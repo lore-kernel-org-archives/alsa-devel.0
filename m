@@ -1,15 +1,18 @@
-From: Rohit Kumar <rohitkr@codeaurora.org>
-Subject: Bug in hdmi codec driver in DPCM
-Date: Tue, 30 Oct 2018 20:20:53 +0530
-Message-ID: <52692082-70ce-9616-6a0b-4c68ed2c61c0@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fix oops w/
+	for_each_rtd_codec_dai_rollback() macro" to the asoc tree
+Date: Tue, 30 Oct 2018 15:35:16 +0000 (GMT)
+Message-ID: <20181030153516.C511211239A7@debutante.sirena.org.uk>
+References: <20181026215443.29081-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F33426751A
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 15:51:00 +0100 (CET)
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B510C26751A
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 16:35:19 +0100 (CET)
+In-Reply-To: <20181026215443.29081-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, plai@codeaurora.org, bgoswami@codeaurora.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-We are facing crash in hdmi codec driver when we use DPCM based 
-dai-links. Crash is happening in hdmi_codec_eld_chmap() while accessing 
-chmap_info struct during hdmi_codec_startup(). However, chmap_info 
-struct is allocated in hdmi_codec_pcm_new() which is only called in 
-non-DPCM based dai-links.
+   ASoC: fix oops w/ for_each_rtd_codec_dai_rollback() macro
 
-Below is the crash stack:
+has been applied to the asoc tree at
 
-[61.635493] Unable to handle kernel NULL pointer dereference at virtual 
-address 00000018
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-.....
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-[61.666696]CM = 0, WnR = 1
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-[61.669778] user pgtable: 4k pages, 39-bit VAs, pgd = ffffffc0d6633000
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-[61.676526] [0000000000000018] *pgd=0000000153fc8003, 
-*pud=0000000153fc8003, *pmd=0000000000000000
-
-[61.685793] Internal error: Oops: 96000046 [#1] PREEMPT SMP
-
-[61.722955] CPU: 7 PID: 2238 Comm: aplay Not tainted 4.14.72 #21
-
-..
-
-[61.740269] PC is at hdmi_codec_startup+0x124/0x164
-
-[61.745308] LR is at hdmi_codec_startup+0xe4/0x164
-
-..
-
-We would probably need to move the implementation on pcm_new() to some 
-other function to make it compatible with DPCM.
-
-Can you please provide suggestions in solving the issue.
-
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
+Mark
 
-Rohit
+>From 23cb2d04db54535df65edbbebbca89f2590f08bd Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 26 Oct 2018 16:54:43 -0500
+Subject: [PATCH] ASoC: fix oops w/ for_each_rtd_codec_dai_rollback() macro
+
+A kernel oops happens on an error case (usual missing BE mixer
+configuration required by Intel SST driver). Git bisect points to this
+macro and an operator precedence issue.
+
+	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
+
+The initial code replaced by this macro was
+	while (--i >= 0) {
+		codec_dai = rtd->codec_dais[i];
+
+Fix the C operator precedence difference by reverting to pre-decrement
+
+Fixes: 0b7990e3897 ('ASoC: add for_each_rtd_codec_dai() macro')
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f1dab1f4b194..70c10a8f3e90 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1192,7 +1192,7 @@ struct snd_soc_pcm_runtime {
+ 	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]); \
+ 	     (i)++)
+ #define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
+-	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
++	for (; ((--i) >= 0) && ((dai) = rtd->codec_dais[i]);)
+ 
+ 
+ /* mixer control */
+-- 
+2.19.0.rc2
