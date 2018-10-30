@@ -1,104 +1,70 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add quirk for boards using pmc_plt_clk_0
-Date: Wed, 31 Oct 2018 15:22:25 +0100
-Message-ID: <20181031142225.16109-1-hdegoede@redhat.com>
+From: =?UTF-8?Q?Ren=c3=a9_Santing?= <rene.santing@wearespindle.com>
+Subject: Re: Bug report - Dell-WD15-Dock not working caused by
+ ucm profile in alsa-lib 1.1.7
+Date: Tue, 30 Oct 2018 16:55:31 +0100
+Message-ID: <851df24c-f461-8469-95d1-282d73ac267c@wearespindle.com>
+References: <16a7a277-0677-9ca6-6765-1e109d6dc3be@wearespindle.com>
+ <s5hwopzixog.wl-tiwai@suse.de>
+ <4ddb1706-d2ba-d5e0-8729-0fa139270e49@wearespindle.com>
+ <s5htvl3ix3p.wl-tiwai@suse.de> <s5hk1lzwi8b.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Dean Wallace <duffydack73@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
+ [209.85.208.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C8E526751A
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 16:55:33 +0100 (CET)
+Received: by mail-ed1-f65.google.com with SMTP id d6-v6so2863739edi.2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 08:55:33 -0700 (PDT)
+In-Reply-To: <s5hk1lzwi8b.wl-tiwai@suse.de>
+Content-Language: en-US-large
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some boards such as the Swanky model Chromebooks use pmc_plt_clk_0 for the
-mclk instead of pmc_plt_clk_3.
-
-This commit adds a DMI based quirk for this.
-
-This fixing audio no longer working on these devices after
-commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-that commit fixes us unnecessary keeping unused clocks on, but in case
-of the Swanky that was breaking audio support since we were not using
-the right clock in the cht_bsw_max98090_ti machine driver.
-
-Cc: stable@vger.kernel.org
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Reported-and-tested-by: Dean Wallace <duffydack73@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 32 ++++++++++++++++++--
- 1 file changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index db6976f4ddaa..9d9f6e41d81c 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -19,6 +19,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
- 
-+#include <linux/dmi.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-@@ -35,6 +36,8 @@
- #define CHT_PLAT_CLK_3_HZ	19200000
- #define CHT_CODEC_DAI	"HiFi"
- 
-+#define QUIRK_PMC_PLT_CLK_0				0x01
-+
- struct cht_mc_private {
- 	struct clk *mclk;
- 	struct snd_soc_jack jack;
-@@ -385,11 +388,29 @@ static struct snd_soc_card snd_soc_card_cht = {
- 	.num_controls = ARRAY_SIZE(cht_mc_controls),
- };
- 
-+static const struct dmi_system_id cht_max98090_quirk_table[] = {
-+	{
-+		/* Swanky model Chromebook (Toshiba Chromebook 2) */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Swanky"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{}
-+};
-+
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
-+	const struct dmi_system_id *dmi_id;
- 	struct device *dev = &pdev->dev;
- 	int ret_val = 0;
- 	struct cht_mc_private *drv;
-+	const char *mclk_name;
-+	int quirks = 0;
-+
-+	dmi_id = dmi_first_match(cht_max98090_quirk_table);
-+	if (dmi_id)
-+		quirks = (unsigned long)dmi_id->driver_data;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
-@@ -411,11 +432,16 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
- 
--	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+	if (quirks & QUIRK_PMC_PLT_CLK_0)
-+		mclk_name = "pmc_plt_clk_0";
-+	else
-+		mclk_name = "pmc_plt_clk_3";
-+
-+	drv->mclk = devm_clk_get(&pdev->dev, mclk_name);
- 	if (IS_ERR(drv->mclk)) {
- 		dev_err(&pdev->dev,
--			"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
--			PTR_ERR(drv->mclk));
-+			"Failed to get MCLK from %s: %ld\n",
-+			mclk_name, PTR_ERR(drv->mclk));
- 		return PTR_ERR(drv->mclk);
- 	}
- 
--- 
-2.19.0
+QXMgYSB1c2VyIEkgZG8gdGhpbmsgdGhlIHVjbSBwcm9maWxlIHdvcmtzIGFzIGludGVuZGVkIHdp
+dGggdGhlIGxhdGVzdApnaXQuIFB1bHNlYXVkaW8gaXMgbm93IGFibGUgdG8gdXNlIHRoZSBoZWFk
+cGhvbmUgYW5kIHNwZWFrZXIgb3V0cHV0IG9mCnRoZSBkb2NraW5nIHN0YXRpb24gYXQgdGhlIHNh
+bWUgdGltZSBhbmQgSSB3YXNuJ3QgYWJsZSB0byBkbyB0aGF0CmJlZm9yZS4gQWxzbyBmb3IgbWUg
+aW4gS0RFIHRoZSB2b2x1bWUvbXV0ZSBjb250cm9scyBhcmUgd29ya2luZyBhcwppbnRlbmRlZC4g
+QnV0IGlmIHRoZSBwcm9maWxlIGdpdmVzIG1vcmUgaXNzdWVzIGZvciBvdGhlciB1c2VycyBJIGNh
+bgpjb25maXJtIHRoYXQgbXkgbm9ybWFsIHVzZWNhc2UgYWxzbyB3b3JrcyBmaW5lIHdpdGhvdXQg
+dGhlIHByb2ZpbGUgb24gbXkKc2V0dXAuCgpSZW7DqQoKT24gMzAtMTAtMTggMTY6NDUsIFRha2Fz
+aGkgSXdhaSB3cm90ZToKPiBPbiBUdWUsIDMwIE9jdCAyMDE4IDEwOjQ4OjI2ICswMTAwLAo+IFRh
+a2FzaGkgSXdhaSB3cm90ZToKPj4gT24gVHVlLCAzMCBPY3QgMjAxOCAxMDo0MToxMCArMDEwMCwK
+Pj4gUmVuOSBTYW50aW5nIHdyb3RlOgo+Pj4gSSB0b3RhbGx5IG1pc3NlZCB0aGF0IGNvbW1pdCBz
+b3JyeSBmb3IgdGhlIHJlZHVuZGFudCBidWcgcmVwb3J0LiBZZXMgaXQKPj4+IHdvcmtzIHdpdGgg
+dGhlIHVwZGF0ZWQgY29uZiBmaWxlLgo+PiBHb29kIHRvIGhlYXIsIHRoYW5rcyBmb3IgcXVpY2sg
+dGVzdGluZyEKPj4KPj4gSmFyb3NsYXYsIHdoYXQgZG8geW91IHRoaW5rIG9mIDEuMS43LjEgcmVs
+ZWFzZSBhZGRyZXNzaW5nIHJlZ3Jlc3Npb24/Cj4+IElJUkMsIHdlIGhhZCBhbiBpc3N1ZSB3aXRo
+IGFsc2EtcGx1Z2lucyBhcyB3ZWxsLgo+IE9yIG1heWJlIHdlIHNob3VsZCBkcm9wIHRoaXMgVUNN
+IHByb2ZpbGUuCj4KPiBTaW5jZSBQQSBzZWVtcyBhZGRyZXNzaW5nIHRoZSBpc3N1ZSBieSBpdHNl
+bGYgdmlhIGl0cyBvd24gc3BlY2lmaWMKPiBwcm9maWxlLCB3ZSBtYXkgbGVhdmUgdGhlIHRoaW5n
+cyB0byBQQSBhbG9uZS4KPgo+IEkgaG9wZWQgdGhhdCBVQ00gcHJvZmlsZSBzdXBwb3J0IGNhbiBp
+bXByb3ZlIHRoZSB0aGluZ3MgaW4gYSBjbGVhbmVyCj4gd2F5LCBidXQgUEEtVUNNIGludGVncmF0
+aW9uIGlzbid0IGZ1bGx5IGRvbmUgKGUuZy4gdGhlIHZvbHVtZSAvIG11dGUKPiBjb250cm9scyBz
+ZWVtIGlnbm9yZWQpLCBhbmQgVUNNIG92ZXJyaWRlcyB0aGUgUEEgcHJvZmlsZSwgaXQgY2FuIGJl
+Cj4gbW9yZSBoYXJtIHRoYW4gZ29vZCBhcyBvZiBub3cuCj4KPgo+IFRha2FzaGkKPgo+Pgo+PiBU
+YWthc2hpCj4+Cj4+PiBUaGFua3MsCj4+Pgo+Pj4gUmVuw6kgU2FudGluZwo+Pj4KPj4+IE9uIDMw
+LTEwLTE4IDEwOjM1LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4gT24gVHVlLCAzMCBPY3QgMjAx
+OCAxMDoxMDowNyArMDEwMCwKPj4+PiBSZW45IFNhbnRpbmcgd3JvdGU6Cj4+Pj4+IEhlbGxvIEFs
+c2EgZGV2ZWxvcGVycywKPj4+Pj4KPj4+Pj4gSSB3b3VsZCBsaWtlIHRvIGZpbGUgYSBidWcgcmVw
+b3J0IGFib3V0IHRoZSBEZWxsLVdEMTUtRG9jay4gVGhpcyBkb2NrCj4+Pj4+IHN0b3BwZWQgd29y
+a2luZyBmb3IgbWUgb24gYXJjaGxpbnV4L2tkZS4gVGhlIGRldmljZSB3YXMgbm90IHBpY2tlZCB1
+cCBhdAo+Pj4+PiBhbGwgYnkgcHVsc2UgYXVkaW8gYWZ0ZXIgc29tZSB1cGRhdGVzIEkgaW5zdGFs
+bGVkIGxhc3Qgd2Vlay4KPj4+Pj4gQnkgdHJpYWwgYW5kIGVycm9yIEkgZm91bmQgb3V0IGl0IHdh
+cyBjYXVzZWQgYnkgdGhlIHVjbSBwcm9maWxlIHRoYXQgd2FzCj4+Pj4+IGFkZGVkIGluIGFsc2Et
+bGliIDEuMS43Lgo+Pj4+IENvdWxkIHlvdSB0cnkgdGhlIGFsc2EtbGliIGdpdCByZXBvPyAgVGhl
+IGZpeCBpcyBhbHJlYWR5IGluY2x1ZGVkLgo+Pj4+Cj4+Pj4KPj4+PiB0aGFua3MsCj4+Pj4KPj4+
+PiBUYWthc2hpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
