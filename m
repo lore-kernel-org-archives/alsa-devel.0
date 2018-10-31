@@ -1,24 +1,26 @@
-From: ab24580@georgiasouthern.edu
+From: ayman.bagabas@gmail.com
 Subject: [PATCH 3/3] ALSA:hda: add support for Huawei WMI MicMute LED
-Date: Wed, 31 Oct 2018 11:59:47 -0400
-Message-ID: <74d2964af8b3556e93c9f33e8291e085676cbc76.camel@georgiasouthern.edu>
+Date: Wed, 31 Oct 2018 12:06:49 -0400
+Message-ID: <984e003722fb42dd69936fd79549a5e639564735.camel@gmail.com>
+References: <74d2964af8b3556e93c9f33e8291e085676cbc76.camel@georgiasouthern.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-abQ9cu1UM9OVZhj6JIcF"
+Content-Type: multipart/mixed; boundary="=-KM3BS2GwMIy5aQnseaPa"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <74d2964af8b3556e93c9f33e8291e085676cbc76.camel@georgiasouthern.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, kailang@realtek.com, hui.wang@canonical.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: Ayman Bagabas <ayman.bagabas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-abQ9cu1UM9OVZhj6JIcF
+--=-KM3BS2GwMIy5aQnseaPa
 Content-Type: text/plain
 Content-Transfer-Encoding: base64
 
 Cg0K
 
 
---=-abQ9cu1UM9OVZhj6JIcF
+--=-KM3BS2GwMIy5aQnseaPa
 Content-Disposition: attachment;
 	filename="0003-ALSA-hda-add-support-for-Huawei-WMI-MicMute-LED.patch"
 Content-Transfer-Encoding: base64
@@ -128,7 +130,7 @@ LWh1YXdlaS1taWNtdXRlIn0sCiAJey5pZCA9IEFMQzI5NV9GSVhVUF9IUF9YMzYwLCAubmFtZSA9
 ICJhbGMyOTUtaHAteDM2MCJ9LAogCXt9CiB9OwotLSAKMi4xNy4yCgo=
 
 
---=-abQ9cu1UM9OVZhj6JIcF
+--=-KM3BS2GwMIy5aQnseaPa
 Content-Disposition: attachment;
 	filename="0002-ALSA-hda-fix-front-speakers-on-Huawei-MBXP.patch"
 Content-Transfer-Encoding: base64
@@ -176,7 +178,7 @@ LCAiT3JkaXNzaW1vIEVWRTIgIiwgQUxDMjY5VkJfRklYVVBfT1JESVNTSU1PX0VWRTIpLCAvKiBB
 bHNvIGtub3duIGFzIE1hbGF0YSBQQy1CMTMwMyAqLwotLSAKMi4xNy4yCgo=
 
 
---=-abQ9cu1UM9OVZhj6JIcF
+--=-KM3BS2GwMIy5aQnseaPa
 Content-Disposition: attachment; filename="0001-x86-add-support-for-Huawei-WMI-hotkeys.patch"
 Content-Transfer-Encoding: base64
 Content-Type: text/x-patch; name="0001-x86-add-support-for-Huawei-WMI-hotkeys.patch";
@@ -318,4 +320,4 @@ LCBNT0RVTEVfTkFNRSk7Cit9CisKK21vZHVsZV9pbml0KGh1YXdlaV93bWlfaW5pdCk7Cittb2R1
 bGVfZXhpdChodWF3ZWlfd21pX2V4aXQpOwotLSAKMi4xNy4yCgo=
 
 
---=-abQ9cu1UM9OVZhj6JIcF--
+--=-KM3BS2GwMIy5aQnseaPa--
