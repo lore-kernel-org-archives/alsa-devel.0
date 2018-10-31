@@ -1,64 +1,167 @@
 From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH 2/3] ALSA:hda: fix front speakers on Huawei MBXP.
-Date: Wed, 31 Oct 2018 15:20:12 -0400
-Message-ID: <20181031192013.7701-1-ayman.bagabas@gmail.com>
+Subject: [PATCH 3/3] ALSA:hda: add support for Huawei WMI MicMute LED
+Date: Wed, 31 Oct 2018 15:20:38 -0400
+Message-ID: <20181031192045.7877-1-ayman.bagabas@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: ayman.bagabas@gmail.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables the front speakers on Huawei Matebook X Pro laptops.
-These laptops come with Dolby Atmos sound system and these pins
-configuration enables the front speakers.
+Some of Huawei laptops come with a LED in the mic mute key. This patch
+enables and disable this LED when the internal microphone status is
+changed.
 
 Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
 ---
- sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ include/linux/huawei_wmi.h        |  7 ++++
+ sound/pci/hda/huawei_wmi_helper.c | 66 +++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c     | 12 ++++++
+ 3 files changed, 85 insertions(+)
+ create mode 100644 include/linux/huawei_wmi.h
+ create mode 100644 sound/pci/hda/huawei_wmi_helper.c
 
+diff --git a/include/linux/huawei_wmi.h b/include/linux/huawei_wmi.h
+new file mode 100644
+index 000000000000..69b656c5029b
+--- /dev/null
++++ b/include/linux/huawei_wmi.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __HUAWEI_WMI_H__
++#define __HUAWEI_WMI_H__
++
++int huawei_wmi_micmute_led_set(bool on);
++
++#endif
+diff --git a/sound/pci/hda/huawei_wmi_helper.c b/sound/pci/hda/huawei_wmi_helper.c
+new file mode 100644
+index 000000000000..57256f51fd88
+--- /dev/null
++++ b/sound/pci/hda/huawei_wmi_helper.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Helper functions for Huawei WMI Mic Mute LED;
++ * to be included from codec driver
++ */
++
++#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
++#include <linux/huawei_wmi.h>
++
++static int (*huawei_wmi_micmute_led_set_func)(bool);
++
++static void update_huawei_wmi_micmute_led(struct hda_codec *codec,
++					  struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
++{
++	if (!ucontrol || !huawei_wmi_micmute_led_set_func)
++		return;
++	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
++		/* TODO: How do I verify if it's a mono or stereo here? */
++		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
++		huawei_wmi_micmute_led_set_func(!val);
++	}
++}
++
++static void alc_fixup_huawei_wmi(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++	struct hda_gen_spec *spec = codec->spec;
++	bool removefunc = false;
++
++	codec_info(codec, "In alc_fixup_huawei_wmi\n");
++
++	if (action == HDA_FIXUP_ACT_PROBE) {
++		if (!huawei_wmi_micmute_led_set_func)
++			huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
++		if (!huawei_wmi_micmute_led_set_func) {
++			codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
++			return;
++		}
++
++		removefunc = true;
++		if (huawei_wmi_micmute_led_set_func(false) >= 0) {
++			if (spec->num_adc_nids > 1 && !spec->dyn_adc_switch)
++				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
++			else {
++				spec->cap_sync_hook = update_huawei_wmi_micmute_led;
++				removefunc = false;
++			}
++		}
++		codec_info(codec, "In alc_fixup_huawei_wmi IF\n");
++
++	}
++
++	if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
++		symbol_put(huawei_wmi_micmute_led_set);
++		huawei_wmi_micmute_led_set_func = NULL;
++	}
++}
++
++#else
++
++static void hda_fixup_huawei_wmi(struct hda_codec *codec,
++				   const struct hda_fixup *fix, int action)
++{
++}
++
++#endif
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3ac7ba9b342d..4f7a39c7883c 100644
+index 4f7a39c7883c..0dab00c0df50 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -5493,6 +5493,7 @@ enum {
- 	ALC298_FIXUP_TPT470_DOCK,
+@@ -5371,6 +5371,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+ /* for dell wmi mic mute led */
+ #include "dell_wmi_helper.c"
+ 
++/* for huawei wmi mic mute led */
++#include "huawei_wmi_helper.c"
++
+ /* for alc295_fixup_hp_top_speakers */
+ #include "hp_x360_helper.c"
+ 
+@@ -5494,6 +5497,7 @@ enum {
  	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
  	ALC255_FIXUP_DELL_HEADSET_MIC,
-+	ALC256_FIXUP_HUAWEI_MBXP_PINS,
+ 	ALC256_FIXUP_HUAWEI_MBXP_PINS,
++	ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED,
  	ALC295_FIXUP_HP_X360,
  	ALC221_FIXUP_HP_HEADSET_MIC,
  };
-@@ -6347,6 +6348,22 @@ static const struct hda_fixup alc269_fixups[] = {
+@@ -6348,6 +6352,10 @@ static const struct hda_fixup alc269_fixups[] = {
  		.chained = true,
  		.chain_id = ALC269_FIXUP_HEADSET_MIC
  	},
-+	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{0x12, 0x90a60130},
-+			{0x13, 0x40000000},
-+			{0x14, 0x90170110},
-+			{0x18, 0x411111f0},
-+			{0x19, 0x04a11040},
-+			{0x1a, 0x411111f0},
-+			{0x1b, 0x90170112},
-+			{0x1d, 0x40759a05},
-+			{0x1e, 0x411111f0},
-+			{0x21, 0x04211020},
-+			{ },
-+		},
++	[ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_huawei_wmi,
 +	},
+ 	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -6363,6 +6371,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{0x21, 0x04211020},
+ 			{ },
+ 		},
++		.chained = true,
++		.chain_id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED
+ 	},
  	[ALC295_FIXUP_HP_X360] = {
  		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc295_fixup_hp_top_speakers,
-@@ -6592,6 +6609,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -6610,6 +6620,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
  	SND_PCI_QUIRK(0x17aa, 0x511e, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
  	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
-+	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+ 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
++	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED),
  	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
  	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
  	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+@@ -6775,6 +6786,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC274_FIXUP_DELL_AIO_LINEOUT_VERB, .name = "alc274-dell-aio"},
+ 	{.id = ALC255_FIXUP_DUMMY_LINEOUT_VERB, .name = "alc255-dummy-lineout"},
+ 	{.id = ALC255_FIXUP_DELL_HEADSET_MIC, .name = "alc255-dell-headset"},
++	{.id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED, .name = "alc256-huawei-micmute"},
+ 	{.id = ALC295_FIXUP_HP_X360, .name = "alc295-hp-x360"},
+ 	{}
+ };
 -- 
 2.17.2
