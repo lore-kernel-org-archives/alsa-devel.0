@@ -1,167 +1,55 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH 3/3] ALSA:hda: add support for Huawei WMI MicMute LED
-Date: Wed, 31 Oct 2018 15:20:38 -0400
-Message-ID: <20181031192045.7877-1-ayman.bagabas@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: stm32: sai: fix less than zero
+	comparison on unsigned int
+Date: Wed, 31 Oct 2018 19:31:43 +0000
+Message-ID: <20181031193143.6994-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 529162677E4
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2018 20:31:51 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Some of Huawei laptops come with a LED in the mic mute key. This patch
-enables and disable this LED when the internal microphone status is
-changed.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+Currently, the comparison of div < 0 is always false because div is
+an unsigned int. Fix this by making div an int.
+
+Detected by CoverityScan, CID#1475309 ("Unsigned compared against 0")
+
+Fixes: 8307b2afd386 "(ASoC: stm32: sai: set sai as mclk clock provider")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/linux/huawei_wmi.h        |  7 ++++
- sound/pci/hda/huawei_wmi_helper.c | 66 +++++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c     | 12 ++++++
- 3 files changed, 85 insertions(+)
- create mode 100644 include/linux/huawei_wmi.h
- create mode 100644 sound/pci/hda/huawei_wmi_helper.c
+ sound/soc/stm/stm32_sai_sub.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/huawei_wmi.h b/include/linux/huawei_wmi.h
-new file mode 100644
-index 000000000000..69b656c5029b
---- /dev/null
-+++ b/include/linux/huawei_wmi.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __HUAWEI_WMI_H__
-+#define __HUAWEI_WMI_H__
-+
-+int huawei_wmi_micmute_led_set(bool on);
-+
-+#endif
-diff --git a/sound/pci/hda/huawei_wmi_helper.c b/sound/pci/hda/huawei_wmi_helper.c
-new file mode 100644
-index 000000000000..57256f51fd88
---- /dev/null
-+++ b/sound/pci/hda/huawei_wmi_helper.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Helper functions for Huawei WMI Mic Mute LED;
-+ * to be included from codec driver
-+ */
-+
-+#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
-+#include <linux/huawei_wmi.h>
-+
-+static int (*huawei_wmi_micmute_led_set_func)(bool);
-+
-+static void update_huawei_wmi_micmute_led(struct hda_codec *codec,
-+					  struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	if (!ucontrol || !huawei_wmi_micmute_led_set_func)
-+		return;
-+	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
-+		/* TODO: How do I verify if it's a mono or stereo here? */
-+		bool val = ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1];
-+		huawei_wmi_micmute_led_set_func(!val);
-+	}
-+}
-+
-+static void alc_fixup_huawei_wmi(struct hda_codec *codec,
-+				   const struct hda_fixup *fix, int action)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	bool removefunc = false;
-+
-+	codec_info(codec, "In alc_fixup_huawei_wmi\n");
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!huawei_wmi_micmute_led_set_func)
-+			huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
-+		if (!huawei_wmi_micmute_led_set_func) {
-+			codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
-+			return;
-+		}
-+
-+		removefunc = true;
-+		if (huawei_wmi_micmute_led_set_func(false) >= 0) {
-+			if (spec->num_adc_nids > 1 && !spec->dyn_adc_switch)
-+				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
-+			else {
-+				spec->cap_sync_hook = update_huawei_wmi_micmute_led;
-+				removefunc = false;
-+			}
-+		}
-+		codec_info(codec, "In alc_fixup_huawei_wmi IF\n");
-+
-+	}
-+
-+	if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-+		symbol_put(huawei_wmi_micmute_led_set);
-+		huawei_wmi_micmute_led_set_func = NULL;
-+	}
-+}
-+
-+#else
-+
-+static void hda_fixup_huawei_wmi(struct hda_codec *codec,
-+				   const struct hda_fixup *fix, int action)
-+{
-+}
-+
-+#endif
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4f7a39c7883c..0dab00c0df50 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5371,6 +5371,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- /* for dell wmi mic mute led */
- #include "dell_wmi_helper.c"
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 211589b0b2ef..d4825700b63f 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -336,8 +336,7 @@ static int stm32_sai_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	struct stm32_sai_mclk_data *mclk = to_mclk_data(hw);
+ 	struct stm32_sai_sub_data *sai = mclk->sai_data;
+-	unsigned int div;
+-	int ret;
++	int div, ret;
  
-+/* for huawei wmi mic mute led */
-+#include "huawei_wmi_helper.c"
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-@@ -5494,6 +5497,7 @@ enum {
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
- 	ALC256_FIXUP_HUAWEI_MBXP_PINS,
-+	ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED,
- 	ALC295_FIXUP_HP_X360,
- 	ALC221_FIXUP_HP_HEADSET_MIC,
- };
-@@ -6348,6 +6352,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
-+	[ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_huawei_wmi,
-+	},
- 	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -6363,6 +6371,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{0x21, 0x04211020},
- 			{ },
- 		},
-+		.chained = true,
-+		.chain_id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED
- 	},
- 	[ALC295_FIXUP_HP_X360] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -6610,6 +6620,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x511e, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
-+	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
-@@ -6775,6 +6786,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC274_FIXUP_DELL_AIO_LINEOUT_VERB, .name = "alc274-dell-aio"},
- 	{.id = ALC255_FIXUP_DUMMY_LINEOUT_VERB, .name = "alc255-dummy-lineout"},
- 	{.id = ALC255_FIXUP_DELL_HEADSET_MIC, .name = "alc255-dell-headset"},
-+	{.id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED, .name = "alc256-huawei-micmute"},
- 	{.id = ALC295_FIXUP_HP_X360, .name = "alc295-hp-x360"},
- 	{}
- };
+ 	div = stm32_sai_get_clk_div(sai, parent_rate, rate);
+ 	if (div < 0)
 -- 
-2.17.2
+2.19.1
