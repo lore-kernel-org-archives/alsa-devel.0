@@ -1,50 +1,43 @@
-From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH] ASoC: core: Invoke pcm_new() for all DAI-link
-Date: Thu,  1 Nov 2018 18:08:49 +0530
-Message-ID: <1541075929-29323-1-git-send-email-rohitkr@codeaurora.org>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH 1/2] CHROMIUM: ASoC: rt5663: Add documentation for power supply support
+Date: Thu,  1 Nov 2018 20:40:06 +0800
+Message-ID: <20181101124007.243258-1-cychiang@chromium.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
-Cc: Rohit kumar <rohitkr@codeaurora.org>
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, oder_chiou@realtek.com, alsa-devel@alsa-project.org, dgreid@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove no_pcm check to invoke pcm_new() for backend dai-links
-too. This fixes crash in hdmi codec driver during hdmi_codec_startup()
-while accessing chmap_info struct. chmap_info struct memory is
-allocated in pcm_new() of hdmi codec driver which is not invoked
-in case of DPCM when hdmi codec driver is part of backend dai-link.
+rt5663 codec driver will support setting CPVDD and AVDD power supply
+from device tree.
 
-Below is the crash stack:
-
-[   61.635493] Unable to handle kernel NULL pointer dereference at virtual address 00000018
-..
-[   61.666696]   CM = 0, WnR = 1
-[   61.669778] user pgtable: 4k pages, 39-bit VAs, pgd = ffffffc0d6633000
-[   61.676526] [0000000000000018] *pgd=0000000153fc8003, *pud=0000000153fc8003, *pmd=0000000000000000
-[   61.685793] Internal error: Oops: 96000046 [#1] PREEMPT SMP
-[   61.722955] CPU: 7 PID: 2238 Comm: aplay Not tainted 4.14.72 #21
-..
-[   61.740269] PC is at hdmi_codec_startup+0x124/0x164
-[   61.745308] LR is at hdmi_codec_startup+0xe4/0x164
-
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/rt5663.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6ddcf12..abdc460 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1467,7 +1467,7 @@ static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
- 	for (i = 0; i < num_dais; ++i) {
- 		struct snd_soc_dai_driver *drv = dais[i]->driver;
+diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
+index 23386446c63d6..d4058dfde0392 100644
+--- a/Documentation/devicetree/bindings/sound/rt5663.txt
++++ b/Documentation/devicetree/bindings/sound/rt5663.txt
+@@ -36,6 +36,9 @@ Optional properties:
+   "realtek,impedance_sensing_num" is 2. It means that there are 2 ranges of
+   impedance in the impedance sensing function.
  
--		if (!rtd->dai_link->no_pcm && drv->pcm_new)
-+		if (drv->pcm_new)
- 			ret = drv->pcm_new(rtd, dais[i]);
- 		if (ret < 0) {
- 			dev_err(dais[i]->dev,
++- avdd-supply: Power supply for AVDD, providing 1.8V.
++- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
++
+ Pins on the device (for linking into audio routes) for RT5663:
+ 
+   * IN1P
+@@ -51,4 +54,6 @@ rt5663: codec@12 {
+ 	compatible = "realtek,rt5663";
+ 	reg = <0x12>;
+ 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
++	avdd-supply = <&pp1800_a_alc5662>;
++	cpvdd-supply = <&pp3500_a_alc5662>;
+ };
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.19.1.568.g152ad8e336-goog
