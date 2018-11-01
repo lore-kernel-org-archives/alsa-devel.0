@@ -1,24 +1,19 @@
-From: Mutz Heuer <mutz.heuer@gmail.com>
-Subject: Re: [USB-Audio - PX USB,
- playback] snd-usb-audio: probe of 2-3:1.0 failed with error -22
- after kernel upgrade
-Date: Thu, 1 Nov 2018 13:57:22 +0100
-Message-ID: <CAHU8kArWuL7wO8Yg3dHX3L-NK_EYFiqc0mWYuU=5ruwoO7vBtw@mail.gmail.com>
-References: <CAHU8kApb6us8A4r9vwzZaM+Y7BQoty0HqXARJXLpQJqjv0OMCA@mail.gmail.com>
- <s5h1s873cev.wl-tiwai@suse.de>
- <CAHU8kAqRB_t6pt81YRvtX+UfW+TNyWUxtZZ4_Hp0LHAsw5LNtQ@mail.gmail.com>
- <s5ho9bbqimq.wl-tiwai@suse.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 7/7] ASoC: Intel: common: add quirk for APL
+	RVP boards
+Date: Thu, 1 Nov 2018 16:11:49 +0200
+Message-ID: <20181101141149.GV10650@smile.fi.intel.com>
+References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+ <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f196.google.com (mail-lj1-f196.google.com
- [209.85.208.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 4023E2677D0
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 13:57:34 +0100 (CET)
-Received: by mail-lj1-f196.google.com with SMTP id s15-v6so17974195lji.3
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2018 05:57:34 -0700 (PDT)
-In-Reply-To: <s5ho9bbqimq.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C3362677D0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 15:11:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,80 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-WW91IGFyZSByaWdodCwgSSBkaWQgbm90IHN3aXRjaCB0byB0aGUgbWFzdGVyIGJyYW5jaC4gVGhl
-IGZpeCBpcyBvbiBtYXN0ZXIKYW5kIEkgdGVzdGVkIHRoZSBkYWlseSB1YnVudHUgbWFpbmxpbmUg
-a2VybmVsLgoKJSB1bmFtZSAtYSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-7oKyIOKclCDugrIgMTgwIO6CsiAxMzo0NjoyNgpMaW51eCBUaGlua1BhZC1YMjIwIDQuMTkuMC05
-OTktbG93bGF0ZW5jeSAjMjAxODEwMzEyMjAyIFNNUCBQUkVFTVBUIFRodSBOb3YKMSAwMjoxMToy
-NCBVVEMgMjAxOCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKClRoYXQgZml4ZXMgdGhl
-IHByb2JsZW0gYW5kIEkgY291bGQgZHJvcCB0aGUgcHVsc2VhdWRpbyBjb25maWd1cmF0aW9uIGFs
-c28uCgpDdXJyZW50bHkgaGFwcGlseSBsaXN0ZW5pbmcgdG8gQmVybGluIFBoaWxoYXJtb25pYyBT
-dHJpbmcgUXVpbnRldDogQS5Edm9yw6FrCi0gU3RyaW5nIFF1aW50ZXQgT3AuNzc6IEkgQWxsZWdy
-byBjb24gZnVvY28g4oCTIFBpw7kgbW9zc28gOC0pCgpJIHVwZGF0ZWQgdGhlIGxhdWNocGFkIGJ1
-ZyAoaG9wZWZ1bGx5IGRpZCB0aGUgcmlnaHQgdGhpbmdzIHRoZXJlKS4KClRoYW5rcyBhIGxvdCBh
-bmQgc29ycnkgZm9yIHRoZSBpbmNvbnZlbmllbmNlLAoKTXV0egoKVGFrYXNoaSBJd2FpIDx0aXdh
-aUBzdXNlLmRlPiBzY2hyaWViIGFtIERpLiwgMzAuIE9rdC4gMjAxOCB1bSAyMTozMyBVaHI6Cgo+
-IE9uIFR1ZSwgMzAgT2N0IDIwMTggMTk6NDU6MzYgKzAxMDAsCj4gTXV0eiBIZXVlciB3cm90ZToK
-PiA+Cj4gPiBJIGNoZWNrZWQgdGhlIHNvdXJjZSBjb2RlIG9mIHF1aXJrcy10YWJsZS5oIG9uIGJy
-YW5jaCA0LjE5LXJjOC4KPgo+IEl0J3MgdG9vIG9sZCA6KQo+Cj4gTGludXMgZ2l0IHRyZWUgYWxy
-ZWFkeSBjb250YWlucyBtb3JlIGZpeGVzLCBhbmQgdGhlIGNvcnJlc3BvbmRpbmcgb25lCj4gaXMg
-Y29tbWl0IGMzNjljOGRiMTVkNTFmYTE3NWQyYmE4NTkyOGY3OWQxNmFmNmI1NjIKPgo+Cj4gVGFr
-YXNoaQo+Cj4gPiBJdCBzdGlsbAo+ID4gY29udGFpbnMgdGhlIHByb2JsZW1hdGljIHdvcmthcm91
-bmQuIEl0IGRvZXNuJ3Qgc2VlbSB0byBmaXQgYW55IGxvbmdlcgo+IHRvIHRoZQo+ID4gaGVhZHBo
-b25lcyBjdXJyZW50IGZpcm13YXJlLiBDaGVja2luZyB0aGUgNC4xNS43IGtlcm5lbCAod2l0aG91
-dCB0aGUKPiBxdWlyaykKPiA+IHdvcmtzIG11Y2ggYmV0dGVyLiBBdCBsZWFzdCB0aGUgZGV2aWNl
-IGlzIHNob3duIGluIHRoZSBtaXhlciBhbmQgZml4aW5nCj4gdGhlCj4gPiBzYW1wbGVyYXRlIHRv
-IDQ4a0h6IGxlYWRzIHRvIGEgdXNlZnVsIGNvbmZpZ3VyYXRpb24uIFRvIGJlIGhvbmVzdCBJIGRv
-Cj4gbm90Cj4gPiByZWFsbHkgdW5kZXJzdGFuZCBob3cgdG8gZGVmaW5lIGEgZml4ZWQgdGFibGUg
-Zm9yIHN1cHBvcnRlZCBzYW1wbGUgcmF0ZQo+ID4gd2l0aG91dCBmaWRkbGluZyB3aXRoIG90aGVy
-IHBhcmFtZXRlcnMuIFRoZSBISUQgc2VlbXMgdG8gd29ya2luZyB0b28uIEF0Cj4gbGVhc3QKPiA+
-IEkgYW0gYWJsZSB0byB1c2UgdGhlIGhlYWRwaG9uZSBidXR0b25zIHRvIGluL2RlY3JlYXNlIHRo
-ZSB2b2x1bWUgYW5kIHRvCj4gc3RvcAo+ID4gYW5kIHJlc3RhcnQgcGxheWJhY2suIFRoZSBtaWNy
-b3Bob25lIGlzIG5vdCBzaG93biAtIGJ1dCB0aGF0IGRvZXMgbm90Cj4gc2VlbSB0bwo+ID4gd29y
-ayBvbiB3aW5kb3dzIGVpdGhlciAtIGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgdGhlIG9yZ2luYWwg
-cGF0Y2ggdG8KPiBzdXBwb3J0Cj4gPiB0aGUgaGVhZHBob25lcy4KPiA+Cj4gPiBXaXRoIHRoZSBx
-dXJpayBpbiBwbGFjZSBJIGdldCBubyByZWFsbHkgaGVscGZ1bCBlcnJvciBtZXNzYWdlcyAuLi4K
-PiA+Cj4gPiBJIGhvcGUgdGhhdCBoZWxwcyB0byBjbGFyaWZ5IHRoZSBzaXR1YXRpb24sCj4gPgo+
-ID4gTXV0ego+ID4KPiA+IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gc2NocmllYiBhbSBE
-aS4sIDMwLiBPa3QuIDIwMTggdW0gMTI6MjQgVWhyOgo+ID4KPiA+ICAgICBPbiBTdW4sIDI4IE9j
-dCAyMDE4IDIyOjAwOjM1ICswMTAwLAo+ID4gICAgIE11dHogSGV1ZXIgd3JvdGU6Cj4gPiAgICAg
-Pgo+ID4gICAgID4gVVNCLUF1ZGlvIENvbm5lY3Rpb24gb24gQm93ZXJzICYgV2lsa2VucyBQWCBC
-bHVldG9vdGggSGVhZHBob25lcwo+IHN0YXJ0ZWQKPiA+ICAgICA+IHdvcmtpbmcgd2hlbiB1cGdy
-YWRpbmcga2VybmVsIGZyb20gNC4xMyB0byA0LjE1IHNlcmllcy4gVGhlbiBpdAo+IHN1ZGRlbmx5
-Cj4gPiAgICAgPiBzdG9wcGVkIHdvcmtpbmcgYWdhaW4gb24gbmV3ZXIga2VybmVscy4gVGhlIGJ1
-ZyByZXBvcnQgaGFzIGJlZW4KPiA+ICAgICBnZW5lcmF0ZWQKPiA+ICAgICA+IG9uIHRoZSBsYXRl
-c3Qgd29ya2luZyBtYWlubGluZSBrZXJuZWwgNC4xNS43LiBBbGwgbmV3ZXIga2VybmVscwo+IGhh
-dmUKPiA+ICAgICBzb21lCj4gPiAgICAgPiB1c2IgcXVpcmtzIGluIHBsYWNlLCB3aGljaCBzaG91
-bGQgZml4IHRoZSBwbGF5YmFjayBzYW1wbGUgcmF0ZXMgdG8KPiA0OAo+ID4gICAgIGtIei4KPiA+
-ICAgICA+IFRoZSBxdWlyayBzZWVtcyBub3QgdG8gYmUgd29ya2luZyBjb3JyZWN0bHkgLSBpdCBz
-ZWVtcyB0byBoaW5kZXIKPiB0aGUKPiA+ICAgICBhdWRpbwo+ID4gICAgID4gc3lzdGVtIHRvIHJl
-Y29nbml6ZSB0aGUgVVNCLWRldmljZSBhcyBhIHNvdW5kIGRldmljZS4KPiA+ICAgICA+Cj4gPiAg
-ICAgPiBUaGUgSGVhZHBob25lcyB3b3JrIG9uIGtlcm5lbHMgYmVmb3JlIDQsMTUuNyB3aGVuIG1h
-bnVhbGx5Cj4gY29uZmlndXJpbmcKPiA+ICAgICA+IHB1bHNlYXVkaW8gdG8gYSBkZWZhdWx0IHNh
-bXBsZXJhdGUgb2YgNDgga0h6Lgo+ID4gICAgID4KPiA+ICAgICA+IFBYIEhlYWRwaG9uZXMgYXJl
-IG9uIHRoZSBuZXdlc3QgZmlybXdhcmUgbGV2ZWwuCj4gPiAgICAgPgo+ID4gICAgID4gU2VlIGh0
-dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTAyNjUzNDUvLiBEcm9wcGluZyB0aGF0
-Cj4gcGF0Y2gKPiA+ICAgICBhbmQKPiA+ICAgICA+IHJlY29tcGlsaW5nIHRoZSBrZXJuZWwgbGVh
-ZHMgdG8gYSBzaXR1YXRpb24gd2hlcmUgYWxzYSBhbmQKPiBwdWxzZWF1ZGlvCj4gPiAgICAgc2Vl
-bQo+ID4gICAgID4gdG8gdG8gYmUgd29ya2luZyBhZ2Fpbi4KPiA+ICAgICA+Cj4gPiAgICAgPiBB
-ZGRpbmcKPiA+ICAgICA+Cj4gPiAgICAgPiAgICAgICBkZWZhdWx0LXNhbXBsZS1yYXRlID0gNDgw
-MDAKPiA+ICAgICA+Cj4gPiAgICAgPiB0byAvZXRjL3B1bHNlL2RhZW1vbi5jb25mIGxlYWRzIHRv
-IHdvcmtpbmcgaGVhZHBob25lcy4KPiA+ICAgICA+Cj4gPiAgICAgPiBNYXliZSB0aGUgcGF0Y2gg
-aGFzIHRvIGJlIGFkanVzdGVkIHRvIG5ld2VyIGZpcm13YXJlPyBBIHF1aXJrCj4gc2VlbXMgdG8K
-PiA+ICAgICBiZQo+ID4gICAgID4gcmVhbGx5IG5lY2Vzc2FyeSB0byBhdm9pZCB0aGUgc3BlY2lm
-aWMgcGF0Y2ggdG8gZGFlbW9uLmNvbmYuCj4gPiAgICAgPgo+ID4gICAgID4KPiA+ICAgICA+IE1v
-cmUgZGV0YWlscyBjYW4gYmUgZm91bmQgaW4KPiA+ICAgICA+IGh0dHBzOi8vYnVncy5sYXVuY2hw
-YWQubmV0L3VidW50dS8rc291cmNlL2xpbnV4LytidWcvMTc3MzY5Nwo+ID4gICAgID4gV2hhdCB3
-b3VsZCBiZSB0aGUgYmVzdCB3YXkgdG8gcHJvY2VlZD8KPiA+Cj4gPiAgICAgQ291bGQgeW91IGNo
-ZWNrIHRoZSBsYXRlc3QgTGludXMgZ2l0IHRyZWUgKG9yIGZvci1saW51cyBicmFuY2ggb2YKPiA+
-ICAgICBzb3VuZCBnaXQgdHJlZSk/ICBUaGUgd29ya2Fyb3VuZCBmb3IgdGhlIGJ1Z2d5IGZpcm13
-YXJlIHdhcyBhbHJlYWR5Cj4gPiAgICAgaW5jbHVkZWQgdGhlcmUuICBMZXQgbWUga25vdyBpZiBp
-dCBzdGlsbCBkb2Vzbid0IHN1ZmZpY2UuCj4gPgo+ID4gICAgIHRoYW5rcywKPiA+Cj4gPiAgICAg
-VGFrYXNoaQo+ID4KPiA+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Wed, Oct 31, 2018 at 08:07:18PM -0500, Pierre-Louis Bossart wrote:
+> For some reason the RVP/LeafHill SSDT exposes an INT34C3 ID which is
+> used on other boards to point to the TDF8532 amplifier. Yay BIOS.
+> 
+> Add a DMI-quirk to ignore this ID and check for other valid machine
+> driver descriptors.
+
+> +static unsigned long apl_machine_id;
+> +
+> +#define APL_RVP  1
+> +
+> +static int apl_rvp_quirk_cb(const struct dmi_system_id *id)
+> +{
+> +	apl_machine_id = APL_RVP;
+> +	return 1;
+> +}
+> +
+> +static const struct dmi_system_id apl_table[] = {
+> +	{
+> +		.callback = apl_rvp_quirk_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corp."),
+> +			DMI_MATCH(DMI_BOARD_NAME, "Apollolake RVP1A"),
+> +		},
+> +	},
+
+> +	{},
+
+Terminator entry doesn't need a comma. It would prevent from (unlikely)
+mistakes when extending the list.
+
+> +};
+> +
+> +static struct snd_soc_acpi_mach *apl_quirk(void *arg)
+> +{
+> +	struct snd_soc_acpi_mach *mach = arg;
+> +
+
+> +	dmi_check_system(apl_table);
+
+Can't we just use driver_data of the table above and get rid of at least global variable?
+
+> +
+> +	if (apl_machine_id == APL_RVP)
+> +		return NULL;
+> +	else
+> +		return mach;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
