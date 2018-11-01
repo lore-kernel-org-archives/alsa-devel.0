@@ -1,17 +1,14 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/7] ASoC: acpi: define common interface for
-	machine driver configuration
-Date: Wed, 31 Oct 2018 20:07:12 -0500
-Message-ID: <20181101010718.2878-2-pierre-louis.bossart@linux.intel.com>
-References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/7] ASoC: Intel: cleanups
+Date: Wed, 31 Oct 2018 20:07:11 -0500
+Message-ID: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AC0F267877
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 02:07:24 +0100 (CET)
-In-Reply-To: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 43E722677E8
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 02:07:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +22,44 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The machine drivers may need information provided by the platform
-driver.  Currently the information is passed using pdata specific to
-each plaform driver. This prevents other drivers, such as SOF, from
-reusing machine drivers directly.
+This patchset contain 4 different cleanups:
+a) change of pdata definition to avoid using SST-specific structures
+and allow for machine driver reuse w/ SOF. No new features, just
+different data structures.
+b) removal of remaining GFP_ATOMIC usages
+c) Cleanup of machine driver tables for APL (missing SOF information
+and quirk for APL RVP/LeafHill CRB boards). These boards are used
+outside of Intel so it's worth sharing the fixes for the general
+public.
+d) typo
 
-Add a new structure which contains the required fields.
+Bard liao (1):
+  ASoC: Intel: common: add SOF information for APL RVP
 
-This proposal requires a bit more work on the platform side but this
-generic interface helps reuse code directly.
+Pierre-Louis Bossart (6):
+  ASoC: acpi: define common interface for machine driver configuration
+  ASoC: Intel: use standard interface for Hdaudio machine driver
+  ASoC: Intel: use standard interface for Atom machine drivers
+  ASoC: Intel: boards: fix Skylake typo
+  ASoC: Intel: remove GFP_ATOMIC, use GFP_KERNEL
+  ASoC: Intel: common: add quirk for APL RVP boards
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/soc-acpi.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/sound/soc-acpi.h                      | 14 +++++++
+ sound/soc/intel/atom/sst/sst_acpi.c           |  4 ++
+ sound/soc/intel/atom/sst/sst_pvt.c            |  4 +-
+ sound/soc/intel/boards/bytcr_rt5640.c         |  6 +--
+ sound/soc/intel/boards/bytcr_rt5651.c         |  6 +--
+ sound/soc/intel/boards/cht_bsw_rt5645.c       |  6 +--
+ sound/soc/intel/boards/cht_bsw_rt5672.c       |  2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c |  2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c  |  8 ++--
+ sound/soc/intel/boards/kbl_rt5663_max98927.c  |  4 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c  | 22 +++++------
+ .../soc/intel/boards/skl_nau88l25_max98357a.c |  4 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c |  4 +-
+ .../intel/common/soc-acpi-intel-bxt-match.c   | 38 +++++++++++++++++++
+ sound/soc/intel/skylake/skl.c                 | 10 ++---
+ 15 files changed, 87 insertions(+), 47 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index e45b2330d16a..5154c6359609 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -37,6 +37,19 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
- 
-+/**
-+ * snd_soc_acpi_mach_params: interface for machine driver configuration
-+ *
-+ * @acpi_ipc_irq_index: used for BYT-CR detection
-+ * @platform: string used for HDaudio codec support
-+ * @codec_mask: used for HDAudio support
-+ */
-+struct snd_soc_acpi_mach_params {
-+	u32 acpi_ipc_irq_index;
-+	const char *platform;
-+	u32 codec_mask;
-+};
-+
- /**
-  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
-  * related to the hardware, except for the firmware and topology file names.
-@@ -68,6 +81,7 @@ struct snd_soc_acpi_mach {
- 	struct snd_soc_acpi_mach * (*machine_quirk)(void *arg);
- 	const void *quirk_data;
- 	void *pdata;
-+	struct snd_soc_acpi_mach_params mach_params;
- 	const char *sof_fw_filename;
- 	const char *sof_tplg_filename;
- 	const char *asoc_plat_name;
 -- 
 2.17.1
