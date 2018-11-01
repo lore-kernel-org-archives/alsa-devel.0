@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/7] ASoC: Intel: use standard interface for
-	Hdaudio machine driver
-Date: Wed, 31 Oct 2018 20:07:13 -0500
-Message-ID: <20181101010718.2878-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/7] ASoC: Intel: use standard interface for
+	Atom machine drivers
+Date: Wed, 31 Oct 2018 20:07:14 -0500
+Message-ID: <20181101010718.2878-4-pierre-louis.bossart@linux.intel.com>
 References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F01826787B
+ by alsa0.perex.cz (Postfix) with ESMTP id 25A7E2678A2
  for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 02:07:25 +0100 (CET)
 In-Reply-To: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,121 +25,105 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Don't rely on internal Skylake-specific data structures, use
-generic interface to let other drivers use the same machine driver
-as is, e.g. SOF to support HDaudio codecs and HDMI outputs.
+Don't rely on internal Atom/SST-specific data structures, use
+generic interface to let other drivers use the same machine drivers
+as is, e.g. SOF to support BYT-CR devices
 
-Tested on LeafHill CRB board, no regression seen with this change.
-
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 20 ++++++++++----------
- sound/soc/intel/skylake/skl.c                | 10 +++-------
- 2 files changed, 13 insertions(+), 17 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c     | 4 ++++
+ sound/soc/intel/boards/bytcr_rt5640.c   | 6 +-----
+ sound/soc/intel/boards/bytcr_rt5651.c   | 6 +-----
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +-----
+ 4 files changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index b415dd4c85f5..b6f287fa9505 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -12,8 +12,8 @@
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index c90b04cc071d..ac542535b9d5 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -341,6 +341,10 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 		byt_rvp_platform_data.res_info = &bytcr_res_info;
+ 	}
+ 
++	/* update machine parameters */
++	mach->mach_params.acpi_ipc_irq_index =
++		pdata->res_info->acpi_ipc_irq_index;
++
+ 	plat_dev = platform_device_register_data(dev, pdata->platform, -1,
+ 						NULL, 0);
+ 	if (IS_ERR(plat_dev)) {
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 8587bd3d1cc1..09591144ea7d 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -29,7 +29,6 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+-#include <asm/platform_sst_audio.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
  #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include "../../codecs/hdac_hdmi.h"
--#include "../skylake/skl.h"
- #include "skl_hda_dsp_common.h"
- 
- static const struct snd_soc_dapm_widget skl_hda_widgets[] = {
-@@ -101,17 +101,17 @@ static struct snd_soc_card hda_soc_card = {
- #define IDISP_ROUTE_COUNT	(IDISP_DAI_COUNT * 2)
- #define IDISP_CODEC_MASK	0x4
- 
--static int skl_hda_fill_card_info(struct skl_machine_pdata *pdata)
-+static int skl_hda_fill_card_info(struct snd_soc_acpi_mach_params *mach_params)
- {
- 	struct snd_soc_card *card = &hda_soc_card;
- 	struct snd_soc_dai_link *dai_link;
- 	u32 codec_count, codec_mask;
- 	int i, num_links, num_route;
- 
--	codec_mask = pdata->codec_mask;
-+	codec_mask = mach_params->codec_mask;
- 	codec_count = hweight_long(codec_mask);
- 
--	if (codec_count == 1 && pdata->codec_mask & IDISP_CODEC_MASK) {
-+	if (codec_count == 1 && codec_mask & IDISP_CODEC_MASK) {
- 		num_links = IDISP_DAI_COUNT;
- 		num_route = IDISP_ROUTE_COUNT;
- 	} else if (codec_count == 2 && codec_mask & IDISP_CODEC_MASK) {
-@@ -127,14 +127,14 @@ static int skl_hda_fill_card_info(struct skl_machine_pdata *pdata)
- 	card->num_dapm_routes = num_route;
- 
- 	for_each_card_prelinks(card, i, dai_link)
--		dai_link->platform_name = pdata->platform;
-+		dai_link->platform_name = mach_params->platform;
- 
- 	return 0;
- }
- 
- static int skl_hda_audio_probe(struct platform_device *pdev)
- {
--	struct skl_machine_pdata *pdata;
-+	struct snd_soc_acpi_mach *mach;
- 	struct skl_hda_private *ctx;
- 	int ret;
- 
-@@ -146,11 +146,11 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- 
- 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
- 
--	pdata = dev_get_drvdata(&pdev->dev);
--	if (!pdata)
-+	mach = dev_get_drvdata(&pdev->dev);
-+	if (!mach)
- 		return -EINVAL;
- 
--	ret = skl_hda_fill_card_info(pdata);
-+	ret = skl_hda_fill_card_info(&mach->mach_params);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Unsupported HDAudio/iDisp configuration found\n");
- 		return ret;
-@@ -158,7 +158,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- 
- 	ctx->pcm_count = hda_soc_card.num_links;
- 	ctx->dai_index = 1; /* hdmi codec dai name starts from index 1 */
--	ctx->platform_name = pdata->platform;
-+	ctx->platform_name = mach->mach_params.platform;
- 
- 	hda_soc_card.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&hda_soc_card, ctx);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 29225623b4b4..ebab04b51bc1 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -525,7 +525,6 @@ static int skl_machine_device_register(struct skl *skl)
- {
- 	struct snd_soc_acpi_mach *mach = skl->mach;
- 	struct hdac_bus *bus = skl_to_bus(skl);
--	struct skl_machine_pdata *pdata;
- 	struct platform_device *pdev;
- 	int ret;
- 
-@@ -542,12 +541,9 @@ static int skl_machine_device_register(struct skl *skl)
- 		return -EIO;
+@@ -1152,10 +1151,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (is_valleyview()) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
  	}
  
--	if (mach->pdata) {
--		pdata = (struct skl_machine_pdata *)mach->pdata;
--		pdata->platform = dev_name(bus->dev);
--		pdata->codec_mask = bus->codec_mask;
--		dev_set_drvdata(&pdev->dev, mach->pdata);
--	}
-+	mach->mach_params.platform = dev_name(bus->dev);
-+	mach->mach_params.codec_mask = bus->codec_mask;
-+	dev_set_drvdata(&pdev->dev, mach);
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 8dffeecda55b..4c9508da8602 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -32,7 +32,6 @@
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+-#include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -920,10 +919,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (x86_match_cpu(baytrail_cpu_ids)) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
+ 	}
  
- 	skl->i2s_dev = pdev;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index f5a5ea6a093c..250a356a0cbf 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -27,7 +27,6 @@
+ #include <linux/dmi.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+-#include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -585,10 +584,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (is_valleyview()) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
+ 	}
  
 -- 
 2.17.1
