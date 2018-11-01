@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/7] ASoC: Intel: remove GFP_ATOMIC,
-	use GFP_KERNEL
-Date: Wed, 31 Oct 2018 20:07:16 -0500
-Message-ID: <20181101010718.2878-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: common: add quirk for APL RVP
+	boards
+Date: Wed, 31 Oct 2018 20:07:18 -0500
+Message-ID: <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
 References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 06B57267877
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AD362678A5
  for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 02:07:27 +0100 (CET)
 In-Reply-To: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,90 +25,72 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-GFP_ATOMIC is not required on any Intel drivers, use GFP_KERNEL
-instead. A first cleanup was merged in April but missed a number
-occurrences and new ones were added by copy/paste inertia.
+For some reason the RVP/LeafHill SSDT exposes an INT34C3 ID which is
+used on other boards to point to the TDF8532 amplifier. Yay BIOS.
 
-While we are at it, make checkpatch happy with a sizeof(*msg)
+Add a DMI-quirk to ignore this ID and check for other valid machine
+driver descriptors.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/atom/sst/sst_pvt.c            | 4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c       | 2 +-
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 2 +-
- sound/soc/intel/boards/skl_hda_dsp_generic.c  | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+ .../intel/common/soc-acpi-intel-bxt-match.c   | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index af93244b4868..00a37a09dc9b 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -166,11 +166,11 @@ int sst_create_ipc_msg(struct ipc_post **arg, bool large)
- {
- 	struct ipc_post *msg;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 2756fa4ab552..752a1bbff7f7 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -6,9 +6,43 @@
+  *
+  */
  
--	msg = kzalloc(sizeof(struct ipc_post), GFP_ATOMIC);
-+	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
- 	if (!msg)
- 		return -ENOMEM;
- 	if (large) {
--		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_ATOMIC);
-+		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
- 		if (!msg->mailbox_data) {
- 			kfree(msg);
- 			return -ENOMEM;
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 51f0d45d6f8f..9de64f447e7b 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -403,7 +403,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	const char *i2c_name;
- 	int i;
++#include <linux/dmi.h>
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
--	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c4b94e2617c5..c74c4f17316f 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -603,7 +603,7 @@ static int geminilake_audio_probe(struct platform_device *pdev)
- {
- 	struct glk_card_private *ctx;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 3bc78e3a91ee..58eb0fe69978 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -935,7 +935,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- {
- 	struct kbl_codec_private *ctx;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index b6f287fa9505..15c502d6774d 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -140,7 +140,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev, "%s: entry\n", __func__);
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
++static unsigned long apl_machine_id;
++
++#define APL_RVP  1
++
++static int apl_rvp_quirk_cb(const struct dmi_system_id *id)
++{
++	apl_machine_id = APL_RVP;
++	return 1;
++}
++
++static const struct dmi_system_id apl_table[] = {
++	{
++		.callback = apl_rvp_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corp."),
++			DMI_MATCH(DMI_BOARD_NAME, "Apollolake RVP1A"),
++		},
++	},
++	{},
++};
++
++static struct snd_soc_acpi_mach *apl_quirk(void *arg)
++{
++	struct snd_soc_acpi_mach *mach = arg;
++
++	dmi_check_system(apl_table);
++
++	if (apl_machine_id == APL_RVP)
++		return NULL;
++	else
++		return mach;
++}
++
+ static struct snd_soc_acpi_codecs bxt_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -50,6 +84,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 	{
+ 		.id = "INT34C3",
+ 		.drv_name = "bxt_tdf8532",
++		.machine_quirk = apl_quirk,
+ 		.sof_fw_filename = "intel/sof-apl.ri",
+ 		.sof_tplg_filename = "intel/sof-apl-tdf8532.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
 -- 
 2.17.1
