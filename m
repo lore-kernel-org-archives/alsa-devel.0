@@ -1,57 +1,50 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qdsp6: q6afe: Fix wrong MI2S SD line mask
-Date: Thu, 1 Nov 2018 12:25:38 +0000
-Message-ID: <9b8e6d31-a406-a0c6-fd6c-7e2b876e21ab@linaro.org>
-References: <1541073067-29553-1-git-send-email-rohitkr@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: core: Invoke pcm_new() for all DAI-link
+Date: Thu,  1 Nov 2018 18:08:49 +0530
+Message-ID: <1541075929-29323-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1541073067-29553-1-git-send-email-rohitkr@codeaurora.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>, plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, niklas.cassel@linaro.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+Remove no_pcm check to invoke pcm_new() for backend dai-links
+too. This fixes crash in hdmi codec driver during hdmi_codec_startup()
+while accessing chmap_info struct. chmap_info struct memory is
+allocated in pcm_new() of hdmi codec driver which is not invoked
+in case of DPCM when hdmi codec driver is part of backend dai-link.
 
+Below is the crash stack:
 
-On 01/11/18 11:51, Rohit kumar wrote:
-> SD line mask for MI2S starts from BIT 0 instead of BIT 1.
-> Fix all bit mask for MI2S SD lines.
-> 
-> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+[   61.635493] Unable to handle kernel NULL pointer dereference at virtual address 00000018
+..
+[   61.666696]   CM = 0, WnR = 1
+[   61.669778] user pgtable: 4k pages, 39-bit VAs, pgd = ffffffc0d6633000
+[   61.676526] [0000000000000018] *pgd=0000000153fc8003, *pud=0000000153fc8003, *pmd=0000000000000000
+[   61.685793] Internal error: Oops: 96000046 [#1] PREEMPT SMP
+[   61.722955] CPU: 7 PID: 2238 Comm: aplay Not tainted 4.14.72 #21
+..
+[   61.740269] PC is at hdmi_codec_startup+0x124/0x164
+[   61.745308] LR is at hdmi_codec_startup+0xe4/0x164
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+---
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->   sound/soc/qcom/qdsp6/q6afe.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-> index 000775b..829b5e987 100644
-> --- a/sound/soc/qcom/qdsp6/q6afe.c
-> +++ b/sound/soc/qcom/qdsp6/q6afe.c
-> @@ -49,14 +49,14 @@
->   #define AFE_PORT_I2S_SD1		0x2
->   #define AFE_PORT_I2S_SD2		0x3
->   #define AFE_PORT_I2S_SD3		0x4
-> -#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
-> -#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
-> -#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
-> -#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
-> -#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
-> -#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
-> -#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
-> -#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
-> +#define AFE_PORT_I2S_SD0_MASK		BIT(0x0)
-> +#define AFE_PORT_I2S_SD1_MASK		BIT(0x1)
-> +#define AFE_PORT_I2S_SD2_MASK		BIT(0x2)
-> +#define AFE_PORT_I2S_SD3_MASK		BIT(0x3)
-> +#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(1, 0)
-> +#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(3, 2)
-> +#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(2, 0)
-> +#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(3, 0)
->   #define AFE_PORT_I2S_QUAD01		0x5
->   #define AFE_PORT_I2S_QUAD23		0x6
->   #define AFE_PORT_I2S_6CHS		0x7
-> 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6ddcf12..abdc460 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1467,7 +1467,7 @@ static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
+ 	for (i = 0; i < num_dais; ++i) {
+ 		struct snd_soc_dai_driver *drv = dais[i]->driver;
+ 
+-		if (!rtd->dai_link->no_pcm && drv->pcm_new)
++		if (drv->pcm_new)
+ 			ret = drv->pcm_new(rtd, dais[i]);
+ 		if (ret < 0) {
+ 			dev_err(dais[i]->dev,
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
