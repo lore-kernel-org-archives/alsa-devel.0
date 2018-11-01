@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 5/7] ASoC: Intel: remove GFP_ATOMIC,
-	use GFP_KERNEL
-Date: Thu,  1 Nov 2018 16:34:52 -0500
-Message-ID: <20181101213454.18894-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 6/7] ASoC: Intel: common: add SOF
+	information for APL RVP
+Date: Thu,  1 Nov 2018 16:34:53 -0500
+Message-ID: <20181101213454.18894-7-pierre-louis.bossart@linux.intel.com>
 References: <20181101213454.18894-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 551722677E4
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 22:35:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DD6F32677E4
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 22:35:17 +0100 (CET)
 In-Reply-To: <20181101213454.18894-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,94 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Bard liao <bard.liao@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-GFP_ATOMIC is not required on any Intel drivers, use GFP_KERNEL
-instead. A first cleanup was merged in April but missed a number
-occurrences and new ones were added by copy/paste inertia.
+From: Bard liao <bard.liao@intel.com>
 
-While we are at it, make checkpatch happy with a sizeof(*msg)
+Add firmware/topology information for APL RVP
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bard liao <bard.liao@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/atom/sst/sst_pvt.c            | 4 ++--
- sound/soc/intel/boards/cht_bsw_rt5672.c       | 2 +-
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 2 +-
- sound/soc/intel/boards/skl_hda_dsp_generic.c  | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
-index af93244b4868..00a37a09dc9b 100644
---- a/sound/soc/intel/atom/sst/sst_pvt.c
-+++ b/sound/soc/intel/atom/sst/sst_pvt.c
-@@ -166,11 +166,11 @@ int sst_create_ipc_msg(struct ipc_post **arg, bool large)
- {
- 	struct ipc_post *msg;
- 
--	msg = kzalloc(sizeof(struct ipc_post), GFP_ATOMIC);
-+	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
- 	if (!msg)
- 		return -ENOMEM;
- 	if (large) {
--		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_ATOMIC);
-+		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
- 		if (!msg->mailbox_data) {
- 			kfree(msg);
- 			return -ENOMEM;
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 51f0d45d6f8f..9de64f447e7b 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -403,7 +403,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	const char *i2c_name;
- 	int i;
- 
--	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
-+	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c4b94e2617c5..c74c4f17316f 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -603,7 +603,7 @@ static int geminilake_audio_probe(struct platform_device *pdev)
- {
- 	struct glk_card_private *ctx;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 3bc78e3a91ee..58eb0fe69978 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -935,7 +935,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- {
- 	struct kbl_codec_private *ctx;
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index b6f287fa9505..15c502d6774d 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -140,7 +140,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev, "%s: entry\n", __func__);
- 
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index f39386e540d3..2756fa4ab552 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -19,6 +19,9 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.id = "INT343A",
+ 		.drv_name = "bxt_alc298s_i2s",
+ 		.fw_filename = "intel/dsp_fw_bxtn.bin",
++		.sof_fw_filename = "intel/sof-apl.ri",
++		.sof_tplg_filename = "intel/sof-apl-rt298.tplg",
++		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+ 		.id = "DLGS7219",
 -- 
 2.17.1
