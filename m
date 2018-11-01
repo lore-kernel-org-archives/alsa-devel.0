@@ -1,103 +1,47 @@
-From: Sergey Popol <popolsergey@gmail.com>
-Subject: Bug report - snd_hda_intel - snd_pcm_delay() returned
- a value that is exceptionally large -
-Date: Wed, 31 Oct 2018 20:39:02 +0300
-Message-ID: <6c1cf5ba-8f39-0150-80b0-20a49f89ec86@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com
- [209.85.208.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 211552675BA
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2018 18:39:04 +0100 (CET)
-Received: by mail-lj1-f177.google.com with SMTP id q186-v6so2271932ljb.5
- for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2018 10:39:04 -0700 (PDT)
-Received: from [192.168.1.22] ([91.108.28.72])
- by smtp.gmail.com with ESMTPSA id t4-v6sm4193567ljj.13.2018.10.31.10.39.02
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 31 Oct 2018 10:39:02 -0700 (PDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: qdsp6: q6afe: Fix wrong MI2S SD line mask
+Date: Thu,  1 Nov 2018 17:21:07 +0530
+Message-ID: <1541073067-29553-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org, niklas.cassel@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpBZnRlciBhIGZldyBob3VycyBteSB1YnVudHUgd29ya3N0YXRpb24gYmVjb21lcyB1
-bnJlc3BvbnNpdmUgKHJlcXVpcmluZyAKYSBTeXNyZXEgcmVpc3ViIHRvIHJlYm9vdCk6Cgo9PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQoKJCBjYXQgL3Zhci9sb2cvc3lzbG9nIHwgZ3JlcCAyMDoyNQpPY3QgMzEgMjA6MjU6MDEg
-c291bHdheCBDUk9OWzE1ODddOiAocm9vdCkgQ01EIChjb21tYW5kIC12IGRlYmlhbi1zYTEgPiAK
-L2Rldi9udWxsICYmIGRlYmlhbi1zYTEgMSAxKQpPY3QgMzEgMjA6MjU6Mjggc291bHdheCBwdWxz
-ZWF1ZGlvWzE4MjRdOiBbYWxzYS1zaW5rLUFMQzI4MyBBbmFsb2ddIAphbHNhLXV0aWwuYzogc25k
-X3BjbV9kZWxheSgpIHJldHVybmVkIGEgdmFsdWUgdGhhdCBpcyBleGNlcHRpb25hbGx5IApsYXJn
-ZTogLTQxNzk2NCBieXRlcyAoLTIzNjkgbXMpLgpPY3QgMzEgMjA6MjU6Mjggc291bHdheCBwdWxz
-ZWF1ZGlvWzE4MjRdOiBbYWxzYS1zaW5rLUFMQzI4MyBBbmFsb2ddIAphbHNhLXV0aWwuYzogTW9z
-dCBsaWtlbHkgdGhpcyBpcyBhIGJ1ZyBpbiB0aGUgQUxTQSBkcml2ZXIgCidzbmRfaGRhX2ludGVs
-Jy4gUGxlYXNlIHJlcG9ydCB0aGlzIGlzc3VlIHRvIHRoZSBBTFNBIGRldmVsb3BlcnMuCk9jdCAz
-MSAyMDoyNToyOSBzb3Vsd2F4IC91c3IvbGliL2dkbTMvZ2RtLXgtc2Vzc2lvblsxNjczXTogKElJ
-KSBldmVudDPCoCAKLSBMb2dpdGVjaCBVU0IgT3B0aWNhbCBNb3VzZTogU1lOX0RST1BQRUQgZXZl
-bnQgLSBzb21lIGlucHV0IGV2ZW50cyBoYXZlIApiZWVuIGxvc3QuCk9jdCAzMSAyMDoyNTozMSBz
-b3Vsd2F4IHB1bHNlYXVkaW9bMTgyNF06IFthbHNhLXNpbmstQUxDMjgzIEFuYWxvZ10gCmFsc2Et
-dXRpbC5jOiBzbmRfcGNtX2R1bXAoKToKT2N0IDMxIDIwOjI1OjMyIHNvdWx3YXggcHVsc2VhdWRp
-b1sxODI0XTogW2Fsc2Etc2luay1BTEMyODMgQW5hbG9nXSAKYWxzYS11dGlsLmM6IFNvZnQgdm9s
-dW1lIFBDTQpPY3QgMzEgMjA6MjU6MzQgc291bHdheCBwdWxzZWF1ZGlvWzE4MjRdOiBbYWxzYS1z
-aW5rLUFMQzI4MyBBbmFsb2ddIAphbHNhLXV0aWwuYzogQ29udHJvbDogUENNIFBsYXliYWNrIFZv
-bHVtZQpPY3QgMzEgMjA6MjU6MzQgc291bHdheCBwdWxzZWF1ZGlvWzE4MjRdOiBbYWxzYS1zaW5r
-LUFMQzI4MyBBbmFsb2ddIAphbHNhLXV0aWwuYzogbWluX2RCOiAtNTEKT2N0IDMxIDIwOjI1OjM1
-IHNvdWx3YXggcHVsc2VhdWRpb1sxODI0XTogW2Fsc2Etc2luay1BTEMyODMgQW5hbG9nXSAKYWxz
-YS11dGlsLmM6IG1heF9kQjogMApPY3QgMzEgMjA6MjU6MzYgc291bHdheCAvdXNyL2xpYi9nZG0z
-L2dkbS14LXNlc3Npb25bMTY3M106IChJSSkgZXZlbnQ0wqAgCi0gTG9naXRlY2ggVVNCIEtleWJv
-YXJkOiBTWU5fRFJPUFBFRCBldmVudCAtIHNvbWUgaW5wdXQgZXZlbnRzIGhhdmUgYmVlbiAKbG9z
-dC4KT2N0IDMxIDIwOjI1OjM2IHNvdWx3YXggcHVsc2VhdWRpb1sxODI0XTogW2Fsc2Etc2luay1B
-TEMyODMgQW5hbG9nXSAKYWxzYS11dGlsLmM6IHJlc29sdXRpb246IDI1NgpPY3QgMzEgMjA6MjU6
-Mzcgc291bHdheCBwdWxzZWF1ZGlvWzE4MjRdOiBbYWxzYS1zaW5rLUFMQzI4MyBBbmFsb2ddIAph
-bHNhLXV0aWwuYzogSXRzIHNldHVwIGlzOgpPY3QgMzEgMjA6MjU6Mzcgc291bHdheCBwdWxzZWF1
-ZGlvWzE4MjRdOiBbYWxzYS1zaW5rLUFMQzI4MyBBbmFsb2ddIAphbHNhLXV0aWwuYzrCoMKgIHN0
-cmVhbcKgwqDCoMKgwqDCoCA6IFBMQVlCQUNLCk9jdCAzMSAyMDoyNTozNyBzb3Vsd2F4IC91c3Iv
-bGliL2dkbTMvZ2RtLXgtc2Vzc2lvblsxNjczXTogKCoqKSBPcHRpb24gCiJmZCIgIjIxIgpPY3Qg
-MzEgMjA6MjU6Mzcgc291bHdheCAvdXNyL2xpYi9nZG0zL2dkbS14LXNlc3Npb25bMTY3M106IChJ
-SSkgZXZlbnQywqAgCi0gUG93ZXIgQnV0dG9uOiBkZXZpY2UgcmVtb3ZlZApPY3QgMzEgMjA6MjU6
-Mzggc291bHdheCBwdWxzZWF1ZGlvWzE4MjRdOiBbYWxzYS1zaW5rLUFMQzI4MyBBbmFsb2ddIAph
-bHNhLXV0aWwuYzrCoMKgIGFjY2Vzc8KgwqDCoMKgwqDCoCA6IE1NQVBfSU5URVJMRUFWRUQKT2N0
-IDMxIDIwOjI1OjM4IHNvdWx3YXggL3Vzci9saWIvZ2RtMy9nZG0teC1zZXNzaW9uWzE2NzNdOiAo
-KiopIE9wdGlvbiAKImZkIiAiMjQiCk9jdCAzMSAyMDoyNTozOSBzb3Vsd2F4IC91c3IvbGliL2dk
-bTMvZ2RtLXgtc2Vzc2lvblsxNjczXTogKElJKSBldmVudDXCoCAKLSBWaWRlbyBCdXM6IGRldmlj
-ZSByZW1vdmVkCk9jdCAzMSAyMDoyNTozOSBzb3Vsd2F4IC91c3IvbGliL2dkbTMvZ2RtLXgtc2Vz
-c2lvblsxNjczXTogKCoqKSBPcHRpb24gCiJmZCIgIjI1IgpPY3QgMzEgMjA6MjU6Mzkgc291bHdh
-eCAvdXNyL2xpYi9nZG0zL2dkbS14LXNlc3Npb25bMTY3M106IChJSSkgZXZlbnQxwqAgCi0gUG93
-ZXIgQnV0dG9uOiBkZXZpY2UgcmVtb3ZlZApPY3QgMzEgMjA6MjU6NDAgc291bHdheCAvdXNyL2xp
-Yi9nZG0zL2dkbS14LXNlc3Npb25bMTY3M106ICgqKikgT3B0aW9uIAoiZmQiICIyNiIKT2N0IDMx
-IDIwOjI1OjQwIHNvdWx3YXgga2VybmVsOiBbMzUxNjUuODY5ODg2XSByZmtpbGw6IGlucHV0IGhh
-bmRsZXIgZW5hYmxlZApPY3QgMzEgMjA6MjU6NDAgc291bHdheCAvdXNyL2xpYi9nZG0zL2dkbS14
-LXNlc3Npb25bMTY3M106IChJSSkgZXZlbnQwwqAgCi0gU2xlZXAgQnV0dG9uOiBkZXZpY2UgcmVt
-b3ZlZApPY3QgMzEgMjA6MjU6NDAgc291bHdheCAvdXNyL2xpYi9nZG0zL2dkbS14LXNlc3Npb25b
-MTY3M106ICgqKikgT3B0aW9uIAoiZmQiICIyNyIKT2N0IDMxIDIwOjI1OjQwIHNvdWx3YXggL3Vz
-ci9saWIvZ2RtMy9nZG0teC1zZXNzaW9uWzE2NzNdOiAoSUkpIGV2ZW50M8KgIAotIExvZ2l0ZWNo
-IFVTQiBPcHRpY2FsIE1vdXNlOiBkZXZpY2UgcmVtb3ZlZApPY3QgMzEgMjA6MjU6NDEgc291bHdh
-eCAvdXNyL2xpYi9nZG0zL2dkbS14LXNlc3Npb25bMTY3M106ICgqKikgT3B0aW9uIAoiZmQiICIy
-OCIKT2N0IDMxIDIwOjI1OjQxIHNvdWx3YXggL3Vzci9saWIvZ2RtMy9nZG0teC1zZXNzaW9uWzE2
-NzNdOiAoSUkpIGV2ZW50NMKgIAotIExvZ2l0ZWNoIFVTQiBLZXlib2FyZDogZGV2aWNlIHJlbW92
-ZWQKT2N0IDMxIDIwOjI1OjQxIHNvdWx3YXggcHVsc2VhdWRpb1sxODI0XTogW2Fsc2Etc2luay1B
-TEMyODMgQW5hbG9nXSAKYWxzYS11dGlsLmM6wqDCoCBmb3JtYXTCoMKgwqDCoMKgwqAgOiBTMTZf
-TEUKT2N0IDMxIDIwOjI1OjQyIHNvdWx3YXggL3Vzci9saWIvZ2RtMy9nZG0teC1zZXNzaW9uWzE2
-NzNdOiAoKiopIE9wdGlvbiAKImZkIiAiMjkiCk9jdCAzMSAyMDoyNTo0MiBzb3Vsd2F4IC91c3Iv
-bGliL2dkbTMvZ2RtLXgtc2Vzc2lvblsxNjczXTogKElJKSBldmVudDbCoCAKLSBMb2dpdGVjaCBV
-U0IgS2V5Ym9hcmQ6IGRldmljZSByZW1vdmVkCk9jdCAzMSAyMDoyNTo0MyBzb3Vsd2F4IC91c3Iv
-bGliL2dkbTMvZ2RtLXgtc2Vzc2lvblsxNjczXTogKCoqKSBPcHRpb24gCiJmZCIgIjMwIgpPY3Qg
-MzEgMjA6MjU6NTQgc291bHdheCAvdXNyL2xpYi9nZG0zL2dkbS14LXNlc3Npb25bMTY3M106IChJ
-SSkgZXZlbnQ3wqAgCi0gSVRFODcxMyBDSVIgdHJhbnNjZWl2ZXI6IGRldmljZSByZW1vdmVkCgo9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PQoKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPWQ1ZTU4ODlmNjRiNDFh
-MjA4ZjRkYWQyYzFhYzRiNDlhOWI5ZWM1NTgKCkhvcGUgdGhhdCBjYW4gaGVscC4KClNlcmdlaQoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+SD line mask for MI2S starts from BIT 0 instead of BIT 1.
+Fix all bit mask for MI2S SD lines.
+
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+---
+ sound/soc/qcom/qdsp6/q6afe.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 000775b..829b5e987 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -49,14 +49,14 @@
+ #define AFE_PORT_I2S_SD1		0x2
+ #define AFE_PORT_I2S_SD2		0x3
+ #define AFE_PORT_I2S_SD3		0x4
+-#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
+-#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
+-#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
+-#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
+-#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
+-#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
+-#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
+-#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
++#define AFE_PORT_I2S_SD0_MASK		BIT(0x0)
++#define AFE_PORT_I2S_SD1_MASK		BIT(0x1)
++#define AFE_PORT_I2S_SD2_MASK		BIT(0x2)
++#define AFE_PORT_I2S_SD3_MASK		BIT(0x3)
++#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(1, 0)
++#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(3, 2)
++#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(2, 0)
++#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(3, 0)
+ #define AFE_PORT_I2S_QUAD01		0x5
+ #define AFE_PORT_I2S_QUAD23		0x6
+ #define AFE_PORT_I2S_6CHS		0x7
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
