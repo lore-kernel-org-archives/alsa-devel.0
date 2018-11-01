@@ -1,17 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 6/7] ASoC: Intel: common: add SOF information
-	for APL RVP
-Date: Wed, 31 Oct 2018 20:07:17 -0500
-Message-ID: <20181101010718.2878-7-pierre-louis.bossart@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [PATCH 7/7] ASoC: Intel: common: add quirk for APL
+ RVP boards
+Date: Thu, 1 Nov 2018 10:35:48 +0800
+Message-ID: <8643253e-3e6e-8b5b-ed42-6e7d46447217@linux.intel.com>
 References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+ <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A77C2677E8
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 02:07:27 +0100 (CET)
-In-Reply-To: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71D1D2677E8
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 03:35:42 +0100 (CET)
+In-Reply-To: <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Bard liao <bard.liao@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, vinod.koul@intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <bard.liao@intel.com>
-
-Add firmware/topology information for APL RVP
-
-Signed-off-by: Bard liao <bard.liao@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index f39386e540d3..2756fa4ab552 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -19,6 +19,9 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.id = "INT343A",
- 		.drv_name = "bxt_alc298s_i2s",
- 		.fw_filename = "intel/dsp_fw_bxtn.bin",
-+		.sof_fw_filename = "intel/sof-apl.ri",
-+		.sof_tplg_filename = "intel/sof-apl-rt298.tplg",
-+		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
- 		.id = "DLGS7219",
--- 
-2.17.1
+CgpPbiAyMDE45bm0MTHmnIgwMeaXpSAwOTowNywgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6
+Cj4gRm9yIHNvbWUgcmVhc29uIHRoZSBSVlAvTGVhZkhpbGwgU1NEVCBleHBvc2VzIGFuIElOVDM0
+QzMgSUQgd2hpY2ggaXMKPiB1c2VkIG9uIG90aGVyIGJvYXJkcyB0byBwb2ludCB0byB0aGUgVERG
+ODUzMiBhbXBsaWZpZXIuIFlheSBCSU9TLgo+IAo+IEFkZCBhIERNSS1xdWlyayB0byBpZ25vcmUg
+dGhpcyBJRCBhbmQgY2hlY2sgZm9yIG90aGVyIHZhbGlkIG1hY2hpbmUKPiBkcml2ZXIgZGVzY3Jp
+cHRvcnMuCj4gCj4gU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1s
+b3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPiAtLS0KPiAgIC4uLi9pbnRlbC9jb21tb24v
+c29jLWFjcGktaW50ZWwtYnh0LW1hdGNoLmMgICB8IDM1ICsrKysrKysrKysrKysrKysrKysKPiAg
+IDEgZmlsZSBjaGFuZ2VkLCAzNSBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5k
+L3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwtYnh0LW1hdGNoLmMgYi9zb3VuZC9zb2Mv
+aW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWJ4dC1tYXRjaC5jCj4gaW5kZXggMjc1NmZhNGFi
+NTUyLi43NTJhMWJiZmY3ZjcgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9z
+b2MtYWNwaS1pbnRlbC1ieHQtbWF0Y2guYwo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9jb21tb24v
+c29jLWFjcGktaW50ZWwtYnh0LW1hdGNoLmMKPiBAQCAtNiw5ICs2LDQzIEBACj4gICAgKgo+ICAg
+ICovCj4gICAKPiArI2luY2x1ZGUgPGxpbnV4L2RtaS5oPgo+ICAgI2luY2x1ZGUgPHNvdW5kL3Nv
+Yy1hY3BpLmg+Cj4gICAjaW5jbHVkZSA8c291bmQvc29jLWFjcGktaW50ZWwtbWF0Y2guaD4KPiAg
+IAo+ICtzdGF0aWMgdW5zaWduZWQgbG9uZyBhcGxfbWFjaGluZV9pZDsKPiArCj4gKyNkZWZpbmUg
+QVBMX1JWUCAgMQo+ICsKPiArc3RhdGljIGludCBhcGxfcnZwX3F1aXJrX2NiKGNvbnN0IHN0cnVj
+dCBkbWlfc3lzdGVtX2lkICppZCkKPiArewo+ICsJYXBsX21hY2hpbmVfaWQgPSBBUExfUlZQOwo+
+ICsJcmV0dXJuIDE7Cj4gK30KPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9p
+ZCBhcGxfdGFibGVbXSA9IHsKPiArCXsKPiArCQkuY2FsbGJhY2sgPSBhcGxfcnZwX3F1aXJrX2Ni
+LAo+ICsJCS5tYXRjaGVzID0gewo+ICsJCQlETUlfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJJbnRl
+bCBDb3JwLiIpLAo+ICsJCQlETUlfTUFUQ0goRE1JX0JPQVJEX05BTUUsICJBcG9sbG9sYWtlIFJW
+UDFBIiksCj4gKwkJfSwKPiArCX0sCj4gKwl7fSwKPiArfTsKPiArCj4gK3N0YXRpYyBzdHJ1Y3Qg
+c25kX3NvY19hY3BpX21hY2ggKmFwbF9xdWlyayh2b2lkICphcmcpCj4gK3sKPiArCXN0cnVjdCBz
+bmRfc29jX2FjcGlfbWFjaCAqbWFjaCA9IGFyZzsKPiArCj4gKwlkbWlfY2hlY2tfc3lzdGVtKGFw
+bF90YWJsZSk7Cj4gKwo+ICsJaWYgKGFwbF9tYWNoaW5lX2lkID09IEFQTF9SVlApCj4gKwkJcmV0
+dXJuIE5VTEw7Cj4gKwllbHNlCj4gKwkJcmV0dXJuIG1hY2g7Cj4gK30KPiArCj4gICBzdGF0aWMg
+c3RydWN0IHNuZF9zb2NfYWNwaV9jb2RlY3MgYnh0X2NvZGVjcyA9IHsKPiAgIAkubnVtX2NvZGVj
+cyA9IDEsCj4gICAJLmNvZGVjcyA9IHsiTVg5ODM1N0EifQo+IEBAIC01MCw2ICs4NCw3IEBAIHN0
+cnVjdCBzbmRfc29jX2FjcGlfbWFjaCBzbmRfc29jX2FjcGlfaW50ZWxfYnh0X21hY2hpbmVzW10g
+PSB7Cj4gICAJewo+ICAgCQkuaWQgPSAiSU5UMzRDMyIsCj4gICAJCS5kcnZfbmFtZSA9ICJieHRf
+dGRmODUzMiIsCj4gKwkJLm1hY2hpbmVfcXVpcmsgPSBhcGxfcXVpcmssCj4gICAJCS5zb2ZfZndf
+ZmlsZW5hbWUgPSAiaW50ZWwvc29mLWFwbC5yaSIsCj4gICAJCS5zb2ZfdHBsZ19maWxlbmFtZSA9
+ICJpbnRlbC9zb2YtYXBsLXRkZjg1MzIudHBsZyIsCj4gICAJCS5hc29jX3BsYXRfbmFtZSA9ICIw
+MDAwOjAwOjBlLjAiLAo+IAoKSSBiZWxpZXZlIHRoaXMgY2FuIHdvcmssIGJ1dCB3aGVuIEkgd2Vu
+dCB0aHJvdWdoIApzbmRfc29jX2FjcGlfZmluZF9tYWNoaW5lKCksIEkgZmluZCBhIHBvc3NpYmxl
+IGJ1ZyB0aGVyZSwgaXQgd29uJ3QgCmNvbnRpbnVlIG1hdGNoaW5nIHNlYXJjaCB3aGVuIHRoZSBt
+YWNoaW5lX3F1aXJrKCkgcmV0dXJuIE5VTEwuCgpMZXQgbWUgc2VuZCBhIGZpeCBmb3IgdGhhdC4K
+ClRoYW5rcywKfktleW9uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
