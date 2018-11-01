@@ -1,15 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 4/7] ASoC: Intel: boards: fix Skylake typo
-Date: Thu,  1 Nov 2018 16:34:51 -0500
-Message-ID: <20181101213454.18894-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 5/7] ASoC: Intel: remove GFP_ATOMIC,
+	use GFP_KERNEL
+Date: Thu,  1 Nov 2018 16:34:52 -0500
+Message-ID: <20181101213454.18894-6-pierre-louis.bossart@linux.intel.com>
 References: <20181101213454.18894-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 142092678EE
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 22:35:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 551722677E4
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 22:35:16 +0100 (CET)
 In-Reply-To: <20181101213454.18894-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,113 +25,91 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-s/skylaye/skylake
+GFP_ATOMIC is not required on any Intel drivers, use GFP_KERNEL
+instead. A first cleanup was merged in April but missed a number
+occurrences and new ones were added by copy/paste inertia.
+
+While we are at it, make checkpatch happy with a sizeof(*msg)
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/kbl_da7219_max98927.c    | 6 +++---
- sound/soc/intel/boards/kbl_rt5663_max98927.c    | 4 ++--
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 4 ++--
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/intel/atom/sst/sst_pvt.c            | 4 ++--
+ sound/soc/intel/boards/cht_bsw_rt5672.c       | 2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c  | 2 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/sound/soc/intel/atom/sst/sst_pvt.c b/sound/soc/intel/atom/sst/sst_pvt.c
+index af93244b4868..00a37a09dc9b 100644
+--- a/sound/soc/intel/atom/sst/sst_pvt.c
++++ b/sound/soc/intel/atom/sst/sst_pvt.c
+@@ -166,11 +166,11 @@ int sst_create_ipc_msg(struct ipc_post **arg, bool large)
+ {
+ 	struct ipc_post *msg;
+ 
+-	msg = kzalloc(sizeof(struct ipc_post), GFP_ATOMIC);
++	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
+ 	if (!msg)
+ 		return -ENOMEM;
+ 	if (large) {
+-		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_ATOMIC);
++		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
+ 		if (!msg->mailbox_data) {
+ 			kfree(msg);
+ 			return -ENOMEM;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 51f0d45d6f8f..9de64f447e7b 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -403,7 +403,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	const char *i2c_name;
+ 	int i;
+ 
+-	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
++	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
+ 	if (!drv)
+ 		return -ENOMEM;
+ 
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index c4b94e2617c5..c74c4f17316f 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -603,7 +603,7 @@ static int geminilake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct glk_card_private *ctx;
+ 
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
 diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 3fa1c3ca6d37..3bc78e3a91ee 100644
+index 3bc78e3a91ee..58eb0fe69978 100644
 --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
 +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -441,7 +441,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- }
+@@ -935,7 +935,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_codec_private *ctx;
  
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
  
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index b6f287fa9505..15c502d6774d 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -140,7 +140,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
  
-@@ -525,7 +525,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-@@ -736,7 +736,7 @@ static struct snd_soc_dai_link kabylake_max98927_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 99e1320c485f..6ea969c0a5fb 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -586,7 +586,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- 				&constraints_16000);
- }
+ 	dev_dbg(&pdev->dev, "%s: entry\n", __func__);
  
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
  
-@@ -655,7 +655,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index d31482b8c9bb..552958ce736d 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -400,7 +400,7 @@ static int skylake_refcap_startup(struct snd_pcm_substream *substream)
- 				&constraints_16000);
- }
- 
--static const struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-@@ -447,7 +447,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[SKL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Skl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index e877bb60beb1..f985b30a1d0e 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -449,7 +449,7 @@ static int skylake_refcap_startup(struct snd_pcm_substream *substream)
- 			&constraints_16000);
- }
- 
--static const struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-@@ -496,7 +496,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[SKL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Skl Audio DMIC cap",
 -- 
 2.17.1
