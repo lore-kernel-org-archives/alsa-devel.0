@@ -1,18 +1,24 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: acpi: fix: continue searching when
- machine is ignored
-Date: Wed, 31 Oct 2018 21:51:57 -0500
-Message-ID: <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
-References: <20181101023641.31435-1-yang.jie@linux.intel.com>
+From: Stefano Antonelli <santonelli@algosolutions.com>
+Subject: plughw behaviour not consistent with hw
+Date: Wed, 31 Oct 2018 21:44:12 -0700
+Message-ID: <1541047452.26732.263.camel@algosolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A75A2677E8
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 03:52:00 +0100 (CET)
-In-Reply-To: <20181101023641.31435-1-yang.jie@linux.intel.com>
-Content-Language: en-US
+Received: from smtp89.ord1d.emailsrvr.com (smtp89.ord1d.emailsrvr.com
+ [184.106.54.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01F6D2678AB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 05:44:14 +0100 (CET)
+Received: from smtp4.relay.ord1d.emailsrvr.com (localhost [127.0.0.1])
+ by smtp4.relay.ord1d.emailsrvr.com (SMTP Server) with ESMTP id 985DD4014A
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 00:44:13 -0400 (EDT)
+Received: from smtp4.relay.ord1d.emailsrvr.com (localhost [127.0.0.1])
+ by smtp4.relay.ord1d.emailsrvr.com (SMTP Server) with ESMTP id 96955401B8
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 00:44:13 -0400 (EDT)
+Received: by smtp4.relay.ord1d.emailsrvr.com (Authenticated sender:
+ santonelli-AT-algosolutions.com) with ESMTPA id 4AD0C4014A
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 00:44:13 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 10/31/18 9:36 PM, Keyon Jie wrote:
-> The machine_quirk may return NULL which means the acpi entries should be
-> skipped and search for next matched entry is needed, here add return
-> check here and continue for NULL case.
-
-Nice catch, this was missed in the other patchset since the ACPI ID to 
-ignore was the last in the table...
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
->
-> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-> ---
->   sound/soc/soc-acpi.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-> index b8e72b52db30..faf8941363e4 100644
-> --- a/sound/soc/soc-acpi.c
-> +++ b/sound/soc/soc-acpi.c
-> @@ -15,7 +15,10 @@ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
->   		if (acpi_dev_present(mach->id, NULL, -1)) {
->   			if (mach->machine_quirk)
->   				mach = mach->machine_quirk(mach);
-> -			return mach;
-> +
-> +			/* return matched machine, continue otherwise */
-> +			if (mach)
-> +				return mach;
->   		}
->   	}
->   	return NULL;
+SGVsbG8gbGlzdCwKCkknbSB3b3JraW5nIG9uIGFuIGFwcGxpY2F0aW9uIHRoYXQgcmVxdWlyZXMg
+YSBwZXJpb2QgdGltZSBvZiAxMG1zLiDCoFRoZQpoYXJkd2FyZSBhdCB0aGUgb3RoZXIgZW5kIG9m
+IHRoZSBidXMgaXMgYSB1bGF3IGNvZGVjIHJ1bm5pbmcgYXQgOGtIei4KwqBUaGUgYXBwbGljYXRp
+b24gcnVucyBhdCAxNmtIeiBTMTZfTEUgYW5kIEkgd2FzIGhvcGluZyB0byB1c2UgdGhlCnBsdWdo
+dyBkZXZpY2UgdG8gZG8gc2FtcGxlIHJhdGUgY29udmVyc2lvbiBhbmQgdWxhdyBlbmNvZGUvZGVj
+b2RlLgrCoFRoaXMgd2F5IHRoZSBhcHBsaWNhdGlvbiBkb2Vzbid0IG5lZWQgdG8gY2hhbmdlIHRv
+IGFjY29tbW9kYXRlIHRoaXMKdWxhdyBjb2RlYy4gwqBIb3dldmVyLCBpdCdzIG5vdCB3b3JraW5n
+IGFuZCBJIGRvbid0IGtub3cgaG93IHRvIGdvIGFib3V0CmRlYnVnZ2luZy4gwqBJJ20gaG9waW5n
+IEkgY2FuIGdldCBzb21lIHBvaW50ZXJzIGhlcmUuCgpUaGUgcHJvYmxlbSBpcyBiZXN0IGlsbHVz
+dHJhdGVkIGJ5IHRoaXMgb3V0cHV0LCBmaXJzdCB1c2luZyBwbHVnaHc6CmFsc2FfcmVhZDogMTAK
+YWxzYV9yZWFkOiAyMAphbHNhX3JlYWQ6IDAKYWxzYV9yZWFkOiAyMAphbHNhX3JlYWQ6IDAKYWxz
+YV9yZWFkOiAyMAphbHNhX3JlYWQ6IDAKYWxzYV9yZWFkOiAyMAphbHNhX3JlYWQ6IDAKYWxzYV9y
+ZWFkOiAyMAoKSXQgd291bGQgYXBwZWFyIHRoYXQgcGx1Z2h3IGdpdmVzIHRoZSBjb3JyZWN0IHBl
+cmlvZCB0aW1lIG9uIHRoZSBmaXJzdApjYWxsLCBidXQgdGhlbiBzdWJzZXF1ZW50bHkgYnVmZmVy
+cyAyIHBlcmlvZHMgYmVmb3JlIHJldHVybmluZy4gwqAKVXNpbmcgaHcgd2l0aCBtYXRjaGluZyBz
+YW1wbGUgcmF0ZSwgc2FtcGxlIGZvcm1hdCwgYW5kIG51bWJlciBvZgpzYW1wbGVzOgphbHNhX3Jl
+YWQ6IDEwCmFsc2FfcmVhZDogMTAKYWxzYV9yZWFkOiAxMAphbHNhX3JlYWQ6IDEwCmFsc2FfcmVh
+ZDogMTAKYWxzYV9yCmVhZDogMTAKYWxzYV9yZWFkOiAxMAphbHNhX3JlYWQ6IDEwCmFsc2FfcmVh
+ZDogMTAKYWxzYV9yZWFkOiAxMAoKVGhpcyBjb2RlIHNuaXBwZXQgZ2VuZXJhdGVkIHRoZSBhYm92
+ZSBvdXRwdXQ6Cgpmb3IgKGkgPSAwOyBpIDwgMTA7ICsraSkgewrCoCDCoCDCoCDCoCBnZXR0aW1l
+b2ZkYXkoJnRpbWUxLCBOVUxMKTsKCWVyciA9IHNuZF9wY21fcmVhZGkgKGNhcHR1cmVfaGFuZGxl
+LCBidWYsIE5TTVApO8KgCsKgIMKgIMKgIMKgIGlmIChlcnIgIT0gTlNNUCkgewrCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBwcmludGYgKCJyZWFkIGZyb20gYXVkaW8gaW50ZXJmYWNlIGZhaWxlZCAi
+CsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICIgKCVzKVxuIiwgc25kX3N0cmVy
+cm9yIChlcnIpKTsKwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZXhpdCAoMSk7CsKgIMKgIMKgIMKg
+IH0KwqAgwqAgwqAgwqAgZ2V0dGltZW9mZGF5KCZ0aW1lMiwgTlVMTCk7CsKgIMKgIMKgIMKgIHBy
+aW50ZigiYWxzYV9yZWFkOiAlZFxuIiwgZ2V0VGltZURpZmYodGltZTEsIHRpbWUyKSk7Cn0KCkkg
+aGF2ZSB0cmllZCB1c2luZyB0aGUgcGF0Y2ggZnJvbSBoZXJlICh3aXRob3V0IHRoZSBlbnZpcm9u
+bWVudAp2YXJpYWJsZSBzd2l0Y2gpOgoKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9w
+aXBlcm1haWwvYWxzYS1kZXZlbC8yMDA4LU9jdG9iZXIvMDExNzAKMy5odG1sCgp0byBwcmludCBv
+dXQgdGhlIGNvbmZpZ3VyYXRpb24gb2YgcGx1Z2h3J3MgcGx1Z2luIGNoYWluLCBidXQgaXQKZ2Vu
+ZXJhdGVzIG5vIG91dHB1dC4gwqBJJ3ZlIHZlcmlmaWVkIHRoZSBtZDVzdW0gb2YgdGhlIGxpYnJh
+cnkgYWZ0ZXIKY29tcGlsYXRpb24gYW5kIGl0IG1hdGNoZXMgdGhlIG9uZSBJIGNvbXBpbGVkLiDC
+oEFuZCBJIHJhbiBsZGNvbmZpZwphZnRlciByZXBsYWNpbmcgbGliYXNvdW5kLnNvLiDCoFNvIEkg
+ZG9uJ3Qga25vdyB3aGF0J3MgZ29pbmcgb24gdGhlcmUuCsKgSSBkZWZpbml0ZWx5IGNhbGzCoHNu
+ZF9wY21faHdfcGFyYW1zKCkgd2hlbiBzZXR0aW5nIHVwIHRoZSBjYXB0dXJlCmRldmljZS4gwqBU
+aGlzIGlzIHVzaW5nwqBhbHNhLWxpYi0xLjAuMjUuCgpEb2VzIGFueW9uZSBrbm93IHdoeSBwbHVn
+aHcgbWlnaHQgYmUgYWN0aW5nIHRoZSB3YXkgaXQgaXMgYW5kIGhvdyBJIGNhbgpnZXQgaXQgdG8g
+ZGVsaXZlciAxMG1zIHBlcmlvZHM/IMKgRXF1YWxseSBhcHByZWNpYXRlZCB3b3VsZCBiZSBhbnkg
+dGlwcwpvbiBob3cgdG8gZGVidWcgdGhpcyBwcm9ibGVtLgoKVGhhbmtzLApTdGVmCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
