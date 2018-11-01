@@ -1,25 +1,20 @@
-From: =?UTF-8?Q?Ren=C3=A9_Santing?= <rene.santing@wearespindle.com>
-Subject: Re: Bug report - Dell-WD15-Dock not working caused by
- ucm profile in alsa-lib 1.1.7
-Date: Thu, 1 Nov 2018 15:46:22 +0100
-Message-ID: <CAGL2t7qvJDREvkMFAJz_-n4Co5-5-kEO7FO-tYo8eT+dc4JKbA@mail.gmail.com>
-References: <16a7a277-0677-9ca6-6765-1e109d6dc3be@wearespindle.com>
- <s5hwopzixog.wl-tiwai@suse.de>
- <4ddb1706-d2ba-d5e0-8729-0fa139270e49@wearespindle.com>
- <s5htvl3ix3p.wl-tiwai@suse.de> <s5hk1lzwi8b.wl-tiwai@suse.de>
- <851df24c-f461-8469-95d1-282d73ac267c@wearespindle.com>
- <s5hwopyuxxd.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 7/7] ASoC: Intel: common: add quirk for APL
+ RVP boards
+Date: Thu, 1 Nov 2018 10:08:55 -0500
+Message-ID: <27df08a1-3682-8e35-f72f-e2048361a095@linux.intel.com>
+References: <20181101010718.2878-1-pierre-louis.bossart@linux.intel.com>
+ <20181101010718.2878-8-pierre-louis.bossart@linux.intel.com>
+ <20181101141149.GV10650@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com
- [209.85.210.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 032E82677D0
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 15:46:36 +0100 (CET)
-Received: by mail-ot1-f65.google.com with SMTP id g10so6891763otl.12
- for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2018 07:46:36 -0700 (PDT)
-In-Reply-To: <s5hwopyuxxd.wl-tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 024702677D0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 16:08:58 +0100 (CET)
+In-Reply-To: <20181101141149.GV10650@smile.fi.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,69 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBoYXZlbid0IGZvdW5kIHRoZSB0aW1lIHRvIHRlc3QgdGhpcyB5ZXQgYnV0IEkgd2lsbCB0cnkg
-dG8gZG8gaXQgdG9tb3Jyb3cuCgpSZW7DqQoKT24gV2VkLCAzMSBPY3QgMjAxOCwgMTM6MDIgVGFr
-YXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlIHdyb3RlOgoKPiBPbiBUdWUsIDMwIE9jdCAyMDE4IDE2
-OjU1OjMxICswMTAwLAo+IFJlbjkgU2FudGluZyB3cm90ZToKPiA+Cj4gPiBBcyBhIHVzZXIgSSBk
-byB0aGluayB0aGUgdWNtIHByb2ZpbGUgd29ya3MgYXMgaW50ZW5kZWQgd2l0aCB0aGUgbGF0ZXN0
-Cj4gPiBnaXQuIFB1bHNlYXVkaW8gaXMgbm93IGFibGUgdG8gdXNlIHRoZSBoZWFkcGhvbmUgYW5k
-IHNwZWFrZXIgb3V0cHV0IG9mCj4gPiB0aGUgZG9ja2luZyBzdGF0aW9uIGF0IHRoZSBzYW1lIHRp
-bWUgYW5kIEkgd2Fzbid0IGFibGUgdG8gZG8gdGhhdAo+ID4gYmVmb3JlLiBBbHNvIGZvciBtZSBp
-biBLREUgdGhlIHZvbHVtZS9tdXRlIGNvbnRyb2xzIGFyZSB3b3JraW5nIGFzCj4gPiBpbnRlbmRl
-ZC4gQnV0IGlmIHRoZSBwcm9maWxlIGdpdmVzIG1vcmUgaXNzdWVzIGZvciBvdGhlciB1c2VycyBJ
-IGNhbgo+ID4gY29uZmlybSB0aGF0IG15IG5vcm1hbCB1c2VjYXNlIGFsc28gd29ya3MgZmluZSB3
-aXRob3V0IHRoZSBwcm9maWxlIG9uIG15Cj4gPiBzZXR1cC4KPgo+IFRoYW5rcywgdGhhdCdzIGlu
-dGVyZXN0aW5nLiAgSSByZXRob3VnaHQgb2YgZHJvcHBpbmcgdGhlIFVDTSBwcm9maWxlCj4ganVz
-dCBiZWNhdXNlIG9mIHNvbWUgY29tcGxhaW50cyBhYm91dCBQQSBiZWhhdmlvci4KPgo+IElzIHRo
-ZSB2b2x1bWUgcmVzdG9yZWQgcHJvcGVybHkgYnkgUEE/ICBUaGUgcmVwb3J0ZXIgdG9sZCB0aGF0
-IHRoZQo+IGxhY2sgb2YgcHJpb3JpdHkgdmFsdWVzIGxlYWQgdG8gdGhlIGZhaWx1cmUgb2YgdGhl
-IHZvbHVtZS1yZXN0b3JlCj4gYmVoYXZpb3IuICBUaGlzIGNvdWxkIGJlIHJlbGF0aXZlbHkgZWFz
-aWx5IGZpeGVkIGluIFVDTSBwcm9maWxlIHNpZGUsCj4gd2UgbWF5IGp1c3QgYWRkIHRoZSBwcmlv
-cml0eSB2YWx1ZXMuCj4KPiBBbm90aGVyIGNvbXBsYWludCB3YXMgYWJvdXQgdGhlIGxhY2sgb2Yg
-dGhlIGtleWJvYXJkIGNvbnRyb2wuICBJdCB3YXMKPiBzdXBwb3NlZCB0byBiZSBkdWUgdG8gdGhl
-IGxhY2sgb2YgdGhlIGhhcmR3YXJlIGZsYWcgZXhwb3NlZCBmcm9tIFBBLgo+IEFuZCwgUEEgVUNN
-IHBhcnNlciBkb2Vzbid0IHNlZW0gdG8gdGFrZSB0aGUgdm9sdW1lIC8gbXV0ZSBkZWZpbml0aW9u
-cwo+IGV2ZW4gaWYgZGVmaW5lZCBpbiBVQ00gcHJvZmlsZSwgc28gZmFyLiAgVGhpcyBjb3VsZCBi
-ZSBmaXhlZCBpbiBQQQo+IHNpZGUgYXMgd2VsbC4KPgo+IFRoZSBsYXN0IGNvbXBsYWludCB3YXMg
-YWJvdXQgdGhlIG1pc3NpbmcgaWNvbjsgdGhpcyBtaWdodCBiZSB0cmlja3ksCj4gbWF5YmUgUEEg
-Y291bGQgZ3Vlc3MgdGhlIG1vcmUgYXBwcm9wcmlhdGUgaWNvbiBmcm9tIHRoZSBVQ00gc3RyZWFt
-Cj4gbmFtZSBzdHJpbmcuLi4KPgo+IEluIGFueXdheSwgSSdkIGJlIGdsYWQgaWYgd2Uga2VlcCBV
-Q00gcHJvZmlsZSBhcyBhbiBvcHRpb24sIHRvby4KPgo+IFdoaWNoIHZlcnNpb24gb2YgUEEgYXJl
-IHlvdSB1c2luZywgQlRXPwo+Cj4KPiBUYWthc2hpCj4KPiA+Cj4gPiBSZW7DqQo+ID4KPiA+IE9u
-IDMwLTEwLTE4IDE2OjQ1LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+IE9uIFR1ZSwgMzAgT2N0
-IDIwMTggMTA6NDg6MjYgKzAxMDAsCj4gPiA+IFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4+IE9u
-IFR1ZSwgMzAgT2N0IDIwMTggMTA6NDE6MTAgKzAxMDAsCj4gPiA+PiBSZW45IFNhbnRpbmcgd3Jv
-dGU6Cj4gPiA+Pj4gSSB0b3RhbGx5IG1pc3NlZCB0aGF0IGNvbW1pdCBzb3JyeSBmb3IgdGhlIHJl
-ZHVuZGFudCBidWcgcmVwb3J0LiBZZXMKPiBpdAo+ID4gPj4+IHdvcmtzIHdpdGggdGhlIHVwZGF0
-ZWQgY29uZiBmaWxlLgo+ID4gPj4gR29vZCB0byBoZWFyLCB0aGFua3MgZm9yIHF1aWNrIHRlc3Rp
-bmchCj4gPiA+Pgo+ID4gPj4gSmFyb3NsYXYsIHdoYXQgZG8geW91IHRoaW5rIG9mIDEuMS43LjEg
-cmVsZWFzZSBhZGRyZXNzaW5nIHJlZ3Jlc3Npb24/Cj4gPiA+PiBJSVJDLCB3ZSBoYWQgYW4gaXNz
-dWUgd2l0aCBhbHNhLXBsdWdpbnMgYXMgd2VsbC4KPiA+ID4gT3IgbWF5YmUgd2Ugc2hvdWxkIGRy
-b3AgdGhpcyBVQ00gcHJvZmlsZS4KPiA+ID4KPiA+ID4gU2luY2UgUEEgc2VlbXMgYWRkcmVzc2lu
-ZyB0aGUgaXNzdWUgYnkgaXRzZWxmIHZpYSBpdHMgb3duIHNwZWNpZmljCj4gPiA+IHByb2ZpbGUs
-IHdlIG1heSBsZWF2ZSB0aGUgdGhpbmdzIHRvIFBBIGFsb25lLgo+ID4gPgo+ID4gPiBJIGhvcGVk
-IHRoYXQgVUNNIHByb2ZpbGUgc3VwcG9ydCBjYW4gaW1wcm92ZSB0aGUgdGhpbmdzIGluIGEgY2xl
-YW5lcgo+ID4gPiB3YXksIGJ1dCBQQS1VQ00gaW50ZWdyYXRpb24gaXNuJ3QgZnVsbHkgZG9uZSAo
-ZS5nLiB0aGUgdm9sdW1lIC8gbXV0ZQo+ID4gPiBjb250cm9scyBzZWVtIGlnbm9yZWQpLCBhbmQg
-VUNNIG92ZXJyaWRlcyB0aGUgUEEgcHJvZmlsZSwgaXQgY2FuIGJlCj4gPiA+IG1vcmUgaGFybSB0
-aGFuIGdvb2QgYXMgb2Ygbm93Lgo+ID4gPgo+ID4gPgo+ID4gPiBUYWthc2hpCj4gPiA+Cj4gPiA+
-Pgo+ID4gPj4gVGFrYXNoaQo+ID4gPj4KPiA+ID4+PiBUaGFua3MsCj4gPiA+Pj4KPiA+ID4+PiBS
-ZW7DqSBTYW50aW5nCj4gPiA+Pj4KPiA+ID4+PiBPbiAzMC0xMC0xOCAxMDozNSwgVGFrYXNoaSBJ
-d2FpIHdyb3RlOgo+ID4gPj4+PiBPbiBUdWUsIDMwIE9jdCAyMDE4IDEwOjEwOjA3ICswMTAwLAo+
-ID4gPj4+PiBSZW45IFNhbnRpbmcgd3JvdGU6Cj4gPiA+Pj4+PiBIZWxsbyBBbHNhIGRldmVsb3Bl
-cnMsCj4gPiA+Pj4+Pgo+ID4gPj4+Pj4gSSB3b3VsZCBsaWtlIHRvIGZpbGUgYSBidWcgcmVwb3J0
-IGFib3V0IHRoZSBEZWxsLVdEMTUtRG9jay4gVGhpcwo+IGRvY2sKPiA+ID4+Pj4+IHN0b3BwZWQg
-d29ya2luZyBmb3IgbWUgb24gYXJjaGxpbnV4L2tkZS4gVGhlIGRldmljZSB3YXMgbm90IHBpY2tl
-ZAo+IHVwIGF0Cj4gPiA+Pj4+PiBhbGwgYnkgcHVsc2UgYXVkaW8gYWZ0ZXIgc29tZSB1cGRhdGVz
-IEkgaW5zdGFsbGVkIGxhc3Qgd2Vlay4KPiA+ID4+Pj4+IEJ5IHRyaWFsIGFuZCBlcnJvciBJIGZv
-dW5kIG91dCBpdCB3YXMgY2F1c2VkIGJ5IHRoZSB1Y20gcHJvZmlsZQo+IHRoYXQgd2FzCj4gPiA+
-Pj4+PiBhZGRlZCBpbiBhbHNhLWxpYiAxLjEuNy4KPiA+ID4+Pj4gQ291bGQgeW91IHRyeSB0aGUg
-YWxzYS1saWIgZ2l0IHJlcG8/ICBUaGUgZml4IGlzIGFscmVhZHkgaW5jbHVkZWQuCj4gPiA+Pj4+
-Cj4gPiA+Pj4+Cj4gPiA+Pj4+IHRoYW5rcywKPiA+ID4+Pj4KPiA+ID4+Pj4gVGFrYXNoaQo+ID4K
-PgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+On 11/1/18 9:11 AM, Andy Shevchenko wrote:
+> On Wed, Oct 31, 2018 at 08:07:18PM -0500, Pierre-Louis Bossart wrote:
+>> For some reason the RVP/LeafHill SSDT exposes an INT34C3 ID which is
+>> used on other boards to point to the TDF8532 amplifier. Yay BIOS.
+>>
+>> Add a DMI-quirk to ignore this ID and check for other valid machine
+>> driver descriptors.
+>> +static unsigned long apl_machine_id;
+>> +
+>> +#define APL_RVP  1
+>> +
+>> +static int apl_rvp_quirk_cb(const struct dmi_system_id *id)
+>> +{
+>> +	apl_machine_id = APL_RVP;
+>> +	return 1;
+>> +}
+>> +
+>> +static const struct dmi_system_id apl_table[] = {
+>> +	{
+>> +		.callback = apl_rvp_quirk_cb,
+>> +		.matches = {
+>> +			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corp."),
+>> +			DMI_MATCH(DMI_BOARD_NAME, "Apollolake RVP1A"),
+>> +		},
+>> +	},
+>> +	{},
+> Terminator entry doesn't need a comma. It would prevent from (unlikely)
+> mistakes when extending the list.
+Indeed. I don't know how many tables use this though... will update.
+>
+>> +};
+>> +
+>> +static struct snd_soc_acpi_mach *apl_quirk(void *arg)
+>> +{
+>> +	struct snd_soc_acpi_mach *mach = arg;
+>> +
+>> +	dmi_check_system(apl_table);
+> Can't we just use driver_data of the table above and get rid of at least global variable?
+
+Yes. The code is pretty much copy-pasted from other BYT quirks but can 
+be written in a better way
+
+Will send a v2 later today, thanks Andy for the suggestion.
+
+
+>
+>> +
+>> +	if (apl_machine_id == APL_RVP)
+>> +		return NULL;
+>> +	else
+>> +		return mach;
+>> +}
