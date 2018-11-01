@@ -1,169 +1,107 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH 2/2] CHROMIUM: ASoC: rt5663: Add regulator support
-Date: Thu,  1 Nov 2018 20:40:07 +0800
-Message-ID: <20181101124007.243258-2-cychiang@chromium.org>
-References: <20181101124007.243258-1-cychiang@chromium.org>
+From: Mutz Heuer <mutz.heuer@gmail.com>
+Subject: Re: [USB-Audio - PX USB,
+ playback] snd-usb-audio: probe of 2-3:1.0 failed with error -22
+ after kernel upgrade
+Date: Thu, 1 Nov 2018 13:57:22 +0100
+Message-ID: <CAHU8kArWuL7wO8Yg3dHX3L-NK_EYFiqc0mWYuU=5ruwoO7vBtw@mail.gmail.com>
+References: <CAHU8kApb6us8A4r9vwzZaM+Y7BQoty0HqXARJXLpQJqjv0OMCA@mail.gmail.com>
+ <s5h1s873cev.wl-tiwai@suse.de>
+ <CAHU8kAqRB_t6pt81YRvtX+UfW+TNyWUxtZZ4_Hp0LHAsw5LNtQ@mail.gmail.com>
+ <s5ho9bbqimq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181101124007.243258-1-cychiang@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, oder_chiou@realtek.com, alsa-devel@alsa-project.org, dgreid@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lj1-f196.google.com (mail-lj1-f196.google.com
+ [209.85.208.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4023E2677D0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 13:57:34 +0100 (CET)
+Received: by mail-lj1-f196.google.com with SMTP id s15-v6so17974195lji.3
+ for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2018 05:57:34 -0700 (PDT)
+In-Reply-To: <s5ho9bbqimq.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add regulator support to turn on cpvdd and avdd in probe.
-If a regulator is not given from device tree, a dummy regulator will be
-used.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- sound/soc/codecs/rt5663.c | 68 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 61 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 2444fad7c2dfe..7e9c1901a0a67 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -17,6 +17,7 @@
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/acpi.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/workqueue.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -33,6 +34,9 @@
- #define RT5663_DEVICE_ID_2 0x6451
- #define RT5663_DEVICE_ID_1 0x6406
- 
-+#define RT5663_POWER_ON_DELAY_MS 300
-+#define RT5663_SUPPLY_CURRENT_UA 500000
-+
- enum {
- 	CODEC_VER_1,
- 	CODEC_VER_0,
-@@ -48,6 +52,11 @@ struct impedance_mapping_table {
- 	unsigned int dc_offset_r_manual_mic;
- };
- 
-+static const char *const rt5663_supply_names[] = {
-+	"avdd",
-+	"cpvdd",
-+};
-+
- struct rt5663_priv {
- 	struct snd_soc_component *component;
- 	struct rt5663_platform_data pdata;
-@@ -56,6 +65,7 @@ struct rt5663_priv {
- 	struct snd_soc_jack *hs_jack;
- 	struct timer_list btn_check_timer;
- 	struct impedance_mapping_table *imp_table;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(rt5663_supply_names)];
- 
- 	int codec_ver;
- 	int sysclk;
-@@ -3480,7 +3490,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- {
- 	struct rt5663_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5663_priv *rt5663;
--	int ret;
-+	int ret, i;
- 	unsigned int val;
- 	struct regmap *regmap;
- 
-@@ -3497,6 +3507,37 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 	else
- 		rt5663_parse_dp(rt5663, &i2c->dev);
- 
-+	for (i = 0; i < ARRAY_SIZE(rt5663->supplies); i++)
-+		rt5663->supplies[i].supply = rt5663_supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(&i2c->dev,
-+				      ARRAY_SIZE(rt5663->supplies),
-+				      rt5663->supplies);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Set load for regulator. */
-+	for (i = 0; i < ARRAY_SIZE(rt5663->supplies); i++) {
-+		ret = regulator_set_load(rt5663->supplies[i].consumer,
-+					 RT5663_SUPPLY_CURRENT_UA);
-+		if (ret) {
-+			dev_err(&i2c->dev,
-+				"Failed to set regulator %s, ret: %d\n",
-+				rt5663->supplies[i].supply, ret);
-+		}
-+	}
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(rt5663->supplies),
-+				    rt5663->supplies);
-+
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
-+		return ret;
-+	}
-+	msleep(RT5663_POWER_ON_DELAY_MS);
-+
- 	regmap = devm_regmap_init_i2c(i2c, &temp_regmap);
- 	if (IS_ERR(regmap)) {
- 		ret = PTR_ERR(regmap);
-@@ -3527,7 +3568,8 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		dev_err(&i2c->dev,
- 			"Device with ID register %#x is not rt5663\n",
- 			val);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_enable;
- 	}
- 
- 	if (IS_ERR(rt5663->regmap)) {
-@@ -3632,20 +3674,30 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		ret = request_irq(i2c->irq, rt5663_irq,
- 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
- 			| IRQF_ONESHOT, "rt5663", rt5663);
--		if (ret)
-+		if (ret) {
- 			dev_err(&i2c->dev, "%s Failed to reguest IRQ: %d\n",
- 				__func__, ret);
-+			goto err_enable;
-+		}
- 	}
- 
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_rt5663,
- 			rt5663_dai, ARRAY_SIZE(rt5663_dai));
- 
--	if (ret) {
--		if (i2c->irq)
--			free_irq(i2c->irq, rt5663);
--	}
-+	if (ret)
-+		goto err_irq;
- 
-+	return 0;
-+
-+err_irq:
-+	if (i2c->irq)
-+		free_irq(i2c->irq, rt5663);
-+
-+err_enable:
-+	dev_err(&i2c->dev,
-+		"%s: Disable regulator after probe error\n", __func__);
-+	regulator_bulk_disable(ARRAY_SIZE(rt5663->supplies), rt5663->supplies);
- 	return ret;
- }
- 
-@@ -3656,6 +3708,8 @@ static int rt5663_i2c_remove(struct i2c_client *i2c)
- 	if (i2c->irq)
- 		free_irq(i2c->irq, rt5663);
- 
-+	regulator_bulk_disable(ARRAY_SIZE(rt5663->supplies), rt5663->supplies);
-+
- 	return 0;
- }
- 
--- 
-2.19.1.568.g152ad8e336-goog
+WW91IGFyZSByaWdodCwgSSBkaWQgbm90IHN3aXRjaCB0byB0aGUgbWFzdGVyIGJyYW5jaC4gVGhl
+IGZpeCBpcyBvbiBtYXN0ZXIKYW5kIEkgdGVzdGVkIHRoZSBkYWlseSB1YnVudHUgbWFpbmxpbmUg
+a2VybmVsLgoKJSB1bmFtZSAtYSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+7oKyIOKclCDugrIgMTgwIO6CsiAxMzo0NjoyNgpMaW51eCBUaGlua1BhZC1YMjIwIDQuMTkuMC05
+OTktbG93bGF0ZW5jeSAjMjAxODEwMzEyMjAyIFNNUCBQUkVFTVBUIFRodSBOb3YKMSAwMjoxMToy
+NCBVVEMgMjAxOCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKClRoYXQgZml4ZXMgdGhl
+IHByb2JsZW0gYW5kIEkgY291bGQgZHJvcCB0aGUgcHVsc2VhdWRpbyBjb25maWd1cmF0aW9uIGFs
+c28uCgpDdXJyZW50bHkgaGFwcGlseSBsaXN0ZW5pbmcgdG8gQmVybGluIFBoaWxoYXJtb25pYyBT
+dHJpbmcgUXVpbnRldDogQS5Edm9yw6FrCi0gU3RyaW5nIFF1aW50ZXQgT3AuNzc6IEkgQWxsZWdy
+byBjb24gZnVvY28g4oCTIFBpw7kgbW9zc28gOC0pCgpJIHVwZGF0ZWQgdGhlIGxhdWNocGFkIGJ1
+ZyAoaG9wZWZ1bGx5IGRpZCB0aGUgcmlnaHQgdGhpbmdzIHRoZXJlKS4KClRoYW5rcyBhIGxvdCBh
+bmQgc29ycnkgZm9yIHRoZSBpbmNvbnZlbmllbmNlLAoKTXV0egoKVGFrYXNoaSBJd2FpIDx0aXdh
+aUBzdXNlLmRlPiBzY2hyaWViIGFtIERpLiwgMzAuIE9rdC4gMjAxOCB1bSAyMTozMyBVaHI6Cgo+
+IE9uIFR1ZSwgMzAgT2N0IDIwMTggMTk6NDU6MzYgKzAxMDAsCj4gTXV0eiBIZXVlciB3cm90ZToK
+PiA+Cj4gPiBJIGNoZWNrZWQgdGhlIHNvdXJjZSBjb2RlIG9mIHF1aXJrcy10YWJsZS5oIG9uIGJy
+YW5jaCA0LjE5LXJjOC4KPgo+IEl0J3MgdG9vIG9sZCA6KQo+Cj4gTGludXMgZ2l0IHRyZWUgYWxy
+ZWFkeSBjb250YWlucyBtb3JlIGZpeGVzLCBhbmQgdGhlIGNvcnJlc3BvbmRpbmcgb25lCj4gaXMg
+Y29tbWl0IGMzNjljOGRiMTVkNTFmYTE3NWQyYmE4NTkyOGY3OWQxNmFmNmI1NjIKPgo+Cj4gVGFr
+YXNoaQo+Cj4gPiBJdCBzdGlsbAo+ID4gY29udGFpbnMgdGhlIHByb2JsZW1hdGljIHdvcmthcm91
+bmQuIEl0IGRvZXNuJ3Qgc2VlbSB0byBmaXQgYW55IGxvbmdlcgo+IHRvIHRoZQo+ID4gaGVhZHBo
+b25lcyBjdXJyZW50IGZpcm13YXJlLiBDaGVja2luZyB0aGUgNC4xNS43IGtlcm5lbCAod2l0aG91
+dCB0aGUKPiBxdWlyaykKPiA+IHdvcmtzIG11Y2ggYmV0dGVyLiBBdCBsZWFzdCB0aGUgZGV2aWNl
+IGlzIHNob3duIGluIHRoZSBtaXhlciBhbmQgZml4aW5nCj4gdGhlCj4gPiBzYW1wbGVyYXRlIHRv
+IDQ4a0h6IGxlYWRzIHRvIGEgdXNlZnVsIGNvbmZpZ3VyYXRpb24uIFRvIGJlIGhvbmVzdCBJIGRv
+Cj4gbm90Cj4gPiByZWFsbHkgdW5kZXJzdGFuZCBob3cgdG8gZGVmaW5lIGEgZml4ZWQgdGFibGUg
+Zm9yIHN1cHBvcnRlZCBzYW1wbGUgcmF0ZQo+ID4gd2l0aG91dCBmaWRkbGluZyB3aXRoIG90aGVy
+IHBhcmFtZXRlcnMuIFRoZSBISUQgc2VlbXMgdG8gd29ya2luZyB0b28uIEF0Cj4gbGVhc3QKPiA+
+IEkgYW0gYWJsZSB0byB1c2UgdGhlIGhlYWRwaG9uZSBidXR0b25zIHRvIGluL2RlY3JlYXNlIHRo
+ZSB2b2x1bWUgYW5kIHRvCj4gc3RvcAo+ID4gYW5kIHJlc3RhcnQgcGxheWJhY2suIFRoZSBtaWNy
+b3Bob25lIGlzIG5vdCBzaG93biAtIGJ1dCB0aGF0IGRvZXMgbm90Cj4gc2VlbSB0bwo+ID4gd29y
+ayBvbiB3aW5kb3dzIGVpdGhlciAtIGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgdGhlIG9yZ2luYWwg
+cGF0Y2ggdG8KPiBzdXBwb3J0Cj4gPiB0aGUgaGVhZHBob25lcy4KPiA+Cj4gPiBXaXRoIHRoZSBx
+dXJpayBpbiBwbGFjZSBJIGdldCBubyByZWFsbHkgaGVscGZ1bCBlcnJvciBtZXNzYWdlcyAuLi4K
+PiA+Cj4gPiBJIGhvcGUgdGhhdCBoZWxwcyB0byBjbGFyaWZ5IHRoZSBzaXR1YXRpb24sCj4gPgo+
+ID4gTXV0ego+ID4KPiA+IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gc2NocmllYiBhbSBE
+aS4sIDMwLiBPa3QuIDIwMTggdW0gMTI6MjQgVWhyOgo+ID4KPiA+ICAgICBPbiBTdW4sIDI4IE9j
+dCAyMDE4IDIyOjAwOjM1ICswMTAwLAo+ID4gICAgIE11dHogSGV1ZXIgd3JvdGU6Cj4gPiAgICAg
+Pgo+ID4gICAgID4gVVNCLUF1ZGlvIENvbm5lY3Rpb24gb24gQm93ZXJzICYgV2lsa2VucyBQWCBC
+bHVldG9vdGggSGVhZHBob25lcwo+IHN0YXJ0ZWQKPiA+ICAgICA+IHdvcmtpbmcgd2hlbiB1cGdy
+YWRpbmcga2VybmVsIGZyb20gNC4xMyB0byA0LjE1IHNlcmllcy4gVGhlbiBpdAo+IHN1ZGRlbmx5
+Cj4gPiAgICAgPiBzdG9wcGVkIHdvcmtpbmcgYWdhaW4gb24gbmV3ZXIga2VybmVscy4gVGhlIGJ1
+ZyByZXBvcnQgaGFzIGJlZW4KPiA+ICAgICBnZW5lcmF0ZWQKPiA+ICAgICA+IG9uIHRoZSBsYXRl
+c3Qgd29ya2luZyBtYWlubGluZSBrZXJuZWwgNC4xNS43LiBBbGwgbmV3ZXIga2VybmVscwo+IGhh
+dmUKPiA+ICAgICBzb21lCj4gPiAgICAgPiB1c2IgcXVpcmtzIGluIHBsYWNlLCB3aGljaCBzaG91
+bGQgZml4IHRoZSBwbGF5YmFjayBzYW1wbGUgcmF0ZXMgdG8KPiA0OAo+ID4gICAgIGtIei4KPiA+
+ICAgICA+IFRoZSBxdWlyayBzZWVtcyBub3QgdG8gYmUgd29ya2luZyBjb3JyZWN0bHkgLSBpdCBz
+ZWVtcyB0byBoaW5kZXIKPiB0aGUKPiA+ICAgICBhdWRpbwo+ID4gICAgID4gc3lzdGVtIHRvIHJl
+Y29nbml6ZSB0aGUgVVNCLWRldmljZSBhcyBhIHNvdW5kIGRldmljZS4KPiA+ICAgICA+Cj4gPiAg
+ICAgPiBUaGUgSGVhZHBob25lcyB3b3JrIG9uIGtlcm5lbHMgYmVmb3JlIDQsMTUuNyB3aGVuIG1h
+bnVhbGx5Cj4gY29uZmlndXJpbmcKPiA+ICAgICA+IHB1bHNlYXVkaW8gdG8gYSBkZWZhdWx0IHNh
+bXBsZXJhdGUgb2YgNDgga0h6Lgo+ID4gICAgID4KPiA+ICAgICA+IFBYIEhlYWRwaG9uZXMgYXJl
+IG9uIHRoZSBuZXdlc3QgZmlybXdhcmUgbGV2ZWwuCj4gPiAgICAgPgo+ID4gICAgID4gU2VlIGh0
+dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTAyNjUzNDUvLiBEcm9wcGluZyB0aGF0
+Cj4gcGF0Y2gKPiA+ICAgICBhbmQKPiA+ICAgICA+IHJlY29tcGlsaW5nIHRoZSBrZXJuZWwgbGVh
+ZHMgdG8gYSBzaXR1YXRpb24gd2hlcmUgYWxzYSBhbmQKPiBwdWxzZWF1ZGlvCj4gPiAgICAgc2Vl
+bQo+ID4gICAgID4gdG8gdG8gYmUgd29ya2luZyBhZ2Fpbi4KPiA+ICAgICA+Cj4gPiAgICAgPiBB
+ZGRpbmcKPiA+ICAgICA+Cj4gPiAgICAgPiAgICAgICBkZWZhdWx0LXNhbXBsZS1yYXRlID0gNDgw
+MDAKPiA+ICAgICA+Cj4gPiAgICAgPiB0byAvZXRjL3B1bHNlL2RhZW1vbi5jb25mIGxlYWRzIHRv
+IHdvcmtpbmcgaGVhZHBob25lcy4KPiA+ICAgICA+Cj4gPiAgICAgPiBNYXliZSB0aGUgcGF0Y2gg
+aGFzIHRvIGJlIGFkanVzdGVkIHRvIG5ld2VyIGZpcm13YXJlPyBBIHF1aXJrCj4gc2VlbXMgdG8K
+PiA+ICAgICBiZQo+ID4gICAgID4gcmVhbGx5IG5lY2Vzc2FyeSB0byBhdm9pZCB0aGUgc3BlY2lm
+aWMgcGF0Y2ggdG8gZGFlbW9uLmNvbmYuCj4gPiAgICAgPgo+ID4gICAgID4KPiA+ICAgICA+IE1v
+cmUgZGV0YWlscyBjYW4gYmUgZm91bmQgaW4KPiA+ICAgICA+IGh0dHBzOi8vYnVncy5sYXVuY2hw
+YWQubmV0L3VidW50dS8rc291cmNlL2xpbnV4LytidWcvMTc3MzY5Nwo+ID4gICAgID4gV2hhdCB3
+b3VsZCBiZSB0aGUgYmVzdCB3YXkgdG8gcHJvY2VlZD8KPiA+Cj4gPiAgICAgQ291bGQgeW91IGNo
+ZWNrIHRoZSBsYXRlc3QgTGludXMgZ2l0IHRyZWUgKG9yIGZvci1saW51cyBicmFuY2ggb2YKPiA+
+ICAgICBzb3VuZCBnaXQgdHJlZSk/ICBUaGUgd29ya2Fyb3VuZCBmb3IgdGhlIGJ1Z2d5IGZpcm13
+YXJlIHdhcyBhbHJlYWR5Cj4gPiAgICAgaW5jbHVkZWQgdGhlcmUuICBMZXQgbWUga25vdyBpZiBp
+dCBzdGlsbCBkb2Vzbid0IHN1ZmZpY2UuCj4gPgo+ID4gICAgIHRoYW5rcywKPiA+Cj4gPiAgICAg
+VGFrYXNoaQo+ID4KPiA+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
