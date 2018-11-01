@@ -1,14 +1,15 @@
 From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH alsa-lib] Don't use fork() on noMMU platforms
-Date: Thu,  1 Nov 2018 15:40:01 +0100
-Message-ID: <20181101144001.1452-1-thomas.petazzoni@bootlin.com>
+Subject: [PATCH alsa-lib] utils/alsa.m4: conditionally enable
+	libdl in AM_PATH_ALSA m4 macro
+Date: Thu,  1 Nov 2018 15:40:07 +0100
+Message-ID: <20181101144007.1507-1-thomas.petazzoni@bootlin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 669AD2677D0
- for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 15:40:04 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C2B92677D0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2018 15:40:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Thomas De Schampheleire <thomas.de.schampheleire@gmail.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 List-Id: alsa-devel@alsa-project.org
 
-fork() is not available on noMMU platforms, but in the specific case
-of pcm_direct.c, vfork() can be used instead. This commit adds an
-autoconf check for fork(), and falls back to vfork() is fork() is not
-available.
-
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
----
- configure.ac         |  2 ++
- src/pcm/pcm_direct.c | 10 +++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/configure.ac b/configure.ac
-index 4c9d860f..ab659490 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -51,6 +51,8 @@ dnl Checks for library functions.
- AC_PROG_GCC_TRADITIONAL
- AC_CHECK_FUNCS([uselocale])
- 
-+AC_CHECK_FUNC([fork])
-+
- SAVE_LIBRARY_VERSION
- AC_SUBST(LIBTOOL_VERSION_INFO)
- 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 2b07eff9..4dc3ea26 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -431,13 +431,21 @@ int snd_pcm_direct_server_create(snd_pcm_direct_t *dmix)
- 		close(dmix->server_fd);
- 		return ret;
- 	}
--	
-+
-+#ifdef HAVE_FORK
- 	ret = fork();
-+#else
-+	ret = vfork();
-+#endif
- 	if (ret < 0) {
- 		close(dmix->server_fd);
- 		return ret;
- 	} else if (ret == 0) {
-+#ifdef HAVE_FORK
- 		ret = fork();
-+#else
-+		ret = vfork();
-+#endif
- 		if (ret == 0)
- 			server_job(dmix);
- 		_exit(EXIT_SUCCESS);
--- 
-2.14.4
+RnJvbTogVGhvbWFzIERlIFNjaGFtcGhlbGVpcmUgPHRob21hcy5kZS5zY2hhbXBoZWxlaXJlQGdt
+YWlsLmNvbT4KClRoZSBBTV9QQVRIX0FMU0EgbWFjcm8gaW4gdXRpbHMvYWxzYS5tNCB1bmNvbmRp
+dGlvbmFsbHkgdXNlcwotbGRsLiBUaGlzIGJyZWFrcyBjb21waWxhdGlvbiBvZiBhbHNhLXV0aWxz
+IChhbmQgcHJvYmFibHkgb3RoZXIKcGFja2FnZXMgdXNpbmcgdGhpcyBtYWNybykgZm9yIHRhcmdl
+dHMgdGhhdCBkbyBub3Qgc3VwcG9ydCBkeW5hbWljCmxvYWRpbmcuCgpUaGlzIHBhdGNoIHVwZGF0
+ZXMgdGhlIG1hY3JvIHRvIGNoZWNrIGlmIGRsb3BlbiBpcyBhdmFpbGFibGUsIGFuZCB1c2UKdGhh
+dCByZXN1bHQgdG8gY29uZGl0aW9uYWxseSBhZGQgLWxkbCB0byB0aGUgbGlzdCBvZiBsaWJyYXJp
+ZXMuCgpTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgRGUgU2NoYW1waGVsZWlyZSA8dGhvbWFzLmRlLnNj
+aGFtcGhlbGVpcmVAZ21haWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBKw7ZyZyBLcmF1c2UgPGpvZXJn
+LmtyYXVzZUBlbWJlZGRlZC5yb2Nrcz4KU2lnbmVkLW9mZi1ieTogVGhvbWFzIFBldGF6em9uaSA8
+dGhvbWFzLnBldGF6em9uaUBib290bGluLmNvbT4KLS0tCiB1dGlscy9hbHNhLm00IHwgNCArKyst
+CiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0t
+Z2l0IGEvdXRpbHMvYWxzYS5tNCBiL3V0aWxzL2Fsc2EubTQKaW5kZXggZTEyMzEwZGYuLmE1YzVh
+MjkyIDEwMDY0NAotLS0gYS91dGlscy9hbHNhLm00CisrKyBiL3V0aWxzL2Fsc2EubTQKQEAgLTQ0
+LDYgKzQ0LDggQEAgaWYgdGVzdCAiJGFsc2FfaW5jX3ByZWZpeCIgIT0gIiIgOyB0aGVuCiBmaQog
+QUNfTVNHX1JFU1VMVCgkQUxTQV9DRkxBR1MpCiAKK0FDX0NIRUNLX0xJQihjLCBkbG9wZW4sIExJ
+QkRMPSIiLCBbQUNfQ0hFQ0tfTElCKGRsLCBkbG9wZW4sIExJQkRMPSItbGRsIildKQorCiBkbmwg
+YWRkIGFueSBzcGVjaWFsIGxpYiBkaXJzCiBBQ19NU0dfQ0hFQ0tJTkcoZm9yIEFMU0EgTERGTEFH
+UykKIGlmIHRlc3QgIiRhbHNhX3ByZWZpeCIgIT0gIiIgOyB0aGVuCkBAIC01Miw3ICs1NCw3IEBA
+IGlmIHRlc3QgIiRhbHNhX3ByZWZpeCIgIT0gIiIgOyB0aGVuCiBmaQogCiBkbmwgYWRkIHRoZSBh
+bHNhIGxpYnJhcnkKLUFMU0FfTElCUz0iJEFMU0FfTElCUyAtbGFzb3VuZCAtbG0gLWxkbCAtbHB0
+aHJlYWQiCitBTFNBX0xJQlM9IiRBTFNBX0xJQlMgLWxhc291bmQgLWxtICRMSUJETCAtbHB0aHJl
+YWQiCiBMSUJTPSIkQUxTQV9MSUJTICRMSUJTIgogQUNfTVNHX1JFU1VMVCgkQUxTQV9MSUJTKQog
+Ci0tIAoyLjE0LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
