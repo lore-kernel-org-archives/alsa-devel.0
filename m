@@ -1,52 +1,41 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
-Date: Fri, 2 Nov 2018 20:33:38 +0200
-Message-ID: <CAHp75VfkyqWRrUND=U9Mb+2-HqpEZhpbUYKs5iTSn0mWK+W_sA@mail.gmail.com>
-References: <20181102041120.7603-1-ayman.bagabas@gmail.com>
- <20181102041120.7603-4-ayman.bagabas@gmail.com> <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
- <s5hlg6bfi26.wl-tiwai@suse.de>
+From: Cupertino Miranda <philfine@gmail.com>
+Subject: Trying to get Roland TD-30 soundcard to work on Linux
+Date: Fri, 2 Nov 2018 18:34:25 +0000
+Message-ID: <CAAR0QZQOEnb0daGLq0nnwAijLZ6PsdeE5DK0asdY9cGcT-t+uQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hlg6bfi26.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ayman Bagabas <ayman.bagabas@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, kailang@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4AC4267692
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 19:34:37 +0100 (CET)
+Received: by mail-oi1-f193.google.com with SMTP id k19-v6so2345009oic.11
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2018 11:34:37 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 2, 2018 at 8:30 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 02 Nov 2018 19:12:44 +0100,
-> Andy Shevchenko wrote:
-> >
-> > > +       if (action == HDA_FIXUP_ACT_PROBE) {
-> > > +               if (!huawei_wmi_micmute_led_set_func)
-> > > +                       huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
-> > > +               if (!huawei_wmi_micmute_led_set_func) {
-> > > +                       codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
-> > > +                       return;
-> > > +               }
-> > > +               removefunc = (huawei_wmi_micmute_led_set_func(false) < 0)
-> > > +                       || (snd_hda_gen_add_micmute_led(codec, update_huawei_wmi_micmute_led) < 0);
-> > > +
-> > > +       }
-> > > +
-> > > +       if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-> > > +               symbol_put(huawei_wmi_micmute_led_set);
-> > > +               huawei_wmi_micmute_led_set_func = NULL;
-> > > +       }
-> > > +}
-> >
-> > Takashi, is it a way how the rest sound drivers are written? B/c this
-> > symbol_request(s) look to me a bit ugly.
->
-> It's a workaround for not having a hard dependency.  The HD-audio
-> codec driver is generic, and we don't want to load the multiple WMI
-> drivers always for using a Realtek codec.
->
-> Ugly, yes, but simple enough.
+Hi,
 
-Okay, thanks for elaboration.
+I have the Rolands TD-30 edrum module that includes a USB sound card in it.
+The card lists but no capture or recording devices work, although they are
+listed.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I am new to audio device drivers and for that reason need some guidance to
+contribute to such driver.
+A full log can be found at:
+www.alsa-project.org/db/?f=e1a28cbd7e9f1201d3b0cbe44d8ec1908272a1d4
+
+Looking forward to ear from you.
+
+Best regards,
+Cupertino Miranda
