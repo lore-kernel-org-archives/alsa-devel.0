@@ -1,34 +1,32 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ASoC: smd845: constify snd_soc_ops structure
-Date: Fri,  2 Nov 2018 16:00:18 +0100
-Message-ID: <1541170818-24219-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: kernel-janitors@vger.kernel.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: GitHub pull_request-opened <github@alsa-project.org>
+Subject: Pull request testing (please ignore)
+Date: Fri,  2 Nov 2018 16:36:17 +0100 (CET)
+Message-ID: <20181102153617.8E4E22679C6@alsa0.perex.cz>
+References: <1541172975728286982-webhooks-bot@alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
+ [192.168.100.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BF042679BF
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 16:36:15 +0100 (CET)
+In-Reply-To: <1541172975728286982-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_soc_ops structure can be const as it is only stored in the
-ops field of a snd_soc_dai_link structure and this field is const.
+alsa-project/alsa-lib pull request #1 was opened from perexg:
 
-Done with the help of Coccinelle.
+Comment body
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- sound/soc/qcom/sdm845.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 9effbecc571f..8d0cdff64377 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -171,7 +171,7 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
- 	}
- }
- 
--static struct snd_soc_ops sdm845_be_ops = {
-+static const struct snd_soc_ops sdm845_be_ops = {
- 	.hw_params = sdm845_snd_hw_params,
- 	.startup = sdm845_snd_startup,
- 	.shutdown = sdm845_snd_shutdown,
+Issue URL     : https://github.com/alsa-project/alsa-lib/pull/1
+Repository URL: https://github.com/alsa-project/alsa-lib
