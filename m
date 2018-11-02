@@ -1,147 +1,45 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
-Date: Fri,  2 Nov 2018 00:11:15 -0400
-Message-ID: <20181102041120.7603-4-ayman.bagabas@gmail.com>
-References: <20181102041120.7603-1-ayman.bagabas@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181102041120.7603-1-ayman.bagabas@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH v2 0/1] Introduce dmic mode switch delay
+	parameter
+Date: Fri,  2 Nov 2018 13:00:46 +0530
+Message-ID: <1541143847-30450-1-git-send-email-jenny.tc@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 138742677E4
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 08:30:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some of Huawei laptops come with a LED in the mic mute key. This patch
-enables and disable this LED accordingly.
+Some DMICs need clock to be running for a specified duration as per the
+DMIC spec to complete the mode transition like sleep to normal, off to normal
+etc.
 
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
----
- drivers/platform/x86/huawei_wmi.c |  1 +
- include/linux/huawei_wmi.h        |  7 +++++
- sound/pci/hda/huawei_wmi_helper.c | 48 +++++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c     | 10 +++++++
- 4 files changed, 66 insertions(+)
- create mode 100644 include/linux/huawei_wmi.h
- create mode 100644 sound/pci/hda/huawei_wmi_helper.c
+v1: First patch set
+v2: 
+1). Removed ACPI device entry since a) The DMIC vendor doesn't have an ACPI vendor
+ID b) The ACPI enumeration creates one more device and conflicts with the existing
+skl.c dmic platform device registration.
+2). Updated commit message
 
-diff --git a/drivers/platform/x86/huawei_wmi.c b/drivers/platform/x86/huawei_wmi.c
-index 83545217ac19..cc5492571727 100644
---- a/drivers/platform/x86/huawei_wmi.c
-+++ b/drivers/platform/x86/huawei_wmi.c
-@@ -26,6 +26,7 @@
- #include <linux/input/sparse-keymap.h>
- #include <linux/acpi.h>
- #include <linux/wmi.h>
-+#include <linux/huawei_wmi.h>
- 
- MODULE_AUTHOR("Ayman Bagabas <ayman.bagabas@gmail.com>");
- MODULE_DESCRIPTION("Huawei WMI hotkeys");
-diff --git a/include/linux/huawei_wmi.h b/include/linux/huawei_wmi.h
-new file mode 100644
-index 000000000000..69b656c5029b
---- /dev/null
-+++ b/include/linux/huawei_wmi.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __HUAWEI_WMI_H__
-+#define __HUAWEI_WMI_H__
-+
-+int huawei_wmi_micmute_led_set(bool on);
-+
-+#endif
-diff --git a/sound/pci/hda/huawei_wmi_helper.c b/sound/pci/hda/huawei_wmi_helper.c
-new file mode 100644
-index 000000000000..77edb658cbf0
---- /dev/null
-+++ b/sound/pci/hda/huawei_wmi_helper.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Helper functions for Huawei WMI Mic Mute LED;
-+ * to be included from codec driver
-+ */
-+
-+#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
-+#include <linux/huawei_wmi.h>
-+
-+static int (*huawei_wmi_micmute_led_set_func)(bool);
-+
-+static void update_huawei_wmi_micmute_led(struct hda_codec *codec)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+
-+	huawei_wmi_micmute_led_set_func(spec->micmute_led.led_value);
-+}
-+
-+static void alc_fixup_huawei_wmi(struct hda_codec *codec,
-+				   const struct hda_fixup *fix, int action)
-+{
-+	bool removefunc = false;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!huawei_wmi_micmute_led_set_func)
-+			huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
-+		if (!huawei_wmi_micmute_led_set_func) {
-+			codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
-+			return;
-+		}
-+		removefunc = (huawei_wmi_micmute_led_set_func(false) < 0)
-+			|| (snd_hda_gen_add_micmute_led(codec, update_huawei_wmi_micmute_led) < 0);
-+
-+	}
-+
-+	if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-+		symbol_put(huawei_wmi_micmute_led_set);
-+		huawei_wmi_micmute_led_set_func = NULL;
-+	}
-+}
-+
-+#else
-+
-+static void alc_fixup_huawei_wmi(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+}
-+
-+#endif
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4f7a39c7883c..d09457d2a4f3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5374,6 +5374,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-+/* for alc_fixup_huawei_micmute_led */
-+#include "huawei_wmi_helper.c"
-+
- enum {
- 	ALC269_FIXUP_SONY_VAIO,
- 	ALC275_FIXUP_SONY_VAIO_GPIO2,
-@@ -5494,6 +5497,7 @@ enum {
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
- 	ALC256_FIXUP_HUAWEI_MBXP_PINS,
-+	ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED,
- 	ALC295_FIXUP_HP_X360,
- 	ALC221_FIXUP_HP_HEADSET_MIC,
- };
-@@ -6348,6 +6352,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
-+	[ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_huawei_wmi
-+	},
- 	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -6363,6 +6371,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{0x21, 0x04211020},
- 			{ },
- 		},
-+		.chained = true,
-+		.chain_id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED
- 	},
- 	[ALC295_FIXUP_HP_X360] = {
- 		.type = HDA_FIXUP_FUNC,
+
+Jenny TC (1):
+  ASoC: dmic: Introduce mode switch delay
+
+ sound/soc/codecs/dmic.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
 -- 
-2.17.2
+1.9.1
