@@ -1,54 +1,50 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] [v2] ASoC: wm97xx: fix uninitialized
- regmap pointer problem
-Date: Fri, 2 Nov 2018 16:01:39 +0000
-Message-ID: <20181102160139.GQ16508@imbe.wolfsonmicro.main>
-References: <20181102151922.889131-1-arnd@arndb.de>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH 1/2] ALSA: x86: Fix runtime PM for
+ hdmi-lpe-audio
+Date: Fri, 2 Nov 2018 18:20:36 +0200
+Message-ID: <20181102162036.GT9144@intel.com>
+References: <20181024154825.18185-1-ville.syrjala@linux.intel.com>
+ <20181101152436.GE9144@intel.com> <s5hh8gzj05i.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id CBCCD2678F7
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 17:01:43 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <20181102151922.889131-1-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>
+In-Reply-To: <s5hh8gzj05i.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 02, 2018 at 04:18:21PM +0100, Arnd Bergmann wrote:
-> gcc notices that without either the ac97 bus or the pdata, we never
-> initialize the regmap pointer, which leads to an uninitialized variable
-> access:
-> 
-> sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
-> sound/soc/codecs/wm9712.c:666:2: error: 'regmap' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> 
-> Since that configuration is invalid, it's better to return an error
-> here. I tried to avoid adding complexity to the conditions, and turned
-> the #ifdef into a regular if(IS_ENABLED()) check for readability.
-> This in turn requires moving some header file declarations out of
-> an #ifdef.
-> 
-> The same code is used in three drivers, all of which I'm changing
-> the same way.
-> 
-> Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+T24gRnJpLCBOb3YgMDIsIDIwMTggYXQgMTA6MzE6MzdBTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFRodSwgMDEgTm92IDIwMTggMTY6MjQ6MzYgKzAxMDAsCj4gVmlsbGUgU3lyasOk
+bMOkIHdyb3RlOgo+ID4gCj4gPiBPbiBXZWQsIE9jdCAyNCwgMjAxOCBhdCAwNjo0ODoyNFBNICsw
+MzAwLCBWaWxsZSBTeXJqYWxhIHdyb3RlOgo+ID4gPiBGcm9tOiBWaWxsZSBTeXJqw6Rsw6QgPHZp
+bGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPgo+ID4gPiAKPiA+ID4gQ29tbWl0IDQ2ZTgzMWFi
+ZTg2NCAoImRybS9pOTE1L2xwZTogTWFyayBMUEUgYXVkaW8gcnVudGltZSBwbSBhcwo+ID4gPiAi
+bm8gY2FsbGJhY2tzIiIpIGJyb2tlIHJ1bnRpbWUgUE0gd2l0aCBscGUgYXVkaW8uIFdlIGNhbiBu
+byBsb25nZXIKPiA+ID4gcnVudGltZSBzdXNwZW5kIHRoZSBHUFUgc2luY2UgdGhlIHN5c2ZzICBw
+b3dlci9jb250cm9sIGZvciB0aGUKPiA+ID4gbHBlLWF1ZGlvIGRldmljZSBubyBsb25nZXIgZXhp
+c3RzIGFuZCB0aGUgZGV2aWNlIGlzIGNvbnNpZGVyZWQKPiA+ID4gYWx3YXlzIGFjdGl2ZS4gV2Ug
+Y2FuIGZpeCB0aGlzIGJ5IG5vdCBtYXJraW5nIHRoZSBkZXZpY2UgYXMKPiA+ID4gYWN0aXZlLgo+
+ID4gPiAKPiA+ID4gQ2M6IENocmlzIFdpbHNvbiA8Y2hyaXNAY2hyaXMtd2lsc29uLmNvLnVrPgo+
+ID4gPiBDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+ID4gPiBDYzogUGllcnJlLUxv
+dWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPiA+ID4g
+Rml4ZXM6IDQ2ZTgzMWFiZTg2NCAoImRybS9pOTE1L2xwZTogTWFyayBMUEUgYXVkaW8gcnVudGlt
+ZSBwbSBhcyAibm8gY2FsbGJhY2tzIiIpCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFZpbGxlIFN5cmrD
+pGzDpCA8dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+Cj4gPiAKPiA+IFRha2FzaGksIGRv
+IHlvdSB3YW50IHRvIHRha2UgdGhlc2Ugb3Igc2hvdWxkIEkganVzdCBzbWFzaCB0aGVtCj4gPiBp
+bnRvIGRybS1pbnRlbD8KPiAKPiBGZWVsIGZyZWUgdG8gZ28gdGhyb3VnaCBkcm0taW50ZWwuCj4g
+ICBBY2tlZC1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgoKVGhhbmtzLiBTZXJpZXMg
+cHVzaGVkLgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdm
+eEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9pbnRlbC1nZngK
