@@ -1,15 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] [v2] ASoC: wm97xx: fix uninitialized regmap
-	pointer problem
-Date: Fri,  2 Nov 2018 16:18:21 +0100
-Message-ID: <20181102151922.889131-1-arnd@arndb.de>
+Subject: [PATCH] ASoC: sunxi: rename SND_SUN8I_ADDA_PR_REGMAP
+Date: Fri,  2 Nov 2018 16:33:40 +0100
+Message-ID: <20181102153406.1528053-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
- by alsa0.perex.cz (Postfix) with ESMTP id E918926796C
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 16:19:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EC7826796C
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 16:34:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,174 +18,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Vasily Khoruzhick <anarsoul@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-gcc notices that without either the ac97 bus or the pdata, we never
-initialize the regmap pointer, which leads to an uninitialized variable
-access:
+The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
+symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
+SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
+into link errors for some configurations:
 
-sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
-sound/soc/codecs/wm9712.c:666:2: error: 'regmap' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+sound/soc/sunxi/sun50i-codec-analog.o: In function `sun50i_codec_analog_probe':
+sun50i-codec-analog.c:(.text+0x62): undefined reference to `sun8i_adda_pr_regmap_init'
 
-Since that configuration is invalid, it's better to return an error
-here. I tried to avoid adding complexity to the conditions, and turned
-the #ifdef into a regular if(IS_ENABLED()) check for readability.
-This in turn requires moving some header file declarations out of
-an #ifdef.
+The new name appears to be more sensible, and as the symbol is hidden,
+there are no downsides in the rename, so use that consistently now.
 
-The same code is used in three drivers, all of which I'm changing
-the same way.
-
-Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: fix a missing check that Charles pointed out
----
- include/sound/soc.h       |  2 +-
- sound/soc/codecs/wm9705.c | 10 ++++------
- sound/soc/codecs/wm9712.c | 10 ++++------
- sound/soc/codecs/wm9713.c | 10 ++++------
- 4 files changed, 13 insertions(+), 19 deletions(-)
+ sound/soc/sunxi/Kconfig  | 4 ++--
+ sound/soc/sunxi/Makefile | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 70c10a8f3e90..3e0ac310a3df 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -553,12 +553,12 @@ static inline void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
- }
- #endif
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 66aad0d3f9c7..0f992bdf1a10 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -23,7 +23,7 @@ config SND_SUN8I_CODEC
+ config SND_SUN8I_CODEC_ANALOG
+ 	tristate "Allwinner sun8i Codec Analog Controls Support"
+ 	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+-	select SND_SUN8I_ADDA_PR_REGMAP
++	select SND_SUNXI_ADDA_PR_REGMAP
+ 	help
+ 	  Say Y or M if you want to add support for the analog controls for
+ 	  the codec embedded in newer Allwinner SoCs.
+@@ -54,7 +54,7 @@ config SND_SUN4I_SPDIF
+ 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
+ 	  A10 and affiliated SoCs.
  
--#ifdef CONFIG_SND_SOC_AC97_BUS
- struct snd_ac97 *snd_soc_alloc_ac97_component(struct snd_soc_component *component);
- struct snd_ac97 *snd_soc_new_ac97_component(struct snd_soc_component *component,
- 	unsigned int id, unsigned int id_mask);
- void snd_soc_free_ac97_component(struct snd_ac97 *ac97);
+-config SND_SUN8I_ADDA_PR_REGMAP
++config SND_SUNXI_ADDA_PR_REGMAP
+ 	tristate
+ 	select REGMAP
  
-+#ifdef CONFIG_SND_SOC_AC97_BUS
- int snd_soc_set_ac97_ops(struct snd_ac97_bus_ops *ops);
- int snd_soc_set_ac97_ops_of_reset(struct snd_ac97_bus_ops *ops,
- 		struct platform_device *pdev);
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index ccdf088461b7..54c306707c02 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -325,8 +325,7 @@ static int wm9705_soc_probe(struct snd_soc_component *component)
- 	if (wm9705->mfd_pdata) {
- 		wm9705->ac97 = wm9705->mfd_pdata->ac97;
- 		regmap = wm9705->mfd_pdata->regmap;
--	} else {
--#ifdef CONFIG_SND_SOC_AC97_BUS
-+	} else if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS)) {
- 		wm9705->ac97 = snd_soc_new_ac97_component(component, WM9705_VENDOR_ID,
- 						      WM9705_VENDOR_ID_MASK);
- 		if (IS_ERR(wm9705->ac97)) {
-@@ -339,7 +338,8 @@ static int wm9705_soc_probe(struct snd_soc_component *component)
- 			snd_soc_free_ac97_component(wm9705->ac97);
- 			return PTR_ERR(regmap);
- 		}
--#endif
-+	} else {
-+		return -ENXIO;
- 	}
- 
- 	snd_soc_component_set_drvdata(component, wm9705->ac97);
-@@ -350,14 +350,12 @@ static int wm9705_soc_probe(struct snd_soc_component *component)
- 
- static void wm9705_soc_remove(struct snd_soc_component *component)
- {
--#ifdef CONFIG_SND_SOC_AC97_BUS
- 	struct wm9705_priv *wm9705 = snd_soc_component_get_drvdata(component);
- 
--	if (!wm9705->mfd_pdata) {
-+	if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS) && !wm9705->mfd_pdata) {
- 		snd_soc_component_exit_regmap(component);
- 		snd_soc_free_ac97_component(wm9705->ac97);
- 	}
--#endif
- }
- 
- static const struct snd_soc_component_driver soc_component_dev_wm9705 = {
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index e873baa9e778..01949eaba4fd 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -642,8 +642,7 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
- 	if (wm9712->mfd_pdata) {
- 		wm9712->ac97 = wm9712->mfd_pdata->ac97;
- 		regmap = wm9712->mfd_pdata->regmap;
--	} else {
--#ifdef CONFIG_SND_SOC_AC97_BUS
-+	} else if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS)) {
- 		int ret;
- 
- 		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
-@@ -660,7 +659,8 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
- 			snd_soc_free_ac97_component(wm9712->ac97);
- 			return PTR_ERR(regmap);
- 		}
--#endif
-+	} else {
-+		return -ENXIO;
- 	}
- 
- 	snd_soc_component_init_regmap(component, regmap);
-@@ -673,14 +673,12 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
- 
- static void wm9712_soc_remove(struct snd_soc_component *component)
- {
--#ifdef CONFIG_SND_SOC_AC97_BUS
- 	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
- 
--	if (!wm9712->mfd_pdata) {
-+	if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS) && !wm9712->mfd_pdata) {
- 		snd_soc_component_exit_regmap(component);
- 		snd_soc_free_ac97_component(wm9712->ac97);
- 	}
--#endif
- }
- 
- static const struct snd_soc_component_driver soc_component_dev_wm9712 = {
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 643863bb32e0..5a2fdf4f69bf 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1214,8 +1214,7 @@ static int wm9713_soc_probe(struct snd_soc_component *component)
- 	if (wm9713->mfd_pdata) {
- 		wm9713->ac97 = wm9713->mfd_pdata->ac97;
- 		regmap = wm9713->mfd_pdata->regmap;
--	} else {
--#ifdef CONFIG_SND_SOC_AC97_BUS
-+	} else if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS)) {
- 		wm9713->ac97 = snd_soc_new_ac97_component(component, WM9713_VENDOR_ID,
- 						      WM9713_VENDOR_ID_MASK);
- 		if (IS_ERR(wm9713->ac97))
-@@ -1225,7 +1224,8 @@ static int wm9713_soc_probe(struct snd_soc_component *component)
- 			snd_soc_free_ac97_component(wm9713->ac97);
- 			return PTR_ERR(regmap);
- 		}
--#endif
-+	} else {
-+		return -ENXIO;
- 	}
- 
- 	snd_soc_component_init_regmap(component, regmap);
-@@ -1238,14 +1238,12 @@ static int wm9713_soc_probe(struct snd_soc_component *component)
- 
- static void wm9713_soc_remove(struct snd_soc_component *component)
- {
--#ifdef CONFIG_SND_SOC_AC97_BUS
- 	struct wm9713_priv *wm9713 = snd_soc_component_get_drvdata(component);
- 
--	if (!wm9713->mfd_pdata) {
-+	if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS) && !wm9713->mfd_pdata) {
- 		snd_soc_component_exit_regmap(component);
- 		snd_soc_free_ac97_component(wm9713->ac97);
- 	}
--#endif
- }
- 
- static const struct snd_soc_component_driver soc_component_dev_wm9713 = {
+diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+index a86be340a076..c4dd2803a011 100644
+--- a/sound/soc/sunxi/Makefile
++++ b/sound/soc/sunxi/Makefile
+@@ -5,4 +5,4 @@ obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
+ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
+ obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
+ obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
+-obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
++obj-$(CONFIG_SND_SUNXI_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
 -- 
 2.18.0
