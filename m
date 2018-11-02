@@ -1,63 +1,37 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: skl: always select SND_SOC_HDAC_HDA
-Date: Fri, 2 Nov 2018 23:03:23 +0100
-Message-ID: <CAK8P3a1FCVTuB+ydE6syMHYPWnUW0WTCFDuyMmm35VNnpTTGBw@mail.gmail.com>
-References: <20181102112456.780127-1-arnd@arndb.de>
- <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
+Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUN8I_ADDA_PR_REGMAP
+Date: Fri, 2 Nov 2018 23:04:28 +0100
+Message-ID: <CAK8P3a3A-mq2HLZjp7-5miL2Pk71=FqP5QKUxxda_y5ywCa7TA@mail.gmail.com>
+References: <20181102153406.1528053-1-arnd@arndb.de> <13542843.KjxkD9786N@anarsoul-thinkpad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-f194.google.com (mail-qk1-f194.google.com
- [209.85.222.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 892C7267692
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 23:03:25 +0100 (CET)
-Received: by mail-qk1-f194.google.com with SMTP id y16so4250134qki.7
- for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2018 15:03:25 -0700 (PDT)
-In-Reply-To: <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Guneshwor Singh <guneshwor.o.singh@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Naveen Manohar <naveen.m@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <13542843.KjxkD9786N@anarsoul-thinkpad>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/2/18, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
->
-> On 11/2/18 6:24 AM, Arnd Bergmann wrote:
->> The skylake sound support is written to work both with or without
->> CONFIG_SND_SOC_HDAC_HDA, and uses an #ifdef to decide whether it should
->> link against that. However, this fails with SND_SOC_ALL_CODECS=m or
->> SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=m when the Skylake support itself
->> is built-in, with this link error:
+On 11/2/18, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> On Friday, November 2, 2018 8:33:40 AM PDT Arnd Bergmann wrote:
+>> The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
+>> symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
+>> SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
+>> into link errors for some configurations:
 >>
->> sound/soc/intel/skylake/skl.o: In function `skl_probe':
->> skl.c:(.text+0x56c): undefined reference to `snd_soc_hdac_hda_get_ops'
+>> sound/soc/sunxi/sun50i-codec-analog.o: In function
+>> `sun50i_codec_analog_probe': sun50i-codec-analog.c:(.text+0x62):
+>> undefined
+>> reference to `sun8i_adda_pr_regmap_init'
 >>
->> Using an explicit 'select' here simplifies the logic and prevents
->> it from happening, at the cost of always including the compile
->> time dependency.
+>> The new name appears to be more sensible, and as the symbol is hidden,
+>> there are no downsides in the rename, so use that consistently now.
 >
-> Thanks Arnd for the report. I don't quite agree with the proposal, this
-> should be similar to HDAC_HDMI which is not selected by default, and
-> there's no reason to force the support for HDAudio when the vast
-> majority of Skylake+ devices which enable this driver don't have any
-> HDaudio codec.
+> Maxime asked it to be SND_SUN8I_ADDA_PR_REGMAP, and also it would be easier
+> to
+> fix it my renaming last remaining SND_SUNXI_ADDA_PR_REGMAP to
+> SND_SUN8I_ADDA_PR_REGMAP.
 
-Sure, feel free to treat this patch as a bug report and come up with
-a better fix.
-
-> Also the code is skl.c is already conditional, so this function should
-> not be required.
->
-> Do you have a config that fails, I'd like to look at this further.
-
-https://pastebin.com/4iYPGxkU is what first triggered this.
+Sure, I don't care either way. Please send a patch to do that then.
 
       Arnd
