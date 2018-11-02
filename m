@@ -1,29 +1,41 @@
-From: lshua312 <lshua312@163.com>
+From: sh liu <liush.damon@gmail.com>
 Subject: [PATCH] ASoC: wm8996: fix small typo
-Date: Fri, 2 Nov 2018 09:08:15 +0800 (CST)
-Message-ID: <284f0219.46f3.166d1f6abb3.Coremail.lshua312@163.com>
+Date: Fri, 2 Nov 2018 09:30:06 +0800
+Message-ID: <CADnCVLz__D9n+UpFLChVcZkjmFZxKZacCCgufRx8y0_03OGgSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GBK
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
 Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbSBlOWI5MjM2OTA2NzVjYThmYTg4M2ZkMjVkY2VhZDViNDU3ODU2NzM1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBsaXVzaCA8bGl1c2hAYWxsd2lubmVydGVjaC5jb20+CkRhdGU6
-IEZyaSwgMiBOb3YgMjAxOCAwODo1NzowMCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFTb0M6IHdt
-ODk5NjogZml4IHNtYWxsIHR5cG8KCmF0bGVhc3QgLT4gYXQgbGVhc3QKCkNoYW5nZS1JZDogSWNj
-OTcwYjQzODE2NmRhZWYxMzUxOGI3ZDFhNjJiMTNlYjg3NTJmNWYKU2lnbmVkLW9mZi1ieTogbGl1
-c2ggPGxpdXNoQGFsbHdpbm5lcnRlY2guY29tPgotLS0KIHNvdW5kL3NvYy9jb2RlY3Mvd204OTk2
-LmMgfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODk5Ni5jIGIvc291bmQvc29jL2NvZGVj
-cy93bTg5OTYuYwppbmRleCA4YWZmYTQ5Li5kMDM5ODM1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mv
-Y29kZWNzL3dtODk5Ni5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTk2LmMKQEAgLTIxMDks
-NyArMjEwOSw3IEBAIHN0YXRpYyBpbnQgd204OTk2X3NldF9mbGwoc3RydWN0IHNuZF9zb2NfY29k
-ZWMgKmNvZGVjLCBpbnQgZmxsX2lkLCBpbnQgc291cmNlLAogCWlmIChpMmMtPmlycSkKIAkJdGlt
-ZW91dCAqPSAxMDsKIAllbHNlCi0JCS8qIGVuc3VyZSB0aW1lb3V0IG9mIGF0bGVhc3QgMSBqaWZm
-aWVzICovCisJCS8qIGVuc3VyZSB0aW1lb3V0IG9mIGF0IGxlYXN0IDEgamlmZmllcyAqLwogCQl0
-aW1lb3V0ID0gdGltZW91dC8yID8gOiAxOwogCiAJZm9yIChyZXRyeSA9IDA7IHJldHJ5IDwgMTA7
-IHJldHJ5KyspIHsKLS0gCjEuOS4x
+>From e9b923690675ca8fa883fd25dcead5b457856735 Mon Sep 17 00:00:00 2001
+From: liush <liush@allwinnertech.com>
+Date: Fri, 2 Nov 2018 08:57:00 +0800
+Subject: [PATCH] ASoC: wm8996: fix small typo
+
+atleast -> at least
+
+Change-Id: Icc970b438166daef13518b7d1a62b13eb8752f5f
+Signed-off-by: liush <liush@allwinnertech.com>
+---
+ sound/soc/codecs/wm8996.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 8affa49..d039835 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2109,7 +2109,7 @@ static int wm8996_set_fll(struct snd_soc_codec
+*codec, int fll_id, int source,
+  if (i2c->irq)
+  timeout *= 10;
+  else
+- /* ensure timeout of atleast 1 jiffies */
++ /* ensure timeout of at least 1 jiffies */
+  timeout = timeout/2 ? : 1;
+
+  for (retry = 0; retry < 10; retry++) {
+-- 
+1.9.1
