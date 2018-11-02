@@ -1,17 +1,20 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] ALSA: usb-audio: Define registers for CM6206
-Date: Fri,  2 Nov 2018 22:11:33 +0100
-Message-ID: <20181102211133.6479-1-linus.walleij@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: skl: always select SND_SOC_HDAC_HDA
+Date: Fri, 2 Nov 2018 23:03:23 +0100
+Message-ID: <CAK8P3a1FCVTuB+ydE6syMHYPWnUW0WTCFDuyMmm35VNnpTTGBw@mail.gmail.com>
+References: <20181102112456.780127-1-arnd@arndb.de>
+ <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-f66.google.com (mail-lf1-f66.google.com
- [209.85.167.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A6818267692
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 22:11:44 +0100 (CET)
-Received: by mail-lf1-f66.google.com with SMTP id p86so2255965lfg.5
- for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2018 14:11:44 -0700 (PDT)
+Received: from mail-qk1-f194.google.com (mail-qk1-f194.google.com
+ [209.85.222.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 892C7267692
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 23:03:25 +0100 (CET)
+Received: by mail-qk1-f194.google.com with SMTP id y16so4250134qki.7
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2018 15:03:25 -0700 (PDT)
+In-Reply-To: <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,171 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Guneshwor Singh <guneshwor.o.singh@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Naveen Manohar <naveen.m@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The register map for CM6206 is known and we can define what
-the values written to the different registers actually mean.
+On 11/2/18, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
+>
+> On 11/2/18 6:24 AM, Arnd Bergmann wrote:
+>> The skylake sound support is written to work both with or without
+>> CONFIG_SND_SOC_HDAC_HDA, and uses an #ifdef to decide whether it should
+>> link against that. However, this fails with SND_SOC_ALL_CODECS=m or
+>> SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=m when the Skylake support itself
+>> is built-in, with this link error:
+>>
+>> sound/soc/intel/skylake/skl.o: In function `skl_probe':
+>> skl.c:(.text+0x56c): undefined reference to `snd_soc_hdac_hda_get_ops'
+>>
+>> Using an explicit 'select' here simplifies the logic and prevents
+>> it from happening, at the cost of always including the compile
+>> time dependency.
+>
+> Thanks Arnd for the report. I don't quite agree with the proposal, this
+> should be similar to HDAC_HDMI which is not selected by default, and
+> there's no reason to force the support for HDAudio when the vast
+> majority of Skylake+ devices which enable this driver don't have any
+> HDaudio codec.
 
-I tested to print the hex values before/after this change,
-there is no functional change.
+Sure, feel free to treat this patch as a bug report and come up with
+a better fix.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/usb/quirks.c | 129 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 124 insertions(+), 5 deletions(-)
+> Also the code is skl.c is already conditional, so this function should
+> not be required.
+>
+> Do you have a config that fails, I'd like to look at this further.
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 8a945ece9869..3d0f09108c98 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -19,6 +19,7 @@
- #include <linux/usb.h>
- #include <linux/usb/audio.h>
- #include <linux/usb/midi.h>
-+#include <linux/bits.h>
- 
- #include <sound/control.h>
- #include <sound/core.h>
-@@ -668,15 +669,133 @@ static int snd_usb_cm106_boot_quirk(struct usb_device *dev)
- }
- 
- /*
-- * C-Media CM6206 is based on CM106 with two additional
-- * registers that are not documented in the data sheet.
-- * Values here are chosen based on sniffing USB traffic
-- * under Windows.
-+ * CM6206 registers from the CM6206 datasheet rev 2.1
-  */
-+#define CM6206_REG0_DMA_MASTER BIT(15)
-+#define CM6206_REG0_SPDIFO_RATE_48K (2 << 12)
-+#define CM6206_REG0_SPDIFO_RATE_96K (7 << 12)
-+/* Bit 4 thru 11 is the S/PDIF category code */
-+#define CM6206_REG0_SPDIFO_CAT_CODE_GENERAL (0 << 4)
-+#define CM6206_REG0_SPDIFO_EMPHASIS_CD BIT(3)
-+#define CM6206_REG0_SPDIFO_COPYRIGHT_NA BIT(2)
-+#define CM6206_REG0_SPDIFO_NON_AUDIO BIT(1)
-+#define CM6206_REG0_SPDIFO_PRO_FORMAT BIT(0)
-+
-+#define CM6206_REG1_TEST_SEL_CLK BIT(14)
-+#define CM6206_REG1_PLLBIN_EN BIT(13)
-+#define CM6206_REG1_SOFT_MUTE_EN BIT(12)
-+#define CM6206_REG1_GPIO4_OUT BIT(11)
-+#define CM6206_REG1_GPIO4_OE BIT(10)
-+#define CM6206_REG1_GPIO3_OUT BIT(9)
-+#define CM6206_REG1_GPIO3_OE BIT(8)
-+#define CM6206_REG1_GPIO2_OUT BIT(7)
-+#define CM6206_REG1_GPIO2_OE BIT(6)
-+#define CM6206_REG1_GPIO1_OUT BIT(5)
-+#define CM6206_REG1_GPIO1_OE BIT(4)
-+#define CM6206_REG1_SPDIFO_INVALID BIT(3)
-+#define CM6206_REG1_SPDIF_LOOP_EN BIT(2)
-+#define CM6206_REG1_SPDIFO_DIS BIT(1)
-+#define CM6206_REG1_SPDIFI_MIX BIT(0)
-+
-+#define CM6206_REG2_DRIVER_ON BIT(15)
-+#define CM6206_REG2_HEADP_SEL_SIDE_CHANNELS (0 << 13)
-+#define CM6206_REG2_HEADP_SEL_SURROUND_CHANNELS (1 << 13)
-+#define CM6206_REG2_HEADP_SEL_CENTER_SUBW (2 << 13)
-+#define CM6206_REG2_HEADP_SEL_FRONT_CHANNELS (3 << 13)
-+#define CM6206_REG2_MUTE_HEADPHONE_RIGHT BIT(12)
-+#define CM6206_REG2_MUTE_HEADPHONE_LEFT BIT(11)
-+#define CM6206_REG2_MUTE_REAR_SURROUND_RIGHT BIT(10)
-+#define CM6206_REG2_MUTE_REAR_SURROUND_LEFT BIT(9)
-+#define CM6206_REG2_MUTE_SIDE_SURROUND_RIGHT BIT(8)
-+#define CM6206_REG2_MUTE_SIDE_SURROUND_LEFT BIT(7)
-+#define CM6206_REG2_MUTE_SUBWOOFER BIT(6)
-+#define CM6206_REG2_MUTE_CENTER BIT(5)
-+#define CM6206_REG2_MUTE_RIGHT_FRONT BIT(3)
-+#define CM6206_REG2_MUTE_LEFT_FRONT BIT(3)
-+#define CM6206_REG2_EN_BTL BIT(2)
-+#define CM6206_REG2_MCUCLKSEL_1_5_MHZ (0)
-+#define CM6206_REG2_MCUCLKSEL_3_MHZ (1)
-+#define CM6206_REG2_MCUCLKSEL_6_MHZ (2)
-+#define CM6206_REG2_MCUCLKSEL_12_MHZ (3)
-+
-+/* Bit 11..13 sets the sensitivity to FLY tuner volume control VP/VD signal */
-+#define CM6206_REG3_FLYSPEED_DEFAULT (2 << 11)
-+#define CM6206_REG3_VRAP25EN BIT(10)
-+#define CM6206_REG3_MSEL1 BIT(9)
-+#define CM6206_REG3_SPDIFI_RATE_44_1K BIT(0 << 7)
-+#define CM6206_REG3_SPDIFI_RATE_48K BIT(2 << 7)
-+#define CM6206_REG3_SPDIFI_RATE_32K BIT(3 << 7)
-+#define CM6206_REG3_PINSEL BIT(6)
-+#define CM6206_REG3_FOE BIT(5)
-+#define CM6206_REG3_ROE BIT(4)
-+#define CM6206_REG3_CBOE BIT(3)
-+#define CM6206_REG3_LOSE BIT(2)
-+#define CM6206_REG3_HPOE BIT(1)
-+#define CM6206_REG3_SPDIFI_CANREC BIT(0)
-+
-+#define CM6206_REG5_DA_RSTN BIT(13)
-+#define CM6206_REG5_AD_RSTN BIT(12)
-+#define CM6206_REG5_SPDIFO_AD2SPDO BIT(12)
-+#define CM6206_REG5_SPDIFO_SEL_FRONT (0 << 9)
-+#define CM6206_REG5_SPDIFO_SEL_SIDE_SUR (1 << 9)
-+#define CM6206_REG5_SPDIFO_SEL_CEN_LFE (2 << 9)
-+#define CM6206_REG5_SPDIFO_SEL_REAR_SUR (3 << 9)
-+#define CM6206_REG5_CODECM BIT(8)
-+#define CM6206_REG5_EN_HPF BIT(7)
-+#define CM6206_REG5_T_SEL_DSDA4 BIT(6)
-+#define CM6206_REG5_T_SEL_DSDA3 BIT(5)
-+#define CM6206_REG5_T_SEL_DSDA2 BIT(4)
-+#define CM6206_REG5_T_SEL_DSDA1 BIT(3)
-+#define CM6206_REG5_T_SEL_DSDAD_NORMAL 0
-+#define CM6206_REG5_T_SEL_DSDAD_FRONT 4
-+#define CM6206_REG5_T_SEL_DSDAD_S_SURROUND 5
-+#define CM6206_REG5_T_SEL_DSDAD_CEN_LFE 6
-+#define CM6206_REG5_T_SEL_DSDAD_R_SURROUND 7
-+
- static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
- {
- 	int err  = 0, reg;
--	int val[] = {0x2004, 0x3000, 0xf800, 0x143f, 0x0000, 0x3000};
-+	int val[] = {
-+		/*
-+		 * Values here are chosen based on sniffing USB traffic
-+		 * under Windows.
-+		 *
-+		 * REG0: DAC is master, sample rate 48kHz, no copyright
-+		 */
-+		CM6206_REG0_SPDIFO_RATE_48K |
-+		CM6206_REG0_SPDIFO_COPYRIGHT_NA,
-+		/*
-+		 * REG1: PLL binary search enable, soft mute enable.
-+		 */
-+		CM6206_REG1_PLLBIN_EN |
-+		CM6206_REG1_SOFT_MUTE_EN |
-+		/*
-+		 * REG2: enable output drivers,
-+		 * select front channels to the headphone output,
-+		 * then mute the headphone channels, run the MCU
-+		 * at 1.5 MHz.
-+		 */
-+		CM6206_REG2_DRIVER_ON |
-+		CM6206_REG2_HEADP_SEL_FRONT_CHANNELS |
-+		CM6206_REG2_MUTE_HEADPHONE_RIGHT |
-+		CM6206_REG2_MUTE_HEADPHONE_LEFT,
-+		/*
-+		 * REG3: default flyspeed, set 2.5V mic bias
-+		 * enable all line out ports and enable SPDIF
-+		 */
-+		CM6206_REG3_FLYSPEED_DEFAULT |
-+		CM6206_REG3_VRAP25EN |
-+		CM6206_REG3_FOE |
-+		CM6206_REG3_ROE |
-+		CM6206_REG3_CBOE |
-+		CM6206_REG3_LOSE |
-+		CM6206_REG3_HPOE |
-+		CM6206_REG3_SPDIFI_CANREC,
-+		/* REG4 is just a bunch of GPIO lines */
-+		0x0000,
-+		/* REG5: de-assert AD/DA reset signals */
-+		CM6206_REG5_DA_RSTN |
-+		CM6206_REG5_AD_RSTN };
- 
- 	for (reg = 0; reg < ARRAY_SIZE(val); reg++) {
- 		err = snd_usb_cm106_write_int_reg(dev, reg, val[reg]);
--- 
-2.19.1
+https://pastebin.com/4iYPGxkU is what first triggered this.
+
+      Arnd
