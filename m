@@ -1,71 +1,54 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUN8I_ADDA_PR_REGMAP
-Date: Fri, 02 Nov 2018 09:00:36 -0700
-Message-ID: <13542843.KjxkD9786N@anarsoul-thinkpad>
-References: <20181102153406.1528053-1-arnd@arndb.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] [v2] ASoC: wm97xx: fix uninitialized
+ regmap pointer problem
+Date: Fri, 2 Nov 2018 16:01:39 +0000
+Message-ID: <20181102160139.GQ16508@imbe.wolfsonmicro.main>
+References: <20181102151922.889131-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181102153406.1528053-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBCCD2678F7
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 17:01:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20181102151922.889131-1-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, November 2, 2018 8:33:40 AM PDT Arnd Bergmann wrote:
-> The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
-> symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
-> SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
-> into link errors for some configurations:
+On Fri, Nov 02, 2018 at 04:18:21PM +0100, Arnd Bergmann wrote:
+> gcc notices that without either the ac97 bus or the pdata, we never
+> initialize the regmap pointer, which leads to an uninitialized variable
+> access:
 > 
-> sound/soc/sunxi/sun50i-codec-analog.o: In function
-> `sun50i_codec_analog_probe': sun50i-codec-analog.c:(.text+0x62): undefined
-> reference to `sun8i_adda_pr_regmap_init'
+> sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
+> sound/soc/codecs/wm9712.c:666:2: error: 'regmap' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 > 
-> The new name appears to be more sensible, and as the symbol is hidden,
-> there are no downsides in the rename, so use that consistently now.
-
-Maxime asked it to be SND_SUN8I_ADDA_PR_REGMAP, and also it would be easier to 
-fix it my renaming last remaining SND_SUNXI_ADDA_PR_REGMAP to 
-SND_SUN8I_ADDA_PR_REGMAP.
-
-> Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's
-> analog path controls") Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Since that configuration is invalid, it's better to return an error
+> here. I tried to avoid adding complexity to the conditions, and turned
+> the #ifdef into a regular if(IS_ENABLED()) check for readability.
+> This in turn requires moving some header file declarations out of
+> an #ifdef.
+> 
+> The same code is used in three drivers, all of which I'm changing
+> the same way.
+> 
+> Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  sound/soc/sunxi/Kconfig  | 4 ++--
->  sound/soc/sunxi/Makefile | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index 66aad0d3f9c7..0f992bdf1a10 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -23,7 +23,7 @@ config SND_SUN8I_CODEC
->  config SND_SUN8I_CODEC_ANALOG
->  	tristate "Allwinner sun8i Codec Analog Controls Support"
->  	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> -	select SND_SUN8I_ADDA_PR_REGMAP
-> +	select SND_SUNXI_ADDA_PR_REGMAP
->  	help
->  	  Say Y or M if you want to add support for the analog controls for
->  	  the codec embedded in newer Allwinner SoCs.
-> @@ -54,7 +54,7 @@ config SND_SUN4I_SPDIF
->  	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
->  	  A10 and affiliated SoCs.
-> 
-> -config SND_SUN8I_ADDA_PR_REGMAP
-> +config SND_SUNXI_ADDA_PR_REGMAP
->  	tristate
->  	select REGMAP
-> 
-> diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-> index a86be340a076..c4dd2803a011 100644
-> --- a/sound/soc/sunxi/Makefile
-> +++ b/sound/soc/sunxi/Makefile
-> @@ -5,4 +5,4 @@ obj-$(CONFIG_SND_SUN4I_SPDIF) += sun4i-spdif.o
->  obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
->  obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
->  obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
-> -obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
-> +obj-$(CONFIG_SND_SUNXI_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
+
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
