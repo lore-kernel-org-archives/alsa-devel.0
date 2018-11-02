@@ -1,46 +1,85 @@
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 2/3] ALSA: hda: fix front speakers on Huawei MBXP.
-Date: Fri, 2 Nov 2018 20:07:10 +0200
-Message-ID: <CAHp75VfOxX-hULNyV0BzMW9VKnh7nReXW7kNfauXORSqp_CQUA@mail.gmail.com>
-References: <20181102041120.7603-1-ayman.bagabas@gmail.com> <20181102041120.7603-3-ayman.bagabas@gmail.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
+Date: Fri, 2 Nov 2018 20:12:44 +0200
+Message-ID: <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
+References: <20181102041120.7603-1-ayman.bagabas@gmail.com> <20181102041120.7603-4-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181102041120.7603-3-ayman.bagabas@gmail.com>
+In-Reply-To: <20181102041120.7603-4-ayman.bagabas@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Ayman Bagabas <ayman.bagabas@gmail.com>
 Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, kailang@realtek.com, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 2, 2018 at 6:11 AM Ayman Bagabas <ayman.bagabas@gmail.com> wrote:
+On Fri, Nov 2, 2018 at 6:12 AM Ayman Bagabas <ayman.bagabas@gmail.com> wrote:
 >
-> This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
-> https://bugzilla.kernel.org/show_bug.cgi?id=200501
-> It enables the front speakers on Huawei Matebook X Pro laptops.
-> These laptops come with Dolby Atmos sound system and these pins
-> configuration enables the front speakers.
+> Some of Huawei laptops come with a LED in the mic mute key. This patch
+> enables and disable this LED accordingly.
 
-> +       [ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
-> +               .type = HDA_FIXUP_PINS,
-> +               .v.pins = (const struct hda_pintbl[]) {
-> +                       {0x12, 0x90a60130},
-> +                       {0x13, 0x40000000},
-> +                       {0x14, 0x90170110},
-> +                       {0x18, 0x411111f0},
-> +                       {0x19, 0x04a11040},
-> +                       {0x1a, 0x411111f0},
-> +                       {0x1b, 0x90170112},
-> +                       {0x1d, 0x40759a05},
-> +                       {0x1e, 0x411111f0},
-> +                       {0x21, 0x04211020},
+> --- a/drivers/platform/x86/huawei_wmi.c
+> +++ b/drivers/platform/x86/huawei_wmi.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/input/sparse-keymap.h>
+>  #include <linux/acpi.h>
+>  #include <linux/wmi.h>
+> +#include <linux/huawei_wmi.h>
 
+Keep it in order and put under
+include/linux/platform_data/x86/
+folder.
 
-> +                       { },
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __HUAWEI_WMI_H__
+> +#define __HUAWEI_WMI_H__
+> +
+> +int huawei_wmi_micmute_led_set(bool on);
+> +
+> +#endif
 
-Terminators better w/o comma.
+This has to cover !HUAWEI_LAPTOP case.
 
-> +               },
-> +       },
+> +/* Helper functions for Huawei WMI Mic Mute LED;
+> + * to be included from codec driver
+> + */
+
+Comment style.
+
+> +#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
+
+See above
+
+> +static int (*huawei_wmi_micmute_led_set_func)(bool);
+
+Why is that?
+
+> +       if (action == HDA_FIXUP_ACT_PROBE) {
+> +               if (!huawei_wmi_micmute_led_set_func)
+> +                       huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
+> +               if (!huawei_wmi_micmute_led_set_func) {
+> +                       codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
+> +                       return;
+> +               }
+> +               removefunc = (huawei_wmi_micmute_led_set_func(false) < 0)
+> +                       || (snd_hda_gen_add_micmute_led(codec, update_huawei_wmi_micmute_led) < 0);
+> +
+> +       }
+> +
+> +       if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+> +               symbol_put(huawei_wmi_micmute_led_set);
+> +               huawei_wmi_micmute_led_set_func = NULL;
+> +       }
+> +}
+
+Takashi, is it a way how the rest sound drivers are written? B/c this
+symbol_request(s) look to me a bit ugly.
+
+> +/* for alc_fixup_huawei_micmute_led */
+> +#include "huawei_wmi_helper.c"
+
+Ditto.
+
+Include *.c?! Huh?
 
 -- 
 With Best Regards,
