@@ -1,15 +1,16 @@
 From: Jenny TC <jenny.tc@intel.com>
-Subject: [PATCH v2 0/1] Introduce dmic mode switch delay
-	parameter
-Date: Fri,  2 Nov 2018 13:00:46 +0530
-Message-ID: <1541143847-30450-1-git-send-email-jenny.tc@intel.com>
+Subject: [PATCH] ASoC: dmic: Introduce mode switch delay
+Date: Fri,  2 Nov 2018 13:00:47 +0530
+Message-ID: <1541143847-30450-2-git-send-email-jenny.tc@intel.com>
+References: <1541143847-30450-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 138742677E4
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 08:30:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E84762677E4
+ for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 08:31:00 +0100 (CET)
+In-Reply-To: <1541143847-30450-1-git-send-email-jenny.tc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +24,78 @@ To: alsa-devel@alsa-project.org
 Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some DMICs need clock to be running for a specified duration as per the
-DMIC spec to complete the mode transition like sleep to normal, off to normal
-etc.
+Some DMICs require a delay as defined in the DMIC data sheet to complete
+DMIC mode transitions. DMIC may enter a bad state if the clock is stopped
+before successful mode transition. To handle this, a delay is introduced
+in the STOP STREAM to ensure the clock is running for the mode switch delay
+duration. A module parameter is introduced to pass the delay as a module
+parameter.
 
-v1: First patch set
-v2: 
-1). Removed ACPI device entry since a) The DMIC vendor doesn't have an ACPI vendor
-ID b) The ACPI enumeration creates one more device and conflicts with the existing
-skl.c dmic platform device registration.
-2). Updated commit message
-
-
-Jenny TC (1):
-  ASoC: dmic: Introduce mode switch delay
-
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+---
  sound/soc/codecs/dmic.c | 31 +++++++++++++++++++++++++++++++
  1 file changed, 31 insertions(+)
 
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 8c4926d..0527bc2 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -30,9 +30,35 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ 
++static int modeswitch_delay_ms;
++module_param(modeswitch_delay_ms, uint, 0644);
++
+ struct dmic {
+ 	struct gpio_desc *gpio_en;
+ 	int wakeup_delay;
++	/* Delay after DMIC mode switch */
++	int modeswitch_delay_ms;
++};
++
++int dmic_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct dmic *dmic = snd_soc_component_get_drvdata(component);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_STOP:
++		if (dmic->modeswitch_delay_ms)
++			mdelay(dmic->modeswitch_delay_ms);
++
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops dmic_dai_ops = {
++	.trigger	= dmic_daiops_trigger,
+ };
+ 
+ static int dmic_aif_event(struct snd_soc_dapm_widget *w,
+@@ -68,6 +94,7 @@ static int dmic_aif_event(struct snd_soc_dapm_widget *w,
+ 			| SNDRV_PCM_FMTBIT_S24_LE
+ 			| SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
++	.ops    = &dmic_dai_ops,
+ };
+ 
+ static int dmic_component_probe(struct snd_soc_component *component)
+@@ -85,6 +112,10 @@ static int dmic_component_probe(struct snd_soc_component *component)
+ 
+ 	device_property_read_u32(component->dev, "wakeup-delay-ms",
+ 				 &dmic->wakeup_delay);
++	device_property_read_u32(component->dev, "modeswitch_delay_ms",
++				 &dmic->modeswitch_delay_ms);
++	if (modeswitch_delay_ms)
++		dmic->modeswitch_delay_ms  = modeswitch_delay_ms;
+ 
+ 	snd_soc_component_set_drvdata(component, dmic);
+ 
 -- 
 1.9.1
