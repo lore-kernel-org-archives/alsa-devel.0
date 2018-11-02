@@ -1,37 +1,43 @@
-From: Arnd Bergmann <arnd@arndb.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
 Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUN8I_ADDA_PR_REGMAP
-Date: Fri, 2 Nov 2018 23:04:28 +0100
-Message-ID: <CAK8P3a3A-mq2HLZjp7-5miL2Pk71=FqP5QKUxxda_y5ywCa7TA@mail.gmail.com>
+Date: Fri, 2 Nov 2018 15:06:59 -0700
+Message-ID: <CA+E=qVfnkH-e6hoHA1eZ7rCJvJH02zgBSF=y30R6AEGwLpssXA@mail.gmail.com>
 References: <20181102153406.1528053-1-arnd@arndb.de> <13542843.KjxkD9786N@anarsoul-thinkpad>
+ <CAK8P3a3A-mq2HLZjp7-5miL2Pk71=FqP5QKUxxda_y5ywCa7TA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <13542843.KjxkD9786N@anarsoul-thinkpad>
+In-Reply-To: <CAK8P3a3A-mq2HLZjp7-5miL2Pk71=FqP5QKUxxda_y5ywCa7TA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Linux-ALSA <alsa-devel@alsa-project.org>, arm-linux <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/2/18, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
-> On Friday, November 2, 2018 8:33:40 AM PDT Arnd Bergmann wrote:
->> The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
->> symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
->> SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
->> into link errors for some configurations:
->>
->> sound/soc/sunxi/sun50i-codec-analog.o: In function
->> `sun50i_codec_analog_probe': sun50i-codec-analog.c:(.text+0x62):
->> undefined
->> reference to `sun8i_adda_pr_regmap_init'
->>
->> The new name appears to be more sensible, and as the symbol is hidden,
->> there are no downsides in the rename, so use that consistently now.
+On Fri, Nov 2, 2018 at 3:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Maxime asked it to be SND_SUN8I_ADDA_PR_REGMAP, and also it would be easier
-> to
-> fix it my renaming last remaining SND_SUNXI_ADDA_PR_REGMAP to
-> SND_SUN8I_ADDA_PR_REGMAP.
+> On 11/2/18, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> > On Friday, November 2, 2018 8:33:40 AM PDT Arnd Bergmann wrote:
+> >> The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
+> >> symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
+> >> SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
+> >> into link errors for some configurations:
+> >>
+> >> sound/soc/sunxi/sun50i-codec-analog.o: In function
+> >> `sun50i_codec_analog_probe': sun50i-codec-analog.c:(.text+0x62):
+> >> undefined
+> >> reference to `sun8i_adda_pr_regmap_init'
+> >>
+> >> The new name appears to be more sensible, and as the symbol is hidden,
+> >> there are no downsides in the rename, so use that consistently now.
+> >
+> > Maxime asked it to be SND_SUN8I_ADDA_PR_REGMAP, and also it would be easier
+> > to
+> > fix it my renaming last remaining SND_SUNXI_ADDA_PR_REGMAP to
+> > SND_SUN8I_ADDA_PR_REGMAP.
+>
+> Sure, I don't care either way. Please send a patch to do that then.
 
-Sure, I don't care either way. Please send a patch to do that then.
+Will do tonight.
 
-      Arnd
+>
+>       Arnd
