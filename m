@@ -1,86 +1,30 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: skl: always select SND_SOC_HDAC_HDA
-Date: Fri, 2 Nov 2018 09:56:52 -0500
-Message-ID: <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
-References: <20181102112456.780127-1-arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: wm97xx: fix uninitialized regmap pointer problem
+Date: Fri, 2 Nov 2018 16:15:48 +0100
+Message-ID: <CAK8P3a0Mb3k8FAVdRWyiEwjCV4re1-LEvxG-NQXLfhEHts1ZDA@mail.gmail.com>
+References: <20181102112341.753642-1-arnd@arndb.de> <20181102143817.GP16508@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 706812675BA
- for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2018 15:56:55 +0100 (CET)
-In-Reply-To: <20181102112456.780127-1-arnd@arndb.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Naveen Manohar <naveen.m@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181102143817.GP16508@imbe.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
+On 11/2/18, Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
+> On Fri, Nov 02, 2018 at 12:23:08PM +0100, Arnd Bergmann wrote:
 
-On 11/2/18 6:24 AM, Arnd Bergmann wrote:
-> The skylake sound support is written to work both with or without
-> CONFIG_SND_SOC_HDAC_HDA, and uses an #ifdef to decide whether it should
-> link against that. However, this fails with SND_SOC_ALL_CODECS=m or
-> SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=m when the Skylake support itself
-> is built-in, with this link error:
+>>  static void wm9713_soc_remove(struct snd_soc_component *component)
+>>  {
+>> -#ifdef CONFIG_SND_SOC_AC97_BUS
+>>  	struct wm9713_priv *wm9713 = snd_soc_component_get_drvdata(component);
+>>
+>> -	if (!wm9713->mfd_pdata) {
+>> +	if (IS_ENABLED(CONFIG_SND_SOC_AC97_BUS)) {
 >
-> sound/soc/intel/skylake/skl.o: In function `skl_probe':
-> skl.c:(.text+0x56c): undefined reference to `snd_soc_hdac_hda_get_ops'
->
-> Using an explicit 'select' here simplifies the logic and prevents
-> it from happening, at the cost of always including the compile
-> time dependency.
+> Should this one not also have an && !wm9713->mfd_pdata?
 
-Thanks Arnd for the report. I don't quite agree with the proposal, this 
-should be similar to HDAC_HDMI which is not selected by default, and 
-there's no reason to force the support for HDAudio when the vast 
-majority of Skylake+ devices which enable this driver don't have any 
-HDaudio codec.
+Right, good catch!. I'll send a fixed version in a bit.
 
-Also the code is skl.c is already conditional, so this function should 
-not be required.
-
-Do you have a config that fails, I'd like to look at this further.
-
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   sound/soc/intel/Kconfig       | 1 +
->   sound/soc/intel/skylake/skl.c | 2 --
->   2 files changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 0caa1f4eb94d..c21ce7624af1 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -109,6 +109,7 @@ config SND_SOC_INTEL_SKYLAKE
->   	depends on PCI && ACPI
->   	select SND_HDA_EXT_CORE
->   	select SND_HDA_DSP_LOADER
-> +	select SND_SOC_HDAC_HDA
->   	select SND_SOC_TOPOLOGY
->   	select SND_SOC_INTEL_SST
->   	select SND_SOC_ACPI_INTEL_MATCH
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index 29225623b4b4..1069ee265ce5 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -870,9 +870,7 @@ static int skl_create(struct pci_dev *pci,
->   	hbus = skl_to_hbus(skl);
->   	bus = skl_to_bus(skl);
->   
-> -#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDA)
->   	ext_ops = snd_soc_hdac_hda_get_ops();
-> -#endif
->   	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, ext_ops);
->   	bus->use_posbuf = 1;
->   	skl->pci = pci;
+       Arnd
