@@ -1,107 +1,57 @@
-From: ayman.bagabas@gmail.com
-Subject: Re: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
-Date: Fri, 02 Nov 2018 19:21:07 -0400
-Message-ID: <33dce911f9544c53a7989430a1ce848444cf4e3b.camel@gmail.com>
-References: <20181102041120.7603-1-ayman.bagabas@gmail.com>
-         <20181102041120.7603-4-ayman.bagabas@gmail.com>
-         <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH] ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP
+	to SND_SUN8I_ADDA_PR_REGMAP
+Date: Fri,  2 Nov 2018 21:26:51 -0700
+Message-ID: <20181103042651.6641-1-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, kailang@realtek.com, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 540672678F7
+ for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2018 05:27:24 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id k13so1807837pga.8
+ for <alsa-devel@alsa-project.org>; Fri, 02 Nov 2018 21:27:23 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2018-11-02 at 20:12 +0200, Andy Shevchenko wrote:
-> On Fri, Nov 2, 2018 at 6:12 AM Ayman Bagabas <ayman.bagabas@gmail.com
-> > wrote:
-> > 
-> > Some of Huawei laptops come with a LED in the mic mute key. This
-> > patch
-> > enables and disable this LED accordingly.
-> > --- a/drivers/platform/x86/huawei_wmi.c
-> > +++ b/drivers/platform/x86/huawei_wmi.c
-> > @@ -26,6 +26,7 @@
-> >  #include <linux/input/sparse-keymap.h>
-> >  #include <linux/acpi.h>
-> >  #include <linux/wmi.h>
-> > +#include <linux/huawei_wmi.h>
-> 
-> Keep it in order and put under
-> include/linux/platform_data/x86/
-> folder.
-> 
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef __HUAWEI_WMI_H__
-> > +#define __HUAWEI_WMI_H__
-> > +
-> > +int huawei_wmi_micmute_led_set(bool on);
-> > +
-> > +#endif
-> 
-> This has to cover !HUAWEI_LAPTOP case.
-> 
-> > +/* Helper functions for Huawei WMI Mic Mute LED;
-> > + * to be included from codec driver
-> > + */
-> 
-> Comment style.
+SND_SUN50I_CODEC_ANALOG selects SND_SUNXI_ADDA_PR_REGMAP which is leftover
+of renaming SND_SUNXI_ADDA_PR_REGMAP to SND_SUN8I_ADDA_PR_REGMAP. Replace
+it with SND_SUN8I_ADDA_PR_REGMAP to fix possible link errors for some
+configurations:
 
-/* Helper functions for Huawei WMI micmute led;
- * to be included from codec driver
- */
+sound/soc/sunxi/sun50i-codec-analog.o: In function `sun50i_codec_analog_probe':
+sun50i-codec-analog.c:(.text+0x62): undefined reference to `sun8i_adda_pr_regmap_init'
 
-> 
-> > +#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
-> 
-> See above
-> 
-> > +static int (*huawei_wmi_micmute_led_set_func)(bool);
-> 
-> Why is that?
+Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ sound/soc/sunxi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is used with symbol_request and then in the update function to
-locate the function from the wmi device. But I guess you are right, we
-could use the function defined in the header file directly.
-
-> 
-> > +       if (action == HDA_FIXUP_ACT_PROBE) {
-> > +               if (!huawei_wmi_micmute_led_set_func)
-> > +                       huawei_wmi_micmute_led_set_func =
-> > symbol_request(huawei_wmi_micmute_led_set);
-> > +               if (!huawei_wmi_micmute_led_set_func) {
-> > +                       codec_warn(codec, "Failed to find
-> > huawei_wmi symbol huawei_wmi_micmute_led_set\n");
-> > +                       return;
-> > +               }
-> > +               removefunc =
-> > (huawei_wmi_micmute_led_set_func(false) < 0)
-> > +                       || (snd_hda_gen_add_micmute_led(codec,
-> > update_huawei_wmi_micmute_led) < 0);
-> > +
-> > +       }
-> > +
-> > +       if (huawei_wmi_micmute_led_set_func && (action ==
-> > HDA_FIXUP_ACT_FREE || removefunc)) {
-> > +               symbol_put(huawei_wmi_micmute_led_set);
-> > +               huawei_wmi_micmute_led_set_func = NULL;
-> > +       }
-> > +}
-> 
-> Takashi, is it a way how the rest sound drivers are written? B/c this
-> symbol_request(s) look to me a bit ugly.
-> 
-> > +/* for alc_fixup_huawei_micmute_led */
-> > +#include "huawei_wmi_helper.c"
-> 
-> Ditto.
-> 
-> Include *.c?! Huh?
-
-Is that the wrong way? Should I define the functions directly into
-patch_realtek.c?
-
-> 
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 66aad0d3f9c7..8134c3c94229 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -31,7 +31,7 @@ config SND_SUN8I_CODEC_ANALOG
+ config SND_SUN50I_CODEC_ANALOG
+ 	tristate "Allwinner sun50i Codec Analog Controls Support"
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+-	select SND_SUNXI_ADDA_PR_REGMAP
++	select SND_SUN8I_ADDA_PR_REGMAP
+ 	help
+ 	  Say Y or M if you want to add support for the analog controls for
+ 	  the codec embedded in Allwinner A64 SoC.
+-- 
+2.19.1
