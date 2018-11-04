@@ -1,82 +1,36 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [GIT PULL] Additional firmware files for CA0132 HD-audio codec
-Date: Sun, 4 Nov 2018 01:00:35 -0400
-Message-ID: <CAM8Agx1VK3QNV52RmiSsrD8042oFRKZg-w6WFa7SPfebVa4hQQ@mail.gmail.com>
-References: <20181010174923.GA29921@connor-Z97X-Gaming-7> <s5hmur3pzg2.wl-tiwai@suse.de>
- <CA+5PVA5xQvz+NftESMLUNY=5vR+A1x76sL64eXCR-KPqi6G+gg@mail.gmail.com> <CAM8Agx38RCN5xUPwV-YP0JyMtxNj9tveou4fHCDK1zyvE0a+Tg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Yangtao Li <tiny.windzz@gmail.com>
+Subject: [PATCH] SoC: nau8825: remove unnecessary unlikely()
+Date: Sun,  4 Nov 2018 07:55:29 -0500
+Message-ID: <20181104125529.3681-1-tiny.windzz@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAM8Agx38RCN5xUPwV-YP0JyMtxNj9tveou4fHCDK1zyvE0a+Tg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: jwboyer@kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, linux-firmware@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, KCHSU0@nuvoton.com, gustavo@embeddedor.com, abhijeet.kumar@intel.com, kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Yangtao Li <tiny.windzz@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, just got a response from the guy at Creative. He said they'll
-try to sort it out this week. Just a heads up. :)
-On Wed, Oct 24, 2018 at 12:22 PM Connor McAdams <conmanx360@gmail.com> wrote:
->
-> Understood. I will see what I can do. I already had them contact
-> Takashi, but I will ask if they're willing to give a sign-off. If
-> they're having trouble, is it okay to have them contact you Josh?
->
-> Let me know.
-> On Wed, Oct 24, 2018 at 9:44 AM Josh Boyer <jwboyer@kernel.org> wrote:
-> >
-> > On Wed, Oct 24, 2018 at 3:37 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Wed, 10 Oct 2018 19:49:23 +0200,
-> > > Connor McAdams wrote:
-> > > >
-> > > > The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
-> > > >
-> > > >   Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
-> > > >
-> > > > are available in the git repository at:
-> > > >
-> > > >   git@github.com:Conmanx360/linux-firmware.git
-> > > >
-> > > > for you to fetch changes up to cd8899323352e772c5989230f35b1c494e0ab196:
-> > > >
-> > > >   linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec (2018-10-09 14:41:12 -0400)
-> > > >
-> > > > ----------------------------------------------------------------
-> > > > These are additional firmware files for CA0132 based sound cards.
-> > > >
-> > > > Creative has given me permission through email to send these to the
-> > > > linux-firmware repository under the same license as the previous ca0132
-> > > > firmware. I asked my contact if they would sign-off on it, but they said
-> > > > to go ahead and submit it and that if there was any issue to contact
-> > > > them.
-> > > >
-> > > > If you need to contact them, or if there's more info needed, let me know
-> > > > and I can get see what I can do.
-> >
-> > I'd really like to see a Sign-off from someone at Creative.  It's not
-> > that I don't trust your word that they agreed to it, but we have
-> > nothing to go back and verify they actually agreed to allow this to be
-> > redistributable, etc.
-> >
-> > josh
-> >
-> > > > ----------------------------------------------------------------
-> > > > Connor McAdams (1):
-> > > >       linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec
-> > > >
-> > > >  WHENCE            |   2 ++
-> > > >  ctefx-desktop.bin | Bin 0 -> 655856 bytes
-> > > >  ctefx-r3di.bin    | Bin 0 -> 655816 bytes
-> > > >  3 files changed, 2 insertions(+)
-> > > >  create mode 100644 ctefx-desktop.bin
-> > > >  create mode 100644 ctefx-r3di.bin
-> > >
-> > > Please can anyone take a look at this pull request?
-> > >
-> > > It's mandatory for the CA0132-based cards that are now supported
-> > > better in the upstream kernel tree.
-> > >
-> > >
-> > > Thanks!
-> > >
-> > > Takashi
+WARN_ON() already contains an unlikely(), so it's not necessary to use
+unlikely.
+
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+---
+ sound/soc/codecs/nau8825.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index b9fed99d8b5e..7bbcbf5f05c8 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -424,10 +424,8 @@ static u32 nau8825_xtalk_sidetone(u32 sig_org, u32 sig_cros)
+ {
+ 	u32 gain, sidetone;
+ 
+-	if (unlikely(sig_org == 0) || unlikely(sig_cros == 0)) {
+-		WARN_ON(1);
++	if (WARN_ON(sig_org == 0 || sig_cros == 0))
+ 		return 0;
+-	}
+ 
+ 	sig_org = nau8825_intlog10_dec3(sig_org);
+ 	sig_cros = nau8825_intlog10_dec3(sig_cros);
+-- 
+2.17.0
