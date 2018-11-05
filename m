@@ -1,49 +1,53 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
-Date: Mon, 5 Nov 2018 16:46:59 +0200
-Message-ID: <CAHp75VfFbv8Xu8TZ3O7QPxrNiBN6admdUSUzOG9KZXYYZJzjyA@mail.gmail.com>
-References: <20181102041120.7603-1-ayman.bagabas@gmail.com>
- <20181102041120.7603-4-ayman.bagabas@gmail.com> <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
- <33dce911f9544c53a7989430a1ce848444cf4e3b.camel@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: skl: always select SND_SOC_HDAC_HDA
+Date: Mon, 5 Nov 2018 16:07:50 +0100
+Message-ID: <CAK8P3a0kdUtK_UuSJEPiWPxhdDULmW6RYEzu-Ug7f8VBoeWVog@mail.gmail.com>
+References: <20181102112456.780127-1-arnd@arndb.de> <943d10e2-299c-4393-f2f5-4ac8bbe400c3@linux.intel.com>
+ <CAK8P3a1FCVTuB+ydE6syMHYPWnUW0WTCFDuyMmm35VNnpTTGBw@mail.gmail.com>
+ <adc83eaa-b7c0-2c76-a434-f1d5872337f6@linux.intel.com> <20181105133545.GF10650@smile.fi.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <33dce911f9544c53a7989430a1ce848444cf4e3b.camel@gmail.com>
+In-Reply-To: <20181105133545.GF10650@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ayman Bagabas <ayman.bagabas@gmail.com>
-Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Guneshwor Singh <guneshwor.o.singh@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Naveen Manohar <naveen.m@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 3, 2018 at 1:21 AM <ayman.bagabas@gmail.com> wrote:
-> On Fri, 2018-11-02 at 20:12 +0200, Andy Shevchenko wrote:
-> > On Fri, Nov 2, 2018 at 6:12 AM Ayman Bagabas <ayman.bagabas@gmail.com
-> > > wrote:
-
-Takashi explained me, that is the way sound driver are using the
-external symbols, so, follow his suggestion.
-
-> > > +static int (*huawei_wmi_micmute_led_set_func)(bool);
-> >
-> > Why is that?
+On 11/5/18, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> On Sun, Nov 04, 2018 at 10:45:17AM -0600, Pierre-Louis Bossart wrote:
 >
-> This is used with symbol_request and then in the update function to
-> locate the function from the wmi device. But I guess you are right, we
-> could use the function defined in the header file directly.
-
-> > Takashi, is it a way how the rest sound drivers are written? B/c this
-> > symbol_request(s) look to me a bit ugly.
-> >
-> > > +/* for alc_fixup_huawei_micmute_led */
-> > > +#include "huawei_wmi_helper.c"
-> >
-> > Ditto.
-> >
-> > Include *.c?! Huh?
+>> So yes indeed we have to add a select HDAC_HDA statement under the
+>> SKYLAKE
+>> config - i just don't know of any other means to say "don't build
+>> HDAC_HDA
+>> as a module when SKYLAKE is buit-in"
 >
-> Is that the wrong way? Should I define the functions directly into
-> patch_realtek.c?
+> We have this ("strange") lines over the drivers:
+>
+> config BAR
+> depends on FOO || FOO=n
+>
+> which guarantees that FOO will be not module when BAR is built-in.
 
+That's what I normally use, but I could not figure this one out.
+One problem is that SND_SOC_ALL_CODECS selects
+SND_SOC_HDAC_HDA, and SND_SOC_ALL_CODECS itself
+may be =m, causing the failure for
+SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=y.
 
--- 
-With Best Regards,
-Andy Shevchenko
+It might work with a separate dummy symbol:
+
+config SND_SOC_HDAC_HDA_FORCE
+         tristate
+         depends on SND_SOC_ALL_CODECS != n
+         default SND_SOC_INTEL_SKYLAKE
+         select SND_SOC_HDAC_HDA
+
+This would make SND_SOC_HDAC_HDA built-in even
+with SND_SOC_ALL_CODECS=m and
+SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH=n
+
+It seems a bit ugly, and would need some testing.
+
+       Arnd
