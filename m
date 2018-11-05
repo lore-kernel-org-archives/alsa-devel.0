@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: cleanup hw_constraint for
-	LEFT_J/I2S" to the asoc tree
-Date: Mon,  5 Nov 2018 11:58:01 +0000 (GMT)
-Message-ID: <20181105115801.9BACE1124D98@debutante.sirena.org.uk>
-References: <87h8h3sxt4.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only
+	16bit format is supported" to the asoc tree
+Date: Mon,  5 Nov 2018 11:58:12 +0000 (GMT)
+Message-ID: <20181105115812.756121124D98@debutante.sirena.org.uk>
+References: <20181025134824.16527-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BA7F2678DD
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:02 +0100 (CET)
-In-Reply-To: <87h8h3sxt4.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D2A24267A64
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:13 +0100 (CET)
+In-Reply-To: <20181025134824.16527-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: cleanup hw_constraint for LEFT_J/I2S
+   ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only 16bit format is supported
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 0900d1e64815b3b8d4d04197aa135e77317176e1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 30 Oct 2018 07:31:40 +0000
-Subject: [PATCH] ASoC: pcm3168a: cleanup hw_constraint for LEFT_J/I2S
+>From 61f18dc78a6b70c409134d0f4d873e9253565e05 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 25 Oct 2018 16:48:24 +0300
+Subject: [PATCH] ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only 16bit format is
+ supported
 
-hw constraint for LEFT_J/I2S are same, but had duplicated code.
-This code cleanup these.
+For samples sizes of 20/24/32 bit the DRR2/DXR2 registers must be used to
+receive or transmit the most significant part of the 32bit sample.
+We can not trick the system by using the DRR2/DXR2 register offset and use
+32bit element size since these (and other McBSP) registers are 16bit ones.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+We would need support for port_window in cyclic mode from the sDMA driver,
+but it is not straight forward as we would need to have the sDMA frame to
+cover the 32bit (DRR2+DRR1/DXR2+DXR1), but the frames must cover the ALSA
+period to be able to receive periodic interrupts.
+
+Since the 32bit samples are not working (DMA timeout), just remove it in
+case we have McBSP with reg_size of 2.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/omap/omap-mcbsp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 52cc950c9fd1..5f4327f5b725 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -504,6 +504,10 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 	unsigned int fmt;
- 	unsigned int sample_min;
- 	unsigned int channel_max;
-+	unsigned int channel_maxs[] = {
-+		6, /* rx */
-+		8  /* tx */
-+	};
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index d0ebb6b9bfac..caa24c463b3e 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -862,6 +862,11 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
- 	if (tx)
- 		fmt = pcm3168a->dac_fmt;
-@@ -528,18 +532,9 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 		channel_max =  2;
- 		break;
- 	case PCM3168A_FMT_LEFT_J:
--		sample_min  = 24;
--		if (tx)
--			channel_max = 8;
--		else
--			channel_max = 6;
--		break;
- 	case PCM3168A_FMT_I2S:
- 		sample_min  = 24;
--		if (tx)
--			channel_max = 8;
--		else
--			channel_max = 6;
-+		channel_max = channel_maxs[tx];
- 		break;
- 	default:
- 		sample_min  = 24;
++	if (mcbsp->pdata->reg_size == 2) {
++		omap_mcbsp_dai.playback.formats = SNDRV_PCM_FMTBIT_S16_LE;
++		omap_mcbsp_dai.capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	}
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &omap_mcbsp_component,
+ 					      &omap_mcbsp_dai, 1);
 -- 
 2.19.0.rc2
