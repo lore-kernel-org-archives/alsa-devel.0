@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: remove unnecessary unlikely()"
-	to the asoc tree
-Date: Mon,  5 Nov 2018 11:58:53 +0000 (GMT)
-Message-ID: <20181105115853.81FF41124D98@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: mrfld: fix uninitialized
+	variable access" to the asoc tree
+Date: Mon,  5 Nov 2018 11:58:59 +0000 (GMT)
+Message-ID: <20181105115859.4BC171124D98@debutante.sirena.org.uk>
+References: <20181103212140.890081-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E84752678DA
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:53 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id C32B72679B0
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:59:00 +0100 (CET)
+In-Reply-To: <20181103212140.890081-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yangtao Li <tiny.windzz@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: remove unnecessary unlikely()
+   ASoC: Intel: mrfld: fix uninitialized variable access
 
 has been applied to the asoc tree at
 
@@ -52,35 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From 0b6277e6343e192aaa7d452ab933281eb0d420dc Mon Sep 17 00:00:00 2001
-From: Yangtao Li <tiny.windzz@gmail.com>
-Date: Sun, 4 Nov 2018 07:55:29 -0500
-Subject: [PATCH] ASoC: nau8825: remove unnecessary unlikely()
+>From 1539c7f23f256120f89f8b9ec53160790bce9ed2 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Sat, 3 Nov 2018 22:21:22 +0100
+Subject: [PATCH] ASoC: Intel: mrfld: fix uninitialized variable access
 
-WARN_ON() already contains an unlikely(), so it's not necessary to use
-unlikely.
+Randconfig testing revealed a very old bug, with gcc-8:
 
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+sound/soc/intel/atom/sst/sst_loader.c: In function 'sst_load_fw':
+sound/soc/intel/atom/sst/sst_loader.c:357:5: error: 'fw' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+  if (fw == NULL) {
+     ^
+sound/soc/intel/atom/sst/sst_loader.c:354:25: note: 'fw' was declared here
+  const struct firmware *fw;
+
+We must check the return code of request_firmware() before we look at the
+pointer result that may be uninitialized when the function fails.
+
+Fixes: 9012c9544eea ("ASoC: Intel: mrfld - Add DSP load and management")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_loader.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index b9fed99d8b5e..7bbcbf5f05c8 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -424,10 +424,8 @@ static u32 nau8825_xtalk_sidetone(u32 sig_org, u32 sig_cros)
- {
- 	u32 gain, sidetone;
+diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
+index 27413ebae956..b8c456753f01 100644
+--- a/sound/soc/intel/atom/sst/sst_loader.c
++++ b/sound/soc/intel/atom/sst/sst_loader.c
+@@ -354,14 +354,14 @@ static int sst_request_fw(struct intel_sst_drv *sst)
+ 	const struct firmware *fw;
  
--	if (unlikely(sig_org == 0) || unlikely(sig_cros == 0)) {
--		WARN_ON(1);
-+	if (WARN_ON(sig_org == 0 || sig_cros == 0))
- 		return 0;
+ 	retval = request_firmware(&fw, sst->firmware_name, sst->dev);
+-	if (fw == NULL) {
+-		dev_err(sst->dev, "fw is returning as null\n");
+-		return -EINVAL;
 -	}
- 
- 	sig_org = nau8825_intlog10_dec3(sig_org);
- 	sig_cros = nau8825_intlog10_dec3(sig_cros);
+ 	if (retval) {
+ 		dev_err(sst->dev, "request fw failed %d\n", retval);
+ 		return retval;
+ 	}
++	if (fw == NULL) {
++		dev_err(sst->dev, "fw is returning as null\n");
++		return -EINVAL;
++	}
+ 	mutex_lock(&sst->sst_lock);
+ 	retval = sst_cache_and_parse_fw(sst, fw);
+ 	mutex_unlock(&sst->sst_lock);
 -- 
 2.19.0.rc2
