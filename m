@@ -1,51 +1,49 @@
-From: Yangtao Li <tiny.windzz@gmail.com>
-Subject: [PATCH] ASoC: fsl_ssi: Change to use DEFINE_SHOW_ATTRIBUTE macro
-Date: Mon,  5 Nov 2018 09:37:30 -0500
-Message-ID: <20181105143730.6071-1-tiny.windzz@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda: add support for Huawei WMI MicMute LED
+Date: Mon, 5 Nov 2018 16:46:59 +0200
+Message-ID: <CAHp75VfFbv8Xu8TZ3O7QPxrNiBN6admdUSUzOG9KZXYYZJzjyA@mail.gmail.com>
+References: <20181102041120.7603-1-ayman.bagabas@gmail.com>
+ <20181102041120.7603-4-ayman.bagabas@gmail.com> <CAHp75VcA5M4XNVr94OALo3=AW3LbWU+Pz-KTRgodBtSP_K9-wA@mail.gmail.com>
+ <33dce911f9544c53a7989430a1ce848444cf4e3b.camel@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <33dce911f9544c53a7989430a1ce848444cf4e3b.camel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Yangtao Li <tiny.windzz@gmail.com>
+To: Ayman Bagabas <ayman.bagabas@gmail.com>
+Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On Sat, Nov 3, 2018 at 1:21 AM <ayman.bagabas@gmail.com> wrote:
+> On Fri, 2018-11-02 at 20:12 +0200, Andy Shevchenko wrote:
+> > On Fri, Nov 2, 2018 at 6:12 AM Ayman Bagabas <ayman.bagabas@gmail.com
+> > > wrote:
 
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
----
- sound/soc/fsl/fsl_ssi_dbg.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+Takashi explained me, that is the way sound driver are using the
+external symbols, so, follow his suggestion.
 
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 1255dfe19eef..6f6294149476 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -124,17 +124,7 @@ static int fsl_ssi_stats_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int fsl_ssi_stats_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, fsl_ssi_stats_show, inode->i_private);
--}
--
--static const struct file_operations fsl_ssi_stats_ops = {
--	.open = fsl_ssi_stats_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(fsl_ssi_stats);
- 
- int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev)
- {
-@@ -144,7 +134,7 @@ int fsl_ssi_debugfs_create(struct fsl_ssi_dbg *ssi_dbg, struct device *dev)
- 
- 	ssi_dbg->dbg_stats = debugfs_create_file("stats", 0444,
- 						 ssi_dbg->dbg_dir, ssi_dbg,
--						 &fsl_ssi_stats_ops);
-+						 &fsl_ssi_stats_fops);
- 	if (!ssi_dbg->dbg_stats) {
- 		debugfs_remove(ssi_dbg->dbg_dir);
- 		return -ENOMEM;
+> > > +static int (*huawei_wmi_micmute_led_set_func)(bool);
+> >
+> > Why is that?
+>
+> This is used with symbol_request and then in the update function to
+> locate the function from the wmi device. But I guess you are right, we
+> could use the function defined in the header file directly.
+
+> > Takashi, is it a way how the rest sound drivers are written? B/c this
+> > symbol_request(s) look to me a bit ugly.
+> >
+> > > +/* for alc_fixup_huawei_micmute_led */
+> > > +#include "huawei_wmi_helper.c"
+> >
+> > Ditto.
+> >
+> > Include *.c?! Huh?
+>
+> Is that the wrong way? Should I define the functions directly into
+> patch_realtek.c?
+
+
 -- 
-2.17.0
+With Best Regards,
+Andy Shevchenko
