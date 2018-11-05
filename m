@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: move .get_status under
-	rsnd_mod_ops" to the asoc tree
-Date: Mon,  5 Nov 2018 11:57:50 +0000 (GMT)
-Message-ID: <20181105115750.4FCCA1124D98@debutante.sirena.org.uk>
-References: <87efc7sx53.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pcm3168a: cleanup hw_constraint for
+	LEFT_J/I2S" to the asoc tree
+Date: Mon,  5 Nov 2018 11:58:01 +0000 (GMT)
+Message-ID: <20181105115801.9BACE1124D98@debutante.sirena.org.uk>
+References: <87h8h3sxt4.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EC9AF2679B0
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:57:50 +0100 (CET)
-In-Reply-To: <87efc7sx53.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BA7F2678DD
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:02 +0100 (CET)
+In-Reply-To: <87h8h3sxt4.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: move .get_status under rsnd_mod_ops
+   ASoC: pcm3168a: cleanup hw_constraint for LEFT_J/I2S
 
 has been applied to the asoc tree at
 
@@ -53,560 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 7e7fe06de376e9874f4399dac81d65ea9b0a9507 Mon Sep 17 00:00:00 2001
+>From 0900d1e64815b3b8d4d04197aa135e77317176e1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 30 Oct 2018 07:46:05 +0000
-Subject: [PATCH] ASoC: rsnd: move .get_status under rsnd_mod_ops
+Date: Tue, 30 Oct 2018 07:31:40 +0000
+Subject: [PATCH] ASoC: pcm3168a: cleanup hw_constraint for LEFT_J/I2S
 
-Each mod needs to have .get_status, but current driver is handling it
-under rsnd_mod, instead of rsnd_mod_ops.
-It is not any make sence. This patch moves it to rsnd_mod_ops, and
-tidyup its parameter order to align to other callback functions.
+hw constraint for LEFT_J/I2S are same, but had duplicated code.
+This code cleanup these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  |   2 +-
- sound/soc/sh/rcar/cmd.c  |  11 ++--
- sound/soc/sh/rcar/core.c |  10 +---
- sound/soc/sh/rcar/ctu.c  |   3 +-
- sound/soc/sh/rcar/dma.c  |  26 ++++----
- sound/soc/sh/rcar/dvc.c  |   3 +-
- sound/soc/sh/rcar/mix.c  |   3 +-
- sound/soc/sh/rcar/rsnd.h |  13 ++--
- sound/soc/sh/rcar/src.c  |  24 ++++----
- sound/soc/sh/rcar/ssi.c  | 124 ++++++++++++++++++++-------------------
- sound/soc/sh/rcar/ssiu.c |  37 ++++++------
- 11 files changed, 129 insertions(+), 127 deletions(-)
+ sound/soc/codecs/pcm3168a.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 28327dd2c6cb..6768a66588eb 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -613,7 +613,7 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 		return -ENOMEM;
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 52cc950c9fd1..5f4327f5b725 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -504,6 +504,10 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
+ 	unsigned int fmt;
+ 	unsigned int sample_min;
+ 	unsigned int channel_max;
++	unsigned int channel_maxs[] = {
++		6, /* rx */
++		8  /* tx */
++	};
  
- 	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
--		      NULL, NULL, 0, 0);
-+		      NULL, 0, 0);
- 	if (ret)
- 		return ret;
- 
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index cc191cd5fb82..e6bb6a9a0684 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -116,10 +116,11 @@ static int rsnd_cmd_stop(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_cmd_ops = {
--	.name	= CMD_NAME,
--	.init	= rsnd_cmd_init,
--	.start	= rsnd_cmd_start,
--	.stop	= rsnd_cmd_stop,
-+	.name		= CMD_NAME,
-+	.init		= rsnd_cmd_init,
-+	.start		= rsnd_cmd_start,
-+	.stop		= rsnd_cmd_stop,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- static struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id)
-@@ -162,7 +163,7 @@ int rsnd_cmd_probe(struct rsnd_priv *priv)
- 	for_each_rsnd_cmd(cmd, priv, i) {
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(cmd),
- 				    &rsnd_cmd_ops, NULL,
--				    rsnd_mod_get_status, RSND_MOD_CMD, i);
-+				    RSND_MOD_CMD, i);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f930f51b686f..5373eba5d572 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -137,8 +137,8 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
- 	return mod->ops->dma_req(io, mod);
- }
- 
--u32 *rsnd_mod_get_status(struct rsnd_dai_stream *io,
--			 struct rsnd_mod *mod,
-+u32 *rsnd_mod_get_status(struct rsnd_mod *mod,
-+			 struct rsnd_dai_stream *io,
- 			 enum rsnd_mod_type type)
- {
- 	return &mod->status;
-@@ -148,9 +148,6 @@ int rsnd_mod_init(struct rsnd_priv *priv,
- 		  struct rsnd_mod *mod,
- 		  struct rsnd_mod_ops *ops,
- 		  struct clk *clk,
--		  u32* (*get_status)(struct rsnd_dai_stream *io,
--				     struct rsnd_mod *mod,
--				     enum rsnd_mod_type type),
- 		  enum rsnd_mod_type type,
- 		  int id)
- {
-@@ -164,7 +161,6 @@ int rsnd_mod_init(struct rsnd_priv *priv,
- 	mod->type	= type;
- 	mod->clk	= clk;
- 	mod->priv	= priv;
--	mod->get_status	= get_status;
- 
- 	return ret;
- }
-@@ -472,7 +468,7 @@ static int rsnd_status_update(u32 *status,
- 	enum rsnd_mod_type *types = rsnd_mod_sequence[is_play];		\
- 	for_each_rsnd_mod_arrays(i, mod, io, types, RSND_MOD_MAX) {	\
- 		int tmp = 0;						\
--		u32 *status = mod->get_status(io, mod, types[i]);	\
-+		u32 *status = mod->ops->get_status(mod, io, types[i]);	\
- 		int func_call = rsnd_status_update(status,		\
- 						__rsnd_mod_shift_##fn,	\
- 						__rsnd_mod_add_##fn,	\
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index ad702377a6c3..28058474075b 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -341,6 +341,7 @@ static struct rsnd_mod_ops rsnd_ctu_ops = {
- 	.quit		= rsnd_ctu_quit,
- 	.hw_params	= rsnd_ctu_hw_params,
- 	.pcm_new	= rsnd_ctu_pcm_new,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id)
-@@ -404,7 +405,7 @@ int rsnd_ctu_probe(struct rsnd_priv *priv)
- 		}
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(ctu), &rsnd_ctu_ops,
--				    clk, rsnd_mod_get_status, RSND_MOD_CTU, i);
-+				    clk, RSND_MOD_CTU, i);
- 		if (ret) {
- 			of_node_put(np);
- 			goto rsnd_ctu_probe_done;
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 6d1947515dc8..e5c30eec1190 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -289,12 +289,13 @@ static int rsnd_dmaen_pointer(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_dmaen_ops = {
--	.name	= "audmac",
--	.prepare = rsnd_dmaen_prepare,
--	.cleanup = rsnd_dmaen_cleanup,
--	.start	= rsnd_dmaen_start,
--	.stop	= rsnd_dmaen_stop,
--	.pointer= rsnd_dmaen_pointer,
-+	.name		= "audmac",
-+	.prepare	= rsnd_dmaen_prepare,
-+	.cleanup	= rsnd_dmaen_cleanup,
-+	.start		= rsnd_dmaen_start,
-+	.stop		= rsnd_dmaen_stop,
-+	.pointer	= rsnd_dmaen_pointer,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- /*
-@@ -477,10 +478,11 @@ static int rsnd_dmapp_attach(struct rsnd_dai_stream *io,
- }
- 
- static struct rsnd_mod_ops rsnd_dmapp_ops = {
--	.name	= "audmac-pp",
--	.start	= rsnd_dmapp_start,
--	.stop	= rsnd_dmapp_stop,
--	.quit	= rsnd_dmapp_stop,
-+	.name		= "audmac-pp",
-+	.start		= rsnd_dmapp_start,
-+	.stop		= rsnd_dmapp_stop,
-+	.quit		= rsnd_dmapp_stop,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- /*
-@@ -756,7 +758,7 @@ static int rsnd_dma_alloc(struct rsnd_dai_stream *io, struct rsnd_mod *mod,
- 	*dma_mod = rsnd_mod_get(dma);
- 
- 	ret = rsnd_mod_init(priv, *dma_mod, ops, NULL,
--			    rsnd_mod_get_status, type, dma_id);
-+			    type, dma_id);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -823,5 +825,5 @@ int rsnd_dma_probe(struct rsnd_priv *priv)
- 	priv->dma = dmac;
- 
- 	/* dummy mem mod for debug */
--	return rsnd_mod_init(NULL, &mem, &mem_ops, NULL, NULL, 0, 0);
-+	return rsnd_mod_init(NULL, &mem, &mem_ops, NULL, 0, 0);
- }
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 2b16e0ce6bc5..d65f24bec991 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -306,6 +306,7 @@ static struct rsnd_mod_ops rsnd_dvc_ops = {
- 	.init		= rsnd_dvc_init,
- 	.quit		= rsnd_dvc_quit,
- 	.pcm_new	= rsnd_dvc_pcm_new,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- struct rsnd_mod *rsnd_dvc_mod_get(struct rsnd_priv *priv, int id)
-@@ -365,7 +366,7 @@ int rsnd_dvc_probe(struct rsnd_priv *priv)
- 		}
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(dvc), &rsnd_dvc_ops,
--				    clk, rsnd_mod_get_status, RSND_MOD_DVC, i);
-+				    clk, RSND_MOD_DVC, i);
- 		if (ret) {
- 			of_node_put(np);
- 			goto rsnd_dvc_probe_done;
-diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
-index 8e3b57eaa708..a3e0370f5704 100644
---- a/sound/soc/sh/rcar/mix.c
-+++ b/sound/soc/sh/rcar/mix.c
-@@ -256,6 +256,7 @@ static struct rsnd_mod_ops rsnd_mix_ops = {
- 	.init		= rsnd_mix_init,
- 	.quit		= rsnd_mix_quit,
- 	.pcm_new	= rsnd_mix_pcm_new,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- struct rsnd_mod *rsnd_mix_mod_get(struct rsnd_priv *priv, int id)
-@@ -315,7 +316,7 @@ int rsnd_mix_probe(struct rsnd_priv *priv)
- 		}
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(mix), &rsnd_mix_ops,
--				    clk, rsnd_mod_get_status, RSND_MOD_MIX, i);
-+				    clk, RSND_MOD_MIX, i);
- 		if (ret) {
- 			of_node_put(np);
- 			goto rsnd_mix_probe_done;
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 4464d1d0a042..d25fb5c14c2d 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -301,6 +301,9 @@ struct rsnd_mod_ops {
- 	int (*cleanup)(struct rsnd_mod *mod,
- 		       struct rsnd_dai_stream *io,
- 		       struct rsnd_priv *priv);
-+	u32 *(*get_status)(struct rsnd_mod *mod,
-+			   struct rsnd_dai_stream *io,
-+			   enum rsnd_mod_type type);
- };
- 
- struct rsnd_dai_stream;
-@@ -310,9 +313,6 @@ struct rsnd_mod {
- 	struct rsnd_mod_ops *ops;
- 	struct rsnd_priv *priv;
- 	struct clk *clk;
--	u32 *(*get_status)(struct rsnd_dai_stream *io,
--			   struct rsnd_mod *mod,
--			   enum rsnd_mod_type type);
- 	u32 status;
- };
- /*
-@@ -385,9 +385,6 @@ int rsnd_mod_init(struct rsnd_priv *priv,
- 		  struct rsnd_mod *mod,
- 		  struct rsnd_mod_ops *ops,
- 		  struct clk *clk,
--		  u32* (*get_status)(struct rsnd_dai_stream *io,
--				     struct rsnd_mod *mod,
--				     enum rsnd_mod_type type),
- 		  enum rsnd_mod_type type,
- 		  int id);
- void rsnd_mod_quit(struct rsnd_mod *mod);
-@@ -396,8 +393,8 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
- void rsnd_mod_interrupt(struct rsnd_mod *mod,
- 			void (*callback)(struct rsnd_mod *mod,
- 					 struct rsnd_dai_stream *io));
--u32 *rsnd_mod_get_status(struct rsnd_dai_stream *io,
--			 struct rsnd_mod *mod,
-+u32 *rsnd_mod_get_status(struct rsnd_mod *mod,
-+			 struct rsnd_dai_stream *io,
- 			 enum rsnd_mod_type type);
- struct rsnd_mod *rsnd_mod_next(int *iterator,
- 			       struct rsnd_dai_stream *io,
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index cd38a43b976f..7de7afd6a3a6 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -527,16 +527,17 @@ static int rsnd_src_pcm_new(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_src_ops = {
--	.name	= SRC_NAME,
--	.dma_req = rsnd_src_dma_req,
--	.probe	= rsnd_src_probe_,
--	.init	= rsnd_src_init,
--	.quit	= rsnd_src_quit,
--	.start	= rsnd_src_start,
--	.stop	= rsnd_src_stop,
--	.irq	= rsnd_src_irq,
--	.hw_params = rsnd_src_hw_params,
--	.pcm_new = rsnd_src_pcm_new,
-+	.name		= SRC_NAME,
-+	.dma_req	= rsnd_src_dma_req,
-+	.probe		= rsnd_src_probe_,
-+	.init		= rsnd_src_init,
-+	.quit		= rsnd_src_quit,
-+	.start		= rsnd_src_start,
-+	.stop		= rsnd_src_stop,
-+	.irq		= rsnd_src_irq,
-+	.hw_params	= rsnd_src_hw_params,
-+	.pcm_new	= rsnd_src_pcm_new,
-+	.get_status	= rsnd_mod_get_status,
- };
- 
- struct rsnd_mod *rsnd_src_mod_get(struct rsnd_priv *priv, int id)
-@@ -605,8 +606,7 @@ int rsnd_src_probe(struct rsnd_priv *priv)
- 		}
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(src),
--				    &rsnd_src_ops, clk, rsnd_mod_get_status,
--				    RSND_MOD_SRC, i);
-+				    &rsnd_src_ops, clk, RSND_MOD_SRC, i);
- 		if (ret) {
- 			of_node_put(np);
- 			goto rsnd_src_probe_done;
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index fcb4df23248c..cb66986ff776 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -681,6 +681,41 @@ static irqreturn_t rsnd_ssi_interrupt(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
-+static u32 *rsnd_ssi_get_status(struct rsnd_mod *mod,
-+				struct rsnd_dai_stream *io,
-+				enum rsnd_mod_type type)
-+{
-+	/*
-+	 * SSIP (= SSI parent) needs to be special, otherwise,
-+	 * 2nd SSI might doesn't start. see also rsnd_mod_call()
-+	 *
-+	 * We can't include parent SSI status on SSI, because we don't know
-+	 * how many SSI requests parent SSI. Thus, it is localed on "io" now.
-+	 * ex) trouble case
-+	 *	Playback: SSI0
-+	 *	Capture : SSI1 (needs SSI0)
-+	 *
-+	 * 1) start Capture  ->	SSI0/SSI1 are started.
-+	 * 2) start Playback ->	SSI0 doesn't work, because it is already
-+	 *			marked as "started" on 1)
-+	 *
-+	 * OTOH, using each mod's status is good for MUX case.
-+	 * It doesn't need to start in 2nd start
-+	 * ex)
-+	 *	IO-0: SRC0 -> CTU1 -+-> MUX -> DVC -> SSIU -> SSI0
-+	 *			    |
-+	 *	IO-1: SRC1 -> CTU2 -+
-+	 *
-+	 * 1) start IO-0 ->	start SSI0
-+	 * 2) start IO-1 ->	SSI0 doesn't need to start, because it is
-+	 *			already started on 1)
-+	 */
-+	if (type == RSND_MOD_SSIP)
-+		return &io->parent_ssi_status;
-+
-+	return rsnd_mod_get_status(mod, io, type);
-+}
-+
- /*
-  *		SSI PIO
-  */
-@@ -876,18 +911,19 @@ static int rsnd_ssi_prepare(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
--	.name	= SSI_NAME,
--	.probe	= rsnd_ssi_common_probe,
--	.remove	= rsnd_ssi_common_remove,
--	.init	= rsnd_ssi_pio_init,
--	.quit	= rsnd_ssi_quit,
--	.start	= rsnd_ssi_start,
--	.stop	= rsnd_ssi_stop,
--	.irq	= rsnd_ssi_irq,
--	.pointer = rsnd_ssi_pio_pointer,
--	.pcm_new = rsnd_ssi_pcm_new,
--	.hw_params = rsnd_ssi_hw_params,
--	.prepare = rsnd_ssi_prepare,
-+	.name		= SSI_NAME,
-+	.probe		= rsnd_ssi_common_probe,
-+	.remove		= rsnd_ssi_common_remove,
-+	.init		= rsnd_ssi_pio_init,
-+	.quit		= rsnd_ssi_quit,
-+	.start		= rsnd_ssi_start,
-+	.stop		= rsnd_ssi_stop,
-+	.irq		= rsnd_ssi_irq,
-+	.pointer	= rsnd_ssi_pio_pointer,
-+	.pcm_new	= rsnd_ssi_pcm_new,
-+	.hw_params	= rsnd_ssi_hw_params,
-+	.prepare	= rsnd_ssi_prepare,
-+	.get_status	= rsnd_ssi_get_status,
- };
- 
- static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
-@@ -951,19 +987,20 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
- }
- 
- static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
--	.name	= SSI_NAME,
--	.dma_req = rsnd_ssi_dma_req,
--	.probe	= rsnd_ssi_dma_probe,
--	.remove	= rsnd_ssi_common_remove,
--	.init	= rsnd_ssi_init,
--	.quit	= rsnd_ssi_quit,
--	.start	= rsnd_ssi_start,
--	.stop	= rsnd_ssi_stop,
--	.irq	= rsnd_ssi_irq,
--	.pcm_new = rsnd_ssi_pcm_new,
--	.fallback = rsnd_ssi_fallback,
--	.hw_params = rsnd_ssi_hw_params,
--	.prepare = rsnd_ssi_prepare,
-+	.name		= SSI_NAME,
-+	.dma_req	= rsnd_ssi_dma_req,
-+	.probe		= rsnd_ssi_dma_probe,
-+	.remove		= rsnd_ssi_common_remove,
-+	.init		= rsnd_ssi_init,
-+	.quit		= rsnd_ssi_quit,
-+	.start		= rsnd_ssi_start,
-+	.stop		= rsnd_ssi_stop,
-+	.irq		= rsnd_ssi_irq,
-+	.pcm_new	= rsnd_ssi_pcm_new,
-+	.fallback	= rsnd_ssi_fallback,
-+	.hw_params	= rsnd_ssi_hw_params,
-+	.prepare	= rsnd_ssi_prepare,
-+	.get_status	= rsnd_ssi_get_status,
- };
- 
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
-@@ -1091,41 +1128,6 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- 	return !!(rsnd_flags_has(rsnd_mod_to_ssi(mod), RSND_SSI_CLK_PIN_SHARE));
- }
- 
--static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
--				struct rsnd_mod *mod,
--				enum rsnd_mod_type type)
--{
--	/*
--	 * SSIP (= SSI parent) needs to be special, otherwise,
--	 * 2nd SSI might doesn't start. see also rsnd_mod_call()
--	 *
--	 * We can't include parent SSI status on SSI, because we don't know
--	 * how many SSI requests parent SSI. Thus, it is localed on "io" now.
--	 * ex) trouble case
--	 *	Playback: SSI0
--	 *	Capture : SSI1 (needs SSI0)
--	 *
--	 * 1) start Capture  ->	SSI0/SSI1 are started.
--	 * 2) start Playback ->	SSI0 doesn't work, because it is already
--	 *			marked as "started" on 1)
--	 *
--	 * OTOH, using each mod's status is good for MUX case.
--	 * It doesn't need to start in 2nd start
--	 * ex)
--	 *	IO-0: SRC0 -> CTU1 -+-> MUX -> DVC -> SSIU -> SSI0
--	 *			    |
--	 *	IO-1: SRC1 -> CTU2 -+
--	 *
--	 * 1) start IO-0 ->	start SSI0
--	 * 2) start IO-1 ->	SSI0 doesn't need to start, because it is
--	 *			already started on 1)
--	 */
--	if (type == RSND_MOD_SSIP)
--		return &io->parent_ssi_status;
--
--	return rsnd_mod_get_status(io, mod, type);
--}
--
- int rsnd_ssi_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *node;
-@@ -1192,7 +1194,7 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
- 			ops = &rsnd_ssi_dma_ops;
- 
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssi), ops, clk,
--				    rsnd_ssi_get_status, RSND_MOD_SSI, i);
-+				    RSND_MOD_SSI, i);
- 		if (ret) {
- 			of_node_put(np);
- 			goto rsnd_ssi_probe_done;
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 39b67643b5dc..ebcb826b849f 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -22,6 +22,16 @@ struct rsnd_ssiu {
- 		     ((pos) = ((struct rsnd_ssiu *)(priv)->ssiu + i));	\
- 	     i++)
- 
-+static u32 *rsnd_ssiu_get_status(struct rsnd_mod *mod,
-+				 struct rsnd_dai_stream *io,
-+				 enum rsnd_mod_type type)
-+{
-+	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
-+	int busif = rsnd_ssi_get_busif(io);
-+
-+	return &ssiu->busif_status[busif];
-+}
-+
- static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 			  struct rsnd_dai_stream *io,
- 			  struct rsnd_priv *priv)
-@@ -115,8 +125,9 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_ssiu_ops_gen1 = {
--	.name	= SSIU_NAME,
--	.init	= rsnd_ssiu_init,
-+	.name		= SSIU_NAME,
-+	.init		= rsnd_ssiu_init,
-+	.get_status	= rsnd_ssiu_get_status,
- };
- 
- static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
-@@ -279,10 +290,11 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
- }
- 
- static struct rsnd_mod_ops rsnd_ssiu_ops_gen2 = {
--	.name	= SSIU_NAME,
--	.init	= rsnd_ssiu_init_gen2,
--	.start	= rsnd_ssiu_start_gen2,
--	.stop	= rsnd_ssiu_stop_gen2,
-+	.name		= SSIU_NAME,
-+	.init		= rsnd_ssiu_init_gen2,
-+	.start		= rsnd_ssiu_start_gen2,
-+	.stop		= rsnd_ssiu_stop_gen2,
-+	.get_status	= rsnd_ssiu_get_status,
- };
- 
- static struct rsnd_mod *rsnd_ssiu_mod_get(struct rsnd_priv *priv, int id)
-@@ -304,16 +316,6 @@ int rsnd_ssiu_attach(struct rsnd_dai_stream *io,
- 	return rsnd_dai_connect(mod, io, mod->type);
- }
- 
--static u32 *rsnd_ssiu_get_status(struct rsnd_dai_stream *io,
--				 struct rsnd_mod *mod,
--				 enum rsnd_mod_type type)
--{
--	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
--	int busif = rsnd_ssi_get_busif(io);
--
--	return &ssiu->busif_status[busif];
--}
--
- int rsnd_ssiu_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
-@@ -337,8 +339,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
- 
- 	for_each_rsnd_ssiu(ssiu, priv, i) {
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssiu),
--				    ops, NULL, rsnd_ssiu_get_status,
--				    RSND_MOD_SSIU, i);
-+				    ops, NULL, RSND_MOD_SSIU, i);
- 		if (ret)
- 			return ret;
- 	}
+ 	if (tx)
+ 		fmt = pcm3168a->dac_fmt;
+@@ -528,18 +532,9 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
+ 		channel_max =  2;
+ 		break;
+ 	case PCM3168A_FMT_LEFT_J:
+-		sample_min  = 24;
+-		if (tx)
+-			channel_max = 8;
+-		else
+-			channel_max = 6;
+-		break;
+ 	case PCM3168A_FMT_I2S:
+ 		sample_min  = 24;
+-		if (tx)
+-			channel_max = 8;
+-		else
+-			channel_max = 6;
++		channel_max = channel_maxs[tx];
+ 		break;
+ 	default:
+ 		sample_min  = 24;
 -- 
 2.19.0.rc2
