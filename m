@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: constify
-	snd_soc_dai_ops structures" to the asoc tree
-Date: Mon,  5 Nov 2018 11:58:44 +0000 (GMT)
-Message-ID: <20181105115844.ACB431124D98@debutante.sirena.org.uk>
-References: <1540647284-26728-3-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Applied "ASoC: nau8825: remove unnecessary unlikely()"
+	to the asoc tree
+Date: Mon,  5 Nov 2018 11:58:53 +0000 (GMT)
+Message-ID: <20181105115853.81FF41124D98@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E3142678DA
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:45 +0100 (CET)
-In-Reply-To: <1540647284-26728-3-git-send-email-Julia.Lawall@lip6.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id E84752678DA
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:53 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Yangtao Li <tiny.windzz@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe-dai: constify snd_soc_dai_ops structures
+   ASoC: nau8825: remove unnecessary unlikely()
 
 has been applied to the asoc tree at
 
@@ -53,59 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 7dfcd9d727c3e69ecb51c0bb4d54b3d46de98e87 Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Sat, 27 Oct 2018 15:34:43 +0200
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: constify snd_soc_dai_ops structures
+>From 0b6277e6343e192aaa7d452ab933281eb0d420dc Mon Sep 17 00:00:00 2001
+From: Yangtao Li <tiny.windzz@gmail.com>
+Date: Sun, 4 Nov 2018 07:55:29 -0500
+Subject: [PATCH] ASoC: nau8825: remove unnecessary unlikely()
 
-The snd_soc_dai_ops structures are only stored in the ops field of a
-snd_soc_dai_driver structure, so make the snd_soc_dai_ops structures
-const as well.
+WARN_ON() already contains an unlikely(), so it's not necessary to use
+unlikely.
 
-Done with the help of Coccinelle.
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/nau8825.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 60ff4a2d3577..a07a4538d5cf 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -561,13 +561,13 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
- 	{"QUAT_MI2S_TX", NULL, "Quaternary MI2S Capture"},
- };
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index b9fed99d8b5e..7bbcbf5f05c8 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -424,10 +424,8 @@ static u32 nau8825_xtalk_sidetone(u32 sig_org, u32 sig_cros)
+ {
+ 	u32 gain, sidetone;
  
--static struct snd_soc_dai_ops q6hdmi_ops = {
-+static const struct snd_soc_dai_ops q6hdmi_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.hw_params	= q6hdmi_hw_params,
- 	.shutdown	= q6afe_dai_shutdown,
- };
+-	if (unlikely(sig_org == 0) || unlikely(sig_cros == 0)) {
+-		WARN_ON(1);
++	if (WARN_ON(sig_org == 0 || sig_cros == 0))
+ 		return 0;
+-	}
  
--static struct snd_soc_dai_ops q6i2s_ops = {
-+static const struct snd_soc_dai_ops q6i2s_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.hw_params	= q6i2s_hw_params,
- 	.set_fmt	= q6i2s_set_fmt,
-@@ -575,14 +575,14 @@ static struct snd_soc_dai_ops q6i2s_ops = {
- 	.set_sysclk	= q6afe_mi2s_set_sysclk,
- };
- 
--static struct snd_soc_dai_ops q6slim_ops = {
-+static const struct snd_soc_dai_ops q6slim_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.hw_params	= q6slim_hw_params,
- 	.shutdown	= q6afe_dai_shutdown,
- 	.set_channel_map = q6slim_set_channel_map,
- };
- 
--static struct snd_soc_dai_ops q6tdm_ops = {
-+static const struct snd_soc_dai_ops q6tdm_ops = {
- 	.prepare	= q6afe_dai_prepare,
- 	.shutdown	= q6afe_dai_shutdown,
- 	.set_sysclk	= q6afe_mi2s_set_sysclk,
+ 	sig_org = nau8825_intlog10_dec3(sig_org);
+ 	sig_cros = nau8825_intlog10_dec3(sig_cros);
 -- 
 2.19.0.rc2
