@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_max98090_ti: Add quirk
-	for boards using pmc_plt_clk_0" to the asoc tree
-Date: Mon,  5 Nov 2018 11:57:21 +0000 (GMT)
-Message-ID: <20181105115721.AFD5A1124D98@debutante.sirena.org.uk>
-References: <20181031142225.16109-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: rsnd: rsnd_mod_name() handles both name
+	and ID" to the asoc tree
+Date: Mon,  5 Nov 2018 11:57:30 +0000 (GMT)
+Message-ID: <20181105115730.3FD411124D98@debutante.sirena.org.uk>
+References: <87bm7bsx26.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E4002679B1
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:57:23 +0100 (CET)
-In-Reply-To: <20181031142225.16109-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C2392678DD
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:57:31 +0100 (CET)
+In-Reply-To: <87bm7bsx26.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, stable@vger.kernel.org, Dean Wallace <duffydack73@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: cht_bsw_max98090_ti: Add quirk for boards using pmc_plt_clk_0
+   ASoC: rsnd: rsnd_mod_name() handles both name and ID
 
 has been applied to the asoc tree at
 
@@ -53,102 +53,314 @@ to this mail.
 Thanks,
 Mark
 
->From a182ecd3809c8d5a2da80c520f3602e301c5317e Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Wed, 31 Oct 2018 15:22:25 +0100
-Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add quirk for boards using
- pmc_plt_clk_0
+>From c0ea089dbad47a41ae30ad290766d7a6571c9802 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 30 Oct 2018 07:47:50 +0000
+Subject: [PATCH] ASoC: rsnd: rsnd_mod_name() handles both name and ID
 
-Some boards such as the Swanky model Chromebooks use pmc_plt_clk_0 for the
-mclk instead of pmc_plt_clk_3.
+Current rsnd driver is using "%s[%d]" for mod name and ID,
+but, this ID portion might confusable.
+For example currently, CTU ID is 0 to 7, but using 00 to 13
+(= 00, 01, 02, 03, 10, 11, 12, 13) is very best matching to datasheet.
 
-This commit adds a DMI based quirk for this.
+In the future, we will support BUSIFn, but it will be more complicated
+numbering. To avoid future confusable code, this patch modify
+rsnd_mod_name() to return understandable name.
 
-This fixing audio no longer working on these devices after
-commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-that commit fixes us unnecessary keeping unused clocks on, but in case
-of the Swanky that was breaking audio support since we were not using
-the right clock in the cht_bsw_max98090_ti machine driver.
+To avoid using pointless memory, it uses static char and snprintf,
+thus, rsnd_mod_name() user should use it immediately, and shouldn't keep
+its pointer.
 
-Cc: stable@vger.kernel.org
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Reported-and-tested-by: Dean Wallace <duffydack73@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 32 ++++++++++++++++++--
- 1 file changed, 29 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 41 +++++++++++++++++++++++++++++++---------
+ sound/soc/sh/rcar/dma.c  | 21 ++++++++------------
+ sound/soc/sh/rcar/gen.c  | 12 ++++++------
+ sound/soc/sh/rcar/rsnd.h |  2 +-
+ sound/soc/sh/rcar/src.c  |  5 ++---
+ sound/soc/sh/rcar/ssi.c  | 23 ++++++++--------------
+ 6 files changed, 57 insertions(+), 47 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index db6976f4ddaa..9d9f6e41d81c 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -19,6 +19,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 82d2234840c5..5e100122391a 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -123,8 +123,8 @@ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type)
+ 		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 		struct device *dev = rsnd_priv_to_dev(priv);
  
-+#include <linux/dmi.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-@@ -35,6 +36,8 @@
- #define CHT_PLAT_CLK_3_HZ	19200000
- #define CHT_CODEC_DAI	"HiFi"
- 
-+#define QUIRK_PMC_PLT_CLK_0				0x01
-+
- struct cht_mc_private {
- 	struct clk *mclk;
- 	struct snd_soc_jack jack;
-@@ -385,11 +388,29 @@ static struct snd_soc_card snd_soc_card_cht = {
- 	.num_controls = ARRAY_SIZE(cht_mc_controls),
- };
- 
-+static const struct dmi_system_id cht_max98090_quirk_table[] = {
-+	{
-+		/* Swanky model Chromebook (Toshiba Chromebook 2) */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Swanky"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
-+	{}
-+};
-+
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
-+	const struct dmi_system_id *dmi_id;
- 	struct device *dev = &pdev->dev;
- 	int ret_val = 0;
- 	struct cht_mc_private *drv;
-+	const char *mclk_name;
-+	int quirks = 0;
-+
-+	dmi_id = dmi_first_match(cht_max98090_quirk_table);
-+	if (dmi_id)
-+		quirks = (unsigned long)dmi_id->driver_data;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
- 	if (!drv)
-@@ -411,11 +432,16 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
- 
--	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+	if (quirks & QUIRK_PMC_PLT_CLK_0)
-+		mclk_name = "pmc_plt_clk_0";
-+	else
-+		mclk_name = "pmc_plt_clk_3";
-+
-+	drv->mclk = devm_clk_get(&pdev->dev, mclk_name);
- 	if (IS_ERR(drv->mclk)) {
- 		dev_err(&pdev->dev,
--			"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
--			PTR_ERR(drv->mclk));
-+			"Failed to get MCLK from %s: %ld\n",
-+			mclk_name, PTR_ERR(drv->mclk));
- 		return PTR_ERR(drv->mclk);
+-		dev_warn(dev, "%s[%d] is not your expected module\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod));
++		dev_warn(dev, "%s is not your expected module\n",
++			 rsnd_mod_name(mod));
  	}
+ }
+ 
+@@ -137,6 +137,30 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
+ 	return mod->ops->dma_req(io, mod);
+ }
+ 
++#define MOD_NAME_SIZE 16
++char *rsnd_mod_name(struct rsnd_mod *mod)
++{
++	static char name[MOD_NAME_SIZE];
++
++	/*
++	 * Let's use same char to avoid pointlessness memory
++	 * Thus, rsnd_mod_name() should be used immediately
++	 * Don't keep pointer
++	 */
++	if ((mod)->ops->id_sub) {
++		snprintf(name, MOD_NAME_SIZE, "%s[%d%d]",
++			 mod->ops->name,
++			 rsnd_mod_id(mod),
++			 rsnd_mod_id_sub(mod));
++	} else {
++		snprintf(name, MOD_NAME_SIZE, "%s[%d]",
++			 mod->ops->name,
++			 rsnd_mod_id(mod));
++	}
++
++	return name;
++}
++
+ u32 *rsnd_mod_get_status(struct rsnd_mod *mod,
+ 			 struct rsnd_dai_stream *io,
+ 			 enum rsnd_mod_type type)
+@@ -494,15 +518,14 @@ static int rsnd_status_update(u32 *status,
+ 						__rsnd_mod_shift_##fn,	\
+ 						__rsnd_mod_add_##fn,	\
+ 						__rsnd_mod_call_##fn);	\
+-		rsnd_dbg_dai_call(dev, "%s[%d]\t0x%08x %s\n",		\
+-			rsnd_mod_name(mod), rsnd_mod_id(mod), *status,	\
++		rsnd_dbg_dai_call(dev, "%s\t0x%08x %s\n",		\
++			rsnd_mod_name(mod), *status,	\
+ 			(func_call && (mod)->ops->fn) ? #fn : "");	\
+ 		if (func_call && (mod)->ops->fn)			\
+ 			tmp = (mod)->ops->fn(mod, io, param);		\
+ 		if (tmp && (tmp != -EPROBE_DEFER))			\
+-			dev_err(dev, "%s[%d] : %s error %d\n",		\
+-				rsnd_mod_name(mod), rsnd_mod_id(mod),	\
+-						     #fn, tmp);		\
++			dev_err(dev, "%s : %s error %d\n",		\
++				rsnd_mod_name(mod), #fn, tmp);		\
+ 		ret |= tmp;						\
+ 	}								\
+ 	ret;								\
+@@ -529,8 +552,8 @@ int rsnd_dai_connect(struct rsnd_mod *mod,
+ 
+ 	io->mod[type] = mod;
+ 
+-	dev_dbg(dev, "%s[%d] is connected to io (%s)\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++	dev_dbg(dev, "%s is connected to io (%s)\n",
++		rsnd_mod_name(mod),
+ 		rsnd_io_is_play(io) ? "Playback" : "Capture");
+ 
+ 	return 0;
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index e5c30eec1190..5daa6c932fce 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -174,8 +174,8 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 
+-	dev_dbg(dev, "%s[%d] %pad -> %pad\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++	dev_dbg(dev, "%s %pad -> %pad\n",
++		rsnd_mod_name(mod),
+ 		&cfg.src_addr, &cfg.dst_addr);
+ 
+ 	ret = dmaengine_slave_config(dmaen->chan, &cfg);
+@@ -369,8 +369,7 @@ static u32 rsnd_dmapp_get_id(struct rsnd_dai_stream *io,
+ 	if ((!entry) || (size <= id)) {
+ 		struct device *dev = rsnd_priv_to_dev(rsnd_io_to_priv(io));
+ 
+-		dev_err(dev, "unknown connection (%s[%d])\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
++		dev_err(dev, "unknown connection (%s)\n", rsnd_mod_name(mod));
+ 
+ 		/* use non-prohibited SRS number as error */
+ 		return 0x00; /* SSI00 */
+@@ -692,12 +691,10 @@ static void rsnd_dma_of_path(struct rsnd_mod *this,
+ 		*mod_to		= mod[1];
+ 	}
+ 
+-	dev_dbg(dev, "module connection (this is %s[%d])\n",
+-		rsnd_mod_name(this), rsnd_mod_id(this));
++	dev_dbg(dev, "module connection (this is %s)\n", rsnd_mod_name(this));
+ 	for (i = 0; i <= idx; i++) {
+-		dev_dbg(dev, "  %s[%d]%s\n",
++		dev_dbg(dev, "  %s%s\n",
+ 			rsnd_mod_name(mod[i] ? mod[i] : &mem),
+-			rsnd_mod_id  (mod[i] ? mod[i] : &mem),
+ 			(mod[i] == *mod_from) ? " from" :
+ 			(mod[i] == *mod_to)   ? " to" : "");
+ 	}
+@@ -762,12 +759,10 @@ static int rsnd_dma_alloc(struct rsnd_dai_stream *io, struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	dev_dbg(dev, "%s[%d] %s[%d] -> %s[%d]\n",
+-		rsnd_mod_name(*dma_mod), rsnd_mod_id(*dma_mod),
++	dev_dbg(dev, "%s %s -> %s\n",
++		rsnd_mod_name(*dma_mod),
+ 		rsnd_mod_name(mod_from ? mod_from : &mem),
+-		rsnd_mod_id  (mod_from ? mod_from : &mem),
+-		rsnd_mod_name(mod_to   ? mod_to   : &mem),
+-		rsnd_mod_id  (mod_to   ? mod_to   : &mem));
++		rsnd_mod_name(mod_to   ? mod_to   : &mem));
+ 
+ 	ret = attach(io, dma, mod_from, mod_to);
+ 	if (ret < 0)
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 1f7881cc16b2..ca639404f2cd 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -83,8 +83,8 @@ u32 rsnd_read(struct rsnd_priv *priv,
+ 
+ 	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
+ 
+-	dev_dbg(dev, "r %s[%d] - %-18s (%4d) : %08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++	dev_dbg(dev, "r %s - %-18s (%4d) : %08x\n",
++		rsnd_mod_name(mod),
+ 		rsnd_reg_name(gen, reg), reg, val);
+ 
+ 	return val;
+@@ -102,8 +102,8 @@ void rsnd_write(struct rsnd_priv *priv,
+ 
+ 	regmap_fields_force_write(gen->regs[reg], rsnd_mod_id(mod), data);
+ 
+-	dev_dbg(dev, "w %s[%d] - %-18s (%4d) : %08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++	dev_dbg(dev, "w %s - %-18s (%4d) : %08x\n",
++		rsnd_mod_name(mod),
+ 		rsnd_reg_name(gen, reg), reg, data);
+ }
+ 
+@@ -119,8 +119,8 @@ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
+ 	regmap_fields_force_update_bits(gen->regs[reg],
+ 					rsnd_mod_id(mod), mask, data);
+ 
+-	dev_dbg(dev, "b %s[%d] - %-18s (%4d) : %08x/%08x\n",
+-		rsnd_mod_name(mod), rsnd_mod_id(mod),
++	dev_dbg(dev, "b %s - %-18s (%4d) : %08x/%08x\n",
++		rsnd_mod_name(mod),
+ 		rsnd_reg_name(gen, reg), reg, data, mask);
+ 
+ }
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index fdf007aeac27..28bd90ab5a99 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -377,7 +377,6 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_pointer		0
+ 
+ #define rsnd_mod_to_priv(mod)	((mod)->priv)
+-#define rsnd_mod_name(mod)	((mod)->ops->name)
+ #define rsnd_mod_power_on(mod)	clk_enable((mod)->clk)
+ #define rsnd_mod_power_off(mod)	clk_disable((mod)->clk)
+ #define rsnd_mod_get(ip)	(&(ip)->mod)
+@@ -400,6 +399,7 @@ u32 *rsnd_mod_get_status(struct rsnd_mod *mod,
+ int rsnd_mod_id(struct rsnd_mod *mod);
+ int rsnd_mod_id_raw(struct rsnd_mod *mod);
+ int rsnd_mod_id_sub(struct rsnd_mod *mod);
++char *rsnd_mod_name(struct rsnd_mod *mod);
+ struct rsnd_mod *rsnd_mod_next(int *iterator,
+ 			       struct rsnd_dai_stream *io,
+ 			       enum rsnd_mod_type *array,
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 7de7afd6a3a6..bdc05952f75f 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -349,9 +349,8 @@ static bool rsnd_src_error_occurred(struct rsnd_mod *mod)
+ 	status0 = rsnd_mod_read(mod, SCU_SYS_STATUS0);
+ 	status1 = rsnd_mod_read(mod, SCU_SYS_STATUS1);
+ 	if ((status0 & val0) || (status1 & val1)) {
+-		rsnd_dbg_irq_status(dev, "%s[%d] err status : 0x%08x, 0x%08x\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod),
+-			status0, status1);
++		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x, 0x%08x\n",
++			rsnd_mod_name(mod), status0, status1);
+ 
+ 		ret = true;
+ 	}
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index cb66986ff776..a032819044f7 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -181,8 +181,7 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
+ 		udelay(5);
+ 	}
+ 
+-	dev_warn(dev, "%s[%d] status check failed\n",
+-		 rsnd_mod_name(mod), rsnd_mod_id(mod));
++	dev_warn(dev, "%s status check failed\n", rsnd_mod_name(mod));
+ }
+ 
+ static u32 rsnd_ssi_multi_slaves(struct rsnd_dai_stream *io)
+@@ -346,9 +345,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	ssi->rate = rate;
+ 	ssi->chan = chan;
+ 
+-	dev_dbg(dev, "%s[%d] outputs %u Hz\n",
+-		rsnd_mod_name(mod),
+-		rsnd_mod_id(mod), rate);
++	dev_dbg(dev, "%s outputs %u Hz\n", rsnd_mod_name(mod), rate);
+ 
+ 	return 0;
+ }
+@@ -494,8 +491,7 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 		return 0;
+ 
+ 	if (!ssi->usrcnt) {
+-		dev_err(dev, "%s[%d] usrcnt error\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
++		dev_err(dev, "%s usrcnt error\n", rsnd_mod_name(mod));
+ 		return -EIO;
+ 	}
+ 
+@@ -654,8 +650,8 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 
+ 	/* DMA only */
+ 	if (is_dma && (status & (UIRQ | OIRQ))) {
+-		rsnd_dbg_irq_status(dev, "%s[%d] err status : 0x%08x\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod), status);
++		rsnd_dbg_irq_status(dev, "%s err status : 0x%08x\n",
++			rsnd_mod_name(mod), status);
+ 
+ 		stop = true;
+ 	}
+@@ -964,8 +960,7 @@ static int rsnd_ssi_fallback(struct rsnd_mod *mod,
+ 	 */
+ 	mod->ops = &rsnd_ssi_pio_ops;
+ 
+-	dev_info(dev, "%s[%d] fallback to PIO mode\n",
+-		 rsnd_mod_name(mod), rsnd_mod_id(mod));
++	dev_info(dev, "%s fallback to PIO mode\n", rsnd_mod_name(mod));
+ 
+ 	return 0;
+ }
+@@ -1085,15 +1080,13 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+ 	/* HDMI0 */
+ 	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI0);
+-		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
+-			 rsnd_mod_name(mod), rsnd_mod_id(mod));
++		dev_dbg(dev, "%s connected to HDMI0\n", rsnd_mod_name(mod));
+ 	}
+ 
+ 	/* HDMI1 */
+ 	if (strstr(remote_node->full_name, "hdmi@feae0000")) {
+ 		rsnd_flags_set(ssi, RSND_SSI_HDMI1);
+-		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
+-			rsnd_mod_name(mod), rsnd_mod_id(mod));
++		dev_dbg(dev, "%s connected to HDMI1\n", rsnd_mod_name(mod));
+ 	}
+ }
  
 -- 
 2.19.0.rc2
