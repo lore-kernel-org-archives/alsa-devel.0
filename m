@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: smd845: constify snd_soc_ops structure"
-	to the asoc tree
-Date: Mon,  5 Nov 2018 11:59:19 +0000 (GMT)
-Message-ID: <20181105115919.AE2871124D98@debutante.sirena.org.uk>
-References: <1541170818-24219-1-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Applied "ASoC: stm32: sai: fix less than zero
+	comparison on unsigned int" to the asoc tree
+Date: Mon,  5 Nov 2018 11:59:30 +0000 (GMT)
+Message-ID: <20181105115930.494DC1124D98@debutante.sirena.org.uk>
+References: <20181031193143.6994-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C1F32679DE
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:59:20 +0100 (CET)
-In-Reply-To: <1541170818-24219-1-git-send-email-Julia.Lawall@lip6.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD733267A72
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:59:31 +0100 (CET)
+In-Reply-To: <20181031193143.6994-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: smd845: constify snd_soc_ops structure
+   ASoC: stm32: sai: fix less than zero comparison on unsigned int
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From ff60005e4598ca9a79fa6d8378dd35a668ae4de7 Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Fri, 2 Nov 2018 16:00:18 +0100
-Subject: [PATCH] ASoC: smd845: constify snd_soc_ops structure
+>From 6b27e27729270a2478fdebea2db9c4f57bb4e8e6 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 31 Oct 2018 19:31:43 +0000
+Subject: [PATCH] ASoC: stm32: sai: fix less than zero comparison on unsigned
+ int
 
-The snd_soc_ops structure can be const as it is only stored in the
-ops field of a snd_soc_dai_link structure and this field is const.
+Currently, the comparison of div < 0 is always false because div is
+an unsigned int. Fix this by making div an int.
 
-Done with the help of Coccinelle.
+Detected by CoverityScan, CID#1475309 ("Unsigned compared against 0")
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Fixes: 8307b2afd386 "(ASoC: stm32: sai: set sai as mclk clock provider")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_sai_sub.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 9effbecc571f..8d0cdff64377 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -171,7 +171,7 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
- 	}
- }
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index ea05cc91aa05..506423d5861a 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -336,8 +336,7 @@ static int stm32_sai_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	struct stm32_sai_mclk_data *mclk = to_mclk_data(hw);
+ 	struct stm32_sai_sub_data *sai = mclk->sai_data;
+-	unsigned int div;
+-	int ret;
++	int div, ret;
  
--static struct snd_soc_ops sdm845_be_ops = {
-+static const struct snd_soc_ops sdm845_be_ops = {
- 	.hw_params = sdm845_snd_hw_params,
- 	.startup = sdm845_snd_startup,
- 	.shutdown = sdm845_snd_shutdown,
+ 	div = stm32_sai_get_clk_div(sai, parent_rate, rate);
+ 	if (div < 0)
 -- 
 2.19.0.rc2
