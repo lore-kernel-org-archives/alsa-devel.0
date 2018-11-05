@@ -1,63 +1,88 @@
-From: Andre Przywara <andre.przywara@arm.com>
-Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP to
- SND_SUN8I_ADDA_PR_REGMAP
-Date: Mon, 5 Nov 2018 09:43:04 +0000
-Message-ID: <20181105094304.3ce0d12c@donnerap.cambridge.arm.com>
-References: <20181103042651.6641-1-anarsoul@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8996: fix small typo
+Date: Mon, 5 Nov 2018 10:36:57 +0000
+Message-ID: <20181105103657.GA5365@sirena.org.uk>
+References: <CADnCVLz__D9n+UpFLChVcZkjmFZxKZacCCgufRx8y0_03OGgSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181103042651.6641-1-anarsoul@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1648711149099712301=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CB622678DF
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 11:36:59 +0100 (CET)
+In-Reply-To: <CADnCVLz__D9n+UpFLChVcZkjmFZxKZacCCgufRx8y0_03OGgSg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: sh liu <liush.damon@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri,  2 Nov 2018 21:26:51 -0700
-Vasily Khoruzhick <anarsoul@gmail.com> wrote:
 
-> SND_SUN50I_CODEC_ANALOG selects SND_SUNXI_ADDA_PR_REGMAP which is
-> leftover of renaming SND_SUNXI_ADDA_PR_REGMAP to
-> SND_SUN8I_ADDA_PR_REGMAP. Replace it with SND_SUN8I_ADDA_PR_REGMAP to
-> fix possible link errors for some configurations:
+--===============1648711149099712301==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
 
-> 
-> sound/soc/sunxi/sun50i-codec-analog.o: In function `sun50i_codec_analog_probe':
-> sun50i-codec-analog.c:(.text+0x62): undefined reference to `sun8i_adda_pr_regmap_init'
-> 
-> Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 
-Just stumbled over the same thing when building 4.20-rc1.
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+On Fri, Nov 02, 2018 at 09:30:06AM +0800, sh liu wrote:
+> From e9b923690675ca8fa883fd25dcead5b457856735 Mon Sep 17 00:00:00 2001
+> From: liush <liush@allwinnertech.com>
+> Date: Fri, 2 Nov 2018 08:57:00 +0800
+> Subject: [PATCH] ASoC: wm8996: fix small typo
+>=20
+> atleast -> at least
+>=20
+> Change-Id: Icc970b438166daef13518b7d1a62b13eb8752f5f
+> Signed-off-by: liush <liush@allwinnertech.com>
 
-Thanks!
-Andre.
+This patch is corrupted and can't be applied:
 
----
->  sound/soc/sunxi/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index 66aad0d3f9c7..8134c3c94229 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -31,7 +31,7 @@ config SND_SUN8I_CODEC_ANALOG
->  config SND_SUN50I_CODEC_ANALOG
->  	tristate "Allwinner sun50i Codec Analog Controls Support"
->  	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> -	select SND_SUNXI_ADDA_PR_REGMAP
-> +	select SND_SUN8I_ADDA_PR_REGMAP
->  	help
->  	  Say Y or M if you want to add support for the analog
-> controls for the codec embedded in Allwinner A64 SoC.
+> *codec, int fll_id, int source,
+>   if (i2c->irq)
+>   timeout *=3D 10;
+>   else
+> - /* ensure timeout of atleast 1 jiffies */
+> + /* ensure timeout of at least 1 jiffies */
+>   timeout =3D timeout/2 ? : 1;
+>=20
+
+It looks like tabs have been replaced by spaces in whatever you're using
+to send it.
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvgHUgACgkQJNaLcl1U
+h9DPNQf8DyEl8ZqUljGGgyyP48lIp5J+gF2eNUOVP+ebotrVxn197W3Fgp2BU0eU
+FVcPNAUqBoRdjN0r9CWjL+2+9xCdHyJHbCCE9OnZrNxwY7CFG2RpchJPTyg/K3FC
+Z9ZJkItrmsb615X2elTQbtLu3UipFYk4+BZ4/eQLTSOr3SiAGlxDbTNtqkxFdL0q
+ktHpqHlIDhIrrBTNGikjCAkrU5vkkrydY53wVyJhDhz0ljsVh8b1rbMEdgXKlYzv
+po1CSPMjprfpx4PGIOKRLHv/+3yNJ/KdFOAYpdPe6y3ca95QA80zZ72s5Rs5XXDg
+yL+F8NmbSCoCrOZMED5nLhrIjkrSYw==
+=1xwh
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
+
+--===============1648711149099712301==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1648711149099712301==--
