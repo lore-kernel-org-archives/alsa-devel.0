@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: AMD: Fix race condition between
-	register access
-Date: Mon, 5 Nov 2018 11:15:57 +0000
-Message-ID: <20181105111557.GB5365@sirena.org.uk>
-References: <1541020930-17337-1-git-send-email-akshu.agrawal@amd.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: dapm: Use less aggressive caching to
+	ensure correctness
+Date: Mon,  5 Nov 2018 19:19:12 +0800
+Message-ID: <20181105111912.14464-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0329119271678049554=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C9D267692
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:16:01 +0100 (CET)
-In-Reply-To: <1541020930-17337-1-git-send-email-akshu.agrawal@amd.com>
+Received: from mail-ot1-f73.google.com (mail-ot1-f73.google.com
+ [209.85.210.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2BBB267692
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:19:41 +0100 (CET)
+Received: by mail-ot1-f73.google.com with SMTP id v4so6225928otb.0
+ for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2018 03:19:41 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: tzungbi@google.com, lars@metafoo.de, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
+Commit 92a99ea439c4 ("ASoC: dapm: Use more aggressive caching") only
+invalidates necessary caches to improve the cache hit rate.  However,
+in snd_soc_dapm_add_path(), the cache is too aggressive which results
+in wrong state of the audio map.
 
---===============0329119271678049554==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
-Content-Disposition: inline
+E.g. imaging the following examples during snd_soc_instantiate_card():
 
+time 1: at the beginning
 
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  in:-1    in:-1     in:-1
+ out:-1   out:-1    out:-1
+      A -----> B       Spk
 
-On Wed, Oct 31, 2018 at 09:24:10PM +0000, Agrawal, Akshu wrote:
+time 2: after someone called snd_soc_dapm_new_widgets()
+(e.g. create_fill_widget_route_map() in sound/soc/codecs/hdac_hdmi.c)
 
-> +/* Lock to protect access to registers */
-> +static DEFINE_SPINLOCK(lock);
-> +
+  in:0    in:0     in:0
+ out:0   out:0    out:1
+     A ----> B      Spk
 
-Why is this a global variable and not a part of the driver structure?
-Is there some interaction between multiple instances?
+time 3: route added to Spk
 
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
+  in:0    in:0      in:0
+ out:0   out:0     out:1
+     A ----> B ----> Spk
 
------BEGIN PGP SIGNATURE-----
+time N: route added from SIGGEN
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvgJmwACgkQJNaLcl1U
-h9D/Mgf9GH4q+k9kKEx0SRVcKkgeynptlR5BeylHyoDKqeDDsZhyuUxEMdBoetL6
-hL4JxHQ5AVSjRESEKSy111NdknxrsNcc89qVykUmreP6URrAY9iLfRQnbjPOxMMK
-cxr7ZAnXrHAU3JssjrrwoldaRg/xMQoaStz1t+6Bm41ma1gJxJMREj3peDhjGb4A
-rrCqXJK5SsJf0m2GYTxRHjmc32xOsFMGmdBYtiBXXKhx/cvfKQU9JEeHKemlRyMV
-JIJZp75QGGWnoTG7D0UI32/SngudwYHabww1pHGPXM6ElrfhMS9J21xIExrBwBC2
-0Oqxxvddcb9PhkdYIqxrVsTq4zEkQQ==
-=aEa+
------END PGP SIGNATURE-----
+  in:1    in:0    in:0      in:0
+ out:0   out:0   out:0     out:1
+SIGGEN ----> A ----> B ----> Spk
 
---neYutvxvOLaeuPCA--
+In the end, the path will not power on but it should be.  At time 2, the
+caches have been polluted.  At time 3, it will not get the correct state
+if snd_soc_dapm_add_path() does not invalidate "out" of B and A.
 
---===============0329119271678049554==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+time 3 (expected result):
 
+  in:0    in:0      in:0
+ out:1   out:1     out:1
+     A ----> B ----> Spk
 
---===============0329119271678049554==--
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a5178845065b..2914f3adb333 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2722,7 +2722,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
+ 		dapm_mark_dirty(widgets[dir], "Route added");
+ 	}
+ 
+-	if (dapm->card->instantiated && path->connect)
++	if (path->connect)
+ 		dapm_path_invalidate(path);
+ 
+ 	return 0;
+-- 
+2.19.1.930.g4563a0d9d0-goog
