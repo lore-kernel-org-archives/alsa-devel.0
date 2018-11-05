@@ -1,20 +1,17 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH] ASoC: core: Invoke pcm_new() for all
- DAI-link
-Date: Mon, 5 Nov 2018 12:13:20 +0100
-Message-ID: <791d4587-4db3-3ffa-331a-f79d0993ca8c@st.com>
-References: <1541075929-29323-1-git-send-email-rohitkr@codeaurora.org>
- <s5htvl0exil.wl-tiwai@suse.de>
- <48c78f67-8178-2d07-e35d-2e4eca51ccbc@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: AMD: Fix race condition between
+	register access
+Date: Mon, 5 Nov 2018 11:15:57 +0000
+Message-ID: <20181105111557.GB5365@sirena.org.uk>
+References: <1541020930-17337-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0329119271678049554=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id A1745267692
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:13:24 +0100 (CET)
-In-Reply-To: <48c78f67-8178-2d07-e35d-2e4eca51ccbc@codeaurora.org>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67C9D267692
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:16:01 +0100 (CET)
+In-Reply-To: <1541020930-17337-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit Kumar <rohitkr@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, olivier.moysan@st.com
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, plai@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, srinivas.kandagatla@linaro.org
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gUm9oaXQsCgpPbiAxMS8yLzE4IDE6MDYgUE0sIFJvaGl0IEt1bWFyIHdyb3RlOgo+IAo+
-IE9uIDExLzIvMjAxOCAxOjEyIFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IE9uIFRodSwgMDEg
-Tm92IDIwMTggMTM6Mzg6NDkgKzAxMDAsCj4+IFJvaGl0IGt1bWFyIHdyb3RlOgo+Pj4gUmVtb3Zl
-IG5vX3BjbSBjaGVjayB0byBpbnZva2UgcGNtX25ldygpIGZvciBiYWNrZW5kIGRhaS1saW5rcwo+
-Pj4gdG9vLiBUaGlzIGZpeGVzIGNyYXNoIGluIGhkbWkgY29kZWMgZHJpdmVyIGR1cmluZyBoZG1p
-X2NvZGVjX3N0YXJ0dXAoKQo+Pj4gd2hpbGUgYWNjZXNzaW5nIGNobWFwX2luZm8gc3RydWN0LiBj
-aG1hcF9pbmZvIHN0cnVjdCBtZW1vcnkgaXMKPj4+IGFsbG9jYXRlZCBpbiBwY21fbmV3KCkgb2Yg
-aGRtaSBjb2RlYyBkcml2ZXIgd2hpY2ggaXMgbm90IGludm9rZWQKPj4+IGluIGNhc2Ugb2YgRFBD
-TSB3aGVuIGhkbWkgY29kZWMgZHJpdmVyIGlzIHBhcnQgb2YgYmFja2VuZCBkYWktbGluay4KPj4+
-Cj4+PiBCZWxvdyBpcyB0aGUgY3Jhc2ggc3RhY2s6Cj4+Pgo+Pj4gW8KgwqAgNjEuNjM1NDkzXSBV
-bmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQKPj4+IHZp
-cnR1YWwgYWRkcmVzcyAwMDAwMDAxOAo+Pj4gLi4KPj4+IFvCoMKgIDYxLjY2NjY5Nl3CoMKgIENN
-ID0gMCwgV25SID0gMQo+Pj4gW8KgwqAgNjEuNjY5Nzc4XSB1c2VyIHBndGFibGU6IDRrIHBhZ2Vz
-LCAzOS1iaXQgVkFzLCBwZ2QgPQo+Pj4gZmZmZmZmYzBkNjYzMzAwMAo+Pj4gW8KgwqAgNjEuNjc2
-NTI2XSBbMDAwMDAwMDAwMDAwMDAxOF0gKnBnZD0wMDAwMDAwMTUzZmM4MDAzLAo+Pj4gKnB1ZD0w
-MDAwMDAwMTUzZmM4MDAzLCAqcG1kPTAwMDAwMDAwMDAwMDAwMDAKPj4+IFvCoMKgIDYxLjY4NTc5
-M10gSW50ZXJuYWwgZXJyb3I6IE9vcHM6IDk2MDAwMDQ2IFsjMV0gUFJFRU1QVCBTTVAKPj4+IFvC
-oMKgIDYxLjcyMjk1NV0gQ1BVOiA3IFBJRDogMjIzOCBDb21tOiBhcGxheSBOb3QgdGFpbnRlZCA0
-LjE0LjcyICMyMQo+Pj4gLi4KPj4+IFvCoMKgIDYxLjc0MDI2OV0gUEMgaXMgYXQgaGRtaV9jb2Rl
-Y19zdGFydHVwKzB4MTI0LzB4MTY0Cj4+PiBbwqDCoCA2MS43NDUzMDhdIExSIGlzIGF0IGhkbWlf
-Y29kZWNfc3RhcnR1cCsweGU0LzB4MTY0Cj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogUm9oaXQga3Vt
-YXIgPHJvaGl0a3JAY29kZWF1cm9yYS5vcmc+Cj4+IERpZCB5b3UgY2hlY2sgd2hldGhlciBhbGwg
-ZHJpdmVycyBoYXZlIG5vIHNpZGUtZWZmZWN0IGJ5IHRoaXMgY2hhbmdlPwo+PiBUaGUgaGRtaS1j
-b2RlYyBpc24ndCB0aGUgb25seSBkcml2ZXIgdGhhdCBoYXMgcGNtX25ldyBvcHMsIHNvIHdlIGhh
-dmUKPj4gdG8gbWFrZSBzdXJlIHRoYXQgc3VjaCBhIGZ1bmRhbWVudGFsIGNoYW5nZSB3b3VsZG4n
-dCBicmluZyBhbnkKPj4gcmVncmVzc2lvbnMuCj4+Cj4gQmVsb3cgYXJlIHRoZSBkcml2ZXJzIGNh
-bGxpbmcgcGNtX25ldygpIG90aGVyIHRoYW4gaGRtaSBjb2RlYyBkcml2ZXIuCj4gc291bmQvc29j
-L21lc29uL2F4Zy1mcmRkci5jCj4gc291bmQvc29jL21lc29uL2F4Zy10b2Rkci5jCj4gVGhlc2Ug
-dHdvIGRyaXZlcnMgYXJlIGZyb250ZW5kIERBSSBkcml2ZXJzIGFuZCBzaG91bGQgbm90IGJlIGlt
-cGFjdGVkCj4gYmVjYXVzZSBvZiB0aGlzLgo+IAo+IE90aGVyIHRoYW4gdGhpcywgcGNtX25ldygp
-IGlzIGNhbGxlZCBmcm9tIHNvdW5kL3NvYy9zdG0vc3RtMzJfc2FpX3N1Yi5jCj4gSSBjb3VsZCBu
-b3QgZ2V0IG11Y2ggaW5mbyBhYm91dCB0aGlzIGRyaXZlci4gSG93ZXZlciwgaXQgaXMganVzdCBh
-ZGRpbmcKPiBrY29udHJvbHMgaW4gcGNtX25ldygpIHdoaWNoIHVzZXMgaW50ZXJuYWwgcHJpdmF0
-ZSBzdHJ1Y3RzIGluIGdldCgpL3B1dCgpLgo+IE9saXZpZXIgTW95c2FuIGNhbiB0b28gY29uZmly
-bSBvbiB0aGlzLgpGaXJzdCwgaSdtIGFuc3dlcmluZyAgZm9yIE9saXZpZXI6IG5vIHJlZ3Jlc3Np
-b24gaWRlbnRpZmllZCBmb3IgdGhlIFNBSQpkcml2ZXIsIGl0IGlzIG5vdCBhIERQQ00gZHJpdmVy
-LgoKVGhlbiBpIGhhdmUgYSBjb25jZXJuIGFib3V0IHRoZSBjYWxsIG9mIHBjbV9uZXcgZm9yIGEg
-bm8tUENNIGJhY2tlbmQuCkRvZXMgaXQgbWFrZSBzZW5zZT8gSW4gRFBDTSBjb25jZXB0LCB0aGUg
-YmFja2VuZCBpcyBub3QgbGlua2VkIHRvIHRoZQpQQ00gZGV2aWNlLi4uCgpJbnN0ZWFkLCBJIHdv
-dWxkIHN1Z2dlc3QgdGhhdCB5b3UgYWRkIHByb3RlY3Rpb24gaW4gSERNSV9jb2RlYyBvbgpjaG1h
-cF9pbmZvIHBvaW50ZXIuCgpUaGUgZHJhd2JhY2sgd291bGQgYmUgdGhhdCB0aGUgY29udHJvbCBp
-cyBubyBtb3JlIGF2YWlsYWJsZS4uLmRvIHlvdQpuZWVkIGl0PwoKUmVnYXJkcwpBcm5hdWQKCj4g
-Cj4gVGhhbmtzLAo+IFJvaGl0Cj4+IHRoYW5rcywKPj4KPj4gVGFrYXNoaQo+IApfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============0329119271678049554==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Disposition: inline
+
+
+--neYutvxvOLaeuPCA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Oct 31, 2018 at 09:24:10PM +0000, Agrawal, Akshu wrote:
+
+> +/* Lock to protect access to registers */
+> +static DEFINE_SPINLOCK(lock);
+> +
+
+Why is this a global variable and not a part of the driver structure?
+Is there some interaction between multiple instances?
+
+--neYutvxvOLaeuPCA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvgJmwACgkQJNaLcl1U
+h9D/Mgf9GH4q+k9kKEx0SRVcKkgeynptlR5BeylHyoDKqeDDsZhyuUxEMdBoetL6
+hL4JxHQ5AVSjRESEKSy111NdknxrsNcc89qVykUmreP6URrAY9iLfRQnbjPOxMMK
+cxr7ZAnXrHAU3JssjrrwoldaRg/xMQoaStz1t+6Bm41ma1gJxJMREj3peDhjGb4A
+rrCqXJK5SsJf0m2GYTxRHjmc32xOsFMGmdBYtiBXXKhx/cvfKQU9JEeHKemlRyMV
+JIJZp75QGGWnoTG7D0UI32/SngudwYHabww1pHGPXM6ElrfhMS9J21xIExrBwBC2
+0Oqxxvddcb9PhkdYIqxrVsTq4zEkQQ==
+=aEa+
+-----END PGP SIGNATURE-----
+
+--neYutvxvOLaeuPCA--
+
+--===============0329119271678049554==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0329119271678049554==--
