@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix less than zero
-	comparison on unsigned int" to the asoc tree
-Date: Mon,  5 Nov 2018 11:59:30 +0000 (GMT)
-Message-ID: <20181105115930.494DC1124D98@debutante.sirena.org.uk>
-References: <20181031193143.6994-1-colin.king@canonical.com>
+Subject: Applied "ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP
+	to SND_SUN8I_ADDA_PR_REGMAP" to the asoc tree
+Date: Mon,  5 Nov 2018 11:59:40 +0000 (GMT)
+Message-ID: <20181105115940.676651124D98@debutante.sirena.org.uk>
+References: <20181103042651.6641-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DD733267A72
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:59:31 +0100 (CET)
-In-Reply-To: <20181031193143.6994-1-colin.king@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D1F7E2678DD
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:59:42 +0100 (CET)
+In-Reply-To: <20181103042651.6641-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-kernel@vger.kernel.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix less than zero comparison on unsigned int
+   ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP to SND_SUN8I_ADDA_PR_REGMAP
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 6b27e27729270a2478fdebea2db9c4f57bb4e8e6 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 31 Oct 2018 19:31:43 +0000
-Subject: [PATCH] ASoC: stm32: sai: fix less than zero comparison on unsigned
- int
+>From 2f5d94123ce3c12a1e15802e6d5ee98f304ccb71 Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Fri, 2 Nov 2018 21:26:51 -0700
+Subject: [PATCH] ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP to
+ SND_SUN8I_ADDA_PR_REGMAP
 
-Currently, the comparison of div < 0 is always false because div is
-an unsigned int. Fix this by making div an int.
+SND_SUN50I_CODEC_ANALOG selects SND_SUNXI_ADDA_PR_REGMAP which is leftover
+of renaming SND_SUNXI_ADDA_PR_REGMAP to SND_SUN8I_ADDA_PR_REGMAP. Replace
+it with SND_SUN8I_ADDA_PR_REGMAP to fix possible link errors for some
+configurations:
 
-Detected by CoverityScan, CID#1475309 ("Unsigned compared against 0")
+sound/soc/sunxi/sun50i-codec-analog.o: In function `sun50i_codec_analog_probe':
+sun50i-codec-analog.c:(.text+0x62): undefined reference to `sun8i_adda_pr_regmap_init'
 
-Fixes: 8307b2afd386 "(ASoC: stm32: sai: set sai as mclk clock provider")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sunxi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index ea05cc91aa05..506423d5861a 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -336,8 +336,7 @@ static int stm32_sai_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct stm32_sai_mclk_data *mclk = to_mclk_data(hw);
- 	struct stm32_sai_sub_data *sai = mclk->sai_data;
--	unsigned int div;
--	int ret;
-+	int div, ret;
- 
- 	div = stm32_sai_get_clk_div(sai, parent_rate, rate);
- 	if (div < 0)
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 66aad0d3f9c7..8134c3c94229 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -31,7 +31,7 @@ config SND_SUN8I_CODEC_ANALOG
+ config SND_SUN50I_CODEC_ANALOG
+ 	tristate "Allwinner sun50i Codec Analog Controls Support"
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+-	select SND_SUNXI_ADDA_PR_REGMAP
++	select SND_SUN8I_ADDA_PR_REGMAP
+ 	help
+ 	  Say Y or M if you want to add support for the analog controls for
+ 	  the codec embedded in Allwinner A64 SoC.
 -- 
 2.19.0.rc2
