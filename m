@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: pcm3060: Add control for
-	differential output
-Date: Mon, 5 Nov 2018 11:20:36 +0000
-Message-ID: <20181105112036.GC5365@sirena.org.uk>
-References: <20181029085913.17298-1-kmarinushkin@birdec.tech>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] vga_switcheroo: Fix missing gpu_bound call
+ at audio client registration
+Date: Mon, 5 Nov 2018 12:55:17 +0100
+Message-ID: <20181105115517.56bclhhq2ctaps7u@wunner.de>
+References: <20181105110253.8655-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4202083341284698655=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 56FEB267692
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:20:37 +0100 (CET)
-In-Reply-To: <20181029085913.17298-1-kmarinushkin@birdec.tech>
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net
+ [83.223.90.240])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65185267692
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:55:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20181105110253.8655-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Sean Paul <sean@poorly.run>, alsa-devel@alsa-project.org, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Nov 05, 2018 at 12:02:53PM +0100, Takashi Iwai wrote:
+> The commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
+> discrete GPU") added a new ops gpu_bound to be called when GPU gets
+> bound.  The patch overlooked, however, that vga_switcheroo_enable() is
+> called only once at GPU is bound.  When an audio client is registered
+> after that point, it would miss the gpu_bound call.  This leads to the
+> unexpected lack of runtime PM in HD-audio side.
+> 
+> For addressing that regression, just call gpu_bound callback manually
+> at vga_switcheroo_register_audio_client() when the GPU was already
+> bound.
+> 
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201615
+> Fixes: 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for discrete GPU")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/gpu/vga/vga_switcheroo.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
+> index cf2a18571d48..a132c37d7334 100644
+> --- a/drivers/gpu/vga/vga_switcheroo.c
+> +++ b/drivers/gpu/vga/vga_switcheroo.c
+> @@ -380,6 +380,9 @@ int vga_switcheroo_register_audio_client(struct pci_dev *pdev,
+>  			mutex_unlock(&vgasr_mutex);
+>  			return -EINVAL;
+>  		}
+> +		/* notify if GPU has been already bound */
+> +		if (ops->gpu_bound)
+> +			ops->gpu_bound(pdev, id);
+>  	}
+>  	mutex_unlock(&vgasr_mutex);
 
---===============4202083341284698655==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
-Content-Disposition: inline
+If the audio client registers before vga_switcheroo becomes enabled,
+->gpu_bound will be executed twice.  AFAICS this only causes a minor
+cosmetic issue, namely that dev_info() is called twice for blacklisted
+devices in set_default_power_save().  This could be eliminated by
+amending the if-condition with "&& vgasr_priv.active".  Since this
+is only minor, up to you if you want to respin.
 
-
---/e2eDi0V/xtL+Mc8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Oct 29, 2018 at 09:59:12AM +0100, Kirill Marinushkin wrote:
-> DAC may be switched between differential and single-ended output.
-
-Isn't this something that'd be better controlled by DT - it's usually
-going to be part of the board design?
-
---/e2eDi0V/xtL+Mc8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvgJ4MACgkQJNaLcl1U
-h9AgSQf/bjb+cz0gVa1FFg7KcrHXXzzQha95LA4kVHTYuxOHaFISIMrY/aaTudvI
-4h4TrRlY0tGBiAxzbqt6yZcGmh55K5UDQpAY81QHrkBKrxzEP3SLWzNiDZGrlO2f
-3Gokdic9Cf5mZ2tV/z+OZ5MMS/NbVWigb1cVmyQgliewpIN6gcnVy0Gtun3Mverr
-q2slTHer+7ye3FA5AK905Fv+F1GysBta14KKbISRV4LhMCJ9C9cO7oqV896nRtnZ
-ob4nUggUVFhpu86SlbnXvhqyXabI+tv6MCWFKTYkGgdXBGnH2YpgDAOLk6ch2IqZ
-0R2fYqU9GG+NKs+LsDwaWAnmBuHYuQ==
-=Cpfl
------END PGP SIGNATURE-----
-
---/e2eDi0V/xtL+Mc8--
-
---===============4202083341284698655==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4202083341284698655==--
+Either way,
+Reviewed-by: Lukas Wunner <lukas@wunner.de>
