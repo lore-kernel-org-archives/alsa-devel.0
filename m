@@ -1,18 +1,17 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH] ASoC: dapm: Use less aggressive caching to
-	ensure correctness
-Date: Mon,  5 Nov 2018 19:19:12 +0800
-Message-ID: <20181105111912.14464-1-tzungbi@google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: pcm3060: Add control for
+	differential output
+Date: Mon, 5 Nov 2018 11:20:36 +0000
+Message-ID: <20181105112036.GC5365@sirena.org.uk>
+References: <20181029085913.17298-1-kmarinushkin@birdec.tech>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4202083341284698655=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-f73.google.com (mail-ot1-f73.google.com
- [209.85.210.73])
- by alsa0.perex.cz (Postfix) with ESMTP id C2BBB267692
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:19:41 +0100 (CET)
-Received: by mail-ot1-f73.google.com with SMTP id v4so6225928otb.0
- for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2018 03:19:41 -0800 (PST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56FEB267692
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:20:37 +0100 (CET)
+In-Reply-To: <20181029085913.17298-1-kmarinushkin@birdec.tech>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: tzungbi@google.com, lars@metafoo.de, dgreid@google.com, cychiang@google.com
+To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 92a99ea439c4 ("ASoC: dapm: Use more aggressive caching") only
-invalidates necessary caches to improve the cache hit rate.  However,
-in snd_soc_dapm_add_path(), the cache is too aggressive which results
-in wrong state of the audio map.
 
-E.g. imaging the following examples during snd_soc_instantiate_card():
+--===============4202083341284698655==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
+Content-Disposition: inline
 
-time 1: at the beginning
 
-  in:-1    in:-1     in:-1
- out:-1   out:-1    out:-1
-      A -----> B       Spk
+--/e2eDi0V/xtL+Mc8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-time 2: after someone called snd_soc_dapm_new_widgets()
-(e.g. create_fill_widget_route_map() in sound/soc/codecs/hdac_hdmi.c)
+On Mon, Oct 29, 2018 at 09:59:12AM +0100, Kirill Marinushkin wrote:
+> DAC may be switched between differential and single-ended output.
 
-  in:0    in:0     in:0
- out:0   out:0    out:1
-     A ----> B      Spk
+Isn't this something that'd be better controlled by DT - it's usually
+going to be part of the board design?
 
-time 3: route added to Spk
+--/e2eDi0V/xtL+Mc8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  in:0    in:0      in:0
- out:0   out:0     out:1
-     A ----> B ----> Spk
+-----BEGIN PGP SIGNATURE-----
 
-time N: route added from SIGGEN
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvgJ4MACgkQJNaLcl1U
+h9AgSQf/bjb+cz0gVa1FFg7KcrHXXzzQha95LA4kVHTYuxOHaFISIMrY/aaTudvI
+4h4TrRlY0tGBiAxzbqt6yZcGmh55K5UDQpAY81QHrkBKrxzEP3SLWzNiDZGrlO2f
+3Gokdic9Cf5mZ2tV/z+OZ5MMS/NbVWigb1cVmyQgliewpIN6gcnVy0Gtun3Mverr
+q2slTHer+7ye3FA5AK905Fv+F1GysBta14KKbISRV4LhMCJ9C9cO7oqV896nRtnZ
+ob4nUggUVFhpu86SlbnXvhqyXabI+tv6MCWFKTYkGgdXBGnH2YpgDAOLk6ch2IqZ
+0R2fYqU9GG+NKs+LsDwaWAnmBuHYuQ==
+=Cpfl
+-----END PGP SIGNATURE-----
 
-  in:1    in:0    in:0      in:0
- out:0   out:0   out:0     out:1
-SIGGEN ----> A ----> B ----> Spk
+--/e2eDi0V/xtL+Mc8--
 
-In the end, the path will not power on but it should be.  At time 2, the
-caches have been polluted.  At time 3, it will not get the correct state
-if snd_soc_dapm_add_path() does not invalidate "out" of B and A.
+--===============4202083341284698655==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-time 3 (expected result):
 
-  in:0    in:0      in:0
- out:1   out:1     out:1
-     A ----> B ----> Spk
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a5178845065b..2914f3adb333 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2722,7 +2722,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
- 		dapm_mark_dirty(widgets[dir], "Route added");
- 	}
- 
--	if (dapm->card->instantiated && path->connect)
-+	if (path->connect)
- 		dapm_path_invalidate(path);
- 
- 	return 0;
--- 
-2.19.1.930.g4563a0d9d0-goog
+--===============4202083341284698655==--
