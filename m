@@ -1,49 +1,64 @@
-From: "He, Bo" <bo.he@intel.com>
-Subject: [PATCH] fix the kernel panic due to wrong use the dev memory API
-Date: Mon, 5 Nov 2018 08:29:14 +0000
-Message-ID: <CD6925E8781EFD4D8E11882D20FC406D529FE3B6@SHSMSX104.ccr.corp.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: GitHub - alsa-project - repositories
+Date: Mon, 5 Nov 2018 09:49:01 +0100
+Message-ID: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id A814026751A
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 09:49:07 +0100 (CET)
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>, "Kesapragada, Pardha Saradhi" <pardha.saradhi.kesapragada@intel.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "guruprasadx.pawse@intel.com" <guruprasadx.pawse@intel.com>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Prakash, Divya1" <divya1.prakash@intel.com>, "Diwakar, Praveen" <praveen.diwakar@intel.com>, "Zhang, Yanmin" <yanmin.zhang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-skl->dais is allocated with devm_kcalloc, can't free with
-the krealloc. Memory allocated with devm API is automatically freed
-on driver detach, Like all other devres resources.
+Hi all,
 
-Refer to drivers/base/devres.c devm_kmalloc for more details.
+  URL: https://github.com/alsa-project
 
-Signed-off-by: he, bo <bo.he@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+  I finally finished the first phase of the integration with GitHub. All
+repositories are now on GitHub and all repositories are mirrored to
+alsa-project.org. The github repositories are master (developers should
+push changes only to those repositories). If you refer the repository as
+the code source (for packaging or so), please, keep to use the
+repositories on alsa-project.org (in case when we migrate to other
+service in future like GitLab or so). The mirroring is realtime, so the
+changes should be visible on git.alsa-project.org in few seconds after
+the push.
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 823e391..928d314 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1438,7 +1438,8 @@ int skl_platform_register(struct device *dev)
- 	}
- 
- 	if (!skl->use_tplg_pcm) {
--		dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
-+		devm_kfree(dev, skl->dais);
-+		dais = devm_kcalloc(dev, skl->dais, sizeof(skl_fe_dai) +
- 				sizeof(skl_platform_dai), GFP_KERNEL);
- 		if (!dais) {
- 			ret = -ENOMEM;
-@@ -1472,7 +1473,5 @@ int skl_platform_unregister(struct device *dev)
- 		}
- 	}
- 
--	kfree(skl->dais);
--
- 	return 0;
- }
+  I invited few people to the GitHub team and actually Takashi has full
+access to all repos, Vinod Koul should have the write access to
+tinycompress and Takashi Sakamoto should have the write access to
+alsa-gi. If I omitted someone (or someone is not on github), please, let
+me know (and register before).
+
+  Because github adds possibility for the pull requests and issue
+tracking, I added notifications for them to this (alsa-devel) mailing
+list. The short notification should be sent when an pull request or an
+issue is opened or changed. I think that it would be best to handle this
+per request, so the developer can ask to resend the patch to the mailing
+list for the wider review or just push the change with the signing.
+
+  I activated Travis CI for alsa-lib and alsa-utils and I will add other
+repos soon, too. URL: https://travis-ci.org/alsa-project
+
+  If you have some ideas which other github applications can be used to
+improve the code maintenance, let me know. I will probably play with the
+coverity checker (http://scan.coverity.com), too.
+
+					Jaroslav
+
 -- 
-2.7.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
