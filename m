@@ -1,19 +1,18 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH] vga_switcheroo: Fix missing gpu_bound call
- at audio client registration
-Date: Mon, 5 Nov 2018 12:55:17 +0100
-Message-ID: <20181105115517.56bclhhq2ctaps7u@wunner.de>
-References: <20181105110253.8655-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qdsp6: q6afe: Fix wrong MI2S SD line
+	mask" to the asoc tree
+Date: Mon,  5 Nov 2018 11:57:13 +0000 (GMT)
+Message-ID: <20181105115713.A86111124D98@debutante.sirena.org.uk>
+References: <1541073067-29553-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net
- [83.223.90.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 65185267692
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:55:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20181105110253.8655-1-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADBD4267692
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:57:15 +0100 (CET)
+In-Reply-To: <1541073067-29553-1-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,50 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Sean Paul <sean@poorly.run>, alsa-devel@alsa-project.org, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, dri-devel@lists.freedesktop.org
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, niklas.cassel@linaro.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 05, 2018 at 12:02:53PM +0100, Takashi Iwai wrote:
-> The commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
-> discrete GPU") added a new ops gpu_bound to be called when GPU gets
-> bound.  The patch overlooked, however, that vga_switcheroo_enable() is
-> called only once at GPU is bound.  When an audio client is registered
-> after that point, it would miss the gpu_bound call.  This leads to the
-> unexpected lack of runtime PM in HD-audio side.
-> 
-> For addressing that regression, just call gpu_bound callback manually
-> at vga_switcheroo_register_audio_client() when the GPU was already
-> bound.
-> 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201615
-> Fixes: 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for discrete GPU")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  drivers/gpu/vga/vga_switcheroo.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
-> index cf2a18571d48..a132c37d7334 100644
-> --- a/drivers/gpu/vga/vga_switcheroo.c
-> +++ b/drivers/gpu/vga/vga_switcheroo.c
-> @@ -380,6 +380,9 @@ int vga_switcheroo_register_audio_client(struct pci_dev *pdev,
->  			mutex_unlock(&vgasr_mutex);
->  			return -EINVAL;
->  		}
-> +		/* notify if GPU has been already bound */
-> +		if (ops->gpu_bound)
-> +			ops->gpu_bound(pdev, id);
->  	}
->  	mutex_unlock(&vgasr_mutex);
+The patch
 
-If the audio client registers before vga_switcheroo becomes enabled,
-->gpu_bound will be executed twice.  AFAICS this only causes a minor
-cosmetic issue, namely that dev_info() is called twice for blacklisted
-devices in set_default_power_save().  This could be eliminated by
-amending the if-condition with "&& vgasr_priv.active".  Since this
-is only minor, up to you if you want to respin.
+   ASoC: qdsp6: q6afe: Fix wrong MI2S SD line mask
 
-Either way,
-Reviewed-by: Lukas Wunner <lukas@wunner.de>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 112b57fa737445b2361be332ce8cc0fd3e2b994e Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Thu, 1 Nov 2018 17:21:07 +0530
+Subject: [PATCH] ASoC: qdsp6: q6afe: Fix wrong MI2S SD line mask
+
+SD line mask for MI2S starts from BIT 0 instead of BIT 1.
+Fix all bit mask for MI2S SD lines.
+
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/qdsp6/q6afe.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 000775b4bba8..829b5e987b2a 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -49,14 +49,14 @@
+ #define AFE_PORT_I2S_SD1		0x2
+ #define AFE_PORT_I2S_SD2		0x3
+ #define AFE_PORT_I2S_SD3		0x4
+-#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
+-#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
+-#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
+-#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
+-#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
+-#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
+-#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
+-#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
++#define AFE_PORT_I2S_SD0_MASK		BIT(0x0)
++#define AFE_PORT_I2S_SD1_MASK		BIT(0x1)
++#define AFE_PORT_I2S_SD2_MASK		BIT(0x2)
++#define AFE_PORT_I2S_SD3_MASK		BIT(0x3)
++#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(1, 0)
++#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(3, 2)
++#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(2, 0)
++#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(3, 0)
+ #define AFE_PORT_I2S_QUAD01		0x5
+ #define AFE_PORT_I2S_QUAD23		0x6
+ #define AFE_PORT_I2S_6CHS		0x7
+-- 
+2.19.0.rc2
