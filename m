@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only
-	16bit format is supported" to the asoc tree
-Date: Mon,  5 Nov 2018 11:58:12 +0000 (GMT)
-Message-ID: <20181105115812.756121124D98@debutante.sirena.org.uk>
-References: <20181025134824.16527-1-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D2A24267A64
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 12:58:13 +0100 (CET)
-In-Reply-To: <20181025134824.16527-1-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
+Subject: Applied "ASoC: AMD: constify regulator_desc structure" to the asoc tree
+Date: Mon,  5 Nov 2018 11:58:24 +0000 (GMT)
+Message-ID: <20181105115824.0D0071124D98@debutante.sirena.org.uk>
+References: <1540706168-30601-1-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1540706168-30601-1-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only 16bit format is supported
+   ASoC: AMD: constify regulator_desc structure
 
 has been applied to the asoc tree at
 
@@ -53,47 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 61f18dc78a6b70c409134d0f4d873e9253565e05 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 25 Oct 2018 16:48:24 +0300
-Subject: [PATCH] ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only 16bit format is
- supported
+>From de3636488cff3678bafaf2d024e64c003ed2beae Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Sun, 28 Oct 2018 06:56:08 +0100
+Subject: [PATCH] ASoC: AMD: constify regulator_desc structure
 
-For samples sizes of 20/24/32 bit the DRR2/DXR2 registers must be used to
-receive or transmit the most significant part of the 32bit sample.
-We can not trick the system by using the DRR2/DXR2 register offset and use
-32bit element size since these (and other McBSP) registers are 16bit ones.
+The regulator_desc structure can be const as it is only passed as the
+second argument of devm_regulator_register and the corresponding
+parameter is declared as const.
 
-We would need support for port_window in cyclic mode from the sDMA driver,
-but it is not straight forward as we would need to have the sDMA frame to
-cover the 32bit (DRR2+DRR1/DXR2+DXR1), but the frames must cover the ALSA
-period to be able to receive periodic interrupts.
+Done with the help of Coccinelle.
 
-Since the 32bit samples are not working (DMA timeout), just remove it in
-case we have McBSP with reg_size of 2.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-mcbsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d0ebb6b9bfac..caa24c463b3e 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -862,6 +862,11 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 3f813ea5210a..a5daad973ce5 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -403,7 +403,7 @@ static struct regulator_config acp_da7219_cfg = {
+ static struct regulator_ops acp_da7219_ops = {
+ };
  
-+	if (mcbsp->pdata->reg_size == 2) {
-+		omap_mcbsp_dai.playback.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+		omap_mcbsp_dai.capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	}
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &omap_mcbsp_component,
- 					      &omap_mcbsp_dai, 1);
+-static struct regulator_desc acp_da7219_desc = {
++static const struct regulator_desc acp_da7219_desc = {
+ 	.name = "reg-fixed-1.8V",
+ 	.type = REGULATOR_VOLTAGE,
+ 	.owner = THIS_MODULE,
 -- 
 2.19.0.rc2
