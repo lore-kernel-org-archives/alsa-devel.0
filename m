@@ -1,15 +1,18 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [RFC PATCH] cplay: Always write frag * fragment_size
-Date: Mon, 5 Nov 2018 14:23:27 +0000
-Message-ID: <1541427790-27876-1-git-send-email-daniel.baluta@nxp.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: linux-4.20-rc1/sound/soc/stm/stm32_sai_sub.c:343:
+ Faulty error check
+Date: Mon, 5 Nov 2018 15:24:09 +0100
+Message-ID: <ccd8a02d-13a0-432a-ecd0-94234a2cfd83@st.com>
+References: <VI1PR08MB3342060AF73044939F5273F59CCA0@VI1PR08MB3342.eurprd08.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-eopbgr60044.outbound.protection.outlook.com [40.107.6.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D0F42678DA
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 15:23:28 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C0DA2678DA
+ for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 15:24:17 +0100 (CET)
+In-Reply-To: <VI1PR08MB3342060AF73044939F5273F59CCA0@VI1PR08MB3342.eurprd08.prod.outlook.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,58 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, "vkoul@kernel.org" <vkoul@kernel.org>
+To: David Binderman <dcb314@hotmail.com>, Olivier MOYSAN <olivier.moysan@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, Alexandre TORGUE <alexandre.torgue@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-cplay first writes frag * fragment_size and then
-it only writes one fragment at a time.
-
-This means for example than if the user supplied a buffer_size
-it will only be used for the first write.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
-I noticed this while investigating why cplay prints buffer_size as
-0 when not specified as command line argument to cplay.
-
-I also noticed that cred always reads frag * frament_size, so I think
-this patch should be OK, but marking it as RFC to get your thoughts.
-
- src/utils/cplay.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/src/utils/cplay.c b/src/utils/cplay.c
-index 2a52b52..b016f52 100644
---- a/src/utils/cplay.c
-+++ b/src/utils/cplay.c
-@@ -435,15 +435,15 @@ void play_samples(char *name, unsigned int card, unsigned int device,
- 	};
- 	if (verbose)
- 		printf("%s: Opened compress device\n", __func__);
--	size = config.fragment_size;
--	buffer = malloc(size * config.fragments);
-+	size = config.fragments * config.fragment_size;
-+	buffer = malloc(size);
- 	if (!buffer) {
- 		fprintf(stderr, "Unable to allocate %d bytes\n", size);
- 		goto COMP_EXIT;
- 	}
- 
- 	/* we will write frag fragment_size and then start */
--	num_read = fread(buffer, 1, size * config.fragments, file);
-+	num_read = fread(buffer, 1, size, file);
- 	if (num_read > 0) {
- 		if (verbose)
- 			printf("%s: Doing first buffer write of %d\n", __func__, num_read);
-@@ -459,7 +459,7 @@ void play_samples(char *name, unsigned int card, unsigned int device,
- 		}
- 	}
- 	printf("Playing file %s On Card %u device %u, with buffer of %lu bytes\n",
--			name, card, device, buffer_size);
-+			name, card, device, size);
- 	printf("Format %u Channels %u, %u Hz, Bit Rate %d\n",
- 			codec.id, codec.ch_in, codec.sample_rate, codec.bit_rate);
- 
--- 
-2.7.4
+SGVsbG8gRGF2aWQsCgpPbiAxMS81LzE4IDI6MzMgUE0sIERhdmlkIEJpbmRlcm1hbiB3cm90ZToK
+PiBIZWxsbyB0aGVyZSwKPiAKPiBsaW51eC00LjIwLXJjMS9zb3VuZC9zb2Mvc3RtL3N0bTMyX3Nh
+aV9zdWIuYzozNDNdOiAoc3R5bGUpIENoZWNraW5nIGlmCj4gdW5zaWduZWQgdmFyaWFibGUgJ2Rp
+dicgaXMgbGVzcyB0aGFuIHplcm8uCj4gCj4gU291cmNlIGNvZGUgaXMKPiAKPiDCoMKgwqDCoMKg
+wqDCoCBkaXYgPSBzdG0zMl9zYWlfZ2V0X2Nsa19kaXYoc2FpLCBwYXJlbnRfcmF0ZSwgcmF0ZSk7
+Cj4gwqDCoMKgwqDCoMKgwqAgaWYgKGRpdiA8IDApCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHJldHVybiBkaXY7Cj4gCj4gU3VnZ2VzdCBzdG9yZSByZXR1cm4gdmFsdWUgZnJvbSBm
+dW5jdGlvbiBpbiBpbnQgbG9jYWwgdmFyaWFibGUsIHRlc3QgaXQKPiBhbmQgb25seSB0aGVuIGFz
+c2lnbiBpdCBpbnRvIGFuIHVuc2lnbmVkIHZhcmlhYmxlLgo+IAo+IFJlZ2FyZHMKPiAKPiBEYXZp
+ZCBCaW5kZXJtYW4KClRoYW5rcyBmb3IgeW91ciBmZWVkYmFjaywgYSBwYXRjaCBoYXMgYWxyZWFk
+eSBiZWVuIHNlbnQgYW5kIGFwcGxpZWQgdG8KZml4IHRoaXMgd2FybmluZzogaHR0cHM6Ly9sa21s
+Lm9yZy9sa21sLzIwMTgvMTEvNS81MTAuCgpSZWdhcmRzLApBcm5hdWQKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
