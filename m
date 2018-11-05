@@ -1,64 +1,63 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: GitHub - alsa-project - repositories
-Date: Mon, 5 Nov 2018 09:49:01 +0100
-Message-ID: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
+From: Andre Przywara <andre.przywara@arm.com>
+Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUNXI_ADDA_PR_REGMAP to
+ SND_SUN8I_ADDA_PR_REGMAP
+Date: Mon, 5 Nov 2018 09:43:04 +0000
+Message-ID: <20181105094304.3ce0d12c@donnerap.cambridge.arm.com>
+References: <20181103042651.6641-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id A814026751A
- for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2018 09:49:07 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@linux.intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20181103042651.6641-1-anarsoul@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Fri,  2 Nov 2018 21:26:51 -0700
+Vasily Khoruzhick <anarsoul@gmail.com> wrote:
 
-  URL: https://github.com/alsa-project
+> SND_SUN50I_CODEC_ANALOG selects SND_SUNXI_ADDA_PR_REGMAP which is
+> leftover of renaming SND_SUNXI_ADDA_PR_REGMAP to
+> SND_SUN8I_ADDA_PR_REGMAP. Replace it with SND_SUN8I_ADDA_PR_REGMAP to
+> fix possible link errors for some configurations:
 
-  I finally finished the first phase of the integration with GitHub. All
-repositories are now on GitHub and all repositories are mirrored to
-alsa-project.org. The github repositories are master (developers should
-push changes only to those repositories). If you refer the repository as
-the code source (for packaging or so), please, keep to use the
-repositories on alsa-project.org (in case when we migrate to other
-service in future like GitLab or so). The mirroring is realtime, so the
-changes should be visible on git.alsa-project.org in few seconds after
-the push.
+> 
+> sound/soc/sunxi/sun50i-codec-analog.o: In function `sun50i_codec_analog_probe':
+> sun50i-codec-analog.c:(.text+0x62): undefined reference to `sun8i_adda_pr_regmap_init'
+> 
+> Fixes: 42371f327df0 ("ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path controls")
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 
-  I invited few people to the GitHub team and actually Takashi has full
-access to all repos, Vinod Koul should have the write access to
-tinycompress and Takashi Sakamoto should have the write access to
-alsa-gi. If I omitted someone (or someone is not on github), please, let
-me know (and register before).
+Just stumbled over the same thing when building 4.20-rc1.
 
-  Because github adds possibility for the pull requests and issue
-tracking, I added notifications for them to this (alsa-devel) mailing
-list. The short notification should be sent when an pull request or an
-issue is opened or changed. I think that it would be best to handle this
-per request, so the developer can ask to resend the patch to the mailing
-list for the wider review or just push the change with the signing.
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
-  I activated Travis CI for alsa-lib and alsa-utils and I will add other
-repos soon, too. URL: https://travis-ci.org/alsa-project
+Thanks!
+Andre.
 
-  If you have some ideas which other github applications can be used to
-improve the code maintenance, let me know. I will probably play with the
-coverity checker (http://scan.coverity.com), too.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+---
+>  sound/soc/sunxi/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+> index 66aad0d3f9c7..8134c3c94229 100644
+> --- a/sound/soc/sunxi/Kconfig
+> +++ b/sound/soc/sunxi/Kconfig
+> @@ -31,7 +31,7 @@ config SND_SUN8I_CODEC_ANALOG
+>  config SND_SUN50I_CODEC_ANALOG
+>  	tristate "Allwinner sun50i Codec Analog Controls Support"
+>  	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+> -	select SND_SUNXI_ADDA_PR_REGMAP
+> +	select SND_SUN8I_ADDA_PR_REGMAP
+>  	help
+>  	  Say Y or M if you want to add support for the analog
+> controls for the codec embedded in Allwinner A64 SoC.
