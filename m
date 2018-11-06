@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap: Remove unused machine driver for
-	AM3517-evm" to the asoc tree
-Date: Tue,  6 Nov 2018 18:07:14 +0000 (GMT)
-Message-ID: <20181106180714.736C2112266B@debutante.sirena.org.uk>
-References: <20181105131011.15277-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: pcm3168a: remove read-only status
+	register from snd_kcontrol_new" to the asoc tree
+Date: Tue,  6 Nov 2018 18:09:13 +0000 (GMT)
+Message-ID: <20181106180913.48E00112266B@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D1DA9267AD9
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:07:15 +0100 (CET)
-In-Reply-To: <20181105131011.15277-1-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 16AE6267AA5
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:09:14 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, linux-omap@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap: Remove unused machine driver for AM3517-evm
+   ASoC: pcm3168a: remove read-only status register from snd_kcontrol_new
 
 has been applied to the asoc tree at
 
@@ -53,209 +52,54 @@ to this mail.
 Thanks,
 Mark
 
->From 2c2596f3ab25008adbc12059321cadbf5264e7bb Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 5 Nov 2018 15:10:11 +0200
-Subject: [PATCH] ASoC: omap: Remove unused machine driver for AM3517-evm
+>From 223bc10b84970fd772c105b550beeef3ac3502be Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 6 Nov 2018 04:33:02 +0000
+Subject: [PATCH] ASoC: pcm3168a: remove read-only status register from
+ snd_kcontrol_new
 
-The audio support is done via simple-audio-card via DT, the custom driver
-is no longer needed.
+"DACn Zero Flag" and "ADCn Overflow Flag" are read-only status
+register. These information are needed for driver not for user.
+Let's remove these from snd_kcontrol_new.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+There is no detail explanation for these register on
+datasheet, but, judging from its behavior, it seems these register
+needs clock to read. Otherwise, I2C returns error.
+Therefor, amixer command will be failed under non working timing.
+
+Without this patch, user often fail amixer command.
+This patch is tested on R-Car H3 ulcb-kf board, SSI3/4 TDM sound.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/Kconfig     |   9 ---
- sound/soc/omap/Makefile    |   2 -
- sound/soc/omap/am3517evm.c | 141 -------------------------------------
- 3 files changed, 152 deletions(-)
- delete mode 100644 sound/soc/omap/am3517evm.c
+ sound/soc/codecs/pcm3168a.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 6dccea6fdaeb..3d418482d242 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -78,15 +78,6 @@ config SND_OMAP_SOC_OSK5912
- 	help
- 	  Say Y if you want to add support for SoC audio on osk5912.
- 
--config SND_OMAP_SOC_AM3517EVM
--	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
--	depends on SND_SDMA_SOC && MACH_OMAP3517EVM && I2C
--	select SND_OMAP_SOC_MCBSP
--	select SND_SOC_TLV320AIC23_I2C
--	help
--	  Say Y if you want to add support for SoC audio on the OMAP3517 / AM3517
--	  EVM.
--
- config SND_OMAP_SOC_OMAP_TWL4030
- 	tristate "SoC Audio support for TI SoC based boards with twl4030 codec"
- 	depends on TWL4030_CORE && SND_SDMA_SOC
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 53eba3413485..af50cdd6eea9 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -17,7 +17,6 @@ snd-soc-n810-objs := n810.o
- snd-soc-rx51-objs := rx51.o
- snd-soc-ams-delta-objs := ams-delta.o
- snd-soc-osk5912-objs := osk5912.o
--snd-soc-am3517evm-objs := am3517evm.o
- snd-soc-omap-abe-twl6040-objs := omap-abe-twl6040.o
- snd-soc-omap-twl4030-objs := omap-twl4030.o
- snd-soc-omap3pandora-objs := omap3pandora.o
-@@ -26,7 +25,6 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
- obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
--obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
-diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-deleted file mode 100644
-index d5651026ec10..000000000000
---- a/sound/soc/omap/am3517evm.c
-+++ /dev/null
-@@ -1,141 +0,0 @@
--/*
-- * am3517evm.c  -- ALSA SoC support for OMAP3517 / AM3517 EVM
-- *
-- * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
-- *
-- * Based on sound/soc/omap/beagle.c by Steve Sakoman
-- *
-- * Copyright (C) 2009 Texas Instruments Incorporated
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the
-- * Free Software Foundation version 2.
-- *
-- * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
-- * whether express or implied; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-- * General Public License for more details.
-- */
--
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--#include <linux/module.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--#include <linux/platform_data/asoc-ti-mcbsp.h>
--
--#include "omap-mcbsp.h"
--
--#include "../codecs/tlv320aic23.h"
--
--#define CODEC_CLOCK 	12000000
--
--static int am3517evm_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	/* Set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
--			CODEC_CLOCK, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		printk(KERN_ERR "can't set codec system clock\n");
--
--	return ret;
--}
--
--static const struct snd_soc_ops am3517evm_ops = {
--	.hw_params = am3517evm_hw_params,
--};
--
--/* am3517evm machine dapm widgets */
--static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Line Out", NULL),
--	SND_SOC_DAPM_LINE("Line In", NULL),
--	SND_SOC_DAPM_MIC("Mic In", NULL),
--};
--
--static const struct snd_soc_dapm_route audio_map[] = {
--	/* Line Out connected to LLOUT, RLOUT */
--	{"Line Out", NULL, "LOUT"},
--	{"Line Out", NULL, "ROUT"},
--
--	{"LLINEIN", NULL, "Line In"},
--	{"RLINEIN", NULL, "Line In"},
--
--	{"MICIN", NULL, "Mic In"},
--};
--
--/* Digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link am3517evm_dai = {
--	.name = "TLV320AIC23",
--	.stream_name = "AIC23",
--	.cpu_dai_name = "omap-mcbsp.1",
--	.codec_dai_name = "tlv320aic23-hifi",
--	.platform_name = "omap-mcbsp.1",
--	.codec_name = "tlv320aic23-codec.2-001a",
--	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
--		   SND_SOC_DAIFMT_CBM_CFM,
--	.ops = &am3517evm_ops,
--};
--
--/* Audio machine driver */
--static struct snd_soc_card snd_soc_am3517evm = {
--	.name = "am3517evm",
--	.owner = THIS_MODULE,
--	.dai_link = &am3517evm_dai,
--	.num_links = 1,
--
--	.dapm_widgets = tlv320aic23_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
--	.dapm_routes = audio_map,
--	.num_dapm_routes = ARRAY_SIZE(audio_map),
--};
--
--static struct platform_device *am3517evm_snd_device;
--
--static int __init am3517evm_soc_init(void)
--{
--	int ret;
--
--	if (!machine_is_omap3517evm())
--		return -ENODEV;
--	pr_info("OMAP3517 / AM3517 EVM SoC init\n");
--
--	am3517evm_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!am3517evm_snd_device) {
--		printk(KERN_ERR "Platform device allocation failed\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(am3517evm_snd_device, &snd_soc_am3517evm);
--
--	ret = platform_device_add(am3517evm_snd_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--
--err1:
--	printk(KERN_ERR "Unable to add platform device\n");
--	platform_device_put(am3517evm_snd_device);
--
--	return ret;
--}
--
--static void __exit am3517evm_soc_exit(void)
--{
--	platform_device_unregister(am3517evm_snd_device);
--}
--
--module_init(am3517evm_soc_init);
--module_exit(am3517evm_soc_exit);
--
--MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
--MODULE_DESCRIPTION("ALSA SoC OMAP3517 / AM3517 EVM");
--MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 5f4327f5b725..115f21658222 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -133,10 +133,6 @@ static const struct snd_kcontrol_new pcm3168a_snd_controls[] = {
+ 	SOC_DOUBLE("DAC2 Invert Switch", PCM3168A_DAC_INV, 2, 3, 1, 0),
+ 	SOC_DOUBLE("DAC3 Invert Switch", PCM3168A_DAC_INV, 4, 5, 1, 0),
+ 	SOC_DOUBLE("DAC4 Invert Switch", PCM3168A_DAC_INV, 6, 7, 1, 0),
+-	SOC_DOUBLE_STS("DAC1 Zero Flag", PCM3168A_DAC_ZERO, 0, 1, 1, 0),
+-	SOC_DOUBLE_STS("DAC2 Zero Flag", PCM3168A_DAC_ZERO, 2, 3, 1, 0),
+-	SOC_DOUBLE_STS("DAC3 Zero Flag", PCM3168A_DAC_ZERO, 4, 5, 1, 0),
+-	SOC_DOUBLE_STS("DAC4 Zero Flag", PCM3168A_DAC_ZERO, 6, 7, 1, 0),
+ 	SOC_ENUM("DAC Volume Control Type", pcm3168a_dac_volume_type),
+ 	SOC_ENUM("DAC Volume Rate Multiplier", pcm3168a_dac_att_mult),
+ 	SOC_ENUM("DAC De-Emphasis", pcm3168a_dac_demp),
+@@ -176,9 +172,6 @@ static const struct snd_kcontrol_new pcm3168a_snd_controls[] = {
+ 	SOC_DOUBLE("ADC1 Mute Switch", PCM3168A_ADC_MUTE, 0, 1, 1, 0),
+ 	SOC_DOUBLE("ADC2 Mute Switch", PCM3168A_ADC_MUTE, 2, 3, 1, 0),
+ 	SOC_DOUBLE("ADC3 Mute Switch", PCM3168A_ADC_MUTE, 4, 5, 1, 0),
+-	SOC_DOUBLE_STS("ADC1 Overflow Flag", PCM3168A_ADC_OV, 0, 1, 1, 0),
+-	SOC_DOUBLE_STS("ADC2 Overflow Flag", PCM3168A_ADC_OV, 2, 3, 1, 0),
+-	SOC_DOUBLE_STS("ADC3 Overflow Flag", PCM3168A_ADC_OV, 4, 5, 1, 0),
+ 	SOC_ENUM("ADC Volume Control Type", pcm3168a_adc_volume_type),
+ 	SOC_ENUM("ADC Volume Rate Multiplier", pcm3168a_adc_att_mult),
+ 	SOC_ENUM("ADC Overflow Flag Polarity", pcm3168a_adc_ov_pol),
 -- 
 2.19.0.rc2
