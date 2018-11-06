@@ -1,96 +1,65 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v4.20-rc1 (sound/pci/hda/patch_ca0132.c)
-Date: Tue, 6 Nov 2018 09:01:23 +0100
-Message-ID: <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
-References: <20181105220559.27458-1-geert@linux-m68k.org> <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
- <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: GitHub - alsa-project - repositories
+Date: Tue, 6 Nov 2018 10:04:46 +0100
+Message-ID: <09ff9777-0916-d991-7acb-6d6e7f9fe657@perex.cz>
+References: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
+ <20181105125439.GX12092@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C31A267839
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 10:04:50 +0100 (CET)
+In-Reply-To: <20181105125439.GX12092@vkoul-mobl>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Randy,
+Dne 5.11.2018 v 13:54 Vinod Koul napsal(a):
+> On 05-11-18, 09:49, Jaroslav Kysela wrote:
+>> Hi all,
+>>
+>>   URL: https://github.com/alsa-project
+>>
+>>   I finally finished the first phase of the integration with GitHub. All
+>> repositories are now on GitHub and all repositories are mirrored to
+>> alsa-project.org. The github repositories are master (developers should
+>> push changes only to those repositories). If you refer the repository as
+>> the code source (for packaging or so), please, keep to use the
+>> repositories on alsa-project.org (in case when we migrate to other
+>> service in future like GitLab or so). The mirroring is realtime, so the
+>> changes should be visible on git.alsa-project.org in few seconds after
+>> the push.
+>>
+>>   I invited few people to the GitHub team and actually Takashi has full
+>> access to all repos, Vinod Koul should have the write access to
+>> tinycompress and Takashi Sakamoto should have the write access to
+>> alsa-gi. If I omitted someone (or someone is not on github), please, let
+>> me know (and register before).
+> 
+> Thanks Jaroslav,
+> 
+> I guess first thing I need is to update my email id :-)
+> 
+> Btw how would the sync be done wrt git.alsa-project.org repos and github
+> or we should move to github starting .... ?
 
-On Tue, Nov 6, 2018 at 2:06 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 11/5/18 2:12 PM, Geert Uytterhoeven wrote:
-> > On Mon, Nov 5, 2018 at 11:07 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >> Below is the list of build error/warning regressions/improvements in
-> >> v4.20-rc1[1] compared to v4.19[2].
-> >>
-> >> Summarized:
-> >>   - build errors: +3/-0
-> >>   - build warnings: +449/-2712
-> >>
-> >> Happy fixing! ;-)
-> >>
-> >> Thanks to the linux-next team for providing the build service.
-> >>
-> >> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/651022382c7f8da46cb4872a545ee1da6d097d2a/ (all 240 configs)
-> >> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d/ (all 240 configs)
-> >>
-> >>
-> >> *** ERRORS ***
-> >>
-> >>   + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
-> >
-> > sh4-all{mod,yes}config
-> >
-> > Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
-> > pci_iomap() on SH")
-> > is not sufficient?
->
-> Different problem.  This is about "select":
->
-> config SND_SOC_ALL_CODECS
->         tristate "Build all ASoC CODEC drivers"
->
-> That enables (sets):
->         select SND_SOC_HDAC_HDA
-> which selects SND_HDA even though CONFIG_PCI is not enabled.
->
-> After SND_HDA is selected (above), the Kconfig symbols in
-> sound/pci/hda/Kconfig are available for enabling, so
-> SND_HDA_CODEC_CA0132 is enabled but will not build.
+The github repos are master (there is no bi-directional sync). Please,
+push to github only.
 
-Thanks for looking into this!
+					Jaroslav
 
-> One simple solution (but possibly too naive) is:
->
-> ---
->  sound/soc/codecs/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
-> +++ lnx-420-rc1/sound/soc/codecs/Kconfig
-> @@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
->         select SND_SOC_ES7241
->         select SND_SOC_GTM601
->         select SND_SOC_HDAC_HDMI
-> -       select SND_SOC_HDAC_HDA
-> +       select SND_SOC_HDAC_HDA if PCI
->         select SND_SOC_ICS43432
->         select SND_SOC_INNO_RK3036
->         select SND_SOC_ISABELLE if I2C
-
-I guess that will work. There are already plenty of "select foo if bar" lines.
-However, looking at what else can enable SND_HDA, I think it should be
-
-    select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
-
-That still leaves the issue that pci_iomap() on SH should be an empty stub if
-PCI is not available, like on other architectures.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
