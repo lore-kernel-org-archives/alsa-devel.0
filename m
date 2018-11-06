@@ -1,66 +1,96 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: plughw behaviour not consistent with hw
-Date: Tue, 6 Nov 2018 16:52:43 +0900
-Message-ID: <04a1fb10-323e-3dfa-6950-20912df97f75@sakamocchi.jp>
-References: <1541047452.26732.263.camel@algosolutions.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Build regressions/improvements in v4.20-rc1 (sound/pci/hda/patch_ca0132.c)
+Date: Tue, 6 Nov 2018 09:01:23 +0100
+Message-ID: <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
+References: <20181105220559.27458-1-geert@linux-m68k.org> <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
+ <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id AD4EE2677E8
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 08:52:52 +0100 (CET)
-In-Reply-To: <1541047452.26732.263.camel@algosolutions.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefano Antonelli <santonelli@algosolutions.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux-sh list <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyMDE4LzExLzAxIDEzOjQ0LCBTdGVmYW5vIEFudG9uZWxsaSB3cm90ZToKPiBEb2Vz
-IGFueW9uZSBrbm93IHdoeSBwbHVnaHcgbWlnaHQgYmUgYWN0aW5nIHRoZSB3YXkgaXQgaXMgYW5k
-IGhvdyBJIGNhbgo+IGdldCBpdCB0byBkZWxpdmVyIDEwbXMgcGVyaW9kcz8gwqBFcXVhbGx5IGFw
-cHJlY2lhdGVkIHdvdWxkIGJlIGFueSB0aXBzCj4gb24gaG93IHRvIGRlYnVnIHRoaXMgcHJvYmxl
-bS4KClRoZSAncGx1Z2h3JyBQQ00gbm9kZSBvZiBhbHNhLWxpYiBjb25maWd1cmF0aW9uIHNwYWNl
-IGlzIGFzc2lnbmVkIHRvCidwbHVnJyBQQ00gcGx1Z2luWzFdLiBUaGlzIFBDTSBwbHVnaW4gY2Fu
-IGFnZ3JlZ2F0ZSBzZXZlcmFsIFBDTSBwbHVnaW5zCnRvIHBlcmZvcm0gcmVzYW1wbGluZy4gRm9y
-IGV4YW1wbGUsIGluIGEgYmVsb3cgY2FzZSwgdHdvIFBDTSBwbHVnaW5zCihyYXRlL3JvdXRlIGNv
-bnZlcnNpb24gUENNIHBsdWdpbnMpIGFyZSBhZ2dyZWdhdGVkIGJ5ICdwbHVnJyBQQ00gcGx1Z2lu
-CmluIGZyb250IG9mICdodycgUENNIHBsdWdpbiB3aGljaCBkaXJlY3QgYWNjZXNzZXMgdG8gQUxT
-QSBQQ00gY2hyYWN0ZXIKZGV2aWNlLgoKJCBMQ19BTEw9QyBhcmVjb3JkIC12IC1EcGx1Z2h3OjEs
-MCAvZGV2L251bGwgLWZTMTZfTEUKUmVjb3JkaW5nIFdBVkUgJy9kZXYvbnVsbCcgOiBTaWduZWQg
-MTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUgODAwMCBIeiwgTW9ubwpQbHVnIFBDTTogUmF0ZSBj
-b252ZXJzaW9uIFBDTSAoNDgwMDAsIHNmb3JtYXQ9UzE2X0xFKQpDb252ZXJ0ZXI6IGxpYnNwZWV4
-IChleHRlcm5hbCkKUHJvdG9jb2wgdmVyc2lvbjogMTAwMDIKSXRzIHNldHVwIGlzOgogICBzdHJl
-YW0gICAgICAgOiBDQVBUVVJFCiAgIGFjY2VzcyAgICAgICA6IFJXX0lOVEVSTEVBVkVECiAgIGZv
-cm1hdCAgICAgICA6IFMxNl9MRQogICAuLi4KU2xhdmU6IFJvdXRlIGNvbnZlcnNpb24gUENNIChz
-Zm9ybWF0PVMxNl9MRSkKICAgVHJhbnNmb3JtYXRpb24gdGFibGU6CiAgICAgMCA8LSAwKjAuNSAr
-IDEqMC41Ckl0cyBzZXR1cCBpczoKICAgc3RyZWFtICAgICAgIDogQ0FQVFVSRQogICBhY2Nlc3Mg
-ICAgICAgOiBNTUFQX0lOVEVSTEVBVkVECiAgIGZvcm1hdCAgICAgICA6IFMxNl9MRQogICAuLi4K
-U2xhdmU6IEhhcmR3YXJlIFBDTSBjYXJkIDEgJ0hEQSBJbnRlbCBQQ0gnIGRldmljZSAwIHN1YmRl
-dmljZSAwCkl0cyBzZXR1cCBpczoKICAgc3RyZWFtICAgICAgIDogQ0FQVFVSRQogICBhY2Nlc3Mg
-ICAgICAgOiBNTUFQX0lOVEVSTEVBVkVECiAgIGZvcm1hdCAgICAgICA6IFMxNl9MRQogICAuLi4K
-CgpXZWxsLCBmb3IgY2FwdHVyZSBkaXJlY3Rpb24sIHRoZSBtb3N0IG9mIFBDTSBwbHVnaW5zIGlu
-CmFsc2EtbGliL2Fsc2EtdXRpbHMgYXJlIHByb2dyYW1tZWQgdG8gZG8gcmVzYW1wbGluZyBpbiAu
-YXZhaWxfdXBkYXRlKCkKY2FsbGJhY2sgb2YgcGx1Z2luIGZyYW1ld29yayBpbiBhbHNhLWxpYi4g
-VGhlIG51bWJlciBvZiBhdmFpbGFibGUgUENNCmZyYW1lcyBpcyBjYWxjdWxhdGVkIGluIHRoaXMg
-dGltaW5nLiBPbiB0aGUgb3RoZXIgaGFuZCwgcG9sbCgyKSBzeXN0ZW0KY2FsbCBpcyBleGVjdXRl
-ZCBhZ2FpbnN0IEFMU0EgUENNIGNoYXJhY3RlciBkZXZpY2UuIEV2ZW4gaWYgcG9sbCgyKQpyZXR1
-cm5zIHRvIG5vdGlmeSBhdmFpbGFibGUgUENNIGZyYW1lcyBpbiB0aGUgZGV2aWNlLCBhY3R1YWwg
-bnVtYmVyIG9mCmF2YWlsYWJsZSBmcmFtZXMgaXMgYSBzdW1tYXJ5IG9mIHJlc2FtcGxpbmcgZG9u
-ZSBieSB0aGUKYWdncmVnYXRlZCBQQ00gcGx1Z2lucy4gQXMgYSByZXN1bHQsIHlvdSBjYW4gc2Vl
-IHRoZSBiZWhhdmlvdXIgYmVjYXVzZQpwbHVnaW5zIHBvc3NpYmx5IGhhdmUgYnVmZmVycyBmb3Ig
-Y291bnQgZ2FwIGJldHdlZW4gaW4vb3V0IGZyYW1lcy4KClsxXSAKaHR0cDovL2dpdC5hbHNhLXBy
-b2plY3Qub3JnLz9wPWFsc2EtbGliLmdpdDthPWJsb2I7Zj1zcmMvY29uZi9hbHNhLmNvbmY7aD1i
-YjAwZmY0MDljZDk2NDNiMDFlMmQzZjhlMzZkYzk1NzFkZGIwYzg1O2hiPUhFQUQjbDE5MwoKClJl
-Z2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Hi Randy,
+
+On Tue, Nov 6, 2018 at 2:06 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 11/5/18 2:12 PM, Geert Uytterhoeven wrote:
+> > On Mon, Nov 5, 2018 at 11:07 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >> Below is the list of build error/warning regressions/improvements in
+> >> v4.20-rc1[1] compared to v4.19[2].
+> >>
+> >> Summarized:
+> >>   - build errors: +3/-0
+> >>   - build warnings: +449/-2712
+> >>
+> >> Happy fixing! ;-)
+> >>
+> >> Thanks to the linux-next team for providing the build service.
+> >>
+> >> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/651022382c7f8da46cb4872a545ee1da6d097d2a/ (all 240 configs)
+> >> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d/ (all 240 configs)
+> >>
+> >>
+> >> *** ERRORS ***
+> >>
+> >>   + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
+> >
+> > sh4-all{mod,yes}config
+> >
+> > Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
+> > pci_iomap() on SH")
+> > is not sufficient?
+>
+> Different problem.  This is about "select":
+>
+> config SND_SOC_ALL_CODECS
+>         tristate "Build all ASoC CODEC drivers"
+>
+> That enables (sets):
+>         select SND_SOC_HDAC_HDA
+> which selects SND_HDA even though CONFIG_PCI is not enabled.
+>
+> After SND_HDA is selected (above), the Kconfig symbols in
+> sound/pci/hda/Kconfig are available for enabling, so
+> SND_HDA_CODEC_CA0132 is enabled but will not build.
+
+Thanks for looking into this!
+
+> One simple solution (but possibly too naive) is:
+>
+> ---
+>  sound/soc/codecs/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
+> +++ lnx-420-rc1/sound/soc/codecs/Kconfig
+> @@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
+>         select SND_SOC_ES7241
+>         select SND_SOC_GTM601
+>         select SND_SOC_HDAC_HDMI
+> -       select SND_SOC_HDAC_HDA
+> +       select SND_SOC_HDAC_HDA if PCI
+>         select SND_SOC_ICS43432
+>         select SND_SOC_INNO_RK3036
+>         select SND_SOC_ISABELLE if I2C
+
+I guess that will work. There are already plenty of "select foo if bar" lines.
+However, looking at what else can enable SND_HDA, I think it should be
+
+    select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
+
+That still leaves the issue that pci_iomap() on SH should be an empty stub if
+PCI is not available, like on other architectures.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
