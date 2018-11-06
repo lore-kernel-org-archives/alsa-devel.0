@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: acpi: define common interface for
-	machine driver configuration" to the asoc tree
-Date: Tue,  6 Nov 2018 18:07:00 +0000 (GMT)
-Message-ID: <20181106180700.A1367112266B@debutante.sirena.org.uk>
+Subject: Applied "ASoC: pxa: change ac97 dependencies" to the
+	asoc tree
+Date: Tue,  6 Nov 2018 18:07:05 +0000 (GMT)
+Message-ID: <20181106180705.6580A112266B@debutante.sirena.org.uk>
+References: <20181102112055.659197-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FC862678F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:07:01 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AF54267AD1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:07:08 +0100 (CET)
+In-Reply-To: <20181102112055.659197-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: acpi: define common interface for machine driver configuration
+   ASoC: pxa: change ac97 dependencies
 
 has been applied to the asoc tree at
 
@@ -52,60 +53,111 @@ to this mail.
 Thanks,
 Mark
 
->From 8679284b37e9e2d529d60d1acc4133af4aa5dd34 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 1 Nov 2018 16:34:48 -0500
-Subject: [PATCH] ASoC: acpi: define common interface for machine driver
- configuration
+>From 25540f68c871d0ed3771b552eb640a1130880ab6 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 2 Nov 2018 12:20:39 +0100
+Subject: [PATCH] ASoC: pxa: change ac97 dependencies
 
-The machine drivers may need information provided by the platform
-driver.  Currently the information is passed using pdata specific to
-each plaform driver. This prevents other drivers, such as SOF, from
-reusing machine drivers directly.
+Enabling both the old AC97_BUS code and the new AC97_BUS_COMPAT causes
+problems because both modules provide an exported snd_ac97_reset()
+function.
 
-Add a new structure which contains the required fields.
+I had tried to fix the problem of having both coexist earlier, but
+my patch only prevented them from being built-in. This is because
+of a special Kconfig feature that lets a symbol have a dependency
+on another one being disabled, but still allow both to be loadable
+modules.
 
-This proposal requires a bit more work on the platform side but this
-generic interface helps reuse code directly.
+Changing the dependency to =n avoids that problem, now we can only
+build the new driver if the old one is completely disabled.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+If we could figure out a way to let rename one of the reset
+functions and have each driver link to exactly the old or
+the compat code, that would also work, but I could not find if
+that's possible.
+
+Fixes: bec5ecdf41d4 ("ASoC: pxa: avoid AC97_BUS build warning")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-acpi.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/pxa/Kconfig | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index e45b2330d16a..5154c6359609 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -37,6 +37,19 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
- 
-+/**
-+ * snd_soc_acpi_mach_params: interface for machine driver configuration
-+ *
-+ * @acpi_ipc_irq_index: used for BYT-CR detection
-+ * @platform: string used for HDaudio codec support
-+ * @codec_mask: used for HDAudio support
-+ */
-+struct snd_soc_acpi_mach_params {
-+	u32 acpi_ipc_irq_index;
-+	const char *platform;
-+	u32 codec_mask;
-+};
-+
- /**
-  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
-  * related to the hardware, except for the firmware and topology file names.
-@@ -68,6 +81,7 @@ struct snd_soc_acpi_mach {
- 	struct snd_soc_acpi_mach * (*machine_quirk)(void *arg);
- 	const void *quirk_data;
- 	void *pdata;
-+	struct snd_soc_acpi_mach_params mach_params;
- 	const char *sof_fw_filename;
- 	const char *sof_tplg_filename;
- 	const char *asoc_plat_name;
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 943b44de1464..6075fc32e6b9 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -79,7 +79,7 @@ config SND_PXA2XX_SOC_TOSA
+ 	tristate "SoC AC97 Audio support for Tosa"
+ 	depends on SND_PXA2XX_SOC && MACH_TOSA
+ 	depends on MFD_TC6393XB
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -89,7 +89,7 @@ config SND_PXA2XX_SOC_TOSA
+ config SND_PXA2XX_SOC_E740
+ 	tristate "SoC AC97 Audio support for e740"
+ 	depends on SND_PXA2XX_SOC && MACH_E740
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -99,7 +99,7 @@ config SND_PXA2XX_SOC_E740
+ config SND_PXA2XX_SOC_E750
+ 	tristate "SoC AC97 Audio support for e750"
+ 	depends on SND_PXA2XX_SOC && MACH_E750
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -109,7 +109,7 @@ config SND_PXA2XX_SOC_E750
+ config SND_PXA2XX_SOC_E800
+ 	tristate "SoC AC97 Audio support for e800"
+ 	depends on SND_PXA2XX_SOC && MACH_E800
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_SOC_WM9712
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -120,7 +120,7 @@ config SND_PXA2XX_SOC_EM_X270
+ 	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
+ 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
+ 			MACH_CM_X300)
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -131,7 +131,7 @@ config SND_PXA2XX_SOC_PALM27X
+ 	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
+ 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
+ 			MACH_PALMT5 || MACH_PALMTE2)
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -161,7 +161,7 @@ config SND_SOC_TTC_DKB
+ config SND_SOC_ZYLONITE
+ 	tristate "SoC Audio support for Marvell Zylonite"
+ 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_WM9713
+@@ -201,7 +201,7 @@ config SND_PXA2XX_SOC_MAGICIAN
+ config SND_PXA2XX_SOC_MIOA701
+         tristate "SoC Audio support for MIO A701"
+         depends on SND_PXA2XX_SOC && MACH_MIOA701
+-	depends on !AC97_BUS
++	depends on AC97_BUS=n
+         select SND_PXA2XX_SOC_AC97
+         select SND_SOC_WM9713
+         help
 -- 
 2.19.0.rc2
