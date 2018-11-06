@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: change ac97 dependencies" to the
-	asoc tree
-Date: Tue,  6 Nov 2018 18:07:05 +0000 (GMT)
-Message-ID: <20181106180705.6580A112266B@debutante.sirena.org.uk>
-References: <20181102112055.659197-1-arnd@arndb.de>
+Subject: Applied "ASoC: omap: Remove unused machine driver for
+	AM3517-evm" to the asoc tree
+Date: Tue,  6 Nov 2018 18:07:14 +0000 (GMT)
+Message-ID: <20181106180714.736C2112266B@debutante.sirena.org.uk>
+References: <20181105131011.15277-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AF54267AD1
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:07:08 +0100 (CET)
-In-Reply-To: <20181102112055.659197-1-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D1DA9267AD9
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:07:15 +0100 (CET)
+In-Reply-To: <20181105131011.15277-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: change ac97 dependencies
+   ASoC: omap: Remove unused machine driver for AM3517-evm
 
 has been applied to the asoc tree at
 
@@ -53,111 +53,209 @@ to this mail.
 Thanks,
 Mark
 
->From 25540f68c871d0ed3771b552eb640a1130880ab6 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 2 Nov 2018 12:20:39 +0100
-Subject: [PATCH] ASoC: pxa: change ac97 dependencies
+>From 2c2596f3ab25008adbc12059321cadbf5264e7bb Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 5 Nov 2018 15:10:11 +0200
+Subject: [PATCH] ASoC: omap: Remove unused machine driver for AM3517-evm
 
-Enabling both the old AC97_BUS code and the new AC97_BUS_COMPAT causes
-problems because both modules provide an exported snd_ac97_reset()
-function.
+The audio support is done via simple-audio-card via DT, the custom driver
+is no longer needed.
 
-I had tried to fix the problem of having both coexist earlier, but
-my patch only prevented them from being built-in. This is because
-of a special Kconfig feature that lets a symbol have a dependency
-on another one being disabled, but still allow both to be loadable
-modules.
-
-Changing the dependency to =n avoids that problem, now we can only
-build the new driver if the old one is completely disabled.
-
-If we could figure out a way to let rename one of the reset
-functions and have each driver link to exactly the old or
-the compat code, that would also work, but I could not find if
-that's possible.
-
-Fixes: bec5ecdf41d4 ("ASoC: pxa: avoid AC97_BUS build warning")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/omap/Kconfig     |   9 ---
+ sound/soc/omap/Makefile    |   2 -
+ sound/soc/omap/am3517evm.c | 141 -------------------------------------
+ 3 files changed, 152 deletions(-)
+ delete mode 100644 sound/soc/omap/am3517evm.c
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 943b44de1464..6075fc32e6b9 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -79,7 +79,7 @@ config SND_PXA2XX_SOC_TOSA
- 	tristate "SoC AC97 Audio support for Tosa"
- 	depends on SND_PXA2XX_SOC && MACH_TOSA
- 	depends on MFD_TC6393XB
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 6dccea6fdaeb..3d418482d242 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -78,15 +78,6 @@ config SND_OMAP_SOC_OSK5912
  	help
-@@ -89,7 +89,7 @@ config SND_PXA2XX_SOC_TOSA
- config SND_PXA2XX_SOC_E740
- 	tristate "SoC AC97 Audio support for e740"
- 	depends on SND_PXA2XX_SOC && MACH_E740
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -99,7 +99,7 @@ config SND_PXA2XX_SOC_E740
- config SND_PXA2XX_SOC_E750
- 	tristate "SoC AC97 Audio support for e750"
- 	depends on SND_PXA2XX_SOC && MACH_E750
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -109,7 +109,7 @@ config SND_PXA2XX_SOC_E750
- config SND_PXA2XX_SOC_E800
- 	tristate "SoC AC97 Audio support for e800"
- 	depends on SND_PXA2XX_SOC && MACH_E800
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_SOC_WM9712
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -120,7 +120,7 @@ config SND_PXA2XX_SOC_EM_X270
- 	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
- 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
- 			MACH_CM_X300)
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -131,7 +131,7 @@ config SND_PXA2XX_SOC_PALM27X
- 	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
- 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
- 			MACH_PALMT5 || MACH_PALMTE2)
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -161,7 +161,7 @@ config SND_SOC_TTC_DKB
- config SND_SOC_ZYLONITE
- 	tristate "SoC Audio support for Marvell Zylonite"
- 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_PXA_SOC_SSP
- 	select SND_SOC_WM9713
-@@ -201,7 +201,7 @@ config SND_PXA2XX_SOC_MAGICIAN
- config SND_PXA2XX_SOC_MIOA701
-         tristate "SoC Audio support for MIO A701"
-         depends on SND_PXA2XX_SOC && MACH_MIOA701
--	depends on !AC97_BUS
-+	depends on AC97_BUS=n
-         select SND_PXA2XX_SOC_AC97
-         select SND_SOC_WM9713
-         help
+ 	  Say Y if you want to add support for SoC audio on osk5912.
+ 
+-config SND_OMAP_SOC_AM3517EVM
+-	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
+-	depends on SND_SDMA_SOC && MACH_OMAP3517EVM && I2C
+-	select SND_OMAP_SOC_MCBSP
+-	select SND_SOC_TLV320AIC23_I2C
+-	help
+-	  Say Y if you want to add support for SoC audio on the OMAP3517 / AM3517
+-	  EVM.
+-
+ config SND_OMAP_SOC_OMAP_TWL4030
+ 	tristate "SoC Audio support for TI SoC based boards with twl4030 codec"
+ 	depends on TWL4030_CORE && SND_SDMA_SOC
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 53eba3413485..af50cdd6eea9 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -17,7 +17,6 @@ snd-soc-n810-objs := n810.o
+ snd-soc-rx51-objs := rx51.o
+ snd-soc-ams-delta-objs := ams-delta.o
+ snd-soc-osk5912-objs := osk5912.o
+-snd-soc-am3517evm-objs := am3517evm.o
+ snd-soc-omap-abe-twl6040-objs := omap-abe-twl6040.o
+ snd-soc-omap-twl4030-objs := omap-twl4030.o
+ snd-soc-omap3pandora-objs := omap3pandora.o
+@@ -26,7 +25,6 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+ obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
+ obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+-obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040) += snd-soc-omap-abe-twl6040.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP_TWL4030) += snd-soc-omap-twl4030.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+deleted file mode 100644
+index d5651026ec10..000000000000
+--- a/sound/soc/omap/am3517evm.c
++++ /dev/null
+@@ -1,141 +0,0 @@
+-/*
+- * am3517evm.c  -- ALSA SoC support for OMAP3517 / AM3517 EVM
+- *
+- * Author: Anuj Aggarwal <anuj.aggarwal@ti.com>
+- *
+- * Based on sound/soc/omap/beagle.c by Steve Sakoman
+- *
+- * Copyright (C) 2009 Texas Instruments Incorporated
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of the GNU General Public License as published by the
+- * Free Software Foundation version 2.
+- *
+- * This program is distributed "as is" WITHOUT ANY WARRANTY of any kind,
+- * whether express or implied; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+- * General Public License for more details.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/platform_device.h>
+-#include <linux/module.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-
+-#include <asm/mach-types.h>
+-#include <linux/platform_data/asoc-ti-mcbsp.h>
+-
+-#include "omap-mcbsp.h"
+-
+-#include "../codecs/tlv320aic23.h"
+-
+-#define CODEC_CLOCK 	12000000
+-
+-static int am3517evm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	/* Set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+-			CODEC_CLOCK, SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		printk(KERN_ERR "can't set codec system clock\n");
+-
+-	return ret;
+-}
+-
+-static const struct snd_soc_ops am3517evm_ops = {
+-	.hw_params = am3517evm_hw_params,
+-};
+-
+-/* am3517evm machine dapm widgets */
+-static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
+-	SND_SOC_DAPM_HP("Line Out", NULL),
+-	SND_SOC_DAPM_LINE("Line In", NULL),
+-	SND_SOC_DAPM_MIC("Mic In", NULL),
+-};
+-
+-static const struct snd_soc_dapm_route audio_map[] = {
+-	/* Line Out connected to LLOUT, RLOUT */
+-	{"Line Out", NULL, "LOUT"},
+-	{"Line Out", NULL, "ROUT"},
+-
+-	{"LLINEIN", NULL, "Line In"},
+-	{"RLINEIN", NULL, "Line In"},
+-
+-	{"MICIN", NULL, "Mic In"},
+-};
+-
+-/* Digital audio interface glue - connects codec <--> CPU */
+-static struct snd_soc_dai_link am3517evm_dai = {
+-	.name = "TLV320AIC23",
+-	.stream_name = "AIC23",
+-	.cpu_dai_name = "omap-mcbsp.1",
+-	.codec_dai_name = "tlv320aic23-hifi",
+-	.platform_name = "omap-mcbsp.1",
+-	.codec_name = "tlv320aic23-codec.2-001a",
+-	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
+-		   SND_SOC_DAIFMT_CBM_CFM,
+-	.ops = &am3517evm_ops,
+-};
+-
+-/* Audio machine driver */
+-static struct snd_soc_card snd_soc_am3517evm = {
+-	.name = "am3517evm",
+-	.owner = THIS_MODULE,
+-	.dai_link = &am3517evm_dai,
+-	.num_links = 1,
+-
+-	.dapm_widgets = tlv320aic23_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
+-	.dapm_routes = audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(audio_map),
+-};
+-
+-static struct platform_device *am3517evm_snd_device;
+-
+-static int __init am3517evm_soc_init(void)
+-{
+-	int ret;
+-
+-	if (!machine_is_omap3517evm())
+-		return -ENODEV;
+-	pr_info("OMAP3517 / AM3517 EVM SoC init\n");
+-
+-	am3517evm_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!am3517evm_snd_device) {
+-		printk(KERN_ERR "Platform device allocation failed\n");
+-		return -ENOMEM;
+-	}
+-
+-	platform_set_drvdata(am3517evm_snd_device, &snd_soc_am3517evm);
+-
+-	ret = platform_device_add(am3517evm_snd_device);
+-	if (ret)
+-		goto err1;
+-
+-	return 0;
+-
+-err1:
+-	printk(KERN_ERR "Unable to add platform device\n");
+-	platform_device_put(am3517evm_snd_device);
+-
+-	return ret;
+-}
+-
+-static void __exit am3517evm_soc_exit(void)
+-{
+-	platform_device_unregister(am3517evm_snd_device);
+-}
+-
+-module_init(am3517evm_soc_init);
+-module_exit(am3517evm_soc_exit);
+-
+-MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
+-MODULE_DESCRIPTION("ALSA SoC OMAP3517 / AM3517 EVM");
+-MODULE_LICENSE("GPL v2");
 -- 
 2.19.0.rc2
