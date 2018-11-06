@@ -1,92 +1,92 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [alsa-devel] Build regressions/improvements in v4.20-rc1 (sound/pci/hda/patch_ca0132.c)
-Date: Tue, 6 Nov 2018 16:25:21 +0100
-Message-ID: <CAMuHMdWMO5yE7vjWsyz6dWQ6eswVRcWO8A43vTrJn26D1EsfVQ@mail.gmail.com>
-References: <20181105220559.27458-1-geert@linux-m68k.org> <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
- <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org> <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
- <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH] ASoC: core: Invoke pcm_new() for all
+ DAI-link
+Date: Tue, 6 Nov 2018 16:41:23 +0100
+Message-ID: <4f22e4e5-84f0-1560-1ba7-5e77d44fd312@st.com>
+References: <1541075929-29323-1-git-send-email-rohitkr@codeaurora.org>
+ <s5htvl0exil.wl-tiwai@suse.de>
+ <48c78f67-8178-2d07-e35d-2e4eca51ccbc@codeaurora.org>
+ <791d4587-4db3-3ffa-331a-f79d0993ca8c@st.com>
+ <3616f01f-6a00-6eb1-0bdd-f161b7ce15e6@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C63EE2678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 16:41:27 +0100 (CET)
+In-Reply-To: <3616f01f-6a00-6eb1-0bdd-f161b7ce15e6@codeaurora.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rohit Kumar <rohitkr@codeaurora.org>, Takashi Iwai <tiwai@suse.de>, olivier.moysan@st.com
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
-
-On Tue, Nov 6, 2018 at 3:56 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> >>>>
-> >>>> *** ERRORS ***
-> >>>>
-> >>>>    + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
-> >>> sh4-all{mod,yes}config
-> >>>
-> >>> Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
-> >>> pci_iomap() on SH")
-> >>> is not sufficient?
-> >> Different problem.  This is about "select":
-> >>
-> >> config SND_SOC_ALL_CODECS
-> >>          tristate "Build all ASoC CODEC drivers"
-> >>
-> >> That enables (sets):
-> >>          select SND_SOC_HDAC_HDA
-> >> which selects SND_HDA even though CONFIG_PCI is not enabled.
-> >>
-> >> After SND_HDA is selected (above), the Kconfig symbols in
-> >> sound/pci/hda/Kconfig are available for enabling, so
-> >> SND_HDA_CODEC_CA0132 is enabled but will not build.
-> > Thanks for looking into this!
-> >
-> >> One simple solution (but possibly too naive) is:
-> >>
-> >> ---
-> >>   sound/soc/codecs/Kconfig |    2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> --- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
-> >> +++ lnx-420-rc1/sound/soc/codecs/Kconfig
-> >> @@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
-> >>          select SND_SOC_ES7241
-> >>          select SND_SOC_GTM601
-> >>          select SND_SOC_HDAC_HDMI
-> >> -       select SND_SOC_HDAC_HDA
-> >> +       select SND_SOC_HDAC_HDA if PCI
-> >>          select SND_SOC_ICS43432
-> >>          select SND_SOC_INNO_RK3036
-> >>          select SND_SOC_ISABELLE if I2C
-> > I guess that will work. There are already plenty of "select foo if bar" lines.
-> > However, looking at what else can enable SND_HDA, I think it should be
-> >
-> >      select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
->
-> This codec can only be used by the Skylake driver (and the upcoming SOF
-> one). For Tegra this module will never be used unless they follow the
-> same path of enabling ASoC to deal with the HDaudio codecs instead of
-> the legacy.
->
-> Likewise HDAC_HDMI will only work on Intel platforms for now.
->
-> >
-> > That still leaves the issue that pci_iomap() on SH should be an empty stub if
-> > PCI is not available, like on other architectures.
->
-> I thought Mark Brown provided a fix to SH maintainers?
-
-Indeed, https://patchwork.kernel.org/patch/10597409/
-
-As usual, no response from the J^HSH maintainers :-(
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGVsbG8gUm9oaXQKCk9uIDExLzUvMTggNzoxNCBQTSwgUm9oaXQgS3VtYXIgd3JvdGU6Cj4gSGVs
+bG8gQXJuYXVkLAo+IAo+IAo+IE9uIDExLzUvMjAxOCA0OjQzIFBNLCBBcm5hdWQgUG91bGlxdWVu
+IHdyb3RlOgo+PiBIZWxsbyBSb2hpdCwKPj4KPj4gT24gMTEvMi8xOCAxOjA2IFBNLCBSb2hpdCBL
+dW1hciB3cm90ZToKPj4+IE9uIDExLzIvMjAxOCAxOjEyIFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6
+Cj4+Pj4gT24gVGh1LCAwMSBOb3YgMjAxOCAxMzozODo0OSArMDEwMCwKPj4+PiBSb2hpdCBrdW1h
+ciB3cm90ZToKPj4+Pj4gUmVtb3ZlIG5vX3BjbSBjaGVjayB0byBpbnZva2UgcGNtX25ldygpIGZv
+ciBiYWNrZW5kIGRhaS1saW5rcwo+Pj4+PiB0b28uIFRoaXMgZml4ZXMgY3Jhc2ggaW4gaGRtaSBj
+b2RlYyBkcml2ZXIgZHVyaW5nIGhkbWlfY29kZWNfc3RhcnR1cCgpCj4+Pj4+IHdoaWxlIGFjY2Vz
+c2luZyBjaG1hcF9pbmZvIHN0cnVjdC4gY2htYXBfaW5mbyBzdHJ1Y3QgbWVtb3J5IGlzCj4+Pj4+
+IGFsbG9jYXRlZCBpbiBwY21fbmV3KCkgb2YgaGRtaSBjb2RlYyBkcml2ZXIgd2hpY2ggaXMgbm90
+IGludm9rZWQKPj4+Pj4gaW4gY2FzZSBvZiBEUENNIHdoZW4gaGRtaSBjb2RlYyBkcml2ZXIgaXMg
+cGFydCBvZiBiYWNrZW5kIGRhaS1saW5rLgo+Pj4+Pgo+Pj4+PiBCZWxvdyBpcyB0aGUgY3Jhc2gg
+c3RhY2s6Cj4+Pj4+Cj4+Pj4+IFvCoMKgIDYxLjYzNTQ5M10gVW5hYmxlIHRvIGhhbmRsZSBrZXJu
+ZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0Cj4+Pj4+IHZpcnR1YWwgYWRkcmVzcyAwMDAw
+MDAxOAo+Pj4+PiAuLgo+Pj4+PiBbwqDCoCA2MS42NjY2OTZdwqDCoCBDTSA9IDAsIFduUiA9IDEK
+Pj4+Pj4gW8KgwqAgNjEuNjY5Nzc4XSB1c2VyIHBndGFibGU6IDRrIHBhZ2VzLCAzOS1iaXQgVkFz
+LCBwZ2QgPQo+Pj4+PiBmZmZmZmZjMGQ2NjMzMDAwCj4+Pj4+IFvCoMKgIDYxLjY3NjUyNl0gWzAw
+MDAwMDAwMDAwMDAwMThdICpwZ2Q9MDAwMDAwMDE1M2ZjODAwMywKPj4+Pj4gKnB1ZD0wMDAwMDAw
+MTUzZmM4MDAzLCAqcG1kPTAwMDAwMDAwMDAwMDAwMDAKPj4+Pj4gW8KgwqAgNjEuNjg1NzkzXSBJ
+bnRlcm5hbCBlcnJvcjogT29wczogOTYwMDAwNDYgWyMxXSBQUkVFTVBUIFNNUAo+Pj4+PiBbwqDC
+oCA2MS43MjI5NTVdIENQVTogNyBQSUQ6IDIyMzggQ29tbTogYXBsYXkgTm90IHRhaW50ZWQgNC4x
+NC43MiAjMjEKPj4+Pj4gLi4KPj4+Pj4gW8KgwqAgNjEuNzQwMjY5XSBQQyBpcyBhdCBoZG1pX2Nv
+ZGVjX3N0YXJ0dXArMHgxMjQvMHgxNjQKPj4+Pj4gW8KgwqAgNjEuNzQ1MzA4XSBMUiBpcyBhdCBo
+ZG1pX2NvZGVjX3N0YXJ0dXArMHhlNC8weDE2NAo+Pj4+Pgo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBS
+b2hpdCBrdW1hciA8cm9oaXRrckBjb2RlYXVyb3JhLm9yZz4KPj4+PiBEaWQgeW91IGNoZWNrIHdo
+ZXRoZXIgYWxsIGRyaXZlcnMgaGF2ZSBubyBzaWRlLWVmZmVjdCBieSB0aGlzIGNoYW5nZT8KPj4+
+PiBUaGUgaGRtaS1jb2RlYyBpc24ndCB0aGUgb25seSBkcml2ZXIgdGhhdCBoYXMgcGNtX25ldyBv
+cHMsIHNvIHdlIGhhdmUKPj4+PiB0byBtYWtlIHN1cmUgdGhhdCBzdWNoIGEgZnVuZGFtZW50YWwg
+Y2hhbmdlIHdvdWxkbid0IGJyaW5nIGFueQo+Pj4+IHJlZ3Jlc3Npb25zLgo+Pj4+Cj4+PiBCZWxv
+dyBhcmUgdGhlIGRyaXZlcnMgY2FsbGluZyBwY21fbmV3KCkgb3RoZXIgdGhhbiBoZG1pIGNvZGVj
+IGRyaXZlci4KPj4+IHNvdW5kL3NvYy9tZXNvbi9heGctZnJkZHIuYwo+Pj4gc291bmQvc29jL21l
+c29uL2F4Zy10b2Rkci5jCj4+PiBUaGVzZSB0d28gZHJpdmVycyBhcmUgZnJvbnRlbmQgREFJIGRy
+aXZlcnMgYW5kIHNob3VsZCBub3QgYmUgaW1wYWN0ZWQKPj4+IGJlY2F1c2Ugb2YgdGhpcy4KPj4+
+Cj4+PiBPdGhlciB0aGFuIHRoaXMsIHBjbV9uZXcoKSBpcyBjYWxsZWQgZnJvbSBzb3VuZC9zb2Mv
+c3RtL3N0bTMyX3NhaV9zdWIuYwo+Pj4gSSBjb3VsZCBub3QgZ2V0IG11Y2ggaW5mbyBhYm91dCB0
+aGlzIGRyaXZlci4gSG93ZXZlciwgaXQgaXMganVzdCBhZGRpbmcKPj4+IGtjb250cm9scyBpbiBw
+Y21fbmV3KCkgd2hpY2ggdXNlcyBpbnRlcm5hbCBwcml2YXRlIHN0cnVjdHMgaW4KPj4+IGdldCgp
+L3B1dCgpLgo+Pj4gT2xpdmllciBNb3lzYW4gY2FuIHRvbyBjb25maXJtIG9uIHRoaXMuCj4+IEZp
+cnN0LCBpJ20gYW5zd2VyaW5nwqAgZm9yIE9saXZpZXI6IG5vIHJlZ3Jlc3Npb24gaWRlbnRpZmll
+ZCBmb3IgdGhlIFNBSQo+PiBkcml2ZXIsIGl0IGlzIG5vdCBhIERQQ00gZHJpdmVyLgo+Pgo+PiBU
+aGVuIGkgaGF2ZSBhIGNvbmNlcm4gYWJvdXQgdGhlIGNhbGwgb2YgcGNtX25ldyBmb3IgYSBuby1Q
+Q00gYmFja2VuZC4KPj4gRG9lcyBpdCBtYWtlIHNlbnNlPyBJbiBEUENNIGNvbmNlcHQsIHRoZSBi
+YWNrZW5kIGlzIG5vdCBsaW5rZWQgdG8gdGhlCj4+IFBDTSBkZXZpY2UuLi4KPj4KPj4gSW5zdGVh
+ZCwgSSB3b3VsZCBzdWdnZXN0IHRoYXQgeW91IGFkZCBwcm90ZWN0aW9uIGluIEhETUlfY29kZWMg
+b24KPj4gY2htYXBfaW5mbyBwb2ludGVyLgo+Pgo+PiBUaGUgZHJhd2JhY2sgd291bGQgYmUgdGhh
+dCB0aGUgY29udHJvbCBpcyBubyBtb3JlIGF2YWlsYWJsZS4uLmRvIHlvdQo+PiBuZWVkIGl0Pwo+
+IEkgZG9uJ3QgbmVlZCBjaG1hcF9pbmZvLCBidXQgRUxEIGtjb250cm9sIGlzIGFsc28gZGVmaW5l
+ZCBpbiBwY21fbmV3KCkKPiB3aGljaAo+IHdlIG5lZWQuIFdlIHNob3VsZCBwcm9iYWJseSB1cGRh
+dGUgdGhlIGRyaXZlciB0byBtYWtlIGl0IGNvbXBhdGlibGUgd2l0aAo+IERQQ00uIEFueSBzdWdn
+ZXN0aW9ucz8KCkkgd291bGQgc2F5IGZvcmNlIGRldmljZSB0byAwIGlmIG5vX3BjbSAobmVlZCBw
+cm9iYWJseSB0byBjcmVhdGUgdGhlCmNvbnRyb2wgaW4gaGRtaV9vZl94bGF0ZV9kYWlfaWQgaW5z
+dGVhZCBvZiBoZG1pX2NvZGVjX3BjbV9uZXcpLgpCdXQga2VlcCBpbiBtaW5kIHRoYXQgc29sdXRp
+b24gaGFzIHRvIHdvcmsgaW4gY2FzZSBvZiBtdWx0aSBIRE1JIGNvZGVjCmluc3RhbmNlcywgcGVy
+aGFwcyB1c2luZyBwcmVmaXguLi4KQW55d2F5LCBpJ20gbm90IGEgRFBDTSBleHBlcnQgc28gcGVy
+aGFwcyBtb3JlIGVsZWdhbnQgc29sdXRpb25zIGV4aXN0LgoKUmVnYXJkcwpBcm5hdWQKCj4+IFJl
+Z2FyZHMKPj4gQXJuYXVkCj4+Cj4+PiBUaGFua3MsCj4+PiBSb2hpdAo+Pj4+IHRoYW5rcywKPj4+
+Pgo+Pj4+IFRha2FzaGkKPiBUaGFua3MsCj4gUm9oaXQKPiAKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
