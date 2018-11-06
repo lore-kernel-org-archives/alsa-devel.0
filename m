@@ -1,107 +1,63 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/2] ASoC: qdsp6: q6asm-dai: Only add routing once.
-Date: Tue,  6 Nov 2018 11:38:56 +0000
-Message-ID: <20181106113857.19737-2-srinivas.kandagatla@linaro.org>
-References: <20181106113857.19737-1-srinivas.kandagatla@linaro.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix incorrect clearance of
+	thinkpad_acpi hooks
+Date: Tue,  6 Nov 2018 13:35:25 +0100
+Message-ID: <20181106123525.32383-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181106113857.19737-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DDA32678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 13:35:27 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id DCA3CB619
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 12:35:26 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-q6asm routing gets added multiple times as part of dai probe.
-Move this to q6routing routes which has those widgets defined, this also
-fixes the issue where these are added each time at dai probe.
+Since the commit c647f806b8c2 ("ALSA: hda - Allow multiple ADCs for
+mic mute LED controls") we allow enabling the mic mute LED with
+multiple ADCs.  The commit changed the function return value to be
+zero or a negative error, while this change was overlooked in the
+thinkpad_acpi helper code where it still expects a positive return
+value for success.  This eventually leads to a NULL dereference on a
+system that has only a mic mute LED.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+This patch corrects the return value check in the corresponding code
+as well.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201621
+Fixes: c647f806b8c2 ("ALSA: hda - Allow multiple ADCs for mic mute LED controls")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 33 --------------------------------
- sound/soc/qcom/qdsp6/q6routing.c | 19 ++++++++++++++++++
- 2 files changed, 19 insertions(+), 33 deletions(-)
+ sound/pci/hda/thinkpad_helper.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index a16c71c03058..86115de5c1b2 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -122,7 +122,6 @@ static struct snd_pcm_hardware q6asm_dai_hardware_playback = {
- 			.rate_max =	48000,				\
- 		},							\
- 		.name = "MultiMedia"#num,				\
--		.probe = fe_dai_probe,					\
- 		.id = MSM_FRONTEND_DAI_MULTIMEDIA##num,			\
+diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helper.c
+index 97f49b751e6e..568575b72f2f 100644
+--- a/sound/pci/hda/thinkpad_helper.c
++++ b/sound/pci/hda/thinkpad_helper.c
+@@ -58,8 +58,8 @@ static void hda_fixup_thinkpad_acpi(struct hda_codec *codec,
+ 			removefunc = false;
+ 		}
+ 		if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0 &&
+-		    snd_hda_gen_add_micmute_led(codec,
+-						update_tpacpi_micmute) > 0)
++		    !snd_hda_gen_add_micmute_led(codec,
++						 update_tpacpi_micmute))
+ 			removefunc = false;
  	}
  
-@@ -511,38 +510,6 @@ static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
- 	}
- }
- 
--static const struct snd_soc_dapm_route afe_pcm_routes[] = {
--	{"MM_DL1",  NULL, "MultiMedia1 Playback" },
--	{"MM_DL2",  NULL, "MultiMedia2 Playback" },
--	{"MM_DL3",  NULL, "MultiMedia3 Playback" },
--	{"MM_DL4",  NULL, "MultiMedia4 Playback" },
--	{"MM_DL5",  NULL, "MultiMedia5 Playback" },
--	{"MM_DL6",  NULL, "MultiMedia6 Playback" },
--	{"MM_DL7",  NULL, "MultiMedia7 Playback" },
--	{"MM_DL7",  NULL, "MultiMedia8 Playback" },
--	{"MultiMedia1 Capture", NULL, "MM_UL1"},
--	{"MultiMedia2 Capture", NULL, "MM_UL2"},
--	{"MultiMedia3 Capture", NULL, "MM_UL3"},
--	{"MultiMedia4 Capture", NULL, "MM_UL4"},
--	{"MultiMedia5 Capture", NULL, "MM_UL5"},
--	{"MultiMedia6 Capture", NULL, "MM_UL6"},
--	{"MultiMedia7 Capture", NULL, "MM_UL7"},
--	{"MultiMedia8 Capture", NULL, "MM_UL8"},
--
--};
--
--static int fe_dai_probe(struct snd_soc_dai *dai)
--{
--	struct snd_soc_dapm_context *dapm;
--
--	dapm = snd_soc_component_get_dapm(dai->component);
--	snd_soc_dapm_add_routes(dapm, afe_pcm_routes,
--				ARRAY_SIZE(afe_pcm_routes));
--
--	return 0;
--}
--
--
- static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.name		= DRV_NAME,
- 	.ops		= &q6asm_dai_ops,
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index c6b51571be94..d61b8404f7da 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -909,6 +909,25 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"MM_UL6", NULL, "MultiMedia6 Mixer"},
- 	{"MM_UL7", NULL, "MultiMedia7 Mixer"},
- 	{"MM_UL8", NULL, "MultiMedia8 Mixer"},
-+
-+	{"MM_DL1",  NULL, "MultiMedia1 Playback" },
-+	{"MM_DL2",  NULL, "MultiMedia2 Playback" },
-+	{"MM_DL3",  NULL, "MultiMedia3 Playback" },
-+	{"MM_DL4",  NULL, "MultiMedia4 Playback" },
-+	{"MM_DL5",  NULL, "MultiMedia5 Playback" },
-+	{"MM_DL6",  NULL, "MultiMedia6 Playback" },
-+	{"MM_DL7",  NULL, "MultiMedia7 Playback" },
-+	{"MM_DL8",  NULL, "MultiMedia8 Playback" },
-+
-+	{"MultiMedia1 Capture", NULL, "MM_UL1"},
-+	{"MultiMedia2 Capture", NULL, "MM_UL2"},
-+	{"MultiMedia3 Capture", NULL, "MM_UL3"},
-+	{"MultiMedia4 Capture", NULL, "MM_UL4"},
-+	{"MultiMedia5 Capture", NULL, "MM_UL5"},
-+	{"MultiMedia6 Capture", NULL, "MM_UL6"},
-+	{"MultiMedia7 Capture", NULL, "MM_UL7"},
-+	{"MultiMedia8 Capture", NULL, "MM_UL8"},
-+
- };
- 
- static int routing_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.19.1
