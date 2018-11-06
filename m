@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: fix Skylake typo" to the
-	asoc tree
-Date: Tue,  6 Nov 2018 18:00:48 +0000 (GMT)
-Message-ID: <20181106180048.6DC15112266B@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: use standard interface for Atom
+	machine drivers" to the asoc tree
+Date: Tue,  6 Nov 2018 18:02:50 +0000 (GMT)
+Message-ID: <20181106180251.029D3112266B@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DFB902678F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:00:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 89FD82678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:02:52 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: fix Skylake typo
+   ASoC: Intel: use standard interface for Atom machine drivers
 
 has been applied to the asoc tree at
 
@@ -52,119 +52,112 @@ to this mail.
 Thanks,
 Mark
 
->From 48bf41a2be51ef3f67b60f85bf75cecfb57884ba Mon Sep 17 00:00:00 2001
+>From 3ee1cd4f81e15f51638db80fb9f1371b3bdf05ba Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 1 Nov 2018 16:34:51 -0500
-Subject: [PATCH] ASoC: Intel: boards: fix Skylake typo
+Date: Thu, 1 Nov 2018 16:34:50 -0500
+Subject: [PATCH] ASoC: Intel: use standard interface for Atom machine drivers
 
-s/skylaye/skylake
+Don't rely on internal Atom/SST-specific data structures, use
+generic interface to let other drivers use the same machine drivers
+as is, e.g. SOF to support BYT-CR devices
 
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98927.c    | 6 +++---
- sound/soc/intel/boards/kbl_rt5663_max98927.c    | 4 ++--
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 4 ++--
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c     | 4 ++++
+ sound/soc/intel/boards/bytcr_rt5640.c   | 6 +-----
+ sound/soc/intel/boards/bytcr_rt5651.c   | 6 +-----
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 6 +-----
+ 4 files changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 3fa1c3ca6d37..3bc78e3a91ee 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -441,7 +441,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- }
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index c90b04cc071d..ac542535b9d5 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -341,6 +341,10 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 		byt_rvp_platform_data.res_info = &bytcr_res_info;
+ 	}
  
++	/* update machine parameters */
++	mach->mach_params.acpi_ipc_irq_index =
++		pdata->res_info->acpi_ipc_irq_index;
++
+ 	plat_dev = platform_device_register_data(dev, pdata->platform, -1,
+ 						NULL, 0);
+ 	if (IS_ERR(plat_dev)) {
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 8587bd3d1cc1..09591144ea7d 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -29,7 +29,6 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+-#include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -1152,10 +1151,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (is_valleyview()) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
+ 	}
  
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index c44298130720..e528995668b7 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -32,7 +32,6 @@
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+-#include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -920,10 +919,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (x86_match_cpu(baytrail_cpu_ids)) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
+ 	}
  
-@@ -525,7 +525,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-@@ -736,7 +736,7 @@ static struct snd_soc_dai_link kabylake_max98927_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 99e1320c485f..6ea969c0a5fb 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -586,7 +586,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- 				&constraints_16000);
- }
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index f5a5ea6a093c..250a356a0cbf 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -27,7 +27,6 @@
+ #include <linux/dmi.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+-#include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -585,10 +584,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	 * (will be overridden if DMI quirk is detected)
+ 	 */
+ 	if (is_valleyview()) {
+-		struct sst_platform_info *p_info = mach->pdata;
+-		const struct sst_res_info *res_info = p_info->res_info;
+-
+-		if (res_info->acpi_ipc_irq_index == 0)
++		if (mach->mach_params.acpi_ipc_irq_index == 0)
+ 			is_bytcr = true;
+ 	}
  
--static struct snd_soc_ops skylaye_refcap_ops = {
-+static struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
- 
-@@ -655,7 +655,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index d31482b8c9bb..552958ce736d 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -400,7 +400,7 @@ static int skylake_refcap_startup(struct snd_pcm_substream *substream)
- 				&constraints_16000);
- }
- 
--static const struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-@@ -447,7 +447,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[SKL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Skl Audio DMIC cap",
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index e877bb60beb1..f985b30a1d0e 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -449,7 +449,7 @@ static int skylake_refcap_startup(struct snd_pcm_substream *substream)
- 			&constraints_16000);
- }
- 
--static const struct snd_soc_ops skylaye_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = skylake_refcap_startup,
- };
- 
-@@ -496,7 +496,7 @@ static struct snd_soc_dai_link skylake_dais[] = {
- 		.dpcm_capture = 1,
- 		.nonatomic = 1,
- 		.dynamic = 1,
--		.ops = &skylaye_refcap_ops,
-+		.ops = &skylake_refcap_ops,
- 	},
- 	[SKL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Skl Audio DMIC cap",
 -- 
 2.19.0.rc2
