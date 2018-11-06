@@ -1,59 +1,42 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v4.20-rc1
-Date: Mon, 5 Nov 2018 23:12:12 +0100
-Message-ID: <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
-References: <20181105220559.27458-1-geert@linux-m68k.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
+Subject: aplay: fix description about options for process
+	duration
+Date: Tue,  6 Nov 2018 01:22:35 +0100 (CET)
+Message-ID: <20181106002235.46EEC2679BF@alsa0.perex.cz>
+References: <1541463753188396931-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181105220559.27458-1-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
+ [192.168.100.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8372D267930
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 01:22:33 +0100 (CET)
+In-Reply-To: <1541463753188396931-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 5, 2018 at 11:07 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v4.20-rc1[1] compared to v4.19[2].
->
-> Summarized:
->   - build errors: +3/-0
->   - build warnings: +449/-2712
->
-> Happy fixing! ;-)
->
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/651022382c7f8da46cb4872a545ee1da6d097d2a/ (all 240 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d/ (all 240 configs)
->
->
-> *** ERRORS ***
->
-> 3 error regressions:
->   + /kisskb/src/arch/s390/kernel/nospec-branch.c: error: macro "memcpy" passed 6 arguments, but takes just 3:  => 130:61
+alsa-project/alsa-utils pull request #1 was opened from takaswie:
 
-s390-all{mod,yes}config
+Hi,
 
->   + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
+At present, aplay has two options for duration to process PCM frames.
+However, the recent one ('--samples') option is not described yet in
+its manual. Furthermore, '-s' option was used for '--sleep-min' option
+once and description for this option was left as is. This can puzzle
+uses.
 
-sh4-all{mod,yes}config
+This patchset improves description about options for process duration.
 
-Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
-pci_iomap() on SH")
-is not sufficient?
-
->   + {standard input}: Error: Unrecognized opcode: `slbfee.':  => 89, 37
-
-powerpc-all{mod,yes}config
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/1
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/1.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
