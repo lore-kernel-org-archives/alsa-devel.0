@@ -1,138 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: Only add routing once." to the asoc tree
-Date: Tue,  6 Nov 2018 18:09:37 +0000 (GMT)
-Message-ID: <20181106180937.94942112266B@debutante.sirena.org.uk>
-References: <20181106113857.19737-2-srinivas.kandagatla@linaro.org>
+From: Mike Brady <mikebrady@eircom.net>
+Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
+ delay
+Date: Tue, 6 Nov 2018 21:05:11 +0000
+Message-ID: <6AF69E32-029E-478F-9BFA-6262316364A9@eircom.net>
+References: <20181022191708.GA4659@ubuntu>
+ <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
+ <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
+ <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
+ <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+ <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
+ <s5hftwuo4t0.wl-tiwai@suse.de>
+ <126FA055-050B-4AAC-9392-CA8CCA821768@eircom.net>
+ <C35AD288-063F-4197-A758-450CBB3B1184@eircom.net>
+ <s5hsh0f1p30.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 12.1 \(3445.101.1\))
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181106113857.19737-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <s5hsh0f1p30.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, rohitkr@codeaurora.orgalsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, julia.lawall@lip6.fr, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, Kirill Marinushkin <k.marinushkin@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: qdsp6: q6asm-dai: Only add routing once.
+> On 5 Nov 2018, at 16:11, Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> On Mon, 05 Nov 2018 16:57:07 +0100,
+> Mike Brady wrote:
+>> 
+>>> One another thing I'd like to point out is that the value given in the
+>>> patch is nothing but an estimated position, optimistically calculated
+>>> via the system timer.  Mike and I had already discussion in another
+>>> thread, and another possible option would be to provide the proper
+>>> timestamp-vs-hwptr pair, instead of updating the timestamp always at
+>>> the status read.
+>> 
+>> Agreed — that would give the caller the information needed to do the
+>> interpolation for themselves if desired.
+> 
+> And now I wonder whether the problem is still present with the latest
+> code.  There was a (kind of) regression in this regard when we
+> introduced the fine-grained hardware timestamping, but it should have
+> been addressed by the commit 20e3f985bb875fea4f86b04eba4b6cc29bfd6b71
+>    ALSA: pcm: update tstamp only if audio_tstamp changed
+> 
+> Could you double-check whether the tstamp field gets still updated
+> even if no hwptr (and delay) is changed?
 
-has been applied to the asoc tree at
+Yes, this could be a bit problematic. The function update_audio_tstamp in pcm_lib.c could include the interpolated delay in the calculation of audio_tstamp, and hence
+could trigger the update of tstamp.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Another issue, as I see it, is that the the audio_tstamp value would depend on whether, and when, a snd_pcm_delay() call (which recalculates the interpolation and puts it into the delay field) was made immediately prior to it. By zeroing the delay when a GPU interrupt occurs, you could be certain that the interpolated delay would be less than or equal to the true delay, but this doesn’t seem very satisfactory — you have neither the timestamp of the last update nor the correctly interpolated timestamp. 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Sadly, therefore, I’m now of the view that this approach to interpolating the delay between GPU interrupts is not really viable. Would that be your view?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Regards
+Mike
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9de57ff1566fd36a664c1b04a641e26fed472a9c Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 6 Nov 2018 11:38:56 +0000
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: Only add routing once.
-
-q6asm routing gets added multiple times as part of dai probe.
-Move this to q6routing routes which has those widgets defined, this also
-fixes the issue where these are added each time at dai probe.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/qdsp6/q6asm-dai.c | 33 --------------------------------
- sound/soc/qcom/qdsp6/q6routing.c | 19 ++++++++++++++++++
- 2 files changed, 19 insertions(+), 33 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index a16c71c03058..86115de5c1b2 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -122,7 +122,6 @@ static struct snd_pcm_hardware q6asm_dai_hardware_playback = {
- 			.rate_max =	48000,				\
- 		},							\
- 		.name = "MultiMedia"#num,				\
--		.probe = fe_dai_probe,					\
- 		.id = MSM_FRONTEND_DAI_MULTIMEDIA##num,			\
- 	}
- 
-@@ -511,38 +510,6 @@ static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
- 	}
- }
- 
--static const struct snd_soc_dapm_route afe_pcm_routes[] = {
--	{"MM_DL1",  NULL, "MultiMedia1 Playback" },
--	{"MM_DL2",  NULL, "MultiMedia2 Playback" },
--	{"MM_DL3",  NULL, "MultiMedia3 Playback" },
--	{"MM_DL4",  NULL, "MultiMedia4 Playback" },
--	{"MM_DL5",  NULL, "MultiMedia5 Playback" },
--	{"MM_DL6",  NULL, "MultiMedia6 Playback" },
--	{"MM_DL7",  NULL, "MultiMedia7 Playback" },
--	{"MM_DL7",  NULL, "MultiMedia8 Playback" },
--	{"MultiMedia1 Capture", NULL, "MM_UL1"},
--	{"MultiMedia2 Capture", NULL, "MM_UL2"},
--	{"MultiMedia3 Capture", NULL, "MM_UL3"},
--	{"MultiMedia4 Capture", NULL, "MM_UL4"},
--	{"MultiMedia5 Capture", NULL, "MM_UL5"},
--	{"MultiMedia6 Capture", NULL, "MM_UL6"},
--	{"MultiMedia7 Capture", NULL, "MM_UL7"},
--	{"MultiMedia8 Capture", NULL, "MM_UL8"},
--
--};
--
--static int fe_dai_probe(struct snd_soc_dai *dai)
--{
--	struct snd_soc_dapm_context *dapm;
--
--	dapm = snd_soc_component_get_dapm(dai->component);
--	snd_soc_dapm_add_routes(dapm, afe_pcm_routes,
--				ARRAY_SIZE(afe_pcm_routes));
--
--	return 0;
--}
--
--
- static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.name		= DRV_NAME,
- 	.ops		= &q6asm_dai_ops,
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index c6b51571be94..d61b8404f7da 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -909,6 +909,25 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"MM_UL6", NULL, "MultiMedia6 Mixer"},
- 	{"MM_UL7", NULL, "MultiMedia7 Mixer"},
- 	{"MM_UL8", NULL, "MultiMedia8 Mixer"},
-+
-+	{"MM_DL1",  NULL, "MultiMedia1 Playback" },
-+	{"MM_DL2",  NULL, "MultiMedia2 Playback" },
-+	{"MM_DL3",  NULL, "MultiMedia3 Playback" },
-+	{"MM_DL4",  NULL, "MultiMedia4 Playback" },
-+	{"MM_DL5",  NULL, "MultiMedia5 Playback" },
-+	{"MM_DL6",  NULL, "MultiMedia6 Playback" },
-+	{"MM_DL7",  NULL, "MultiMedia7 Playback" },
-+	{"MM_DL8",  NULL, "MultiMedia8 Playback" },
-+
-+	{"MultiMedia1 Capture", NULL, "MM_UL1"},
-+	{"MultiMedia2 Capture", NULL, "MM_UL2"},
-+	{"MultiMedia3 Capture", NULL, "MM_UL3"},
-+	{"MultiMedia4 Capture", NULL, "MM_UL4"},
-+	{"MultiMedia5 Capture", NULL, "MM_UL5"},
-+	{"MultiMedia6 Capture", NULL, "MM_UL6"},
-+	{"MultiMedia7 Capture", NULL, "MM_UL7"},
-+	{"MultiMedia8 Capture", NULL, "MM_UL8"},
-+
- };
- 
- static int routing_hw_params(struct snd_pcm_substream *substream,
--- 
-2.19.0.rc2
+> thanks,
+> 
+> Takashi
