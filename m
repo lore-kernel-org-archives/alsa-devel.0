@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: use defined
-	io_playback/io_capture" to the asoc tree
-Date: Tue,  6 Nov 2018 17:53:11 +0000 (GMT)
-Message-ID: <20181106175311.0B750112266B@debutante.sirena.org.uk>
-References: <87bm72x02z.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rename rsnd_runtime_is_ssi_xxx()"
+	to the asoc tree
+Date: Tue,  6 Nov 2018 17:53:21 +0000 (GMT)
+Message-ID: <20181106175321.0D4FC112266B@debutante.sirena.org.uk>
+References: <87d0rix03j.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 08ABE267AAB
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:53:11 +0100 (CET)
-In-Reply-To: <87bm72x02z.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E8E8267AA8
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:53:21 +0100 (CET)
+In-Reply-To: <87d0rix03j.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: use defined io_playback/io_capture
+   ASoC: rsnd: rename rsnd_runtime_is_ssi_xxx()
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,104 @@ to this mail.
 Thanks,
 Mark
 
->From 9328882e9dc6b3ae6d11eaf6dbdeb45dfbb2d38f Mon Sep 17 00:00:00 2001
+>From a607280293b4b804fa080c75412b256ec37ce04c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Nov 2018 05:19:33 +0000
-Subject: [PATCH] ASoC: rsnd: use defined io_playback/io_capture
+Date: Tue, 6 Nov 2018 05:19:19 +0000
+Subject: [PATCH] ASoC: rsnd: rename rsnd_runtime_is_ssi_xxx()
 
-rdai->playback/rdai->capture are defined as io_playback/io_capture
-on __rsnd_dai_probe(). Let's use it instead of original one.
+Current rsnd driver has rsnd_runtime_is_ssi_xxx() functions,
+but it is not only related to SSI, thus, it is misunderstandable.
+This patch renames it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/sh/rcar/core.c | 6 +++---
+ sound/soc/sh/rcar/rsnd.h | 4 ++--
+ sound/soc/sh/rcar/ssi.c  | 4 ++--
+ sound/soc/sh/rcar/ssiu.c | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index cbe846e4438f..cb592191bc86 100644
+index 5e100122391a..cbe846e4438f 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -1091,24 +1091,24 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 	drv->name	= rdai->name;
- 	drv->ops	= &rsnd_soc_dai_ops;
+@@ -287,7 +287,7 @@ int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
+ 		rsnd_runtime_channel_original_with_params(io, params);
  
--	snprintf(rdai->playback.name, RSND_DAI_NAME_SIZE,
-+	snprintf(io_playback->name, RSND_DAI_NAME_SIZE,
- 		 "DAI%d Playback", dai_i);
- 	drv->playback.rates		= RSND_RATES;
- 	drv->playback.formats		= RSND_FMTS;
- 	drv->playback.channels_min	= 2;
- 	drv->playback.channels_max	= 8;
--	drv->playback.stream_name	= rdai->playback.name;
-+	drv->playback.stream_name	= io_playback->name;
+ 	/* Use Multi SSI */
+-	if (rsnd_runtime_is_ssi_multi(io))
++	if (rsnd_runtime_is_multi_ssi(io))
+ 		chan /= rsnd_rdai_ssi_lane_get(rdai);
  
--	snprintf(rdai->capture.name, RSND_DAI_NAME_SIZE,
-+	snprintf(io_capture->name, RSND_DAI_NAME_SIZE,
- 		 "DAI%d Capture", dai_i);
- 	drv->capture.rates		= RSND_RATES;
- 	drv->capture.formats		= RSND_FMTS;
- 	drv->capture.channels_min	= 2;
- 	drv->capture.channels_max	= 8;
--	drv->capture.stream_name	= rdai->capture.name;
-+	drv->capture.stream_name	= io_capture->name;
+ 	/* TDM Extend Mode needs 8ch */
+@@ -297,7 +297,7 @@ int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
+ 	return chan;
+ }
  
--	rdai->playback.rdai		= rdai;
--	rdai->capture.rdai		= rdai;
-+	io_playback->rdai		= rdai;
-+	io_capture->rdai		= rdai;
- 	rsnd_rdai_channels_set(rdai, 2); /* default 2ch */
- 	rsnd_rdai_ssi_lane_set(rdai, 1); /* default 1lane */
- 	rsnd_rdai_width_set(rdai, 32);   /* default 32bit width */
+-int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io)
++int rsnd_runtime_is_multi_ssi(struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	int lane = rsnd_rdai_ssi_lane_get(rdai);
+@@ -308,7 +308,7 @@ int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io)
+ 	return (chan > 2) && (lane > 1);
+ }
+ 
+-int rsnd_runtime_is_ssi_tdm(struct rsnd_dai_stream *io)
++int rsnd_runtime_is_tdm(struct rsnd_dai_stream *io)
+ {
+ 	return rsnd_runtime_channel_for_ssi(io) >= 6;
+ }
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 28bd90ab5a99..4b547c6f62a2 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -431,8 +431,8 @@ int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
+ 	rsnd_runtime_channel_for_ssi_with_params(io, NULL)
+ int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
+ 				 struct snd_pcm_hw_params *params);
+-int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io);
+-int rsnd_runtime_is_ssi_tdm(struct rsnd_dai_stream *io);
++int rsnd_runtime_is_multi_ssi(struct rsnd_dai_stream *io);
++int rsnd_runtime_is_tdm(struct rsnd_dai_stream *io);
+ 
+ /*
+  * DT
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 10a53e2adcad..f5bda1617b02 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -223,7 +223,7 @@ static u32 rsnd_ssi_run_mods(struct rsnd_dai_stream *io)
+ 
+ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io)
+ {
+-	if (rsnd_runtime_is_ssi_multi(io))
++	if (rsnd_runtime_is_multi_ssi(io))
+ 		return rsnd_ssi_multi_slaves(io);
+ 
+ 	return 0;
+@@ -383,7 +383,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	u32 wsr		= ssi->wsr;
+ 	int is_tdm;
+ 
+-	is_tdm = rsnd_runtime_is_ssi_tdm(io);
++	is_tdm = rsnd_runtime_is_tdm(io);
+ 
+ 	cr_own |= FORCE | rsnd_rdai_width_to_swl(rdai);
+ 
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index ebcb826b849f..645340ee4222 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -145,7 +145,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 
+ 	ssiu->usrcnt++;
+ 
+-	if (rsnd_runtime_is_ssi_tdm(io)) {
++	if (rsnd_runtime_is_tdm(io)) {
+ 		/*
+ 		 * TDM Extend Mode
+ 		 * see
 -- 
 2.19.0.rc2
