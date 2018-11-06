@@ -1,106 +1,78 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] fix the kernel panic due to wrong use the
- dev memory API
-Date: Tue, 6 Nov 2018 08:39:46 -0600
-Message-ID: <c57e4dcf-7117-72f4-0e07-350a20120742@linux.intel.com>
-References: <CD6925E8781EFD4D8E11882D20FC406D529FE3B6@SHSMSX104.ccr.corp.intel.com>
- <f2e3ffeb-12bd-d60e-e96a-8fa00a17844f@linux.intel.com>
- <CD6925E8781EFD4D8E11882D20FC406D529FE5A9@SHSMSX104.ccr.corp.intel.com>
+Subject: Re: [alsa-devel] Build regressions/improvements in v4.20-rc1
+ (sound/pci/hda/patch_ca0132.c)
+Date: Tue, 6 Nov 2018 08:56:39 -0600
+Message-ID: <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
+References: <20181105220559.27458-1-geert@linux-m68k.org>
+ <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
+ <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
+ <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CD6925E8781EFD4D8E11882D20FC406D529FE5A9@SHSMSX104.ccr.corp.intel.com>
+In-Reply-To: <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "He, Bo" <bo.he@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>, "Kesapragada, Pardha Saradhi" <pardha.saradhi.kesapragada@intel.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Prakash, Divya1" <divya1.prakash@intel.com>, "Diwakar, Praveen" <praveen.diwakar@intel.com>, "Zhang, Yanmin" <yanmin.zhang@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/5/18 6:58 PM, He, Bo wrote:
-> Hi,
-> 	I submit the patch based on tag v4.19.
 
-Please don't post on mailing lists.
-
-> 
-> -----Original Message-----
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Sent: Tuesday, November 6, 2018 1:02 AM
-> To: He, Bo <bo.he@intel.com>; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org
-> Cc: liam.r.girdwood@linux.intel.com; perex@perex.cz; tiwai@suse.com; Singh, Guneshwor O <guneshwor.o.singh@intel.com>; Periyasamy, SriramX <sriramx.periyasamy@intel.com>; Kale, Sanyog R <sanyog.r.kale@intel.com>; Kesapragada, Pardha Saradhi <pardha.saradhi.kesapragada@intel.com>; kuninori.morimoto.gx@renesas.com; guruprasadx.pawse@intel.com; Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; Prakash, Divya1 <divya1.prakash@intel.com>; Diwakar, Praveen <praveen.diwakar@intel.com>; Zhang, Yanmin <yanmin.zhang@intel.com>
-> Subject: Re: [alsa-devel] [PATCH] fix the kernel panic due to wrong use the dev memory API
-> 
-> 
-> On 11/5/18 2:29 AM, He, Bo wrote:
->> skl->dais is allocated with devm_kcalloc, can't free with
->> the krealloc. Memory allocated with devm API is automatically freed on
->> driver detach, Like all other devres resources.
+>>>>
+>>>> *** ERRORS ***
+>>>>
+>>>>    + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
+>>> sh4-all{mod,yes}config
+>>>
+>>> Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
+>>> pci_iomap() on SH")
+>>> is not sufficient?
+>> Different problem.  This is about "select":
 >>
->> Refer to drivers/base/devres.c devm_kmalloc for more details.
-> 
-> What code are you looking at?
-> 
-> I see this in the Mark's tree
-> 
-> int skl_platform_register(struct device *dev) {
->       int ret;
->       struct snd_soc_dai_driver *dais;
->       int num_dais = ARRAY_SIZE(skl_platform_dai);
->       struct hdac_bus *bus = dev_get_drvdata(dev);
->       struct skl *skl = bus_to_skl(bus);
-> 
->       INIT_LIST_HEAD(&skl->ppl_list);
->       INIT_LIST_HEAD(&skl->bind_list);
-> 
->       skl->dais = kmemdup(skl_platform_dai, sizeof(skl_platform_dai),
->                   GFP_KERNEL);
->       if (!skl->dais) {
->           ret = -ENOMEM;
->           goto err;
->       }
-> 
->       if (!skl->use_tplg_pcm) {
->           dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
->                   sizeof(skl_platform_dai), GFP_KERNEL);
-> 
-> 
-> No trace of devm as you mention it? I checked the Chrome tree as well and it's not there.
-> 
-> What am I missing?
-
-The code is completely identical in v4.19. skl->dais is allocated with 
-kmemdup, which is a kmalloc+memcpy, i just don't understand what you are 
-trying to fix.
-
-> 
-> 
+>> config SND_SOC_ALL_CODECS
+>>          tristate "Build all ASoC CODEC drivers"
 >>
->> Signed-off-by: he, bo <bo.he@intel.com>
+>> That enables (sets):
+>>          select SND_SOC_HDAC_HDA
+>> which selects SND_HDA even though CONFIG_PCI is not enabled.
+>>
+>> After SND_HDA is selected (above), the Kconfig symbols in
+>> sound/pci/hda/Kconfig are available for enabling, so
+>> SND_HDA_CODEC_CA0132 is enabled but will not build.
+> Thanks for looking into this!
+>
+>> One simple solution (but possibly too naive) is:
+>>
 >> ---
->>    sound/soc/intel/skylake/skl-pcm.c | 5 ++---
->>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>   sound/soc/codecs/Kconfig |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> diff --git a/sound/soc/intel/skylake/skl-pcm.c
->> b/sound/soc/intel/skylake/skl-pcm.c
->> index 823e391..928d314 100644
->> --- a/sound/soc/intel/skylake/skl-pcm.c
->> +++ b/sound/soc/intel/skylake/skl-pcm.c
->> @@ -1438,7 +1438,8 @@ int skl_platform_register(struct device *dev)
->>    	}
->>    
->>    	if (!skl->use_tplg_pcm) {
->> -		dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
->> +		devm_kfree(dev, skl->dais);
->> +		dais = devm_kcalloc(dev, skl->dais, sizeof(skl_fe_dai) +
->>    				sizeof(skl_platform_dai), GFP_KERNEL);
->>    		if (!dais) {
->>    			ret = -ENOMEM;
->> @@ -1472,7 +1473,5 @@ int skl_platform_unregister(struct device *dev)
->>    		}
->>    	}
->>    
->> -	kfree(skl->dais);
->> -
->>    	return 0;
->>    }
+>> --- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
+>> +++ lnx-420-rc1/sound/soc/codecs/Kconfig
+>> @@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
+>>          select SND_SOC_ES7241
+>>          select SND_SOC_GTM601
+>>          select SND_SOC_HDAC_HDMI
+>> -       select SND_SOC_HDAC_HDA
+>> +       select SND_SOC_HDAC_HDA if PCI
+>>          select SND_SOC_ICS43432
+>>          select SND_SOC_INNO_RK3036
+>>          select SND_SOC_ISABELLE if I2C
+> I guess that will work. There are already plenty of "select foo if bar" lines.
+> However, looking at what else can enable SND_HDA, I think it should be
+>
+>      select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
+
+This codec can only be used by the Skylake driver (and the upcoming SOF 
+one). For Tegra this module will never be used unless they follow the 
+same path of enabling ASoC to deal with the HDaudio codecs instead of 
+the legacy.
+
+Likewise HDAC_HDMI will only work on Intel platforms for now.
+
+>
+> That still leaves the issue that pci_iomap() on SH should be an empty stub if
+> PCI is not available, like on other architectures.
+
+I thought Mark Brown provided a fix to SH maintainers?
