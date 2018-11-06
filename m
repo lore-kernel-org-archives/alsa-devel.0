@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: handle DPCM converted rate/chan
-	under core" to the asoc tree
-Date: Tue,  6 Nov 2018 17:52:52 +0000 (GMT)
-Message-ID: <20181106175252.06DB9112266B@debutante.sirena.org.uk>
-References: <878t26x01y.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: move HDMI information from ssi.c
+	to core.c" to the asoc tree
+Date: Tue,  6 Nov 2018 17:53:00 +0000 (GMT)
+Message-ID: <20181106175300.A7D3B112266B@debutante.sirena.org.uk>
+References: <87a7mmx02k.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B439E267AC1
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:52:52 +0100 (CET)
-In-Reply-To: <878t26x01y.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E9F6267AAB
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:53:01 +0100 (CET)
+In-Reply-To: <87a7mmx02k.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: handle DPCM converted rate/chan under core
+   ASoC: rsnd: move HDMI information from ssi.c to core.c
 
 has been applied to the asoc tree at
 
@@ -53,257 +53,228 @@ to this mail.
 Thanks,
 Mark
 
->From c2aaaa57d44a195b71fe1e9ff0c6a80ac017495d Mon Sep 17 00:00:00 2001
+>From beed78aeeb10214798b1fd5f1dd05e0b7199d65f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Nov 2018 05:20:10 +0000
-Subject: [PATCH] ASoC: rsnd: handle DPCM converted rate/chan under core
+Date: Tue, 6 Nov 2018 05:19:48 +0000
+Subject: [PATCH] ASoC: rsnd: move HDMI information from ssi.c to core.c
 
-converted rate/chan are handled each rated module, but
-it will be used other module too.
-For examle, converted channel is currently used for CTU,
-but, it will be used for TDM Split mode, too.
-
-This patch move/merge SRC/CTU hw_param under core.c
-and handles converted rate/chan under rsnd_dai_stream.
+Current driver is supporting HDMI output, and its information
+are handled under ssi.c. But, it is stream information.
+Let's move it from ssi.c to core.c.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 34 +++++++++++++++++++++++++++++-
- sound/soc/sh/rcar/ctu.c  | 45 ----------------------------------------
- sound/soc/sh/rcar/rsnd.h |  5 ++++-
- sound/soc/sh/rcar/src.c  | 40 ++---------------------------------
- 4 files changed, 39 insertions(+), 85 deletions(-)
+ sound/soc/sh/rcar/core.c | 30 +++++++++++++++++++-
+ sound/soc/sh/rcar/rsnd.h | 13 ++++-----
+ sound/soc/sh/rcar/ssi.c  | 60 +---------------------------------------
+ sound/soc/sh/rcar/ssiu.c | 13 ++++-----
+ 4 files changed, 41 insertions(+), 75 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 1758fecaed4c..fcc5c2e9d191 100644
+index cb592191bc86..1758fecaed4c 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -269,7 +269,7 @@ int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
- 	struct rsnd_mod *ctu_mod = rsnd_io_to_mod_ctu(io);
+@@ -1005,6 +1005,29 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.prepare	= rsnd_soc_dai_prepare,
+ };
  
- 	if (ctu_mod) {
--		u32 converted_chan = rsnd_ctu_converted_channel(ctu_mod);
-+		u32 converted_chan = rsnd_io_converted_chan(io);
- 
- 		if (converted_chan)
- 			return converted_chan;
-@@ -1225,8 +1225,40 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+	struct snd_soc_pcm_runtime *fe = substream->private_data;
- 	int ret;
- 
-+	/*
-+	 * rsnd assumes that it might be used under DPCM if user want to use
-+	 * channel / rate convert. Then, rsnd should be FE.
-+	 * And then, this function will be called *after* BE settings.
-+	 * this means, each BE already has fixuped hw_params.
-+	 * see
-+	 *	dpcm_fe_dai_hw_params()
-+	 *	dpcm_be_dai_hw_params()
-+	 */
-+	io->converted_rate = 0;
-+	io->converted_chan = 0;
-+	if (fe->dai_link->dynamic) {
-+		struct rsnd_priv *priv = rsnd_io_to_priv(io);
-+		struct device *dev = rsnd_priv_to_dev(priv);
-+		struct snd_soc_dpcm *dpcm;
-+		struct snd_pcm_hw_params *be_params;
-+		int stream = substream->stream;
++static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
++				     struct rsnd_dai_stream *io,
++				     struct device_node *endpoint)
++{
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct device_node *remote_node = of_graph_get_remote_port_parent(endpoint);
 +
-+		for_each_dpcm_be(fe, stream, dpcm) {
-+			be_params = &dpcm->hw_params;
-+			if (params_channels(hw_params) != params_channels(be_params))
-+				io->converted_chan = params_channels(be_params);
-+			if (params_rate(hw_params) != params_rate(be_params))
-+				io->converted_rate = params_rate(be_params);
-+		}
-+		if (io->converted_chan)
-+			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
-+		if (io->converted_rate)
-+			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
++	if (!rsnd_io_to_mod_ssi(io))
++		return;
++
++	/* HDMI0 */
++	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
++		rsnd_flags_set(io, RSND_STREAM_HDMI0);
++		dev_dbg(dev, "%s connected to HDMI0\n", io->name);
 +	}
 +
- 	ret = rsnd_dai_call(hw_params, io, substream, hw_params);
- 	if (ret)
- 		return ret;
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index 6a948b1fd9ab..4dda7d968894 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -107,13 +107,6 @@ static void rsnd_ctu_halt(struct rsnd_mod *mod)
- 	rsnd_mod_write(mod, CTU_SWRSR, 0);
- }
- 
--int rsnd_ctu_converted_channel(struct rsnd_mod *mod)
--{
--	struct rsnd_ctu *ctu = rsnd_mod_to_ctu(mod);
--
--	return ctu->channels;
--}
--
- static int rsnd_ctu_probe_(struct rsnd_mod *mod,
- 			   struct rsnd_dai_stream *io,
- 			   struct rsnd_priv *priv)
-@@ -233,43 +226,6 @@ static int rsnd_ctu_quit(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_ctu_hw_params(struct rsnd_mod *mod,
--			      struct rsnd_dai_stream *io,
--			      struct snd_pcm_substream *substream,
--			      struct snd_pcm_hw_params *fe_params)
--{
--	struct rsnd_ctu *ctu = rsnd_mod_to_ctu(mod);
--	struct snd_soc_pcm_runtime *fe = substream->private_data;
--
--	/*
--	 * CTU assumes that it is used under DPCM if user want to use
--	 * channel transfer. Then, CTU should be FE.
--	 * And then, this function will be called *after* BE settings.
--	 * this means, each BE already has fixuped hw_params.
--	 * see
--	 *	dpcm_fe_dai_hw_params()
--	 *	dpcm_be_dai_hw_params()
--	 */
--	ctu->channels = 0;
--	if (fe->dai_link->dynamic) {
--		struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--		struct device *dev = rsnd_priv_to_dev(priv);
--		struct snd_soc_dpcm *dpcm;
--		struct snd_pcm_hw_params *be_params;
--		int stream = substream->stream;
--
--		for_each_dpcm_be(fe, stream, dpcm) {
--			be_params = &dpcm->hw_params;
--			if (params_channels(fe_params) != params_channels(be_params))
--				ctu->channels = params_channels(be_params);
--		}
--
--		dev_dbg(dev, "CTU convert channels %d\n", ctu->channels);
--	}
--
--	return 0;
--}
--
- static int rsnd_ctu_pcm_new(struct rsnd_mod *mod,
- 			    struct rsnd_dai_stream *io,
- 			    struct snd_soc_pcm_runtime *rtd)
-@@ -357,7 +313,6 @@ static struct rsnd_mod_ops rsnd_ctu_ops = {
- 	.probe		= rsnd_ctu_probe_,
- 	.init		= rsnd_ctu_init,
- 	.quit		= rsnd_ctu_quit,
--	.hw_params	= rsnd_ctu_hw_params,
- 	.pcm_new	= rsnd_ctu_pcm_new,
- 	.get_status	= rsnd_mod_get_status,
- 	.id		= rsnd_ctu_id,
++	/* HDMI1 */
++	if (strstr(remote_node->full_name, "hdmi@feae0000")) {
++		rsnd_flags_set(io, RSND_STREAM_HDMI1);
++		dev_dbg(dev, "%s connected to HDMI1\n", io->name);
++	}
++}
++
+ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
+ 		struct rsnd_mod* (*mod_get)(struct rsnd_priv *priv, int id),
+ 		struct device_node *node,
+@@ -1177,7 +1200,12 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 	if (is_graph) {
+ 		for_each_endpoint_of_node(dai_node, dai_np) {
+ 			__rsnd_dai_probe(priv, dai_np, dai_i);
+-			rsnd_ssi_parse_hdmi_connection(priv, dai_np, dai_i);
++			if (rsnd_is_gen3(priv)) {
++				struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
++
++				rsnd_parse_connect_graph(priv, &rdai->playback, dai_np);
++				rsnd_parse_connect_graph(priv, &rdai->capture,  dai_np);
++			}
+ 			dai_i++;
+ 		}
+ 	} else {
 diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 9aeb5478fe02..7e54edcc2ce8 100644
+index 4b547c6f62a2..9aeb5478fe02 100644
 --- a/sound/soc/sh/rcar/rsnd.h
 +++ b/sound/soc/sh/rcar/rsnd.h
-@@ -457,6 +457,8 @@ struct rsnd_dai_stream {
- 	struct rsnd_mod *dma;
+@@ -458,7 +458,13 @@ struct rsnd_dai_stream {
  	struct rsnd_dai *rdai;
  	struct device *dmac_dev; /* for IPMMU */
-+	u32 converted_rate;      /* converted sampling rate */
-+	int converted_chan;      /* converted channels */
  	u32 parent_ssi_status;
- 	u32 flags;
++	u32 flags;
  };
-@@ -479,6 +481,8 @@ struct rsnd_dai_stream {
- #define rsnd_io_is_play(io)	(&rsnd_io_to_rdai(io)->playback == io)
- #define rsnd_io_to_runtime(io) ((io)->substream ? \
- 				(io)->substream->runtime : NULL)
-+#define rsnd_io_converted_rate(io)	((io)->converted_rate)
-+#define rsnd_io_converted_chan(io)	((io)->converted_chan)
- int rsnd_io_is_working(struct rsnd_dai_stream *io);
++
++/* flags */
++#define RSND_STREAM_HDMI0	(1 << 0) /* for HDMI0 */
++#define RSND_STREAM_HDMI1	(1 << 1) /* for HDMI1 */
++
+ #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+ #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
+ #define rsnd_io_to_mod_ssiu(io)	rsnd_io_to_mod((io), RSND_MOD_SSIU)
+@@ -718,13 +724,6 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
+ int rsnd_ssi_get_busif(struct rsnd_dai_stream *io);
+ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
  
- struct rsnd_dai {
-@@ -767,7 +771,6 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
-  */
- int rsnd_ctu_probe(struct rsnd_priv *priv);
- void rsnd_ctu_remove(struct rsnd_priv *priv);
--int rsnd_ctu_converted_channel(struct rsnd_mod *mod);
- struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id);
- #define rsnd_ctu_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_CTU)
- #define rsnd_parse_connect_ctu(rdai, playback, capture)			\
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index bdc05952f75f..50348a2c9203 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -25,7 +25,6 @@ struct rsnd_src {
- 	struct rsnd_mod *dma;
- 	struct rsnd_kctrl_cfg_s sen;  /* sync convert enable */
- 	struct rsnd_kctrl_cfg_s sync; /* sync convert */
--	u32 convert_rate; /* sampling rate convert */
- 	int irq;
- };
+-#define RSND_SSI_HDMI_PORT0	0xf0
+-#define RSND_SSI_HDMI_PORT1	0xf1
+-int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io);
+-void rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+-				    struct device_node *endpoint,
+-				    int dai_i);
+-
+ #define rsnd_ssi_is_pin_sharing(io)	\
+ 	__rsnd_ssi_is_pin_sharing(rsnd_io_to_mod_ssi(io))
+ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index f5bda1617b02..e91d3c942ea0 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -99,9 +99,7 @@ struct rsnd_ssi {
+ /* flags */
+ #define RSND_SSI_CLK_PIN_SHARE		(1 << 0)
+ #define RSND_SSI_NO_BUSIF		(1 << 1) /* SSI+DMA without BUSIF */
+-#define RSND_SSI_HDMI0			(1 << 2) /* for HDMI0 */
+-#define RSND_SSI_HDMI1			(1 << 3) /* for HDMI1 */
+-#define RSND_SSI_PROBED			(1 << 4)
++#define RSND_SSI_PROBED			(1 << 2)
  
-@@ -89,12 +88,12 @@ static u32 rsnd_src_convert_rate(struct rsnd_dai_stream *io,
- 		return 0;
+ #define for_each_rsnd_ssi(pos, priv, i)					\
+ 	for (i = 0;							\
+@@ -119,20 +117,6 @@ struct rsnd_ssi {
+ 	(rsnd_ssi_run_mods(io) & (1 << rsnd_mod_id(mod)))
+ #define rsnd_ssi_can_output_clk(mod) (!__rsnd_ssi_is_pin_sharing(mod))
  
- 	if (!rsnd_src_sync_is_enabled(mod))
--		return src->convert_rate;
-+		return rsnd_io_converted_rate(io);
- 
- 	convert_rate = src->sync.val;
- 
- 	if (!convert_rate)
--		convert_rate = src->convert_rate;
-+		convert_rate = rsnd_io_converted_rate(io);
- 
- 	if (!convert_rate)
- 		convert_rate = runtime->rate;
-@@ -135,40 +134,6 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
- 	return rate;
- }
- 
--static int rsnd_src_hw_params(struct rsnd_mod *mod,
--			      struct rsnd_dai_stream *io,
--			      struct snd_pcm_substream *substream,
--			      struct snd_pcm_hw_params *fe_params)
+-int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io)
 -{
--	struct rsnd_src *src = rsnd_mod_to_src(mod);
--	struct snd_soc_pcm_runtime *fe = substream->private_data;
+-	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
 -
--	/*
--	 * SRC assumes that it is used under DPCM if user want to use
--	 * sampling rate convert. Then, SRC should be FE.
--	 * And then, this function will be called *after* BE settings.
--	 * this means, each BE already has fixuped hw_params.
--	 * see
--	 *	dpcm_fe_dai_hw_params()
--	 *	dpcm_be_dai_hw_params()
--	 */
--	src->convert_rate = 0;
--	if (fe->dai_link->dynamic) {
--		int stream = substream->stream;
--		struct snd_soc_dpcm *dpcm;
--		struct snd_pcm_hw_params *be_params;
+-	if (rsnd_flags_has(ssi, RSND_SSI_HDMI0))
+-		return RSND_SSI_HDMI_PORT0;
 -
--		for_each_dpcm_be(fe, stream, dpcm) {
--			be_params = &dpcm->hw_params;
--
--			if (params_rate(fe_params) != params_rate(be_params))
--				src->convert_rate = params_rate(be_params);
--		}
--	}
+-	if (rsnd_flags_has(ssi, RSND_SSI_HDMI1))
+-		return RSND_SSI_HDMI_PORT1;
 -
 -	return 0;
 -}
 -
- static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
- 				      struct rsnd_mod *mod)
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
  {
-@@ -534,7 +499,6 @@ static struct rsnd_mod_ops rsnd_src_ops = {
- 	.start		= rsnd_src_start,
- 	.stop		= rsnd_src_stop,
- 	.irq		= rsnd_src_irq,
--	.hw_params	= rsnd_src_hw_params,
- 	.pcm_new	= rsnd_src_pcm_new,
- 	.get_status	= rsnd_mod_get_status,
- };
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+@@ -1059,48 +1043,6 @@ void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
+ 	of_node_put(node);
+ }
+ 
+-static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+-					     struct rsnd_dai_stream *io,
+-					     struct device_node *remote_ep)
+-{
+-	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+-	struct rsnd_ssi *ssi;
+-	struct device_node *remote_node = of_graph_get_port_parent(remote_ep);
+-
+-	/* support Gen3 only */
+-	if (!rsnd_is_gen3(priv))
+-		return;
+-
+-	if (!mod)
+-		return;
+-
+-	ssi  = rsnd_mod_to_ssi(mod);
+-
+-	/* HDMI0 */
+-	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
+-		rsnd_flags_set(ssi, RSND_SSI_HDMI0);
+-		dev_dbg(dev, "%s connected to HDMI0\n", rsnd_mod_name(mod));
+-	}
+-
+-	/* HDMI1 */
+-	if (strstr(remote_node->full_name, "hdmi@feae0000")) {
+-		rsnd_flags_set(ssi, RSND_SSI_HDMI1);
+-		dev_dbg(dev, "%s connected to HDMI1\n", rsnd_mod_name(mod));
+-	}
+-}
+-
+-void rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+-				    struct device_node *endpoint,
+-				    int dai_i)
+-{
+-	struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
+-	struct device_node *remote_ep = of_graph_get_remote_endpoint(endpoint);
+-
+-	__rsnd_ssi_parse_hdmi_connection(priv, &rdai->playback, remote_ep);
+-	__rsnd_ssi_parse_hdmi_connection(priv, &rdai->capture,  remote_ep);
+-}
+-
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
+ {
+ 	if (WARN_ON(id < 0 || id >= rsnd_ssi_nr(priv)))
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 645340ee4222..4f591008cfe5 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -135,7 +135,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_priv *priv)
+ {
+ 	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
+-	int hdmi = rsnd_ssi_hdmi_port(io);
++	u32 has_hdmi0 = rsnd_flags_has(io, RSND_STREAM_HDMI0);
++	u32 has_hdmi1 = rsnd_flags_has(io, RSND_STREAM_HDMI1);
+ 	int ret;
+ 	u32 mode = 0;
+ 
+@@ -212,7 +213,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 		}
+ 	}
+ 
+-	if (hdmi) {
++	if (has_hdmi0 || has_hdmi1) {
+ 		enum rsnd_mod_type rsnd_ssi_array[] = {
+ 			RSND_MOD_SSIM1,
+ 			RSND_MOD_SSIM2,
+@@ -238,14 +239,10 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 				rsnd_mod_id(pos) << shift;
+ 		}
+ 
+-		switch (hdmi) {
+-		case RSND_SSI_HDMI_PORT0:
++		if (has_hdmi0)
+ 			rsnd_mod_write(mod, HDMI0_SEL, val);
+-			break;
+-		case RSND_SSI_HDMI_PORT1:
++		if (has_hdmi1)
+ 			rsnd_mod_write(mod, HDMI1_SEL, val);
+-			break;
+-		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.19.0.rc2
