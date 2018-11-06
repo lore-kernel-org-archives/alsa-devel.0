@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove endpoint bidirectional
-	check" to the asoc tree
-Date: Tue,  6 Nov 2018 17:53:29 +0000 (GMT)
-Message-ID: <20181106175329.72AF0112266B@debutante.sirena.org.uk>
-References: <87efbyx043.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-scu-card: remove error
+	check which never happen" to the asoc tree
+Date: Tue,  6 Nov 2018 17:53:40 +0000 (GMT)
+Message-ID: <20181106175340.94EDA112266B@debutante.sirena.org.uk>
+References: <87h8gux221.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3194D267AAE
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:53:29 +0100 (CET)
-In-Reply-To: <87efbyx043.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5184C267AB0
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:53:41 +0100 (CET)
+In-Reply-To: <87h8gux221.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove endpoint bidirectional check
+   ASoC: audio-graph-scu-card: remove error check which never happen
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From c8b222bf110ccb54d787f695fb3eb2fb6b723903 Mon Sep 17 00:00:00 2001
+>From 5049a6e7316cdbf4370d5479e9628d8f5e906635 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Nov 2018 05:18:58 +0000
-Subject: [PATCH] ASoC: rsnd: remove endpoint bidirectional check
+Date: Tue, 6 Nov 2018 04:36:55 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: remove error check which never
+ happen
 
-DTC commit df536831d02c ("checks: add graph binding checks")
-is checking endpoint bidirectional, and it is upstreamed to linux by
-commit 50aafd60898a ("scripts/dtc: Update to upstream version
-v1.4.6-21-g84e414b0b5bc").
-Let's remove own bidirectional check
+Current driver is checking situation that can not happen.
+This patch removes over-kill check
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/generic/audio-graph-scu-card.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index a032819044f7..10a53e2adcad 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -1095,11 +1095,7 @@ void rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
- 				    int dai_i)
- {
- 	struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
--	struct device_node *remote_ep;
--
--	remote_ep = of_graph_get_remote_endpoint(endpoint);
--	if (!remote_ep)
--		return;
-+	struct device_node *remote_ep = of_graph_get_remote_endpoint(endpoint);
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index ba7b0cf028b7..2ba35bdd3b38 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -250,9 +250,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 			of_node_put(codec_port);
  
- 	__rsnd_ssi_parse_hdmi_connection(priv, &rdai->playback, remote_ep);
- 	__rsnd_ssi_parse_hdmi_connection(priv, &rdai->capture,  remote_ep);
+ 			if (codec) {
+-				if (!codec_port)
+-					continue;
+-
+ 				if (codec_port_old == codec_port)
+ 					continue;
+ 
+@@ -308,11 +305,7 @@ static int asoc_graph_get_dais_count(struct device *dev)
+ 		of_node_put(codec_ep);
+ 		of_node_put(codec_port);
+ 
+-		if (cpu_ep)
+-			count++;
+-
+-		if (!codec_port)
+-			continue;
++		count++;
+ 
+ 		if (codec_port_old == codec_port)
+ 			continue;
 -- 
 2.19.0.rc2
