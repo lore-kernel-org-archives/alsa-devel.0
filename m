@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak5558: Remove redundant
-	snd_soc_component_read32 calls" to the asoc tree
-Date: Tue,  6 Nov 2018 18:09:19 +0000 (GMT)
-Message-ID: <20181106180919.CD2CB112266B@debutante.sirena.org.uk>
-References: <20181106093919.20740-1-axel.lin@ingics.com>
+Subject: Applied "ASoC: qdsp6: q6afe-dai: Fix the dai widgets"
+	to the asoc tree
+Date: Tue,  6 Nov 2018 18:09:27 +0000 (GMT)
+Message-ID: <20181106180927.B8501112266B@debutante.sirena.org.uk>
+References: <20181106113857.19737-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 98333267ADA
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:09:20 +0100 (CET)
-In-Reply-To: <20181106093919.20740-1-axel.lin@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AE72267AA5
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:09:28 +0100 (CET)
+In-Reply-To: <20181106113857.19737-3-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, Jimmy Cheng-Yi Chiang <cychiang@google.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak5558: Remove redundant snd_soc_component_read32 calls
+   ASoC: qdsp6: q6afe-dai: Fix the dai widgets
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,337 @@ to this mail.
 Thanks,
 Mark
 
->From 39dfdf00c7a56b2a8c01c596f6522f089428b1c7 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Tue, 6 Nov 2018 17:39:19 +0800
-Subject: [PATCH] ASoC: ak5558: Remove redundant snd_soc_component_read32 calls
+>From e14856f6cfbb1b96aa45a68f188b147b5bde76b4 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Tue, 6 Nov 2018 11:38:57 +0000
+Subject: [PATCH] ASoC: qdsp6: q6afe-dai: Fix the dai widgets
 
-snd_soc_component_update_bits() will only update the mask bits,
-so remove the redundant snd_soc_component_read32().
+For some reason the dapm widgets are incorrectly defined from the start,
+Not sure how we ended up with such thing. Fix them now!
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Without this fix the backend dais are always powered up even if there
+is no active stream.
+
+Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Reported-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak5558.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 208 +++++++++++++++----------------
+ 1 file changed, 104 insertions(+), 104 deletions(-)
 
-diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
-index 60f1f12c81ea..8179512129d3 100644
---- a/sound/soc/codecs/ak5558.c
-+++ b/sound/soc/codecs/ak5558.c
-@@ -130,16 +130,12 @@ static int ak5558_hw_params(struct snd_pcm_substream *substream,
- 	u8 bits;
- 	int pcm_width = max(params_physical_width(params), ak5558->slot_width);
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index 60ff4a2d3577..8f6c8fc073a9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -1112,204 +1112,204 @@ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+ }
  
--	/* set master/slave audio interface */
--	bits = snd_soc_component_read32(component, AK5558_02_CONTROL1);
--	bits &= ~AK5558_BITS;
--
- 	switch (pcm_width) {
- 	case 16:
--		bits |= AK5558_DIF_24BIT_MODE;
-+		bits = AK5558_DIF_24BIT_MODE;
- 		break;
- 	case 32:
--		bits |= AK5558_DIF_32BIT_MODE;
-+		bits = AK5558_DIF_32BIT_MODE;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -168,18 +164,15 @@ static int ak5558_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
+ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+-	SND_SOC_DAPM_AIF_OUT("HDMI_RX", "HDMI Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_RX", "Slimbus Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_RX", "Slimbus1 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_RX", "Slimbus2 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_RX", "Slimbus3 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_RX", "Slimbus4 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_RX", "Slimbus5 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_RX", "Slimbus6 Playback", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_0_TX", "Slimbus Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_1_TX", "Slimbus1 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_2_TX", "Slimbus2 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_3_TX", "Slimbus3 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_4_TX", "Slimbus4 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_5_TX", "Slimbus5 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SLIMBUS_6_TX", "Slimbus6 Capture", 0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_RX", "Quaternary MI2S Playback",
++	SND_SOC_DAPM_AIF_IN("HDMI_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_0_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_1_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_2_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_3_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_4_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_5_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("SLIMBUS_6_RX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_0_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_1_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_2_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_3_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_TX", NULL, 0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_IN("QUAT_MI2S_RX", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_MI2S_TX", "Quaternary MI2S Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_TX", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_MI2S_RX", "Tertiary MI2S Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_MI2S_RX", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_MI2S_TX", "Tertiary MI2S Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_MI2S_TX", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_RX", "Secondary MI2S Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_MI2S_RX", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_MI2S_TX", "Secondary MI2S Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_TX", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_MI2S_RX_SD1",
++	SND_SOC_DAPM_AIF_IN("SEC_MI2S_RX_SD1",
+ 			"Secondary MI2S Playback SD1",
+ 			0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_RX", "Primary MI2S Playback",
++	SND_SOC_DAPM_AIF_IN("PRI_MI2S_RX", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRI_MI2S_TX", "Primary MI2S Capture",
++	SND_SOC_DAPM_AIF_OUT("PRI_MI2S_TX", NULL,
+ 						0, 0, 0, 0),
  
- 	/* set master/slave audio interface */
--	format = snd_soc_component_read32(component, AK5558_02_CONTROL1);
--	format &= ~AK5558_DIF;
--
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		format |= AK5558_DIF_I2S_MODE;
-+		format = AK5558_DIF_I2S_MODE;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
--		format |= AK5558_DIF_MSB_MODE;
-+		format = AK5558_DIF_MSB_MODE;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_B:
--		format |= AK5558_DIF_MSB_MODE;
-+		format = AK5558_DIF_MSB_MODE;
- 		break;
- 	default:
- 		return -EINVAL;
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_0", "Primary TDM0 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_1", "Primary TDM1 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_1", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_2", "Primary TDM2 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_2", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_3", "Primary TDM3 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_3", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_4", "Primary TDM4 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_4", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_5", "Primary TDM5 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_5", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_6", "Primary TDM6 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_6", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_RX_7", "Primary TDM7 Playback",
++	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_RX_7", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_0", "Primary TDM0 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_0", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_1", "Primary TDM1 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_1", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_2", "Primary TDM2 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_2", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_3", "Primary TDM3 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_3", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_4", "Primary TDM4 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_4", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_5", "Primary TDM5 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_5", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_6", "Primary TDM6 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_6", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("PRIMARY_TDM_TX_7", "Primary TDM7 Capture",
++	SND_SOC_DAPM_AIF_OUT("PRIMARY_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
+ 
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_0", "Secondary TDM0 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_1", "Secondary TDM1 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_1", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_2", "Secondary TDM2 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_2", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_3", "Secondary TDM3 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_3", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_4", "Secondary TDM4 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_4", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_5", "Secondary TDM5 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_5", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_6", "Secondary TDM6 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_6", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("SEC_TDM_RX_7", "Secondary TDM7 Playback",
++	SND_SOC_DAPM_AIF_IN("SEC_TDM_RX_7", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_0", "Secondary TDM0 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_0", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_1", "Secondary TDM1 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_1", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_2", "Secondary TDM2 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_2", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_3", "Secondary TDM3 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_3", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_4", "Secondary TDM4 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_4", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_5", "Secondary TDM5 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_5", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_6", "Secondary TDM6 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_6", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("SEC_TDM_TX_7", "Secondary TDM7 Capture",
++	SND_SOC_DAPM_AIF_OUT("SEC_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
+ 
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_0", "Tertiary TDM0 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_1", "Tertiary TDM1 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_1", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_2", "Tertiary TDM2 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_2", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_3", "Tertiary TDM3 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_3", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_4", "Tertiary TDM4 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_4", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_5", "Tertiary TDM5 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_5", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_6", "Tertiary TDM6 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_6", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("TERT_TDM_RX_7", "Tertiary TDM7 Playback",
++	SND_SOC_DAPM_AIF_IN("TERT_TDM_RX_7", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_0", "Tertiary TDM0 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_0", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_1", "Tertiary TDM1 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_1", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_2", "Tertiary TDM2 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_2", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_3", "Tertiary TDM3 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_3", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_4", "Tertiary TDM4 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_4", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_5", "Tertiary TDM5 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_5", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_6", "Tertiary TDM6 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_6", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("TERT_TDM_TX_7", "Tertiary TDM7 Capture",
++	SND_SOC_DAPM_AIF_OUT("TERT_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
+ 
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_0", "Quaternary TDM0 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_1", "Quaternary TDM1 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_1", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_2", "Quaternary TDM2 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_2", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_3", "Quaternary TDM3 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_3", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_4", "Quaternary TDM4 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_4", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_5", "Quaternary TDM5 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_5", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_6", "Quaternary TDM6 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_6", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_RX_7", "Quaternary TDM7 Playback",
++	SND_SOC_DAPM_AIF_IN("QUAT_TDM_RX_7", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_0", "Quaternary TDM0 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_0", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_1", "Quaternary TDM1 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_1", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_2", "Quaternary TDM2 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_2", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_3", "Quaternary TDM3 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_3", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_4", "Quaternary TDM4 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_4", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_5", "Quaternary TDM5 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_5", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_6", "Quaternary TDM6 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_6", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUAT_TDM_TX_7", "Quaternary TDM7 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUAT_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
+ 
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_0", "Quinary TDM0 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_0", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_1", "Quinary TDM1 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_1", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_2", "Quinary TDM2 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_2", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_3", "Quinary TDM3 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_3", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_4", "Quinary TDM4 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_4", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_5", "Quinary TDM5 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_5", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_6", "Quinary TDM6 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_6", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_RX_7", "Quinary TDM7 Playback",
++	SND_SOC_DAPM_AIF_IN("QUIN_TDM_RX_7", NULL,
+ 			     0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_0", "Quinary TDM0 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_0", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_1", "Quinary TDM1 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_1", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_2", "Quinary TDM2 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_2", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_3", "Quinary TDM3 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_3", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_4", "Quinary TDM4 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_4", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_5", "Quinary TDM5 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_5", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_6", "Quinary TDM6 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_6", NULL,
+ 						0, 0, 0, 0),
+-	SND_SOC_DAPM_AIF_IN("QUIN_TDM_TX_7", "Quinary TDM7 Capture",
++	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
+ };
+ 
 -- 
 2.19.0.rc2
