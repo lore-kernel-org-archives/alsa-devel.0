@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Build regressions/improvements in v4.20-rc1
- (sound/pci/hda/patch_ca0132.c)
-Date: Tue, 6 Nov 2018 15:46:59 +0000
-Message-ID: <20181106154659.GA31950@sirena.org.uk>
-References: <20181105220559.27458-1-geert@linux-m68k.org>
- <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
- <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
- <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
- <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
+From: Timo Wischer <twischer@de.adit-jv.com>
+Subject: Re: [PATCH - dmix v3 0/1] pcm: dmix: Align
+ slave_hw_ptr to slave period boundary
+Date: Tue, 6 Nov 2018 17:15:31 +0100
+Message-ID: <04f0ef9b-fc3b-f268-6e74-cd1f07758163@de.adit-jv.com>
+References: <bdf2f9ca-7ff1-40cb-271d-4a83b32ccf56@de.adit-jv.com>
+ <s5hpnviz3gh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4218859509696698923=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CE102678F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 16:47:04 +0100 (CET)
-In-Reply-To: <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 880132678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 17:15:38 +0100 (CET)
+In-Reply-To: <s5hpnviz3gh.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Laxmi Devi <Laxmi.Devi@in.bosch.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/6/18 15:27, Takashi Iwai wrote:
+> I guess that the biggest issue is the understanding of PCM period
+> wakeup; let me cite the description of a part of your patch:
+>
+>   "But since 3 snd_pcm_period_elapsed(), 3 periods should be available
+>    and it should have been able to write.
+>    If rsnd_pointer during the start was 0x120 which is 3 periods
+>    then 0x248 - 0x120 =  128 it could go on with write."
+>
+> This assumption can't be applied.
+>
+> However, the current implementation of dmix is designed to achieve the
+> lowest latency by putting the data at the exact position being played
+> back now.  This, of course, doesn't guarantee the period wakeup = one
+> period free to fill like the above.  So it's the design choice.
+>
+> The current code has a workaround for the case of nperiods <= 2, by
+> setting the initial slave_appl_ptr to the next period start.  This
+> guarantees that the period wakeup = one period to be filled.  But its
+> cost is the start latency; the playback doesn't start immediately but
+> wait until the next period start.
+>
+>
+> Takashi
 
---===============4218859509696698923==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
+Thanks for this explanation. That helps me to understand.
+
+Now, I am thinking about a solution to align the slave_hw_ptr and 
+slave_appl_ptr to the slave_period (round down) only on start up.
+So we keep this low latency. (At start up it is the same behavior as 
+known from old sound drivers)
+
+As known from the past in worst case it will drop up to slave_period-1 
+frames.
+If the application uses big periods and the drop is not acceptable a 
+small slave_period using the var_period feature could be configured.
+But I think it is also not acceptable for an application which is using 
+really big periods to wait sometimes one period longer.
+
+There is always a higher probability of an under run whenever a poll() 
+wakeup will not result in a write.
+For example on systems with high load this could be an issue.
+
+If you are anyway not happy with this solution may be we can think about 
+an option to disable this feature
+like "min_drop_on_start true"
+But then we also should describe the drawbacks of this option like
+* Delay of snd_pcm_wait() up to 2*periods
+* Higher probability of Xruns
 
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Best regards
 
-On Tue, Nov 06, 2018 at 08:56:39AM -0600, Pierre-Louis Bossart wrote:
-
-> > However, looking at what else can enable SND_HDA, I think it should be
-
-> >      select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
-
-> This codec can only be used by the Skylake driver (and the upcoming SOF
-> one). For Tegra this module will never be used unless they follow the same
-> path of enabling ASoC to deal with the HDaudio codecs instead of the legacy.
-
-> Likewise HDAC_HDMI will only work on Intel platforms for now.
-
-_ALL_CODECS is a build coverage option, not a useful configuration
-option.  We should be building things in as many different
-configurations as possible so that it's easier for people to get build
-coverage when making subsystem wide changes.
-
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvht3EACgkQJNaLcl1U
-h9Deagf+OnHg8fBz8mKu9ehkKNp8xTUnAUdpPtoS0edsuI0QuH1I5WbIs6F3Ro58
-cxf6scOiMI7R0/qne0h0ReQbOudbh0mT0aCBL1UP77FGvWhkgpJF8CkJP5Hwl+MB
-eFtQe4CE0IfCXtzbfhg+RZ22OkUmJ4Rgdue5yqS7fPHswqQb/7zMGXZpKYGHuJx5
-T1Dhj5dnKqI7pS8lThDzcA/ZtkBbST4aN+Zv1RvI9ew6pVMrYWq30QSohmx2+qTs
-A9ESsst56DEvX8RSIZcsqMNejmuXFIQ4L7dqyIjS/9FjLoG1fp5SUkSOd4p6NHoo
-BBLuGM/ddEXdoSs7PJGNuK+CihZHtA==
-=wMGV
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
-
---===============4218859509696698923==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4218859509696698923==--
+Timo
