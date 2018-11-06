@@ -1,76 +1,92 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: GitHub - alsa-project - repositories
-Date: Tue, 6 Nov 2018 09:05:08 -0600
-Message-ID: <57f8965e-f5ec-a65f-47aa-97c67831f417@linux.intel.com>
-References: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [alsa-devel] Build regressions/improvements in v4.20-rc1 (sound/pci/hda/patch_ca0132.c)
+Date: Tue, 6 Nov 2018 16:25:21 +0100
+Message-ID: <CAMuHMdWMO5yE7vjWsyz6dWQ6eswVRcWO8A43vTrJn26D1EsfVQ@mail.gmail.com>
+References: <20181105220559.27458-1-geert@linux-m68k.org> <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
+ <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org> <CAMuHMdViTrKqQzci3=YJzk2+kQKqbWcr0oaaR1ZQM_VqT33RvA@mail.gmail.com>
+ <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F29A2678F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 16:05:16 +0100 (CET)
-In-Reply-To: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <eccd20fa-5be3-957d-7905-9cc4021ba94e@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Pierre,
 
-On 11/5/18 2:49 AM, Jaroslav Kysela wrote:
-> Hi all,
+On Tue, Nov 6, 2018 at 3:56 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> >>>>
+> >>>> *** ERRORS ***
+> >>>>
+> >>>>    + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
+> >>> sh4-all{mod,yes}config
+> >>>
+> >>> Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
+> >>> pci_iomap() on SH")
+> >>> is not sufficient?
+> >> Different problem.  This is about "select":
+> >>
+> >> config SND_SOC_ALL_CODECS
+> >>          tristate "Build all ASoC CODEC drivers"
+> >>
+> >> That enables (sets):
+> >>          select SND_SOC_HDAC_HDA
+> >> which selects SND_HDA even though CONFIG_PCI is not enabled.
+> >>
+> >> After SND_HDA is selected (above), the Kconfig symbols in
+> >> sound/pci/hda/Kconfig are available for enabling, so
+> >> SND_HDA_CODEC_CA0132 is enabled but will not build.
+> > Thanks for looking into this!
+> >
+> >> One simple solution (but possibly too naive) is:
+> >>
+> >> ---
+> >>   sound/soc/codecs/Kconfig |    2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> --- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
+> >> +++ lnx-420-rc1/sound/soc/codecs/Kconfig
+> >> @@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
+> >>          select SND_SOC_ES7241
+> >>          select SND_SOC_GTM601
+> >>          select SND_SOC_HDAC_HDMI
+> >> -       select SND_SOC_HDAC_HDA
+> >> +       select SND_SOC_HDAC_HDA if PCI
+> >>          select SND_SOC_ICS43432
+> >>          select SND_SOC_INNO_RK3036
+> >>          select SND_SOC_ISABELLE if I2C
+> > I guess that will work. There are already plenty of "select foo if bar" lines.
+> > However, looking at what else can enable SND_HDA, I think it should be
+> >
+> >      select SND_SOC_HDAC_HDA if SND_PCI || ARCH_TEGRA
 >
->    URL: https://github.com/alsa-project
+> This codec can only be used by the Skylake driver (and the upcoming SOF
+> one). For Tegra this module will never be used unless they follow the
+> same path of enabling ASoC to deal with the HDaudio codecs instead of
+> the legacy.
 >
->    I finally finished the first phase of the integration with GitHub. All
-> repositories are now on GitHub and all repositories are mirrored to
-> alsa-project.org. The github repositories are master (developers should
-> push changes only to those repositories). If you refer the repository as
-> the code source (for packaging or so), please, keep to use the
-> repositories on alsa-project.org (in case when we migrate to other
-> service in future like GitLab or so). The mirroring is realtime, so the
-> changes should be visible on git.alsa-project.org in few seconds after
-> the push.
+> Likewise HDAC_HDMI will only work on Intel platforms for now.
 >
->    I invited few people to the GitHub team and actually Takashi has full
-> access to all repos, Vinod Koul should have the write access to
-> tinycompress and Takashi Sakamoto should have the write access to
-> alsa-gi. If I omitted someone (or someone is not on github), please, let
-> me know (and register before).
+> >
+> > That still leaves the issue that pci_iomap() on SH should be an empty stub if
+> > PCI is not available, like on other architectures.
 >
->    Because github adds possibility for the pull requests and issue
-> tracking, I added notifications for them to this (alsa-devel) mailing
-> list. The short notification should be sent when an pull request or an
-> issue is opened or changed. I think that it would be best to handle this
-> per request, so the developer can ask to resend the patch to the mailing
-> list for the wider review or just push the change with the signing.
->
->    I activated Travis CI for alsa-lib and alsa-utils and I will add other
-> repos soon, too. URL: https://travis-ci.org/alsa-project
->
->    If you have some ideas which other github applications can be used to
-> improve the code maintenance, let me know. I will probably play with the
-> coverity checker (http://scan.coverity.com), too.
+> I thought Mark Brown provided a fix to SH maintainers?
 
-Nice. If you figure out how to do the CI integration with Coverity I am 
-all ears. I've been trying to enable it for SOF (which is also on 
-github) but couldn't find anyone that has done this successfully.
+Indeed, https://patchwork.kernel.org/patch/10597409/
 
-While I am at it, I've only used the 'rebase-and-merge' solution to 
-merge PRs, which gives you a linear history similar to what we've always 
-had. when using the default merge you end up with a spaghetti plate of 
-branches that quickly makes no sense for most people and make tools like 
-gitk nearly useless. Maybe the merge is fine when dealing with different 
-subsystems but when dealing with relatively small components it's more 
-confusing that helpful.
+As usual, no response from the J^HSH maintainers :-(
 
--Pierre
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
