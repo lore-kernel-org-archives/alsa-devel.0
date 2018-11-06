@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Use less aggressive caching to
- ensure correctness
-Date: Tue, 6 Nov 2018 17:18:45 +0000
-Message-ID: <20181106171845.GF31950@sirena.org.uk>
-References: <20181105111912.14464-1-tzungbi@google.com>
+Subject: Applied "ASoC: rsnd: add TDM Split mode support" to
+	the asoc tree
+Date: Tue,  6 Nov 2018 17:52:08 +0000 (GMT)
+Message-ID: <20181106175208.7B242112266B@debutante.sirena.org.uk>
+References: <871s7ywzz9.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8595648966537034064=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B3FBE2678F2
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:18:46 +0100 (CET)
-In-Reply-To: <20181105111912.14464-1-tzungbi@google.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A72B2678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:52:09 +0100 (CET)
+In-Reply-To: <871s7ywzz9.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +22,313 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tzung-Bi Shih <tzungbi@google.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, dgreid@google.com, lgirdwood@gmail.com, cychiang@google.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8595648966537034064==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TU+u6i6jrDPzmlWF"
-Content-Disposition: inline
+   ASoC: rsnd: add TDM Split mode support
 
+has been applied to the asoc tree at
 
---TU+u6i6jrDPzmlWF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Nov 05, 2018 at 07:19:12PM +0800, Tzung-Bi Shih wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +++ b/sound/soc/soc-dapm.c
-> @@ -2722,7 +2722,7 @@ static int snd_soc_dapm_add_path(struct snd_soc_dap=
-m_context *dapm,
->  		dapm_mark_dirty(widgets[dir], "Route added");
->  	}
-> =20
-> -	if (dapm->card->instantiated && path->connect)
-> +	if (path->connect)
->  		dapm_path_invalidate(path);
-> =20
->  	return 0;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The whole point with the instantiated check here is that when we
-instantiate the card we're supposed to go through and redo all the DAPM
-configuration for the card in one fell swoop rather than having to
-constantly redo things while we're building up the graph.  If that
-invalidation isn't happening then we should fix that.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---TU+u6i6jrDPzmlWF
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvhzPQACgkQJNaLcl1U
-h9DHGQf/eoud7SLinHkEdgWGwXt4r4xNW/ix57pZcWjEam/4mR8gqEYj4+iCQmUR
-/VaEMmgVWUOaclKeA9PMHQKU9vN+m/XkWCU2463EYXqVJjs0N6UuPw3ar/mg58RA
-Kd4mCuLF31ux6rJY5wd3XOX73acMX2TTGPAdRYIruQjAhMxgOkDm4i0HSRr/UszI
-JcDdOTu6H/UrbH80L4VQWplLEV/vz8lWCcpg1Aw7lINnOXxZhJfkIItUZ91aDzVH
-kmxolw1P+9w9w+0gT9v6mpFuYDlpB58TO1au6mOaVQPxeU2tnDBnmY9X5OdyNkpJ
-5/4pFor+9Kga5nwz5mtCtxogzjXy2Q==
-=0UdI
------END PGP SIGNATURE-----
+>From f69f452243e4e16d7a3d0a14e14126b10933d545 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 6 Nov 2018 05:21:46 +0000
+Subject: [PATCH] ASoC: rsnd: add TDM Split mode support
 
---TU+u6i6jrDPzmlWF--
+This patch adds TDM Split mode support. rsnd driver is assuming
+audio-graph-scu-card is used for Sound Card.
 
---===============8595648966537034064==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is very simple sample DT settings to use it.
 
+	sound_card: sound {
+		compatible = "audio-graph-scu-card";
+		...
+		convert-channels = <8>; /* TDM Split */
 
---===============8595648966537034064==--
+		dais = <&rsnd_port0     /* playback ch1/ch2 */
+			&rsnd_port1     /* playback ch3/ch4 */
+			&rsnd_port2     /* playback ch5/ch6 */
+			&rsnd_port3     /* playback ch7/ch8 */
+			>;
+	};
+
+	audio-codec {
+		...
+		port {
+			codec_0: endpoint@1 {
+				remote-endpoint = <&rsnd_ep0>;
+			};
+			codec_1: endpoint@2 {
+				remote-endpoint = <&rsnd_ep1>;
+			};
+			codec_2: endpoint@3 {
+				remote-endpoint = <&rsnd_ep2>;
+			};
+			codec_3: endpoint@4 {
+				remote-endpoint = <&rsnd_ep3>;
+			};
+		};
+	};
+
+	&rcar_sound {
+		...
+		ports {
+			rsnd_port0: port@0 {
+				rsnd_ep0: endpoint {
+					remote-endpoint = <&codec_0>;
+					...
+					playback = <&ssiu30 &ssi3>;
+				};
+			};
+			rsnd_port1: port@1 {
+				rsnd_ep1: endpoint {
+					remote-endpoint = <&codec_1>;
+					...
+					playback = <&ssiu31 &ssi3>;
+				};
+			};
+			rsnd_port2: port@2 {
+				rsnd_ep2: endpoint {
+					remote-endpoint = <&codec_2>;
+					...
+					playback = <&ssiu32 &ssi3>;
+				};
+			};
+			rsnd_port3: port@3 {
+				rsnd_ep3: endpoint {
+					remote-endpoint = <&codec_3>;
+					...
+					playback = <&ssiu33 &ssi3>;
+				};
+			};
+		};
+	};
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 29 +++++++++++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h |  2 ++
+ sound/soc/sh/rcar/ssi.c  | 27 +++++++++++++++++++++++----
+ sound/soc/sh/rcar/ssiu.c | 21 +++++++++++++--------
+ 4 files changed, 67 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index ff621615a924..12f559e0463f 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -271,6 +271,19 @@ int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
+ 	if (ctu_mod) {
+ 		u32 converted_chan = rsnd_io_converted_chan(io);
+ 
++		/*
++		 * !! Note !!
++		 *
++		 * converted_chan will be used for CTU,
++		 * or TDM Split mode.
++		 * User shouldn't use CTU with TDM Split mode.
++		 */
++		if (rsnd_runtime_is_tdm_split(io)) {
++			struct device *dev = rsnd_priv_to_dev(rsnd_io_to_priv(io));
++
++			dev_err(dev, "CTU and TDM Split should be used\n");
++		}
++
+ 		if (converted_chan)
+ 			return converted_chan;
+ 	}
+@@ -313,6 +326,11 @@ int rsnd_runtime_is_tdm(struct rsnd_dai_stream *io)
+ 	return rsnd_runtime_channel_for_ssi(io) >= 6;
+ }
+ 
++int rsnd_runtime_is_tdm_split(struct rsnd_dai_stream *io)
++{
++	return !!rsnd_flags_has(io, RSND_STREAM_TDM_SPLIT);
++}
++
+ /*
+  *	ADINR function
+  */
+@@ -790,6 +808,7 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 
+ 	switch (slots) {
+ 	case 2:
++		/* TDM Split Mode */
+ 	case 6:
+ 	case 8:
+ 		/* TDM Extend Mode */
+@@ -1010,6 +1029,7 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
+ 				     struct device_node *endpoint)
+ {
+ 	struct device *dev = rsnd_priv_to_dev(priv);
++	struct device_node *remote_port = of_graph_get_remote_port(endpoint);
+ 	struct device_node *remote_node = of_graph_get_remote_port_parent(endpoint);
+ 
+ 	if (!rsnd_io_to_mod_ssi(io))
+@@ -1026,6 +1046,15 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
+ 		rsnd_flags_set(io, RSND_STREAM_HDMI1);
+ 		dev_dbg(dev, "%s connected to HDMI1\n", io->name);
+ 	}
++
++	/*
++	 * This driver assumes that it is TDM Split mode
++	 * if remote node has multi endpoint
++	 */
++	if (of_get_child_count(remote_port) > 1) {
++		rsnd_flags_set(io, RSND_STREAM_TDM_SPLIT);
++		dev_dbg(dev, "%s is part of TDM Split\n", io->name);
++	}
+ }
+ 
+ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 7b1e7fb1968c..64c3a3bbcbb9 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -433,6 +433,7 @@ int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
+ 				 struct snd_pcm_hw_params *params);
+ int rsnd_runtime_is_multi_ssi(struct rsnd_dai_stream *io);
+ int rsnd_runtime_is_tdm(struct rsnd_dai_stream *io);
++int rsnd_runtime_is_tdm_split(struct rsnd_dai_stream *io);
+ 
+ /*
+  * DT
+@@ -467,6 +468,7 @@ struct rsnd_dai_stream {
+ /* flags */
+ #define RSND_STREAM_HDMI0	(1 << 0) /* for HDMI0 */
+ #define RSND_STREAM_HDMI1	(1 << 1) /* for HDMI1 */
++#define RSND_STREAM_TDM_SPLIT	(1 << 2) /* for TDM split mode */
+ 
+ #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+ #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 940a7ac69af1..26fc4a5da0e8 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -298,6 +298,9 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 		return 0;
+ 	}
+ 
++	if (rsnd_runtime_is_tdm_split(io))
++		chan = rsnd_io_converted_chan(io);
++
+ 	main_rate = rsnd_ssi_clk_query(rdai, rate, chan, &idx);
+ 	if (!main_rate) {
+ 		dev_err(dev, "unsupported clock rate\n");
+@@ -360,9 +363,11 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	u32 cr_own	= ssi->cr_own;
+ 	u32 cr_mode	= ssi->cr_mode;
+ 	u32 wsr		= ssi->wsr;
+-	int is_tdm;
++	int width;
++	int is_tdm, is_tdm_split;
+ 
+-	is_tdm = rsnd_runtime_is_tdm(io);
++	is_tdm		= rsnd_runtime_is_tdm(io);
++	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
+ 
+ 	cr_own |= FORCE | rsnd_rdai_width_to_swl(rdai);
+ 
+@@ -381,7 +386,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	 *	rsnd_ssiu_init_gen2()
+ 	 */
+ 	wsr = ssi->wsr;
+-	if (is_tdm) {
++	if (is_tdm || is_tdm_split) {
+ 		wsr	|= WS_MODE;
+ 		cr_own	|= CHNL_8;
+ 	}
+@@ -397,7 +402,18 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 		cr_own |= TRMD;
+ 
+ 	cr_own &= ~DWL_MASK;
+-	switch (snd_pcm_format_width(runtime->format)) {
++	width = snd_pcm_format_width(runtime->format);
++	if (is_tdm_split) {
++		/*
++		 * The SWL and DWL bits in SSICR should be fixed at 32-bit
++		 * setting when TDM split mode.
++		 * see datasheet
++		 *	Operation :: TDM Format Split Function (TDM Split Mode)
++		 */
++		width = 32;
++	}
++
++	switch (width) {
+ 	case 8:
+ 		cr_own |= DWL_8;
+ 		break;
+@@ -407,6 +423,9 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	case 24:
+ 		cr_own |= DWL_24;
+ 		break;
++	case 32:
++		cr_own |= DWL_32;
++		break;
+ 	}
+ 
+ 	if (rsnd_ssi_is_dma_mode(mod)) {
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 0609a0c5f9f9..650b14e99b05 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -16,6 +16,10 @@ struct rsnd_ssiu {
+ 	int id_sub;
+ };
+ 
++/* SSI_MODE */
++#define TDM_EXT		(1 << 0)
++#define TDM_SPLIT	(1 << 8)
++
+ #define rsnd_ssiu_nr(priv) ((priv)->ssiu_nr)
+ #define rsnd_mod_to_ssiu(_mod) container_of((_mod), struct rsnd_ssiu, mod)
+ #define for_each_rsnd_ssiu(pos, priv, i)				\
+@@ -165,14 +169,15 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 
+ 	ssiu->usrcnt++;
+ 
+-	if (rsnd_runtime_is_tdm(io)) {
+-		/*
+-		 * TDM Extend Mode
+-		 * see
+-		 *	rsnd_ssi_config_init()
+-		 */
+-		mode = 0x1;
+-	}
++	/*
++	 * TDM Extend/Split Mode
++	 * see
++	 *	rsnd_ssi_config_init()
++	 */
++	if (rsnd_runtime_is_tdm(io))
++		mode = TDM_EXT;
++	else if (rsnd_runtime_is_tdm_split(io))
++		mode = TDM_SPLIT;
+ 
+ 	rsnd_mod_write(mod, SSI_MODE, mode);
+ 
+-- 
+2.19.0.rc2
