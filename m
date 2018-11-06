@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: remove endpoint
-	bidirectional check" to the asoc tree
-Date: Tue,  6 Nov 2018 17:54:01 +0000 (GMT)
-Message-ID: <20181106175401.A02F9112266B@debutante.sirena.org.uk>
-References: <87k1lqx22s.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: common: add quirk for APL RVP
+	boards" to the asoc tree
+Date: Tue,  6 Nov 2018 17:54:10 +0000 (GMT)
+Message-ID: <20181106175410.04E50112266B@debutante.sirena.org.uk>
+References: <20181101213454.18894-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 17C6D267AB5
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:54:02 +0100 (CET)
-In-Reply-To: <87k1lqx22s.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6472B2678F2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 18:54:11 +0100 (CET)
+In-Reply-To: <20181101213454.18894-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: remove endpoint bidirectional check
+   ASoC: Intel: common: add quirk for APL RVP boards
 
 has been applied to the asoc tree at
 
@@ -53,51 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From 39ee0b3401feac5932dca6a98d538438aa5f6236 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Nov 2018 04:36:27 +0000
-Subject: [PATCH] ASoC: audio-graph-card: remove endpoint bidirectional check
+>From 935ff8007f5efd24e995d26ebf875ee2c787465e Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 1 Nov 2018 16:34:54 -0500
+Subject: [PATCH] ASoC: Intel: common: add quirk for APL RVP boards
 
-DTC commit df536831d02c ("checks: add graph binding checks")
-is checking endpoint bidirectional, and it is upstreamed to linux by
-commit 50aafd60898a ("scripts/dtc: Update to upstream version
-v1.4.6-21-g84e414b0b5bc").
-Let's remove own bidirectional check
+For some reason the RVP/LeafHill SSDT exposes an INT34C3 ID which is
+used on other boards to point to the TDF8532 amplifier. Yay BIOS.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Add a DMI-quirk to ignore this ID and check for other valid machine
+driver descriptors.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ .../intel/common/soc-acpi-intel-bxt-match.c   | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 25c819e402e1..26eb6ff9b9f3 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -167,16 +167,8 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	struct asoc_simple_dai *codec_dai = &dai_props->codec_dai;
- 	struct device_node *cpu_ep    = of_get_next_child(cpu_port, NULL);
- 	struct device_node *codec_ep = of_graph_get_remote_endpoint(cpu_ep);
--	struct device_node *rcpu_ep = of_graph_get_remote_endpoint(codec_ep);
- 	int ret;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 2756fa4ab552..61dedc103b19 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -6,9 +6,41 @@
+  *
+  */
  
--	if (rcpu_ep != cpu_ep) {
--		dev_err(dev, "remote-endpoint mismatch (%s/%s/%s)\n",
--			cpu_ep->name, codec_ep->name, rcpu_ep->name);
--		ret = -EINVAL;
--		goto dai_link_of_err;
--	}
--
- 	ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
- 					    NULL, &dai_link->dai_fmt);
- 	if (ret < 0)
-@@ -228,7 +220,6 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
++#include <linux/dmi.h>
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
- dai_link_of_err:
- 	of_node_put(cpu_ep);
--	of_node_put(rcpu_ep);
- 	of_node_put(codec_ep);
- 
- 	return ret;
++enum {
++	APL_RVP,
++};
++
++static const struct dmi_system_id apl_table[] = {
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corp."),
++			DMI_MATCH(DMI_BOARD_NAME, "Apollolake RVP1A"),
++		},
++		.driver_data = (void *)(APL_RVP),
++	},
++	{}
++};
++
++static struct snd_soc_acpi_mach *apl_quirk(void *arg)
++{
++	struct snd_soc_acpi_mach *mach = arg;
++	const struct dmi_system_id *dmi_id;
++	unsigned long apl_machine_id;
++
++	dmi_id = dmi_first_match(apl_table);
++	if (dmi_id) {
++		apl_machine_id = (unsigned long)dmi_id->driver_data;
++		if (apl_machine_id == APL_RVP)
++			return NULL;
++	}
++
++	return mach;
++}
++
+ static struct snd_soc_acpi_codecs bxt_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+@@ -50,6 +82,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 	{
+ 		.id = "INT34C3",
+ 		.drv_name = "bxt_tdf8532",
++		.machine_quirk = apl_quirk,
+ 		.sof_fw_filename = "intel/sof-apl.ri",
+ 		.sof_tplg_filename = "intel/sof-apl-tdf8532.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
 -- 
 2.19.0.rc2
