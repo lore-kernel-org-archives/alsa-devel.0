@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: remove read-only status
-	register from snd_kcontrol_new" to the asoc tree
-Date: Tue,  6 Nov 2018 18:09:13 +0000 (GMT)
-Message-ID: <20181106180913.48E00112266B@debutante.sirena.org.uk>
+Subject: Applied "ASoC: ak5558: Remove redundant
+	snd_soc_component_read32 calls" to the asoc tree
+Date: Tue,  6 Nov 2018 18:09:19 +0000 (GMT)
+Message-ID: <20181106180919.CD2CB112266B@debutante.sirena.org.uk>
+References: <20181106093919.20740-1-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 16AE6267AA5
- for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:09:14 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 98333267ADA
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 19:09:20 +0100 (CET)
+In-Reply-To: <20181106093919.20740-1-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: remove read-only status register from snd_kcontrol_new
+   ASoC: ak5558: Remove redundant snd_soc_component_read32 calls
 
 has been applied to the asoc tree at
 
@@ -52,54 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From 223bc10b84970fd772c105b550beeef3ac3502be Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Nov 2018 04:33:02 +0000
-Subject: [PATCH] ASoC: pcm3168a: remove read-only status register from
- snd_kcontrol_new
+>From 39dfdf00c7a56b2a8c01c596f6522f089428b1c7 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Tue, 6 Nov 2018 17:39:19 +0800
+Subject: [PATCH] ASoC: ak5558: Remove redundant snd_soc_component_read32 calls
 
-"DACn Zero Flag" and "ADCn Overflow Flag" are read-only status
-register. These information are needed for driver not for user.
-Let's remove these from snd_kcontrol_new.
+snd_soc_component_update_bits() will only update the mask bits,
+so remove the redundant snd_soc_component_read32().
 
-There is no detail explanation for these register on
-datasheet, but, judging from its behavior, it seems these register
-needs clock to read. Otherwise, I2C returns error.
-Therefor, amixer command will be failed under non working timing.
-
-Without this patch, user often fail amixer command.
-This patch is tested on R-Car H3 ulcb-kf board, SSI3/4 TDM sound.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/codecs/ak5558.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 5f4327f5b725..115f21658222 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -133,10 +133,6 @@ static const struct snd_kcontrol_new pcm3168a_snd_controls[] = {
- 	SOC_DOUBLE("DAC2 Invert Switch", PCM3168A_DAC_INV, 2, 3, 1, 0),
- 	SOC_DOUBLE("DAC3 Invert Switch", PCM3168A_DAC_INV, 4, 5, 1, 0),
- 	SOC_DOUBLE("DAC4 Invert Switch", PCM3168A_DAC_INV, 6, 7, 1, 0),
--	SOC_DOUBLE_STS("DAC1 Zero Flag", PCM3168A_DAC_ZERO, 0, 1, 1, 0),
--	SOC_DOUBLE_STS("DAC2 Zero Flag", PCM3168A_DAC_ZERO, 2, 3, 1, 0),
--	SOC_DOUBLE_STS("DAC3 Zero Flag", PCM3168A_DAC_ZERO, 4, 5, 1, 0),
--	SOC_DOUBLE_STS("DAC4 Zero Flag", PCM3168A_DAC_ZERO, 6, 7, 1, 0),
- 	SOC_ENUM("DAC Volume Control Type", pcm3168a_dac_volume_type),
- 	SOC_ENUM("DAC Volume Rate Multiplier", pcm3168a_dac_att_mult),
- 	SOC_ENUM("DAC De-Emphasis", pcm3168a_dac_demp),
-@@ -176,9 +172,6 @@ static const struct snd_kcontrol_new pcm3168a_snd_controls[] = {
- 	SOC_DOUBLE("ADC1 Mute Switch", PCM3168A_ADC_MUTE, 0, 1, 1, 0),
- 	SOC_DOUBLE("ADC2 Mute Switch", PCM3168A_ADC_MUTE, 2, 3, 1, 0),
- 	SOC_DOUBLE("ADC3 Mute Switch", PCM3168A_ADC_MUTE, 4, 5, 1, 0),
--	SOC_DOUBLE_STS("ADC1 Overflow Flag", PCM3168A_ADC_OV, 0, 1, 1, 0),
--	SOC_DOUBLE_STS("ADC2 Overflow Flag", PCM3168A_ADC_OV, 2, 3, 1, 0),
--	SOC_DOUBLE_STS("ADC3 Overflow Flag", PCM3168A_ADC_OV, 4, 5, 1, 0),
- 	SOC_ENUM("ADC Volume Control Type", pcm3168a_adc_volume_type),
- 	SOC_ENUM("ADC Volume Rate Multiplier", pcm3168a_adc_att_mult),
- 	SOC_ENUM("ADC Overflow Flag Polarity", pcm3168a_adc_ov_pol),
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 60f1f12c81ea..8179512129d3 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -130,16 +130,12 @@ static int ak5558_hw_params(struct snd_pcm_substream *substream,
+ 	u8 bits;
+ 	int pcm_width = max(params_physical_width(params), ak5558->slot_width);
+ 
+-	/* set master/slave audio interface */
+-	bits = snd_soc_component_read32(component, AK5558_02_CONTROL1);
+-	bits &= ~AK5558_BITS;
+-
+ 	switch (pcm_width) {
+ 	case 16:
+-		bits |= AK5558_DIF_24BIT_MODE;
++		bits = AK5558_DIF_24BIT_MODE;
+ 		break;
+ 	case 32:
+-		bits |= AK5558_DIF_32BIT_MODE;
++		bits = AK5558_DIF_32BIT_MODE;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -168,18 +164,15 @@ static int ak5558_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	/* set master/slave audio interface */
+-	format = snd_soc_component_read32(component, AK5558_02_CONTROL1);
+-	format &= ~AK5558_DIF;
+-
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		format |= AK5558_DIF_I2S_MODE;
++		format = AK5558_DIF_I2S_MODE;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		format |= AK5558_DIF_MSB_MODE;
++		format = AK5558_DIF_MSB_MODE;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		format |= AK5558_DIF_MSB_MODE;
++		format = AK5558_DIF_MSB_MODE;
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.19.0.rc2
