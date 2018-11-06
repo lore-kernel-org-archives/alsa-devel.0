@@ -1,71 +1,93 @@
-From: "He, Bo" <bo.he@intel.com>
-Subject: RE: [alsa-devel] [PATCH] fix the kernel panic due to wrong use the
- dev memory API
-Date: Tue, 6 Nov 2018 00:58:30 +0000
-Message-ID: <CD6925E8781EFD4D8E11882D20FC406D529FE5A9@SHSMSX104.ccr.corp.intel.com>
-References: <CD6925E8781EFD4D8E11882D20FC406D529FE3B6@SHSMSX104.ccr.corp.intel.com>
- <f2e3ffeb-12bd-d60e-e96a-8fa00a17844f@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Build regressions/improvements in v4.20-rc1
+ (sound/pci/hda/patch_ca0132.c)
+Date: Mon, 5 Nov 2018 17:04:47 -0800
+Message-ID: <80f2f98b-9ab1-2a1c-0962-63e3be1dd742@infradead.org>
+References: <20181105220559.27458-1-geert@linux-m68k.org>
+ <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f2e3ffeb-12bd-d60e-e96a-8fa00a17844f@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56ADB267930
+ for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2018 02:05:09 +0100 (CET)
+In-Reply-To: <CAMuHMdWGpjvwunNWgFujPO9_j+=QiNsi346s4-xBF1g4DT5xZw@mail.gmail.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "Singh, Guneshwor O" <guneshwor.o.singh@intel.com>, "Periyasamy, SriramX" <sriramx.periyasamy@intel.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>, "Kesapragada, Pardha Saradhi" <pardha.saradhi.kesapragada@intel.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Prakash, Divya1" <divya1.prakash@intel.com>, "Diwakar, Praveen" <praveen.diwakar@intel.com>, "Zhang, Yanmin" <yanmin.zhang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: linux-s390 <linux-s390@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksIA0KCUkgc3VibWl0IHRoZSBwYXRjaCBiYXNlZCBvbiB0YWcgdjQuMTkuDQoNCi0tLS0tT3Jp
-Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxv
-dWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPiANClNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDYs
-IDIwMTggMTowMiBBTQ0KVG86IEhlLCBCbyA8Ym8uaGVAaW50ZWwuY29tPjsgYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpDYzogbGlhbS5y
-LmdpcmR3b29kQGxpbnV4LmludGVsLmNvbTsgcGVyZXhAcGVyZXguY3o7IHRpd2FpQHN1c2UuY29t
-OyBTaW5naCwgR3VuZXNod29yIE8gPGd1bmVzaHdvci5vLnNpbmdoQGludGVsLmNvbT47IFBlcml5
-YXNhbXksIFNyaXJhbVggPHNyaXJhbXgucGVyaXlhc2FteUBpbnRlbC5jb20+OyBLYWxlLCBTYW55
-b2cgUiA8c2FueW9nLnIua2FsZUBpbnRlbC5jb20+OyBLZXNhcHJhZ2FkYSwgUGFyZGhhIFNhcmFk
-aGkgPHBhcmRoYS5zYXJhZGhpLmtlc2FwcmFnYWRhQGludGVsLmNvbT47IGt1bmlub3JpLm1vcmlt
-b3RvLmd4QHJlbmVzYXMuY29tOyBndXJ1cHJhc2FkeC5wYXdzZUBpbnRlbC5jb207IFVnaHJlamEs
-IFJha2VzaCBBIDxyYWtlc2guYS51Z2hyZWphQGludGVsLmNvbT47IFByYWthc2gsIERpdnlhMSA8
-ZGl2eWExLnByYWthc2hAaW50ZWwuY29tPjsgRGl3YWthciwgUHJhdmVlbiA8cHJhdmVlbi5kaXdh
-a2FyQGludGVsLmNvbT47IFpoYW5nLCBZYW5taW4gPHlhbm1pbi56aGFuZ0BpbnRlbC5jb20+DQpT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSF0gZml4IHRoZSBrZXJuZWwgcGFuaWMgZHVl
-IHRvIHdyb25nIHVzZSB0aGUgZGV2IG1lbW9yeSBBUEkNCg0KDQpPbiAxMS81LzE4IDI6MjkgQU0s
-IEhlLCBCbyB3cm90ZToNCj4gc2tsLT5kYWlzIGlzIGFsbG9jYXRlZCB3aXRoIGRldm1fa2NhbGxv
-YywgY2FuJ3QgZnJlZSB3aXRoDQo+IHRoZSBrcmVhbGxvYy4gTWVtb3J5IGFsbG9jYXRlZCB3aXRo
-IGRldm0gQVBJIGlzIGF1dG9tYXRpY2FsbHkgZnJlZWQgb24gDQo+IGRyaXZlciBkZXRhY2gsIExp
-a2UgYWxsIG90aGVyIGRldnJlcyByZXNvdXJjZXMuDQo+DQo+IFJlZmVyIHRvIGRyaXZlcnMvYmFz
-ZS9kZXZyZXMuYyBkZXZtX2ttYWxsb2MgZm9yIG1vcmUgZGV0YWlscy4NCg0KV2hhdCBjb2RlIGFy
-ZSB5b3UgbG9va2luZyBhdD8NCg0KSSBzZWUgdGhpcyBpbiB0aGUgTWFyaydzIHRyZWUNCg0KaW50
-IHNrbF9wbGF0Zm9ybV9yZWdpc3RlcihzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCiDCoMKgwqAgaW50
-IHJldDsNCiDCoMKgwqAgc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlciAqZGFpczsNCiDCoMKgwqAg
-aW50IG51bV9kYWlzID0gQVJSQVlfU0laRShza2xfcGxhdGZvcm1fZGFpKTsNCiDCoMKgwqAgc3Ry
-dWN0IGhkYWNfYnVzICpidXMgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCiDCoMKgwqAgc3RydWN0
-IHNrbCAqc2tsID0gYnVzX3RvX3NrbChidXMpOw0KDQogwqDCoMKgIElOSVRfTElTVF9IRUFEKCZz
-a2wtPnBwbF9saXN0KTsNCiDCoMKgwqAgSU5JVF9MSVNUX0hFQUQoJnNrbC0+YmluZF9saXN0KTsN
-Cg0KIMKgwqDCoCBza2wtPmRhaXMgPSBrbWVtZHVwKHNrbF9wbGF0Zm9ybV9kYWksIHNpemVvZihz
-a2xfcGxhdGZvcm1fZGFpKSwNCiDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgR0ZQX0tFUk5F
-TCk7DQogwqDCoMKgIGlmICghc2tsLT5kYWlzKSB7DQogwqDCoMKgIMKgwqDCoCByZXQgPSAtRU5P
-TUVNOw0KIMKgwqDCoCDCoMKgwqAgZ290byBlcnI7DQogwqDCoMKgIH0NCg0KIMKgwqDCoCBpZiAo
-IXNrbC0+dXNlX3RwbGdfcGNtKSB7DQogwqDCoMKgIMKgwqDCoCBkYWlzID0ga3JlYWxsb2Moc2ts
-LT5kYWlzLCBzaXplb2Yoc2tsX2ZlX2RhaSkgKw0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCBzaXplb2Yoc2tsX3BsYXRmb3JtX2RhaSksIEdGUF9LRVJORUwpOw0KDQoNCk5vIHRyYWNlIG9m
-IGRldm0gYXMgeW91IG1lbnRpb24gaXQ/IEkgY2hlY2tlZCB0aGUgQ2hyb21lIHRyZWUgYXMgd2Vs
-bCBhbmQgaXQncyBub3QgdGhlcmUuDQoNCldoYXQgYW0gSSBtaXNzaW5nPw0KDQoNCj4NCj4gU2ln
-bmVkLW9mZi1ieTogaGUsIGJvIDxiby5oZUBpbnRlbC5jb20+DQo+IC0tLQ0KPiAgIHNvdW5kL3Nv
-Yy9pbnRlbC9za3lsYWtlL3NrbC1wY20uYyB8IDUgKystLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2ludGVsL3NreWxha2Uvc2tsLXBjbS5jIA0KPiBiL3NvdW5kL3NvYy9pbnRlbC9za3lsYWtl
-L3NrbC1wY20uYw0KPiBpbmRleCA4MjNlMzkxLi45MjhkMzE0IDEwMDY0NA0KPiAtLS0gYS9zb3Vu
-ZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wtcGNtLmMNCj4gKysrIGIvc291bmQvc29jL2ludGVsL3Nr
-eWxha2Uvc2tsLXBjbS5jDQo+IEBAIC0xNDM4LDcgKzE0MzgsOCBAQCBpbnQgc2tsX3BsYXRmb3Jt
-X3JlZ2lzdGVyKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gICAJfQ0KPiAgIA0KPiAgIAlpZiAoIXNr
-bC0+dXNlX3RwbGdfcGNtKSB7DQo+IC0JCWRhaXMgPSBrcmVhbGxvYyhza2wtPmRhaXMsIHNpemVv
-Zihza2xfZmVfZGFpKSArDQo+ICsJCWRldm1fa2ZyZWUoZGV2LCBza2wtPmRhaXMpOw0KPiArCQlk
-YWlzID0gZGV2bV9rY2FsbG9jKGRldiwgc2tsLT5kYWlzLCBzaXplb2Yoc2tsX2ZlX2RhaSkgKw0K
-PiAgIAkJCQlzaXplb2Yoc2tsX3BsYXRmb3JtX2RhaSksIEdGUF9LRVJORUwpOw0KPiAgIAkJaWYg
-KCFkYWlzKSB7DQo+ICAgCQkJcmV0ID0gLUVOT01FTTsNCj4gQEAgLTE0NzIsNyArMTQ3Myw1IEBA
-IGludCBza2xfcGxhdGZvcm1fdW5yZWdpc3RlcihzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICAgCQl9
-DQo+ICAgCX0NCj4gICANCj4gLQlrZnJlZShza2wtPmRhaXMpOw0KPiAtDQo+ICAgCXJldHVybiAw
-Ow0KPiAgIH0NCg==
+On 11/5/18 2:12 PM, Geert Uytterhoeven wrote:
+> On Mon, Nov 5, 2018 at 11:07 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> Below is the list of build error/warning regressions/improvements in
+>> v4.20-rc1[1] compared to v4.19[2].
+>>
+>> Summarized:
+>>   - build errors: +3/-0
+>>   - build warnings: +449/-2712
+>>
+>> Happy fixing! ;-)
+>>
+>> Thanks to the linux-next team for providing the build service.
+>>
+>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/651022382c7f8da46cb4872a545ee1da6d097d2a/ (all 240 configs)
+>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/84df9525b0c27f3ebc2ebb1864fa62a97fdedb7d/ (all 240 configs)
+>>
+>>
+>> *** ERRORS ***
+>>
+>>   + /kisskb/src/sound/pci/hda/patch_ca0132.c: error: implicit declaration of function 'pci_iomap' [-Werror=implicit-function-declaration]:  => 8799:3
+> 
+> sh4-all{mod,yes}config
+> 
+> Looks like d9b84a15892c0233 ("ALSA: hda: Fix implicit definition of
+> pci_iomap() on SH")
+> is not sufficient?
+
+Different problem.  This is about "select":
+
+config SND_SOC_ALL_CODECS
+	tristate "Build all ASoC CODEC drivers"
+
+That enables (sets):
+	select SND_SOC_HDAC_HDA
+which selects SND_HDA even though CONFIG_PCI is not enabled.
+
+After SND_HDA is selected (above), the Kconfig symbols in
+sound/pci/hda/Kconfig are available for enabling, so
+SND_HDA_CODEC_CA0132 is enabled but will not build.
+
+
+One simple solution (but possibly too naive) is:
+
+---
+ sound/soc/codecs/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- lnx-420-rc1.orig/sound/soc/codecs/Kconfig
++++ lnx-420-rc1/sound/soc/codecs/Kconfig
+@@ -82,7 +82,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ES7241
+ 	select SND_SOC_GTM601
+ 	select SND_SOC_HDAC_HDMI
+-	select SND_SOC_HDAC_HDA
++	select SND_SOC_HDAC_HDA if PCI
+ 	select SND_SOC_ICS43432
+ 	select SND_SOC_INNO_RK3036
+ 	select SND_SOC_ISABELLE if I2C
+
+
+
+
+-- 
+~Randy
