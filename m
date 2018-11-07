@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: Invoke pcm_new() for all
- DAI-link
-Date: Wed, 7 Nov 2018 16:14:37 +0000
-Message-ID: <20181107161437.GC6809@sirena.org.uk>
-References: <1541075929-29323-1-git-send-email-rohitkr@codeaurora.org>
- <s5htvl0exil.wl-tiwai@suse.de>
- <48c78f67-8178-2d07-e35d-2e4eca51ccbc@codeaurora.org>
- <791d4587-4db3-3ffa-331a-f79d0993ca8c@st.com>
- <3616f01f-6a00-6eb1-0bdd-f161b7ce15e6@codeaurora.org>
- <4f22e4e5-84f0-1560-1ba7-5e77d44fd312@st.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH v2 0/7] ASoC: omap-mcbsp: Cleanup and split
+ core/sidetone support
+Date: Wed, 7 Nov 2018 20:57:37 +0200
+Message-ID: <a3939fd6-b120-5723-4674-4d2abfcc5eb5@bitmer.com>
+References: <20181107132310.29597-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6850536743011095917=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 82E3A267839
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2018 17:14:44 +0100 (CET)
-In-Reply-To: <4f22e4e5-84f0-1560-1ba7-5e77d44fd312@st.com>
+Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31C5A2677E8
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2018 19:57:39 +0100 (CET)
+In-Reply-To: <20181107132310.29597-1-peter.ujfalusi@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, olivier.moysan@st.com, Takashi Iwai <tiwai@suse.de>, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Rohit Kumar <rohitkr@codeaurora.org>, srinivas.kandagatla@linaro.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/7/18 3:23 PM, Peter Ujfalusi wrote:
+> Hi,
+> 
+> Changes since v1:
+> - Two patch added to address the code move triggered few warnings from build.
+>   One of them is around mcbsp->pdata checks (not valid complaint), the other is
+>   that we set -EINVAL to unsigned variables (they were not used in that case)
+> 
+> While preparing for merging the davinci and omap directories (I will send the
+> series for that shortly) I have taken some time to do cleanup on the McBSP
+> driver.
+> 
+> The mcbsp.c/h files were the result when we moved code from arch/arm/plat-omap
+> to sound/soc/omap/ a long time ago and it contained code for McBSP core and the
+> OMAP3 sidetone functionality.
+> 
+> With this series I tried to split the core and sidetone code to separate files.
+> 
+> There were two reasons for this:
+> 1. to have the OMAP specific DAI driver files prefixed with omap-* under the new
+>    sound/soc/ti/ directory
+> 2. easier to find functions as all sidetone code is in separate file.
+> 
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (7):
+>   ASoC: omap-mcbsp: Clean up dma_data addr initialization code
+>   ASoC: omap-mcbsp: Clean up the interrupt handlers
+>   ASoC: omap-mcbsp: Simplify the mcbsp_start/_stop function parameters
+>   ASoC: omap-mcbsp: Move out the FIFO check from set_threshold and
+>     get_delay
+>   ASoC: omap-mcbsp: Re-arrange files for core McBSP and Sidetone
+>     function split
+>   ASoC: omap-mcbsp: Remove redundant check for mcbsp->pdata
+>   ASoC: omap-mcbsp: No need to initialize max_xx_thres when it is not
+>     used
+> 
+Minor comments, no need to resend. Patch 1/7 looked like it could be
+splitted into two but don't know is it worth of effort, maybe not. Then
+I was thinking can 6-7/7 be moved before 5/7?
 
---===============6850536743011095917==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
-Content-Disposition: inline
+I'll try to give a test to the set perhaps during weekend but don't let
+that delay the process.
 
-
---hOcCNbCCxyk/YU74
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 06, 2018 at 04:41:23PM +0100, Arnaud Pouliquen wrote:
-
-> I would say force device to 0 if no_pcm (need probably to create the
-> control in hdmi_of_xlate_dai_id instead of hdmi_codec_pcm_new).
-> But keep in mind that solution has to work in case of multi HDMI codec
-> instances, perhaps using prefix...
-> Anyway, i'm not a DPCM expert so perhaps more elegant solutions exist.
-
-Liam, any thoughts on how to handle this?  I've still not really worked
-with DPCM systems!
-
---hOcCNbCCxyk/YU74
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvjD20ACgkQJNaLcl1U
-h9A8Dgf/UWITAfBn1fgkapuJtrcu/6lI5ZQuwpTlRaME25VLqX7uo5ph0ZW5U9VU
-xm4bALOyi2F4zxT4uEaFDYN9AVVDYjAC19yD10ZEKVmb940q1XSL1g5elBySoLGB
-qDjQGVDMa8fOuObXJ5198IbnthqOj/PcazG7zywWSWu8T9g4r9W6FQYjhaLbbQiP
-NhTI75xlFgsDlpD+0APD73Cy69wRiunMrINfXJ3AYf02mG8JJCn+dsm9mExV+tPr
-kwpCjCoMwNDxbE3GF5qBt90INMFOQ7O33a6hURWULb9AE2FW2Z7KDIp7+mmrBcFt
-FW3ulHM249aDqVgWh6KFqwgV0iRj7A==
-=RPSz
------END PGP SIGNATURE-----
-
---hOcCNbCCxyk/YU74--
-
---===============6850536743011095917==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6850536743011095917==--
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
