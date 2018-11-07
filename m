@@ -1,20 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Change to use
- DEFINE_SHOW_ATTRIBUTE macro
-Date: Wed, 7 Nov 2018 17:08:28 -0200
-Message-ID: <CAOMZO5C+TSGY4wJmZbMW7rVSp4RKcXLH90Em3D5LxZTP-W00Xw@mail.gmail.com>
-References: <20181105143730.6071-1-tiny.windzz@gmail.com>
+From: sonntex <sonntex@gmail.com>
+Subject: snd_pcm_hw_params resets microphone boost
+Date: Thu, 8 Nov 2018 00:28:37 +0300
+Message-ID: <CAPeTicNf-d_h0KM9CmT0UX4KFf7RfEuwMN2QuRSEPLEMuyK9bA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 96D7E26751A
- for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2018 20:08:39 +0100 (CET)
-Received: by mail-ot1-f66.google.com with SMTP id q5so15753812otl.13
- for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2018 11:08:39 -0800 (PST)
-In-Reply-To: <20181105143730.6071-1-tiny.windzz@gmail.com>
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com
+ [209.85.219.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B30226751A
+ for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2018 22:28:50 +0100 (CET)
+Received: by mail-yb1-f178.google.com with SMTP id z2-v6so7479012ybj.2
+ for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2018 13:28:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,14 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiny.windzz@gmail.com
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, timur@kernel.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 7, 2018 at 4:57 PM Yangtao Li <tiny.windzz@gmail.com> wrote:
->
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+I have small program that captures audio from a microphone. As my
+microphone is very sensitive, I prefer to mute the microphone boost before
+capturing. I open alsamixer and set volume of the microphone boost to zero,
+save settings and exit. Then I execute my program. I see that it resets
+volume of the microphone boost in snd_pcm_hw_params. What should I do
+resolve this problem? Where can I find default value and change it?
