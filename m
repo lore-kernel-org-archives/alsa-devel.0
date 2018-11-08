@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 8/8] ASoC: omap-mcbsp: No need to initialize
-	max_xx_thres when it is not used
-Date: Thu, 8 Nov 2018 09:30:00 +0200
-Message-ID: <20181108073000.21114-9-peter.ujfalusi@ti.com>
-References: <20181108073000.21114-1-peter.ujfalusi@ti.com>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: High CPU usage in mpd
+Date: Thu,  8 Nov 2018 09:11:51 +0100 (CET)
+Message-ID: <20181108081151.59F55267AD3@alsa0.perex.cz>
+References: <1541664708886255980-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 36A932678DA
- for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 08:28:59 +0100 (CET)
-In-Reply-To: <20181108073000.21114-1-peter.ujfalusi@ti.com>
+Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
+ [192.168.100.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 354BC2678F2
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 09:11:48 +0100 (CET)
+In-Reply-To: <1541664708886255980-webhooks-bot@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Initializing to -EINVAL is not correct as the variables are unsigned and
-if buffer_size is 0 then they are not used anyway.
+alsa-project/alsa-utils issue #2 was opened from buttjake:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
----
- sound/soc/omap/omap-mcbsp.c | 3 ---
- 1 file changed, 3 deletions(-)
+I've ran into a strange bug in mpd where I get really high cpu usage. All the details are in the following two short threads.
+https://github.com/MusicPlayerDaemon/MPD/issues/391#issuecomment-435698235
+https://bbs.archlinux.org/viewtopic.php?id=241722 ( buttcake is me )
+I can also solve the bug by adding
+```
+audio_output {
+ type	"alsa"
+ device	"hw:0,0"
+}
+```
+to the mpd.conf
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 8cab1151d3bb..e0ef4774c710 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -727,9 +727,6 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- 				"Unable to create additional controls\n");
- 			goto err_thres;
- 		}
--	} else {
--		mcbsp->max_tx_thres = -EINVAL;
--		mcbsp->max_rx_thres = -EINVAL;
- 	}
- 
- 	ret = omap_mcbsp_st_init(pdev);
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/2
+Repository URL: https://github.com/alsa-project/alsa-utils
