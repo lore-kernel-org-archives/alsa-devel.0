@@ -1,53 +1,54 @@
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 2/2] ASoC: dt-bindings: add bindings for AK4118 transceiver
-Date: Thu,  8 Nov 2018 13:49:34 +0100
-Message-ID: <20181108124934.32381-2-peron.clem@gmail.com>
-References: <20181108124934.32381-1-peron.clem@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: qcom: Set dai_link id to each dai_link
+Date: Thu,  8 Nov 2018 19:11:40 +0530
+Message-ID: <1541684500-32728-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181108124934.32381-1-peron.clem@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Document the bindings for AK4118 S/PDIF transceiver
+Frontend dai_link id is used for closing ADM sessions.
+During concurrent usecase when one session is closed,
+it closes other ADM session associated with other usecase
+too. Dai_link->id should always point to Frontend dai id.
+Set cpu_dai id as dai_link id to fix the issue.
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- .../devicetree/bindings/sound/ak4118.txt      | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ak4118.txt
+ sound/soc/qcom/common.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4118.txt b/Documentation/devicetree/bindings/sound/ak4118.txt
-new file mode 100644
-index 000000000000..6e11a2f7404c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ak4118.txt
-@@ -0,0 +1,22 @@
-+AK4118 S/PDIF transceiver
-+
-+This device supports I2C mode.
-+
-+Required properties:
-+
-+- compatible : "asahi-kasei,ak4118"
-+- reg : The I2C address of the device for I2C
-+- reset-gpios: A GPIO specifier for the reset pin
-+- irq-gpios: A GPIO specifier for the IRQ pin
-+
-+Example:
-+
-+&i2c {
-+	ak4118: ak4118@13 {
-+		#sound-dai-cells = <0>;
-+		compatible = "asahi-kasei,ak4118";
-+		reg = <0x13>;
-+		reset-gpios = <&gpio 0 GPIO_ACTIVE_LOW>
-+		irq-gpios = <&gpio 1 GPIO_ACTIVE_HIGH>;
-+	};
-+};
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index eb1b9da..4715527 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -13,6 +13,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 	struct device_node *cpu = NULL;
+ 	struct device *dev = card->dev;
+ 	struct snd_soc_dai_link *link;
++	struct of_phandle_args args;
+ 	int ret, num_links;
+ 
+ 	ret = snd_soc_of_parse_card_name(card, "model");
+@@ -47,12 +48,14 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			goto err;
+ 		}
+ 
+-		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
+-		if (!link->cpu_of_node) {
++		ret = of_parse_phandle_with_args(cpu, "sound-dai",
++					"#sound-dai-cells", 0, &args);
++		if (ret) {
+ 			dev_err(card->dev, "error getting cpu phandle\n");
+-			ret = -EINVAL;
+ 			goto err;
+ 		}
++		link->cpu_of_node = args.np;
++		link->id = args.args[0];
+ 
+ 		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
+ 		if (ret) {
 -- 
-2.19.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
