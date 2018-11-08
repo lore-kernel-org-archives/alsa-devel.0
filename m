@@ -1,158 +1,179 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v3 3/3] ALSA: hda: add support for Huawei WMI micmute LED
-Date: Thu,  8 Nov 2018 12:16:55 -0500
-Message-ID: <20181108171701.4444-4-ayman.bagabas@gmail.com>
-References: <20181108171701.4444-1-ayman.bagabas@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v3 1/3] x86: add support for Huawei WMI hotkeys.
+Date: Thu, 8 Nov 2018 21:58:44 +0200
+Message-ID: <CAHp75Vev_0ObO=KLHfON8JAco=a9MURycH9uk-a+h1JqrSSQFA@mail.gmail.com>
+References: <20181108171701.4444-1-ayman.bagabas@gmail.com> <20181108171701.4444-2-ayman.bagabas@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181108171701.4444-1-ayman.bagabas@gmail.com>
+In-Reply-To: <20181108171701.4444-2-ayman.bagabas@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
+To: Ayman Bagabas <ayman.bagabas@gmail.com>
+Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some of Huawei laptops come with a LED in the micmute key. This patch
-enables and disable this LED accordingly.
+On Thu, Nov 8, 2018 at 7:17 PM Ayman Bagabas <ayman.bagabas@gmail.com> wrote:
+>
+> This driver adds support for missing hotkeys on some Huawei laptops.
+> Currently, only Huawei Matebook X and Matebook X Pro is supported.
+>
 
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
----
- drivers/platform/x86/huawei_wmi.c            |  1 +
- include/linux/platform_data/x86/huawei_wmi.h |  9 ++++
- sound/pci/hda/huawei_wmi_helper.c            | 47 ++++++++++++++++++++
- sound/pci/hda/patch_realtek.c                | 13 +++++-
- 4 files changed, 69 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/platform_data/x86/huawei_wmi.h
- create mode 100644 sound/pci/hda/huawei_wmi_helper.c
+Thanks for an update, my comments below.
 
-diff --git a/drivers/platform/x86/huawei_wmi.c b/drivers/platform/x86/huawei_wmi.c
-index 658c44ab2126..f06aa967c311 100644
---- a/drivers/platform/x86/huawei_wmi.c
-+++ b/drivers/platform/x86/huawei_wmi.c
-@@ -23,6 +23,7 @@
- #include <linux/input.h>
- #include <linux/input/sparse-keymap.h>
- #include <linux/module.h>
-+#include <linux/platform_data/x86/huawei_wmi.h>
- 
- MODULE_AUTHOR("Ayman Bagabas <ayman.bagabas@gmail.com>");
- MODULE_DESCRIPTION("Huawei WMI hotkeys");
-diff --git a/include/linux/platform_data/x86/huawei_wmi.h b/include/linux/platform_data/x86/huawei_wmi.h
-new file mode 100644
-index 000000000000..dd251780ee5c
---- /dev/null
-+++ b/include/linux/platform_data/x86/huawei_wmi.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
-+#ifndef __HUAWEI_WMI_H__
-+#define __HUAWEI_WMI_H__
-+
-+int huawei_wmi_micmute_led_set(bool on);
-+
-+#endif
-+#endif
-diff --git a/sound/pci/hda/huawei_wmi_helper.c b/sound/pci/hda/huawei_wmi_helper.c
-new file mode 100644
-index 000000000000..7c91f914ffba
---- /dev/null
-+++ b/sound/pci/hda/huawei_wmi_helper.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Helper functions for Huawei WMI micmute LED;
-+ * to be included from codec driver
-+ */
-+
-+#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
-+#include <linux/platform_data/x86/huawei_wmi.h>
-+
-+static int (*huawei_wmi_micmute_led_set_func)(bool);
-+
-+static void update_huawei_wmi_micmute_led(struct hda_codec *codec)
-+{
-+	struct hda_gen_spec *spec = codec->spec;
-+	huawei_wmi_micmute_led_set_func(spec->micmute_led.led_value);
-+}
-+
-+static void alc_fixup_huawei_wmi(struct hda_codec *codec,
-+				   const struct hda_fixup *fix, int action)
-+{
-+	bool removefunc = false;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!huawei_wmi_micmute_led_set_func)
-+			huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
-+		if (!huawei_wmi_micmute_led_set_func) {
-+			codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
-+			return;
-+		}
-+
-+		removefunc = (huawei_wmi_micmute_led_set_func(false) < 0)
-+			|| (snd_hda_gen_add_micmute_led(codec, update_huawei_wmi_micmute_led) < 0);
-+	}
-+
-+	if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-+		symbol_put(huawei_wmi_micmute_led_set);
-+		huawei_wmi_micmute_led_set_func = NULL;
-+	}
-+}
-+
-+#else
-+
-+static void alc_fixup_huawei_wmi(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+}
-+
-+#endif
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ed6c9c79ce46..a0fdcfb0b635 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5374,6 +5374,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-+/* for alc_fixup_huawei_micmute_led */
-+#include "huawei_wmi_helper.c"
-+
- enum {
- 	ALC269_FIXUP_SONY_VAIO,
- 	ALC275_FIXUP_SONY_VAIO_GPIO2,
-@@ -5494,6 +5497,7 @@ enum {
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
- 	ALC256_FIXUP_HUAWEI_MBXP_PINS,
-+	ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED,
- 	ALC295_FIXUP_HP_X360,
- 	ALC221_FIXUP_HP_HEADSET_MIC,
- };
-@@ -5765,6 +5769,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
-+	[ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_huawei_wmi
-+	},
- 	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -5779,7 +5787,9 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{0x1e, 0x411111f0},
- 			{0x21, 0x04211020},
- 			{ }
--		}
-+		},
-+		.chained = true,
-+		.chain_id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED
- 	},
- 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -6609,6 +6619,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x511e, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
-+	SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED),
- 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+
+> +config HUAWEI_LAPTOP
+> +       tristate "Huawei WMI hotkeys driver"
+
+> +       depends on ACPI
+
+Do you need an ACPI dependency be explicit here?
+
+> +       depends on ACPI_WMI
+> +       depends on INPUT
+> +       select INPUT_SPARSEKMAP
+> +       help
+> +         This driver provides support for Huawei WMI hotkeys.
+> +         It enables the missing keys and adds support to the micmute
+> +         LED found on some of these laptops.
+
+
+> +/*
+> + *  Huawei WMI hotkeys
+> + *
+> + *  Copyright (C) 2018       Ayman Bagabas <ayman.bagabas@gmail.com>
+
+> + *
+> + *  This program is free software: you can redistribute it and/or modify
+> + *  it under the terms of the GNU General Public License as published by
+> + *  the Free Software Foundation, either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + *  This program is distributed in the hope that it will be useful,
+> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *  GNU General Public License for more details.
+> + *
+> + *  You should have received a copy of the GNU General Public License
+> + *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+> + *
+
+Please, replace this boilerplate text with appropriate SPDX identifier.
+
+> + */
+
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+
+One of them should be chosen.
+
+> +static char *event_guid;
+> +static struct input_dev *inputdev;
+
+> +int huawei_wmi_micmute_led_set(bool on)
+> +{
+> +       acpi_handle handle = ACPI_HANDLE(&inputdev->dev);
+> +       char *method;
+> +       union acpi_object args[3];
+
+> +       args[0].type = args[1].type = args[2].type = ACPI_TYPE_INTEGER;
+> +       args[1].integer.value = 0x04;
+
+Please, don't mix definitions and code.
+
+> +       struct acpi_object_list arg_list = {
+> +               .pointer = args,
+> +               .count = ARRAY_SIZE(args),
+> +       };
+> +
+> +       if (acpi_has_method(handle, method = "\\_SB.PCI0.LPCB.EC0.SPIN")) {
+> +               args[0].integer.value = 0;
+> +               args[2].integer.value = on ? 1 : 0;
+> +       } else if (acpi_has_method(handle, method = "\\_SB.PCI0.LPCB.EC0.WPIN")) {
+> +               args[0].integer.value = 1;
+> +               args[2].integer.value = on ? 0 : 1;
+> +       } else {
+> +               pr_err("Unable to find ACPI method\n");
+
+dev_err() here.
+
+> +               return -1;
+
+Return appropriate error code.
+
+> +       }
+> +
+> +       acpi_evaluate_object(handle, method, &arg_list, NULL);
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(huawei_wmi_micmute_led_set);
+> +
+> +static void huawei_wmi_process_key(struct input_dev *inputdev, int code)
+> +{
+
+> +               acpi_status status;
+> +               unsigned long long result;
+> +               const char *method = "\\WMI0.WQ00";
+> +               union acpi_object args[] = {
+> +                               { .type = ACPI_TYPE_INTEGER  },
+> +               };
+
+> +               args[0].integer.value = 0;
+
+Don't mix definitions and code.
+
+> +               struct acpi_object_list arg_list = {
+> +                       .pointer = args,
+> +                       .count = ARRAY_SIZE(args),
+> +               };
+
+> +       if ((key->sw.code == KEY_BRIGHTNESSUP
+> +                       || key->sw.code == KEY_BRIGHTNESSDOWN)
+
+I believe this can fit one line.
+
+> +                       && strcmp(event_guid, MBXP_EVENT_GUID) == 0)
+> +               return;
+> +
+> +       sparse_keymap_report_entry(inputdev, key, 1, true);
+> +}
+
+> +static int __init huawei_wmi_init(void)
+> +{
+> +       int err;
+> +
+> +       if (wmi_has_guid(MBX_EVENT_GUID)) {
+> +               event_guid = MBX_EVENT_GUID;
+> +       } else if (wmi_has_guid(MBXP_EVENT_GUID)) {
+> +               event_guid = MBXP_EVENT_GUID;
+> +       } else {
+
+> +               pr_warn("No known WMI GUID found\n");
+
+Simple "Compatible WMI GUID not found\n".
+
+> +               return -ENODEV;
+> +       }
+> +
+
+> +       err = huawei_wmi_input_init();
+> +       if (err) {
+
+> +               pr_err("Failed to setup input device\n");
+
+Noise.
+
+> +               return err;
+> +       }
+> +
+> +       return 0;
+
+...just do
+
+return huawei_wmi_input_init();
+
+> +}
+
 -- 
-2.17.2
+With Best Regards,
+Andy Shevchenko
