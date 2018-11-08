@@ -1,20 +1,20 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [RFC PATCH] cplay: Always write frag *
-	fragment_size
-Date: Thu, 8 Nov 2018 14:37:43 +0000
-Message-ID: <1541687863.3164.87.camel@nxp.com>
-References: <1541427790-27876-1-git-send-email-daniel.baluta@nxp.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: GitHub - alsa-project - repositories
+Date: Thu, 8 Nov 2018 15:38:38 +0100
+Message-ID: <7943ec40-aff5-0157-530b-cd08ad3ef732@perex.cz>
+References: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
+ <fe3a3e44-f712-fac0-a76b-c91b5a1a222e@sakamocchi.jp>
+ <970ae06c-be01-8cef-930e-a7c0bccfa31b@perex.cz>
+ <fea4f32f-625c-7e2e-3911-667221a43877@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-eopbgr60069.outbound.protection.outlook.com [40.107.6.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B499267AB4
- for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 15:37:45 +0100 (CET)
-In-Reply-To: <1541427790-27876-1-git-send-email-daniel.baluta@nxp.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A8B5267AB4
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 15:38:43 +0100 (CET)
+In-Reply-To: <fea4f32f-625c-7e2e-3911-667221a43877@sakamocchi.jp>
 Content-Language: en-US
-Content-ID: <5302CAF2D8101841B213D1708DDAACEF@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "vkoul@kernel.org" <vkoul@kernel.org>, "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>, "S.j. Wang" <shengjiu.wang@nxp.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVmlub2QsDQoNCkp1c3Qgbm90aWNlZCB0aGF0IHRoaXMgcGF0Y2ggaXMgc2ltaWxhciB3aXRo
-IHRoaXMgb25lIGZvciBjcmVjb3JkDQoNCmh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD10
-aW55Y29tcHJlc3MuZ2l0O2E9Y29tbWl0O2g9ZThlMzY1Njc0MzhjDQoxNmE1MTIxOTQzMjA1YTBj
-ZDhjNjM5MjRkMGQ4DQoNClNvLCBJIHRoaW5rIHdlIGNhbiByZW1vdmUgdGhlIFJGQyB0YWcgOiku
-DQoNCnRoYW5rcywNCkRhbmllbC4NCk9uIEx1LCAyMDE4LTExLTA1IGF0IDE0OjIzICswMDAwLCBE
-YW5pZWwgQmFsdXRhIHdyb3RlOg0KPiBjcGxheSBmaXJzdCB3cml0ZXMgZnJhZyAqIGZyYWdtZW50
-X3NpemUgYW5kIHRoZW4NCj4gaXQgb25seSB3cml0ZXMgb25lIGZyYWdtZW50IGF0IGEgdGltZS4N
-Cj4gDQo+IFRoaXMgbWVhbnMgZm9yIGV4YW1wbGUgdGhhbiBpZiB0aGUgdXNlciBzdXBwbGllZCBh
-IGJ1ZmZlcl9zaXplDQo+IGl0IHdpbGwgb25seSBiZSB1c2VkIGZvciB0aGUgZmlyc3Qgd3JpdGUu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5j
-b20+DQo+IC0tLQ0KPiBJIG5vdGljZWQgdGhpcyB3aGlsZSBpbnZlc3RpZ2F0aW5nIHdoeSBjcGxh
-eSBwcmludHMgYnVmZmVyX3NpemUgYXMNCj4gMCB3aGVuIG5vdCBzcGVjaWZpZWQgYXMgY29tbWFu
-ZCBsaW5lIGFyZ3VtZW50IHRvIGNwbGF5Lg0KPiANCj4gSSBhbHNvIG5vdGljZWQgdGhhdCBjcmVk
-IGFsd2F5cyByZWFkcyBmcmFnICogZnJhbWVudF9zaXplLCBzbyBJIHRoaW5rDQo+IHRoaXMgcGF0
-Y2ggc2hvdWxkIGJlIE9LLCBidXQgbWFya2luZyBpdCBhcyBSRkMgdG8gZ2V0IHlvdXIgdGhvdWdo
-dHMuDQo+IA0KPiDCoHNyYy91dGlscy9jcGxheS5jIHwgOCArKysrLS0tLQ0KPiDCoDEgZmlsZSBj
-aGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
-IGEvc3JjL3V0aWxzL2NwbGF5LmMgYi9zcmMvdXRpbHMvY3BsYXkuYw0KPiBpbmRleCAyYTUyYjUy
-Li5iMDE2ZjUyIDEwMDY0NA0KPiAtLS0gYS9zcmMvdXRpbHMvY3BsYXkuYw0KPiArKysgYi9zcmMv
-dXRpbHMvY3BsYXkuYw0KPiBAQCAtNDM1LDE1ICs0MzUsMTUgQEAgdm9pZCBwbGF5X3NhbXBsZXMo
-Y2hhciAqbmFtZSwgdW5zaWduZWQgaW50DQo+IGNhcmQsIHVuc2lnbmVkIGludCBkZXZpY2UsDQo+
-IMKgCX07DQo+IMKgCWlmICh2ZXJib3NlKQ0KPiDCoAkJcHJpbnRmKCIlczogT3BlbmVkIGNvbXBy
-ZXNzIGRldmljZVxuIiwgX19mdW5jX18pOw0KPiAtCXNpemUgPSBjb25maWcuZnJhZ21lbnRfc2l6
-ZTsNCj4gLQlidWZmZXIgPSBtYWxsb2Moc2l6ZSAqIGNvbmZpZy5mcmFnbWVudHMpOw0KPiArCXNp
-emUgPSBjb25maWcuZnJhZ21lbnRzICogY29uZmlnLmZyYWdtZW50X3NpemU7DQo+ICsJYnVmZmVy
-ID0gbWFsbG9jKHNpemUpOw0KPiDCoAlpZiAoIWJ1ZmZlcikgew0KPiDCoAkJZnByaW50ZihzdGRl
-cnIsICJVbmFibGUgdG8gYWxsb2NhdGUgJWQgYnl0ZXNcbiIsDQo+IHNpemUpOw0KPiDCoAkJZ290
-byBDT01QX0VYSVQ7DQo+IMKgCX0NCj4gwqANCj4gwqAJLyogd2Ugd2lsbCB3cml0ZSBmcmFnIGZy
-YWdtZW50X3NpemUgYW5kIHRoZW4gc3RhcnQgKi8NCj4gLQludW1fcmVhZCA9IGZyZWFkKGJ1ZmZl
-ciwgMSwgc2l6ZSAqIGNvbmZpZy5mcmFnbWVudHMsIGZpbGUpOw0KPiArCW51bV9yZWFkID0gZnJl
-YWQoYnVmZmVyLCAxLCBzaXplLCBmaWxlKTsNCj4gwqAJaWYgKG51bV9yZWFkID4gMCkgew0KPiDC
-oAkJaWYgKHZlcmJvc2UpDQo+IMKgCQkJcHJpbnRmKCIlczogRG9pbmcgZmlyc3QgYnVmZmVyIHdy
-aXRlIG9mDQo+ICVkXG4iLCBfX2Z1bmNfXywgbnVtX3JlYWQpOw0KPiBAQCAtNDU5LDcgKzQ1OSw3
-IEBAIHZvaWQgcGxheV9zYW1wbGVzKGNoYXIgKm5hbWUsIHVuc2lnbmVkIGludCBjYXJkLA0KPiB1
-bnNpZ25lZCBpbnQgZGV2aWNlLA0KPiDCoAkJfQ0KPiDCoAl9DQo+IMKgCXByaW50ZigiUGxheWlu
-ZyBmaWxlICVzIE9uIENhcmQgJXUgZGV2aWNlICV1LCB3aXRoIGJ1ZmZlciBvZg0KPiAlbHUgYnl0
-ZXNcbiIsDQo+IC0JCQluYW1lLCBjYXJkLCBkZXZpY2UsIGJ1ZmZlcl9zaXplKTsNCj4gKwkJCW5h
-bWUsIGNhcmQsIGRldmljZSwgc2l6ZSk7DQo+IMKgCXByaW50ZigiRm9ybWF0ICV1IENoYW5uZWxz
-ICV1LCAldSBIeiwgQml0IFJhdGUgJWRcbiIsDQo+IMKgCQkJY29kZWMuaWQsIGNvZGVjLmNoX2lu
-LCBjb2RlYy5zYW1wbGVfcmF0ZSwNCj4gY29kZWMuYml0X3JhdGUpOw0KPiDCoApfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Dne 8.11.2018 v 15:20 Takashi Sakamoto napsal(a):
+> Hi Jaroslav,
+> 
+> Thanks for your reply.
+> 
+> On 2018/11/06 18:20, Jaroslav Kysela wrote:
+>>> I have two concerns.
+>>>
+>>> 1. For Ubuntu 14.04 LTS (trusty), End-of-life (EOL) is scheduled April
+>>> 2019. A few months remained but it's better to use recent LTSs such as
+>>> 18.04 (bionic) to reduce future maintenance cost. (I guess packages
+>>> except on 'main' pocket are not already maintained for security
+>>> updates.)
+>>
+>> I think that we have limited choices:
+>>
+>> https://docs.travis-ci.com/user/reference/overview/
+> 
+> Oh, indeed. It's reasonable currently, but I continue to take care of
+> travis-ci action against the EOF.
+> 
+>>> 2. Message for PR
+>>> In my opinion, notification to alsa-devel list is an alternative of
+>>> cover-letters in the past. But in this time it doesn't includes change
+>>> summary, like:
+>>>
+>>> ```
+>>> Takashi Sakamoto (3):
+>>>     aplay: delete paragraph for obsoleted '--sleep-min' ('-s') option from
+>>>       aplay manual
+>>>     aplay: add a paragraph for '--samples' ('-s') option to aplay manual
+>>>     aplay: improve available conditions for '--samples' and '--duration'
+>>>       options
+>>>
+>>>    aplay/aplay.1 | 10 +++++++---
+>>>    1 file changed, 7 insertions(+), 3 deletions(-)
+>>> ```
+>>>
+>>> If it's difficult to include the change summary automatically into the
+>>> notification, it's worth to discuss that PR senders should include it
+>>> handy to PR message.
+>>
+>> Actually, I can work directly only with the information from the webhooks:
+>>
+>> https://developer.github.com/v3/activity/events/types/#pullrequestevent
+>>
+>> The webhook code used on my server is in python, so we can probably
+>> fetch the patch from github and generate the diffstat from it.
+> Sounds good, but I don't mind to postpone the idea because this is not
+> so critical issue. Readers of posted issue can see diffstat in
+> github.com.
+> 
+> 
+> Well, I have another concern when having conversation with Daniel
+> Baluta[1]. He post his 'Reviewed-by' tag to the github issue. In this
+> case, how can we apply the tag to commit history? I don't know exactly
+> services in github.com have good solution for this issue, or not...
+> 
+> [1] https://github.com/alsa-project/alsa-utils/pull/1#issuecomment-436164565
+
+I believe that the maintainer who signs and pushes the commits should
+handle those tags, too.
+
+It means that we are not allowed to use the github web merge button! (no
+signing - seems like on github's issue list -
+https://github.com/todogroup/gh-issues/issues/50)
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
