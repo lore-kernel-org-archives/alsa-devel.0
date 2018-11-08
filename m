@@ -1,20 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [RFC PATCH] cplay: Always write frag *
-	fragment_size
-Date: Thu, 8 Nov 2018 15:21:47 +0000
-Message-ID: <20181108152147.GT16508@imbe.wolfsonmicro.main>
-References: <1541427790-27876-1-git-send-email-daniel.baluta@nxp.com>
- <1541687863.3164.87.camel@nxp.com>
+Subject: [PATCH] tinycompress: Update headers to include
+	AUDIOCODEC_BESPOKE
+Date: Thu, 8 Nov 2018 17:12:32 +0000
+Message-ID: <20181108171232.11722-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A714D267AD3
- for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 16:21:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1541687863.3164.87.camel@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3ECF2267AD3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2018 18:12:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vkoul@kernel.org" <vkoul@kernel.org>
+To: vkoul@kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, andrew.ford@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 08, 2018 at 02:37:43PM +0000, Daniel Baluta wrote:
-> Hi Vinod,
-> 
-> Just noticed that this patch is similar with this one for crecord
-> 
-> http://git.alsa-project.org/?p=tinycompress.git;a=commit;h=e8e36567438c
-> 16a5121943205a0cd8c63924d0d8
-> 
-> So, I think we can remove the RFC tag :).
-> 
-> thanks,
-> Daniel.
-> On Lu, 2018-11-05 at 14:23 +0000, Daniel Baluta wrote:
-> > cplay first writes frag * fragment_size and then
-> > it only writes one fragment at a time.
-> > 
-> > This means for example than if the user supplied a buffer_size
-> > it will only be used for the first write.
-> > 
-> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > ---
-> > I noticed this while investigating why cplay prints buffer_size as
-> > 0 when not specified as command line argument to cplay.
-> > 
-> > I also noticed that cred always reads frag * frament_size, so I think
-> > this patch should be OK, but marking it as RFC to get your thoughts.
-> > 
+commit dbb6b94339e8 ("ALSA: compress: Add SND_AUDIOCODEC_BESPOKE") added
+an additional CODEC type for bespoke CODECs. Update the local headers to
+include this.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Reported-by: Andrew Ford <andrew.ford@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ include/sound/compress_params.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Yeah looks good to me.
-
-Thanks,
-Charles
+diff --git a/include/sound/compress_params.h b/include/sound/compress_params.h
+index 9802292..7286556 100644
+--- a/include/sound/compress_params.h
++++ b/include/sound/compress_params.h
+@@ -38,8 +38,9 @@
+ #define SND_AUDIOCODEC_IEC61937 ((__u32) 0x0000000B)
+ #define SND_AUDIOCODEC_G723_1 ((__u32) 0x0000000C)
+ #define SND_AUDIOCODEC_G729 ((__u32) 0x0000000D)
++#define SND_AUDIOCODEC_BESPOKE ((__u32) 0x0000000E)
+ 
+-#define SND_AUDIOCODEC_MAX SND_AUDIOCODEC_G729
++#define SND_AUDIOCODEC_MAX SND_AUDIOCODEC_BESPOKE
+ #define SND_AUDIOPROFILE_PCM ((__u32) 0x00000001)
+ 
+ #define SND_AUDIOCHANMODE_MP3_MONO ((__u32) 0x00000001)
+-- 
+2.11.0
