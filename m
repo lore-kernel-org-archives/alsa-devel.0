@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: use ring buffer for
-	rsnd_mod_name()" to the asoc tree
-Date: Fri,  9 Nov 2018 15:58:05 +0000 (GMT)
-Message-ID: <20181109155805.652541124E6F@debutante.sirena.org.uk>
-References: <87lg62ki78.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sun8i-codec: fix crash on module
+	removal" to the asoc tree
+Date: Fri,  9 Nov 2018 15:58:16 +0000 (GMT)
+Message-ID: <20181109155816.C5B581124E6F@debutante.sirena.org.uk>
+References: <20181109043135.26200-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 32AC72677E4
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 16:58:06 +0100 (CET)
-In-Reply-To: <87lg62ki78.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B180F267B1D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 16:58:20 +0100 (CET)
+In-Reply-To: <20181109043135.26200-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: use ring buffer for rsnd_mod_name()
+   ASoC: sun8i-codec: fix crash on module removal
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 0246c661b6f0051ef7bfbfff01d8ef7fd0359372 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 9 Nov 2018 04:15:46 +0000
-Subject: [PATCH] ASoC: rsnd: use ring buffer for rsnd_mod_name()
+>From 278df5e5527b633f4882f1680ad58b62a7c07bfe Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Thu, 8 Nov 2018 20:31:35 -0800
+Subject: [PATCH] ASoC: sun8i-codec: fix crash on module removal
 
-commit c0ea089dbad4 ("ASoC: rsnd: rsnd_mod_name() handles both name and
-ID") merged "name" and "ID" on rsnd_mod_name() to handle sub-ID
-(= for CTU/BUSIF).
-Then, it decided to share static char to avoid pointless memory.
-But, it doesn't work correctry in below case, because last called
-name will be used.
+drvdata is actually sun8i_codec, not snd_soc_card, so it crashes
+when calling snd_soc_card_get_drvdata().
 
-	dev_xxx(dev, "%s is connected to %s\n",
-		rsnd_mod_name(mod_a),  /* ssiu[00] */
-		rsnd_mod_name(mod_b)); /* ssi[0]   */
-	->
-	rcar_sound ec500000.sound: ssi[0] is connected to ssi[0]
-	                           ~~~~~~                 ~~~~~~
-We still don't want to have pointless memory, so let's use ring buffer.
-16byte x 5 is very enough for this purpose.
+Drop card and scodec vars anyway since we don't need to
+disable/unprepare clocks - it's already done by calling
+runtime_suspend()
 
-	dev_xxx(dev, "%s is connected to %s\n",
-		rsnd_mod_name(mod_a),  /* ssiu[00] */
-		rsnd_mod_name(mod_b)); /* ssi[0]   */
-	->
-	rcar_sound ec500000.sound: ssiu[00] is connected to ssi[0]
-	                           ~~~~~~~~                 ~~~~~~
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Drop clk_disable_unprepare() calls for the same reason.
 
+Fixes: 36c684936fae7 ("ASoC: Add sun8i digital audio codec")
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/sunxi/sun8i-codec.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 12f559e0463f..56469ac4bc8c 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -137,10 +137,17 @@ struct dma_chan *rsnd_mod_dma_req(struct rsnd_dai_stream *io,
- 	return mod->ops->dma_req(io, mod);
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 522a72fde78d..c4196d4e5915 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -605,16 +605,10 @@ static int sun8i_codec_probe(struct platform_device *pdev)
+ 
+ static int sun8i_codec_remove(struct platform_device *pdev)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-	struct sun8i_codec *scodec = snd_soc_card_get_drvdata(card);
+-
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		sun8i_codec_runtime_suspend(&pdev->dev);
+ 
+-	clk_disable_unprepare(scodec->clk_module);
+-	clk_disable_unprepare(scodec->clk_bus);
+-
+ 	return 0;
  }
  
-+#define MOD_NAME_NUM   5
- #define MOD_NAME_SIZE 16
- char *rsnd_mod_name(struct rsnd_mod *mod)
- {
--	static char name[MOD_NAME_SIZE];
-+	static char names[MOD_NAME_NUM][MOD_NAME_SIZE];
-+	static int num;
-+	char *name = names[num];
-+
-+	num++;
-+	if (num >= MOD_NAME_NUM)
-+		num = 0;
- 
- 	/*
- 	 * Let's use same char to avoid pointlessness memory
 -- 
 2.19.0.rc2
