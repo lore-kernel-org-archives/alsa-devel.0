@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: fix crash on module
-	removal" to the asoc tree
-Date: Fri,  9 Nov 2018 15:58:16 +0000 (GMT)
-Message-ID: <20181109155816.C5B581124E6F@debutante.sirena.org.uk>
-References: <20181109043135.26200-1-anarsoul@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Power down links before turning
+	off display audio power
+Date: Fri,  9 Nov 2018 11:37:12 -0600
+Message-ID: <20181109173712.26925-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B180F267B1D
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 16:58:20 +0100 (CET)
-In-Reply-To: <20181109043135.26200-1-anarsoul@gmail.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88AFC2677E4
+ for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 18:37:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +19,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On certain platforms, Display HDMI HDA codec was not going to sleep state
+after the use when links are powered down after turning off the display
+power. As per the HW recommendation, links are powered down before turning
+off the display power to ensure that the codec goes to sleep state.
 
-   ASoC: sun8i-codec: fix crash on module removal
+This patch was updated from an earlier version submitted upstream [1]
+which conflicted with the changes merged for HDaudio codec support
+with the Intel DSP.
 
-has been applied to the asoc tree at
+[1] https://patchwork.kernel.org/patch/10540213/
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 278df5e5527b633f4882f1680ad58b62a7c07bfe Mon Sep 17 00:00:00 2001
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Thu, 8 Nov 2018 20:31:35 -0800
-Subject: [PATCH] ASoC: sun8i-codec: fix crash on module removal
-
-drvdata is actually sun8i_codec, not snd_soc_card, so it crashes
-when calling snd_soc_card_get_drvdata().
-
-Drop card and scodec vars anyway since we don't need to
-disable/unprepare clocks - it's already done by calling
-runtime_suspend()
-
-Drop clk_disable_unprepare() calls for the same reason.
-
-Fixes: 36c684936fae7 ("ASoC: Add sun8i digital audio codec")
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sunxi/sun8i-codec.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c  | 13 +++++++------
+ sound/soc/intel/skylake/skl.c | 12 ++++++------
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 522a72fde78d..c4196d4e5915 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -605,16 +605,10 @@ static int sun8i_codec_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 4e9854889a95..e0fe682cea04 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2187,11 +2187,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	 */
+ 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ 							AC_PWRST_D3);
+-	err = snd_hdac_display_power(bus, false);
+-	if (err < 0) {
+-		dev_err(dev, "Cannot turn on display power on i915\n");
+-		return err;
+-	}
  
- static int sun8i_codec_remove(struct platform_device *pdev)
- {
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--	struct sun8i_codec *scodec = snd_soc_card_get_drvdata(card);
--
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		sun8i_codec_runtime_suspend(&pdev->dev);
+ 	hlink = snd_hdac_ext_bus_get_link(bus, dev_name(dev));
+ 	if (!hlink) {
+@@ -2201,7 +2196,13 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
  
--	clk_disable_unprepare(scodec->clk_module);
--	clk_disable_unprepare(scodec->clk_bus);
--
- 	return 0;
+ 	snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+-	return 0;
++	err = snd_hdac_display_power(bus, false);
++	if (err < 0) {
++		dev_err(dev, "Cannot turn off display power on i915\n");
++		return err;
++	}
++
++	return err;
  }
  
+ static int hdac_hdmi_runtime_resume(struct device *dev)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 29225623b4b4..1586c97d9450 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -815,6 +815,12 @@ static void skl_probe_work(struct work_struct *work)
+ 		}
+ 	}
+ 
++	/*
++	 * we are done probing so decrement link counts
++	 */
++	list_for_each_entry(hlink, &bus->hlink_list, list)
++		snd_hdac_ext_bus_link_put(bus, hlink);
++
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+ 		err = snd_hdac_display_power(bus, false);
+ 		if (err < 0) {
+@@ -824,12 +830,6 @@ static void skl_probe_work(struct work_struct *work)
+ 		}
+ 	}
+ 
+-	/*
+-	 * we are done probing so decrement link counts
+-	 */
+-	list_for_each_entry(hlink, &bus->hlink_list, list)
+-		snd_hdac_ext_bus_link_put(bus, hlink);
+-
+ 	/* configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+ 	pm_runtime_allow(bus->dev);
 -- 
-2.19.0.rc2
+2.17.1
