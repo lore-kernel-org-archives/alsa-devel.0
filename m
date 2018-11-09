@@ -1,19 +1,19 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH v7 3/4] arm64: dts: allwinner: a64: enable
-	sound on Pine64 and SoPine
-Date: Thu,  8 Nov 2018 20:24:21 -0800
-Message-ID: <20181109042422.25653-4-anarsoul@gmail.com>
+Subject: [PATCH v7 4/4] arm64: dts: allwinner: a64: enable
+	sound on Pinebook
+Date: Thu,  8 Nov 2018 20:24:22 -0800
+Message-ID: <20181109042422.25653-5-anarsoul@gmail.com>
 References: <20181109042422.25653-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
- [209.85.215.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 14AE5267AFE
- for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 05:24:36 +0100 (CET)
-Received: by mail-pg1-f194.google.com with SMTP id z10so304000pgp.7
- for <alsa-devel@alsa-project.org>; Thu, 08 Nov 2018 20:24:36 -0800 (PST)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1E3A267B05
+ for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2018 05:24:37 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id f8-v6so307174pgq.5
+ for <alsa-devel@alsa-project.org>; Thu, 08 Nov 2018 20:24:37 -0800 (PST)
 In-Reply-To: <20181109042422.25653-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,22 +28,28 @@ To: Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Rob
 List-Id: alsa-devel@alsa-project.org
 
 This commit enables I2S, digital and analog parts of audiocodec on
-Pine64 and SoPine boards.
+Pinebook
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- .../boot/dts/allwinner/sun50i-a64-pine64.dts  | 25 +++++++++++++++++++
- .../allwinner/sun50i-a64-sopine-baseboard.dts | 25 +++++++++++++++++++
- 2 files changed, 50 insertions(+)
+ .../dts/allwinner/sun50i-a64-pinebook.dts     | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index c077b6c1f458..aba40b4c5216 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -75,6 +75,18 @@
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+index 77fac84797e9..ec4dd9877355 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+@@ -64,6 +64,23 @@
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&r_pio 0 2 GPIO_ACTIVE_LOW>; /* PL2 */
  	};
- };
- 
++
++	speaker_amp: speaker_amp {
++		compatible = "simple-audio-amplifier";
++		enable-gpios = <&pio 7 7 GPIO_ACTIVE_HIGH>; /* PH7 */
++	};
++};
++
 +&codec {
 +	status = "okay";
 +};
@@ -54,69 +60,34 @@ index c077b6c1f458..aba40b4c5216 100644
 +
 +&dai {
 +	status = "okay";
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -264,6 +276,19 @@
- 	status = "disabled";
  };
  
-+&sound {
-+	status = "okay";
-+	simple-audio-card,widgets = "Microphone", "Microphone Jack",
-+				    "Headphone", "Headphone Jack";
-+	simple-audio-card,routing =
-+			"Left DAC", "AIF1 Slot 0 Left",
-+			"Right DAC", "AIF1 Slot 0 Right",
-+			"Headphone Jack", "HP",
-+			"AIF1 Slot 0 Left ADC", "Left ADC",
-+			"AIF1 Slot 0 Right ADC", "Right ADC",
-+			"MIC2", "Microphone Jack";
-+};
-+
- /* On Exp and Euler connectors */
- &uart0 {
- 	pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-index 53fcc9098df3..be45e2a287e1 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-@@ -80,6 +80,18 @@
- 	};
- };
- 
-+&codec {
-+	status = "okay";
-+};
-+
-+&codec_analog {
-+	status = "okay";
-+};
-+
-+&dai {
-+	status = "okay";
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -164,6 +176,19 @@
+ &ehci0 {
+@@ -267,6 +284,29 @@
  	vcc-hdmi-supply = <&reg_dldo1>;
  };
  
 +&sound {
 +	status = "okay";
-+	simple-audio-card,widgets = "Microphone", "Microphone Jack",
-+				    "Headphone", "Headphone Jack";
++	simple-audio-card,widgets = "Microphone", "Internal Microphone Left",
++				    "Microphone", "Internal Microphone Right",
++				    "Headphone", "Headphone Jack",
++				    "Speaker", "Internal Speaker";
++	simple-audio-card,aux-devs = <&codec_analog>, <&speaker_amp>;
 +	simple-audio-card,routing =
 +			"Left DAC", "AIF1 Slot 0 Left",
 +			"Right DAC", "AIF1 Slot 0 Right",
++			"INL", "LINEOUT",
++			"INR", "LINEOUT",
++			"Internal Speaker", "OUTL",
++			"Internal Speaker", "OUTR",
 +			"Headphone Jack", "HP",
 +			"AIF1 Slot 0 Left ADC", "Left ADC",
 +			"AIF1 Slot 0 Right ADC", "Right ADC",
-+			"MIC2", "Microphone Jack";
++			"Internal Microphone Left", "MBIAS",
++			"MIC1", "Internal Microphone Left",
++			"Internal Microphone Right", "HBIAS",
++			"MIC2", "Internal Microphone Right";
 +};
 +
  &uart0 {
