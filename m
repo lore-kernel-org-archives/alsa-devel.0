@@ -1,18 +1,15 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH v3 0/8] ASoC: omap-mcbsp: Cleanup and split
- core/sidetone support
-Date: Sat, 10 Nov 2018 17:59:57 +0200
-Message-ID: <c2e86562-49f0-9600-3df7-87de40caec06@bitmer.com>
-References: <20181108073000.21114-1-peter.ujfalusi@ti.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH 17/17] ASoc: bcm2835-i2s: Switch to SPDX
+	identifier
+Date: Sat, 10 Nov 2018 18:02:31 +0100
+Message-ID: <1541869351-8499-1-git-send-email-stefan.wahren@i2se.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B08C2679B0
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 17:00:05 +0100 (CET)
-In-Reply-To: <20181108073000.21114-1-peter.ujfalusi@ti.com>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDFD22679AB
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 18:02:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Eric Anholt <eric@anholt.net>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Florian Kauer <florian.kauer@koalo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/8/18 9:29 AM, Peter Ujfalusi wrote:
-> Hi,
-> 
-> Changes since v2:
-> - Split the dma_data addr and maxburst cleanup patches
-> - Added Jarkko's Acked-by tot he series.
-> 
-Here's my promised testing too. I used a setup below to test sidetone
-functionality. Assuming both playback and recording path are already set.
+Adopt the SPDX license identifier headers to ease license compliance
+management.
 
-amixer -D hw:0 set 'McBSP2 Sidetone' on
-amixer -D hw:0 set 'McBSP2 Sidetone Channel 0' 100%
-amixer -D hw:0 set 'McBSP2 Sidetone Channel 1' 100%
-echo 32767 >/sys/devices/platform/68000000.ocp/49022000.mcbsp/st_taps
-echo threshold
->/sys/devices/platform/68000000.ocp/49022000.mcbsp/dma_op_mode
-arecord -f dat >/dev/null |aplay -f dat /dev/zero
+Cc: Florian Kauer <florian.kauer@koalo.de>
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-^^
-arecord dumps into /dev/null and aplay plays from /dev/zero so only path
-from input to output is the sidetone path.
-
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index d5f73a8..0e4a0e9 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * ALSA SoC I2S Audio Layer for Broadcom BCM2835 SoC
+  *
+@@ -20,15 +21,6 @@
+  *	Freescale SSI ALSA SoC Digital Audio Interface (DAI) driver
+  *	Author: Timur Tabi <timur@freescale.com>
+  *	Copyright 2007-2010 Freescale Semiconductor, Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * version 2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+  */
+ 
+ #include <linux/bitops.h>
+-- 
+2.7.4
