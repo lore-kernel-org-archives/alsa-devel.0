@@ -1,81 +1,164 @@
-From: Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH 00/17] bcm2835: Treewide switch to SPDX identifier
-Date: Sat, 10 Nov 2018 15:17:56 +0100
-Message-ID: <1541859476-6210-1-git-send-email-stefan.wahren@i2se.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v4 3/3] ALSA: hda: add support for Huawei
+	WMI micmute LED
+Date: Sat, 10 Nov 2018 16:26:55 +0200
+Message-ID: <CAHp75VcM4sDMX96GCJcBRG-hcdfTsKntR2e9A4sFmZi-4tRYWw@mail.gmail.com>
+References: <20181109234526.4280-1-ayman.bagabas@gmail.com>
+ <20181109234526.4280-4-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Eric Anholt <eric@anholt.net>, Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Vinod Koul <vkoul@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Jassi Brar <jassisinghbrar@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, Zhang Rui <rui.zhang@intel.com>, Eduardo Valentin <edube>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk1-f193.google.com (mail-qk1-f193.google.com
+ [209.85.222.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAABB267B35
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 15:27:07 +0100 (CET)
+Received: by mail-qk1-f193.google.com with SMTP id e4so6567616qkh.6
+ for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 06:27:07 -0800 (PST)
+In-Reply-To: <20181109234526.4280-4-ayman.bagabas@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ayman Bagabas <ayman.bagabas@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, Darren Hart <dvhart@infradead.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, Andy Shevchenko <andy@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-After fixing the module license of some bcm2835 drivers in "Fix MODULE_LICENSE
-of bcm2835 drivers", we can finally switch all outstanding bcm2835 /
-Raspberry Pi drivers to SPDX identifier and drop the unnecessary license text.
-I omit the staging area, because there are proposed a lot of changes for
-vc04_services. 
+On Sat, Nov 10, 2018 at 1:46 AM Ayman Bagabas <ayman.bagabas@gmail.com> wrote:
+>
+> Some of Huawei laptops come with a LED in the micmute key. This patch
+> enables and disable this LED accordingly.
+> This enables micmute LED for:
+> 1. Matebook X (19e5:3200), (19e5:3201)
+> 2. Matebook X Pro (19e5:3204)
+>
+> Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+> ---
+>  sound/pci/hda/huawei_wmi_helper.c | 47 +++++++++++++++++++++++++++++++
+>  sound/pci/hda/patch_realtek.c     | 14 ++++++++-
+>  2 files changed, 60 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/pci/hda/huawei_wmi_helper.c
+>
+> diff --git a/sound/pci/hda/huawei_wmi_helper.c b/sound/pci/hda/huawei_wmi_helper.c
+> new file mode 100644
+> index 000000000000..7c91f914ffba
+> --- /dev/null
+> +++ b/sound/pci/hda/huawei_wmi_helper.c
+> @@ -0,0 +1,47 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Helper functions for Huawei WMI micmute LED;
+> + * to be included from codec driver
+> + */
+> +
 
-I hope it is okay to have the binding header integrated in the tree-wise
-patches instead of a separate one. This should avoid conflicts while merging.
+> +#if IS_ENABLED(CONFIG_HUAWEI_LAPTOP)
 
-Stefan Wahren (17):
-  ARM: dts: bcm2835-rpi-zero: Switch to SPDX identifier
-  ARM: mach-bcm: Switch bcm2835 and platsmp to SPDX identifier
-  hw_random: bcm2835-rng: Switch to SPDX identifier
-  clk: bcm2835: Switch to SPDX identifier
-  clocksource: bcm2835: Switch to SPDX identifier
-  dma: bcm2835: Switch to SPDX identifier
-  firmware: raspberrypi: Switch to SPDX identifier
-  i2c: bcm2835: Switch to SPDX identifier
-  irqchip: bcm283x: Switch to SPDX identifier
-  mailbox: bcm2835: Switch to SPDX identifier
-  mmc: bcm2835: Switch to SPDX identifier
-  pinctrl: bcm2835: Switch to SPDX identifier
-  pwm: bcm2835: Switch to SPDX identifier
-  soc: bcm: Switch raspberrypi-power to SPDX identifier
-  spi: bcm2835: Switch to SPDX identifier
-  thermal: bcm2835: Switch to SPDX identifier
-  ASoc: bcm2835-i2s: Switch to SPDX identifier
+ENABLED or REACHABLE?
 
- arch/arm/boot/dts/bcm2835-rpi-zero-w.dts      |  8 +-------
- arch/arm/boot/dts/bcm2835-rpi-zero.dts        |  8 +-------
- arch/arm/mach-bcm/board_bcm2835.c             | 11 +----------
- arch/arm/mach-bcm/platsmp.c                   | 10 +---------
- arch/arm/mach-bcm/platsmp.h                   |  6 +-----
- drivers/char/hw_random/bcm2835-rng.c          |  7 ++-----
- drivers/clk/bcm/clk-bcm2835-aux.c             | 11 +----------
- drivers/clk/bcm/clk-bcm2835.c                 | 12 +-----------
- drivers/clocksource/bcm2835_timer.c           | 15 +--------------
- drivers/dma/bcm2835-dma.c                     | 11 +----------
- drivers/firmware/raspberrypi.c                |  5 +----
- drivers/i2c/busses/i2c-bcm2835.c              | 10 +---------
- drivers/irqchip/irq-bcm2835.c                 | 11 +----------
- drivers/irqchip/irq-bcm2836.c                 | 11 +----------
- drivers/mailbox/bcm2835-mailbox.c             |  8 +-------
- drivers/mmc/host/bcm2835.c                    | 13 +------------
- drivers/pinctrl/bcm/pinctrl-bcm2835.c         | 11 +----------
- drivers/pwm/pwm-bcm2835.c                     |  5 +----
- drivers/soc/bcm/raspberrypi-power.c           |  5 +----
- drivers/spi/spi-bcm2835.c                     | 11 +----------
- drivers/spi/spi-bcm2835aux.c                  | 11 +----------
- drivers/thermal/broadcom/bcm2835_thermal.c    | 11 +----------
- include/dt-bindings/clock/bcm2835-aux.h       | 10 +---------
- include/dt-bindings/clock/bcm2835.h           | 10 +---------
- include/dt-bindings/pinctrl/bcm2835.h         |  8 +-------
- include/dt-bindings/power/raspberrypi-power.h |  5 +----
- include/soc/bcm2835/raspberrypi-firmware.h    |  5 +----
- sound/soc/bcm/bcm2835-i2s.c                   | 10 +---------
- 28 files changed, 29 insertions(+), 230 deletions(-)
+> +#include <linux/platform_data/x86/huawei_wmi.h>
+> +
+> +static int (*huawei_wmi_micmute_led_set_func)(bool);
+> +
+> +static void update_huawei_wmi_micmute_led(struct hda_codec *codec)
+> +{
+> +       struct hda_gen_spec *spec = codec->spec;
+> +       huawei_wmi_micmute_led_set_func(spec->micmute_led.led_value);
+> +}
+> +
+> +static void alc_fixup_huawei_wmi(struct hda_codec *codec,
+> +                                  const struct hda_fixup *fix, int action)
+> +{
+> +       bool removefunc = false;
+> +
+> +       if (action == HDA_FIXUP_ACT_PROBE) {
+> +               if (!huawei_wmi_micmute_led_set_func)
+> +                       huawei_wmi_micmute_led_set_func = symbol_request(huawei_wmi_micmute_led_set);
+> +               if (!huawei_wmi_micmute_led_set_func) {
+> +                       codec_warn(codec, "Failed to find huawei_wmi symbol huawei_wmi_micmute_led_set\n");
+> +                       return;
+> +               }
+> +
+> +               removefunc = (huawei_wmi_micmute_led_set_func(false) < 0)
+> +                       || (snd_hda_gen_add_micmute_led(codec, update_huawei_wmi_micmute_led) < 0);
+> +       }
+> +
+> +       if (huawei_wmi_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+> +               symbol_put(huawei_wmi_micmute_led_set);
+> +               huawei_wmi_micmute_led_set_func = NULL;
+> +       }
+> +}
+> +
+> +#else
+> +
+> +static void alc_fixup_huawei_wmi(struct hda_codec *codec,
+> +                               const struct hda_fixup *fix, int action)
+> +{
+> +}
+> +
+> +#endif
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 135c0826859b..5431dee40f4f 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5374,6 +5374,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+>  /* for alc295_fixup_hp_top_speakers */
+>  #include "hp_x360_helper.c"
+>
+> +/* for alc_fixup_huawei_micmute_led */
+> +#include "huawei_wmi_helper.c"
+> +
+>  enum {
+>         ALC269_FIXUP_SONY_VAIO,
+>         ALC275_FIXUP_SONY_VAIO_GPIO2,
+> @@ -5494,6 +5497,7 @@ enum {
+>         ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+>         ALC255_FIXUP_DELL_HEADSET_MIC,
+>         ALC256_FIXUP_HUAWEI_MBXP_PINS,
+> +       ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED,
+>         ALC295_FIXUP_HP_X360,
+>         ALC221_FIXUP_HP_HEADSET_MIC,
+>  };
+> @@ -5765,6 +5769,10 @@ static const struct hda_fixup alc269_fixups[] = {
+>                 .chained = true,
+>                 .chain_id = ALC269_FIXUP_HEADSET_MIC
+>         },
+> +       [ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED] = {
+> +               .type = HDA_FIXUP_FUNC,
+> +               .v.func = alc_fixup_huawei_wmi
+> +       },
+>         [ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
+>                 .type = HDA_FIXUP_PINS,
+>                 .v.pins = (const struct hda_pintbl[]) {
+> @@ -5779,7 +5787,9 @@ static const struct hda_fixup alc269_fixups[] = {
+>                         {0x1e, 0x411111f0},
+>                         {0x21, 0x04211020},
+>                         { }
+> -               }
+> +               },
+> +               .chained = true,
+> +               .chain_id = ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED
+>         },
+>         [ALC269_FIXUP_ASUS_X101_FUNC] = {
+>                 .type = HDA_FIXUP_FUNC,
+> @@ -6611,6 +6621,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>         SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+>         SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+>         SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+> +       SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED),
+> +       SND_PCI_QUIRK(0x19e5, 0x3201, "Huawei MBX", ALC256_FIXUP_HUAWEI_WMI_MICMUTE_LED),
+>         SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+>         SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+>
+> --
+> 2.17.2
+>
+
 
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
