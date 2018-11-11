@@ -1,112 +1,69 @@
-From: Mike Brady <mikebrady@eircom.net>
-Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
- delay
-Date: Sun, 11 Nov 2018 18:08:29 +0000
-Message-ID: <B1CDD261-AB22-43CE-AF46-DFB5460B5D50@eircom.net>
-References: <20181022191708.GA4659@ubuntu>
- <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
- <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
- <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
- <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
- <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
- <s5hftwuo4t0.wl-tiwai@suse.de>
- <126FA055-050B-4AAC-9392-CA8CCA821768@eircom.net>
- <C35AD288-063F-4197-A758-450CBB3B1184@eircom.net>
- <s5hsh0f1p30.wl-tiwai@suse.de>
- <6AF69E32-029E-478F-9BFA-6262316364A9@eircom.net>
- <s5hsh0dx59n.wl-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 12.1 \(3445.101.1\))
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: [PATCH v5 2/3] ALSA: hda: fix front speakers on Huawei MBXP.
+Date: Sun, 11 Nov 2018 14:02:44 -0500
+Message-ID: <20181111190250.6055-3-ayman.bagabas@gmail.com>
+References: <20181111190250.6055-1-ayman.bagabas@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hsh0dx59n.wl-tiwai@suse.de>
+In-Reply-To: <20181111190250.6055-1-ayman.bagabas@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, julia.lawall@lip6.fr, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, Kirill Marinushkin <k.marinushkin@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
+https://bugzilla.kernel.org/show_bug.cgi?id=200501
+It enables the front speakers on Huawei Matebook X Pro laptops.
+These laptops come with Dolby Atmos sound system and these pins
+configuration enables the front speakers.
 
+Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-> On 6 Nov 2018, at 21:31, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> On Tue, 06 Nov 2018 22:05:11 +0100,
-> Mike Brady wrote:
->> 
->> 
->>> On 5 Nov 2018, at 16:11, Takashi Iwai <tiwai@suse.de> wrote:
->>> 
->>> On Mon, 05 Nov 2018 16:57:07 +0100,
->>> Mike Brady wrote:
->>>> 
->>>>> One another thing I'd like to point out is that the value given in the
->>>>> patch is nothing but an estimated position, optimistically calculated
->>>>> via the system timer.  Mike and I had already discussion in another
->>>>> thread, and another possible option would be to provide the proper
->>>>> timestamp-vs-hwptr pair, instead of updating the timestamp always at
->>>>> the status read.
->>>> 
->>>> Agreed — that would give the caller the information needed to do the
->>>> interpolation for themselves if desired.
->>> 
->>> And now I wonder whether the problem is still present with the latest
->>> code.  There was a (kind of) regression in this regard when we
->>> introduced the fine-grained hardware timestamping, but it should have
->>> been addressed by the commit 20e3f985bb875fea4f86b04eba4b6cc29bfd6b71
->>>   ALSA: pcm: update tstamp only if audio_tstamp changed
->>> 
->>> Could you double-check whether the tstamp field gets still updated
->>> even if no hwptr (and delay) is changed?
->> 
->> Yes, this could be a bit problematic. The function update_audio_tstamp in pcm_lib.c could include the interpolated delay in the calculation of audio_tstamp, and hence
->> could trigger the update of tstamp.
-> 
-> Well, my question is about the current driver as-is.
-> It has no runtime->delay, so far, hence audio_tstamp is calculated
-> only from the hwptr position.  As the corresponding tstamp gets
-> updated only when the audio_tstamp (i.e. hwptr) is updated, the driver
-> should provide the consistent pair of audio_tstamp (i.e. hwptr) vs
-> tstamp.
-
-Fair enough — I had been thinking about the situation with the patch in place.
-
->> Another issue, as I see it, is that the the audio_tstamp value would depend on whether, and when, a snd_pcm_delay() call (which recalculates the interpolation and puts it into the delay field) was made immediately prior to it. By zeroing the delay when a GPU interrupt occurs, you could be certain that the interpolated delay would be less than or equal to the true delay, but this doesn’t seem very satisfactory — you have neither the timestamp of the last update nor the correctly interpolated timestamp. 
-> 
-> No, audio_stamp field is updated at snd_pcm_period_elapsed() call as
-> well as tstamp field.
-
-That's great.
-
-> Basically the driver provides three things: hwptr, tstamp and
-> audio_tstamp.  For the default configuration (like bcm audio does),
-> audio_tstamp is calculated from hwptr, so it can be seen as the hwptr
-> represented in timespec.  OTOH, tstamp is the actual system time that
-> is updated only when audio_tstamp changes -- which means tstamp gets
-> updated *only* at snd_pcm_period_elapsed() call on bcm audio.
-> 
-> And, my point is that you should be able to interpolate the actual
-> position in user-space side based on these information; it doesn't
-> have to be done in the kernel at all.
-
-That is true, of course. The problem is that the snd_pcm_delay() call is so inaccurate though.
-
->> Sadly, therefore, I’m now of the view that this approach to interpolating the delay between GPU interrupts is not really viable. Would that be your view?
-
-> Actually there were some bugs in the past that the tstamp was updated
-> at each snd_pcm_status(), but it should have been fixed in the recent
-> kernels.  That's why I asked to re-check the current status.
-
-Yes, as far as I can see, that's fixed. 
-
-In further testing, however, I noticed that the audio_frames calculation in update_audio_tstamp() in pcm_lib.c didn't include the delay,
-so now it does if the delay field is negative, which it is "naturally" in this case. With that change, the delay reported by snd_pcm_delay() and
-calculated as you referred to above are consistent.
-
-So, overall, I am happier that this approach is at least viable. But two issues remain, in my view:
-First, is it "a good idea"?
-Second, the delay field is now being used as a delay if its positive and an interpolation if it's negative. It works, but would it be better to have an extra "interpolation" field?
-
-I'll post the updated patch shortly.
-
-Thanks,
-Mike
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fa61674a5605..135c0826859b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5493,6 +5493,7 @@ enum {
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
++	ALC256_FIXUP_HUAWEI_MBXP_PINS,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
+ };
+@@ -5764,6 +5765,22 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{0x12, 0x90a60130},
++			{0x13, 0x40000000},
++			{0x14, 0x90170110},
++			{0x18, 0x411111f0},
++			{0x19, 0x04a11040},
++			{0x1a, 0x411111f0},
++			{0x1b, 0x90170112},
++			{0x1d, 0x40759a05},
++			{0x1e, 0x411111f0},
++			{0x21, 0x04211020},
++			{ }
++		}
++	},
+ 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_x101_headset_mic,
+@@ -6594,6 +6611,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 
+ #if 0
+-- 
+2.17.2
