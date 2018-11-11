@@ -1,24 +1,18 @@
-From: =?UTF-8?Q?Tomasz_Przyby=c5=82?= <fademind@gmail.com>
-Subject: Realtek ALC294 Intel Sunrise Point-LP HD Audio driver
- - sound does not work
-Date: Sat, 10 Nov 2018 14:42:01 +0100
-Message-ID: <6071c853-eba0-6d10-cfde-b213e774d079@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
+Date: Sun, 11 Nov 2018 09:10:10 -0600
+Message-ID: <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
+References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
+ <s5hftw8ngd4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com
- [209.85.208.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 99F99267B2B
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 14:42:05 +0100 (CET)
-Received: by mail-lj1-f170.google.com with SMTP id t9-v6so3913210ljh.6
- for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2018 05:42:05 -0800 (PST)
-Received: from [192.168.1.104] (abvo12.neoplus.adsl.tpnet.pl. [83.8.212.12])
- by smtp.gmail.com with ESMTPSA id y1-v6sm1968880lja.53.2018.11.10.05.42.02
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 10 Nov 2018 05:42:03 -0800 (PST)
-Content-Language: pl
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5B452677E4
+ for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2018 16:10:13 +0100 (CET)
+In-Reply-To: <s5hftw8ngd4.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,54 +22,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gRGV2cwoKTG90cyBvZiB1c2VycyB3aXRoIEludGVsIFN1bnJpc2UgUG9pbnQtTFAgSEQg
-QXVkaW8gZHJpdmVyIChBTEMyOTQpIAooc25kX2hkYV9pbnRlbCkgaGF2ZSBtYWpvciBpc3N1ZS4g
-Tm90IHNvdW5kIGF0IGFsbC4gT25seSBjcmFja2xpbmcgZnJvbSAKZXh0ZXJuYWwgc3BlYWtlcnMg
-T1Igc2lsZW5jZSBmcm9tIGludGVybmFsIG5vdGVib29rIHNwZWFrZXJzLgpUcmllZCBmaXggd2l0
-aCBleHRyYSBib290IGZsYWdzIGRvZXMgbm90IHdvcmsgYXQgYWxsLgoKQWxzbyBhZmZlY3RlZCBB
-c3VzIFZpdm9Cb29rIFI1NDJVRgoKYGBgCk1hY2hpbmU6CiDCoCBUeXBlOiBMYXB0b3AgU3lzdGVt
-OiBBU1VTVGVLIHByb2R1Y3Q6IFZpdm9Cb29rIDE1X0FTVVMgTGFwdG9wIFg1NDJVRgogwqAgdjog
-MS4wIHNlcmlhbDogPGZpbHRlcj4KIMKgIE1vYm86IEFTVVNUZUsgbW9kZWw6IFg1NDJVRiB2OiAx
-LjAgc2VyaWFsOiA8ZmlsdGVyPgogwqAgVUVGSTogQW1lcmljYW4gTWVnYXRyZW5kcyB2OiBYNTQy
-VUYuMzAzIGRhdGU6IDAzLzE1LzIwMTgKQXVkaW86CiDCoCBEZXZpY2UtMTogSW50ZWwgU3Vucmlz
-ZSBQb2ludC1MUCBIRCBBdWRpbyBkcml2ZXI6IHNuZF9oZGFfaW50ZWwKIMKgIHY6IGtlcm5lbCBi
-dXMgSUQ6IDAwOjFmLjMKIMKgIFNvdW5kIFNlcnZlcjogQUxTQSBLZXJuZWw6IDQuMTkKYGBgCmBg
-YAphcGxheSAtbAoqKioqIExpc3Qgb2YgUExBWUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNh
-cmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2aWNlIDA6IEFMQzI5NCBBbmFsb2cgW0FMQzI5
-NCBBbmFsb2ddCiDCoCBTdWJkZXZpY2VzOiAxLzEKIMKgIFN1YmRldmljZSAjMDogc3ViZGV2aWNl
-ICMwCmNhcmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2aWNlIDM6IEhETUkgMCBbSERNSSAw
-XQogwqAgU3ViZGV2aWNlczogMS8xCiDCoCBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJk
-IDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA3OiBIRE1JIDEgW0hETUkgMV0KIMKgIFN1
-YmRldmljZXM6IDEvMQogwqAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAwOiBQQ0gg
-W0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgODogSERNSSAyIFtIRE1JIDJdCiDCoCBTdWJkZXZpY2Vz
-OiAxLzEKIMKgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDogUENIIFtIREEgSW50
-ZWwgUENIXSwgZGV2aWNlIDk6IEhETUkgMyBbSERNSSAzXQogwqAgU3ViZGV2aWNlczogMS8xCiDC
-oCBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0s
-IGRldmljZSAxMDogSERNSSA0IFtIRE1JIDRdCiDCoCBTdWJkZXZpY2VzOiAxLzEKIMKgIFN1YmRl
-dmljZSAjMDogc3ViZGV2aWNlICMwCmBgYApEbWVzZyBwYXJ0cwpgYGAKWyAxMi4zNDI1MjhdIHNu
-ZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogYXV0b2NvbmZpZyBmb3IgQUxDMjk0OiAK
-bGluZV9vdXRzPTEgKDB4MTQvMHgwLzB4MC8weDAvMHgwKSB0eXBlOnNwZWFrZXIKWyAxMi4zNDI1
-MzFdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogc3BlYWtlcl9vdXRzPTAgCigw
-eDAvMHgwLzB4MC8weDAvMHgwKQpbIDEyLjM0MjUzM10gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhk
-YXVkaW9DMEQwOiBocF9vdXRzPTEgCigweDIxLzB4MC8weDAvMHgwLzB4MCkKWyAxMi4zNDI1MzVd
-IHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogbW9ubzogbW9ub19vdXQ9MHgwClsg
-MTIuMzQyNTM2XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDA6IGlucHV0czoKWyAx
-Mi4zNDI1MzhdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMDogTWljPTB4MWIKYGBg
-CmBgYApbIDEyLjYzNDE3MV0gaW5wdXQ6IEhEQSBJbnRlbCBQQ0ggSGVhZHBob25lIGFzIAovZGV2
-aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYuMy9zb3VuZC9jYXJkMC9pbnB1dDE4ClsgMTIuNjM0
-Mzg5XSBpbnB1dDogSERBIEludGVsIFBDSCBIRE1JL0RQLHBjbT0zIGFzIAovZGV2aWNlcy9wY2kw
-MDAwOjAwLzAwMDA6MDA6MWYuMy9zb3VuZC9jYXJkMC9pbnB1dDE5ClsgMTIuNjM0NTYzXSBpbnB1
-dDogSERBIEludGVsIFBDSCBIRE1JL0RQLHBjbT03IGFzIAovZGV2aWNlcy9wY2kwMDAwOjAwLzAw
-MDA6MDA6MWYuMy9zb3VuZC9jYXJkMC9pbnB1dDIwClsgMTIuNjM0NzM3XSBpbnB1dDogSERBIElu
-dGVsIFBDSCBIRE1JL0RQLHBjbT04IGFzIAovZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYu
-My9zb3VuZC9jYXJkMC9pbnB1dDIxClsgMTIuNjM0OTA1XSBpbnB1dDogSERBIEludGVsIFBDSCBI
-RE1JL0RQLHBjbT05IGFzIAovZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWYuMy9zb3VuZC9j
-YXJkMC9pbnB1dDIyClsgMTIuNjM1MDQ1XSBpbnB1dDogSERBIEludGVsIFBDSCBIRE1JL0RQLHBj
-bT0xMCBhcyAKL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFmLjMvc291bmQvY2FyZDAvaW5w
-dXQyMwpgYGAKClJlZ2FyZHMKClRvbWFzegoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+On 11/11/18 2:55 AM, Takashi Iwai wrote:
+> On Sat, 10 Nov 2018 22:18:46 +0100,
+> Bard liao wrote:
+>> From: Bard liao <bard.liao@intel.com>
+>>
+>> Add Icelake device id. Also, Icelake's pin2port mapping table is
+>> complicated. So we use a mapping table to do the pin2port mapping.
+>>
+>> Signed-off-by: Bard liao <bard.liao@intel.com>
+> The recent code has already pin2port callback in drm_audio_component
+> ops.  This is called in sound/hda/hdac_component.c before eld notify
+> callback gets called.  So, use this callback instead of introducing
+> yet another one.
+Sorry Takashi, can you elaborate? What this patch does is modify the 
+existing implementation of the .pin2port callback, not add a new one. 
+The existing logic (return pin - 4) is no longer sufficient on IceLake.
+>
+> Also, it'd be helpful if you fix the same for the legacy HD-audio HDMI
+> codec driver.
+Our intention was to revisit differences between legacy and non-legacy 
+in a separate patch if that's all right with you. We've identified 
+missing IDs and other things that should be fixed separately.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>
+>>   sound/soc/codecs/hdac_hdmi.c | 63 ++++++++++++++++++++++++++++++------
+>>   1 file changed, 54 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+>> index 4e9854889a95..fac397326515 100644
+>> --- a/sound/soc/codecs/hdac_hdmi.c
+>> +++ b/sound/soc/codecs/hdac_hdmi.c
+>> @@ -121,8 +121,16 @@ struct hdac_hdmi_dai_port_map {
+>>   	struct hdac_hdmi_cvt *cvt;
+>>   };
+>>   
+>> +/*
+>> + * pin to port mapping table where the value indicate the pin number and
+>> + * the index indicate the port number with 1 base.
+>> + */
+>> +static const int icl_pin2port_map[] = {0x4, 0x6, 0x8, 0xa, 0xb};
+>> +
+>>   struct hdac_hdmi_drv_data {
+>>   	unsigned int vendor_nid;
+>> +	const int *port_map; /* pin to port mapping table */
+>> +	int port_num;
+>>   };
+>>   
+>>   struct hdac_hdmi_priv {
+>> @@ -1329,11 +1337,12 @@ static int hdac_hdmi_add_pin(struct hdac_device *hdev, hda_nid_t nid)
+>>   	return 0;
+>>   }
+>>   
+>> -#define INTEL_VENDOR_NID 0x08
+>> -#define INTEL_GLK_VENDOR_NID 0x0b
+>> +#define INTEL_VENDOR_NID_0x2 0x02
+>> +#define INTEL_VENDOR_NID_0x8 0x08
+>> +#define INTEL_VENDOR_NID_0xb 0x0b
+>>   #define INTEL_GET_VENDOR_VERB 0xf81
+>>   #define INTEL_SET_VENDOR_VERB 0x781
+>> -#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
+>> +#define INTEL_EN_DP12		0x02 /* enable DP 1.2 features */
+>>   #define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
+>>   
+>>   static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdev)
+>> @@ -1538,7 +1547,26 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
+>>   
+>>   static int hdac_hdmi_pin2port(void *aptr, int pin)
+>>   {
+>> -	return pin - 4; /* map NID 0x05 -> port #1 */
+>> +	struct hdac_device *hdev = aptr;
+>> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> +	const int *map = hdmi->drv_data->port_map;
+>> +	int i;
+>> +
+>> +	if (!hdmi->drv_data->port_num)
+>> +		return pin - 4; /* map NID 0x05 -> port #1 */
+>> +
+>> +	/*
+>> +	 * looking for the pin number in the mapping table and return
+>> +	 * the index which indicate the port number
+>> +	 */
+>> +	for (i = 0; i < hdmi->drv_data->port_num; i++) {
+>> +		if (pin == map[i])
+>> +			return i + 1;
+>> +	}
+>> +
+>> +	/* return -1 if pin number exceeds our expectation */
+>> +	dev_err(&hdev->dev, "Can't find the port for pin %d\n", pin);
+>> +	return -1;
+>>   }
+>>   
+>>   static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
+>> @@ -1549,9 +1577,18 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
+>>   	struct hdac_hdmi_port *hport = NULL;
+>>   	struct snd_soc_component *component = hdmi->component;
+>>   	int i;
+>> -
+>> -	/* Don't know how this mapping is derived */
+>> -	hda_nid_t pin_nid = port + 0x04;
+>> +	hda_nid_t pin_nid;
+>> +
+>> +	if (!hdmi->drv_data->port_num) {
+>> +		/* for legacy platforms */
+>> +		pin_nid = port + 0x04;
+>> +	} else if (port < hdmi->drv_data->port_num) {
+>> +		/* get pin number from the pin2port mapping table */
+>> +		pin_nid = hdmi->drv_data->port_map[port - 1];
+>> +	} else {
+>> +		dev_err(&hdev->dev, "Can't find the pin for port %d\n", port);
+>> +		return;
+>> +	}
+>>   
+>>   	dev_dbg(&hdev->dev, "%s: for pin:%d port=%d\n", __func__,
+>>   							pin_nid, pipe);
+>> @@ -1973,12 +2010,18 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdev, int pcm_idx)
+>>   	return port->eld.info.spk_alloc;
+>>   }
+>>   
+>> +static struct hdac_hdmi_drv_data intel_icl_drv_data  = {
+>> +	.vendor_nid = INTEL_VENDOR_NID_0x2,
+>> +	.port_map = icl_pin2port_map,
+>> +	.port_num = ARRAY_SIZE(icl_pin2port_map),
+>> +};
+>> +
+>>   static struct hdac_hdmi_drv_data intel_glk_drv_data  = {
+>> -	.vendor_nid = INTEL_GLK_VENDOR_NID,
+>> +	.vendor_nid = INTEL_VENDOR_NID_0xb,
+>>   };
+>>   
+>>   static struct hdac_hdmi_drv_data intel_drv_data  = {
+>> -	.vendor_nid = INTEL_VENDOR_NID,
+>> +	.vendor_nid = INTEL_VENDOR_NID_0x8,
+>>   };
+>>   
+>>   static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
+>> @@ -2259,6 +2302,8 @@ static const struct hda_device_id hdmi_list[] = {
+>>   						   &intel_glk_drv_data),
+>>   	HDA_CODEC_EXT_ENTRY(0x8086280d, 0x100000, "Geminilake HDMI",
+>>   						   &intel_glk_drv_data),
+>> +	HDA_CODEC_EXT_ENTRY(0x8086280f, 0x100000, "Icelake HDMI",
+>> +						   &intel_icl_drv_data),
+>>   	{}
+>>   };
+>>   
+>> -- 
+>> 2.17.1
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
