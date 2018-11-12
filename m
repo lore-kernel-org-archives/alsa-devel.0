@@ -1,51 +1,84 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 0/8] ASoC: omap-mcbsp: Cleanup and split
- core/sidetone support
-Date: Mon, 12 Nov 2018 15:35:52 +0200
-Message-ID: <0de12aae-39b8-abf2-24a2-237d9570ee09@ti.com>
-References: <20181108073000.21114-1-peter.ujfalusi@ti.com>
- <c2e86562-49f0-9600-3df7-87de40caec06@bitmer.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 2/2] ASoC: wm_adsp: Factor out common init code
+Date: Mon, 12 Nov 2018 13:36:39 +0000
+Message-ID: <20181112133639.13444-2-rf@opensource.cirrus.com>
+References: <20181112133639.13444-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 00D4C26751A
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 14:34:34 +0100 (CET)
-In-Reply-To: <c2e86562-49f0-9600-3df7-87de40caec06@bitmer.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181112133639.13444-1-rf@opensource.cirrus.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE4LTExLTEwIDE3OjU5LCBKYXJra28gTmlrdWxhIHdyb3RlOgo+IE9uIDExLzgvMTgg
-OToyOSBBTSwgUGV0ZXIgVWpmYWx1c2kgd3JvdGU6Cj4+IEhpLAo+Pgo+PiBDaGFuZ2VzIHNpbmNl
-IHYyOgo+PiAtIFNwbGl0IHRoZSBkbWFfZGF0YSBhZGRyIGFuZCBtYXhidXJzdCBjbGVhbnVwIHBh
-dGNoZXMKPj4gLSBBZGRlZCBKYXJra28ncyBBY2tlZC1ieSB0b3QgaGUgc2VyaWVzLgo+Pgo+IEhl
-cmUncyBteSBwcm9taXNlZCB0ZXN0aW5nIHRvby4gSSB1c2VkIGEgc2V0dXAgYmVsb3cgdG8gdGVz
-dCBzaWRldG9uZQo+IGZ1bmN0aW9uYWxpdHkuIEFzc3VtaW5nIGJvdGggcGxheWJhY2sgYW5kIHJl
-Y29yZGluZyBwYXRoIGFyZSBhbHJlYWR5IHNldC4KPiAKPiBhbWl4ZXIgLUQgaHc6MCBzZXQgJ01j
-QlNQMiBTaWRldG9uZScgb24KPiBhbWl4ZXIgLUQgaHc6MCBzZXQgJ01jQlNQMiBTaWRldG9uZSBD
-aGFubmVsIDAnIDEwMCUKPiBhbWl4ZXIgLUQgaHc6MCBzZXQgJ01jQlNQMiBTaWRldG9uZSBDaGFu
-bmVsIDEnIDEwMCUKPiBlY2hvIDMyNzY3ID4vc3lzL2RldmljZXMvcGxhdGZvcm0vNjgwMDAwMDAu
-b2NwLzQ5MDIyMDAwLm1jYnNwL3N0X3RhcHMKPiBlY2hvIHRocmVzaG9sZAo+PiAvc3lzL2Rldmlj
-ZXMvcGxhdGZvcm0vNjgwMDAwMDAub2NwLzQ5MDIyMDAwLm1jYnNwL2RtYV9vcF9tb2RlCj4gYXJl
-Y29yZCAtZiBkYXQgPi9kZXYvbnVsbCB8YXBsYXkgLWYgZGF0IC9kZXYvemVybwo+IAo+IF5eCj4g
-YXJlY29yZCBkdW1wcyBpbnRvIC9kZXYvbnVsbCBhbmQgYXBsYXkgcGxheXMgZnJvbSAvZGV2L3pl
-cm8gc28gb25seSBwYXRoCj4gZnJvbSBpbnB1dCB0byBvdXRwdXQgaXMgdGhlIHNpZGV0b25lIHBh
-dGguCj4gCj4gVGVzdGVkLWJ5OiBKYXJra28gTmlrdWxhIDxqYXJra28ubmlrdWxhQGJpdG1lci5j
-b20+CgpUaGFua3MgSmFya2tvIQoKLSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQg
-T3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVzcyBJ
-RDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Factor out the duplicated initialization statements from
+wm_adsp1_init() and wm_adsp2_init() into new function
+wm_adsp_common_init().
+
+The entire content of wm_adsp1_init() is the common code
+but it is convenient to retain this exported function
+to hide what we currently treat as common init (which might
+change in the future) and also make clear the difference
+between an ADSP1 entry point and common code.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 66501b8dc46f..1dd291cebe67 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2419,7 +2419,7 @@ static int wm_adsp_create_name(struct wm_adsp *dsp)
+ 	return 0;
+ }
+ 
+-int wm_adsp1_init(struct wm_adsp *dsp)
++static int wm_adsp_common_init(struct wm_adsp *dsp)
+ {
+ 	int ret;
+ 
+@@ -2428,11 +2428,17 @@ int wm_adsp1_init(struct wm_adsp *dsp)
+ 		return ret;
+ 
+ 	INIT_LIST_HEAD(&dsp->alg_regions);
++	INIT_LIST_HEAD(&dsp->ctl_list);
+ 
+ 	mutex_init(&dsp->pwr_lock);
+ 
+ 	return 0;
+ }
++
++int wm_adsp1_init(struct wm_adsp *dsp)
++{
++	return wm_adsp_common_init(dsp);
++}
+ EXPORT_SYMBOL_GPL(wm_adsp1_init);
+ 
+ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+@@ -2917,7 +2923,7 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ {
+ 	int ret;
+ 
+-	ret = wm_adsp_create_name(dsp);
++	ret = wm_adsp_common_init(dsp);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2939,12 +2945,8 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ 		break;
+ 	}
+ 
+-	INIT_LIST_HEAD(&dsp->alg_regions);
+-	INIT_LIST_HEAD(&dsp->ctl_list);
+ 	INIT_WORK(&dsp->boot_work, wm_adsp2_boot_work);
+ 
+-	mutex_init(&dsp->pwr_lock);
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_init);
+-- 
+2.11.0
