@@ -1,91 +1,60 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 10/11] ASoC: amd: add acp3x system resume pm op
-Date: Mon, 12 Nov 2018 11:05:01 +0530
-Message-ID: <1542000903-19020-11-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 11/11] ASoC: amd: enable acp3x drivers build
+Date: Mon, 12 Nov 2018 11:05:02 +0530
+Message-ID: <1542000903-19020-12-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: vijendar.mukunda@amd.com, Alexander.Deucher@amd.com, Vishnuvardhanrao.Ravulapati@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Cc: vijendar.mukunda@amd.com, Alexander.Deucher@amd.com, Vishnuvardhanrao.Ravulapati@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Alex Deucher <alexander.deucher@amd.com>, open list <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-When system wide suspend happens, ACP will be powered off.
-When system resumes, all the runtime configuration data for
-ACP needs to be programmed again.
-Added 'resume'pm call back to ACP pm ops.
+ACP3x drivers can be built by selecting necessary kernel config option.
+The patch enables build support of the same.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
 Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 46 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ sound/soc/amd/Kconfig        | 5 +++++
+ sound/soc/amd/Makefile       | 1 +
+ sound/soc/amd/raven/Makefile | 4 ++++
+ 3 files changed, 10 insertions(+)
+ create mode 100644 sound/soc/amd/raven/Makefile
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 710c5c5..2e61cef 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -690,6 +690,51 @@ static int acp3x_audio_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int acp3x_resume(struct device *dev)
-+{
-+	int status;
-+	u32 val;
-+	struct i2s_dev_data *adata = dev_get_drvdata(dev);
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 58c1dcb..5f3b560 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -19,3 +19,8 @@ config SND_SOC_AMD_CZ_RT5645_MACH
+ 	depends on SND_SOC_AMD_ACP && I2C
+ 	help
+ 	 This option enables machine driver for rt5645.
 +
-+	status = acp3x_init(adata->acp3x_base);
-+	if (status)
-+		return -ENODEV;
-+
-+	if (adata->play_stream && adata->play_stream->runtime) {
-+		struct i2s_stream_instance *rtd =
-+			adata->play_stream->runtime->private_data;
-+		config_acp3x_dma(rtd, SNDRV_PCM_STREAM_PLAYBACK);
-+		rv_writel((rtd->xfer_resolution  << 3),
-+			  rtd->acp3x_base + mmACP_BTTDM_ITER);
-+		if (adata->tdm_mode == true) {
-+			rv_writel(adata->tdm_fmt, adata->acp3x_base +
-+				  mmACP_BTTDM_TXFRMT);
-+			val = rv_readl(adata->acp3x_base + mmACP_BTTDM_ITER);
-+			rv_writel((val | 0x2), adata->acp3x_base +
-+				  mmACP_BTTDM_ITER);
-+		}
-+	}
-+
-+	if (adata->capture_stream && adata->capture_stream->runtime) {
-+		struct i2s_stream_instance *rtd =
-+			adata->capture_stream->runtime->private_data;
-+		config_acp3x_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
-+		rv_writel((rtd->xfer_resolution  << 3),
-+			  rtd->acp3x_base + mmACP_BTTDM_IRER);
-+		if (adata->tdm_mode == true) {
-+			rv_writel(adata->tdm_fmt, adata->acp3x_base +
-+				  mmACP_BTTDM_RXFRMT);
-+			val = rv_readl(adata->acp3x_base + mmACP_BTTDM_IRER);
-+			rv_writel((val | 0x2), adata->acp3x_base +
-+				  mmACP_BTTDM_IRER);
-+		}
-+	}
-+
-+	rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
-+	return 0;
-+}
-+
-+
- static int acp3x_pcm_runtime_suspend(struct device *dev)
- {
- 	int status;
-@@ -721,6 +766,7 @@ static int acp3x_pcm_runtime_resume(struct device *dev)
- static const struct dev_pm_ops acp3x_pm_ops = {
- 	.runtime_suspend = acp3x_pcm_runtime_suspend,
- 	.runtime_resume = acp3x_pcm_runtime_resume,
-+	.resume = acp3x_resume,
- };
- 
- static struct platform_driver acp3x_dma_driver = {
++config SND_SOC_AMD_ACP3x
++	tristate "AMD Audio Coprocessor-v3.x support"
++	help
++	 This option enables ACP v3.x I2S support on AMD platform
+diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
+index 79b0622..8e1c571 100644
+--- a/sound/soc/amd/Makefile
++++ b/sound/soc/amd/Makefile
+@@ -5,3 +5,4 @@ snd-soc-acp-rt5645-mach-objs := acp-rt5645.o
+ obj-$(CONFIG_SND_SOC_AMD_ACP) += acp_audio_dma.o
+ obj-$(CONFIG_SND_SOC_AMD_CZ_DA7219MX98357_MACH) += snd-soc-acp-da7219mx98357-mach.o
+ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
+diff --git a/sound/soc/amd/raven/Makefile b/sound/soc/amd/raven/Makefile
+new file mode 100644
+index 0000000..8c03e6f
+--- /dev/null
++++ b/sound/soc/amd/raven/Makefile
+@@ -0,0 +1,4 @@
++snd-pci-acp3x-objs	:= pci-acp3x.o
++snd-acp3x-pcm-dma-objs	:= acp3x-pcm-dma.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-pci-acp3x.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-acp3x-pcm-dma.o
 -- 
 2.7.4
