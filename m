@@ -1,16 +1,19 @@
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 1/2] ASoC: wm_adsp: Fix dma-unsafe read of
-	scratch registers
-Date: Mon, 12 Nov 2018 13:36:38 +0000
-Message-ID: <20181112133639.13444-1-rf@opensource.cirrus.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 0/9] ASoC/ARM: Merge the davinci and omap
+	audio directories
+Date: Mon, 12 Nov 2018 15:38:17 +0200
+Message-ID: <812b333e-cd01-ba32-8daa-7783072cb613@ti.com>
+References: <20181108083754.1746-1-peter.ujfalusi@ti.com>
+ <1065fb8a-a8ec-fbe3-83eb-a308072ef6d6@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A69DF267A8F
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 14:36:43 +0100 (CET)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12274267A94
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 14:36:59 +0100 (CET)
+In-Reply-To: <1065fb8a-a8ec-fbe3-83eb-a308072ef6d6@bitmer.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,85 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, tony@atomide.com, nsekhar@ti.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, jsarha@ti.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Stack memory isn't DMA-safe so it isn't safe to use either
-regmap_raw_read or regmap_bulk_read to read into stack memory.
-
-The two functions to read the scratch registers were using
-stack memory and regmap_raw_read. It's not worth allocating
-memory just for this trivial read, and it isn't time-critical.
-A simple regmap_read for each register is sufficient.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a53dc174bbf0..66501b8dc46f 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -765,38 +765,41 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *mem,
- 
- static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
- {
--	u16 scratch[4];
-+	unsigned int scratch[4];
-+	unsigned int addr = dsp->base + ADSP2_SCRATCH0;
-+	unsigned int i;
- 	int ret;
- 
--	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2_SCRATCH0,
--				scratch, sizeof(scratch));
--	if (ret) {
--		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
--		return;
-+	for (i = 0; i < ARRAY_SIZE(scratch); ++i) {
-+		ret = regmap_read(dsp->regmap, addr + i, &scratch[i]);
-+		if (ret) {
-+			adsp_err(dsp, "Failed to read SCRATCH%u: %d\n", i, ret);
-+			return;
-+		}
- 	}
- 
- 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
--		 be16_to_cpu(scratch[0]),
--		 be16_to_cpu(scratch[1]),
--		 be16_to_cpu(scratch[2]),
--		 be16_to_cpu(scratch[3]));
-+		 scratch[0], scratch[1], scratch[2], scratch[3]);
- }
- 
- static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
- {
--	u32 scratch[2];
-+	unsigned int scratch[2];
- 	int ret;
- 
--	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
--			      scratch, sizeof(scratch));
--
-+	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
-+			  &scratch[0]);
- 	if (ret) {
--		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
-+		adsp_err(dsp, "Failed to read SCRATCH0_1: %d\n", ret);
- 		return;
- 	}
- 
--	scratch[0] = be32_to_cpu(scratch[0]);
--	scratch[1] = be32_to_cpu(scratch[1]);
-+	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH2_3,
-+			  &scratch[1]);
-+	if (ret) {
-+		adsp_err(dsp, "Failed to read SCRATCH2_3: %d\n", ret);
-+		return;
-+	}
- 
- 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
- 		 scratch[0] & 0xFFFF,
--- 
-2.11.0
+CgpPbiAyMDE4LTExLTExIDE4OjM3LCBKYXJra28gTmlrdWxhIHdyb3RlOgo+IE9uIDExLzgvMTgg
+MTA6MzcgQU0sIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBUaGUgc2VyaWVzIGFsc28gaW5jbHVk
+ZXMgcGF0Y2hlcyB0byB1cGRhdGVkIHRoZSBhcmNoL2FybS8gZmlsZXMgKGRlZmNvbmZpZ3MsCj4+
+IHNvdXJjZSBmaWxlcyB1c2luZyBhdWRpbyBLY29uZmlnIHN5bWJvbHMpLgo+Pgo+PiBJIGJlbGll
+dmUgd2l0aCB2MSBhbGwgb2YgdGhpcyBjYW4gYmUgbWVyZ2VkIHZpYSBBU29DIHRyZWUgYXMgdGhl
+IGNoYW5jZXMgb2YKPj4gY29uZmxpY3RzIGFyZSBsb3cgZm9yIHRoZSB0b3VjaGVkIGFyY2gvYXJt
+IGZpbGVzLiBCdXQgU2VraGFyIGFuZCBUb255IGNhbgo+PiBjb3JyZWN0IG1lIGlmIEknbSB3cm9u
+Zy4KPj4KPj4gSSB0aGluayBJIGhhdmUgY2F0Y2hlZCBhbGwgKEkgaG9wZSkgaXNzdWVzIHJlZ2Fy
+ZGluZyB0byBLY29uZmlnIHRoYW5rcyB0byB0aGUKPj4gdmFyaW91cyBhdXRvYnVpbGQgbWFjaGlu
+ZXMgb3V0IHRoZXJlIGtpbmRseSB0ZXN0aW5nIG15IGxpbnV4LW5leHQtd2lwIGJyYW5jaC4KPj4K
+Pj4gSSB3b3VsZCBhcHByZWNpYXRlIGFueSB0ZXN0aW5nIGNvbW1lbnRzIGJlZm9yZSBJIHNlbmQg
+dGhlIHYxIQo+Pgo+IEkgYXBwbGllZCBvbiB0b3Agb2YKPiBnaXQ6Ly9naXQua2VybmVsLm9yZy9w
+dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9zb3VuZC5naXQgY29tbWl0Cj4gYWJkOTdi
+N2M1M2FjICgiTWVyZ2UgYnJhbmNoICdhc29jLTQuMjEnIGludG8gYXNvYy1uZXh0IikuCj4gCj4g
+UGF0Y2hlcyAyIGFuZCA2IGRpZG4ndCBhcHBseSBhbmQgNy04IEkgc2tpcHBlZC4gRm9yIG15IGZ1
+bmN0aW9uYWwKPiB0ZXN0aW5nIG5vbmUgb2YgdGhvc2Ugd2VyZSByZXF1aXJlZC4KCkhybSwgdGhl
+IHNlcmllcyB3YXMgYmFzZWQgb24gbmV4dC0yMDE4MTAxOSwgYnV0IEkgd2lsbCBrZWVwIG9uIGV5
+ZSBvbiB0aGVzZSEKCj4gRm9yIHRoZSBzb3VuZC9zb2Mve29tYXAgPT4gdGl9IGNvbnZlcnNpb24g
+eW91IG1heSBhZGQ6Cj4gCj4gVGVzdGVkLWJ5OiBKYXJra28gTmlrdWxhIDxqYXJra28ubmlrdWxh
+QGJpdG1lci5jb20+Cj4gQWNrZWQtYnk6IEphcmtrbyBOaWt1bGEgPGphcmtrby5uaWt1bGFAYml0
+bWVyLmNvbT4KClRoYW5rIHlvdSEKCi0gUMOpdGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5k
+IE95LCBQb3Jra2FsYW5rYXR1IDIyLCAwMDE4MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3Mg
+SUQ6IDA2MTU1MjEtNC4gS290aXBhaWtrYS9Eb21pY2lsZTogSGVsc2lua2kKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
