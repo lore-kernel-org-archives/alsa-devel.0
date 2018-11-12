@@ -1,16 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
-Date: Mon, 12 Nov 2018 07:57:58 -0600
-Message-ID: <57337f2b-b01e-0cd6-00b2-f386bf90607c@linux.intel.com>
+Date: Mon, 12 Nov 2018 08:00:36 -0600
+Message-ID: <ad05386f-af75-3bf2-bc76-628928fc4fea@linux.intel.com>
 References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
+ <s5hftw8ngd4.wl-tiwai@suse.de>
+ <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
+ <s5h5zx3o6um.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CE42267A5C
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 14:58:00 +0100 (CET)
-In-Reply-To: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FAAE267A8E
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 15:00:38 +0100 (CET)
+In-Reply-To: <s5h5zx3o6um.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,141 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 11/10/18 3:18 PM, Bard liao wrote:
-> From: Bard liao <bard.liao@intel.com>
->
-> Add Icelake device id. Also, Icelake's pin2port mapping table is
-> complicated. So we use a mapping table to do the pin2port mapping.
+>>> Also, it'd be helpful if you fix the same for the legacy HD-audio HDMI
+>>> codec driver.
+>> Our intention was to revisit differences between legacy and non-legacy
+>> in a separate patch if that's all right with you. We've identified
+>> missing IDs and other things that should be fixed separately.
+> Sure, I don't mean to fix both in a single patch, but just to remind
+> you guys not to forget about that code path.
 
-I double-checked the mappings in the hardware specs so:
+Yes, this is very much on our radar. I don't like the current approach 
+where patch_hdmi.c and hdac_hdmi.c have duplicated/different definitions 
+for the same things or capabilities that can't be traced back to 
+hardware documentation or known issues. the main issue I am facing with 
+the legacy path is ironically validation. Our team necessarily have 
+access to all commercially-available platforms listed in those files or 
+when we do it's not necessarily easy to work with the latest kernel or 
+handle BIOS issues - we'll do what we can though.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+And btw the big topic is still how we provide distributions the means to 
+handle a 'graceful' fallback from DSP-enabled solutions (SST or SOF) to 
+legacy HDAudio, it's already popped up for cases where we have HDaudio 
+solutions with DMICs.
 
->
-> Signed-off-by: Bard liao <bard.liao@intel.com>
-> ---
->   sound/soc/codecs/hdac_hdmi.c | 63 ++++++++++++++++++++++++++++++------
->   1 file changed, 54 insertions(+), 9 deletions(-)
->
-> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> index 4e9854889a95..fac397326515 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -121,8 +121,16 @@ struct hdac_hdmi_dai_port_map {
->   	struct hdac_hdmi_cvt *cvt;
->   };
->   
-> +/*
-> + * pin to port mapping table where the value indicate the pin number and
-> + * the index indicate the port number with 1 base.
-> + */
-> +static const int icl_pin2port_map[] = {0x4, 0x6, 0x8, 0xa, 0xb};
-> +
->   struct hdac_hdmi_drv_data {
->   	unsigned int vendor_nid;
-> +	const int *port_map; /* pin to port mapping table */
-> +	int port_num;
->   };
->   
->   struct hdac_hdmi_priv {
-> @@ -1329,11 +1337,12 @@ static int hdac_hdmi_add_pin(struct hdac_device *hdev, hda_nid_t nid)
->   	return 0;
->   }
->   
-> -#define INTEL_VENDOR_NID 0x08
-> -#define INTEL_GLK_VENDOR_NID 0x0b
-> +#define INTEL_VENDOR_NID_0x2 0x02
-> +#define INTEL_VENDOR_NID_0x8 0x08
-> +#define INTEL_VENDOR_NID_0xb 0x0b
->   #define INTEL_GET_VENDOR_VERB 0xf81
->   #define INTEL_SET_VENDOR_VERB 0x781
-> -#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
-> +#define INTEL_EN_DP12		0x02 /* enable DP 1.2 features */
->   #define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
->   
->   static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdev)
-> @@ -1538,7 +1547,26 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
->   
->   static int hdac_hdmi_pin2port(void *aptr, int pin)
->   {
-> -	return pin - 4; /* map NID 0x05 -> port #1 */
-> +	struct hdac_device *hdev = aptr;
-> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
-> +	const int *map = hdmi->drv_data->port_map;
-> +	int i;
-> +
-> +	if (!hdmi->drv_data->port_num)
-> +		return pin - 4; /* map NID 0x05 -> port #1 */
-> +
-> +	/*
-> +	 * looking for the pin number in the mapping table and return
-> +	 * the index which indicate the port number
-> +	 */
-> +	for (i = 0; i < hdmi->drv_data->port_num; i++) {
-> +		if (pin == map[i])
-> +			return i + 1;
-> +	}
-> +
-> +	/* return -1 if pin number exceeds our expectation */
-> +	dev_err(&hdev->dev, "Can't find the port for pin %d\n", pin);
-> +	return -1;
->   }
->   
->   static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
-> @@ -1549,9 +1577,18 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
->   	struct hdac_hdmi_port *hport = NULL;
->   	struct snd_soc_component *component = hdmi->component;
->   	int i;
-> -
-> -	/* Don't know how this mapping is derived */
-> -	hda_nid_t pin_nid = port + 0x04;
-> +	hda_nid_t pin_nid;
-> +
-> +	if (!hdmi->drv_data->port_num) {
-> +		/* for legacy platforms */
-> +		pin_nid = port + 0x04;
-> +	} else if (port < hdmi->drv_data->port_num) {
-> +		/* get pin number from the pin2port mapping table */
-> +		pin_nid = hdmi->drv_data->port_map[port - 1];
-> +	} else {
-> +		dev_err(&hdev->dev, "Can't find the pin for port %d\n", port);
-> +		return;
-> +	}
->   
->   	dev_dbg(&hdev->dev, "%s: for pin:%d port=%d\n", __func__,
->   							pin_nid, pipe);
-> @@ -1973,12 +2010,18 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdev, int pcm_idx)
->   	return port->eld.info.spk_alloc;
->   }
->   
-> +static struct hdac_hdmi_drv_data intel_icl_drv_data  = {
-> +	.vendor_nid = INTEL_VENDOR_NID_0x2,
-> +	.port_map = icl_pin2port_map,
-> +	.port_num = ARRAY_SIZE(icl_pin2port_map),
-> +};
-> +
->   static struct hdac_hdmi_drv_data intel_glk_drv_data  = {
-> -	.vendor_nid = INTEL_GLK_VENDOR_NID,
-> +	.vendor_nid = INTEL_VENDOR_NID_0xb,
->   };
->   
->   static struct hdac_hdmi_drv_data intel_drv_data  = {
-> -	.vendor_nid = INTEL_VENDOR_NID,
-> +	.vendor_nid = INTEL_VENDOR_NID_0x8,
->   };
->   
->   static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
-> @@ -2259,6 +2302,8 @@ static const struct hda_device_id hdmi_list[] = {
->   						   &intel_glk_drv_data),
->   	HDA_CODEC_EXT_ENTRY(0x8086280d, 0x100000, "Geminilake HDMI",
->   						   &intel_glk_drv_data),
-> +	HDA_CODEC_EXT_ENTRY(0x8086280f, 0x100000, "Icelake HDMI",
-> +						   &intel_icl_drv_data),
->   	{}
->   };
->   
+-Pierre
