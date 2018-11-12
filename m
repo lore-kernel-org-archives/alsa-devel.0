@@ -1,16 +1,16 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 06/11] ASoC: amd: add acp3x pcm driver dma ops
-Date: Mon, 12 Nov 2018 11:04:57 +0530
-Message-ID: <1542000903-19020-7-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 07/11] ASoC: amd: add acp3x i2s ops
+Date: Mon, 12 Nov 2018 11:04:58 +0530
+Message-ID: <1542000903-19020-8-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com
- (mail-eopbgr810058.outbound.protection.outlook.com [40.107.81.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FC7F2677E4
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:32:43 +0100 (CET)
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam02on0044.outbound.protection.outlook.com [104.47.36.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id C07B92677E4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:32:58 +0100 (CET)
 In-Reply-To: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,334 +21,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND
- - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sanju R Mehta <sanju.mehta@amd.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER
+ MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-ACP3x has a DMA controller to access system memory.
-This controller transfers data from/to system memory
-to/from the ACP internal FIFO.
-The patch adds PCM driver DMA operations.
+ACP3x has a i2s controller block for playback and capture.
+This patch adds ACP3x i2s DAI operations.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
 Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 262 +++++++++++++++++++++++++++++++++++-
- sound/soc/amd/raven/acp3x.h         |  20 +++
- 2 files changed, 275 insertions(+), 7 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 89 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 86 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 94f915a..06c1985 100644
+index 06c1985..ed2c163 100644
 --- a/sound/soc/amd/raven/acp3x-pcm-dma.c
 +++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -33,6 +33,54 @@ struct i2s_dev_data {
- 	struct snd_pcm_substream *capture_stream;
+@@ -423,10 +423,93 @@ static struct snd_pcm_ops acp3x_dma_ops = {
+ 	.mmap = acp3x_dma_mmap,
  };
  
-+struct i2s_stream_instance {
-+	u16 num_pages;
-+	u16 channels;
-+	u32 xfer_resolution;
-+	struct page *pg;
-+	void __iomem *acp3x_base;
-+};
-+
-+static const struct snd_pcm_hardware acp3x_pcm_hardware_playback = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_BATCH |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
-+		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
-+		   SNDRV_PCM_FMTBIT_S32_LE,
-+	.channels_min = 2,
-+	.channels_max = 8,
-+	.rates = SNDRV_PCM_RATE_8000_96000,
-+	.rate_min = 8000,
-+	.rate_max = 96000,
-+	.buffer_bytes_max = PLAYBACK_MAX_NUM_PERIODS * PLAYBACK_MAX_PERIOD_SIZE,
-+	.period_bytes_min = PLAYBACK_MIN_PERIOD_SIZE,
-+	.period_bytes_max = PLAYBACK_MAX_PERIOD_SIZE,
-+	.periods_min = PLAYBACK_MIN_NUM_PERIODS,
-+	.periods_max = PLAYBACK_MAX_NUM_PERIODS,
-+};
-+
-+static const struct snd_pcm_hardware acp3x_pcm_hardware_capture = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_BATCH |
-+	    SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
-+		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
-+		   SNDRV_PCM_FMTBIT_S32_LE,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.rates = SNDRV_PCM_RATE_8000_48000,
-+	.rate_min = 8000,
-+	.rate_max = 48000,
-+	.buffer_bytes_max = CAPTURE_MAX_NUM_PERIODS * CAPTURE_MAX_PERIOD_SIZE,
-+	.period_bytes_min = CAPTURE_MIN_PERIOD_SIZE,
-+	.period_bytes_max = CAPTURE_MAX_PERIOD_SIZE,
-+	.periods_min = CAPTURE_MIN_NUM_PERIODS,
-+	.periods_max = CAPTURE_MAX_NUM_PERIODS,
-+};
-+
- static int acp3x_power_on(void __iomem *acp3x_base, bool on)
- {
- 	u16 val, mask;
-@@ -165,14 +213,214 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
- 		return IRQ_NONE;
- }
- 
-+static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
++static int acp3x_dai_i2s_hwparams(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
 +{
-+	u16 page_idx;
-+	u64 addr;
-+	u32 low, high, val, acp_fifo_addr;
-+	struct page *pg = rtd->pg;
++	u32 val = 0;
++	struct i2s_stream_instance *rtd = substream->runtime->private_data;
 +
-+	/* 8 scratch registers used to map one 64 bit address */
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-+		val = 0;
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_U8:
++	case SNDRV_PCM_FORMAT_S8:
++		rtd->xfer_resolution = 0x0;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		rtd->xfer_resolution = 0x02;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		rtd->xfer_resolution = 0x04;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		rtd->xfer_resolution = 0x05;
++		break;
++	default:
++		return -EINVAL;
++	}
++	val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
++	val = val | (rtd->xfer_resolution  << 3);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
 +	else
-+		val = rtd->num_pages * 8;
++		rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
 +
-+	/* Group Enable */
-+	rv_writel(ACP_SRAM_PTE_OFFSET | BIT(31), rtd->acp3x_base +
-+		  mmACPAXI2AXI_ATU_BASE_ADDR_GRP_1);
-+	rv_writel(PAGE_SIZE_4K_ENABLE, rtd->acp3x_base +
-+		  mmACPAXI2AXI_ATU_PAGE_SIZE_GRP_1);
-+
-+	for (page_idx = 0; page_idx < rtd->num_pages; page_idx++) {
-+		/* Load the low address of page int ACP SRAM through SRBM */
-+		addr = page_to_phys(pg);
-+		low = lower_32_bits(addr);
-+		high = upper_32_bits(addr);
-+
-+		rv_writel(low, rtd->acp3x_base + mmACP_SCRATCH_REG_0 + val);
-+		high |= BIT(31);
-+		rv_writel(high, rtd->acp3x_base + mmACP_SCRATCH_REG_0 + val
-+				+ 4);
-+		/* Move to next physically contiguos page */
-+		val += 8;
-+		pg++;
-+	}
-+
-+	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		/* Config ringbuffer */
-+		rv_writel(MEM_WINDOW_START, rtd->acp3x_base +
-+			  mmACP_BT_TX_RINGBUFADDR);
-+		rv_writel(MAX_BUFFER, rtd->acp3x_base +
-+			  mmACP_BT_TX_RINGBUFSIZE);
-+		rv_writel(DMA_SIZE, rtd->acp3x_base + mmACP_BT_TX_DMA_SIZE);
-+
-+		/* Config audio fifo */
-+		acp_fifo_addr = ACP_SRAM_PTE_OFFSET + (rtd->num_pages * 8)
-+				+ PLAYBACK_FIFO_ADDR_OFFSET;
-+		rv_writel(acp_fifo_addr, rtd->acp3x_base +
-+			  mmACP_BT_TX_FIFOADDR);
-+		rv_writel(FIFO_SIZE, rtd->acp3x_base + mmACP_BT_TX_FIFOSIZE);
-+	} else {
-+		/* Config ringbuffer */
-+		rv_writel(MEM_WINDOW_START + MAX_BUFFER, rtd->acp3x_base +
-+			  mmACP_BT_RX_RINGBUFADDR);
-+		rv_writel(MAX_BUFFER, rtd->acp3x_base +
-+			  mmACP_BT_RX_RINGBUFSIZE);
-+		rv_writel(DMA_SIZE, rtd->acp3x_base + mmACP_BT_RX_DMA_SIZE);
-+
-+		/* Config audio fifo */
-+		acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
-+				(rtd->num_pages * 8) + CAPTURE_FIFO_ADDR_OFFSET;
-+		rv_writel(acp_fifo_addr, rtd->acp3x_base +
-+			  mmACP_BT_RX_FIFOADDR);
-+		rv_writel(FIFO_SIZE, rtd->acp3x_base + mmACP_BT_RX_FIFOSIZE);
-+	}
-+
-+	/* Enable  watermark/period interrupt to host */
-+	rv_writel(BIT(BT_TX_THRESHOLD) | BIT(BT_RX_THRESHOLD),
-+		  rtd->acp3x_base + mmACP_EXTERNAL_INTR_CNTL);
++	return 0;
 +}
 +
-+static int acp3x_dma_open(struct snd_pcm_substream *substream)
++static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
++				 int cmd, struct snd_soc_dai *dai)
 +{
 +	int ret = 0;
++	struct i2s_stream_instance *rtd = substream->runtime->private_data;
++	u32 val, period_bytes;
 +
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
-+								    DRV_NAME);
-+	struct i2s_dev_data *adata = dev_get_drvdata(component->dev);
-+
-+	struct i2s_stream_instance *i2s_data = kzalloc(sizeof(struct i2s_stream_instance),
-+						       GFP_KERNEL);
-+	if (!i2s_data)
-+		return -EINVAL;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		runtime->hw = acp3x_pcm_hardware_playback;
-+	else
-+		runtime->hw = acp3x_pcm_hardware_capture;
-+
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0) {
-+		dev_err(component->dev, "set integer constraint failed\n");
-+		return ret;
++	period_bytes = frames_to_bytes(substream->runtime,
++				       substream->runtime->period_size);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			rv_writel(period_bytes, rtd->acp3x_base +
++				  mmACP_BT_TX_INTR_WATERMARK_SIZE);
++			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
++			val = val | BIT(0);
++			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
++		} else {
++			rv_writel(period_bytes, rtd->acp3x_base +
++				  mmACP_BT_RX_INTR_WATERMARK_SIZE);
++			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_IRER);
++			val = val | BIT(0);
++			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
++		}
++		rv_writel(1, rtd->acp3x_base + mmACP_BTTDM_IER);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
++			val = val & ~BIT(0);
++			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
++		} else {
++			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_IRER);
++			val = val & ~BIT(0);
++			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
++		}
++		rv_writel(0, rtd->acp3x_base + mmACP_BTTDM_IER);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
 +	}
 +
-+	if (!adata->play_stream && !adata->capture_stream)
-+		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		adata->play_stream = substream;
-+	else
-+		adata->capture_stream = substream;
-+
-+	i2s_data->acp3x_base = adata->acp3x_base;
-+	runtime->private_data = i2s_data;
-+	return 0;
++	return ret;
 +}
 +
-+static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params)
-+{
-+	int status;
-+	u64 size;
-+	struct snd_dma_buffer *dma_buffer;
-+	struct page *pg;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct i2s_stream_instance *rtd = runtime->private_data;
-+
-+	if (!rtd)
-+		return -EINVAL;
-+
-+	dma_buffer = &substream->dma_buffer;
-+	size = params_buffer_bytes(params);
-+	status = snd_pcm_lib_malloc_pages(substream, size);
-+	if (status < 0)
-+		return status;
-+
-+	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
-+	pg = virt_to_page(substream->dma_buffer.area);
-+	if (pg) {
-+		rtd->pg = pg;
-+		rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
-+		config_acp3x_dma(rtd, substream->stream);
-+		status = 0;
-+	} else {
-+		status = -ENOMEM;
-+	}
-+	return status;
-+}
-+
-+static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_pcm_substream *substream)
-+{
-+	u32 pos = 0;
-+	struct i2s_stream_instance *rtd = substream->runtime->private_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		pos = rv_readl(rtd->acp3x_base +
-+			       mmACP_BT_TX_LINKPOSITIONCNTR);
-+	else
-+		pos = rv_readl(rtd->acp3x_base +
-+			       mmACP_BT_RX_LINKPOSITIONCNTR);
-+
-+	if (pos >= MAX_BUFFER)
-+		pos = 0;
-+
-+	return bytes_to_frames(substream->runtime, pos);
-+}
-+
-+static int acp3x_dma_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+						     SNDRV_DMA_TYPE_DEV,
-+						     NULL, MIN_BUFFER,
-+						     MAX_BUFFER);
-+}
-+
-+static int acp3x_dma_hw_free(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_lib_free_pages(substream);
-+}
-+
-+static int acp3x_dma_mmap(struct snd_pcm_substream *substream,
-+			  struct vm_area_struct *vma)
-+{
-+	return snd_pcm_lib_default_mmap(substream, vma);
-+}
-+
-+static int acp3x_dma_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct i2s_stream_instance *rtd = substream->runtime->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
-+								    DRV_NAME);
-+	struct i2s_dev_data *adata = dev_get_drvdata(component->dev);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		adata->play_stream = NULL;
-+	else
-+		adata->capture_stream = NULL;
-+
-+	/* Disable ACP irq, when the current stream is being closed and
-+	 * another stream is also not active.
-+	 */
-+	if (!adata->play_stream && !adata->capture_stream)
-+		rv_writel(0, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
-+	kfree(rtd);
-+	return 0;
-+}
-+
- static struct snd_pcm_ops acp3x_dma_ops = {
--	.open = NULL,
--	.close = NULL,
--	.ioctl = NULL,
+ struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
 -	.hw_params = NULL,
--	.hw_free = NULL,
--	.pointer = NULL,
--	.mmap = NULL,
-+	.open = acp3x_dma_open,
-+	.close = acp3x_dma_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = acp3x_dma_hw_params,
-+	.hw_free = acp3x_dma_hw_free,
-+	.pointer = acp3x_dma_pointer,
-+	.mmap = acp3x_dma_mmap,
+-	.trigger   = NULL,
+-	.set_fmt = NULL,
++	.hw_params = acp3x_dai_i2s_hwparams,
++	.trigger   = acp3x_dai_i2s_trigger,
  };
  
- struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
-diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-index f3d3e51..9f33e34 100644
---- a/sound/soc/amd/raven/acp3x.h
-+++ b/sound/soc/amd/raven/acp3x.h
-@@ -13,6 +13,26 @@
- #define ACP3x_POWER_OFF_IN_PROGRESS 0x03
- #define ACP3x_SOFT_RESET__SoftResetAudDone_MASK	0x00010001
- 
-+#define ACP_SRAM_PTE_OFFSET	0x02050000
-+#define PAGE_SIZE_4K_ENABLE 0x2
-+#define MEM_WINDOW_START	0x4000000
-+#define PLAYBACK_FIFO_ADDR_OFFSET 0x400
-+#define CAPTURE_FIFO_ADDR_OFFSET  0x500
-+
-+#define PLAYBACK_MIN_NUM_PERIODS    2
-+#define PLAYBACK_MAX_NUM_PERIODS    8
-+#define PLAYBACK_MAX_PERIOD_SIZE    16384
-+#define PLAYBACK_MIN_PERIOD_SIZE    4096
-+#define CAPTURE_MIN_NUM_PERIODS     2
-+#define CAPTURE_MAX_NUM_PERIODS     8
-+#define CAPTURE_MAX_PERIOD_SIZE     16384
-+#define CAPTURE_MIN_PERIOD_SIZE     4096
-+
-+#define MAX_BUFFER (PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
-+#define MIN_BUFFER MAX_BUFFER
-+#define FIFO_SIZE 0x100
-+#define DMA_SIZE 0x40
-+
- static inline u32 rv_readl(void __iomem *base_addr)
- {
- 	return readl(base_addr - ACP3x_PHY_BASE_ADDRESS);
+ static struct snd_soc_dai_driver acp3x_i2s_dai_driver = {
 -- 
 2.7.4
