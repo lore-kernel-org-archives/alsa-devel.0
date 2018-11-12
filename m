@@ -1,7 +1,7 @@
 From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH v2 2/3] ASoC: pcm3060: Add DT property for single-ended output
-Date: Mon, 12 Nov 2018 08:08:33 +0100
-Message-ID: <20181112070834.16979-2-kmarinushkin@birdec.tech>
+Subject: [PATCH v2 3/3] ASoC: pcm3060: Rename output widgets
+Date: Mon, 12 Nov 2018 08:08:34 +0100
+Message-ID: <20181112070834.16979-3-kmarinushkin@birdec.tech>
 References: <20181105112036.GC5365@sirena.org.uk>
  <20181112070834.16979-1-kmarinushkin@birdec.tech>
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -11,53 +11,66 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
 List-Id: alsa-devel@alsa-project.org
 
-DAC output may be differential (default) or single-ended.
+In the initial commit [1], I added differential output of the codec as
+separate `+` and `-` widgets:
+
+OUTL+
+OUTR+
+OUTL-
+OUTR-
+
+Later, in the commit [2], I added a device tree property to configure the
+output as single-ended or differential. Having this property, the `+` and
+`-` separation in widgets seems for me confusing. There are no functional
+benefits in such separation, so I find reasonable to get rid of it:
+
+OUTL
+OUTR
+
+The new naming is more friendly for sound cards, and is better aligned with
+other codec drivers in kernel.
+
+Renaming the output widgets now should not be a problem from the backwards-
+compatibility perspective, as the driver for PCM3060 is added into the
+mainline very recently, and did not yet appear in any releases.
+
+[1] commit 6ee47d4a8dac ("ASoC: pcm3060: Add codec driver")
+[2] commit a78c62de00d5 ("ASoC: pcm3060: Add DT property for single-ended
+    output")
 
 Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 ---
- sound/soc/codecs/pcm3060.c | 14 ++++++++++++++
- sound/soc/codecs/pcm3060.h |  1 +
- 2 files changed, 15 insertions(+)
+ sound/soc/codecs/pcm3060.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 494d9d662be8..5f479aa61097 100644
+index 5f479aa61097..1dd851a7b43b 100644
 --- a/sound/soc/codecs/pcm3060.c
 +++ b/sound/soc/codecs/pcm3060.c
-@@ -274,9 +274,23 @@ EXPORT_SYMBOL(pcm3060_regmap);
- 
- /* device */
- 
-+static void pcm3060_parse_dt(const struct device_node *np,
-+			     struct pcm3060_priv *priv)
-+{
-+	priv->out_se = of_property_read_bool(np, "ti,out-single-ended");
-+}
-+
- int pcm3060_probe(struct device *dev)
- {
- 	int rc;
-+	struct pcm3060_priv *priv = dev_get_drvdata(dev);
-+
-+	if (dev->of_node)
-+		pcm3060_parse_dt(dev->of_node, priv);
-+
-+	if (priv->out_se)
-+		regmap_update_bits(priv->regmap, PCM3060_REG64,
-+				   PCM3060_REG_SE, PCM3060_REG_SE);
- 
- 	rc = devm_snd_soc_register_component(dev, &pcm3060_soc_comp_driver,
- 					     pcm3060_dai,
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index fd89a68aa8a7..c895cf40ee10 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -25,6 +25,7 @@ struct pcm3060_priv_dai {
- struct pcm3060_priv {
- 	struct regmap *regmap;
- 	struct pcm3060_priv_dai dai[PCM3060_DAI_IDS_NUM];
-+	u8 out_se: 1;
+@@ -198,20 +198,16 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
  };
  
- int pcm3060_probe(struct device *dev);
+ static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
+-	SND_SOC_DAPM_OUTPUT("OUTL+"),
+-	SND_SOC_DAPM_OUTPUT("OUTR+"),
+-	SND_SOC_DAPM_OUTPUT("OUTL-"),
+-	SND_SOC_DAPM_OUTPUT("OUTR-"),
++	SND_SOC_DAPM_OUTPUT("OUTL"),
++	SND_SOC_DAPM_OUTPUT("OUTR"),
+ 
+ 	SND_SOC_DAPM_INPUT("INL"),
+ 	SND_SOC_DAPM_INPUT("INR"),
+ };
+ 
+ static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
+-	{ "OUTL+", NULL, "Playback" },
+-	{ "OUTR+", NULL, "Playback" },
+-	{ "OUTL-", NULL, "Playback" },
+-	{ "OUTR-", NULL, "Playback" },
++	{ "OUTL", NULL, "Playback" },
++	{ "OUTR", NULL, "Playback" },
+ 
+ 	{ "Capture", NULL, "INL" },
+ 	{ "Capture", NULL, "INR" },
 -- 
 2.13.6
