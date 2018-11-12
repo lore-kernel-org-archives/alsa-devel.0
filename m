@@ -1,57 +1,63 @@
 From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH v2 1/3] dt-bindings: sound: Add documentation
-	for pcm3060 property out-single-ended
-Date: Mon, 12 Nov 2018 08:08:32 +0100
-Message-ID: <20181112070834.16979-1-kmarinushkin@birdec.tech>
+Subject: [PATCH v2 2/3] ASoC: pcm3060: Add DT property for single-ended output
+Date: Mon, 12 Nov 2018 08:08:33 +0100
+Message-ID: <20181112070834.16979-2-kmarinushkin@birdec.tech>
 References: <20181105112036.GC5365@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 568072677E4
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 08:07:07 +0100 (CET)
-In-Reply-To: <20181105112036.GC5365@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+ <20181112070834.16979-1-kmarinushkin@birdec.tech>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181112070834.16979-1-kmarinushkin@birdec.tech>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
 List-Id: alsa-devel@alsa-project.org
 
-Output of pcm3060 codec may be configured as single-ended or differential
+DAC output may be differential (default) or single-ended.
 
 Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: devicetree@vger.kernel.org
 ---
- Documentation/devicetree/bindings/sound/pcm3060.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/pcm3060.c | 14 ++++++++++++++
+ sound/soc/codecs/pcm3060.h |  1 +
+ 2 files changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/pcm3060.txt b/Documentation/devicetree/bindings/sound/pcm3060.txt
-index 90fcb8523099..97de66932d44 100644
---- a/Documentation/devicetree/bindings/sound/pcm3060.txt
-+++ b/Documentation/devicetree/bindings/sound/pcm3060.txt
-@@ -9,9 +9,15 @@ Required properties:
- - reg : the I2C address of the device for I2C, the chip select
-         number for SPI.
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 494d9d662be8..5f479aa61097 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -274,9 +274,23 @@ EXPORT_SYMBOL(pcm3060_regmap);
  
-+Optional properties:
-+
-+- ti,out-single-ended: "true" if output is single-ended;
-+                       "false" or not specified if output is differential.
-+
- Examples:
+ /* device */
  
- 	pcm3060: pcm3060@46 {
- 		 compatible = "ti,pcm3060";
- 		 reg = <0x46>;
-+		 ti,out-single-ended = "true";
- 	};
++static void pcm3060_parse_dt(const struct device_node *np,
++			     struct pcm3060_priv *priv)
++{
++	priv->out_se = of_property_read_bool(np, "ti,out-single-ended");
++}
++
+ int pcm3060_probe(struct device *dev)
+ {
+ 	int rc;
++	struct pcm3060_priv *priv = dev_get_drvdata(dev);
++
++	if (dev->of_node)
++		pcm3060_parse_dt(dev->of_node, priv);
++
++	if (priv->out_se)
++		regmap_update_bits(priv->regmap, PCM3060_REG64,
++				   PCM3060_REG_SE, PCM3060_REG_SE);
+ 
+ 	rc = devm_snd_soc_register_component(dev, &pcm3060_soc_comp_driver,
+ 					     pcm3060_dai,
+diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
+index fd89a68aa8a7..c895cf40ee10 100644
+--- a/sound/soc/codecs/pcm3060.h
++++ b/sound/soc/codecs/pcm3060.h
+@@ -25,6 +25,7 @@ struct pcm3060_priv_dai {
+ struct pcm3060_priv {
+ 	struct regmap *regmap;
+ 	struct pcm3060_priv_dai dai[PCM3060_DAI_IDS_NUM];
++	u8 out_se: 1;
+ };
+ 
+ int pcm3060_probe(struct device *dev);
 -- 
 2.13.6
