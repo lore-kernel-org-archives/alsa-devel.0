@@ -1,16 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 02/11] ASoC: AMD: add ACP3.0 PCI driver
-Date: Mon, 12 Nov 2018 11:04:53 +0530
-Message-ID: <1542000903-19020-3-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 03/11] ASoC: amd: create ACP3x PCM platform
+	device
+Date: Mon, 12 Nov 2018 11:04:54 +0530
+Message-ID: <1542000903-19020-4-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-eopbgr760042.outbound.protection.outlook.com [40.107.76.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 564B6267A5C
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:31:29 +0100 (CET)
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam02on0042.outbound.protection.outlook.com [104.47.36.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6010326792F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:31:52 +0100 (CET)
 In-Reply-To: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,146 +22,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sanju R Mehta <sanju.mehta@amd.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+Cc: "moderated list:SOUND - SOC LAYER /
+ DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sanju R Mehta <sanju.mehta@amd.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>
-
-ACP 3.0 is a PCI audio device. This patch adds PCI driver to bind
-to this device and get PCI resources.
+ACP 3x IP has I2S controller device as one of IP blocks.
+Create a platform device for it, so that the PCM platform driver
+can be bound to this device. Pass PCI resources like MMIO, irq
+to the platform device.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-Signed-off-by: Sanju R Mehta <sanju.mehta@amd.com>
-Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Tested-by: Ravulapati Vishnu vardhan Rao <vishnuvardhanrao.ravulapati@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
 ---
- sound/soc/amd/raven/acp3x.h     | 13 ++++++
- sound/soc/amd/raven/pci-acp3x.c | 97 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 110 insertions(+)
- create mode 100644 sound/soc/amd/raven/acp3x.h
- create mode 100644 sound/soc/amd/raven/pci-acp3x.c
+ sound/soc/amd/raven/acp3x.h     |  4 +++
+ sound/soc/amd/raven/pci-acp3x.c | 70 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 73 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-new file mode 100644
-index 0000000..e9b4df0
---- /dev/null
+index e9b4df0..83b1ed8 100644
+--- a/sound/soc/amd/raven/acp3x.h
 +++ b/sound/soc/amd/raven/acp3x.h
-@@ -0,0 +1,13 @@
-+#include "chip_offset_byte.h"
-+
-+#define ACP3x_PHY_BASE_ADDRESS 0x1240000
-+
-+static inline u32 rv_readl(void __iomem *base_addr)
-+{
-+	return readl(base_addr - ACP3x_PHY_BASE_ADDRESS);
-+}
-+
-+static inline void rv_writel(u32 val, void __iomem *base_addr)
-+{
-+	writel(val, base_addr - ACP3x_PHY_BASE_ADDRESS);
-+}
+@@ -1,6 +1,10 @@
+ #include "chip_offset_byte.h"
+ 
+ #define ACP3x_PHY_BASE_ADDRESS 0x1240000
++#define	ACP3x_I2S_MODE	0
++#define	ACP3x_REG_START	0x1240000
++#define	ACP3x_REG_END	0x1250200
++#define I2S_MODE	0x04
+ 
+ static inline u32 rv_readl(void __iomem *base_addr)
+ {
 diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-new file mode 100644
-index 0000000..27588ed
---- /dev/null
+index 27588ed..0700162 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
 +++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -0,0 +1,97 @@
-+/*
-+ * AMD ALSA SoC PCM Driver
-+ *
-+ * Copyright 2016 Advanced Micro Devices, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ */
+@@ -16,19 +16,26 @@
+ #include <linux/pci.h>
+ #include <linux/module.h>
+ #include <linux/io.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
+ 
+ #include "acp3x.h"
+ 
+ struct acp3x_dev_data {
+ 	void __iomem *acp3x_base;
++	bool acp3x_audio_mode;
++	struct resource *res;
++	struct platform_device *pdev;
+ };
+ 
+ static int snd_acp3x_probe(struct pci_dev *pci,
+ 			   const struct pci_device_id *pci_id)
+ {
+ 	int ret;
+-	u32 addr;
++	u32 addr, val;
+ 	struct acp3x_dev_data *adata;
++	struct platform_device_info pdevinfo;
++	unsigned int irqflags;
+ 
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+@@ -48,6 +55,15 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 		goto release_regions;
+ 	}
+ 
++	/* check for msi interrupt support */
++	ret = pci_enable_msi(pci);
++	if (ret)
++		/* msi is not enabled */
++		irqflags = IRQF_SHARED;
++	else
++		/* msi is enabled */
++		irqflags = 0;
 +
-+#include <linux/pci.h>
-+#include <linux/module.h>
-+#include <linux/io.h>
+ 	addr = pci_resource_start(pci, 0);
+ 	adata->acp3x_base = ioremap(addr, pci_resource_len(pci, 0));
+ 	if (!adata->acp3x_base) {
+@@ -56,8 +72,57 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	}
+ 	pci_set_master(pci);
+ 	pci_set_drvdata(pci, adata);
 +
-+#include "acp3x.h"
++	val = rv_readl(adata->acp3x_base + mmACP_I2S_PIN_CONFIG);
++	switch (val) {
++	case I2S_MODE:
++		adata->res = devm_kzalloc(&pci->dev,
++					  sizeof(struct resource) * 2,
++					  GFP_KERNEL);
++		if (!adata->res) {
++			ret = -ENOMEM;
++			goto unmap_mmio;
++		}
 +
-+struct acp3x_dev_data {
-+	void __iomem *acp3x_base;
-+};
++		adata->res[0].name = "acp3x_i2s_iomem";
++		adata->res[0].flags = IORESOURCE_MEM;
++		adata->res[0].start = addr;
++		adata->res[0].end = addr + (ACP3x_REG_END - ACP3x_REG_START);
 +
-+static int snd_acp3x_probe(struct pci_dev *pci,
-+			   const struct pci_device_id *pci_id)
-+{
-+	int ret;
-+	u32 addr;
-+	struct acp3x_dev_data *adata;
++		adata->res[1].name = "acp3x_i2s_irq";
++		adata->res[1].flags = IORESOURCE_IRQ;
++		adata->res[1].start = pci->irq;
++		adata->res[1].end = pci->irq;
 +
-+	if (pci_enable_device(pci)) {
-+		dev_err(&pci->dev, "pci_enable_device failed\n");
-+		return -ENODEV;
++		adata->acp3x_audio_mode = ACP3x_I2S_MODE;
++
++		memset(&pdevinfo, 0, sizeof(pdevinfo));
++		pdevinfo.name = "acp3x_rv_i2s";
++		pdevinfo.id = 0;
++		pdevinfo.parent = &pci->dev;
++		pdevinfo.num_res = 2;
++		pdevinfo.res = adata->res;
++		pdevinfo.data = &irqflags;
++		pdevinfo.size_data = sizeof(irqflags);
++
++		adata->pdev = platform_device_register_full(&pdevinfo);
++		if (!adata->pdev) {
++			dev_err(&pci->dev, "cannot register %s device\n",
++				pdevinfo.name);
++			ret = -ENODEV;
++			goto unmap_mmio;
++		}
++		break;
++	default:
++		dev_err(&pci->dev, "Inavlid ACP audio mode : %d\n", val);
++		ret = -ENODEV;
++		goto unmap_mmio;
 +	}
-+
-+	ret = pci_request_regions(pci, "AMD ACP3x audio");
-+	if (ret < 0) {
-+		dev_err(&pci->dev, "pci_request_regions failed\n");
-+		goto disable_pci;
-+	}
-+
-+	adata = devm_kzalloc(&pci->dev, sizeof(struct acp3x_dev_data),
-+			     GFP_KERNEL);
-+	if (!adata) {
-+		ret = -ENOMEM;
-+		goto release_regions;
-+	}
-+
-+	addr = pci_resource_start(pci, 0);
-+	adata->acp3x_base = ioremap(addr, pci_resource_len(pci, 0));
-+	if (!adata->acp3x_base) {
-+		ret = -ENOMEM;
-+		goto release_regions;
-+	}
-+	pci_set_master(pci);
-+	pci_set_drvdata(pci, adata);
-+	return 0;
-+
-+release_regions:
-+	pci_release_regions(pci);
-+disable_pci:
-+	pci_disable_device(pci);
-+
-+	return ret;
-+}
-+
-+static void snd_acp3x_remove(struct pci_dev *pci)
-+{
-+	struct acp3x_dev_data *adata = pci_get_drvdata(pci);
-+
+ 	return 0;
+ 
++unmap_mmio:
++	pci_disable_msi(pci);
 +	iounmap(adata->acp3x_base);
-+	pci_release_regions(pci);
-+	pci_disable_device(pci);
-+}
+ release_regions:
+ 	pci_release_regions(pci);
+ disable_pci:
+@@ -70,7 +135,10 @@ static void snd_acp3x_remove(struct pci_dev *pci)
+ {
+ 	struct acp3x_dev_data *adata = pci_get_drvdata(pci);
+ 
++	platform_device_unregister(adata->pdev);
+ 	iounmap(adata->acp3x_base);
 +
-+static const struct pci_device_id snd_acp3x_ids[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, 0x15e2),
-+	.class = PCI_CLASS_MULTIMEDIA_OTHER << 8,
-+	.class_mask = 0xffffff },
-+	{ 0, },
-+};
-+MODULE_DEVICE_TABLE(pci, snd_acp3x_ids);
-+
-+static struct pci_driver acp3x_driver  = {
-+	.name = KBUILD_MODNAME,
-+	.id_table = snd_acp3x_ids,
-+	.probe = snd_acp3x_probe,
-+	.remove = snd_acp3x_remove,
-+};
-+
-+module_pci_driver(acp3x_driver);
-+
-+MODULE_AUTHOR("Maruthi.Bayyavarapu@amd.com");
-+MODULE_DESCRIPTION("AMD ACP3x PCI driver");
-+MODULE_LICENSE("GPL v2");
++	pci_disable_msi(pci);
+ 	pci_release_regions(pci);
+ 	pci_disable_device(pci);
+ }
 -- 
 2.7.4
