@@ -1,140 +1,133 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 07/11] ASoC: amd: add acp3x i2s ops
-Date: Mon, 12 Nov 2018 11:04:58 +0530
-Message-ID: <1542000903-19020-8-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 08/11] ASoC: amd: add acp3x tdm mode support
+Date: Mon, 12 Nov 2018 11:04:59 +0530
+Message-ID: <1542000903-19020-9-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam02on0044.outbound.protection.outlook.com [104.47.36.44])
- by alsa0.perex.cz (Postfix) with ESMTP id C07B92677E4
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:32:58 +0100 (CET)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER
- MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: vijendar.mukunda@amd.com, Alexander.Deucher@amd.com, Vishnuvardhanrao.Ravulapati@amd.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sanju R Mehta <sanju.mehta@amd.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-ACP3x has a i2s controller block for playback and capture.
-This patch adds ACP3x i2s DAI operations.
+ACP3x I2S (CPU DAI) can act in normal I2S and TDM modes.
+Added support for TDM mode.
+Desired mode can be selected from ASoC machine driver.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
 Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 89 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 86 insertions(+), 3 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 62 +++++++++++++++++++++++++++++++++++++
+ sound/soc/amd/raven/acp3x.h         |  7 +++++
+ 2 files changed, 69 insertions(+)
 
 diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 06c1985..ed2c163 100644
+index ed2c163..15a5f3b 100644
 --- a/sound/soc/amd/raven/acp3x-pcm-dma.c
 +++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -423,10 +423,93 @@ static struct snd_pcm_ops acp3x_dma_ops = {
+@@ -27,7 +27,9 @@
+ #define DRV_NAME "acp3x-i2s-audio"
+ 
+ struct i2s_dev_data {
++	bool tdm_mode;
+ 	unsigned int i2s_irq;
++	u32 tdm_fmt;
+ 	void __iomem *acp3x_base;
+ 	struct snd_pcm_substream *play_stream;
+ 	struct snd_pcm_substream *capture_stream;
+@@ -423,6 +425,64 @@ static struct snd_pcm_ops acp3x_dma_ops = {
  	.mmap = acp3x_dma_mmap,
  };
  
-+static int acp3x_dai_i2s_hwparams(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	u32 val = 0;
-+	struct i2s_stream_instance *rtd = substream->runtime->private_data;
 +
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_S8:
-+		rtd->xfer_resolution = 0x0;
++static int acp3x_dai_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
++{
++
++	struct i2s_dev_data *adata = snd_soc_dai_get_drvdata(cpu_dai);
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		adata->tdm_mode = false;
 +		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		rtd->xfer_resolution = 0x02;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		rtd->xfer_resolution = 0x04;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		rtd->xfer_resolution = 0x05;
++	case SND_SOC_DAIFMT_DSP_A:
++		adata->tdm_mode = true;
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
-+	val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
-+	val = val | (rtd->xfer_resolution  << 3);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
-+	else
-+		rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
 +
 +	return 0;
 +}
 +
-+static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
-+				 int cmd, struct snd_soc_dai *dai)
++static int acp3x_dai_set_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
++				  u32 rx_mask, int slots, int slot_width)
 +{
-+	int ret = 0;
-+	struct i2s_stream_instance *rtd = substream->runtime->private_data;
-+	u32 val, period_bytes;
++	u32 val = 0;
++	u16 slot_len;
 +
-+	period_bytes = frames_to_bytes(substream->runtime,
-+				       substream->runtime->period_size);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			rv_writel(period_bytes, rtd->acp3x_base +
-+				  mmACP_BT_TX_INTR_WATERMARK_SIZE);
-+			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
-+			val = val | BIT(0);
-+			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
-+		} else {
-+			rv_writel(period_bytes, rtd->acp3x_base +
-+				  mmACP_BT_RX_INTR_WATERMARK_SIZE);
-+			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_IRER);
-+			val = val | BIT(0);
-+			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
-+		}
-+		rv_writel(1, rtd->acp3x_base + mmACP_BTTDM_IER);
++	struct i2s_dev_data *adata = snd_soc_dai_get_drvdata(cpu_dai);
++
++	switch (slot_width) {
++	case SLOT_WIDTH_8:
++		slot_len = 8;
 +		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_ITER);
-+			val = val & ~BIT(0);
-+			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_ITER);
-+		} else {
-+			val = rv_readl(rtd->acp3x_base + mmACP_BTTDM_IRER);
-+			val = val & ~BIT(0);
-+			rv_writel(val, rtd->acp3x_base + mmACP_BTTDM_IRER);
-+		}
-+		rv_writel(0, rtd->acp3x_base + mmACP_BTTDM_IER);
++	case SLOT_WIDTH_16:
++		slot_len = 16;
++		break;
++	case SLOT_WIDTH_24:
++		slot_len = 24;
++		break;
++	case SLOT_WIDTH_32:
++		slot_len = 0;
 +		break;
 +	default:
-+		ret = -EINVAL;
-+		break;
++		return -EINVAL;
 +	}
 +
-+	return ret;
++	val = rv_readl(adata->acp3x_base + mmACP_BTTDM_ITER);
++	rv_writel((val | 0x2), adata->acp3x_base + mmACP_BTTDM_ITER);
++	val = rv_readl(adata->acp3x_base + mmACP_BTTDM_IRER);
++	rv_writel((val | 0x2), adata->acp3x_base + mmACP_BTTDM_IRER);
++
++	val = (FRM_LEN | (slots << 15) | (slot_len << 18));
++	rv_writel(val, adata->acp3x_base + mmACP_BTTDM_TXFRMT);
++	rv_writel(val, adata->acp3x_base + mmACP_BTTDM_RXFRMT);
++
++	adata->tdm_fmt = val;
++	return 0;
 +}
 +
+ static int acp3x_dai_i2s_hwparams(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+@@ -510,6 +570,8 @@ static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
  struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
--	.hw_params = NULL,
--	.trigger   = NULL,
--	.set_fmt = NULL,
-+	.hw_params = acp3x_dai_i2s_hwparams,
-+	.trigger   = acp3x_dai_i2s_trigger,
+ 	.hw_params = acp3x_dai_i2s_hwparams,
+ 	.trigger   = acp3x_dai_i2s_trigger,
++	.set_fmt = acp3x_dai_i2s_set_fmt,
++	.set_tdm_slot = acp3x_dai_set_tdm_slot,
  };
  
  static struct snd_soc_dai_driver acp3x_i2s_dai_driver = {
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 9f33e34..95fef85 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -32,6 +32,13 @@
+ #define MIN_BUFFER MAX_BUFFER
+ #define FIFO_SIZE 0x100
+ #define DMA_SIZE 0x40
++#define FRM_LEN 0x100
++
++#define SLOT_WIDTH_8 0x08
++#define SLOT_WIDTH_16 0x10
++#define SLOT_WIDTH_24 0x18
++#define SLOT_WIDTH_32 0x20
++
+ 
+ static inline u32 rv_readl(void __iomem *base_addr)
+ {
 -- 
 2.7.4
