@@ -1,17 +1,16 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 03/11] ASoC: amd: create ACP3x PCM platform
-	device
-Date: Mon, 12 Nov 2018 11:04:54 +0530
-Message-ID: <1542000903-19020-4-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 04/11] ASoC: amd: add ACP3x PCM platform driver
+Date: Mon, 12 Nov 2018 11:04:55 +0530
+Message-ID: <1542000903-19020-5-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam02on0042.outbound.protection.outlook.com [104.47.36.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 6010326792F
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:31:52 +0100 (CET)
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-eopbgr740049.outbound.protection.outlook.com [40.107.74.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D5C12677E4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 06:32:11 +0100 (CET)
 In-Reply-To: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,154 +21,309 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND - SOC LAYER /
- DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sanju R Mehta <sanju.mehta@amd.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC
+ AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Sanju R Mehta <sanju.mehta@amd.com>, Vishnuvardhanrao.Ravulapati@amd.com, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-ACP 3x IP has I2S controller device as one of IP blocks.
-Create a platform device for it, so that the PCM platform driver
-can be bound to this device. Pass PCI resources like MMIO, irq
-to the platform device.
+PCM platform driver binds to the platform device created by ACP3x PCI
+device. PCM driver registers ALSA DMA and CPU DAI components with ASoC
+framework.
 
 Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-Tested-by: Ravulapati Vishnu vardhan Rao <vishnuvardhanrao.ravulapati@amd.com>
+Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
 ---
- sound/soc/amd/raven/acp3x.h     |  4 +++
- sound/soc/amd/raven/pci-acp3x.c | 70 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 73 insertions(+), 1 deletion(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 263 ++++++++++++++++++++++++++++++++++++
+ sound/soc/amd/raven/acp3x.h         |   7 +
+ 2 files changed, 270 insertions(+)
+ create mode 100644 sound/soc/amd/raven/acp3x-pcm-dma.c
 
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+new file mode 100644
+index 0000000..3e806f7
+--- /dev/null
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -0,0 +1,263 @@
++/*
++ * AMD ALSA SoC PCM Driver
++ *
++ * Copyright 2016 Advanced Micro Devices, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
++#include "acp3x.h"
++
++#define DRV_NAME "acp3x-i2s-audio"
++
++struct i2s_dev_data {
++	void __iomem *acp3x_base;
++	struct snd_pcm_substream *play_stream;
++	struct snd_pcm_substream *capture_stream;
++};
++
++static int acp3x_power_on(void __iomem *acp3x_base, bool on)
++{
++	u16 val, mask;
++	u32 timeout;
++
++	if (on == true) {
++		val = 1;
++		mask = ACP3x_POWER_ON;
++	} else {
++		val = 0;
++		mask = ACP3x_POWER_OFF;
++	}
++
++	rv_writel(val, acp3x_base + mmACP_PGFSM_CONTROL);
++	timeout = 0;
++	while (true) {
++		val = rv_readl(acp3x_base + mmACP_PGFSM_STATUS);
++		if ((val & ACP3x_POWER_OFF_IN_PROGRESS) == mask)
++			break;
++		if (timeout > 100) {
++			pr_err("ACP3x power state change failure\n");
++			return -ENODEV;
++		}
++		timeout++;
++		cpu_relax();
++	}
++	return 0;
++}
++
++static int acp3x_reset(void __iomem *acp3x_base)
++{
++	u32 val, timeout;
++
++	rv_writel(1, acp3x_base + mmACP_SOFT_RESET);
++	timeout = 0;
++	while (true) {
++		val = rv_readl(acp3x_base + mmACP_SOFT_RESET);
++		if ((val & ACP3x_SOFT_RESET__SoftResetAudDone_MASK) ||
++		     timeout > 100) {
++			if (val & ACP3x_SOFT_RESET__SoftResetAudDone_MASK)
++				break;
++			return -ENODEV;
++		}
++		timeout++;
++		cpu_relax();
++	}
++
++	rv_writel(0, acp3x_base + mmACP_SOFT_RESET);
++	timeout = 0;
++	while (true) {
++		val = rv_readl(acp3x_base + mmACP_SOFT_RESET);
++		if (!val || timeout > 100) {
++			if (!val)
++				break;
++			return -ENODEV;
++		}
++		timeout++;
++		cpu_relax();
++	}
++	return 0;
++}
++
++static int acp3x_init(void __iomem *acp3x_base)
++{
++	int ret;
++
++	/* power on */
++	ret = acp3x_power_on(acp3x_base, true);
++	if (ret) {
++		pr_err("ACP3x power on failed\n");
++		return ret;
++	}
++	/* Reset */
++	ret = acp3x_reset(acp3x_base);
++	if (ret) {
++		pr_err("ACP3x reset failed\n");
++		return ret;
++	}
++	return 0;
++}
++
++static int acp3x_deinit(void __iomem *acp3x_base)
++{
++	int ret;
++
++	/* Reset */
++	ret = acp3x_reset(acp3x_base);
++	if (ret) {
++		pr_err("ACP3x reset failed\n");
++		return ret;
++	}
++	/* power off */
++	ret = acp3x_power_on(acp3x_base, false);
++	if (ret) {
++		pr_err("ACP3x power off failed\n");
++		return ret;
++	}
++	return 0;
++}
++
++static struct snd_pcm_ops acp3x_dma_ops = {
++	.open = NULL,
++	.close = NULL,
++	.ioctl = NULL,
++	.hw_params = NULL,
++	.hw_free = NULL,
++	.pointer = NULL,
++	.mmap = NULL,
++};
++
++struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
++	.hw_params = NULL,
++	.trigger   = NULL,
++	.set_fmt = NULL,
++};
++
++static struct snd_soc_dai_driver acp3x_i2s_dai_driver = {
++	.playback = {
++		.rates = SNDRV_PCM_RATE_8000_96000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
++					SNDRV_PCM_FMTBIT_U8 |
++					SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE,
++		.channels_min = 2,
++		.channels_max = 8,
++
++		.rate_min = 8000,
++		.rate_max = 96000,
++	},
++	.capture = {
++		.rates = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
++					SNDRV_PCM_FMTBIT_U8 |
++					SNDRV_PCM_FMTBIT_S24_LE |
++					SNDRV_PCM_FMTBIT_S32_LE,
++		.channels_min = 2,
++		.channels_max = 2,
++		.rate_min = 8000,
++		.rate_max = 48000,
++	},
++	.ops = &acp3x_dai_i2s_ops,
++};
++
++static const struct snd_soc_component_driver acp3x_i2s_component = {
++	.name           = DRV_NAME,
++	.ops		= &acp3x_dma_ops,
++	.pcm_new	= acp3x_dma_new,
++};
++
++static int acp3x_audio_probe(struct platform_device *pdev)
++{
++	int status;
++	struct resource *res;
++	struct i2s_dev_data *adata;
++	unsigned int irqflags;
++
++	if (!pdev->dev.platform_data) {
++		dev_err(&pdev->dev, "platform_data not retrieved\n");
++		return -ENODEV;
++	}
++	irqflags = *((unsigned int *)(pdev->dev.platform_data));
++
++	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data),
++			     GFP_KERNEL);
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "IORESOURCE_IRQ FAILED\n");
++			return -ENODEV;
++	}
++
++	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
++					 resource_size(res));
++
++	adata->play_stream = NULL;
++	adata->capture_stream = NULL;
++
++	dev_set_drvdata(&pdev->dev, adata);
++	/* Initialize ACP */
++	status = acp3x_init(adata->acp3x_base);
++	if (status)
++		return -ENODEV;
++	status = devm_snd_soc_register_component(&pdev->dev,
++						 &acp3x_i2s_component,
++						 &acp3x_i2s_dai_driver, 1);
++	if (status) {
++		dev_err(&pdev->dev, "Fail to register acp i2s dai\n");
++		goto dev_err;
++	}
++
++	return 0;
++dev_err:
++	status = acp3x_deinit(adata->acp3x_base);
++	if (status)
++		dev_err(&pdev->dev, "ACP de-init failed\n");
++	else
++		dev_info(&pdev->dev, "ACP de-initialized\n");
++	/*ignore device status and return driver probe error*/
++	return -ENODEV;
++}
++
++static int acp3x_audio_remove(struct platform_device *pdev)
++{
++	int ret;
++	struct i2s_dev_data *adata = dev_get_drvdata(&pdev->dev);
++
++	ret = acp3x_deinit(adata->acp3x_base);
++	if (ret)
++		dev_err(&pdev->dev, "ACP de-init failed\n");
++	else
++		dev_info(&pdev->dev, "ACP de-initialized\n");
++
++	return 0;
++}
++
++static struct platform_driver acp3x_dma_driver = {
++	.probe = acp3x_audio_probe,
++	.remove = acp3x_audio_remove,
++	.driver = {
++		.name = "acp3x_rv_i2s",
++	},
++};
++
++module_platform_driver(acp3x_dma_driver);
++
++MODULE_AUTHOR("Maruthi.Bayyavarapu@amd.com");
++MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
++MODULE_DESCRIPTION("AMD ACP 3.x PCM Driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:" DRV_NAME);
 diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-index e9b4df0..83b1ed8 100644
+index 83b1ed8..f3d3e51 100644
 --- a/sound/soc/amd/raven/acp3x.h
 +++ b/sound/soc/amd/raven/acp3x.h
-@@ -1,6 +1,10 @@
- #include "chip_offset_byte.h"
- 
- #define ACP3x_PHY_BASE_ADDRESS 0x1240000
-+#define	ACP3x_I2S_MODE	0
-+#define	ACP3x_REG_START	0x1240000
-+#define	ACP3x_REG_END	0x1250200
-+#define I2S_MODE	0x04
+@@ -5,6 +5,13 @@
+ #define	ACP3x_REG_START	0x1240000
+ #define	ACP3x_REG_END	0x1250200
+ #define I2S_MODE	0x04
++#define	BT_TX_THRESHOLD 26
++#define	BT_RX_THRESHOLD 25
++#define ACP3x_POWER_ON 0x00
++#define ACP3x_POWER_ON_IN_PROGRESS 0x01
++#define ACP3x_POWER_OFF 0x02
++#define ACP3x_POWER_OFF_IN_PROGRESS 0x03
++#define ACP3x_SOFT_RESET__SoftResetAudDone_MASK	0x00010001
  
  static inline u32 rv_readl(void __iomem *base_addr)
  {
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 27588ed..0700162 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -16,19 +16,26 @@
- #include <linux/pci.h>
- #include <linux/module.h>
- #include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <linux/interrupt.h>
- 
- #include "acp3x.h"
- 
- struct acp3x_dev_data {
- 	void __iomem *acp3x_base;
-+	bool acp3x_audio_mode;
-+	struct resource *res;
-+	struct platform_device *pdev;
- };
- 
- static int snd_acp3x_probe(struct pci_dev *pci,
- 			   const struct pci_device_id *pci_id)
- {
- 	int ret;
--	u32 addr;
-+	u32 addr, val;
- 	struct acp3x_dev_data *adata;
-+	struct platform_device_info pdevinfo;
-+	unsigned int irqflags;
- 
- 	if (pci_enable_device(pci)) {
- 		dev_err(&pci->dev, "pci_enable_device failed\n");
-@@ -48,6 +55,15 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		goto release_regions;
- 	}
- 
-+	/* check for msi interrupt support */
-+	ret = pci_enable_msi(pci);
-+	if (ret)
-+		/* msi is not enabled */
-+		irqflags = IRQF_SHARED;
-+	else
-+		/* msi is enabled */
-+		irqflags = 0;
-+
- 	addr = pci_resource_start(pci, 0);
- 	adata->acp3x_base = ioremap(addr, pci_resource_len(pci, 0));
- 	if (!adata->acp3x_base) {
-@@ -56,8 +72,57 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 	}
- 	pci_set_master(pci);
- 	pci_set_drvdata(pci, adata);
-+
-+	val = rv_readl(adata->acp3x_base + mmACP_I2S_PIN_CONFIG);
-+	switch (val) {
-+	case I2S_MODE:
-+		adata->res = devm_kzalloc(&pci->dev,
-+					  sizeof(struct resource) * 2,
-+					  GFP_KERNEL);
-+		if (!adata->res) {
-+			ret = -ENOMEM;
-+			goto unmap_mmio;
-+		}
-+
-+		adata->res[0].name = "acp3x_i2s_iomem";
-+		adata->res[0].flags = IORESOURCE_MEM;
-+		adata->res[0].start = addr;
-+		adata->res[0].end = addr + (ACP3x_REG_END - ACP3x_REG_START);
-+
-+		adata->res[1].name = "acp3x_i2s_irq";
-+		adata->res[1].flags = IORESOURCE_IRQ;
-+		adata->res[1].start = pci->irq;
-+		adata->res[1].end = pci->irq;
-+
-+		adata->acp3x_audio_mode = ACP3x_I2S_MODE;
-+
-+		memset(&pdevinfo, 0, sizeof(pdevinfo));
-+		pdevinfo.name = "acp3x_rv_i2s";
-+		pdevinfo.id = 0;
-+		pdevinfo.parent = &pci->dev;
-+		pdevinfo.num_res = 2;
-+		pdevinfo.res = adata->res;
-+		pdevinfo.data = &irqflags;
-+		pdevinfo.size_data = sizeof(irqflags);
-+
-+		adata->pdev = platform_device_register_full(&pdevinfo);
-+		if (!adata->pdev) {
-+			dev_err(&pci->dev, "cannot register %s device\n",
-+				pdevinfo.name);
-+			ret = -ENODEV;
-+			goto unmap_mmio;
-+		}
-+		break;
-+	default:
-+		dev_err(&pci->dev, "Inavlid ACP audio mode : %d\n", val);
-+		ret = -ENODEV;
-+		goto unmap_mmio;
-+	}
- 	return 0;
- 
-+unmap_mmio:
-+	pci_disable_msi(pci);
-+	iounmap(adata->acp3x_base);
- release_regions:
- 	pci_release_regions(pci);
- disable_pci:
-@@ -70,7 +135,10 @@ static void snd_acp3x_remove(struct pci_dev *pci)
- {
- 	struct acp3x_dev_data *adata = pci_get_drvdata(pci);
- 
-+	platform_device_unregister(adata->pdev);
- 	iounmap(adata->acp3x_base);
-+
-+	pci_disable_msi(pci);
- 	pci_release_regions(pci);
- 	pci_disable_device(pci);
- }
 -- 
 2.7.4
