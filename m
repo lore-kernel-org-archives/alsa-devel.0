@@ -1,14 +1,20 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - dmix v4 1/1] pcm: dmix: Align slave_hw_ptr to
-	slave period boundary
-Date: Mon, 12 Nov 2018 13:47:18 +0100
-Message-ID: <1542026838-13907-2-git-send-email-twischer@de.adit-jv.com>
-References: <1542026838-13907-1-git-send-email-twischer@de.adit-jv.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
+Date: Mon, 12 Nov 2018 21:04:11 +0800
+Message-ID: <ae98c656-07eb-0f4e-57f4-adbb3d751ff9@linux.intel.com>
+References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
+ <s5hftw8ngd4.wl-tiwai@suse.de>
+ <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
+ <s5h5zx3o6um.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1542026838-13907-1-git-send-email-twischer@de.adit-jv.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 866CB26751A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 14:04:17 +0100 (CET)
+In-Reply-To: <s5h5zx3o6um.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,193 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org, tiwai@suse.de
-Cc: Laxmi Devi <Laxmi.Devi@in.bosch.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Laxmi Devi <Laxmi.Devi@in.bosch.com>
+On 11/12/2018 1:35 AM, Takashi Iwai wrote:
+> On Sun, 11 Nov 2018 16:10:10 +0100,
+> Pierre-Louis Bossart wrote:
+>>
+>> On 11/11/18 2:55 AM, Takashi Iwai wrote:
+>>> On Sat, 10 Nov 2018 22:18:46 +0100,
+>>> Bard liao wrote:
+>>>> From: Bard liao <bard.liao@intel.com>
+>>>>
+>>>> Add Icelake device id. Also, Icelake's pin2port mapping table is
+>>>> complicated. So we use a mapping table to do the pin2port mapping.
+>>>>
+>>>> Signed-off-by: Bard liao <bard.liao@intel.com>
+>>> The recent code has already pin2port callback in drm_audio_component
+>>> ops.  This is called in sound/hda/hdac_component.c before eld notify
+>>> callback gets called.  So, use this callback instead of introducing
+>>> yet another one.
+>> Sorry Takashi, can you elaborate? What this patch does is modify the
+>> existing implementation of the .pin2port callback, not add a new
+>> one. The existing logic (return pin - 4) is no longer sufficient on
+>> IceLake.
+> The recent change added the pin2port call in
+> drm_audio_component_audio_ops.  You can put the ICL-specific call into
+> this if any specific conversion is needed.
 
-These changes are required due to the kernel
-commit 07b7acb51d283d8469696c906b91f1882696a4d4
-("ASoC: rsnd: update pointer more accurate")
+hdac_hdmi_pin2port is indeed the pin2port call back function in
+drm_audio_component_audio_ops :)
+What the patch did is to modify the current pin2port call back
+function in drm_audio_component_audio_ops.
 
-Issue is that snd_pcm_wait() goes back to waiting because the hw_ptr
-is not period aligned. Therefore snd_pcm_wait() will block for a longer
-time as required.
-
-With these rcar driver changes the exact position of the dma is returned.
-During snd_pcm_start they read hw_ptr as reference, and this hw_ptr
-is now not period aligned, and is a little ahead over the period while it
-is read. Therefore when the avail is calculated during snd_pcm_wait(),
-it is missing the avail_min by a few frames.
-
-An additional option hw_ptr_filter is provided to dmix configuration,
-to allow the user to configure the slave application and hw pointer
-alignment at startup
-
-
-Signed-off-by: Laxmi Devi <Laxmi.Devi@in.bosch.com>
-
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 091fd78..1ff7527 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -1883,6 +1883,7 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 	rec->max_periods = 0;
- 	rec->var_periodsize = 0;
- 	rec->direct_memory_access = 1;
-+	rec->hw_ptr_filter = SND_PCM_HW_PTR_FLTR_AUTO;
- 
- 	/* read defaults */
- 	if (snd_config_search(root, "defaults.pcm.dmix_max_periods", &n) >= 0) {
-@@ -1924,6 +1925,28 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 			rec->ipc_perm = perm;
- 			continue;
- 		}
-+		if (strcmp(id, "hw_ptr_filter") == 0) {
-+			const char *str;
-+			err = snd_config_get_string(n, &str);
-+			if (err < 0) {
-+				SNDERR("Invalid type for %s", id);
-+				return -EINVAL;
-+			}
-+			if (strcmp(str, "min_latency_min_frame_drop") == 0)
-+				rec->hw_ptr_filter = SND_PCM_HW_PTR_FLTR_MIN_LATENCY_MIN_FRAME_DROP;
-+			else if (strcmp(str, "no_frame_drop") == 0)
-+				rec->hw_ptr_filter = SND_PCM_HW_PTR_FLTR_NO_FRAME_DROP;
-+			else if (strcmp(str, "exact_wakeup") == 0)
-+				rec->hw_ptr_filter = SND_PCM_HW_PTR_FLTR_EXACT_WAKEUP;
-+			else if (strcmp(str, "auto") == 0)
-+				rec->hw_ptr_filter = SND_PCM_HW_PTR_FLTR_AUTO;
-+			else {
-+				SNDERR("The field hw_ptr_filter is invalid : %s", str);
-+				return -EINVAL;
-+			}
-+
-+			continue;
-+		}
- 		if (strcmp(id, "ipc_gid") == 0) {
- 			char *group;
- 			char *endp;
-diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 582f055..bd0d0a1 100644
---- a/src/pcm/pcm_direct.h
-+++ b/src/pcm/pcm_direct.h
-@@ -49,6 +49,13 @@ typedef void (mix_areas_u8_t)(unsigned int size,
- 			      volatile signed int *sum, size_t dst_step,
- 			      size_t src_step, size_t sum_step);
- 
-+typedef enum snd_pcm_direct_hw_ptr_filter {
-+	SND_PCM_HW_PTR_FLTR_MIN_LATENCY_MIN_FRAME_DROP = 0,	/* use the hw_ptr as is and do no rounding */
-+	SND_PCM_HW_PTR_FLTR_NO_FRAME_DROP = 1,			/* round the slave_appl_ptr up to slave_period */
-+	SND_PCM_HW_PTR_FLTR_EXACT_WAKEUP = 2,			/* round slave_hw_ptr and slave_appl_ptr down to slave_period */
-+	SND_PCM_HW_PTR_FLTR_AUTO = 3				/* automatic selection */
-+} snd_pcm_direct_hw_ptr_filter_t;
-+
- struct slave_params {
- 	snd_pcm_format_t format;
- 	int rate;
-@@ -159,6 +166,7 @@ struct snd_pcm_direct {
- 	unsigned int *bindings;
- 	unsigned int recoveries;	/* mirror of executed recoveries on slave */
- 	int direct_memory_access;	/* use arch-optimized buffer RW */
-+	snd_pcm_direct_hw_ptr_filter_t hw_ptr_filter;
- 	union {
- 		struct {
- 			int shmid_sum;			/* IPC global sum ring buffer memory identification */
-@@ -341,6 +349,7 @@ struct snd_pcm_direct_open_conf {
- 	int max_periods;
- 	int var_periodsize;
- 	int direct_memory_access;
-+	snd_pcm_direct_hw_ptr_filter_t hw_ptr_filter;
- 	snd_config_t *slave;
- 	snd_config_t *bindings;
- };
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 881154e..ad1bd90 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -55,6 +55,9 @@ const char *_snd_module_pcm_dmix = "";
- #define STATE_RUN_PENDING	1024
- #endif
- 
-+#define SEC_TO_MS	1000			/* Seconds representing in Milli seconds */
-+#define LOW_LATENCY_PERIOD_TIME	10	/* slave_period time for low latency requirements in ms */
-+
- /*
-  *
-  */
-@@ -560,14 +563,17 @@ static int snd_pcm_dmix_hwsync(snd_pcm_t *pcm)
- static void reset_slave_ptr(snd_pcm_t *pcm, snd_pcm_direct_t *dmix)
- {
- 	dmix->slave_appl_ptr = dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
--	if (pcm->buffer_size > pcm->period_size * 2)
--		return;
--	/* If we have too litte periods, better to align the start position
--	 * to the period boundary so that the interrupt can be handled properly
--	 * at the right time.
--	 */
--	dmix->slave_appl_ptr = ((dmix->slave_appl_ptr + dmix->slave_period_size - 1)
-+
-+	if (dmix->hw_ptr_filter == SND_PCM_HW_PTR_FLTR_NO_FRAME_DROP ||
-+			(dmix->hw_ptr_filter == SND_PCM_HW_PTR_FLTR_AUTO &&
-+			pcm->buffer_size <= pcm->period_size * 2))
-+		dmix->slave_appl_ptr = ((dmix->slave_appl_ptr + dmix->slave_period_size - 1)
- 				/ dmix->slave_period_size) * dmix->slave_period_size;
-+	else if (dmix->hw_ptr_filter == SND_PCM_HW_PTR_FLTR_EXACT_WAKEUP ||
-+			(dmix->hw_ptr_filter == SND_PCM_HW_PTR_FLTR_AUTO &&
-+			(((dmix->slave_period_size * SEC_TO_MS) / pcm->rate) < LOW_LATENCY_PERIOD_TIME)))
-+		dmix->slave_appl_ptr = dmix->slave_hw_ptr = ((dmix->slave_hw_ptr
-+				/ dmix->slave_period_size) * dmix->slave_period_size);
- }
- 
- static int snd_pcm_dmix_reset(snd_pcm_t *pcm)
-@@ -1086,6 +1092,7 @@ int snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
- 	dmix->slowptr = opts->slowptr;
- 	dmix->max_periods = opts->max_periods;
- 	dmix->var_periodsize = opts->var_periodsize;
-+	dmix->hw_ptr_filter = opts->hw_ptr_filter;
- 	dmix->sync_ptr = snd_pcm_dmix_sync_ptr;
- 	dmix->direct_memory_access = opts->direct_memory_access;
- 
-@@ -1241,6 +1248,12 @@ pcm.name {
- 	ipc_key INT		# unique IPC key
- 	ipc_key_add_uid BOOL	# add current uid to unique IPC key
- 	ipc_perm INT		# IPC permissions (octal, default 0600)
-+	hw_ptr_filter STR	# Slave application and hw pointer alignment type
-+						# STR can be one of the below strings :
-+						# min_latency_min_frame_drop
-+						# no_frame_drop
-+						# exact_wakeup
-+						# auto (default)
- 	slave STR
- 	# or
- 	slave {			# Slave definition
-@@ -1273,6 +1286,25 @@ added to the value set in <code>ipc_key</code>.  This will
- avoid the confliction of the same IPC key with different users
- concurrently.
- 
-+<code>hw_ptr_filter</code> specifies slave application and hw pointer alignment
-+type. By default hw_ptr_filter is auto. Below are the possible configurations :
-+- min_latency_min_frame_drop : minimal latency with minimal frames dropped at
-+	startup. But wakeup of application (return from snd_pcm_wait() or poll())
-+	can take up to 2 * period.
-+- no_frame_drop : It is guaranteed that all frames will be played at startup. But
-+	the latency will increase upto period-1 frames.
-+- exact_wakeup : It is guaranteed that a wakeup will happen for each period and
-+	frames can be written from application. But on startup upto period-1 frames
-+	will be dropped.
-+- auto : Selects the best approach depending on the used period and buffer size.
-+	If the application buffer size is < 2 * application period, no_frame_drop
-+	will be selected to avoid under runs. If the slave_period is < 10ms we
-+	could expect that there are low latency requirements. Therefore exact_wakeup
-+	will be chosen to avoid long wakeup times. Such wakeup delay could otherwise
-+	end up with Xruns in case of a dependency to another sound device
-+	(e.g. forwarding of microphone to speaker). Else min_latency_min_frame_drop
-+	will be chosen.
-+
- Note that the dmix plugin itself supports only a single configuration.
- That is, it supports only the fixed rate (default 48000), format
- (\c S16), channels (2), and period_time (125000).
--- 
-2.7.4
+>>> Also, it'd be helpful if you fix the same for the legacy HD-audio HDMI
+>>> codec driver.
+>> Our intention was to revisit differences between legacy and non-legacy
+>> in a separate patch if that's all right with you. We've identified
+>> missing IDs and other things that should be fixed separately.
+> Sure, I don't mean to fix both in a single patch, but just to remind
+> you guys not to forget about that code path.
+>
+>
+> thanks,
+>
+> Takashi
+>
