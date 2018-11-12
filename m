@@ -1,25 +1,53 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 1/3] soundwire: intel: constify snd_soc_dai_ops structures
-Date: Mon, 12 Nov 2018 15:36:29 +0530
-Message-ID: <20181112100629.GC2477@vkoul-mobl>
-References: <1540647284-26728-1-git-send-email-Julia.Lawall@lip6.fr>
- <1540647284-26728-2-git-send-email-Julia.Lawall@lip6.fr>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/ca0132 - Call pci_iounmap() instead
+	of iounmap()
+Date: Mon, 12 Nov 2018 12:31:21 +0100
+Message-ID: <20181112113121.1821-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1540647284-26728-2-git-send-email-Julia.Lawall@lip6.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: kernel-janitors@vger.kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2604326751A
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 12:31:23 +0100 (CET)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 6BA6EB06C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 11:31:23 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27-10-18, 15:34, Julia Lawall wrote:
-> The snd_soc_dai_ops structures are only stored in the ops field of a
-> snd_soc_dai_driver structure, so make the snd_soc_dai_ops structures
-> const as well.
+We need to call pci_iounmap() instead of iounmap() for the regions
+obtained via pci_iomap() call for some archs that need special
+treatment.
 
-Applied, thanks
+Fixes: aa31704fd81c ("ALSA: hda/ca0132: Add PCI region2 iomap for SBZ")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_ca0132.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 0a24037184c3..bdbbc51e8d18 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -8413,7 +8413,7 @@ static void ca0132_free(struct hda_codec *codec)
+ 
+ 	snd_hda_power_down(codec);
+ 	if (spec->mem_base)
+-		iounmap(spec->mem_base);
++		pci_iounmap(codec->bus->pci, spec->mem_base);
+ 	kfree(spec->spec_init_verbs);
+ 	kfree(codec->spec);
+ }
 -- 
-~Vinod
+2.19.1
