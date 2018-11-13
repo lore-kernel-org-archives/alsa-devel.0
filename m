@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcbsp: Clean up the interrupt
-	handlers" to the asoc tree
-Date: Tue, 13 Nov 2018 18:33:30 +0000 (GMT)
-Message-ID: <20181113183330.EA84A440079@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: omap-mcbsp: Skip dma_data.maxburst
+	initialization" to the asoc tree
+Date: Tue, 13 Nov 2018 18:33:39 +0000 (GMT)
+Message-ID: <20181113183339.98FF4440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 057D226786A
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:33:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 43E102677E4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:33:46 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-mcbsp: Clean up the interrupt handlers
+   ASoC: omap-mcbsp: Skip dma_data.maxburst initialization
 
 has been applied to the asoc tree at
 
@@ -52,90 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From d63a7625a6dff8f75604b952de600d24b58b8b54 Mon Sep 17 00:00:00 2001
+>From c9ece9c29e263a4bda60b141b7b9dece4256b7dd Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 8 Nov 2018 09:29:55 +0200
-Subject: [PATCH] ASoC: omap-mcbsp: Clean up the interrupt handlers
+Date: Thu, 8 Nov 2018 09:29:54 +0200
+Subject: [PATCH] ASoC: omap-mcbsp: Skip dma_data.maxburst initialization
 
-The parameter name of dev_id is leftover from the old times when we passed
-numeric ID as data for the interrupt handlers.
-
-The mcbsp_rx and mcbsp_tx is misleading as they are pointers to the mcbsp
-struct.
+It is configured runtime so no need to initialize it.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/mcbsp.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/omap/mcbsp.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-index 8c3cedfcb878..fca0b0e9186b 100644
+index d6784f2887e4..8c3cedfcb878 100644
 --- a/sound/soc/omap/mcbsp.c
 +++ b/sound/soc/omap/mcbsp.c
-@@ -110,9 +110,9 @@ static void omap_mcbsp_dump_reg(struct omap_mcbsp *mcbsp)
- 	dev_dbg(mcbsp->dev, "***********************\n");
- }
+@@ -1035,11 +1035,8 @@ int omap_mcbsp_init(struct platform_device *pdev)
  
--static irqreturn_t omap_mcbsp_irq_handler(int irq, void *dev_id)
-+static irqreturn_t omap_mcbsp_irq_handler(int irq, void *data)
- {
--	struct omap_mcbsp *mcbsp = dev_id;
-+	struct omap_mcbsp *mcbsp = data;
- 	u16 irqst;
+ 	mcbsp->dma_data[0].addr = omap_mcbsp_dma_reg_params(mcbsp,
+ 						SNDRV_PCM_STREAM_PLAYBACK);
+-	mcbsp->dma_data[0].maxburst = 4;
+-
+ 	mcbsp->dma_data[1].addr = omap_mcbsp_dma_reg_params(mcbsp,
+ 						SNDRV_PCM_STREAM_CAPTURE);
+-	mcbsp->dma_data[1].maxburst = 4;
  
- 	irqst = MCBSP_READ(mcbsp, IRQST);
-@@ -151,37 +151,37 @@ static irqreturn_t omap_mcbsp_irq_handler(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static irqreturn_t omap_mcbsp_tx_irq_handler(int irq, void *dev_id)
-+static irqreturn_t omap_mcbsp_tx_irq_handler(int irq, void *data)
- {
--	struct omap_mcbsp *mcbsp_tx = dev_id;
-+	struct omap_mcbsp *mcbsp = data;
- 	u16 irqst_spcr2;
- 
--	irqst_spcr2 = MCBSP_READ(mcbsp_tx, SPCR2);
--	dev_dbg(mcbsp_tx->dev, "TX IRQ callback : 0x%x\n", irqst_spcr2);
-+	irqst_spcr2 = MCBSP_READ(mcbsp, SPCR2);
-+	dev_dbg(mcbsp->dev, "TX IRQ callback : 0x%x\n", irqst_spcr2);
- 
- 	if (irqst_spcr2 & XSYNC_ERR) {
--		dev_err(mcbsp_tx->dev, "TX Frame Sync Error! : 0x%x\n",
-+		dev_err(mcbsp->dev, "TX Frame Sync Error! : 0x%x\n",
- 			irqst_spcr2);
- 		/* Writing zero to XSYNC_ERR clears the IRQ */
--		MCBSP_WRITE(mcbsp_tx, SPCR2, MCBSP_READ_CACHE(mcbsp_tx, SPCR2));
-+		MCBSP_WRITE(mcbsp, SPCR2, MCBSP_READ_CACHE(mcbsp, SPCR2));
- 	}
- 
- 	return IRQ_HANDLED;
- }
- 
--static irqreturn_t omap_mcbsp_rx_irq_handler(int irq, void *dev_id)
-+static irqreturn_t omap_mcbsp_rx_irq_handler(int irq, void *data)
- {
--	struct omap_mcbsp *mcbsp_rx = dev_id;
-+	struct omap_mcbsp *mcbsp = data;
- 	u16 irqst_spcr1;
- 
--	irqst_spcr1 = MCBSP_READ(mcbsp_rx, SPCR1);
--	dev_dbg(mcbsp_rx->dev, "RX IRQ callback : 0x%x\n", irqst_spcr1);
-+	irqst_spcr1 = MCBSP_READ(mcbsp, SPCR1);
-+	dev_dbg(mcbsp->dev, "RX IRQ callback : 0x%x\n", irqst_spcr1);
- 
- 	if (irqst_spcr1 & RSYNC_ERR) {
--		dev_err(mcbsp_rx->dev, "RX Frame Sync Error! : 0x%x\n",
-+		dev_err(mcbsp->dev, "RX Frame Sync Error! : 0x%x\n",
- 			irqst_spcr1);
- 		/* Writing zero to RSYNC_ERR clears the IRQ */
--		MCBSP_WRITE(mcbsp_rx, SPCR1, MCBSP_READ_CACHE(mcbsp_rx, SPCR1));
-+		MCBSP_WRITE(mcbsp, SPCR1, MCBSP_READ_CACHE(mcbsp, SPCR1));
- 	}
- 
- 	return IRQ_HANDLED;
+ 	mcbsp->fclk = clk_get(&pdev->dev, "fck");
+ 	if (IS_ERR(mcbsp->fclk)) {
 -- 
 2.19.1
