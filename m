@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/35] axfer: add a common interface to align
-	data frames on different layout
-Date: Tue, 13 Nov 2018 15:41:21 +0900
-Message-ID: <20181113064147.13577-9-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/35] axfer: add support for a container of
+	raw data
+Date: Tue, 13 Nov 2018 15:41:19 +0900
+Message-ID: <20181113064147.13577-7-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
- [209.85.210.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 111F1267AB9
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:10 +0100 (CET)
-Received: by mail-pf1-f194.google.com with SMTP id v9-v6so5547623pff.2
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:09 -0800 (PST)
+Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
+ [209.85.215.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AFDD267AB0
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:06 +0100 (CET)
+Received: by mail-pg1-f194.google.com with SMTP id r9-v6so5227208pgv.6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:06 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,273 +29,233 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current aplay, several files can be handled as source of data frames for
-playback, or destination of captured data frames by an option
-'--separate-channels' (-I).
+This commit adds support for raw data without any headers/chunks/blocks.
+A parser of container cannot recognize format of sample without
+supplemental information.
 
-On the other hand, in ALSA PCM kernel/user interface, several types of
-buffer are used to communicate between application/hardware;
- - mapped page frame for data frames with interleaved alignment
- - mapped page frame for data frames with non-interleaved alignment
- - buffer in user space for data frames with interleaved alignment
- - a list of buffer in user space for data frames with non-interleaved
-   alignment
-
-This commit adds a common interface, named as 'mapper' to convert frame
-alignment between these two sides. This interface includes two types;
-'muxer' and 'demuxer'. The 'muxer' is for playback direction, to
-construct playback buffer with PCM frames from several files. The 'demuxer'
-is for capture direction, to split PCM frames from capture buffer to
-each of file. Unlike multimedia containers such as MPEG 2/4 Systems,
-the 'muxer' and 'demuxer' are for playback/capture buffer, not for file
-contents.
+Additionally, it includes no magic bytes. A parser of container should
+process first several bytes as a part of PCM frames, instead of magic
+bytes.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am |   7 ++-
- axfer/mapper.c    | 125 ++++++++++++++++++++++++++++++++++++++++++++++
- axfer/mapper.h    |  79 +++++++++++++++++++++++++++++
- 3 files changed, 209 insertions(+), 2 deletions(-)
- create mode 100644 axfer/mapper.c
- create mode 100644 axfer/mapper.h
+ axfer/Makefile.am     |  3 +-
+ axfer/container-raw.c | 66 +++++++++++++++++++++++++++++++++++++++++++
+ axfer/container.c     | 37 ++++++++++++++++++++----
+ axfer/container.h     |  4 +++
+ 4 files changed, 103 insertions(+), 7 deletions(-)
+ create mode 100644 axfer/container-raw.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 55fcf71..cb4b188 100644
+index 48d046e..f1ec1d1 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -17,7 +17,8 @@ LDADD = \
- noinst_HEADERS = \
- 	misc.h \
- 	subcmd.h \
--	container.h
-+	container.h \
-+	mapper.h
- 
- axfer_SOURCES = \
- 	misc.h \
-@@ -29,4 +30,6 @@ axfer_SOURCES = \
+@@ -27,4 +27,5 @@ axfer_SOURCES = \
+ 	container.c \
  	container-riff-wave.c \
  	container-au.c \
- 	container-voc.c \
--	container-raw.c
-+	container-raw.c \
-+	mapper.h \
-+	mapper.c
-diff --git a/axfer/mapper.c b/axfer/mapper.c
+-	container-voc.c
++	container-voc.c \
++	container-raw.c
+diff --git a/axfer/container-raw.c b/axfer/container-raw.c
 new file mode 100644
-index 00000000..eb63a0e
+index 00000000..9b0022e
 --- /dev/null
-+++ b/axfer/mapper.c
-@@ -0,0 +1,125 @@
++++ b/axfer/container-raw.c
+@@ -0,0 +1,66 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// mapper.c - an interface of muxer/demuxer between buffer with data frames and
-+// 	      formatted files.
++// container-raw.c - a parser/builder for a container with raw data frame.
 +//
 +// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 +//
 +// Licensed under the terms of the GNU General Public License, version 2.
 +
-+#include "mapper.h"
++#include "container.h"
 +#include "misc.h"
 +
-+#include <stdio.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
 +
-+static const char *const mapper_type_labels[] = {
-+	[MAPPER_TYPE_MUXER] = "muxer",
-+	[MAPPER_TYPE_DEMUXER] = "demuxer",
-+};
-+
-+static const char *const mapper_target_labels[] = {
-+	[MAPPER_TARGET_COUNT] = "",
-+};
-+
-+int mapper_context_init(struct mapper_context *mapper,
-+			enum mapper_type type, unsigned int cntr_count,
-+			unsigned int verbose)
++static int raw_builder_pre_process(struct container_context *cntr,
++				   snd_pcm_format_t *sample_format,
++				   unsigned int *samples_per_frame,
++				   unsigned int *frames_per_second,
++				   uint64_t *byte_count)
 +{
-+	const struct mapper_data *data = NULL;
-+
-+	assert(mapper);
-+	assert(cntr_count > 0);
-+
-+	// Detect forgotten to destruct.
-+	assert(mapper->private_data == NULL);
-+
-+	memset(mapper, 0, sizeof(*mapper));
-+
-+	mapper->ops = &data->ops;
-+	mapper->type = type;
-+
-+	mapper->private_data = malloc(data->private_size);
-+	if (mapper->private_data == NULL)
-+		return -ENOMEM;
-+	memset(mapper->private_data, 0, data->private_size);
-+
-+	mapper->cntr_count = cntr_count;
-+	mapper->verbose = verbose;
++	*byte_count = UINT64_MAX;
 +
 +	return 0;
 +}
 +
-+int mapper_context_pre_process(struct mapper_context *mapper,
-+			       snd_pcm_access_t access,
-+			       unsigned int bytes_per_sample,
-+			       unsigned int samples_per_frame,
-+			       unsigned int frames_per_buffer,
-+			       struct container_context *cntrs)
++static int raw_parser_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *sample_format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *byte_count)
 +{
++	struct stat buf = {0};
 +	int err;
 +
-+	assert(mapper);
-+	assert(access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
-+	assert(access <= SND_PCM_ACCESS_RW_NONINTERLEAVED);
-+	assert(bytes_per_sample > 0);
-+	assert(samples_per_frame > 0);
-+	assert(cntrs);
++	if (cntr->stdio) {
++		*byte_count = UINT64_MAX;
++		return 0;
++	}
 +
-+	mapper->access = access;
-+	mapper->bytes_per_sample = bytes_per_sample;
-+	mapper->samples_per_frame = samples_per_frame;
-+	mapper->frames_per_buffer = frames_per_buffer;
-+
-+	err = mapper->ops->pre_process(mapper, cntrs, mapper->cntr_count);
++	err = fstat(cntr->fd, &buf);
 +	if (err < 0)
 +		return err;
 +
-+	if (mapper->verbose > 0) {
-+		fprintf(stderr, "Mapper: %s\n",
-+		       mapper_type_labels[mapper->type]);
-+		fprintf(stderr, "  target: %s\n",
-+		       mapper_target_labels[mapper->target]);
-+		fprintf(stderr, "  access: %s\n",
-+		       snd_pcm_access_name(mapper->access));
-+		fprintf(stderr, "  bytes/sample: %u\n",
-+			mapper->bytes_per_sample);
-+		fprintf(stderr, "  samples/frame: %u\n",
-+			mapper->samples_per_frame);
-+		fprintf(stderr, "  frames/buffer: %lu\n",
-+			mapper->frames_per_buffer);
-+	}
++	*byte_count = buf.st_size;
++	if (*byte_count == 0)
++		*byte_count = UINT64_MAX;
 +
 +	return 0;
 +}
 +
-+int mapper_context_process_frames(struct mapper_context *mapper,
-+				  void *frame_buffer,
-+				  unsigned int *frame_count,
-+				  struct container_context *cntrs)
-+{
-+	assert(mapper);
-+	assert(frame_buffer);
-+	assert(frame_count);
-+	assert(*frame_count <= mapper->frames_per_buffer);
-+	assert(cntrs);
-+
-+	return mapper->ops->process_frames(mapper, frame_buffer, frame_count,
-+					    cntrs, mapper->cntr_count);
-+}
-+
-+void mapper_context_post_process(struct mapper_context *mapper)
-+{
-+	assert(mapper);
-+
-+	if (mapper->ops && mapper->ops->post_process)
-+		mapper->ops->post_process(mapper);
-+}
-+
-+void mapper_context_destroy(struct mapper_context *mapper)
-+{
-+	assert(mapper);
-+
-+	if (mapper->private_data)
-+		free(mapper->private_data);
-+	mapper->private_data = NULL;
-+}
-diff --git a/axfer/mapper.h b/axfer/mapper.h
-new file mode 100644
-index 00000000..c4caf09
---- /dev/null
-+++ b/axfer/mapper.h
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// mapper.h - an interface of muxer/demuxer between buffer with data frames and
-+//	      formatted files.
-+//
-+// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+//
-+// Licensed under the terms of the GNU General Public License, version 2.
-+
-+#ifndef __ALSA_UTILS_AXFER_MAPPER__H_
-+#define __ALSA_UTILS_AXFER_MAPPER__H_
-+
-+#include "container.h"
-+
-+enum mapper_type {
-+	MAPPER_TYPE_MUXER = 0,
-+	MAPPER_TYPE_DEMUXER,
-+	MAPPER_TYPE_COUNT,
++const struct container_parser container_parser_raw = {
++	.format = CONTAINER_FORMAT_RAW,
++	.max_size = UINT64_MAX,
++	.ops = {
++		.pre_process = raw_parser_pre_process,
++	},
 +};
 +
-+enum mapper_target {
-+	MAPPER_TARGET_COUNT,
++const struct container_builder container_builder_raw = {
++	.format = CONTAINER_FORMAT_RAW,
++	.max_size = UINT64_MAX,
++	.ops = {
++		.pre_process = raw_builder_pre_process,
++	},
 +};
+diff --git a/axfer/container.c b/axfer/container.c
+index 94afb2b..690fe5b 100644
+--- a/axfer/container.c
++++ b/axfer/container.c
+@@ -23,15 +23,16 @@ static const char *const cntr_format_labels[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
+ 	[CONTAINER_FORMAT_AU] = "au",
+ 	[CONTAINER_FORMAT_VOC] = "voc",
++	[CONTAINER_FORMAT_RAW] = "raw",
+ };
+ 
+ static const char *const suffixes[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
+ 	[CONTAINER_FORMAT_AU]		= ".au",
+ 	[CONTAINER_FORMAT_VOC]		= ".voc",
++	[CONTAINER_FORMAT_RAW]		= "",
+ };
+ 
+-
+ const char *const container_suffix_from_format(enum container_format format)
+ {
+ 	return suffixes[format];
+@@ -108,7 +109,7 @@ enum container_format container_format_from_path(const char *path)
+ 	}
+ 
+ 	// Unsupported.
+-	return CONTAINER_FORMAT_COUNT;
++	return CONTAINER_FORMAT_RAW;
+ }
+ 
+ int container_seek_offset(struct container_context *cntr, off64_t offset)
+@@ -196,7 +197,7 @@ int container_parser_init(struct container_context *cntr,
+ 
+ 	// Unless detected, use raw container.
+ 	if (i == ARRAY_SIZE(parsers))
+-		return -EINVAL;
++		parser = &container_parser_raw;
+ 
+ 	// Allocate private data for the parser.
+ 	if (parser->private_size > 0) {
+@@ -224,6 +225,7 @@ int container_builder_init(struct container_context *cntr,
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
+ 		[CONTAINER_FORMAT_AU] = &container_builder_au,
+ 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
++		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
+ 	};
+ 	const struct container_builder *builder;
+ 	int err;
+@@ -302,6 +304,16 @@ int container_context_pre_process(struct container_context *cntr,
+ 			return 0;
+ 	}
+ 
++	if (cntr->format == CONTAINER_FORMAT_RAW) {
++		if (*format == SND_PCM_FORMAT_UNKNOWN ||
++		    *samples_per_frame == 0 || *frames_per_second == 0) {
++			fprintf(stderr,
++				"Any file format is not detected. Need to "
++				"indicate all of sample format, channels and "
++				"rate explicitly.\n");
++			return -EINVAL;
++		}
++	}
+ 	assert(*format >= SND_PCM_FORMAT_S8);
+ 	assert(*format <= SND_PCM_FORMAT_LAST);
+ 	assert(*samples_per_frame > 0);
+@@ -348,6 +360,7 @@ int container_context_process_frames(struct container_context *cntr,
+ 	char *buf = frame_buffer;
+ 	unsigned int bytes_per_frame;
+ 	unsigned int byte_count;
++	unsigned int target_byte_count;
+ 	int err;
+ 
+ 	assert(cntr);
+@@ -356,7 +369,19 @@ int container_context_process_frames(struct container_context *cntr,
+ 	assert(frame_count);
+ 
+ 	bytes_per_frame = cntr->bytes_per_sample * cntr->samples_per_frame;
+-	byte_count = *frame_count * bytes_per_frame;
++	target_byte_count = *frame_count * bytes_per_frame;
 +
-+struct mapper_ops;
++	// A parser of cotainers already read first 4 bytes to detect format
++	// of container, however they includes PCM frames when any format was
++	// undetected. Surely to write out them.
++	byte_count = target_byte_count;
++	if (cntr->format == CONTAINER_FORMAT_RAW &&
++	    cntr->type == CONTAINER_TYPE_PARSER && !cntr->magic_handled) {
++		memcpy(buf, cntr->magic, sizeof(cntr->magic));
++		buf += sizeof(cntr->magic);
++		byte_count -= sizeof(cntr->magic);
++		cntr->magic_handled = true;
++	}
+ 
+ 	// Each container has limitation for its volume for sample data.
+ 	if (cntr->handled_byte_count > cntr->max_size - byte_count)
+@@ -370,11 +395,11 @@ int container_context_process_frames(struct container_context *cntr,
+ 		return err;
+ 	}
+ 
+-	cntr->handled_byte_count += byte_count;
++	cntr->handled_byte_count += target_byte_count;
+ 	if (cntr->handled_byte_count == cntr->max_size)
+ 		cntr->eof = true;
+ 
+-	*frame_count = byte_count / bytes_per_frame;
++	*frame_count = target_byte_count / bytes_per_frame;
+ 
+ 	return 0;
+ }
+diff --git a/axfer/container.h b/axfer/container.h
+index 71e188c..2c0c4cf 100644
+--- a/axfer/container.h
++++ b/axfer/container.h
+@@ -28,6 +28,7 @@ enum container_format {
+ 	CONTAINER_FORMAT_RIFF_WAVE = 0,
+ 	CONTAINER_FORMAT_AU,
+ 	CONTAINER_FORMAT_VOC,
++	CONTAINER_FORMAT_RAW,
+ 	CONTAINER_FORMAT_COUNT,
+ };
+ 
+@@ -119,4 +120,7 @@ extern const struct container_builder container_builder_au;
+ extern const struct container_parser container_parser_voc;
+ extern const struct container_builder container_builder_voc;
+ 
++const struct container_parser container_parser_raw;
++const struct container_builder container_builder_raw;
 +
-+struct mapper_context {
-+	enum mapper_type type;
-+	enum mapper_target target;
-+	const struct mapper_ops *ops;
-+	unsigned int private_size;
-+
-+	void *private_data;
-+	unsigned int cntr_count;
-+
-+	// A part of parameters of PCM substream.
-+	snd_pcm_access_t access;
-+	unsigned int bytes_per_sample;
-+	unsigned int samples_per_frame;
-+	snd_pcm_uframes_t frames_per_buffer;
-+
-+	unsigned int verbose;
-+};
-+
-+int mapper_context_init(struct mapper_context *mapper,
-+			enum mapper_type type, unsigned int cntr_count,
-+			unsigned int verbose);
-+int mapper_context_pre_process(struct mapper_context *mapper,
-+			       snd_pcm_access_t access,
-+			       unsigned int bytes_per_sample,
-+			       unsigned int samples_per_frame,
-+			       unsigned int frames_per_buffer,
-+			       struct container_context *cntrs);
-+int mapper_context_process_frames(struct mapper_context *mapper,
-+				  void *frame_buffer,
-+				  unsigned int *frame_count,
-+				  struct container_context *cntrs);
-+void mapper_context_post_process(struct mapper_context *mapper);
-+void mapper_context_destroy(struct mapper_context *mapper);
-+
-+// For internal use in 'mapper' module.
-+
-+struct mapper_ops {
-+	int (*pre_process)(struct mapper_context *mapper,
-+			   struct container_context *cntrs,
-+			   unsigned int cntr_count);
-+	int (*process_frames)(struct mapper_context *mapper,
-+			      void *frame_buffer, unsigned int *frame_count,
-+			      struct container_context *cntrs,
-+			      unsigned int cntr_count);
-+	void (*post_process)(struct mapper_context *mapper);
-+};
-+
-+struct mapper_data {
-+	struct mapper_ops ops;
-+	unsigned int private_size;
-+};
-+
-+#endif
+ #endif
 -- 
 2.19.1
