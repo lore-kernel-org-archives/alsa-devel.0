@@ -1,20 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 24/35] axfer: add an option to suppress event
-	waiting
-Date: Tue, 13 Nov 2018 15:41:36 +0900
-Message-ID: <20181113064147.13577-24-o-takashi@sakamocchi.jp>
+Subject: [PATCH 25/35] axfer: add options for buffer arrangement
+Date: Tue, 13 Nov 2018 15:41:37 +0900
+Message-ID: <20181113064147.13577-25-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com
- [209.85.215.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CE93267B3F
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:36 +0100 (CET)
-Received: by mail-pg1-f196.google.com with SMTP id 32-v6so5232826pgu.2
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:36 -0800 (PST)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2465267B62
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:38 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id 32-v6so5232865pgu.2
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:38 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,148 +28,231 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In aplay, '--test-nowait' is used to suppress calls of snd_pcm_wait()
-when I/O operations return -EAGAIN or process truncated number of data
-frames. This seems to be for debugging purpose. In this program, this
-option is equivalent to suppress event waiting.
+In ALSA PCM interface, two parameters are used for size of intermediate
+buffer for data frames; period size and buffer size. Actual effects of
+these sizes differs depending on hardware, but basically the size of
+period is used for intervals of hardware interrupts and the size of buffer
+is used to maintain the intermediate buffer as ring buffer. These
+parameters can be configured as a part of hardware parameters by
+data frame unit or micro second. PCM API in alsa-lib also includes
+helper functions to configure them by the two units.
 
-This commit adds support for this option.
+This commit adds support for options to the parameters by both units. When
+no options are given, default values are applied according to current
+aplay; available maximum size of buffer up to 500msec, a quarter of the
+size of buffer for period size. However, these calculation should be
+reconsidered somehow.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/xfer-libasound-irq-mmap.c | 10 ++++++----
- axfer/xfer-libasound-irq-rw.c   | 20 ++++++++++++--------
- axfer/xfer-libasound.c          | 16 ++++++++++++++++
- axfer/xfer-libasound.h          |  3 +++
- 4 files changed, 37 insertions(+), 12 deletions(-)
+ axfer/xfer-libasound.c | 122 +++++++++++++++++++++++++++++++++++++++--
+ axfer/xfer-libasound.h |   5 ++
+ axfer/xfer-options.c   |   2 +
+ 3 files changed, 125 insertions(+), 4 deletions(-)
 
-diff --git a/axfer/xfer-libasound-irq-mmap.c b/axfer/xfer-libasound-irq-mmap.c
-index 87ef7e0..18f6dfe 100644
---- a/axfer/xfer-libasound-irq-mmap.c
-+++ b/axfer/xfer-libasound-irq-mmap.c
-@@ -81,10 +81,12 @@ static int irq_mmap_process_frames(struct libasound_state *state,
- 	snd_pcm_sframes_t consumed_count;
- 	int err;
- 
--	// Wait for hardware IRQ when no avail space in buffer.
--	err = snd_pcm_wait(state->handle, -1);
--	if (err < 0)
--		return err;
-+	if (state->use_waiter) {
-+		// Wait for hardware IRQ when no avail space in buffer.
-+		err = snd_pcm_wait(state->handle, -1);
-+		if (err < 0)
-+			return err;
-+	}
- 
- 	// Sync cache in user space to data in kernel space to calculate avail
- 	// frames according to the latest positions on PCM buffer.
-diff --git a/axfer/xfer-libasound-irq-rw.c b/axfer/xfer-libasound-irq-rw.c
-index f05ac4b..625c095 100644
---- a/axfer/xfer-libasound-irq-rw.c
-+++ b/axfer/xfer-libasound-irq-rw.c
-@@ -133,10 +133,12 @@ static int r_process_frames_nonblocking(struct libasound_state *state,
- 			goto error;
- 	}
- 
--	// Wait for hardware IRQ when no available space.
--	err = snd_pcm_wait(state->handle, -1);
--	if (err < 0)
--		goto error;
-+	if (state->use_waiter) {
-+		// Wait for hardware IRQ when no available space.
-+		err = snd_pcm_wait(state->handle, -1);
-+		if (err < 0)
-+			goto error;
-+	}
- 
- 	// Check available space on the buffer.
- 	avail = snd_pcm_avail(state->handle);
-@@ -286,10 +288,12 @@ static int w_process_frames_nonblocking(struct libasound_state *state,
- 	unsigned int avail_count;
- 	int err;
- 
--	// Wait for hardware IRQ when no left space.
--	err = snd_pcm_wait(state->handle, -1);
--	if (err < 0)
--		goto error;
-+	if (state->use_waiter) {
-+		// Wait for hardware IRQ when no left space.
-+		err = snd_pcm_wait(state->handle, -1);
-+		if (err < 0)
-+			goto error;
-+	}
- 
- 	// Check available space on the buffer.
- 	avail = snd_pcm_avail(state->handle);
 diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-index c2e1282..61ae115 100644
+index 61ae115..a23021e 100644
 --- a/axfer/xfer-libasound.c
 +++ b/axfer/xfer-libasound.c
-@@ -12,6 +12,7 @@
+@@ -11,15 +11,21 @@
+ 
  enum no_short_opts {
          // 200 or later belong to non us-ascii character set.
- 	OPT_FATAL_ERRORS = 200,
-+	OPT_TEST_NOWAIT,
+-	OPT_FATAL_ERRORS = 200,
++	OPT_PERIOD_SIZE = 200,
++	OPT_BUFFER_SIZE,
++	OPT_FATAL_ERRORS,
+ 	OPT_TEST_NOWAIT,
  };
  
- #define S_OPTS	"D:NM"
-@@ -21,6 +22,7 @@ static const struct option l_opts[] = {
+-#define S_OPTS	"D:NM"
++#define S_OPTS	"D:NMF:B:"
+ static const struct option l_opts[] = {
+ 	{"device",		1, 0, 'D'},
+ 	{"nonblock",		0, 0, 'N'},
  	{"mmap",		0, 0, 'M'},
++	{"period-time",		1, 0, 'F'},
++	{"buffer-time",		1, 0, 'B'},
++	{"period-size",		1, 0, OPT_PERIOD_SIZE},
++	{"buffer-size",		1, 0, OPT_BUFFER_SIZE},
  	// For debugging.
  	{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
-+	{"test-nowait",		0, 0, OPT_TEST_NOWAIT},
- };
- 
- static int xfer_libasound_init(struct xfer_context *xfer,
-@@ -54,6 +56,8 @@ static int xfer_libasound_parse_opt(struct xfer_context *xfer, int key,
+ 	{"test-nowait",		0, 0, OPT_TEST_NOWAIT},
+@@ -54,6 +60,14 @@ static int xfer_libasound_parse_opt(struct xfer_context *xfer, int key,
+ 		state->nonblock = true;
+ 	else if (key == 'M')
  		state->mmap = true;
++	else if (key == 'F')
++		state->msec_per_period = arg_parse_decimal_num(optarg, &err);
++	else if (key == 'B')
++		state->msec_per_buffer = arg_parse_decimal_num(optarg, &err);
++	else if (key == OPT_PERIOD_SIZE)
++		state->frames_per_period = arg_parse_decimal_num(optarg, &err);
++	else if (key == OPT_BUFFER_SIZE)
++		state->frames_per_buffer = arg_parse_decimal_num(optarg, &err);
  	else if (key == OPT_FATAL_ERRORS)
  		state->finish_at_xrun = true;
-+	else if (key == OPT_TEST_NOWAIT)
-+		state->test_nowait = true;
- 	else
- 		err = -ENXIO;
- 
-@@ -80,6 +84,15 @@ int xfer_libasound_validate_opts(struct xfer_context *xfer)
- 		return -EINVAL;
+ 	else if (key == OPT_TEST_NOWAIT)
+@@ -93,6 +107,20 @@ int xfer_libasound_validate_opts(struct xfer_context *xfer)
+ 		}
  	}
  
-+	if (state->test_nowait) {
-+		if (!state->nonblock && !state->mmap) {
-+			fprintf(stderr,
-+				"An option for nowait test should be used with "
-+				"nonblock or mmap options.\n");
-+			return -EINVAL;
++	if (state->msec_per_period > 0 && state->msec_per_buffer > 0) {
++		if (state->msec_per_period > state->msec_per_buffer) {
++			state->msec_per_period = state->msec_per_buffer;
++			state->msec_per_buffer = 0;
++		}
++	}
++
++	if (state->frames_per_period > 0 && state->frames_per_buffer > 0) {
++		if (state->frames_per_period > state->frames_per_buffer) {
++			state->frames_per_period = state->frames_per_buffer;
++			state->frames_per_buffer = 0;
 +		}
 +	}
 +
  	return err;
  }
  
-@@ -124,6 +137,9 @@ static int open_handle(struct xfer_context *xfer)
+@@ -161,7 +189,11 @@ static int open_handle(struct xfer_context *xfer)
+ static int configure_hw_params(struct libasound_state *state,
+ 			       snd_pcm_format_t format,
+ 			       unsigned int samples_per_frame,
+-			       unsigned int frames_per_second)
++			       unsigned int frames_per_second,
++			       unsigned int msec_per_period,
++			       unsigned int msec_per_buffer,
++			       snd_pcm_uframes_t frames_per_period,
++			       snd_pcm_uframes_t frames_per_buffer)
+ {
+ 	int err;
+ 
+@@ -232,6 +264,84 @@ static int configure_hw_params(struct libasound_state *state,
  		return err;
  	}
  
-+	if ((state->nonblock || state->mmap) && !state->test_nowait)
-+		state->use_waiter = true;
++	// Keep one of 'frames_per_buffer' and 'msec_per_buffer'.
++	if (frames_per_buffer == 0) {
++		if (msec_per_buffer == 0) {
++			err = snd_pcm_hw_params_get_buffer_time_max(
++				state->hw_params, &msec_per_buffer, NULL);
++			if (err < 0) {
++				logging(state,
++					"The maximum msec per buffer is not "
++					"available.\n");
++				return err;
++			}
++			if (msec_per_buffer > 500000)
++				msec_per_buffer = 500000;
++		}
++	} else if (msec_per_buffer > 0) {
++		uint64_t msec;
 +
- 	err = snd_pcm_hw_params_any(state->handle, state->hw_params);
- 	if (err < 0)
- 		return err;
++		msec = 1000000 * frames_per_buffer / frames_per_second;
++		if (msec < msec_per_buffer)
++			msec_per_buffer = 0;
++	}
++
++	// Keep one of 'frames_per_period' and 'msec_per_period'.
++	if (frames_per_period == 0) {
++		if (msec_per_period == 0) {
++			if (msec_per_buffer > 0)
++				msec_per_period = msec_per_buffer / 4;
++			else
++				frames_per_period = frames_per_buffer / 4;
++		}
++	} else if (msec_per_period > 0) {
++		uint64_t msec;
++
++		msec = 1000000 * frames_per_period / frames_per_second;
++		if (msec < msec_per_period)
++			msec_per_period = 0;
++	}
++
++	if (msec_per_period) {
++		err = snd_pcm_hw_params_set_period_time_near(state->handle,
++				state->hw_params, &msec_per_period, NULL);
++		if (err < 0) {
++			logging(state,
++				"Fail to configure period time: %u msec\n",
++				msec_per_period);
++			return err;
++		}
++	} else {
++		err = snd_pcm_hw_params_set_period_size_near(state->handle,
++				state->hw_params, &frames_per_period, NULL);
++		if (err < 0) {
++			logging(state,
++				"Fail to configure period size: %lu frames\n",
++				frames_per_period);
++			return err;
++		}
++	}
++
++	if (msec_per_buffer) {
++		err = snd_pcm_hw_params_set_buffer_time_near(state->handle,
++				state->hw_params, &msec_per_buffer, NULL);
++		if (err < 0) {
++			logging(state,
++				"Fail to configure buffer time: %u msec\n",
++				msec_per_buffer);
++			return err;
++		}
++	} else {
++		err = snd_pcm_hw_params_set_buffer_size_near(state->handle,
++					state->hw_params, &frames_per_buffer);
++		if (err < 0) {
++			logging(state,
++				"Fail to configure buffer size: %lu frames\n",
++				frames_per_buffer);
++			return err;
++		}
++	}
++
+ 	return snd_pcm_hw_params(state->handle, state->hw_params);
+ }
+ 
+@@ -287,7 +397,11 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
+ 		return -ENXIO;
+ 
+ 	err = configure_hw_params(state, *format, *samples_per_frame,
+-				  *frames_per_second);
++				  *frames_per_second,
++				  state->msec_per_period,
++				  state->msec_per_buffer,
++				  state->frames_per_period,
++				  state->frames_per_buffer);
+ 	if (err < 0) {
+ 		logging(state, "Current hardware parameters:\n");
+ 		snd_pcm_hw_params_dump(state->hw_params, state->log);
 diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
-index 550b1c2..f3ce73f 100644
+index f3ce73f..4456fab 100644
 --- a/axfer/xfer-libasound.h
 +++ b/axfer/xfer-libasound.h
-@@ -33,6 +33,9 @@ struct libasound_state {
+@@ -30,6 +30,11 @@ struct libasound_state {
+ 
+ 	char *node_literal;
+ 
++	unsigned int msec_per_period;
++	unsigned int msec_per_buffer;
++	unsigned int frames_per_period;
++	unsigned int frames_per_buffer;
++
  	bool finish_at_xrun:1;
  	bool nonblock:1;
  	bool mmap:1;
-+	bool test_nowait:1;
-+
-+	bool use_waiter:1;
+diff --git a/axfer/xfer-options.c b/axfer/xfer-options.c
+index 9233647..d899134 100644
+--- a/axfer/xfer-options.c
++++ b/axfer/xfer-options.c
+@@ -17,6 +17,8 @@ enum no_short_opts {
+ 	// 128 or later belong to non us-ascii character set.
+ 	OPT_XFER_TYPE = 128,
+ 	OPT_DUMP_HW_PARAMS,
++	OPT_PERIOD_SIZE,
++	OPT_BUFFER_SIZE,
+ 	// Obsoleted.
+ 	OPT_MAX_FILE_TIME,
  };
- 
- // For internal use in 'libasound' module.
 -- 
 2.19.1
