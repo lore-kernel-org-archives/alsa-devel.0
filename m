@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Factor out common init code"
-	to the asoc tree
-Date: Tue, 13 Nov 2018 18:28:02 +0000 (GMT)
-Message-ID: <20181113182802.C98BA440078@finisterre.ee.mobilebroadband>
-References: <20181112133639.13444-2-rf@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B47B26751A
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:28:11 +0100 (CET)
-In-Reply-To: <20181112133639.13444-2-rf@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Fix dma-unsafe read of scratch registers" to the asoc tree
+Date: Tue, 13 Nov 2018 18:28:10 +0000 (GMT)
+Message-ID: <20181113182810.ED4F5440078@finisterre.ee.mobilebroadband>
+References: <20181112133639.13444-1-rf@opensource.cirrus.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181112133639.13444-1-rf@opensource.cirrus.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Factor out common init code
+   ASoC: wm_adsp: Fix dma-unsafe read of scratch registers
 
 has been applied to the asoc tree at
 
@@ -53,79 +37,87 @@ to this mail.
 Thanks,
 Mark
 
->From dcad34f818f2a23b9a51c7c2a21e167fff441e52 Mon Sep 17 00:00:00 2001
+>From 20e00db2f59bdddf8a8e241473ef8be94631d3ae Mon Sep 17 00:00:00 2001
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Mon, 12 Nov 2018 13:36:39 +0000
-Subject: [PATCH] ASoC: wm_adsp: Factor out common init code
+Date: Mon, 12 Nov 2018 13:36:38 +0000
+Subject: [PATCH] ASoC: wm_adsp: Fix dma-unsafe read of scratch registers
 
-Factor out the duplicated initialization statements from
-wm_adsp1_init() and wm_adsp2_init() into new function
-wm_adsp_common_init().
+Stack memory isn't DMA-safe so it isn't safe to use either
+regmap_raw_read or regmap_bulk_read to read into stack memory.
 
-The entire content of wm_adsp1_init() is the common code
-but it is convenient to retain this exported function
-to hide what we currently treat as common init (which might
-change in the future) and also make clear the difference
-between an ADSP1 entry point and common code.
+The two functions to read the scratch registers were using
+stack memory and regmap_raw_read. It's not worth allocating
+memory just for this trivial read, and it isn't time-critical.
+A simple regmap_read for each register is sufficient.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a53dc174bbf0..0ed44e5c58f7 100644
+index a53dc174bbf0..66501b8dc46f 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2416,7 +2416,7 @@ static int wm_adsp_create_name(struct wm_adsp *dsp)
- 	return 0;
- }
+@@ -765,38 +765,41 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *mem,
  
--int wm_adsp1_init(struct wm_adsp *dsp)
-+static int wm_adsp_common_init(struct wm_adsp *dsp)
+ static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
  {
+-	u16 scratch[4];
++	unsigned int scratch[4];
++	unsigned int addr = dsp->base + ADSP2_SCRATCH0;
++	unsigned int i;
  	int ret;
  
-@@ -2425,11 +2425,17 @@ int wm_adsp1_init(struct wm_adsp *dsp)
- 		return ret;
- 
- 	INIT_LIST_HEAD(&dsp->alg_regions);
-+	INIT_LIST_HEAD(&dsp->ctl_list);
- 
- 	mutex_init(&dsp->pwr_lock);
- 
- 	return 0;
- }
-+
-+int wm_adsp1_init(struct wm_adsp *dsp)
-+{
-+	return wm_adsp_common_init(dsp);
-+}
- EXPORT_SYMBOL_GPL(wm_adsp1_init);
- 
- int wm_adsp1_event(struct snd_soc_dapm_widget *w,
-@@ -2914,7 +2920,7 @@ int wm_adsp2_init(struct wm_adsp *dsp)
- {
- 	int ret;
- 
--	ret = wm_adsp_create_name(dsp);
-+	ret = wm_adsp_common_init(dsp);
- 	if (ret)
- 		return ret;
- 
-@@ -2936,12 +2942,8 @@ int wm_adsp2_init(struct wm_adsp *dsp)
- 		break;
+-	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2_SCRATCH0,
+-				scratch, sizeof(scratch));
+-	if (ret) {
+-		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
+-		return;
++	for (i = 0; i < ARRAY_SIZE(scratch); ++i) {
++		ret = regmap_read(dsp->regmap, addr + i, &scratch[i]);
++		if (ret) {
++			adsp_err(dsp, "Failed to read SCRATCH%u: %d\n", i, ret);
++			return;
++		}
  	}
  
--	INIT_LIST_HEAD(&dsp->alg_regions);
--	INIT_LIST_HEAD(&dsp->ctl_list);
- 	INIT_WORK(&dsp->boot_work, wm_adsp2_boot_work);
- 
--	mutex_init(&dsp->pwr_lock);
--
- 	return 0;
+ 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
+-		 be16_to_cpu(scratch[0]),
+-		 be16_to_cpu(scratch[1]),
+-		 be16_to_cpu(scratch[2]),
+-		 be16_to_cpu(scratch[3]));
++		 scratch[0], scratch[1], scratch[2], scratch[3]);
  }
- EXPORT_SYMBOL_GPL(wm_adsp2_init);
+ 
+ static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
+ {
+-	u32 scratch[2];
++	unsigned int scratch[2];
+ 	int ret;
+ 
+-	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
+-			      scratch, sizeof(scratch));
+-
++	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
++			  &scratch[0]);
+ 	if (ret) {
+-		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
++		adsp_err(dsp, "Failed to read SCRATCH0_1: %d\n", ret);
+ 		return;
+ 	}
+ 
+-	scratch[0] = be32_to_cpu(scratch[0]);
+-	scratch[1] = be32_to_cpu(scratch[1]);
++	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH2_3,
++			  &scratch[1]);
++	if (ret) {
++		adsp_err(dsp, "Failed to read SCRATCH2_3: %d\n", ret);
++		return;
++	}
+ 
+ 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
+ 		 scratch[0] & 0xFFFF,
 -- 
 2.19.1
