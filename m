@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcbsp: No need to initialize
-	max_xx_thres when it is not used" to the asoc tree
-Date: Tue, 13 Nov 2018 18:29:11 +0000 (GMT)
-Message-ID: <20181113182911.CAA59440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: omap-mcbsp: Remove redundant check for
+	mcbsp->pdata" to the asoc tree
+Date: Tue, 13 Nov 2018 18:30:17 +0000 (GMT)
+Message-ID: <20181113183017.B26C4440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DFCFE2677E4
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:29:18 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B6782677E4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:30:24 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-mcbsp: No need to initialize max_xx_thres when it is not used
+   ASoC: omap-mcbsp: Remove redundant check for mcbsp->pdata
 
 has been applied to the asoc tree at
 
@@ -52,36 +52,51 @@ to this mail.
 Thanks,
 Mark
 
->From f15c19af929d380d0acb2a8d8277d688351bd5de Mon Sep 17 00:00:00 2001
+>From 465d85b3976a15c9e0e205ff50be64efa11b7af3 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 8 Nov 2018 09:30:00 +0200
-Subject: [PATCH] ASoC: omap-mcbsp: No need to initialize max_xx_thres when it
- is not used
+Date: Thu, 8 Nov 2018 09:29:59 +0200
+Subject: [PATCH] ASoC: omap-mcbsp: Remove redundant check for mcbsp->pdata
 
-Initializing to -EINVAL is not correct as the variables are unsigned and
-if buffer_size is 0 then they are not used anyway.
+The driver will not probe if the pdata is not provided or created.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-mcbsp.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/omap/omap-mcbsp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 8cab1151d3bb..e0ef4774c710 100644
+index e48fad11a0cc..8cab1151d3bb 100644
 --- a/sound/soc/omap/omap-mcbsp.c
 +++ b/sound/soc/omap/omap-mcbsp.c
-@@ -727,9 +727,6 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- 				"Unable to create additional controls\n");
- 			goto err_thres;
- 		}
--	} else {
--		mcbsp->max_tx_thres = -EINVAL;
--		mcbsp->max_rx_thres = -EINVAL;
- 	}
+@@ -324,7 +324,7 @@ static int omap_mcbsp_request(struct omap_mcbsp *mcbsp)
+ 	mcbsp->reg_cache = reg_cache;
+ 	spin_unlock(&mcbsp->lock);
  
- 	ret = omap_mcbsp_st_init(pdev);
+-	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->request)
++	if(mcbsp->pdata->ops && mcbsp->pdata->ops->request)
+ 		mcbsp->pdata->ops->request(mcbsp->id - 1);
+ 
+ 	/*
+@@ -361,7 +361,7 @@ static int omap_mcbsp_request(struct omap_mcbsp *mcbsp)
+ err_free_irq:
+ 	free_irq(mcbsp->tx_irq, (void *)mcbsp);
+ err_clk_disable:
+-	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->free)
++	if(mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+ 		mcbsp->pdata->ops->free(mcbsp->id - 1);
+ 
+ 	/* Disable wakeup behavior */
+@@ -382,7 +382,7 @@ static void omap_mcbsp_free(struct omap_mcbsp *mcbsp)
+ {
+ 	void *reg_cache;
+ 
+-	if (mcbsp->pdata && mcbsp->pdata->ops && mcbsp->pdata->ops->free)
++	if(mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+ 		mcbsp->pdata->ops->free(mcbsp->id - 1);
+ 
+ 	/* Disable wakeup behavior */
 -- 
 2.19.1
