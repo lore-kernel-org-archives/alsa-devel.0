@@ -1,18 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: HTTP GIT access to alsa-lib seems to be misaligned
-Date: Tue, 13 Nov 2018 23:05:44 +0100
-Message-ID: <3ec40b00-2781-a205-dd14-4e8742a2921b@perex.cz>
-References: <d0499705-8b84-3761-42f0-f4b3b311c6d0@de.adit-jv.com>
- <s5hpnv8c25i.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 0/9] ASoC/ARM: Merge the davinci and omap
+	audio directories
+Date: Tue, 13 Nov 2018 14:46:40 -0800
+Message-ID: <20181113224640.GP2089@sirena.org.uk>
+References: <20181108083754.1746-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4980282007799773054=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id EFB542677E4
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 23:05:52 +0100 (CET)
-In-Reply-To: <s5hpnv8c25i.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C60BD2677E4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 23:46:47 +0100 (CET)
+In-Reply-To: <20181108083754.1746-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,26 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Timo Wischer <twischer@de.adit-jv.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-Dne 13.11.2018 v 18:34 Takashi Iwai napsal(a):
-> On Tue, 13 Nov 2018 11:26:18 +0100,
-> Timo Wischer wrote:
->>
->> Hi all,
->>
->> The master branch of
->>
->> $ git clone http://git.alsa-project.org/http/alsa-lib.git
-> 
-> I don't think http never worked properly for git.alsa-project.org.
 
-It should work. The http export should be properly updated.
+--===============4980282007799773054==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OwXh6gFRjCd3qPCM"
+Content-Disposition: inline
 
-					Jaroslav
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+--OwXh6gFRjCd3qPCM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 08, 2018 at 10:37:45AM +0200, Peter Ujfalusi wrote:
+> Hi,
+>=20
+> This RFC series is on top of the omap-mcbsp cleanup series:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2018-November/141604=
+=2Ehtml
+
+This is all fine by me.
+
+--OwXh6gFRjCd3qPCM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvrVE8ACgkQJNaLcl1U
+h9BLxgf/UXNPlAVXSFIQj/ApSPolYc3LrfDwS5Hgu+VziokQL1xCw3saHmM0/boH
+UgrCxR95NaGZfeYX+qxj0p+Mi7lGWlUCQ7pmC7AL64AUOdOX1TgBw7Hhcq4vdYIo
+rdwMvX2pryzlBrUcMDIIVULL3eZMW4M06eeIz8nfLFUfMMYK2kDoTCKMeppI6sOm
+otNsXZl636421Tl6fs/ql5RysKyRBpy8ujHmzbG9qzlcpg0GedH8psM0Qnsb/vSq
+2trDoGZ70sE36ydCLurdXk4mnOeiY1qtfeJwE9U59AmxtEHWKQAKGVdmUBZJdb+Q
+p1cVrUTKs0rtNEuTocjiq75aGyjjWA==
+=lt85
+-----END PGP SIGNATURE-----
+
+--OwXh6gFRjCd3qPCM--
+
+--===============4980282007799773054==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4980282007799773054==--
