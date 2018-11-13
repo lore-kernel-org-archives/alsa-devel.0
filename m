@@ -1,70 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/11] ASoC: amd: enable acp3x drivers build
-Date: Tue, 13 Nov 2018 11:45:17 -0800
-Message-ID: <20181113194517.GM2089@sirena.org.uk>
-References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1542000903-19020-12-git-send-email-Vijendar.Mukunda@amd.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8192111937084438420=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BED4C267A61
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 20:45:25 +0100 (CET)
+Subject: Applied "ASoC: amd: enable acp3x drivers build" to the asoc tree
+Date: Tue, 13 Nov 2018 19:45:21 +0000 (GMT)
+Message-ID: <20181113194521.5AEE8440079@finisterre.ee.mobilebroadband>
+References: <1542000903-19020-12-git-send-email-Vijendar.Mukunda@amd.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1542000903-19020-12-git-send-email-Vijendar.Mukunda@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishnuvardhanrao.Ravulapati@amd.com, Alexander.Deucher@amd.com, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>, Vijendar Mukunda <vijendar.mukunda@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Vishnuvardhanrao.Ravulapati@amd.comMark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Akshu Agrawal <akshu.agrawal@amd.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8192111937084438420==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vTfKKTivj/mQoluA"
-Content-Disposition: inline
+   ASoC: amd: enable acp3x drivers build
 
+has been applied to the asoc tree at
 
---vTfKKTivj/mQoluA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Nov 12, 2018 at 11:05:02AM +0530, Vijendar Mukunda wrote:
-> ACP3x drivers can be built by selecting necessary kernel config option.
-> The patch enables build support of the same.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Apart from the SPDX headers this all looks fine so I've applied it,
-please send followup patches converting everything to SPDX headers.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---vTfKKTivj/mQoluA
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvrKcwACgkQJNaLcl1U
-h9Bragf/VRhhS03dy0CO8cJ4szZu8pDQNzib4mOabLCFqlvyZcEEJLHf/dwPsljS
-avYm1xO/PwI5pa/stGeliZUzkanQjZOPNhDcW9dZ6fXG2Q6KmR7ZsQaVY1UIdBxb
-fHYz9lQjueakYg0Cb6LFxmVA6ooXtiJkC0xekqh4GUEzCLXLPugK/x9HVPE9S7HK
-CicfPuvGJqyK+LO0bXdUQU1/h3UorOyClbZRhLlBCtLy2G/N+Vsp9PV+aaA9OtLI
-y2si+8Ms14Nb4X7WhMixinUTF2ggdASem3vb/VfIlT8pPSraMwm+5makHS1UgF9h
-JKg/9K8usJr8rSKjgAmBrWZqA5SPjA==
-=XiPi
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---vTfKKTivj/mQoluA--
+>From 818ba93b0e9ed4a08cba575dd49c1391ef4b7776 Mon Sep 17 00:00:00 2001
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Mon, 12 Nov 2018 11:05:02 +0530
+Subject: [PATCH] ASoC: amd: enable acp3x drivers build
 
---===============8192111937084438420==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ACP3x drivers can be built by selecting necessary kernel config option.
+The patch enables build support of the same.
 
+Signed-off-by: Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
+Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/Kconfig        | 5 +++++
+ sound/soc/amd/Makefile       | 1 +
+ sound/soc/amd/raven/Makefile | 4 ++++
+ 3 files changed, 10 insertions(+)
+ create mode 100644 sound/soc/amd/raven/Makefile
 
---===============8192111937084438420==--
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 58c1dcb4d255..5f3b56087ba1 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -19,3 +19,8 @@ config SND_SOC_AMD_CZ_RT5645_MACH
+ 	depends on SND_SOC_AMD_ACP && I2C
+ 	help
+ 	 This option enables machine driver for rt5645.
++
++config SND_SOC_AMD_ACP3x
++	tristate "AMD Audio Coprocessor-v3.x support"
++	help
++	 This option enables ACP v3.x I2S support on AMD platform
+diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
+index 79b0622fa5d3..8e1c571c3161 100644
+--- a/sound/soc/amd/Makefile
++++ b/sound/soc/amd/Makefile
+@@ -5,3 +5,4 @@ snd-soc-acp-rt5645-mach-objs := acp-rt5645.o
+ obj-$(CONFIG_SND_SOC_AMD_ACP) += acp_audio_dma.o
+ obj-$(CONFIG_SND_SOC_AMD_CZ_DA7219MX98357_MACH) += snd-soc-acp-da7219mx98357-mach.o
+ obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x) += raven/
+diff --git a/sound/soc/amd/raven/Makefile b/sound/soc/amd/raven/Makefile
+new file mode 100644
+index 000000000000..8c03e6fccf6a
+--- /dev/null
++++ b/sound/soc/amd/raven/Makefile
+@@ -0,0 +1,4 @@
++snd-pci-acp3x-objs	:= pci-acp3x.o
++snd-acp3x-pcm-dma-objs	:= acp3x-pcm-dma.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-pci-acp3x.o
++obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-acp3x-pcm-dma.o
+-- 
+2.19.1
