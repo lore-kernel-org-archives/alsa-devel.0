@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/35] axfer: add support for a mapper for
-	multiple target
-Date: Tue, 13 Nov 2018 15:41:23 +0900
-Message-ID: <20181113064147.13577-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH 12/35] axfer: add a unit test for mapper
+	interface
+Date: Tue, 13 Nov 2018 15:41:24 +0900
+Message-ID: <20181113064147.13577-12-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
- [209.85.214.194])
- by alsa0.perex.cz (Postfix) with ESMTP id A4FD6267AB1
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:13 +0100 (CET)
-Received: by mail-pl1-f194.google.com with SMTP id n4-v6so5522175plp.2
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:13 -0800 (PST)
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79BC6267ABF
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:15 +0100 (CET)
+Received: by mail-pf1-f196.google.com with SMTP id c72so861923pfc.6
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:15 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,363 +29,550 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of mapper for 'multiple' target. This handles
-several files via 'container' functions, and constructs data frame buffer
-for playback, or splits data frames from data frame buffer for capture.
-When playback source files includes data frames with several channels, the
-first channel is used to construct buffer. For capture direction, each of
-channel of data frame is stored in one file, thus the file includes one
-channel of data frame. When handling non-interleaved buffer, a caller
-should use an array of buffer for each of channels with non-interleaved
-data frames.
+In former commits, mapper module gets supports of muxer/demuxer for
+single/multiple targets for playback source or capture destination. This
+commit adds a unit test for them. This includes positive test cases only.
+The test cases actually generate I/O to file systems for many test cases.
+It takes a bit long time to finish.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am       |   3 +-
- axfer/mapper-multiple.c | 259 ++++++++++++++++++++++++++++++++++++++++
- axfer/mapper.c          |  13 ++
- axfer/mapper.h          |   4 +
- 4 files changed, 278 insertions(+), 1 deletion(-)
- create mode 100644 axfer/mapper-multiple.c
+ axfer/test/Makefile.am   |  20 +-
+ axfer/test/mapper-test.c | 491 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 509 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/test/mapper-test.c
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index baf9b89..f17e59b 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -33,4 +33,5 @@ axfer_SOURCES = \
- 	container-raw.c \
- 	mapper.h \
- 	mapper.c \
--	mapper-single.c
-+	mapper-single.c \
-+	mapper-multiple.c
-diff --git a/axfer/mapper-multiple.c b/axfer/mapper-multiple.c
+diff --git a/axfer/test/Makefile.am b/axfer/test/Makefile.am
+index 66b30ef..76a93bf 100644
+--- a/axfer/test/Makefile.am
++++ b/axfer/test/Makefile.am
+@@ -1,8 +1,10 @@
+ TESTS = \
+-	container-test
++	container-test  \
++	mapper-test
+ 
+ check_PROGRAMS = \
+-	container-test
++	container-test \
++	mapper-test
+ 
+ container_test_SOURCES = \
+ 	../container.h \
+@@ -13,3 +15,17 @@ container_test_SOURCES = \
+ 	../container-raw.c \
+ 	generator.c \
+ 	container-test.c
++
++mapper_test_SOURCES = \
++	../container.h \
++	../container.c \
++	../container-riff-wave.c \
++	../container-au.c \
++	../container-voc.c \
++	../container-raw.c \
++	../mapper.h \
++	../mapper.c \
++	../mapper-single.c \
++	../mapper-multiple.c \
++	generator.c \
++	mapper-test.c
+diff --git a/axfer/test/mapper-test.c b/axfer/test/mapper-test.c
 new file mode 100644
-index 00000000..a0978b9
+index 00000000..9f005aa
 --- /dev/null
-+++ b/axfer/mapper-multiple.c
-@@ -0,0 +1,259 @@
++++ b/axfer/test/mapper-test.c
+@@ -0,0 +1,491 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// mapper-multiple.c - a muxer/demuxer for multiple containers.
++// mapper-io.c - a unit test for muxer/demuxer for PCM frames on buffer.
 +//
 +// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 +//
 +// Licensed under the terms of the GNU General Public License, version 2.
 +
-+#include "mapper.h"
-+#include "misc.h"
++#include "../mapper.h"
++#include "../misc.h"
 +
-+struct multiple_state {
-+	void (*align_frames)(void *frame_buf, unsigned int frame_count,
-+			     char **buf, unsigned int bytes_per_sample,
-+			     struct container_context *cntrs,
-+			     unsigned int cntr_count);
-+	char **bufs;
-+	unsigned int cntr_count;
++#include "generator.h"
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <stdbool.h>
++
++#include <assert.h>
++
++struct mapper_trial {
++	enum container_format cntr_format;
++	struct container_context *cntrs;
++
++	char **paths;
++
++	struct mapper_context mapper;
++	bool verbose;
 +};
 +
-+static void align_to_i(void *frame_buf, unsigned int frame_count,
-+		       char **src_bufs, unsigned int bytes_per_sample,
-+		       struct container_context *cntrs, unsigned int cntr_count)
-+{
-+	char *dst = frame_buf;
-+	char *src;
-+	unsigned int dst_pos;
-+	unsigned int src_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	// src: first channel in each of interleaved buffers in containers =>
-+	// dst:interleaved.
-+	for (i = 0; i < cntr_count; ++i) {
-+		src = src_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			// Use first src channel for each of dst channel.
-+			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+			dst_pos = bytes_per_sample * (cntr_count * j + i);
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static void align_from_i(void *frame_buf, unsigned int frame_count,
-+			 char **dst_bufs, unsigned int bytes_per_sample,
++static void test_demuxer(struct mapper_context *mapper, snd_pcm_access_t access,
++			 unsigned int bytes_per_sample,
++			 unsigned int samples_per_frame,
++			 unsigned int frames_per_buffer,
++			 void *frame_buffer, unsigned int frame_count,
 +			 struct container_context *cntrs,
-+			 unsigned int cntr_count)
++			 unsigned int cntr_count, bool verbose)
 +{
-+	char *src = frame_buf;
-+	char *dst;
-+	unsigned int src_pos;
-+	unsigned int dst_pos;
-+	struct container_context *cntr;
-+	int i, j;
++	unsigned int total_frame_count;
++	int err;
 +
-+	for (i = 0; i < cntr_count; ++i) {
-+		dst = dst_bufs[i];
-+		cntr = cntrs + i;
++	err = mapper_context_init(mapper, MAPPER_TYPE_DEMUXER, cntr_count,
++				  verbose);
++	assert(err == 0);
 +
-+		for (j = 0; j < frame_count; ++j) {
-+			// Use first src channel for each of dst channel.
-+			src_pos = bytes_per_sample * (cntr_count * j + i);
-+			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
++	err = mapper_context_pre_process(mapper, access, bytes_per_sample,
++					 samples_per_frame, frames_per_buffer,
++					 cntrs);
++	assert(err == 0);
 +
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
++	total_frame_count = frame_count;
++	err = mapper_context_process_frames(mapper, frame_buffer,
++					    &total_frame_count, cntrs);
++	assert(err == 0);
++	assert(total_frame_count == frame_count);
++
++	mapper_context_post_process(mapper);
++	mapper_context_destroy(mapper);
 +}
 +
-+static int multiple_pre_process(struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int cntr_count)
++static int test_demux(struct mapper_trial *trial, snd_pcm_access_t access,
++		      snd_pcm_format_t sample_format,
++		      unsigned int samples_per_frame,
++		      unsigned int frames_per_second,
++		      unsigned int frames_per_buffer,
++		      void *frame_buffer, unsigned int frame_count,
++		      unsigned int cntr_count)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	struct container_context *cntr;
++	struct container_context *cntrs = trial->cntrs;
++	char **paths = trial->paths;
++	enum container_format cntr_format = trial->cntr_format;
++	unsigned int bytes_per_sample;
++	uint64_t total_frame_count;
 +	int i;
++	int err;
 +
-+	// Additionally, format of samples in the containers should be the same
-+	// as the format in PCM substream.
 +	for (i = 0; i < cntr_count; ++i) {
-+		cntr = cntrs + i;
-+		if (mapper->bytes_per_sample != cntr->bytes_per_sample)
-+			return -EINVAL;
-+	}
-+	state->cntr_count = cntr_count;
++		snd_pcm_format_t format;
++		unsigned int channels;
++		unsigned int rate;
 +
-+	// Decide method to align frames.
-+	if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_from_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
-+	} else {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_to_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
-+	}
-+
-+	if (state->align_frames) {
-+		// Furthermore, in demuxer case, each container should be
-+		// configured to store one sample per frame.
-+		if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+			for (i = 0; i < cntr_count; ++i) {
-+				cntr = cntrs + i;
-+				if (cntrs->samples_per_frame != 1)
-+					return -EINVAL;
-+			}
-+		}
-+
-+		state->bufs = calloc(cntr_count, sizeof(char *));
-+		if (state->bufs == NULL)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < cntr_count; ++i) {
-+			unsigned int bytes_per_buffer;
-+
-+			// Allocate intermediate buffer as the same size as a
-+			// period for each of containers.
-+			cntr = cntrs + i;
-+
-+			bytes_per_buffer = mapper->bytes_per_sample *
-+					   cntr->samples_per_frame *
-+					   mapper->frames_per_buffer;
-+
-+			state->bufs[i] = malloc(bytes_per_buffer);
-+			if (state->bufs[i] == NULL)
-+				return -ENOMEM;
-+			memset(state->bufs[i], 0, bytes_per_buffer);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int process_containers(char **src_bufs, unsigned int *frame_count,
-+			      struct container_context *cntrs,
-+			      unsigned int cntr_count)
-+{
-+	struct container_context *cntr;
-+	char *src;
-+	int i;
-+	int err = 0;
-+
-+	// TODO: arrangement for *frame_count.
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = &cntrs[i];
-+		src = src_bufs[i];
-+
-+		err = container_context_process_frames(cntr, src, frame_count);
++		err = container_builder_init(cntrs + i, paths[i], cntr_format,
++					     0);
 +		if (err < 0)
-+			break;
++			goto end;
++
++		format = sample_format;
++		rate = frames_per_second;
++		total_frame_count = frame_count;
++		if (cntr_count > 1)
++			channels = 1;
++		else
++			channels = samples_per_frame;
++		err = container_context_pre_process(cntrs + i, &format,
++						    &channels, &rate,
++						    &total_frame_count);
++		if (err < 0)
++			goto end;
++		assert(format == sample_format);
++		assert(rate == frames_per_second);
++		assert(total_frame_count >= 0);
++		if (cntr_count > 1)
++			assert(channels == 1);
++		else
++			assert(channels == samples_per_frame);
 +	}
++
++	bytes_per_sample = snd_pcm_format_physical_width(sample_format) / 8;
++	test_demuxer(&trial->mapper, access, bytes_per_sample,
++		     samples_per_frame, frames_per_buffer, frame_buffer,
++		     frame_count, cntrs, cntr_count, trial->verbose);
++
++	for (i = 0; i < cntr_count; ++i) {
++		container_context_post_process(cntrs + i, &total_frame_count);
++		assert(total_frame_count == frame_count);
++	}
++end:
++	for (i = 0; i < cntr_count; ++i)
++		container_context_destroy(cntrs + i);
 +
 +	return err;
 +}
 +
-+static int multiple_muxer_process_frames(struct mapper_context *mapper,
-+					 void *frame_buf,
-+					 unsigned int *frame_count,
-+					 struct container_context *cntrs,
-+					 unsigned int cntr_count)
++static void test_muxer(struct mapper_context *mapper, snd_pcm_access_t access,
++		       unsigned int bytes_per_sample,
++		       unsigned int samples_per_frame,
++		       unsigned int frames_per_buffer,
++		       void *frame_buffer, unsigned int frame_count,
++		       struct container_context *cntrs,
++		       unsigned int cntr_count, bool verbose)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **src_bufs;
++	unsigned int total_frame_count;
 +	int err;
 +
-+	// If need to align PCM frames, process PCM frames to the intermediate
-+	// buffer once.
-+	if (!state->align_frames) {
-+		// The most likely.
-+		src_bufs = frame_buf;
-+	} else {
-+		src_bufs = state->bufs;
-+	}
-+	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
-+	if (err < 0)
-+		return err;
++	err = mapper_context_init(mapper, MAPPER_TYPE_MUXER, cntr_count,
++				  verbose);
++	assert(err == 0);
 +
-+	// Unlikely.
-+	if (src_bufs != frame_buf && *frame_count > 0) {
-+		state->align_frames(frame_buf, *frame_count, src_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
++	err = mapper_context_pre_process(mapper, access, bytes_per_sample,
++					 samples_per_frame, frames_per_buffer,
++					 cntrs);
++	assert(err == 0);
 +
-+	return 0;
++	total_frame_count = frame_count;
++	err = mapper_context_process_frames(mapper, frame_buffer,
++					    &total_frame_count, cntrs);
++	assert(err == 0);
++	assert(total_frame_count == frame_count);
++
++	mapper_context_post_process(mapper);
++	mapper_context_destroy(mapper);
 +}
 +
-+static int multiple_demuxer_process_frames(struct mapper_context *mapper,
-+					   void *frame_buf,
-+					   unsigned int *frame_count,
-+					   struct container_context *cntrs,
-+					   unsigned int cntr_count)
++static int test_mux(struct mapper_trial *trial, snd_pcm_access_t access,
++		    snd_pcm_format_t sample_format,
++		    unsigned int samples_per_frame,
++		    unsigned int frames_per_second,
++		    unsigned int frames_per_buffer,
++		    void *frame_buffer, unsigned int frame_count,
++		    unsigned int cntr_count)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **dst_bufs;
-+
-+	// If need to align PCM frames, process PCM frames to the intermediate
-+	// buffer once.
-+	if (!state->align_frames) {
-+		// The most likely.
-+		dst_bufs = frame_buf;
-+	} else {
-+		dst_bufs = state->bufs;
-+		state->align_frames(frame_buf, *frame_count, dst_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
-+
-+	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
-+}
-+
-+static void multiple_post_process(struct mapper_context *mapper)
-+{
-+	struct multiple_state *state = mapper->private_data;
++	struct container_context *cntrs = trial->cntrs;
++	char **paths = trial->paths;
++	unsigned int bytes_per_sample;
++	uint64_t total_frame_count;
 +	int i;
++	int err;
 +
-+	if (state->bufs) {
-+		for (i = 0; i < state->cntr_count; ++i) {
-+			if (state->bufs[i])
-+				free(state->bufs[i]);
-+		}
-+		free(state->bufs);
++	for (i = 0; i < cntr_count; ++i) {
++		snd_pcm_format_t format;
++		unsigned int channels;
++		unsigned int rate;
++
++		err = container_parser_init(cntrs + i, paths[i], 0);
++		if (err < 0)
++			goto end;
++
++		format = sample_format;
++		rate = frames_per_second;
++		if (cntr_count > 1)
++			channels = 1;
++		else
++			channels = samples_per_frame;
++		err = container_context_pre_process(cntrs + i, &format,
++						    &channels, &rate,
++						    &total_frame_count);
++		if (err < 0)
++			goto end;
++
++		assert(format == sample_format);
++		assert(rate == frames_per_second);
++		assert(total_frame_count == frame_count);
++		if (cntr_count > 1)
++			assert(channels == 1);
++		else
++			assert(channels == samples_per_frame);
 +	}
 +
-+	state->bufs = NULL;
-+	state->align_frames = NULL;
++	bytes_per_sample = snd_pcm_format_physical_width(sample_format) / 8;
++	test_muxer(&trial->mapper, access, bytes_per_sample, samples_per_frame,
++		   frames_per_buffer, frame_buffer, frame_count, cntrs,
++		   cntr_count, trial->verbose);
++
++	for (i = 0; i < cntr_count; ++i) {
++		container_context_post_process(cntrs + i, &total_frame_count);
++		assert(total_frame_count == frame_count);
++	}
++end:
++	for (i = 0; i < cntr_count; ++i)
++		container_context_destroy(cntrs + i);
++
++	return err;
 +}
 +
-+const struct mapper_data mapper_muxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_muxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
++static int test_mapper(struct mapper_trial *trial, snd_pcm_access_t access,
++		    snd_pcm_format_t sample_format,
++		    unsigned int samples_per_frame,
++		    unsigned int frames_per_second, void *frame_buffer,
++		    void *check_buffer, unsigned int frame_count,
++		    unsigned int cntr_count)
++{
++	unsigned int frames_per_buffer;
++	int i;
++	int err;
++
++	// Use a buffer aligned by typical size of page frame.
++	frames_per_buffer = ((frame_count + 4096) / 4096) * 4096;
++
++	err = test_demux(trial, access, sample_format, samples_per_frame,
++			 frames_per_second, frames_per_buffer, frame_buffer,
++			 frame_count, cntr_count);
++	if (err < 0)
++		goto end;
++
++	err = test_mux(trial, access, sample_format, samples_per_frame,
++		       frames_per_second, frames_per_buffer, check_buffer,
++		       frame_count, cntr_count);
++end:
++	for (i = 0; i < cntr_count; ++i)
++		unlink(trial->paths[i]);
++
++	return err;
++}
++
++static int test_i_buf(struct mapper_trial *trial, snd_pcm_access_t access,
++		      snd_pcm_format_t sample_format,
++		      unsigned int samples_per_frame,
++		      unsigned int frames_per_second, void *frame_buffer,
++		      unsigned int frame_count, unsigned int cntr_count)
++{
++	unsigned int size;
++	char *buf;
++	int err;
++
++	size = frame_count * samples_per_frame *
++			snd_pcm_format_physical_width(sample_format) / 8;
++	buf = malloc(size);
++	if (buf == 0)
++		return -ENOMEM;
++	memset(buf, 0, size);
++
++	// Test multiple target.
++	err = test_mapper(trial, access, sample_format, samples_per_frame,
++			  frames_per_second, frame_buffer, buf,
++			  frame_count, cntr_count);
++	if (err < 0)
++		goto end;
++	err = memcmp(frame_buffer, buf, size);
++	assert(err == 0);
++
++	// Test single target.
++	err = test_mapper(trial, access, sample_format, samples_per_frame,
++			  frames_per_second, frame_buffer, buf,
++			  frame_count, 1);
++	if (err < 0)
++		goto end;
++	err = memcmp(frame_buffer, buf, size);
++	assert(err == 0);
++end:
++	free(buf);
++
++	return err;
++}
++
++static int test_vector(struct mapper_trial *trial, snd_pcm_access_t access,
++		       snd_pcm_format_t sample_format,
++		       unsigned int samples_per_frame,
++		       unsigned int frames_per_second, void *frame_buffer,
++		       unsigned int frame_count, unsigned int cntr_count)
++{
++	unsigned int size;
++	char **bufs;
++	int i;
++	int err;
++
++	bufs = calloc(cntr_count, sizeof(*bufs));
++	if (bufs == NULL)
++		return -ENOMEM;
++
++	size = frame_count * snd_pcm_format_physical_width(sample_format) / 8;
++
++	for (i = 0; i < cntr_count; ++i) {
++		bufs[i] = malloc(size);
++		if (bufs[i] == NULL)
++			goto end;
++		memset(bufs[i], 0, size);
++	}
++
++	// Test multiple target.
++	err = test_mapper(trial, access, sample_format, samples_per_frame,
++			  frames_per_second, frame_buffer, bufs,
++			  frame_count, cntr_count);
++	if (err < 0)
++		goto end;
++	for (i = 0; i < cntr_count; ++i) {
++		char **target = frame_buffer;
++		err = memcmp(target[i], bufs[i], size);
++		assert(err == 0);
++	}
++
++	// Test single target.
++	err = test_mapper(trial, access, sample_format, samples_per_frame,
++			  frames_per_second, frame_buffer, bufs,
++			  frame_count, 1);
++	if (err < 0)
++		goto end;
++	for (i = 0; i < cntr_count; ++i) {
++		char **target = frame_buffer;
++		err = memcmp(target[i], bufs[i], size);
++		assert(err == 0);
++	}
++end:
++	for (i = 0; i < cntr_count; ++i) {
++		if (bufs[i])
++			free(bufs[i]);
++	}
++	free(bufs);
++
++	return err;
++}
++
++static int test_n_buf(struct mapper_trial *trial, snd_pcm_access_t access,
++		      snd_pcm_format_t sample_format,
++		      unsigned int samples_per_frame,
++		      unsigned int frames_per_second, void *frame_buffer,
++		      unsigned int frame_count, unsigned int cntr_count)
++{
++	char *test_buf = frame_buffer;
++	unsigned int size;
++	char **test_vec;
++	int i;
++	int err;
++
++	size = frame_count * snd_pcm_format_physical_width(sample_format) / 8;
++
++	test_vec = calloc(cntr_count * 2, sizeof(*test_vec));
++	if (test_vec == NULL)
++		return -ENOMEM;
++
++	for (i = 0; i < cntr_count; ++i)
++		test_vec[i] = test_buf + size * i;
++
++	err = test_vector(trial, access, sample_format, samples_per_frame,
++			  frames_per_second, test_vec, frame_count, cntr_count);
++	free(test_vec);
++
++	return err;
++}
++
++static int callback(struct test_generator *gen, snd_pcm_access_t access,
++		    snd_pcm_format_t sample_format,
++		    unsigned int samples_per_frame, void *frame_buffer,
++		    unsigned int frame_count)
++{
++
++	int (*handler)(struct mapper_trial *trial, snd_pcm_access_t access,
++		       snd_pcm_format_t sample_format,
++		       unsigned int samples_per_frame,
++		       unsigned int frames_per_second, void *frame_buffer,
++		       unsigned int frame_count, unsigned int cntr_count);
++	struct mapper_trial *trial = gen->private_data;
++
++	if (access == SND_PCM_ACCESS_RW_NONINTERLEAVED)
++		handler = test_vector;
++	else if (access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++		handler = test_n_buf;
++	else
++		handler = test_i_buf;
++
++	return handler(trial, access, sample_format, samples_per_frame, 48000,
++		       frame_buffer, frame_count, samples_per_frame);
 +};
 +
-+const struct mapper_data mapper_demuxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_demuxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
-+};
-diff --git a/axfer/mapper.c b/axfer/mapper.c
-index 07ca595..4c3f0e3 100644
---- a/axfer/mapper.c
-+++ b/axfer/mapper.c
-@@ -19,6 +19,7 @@ static const char *const mapper_type_labels[] = {
- 
- static const char *const mapper_target_labels[] = {
- 	[MAPPER_TARGET_SINGLE] = "single",
-+	[MAPPER_TARGET_MULTIPLE] = "multiple",
- };
- 
- int mapper_context_init(struct mapper_context *mapper,
-@@ -39,11 +40,17 @@ int mapper_context_init(struct mapper_context *mapper,
- 		if (cntr_count == 1) {
- 			data = &mapper_muxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_muxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	} else {
- 		if (cntr_count == 1) {
- 			data = &mapper_demuxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_demuxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	}
- 
-@@ -77,6 +84,12 @@ int mapper_context_pre_process(struct mapper_context *mapper,
- 	assert(samples_per_frame > 0);
- 	assert(cntrs);
- 
-+	// The purpose of multiple target is to mux/demux each channels to/from
-+	// containers.
-+	if (mapper->target == MAPPER_TARGET_MULTIPLE &&
-+	    samples_per_frame != mapper->cntr_count)
-+		return -EINVAL;
++int main(int argc, const char *argv[])
++{
++	// Test 8/16/18/20/24/32/64 bytes per sample.
++	static const uint64_t sample_format_mask =
++			(1ul << SND_PCM_FORMAT_U8) |
++			(1ul << SND_PCM_FORMAT_S16_LE) |
++			(1ul << SND_PCM_FORMAT_S18_3LE) |
++			(1ul << SND_PCM_FORMAT_S20_3LE) |
++			(1ul << SND_PCM_FORMAT_S24_LE) |
++			(1ul << SND_PCM_FORMAT_S32_LE) |
++			(1ul << SND_PCM_FORMAT_FLOAT64_LE);
++	uint64_t access_mask;
++	struct test_generator gen = {0};
++	struct mapper_trial *trial;
++	struct container_context *cntrs;
++	unsigned int samples_per_frame;
++	char **paths = NULL;
++	snd_pcm_access_t access;
++	bool verbose;
++	int i;
++	int err;
 +
- 	mapper->access = access;
- 	mapper->bytes_per_sample = bytes_per_sample;
- 	mapper->samples_per_frame = samples_per_frame;
-diff --git a/axfer/mapper.h b/axfer/mapper.h
-index 3a95d9f..58b6118 100644
---- a/axfer/mapper.h
-+++ b/axfer/mapper.h
-@@ -20,6 +20,7 @@ enum mapper_type {
- 
- enum mapper_target {
- 	MAPPER_TARGET_SINGLE = 0,
-+	MAPPER_TARGET_MULTIPLE,
- 	MAPPER_TARGET_COUNT,
- };
- 
-@@ -80,4 +81,7 @@ struct mapper_data {
- extern const struct mapper_data mapper_muxer_single;
- extern const struct mapper_data mapper_demuxer_single;
- 
-+extern const struct mapper_data mapper_muxer_multiple;
-+extern const struct mapper_data mapper_demuxer_multiple;
++	// Test up to 32 channels.
++	samples_per_frame = 32;
++	cntrs = calloc(samples_per_frame, sizeof(*cntrs));
++	if (cntrs == NULL)
++		return -ENOMEM;
 +
- #endif
++	paths = calloc(samples_per_frame, sizeof(*paths));
++	if (paths == NULL) {
++		err = -ENOMEM;
++		goto end;
++	}
++	for (i = 0; i < samples_per_frame; ++i) {
++		paths[i] = malloc(8);
++		if (paths[i] == NULL) {
++			err = -ENOMEM;
++			goto end;
++		}
++		snprintf(paths[i], 8, "hoge%d", i);
++	}
++
++	if (argc > 1) {
++		char *term;
++		access = strtol(argv[1], &term, 10);
++		if (errno != 0 || *term != '\0') {
++			err = -EINVAL;;
++			goto end;
++		}
++		if (access < SND_PCM_ACCESS_MMAP_INTERLEAVED &&
++		    access > SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++			err = -EINVAL;
++			goto end;
++		}
++		if (access == SND_PCM_ACCESS_MMAP_COMPLEX) {
++			err = -EINVAL;
++			goto end;
++		}
++
++		access_mask = 1ul << access;
++		verbose = true;
++	} else {
++		access_mask = (1ul << SND_PCM_ACCESS_MMAP_INTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_MMAP_NONINTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_RW_INTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_RW_NONINTERLEAVED);
++		verbose = false;
++	}
++
++	err = generator_context_init(&gen, access_mask, sample_format_mask,
++				     1, samples_per_frame,
++				     23, 4500, 1024,
++				     sizeof(struct mapper_trial));
++	if (err < 0)
++		goto end;
++
++	trial = gen.private_data;
++	trial->cntrs = cntrs;
++	trial->cntr_format = CONTAINER_FORMAT_RIFF_WAVE;
++	trial->paths = paths;
++	trial->verbose = verbose;
++	err = generator_context_run(&gen, callback);
++
++	generator_context_destroy(&gen);
++end:
++	if (paths) {
++		for (i = 0; i < samples_per_frame; ++i)
++			free(paths[i]);
++		free(paths);
++	}
++	free(cntrs);
++
++	if (err < 0) {
++		printf("%s\n", strerror(-err));
++		return EXIT_FAILURE;
++	}
++
++	return EXIT_SUCCESS;
++}
 -- 
 2.19.1
