@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add missing slave_config
-	setting for I2S" to the asoc tree
-Date: Tue, 13 Nov 2018 18:28:18 +0000 (GMT)
-Message-ID: <20181113182818.DDD95440078@finisterre.ee.mobilebroadband>
-References: <20181110151844.21362-1-katsuhiro@katsuster.net>
+Subject: Applied "ASoC: omap-mcbsp: No need to initialize
+	max_xx_thres when it is not used" to the asoc tree
+Date: Tue, 13 Nov 2018 18:29:11 +0000 (GMT)
+Message-ID: <20181113182911.CAA59440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F8BE267AC1
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:28:26 +0100 (CET)
-In-Reply-To: <20181110151844.21362-1-katsuhiro@katsuster.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id DFCFE2677E4
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 19:29:18 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add missing slave_config setting for I2S
+   ASoC: omap-mcbsp: No need to initialize max_xx_thres when it is not used
 
 has been applied to the asoc tree at
 
@@ -53,31 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 16a8ee4c80b45984b6de1f90a49edcf336b7c621 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Sun, 11 Nov 2018 00:18:44 +0900
-Subject: [PATCH] ASoC: rockchip: add missing slave_config setting for I2S
+>From f15c19af929d380d0acb2a8d8277d688351bd5de Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 8 Nov 2018 09:30:00 +0200
+Subject: [PATCH] ASoC: omap-mcbsp: No need to initialize max_xx_thres when it
+ is not used
 
-This patch adds missing prepare_sleve_config that is needed for
-setup the DMA slave channel for I2S.
+Initializing to -EINVAL is not correct as the variables are unsigned and
+if buffer_size is 0 then they are not used anyway.
 
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pcm.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/omap/omap-mcbsp.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
-index 9e7b5fa4cf59..4ac78d7a4b2d 100644
---- a/sound/soc/rockchip/rockchip_pcm.c
-+++ b/sound/soc/rockchip/rockchip_pcm.c
-@@ -33,6 +33,7 @@ static const struct snd_pcm_hardware snd_rockchip_hardware = {
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 8cab1151d3bb..e0ef4774c710 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -727,9 +727,6 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 				"Unable to create additional controls\n");
+ 			goto err_thres;
+ 		}
+-	} else {
+-		mcbsp->max_tx_thres = -EINVAL;
+-		mcbsp->max_rx_thres = -EINVAL;
+ 	}
  
- static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config = {
- 	.pcm_hardware = &snd_rockchip_hardware,
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
- 	.prealloc_buffer_size = 32 * 1024,
- };
- 
+ 	ret = omap_mcbsp_st_init(pdev);
 -- 
 2.19.1
