@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 31/35] axfer: add an implementation of waiter
-	for select(2)
-Date: Tue, 13 Nov 2018 15:41:43 +0900
-Message-ID: <20181113064147.13577-31-o-takashi@sakamocchi.jp>
+Subject: [PATCH 32/35] axfer: add an implementation of waiter
+	for epoll(7)
+Date: Tue, 13 Nov 2018 15:41:44 +0900
+Message-ID: <20181113064147.13577-32-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97277267AC2
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:48 +0100 (CET)
-Received: by mail-pg1-f193.google.com with SMTP id w7so5211998pgp.13
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:48 -0800 (PST)
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
+ [209.85.210.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39345267AE5
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:50 +0100 (CET)
+Received: by mail-pf1-f194.google.com with SMTP id 64so1069816pfr.9
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:50 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,175 +29,185 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of waiter for select(2) system call.
+This commit adds support of waiter for Linux specific epoll(7) system call.
+For portability to the other Unix-like systems such as xBSD, modification
+of Makefile.am may be required for conditional build, but this commit
+includes no changes for it.
 
 Below lines are examples to use this option:
-$ axfer transfer --waiter-type=select -M -P -d 2 -D hw:0,3 /dev/urandom -f dat -vvv
-$ axfer transfer --waiter-type=select -M -C -d 2 -D hw:1,0 /dev/null -r 48000 -vvv
+$ axfer transfer --waiter-type=epoll -M -P -d 2 -D hw:0,3 /dev/urandom -f dat -vvv
+$ axfer transfer --waiter-type=epoll -M -C -d 2 -D hw:1,0 /dev/null -r 48000 -vvv
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am     |   3 +-
- axfer/waiter-select.c | 100 ++++++++++++++++++++++++++++++++++++++++++
- axfer/waiter.c        |   2 +
- axfer/waiter.h        |   2 +
- 4 files changed, 106 insertions(+), 1 deletion(-)
- create mode 100644 axfer/waiter-select.c
+ axfer/Makefile.am    |   3 +-
+ axfer/waiter-epoll.c | 107 +++++++++++++++++++++++++++++++++++++++++++
+ axfer/waiter.c       |   2 +
+ axfer/waiter.h       |   2 +
+ 4 files changed, 113 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/waiter-epoll.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 7123006..867007b 100644
+index 867007b..ab1d0b4 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -51,4 +51,5 @@ axfer_SOURCES = \
- 	xfer-libasound-irq-mmap.c \
+@@ -52,4 +52,5 @@ axfer_SOURCES = \
  	waiter.h \
  	waiter.c \
--	waiter-poll.c
-+	waiter-poll.c \
-+	waiter-select.c
-diff --git a/axfer/waiter-select.c b/axfer/waiter-select.c
+ 	waiter-poll.c \
+-	waiter-select.c
++	waiter-select.c \
++	waiter-epoll.c
+diff --git a/axfer/waiter-epoll.c b/axfer/waiter-epoll.c
 new file mode 100644
-index 00000000..a35ea85
+index 00000000..8f084f1
 --- /dev/null
-+++ b/axfer/waiter-select.c
-@@ -0,0 +1,100 @@
++++ b/axfer/waiter-epoll.c
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// waiter-select.c - Waiter for event notification by select(2).
++// waiter-epoll.c - Waiter for event notification by epoll(7).
 +//
 +// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 +//
 +// Licensed under the terms of the GNU General Public License, version 2.
 +
 +#include "waiter.h"
++#include "misc.h"
 +
 +#include <stdlib.h>
 +#include <unistd.h>
 +#include <string.h>
 +#include <errno.h>
-+#include <sys/select.h>
++#include <sys/types.h>
++#include <sys/epoll.h>
 +
-+// Except for POLLERR.
-+#define POLLIN_SET	(POLLRDNORM | POLLRDBAND | POLLIN | POLLHUP)
-+#define POLLOUT_SET	(POLLWRBAND | POLLWRNORM | POLLOUT)
-+#define POLLEX_SET	(POLLPRI)
-+
-+struct select_state {
-+	fd_set rfds_rd;
-+	fd_set rfds_wr;
-+	fd_set rfds_ex;
++struct epoll_state {
++	int epfd;
++	struct epoll_event *events;
++	unsigned int ev_count;
 +};
 +
-+static int select_prepare(struct waiter_context *waiter)
++static int epoll_prepare(struct waiter_context *waiter)
 +{
++	struct epoll_state *state = waiter->private_data;
++	int i;
++
++	state->ev_count = waiter->pfd_count;
++	state->events = calloc(state->ev_count, sizeof(*state->events));
++	if (state->events == NULL)
++		return -ENOMEM;
++
++	state->epfd = epoll_create(1);
++	if (state->epfd < 0)
++		return -errno;
++
++	for (i = 0; i < waiter->pfd_count; ++i) {
++		struct epoll_event ev = {
++			.data.fd = waiter->pfds[i].fd,
++			.events = waiter->pfds[i].events,
++		};
++		if (epoll_ctl(state->epfd, EPOLL_CTL_ADD, ev.data.fd, &ev) < 0)
++			return -errno;
++	}
++
 +	return 0;
 +}
 +
-+static int select_wait_event(struct waiter_context *waiter, int timeout_msec)
++static int epoll_wait_event(struct waiter_context *waiter, int timeout_msec)
 +{
-+	struct select_state *state = waiter->private_data;
-+	struct pollfd *pfd;
-+	int fd_max;
-+	struct timeval tv, *tv_ptr;
-+	int i;
++	struct epoll_state *state = waiter->private_data;
++	unsigned int ev_count;
++	int i, j;
 +	int err;
 +
-+	FD_ZERO(&state->rfds_rd);
-+	FD_ZERO(&state->rfds_wr);
-+	FD_ZERO(&state->rfds_ex);
-+
-+	fd_max = 0;
-+	for (i = 0; i < waiter->pfd_count; ++i) {
-+		pfd = &waiter->pfds[i];
-+
-+		if (pfd->events & POLLIN_SET)
-+			FD_SET(pfd->fd, &state->rfds_rd);
-+		if (pfd->events & POLLOUT_SET)
-+			FD_SET(pfd->fd, &state->rfds_wr);
-+		if (pfd->events & POLLEX_SET)
-+			FD_SET(pfd->fd, &state->rfds_ex);
-+		if (pfd->fd > fd_max)
-+			fd_max = pfd->fd;
-+	}
-+
-+	if (timeout_msec < 0) {
-+		tv_ptr = NULL;
-+	} else {
-+		tv.tv_sec = 0;
-+		tv.tv_usec = timeout_msec * 1000;
-+		tv_ptr = &tv;
-+	}
-+
-+	err = select(fd_max + 1, &state->rfds_rd, &state->rfds_wr,
-+		     &state->rfds_ex, tv_ptr);
++	memset(state->events, 0, state->ev_count * sizeof(*state->events));
++	err = epoll_wait(state->epfd, state->events, state->ev_count,
++			 timeout_msec);
 +	if (err < 0)
-+		return err;
++		return -errno;
++	ev_count = (unsigned int)err;
 +
-+	for (i = 0; i < waiter->pfd_count; ++i) {
-+		pfd = &waiter->pfds[i];
-+
-+		pfd->revents = 0;
-+		if (FD_ISSET(pfd->fd, &state->rfds_rd))
-+			pfd->revents |= POLLIN;
-+		if (FD_ISSET(pfd->fd, &state->rfds_wr))
-+			pfd->revents |= POLLOUT;
-+		if (FD_ISSET(pfd->fd, &state->rfds_ex))
-+			pfd->revents |= POLLHUP;
++	if (ev_count > 0) {
++		// Reconstruct data of pollfd structure.
++		for (i = 0; i < ev_count; ++i) {
++			struct epoll_event *ev = &state->events[i];
++			for (j = 0; j < waiter->pfd_count; ++j) {
++				if (waiter->pfds[i].fd == ev->data.fd) {
++					waiter->pfds[i].revents = ev->events;
++					break;
++				}
++			}
++		}
 +	}
 +
-+	return 0;
++	return ev_count;
 +}
 +
-+static void select_release(struct waiter_context *waiter)
++static void epoll_release(struct waiter_context *waiter)
 +{
-+	return;
++	struct epoll_state *state = waiter->private_data;
++	int i;
++
++	for (i = 0; i < waiter->pfd_count; ++i) {
++		int fd = waiter->pfds[i].fd;
++		epoll_ctl(state->epfd, EPOLL_CTL_DEL, fd, NULL);
++	}
++
++	free(state->events);
++	state->events = NULL;
++
++	close(state->epfd);
++
++	state->ev_count = 0;
++	state->epfd = 0;
 +}
 +
-+const struct waiter_data waiter_select = {
++const struct waiter_data waiter_epoll = {
 +	.ops = {
-+		.prepare	= select_prepare,
-+		.wait_event	= select_wait_event,
-+		.release	= select_release,
++		.prepare	= epoll_prepare,
++		.wait_event	= epoll_wait_event,
++		.release	= epoll_release,
 +	},
-+	.private_size = sizeof(struct select_state),
++	.private_size = sizeof(struct epoll_state),
 +};
 diff --git a/axfer/waiter.c b/axfer/waiter.c
-index 446e617..08428e3 100644
+index 08428e3..1e9c811 100644
 --- a/axfer/waiter.c
 +++ b/axfer/waiter.c
-@@ -17,6 +17,7 @@
- static const char *const waiter_type_labels[] = {
+@@ -18,6 +18,7 @@ static const char *const waiter_type_labels[] = {
  	[WAITER_TYPE_DEFAULT] = "default",
  	[WAITER_TYPE_POLL] = "poll",
-+	[WAITER_TYPE_SELECT] = "select",
+ 	[WAITER_TYPE_SELECT] = "select",
++	[WAITER_TYPE_EPOLL] = "epoll",
  };
  
  enum waiter_type waiter_type_from_label(const char *label)
-@@ -44,6 +45,7 @@ int waiter_context_init(struct waiter_context *waiter,
- 		const struct waiter_data *waiter;
+@@ -46,6 +47,7 @@ int waiter_context_init(struct waiter_context *waiter,
  	} entries[] = {
  		{WAITER_TYPE_POLL,	&waiter_poll},
-+		{WAITER_TYPE_SELECT,	&waiter_select},
+ 		{WAITER_TYPE_SELECT,	&waiter_select},
++		{WAITER_TYPE_EPOLL,	&waiter_epoll},
  	};
  	int i;
  
 diff --git a/axfer/waiter.h b/axfer/waiter.h
-index 9366724..fec16b7 100644
+index fec16b7..db18e33 100644
 --- a/axfer/waiter.h
 +++ b/axfer/waiter.h
-@@ -14,6 +14,7 @@
- enum waiter_type {
+@@ -15,6 +15,7 @@ enum waiter_type {
  	WAITER_TYPE_DEFAULT = 0,
  	WAITER_TYPE_POLL,
-+	WAITER_TYPE_SELECT,
+ 	WAITER_TYPE_SELECT,
++	WAITER_TYPE_EPOLL,
  	WAITER_TYPE_COUNT,
  };
  
-@@ -53,5 +54,6 @@ struct waiter_data {
- };
+@@ -55,5 +56,6 @@ struct waiter_data {
  
  extern const struct waiter_data waiter_poll;
-+extern const struct waiter_data waiter_select;
+ extern const struct waiter_data waiter_select;
++extern const struct waiter_data waiter_epoll;
  
  #endif
 -- 
