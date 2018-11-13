@@ -1,20 +1,21 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/35] axfer: add an entry point for this
-	command
-Date: Tue, 13 Nov 2018 15:41:13 +0900
-Message-ID: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/35] axfer: add a common interface to handle
+	a file with audio-specific data format
+Date: Tue, 13 Nov 2018 15:41:15 +0900
+Message-ID: <20181113064147.13577-3-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
+ <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98DF6267839
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:41:56 +0100 (CET)
-Received: by mail-pf1-f193.google.com with SMTP id c72so861564pfc.6
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:41:56 -0800 (PST)
-In-Reply-To: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0823267839
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:41:59 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id 70so5219743pgh.8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:41:59 -0800 (PST)
+In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,332 +29,589 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new command, 'axfer' ('ALSA transfer'), to transfer data
-frames described in asound.h. This command is intended to replace current
-aplay. The most of features and command line parameters come from aplay as
-much as possible, while it has more better feature and code to maintain.
+Current aplay supports several types of data format for file; Microsoft/IBM
+RIFF/Wave (.wav), Sparc AU (.au) and Creative Tech. voice (.voc). These
+formats were designed to handle audio-related data with interleaved frame
+alignment.
 
-This commit adds an entry point for this command. Current option system of
-aplay is still available, while this command has a sub-command system like
-commands in iproute2.
-
-Currently, two sub-commands are supported; 'list' and 'transfer'. The
-'list' sub-command has the same effect as '-l' and '-L' options of aplay.
-The 'transfer' sub-command has the same effect as the main feature of
-aplay. For the sub-command system, an option for stream direction is
-required; '-P' for playback and '-C' for capture. If you create symbolic
-links to this binary for aplay/arecord, please execute:
-$ ln -s axfer aplay
-$ ln -s axfer arecord
-
-Actual code for each sub-command will be implemented in later commits.
+This commit adds a common interface to handle the file format, named as
+'container' module. This includes several functions to build/parse
+the format data from any file descriptors. Furthermore, this includes
+several helper functions for implementations of each builder/parser.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- Makefile.am       |   2 +-
- axfer/Makefile.am |  23 ++++++
- axfer/main.c      | 193 ++++++++++++++++++++++++++++++++++++++++++++++
- axfer/misc.h      |  16 ++++
- axfer/subcmd.h    |  14 ++++
- configure.ac      |   2 +-
- 6 files changed, 248 insertions(+), 2 deletions(-)
- create mode 100644 axfer/Makefile.am
- create mode 100644 axfer/main.c
- create mode 100644 axfer/misc.h
- create mode 100644 axfer/subcmd.h
+ axfer/Makefile.am |   7 +-
+ axfer/container.c | 423 ++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/container.h | 110 ++++++++++++
+ 3 files changed, 538 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/container.c
+ create mode 100644 axfer/container.h
 
-diff --git a/Makefile.am b/Makefile.am
-index 3d24b87..a4e25ae 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -14,7 +14,7 @@ if ALSACONF
- SUBDIRS += alsaconf
- endif
- if HAVE_PCM
--SUBDIRS += aplay iecset speaker-test
-+SUBDIRS += aplay iecset speaker-test axfer
- if ALSALOOP
- SUBDIRS += alsaloop
- endif
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-new file mode 100644
-index 00000000..b48b9c5
---- /dev/null
+index 4e37b92..3913d0c 100644
+--- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -0,0 +1,23 @@
-+bin_PROGRAMS = \
-+	axfer
-+
-+# To include headers for gettext and version.
-+AM_CPPFLAGS = \
-+	-I$(top_srcdir)/include
-+
-+# Unit tests.
-+SUBDIRS =
-+
-+LIBRT = @LIBRT@
-+LDADD = \
-+	$(LIBINTL) \
-+	$(LIBRT)
-+
-+noinst_HEADERS = \
-+	misc.h \
-+	subcmd.h
-+
-+axfer_SOURCES = \
-+	misc.h \
+@@ -15,10 +15,13 @@ LDADD = \
+ 
+ noinst_HEADERS = \
+ 	misc.h \
+-	subcmd.h
 +	subcmd.h \
-+	main.c
-diff --git a/axfer/main.c b/axfer/main.c
++	container.h
+ 
+ axfer_SOURCES = \
+ 	misc.h \
+ 	subcmd.h \
+ 	main.c \
+-	subcmd-list.c
++	subcmd-list.c \
++	container.h \
++	container.c
+diff --git a/axfer/container.c b/axfer/container.c
 new file mode 100644
-index 00000000..1e92941
+index 00000000..77bbd6c
 --- /dev/null
-+++ b/axfer/main.c
-@@ -0,0 +1,193 @@
++++ b/axfer/container.c
+@@ -0,0 +1,423 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// main.c - an entry point for this program.
++//
++// container.c - an interface of parser/builder for formatted files.
 +//
 +// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 +//
-+// Originally written as 'aplay', by Michael Beck and Jaroslav Kysela.
-+//
 +// Licensed under the terms of the GNU General Public License, version 2.
 +
-+#include "subcmd.h"
++#include "container.h"
 +#include "misc.h"
 +
-+#include "version.h"
-+
 +#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
++#include <errno.h>
 +#include <string.h>
++#include <fcntl.h>
 +
-+enum subcmds {
-+	SUBCMD_TRANSFER = 0,
-+	SUBCMD_LIST,
-+	SUBCMD_HELP,
-+	SUBCMD_VERSION,
++static const char *const cntr_type_labels[] = {
++	[CONTAINER_TYPE_PARSER] = "parser",
++	[CONTAINER_TYPE_BUILDER] = "builder",
 +};
 +
-+static void print_version(const char *const cmdname)
++static const char *const cntr_format_labels[] = {
++	[CONTAINER_FORMAT_COUNT] = "",
++};
++
++static const char *const suffixes[] = {
++	[CONTAINER_FORMAT_COUNT] = "",
++};
++
++const char *const container_suffix_from_format(enum container_format format)
 +{
-+	printf("%s: version %s\n", cmdname, SND_UTIL_VERSION_STR);
++	return suffixes[format];
 +}
 +
-+static void print_help(void)
++int container_recursive_read(struct container_context *cntr, void *buf,
++			     unsigned int byte_count)
 +{
-+	printf("help\n");
++	char *dst = buf;
++	ssize_t result;
++	size_t consumed = 0;
++
++	while (consumed < byte_count && !cntr->interrupted) {
++		result = read(cntr->fd, dst + consumed, byte_count - consumed);
++		if (result < 0) {
++			// This descriptor was configured with non-blocking
++			// mode. EINTR is not cought when get any interrupts.
++			if (cntr->interrupted)
++				return -EINTR;
++			if (errno == EAGAIN)
++				continue;
++			return -errno;
++		}
++		// Reach EOF.
++		if (result == 0) {
++			cntr->eof = true;
++			return 0;
++		}
++
++		consumed += result;
++	}
++
++	return 0;
 +}
 +
-+static void decide_subcmd(int argc, char *const *argv, enum subcmds *subcmd)
++int container_recursive_write(struct container_context *cntr, void *buf,
++			      unsigned int byte_count)
 +{
-+	static const char *const subcmds[] = {
-+		[SUBCMD_TRANSFER] = "transfer",
-+		[SUBCMD_LIST] = "list",
-+		[SUBCMD_HELP] = "help",
-+		[SUBCMD_VERSION] = "version",
-+	};
-+	static const struct {
-+		const char *const name;
-+		enum subcmds subcmd;
-+	} long_opts[] = {
-+		{"--list-devices",	SUBCMD_LIST},
-+		{"--list-pcms",		SUBCMD_LIST},
-+		{"--help",  		SUBCMD_HELP},
-+		{"--version",  		SUBCMD_VERSION},
-+	};
-+	static const struct {
-+		unsigned char c;
-+		enum subcmds subcmd;
-+	} short_opts[] = {
-+		{'l', SUBCMD_LIST},
-+		{'L', SUBCMD_LIST},
-+		{'h', SUBCMD_HELP},
-+	};
-+	char *pos;
-+	int i, j;
++	char *src = buf;
++	ssize_t result;
++	size_t consumed = 0;
 +
-+	if (argc == 1) {
-+		*subcmd = SUBCMD_HELP;
-+		return;
-+	}
-+
-+	// sub-command system.
-+	for (i = 0; i < ARRAY_SIZE(subcmds); ++i) {
-+		if (!strcmp(argv[1], subcmds[i])) {
-+			*subcmd = i;
-+			return;
++	while (consumed < byte_count && !cntr->interrupted) {
++		result = write(cntr->fd, src + consumed, byte_count - consumed);
++		if (result < 0) {
++			// This descriptor was configured with non-blocking
++			// mode. EINTR is not cought when get any interrupts.
++			if (cntr->interrupted)
++				return -EINTR;
++			if (errno == EAGAIN)
++				continue;
++			return -errno;
 +		}
++
++		consumed += result;
 +	}
 +
-+	// Original command system. For long options.
-+	for (i = 0; i < ARRAY_SIZE(long_opts); ++i) {
-+		for (j = 0; j < argc; ++j) {
-+			if (!strcmp(long_opts[i].name, argv[j])) {
-+				*subcmd = long_opts[i].subcmd;
-+				return;
-+			}
-+		}
-+	}
-+
-+	// Original command system. For short options.
-+	for (i = 1; i < argc; ++i) {
-+		// Pick up short options only.
-+		if (argv[i][0] != '-' || argv[i][0] == '\0' ||
-+		    argv[i][1] == '-' || argv[i][1] == '\0')
-+			continue;
-+		for (pos = argv[i]; *pos != '\0'; ++pos) {
-+			for (j = 0; j < ARRAY_SIZE(short_opts); ++j) {
-+				if (*pos == short_opts[j].c) {
-+					*subcmd = short_opts[j].subcmd;
-+					return;
-+				}
-+			}
-+		}
-+	}
-+
-+	*subcmd = SUBCMD_TRANSFER;
++	return 0;
 +}
 +
-+static bool decide_direction(int argc, char *const *argv,
-+			     snd_pcm_stream_t *direction)
++enum container_format container_format_from_path(const char *path)
 +{
-+	static const struct {
-+		const char *const name;
-+		snd_pcm_stream_t direction;
-+	} long_opts[] = {
-+		{"--capture",	SND_PCM_STREAM_CAPTURE},
-+		{"--playback",	SND_PCM_STREAM_PLAYBACK},
-+	};
-+	static const struct {
-+		unsigned char c;
-+		snd_pcm_stream_t direction;
-+	} short_opts[] = {
-+		{'C',		SND_PCM_STREAM_CAPTURE},
-+		{'P',		SND_PCM_STREAM_PLAYBACK},
-+	};
-+	static const char *const aliases[] = {
-+		[SND_PCM_STREAM_CAPTURE] = "arecord",
-+		[SND_PCM_STREAM_PLAYBACK] = "aplay",
-+	};
-+	int i, j;
-+	char *pos;
++	const char *suffix;
++	const char *pos;
++	int i;
 +
-+	// Original command system. For long options.
-+	for (i = 0; i < ARRAY_SIZE(long_opts); ++i) {
-+		for (j = 0; j < argc; ++j) {
-+			if (!strcmp(long_opts[i].name, argv[j])) {
-+				*direction = long_opts[i].direction;
-+				return true;
-+			}
-+		}
++	for (i = 0; i < ARRAY_SIZE(suffixes); ++i) {
++		suffix = suffixes[i];
++
++		// Check last part of the string.
++		pos = path + strlen(path) - strlen(suffix);
++		if (!strcmp(pos, suffix))
++			return i;
 +	}
 +
-+	// Original command system. For short options.
-+	for (i = 1; i < argc; ++i) {
-+		// Pick up short options only.
-+		if (argv[i][0] != '-' || argv[i][0] == '\0' ||
-+		    argv[i][1] == '-' || argv[i][1] == '\0')
-+			continue;
-+		for (pos = argv[i]; *pos != '\0'; ++pos) {
-+			for (j = 0; j < ARRAY_SIZE(short_opts); ++j) {
-+				if (*pos == short_opts[j].c) {
-+					*direction = short_opts[j].direction;
-+					return true;
-+				}
-+			}
-+		}
-+	}
-+
-+	// If not decided yet, judge according to command name.
-+	for (i = 0; i < ARRAY_SIZE(aliases); ++i) {
-+		for (pos = argv[0] + strlen(argv[0]); pos != argv[0]; --pos) {
-+			if (strstr(pos, aliases[i]) != NULL) {
-+				*direction = i;
-+				return true;
-+			}
-+		}
-+	}
-+
-+	return false;
++	// Unsupported.
++	return CONTAINER_FORMAT_COUNT;
 +}
 +
-+int main(int argc, char *const *argv)
++int container_seek_offset(struct container_context *cntr, off64_t offset)
 +{
-+	snd_pcm_stream_t direction;
-+	enum subcmds subcmd;
++	off64_t pos;
++
++	pos = lseek64(cntr->fd, offset, SEEK_SET);
++	if (pos < 0)
++		return -errno;
++	if (pos != offset)
++		return -EIO;
++
++	return 0;
++}
++
++// To avoid blocking execution at system call iteration after receiving UNIX
++// signals.
++static int set_nonblock_flag(int fd)
++{
++	int flags;
++
++	flags = fcntl(fd, F_GETFL);
++	if (flags < 0)
++		return -errno;
++
++	flags |= O_NONBLOCK;
++	if (fcntl(fd, F_SETFL, flags) < 0)
++		return -errno;
++
++	return 0;
++}
++
++int container_parser_init(struct container_context *cntr,
++			  const char *const path, unsigned int verbose)
++{
++	const struct container_parser *parsers[] = {
++		NULL,
++	};
++	const struct container_parser *parser;
++	unsigned int size;
++	int i;
++	int err;
++
++	assert(cntr);
++	assert(path);
++	assert(path[0] != '\0');
++
++	// Detect forgotten to destruct.
++	assert(cntr->fd == 0);
++	assert(cntr->private_data == NULL);
++
++	memset(cntr, 0, sizeof(*cntr));
++
++	// Open a target descriptor.
++	if (!strcmp(path, "-")) {
++		cntr->fd = fileno(stdin);
++		err = set_nonblock_flag(cntr->fd);
++		if (err < 0)
++			return err;
++		cntr->stdio = true;
++	} else {
++		cntr->fd = open(path, O_RDONLY | O_NONBLOCK);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	// 4 bytes are enough to detect supported containers.
++	err = container_recursive_read(cntr, cntr->magic, sizeof(cntr->magic));
++	if (err < 0)
++		return err;
++	for (i = 0; i < ARRAY_SIZE(parsers); ++i) {
++		parser = parsers[i];
++		size = strlen(parser->magic);
++		if (size > 4)
++			size = 4;
++		if (!strncmp(cntr->magic, parser->magic, size))
++			break;
++	}
++
++	// Don't forget that the first 4 bytes were already read for magic
++	// bytes.
++	cntr->magic_handled = false;
++
++	// Unless detected, use raw container.
++	if (i == ARRAY_SIZE(parsers))
++		return -EINVAL;
++
++	// Allocate private data for the parser.
++	if (parser->private_size > 0) {
++		cntr->private_data = malloc(parser->private_size);
++		if (cntr->private_data == NULL)
++			return -ENOMEM;
++		memset(cntr->private_data, 0, parser->private_size);
++	}
++
++	cntr->type = CONTAINER_TYPE_PARSER;
++	cntr->process_bytes = container_recursive_read;
++	cntr->format = parser->format;
++	cntr->ops = &parser->ops;
++	cntr->max_size = parser->max_size;
++	cntr->verbose = verbose;
++
++	return 0;
++}
++
++int container_builder_init(struct container_context *cntr,
++			   const char *const path, enum container_format format,
++			   unsigned int verbose)
++{
++	const struct container_builder *builders[] = {
++		NULL,
++	};
++	const struct container_builder *builder;
++	int err;
++
++	assert(cntr);
++	assert(path);
++	assert(path[0] != '\0');
++
++	// Detect forgotten to destruct.
++	assert(cntr->fd == 0);
++	assert(cntr->private_data == NULL);
++
++	memset(cntr, 0, sizeof(*cntr));
++
++	// Open a target descriptor.
++	if (path == NULL || *path == '\0')
++		return -EINVAL;
++	if (!strcmp(path, "-")) {
++		cntr->fd = fileno(stdout);
++		err = set_nonblock_flag(cntr->fd);
++		if (err < 0)
++			return err;
++		cntr->stdio = true;
++	} else {
++		cntr->fd = open(path, O_RDWR | O_NONBLOCK | O_CREAT | O_TRUNC,
++				0644);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	builder = builders[format];
++
++	// Allocate private data for the builder.
++	if (builder->private_size > 0) {
++		cntr->private_data = malloc(builder->private_size);
++		if (cntr->private_data == NULL)
++			return -ENOMEM;
++		memset(cntr->private_data, 0, builder->private_size);
++	}
++
++	cntr->type = CONTAINER_TYPE_BUILDER;
++	cntr->process_bytes = container_recursive_write;
++	cntr->format = builder->format;
++	cntr->ops = &builder->ops;
++	cntr->max_size = builder->max_size;
++	cntr->verbose = verbose;
++
++	return 0;
++}
++
++int container_context_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *frame_count)
++{
++	uint64_t byte_count;
++	unsigned int bytes_per_frame;
++	int err;
++
++	assert(cntr);
++	assert(format);
++	assert(samples_per_frame);
++	assert(frames_per_second);
++	assert(frame_count);
++
++	if (cntr->type == CONTAINER_TYPE_BUILDER)
++		byte_count = cntr->max_size;
++
++	if (cntr->ops->pre_process) {
++		err = cntr->ops->pre_process(cntr, format, samples_per_frame,
++					     frames_per_second, &byte_count);
++		if (err < 0)
++			return err;
++		if (cntr->eof)
++			return 0;
++	}
++
++	assert(*format >= SND_PCM_FORMAT_S8);
++	assert(*format <= SND_PCM_FORMAT_LAST);
++	assert(*samples_per_frame > 0);
++	assert(*frames_per_second > 0);
++	assert(byte_count > 0);
++
++	cntr->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++	cntr->samples_per_frame = *samples_per_frame;
++	cntr->frames_per_second = *frames_per_second;
++
++	bytes_per_frame = cntr->bytes_per_sample * *samples_per_frame;
++	*frame_count = byte_count / bytes_per_frame;
++	cntr->max_size -= cntr->max_size / bytes_per_frame;
++
++	if (cntr->verbose > 0) {
++		fprintf(stderr, "Container: %s\n",
++			cntr_type_labels[cntr->type]);
++		fprintf(stderr, "  format: %s\n",
++			cntr_format_labels[cntr->format]);
++		fprintf(stderr, "  sample format: %s\n",
++			snd_pcm_format_name(*format));
++		fprintf(stderr, "  bytes/sample: %u\n",
++			cntr->bytes_per_sample);
++		fprintf(stderr, "  samples/frame: %u\n",
++			cntr->samples_per_frame);
++		fprintf(stderr, "  frames/second: %u\n",
++			cntr->frames_per_second);
++		if (cntr->type == CONTAINER_TYPE_PARSER) {
++			fprintf(stderr, "  frames: %lu\n",
++				*frame_count);
++		} else {
++			fprintf(stderr, "  max frames: %lu\n",
++				*frame_count);
++		}
++	}
++
++	return 0;
++}
++
++int container_context_process_frames(struct container_context *cntr,
++				     void *frame_buffer,
++				     unsigned int *frame_count)
++{
++	char *buf = frame_buffer;
++	unsigned int bytes_per_frame;
++	unsigned int byte_count;
++	int err;
++
++	assert(cntr);
++	assert(!cntr->eof);
++	assert(frame_buffer);
++	assert(frame_count);
++
++	bytes_per_frame = cntr->bytes_per_sample * cntr->samples_per_frame;
++	byte_count = *frame_count * bytes_per_frame;
++
++	// Each container has limitation for its volume for sample data.
++	if (cntr->handled_byte_count > cntr->max_size - byte_count)
++		byte_count = cntr->max_size - cntr->handled_byte_count;
++
++	// All of supported containers include interleaved PCM frames.
++	// TODO: process frames for truncate case.
++	err = cntr->process_bytes(cntr, buf, byte_count);
++	if (err < 0) {
++		*frame_count = 0;
++		return err;
++	}
++
++	cntr->handled_byte_count += byte_count;
++	if (cntr->handled_byte_count == cntr->max_size)
++		cntr->eof = true;
++
++	*frame_count = byte_count / bytes_per_frame;
++
++	return 0;
++}
++
++int container_context_post_process(struct container_context *cntr,
++				   uint64_t *frame_count)
++{
 +	int err = 0;
 +
-+	if (!decide_direction(argc, argv, &direction))
-+		subcmd = SUBCMD_HELP;
-+	else
-+		decide_subcmd(argc, argv, &subcmd);
++	assert(cntr);
++	assert(frame_count);
 +
-+	if (subcmd == SUBCMD_TRANSFER)
-+		printf("execute 'transfer' subcmd.\n");
-+	else if (subcmd == SUBCMD_LIST)
-+		printf("execute 'list' subcmd.\n");
-+	else if (subcmd == SUBCMD_VERSION)
-+		print_version(argv[0]);
-+	else
-+		print_help();
++	if (cntr->verbose && cntr->handled_byte_count > 0) {
++		fprintf(stderr, "  Handled bytes: %lu\n",
++			cntr->handled_byte_count);
++	}
++
++	// NOTE* we cannot seek when using standard input/output.
++	if (!cntr->stdio && cntr->ops && cntr->ops->post_process) {
++		// Usually, need to write out processed bytes in container
++		// header even it this program is interrupted.
++		cntr->interrupted = false;
++
++		err = cntr->ops->post_process(cntr, cntr->handled_byte_count);
++	}
++
++	// Ensure to perform write-back from disk cache.
++	if (cntr->type == CONTAINER_TYPE_BUILDER)
++		fsync(cntr->fd);
++
 +	if (err < 0)
-+		return EXIT_FAILURE;
++		return err;
 +
-+	return EXIT_SUCCESS;
++	if (cntr->bytes_per_sample == 0 || cntr->samples_per_frame == 0) {
++		*frame_count = 0;
++	} else {
++		*frame_count = cntr->handled_byte_count /
++			       cntr->bytes_per_sample /
++			       cntr->samples_per_frame;
++	}
++
++	return 0;
 +}
-diff --git a/axfer/misc.h b/axfer/misc.h
++
++void container_context_destroy(struct container_context *cntr)
++{
++	assert(cntr);
++
++	close(cntr->fd);
++	if (cntr->private_data)
++		free(cntr->private_data);
++
++	cntr->fd = 0;
++	cntr->private_data = NULL;
++}
+diff --git a/axfer/container.h b/axfer/container.h
 new file mode 100644
-index 00000000..7c8bfb3
+index 00000000..4a94d7f
 --- /dev/null
-+++ b/axfer/misc.h
-@@ -0,0 +1,16 @@
++++ b/axfer/container.h
+@@ -0,0 +1,110 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// misc.h - a header file for miscellaneous tools.
++// container.h - an interface of parser/builder for formatted files.
 +//
 +// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 +//
 +// Licensed under the terms of the GNU General Public License, version 2.
 +
-+#ifndef __ALSA_UTILS_AXFER_MISC__H_
-+#define __ALSA_UTILS_AXFER_MISC__H_
++#ifndef __ALSA_UTILS_AXFER_CONTAINER__H_
++#define __ALSA_UTILS_AXFER_CONTAINER__H_
 +
-+#include <gettext.h>
++#define _LARGEFILE64_SOURCE
++#include <sys/types.h>
++#include <unistd.h>
 +
-+#define ARRAY_SIZE(array)	(sizeof(array)/sizeof(array[0]))
-+
-+#endif
-diff --git a/axfer/subcmd.h b/axfer/subcmd.h
-new file mode 100644
-index 00000000..470a415
---- /dev/null
-+++ b/axfer/subcmd.h
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// subcmd.h - a header for each sub-commands.
-+//
-+// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+//
-+// Licensed under the terms of the GNU General Public License, version 2.
-+
-+#ifndef __ALSA_UTILS_AXFER_SUBCMD__H_
-+#define __ALSA_UTILS_AXFER_SUBCMD__H_
++#include <stdbool.h>
++#include <stdint.h>
 +
 +#include <alsa/asoundlib.h>
 +
++enum container_type {
++	CONTAINER_TYPE_PARSER = 0,
++	CONTAINER_TYPE_BUILDER,
++	CONTAINER_TYPE_COUNT,
++};
++
++enum container_format {
++	CONTAINER_FORMAT_COUNT,
++};
++
++struct container_ops;
++
++struct container_context {
++	enum container_type type;
++	int fd;
++	int (*process_bytes)(struct container_context *cntr,
++			     void *buffer, unsigned int byte_count);
++	bool magic_handled;
++	bool eof;
++	bool interrupted;
++	bool stdio;
++
++	enum container_format format;
++	uint64_t max_size;
++	char magic[4];
++	const struct container_ops *ops;
++	void *private_data;
++
++	// Available after pre-process.
++	unsigned int bytes_per_sample;
++	unsigned int samples_per_frame;
++	unsigned int frames_per_second;
++
++	unsigned int verbose;
++	uint64_t handled_byte_count;
++};
++
++const char *const container_suffix_from_format(enum container_format format);
++enum container_format container_format_from_path(const char *path);
++int container_parser_init(struct container_context *cntr,
++			  const char *const path, unsigned int verbose);
++int container_builder_init(struct container_context *cntr,
++			   const char *const path, enum container_format format,
++			   unsigned int verbose);
++void container_context_destroy(struct container_context *cntr);
++int container_context_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *frame_count);
++int container_context_process_frames(struct container_context *cntr,
++				     void *frame_buffer,
++				     unsigned int *frame_count);
++int container_context_post_process(struct container_context *cntr,
++				   uint64_t *frame_count);
++
++// For internal use in 'container' module.
++
++struct container_ops {
++	int (*pre_process)(struct container_context *cntr,
++			   snd_pcm_format_t *format,
++			   unsigned int *samples_per_frame,
++			   unsigned int *frames_per_second,
++			   uint64_t *byte_count);
++	int (*post_process)(struct container_context *cntr,
++			    uint64_t handled_byte_count);
++};
++struct container_parser {
++	enum container_format format;
++	const char *const magic;
++	uint64_t max_size;
++	struct container_ops ops;
++	unsigned int private_size;
++};
++
++struct container_builder {
++	enum container_format format;
++	const char *const suffix;
++	uint64_t max_size;
++	struct container_ops ops;
++	unsigned int private_size;
++};
++
++int container_recursive_read(struct container_context *cntr, void *buf,
++			     unsigned int byte_count);
++int container_recursive_write(struct container_context *cntr, void *buf,
++			      unsigned int byte_count);
++int container_seek_offset(struct container_context *cntr, off64_t offset);
++
 +#endif
-diff --git a/configure.ac b/configure.ac
-index c37b8a5..404fa16 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -430,4 +430,4 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
- 	  utils/alsa-utils.spec seq/Makefile seq/aconnect/Makefile \
- 	  seq/aplaymidi/Makefile seq/aseqdump/Makefile seq/aseqnet/Makefile \
- 	  speaker-test/Makefile speaker-test/samples/Makefile \
--	  alsaloop/Makefile alsa-info/Makefile)
-+	  alsaloop/Makefile alsa-info/Makefile axfer/Makefile)
 -- 
 2.19.1
