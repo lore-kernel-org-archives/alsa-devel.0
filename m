@@ -1,21 +1,22 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [RFC PATCH] cplay: Always write frag *
-	fragment_size
-Date: Wed, 14 Nov 2018 08:59:27 +0200
-Message-ID: <CAEnQRZCj=jRRr1-r_nGpToigLpR4UASBwXuU32P9tq4K8M0P7Q@mail.gmail.com>
-References: <1541427790-27876-1-git-send-email-daniel.baluta@nxp.com>
- <20181113145221.GC3060@vkoul-mobl>
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: Re: [PATCH v5 3/3] ALSA: hda: add support for Huawei
+	WMI micmute LED
+Date: Tue, 13 Nov 2018 15:40:22 -0500
+Message-ID: <CAB3uXr5NrrQ4zLvpXM51EJtjJAAScDw_daj5bY40xtsUnj=RGg@mail.gmail.com>
+References: <20181111190250.6055-1-ayman.bagabas@gmail.com>
+ <20181111190250.6055-4-ayman.bagabas@gmail.com> <s5hsh04c28h.wl-tiwai@suse.de>
+ <CAHp75VfH3ypEeM+kEOCsAkKmd9NRUq3Q-soYJ4aPB9+icn3Rdg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
- [209.85.208.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F786267A61
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 07:59:40 +0100 (CET)
-Received: by mail-ed1-f66.google.com with SMTP id b14so10154741edt.6
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 22:59:40 -0800 (PST)
-In-Reply-To: <20181113145221.GC3060@vkoul-mobl>
+Received: from mail-vs1-f66.google.com (mail-vs1-f66.google.com
+ [209.85.217.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id F01D226751A
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 21:40:36 +0100 (CET)
+Received: by mail-vs1-f66.google.com with SMTP id x1so8133140vsc.10
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 12:40:36 -0800 (PST)
+In-Reply-To: <CAHp75VfH3ypEeM+kEOCsAkKmd9NRUq3Q-soYJ4aPB9+icn3Rdg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vkoul@kernel.org
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Daniel Baluta <daniel.baluta@nxp.com>, vinod.koul@linux.intel.com
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>, Darren Hart <dvhart@infradead.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, Andy Shevchenko <andy@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
+On Tue, Nov 13, 2018, 1:51 PM Andy Shevchenko <andy.shevchenko@gmail.com>
+wrote:
 
-Thanks a lot for having a look at this. Please check my comments inline:
-
-<snip>
-> > -     size = config.fragment_size;
-> > -     buffer = malloc(size * config.fragments);
-> > +     size = config.fragments * config.fragment_size;
-> > +     buffer = malloc(size);
+> On Tue, Nov 13, 2018 at 7:32 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Sun, 11 Nov 2018 20:02:45 +0100,
+> > Ayman Bagabas wrote:
 >
-> net result of this change is no change. Leaving alone the variable names
-> from this discussion, we allocate memory for size of config.fragments * config.fragment_size
+>
+> > With that fix,
+> >   Reviewed-by: Takashi Iwai <tiwai@suse.de>
+>
+> Ayman, please, send next version with requested changes and appended
+> tags. I will apply it.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
 
-Yes, you are right on this. There is no change here. But notice that we change
-the value of size to config.fragments * config.fragment_size;
+Andy, to clarify, what tags you referring to? Is it patch version?
 
-Now, please take a look at the inner loop at:
-
-https://github.com/alsa-project/tinycompress/blob/master/src/utils/cplay.c#L382
-
-num_read = fread(buffer, 1, size, file);
-
-So, now instead of reading config.fragment_size we read
-config.fragments * config.fragment_size
-thus we fully utilize the buffer.
-
-I'm pretty sure this is the correct fix. See also crecord fix from Charles:
-
-http://git.alsa-project.org/?p=tinycompress.git;a=commit;h=e8e36567438c
-16a5121943205a0cd8c63924d0d8
-
-thanks,
-daniel.
+>
