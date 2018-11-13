@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 32/35] axfer: add an implementation of waiter
-	for epoll(7)
-Date: Tue, 13 Nov 2018 15:41:44 +0900
-Message-ID: <20181113064147.13577-32-o-takashi@sakamocchi.jp>
+Subject: [PATCH 34/35] axfer: obsolete some unimplemented
+	options
+Date: Tue, 13 Nov 2018 15:41:46 +0900
+Message-ID: <20181113064147.13577-34-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
- [209.85.210.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 39345267AE5
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:50 +0100 (CET)
-Received: by mail-pf1-f194.google.com with SMTP id 64so1069816pfr.9
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:50 -0800 (PST)
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6708267B94
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:53 +0100 (CET)
+Received: by mail-pl1-f195.google.com with SMTP id w24-v6so5526945plq.3
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:53 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,186 +29,104 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of waiter for Linux specific epoll(7) system call.
-For portability to the other Unix-like systems such as xBSD, modification
-of Makefile.am may be required for conditional build, but this commit
-includes no changes for it.
+Althogh many options are actually supported by aplay, some of them are
+not enough good in practical points. For example, '--test-position'
+option is meaningless for some use cases. Furthermore, due to practical
+reasons, some options are not implemented well; e.g. vumeter.
 
-Below lines are examples to use this option:
-$ axfer transfer --waiter-type=epoll -M -P -d 2 -D hw:0,3 /dev/urandom -f dat -vvv
-$ axfer transfer --waiter-type=epoll -M -C -d 2 -D hw:1,0 /dev/null -r 48000 -vvv
+This commit marks such options as 'obsoleted'.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am    |   3 +-
- axfer/waiter-epoll.c | 107 +++++++++++++++++++++++++++++++++++++++++++
- axfer/waiter.c       |   2 +
- axfer/waiter.h       |   2 +
- 4 files changed, 113 insertions(+), 1 deletion(-)
- create mode 100644 axfer/waiter-epoll.c
+ axfer/xfer-libasound.c | 13 ++++++++++++-
+ axfer/xfer-options.c   | 14 ++++++++++++--
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 867007b..ab1d0b4 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -52,4 +52,5 @@ axfer_SOURCES = \
- 	waiter.h \
- 	waiter.c \
- 	waiter-poll.c \
--	waiter-select.c
-+	waiter-select.c \
-+	waiter-epoll.c
-diff --git a/axfer/waiter-epoll.c b/axfer/waiter-epoll.c
-new file mode 100644
-index 00000000..8f084f1
---- /dev/null
-+++ b/axfer/waiter-epoll.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// waiter-epoll.c - Waiter for event notification by epoll(7).
-+//
-+// Copyright (c) 2018 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+//
-+// Licensed under the terms of the GNU General Public License, version 2.
-+
-+#include "waiter.h"
-+#include "misc.h"
-+
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <sys/epoll.h>
-+
-+struct epoll_state {
-+	int epfd;
-+	struct epoll_event *events;
-+	unsigned int ev_count;
-+};
-+
-+static int epoll_prepare(struct waiter_context *waiter)
-+{
-+	struct epoll_state *state = waiter->private_data;
-+	int i;
-+
-+	state->ev_count = waiter->pfd_count;
-+	state->events = calloc(state->ev_count, sizeof(*state->events));
-+	if (state->events == NULL)
-+		return -ENOMEM;
-+
-+	state->epfd = epoll_create(1);
-+	if (state->epfd < 0)
-+		return -errno;
-+
-+	for (i = 0; i < waiter->pfd_count; ++i) {
-+		struct epoll_event ev = {
-+			.data.fd = waiter->pfds[i].fd,
-+			.events = waiter->pfds[i].events,
-+		};
-+		if (epoll_ctl(state->epfd, EPOLL_CTL_ADD, ev.data.fd, &ev) < 0)
-+			return -errno;
-+	}
-+
-+	return 0;
-+}
-+
-+static int epoll_wait_event(struct waiter_context *waiter, int timeout_msec)
-+{
-+	struct epoll_state *state = waiter->private_data;
-+	unsigned int ev_count;
-+	int i, j;
-+	int err;
-+
-+	memset(state->events, 0, state->ev_count * sizeof(*state->events));
-+	err = epoll_wait(state->epfd, state->events, state->ev_count,
-+			 timeout_msec);
-+	if (err < 0)
-+		return -errno;
-+	ev_count = (unsigned int)err;
-+
-+	if (ev_count > 0) {
-+		// Reconstruct data of pollfd structure.
-+		for (i = 0; i < ev_count; ++i) {
-+			struct epoll_event *ev = &state->events[i];
-+			for (j = 0; j < waiter->pfd_count; ++j) {
-+				if (waiter->pfds[i].fd == ev->data.fd) {
-+					waiter->pfds[i].revents = ev->events;
-+					break;
-+				}
-+			}
-+		}
-+	}
-+
-+	return ev_count;
-+}
-+
-+static void epoll_release(struct waiter_context *waiter)
-+{
-+	struct epoll_state *state = waiter->private_data;
-+	int i;
-+
-+	for (i = 0; i < waiter->pfd_count; ++i) {
-+		int fd = waiter->pfds[i].fd;
-+		epoll_ctl(state->epfd, EPOLL_CTL_DEL, fd, NULL);
-+	}
-+
-+	free(state->events);
-+	state->events = NULL;
-+
-+	close(state->epfd);
-+
-+	state->ev_count = 0;
-+	state->epfd = 0;
-+}
-+
-+const struct waiter_data waiter_epoll = {
-+	.ops = {
-+		.prepare	= epoll_prepare,
-+		.wait_event	= epoll_wait_event,
-+		.release	= epoll_release,
-+	},
-+	.private_size = sizeof(struct epoll_state),
-+};
-diff --git a/axfer/waiter.c b/axfer/waiter.c
-index 08428e3..1e9c811 100644
---- a/axfer/waiter.c
-+++ b/axfer/waiter.c
-@@ -18,6 +18,7 @@ static const char *const waiter_type_labels[] = {
- 	[WAITER_TYPE_DEFAULT] = "default",
- 	[WAITER_TYPE_POLL] = "poll",
- 	[WAITER_TYPE_SELECT] = "select",
-+	[WAITER_TYPE_EPOLL] = "epoll",
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index f6d0515..bacd835 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -26,9 +26,12 @@ enum no_short_opts {
+ 	OPT_DISABLE_SOFTVOL,
+ 	OPT_FATAL_ERRORS,
+ 	OPT_TEST_NOWAIT,
++	// Obsoleted.
++	OPT_TEST_POSITION,
++	OPT_TEST_COEF,
  };
  
- enum waiter_type waiter_type_from_label(const char *label)
-@@ -46,6 +47,7 @@ int waiter_context_init(struct waiter_context *waiter,
- 	} entries[] = {
- 		{WAITER_TYPE_POLL,	&waiter_poll},
- 		{WAITER_TYPE_SELECT,	&waiter_select},
-+		{WAITER_TYPE_EPOLL,	&waiter_epoll},
+-#define S_OPTS	"D:NMF:B:A:R:T:"
++#define S_OPTS	"D:NMF:B:A:R:T:m:"
+ static const struct option l_opts[] = {
+ 	{"device",		1, 0, 'D'},
+ 	{"nonblock",		0, 0, 'N'},
+@@ -50,6 +53,10 @@ static const struct option l_opts[] = {
+ 	// For debugging.
+ 	{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
+ 	{"test-nowait",		0, 0, OPT_TEST_NOWAIT},
++	// Obsoleted.
++	{"chmap",		1, 0, 'm'},
++	{"test-position",	0, 0, OPT_TEST_POSITION},
++	{"test-coef",		1, 0, OPT_TEST_COEF},
+ };
+ 
+ static int xfer_libasound_init(struct xfer_context *xfer,
+@@ -107,6 +114,10 @@ static int xfer_libasound_parse_opt(struct xfer_context *xfer, int key,
+ 		state->no_auto_format = true;
+ 	else if (key == OPT_DISABLE_SOFTVOL)
+ 		state->no_softvol = true;
++	else if (key == 'm' ||
++		 key == OPT_TEST_POSITION ||
++		 key == OPT_TEST_COEF)
++		err = -EINVAL;
+ 	else if (key == OPT_FATAL_ERRORS)
+ 		state->finish_at_xrun = true;
+ 	else if (key == OPT_TEST_NOWAIT)
+diff --git a/axfer/xfer-options.c b/axfer/xfer-options.c
+index d899134..5a68646 100644
+--- a/axfer/xfer-options.c
++++ b/axfer/xfer-options.c
+@@ -21,6 +21,8 @@ enum no_short_opts {
+ 	OPT_BUFFER_SIZE,
+ 	// Obsoleted.
+ 	OPT_MAX_FILE_TIME,
++	OPT_USE_STRFTIME,
++	OPT_PROCESS_ID_FILE,
+ };
+ 
+ static int allocate_paths(struct xfer_context *xfer, char *const *paths,
+@@ -232,7 +234,7 @@ int xfer_options_parse_args(struct xfer_context *xfer,
+ 			    const struct xfer_data *data, int argc,
+ 			    char *const *argv)
+ {
+-	static const char *short_opts = "CPhvqd:s:f:c:r:t:I";
++	static const char *short_opts = "CPhvqd:s:f:c:r:t:IV:i";
+ 	static const struct option long_opts[] = {
+ 		// For generic purposes.
+ 		{"capture",		0, 0, 'C'},
+@@ -255,6 +257,10 @@ int xfer_options_parse_args(struct xfer_context *xfer,
+ 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
+ 		// Obsoleted.
+ 		{"max-file-time",	1, 0, OPT_MAX_FILE_TIME},
++		{"use-strftime",	0, 0, OPT_USE_STRFTIME},
++		{"process-id-file",	1, 0, OPT_PROCESS_ID_FILE},
++		{"vumeter",		1, 0, 'V'},
++		{"interactive",		0, 0, 'i'},
  	};
- 	int i;
- 
-diff --git a/axfer/waiter.h b/axfer/waiter.h
-index fec16b7..db18e33 100644
---- a/axfer/waiter.h
-+++ b/axfer/waiter.h
-@@ -15,6 +15,7 @@ enum waiter_type {
- 	WAITER_TYPE_DEFAULT = 0,
- 	WAITER_TYPE_POLL,
- 	WAITER_TYPE_SELECT,
-+	WAITER_TYPE_EPOLL,
- 	WAITER_TYPE_COUNT,
- };
- 
-@@ -55,5 +56,6 @@ struct waiter_data {
- 
- extern const struct waiter_data waiter_poll;
- extern const struct waiter_data waiter_select;
-+extern const struct waiter_data waiter_epoll;
- 
- #endif
+ 	char *s_opts;
+ 	struct option *l_opts;
+@@ -321,7 +327,11 @@ int xfer_options_parse_args(struct xfer_context *xfer,
+ 			xfer->dump_hw_params = true;
+ 		else if (key == '?')
+ 			return -EINVAL;
+-		else if (key == OPT_MAX_FILE_TIME) {
++		else if (key == OPT_MAX_FILE_TIME ||
++			 key == OPT_USE_STRFTIME ||
++			 key == OPT_PROCESS_ID_FILE ||
++			 key == 'V' ||
++			 key == 'i') {
+ 			fprintf(stderr,
+ 				"An option '--%s' is obsoleted and has no "
+ 				"effect.\n",
 -- 
 2.19.1
