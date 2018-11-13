@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/35] axfer: add informative output and an
-	option to suppress it
-Date: Tue, 13 Nov 2018 15:41:30 +0900
-Message-ID: <20181113064147.13577-18-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/35] axfer: add an option to dump available
+	hardware parameters
+Date: Tue, 13 Nov 2018 15:41:31 +0900
+Message-ID: <20181113064147.13577-19-o-takashi@sakamocchi.jp>
 References: <20181113062459.DD8F7267A5C@alsa0.perex.cz>
  <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 24FCE267B3E
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:25 +0100 (CET)
-Received: by mail-pf1-f193.google.com with SMTP id v68-v6so5554462pfk.0
- for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:25 -0800 (PST)
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAF22267AE5
+ for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 07:42:27 +0100 (CET)
+Received: by mail-pl1-f196.google.com with SMTP id x21-v6so2795170pln.9
+ for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2018 22:42:27 -0800 (PST)
 In-Reply-To: <20181113064147.13577-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,104 +29,106 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current aplay, some informative output is available as a default. This
-can be suppressed by a quiet option. This commit adds support for it.
+In ALSA PCM interface, before configuring hardware actually, applications
+can request available set of hardware parameters for runtime of PCM
+substream. The set of parameters are represented and delivered by a
+structure.
 
-An original aplay implementation has no effect of this option in a case
-to handle multiple files. However, in a point of usability, this commit
-support this case.
+In alsa-lib PCM API, the above design is abstracted by a series of
+snd_pcm_hw_params_xxx() functions. An actual layout of the structure is
+hidden from applications by an opaque pointer.
+
+In aplay, '--dump-hw-params' option is for this purpose. With this option,
+the command output available set of the hardware parameters.
+
+This commit adds support for the option. Unlike aplay, this commit takes
+this program to finish after dumping the parameters for simplicity of
+usage.
+
+I note that all of combinations in the set are not necessarily available
+when the PCM substream includes dependencies of parameters described by
+constraints and rules.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/subcmd-transfer.c | 27 +++++++++++++++++++++++++++
- axfer/xfer-options.c    |  5 ++++-
- axfer/xfer.h            |  1 +
- 3 files changed, 32 insertions(+), 1 deletion(-)
+ axfer/subcmd-transfer.c | 2 +-
+ axfer/xfer-libasound.c  | 9 +++++++++
+ axfer/xfer-options.c    | 5 +++++
+ axfer/xfer.h            | 1 +
+ 4 files changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
-index 188589f..a165a93 100644
+index a165a93..36817f3 100644
 --- a/axfer/subcmd-transfer.c
 +++ b/axfer/subcmd-transfer.c
-@@ -340,6 +340,21 @@ static int context_process_frames(struct context *ctx,
- 	int i;
- 	int err = 0;
+@@ -447,7 +447,7 @@ int subcmd_transfer(int argc, char *const *argv, snd_pcm_stream_t direction)
+ 	err = context_init(&ctx, direction, argc, argv);
+ 	if (err < 0)
+ 		goto end;
+-	if (ctx.xfer.help)
++	if (ctx.xfer.help || ctx.xfer.dump_hw_params)
+ 		goto end;
  
-+	if (!ctx->xfer.quiet) {
-+		fprintf(stderr,
-+			"%s: Format '%s', Rate %u Hz, Channels ",
-+			snd_pcm_stream_name(direction),
-+			snd_pcm_format_description(ctx->xfer.sample_format),
-+			ctx->xfer.frames_per_second);
-+		if (ctx->xfer.samples_per_frame == 1)
-+			fprintf(stderr, "'monaural'");
-+		else if (ctx->xfer.samples_per_frame == 2)
-+			fprintf(stderr, "'Stereo'");
-+		else
-+			fprintf(stderr, "%u", ctx->xfer.samples_per_frame);
-+		fprintf(stderr, "\n");
+ 	err = context_pre_process(&ctx, direction, &expected_frame_count);
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index bf1b056..60e9aab 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -99,6 +99,15 @@ static int open_handle(struct xfer_context *xfer)
+ 
+ 	// TODO: Applying NO_PERIOD_WAKEUP should be done here.
+ 
++	if (xfer->dump_hw_params) {
++		logging(state, "Available HW Params of node: %s\n",
++			snd_pcm_name(state->handle));
++		snd_pcm_hw_params_dump(state->hw_params, state->log);
++		// TODO: there're more parameters which are not dumped by
++		// alsa-lib.
++		return 0;
 +	}
 +
- 	*actual_frame_count = 0;
- 	while (!ctx->interrupted) {
- 		struct container_context *cntr;
-@@ -370,6 +385,18 @@ static int context_process_frames(struct context *ctx,
- 			break;
- 	}
- 
-+	if (!ctx->xfer.quiet) {
-+		fprintf(stderr,
-+			"%s: Expected %lu frames, Actual %lu frames\n",
-+			snd_pcm_stream_name(direction), expected_frame_count,
-+			*actual_frame_count);
-+		if (ctx->interrupted) {
-+			fprintf(stderr, "Aborted by signal: %s\n",
-+			       strsignal(ctx->signal));
-+			return 0;
-+		}
-+	}
-+
- 	return err;
+ 	return set_access_hw_param(state);
  }
  
 diff --git a/axfer/xfer-options.c b/axfer/xfer-options.c
-index fb71244..7790ea9 100644
+index 7790ea9..21fc6bb 100644
 --- a/axfer/xfer-options.c
 +++ b/axfer/xfer-options.c
-@@ -227,7 +227,7 @@ int xfer_options_parse_args(struct xfer_context *xfer,
- 			    const struct xfer_data *data, int argc,
- 			    char *const *argv)
- {
--	static const char *short_opts = "CPhvf:c:r:t:I";
-+	static const char *short_opts = "CPhvqf:c:r:t:I";
- 	static const struct option long_opts[] = {
- 		// For generic purposes.
- 		{"capture",		0, 0, 'C'},
-@@ -235,6 +235,7 @@ int xfer_options_parse_args(struct xfer_context *xfer,
- 		{"xfer-type",		1, 0, OPT_XFER_TYPE},
- 		{"help",		0, 0, 'h'},
- 		{"verbose",		0, 0, 'v'},
-+		{"quiet",		0, 0, 'q'},
- 		// For transfer backend.
- 		{"format",		1, 0, 'f'},
- 		{"channels",		1, 0, 'c'},
-@@ -289,6 +290,8 @@ int xfer_options_parse_args(struct xfer_context *xfer,
- 			xfer->help = true;
- 		else if (key == 'v')
- 			++xfer->verbose;
-+		else if (key == 'q')
-+			xfer->quiet = true;
- 		else if (key == 'f')
- 			xfer->sample_format_literal = arg_duplicate_string(optarg, &err);
- 		else if (key == 'c')
+@@ -16,6 +16,7 @@
+ enum no_short_opts {
+ 	// 128 or later belong to non us-ascii character set.
+ 	OPT_XFER_TYPE = 128,
++	OPT_DUMP_HW_PARAMS,
+ };
+ 
+ static int allocate_paths(struct xfer_context *xfer, char *const *paths,
+@@ -244,6 +245,8 @@ int xfer_options_parse_args(struct xfer_context *xfer,
+ 		{"file-type",		1, 0, 't'},
+ 		// For mapper.
+ 		{"separate-channels",	0, 0, 'I'},
++		// For debugging.
++		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
+ 	};
+ 	char *s_opts;
+ 	struct option *l_opts;
+@@ -302,6 +305,8 @@ int xfer_options_parse_args(struct xfer_context *xfer,
+ 			xfer->cntr_format_literal = arg_duplicate_string(optarg, &err);
+ 		else if (key == 'I')
+ 			xfer->multiple_cntrs = true;
++		else if (key == OPT_DUMP_HW_PARAMS)
++			xfer->dump_hw_params = true;
+ 		else if (key == '?')
+ 			return -EINVAL;
+ 		else {
 diff --git a/axfer/xfer.h b/axfer/xfer.h
-index df43d1c..0ed84e4 100644
+index 0ed84e4..a234851 100644
 --- a/axfer/xfer.h
 +++ b/axfer/xfer.h
-@@ -33,6 +33,7 @@ struct xfer_context {
- 	unsigned int frames_per_second;
+@@ -34,6 +34,7 @@ struct xfer_context {
  	unsigned int samples_per_frame;
  	bool help:1;
-+	bool quiet:1;
+ 	bool quiet:1;
++	bool dump_hw_params:1;
  	bool multiple_cntrs:1;	// For mapper.
  
  	snd_pcm_format_t sample_format;
