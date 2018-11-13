@@ -1,75 +1,61 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/11] ASoC: AMD: add ACP 3.x IP register
-	header
-Date: Tue, 13 Nov 2018 11:36:12 -0800
-Message-ID: <20181113193612.GK2089@sirena.org.uk>
+Subject: Re: [PATCH 04/11] ASoC: amd: add ACP3x PCM platform driver
+Date: Tue, 13 Nov 2018 11:41:22 -0800
+Message-ID: <20181113194122.GL2089@sirena.org.uk>
 References: <1542000903-19020-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1542000903-19020-2-git-send-email-Vijendar.Mukunda@amd.com>
+ <1542000903-19020-5-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2476477743346081395=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BD43267A61
- for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2018 20:36:20 +0100 (CET)
-In-Reply-To: <1542000903-19020-2-git-send-email-Vijendar.Mukunda@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gmhhrsDozM2n+uz5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1542000903-19020-5-git-send-email-Vijendar.Mukunda@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishnuvardhanrao.Ravulapati@amd.com, Alexander.Deucher@amd.com
+Cc: Alexander.Deucher@amd.com, Vishnuvardhanrao.Ravulapati@amd.com, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sanju R Mehta <sanju.mehta@amd.com>, open list <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2476477743346081395==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UlsYxwg8UDQn+EKZ"
-Content-Disposition: inline
-
-
---UlsYxwg8UDQn+EKZ
+--gmhhrsDozM2n+uz5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Nov 12, 2018 at 11:04:52AM +0530, Vijendar Mukunda wrote:
+On Mon, Nov 12, 2018 at 11:04:55AM +0530, Vijendar Mukunda wrote:
 
-> @@ -0,0 +1,655 @@
-> +/*
-> + * ACP 3.0 Register documentation
-> + *
-> + * Copyright (C) 2016 Advanced Micro Devices, Inc.
+> +static struct snd_pcm_ops acp3x_dma_ops = {
+> +	.open = NULL,
+> +	.close = NULL,
+> +	.ioctl = NULL,
+> +	.hw_params = NULL,
+> +	.hw_free = NULL,
+> +	.pointer = NULL,
+> +	.mmap = NULL,
+> +};
+> +
+> +struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
+> +	.hw_params = NULL,
+> +	.trigger   = NULL,
+> +	.set_fmt = NULL,
+> +};
 
-Please use SPDX headers on new files.
+Having these empty ops sets is really surprising - I see they do get
+added later on, but there's no sign that this will happen here and
+assigning NULL explicitly is generally bad.  It'd be better to just
+leave these empty here so they don't look like a bug when doing review.
 
-
---UlsYxwg8UDQn+EKZ
+--gmhhrsDozM2n+uz5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvrJ6wACgkQJNaLcl1U
-h9A8Qwf9ETej1fTRkd2dbKa04Ypx0+iHUnJI6YKM0jJPY4kMfhS1py1AQfwzfPQN
-Rk20lF/6Puc80Y/YCif7bGrmbkPEb5iA/RpC0EV7PcVOjJOK4h+FiXh7vcUTA3Bx
-BHW65YU5q5kmE+4mmbCESdL5EUld9xA6KcpV99fX7iQ74SPy4tTLzS1oI0azCVwL
-Fi1L407CkWu1WvNo/5DySSaHfHj1AU3GtxDE5elGex7VCzNbTfzO14szVcyD2YuI
-zi2bJZZGySstQvXMlXLVu/7rMLxSjXGc7Ro/mM2BWrIEIj7mVfRIJWQefQ9udJfH
-JkMsaXcaILEMa/dOjEPDgmlTBOiJkQ==
-=YxuY
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvrKN4ACgkQJNaLcl1U
+h9Dhnwf/TTWRh5Jg+uDQ7fBuAKdvKhqWhYGLO3MFidokeN7ewqDQC65WTGHr08yd
+rhHtg5hHdU2ffxbyZECzXFM0GKNmSWGHjmRTPIUIu8qAGWivUuTd0D3372JMIZeq
+jD5Qs6scAC1ei8o4ijrgN9CzMuPaGroL2LKk1Gk1gm9Z+GidiwWEhnVBhcCgXpSk
+z6h4dmCgWjXUdZAxg+U0eS8dehWVASbEUggyzMJk77kr9HCYM0oYUWSILZ1Ab8cY
+hFTsFWuEKMSSGGRvnMn2BwcyBiY2fyi+ilmTJSHkOKPu9QM3DOzWTEiMKa+AjMpz
+W7C3KvHyiTo9RZgbrBPG60rAuGGDxQ==
+=pVFt
 -----END PGP SIGNATURE-----
 
---UlsYxwg8UDQn+EKZ--
-
---===============2476477743346081395==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2476477743346081395==--
+--gmhhrsDozM2n+uz5--
