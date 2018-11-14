@@ -1,68 +1,70 @@
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: ak4118: Add support for AK4118
- S/PDIF transceiver
-Date: Wed, 14 Nov 2018 16:24:44 +0100
-Message-ID: <CAJiuCcd_LAhODGGu=EBj4WBvx2PufcVbw=tO1+Mm+1Hj0k6BRw@mail.gmail.com>
-References: <20181114121642.1404-1-peron.clem@gmail.com> <alpine.DEB.2.20.1811141602590.20252@lnxricardw1.se.axis.com>
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: [PATCH v6 2/3] ALSA: hda: fix front speakers on Huawei MBXP.
+Date: Wed, 14 Nov 2018 10:25:57 -0500
+Message-ID: <20181114152602.7842-3-ayman.bagabas@gmail.com>
+References: <20181114152602.7842-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.20.1811141602590.20252@lnxricardw1.se.axis.com>
+In-Reply-To: <20181114152602.7842-1-ayman.bagabas@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: ricard.wanderlof@axis.com
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Adrien Charruel <adrien.charruel@devialet.com>, linux-kernel@vger.kernel.org
+To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ayman Bagabas <ayman.bagabas@gmail.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ricard,
+This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
+https://bugzilla.kernel.org/show_bug.cgi?id=200501
+It enables the front speakers on Huawei Matebook X Pro laptops.
+These laptops come with Dolby Atmos sound system and these pins
+configuration enables the front speakers.
 
-On Wed, 14 Nov 2018 at 16:07, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
->
-> On Wed, 14 Nov 2018, Cl=C3=A9ment P=C3=A9ron wrote:
->
-> > From: Adrien Charruel <adrien.charruel@devialet.com>
-> >
-> > The AK4118A is a digital audio transceiver supporting 8 input channels
-> > at 192kHz and with 24bits resolution.
-> > It converts the S/PDIF signal to I2S format and is configurable over I2=
-C.
-> >
-> > This driver introduce a minimal support of the AK4118, like selecting t=
-he
-> > input channel, reading input frequency and detecting some errors.
->
-> I'm curious, from what it seems, there is no checking that the input
-> sample rate actually matches the configured sample rate? It's perfectly
-> understandable for a driver which has 'minimal support', but it's
-> something a user must be aware of; for instance if someone does
->
-> arecord -r 48000 output.wav
->
-> when the input data actually has a rate of 44100 Hz then the file will be
-> written with a header specifying 44100 Hz but the data will actually be
-> 48000 Hz.
->
-> It's not an objection on my part, just an observation. I don't know how
-> ALSA could enforce this in any way; ideally (barring automatic sample rat=
-e
-> conversion) one would want an error message that the sample rate specifie=
-d
-> when opening the stream does not match the sample rate of the S/PDIF inpu=
-t
-> data.
+Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-I'm quite new with linux audio driver but adding in ak4118_hw_params a
-check like if params_rate(params) =3D=3D ak4118_rate should do the job no
-?
-
-Regards,
-Clement
-
->
-> /Ricard
-> --
-> Ricard Wolf Wanderlof                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fa61674a5605..135c0826859b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5493,6 +5493,7 @@ enum {
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
++	ALC256_FIXUP_HUAWEI_MBXP_PINS,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
+ };
+@@ -5764,6 +5765,22 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{0x12, 0x90a60130},
++			{0x13, 0x40000000},
++			{0x14, 0x90170110},
++			{0x18, 0x411111f0},
++			{0x19, 0x04a11040},
++			{0x1a, 0x411111f0},
++			{0x1b, 0x90170112},
++			{0x1d, 0x40759a05},
++			{0x1e, 0x411111f0},
++			{0x21, 0x04211020},
++			{ }
++		}
++	},
+ 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_x101_headset_mic,
+@@ -6594,6 +6611,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 
+ #if 0
+-- 
+2.17.2
