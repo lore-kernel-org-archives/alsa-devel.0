@@ -1,18 +1,23 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: How to propagate parameters from FE to BE with
- compressed audio interfaces
-Date: Wed, 14 Nov 2018 15:35:28 +0000
-Message-ID: <1542209728.21696.53.camel@nxp.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: GitHub - alsa-project - repositories
+Date: Thu, 15 Nov 2018 00:50:22 +0900 (JST)
+Message-ID: <alpine.DEB.2.21.1811142352060.2496@laptop>
+References: <031c30f1-36b6-4cd9-3f67-3e8de8c77a3e@perex.cz>
+ <fe3a3e44-f712-fac0-a76b-c91b5a1a222e@sakamocchi.jp>
+ <970ae06c-be01-8cef-930e-a7c0bccfa31b@perex.cz>
+ <fea4f32f-625c-7e2e-3911-667221a43877@sakamocchi.jp>
+ <7943ec40-aff5-0157-530b-cd08ad3ef732@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr140040.outbound.protection.outlook.com [40.107.14.40])
- by alsa0.perex.cz (Postfix) with ESMTP id D171A2677E8
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 16:35:29 +0100 (CET)
-Content-Language: en-US
-Content-ID: <333B0A6EA5581A4FB050E73F30486EE7@eurprd04.prod.outlook.com>
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D37C267A61
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 16:50:27 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id d72so4100629pga.9
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 07:50:27 -0800 (PST)
+In-Reply-To: <7943ec40-aff5-0157-530b-cd08ad3ef732@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,29 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "vkoul@kernel.org" <vkoul@kernel.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sDQoNCnNvY19jb21wcl9zZXRfcGFyYW1zX2ZlIGNhbGxzwqBkcGNtX2JlX2RhaV9od19w
-YXJhbXMgaW4gb3JkZXIgdG8gc2V0dXANCkJFIGh3X3BhcmFtcy4NCg0KSXMgdGhlcmUgYSB3YXkg
-dG8gdHJhbnNmZXIgcGFyYW1ldGVycyBsaWtlIGZvciBleGFtcGxlIHRoZSByYXRlIGZyb20gRkUN
-CnRvIEJFPw0KDQpJbiBzb2NfY29tcHJfc2V0X3BhcmFtc19mZSB0aGVyZSBpcyB0aGlzIGNvZGU6
-DQoNCioNCiogQ3JlYXRlIGFuIGVtcHR5IGh3X3BhcmFtcyBmb3IgdGhlIEJFIGFzIHRoZSBtYWNo
-aW5lIGRyaXZlciBtdXN0DQoqIGZpeCB0aGlzIHVwIHRvIG1hdGNoIERTUCBkZWNvZGVyIGFuZCBB
-U1JDIGNvbmZpZ3VyYXRpb24uDQoqIEkuZS4gbWFjaGluZSBkcml2ZXIgZml4dXAgZm9yIGNvbXBy
-ZXNzZWQgQkUgaXMgbWFuZGF0b3J5Lg0KKi8NCm1lbXNldCgmZmUtPmRwY21bZmVfc3Vic3RyZWFt
-LT5zdHJlYW1dLmh3X3BhcmFtcywgMCwNCsKgIMKgIMKgIMKgc2l6ZW9mKHN0cnVjdCBzbmRfcGNt
-X2h3X3BhcmFtcykpOw0KDQpTbywgaW5mb3JtYXRpb24gYWJvdXQgcGFyYW1ldGVycyBpcyBqdXN0
-IGlnbm9yZWQuDQoNClRoZSBvbmx5IHdheSB3ZSBjYW4gc2V0dXAgaHdfcGFyYW1zIGZvciBCRSBp
-cyB2aWHCoA0KYmVfaHdfcGFyYW1zX2ZpeHVwKCkgYnV0IHRoaXMgZnVuY3Rpb24gZG9lc24ndCBo
-YXZlIGFueSBpbmZvcm1hdGlvbg0KZnJvbSBGRS4NCg0KTXkgdXNlIGNhc2UgaXMgc29tZXRoaW5n
-IGxpa2UgdGhpczoNCg0KRkU6DQrCoCDCoCAtIGNwdTogRlNMIFNBSSBEQUkgaW50ZXJmYWNlDQrC
-oCDCoCAtIHBsYXRmb3JtOiBEU1DCoA0KwqAgwqAgLSBjb2RlYzogZHVtbXkgY29kZWMNCkJFOg0K
-wqAgwqAgLSBjcHU6IGR1bW15DQrCoCDCoCAtIHBsYXRmb3JtOiBkdW1teQ0KwqAgwqAgLSBjb2Rl
-YzogY3M0Mjg4OC4NCg0KY29kZWMgY291bGQgaGFuZGxlIDQ0MTAwSHogYW5kIDQ4MDAwSHogc3Ry
-ZWFtcywgYnV0IHRoZSBCRSBkb2Vzbid0IGhhdmUNCmFueSB3YXkgdG8ga25vdyB3aGF0IGlzIHRo
-ZSByYXRlIGNwbGF5IHNldHMgdG8gRkUuDQoNCnRoYW5rcywNCkRhbmllbC4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Jaroslav,
+
+Sorry for late reply.
+
+On Thu, 8 Nov 2018, Jaroslav Kysela wrote:
+>> Well, I have another concern when having conversation with Daniel
+>> Baluta[1]. He post his 'Reviewed-by' tag to the github issue. In this
+>> case, how can we apply the tag to commit history? I don't know exactly
+>> services in github.com have good solution for this issue, or not...
+>>
+>> [1] https://github.com/alsa-project/alsa-utils/pull/1#issuecomment-436164565
+>
+> I believe that the maintainer who signs and pushes the commits should
+> handle those tags, too.
+>
+> It means that we are not allowed to use the github web merge button! (no
+> signing - seems like on github's issue list -
+> https://github.com/todogroup/gh-issues/issues/50)
+
+Thank you. It's completely against out maintainance policy that we can
+handle no tag such as 'Reviewed-by:' and 'Signed-off-by:', thus the web 
+merge button in github.com can not be used. I'm OK to avoid pushing 
+the button.
+
+I think it good to push a small guideline message for userspace work to 
+somewhere for smooth communication between people, like:
+
+1. contributors
+  * prepare change history so that fast-forward to remote repository
+  * each of commit should have 'Signed-off-by:' tag
+  * For bug fix, additional 'Fixes:' tag is preferable
+  * two communication paths; 'git format-patch/send-email' to alsa-devel
+    list, or PR on github.com
+  * put enough information in cover-letter of email or PR comment so that
+    reviers/maintainers can get purpose of this work
+2. reviewers
+  * any review action is welcome and expected
+  * after review work, send comments with 'Reviewed-by:', 'Tested-by:' tags
+    as reply to the list or PR so that contributors and reviewers can catch
+3. maintainers
+  * apply the patches from contributor to local repository by hand without
+    web UI of github.com so that the history has no merge commits
+  * add reviewer's tags to applied commits
+  * add 'Signed-off-by:' tag to applied commits
+  * reply to list or PR when push to remote repository
+
+Any thoughts?
+
+
+Thanks
+
+Takashi Sakamoto
