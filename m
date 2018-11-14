@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Add DT property for
-	single-ended output" to the asoc tree
-Date: Wed, 14 Nov 2018 22:12:25 +0000 (GMT)
-Message-ID: <20181114221226.0765C440078@finisterre.ee.mobilebroadband>
+Subject: Re: [RFC][PATCH] ASoC: rsnd: add SSIU BUSIF support
+Date: Wed, 14 Nov 2018 14:13:38 -0800
+Message-ID: <20181114221338.GC2089@sirena.org.uk>
+References: <87a7mvswr1.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4485314844007746228=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D9213267AEB
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:12:32 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 3496F2677E8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:13:47 +0100 (CET)
+In-Reply-To: <87a7mvswr1.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,90 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jiada Wang <jiada_wang@mentor.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: pcm3060: Add DT property for single-ended output
+--===============4485314844007746228==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SfqqZ2zU93BLT28p"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--SfqqZ2zU93BLT28p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Oct 30, 2018 at 07:54:30AM +0000, Kuninori Morimoto wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> BUSIF is handled by SSIU instead of SSI anymore.
+> Thus, its settings no longer needed on SSI node on DT.
+> This patch removes its settings from Document, but driver is still
+> keeping compatibility. Thus, old DT style is still working.
+> But, to avoid confusing, it doesn't indicate old compatiblity things on
+> Document. New SoC should have SSIU on DT from this patch.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+It's better to move these to a deprecated section rather than deleting
+them entirely, that way someone working on the driver or looking at a DT
+for a board in future can see what the old binding did more easily.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> > Jiada
+>=20
+> This patch supports BUSIF, you can select it on DT.
+> Is this style OK for you ?
+> For example
+>=20
+> 	playback =3D <&src0 &dvc0 &ssiu02 &ssi0>;
+> 	                        ~~~~~~~
+>=20
+> It is keeping compatiblity. no <&ssiu> is still OK
 
-Thanks,
-Mark
+Any news here?
 
->From 9d4b17efa51f3bb0918021090c09b0013039df00 Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Mon, 12 Nov 2018 08:08:33 +0100
-Subject: [PATCH] ASoC: pcm3060: Add DT property for single-ended output
+This looks basically fine to me.
 
-DAC output may be differential (default) or single-ended.
+--SfqqZ2zU93BLT28p
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/pcm3060.c | 14 ++++++++++++++
- sound/soc/codecs/pcm3060.h |  1 +
- 2 files changed, 15 insertions(+)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 494d9d662be8..5f479aa61097 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -274,9 +274,23 @@ EXPORT_SYMBOL(pcm3060_regmap);
- 
- /* device */
- 
-+static void pcm3060_parse_dt(const struct device_node *np,
-+			     struct pcm3060_priv *priv)
-+{
-+	priv->out_se = of_property_read_bool(np, "ti,out-single-ended");
-+}
-+
- int pcm3060_probe(struct device *dev)
- {
- 	int rc;
-+	struct pcm3060_priv *priv = dev_get_drvdata(dev);
-+
-+	if (dev->of_node)
-+		pcm3060_parse_dt(dev->of_node, priv);
-+
-+	if (priv->out_se)
-+		regmap_update_bits(priv->regmap, PCM3060_REG64,
-+				   PCM3060_REG_SE, PCM3060_REG_SE);
- 
- 	rc = devm_snd_soc_register_component(dev, &pcm3060_soc_comp_driver,
- 					     pcm3060_dai,
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index fd89a68aa8a7..c895cf40ee10 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -25,6 +25,7 @@ struct pcm3060_priv_dai {
- struct pcm3060_priv {
- 	struct regmap *regmap;
- 	struct pcm3060_priv_dai dai[PCM3060_DAI_IDS_NUM];
-+	u8 out_se: 1;
- };
- 
- int pcm3060_probe(struct device *dev);
--- 
-2.19.1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvsnhEACgkQJNaLcl1U
+h9AkMwf+OPauITXmpUVib+x9MytcXc6LzYE8YxH0AZ2P256m3tIqUgf46FfDQQdS
+5IqSLwHVWQhxGYtzrc5kw5Qdny8jLHGbxPQ2klYsxgwv9ZjDQA2CLQIQS4UHe/sF
+lUGaHe70rOnIG6XRPbwRf/+lyTPrLMIA8rAxfeVP0zZKYr2kNuMaW91kNQzeb893
+WTlGthKN6+cmE3FGTkNZHLf6/TjRZBnEBuiHN2fID+MljWsjDrwtOp9dNmuVo71J
+70dOmk/+HuVsC83eHoXTiyPHT6BtY2JRd4WnCMIQti7Bt5S+1wik9QurNQk4w2pP
+3f7UNZLQoUNsRUQlN4o71mu3v9Mfzg==
+=K+tb
+-----END PGP SIGNATURE-----
+
+--SfqqZ2zU93BLT28p--
+
+--===============4485314844007746228==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4485314844007746228==--
