@@ -1,20 +1,18 @@
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 2/2] ASoC: dt-bindings: add bindings for
-	AK4118 transceiver
-Date: Wed, 14 Nov 2018 13:16:42 +0100
-Message-ID: <20181114121642.1404-2-peron.clem@gmail.com>
-References: <20181114121642.1404-1-peron.clem@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: H. Nikolaus Schaller <hns@goldelico.com>
+Subject: Re: [PATCH 0/3] ASoC: omap: Fix and add pm_qos
+	configuration
+Date: Wed, 14 Nov 2018 13:45:06 +0100
+Message-ID: <2C9D3C26-75A9-4736-BC68-5954728083DB@goldelico.com>
+References: <20181114110623.30932-1-peter.ujfalusi@ti.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com
- [209.85.128.65])
- by alsa0.perex.cz (Postfix) with ESMTP id BDD59267A61
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 13:17:00 +0100 (CET)
-Received: by mail-wm1-f65.google.com with SMTP id f2-v6so14499889wme.3
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 04:17:00 -0800 (PST)
-In-Reply-To: <20181114121642.1404-1-peron.clem@gmail.com>
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [81.169.146.165])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39A33267839
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 13:45:06 +0100 (CET)
+In-Reply-To: <20181114110623.30932-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>, linux-kernel@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pyra-handheld.com, linux-omap <linux-omap@vger.kernel.org>, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-RG9jdW1lbnQgdGhlIGJpbmRpbmdzIGZvciBBSzQxMTggUy9QRElGIHRyYW5zY2VpdmVyCgpTaWdu
-ZWQtb2ZmLWJ5OiBDbMOpbWVudCBQw6lyb24gPHBlcm9uLmNsZW1AZ21haWwuY29tPgotLS0KIC4u
-Li9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2FrNDExOC50eHQgICAgICB8IDIyICsrKysrKysr
-KysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9k
-ZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2FrNDExOC50
-eHQKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQv
-YWs0MTE4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hazQx
-MTgudHh0Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uNmUxMWEyZjc0
-MDRjCi0tLSAvZGV2L251bGwKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NvdW5kL2FrNDExOC50eHQKQEAgLTAsMCArMSwyMiBAQAorQUs0MTE4IFMvUERJRiB0cmFuc2Nl
-aXZlcgorCitUaGlzIGRldmljZSBzdXBwb3J0cyBJMkMgbW9kZS4KKworUmVxdWlyZWQgcHJvcGVy
-dGllczoKKworLSBjb21wYXRpYmxlIDogImFzYWhpLWthc2VpLGFrNDExOCIKKy0gcmVnIDogVGhl
-IEkyQyBhZGRyZXNzIG9mIHRoZSBkZXZpY2UgZm9yIEkyQworLSByZXNldC1ncGlvczogQSBHUElP
-IHNwZWNpZmllciBmb3IgdGhlIHJlc2V0IHBpbgorLSBpcnEtZ3Bpb3M6IEEgR1BJTyBzcGVjaWZp
-ZXIgZm9yIHRoZSBJUlEgcGluCisKK0V4YW1wbGU6CisKKyZpMmMgeworCWFrNDExODogYWs0MTE4
-QDEzIHsKKwkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKKwkJY29tcGF0aWJsZSA9ICJhc2FoaS1r
-YXNlaSxhazQxMTgiOworCQlyZWcgPSA8MHgxMz47CisJCXJlc2V0LWdwaW9zID0gPCZncGlvIDAg
-R1BJT19BQ1RJVkVfTE9XPgorCQlpcnEtZ3Bpb3MgPSA8JmdwaW8gMSBHUElPX0FDVElWRV9ISUdI
-PjsKKwl9OworfTsKLS0gCjIuMTkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Hi Peter,
+
+> Am 14.11.2018 um 12:06 schrieb Peter Ujfalusi <peter.ujfalusi@ti.com>:
+> 
+> Hi,
+> 
+> The defconfig for OMAP2+ now have the CPU_IDLE enabled which can cause audio
+> artifacts because we try to enter too low power state from where the wakeup
+> takes longer than the FIFO can tolerate on the dai side.
+> 
+> While adding pm_qos to McPDM and DMIC I have noticed that the McBSP calculation
+> was not correct as we need usec for the latency value.
+> 
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (3):
+> ASoC: omap-mcbsp: Fix latency value calculation for pm_qos
+> ASoC: omap-mcpdm: Add pm_qos handling to avoid under/overruns with
+>  CPU_IDLE
+> ASoC: omap-dmic: Add pm_qos handling to avoid overruns with CPU_IDLE
+> 
+> sound/soc/omap/omap-dmic.c  |  9 ++++++++
+> sound/soc/omap/omap-mcbsp.c |  6 +++---
+> sound/soc/omap/omap-mcpdm.c | 43 ++++++++++++++++++++++++++++++++++++-
+> 3 files changed, 54 insertions(+), 4 deletions(-)
+
+I will test asap.
+
+BR and thanks,
+Nikolaus
