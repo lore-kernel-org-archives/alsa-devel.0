@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: add missing route for ADC"
-	to the asoc tree
-Date: Tue, 13 Nov 2018 23:10:42 +0000 (GMT)
-Message-ID: <20181113231042.E8F82440078@finisterre.ee.mobilebroadband>
-References: <20181109042422.25653-2-anarsoul@gmail.com>
+Subject: Re: [PATCH] ASoC: dapm: Use less aggressive caching to
+ ensure correctness
+Date: Tue, 13 Nov 2018 16:26:12 -0800
+Message-ID: <20181114002612.GU2089@sirena.org.uk>
+References: <20181105111912.14464-1-tzungbi@google.com>
+ <20181106171845.GF31950@sirena.org.uk>
+ <CA+Px+wU59XObu9C2RphG8st9TEZ4v8HTtM8s5TpyGa+tSCBTKg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3460207391663960821=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ECEF6267AF0
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 00:10:51 +0100 (CET)
-In-Reply-To: <20181109042422.25653-2-anarsoul@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 53A322677E4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:26:21 +0100 (CET)
+In-Reply-To: <CA+Px+wU59XObu9C2RphG8st9TEZ4v8HTtM8s5TpyGa+tSCBTKg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Dylan Reid <dgreid@google.com>, lgirdwood@gmail.com, Jimmy Cheng-Yi Chiang <cychiang@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sun8i-codec: add missing route for ADC
+--===============3460207391663960821==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XJ5wUQMT/jAb5xue"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--XJ5wUQMT/jAb5xue
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Nov 07, 2018 at 12:03:06PM +0800, Tzung-Bi Shih wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> The second one is forcing to recalculate the graph at the bottom of
+> snd_soc_instantiate_card() by additionally calling
+> dapm_mark_endpoints_dirty().  It would waste some computing power by
+> comparing with the first idea but it would be also simpler than the
+> first one.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+As we just discussed in person this is probably the best option - it's
+what we used to have (or were supposed to have, but I'm fairly sure I
+remember writing the code), I'm guessing it's gone AWOL during all the
+refactorings for componentization.
 
-Thanks,
-Mark
+--XJ5wUQMT/jAb5xue
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 9ee325d029c4abb75716851ce38863845911d605 Mon Sep 17 00:00:00 2001
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Thu, 8 Nov 2018 20:24:19 -0800
-Subject: [PATCH] ASoC: sun8i-codec: add missing route for ADC
+-----BEGIN PGP SIGNATURE-----
 
-sun8i-codec misses a route from ADC to AIF1 Slot 0 ADC. Add it
-to the driver to avoid adding it to every dts.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvra6QACgkQJNaLcl1U
+h9CZwgf/TT6edbiCOMu9/arM9b6nABnehKpxRtmUw8sE78HEnvskzVDorDo2uOwd
+dPUUVdWRcTfUy+LrZtx7Wuw2SyaaX40FEI1cPjlM55hhQW4lJXaeqPheXM5WOLxP
+DrnAKlITHLtIsdU/hl02Azk0eIBgLl4bvIgoazKfeLt5H3MSz9D9twapsJn1v0s3
+B2zonmQH+L8E/MnrsVCDgXzykiZNC79mxpoWtgRepmAJUjhedtLvXXV2Goo1QT29
+V66uqo4yVbH8oOP+Vjxk2CfiFF33g8CeMVfjdl07WNaD7lmfi53vi0wIHU8Fki56
+y4/NQNc5QChKN/2tLDGVpvcnqjIX5A==
+=IaNp
+-----END PGP SIGNATURE-----
 
-Fixes: eda85d1fee05d ("ASoC: sun8i-codec: Add ADC support for a33")
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun8i-codec.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+--XJ5wUQMT/jAb5xue--
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index c4196d4e5915..92c5de026c43 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -481,7 +481,11 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "Right Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
- 	  "AIF1 Slot 0 Right"},
- 
--	/* ADC routes */
-+	/* ADC Routes */
-+	{ "AIF1 Slot 0 Right ADC", NULL, "ADC" },
-+	{ "AIF1 Slot 0 Left ADC", NULL, "ADC" },
-+
-+	/* ADC Mixer Routes */
- 	{ "Left Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
- 	  "AIF1 Slot 0 Left ADC" },
- 	{ "Right Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
--- 
-2.19.1
+--===============3460207391663960821==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3460207391663960821==--
