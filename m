@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Rename output widgets" to the
-	asoc tree
-Date: Wed, 14 Nov 2018 00:37:59 +0000 (GMT)
-Message-ID: <20181114003759.EAAEF440079@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: stm32: sai: fix invalid use of sizeof
+	in stm32_sai_add_mclk_provider()" to the asoc tree
+Date: Wed, 14 Nov 2018 00:38:54 +0000 (GMT)
+Message-ID: <20181114003854.8824F440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CF90F267AEE
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:38:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id EB392267A61
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:39:04 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+To: Wei Yongjun <weiyongjun1@huawei.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Rename output widgets
+   ASoC: stm32: sai: fix invalid use of sizeof in stm32_sai_add_mclk_provider()
 
 has been applied to the asoc tree at
 
@@ -52,72 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From 933a95496e48bde40e366a79e6dd9f9740905573 Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Mon, 12 Nov 2018 08:08:34 +0100
-Subject: [PATCH] ASoC: pcm3060: Rename output widgets
+>From 496fa3ba0a66c0192be86a45f44f94827ab8bcb6 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Sat, 27 Oct 2018 02:19:59 +0000
+Subject: [PATCH] ASoC: stm32: sai: fix invalid use of sizeof in
+ stm32_sai_add_mclk_provider()
 
-In the initial commit [1], I added differential output of the codec as
-separate `+` and `-` widgets:
+sizeof() when applied to a pointer typed expression gives the
+size of the pointer, not that of the pointed data.
 
-OUTL+
-OUTR+
-OUTL-
-OUTR-
-
-Later, in the commit [2], I added a device tree property to configure the
-output as single-ended or differential. Having this property, the `+` and
-`-` separation in widgets seems for me confusing. There are no functional
-benefits in such separation, so I find reasonable to get rid of it:
-
-OUTL
-OUTR
-
-The new naming is more friendly for sound cards, and is better aligned with
-other codec drivers in kernel.
-
-Renaming the output widgets now should not be a problem from the backwards-
-compatibility perspective, as the driver for PCM3060 is added into the
-mainline very recently, and did not yet appear in any releases.
-
-[1] commit 6ee47d4a8dac ("ASoC: pcm3060: Add codec driver")
-[2] commit a78c62de00d5 ("ASoC: pcm3060: Add DT property for single-ended
-    output")
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Fixes: 8307b2afd386 ("ASoC: stm32: sai: set sai as mclk clock provider")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 494d9d662be8..771b46e1974b 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -198,20 +198,16 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
- };
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 506423d5861a..d4825700b63f 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -389,7 +389,7 @@ static int stm32_sai_add_mclk_provider(struct stm32_sai_sub_data *sai)
+ 	char *mclk_name, *p, *s = (char *)pname;
+ 	int ret, i = 0;
  
- static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
--	SND_SOC_DAPM_OUTPUT("OUTL+"),
--	SND_SOC_DAPM_OUTPUT("OUTR+"),
--	SND_SOC_DAPM_OUTPUT("OUTL-"),
--	SND_SOC_DAPM_OUTPUT("OUTR-"),
-+	SND_SOC_DAPM_OUTPUT("OUTL"),
-+	SND_SOC_DAPM_OUTPUT("OUTR"),
+-	mclk = devm_kzalloc(dev, sizeof(mclk), GFP_KERNEL);
++	mclk = devm_kzalloc(dev, sizeof(*mclk), GFP_KERNEL);
+ 	if (!mclk)
+ 		return -ENOMEM;
  
- 	SND_SOC_DAPM_INPUT("INL"),
- 	SND_SOC_DAPM_INPUT("INR"),
- };
- 
- static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
--	{ "OUTL+", NULL, "Playback" },
--	{ "OUTR+", NULL, "Playback" },
--	{ "OUTL-", NULL, "Playback" },
--	{ "OUTR-", NULL, "Playback" },
-+	{ "OUTL", NULL, "Playback" },
-+	{ "OUTR", NULL, "Playback" },
- 
- 	{ "Capture", NULL, "INL" },
- 	{ "Capture", NULL, "INR" },
 -- 
 2.19.1
