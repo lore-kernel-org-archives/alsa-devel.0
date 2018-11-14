@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC][PATCH] ASoC: rsnd: add SSIU BUSIF support
-Date: Wed, 14 Nov 2018 14:13:38 -0800
-Message-ID: <20181114221338.GC2089@sirena.org.uk>
-References: <87a7mvswr1.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: dapm: Recalculate audio map forcely
+	when card instantiated" to the asoc tree
+Date: Wed, 14 Nov 2018 22:26:50 +0000 (GMT)
+Message-ID: <20181114222650.9B844440078@finisterre.ee.mobilebroadband>
+References: <20181114090613.140247-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4485314844007746228=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3496F2677E8
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:13:47 +0100 (CET)
-In-Reply-To: <87a7mvswr1.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A31C2677E8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:26:57 +0100 (CET)
+In-Reply-To: <20181114090613.140247-1-tzungbi@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,72 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Jiada Wang <jiada_wang@mentor.com>, Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com, tzungbi@google.com, broonie@kernel.org, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4485314844007746228==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SfqqZ2zU93BLT28p"
-Content-Disposition: inline
+   ASoC: dapm: Recalculate audio map forcely when card instantiated
 
+has been applied to the asoc tree at
 
---SfqqZ2zU93BLT28p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Oct 30, 2018 at 07:54:30AM +0000, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> BUSIF is handled by SSIU instead of SSI anymore.
-> Thus, its settings no longer needed on SSI node on DT.
-> This patch removes its settings from Document, but driver is still
-> keeping compatibility. Thus, old DT style is still working.
-> But, to avoid confusing, it doesn't indicate old compatiblity things on
-> Document. New SoC should have SSIU on DT from this patch.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-It's better to move these to a deprecated section rather than deleting
-them entirely, that way someone working on the driver or looking at a DT
-for a board in future can see what the old binding did more easily.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> > Jiada
->=20
-> This patch supports BUSIF, you can select it on DT.
-> Is this style OK for you ?
-> For example
->=20
-> 	playback =3D <&src0 &dvc0 &ssiu02 &ssi0>;
-> 	                        ~~~~~~~
->=20
-> It is keeping compatiblity. no <&ssiu> is still OK
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Any news here?
+Thanks,
+Mark
 
-This looks basically fine to me.
+>From 882eab6c28d23a970ae73b7eb831b169a672d456 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Wed, 14 Nov 2018 17:06:13 +0800
+Subject: [PATCH] ASoC: dapm: Recalculate audio map forcely when card
+ instantiated
 
---SfqqZ2zU93BLT28p
-Content-Type: application/pgp-signature; name="signature.asc"
+Audio map are possible in wrong state before card->instantiated has
+been set to true.  Imaging the following examples:
 
------BEGIN PGP SIGNATURE-----
+time 1: at the beginning
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvsnhEACgkQJNaLcl1U
-h9AkMwf+OPauITXmpUVib+x9MytcXc6LzYE8YxH0AZ2P256m3tIqUgf46FfDQQdS
-5IqSLwHVWQhxGYtzrc5kw5Qdny8jLHGbxPQ2klYsxgwv9ZjDQA2CLQIQS4UHe/sF
-lUGaHe70rOnIG6XRPbwRf/+lyTPrLMIA8rAxfeVP0zZKYr2kNuMaW91kNQzeb893
-WTlGthKN6+cmE3FGTkNZHLf6/TjRZBnEBuiHN2fID+MljWsjDrwtOp9dNmuVo71J
-70dOmk/+HuVsC83eHoXTiyPHT6BtY2JRd4WnCMIQti7Bt5S+1wik9QurNQk4w2pP
-3f7UNZLQoUNsRUQlN4o71mu3v9Mfzg==
-=K+tb
------END PGP SIGNATURE-----
+  in:-1    in:-1    in:-1    in:-1
+ out:-1   out:-1   out:-1   out:-1
+ SIGGEN        A        B      Spk
 
---SfqqZ2zU93BLT28p--
+time 2: after someone called snd_soc_dapm_new_widgets()
+(e.g. create_fill_widget_route_map() in sound/soc/codecs/hdac_hdmi.c)
 
---===============4485314844007746228==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+   in:1     in:0     in:0     in:0
+  out:0    out:0    out:0    out:1
+ SIGGEN        A        B      Spk
 
+time 3: routes added
 
---===============4485314844007746228==--
+   in:1     in:0     in:0     in:0
+  out:0    out:0    out:0    out:1
+ SIGGEN -----> A -----> B ---> Spk
+
+In the end, the path should be powered on but it did not.  At time 3,
+"in" of SIGGEN and "out" of Spk did not propagate to their neighbors
+because snd_soc_dapm_add_path() will not invalidate the paths if
+the card has not instantiated (i.e. card->instantiated is false).
+To correct the state of audio map, recalculate the whole map forcely.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6ddcf12bc030..b29d0f65611e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2131,6 +2131,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	}
+ 
+ 	card->instantiated = 1;
++	dapm_mark_endpoints_dirty(card);
+ 	snd_soc_dapm_sync(&card->dapm);
+ 	mutex_unlock(&card->mutex);
+ 	mutex_unlock(&client_mutex);
+-- 
+2.19.1
