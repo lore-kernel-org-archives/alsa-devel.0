@@ -2,15 +2,15 @@ From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: pcm3060: Rename output widgets" to the
 	asoc tree
 Date: Wed, 14 Nov 2018 00:37:59 +0000 (GMT)
-Message-ID: <20181114003759.7AC2C440078@finisterre.ee.mobilebroadband>
+Message-ID: <20181114003759.EAAEF440079@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BA347267A61
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:38:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id CF90F267AEE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:38:11 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -52,7 +52,7 @@ to this mail.
 Thanks,
 Mark
 
->From efcf8f9ee39dd4d63fc95d05e460a78605a6cbf2 Mon Sep 17 00:00:00 2001
+>From 933a95496e48bde40e366a79e6dd9f9740905573 Mon Sep 17 00:00:00 2001
 From: Kirill Marinushkin <kmarinushkin@birdec.tech>
 Date: Mon, 12 Nov 2018 08:08:34 +0100
 Subject: [PATCH] ASoC: pcm3060: Rename output widgets
