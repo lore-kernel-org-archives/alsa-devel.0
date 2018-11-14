@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Wed, 14 Nov 2018 14:06:40 -0800
-Message-ID: <20181114220640.GB2089@sirena.org.uk>
-References: <ed34c70f-8d10-992e-1cf3-3a5f038c3664@gmail.com>
- <dccda0dc-bde7-7790-e4cc-2737871b14ea@linux.intel.com>
- <11a5bb5b-f8ad-d9cc-29df-8efeccb6228d@gmail.com>
+Subject: Applied "ASoC: omap-abe-twl6040: Fix missing audio
+	card caused by deferred probing" to the asoc tree
+Date: Wed, 14 Nov 2018 22:11:21 +0000 (GMT)
+Message-ID: <20181114221121.BE788440078@finisterre.ee.mobilebroadband>
+References: <20181114125820.7424-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5074893187178967034=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F9AF2677E8
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:06:47 +0100 (CET)
-In-Reply-To: <11a5bb5b-f8ad-d9cc-29df-8efeccb6228d@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1478E2677E8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 23:11:28 +0100 (CET)
+In-Reply-To: <20181114125820.7424-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +22,189 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papavasiliou <dpapavas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5074893187178967034==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="iNKvvK4J48bNrWSb"
-Content-Disposition: inline
+   ASoC: omap-abe-twl6040: Fix missing audio card caused by deferred probing
 
+has been applied to the asoc tree at
 
---iNKvvK4J48bNrWSb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Sat, Nov 10, 2018 at 05:46:33PM +0200, Dimitris Papavasiliou wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Are you also getting loud pops when switching between clocks?  I
-> use the following Python script to reproduce the problem (and
-> also disable auto-mute via the mixer, as it can mask it):
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Switching between clocks while the device isn't completely idle is
-unlikely to work well with any device - I'd have questions about a use
-case that's doing that.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---iNKvvK4J48bNrWSb
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvsnG8ACgkQJNaLcl1U
-h9AMIAf9E4O/TB5FmYyBMc2ZuuVEqElJrPbQX0AZ/dKkuS4G05LRQSXKFifmhPF4
-eM1NIgFSaITTFcjIUYMFiZPONrOF6Aq1GapypUWuvngS896YymF3OOnVZ/nX2g95
-gM0GyjFf91Sv44gtrWeUTuJhYUfCk+nS+98hRxgbbptX/cHQX35lqX/u5/t0/2g3
-kF0ZX/TIl36m3cco4vvkj53rssDGtmdAq4e5QqE5HaXGIRLdnON1qByG88eDDuJo
-vY4UfZ1g6h1CAb9N1kTiSD6vhtGyEzBtTVxskDhQ1zybsRzoFupXcno8+WQisqKj
-8rnIdnwmnFPvWc8bUVF+Go9Nf2TfIQ==
-=d25X
------END PGP SIGNATURE-----
+>From 76836fd354922ebe4798a64fda01f8dc6a8b0984 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Wed, 14 Nov 2018 14:58:20 +0200
+Subject: [PATCH] ASoC: omap-abe-twl6040: Fix missing audio card caused by
+ deferred probing
 
---iNKvvK4J48bNrWSb--
+The machine driver fails to probe in next-20181113 with:
 
---===============5074893187178967034==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[    2.539093] omap-abe-twl6040 sound: ASoC: CODEC DAI twl6040-legacy not registered
+[    2.546630] omap-abe-twl6040 sound: devm_snd_soc_register_card() failed: -517
+...
+[    3.693206] omap-abe-twl6040 sound: ASoC: Both platform name/of_node are set for TWL6040
+[    3.701446] omap-abe-twl6040 sound: ASoC: failed to init link TWL6040
+[    3.708007] omap-abe-twl6040 sound: devm_snd_soc_register_card() failed: -22
+[    3.715148] omap-abe-twl6040: probe of sound failed with error -22
 
+Bisect pointed to a merge commit:
+first bad commit: [0f688ab20a540aafa984c5dbd68a71debebf4d7f] Merge remote-tracking branch 'net-next/master'
 
---===============5074893187178967034==--
+and a diff between a working kernel does not reveal anything which would
+explain the change in behavior.
+
+Further investigation showed that on the second try of loading fails
+because the dai_link->platform is no longer NULL and it might be pointing
+to uninitialized memory.
+
+The fix is to move the snd_soc_dai_link and snd_soc_card inside of the
+abe_twl6040 struct, which is dynamically allocated every time the driver
+probes.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/omap/omap-abe-twl6040.c | 67 +++++++++++++------------------
+ 1 file changed, 29 insertions(+), 38 deletions(-)
+
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index d5ae9eb8c756..fed45b41f9d3 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -36,6 +36,8 @@
+ #include "../codecs/twl6040.h"
+ 
+ struct abe_twl6040 {
++	struct snd_soc_card card;
++	struct snd_soc_dai_link dai_links[2];
+ 	int	jack_detection;	/* board can detect jack events */
+ 	int	mclk_freq;	/* MCLK frequency speed for twl6040 */
+ };
+@@ -208,40 +210,10 @@ static int omap_abe_dmic_init(struct snd_soc_pcm_runtime *rtd)
+ 				ARRAY_SIZE(dmic_audio_map));
+ }
+ 
+-/* Digital audio interface glue - connects codec <--> CPU */
+-static struct snd_soc_dai_link abe_twl6040_dai_links[] = {
+-	{
+-		.name = "TWL6040",
+-		.stream_name = "TWL6040",
+-		.codec_dai_name = "twl6040-legacy",
+-		.codec_name = "twl6040-codec",
+-		.init = omap_abe_twl6040_init,
+-		.ops = &omap_abe_ops,
+-	},
+-	{
+-		.name = "DMIC",
+-		.stream_name = "DMIC Capture",
+-		.codec_dai_name = "dmic-hifi",
+-		.codec_name = "dmic-codec",
+-		.init = omap_abe_dmic_init,
+-		.ops = &omap_abe_dmic_ops,
+-	},
+-};
+-
+-/* Audio machine driver */
+-static struct snd_soc_card omap_abe_card = {
+-	.owner = THIS_MODULE,
+-
+-	.dapm_widgets = twl6040_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(twl6040_dapm_widgets),
+-	.dapm_routes = audio_map,
+-	.num_dapm_routes = ARRAY_SIZE(audio_map),
+-};
+-
+ static int omap_abe_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
+-	struct snd_soc_card *card = &omap_abe_card;
++	struct snd_soc_card *card;
+ 	struct device_node *dai_node;
+ 	struct abe_twl6040 *priv;
+ 	int num_links = 0;
+@@ -252,12 +224,18 @@ static int omap_abe_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	card->dev = &pdev->dev;
+-
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(struct abe_twl6040), GFP_KERNEL);
+ 	if (priv == NULL)
+ 		return -ENOMEM;
+ 
++	card = &priv->card;
++	card->dev = &pdev->dev;
++	card->owner = THIS_MODULE;
++	card->dapm_widgets = twl6040_dapm_widgets;
++	card->num_dapm_widgets = ARRAY_SIZE(twl6040_dapm_widgets);
++	card->dapm_routes = audio_map;
++	card->num_dapm_routes = ARRAY_SIZE(audio_map);
++
+ 	if (snd_soc_of_parse_card_name(card, "ti,model")) {
+ 		dev_err(&pdev->dev, "Card name is not provided\n");
+ 		return -ENODEV;
+@@ -274,14 +252,27 @@ static int omap_abe_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "McPDM node is not provided\n");
+ 		return -EINVAL;
+ 	}
+-	abe_twl6040_dai_links[0].cpu_of_node = dai_node;
+-	abe_twl6040_dai_links[0].platform_of_node = dai_node;
++
++	priv->dai_links[0].name = "DMIC";
++	priv->dai_links[0].stream_name = "TWL6040";
++	priv->dai_links[0].cpu_of_node = dai_node;
++	priv->dai_links[0].platform_of_node = dai_node;
++	priv->dai_links[0].codec_dai_name = "twl6040-legacy";
++	priv->dai_links[0].codec_name = "twl6040-codec";
++	priv->dai_links[0].init = omap_abe_twl6040_init;
++	priv->dai_links[0].ops = &omap_abe_ops;
+ 
+ 	dai_node = of_parse_phandle(node, "ti,dmic", 0);
+ 	if (dai_node) {
+ 		num_links = 2;
+-		abe_twl6040_dai_links[1].cpu_of_node = dai_node;
+-		abe_twl6040_dai_links[1].platform_of_node = dai_node;
++		priv->dai_links[1].name = "TWL6040";
++		priv->dai_links[1].stream_name = "DMIC Capture";
++		priv->dai_links[1].cpu_of_node = dai_node;
++		priv->dai_links[1].platform_of_node = dai_node;
++		priv->dai_links[1].codec_dai_name = "dmic-hifi";
++		priv->dai_links[1].codec_name = "dmic-codec";
++		priv->dai_links[1].init = omap_abe_dmic_init;
++		priv->dai_links[1].ops = &omap_abe_dmic_ops;
+ 	} else {
+ 		num_links = 1;
+ 	}
+@@ -300,7 +291,7 @@ static int omap_abe_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	card->dai_link = abe_twl6040_dai_links;
++	card->dai_link = priv->dai_links;
+ 	card->num_links = num_links;
+ 
+ 	snd_soc_card_set_drvdata(card, priv);
+-- 
+2.19.1
