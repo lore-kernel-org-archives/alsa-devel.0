@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Add DT property for
-	single-ended output" to the asoc tree
-Date: Wed, 14 Nov 2018 00:37:07 +0000 (GMT)
-Message-ID: <20181114003707.4047B440078@finisterre.ee.mobilebroadband>
-References: <20181112070834.16979-2-kmarinushkin@birdec.tech>
+Subject: Applied "ASoC: pcm3060: Rename output widgets" to the
+	asoc tree
+Date: Wed, 14 Nov 2018 00:37:59 +0000 (GMT)
+Message-ID: <20181114003759.7AC2C440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E65A72677E4
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:37:15 +0100 (CET)
-In-Reply-To: <20181112070834.16979-2-kmarinushkin@birdec.tech>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA347267A61
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:38:07 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Add DT property for single-ended output
+   ASoC: pcm3060: Rename output widgets
 
 has been applied to the asoc tree at
 
@@ -53,59 +52,72 @@ to this mail.
 Thanks,
 Mark
 
->From b1c0000bde8fb287f4fd3493ca4167efee344c3e Mon Sep 17 00:00:00 2001
+>From efcf8f9ee39dd4d63fc95d05e460a78605a6cbf2 Mon Sep 17 00:00:00 2001
 From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Mon, 12 Nov 2018 08:08:33 +0100
-Subject: [PATCH] ASoC: pcm3060: Add DT property for single-ended output
+Date: Mon, 12 Nov 2018 08:08:34 +0100
+Subject: [PATCH] ASoC: pcm3060: Rename output widgets
 
-DAC output may be differential (default) or single-ended.
+In the initial commit [1], I added differential output of the codec as
+separate `+` and `-` widgets:
+
+OUTL+
+OUTR+
+OUTL-
+OUTR-
+
+Later, in the commit [2], I added a device tree property to configure the
+output as single-ended or differential. Having this property, the `+` and
+`-` separation in widgets seems for me confusing. There are no functional
+benefits in such separation, so I find reasonable to get rid of it:
+
+OUTL
+OUTR
+
+The new naming is more friendly for sound cards, and is better aligned with
+other codec drivers in kernel.
+
+Renaming the output widgets now should not be a problem from the backwards-
+compatibility perspective, as the driver for PCM3060 is added into the
+mainline very recently, and did not yet appear in any releases.
+
+[1] commit 6ee47d4a8dac ("ASoC: pcm3060: Add codec driver")
+[2] commit a78c62de00d5 ("ASoC: pcm3060: Add DT property for single-ended
+    output")
 
 Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060.c | 14 ++++++++++++++
- sound/soc/codecs/pcm3060.h |  1 +
- 2 files changed, 15 insertions(+)
+ sound/soc/codecs/pcm3060.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 771b46e1974b..1dd851a7b43b 100644
+index 494d9d662be8..771b46e1974b 100644
 --- a/sound/soc/codecs/pcm3060.c
 +++ b/sound/soc/codecs/pcm3060.c
-@@ -270,9 +270,23 @@ EXPORT_SYMBOL(pcm3060_regmap);
- 
- /* device */
- 
-+static void pcm3060_parse_dt(const struct device_node *np,
-+			     struct pcm3060_priv *priv)
-+{
-+	priv->out_se = of_property_read_bool(np, "ti,out-single-ended");
-+}
-+
- int pcm3060_probe(struct device *dev)
- {
- 	int rc;
-+	struct pcm3060_priv *priv = dev_get_drvdata(dev);
-+
-+	if (dev->of_node)
-+		pcm3060_parse_dt(dev->of_node, priv);
-+
-+	if (priv->out_se)
-+		regmap_update_bits(priv->regmap, PCM3060_REG64,
-+				   PCM3060_REG_SE, PCM3060_REG_SE);
- 
- 	rc = devm_snd_soc_register_component(dev, &pcm3060_soc_comp_driver,
- 					     pcm3060_dai,
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index fd89a68aa8a7..c895cf40ee10 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -25,6 +25,7 @@ struct pcm3060_priv_dai {
- struct pcm3060_priv {
- 	struct regmap *regmap;
- 	struct pcm3060_priv_dai dai[PCM3060_DAI_IDS_NUM];
-+	u8 out_se: 1;
+@@ -198,20 +198,16 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
  };
  
- int pcm3060_probe(struct device *dev);
+ static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
+-	SND_SOC_DAPM_OUTPUT("OUTL+"),
+-	SND_SOC_DAPM_OUTPUT("OUTR+"),
+-	SND_SOC_DAPM_OUTPUT("OUTL-"),
+-	SND_SOC_DAPM_OUTPUT("OUTR-"),
++	SND_SOC_DAPM_OUTPUT("OUTL"),
++	SND_SOC_DAPM_OUTPUT("OUTR"),
+ 
+ 	SND_SOC_DAPM_INPUT("INL"),
+ 	SND_SOC_DAPM_INPUT("INR"),
+ };
+ 
+ static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
+-	{ "OUTL+", NULL, "Playback" },
+-	{ "OUTR+", NULL, "Playback" },
+-	{ "OUTL-", NULL, "Playback" },
+-	{ "OUTR-", NULL, "Playback" },
++	{ "OUTL", NULL, "Playback" },
++	{ "OUTR", NULL, "Playback" },
+ 
+ 	{ "Capture", NULL, "INL" },
+ 	{ "Capture", NULL, "INR" },
 -- 
 2.19.1
