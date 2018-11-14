@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Use less aggressive caching to
- ensure correctness
-Date: Tue, 13 Nov 2018 16:26:12 -0800
-Message-ID: <20181114002612.GU2089@sirena.org.uk>
-References: <20181105111912.14464-1-tzungbi@google.com>
- <20181106171845.GF31950@sirena.org.uk>
- <CA+Px+wU59XObu9C2RphG8st9TEZ4v8HTtM8s5TpyGa+tSCBTKg@mail.gmail.com>
+Subject: Applied "ASoC: pcm3060: Add DT property for
+	single-ended output" to the asoc tree
+Date: Wed, 14 Nov 2018 00:37:07 +0000 (GMT)
+Message-ID: <20181114003707.4047B440078@finisterre.ee.mobilebroadband>
+References: <20181112070834.16979-2-kmarinushkin@birdec.tech>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3460207391663960821=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 53A322677E4
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:26:21 +0100 (CET)
-In-Reply-To: <CA+Px+wU59XObu9C2RphG8st9TEZ4v8HTtM8s5TpyGa+tSCBTKg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E65A72677E4
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 01:37:15 +0100 (CET)
+In-Reply-To: <20181112070834.16979-2-kmarinushkin@birdec.tech>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tzung-Bi Shih <tzungbi@google.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Dylan Reid <dgreid@google.com>, lgirdwood@gmail.com, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3460207391663960821==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XJ5wUQMT/jAb5xue"
-Content-Disposition: inline
+   ASoC: pcm3060: Add DT property for single-ended output
 
+has been applied to the asoc tree at
 
---XJ5wUQMT/jAb5xue
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Nov 07, 2018 at 12:03:06PM +0800, Tzung-Bi Shih wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The second one is forcing to recalculate the graph at the bottom of
-> snd_soc_instantiate_card() by additionally calling
-> dapm_mark_endpoints_dirty().  It would waste some computing power by
-> comparing with the first idea but it would be also simpler than the
-> first one.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-As we just discussed in person this is probably the best option - it's
-what we used to have (or were supposed to have, but I'm fairly sure I
-remember writing the code), I'm guessing it's gone AWOL during all the
-refactorings for componentization.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---XJ5wUQMT/jAb5xue
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From b1c0000bde8fb287f4fd3493ca4167efee344c3e Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Date: Mon, 12 Nov 2018 08:08:33 +0100
+Subject: [PATCH] ASoC: pcm3060: Add DT property for single-ended output
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvra6QACgkQJNaLcl1U
-h9CZwgf/TT6edbiCOMu9/arM9b6nABnehKpxRtmUw8sE78HEnvskzVDorDo2uOwd
-dPUUVdWRcTfUy+LrZtx7Wuw2SyaaX40FEI1cPjlM55hhQW4lJXaeqPheXM5WOLxP
-DrnAKlITHLtIsdU/hl02Azk0eIBgLl4bvIgoazKfeLt5H3MSz9D9twapsJn1v0s3
-B2zonmQH+L8E/MnrsVCDgXzykiZNC79mxpoWtgRepmAJUjhedtLvXXV2Goo1QT29
-V66uqo4yVbH8oOP+Vjxk2CfiFF33g8CeMVfjdl07WNaD7lmfi53vi0wIHU8Fki56
-y4/NQNc5QChKN/2tLDGVpvcnqjIX5A==
-=IaNp
------END PGP SIGNATURE-----
+DAC output may be differential (default) or single-ended.
 
---XJ5wUQMT/jAb5xue--
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/pcm3060.c | 14 ++++++++++++++
+ sound/soc/codecs/pcm3060.h |  1 +
+ 2 files changed, 15 insertions(+)
 
---===============3460207391663960821==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3460207391663960821==--
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 771b46e1974b..1dd851a7b43b 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -270,9 +270,23 @@ EXPORT_SYMBOL(pcm3060_regmap);
+ 
+ /* device */
+ 
++static void pcm3060_parse_dt(const struct device_node *np,
++			     struct pcm3060_priv *priv)
++{
++	priv->out_se = of_property_read_bool(np, "ti,out-single-ended");
++}
++
+ int pcm3060_probe(struct device *dev)
+ {
+ 	int rc;
++	struct pcm3060_priv *priv = dev_get_drvdata(dev);
++
++	if (dev->of_node)
++		pcm3060_parse_dt(dev->of_node, priv);
++
++	if (priv->out_se)
++		regmap_update_bits(priv->regmap, PCM3060_REG64,
++				   PCM3060_REG_SE, PCM3060_REG_SE);
+ 
+ 	rc = devm_snd_soc_register_component(dev, &pcm3060_soc_comp_driver,
+ 					     pcm3060_dai,
+diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
+index fd89a68aa8a7..c895cf40ee10 100644
+--- a/sound/soc/codecs/pcm3060.h
++++ b/sound/soc/codecs/pcm3060.h
+@@ -25,6 +25,7 @@ struct pcm3060_priv_dai {
+ struct pcm3060_priv {
+ 	struct regmap *regmap;
+ 	struct pcm3060_priv_dai dai[PCM3060_DAI_IDS_NUM];
++	u8 out_se: 1;
+ };
+ 
+ int pcm3060_probe(struct device *dev);
+-- 
+2.19.1
