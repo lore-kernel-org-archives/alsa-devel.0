@@ -1,26 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
-Date: Wed, 14 Nov 2018 10:55:26 -0600
-Message-ID: <6f5468a8-0734-8f8d-819f-efec32223093@linux.intel.com>
-References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
- <s5hftw8ngd4.wl-tiwai@suse.de>
- <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
- <s5h5zx3o6um.wl-tiwai@suse.de>
- <ad05386f-af75-3bf2-bc76-628928fc4fea@linux.intel.com>
- <s5hpnv7aexo.wl-tiwai@suse.de>
- <fadd2a71-6f2f-ea22-5372-360cf7391273@linux.intel.com>
- <s5hk1lfaa5h.wl-tiwai@suse.de>
- <85a47580-e47d-a600-6c17-64521996ecd4@linux.intel.com>
- <s5hh8gja9s0.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: ak4118: Add support for AK4118
+ S/PDIF transceiver
+Date: Wed, 14 Nov 2018 09:31:29 -0800
+Message-ID: <20181114173129.GY2089@sirena.org.uk>
+References: <20181108124934.32381-1-peron.clem@gmail.com>
+ <20181113225135.GQ2089@sirena.org.uk>
+ <CAJiuCcewYbt4SDZfFzDfTfTzj_Z1cm=S3_GAA-zcYGW-jzXR4w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0041556861377147262=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 362A72677E8
- for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 17:55:28 +0100 (CET)
-In-Reply-To: <s5hh8gja9s0.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EDAC2677E8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2018 18:31:38 +0100 (CET)
+In-Reply-To: <CAJiuCcewYbt4SDZfFzDfTfTzj_Z1cm=S3_GAA-zcYGW-jzXR4w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,49 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+To: =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Adrien Charruel <adrien.charruel@devialet.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDExLzE0LzE4IDEwOjQ0IEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gV2VkLCAxNCBO
-b3YgMjAxOCAxNzo0MToyNyArMDEwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4K
-Pj4+PiBTbyBpbiB0aGVvcnkgYWxsIHdlIG5lZWQgdG8gYWRkIGlzIGEgbmV3IHRhYmxlIGVudHJ5
-IGluIHNrbC5jLAo+Pj4+IGUuZy4gd2l0aCB0aGUgZm9sbG93aW5nIHVudGVzdGVkIGNvZGUuIEkn
-bGwgaGF2ZSB0byBjaGVjayBpZiB0aGlzIGlzCj4+Pj4gY29ycmVjdCBvZmZsaW5lIGJ1dCBpdCdk
-IGFsbG93IHlvdSB0byB0ZXN0IHRoZSBwcm9iZSBwYXJ0Lgo+Pj4+Cj4+Pj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9pbnRlbC9za3lsYWtlL3NrbC5jIGIvc291bmQvc29jL2ludGVsL3NreWxha2Uv
-c2tsLmMKPj4+PiBpbmRleCBhYzBiNGZmMjFhY2MuLjM3NWY0YjYwZTUxNSAxMDA2NDQKPj4+PiAt
-LS0gYS9zb3VuZC9zb2MvaW50ZWwvc2t5bGFrZS9za2wuYwo+Pj4+ICsrKyBiL3NvdW5kL3NvYy9p
-bnRlbC9za3lsYWtlL3NrbC5jCj4+Pj4gQEAgLTEwOTgsNiArMTA5OCw5IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgcGNpX2RldmljZV9pZCBza2xfaWRzW10gPSB7Cj4+Pj4gICDCoMKgwqDCoMKgwqDC
-oCAvKiBDTkwgKi8KPj4+PiAgIMKgwqDCoMKgwqDCoMKgIHsgUENJX0RFVklDRSgweDgwODYsIDB4
-OWRjOCksCj4+Pj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLmRyaXZlcl9kYXRh
-ID0gKHVuc2lnbmVkCj4+Pj4gbG9uZykmc25kX3NvY19hY3BpX2ludGVsX2NubF9tYWNoaW5lc30s
-Cj4+Pj4gK8KgwqDCoMKgwqDCoCAvKiBDRkwgKi8KPj4+PiArwqDCoMKgwqDCoMKgIHsgUENJX0RF
-VklDRSgweDgwODYsIDB4YTM0OCksCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-LmRyaXZlcl9kYXRhID0gKHVuc2lnbmVkCj4+Pj4gbG9uZykmc25kX3NvY19hY3BpX2ludGVsX2Nu
-bF9tYWNoaW5lc30KPj4+PiAgIMKgwqDCoMKgwqDCoMKgIHsgMCwgfQo+Pj4+ICAgwqB9Owo+Pj4g
-SSd2ZSBhbHJlYWR5IHRyaWVkIGl0IGJ1dCB0aGlzIGRvZXNuJ3Qgc2VlbSBlbm91Z2guICBUaGUg
-c2ltaWxhcgo+Pj4gYWRkaXRpb24gZm9yIDB4YTM0OCBpcyBuZWVkZWQgaW4gc2tsLW1lc3NhZ2Vz
-LmMgZm9yIGNsayBzZXR1cC4KPj4+IChCVFcsIHJlbG9hZGluZyB0aGUgbW9kdWxlIGFmdGVyIHRo
-aXMgZXJyb3IgdHJpZ2dlcmVkIHRoZSBsZWZ0b3Zlcgo+Pj4gICAgc3lzZnMgZW50cmllczsgeW91
-IGNhbiB0cnkgdG8gaW5qZWN0IHRoZSBlcnJvciBhbmQgcmVwcm9kdWNlIGl0LikKPj4+Cj4+PiBB
-ZnRlciB0aGVzZSBjaGFuZ2VzLCB0aGUgZHJpdmVyIHdhcyBsb2FkZWQsIGJ1dCBpdCBzdGlsbCBj
-b21wbGFpbnMKPj4+IGFib3V0IHRoZSBsYWNrIG9mIGZpcm13YXJlIChib3RoIFNPRiBhbmQgZmFs
-bGJhY2sgb25lKS4KPj4+IFRoZSBiaW5kaW5nIHdpdGggSERNSSBjb2RlYyBzZWVtcyB3b3JraW5n
-LCBidXQgdGhlIGFuYWxvZyBvbmUgaXMgc3RpbGwKPj4+IG1pc3NpbmcuCj4+IElzIHRoaXMgbGFj
-ayBvZiBmaXJtd2FyZSBvciBmaXJtd2FyZSB0aGF0IHdvbid0IGJvb3QgZHVlIHRvCj4+IGNvbmZp
-Z3VyYXRpb24gaXNzdWVzPwo+IFRoZSBmb3JtZXIuICBJJ2xsIGNoZWNrIGFnYWluIGFmdGVyIHVw
-ZGF0aW5nIHRoZSBsaW51eC1maXJtd2FyZQo+IHBhY2thZ2UuCgpTdHJhbmdlLCB0aGUgQ05MIGZp
-cm13YXJlIGhhcyBiZWVuIGFyb3VuZCBmb3Igc29tZSB0aW1lLgoKZ2l0IGxvZyBpbnRlbC9kc3Bf
-ZndfY25sLmJpbgpjb21taXQgODljNjIxMTVmMTRkZDhmNDE0ZGZkMjcwMjkxM2E2ZjFmY2FjMzI4
-NwpBdXRob3I6IFZpbm9kIEtvdWwgPHZpbm9kLmtvdWxAaW50ZWwuY29tPgpEYXRlOsKgwqAgTW9u
-IERlYyA0IDA5OjA0OjU3IDIwMTcgKzA1MzAKCiDCoMKgwqAgbGludXgtZmlybXdhcmU6IGludGVs
-OiBBZGQgQ2Fubm9ubGFrZSBhdWRpbyBmaXJtd2FyZQoKCj4KPj4gSWYgeW91IGNhbiBzaGFyZSB0
-aGUgZG1lc2cgbG9nIHNvbWV3aGVyZSBpdCdkIGJlIGludGVyZXN0aW5nLCBJIGFtCj4+IHRyeWlu
-ZyB0byBoZWxwIGZpeCBzdXBwb3J0IGZvciBXSEwgYW5kIENGTCAqc2hvdWxkKiBiZSBzaW1pbGFy
-IChJCj4+IGhhdmVuJ3QgY2hlY2tlZCB0aGUgYWN0dWFsIHNwZWNzIHRob3VnaCkuCj4gT0ssIHdp
-bGwgc2VuZCB5b3UgbGF0ZXIuCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============0041556861377147262==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="agGyne4gKHM29dDu"
+Content-Disposition: inline
+
+
+--agGyne4gKHM29dDu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 14, 2018 at 11:55:17AM +0100, Cl=E9ment P=E9ron wrote:
+> On Tue, 13 Nov 2018 at 23:51, Mark Brown <broonie@kernel.org> wrote:
+> > On Thu, Nov 08, 2018 at 01:49:33PM +0100, Cl=E9ment P=E9ron wrote:
+
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * ak4118.c  --  Asahi Kasei ALSA Soc Audio driver
+> > > + *
+
+> > Please make the entire comment a C++ one so this looks more intentional.
+
+> I check from other files and also this article says :
+> "For normal C source files, the string will be a comment using the
+> "//" syntax; header files, instead, use traditional (/* */) comments
+> for reasons related to tooling"
+> https://lwn.net/Articles/739183/
+
+Right, and what I said was that you should make the entire comment a C++
+one which means that the magic line will be C++ as required.
+
+--agGyne4gKHM29dDu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvsW/AACgkQJNaLcl1U
+h9ARfAf7BUJ2TjdjCO1OP/yZi+Fz/tBTVFUVwsvmt3t6tDcgAnvBddRaxNkf2UnI
+Ku02xMMRFJVIlPiWqh0HqT1l758GfvSVaZC2YdDFSO+JVQnP+svyxnx0XaSuM8QF
+wU9yP4kUyOALyfBNqMcF2YaTfNSxxmiO49XIr0dVH6Sik+xdRbiY2apra+/oKmRt
+LRcnJLty1t6VyrZdAnUNWMH/L3oF/lEzOLrqTthEqpxfnaVhsReWu42qJeFmYI8n
+rJmR/6oe+mx+0y2USzduCUUn8syd0YExUkQSoF/sDgkwaFb7dWtF7bZ6s2CXGpqI
+6Se4ft3a4WA6K0hrGJbZMwr5iD7awg==
+=zoBY
+-----END PGP SIGNATURE-----
+
+--agGyne4gKHM29dDu--
+
+--===============0041556861377147262==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0041556861377147262==--
