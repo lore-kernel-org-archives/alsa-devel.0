@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: omap-mcpdm: Support for handling
-	pdmclk
-Date: Thu, 15 Nov 2018 14:30:12 -0800
-Message-ID: <20181115223012.GR2089@sirena.org.uk>
-References: <20181114124631.4586-1-peter.ujfalusi@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: acpi: fix: continue searching when
+ machine is ignored
+Date: Thu, 15 Nov 2018 17:01:12 -0600
+Message-ID: <7e937596-838c-4165-2e6f-478873e9c422@linux.intel.com>
+References: <20181101023641.31435-1-yang.jie@linux.intel.com>
+ <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1875609445185744718=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4372D267AFC
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 23:30:20 +0100 (CET)
-In-Reply-To: <20181114124631.4586-1-peter.ujfalusi@ti.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E0EA267AFC
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 00:01:15 +0100 (CET)
+In-Reply-To: <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
+To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: "Patel, Chintan M" <chintan.m.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1875609445185744718==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="u3NPeJodHuZECfqv"
-Content-Disposition: inline
-
-
---u3NPeJodHuZECfqv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 14, 2018 at 02:46:29PM +0200, Peter Ujfalusi wrote:
-
-> I have separated the binding document update and the driver patch and also
-> added the return value check for the clk_prepare_enable() as per Mark's comment.
-
-I guess this depends on your other series for pm_qos - it's fine itself
-but doesn't apply, I'm leaving the pm_qos series for a bit longer in
-case there's more reviews.
-
---u3NPeJodHuZECfqv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvt83MACgkQJNaLcl1U
-h9BCNwf/X0P+NNQozjA2zKEPie30BBUiBV6d9T2QyfKlKhuA8ZOCoYpzdvob2Bca
-njFIWZpnhjBZvQ1X9rDP5Oru58oJZFCuVii0x/BwuL9NdktC3a75A2wGyo66Ilwd
-inUl6mKwla+4X6ctBNjpCYqLbdIr1VpxBI656k1xmKRKiOZ0DXms4mmh0M8V8LEL
-TOeU/t2Pud8MBW0jYMc7cPDt4KrzkfZhoPVo4QlOTHjmbtiFgBwMTVIZj6E3X9Sg
-feS66/0yMXTZF71SFoAbrl1+cY/1HK/vU+8B9n5JgyYxUHoB2jKZb3G8YaSGVqLH
-fikm31dhwc7jRMqezYOsg8zU4WF6fQ==
-=tHNe
------END PGP SIGNATURE-----
-
---u3NPeJodHuZECfqv--
-
---===============1875609445185744718==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1875609445185744718==--
+SGkgS2V5b24sCgo+PiBUaGUgbWFjaGluZV9xdWlyayBtYXkgcmV0dXJuIE5VTEwgd2hpY2ggbWVh
+bnMgdGhlIGFjcGkgZW50cmllcyBzaG91bGQgYmUKPj4gc2tpcHBlZCBhbmQgc2VhcmNoIGZvciBu
+ZXh0IG1hdGNoZWQgZW50cnkgaXMgbmVlZGVkLCBoZXJlIGFkZCByZXR1cm4KPj4gY2hlY2sgaGVy
+ZSBhbmQgY29udGludWUgZm9yIE5VTEwgY2FzZS4KPgo+IE5pY2UgY2F0Y2gsIHRoaXMgd2FzIG1p
+c3NlZCBpbiB0aGUgb3RoZXIgcGF0Y2hzZXQgc2luY2UgdGhlIEFDUEkgSUQgdG8gCj4gaWdub3Jl
+IHdhcyB0aGUgbGFzdCBpbiB0aGUgdGFibGUuLi4KPgo+IEFja2VkLWJ5OiBQaWVycmUtTG91aXMg
+Qm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgoKSSB3YXMgd29u
+ZGVyaW5nIGlmIHRoaXMgcGF0Y2ggd2FzIG1lcmdlZCwgYnV0IGFjdHVhbGx5IGl0J3MgZ29vZCBN
+YXJrIAp3YXNuJ3QgY29waWVkIG9uIHRoaXMgb25lOiB0aGUgY29kZSBkb2Vzbid0IHF1aXRlIHdv
+cmsgYXMgaW50ZW5kZWQgYW5kIApzaG91bGRuJ3QgYmUgbWVyZ2VkIGFzIGlzLgoKQ2hpbnRhbiBh
+bmQgSSBzZWUgYW4gb29wcyBhbmQgcmVib290IG9uIEtCTCBDaHJvbWVib29rcywgd2hlbiB0aGUg
+cXVpcmsgCnJldHVybnMgTlVMTCwgdGhlIG1hY2ggdmFyaWFibGUgYmVjb21lcyBOVUxMIGFuZCBj
+YW5ub3QgYmUgbW9kaWZpZWQgd2l0aCAKcG9pbnRlciBhcml0aG1ldGljICh3aGljaCBkb2Vzbid0
+IHNob3cgd2l0aCB0aGUgZGlmZiBmb3JtYXQpLgoKSXQncyB2ZXJ5IGxpa2VseSBidHcgdGhhdCBh
+bnlvbmUgdHJ5aW5nIGEgcmVjZW50IGtlcm5lbCBvbiB0aGVzZSBkZXZpY2VzIAp3b3VsZCBub3Qg
+c2VlIHRoZSBhdWRpbyBkcml2ZXIgcHJvYmUgYXQgYWxsLCBzbyB3ZSBkbyB3YW50IHRvIHRyeSBv
+dGhlciAKZW50cmllcyAtIGJ1dCBvZiBjb3Vyc2Ugd2l0aG91dCB0aGlzIG5hc3R5IHNpZGUgZWZm
+ZWN0LiBJIHdpbGwgc3VibWl0IGEgCnYyIHdoZW4gSSd2ZSBzb3J0ZWQgb3V0IG90aGVyIHByb2Js
+ZW1zIG9uIENocm9tZS4KClRoYW5rcwoKLVBpZXJyZQoKPgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBL
+ZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4KPj4gLS0tCj4+IMKgIHNvdW5kL3Nv
+Yy9zb2MtYWNwaS5jIHwgNSArKysrLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLWFjcGku
+YyBiL3NvdW5kL3NvYy9zb2MtYWNwaS5jCj4+IGluZGV4IGI4ZTcyYjUyZGIzMC4uZmFmODk0MTM2
+M2U0IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvc29jLWFjcGkuYwo+PiArKysgYi9zb3VuZC9z
+b2Mvc29jLWFjcGkuYwo+PiBAQCAtMTUsNyArMTUsMTAgQEAgc25kX3NvY19hY3BpX2ZpbmRfbWFj
+aGluZShzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggCj4+ICptYWNoaW5lcykKPj4gwqDCoMKgwqDC
+oMKgwqDCoMKgIGlmIChhY3BpX2Rldl9wcmVzZW50KG1hY2gtPmlkLCBOVUxMLCAtMSkpIHsKPj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKG1hY2gtPm1hY2hpbmVfcXVpcmspCj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbWFjaCA9IG1hY2gtPm1hY2hpbmVfcXVp
+cmsobWFjaCk7Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBtYWNoOwo+PiArCj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qIHJldHVybiBtYXRjaGVkIG1hY2hpbmUsIGNvbnRp
+bnVlIG90aGVyd2lzZSAqLwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAobWFjaCkKPj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbWFjaDsKPj4gwqDCoMKgwqDC
+oMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7Cj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
