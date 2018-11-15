@@ -1,17 +1,15 @@
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH alsa-lib 2/2] pcm_dmix: Fix compiler warnings
-	-Wunused-result
-Date: Thu, 15 Nov 2018 08:19:57 +0100
-Message-ID: <20181115071957.22753-2-kmarinushkin@birdec.tech>
-References: <20181115071957.22753-1-kmarinushkin@birdec.tech>
+From: David Lin <CTLIN0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8822: convert to SPDX identifiers
+Date: Thu, 15 Nov 2018 17:14:47 +0800
+Message-ID: <20181115091446.32764-1-CTLIN0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
- by alsa0.perex.cz (Postfix) with ESMTP id CD145267A61
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 08:18:40 +0100 (CET)
-In-Reply-To: <20181115071957.22753-1-kmarinushkin@birdec.tech>
+Received: from server-codec (60-250-207-217.hinet-ip.hinet.net
+ [60.250.207.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DDCF26751A
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 10:18:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +19,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, wtli@nuvoton.com, kchsu0@nuvoton.com, lgirdwood@gmail.com, yhchuang@nuvoton.com, David Lin <CTLIN0@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-Before this commit, compilation of `pcm_dmix` causes warnings "ignoring
-return value" for `fgets` operations:
+This patch updates license to SPDX-License-Identifier
+instead of verbose license text.
 
-~~~~
-pcm_dmix_i386.c:108:5: warning: ignoring return value of 'fgets', declared
-with attribute warn_unused_result [-Wunused-result]
-     fgets(line, sizeof(line), in);
-     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~
-
-This commit fixes the warnings.
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: David Lin <CTLIN0@nuvoton.com>
 ---
- src/pcm/pcm_dmix_i386.c   | 3 ++-
- src/pcm/pcm_dmix_x86_64.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8822.c | 26 +++++++++++---------------
+ sound/soc/codecs/nau8822.h | 11 +++++------
+ 2 files changed, 16 insertions(+), 21 deletions(-)
 
-diff --git a/src/pcm/pcm_dmix_i386.c b/src/pcm/pcm_dmix_i386.c
-index 1ab983a8..81265517 100644
---- a/src/pcm/pcm_dmix_i386.c
-+++ b/src/pcm/pcm_dmix_i386.c
-@@ -105,7 +105,8 @@ static void mix_select_callbacks(snd_pcm_direct_t *dmix)
- 		in = fopen("/proc/cpuinfo", "r");
- 		if (in) {
- 			while (!feof(in)) {
--				fgets(line, sizeof(line), in);
-+				if (!fgets(line, sizeof(line), in))
-+					continue;
- 				if (!strncmp(line, "processor", 9))
- 					smp++;
- 				else if (!strncmp(line, "flags", 5)) {
-diff --git a/src/pcm/pcm_dmix_x86_64.c b/src/pcm/pcm_dmix_x86_64.c
-index 34c40d4e..c96af69b 100644
---- a/src/pcm/pcm_dmix_x86_64.c
-+++ b/src/pcm/pcm_dmix_x86_64.c
-@@ -88,7 +88,8 @@ static void mix_select_callbacks(snd_pcm_direct_t *dmix)
- 		in = fopen("/proc/cpuinfo", "r");
- 		if (in) {
- 			while (!feof(in)) {
--				fgets(line, sizeof(line), in);
-+				if (!fgets(line, sizeof(line), in))
-+					continue;
- 				if (!strncmp(line, "processor", 9))
- 					smp++;
- 			}
+diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
+index 622ce947f134..c6152a044416 100644
+--- a/sound/soc/codecs/nau8822.c
++++ b/sound/soc/codecs/nau8822.c
+@@ -1,18 +1,14 @@
+-/*
+- * nau8822.c  --  NAU8822 ALSA Soc Audio Codec driver
+- *
+- * Copyright 2017 Nuvoton Technology Corp.
+- *
+- * Author: David Lin <ctlin0@nuvoton.com>
+- * Co-author: John Hsu <kchsu0@nuvoton.com>
+- * Co-author: Seven Li <wtli@nuvoton.com>
+- *
+- * Based on WM8974.c
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// nau8822.c  --  NAU8822 ALSA Soc Audio driver
++//
++// Copyright 2017 Nuvoton Technology Crop.
++//
++// Author: David Lin <ctlin0@nuvoton.com>
++// Co-author: John Hsu <kchsu0@nuvoton.com>
++// Co-author: Seven Li <wtli@nuvoton.com>
++//
++// Based on WM8974.c
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+diff --git a/sound/soc/codecs/nau8822.h b/sound/soc/codecs/nau8822.h
+index aa79c969cd44..d15afd782815 100644
+--- a/sound/soc/codecs/nau8822.h
++++ b/sound/soc/codecs/nau8822.h
+@@ -1,13 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * nau8822.h  --  NAU8822 Soc Audio Codec driver
++ * nau8822.h  --  NAU8822 ALSA SoC Audio driver
++ *
++ * Copyright 2017 Nuvoton Technology Crop.
+  *
+  * Author: David Lin <ctlin0@nuvoton.com>
+- * Co-author: John Hsu <kchsu0@nuvoton.com>
++ * Co-author: John Hsu <kchsu@nuvoton.com>
+  * Co-author: Seven Li <wtli@nuvoton.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef __NAU8822_H__
 -- 
-2.13.6
+2.18.0
