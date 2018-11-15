@@ -1,61 +1,151 @@
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: Re: [PATCH alsa-lib 1/2] pcm_share: Fix compiler
- warnings -Wunused-result
-Date: Thu, 15 Nov 2018 18:30:18 +0100
-Message-ID: <e9666664-14a6-1bb0-e9b6-0cb6ad45f6af@birdec.tech>
-References: <20181115071957.22753-1-kmarinushkin@birdec.tech>
- <s5h8t1ua999.wl-tiwai@suse.de>
+From: syzbot <syzbot+dc09047bce3820621ba2@syzkaller.appspotmail.com>
+Subject: KASAN: use-after-free Read in snd_ctl_elem_add
+Date: Thu, 15 Nov 2018 09:38:03 -0800
+Message-ID: <0000000000004550b5057ab7831a@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A0AD2679C0
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 18:28:20 +0100 (CET)
-In-Reply-To: <s5h8t1ua999.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, rf@opensource.cirrus.com, syzkaller-bugs@googlegroups.com, tiwai@suse.com, viro@zeniv.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+Hello,
 
-On 11/15/18 12:08, Takashi Iwai wrote:
-> On Thu, 15 Nov 2018 08:19:56 +0100,
-> Kirill Marinushkin wrote:
->>
->> Before this commit, compilation of `pcm_share` causes warnings "ignoring
->> return value" for several `read` and `write` operations:
->>
->> ~~~~
->> pcm_share.c: In function '_snd_pcm_share_missing':
->> pcm_share.c:293:5: warning: ignoring return value of 'read', declared with
->> attribute warn_unused_result [-Wunused-result]
->>      read(share->slave_socket, buf, 1);
->>      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> <...>
->> ~~~~
->>
+syzbot found the following crash on:
 
-> Which compiler version?  I'm using gcc 8.2.1, and couldn't get any
-> warnings like the above.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
+HEAD commit:    ccda4af0f4b9 Linux 4.20-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=139bbad5400000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4a0a89f12ca9b0f5
+dashboard link: https://syzkaller.appspot.com/bug?extid=dc09047bce3820621ba2
+compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
 
-My gcc version is 6.4.0
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Best Regards,
-Kirill
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+dc09047bce3820621ba2@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in snd_ctl_get_ioff include/sound/control.h:164  
+[inline]
+BUG: KASAN: use-after-free in snd_ctl_elem_add+0x1210/0x14d0  
+sound/core/control.c:1367
+Read of size 4 at addr ffff8881780ba710 by task syz-executor1/10730
+
+CPU: 0 PID: 10730 Comm: syz-executor1 Not tainted 4.20.0-rc2+ #112
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x244/0x39d lib/dump_stack.c:113
+  print_address_description.cold.7+0x9/0x1ff mm/kasan/report.c:256
+  kasan_report_error mm/kasan/report.c:354 [inline]
+  kasan_report.cold.8+0x242/0x309 mm/kasan/report.c:412
+  __asan_report_load4_noabort+0x14/0x20 mm/kasan/report.c:432
+  snd_ctl_get_ioff include/sound/control.h:164 [inline]
+  snd_ctl_elem_add+0x1210/0x14d0 sound/core/control.c:1367
+  snd_ctl_elem_add_user+0xb8/0x170 sound/core/control.c:1392
+  snd_ctl_ioctl+0x480/0x1110 sound/core/control.c:1568
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0x1de/0x1790 fs/ioctl.c:696
+  ksys_ioctl+0xa9/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x457569
+Code: fd b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fe6bc8bac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000457569
+RDX: 0000000020000080 RSI: 00000000c1105517 RDI: 0000000000000006
+RBP: 000000000072c040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fe6bc8bb6d4
+R13: 00000000004c8a70 R14: 00000000004d15d8 R15: 00000000ffffffff
+
+Allocated by task 10730:
+  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
+  set_track mm/kasan/kasan.c:460 [inline]
+  kasan_kmalloc+0xc7/0xe0 mm/kasan/kasan.c:553
+  __do_kmalloc mm/slab.c:3722 [inline]
+  __kmalloc+0x15b/0x760 mm/slab.c:3731
+  kmalloc include/linux/slab.h:551 [inline]
+  kzalloc include/linux/slab.h:741 [inline]
+  snd_ctl_new+0x5c/0x180 sound/core/control.c:223
+  snd_ctl_elem_add+0x555/0x14d0 sound/core/control.c:1324
+  snd_ctl_elem_add_user+0xb8/0x170 sound/core/control.c:1392
+  snd_ctl_ioctl+0x480/0x1110 sound/core/control.c:1568
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0x1de/0x1790 fs/ioctl.c:696
+  ksys_ioctl+0xa9/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 10728:
+  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
+  set_track mm/kasan/kasan.c:460 [inline]
+  __kasan_slab_free+0x102/0x150 mm/kasan/kasan.c:521
+  kasan_slab_free+0xe/0x10 mm/kasan/kasan.c:528
+  __cache_free mm/slab.c:3498 [inline]
+  kfree+0xcf/0x230 mm/slab.c:3817
+  snd_ctl_free_one+0x5d/0x70 sound/core/control.c:313
+  snd_ctl_remove+0x43b/0x5a0 sound/core/control.c:504
+  snd_ctl_remove_user_ctl+0x17d/0x240 sound/core/control.c:568
+  snd_ctl_elem_remove sound/core/control.c:1410 [inline]
+  snd_ctl_ioctl+0xb25/0x1110 sound/core/control.c:1572
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0x1de/0x1790 fs/ioctl.c:696
+  ksys_ioctl+0xa9/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+The buggy address belongs to the object at ffff8881780ba6c0
+  which belongs to the cache kmalloc-16k of size 16384
+The buggy address is located 80 bytes inside of
+  16384-byte region [ffff8881780ba6c0, ffff8881780be6c0)
+The buggy address belongs to the page:
+page:ffffea0005e02e00 count:1 mapcount:0 mapping:ffff8881da802200 index:0x0  
+compound_mapcount: 0
+flags: 0x2fffc0000010200(slab|head)
+raw: 02fffc0000010200 ffffea00068ce008 ffff8881da801c48 ffff8881da802200
+raw: 0000000000000000 ffff8881780ba6c0 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff8881780ba600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff8881780ba680: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
+> ffff8881780ba700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                          ^
+  ffff8881780ba780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff8881780ba800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+kauditd_printk_skb: 174 callbacks suppressed
+audit: type=1400 audit(1542205722.082:3119): avc:  denied  { map } for   
+pid=10761 comm="blkid" path="/lib/x86_64-linux-gnu/libblkid.so.1.1.0"  
+dev="sda1" ino=2825 scontext=system_u:system_r:kernel_t:s0  
+tcontext=system_u:object_r:file_t:s0 tclass=file permissive=1
+audit: type=1400 audit(1542205722.102:3121): avc:  denied  { map } for   
+pid=10764 comm="modprobe" path="/lib/x86_64-linux-gnu/libkmod.so.2.1.3"  
+dev="sda1" ino=2811 scontext=system_u:system_r:kernel_t:s0  
+tcontext=system_u:object_r:file_t:s0 tclass=file permissive=1
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
+syzbot.
