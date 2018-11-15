@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Fixed build errors" to the asoc tree
-Date: Thu, 15 Nov 2018 19:46:45 +0000 (GMT)
-Message-ID: <20181115194645.CFE8D440078@finisterre.ee.mobilebroadband>
-References: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: Vijendar Mukunda <vijendar.mukunda@amd.com>, Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC, AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: nau8822: convert to SPDX identifiers"
+	to the asoc tree
+Date: Thu, 15 Nov 2018 19:46:53 +0000 (GMT)
+Message-ID: <20181115194653.8D8D4440078@finisterre.ee.mobilebroadband>
+References: <20181115094912.656-1-CTLIN0@nuvoton.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33932267B23
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 20:47:00 +0100 (CET)
+In-Reply-To: <20181115094912.656-1-CTLIN0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Lin <CTLIN0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, wtli@nuvoton.com, kchsu0@nuvoton.com, lgirdwood@gmail.com, yhchuang@nuvoton.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: Fixed build errors
+   ASoC: nau8822: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -37,36 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 1c4fb2457e541c614792e6d9986bc95461e67e41 Mon Sep 17 00:00:00 2001
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Date: Thu, 15 Nov 2018 21:43:49 +0530
-Subject: [PATCH] ASoC: amd: Fixed build errors
+>From 0c8224c34aa82901037e6c5921b692ea1b78fd24 Mon Sep 17 00:00:00 2001
+From: David Lin <CTLIN0@nuvoton.com>
+Date: Thu, 15 Nov 2018 17:49:13 +0800
+Subject: [PATCH] ASoC: nau8822: convert to SPDX identifiers
 
-Fixed build errors.
-- Implicit declaration of pci_enable_msi() & pci_disable_msi()
-api's for openrisc architecture.
-- type defaults to 'int' in declaration of 'module_pci_driver'
+This patch fixes typo in the comment.
 
-Enabled build for x86 architecture.
-
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
-Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Signed-off-by: David Lin <CTLIN0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/nau8822.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 5f3b56087ba1..33ebec990c2f 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -22,5 +22,6 @@ config SND_SOC_AMD_CZ_RT5645_MACH
+diff --git a/sound/soc/codecs/nau8822.h b/sound/soc/codecs/nau8822.h
+index d15afd782815..9c552983a293 100644
+--- a/sound/soc/codecs/nau8822.h
++++ b/sound/soc/codecs/nau8822.h
+@@ -5,7 +5,7 @@
+  * Copyright 2017 Nuvoton Technology Crop.
+  *
+  * Author: David Lin <ctlin0@nuvoton.com>
+- * Co-author: John Hsu <kchsu@nuvoton.com>
++ * Co-author: John Hsu <kchsu0@nuvoton.com>
+  * Co-author: Seven Li <wtli@nuvoton.com>
+  */
  
- config SND_SOC_AMD_ACP3x
- 	tristate "AMD Audio Coprocessor-v3.x support"
-+	depends on X86 && PCI
- 	help
- 	 This option enables ACP v3.x I2S support on AMD platform
 -- 
 2.19.1
