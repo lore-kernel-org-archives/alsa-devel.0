@@ -1,47 +1,45 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: amd: remove set but not used variable 'dma_buffer'
-Date: Thu, 15 Nov 2018 01:56:35 +0000
-Message-ID: <1542246995-180932-1-git-send-email-yuehaibing@huawei.com>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH 1/2] ASoC: rt5663: Add documentation for power supply support
+Date: Thu, 15 Nov 2018 12:13:33 +0800
+Message-ID: <20181115041334.79446-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>
-Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, oder_chiou@realtek.com, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+rt5663 codec driver will support setting CPVDD and AVDD power supply
+from device tree.
 
-sound/soc/amd/raven/acp3x-pcm-dma.c: In function 'acp3x_dma_hw_params':
-sound/soc/amd/raven/acp3x-pcm-dma.c:333:25: warning:
- variable 'dma_buffer' set but not used [-Wunused-but-set-variable]
-
-It never used since introduction in commit
-8de1b5ed0337 ("ASoC: amd: add acp3x system resume pm op")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 2 --
- 1 file changed, 2 deletions(-)
+ Fixed the commit title of v1.
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 2e61cef..28a867f 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -330,7 +330,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- {
- 	int status;
- 	u64 size;
--	struct snd_dma_buffer *dma_buffer;
- 	struct page *pg;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct i2s_stream_instance *rtd = runtime->private_data;
-@@ -338,7 +337,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- 	if (!rtd)
- 		return -EINVAL;
+ Documentation/devicetree/bindings/sound/rt5663.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
+index 23386446c63d6..d4058dfde0392 100644
+--- a/Documentation/devicetree/bindings/sound/rt5663.txt
++++ b/Documentation/devicetree/bindings/sound/rt5663.txt
+@@ -36,6 +36,9 @@ Optional properties:
+   "realtek,impedance_sensing_num" is 2. It means that there are 2 ranges of
+   impedance in the impedance sensing function.
  
--	dma_buffer = &substream->dma_buffer;
- 	size = params_buffer_bytes(params);
- 	status = snd_pcm_lib_malloc_pages(substream, size);
- 	if (status < 0)
++- avdd-supply: Power supply for AVDD, providing 1.8V.
++- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
++
+ Pins on the device (for linking into audio routes) for RT5663:
+ 
+   * IN1P
+@@ -51,4 +54,6 @@ rt5663: codec@12 {
+ 	compatible = "realtek,rt5663";
+ 	reg = <0x12>;
+ 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
++	avdd-supply = <&pp1800_a_alc5662>;
++	cpvdd-supply = <&pp3500_a_alc5662>;
+ };
+-- 
+2.19.1.930.g4563a0d9d0-goog
