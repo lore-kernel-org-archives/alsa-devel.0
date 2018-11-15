@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/3] ASoC: omap: Fix and add pm_qos
-	configuration
-Date: Thu, 15 Nov 2018 16:29:36 +0200
-Message-ID: <7c20517e-4021-e62f-a8ff-a380fe90495e@ti.com>
-References: <20181114110623.30932-1-peter.ujfalusi@ti.com>
- <2C9D3C26-75A9-4736-BC68-5954728083DB@goldelico.com>
- <6128350C-8801-492F-9FE6-B07CCAF56925@goldelico.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 1/2] ASoC: amd: Fixed build errors
+Date: Thu, 15 Nov 2018 21:43:49 +0530
+Message-ID: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- by alsa0.perex.cz (Postfix) with ESMTP id A4465267AFC
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 15:28:16 +0100 (CET)
-In-Reply-To: <6128350C-8801-492F-9FE6-B07CCAF56925@goldelico.com>
-Content-Language: en-US
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr800049.outbound.protection.outlook.com [40.107.80.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F1F8267AFC
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 17:09:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pyra-handheld.com, Andreas Kemnade <andreas@kemnade.info>, linux-omap <linux-omap@vger.kernel.org>, jarkko.nikula@bitmer.com
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC
+ AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyMDE4LTExLTE1IDE0OjI2LCBILiBOaWtvbGF1cyBTY2hhbGxlciB3cm90ZToKPiBI
-aSwKPiAKPj4gQW0gMTQuMTEuMjAxOCB1bSAxMzo0NSBzY2hyaWViIEguIE5pa29sYXVzIFNjaGFs
-bGVyIDxobnNAZ29sZGVsaWNvLmNvbT46Cj4+Cj4+IEhpIFBldGVyLAo+Pgo+Pj4gQW0gMTQuMTEu
-MjAxOCB1bSAxMjowNiBzY2hyaWViIFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5j
-b20+Ogo+Pj4KPj4+IEhpLAo+Pj4KPj4+IFRoZSBkZWZjb25maWcgZm9yIE9NQVAyKyBub3cgaGF2
-ZSB0aGUgQ1BVX0lETEUgZW5hYmxlZCB3aGljaCBjYW4gY2F1c2UgYXVkaW8KPj4+IGFydGlmYWN0
-cyBiZWNhdXNlIHdlIHRyeSB0byBlbnRlciB0b28gbG93IHBvd2VyIHN0YXRlIGZyb20gd2hlcmUg
-dGhlIHdha2V1cAo+Pj4gdGFrZXMgbG9uZ2VyIHRoYW4gdGhlIEZJRk8gY2FuIHRvbGVyYXRlIG9u
-IHRoZSBkYWkgc2lkZS4KPj4+Cj4+PiBXaGlsZSBhZGRpbmcgcG1fcW9zIHRvIE1jUERNIGFuZCBE
-TUlDIEkgaGF2ZSBub3RpY2VkIHRoYXQgdGhlIE1jQlNQIGNhbGN1bGF0aW9uCj4+PiB3YXMgbm90
-IGNvcnJlY3QgYXMgd2UgbmVlZCB1c2VjIGZvciB0aGUgbGF0ZW5jeSB2YWx1ZS4KPj4+Cj4+PiBS
-ZWdhcmRzLAo+Pj4gUGV0ZXIKPj4+IC0tLQo+Pj4gUGV0ZXIgVWpmYWx1c2kgKDMpOgo+Pj4gQVNv
-Qzogb21hcC1tY2JzcDogRml4IGxhdGVuY3kgdmFsdWUgY2FsY3VsYXRpb24gZm9yIHBtX3Fvcwo+
-Pj4gQVNvQzogb21hcC1tY3BkbTogQWRkIHBtX3FvcyBoYW5kbGluZyB0byBhdm9pZCB1bmRlci9v
-dmVycnVucyB3aXRoCj4+PiBDUFVfSURMRQo+Pj4gQVNvQzogb21hcC1kbWljOiBBZGQgcG1fcW9z
-IGhhbmRsaW5nIHRvIGF2b2lkIG92ZXJydW5zIHdpdGggQ1BVX0lETEUKPj4+Cj4+PiBzb3VuZC9z
-b2Mvb21hcC9vbWFwLWRtaWMuYyAgfCAgOSArKysrKysrKwo+Pj4gc291bmQvc29jL29tYXAvb21h
-cC1tY2JzcC5jIHwgIDYgKysrLS0tCj4+PiBzb3VuZC9zb2Mvb21hcC9vbWFwLW1jcGRtLmMgfCA0
-MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCj4+PiAzIGZpbGVzIGNoYW5n
-ZWQsIDU0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4+Cj4+IEkgd2lsbCB0ZXN0IGFz
-YXAuCj4gCj4gSSBoYXZlIG5vdzoKPiAKPiAqIHY0LjIwLXJjMgo+ICogcGx1cyB5b3VyIG5ldyBw
-YXRjaGVzCj4gKiBwbHVzIGxldHV4LTQuMjAtcmMyIHBhdGNoZXMKPiAqIGluY2x1ZGluZyBvdXIg
-cHJpdmF0ZSBBRVNTIHBhdGNoIHNldCAobW9zdGx5IGluYWN0aXZlLCBiZWNhdXNlIGl0IGZhaWxz
-IHRvIGxvYWQgZmlybXdhcmUpCj4gKiBDT05GSUdfQ1BVX0lETEU9eQo+IAo+IGFuZCBpdCB3b3Jr
-cy4gSSBjYW4gdXNlIGFwbGF5IGFuZCBwbGF5IHRvIGdldCBoYW5kc2ZyZWUgYXVkaW8gYXMgd2l0
-aCBDT05GSUdfQ1BVX0lETEU9bgoKVGhhbmtzIGZvciB0ZXN0aW5nIQoKPiBTb21ldGltZXMsIHRo
-ZXJlIGlzIGEgc2NyYXRjaHkgdGVudGggb2YgYSBzZWNvbmQgKGluIGhhbmRzZnJlZSBhbmQgaGVh
-ZHNldCksCgpJZiB5b3Ugc2V0IENPTkZJR19DUFVfSURMRT1uLCBkbyB5b3Ugc3RpbGwgaGF2ZSB0
-aGUgc2NyYXRjaHkgc291bmQ/IE9yCndpdGggNC4xOSBrZXJuZWwgaWYgeW91IGNhbiBjcm9zcyBj
-aGVjayBpdD8KCj4gYnV0IHRoZSBiYXNpYyByaHl0aG0gZG9lcyBub3QgZ2V0IGludGVycnVwdGVk
-IGFueSBtb3JlIGFuZCB0aGUgcGxheSBjb21tYW5kIGRvZXMKPiBub3QgZ2V0IHN0dWNrLgo+IAo+
-IEkgaGF2ZSBwbGF5ZWQgYW4gbXAzIG9mIDQgbWludXRlcyBhbmQgdGhlIHBsYXkgcHJvY2VzcyBk
-aWQgc3VjY2VlZCBhbmQgZGlkbid0IHJlcG9ydAo+IGJ1ZmZlciB1bmRlcnJ1biBpc3N1ZXMuCj4g
-Cj4gU28geW91ciBwYXRjaGVzIHNlZW0gdG8gZml4IHRoZSBpc3N1ZS4gQXQgbGVhc3QgdGhlIGJh
-c2ljIHByb2JsZW1zLiBUaGlzIHNjcmF0Y2h5Cj4gdGhpbmcgbmVlZHMgZnVydGhlciBzdHVkeSwg
-aWYgaXQgaXMgYSBzcHVyaW91cyB0aGluZyBvbiBteSBQeXJhIHByb3RveXBlIGRldmljZS4KPiBP
-ciBpZiBpdCBpcyBzdGlsbCB0aGVyZSBpZiB3ZSBkaXNhYmxlIENQVV9JRExFIGFnYWluIChJIGhh
-dmVuJ3QgdHJpZWQgdGhhdCB5ZXQpLgo+IAo+IEJSIGFuZCB0aGFua3MgZm9yIHF1aWNrIGhlbHAs
-Cj4gTmlrb2xhdXMKPiAKCi0gUMOpdGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQ
-b3Jra2FsYW5rYXR1IDIyLCAwMDE4MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2
-MTU1MjEtNC4gS290aXBhaWtrYS9Eb21pY2lsZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Fixed build errors.
+- Implicit declaration of pci_enable_msi() & pci_disable_msi()
+api's for openrisc architecture.
+- type defaults to 'int' in declaration of 'module_pci_driver'
+
+Enabled build for x86 architecture.
+
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
+---
+ sound/soc/amd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 5f3b560..33ebec9 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -22,5 +22,6 @@ config SND_SOC_AMD_CZ_RT5645_MACH
+ 
+ config SND_SOC_AMD_ACP3x
+ 	tristate "AMD Audio Coprocessor-v3.x support"
++	depends on X86 && PCI
+ 	help
+ 	 This option enables ACP v3.x I2S support on AMD platform
+-- 
+2.7.4
