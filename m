@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Switch to SPDX identifier" to the
-	asoc tree
-Date: Thu, 15 Nov 2018 19:46:37 +0000 (GMT)
-Message-ID: <20181115194637.571D6440079@finisterre.ee.mobilebroadband>
-References: <1542298434-17287-2-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Applied "ASoC: amd: remove set but not used variable
+	'dma_buffer'" to the asoc tree
+Date: Thu, 15 Nov 2018 19:46:33 +0000 (GMT)
+Message-ID: <20181115194633.D3D6A440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4675D267B0E
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 20:46:43 +0100 (CET)
-In-Reply-To: <1542298434-17287-2-git-send-email-Vijendar.Mukunda@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 971BA267B0E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 20:46:41 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Sanju R Mehta <sanju.mehta@amd.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <vijendar.mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Colin Ian King <colin.king@canonical.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: Switch to SPDX identifier
+   ASoC: amd: remove set but not used variable 'dma_buffer'
 
 has been applied to the asoc tree at
 
@@ -53,135 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From d5a932e541f61a2be1cca7bab1e00d2bf7803e71 Mon Sep 17 00:00:00 2001
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Date: Thu, 15 Nov 2018 21:43:50 +0530
-Subject: [PATCH] ASoC: amd: Switch to SPDX identifier
+>From 424d5b56d020b750803134cc15bbd4d0addaaee7 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 15 Nov 2018 01:56:35 +0000
+Subject: [PATCH] ASoC: amd: remove set but not used variable 'dma_buffer'
 
-Adopt the SPDX license identifier headers to ease license
-compliance management.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+sound/soc/amd/raven/acp3x-pcm-dma.c: In function 'acp3x_dma_hw_params':
+sound/soc/amd/raven/acp3x-pcm-dma.c:333:25: warning:
+ variable 'dma_buffer' set but not used [-Wunused-but-set-variable]
+
+It never used since introduction in commit
+8de1b5ed0337 ("ASoC: amd: add acp3x system resume pm op")
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/Makefile           |  2 ++
- sound/soc/amd/raven/acp3x-pcm-dma.c    | 19 +++++--------------
- sound/soc/amd/raven/acp3x.h            |  7 +++++++
- sound/soc/amd/raven/chip_offset_byte.h | 22 +++-------------------
- sound/soc/amd/raven/pci-acp3x.c        | 19 +++++--------------
- 5 files changed, 22 insertions(+), 47 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/amd/raven/Makefile b/sound/soc/amd/raven/Makefile
-index 8c03e6fccf6a..108d1acf189b 100644
---- a/sound/soc/amd/raven/Makefile
-+++ b/sound/soc/amd/raven/Makefile
-@@ -1,3 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+# Raven Ridge platform Support
- snd-pci-acp3x-objs	:= pci-acp3x.o
- snd-acp3x-pcm-dma-objs	:= acp3x-pcm-dma.o
- obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-pci-acp3x.o
 diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index b16cdd187139..2aa34208ae92 100644
+index 2aa34208ae92..022a8912c8a2 100644
 --- a/sound/soc/amd/raven/acp3x-pcm-dma.c
 +++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -1,17 +1,8 @@
--/*
-- * AMD ALSA SoC PCM Driver
-- *
-- * Copyright 2016 Advanced Micro Devices, Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// AMD ALSA SoC PCM Driver
-+//
-+//Copyright 2016 Advanced Micro Devices, Inc.
+@@ -322,7 +322,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	int status;
+ 	u64 size;
+-	struct snd_dma_buffer *dma_buffer;
+ 	struct page *pg;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct i2s_stream_instance *rtd = runtime->private_data;
+@@ -330,7 +329,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
+ 	if (!rtd)
+ 		return -EINVAL;
  
- #include <linux/platform_device.h>
- #include <linux/module.h>
-diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-index 95fef8570577..4f2cadd90a87 100644
---- a/sound/soc/amd/raven/acp3x.h
-+++ b/sound/soc/amd/raven/acp3x.h
-@@ -1,3 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * AMD ALSA SoC PCM Driver
-+ *
-+ * Copyright 2016 Advanced Micro Devices, Inc.
-+ */
-+
- #include "chip_offset_byte.h"
- 
- #define ACP3x_PHY_BASE_ADDRESS 0x1240000
-diff --git a/sound/soc/amd/raven/chip_offset_byte.h b/sound/soc/amd/raven/chip_offset_byte.h
-index fceb7bb40297..9c1fac58fb2a 100644
---- a/sound/soc/amd/raven/chip_offset_byte.h
-+++ b/sound/soc/amd/raven/chip_offset_byte.h
-@@ -1,24 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-- * ACP 3.0 Register documentation
-+ * AMD ACP 3.0 Register Documentation
-  *
-- * Copyright (C) 2016 Advanced Micro Devices, Inc.
-- *
-- * Permission is hereby granted, free of charge, to any person obtaining a
-- * copy of this software and associated documentation files (the "Software"),
-- * to deal in the Software without restriction, including without limitation
-- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-- * and/or sell copies of the Software, and to permit persons to whom the
-- * Software is furnished to do so, subject to the following conditions:
-- *
-- * The above copyright notice and this permission notice shall be included
-- * in all copies or substantial portions of the Software.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-- * THE COPYRIGHT HOLDER(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-+ * Copyright 2016 Advanced Micro Devices, Inc.
-  */
- 
- #ifndef _acp_ip_OFFSET_HEADER
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 0700162b0ed1..ef805e71a98f 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -1,17 +1,8 @@
--/*
-- * AMD ALSA SoC PCM Driver
-- *
-- * Copyright 2016 Advanced Micro Devices, Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// AMD ACP PCI Driver
-+//
-+//Copyright 2016 Advanced Micro Devices, Inc.
- 
- #include <linux/pci.h>
- #include <linux/module.h>
+-	dma_buffer = &substream->dma_buffer;
+ 	size = params_buffer_bytes(params);
+ 	status = snd_pcm_lib_malloc_pages(substream, size);
+ 	if (status < 0)
 -- 
 2.19.1
