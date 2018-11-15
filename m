@@ -1,17 +1,18 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH] ASoC: pcm186x: Fix device reset-registers
-	trigger value
-Date: Thu, 15 Nov 2018 11:08:33 -0600
-Message-ID: <a7db24e0-94fe-7875-c4a6-84d739ac185b@ti.com>
-References: <20181115170131.1839-1-dannenberg@ti.com>
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Subject: Re: [PATCH alsa-lib 1/2] pcm_share: Fix compiler
+ warnings -Wunused-result
+Date: Thu, 15 Nov 2018 18:30:18 +0100
+Message-ID: <e9666664-14a6-1bb0-e9b6-0cb6ad45f6af@birdec.tech>
+References: <20181115071957.22753-1-kmarinushkin@birdec.tech>
+ <s5h8t1ua999.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- by alsa0.perex.cz (Postfix) with ESMTP id BF484267AFC
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 18:08:36 +0100 (CET)
-In-Reply-To: <20181115170131.1839-1-dannenberg@ti.com>
+Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A0AD2679C0
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 18:28:20 +0100 (CET)
+In-Reply-To: <s5h8t1ua999.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,42 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Dannenberg <dannenberg@ti.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stephane Le Provost <stephane.leprovost@mediatek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/18 11:01 AM, Andreas Dannenberg wrote:
-> According to the current device datasheet (TI Lit # SLAS831D, revised
-> March 2018) the value written to the device's PAGE register to trigger
-> a complete register reset should be 0xfe, not 0xff. So go ahead and
-> update to the correct value.
+Hello Takashi,
+
+On 11/15/18 12:08, Takashi Iwai wrote:
+> On Thu, 15 Nov 2018 08:19:56 +0100,
+> Kirill Marinushkin wrote:
+>>
+>> Before this commit, compilation of `pcm_share` causes warnings "ignoring
+>> return value" for several `read` and `write` operations:
+>>
+>> ~~~~
+>> pcm_share.c: In function '_snd_pcm_share_missing':
+>> pcm_share.c:293:5: warning: ignoring return value of 'read', declared with
+>> attribute warn_unused_result [-Wunused-result]
+>>      read(share->slave_socket, buf, 1);
+>>      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> <...>
+>> ~~~~
+>>
+
+> Which compiler version?  I'm using gcc 8.2.1, and couldn't get any
+> warnings like the above.
 > 
-> Reported-by: Stephane Le Provost <stephane.leprovost@mediatek.com>
-> Tested-by: Stephane Le Provost <stephane.leprovost@mediatek.com>
-> Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-> ---
-
-
-Does 0xff not reset the device? If so then this is not just a typo but a
-bug and this patch should have a fixes tag. Either way:
-
-Acked-by: Andrew F. Davis <afd@ti.com>
-
-
->  sound/soc/codecs/pcm186x.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/codecs/pcm186x.h b/sound/soc/codecs/pcm186x.h
-> index 2c6ba55bf394..bb3f0c42a1cd 100644
-> --- a/sound/soc/codecs/pcm186x.h
-> +++ b/sound/soc/codecs/pcm186x.h
-> @@ -139,7 +139,7 @@ enum pcm186x_type {
->  #define PCM186X_MAX_REGISTER		PCM186X_CURR_TRIM_CTRL
->  
->  /* PCM186X_PAGE */
-> -#define PCM186X_RESET			0xff
-> +#define PCM186X_RESET			0xfe
->  
->  /* PCM186X_ADCX_INPUT_SEL_X */
->  #define PCM186X_ADC_INPUT_SEL_POL	BIT(7)
+> thanks,
 > 
+> Takashi
+> 
+
+My gcc version is 6.4.0
+
+Best Regards,
+Kirill
