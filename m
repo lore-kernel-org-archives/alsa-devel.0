@@ -1,15 +1,17 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 1/2] ASoC: amd: Fixed build errors
-Date: Thu, 15 Nov 2018 21:43:49 +0530
-Message-ID: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 2/2] ASoC: amd: Switch to SPDX identifier
+Date: Thu, 15 Nov 2018 21:43:50 +0530
+Message-ID: <1542298434-17287-2-git-send-email-Vijendar.Mukunda@amd.com>
+References: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com
- (mail-eopbgr800049.outbound.protection.outlook.com [40.107.80.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F1F8267AFC
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 17:09:36 +0100 (CET)
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr730060.outbound.protection.outlook.com [40.107.73.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id E98A5267AFF
+ for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 17:10:16 +0100 (CET)
+In-Reply-To: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,34 +21,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC
- AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Sanju R Mehta <sanju.mehta@amd.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Colin Ian King <colin.king@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fixed build errors.
-- Implicit declaration of pci_enable_msi() & pci_disable_msi()
-api's for openrisc architecture.
-- type defaults to 'int' in declaration of 'module_pci_driver'
-
-Enabled build for x86 architecture.
+Adopt the SPDX license identifier headers to ease license
+compliance management.
 
 Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
-Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 ---
- sound/soc/amd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/raven/Makefile           |  2 ++
+ sound/soc/amd/raven/acp3x-pcm-dma.c    | 19 +++++--------------
+ sound/soc/amd/raven/acp3x.h            |  7 +++++++
+ sound/soc/amd/raven/chip_offset_byte.h | 22 +++-------------------
+ sound/soc/amd/raven/pci-acp3x.c        | 19 +++++--------------
+ 5 files changed, 22 insertions(+), 47 deletions(-)
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 5f3b560..33ebec9 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -22,5 +22,6 @@ config SND_SOC_AMD_CZ_RT5645_MACH
+diff --git a/sound/soc/amd/raven/Makefile b/sound/soc/amd/raven/Makefile
+index 8c03e6f..108d1ac 100644
+--- a/sound/soc/amd/raven/Makefile
++++ b/sound/soc/amd/raven/Makefile
+@@ -1,3 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0+
++# Raven Ridge platform Support
+ snd-pci-acp3x-objs	:= pci-acp3x.o
+ snd-acp3x-pcm-dma-objs	:= acp3x-pcm-dma.o
+ obj-$(CONFIG_SND_SOC_AMD_ACP3x)	 += snd-pci-acp3x.o
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index b16cdd1..2aa3420 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -1,17 +1,8 @@
+-/*
+- * AMD ALSA SoC PCM Driver
+- *
+- * Copyright 2016 Advanced Micro Devices, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// AMD ALSA SoC PCM Driver
++//
++//Copyright 2016 Advanced Micro Devices, Inc.
  
- config SND_SOC_AMD_ACP3x
- 	tristate "AMD Audio Coprocessor-v3.x support"
-+	depends on X86 && PCI
- 	help
- 	 This option enables ACP v3.x I2S support on AMD platform
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 95fef85..4f2cadd 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -1,3 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * AMD ALSA SoC PCM Driver
++ *
++ * Copyright 2016 Advanced Micro Devices, Inc.
++ */
++
+ #include "chip_offset_byte.h"
+ 
+ #define ACP3x_PHY_BASE_ADDRESS 0x1240000
+diff --git a/sound/soc/amd/raven/chip_offset_byte.h b/sound/soc/amd/raven/chip_offset_byte.h
+index fceb7bb..9c1fac5 100644
+--- a/sound/soc/amd/raven/chip_offset_byte.h
++++ b/sound/soc/amd/raven/chip_offset_byte.h
+@@ -1,24 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * ACP 3.0 Register documentation
++ * AMD ACP 3.0 Register Documentation
+  *
+- * Copyright (C) 2016 Advanced Micro Devices, Inc.
+- *
+- * Permission is hereby granted, free of charge, to any person obtaining a
+- * copy of this software and associated documentation files (the "Software"),
+- * to deal in the Software without restriction, including without limitation
+- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+- * and/or sell copies of the Software, and to permit persons to whom the
+- * Software is furnished to do so, subject to the following conditions:
+- *
+- * The above copyright notice and this permission notice shall be included
+- * in all copies or substantial portions of the Software.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+- * THE COPYRIGHT HOLDER(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ * Copyright 2016 Advanced Micro Devices, Inc.
+  */
+ 
+ #ifndef _acp_ip_OFFSET_HEADER
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index 0700162..ef805e7 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -1,17 +1,8 @@
+-/*
+- * AMD ALSA SoC PCM Driver
+- *
+- * Copyright 2016 Advanced Micro Devices, Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// AMD ACP PCI Driver
++//
++//Copyright 2016 Advanced Micro Devices, Inc.
+ 
+ #include <linux/pci.h>
+ #include <linux/module.h>
 -- 
 2.7.4
