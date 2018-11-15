@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: remove set but not used variable
-	'dma_buffer'" to the asoc tree
-Date: Thu, 15 Nov 2018 19:46:33 +0000 (GMT)
-Message-ID: <20181115194633.D3D6A440078@finisterre.ee.mobilebroadband>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 971BA267B0E
- for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2018 20:46:41 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: amd: Fixed build errors" to the asoc tree
+Date: Thu, 15 Nov 2018 19:46:45 +0000 (GMT)
+Message-ID: <20181115194645.CFE8D440078@finisterre.ee.mobilebroadband>
+References: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1542298434-17287-1-git-send-email-Vijendar.Mukunda@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Vijendar Mukunda <vijendar.mukunda@amd.com>, Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC, AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: remove set but not used variable 'dma_buffer'
+   ASoC: amd: Fixed build errors
 
 has been applied to the asoc tree at
 
@@ -52,45 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 424d5b56d020b750803134cc15bbd4d0addaaee7 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 15 Nov 2018 01:56:35 +0000
-Subject: [PATCH] ASoC: amd: remove set but not used variable 'dma_buffer'
+>From 1c4fb2457e541c614792e6d9986bc95461e67e41 Mon Sep 17 00:00:00 2001
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Thu, 15 Nov 2018 21:43:49 +0530
+Subject: [PATCH] ASoC: amd: Fixed build errors
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Fixed build errors.
+- Implicit declaration of pci_enable_msi() & pci_disable_msi()
+api's for openrisc architecture.
+- type defaults to 'int' in declaration of 'module_pci_driver'
 
-sound/soc/amd/raven/acp3x-pcm-dma.c: In function 'acp3x_dma_hw_params':
-sound/soc/amd/raven/acp3x-pcm-dma.c:333:25: warning:
- variable 'dma_buffer' set but not used [-Wunused-but-set-variable]
+Enabled build for x86 architecture.
 
-It never used since introduction in commit
-8de1b5ed0337 ("ASoC: amd: add acp3x system resume pm op")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Vijendar Mukunda <vijendar.mukunda@amd.com>
+Tested-by: Ravulapati Vishnu vardhan Rao <Vishnuvardhanrao.Ravulapati@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/amd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 2aa34208ae92..022a8912c8a2 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -322,7 +322,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- {
- 	int status;
- 	u64 size;
--	struct snd_dma_buffer *dma_buffer;
- 	struct page *pg;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct i2s_stream_instance *rtd = runtime->private_data;
-@@ -330,7 +329,6 @@ static int acp3x_dma_hw_params(struct snd_pcm_substream *substream,
- 	if (!rtd)
- 		return -EINVAL;
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 5f3b56087ba1..33ebec990c2f 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -22,5 +22,6 @@ config SND_SOC_AMD_CZ_RT5645_MACH
  
--	dma_buffer = &substream->dma_buffer;
- 	size = params_buffer_bytes(params);
- 	status = snd_pcm_lib_malloc_pages(substream, size);
- 	if (status < 0)
+ config SND_SOC_AMD_ACP3x
+ 	tristate "AMD Audio Coprocessor-v3.x support"
++	depends on X86 && PCI
+ 	help
+ 	 This option enables ACP v3.x I2S support on AMD platform
 -- 
 2.19.1
