@@ -1,26 +1,22 @@
-From: David Ulricht <david.ulricht434@gmail.com>
-Subject: Re: CS8409 Macbook Pro 2016 2017
-Date: Fri, 16 Nov 2018 16:02:15 +0200
-Message-ID: <CALbf9MyfhiE73gLsimw4XS3pJyD1N+w6NMD5KzH-dSPAA3qbFg@mail.gmail.com>
-References: <CALbf9MzcxBqkBP4mbUKht72Ga6VnTubeiHcTr2joEf7i-enxFQ@mail.gmail.com>
- <s5h7el6vd91.wl-tiwai@suse.de>
- <CALbf9Mw=Y5ddFZDZQ4_mfYCHxKb9XFHN3v5ge0JaTca7NLMM7A@mail.gmail.com>
- <s5hzhy2t7ww.wl-tiwai@suse.de>
- <CALbf9MwN4pEk26R9c2-UMxzvLXQ3OOBTcqgdSvXeFb-dw7-Wnw@mail.gmail.com>
- <s5hwot6t5qz.wl-tiwai@suse.de>
- <CALbf9MzYvcz+d0HKmvc60WhTHVpiuTK8O66qNH3Xcuo5j3uU9Q@mail.gmail.com>
- <s5h1sbcu1t1.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
+Date: Fri, 16 Nov 2018 08:11:27 -0600
+Message-ID: <7f7c8349-c329-9789-ddb6-4779c56668fb@linux.intel.com>
+References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
+ <s5hftw8ngd4.wl-tiwai@suse.de>
+ <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
+ <s5h5zx3o6um.wl-tiwai@suse.de>
+ <ad05386f-af75-3bf2-bc76-628928fc4fea@linux.intel.com>
+ <s5hpnv7aexo.wl-tiwai@suse.de> <s5ho9ap6sjk.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
- [209.85.167.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 66E3F267949
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 15:02:28 +0100 (CET)
-Received: by mail-oi1-f194.google.com with SMTP id c206so14160898oib.0
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 06:02:28 -0800 (PST)
-In-Reply-To: <s5h1sbcu1t1.wl-tiwai@suse.de>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D2372679C0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 15:11:30 +0100 (CET)
+In-Reply-To: <s5ho9ap6sjk.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,173 +26,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, kraxel@cs.tu-berlin.de
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-THVrYXMgV3VubmVyIGhlbHBlZCB3aXRoIGludmVzdGlnYXRpb24gb24gdGhlIHRvcGljLCBjaGVj
-ayBoaXMgbGFzdCBwb3N0CmF0OiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcu
-Y2dpP2lkPTExMDU2MQpJIGFtIGxvb2tpbmcgYXQgc291bmQvaTJjL2kyYy5jIGFuZCBzb3VuZC9p
-MmMvY3M4NDI3LmMgYnV0IGkgZG9uJ3QKdW5kZXJzdGFuZCBob3cgdG8gaW5pdGlhbGl6ZSB0aGUg
-aTJjIGJ1cyBoYXZpbmcgdGhlIFdpbmRvd3MxMCBpbmkgaGV4ZXMKYWJvdXQgSTJDLgpJIGJlbGll
-dmUgeW91IGFyZSBtb3JlIGZhbWlsaWFyIHdpdGggdGhlIGNvZGUgYW5kIHlvdSBjYW4gaGVscCB3
-aXRoIGEgYnJpZWYKZXhhbXBsZSBob3cgdG8gaW5pdGlhbGl6ZSBpMmMgYnVzIGFuZCBob3cgdG8g
-c2VuZCB0aGUgSW5pdEkyQyBoZXggdG8gdGhlCkkyQyBidXMuIFN0aWxsICBpMmMuYyBpcyBmcm9t
-IDE5OTggc2hvdWxkIGJlIG9mIGhlbHAuClBsZWFzZSBhZHZpc2UuCgpPbiBTdW4sIEF1ZyA1LCAy
-MDE4IGF0IDk6MDUgUE0gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKCj4gT24g
-U2F0LCAwNCBBdWcgMjAxOCAyMjozMDoyOSArMDIwMCwKPiBEYXZpZCBVbHJpY2h0IHdyb3RlOgo+
-ID4KPiA+ICBFeGN1c2UgbWUgZm9yIGRyb3BwaW5nIENDLi4KPiA+Cj4gPiBJIHNldCB0aGUgZGly
-ZWN0aW9uIGJpdCB0byAwIGFuZCB1c2VkIGdldF9ncGlvX2RhdGEgYW5kIGdldCBvbmx5OiAgdmFs
-dWUKPiA9Cj4gPiAweDAKPiA+IGFsc28gY2hlY2tpbmcgIklPWzAtN10gZGF0YT0wLTEiIHZhbHVl
-IGluICAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMAo+IHNob3dzCj4gPiBubyBjaGFuZ2VzIGF0
-IGFsbCB3aGVuIGluc2VydCBhdWRpbyBqYWNrLgo+Cj4gT0ssIHRoZW4gaXQncyBub3QgYWJvdXQg
-R1BJTywgc29tZXRoaW5nIGVsc2UuCj4gSXQncyBoYXJkIHRvIGtub3cgd2l0aG91dCB0aGUgZGF0
-YXNoZWV0Li4uCj4KPiA+IEkgdHJpZWQgYWxzbyBib290aW5nIHdpdGggImFjcGk9b2ZmIi4gSSB0
-cmllZCBvbGRlciBrZXJuZWxzIGZyb20gZmV3Cj4geWVhcnMKPiA+IGFnby4gTm90aGluZyBoZWxw
-cy4KPiA+IEkgd29uZGVyIGlmIHRoZXJlIGlzIHNvbWUgdG9vbCBmb3IgV2luZG93cyB0aGF0IEkg
-dXNlIHRvIGRlYnVnIGFuZCBzZWUKPiB3aGF0Cj4gPiBpcyBzZW50IHRvIHRoZSBjb2RlYyBzbyBp
-IHJlcGxpY2F0ZSBpbiBMaW51eCB3aXRoIGhkYS12ZXJiPwo+Cj4gYWNwaT1vZmYgd291bGRuJ3Qg
-d29yayBhdCBhbGwgb24gbW9kZXJuIG1hY2hpbmVzLgo+Cj4gPiBXaGF0IGFtIEkgZG9pbmcgd3Jv
-bmcgPyAgSXMgdGhlIGJlbG93IHNjcmlwdCBjb3JyZWN0IGZvciB0ZXN0aW5nIHRoZQo+IEdQSU9z
-ID8KPiA+IGZvciB4IGluIHJhbmdlKDAsMjU2KToKPiA+ICAgICBtaGV4PSgiMHglMC4yWCIgJSB4
-KQo+ID4gICAgIG9zLnN5c3RlbSgiaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQ
-SU9fTUFTSyAiK21oZXgpCj4gPiAgICAgb3Muc3lzdGVtKCJoZGEtdmVyYiAvZGV2L3NuZC9od0Mw
-RDAgMHgwMSBTRVRfR1BJT19ESVJFQ1RJT04gIittaGV4KQo+ID4gICAgIG9zLnN5c3RlbSgiaGRh
-LXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQSU9fREFUQSAiK21oZXgpCj4gPiBJIHRo
-aW5rIGl0cyBub3QgY29ycmVjdCBncGlvX2RpcmVjdGlvbiBpIGd1ZXNzIGNvdWxkIGJlIG9ubHkg
-MCBvciAxPwo+ID4gV2hhdCBoYXBwZW5zIHdoZW4gSSBwYXNzIGEgZGlmZmVyZW50IHZhbHVlIHRv
-IGRhdGEgdGhhbiAwLzEgPyB0aGlzIHNob3VsZAo+ID4gYWxzbyBub3QgYmUgY29ycmVjdC4KPiA+
-IEkgZ3Vlc3MgMHgwMSBpcyB0aGUgTklEIHZhbHVlIGlzIGl0IG9rYXkgdG8gdXNlIDB4MDEgb25s
-eSBvciBJIGhhdmUgdG8KPiBwYXNzCj4gPiBvdGhlciB2YWx1ZXMgdG8gaXQgYWxzbyA/Cj4KPiBZ
-ZXMsIE5JRCAweDAxIGlzIHVzdWFsbHkgdGhlIHJpZ2h0IHZhbHVlLCB3aGljaCBtZWFucyBBRkcu
-Cj4KPiBCVFcsIEkgbm90aWNlZCB0aGF0IHRoZXJlIGlzIHNvbWUgZG93bnN0cmVhbSBwYXRjaC4g
-IElzIGl0IHRoZSByZXBvCj4geW91IG1lbnRpb25lZCBlYXJsaWVyPwo+Cj4gaHR0cHM6Ly9naXRo
-dWIuY29tL2pvZWxrcmFlaGVtYW5uL2hkYS10b29sL2Jsb2IvbWFzdGVyL3BhdGNoX2NpcnJ1cy5j
-LnBhdGNoCj4KPiBEaWQgeW91IHRyeSB0aGF0Pwo+Cj4KPiBUYWthc2hpCj4KPiA+IE9uIFNhdCwg
-QXVnIDQsIDIwMTggYXQgODoxMyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKPiA+Cj4gPiA+IFBsZWFzZSBkb24ndCBkcm9wIENjIHRvIE1MLiAgQWxzbyBhdm9pZCB0b3At
-cG9zdGluZy4KPiA+ID4KPiA+ID4gT24gU2F0LCAwNCBBdWcgMjAxOCAxOTowMjo1MyArMDIwMCwK
-PiA+ID4gRGF2aWQgVWxyaWNodCB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IEhvdyBjYW4gSSBkbyB0
-aGF0ID8KPiA+ID4gPiBJIHRyaWVkIHZlcmlmeWluZyBpZiAvcHJvYy9hc291bmQvY2FyZDAvY29k
-ZWMjMCBjaGFuZ2VzIHdoZW4gaSBwdXQKPiA+ID4gPiBoYW5kcGhvbmUgamFjayBpbiBhbmQgb3V0
-IHdpdGggImRpZmYgdmVyMSB2ZXIyIiBhbmQgaXQgaXMgZXhhY3RseSB0aGUKPiA+ID4gc2FtZS4K
-PiA+ID4KPiA+ID4gSnVzdCBkbyBmb3IgZWFjaCBiaXQgYXMgeW91IHRyaWVkIGZvciBHUElPIG91
-dHB1dC4gIEluIHRoaXMgY2FzZSwgdGhlCj4gPiA+IGRpcmVjdGlvbiBiaXQgc2hvdWxkIGJlIGRp
-ZmZlcmVudCAoc2V0IDApLCBhbmQgeW91IG5lZWQgdG8gcmVhZC4KPiA+ID4KPiA+ID4gPgo+ID4g
-PiA+IE9uZSBzdHJhbmdlIHRoaW5nIEkgbm90ZSBpcyBoZGEtamFjay1yZXRhc2suZncgY29udGFp
-bnM6Cj4gPiA+ID4gW3BpbmNmZ10KPiA+ID4gPiAweDI0IDB4OTAxMDAwODAKPiA+ID4gPiAweDI1
-IDB4OTAxMDAwODIKPiA+ID4gPiBJIGhhdmUgMHg5MDEwMDA4MCBmb3IgMHgyNCBidXQgaW4gL3By
-b2MvYXNvdW5kL2NhcmQwL2NvZGVjIzAgOgo+ID4gPiA+IE5vZGUgMHgyNCBbUGluIENvbXBsZXhd
-IHdjYXBzIDB4NDAwMTAxOiBTdGVyZW8KPiA+ID4gPiAgIFBpbmNhcCAweDAwMDAwMDEwOiBPVVQK
-PiA+ID4gPiAgIFBpbiBEZWZhdWx0IDB4OTAxMDAxMTA6IFtGaXhlZF0gU3BlYWtlciBhdCBJbnQg
-Ti9BCj4gPiA+ID4gICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KPiA+ID4gPiAg
-ICAgRGVmQXNzb2NpYXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHgwCj4gPiA+ID4gICAgIE1pc2Mg
-PSBOT19QUkVTRU5DRQo+ID4gPiA+ICAgUGluLWN0bHM6IDB4NDA6IE9VVAo+ID4gPiA+ICAgQ29u
-bmVjdGlvbjogMQo+ID4gPiA+ICAgICAgMHgwMgo+ID4gPiA+Cj4gPiA+ID4gU2hvdWxkbid0ICJQ
-aW4gRGVmYXVsdCAweDkwMTAwMTEwIiBiZSAweDkwMTAwMDgwIGFmdGVyIGFwcGx5aW5nIHRoZQo+
-ID4gPiBwYXRjaCA/Cj4gPiA+Cj4gPiA+IE5vLCB0aGUgY29kZWMgY29uZmlnIHZhbHVlIGl0c2Vs
-ZiB3b24ndCBjaGFuZ2UsIHRoZSBkcml2ZXIgdXNlcyB0aGUKPiA+ID4gZ2l2ZW4gdmFsdWUgb25s
-eSBpbnRlcm5hbGx5Lgo+ID4gPgo+ID4gPgo+ID4gPiBUYWthc2hpCj4gPiA+Cj4gPiA+ID4gSSBj
-YW4gc2VlIHRoYXQgIEFwcGx5aW5nIHBhdGNoIGZpcm13YXJlICdoZGEtamFjay1yZXRhc2suZncn
-IGlzCj4gYmVmb3JlCj4gPiA+ID4gaGRhdWRpb0MwRDA6IGF1dG9jb25maWcgZm9yIEdlbmVyaWM6
-IGxpbmVfb3V0cz0yCj4gKDB4MjQvMHgyNS8weDAvMHgwLzB4MCkKPiA+ID4gPiB0eXBlOnNwZWFr
-ZXIKPiA+ID4gPiBpbiBkbWVzZyBhbmQgdGhpcyB3b3JyaWVzIG1lLCBtYXliZSB0aGUgcGlucyBh
-cmUgb3ZlcnJpZGVuIGJ5IGdlbmVyaWMKPiA+ID4gPiBjaXJydXMgbG9naWMgPwo+ID4gPiA+Cj4g
-PiA+ID4KPiA+ID4gPiBPbiBTYXQsIEF1ZyA0LCAyMDE4IGF0IDc6MjYgUE0sIFRha2FzaGkgSXdh
-aSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4gPiA+ID4KPiA+ID4gPiA+IE9uIFNhdCwgMDQgQXVn
-IDIwMTggMTc6NDQ6NTkgKzAyMDAsCj4gPiA+ID4gPiBEYXZpZCBVbHJpY2h0IHdyb3RlOgo+ID4g
-PiA+ID4gPgo+ID4gPiA+ID4gPiBJIHVzZWQgdGhlIGZvbGxvd2luZyBzY3JpcHQgcnVubmluZyBh
-cyByb290IHRvIHZlcmlmeSB0aGUgOCBHUElPcwo+ID4gPiB3aGlsZQo+ID4gPiA+ID4gPiBwbGF5
-aW5nIGxvbmcgeW91dHViZSB2aWRlbywKPiA+ID4gPiA+ID4gSSBoYXZlIHJ1bm5pbmcgcHVsc2Vh
-dWRpbyBtZWFud2hpbGUgYW5kIG5vdCByZXN0YXJ0aW5nIGl0LCBpCj4gdGhpbmsKPiA+ID4gaXRz
-Cj4gPiA+ID4gPiBva2F5Cj4gPiA+ID4gPiA+IGxpa2UgdGhhdCBwZW9wbGUgb24gdGhlIHVidW50
-dSBmb3J1bXMgc2F5IHRoYXQgYWZ0ZXIgdXNpbmcKPiA+ID4gPiA+ID4gaGRhLXZlcmIgYW5kIHNl
-dHRpbmcgYSBncGlvIGFjdGl2ZSBpbW1lZGlhdGVseSBzb3VuZCBhcHBlYXJzLCBzbwo+IGkKPiA+
-ID4gZ3Vlc3MKPiA+ID4gPiA+ID4gdGhlcmUgaXMgbm8gbmVlZCB0byByZXN0YXJ0IHB1bHNlYXVk
-aW8uCj4gPiA+ID4gPiA+IEkgaGF2ZSBkb25lIHRoZSBzYW1lIHRlc3Qgd2l0aCBoZWFkcGhvbmVz
-IGluLgo+ID4gPiA+ID4gPiBObyBzb3VuZCBpbiBib3RoIHNjZW5hcmlvcywgbm8gaW5wdXQgbm8g
-b3V0cHV0IGRldGVjdGVkIChpJ20KPiB3YXRjaGluZwo+ID4gPiA+ID4gPiBwYXZ1Y29udHJvbCBm
-b3IgaW5wdXQgZGV0ZWN0aW9uKS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBUaGlzIGNvZGVjIGlzIGZh
-aXJseSB1bmlxdWUgYW5kIGRvZXNuJ3QgcHJvdmlkZSB0aGUgc3RhbmRhcmQgamFjawo+ID4gPiA+
-ID4gZGV0ZWN0aW9uIG9uIGVhY2ggcGluLiAgTWF5YmUgaXQncyB2aWEgZWl0aGVyIEdQSU8gb3Ig
-YW55IG90aGVyCj4gPiA+ID4gPiBtZXRob2QuICBZb3UgY2FuIHRyeSB0byByZWFkIEdQSU8gcGlu
-cyAoc2V0IGFzIGlucHV0KSB0byBzZWUKPiB3aGV0aGVyCj4gPiA+ID4gPiBhbnkgb2YgdGhlbSBj
-b3JyZXNwb25kcyB0byB0aGUgamFjayBkZXRlY3Rpb24sIGZvciBleGFtcGxlLgo+ID4gPiA+ID4K
-PiA+ID4gPiA+Cj4gPiA+ID4gPiBUYWthc2hpCj4gPiA+ID4gPgo+ID4gPiA+ID4gPgo+ID4gPiA+
-ID4gPiAjIS91c3IvYmluL2VudiBweXRob24zCj4gPiA+ID4gPiA+IGltcG9ydCBvcyx0aW1lCj4g
-PiA+ID4gPiA+IGZvciB4IGluIHJhbmdlKDAsMjU2KToKPiA+ID4gPiA+ID4gICAgIG1oZXg9KCIw
-eCUwLjJYIiAlIHgpCj4gPiA+ID4gPiA+ICAgICBvcy5zeXN0ZW0oImhkYS12ZXJiIC9kZXYvc25k
-L2h3QzBEMCAweDAxIFNFVF9HUElPX01BU0sKPiAiK21oZXgpCj4gPiA+ID4gPiA+ICAgICBvcy5z
-eXN0ZW0oImhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDAxIFNFVF9HUElPX0RJUkVDVElPTgo+
-ID4gPiAiK21oZXgpCj4gPiA+ID4gPiA+ICAgICBvcy5zeXN0ZW0oImhkYS12ZXJiIC9kZXYvc25k
-L2h3QzBEMCAweDAxIFNFVF9HUElPX0RBVEEKPiAiK21oZXgpCj4gPiA+ID4gPiA+ICAgICB0aW1l
-LnNsZWVwKDMpCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IE1lYW53aGlsZSBzY3JpcHQgaXMgcnVu
-bmluZyBJJ20gd2F0Y2hpbmcKPiAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMAo+ID4gPiBhbmQK
-PiA+ID4gPiA+ID4gSU9bMC03XSBjaGFuZ2VzIGl0cyBjb25maWd1cmF0aW9uLAo+ID4gPiA+ID4g
-PiBpbiBjb21wYXJpc29uIEpvZWwgS3JhaGVtYW5uIGluIGhpcyBzY3JpcHRzIGlzIGNoYW5naW5n
-IHRoZSBoZXgKPiByaWdodAo+ID4gPiA+ID4gYWZ0ZXIKPiA+ID4gPiA+ID4gL2Rldi9zbmQvaHdD
-MEQwICgweDAxKSBlLmcuIGkgZG9udCB0aGluayBoZSBpcyBtb2RpZml5aW5nIHRoZQo+IEdQSU9z
-Cj4gPiA+ID4gPiA+IGNvcnJlY3RseS4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gSSBmb3VuZCB0
-aGUgZm9sbG93aW5nIHBvc3Q6Cj4gPiA+ID4gPiA+IGh0dHBzOi8vZm9ydW0ubWFuamFyby5vcmcv
-dC9zb3VuZC1ub3Qtd29ya2luZy1vbi1hLTIwMTctCj4gPiA+ID4gPiBpbWFjLTI3LTVrLXJldGlu
-YS80MzYzOAo+ID4gPiA+ID4gPiBBY2NvcmRpbmcgdG8gaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwu
-b3JnL3Nob3dfYnVnLmNnaT9pZD0xOTU2NzEKPiA+ID4gaU1hYzI3Cj4gPiA+ID4gPiBoYXMKPiA+
-ID4gPiA+ID4gYSBzaW1pbGFyIHNvdW5kY2FyZC4KPiA+ID4gPiA+ID4gSG93IGNhbiBpIHNldHVw
-IHdpdGggY29tbWFuZCBsaW5lIG9yIGFueSBvdGhlciB1dGlsaXR5Ogo+ID4gPiA+ID4gPiAiIiJz
-ZWxlY3Qg4oCcb2Zm4oCdIGluIHRoZSB0b3AgbWVudSB0aGF0IHByb3Bvc2UgdG8gc2V0dXAgdGhl
-IERpZ2l0YWwKPiA+ID4gPiA+ID4gU3Vycm91bmQiIiIKPiA+ID4gPiA+ID4gdGhpcyBpcyBzb21l
-IHNldHRpbmcgaW4geGZjZTQtbWl4ZXIgcGFja2FnZSB3aGljaCBpcyBub3QKPiBhdmFpbGFibGUK
-PiA+ID4gZm9yCj4gPiA+ID4gPiA+IHVidW50dSBzaW5jZSAyIExUUyB2ZXJzaW9ucyBiZWhpbmQu
-IEkgdHJpZWQgY3VycmVudCBNYW5qYXJvIGFuZAo+ID4gPiBjb3VsZG4ndAo+ID4gPiA+ID4gPiBm
-aW5kIHRoaXMgc2V0dGluZyBpbiBhdWRpbyBtaXhlciBvZiB4ZmNlNCBlaXRoZXIuCj4gPiA+ID4g
-PiA+Cj4gPiA+ID4gPiA+IE9uIFNhdCwgQXVnIDQsIDIwMTggYXQgOTo0OCBBTSwgVGFrYXNoaSBJ
-d2FpIDx0aXdhaUBzdXNlLmRlPgo+IHdyb3RlOgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IE9u
-IFNhdCwgMDQgQXVnIDIwMTggMDQ6MDc6NDMgKzAyMDAsCj4gPiA+ID4gPiA+ID4gRGF2aWQgVWxy
-aWNodCB3cm90ZToKPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBIZWxsbywKPiA+ID4g
-PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBNYWNib29rIHBybyBtb2RlbHMgY29udGFpbmluZyBD
-Uzg0MDkgZm9yIHN1cmUgYXJlOgo+ID4gPiA+ID4gPiA+ID4gTUJQMTMxIE1CUDE0MS5JIG93biBN
-QlAgMTQsMSBlLmcuIDIwMTcgbW9kZWwuCj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4g
-SSdtIGF0dGFjaGluZyB3b3JraW5nIHNvdW5kIGNvbmZpZ3VyYXRpb24gZnJvbSBXaW5kb3dzIDEw
-Cj4gPiA+IHJlZ2lzdHJ5Cj4gPiA+ID4gPiAobm90ZQo+ID4gPiA+ID4gPiA+ID4gdGhhdCB0aGUg
-Y3M0MjB4IG1pZ2h0IG5lZWQgdG8gYmUgaWdub3JlZCBvciBtaWdodCBiZQo+IGltcG9ydGFudCBp
-Cj4gPiA+ID4gPiBkb24ndAo+ID4gPiA+ID4gPiA+ID4gcmVhbGx5IGtub3cpLiBJIGJlbGlldmUg
-d2hhdCBpcyByZWFsbHkgdXNlZCBpcyBpbiB0aGUKPiA+ID4gPiA+IFBpbkNvbmZpZ092ZXJyaWRl
-Cj4gPiA+ID4gPiA+ID4gPiBzZWN0aW9uLgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gQ29t
-cGFyaW5nIGJldHdlZW4gQklPUyBkZWZhdWx0IChpbml0X3Bpbl9jZmcgaW4gYWxzYS1pbmZvLnNo
-Cj4gPiA+IG91dHB1dCkKPiA+ID4gPiA+ID4gPiBhbmQgeW91ciBvdmVycmlkZSAodXNlcl9waW5f
-Y2ZnKSwgdGhlcmUgYXJlbid0IHNvIG1hbnkgY2hhbmdlcy4KPiA+ID4gPiA+ID4gPiBBbGwgY2hh
-bmdlcyBhcmUgcHJldHR5IG1pbm9yLCBhbmQgSSBndWVzcyBpdCB3b24ndCBpbmZsdWVuY2UKPiBv
-biB0aGUKPiA+ID4gPiA+ID4gPiBkcml2ZXIgYmVoYXZpb3IuCj4gPiA+ID4gPiA+ID4KPiA+ID4g
-PiA+ID4gPiA+IEludGVyZXN0aW5nIHRoaW5nIHRvIG5vdGUgaXMgdGhhdCBzb3VuZCBpbiBNYWNP
-UyBpcyBtdWNoCj4gbG91ZGVyCj4gPiA+IHRoYW4KPiA+ID4gPiA+ID4gPiA+IEJvb3RjYW1wIFdp
-bmRvd3MsIHdvdWxkIGJlIG5pY2UgdG8gaGVhciBob3cgbG91ZCBpcyBvbiBsaW51eC4KPiA+ID4g
-PiA+ID4gPgo+ID4gPiA+ID4gPiA+IFRoaXMgaXMgcG9zc2libHkgd2l0aCBzb21lIHZlbmRvci1z
-cGVjaWZpYyBHUElPIG9yIENPRUYgdmVyYnMuCj4gPiA+ID4gPiA+ID4gT3IgaXQncyBzb21lIGRp
-cmVjdCBJMkMgY29udHJvbC4gIFRoZSBJTkkgZmlsZSBtZW50aW9ucyBpdC4KPiA+ID4gPiA+ID4g
-PiBBbmQgdGhhdCdzIGFib3ZlIEhELWF1ZGlvIGRyaXZlcidzIHJlc3BvbnNpYmlsaXR5Lgo+ID4g
-PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBJIGRpZCBjb252ZXJ0IFBpbkNvbmZpZ092ZXJyaWRl
-IEhFWCBzdHJpbmdzIHRvIFtwaW5jZmddCj4gZm9ybWF0Cj4gPiA+IGluIHRoZQo+ID4gPiA+ID4g
-PiA+ID4gYXR0YWNoZWQgaGRhLWphY2stcmV0YXNrLmZ3IHRoYW5rcyB0byBUYWthc2hpJ3MgZ3Vp
-ZGFuY2UuCj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gSSdtIGF0dGFjaGluZyBhbHNv
-IGFsc2FtaXhlciBBU0NJSS4gT25seSBQQ00sIG5vIE1hc3RlciA/Cj4gPiA+ID4gPiA+ID4KPiA+
-ID4gPiA+ID4gPiBJdCdzIGJlY2F1c2UgdGhlIGNvZGVjIGNoaXAgaGFzIG5vIG91dHB1dCBhbXBs
-aWZpZXIgYXQgYWxsLgo+ID4gPiA+ID4gPiA+IFNvIHRoZXJlIGNhbiBiZSBuZWl0aGVyIG91dHB1
-dCB2b2x1bWUgbm9yIG11dGUgY29udHJvbCBvbiB0aGlzCj4gPiA+IGNoaXAuCj4gPiA+ID4gPiA+
-ID4KPiA+ID4gPiA+ID4gPiA+IFdoYXQgSSBoYXZlIHRyaWVkIGlzIGV4ZWN1dGU6Cj4gPiA+ID4g
-PiA+ID4gPiBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwMSBTRVRfR1BJT19NQVNLIDB4QEAK
-PiA+ID4gPiA+ID4gPiA+IGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDAxIFNFVF9HUElPX0RJ
-UkVDVElPTiAweEBACj4gPiA+ID4gPiA+ID4gPiBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgw
-MSBTRVRfR1BJT19EQVRBIDB4QEAKPiA+ID4gPiA+ID4gPiA+IHB1dHRpbmcgQEAgZnJvbSAweDAw
-IHRvIDB4NTAKPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IFRoZXJlIGFyZSBlaWdodCBHUElP
-cywgc28geW91J2QgbmVlZCB0byB0ZXN0IGVhY2ggYml0LCBpLmUuCj4gMHgwMSwKPiA+ID4gPiA+
-ID4gPiAweDAyLCAweDA0LCAweDA4LCAuLi4gMHg4MC4KPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
-PiA+IEFuZCBob3cgaXMgdGhlIGN1cnJlbnQgc2l0dWF0aW9uPyAgWW91IGNhbid0IHBsYXkgKmFu
-ZCogcmVjb3JkCj4gPiA+ID4gPiA+ID4gYW55dGhpbmcgZnJvbSBhbnkgaW5wdXRzIC8gb3V0cHV0
-cz8KPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gVGFrYXNoaQo+ID4g
-PiA+ID4gPiA+Cj4gPiA+ID4gPiA+IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXByaW50
-YWJsZSk+XQo+ID4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiBbMiAgPHRleHQvaHRtbDsgVVRG
-LTggKHF1b3RlZC1wcmludGFibGUpPl0KPiA+ID4gPgo+ID4gPgo+ID4gWzIgIDx0ZXh0L2h0bWw7
-IFVURi04IChxdW90ZWQtcHJpbnRhYmxlKT5dCj4gPgo+Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+On 11/16/18 7:49 AM, Takashi Iwai wrote:
+> On Wed, 14 Nov 2018 15:53:23 +0100,
+> Takashi Iwai wrote:
+>> On Mon, 12 Nov 2018 15:00:36 +0100,
+>> Pierre-Louis Bossart wrote:
+>>> And btw the big topic is still how we provide distributions the means
+>>> to handle a 'graceful' fallback from DSP-enabled solutions (SST or
+>>> SOF) to legacy HDAudio, it's already popped up for cases where we have
+>>> HDaudio solutions with DMICs.
+>> Yeah, that's a long-standing problem.  I've experimented some
+>> scenarios in the past, and the conclusion is that there is no really
+>> working fallback mechanism in general in Linux driver binding.
+>> That is, the only reasonable way seems to make a dedicated driver for
+>> the specific PCI ID (SKL+) doing the probe-and-fallback by itself,
+>> while excluding these IDs from other existing driver entries.
+>>
+>> I'd love to proceed this but unfortunately I have no machine that can
+>> run SKL+ SST driver right now.  I have a new CFL devel box, but it has
+>> no support (PCI ID 8086:a348) as well as no firmware...
+> So, with a working machine, I could finally hack this a bit.
+> Below is a freshly cooked patch(set).  The first one is just to add
+> the support for my CFL machine, and another one is to add the fallback
+> binding with the legacy HD-audio on snd-soc-skl.
+>
+> The changes aren't that big.  And you can still control the binding
+> via a module option, e.g. snd_soc_skl.legacy=1 will let it bound only
+> with the legacy driver, snd_soc_skl.legacy=2 for ASoC only.  The
+> default is 0, the fallback to legacy if ASoC binding fails.
+>
+> It's still a PoC, no proper patch description is put yet.
+
+Thanks Takashi, much appreciate. will give it a try later today.
+
+One comment is that we will have to deal with SOF as well. While the 
+end-goal is to converge on a single SOF-based driver, it'll take time to 
+support all shipping platforms and deal with firmware authentication 
+issues, so the fallback could be SOF->SST->legacy (hopefully on a small 
+set of platforms). SST->SOF will likely never happen.
+
+I also wanted to try what happens with your solution if the 
+authentication fails with SST (as in your case with the current CNL 
+firmware). It's my understanding that the firmware download is deferred 
+with a work queue and takes time anyways, so maybe the decision not to 
+go back to legacy would be made too early? We'd also need to check with 
+a platform where the DSP is not enabled to see if the fallback happens 
+immediately (no need to try and download firmware to a non-enabled DSP).
+
+And while I am at it, we may want to think about a single table for PCI 
+IDs so that by construction we remove the risk of a platform supported 
+with legacy but not the others, and vice versa.
+
+Just my 2 cents before coffee.
+
+>
+> Comments / suggestions appreciated.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
