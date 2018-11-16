@@ -1,7 +1,7 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] ASoC: davinci-mcasp: Update PDIR (pin direction) register handling
-Date: Fri, 16 Nov 2018 15:41:39 +0200
-Message-ID: <20181116134141.17396-3-peter.ujfalusi@ti.com>
+Subject: [PATCH 3/4] bindings: sound: davinci-mcasp: Document dismod optional property
+Date: Fri, 16 Nov 2018 15:41:40 +0200
+Message-ID: <20181116134141.17396-4-peter.ujfalusi@ti.com>
 References: <20181116134141.17396-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -13,277 +13,30 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, jsarha@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When McASP is master and the PDIR for the clock pins are configured as
-outputs before the clocking is configured it will output whatever clock
-is generated at the moment internally.
-The clock will switch to the correct rate only when the we start the clock
-generators.
-
-To avoid this we must only set the pin as output after the clock is
-configured and enabled.
-
-AXR pins configured as outputs behaves somehow interesting as well:
-when McASP is not enabled and the pin is selected as output it will not
-honor the DISMOD settings for the inactive state, but will pull the pin
-down.
-
-Add a new bitfield and mark the pins there which needs to be output and
-set the pins only at the time when they will behave correctly.
-
-On stream stop configure the pins back to input which makes them to obey
-the global pin configuration regarding to pull up/down.
+The dismod property can be used to specify the drive on level of inactive
+TX slots.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 88 ++++++++++++++++++++++++++-----
- sound/soc/davinci/davinci-mcasp.h | 29 ++++------
- 2 files changed, 85 insertions(+), 32 deletions(-)
+ .../devicetree/bindings/sound/davinci-mcasp-audio.txt        | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 740030b4d37a..0f3911be1c8e 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -28,6 +28,7 @@
- #include <linux/of_device.h>
- #include <linux/platform_data/davinci_asp.h>
- #include <linux/math64.h>
-+#include <linux/bitmap.h>
- 
- #include <sound/asoundef.h>
- #include <sound/core.h>
-@@ -95,6 +96,8 @@ struct davinci_mcasp {
- 	int	sysclk_freq;
- 	bool	bclk_master;
- 
-+	unsigned long pdir; /* Pin direction bitfield */
-+
- 	/* McASP FIFO related */
- 	u8	txnumevt;
- 	u8	rxnumevt;
-@@ -169,6 +172,30 @@ static bool mcasp_is_synchronous(struct davinci_mcasp *mcasp)
- 	return !(aclkxctl & TX_ASYNC) && rxfmctl & AFSRE;
- }
- 
-+static inline void mcasp_set_clk_pdir(struct davinci_mcasp *mcasp, bool enable)
-+{
-+	u32 bit = PIN_BIT_AMUTE;
-+
-+	for_each_set_bit_from(bit, &mcasp->pdir, PIN_BIT_AFSR + 1) {
-+		if (enable)
-+			mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(bit));
-+		else
-+			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(bit));
-+	}
-+}
-+
-+static inline void mcasp_set_axr_pdir(struct davinci_mcasp *mcasp, bool enable)
-+{
-+	u32 bit;
-+
-+	for_each_set_bit(bit, &mcasp->pdir, PIN_BIT_AFSR) {
-+		if (enable)
-+			mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(bit));
-+		else
-+			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(bit));
-+	}
-+}
-+
- static void mcasp_start_rx(struct davinci_mcasp *mcasp)
- {
- 	if (mcasp->rxnumevt) {	/* enable FIFO */
-@@ -220,6 +247,8 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
- 	/* Start clocks */
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXHCLKRST);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
-+	mcasp_set_clk_pdir(mcasp, true);
-+
- 	/* Activate serializer(s) */
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSERCLR);
-@@ -230,6 +259,8 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
- 	       (cnt < 100000))
- 		cnt++;
- 
-+	mcasp_set_axr_pdir(mcasp, true);
-+
- 	/* Release TX state machine */
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSMRST);
- 	/* Release Frame Sync generator */
-@@ -260,8 +291,10 @@ static void mcasp_stop_rx(struct davinci_mcasp *mcasp)
- 	 * In synchronous mode stop the TX clocks if no other stream is
- 	 * running
- 	 */
--	if (mcasp_is_synchronous(mcasp) && !mcasp->streams)
-+	if (mcasp_is_synchronous(mcasp) && !mcasp->streams) {
-+		mcasp_set_clk_pdir(mcasp, false);
- 		mcasp_set_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, 0);
-+	}
- 
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, 0);
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXSTAT_REG, 0xFFFFFFFF);
-@@ -287,6 +320,9 @@ static void mcasp_stop_tx(struct davinci_mcasp *mcasp)
- 	 */
- 	if (mcasp_is_synchronous(mcasp) && mcasp->streams)
- 		val =  TXHCLKRST | TXCLKRST | TXFSRST;
-+	else
-+		mcasp_set_clk_pdir(mcasp, false);
-+
- 
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, val);
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
-@@ -296,6 +332,8 @@ static void mcasp_stop_tx(struct davinci_mcasp *mcasp)
- 
- 		mcasp_clr_bits(mcasp, reg, FIFO_ENABLE);
- 	}
-+
-+	mcasp_set_axr_pdir(mcasp, false);
- }
- 
- static void davinci_mcasp_stop(struct davinci_mcasp *mcasp, int stream)
-@@ -446,8 +484,13 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
- 
--		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, ACLKX | ACLKR);
--		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AFSX | AFSR);
-+		/* BCLK */
-+		set_bit(PIN_BIT_ACLKX, &mcasp->pdir);
-+		set_bit(PIN_BIT_ACLKR, &mcasp->pdir);
-+		/* Frame Sync */
-+		set_bit(PIN_BIT_AFSX, &mcasp->pdir);
-+		set_bit(PIN_BIT_AFSR, &mcasp->pdir);
-+
- 		mcasp->bclk_master = 1;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFM:
-@@ -458,8 +501,13 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
- 
--		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, ACLKX | ACLKR);
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AFSX | AFSR);
-+		/* BCLK */
-+		set_bit(PIN_BIT_ACLKX, &mcasp->pdir);
-+		set_bit(PIN_BIT_ACLKR, &mcasp->pdir);
-+		/* Frame Sync */
-+		clear_bit(PIN_BIT_AFSX, &mcasp->pdir);
-+		clear_bit(PIN_BIT_AFSR, &mcasp->pdir);
-+
- 		mcasp->bclk_master = 1;
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFS:
-@@ -470,8 +518,13 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
- 
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, ACLKX | ACLKR);
--		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AFSX | AFSR);
-+		/* BCLK */
-+		clear_bit(PIN_BIT_ACLKX, &mcasp->pdir);
-+		clear_bit(PIN_BIT_ACLKR, &mcasp->pdir);
-+		/* Frame Sync */
-+		set_bit(PIN_BIT_AFSX, &mcasp->pdir);
-+		set_bit(PIN_BIT_AFSR, &mcasp->pdir);
-+
- 		mcasp->bclk_master = 0;
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
-@@ -482,8 +535,13 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
- 
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG,
--			       ACLKX | AFSX | ACLKR | AHCLKR | AFSR);
-+		/* BCLK */
-+		clear_bit(PIN_BIT_ACLKX, &mcasp->pdir);
-+		clear_bit(PIN_BIT_ACLKR, &mcasp->pdir);
-+		/* Frame Sync */
-+		clear_bit(PIN_BIT_AFSX, &mcasp->pdir);
-+		clear_bit(PIN_BIT_AFSR, &mcasp->pdir);
-+
- 		mcasp->bclk_master = 0;
- 		break;
- 	default:
-@@ -598,11 +656,11 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	if (dir == SND_SOC_CLOCK_OUT) {
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
--		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
-+		set_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
- 	} else {
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AHCLKX);
-+		clear_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
- 	}
- 
- 	mcasp->sysclk_freq = freq;
-@@ -775,17 +833,21 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
- 			       mcasp->serial_dir[i]);
- 		if (mcasp->serial_dir[i] == TX_MODE &&
- 					tx_ser < max_active_serializers) {
--			mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AXR(i));
- 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
- 				       DISMOD_LOW, DISMOD_MASK);
-+			set_bit(PIN_BIT_AXR(i), &mcasp->pdir);
- 			tx_ser++;
- 		} else if (mcasp->serial_dir[i] == RX_MODE &&
- 					rx_ser < max_active_serializers) {
--			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AXR(i));
-+			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
- 			rx_ser++;
- 		} else if (mcasp->serial_dir[i] == INACTIVE_MODE) {
- 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
- 				       SRMOD_INACTIVE, SRMOD_MASK);
-+			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
-+		} else if (mcasp->serial_dir[i] == TX_MODE) {
-+			/* Unused TX pins, clear PDIR  */
-+			clear_bit(PIN_BIT_AXR(i), &mcasp->pdir);
- 		}
- 	}
- 
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index afddc8010c54..acb024ab6a9d 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -108,27 +108,18 @@
- 
- /*
-  * DAVINCI_MCASP_PFUNC_REG - Pin Function / GPIO Enable Register Bits
-- */
--#define AXR(n)		(1<<n)
--#define PFUNC_AMUTE	BIT(25)
--#define ACLKX		BIT(26)
--#define AHCLKX		BIT(27)
--#define AFSX		BIT(28)
--#define ACLKR		BIT(29)
--#define AHCLKR		BIT(30)
--#define AFSR		BIT(31)
--
--/*
-  * DAVINCI_MCASP_PDIR_REG - Pin Direction Register Bits
-+ * DAVINCI_MCASP_PDOUT_REG - Pin output in GPIO mode
-+ * DAVINCI_MCASP_PDSET_REG - Pin input in GPIO mode
-  */
--#define AXR(n)		(1<<n)
--#define PDIR_AMUTE	BIT(25)
--#define ACLKX		BIT(26)
--#define AHCLKX		BIT(27)
--#define AFSX		BIT(28)
--#define ACLKR		BIT(29)
--#define AHCLKR		BIT(30)
--#define AFSR		BIT(31)
-+#define PIN_BIT_AXR(n)	(n)
-+#define PIN_BIT_AMUTE	25
-+#define PIN_BIT_ACLKX	26
-+#define PIN_BIT_AHCLKX	27
-+#define PIN_BIT_AFSX	28
-+#define PIN_BIT_ACLKR	29
-+#define PIN_BIT_AHCLKR	30
-+#define PIN_BIT_AFSR	31
- 
- /*
-  * DAVINCI_MCASP_TXDITCTL_REG - Transmit DIT Control Register Bits
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+index 46bc9829c71a..b279b6072bd5 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+@@ -30,6 +30,11 @@ Optional properties:
+ - ti,hwmods : Must be "mcasp<n>", n is controller instance starting 0
+ - tx-num-evt : FIFO levels.
+ - rx-num-evt : FIFO levels.
++- dismod : Specify the drive on TX pin during inactive slots
++	0 : 3-state
++	2 : logic low
++	3 : logic high
++	Defaults to 'logic low' when the property is not present
+ - sram-size-playback : size of sram to be allocated during playback
+ - sram-size-capture  : size of sram to be allocated during capture
+ - interrupts : Interrupt numbers for McASP
 -- 
 Peter
 
