@@ -1,93 +1,50 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH] ASoC: rt5663: Fix error handling of regulator_set_load
-Date: Fri, 16 Nov 2018 17:28:56 +0800
-Message-ID: <20181116092856.47815-1-cychiang@chromium.org>
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH v3 0/2] Introduce dmic mode switch delay
+	parameter
+Date: Fri, 16 Nov 2018 16:40:07 +0530
+Message-ID: <1542366609-18861-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, oder_chiou@realtek.com, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ED8B267949
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 12:10:18 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The default implementation of regulator_set_load returns
-REGULATOR_MODE_NORMAL, which is positive.
+Some DMICs need clock to be running for a specified duration as per the
+DMIC spec to complete the mode transition like sleep to normal, off to normal
+etc. This  series add a mode-switch delay which will prevent the clock from
+being turned off without complying with manufacturer timing
+specifications. Also introduces a module parameter for the wakeup_delay parameter.
 
-rt5663_i2c_probe should only do error handling when return value of
-regulator_set_load is negative.
-In this case, rt5663_i2c_probe should return error.
+v1: First patch set
+v2: 
+1). Removed ACPI device entry since a) The DMIC vendor doesn't have an ACPI vendor
+ID b) The ACPI enumeration creates one more device and conflicts with the existing
+skl.c dmic platform device registration.
+2). Updated commit message
 
-Also, consolidate err_irq into err_enable.
+v3: Updated commit message and introduced module param for wakeup_delay
 
-Fix the missing goto for temporary regmap and rt5663->regmap.
 
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- This patch is the fixup of the patch
- e81a2a6d12e85 ASoC: rt5663: Add regulator support
- sound/soc/codecs/rt5663.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+Jenny TC (2):
+  ASoC: dmic: introduce mode switch delay
+  ASoC: dmic: introduce module_param wakeup_delay
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index bb2c1ee4a836f..473a54d1ae2c5 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3522,10 +3522,11 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 	for (i = 0; i < ARRAY_SIZE(rt5663->supplies); i++) {
- 		ret = regulator_set_load(rt5663->supplies[i].consumer,
- 					 RT5663_SUPPLY_CURRENT_UA);
--		if (ret) {
-+		if (ret < 0) {
- 			dev_err(&i2c->dev,
--				"Failed to set regulator %s, ret: %d\n",
-+				"Failed to set regulator load on %s, ret: %d\n",
- 				rt5663->supplies[i].supply, ret);
-+			return ret;
- 		}
- 	}
- 
-@@ -3543,7 +3544,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		ret = PTR_ERR(regmap);
- 		dev_err(&i2c->dev, "Failed to allocate temp register map: %d\n",
- 			ret);
--		return ret;
-+		goto err_enable;
- 	}
- 
- 	ret = regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
-@@ -3576,7 +3577,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		ret = PTR_ERR(rt5663->regmap);
- 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
- 			ret);
--		return ret;
-+		goto err_enable;
- 	}
- 
- 	/* reset and calibrate */
-@@ -3686,17 +3687,19 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 			rt5663_dai, ARRAY_SIZE(rt5663_dai));
- 
- 	if (ret)
--		goto err_irq;
-+		goto err_enable;
- 
- 	return 0;
- 
--err_irq:
-+
-+	/*
-+	 * Error after enabling regulators should goto err_enable
-+	 * to disable regulators.
-+	 */
-+err_enable:
- 	if (i2c->irq)
- 		free_irq(i2c->irq, rt5663);
- 
--err_enable:
--	dev_err(&i2c->dev,
--		"%s: Disable regulator after probe error\n", __func__);
- 	regulator_bulk_disable(ARRAY_SIZE(rt5663->supplies), rt5663->supplies);
- 	return ret;
- }
+ sound/soc/codecs/dmic.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
 -- 
-2.19.1.1215.g8438c0b245-goog
+1.9.1
