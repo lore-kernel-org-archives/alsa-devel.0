@@ -1,39 +1,24 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v3 1/5] ALSA: soc-compress: add support to snd_compr_set_runtime_buffer()
-Date: Fri, 16 Nov 2018 09:18:34 +0200
-Message-ID: <CAEnQRZBGQX7C2=fUr-6et6Wh=fOgX3nB=eFYG959XiuDMqbaKg@mail.gmail.com>
-References: <20181115181324.26784-1-srinivas.kandagatla@linaro.org> <20181115181324.26784-2-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH 0/2] ASoC: SDM845: Update MI2S and TDM configuration
+Date: Fri, 16 Nov 2018 13:11:56 +0530
+Message-ID: <1542354118-23360-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181115181324.26784-2-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: Mark Brown <broonie@kernel.org>, vkoul@kernel.org, Devicetree List <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, bgoswami@codeaurora.org, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, rohitkr@codeaurora.org, srini@kernel.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Srinivas,
+Update bit clock rate, slot width for TDM and MI2S
+interfaces. Also add support for secondary MI2S TX
+interface in SDM845 machine driver.
 
-One minor comment:
+Rohit kumar (2):
+  ASoC: sdm845: Update slot_width for Quaternary TDM port
+  ASoC: sdm845: Add support for Secondary MI2S interface
 
-<snip>
+ sound/soc/qcom/sdm845.c | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
 
->         struct snd_compr_ops *ops;
-> +       struct snd_dma_buffer *dma_buffer_p;
-
-I don't think it is necessary to encode the type inside the name variable
-So, dma_buffer would sounds better to me then dma_buffer_p;
-
->         void *buffer;
-
-It is also consistent with this ^
-
-<snip>
-> +static inline void snd_compr_set_runtime_buffer(
-> +                                       struct snd_compr_stream *substream,
-> +                                       struct snd_dma_buffer *bufp)
-
-Also buf instead of bufp here.
-
-thanks,
-Daniel.
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
