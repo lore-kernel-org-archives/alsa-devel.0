@@ -1,37 +1,45 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: amd: fix spelling mistake "Inavlid" -> "Invalid"
-Date: Fri, 16 Nov 2018 13:39:43 +0000
-Message-ID: <20181116133943.8267-1-colin.king@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/4] ASoC; davinci-mcasp: Pin handling updates
+Date: Fri, 16 Nov 2018 15:41:37 +0200
+Message-ID: <20181116134141.17396-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, jsarha@ti.com, robh+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-There is a spelling mistake in a dev_err message. Fix this.
+The series will improve the McASP pin handling:
+- To avoid non configured clocks leaking out from McASP
+- make sure that the AXR pin (TX) state is correct in all scenarios
+- Allow user configurable DISMOD for the tx pin instead of hardwiring it in the
+  code to low
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+The DISMOD configuration is needed when the codec requires the TX line to be
+high during inactive slots (mu-law codecs for example).
+
+Regards,
+Peter
 ---
- sound/soc/amd/raven/pci-acp3x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Peter Ujfalusi (4):
+  ASoC: davinci-mcasp: Clear TXSTAT register before activating
+    serializers
+  ASoC: davinci-mcasp: Update PDIR (pin direction) register handling
+  bindings: sound: davinci-mcasp: Document dismod optional property
+  ASoC: davinci-mcasp: Implement configurable dismod handling
 
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index ef805e71a98f..c28457fd9b81 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -105,7 +105,7 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		}
- 		break;
- 	default:
--		dev_err(&pci->dev, "Inavlid ACP audio mode : %d\n", val);
-+		dev_err(&pci->dev, "Invalid ACP audio mode : %d\n", val);
- 		ret = -ENODEV;
- 		goto unmap_mmio;
- 	}
+ .../bindings/sound/davinci-mcasp-audio.txt    |   5 +
+ include/linux/platform_data/davinci_asp.h     |   1 +
+ sound/soc/davinci/davinci-mcasp.c             | 109 +++++++++++++++---
+ sound/soc/davinci/davinci-mcasp.h             |  30 ++---
+ 4 files changed, 112 insertions(+), 33 deletions(-)
+
 -- 
-2.19.1
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
