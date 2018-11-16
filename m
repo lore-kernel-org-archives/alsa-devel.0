@@ -1,46 +1,99 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH v2] ASoC: rt5663: Add documentation for power supply support
-Date: Fri, 16 Nov 2018 10:12:43 +0800
-Message-ID: <20181116021243.179183-1-cychiang@chromium.org>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [PATCH] ASoC: acpi: fix: continue searching when
+ machine is ignored
+Date: Fri, 16 Nov 2018 11:03:07 +0800
+Message-ID: <0aab2e4b-2c1b-0af0-1a99-edb678041caf@linux.intel.com>
+References: <20181101023641.31435-1-yang.jie@linux.intel.com>
+ <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
+ <7e937596-838c-4165-2e6f-478873e9c422@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, oder_chiou@realtek.com, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37553267AFC
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 04:02:36 +0100 (CET)
+In-Reply-To: <7e937596-838c-4165-2e6f-478873e9c422@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: "Patel, Chintan M" <chintan.m.patel@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-rt5663 codec driver will support setting CPVDD and AVDD power supply
-from device tree.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- Moved power supply properties to required properties.
-
- Documentation/devicetree/bindings/sound/rt5663.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
-index 23386446c63d6..2a55e91334082 100644
---- a/Documentation/devicetree/bindings/sound/rt5663.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5663.txt
-@@ -10,6 +10,10 @@ Required properties:
- 
- - interrupts : The CODEC's interrupt output.
- 
-+- avdd-supply: Power supply for AVDD, providing 1.8V.
-+
-+- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
-+
- Optional properties:
- 
- - "realtek,dc_offset_l_manual"
-@@ -51,4 +55,6 @@ rt5663: codec@12 {
- 	compatible = "realtek,rt5663";
- 	reg = <0x12>;
- 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+	avdd-supply = <&pp1800_a_alc5662>;
-+	cpvdd-supply = <&pp3500_a_alc5662>;
- };
--- 
-2.19.1.1215.g8438c0b245-goog
+CgpPbiAyMDE4LzExLzE2IOS4iuWNiDc6MDEsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
+IEhpIEtleW9uLAo+IAo+Pj4gVGhlIG1hY2hpbmVfcXVpcmsgbWF5IHJldHVybiBOVUxMIHdoaWNo
+IG1lYW5zIHRoZSBhY3BpIGVudHJpZXMgc2hvdWxkIGJlCj4+PiBza2lwcGVkIGFuZCBzZWFyY2gg
+Zm9yIG5leHQgbWF0Y2hlZCBlbnRyeSBpcyBuZWVkZWQsIGhlcmUgYWRkIHJldHVybgo+Pj4gY2hl
+Y2sgaGVyZSBhbmQgY29udGludWUgZm9yIE5VTEwgY2FzZS4KPj4KPj4gTmljZSBjYXRjaCwgdGhp
+cyB3YXMgbWlzc2VkIGluIHRoZSBvdGhlciBwYXRjaHNldCBzaW5jZSB0aGUgQUNQSSBJRCB0byAK
+Pj4gaWdub3JlIHdhcyB0aGUgbGFzdCBpbiB0aGUgdGFibGUuLi4KPj4KPj4gQWNrZWQtYnk6IFBp
+ZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+
+Cj4gCj4gSSB3YXMgd29uZGVyaW5nIGlmIHRoaXMgcGF0Y2ggd2FzIG1lcmdlZCwgYnV0IGFjdHVh
+bGx5IGl0J3MgZ29vZCBNYXJrIAo+IHdhc24ndCBjb3BpZWQgb24gdGhpcyBvbmU6IHRoZSBjb2Rl
+IGRvZXNuJ3QgcXVpdGUgd29yayBhcyBpbnRlbmRlZCBhbmQgCj4gc2hvdWxkbid0IGJlIG1lcmdl
+ZCBhcyBpcy4KPiAKPiBDaGludGFuIGFuZCBJIHNlZSBhbiBvb3BzIGFuZCByZWJvb3Qgb24gS0JM
+IENocm9tZWJvb2tzLCB3aGVuIHRoZSBxdWlyayAKPiByZXR1cm5zIE5VTEwsIHRoZSBtYWNoIHZh
+cmlhYmxlIGJlY29tZXMgTlVMTCBhbmQgY2Fubm90IGJlIG1vZGlmaWVkIHdpdGggCj4gcG9pbnRl
+ciBhcml0aG1ldGljICh3aGljaCBkb2Vzbid0IHNob3cgd2l0aCB0aGUgZGlmZiBmb3JtYXQpLgoK
+QWgsIHllYXAsIEkgb21pdHRlZCB0aGlzLCBzbyB3ZSBtYXkgbmVlZCBpbnRyb2R1Y2UgYSBuZXcg
+cG9pbnRlciB0byBmaXggCnRoYXQsIHNvbWV0aGluZyBsaWtlIHRoaXM6CgpkaWZmIC0tZ2l0IGEv
+c291bmQvc29jL3NvYy1hY3BpLmMgYi9zb3VuZC9zb2Mvc29jLWFjcGkuYwppbmRleCBiOGU3MmI1
+MmRiMzAuLjBkOTY3ZDBjYTIyMiAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1hY3BpLmMKKysr
+IGIvc291bmQvc29jL3NvYy1hY3BpLmMKQEAgLTEwLDExICsxMCwyMiBAQCBzdHJ1Y3Qgc25kX3Nv
+Y19hY3BpX21hY2ggKgogIHNuZF9zb2NfYWNwaV9maW5kX21hY2hpbmUoc3RydWN0IHNuZF9zb2Nf
+YWNwaV9tYWNoICptYWNoaW5lcykKICB7CiAgICAgICAgIHN0cnVjdCBzbmRfc29jX2FjcGlfbWFj
+aCAqbWFjaDsKKyAgICAgICBzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggKnF1aXJrX21hY2ggPSBO
+VUxMOwoKICAgICAgICAgZm9yIChtYWNoID0gbWFjaGluZXM7IG1hY2gtPmlkWzBdOyBtYWNoKysp
+IHsKICAgICAgICAgICAgICAgICBpZiAoYWNwaV9kZXZfcHJlc2VudChtYWNoLT5pZCwgTlVMTCwg
+LTEpKSB7Ci0gICAgICAgICAgICAgICAgICAgICAgIGlmIChtYWNoLT5tYWNoaW5lX3F1aXJrKQot
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1hY2ggPSBtYWNoLT5tYWNoaW5lX3F1aXJr
+KG1hY2gpOworICAgICAgICAgICAgICAgICAgICAgICBpZiAobWFjaC0+bWFjaGluZV9xdWlyaykg
+eworICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHF1aXJrX21hY2ggPSBtYWNoLT5tYWNo
+aW5lX3F1aXJrKG1hY2gpOworCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFx
+dWlya19tYWNoKQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogc2tp
+cCBpZiBubyBxdWlyayBtYXRjaGVkICovCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBjb250aW51ZTsKKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlCisg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiByZXR1cm4gcXVpcmsgbWF0
+Y2hlZCBtYWNoaW5lICovCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBy
+ZXR1cm4gcXVpcmtfbWFjaDsKKyAgICAgICAgICAgICAgICAgICAgICAgfQorCisgICAgICAgICAg
+ICAgICAgICAgICAgIC8qIHJldHVybiBhY3BpIG1hdGNoZWQgbWFjaGluZSBkaXJlY3RseSAqLwog
+ICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIG1hY2g7CiAgICAgICAgICAgICAgICAgfQog
+ICAgICAgICB9CgoKPiAKPiBJdCdzIHZlcnkgbGlrZWx5IGJ0dyB0aGF0IGFueW9uZSB0cnlpbmcg
+YSByZWNlbnQga2VybmVsIG9uIHRoZXNlIGRldmljZXMgCj4gd291bGQgbm90IHNlZSB0aGUgYXVk
+aW8gZHJpdmVyIHByb2JlIGF0IGFsbCwgc28gd2UgZG8gd2FudCB0byB0cnkgb3RoZXIgCj4gZW50
+cmllcyAtIGJ1dCBvZiBjb3Vyc2Ugd2l0aG91dCB0aGlzIG5hc3R5IHNpZGUgZWZmZWN0LiBJIHdp
+bGwgc3VibWl0IGEgCj4gdjIgd2hlbiBJJ3ZlIHNvcnRlZCBvdXQgb3RoZXIgcHJvYmxlbXMgb24g
+Q2hyb21lLgoKVGhhdCdzIGZpbmUuCgpUaGFua3MsCn5LZXlvbgoKPiAKPiBUaGFua3MKPiAKPiAt
+UGllcnJlCj4gCj4+Cj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogS2V5b24gSmllIDx5YW5nLmppZUBs
+aW51eC5pbnRlbC5jb20+Cj4+PiAtLS0KPj4+IMKgIHNvdW5kL3NvYy9zb2MtYWNwaS5jIHwgNSAr
+KysrLQo+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLWFjcGkuYyBiL3NvdW5kL3NvYy9z
+b2MtYWNwaS5jCj4+PiBpbmRleCBiOGU3MmI1MmRiMzAuLmZhZjg5NDEzNjNlNCAxMDA2NDQKPj4+
+IC0tLSBhL3NvdW5kL3NvYy9zb2MtYWNwaS5jCj4+PiArKysgYi9zb3VuZC9zb2Mvc29jLWFjcGku
+Ywo+Pj4gQEAgLTE1LDcgKzE1LDEwIEBAIHNuZF9zb2NfYWNwaV9maW5kX21hY2hpbmUoc3RydWN0
+IHNuZF9zb2NfYWNwaV9tYWNoIAo+Pj4gKm1hY2hpbmVzKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
+IGlmIChhY3BpX2Rldl9wcmVzZW50KG1hY2gtPmlkLCBOVUxMLCAtMSkpIHsKPj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGlmIChtYWNoLT5tYWNoaW5lX3F1aXJrKQo+Pj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtYWNoID0gbWFjaC0+bWFjaGluZV9xdWlyayhtYWNo
+KTsKPj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBtYWNoOwo+Pj4gKwo+Pj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogcmV0dXJuIG1hdGNoZWQgbWFjaGluZSwgY29udGludWUg
+b3RoZXJ3aXNlICovCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAobWFjaCkKPj4+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIG1hY2g7Cj4+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgfQo+Pj4gwqDCoMKgwqDCoCB9Cj4+PiDCoMKgwqDCoMKgIHJldHVybiBOVUxMOwo+
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
