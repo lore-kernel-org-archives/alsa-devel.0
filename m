@@ -1,53 +1,38 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH 2/5] ASoC: tlv320aic31xx: asihpi: clean up
-	indentation, remove extraneous tab
-Date: Fri, 16 Nov 2018 15:06:33 +0000
-Message-ID: <20181116150636.5226-2-colin.king@canonical.com>
-References: <20181116150636.5226-1-colin.king@canonical.com>
+Subject: [PATCH 1/5] ALSA: asihpi: clean up indentation, replace spaces with tab
+Date: Fri, 16 Nov 2018 15:06:32 +0000
+Message-ID: <20181116150636.5226-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 03FA9267949
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 16:06:41 +0100 (CET)
-In-Reply-To: <20181116150636.5226-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-The return statement is indented too much by one level, fix this by
-removing an extraneous tab.
+The struct declaration is not indented correctly. Fix this by replacing
+spaces with a tab.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
+ sound/pci/asihpi/asihpi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 608ad49ad978..c6048d95c6d3 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1095,7 +1095,7 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	if (freq/i > 20000000) {
- 		dev_err(aic31xx->dev, "%s: Too high mclk frequency %u\n",
- 			__func__, freq);
--			return -EINVAL;
-+		return -EINVAL;
- 	}
- 	aic31xx->p_div = i;
- 
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index a31fe1550903..aad74e809797 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -1183,7 +1183,7 @@ static int snd_card_asihpi_capture_prepare(struct snd_pcm_substream *substream)
+ static u64 snd_card_asihpi_capture_formats(struct snd_card_asihpi *asihpi,
+ 					u32 h_stream)
+ {
+-  struct hpi_format hpi_format;
++	struct hpi_format hpi_format;
+ 	u16 format;
+ 	u16 err;
+ 	u32 h_control;
 -- 
 2.19.1
