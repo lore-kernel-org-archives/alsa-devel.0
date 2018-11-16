@@ -1,19 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: acpi: fix: continue searching when
- machine is ignored
-Date: Thu, 15 Nov 2018 17:01:12 -0600
-Message-ID: <7e937596-838c-4165-2e6f-478873e9c422@linux.intel.com>
-References: <20181101023641.31435-1-yang.jie@linux.intel.com>
- <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Add documentation for pcm3060 property
+	out-single-ended" to the asoc tree
+Date: Fri, 16 Nov 2018 00:39:24 +0000 (GMT)
+Message-ID: <20181116003925.01EC6440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E0EA267AFC
- for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 00:01:15 +0100 (CET)
-In-Reply-To: <4392c384-2cab-86d2-0348-4338fda3d981@linux.intel.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id F311E267AFC
+ for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2018 01:39:31 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: "Patel, Chintan M" <chintan.m.patel@intel.com>
+To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgS2V5b24sCgo+PiBUaGUgbWFjaGluZV9xdWlyayBtYXkgcmV0dXJuIE5VTEwgd2hpY2ggbWVh
-bnMgdGhlIGFjcGkgZW50cmllcyBzaG91bGQgYmUKPj4gc2tpcHBlZCBhbmQgc2VhcmNoIGZvciBu
-ZXh0IG1hdGNoZWQgZW50cnkgaXMgbmVlZGVkLCBoZXJlIGFkZCByZXR1cm4KPj4gY2hlY2sgaGVy
-ZSBhbmQgY29udGludWUgZm9yIE5VTEwgY2FzZS4KPgo+IE5pY2UgY2F0Y2gsIHRoaXMgd2FzIG1p
-c3NlZCBpbiB0aGUgb3RoZXIgcGF0Y2hzZXQgc2luY2UgdGhlIEFDUEkgSUQgdG8gCj4gaWdub3Jl
-IHdhcyB0aGUgbGFzdCBpbiB0aGUgdGFibGUuLi4KPgo+IEFja2VkLWJ5OiBQaWVycmUtTG91aXMg
-Qm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgoKSSB3YXMgd29u
-ZGVyaW5nIGlmIHRoaXMgcGF0Y2ggd2FzIG1lcmdlZCwgYnV0IGFjdHVhbGx5IGl0J3MgZ29vZCBN
-YXJrIAp3YXNuJ3QgY29waWVkIG9uIHRoaXMgb25lOiB0aGUgY29kZSBkb2Vzbid0IHF1aXRlIHdv
-cmsgYXMgaW50ZW5kZWQgYW5kIApzaG91bGRuJ3QgYmUgbWVyZ2VkIGFzIGlzLgoKQ2hpbnRhbiBh
-bmQgSSBzZWUgYW4gb29wcyBhbmQgcmVib290IG9uIEtCTCBDaHJvbWVib29rcywgd2hlbiB0aGUg
-cXVpcmsgCnJldHVybnMgTlVMTCwgdGhlIG1hY2ggdmFyaWFibGUgYmVjb21lcyBOVUxMIGFuZCBj
-YW5ub3QgYmUgbW9kaWZpZWQgd2l0aCAKcG9pbnRlciBhcml0aG1ldGljICh3aGljaCBkb2Vzbid0
-IHNob3cgd2l0aCB0aGUgZGlmZiBmb3JtYXQpLgoKSXQncyB2ZXJ5IGxpa2VseSBidHcgdGhhdCBh
-bnlvbmUgdHJ5aW5nIGEgcmVjZW50IGtlcm5lbCBvbiB0aGVzZSBkZXZpY2VzIAp3b3VsZCBub3Qg
-c2VlIHRoZSBhdWRpbyBkcml2ZXIgcHJvYmUgYXQgYWxsLCBzbyB3ZSBkbyB3YW50IHRvIHRyeSBv
-dGhlciAKZW50cmllcyAtIGJ1dCBvZiBjb3Vyc2Ugd2l0aG91dCB0aGlzIG5hc3R5IHNpZGUgZWZm
-ZWN0LiBJIHdpbGwgc3VibWl0IGEgCnYyIHdoZW4gSSd2ZSBzb3J0ZWQgb3V0IG90aGVyIHByb2Js
-ZW1zIG9uIENocm9tZS4KClRoYW5rcwoKLVBpZXJyZQoKPgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBL
-ZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4KPj4gLS0tCj4+IMKgIHNvdW5kL3Nv
-Yy9zb2MtYWNwaS5jIHwgNSArKysrLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25z
-KCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLWFjcGku
-YyBiL3NvdW5kL3NvYy9zb2MtYWNwaS5jCj4+IGluZGV4IGI4ZTcyYjUyZGIzMC4uZmFmODk0MTM2
-M2U0IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvc29jLWFjcGkuYwo+PiArKysgYi9zb3VuZC9z
-b2Mvc29jLWFjcGkuYwo+PiBAQCAtMTUsNyArMTUsMTAgQEAgc25kX3NvY19hY3BpX2ZpbmRfbWFj
-aGluZShzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggCj4+ICptYWNoaW5lcykKPj4gwqDCoMKgwqDC
-oMKgwqDCoMKgIGlmIChhY3BpX2Rldl9wcmVzZW50KG1hY2gtPmlkLCBOVUxMLCAtMSkpIHsKPj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKG1hY2gtPm1hY2hpbmVfcXVpcmspCj4+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbWFjaCA9IG1hY2gtPm1hY2hpbmVfcXVp
-cmsobWFjaCk7Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBtYWNoOwo+PiArCj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qIHJldHVybiBtYXRjaGVkIG1hY2hpbmUsIGNvbnRp
-bnVlIG90aGVyd2lzZSAqLwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAobWFjaCkKPj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbWFjaDsKPj4gwqDCoMKgwqDC
-oMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7Cj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: Add documentation for pcm3060 property out-single-ended
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fd7de6370cb62b147185834d60069568a21acacd Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Date: Thu, 15 Nov 2018 08:12:53 +0100
+Subject: [PATCH] ASoC: Add documentation for pcm3060 property out-single-ended
+
+Output of pcm3060 codec may be configured as single-ended or differential
+
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/pcm3060.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/pcm3060.txt b/Documentation/devicetree/bindings/sound/pcm3060.txt
+index 90fcb8523099..97de66932d44 100644
+--- a/Documentation/devicetree/bindings/sound/pcm3060.txt
++++ b/Documentation/devicetree/bindings/sound/pcm3060.txt
+@@ -9,9 +9,15 @@ Required properties:
+ - reg : the I2C address of the device for I2C, the chip select
+         number for SPI.
+ 
++Optional properties:
++
++- ti,out-single-ended: "true" if output is single-ended;
++                       "false" or not specified if output is differential.
++
+ Examples:
+ 
+ 	pcm3060: pcm3060@46 {
+ 		 compatible = "ti,pcm3060";
+ 		 reg = <0x46>;
++		 ti,out-single-ended = "true";
+ 	};
+-- 
+2.19.1
