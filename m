@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: fix spelling mistake "Inavlid" ->
-	"Invalid"" to the asoc tree
-Date: Sat, 17 Nov 2018 03:27:46 +0000 (GMT)
-Message-ID: <20181117032746.B63D0440078@finisterre.ee.mobilebroadband>
-References: <20181116133943.8267-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D4A1D2679C0
- for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 04:27:55 +0100 (CET)
-In-Reply-To: <20181116133943.8267-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: qcom: clean up indentation, remove extraneous tab" to the asoc tree
+Date: Sat, 17 Nov 2018 03:27:53 +0000 (GMT)
+Message-ID: <20181117032753.A0F45440078@finisterre.ee.mobilebroadband>
+References: <20181116150636.5226-5-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181116150636.5226-5-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: fix spelling mistake "Inavlid" -> "Invalid"
+   ASoC: qcom: clean up indentation, remove extraneous tab
 
 has been applied to the asoc tree at
 
@@ -53,31 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 00347e4ea8ca4c6ed5e254d7cebad0917175a07e Mon Sep 17 00:00:00 2001
+>From e8d4bf8ae8dbcf635a87883437539fb3e5deb6d4 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Nov 2018 13:39:43 +0000
-Subject: [PATCH] ASoC: amd: fix spelling mistake "Inavlid" -> "Invalid"
+Date: Fri, 16 Nov 2018 15:06:36 +0000
+Subject: [PATCH] ASoC: qcom: clean up indentation, remove extraneous tab
 
-There is a spelling mistake in a dev_err message. Fix this.
+The return statement is indented too much by one level, fix this by
+removing the extraneous tab.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/pci-acp3x.c | 2 +-
+ sound/soc/qcom/lpass-platform.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index ef805e71a98f..c28457fd9b81 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -105,7 +105,7 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		}
- 		break;
- 	default:
--		dev_err(&pci->dev, "Inavlid ACP audio mode : %d\n", val);
-+		dev_err(&pci->dev, "Invalid ACP audio mode : %d\n", val);
- 		ret = -ENODEV;
- 		goto unmap_mmio;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index d07271ea4c45..028bce671cbc 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -91,7 +91,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	if (ret) {
+ 		dev_err(soc_runtime->dev,
+ 			"error writing to rdmactl reg: %d\n", ret);
+-			return ret;
++		return ret;
  	}
+ 
+ 	data->dma_ch = dma_ch;
 -- 
 2.19.1
