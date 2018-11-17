@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: asihpi: clean up indentation, remove extraneous tab" to the asoc tree
-Date: Sat, 17 Nov 2018 03:28:14 +0000 (GMT)
-Message-ID: <20181117032814.CDBA4440079@finisterre.ee.mobilebroadband>
-References: <20181116150636.5226-2-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181116150636.5226-2-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5663: Add documentation for power
+	supply support" to the asoc tree
+Date: Sat, 17 Nov 2018 03:29:07 +0000 (GMT)
+Message-ID: <20181117032908.0E505440079@finisterre.ee.mobilebroadband>
+References: <20181116021243.179183-1-cychiang@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 840242679F4
+ for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 04:29:12 +0100 (CET)
+In-Reply-To: <20181116021243.179183-1-cychiang@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: asihpi: clean up indentation, remove extraneous tab
+   ASoC: rt5663: Add documentation for power supply support
 
 has been applied to the asoc tree at
 
@@ -37,33 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 7806869c6e5ea3c48aee80a72c790c55e6c3c303 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Nov 2018 15:06:33 +0000
-Subject: [PATCH] ASoC: tlv320aic31xx: asihpi: clean up indentation, remove
- extraneous tab
+>From 276aa6d38e619d2bd61fbac71388a4da680e7ed5 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Fri, 16 Nov 2018 10:12:43 +0800
+Subject: [PATCH] ASoC: rt5663: Add documentation for power supply support
 
-The return statement is indented too much by one level, fix this by
-removing an extraneous tab.
+rt5663 codec driver will support setting CPVDD and AVDD power supply
+from device tree.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/rt5663.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 608ad49ad978..c6048d95c6d3 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1095,7 +1095,7 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	if (freq/i > 20000000) {
- 		dev_err(aic31xx->dev, "%s: Too high mclk frequency %u\n",
- 			__func__, freq);
--			return -EINVAL;
-+		return -EINVAL;
- 	}
- 	aic31xx->p_div = i;
+diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
+index 23386446c63d..2a55e9133408 100644
+--- a/Documentation/devicetree/bindings/sound/rt5663.txt
++++ b/Documentation/devicetree/bindings/sound/rt5663.txt
+@@ -10,6 +10,10 @@ Required properties:
  
+ - interrupts : The CODEC's interrupt output.
+ 
++- avdd-supply: Power supply for AVDD, providing 1.8V.
++
++- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
++
+ Optional properties:
+ 
+ - "realtek,dc_offset_l_manual"
+@@ -51,4 +55,6 @@ rt5663: codec@12 {
+ 	compatible = "realtek,rt5663";
+ 	reg = <0x12>;
+ 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
++	avdd-supply = <&pp1800_a_alc5662>;
++	cpvdd-supply = <&pp3500_a_alc5662>;
+ };
 -- 
 2.19.1
