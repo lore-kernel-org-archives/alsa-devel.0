@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Add documentation for power
-	supply support" to the asoc tree
-Date: Sat, 17 Nov 2018 03:29:07 +0000 (GMT)
-Message-ID: <20181117032908.0E505440079@finisterre.ee.mobilebroadband>
-References: <20181116021243.179183-1-cychiang@chromium.org>
+Subject: Applied "ASoC: Convert a few more users to using %pOFn
+	instead of device_node.name" to the asoc tree
+Date: Sat, 17 Nov 2018 03:29:03 +0000 (GMT)
+Message-ID: <20181117032903.DFF8E440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 840242679F4
- for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 04:29:12 +0100 (CET)
-In-Reply-To: <20181116021243.179183-1-cychiang@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AD102679F4
+ for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 04:29:13 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, dgreid@chromium.org
+To: Rob Herring <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Add documentation for power supply support
+   ASoC: Convert a few more users to using %pOFn instead of device_node.name
 
 has been applied to the asoc tree at
 
@@ -53,41 +52,82 @@ to this mail.
 Thanks,
 Mark
 
->From 276aa6d38e619d2bd61fbac71388a4da680e7ed5 Mon Sep 17 00:00:00 2001
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Fri, 16 Nov 2018 10:12:43 +0800
-Subject: [PATCH] ASoC: rt5663: Add documentation for power supply support
+>From dc43d3aa045c6588f163f4c0f5084e09cb5c0295 Mon Sep 17 00:00:00 2001
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 16 Nov 2018 15:43:49 -0600
+Subject: [PATCH] ASoC: Convert a few more users to using %pOFn instead of
+ device_node.name
 
-rt5663 codec driver will support setting CPVDD and AVDD power supply
-from device tree.
+In preparation to remove the node name pointer from struct device_node,
+convert printf users to use the %pOFn format specifier.
 
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Olivier Moysan <olivier.moysan@st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5663.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c | 2 +-
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 2 +-
+ sound/soc/stm/stm32_sai.c                  | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
-index 23386446c63d..2a55e9133408 100644
---- a/Documentation/devicetree/bindings/sound/rt5663.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5663.txt
-@@ -10,6 +10,10 @@ Required properties:
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index 192f4d7b37b6..bff7d71d0742 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -828,7 +828,7 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	/* request irq */
+ 	irq_id = platform_get_irq(pdev, 0);
+ 	if (!irq_id) {
+-		dev_err(dev, "%s no irq found\n", dev->of_node->name);
++		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
+ 		return -ENXIO;
+ 	}
+ 	ret = devm_request_irq(dev, irq_id, mt6797_afe_irq_handler,
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index c0b6697503fd..166aed28330d 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -1092,7 +1092,7 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
  
- - interrupts : The CODEC's interrupt output.
+ 	irq_id = platform_get_irq(pdev, 0);
+ 	if (irq_id <= 0) {
+-		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
++		dev_err(afe->dev, "np %pOFn no irq\n", afe->dev->of_node);
+ 		return irq_id < 0 ? irq_id : -ENXIO;
+ 	}
+ 	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index d597eba61992..bcb35cae2a2c 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -74,14 +74,14 @@ static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
+ 		return ret;
+ 	}
  
-+- avdd-supply: Power supply for AVDD, providing 1.8V.
-+
-+- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
-+
- Optional properties:
+-	dev_dbg(&sai->pdev->dev, "Set %s%s as synchro provider\n",
+-		sai->pdev->dev.of_node->name,
++	dev_dbg(&sai->pdev->dev, "Set %pOFn%s as synchro provider\n",
++		sai->pdev->dev.of_node,
+ 		synco == STM_SAI_SYNC_OUT_A ? "A" : "B");
  
- - "realtek,dc_offset_l_manual"
-@@ -51,4 +55,6 @@ rt5663: codec@12 {
- 	compatible = "realtek,rt5663";
- 	reg = <0x12>;
- 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+	avdd-supply = <&pp1800_a_alc5662>;
-+	cpvdd-supply = <&pp3500_a_alc5662>;
- };
+ 	prev_synco = FIELD_GET(SAI_GCR_SYNCOUT_MASK, readl_relaxed(sai->base));
+ 	if (prev_synco != STM_SAI_SYNC_OUT_NONE && synco != prev_synco) {
+-		dev_err(&sai->pdev->dev, "%s%s already set as sync provider\n",
+-			sai->pdev->dev.of_node->name,
++		dev_err(&sai->pdev->dev, "%pOFn%s already set as sync provider\n",
++			sai->pdev->dev.of_node,
+ 			prev_synco == STM_SAI_SYNC_OUT_A ? "A" : "B");
+ 		clk_disable_unprepare(sai->pclk);
+ 		return -EINVAL;
 -- 
 2.19.1
