@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320dac33: clean up indentation, remove extraneous tab" to the asoc tree
-Date: Sat, 17 Nov 2018 03:28:08 +0000 (GMT)
-Message-ID: <20181117032808.3D89D440078@finisterre.ee.mobilebroadband>
-References: <20181116150636.5226-3-colin.king@canonical.com>
+Subject: Applied "ASoC: tlv320aic31xx: asihpi: clean up indentation, remove extraneous tab" to the asoc tree
+Date: Sat, 17 Nov 2018 03:28:14 +0000 (GMT)
+Message-ID: <20181117032814.CDBA4440079@finisterre.ee.mobilebroadband>
+References: <20181116150636.5226-2-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181116150636.5226-3-colin.king@canonical.com>
+In-Reply-To: <20181116150636.5226-2-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
 Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320dac33: clean up indentation, remove extraneous tab
+   ASoC: tlv320aic31xx: asihpi: clean up indentation, remove extraneous tab
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 6857b9d0881e4cbf30237a1091e83a8e3e7ee7c3 Mon Sep 17 00:00:00 2001
+>From 7806869c6e5ea3c48aee80a72c790c55e6c3c303 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Nov 2018 15:06:34 +0000
-Subject: [PATCH] ASoC: tlv320dac33: clean up indentation, remove extraneous
- tab
+Date: Fri, 16 Nov 2018 15:06:33 +0000
+Subject: [PATCH] ASoC: tlv320aic31xx: asihpi: clean up indentation, remove
+ extraneous tab
 
-The goto statement is indented too much by one level, fix this by
-removing the extraneous tab.
+The return statement is indented too much by one level, fix this by
+removing an extraneous tab.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320dac33.c | 2 +-
+ sound/soc/codecs/tlv320aic31xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index a957eaeb7bc1..32907b1e20cf 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -394,7 +394,7 @@ static int dac33_hard_power(struct snd_soc_component *component, int power)
- 		if (ret != 0) {
- 			dev_err(component->dev,
- 				"Failed to enable supplies: %d\n", ret);
--				goto exit;
-+			goto exit;
- 		}
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 608ad49ad978..c6048d95c6d3 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1095,7 +1095,7 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	if (freq/i > 20000000) {
+ 		dev_err(aic31xx->dev, "%s: Too high mclk frequency %u\n",
+ 			__func__, freq);
+-			return -EINVAL;
++		return -EINVAL;
+ 	}
+ 	aic31xx->p_div = i;
  
- 		if (dac33->power_gpio >= 0)
 -- 
 2.19.1
