@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: clean up indentation, remove extraneous tab" to the asoc tree
-Date: Sat, 17 Nov 2018 03:27:53 +0000 (GMT)
-Message-ID: <20181117032753.A0F45440078@finisterre.ee.mobilebroadband>
-References: <20181116150636.5226-5-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181116150636.5226-5-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: arizona: fix indentation issue with
+	return statement" to the asoc tree
+Date: Sat, 17 Nov 2018 03:28:01 +0000 (GMT)
+Message-ID: <20181117032801.1096A440078@finisterre.ee.mobilebroadband>
+References: <20181116150636.5226-4-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A3F52679F6
+ for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 04:28:08 +0100 (CET)
+In-Reply-To: <20181116150636.5226-4-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: clean up indentation, remove extraneous tab
+   ASoC: arizona: fix indentation issue with return statement
 
 has been applied to the asoc tree at
 
@@ -37,32 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From e8d4bf8ae8dbcf635a87883437539fb3e5deb6d4 Mon Sep 17 00:00:00 2001
+>From 812fb75d977efb0257fe41700e6f8e04900ab27c Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 16 Nov 2018 15:06:36 +0000
-Subject: [PATCH] ASoC: qcom: clean up indentation, remove extraneous tab
+Date: Fri, 16 Nov 2018 15:06:35 +0000
+Subject: [PATCH] ASoC: arizona: fix indentation issue with return statement
 
-The return statement is indented too much by one level, fix this by
-removing the extraneous tab.
+The return statement is indented incorrectly. Fix this by adding in
+the missing tab.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/lpass-platform.c | 2 +-
+ sound/soc/codecs/wm8998.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index d07271ea4c45..028bce671cbc 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -91,7 +91,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
- 	if (ret) {
- 		dev_err(soc_runtime->dev,
- 			"error writing to rdmactl reg: %d\n", ret);
--			return ret;
-+		return ret;
- 	}
- 
- 	data->dma_ch = dma_ch;
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 61294c787f27..409bed30a4e4 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -60,7 +60,7 @@ static int wm8998_asrc_ev(struct snd_soc_dapm_widget *w,
+ 				dev_warn(component->dev,
+ 					 "Unsupported ASRC rate1 (%s)\n",
+ 					 arizona_sample_rate_val_to_name(val));
+-			return -EINVAL;
++				return -EINVAL;
+ 			}
+ 			break;
+ 		default:
 -- 
 2.19.1
