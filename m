@@ -1,59 +1,65 @@
-From: Rob Herring <robh@kernel.org>
-Subject: [PATCH] ALSA: aoa: Use device_type helpers to access the node type
-Date: Fri, 16 Nov 2018 16:11:04 -0600
-Message-ID: <20181116221104.23024-8-robh@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: acpi: fix: continue searching when
+	machine is ignored
+Date: Fri, 16 Nov 2018 18:47:04 -0600
+Message-ID: <20181117004706.15911-2-pierre-louis.bossart@linux.intel.com>
+References: <20181117004706.15911-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85FAA2679C0
+ for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2018 01:47:16 +0100 (CET)
+In-Reply-To: <20181117004706.15911-1-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove directly accessing device_node.type pointer and use the accessors
-instead. This will eventually allow removing the type pointer.
+From: Keyon Jie <yang.jie@linux.intel.com>
 
-Replace the open coded iterating over child nodes with
-for_each_child_of_node() while we're here.
+The machine_quirk may return NULL which means the acpi entries should be
+skipped and search for next matched entry is needed, here add return
+check here and continue for NULL case.
 
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/aoa/fabrics/layout.c | 4 ++--
- sound/aoa/soundbus/core.c  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-acpi.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 1eddf8fa188f..3a23fd032611 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -1008,8 +1008,8 @@ static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
- 		return -ENODEV;
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index b8e72b52db30..4fb29f0e561e 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -10,11 +10,17 @@ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+ {
+ 	struct snd_soc_acpi_mach *mach;
++	struct snd_soc_acpi_mach *mach_alt;
  
- 	/* by breaking out we keep a reference */
--	while ((sound = of_get_next_child(sdev->ofdev.dev.of_node, sound))) {
--		if (sound->type && strcasecmp(sound->type, "soundchip") == 0)
-+	for_each_child_of_node(sdev->ofdev.dev.of_node, sound) {
-+		if (of_node_is_type(sound, "soundchip"))
- 			break;
+ 	for (mach = machines; mach->id[0]; mach++) {
+ 		if (acpi_dev_present(mach->id, NULL, -1)) {
+-			if (mach->machine_quirk)
+-				mach = mach->machine_quirk(mach);
++			if (mach->machine_quirk) {
++				mach_alt = mach->machine_quirk(mach);
++				if (!mach_alt)
++					continue; /* not full match, ignore */
++				mach = mach_alt;
++			}
++
+ 			return mach;
+ 		}
  	}
- 	if (!sound)
-diff --git a/sound/aoa/soundbus/core.c b/sound/aoa/soundbus/core.c
-index 70bcaa7f93dd..f3076a3f7f2f 100644
---- a/sound/aoa/soundbus/core.c
-+++ b/sound/aoa/soundbus/core.c
-@@ -78,7 +78,7 @@ static int soundbus_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	if (retval)
- 		return retval;
- 
--	retval = add_uevent_var(env, "OF_TYPE=%s", of->dev.of_node->type);
-+	retval = add_uevent_var(env, "OF_TYPE=%s", of_node_get_device_type(of->dev.of_node));
- 	if (retval)
- 		return retval;
- 
 -- 
-2.19.1
+2.17.1
