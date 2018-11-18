@@ -1,30 +1,19 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Sun, 18 Nov 2018 15:37:34 +0200
-Message-ID: <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
-References: <ed34c70f-8d10-992e-1cf3-3a5f038c3664@gmail.com>
- <dccda0dc-bde7-7790-e4cc-2737871b14ea@linux.intel.com>
- <11a5bb5b-f8ad-d9cc-29df-8efeccb6228d@gmail.com>
- <20181114220640.GB2089@sirena.org.uk>
- <c0546298-960e-df17-273f-fa0734050aac@gmail.com>
- <20181114230255.GG2089@sirena.org.uk>
- <b48bc9d6-767a-24df-692e-fe675afed22e@gmail.com>
- <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: Fix latency value
+ calculation for pm_qos
+Date: Sun, 18 Nov 2018 19:04:52 +0200
+Message-ID: <d1e6e9df-3893-7c2d-acbb-05b59011a364@bitmer.com>
+References: <20181114110623.30932-1-peter.ujfalusi@ti.com>
+ <20181114110623.30932-2-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com
- [209.85.221.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E94726784F
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2018 14:37:37 +0100 (CET)
-Received: by mail-wr1-f52.google.com with SMTP id u5-v6so23962313wrn.9
- for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2018 05:37:37 -0800 (PST)
-In-Reply-To: <20181115190403.GI2089@sirena.org.uk>
-Content-Language: en-US
+Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1448026784F
+ for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2018 18:05:02 +0100 (CET)
+In-Reply-To: <20181114110623.30932-2-peter.ujfalusi@ti.com>
+Content-Language: en_US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,62 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, tony@atomide.com
+Cc: kernel@pyra-handheld.com, hns@goldelico.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, matt@ranostay.consulting
 List-Id: alsa-devel@alsa-project.org
 
-On 11/15/2018 09:04 PM, Mark Brown wrote:
-> You can get to the CODEC driver from the machine driver, and for
-> idle_bias_off there's probably a good case for just setting it
-> unconditionally given the lack of delays.
+On 11/14/18 1:06 PM, Peter Ujfalusi wrote:
+> The latency number is in usec for the pm_qos. Correct the calculation to
+> give us the time in usec
 > 
-> ...
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> That's why I'm suggesting ignore_pmdown_time as a first thing to try -
-> it should cause the powerdown to happen synchronously so there's no
-> chance for anything else to go in and change the clocking to cause a
-> pop.
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index e0ef4774c710..a395598f1f20 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -999,9 +999,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+>  			pkt_size = channels;
+>  		}
+>  
+> -		latency = ((((buffer_size - pkt_size) / channels) * 1000)
+> -				 / (params->rate_num / params->rate_den));
+> -
+> +		latency = (buffer_size - pkt_size) / channels;
+> +		latency = latency * USEC_PER_SEC /
+> +			  (params->rate_num / params->rate_den);
 
-Thanks for clarifying about idle_bias_off/ignore_pmdown_time.  As
-far as I can see, idle_bias_off seems to be set by default, as
-the pcm512x driver is now a component driver and idle_bias_on is
-not set to true.  I've also tried to explicitly set it to false,
-as well as setting use_pmdown_time to false. As far as
-ignore_pmdown_time is concerned, it seems to be settable at the
-dai_link level now, which is convenient for my use case.
+Did I understand correctly this doesn't fix any audio issue but allows
+CPU sleep longer or reach deeper sleep?
 
-Unfortunately none of this helps.  Although the chip is turned
-off without delay, it's turned off only while the device is
-closed.  As soon as the device is opened, it is turned on and
-kept on during all subsequent hw_params calls, where clock
-switching takes place.  The pops always get through.
-
-> No, there's no facility for that and it's such a niche case that I'm not
-> convinced it's a good idea to do it.  Another thing you could do here
-> though is to do the bounce as part of set_sysclk() in the CODEC driver.
-
-Regarding your suggestion to do the bounce as part of
-set_sysclk() in the CODEC driver, I'm unsure how to proceed.  The
-set_sysclk callback is virtually undocumented, as far as I could
-see, and not supported by the pcm512x component driver.  Even if
-I could support it, either my somehow filling in the component
-driver callbacks from the machine driver, or by patching the
-pcm512x component driver itself, if such a patch would be
-acceptable, I don't see how it could help with my problem.  Since
-both set_sysclk callbacks seem to operate at the CODEC or CODEC
-DAI level, which knows nothing about how to switch clocks on this
-particular card, I don't see how I can do the switch there, where
-I can safely wrap it inside a bounce.
-
-Maybe I'm just missing something, but as far as I can see,
-there's no way to get around the need to synchronize access to
-the POWER register, so as to be able to reliably power bounce the
-chip while the clock selection takes place outside the
-CODEC/component driver.  If such synchronization is impossible,
-I'm forced to accept that the pop will be generated and rely on
-suppressing it via a mute.  This can be done by implementing the
-.digital_mute callback in the pcm512x component driver, for which
-I have a patch, which seems to work reliably for suppressing both
-the loud pop, as well as various other lower volume clicks and
-pops generated by the chip.  I still feel that not generating the
-pop in the first place would be preferable though.
+-- 
+Jarkko
