@@ -1,21 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/3] ASoC: omap: Fix and add pm_qos
-	configuration
-Date: Mon, 19 Nov 2018 16:17:27 +0200
-Message-ID: <c570c921-c712-be41-f827-4748c56e7690@ti.com>
-References: <20181114110623.30932-1-peter.ujfalusi@ti.com>
- <2C9D3C26-75A9-4736-BC68-5954728083DB@goldelico.com>
- <6128350C-8801-492F-9FE6-B07CCAF56925@goldelico.com>
- <b08cb2ac-b02f-861d-7ff8-f91b2ca08fd8@bitmer.com>
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH v4 0/2] Introduce dmic mode switch delay
+	parameter
+Date: Mon, 19 Nov 2018 22:23:04 +0530
+Message-ID: <1542646386-9225-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- by alsa0.perex.cz (Postfix) with ESMTP id E882B267837
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2018 15:16:05 +0100 (CET)
-In-Reply-To: <b08cb2ac-b02f-861d-7ff8-f91b2ca08fd8@bitmer.com>
-Content-Language: en-US
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CAC6267837
+ for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2018 17:53:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Andreas Kemnade <andreas@kemnade.info>, kernel@pyra-handheld.com, linux-omap <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE4LTExLTE4IDE5OjA0LCBKYXJra28gTmlrdWxhIHdyb3RlOgo+IE9uIDExLzE1LzE4
-IDI6MjYgUE0sIEguIE5pa29sYXVzIFNjaGFsbGVyIHdyb3RlOgo+Pj4+IFBldGVyIFVqZmFsdXNp
-ICgzKToKPj4+PiBBU29DOiBvbWFwLW1jYnNwOiBGaXggbGF0ZW5jeSB2YWx1ZSBjYWxjdWxhdGlv
-biBmb3IgcG1fcW9zCj4+Pj4gQVNvQzogb21hcC1tY3BkbTogQWRkIHBtX3FvcyBoYW5kbGluZyB0
-byBhdm9pZCB1bmRlci9vdmVycnVucyB3aXRoCj4+Pj4gQ1BVX0lETEUKPj4+PiBBU29DOiBvbWFw
-LWRtaWM6IEFkZCBwbV9xb3MgaGFuZGxpbmcgdG8gYXZvaWQgb3ZlcnJ1bnMgd2l0aCBDUFVfSURM
-RQo+Pj4+Cj4+Pj4gc291bmQvc29jL29tYXAvb21hcC1kbWljLmMgIHwgIDkgKysrKysrKysKPj4+
-PiBzb3VuZC9zb2Mvb21hcC9vbWFwLW1jYnNwLmMgfCAgNiArKystLS0KPj4+PiBzb3VuZC9zb2Mv
-b21hcC9vbWFwLW1jcGRtLmMgfCA0MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KystCj4+Pj4gMyBmaWxlcyBjaGFuZ2VkLCA1NCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
-KQo+Pj4KPj4+IEkgd2lsbCB0ZXN0IGFzYXAuCj4+Cj4+IEkgaGF2ZSBub3c6Cj4+Cj4+ICogdjQu
-MjAtcmMyCj4+ICogcGx1cyB5b3VyIG5ldyBwYXRjaGVzCj4+ICogcGx1cyBsZXR1eC00LjIwLXJj
-MiBwYXRjaGVzCj4+ICogaW5jbHVkaW5nIG91ciBwcml2YXRlIEFFU1MgcGF0Y2ggc2V0IChtb3N0
-bHkgaW5hY3RpdmUsIGJlY2F1c2UgaXQgZmFpbHMgdG8gbG9hZCBmaXJtd2FyZSkKPj4gKiBDT05G
-SUdfQ1BVX0lETEU9eQo+Pgo+PiBhbmQgaXQgd29ya3MuIEkgY2FuIHVzZSBhcGxheSBhbmQgcGxh
-eSB0byBnZXQgaGFuZHNmcmVlIGF1ZGlvIGFzIHdpdGggQ09ORklHX0NQVV9JRExFPW4KPj4KPj4g
-U29tZXRpbWVzLCB0aGVyZSBpcyBhIHNjcmF0Y2h5IHRlbnRoIG9mIGEgc2Vjb25kIChpbiBoYW5k
-c2ZyZWUgYW5kIGhlYWRzZXQpLAo+PiBidXQgdGhlIGJhc2ljIHJoeXRobSBkb2VzIG5vdCBnZXQg
-aW50ZXJydXB0ZWQgYW55IG1vcmUgYW5kIHRoZSBwbGF5IGNvbW1hbmQgZG9lcwo+PiBub3QgZ2V0
-IHN0dWNrLgo+Pgo+PiBJIGhhdmUgcGxheWVkIGFuIG1wMyBvZiA0IG1pbnV0ZXMgYW5kIHRoZSBw
-bGF5IHByb2Nlc3MgZGlkIHN1Y2NlZWQgYW5kIGRpZG4ndCByZXBvcnQKPj4gYnVmZmVyIHVuZGVy
-cnVuIGlzc3Vlcy4KPj4KPj4gU28geW91ciBwYXRjaGVzIHNlZW0gdG8gZml4IHRoZSBpc3N1ZS4g
-QXQgbGVhc3QgdGhlIGJhc2ljIHByb2JsZW1zLiBUaGlzIHNjcmF0Y2h5Cj4+IHRoaW5nIG5lZWRz
-IGZ1cnRoZXIgc3R1ZHksIGlmIGl0IGlzIGEgc3B1cmlvdXMgdGhpbmcgb24gbXkgUHlyYSBwcm90
-b3lwZSBkZXZpY2UuCj4+IE9yIGlmIGl0IGlzIHN0aWxsIHRoZXJlIGlmIHdlIGRpc2FibGUgQ1BV
-X0lETEUgYWdhaW4gKEkgaGF2ZW4ndCB0cmllZCB0aGF0IHlldCkuCj4+Cj4gUGV0ZXI6IGRvIHlv
-dSBoYXZlIHNvbWUgc2ltcGxlIHRlc3QgY2FzZSBmb3IgTjgxMCBvciBOOTAwPyBJIHRyaWVkIHRv
-Cj4gcGxheSB3aXRoIGEgZmV3IGRpZmZlcmVudCBhcGxheSAtLWJ1ZmZlci1zaXplIGFuZCAtLXBl
-cmlvZC1zaXplCj4gY29tYmluYXRpb25zIHRvIHNlZSBjYW4gSSBoaXQgdGhpcy4gTjgxMCBtb3N0
-IHByb2JhYmx5IHdhc24ndCBhYmxlIHRvCj4gaGl0IGRlZXAgZW5vdWdoIGlkbGUgYXMgdGhlIGRp
-c3BsYXkgaXMgb24gZHVlIHRoZXJlIGlzIG5vIGRyaXZlciBmb3IgaXQuCj4gT24gTjkwMCBJIGhh
-dmUgZGlzcGxheSBibGFua2VkLgoKSWYgeW91IGhhdmUgQ1BVX0lETEUgZW5hYmxlZCAoaXQgc2hv
-dWxkIGJlIGJ5IGRlZmF1bHQpIGFuZCB5b3UgZG9uJ3QKZXhwZXJpZW5jZSBhbnkgY3JhY2tsaW5n
-IHRoYW4gaXQgaXMgd29ya2luZyBPSy4KClRvbnk6IG9yIGlzIHRoZXJlIHNvbWV0aGluZyBlbHNl
-IHRvIGxvb2sgZm9yIGluIE9NQVAyLzMgPwoKPiBJIGhhdmUgb25lIGVkdWNhdGlvbmFsIHF1ZXN0
-aW9uIG9uIDEvMyBidXQgbm8gYW55IHNob3cgc3RvcHBlcnMuIEZvciBhbGwKPiB0aHJlZToKPiAK
-PiBBY2tlZC1ieTogSmFya2tvIE5pa3VsYSA8amFya2tvLm5pa3VsYUBiaXRtZXIuY29tPgo+IAoK
-LSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIs
-IDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFp
-a2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Some DMICs need clock to be running for a specified duration as per the
+DMIC spec to complete the mode transition like sleep to normal, off to normal
+etc. This  series add a mode-switch delay which will prevent the clock from
+being turned off without complying with manufacturer timing
+specifications. Also introduces a module parameter for the wakeup_delay parameter.
+
+v1: First patch set
+v2: 
+1). Removed ACPI device entry since a) The DMIC vendor doesn't have an ACPI vendor
+ID b) The ACPI enumeration creates one more device and conflicts with the existing
+skl.c dmic platform device registration.
+2). Updated commit message
+
+v3: Updated commit message and introduced module param for wakeup_delay
+
+v4: Addressed parameter name to align with existing parameter. Added dt entry
+in Documentation
+
+Jenny TC (2):
+  ASoC: dmic: introduce mode switch delay
+  ASoC: dmic: introduce module_param wakeup_delay
+
+ Documentation/devicetree/bindings/sound/dmic.txt |  2 ++
+ sound/soc/codecs/dmic.c                          | 36 ++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+-- 
+1.9.1
