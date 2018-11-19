@@ -1,55 +1,51 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC PATCH] ASoC: Intel: Skylake: fix Kconfigs,
- make HDaudio codec optional
-Date: Mon, 19 Nov 2018 11:03:37 +0100
-Message-ID: <CAK8P3a3acuA5jkW5MBLEZT=sNsN0opBjowRGNwK-bXZWZquOmA@mail.gmail.com>
-References: <20181118223809.23314-1-pierre-louis.bossart@linux.intel.com>
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v2] ASoC: imx-audmux: complete dt-bindings for i.MX6
+Date: Mon, 19 Nov 2018 11:47:18 +0100
+Message-ID: <20181119104718.18716-1-peron.clem@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-f196.google.com (mail-qk1-f196.google.com
- [209.85.222.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FBE7267837
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2018 11:03:55 +0100 (CET)
-Received: by mail-qk1-f196.google.com with SMTP id r71so47543696qkr.10
- for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2018 02:03:55 -0800 (PST)
-In-Reply-To: <20181118223809.23314-1-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Colin Didier <colin.didier@devialet.com>, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 18, 2018 at 11:38 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> The Skylake driver currently has a set of problems supporting
-> load/unload modules. We need to make the HDaudio codec support
-> optional to help narrow down the issues.
->
-> Support for HDaudio codecs also leads to a Kconfig issue. We want the
-> hdac_hda codec to be compilable independently of Skylake (e.g. with
-> ALL_CODECS) but when Skylake is selected as built-in the hdac_hda
-> codec needs to use the same option due a a code dependency
->
-> Solve both problems by adding a user-selectable boolean Kconfig,
-> select HDAC_HDA as needed and make the HDaudio codec support in the
-> Skylake driver optional. Tests on a Chell Chromebook device without
-> HDaudio show no regression for speaker and HDMI playback.
->
-> This is submitted as an RFC to allow for comments and more validation.
->
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Colin Didier <colin.didier@devialet.com>
 
-This looks correct to me to solve the problem I reported.
+The i.MX6 audmux differs from i.MX51.
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+This patch adds the audmux for i.MX6 family.
+
+Signed-off-by: Colin Didier <colin.didier@devialet.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+
+v2:
+	Repost with ASoC maintainer and list
+
+ include/dt-bindings/sound/fsl-imx-audmux.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/include/dt-bindings/sound/fsl-imx-audmux.h b/include/dt-bindings/sound/fsl-imx-audmux.h
+index 15f138bebe16..a1d0741d9ed1 100644
+--- a/include/dt-bindings/sound/fsl-imx-audmux.h
++++ b/include/dt-bindings/sound/fsl-imx-audmux.h
+@@ -25,6 +25,14 @@
+ #define MX51_AUDMUX_PORT6		5
+ #define MX51_AUDMUX_PORT7		6
+ 
++#define MX6_AUDMUX_PORT1_SSI1		0
++#define MX6_AUDMUX_PORT2_SSI2		1
++#define MX6_AUDMUX_PORT3		2
++#define MX6_AUDMUX_PORT4		3
++#define MX6_AUDMUX_PORT5		4
++#define MX6_AUDMUX_PORT6		5
++#define MX6_AUDMUX_PORT7_SSI3		6
++
+ /*
+  * TFCSEL/RFCSEL (i.MX27) or TFSEL/TCSEL/RFSEL/RCSEL (i.MX31/51/53/6Q)
+  * can be sourced from Rx/Tx.
+-- 
+2.19.1
