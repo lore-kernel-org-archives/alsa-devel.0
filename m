@@ -1,74 +1,50 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 2/6] ASoC: Intel: Skylake: stop init/probe if DSP is not present
-Date: Tue, 20 Nov 2018 15:36:40 -0600
-Message-ID: <20181120213644.19103-3-pierre-louis.bossart@linux.intel.com>
-References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 0/6] ASoC:Intel:Skylake: Enable HDaudio legacy fallback
+Date: Tue, 20 Nov 2018 15:36:38 -0600
+Message-ID: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Check immediately if the DSP can be found, bail and avoid doing inits
-to enable legacy fallback without delay.
+This patchset is provided as an RFC and should not be merged as is
+(Turkey break in the USA and more validation needed). This is however
+a good time to gather comments. This work is the result of multiple
+email discussions to finally provide more flexibility for
+distributions to chose whether to stick with the legacy HDaudio driver
+or to enable the SST/Skylake driver for newer platforms (required
+e.g. for digital microphone support)
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/skylake/skl.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+The patches add support for CoffeeLake, simplify the probe for the
+Skylake driver, introduce more compile-time granularity so that
+platforms can be selected individually and last provide a dynamic
+fallback mechanism when two drivers are registered for the same PCI
+ID.
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index df36b8fe6d5e..1d7146773d19 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -931,6 +931,12 @@ static int skl_first_init(struct hdac_bus *bus)
- 
- 	snd_hdac_bus_parse_capabilities(bus);
- 
-+	/* check if dsp is there */
-+	if (!bus->ppcap) {
-+		dev_err(bus->dev, "bus ppcap not set, DSP not present?\n");
-+		return -ENODEV;
-+	}
-+
- 	if (skl_acquire_irq(bus, 0) < 0)
- 		return -EBUSY;
- 
-@@ -940,23 +946,25 @@ static int skl_first_init(struct hdac_bus *bus)
- 	gcap = snd_hdac_chip_readw(bus, GCAP);
- 	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
- 
--	/* allow 64bit DMA address if supported by H/W */
--	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
--	} else {
--		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
--	}
--
- 	/* read number of streams from GCAP register */
- 	cp_streams = (gcap >> 8) & 0x0f;
- 	pb_streams = (gcap >> 12) & 0x0f;
- 
--	if (!pb_streams && !cp_streams)
-+	if (!pb_streams && !cp_streams) {
-+		dev_err(bus->dev, "no streams found in GCAP definitions?\n");
- 		return -EIO;
-+	}
- 
- 	bus->num_streams = cp_streams + pb_streams;
- 
-+	/* allow 64bit DMA address if supported by H/W */
-+	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
-+		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
-+	} else {
-+		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
-+		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
-+	}
-+
- 	/* initialize streams */
- 	snd_hdac_ext_stream_init_all
- 		(bus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
+When the SOF driver is released, the same mechanism will be used to
+enable the SOF-legacy fallback. There will be no plans to enable an
+SOF->SST falback.
+
+Pierre-Louis Bossart (4):
+  ASoC: Intel: Skylake: stop init/probe if DSP is not present
+  ASoC: Intel: Skylake: remove useless tests on DSP presence
+  ASoC: Intel: Skylake: Add more platform granularity
+  ALSA: hda: add fallback capabilities for SKL+ platforms
+
+Takashi Iwai (2):
+  ASoC: Intel: Skylake: Add CFL-S support
+  ALSA: hda: Allow fallback binding with legacy HD-audio for Intel SKL+
+
+ include/sound/hdaudio.h                |   6 +
+ sound/pci/hda/Kconfig                  |  40 +++++++
+ sound/pci/hda/hda_controller.h         |   2 +-
+ sound/pci/hda/hda_intel.c              |  51 ++++++--
+ sound/soc/intel/Kconfig                |  86 ++++++++++++--
+ sound/soc/intel/boards/Kconfig         |  16 ++-
+ sound/soc/intel/skylake/skl-messages.c |   8 ++
+ sound/soc/intel/skylake/skl.c          | 154 +++++++++++++++++++------
+ 8 files changed, 311 insertions(+), 52 deletions(-)
+
 -- 
 2.17.1
