@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Add support for CBM_CFS
-	and CBS_CFM clocking modes" to the asoc tree
-Date: Tue, 20 Nov 2018 16:28:01 +0000 (GMT)
-Message-ID: <20181120162801.3C2601124DC2@debutante.sirena.org.uk>
-References: <20181120124253.27775-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: Intel: use platform_data for machine
+	drivers" to the asoc tree
+Date: Tue, 20 Nov 2018 17:01:26 +0000 (GMT)
+Message-ID: <20181120170126.C19411124DC2@debutante.sirena.org.uk>
+References: <20181117004706.15911-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EF46526784F
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 17:28:02 +0100 (CET)
-In-Reply-To: <20181120124253.27775-1-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C68726784F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 18:01:28 +0100 (CET)
+In-Reply-To: <20181117004706.15911-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Add support for CBM_CFS and CBS_CFM clocking modes
+   ASoC: Intel: use platform_data for machine drivers
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,121 @@ to this mail.
 Thanks,
 Mark
 
->From 4647598cde0e55d5c6d6a3c4223953611a472289 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Tue, 20 Nov 2018 14:42:53 +0200
-Subject: [PATCH] ASoC: tlv320aic3x: Add support for CBM_CFS and CBS_CFM
- clocking modes
+>From 5a619b9e8883a0f9691964d001b8480df44df5b9 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 16 Nov 2018 18:47:06 -0600
+Subject: [PATCH] ASoC: Intel: use platform_data for machine drivers
 
-The codec can support any variation of bclk/fs master/slave configuration.
+For some reason we have different mechanisms for passing data to
+machine drivers. Use the solution used by Atom/SST and SOF instead of
+using drv_data as done by Skylake.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        |  2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c |  2 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c        |  2 +-
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c     |  2 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c       |  2 +-
+ sound/soc/intel/skylake/skl.c                       | 13 ++++++++++---
+ 6 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 6a271e6e6b8f..6aa0edf8c5ef 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1260,6 +1260,16 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		aic3x->master = 0;
- 		iface_areg &= ~(BIT_CLK_MASTER | WORD_CLK_MASTER);
- 		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		aic3x->master = 1;
-+		iface_areg |= BIT_CLK_MASTER;
-+		iface_areg &= ~WORD_CLK_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		aic3x->master = 1;
-+		iface_areg |= WORD_CLK_MASTER;
-+		iface_areg &= ~BIT_CLK_MASTER;
-+		break;
- 	default:
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index c2a96940f9f2..d71475200b08 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -984,7 +984,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 	kabylake_audio_card->dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
+ 
+-	mach = dev_get_drvdata(&pdev->dev);
++	mach = (&pdev->dev)->platform_data;
+ 	if (mach)
+ 		dmic_constraints = mach->mach_params.dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index d7df307b406f..7044d8c2b187 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -659,7 +659,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 	kabylake_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&kabylake_audio_card, ctx);
+ 
+-	mach = dev_get_drvdata(&pdev->dev);
++	mach = (&pdev->dev)->platform_data;
+ 	if (mach)
+ 		dmic_constraints = mach->mach_params.dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index 15c502d6774d..b9a21e64ead2 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -146,7 +146,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
+ 
+ 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+ 
+-	mach = dev_get_drvdata(&pdev->dev);
++	mach = (&pdev->dev)->platform_data;
+ 	if (!mach)
  		return -EINVAL;
+ 
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 931890f9aa74..0922106bd323 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -652,7 +652,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	skylake_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
+ 
+-	mach = dev_get_drvdata(&pdev->dev);
++	mach = (&pdev->dev)->platform_data;
+ 	if (mach)
+ 		dmic_constraints = mach->mach_params.dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 657c650766fc..8433c521d39f 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -705,7 +705,7 @@ static int skylake_audio_probe(struct platform_device *pdev)
+ 	skylake_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&skylake_audio_card, ctx);
+ 
+-	mach = dev_get_drvdata(&pdev->dev);
++	mach = (&pdev->dev)->platform_data;
+ 	if (mach)
+ 		dmic_constraints = mach->mach_params.dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index b66d66acbc35..f81e7996aa0c 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -534,6 +534,16 @@ static int skl_machine_device_register(struct skl *skl)
+ 		return -EIO;
  	}
+ 
++	mach->mach_params.platform = dev_name(bus->dev);
++	mach->mach_params.codec_mask = bus->codec_mask;
++
++	ret = platform_device_add_data(pdev, (const void *)mach, sizeof(*mach));
++	if (ret) {
++		dev_err(bus->dev, "failed to add machine device platform data\n");
++		platform_device_put(pdev);
++		return ret;
++	}
++
+ 	ret = platform_device_add(pdev);
+ 	if (ret) {
+ 		dev_err(bus->dev, "failed to add machine device\n");
+@@ -541,9 +551,6 @@ static int skl_machine_device_register(struct skl *skl)
+ 		return -EIO;
+ 	}
+ 
+-	mach->mach_params.platform = dev_name(bus->dev);
+-	mach->mach_params.codec_mask = bus->codec_mask;
+-	dev_set_drvdata(&pdev->dev, mach);
+ 
+ 	skl->i2s_dev = pdev;
+ 
 -- 
 2.19.0.rc2
