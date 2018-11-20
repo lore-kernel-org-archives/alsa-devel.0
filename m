@@ -1,109 +1,58 @@
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH alsa-lib] pcm_dshare: Fix segfault when not
-	binding channel 0
-Date: Tue, 20 Nov 2018 21:43:44 +0100
-Message-ID: <20181120204344.1623-1-kmarinushkin@birdec.tech>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
- by alsa0.perex.cz (Postfix) with ESMTP id C75BE2677E8
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 21:42:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 1/6] ASoC: Intel: Skylake: Add CFL-S support
+Date: Tue, 20 Nov 2018 15:36:39 -0600
+Message-ID: <20181120213644.19103-2-pierre-louis.bossart@linux.intel.com>
+References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Configuration to reproduce:
+From: Takashi Iwai <tiwai@suse.de>
 
-~~~~
-pcm.share_right {
-  type dshare
-  ipc_key 73
-  ipc_perm 0666
-  slave {
-    pcm "hw:0,0"
-  }
-  bindings {
-    # the seagfault happens when we don't bind channel 0
-    1 1
-  }
-}
-~~~~
+It's with CNP, supposed to be equivalent with CNL entry.
 
-Execute to reproduce:
-
-~~~~
-$ aplay -D plug:share_right test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Segmentation fault
-~~~~
-
-For channels whithout binding, values are set to UINT_MAX in function
-`snd_pcm_direct_parse_bindings()`:
-
-~~~~
-	for (chn = 0; chn < count; chn++)
-		bindings[chn] = UINT_MAX;		/* don't route */
-~~~~
-
-But, these values are not checked when playing, which causes the segfault.
-
-This commit fixes the issue.
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- src/pcm/pcm_dshare.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 8 ++++++++
+ sound/soc/intel/skylake/skl.c          | 3 +++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 54dc9d48..2bb735fe 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -67,7 +67,9 @@ static void do_silence(snd_pcm_t *pcm)
- 	format = dshare->shmptr->s.format;
- 	for (chn = 0; chn < channels; chn++) {
- 		dchn = dshare->bindings ? dshare->bindings[chn] : chn;
--		snd_pcm_area_silence(&dst_areas[dchn], 0, dshare->shmptr->s.buffer_size, format);
-+		if (dchn != UINT_MAX)
-+			snd_pcm_area_silence(&dst_areas[dchn], 0,
-+					     dshare->shmptr->s.buffer_size, format);
- 	}
- }
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 8bfb8b0fa3d5..b0e6fb93eaf8 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -247,6 +247,14 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 		.init_fw = cnl_sst_init_fw,
+ 		.cleanup = cnl_sst_dsp_cleanup
+ 	},
++	{
++		.id = 0xa348,
++		.num_cores = 4,
++		.loader_ops = bxt_get_loader_ops,
++		.init = cnl_sst_dsp_init,
++		.init_fw = cnl_sst_init_fw,
++		.cleanup = cnl_sst_dsp_cleanup
++	},
+ };
  
-@@ -91,7 +93,9 @@ static void share_areas(snd_pcm_direct_t *dshare,
- 	} else {
- 		for (chn = 0; chn < channels; chn++) {
- 			dchn = dshare->bindings ? dshare->bindings[chn] : chn;
--			snd_pcm_area_copy(&dst_areas[dchn], dst_ofs, &src_areas[chn], src_ofs, size, format);
-+			if (dchn != UINT_MAX)
-+				snd_pcm_area_copy(&dst_areas[dchn], dst_ofs,
-+						  &src_areas[chn], src_ofs, size, format);
- 
- 		}
- 	}
-@@ -834,8 +838,11 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 		dshare->spcm = spcm;
- 	}
- 
--	for (chn = 0; chn < dshare->channels; chn++)
--		dshare->u.dshare.chn_mask |= (1ULL<<dshare->bindings[chn]);
-+	for (chn = 0; chn < dshare->channels; chn++) {
-+		unsigned int dchn = dshare->bindings ? dshare->bindings[chn] : chn;
-+		if (dchn != UINT_MAX)
-+			dshare->u.dshare.chn_mask |= (1ULL << dchn);
-+	}
- 	if (dshare->shmptr->u.dshare.chn_mask & dshare->u.dshare.chn_mask) {
- 		SNDERR("destination channel specified in bindings is already used");
- 		dshare->u.dshare.chn_mask = 0;
+ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 3f0ac1312982..df36b8fe6d5e 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1121,6 +1121,9 @@ static const struct pci_device_id skl_ids[] = {
+ 	/* CNL */
+ 	{ PCI_DEVICE(0x8086, 0x9dc8),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
++	/* CFL */
++	{ PCI_DEVICE(0x8086, 0xa348),
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, skl_ids);
 -- 
-2.13.6
+2.17.1
