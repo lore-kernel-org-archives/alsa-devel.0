@@ -1,24 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: add Icelake support
-Date: Tue, 20 Nov 2018 10:02:04 -0600
-Message-ID: <ad104c2e-8704-948e-4ea4-7e6dcc9a995c@linux.intel.com>
-References: <20181110211846.23667-1-yung-chuan.liao@linux.intel.com>
- <s5hftw8ngd4.wl-tiwai@suse.de>
- <ac9cecd2-7321-34dd-a317-4d6d3c21635e@linux.intel.com>
- <s5h5zx3o6um.wl-tiwai@suse.de>
- <ad05386f-af75-3bf2-bc76-628928fc4fea@linux.intel.com>
- <s5hpnv7aexo.wl-tiwai@suse.de> <s5ho9ap6sjk.wl-tiwai@suse.de>
- <7f7c8349-c329-9789-ddb6-4779c56668fb@linux.intel.com>
- <s5hmuq8hq7a.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tlv320aic3x: Add support for CBM_CFS
+	and CBS_CFM clocking modes" to the asoc tree
+Date: Tue, 20 Nov 2018 16:28:01 +0000 (GMT)
+Message-ID: <20181120162801.3C2601124DC2@debutante.sirena.org.uk>
+References: <20181120124253.27775-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id AD8CE26784F
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 17:02:07 +0100 (CET)
-In-Reply-To: <s5hmuq8hq7a.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF46526784F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 17:28:02 +0100 (CET)
+In-Reply-To: <20181120124253.27775-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,99 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKCj4+ICAgICAgU28sIHdpdGggYSB3b3JraW5nIG1hY2hpbmUsIEkgY291bGQg
-ZmluYWxseSBoYWNrIHRoaXMgYSBiaXQuCj4+ICAgICAgQmVsb3cgaXMgYSBmcmVzaGx5IGNvb2tl
-ZCBwYXRjaChzZXQpLiAgVGhlIGZpcnN0IG9uZSBpcyBqdXN0IHRvIGFkZAo+PiAgICAgIHRoZSBz
-dXBwb3J0IGZvciBteSBDRkwgbWFjaGluZSwgYW5kIGFub3RoZXIgb25lIGlzIHRvIGFkZCB0aGUg
-ZmFsbGJhY2sKPj4gICAgICBiaW5kaW5nIHdpdGggdGhlIGxlZ2FjeSBIRC1hdWRpbyBvbiBzbmQt
-c29jLXNrbC4KPj4gICAgICAKPj4gICAgICBUaGUgY2hhbmdlcyBhcmVuJ3QgdGhhdCBiaWcuICBB
-bmQgeW91IGNhbiBzdGlsbCBjb250cm9sIHRoZSBiaW5kaW5nCj4+ICAgICAgdmlhIGEgbW9kdWxl
-IG9wdGlvbiwgZS5nLiBzbmRfc29jX3NrbC5sZWdhY3k9MSB3aWxsIGxldCBpdCBib3VuZCBvbmx5
-Cj4+ICAgICAgd2l0aCB0aGUgbGVnYWN5IGRyaXZlciwgc25kX3NvY19za2wubGVnYWN5PTIgZm9y
-IEFTb0Mgb25seS4gIFRoZQo+PiAgICAgIGRlZmF1bHQgaXMgMCwgdGhlIGZhbGxiYWNrIHRvIGxl
-Z2FjeSBpZiBBU29DIGJpbmRpbmcgZmFpbHMuCj4+ICAgICAgCj4+ICAgICAgSXQncyBzdGlsbCBh
-IFBvQywgbm8gcHJvcGVyIHBhdGNoIGRlc2NyaXB0aW9uIGlzIHB1dCB5ZXQuCj4+ICAgICAgCj4+
-IFRoYW5rcyBUYWthc2hpLCBtdWNoIGFwcHJlY2lhdGUuIHdpbGwgZ2l2ZSBpdCBhIHRyeSBsYXRl
-ciB0b2RheS4KPj4KPj4gT25lIGNvbW1lbnQgaXMgdGhhdCB3ZSB3aWxsIGhhdmUgdG8gZGVhbCB3
-aXRoIFNPRiBhcyB3ZWxsLiBXaGlsZSB0aGUgZW5kLWdvYWwKPj4gaXMgdG8gY29udmVyZ2Ugb24g
-YSBzaW5nbGUgU09GLWJhc2VkIGRyaXZlciwgaXQnbGwgdGFrZSB0aW1lIHRvIHN1cHBvcnQgYWxs
-Cj4+IHNoaXBwaW5nIHBsYXRmb3JtcyBhbmQgZGVhbCB3aXRoIGZpcm13YXJlIGF1dGhlbnRpY2F0
-aW9uIGlzc3Vlcywgc28gdGhlCj4+IGZhbGxiYWNrIGNvdWxkIGJlIFNPRi0+U1NULT5sZWdhY3kg
-KGhvcGVmdWxseSBvbiBhIHNtYWxsIHNldCBvZiBwbGF0Zm9ybXMpLgo+PiBTU1QtPlNPRiB3aWxs
-IGxpa2VseSBuZXZlciBoYXBwZW4uCj4gT0ssIGdvb2QgdG8ga25vdy4KPgo+PiBJIGFsc28gd2Fu
-dGVkIHRvIHRyeSB3aGF0IGhhcHBlbnMgd2l0aCB5b3VyIHNvbHV0aW9uIGlmIHRoZSBhdXRoZW50
-aWNhdGlvbgo+PiBmYWlscyB3aXRoIFNTVCAoYXMgaW4geW91ciBjYXNlIHdpdGggdGhlIGN1cnJl
-bnQgQ05MIGZpcm13YXJlKS4gSXQncyBteQo+PiB1bmRlcnN0YW5kaW5nIHRoYXQgdGhlIGZpcm13
-YXJlIGRvd25sb2FkIGlzIGRlZmVycmVkIHdpdGggYSB3b3JrIHF1ZXVlIGFuZAo+PiB0YWtlcyB0
-aW1lIGFueXdheXMsIHNvIG1heWJlIHRoZSBkZWNpc2lvbiBub3QgdG8gZ28gYmFjayB0byBsZWdh
-Y3kgd291bGQgYmUKPj4gbWFkZSB0b28gZWFybHk/IFdlJ2QgYWxzbyBuZWVkIHRvIGNoZWNrIHdp
-dGggYSBwbGF0Zm9ybSB3aGVyZSB0aGUgRFNQIGlzIG5vdAo+PiBlbmFibGVkIHRvIHNlZSBpZiB0
-aGUgZmFsbGJhY2sgaGFwcGVucyBpbW1lZGlhdGVseSAobm8gbmVlZCB0byB0cnkgYW5kCj4+IGRv
-d25sb2FkIGZpcm13YXJlIHRvIGEgbm9uLWVuYWJsZWQgRFNQKS4KPiBJdCdzIGEgZ29vZCBxdWVz
-dGlvbiwgYW5kIEkgZ3Vlc3MgaXQncyBoYXJkIHRvIGdpdmUgYSBmYWxsYmFjayBpbiB0aGF0Cj4g
-bGV2ZWwuICBJT1csIHRoZSBmYWxsYmFjayB0byB0aGUgbGVnYWN5IGlzIG9ubHkgZm9yIHRoZSBj
-YXNlIHdoZXJlIG5vCj4gRFNQIGlzIGF2YWlsYWJsZSBhdCBhbGwgaW4gdGhlIGhhcmR3YXJlIGxl
-dmVsLiAgSWYgdGhlIGxlZ2FjeSBkcml2ZXIKPiBpcyByZXF1aXJlZCBieSBzb21lIHJlYXNvbiAo
-ZmF1bHR5IGhhcmR3YXJlIGRldGVjdGlvbiBvciB0aGUKPiBub24tcHVibGljIGZpcm13YXJlKSwg
-d2UgY2FuIHN0aWxsIGVuZm9yY2UgdG8gdGhlIGxlZ2FjeSBtb2RlIHZpYSBhCj4gbW9kdWxlIG9w
-dGlvbi4KPgo+IEJ1dCBmb3IgdGhlIGZhbGxiYWNrIG9mIFNPRiB0byBTU1QgaXMgYSBkaWZmZXJl
-bnQgcXVlc3Rpb24uICBJIGd1ZXNzCj4gd2Ugc2hvdWxkIGNoZWNrIHRoZSBhdmFpbGFiaWxpdHkg
-b2YgdGhlIGZpcm13YXJlIGF0IHRoZSBiZWdpbm5pbmcgb2YKPiBwcm9iZT8gIEJ1dCByZXF1ZXN0
-X2Zpcm13YXJlKCkgaW5zaWRlIHRoZSBwcm9iZSBpcyBiYXNpY2FsbHkgbm8tZ28KPiAoYWx0aG91
-Z2ggaXQgbWlnaHQgd29yayksIHNvIHRoZSBmYWxsYmFjayBwb2ludCB3b3VsZCBiZSBwdXNoZWQg
-bGF0ZXIKPiBpbiB0aGF0IGNhc2UuCj4KPiBFdmVuIG15IHNpbXBsZSBQb0MgaGFzIGEgcG90ZW50
-aWFsIHByb2JsZW06IGFzIGl0IGRvZXNuJ3QgcmVhY2ggdG8gdGhlCj4gcHJvYmUgZXJyb3IgaW4g
-dGhlIGRyaXZlciBjb3JlLCB0aGUgcHJldmlvdXNseSBjYWxsZWQgZGV2cmVzIGFuZCBvdGhlcgo+
-IHN0dWZmIGFyZW4ndCBjbGVhcmVkIGF0IGNhbGxpbmcgdGhlIGZhbGxiYWNrIGRyaXZlci4gIFRo
-aXMgcHJvYmxlbQo+IHdpbGwgcmVtYWluIGV2ZW4gaWYgd2UgY2hhbmdlIHRoZSBmYWxsYmFjayBw
-bGFjZSwgc28gdGhpcyBuZWVkcyB0byBiZQo+IHNvbHZlZCAob3IganVzdCBpZ25vcmUgaWYgaXQn
-cyBvbmx5IGEgZmV3IG1lbW9yeSBhbGxvY2F0aW9ucykuCgpJIHRvb2sgYSBsb25nZXIgbG9vayBh
-dCB0aGUgc3VnZ2VzdGVkIGNvZGUsIGFuZCBpdCdzIGdvb2QgZW5vdWdoIGZvciBtZSAKLSBhY3R1
-YWxseSBzbWFydGVyIHRoYW4gd2hhdCBJIGhhZCBpbiBtaW5kIDotKS4KCldoYXQgd2UgcmVhbGx5
-IHdhbnQgaXMgZGV0ZWN0IGlmIHRoZSBEU1AgaXMgcHJlc2VudCBvciBub3QsIGFuZCBmYWxsIApi
-YWNrIHRvIGxlZ2FjeSBpZiBub3QuCgpUaGUgcHJvYmxlbXMgd2l0aCBmaXJtd2FyZSBhcmUgb25l
-IHN0ZXAgdG9vIGZhciwgdGhlcmUgYXJlIGNhc2VzIHdoZXJlIAp3ZSBoYXZlIGZpcm13YXJlIGJ1
-dCBpdCdzIHRoZSB3cm9uZyBvbmUgZHVlIHRvIGF1dGhlbnRpY2F0aW9uIGlzc3VlcyAKdGhhdCBj
-YW5ub3QgYmUgaGFuZGxlZCBhdXRvbWFnaWNhbGx5LgoKTGlrZXdpc2UgdGhlIGZhbGxiYWNrIGJl
-dHdlZW4gU09GIGFuZCBTU1QgaXMgYWxzbyBvbmUgYnJpZGdlIHRvbyBmYXIuIElmIAp0aGUgcHJv
-YmxlbSBpcyB3aXRoIGZpcm13YXJlIGF1dGhlbnRpY2F0aW9uLCB0aGVuIGxpa2V3aXNlIGl0J3Mg
-CnNvbWV0aGluZyB0aGF0IG5lZWRzIHRvIGJlIHNvcnRlZCBvdXQgYnkgSW50ZWwgcmVsZWFzaW5n
-IHRoZSBjb3JyZWN0IApmaXJtd2FyZSBhbmQvb3IgdXNlcnMgc2VsZWN0aW5nIGEgZGlmZmVyZW50
-IGZpcm13YXJlIHdoaWNoIGlzIHNwZWNpZmljIAp0byB0aGVpciBwbGF0Zm9ybXMuCgpBbHNvIHRo
-ZSBTU1QgZHJpdmVyIGRlcGVuZHMgb24gdG9wb2xvZ3kgZmlsZXMgdGhhdCBoYXZlIG5vdCBiZWVu
-IHNoYXJlZCAKaW4gbW9zdCBjYXNlcywgc28gYSBnZW5lcmljIGRpc3RyaWJ1dGlvbiB0aGF0IGRv
-ZXNuJ3QgaGF2ZSBhY2Nlc3MgdG8gYWxsIAp0aGUgcGFydHMgd291bGQganVzdCBub3Qgd29yay4g
-SXQncyBqdXN0IHNpbXBsZXIgdG8gc2VsZWN0IHdoYXQgaXMga25vd24gCnRvIHdvcmsgKGUuZy4g
-bGVnYWN5IHVudGlsIEtCTCwgU1NUIGFmdGVyKSwgYW5kIGdyYWR1YWxseSBkZXByZWNhdGUgdGhl
-IApTU1QgZHJpdmVyIGFzIGJvdGggZmVhdHVyZXMgYW5kIHRvcG9sb2dpZXMgYXJlIHByb3ZpZGVk
-IHdpdGggU09GLgoKWW91IGhhdmUgYSBnb29kIHBvaW50IG9uIHRoZSBhbGxvY2F0aW9ucywgYnV0
-IGlmIHdlIG1vZGlmeSB0aGUgc2t5bGFrZSAKZHJpdmVyIHRvIG9ubHkgYWxsb2NhdGUgYWxsIHRo
-ZSByZXNvdXJjZXMgaWYgdGhlIERTUCBpcyBwcmVzZW50LCB0aGVuIAppdCdzIG9ubHkgYSBjb3Vw
-bGUgb2Ygc3RydWN0dXJlcyB0aGF0IG1hdHRlci4gVG9kYXkgdGhlIHRlc3QKCi8qIGNoZWNrIGlm
-IGRzcCBpcyB0aGVyZSAqLwogwqDCoMKgIGlmIChidXMtPnBwY2FwKSB7CgppbiBza2wuYyBpcyBk
-b25lIHRvbyBsYXRlLCB0aGVyZSBpcyBubyBwb2ludCBpbiBlLmcgYWxsb2NhdGluZyBETUEgcGFn
-ZXMgCmFuZCBzdHVmZiBpZiB0aGUgRFNQIGlzIG5vdCB0aGVyZSBpcyB0aGUgZmlyc3QgcGxhY2Uu
-Li4KCj4KPj4gQW5kIHdoaWxlIEkgYW0gYXQgaXQsIHdlIG1heSB3YW50IHRvIHRoaW5rIGFib3V0
-IGEgc2luZ2xlIHRhYmxlIGZvciBQQ0kgSURzIHNvCj4+IHRoYXQgYnkgY29uc3RydWN0aW9uIHdl
-IHJlbW92ZSB0aGUgcmlzayBvZiBhIHBsYXRmb3JtIHN1cHBvcnRlZCB3aXRoIGxlZ2FjeQo+PiBi
-dXQgbm90IHRoZSBvdGhlcnMsIGFuZCB2aWNlIHZlcnNhLgo+IEl0J3MgYWxzbyB3aGF0IEkgdGhv
-dWdodCwgdG9vLCBidXQgaXQgdHVybmVkIG91dCB0byBiZSBkaWZmaWN1bHQKPiBiZWNhdXNlIGJv
-dGggZHJpdmVycyByZXF1aXJlIHRoZSBvd24gZHJpdmVyX2RhdGEgZmllbGQuCgpZZXMgYWdyZWUu
-IEkgdGhpbmsgd2UgY2FuIGhhdmUgYSBtb3JlIGdyYW51bGFyIGFwcHJvYWNoIHRob3VnaCwgaXQn
-cyAKc2ltcGxlIGVub3VnaCB0byBjaGFuZ2UgdGhlIFNreWxha2UgZHJpdmVyIGFuZCBzZWxlY3Qg
-U0tML0FQTC9HTEsvS0JMIAppbmRlcGVuZGVudGx5IChhcyB3ZSBkbyBmb3IgU09GKSwgc28gd2Ug
-Y291bGQgZG8gdGhpcyBmYWxsYmFjayBvbiBhbiBTT0MgCmJhc2lzLCBlLmcgc29tZXRoaW5nIGxp
-a2U6CgovKiBTdW5yaXNlIFBvaW50LUxQICovCiDCoMKgwqAgeyBQQ0lfREVWSUNFKDB4ODA4Niwg
-MHg5ZDcwKSwKIMKgwqDCoCDCoCAuZHJpdmVyX2RhdGEgPSBBWlhfRFJJVkVSX1NLTCB8IEFaWF9E
-Q0FQU19JTlRFTF9TS1lMQUtFIHwKIMKgwqDCoCDCoCBJU19FTkFCTEVEKENPTkZJR19TTkRfSERB
-X0lOVEVMX1NLTF9TSEFSRUQpICYgCkFaWF9EQ0FQU19JTlRFTF9TSEFSRUQgfSwKCndpdGggU05E
-X0hEQV9JTlRFTF9TS0xfU0hBUkVEIHNlbGVjdGVkIGJ5IHRoZSBTS0wgZHJpdmVyLgoKdGhpcyB3
-b3VsZCBzY2FsZSB3ZWxsIHdpdGggU09GIGFzIHdlbGwuCgpUaGFua3MgZm9yIHN0YXJ0aW5nIHRo
-aXMgUE9DLCBtdWNoIGFwcHJlY2lhdGVkLgoKLVBpZXJyZQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: tlv320aic3x: Add support for CBM_CFS and CBS_CFM clocking modes
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 4647598cde0e55d5c6d6a3c4223953611a472289 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Tue, 20 Nov 2018 14:42:53 +0200
+Subject: [PATCH] ASoC: tlv320aic3x: Add support for CBM_CFS and CBS_CFM
+ clocking modes
+
+The codec can support any variation of bclk/fs master/slave configuration.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tlv320aic3x.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6a271e6e6b8f..6aa0edf8c5ef 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1260,6 +1260,16 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		aic3x->master = 0;
+ 		iface_areg &= ~(BIT_CLK_MASTER | WORD_CLK_MASTER);
+ 		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		aic3x->master = 1;
++		iface_areg |= BIT_CLK_MASTER;
++		iface_areg &= ~WORD_CLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		aic3x->master = 1;
++		iface_areg |= WORD_CLK_MASTER;
++		iface_areg &= ~BIT_CLK_MASTER;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.19.0.rc2
