@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 6/6] ALSA: hda: add fallback capabilities for SKL+ platforms
-Date: Tue, 20 Nov 2018 15:36:44 -0600
-Message-ID: <20181120213644.19103-7-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 5/6] ALSA: hda: Allow fallback binding with legacy HD-audio for Intel SKL+
+Date: Tue, 20 Nov 2018 15:36:43 -0600
+Message-ID: <20181120213644.19103-6-pierre-louis.bossart@linux.intel.com>
 References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
@@ -10,139 +10,320 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable fallback for select PCI IDs
+From: Takashi Iwai <tiwai@suse.de>
 
+Previous patches enabled distributions to select for which platform
+the Skylake driver will be used. This is not enough however since the
+DSP may or may not enabled by the BIOS, and a probe-time dynamic
+fallback is highly desired.
+
+This patch introduces a new AZX_DCAPS value, and when this field is
+set for the relevant PCI ID the HDaudio legacy driver will stop its
+probe. Conversely the Skylake driver will attempt to probe, but in
+case of errors (typically DSP not present or no HDAudio streams found)
+it will fall back to the HDaudio legacy.
+
+The behavior can be influenced by static Kconfig definitions to enable
+or disable this fallback. A 'legacy' parameter also controls the
+fallback, allowing testers to prevent the Skylake driver from probing
+or conversely preventing the fallback from happening.
+
+This patch only introduces the fallback capabilities and handling, the
+platform definitions are provided in a follow-up patch.
+
+Errors beyond the initial DSP capability parsing (e.g. missing
+firmware file, firmware authentication issue, missing topology file,
+bad topology configuration, etc) are considered out-of-scope. It is
+nearly impossible to handle all possible error cases and most errors
+are only detected after a timeout which isn't compatible with usual
+probe expectations. It is expected that additional debug hooks will
+have to be provided at a later point, e.g. module parameters to
+override hard-coded firmware name and topology files.
+
+Credits to Takashi for the initial code shared on the alsa-devel
+mailing list. Testing with base-defconfig, sst-defconfig and
+hdaudio-defconfigs provided at
+https://github.com/thesofproject/kconfig
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/Kconfig     | 40 +++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_intel.c | 19 +++++++++++++------
- sound/soc/intel/Kconfig   |  6 ++++++
- 3 files changed, 59 insertions(+), 6 deletions(-)
+ include/sound/hdaudio.h        |  6 +++
+ sound/pci/hda/hda_controller.h |  2 +-
+ sound/pci/hda/hda_intel.c      | 32 ++++++++++++++-
+ sound/soc/intel/Kconfig        |  7 ++++
+ sound/soc/intel/skylake/skl.c  | 73 ++++++++++++++++++++++++++++++++--
+ 5 files changed, 114 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 4235907b7858..9bb317fb3507 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -228,4 +228,44 @@ config SND_HDA_POWER_SAVE_DEFAULT
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index cd1773d0e08f..2ed67f315962 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -8,6 +8,7 @@
  
- endif
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
++#include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/timecounter.h>
+ #include <sound/core.h>
+@@ -634,4 +635,9 @@ static inline unsigned int snd_array_index(struct snd_array *array, void *ptr)
+ 	for ((idx) = 0, (ptr) = (array)->list; (idx) < (array)->used; \
+ 	     (ptr) = snd_array_elem(array, ++(idx)))
  
-+if SND_HDA_INTEL
++/* shared resource with ASoC and legacy HD-audio drivers */
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++const struct pci_driver *snd_hda_intel_probe(struct pci_dev *pci);
++#endif
 +
-+config SND_HDA_INTEL_LEGACY_FALLBACK_SKL
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  Skylake machines
-+
-+config SND_HDA_INTEL_LEGACY_FALLBACK_APL
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  Broxton/ApolloLake machines
-+
-+config SND_HDA_INTEL_LEGACY_FALLBACK_KBL
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  KabyLake machines
-+
-+config SND_HDA_INTEL_LEGACY_FALLBACK_GLK
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  GeminiLake machines
-+
-+config SND_HDA_INTEL_LEGACY_FALLBACK_CNL
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  CannonLake machines
-+
-+config SND_HDA_INTEL_LEGACY_FALLBACK_CFL
-+	bool
-+	help
-+	  This option enables HD-audio legacy fallback for
-+	  CoffeeLake machines
-+
-+endif ## SND_HDA_INTEL
-+
- endmenu
+ #endif /* __SOUND_HDAUDIO_H */
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index c95097bb5a0c..2351115f922e 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -37,7 +37,7 @@
+ #else
+ #define AZX_DCAPS_I915_COMPONENT 0		/* NOP */
+ #endif
+-/* 14 unused */
++#define AZX_DCAPS_INTEL_SHARED	(1 << 14)	/* shared with ASoC */
+ #define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
+ #define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
+ /* 17 unused */
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index eb00e37c1c27..569419242da3 100644
+index d8eb2b5f51ae..eb00e37c1c27 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -360,6 +360,7 @@ enum {
- 	 AZX_DCAPS_NO_64BIT |\
- 	 AZX_DCAPS_4K_BDLE_BOUNDARY | AZX_DCAPS_SNOOP_OFF)
+@@ -2081,8 +2081,8 @@ static const struct hda_controller_ops pci_hda_ops = {
+ 	.link_power = azx_intel_link_power,
+ };
  
-+#define AZX_DCAPS_INTEL_LEGACY_FALLBACK(conf) (IS_ENABLED(conf) ? AZX_DCAPS_INTEL_SHARED : 0)
- /*
-  * vga_switcheroo support
-  */
-@@ -2416,34 +2417,40 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_SKL) },
- 	/* Kabylake */
- 	{ PCI_DEVICE(0x8086, 0xa171),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Kabylake-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d71),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_KBL) },
- 	/* Kabylake-H */
- 	{ PCI_DEVICE(0x8086, 0xa2f0),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Coffelake */
- 	{ PCI_DEVICE(0x8086, 0xa348),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_CFL) },
- 	/* Cannonlake */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_CNL) },
- 	/* Icelake */
- 	{ PCI_DEVICE(0x8086, 0x34c8),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_APL) },
- 	/* Broxton-T */
- 	{ PCI_DEVICE(0x8086, 0x1a98),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Gemini-Lake */
- 	{ PCI_DEVICE(0x8086, 0x3198),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
-+	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_GLK) },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
+-static int azx_probe(struct pci_dev *pci,
+-		     const struct pci_device_id *pci_id)
++static int __azx_probe(struct pci_dev *pci, const struct pci_device_id *pci_id,
++		       bool skip_shared)
+ {
+ 	static int dev;
+ 	struct snd_card *card;
+@@ -2091,6 +2091,10 @@ static int azx_probe(struct pci_dev *pci,
+ 	bool schedule_probe;
+ 	int err;
+ 
++	/* skip the entry if it's shared with ASoC */
++	if (skip_shared && (pci_id->driver_data & AZX_DCAPS_INTEL_SHARED))
++		return -ENODEV;
++
+ 	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+ 	if (!enable[dev]) {
+@@ -2158,6 +2162,12 @@ static int azx_probe(struct pci_dev *pci,
+ 	return err;
+ }
+ 
++static int azx_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
++{
++	return __azx_probe(pci, pci_id,
++			   IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT));
++}
++
+ #ifdef CONFIG_PM
+ /* On some boards setting power_save to a non 0 value leads to clicking /
+  * popping sounds when ever we enter/leave powersaving mode. Ideally we would
+@@ -2650,4 +2660,22 @@ static struct pci_driver azx_driver = {
+ 	},
+ };
+ 
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++const struct pci_driver *
++snd_hda_intel_probe(struct pci_dev *pci)
++{
++	const struct pci_device_id *pci_id;
++	int ret;
++
++	pci_id = pci_match_id(azx_ids, pci);
++	if (!pci_id)
++		return ERR_PTR(-ENODEV);
++	ret = __azx_probe(pci, pci_id, false);
++	if (ret < 0)
++		return ERR_PTR(ret);
++	return &azx_driver;
++}
++EXPORT_SYMBOL_GPL(snd_hda_intel_probe);
++#endif
++
+ module_pci_driver(azx_driver);
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c02d08d31d0d..4c6abdbb0b90 100644
+index 99a62ba409df..c02d08d31d0d 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -197,6 +197,12 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- config SND_SOC_INTEL_SKL_LEGACY_SUPPORT
- 	bool "Fallback legacy HD-audio binding"
- 	depends on SND_HDA_INTEL=y || SND_SOC_INTEL_SKYLAKE_FAMILY=SND_HDA_INTEL
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_SKL if SND_SOC_INTEL_SKL
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_APL if SND_SOC_INTEL_APL
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_KBL if SND_SOC_INTEL_KBL
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_GLK if SND_SOC_INTEL_GLK
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_CNL if SND_SOC_INTEL_CNL
-+	select SND_HDA_INTEL_LEGACY_FALLBACK_CFL if SND_SOC_INTEL_CFL
- 	help
- 	  Fallback binding with the legacy HD-audio driver when no DSP is
- 	  found
+@@ -194,6 +194,13 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+ 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+ 	  then enable this option by saying Y or m.
+ 
++config SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++	bool "Fallback legacy HD-audio binding"
++	depends on SND_HDA_INTEL=y || SND_SOC_INTEL_SKYLAKE_FAMILY=SND_HDA_INTEL
++	help
++	  Fallback binding with the legacy HD-audio driver when no DSP is
++	  found
++
+ endif ## SND_SOC_INTEL_SKYLAKE_FAMILY
+ 
+ config SND_SOC_ACPI_INTEL_MATCH
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 73f82532770e..b67cb54d382c 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -41,6 +41,21 @@
+ #include "../../../soc/codecs/hdac_hda.h"
+ #endif
+ 
++enum {
++	SKL_BIND_AUTO,		/* fallback to legacy driver */
++	SKL_BIND_LEGACY,	/* bind only with legacy driver */
++	SKL_BIND_ASOC		/* bind only with ASoC driver */
++};
++
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++static const struct pci_driver *skl_fallback_driver;
++#define FALLBACK_PM_CALL(dev, method)					\
++	do {								\
++		if (skl_fallback_driver &&				\
++		    skl_fallback_driver->driver.pm->method)		\
++			return skl_fallback_driver->driver.pm->method(dev); \
++	} while (0)
++
+ /*
+  * initialize the PCI registers
+  */
+@@ -264,6 +279,9 @@ static int skl_suspend_late(struct device *dev)
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl *skl = bus_to_skl(bus);
+ 
++	if (skl_fallback_driver)
++		return 0;
++
+ 	return skl_suspend_late_dsp(skl);
+ }
+ 
+@@ -313,6 +331,8 @@ static int skl_suspend(struct device *dev)
+ 	struct skl *skl  = bus_to_skl(bus);
+ 	int ret = 0;
+ 
++	FALLBACK_PM_CALL(dev, suspend);
++
+ 	/*
+ 	 * Do not suspend if streams which are marked ignore suspend are
+ 	 * running, we need to save the state for these and continue
+@@ -351,6 +371,8 @@ static int skl_resume(struct device *dev)
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int ret;
+ 
++	FALLBACK_PM_CALL(dev, resume);
++
+ 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+ 		ret = snd_hdac_display_power(bus, true);
+@@ -405,6 +427,8 @@ static int skl_runtime_suspend(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 
++	FALLBACK_PM_CALL(dev, runtime_suspend);
++
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+ 	return _skl_suspend(bus);
+@@ -415,15 +439,24 @@ static int skl_runtime_resume(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 
++	FALLBACK_PM_CALL(dev, runtime_resume);
++
+ 	dev_dbg(bus->dev, "in %s\n", __func__);
+ 
+ 	return _skl_resume(bus);
+ }
++
++static int skl_runtime_idle(struct device *dev)
++{
++	FALLBACK_PM_CALL(dev, runtime_idle);
++	return 0;
++}
+ #endif /* CONFIG_PM */
+ 
+ static const struct dev_pm_ops skl_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(skl_suspend, skl_resume)
+-	SET_RUNTIME_PM_OPS(skl_runtime_suspend, skl_runtime_resume, NULL)
++	SET_RUNTIME_PM_OPS(skl_runtime_suspend, skl_runtime_resume,
++			   skl_runtime_idle)
+ 	.suspend_late = skl_suspend_late,
+ };
+ 
+@@ -980,8 +1013,8 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	return skl_init_chip(bus, true);
+ }
+ 
+-static int skl_probe(struct pci_dev *pci,
+-		     const struct pci_device_id *pci_id)
++static int __skl_probe(struct pci_dev *pci,
++		       const struct pci_device_id *pci_id)
+ {
+ 	struct skl *skl;
+ 	struct hdac_bus *bus = NULL;
+@@ -1060,6 +1093,25 @@ static int skl_probe(struct pci_dev *pci,
+ 	return err;
+ }
+ 
++static int skl_probe(struct pci_dev *pci,
++		     const struct pci_device_id *pci_id)
++{
++	int ret = -ENODEV;
++
++	if (skl_legacy_binding != SKL_BIND_LEGACY)
++		ret = __skl_probe(pci, pci_id);
++
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++	if (ret < 0 && skl_legacy_binding != SKL_BIND_ASOC) {
++		skl_fallback_driver = snd_hda_intel_probe(pci);
++		ret = PTR_ERR_OR_ZERO(skl_fallback_driver);
++		if (ret)
++			skl_fallback_driver = NULL;
++	}
++#endif
++	return ret;
++}
++
+ static void skl_shutdown(struct pci_dev *pci)
+ {
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+@@ -1067,6 +1119,13 @@ static void skl_shutdown(struct pci_dev *pci)
+ 	struct hdac_ext_stream *stream;
+ 	struct skl *skl;
+ 
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++	if (skl_fallback_driver) {
++		skl_fallback_driver->shutdown(pci);
++		return;
++	}
++#endif
++
+ 	if (!bus)
+ 		return;
+ 
+@@ -1089,6 +1148,14 @@ static void skl_remove(struct pci_dev *pci)
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl *skl = bus_to_skl(bus);
+ 
++#ifdef CONFIG_SND_SOC_INTEL_SKL_LEGACY_SUPPORT
++	if (skl_fallback_driver) {
++		skl_fallback_driver->remove(pci);
++		skl_fallback_driver = NULL;
++		return;
++	}
++#endif
++
+ 	release_firmware(skl->tplg);
+ 
+ 	pm_runtime_get_noresume(&pci->dev);
 -- 
 2.17.1
