@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: remove
-	asoc_simple_card_clk_register()" to the asoc tree
-Date: Wed, 21 Nov 2018 13:29:42 +0000 (GMT)
-Message-ID: <20181121132942.1912111250AE@debutante.sirena.org.uk>
-References: <87va4rp4vj.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: makes rsnd_ssi_is_dma_mode()
+	static" to the asoc tree
+Date: Wed, 21 Nov 2018 13:29:52 +0000 (GMT)
+Message-ID: <20181121132952.9960C11250AE@debutante.sirena.org.uk>
+References: <87k1l6q2h3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DD0B267A61
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:29:42 +0100 (CET)
-In-Reply-To: <87va4rp4vj.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C933267A86
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:29:53 +0100 (CET)
+In-Reply-To: <87k1l6q2h3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: remove asoc_simple_card_clk_register()
+   ASoC: rsnd: makes rsnd_ssi_is_dma_mode() static
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,59 @@ to this mail.
 Thanks,
 Mark
 
->From c0f4697c5dbca0c9bdd1264bcf2d7c5d15a14f67 Mon Sep 17 00:00:00 2001
+>From 0ade2ccfb81244d0a271a5f9917f9fccc349b6cf Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Nov 2018 02:08:59 +0000
-Subject: [PATCH] ASoC: simple-card-utils: remove
- asoc_simple_card_clk_register()
+Date: Wed, 21 Nov 2018 08:15:30 +0000
+Subject: [PATCH] ASoC: rsnd: makes rsnd_ssi_is_dma_mode() static
 
-asoc_simple_card_clk_register() is used but only 1 user,
-and very pointless code. Let's remove it.
+ssi.c only is using rsnd_ssi_is_dma_mode().
+Let's move it as static function.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 1 -
+ sound/soc/sh/rcar/ssi.c  | 5 +++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index f34cc6cddfa2..996bfe42bc8d 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -151,12 +151,6 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 64c3a3bbcbb9..3c57129af6d1 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -726,7 +726,6 @@ extern const char * const volume_ramp_rate[];
+ int rsnd_ssi_probe(struct rsnd_priv *priv);
+ void rsnd_ssi_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
+-int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
+ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
  
--static void asoc_simple_card_clk_register(struct asoc_simple_dai *dai,
--					  struct clk *clk)
--{
--	dai->clk = clk;
--}
--
- int asoc_simple_card_clk_enable(struct asoc_simple_dai *dai)
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 26fc4a5da0e8..1996aea21172 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -117,6 +117,8 @@ struct rsnd_ssi {
+ 	(rsnd_ssi_run_mods(io) & (1 << rsnd_mod_id(mod)))
+ #define rsnd_ssi_can_output_clk(mod) (!__rsnd_ssi_is_pin_sharing(mod))
+ 
++static int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
++
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
  {
- 	return clk_prepare_enable(dai->clk);
-@@ -200,7 +194,7 @@ int asoc_simple_card_parse_clk(struct device *dev,
- 	if (!IS_ERR(clk)) {
- 		simple_dai->sysclk = clk_get_rate(clk);
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+@@ -1003,12 +1005,11 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
+ 	.get_status	= rsnd_ssi_get_status,
+ };
  
--		asoc_simple_card_clk_register(simple_dai, clk);
-+		simple_dai->clk = clk;
- 	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
- 		simple_dai->sysclk = val;
- 	} else {
+-int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
++static int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
+ {
+ 	return mod->ops == &rsnd_ssi_dma_ops;
+ }
+ 
+-
+ /*
+  *		ssi mod function
+  */
 -- 
 2.19.0.rc2
