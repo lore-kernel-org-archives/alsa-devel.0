@@ -1,57 +1,57 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [RFC PATCH 1/6] ASoC: Intel: Skylake: Add CFL-S support
-Date: Wed, 21 Nov 2018 19:38:41 +0200
-Message-ID: <20181121173841.GS10650@smile.fi.intel.com>
-References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
- <20181120213644.19103-2-pierre-louis.bossart@linux.intel.com>
- <20181121142721.GO10650@smile.fi.intel.com>
- <414b4c3a-7e04-2775-7d87-16a236b5b4e8@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Girija Kumar Kasinadhuni <gkumar@neverware.com>
+Subject: [PATCH v2] ALSA: hda/realtek - Add auto-mute quirk for HP Spectre x360 laptop
+Date: Wed, 21 Nov 2018 12:49:11 -0500
+Message-ID: <1542822552-110314-1-git-send-email-gkumar@neverware.com>
+References: <s5hlg5mbch9.wl-tiwai@suse.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <414b4c3a-7e04-2775-7d87-16a236b5b4e8@linux.intel.com>
+In-Reply-To: <s5hlg5mbch9.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Girija Kumar Kasinadhuni <gkumar@neverware.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 21, 2018 at 11:16:50AM -0600, Pierre-Louis Bossart wrote:
-> On 11/21/18 8:27 AM, Andy Shevchenko wrote:
+This device makes a loud buzzing sound when a headphone is inserted while
+playing audio at full volume through the speaker.
 
-> > May you consider to switch to PCI_DEVICE_DATA() first?
-> 
-> Is this really the recommended path?
-> 
-> The macro generates PCI_DEVICE_ID_##vend##_##dev, and I don't have a turn
-> key #define PCI_DEVICE_ID_INTEL_AUDIO_CFL 0xa348 I can use. In a number of
-> cases we have multiple variants of the same hardware, and it starts being
-> painful to use a 20-letter macro to differentiate between INTEL_AUDIO_CFL_Y
-> and INTEL_AUDIO_CFL_H. The explicit code and a short comment are more
-> readable really.
-> 
-> git grep PCI_DEVICE_ID_INTEL gives me hundreds of definitions, some global,
-> some local to specific drivers, doesn't seem like there is a well-agreed
-> usage of this macro, is there? I don't mind making the change but I don't
-> sense an strong argument for it?
+Signed-off-by: Girija Kumar Kasinadhuni <gkumar@neverware.com>
+---
+Changes in v2:
+	- changed commit message
+	- removed "disable" from description
 
-Compare:
+ sound/pci/hda/patch_realtek.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-	/* CFL */
-	{ PCI_DEVICE(0x8086, 0xa348),
-		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-
-to something like:
-
-#define PCI_DEVICE_ID_INTEL_AUDIO_CFL	0xa348
-...
-
-	{PCI_DEVICE_DATA(INTEL, AUDIO_CFL, &snd_soc_acpi_intel_cnl_machines)},
-
-
-Macro is recently introduced, that's why not many users of it. At least I'm
-planning to clean up dwc3-pci.c using it.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fa61674..69bb005 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5495,6 +5495,7 @@ enum {
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
++	ALC295_FIXUP_HP_AUTO_MUTE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -6362,6 +6363,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC295_FIXUP_HP_AUTO_MUTE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_auto_mute_via_amp,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6486,6 +6491,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre X360 ", ALC295_FIXUP_HP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
