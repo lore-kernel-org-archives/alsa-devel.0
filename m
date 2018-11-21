@@ -1,20 +1,18 @@
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/4] ASoC: simple_card_utils: remove "option"
- from asoc_simple_card_of_parse_routing()
-Date: Wed, 21 Nov 2018 02:11:13 +0000
-Message-ID: <87r2ffp4rs.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wop7p4wk.wl-kuninori.morimoto.gx@renesas.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH v8 0/7] Add support for audiocodec in Allwinner
+	A64
+Date: Tue, 20 Nov 2018 21:17:45 -0800
+Message-ID: <20181121051752.18387-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from JPN01-TY1-obe.outbound.protection.outlook.com
- (mail-eopbgr1400117.outbound.protection.outlook.com [40.107.140.117])
- by alsa0.perex.cz (Postfix) with ESMTP id A07AB267A75
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 03:11:16 +0100 (CET)
-In-Reply-To: <87wop7p4wk.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Content-ID: <53B2C8F69279E047A51822556C4D96A9@jpnprd01.prod.outlook.com>
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7176267936
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 06:19:12 +0100 (CET)
+Received: by mail-pl1-f195.google.com with SMTP id b22-v6so3712325pls.7
+ for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 21:19:12 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,119 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vasily Khoruzhick <anarsoul@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+v2: - Use simple-amplifier for speaker amp on Pinebook
+    - Rename sun50i-a64-i2s to sun50i-a64-codec-i2s to preserve compatible
+      string for other 3 I2S modules in A64 in case if there's any
+      incompatibility with H3
+v3: - renamed sunxi-adda-pr-regmap to sun8i-adda-pr-regmap
+    - use ilog2() to calculate reg value for LRCK div instead of using a
+      table
+v4: - dts: don't use 'Mic' and 'Headset Mic' widgets from sun8i-codec,
+      define our board-level widgets instead.
+v5: - collect all the tags
+v6: - driver patches has been merged through ASoC tree
+    - rebase onto 4.20-rc1
+    - Drop 'Speaker' from routes on sopine and pine64, they don't have
+      speaker.
+v7: - drop 'Mic' and 'Headset Mic' from dtsi
+    - move AIF1 Slot 0 ADC to ADC route to sun8i-codec
+    - drop BIAS routes for Pine64 and SoPine
+v8  - drop merged patches
+    - add regulator property for simple amplifier, make enable-gpio
+      optional
+    - add regulator to speaker amp, introduce headphone amp
 
-asoc_simple_card_of_parse_routing() had "option" parameter
-to consider error handling, but it is very pointless parameter.
-Let's remove it.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- include/sound/simple_card_utils.h        |  3 +--
- sound/soc/generic/audio-graph-card.c     |  2 +-
- sound/soc/generic/audio-graph-scu-card.c |  2 +-
- sound/soc/generic/simple-card-utils.c    | 10 +++-------
- sound/soc/generic/simple-card.c          |  2 +-
- sound/soc/generic/simple-scu-card.c      |  2 +-
- 6 files changed, 8 insertions(+), 13 deletions(-)
+Vasily Khoruzhick (7):
+  ASoC: dt-bindings: add regulator property to simple amplifier
+  ASoC: simple-amplifier: add VCC regulator widget
+  ASoC: dt-bindings: make enable-gpio optional for simple amplifier
+  ASoC: simple-amplifier: make enable-gpio optional
+  arm64: dts: allwinner: a64: add nodes necessary for analog sound
+    support
+  arm64: dts: allwinner: a64: enable sound on Pine64 and SoPine
+  arm64: dts: allwinner: a64: enable sound on Pinebook
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index d1f1717..6d69ed2 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -121,8 +121,7 @@ void asoc_simple_card_parse_convert(struct device *dev,
- 				    struct asoc_simple_card_data *data);
- 
- int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
--				      char *prefix,
--				      int optional);
-+				      char *prefix);
- int asoc_simple_card_of_parse_widgets(struct snd_soc_card *card,
- 				      char *prefix);
- 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 26eb6ff..101c7da 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -238,7 +238,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = asoc_simple_card_of_parse_routing(card, NULL, 1);
-+	ret = asoc_simple_card_of_parse_routing(card, NULL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index 1f75493..c469473 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -200,7 +200,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	 * see simple-card
- 	 */
- 
--	ret = asoc_simple_card_of_parse_routing(card, NULL, 0);
-+	ret = asoc_simple_card_of_parse_routing(card, NULL);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index f588c93..119f831 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -420,8 +420,7 @@ int asoc_simple_card_clean_reference(struct snd_soc_card *card)
- EXPORT_SYMBOL_GPL(asoc_simple_card_clean_reference);
- 
- int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
--				      char *prefix,
--				      int optional)
-+				      char *prefix)
- {
- 	struct device_node *node = card->dev->of_node;
- 	char prop[128];
-@@ -431,11 +430,8 @@ int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
- 
- 	snprintf(prop, sizeof(prop), "%s%s", prefix, "routing");
- 
--	if (!of_property_read_bool(node, prop)) {
--		if (optional)
--			return 0;
--		return -EINVAL;
--	}
-+	if (!of_property_read_bool(node, prop))
-+		return 0;
- 
- 	return snd_soc_of_parse_audio_routing(card, prop);
- }
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 5a3f59a..ff3f9fa 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -300,7 +300,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
- 		goto card_parse_end;
- 
--	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 1);
-+	ret = asoc_simple_card_of_parse_routing(card, PREFIX);
- 	if (ret < 0)
- 		goto card_parse_end;
- 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 2d3ef6e..e650143 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -198,7 +198,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 0);
-+	ret = asoc_simple_card_of_parse_routing(card, PREFIX);
- 	if (ret < 0)
- 		return ret;
- 
+ .../bindings/sound/simple-amplifier.txt       |  5 ++
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  | 35 ++++++++++++
+ .../dts/allwinner/sun50i-a64-pinebook.dts     | 53 ++++++++++++++++++
+ .../allwinner/sun50i-a64-sopine-baseboard.dts | 35 ++++++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 54 +++++++++++++++++++
+ sound/soc/codecs/simple-amplifier.c           |  7 ++-
+ 6 files changed, 188 insertions(+), 1 deletion(-)
+
 -- 
-2.7.4
+2.19.1
