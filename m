@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Add device tree support for
-	r8a77995" to the asoc tree
-Date: Wed, 21 Nov 2018 13:30:13 +0000 (GMT)
-Message-ID: <20181121133013.8B6A011250AE@debutante.sirena.org.uk>
-References: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sdm845: Add support for Secondary MI2S
+	interface" to the asoc tree
+Date: Wed, 21 Nov 2018 13:30:23 +0000 (GMT)
+Message-ID: <20181121133023.CC42911250AE@debutante.sirena.org.uk>
+References: <1542354118-23360-3-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 13AEC267A61
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:30:14 +0100 (CET)
-In-Reply-To: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8409326794B
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:30:26 +0100 (CET)
+In-Reply-To: <1542354118-23360-3-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, HIROYUKI YOKOYAMA <hiroyuki.yokoyama.vx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Add device tree support for r8a77995
+   ASoC: sdm845: Add support for Secondary MI2S interface
 
 has been applied to the asoc tree at
 
@@ -52,32 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From f6c2d6026afe2f1e611bdec270e1f42af0a42f06 Mon Sep 17 00:00:00 2001
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Date: Wed, 21 Nov 2018 01:06:43 +0000
-Subject: [PATCH] ASoC: rsnd: Add device tree support for r8a77995
+>From 992e75b3c80952fc60946458c75e1bf609e86aa2 Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Fri, 16 Nov 2018 13:11:58 +0530
+Subject: [PATCH] ASoC: sdm845: Add support for Secondary MI2S interface
 
-Simply document new compat strings.
-There appears to be no need for a driver updates.
+Add support to configure bit clock for secondary MI2S
+TX interface.
 
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/sdm845.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 453e8ec2ac78..47dc8190f0a7 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -277,6 +277,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
- 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
- 				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
-+				    - "renesas,rcar_sound-r8a77995" (R-Car D3)
- - reg				: Should contain the register physical address.
- 				  required register is
- 				   SRU/ADG/SSI      if generation1
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 84e6ee7d78d3..58593db2ab15 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -19,6 +19,7 @@
+ struct sdm845_snd_data {
+ 	struct snd_soc_card *card;
+ 	uint32_t pri_mi2s_clk_count;
++	uint32_t sec_mi2s_clk_count;
+ 	uint32_t quat_tdm_clk_count;
+ };
+ 
+@@ -121,6 +122,15 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 		break;
+ 
++	case SECONDARY_MI2S_TX:
++		if (++(data->sec_mi2s_clk_count) == 1) {
++			snd_soc_dai_set_sysclk(cpu_dai,
++				Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
++				MI2S_BCLK_RATE,	SNDRV_PCM_STREAM_CAPTURE);
++		}
++		snd_soc_dai_set_fmt(cpu_dai, fmt);
++		break;
++
+ 	case QUATERNARY_TDM_RX_0:
+ 	case QUATERNARY_TDM_TX_0:
+ 		if (++(data->quat_tdm_clk_count) == 1) {
+@@ -157,6 +167,14 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
+ 		};
+ 		break;
+ 
++	case SECONDARY_MI2S_TX:
++		if (--(data->sec_mi2s_clk_count) == 0) {
++			snd_soc_dai_set_sysclk(cpu_dai,
++				Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
++				0, SNDRV_PCM_STREAM_CAPTURE);
++		}
++		break;
++
+ 	case QUATERNARY_TDM_RX_0:
+ 	case QUATERNARY_TDM_TX_0:
+ 		if (--(data->quat_tdm_clk_count) == 0) {
 -- 
 2.19.0.rc2
