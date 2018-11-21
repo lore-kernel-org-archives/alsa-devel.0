@@ -1,18 +1,18 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: rsnd: Add device tree support for
-	r8a77995
-Date: Wed, 21 Nov 2018 01:06:43 +0000
-Message-ID: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: rsnd: tidyup
+	rsnd_parse_connect_ssiu_compatible()
+Date: Wed, 21 Nov 2018 01:58:30 +0000
+Message-ID: <87zhu3p5d4.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from JPN01-TY1-obe.outbound.protection.outlook.com
- (mail-eopbgr1400132.outbound.protection.outlook.com [40.107.140.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 125732678DD
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 02:06:46 +0100 (CET)
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com
+ (mail-eopbgr1410122.outbound.protection.outlook.com [40.107.141.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6429D2678F7
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 02:58:36 +0100 (CET)
 Content-Language: en-US
-Content-ID: <FF81A78421C5FA4F9FB538F4F26462B2@jpnprd01.prod.outlook.com>
+Content-ID: <88EB3C1440A8DF4CA0732802CD693F4D@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, HIROYUKI YOKOYAMA <hiroyuki.yokoyama.vx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Simply document new compat strings.
-There appears to be no need for a driver updates.
+rsnd_parse_connect_ssiu_compatible() is doing
+ - using rsnd_ssiu_id(), but we use it via rsnd_mod_id()
+ - we can break loop if rsnd_dai_connect() was called
+This patch fixup these.
 
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sh/rcar/ssiu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 453e8ec..47dc819 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -277,6 +277,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
- 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
- 				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
-+				    - "renesas,rcar_sound-r8a77995" (R-Car D3)
- - reg				: Should contain the register physical address.
- 				  required register is
- 				   SRU/ADG/SSI      if generation1
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 650b14e..04b1a48 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -382,9 +382,11 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
+ 		mod = rsnd_mod_get(ssiu);
+ 
+-		if ((rsnd_mod_id(ssi_mod) == rsnd_ssiu_id(mod)) &&
+-		    (rsnd_mod_id_sub(mod) == 0))
++		if ((rsnd_mod_id(ssi_mod) == rsnd_mod_id(mod)) &&
++		    (rsnd_mod_id_sub(mod) == 0)) {
+ 			rsnd_dai_connect(mod, io, mod->type);
++			return;
++		}
+ 	}
+ }
+ 
 -- 
 2.7.4
