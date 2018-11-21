@@ -1,84 +1,162 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [RFC PATCH 2/6] ASoC: Intel: Skylake: stop init/probe if DSP is
- not present
-Date: Wed, 21 Nov 2018 16:29:25 +0200
-Message-ID: <20181121142925.GP10650@smile.fi.intel.com>
+Subject: Re: [RFC PATCH 6/6] ALSA: hda: add fallback capabilities for SKL+
+ platforms
+Date: Wed, 21 Nov 2018 16:39:39 +0200
+Message-ID: <20181121143939.GQ10650@smile.fi.intel.com>
 References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
- <20181120213644.19103-3-pierre-louis.bossart@linux.intel.com>
+ <20181120213644.19103-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20181120213644.19103-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20181120213644.19103-7-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 20, 2018 at 03:36:40PM -0600, Pierre-Louis Bossart wrote:
-> Check immediately if the DSP can be found, bail and avoid doing inits
-> to enable legacy fallback without delay.
-
-It does slightly more than described. Please do either remove unrelated changes, or fill the gap in the commit message. In the latter case it may require to split patch to two.
-
+On Tue, Nov 20, 2018 at 03:36:44PM -0600, Pierre-Louis Bossart wrote:
+> Enable fallback for select PCI IDs
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  sound/soc/intel/skylake/skl.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
+>  sound/pci/hda/Kconfig     | 40 +++++++++++++++++++++++++++++++++++++++
+>  sound/pci/hda/hda_intel.c | 19 +++++++++++++------
+>  sound/soc/intel/Kconfig   |  6 ++++++
+>  3 files changed, 59 insertions(+), 6 deletions(-)
 > 
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index df36b8fe6d5e..1d7146773d19 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -931,6 +931,12 @@ static int skl_first_init(struct hdac_bus *bus)
+> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+> index 4235907b7858..9bb317fb3507 100644
+> --- a/sound/pci/hda/Kconfig
+> +++ b/sound/pci/hda/Kconfig
+> @@ -228,4 +228,44 @@ config SND_HDA_POWER_SAVE_DEFAULT
 >  
->  	snd_hdac_bus_parse_capabilities(bus);
+>  endif
 >  
-> +	/* check if dsp is there */
-> +	if (!bus->ppcap) {
-> +		dev_err(bus->dev, "bus ppcap not set, DSP not present?\n");
-> +		return -ENODEV;
-> +	}
+> +if SND_HDA_INTEL
 > +
->  	if (skl_acquire_irq(bus, 0) < 0)
->  		return -EBUSY;
->  
-> @@ -940,23 +946,25 @@ static int skl_first_init(struct hdac_bus *bus)
->  	gcap = snd_hdac_chip_readw(bus, GCAP);
->  	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
->  
-> -	/* allow 64bit DMA address if supported by H/W */
-> -	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
-> -		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
-> -	} else {
-> -		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
-> -		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
-> -	}
-> -
->  	/* read number of streams from GCAP register */
->  	cp_streams = (gcap >> 8) & 0x0f;
->  	pb_streams = (gcap >> 12) & 0x0f;
->  
-> -	if (!pb_streams && !cp_streams)
-> +	if (!pb_streams && !cp_streams) {
-> +		dev_err(bus->dev, "no streams found in GCAP definitions?\n");
->  		return -EIO;
-> +	}
->  
->  	bus->num_streams = cp_streams + pb_streams;
->  
-> +	/* allow 64bit DMA address if supported by H/W */
-> +	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
-> +		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
-> +	} else {
-> +		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
-> +		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
-> +	}
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_SKL
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  Skylake machines
 > +
->  	/* initialize streams */
->  	snd_hdac_ext_stream_init_all
->  		(bus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_APL
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  Broxton/ApolloLake machines
+> +
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_KBL
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  KabyLake machines
+> +
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_GLK
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  GeminiLake machines
+> +
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_CNL
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  CannonLake machines
+> +
+> +config SND_HDA_INTEL_LEGACY_FALLBACK_CFL
+> +	bool
+> +	help
+> +	  This option enables HD-audio legacy fallback for
+> +	  CoffeeLake machines
+> +
+> +endif ## SND_HDA_INTEL
+> +
+>  endmenu
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index eb00e37c1c27..569419242da3 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -360,6 +360,7 @@ enum {
+>  	 AZX_DCAPS_NO_64BIT |\
+>  	 AZX_DCAPS_4K_BDLE_BOUNDARY | AZX_DCAPS_SNOOP_OFF)
+>  
+> +#define AZX_DCAPS_INTEL_LEGACY_FALLBACK(conf) (IS_ENABLED(conf) ? AZX_DCAPS_INTEL_SHARED : 0)
+>  /*
+>   * vga_switcheroo support
+>   */
+> @@ -2416,34 +2417,40 @@ static const struct pci_device_id azx_ids[] = {
+>  	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
+>  	/* Sunrise Point-LP */
+>  	{ PCI_DEVICE(0x8086, 0x9d70),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_SKL) },
+
+Preprocessor may concatenate the same prefix for you.
+I expect to see something like ..._FALLBACK(SKL) and so on.
+
+Moreover, you can go further and create a macro that would consolidate all bits together.
+
+
+>  	/* Kabylake */
+>  	{ PCI_DEVICE(0x8086, 0xa171),
+>  	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
+>  	/* Kabylake-LP */
+>  	{ PCI_DEVICE(0x8086, 0x9d71),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_KBL) },
+>  	/* Kabylake-H */
+>  	{ PCI_DEVICE(0x8086, 0xa2f0),
+>  	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
+>  	/* Coffelake */
+>  	{ PCI_DEVICE(0x8086, 0xa348),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_CFL) },
+>  	/* Cannonlake */
+>  	{ PCI_DEVICE(0x8086, 0x9dc8),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_CNL) },
+>  	/* Icelake */
+>  	{ PCI_DEVICE(0x8086, 0x34c8),
+>  	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+>  	/* Broxton-P(Apollolake) */
+>  	{ PCI_DEVICE(0x8086, 0x5a98),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_APL) },
+>  	/* Broxton-T */
+>  	{ PCI_DEVICE(0x8086, 0x1a98),
+>  	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+>  	/* Gemini-Lake */
+>  	{ PCI_DEVICE(0x8086, 0x3198),
+> -	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+> +	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
+> +	  AZX_DCAPS_INTEL_LEGACY_FALLBACK(CONFIG_SND_HDA_INTEL_LEGACY_FALLBACK_GLK) },
+>  	/* Haswell */
+>  	{ PCI_DEVICE(0x8086, 0x0a0c),
+>  	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index c02d08d31d0d..4c6abdbb0b90 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -197,6 +197,12 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+>  config SND_SOC_INTEL_SKL_LEGACY_SUPPORT
+>  	bool "Fallback legacy HD-audio binding"
+>  	depends on SND_HDA_INTEL=y || SND_SOC_INTEL_SKYLAKE_FAMILY=SND_HDA_INTEL
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_SKL if SND_SOC_INTEL_SKL
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_APL if SND_SOC_INTEL_APL
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_KBL if SND_SOC_INTEL_KBL
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_GLK if SND_SOC_INTEL_GLK
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_CNL if SND_SOC_INTEL_CNL
+> +	select SND_HDA_INTEL_LEGACY_FALLBACK_CFL if SND_SOC_INTEL_CFL
+>  	help
+>  	  Fallback binding with the legacy HD-audio driver when no DSP is
+>  	  found
 > -- 
 > 2.17.1
 > 
