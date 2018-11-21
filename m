@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: makes rsnd_ssi_is_dma_mode()
-	static" to the asoc tree
-Date: Wed, 21 Nov 2018 13:29:52 +0000 (GMT)
-Message-ID: <20181121132952.9960C11250AE@debutante.sirena.org.uk>
-References: <87k1l6q2h3.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: tidyup
+	rsnd_parse_connect_ssiu_compatible()" to the asoc tree
+Date: Wed, 21 Nov 2018 13:30:03 +0000 (GMT)
+Message-ID: <20181121133003.2819F11250AE@debutante.sirena.org.uk>
+References: <87zhu3p5d4.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C933267A86
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:29:53 +0100 (CET)
-In-Reply-To: <87k1l6q2h3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D90D6267A8C
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:30:03 +0100 (CET)
+In-Reply-To: <87zhu3p5d4.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: makes rsnd_ssi_is_dma_mode() static
+   ASoC: rsnd: tidyup rsnd_parse_connect_ssiu_compatible()
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 0ade2ccfb81244d0a271a5f9917f9fccc349b6cf Mon Sep 17 00:00:00 2001
+>From 331e875432ecfb651d9335a18149160c307429ab Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Nov 2018 08:15:30 +0000
-Subject: [PATCH] ASoC: rsnd: makes rsnd_ssi_is_dma_mode() static
+Date: Wed, 21 Nov 2018 01:58:30 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup rsnd_parse_connect_ssiu_compatible()
 
-ssi.c only is using rsnd_ssi_is_dma_mode().
-Let's move it as static function.
+rsnd_parse_connect_ssiu_compatible() is doing
+ - using rsnd_ssiu_id(), but we use it via rsnd_mod_id()
+ - we can break loop if rsnd_dai_connect() was called
+This patch fixup these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h | 1 -
- sound/soc/sh/rcar/ssi.c  | 5 +++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/ssiu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 64c3a3bbcbb9..3c57129af6d1 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -726,7 +726,6 @@ extern const char * const volume_ramp_rate[];
- int rsnd_ssi_probe(struct rsnd_priv *priv);
- void rsnd_ssi_remove(struct rsnd_priv *priv);
- struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
--int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
- u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 650b14e99b05..04b1a4836bd3 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -382,9 +382,11 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
+ 		mod = rsnd_mod_get(ssiu);
  
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 26fc4a5da0e8..1996aea21172 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -117,6 +117,8 @@ struct rsnd_ssi {
- 	(rsnd_ssi_run_mods(io) & (1 << rsnd_mod_id(mod)))
- #define rsnd_ssi_can_output_clk(mod) (!__rsnd_ssi_is_pin_sharing(mod))
- 
-+static int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
-+
- int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
- {
- 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
-@@ -1003,12 +1005,11 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
- 	.get_status	= rsnd_ssi_get_status,
- };
- 
--int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
-+static int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
- {
- 	return mod->ops == &rsnd_ssi_dma_ops;
+-		if ((rsnd_mod_id(ssi_mod) == rsnd_ssiu_id(mod)) &&
+-		    (rsnd_mod_id_sub(mod) == 0))
++		if ((rsnd_mod_id(ssi_mod) == rsnd_mod_id(mod)) &&
++		    (rsnd_mod_id_sub(mod) == 0)) {
+ 			rsnd_dai_connect(mod, io, mod->type);
++			return;
++		}
+ 	}
  }
  
--
- /*
-  *		ssi mod function
-  */
 -- 
 2.19.0.rc2
