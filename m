@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup
-	rsnd_parse_connect_ssiu_compatible()" to the asoc tree
-Date: Wed, 21 Nov 2018 13:30:03 +0000 (GMT)
-Message-ID: <20181121133003.2819F11250AE@debutante.sirena.org.uk>
-References: <87zhu3p5d4.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: Add device tree support for
+	r8a77995" to the asoc tree
+Date: Wed, 21 Nov 2018 13:30:13 +0000 (GMT)
+Message-ID: <20181121133013.8B6A011250AE@debutante.sirena.org.uk>
+References: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D90D6267A8C
- for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:30:03 +0100 (CET)
-In-Reply-To: <87zhu3p5d4.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13AEC267A61
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 14:30:14 +0100 (CET)
+In-Reply-To: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, HIROYUKI YOKOYAMA <hiroyuki.yokoyama.vx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup rsnd_parse_connect_ssiu_compatible()
+   ASoC: rsnd: Add device tree support for r8a77995
 
 has been applied to the asoc tree at
 
@@ -53,39 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 331e875432ecfb651d9335a18149160c307429ab Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Nov 2018 01:58:30 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup rsnd_parse_connect_ssiu_compatible()
+>From f6c2d6026afe2f1e611bdec270e1f42af0a42f06 Mon Sep 17 00:00:00 2001
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Date: Wed, 21 Nov 2018 01:06:43 +0000
+Subject: [PATCH] ASoC: rsnd: Add device tree support for r8a77995
 
-rsnd_parse_connect_ssiu_compatible() is doing
- - using rsnd_ssiu_id(), but we use it via rsnd_mod_id()
- - we can break loop if rsnd_dai_connect() was called
-This patch fixup these.
+Simply document new compat strings.
+There appears to be no need for a driver updates.
 
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 650b14e99b05..04b1a4836bd3 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -382,9 +382,11 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
- 	for_each_rsnd_ssiu(ssiu, priv, i) {
- 		mod = rsnd_mod_get(ssiu);
- 
--		if ((rsnd_mod_id(ssi_mod) == rsnd_ssiu_id(mod)) &&
--		    (rsnd_mod_id_sub(mod) == 0))
-+		if ((rsnd_mod_id(ssi_mod) == rsnd_mod_id(mod)) &&
-+		    (rsnd_mod_id_sub(mod) == 0)) {
- 			rsnd_dai_connect(mod, io, mod->type);
-+			return;
-+		}
- 	}
- }
- 
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 453e8ec2ac78..47dc8190f0a7 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -277,6 +277,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
+ 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
+ 				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
++				    - "renesas,rcar_sound-r8a77995" (R-Car D3)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+ 				   SRU/ADG/SSI      if generation1
 -- 
 2.19.0.rc2
