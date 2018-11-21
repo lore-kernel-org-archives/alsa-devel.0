@@ -1,17 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 3/6] ASoC: Intel: Skylake: remove useless
-	tests on DSP presence
-Date: Tue, 20 Nov 2018 15:36:41 -0600
-Message-ID: <20181120213644.19103-4-pierre-louis.bossart@linux.intel.com>
-References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: rsnd: Add device tree support for
+	r8a77995
+Date: Wed, 21 Nov 2018 01:06:43 +0000
+Message-ID: <87zhu31c3r.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 257CB2678E4
- for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2018 22:37:00 +0100 (CET)
-In-Reply-To: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400132.outbound.protection.outlook.com [40.107.140.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 125732678DD
+ for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2018 02:06:46 +0100 (CET)
+Content-Language: en-US
+Content-ID: <FF81A78421C5FA4F9FB538F4F26462B2@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, HIROYUKI YOKOYAMA <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-bus->ppcap is now tested upfront, there is no need to re-check if the
-DSP is present. Remove tests and remove indentation.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+
+Simply document new compat strings.
+There appears to be no need for a driver updates.
+
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/intel/skylake/skl.c | 40 ++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 1d7146773d19..0bdb1f7fdd4a 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -826,12 +826,10 @@ static void skl_probe_work(struct work_struct *work)
- 		return;
- 	}
- 
--	if (bus->ppcap) {
--		err = skl_machine_device_register(skl);
--		if (err < 0) {
--			dev_err(bus->dev, "machine register failed: %d\n", err);
--			goto out_err;
--		}
-+	err = skl_machine_device_register(skl);
-+	if (err < 0) {
-+		dev_err(bus->dev, "machine register failed: %d\n", err);
-+		goto out_err;
- 	}
- 
- 	/*
-@@ -1019,25 +1017,23 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, bus);
- 
--	/* check if dsp is there */
--	if (bus->ppcap) {
--		/* create device for dsp clk */
--		err = skl_clock_device_register(skl);
--		if (err < 0)
--			goto out_clk_free;
-+	/* create device for dsp clk */
-+	err = skl_clock_device_register(skl);
-+	if (err < 0)
-+		goto out_clk_free;
- 
--		err = skl_find_machine(skl, (void *)pci_id->driver_data);
--		if (err < 0)
--			goto out_nhlt_free;
-+	err = skl_find_machine(skl, (void *)pci_id->driver_data);
-+	if (err < 0)
-+		goto out_nhlt_free;
- 
--		err = skl_init_dsp(skl);
--		if (err < 0) {
--			dev_dbg(bus->dev, "error failed to register dsp\n");
--			goto out_nhlt_free;
--		}
--		skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
--		skl->skl_sst->clock_power_gating = skl_clock_power_gating;
-+	err = skl_init_dsp(skl);
-+	if (err < 0) {
-+		dev_dbg(bus->dev, "error failed to register dsp\n");
-+		goto out_nhlt_free;
- 	}
-+	skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
-+	skl->skl_sst->clock_power_gating = skl_clock_power_gating;
-+
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
- 
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 453e8ec..47dc819 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -277,6 +277,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
+ 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
+ 				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
++				    - "renesas,rcar_sound-r8a77995" (R-Car D3)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+ 				   SRU/ADG/SSI      if generation1
 -- 
-2.17.1
+2.7.4
