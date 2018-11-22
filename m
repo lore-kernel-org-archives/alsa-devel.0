@@ -1,8 +1,8 @@
 From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v9 5/8] clk: sunxi-ng: sun50i: a64: Use
- sigma-delta modulation for audio PLL
-Date: Thu, 22 Nov 2018 18:23:22 +0800
-Message-ID: <20181122102325.29495-6-wens@csie.org>
+Subject: [PATCH v9 8/8] arm64: dts: allwinner: a64: enable sound
+ on Pinebook
+Date: Thu, 22 Nov 2018 18:23:25 +0800
+Message-ID: <20181122102325.29495-9-wens@csie.org>
 References: <20181122102325.29495-1-wens@csie.org>
 Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
@@ -17,89 +17,92 @@ List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto
 List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
  <https://groups.google.com/group/linux-sunxi/subscribe>
 To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The audio blocks require specific clock rates. Until now we were using
-the closest clock rate possible with integer N-M factors. This resulted
-in audio playback being slightly slower than it should be.
+From: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-The vendor kernel gets around this (for some SoCs) by using sigma-delta
-modulation to generate a fractional-N factor. As the PLL hardware is
-identical in most chips, we can port the settings for H3 onto the A64.
+The Pinebook has a headphone jack tied to the HP headphone output of
+the SoC, and internal speakers connected to the LINEOUT of the SoC,
+through a standalone amplifier.
 
+This commit enables I2S, digital and analog parts of audio codec on
+Pinebook, along with a device node for the external amplifier.
+
+Signed-off-by: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+[wens-jdAy2FN1RRM@public.gmane.org: dropped headphone_amp; added headphone amp regulator supply;
+		fixed speaker_amp node name and sound-name-prefix name]
 Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 37 +++++++++++++++++----------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ .../dts/allwinner/sun50i-a64-pinebook.dts     | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index 1f45b20ad752..181b599dc163 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -51,18 +51,29 @@ static struct ccu_nkmp pll_cpux_clk = {
-  * the base (2x, 4x and 8x), and one variable divider (the one true
-  * pll audio).
-  *
-- * We don't have any need for the variable divider for now, so we just
-- * hardcode it to match with the clock names
-+ * With sigma-delta modulation for fractional-N on the audio PLL,
-+ * we have to use specific dividers. This means the variable divider
-+ * can no longer be used, as the audio codec requests the exact clock
-+ * rates we support through this mechanism. So we now hard code the
-+ * variable divider to 1. This means the clock rates will no longer
-+ * match the clock names.
-  */
- #define SUN50I_A64_PLL_AUDIO_REG	0x008
- 
--static SUNXI_CCU_NM_WITH_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
--				   "osc24M", 0x008,
--				   8, 7,	/* N */
--				   0, 5,	/* M */
--				   BIT(31),	/* gate */
--				   BIT(28),	/* lock */
--				   CLK_SET_RATE_UNGATE);
-+static struct ccu_sdm_setting pll_audio_sdm_table[] = {
-+	{ .rate = 22579200, .pattern = 0xc0010d84, .m = 8, .n = 7 },
-+	{ .rate = 24576000, .pattern = 0xc000ac02, .m = 14, .n = 14 },
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+index ec537c529726..b6d0b926a2ff 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+@@ -74,6 +74,32 @@
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&r_pio 0 2 GPIO_ACTIVE_LOW>; /* PL2 */
+ 	};
++
++	speaker_amp: audio-amplifier {
++		compatible = "simple-audio-amplifier";
++		/*
++		 * TODO This is actually a fixed regulator controlled by
++		 * the GPIO line on the PMIC. This should be corrected
++		 * once GPIO support is added for this PMIC.
++		 */
++		VCC-supply = <&reg_ldo_io0>;
++		enable-gpios = <&pio 7 7 GPIO_ACTIVE_HIGH>; /* PH7 */
++		sound-name-prefix = "Speaker Amp";
++	};
++
 +};
 +
-+static SUNXI_CCU_NM_WITH_SDM_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
-+				       "osc24M", 0x008,
-+				       8, 7,	/* N */
-+				       0, 5,	/* M */
-+				       pll_audio_sdm_table, BIT(24),
-+				       0x284, BIT(31),
-+				       BIT(31),	/* gate */
-+				       BIT(28),	/* lock */
-+				       CLK_SET_RATE_UNGATE);
++&codec {
++	hpvcc-supply = <&reg_eldo1>;
++	status = "okay";
++};
++
++&codec_analog {
++	status = "okay";
++};
++
++&dai {
++	status = "okay";
+ };
  
- static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX(pll_video0_clk, "pll-video0",
- 						"osc24M", 0x010,
-@@ -594,9 +605,9 @@ static SUNXI_CCU_M_WITH_GATE(gpu_clk, "gpu", "pll-gpu",
- /* Fixed Factor clocks */
- static CLK_FIXED_FACTOR(osc12M_clk, "osc12M", "osc24M", 2, 1, 0);
+ &ehci0 {
+@@ -277,6 +303,29 @@
+ 	vcc-hdmi-supply = <&reg_dldo1>;
+ };
  
--/* We hardcode the divider to 4 for now */
-+/* We hardcode the divider to 1 for now */
- static CLK_FIXED_FACTOR(pll_audio_clk, "pll-audio",
--			"pll-audio-base", 4, 1, CLK_SET_RATE_PARENT);
-+			"pll-audio-base", 1, 1, CLK_SET_RATE_PARENT);
- static CLK_FIXED_FACTOR(pll_audio_2x_clk, "pll-audio-2x",
- 			"pll-audio-base", 2, 1, CLK_SET_RATE_PARENT);
- static CLK_FIXED_FACTOR(pll_audio_4x_clk, "pll-audio-4x",
-@@ -916,10 +927,10 @@ static int sun50i_a64_ccu_probe(struct platform_device *pdev)
- 	if (IS_ERR(reg))
- 		return PTR_ERR(reg);
- 
--	/* Force the PLL-Audio-1x divider to 4 */
-+	/* Force the PLL-Audio-1x divider to 1 */
- 	val = readl(reg + SUN50I_A64_PLL_AUDIO_REG);
- 	val &= ~GENMASK(19, 16);
--	writel(val | (3 << 16), reg + SUN50I_A64_PLL_AUDIO_REG);
-+	writel(val | (0 << 16), reg + SUN50I_A64_PLL_AUDIO_REG);
- 
- 	writel(0x515, reg + SUN50I_A64_PLL_MIPI_REG);
- 
++&sound {
++	status = "okay";
++	simple-audio-card,aux-devs = <&codec_analog>, <&speaker_amp>;
++	simple-audio-card,widgets = "Microphone", "Internal Microphone Left",
++				    "Microphone", "Internal Microphone Right",
++				    "Headphone", "Headphone Jack",
++				    "Speaker", "Internal Speaker";
++	simple-audio-card,routing =
++			"Left DAC", "AIF1 Slot 0 Left",
++			"Right DAC", "AIF1 Slot 0 Right",
++			"Speaker Amp INL", "LINEOUT",
++			"Speaker Amp INR", "LINEOUT",
++			"Internal Speaker", "Speaker Amp OUTL",
++			"Internal Speaker", "Speaker Amp OUTR",
++			"Headphone Jack", "HP",
++			"AIF1 Slot 0 Left ADC", "Left ADC",
++			"AIF1 Slot 0 Right ADC", "Right ADC",
++			"Internal Microphone Left", "MBIAS",
++			"MIC1", "Internal Microphone Left",
++			"Internal Microphone Right", "HBIAS",
++			"MIC2", "Internal Microphone Right";
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_pb_pins>;
 -- 
 2.19.1
