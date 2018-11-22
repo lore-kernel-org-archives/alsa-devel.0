@@ -1,45 +1,127 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH v9 3/8] ASoC: dt-bindings: add regulator property to simple amplifier
-Date: Thu, 22 Nov 2018 18:23:20 +0800
-Message-ID: <20181122102325.29495-4-wens@csie.org>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: [PATCH v9 6/8] arm64: dts: allwinner: a64: add nodes
+ necessary for analog sound support
+Date: Thu, 22 Nov 2018 18:23:23 +0800
+Message-ID: <20181122102325.29495-7-wens@csie.org>
 References: <20181122102325.29495-1-wens@csie.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181122102325.29495-1-wens@csie.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBN4H3LPQKGQE3ZVBN5A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20181122102325.29495-1-wens-jdAy2FN1RRM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Cc: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vasily Khoruzhick <anarsoul@gmail.com>
+From: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Amplifier may have associated regulator, so add a property for it.
+Add nodes for i2s, digital and analog parts of audiocodec on A64.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+The routing paths listed are entries connecting the digital and analog
+side of the audio codec together. Due to how device tree works, these
+must be copied over to each board device tree, in addition to any board
+level routes.
+
+The oversampling rate is set to 128, so that when playing back 192 kHz
+audio samples, the MCLK runs at the same rate as the module clock, at
+24.576 MHz.
+
+The user manual suggests using different oversampling rates for different
+sample rates, but that's not possible without a platform-specific machine
+driver.
+
+Signed-off-by: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+[wens-jdAy2FN1RRM@public.gmane.org: Lowered oversampling rate to 128; expanded commit message]
+Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/simple-amplifier.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-amplifier.txt b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
-index 8647edae7af0..7182ac4f1e65 100644
---- a/Documentation/devicetree/bindings/sound/simple-amplifier.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
-@@ -4,9 +4,14 @@ Required properties:
- - compatible : "dioo,dio2125" or "simple-audio-amplifier"
- - enable-gpios : the gpio connected to the enable pin of the simple amplifier
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 42abfbf56b88..384c417cb7a2 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -155,6 +155,30 @@
+ 		method = "smc";
+ 	};
  
-+Optional properties:
-+- VCC-supply   : power supply for the device, as covered
-+                 in Documentation/devicetree/bindings/regulator/regulator.txt
++	sound: sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "sun50i-a64-audio";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,frame-master = <&cpudai>;
++		simple-audio-card,bitclock-master = <&cpudai>;
++		simple-audio-card,mclk-fs = <128>;
++		simple-audio-card,aux-devs = <&codec_analog>;
++		simple-audio-card,routing =
++				"Left DAC", "AIF1 Slot 0 Left",
++				"Right DAC", "AIF1 Slot 0 Right",
++				"AIF1 Slot 0 Left ADC", "Left ADC",
++				"AIF1 Slot 0 Right ADC", "Right ADC";
++		status = "disabled";
 +
- Example:
++		cpudai: simple-audio-card,cpu {
++			sound-dai = <&dai>;
++		};
++
++		link_codec: simple-audio-card,codec {
++			sound-dai = <&codec>;
++		};
++	};
++
+ 	sound_spdif {
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,name = "On-board SPDIF";
+@@ -665,6 +689,30 @@
+ 			status = "disabled";
+ 		};
  
- amp: analog-amplifier {
- 	compatible = "simple-audio-amplifier";
-+	VCC-supply = <&regulator>;
- 	enable-gpios = <&gpio GPIOH_3 0>;
- };
++		dai: dai@1c22c00 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun50i-a64-codec-i2s";
++			reg = <0x01c22c00 0x200>;
++			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
++			clock-names = "apb", "mod";
++			resets = <&ccu RST_BUS_CODEC>;
++			reset-names = "rst";
++			dmas = <&dma 15>, <&dma 15>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
++		codec: codec@1c22e00 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun8i-a33-codec";
++			reg = <0x01c22e00 0x600>;
++			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
++			clock-names = "bus", "mod";
++			status = "disabled";
++		};
++
+ 		uart0: serial@1c28000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x01c28000 0x400>;
+@@ -924,6 +972,12 @@
+ 			#reset-cells = <1>;
+ 		};
+ 
++		codec_analog: codec-analog@1f015c0 {
++			compatible = "allwinner,sun50i-a64-codec-analog";
++			reg = <0x01f015c0 0x4>;
++			status = "disabled";
++		};
++
+ 		r_i2c: i2c@1f02400 {
+ 			compatible = "allwinner,sun50i-a64-i2c",
+ 				     "allwinner,sun6i-a31-i2c";
 -- 
 2.19.1
