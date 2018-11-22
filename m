@@ -1,142 +1,61 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH v9 7/8] arm64: dts: allwinner: a64: enable sound
- on Pine64 and SoPine
-Date: Thu, 22 Nov 2018 18:23:24 +0800
-Message-ID: <20181122102325.29495-8-wens@csie.org>
-References: <20181122102325.29495-1-wens@csie.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v3 3/3] ALSA: hda: add support for Huawei WMI micmute LED
+Date: Thu, 22 Nov 2018 13:36:43 +0200
+Message-ID: <CAHp75VddanEB-7qQutSWkbSZW4srRzGXkigCMxEP7zJ=KC6iKw@mail.gmail.com>
+References: <20181108171701.4444-1-ayman.bagabas@gmail.com>
+ <20181108171701.4444-4-ayman.bagabas@gmail.com> <20181119235713.GB7367@amd>
+ <s5hr2fgfcrm.wl-tiwai@suse.de> <20181120091039.GA16916@amd>
+ <s5hbm6kf6gi.wl-tiwai@suse.de> <20181120093610.GF16916@amd>
+ <s5h4lccf58f.wl-tiwai@suse.de> <20181120115159.GG16916@amd> <s5hzhu4c569.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBOEH3LPQKGQE7NJLXPQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20181122102325.29495-1-wens-jdAy2FN1RRM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hzhu4c569.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Pavel Machek <pavel@ucw.cz>, Ayman Bagabas <ayman.bagabas@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On Tue, Nov 20, 2018 at 2:19 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Tue, 20 Nov 2018 12:51:59 +0100,
+> Pavel Machek wrote:
+> >
+> > Hi!
+> >
+> > > > You have general-purpose LED, yet you are treating it as "something
+> > > > special". That means ugly code (quoted above) and lack of flexibility.
+> > > >
+> > > > For example, if my notebook lacks HDD LED, I can use scrollock LED for
+> > > > that instead. Or, in reverse way, maybe "mic mute" LED is not useful
+> > > > for me, and I'd like to use it for notifications instead.
+> > >
+> > > I'm not against adding the LEDs device implementation for any exotic
+> > > usage.
+> > >
+> > > But for the audio mute LED features, you'll need really lots of other
+> > > works if it were implemented via leds device.  That's the hardest
+> > > part, and a few lines of hooks solves it easily in the kernel side.
+> > > That's all about it.
+> > >
+> > > If you are ready for submitting the real solutions in user-space side
+> > > (patching PulseAudio and whatever all existing sound daemons, and
+> > > creating yet another daemon for non-PA systems (another footprint,
+> > > lovely), and so on), we can happily delete such in-kernel hooks :)
+> >
+> > I'm not saying we should move it to the userspace.
+> >
+> > I'm saying this should be "normal" led. drivers/leds/led-huawei-acpi.c,
+> > or something. Perhaps this acpi stuff is so similar you don't really
+> > need .c code.
+> >
+> > And then there should be a "mic muted" trigger. Similar to
+> > drivers/leds/trigger/ledtrig-disk.c.
+>
+> And who will trigger this, e.g. when the mixer is muted?
 
-This commit enables I2S, digital and analog parts of audiocodec on
-Pine64 and SoPine boards.
+Is this settled? I'm encouraged to promote this series to our for-next branch.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-[wens-jdAy2FN1RRM@public.gmane.org: Dropped headphone_amp; added headphone amp regulator supply]
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
----
- .../boot/dts/allwinner/sun50i-a64-pine64.dts  | 27 +++++++++++++++++++
- .../allwinner/sun50i-a64-sopine-baseboard.dts | 26 ++++++++++++++++++
- .../boot/dts/allwinner/sun50i-a64-sopine.dtsi |  4 +++
- 3 files changed, 57 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index c077b6c1f458..216f2f5db5ef 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -75,6 +75,19 @@
- 	};
- };
- 
-+&codec {
-+	status = "okay";
-+};
-+
-+&codec_analog {
-+	hpvcc-supply = <&reg_eldo1>;
-+	status = "okay";
-+};
-+
-+&dai {
-+	status = "okay";
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -259,6 +272,20 @@
- 	vcc-hdmi-supply = <&reg_dldo1>;
- };
- 
-+&sound {
-+	simple-audio-card,aux-devs = <&codec_analog>;
-+	simple-audio-card,widgets = "Microphone", "Microphone Jack",
-+				    "Headphone", "Headphone Jack";
-+	simple-audio-card,routing =
-+			"Left DAC", "AIF1 Slot 0 Left",
-+			"Right DAC", "AIF1 Slot 0 Right",
-+			"Headphone Jack", "HP",
-+			"AIF1 Slot 0 Left ADC", "Left ADC",
-+			"AIF1 Slot 0 Right ADC", "Right ADC",
-+			"MIC2", "Microphone Jack";
-+	status = "okay";
-+};
-+
- /* On Euler connector */
- &spdif {
- 	status = "disabled";
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-index 53fcc9098df3..2052319b9030 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-@@ -80,6 +80,18 @@
- 	};
- };
- 
-+&codec {
-+	status = "okay";
-+};
-+
-+&codec_analog {
-+	status = "okay";
-+};
-+
-+&dai {
-+	status = "okay";
-+};
-+
- &de {
- 	status = "okay";
- };
-@@ -164,6 +176,20 @@
- 	vcc-hdmi-supply = <&reg_dldo1>;
- };
- 
-+&sound {
-+	simple-audio-card,aux-devs = <&codec_analog>;
-+	simple-audio-card,widgets = "Microphone", "Microphone Jack",
-+				    "Headphone", "Headphone Jack";
-+	simple-audio-card,routing =
-+			"Left DAC", "AIF1 Slot 0 Left",
-+			"Right DAC", "AIF1 Slot 0 Right",
-+			"Headphone Jack", "HP",
-+			"AIF1 Slot 0 Left ADC", "Left ADC",
-+			"AIF1 Slot 0 Right ADC", "Right ADC",
-+			"MIC2", "Microphone Jack";
-+	status = "okay";
-+};
-+
- &uart0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart0_pb_pins>;
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-index 6723b8695e0b..d2651f284aa0 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-@@ -47,6 +47,10 @@
- 
- #include <dt-bindings/gpio/gpio.h>
- 
-+&codec_analog {
-+	hpvcc-supply = <&reg_eldo1>;
-+};
-+
- &mmc0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc0_pins>;
 -- 
-2.19.1
+With Best Regards,
+Andy Shevchenko
