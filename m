@@ -1,219 +1,58 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: control: Consolidate helpers for
-	adding and replacing ctl elements
-Date: Thu, 22 Nov 2018 17:10:34 +0100
-Message-ID: <20181122161034.30212-3-tiwai@suse.de>
-References: <20181122161034.30212-1-tiwai@suse.de>
+From: Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH] ASoC: sunxi: rename SND_SUN8I_ADDA_PR_REGMAP
+Date: Thu, 22 Nov 2018 22:29:05 +0100
+Message-ID: <20181122212905.GA13187@zn.tnic>
+References: <20181102153406.1528053-1-arnd@arndb.de>
+ <13542843.KjxkD9786N@anarsoul-thinkpad>
+ <CAK8P3a3A-mq2HLZjp7-5miL2Pk71=FqP5QKUxxda_y5ywCa7TA@mail.gmail.com>
+ <CA+E=qVfnkH-e6hoHA1eZ7rCJvJH02zgBSF=y30R6AEGwLpssXA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 47BB2267947
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 17:10:41 +0100 (CET)
-In-Reply-To: <20181122161034.30212-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CA+E=qVfnkH-e6hoHA1eZ7rCJvJH02zgBSF=y30R6AEGwLpssXA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Linux-ALSA <alsa-devel@alsa-project.org>, arm-linux <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Both snd_ctl_add() and snd_ctl_replace() process the things in a
-fairly similar way, and indeed the most of the codes can be unified.
+On Fri, Nov 02, 2018 at 03:06:59PM -0700, Vasily Khoruzhick wrote:
+> On Fri, Nov 2, 2018 at 3:04 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On 11/2/18, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> > > On Friday, November 2, 2018 8:33:40 AM PDT Arnd Bergmann wrote:
+> > >> The newly added SND_SUN50I_CODEC_ANALOG driver selects a nonexisting
+> > >> symbol SND_SUNXI_ADDA_PR_REGMAP, which was evidently intended to replace
+> > >> SND_SUN8I_ADDA_PR_REGMAP, but since they are now mismatched, we can run
+> > >> into link errors for some configurations:
+> > >>
+> > >> sound/soc/sunxi/sun50i-codec-analog.o: In function
+> > >> `sun50i_codec_analog_probe': sun50i-codec-analog.c:(.text+0x62):
+> > >> undefined
+> > >> reference to `sun8i_adda_pr_regmap_init'
+> > >>
+> > >> The new name appears to be more sensible, and as the symbol is hidden,
+> > >> there are no downsides in the rename, so use that consistently now.
+> > >
+> > > Maxime asked it to be SND_SUN8I_ADDA_PR_REGMAP, and also it would be easier
+> > > to
+> > > fix it my renaming last remaining SND_SUNXI_ADDA_PR_REGMAP to
+> > > SND_SUN8I_ADDA_PR_REGMAP.
+> >
+> > Sure, I don't care either way. Please send a patch to do that then.
+> 
+> Will do tonight.
 
-This patch is a refactoring to consolidate the both functions to call
-a single helper with an extra "mode" argument.  There should be no
-functional difference, except for one additional sanity check applied
-now to snd_ctl_replace() (which was rather overlooking, IMO), too.
+Is that patch coming up or on its way somewhere?
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/control.c | 123 ++++++++++++++++++-------------------------
- 1 file changed, 52 insertions(+), 71 deletions(-)
+I still hit randconfig build failures:
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 649d3217590e..fad7db402443 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -348,22 +348,41 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
- 	return 0;
- }
- 
--/* add a new kcontrol object; call with card->controls_rwsem locked */
--static int __snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
-+enum snd_ctl_add_mode {
-+	CTL_ADD_EXCLUSIVE, CTL_REPLACE, CTL_ADD_ON_REPLACE,
-+};
-+
-+/* add/replace a new kcontrol object; call with card->controls_rwsem locked */
-+static int __snd_ctl_add_replace(struct snd_card *card,
-+				 struct snd_kcontrol *kcontrol,
-+				 enum snd_ctl_add_mode mode)
- {
- 	struct snd_ctl_elem_id id;
- 	unsigned int idx;
- 	unsigned int count;
-+	struct snd_kcontrol *old;
-+	int err;
- 
- 	id = kcontrol->id;
- 	if (id.index > UINT_MAX - kcontrol->count)
- 		return -EINVAL;
- 
--	if (snd_ctl_find_id(card, &id)) {
--		dev_err(card->dev,
--			"control %i:%i:%i:%s:%i is already present\n",
--			id.iface, id.device, id.subdevice, id.name, id.index);
--		return -EBUSY;
-+	old = snd_ctl_find_id(card, &id);
-+	if (!old) {
-+		if (mode == CTL_REPLACE)
-+			return -EINVAL;
-+	} else {
-+		if (mode == CTL_ADD_EXCLUSIVE) {
-+			dev_err(card->dev,
-+				"control %i:%i:%i:%s:%i is already present\n",
-+				id.iface, id.device, id.subdevice, id.name,
-+				id.index);
-+			return -EBUSY;
-+		}
-+
-+		err = snd_ctl_remove(card, old);
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	if (snd_ctl_find_hole(card, kcontrol->count) < 0)
-@@ -382,21 +401,9 @@ static int __snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	return 0;
- }
- 
--/**
-- * snd_ctl_add - add the control instance to the card
-- * @card: the card instance
-- * @kcontrol: the control instance to add
-- *
-- * Adds the control instance created via snd_ctl_new() or
-- * snd_ctl_new1() to the given card. Assigns also an unique
-- * numid used for fast search.
-- *
-- * It frees automatically the control which cannot be added.
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- *
-- */
--int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
-+static int snd_ctl_add_replace(struct snd_card *card,
-+			       struct snd_kcontrol *kcontrol,
-+			       enum snd_ctl_add_mode mode)
- {
- 	int err = -EINVAL;
- 
-@@ -406,7 +413,7 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 		goto error;
- 
- 	down_write(&card->controls_rwsem);
--	err = __snd_ctl_add(card, kcontrol);
-+	err = __snd_ctl_add_replace(card, kcontrol, mode);
- 	up_write(&card->controls_rwsem);
- 	if (err < 0)
- 		goto error;
-@@ -416,6 +423,25 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 	snd_ctl_free_one(kcontrol);
- 	return err;
- }
-+
-+/**
-+ * snd_ctl_add - add the control instance to the card
-+ * @card: the card instance
-+ * @kcontrol: the control instance to add
-+ *
-+ * Adds the control instance created via snd_ctl_new() or
-+ * snd_ctl_new1() to the given card. Assigns also an unique
-+ * numid used for fast search.
-+ *
-+ * It frees automatically the control which cannot be added.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ *
-+ */
-+int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
-+{
-+	return snd_ctl_add_replace(card, kcontrol, CTL_ADD_EXCLUSIVE);
-+}
- EXPORT_SYMBOL(snd_ctl_add);
- 
- /**
-@@ -435,53 +461,8 @@ EXPORT_SYMBOL(snd_ctl_add);
- int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
- 		    bool add_on_replace)
- {
--	struct snd_ctl_elem_id id;
--	unsigned int count;
--	unsigned int idx;
--	struct snd_kcontrol *old;
--	int ret;
--
--	if (!kcontrol)
--		return -EINVAL;
--	if (snd_BUG_ON(!card || !kcontrol->info)) {
--		ret = -EINVAL;
--		goto error;
--	}
--	id = kcontrol->id;
--	down_write(&card->controls_rwsem);
--	old = snd_ctl_find_id(card, &id);
--	if (!old) {
--		if (add_on_replace)
--			goto add;
--		up_write(&card->controls_rwsem);
--		ret = -EINVAL;
--		goto error;
--	}
--	ret = snd_ctl_remove(card, old);
--	if (ret < 0) {
--		up_write(&card->controls_rwsem);
--		goto error;
--	}
--add:
--	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
--		up_write(&card->controls_rwsem);
--		ret = -ENOMEM;
--		goto error;
--	}
--	list_add_tail(&kcontrol->list, &card->controls);
--	card->controls_count += kcontrol->count;
--	kcontrol->id.numid = card->last_numid + 1;
--	card->last_numid += kcontrol->count;
--	id = kcontrol->id;
--	count = kcontrol->count;
--	up_write(&card->controls_rwsem);
--	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
--		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
--	return 0;
--
--error:
--	snd_ctl_free_one(kcontrol);
--	return ret;
-+	return snd_ctl_add_replace(card, kcontrol,
-+				   add_on_replace ? CTL_ADD_ON_REPLACE : CTL_REPLACE);
- }
- EXPORT_SYMBOL(snd_ctl_replace);
- 
-@@ -1369,7 +1350,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 
- 	/* This function manage to free the instance on failure. */
- 	down_write(&card->controls_rwsem);
--	err = __snd_ctl_add(card, kctl);
-+	err = __snd_ctl_add_replace(card, kctl, CTL_ADD_EXCLUSIVE);
- 	if (err < 0) {
- 		snd_ctl_free_one(kctl);
- 		goto unlock;
+ERROR: "sun8i_adda_pr_regmap_init" [sound/soc/sunxi/sun50i-codec-analog.ko] undefined!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
+
 -- 
-2.19.1
+Regards/Gruss,
+    Boris.
+
+Good mailing practices for 400: avoid top-posting and trim the reply.
