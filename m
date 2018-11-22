@@ -1,20 +1,20 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 06/10] ASoC: audio-graph-scu-card: tidyup
- "convert-rate/channels" parsing on Doc
-Date: Thu, 22 Nov 2018 00:56:41 +0000
-Message-ID: <87sgzulyzm.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 07/10] ASoC: audio-graph-scu-card: tidyup
+ "convert-rate/channels" parsing
+Date: Thu, 22 Nov 2018 00:56:53 +0000
+Message-ID: <87r2felyz9.wl-kuninori.morimoto.gx@renesas.com>
 References: <871s7endnu.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from JPN01-TY1-obe.outbound.protection.outlook.com
- (mail-eopbgr1400104.outbound.protection.outlook.com [40.107.140.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 147B7267961
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 01:56:43 +0100 (CET)
+ (mail-eopbgr1400109.outbound.protection.outlook.com [40.107.140.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA51126770D
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 01:56:58 +0100 (CET)
 In-Reply-To: <871s7endnu.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Content-ID: <F6123503FEB3474DBCB7FCE92FDC6F6A@jpnprd01.prod.outlook.com>
+Content-ID: <3217E89043FBA041BA5E71F27BBAF345@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -43,28 +43,41 @@ multi codecs without this patch.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/audio-graph-scu-card.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-index a361088..62d4276 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-@@ -80,7 +80,6 @@ Example 2. 2 CPU 1 Codec (Mixing)
- 		routing = "codec Playback", "DAI0 Playback",
- 			  "codec Playback", "DAI1 Playback",
- 			  "DAI0 Capture",   "codec Capture";
--		convert-rate = <48000>;
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index fdc61f1..0f13f11 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -29,6 +29,7 @@ struct graph_card_data {
+ 		struct asoc_simple_dai dai;
+ 		struct snd_soc_dai_link_component codecs;
+ 		struct snd_soc_dai_link_component platform;
++		struct asoc_simple_card_data adata;
+ 	} *dai_props;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_card_data adata;
+@@ -85,7 +86,11 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 					       struct snd_pcm_hw_params *params)
+ {
+ 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
++
++	asoc_simple_card_convert_fixup(&dai_props->adata, params);
  
- 		dais = <&cpu_port0
- 			&cpu_port1>;
-@@ -90,6 +89,7 @@ Example 2. 2 CPU 1 Codec (Mixing)
- 		...
++	/* overwrite by top level adata if exist */
+ 	asoc_simple_card_convert_fixup(&priv->adata, params);
  
- 		audio-graph-card,prefix = "codec";
-+		audio-graph-card,convert-rate = <48000>;
- 		port {
- 			codec_endpoint0: endpoint {
- 				remote-endpoint = <&cpu_endpoint0>;
+ 	return 0;
+@@ -170,6 +175,8 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
+ 						     PREFIX "prefix");
+ 	}
+ 
++	asoc_simple_card_parse_convert(dev, node, PREFIX, &dai_props->adata);
++
+ 	ret = asoc_simple_card_of_parse_tdm(ep, &dai_props->dai);
+ 	if (ret)
+ 		return ret;
 -- 
 2.7.4
