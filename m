@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: simple-scu-card: tidyup "prefix"
-	parsing" to the asoc tree
-Date: Fri, 23 Nov 2018 14:12:41 +0000 (GMT)
-Message-ID: <20181123141241.3AF1D440078@finisterre.ee.mobilebroadband>
-References: <87wop6lz1a.wl-kuninori.morimoto.gx@renesas.com>
+	parsing on Doc" to the asoc tree
+Date: Fri, 23 Nov 2018 14:12:50 +0000 (GMT)
+Message-ID: <20181123141250.93E6B440078@finisterre.ee.mobilebroadband>
+References: <87y39mlz1s.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 20A65267929
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:12:43 +0100 (CET)
-In-Reply-To: <87wop6lz1a.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 448F22678DF
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:12:52 +0100 (CET)
+In-Reply-To: <87y39mlz1s.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: tidyup "prefix" parsing
+   ASoC: simple-scu-card: tidyup "prefix" parsing on Doc
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From ca8d95c709378d0792c9dbacdab176a75e521ffb Mon Sep 17 00:00:00 2001
+>From f94b0f7f9246013ac158ae3adf194c1bfa1d1847 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Nov 2018 00:55:40 +0000
-Subject: [PATCH] ASoC: simple-scu-card: tidyup "prefix" parsing
+Date: Thu, 22 Nov 2018 00:55:24 +0000
+Subject: [PATCH] ASoC: simple-scu-card: tidyup "prefix" parsing on Doc
 
 simple-scu-card.c is supporting "prefix" which is used to avoid
 DAI naming conflict when CPU/Codec matching.
@@ -72,30 +72,28 @@ without this patch.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/sound/simple-scu-card.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index e650143eb532..7ae1901b2f85 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -157,10 +157,17 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
- 		if (ret < 0)
- 			return ret;
+diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+index 32f8dbce5241..3a2f71616cda 100644
+--- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+@@ -75,7 +75,6 @@ sound {
+ 	simple-audio-card,bitclock-master = <&dpcmcpu>;
+ 	simple-audio-card,frame-master = <&dpcmcpu>;
  
-+		/* check "prefix" from top node */
- 		snd_soc_of_parse_audio_prefix(card,
- 					      &priv->codec_conf,
- 					      dai_link->codecs->of_node,
- 					      PREFIX "prefix");
-+		/* check "prefix" from each node if top doesn't have */
-+		if (!priv->codec_conf.of_node)
-+			snd_soc_of_parse_node_prefix(np,
-+						     &priv->codec_conf,
-+						     dai_link->codecs->of_node,
-+						     "prefix");
- 	}
+-	simple-audio-card,prefix = "ak4642";
+ 	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+ 			"ak4642 Playback", "DAI1 Playback";
  
- 	ret = asoc_simple_card_of_parse_tdm(np, &dai_props->dai);
+@@ -88,6 +87,7 @@ sound {
+ 	};
+ 
+ 	codec {
++		prefix = "ak4642";
+ 		sound-dai = <&ak4643>;
+ 		clocks = <&audio_clock>;
+ 	};
 -- 
 2.19.1
