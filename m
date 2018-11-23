@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcbsp: Fix latency value
-	calculation for pm_qos" to the asoc tree
-Date: Fri, 23 Nov 2018 14:11:10 +0000 (GMT)
-Message-ID: <20181123141110.C47A5440078@finisterre.ee.mobilebroadband>
-References: <20181114110623.30932-2-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: audio-graph-card: tidyup define
+	position" to the asoc tree
+Date: Fri, 23 Nov 2018 14:11:23 +0000 (GMT)
+Message-ID: <20181123141123.AF452440078@finisterre.ee.mobilebroadband>
+References: <87muq2lyxy.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B5A53267947
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:11:12 +0100 (CET)
-In-Reply-To: <20181114110623.30932-2-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D3BE267A80
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:11:25 +0100 (CET)
+In-Reply-To: <87muq2lyxy.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, matt@ranostay.consulting, tony@atomide.com, hns@goldelico.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pyra-handheld.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-mcbsp: Fix latency value calculation for pm_qos
+   ASoC: audio-graph-card: tidyup define position
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From dd2f52d8991af9fe0928d59ec502ba52be7bc38d Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Wed, 14 Nov 2018 13:06:21 +0200
-Subject: [PATCH] ASoC: omap-mcbsp: Fix latency value calculation for pm_qos
+>From 64ef0817b9679b525f86773e929777be96f5c728 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 22 Nov 2018 00:57:40 +0000
+Subject: [PATCH] ASoC: audio-graph-card: tidyup define position
 
-The latency number is in usec for the pm_qos. Correct the calculation to
-give us the time in usec
+commit f986907c9225 ("ASoC: audio-graph-card: add widgets and routing for
+external amplifier support") added new function
+asoc_graph_card_outdrv_event(), but the inserted position breaks
+define area. This patch tidyup it
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-mcbsp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d0ebb6b9bfac..2d6decbfc99e 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -308,9 +308,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 			pkt_size = channels;
- 		}
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 101c7da2df7c..1b158cc2df88 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -36,6 +36,11 @@ struct graph_card_data {
+ 	struct gpio_desc *pa_gpio;
+ };
  
--		latency = ((((buffer_size - pkt_size) / channels) * 1000)
--				 / (params->rate_num / params->rate_den));
++#define graph_priv_to_card(priv) (&(priv)->snd_card)
++#define graph_priv_to_props(priv, i) ((priv)->dai_props + (i))
++#define graph_priv_to_dev(priv) (graph_priv_to_card(priv)->dev)
++#define graph_priv_to_link(priv, i) (graph_priv_to_card(priv)->dai_link + (i))
++
+ static int asoc_graph_card_outdrv_event(struct snd_soc_dapm_widget *w,
+ 					struct snd_kcontrol *kcontrol,
+ 					int event)
+@@ -63,11 +68,6 @@ static const struct snd_soc_dapm_widget asoc_graph_card_dapm_widgets[] = {
+ 			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ };
+ 
+-#define graph_priv_to_card(priv) (&(priv)->snd_card)
+-#define graph_priv_to_props(priv, i) ((priv)->dai_props + (i))
+-#define graph_priv_to_dev(priv) (graph_priv_to_card(priv)->dev)
+-#define graph_priv_to_link(priv, i) (graph_priv_to_card(priv)->dai_link + (i))
 -
-+		latency = (buffer_size - pkt_size) / channels;
-+		latency = latency * USEC_PER_SEC /
-+			  (params->rate_num / params->rate_den);
- 		mcbsp->latency[substream->stream] = latency;
- 
- 		omap_mcbsp_set_threshold(substream, pkt_size);
+ static int asoc_graph_card_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -- 
 2.19.1
