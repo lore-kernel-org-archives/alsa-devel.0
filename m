@@ -1,74 +1,104 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v9 1/8] ASoC: dt-bindings:
- sun50i-codec-analog: Add headphone amp regulator supply
-Date: Fri, 23 Nov 2018 10:11:45 +0800
-Message-ID: <CAGb2v669eNKvLxrD4OXgqUa_6qXwvNR0241AkS2x_zC3NCSo1Q@mail.gmail.com>
-References: <20181122102325.29495-1-wens@csie.org> <20181122102325.29495-2-wens@csie.org>
- <20181122153241.lzrwhkewg5q4hy2c@flea> <CAGb2v64-Wszg9m8+jCPWzYYRQduwpod2P0UdrFdhTLvAe3paPA@mail.gmail.com>
- <20181122154819.powgbwwqpljqvjty@flea>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/5] ALSA: firewire-tascam: support
+	notification of
+Date: Fri, 23 Nov 2018 13:13:02 +0900
+Message-ID: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB4GD3XPQKGQEKZJR73Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20181122154819.powgbwwqpljqvjty@flea>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com
+ [209.85.210.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D140267865
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:31 +0100 (CET)
+Received: by mail-pf1-f175.google.com with SMTP id b7so2750454pfi.8
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:31 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: sbahling@suse.com, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 22, 2018 at 11:48 PM Maxime Ripard
-<maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
->
-> On Thu, Nov 22, 2018 at 11:41:57PM +0800, Chen-Yu Tsai wrote:
-> > On Thu, Nov 22, 2018 at 11:33 PM Maxime Ripard
-> > <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
-> > >
-> > > On Thu, Nov 22, 2018 at 06:23:18PM +0800, Chen-Yu Tsai wrote:
-> > > > On the Allwinner A64 SoC, the audio codec has a built-in headphone
-> > > > amplifier. This amplifier has a power supply separate from the rest of
-> > > > the analog audio circuitry.
-> > > >
-> > > > Add a regulator supply property to handle this.
-> > > >
-> > > > Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
-> > > > index 4f8ad0e04d20..056a098495cc 100644
-> > > > --- a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
-> > > > +++ b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
-> > > > @@ -4,9 +4,11 @@ Required properties:
-> > > >  - compatible: must be one of the following compatibles:
-> > > >               - "allwinner,sun50i-a64-codec-analog"
-> > > >  - reg: must contain the registers location and length
-> > > > +- cpvdd-supply: Regulator supply for the headphone amplifier
-> > >
-> > > I guess we should make this optional, since even if it's missing, it's
-> > > going to create a dummy regulator. and that allows to have backward
-> > > compatibility.
-> > >
-> > > For the rest of the series,
-> > > Acked-by: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-> >
-> > This one (not sun8i-codec-analog) is new for the next release, so there's
-> > no backward compatibility to consider. Plus none of the device tree changes
-> > for A64 have been merged.
->
-> Ok, that works for me then.
+Hi,
 
-Well, I misspoke. The driver was introduced in 4.20-rc1, and these changes will
-end up in 4.21. But again, since we don't have any device tree changes already
-merged, we should be fine.
+Units of TASCAM FireWire series transfer its state in tx isochronous
+packets. The way to handle change of the state is a longstanding issue
+since I firstly reveal the mechanism in this list[1].
 
-Implementation wise, there really isn't a "required" variant of the regulator
-API. The API will use the dummy regulator if it's missing.
+In this time, Scott Bahling dedicates for further investigation to seek
+better implementation[2][3][4]. Finally, we identified meaning of the
+most of bits in the image of state, and decided which changes are worth
+for userspace applications to handle as events.
 
-ChenYu
+This commit adds support notification of the events. Userspace
+applications can handle the notification via ALSA hwdep interface.
+Furthermore, they can retrieve image of the latest states via the
+interface.
+
+Changes from the initial proposal[5]:
+ - obsolete usage of mmap(2) due to several disadvantages. Instead, use
+   event queue for change notification, and add ioctl command to retrieve
+   image of states.
+
+Changes from the latest work[6]:
+ - To reduce time in an interrupt context in which tx isochronous packets
+   are handled, data in the event and the image is passed to userspace in
+   big-endian order. Additionally, image of the states are passed to
+   userspace in big-endian order as well. Userspace applications are
+   responsible to convert the data in host-endianness order.
+ - improve efficiency to copy batch of events to userspace in hwdep
+   interface
+ - rename structure and macro name.
+
+This patchset is also available in my remote branch for backport purpose
+to Linux v4.17 or later[7].
+
+I've already prepare userspace implementation; libhinwa. A
+'topic/firewire-tascam-pr' remote branch includes patchset for the
+additional feature[8]. This library produces GObject class to handle the
+event notification and emits GObject signal, and has a method
+'HinawaSndTscm.get_state()', with enough consideration to endianness.
+Developers can process change of state with these two APIs.
+
+> Scott
+
+As the above, I changed method name from 'HinawaSndTscm.get_status()'.
+I'd like you to change your local implementation for 'hinawa-utils'.
+Sorry to add further work to you.
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094817.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140051.html
+[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-October/140593.html
+[4] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-November/141395.html
+[5] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace
+[6] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-take3
+[7] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-pr
+[8] https://github.com/takaswie/libhinawa/tree/topic/tascam-userspace-pr
+
+Regards
+
+Takashi Sakamoto (5):
+  ALSA: firewire-tascam: pick up data of state from tx isochronous
+    pakcets
+  ALSA: firewire-tascam: add new hwdep ioctl command to get state image
+  ALSA: firewire-tascam: queue events for change of control surface
+  ALSA: firewire-tascam: apply small refactoring to handle several type
+    of event for hwdep interface
+  ALSA: firewire-tascam: notify events of change of state for userspace
+    applications
+
+ include/uapi/sound/firewire.h        |  20 +++++
+ sound/firewire/tascam/amdtp-tascam.c |  51 +++++++++++-
+ sound/firewire/tascam/tascam-hwdep.c | 115 +++++++++++++++++++++++----
+ sound/firewire/tascam/tascam.h       |   9 +++
+ 4 files changed, 180 insertions(+), 15 deletions(-)
+
+-- 
+2.19.1
