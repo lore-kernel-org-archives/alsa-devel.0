@@ -1,8 +1,8 @@
 From: Pavel Machek <pavel@ucw.cz>
 Subject: Re: [PATCH v3 3/3] ALSA: hda: add support for Huawei
 	WMI micmute LED
-Date: Fri, 23 Nov 2018 23:05:23 +0100
-Message-ID: <20181123220523.GA22118@amd>
+Date: Sat, 24 Nov 2018 00:33:09 +0100
+Message-ID: <20181123233309.GA4340@amd>
 References: <s5hr2fgfcrm.wl-tiwai@suse.de> <20181120091039.GA16916@amd>
  <s5hbm6kf6gi.wl-tiwai@suse.de> <20181120093610.GF16916@amd>
  <s5h4lccf58f.wl-tiwai@suse.de> <20181120115159.GG16916@amd>
@@ -10,12 +10,12 @@ References: <s5hr2fgfcrm.wl-tiwai@suse.de> <20181120091039.GA16916@amd>
  <CAHp75VddanEB-7qQutSWkbSZW4srRzGXkigCMxEP7zJ=KC6iKw@mail.gmail.com>
  <20181122131802.GB13339@amd> <s5h8t1l5ish.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0437043279792233676=="
+Content-Type: multipart/mixed; boundary="===============2711927848017103846=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
  [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 869AB2677E8
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 23:05:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F4082677E8
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 00:33:10 +0100 (CET)
 In-Reply-To: <s5h8t1l5ish.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,67 +31,25 @@ Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Ayman Bagabas <
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0437043279792233676==
+--===============2711927848017103846==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
+	protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
 Content-Disposition: inline
 
 
---7JfCtLOvnd9MIVvH
+--C7zPtVaVf+AK4Oqc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-HI!
+Hi!
 
 > > > > > > > You have general-purpose LED, yet you are treating it as "som=
 ething
 > > > > > > > special". That means ugly code (quoted above) and lack of fle=
 xibility.
 > > > > > > >
-> > > > > > > For example, if my notebook lacks HDD LED, I can use scrolloc=
-k LED for
-> > > > > > > that instead. Or, in reverse way, maybe "mic mute" LED is not=
- useful
-> > > > > > > for me, and I'd like to use it for notifications instead.
-> > > > > >
-> > > > > > I'm not against adding the LEDs device implementation for any e=
-xotic
-> > > > > > usage.
-> > > > > >
-> > > > > > But for the audio mute LED features, you'll need really lots of=
- other
-> > > > > > works if it were implemented via leds device.  That's the harde=
-st
-> > > > > > part, and a few lines of hooks solves it easily in the kernel s=
-ide.
-> > > > > > That's all about it.
-> > > > > >
-> > > > > > If you are ready for submitting the real solutions in user-spac=
-e side
-> > > > > > (patching PulseAudio and whatever all existing sound daemons, a=
-nd
-> > > > > > creating yet another daemon for non-PA systems (another footpri=
-nt,
-> > > > > > lovely), and so on), we can happily delete such in-kernel hooks=
- :)
-> > > > >
-> > > > > I'm not saying we should move it to the userspace.
-> > > > >
-> > > > > I'm saying this should be "normal" led. drivers/leds/led-huawei-a=
-cpi.c,
-> > > > > or something. Perhaps this acpi stuff is so similar you don't rea=
-lly
-> > > > > need .c code.
-> > > > >
-> > > > > And then there should be a "mic muted" trigger. Similar to
-> > > > > drivers/leds/trigger/ledtrig-disk.c.
-> > > >
-> > > > And who will trigger this, e.g. when the mixer is muted?
-> > >=20
-> > > Is this settled? I'm encouraged to promote this series to our for-nex=
-t branch.
-> >=20
+
 > > I'd prefer this to be normal LED and "mic muted" to become normal
 > > trigger.
 >=20
@@ -108,43 +66,145 @@ t branch.
 > because it's not so trivial at all.  FWIW, this must be all done
 > inside the kernel; otherwise you'll hit a regression.
 
-I am really have enough work to do at the moment, but let me take a look.
+Ok, what about something like this?
 
-> If the path via leds class can't be achieved quickly, I'd prefer
-> taking the current approach at first.  Once after it's done for those
-> above, we can apply the same for huawei-wmi later, too.
+Tested, and it did not work. I guess I hooked it up at the wrong place
+in LED subsystem... or maybe thinkpad x60 is wrong machine to test on.
 
-I'd prefer not adding more mess. Don't expect full solution from me,
-but ... I should have something better than what is in the tree rather
-soon.
+Anyway, it looks less ugly than current code in alsa. We should not
+really be using mixer settings to turn LED on and off.
 
-Best regards,
-									Pavel
+Plus, it works in similar way triggers and LEDs "usually" do, and has
+all the flexibility.
+
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+commit e7d6d170f2f45ea7a42c9ebb31869f440382e3ad
+
+    leds: ledtrig-sound: provide indication of muted microphone
+   =20
+    Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
+index 9bcb64e..c5ea19e 100644
+--- a/drivers/leds/trigger/Makefile
++++ b/drivers/leds/trigger/Makefile
+@@ -14,3 +14,4 @@ obj-$(CONFIG_LEDS_TRIGGER_CAMERA)	+=3D ledtrig-camera.o
+ obj-$(CONFIG_LEDS_TRIGGER_PANIC)	+=3D ledtrig-panic.o
+ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+=3D ledtrig-netdev.o
+ obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+=3D ledtrig-pattern.o
++obj-y					+=3D ledtrig-sound.o
+diff --git a/drivers/leds/trigger/ledtrig-sound.c b/drivers/leds/trigger/le=
+dtrig-sound.c
+new file mode 100644
+index 0000000..608df35
+--- /dev/null
++++ b/drivers/leds/trigger/ledtrig-sound.c
+@@ -0,0 +1,23 @@
++/* GPLv2+.
++ * Copyright 2018 Pavel Machek <pavel@ucw.cz>
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/leds.h>
++
++DEFINE_LED_TRIGGER(ledtrig_micmute);
++
++void ledtrig_mic_muted(bool muted)
++{
++	led_trigger_event(ledtrig_micmute, muted ? LED_FULL : LED_OFF);
++}
++EXPORT_SYMBOL(ledtrig_mic_muted);
++
++static int __init ledtrig_micmute_init(void)
++{
++	led_trigger_register_simple("mic-muted", &ledtrig_micmute);
++
++	return 0;
++}
++device_initcall(ledtrig_micmute_init);
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index e4a9a00..c30e1cb 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -494,6 +494,14 @@ static inline void ledtrig_cpu(enum cpu_led_event evt)
+ }
+ #endif
+=20
++#ifdef CONFIG_LEDS_TRIGGERS
++extern void ledtrig_mic_muted(bool m);
++#else
++static inline void ledtrig_mic_muted(bool m) {}
++#endif
++
++
++
+ #ifdef CONFIG_LEDS_BRIGHTNESS_HW_CHANGED
+ extern void led_classdev_notify_brightness_hw_changed(
+ 	struct led_classdev *led_cdev, enum led_brightness brightness);
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 276150f..3ec1f61 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -29,6 +29,7 @@
+ #include <linux/string.h>
+ #include <linux/bitops.h>
+ #include <linux/module.h>
++#include <linux/leds.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/tlv.h>
+@@ -3929,6 +3930,7 @@ static void call_micmute_led_update(struct hda_codec =
+*codec)
+ 		val =3D !spec->micmute_led.capture;
+ 		break;
+ 	}
++	ledtrig_mic_muted(!spec->micmute_led.capture);
+=20
+ 	if (val =3D=3D spec->micmute_led.led_value)
+ 		return;
+diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_helpe=
+r.c
+index 568575b..f1b2265 100644
+--- a/sound/pci/hda/thinkpad_helper.c
++++ b/sound/pci/hda/thinkpad_helper.c
+@@ -23,6 +23,8 @@ static void update_tpacpi_mute_led(void *private_data, in=
+t enabled)
+ 	if (old_vmaster_hook)
+ 		old_vmaster_hook(private_data, enabled);
+=20
++	printk("mute led... %d\n", !enabled);
++
+ 	if (led_set_func)
+ 		led_set_func(TPACPI_LED_MUTE, !enabled);
+ }
+
 
 --=20
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
 g.html
 
---7JfCtLOvnd9MIVvH
+--C7zPtVaVf+AK4Oqc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAlv4eaMACgkQMOfwapXb+vJuAACdH7eG8BCG9j+wfTKoEyj7B3hc
-TIsAoI89+VS11+xTUpAodEJdFYwOmH1V
-=shKN
+iEYEARECAAYFAlv4jjUACgkQMOfwapXb+vJAGgCeMG4/q2ENCFEKzXy0t38q3MXG
+SXEAoJ1ul32RBQTk3ftSyS1sCDHRevmK
+=xYkY
 -----END PGP SIGNATURE-----
 
---7JfCtLOvnd9MIVvH--
+--C7zPtVaVf+AK4Oqc--
 
---===============0437043279792233676==
+--===============2711927848017103846==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0437043279792233676==--
+--===============2711927848017103846==--
