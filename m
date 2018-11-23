@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/5] ALSA: firewire-tascam: queue events for
-	change of control surface
-Date: Fri, 23 Nov 2018 13:13:05 +0900
-Message-ID: <20181123041307.22980-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/5] ALSA: firewire-tascam: apply small
+	refactoring to handle several type of event for hwdep interface
+Date: Fri, 23 Nov 2018 13:13:06 +0900
+Message-ID: <20181123041307.22980-5-o-takashi@sakamocchi.jp>
 References: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 802FE267A75
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:37 +0100 (CET)
-Received: by mail-pg1-f193.google.com with SMTP id 80so2506920pge.4
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:37 -0800 (PST)
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
+ [209.85.210.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29BE3267A81
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:39 +0100 (CET)
+Received: by mail-pf1-f193.google.com with SMTP id h3so2767450pfg.1
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:39 -0800 (PST)
 In-Reply-To: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,138 +28,79 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: sbahling@suse.com, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Units of TASCAM FireWire series transfer image of states of the unit in
-tx isochronous packets. Demultiplexing of the states from the packets
-is done in software interrupt context regardless of any process context.
-In a view of userspace applications, it needs to have notification
-mechanism to catch change of the states.
+In later commits, ALSA firewire-tascam driver will allow userspace
+applications to receive notifications about changes of device state,
+transferred in tx isochronous packet. At present, all of drivers in ALSA
+firewire stack have mechanism to notify change of status of packet
+streaming, thus it needs to distinguish these two types of notification.
 
-This commit implements a queue to store events for the notification. The
-image of states includes fluctuating data such as level of gain/volume
-for physical input/output and position of knobs. Therefore the events
-are queued corresponding to some control features only.
-
-Furthermore, the queued events are planned to be consumed by userspace
-applications via ALSA hwdep interface. This commit suppresses event
-queueing when no applications open the hwdep interface.
-
-However, the queue is maintained in an optimistic scenario, thus without
-any care against overrrun. This is reasonable because target events are
-useless just to handle PCM frames. It starts queueing when an usespace
-application opens hwdep interface, thus it's expected to read the queued
-events steadily.
+This commit is a preparation for the above.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/firewire.h        |  6 +++++
- sound/firewire/tascam/amdtp-tascam.c | 34 +++++++++++++++++++++++++++-
- sound/firewire/tascam/tascam-hwdep.c |  2 ++
- sound/firewire/tascam/tascam.h       |  6 +++++
- 4 files changed, 47 insertions(+), 1 deletion(-)
+ sound/firewire/tascam/tascam-hwdep.c | 38 +++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 12 deletions(-)
 
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 012f81bf4750..bb067efb09c6 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -53,6 +53,12 @@ struct snd_firewire_event_motu_notification {
- 	__u32 message;	/* MOTU-specific bits. */
- };
- 
-+struct snd_firewire_tascam_change {
-+	unsigned int index;
-+	__be32 before;
-+	__be32 after;
-+};
-+
- union snd_firewire_event {
- 	struct snd_firewire_event_common            common;
- 	struct snd_firewire_event_lock_status       lock_status;
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
-index 516cb931fd5e..0e8088c9ada9 100644
---- a/sound/firewire/tascam/amdtp-tascam.c
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -121,13 +121,45 @@ static void read_status_messages(struct amdtp_stream *s,
- 				 __be32 *buffer, unsigned int data_blocks)
- {
- 	struct snd_tscm *tscm = container_of(s, struct snd_tscm, tx_stream);
-+	bool used = READ_ONCE(tscm->hwdep->used);
- 	int i;
- 
- 	for (i = 0; i < data_blocks; i++) {
- 		unsigned int index;
-+		__be32 before;
-+		__be32 after;
- 
- 		index = be32_to_cpu(buffer[0]) % SNDRV_FIREWIRE_TASCAM_STATE_COUNT;
--		tscm->state[index] = buffer[s->data_block_quadlets - 1];
-+		before = tscm->state[index];
-+		after = buffer[s->data_block_quadlets - 1];
-+
-+		if (used && index > 4 && index < 16) {
-+			__be32 mask;
-+
-+			if (index == 5)
-+				mask = cpu_to_be32(~0x0000ffff);
-+			else if (index == 6)
-+				mask = cpu_to_be32(~0x0000ffff);
-+			else if (index == 8)
-+				mask = cpu_to_be32(~0x000f0f00);
-+			else
-+				mask = cpu_to_be32(~0x00000000);
-+
-+			if ((before ^ after) & mask) {
-+				struct snd_firewire_tascam_change *entry =
-+						&tscm->queue[tscm->push_pos];
-+
-+				spin_lock_irq(&tscm->lock);
-+				entry->index = index;
-+				entry->before = before;
-+				entry->after = after;
-+				if (++tscm->push_pos >= SND_TSCM_QUEUE_COUNT)
-+					tscm->push_pos = 0;
-+				spin_unlock_irq(&tscm->lock);
-+			}
-+		}
-+
-+		tscm->state[index] = after;
- 		buffer += s->data_block_quadlets;
- 	}
- }
 diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index a80397116c48..9afa827af05d 100644
+index 9afa827af05d..8f34cede2e9f 100644
 --- a/sound/firewire/tascam/tascam-hwdep.c
 +++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -195,5 +195,7 @@ int snd_tscm_create_hwdep_device(struct snd_tscm *tscm)
- 	hwdep->private_data = tscm;
- 	hwdep->exclusive = true;
+@@ -16,14 +16,30 @@
  
-+	tscm->hwdep = hwdep;
+ #include "tascam.h"
+ 
++static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
++				   long count, loff_t *offset)
++{
++	struct snd_firewire_event_lock_status event = {
++		.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
++	};
 +
- 	return err;
++	event.status = (tscm->dev_lock_count > 0);
++	tscm->dev_lock_changed = false;
++	count = min_t(long, count, sizeof(event));
++
++	spin_unlock_irq(&tscm->lock);
++
++	if (copy_to_user(buf, &event, count))
++		return -EFAULT;
++
++	return count;
++}
++
+ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		       loff_t *offset)
+ {
+ 	struct snd_tscm *tscm = hwdep->private_data;
+ 	DEFINE_WAIT(wait);
+-	union snd_firewire_event event = {
+-		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
+-	};
+ 
+ 	spin_lock_irq(&tscm->lock);
+ 
+@@ -37,15 +53,13 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		spin_lock_irq(&tscm->lock);
+ 	}
+ 
+-	event.lock_status.status = (tscm->dev_lock_count > 0);
+-	tscm->dev_lock_changed = false;
+-
+-	spin_unlock_irq(&tscm->lock);
+-
+-	count = min_t(long, count, sizeof(event.lock_status));
+-
+-	if (copy_to_user(buf, &event, count))
+-		return -EFAULT;
++	// NOTE: The acquired lock should be released in callee side.
++	if (tscm->dev_lock_changed) {
++		count = tscm_hwdep_read_locked(tscm, buf, count, offset);
++	} else {
++		spin_unlock_irq(&tscm->lock);
++		count = 0;
++	}
+ 
+ 	return count;
  }
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index c710496a99cf..6a411ee0dcf1 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -62,6 +62,8 @@ struct snd_fw_async_midi_port {
- 	int consume_bytes;
- };
- 
-+#define SND_TSCM_QUEUE_COUNT	16
-+
- struct snd_tscm {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -92,6 +94,10 @@ struct snd_tscm {
- 
- 	// A cache of status information in tx isoc packets.
- 	__be32 state[SNDRV_FIREWIRE_TASCAM_STATE_COUNT];
-+	struct snd_hwdep *hwdep;
-+	struct snd_firewire_tascam_change queue[SND_TSCM_QUEUE_COUNT];
-+	unsigned int pull_pos;
-+	unsigned int push_pos;
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
 -- 
 2.19.1
