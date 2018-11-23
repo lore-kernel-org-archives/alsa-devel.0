@@ -1,69 +1,46 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [alsa-devel] [Xen-devel][PATCH 3/3] ALSA: xen-front: Use Xen
- common shared buffer implementation
-Date: Fri, 23 Nov 2018 10:19:38 +0200
-Message-ID: <a5a5754f-0a1d-d537-feaa-8f4ff4e203e3@gmail.com>
+From: Juergen Gross <jgross@suse.com>
+Subject: Re: [Xen-devel][PATCH 2/3] drm/xen-front: Use Xen common shared
+ buffer implementation
+Date: Fri, 23 Nov 2018 09:24:59 +0100
+Message-ID: <0e9bde68-3f4c-7471-1d8d-89b145e65b54@suse.com>
 References: <20181122100230.14976-1-andr2000@gmail.com>
- <20181122100230.14976-3-andr2000@gmail.com> <s5hzhu13yil.wl-tiwai@suse.de>
+ <20181122100230.14976-2-andr2000@gmail.com>
+ <20181122143354.GG4266@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hzhu13yil.wl-tiwai@suse.de>
-Content-Language: en-US
+In-Reply-To: <20181122143354.GG4266@phenom.ffwll.local>
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, boris.ostrovsky@oracle.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/22/18 5:47 PM, Takashi Iwai wrote:
-> On Thu, 22 Nov 2018 11:02:30 +0100,
-> Oleksandr Andrushchenko wrote:
->> @@ -214,12 +221,19 @@ static void stream_clear(struct xen_snd_front_pcm_stream_info *stream)
->>   	stream->out_frames = 0;
->>   	atomic_set(&stream->hw_ptr, 0);
->>   	xen_snd_front_evtchnl_pair_clear(stream->evt_pair);
->> -	xen_snd_front_shbuf_clear(&stream->sh_buf);
->> +	memset(&stream->shbuf, 0, sizeof(stream->shbuf));
->> +	stream->buffer = NULL;
->> +	stream->buffer_sz = 0;
->> +	stream->pages = NULL;
->> +	stream->num_pages = 0;
->>   }
->>   
->>   static void stream_free(struct xen_snd_front_pcm_stream_info *stream)
->>   {
->> -	xen_snd_front_shbuf_free(&stream->sh_buf);
->> +	xen_front_pgdir_shbuf_unmap(&stream->shbuf);
->> +	xen_front_pgdir_shbuf_free(&stream->shbuf);
->> +	free_pages_exact(stream->buffer, stream->buffer_sz);
->> +	kfree(stream->pages);
->>   	stream_clear(stream);
->>   }
->>   
->> @@ -421,10 +435,34 @@ static int alsa_close(struct snd_pcm_substream *substream)
->>   	return 0;
->>   }
->>   
->> +static int shbuf_setup_backstore(struct xen_snd_front_pcm_stream_info *stream,
->> +				 size_t buffer_sz)
->> +{
->> +	int i;
->> +
->> +	stream->buffer_sz = buffer_sz;
->> +	stream->buffer = alloc_pages_exact(stream->buffer_sz, GFP_KERNEL);
->> +	if (!stream->buffer)
->> +		return -ENOMEM;
-> This keeps the NULL stream->buffer, and then the caller goes to the
-> error path via stream_free() which will lead to an Oops due to the
-> unconditional call of free_pages_exact().
+On 22/11/2018 15:33, Daniel Vetter wrote:
+> On Thu, Nov 22, 2018 at 12:02:29PM +0200, Oleksandr Andrushchenko wrote:
+>> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>>
+>> Use page directory based shared buffer implementation
+>> now available as common code for Xen frontend drivers.
+>>
+>> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>> ---
+>>  drivers/gpu/drm/xen/Kconfig               |   1 +
+>>  drivers/gpu/drm/xen/Makefile              |   1 -
+>>  drivers/gpu/drm/xen/xen_drm_front.c       |  60 ++--
+>>  drivers/gpu/drm/xen/xen_drm_front_gem.c   |   1 -
+>>  drivers/gpu/drm/xen/xen_drm_front_shbuf.c | 414 ----------------------
+>>  drivers/gpu/drm/xen/xen_drm_front_shbuf.h |  64 ----
+>>  6 files changed, 30 insertions(+), 511 deletions(-)
+>>  delete mode 100644 drivers/gpu/drm/xen/xen_drm_front_shbuf.c
+>>  delete mode 100644 drivers/gpu/drm/xen/xen_drm_front_shbuf.h
+> Anyway, I'm all for code duplication removal, so if the Xen folks are
+> happy with patch 1, this one here has my ack. Might also be best to merge
+> all three through the Xen tree. Fallback would be xen folks sending a
+> topic pull request with these 3 patches to drm-misc and takashi's sound
+> tree.
 
-You are absolutely right, will fix
+I'm fine with taking it through the Xen tree.
 
-Thank you for catching this
 
->
->
-> thanks,
->
-> Takashi
+Juergen
