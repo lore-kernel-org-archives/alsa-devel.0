@@ -1,49 +1,120 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v9 1/8] ASoC: dt-bindings:
- sun50i-codec-analog: Add headphone amp regulator supply
-Date: Fri, 23 Nov 2018 13:31:26 +0000
-Message-ID: <20181123133126.GF2089@sirena.org.uk>
-References: <20181122102325.29495-1-wens@csie.org>
- <20181122102325.29495-2-wens@csie.org>
- <20181122153241.lzrwhkewg5q4hy2c@flea>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/10] ASoC: soc-core: add
+	snd_soc_of_parse_node_prefix()
+Date: Fri, 23 Nov 2018 13:53:13 +0000
+Message-ID: <20181123135313.GH2089@sirena.org.uk>
+References: <871s7endnu.wl-kuninori.morimoto.gx@renesas.com>
+ <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tWc6BTYdre847SEs"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBNUC4DPQKGQE3W34SKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20181122153241.lzrwhkewg5q4hy2c@flea>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Vasily Khoruzhick <anarsoul-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============3886597822658132010=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59D732677E8
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 14:53:20 +0100 (CET)
+In-Reply-To: <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---tWc6BTYdre847SEs
-Content-Type: text/plain; charset="UTF-8"
+--===============3886597822658132010==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EiqC2rRjhiyODL92"
 Content-Disposition: inline
 
-On Thu, Nov 22, 2018 at 04:32:41PM +0100, Maxime Ripard wrote:
-> On Thu, Nov 22, 2018 at 06:23:18PM +0800, Chen-Yu Tsai wrote:
 
-> > +- cpvdd-supply: Regulator supply for the headphone amplifier
+--EiqC2rRjhiyODL92
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I guess we should make this optional, since even if it's missing, it's
-> going to create a dummy regulator. and that allows to have backward
-> compatibility.
+On Thu, Nov 22, 2018 at 12:55:09AM +0000, Kuninori Morimoto wrote:
 
-Regulators should never be marked as optional unless they can be
-physically absent.  It is true that Linux has code to handle partially
-defined device trees but we shouldn't rely on other OSs having similar
-code and it's better practice to have board device trees be fully
-specified, it means that if we need the regulator information for some
-future thing it's more likely to be there and it's less likely that bugs
-which do things like cause the regulator to be powered off incorrectly
-will be introduced in future.
---tWc6BTYdre847SEs--
+> +void snd_soc_of_parse_node_prefix(struct device_node *np,
+>  				   struct snd_soc_codec_conf *codec_conf,
+>  				   struct device_node *of_node,
+>  				   const char *propname);
+> +#define snd_soc_of_parse_audio_prefix(card, conf, node, name) \
+> +	snd_soc_of_parse_node_prefix((card)->dev->of_node,    \
+> +				     (conf), (node), (name))
+
+This is basically fine but it'd be better to make this a static inline
+rather than a #define - it helps with error messages and type safety.
+I'll apply the series since otherwise this looks good, please send a
+followup patch fixing this.
+
+> +
+>  int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+>  				   const char *propname);
+>  unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 6ddcf12..012000d 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -3484,12 +3484,11 @@ int snd_soc_of_parse_tdm_slot(struct device_node =
+*np,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_of_parse_tdm_slot);
+> =20
+> -void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+> -				   struct snd_soc_codec_conf *codec_conf,
+> -				   struct device_node *of_node,
+> -				   const char *propname)
+> +void snd_soc_of_parse_node_prefix(struct device_node *np,
+> +				  struct snd_soc_codec_conf *codec_conf,
+> +				  struct device_node *of_node,
+> +				  const char *propname)
+>  {
+> -	struct device_node *np =3D card->dev->of_node;
+>  	const char *str;
+>  	int ret;
+> =20
+> @@ -3502,7 +3501,7 @@ void snd_soc_of_parse_audio_prefix(struct snd_soc_c=
+ard *card,
+>  	codec_conf->of_node	=3D of_node;
+>  	codec_conf->name_prefix	=3D str;
+>  }
+> -EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix);
+> +EXPORT_SYMBOL_GPL(snd_soc_of_parse_node_prefix);
+> =20
+>  int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+>  				   const char *propname)
+> --=20
+> 2.7.4
+>=20
+
+--EiqC2rRjhiyODL92
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv4BkgACgkQJNaLcl1U
+h9AwYQf/eXynb6X4LoH1/rEc4lWGDwyYPKfLnpXnMhlzgDCr35nBOQpVgbikRon/
+5+VJnZeK75bxFwSF1CGb6JyBy9KQvaGUNsHhiFtkB5yiIWoB/L0fr3ce42njDmZK
+cAivRkx93QXaoo7k6NXAbC2eanva7+d5XlcNnuDj33Z7qa3S2p4YAg7GE5XdoZPE
+uZoOUbNBslB6NemLdd9jEU8X/RtKRFwoSq0n1KPVdZHKmFE7CwAjSANnFdl66aXv
+xWteebw48kTozOL3J3fAwd9waHpBjGnC1DkW3daOPlsV1+NPW8OCYtfjj7JFAg47
+rlGAXUuY7RRr36OlbzTZgObbjUY0MA==
+=IeKV
+-----END PGP SIGNATURE-----
+
+--EiqC2rRjhiyODL92--
+
+--===============3886597822658132010==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3886597822658132010==--
