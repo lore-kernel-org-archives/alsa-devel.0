@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-amplifier: add VCC regulator
-	widget" to the asoc tree
-Date: Fri, 23 Nov 2018 14:13:34 +0000 (GMT)
-Message-ID: <20181123141334.A8245440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: dt-bindings: add regulator property to
+	simple amplifier" to the asoc tree
+Date: Fri, 23 Nov 2018 14:14:04 +0000 (GMT)
+Message-ID: <20181123141404.8D41E440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BD102678DF
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:13:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 367D62678DF
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:14:06 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-amplifier: add VCC regulator widget
+   ASoC: dt-bindings: add regulator property to simple amplifier
 
 has been applied to the asoc tree at
 
@@ -52,48 +52,38 @@ to this mail.
 Thanks,
 Mark
 
->From 6debd01a74b8c15ab3f2a6f7ff4a7dcbada101cb Mon Sep 17 00:00:00 2001
+>From 8e84de031a11c4240f3654fd4c380542e358f5f6 Mon Sep 17 00:00:00 2001
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Date: Thu, 22 Nov 2018 18:23:21 +0800
-Subject: [PATCH] ASoC: simple-amplifier: add VCC regulator widget
+Date: Thu, 22 Nov 2018 18:23:20 +0800
+Subject: [PATCH] ASoC: dt-bindings: add regulator property to simple amplifier
 
-Amplifier may have assosicated regulator, so add a widget for it
-and appropriate route.
+Amplifier may have associated regulator, so add a property for it.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/simple-amplifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/sound/simple-amplifier.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/simple-amplifier.c b/sound/soc/codecs/simple-amplifier.c
-index 85524acf3e9c..c07e8a80b4b7 100644
---- a/sound/soc/codecs/simple-amplifier.c
-+++ b/sound/soc/codecs/simple-amplifier.c
-@@ -19,6 +19,7 @@
+diff --git a/Documentation/devicetree/bindings/sound/simple-amplifier.txt b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
+index 8647edae7af0..7182ac4f1e65 100644
+--- a/Documentation/devicetree/bindings/sound/simple-amplifier.txt
++++ b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
+@@ -4,9 +4,14 @@ Required properties:
+ - compatible : "dioo,dio2125" or "simple-audio-amplifier"
+ - enable-gpios : the gpio connected to the enable pin of the simple amplifier
  
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
-+#include <linux/regulator/consumer.h>
- #include <sound/soc.h>
++Optional properties:
++- VCC-supply   : power supply for the device, as covered
++                 in Documentation/devicetree/bindings/regulator/regulator.txt
++
+ Example:
  
- #define DRV_NAME "simple-amplifier"
-@@ -58,11 +59,14 @@ static const struct snd_soc_dapm_widget simple_amp_dapm_widgets[] = {
- 			       (SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)),
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
-+	SND_SOC_DAPM_REGULATOR_SUPPLY("VCC", 20, 0),
- };
- 
- static const struct snd_soc_dapm_route simple_amp_dapm_routes[] = {
- 	{ "DRV", NULL, "INL" },
- 	{ "DRV", NULL, "INR" },
-+	{ "OUTL", NULL, "VCC" },
-+	{ "OUTR", NULL, "VCC" },
- 	{ "OUTL", NULL, "DRV" },
- 	{ "OUTR", NULL, "DRV" },
+ amp: analog-amplifier {
+ 	compatible = "simple-audio-amplifier";
++	VCC-supply = <&regulator>;
+ 	enable-gpios = <&gpio GPIOH_3 0>;
  };
 -- 
 2.19.1
