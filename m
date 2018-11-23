@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: tidyup "prefix"
-	parsing on Doc" to the asoc tree
-Date: Fri, 23 Nov 2018 14:12:30 +0000 (GMT)
-Message-ID: <20181123141230.51EBF440078@finisterre.ee.mobilebroadband>
-References: <87va4qlz0w.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-scu-card: tidyup "prefix"
+	parsing" to the asoc tree
+Date: Fri, 23 Nov 2018 14:12:41 +0000 (GMT)
+Message-ID: <20181123141241.3AF1D440078@finisterre.ee.mobilebroadband>
+References: <87wop6lz1a.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 38208267AAB
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:12:32 +0100 (CET)
-In-Reply-To: <87va4qlz0w.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 20A65267929
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:12:43 +0100 (CET)
+In-Reply-To: <87wop6lz1a.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: tidyup "prefix" parsing on Doc
+   ASoC: simple-scu-card: tidyup "prefix" parsing
 
 has been applied to the asoc tree at
 
@@ -53,12 +53,12 @@ to this mail.
 Thanks,
 Mark
 
->From 264d15035eac5e779788c435bafb5c8319ffed81 Mon Sep 17 00:00:00 2001
+>From ca8d95c709378d0792c9dbacdab176a75e521ffb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Nov 2018 00:55:54 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: tidyup "prefix" parsing on Doc
+Date: Thu, 22 Nov 2018 00:55:40 +0000
+Subject: [PATCH] ASoC: simple-scu-card: tidyup "prefix" parsing
 
-audio-graph-scu-card.c is supporting "prefix" which is used to avoid
+simple-scu-card.c is supporting "prefix" which is used to avoid
 DAI naming conflict when CPU/Codec matching.
 But, sound card might have multi sub-devices, and each codec might need
 each prefix.
@@ -72,28 +72,30 @@ without this patch.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/audio-graph-scu-card.txt          | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/simple-scu-card.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-index 441dd6f29df1..a3610888e121 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-@@ -77,7 +77,6 @@ Example 2. 2 CPU 1 Codec (Mixing)
- 		compatible = "audio-graph-scu-card";
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index e650143eb532..7ae1901b2f85 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -157,10 +157,17 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 		if (ret < 0)
+ 			return ret;
  
- 		label = "sound-card";
--		prefix = "codec";
- 		routing = "codec Playback", "DAI0 Playback",
- 			  "codec Playback", "DAI1 Playback",
- 			  "DAI0 Capture",   "codec Capture";
-@@ -90,6 +89,7 @@ Example 2. 2 CPU 1 Codec (Mixing)
- 	audio-codec {
- 		...
++		/* check "prefix" from top node */
+ 		snd_soc_of_parse_audio_prefix(card,
+ 					      &priv->codec_conf,
+ 					      dai_link->codecs->of_node,
+ 					      PREFIX "prefix");
++		/* check "prefix" from each node if top doesn't have */
++		if (!priv->codec_conf.of_node)
++			snd_soc_of_parse_node_prefix(np,
++						     &priv->codec_conf,
++						     dai_link->codecs->of_node,
++						     "prefix");
+ 	}
  
-+		audio-graph-card,prefix = "codec";
- 		port {
- 			codec_endpoint0: endpoint {
- 				remote-endpoint = <&cpu_endpoint0>;
+ 	ret = asoc_simple_card_of_parse_tdm(np, &dai_props->dai);
 -- 
 2.19.1
