@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: add
-	snd_soc_of_parse_node_prefix()" to the asoc tree
-Date: Fri, 23 Nov 2018 14:13:01 +0000 (GMT)
-Message-ID: <20181123141301.CAD48440078@finisterre.ee.mobilebroadband>
-References: <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-amplifier: add VCC regulator
+	widget" to the asoc tree
+Date: Fri, 23 Nov 2018 14:13:34 +0000 (GMT)
+Message-ID: <20181123141334.A8245440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BA199267929
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:13:03 +0100 (CET)
-In-Reply-To: <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BD102678DF
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:13:37 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: add snd_soc_of_parse_node_prefix()
+   ASoC: simple-amplifier: add VCC regulator widget
 
 has been applied to the asoc tree at
 
@@ -53,79 +52,48 @@ to this mail.
 Thanks,
 Mark
 
->From 3b7103562c03cffb1a351f8c235b3bba2acd9e9b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 22 Nov 2018 00:55:09 +0000
-Subject: [PATCH] ASoC: soc-core: add snd_soc_of_parse_node_prefix()
+>From 6debd01a74b8c15ab3f2a6f7ff4a7dcbada101cb Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Thu, 22 Nov 2018 18:23:21 +0800
+Subject: [PATCH] ASoC: simple-amplifier: add VCC regulator widget
 
-Current ASoC has snd_soc_of_parse_audio_prefix() to get codec_conf
-settings from DT which is used to avoid DAI naming conflict when
-CPU/Codec matching.
+Amplifier may have assosicated regulator, so add a widget for it
+and appropriate route.
 
-Currently, it is parsing from "top node",
-but, we want to parse from "each sub node" if sound card had multi
-cpus/codecs.
-
-This patch adds new snd_soc_of_parse_node_prefix() to allow parsing
-settings from selected node.
-It is keeping existing snd_soc_of_parse_audio_prefix() by using macro.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  6 +++++-
- sound/soc/soc-core.c | 11 +++++------
- 2 files changed, 10 insertions(+), 7 deletions(-)
+ sound/soc/codecs/simple-amplifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 5a8b84140f01..93b7510e7f7d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1477,10 +1477,14 @@ int snd_soc_of_parse_tdm_slot(struct device_node *np,
- 			      unsigned int *rx_mask,
- 			      unsigned int *slots,
- 			      unsigned int *slot_width);
--void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
-+void snd_soc_of_parse_node_prefix(struct device_node *np,
- 				   struct snd_soc_codec_conf *codec_conf,
- 				   struct device_node *of_node,
- 				   const char *propname);
-+#define snd_soc_of_parse_audio_prefix(card, conf, node, name) \
-+	snd_soc_of_parse_node_prefix((card)->dev->of_node,    \
-+				     (conf), (node), (name))
-+
- int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname);
- unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6ddcf12bc030..012000de4bf0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3484,12 +3484,11 @@ int snd_soc_of_parse_tdm_slot(struct device_node *np,
- }
- EXPORT_SYMBOL_GPL(snd_soc_of_parse_tdm_slot);
+diff --git a/sound/soc/codecs/simple-amplifier.c b/sound/soc/codecs/simple-amplifier.c
+index 85524acf3e9c..c07e8a80b4b7 100644
+--- a/sound/soc/codecs/simple-amplifier.c
++++ b/sound/soc/codecs/simple-amplifier.c
+@@ -19,6 +19,7 @@
  
--void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
--				   struct snd_soc_codec_conf *codec_conf,
--				   struct device_node *of_node,
--				   const char *propname)
-+void snd_soc_of_parse_node_prefix(struct device_node *np,
-+				  struct snd_soc_codec_conf *codec_conf,
-+				  struct device_node *of_node,
-+				  const char *propname)
- {
--	struct device_node *np = card->dev->of_node;
- 	const char *str;
- 	int ret;
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
++#include <linux/regulator/consumer.h>
+ #include <sound/soc.h>
  
-@@ -3502,7 +3501,7 @@ void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
- 	codec_conf->of_node	= of_node;
- 	codec_conf->name_prefix	= str;
- }
--EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix);
-+EXPORT_SYMBOL_GPL(snd_soc_of_parse_node_prefix);
+ #define DRV_NAME "simple-amplifier"
+@@ -58,11 +59,14 @@ static const struct snd_soc_dapm_widget simple_amp_dapm_widgets[] = {
+ 			       (SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)),
+ 	SND_SOC_DAPM_OUTPUT("OUTL"),
+ 	SND_SOC_DAPM_OUTPUT("OUTR"),
++	SND_SOC_DAPM_REGULATOR_SUPPLY("VCC", 20, 0),
+ };
  
- int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname)
+ static const struct snd_soc_dapm_route simple_amp_dapm_routes[] = {
+ 	{ "DRV", NULL, "INL" },
+ 	{ "DRV", NULL, "INR" },
++	{ "OUTL", NULL, "VCC" },
++	{ "OUTR", NULL, "VCC" },
+ 	{ "OUTL", NULL, "DRV" },
+ 	{ "OUTR", NULL, "DRV" },
+ };
 -- 
 2.19.1
