@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ALSA: firewire-tascam: apply small
-	refactoring to handle several type of event for hwdep interface
-Date: Fri, 23 Nov 2018 13:13:06 +0900
-Message-ID: <20181123041307.22980-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: firewire-tascam: notify events of
+	change of state for userspace applications
+Date: Fri, 23 Nov 2018 13:13:07 +0900
+Message-ID: <20181123041307.22980-6-o-takashi@sakamocchi.jp>
 References: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 29BE3267A81
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:39 +0100 (CET)
-Received: by mail-pf1-f193.google.com with SMTP id h3so2767450pfg.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:39 -0800 (PST)
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C629267A8A
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:41 +0100 (CET)
+Received: by mail-pf1-f196.google.com with SMTP id c73so2736770pfe.13
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:41 -0800 (PST)
 In-Reply-To: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,41 +28,126 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: sbahling@suse.com, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In later commits, ALSA firewire-tascam driver will allow userspace
-applications to receive notifications about changes of device state,
-transferred in tx isochronous packet. At present, all of drivers in ALSA
-firewire stack have mechanism to notify change of status of packet
-streaming, thus it needs to distinguish these two types of notification.
+In former commits, ALSA firewire-tascam driver queues events to notify
+change of state of control surface to userspace via ALSA hwdep
+interface.
 
-This commit is a preparation for the above.
+This commit implements actual notification of the events. The events are
+not governed by real time, thus no need to care underrun.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-hwdep.c | 38 +++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+ include/uapi/sound/firewire.h        |  7 +++
+ sound/firewire/tascam/amdtp-tascam.c |  2 +
+ sound/firewire/tascam/tascam-hwdep.c | 65 +++++++++++++++++++++++++++-
+ 3 files changed, 72 insertions(+), 2 deletions(-)
 
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index bb067efb09c6..ae12826ed641 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -12,6 +12,7 @@
+ #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
+ #define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
+ #define SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION	0x64776479
++#define SNDRV_FIREWIRE_EVENT_TASCAM_CONTROL	0x7473636d
+ 
+ struct snd_firewire_event_common {
+ 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
+@@ -59,12 +60,18 @@ struct snd_firewire_tascam_change {
+ 	__be32 after;
+ };
+ 
++struct snd_firewire_event_tascam_control {
++	unsigned int type;
++	struct snd_firewire_tascam_change changes[0];
++};
++
+ union snd_firewire_event {
+ 	struct snd_firewire_event_common            common;
+ 	struct snd_firewire_event_lock_status       lock_status;
+ 	struct snd_firewire_event_dice_notification dice_notification;
+ 	struct snd_firewire_event_efw_response      efw_response;
+ 	struct snd_firewire_event_digi00x_message   digi00x_message;
++	struct snd_firewire_event_tascam_control    tascam_control;
+ 	struct snd_firewire_event_motu_notification motu_notification;
+ };
+ 
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+index 0e8088c9ada9..a52d1f76c610 100644
+--- a/sound/firewire/tascam/amdtp-tascam.c
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -156,6 +156,8 @@ static void read_status_messages(struct amdtp_stream *s,
+ 				if (++tscm->push_pos >= SND_TSCM_QUEUE_COUNT)
+ 					tscm->push_pos = 0;
+ 				spin_unlock_irq(&tscm->lock);
++
++				wake_up(&tscm->hwdep_wait);
+ 			}
+ 		}
+ 
 diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index 9afa827af05d..8f34cede2e9f 100644
+index 8f34cede2e9f..0414abf5daa8 100644
 --- a/sound/firewire/tascam/tascam-hwdep.c
 +++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -16,14 +16,30 @@
+@@ -35,6 +35,65 @@ static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
+ 	return count;
+ }
  
- #include "tascam.h"
- 
-+static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
-+				   long count, loff_t *offset)
++static long tscm_hwdep_read_queue(struct snd_tscm *tscm, char __user *buf,
++				  long remained, loff_t *offset)
 +{
-+	struct snd_firewire_event_lock_status event = {
-+		.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
-+	};
++	char __user *pos = buf;
++	unsigned int type = SNDRV_FIREWIRE_EVENT_TASCAM_CONTROL;
++	struct snd_firewire_tascam_change *entries = tscm->queue;
++	long count;
 +
-+	event.status = (tscm->dev_lock_count > 0);
-+	tscm->dev_lock_changed = false;
-+	count = min_t(long, count, sizeof(event));
++	// At least, one control event can be copied.
++	if (remained < sizeof(type) + sizeof(*entries)) {
++		spin_unlock_irq(&tscm->lock);
++		return -EINVAL;
++	}
++
++	// Copy the type field later.
++	count = sizeof(type);
++	remained -= sizeof(type);
++	pos += sizeof(type);
++
++	while (true) {
++		unsigned int head_pos;
++		unsigned int tail_pos;
++		unsigned int length;
++
++		if (tscm->pull_pos == tscm->push_pos)
++			break;
++		else if (tscm->pull_pos < tscm->push_pos)
++			tail_pos = tscm->push_pos;
++		else
++			tail_pos = SND_TSCM_QUEUE_COUNT;
++		head_pos = tscm->pull_pos;
++
++		length = (tail_pos - head_pos) * sizeof(*entries);
++		if (remained < length)
++			length = rounddown(remained, sizeof(*entries));
++		if (length == 0)
++			break;
++
++		spin_unlock_irq(&tscm->lock);
++		if (copy_to_user(pos, &entries[head_pos], length))
++			return -EFAULT;
++
++		spin_lock_irq(&tscm->lock);
++
++		tscm->pull_pos = tail_pos % SND_TSCM_QUEUE_COUNT;
++
++		count += length;
++		remained -= length;
++		pos += length;
++	}
 +
 +	spin_unlock_irq(&tscm->lock);
 +
-+	if (copy_to_user(buf, &event, count))
++	if (copy_to_user(buf, &type, sizeof(type)))
 +		return -EFAULT;
 +
 +	return count;
@@ -71,36 +156,32 @@ index 9afa827af05d..8f34cede2e9f 100644
  static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
  		       loff_t *offset)
  {
- 	struct snd_tscm *tscm = hwdep->private_data;
- 	DEFINE_WAIT(wait);
--	union snd_firewire_event event = {
--		.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS,
--	};
+@@ -43,7 +102,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
  
  	spin_lock_irq(&tscm->lock);
  
-@@ -37,15 +53,13 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		spin_lock_irq(&tscm->lock);
- 	}
+-	while (!tscm->dev_lock_changed) {
++	while (!tscm->dev_lock_changed && tscm->push_pos == tscm->pull_pos) {
+ 		prepare_to_wait(&tscm->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&tscm->lock);
+ 		schedule();
+@@ -56,6 +115,8 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 	// NOTE: The acquired lock should be released in callee side.
+ 	if (tscm->dev_lock_changed) {
+ 		count = tscm_hwdep_read_locked(tscm, buf, count, offset);
++	} else if (tscm->push_pos != tscm->pull_pos) {
++		count = tscm_hwdep_read_queue(tscm, buf, count, offset);
+ 	} else {
+ 		spin_unlock_irq(&tscm->lock);
+ 		count = 0;
+@@ -73,7 +134,7 @@ static __poll_t hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 	poll_wait(file, &tscm->hwdep_wait, wait);
  
--	event.lock_status.status = (tscm->dev_lock_count > 0);
--	tscm->dev_lock_changed = false;
--
--	spin_unlock_irq(&tscm->lock);
--
--	count = min_t(long, count, sizeof(event.lock_status));
--
--	if (copy_to_user(buf, &event, count))
--		return -EFAULT;
-+	// NOTE: The acquired lock should be released in callee side.
-+	if (tscm->dev_lock_changed) {
-+		count = tscm_hwdep_read_locked(tscm, buf, count, offset);
-+	} else {
-+		spin_unlock_irq(&tscm->lock);
-+		count = 0;
-+	}
- 
- 	return count;
- }
+ 	spin_lock_irq(&tscm->lock);
+-	if (tscm->dev_lock_changed)
++	if (tscm->dev_lock_changed || tscm->push_pos != tscm->pull_pos)
+ 		events = EPOLLIN | EPOLLRDNORM;
+ 	else
+ 		events = 0;
 -- 
 2.19.1
