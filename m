@@ -1,20 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/5] ALSA: firewire-tascam: notify events of
-	change of state for userspace applications
-Date: Fri, 23 Nov 2018 13:13:07 +0900
-Message-ID: <20181123041307.22980-6-o-takashi@sakamocchi.jp>
-References: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH v9 8/8] arm64: dts: allwinner: a64: enable
+	sound on Pinebook
+Date: Thu, 22 Nov 2018 20:15:02 -0800
+Message-ID: <4447541.czlqnMh8c9@anarsoul-thinkpad>
+References: <20181122102325.29495-1-wens@csie.org>
+ <20181122102325.29495-9-wens@csie.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C629267A8A
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:41 +0100 (CET)
-Received: by mail-pf1-f196.google.com with SMTP id c73so2736770pfe.13
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:41 -0800 (PST)
-In-Reply-To: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC1B9267865
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:15:04 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id w6so2505247pgl.6
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:15:04 -0800 (PST)
+In-Reply-To: <20181122102325.29495-9-wens@csie.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,164 +25,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: sbahling@suse.com, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, ALSA firewire-tascam driver queues events to notify
-change of state of control surface to userspace via ALSA hwdep
-interface.
+On Thursday, November 22, 2018 2:23:25 AM PST Chen-Yu Tsai wrote:
+> From: Vasily Khoruzhick <anarsoul@gmail.com>
+> 
+> The Pinebook has a headphone jack tied to the HP headphone output of
+> the SoC, and internal speakers connected to the LINEOUT of the SoC,
+> through a standalone amplifier.
+> 
+> This commit enables I2S, digital and analog parts of audio codec on
+> Pinebook, along with a device node for the external amplifier.
+> 
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> [wens@csie.org: dropped headphone_amp; added headphone amp regulator supply;
+> fixed speaker_amp node name and sound-name-prefix name]
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+>  .../dts/allwinner/sun50i-a64-pinebook.dts     | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+> b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts index
+> ec537c529726..b6d0b926a2ff 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+> @@ -74,6 +74,32 @@
+>  		compatible = "mmc-pwrseq-simple";
+>  		reset-gpios = <&r_pio 0 2 GPIO_ACTIVE_LOW>; /* PL2 */
+>  	};
+> +
+> +	speaker_amp: audio-amplifier {
+> +		compatible = "simple-audio-amplifier";
+> +		/*
+> +		 * TODO This is actually a fixed regulator controlled by
+> +		 * the GPIO line on the PMIC. This should be corrected
+> +		 * once GPIO support is added for this PMIC.
+> +		 */
+> +		VCC-supply = <&reg_ldo_io0>;
+> +		enable-gpios = <&pio 7 7 GPIO_ACTIVE_HIGH>; /* PH7 */
+> +		sound-name-prefix = "Speaker Amp";
+> +	};
+> +
+> +};
+> +
+> +&codec {
+> +	hpvcc-supply = <&reg_eldo1>;
 
-This commit implements actual notification of the events. The events are
-not governed by real time, thus no need to care underrun.
+It should be a property of codec_analog, not codec
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/uapi/sound/firewire.h        |  7 +++
- sound/firewire/tascam/amdtp-tascam.c |  2 +
- sound/firewire/tascam/tascam-hwdep.c | 65 +++++++++++++++++++++++++++-
- 3 files changed, 72 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index bb067efb09c6..ae12826ed641 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -12,6 +12,7 @@
- #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
- #define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
- #define SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION	0x64776479
-+#define SNDRV_FIREWIRE_EVENT_TASCAM_CONTROL	0x7473636d
- 
- struct snd_firewire_event_common {
- 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
-@@ -59,12 +60,18 @@ struct snd_firewire_tascam_change {
- 	__be32 after;
- };
- 
-+struct snd_firewire_event_tascam_control {
-+	unsigned int type;
-+	struct snd_firewire_tascam_change changes[0];
-+};
-+
- union snd_firewire_event {
- 	struct snd_firewire_event_common            common;
- 	struct snd_firewire_event_lock_status       lock_status;
- 	struct snd_firewire_event_dice_notification dice_notification;
- 	struct snd_firewire_event_efw_response      efw_response;
- 	struct snd_firewire_event_digi00x_message   digi00x_message;
-+	struct snd_firewire_event_tascam_control    tascam_control;
- 	struct snd_firewire_event_motu_notification motu_notification;
- };
- 
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
-index 0e8088c9ada9..a52d1f76c610 100644
---- a/sound/firewire/tascam/amdtp-tascam.c
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -156,6 +156,8 @@ static void read_status_messages(struct amdtp_stream *s,
- 				if (++tscm->push_pos >= SND_TSCM_QUEUE_COUNT)
- 					tscm->push_pos = 0;
- 				spin_unlock_irq(&tscm->lock);
-+
-+				wake_up(&tscm->hwdep_wait);
- 			}
- 		}
- 
-diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
-index 8f34cede2e9f..0414abf5daa8 100644
---- a/sound/firewire/tascam/tascam-hwdep.c
-+++ b/sound/firewire/tascam/tascam-hwdep.c
-@@ -35,6 +35,65 @@ static long tscm_hwdep_read_locked(struct snd_tscm *tscm, char __user *buf,
- 	return count;
- }
- 
-+static long tscm_hwdep_read_queue(struct snd_tscm *tscm, char __user *buf,
-+				  long remained, loff_t *offset)
-+{
-+	char __user *pos = buf;
-+	unsigned int type = SNDRV_FIREWIRE_EVENT_TASCAM_CONTROL;
-+	struct snd_firewire_tascam_change *entries = tscm->queue;
-+	long count;
-+
-+	// At least, one control event can be copied.
-+	if (remained < sizeof(type) + sizeof(*entries)) {
-+		spin_unlock_irq(&tscm->lock);
-+		return -EINVAL;
-+	}
-+
-+	// Copy the type field later.
-+	count = sizeof(type);
-+	remained -= sizeof(type);
-+	pos += sizeof(type);
-+
-+	while (true) {
-+		unsigned int head_pos;
-+		unsigned int tail_pos;
-+		unsigned int length;
-+
-+		if (tscm->pull_pos == tscm->push_pos)
-+			break;
-+		else if (tscm->pull_pos < tscm->push_pos)
-+			tail_pos = tscm->push_pos;
-+		else
-+			tail_pos = SND_TSCM_QUEUE_COUNT;
-+		head_pos = tscm->pull_pos;
-+
-+		length = (tail_pos - head_pos) * sizeof(*entries);
-+		if (remained < length)
-+			length = rounddown(remained, sizeof(*entries));
-+		if (length == 0)
-+			break;
-+
-+		spin_unlock_irq(&tscm->lock);
-+		if (copy_to_user(pos, &entries[head_pos], length))
-+			return -EFAULT;
-+
-+		spin_lock_irq(&tscm->lock);
-+
-+		tscm->pull_pos = tail_pos % SND_TSCM_QUEUE_COUNT;
-+
-+		count += length;
-+		remained -= length;
-+		pos += length;
-+	}
-+
-+	spin_unlock_irq(&tscm->lock);
-+
-+	if (copy_to_user(buf, &type, sizeof(type)))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
- static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		       loff_t *offset)
- {
-@@ -43,7 +102,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 
- 	spin_lock_irq(&tscm->lock);
- 
--	while (!tscm->dev_lock_changed) {
-+	while (!tscm->dev_lock_changed && tscm->push_pos == tscm->pull_pos) {
- 		prepare_to_wait(&tscm->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
- 		spin_unlock_irq(&tscm->lock);
- 		schedule();
-@@ -56,6 +115,8 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 	// NOTE: The acquired lock should be released in callee side.
- 	if (tscm->dev_lock_changed) {
- 		count = tscm_hwdep_read_locked(tscm, buf, count, offset);
-+	} else if (tscm->push_pos != tscm->pull_pos) {
-+		count = tscm_hwdep_read_queue(tscm, buf, count, offset);
- 	} else {
- 		spin_unlock_irq(&tscm->lock);
- 		count = 0;
-@@ -73,7 +134,7 @@ static __poll_t hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
- 	poll_wait(file, &tscm->hwdep_wait, wait);
- 
- 	spin_lock_irq(&tscm->lock);
--	if (tscm->dev_lock_changed)
-+	if (tscm->dev_lock_changed || tscm->push_pos != tscm->pull_pos)
- 		events = EPOLLIN | EPOLLRDNORM;
- 	else
- 		events = 0;
--- 
-2.19.1
+> +	status = "okay";
+> +};
+> +
+> +&codec_analog {
+> +	status = "okay";
+> +};
+> +
+> +&dai {
+> +	status = "okay";
+>  };
+> 
+>  &ehci0 {
+> @@ -277,6 +303,29 @@
+>  	vcc-hdmi-supply = <&reg_dldo1>;
+>  };
+> 
+> +&sound {
+> +	status = "okay";
+> +	simple-audio-card,aux-devs = <&codec_analog>, <&speaker_amp>;
+> +	simple-audio-card,widgets = "Microphone", "Internal Microphone Left",
+> +				    "Microphone", "Internal Microphone Right",
+> +				    "Headphone", "Headphone Jack",
+> +				    "Speaker", "Internal Speaker";
+> +	simple-audio-card,routing =
+> +			"Left DAC", "AIF1 Slot 0 Left",
+> +			"Right DAC", "AIF1 Slot 0 Right",
+> +			"Speaker Amp INL", "LINEOUT",
+> +			"Speaker Amp INR", "LINEOUT",
+> +			"Internal Speaker", "Speaker Amp OUTL",
+> +			"Internal Speaker", "Speaker Amp OUTR",
+> +			"Headphone Jack", "HP",
+> +			"AIF1 Slot 0 Left ADC", "Left ADC",
+> +			"AIF1 Slot 0 Right ADC", "Right ADC",
+> +			"Internal Microphone Left", "MBIAS",
+> +			"MIC1", "Internal Microphone Left",
+> +			"Internal Microphone Right", "HBIAS",
+> +			"MIC2", "Internal Microphone Right";
+> +};
+> +
+>  &uart0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&uart0_pb_pins>;
