@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/10] ASoC: soc-core: add
-	snd_soc_of_parse_node_prefix()
-Date: Fri, 23 Nov 2018 13:53:13 +0000
-Message-ID: <20181123135313.GH2089@sirena.org.uk>
-References: <871s7endnu.wl-kuninori.morimoto.gx@renesas.com>
- <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: omap-dmic: Add pm_qos handling to avoid
+	overruns with CPU_IDLE" to the asoc tree
+Date: Fri, 23 Nov 2018 14:10:49 +0000 (GMT)
+Message-ID: <20181123141049.29479440078@finisterre.ee.mobilebroadband>
+References: <20181114110623.30932-4-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3886597822658132010=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 59D732677E8
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 14:53:20 +0100 (CET)
-In-Reply-To: <87zhu2lz26.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 898BE2678DF
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 15:10:52 +0100 (CET)
+In-Reply-To: <20181114110623.30932-4-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, matt@ranostay.consulting, tony@atomide.com, hns@goldelico.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pyra-handheld.com, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3886597822658132010==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="EiqC2rRjhiyODL92"
-Content-Disposition: inline
+   ASoC: omap-dmic: Add pm_qos handling to avoid overruns with CPU_IDLE
 
+has been applied to the asoc tree at
 
---EiqC2rRjhiyODL92
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Nov 22, 2018 at 12:55:09AM +0000, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +void snd_soc_of_parse_node_prefix(struct device_node *np,
->  				   struct snd_soc_codec_conf *codec_conf,
->  				   struct device_node *of_node,
->  				   const char *propname);
-> +#define snd_soc_of_parse_audio_prefix(card, conf, node, name) \
-> +	snd_soc_of_parse_node_prefix((card)->dev->of_node,    \
-> +				     (conf), (node), (name))
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This is basically fine but it'd be better to make this a static inline
-rather than a #define - it helps with error messages and type safety.
-I'll apply the series since otherwise this looks good, please send a
-followup patch fixing this.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +
->  int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
->  				   const char *propname);
->  unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 6ddcf12..012000d 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -3484,12 +3484,11 @@ int snd_soc_of_parse_tdm_slot(struct device_node =
-*np,
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_of_parse_tdm_slot);
-> =20
-> -void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
-> -				   struct snd_soc_codec_conf *codec_conf,
-> -				   struct device_node *of_node,
-> -				   const char *propname)
-> +void snd_soc_of_parse_node_prefix(struct device_node *np,
-> +				  struct snd_soc_codec_conf *codec_conf,
-> +				  struct device_node *of_node,
-> +				  const char *propname)
->  {
-> -	struct device_node *np =3D card->dev->of_node;
->  	const char *str;
->  	int ret;
-> =20
-> @@ -3502,7 +3501,7 @@ void snd_soc_of_parse_audio_prefix(struct snd_soc_c=
-ard *card,
->  	codec_conf->of_node	=3D of_node;
->  	codec_conf->name_prefix	=3D str;
->  }
-> -EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix);
-> +EXPORT_SYMBOL_GPL(snd_soc_of_parse_node_prefix);
-> =20
->  int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
->  				   const char *propname)
-> --=20
-> 2.7.4
->=20
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---EiqC2rRjhiyODL92
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From ffdcc3638c58d55a6fa68b6e5dfd4fb4109652eb Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Wed, 14 Nov 2018 13:06:23 +0200
+Subject: [PATCH] ASoC: omap-dmic: Add pm_qos handling to avoid overruns with
+ CPU_IDLE
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv4BkgACgkQJNaLcl1U
-h9AwYQf/eXynb6X4LoH1/rEc4lWGDwyYPKfLnpXnMhlzgDCr35nBOQpVgbikRon/
-5+VJnZeK75bxFwSF1CGb6JyBy9KQvaGUNsHhiFtkB5yiIWoB/L0fr3ce42njDmZK
-cAivRkx93QXaoo7k6NXAbC2eanva7+d5XlcNnuDj33Z7qa3S2p4YAg7GE5XdoZPE
-uZoOUbNBslB6NemLdd9jEU8X/RtKRFwoSq0n1KPVdZHKmFE7CwAjSANnFdl66aXv
-xWteebw48kTozOL3J3fAwd9waHpBjGnC1DkW3daOPlsV1+NPW8OCYtfjj7JFAg47
-rlGAXUuY7RRr36OlbzTZgObbjUY0MA==
-=IeKV
------END PGP SIGNATURE-----
+We need to block sleep states which would require longer time to leave than
+the time the DMA must react to the DMA request in order to keep the FIFO
+serviced without overrun.
 
---EiqC2rRjhiyODL92--
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/omap/omap-dmic.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---===============3886597822658132010==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3886597822658132010==--
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index fe966272bd0c..cba9645b6487 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -48,6 +48,8 @@ struct omap_dmic {
+ 	struct device *dev;
+ 	void __iomem *io_base;
+ 	struct clk *fclk;
++	struct pm_qos_request pm_qos_req;
++	int latency;
+ 	int fclk_freq;
+ 	int out_freq;
+ 	int clk_div;
+@@ -124,6 +126,8 @@ static void omap_dmic_dai_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	mutex_lock(&dmic->mutex);
+ 
++	pm_qos_remove_request(&dmic->pm_qos_req);
++
+ 	if (!dai->active)
+ 		dmic->active = 0;
+ 
+@@ -228,6 +232,8 @@ static int omap_dmic_dai_hw_params(struct snd_pcm_substream *substream,
+ 	/* packet size is threshold * channels */
+ 	dma_data = snd_soc_dai_get_dma_data(dai, substream);
+ 	dma_data->maxburst = dmic->threshold * channels;
++	dmic->latency = (OMAP_DMIC_THRES_MAX - dmic->threshold) * USEC_PER_SEC /
++			params_rate(params);
+ 
+ 	return 0;
+ }
+@@ -238,6 +244,9 @@ static int omap_dmic_dai_prepare(struct snd_pcm_substream *substream,
+ 	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
+ 	u32 ctrl;
+ 
++	if (pm_qos_request_active(&dmic->pm_qos_req))
++		pm_qos_update_request(&dmic->pm_qos_req, dmic->latency);
++
+ 	/* Configure uplink threshold */
+ 	omap_dmic_write(dmic, OMAP_DMIC_FIFO_CTRL_REG, dmic->threshold);
+ 
+-- 
+2.19.1
