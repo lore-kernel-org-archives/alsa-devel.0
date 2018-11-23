@@ -1,117 +1,114 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/5] ALSA: firewire-tascam: support
- notification of
-Date: Fri, 23 Nov 2018 13:19:06 +0900
-Message-ID: <20181123041906.GA23251@sakamocchi.jp>
-References: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH v9 0/8] Add support for audiocodec in Allwinner A64
+Date: Thu, 22 Nov 2018 20:26:14 -0800
+Message-ID: <2007258.VzpTJLJblp@anarsoul-thinkpad>
+References: <20181122102325.29495-1-wens@csie.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com
- [209.85.215.174])
- by alsa0.perex.cz (Postfix) with ESMTP id D0804267865
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:19:14 +0100 (CET)
-Received: by mail-pg1-f174.google.com with SMTP id 17so2515809pgg.1
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:19:14 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, sbahling@suse.com
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181122102325.29495-1-wens@csie.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-Oops, the subject line is truncated... It should be
-"ALSA: firewire-tascam: support notification of change of state for
-control surface". (My text editor works for the surplus.)
+On Thursday, November 22, 2018 2:23:17 AM PST Chen-Yu Tsai wrote:
+> Hi everyone,
+> 
+> This is v9 of the A64 audio codec series, originally started by Vasily.
+> These are the last changes to make the A64 audio codec work correctly,
+> and be accurately represented in the device tree and in software.
+> 
+> Notably, the new driver changes cover regulator supplies for the simple
+> audio amplifier, which is used in the Pinebook for the internal
+> speakers, and the audio codec's internal headphone amp. There's also an
+> extra patch that enables SDM fractional clock support for the audio PLL
+> on the A64, which gives us accurate audio playback.
+> 
+> Patch 1 & 2 add the cpvdd regulator supply to the sun50i-codec-analog
+> dt bindings & driver.
+> 
+> Patch 3 & 4 add a regulator supply to the simple-audio-amplifier dt
+> bindings & driver.
+> 
+> Patch 5 adds SDM fractional clock support for the audio PLL on the A64.
+> 
+> Patch 6 ~ 8 add the device tree bits and enables audio on several
+> boards.
+> 
+> I have one extra patch for the Bananapi M64 that's not included here,
+> as I'm waiting for an accessory to test the microphone bias. I'll send
+> that one out once it's tested.
+> 
+> As always, we'll take the clock and dts patches after Mark has merged
+> the ASoC ones.
+> 
+> And a big thanks to Vasily for having worked on this for so long.
 
-On Fri, Nov 23, 2018 at 01:13:02PM +0900, Takashi Sakamoto wrote:
-> Hi,
-> 
-> Units of TASCAM FireWire series transfer its state in tx isochronous
-> packets. The way to handle change of the state is a longstanding issue
-> since I firstly reveal the mechanism in this list[1].
-> 
-> In this time, Scott Bahling dedicates for further investigation to seek
-> better implementation[2][3][4]. Finally, we identified meaning of the
-> most of bits in the image of state, and decided which changes are worth
-> for userspace applications to handle as events.
-> 
-> This commit adds support notification of the events. Userspace
-> applications can handle the notification via ALSA hwdep interface.
-> Furthermore, they can retrieve image of the latest states via the
-> interface.
-> 
-> Changes from the initial proposal[5]:
->  - obsolete usage of mmap(2) due to several disadvantages. Instead, use
->    event queue for change notification, and add ioctl command to retrieve
->    image of states.
-> 
-> Changes from the latest work[6]:
->  - To reduce time in an interrupt context in which tx isochronous packets
->    are handled, data in the event and the image is passed to userspace in
->    big-endian order. Additionally, image of the states are passed to
->    userspace in big-endian order as well. Userspace applications are
->    responsible to convert the data in host-endianness order.
->  - improve efficiency to copy batch of events to userspace in hwdep
->    interface
->  - rename structure and macro name.
-> 
-> This patchset is also available in my remote branch for backport purpose
-> to Linux v4.17 or later[7].
-> 
-> I've already prepare userspace implementation; libhinwa. A
-> 'topic/firewire-tascam-pr' remote branch includes patchset for the
-> additional feature[8]. This library produces GObject class to handle the
-> event notification and emits GObject signal, and has a method
-> 'HinawaSndTscm.get_state()', with enough consideration to endianness.
-> Developers can process change of state with these two APIs.
-> 
-> > Scott
-> 
-> As the above, I changed method name from 'HinawaSndTscm.get_status()'.
-> I'd like you to change your local implementation for 'hinawa-utils'.
-> Sorry to add further work to you.
-> 
-> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094817.html
-> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140051.html
-> [3] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-October/140593.html
-> [4] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-November/141395.html
-> [5] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace
-> [6] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-take3
-> [7] https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-pr
-> [8] https://github.com/takaswie/libhinawa/tree/topic/tascam-userspace-pr
-> 
+Thank you for picking it up!
+
+Just a minor note: hpvcc-supply should be a property of codec_analog in 
+sun50i-a64-pinebook.dts
+
+Otherwise looks fine, tested on Pinebook and Pine64-LTS.
+
+Tested-by: Vasily Khoruzhick <anarsoul@gmail.com> 
+
 > Regards
+> ChenYu
 > 
-> Takashi Sakamoto (5):
->   ALSA: firewire-tascam: pick up data of state from tx isochronous
->     pakcets
->   ALSA: firewire-tascam: add new hwdep ioctl command to get state image
->   ALSA: firewire-tascam: queue events for change of control surface
->   ALSA: firewire-tascam: apply small refactoring to handle several type
->     of event for hwdep interface
->   ALSA: firewire-tascam: notify events of change of state for userspace
->     applications
+> v9: - Dropped simple amplifier headphone amp device tree changes
+>     - Dropped "make enable-gpio optional for simple amplifier"
+>     - Lowered oversampling rate from 512 to 128
+>     - Add regulator supply for audio codec CPVDD (headphone amp charge pump)
+> - Hook up CPVDD regulator in board device trees
+>     - Add patch to enable SDM fractional clock support for audio PLL on A64
+> v8: - drop merged patches
+>     - add regulator property for simple amplifier, make enable-gpio
+>       optional
+>     - add regulator to speaker amp, introduce headphone amp
+> v7: - drop 'Mic' and 'Headset Mic' from dtsi
+>     - move AIF1 Slot 0 ADC to ADC route to sun8i-codec
+>     - drop BIAS routes for Pine64 and SoPine
+> v6: - driver patches has been merged through ASoC tree
+>     - rebase onto 4.20-rc1
+>     - Drop 'Speaker' from routes on sopine and pine64, they don't have
+>       speaker.
+> v5: - collect all the tags
+> v4: - dts: don't use 'Mic' and 'Headset Mic' widgets from sun8i-codec,
+>       define our board-level widgets instead.
+> v3: - renamed sunxi-adda-pr-regmap to sun8i-adda-pr-regmap
+>     - use ilog2() to calculate reg value for LRCK div instead of using a
+>       table
+> v2: - Use simple-amplifier for speaker amp on Pinebook
+>     - Rename sun50i-a64-i2s to sun50i-a64-codec-i2s to preserve compatible
+>       string for other 3 I2S modules in A64 in case if there's any
+>       incompatibility with H3
 > 
->  include/uapi/sound/firewire.h        |  20 +++++
->  sound/firewire/tascam/amdtp-tascam.c |  51 +++++++++++-
->  sound/firewire/tascam/tascam-hwdep.c | 115 +++++++++++++++++++++++----
->  sound/firewire/tascam/tascam.h       |   9 +++
->  4 files changed, 180 insertions(+), 15 deletions(-)
+> Chen-Yu Tsai (3):
+>   ASoC: dt-bindings: sun50i-codec-analog: Add headphone amp regulator
+>     supply
+>   ASoC: sunxi: sun50i-codec-analog: Add support for cpvdd regulator
+>     supply
+>   clk: sunxi-ng: sun50i: a64: Use sigma-delta modulation for audio PLL
 > 
-> -- 
-> 2.19.1
+> Vasily Khoruzhick (5):
+>   ASoC: dt-bindings: add regulator property to simple amplifier
+>   ASoC: simple-amplifier: add VCC regulator widget
+>   arm64: dts: allwinner: a64: add nodes necessary for analog sound
+>     support
+>   arm64: dts: allwinner: a64: enable sound on Pine64 and SoPine
+>   arm64: dts: allwinner: a64: enable sound on Pinebook
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  .../bindings/sound/simple-amplifier.txt       |  5 ++
+>  .../bindings/sound/sun50i-codec-analog.txt    |  2 +
+>  .../boot/dts/allwinner/sun50i-a64-pine64.dts  | 27 ++++++++++
+>  .../dts/allwinner/sun50i-a64-pinebook.dts     | 49 +++++++++++++++++
+>  .../allwinner/sun50i-a64-sopine-baseboard.dts | 26 +++++++++
+>  .../boot/dts/allwinner/sun50i-a64-sopine.dtsi |  4 ++
+>  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 54 +++++++++++++++++++
+>  drivers/clk/sunxi-ng/ccu-sun50i-a64.c         | 37 ++++++++-----
+>  sound/soc/codecs/simple-amplifier.c           |  4 ++
+>  sound/soc/sunxi/sun50i-codec-analog.c         |  2 +
+>  10 files changed, 197 insertions(+), 13 deletions(-)
