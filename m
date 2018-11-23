@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: firewire-tascam: pick up data of
-	state from tx isochronous pakcets
-Date: Fri, 23 Nov 2018 13:13:03 +0900
-Message-ID: <20181123041307.22980-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: firewire-tascam: add new hwdep ioctl
+	command to get state image
+Date: Fri, 23 Nov 2018 13:13:04 +0900
+Message-ID: <20181123041307.22980-3-o-takashi@sakamocchi.jp>
 References: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id DB04926786E
- for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:33 +0100 (CET)
-Received: by mail-pf1-f196.google.com with SMTP id c72so2754312pfc.6
- for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:33 -0800 (PST)
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6E71267865
+ for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2018 05:13:35 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id z10so2504095pgp.7
+ for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2018 20:13:35 -0800 (PST)
 In-Reply-To: <20181123041307.22980-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,79 +28,72 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: sbahling@suse.com, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Units of TASCAM FireWire series multiplex PCM frames and state of
-control surface into the same tx isochronous packets. One isochronous
-packet includes a part of the state in a quadlet data. An image of the
-state consists of 64 quadlet data.
+In a previous commit, ALSA firewire-tascam driver stores state image
+from tx isochronous packets. This image includes states of knob, fader,
+button of control surface, level of gain/volume of each physical
+inputs/outputs, and so on. It's useful for userspace applications to
+read whole of the image.
 
-This commit demultiplexes the state from tx isochronous packets.
+This commit adds a unique ioctl command for ALSA hwdep interface for the
+purpose. For actual meaning of each bits in this image, please refer to
+discussion in alsa-devel[1].
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-October/140785.html
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/firewire.h        |  2 ++
- sound/firewire/tascam/amdtp-tascam.c | 17 ++++++++++++++++-
- sound/firewire/tascam/tascam.h       |  3 +++
- 3 files changed, 21 insertions(+), 1 deletion(-)
+ include/uapi/sound/firewire.h        |  5 +++++
+ sound/firewire/tascam/tascam-hwdep.c | 10 ++++++++++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index f0a547d86679..b9bc4bb1756b 100644
+index b9bc4bb1756b..012f81bf4750 100644
 --- a/include/uapi/sound/firewire.h
 +++ b/include/uapi/sound/firewire.h
-@@ -88,4 +88,6 @@ struct snd_firewire_get_info {
-  * Returns -EBUSY if the driver is already streaming.
-  */
+@@ -66,6 +66,7 @@ union snd_firewire_event {
+ #define SNDRV_FIREWIRE_IOCTL_GET_INFO _IOR('H', 0xf8, struct snd_firewire_get_info)
+ #define SNDRV_FIREWIRE_IOCTL_LOCK      _IO('H', 0xf9)
+ #define SNDRV_FIREWIRE_IOCTL_UNLOCK    _IO('H', 0xfa)
++#define SNDRV_FIREWIRE_IOCTL_TASCAM_STATE _IOR('H', 0xfb, struct snd_firewire_tascam_state)
  
-+#define SNDRV_FIREWIRE_TASCAM_STATE_COUNT	64
+ #define SNDRV_FIREWIRE_TYPE_DICE	1
+ #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
+@@ -90,4 +91,8 @@ struct snd_firewire_get_info {
+ 
+ #define SNDRV_FIREWIRE_TASCAM_STATE_COUNT	64
+ 
++struct snd_firewire_tascam_state {
++	__be32 data[SNDRV_FIREWIRE_TASCAM_STATE_COUNT];
++};
 +
  #endif /* _UAPI_SOUND_FIREWIRE_H_INCLUDED */
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
-index ab482423c165..516cb931fd5e 100644
---- a/sound/firewire/tascam/amdtp-tascam.c
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -117,6 +117,21 @@ int amdtp_tscm_add_pcm_hw_constraints(struct amdtp_stream *s,
- 	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
+diff --git a/sound/firewire/tascam/tascam-hwdep.c b/sound/firewire/tascam/tascam-hwdep.c
+index 4e4c1e9020e8..a80397116c48 100644
+--- a/sound/firewire/tascam/tascam-hwdep.c
++++ b/sound/firewire/tascam/tascam-hwdep.c
+@@ -123,6 +123,14 @@ static int hwdep_unlock(struct snd_tscm *tscm)
+ 	return err;
  }
  
-+static void read_status_messages(struct amdtp_stream *s,
-+				 __be32 *buffer, unsigned int data_blocks)
++static int tscm_hwdep_state(struct snd_tscm *tscm, void __user *arg)
 +{
-+	struct snd_tscm *tscm = container_of(s, struct snd_tscm, tx_stream);
-+	int i;
++	if (copy_to_user(arg, tscm->state, sizeof(tscm->state)))
++		return -EFAULT;
 +
-+	for (i = 0; i < data_blocks; i++) {
-+		unsigned int index;
-+
-+		index = be32_to_cpu(buffer[0]) % SNDRV_FIREWIRE_TASCAM_STATE_COUNT;
-+		tscm->state[index] = buffer[s->data_block_quadlets - 1];
-+		buffer += s->data_block_quadlets;
-+	}
++	return 0;
 +}
 +
- static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
- 					   __be32 *buffer,
- 					   unsigned int data_blocks,
-@@ -128,7 +143,7 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
- 	if (data_blocks > 0 && pcm)
- 		read_pcm_s32(s, pcm, buffer, data_blocks);
- 
--	/* A place holder for control messages. */
-+	read_status_messages(s, buffer, data_blocks);
- 
- 	return data_blocks;
- }
-diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index a5bd167eb5d9..c710496a99cf 100644
---- a/sound/firewire/tascam/tascam.h
-+++ b/sound/firewire/tascam/tascam.h
-@@ -89,6 +89,9 @@ struct snd_tscm {
- 
- 	/* For MIDI message outgoing transactions. */
- 	struct snd_fw_async_midi_port out_ports[TSCM_MIDI_OUT_PORT_MAX];
-+
-+	// A cache of status information in tx isoc packets.
-+	__be32 state[SNDRV_FIREWIRE_TASCAM_STATE_COUNT];
- };
- 
- #define TSCM_ADDR_BASE			0xffff00000000ull
+ static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
+ {
+ 	struct snd_tscm *tscm = hwdep->private_data;
+@@ -147,6 +155,8 @@ static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
+ 		return hwdep_lock(tscm);
+ 	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
+ 		return hwdep_unlock(tscm);
++	case SNDRV_FIREWIRE_IOCTL_TASCAM_STATE:
++		return tscm_hwdep_state(tscm, (void __user *)arg);
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
 -- 
 2.19.1
