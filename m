@@ -1,71 +1,77 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: sparc: Fix invalid
- snd_free_pages() at error path
-Date: Sat, 24 Nov 2018 23:47:08 +0900
-Message-ID: <20181124144708.GB11722@sakamocchi.jp>
-References: <20181123171956.9236-1-tiwai@suse.de>
- <20181123171956.9236-2-tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: Replace snd_malloc_pages() and
+ snd_free_pages() with standard helpers
+Date: Sun, 25 Nov 2018 00:12:33 +0900
+Message-ID: <20181124151233.GC11722@sakamocchi.jp>
+References: <20181123203526.5008-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
+ [209.85.210.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93DEA267865
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 16:12:39 +0100 (CET)
+Received: by mail-pf1-f195.google.com with SMTP id u3-v6so4555878pfm.4
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 07:12:39 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20181123171956.9236-2-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
+In-Reply-To: <20181123203526.5008-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 23, 2018 at 06:19:56PM +0100, Takashi Iwai wrote:
-> Some spurious calls of snd_free_pages() have been overlooked and
-> remain in the error paths of sparc cs4231 driver code.  Since
-> runtime->dma_area is managed by the PCM core helper, we shouldn't
-> release manually.
+Hi,
+
+On Fri, Nov 23, 2018 at 09:35:26PM +0100, Takashi Iwai wrote:
+> snd_malloc_pages() and snd_free_pages() are merely thin wrappers of
+> the standard page allocator / free functions.  Even the arguments are
+> compatible with some standard helpers, so there is little merit of
+> keeping these wrappers.
 > 
-> Drop the superfluous calls.
+> This patch replaces the all existing callers of snd_malloc_pages() and
+> snd_free_pages() with the direct calls of the standard helper
+> functions.  In this version, we use a recently introduced one,
+> alloc_pages_exact(), which suits better than the old
+> snd_malloc_pages() implementation.  Then we can avoid the waste of
+> pages by alignment to power-of-two.
 > 
-> Cc: <stable@vger.kernel.org>
+> Also, the __GFP_COMP flag that has been always added in the old
+> implementation is dropped for most of callers now.  The only one that
+> may still need it is the PCM buffer allocation which can be quite
+> large.  The rest are single page allocations, so no sense to keep that
+> flag.
+> 
+> With these conversions, snd_malloc_pages() and snd_free_pages() are
+> dropped altogether from the whole tree.
+> 
 > Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
->  sound/sparc/cs4231.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
-> index e73c962590eb..079063d8038d 100644
-> --- a/sound/sparc/cs4231.c
-> +++ b/sound/sparc/cs4231.c
-> @@ -1146,10 +1146,8 @@ static int snd_cs4231_playback_open(struct snd_pcm_substream *substream)
->  	runtime->hw = snd_cs4231_playback;
->  
->  	err = snd_cs4231_open(chip, CS4231_MODE_PLAY);
-> -	if (err < 0) {
-> -		snd_free_pages(runtime->dma_area, runtime->dma_bytes);
-> +	if (err < 0)
->  		return err;
-> -	}
->  	chip->playback_substream = substream;
->  	chip->p_periods_sent = 0;
->  	snd_pcm_set_sync(substream);
-> @@ -1167,10 +1165,8 @@ static int snd_cs4231_capture_open(struct snd_pcm_substream *substream)
->  	runtime->hw = snd_cs4231_capture;
->  
->  	err = snd_cs4231_open(chip, CS4231_MODE_RECORD);
-> -	if (err < 0) {
-> -		snd_free_pages(runtime->dma_area, runtime->dma_bytes);
-> +	if (err < 0)
->  		return err;
-> -	}
->  	chip->capture_substream = substream;
->  	chip->c_periods_sent = 0;
->  	snd_pcm_set_sync(substream);
-> -- 
-> 2.19.1
+>  include/sound/memalloc.h        |  4 ---
+>  sound/core/memalloc.c           | 54 +++------------------------------
+>  sound/core/pcm.c                | 14 ++++-----
+>  sound/usb/usx2y/usX2Yhwdep.c    |  3 +-
+>  sound/usb/usx2y/usbusx2y.c      |  3 +-
+>  sound/usb/usx2y/usx2yhwdeppcm.c |  6 ++--
+>  6 files changed, 19 insertions(+), 65 deletions(-)
+
+Usage of 'alloc_pages_exact()' function and '__GFP_COMP' flag looks good
+to me.
 
 Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+Messages from 01.org can be ignored because the past patches can
+suppress it.
+
 
 Regards
 
 Takashi Sakamoto
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
