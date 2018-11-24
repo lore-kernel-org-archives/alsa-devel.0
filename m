@@ -1,55 +1,56 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 1/6] ASoC: Intel: Skylake: Add CFL-S
- support
-Date: Fri, 23 Nov 2018 21:16:31 -0600
-Message-ID: <7598e3f5-d936-709b-85e4-eecfa5d149fd@linux.intel.com>
-References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
- <20181120213644.19103-2-pierre-louis.bossart@linux.intel.com>
- <20181121142721.GO10650@smile.fi.intel.com>
- <414b4c3a-7e04-2775-7d87-16a236b5b4e8@linux.intel.com>
- <20181121173841.GS10650@smile.fi.intel.com> <s5hh8gaaxdm.wl-tiwai@suse.de>
- <20181122095611.GV10650@smile.fi.intel.com>
+From: Chanho Min <chanho.min@lge.com>
+Subject: [PATCH] ALSA: pcm: Fix starvation on
+	down_write_nonblock()
+Date: Sat, 24 Nov 2018 16:32:43 +0900
+Message-ID: <1543044763-31843-1-git-send-email-chanho.min@lge.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181122095611.GV10650@smile.fi.intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lgeamrelo11.lge.com (lgeamrelo13.lge.com [156.147.23.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 68E5E2677E8
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 08:33:10 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Daniel Mentz <danielmentz@google.com>
+Cc: alsa-devel@alsa-project.org, Jaehyun Kim <jehn.kim@lge.com>, Jongsung Kim <neidhard.kim@lge.com>, Chanho Min <chanho.min@lge.com>, linux-kernel@vger.kernel.org, Hyonwoo Park <hyonwoo.park@lge.com>, Wonmin Jung <wonmin.jung@lge.com>, Seungho Park <seungho1.park@lge.com>
 List-Id: alsa-devel@alsa-project.org
 
+Commit 67ec1072b053 (ALSA: pcm: Fix rwsem deadlock for non-atomic PCM stream)
+fixes deadlock for non-atomic PCM stream. But, This patch causes antother stuck.
+If writer is RT thread and reader is a normal thread, the reader thread will
+be difficult to get scheduled. It may not give chance to release read locks
+and writer gets stuck for a long time or forever if they are pinned to single
+cpu.
 
-On 11/22/18 3:56 AM, Andy Shevchenko wrote:
-> On Wed, Nov 21, 2018 at 11:17:41PM +0100, Takashi Iwai wrote:
->> On Wed, 21 Nov 2018 18:38:41 +0100, Andy Shevchenko wrote:
->>> Compare:
->>>
->>> 	/* CFL */
->>> 	{ PCI_DEVICE(0x8086, 0xa348),
->>> 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
->>>
->>> to something like:
->>>
->>> #define PCI_DEVICE_ID_INTEL_AUDIO_CFL	0xa348
->>> ...
->>>
->>> 	{PCI_DEVICE_DATA(INTEL, AUDIO_CFL, &snd_soc_acpi_intel_cnl_machines)},
->> The former gives a better grep-ability, though.
->>
->> I have no big preference over two, just want to mention that both have
->> merits and demerits.
-> True.
-> So, up to you, guys, what to choose.
+To fix this, The writer gives reader a chance to be scheduled by using the
+minimum msleep() instaed of spinning. This is for concept, We may need to
+change the function name and comments or suggest another approach.
 
-I am leaning to leave the PCI stuff alone for now. If we change the PCI 
-definitions I'd like to do it on the SKL and legacy sides at the same 
-time, to avoid multiple definitions or redundancies.
+Signed-off-by: Chanho Min <chanho.min@lge.com>
+---
+ sound/core/pcm_native.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-However I like your suggestion for the macros on the other patch so will 
-change the code.
-
-Thanks for the reviews!
-
->
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 66c90f4..88d4aab 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -96,7 +96,7 @@ static DECLARE_RWSEM(snd_pcm_link_rwsem);
+ static inline void down_write_nonblock(struct rw_semaphore *lock)
+ {
+ 	while (!down_write_trylock(lock))
+-		cond_resched();
++		msleep(1);
+ }
+ 
+ #define PCM_LOCK_DEFAULT	0
+-- 
+2.1.4
