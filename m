@@ -1,155 +1,246 @@
-From: syzbot <syzbot+d4503ae45b65c5bc1194@syzkaller.appspotmail.com>
-Subject: KASAN: slab-out-of-bounds Read in default_write_copy_kernel
-Date: Sat, 24 Nov 2018 10:30:03 -0800
-Message-ID: <000000000000c93833057b6d496a@google.com>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Subject: [PATCH] ASoC: pcm512x: Implement the digital_mute
+	interface
+Date: Sat, 24 Nov 2018 22:05:42 +0200
+Message-ID: <c18a7eef-4919-eb16-7f3e-fc4e2199fa7b@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, pasqualirb@gmail.com, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, twischer@de.adit-jv.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com
+ [209.85.221.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AA24267947
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 21:05:45 +0100 (CET)
+Received: by mail-wr1-f68.google.com with SMTP id t3so15171314wrr.3
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 12:05:45 -0800 (PST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Clicks and pops of various volumes can be produced while the device is
+opened, closed, put into and taken out of standby, or reconfigured.
+Fix this, by implementing the digital_mute interface, so that the
+output is muted during such operations.
 
-syzbot found the following crash on:
-
-HEAD commit:    7c98a4261827 Merge tag 'ceph-for-4.20-rc4' of https://gith..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=142c8893400000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=73e2bc0cb6463446
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4503ae45b65c5bc1194
-compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1789354d400000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162ebe2b400000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d4503ae45b65c5bc1194@syzkaller.appspotmail.com
-
-RDX: 0000000056da83a0 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 00000000006cf018 R08: 0000000000000001 R09: 0000000000000037
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: ffffffffffffffff R14: 0000000000000000 R15: 0000000000000000
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:352 [inline]
-BUG: KASAN: slab-out-of-bounds in default_write_copy_kernel+0xe1/0x140  
-sound/core/pcm_lib.c:1946
-Read of size 64 at addr ffff8881cee03c40 by task syz-executor636/6021
-
-CPU: 1 PID: 6021 Comm: syz-executor636 Not tainted 4.20.0-rc3+ #347
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x244/0x39d lib/dump_stack.c:113
-  print_address_description.cold.7+0x9/0x1ff mm/kasan/report.c:256
-  kasan_report_error mm/kasan/report.c:354 [inline]
-  kasan_report.cold.8+0x242/0x309 mm/kasan/report.c:412
-  check_memory_region_inline mm/kasan/kasan.c:260 [inline]
-  check_memory_region+0x13e/0x1b0 mm/kasan/kasan.c:267
-  memcpy+0x23/0x50 mm/kasan/kasan.c:302
-  memcpy include/linux/string.h:352 [inline]
-  default_write_copy_kernel+0xe1/0x140 sound/core/pcm_lib.c:1946
-  interleaved_copy+0xd1/0x110 sound/core/pcm_lib.c:2007
-  __snd_pcm_lib_xfer+0x115f/0x1f23 sound/core/pcm_lib.c:2227
-  snd_pcm_oss_write3+0xe9/0x220 sound/core/oss/pcm_oss.c:1237
-  io_playback_transfer+0x27d/0x310 sound/core/oss/io.c:47
-  snd_pcm_plug_write_transfer+0x374/0x490 sound/core/oss/pcm_plugin.c:620
-  snd_pcm_oss_write2+0x25d/0x450 sound/core/oss/pcm_oss.c:1366
-  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1432 [inline]
-  snd_pcm_oss_write+0x567/0xa60 sound/core/oss/pcm_oss.c:2775
-  __vfs_write+0x119/0x9f0 fs/read_write.c:485
-  vfs_write+0x1fc/0x560 fs/read_write.c:549
-  ksys_write+0x101/0x260 fs/read_write.c:598
-  __do_sys_write fs/read_write.c:610 [inline]
-  __se_sys_write fs/read_write.c:607 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:607
-  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x444119
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b d8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdf4510538 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000444119
-RDX: 0000000056da83a0 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 00000000006cf018 R08: 0000000000000001 R09: 0000000000000037
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
-R13: ffffffffffffffff R14: 0000000000000000 R15: 0000000000000000
-
-Allocated by task 6021:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  kasan_kmalloc+0xc7/0xe0 mm/kasan/kasan.c:553
-  __do_kmalloc_node mm/slab.c:3684 [inline]
-  __kmalloc_node+0x50/0x70 mm/slab.c:3691
-  kmalloc_node include/linux/slab.h:589 [inline]
-  kvmalloc_node+0x65/0xf0 mm/util.c:416
-  kvmalloc include/linux/mm.h:577 [inline]
-  kvzalloc include/linux/mm.h:585 [inline]
-  snd_pcm_plugin_alloc+0x577/0x770 sound/core/oss/pcm_plugin.c:70
-  snd_pcm_plug_alloc+0x218/0x340 sound/core/oss/pcm_plugin.c:117
-  snd_pcm_oss_change_params_locked+0x2209/0x3c60  
-sound/core/oss/pcm_oss.c:1038
-  snd_pcm_oss_make_ready_locked+0xbc/0x130 sound/core/oss/pcm_oss.c:1183
-  snd_pcm_oss_write1 sound/core/oss/pcm_oss.c:1397 [inline]
-  snd_pcm_oss_write+0x51e/0xa60 sound/core/oss/pcm_oss.c:2775
-  __vfs_write+0x119/0x9f0 fs/read_write.c:485
-  vfs_write+0x1fc/0x560 fs/read_write.c:549
-  ksys_write+0x101/0x260 fs/read_write.c:598
-  __do_sys_write fs/read_write.c:610 [inline]
-  __se_sys_write fs/read_write.c:607 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:607
-  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 2446:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/kasan.c:521
-  kasan_slab_free+0xe/0x10 mm/kasan/kasan.c:528
-  __cache_free mm/slab.c:3498 [inline]
-  kfree+0xcf/0x230 mm/slab.c:3817
-  blk_mq_hw_sysfs_release+0x42/0x60 block/blk-mq-sysfs.c:25
-  kobject_cleanup lib/kobject.c:662 [inline]
-  kobject_release lib/kobject.c:691 [inline]
-  kref_put include/linux/kref.h:70 [inline]
-  kobject_put.cold.9+0x287/0x2e4 lib/kobject.c:708
-  blk_mq_release+0xf2/0x210 block/blk-mq.c:2478
-  __blk_release_queue+0x228/0x510 block/blk-sysfs.c:862
-  process_one_work+0xc90/0x1c40 kernel/workqueue.c:2153
-  worker_thread+0x17f/0x1390 kernel/workqueue.c:2296
-  kthread+0x35a/0x440 kernel/kthread.c:246
-  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
-
-The buggy address belongs to the object at ffff8881cee03c40
-  which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 0 bytes inside of
-  32-byte region [ffff8881cee03c40, ffff8881cee03c60)
-The buggy address belongs to the page:
-page:ffffea00073b80c0 count:1 mapcount:0 mapping:ffff8881da8001c0  
-index:0xffff8881cee03fc1
-flags: 0x2fffc0000000200(slab)
-raw: 02fffc0000000200 ffffea0007433308 ffff8881da801248 ffff8881da8001c0
-raw: ffff8881cee03fc1 ffff8881cee03000 000000010000003f 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff8881cee03b00: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-  ffff8881cee03b80: fb fb fb fb fc fc fc fc 00 fc fc fc fc fc fc fc
-> ffff8881cee03c00: fb fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
-                                                        ^
-  ffff8881cee03c80: 00 00 fc fc fc fc fc fc fb fb fb fb fc fc fc fc
-  ffff8881cee03d00: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-==================================================================
-
-
+Signed-off-by: Dimitris Papavasiliou <dpapavas@gmail.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Notes:
+    Although the datasheet isn't very specific about it,
+    PCM512x_ANALOG_MUTE_DET is only updated once ramp-down to digital mute
+    is complete (followed by analog mute, assuming
+    PCM512x_ANALOG_MUTE_CTRL is left with the default value, as is now the
+    case).  I've measured the time it takes for the polling to finish and
+    it seems consistent with that assumption, including properly tracking
+    changes in the ramp-down parameters.  Thus, polling the register
+    ensures that the device has been completely muted before returning.
+    
+    When unmuting, the time required for PCM512x_ANALOG_MUTE_DET to
+    reflect the change, doesn't depend on the ramp-up parameters (as might
+    be expected, since analog mute is likely lifted first).  Nevertheless
+    the value is consistently substantially larger than zero, so that it
+    seemingly reflects a particular stage in the unmuting process.  It
+    also does no harm and seems to help minimize clicks, so I've kept the
+    delay.
+    
+    I've tested this patch both in my day-to-day use of my DAC for more
+    than a month, as well as by running a script that opens the device,
+    performs several sample rate and format changes and closes it, every
+    one second.  Without the patch, several different kinds of clicks and
+    pops are produced.  After the patch, I've run the script for several
+    hours with the DAC being consistently virtually silent.
+
+ sound/soc/codecs/pcm512x.c | 121 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/pcm512x.h |   2 +
+ 2 files changed, 121 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index f0f2d4fd3769..6cb1653be804 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -53,6 +53,8 @@ struct pcm512x_priv {
+ 	unsigned long overclock_pll;
+ 	unsigned long overclock_dac;
+ 	unsigned long overclock_dsp;
++	int mute;
++	struct mutex mutex;
+ };
+ 
+ /*
+@@ -384,6 +386,61 @@ static const struct soc_enum pcm512x_veds =
+ 	SOC_ENUM_SINGLE(PCM512x_DIGITAL_MUTE_2, PCM512x_VEDS_SHIFT, 4,
+ 			pcm512x_ramp_step_text);
+ 
++static int pcm512x_update_mute(struct pcm512x_priv *pcm512x)
++{
++	return regmap_update_bits(
++		pcm512x->regmap, PCM512x_MUTE, PCM512x_RQML | PCM512x_RQMR,
++		(!!(pcm512x->mute & 0x5) << PCM512x_RQML_SHIFT)
++		| (!!(pcm512x->mute & 0x3) << PCM512x_RQMR_SHIFT));
++}
++
++static int pcm512x_digital_playback_switch_get(struct snd_kcontrol *kcontrol,
++					       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
++
++	mutex_lock(&pcm512x->mutex);
++	ucontrol->value.integer.value[0] = !(pcm512x->mute & 0x4);
++	ucontrol->value.integer.value[1] = !(pcm512x->mute & 0x2);
++	mutex_unlock(&pcm512x->mutex);
++
++	return 0;
++}
++
++static int pcm512x_digital_playback_switch_put(struct snd_kcontrol *kcontrol,
++					       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
++	int ret, changed = 0;
++
++	mutex_lock(&pcm512x->mutex);
++
++	if ((pcm512x->mute & 0x4) == (ucontrol->value.integer.value[0] << 2)) {
++		pcm512x->mute ^= 0x4;
++		changed = 1;
++	}
++	if ((pcm512x->mute & 0x2) == (ucontrol->value.integer.value[1] << 1)) {
++		pcm512x->mute ^= 0x2;
++		changed = 1;
++	}
++
++	if (changed) {
++		ret = pcm512x_update_mute(pcm512x);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to update digital mute: %d\n", ret);
++			mutex_unlock(&pcm512x->mutex);
++			return ret;
++		}
++	}
++
++	mutex_unlock(&pcm512x->mutex);
++
++	return changed;
++}
++
+ static const struct snd_kcontrol_new pcm512x_controls[] = {
+ SOC_DOUBLE_R_TLV("Digital Playback Volume", PCM512x_DIGITAL_VOLUME_2,
+ 		 PCM512x_DIGITAL_VOLUME_3, 0, 255, 1, digital_tlv),
+@@ -391,8 +448,15 @@ SOC_DOUBLE_TLV("Analogue Playback Volume", PCM512x_ANALOG_GAIN_CTRL,
+ 	       PCM512x_LAGN_SHIFT, PCM512x_RAGN_SHIFT, 1, 1, analog_tlv),
+ SOC_DOUBLE_TLV("Analogue Playback Boost Volume", PCM512x_ANALOG_GAIN_BOOST,
+ 	       PCM512x_AGBL_SHIFT, PCM512x_AGBR_SHIFT, 1, 0, boost_tlv),
+-SOC_DOUBLE("Digital Playback Switch", PCM512x_MUTE, PCM512x_RQML_SHIFT,
+-	   PCM512x_RQMR_SHIFT, 1, 1),
++{
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Digital Playback Switch",
++	.index = 0,
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.info = snd_ctl_boolean_stereo_info,
++	.get = pcm512x_digital_playback_switch_get,
++	.put = pcm512x_digital_playback_switch_put
++},
+ 
+ SOC_SINGLE("Deemphasis Switch", PCM512x_DSP, PCM512x_DEMP_SHIFT, 1, 1),
+ SOC_ENUM("DSP Program", pcm512x_dsp_program),
+@@ -1319,10 +1383,61 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
++static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
++{
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
++	int ret;
++	unsigned int mute_det;
++
++	mutex_lock(&pcm512x->mutex);
++
++	if (mute) {
++		pcm512x->mute |= 0x1;
++		ret = regmap_update_bits(pcm512x->regmap, PCM512x_MUTE,
++					 PCM512x_RQML | PCM512x_RQMR,
++					 PCM512x_RQML | PCM512x_RQMR);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to set digital mute: %d\n", ret);
++			mutex_unlock(&pcm512x->mutex);
++			return ret;
++		}
++
++		regmap_read_poll_timeout(pcm512x->regmap,
++					 PCM512x_ANALOG_MUTE_DET,
++					 mute_det, (mute_det & 0x3) == 0,
++					 200, 10000);
++
++		mutex_unlock(&pcm512x->mutex);
++	} else {
++		pcm512x->mute &= ~0x1;
++		ret = pcm512x_update_mute(pcm512x);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to update digital mute: %d\n", ret);
++			mutex_unlock(&pcm512x->mutex);
++			return ret;
++		}
++
++		regmap_read_poll_timeout(pcm512x->regmap,
++					 PCM512x_ANALOG_MUTE_DET,
++					 mute_det,
++					 (mute_det & 0x3)
++					 == ((~pcm512x->mute >> 1) & 0x3),
++					 200, 10000);
++	}
++
++	mutex_unlock(&pcm512x->mutex);
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
+ 	.startup = pcm512x_dai_startup,
+ 	.hw_params = pcm512x_hw_params,
+ 	.set_fmt = pcm512x_set_fmt,
++	.digital_mute = pcm512x_digital_mute,
+ };
+ 
+ static struct snd_soc_dai_driver pcm512x_dai = {
+@@ -1388,6 +1503,8 @@ int pcm512x_probe(struct device *dev, struct regmap *regmap)
+ 	if (!pcm512x)
+ 		return -ENOMEM;
+ 
++	mutex_init(&pcm512x->mutex);
++
+ 	dev_set_drvdata(dev, pcm512x);
+ 	pcm512x->regmap = regmap;
+ 
+diff --git a/sound/soc/codecs/pcm512x.h b/sound/soc/codecs/pcm512x.h
+index d70d9c0c2088..9dda8693498e 100644
+--- a/sound/soc/codecs/pcm512x.h
++++ b/sound/soc/codecs/pcm512x.h
+@@ -112,7 +112,9 @@
+ #define PCM512x_RQST_SHIFT 4
+ 
+ /* Page 0, Register 3 - mute */
++#define PCM512x_RQMR (1 << 0)
+ #define PCM512x_RQMR_SHIFT 0
++#define PCM512x_RQML (1 << 4)
+ #define PCM512x_RQML_SHIFT 4
+ 
+ /* Page 0, Register 4 - PLL */
+-- 
+2.11.0
