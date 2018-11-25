@@ -1,31 +1,21 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Sat, 24 Nov 2018 22:17:49 +0200
-Message-ID: <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
-References: <ed34c70f-8d10-992e-1cf3-3a5f038c3664@gmail.com>
- <dccda0dc-bde7-7790-e4cc-2737871b14ea@linux.intel.com>
- <11a5bb5b-f8ad-d9cc-29df-8efeccb6228d@gmail.com>
- <20181114220640.GB2089@sirena.org.uk>
- <c0546298-960e-df17-273f-fa0734050aac@gmail.com>
- <20181114230255.GG2089@sirena.org.uk>
- <b48bc9d6-767a-24df-692e-fe675afed22e@gmail.com>
- <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
- <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
+From: youling 257 <youling257@gmail.com>
+Subject: Fwd: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
+	generic bytcr/PlatformEnableSeq.conf
+Date: Sun, 25 Nov 2018 12:05:06 +0800
+Message-ID: <CAOzgRdZ=QC2Joct8Z3+R9EygvV3xXit+NBis7Hyiin-Rdn1O6A@mail.gmail.com>
+References: <CAOzgRdZPxwQxG7JpmzEYPpGep9bD7strb8H8M9q3z4UsHFDC5Q@mail.gmail.com>
+ <CAOzgRdY7_RtCEjF9LykX9NwTFS3oex3pD39e5xFfJ0MQLaMZ5A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com
- [209.85.221.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 3803F267947
- for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 21:17:51 +0100 (CET)
-Received: by mail-wr1-f42.google.com with SMTP id v13so11713868wrw.5
- for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 12:17:51 -0800 (PST)
-In-Reply-To: <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
-Content-Language: en-US
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com
+ [209.85.166.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id ACC17267847
+ for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2018 05:05:08 +0100 (CET)
+Received: by mail-io1-f46.google.com with SMTP id x6so11406292ioa.9
+ for <alsa-devel@alsa-project.org>; Sat, 24 Nov 2018 20:05:08 -0800 (PST)
+In-Reply-To: <CAOzgRdY7_RtCEjF9LykX9NwTFS3oex3pD39e5xFfJ0MQLaMZ5A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,18 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've submitted a patch for the pcm512x CODEC, that is relevant to
-this problem.  The patch implements the digital_mute interface,
-suppressing various clicks and pops, including the loud pop under
-discussion here.  I still feel that fixing the machine driver, so
-that it doesn't generate the pop at all would be desirable, as
-I'm not sure whether the digital_mute callback is guaranteed to
-have muted the device when the clock source takes place.
-
-Does that sound reasonable, or would it be preferable to simply
-rely on the digital_mute mechanism (assuming the patch is
-acceptable)?
+LS0tLS0tLS0tLSBGb3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0KRnJvbTogeW91bGluZyAyNTcg
+PHlvdWxpbmcyNTdAZ21haWwuY29tPgpEYXRlOiAyMDE45bm0MTHmnIgyNOaXpeWRqOWFrSDkuIvl
+jYg2OjQyClN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMDEvMTNdIGNvbmYvdWNtOiBieXRjci1ydDU2
+NDU6IFVzZSB0aGUgZ2VuZXJpYwpieXRjci9QbGF0Zm9ybUVuYWJsZVNlcS5jb25mClRvOiBQaWVy
+cmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPiwK
+VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiwgSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVk
+aGF0LmNvbT4sCjxhbHNhLWRldmVsQHZnZXIua2VybmVsLm9yZz4KCgphbHNhdWNtIC1jIGNodHJ0
+NTY0NSBzZXQgX3ZlcmIgSGlGaSBzZXQgX2VuYWRldiBTcGVha2VyCgpBTFNBIGxpYiBjb25mLmM6
+ODIzOihnZXRfY2hhcl9za2lwX2NvbW1lbnRzKSBDYW5ub3QgYWNjZXNzIGZpbGUKYnl0Y3IvUGxh
+dGZvcm1FbmFibGVTZXEuY29uZgpBTFNBIGxpYiBjb25mLmM6MTg3Nzooc25kX2NvbmZpZ19sb2Fk
+MSkgX3RvcGxldmVsXzoxNzoxODpVbmV4cGVjdGVkIGNoYXIKCkFMU0EgbGliIHV0aWxzLmM6Njc6
+KHVjX21ncl9jb25maWdfbG9hZCkgY291bGQgbm90IG9wZW4gY29uZmlndXJhdGlvbgpmaWxlIC91
+c3Ivc2hhcmUvYWxzYS91Y20vQVNVU1RlS0NPTVBVVEVSSU5DLi1YMjA1VEEtMS4wLVgyMDVUQS9B
+U1VTVGVLQ09NUFVURVJJTkMuLVgyMDVUQS0xLjAtWDIwNVRBLmNvbmYKQUxTQSBsaWIgcGFyc2Vy
+LmM6MTQyNzoobG9hZF9tYXN0ZXJfY29uZmlnKSBlcnJvcjogY291bGQgbm90IHBhcnNlCmNvbmZp
+Z3VyYXRpb24gZm9yIGNhcmQgQVNVU1RlS0NPTVBVVEVSSU5DLi1YMjA1VEEtMS4wLVgyMDVUQQpB
+TFNBIGxpYiBjb25mLmM6ODIzOihnZXRfY2hhcl9za2lwX2NvbW1lbnRzKSBDYW5ub3QgYWNjZXNz
+IGZpbGUKYnl0Y3IvUGxhdGZvcm1FbmFibGVTZXEuY29uZgpBTFNBIGxpYiBjb25mLmM6MTg3Nzoo
+c25kX2NvbmZpZ19sb2FkMSkgX3RvcGxldmVsXzoxNzoxODpVbmV4cGVjdGVkIGNoYXIKQUxTQSBs
+aWIgdXRpbHMuYzo3NToodWNfbWdyX2NvbmZpZ19sb2FkKSBjb3VsZCBub3QgbG9hZCBjb25maWd1
+cmF0aW9uCmZpbGUgL3Vzci9zaGFyZS9hbHNhL3VjbS9jaHRydDU2NDUvSGlGaS5jb25mCkFMU0Eg
+bGliIHBhcnNlci5jOjExMDE6KHBhcnNlX3ZlcmJfZmlsZSkgZXJyb3I6IGZhaWxlZCB0byBvcGVu
+IHZlcmIKZmlsZSAvdXNyL3NoYXJlL2Fsc2EvdWNtL2NodHJ0NTY0NS9IaUZpLmNvbmYgOiAtMgpB
+TFNBIGxpYiBtYWluLmM6OTQ2OihzbmRfdXNlX2Nhc2VfbWdyX29wZW4pIGVycm9yOiBmYWlsZWQg
+dG8gaW1wb3J0CmNodHJ0NTY0NSB1c2UgY2FzZSBjb25maWd1cmF0aW9uIC0yMgphbHNhdWNtOiBl
+cnJvciBmYWlsZWQgdG8gb3BlbiBzb3VuZCBjYXJkIGNodHJ0NTY0NTogSW52YWxpZCBhcmd1bWVu
+dApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
