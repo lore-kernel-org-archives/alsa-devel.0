@@ -1,7 +1,7 @@
 From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v7 1/3] ALSA: hda: fix front speakers on Huawei MBXP.
-Date: Mon, 26 Nov 2018 18:46:22 -0500
-Message-ID: <20181126234624.31264-2-ayman.bagabas@gmail.com>
+Subject: [PATCH v7 3/3] ALSA: hda: add support for Huawei WMI micmute LED
+Date: Mon, 26 Nov 2018 18:46:24 -0500
+Message-ID: <20181126234624.31264-4-ayman.bagabas@gmail.com>
 References: <20181126234624.31264-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,60 +12,39 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yan
 Cc: ayman.bagabas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
-https://bugzilla.kernel.org/show_bug.cgi?id=200501
-It enables the front speakers on Huawei Matebook X Pro laptops.
-These laptops come with Dolby Atmos sound system and these pins
-configuration enables the front speakers.
+Some of Huawei laptops come with a LED in the micmute key. This patch
+enables the use of micmute LED for these devices:
+1. Matebook X (19e5:3200), (19e5:3201)
+2. Matebook X Pro (19e5:3204)
 
 Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/pci/hda/patch_realtek.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 993d34c141c2..1326f32f4574 100644
+index 1326f32f4574..9766fd249bdf 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -5490,6 +5490,7 @@ enum {
- 	ALC298_FIXUP_TPT470_DOCK,
- 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
- 	ALC255_FIXUP_DELL_HEADSET_MIC,
-+	ALC256_FIXUP_HUAWEI_MBXP_PINS,
- 	ALC295_FIXUP_HP_X360,
- 	ALC221_FIXUP_HP_HEADSET_MIC,
- };
-@@ -5761,6 +5762,22 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+@@ -5776,7 +5776,9 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{0x1e, 0x411111f0},
+ 			{0x21, 0x04211020},
+ 			{ }
+-		}
++		},
++		.chained = true,
++		.chain_id = ALC255_FIXUP_MIC_MUTE_LED
  	},
-+	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{0x12, 0x90a60130},
-+			{0x13, 0x40000000},
-+			{0x14, 0x90170110},
-+			{0x18, 0x411111f0},
-+			{0x19, 0x04a11040},
-+			{0x1a, 0x411111f0},
-+			{0x1b, 0x90170112},
-+			{0x1d, 0x40759a05},
-+			{0x1e, 0x411111f0},
-+			{0x21, 0x04211020},
-+			{ }
-+		}
-+	},
  	[ALC269_FIXUP_ASUS_X101_FUNC] = {
  		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_x101_headset_mic,
-@@ -6591,6 +6608,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6608,6 +6610,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
  	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
  	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
  	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
-+	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
++	SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
++	SND_PCI_QUIRK(0x19e5, 0x3201, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
+ 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
  	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
  
- #if 0
 -- 
 2.19.1
