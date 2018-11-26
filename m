@@ -1,89 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Fix a NULL vs IS_ERR() check in
-	probe" to the asoc tree
-Date: Mon, 26 Nov 2018 17:21:05 +0000 (GMT)
-Message-ID: <20181126172105.62712112519F@debutante.sirena.org.uk>
-References: <20181126081307.qhbpwnlikquep476@kili.mountain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 38EFD267AE4
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 18:21:07 +0100 (CET)
-In-Reply-To: <20181126081307.qhbpwnlikquep476@kili.mountain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Sanju R Mehta <sanju.mehta@amd.com>, Mark Brown <broonie@kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>
+From: Girija Kumar Kasinadhuni <gkumar@neverware.com>
+Subject: [PATCH v3] ALSA: hda/realtek - Add auto-mute quirk for HP Spectre x360 laptop
+Date: Mon, 26 Nov 2018 13:40:46 -0500
+Message-ID: <1543257648-105480-1-git-send-email-gkumar@neverware.com>
+References: <s5hefbeax39.wl-tiwai@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hefbeax39.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Girija Kumar Kasinadhuni <gkumar@neverware.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This device makes a loud buzzing sound when a headphone is inserted while
+playing audio at full volume through the speaker.
 
-   ASoC: amd: Fix a NULL vs IS_ERR() check in probe
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 83b12c2e1d942459f420490d4219fc1ad38c3620 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Mon, 26 Nov 2018 11:13:07 +0300
-Subject: [PATCH] ASoC: amd: Fix a NULL vs IS_ERR() check in probe
-
-The platform_device_register_full() function doesn't return NULL, it
-returns error pointers.
-
-Fixes: 7894a7e7ea3d ("ASoC: amd: create ACP3x PCM platform device")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Girija Kumar Kasinadhuni <gkumar@neverware.com>
 ---
- sound/soc/amd/raven/pci-acp3x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Apologies for the earlier patch not being tested properly. Verified this
+time, and on the actual hardware. Here' s the alsa-info output.
+http://www.alsa-project.org/db/?f=16bc34d9bf8c9b2536969c125c1721fee570c9b0
 
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index c28457fd9b81..facec2472b34 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -97,10 +97,10 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		pdevinfo.size_data = sizeof(irqflags);
+ sound/pci/hda/patch_realtek.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 970bc44..c39f7f2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5495,6 +5495,7 @@ enum {
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
++	ALC295_FIXUP_HP_AUTO_MUTE,
+ };
  
- 		adata->pdev = platform_device_register_full(&pdevinfo);
--		if (!adata->pdev) {
-+		if (IS_ERR(adata->pdev)) {
- 			dev_err(&pci->dev, "cannot register %s device\n",
- 				pdevinfo.name);
--			ret = -ENODEV;
-+			ret = PTR_ERR(adata->pdev);
- 			goto unmap_mmio;
- 		}
- 		break;
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -5659,6 +5660,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC269_FIXUP_HP_MUTE_LED_MIC3] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_hp_mute_led_mic3,
++		.chained = true,
++		.chain_id = ALC295_FIXUP_HP_AUTO_MUTE
+ 	},
+ 	[ALC269_FIXUP_HP_GPIO_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -6362,6 +6365,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC295_FIXUP_HP_AUTO_MUTE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_auto_mute_via_amp,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
 -- 
-2.19.0.rc2
+2.7.4
