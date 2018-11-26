@@ -1,22 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
- generic bytcr/PlatformEnableSeq.conf
-Date: Mon, 26 Nov 2018 14:40:48 +0100
-Message-ID: <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
-References: <20180808090543.15181-1-hdegoede@redhat.com>
- <20181126094911.27716-1-youling257@gmail.com> <s5hlg5g17a4.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pcm512x: Implement the digital_mute
+	interface
+Date: Mon, 26 Nov 2018 14:02:00 +0000
+Message-ID: <20181126140200.GC9715@sirena.org.uk>
+References: <c18a7eef-4919-eb16-7f3e-fc4e2199fa7b@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6493480045862632393=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B15F26751A
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 14:40:50 +0100 (CET)
-Received: by mail-wr1-f66.google.com with SMTP id l9so18934550wrt.13
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 05:40:50 -0800 (PST)
-In-Reply-To: <s5hlg5g17a4.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D59B526751A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 15:02:03 +0100 (CET)
+In-Reply-To: <c18a7eef-4919-eb16-7f3e-fc4e2199fa7b@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,57 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, youling257 <youling257@gmail.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+To: Dimitris Papavasiliou <dpapavas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On 26-11-18 11:07, Takashi Iwai wrote:
-> The error messages (at least some of them) are known issues and I
-> already posted the problem on alsa-devel ML.  The fix should be easy
-> but I'd like to get consensus beforehand.
+--===============6493480045862632393==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
+Content-Disposition: inline
 
-Ah I missed that mail as I'm not subscribed to alsa-devel. Since
-my changes are the cause of this alsaucm command problem, let me
-reply here:
 
- > some of the recently added UCM profiles are the files to be included
- > by others, and they are not card targets.  Unfortunately alsaucm
- > doesn't know about it, and it aborts with error, e.g.
- >
- > ====
- > % alsaucm
- > ALSA lib utils.c:67:(uc_mgr_config_load) could not open configuration file /usr/share/alsa/ucm/bytcr/bytcr.conf
- > ALSA lib parser.c:1427:(load_master_config) error: could not parse configuration for card bytcr
- > alsaucm: unable to obtain card list: No such file or directory
- > ====
- >
- > The similar error is found in nau8824, rt5640 and rt5651.  After
- > putting a placeholder card config file (e.g. bytcr.conf), the error is
- > gone.  But certainly we don't want to allow user to choose this as the
- > proper card.
- >
- > So, I guess we need to put some flag to each such directory indicating
- > that it's no card config.  For example, putting
- > /usr/share/alsa/ucm/bytcr/.nocard file or such...
- >
- > Not sure whether it's wise to have a file starting with dot, though.
- > Maybe clearer to be "nocard" or any other visible one?
+--TYecfFk8j8mZq+dy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All the HiFi.conf files using the "include" snippets I added to avoid
-copy and pasting a lot, already need to have this at the top for
-this to work:
+On Sat, Nov 24, 2018 at 10:05:42PM +0200, Dimitris Papavasiliou wrote:
 
-<searchdir:ucm>
+> +static int pcm512x_digital_playback_switch_get(struct snd_kcontrol *kcontrol,
+> +					       struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+> +	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+> +
+> +	mutex_lock(&pcm512x->mutex);
+> +	ucontrol->value.integer.value[0] = !(pcm512x->mute & 0x4);
+> +	ucontrol->value.integer.value[1] = !(pcm512x->mute & 0x2);
+> +	mutex_unlock(&pcm512x->mutex);
+> +
+> +	return 0;
+> +}
 
-So it might be best to move all the dirs holding include files rather
-then proper card configs from /usr/share/alsa/ucm to
-/usr/share/alsa/ucm-includes and then change the searchdir part of
-the configs using these to:
+Just remove the control, no need to jump through these hoops.
 
-<searchdir:ucm-includes>
+--TYecfFk8j8mZq+dy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Regards,
+-----BEGIN PGP SIGNATURE-----
 
-Hans
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv7/NcACgkQJNaLcl1U
+h9DABwf/SvYGuczpS+8r0U8Og7odpJTbxEaUSceGqnGlhNZG40v+puNE8zRnLovS
+n1y7WOARA3QBzQ43P0iTiDwS4nXZrWn7iPpttPdYbMdr+ek3354NYwL6jJgQQd5Q
+Y13Fl+KUHYbTmVZ+zx/p4Wc1aTiS7egK9grFB1M/GnKYogwWq1RRRJP8RNzg/1ZN
+3POKEH8sIYA+Ljqw5sAqH84IgSYlu2BXBB/KR/m/DDfQ8luINnaqLhFB+18x7PJZ
+lqSMZdbYYiF5VH9SL3p3IPgXLZkisjkzx3PDWLZ2AXT9+0zjVRbARp2lfX91jdWZ
+ybjRPlkaS8S8U6dP/YommNyRJzY+qg==
+=ddYm
+-----END PGP SIGNATURE-----
+
+--TYecfFk8j8mZq+dy--
+
+--===============6493480045862632393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6493480045862632393==--
