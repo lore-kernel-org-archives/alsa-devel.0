@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/5] ASoC: max9867: Fix power management
-Date: Mon, 26 Nov 2018 12:57:19 +0000
-Message-ID: <20181126125719.GB9715@sirena.org.uk>
-References: <20181123142507.GA7347@lenoch>
- <20181123142729.GC7347@lenoch>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
+ generic bytcr/PlatformEnableSeq.conf
+Date: Mon, 26 Nov 2018 14:40:48 +0100
+Message-ID: <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
+References: <20180808090543.15181-1-hdegoede@redhat.com>
+ <20181126094911.27716-1-youling257@gmail.com> <s5hlg5g17a4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9026881543033601892=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A4AF526751A
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 13:57:20 +0100 (CET)
-In-Reply-To: <20181123142729.GC7347@lenoch>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B15F26751A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 14:40:50 +0100 (CET)
+Received: by mail-wr1-f66.google.com with SMTP id l9so18934550wrt.13
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 05:40:50 -0800 (PST)
+In-Reply-To: <s5hlg5g17a4.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, youling257 <youling257@gmail.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============9026881543033601892==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
-Content-Disposition: inline
+On 26-11-18 11:07, Takashi Iwai wrote:
+> The error messages (at least some of them) are known issues and I
+> already posted the problem on alsa-devel ML.  The fix should be easy
+> but I'd like to get consensus beforehand.
 
+Ah I missed that mail as I'm not subscribed to alsa-devel. Since
+my changes are the cause of this alsaucm command problem, let me
+reply here:
 
---b5gNqxB1S1yM7hjW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ > some of the recently added UCM profiles are the files to be included
+ > by others, and they are not card targets.  Unfortunately alsaucm
+ > doesn't know about it, and it aborts with error, e.g.
+ >
+ > ====
+ > % alsaucm
+ > ALSA lib utils.c:67:(uc_mgr_config_load) could not open configuration file /usr/share/alsa/ucm/bytcr/bytcr.conf
+ > ALSA lib parser.c:1427:(load_master_config) error: could not parse configuration for card bytcr
+ > alsaucm: unable to obtain card list: No such file or directory
+ > ====
+ >
+ > The similar error is found in nau8824, rt5640 and rt5651.  After
+ > putting a placeholder card config file (e.g. bytcr.conf), the error is
+ > gone.  But certainly we don't want to allow user to choose this as the
+ > proper card.
+ >
+ > So, I guess we need to put some flag to each such directory indicating
+ > that it's no card config.  For example, putting
+ > /usr/share/alsa/ucm/bytcr/.nocard file or such...
+ >
+ > Not sure whether it's wise to have a file starting with dot, though.
+ > Maybe clearer to be "nocard" or any other visible one?
 
-On Fri, Nov 23, 2018 at 03:27:29PM +0100, Ladislav Michl wrote:
+All the HiFi.conf files using the "include" snippets I added to avoid
+copy and pasting a lot, already need to have this at the top for
+this to work:
 
-> Move device enable to probe function. Doing that from prepare
-> callback allows only DAC to be enabled.
+<searchdir:ucm>
 
-This seems like it'll be a power consumption regression - instead of
-managing the power at runtime we'll just leave the power on all the
-time.  The normal place to do this would be either directly through DAPM
-or via set_bias_level() - the latter seems a better fit here.
+So it might be best to move all the dirs holding include files rather
+then proper card configs from /usr/share/alsa/ucm to
+/usr/share/alsa/ucm-includes and then change the searchdir part of
+the configs using these to:
 
-> While here move suspend and resume functions to more common place.
+<searchdir:ucm-includes>
 
-It would be better to split this out from the rest of the change as it's
-a fairly large bit of code motion relative to the rest of the patch.
+Regards,
 
-> @@ -491,19 +458,40 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
->  	}
->  	ret = regmap_read(max9867->regmap, MAX9867_REVISION, &reg);
->  	if (ret < 0) {
-> -		dev_err(&i2c->dev, "Failed to read: %d\n", ret);
-> +		dev_err(&i2c->dev, "Failed to read revision: %d\n", ret);
->  		return ret;
->  	}
-
-This is a cosmetic change unrelated to the rest of the patch, it should
-be sent separately.
-
---b5gNqxB1S1yM7hjW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv77a4ACgkQJNaLcl1U
-h9Ce4Af/ZqtLdpqN2QPeyn7fP645Z/puvwapf4KyLQx5KIoSxMHA3TJ8SUqFTR13
-57hJz5U46a7yp4NJkmb4vyLyKp9PnoR16T3vgwc9GPNc3JyiNMYGPnElZQB03+zB
-c6gnnuPq0ot6xFCDk9PTKVHQRLI6kqnr+AskPHIFIG900tAnuzQBHEfx9Mza9v2f
-sT6fPbr4WQvzA3MYbRiqItHpzymyVsC4rSK4u4yZV1OFveP6ROe+ipREZ99B8Z6T
-AznWRJBcxI+42OKxJstcFaXikgmBnDIDtl/02HsCUaGQ+wYlWAuOKS+B73Ob+fWl
-8FUrwI/rKQEZg02UfgtqXTWA0dZ1Mw==
-=5I7y
------END PGP SIGNATURE-----
-
---b5gNqxB1S1yM7hjW--
-
---===============9026881543033601892==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9026881543033601892==--
+Hans
