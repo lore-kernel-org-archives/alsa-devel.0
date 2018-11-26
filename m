@@ -1,104 +1,71 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
-	conversions to it)
-Date: Tue, 27 Nov 2018 01:09:17 +0200
-Message-ID: <CAHp75VcGC4eMOHpwvM4EW5DqYm7n5XjV83K5jsXTEv-qLOOJCw@mail.gmail.com>
-References: <20181126171126.20280-1-tiwai@suse.de>
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: [PATCH v7 1/3] ALSA: hda: fix front speakers on Huawei MBXP.
+Date: Mon, 26 Nov 2018 18:46:22 -0500
+Message-ID: <20181126234624.31264-2-ayman.bagabas@gmail.com>
+References: <20181126234624.31264-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f196.google.com (mail-qt1-f196.google.com
- [209.85.160.196])
- by alsa0.perex.cz (Postfix) with ESMTP id EA43226782E
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 00:09:29 +0100 (CET)
-Received: by mail-qt1-f196.google.com with SMTP id z16so19709981qtq.4
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 15:09:29 -0800 (PST)
-In-Reply-To: <20181126171126.20280-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Ayman Bagabas <ayman.bagabas@gmail.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linux LED Subsystem <linux-leds@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181126234624.31264-1-ayman.bagabas@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ayman.bagabas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 26, 2018 at 7:14 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> Hi,
->
-> this is patch series I've hacked after useful conversation with
-> Pavel.  Basically this adds a new LED trigger audio-mute and
-> audio-micmute, and convert the HD-audio driver and the platform
-> drivers to use the LED trigger instead of the ugly direct dynamic
-> symbol binding.
->
-> The latest version of patches are found in topic/leds-trigger branch
-> in my sound git tree.
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->
-> As these are cross-tree patches, the branch above is based cleanly on
-> v4.20-rc3, so that it can be merged well to multiple trees.
->
-> Once after getting the ACK's, I'll add tags and fixate for merges.
->
-> This patch series don't include huawei-wmi stuff; so Huawei patches
-> need rework.  I already have some piece of changes for huawei-wmi, so
-> please ping me if needed.
->
-> I checked briefly on my Dell laptop, and a Thinkpad model.
-> Wider tests are appreciated, of course.
->
+This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
+https://bugzilla.kernel.org/show_bug.cgi?id=200501
+It enables the front speakers on Huawei Matebook X Pro laptops.
+These laptops come with Dolby Atmos sound system and these pins
+configuration enables the front speakers.
 
-Few minor comments, otherwise I like this series.
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-for PDx86 bits.
+Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
->
-> thanks,
->
-> Takashi
->
-> ===
->
-> Takashi Iwai (6):
->   leds: trigger: Introduce audio mute LED trigger
->   platform/x86: dell-laptop: Add micmute LED trigger support
->   platform/x86: thinkpad_acpi: Add audio mute LED classdev support
->   ALSA: hda - Support led audio trigger
->   platform/x86: dell-laptop: Drop superfluous exported function
->   platform/x86: thinkpad_acpi: Drop superfluous exported function
->
->  drivers/leds/trigger/Kconfig         |  7 +++
->  drivers/leds/trigger/Makefile        |  1 +
->  drivers/leds/trigger/ledtrig-audio.c | 45 +++++++++++++++++++
->  drivers/platform/x86/Kconfig         |  4 ++
->  drivers/platform/x86/dell-laptop.c   | 27 +++++++++---
->  drivers/platform/x86/thinkpad_acpi.c | 66 +++++++++++++++++++++-------
->  include/linux/dell-led.h             |  7 ---
->  include/linux/leds.h                 | 20 +++++++++
->  include/linux/thinkpad_acpi.h        | 16 -------
->  sound/pci/hda/dell_wmi_helper.c      | 48 --------------------
->  sound/pci/hda/hda_generic.c          | 31 +++++++++++++
->  sound/pci/hda/hda_generic.h          |  2 +
->  sound/pci/hda/patch_realtek.c        | 17 +++----
->  sound/pci/hda/thinkpad_helper.c      | 43 +++---------------
->  14 files changed, 194 insertions(+), 140 deletions(-)
->  create mode 100644 drivers/leds/trigger/ledtrig-audio.c
->  delete mode 100644 include/linux/dell-led.h
->  delete mode 100644 include/linux/thinkpad_acpi.h
->  delete mode 100644 sound/pci/hda/dell_wmi_helper.c
->
-> --
-> 2.19.1
->
-
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 993d34c141c2..1326f32f4574 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5490,6 +5490,7 @@ enum {
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
++	ALC256_FIXUP_HUAWEI_MBXP_PINS,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
+ };
+@@ -5761,6 +5762,22 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{0x12, 0x90a60130},
++			{0x13, 0x40000000},
++			{0x14, 0x90170110},
++			{0x18, 0x411111f0},
++			{0x19, 0x04a11040},
++			{0x1a, 0x411111f0},
++			{0x1b, 0x90170112},
++			{0x1d, 0x40759a05},
++			{0x1e, 0x411111f0},
++			{0x21, 0x04211020},
++			{ }
++		}
++	},
+ 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_x101_headset_mic,
+@@ -6591,6 +6608,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 
+ #if 0
 -- 
-With Best Regards,
-Andy Shevchenko
+2.19.1
