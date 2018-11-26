@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc.h: makes
-	snd_soc_of_parse_audio_prefix() inline" to the asoc tree
-Date: Mon, 26 Nov 2018 17:20:46 +0000 (GMT)
-Message-ID: <20181126172046.BBC1B112519F@debutante.sirena.org.uk>
-References: <87h8g43an3.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: tidyup for SSIU subnode" to the
+	asoc tree
+Date: Mon, 26 Nov 2018 17:20:55 +0000 (GMT)
+Message-ID: <20181126172055.32367112519F@debutante.sirena.org.uk>
+References: <87in0k3aud.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 61B2F267AC3
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 18:20:47 +0100 (CET)
-In-Reply-To: <87h8g43an3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6940F26770D
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 18:20:55 +0100 (CET)
+In-Reply-To: <87in0k3aud.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc.h: makes snd_soc_of_parse_audio_prefix() inline
+   ASoC: rsnd: tidyup for SSIU subnode
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 2708bccf9c6f142c3ef5a27f15d34febe751ce4c Mon Sep 17 00:00:00 2001
+>From 7121779fec95ce106ed3a7948d265809bd4e849b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Nov 2018 01:21:22 +0000
-Subject: [PATCH] ASoC: soc.h: makes snd_soc_of_parse_audio_prefix() inline
+Date: Mon, 26 Nov 2018 01:17:01 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup for SSIU subnode
 
-commit 3b7103562c03c ("ASoC: soc-core: add
-snd_soc_of_parse_node_prefix()") maked snd_soc_of_parse_audio_prefix()
-as #define. But it'd be better to make this a static inline rather than
-a #define. It helps with error messages and type safety.
-This patch makes it inline.
+commit da48a6eb82ea2 ("ASoC: rsnd: add SSIU BUSIF support for
+Document") updated Documentation for SSIU, but 1) we want to
+keep old/deprecated DMA description, 2) it is missing SSIU
+subnode properties. This patch tidyup these
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 93b7510e7f7d..66aafadcf5ef 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1481,9 +1481,15 @@ void snd_soc_of_parse_node_prefix(struct device_node *np,
- 				   struct snd_soc_codec_conf *codec_conf,
- 				   struct device_node *of_node,
- 				   const char *propname);
--#define snd_soc_of_parse_audio_prefix(card, conf, node, name) \
--	snd_soc_of_parse_node_prefix((card)->dev->of_node,    \
--				     (conf), (node), (name))
-+static inline
-+void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
-+				   struct snd_soc_codec_conf *codec_conf,
-+				   struct device_node *of_node,
-+				   const char *propname)
-+{
-+	snd_soc_of_parse_node_prefix(card->dev->of_node,
-+				     codec_conf, of_node, propname);
-+}
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 47dc8190f0a7..4d19d2bd6286 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -327,8 +327,13 @@ SSI subnode properties:
+ - no-busif			: BUSIF is not ussed when [mem -> SSI] via DMA case
+ - dma				: Should contain Audio DMAC entry
+ - dma-names			: SSI  case "rx"  (=playback), "tx"  (=capture)
++				  Deprecated: see SSIU subnode properties
+ 				  SSIU case "rxu" (=playback), "txu" (=capture)
  
- int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname);
++SSIU subnode properties:
++- dma				: Should contain Audio DMAC entry
++- dma-names			: "rx" (=playback), "tx" (=capture)
++
+ SRC subnode properties:
+ - dma				: Should contain Audio DMAC entry
+ - dma-names			: "rx" (=playback), "tx" (=capture)
 -- 
 2.19.0.rc2
