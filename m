@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup for SSIU subnode" to the
-	asoc tree
-Date: Mon, 26 Nov 2018 17:20:55 +0000 (GMT)
-Message-ID: <20181126172055.32367112519F@debutante.sirena.org.uk>
-References: <87in0k3aud.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
+ generic bytcr/PlatformEnableSeq.conf
+Date: Mon, 26 Nov 2018 11:20:41 -0600
+Message-ID: <2658f3ea-c442-96b6-31f7-64ee08971d0b@linux.intel.com>
+References: <20180808090543.15181-1-hdegoede@redhat.com>
+ <20181126094911.27716-1-youling257@gmail.com> <s5hlg5g17a4.wl-tiwai@suse.de>
+ <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
+ <s5ho9abzzub.wl-tiwai@suse.de>
+ <2dcbb4a3-d822-d63a-d393-172edbbbc299@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6940F26770D
- for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 18:20:55 +0100 (CET)
-In-Reply-To: <87in0k3aud.wl-kuninori.morimoto.gx@renesas.com>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82946267AC9
+ for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2018 18:20:53 +0100 (CET)
+In-Reply-To: <2dcbb4a3-d822-d63a-d393-172edbbbc299@perex.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +26,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
+Cc: youling257 <youling257@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsnd: tidyup for SSIU subnode
+On 11/26/18 9:28 AM, Jaroslav Kysela wrote:
+> Dne 26.11.2018 v 15:18 Takashi Iwai napsal(a):
+>> On Mon, 26 Nov 2018 14:40:48 +0100,
+>> Hans de Goede wrote:
+>>>> some of the recently added UCM profiles are the files to be included
+>>>> by others, and they are not card targets.  Unfortunately alsaucm
+>>>> doesn't know about it, and it aborts with error, e.g.
+>>>>
+>>>> ====
+>>>> % alsaucm
+>>>> ALSA lib utils.c:67:(uc_mgr_config_load) could not open configuration file /usr/share/alsa/ucm/bytcr/bytcr.conf
+>>>> ALSA lib parser.c:1427:(load_master_config) error: could not parse configuration for card bytcr
+>>>> alsaucm: unable to obtain card list: No such file or directory
+>>>> ====
+>>>>
+>>>> The similar error is found in nau8824, rt5640 and rt5651.  After
+>>>> putting a placeholder card config file (e.g. bytcr.conf), the error is
+>>>> gone.  But certainly we don't want to allow user to choose this as the
+>>>> proper card.
+>>>>
+>>>> So, I guess we need to put some flag to each such directory indicating
+>>>> that it's no card config.  For example, putting
+>>>> /usr/share/alsa/ucm/bytcr/.nocard file or such...
+>>>>
+>>>> Not sure whether it's wise to have a file starting with dot, though.
+>>>> Maybe clearer to be "nocard" or any other visible one?
+>>> All the HiFi.conf files using the "include" snippets I added to avoid
+>>> copy and pasting a lot, already need to have this at the top for
+>>> this to work:
+>>>
+>>> <searchdir:ucm>
+>>>
+>>> So it might be best to move all the dirs holding include files rather
+>>> then proper card configs from /usr/share/alsa/ucm to
+>>> /usr/share/alsa/ucm-includes and then change the searchdir part of
+>>> the configs using these to:
+>>>
+>>> <searchdir:ucm-includes>
+>> This sounds like a good solution, indeed.
+>> Care to submit a fix patch?  I'll apply it unless anyone objects.
+> Yep, it looks like a good idea.
 
-has been applied to the asoc tree at
+Makes sense.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+We may also want to change the error message when the DMI-based 
+configuration is not found, e.g.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+ALSA lib utils.c:67:(uc_mgr_config_load) could not open configuration 
+file 
+/usr/share/alsa/ucm/ASUSTeKCOMPUTERINC.-X205TA-1.0-X205TA/ASUSTeKCOMPUTERINC.-X205TA-1.0-X205TA.conf 
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ALSA lib parser.c:1427:(load_master_config) error: could not parse 
+configuration for card ASUSTeKCOMPUTERINC.-X205TA-1.0-X205TA
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+This is reported as an error even if there is a fallback. I remember 
+losing a couple of hours trying to figure out what was happening when in 
+reality there was no issue.
 
-Thanks,
-Mark
+I have two other points I need to sort out
 
->From 7121779fec95ce106ed3a7948d265809bd4e849b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 26 Nov 2018 01:17:01 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup for SSIU subnode
+- what is the license for those UCM files? I keep getting questions and 
+I don't have the answer. It'd be odd to have then inherit the LGPL 
+license from alsa-lib, it's expected that people will have to do minor 
+modifications left and right and handle a number of derivatives, e.g. 
+because the perceived volume is too low due to some mechanics/acoustics 
+issue and requiring them to share is a bit cumbersome.
 
-commit da48a6eb82ea2 ("ASoC: rsnd: add SSIU BUSIF support for
-Document") updated Documentation for SSIU, but 1) we want to
-keep old/deprecated DMA description, 2) it is missing SSIU
-subnode properties. This patch tidyup these
+- how are we going to handle the changes for SOF, we added an "sof-" 
+prefix to make it explicit that the platform/DSP driver side is 
+different, but having a different board name will interfere with search 
+and includes.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 47dc8190f0a7..4d19d2bd6286 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -327,8 +327,13 @@ SSI subnode properties:
- - no-busif			: BUSIF is not ussed when [mem -> SSI] via DMA case
- - dma				: Should contain Audio DMAC entry
- - dma-names			: SSI  case "rx"  (=playback), "tx"  (=capture)
-+				  Deprecated: see SSIU subnode properties
- 				  SSIU case "rxu" (=playback), "txu" (=capture)
- 
-+SSIU subnode properties:
-+- dma				: Should contain Audio DMAC entry
-+- dma-names			: "rx" (=playback), "tx" (=capture)
-+
- SRC subnode properties:
- - dma				: Should contain Audio DMAC entry
- - dma-names			: "rx" (=playback), "tx" (=capture)
--- 
-2.19.0.rc2
+-Pierre
