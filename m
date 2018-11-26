@@ -1,79 +1,83 @@
-From: Chanho Min <chanho.min@lge.com>
-Subject: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
-Date: Mon, 26 Nov 2018 14:36:37 +0900
-Message-ID: <1543210597-6717-1-git-send-email-chanho.min@lge.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@kernel.org>, Vinod Koul <vkoul@kernel.org>, Daniel Mentz <danielmentz@google.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Seungho Park <seungho1.park@lge.com>, Jongsung Kim <neidhard.kim@lge.com>, Wonmin Jung <wonmin.jung@lge.com>, Jaehyun Kim <jehn.kim@lge.com>, Hyonwoo Park <hyonwoo.park@lge.com>, Chanho Min <chanho.min@lge.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - fix the pop noise on headphone for lenovo laptops
+Date: Mon, 26 Nov 2018 14:17:16 +0800
+Message-ID: <20181126061716.20417-1-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 67ec1072b053 ("ALSA: pcm: Fix rwsem deadlock for non-atomic PCM stream")
-fixes deadlock for non-atomic PCM stream. But, This patch causes antother stuck.
-If writer is RT thread and reader is a normal thread, the reader thread will
-be difficult to get scheduled. It may not give chance to release readlocks
-and writer gets stuck for a long time if they are pinned to single cpu.
+We have several Lenovo laptops with the codec alc285, when playing
+sound via headphone, we can hear click/pop noise in the headphone,
+if we let the headphone share the DAC of NID 0x2 with the speaker,
+the noise disappears.
 
-The deadlock described in the previous commit is because the linux rwsem
-queues like a FIFO. So, we might need non-FIFO writelock, not non-block one.
+The Lenovo laptops here include P52, P72, X1 yoda2 and X1 carbon.
 
-My suggestion is that the writer gives reader a chance to be scheduled by using
-the minimum msleep() instaed of spinning without blocking by writer. Also,
-The *_nonblock may be changed to *_nonfifo appropriately to this concept.
-In terms of performance, when trylock is failed, this minimum periodic msleep
-will have the same performance as the tick-based schedule()/wake_up_q().
+I have tried to set preferred_dacs and override_conn, but neither of
+them worked. Thanks for Kailang, he told me to invalidate the NID 0x3
+through override_wcaps.
 
-Suggested-by: Wonmin Jung <wonmin.jung@lge.com>
-Signed-off-by: Chanho Min <chanho.min@lge.com>
+BugLink: https://bugs.launchpad.net/bugs/1805079
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/core/pcm_native.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_realtek.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 66c90f4..bdca0e1 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -36,6 +36,7 @@
- #include <sound/timer.h>
- #include <sound/minors.h>
- #include <linux/uio.h>
-+#include <linux/delay.h>
- 
- #include "pcm_local.h"
- 
-@@ -91,12 +92,12 @@ static DECLARE_RWSEM(snd_pcm_link_rwsem);
-  * and this may lead to a deadlock when the code path takes read sem
-  * twice (e.g. one in snd_pcm_action_nonatomic() and another in
-  * snd_pcm_stream_lock()).  As a (suboptimal) workaround, let writer to
-- * spin until it gets the lock.
-+ * sleep until all the readers are completed without blocking by writer.
-  */
--static inline void down_write_nonblock(struct rw_semaphore *lock)
-+static inline void down_write_nonfifo(struct rw_semaphore *lock)
- {
- 	while (!down_write_trylock(lock))
--		cond_resched();
-+		msleep(1);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1118fd1bbf1a..e66da22272fd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5358,6 +5358,16 @@ static void alc274_fixup_bind_dacs(struct hda_codec *codec,
+ 	spec->gen.preferred_dacs = preferred_pairs;
  }
  
- #define PCM_LOCK_DEFAULT	0
-@@ -1967,7 +1968,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
- 		res = -ENOMEM;
- 		goto _nolock;
- 	}
--	down_write_nonblock(&snd_pcm_link_rwsem);
-+	down_write_nonfifo(&snd_pcm_link_rwsem);
- 	write_lock_irq(&snd_pcm_link_rwlock);
- 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN ||
- 	    substream->runtime->status->state != substream1->runtime->status->state ||
-@@ -2014,7 +2015,7 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
- 	struct snd_pcm_substream *s;
- 	int res = 0;
++/* The DAC of NID 0x3 will introduce click/pop noise on headphones, so invalidate it */
++static void alc285_fixup_invalidate_dacs(struct hda_codec *codec,
++			      const struct hda_fixup *fix, int action)
++{
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	snd_hda_override_wcaps(codec, 0x03, 0);
++}
++
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
  
--	down_write_nonblock(&snd_pcm_link_rwsem);
-+	down_write_nonfifo(&snd_pcm_link_rwsem);
- 	write_lock_irq(&snd_pcm_link_rwlock);
- 	if (!snd_pcm_stream_linked(substream)) {
- 		res = -EALREADY;
+@@ -5495,6 +5505,7 @@ enum {
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
++	ALC285_FIXUP_LENOVO_HEADPHONE_NOISE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -6362,6 +6373,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC285_FIXUP_LENOVO_HEADPHONE_NOISE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_invalidate_dacs,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7035,6 +7050,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x12, 0x90a60130},
+ 		{0x19, 0x03a11020},
+ 		{0x21, 0x0321101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_LENOVO_HEADPHONE_NOISE,
++		{0x12, 0x90a60130},
++		{0x14, 0x90170110},
++		{0x19, 0x04a11040},
++		{0x21, 0x04211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0288, 0x1028, "Dell", ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60120},
+ 		{0x14, 0x90170110},
 -- 
-2.1.4
+2.17.1
