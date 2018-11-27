@@ -1,46 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98373: Added max98373_reset for stable amp reset
-Date: Tue, 27 Nov 2018 11:50:35 +0000
-Message-ID: <20181127115035.GB3206@sirena.org.uk>
-References: <20181126183942.2631-1-ryans.lee@maximintegrated.com>
+From: Daniel James <daniel@64studio.com>
+Subject: Re: Subwoofers aren't working on ALC298 (Lenovo Yoga
+ C930 Laptop)
+Date: Tue, 27 Nov 2018 12:01:55 +0000
+Message-ID: <32e2283a-8a5e-25a6-de95-bfb568341269@64studio.com>
+References: <871s77zw23.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181126183942.2631-1-ryans.lee@maximintegrated.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web2.default.djames.uk0.bigv.io
+ (web2.default.djames.uk0.bigv.io [213.138.101.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3350026751A
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 13:01:56 +0100 (CET)
+In-Reply-To: <871s77zw23.fsf@gmail.com>
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jonathan Reeve <jon.reeve@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jonathan,
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> - Running hdajackretask, from the alsaTools package. It seems to 
+> correctly recognize that there are some unassigned pins, and even gives 
+> me the option of assigning them to "internal speaker (LFE)," which 
+> sounds like it could be a bass output.
 
-On Mon, Nov 26, 2018 at 06:46:05PM +0000, Ryan Lee wrote:
-> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
-> ---
+LFE usually stands for Low Frequency Effects, i.e. a subwoofer channel 
+on a movie or game. There are some tips on surround sound at 
+http://www.volkerschatz.com/noise/alsa.html
 
-This really needs a changelog to explain what is going on here, and we
-need some more documentation in the code.  It is *extremely* unusual to
-have to poll for reset like this, and if the failure mode is I/O errors
-that's going to be pretty painful.
+I don't know which 'md' program they are referring to, but you can 
+install tee separately.
 
---mojUlQ0s9EVzWg2t
-Content-Type: application/pgp-signature; name="signature.asc"
+Cheers!
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv9L4oACgkQJNaLcl1U
-h9A9dAf/YNgemguFt+88Dci5UTRiy8trzQVPKNreg51M7R/0pOnk/fyAC76I3xUj
-F545w42n+Crp2QiRzn8ONI3Vn4ycdTS9LaUI4jNmubYLQ3cYODGHPREvciFEmpqH
-cPoCmhPytfuIwf22bUdMgL2BI13WQDSpJJwskYjz66wcu1HRlZyGLUq7Lk2p+nrR
-gr1Rq+2yCCZiUzTs5eEvEwNP07ePngofy7gMNVeuSWzdiT9fBRPEio0rs8+VXvwr
-rm+btK3IOGcB6Yc/weV1djHZbxDo6fUhiDS90gSb99sE0J+RX/vhXsjHL+LtYxqJ
-wWkk7OOlNy9WknhGx6wmXEnhStRK/A==
-=5YXq
------END PGP SIGNATURE-----
-
---mojUlQ0s9EVzWg2t--
+Daniel
