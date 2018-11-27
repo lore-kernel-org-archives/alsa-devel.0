@@ -1,105 +1,61 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
- conversions to it)
-Date: Tue, 27 Nov 2018 09:44:18 +0100
-Message-ID: <20181127084418.GA20504@amd>
-References: <20181126171126.20280-1-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: qcom: sdm845: Add board specific
+ dapm widgets
+Date: Tue, 27 Nov 2018 09:17:00 +0000
+Message-ID: <f6d2c5d7-ac18-d95a-4814-14365a0a63e7@linaro.org>
+References: <20181124110948.209019-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0837932930531882148=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FCE92679A7
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 09:44:19 +0100 (CET)
-In-Reply-To: <20181126171126.20280-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181124110948.209019-1-cychiang@chromium.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, tzungbi@chromium.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0837932930531882148==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
 
+On 24/11/18 11:09, Cheng-Yi Chiang wrote:
+> Add board specific dapm widgets so these widgets can be used
+> in the route.
+> 
+> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Hi!
-
-> this is patch series I've hacked after useful conversation with
-> Pavel.  Basically this adds a new LED trigger audio-mute and
-> audio-micmute, and convert the HD-audio driver and the platform
-> drivers to use the LED trigger instead of the ugly direct dynamic
-> symbol binding.
-
-Thanks a lot for doing this!
-
-> The latest version of patches are found in topic/leds-trigger branch
-> in my sound git tree.
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->=20
-> As these are cross-tree patches, the branch above is based cleanly on
-> v4.20-rc3, so that it can be merged well to multiple trees.
->=20
-> Once after getting the ACK's, I'll add tags and fixate for merges.
->=20
-> This patch series don't include huawei-wmi stuff; so Huawei patches
-> need rework.  I already have some piece of changes for huawei-wmi, so
-> please ping me if needed.
->=20
-> I checked briefly on my Dell laptop, and a Thinkpad model.
-> Wider tests are appreciated, of course.
-
-Looks good... except one detail: you have "tpacpi::micmute" and
-"dell::micmute". I know it follows "tradition", but we are trying to
-fix that at the moment. Laptop micmute button is a laptop micmute
-button, and userspace should not need to know what prefix to use
-depending on vendor.
-
-I'd suggest using "sys::micmute".
-
-With that:
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlv9A+IACgkQMOfwapXb+vLBsACgra1PraOEcBCMo5EbZ6z86T1F
-gv8Anj0Mgc1uTlJ0pApuknp6UrsME1Ct
-=1GT3
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
-
---===============0837932930531882148==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0837932930531882148==--
+> ---
+>   sound/soc/qcom/sdm845.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+> index 58593db2ab151..95d8d4422dae0 100644
+> --- a/sound/soc/qcom/sdm845.c
+> +++ b/sound/soc/qcom/sdm845.c
+> @@ -212,6 +212,14 @@ static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+>   	return 0;
+>   }
+>   
+> +static const struct snd_soc_dapm_widget sdm845_snd_widgets[] = {
+> +	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+> +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> +	SND_SOC_DAPM_SPK("Left Spk", NULL),
+> +	SND_SOC_DAPM_SPK("Right Spk", NULL),
+> +	SND_SOC_DAPM_MIC("Int Mic", NULL),
+> +};
+> +
+>   static void sdm845_add_be_ops(struct snd_soc_card *card)
+>   {
+>   	struct snd_soc_dai_link *link;
+> @@ -243,6 +251,8 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+>   		goto data_alloc_fail;
+>   	}
+>   
+> +	card->dapm_widgets = sdm845_snd_widgets;
+> +	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
+>   	card->dev = dev;
+>   	dev_set_drvdata(dev, card);
+>   	ret = qcom_snd_parse_of(card);
+> 
