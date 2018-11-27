@@ -1,15 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: ALC300 enable
-Date: Tue, 27 Nov 2018 07:36:28 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FA2C@RTITMBSV02.realtek.com.tw>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
+ conversions to it)
+Date: Tue, 27 Nov 2018 09:44:18 +0100
+Message-ID: <20181127084418.GA20504@amd>
+References: <20181126171126.20280-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1841FA2CRTITMBSV02realt_"
+Content-Type: multipart/mixed; boundary="===============0837932930531882148=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C6C5267A8C
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 08:36:33 +0100 (CET)
-Content-Language: zh-TW
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FCE92679A7
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 09:44:19 +0100 (CET)
+In-Reply-To: <20181126171126.20280-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "tiwai@suse.de" <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1841FA2CRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
+
+--===============0837932930531882148==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+
+
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
+Hi!
 
-Attach patch will enable new codec ALC300.
-Thanks.
+> this is patch series I've hacked after useful conversation with
+> Pavel.  Basically this adds a new LED trigger audio-mute and
+> audio-micmute, and convert the HD-audio driver and the platform
+> drivers to use the LED trigger instead of the ugly direct dynamic
+> symbol binding.
 
-BR,
-Kailang
+Thanks a lot for doing this!
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1841FA2CRTITMBSV02realt_
-Content-Type: application/octet-stream; name="0000-alc300.patch"
-Content-Description: 0000-alc300.patch
-Content-Disposition: attachment; filename="0000-alc300.patch"; size=2017;
-	creation-date="Tue, 27 Nov 2018 07:27:24 GMT";
-	modification-date="Thu, 08 Nov 2018 08:39:34 GMT"
-Content-Transfer-Encoding: base64
+> The latest version of patches are found in topic/leds-trigger branch
+> in my sound git tree.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+>=20
+> As these are cross-tree patches, the branch above is based cleanly on
+> v4.20-rc3, so that it can be merged well to multiple trees.
+>=20
+> Once after getting the ACK's, I'll add tags and fixate for merges.
+>=20
+> This patch series don't include huawei-wmi stuff; so Huawei patches
+> need rework.  I already have some piece of changes for huawei-wmi, so
+> please ping me if needed.
+>=20
+> I checked briefly on my Dell laptop, and a Thinkpad model.
+> Wider tests are appreciated, of course.
 
-RnJvbSA5ZTkyZjA3ZjY5ZDk2NmRkYzk5MzM1YTBjNmY1ZGFhNzc1NTk3YmVkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFRodSwgOCBOb3YgMjAxOCAxNjozNjoxNSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrIC0gU3VwcG9ydCBBTEMzMDAKClRoaXMgcGF0Y2ggd2lsbCBlbmFibGUgQUxD
-MzAwLgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgoK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hk
-YS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggZmE2MTY3NC4uZDBhMmNjNCAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKQEAgLTM4OCw2ICszODgsNyBAQCBzdGF0aWMgdm9pZCBhbGNfZmlsbF9lYXBkX2NvZWYo
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwZWMwMjg1OgogCWNhc2UgMHgxMGVj
-MDI5ODoKIAljYXNlIDB4MTBlYzAyODk6CisJY2FzZSAweDEwZWMwMzAwOgogCQlhbGNfdXBkYXRl
-X2NvZWZfaWR4KGNvZGVjLCAweDEwLCAxPDw5LCAwKTsKIAkJYnJlYWs7CiAJY2FzZSAweDEwZWMw
-Mjc1OgpAQCAtMjgzMCw2ICsyODMxLDcgQEAgZW51bSB7CiAJQUxDMjY5X1RZUEVfQUxDMjE1LAog
-CUFMQzI2OV9UWVBFX0FMQzIyNSwKIAlBTEMyNjlfVFlQRV9BTEMyOTQsCisJQUxDMjY5X1RZUEVf
-QUxDMzAwLAogCUFMQzI2OV9UWVBFX0FMQzcwMCwKIH07CiAKQEAgLTI4NjQsNiArMjg2Niw3IEBA
-IHN0YXRpYyBpbnQgYWxjMjY5X3BhcnNlX2F1dG9fY29uZmlnKHN0cnVjdCBoZGFfY29kZWMgKmNv
-ZGVjKQogCWNhc2UgQUxDMjY5X1RZUEVfQUxDMjE1OgogCWNhc2UgQUxDMjY5X1RZUEVfQUxDMjI1
-OgogCWNhc2UgQUxDMjY5X1RZUEVfQUxDMjk0OgorCWNhc2UgQUxDMjY5X1RZUEVfQUxDMzAwOgog
-CWNhc2UgQUxDMjY5X1RZUEVfQUxDNzAwOgogCQlzc2lkcyA9IGFsYzI2OV9zc2lkczsKIAkJYnJl
-YWs7CkBAIC03Mjk0LDYgKzcyOTcsMTAgQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjkoc3RydWN0
-IGhkYV9jb2RlYyAqY29kZWMpCiAJCXNwZWMtPmdlbi5taXhlcl9uaWQgPSAwOyAvKiBBTEMyeDQg
-ZG9lcyBub3QgaGF2ZSBhbnkgbG9vcGJhY2sgbWl4ZXIgcGF0aCAqLwogCQlhbGNfdXBkYXRlX2Nv
-ZWZfaWR4KGNvZGVjLCAweDZiLCAweDAwMTgsICgxPDw0KSB8ICgxPDwzKSk7IC8qIFVBSiBNSUMg
-VnJlZiBjb250cm9sIGJ5IHZlcmIgKi8KIAkJYnJlYWs7CisJY2FzZSAweDEwZWMwMzAwOgorCQlz
-cGVjLT5jb2RlY192YXJpYW50ID0gQUxDMjY5X1RZUEVfQUxDMzAwOworCQlzcGVjLT5nZW4ubWl4
-ZXJfbmlkID0gMDsgLyogbm8gbG9vcGJhY2sgb24gQUxDMzAwICovCisJCWJyZWFrOwogCWNhc2Ug
-MHgxMGVjMDcwMDoKIAljYXNlIDB4MTBlYzA3MDE6CiAJY2FzZSAweDEwZWMwNzAzOgpAQCAtODQw
-NCw2ICs4NDExLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZGV2aWNlX2lkIHNuZF9oZGFf
-aWRfcmVhbHRla1tdID0gewogCUhEQV9DT0RFQ19FTlRSWSgweDEwZWMwMjk1LCAiQUxDMjk1Iiwg
-cGF0Y2hfYWxjMjY5KSwKIAlIREFfQ09ERUNfRU5UUlkoMHgxMGVjMDI5OCwgIkFMQzI5OCIsIHBh
-dGNoX2FsYzI2OSksCiAJSERBX0NPREVDX0VOVFJZKDB4MTBlYzAyOTksICJBTEMyOTkiLCBwYXRj
-aF9hbGMyNjkpLAorCUhEQV9DT0RFQ19FTlRSWSgweDEwZWMwMzAwLCAiQUxDMzAwIiwgcGF0Y2hf
-YWxjMjY5KSwKIAlIREFfQ09ERUNfUkVWX0VOVFJZKDB4MTBlYzA4NjEsIDB4MTAwMzQwLCAiQUxD
-NjYwIiwgcGF0Y2hfYWxjODYxKSwKIAlIREFfQ09ERUNfRU5UUlkoMHgxMGVjMDY2MCwgIkFMQzY2
-MC1WRCIsIHBhdGNoX2FsYzg2MXZkKSwKIAlIREFfQ09ERUNfRU5UUlkoMHgxMGVjMDg2MSwgIkFM
-Qzg2MSIsIHBhdGNoX2FsYzg2MSksCg==
+Looks good... except one detail: you have "tpacpi::micmute" and
+"dell::micmute". I know it follows "tradition", but we are trying to
+fix that at the moment. Laptop micmute button is a laptop micmute
+button, and userspace should not need to know what prefix to use
+depending on vendor.
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1841FA2CRTITMBSV02realt_
+I'd suggest using "sys::micmute".
+
+With that:
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlv9A+IACgkQMOfwapXb+vLBsACgra1PraOEcBCMo5EbZ6z86T1F
+gv8Anj0Mgc1uTlJ0pApuknp6UrsME1Ct
+=1GT3
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
+
+--===============0837932930531882148==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A1841FA2CRTITMBSV02realt_--
+--===============0837932930531882148==--
