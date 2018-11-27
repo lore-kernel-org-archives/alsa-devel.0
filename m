@@ -1,50 +1,57 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v7 3/3] ALSA: hda: add support for Huawei WMI micmute LED
-Date: Mon, 26 Nov 2018 18:46:24 -0500
-Message-ID: <20181126234624.31264-4-ayman.bagabas@gmail.com>
-References: <20181126234624.31264-1-ayman.bagabas@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: usb-audio: Add vendor and product name
+	for Dell WD19 Dock
+Date: Tue, 27 Nov 2018 09:33:32 +0800
+Message-ID: <20181127013332.7494-1-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181126234624.31264-1-ayman.bagabas@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: ayman.bagabas@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5888226784E
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 02:33:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Some of Huawei laptops come with a LED in the micmute key. This patch
-enables the use of micmute LED for these devices:
-1. Matebook X (19e5:3200), (19e5:3201)
-2. Matebook X Pro (19e5:3204)
+Like the Dell WD15 Dock, the WD19 Dock (0bda:402e) doens't provide
+useful string for the vendor and product names too, and WD19 has a
+headset Jack and a Speaker out Jack. In order to support UCM for this
+Dock in the alsa-lib, here we add profile_name too.
 
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/usb/quirks-table.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1326f32f4574..9766fd249bdf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5776,7 +5776,9 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{0x1e, 0x411111f0},
- 			{0x21, 0x04211020},
- 			{ }
--		}
-+		},
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_MIC_MUTE_LED
- 	},
- 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -6608,6 +6610,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
-+	SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
-+	SND_PCI_QUIRK(0x19e5, 0x3201, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
- 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 849953e5775c..4c10015cc0ca 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3382,5 +3382,15 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		.ifnum = QUIRK_NO_INTERFACE
+ 	}
+ },
++/* Dell WD19 Dock */
++{
++	USB_DEVICE(0x0bda, 0x402e),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Dell",
++		.product_name = "WD19 Dock",
++		.profile_name = "Dell-WD19-Dock",
++		.ifnum = QUIRK_NO_INTERFACE
++	}
++},
  
+ #undef USB_DEVICE_VENDOR_SPEC
 -- 
-2.19.1
+2.17.1
