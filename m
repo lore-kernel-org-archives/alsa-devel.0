@@ -1,131 +1,66 @@
-From: ayman.bagabas@gmail.com
-Subject: Re: [PATCH v7 2/3] x86: add support for Huawei WMI hotkeys.
-Date: Tue, 27 Nov 2018 19:58:24 -0500
-Message-ID: <30a2b3bea95199ffc1a81f374deabbfadaeb2c22.camel@gmail.com>
-References: <20181127025752.6459-1-ayman.bagabas@gmail.com>
-         <20181127025752.6459-3-ayman.bagabas@gmail.com>
-         <s5h5zwi7t1s.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Add vendor and product
+ name for Dell WD19 Dock
+Date: Wed, 28 Nov 2018 09:14:06 +0800
+Message-ID: <c133267a-9b57-59b1-3759-3d9144c50d70@canonical.com>
+References: <20181127013332.7494-1-hui.wang@canonical.com>
+ <s5hh8g2yda8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h5zwi7t1s.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF122267AF1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 02:14:11 +0100 (CET)
+In-Reply-To: <s5hh8g2yda8.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-11-27 at 10:45 +0100, Takashi Iwai wrote:
-> On Tue, 27 Nov 2018 03:57:48 +0100,
-> Ayman Bagabas wrote:
-> > +static const struct key_entry huawei_wmi_keymap[] __initconst = {
-> > +		{ KE_KEY,    0x281, { KEY_BRIGHTNESSDOWN } },
-> > +		{ KE_KEY,    0x282, { KEY_BRIGHTNESSUP } },
-> > +		{ KE_KEY,    0x284, { KEY_MUTE } },
-> > +		{ KE_KEY,    0x285, { KEY_VOLUMEDOWN } },
-> > +		{ KE_KEY,    0x286, { KEY_VOLUMEUP } },
-> > +		{ KE_KEY,    0x287, { KEY_MICMUTE } },
-> > +		{ KE_KEY,    0x289, { KEY_WLAN } },
-> > +		// Huawei |M| button
-> > +		{ KE_KEY,    0x28a, { KEY_CONFIG } },
-> > +		// Keyboard light
-> > +		{ KE_IGNORE, 0x293, { KEY_KBDILLUMTOGGLE } },
-> > +		{ KE_IGNORE, 0x294, { KEY_KBDILLUMUP } },
-> > +		{ KE_IGNORE, 0x295, { KEY_KBDILLUMUP } },
-> > +		{ KE_END,    0 }
-> 
-> The indentation looks too deep here.
-> 
-> > +static int huawei_wmi_micmute_led_set(bool on)
-> > +{
-> > +	acpi_handle handle;
-> > +	char *method;
-> > +	union acpi_object args[3];
-> > +	struct acpi_object_list arg_list = {
-> > +		.pointer = args,
-> > +		.count = ARRAY_SIZE(args),
-> > +	};
-> > +
-> > +	handle = ACPI_HANDLE(&inputdev->dev);
-> 
-> Just wondering whether the ACPI handle is assigned properly for this
-> device...
-
-It is, but it returns a handle at "\".
-
-> 
-> > +	args[0].type = args[1].type = args[2].type = ACPI_TYPE_INTEGER;
-> > +	args[1].integer.value = 0x04;
-> > +
-> > +	if (acpi_has_method(handle, method =
-> > "\\_SB.PCI0.LPCB.EC0.SPIN")) {
-> > +		args[0].integer.value = 0;
-> > +		args[2].integer.value = on ? 1 : 0;
-> > +	} else if (acpi_has_method(handle, method =
-> > "\\_SB.PCI0.LPCB.EC0.WPIN")) {
-> > +		args[0].integer.value = 1;
-> > +		args[2].integer.value = on ? 0 : 1;
-> > +	} else {
-> > +		dev_err(&inputdev->dev, "Unable to find ACPI
-> > method\n");
-> > +		return -ENOSYS;
-> > +	}
-> > +
-> > +	acpi_evaluate_object(handle, method, &arg_list, NULL);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int micmute_led_set(struct led_classdev *led_cdev,
-> > +		enum led_brightness brightness)
-> > +{
-> > +	int state = brightness != LED_OFF;
-> > +	int err;
-> > +
-> > +	err = huawei_wmi_micmute_led_set(state);
-> > +	return err < 0 ? err : 0;
-> 
-> No need for checking err here, you can return
-> huawei_wmi_mute_led_set() directly.
-> 
-> Or even you can fold two functions into one.
-
-I think folding them make more sense.
-
-> 
-> > +static int __init huawei_wmi_init(void)
-> > +{
-> > +	int err;
-> > +
-> > +	if (wmi_has_guid(MBX_EVENT_GUID)) {
-> > +		event_guid = MBX_EVENT_GUID;
-> > +	} else if (wmi_has_guid(MBXP_EVENT_GUID)) {
-> > +		event_guid = MBXP_EVENT_GUID;
-> > +	} else {
-> > +		pr_warn("Compatible WMI GUID not found\n");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	err = huawei_wmi_input_init();
-> > +	if (err)
-> > +		goto err_input;
-> > +
-> > +	micmute_led_cdev.brightness =
-> > ledtrig_audio_get(LED_AUDIO_MICMUTE);
-> > +	err = led_classdev_register(&inputdev->dev, &micmute_led_cdev);
-> > +	if (err)
-> > +		goto err_leds;
-> > +
-> > +	return 0;
-> 
-> Might it be cleaner to implement on top of wmi_driver?
-> Then you can create both input and led devices on wmi device.
-> 
-
-Done! Now led devices get registered when wmi probes a new device.
-Thanks.
-
-> 
-> thanks,
-> 
-> Takashi
+T24gMjAxOC8xMS8yNyDkuIvljYg3OjIzLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAy
+NyBOb3YgMjAxOCAwMjozMzozMiArMDEwMCwKPiBIdWkgV2FuZyB3cm90ZToKPj4gTGlrZSB0aGUg
+RGVsbCBXRDE1IERvY2ssIHRoZSBXRDE5IERvY2sgKDBiZGE6NDAyZSkgZG9lbnMndCBwcm92aWRl
+Cj4+IHVzZWZ1bCBzdHJpbmcgZm9yIHRoZSB2ZW5kb3IgYW5kIHByb2R1Y3QgbmFtZXMgdG9vLCBh
+bmQgV0QxOSBoYXMgYQo+PiBoZWFkc2V0IEphY2sgYW5kIGEgU3BlYWtlciBvdXQgSmFjay4gSW4g
+b3JkZXIgdG8gc3VwcG9ydCBVQ00gZm9yIHRoaXMKPj4gRG9jayBpbiB0aGUgYWxzYS1saWIsIGhl
+cmUgd2UgYWRkIHByb2ZpbGVfbmFtZSB0b28uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEh1aSBXYW5n
+IDxodWkud2FuZ0BjYW5vbmljYWwuY29tPgo+IExvb2tpbmcgYXQgdGhlIFVDTSBhZGRpdGlvbiwg
+aXQncyBzYW1lIGFzIFdEMTUgYnV0IGp1c3QgYSBkaWZmZXJlbnQKPiBuYW1lPyAgV2hhdCB5b3Ug
+cHV0ICJTcGVha2VyIiB3YXMgIkxpbmUgT3V0IiBvbiBXRDE1LCBidXQgaXQgd2FzIG1lYW50Cj4g
+dG8gYmUgc2FtZS4gIExpbmUgT3V0IHdhcyBjaG9zZW4ganVzdCBiZWNhdXNlIG9mIGNvbnZlbnRp
+b24udGVkCkkganVzdCBjaGVja2VkIHRoZWlyIGRvY3VtZW50cyzCoCB0aGV5IGFyZSBzYW1lIHdp
+dGggdGhlIG91dHB1dCBhbmQgaW5wdXQuCj4KPiBJJ20gT0sgdG8gYWRkIGEgbmV3IG9uZSwgYnV0
+IGtlZXBpbmcgIkRlbGwtV0QxNS1Eb2NrIiBtYWtlcyB0aGUgbmV3Cj4ga2VybmVsIHdvcmtpbmcg
+ZXZlbiB3aXRob3V0IFVDTSBwcm9maWxlIHVwZGF0ZS4KCk9LLCBnb3QgaXQuIGtlZXAgdGhlIHBy
+b2ZpbGVfbmFtZS4gSSB3aWxsIHNlbmQgdGhlIHVwZGF0ZWQgcGF0Y2ggbGF0ZXIuCgoKVGhhbmtz
+LAoKSHVpLgoKPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4+IC0tLQo+PiAgIHNvdW5kL3Vz
+Yi9xdWlya3MtdGFibGUuaCB8IDEwICsrKysrKysrKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgMTAg
+aW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3F1aXJrcy10YWJsZS5o
+IGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4+IGluZGV4IDg0OTk1M2U1Nzc1Yy4uNGMxMDAx
+NWNjMGNhIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKPj4gKysrIGIv
+c291bmQvdXNiL3F1aXJrcy10YWJsZS5oCj4+IEBAIC0zMzgyLDUgKzMzODIsMTUgQEAgQVUwODI4
+X0RFVklDRSgweDIwNDAsIDB4NzI3MCwgIkhhdXBwYXVnZSIsICJIVlItOTUwUSIpLAo+PiAgIAkJ
+LmlmbnVtID0gUVVJUktfTk9fSU5URVJGQUNFCj4+ICAgCX0KPj4gICB9LAo+PiArLyogRGVsbCBX
+RDE5IERvY2sgKi8KPj4gK3sKPj4gKwlVU0JfREVWSUNFKDB4MGJkYSwgMHg0MDJlKSwKPj4gKwku
+ZHJpdmVyX2luZm8gPSAodW5zaWduZWQgbG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVk
+aW9fcXVpcmspIHsKPj4gKwkJLnZlbmRvcl9uYW1lID0gIkRlbGwiLAo+PiArCQkucHJvZHVjdF9u
+YW1lID0gIldEMTkgRG9jayIsCj4+ICsJCS5wcm9maWxlX25hbWUgPSAiRGVsbC1XRDE5LURvY2si
+LAo+PiArCQkuaWZudW0gPSBRVUlSS19OT19JTlRFUkZBQ0UKPj4gKwl9Cj4+ICt9LAo+PiAgIAo+
+PiAgICN1bmRlZiBVU0JfREVWSUNFX1ZFTkRPUl9TUEVDCj4+IC0tIAo+PiAyLjE3LjEKPj4KPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
