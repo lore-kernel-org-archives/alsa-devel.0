@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dmic: introduce mode switch delay" to
-	the asoc tree
-Date: Wed, 28 Nov 2018 16:05:21 +0000 (GMT)
-Message-ID: <20181128160521.30EC6112521B@debutante.sirena.org.uk>
-References: <1543387966-2708-2-git-send-email-jenny.tc@intel.com>
+Subject: Applied "ASoC: qcom: sdm845: Create and setup jack in
+	init callback" to the asoc tree
+Date: Wed, 28 Nov 2018 16:05:24 +0000 (GMT)
+Message-ID: <20181128160524.B60F8112521B@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B34AE267B6B
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 17:05:24 +0100 (CET)
-In-Reply-To: <1543387966-2708-2-git-send-email-jenny.tc@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 82FA4267B01
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 17:05:25 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jenny TC <jenny.tc@intel.com>
-Cc: alsa-devel@alsa-project.org, Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dmic: introduce mode switch delay
+   ASoC: qcom: sdm845: Create and setup jack in init callback
 
 has been applied to the asoc tree at
 
@@ -53,114 +52,123 @@ to this mail.
 Thanks,
 Mark
 
->From bc0a7dbc5a54a06b925064adba8b07d65acf8718 Mon Sep 17 00:00:00 2001
-From: Jenny TC <jenny.tc@intel.com>
-Date: Wed, 28 Nov 2018 12:22:45 +0530
-Subject: [PATCH] ASoC: dmic: introduce mode switch delay
+>From 80e733fda42f511b346106351ba7b73d5a8196d4 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Sat, 24 Nov 2018 19:09:46 +0800
+Subject: [PATCH] ASoC: qcom: sdm845: Create and setup jack in init callback
 
-On startup, applications such as PulseAudio or CRAS enable playback or
-capture on all PCM devices to verify that configurations are correct,
-and close them immediately. For DMICs, this can result in the clock
-being turned off very quickly, which may not compatible with internal
-state machine transition requirements.
+Add a callback for init ops on dai_link to create and setup jack.
 
-This patch add a mode-switch delay which will prevent the clock from
-being turned off without complying with manufacturer timing
-specifications. While the DMIC clock may be controlled at a lower level,
-be it with hardware or firmware, applying the delay during the
-STOP_TRIGGER phase ensures that there is no race condition, e.g. with
-the hardware/firmware turning off the clock earlier
-
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Jenny TC <jenny.tc@intel.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/dmic.txt        |  2 ++
- sound/soc/codecs/dmic.c                       | 35 +++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ sound/soc/qcom/sdm845.c | 57 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 55 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-index e957b4136716..32e871037269 100644
---- a/Documentation/devicetree/bindings/sound/dmic.txt
-+++ b/Documentation/devicetree/bindings/sound/dmic.txt
-@@ -9,6 +9,7 @@ Optional properties:
- 	- dmicen-gpios: GPIO specifier for dmic to control start and stop
- 	- num-channels: Number of microphones on this DAI
- 	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
-+	- modeswitch-delay-ms: Delay (in ms) to complete DMIC mode switch
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 95d8d4422dae..43c03f8e8cdc 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -8,6 +8,8 @@
+ #include <linux/of_device.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/jack.h>
++#include <uapi/linux/input-event-codes.h>
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
  
- Example node:
+@@ -17,6 +19,8 @@
+ #define MI2S_BCLK_RATE		1536000
  
-@@ -17,4 +18,5 @@ Example node:
- 		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
- 		num-channels = <1>;
- 		wakeup-delay-ms <50>;
-+		modeswitch-delay-ms <35>;
- 	};
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index 71322e0410ee..f4eb0a438a3a 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -30,9 +30,36 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
+ struct sdm845_snd_data {
++	struct snd_soc_jack jack;
++	bool jack_setup;
+ 	struct snd_soc_card *card;
+ 	uint32_t pri_mi2s_clk_count;
+ 	uint32_t sec_mi2s_clk_count;
+@@ -100,6 +104,54 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
  
-+#define MAX_MODESWITCH_DELAY 70
-+static int modeswitch_delay;
-+module_param(modeswitch_delay, uint, 0644);
-+
- struct dmic {
- 	struct gpio_desc *gpio_en;
- 	int wakeup_delay;
-+	/* Delay after DMIC mode switch */
-+	int modeswitch_delay;
-+};
-+
-+int dmic_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
++static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct snd_soc_component *component = dai->component;
-+	struct dmic *dmic = snd_soc_component_get_drvdata(component);
++	struct snd_soc_component *component;
++	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++	struct snd_soc_card *card = rtd->card;
++	struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(card);
++	int i, rval;
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		if (dmic->modeswitch_delay)
-+			mdelay(dmic->modeswitch_delay);
++	if (!pdata->jack_setup) {
++		struct snd_jack *jack;
 +
-+		break;
++		rval = snd_soc_card_jack_new(card, "Headset Jack",
++				SND_JACK_HEADSET |
++				SND_JACK_HEADPHONE |
++				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				&pdata->jack, NULL, 0);
++
++		if (rval < 0) {
++			dev_err(card->dev, "Unable to add Headphone Jack\n");
++			return rval;
++		}
++
++		jack = pdata->jack.jack;
++
++		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++		pdata->jack_setup = true;
++	}
++
++	for (i = 0 ; i < dai_link->num_codecs; i++) {
++		struct snd_soc_dai *dai = rtd->codec_dais[i];
++
++		component = dai->component;
++		rval = snd_soc_component_set_jack(
++				component, &pdata->jack, NULL);
++		if (rval != 0 && rval != -ENOTSUPP) {
++			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
++			return rval;
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops dmic_dai_ops = {
-+	.trigger	= dmic_daiops_trigger,
- };
- 
- static int dmic_aif_event(struct snd_soc_dapm_widget *w,
-@@ -68,6 +95,7 @@ static struct snd_soc_dai_driver dmic_dai = {
- 			| SNDRV_PCM_FMTBIT_S24_LE
- 			| SNDRV_PCM_FMTBIT_S16_LE,
- 	},
-+	.ops    = &dmic_dai_ops,
- };
- 
- static int dmic_component_probe(struct snd_soc_component *component)
-@@ -85,6 +113,13 @@ static int dmic_component_probe(struct snd_soc_component *component)
- 
- 	device_property_read_u32(component->dev, "wakeup-delay-ms",
- 				 &dmic->wakeup_delay);
-+	device_property_read_u32(component->dev, "modeswitch-delay-ms",
-+				 &dmic->modeswitch_delay);
-+	if (modeswitch_delay)
-+		dmic->modeswitch_delay  = modeswitch_delay;
 +
-+	if (dmic->modeswitch_delay > MAX_MODESWITCH_DELAY)
-+		dmic->modeswitch_delay = MAX_MODESWITCH_DELAY;
+ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ {
+ 	unsigned int fmt = SND_SOC_DAIFMT_CBS_CFS;
+@@ -220,7 +272,7 @@ static const struct snd_soc_dapm_widget sdm845_snd_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+ };
  
- 	snd_soc_component_set_drvdata(component, dmic);
+-static void sdm845_add_be_ops(struct snd_soc_card *card)
++static void sdm845_add_ops(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dai_link *link;
+ 	int i;
+@@ -230,6 +282,7 @@ static void sdm845_add_be_ops(struct snd_soc_card *card)
+ 			link->ops = &sdm845_be_ops;
+ 			link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
+ 		}
++		link->init = sdm845_dai_init;
+ 	}
+ }
  
+@@ -264,7 +317,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+ 	data->card = card;
+ 	snd_soc_card_set_drvdata(card, data);
+ 
+-	sdm845_add_be_ops(card);
++	sdm845_add_ops(card);
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(dev, "Sound card registration failed\n");
 -- 
 2.19.0.rc2
