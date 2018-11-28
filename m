@@ -1,17 +1,23 @@
-From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: [PATCH V2] ASoC: max98373: Added max98373_reset for
-	stable amp reset
-Date: Wed, 28 Nov 2018 03:20:16 +0000
-Message-ID: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
+From: youling 257 <youling257@gmail.com>
+Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
+	generic bytcr/PlatformEnableSeq.conf
+Date: Wed, 28 Nov 2018 11:27:40 +0800
+Message-ID: <CAOzgRdaQCNjbvk-P4o6ui5va7PrgesQPgiju3vJndMuE9ZNV8Q@mail.gmail.com>
+References: <20180808090543.15181-1-hdegoede@redhat.com>
+ <20181126094911.27716-1-youling257@gmail.com>
+ <s5hlg5g17a4.wl-tiwai@suse.de>
+ <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com
- (mail-eopbgr800112.outbound.protection.outlook.com [40.107.80.112])
- by alsa0.perex.cz (Postfix) with ESMTP id D8CF3267AF1
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 04:20:19 +0100 (CET)
-Content-Language: en-US
+Received: from mail-it1-f193.google.com (mail-it1-f193.google.com
+ [209.85.166.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C28E3267AF1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 04:27:31 +0100 (CET)
+Received: by mail-it1-f193.google.com with SMTP id c9so2105765itj.1
+ for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 19:27:31 -0800 (PST)
+In-Reply-To: <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +27,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ryan Lee <RyanS.Lee@maximintegrated.com>, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
-Changes since v1 : Removed unusual repeat for amp software reset and verification.
-                   Amp software reset will be performed once and it repeats verification maximum 3 times if it is failed.
-                   Wait 10ms before every verification trial. Maximum 30ms delay will be applied to wait AMP idle state.
-
-Changes : Created max98373_reset function to minimize code duplication.
-          Changed regmap_write to regmap_update_bits. Other bits except LSB need to be masked.
-          Added reset verification step to make sure software reset is completed well. Software reset is done in 10ms in normal case.
-          Revision ID is available when the amp is in the idle state which means software reset is completed.
-          Software reset will be performed maximum 3 times to avoid amp reset failure. Generally it is done in the first trial.
-          sleep time after software reset is increased + 30ms for every retrial. Maximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
-
- sound/soc/codecs/max98373.c | 35 +++++++++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index a09d013..9c8616a 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -724,14 +724,39 @@ static struct snd_soc_dai_driver max98373_dai[] = {
- 	}
- };
- 
-+static void max98373_reset(struct max98373_priv *max98373, struct device *dev)
-+{
-+	int ret, reg, count;
-+
-+	/* Software Reset */
-+	ret = regmap_update_bits(max98373->regmap,
-+		MAX98373_R2000_SW_RESET,
-+		MAX98373_SOFT_RESET,
-+		MAX98373_SOFT_RESET);
-+	if (ret)
-+		dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
-+
-+	count = 0;
-+	while (count < 3) {
-+		usleep_range(10000, 11000);
-+		/* Software Reset Verification */
-+		ret = regmap_read(max98373->regmap,
-+			MAX98373_R21FF_REV_ID, &reg);
-+		if (!ret) {
-+			dev_info(dev, "Reset completed (retry:%d)\n", count);
-+			return;
-+		}
-+		count++;
-+	}
-+	dev_err(dev, "Reset failed. (ret:%d)\n", ret);
-+}
-+
- static int max98373_probe(struct snd_soc_component *component)
- {
- 	struct max98373_priv *max98373 = snd_soc_component_get_drvdata(component);
- 
- 	/* Software Reset */
--	regmap_write(max98373->regmap,
--		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
--	usleep_range(10000, 11000);
-+	max98373_reset(max98373, component->dev);
- 
- 	/* IV default slot configuration */
- 	regmap_write(max98373->regmap,
-@@ -818,9 +843,7 @@ static int max98373_resume(struct device *dev)
- {
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
- 
--	regmap_write(max98373->regmap,
--		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
--	usleep_range(10000, 11000);
-+	max98373_reset(max98373, dev);
- 	regcache_cache_only(max98373->regmap, false);
- 	regcache_sync(max98373->regmap);
- 	return 0;
--- 
-2.7.4
+L3NyYy9jb25mL3VjbS9jaHRydDU2NDUvSGlGaS5jb25mIG1pc3NlZCA8c2VhcmNoZGlyOnVjbT4s
+IG5vdywgc2hvdWxkCmFkZCA8c2VhcmNoZGlyOnVjbS1pbmNsdWRlcz4uCkhhbnMgZGUgR29lZGUg
+PGhkZWdvZWRlQHJlZGhhdC5jb20+IOS6jjIwMTjlubQxMeaciDI25pel5ZGo5LiAIOS4i+WNiDk6
+NDDlhpnpgZPvvJoKPgo+IEhpLAo+Cj4gT24gMjYtMTEtMTggMTE6MDcsIFRha2FzaGkgSXdhaSB3
+cm90ZToKPiA+IFRoZSBlcnJvciBtZXNzYWdlcyAoYXQgbGVhc3Qgc29tZSBvZiB0aGVtKSBhcmUg
+a25vd24gaXNzdWVzIGFuZCBJCj4gPiBhbHJlYWR5IHBvc3RlZCB0aGUgcHJvYmxlbSBvbiBhbHNh
+LWRldmVsIE1MLiAgVGhlIGZpeCBzaG91bGQgYmUgZWFzeQo+ID4gYnV0IEknZCBsaWtlIHRvIGdl
+dCBjb25zZW5zdXMgYmVmb3JlaGFuZC4KPgo+IEFoIEkgbWlzc2VkIHRoYXQgbWFpbCBhcyBJJ20g
+bm90IHN1YnNjcmliZWQgdG8gYWxzYS1kZXZlbC4gU2luY2UKPiBteSBjaGFuZ2VzIGFyZSB0aGUg
+Y2F1c2Ugb2YgdGhpcyBhbHNhdWNtIGNvbW1hbmQgcHJvYmxlbSwgbGV0IG1lCj4gcmVwbHkgaGVy
+ZToKPgo+ICA+IHNvbWUgb2YgdGhlIHJlY2VudGx5IGFkZGVkIFVDTSBwcm9maWxlcyBhcmUgdGhl
+IGZpbGVzIHRvIGJlIGluY2x1ZGVkCj4gID4gYnkgb3RoZXJzLCBhbmQgdGhleSBhcmUgbm90IGNh
+cmQgdGFyZ2V0cy4gIFVuZm9ydHVuYXRlbHkgYWxzYXVjbQo+ICA+IGRvZXNuJ3Qga25vdyBhYm91
+dCBpdCwgYW5kIGl0IGFib3J0cyB3aXRoIGVycm9yLCBlLmcuCj4gID4KPiAgPiA9PT09Cj4gID4g
+JSBhbHNhdWNtCj4gID4gQUxTQSBsaWIgdXRpbHMuYzo2NzoodWNfbWdyX2NvbmZpZ19sb2FkKSBj
+b3VsZCBub3Qgb3BlbiBjb25maWd1cmF0aW9uIGZpbGUgL3Vzci9zaGFyZS9hbHNhL3VjbS9ieXRj
+ci9ieXRjci5jb25mCj4gID4gQUxTQSBsaWIgcGFyc2VyLmM6MTQyNzoobG9hZF9tYXN0ZXJfY29u
+ZmlnKSBlcnJvcjogY291bGQgbm90IHBhcnNlIGNvbmZpZ3VyYXRpb24gZm9yIGNhcmQgYnl0Y3IK
+PiAgPiBhbHNhdWNtOiB1bmFibGUgdG8gb2J0YWluIGNhcmQgbGlzdDogTm8gc3VjaCBmaWxlIG9y
+IGRpcmVjdG9yeQo+ICA+ID09PT0KPiAgPgo+ICA+IFRoZSBzaW1pbGFyIGVycm9yIGlzIGZvdW5k
+IGluIG5hdTg4MjQsIHJ0NTY0MCBhbmQgcnQ1NjUxLiAgQWZ0ZXIKPiAgPiBwdXR0aW5nIGEgcGxh
+Y2Vob2xkZXIgY2FyZCBjb25maWcgZmlsZSAoZS5nLiBieXRjci5jb25mKSwgdGhlIGVycm9yIGlz
+Cj4gID4gZ29uZS4gIEJ1dCBjZXJ0YWlubHkgd2UgZG9uJ3Qgd2FudCB0byBhbGxvdyB1c2VyIHRv
+IGNob29zZSB0aGlzIGFzIHRoZQo+ICA+IHByb3BlciBjYXJkLgo+ICA+Cj4gID4gU28sIEkgZ3Vl
+c3Mgd2UgbmVlZCB0byBwdXQgc29tZSBmbGFnIHRvIGVhY2ggc3VjaCBkaXJlY3RvcnkgaW5kaWNh
+dGluZwo+ICA+IHRoYXQgaXQncyBubyBjYXJkIGNvbmZpZy4gIEZvciBleGFtcGxlLCBwdXR0aW5n
+Cj4gID4gL3Vzci9zaGFyZS9hbHNhL3VjbS9ieXRjci8ubm9jYXJkIGZpbGUgb3Igc3VjaC4uLgo+
+ICA+Cj4gID4gTm90IHN1cmUgd2hldGhlciBpdCdzIHdpc2UgdG8gaGF2ZSBhIGZpbGUgc3RhcnRp
+bmcgd2l0aCBkb3QsIHRob3VnaC4KPiAgPiBNYXliZSBjbGVhcmVyIHRvIGJlICJub2NhcmQiIG9y
+IGFueSBvdGhlciB2aXNpYmxlIG9uZT8KPgo+IEFsbCB0aGUgSGlGaS5jb25mIGZpbGVzIHVzaW5n
+IHRoZSAiaW5jbHVkZSIgc25pcHBldHMgSSBhZGRlZCB0byBhdm9pZAo+IGNvcHkgYW5kIHBhc3Rp
+bmcgYSBsb3QsIGFscmVhZHkgbmVlZCB0byBoYXZlIHRoaXMgYXQgdGhlIHRvcCBmb3IKPiB0aGlz
+IHRvIHdvcms6Cj4KPiA8c2VhcmNoZGlyOnVjbT4KPgo+IFNvIGl0IG1pZ2h0IGJlIGJlc3QgdG8g
+bW92ZSBhbGwgdGhlIGRpcnMgaG9sZGluZyBpbmNsdWRlIGZpbGVzIHJhdGhlcgo+IHRoZW4gcHJv
+cGVyIGNhcmQgY29uZmlncyBmcm9tIC91c3Ivc2hhcmUvYWxzYS91Y20gdG8KPiAvdXNyL3NoYXJl
+L2Fsc2EvdWNtLWluY2x1ZGVzIGFuZCB0aGVuIGNoYW5nZSB0aGUgc2VhcmNoZGlyIHBhcnQgb2YK
+PiB0aGUgY29uZmlncyB1c2luZyB0aGVzZSB0bzoKPgo+IDxzZWFyY2hkaXI6dWNtLWluY2x1ZGVz
+Pgo+Cj4gUmVnYXJkcywKPgo+IEhhbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
