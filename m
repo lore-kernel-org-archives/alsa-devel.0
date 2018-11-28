@@ -1,23 +1,17 @@
-From: youling 257 <youling257@gmail.com>
-Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
-	generic bytcr/PlatformEnableSeq.conf
-Date: Wed, 28 Nov 2018 11:04:05 +0800
-Message-ID: <CAOzgRdYFruycZOze9w=hNSZ2ddtXvbmxEy7ogbJerNvHLjS5JA@mail.gmail.com>
-References: <20180808090543.15181-1-hdegoede@redhat.com>
- <20181126094911.27716-1-youling257@gmail.com>
- <s5hlg5g17a4.wl-tiwai@suse.de>
- <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
+From: Ryan Lee <RyanS.Lee@maximintegrated.com>
+Subject: [PATCH V2] ASoC: max98373: Added max98373_reset for
+	stable amp reset
+Date: Wed, 28 Nov 2018 03:20:16 +0000
+Message-ID: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io1-f65.google.com (mail-io1-f65.google.com
- [209.85.166.65])
- by alsa0.perex.cz (Postfix) with ESMTP id BBFCE267AF3
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 04:03:56 +0100 (CET)
-Received: by mail-io1-f65.google.com with SMTP id l14so18647282ioj.5
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 19:03:56 -0800 (PST)
-In-Reply-To: <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr800112.outbound.protection.outlook.com [40.107.80.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8CF3267AF1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 04:20:19 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +21,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ryan Lee <RyanS.Lee@maximintegrated.com>, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-d2h5IG5vdCBpIHVzZSB0aGlzIGNvbW1hbmQsIHNwZWFrZXIgYWxzbyB3b3JrIG9uIHgyMDV0YS4K
-YWxzYXVjbSAtYyBjaHRydDU2NDUtbW9uby1zcGVha2VyLWFuYWxvZy1taWMgc2V0IF92ZXJiIEhp
-Rmkgc2V0IF9lbmFkZXYgU3BlYWtlcgpIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQuY29t
-PiDkuo4yMDE45bm0MTHmnIgyNuaXpeWRqOS4gCDkuIvljYg5OjQw5YaZ6YGT77yaCj4KPiBIaSwK
-Pgo+IE9uIDI2LTExLTE4IDExOjA3LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiBUaGUgZXJyb3Ig
-bWVzc2FnZXMgKGF0IGxlYXN0IHNvbWUgb2YgdGhlbSkgYXJlIGtub3duIGlzc3VlcyBhbmQgSQo+
-ID4gYWxyZWFkeSBwb3N0ZWQgdGhlIHByb2JsZW0gb24gYWxzYS1kZXZlbCBNTC4gIFRoZSBmaXgg
-c2hvdWxkIGJlIGVhc3kKPiA+IGJ1dCBJJ2QgbGlrZSB0byBnZXQgY29uc2Vuc3VzIGJlZm9yZWhh
-bmQuCj4KPiBBaCBJIG1pc3NlZCB0aGF0IG1haWwgYXMgSSdtIG5vdCBzdWJzY3JpYmVkIHRvIGFs
-c2EtZGV2ZWwuIFNpbmNlCj4gbXkgY2hhbmdlcyBhcmUgdGhlIGNhdXNlIG9mIHRoaXMgYWxzYXVj
-bSBjb21tYW5kIHByb2JsZW0sIGxldCBtZQo+IHJlcGx5IGhlcmU6Cj4KPiAgPiBzb21lIG9mIHRo
-ZSByZWNlbnRseSBhZGRlZCBVQ00gcHJvZmlsZXMgYXJlIHRoZSBmaWxlcyB0byBiZSBpbmNsdWRl
-ZAo+ICA+IGJ5IG90aGVycywgYW5kIHRoZXkgYXJlIG5vdCBjYXJkIHRhcmdldHMuICBVbmZvcnR1
-bmF0ZWx5IGFsc2F1Y20KPiAgPiBkb2Vzbid0IGtub3cgYWJvdXQgaXQsIGFuZCBpdCBhYm9ydHMg
-d2l0aCBlcnJvciwgZS5nLgo+ICA+Cj4gID4gPT09PQo+ICA+ICUgYWxzYXVjbQo+ICA+IEFMU0Eg
-bGliIHV0aWxzLmM6Njc6KHVjX21ncl9jb25maWdfbG9hZCkgY291bGQgbm90IG9wZW4gY29uZmln
-dXJhdGlvbiBmaWxlIC91c3Ivc2hhcmUvYWxzYS91Y20vYnl0Y3IvYnl0Y3IuY29uZgo+ICA+IEFM
-U0EgbGliIHBhcnNlci5jOjE0Mjc6KGxvYWRfbWFzdGVyX2NvbmZpZykgZXJyb3I6IGNvdWxkIG5v
-dCBwYXJzZSBjb25maWd1cmF0aW9uIGZvciBjYXJkIGJ5dGNyCj4gID4gYWxzYXVjbTogdW5hYmxl
-IHRvIG9idGFpbiBjYXJkIGxpc3Q6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiAgPiA9PT09
-Cj4gID4KPiAgPiBUaGUgc2ltaWxhciBlcnJvciBpcyBmb3VuZCBpbiBuYXU4ODI0LCBydDU2NDAg
-YW5kIHJ0NTY1MS4gIEFmdGVyCj4gID4gcHV0dGluZyBhIHBsYWNlaG9sZGVyIGNhcmQgY29uZmln
-IGZpbGUgKGUuZy4gYnl0Y3IuY29uZiksIHRoZSBlcnJvciBpcwo+ICA+IGdvbmUuICBCdXQgY2Vy
-dGFpbmx5IHdlIGRvbid0IHdhbnQgdG8gYWxsb3cgdXNlciB0byBjaG9vc2UgdGhpcyBhcyB0aGUK
-PiAgPiBwcm9wZXIgY2FyZC4KPiAgPgo+ICA+IFNvLCBJIGd1ZXNzIHdlIG5lZWQgdG8gcHV0IHNv
-bWUgZmxhZyB0byBlYWNoIHN1Y2ggZGlyZWN0b3J5IGluZGljYXRpbmcKPiAgPiB0aGF0IGl0J3Mg
-bm8gY2FyZCBjb25maWcuICBGb3IgZXhhbXBsZSwgcHV0dGluZwo+ICA+IC91c3Ivc2hhcmUvYWxz
-YS91Y20vYnl0Y3IvLm5vY2FyZCBmaWxlIG9yIHN1Y2guLi4KPiAgPgo+ICA+IE5vdCBzdXJlIHdo
-ZXRoZXIgaXQncyB3aXNlIHRvIGhhdmUgYSBmaWxlIHN0YXJ0aW5nIHdpdGggZG90LCB0aG91Z2gu
-Cj4gID4gTWF5YmUgY2xlYXJlciB0byBiZSAibm9jYXJkIiBvciBhbnkgb3RoZXIgdmlzaWJsZSBv
-bmU/Cj4KPiBBbGwgdGhlIEhpRmkuY29uZiBmaWxlcyB1c2luZyB0aGUgImluY2x1ZGUiIHNuaXBw
-ZXRzIEkgYWRkZWQgdG8gYXZvaWQKPiBjb3B5IGFuZCBwYXN0aW5nIGEgbG90LCBhbHJlYWR5IG5l
-ZWQgdG8gaGF2ZSB0aGlzIGF0IHRoZSB0b3AgZm9yCj4gdGhpcyB0byB3b3JrOgo+Cj4gPHNlYXJj
-aGRpcjp1Y20+Cj4KPiBTbyBpdCBtaWdodCBiZSBiZXN0IHRvIG1vdmUgYWxsIHRoZSBkaXJzIGhv
-bGRpbmcgaW5jbHVkZSBmaWxlcyByYXRoZXIKPiB0aGVuIHByb3BlciBjYXJkIGNvbmZpZ3MgZnJv
-bSAvdXNyL3NoYXJlL2Fsc2EvdWNtIHRvCj4gL3Vzci9zaGFyZS9hbHNhL3VjbS1pbmNsdWRlcyBh
-bmQgdGhlbiBjaGFuZ2UgdGhlIHNlYXJjaGRpciBwYXJ0IG9mCj4gdGhlIGNvbmZpZ3MgdXNpbmcg
-dGhlc2UgdG86Cj4KPiA8c2VhcmNoZGlyOnVjbS1pbmNsdWRlcz4KPgo+IFJlZ2FyZHMsCj4KPiBI
-YW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+---
+Changes since v1 : Removed unusual repeat for amp software reset and verification.
+                   Amp software reset will be performed once and it repeats verification maximum 3 times if it is failed.
+                   Wait 10ms before every verification trial. Maximum 30ms delay will be applied to wait AMP idle state.
+
+Changes : Created max98373_reset function to minimize code duplication.
+          Changed regmap_write to regmap_update_bits. Other bits except LSB need to be masked.
+          Added reset verification step to make sure software reset is completed well. Software reset is done in 10ms in normal case.
+          Revision ID is available when the amp is in the idle state which means software reset is completed.
+          Software reset will be performed maximum 3 times to avoid amp reset failure. Generally it is done in the first trial.
+          sleep time after software reset is increased + 30ms for every retrial. Maximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
+
+ sound/soc/codecs/max98373.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index a09d013..9c8616a 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -724,14 +724,39 @@ static struct snd_soc_dai_driver max98373_dai[] = {
+ 	}
+ };
+ 
++static void max98373_reset(struct max98373_priv *max98373, struct device *dev)
++{
++	int ret, reg, count;
++
++	/* Software Reset */
++	ret = regmap_update_bits(max98373->regmap,
++		MAX98373_R2000_SW_RESET,
++		MAX98373_SOFT_RESET,
++		MAX98373_SOFT_RESET);
++	if (ret)
++		dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
++
++	count = 0;
++	while (count < 3) {
++		usleep_range(10000, 11000);
++		/* Software Reset Verification */
++		ret = regmap_read(max98373->regmap,
++			MAX98373_R21FF_REV_ID, &reg);
++		if (!ret) {
++			dev_info(dev, "Reset completed (retry:%d)\n", count);
++			return;
++		}
++		count++;
++	}
++	dev_err(dev, "Reset failed. (ret:%d)\n", ret);
++}
++
+ static int max98373_probe(struct snd_soc_component *component)
+ {
+ 	struct max98373_priv *max98373 = snd_soc_component_get_drvdata(component);
+ 
+ 	/* Software Reset */
+-	regmap_write(max98373->regmap,
+-		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
+-	usleep_range(10000, 11000);
++	max98373_reset(max98373, component->dev);
+ 
+ 	/* IV default slot configuration */
+ 	regmap_write(max98373->regmap,
+@@ -818,9 +843,7 @@ static int max98373_resume(struct device *dev)
+ {
+ 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
+ 
+-	regmap_write(max98373->regmap,
+-		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
+-	usleep_range(10000, 11000);
++	max98373_reset(max98373, dev);
+ 	regcache_cache_only(max98373->regmap, false);
+ 	regcache_sync(max98373->regmap);
+ 	return 0;
+-- 
+2.7.4
