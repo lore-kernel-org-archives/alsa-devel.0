@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Clear TXSTAT register before activating serializers" to the asoc tree
-Date: Wed, 28 Nov 2018 12:57:35 +0000 (GMT)
-Message-ID: <20181128125735.CEE36440078@finisterre.ee.mobilebroadband>
-References: <20181116134141.17396-2-peter.ujfalusi@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181116134141.17396-2-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jsarha@ti.com, robh+dt@kernel.org, misael.lopez@ti.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: Add FW reply for
+	MCLK/SCLK IPC" to the asoc tree
+Date: Wed, 28 Nov 2018 12:57:38 +0000 (GMT)
+Message-ID: <20181128125738.DD6F5440078@finisterre.ee.mobilebroadband>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CEFB267B72
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 13:57:42 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Clear TXSTAT register before activating serializers
+   ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
 
 has been applied to the asoc tree at
 
@@ -37,43 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 1003c27acfc2174558b2a0803bd6974e19be2738 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Fri, 16 Nov 2018 15:41:38 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: Clear TXSTAT register before activating
- serializers
+>From 61f94ee4a7435c35d78b22e4ae6e0551908000ae Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 29 Jan 2018 21:46:00 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
 
-Follow the guideline from the TRM:
-Before starting, clear the respective transmitter and receiver status
-registers
+If mclk/sclk is already running, FW responds with IPC reply MCLK/SCLK
+already running. Add these to the IPC reply lookup table.
 
-To avoid stale state stored in the status registers.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl-sst-ipc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 267aee776b2d..740030b4d37a 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -192,6 +192,7 @@ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
- 	}
+diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
+index 8708755a8f9a..9f3ce73593ae 100644
+--- a/sound/soc/intel/skylake/skl-sst-ipc.c
++++ b/sound/soc/intel/skylake/skl-sst-ipc.c
+@@ -249,6 +249,8 @@ enum skl_ipc_glb_reply {
+ 	IPC_GLB_REPLY_INVALID_CONFIG_DATA_LEN = 121,
+ 	IPC_GLB_REPLY_GATEWAY_NOT_INITIALIZED = 140,
+ 	IPC_GLB_REPLY_GATEWAY_NOT_EXIST = 141,
++	IPC_GLB_REPLY_SCLK_ALREADY_RUNNING = 150,
++	IPC_GLB_REPLY_MCLK_ALREADY_RUNNING = 151,
  
- 	/* Activate serializer(s) */
-+	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXSTAT_REG, 0xFFFFFFFF);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXSERCLR);
- 	/* Release RX state machine */
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXSMRST);
-@@ -220,6 +221,7 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXHCLKRST);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
- 	/* Activate serializer(s) */
-+	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
- 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXSERCLR);
+ 	IPC_GLB_REPLY_PPL_NOT_INITIALIZED = 160,
+ 	IPC_GLB_REPLY_PPL_NOT_EXIST = 161,
+@@ -401,6 +403,10 @@ struct skl_ipc_err_map {
+ static struct skl_ipc_err_map skl_err_map[] = {
+ 	{"DSP out of memory", IPC_GLB_REPLY_OUT_OF_MEMORY, -ENOMEM},
+ 	{"DSP busy", IPC_GLB_REPLY_BUSY, -EBUSY},
++	{"SCLK already running", IPC_GLB_REPLY_SCLK_ALREADY_RUNNING,
++			IPC_GLB_REPLY_SCLK_ALREADY_RUNNING},
++	{"MCLK already running", IPC_GLB_REPLY_MCLK_ALREADY_RUNNING,
++			IPC_GLB_REPLY_MCLK_ALREADY_RUNNING},
+ };
  
- 	/* wait for XDATA to be cleared */
+ static int skl_ipc_set_reply_error_code(struct sst_generic_ipc *ipc, u32 reply)
 -- 
 2.19.1
