@@ -1,21 +1,17 @@
-From: Jonathan Reeve <jon.reeve@gmail.com>
-Subject: Re: Subwoofers aren't working on ALC298 (Lenovo Yoga
-	C930 Laptop)
-Date: Wed, 28 Nov 2018 10:36:58 -0500
-Message-ID: <871s75tdr9.fsf@gmail.com>
-References: <871s77zw23.fsf@gmail.com>
- <32e2283a-8a5e-25a6-de95-bfb568341269@64studio.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dmic: introduce module_param
+	wakeup_delay" to the asoc tree
+Date: Wed, 28 Nov 2018 16:05:19 +0000 (GMT)
+Message-ID: <20181128160519.689DB112521B@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com
- [209.85.222.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 67F1A267B01
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 16:37:04 +0100 (CET)
-Received: by mail-qk1-f171.google.com with SMTP id w204so17058155qka.2
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 07:37:04 -0800 (PST)
-In-reply-to: <32e2283a-8a5e-25a6-de95-bfb568341269@64studio.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 411F5267B01
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 17:05:22 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel James <daniel@64studio.com>
-Cc: alsa-devel@alsa-project.org
+To: Jenny TC <jenny.tc@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-CkhpIERhbmllbCwKCkknbSBndWVzc2luZyBJIHNob3VsZG4ndCBhc3NpZ24gdGhpcyBwaW4gdG8g
-TEZFLCB0aGVuPyBBbmQgbWF5YmUgCmFzc2lnbgppdCB0byAiaW50ZXJuYWwgc3BlYWtlciAoYmFj
-aykiPyBJJ20gYXQgYSBsb3NzIGZvciBrbm93aW5nIHdoYXQgdG8KYXNzaWduIHRvIHdoYXQuCgpC
-dXQgdGhpcyBpcyBhbGwgbW9vdCwgc2luY2UgdGhlIHJlYWwgcHJvYmxlbSwgaXQgc2VlbXMgdG8g
-bWUsIGlzIAp0aGF0CmNsaWNraW5nICJhcHBseSBub3ciIG9yICJpbnN0YWxsIGJvb3Qgb3ZlcnJp
-ZGUiIHdvbid0IHdvcmsgb24gCk5peE9TLgpUaGUgZmlyc3QgaXNzdWUgaXMgdGhhdCBgaGRhamFj
-a3JldGFza2AgYXBwYXJlbnRseSBjYW4ndCBmaW5kIG15IApjb3BpZXMKb2YgYHRlZWAgYW5kIGBt
-dmAuIEkgY2FuIHJ1biB0aGVzZSBwcm9ncmFtcyBqdXN0IGZpbmUgZnJvbSBhIApzaGVsbCwgYW5k
-CmB3aGljaCB0ZWVgIHNob3dzIHRoZWlyIGxvY2F0aW9ucyBpbiBOaXhPUzoKYC9ydW4vY3VycmVu
-dC1zeXN0ZW0vc3cvYmluL3RlZWAsIGJ1dCBgaGRhamFja3JldGFza2AgY2FuJ3QgZmluZCAKdGhl
-bSwKZm9yIHNvbWUgcmVhc29uLCBhbmQgYEFwcGx5IG5vd2AgZmFpbHMuIFRoZSBzZWNvbmQgaXMg
-dGhhdCwgZXZlbiAKaWYgSQpydW4gcnVuIHRoZSAvdG1wIHNjcmlwdCBtYW51YWxseSwgbm90aGlu
-ZyBzZWVtcyB0byBjaGFuZ2Ugd2l0aCBteQpzeXN0ZW0uIEkgaGF2ZSBhIGZlZWxpbmcgYGhkYWph
-Y2tyZXRhc2tgIG5lZWRzIHRvIGRvIHNvbWV0aGluZyAKYmV5b25kCndoYXQgaXMgaW4gdGhlIGAv
-dG1wYCBzY3JpcHQsIGFuZCB0aGF0IGl0IGNhbid0IGRvIHRoYXQsIHNpbmNlIGl0IApjYW4ndApm
-aW5kIG15IHN5c3RlbSB1dGlsaXRpZXMuCgpUaGFua3MgZm9yIHRoYXQgbGluaywgdGhvdWdo4oCU
-dGhlcmUncyBzb21lIHVzZWZ1bCBzdHVmZiBpbiB0aGVyZS4KCkFyZSB0aGVyZSBvdGhlciB3YXlz
-IG9mIGNvbm5lY3RpbmcgdW51c2VkIHBpbnMgdGhhdCBkb24ndCB1c2UKaGRhamFja3JldGFzaz8g
-TGlrZSBhIHNjcmlwdCBJIGNhbiBydW4gb3IgYSBzZXF1ZW5jZSBvZiBjb21tYW5kcz8KCkJlc3Qs
-CgpKb25hdGhhbgoKRGFuaWVsIEphbWVzIDxkYW5pZWxANjRzdHVkaW8uY29tPiB3cml0ZXM6Cgo+
-IEhpIEpvbmF0aGFuLAo+Cj4+IC0gUnVubmluZyBoZGFqYWNrcmV0YXNrLCBmcm9tIHRoZSBhbHNh
-VG9vbHMgcGFja2FnZS4gSXQgc2VlbXMgCj4+IHRvIGNvcnJlY3RseQo+PiByZWNvZ25pemUgdGhh
-dCB0aGVyZSBhcmUgc29tZSB1bmFzc2lnbmVkIHBpbnMsIGFuZCBldmVuIGdpdmVzIAo+PiBtZSB0
-aGUgb3B0aW9uIG9mCj4+IGFzc2lnbmluZyB0aGVtIHRvICJpbnRlcm5hbCBzcGVha2VyIChMRkUp
-LCIgd2hpY2ggc291bmRzIGxpa2UgCj4+IGl0IGNvdWxkIGJlIGEKPj4gYmFzcyBvdXRwdXQuCj4K
-PiBMRkUgdXN1YWxseSBzdGFuZHMgZm9yIExvdyBGcmVxdWVuY3kgRWZmZWN0cywgaS5lLiBhIHN1
-Yndvb2ZlciAKPiBjaGFubmVsIG9uIGEKPiBtb3ZpZSBvciBnYW1lLiBUaGVyZSBhcmUgc29tZSB0
-aXBzIG9uIHN1cnJvdW5kIHNvdW5kIGF0Cj4gaHR0cDovL3d3dy52b2xrZXJzY2hhdHouY29tL25v
-aXNlL2Fsc2EuaHRtbAo+Cj4gSSBkb24ndCBrbm93IHdoaWNoICdtZCcgcHJvZ3JhbSB0aGV5IGFy
-ZSByZWZlcnJpbmcgdG8sIGJ1dCB5b3UgCj4gY2FuIGluc3RhbGwgdGVlCj4gc2VwYXJhdGVseS4K
-Pgo+IENoZWVycyEKPgo+IERhbmllbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: dmic: introduce module_param wakeup_delay
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From f6f30a609c526dbf6d59490a8c85adaf6ac9b0fa Mon Sep 17 00:00:00 2001
+From: Jenny TC <jenny.tc@intel.com>
+Date: Wed, 28 Nov 2018 12:22:46 +0530
+Subject: [PATCH] ASoC: dmic: introduce module_param wakeup_delay
+
+Introducing a module param for wakeup_delay in order to
+align with modeswitch_delay parameter. With this change, both
+wakeup_delay and modeswitch_delay parameters can be passed
+as module parameters.
+
+Signed-off-by: Jenny TC <jenny.tc@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/dmic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index f4eb0a438a3a..da921da50ef0 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -34,6 +34,9 @@
+ static int modeswitch_delay;
+ module_param(modeswitch_delay, uint, 0644);
+ 
++static int wakeup_delay;
++module_param(wakeup_delay, uint, 0644);
++
+ struct dmic {
+ 	struct gpio_desc *gpio_en;
+ 	int wakeup_delay;
+@@ -115,6 +118,8 @@ static int dmic_component_probe(struct snd_soc_component *component)
+ 				 &dmic->wakeup_delay);
+ 	device_property_read_u32(component->dev, "modeswitch-delay-ms",
+ 				 &dmic->modeswitch_delay);
++	if (wakeup_delay)
++		dmic->wakeup_delay  = wakeup_delay;
+ 	if (modeswitch_delay)
+ 		dmic->modeswitch_delay  = modeswitch_delay;
+ 
+-- 
+2.19.0.rc2
