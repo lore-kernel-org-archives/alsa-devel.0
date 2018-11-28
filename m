@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: omap-mcpdm: Update
-	documentation for pdmclk" to the asoc tree
-Date: Wed, 28 Nov 2018 16:05:22 +0000 (GMT)
-Message-ID: <20181128160523.035E5112521B@debutante.sirena.org.uk>
-References: <20181114124631.4586-2-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: dmic: introduce mode switch delay" to
+	the asoc tree
+Date: Wed, 28 Nov 2018 16:05:21 +0000 (GMT)
+Message-ID: <20181128160521.30EC6112521B@debutante.sirena.org.uk>
+References: <1543387966-2708-2-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E3B3267B4F
+ by alsa0.perex.cz (Postfix) with ESMTP id B34AE267B6B
  for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 17:05:24 +0100 (CET)
-In-Reply-To: <20181114124631.4586-2-peter.ujfalusi@ti.com>
+In-Reply-To: <1543387966-2708-2-git-send-email-jenny.tc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, tony@atomide.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: Jenny TC <jenny.tc@intel.com>
+Cc: alsa-devel@alsa-project.org, Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: omap-mcpdm: Update documentation for pdmclk
+   ASoC: dmic: introduce mode switch delay
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,114 @@ to this mail.
 Thanks,
 Mark
 
->From 22cc062c4dfb16330fe18e8d7e155d733fd59e61 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Wed, 14 Nov 2018 14:46:30 +0200
-Subject: [PATCH] dt-bindings: sound: omap-mcpdm: Update documentation for
- pdmclk
+>From bc0a7dbc5a54a06b925064adba8b07d65acf8718 Mon Sep 17 00:00:00 2001
+From: Jenny TC <jenny.tc@intel.com>
+Date: Wed, 28 Nov 2018 12:22:45 +0530
+Subject: [PATCH] ASoC: dmic: introduce mode switch delay
 
-McPDM module receives it's functional clock from external source. This
-clock is the pdmclk provided by the twl6040 audio IC. If the clock is not
-available all register accesses to McPDM fails and the module is not
-operational.
+On startup, applications such as PulseAudio or CRAS enable playback or
+capture on all PCM devices to verify that configurations are correct,
+and close them immediately. For DMICs, this can result in the clock
+being turned off very quickly, which may not compatible with internal
+state machine transition requirements.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
+This patch add a mode-switch delay which will prevent the clock from
+being turned off without complying with manufacturer timing
+specifications. While the DMIC clock may be controlled at a lower level,
+be it with hardware or firmware, applying the delay during the
+STOP_TRIGGER phase ensures that there is no race condition, e.g. with
+the hardware/firmware turning off the clock earlier
+
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Jenny TC <jenny.tc@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/omap-mcpdm.txt | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../devicetree/bindings/sound/dmic.txt        |  2 ++
+ sound/soc/codecs/dmic.c                       | 35 +++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-index 5f4e68ca228c..ff98a0cb5b3f 100644
---- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-+++ b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-@@ -7,6 +7,8 @@ Required properties:
-        <L3 interconnect address, size>;
- - interrupts: Interrupt number for McPDM
- - ti,hwmods: Name of the hwmod associated to the McPDM
-+- clocks:  phandle for the pdmclk provider, likely <&twl6040>
-+- clock-names: Must be "pdmclk"
+diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
+index e957b4136716..32e871037269 100644
+--- a/Documentation/devicetree/bindings/sound/dmic.txt
++++ b/Documentation/devicetree/bindings/sound/dmic.txt
+@@ -9,6 +9,7 @@ Optional properties:
+ 	- dmicen-gpios: GPIO specifier for dmic to control start and stop
+ 	- num-channels: Number of microphones on this DAI
+ 	- wakeup-delay-ms: Delay (in ms) after enabling the DMIC
++	- modeswitch-delay-ms: Delay (in ms) to complete DMIC mode switch
  
- Example:
+ Example node:
  
-@@ -18,3 +20,11 @@ mcpdm: mcpdm@40132000 {
- 	interrupt-parent = <&gic>;
- 	ti,hwmods = "mcpdm";
- };
+@@ -17,4 +18,5 @@ Example node:
+ 		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
+ 		num-channels = <1>;
+ 		wakeup-delay-ms <50>;
++		modeswitch-delay-ms <35>;
+ 	};
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 71322e0410ee..f4eb0a438a3a 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -30,9 +30,36 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ 
++#define MAX_MODESWITCH_DELAY 70
++static int modeswitch_delay;
++module_param(modeswitch_delay, uint, 0644);
 +
-+In board DTS file the pdmclk needs to be added:
-+
-+&mcpdm {
-+	clocks = <&twl6040>;
-+	clock-names = "pdmclk";
-+	status = "okay";
+ struct dmic {
+ 	struct gpio_desc *gpio_en;
+ 	int wakeup_delay;
++	/* Delay after DMIC mode switch */
++	int modeswitch_delay;
 +};
++
++int dmic_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct dmic *dmic = snd_soc_component_get_drvdata(component);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_STOP:
++		if (dmic->modeswitch_delay)
++			mdelay(dmic->modeswitch_delay);
++
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops dmic_dai_ops = {
++	.trigger	= dmic_daiops_trigger,
+ };
+ 
+ static int dmic_aif_event(struct snd_soc_dapm_widget *w,
+@@ -68,6 +95,7 @@ static struct snd_soc_dai_driver dmic_dai = {
+ 			| SNDRV_PCM_FMTBIT_S24_LE
+ 			| SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
++	.ops    = &dmic_dai_ops,
+ };
+ 
+ static int dmic_component_probe(struct snd_soc_component *component)
+@@ -85,6 +113,13 @@ static int dmic_component_probe(struct snd_soc_component *component)
+ 
+ 	device_property_read_u32(component->dev, "wakeup-delay-ms",
+ 				 &dmic->wakeup_delay);
++	device_property_read_u32(component->dev, "modeswitch-delay-ms",
++				 &dmic->modeswitch_delay);
++	if (modeswitch_delay)
++		dmic->modeswitch_delay  = modeswitch_delay;
++
++	if (dmic->modeswitch_delay > MAX_MODESWITCH_DELAY)
++		dmic->modeswitch_delay = MAX_MODESWITCH_DELAY;
+ 
+ 	snd_soc_component_set_drvdata(component, dmic);
+ 
 -- 
 2.19.0.rc2
