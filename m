@@ -1,93 +1,91 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
- conversions to it)
-Date: Wed, 28 Nov 2018 22:22:13 +0100
-Message-ID: <20181128212212.GE20670@amd>
-References: <20181126171126.20280-1-tiwai@suse.de> <20181127084418.GA20504@amd>
- <20181128111806.cb3cncpjeq73sptg@pali>
- <s5hy39dv3dg.wl-tiwai@suse.de> <20181128122505.GA1193@amd>
- <8bb45cc6-9f98-9fed-9676-7f1429328c4a@gmail.com>
- <20181128203410.GA20670@amd> <20181128204612.l3bayhop4qmep2hj@pali>
- <0ed37870-c7b6-fd6b-2f6e-7325fdde3629@gmail.com>
+From: "Chanho Min" <chanho.min@lge.com>
+Subject: RE: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
+Date: Thu, 29 Nov 2018 08:48:20 +0900
+Message-ID: <046401d48774$d7d1e440$8775acc0$@lge.com>
+References: <1543210597-6717-1-git-send-email-chanho.min@lge.com>       <s5hin0k6xqy.wl-tiwai@suse.de>  <1aaf01d486ab$8017a5b0$8046f110$@lge.com> <s5hwoox61ic.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6175940629705471447=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 39D1C267B0A
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 22:22:13 +0100 (CET)
-In-Reply-To: <0ed37870-c7b6-fd6b-2f6e-7325fdde3629@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, Takashi Iwai <tiwai@suse.de>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hwoox61ic.wl-tiwai@suse.de>
+Content-Language: ko
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@kernel.org>, 'Vinod Koul' <vkoul@kernel.org>, 'Daniel Mentz' <danielmentz@google.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Seungho Park' <seungho1.park@lge.com>, 'Jongsung Kim' <neidhard.kim@lge.com>, 'Wonmin Jung' <wonmin.jung@lge.com>, 'Jaehyun Kim' <jehn.kim@lge.com>, 'Hyonwoo Park' <hyonwoo.park@lge.com>
 List-Id: alsa-devel@alsa-project.org
 
+> > > On Mon, 26 Nov 2018 06:36:37 +0100,
+> > > Chanho Min wrote:
+> > > >
+> > > > Commit 67ec1072b053 ("ALSA: pcm: Fix rwsem deadlock for non-atomic
+> > > > PCM
+> > > > stream") fixes deadlock for non-atomic PCM stream. But, This patch
+> > > causes antother stuck.
+> > > > If writer is RT thread and reader is a normal thread, the reader
+> > > > thread will be difficult to get scheduled. It may not give chance
+> > > > to release readlocks and writer gets stuck for a long time if they
+> > > > are
+> > > pinned to single cpu.
+> > > >
+> > > > The deadlock described in the previous commit is because the linux
+> > > > rwsem queues like a FIFO. So, we might need non-FIFO writelock,
+> > > > not non-
+> > > block one.
+> > > >
+> > > > My suggestion is that the writer gives reader a chance to be
+> > > > scheduled by using the minimum msleep() instaed of spinning
+> > > > without blocking by writer. Also, The *_nonblock may be changed to
+> > > > *_nonfifo appropriately
+> > > to this concept.
+> > > > In terms of performance, when trylock is failed, this minimum
+> > > > periodic msleep will have the same performance as the tick-based
+> > > schedule()/wake_up_q().
+> > > >
+> > > > Suggested-by: Wonmin Jung <wonmin.jung@lge.com>
+> > > > Signed-off-by: Chanho Min <chanho.min@lge.com>
+> > >
+> > > Hrm, converting unconditionally with msleep() looks too drastic.
+> >
+> > Yes, it looks drastic. But, IMHO, I can't say busy-spin is not non-
+> drastic.
+> > To fix the root cause, We may need another rwsem that does not work as
+> > a FIFO.
+> 
+> Right, but applying msleep(1) unconditionally is really bad.
+> 
+> > > I guess you've hit this while not explicitly using the linked PCM
+> > > streams, i.e. in the call of snd_pcm_unlink() at close, right?
+> > >
+> > > Then this can be worked around by checking the link before calling it.
+> > > Could you check the patch below?
+> >
+> > More testing is needed, but it seems to be fixed by your patch.
+> > We may not use the linked PCM.
+> 
+> Then I'm sure that my patch papers over.
+Thanks, Plz let me know when the patch is merged.
 
---===============6175940629705471447==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cPi+lWm09sJ+d57q"
-Content-Disposition: inline
+> 
+> > But, If the linked PCM is enabled,  Can snd_pcm_unlink() be called?
+> > This also seems to be a workaround.
+> 
+> Yes, for the linked streams, something else is needed *in addition*.
+> 
+> The original fix with busy loop also assumed that this code path (via
+> snd_pcm_link() and snd_pcm_unlink()) is the rare occasion, and it didn't
+> consider that it were called for regular use cases.  So the fix to make
+> things just works for regular use cases without any artifact must be
+> implemented in the first place.  The fix for the linked streams comes at
+> next.  It might be like your msleep() change as a workaround, but in
+> anyway it's far less urgency.
 
+msleep is worst, but If it is harmless, can I apply my patch to the private
+tree
+temporarily until your next fix comes?
+We may use the linked streams in the near future. It makes our product
+unstable.
+It's urgency for us. How is your opinion?
 
---cPi+lWm09sJ+d57q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > If external USB keyboard is identified as "input7" device, then
-> > "input7::mute" is a good name for mute key. But "sys::mute" does not say
-> > anything to which device or hardware it belongs nor does not solve
-> > problem that which device/driver/subsystem should have privilege to take
-> > this "sys" name.
->=20
-> How about just "platform" for the LEDs being part of the device
-> on which the system is running?
-
-"platform" works for me.
-
-Are we in agreement that this name will be used for all similar LEDs,
-as long as they are on the "main box" of the device, no matter if they
-are connected using acpi, gpio, i2c, ...?
-
-Should we start Documentation file explaining common names we want
-people to use?
-
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---cPi+lWm09sJ+d57q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlv/BwQACgkQMOfwapXb+vKb2ACfZJfWC+Arq4KD0vrx1ko3Sca0
-kDIAoI+CXAJl3Ca37mFYly/Hhi+Ydz6H
-=DHC4
------END PGP SIGNATURE-----
-
---cPi+lWm09sJ+d57q--
-
---===============6175940629705471447==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6175940629705471447==--
+Thanks
+Chanho
