@@ -1,91 +1,94 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 0/6] ASoC:Intel:Skylake: Enable HDaudio legacy
- fallback
-Date: Wed, 28 Nov 2018 12:09:19 -0600
-Message-ID: <5854417f-5e36-4397-5644-99c9b5f4ed40@linux.intel.com>
-References: <20181120213644.19103-1-pierre-louis.bossart@linux.intel.com>
- <s5h36rud8lg.wl-tiwai@suse.de>
+From: David Ulricht <david.ulricht434@gmail.com>
+Subject: Re: Subwoofers aren't working on ALC298 (Lenovo Yoga
+ C930 Laptop)
+Date: Wed, 28 Nov 2018 21:48:51 +0200
+Message-ID: <CALbf9MznCgTE8rTm-6WLEeYAQE5iHbVAn9_SNfHEOuRTpYNNgA@mail.gmail.com>
+References: <871s77zw23.fsf@gmail.com>
+ <32e2283a-8a5e-25a6-de95-bfb568341269@64studio.com>
+ <871s75tdr9.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h36rud8lg.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com
+ [209.85.210.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4083F2679A7
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 20:49:03 +0100 (CET)
+Received: by mail-ot1-f44.google.com with SMTP id e12so20393194otl.5
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 11:49:03 -0800 (PST)
+In-Reply-To: <871s75tdr9.fsf@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jon.reeve@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 11/21/18 4:32 AM, Takashi Iwai wrote:
-> On Tue, 20 Nov 2018 22:36:38 +0100,
-> Pierre-Louis Bossart wrote:
->> This patchset is provided as an RFC and should not be merged as is
->> (Turkey break in the USA and more validation needed). This is however
->> a good time to gather comments. This work is the result of multiple
->> email discussions to finally provide more flexibility for
->> distributions to chose whether to stick with the legacy HDaudio driver
->> or to enable the SST/Skylake driver for newer platforms (required
->> e.g. for digital microphone support)
->>
->> The patches add support for CoffeeLake, simplify the probe for the
->> Skylake driver, introduce more compile-time granularity so that
->> platforms can be selected individually and last provide a dynamic
->> fallback mechanism when two drivers are registered for the same PCI
->> ID.
->>
->> When the SOF driver is released, the same mechanism will be used to
->> enable the SOF-legacy fallback. There will be no plans to enable an
->> SOF->SST falback.
-> This looks like a sensible way to go, thanks for working on this!
->
-> While the fallback stuff might need more testing, the other patches
-> (addition of CFL-S and split of configs) are rather systematic, so we
-> can merge this at first soonish.
->
-> And we may need a bit more comments in Kconfig help for the fallback
-> behavior.  Or document it properly and refer to it from Kconfig help.
-> The git commit log isn't present in the released kernel code, after
-> all.
-
-I will indeed put the dynamic fallback on the back-burner, of course the 
-tests work on NUCs and recent devices but fail on a HP SKL device I 
-tried on, so additional code needs to be added to check if the DSP is 
-present or not, remove silly dependencies on NHLT that make no sense for 
-HDaudio, etc.
-
-I'd like however to follow your idea of a 'shared' caps but use it for 
-static mutual-exclusion to start, e.g. to let distributions use legacy 
-for Broadwell but SST for SKL/KBL without requiring the user to play 
-with blacklists.  Once we have this in place, and the additional code 
-added for DSP detection the dynamic fallback is an 'easy' transition.
-
->
->
-> thanks,
->
-> Takashi
->
->> Pierre-Louis Bossart (4):
->>    ASoC: Intel: Skylake: stop init/probe if DSP is not present
->>    ASoC: Intel: Skylake: remove useless tests on DSP presence
->>    ASoC: Intel: Skylake: Add more platform granularity
->>    ALSA: hda: add fallback capabilities for SKL+ platforms
->>
->> Takashi Iwai (2):
->>    ASoC: Intel: Skylake: Add CFL-S support
->>    ALSA: hda: Allow fallback binding with legacy HD-audio for Intel SKL+
->>
->>   include/sound/hdaudio.h                |   6 +
->>   sound/pci/hda/Kconfig                  |  40 +++++++
->>   sound/pci/hda/hda_controller.h         |   2 +-
->>   sound/pci/hda/hda_intel.c              |  51 ++++++--
->>   sound/soc/intel/Kconfig                |  86 ++++++++++++--
->>   sound/soc/intel/boards/Kconfig         |  16 ++-
->>   sound/soc/intel/skylake/skl-messages.c |   8 ++
->>   sound/soc/intel/skylake/skl.c          | 154 +++++++++++++++++++------
->>   8 files changed, 311 insertions(+), 52 deletions(-)
->>
->> -- 
->> 2.17.1
->>
+PiBBcyBmYXIgYXMgSSBjYW4gdGVsbCwgSSdtIHJ1bm5pbmcgdGhlIGxhdGVzdCB2ZXJzaW9uIG9m
+IEFMU0EsIHNpbmNlIEknbQpvbiBOaXhPUyB1bnN0YWJsZSwgYW5kCgpIYXZlIHlvdSB0cmllZCBh
+bnkgb3RoZXIgZGlzdHJpYnV0aW9uLCBzb21ldGhpbmcgbW9yZSBub3JtYWwgbGlrZSBsYXRlc3QK
+RmVkb3JhIG9yIFVidW50dSA/IERvZXMgdGhlIHN1Yndvb2ZlcnMgd29yayB0aGVyZSA/CklmIHlv
+dSBydW4gVWJ1bnR1L0ZlZG9yYSB5b3UgY2FuIGNoZWNrIHRoZSBzb3VuZCBzZXR0aW5ncyBhbmQg
+cGF2dWNvbnRyb2wKdGhlcmUgaXMgc2VsZWN0aW9uIG9mIHNwZWFrZXJzIHVzdWFsbHkgMi4xIDUu
+MS4uLiB0cnkgdGhvc2UgPwpUaGUgbW9tZW50IHlvdSByZWFsaXplIHlvdXIgInRlZSIgaXMgbG9j
+YXRlZCBpbgovcnVuL2N1cnJlbnQtc3lzdGVtL3N3L2Jpbi90ZWUgaXQgc2hvdWxkIHJpbmcgYSBi
+ZWxsIHRoYXQgc29tZXRoaW5nIGlzCndyb25nIHdpdGggdGhpcyBkaXN0cmlidXRpb24uCmhkYWph
+Y2tyZXRhc2sgaXMgY3JlYXRpbmcgYSAvbGliL2Zpcm13YXJlL2hkYS1qYWNrLXJldGFzay5mdyAo
+dGV4dCBmaWxlKQp3aGljaCBpcyBhdHRhY2hlZCB0byBtb2Rwcm9iZSBhdXRvbWF0aWMgYW5kIGNy
+ZWF0ZXMgYSBmaWxlIGluCi9ldGMvbW9kcHJvYmUuZC9oZGEtamFjay1yZXRhc2suY29uZgp3aGlj
+aCBjb250YWlucyBhIGxpbmU6Cm9wdGlvbnMgc25kLWhkYS1pbnRlbCBwYXRjaD1oZGEtamFjay1y
+ZXRhc2suZncsIGhkYS1qYWNrLXJldGFzay5mdywKaGRhLWphY2stcmV0YXNrLmZ3LCBoZGEtamFj
+ay1yZXRhc2suZncKQW5kIHRoZSBjb250ZW50IG9mIHRoZSBoZGEtamFjay1yZXRhc2suZncgaXMg
+c29tZXRoaW5nIGxpa2UgdGhpczoKCltjb2RlY10KMHgxMDEzODQwOSAweDEwNmIzMzAwIDAKCltw
+aW5jZmddCjB4MjQgMHg5MDEwMDA4MAoweDI1IDB4OTAxMDAwODIKMHgyNiAweDQwMDAwMGYwCjB4
+MjcgMHg0MDAwMDBmMApBbmQgeW91IGhhdmUgdG8gbWFrZSBzdXJlIHRob3NlIFtwaW5jZmdzXSBt
+YXRjaCB3aXRoIHlvdXIgV2luZG93czEwCnJlZ2lzdHJ5IG9mIHRoZSBkcml2ZXIncyBQaW5Db25m
+aWdPdmVycmlkZS4KWW91IGhhcHBlbiB0byBoYXZlIFdpbmRvd3MgcnVubmluZyBvbiB0aGF0IG1h
+Y2hpbmUgYW5kIGNhbiBleHRyYWN0IHRoZQpwaW5jb25maWdvdmVycmlkZSBvciBoYXZlIC5pbmkg
+b2YgdGhlIGRyaXZlcj8gSSBjYW4gaGVscCB5b3UgY29tcGFyZQp0aG9zZS4KCgoKCgpPbiBXZWQs
+IE5vdiAyOCwgMjAxOCBhdCA1OjM3IFBNIEpvbmF0aGFuIFJlZXZlIDxqb24ucmVldmVAZ21haWwu
+Y29tPiB3cm90ZToKCj4KPiBIaSBEYW5pZWwsCj4KPiBJJ20gZ3Vlc3NpbmcgSSBzaG91bGRuJ3Qg
+YXNzaWduIHRoaXMgcGluIHRvIExGRSwgdGhlbj8gQW5kIG1heWJlCj4gYXNzaWduCj4gaXQgdG8g
+ImludGVybmFsIHNwZWFrZXIgKGJhY2spIj8gSSdtIGF0IGEgbG9zcyBmb3Iga25vd2luZyB3aGF0
+IHRvCj4gYXNzaWduIHRvIHdoYXQuCj4KPiBCdXQgdGhpcyBpcyBhbGwgbW9vdCwgc2luY2UgdGhl
+IHJlYWwgcHJvYmxlbSwgaXQgc2VlbXMgdG8gbWUsIGlzCj4gdGhhdAo+IGNsaWNraW5nICJhcHBs
+eSBub3ciIG9yICJpbnN0YWxsIGJvb3Qgb3ZlcnJpZGUiIHdvbid0IHdvcmsgb24KPiBOaXhPUy4K
+PiBUaGUgZmlyc3QgaXNzdWUgaXMgdGhhdCBgaGRhamFja3JldGFza2AgYXBwYXJlbnRseSBjYW4n
+dCBmaW5kIG15Cj4gY29waWVzCj4gb2YgYHRlZWAgYW5kIGBtdmAuIEkgY2FuIHJ1biB0aGVzZSBw
+cm9ncmFtcyBqdXN0IGZpbmUgZnJvbSBhCj4gc2hlbGwsIGFuZAo+IGB3aGljaCB0ZWVgIHNob3dz
+IHRoZWlyIGxvY2F0aW9ucyBpbiBOaXhPUzoKPiBgL3J1bi9jdXJyZW50LXN5c3RlbS9zdy9iaW4v
+dGVlYCwgYnV0IGBoZGFqYWNrcmV0YXNrYCBjYW4ndCBmaW5kCj4gdGhlbSwKPiBmb3Igc29tZSBy
+ZWFzb24sIGFuZCBgQXBwbHkgbm93YCBmYWlscy4gVGhlIHNlY29uZCBpcyB0aGF0LCBldmVuCj4g
+aWYgSQo+IHJ1biBydW4gdGhlIC90bXAgc2NyaXB0IG1hbnVhbGx5LCBub3RoaW5nIHNlZW1zIHRv
+IGNoYW5nZSB3aXRoIG15Cj4gc3lzdGVtLiBJIGhhdmUgYSBmZWVsaW5nIGBoZGFqYWNrcmV0YXNr
+YCBuZWVkcyB0byBkbyBzb21ldGhpbmcKPiBiZXlvbmQKPiB3aGF0IGlzIGluIHRoZSBgL3RtcGAg
+c2NyaXB0LCBhbmQgdGhhdCBpdCBjYW4ndCBkbyB0aGF0LCBzaW5jZSBpdAo+IGNhbid0Cj4gZmlu
+ZCBteSBzeXN0ZW0gdXRpbGl0aWVzLgo+Cj4gVGhhbmtzIGZvciB0aGF0IGxpbmssIHRob3VnaOKA
+lHRoZXJlJ3Mgc29tZSB1c2VmdWwgc3R1ZmYgaW4gdGhlcmUuCj4KPiBBcmUgdGhlcmUgb3RoZXIg
+d2F5cyBvZiBjb25uZWN0aW5nIHVudXNlZCBwaW5zIHRoYXQgZG9uJ3QgdXNlCj4gaGRhamFja3Jl
+dGFzaz8gTGlrZSBhIHNjcmlwdCBJIGNhbiBydW4gb3IgYSBzZXF1ZW5jZSBvZiBjb21tYW5kcz8K
+Pgo+IEJlc3QsCj4KPiBKb25hdGhhbgo+Cj4gRGFuaWVsIEphbWVzIDxkYW5pZWxANjRzdHVkaW8u
+Y29tPiB3cml0ZXM6Cj4KPiA+IEhpIEpvbmF0aGFuLAo+ID4KPiA+PiAtIFJ1bm5pbmcgaGRhamFj
+a3JldGFzaywgZnJvbSB0aGUgYWxzYVRvb2xzIHBhY2thZ2UuIEl0IHNlZW1zCj4gPj4gdG8gY29y
+cmVjdGx5Cj4gPj4gcmVjb2duaXplIHRoYXQgdGhlcmUgYXJlIHNvbWUgdW5hc3NpZ25lZCBwaW5z
+LCBhbmQgZXZlbiBnaXZlcwo+ID4+IG1lIHRoZSBvcHRpb24gb2YKPiA+PiBhc3NpZ25pbmcgdGhl
+bSB0byAiaW50ZXJuYWwgc3BlYWtlciAoTEZFKSwiIHdoaWNoIHNvdW5kcyBsaWtlCj4gPj4gaXQg
+Y291bGQgYmUgYQo+ID4+IGJhc3Mgb3V0cHV0Lgo+ID4KPiA+IExGRSB1c3VhbGx5IHN0YW5kcyBm
+b3IgTG93IEZyZXF1ZW5jeSBFZmZlY3RzLCBpLmUuIGEgc3Vid29vZmVyCj4gPiBjaGFubmVsIG9u
+IGEKPiA+IG1vdmllIG9yIGdhbWUuIFRoZXJlIGFyZSBzb21lIHRpcHMgb24gc3Vycm91bmQgc291
+bmQgYXQKPiA+IGh0dHA6Ly93d3cudm9sa2Vyc2NoYXR6LmNvbS9ub2lzZS9hbHNhLmh0bWwKPiA+
+Cj4gPiBJIGRvbid0IGtub3cgd2hpY2ggJ21kJyBwcm9ncmFtIHRoZXkgYXJlIHJlZmVycmluZyB0
+bywgYnV0IHlvdQo+ID4gY2FuIGluc3RhbGwgdGVlCj4gPiBzZXBhcmF0ZWx5Lgo+ID4KPiA+IENo
+ZWVycyEKPiA+Cj4gPiBEYW5pZWwKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
