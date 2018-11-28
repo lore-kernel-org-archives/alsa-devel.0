@@ -1,22 +1,21 @@
-From: youling 257 <youling257@gmail.com>
-Subject: Re: [PATCH v2] conf: Move UCM profile snippets into
-	components subdirectory
-Date: Wed, 28 Nov 2018 19:09:17 +0800
-Message-ID: <CAOzgRdb4VuAE_Tux2HkvoV_qiY_2o-H8ziBqSNRHi3k=6tCBzw@mail.gmail.com>
-References: <20181128095654.22915-1-tiwai@suse.de>
- <CAOzgRdbg_zwpGqAVmi0rgGdLrhz_AyOhUFtvoscN0gXAS2utoQ@mail.gmail.com>
- <s5hbm695vh1.wl-tiwai@suse.de>
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
+Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
+ conversions to it)
+Date: Wed, 28 Nov 2018 12:14:34 +0100
+Message-ID: <20181128111434.obgjtzpm6zwz5c43@pali>
+References: <20181126171126.20280-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io1-f68.google.com (mail-io1-f68.google.com
- [209.85.166.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 2640F2679A7
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 12:09:18 +0100 (CET)
-Received: by mail-io1-f68.google.com with SMTP id s22so19620755ioc.8
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 03:09:18 -0800 (PST)
-In-Reply-To: <s5hbm695vh1.wl-tiwai@suse.de>
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B718C2679A7
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 12:14:36 +0100 (CET)
+Received: by mail-wr1-f65.google.com with SMTP id l9so25853316wrt.13
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 03:14:36 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20181126171126.20280-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-src/conf/ucm/chtrt5645/HiFi.conf, a lot of cset command, why quote
-PlatformEnableSeq.conf? although PlatformEnableSeq.conf is custom
-command for bytcr/chtbsw platform.
-if chtrt5645/HiFi.conf <searchdir:ucm> and
-<platforms/bytcr/PlatformEnableSeq.conf>, do you think the code is not
-neat?
-so i said revert "conf/ucm: bytcr-rt5645: Use the generic
-bytcr/PlatformEnableSeq.conf".
-chtrt5645-mono-speaker-analog-mic/HiFi.conf not quote PlatformEnableSeq.conf.
-
-2018-11-28 18:48 GMT+08:00, Takashi Iwai <tiwai@suse.de>:
-> On Wed, 28 Nov 2018 11:40:56 +0100,
-> youling 257 wrote:
->>
->> I'm still not see '<searchdir:ucm>' in the
->> src/conf/ucm/chtrt5645/HiFi.conf,
->> if needn't '<searchdir:ucm>', so can remove '<searchdir:ucm>' in other
->> files?
->> bytcr-rt5640/HiFi.conf, bytcr-rt5651/HiFi.conf, chtnau8824/HiFi.conf,
->> ......, remove <searchdir:ucm>?
->>
->> my understand, no '<searchdir:ucm>',
->> '<platforms/bytcr/PlatformEnableSeq.conf>' won't work.
->
-> OK, point taken.  Yes, it's a missing piece.
->
-> So, just adding <searchdir:ucm> makes things working on your machine,
-> right?
->
-> If so, I'll refresh the patch to address it.
->
->
-> thanks,
->
-> Takashi
->
->>
->> 	EnableSequence [
->> 		cdev "hw:chtrt5645"
->>
->> 		<platforms/bytcr/PlatformEnableSeq.conf>
->>
->> 		# Output Configuration
->> 		cset "name='DAC1 L Mux' IF1 DAC"
->> 		cset "name='DAC1 R Mux' IF1 DAC"
->>
+T24gTW9uZGF5IDI2IE5vdmVtYmVyIDIwMTggMTg6MTE6MjAgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
+IEhpLAo+IAo+IHRoaXMgaXMgcGF0Y2ggc2VyaWVzIEkndmUgaGFja2VkIGFmdGVyIHVzZWZ1bCBj
+b252ZXJzYXRpb24gd2l0aAo+IFBhdmVsLiAgQmFzaWNhbGx5IHRoaXMgYWRkcyBhIG5ldyBMRUQg
+dHJpZ2dlciBhdWRpby1tdXRlIGFuZAo+IGF1ZGlvLW1pY211dGUsIGFuZCBjb252ZXJ0IHRoZSBI
+RC1hdWRpbyBkcml2ZXIgYW5kIHRoZSBwbGF0Zm9ybQo+IGRyaXZlcnMgdG8gdXNlIHRoZSBMRUQg
+dHJpZ2dlciBpbnN0ZWFkIG9mIHRoZSB1Z2x5IGRpcmVjdCBkeW5hbWljCj4gc3ltYm9sIGJpbmRp
+bmcuCj4gCj4gVGhlIGxhdGVzdCB2ZXJzaW9uIG9mIHBhdGNoZXMgYXJlIGZvdW5kIGluIHRvcGlj
+L2xlZHMtdHJpZ2dlciBicmFuY2gKPiBpbiBteSBzb3VuZCBnaXQgdHJlZS4KPiAgIGdpdDovL2dp
+dC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQKPiAK
+PiBBcyB0aGVzZSBhcmUgY3Jvc3MtdHJlZSBwYXRjaGVzLCB0aGUgYnJhbmNoIGFib3ZlIGlzIGJh
+c2VkIGNsZWFubHkgb24KPiB2NC4yMC1yYzMsIHNvIHRoYXQgaXQgY2FuIGJlIG1lcmdlZCB3ZWxs
+IHRvIG11bHRpcGxlIHRyZWVzLgo+IAo+IE9uY2UgYWZ0ZXIgZ2V0dGluZyB0aGUgQUNLJ3MsIEkn
+bGwgYWRkIHRhZ3MgYW5kIGZpeGF0ZSBmb3IgbWVyZ2VzLgo+IAo+IFRoaXMgcGF0Y2ggc2VyaWVz
+IGRvbid0IGluY2x1ZGUgaHVhd2VpLXdtaSBzdHVmZjsgc28gSHVhd2VpIHBhdGNoZXMKPiBuZWVk
+IHJld29yay4gIEkgYWxyZWFkeSBoYXZlIHNvbWUgcGllY2Ugb2YgY2hhbmdlcyBmb3IgaHVhd2Vp
+LXdtaSwgc28KPiBwbGVhc2UgcGluZyBtZSBpZiBuZWVkZWQuCj4gCj4gSSBjaGVja2VkIGJyaWVm
+bHkgb24gbXkgRGVsbCBsYXB0b3AsIGFuZCBhIFRoaW5rcGFkIG1vZGVsLgo+IFdpZGVyIHRlc3Rz
+IGFyZSBhcHByZWNpYXRlZCwgb2YgY291cnNlLgoKSGkhIFRoYW5rcyBmb3IgcGF0Y2ggc2VyaWVz
+LiBJdCBpcyByZWFsbHkgaW1wcm92ZW1lbnQgaW4gY3VycmVudCBtdXRlCmxlZCBzaXR1YXRpb24u
+IEkgcXVpY2tseSBsb29rZWQgYXQgcGF0Y2hlcyBhbmQgdGhleSBsb29rIGdvb2QuIFNvIHlvdQpj
+YW4gYWRkIG15IEFja2VkLUJ5OiBQYWxpIFJvaMOhciA8cGFsaS5yb2hhckBnbWFpbC5jb20+LgoK
+LS0gClBhbGkgUm9ow6FyCnBhbGkucm9oYXJAZ21haWwuY29tCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
