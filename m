@@ -1,91 +1,27 @@
-From: youling 257 <youling257@gmail.com>
-Subject: Re: [PATCH v2 01/13] conf/ucm: bytcr-rt5645: Use the
- generic bytcr/PlatformEnableSeq.conf
-Date: Wed, 28 Nov 2018 12:35:50 +0800
-Message-ID: <CAOzgRdYoU88LWtJ0kH6sMSHGF8uxUuiNM714suktdKShbc0Pyw@mail.gmail.com>
-References: <20180808090543.15181-1-hdegoede@redhat.com>
- <20181126094911.27716-1-youling257@gmail.com>
- <s5hlg5g17a4.wl-tiwai@suse.de>
- <11fd58d6-4008-3ba1-be85-b648b849379a@redhat.com>
- <s5ho9abzzub.wl-tiwai@suse.de> <2dcbb4a3-d822-d63a-d393-172edbbbc299@perex.cz>
- <2658f3ea-c442-96b6-31f7-64ee08971d0b@linux.intel.com>
- <s5hbm6ay8g1.wl-tiwai@suse.de>
- <ff2c2705-ac0a-8c03-4484-c22feae4b244@linux.intel.com>
- <s5h36rmwila.wl-tiwai@suse.de>
+From: "Chanho Min" <chanho.min@lge.com>
+Subject: RE: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
+Date: Wed, 28 Nov 2018 15:26:34 +0900
+Message-ID: <00d001d486e3$4f2d1600$ed874200$@lge.com>
+References: <1543210597-6717-1-git-send-email-chanho.min@lge.com> <s5hin0k6xqy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it1-f195.google.com (mail-it1-f195.google.com
- [209.85.166.195])
- by alsa0.perex.cz (Postfix) with ESMTP id A8F2F267AF1
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 05:36:10 +0100 (CET)
-Received: by mail-it1-f195.google.com with SMTP id b5so2271937iti.2
- for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2018 20:36:10 -0800 (PST)
-In-Reply-To: <s5h36rmwila.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: 
+Content-Language: ko
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@kernel.org>, 'Vinod Koul' <vkoul@kernel.org>, 'Daniel Mentz' <danielmentz@google.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Seungho Park' <seungho1.park@lge.com>, 'Jongsung Kim' <neidhard.kim@lge.com>, 'Wonmin Jung' <wonmin.jung@lge.com>, 'Jaehyun Kim' <jehn.kim@lge.com>, 'Hyonwoo Park' <hyonwoo.park@lge.com>
 List-Id: alsa-devel@alsa-project.org
 
-cmV2ZXJ0ICJjb25mL3VjbTogYnl0Y3ItcnQ1NjQ1OiBVc2UgdGhlIGdlbmVyaWMKYnl0Y3IvUGxh
-dGZvcm1FbmFibGVTZXEuY29uZiIsIG9yIGFkZCBtaXNzZWQgPHNlYXJjaGRpcjp1Y20taW5jbHVk
-ZXM+CmZvciBjaHRydDU2NDUsIHdoYXQgZG8geW91IHdhbnQ/CgpUYWthc2hpIEl3YWkgPHRpd2Fp
-QHN1c2UuZGU+IOS6jjIwMTjlubQxMeaciDI45pel5ZGo5LiJIOS4iuWNiDE6MTLlhpnpgZPvvJoK
-Pgo+IE9uIFR1ZSwgMjcgTm92IDIwMTggMTg6MDg6MzAgKzAxMDAsCj4gUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gPgo+ID4KPiA+ID4+IC0gd2hhdCBpcyB0aGUgbGljZW5zZSBmb3IgdGhv
-c2UgVUNNIGZpbGVzPyBJIGtlZXAgZ2V0dGluZyBxdWVzdGlvbnMKPiA+ID4+IGFuZCBJIGRvbid0
-IGhhdmUgdGhlIGFuc3dlci4gSXQnZCBiZSBvZGQgdG8gaGF2ZSB0aGVuIGluaGVyaXQgdGhlIExH
-UEwKPiA+ID4+IGxpY2Vuc2UgZnJvbSBhbHNhLWxpYiwgaXQncyBleHBlY3RlZCB0aGF0IHBlb3Bs
-ZSB3aWxsIGhhdmUgdG8gZG8gbWlub3IKPiA+ID4+IG1vZGlmaWNhdGlvbnMgbGVmdCBhbmQgcmln
-aHQgYW5kIGhhbmRsZSBhIG51bWJlciBvZiBkZXJpdmF0aXZlcywKPiA+ID4+IGUuZy4gYmVjYXVz
-ZSB0aGUgcGVyY2VpdmVkIHZvbHVtZSBpcyB0b28gbG93IGR1ZSB0byBzb21lCj4gPiA+PiBtZWNo
-YW5pY3MvYWNvdXN0aWNzIGlzc3VlIGFuZCByZXF1aXJpbmcgdGhlbSB0byBzaGFyZSBpcyBhIGJp
-dAo+ID4gPj4gY3VtYmVyc29tZS4KPiA+ID4gVW5sZXNzIGV4cGxpY2l0bHkgc3BlY2lmaWVkLCBp
-dCBzaG91bGQgaW5oZXJpdCBmcm9tIHRoZSB3aG9sZSBhbHNhLWxpYgo+ID4gPiBsaWNlbnNlLCBp
-LmUuIExHUEwuICBCdXQgSSBndWVzcyB3ZSBoYXZlIG5vIHByb2JsZW0gZm9yIHJlLWxpY2Vuc2lu
-Zwo+ID4gPiAob3IgZHVhbC1saWNlbnNlKSB3aXRoIGEgbW9yZSByZWxheGVkIG9uZSBmb3IgVUNN
-IHByb2ZpbGVzLCBvbmNlIHdoZW4KPiA+ID4gdGhleSBhcmUgc3BsaXQgdG8gYW4gaW5kaXZpZHVh
-bCByZXBvLgo+ID4gPgo+ID4gPiBTaW5jZSB0aGUgd2hvbGUgcHJvamVjdHMgd2VyZSBtb3ZlZCB0
-byBnaXRodWIsIHdlIGNhbiBkbyBpdCBlYXNpbHksIEkKPiA+ID4gc3VwcG9zZS4KPiA+Cj4gPiBJ
-IHRoaW5rIHdlIHNob3VsZCBoYXZlIFVDTSBhbmQgdG9wb2xvZ3kgZmlsZXMgaW4gdGhlIHNhbWUg
-cmVwbyBzaW5jZQo+ID4gdGhleSBhcmUgcmVsYXRlZCAoY29udHJvbCBuYW1lcywgZXRjKS4KPgo+
-IE9LLCBtYWtlcyBzZW5zZS4KPgo+ID4gQlRXIHRoYXQncyBhbHNvIG9uZSBpbXByb3ZlbWVudCB0
-aGF0IEkgZm9yZ290IGFib3V0LiBhbHNhLWxpYgo+ID4gY3VycmVudGx5IGJhaWxzIHdoZW4gaXQg
-Y2Fubm90IGZpbmQgYSBjb250cm9sIGluIGFuIFVDTSBmaWxlLCBhbmQKPiA+IHRoYXQncyBwYWlu
-ZnVsIHdoZW4gY29udHJvbCBuYW1lcyBjaGFuZ2Ugb3ZlciB0aW1lLiBJIGhhdmUgZS5nLiBvbGRl
-cgo+ID4gVUNNIHByb2ZpbGVzIGZvciBDaHJvbWVib29rcyB0aGF0IGFyZW4ndCBjb21wYXRpYmxl
-IGFueSBsb25nZXIgd2l0aAo+ID4gdGhlIHVwc3RyZWFtIGtlcm5lbCBmb3IgSERNSSBwYXRocywg
-YnV0IHdvcmsgZmluZSB3aXRoIGFuYWxvZwo+ID4gcGF0aHMuIEl0J2QgYmUgcmVhbGx5IG5pY2Ug
-dG8gZG93bmdyYWRlIHRoZSBlcnJvciB0byBhIHdhcm5pbmcuCj4KPiBZZWFoLCBJJ3ZlIGhpdCB0
-aGlzIGEgZmV3IHRpbWVzIGFzIHdlbGwgOikKPiBJdCdkIGJlIGhlbHBmdWwgdG8gZmFsbGJhY2sg
-b3IgYWxsb3cgb3B0aW9uYWwgY29udHJvbHMuCj4KPiA+ID4KPiA+ID4+IC0gaG93IGFyZSB3ZSBn
-b2luZyB0byBoYW5kbGUgdGhlIGNoYW5nZXMgZm9yIFNPRiwgd2UgYWRkZWQgYW4gInNvZi0iCj4g
-PiA+PiBwcmVmaXggdG8gbWFrZSBpdCBleHBsaWNpdCB0aGF0IHRoZSBwbGF0Zm9ybS9EU1AgZHJp
-dmVyIHNpZGUgaXMKPiA+ID4+IGRpZmZlcmVudCwgYnV0IGhhdmluZyBhIGRpZmZlcmVudCBib2Fy
-ZCBuYW1lIHdpbGwgaW50ZXJmZXJlIHdpdGgKPiA+ID4+IHNlYXJjaCBhbmQgaW5jbHVkZXMuCj4g
-PiA+IFNvcnJ5LCBpdCdzIG5vdCBjbGVhciBhYm91dCB0aGUgcXVlc3Rpb24uICBZb3UgbmVlZCB0
-byB1c2UgYSBkaWZmZXJlbnQKPiA+ID4gVUNNIHByb2ZpbGUgd2hlbiB0aGUgZGV2aWNlIGlzIGJv
-dW5kIHdpdGggU09GLCByaWdodD8KPiA+Cj4gPiBJdCdzIG9ubHkgZGlmZmVyZW50IGZvciB0aGUg
-RFNQIHBhcnRzLCB0aGUgY29kZWMgc2V0dGluZ3MgYXJlCj4gPiBjb21wbGV0ZWx5IGlkZW50aWNh
-bCBzbyBJIHdhcyBob3BpbmcgdG8gYXZvaWQgZHVwbGljYXRpb24gb2YgYWxsIHRoZQo+ID4gcHJv
-ZmlsZXMgYW5kIHVzZSBzb21lIHNvcnQgb2YgcnVuLXRpbWUgcnVsZSB0byBvbmx5IGluY2x1ZGUg
-dGhlCj4gPiBjaGFuZ2VkIERTUCBzZXR0aW5ncy4gSSBkb24ndCBoYXZlIGEgdHVybi1rZXkgc29s
-dXRpb24gdG8gc3VnZ2VzdCwKPiA+IGp1c3QgYSBkZXNpcmUgdG8gYXZvaWQgbW9yZSBtYWludGVu
-YW5jZSB3b3JrIGp1c3QgYmVjYXVzZSBvZiBhIHByZWZpeAo+ID4gYWRkZWQuCj4KPiBTb21lIHN0
-cmluZyBtYW5pcHVsYXRpb25zIHNob3VsZCBiZSBhdmFpbGFibGUgaW4gdGhlIGFsc2EtbGliIGNv
-bmZpZwo+IHN5bnRheCwgc28gYSB0aGluZyBsaWtlIGEgY29udHJvbCBuYW1lIG1pZ2h0IGJlIHNl
-dCBkeW5hbWljYWxseQo+IChob3BlZnVsbHkpLgo+Cj4gQnV0IG15IGNvdmVyYWdlIGFuZCBtZW1v
-cnkgaW4gdGhhdCBhcmVhIGFyZSBhIGJpdCB2YWd1ZSwgc28gbGV0IG1lIHNlZQo+IGFnYWluIG9u
-Y2Ugd2hlbiBtb3JlIGNvbmNyZXRlIHBpY3R1cmVzIHNob3cgdXAuCj4KPgo+IHRoYW5rcywKPgo+
-IFRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> >
+> > Hrm, converting unconditionally with msleep() looks too drastic.
+> 
+> Yes, it looks drastic. But, IMHO, I can't say busy-spin is not
+non-drastic.
+Fix typo in this comment:
+I can't say busy-spin is not drastic.
+
+Thanks
+Chanho
