@@ -1,86 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: pcm3168a: Don't disable pcm3168a
- when CONFIG_PM defined
-Date: Wed, 28 Nov 2018 16:22:11 +0000
-Message-ID: <20181128162211.GL6828@sirena.org.uk>
-References: <20181128122612.17820-1-jiada_wang@mentor.com>
+From: Ryan Lee <RyanS.Lee@maximintegrated.com>
+Subject: RE: [PATCH V2] ASoC: max98373: Added max98373_reset for stable amp
+ reset
+Date: Wed, 28 Nov 2018 17:07:02 +0000
+Message-ID: <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
+References: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
+ <20181128094955.GG6828@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0540757198568489560=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 74AC9267B4F
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 17:22:13 +0100 (CET)
-In-Reply-To: <20181128122612.17820-1-jiada_wang@mentor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jiada_wang@mentor.com
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181128094955.GG6828@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+>-----Original Message-----
+>From: Mark Brown <broonie@kernel.org>
+>Sent: Wednesday, November 28, 2018 1:50 AM
+>To: Ryan Lee <RyanS.Lee@maximintegrated.com>
+>Cc: Liam Girdwood <lgirdwood@gmail.com>; Jaroslav Kysela
+><perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Grant Grundler
+><grundler@chromium.org>; Kuninori Morimoto
+><kuninori.morimoto.gx@renesas.com>; Benson Leung
+><bleung@chromium.org>; alsa-devel@alsa-project.org; linux-
+>kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
+>Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable
+>amp reset
+>
+>On Wed, Nov 28, 2018 at 03:20:16AM +0000, Ryan Lee wrote:
+>> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+>> ---
+>
+>Not seeing a changelog here like I asked for :(
 
---===============0540757198568489560==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wA9WyeW1yVBM2Q32"
-Content-Disposition: inline
+Actually I added changelog as below. Do you mean this is not sufficient?
 
+Changes since v1 : Removed unusual repeat for amp software reset and verifi=
+cation.
+                   Amp software reset will be performed once and it repeats=
+ verification maximum 3 times if it is failed.
+                   Wait 10ms before every verification trial. Maximum 30ms =
+delay will be applied to wait AMP idle state.
 
---wA9WyeW1yVBM2Q32
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 28, 2018 at 09:26:12PM +0900, jiada_wang@mentor.com wrote:
-> From: Jiada Wang <jiada_wang@mentor.com>
->=20
-> pcm3168 codec support runtime_[resume|suspend], whenever it
-> is not active, it enters suspend mode, and it's clock and regulators
-> will be disabled. so there is no need to disable them again in
-> remove callback.  Otherwise we got following kernel warnings,
-> when unload pcm3168a driver
->=20
-> [  222.257514] unbalanced disables for amp-en-regulator
-> [  222.262526] ------------[ cut here ]------------
-> [  222.267158] WARNING: CPU: 0 PID: 2423 at drivers/regulator/core.c:2264=
- _regulator_disable+0x28/0x108
-> [  222.276291] Modules linked in:
-> [  222.279343]  snd_soc_pcm3168a_i2c(-)
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---wA9WyeW1yVBM2Q32
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlv+wLIACgkQJNaLcl1U
-h9AE6wf/fUj43xe+OXVuc4QSIiRt0payrWXBKKvyj+KhVPvnLZF1dKaQdhV9bejr
-TMx+Kdxj3ZpkL/UBmJHgL5XeveqVz9qHKVfYSe2bYqYUKWznEcyMGyRcSAuoTeAr
-+dhvGr0OUuEaQX0zUr2N1H4az3tUmsXBSR+qVZGfOREe58NFFAflD/Q14ODAa7tp
-9NxsbhmubVVPAMuv2vO6ez4nUOj14lh4Dml6xDKOCohTjTTYxl6BcrGV9E7SZNa0
-IyU1fMkAzDIzRXcjzcGYN4hdi+q5vdPDYaTn7mzt3ZGcndiLMb5Rla4l/SuUAngm
-xO8COaqgn8H8ZLJCniula7hdxCQiUQ==
-=gA+C
------END PGP SIGNATURE-----
-
---wA9WyeW1yVBM2Q32--
-
---===============0540757198568489560==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0540757198568489560==--
+>
+>> Changes : Created max98373_reset function to minimize code duplication.
+>>           Changed regmap_write to regmap_update_bits. Other bits except =
+LSB
+>need to be masked.
+>>           Added reset verification step to make sure software reset is c=
+ompleted
+>well. Software reset is done in 10ms in normal case.
+>>           Revision ID is available when the amp is in the idle state whi=
+ch means
+>software reset is completed.
+>>           Software reset will be performed maximum 3 times to avoid amp =
+reset
+>failure. Generally it is done in the first trial.
+>>           sleep time after software reset is increased + 30ms for every =
+retrial.
+>Maximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
+>
+>This looks like it's supposed to be a changelog but it isn't one?
