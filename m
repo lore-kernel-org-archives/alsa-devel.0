@@ -1,17 +1,15 @@
-From: Jenny TC <jenny.tc@intel.com>
-Subject: [PATCH 2/2] ASoC: dmic: introduce module_param
-	wakeup_delay
-Date: Wed, 28 Nov 2018 12:22:46 +0530
-Message-ID: <1543387966-2708-3-git-send-email-jenny.tc@intel.com>
-References: <1543387966-2708-1-git-send-email-jenny.tc@intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: HDA headset button support
+Date: Wed, 28 Nov 2018 08:07:32 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FAEF@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A1841FAEFRTITMBSV02realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E870267B08
- for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 07:53:03 +0100 (CET)
-In-Reply-To: <1543387966-2708-1-git-send-email-jenny.tc@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6690267AF3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 09:07:39 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +19,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Introducing a module param for wakeup_delay in order to
-align with modeswitch_delay parameter. With this change, both
-wakeup_delay and modeswitch_delay parameters can be passed
-as module parameters.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1841FAEFRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jenny TC <jenny.tc@intel.com>
----
- sound/soc/codecs/dmic.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Hi Takashi,
 
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index 2ee7690..9af229f 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -34,6 +34,9 @@
- static int modeswitch_delay;
- module_param(modeswitch_delay, uint, 0644);
- 
-+static int wakeup_delay;
-+module_param(wakeup_delay, uint, 0644);
-+
- struct dmic {
- 	struct gpio_desc *gpio_en;
- 	int wakeup_delay;
-@@ -115,6 +118,8 @@ static int dmic_component_probe(struct snd_soc_component *component)
- 				 &dmic->wakeup_delay);
- 	device_property_read_u32(component->dev, "modeswitch-delay-ms",
- 				 &dmic->modeswitch_delay);
-+	if (wakeup_delay)
-+		dmic->wakeup_delay  = wakeup_delay;
- 	if (modeswitch_delay)
- 		dmic->modeswitch_delay  = modeswitch_delay;
- 
--- 
-1.9.1
+New Chrome platform need to support HS button function.
+I sent it to Intel chrome team already.
+
+Could you take a look for attach patch?
+I think it maybe could upstream.=20
+It just waiting for test by Intel Chrome team.
+Thanks.
+
+BR,
+Kailang
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1841FAEFRTITMBSV02realt_
+Content-Type: application/octet-stream; name="0000-chrome-headset-btn.patch"
+Content-Description: 0000-chrome-headset-btn.patch
+Content-Disposition: attachment; filename="0000-chrome-headset-btn.patch";
+	size=5139; creation-date="Wed, 28 Nov 2018 07:40:01 GMT";
+	modification-date="Wed, 28 Nov 2018 07:39:53 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSA2M2Q0NjQxOTczYjNlY2IzYjM3N2U5MDg4YmRlZWNjM2ZlOWUxOWVhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFdlZCwgMjggTm92IDIwMTggMTU6MzI6NDUgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEVuYWJsZSBoZWFkc2V0IGJ1dHRvbiBzdXBwb3J0IGZvciBuZXcKIGNv
+ZGVjCgpUaGlzIHBhdGNoIHdpbGwgZW5hYmxlIGhlYWRzZXQgYnV0dG9uIGZvciBuZXcgQ2hyb21l
+IHBsYXRmb3JtLgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsu
+Y29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2phY2suYyBiL3NvdW5kL3BjaS9o
+ZGEvaGRhX2phY2suYwppbmRleCBjNDk5NzI3Li5mOWY1NWQyIDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL2hkYV9qYWNrLmMKKysrIGIvc291bmQvcGNpL2hkYS9oZGFfamFjay5jCkBAIC0xMTAs
+NyArMTEwLDcgQEAgRVhQT1JUX1NZTUJPTF9HUEwoc25kX2hkYV9qYWNrX3RibF9nZXRfZnJvbV90
+YWcpOwogICogQGNvZGVjOiB0aGUgSERBIGNvZGVjCiAgKiBAbmlkOiBwaW4gTklEIHRvIGFzc2ln
+bgogICovCi1zdGF0aWMgc3RydWN0IGhkYV9qYWNrX3RibCAqCitzdHJ1Y3QgaGRhX2phY2tfdGJs
+ICoKIHNuZF9oZGFfamFja190YmxfbmV3KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlk
+X3QgbmlkKQogewogCXN0cnVjdCBoZGFfamFja190YmwgKmphY2sgPSBzbmRfaGRhX2phY2tfdGJs
+X2dldChjb2RlYywgbmlkKTsKQEAgLTEyNCw2ICsxMjQsNyBAQCBzbmRfaGRhX2phY2tfdGJsX25l
+dyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaGRhX25pZF90IG5pZCkKIAlqYWNrLT50YWcgPSBj
+b2RlYy0+amFja3RibC51c2VkOwogCXJldHVybiBqYWNrOwogfQorRVhQT1JUX1NZTUJPTF9HUEwo
+c25kX2hkYV9qYWNrX3RibF9uZXcpOwogCiB2b2lkIHNuZF9oZGFfamFja190YmxfY2xlYXIoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9q
+YWNrLmggYi9zb3VuZC9wY2kvaGRhL2hkYV9qYWNrLmgKaW5kZXggZTk4MTRjMC4uYTExOWYxZCAx
+MDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfamFjay5oCisrKyBiL3NvdW5kL3BjaS9oZGEv
+aGRhX2phY2suaApAQCAtNDcsNiArNDcsOCBAQCBzdHJ1Y3QgaGRhX2phY2tfdGJsICoKIHNuZF9o
+ZGFfamFja190YmxfZ2V0KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgbmlkKTsK
+IHN0cnVjdCBoZGFfamFja190YmwgKgogc25kX2hkYV9qYWNrX3RibF9nZXRfZnJvbV90YWcoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMsIHVuc2lnbmVkIGNoYXIgdGFnKTsKK3N0cnVjdCBoZGFfamFj
+a190YmwgKgorc25kX2hkYV9qYWNrX3RibF9uZXcoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhk
+YV9uaWRfdCBuaWQpOwogCiB2b2lkIHNuZF9oZGFfamFja190YmxfY2xlYXIoc3RydWN0IGhkYV9j
+b2RlYyAqY29kZWMpOwogCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
+YyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDA2ZjkzMDMuLjBmY2M5OGIg
+MTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC01MzcxLDYgKzUzNzEsOTUgQEAgc3RhdGljIHZvaWQg
+YWxjMjg1X2ZpeHVwX2ludmFsaWRhdGVfZGFjcyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAlz
+bmRfaGRhX292ZXJyaWRlX3djYXBzKGNvZGVjLCAweDAzLCAwKTsKIH0KIAorc3RhdGljIHZvaWQg
+YWxjX2hlYWRzZXRfYnRuX3Vuc29sX2V2ZW50KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJ
+CXVuc2lnbmVkIGludCByZXMpCit7CisJc3RydWN0IGhkYV9qYWNrX3RibCAqamFjazsKKwlpbnQg
+cmVwb3J0ID0gMDsKKworCWphY2sgPSBzbmRfaGRhX2phY2tfdGJsX2dldChjb2RlYywgMHg1NSk7
+CisJcmVwb3J0ID0gU05EX0pBQ0tfSEVBRFNFVDsKKwlpZiAoamFjay0+bmlkID09IDB4NTUpIHsK
+KwkJaWYgKHJlcyAmICg3IDw8IDEzKSkKKwkJCXJlcG9ydCB8PSBTTkRfSkFDS19CVE5fMDsKKwor
+CQlpZiAocmVzICAmICgxIDw8IDE2IHwgMyA8PCA4KSkKKwkJCXJlcG9ydCB8PSBTTkRfSkFDS19C
+VE5fMTsKKworCQkvKiBWb2x1bWUgdXAga2V5ICovCisJCWlmIChyZXMgJiAoNyA8PCAyMykpCisJ
+CQlyZXBvcnQgfD0gU05EX0pBQ0tfQlROXzI7CisKKwkJLyogVm9sdW1lIGRvd24ga2V5ICovCisJ
+CWlmIChyZXMgJiAoNyA8PCAxMCkpCisJCQlyZXBvcnQgfD0gU05EX0pBQ0tfQlROXzM7CisKKwkJ
+cmVwb3J0IHw9IHJlcG9ydCAmIGphY2stPnR5cGU7CisJCXNuZF9qYWNrX3JlcG9ydChqYWNrLT5q
+YWNrLCByZXBvcnQpOworCX0KKworCXNuZF9oZGFfamFja191bnNvbF9ldmVudChjb2RlYywgcmVz
+KTsKK30KKworc3RhdGljIGludCBhbGNfaGRhX2phY2tfYWRkX2tleV9rY3RsKHN0cnVjdCBoZGFf
+Y29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgbmlkLAorCQkJICBjb25zdCBjaGFyICpuYW1lLCBpbnQg
+dHlwZSkKK3sKKwlzdHJ1Y3QgaGRhX2phY2tfdGJsICpqYWNrOworCWludCBlcnI7CisKKwlqYWNr
+ID0gc25kX2hkYV9qYWNrX3RibF9uZXcoY29kZWMsIG5pZCk7CisJaWYgKCFqYWNrKQorCQlyZXR1
+cm4gMDsKKwlpZiAoamFjay0+amFjaykKKwkJcmV0dXJuIDA7IC8qIGFscmVhZHkgY3JlYXRlZCAq
+LworCisJZXJyID0gc25kX2phY2tfbmV3KGNvZGVjLT5jYXJkLCBuYW1lLCB0eXBlLAorCQkJICAg
+JmphY2stPmphY2ssIGZhbHNlLCBmYWxzZSk7CisJaWYgKGVyciA8IDApCisJCXJldHVybiBlcnI7
+CisKKwlzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8wLCBLRVlfUExB
+WVBBVVNFKTsKKwlzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8xLCBL
+RVlfVk9JQ0VDT01NQU5EKTsKKwlzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNL
+X0JUTl8yLCBLRVlfVk9MVU1FVVApOworCXNuZF9qYWNrX3NldF9rZXkoamFjay0+amFjaywgU05E
+X0pBQ0tfQlROXzMsIEtFWV9WT0xVTUVET1dOKTsKKworCWphY2stPnR5cGUgPSB0eXBlOworCWph
+Y2stPmphY2stPnByaXZhdGVfZGF0YSA9IGphY2s7CisKKwlyZXR1cm4gMDsKK30KKworCitzdGF0
+aWMgdm9pZCBhbGNfZml4dXBfaGVhZHNldF9qYWNrKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAor
+CQkJCSAgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGludCBhY3Rpb24pCit7CisKKwlz
+d2l0Y2ggKGFjdGlvbikgeworCWNhc2UgSERBX0ZJWFVQX0FDVF9QUkVfUFJPQkU6CisJCWNvZGVj
+LT5wYXRjaF9vcHMudW5zb2xfZXZlbnQgPSBhbGNfaGVhZHNldF9idG5fdW5zb2xfZXZlbnQ7CisJ
+CXNuZF9oZGFfamFja19kZXRlY3RfZW5hYmxlKGNvZGVjLCAweDU1KTsKKwkJYWxjX2hkYV9qYWNr
+X2FkZF9rZXlfa2N0bChjb2RlYywgMHg1NSwiSGVhZHNldCBKYWNrIiwgU05EX0pBQ0tfSEVBRFNF
+VCB8CisJCQlTTkRfSkFDS19CVE5fMCB8IFNORF9KQUNLX0JUTl8xIHwgU05EX0pBQ0tfQlROXzIg
+fCBTTkRfSkFDS19CVE5fMyk7CisJCWJyZWFrOworCWNhc2UgSERBX0ZJWFVQX0FDVF9JTklUOgor
+CQlzd2l0Y2ggKGNvZGVjLT5jb3JlLnZlbmRvcl9pZCkgeworCQljYXNlIDB4MTBlYzAyMjU6CisJ
+CWNhc2UgMHgxMGVjMDI5NToKKwkJY2FzZSAweDEwZWMwMjk5OgorCQkJYWxjX3dyaXRlX2NvZWZf
+aWR4KGNvZGVjLCAweDQ4LCAweDgwMTEpOworCQkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywg
+MHg0OSwgMHgwMDdmLCAweDAwNDUpOworCQkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0
+NCwgMHgwMDdmIDw8IDgsIDB4MDA0NSA8PCA4KTsKKwkJCWJyZWFrOworCQljYXNlIDB4MTBlYzAy
+MzY6CisJCWNhc2UgMHgxMGVjMDI1NjoKKwkJCWFsY193cml0ZV9jb2VmX2lkeChjb2RlYywgMHg0
+OCwgMHg4MDExKTsKKwkJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NDksIDB4MDA3Ziwg
+MHgwMDQ1KTsKKwkJCWJyZWFrOworCQl9CisJCWJyZWFrOworCX0KK30KKwogLyogZm9yIGhkYV9m
+aXh1cF90aGlua3BhZF9hY3BpKCkgKi8KICNpbmNsdWRlICJ0aGlua3BhZF9oZWxwZXIuYyIKIApA
+QCAtNTUxMCw2ICs1NTk5LDcgQEAgZW51bSB7CiAJQUxDMjIxX0ZJWFVQX0hQX0hFQURTRVRfTUlD
+LAogCUFMQzI4NV9GSVhVUF9MRU5PVk9fSEVBRFBIT05FX05PSVNFLAogCUFMQzI5NV9GSVhVUF9I
+UF9BVVRPX01VVEUsCisJQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFDSywKIH07CiAKIHN0YXRpYyBj
+b25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKQEAgLTYzODcsNiArNjQ3
+NywxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7
+CiAJCS50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCiAJCS52LmZ1bmMgPSBhbGNfZml4dXBfYXV0b19t
+dXRlX3ZpYV9hbXAsCiAJfSwKKwlbQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFDS10gPSB7CisJCS50
+eXBlID0gSERBX0ZJWFVQX0ZVTkMsCisJCS52LmZ1bmMgPSBhbGNfZml4dXBfaGVhZHNldF9qYWNr
+LAorCX0sCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2Zp
+eHVwX3RibFtdID0gewpAQCAtNjc4NSw2ICs2ODc5LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBo
+ZGFfbW9kZWxfZml4dXAgYWxjMjY5X2ZpeHVwX21vZGVsc1tdID0gewogCXsuaWQgPSBBTEMyNTVf
+RklYVVBfRFVNTVlfTElORU9VVF9WRVJCLCAubmFtZSA9ICJhbGMyNTUtZHVtbXktbGluZW91dCJ9
+LAogCXsuaWQgPSBBTEMyNTVfRklYVVBfREVMTF9IRUFEU0VUX01JQywgLm5hbWUgPSAiYWxjMjU1
+LWRlbGwtaGVhZHNldCJ9LAogCXsuaWQgPSBBTEMyOTVfRklYVVBfSFBfWDM2MCwgLm5hbWUgPSAi
+YWxjMjk1LWhwLXgzNjAifSwKKwl7LmlkID0gQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFDSywgLm5h
+bWUgPSAiYWxjLXNlbnNlLWNvbWJvIn0sCiAJe30KIH07CiAjZGVmaW5lIEFMQzIyNV9TVEFOREFS
+RF9QSU5TIFwK
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1841FAEFRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A1841FAEFRTITMBSV02realt_--
