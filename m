@@ -1,79 +1,65 @@
-From: "Chanho Min" <chanho.min@lge.com>
-Subject: RE: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
-Date: Wed, 28 Nov 2018 08:47:03 +0900
-Message-ID: <1aaf01d486ab$8017a5b0$8046f110$@lge.com>
-References: <1543210597-6717-1-git-send-email-chanho.min@lge.com> <s5hin0k6xqy.wl-tiwai@suse.de>
+From: ayman.bagabas@gmail.com
+Subject: Re: [PATCH v7 2/3] x86: add support for Huawei WMI hotkeys.
+Date: Tue, 27 Nov 2018 19:49:48 -0500
+Message-ID: <789965489e73fd543f0552090063fdff69363497.camel@gmail.com>
+References: <20181127025752.6459-1-ayman.bagabas@gmail.com>
+         <20181127025752.6459-3-ayman.bagabas@gmail.com>
+         <s5hwooyye9c.wl-tiwai@suse.de>
+         <CAHp75Vd_k3Gu93hOUOLXD90O_eM3wy2K3QfMN0789PQEOixS=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="US-ASCII"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hin0k6xqy.wl-tiwai@suse.de>
-Content-Language: ko
+In-Reply-To: <CAHp75Vd_k3Gu93hOUOLXD90O_eM3wy2K3QfMN0789PQEOixS=w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@kernel.org>, 'Vinod Koul' <vkoul@kernel.org>, 'Daniel Mentz' <danielmentz@google.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Seungho Park' <seungho1.park@lge.com>, 'Jongsung Kim' <neidhard.kim@lge.com>, 'Wonmin Jung' <wonmin.jung@lge.com>, 'Jaehyun Kim' <jehn.kim@lge.com>, 'Hyonwoo Park' <hyonwoo.park@lge.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> On Mon, 26 Nov 2018 06:36:37 +0100,
-> Chanho Min wrote:
-> >
-> > Commit 67ec1072b053 ("ALSA: pcm: Fix rwsem deadlock for non-atomic PCM
-> > stream") fixes deadlock for non-atomic PCM stream. But, This patch
-> causes antother stuck.
-> > If writer is RT thread and reader is a normal thread, the reader
-> > thread will be difficult to get scheduled. It may not give chance to
-> > release readlocks and writer gets stuck for a long time if they are
-> pinned to single cpu.
-> >
-> > The deadlock described in the previous commit is because the linux
-> > rwsem queues like a FIFO. So, we might need non-FIFO writelock, not non-
-> block one.
-> >
-> > My suggestion is that the writer gives reader a chance to be scheduled
-> > by using the minimum msleep() instaed of spinning without blocking by
-> > writer. Also, The *_nonblock may be changed to *_nonfifo appropriately
-> to this concept.
-> > In terms of performance, when trylock is failed, this minimum periodic
-> > msleep will have the same performance as the tick-based
-> schedule()/wake_up_q().
-> >
-> > Suggested-by: Wonmin Jung <wonmin.jung@lge.com>
-> > Signed-off-by: Chanho Min <chanho.min@lge.com>
+On Tue, 2018-11-27 at 17:52 +0200, Andy Shevchenko wrote:
+> On Tue, Nov 27, 2018 at 1:02 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Tue, 27 Nov 2018 03:57:48 +0100,
+> > Ayman Bagabas wrote:
+> > > +     handle = ACPI_HANDLE(&inputdev->dev);
+> > > +     args[0].type = args[1].type = args[2].type =
+> > > ACPI_TYPE_INTEGER;
+> > > +     args[1].integer.value = 0x04;
+> > > +
+> > > +     if (acpi_has_method(handle, method =
+> > > "\\_SB.PCI0.LPCB.EC0.SPIN")) {
+> > 
+> > This looks ugly...  And checkpatch also complains.
 > 
-> Hrm, converting unconditionally with msleep() looks too drastic.
+> Good point.
+> Actually another question is what handle do we get here? Can we check
+> method name by relative path, i.e. "SPIN" / "WPIN" instead?
 
-Yes, it looks drastic. But, IMHO, I can't say busy-spin is not non-drastic.
-To fix the root cause, We may need another rwsem that does not work as a
-FIFO.
+The handle is a NULL handle at "\". Should I use acpi_get_handle(NULL,
+"\\_SB.PCI0.LPCB.EC0", &handle)?  EC0 is a acpi device HID:PNP0C09.
 
 > 
-> I guess you've hit this while not explicitly using the linked PCM streams,
-> i.e. in the call of snd_pcm_unlink() at close, right?
+> > > +             args[0].integer.value = 0;
+> > > +             args[2].integer.value = on ? 1 : 0;
+> > > +     } else if (acpi_has_method(handle, method =
+> > > "\\_SB.PCI0.LPCB.EC0.WPIN")) {
+> > > +             args[0].integer.value = 1;
+> > > +             args[2].integer.value = on ? 0 : 1;
+> > > +     } else {
+> > > +             dev_err(&inputdev->dev, "Unable to find ACPI
+> > > method\n");
+> > > +             return -ENOSYS;
+> > > +     }
+> > 
+> > Can these checks be done at initialization phase?  It doesn't seem
+> > needed to be executed at each call.
 > 
-> Then this can be worked around by checking the link before calling it.
-> Could you check the patch below?
+> Agree.
+> 
 
-More testing is needed, but it seems to be fixed by your patch.
-We may not use the linked PCM.
-But, If the linked PCM is enabled,  Can snd_pcm_unlink() be called?
-This also seems to be a workaround.
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -2369,7 +2369,8 @@ int snd_pcm_hw_constraints_complete(struct
-> snd_pcm_substream *substream)
-> 
->  static void pcm_release_private(struct snd_pcm_substream *substream)  {
-> -	snd_pcm_unlink(substream);
-> +	if (snd_pcm_stream_linked(substream))
-> +		snd_pcm_unlink(substream);
->  }
-> 
->  void snd_pcm_release_substream(struct snd_pcm_substream *substream)
+Even if it was done in init phase, we still need to check what acpi
+method should be used and based on that and micmute status we set the
+arguments args[0] and args[2], args[1] is the pin value. We could check
+these using event_guid, but that would assume the methods exist for
+each guid.
+For example, if event_guid == MBX_EVENT_GUID, then method SPIN should
+be used.
