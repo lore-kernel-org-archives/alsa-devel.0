@@ -1,65 +1,131 @@
 From: ayman.bagabas@gmail.com
 Subject: Re: [PATCH v7 2/3] x86: add support for Huawei WMI hotkeys.
-Date: Tue, 27 Nov 2018 19:49:48 -0500
-Message-ID: <789965489e73fd543f0552090063fdff69363497.camel@gmail.com>
+Date: Tue, 27 Nov 2018 19:58:24 -0500
+Message-ID: <30a2b3bea95199ffc1a81f374deabbfadaeb2c22.camel@gmail.com>
 References: <20181127025752.6459-1-ayman.bagabas@gmail.com>
          <20181127025752.6459-3-ayman.bagabas@gmail.com>
-         <s5hwooyye9c.wl-tiwai@suse.de>
-         <CAHp75Vd_k3Gu93hOUOLXD90O_eM3wy2K3QfMN0789PQEOixS=w@mail.gmail.com>
+         <s5h5zwi7t1s.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAHp75Vd_k3Gu93hOUOLXD90O_eM3wy2K3QfMN0789PQEOixS=w@mail.gmail.com>
+In-Reply-To: <s5h5zwi7t1s.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-11-27 at 17:52 +0200, Andy Shevchenko wrote:
-> On Tue, Nov 27, 2018 at 1:02 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > On Tue, 27 Nov 2018 03:57:48 +0100,
-> > Ayman Bagabas wrote:
-> > > +     handle = ACPI_HANDLE(&inputdev->dev);
-> > > +     args[0].type = args[1].type = args[2].type =
-> > > ACPI_TYPE_INTEGER;
-> > > +     args[1].integer.value = 0x04;
-> > > +
-> > > +     if (acpi_has_method(handle, method =
-> > > "\\_SB.PCI0.LPCB.EC0.SPIN")) {
-> > 
-> > This looks ugly...  And checkpatch also complains.
+On Tue, 2018-11-27 at 10:45 +0100, Takashi Iwai wrote:
+> On Tue, 27 Nov 2018 03:57:48 +0100,
+> Ayman Bagabas wrote:
+> > +static const struct key_entry huawei_wmi_keymap[] __initconst = {
+> > +		{ KE_KEY,    0x281, { KEY_BRIGHTNESSDOWN } },
+> > +		{ KE_KEY,    0x282, { KEY_BRIGHTNESSUP } },
+> > +		{ KE_KEY,    0x284, { KEY_MUTE } },
+> > +		{ KE_KEY,    0x285, { KEY_VOLUMEDOWN } },
+> > +		{ KE_KEY,    0x286, { KEY_VOLUMEUP } },
+> > +		{ KE_KEY,    0x287, { KEY_MICMUTE } },
+> > +		{ KE_KEY,    0x289, { KEY_WLAN } },
+> > +		// Huawei |M| button
+> > +		{ KE_KEY,    0x28a, { KEY_CONFIG } },
+> > +		// Keyboard light
+> > +		{ KE_IGNORE, 0x293, { KEY_KBDILLUMTOGGLE } },
+> > +		{ KE_IGNORE, 0x294, { KEY_KBDILLUMUP } },
+> > +		{ KE_IGNORE, 0x295, { KEY_KBDILLUMUP } },
+> > +		{ KE_END,    0 }
 > 
-> Good point.
-> Actually another question is what handle do we get here? Can we check
-> method name by relative path, i.e. "SPIN" / "WPIN" instead?
+> The indentation looks too deep here.
+> 
+> > +static int huawei_wmi_micmute_led_set(bool on)
+> > +{
+> > +	acpi_handle handle;
+> > +	char *method;
+> > +	union acpi_object args[3];
+> > +	struct acpi_object_list arg_list = {
+> > +		.pointer = args,
+> > +		.count = ARRAY_SIZE(args),
+> > +	};
+> > +
+> > +	handle = ACPI_HANDLE(&inputdev->dev);
+> 
+> Just wondering whether the ACPI handle is assigned properly for this
+> device...
 
-The handle is a NULL handle at "\". Should I use acpi_get_handle(NULL,
-"\\_SB.PCI0.LPCB.EC0", &handle)?  EC0 is a acpi device HID:PNP0C09.
+It is, but it returns a handle at "\".
 
 > 
-> > > +             args[0].integer.value = 0;
-> > > +             args[2].integer.value = on ? 1 : 0;
-> > > +     } else if (acpi_has_method(handle, method =
-> > > "\\_SB.PCI0.LPCB.EC0.WPIN")) {
-> > > +             args[0].integer.value = 1;
-> > > +             args[2].integer.value = on ? 0 : 1;
-> > > +     } else {
-> > > +             dev_err(&inputdev->dev, "Unable to find ACPI
-> > > method\n");
-> > > +             return -ENOSYS;
-> > > +     }
-> > 
-> > Can these checks be done at initialization phase?  It doesn't seem
-> > needed to be executed at each call.
+> > +	args[0].type = args[1].type = args[2].type = ACPI_TYPE_INTEGER;
+> > +	args[1].integer.value = 0x04;
+> > +
+> > +	if (acpi_has_method(handle, method =
+> > "\\_SB.PCI0.LPCB.EC0.SPIN")) {
+> > +		args[0].integer.value = 0;
+> > +		args[2].integer.value = on ? 1 : 0;
+> > +	} else if (acpi_has_method(handle, method =
+> > "\\_SB.PCI0.LPCB.EC0.WPIN")) {
+> > +		args[0].integer.value = 1;
+> > +		args[2].integer.value = on ? 0 : 1;
+> > +	} else {
+> > +		dev_err(&inputdev->dev, "Unable to find ACPI
+> > method\n");
+> > +		return -ENOSYS;
+> > +	}
+> > +
+> > +	acpi_evaluate_object(handle, method, &arg_list, NULL);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int micmute_led_set(struct led_classdev *led_cdev,
+> > +		enum led_brightness brightness)
+> > +{
+> > +	int state = brightness != LED_OFF;
+> > +	int err;
+> > +
+> > +	err = huawei_wmi_micmute_led_set(state);
+> > +	return err < 0 ? err : 0;
 > 
-> Agree.
+> No need for checking err here, you can return
+> huawei_wmi_mute_led_set() directly.
+> 
+> Or even you can fold two functions into one.
+
+I think folding them make more sense.
+
+> 
+> > +static int __init huawei_wmi_init(void)
+> > +{
+> > +	int err;
+> > +
+> > +	if (wmi_has_guid(MBX_EVENT_GUID)) {
+> > +		event_guid = MBX_EVENT_GUID;
+> > +	} else if (wmi_has_guid(MBXP_EVENT_GUID)) {
+> > +		event_guid = MBXP_EVENT_GUID;
+> > +	} else {
+> > +		pr_warn("Compatible WMI GUID not found\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	err = huawei_wmi_input_init();
+> > +	if (err)
+> > +		goto err_input;
+> > +
+> > +	micmute_led_cdev.brightness =
+> > ledtrig_audio_get(LED_AUDIO_MICMUTE);
+> > +	err = led_classdev_register(&inputdev->dev, &micmute_led_cdev);
+> > +	if (err)
+> > +		goto err_leds;
+> > +
+> > +	return 0;
+> 
+> Might it be cleaner to implement on top of wmi_driver?
+> Then you can create both input and led devices on wmi device.
 > 
 
-Even if it was done in init phase, we still need to check what acpi
-method should be used and based on that and micmute status we set the
-arguments args[0] and args[2], args[1] is the pin value. We could check
-these using event_guid, but that would assume the methods exist for
-each guid.
-For example, if event_guid == MBX_EVENT_GUID, then method SPIN should
-be used.
+Done! Now led devices get registered when wmi probes a new device.
+Thanks.
+
+> 
+> thanks,
+> 
+> Takashi
