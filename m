@@ -1,27 +1,55 @@
-From: "Chanho Min" <chanho.min@lge.com>
-Subject: RE: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
-Date: Wed, 28 Nov 2018 15:26:34 +0900
-Message-ID: <00d001d486e3$4f2d1600$ed874200$@lge.com>
-References: <1543210597-6717-1-git-send-email-chanho.min@lge.com> <s5hin0k6xqy.wl-tiwai@suse.de>
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH v5 0/2] Introduce dmic mode switch delay
+	parameter
+Date: Wed, 28 Nov 2018 12:22:44 +0530
+Message-ID: <1543387966-2708-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: 
-Content-Language: ko
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@kernel.org>, 'Vinod Koul' <vkoul@kernel.org>, 'Daniel Mentz' <danielmentz@google.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Seungho Park' <seungho1.park@lge.com>, 'Jongsung Kim' <neidhard.kim@lge.com>, 'Wonmin Jung' <wonmin.jung@lge.com>, 'Jaehyun Kim' <jehn.kim@lge.com>, 'Hyonwoo Park' <hyonwoo.park@lge.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7A3B267AF1
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 07:52:55 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harshapriya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > Hrm, converting unconditionally with msleep() looks too drastic.
-> 
-> Yes, it looks drastic. But, IMHO, I can't say busy-spin is not
-non-drastic.
-Fix typo in this comment:
-I can't say busy-spin is not drastic.
+Some DMICs need clock to be running for a specified duration as per the
+DMIC spec to complete the mode transition like sleep to normal, off to normal
+etc. This  series add a mode-switch delay which will prevent the clock from
+being turned off without complying with manufacturer timing
+specifications. Also introduces a module parameter for the wakeup_delay parameter.
 
-Thanks
-Chanho
+v1: First patch set
+v2: 
+1). Removed ACPI device entry since a) The DMIC vendor doesn't have an ACPI vendor
+ID b) The ACPI enumeration creates one more device and conflicts with the existing
+skl.c dmic platform device registration.
+2). Updated commit message
+
+v3: Updated commit message and introduced module param for wakeup_delay
+
+v4: Addressed parameter name to align with existing parameter. Added dt entry
+in Documentation
+
+v5: Validate modeswitch_delay to ensure sensible value
+
+Jenny TC (2):
+  ASoC: dmic: introduce mode switch delay
+  ASoC: dmic: introduce module_param wakeup_delay
+
+ Documentation/devicetree/bindings/sound/dmic.txt |  2 ++
+ sound/soc/codecs/dmic.c                          | 40 ++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+
+-- 
+1.9.1
