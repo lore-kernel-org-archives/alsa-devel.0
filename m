@@ -1,7 +1,7 @@
 From: Kailang <kailang@realtek.com>
 Subject: Re: HDA headset button support
-Date: Thu, 29 Nov 2018 07:22:39 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FB60@RTITMBSV02.realtek.com.tw>
+Date: Thu, 29 Nov 2018 07:30:37 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FB6C@RTITMBSV02.realtek.com.tw>
 References: <6FAB7C47BCF00940BB0999A99BE3547A1841FAEF@RTITMBSV02.realtek.com.tw>
  <s5ho9a9uwkr.wl-tiwai@suse.de>
 Mime-Version: 1.0
@@ -9,9 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id D50B4267B21
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2018 08:22:46 +0100 (CET)
-In-Reply-To: <s5ho9a9uwkr.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 480B726770D
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2018 08:30:42 +0100 (CET)
 Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,6 +27,42 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi,
 
+Belowing was the unplug dump.
+[ 5184.677125] snd_hda_jack_unsol_event nid=0x21 res=0x8000020 tag=0x2
+[ 5184.696467] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
+[ 5184.696477] snd_hda_jack_report_sync nid=0x21 state=0x0 jack->pin_sense=0x0
+[ 5184.696481] snd_hda_jack_report_sync nid=0x19 state=0x2 jack->pin_sense=0x80000000
+[ 5184.696484] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
+[ 5184.696486] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
+[ 5184.696490] snd_hda_jack_unsol_event nid=0x19 res=0xc000000 tag=0x3
+[ 5184.716529] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
+[ 5184.716537] snd_hda_jack_report_sync nid=0x21 state=0x0 jack->pin_sense=0x0
+[ 5184.716545] snd_hda_jack_report_sync nid=0x19 state=0x0 jack->pin_sense=0x0
+[ 5184.716548] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
+[ 5184.716551] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
+
+>> [ 5184.696467] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
+If state of 0x55 keep value, plug and unplug jack will update 0x55 button sync.
+I test add the code to clear the jack->button_state = 0. The issue will be gone.
+
+But why 0x14 and 0x12 had pin sens?
+[ 5184.716548] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
+[ 5184.716551] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
+
+This modify also update for all pins. When I test press the HS button, the dump show as upper list.
+
+BR,
+Kailang
+
+-----Original Message-----
+From: Kailang 
+Sent: Thursday, November 29, 2018 3:03 PM
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+Subject: RE: HDA headset button support
+
+Hi Takashi,
+
 I test the patch.
 It will go to Max or Min volume when I press HS button up or down.
 
@@ -38,15 +73,14 @@ It will go to Max or Min volume when I press HS button up or down.
 			If (jack->nid == 0x55)
 				snd_jack_report(jack->jack, 0); ==> Add this will solve keep volume up and down.
 
-If the pin sense active, it will update Mic and Headphone state. (Upper code)
-But it still had chance to update 0x55 during unplug and plug state.
+If the pin sense active, it will update Mic and Headphone state. (Upper code) But it still had chance to update 0x55 during unplug and plug state.
 So, Maybe need to clear the Button state. I guess.
 
 BR,
 Kailang
 
 -----Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
+From: Takashi Iwai <tiwai@suse.de>
 Sent: Wednesday, November 28, 2018 10:05 PM
 To: Kailang <kailang@realtek.com>
 Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
