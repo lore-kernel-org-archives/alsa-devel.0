@@ -1,69 +1,82 @@
-From: Grant Grundler <grundler@chromium.org>
-Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable amp reset
-Date: Wed, 28 Nov 2018 17:55:48 -0800
-Message-ID: <CANEJEGse1DGQE6K=sn=bfJuQW=-gM6zps+kvKd8y=yzXjrsTZQ@mail.gmail.com>
-References: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
- <20181128094955.GG6828@sirena.org.uk> <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
+From: Jonathan Reeve <jon.reeve@gmail.com>
+Subject: Re: Subwoofers aren't working on ALC298 (Lenovo Yoga
+	C930 Laptop)
+Date: Wed, 28 Nov 2018 22:58:10 -0500
+Message-ID: <8736rkbkml.fsf@gmail.com>
+References: <871s77zw23.fsf@gmail.com>
+ <32e2283a-8a5e-25a6-de95-bfb568341269@64studio.com>
+ <871s75tdr9.fsf@gmail.com>
+ <CALbf9MznCgTE8rTm-6WLEeYAQE5iHbVAn9_SNfHEOuRTpYNNgA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: RyanS.Lee@maximintegrated.com
-Cc: broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.com, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, ryan.lee.maxim@gmail.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com
+ [209.85.222.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6EBF267B11
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2018 04:58:16 +0100 (CET)
+Received: by mail-qk1-f176.google.com with SMTP id y78so299774qka.12
+ for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2018 19:58:16 -0800 (PST)
+In-reply-to: <CALbf9MznCgTE8rTm-6WLEeYAQE5iHbVAn9_SNfHEOuRTpYNNgA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Ulricht <david.ulricht434@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 28, 2018 at 9:07 AM Ryan Lee <RyanS.Lee@maximintegrated.com> wrote:
->
-> >-----Original Message-----
-> >From: Mark Brown <broonie@kernel.org>
-> >Sent: Wednesday, November 28, 2018 1:50 AM
-> >To: Ryan Lee <RyanS.Lee@maximintegrated.com>
-> >Cc: Liam Girdwood <lgirdwood@gmail.com>; Jaroslav Kysela
-> ><perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Grant Grundler
-> ><grundler@chromium.org>; Kuninori Morimoto
-> ><kuninori.morimoto.gx@renesas.com>; Benson Leung
-> ><bleung@chromium.org>; alsa-devel@alsa-project.org; linux-
-> >kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
-> >Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable
-> >amp reset
-> >
-> >On Wed, Nov 28, 2018 at 03:20:16AM +0000, Ryan Lee wrote:
-> >> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
-> >> ---
-> >
-> >Not seeing a changelog here like I asked for :(
->
-> Actually I added changelog as below. Do you mean this is not sufficient?
 
-The text is probably sufficient but not in a format that Mark can
-directly apply.
-Please take a quick look at Documentation/process/submitting-patches.rst.
+Hi David,
 
-Mark wants the "commit message" to be before the '---' line. So move
-the "Changes:" text up to become the commit message and drop the
-"Changes" line. That should explain why this commit is needed and
-include the S-o-B line.
+Thanks very much for helping me look into this.
 
-cheers,
-grant
+> Have you tried any other distribution, something more normal 
+> like latest
+> Fedora or Ubuntu ? Does the subwoofers work there ?
 
->
-> Changes since v1 : Removed unusual repeat for amp software reset and verification.
->                    Amp software reset will be performed once and it repeats verification maximum 3 times if it is failed.
->                    Wait 10ms before every verification trial. Maximum 30ms delay will be applied to wait AMP idle state.
->
-> >
-> >> Changes : Created max98373_reset function to minimize code duplication.
-> >>           Changed regmap_write to regmap_update_bits. Other bits except LSB
-> >need to be masked.
-> >>           Added reset verification step to make sure software reset is completed
-> >well. Software reset is done in 10ms in normal case.
-> >>           Revision ID is available when the amp is in the idle state which means
-> >software reset is completed.
-> >>           Software reset will be performed maximum 3 times to avoid amp reset
-> >failure. Generally it is done in the first trial.
-> >>           sleep time after software reset is increased + 30ms for every retrial.
-> >Maximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
-> >
-> >This looks like it's supposed to be a changelog but it isn't one?
+I just tried an Ubuntu live USB disk. I can't get subwoofers to 
+work
+there, either. 
+
+> If you run Ubuntu/Fedora you can check the sound settings and 
+> pavucontrol
+> there is selection of speakers usually 2.1 5.1... try those ?
+
+I don't see any option for that in pavucontrol on Ubuntu.
+
+> And you have to make sure those [pincfgs] match with your 
+> Windows10
+> registry of the driver's PinConfigOverride.
+
+Awesome. How can I find these settings? I checked in regedit and 
+searched
+for `pinconfigoverride` and `pincfg`, but nothing's coming up. I 
+also
+grepped all the driver files for those expressions, but nothing's 
+coming
+up there, either. Do you know if these settings are called 
+something
+else?
+
+> You happen to have Windows running on that machine and can 
+> extract the
+> pinconfigoverride or have .ini of the driver? I can help you 
+> compare
+> those.
+
+Yep, I have the Windows 10 driver files, but there is no .ini 
+file, as far as
+I can tell. There are lots of text files that look like they could 
+be
+configuration files of some sort. Which one(s) should I be looking 
+for? 
+
+Best,
+
+Jonathan
