@@ -1,17 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: HDA headset button support
-Date: Thu, 29 Nov 2018 07:30:37 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FB6C@RTITMBSV02.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A1841FAEF@RTITMBSV02.realtek.com.tw>
- <s5ho9a9uwkr.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 2/6] platform/x86: dell-laptop: Add micmute
+	LED trigger support
+Date: Thu, 29 Nov 2018 08:31:27 +0100
+Message-ID: <20181129073131.4338-3-tiwai@suse.de>
+References: <20181129073131.4338-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 480B726770D
- for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2018 08:30:42 +0100 (CET)
-Content-Language: zh-TW
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7AD3267B21
+ for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2018 08:31:35 +0100 (CET)
+In-Reply-To: <20181129073131.4338-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,104 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Ayman Bagabas <ayman.bagabas@gmail.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-Belowing was the unplug dump.
-[ 5184.677125] snd_hda_jack_unsol_event nid=0x21 res=0x8000020 tag=0x2
-[ 5184.696467] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
-[ 5184.696477] snd_hda_jack_report_sync nid=0x21 state=0x0 jack->pin_sense=0x0
-[ 5184.696481] snd_hda_jack_report_sync nid=0x19 state=0x2 jack->pin_sense=0x80000000
-[ 5184.696484] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
-[ 5184.696486] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
-[ 5184.696490] snd_hda_jack_unsol_event nid=0x19 res=0xc000000 tag=0x3
-[ 5184.716529] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
-[ 5184.716537] snd_hda_jack_report_sync nid=0x21 state=0x0 jack->pin_sense=0x0
-[ 5184.716545] snd_hda_jack_report_sync nid=0x19 state=0x0 jack->pin_sense=0x0
-[ 5184.716548] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
-[ 5184.716551] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
-
->> [ 5184.696467] snd_hda_jack_report_sync nid=0x55 state=0x800 jack->pin_sense=0x0
-If state of 0x55 keep value, plug and unplug jack will update 0x55 button sync.
-I test add the code to clear the jack->button_state = 0. The issue will be gone.
-
-But why 0x14 and 0x12 had pin sens?
-[ 5184.716548] snd_hda_jack_report_sync nid=0x12 state=0x2 jack->pin_sense=0x80000000
-[ 5184.716551] snd_hda_jack_report_sync nid=0x14 state=0x4 jack->pin_sense=0x80000000
-
-This modify also update for all pins. When I test press the HS button, the dump show as upper list.
-
-BR,
-Kailang
-
------Original Message-----
-From: Kailang 
-Sent: Thursday, November 29, 2018 3:03 PM
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: RE: HDA headset button support
-
-Hi Takashi,
-
-I test the patch.
-It will go to Max or Min volume when I press HS button up or down.
-
-+			state = jack->button_state;
-+			if (get_jack_plug_state(jack->pin_sense))
-+				state |= jack->type;
-+			snd_jack_report(jack->jack, state);
-			If (jack->nid == 0x55)
-				snd_jack_report(jack->jack, 0); ==> Add this will solve keep volume up and down.
-
-If the pin sense active, it will update Mic and Headphone state. (Upper code) But it still had chance to update 0x55 during unplug and plug state.
-So, Maybe need to clear the Button state. I guess.
-
-BR,
-Kailang
-
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de>
-Sent: Wednesday, November 28, 2018 10:05 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: HDA headset button support
-
-On Wed, 28 Nov 2018 13:03:58 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> >I'd rather like to extend snd_hda_jack_add_kctl() with the key 
-> >support (maybe adding a new function).  You can pass there the 
-> >combination of SND_JACK_BTN_X with KEY_XXX in an array.
-> 
-> Do you mean create new function like below?
-> snd_hda_jack_add_key_kctl()
-> 
-> It couldn't use snd_hda_jack_add_kctl() directly.
-> Because it had report pin state and get type from NID.
-> 
-> 	type = get_input_jack_type(codec, nid);
->         .....
->         .....
->  	state = snd_hda_jack_detect(codec, nid);
-> 	snd_jack_report(jack->jack, state ? jack->type : 0);
-> 
-> So, to create a new function in hda_jack.c was better.
-
-Well, this seems more deeper than I thought.
-
-Below is my quick attempt to add the infrastructure.  This adds more flexibility but still easiness for other possible button implementations, hopefully.
-
-Could you check the series below?
-
-
-thanks,
-
-Takashi
-
-
-------Please consider the environment before printing this e-mail.
+VGhpcyBwYXRjaCBhZGRzIHRoZSBMRUQgdHJpZ2dlciBzdXBwb3J0IGZvciBhdWRpbyBtaWMtbXV0
+ZSBjb250cm9sLgpBcyBvZiB0aGlzIHBhdGNoLCB0aGUgTEVEIGRldmljZSBpc24ndCB0aWVkIHdp
+dGggdGhlIGF1ZGlvIGRyaXZlciwgYW5kCmNhbiBiZSBjaGFuZ2VkIHZpYSB1c2VyLXNwYWNlIGF0
+ICJwbGF0Zm9ybTo6bWljbXV0ZSIgc3lzZnMgZW50cnkuCihUaGlzIG5ldyBwcmVmaXggInBsYXRm
+b3JtIiBpcyB0aGUgYWdyZWVtZW50IGFtb25nIHBlb3BsZSBmb3IKaW5kaWNhdGluZyB0aGUgZ2Vu
+ZXJpYyBsYXB0b3AgLyBzeXN0ZW0td2lkZSBhdHRyaWJ1dGUuKQoKVGhlIGJpbmRpbmcgd2l0aCBI
+RC1hdWRpbyBpcyBzdGlsbCBkb25lIHZpYSB0aGUgZXhpc3RpbmcgZXhwb3J0ZWQKZGVsbF9taWNt
+dXRlX2xlZF9zZXQoKS4gIEl0IHdpbGwgYmUgcmVwbGFjZWQgd2l0aCB0aGUgTEVEIHRyaWdnZXIK
+YmluZGluZyBpbiBsYXRlciBwYXRjaGVzLgoKQWxzbyB0aGlzIHNlbGVjdHMgQ09ORklHX0xFRFNf
+VFJJR0dFUlMgYW5kIENPTkZJR19MRURTX1RSSUdHRVJTX0FVRElPCnVuY29uZGl0aW9uYWxseS4g
+IFN0cmljdGx5IHNwZWFraW5nLCB0aGVzZSBhcmVuJ3QgMTAwJSBtYW5kYXRvcnksIGJ1dApsZWF2
+aW5nIHRoZXNlIG1hbnVhbCBzZWxlY3Rpb25zIHdvdWxkIGxlYWQgdG8gYSBmdW5jdGlvbmFsIHJl
+Z3Jlc3Npb24KZWFzaWx5IG9uY2UgYWZ0ZXIgY29udmVydGluZyBmcm9tIHRoZSBkeW5hbWljIHN5
+bWJvbCBiaW5kaW5nIHRvIHRoZQpMRURzIHRyaWdnZXIgaW4gYSBsYXRlciBwYXRjaC4KCkFja2Vk
+LWJ5OiBKYWNlayBBbmFzemV3c2tpIDxqYWNlay5hbmFzemV3c2tpQGdtYWlsLmNvbT4KQWNrZWQt
+Ynk6IFBhdmVsIE1hY2hlayA8cGF2ZWxAdWN3LmN6PgpBY2tlZC1ieTogQW5keSBTaGV2Y2hlbmtv
+IDxhbmR5LnNoZXZjaGVua29AZ21haWwuY29tPgpBY2tlZC1ieTogUGFsaSBSb2jDoXIgPHBhbGku
+cm9oYXJAZ21haWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
+ZGU+Ci0tLQogZHJpdmVycy9wbGF0Zm9ybS94ODYvS2NvbmZpZyAgICAgICB8ICAyICsrCiBkcml2
+ZXJzL3BsYXRmb3JtL3g4Ni9kZWxsLWxhcHRvcC5jIHwgMjUgKysrKysrKysrKysrKysrKysrKysr
+KysrKwogMiBmaWxlcyBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9wbGF0Zm9ybS94ODYvS2NvbmZpZyBiL2RyaXZlcnMvcGxhdGZvcm0veDg2L0tjb25maWcK
+aW5kZXggNTRmNmE0MGM3NWM2Li45YjljYzNjYzMzZTkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvcGxh
+dGZvcm0veDg2L0tjb25maWcKKysrIGIvZHJpdmVycy9wbGF0Zm9ybS94ODYvS2NvbmZpZwpAQCAt
+MTc3LDYgKzE3Nyw4IEBAIGNvbmZpZyBERUxMX0xBUFRPUAogCXNlbGVjdCBQT1dFUl9TVVBQTFkK
+IAlzZWxlY3QgTEVEU19DTEFTUwogCXNlbGVjdCBORVdfTEVEUworCXNlbGVjdCBMRURTX1RSSUdH
+RVJTCisJc2VsZWN0IExFRFNfVFJJR0dFUl9BVURJTwogCS0tLWhlbHAtLS0KIAlUaGlzIGRyaXZl
+ciBhZGRzIHN1cHBvcnQgZm9yIHJma2lsbCBhbmQgYmFja2xpZ2h0IGNvbnRyb2wgdG8gRGVsbAog
+CWxhcHRvcHMgKGV4Y2VwdCBmb3Igc29tZSBtb2RlbHMgY292ZXJlZCBieSB0aGUgQ29tcGFsIGRy
+aXZlcikuCmRpZmYgLS1naXQgYS9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9kZWxsLWxhcHRvcC5jIGIv
+ZHJpdmVycy9wbGF0Zm9ybS94ODYvZGVsbC1sYXB0b3AuYwppbmRleCAwNjk3OGMxNGM4M2IuLjBk
+YjJkYmY3YjBkMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvZGVsbC1sYXB0b3Au
+YworKysgYi9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9kZWxsLWxhcHRvcC5jCkBAIC0yMTMxLDYgKzIx
+MzEsMjMgQEAgaW50IGRlbGxfbWljbXV0ZV9sZWRfc2V0KGludCBzdGF0ZSkKIH0KIEVYUE9SVF9T
+WU1CT0xfR1BMKGRlbGxfbWljbXV0ZV9sZWRfc2V0KTsKIAorc3RhdGljIGludCBtaWNtdXRlX2xl
+ZF9zZXQoc3RydWN0IGxlZF9jbGFzc2RldiAqbGVkX2NkZXYsCisJCQkgICBlbnVtIGxlZF9icmln
+aHRuZXNzIGJyaWdodG5lc3MpCit7CisJaW50IHN0YXRlID0gYnJpZ2h0bmVzcyAhPSBMRURfT0ZG
+OworCWludCBlcnI7CisKKwllcnIgPSBkZWxsX21pY211dGVfbGVkX3NldChzdGF0ZSk7CisJcmV0
+dXJuIGVyciA8IDAgPyBlcnIgOiAwOworfQorCitzdGF0aWMgc3RydWN0IGxlZF9jbGFzc2RldiBt
+aWNtdXRlX2xlZF9jZGV2ID0geworCS5uYW1lID0gInBsYXRmb3JtOjptaWNtdXRlIiwKKwkubWF4
+X2JyaWdodG5lc3MgPSAxLAorCS5icmlnaHRuZXNzX3NldF9ibG9ja2luZyA9IG1pY211dGVfbGVk
+X3NldCwKKwkuZGVmYXVsdF90cmlnZ2VyID0gImF1ZGlvLW1pY211dGUiLAorfTsKKwogc3RhdGlj
+IGludCBfX2luaXQgZGVsbF9pbml0KHZvaWQpCiB7CiAJc3RydWN0IGNhbGxpbmdfaW50ZXJmYWNl
+X3Rva2VuICp0b2tlbjsKQEAgLTIxNzUsNiArMjE5MiwxMSBAQCBzdGF0aWMgaW50IF9faW5pdCBk
+ZWxsX2luaXQodm9pZCkKIAogCWRlbGxfbGFwdG9wX3JlZ2lzdGVyX25vdGlmaWVyKCZkZWxsX2xh
+cHRvcF9ub3RpZmllcik7CiAKKwltaWNtdXRlX2xlZF9jZGV2LmJyaWdodG5lc3MgPSBsZWR0cmln
+X2F1ZGlvX2dldChMRURfQVVESU9fTUlDTVVURSk7CisJcmV0ID0gbGVkX2NsYXNzZGV2X3JlZ2lz
+dGVyKCZwbGF0Zm9ybV9kZXZpY2UtPmRldiwgJm1pY211dGVfbGVkX2NkZXYpOworCWlmIChyZXQg
+PCAwKQorCQlnb3RvIGZhaWxfbGVkOworCiAJaWYgKGFjcGlfdmlkZW9fZ2V0X2JhY2tsaWdodF90
+eXBlKCkgIT0gYWNwaV9iYWNrbGlnaHRfdmVuZG9yKQogCQlyZXR1cm4gMDsKIApAQCAtMjIyMCw2
+ICsyMjQyLDggQEAgc3RhdGljIGludCBfX2luaXQgZGVsbF9pbml0KHZvaWQpCiBmYWlsX2dldF9i
+cmlnaHRuZXNzOgogCWJhY2tsaWdodF9kZXZpY2VfdW5yZWdpc3RlcihkZWxsX2JhY2tsaWdodF9k
+ZXZpY2UpOwogZmFpbF9iYWNrbGlnaHQ6CisJbGVkX2NsYXNzZGV2X3VucmVnaXN0ZXIoJm1pY211
+dGVfbGVkX2NkZXYpOworZmFpbF9sZWQ6CiAJZGVsbF9jbGVhbnVwX3Jma2lsbCgpOwogZmFpbF9y
+ZmtpbGw6CiAJcGxhdGZvcm1fZGV2aWNlX2RlbChwbGF0Zm9ybV9kZXZpY2UpOwpAQCAtMjIzOSw2
+ICsyMjYzLDcgQEAgc3RhdGljIHZvaWQgX19leGl0IGRlbGxfZXhpdCh2b2lkKQogCQl0b3VjaHBh
+ZF9sZWRfZXhpdCgpOwogCWtiZF9sZWRfZXhpdCgpOwogCWJhY2tsaWdodF9kZXZpY2VfdW5yZWdp
+c3RlcihkZWxsX2JhY2tsaWdodF9kZXZpY2UpOworCWxlZF9jbGFzc2Rldl91bnJlZ2lzdGVyKCZt
+aWNtdXRlX2xlZF9jZGV2KTsKIAlkZWxsX2NsZWFudXBfcmZraWxsKCk7CiAJaWYgKHBsYXRmb3Jt
+X2RldmljZSkgewogCQlwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3RlcihwbGF0Zm9ybV9kZXZpY2Up
+OwotLSAKMi4xOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
