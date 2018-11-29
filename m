@@ -1,91 +1,69 @@
-From: "Chanho Min" <chanho.min@lge.com>
-Subject: RE: [PATCH] ALSA: pcm: Fix starvation on down_write_nonblock()
-Date: Thu, 29 Nov 2018 08:48:20 +0900
-Message-ID: <046401d48774$d7d1e440$8775acc0$@lge.com>
-References: <1543210597-6717-1-git-send-email-chanho.min@lge.com>       <s5hin0k6xqy.wl-tiwai@suse.de>  <1aaf01d486ab$8017a5b0$8046f110$@lge.com> <s5hwoox61ic.wl-tiwai@suse.de>
+From: Grant Grundler <grundler@chromium.org>
+Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable amp reset
+Date: Wed, 28 Nov 2018 17:55:48 -0800
+Message-ID: <CANEJEGse1DGQE6K=sn=bfJuQW=-gM6zps+kvKd8y=yzXjrsTZQ@mail.gmail.com>
+References: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
+ <20181128094955.GG6828@sirena.org.uk> <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hwoox61ic.wl-tiwai@suse.de>
-Content-Language: ko
+In-Reply-To: <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'Jaroslav Kysela' <perex@perex.cz>, 'Takashi Iwai' <tiwai@kernel.org>, 'Vinod Koul' <vkoul@kernel.org>, 'Daniel Mentz' <danielmentz@google.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Seungho Park' <seungho1.park@lge.com>, 'Jongsung Kim' <neidhard.kim@lge.com>, 'Wonmin Jung' <wonmin.jung@lge.com>, 'Jaehyun Kim' <jehn.kim@lge.com>, 'Hyonwoo Park' <hyonwoo.park@lge.com>
+To: RyanS.Lee@maximintegrated.com
+Cc: broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, tiwai@suse.com, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-> > > On Mon, 26 Nov 2018 06:36:37 +0100,
-> > > Chanho Min wrote:
-> > > >
-> > > > Commit 67ec1072b053 ("ALSA: pcm: Fix rwsem deadlock for non-atomic
-> > > > PCM
-> > > > stream") fixes deadlock for non-atomic PCM stream. But, This patch
-> > > causes antother stuck.
-> > > > If writer is RT thread and reader is a normal thread, the reader
-> > > > thread will be difficult to get scheduled. It may not give chance
-> > > > to release readlocks and writer gets stuck for a long time if they
-> > > > are
-> > > pinned to single cpu.
-> > > >
-> > > > The deadlock described in the previous commit is because the linux
-> > > > rwsem queues like a FIFO. So, we might need non-FIFO writelock,
-> > > > not non-
-> > > block one.
-> > > >
-> > > > My suggestion is that the writer gives reader a chance to be
-> > > > scheduled by using the minimum msleep() instaed of spinning
-> > > > without blocking by writer. Also, The *_nonblock may be changed to
-> > > > *_nonfifo appropriately
-> > > to this concept.
-> > > > In terms of performance, when trylock is failed, this minimum
-> > > > periodic msleep will have the same performance as the tick-based
-> > > schedule()/wake_up_q().
-> > > >
-> > > > Suggested-by: Wonmin Jung <wonmin.jung@lge.com>
-> > > > Signed-off-by: Chanho Min <chanho.min@lge.com>
-> > >
-> > > Hrm, converting unconditionally with msleep() looks too drastic.
+On Wed, Nov 28, 2018 at 9:07 AM Ryan Lee <RyanS.Lee@maximintegrated.com> wrote:
+>
+> >-----Original Message-----
+> >From: Mark Brown <broonie@kernel.org>
+> >Sent: Wednesday, November 28, 2018 1:50 AM
+> >To: Ryan Lee <RyanS.Lee@maximintegrated.com>
+> >Cc: Liam Girdwood <lgirdwood@gmail.com>; Jaroslav Kysela
+> ><perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Grant Grundler
+> ><grundler@chromium.org>; Kuninori Morimoto
+> ><kuninori.morimoto.gx@renesas.com>; Benson Leung
+> ><bleung@chromium.org>; alsa-devel@alsa-project.org; linux-
+> >kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
+> >Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable
+> >amp reset
 > >
-> > Yes, it looks drastic. But, IMHO, I can't say busy-spin is not non-
-> drastic.
-> > To fix the root cause, We may need another rwsem that does not work as
-> > a FIFO.
-> 
-> Right, but applying msleep(1) unconditionally is really bad.
-> 
-> > > I guess you've hit this while not explicitly using the linked PCM
-> > > streams, i.e. in the call of snd_pcm_unlink() at close, right?
-> > >
-> > > Then this can be worked around by checking the link before calling it.
-> > > Could you check the patch below?
+> >On Wed, Nov 28, 2018 at 03:20:16AM +0000, Ryan Lee wrote:
+> >> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+> >> ---
 > >
-> > More testing is needed, but it seems to be fixed by your patch.
-> > We may not use the linked PCM.
-> 
-> Then I'm sure that my patch papers over.
-Thanks, Plz let me know when the patch is merged.
+> >Not seeing a changelog here like I asked for :(
+>
+> Actually I added changelog as below. Do you mean this is not sufficient?
 
-> 
-> > But, If the linked PCM is enabled,  Can snd_pcm_unlink() be called?
-> > This also seems to be a workaround.
-> 
-> Yes, for the linked streams, something else is needed *in addition*.
-> 
-> The original fix with busy loop also assumed that this code path (via
-> snd_pcm_link() and snd_pcm_unlink()) is the rare occasion, and it didn't
-> consider that it were called for regular use cases.  So the fix to make
-> things just works for regular use cases without any artifact must be
-> implemented in the first place.  The fix for the linked streams comes at
-> next.  It might be like your msleep() change as a workaround, but in
-> anyway it's far less urgency.
+The text is probably sufficient but not in a format that Mark can
+directly apply.
+Please take a quick look at Documentation/process/submitting-patches.rst.
 
-msleep is worst, but If it is harmless, can I apply my patch to the private
-tree
-temporarily until your next fix comes?
-We may use the linked streams in the near future. It makes our product
-unstable.
-It's urgency for us. How is your opinion?
+Mark wants the "commit message" to be before the '---' line. So move
+the "Changes:" text up to become the commit message and drop the
+"Changes" line. That should explain why this commit is needed and
+include the S-o-B line.
 
-Thanks
-Chanho
+cheers,
+grant
+
+>
+> Changes since v1 : Removed unusual repeat for amp software reset and verification.
+>                    Amp software reset will be performed once and it repeats verification maximum 3 times if it is failed.
+>                    Wait 10ms before every verification trial. Maximum 30ms delay will be applied to wait AMP idle state.
+>
+> >
+> >> Changes : Created max98373_reset function to minimize code duplication.
+> >>           Changed regmap_write to regmap_update_bits. Other bits except LSB
+> >need to be masked.
+> >>           Added reset verification step to make sure software reset is completed
+> >well. Software reset is done in 10ms in normal case.
+> >>           Revision ID is available when the amp is in the idle state which means
+> >software reset is completed.
+> >>           Software reset will be performed maximum 3 times to avoid amp reset
+> >failure. Generally it is done in the first trial.
+> >>           sleep time after software reset is increased + 30ms for every retrial.
+> >Maximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
+> >
+> >This looks like it's supposed to be a changelog but it isn't one?
