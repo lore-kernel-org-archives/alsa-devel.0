@@ -1,375 +1,723 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [Xen-devel][PATCH v2 1/3] xen: Introduce shared buffer helpers for
- page directory...
-Date: Fri, 30 Nov 2018 09:42:03 +0200
-Message-ID: <20181130074205.20496-1-andr2000@gmail.com>
+Subject: [Xen-devel][PATCH v2 2/3] drm/xen-front: Use Xen common shared buffer implementation
+Date: Fri, 30 Nov 2018 09:42:04 +0200
+Message-ID: <20181130074205.20496-2-andr2000@gmail.com>
+References: <20181130074205.20496-1-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181130074205.20496-1-andr2000@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com
 Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVw
-YW0uY29tPgoKYmFzZWQgZnJvbnRlbmRzLiBDdXJyZW50bHkgdGhlIGZyb250ZW5kcyB3aGljaCBp
-bXBsZW1lbnQKc2ltaWxhciBjb2RlIGZvciBzaGFyaW5nIGJpZyBidWZmZXJzIGJldHdlZW4gZnJv
-bnRlbmQgYW5kCmJhY2tlbmQgYXJlIHBhcmEtdmlydHVhbGl6ZWQgRFJNIGFuZCBzb3VuZCBkcml2
-ZXJzLgpCb3RoIGRlZmluZSB0aGUgc2FtZSB3YXkgdG8gc2hhcmUgZ3JhbnQgcmVmZXJlbmNlcyBv
-ZiBhCmRhdGEgYnVmZmVyIHdpdGggdGhlIGNvcnJlc3BvbmRpbmcgYmFja2VuZCB3aXRoIGxpdHRs
-ZQpkaWZmZXJlbmNlcy4KCk1vdmUgc2hhcmVkIGNvZGUgaW50byBhIGhlbHBlciBtb2R1bGUsIHNv
-IHRoZXJlIGlzIGEgc2luZ2xlCmltcGxlbWVudGF0aW9uIG9mIHRoZSBzYW1lIGZ1bmN0aW9uYWxp
-dHkgZm9yIGFsbC4KClRoaXMgcGF0Y2ggaW50cm9kdWNlcyBjb2RlIHdoaWNoIGlzIHVzZWQgYnkg
-c291bmQgYW5kIGRpc3BsYXkKZnJvbnRlbmQgZHJpdmVycyB3aXRob3V0IGZ1bmN0aW9uYWwgY2hh
-bmdlcyB3aXRoIHRoZSBpbnRlbnRpb24KdG8gcmVtb3ZlIHNoYXJlZCBjb2RlIGZyb20gdGhlIGNv
-cnJlc3BvbmRpbmcgZHJpdmVycy4KClNpZ25lZC1vZmYtYnk6IE9sZWtzYW5kciBBbmRydXNoY2hl
-bmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4KLS0tCiBkcml2ZXJzL3hlbi9L
-Y29uZmlnICAgICAgICAgICAgICAgICB8ICAgMyArCiBkcml2ZXJzL3hlbi9NYWtlZmlsZSAgICAg
-ICAgICAgICAgICB8ICAgMSArCiBkcml2ZXJzL3hlbi94ZW4tZnJvbnQtcGdkaXItc2hidWYuYyB8
-IDU1MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrCiBpbmNsdWRlL3hlbi94ZW4tZnJvbnQt
-cGdkaXItc2hidWYuaCB8ICA4OSArKysrKwogNCBmaWxlcyBjaGFuZ2VkLCA2NDYgaW5zZXJ0aW9u
-cygrKQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMveGVuL3hlbi1mcm9udC1wZ2Rpci1zaGJ1
-Zi5jCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS94ZW4veGVuLWZyb250LXBnZGlyLXNoYnVm
-LmgKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3hlbi9LY29uZmlnIGIvZHJpdmVycy94ZW4vS2NvbmZp
-ZwppbmRleCA4MTViOWU5YmI5NzUuLjgzOGI2NmE5YTBlNyAxMDA2NDQKLS0tIGEvZHJpdmVycy94
-ZW4vS2NvbmZpZworKysgYi9kcml2ZXJzL3hlbi9LY29uZmlnCkBAIC0zNDAsNCArMzQwLDcgQEAg
-Y29uZmlnIFhFTl9TWU1TCiBjb25maWcgWEVOX0hBVkVfVlBNVQogICAgICAgIGJvb2wKIAorY29u
-ZmlnIFhFTl9GUk9OVF9QR0RJUl9TSEJVRgorCXRyaXN0YXRlCisKIGVuZG1lbnUKZGlmZiAtLWdp
-dCBhL2RyaXZlcnMveGVuL01ha2VmaWxlIGIvZHJpdmVycy94ZW4vTWFrZWZpbGUKaW5kZXggM2U1
-NDJmNjBmMjlmLi5jNDg5MjdhNThlMTAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMveGVuL01ha2VmaWxl
-CisrKyBiL2RyaXZlcnMveGVuL01ha2VmaWxlCkBAIC00NCwzICs0NCw0IEBAIHhlbi1nbnRkZXYt
-eQkJCQk6PSBnbnRkZXYubwogeGVuLWdudGRldi0kKENPTkZJR19YRU5fR05UREVWX0RNQUJVRikJ
-Kz0gZ250ZGV2LWRtYWJ1Zi5vCiB4ZW4tZ250YWxsb2MteQkJCQk6PSBnbnRhbGxvYy5vCiB4ZW4t
-cHJpdmNtZC15CQkJCTo9IHByaXZjbWQubyBwcml2Y21kLWJ1Zi5vCitvYmotJChDT05GSUdfWEVO
-X0ZST05UX1BHRElSX1NIQlVGKQkrPSB4ZW4tZnJvbnQtcGdkaXItc2hidWYubwpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy94ZW4veGVuLWZyb250LXBnZGlyLXNoYnVmLmMgYi9kcml2ZXJzL3hlbi94ZW4t
-ZnJvbnQtcGdkaXItc2hidWYuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAw
-MDAuLjQ4YTY1OGRjN2NjZgotLS0gL2Rldi9udWxsCisrKyBiL2RyaXZlcnMveGVuL3hlbi1mcm9u
-dC1wZ2Rpci1zaGJ1Zi5jCkBAIC0wLDAgKzEsNTUzIEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRp
-ZmllcjogR1BMLTIuMCBPUiBNSVQKKworLyoKKyAqIFhlbiBmcm9udGVuZC9iYWNrZW5kIHBhZ2Ug
-ZGlyZWN0b3J5IGJhc2VkIHNoYXJlZCBidWZmZXIKKyAqIGhlbHBlciBtb2R1bGUuCisgKgorICog
-Q29weXJpZ2h0IChDKSAyMDE4IEVQQU0gU3lzdGVtcyBJbmMuCisgKgorICogQXV0aG9yOiBPbGVr
-c2FuZHIgQW5kcnVzaGNoZW5rbyA8b2xla3NhbmRyX2FuZHJ1c2hjaGVua29AZXBhbS5jb20+Cisg
-Ki8KKworI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgorI2luY2x1ZGUgPGxpbnV4L2Vycm5vLmg+
-CisjaW5jbHVkZSA8bGludXgvbW0uaD4KKworI2luY2x1ZGUgPGFzbS94ZW4vaHlwZXJ2aXNvci5o
-PgorI2luY2x1ZGUgPHhlbi9iYWxsb29uLmg+CisjaW5jbHVkZSA8eGVuL3hlbi5oPgorI2luY2x1
-ZGUgPHhlbi94ZW5idXMuaD4KKyNpbmNsdWRlIDx4ZW4vaW50ZXJmYWNlL2lvL3JpbmcuaD4KKwor
-I2luY2x1ZGUgPHhlbi94ZW4tZnJvbnQtcGdkaXItc2hidWYuaD4KKworI2lmbmRlZiBHUkFOVF9J
-TlZBTElEX1JFRgorLyoKKyAqIEZJWE1FOiB1c2FnZSBvZiBncmFudCByZWZlcmVuY2UgMCBhcyBp
-bnZhbGlkIGdyYW50IHJlZmVyZW5jZToKKyAqIGdyYW50IHJlZmVyZW5jZSAwIGlzIHZhbGlkLCBi
-dXQgbmV2ZXIgZXhwb3NlZCB0byBhIFBWIGRyaXZlciwKKyAqIGJlY2F1c2Ugb2YgdGhlIGZhY3Qg
-aXQgaXMgYWxyZWFkeSBpbiB1c2UvcmVzZXJ2ZWQgYnkgdGhlIFBWIGNvbnNvbGUuCisgKi8KKyNk
-ZWZpbmUgR1JBTlRfSU5WQUxJRF9SRUYJMAorI2VuZGlmCisKKy8qKgorICogVGhpcyBzdHJ1Y3R1
-cmUgcmVwcmVzZW50cyB0aGUgc3RydWN0dXJlIG9mIGEgc2hhcmVkIHBhZ2UKKyAqIHRoYXQgY29u
-dGFpbnMgZ3JhbnQgcmVmZXJlbmNlcyB0byB0aGUgcGFnZXMgb2YgdGhlIHNoYXJlZAorICogYnVm
-ZmVyLiBUaGlzIHN0cnVjdHVyZSBpcyBjb21tb24gdG8gbWFueSBYZW4gcGFyYS12aXJ0dWFsaXpl
-ZAorICogcHJvdG9jb2xzIGF0IGluY2x1ZGUveGVuL2ludGVyZmFjZS9pby8KKyAqLworc3RydWN0
-IHhlbl9wYWdlX2RpcmVjdG9yeSB7CisJZ3JhbnRfcmVmX3QgZ3JlZl9kaXJfbmV4dF9wYWdlOwor
-CWdyYW50X3JlZl90IGdyZWZbMV07IC8qIFZhcmlhYmxlIGxlbmd0aCAqLworfTsKKworLyoqCisg
-KiBTaGFyZWQgYnVmZmVyIG9wcyB3aGljaCBhcmUgZGlmZmVyZW50bHkgaW1wbGVtZW50ZWQKKyAq
-IGRlcGVuZGluZyBvbiB0aGUgYWxsb2NhdGlvbiBtb2RlLCBlLmcuIGlmIHRoZSBidWZmZXIKKyAq
-IGlzIGFsbG9jYXRlZCBieSB0aGUgY29ycmVzcG9uZGluZyBiYWNrZW5kIG9yIGZyb250ZW5kLgor
-ICogU29tZSBvZiB0aGUgb3BlcmF0aW9ucy4KKyAqLworc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9z
-aGJ1Zl9vcHMgeworCS8qCisJICogQ2FsY3VsYXRlIG51bWJlciBvZiBncmVmcyByZXF1aXJlZCB0
-byBoYW5kbGUgdGhpcyBidWZmZXIsCisJICogZS5nLiBpZiBncmVmcyBhcmUgcmVxdWlyZWQgZm9y
-IHBhZ2UgZGlyZWN0b3J5IG9ubHkgb3IgdGhlIGJ1ZmZlcgorCSAqIHBhZ2VzIGFzIHdlbGwuCisJ
-ICovCisJdm9pZCAoKmNhbGNfbnVtX2dyZWZzKShzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVm
-ICpidWYpOworCisJLyogRmlsbCBwYWdlIGRpcmVjdG9yeSBhY2NvcmRpbmcgdG8gcGFyYS12aXJ0
-dWFsIGRpc3BsYXkgcHJvdG9jb2wuICovCisJdm9pZCAoKmZpbGxfcGFnZV9kaXIpKHN0cnVjdCB4
-ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7CisKKwkvKiBDbGFpbSBncmFudCByZWZlcmVuY2Vz
-IGZvciB0aGUgcGFnZXMgb2YgdGhlIGJ1ZmZlci4gKi8KKwlpbnQgKCpncmFudF9yZWZzX2Zvcl9i
-dWZmZXIpKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZiwKKwkJCQkgICAgIGdyYW50
-X3JlZl90ICpwcml2X2dyZWZfaGVhZCwgaW50IGdyZWZfaWR4KTsKKworCS8qIE1hcCBncmFudCBy
-ZWZlcmVuY2VzIG9mIHRoZSBidWZmZXIuICovCisJaW50ICgqbWFwKShzdHJ1Y3QgeGVuX2Zyb250
-X3BnZGlyX3NoYnVmICpidWYpOworCisJLyogVW5tYXAgZ3JhbnQgcmVmZXJlbmNlcyBvZiB0aGUg
-YnVmZmVyLiAqLworCWludCAoKnVubWFwKShzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpi
-dWYpOworfTsKKworLyoqCisgKiBHZXQgZ3JhbnRlZCByZWZlcmVuY2UgdG8gdGhlIHZlcnkgZmly
-c3QgcGFnZSBvZiB0aGUKKyAqIHBhZ2UgZGlyZWN0b3J5LiBVc3VhbGx5IHRoaXMgaXMgcGFzc2Vk
-IHRvIHRoZSBiYWNrZW5kLAorICogc28gaXQgY2FuIGZpbmQvZmlsbCB0aGUgZ3JhbnQgcmVmZXJl
-bmNlcyB0byB0aGUgYnVmZmVyJ3MKKyAqIHBhZ2VzLgorICoKKyAqIFxwYXJhbSBidWYgc2hhcmVk
-IGJ1ZmZlciB3aGljaCBwYWdlIGRpcmVjdG9yeSBpcyBvZiBpbnRlcmVzdC4KKyAqIFxyZXR1cm4g
-Z3JhbnRlZCByZWZlcmVuY2UgdG8gdGhlIHZlcnkgZmlyc3QgcGFnZSBvZiB0aGUKKyAqIHBhZ2Ug
-ZGlyZWN0b3J5LgorICovCitncmFudF9yZWZfdAoreGVuX2Zyb250X3BnZGlyX3NoYnVmX2dldF9k
-aXJfc3RhcnQoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKQoreworCWlmICghYnVm
-LT5ncmVmcykKKwkJcmV0dXJuIEdSQU5UX0lOVkFMSURfUkVGOworCisJcmV0dXJuIGJ1Zi0+Z3Jl
-ZnNbMF07Cit9CitFWFBPUlRfU1lNQk9MX0dQTCh4ZW5fZnJvbnRfcGdkaXJfc2hidWZfZ2V0X2Rp
-cl9zdGFydCk7CisKKy8qKgorICogTWFwIGdyYW50ZWQgcmVmZXJlbmNlcyBvZiB0aGUgc2hhcmVk
-IGJ1ZmZlci4KKyAqCisgKiBEZXBlbmRpbmcgb24gdGhlIHNoYXJlZCBidWZmZXIgbW9kZSBvZiBh
-bGxvY2F0aW9uCisgKiAoYmVfYWxsb2MgZmxhZykgdGhpcyBjYW4gZWl0aGVyIGRvIG5vdGhpbmcg
-KGZvciBidWZmZXJzCisgKiBzaGFyZWQgYnkgdGhlIGZyb250ZW5kIGl0c2VsZikgb3IgbWFwIHRo
-ZSBwcm92aWRlZCBncmFudGVkCisgKiByZWZlcmVuY2VzIG9udG8gdGhlIGJhY2tpbmcgc3RvcmFn
-ZSAoYnVmLT5wYWdlcykuCisgKgorICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyIHdoaWNoIGdy
-YW50cyB0byBiZSBtYXBlZC4KKyAqIFxyZXR1cm4gemVybyBvbiBzdWNjZXNzIG9yIGEgbmVnYXRp
-dmUgbnVtYmVyIG9uIGZhaWx1cmUuCisgKi8KK2ludCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfbWFw
-KHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwlpZiAoYnVmLT5vcHMgJiYg
-YnVmLT5vcHMtPm1hcCkKKwkJcmV0dXJuIGJ1Zi0+b3BzLT5tYXAoYnVmKTsKKworCS8qIE5vIG5l
-ZWQgdG8gbWFwIG93biBncmFudCByZWZlcmVuY2VzLiAqLworCXJldHVybiAwOworfQorRVhQT1JU
-X1NZTUJPTF9HUEwoeGVuX2Zyb250X3BnZGlyX3NoYnVmX21hcCk7CisKKy8qKgorICogVW5tYXAg
-Z3JhbnRlZCByZWZlcmVuY2VzIG9mIHRoZSBzaGFyZWQgYnVmZmVyLgorICoKKyAqIERlcGVuZGlu
-ZyBvbiB0aGUgc2hhcmVkIGJ1ZmZlciBtb2RlIG9mIGFsbG9jYXRpb24KKyAqIChiZV9hbGxvYyBm
-bGFnKSB0aGlzIGNhbiBlaXRoZXIgZG8gbm90aGluZyAoZm9yIGJ1ZmZlcnMKKyAqIHNoYXJlZCBi
-eSB0aGUgZnJvbnRlbmQgaXRzZWxmKSBvciB1bm1hcCB0aGUgcHJvdmlkZWQgZ3JhbnRlZAorICog
-cmVmZXJlbmNlcy4KKyAqCisgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIgd2hpY2ggZ3JhbnRz
-IHRvIGJlIHVubWFwZWQuCisgKiBccmV0dXJuIHplcm8gb24gc3VjY2VzcyBvciBhIG5lZ2F0aXZl
-IG51bWJlciBvbiBmYWlsdXJlLgorICovCitpbnQgeGVuX2Zyb250X3BnZGlyX3NoYnVmX3VubWFw
-KHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwlpZiAoYnVmLT5vcHMgJiYg
-YnVmLT5vcHMtPnVubWFwKQorCQlyZXR1cm4gYnVmLT5vcHMtPnVubWFwKGJ1Zik7CisKKwkvKiBO
-byBuZWVkIHRvIHVubWFwIG93biBncmFudCByZWZlcmVuY2VzLiAqLworCXJldHVybiAwOworfQor
-RVhQT1JUX1NZTUJPTF9HUEwoeGVuX2Zyb250X3BnZGlyX3NoYnVmX3VubWFwKTsKKworLyoqCisg
-KiBGcmVlIGFsbCB0aGUgcmVzb3VyY2VzIG9mIHRoZSBzaGFyZWQgYnVmZmVyLgorICoKKyAqIFxw
-YXJhbSBidWYgc2hhcmVkIGJ1ZmZlciB3aGljaCByZXNvdXJjZXMgdG8gYmUgZnJlZWQuCisgKi8K
-K3ZvaWQgeGVuX2Zyb250X3BnZGlyX3NoYnVmX2ZyZWUoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9z
-aGJ1ZiAqYnVmKQoreworCWlmIChidWYtPmdyZWZzKSB7CisJCWludCBpOworCisJCWZvciAoaSA9
-IDA7IGkgPCBidWYtPm51bV9ncmVmczsgaSsrKQorCQkJaWYgKGJ1Zi0+Z3JlZnNbaV0gIT0gR1JB
-TlRfSU5WQUxJRF9SRUYpCisJCQkJZ250dGFiX2VuZF9mb3JlaWduX2FjY2VzcyhidWYtPmdyZWZz
-W2ldLAorCQkJCQkJCSAgMCwgMFVMKTsKKwl9CisJa2ZyZWUoYnVmLT5ncmVmcyk7CisJa2ZyZWUo
-YnVmLT5kaXJlY3RvcnkpOworfQorRVhQT1JUX1NZTUJPTF9HUEwoeGVuX2Zyb250X3BnZGlyX3No
-YnVmX2ZyZWUpOworCisvKgorICogTnVtYmVyIG9mIGdyZWZzIGEgcGFnZSBjYW4gaG9sZCB3aXRo
-IHJlc3BlY3QgdG8gdGhlCisgKiBzdHJ1Y3QgeGVuX3BhZ2VfZGlyZWN0b3J5IGhlYWRlci4KKyAq
-LworI2RlZmluZSBYRU5fTlVNX0dSRUZTX1BFUl9QQUdFICgoUEFHRV9TSVpFIC0gXAorCQkJCSBv
-ZmZzZXRvZihzdHJ1Y3QgeGVuX3BhZ2VfZGlyZWN0b3J5LCBcCisJCQkJCSAgZ3JlZikpIC8gc2l6
-ZW9mKGdyYW50X3JlZl90KSkKKworLyoqCisgKiBHZXQgdGhlIG51bWJlciBvZiBwYWdlcyB0aGUg
-cGFnZSBkaXJlY3RvcnkgY29uc3VtZXMgaXRzZWxmLgorICoKKyAqIFxwYXJhbSBidWYgc2hhcmVk
-IGJ1ZmZlci4KKyAqLworc3RhdGljIGludCBnZXRfbnVtX3BhZ2VzX2RpcihzdHJ1Y3QgeGVuX2Zy
-b250X3BnZGlyX3NoYnVmICpidWYpCit7CisJcmV0dXJuIERJVl9ST1VORF9VUChidWYtPm51bV9w
-YWdlcywgWEVOX05VTV9HUkVGU19QRVJfUEFHRSk7Cit9CisKKy8qKgorICogQ2FsY3VsYXRlIHRo
-ZSBudW1iZXIgb2YgZ3JhbnQgcmVmZXJlbmNlcyBuZWVkZWQgdG8gc2hhcmUgdGhlIGJ1ZmZlcgor
-ICogYW5kIGl0cyBwYWdlcyB3aGVuIGJhY2tlbmQgYWxsb2NhdGVzIHRoZSBidWZmZXIuCisgKgor
-ICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgorICovCitzdGF0aWMgdm9pZCBiYWNrZW5kX2Nh
-bGNfbnVtX2dyZWZzKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwkvKiBP
-bmx5IGZvciBwYWdlcyB0aGUgcGFnZSBkaXJlY3RvcnkgY29uc3VtZXMgaXRzZWxmLiAqLworCWJ1
-Zi0+bnVtX2dyZWZzID0gZ2V0X251bV9wYWdlc19kaXIoYnVmKTsKK30KKworLyoqCisgKiBDYWxj
-dWxhdGUgdGhlIG51bWJlciBvZiBncmFudCByZWZlcmVuY2VzIG5lZWRlZCB0byBzaGFyZSB0aGUg
-YnVmZmVyCisgKiBhbmQgaXRzIHBhZ2VzIHdoZW4gZnJvbnRlbmQgYWxsb2NhdGVzIHRoZSBidWZm
-ZXIuCisgKgorICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgorICovCitzdGF0aWMgdm9pZCBn
-dWVzdF9jYWxjX251bV9ncmVmcyhzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpidWYpCit7
-CisJLyoKKwkgKiBOdW1iZXIgb2YgcGFnZXMgdGhlIHBhZ2UgZGlyZWN0b3J5IGNvbnN1bWVzIGl0
-c2VsZgorCSAqIHBsdXMgZ3JlZnMgZm9yIHRoZSBidWZmZXIgcGFnZXMuCisJICovCisJYnVmLT5u
-dW1fZ3JlZnMgPSBnZXRfbnVtX3BhZ2VzX2RpcihidWYpICsgYnVmLT5udW1fcGFnZXM7Cit9CisK
-KyNkZWZpbmUgeGVuX3BhZ2VfdG9fdmFkZHIocGFnZSkgXAorCSgodWludHB0cl90KXBmbl90b19r
-YWRkcihwYWdlX3RvX3hlbl9wZm4ocGFnZSkpKQorCisvKioKKyAqIFVubWFwIHRoZSBidWZmZXIg
-cHJldmlvdXNseSBtYXBwZWQgd2l0aCBncmFudCByZWZlcmVuY2VzCisgKiBwcm92aWRlZCBieSB0
-aGUgYmFja2VuZC4KKyAqCisgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCisgKiBccmV0dXJu
-IHplcm8gb24gc3VjY2VzcyBvciBhIG5lZ2F0aXZlIG51bWJlciBvbiBmYWlsdXJlLgorICovCitz
-dGF0aWMgaW50IGJhY2tlbmRfdW5tYXAoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVm
-KQoreworCXN0cnVjdCBnbnR0YWJfdW5tYXBfZ3JhbnRfcmVmICp1bm1hcF9vcHM7CisJaW50IGks
-IHJldDsKKworCWlmICghYnVmLT5wYWdlcyB8fCAhYnVmLT5iYWNrZW5kX21hcF9oYW5kbGVzIHx8
-ICFidWYtPmdyZWZzKQorCQlyZXR1cm4gMDsKKworCXVubWFwX29wcyA9IGtjYWxsb2MoYnVmLT5u
-dW1fcGFnZXMsIHNpemVvZigqdW5tYXBfb3BzKSwKKwkJCSAgICBHRlBfS0VSTkVMKTsKKwlpZiAo
-IXVubWFwX29wcykKKwkJcmV0dXJuIC1FTk9NRU07CisKKwlmb3IgKGkgPSAwOyBpIDwgYnVmLT5u
-dW1fcGFnZXM7IGkrKykgeworCQlwaHlzX2FkZHJfdCBhZGRyOworCisJCWFkZHIgPSB4ZW5fcGFn
-ZV90b192YWRkcihidWYtPnBhZ2VzW2ldKTsKKwkJZ250dGFiX3NldF91bm1hcF9vcCgmdW5tYXBf
-b3BzW2ldLCBhZGRyLCBHTlRNQVBfaG9zdF9tYXAsCisJCQkJICAgIGJ1Zi0+YmFja2VuZF9tYXBf
-aGFuZGxlc1tpXSk7CisJfQorCisJcmV0ID0gZ250dGFiX3VubWFwX3JlZnModW5tYXBfb3BzLCBO
-VUxMLCBidWYtPnBhZ2VzLAorCQkJCWJ1Zi0+bnVtX3BhZ2VzKTsKKworCWZvciAoaSA9IDA7IGkg
-PCBidWYtPm51bV9wYWdlczsgaSsrKSB7CisJCWlmICh1bmxpa2VseSh1bm1hcF9vcHNbaV0uc3Rh
-dHVzICE9IEdOVFNUX29rYXkpKQorCQkJZGV2X2VycigmYnVmLT54Yl9kZXYtPmRldiwKKwkJCQki
-RmFpbGVkIHRvIHVubWFwIHBhZ2UgJWQ6ICVkXG4iLAorCQkJCWksIHVubWFwX29wc1tpXS5zdGF0
-dXMpOworCX0KKworCWlmIChyZXQpCisJCWRldl9lcnIoJmJ1Zi0+eGJfZGV2LT5kZXYsCisJCQki
-RmFpbGVkIHRvIHVubWFwIGdyYW50IHJlZmVyZW5jZXMsIHJldCAlZCIsIHJldCk7CisKKwlrZnJl
-ZSh1bm1hcF9vcHMpOworCWtmcmVlKGJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlcyk7CisJYnVmLT5i
-YWNrZW5kX21hcF9oYW5kbGVzID0gTlVMTDsKKwlyZXR1cm4gcmV0OworfQorCisvKioKKyAqIE1h
-cCB0aGUgYnVmZmVyIHdpdGggZ3JhbnQgcmVmZXJlbmNlcyBwcm92aWRlZCBieSB0aGUgYmFja2Vu
-ZC4KKyAqCisgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCisgKiBccmV0dXJuIHplcm8gb24g
-c3VjY2VzcyBvciBhIG5lZ2F0aXZlIG51bWJlciBvbiBmYWlsdXJlLgorICovCitzdGF0aWMgaW50
-IGJhY2tlbmRfbWFwKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwlzdHJ1
-Y3QgZ250dGFiX21hcF9ncmFudF9yZWYgKm1hcF9vcHMgPSBOVUxMOworCXVuc2lnbmVkIGNoYXIg
-KnB0cjsKKwlpbnQgcmV0LCBjdXJfZ3JlZiwgY3VyX2Rpcl9wYWdlLCBjdXJfcGFnZSwgZ3JlZnNf
-bGVmdDsKKworCW1hcF9vcHMgPSBrY2FsbG9jKGJ1Zi0+bnVtX3BhZ2VzLCBzaXplb2YoKm1hcF9v
-cHMpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIW1hcF9vcHMpCisJCXJldHVybiAtRU5PTUVNOworCisJ
-YnVmLT5iYWNrZW5kX21hcF9oYW5kbGVzID0ga2NhbGxvYyhidWYtPm51bV9wYWdlcywKKwkJCQkJ
-ICAgc2l6ZW9mKCpidWYtPmJhY2tlbmRfbWFwX2hhbmRsZXMpLAorCQkJCQkgICBHRlBfS0VSTkVM
-KTsKKwlpZiAoIWJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlcykgeworCQlrZnJlZShtYXBfb3BzKTsK
-KwkJcmV0dXJuIC1FTk9NRU07CisJfQorCisJLyoKKwkgKiBSZWFkIHBhZ2UgZGlyZWN0b3J5IHRv
-IGdldCBncmVmcyBmcm9tIHRoZSBiYWNrZW5kOiBmb3IgZXh0ZXJuYWwKKwkgKiBidWZmZXIgd2Ug
-b25seSBhbGxvY2F0ZSBidWYtPmdyZWZzIGZvciB0aGUgcGFnZSBkaXJlY3RvcnksCisJICogc28g
-YnVmLT5udW1fZ3JlZnMgaGFzIG51bWJlciBvZiBwYWdlcyBpbiB0aGUgcGFnZSBkaXJlY3Rvcnkg
-aXRzZWxmLgorCSAqLworCXB0ciA9IGJ1Zi0+ZGlyZWN0b3J5OworCWdyZWZzX2xlZnQgPSBidWYt
-Pm51bV9wYWdlczsKKwljdXJfcGFnZSA9IDA7CisJZm9yIChjdXJfZGlyX3BhZ2UgPSAwOyBjdXJf
-ZGlyX3BhZ2UgPCBidWYtPm51bV9ncmVmczsgY3VyX2Rpcl9wYWdlKyspIHsKKwkJc3RydWN0IHhl
-bl9wYWdlX2RpcmVjdG9yeSAqcGFnZV9kaXIgPQorCQkJKHN0cnVjdCB4ZW5fcGFnZV9kaXJlY3Rv
-cnkgKilwdHI7CisJCWludCB0b19jb3B5ID0gWEVOX05VTV9HUkVGU19QRVJfUEFHRTsKKworCQlp
-ZiAodG9fY29weSA+IGdyZWZzX2xlZnQpCisJCQl0b19jb3B5ID0gZ3JlZnNfbGVmdDsKKworCQlm
-b3IgKGN1cl9ncmVmID0gMDsgY3VyX2dyZWYgPCB0b19jb3B5OyBjdXJfZ3JlZisrKSB7CisJCQlw
-aHlzX2FkZHJfdCBhZGRyOworCisJCQlhZGRyID0geGVuX3BhZ2VfdG9fdmFkZHIoYnVmLT5wYWdl
-c1tjdXJfcGFnZV0pOworCQkJZ250dGFiX3NldF9tYXBfb3AoJm1hcF9vcHNbY3VyX3BhZ2VdLCBh
-ZGRyLAorCQkJCQkgIEdOVE1BUF9ob3N0X21hcCwKKwkJCQkJICBwYWdlX2Rpci0+Z3JlZltjdXJf
-Z3JlZl0sCisJCQkJCSAgYnVmLT54Yl9kZXYtPm90aGVyZW5kX2lkKTsKKwkJCWN1cl9wYWdlKys7
-CisJCX0KKworCQlncmVmc19sZWZ0IC09IHRvX2NvcHk7CisJCXB0ciArPSBQQUdFX1NJWkU7CisJ
-fQorCXJldCA9IGdudHRhYl9tYXBfcmVmcyhtYXBfb3BzLCBOVUxMLCBidWYtPnBhZ2VzLCBidWYt
-Pm51bV9wYWdlcyk7CisKKwkvKiBTYXZlIGhhbmRsZXMgZXZlbiBpZiBlcnJvciwgc28gd2UgY2Fu
-IHVubWFwLiAqLworCWZvciAoY3VyX3BhZ2UgPSAwOyBjdXJfcGFnZSA8IGJ1Zi0+bnVtX3BhZ2Vz
-OyBjdXJfcGFnZSsrKSB7CisJCWJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlc1tjdXJfcGFnZV0gPSBt
-YXBfb3BzW2N1cl9wYWdlXS5oYW5kbGU7CisJCWlmICh1bmxpa2VseShtYXBfb3BzW2N1cl9wYWdl
-XS5zdGF0dXMgIT0gR05UU1Rfb2theSkpCisJCQlkZXZfZXJyKCZidWYtPnhiX2Rldi0+ZGV2LAor
-CQkJCSJGYWlsZWQgdG8gbWFwIHBhZ2UgJWQ6ICVkXG4iLAorCQkJCWN1cl9wYWdlLCBtYXBfb3Bz
-W2N1cl9wYWdlXS5zdGF0dXMpOworCX0KKworCWlmIChyZXQpIHsKKwkJZGV2X2VycigmYnVmLT54
-Yl9kZXYtPmRldiwKKwkJCSJGYWlsZWQgdG8gbWFwIGdyYW50IHJlZmVyZW5jZXMsIHJldCAlZCIs
-IHJldCk7CisJCWJhY2tlbmRfdW5tYXAoYnVmKTsKKwl9CisKKwlrZnJlZShtYXBfb3BzKTsKKwly
-ZXR1cm4gcmV0OworfQorCisvKioKKyAqIEZpbGwgcGFnZSBkaXJlY3Rvcnkgd2l0aCBncmFudCBy
-ZWZlcmVuY2VzIHRvIHRoZSBwYWdlcyBvZiB0aGUKKyAqIHBhZ2UgZGlyZWN0b3J5IGl0c2VsZi4K
-KyAqCisgKiBUaGUgZ3JhbnQgcmVmZXJlbmNlcyB0byB0aGUgYnVmZmVyIHBhZ2VzIGFyZSBwcm92
-aWRlZCBieSB0aGUKKyAqIGJhY2tlbmQgaW4gdGhpcyBjYXNlLgorICoKKyAqIFxwYXJhbSBidWYg
-c2hhcmVkIGJ1ZmZlci4KKyAqLworc3RhdGljIHZvaWQgYmFja2VuZF9maWxsX3BhZ2VfZGlyKHN0
-cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwlzdHJ1Y3QgeGVuX3BhZ2VfZGly
-ZWN0b3J5ICpwYWdlX2RpcjsKKwl1bnNpZ25lZCBjaGFyICpwdHI7CisJaW50IGksIG51bV9wYWdl
-c19kaXI7CisKKwlwdHIgPSBidWYtPmRpcmVjdG9yeTsKKwludW1fcGFnZXNfZGlyID0gZ2V0X251
-bV9wYWdlc19kaXIoYnVmKTsKKworCS8qIEZpbGwgb25seSBncmVmcyBmb3IgdGhlIHBhZ2UgZGly
-ZWN0b3J5IGl0c2VsZi4gKi8KKwlmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzX2RpciAtIDE7IGkr
-KykgeworCQlwYWdlX2RpciA9IChzdHJ1Y3QgeGVuX3BhZ2VfZGlyZWN0b3J5ICopcHRyOworCisJ
-CXBhZ2VfZGlyLT5ncmVmX2Rpcl9uZXh0X3BhZ2UgPSBidWYtPmdyZWZzW2kgKyAxXTsKKwkJcHRy
-ICs9IFBBR0VfU0laRTsKKwl9CisJLyogTGFzdCBwYWdlIG11c3Qgc2F5IHRoZXJlIGlzIG5vIG1v
-cmUgcGFnZXMuICovCisJcGFnZV9kaXIgPSAoc3RydWN0IHhlbl9wYWdlX2RpcmVjdG9yeSAqKXB0
-cjsKKwlwYWdlX2Rpci0+Z3JlZl9kaXJfbmV4dF9wYWdlID0gR1JBTlRfSU5WQUxJRF9SRUY7Cit9
-CisKKy8qKgorICogRmlsbCBwYWdlIGRpcmVjdG9yeSB3aXRoIGdyYW50IHJlZmVyZW5jZXMgdG8g
-dGhlIHBhZ2VzIG9mIHRoZQorICogcGFnZSBkaXJlY3RvcnkgYW5kIHRoZSBidWZmZXIgd2Ugc2hh
-cmUgd2l0aCB0aGUgYmFja2VuZC4KKyAqCisgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCisg
-Ki8KK3N0YXRpYyB2b2lkIGd1ZXN0X2ZpbGxfcGFnZV9kaXIoc3RydWN0IHhlbl9mcm9udF9wZ2Rp
-cl9zaGJ1ZiAqYnVmKQoreworCXVuc2lnbmVkIGNoYXIgKnB0cjsKKwlpbnQgY3VyX2dyZWYsIGdy
-ZWZzX2xlZnQsIHRvX2NvcHksIGksIG51bV9wYWdlc19kaXI7CisKKwlwdHIgPSBidWYtPmRpcmVj
-dG9yeTsKKwludW1fcGFnZXNfZGlyID0gZ2V0X251bV9wYWdlc19kaXIoYnVmKTsKKworCS8qCisJ
-ICogV2hpbGUgY29weWluZywgc2tpcCBncmVmcyBhdCBzdGFydCwgdGhleSBhcmUgZm9yIHBhZ2Vz
-CisJICogZ3JhbnRlZCBmb3IgdGhlIHBhZ2UgZGlyZWN0b3J5IGl0c2VsZi4KKwkgKi8KKwljdXJf
-Z3JlZiA9IG51bV9wYWdlc19kaXI7CisJZ3JlZnNfbGVmdCA9IGJ1Zi0+bnVtX3BhZ2VzOworCWZv
-ciAoaSA9IDA7IGkgPCBudW1fcGFnZXNfZGlyOyBpKyspIHsKKwkJc3RydWN0IHhlbl9wYWdlX2Rp
-cmVjdG9yeSAqcGFnZV9kaXIgPQorCQkJKHN0cnVjdCB4ZW5fcGFnZV9kaXJlY3RvcnkgKilwdHI7
-CisKKwkJaWYgKGdyZWZzX2xlZnQgPD0gWEVOX05VTV9HUkVGU19QRVJfUEFHRSkgeworCQkJdG9f
-Y29weSA9IGdyZWZzX2xlZnQ7CisJCQlwYWdlX2Rpci0+Z3JlZl9kaXJfbmV4dF9wYWdlID0gR1JB
-TlRfSU5WQUxJRF9SRUY7CisJCX0gZWxzZSB7CisJCQl0b19jb3B5ID0gWEVOX05VTV9HUkVGU19Q
-RVJfUEFHRTsKKwkJCXBhZ2VfZGlyLT5ncmVmX2Rpcl9uZXh0X3BhZ2UgPSBidWYtPmdyZWZzW2kg
-KyAxXTsKKwkJfQorCQltZW1jcHkoJnBhZ2VfZGlyLT5ncmVmLCAmYnVmLT5ncmVmc1tjdXJfZ3Jl
-Zl0sCisJCSAgICAgICB0b19jb3B5ICogc2l6ZW9mKGdyYW50X3JlZl90KSk7CisJCXB0ciArPSBQ
-QUdFX1NJWkU7CisJCWdyZWZzX2xlZnQgLT0gdG9fY29weTsKKwkJY3VyX2dyZWYgKz0gdG9fY29w
-eTsKKwl9Cit9CisKKy8qKgorICogR3JhbnQgcmVmZXJlbmNlcyB0byB0aGUgZnJvbnRlbmQncyBi
-dWZmZXIgcGFnZXMuCisgKgorICogVGhlc2Ugd2lsbCBiZSBzaGFyZWQgd2l0aCB0aGUgYmFja2Vu
-ZCwgc28gaXQgY2FuCisgKiBhY2Nlc3MgdGhlIGJ1ZmZlcidzIGRhdGEuCisgKgorICogXHBhcmFt
-IGJ1ZiBzaGFyZWQgYnVmZmVyLgorICogXHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3Mgb3IgYSBuZWdh
-dGl2ZSBudW1iZXIgb24gZmFpbHVyZS4KKyAqLworc3RhdGljIGludCBndWVzdF9ncmFudF9yZWZz
-X2Zvcl9idWZmZXIoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmLAorCQkJCSAgICAg
-ICBncmFudF9yZWZfdCAqcHJpdl9ncmVmX2hlYWQsCisJCQkJICAgICAgIGludCBncmVmX2lkeCkK
-K3sKKwlpbnQgaSwgY3VyX3JlZiwgb3RoZXJlbmRfaWQ7CisKKwlvdGhlcmVuZF9pZCA9IGJ1Zi0+
-eGJfZGV2LT5vdGhlcmVuZF9pZDsKKwlmb3IgKGkgPSAwOyBpIDwgYnVmLT5udW1fcGFnZXM7IGkr
-KykgeworCQljdXJfcmVmID0gZ250dGFiX2NsYWltX2dyYW50X3JlZmVyZW5jZShwcml2X2dyZWZf
-aGVhZCk7CisJCWlmIChjdXJfcmVmIDwgMCkKKwkJCXJldHVybiBjdXJfcmVmOworCisJCWdudHRh
-Yl9ncmFudF9mb3JlaWduX2FjY2Vzc19yZWYoY3VyX3JlZiwgb3RoZXJlbmRfaWQsCisJCQkJCQl4
-ZW5fcGFnZV90b19nZm4oYnVmLT5wYWdlc1tpXSksCisJCQkJCQkwKTsKKwkJYnVmLT5ncmVmc1tn
-cmVmX2lkeCsrXSA9IGN1cl9yZWY7CisJfQorCXJldHVybiAwOworfQorCisvKioKKyAqIEdyYW50
-IGFsbCB0aGUgcmVmZXJlbmNlcyBuZWVkZWQgdG8gc2hhcmUgdGhlIGJ1ZmZlci4KKyAqCisgKiBH
-cmFudCByZWZlcmVuY2VzIHRvIHRoZSBwYWdlIGRpcmVjdG9yeSBwYWdlcyBhbmQsIGlmCisgKiBu
-ZWVkZWQsIGFsc28gdG8gdGhlIHBhZ2VzIG9mIHRoZSBzaGFyZWQgYnVmZmVyIGRhdGEuCisgKgor
-ICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgorICogXHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3Mg
-b3IgYSBuZWdhdGl2ZSBudW1iZXIgb24gZmFpbHVyZS4KKyAqLworc3RhdGljIGludCBncmFudF9y
-ZWZlcmVuY2VzKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKK3sKKwlncmFudF9y
-ZWZfdCBwcml2X2dyZWZfaGVhZDsKKwlpbnQgcmV0LCBpLCBqLCBjdXJfcmVmOworCWludCBvdGhl
-cmVuZF9pZCwgbnVtX3BhZ2VzX2RpcjsKKworCXJldCA9IGdudHRhYl9hbGxvY19ncmFudF9yZWZl
-cmVuY2VzKGJ1Zi0+bnVtX2dyZWZzLCAmcHJpdl9ncmVmX2hlYWQpOworCWlmIChyZXQgPCAwKSB7
-CisJCWRldl9lcnIoJmJ1Zi0+eGJfZGV2LT5kZXYsCisJCQkiQ2Fubm90IGFsbG9jYXRlIGdyYW50
-IHJlZmVyZW5jZXNcbiIpOworCQlyZXR1cm4gcmV0OworCX0KKworCW90aGVyZW5kX2lkID0gYnVm
-LT54Yl9kZXYtPm90aGVyZW5kX2lkOworCWogPSAwOworCW51bV9wYWdlc19kaXIgPSBnZXRfbnVt
-X3BhZ2VzX2RpcihidWYpOworCWZvciAoaSA9IDA7IGkgPCBudW1fcGFnZXNfZGlyOyBpKyspIHsK
-KwkJdW5zaWduZWQgbG9uZyBmcmFtZTsKKworCQljdXJfcmVmID0gZ250dGFiX2NsYWltX2dyYW50
-X3JlZmVyZW5jZSgmcHJpdl9ncmVmX2hlYWQpOworCQlpZiAoY3VyX3JlZiA8IDApCisJCQlyZXR1
-cm4gY3VyX3JlZjsKKworCQlmcmFtZSA9IHhlbl9wYWdlX3RvX2dmbih2aXJ0X3RvX3BhZ2UoYnVm
-LT5kaXJlY3RvcnkgKworCQkJCQkJICAgICBQQUdFX1NJWkUgKiBpKSk7CisJCWdudHRhYl9ncmFu
-dF9mb3JlaWduX2FjY2Vzc19yZWYoY3VyX3JlZiwgb3RoZXJlbmRfaWQsIGZyYW1lLCAwKTsKKwkJ
-YnVmLT5ncmVmc1tqKytdID0gY3VyX3JlZjsKKwl9CisKKwlpZiAoYnVmLT5vcHMtPmdyYW50X3Jl
-ZnNfZm9yX2J1ZmZlcikgeworCQlyZXQgPSBidWYtPm9wcy0+Z3JhbnRfcmVmc19mb3JfYnVmZmVy
-KGJ1ZiwgJnByaXZfZ3JlZl9oZWFkLCBqKTsKKwkJaWYgKHJldCkKKwkJCXJldHVybiByZXQ7CisJ
-fQorCisJZ250dGFiX2ZyZWVfZ3JhbnRfcmVmZXJlbmNlcyhwcml2X2dyZWZfaGVhZCk7CisJcmV0
-dXJuIDA7Cit9CisKKy8qKgorICogQWxsb2NhdGUgYWxsIHJlcXVpcmVkIHN0cnVjdHVyZXMgdG8g
-bWFuZ2Ugc2hhcmVkIGJ1ZmZlci4KKyAqCisgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCisg
-KiBccmV0dXJuIHplcm8gb24gc3VjY2VzcyBvciBhIG5lZ2F0aXZlIG51bWJlciBvbiBmYWlsdXJl
-LgorICovCitzdGF0aWMgaW50IGFsbG9jX3N0b3JhZ2Uoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9z
-aGJ1ZiAqYnVmKQoreworCWJ1Zi0+Z3JlZnMgPSBrY2FsbG9jKGJ1Zi0+bnVtX2dyZWZzLCBzaXpl
-b2YoKmJ1Zi0+Z3JlZnMpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWJ1Zi0+Z3JlZnMpCisJCXJldHVy
-biAtRU5PTUVNOworCisJYnVmLT5kaXJlY3RvcnkgPSBrY2FsbG9jKGdldF9udW1fcGFnZXNfZGly
-KGJ1ZiksIFBBR0VfU0laRSwgR0ZQX0tFUk5FTCk7CisJaWYgKCFidWYtPmRpcmVjdG9yeSkKKwkJ
-cmV0dXJuIC1FTk9NRU07CisKKwlyZXR1cm4gMDsKK30KKworLyoKKyAqIEZvciBiYWNrZW5kIGFs
-bG9jYXRlZCBidWZmZXJzIHdlIGRvbid0IG5lZWQgZ3JhbnRfcmVmc19mb3JfYnVmZmVyCisgKiBh
-cyB0aG9zZSBncmFudCByZWZlcmVuY2VzIGFyZSBhbGxvY2F0ZWQgYXQgYmFja2VuZCBzaWRlLgor
-ICovCitzdGF0aWMgY29uc3Qgc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9vcHMgYmFja2Vu
-ZF9vcHMgPSB7CisJLmNhbGNfbnVtX2dyZWZzID0gYmFja2VuZF9jYWxjX251bV9ncmVmcywKKwku
-ZmlsbF9wYWdlX2RpciA9IGJhY2tlbmRfZmlsbF9wYWdlX2RpciwKKwkubWFwID0gYmFja2VuZF9t
-YXAsCisJLnVubWFwID0gYmFja2VuZF91bm1hcAorfTsKKworLyoKKyAqIEZvciBsb2NhbGx5IGdy
-YW50ZWQgcmVmZXJlbmNlcyB3ZSBkbyBub3QgbmVlZCB0byBtYXAvdW5tYXAKKyAqIHRoZSByZWZl
-cmVuY2VzLgorICovCitzdGF0aWMgY29uc3Qgc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9v
-cHMgbG9jYWxfb3BzID0geworCS5jYWxjX251bV9ncmVmcyA9IGd1ZXN0X2NhbGNfbnVtX2dyZWZz
-LAorCS5maWxsX3BhZ2VfZGlyID0gZ3Vlc3RfZmlsbF9wYWdlX2RpciwKKwkuZ3JhbnRfcmVmc19m
-b3JfYnVmZmVyID0gZ3Vlc3RfZ3JhbnRfcmVmc19mb3JfYnVmZmVyLAorfTsKKworLyoqCisgKiBB
-bGxvY2F0ZSBhIG5ldyBpbnN0YW5jZSBvZiBhIHNoYXJlZCBidWZmZXIuCisgKgorICogXHBhcmFt
-IGNmZyBjb25maWd1cmF0aW9uIHRvIGJlIHVzZWQgd2hpbGUgYWxsb2NhdGluZyBhIG5ldyBzaGFy
-ZWQgYnVmZmVyLgorICogXHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3Mgb3IgYSBuZWdhdGl2ZSBudW1i
-ZXIgb24gZmFpbHVyZS4KKyAqLworaW50IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9hbGxvYyhzdHJ1
-Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmX2NmZyAqY2ZnKQoreworCXN0cnVjdCB4ZW5fZnJvbnRf
-cGdkaXJfc2hidWYgKmJ1ZiA9IGNmZy0+cGdkaXI7CisJaW50IHJldDsKKworCWlmIChjZmctPmJl
-X2FsbG9jKQorCQlidWYtPm9wcyA9ICZiYWNrZW5kX29wczsKKwllbHNlCisJCWJ1Zi0+b3BzID0g
-JmxvY2FsX29wczsKKwlidWYtPnhiX2RldiA9IGNmZy0+eGJfZGV2OworCWJ1Zi0+bnVtX3BhZ2Vz
-ID0gY2ZnLT5udW1fcGFnZXM7CisJYnVmLT5wYWdlcyA9IGNmZy0+cGFnZXM7CisKKwlidWYtPm9w
-cy0+Y2FsY19udW1fZ3JlZnMoYnVmKTsKKworCXJldCA9IGFsbG9jX3N0b3JhZ2UoYnVmKTsKKwlp
-ZiAocmV0KQorCQlnb3RvIGZhaWw7CisKKwlyZXQgPSBncmFudF9yZWZlcmVuY2VzKGJ1Zik7CisJ
-aWYgKHJldCkKKwkJZ290byBmYWlsOworCisJYnVmLT5vcHMtPmZpbGxfcGFnZV9kaXIoYnVmKTsK
-KworCXJldHVybiAwOworCitmYWlsOgorCXhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9mcmVlKGJ1Zik7
-CisJcmV0dXJuIHJldDsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKHhlbl9mcm9udF9wZ2Rpcl9zaGJ1
-Zl9hbGxvYyk7CisKK01PRFVMRV9ERVNDUklQVElPTigiWGVuIGZyb250ZW5kL2JhY2tlbmQgcGFn
-ZSBkaXJlY3RvcnkgYmFzZWQgIgorCQkgICAic2hhcmVkIGJ1ZmZlciBoYW5kbGluZyIpOworTU9E
-VUxFX0FVVEhPUigiT2xla3NhbmRyIEFuZHJ1c2hjaGVua28iKTsKK01PRFVMRV9MSUNFTlNFKCJH
-UEwiKTsKZGlmZiAtLWdpdCBhL2luY2x1ZGUveGVuL3hlbi1mcm9udC1wZ2Rpci1zaGJ1Zi5oIGIv
-aW5jbHVkZS94ZW4veGVuLWZyb250LXBnZGlyLXNoYnVmLmgKbmV3IGZpbGUgbW9kZSAxMDA2NDQK
-aW5kZXggMDAwMDAwMDAwMDAwLi4xNTBlZjdlYzUxZWMKLS0tIC9kZXYvbnVsbAorKysgYi9pbmNs
-dWRlL3hlbi94ZW4tZnJvbnQtcGdkaXItc2hidWYuaApAQCAtMCwwICsxLDg5IEBACisvKiBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCBPUiBNSVQgKi8KKworLyoKKyAqIFhlbiBmcm9u
-dGVuZC9iYWNrZW5kIHBhZ2UgZGlyZWN0b3J5IGJhc2VkIHNoYXJlZCBidWZmZXIKKyAqIGhlbHBl
-ciBtb2R1bGUuCisgKgorICogQ29weXJpZ2h0IChDKSAyMDE4IEVQQU0gU3lzdGVtcyBJbmMuCisg
-KgorICogQXV0aG9yOiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyA8b2xla3NhbmRyX2FuZHJ1c2hj
-aGVua29AZXBhbS5jb20+CisgKi8KKworI2lmbmRlZiBfX1hFTl9GUk9OVF9QR0RJUl9TSEJVRl9I
-XworI2RlZmluZSBfX1hFTl9GUk9OVF9QR0RJUl9TSEJVRl9IXworCisjaW5jbHVkZSA8bGludXgv
-a2VybmVsLmg+CisKKyNpbmNsdWRlIDx4ZW4vZ3JhbnRfdGFibGUuaD4KKworc3RydWN0IHhlbl9m
-cm9udF9wZ2Rpcl9zaGJ1Zl9vcHM7CisKK3N0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgewor
-CS8qCisJICogTnVtYmVyIG9mIHJlZmVyZW5jZXMgZ3JhbnRlZCBmb3IgdGhlIGJhY2tlbmQgdXNl
-OgorCSAqCisJICogIC0gZm9yIGZyb250ZW5kIGFsbG9jYXRlZC9pbXBvcnRlZCBidWZmZXJzIHRo
-aXMgaG9sZHMgdGhlIG51bWJlcgorCSAqICAgIG9mIGdyYW50IHJlZmVyZW5jZXMgZm9yIHRoZSBw
-YWdlIGRpcmVjdG9yeSBhbmQgdGhlIHBhZ2VzCisJICogICAgb2YgdGhlIGJ1ZmZlcgorCSAqCisJ
-ICogIC0gZm9yIHRoZSBidWZmZXIgcHJvdmlkZWQgYnkgdGhlIGJhY2tlbmQgdGhpcyBvbmx5IGhv
-bGRzIHRoZSBudW1iZXIKKwkgKiAgICBvZiBncmFudCByZWZlcmVuY2VzIGZvciB0aGUgcGFnZSBk
-aXJlY3RvcnkgaXRzZWxmIGFzIGdyYW50CisJICogICAgcmVmZXJlbmNlcyBmb3IgdGhlIGJ1ZmZl
-ciB3aWxsIGJlIHByb3ZpZGVkIGJ5IHRoZSBiYWNrZW5kLgorCSAqLworCWludCBudW1fZ3JlZnM7
-CisJZ3JhbnRfcmVmX3QgKmdyZWZzOworCS8qIFBhZ2UgZGlyZWN0b3J5IGJhY2tpbmcgc3RvcmFn
-ZS4gKi8KKwl1OCAqZGlyZWN0b3J5OworCisJLyoKKwkgKiBOdW1iZXIgb2YgcGFnZXMgZm9yIHRo
-ZSBzaGFyZWQgYnVmZmVyIGl0c2VsZiAoZXhjbHVkaW5nIHRoZSBwYWdlCisJICogZGlyZWN0b3J5
-KS4KKwkgKi8KKwlpbnQgbnVtX3BhZ2VzOworCS8qCisJICogQmFja2luZyBzdG9yYWdlIG9mIHRo
-ZSBzaGFyZWQgYnVmZmVyOiB0aGVzZSBhcmUgdGhlIHBhZ2VzIGJlaW5nCisJICogc2hhcmVkLgor
-CSAqLworCXN0cnVjdCBwYWdlICoqcGFnZXM7CisKKwlzdHJ1Y3QgeGVuYnVzX2RldmljZSAqeGJf
-ZGV2OworCisJLyogVGhlc2UgYXJlIHRoZSBvcHMgdXNlZCBpbnRlcm5hbGx5IGRlcGVuZGluZyBv
-biBiZV9hbGxvYyBtb2RlLiAqLworCWNvbnN0IHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZf
-b3BzICpvcHM7CisKKwkvKiBYZW4gbWFwIGhhbmRsZXMgZm9yIHRoZSBidWZmZXIgYWxsb2NhdGVk
-IGJ5IHRoZSBiYWNrZW5kLiAqLworCWdyYW50X2hhbmRsZV90ICpiYWNrZW5kX21hcF9oYW5kbGVz
-OworfTsKKworc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9jZmcgeworCXN0cnVjdCB4ZW5i
-dXNfZGV2aWNlICp4Yl9kZXY7CisKKwkvKiBOdW1iZXIgb2YgcGFnZXMgb2YgdGhlIGJ1ZmZlciBi
-YWNraW5nIHN0b3JhZ2UuICovCisJaW50IG51bV9wYWdlczsKKwkvKiBQYWdlcyBvZiB0aGUgYnVm
-ZmVyIHRvIGJlIHNoYXJlZC4gKi8KKwlzdHJ1Y3QgcGFnZSAqKnBhZ2VzOworCisJLyoKKwkgKiBU
-aGlzIGlzIGFsbG9jYXRlZCBvdXRzaWRlIGJlY2F1c2UgdGhlcmUgYXJlIHVzZS1jYXNlcyB3aGVu
-CisJICogdGhlIGJ1ZmZlciBzdHJ1Y3R1cmUgaXMgYWxsb2NhdGVkIGFzIGEgcGFydCBvZiBhIGJp
-Z2dlciBvbmUuCisJICovCisJc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqcGdkaXI7CisJ
-LyoKKwkgKiBNb2RlIG9mIGdyYW50IHJlZmVyZW5jZSBzaGFyaW5nOiBpZiBzZXQgdGhlbiBiYWNr
-ZW5kIHdpbGwgc2hhcmUKKwkgKiBncmFudCByZWZlcmVuY2VzIHRvIHRoZSBidWZmZXIgd2l0aCB0
-aGUgZnJvbnRlbmQuCisJICovCisJaW50IGJlX2FsbG9jOworfTsKKworaW50IHhlbl9mcm9udF9w
-Z2Rpcl9zaGJ1Zl9hbGxvYyhzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmX2NmZyAqY2ZnKTsK
-KworZ3JhbnRfcmVmX3QKK3hlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9nZXRfZGlyX3N0YXJ0KHN0cnVj
-dCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7CisKK2ludCB4ZW5fZnJvbnRfcGdkaXJfc2hi
-dWZfbWFwKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7CisKK2ludCB4ZW5fZnJv
-bnRfcGdkaXJfc2hidWZfdW5tYXAoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKTsK
-Kwordm9pZCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfZnJlZShzdHJ1Y3QgeGVuX2Zyb250X3BnZGly
-X3NoYnVmICpidWYpOworCisjZW5kaWYgLyogX19YRU5fRlJPTlRfUEdESVJfU0hCVUZfSF8gKi8K
-LS0gCjIuMTkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-Cmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
-Cg==
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+
+Use page directory based shared buffer implementation
+now available as common code for Xen frontend drivers.
+
+Remove flushing of shared buffer on page flip as this
+workaround needs a proper fix.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ drivers/gpu/drm/xen/Kconfig               |   1 +
+ drivers/gpu/drm/xen/Makefile              |   1 -
+ drivers/gpu/drm/xen/xen_drm_front.c       |  65 ++--
+ drivers/gpu/drm/xen/xen_drm_front_gem.c   |   1 -
+ drivers/gpu/drm/xen/xen_drm_front_shbuf.c | 414 ----------------------
+ drivers/gpu/drm/xen/xen_drm_front_shbuf.h |  64 ----
+ 6 files changed, 26 insertions(+), 520 deletions(-)
+ delete mode 100644 drivers/gpu/drm/xen/xen_drm_front_shbuf.c
+ delete mode 100644 drivers/gpu/drm/xen/xen_drm_front_shbuf.h
+
+diff --git a/drivers/gpu/drm/xen/Kconfig b/drivers/gpu/drm/xen/Kconfig
+index 4cca160782ab..f969d486855d 100644
+--- a/drivers/gpu/drm/xen/Kconfig
++++ b/drivers/gpu/drm/xen/Kconfig
+@@ -12,6 +12,7 @@ config DRM_XEN_FRONTEND
+ 	select DRM_KMS_HELPER
+ 	select VIDEOMODE_HELPERS
+ 	select XEN_XENBUS_FRONTEND
++	select XEN_FRONT_PGDIR_SHBUF
+ 	help
+ 	  Choose this option if you want to enable a para-virtualized
+ 	  frontend DRM/KMS driver for Xen guest OSes.
+diff --git a/drivers/gpu/drm/xen/Makefile b/drivers/gpu/drm/xen/Makefile
+index 712afff5ffc3..825905f67faa 100644
+--- a/drivers/gpu/drm/xen/Makefile
++++ b/drivers/gpu/drm/xen/Makefile
+@@ -4,7 +4,6 @@ drm_xen_front-objs := xen_drm_front.o \
+ 		      xen_drm_front_kms.o \
+ 		      xen_drm_front_conn.o \
+ 		      xen_drm_front_evtchnl.o \
+-		      xen_drm_front_shbuf.o \
+ 		      xen_drm_front_cfg.o \
+ 		      xen_drm_front_gem.o
+ 
+diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
+index 6b6d5ab82ec3..4d3d36fc3a5d 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front.c
++++ b/drivers/gpu/drm/xen/xen_drm_front.c
+@@ -19,6 +19,7 @@
+ #include <xen/xen.h>
+ #include <xen/xenbus.h>
+ 
++#include <xen/xen-front-pgdir-shbuf.h>
+ #include <xen/interface/io/displif.h>
+ 
+ #include "xen_drm_front.h"
+@@ -26,28 +27,20 @@
+ #include "xen_drm_front_evtchnl.h"
+ #include "xen_drm_front_gem.h"
+ #include "xen_drm_front_kms.h"
+-#include "xen_drm_front_shbuf.h"
+ 
+ struct xen_drm_front_dbuf {
+ 	struct list_head list;
+ 	u64 dbuf_cookie;
+ 	u64 fb_cookie;
+-	struct xen_drm_front_shbuf *shbuf;
++
++	struct xen_front_pgdir_shbuf shbuf;
+ };
+ 
+-static int dbuf_add_to_list(struct xen_drm_front_info *front_info,
+-			    struct xen_drm_front_shbuf *shbuf, u64 dbuf_cookie)
++static void dbuf_add_to_list(struct xen_drm_front_info *front_info,
++			     struct xen_drm_front_dbuf *dbuf, u64 dbuf_cookie)
+ {
+-	struct xen_drm_front_dbuf *dbuf;
+-
+-	dbuf = kzalloc(sizeof(*dbuf), GFP_KERNEL);
+-	if (!dbuf)
+-		return -ENOMEM;
+-
+ 	dbuf->dbuf_cookie = dbuf_cookie;
+-	dbuf->shbuf = shbuf;
+ 	list_add(&dbuf->list, &front_info->dbuf_list);
+-	return 0;
+ }
+ 
+ static struct xen_drm_front_dbuf *dbuf_get(struct list_head *dbuf_list,
+@@ -62,15 +55,6 @@ static struct xen_drm_front_dbuf *dbuf_get(struct list_head *dbuf_list,
+ 	return NULL;
+ }
+ 
+-static void dbuf_flush_fb(struct list_head *dbuf_list, u64 fb_cookie)
+-{
+-	struct xen_drm_front_dbuf *buf, *q;
+-
+-	list_for_each_entry_safe(buf, q, dbuf_list, list)
+-		if (buf->fb_cookie == fb_cookie)
+-			xen_drm_front_shbuf_flush(buf->shbuf);
+-}
+-
+ static void dbuf_free(struct list_head *dbuf_list, u64 dbuf_cookie)
+ {
+ 	struct xen_drm_front_dbuf *buf, *q;
+@@ -78,8 +62,8 @@ static void dbuf_free(struct list_head *dbuf_list, u64 dbuf_cookie)
+ 	list_for_each_entry_safe(buf, q, dbuf_list, list)
+ 		if (buf->dbuf_cookie == dbuf_cookie) {
+ 			list_del(&buf->list);
+-			xen_drm_front_shbuf_unmap(buf->shbuf);
+-			xen_drm_front_shbuf_free(buf->shbuf);
++			xen_front_pgdir_shbuf_unmap(&buf->shbuf);
++			xen_front_pgdir_shbuf_free(&buf->shbuf);
+ 			kfree(buf);
+ 			break;
+ 		}
+@@ -91,8 +75,8 @@ static void dbuf_free_all(struct list_head *dbuf_list)
+ 
+ 	list_for_each_entry_safe(buf, q, dbuf_list, list) {
+ 		list_del(&buf->list);
+-		xen_drm_front_shbuf_unmap(buf->shbuf);
+-		xen_drm_front_shbuf_free(buf->shbuf);
++		xen_front_pgdir_shbuf_unmap(&buf->shbuf);
++		xen_front_pgdir_shbuf_free(&buf->shbuf);
+ 		kfree(buf);
+ 	}
+ }
+@@ -171,9 +155,9 @@ int xen_drm_front_dbuf_create(struct xen_drm_front_info *front_info,
+ 			      u32 bpp, u64 size, struct page **pages)
+ {
+ 	struct xen_drm_front_evtchnl *evtchnl;
+-	struct xen_drm_front_shbuf *shbuf;
++	struct xen_drm_front_dbuf *dbuf;
+ 	struct xendispl_req *req;
+-	struct xen_drm_front_shbuf_cfg buf_cfg;
++	struct xen_front_pgdir_shbuf_cfg buf_cfg;
+ 	unsigned long flags;
+ 	int ret;
+ 
+@@ -181,28 +165,29 @@ int xen_drm_front_dbuf_create(struct xen_drm_front_info *front_info,
+ 	if (unlikely(!evtchnl))
+ 		return -EIO;
+ 
++	dbuf = kzalloc(sizeof(*dbuf), GFP_KERNEL);
++	if (!dbuf)
++		return -ENOMEM;
++
++	dbuf_add_to_list(front_info, dbuf, dbuf_cookie);
++
+ 	memset(&buf_cfg, 0, sizeof(buf_cfg));
+ 	buf_cfg.xb_dev = front_info->xb_dev;
++	buf_cfg.num_pages = DIV_ROUND_UP(size, PAGE_SIZE);
+ 	buf_cfg.pages = pages;
+-	buf_cfg.size = size;
++	buf_cfg.pgdir = &dbuf->shbuf;
+ 	buf_cfg.be_alloc = front_info->cfg.be_alloc;
+ 
+-	shbuf = xen_drm_front_shbuf_alloc(&buf_cfg);
+-	if (IS_ERR(shbuf))
+-		return PTR_ERR(shbuf);
+-
+-	ret = dbuf_add_to_list(front_info, shbuf, dbuf_cookie);
+-	if (ret < 0) {
+-		xen_drm_front_shbuf_free(shbuf);
+-		return ret;
+-	}
++	ret = xen_front_pgdir_shbuf_alloc(&buf_cfg);
++	if (ret < 0)
++		goto fail_shbuf_alloc;
+ 
+ 	mutex_lock(&evtchnl->u.req.req_io_lock);
+ 
+ 	spin_lock_irqsave(&front_info->io_lock, flags);
+ 	req = be_prepare_req(evtchnl, XENDISPL_OP_DBUF_CREATE);
+ 	req->op.dbuf_create.gref_directory =
+-			xen_drm_front_shbuf_get_dir_start(shbuf);
++			xen_front_pgdir_shbuf_get_dir_start(&dbuf->shbuf);
+ 	req->op.dbuf_create.buffer_sz = size;
+ 	req->op.dbuf_create.dbuf_cookie = dbuf_cookie;
+ 	req->op.dbuf_create.width = width;
+@@ -221,7 +206,7 @@ int xen_drm_front_dbuf_create(struct xen_drm_front_info *front_info,
+ 	if (ret < 0)
+ 		goto fail;
+ 
+-	ret = xen_drm_front_shbuf_map(shbuf);
++	ret = xen_front_pgdir_shbuf_map(&dbuf->shbuf);
+ 	if (ret < 0)
+ 		goto fail;
+ 
+@@ -230,6 +215,7 @@ int xen_drm_front_dbuf_create(struct xen_drm_front_info *front_info,
+ 
+ fail:
+ 	mutex_unlock(&evtchnl->u.req.req_io_lock);
++fail_shbuf_alloc:
+ 	dbuf_free(&front_info->dbuf_list, dbuf_cookie);
+ 	return ret;
+ }
+@@ -358,7 +344,6 @@ int xen_drm_front_page_flip(struct xen_drm_front_info *front_info,
+ 	if (unlikely(conn_idx >= front_info->num_evt_pairs))
+ 		return -EINVAL;
+ 
+-	dbuf_flush_fb(&front_info->dbuf_list, fb_cookie);
+ 	evtchnl = &front_info->evt_pairs[conn_idx].req;
+ 
+ 	mutex_lock(&evtchnl->u.req.req_io_lock);
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index c85bfe7571cb..53be4c7dc0a4 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -22,7 +22,6 @@
+ #include <xen/balloon.h>
+ 
+ #include "xen_drm_front.h"
+-#include "xen_drm_front_shbuf.h"
+ 
+ struct xen_gem_object {
+ 	struct drm_gem_object base;
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_shbuf.c b/drivers/gpu/drm/xen/xen_drm_front_shbuf.c
+deleted file mode 100644
+index d333b67cc1a0..000000000000
+--- a/drivers/gpu/drm/xen/xen_drm_front_shbuf.c
++++ /dev/null
+@@ -1,414 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0 OR MIT
+-
+-/*
+- *  Xen para-virtual DRM device
+- *
+- * Copyright (C) 2016-2018 EPAM Systems Inc.
+- *
+- * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+- */
+-
+-#include <drm/drmP.h>
+-
+-#if defined(CONFIG_X86)
+-#include <drm/drm_cache.h>
+-#endif
+-#include <linux/errno.h>
+-#include <linux/mm.h>
+-
+-#include <asm/xen/hypervisor.h>
+-#include <xen/balloon.h>
+-#include <xen/xen.h>
+-#include <xen/xenbus.h>
+-#include <xen/interface/io/ring.h>
+-#include <xen/interface/io/displif.h>
+-
+-#include "xen_drm_front.h"
+-#include "xen_drm_front_shbuf.h"
+-
+-struct xen_drm_front_shbuf_ops {
+-	/*
+-	 * Calculate number of grefs required to handle this buffer,
+-	 * e.g. if grefs are required for page directory only or the buffer
+-	 * pages as well.
+-	 */
+-	void (*calc_num_grefs)(struct xen_drm_front_shbuf *buf);
+-	/* Fill page directory according to para-virtual display protocol. */
+-	void (*fill_page_dir)(struct xen_drm_front_shbuf *buf);
+-	/* Claim grant references for the pages of the buffer. */
+-	int (*grant_refs_for_buffer)(struct xen_drm_front_shbuf *buf,
+-				     grant_ref_t *priv_gref_head, int gref_idx);
+-	/* Map grant references of the buffer. */
+-	int (*map)(struct xen_drm_front_shbuf *buf);
+-	/* Unmap grant references of the buffer. */
+-	int (*unmap)(struct xen_drm_front_shbuf *buf);
+-};
+-
+-grant_ref_t xen_drm_front_shbuf_get_dir_start(struct xen_drm_front_shbuf *buf)
+-{
+-	if (!buf->grefs)
+-		return GRANT_INVALID_REF;
+-
+-	return buf->grefs[0];
+-}
+-
+-int xen_drm_front_shbuf_map(struct xen_drm_front_shbuf *buf)
+-{
+-	if (buf->ops->map)
+-		return buf->ops->map(buf);
+-
+-	/* no need to map own grant references */
+-	return 0;
+-}
+-
+-int xen_drm_front_shbuf_unmap(struct xen_drm_front_shbuf *buf)
+-{
+-	if (buf->ops->unmap)
+-		return buf->ops->unmap(buf);
+-
+-	/* no need to unmap own grant references */
+-	return 0;
+-}
+-
+-void xen_drm_front_shbuf_flush(struct xen_drm_front_shbuf *buf)
+-{
+-#if defined(CONFIG_X86)
+-	drm_clflush_pages(buf->pages, buf->num_pages);
+-#endif
+-}
+-
+-void xen_drm_front_shbuf_free(struct xen_drm_front_shbuf *buf)
+-{
+-	if (buf->grefs) {
+-		int i;
+-
+-		for (i = 0; i < buf->num_grefs; i++)
+-			if (buf->grefs[i] != GRANT_INVALID_REF)
+-				gnttab_end_foreign_access(buf->grefs[i],
+-							  0, 0UL);
+-	}
+-	kfree(buf->grefs);
+-	kfree(buf->directory);
+-	kfree(buf);
+-}
+-
+-/*
+- * number of grefs a page can hold with respect to the
+- * struct xendispl_page_directory header
+- */
+-#define XEN_DRM_NUM_GREFS_PER_PAGE ((PAGE_SIZE - \
+-		offsetof(struct xendispl_page_directory, gref)) / \
+-		sizeof(grant_ref_t))
+-
+-static int get_num_pages_dir(struct xen_drm_front_shbuf *buf)
+-{
+-	/* number of pages the page directory consumes itself */
+-	return DIV_ROUND_UP(buf->num_pages, XEN_DRM_NUM_GREFS_PER_PAGE);
+-}
+-
+-static void backend_calc_num_grefs(struct xen_drm_front_shbuf *buf)
+-{
+-	/* only for pages the page directory consumes itself */
+-	buf->num_grefs = get_num_pages_dir(buf);
+-}
+-
+-static void guest_calc_num_grefs(struct xen_drm_front_shbuf *buf)
+-{
+-	/*
+-	 * number of pages the page directory consumes itself
+-	 * plus grefs for the buffer pages
+-	 */
+-	buf->num_grefs = get_num_pages_dir(buf) + buf->num_pages;
+-}
+-
+-#define xen_page_to_vaddr(page) \
+-		((uintptr_t)pfn_to_kaddr(page_to_xen_pfn(page)))
+-
+-static int backend_unmap(struct xen_drm_front_shbuf *buf)
+-{
+-	struct gnttab_unmap_grant_ref *unmap_ops;
+-	int i, ret;
+-
+-	if (!buf->pages || !buf->backend_map_handles || !buf->grefs)
+-		return 0;
+-
+-	unmap_ops = kcalloc(buf->num_pages, sizeof(*unmap_ops),
+-			    GFP_KERNEL);
+-	if (!unmap_ops) {
+-		DRM_ERROR("Failed to get memory while unmapping\n");
+-		return -ENOMEM;
+-	}
+-
+-	for (i = 0; i < buf->num_pages; i++) {
+-		phys_addr_t addr;
+-
+-		addr = xen_page_to_vaddr(buf->pages[i]);
+-		gnttab_set_unmap_op(&unmap_ops[i], addr, GNTMAP_host_map,
+-				    buf->backend_map_handles[i]);
+-	}
+-
+-	ret = gnttab_unmap_refs(unmap_ops, NULL, buf->pages,
+-				buf->num_pages);
+-
+-	for (i = 0; i < buf->num_pages; i++) {
+-		if (unlikely(unmap_ops[i].status != GNTST_okay))
+-			DRM_ERROR("Failed to unmap page %d: %d\n",
+-				  i, unmap_ops[i].status);
+-	}
+-
+-	if (ret)
+-		DRM_ERROR("Failed to unmap grant references, ret %d", ret);
+-
+-	kfree(unmap_ops);
+-	kfree(buf->backend_map_handles);
+-	buf->backend_map_handles = NULL;
+-	return ret;
+-}
+-
+-static int backend_map(struct xen_drm_front_shbuf *buf)
+-{
+-	struct gnttab_map_grant_ref *map_ops = NULL;
+-	unsigned char *ptr;
+-	int ret, cur_gref, cur_dir_page, cur_page, grefs_left;
+-
+-	map_ops = kcalloc(buf->num_pages, sizeof(*map_ops), GFP_KERNEL);
+-	if (!map_ops)
+-		return -ENOMEM;
+-
+-	buf->backend_map_handles = kcalloc(buf->num_pages,
+-					   sizeof(*buf->backend_map_handles),
+-					   GFP_KERNEL);
+-	if (!buf->backend_map_handles) {
+-		kfree(map_ops);
+-		return -ENOMEM;
+-	}
+-
+-	/*
+-	 * read page directory to get grefs from the backend: for external
+-	 * buffer we only allocate buf->grefs for the page directory,
+-	 * so buf->num_grefs has number of pages in the page directory itself
+-	 */
+-	ptr = buf->directory;
+-	grefs_left = buf->num_pages;
+-	cur_page = 0;
+-	for (cur_dir_page = 0; cur_dir_page < buf->num_grefs; cur_dir_page++) {
+-		struct xendispl_page_directory *page_dir =
+-				(struct xendispl_page_directory *)ptr;
+-		int to_copy = XEN_DRM_NUM_GREFS_PER_PAGE;
+-
+-		if (to_copy > grefs_left)
+-			to_copy = grefs_left;
+-
+-		for (cur_gref = 0; cur_gref < to_copy; cur_gref++) {
+-			phys_addr_t addr;
+-
+-			addr = xen_page_to_vaddr(buf->pages[cur_page]);
+-			gnttab_set_map_op(&map_ops[cur_page], addr,
+-					  GNTMAP_host_map,
+-					  page_dir->gref[cur_gref],
+-					  buf->xb_dev->otherend_id);
+-			cur_page++;
+-		}
+-
+-		grefs_left -= to_copy;
+-		ptr += PAGE_SIZE;
+-	}
+-	ret = gnttab_map_refs(map_ops, NULL, buf->pages, buf->num_pages);
+-
+-	/* save handles even if error, so we can unmap */
+-	for (cur_page = 0; cur_page < buf->num_pages; cur_page++) {
+-		buf->backend_map_handles[cur_page] = map_ops[cur_page].handle;
+-		if (unlikely(map_ops[cur_page].status != GNTST_okay))
+-			DRM_ERROR("Failed to map page %d: %d\n",
+-				  cur_page, map_ops[cur_page].status);
+-	}
+-
+-	if (ret) {
+-		DRM_ERROR("Failed to map grant references, ret %d", ret);
+-		backend_unmap(buf);
+-	}
+-
+-	kfree(map_ops);
+-	return ret;
+-}
+-
+-static void backend_fill_page_dir(struct xen_drm_front_shbuf *buf)
+-{
+-	struct xendispl_page_directory *page_dir;
+-	unsigned char *ptr;
+-	int i, num_pages_dir;
+-
+-	ptr = buf->directory;
+-	num_pages_dir = get_num_pages_dir(buf);
+-
+-	/* fill only grefs for the page directory itself */
+-	for (i = 0; i < num_pages_dir - 1; i++) {
+-		page_dir = (struct xendispl_page_directory *)ptr;
+-
+-		page_dir->gref_dir_next_page = buf->grefs[i + 1];
+-		ptr += PAGE_SIZE;
+-	}
+-	/* last page must say there is no more pages */
+-	page_dir = (struct xendispl_page_directory *)ptr;
+-	page_dir->gref_dir_next_page = GRANT_INVALID_REF;
+-}
+-
+-static void guest_fill_page_dir(struct xen_drm_front_shbuf *buf)
+-{
+-	unsigned char *ptr;
+-	int cur_gref, grefs_left, to_copy, i, num_pages_dir;
+-
+-	ptr = buf->directory;
+-	num_pages_dir = get_num_pages_dir(buf);
+-
+-	/*
+-	 * while copying, skip grefs at start, they are for pages
+-	 * granted for the page directory itself
+-	 */
+-	cur_gref = num_pages_dir;
+-	grefs_left = buf->num_pages;
+-	for (i = 0; i < num_pages_dir; i++) {
+-		struct xendispl_page_directory *page_dir =
+-				(struct xendispl_page_directory *)ptr;
+-
+-		if (grefs_left <= XEN_DRM_NUM_GREFS_PER_PAGE) {
+-			to_copy = grefs_left;
+-			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
+-		} else {
+-			to_copy = XEN_DRM_NUM_GREFS_PER_PAGE;
+-			page_dir->gref_dir_next_page = buf->grefs[i + 1];
+-		}
+-		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
+-		       to_copy * sizeof(grant_ref_t));
+-		ptr += PAGE_SIZE;
+-		grefs_left -= to_copy;
+-		cur_gref += to_copy;
+-	}
+-}
+-
+-static int guest_grant_refs_for_buffer(struct xen_drm_front_shbuf *buf,
+-				       grant_ref_t *priv_gref_head,
+-				       int gref_idx)
+-{
+-	int i, cur_ref, otherend_id;
+-
+-	otherend_id = buf->xb_dev->otherend_id;
+-	for (i = 0; i < buf->num_pages; i++) {
+-		cur_ref = gnttab_claim_grant_reference(priv_gref_head);
+-		if (cur_ref < 0)
+-			return cur_ref;
+-
+-		gnttab_grant_foreign_access_ref(cur_ref, otherend_id,
+-						xen_page_to_gfn(buf->pages[i]),
+-						0);
+-		buf->grefs[gref_idx++] = cur_ref;
+-	}
+-	return 0;
+-}
+-
+-static int grant_references(struct xen_drm_front_shbuf *buf)
+-{
+-	grant_ref_t priv_gref_head;
+-	int ret, i, j, cur_ref;
+-	int otherend_id, num_pages_dir;
+-
+-	ret = gnttab_alloc_grant_references(buf->num_grefs, &priv_gref_head);
+-	if (ret < 0) {
+-		DRM_ERROR("Cannot allocate grant references\n");
+-		return ret;
+-	}
+-
+-	otherend_id = buf->xb_dev->otherend_id;
+-	j = 0;
+-	num_pages_dir = get_num_pages_dir(buf);
+-	for (i = 0; i < num_pages_dir; i++) {
+-		unsigned long frame;
+-
+-		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
+-		if (cur_ref < 0)
+-			return cur_ref;
+-
+-		frame = xen_page_to_gfn(virt_to_page(buf->directory +
+-					PAGE_SIZE * i));
+-		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
+-		buf->grefs[j++] = cur_ref;
+-	}
+-
+-	if (buf->ops->grant_refs_for_buffer) {
+-		ret = buf->ops->grant_refs_for_buffer(buf, &priv_gref_head, j);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	gnttab_free_grant_references(priv_gref_head);
+-	return 0;
+-}
+-
+-static int alloc_storage(struct xen_drm_front_shbuf *buf)
+-{
+-	buf->grefs = kcalloc(buf->num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
+-	if (!buf->grefs)
+-		return -ENOMEM;
+-
+-	buf->directory = kcalloc(get_num_pages_dir(buf), PAGE_SIZE, GFP_KERNEL);
+-	if (!buf->directory)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+-/*
+- * For be allocated buffers we don't need grant_refs_for_buffer as those
+- * grant references are allocated at backend side
+- */
+-static const struct xen_drm_front_shbuf_ops backend_ops = {
+-	.calc_num_grefs = backend_calc_num_grefs,
+-	.fill_page_dir = backend_fill_page_dir,
+-	.map = backend_map,
+-	.unmap = backend_unmap
+-};
+-
+-/* For locally granted references we do not need to map/unmap the references */
+-static const struct xen_drm_front_shbuf_ops local_ops = {
+-	.calc_num_grefs = guest_calc_num_grefs,
+-	.fill_page_dir = guest_fill_page_dir,
+-	.grant_refs_for_buffer = guest_grant_refs_for_buffer,
+-};
+-
+-struct xen_drm_front_shbuf *
+-xen_drm_front_shbuf_alloc(struct xen_drm_front_shbuf_cfg *cfg)
+-{
+-	struct xen_drm_front_shbuf *buf;
+-	int ret;
+-
+-	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+-	if (!buf)
+-		return ERR_PTR(-ENOMEM);
+-
+-	if (cfg->be_alloc)
+-		buf->ops = &backend_ops;
+-	else
+-		buf->ops = &local_ops;
+-
+-	buf->xb_dev = cfg->xb_dev;
+-	buf->num_pages = DIV_ROUND_UP(cfg->size, PAGE_SIZE);
+-	buf->pages = cfg->pages;
+-
+-	buf->ops->calc_num_grefs(buf);
+-
+-	ret = alloc_storage(buf);
+-	if (ret)
+-		goto fail;
+-
+-	ret = grant_references(buf);
+-	if (ret)
+-		goto fail;
+-
+-	buf->ops->fill_page_dir(buf);
+-
+-	return buf;
+-
+-fail:
+-	xen_drm_front_shbuf_free(buf);
+-	return ERR_PTR(ret);
+-}
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_shbuf.h b/drivers/gpu/drm/xen/xen_drm_front_shbuf.h
+deleted file mode 100644
+index 7545c692539e..000000000000
+--- a/drivers/gpu/drm/xen/xen_drm_front_shbuf.h
++++ /dev/null
+@@ -1,64 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+-
+-/*
+- *  Xen para-virtual DRM device
+- *
+- * Copyright (C) 2016-2018 EPAM Systems Inc.
+- *
+- * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+- */
+-
+-#ifndef __XEN_DRM_FRONT_SHBUF_H_
+-#define __XEN_DRM_FRONT_SHBUF_H_
+-
+-#include <linux/kernel.h>
+-#include <linux/scatterlist.h>
+-
+-#include <xen/grant_table.h>
+-
+-struct xen_drm_front_shbuf {
+-	/*
+-	 * number of references granted for the backend use:
+-	 *  - for allocated/imported dma-buf's this holds number of grant
+-	 *    references for the page directory and pages of the buffer
+-	 *  - for the buffer provided by the backend this holds number of
+-	 *    grant references for the page directory as grant references for
+-	 *    the buffer will be provided by the backend
+-	 */
+-	int num_grefs;
+-	grant_ref_t *grefs;
+-	unsigned char *directory;
+-
+-	int num_pages;
+-	struct page **pages;
+-
+-	struct xenbus_device *xb_dev;
+-
+-	/* these are the ops used internally depending on be_alloc mode */
+-	const struct xen_drm_front_shbuf_ops *ops;
+-
+-	/* Xen map handles for the buffer allocated by the backend */
+-	grant_handle_t *backend_map_handles;
+-};
+-
+-struct xen_drm_front_shbuf_cfg {
+-	struct xenbus_device *xb_dev;
+-	size_t size;
+-	struct page **pages;
+-	bool be_alloc;
+-};
+-
+-struct xen_drm_front_shbuf *
+-xen_drm_front_shbuf_alloc(struct xen_drm_front_shbuf_cfg *cfg);
+-
+-grant_ref_t xen_drm_front_shbuf_get_dir_start(struct xen_drm_front_shbuf *buf);
+-
+-int xen_drm_front_shbuf_map(struct xen_drm_front_shbuf *buf);
+-
+-int xen_drm_front_shbuf_unmap(struct xen_drm_front_shbuf *buf);
+-
+-void xen_drm_front_shbuf_flush(struct xen_drm_front_shbuf *buf);
+-
+-void xen_drm_front_shbuf_free(struct xen_drm_front_shbuf *buf);
+-
+-#endif /* __XEN_DRM_FRONT_SHBUF_H_ */
+-- 
+2.19.1
