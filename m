@@ -1,45 +1,33 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 0/6] Introduce audio-mute LED trigger (and
- conversions to it)
-Date: Fri, 30 Nov 2018 12:42:34 +0200
-Message-ID: <20181130104234.GJ10650@smile.fi.intel.com>
-References: <20181127084418.GA20504@amd> <20181128111806.cb3cncpjeq73sptg@pali>
- <s5hy39dv3dg.wl-tiwai@suse.de> <20181128122505.GA1193@amd>
- <8bb45cc6-9f98-9fed-9676-7f1429328c4a@gmail.com>
- <20181128203410.GA20670@amd> <20181128204612.l3bayhop4qmep2hj@pali>
- <0ed37870-c7b6-fd6b-2f6e-7325fdde3629@gmail.com>
- <20181128212212.GE20670@amd>
- <5f8eece3-95af-7866-d7d0-02cc3cb695ca@gmail.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v3 0/5] ASoC: qdsp6: add compress offload support
+Date: Fri, 30 Nov 2018 17:52:20 +0530
+Message-ID: <20181130122220.GO3175@vkoul-mobl.Dlink>
+References: <20181115181324.26784-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C9D126770D
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2018 11:42:39 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5f8eece3-95af-7866-d7d0-02cc3cb695ca@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, Takashi Iwai <tiwai@suse.de>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Pavel Machek <pavel@ucw.cz>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, linux-leds@vger.kernel.org
+In-Reply-To: <20181115181324.26784-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, srini@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 29, 2018 at 10:23:31PM +0100, Jacek Anaszewski wrote:
+On 15-11-18, 18:13, Srinivas Kandagatla wrote:
+> This patchset adds support to very basic MP3 playback compress offload
+> support via QDSP ASM module.
+> 
+> Tested this patchset on DB410c with APQ8016 and DB820c with APQ8096 using
+> tinycompress library.
+> 
+> Adding other codec support should be trivial w.r.t qdsp6 side, however
+> there are other dependencies like compress UAPI header changes and
+> FastRPC which are being worked in parallel. Once ready will post them!
 
-> Regarding sound devices - how would we name micmute LED for USB
-> microphone? I suppose that it is possible to discover some unique
-> identifier in runtime - this is a question to ALSA people.
+Thanks Srini, with this we will have compress support upstream for a
+public board.
 
-USB path (e.g. 2-1.1.2.4.3) + '::' + name ?
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
 -- 
-With Best Regards,
-Andy Shevchenko
+~Vinod
