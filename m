@@ -1,573 +1,408 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [Xen-devel][PATCH v2 3/3] ALSA: xen-front: Use Xen common shared buffer implementation
-Date: Fri, 30 Nov 2018 09:42:05 +0200
-Message-ID: <20181130074205.20496-3-andr2000@gmail.com>
+Subject: Re: [Xen-devel][PATCH v2 1/3] xen: Introduce shared buffer helpers
+ for page directory...
+Date: Fri, 30 Nov 2018 09:46:18 +0200
+Message-ID: <7e6ae967-174b-012e-74d8-16af9395332c@gmail.com>
 References: <20181130074205.20496-1-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 In-Reply-To: <20181130074205.20496-1-andr2000@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-
-Use page directory based shared buffer implementation
-now available as common code for Xen frontend drivers.
-
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
----
- sound/xen/Kconfig               |   1 +
- sound/xen/Makefile              |   1 -
- sound/xen/xen_snd_front.c       |   7 +-
- sound/xen/xen_snd_front.h       |   4 +-
- sound/xen/xen_snd_front_alsa.c  | 102 +++++++++++++----
- sound/xen/xen_snd_front_shbuf.c | 194 --------------------------------
- sound/xen/xen_snd_front_shbuf.h |  36 ------
- 7 files changed, 84 insertions(+), 261 deletions(-)
- delete mode 100644 sound/xen/xen_snd_front_shbuf.c
- delete mode 100644 sound/xen/xen_snd_front_shbuf.h
-
-diff --git a/sound/xen/Kconfig b/sound/xen/Kconfig
-index 4f1fceea82d2..e4d7beb4df1c 100644
---- a/sound/xen/Kconfig
-+++ b/sound/xen/Kconfig
-@@ -5,6 +5,7 @@ config SND_XEN_FRONTEND
- 	depends on XEN
- 	select SND_PCM
- 	select XEN_XENBUS_FRONTEND
-+	select XEN_FRONT_PGDIR_SHBUF
- 	help
- 	  Choose this option if you want to enable a para-virtualized
- 	  frontend sound driver for Xen guest OSes.
-diff --git a/sound/xen/Makefile b/sound/xen/Makefile
-index 1e6470ecc2f2..24031775b715 100644
---- a/sound/xen/Makefile
-+++ b/sound/xen/Makefile
-@@ -3,7 +3,6 @@
- snd_xen_front-objs := xen_snd_front.o \
- 		      xen_snd_front_cfg.o \
- 		      xen_snd_front_evtchnl.o \
--		      xen_snd_front_shbuf.o \
- 		      xen_snd_front_alsa.o
- 
- obj-$(CONFIG_SND_XEN_FRONTEND) += snd_xen_front.o
-diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-index b089b13b5160..a9e5c2cd7698 100644
---- a/sound/xen/xen_snd_front.c
-+++ b/sound/xen/xen_snd_front.c
-@@ -16,12 +16,12 @@
- #include <xen/xen.h>
- #include <xen/xenbus.h>
- 
-+#include <xen/xen-front-pgdir-shbuf.h>
- #include <xen/interface/io/sndif.h>
- 
- #include "xen_snd_front.h"
- #include "xen_snd_front_alsa.h"
- #include "xen_snd_front_evtchnl.h"
--#include "xen_snd_front_shbuf.h"
- 
- static struct xensnd_req *
- be_stream_prepare_req(struct xen_snd_front_evtchnl *evtchnl, u8 operation)
-@@ -82,7 +82,7 @@ int xen_snd_front_stream_query_hw_param(struct xen_snd_front_evtchnl *evtchnl,
- }
- 
- int xen_snd_front_stream_prepare(struct xen_snd_front_evtchnl *evtchnl,
--				 struct xen_snd_front_shbuf *sh_buf,
-+				 struct xen_front_pgdir_shbuf *shbuf,
- 				 u8 format, unsigned int channels,
- 				 unsigned int rate, u32 buffer_sz,
- 				 u32 period_sz)
-@@ -99,7 +99,8 @@ int xen_snd_front_stream_prepare(struct xen_snd_front_evtchnl *evtchnl,
- 	req->op.open.pcm_rate = rate;
- 	req->op.open.buffer_sz = buffer_sz;
- 	req->op.open.period_sz = period_sz;
--	req->op.open.gref_directory = xen_snd_front_shbuf_get_dir_start(sh_buf);
-+	req->op.open.gref_directory =
-+		xen_front_pgdir_shbuf_get_dir_start(shbuf);
- 	mutex_unlock(&evtchnl->ring_io_lock);
- 
- 	ret = be_stream_do_io(evtchnl);
-diff --git a/sound/xen/xen_snd_front.h b/sound/xen/xen_snd_front.h
-index a2ea2463bcc5..05611f113b94 100644
---- a/sound/xen/xen_snd_front.h
-+++ b/sound/xen/xen_snd_front.h
-@@ -16,7 +16,7 @@
- struct xen_snd_front_card_info;
- struct xen_snd_front_evtchnl;
- struct xen_snd_front_evtchnl_pair;
--struct xen_snd_front_shbuf;
-+struct xen_front_pgdir_shbuf;
- struct xensnd_query_hw_param;
- 
- struct xen_snd_front_info {
-@@ -35,7 +35,7 @@ int xen_snd_front_stream_query_hw_param(struct xen_snd_front_evtchnl *evtchnl,
- 					struct xensnd_query_hw_param *hw_param_resp);
- 
- int xen_snd_front_stream_prepare(struct xen_snd_front_evtchnl *evtchnl,
--				 struct xen_snd_front_shbuf *sh_buf,
-+				 struct xen_front_pgdir_shbuf *shbuf,
- 				 u8 format, unsigned int channels,
- 				 unsigned int rate, u32 buffer_sz,
- 				 u32 period_sz);
-diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
-index 129180e17db1..a17ae45ec634 100644
---- a/sound/xen/xen_snd_front_alsa.c
-+++ b/sound/xen/xen_snd_front_alsa.c
-@@ -15,17 +15,24 @@
- #include <sound/pcm_params.h>
- 
- #include <xen/xenbus.h>
-+#include <xen/xen-front-pgdir-shbuf.h>
- 
- #include "xen_snd_front.h"
- #include "xen_snd_front_alsa.h"
- #include "xen_snd_front_cfg.h"
- #include "xen_snd_front_evtchnl.h"
--#include "xen_snd_front_shbuf.h"
- 
- struct xen_snd_front_pcm_stream_info {
- 	struct xen_snd_front_info *front_info;
- 	struct xen_snd_front_evtchnl_pair *evt_pair;
--	struct xen_snd_front_shbuf sh_buf;
-+
-+	/* This is the shared buffer with its backing storage. */
-+	struct xen_front_pgdir_shbuf shbuf;
-+	u8 *buffer;
-+	size_t buffer_sz;
-+	int num_pages;
-+	struct page **pages;
-+
- 	int index;
- 
- 	bool is_open;
-@@ -214,12 +221,20 @@ static void stream_clear(struct xen_snd_front_pcm_stream_info *stream)
- 	stream->out_frames = 0;
- 	atomic_set(&stream->hw_ptr, 0);
- 	xen_snd_front_evtchnl_pair_clear(stream->evt_pair);
--	xen_snd_front_shbuf_clear(&stream->sh_buf);
-+	memset(&stream->shbuf, 0, sizeof(stream->shbuf));
-+	stream->buffer = NULL;
-+	stream->buffer_sz = 0;
-+	stream->pages = NULL;
-+	stream->num_pages = 0;
- }
- 
- static void stream_free(struct xen_snd_front_pcm_stream_info *stream)
- {
--	xen_snd_front_shbuf_free(&stream->sh_buf);
-+	xen_front_pgdir_shbuf_unmap(&stream->shbuf);
-+	xen_front_pgdir_shbuf_free(&stream->shbuf);
-+	if (stream->buffer)
-+		free_pages_exact(stream->buffer, stream->buffer_sz);
-+	kfree(stream->pages);
- 	stream_clear(stream);
- }
- 
-@@ -421,10 +436,34 @@ static int alsa_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
-+static int shbuf_setup_backstore(struct xen_snd_front_pcm_stream_info *stream,
-+				 size_t buffer_sz)
-+{
-+	int i;
-+
-+	stream->buffer = alloc_pages_exact(stream->buffer_sz, GFP_KERNEL);
-+	if (!stream->buffer)
-+		return -ENOMEM;
-+
-+	stream->buffer_sz = buffer_sz;
-+	stream->num_pages = DIV_ROUND_UP(stream->buffer_sz, PAGE_SIZE);
-+	stream->pages = kcalloc(stream->num_pages, sizeof(struct page *),
-+				GFP_KERNEL);
-+	if (!stream->pages)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < stream->num_pages; i++)
-+		stream->pages[i] = virt_to_page(stream->buffer + i * PAGE_SIZE);
-+
-+	return 0;
-+}
-+
- static int alsa_hw_params(struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *params)
- {
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
-+	struct xen_snd_front_info *front_info = stream->front_info;
-+	struct xen_front_pgdir_shbuf_cfg buf_cfg;
- 	int ret;
- 
- 	/*
-@@ -432,19 +471,32 @@ static int alsa_hw_params(struct snd_pcm_substream *substream,
- 	 * so free the previously allocated shared buffer if any.
- 	 */
- 	stream_free(stream);
-+	ret = shbuf_setup_backstore(stream, params_buffer_bytes(params));
-+	if (ret < 0)
-+		goto fail;
- 
--	ret = xen_snd_front_shbuf_alloc(stream->front_info->xb_dev,
--					&stream->sh_buf,
--					params_buffer_bytes(params));
--	if (ret < 0) {
--		stream_free(stream);
--		dev_err(&stream->front_info->xb_dev->dev,
--			"Failed to allocate buffers for stream with index %d\n",
--			stream->index);
--		return ret;
--	}
-+	memset(&buf_cfg, 0, sizeof(buf_cfg));
-+	buf_cfg.xb_dev = front_info->xb_dev;
-+	buf_cfg.pgdir = &stream->shbuf;
-+	buf_cfg.num_pages = stream->num_pages;
-+	buf_cfg.pages = stream->pages;
-+
-+	ret = xen_front_pgdir_shbuf_alloc(&buf_cfg);
-+	if (ret < 0)
-+		goto fail;
-+
-+	ret = xen_front_pgdir_shbuf_map(&stream->shbuf);
-+	if (ret < 0)
-+		goto fail;
- 
- 	return 0;
-+
-+fail:
-+	stream_free(stream);
-+	dev_err(&front_info->xb_dev->dev,
-+		"Failed to allocate buffers for stream with index %d\n",
-+		stream->index);
-+	return ret;
- }
- 
- static int alsa_hw_free(struct snd_pcm_substream *substream)
-@@ -476,7 +528,7 @@ static int alsa_prepare(struct snd_pcm_substream *substream)
- 		sndif_format = ret;
- 
- 		ret = xen_snd_front_stream_prepare(&stream->evt_pair->req,
--						   &stream->sh_buf,
-+						   &stream->shbuf,
- 						   sndif_format,
- 						   runtime->channels,
- 						   runtime->rate,
-@@ -556,10 +608,10 @@ static int alsa_pb_copy_user(struct snd_pcm_substream *substream,
- {
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
- 
--	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+	if (unlikely(pos + count > stream->buffer_sz))
- 		return -EINVAL;
- 
--	if (copy_from_user(stream->sh_buf.buffer + pos, src, count))
-+	if (copy_from_user(stream->buffer + pos, src, count))
- 		return -EFAULT;
- 
- 	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
-@@ -571,10 +623,10 @@ static int alsa_pb_copy_kernel(struct snd_pcm_substream *substream,
- {
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
- 
--	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+	if (unlikely(pos + count > stream->buffer_sz))
- 		return -EINVAL;
- 
--	memcpy(stream->sh_buf.buffer + pos, src, count);
-+	memcpy(stream->buffer + pos, src, count);
- 
- 	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
- }
-@@ -586,14 +638,14 @@ static int alsa_cap_copy_user(struct snd_pcm_substream *substream,
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
- 	int ret;
- 
--	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+	if (unlikely(pos + count > stream->buffer_sz))
- 		return -EINVAL;
- 
- 	ret = xen_snd_front_stream_read(&stream->evt_pair->req, pos, count);
- 	if (ret < 0)
- 		return ret;
- 
--	return copy_to_user(dst, stream->sh_buf.buffer + pos, count) ?
-+	return copy_to_user(dst, stream->buffer + pos, count) ?
- 		-EFAULT : 0;
- }
- 
-@@ -604,14 +656,14 @@ static int alsa_cap_copy_kernel(struct snd_pcm_substream *substream,
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
- 	int ret;
- 
--	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+	if (unlikely(pos + count > stream->buffer_sz))
- 		return -EINVAL;
- 
- 	ret = xen_snd_front_stream_read(&stream->evt_pair->req, pos, count);
- 	if (ret < 0)
- 		return ret;
- 
--	memcpy(dst, stream->sh_buf.buffer + pos, count);
-+	memcpy(dst, stream->buffer + pos, count);
- 
- 	return 0;
- }
-@@ -622,10 +674,10 @@ static int alsa_pb_fill_silence(struct snd_pcm_substream *substream,
- {
- 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
- 
--	if (unlikely(pos + count > stream->sh_buf.buffer_sz))
-+	if (unlikely(pos + count > stream->buffer_sz))
- 		return -EINVAL;
- 
--	memset(stream->sh_buf.buffer + pos, 0, count);
-+	memset(stream->buffer + pos, 0, count);
- 
- 	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
- }
-diff --git a/sound/xen/xen_snd_front_shbuf.c b/sound/xen/xen_snd_front_shbuf.c
-deleted file mode 100644
-index 07ac176a41ba..000000000000
---- a/sound/xen/xen_snd_front_shbuf.c
-+++ /dev/null
-@@ -1,194 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0 OR MIT
--
--/*
-- * Xen para-virtual sound device
-- *
-- * Copyright (C) 2016-2018 EPAM Systems Inc.
-- *
-- * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-- */
--
--#include <linux/kernel.h>
--#include <xen/xen.h>
--#include <xen/xenbus.h>
--
--#include "xen_snd_front_shbuf.h"
--
--grant_ref_t xen_snd_front_shbuf_get_dir_start(struct xen_snd_front_shbuf *buf)
--{
--	if (!buf->grefs)
--		return GRANT_INVALID_REF;
--
--	return buf->grefs[0];
--}
--
--void xen_snd_front_shbuf_clear(struct xen_snd_front_shbuf *buf)
--{
--	memset(buf, 0, sizeof(*buf));
--}
--
--void xen_snd_front_shbuf_free(struct xen_snd_front_shbuf *buf)
--{
--	int i;
--
--	if (buf->grefs) {
--		for (i = 0; i < buf->num_grefs; i++)
--			if (buf->grefs[i] != GRANT_INVALID_REF)
--				gnttab_end_foreign_access(buf->grefs[i],
--							  0, 0UL);
--		kfree(buf->grefs);
--	}
--	kfree(buf->directory);
--	free_pages_exact(buf->buffer, buf->buffer_sz);
--	xen_snd_front_shbuf_clear(buf);
--}
--
--/*
-- * number of grant references a page can hold with respect to the
-- * xensnd_page_directory header
-- */
--#define XENSND_NUM_GREFS_PER_PAGE ((XEN_PAGE_SIZE - \
--		offsetof(struct xensnd_page_directory, gref)) / \
--		sizeof(grant_ref_t))
--
--static void fill_page_dir(struct xen_snd_front_shbuf *buf,
--			  int num_pages_dir)
--{
--	struct xensnd_page_directory *page_dir;
--	unsigned char *ptr;
--	int i, cur_gref, grefs_left, to_copy;
--
--	ptr = buf->directory;
--	grefs_left = buf->num_grefs - num_pages_dir;
--	/*
--	 * skip grant references at the beginning, they are for pages granted
--	 * for the page directory itself
--	 */
--	cur_gref = num_pages_dir;
--	for (i = 0; i < num_pages_dir; i++) {
--		page_dir = (struct xensnd_page_directory *)ptr;
--		if (grefs_left <= XENSND_NUM_GREFS_PER_PAGE) {
--			to_copy = grefs_left;
--			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
--		} else {
--			to_copy = XENSND_NUM_GREFS_PER_PAGE;
--			page_dir->gref_dir_next_page = buf->grefs[i + 1];
--		}
--
--		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
--		       to_copy * sizeof(grant_ref_t));
--
--		ptr += XEN_PAGE_SIZE;
--		grefs_left -= to_copy;
--		cur_gref += to_copy;
--	}
--}
--
--static int grant_references(struct xenbus_device *xb_dev,
--			    struct xen_snd_front_shbuf *buf,
--			    int num_pages_dir, int num_pages_buffer,
--			    int num_grefs)
--{
--	grant_ref_t priv_gref_head;
--	unsigned long frame;
--	int ret, i, j, cur_ref;
--	int otherend_id;
--
--	ret = gnttab_alloc_grant_references(num_grefs, &priv_gref_head);
--	if (ret)
--		return ret;
--
--	buf->num_grefs = num_grefs;
--	otherend_id = xb_dev->otherend_id;
--	j = 0;
--
--	for (i = 0; i < num_pages_dir; i++) {
--		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
--		if (cur_ref < 0) {
--			ret = cur_ref;
--			goto fail;
--		}
--
--		frame = xen_page_to_gfn(virt_to_page(buf->directory +
--						     XEN_PAGE_SIZE * i));
--		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
--		buf->grefs[j++] = cur_ref;
--	}
--
--	for (i = 0; i < num_pages_buffer; i++) {
--		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
--		if (cur_ref < 0) {
--			ret = cur_ref;
--			goto fail;
--		}
--
--		frame = xen_page_to_gfn(virt_to_page(buf->buffer +
--						     XEN_PAGE_SIZE * i));
--		gnttab_grant_foreign_access_ref(cur_ref, otherend_id, frame, 0);
--		buf->grefs[j++] = cur_ref;
--	}
--
--	gnttab_free_grant_references(priv_gref_head);
--	fill_page_dir(buf, num_pages_dir);
--	return 0;
--
--fail:
--	gnttab_free_grant_references(priv_gref_head);
--	return ret;
--}
--
--static int alloc_int_buffers(struct xen_snd_front_shbuf *buf,
--			     int num_pages_dir, int num_pages_buffer,
--			     int num_grefs)
--{
--	buf->grefs = kcalloc(num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
--	if (!buf->grefs)
--		return -ENOMEM;
--
--	buf->directory = kcalloc(num_pages_dir, XEN_PAGE_SIZE, GFP_KERNEL);
--	if (!buf->directory)
--		goto fail;
--
--	buf->buffer_sz = num_pages_buffer * XEN_PAGE_SIZE;
--	buf->buffer = alloc_pages_exact(buf->buffer_sz, GFP_KERNEL);
--	if (!buf->buffer)
--		goto fail;
--
--	return 0;
--
--fail:
--	kfree(buf->grefs);
--	buf->grefs = NULL;
--	kfree(buf->directory);
--	buf->directory = NULL;
--	return -ENOMEM;
--}
--
--int xen_snd_front_shbuf_alloc(struct xenbus_device *xb_dev,
--			      struct xen_snd_front_shbuf *buf,
--			      unsigned int buffer_sz)
--{
--	int num_pages_buffer, num_pages_dir, num_grefs;
--	int ret;
--
--	xen_snd_front_shbuf_clear(buf);
--
--	num_pages_buffer = DIV_ROUND_UP(buffer_sz, XEN_PAGE_SIZE);
--	/* number of pages the page directory consumes itself */
--	num_pages_dir = DIV_ROUND_UP(num_pages_buffer,
--				     XENSND_NUM_GREFS_PER_PAGE);
--	num_grefs = num_pages_buffer + num_pages_dir;
--
--	ret = alloc_int_buffers(buf, num_pages_dir,
--				num_pages_buffer, num_grefs);
--	if (ret < 0)
--		return ret;
--
--	ret = grant_references(xb_dev, buf, num_pages_dir, num_pages_buffer,
--			       num_grefs);
--	if (ret < 0)
--		return ret;
--
--	fill_page_dir(buf, num_pages_dir);
--	return 0;
--}
-diff --git a/sound/xen/xen_snd_front_shbuf.h b/sound/xen/xen_snd_front_shbuf.h
-deleted file mode 100644
-index d28e97c47b2c..000000000000
---- a/sound/xen/xen_snd_front_shbuf.h
-+++ /dev/null
-@@ -1,36 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 OR MIT */
--
--/*
-- * Xen para-virtual sound device
-- *
-- * Copyright (C) 2016-2018 EPAM Systems Inc.
-- *
-- * Author: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-- */
--
--#ifndef __XEN_SND_FRONT_SHBUF_H
--#define __XEN_SND_FRONT_SHBUF_H
--
--#include <xen/grant_table.h>
--
--#include "xen_snd_front_evtchnl.h"
--
--struct xen_snd_front_shbuf {
--	int num_grefs;
--	grant_ref_t *grefs;
--	u8 *directory;
--	u8 *buffer;
--	size_t buffer_sz;
--};
--
--grant_ref_t xen_snd_front_shbuf_get_dir_start(struct xen_snd_front_shbuf *buf);
--
--int xen_snd_front_shbuf_alloc(struct xenbus_device *xb_dev,
--			      struct xen_snd_front_shbuf *buf,
--			      unsigned int buffer_sz);
--
--void xen_snd_front_shbuf_clear(struct xen_snd_front_shbuf *buf);
--
--void xen_snd_front_shbuf_free(struct xen_snd_front_shbuf *buf);
--
--#endif /* __XEN_SND_FRONT_SHBUF_H */
--- 
-2.19.1
+Q2hhbmdlcyBpbiB0aGUgc2VyaWVzIHNpbmNlIHYxOgoKLSBubyBjaGFuZ2VzIHRvIHBhdGNoIDEg
+KFhlbiBzaGFyZWQgY29kZSkKCi0gQUxTQTogZml4IGNvbW1lbnQgZnJvbSBUYWthc2hpIChOVUxM
+IHN0cmVhbS0+YnVmZmVyKQoKLSBEUk06IHJlbW92ZWQgZGlzcGxheSBidWZmZXIgZmx1c2ggd29y
+a2Fyb3VuZAoKKHByb3BlciBmaXggaXMgb24gcmV2aWV3IFsxXSkKClRoYW5rIHlvdSwKCk9sZWtz
+YW5kcgoKT24gMTEvMzAvMTggOTo0MiBBTSwgT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3JvdGU6
+Cj4gRnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtv
+QGVwYW0uY29tPgo+Cj4gYmFzZWQgZnJvbnRlbmRzLiBDdXJyZW50bHkgdGhlIGZyb250ZW5kcyB3
+aGljaCBpbXBsZW1lbnQKPiBzaW1pbGFyIGNvZGUgZm9yIHNoYXJpbmcgYmlnIGJ1ZmZlcnMgYmV0
+d2VlbiBmcm9udGVuZCBhbmQKPiBiYWNrZW5kIGFyZSBwYXJhLXZpcnR1YWxpemVkIERSTSBhbmQg
+c291bmQgZHJpdmVycy4KPiBCb3RoIGRlZmluZSB0aGUgc2FtZSB3YXkgdG8gc2hhcmUgZ3JhbnQg
+cmVmZXJlbmNlcyBvZiBhCj4gZGF0YSBidWZmZXIgd2l0aCB0aGUgY29ycmVzcG9uZGluZyBiYWNr
+ZW5kIHdpdGggbGl0dGxlCj4gZGlmZmVyZW5jZXMuCj4KPiBNb3ZlIHNoYXJlZCBjb2RlIGludG8g
+YSBoZWxwZXIgbW9kdWxlLCBzbyB0aGVyZSBpcyBhIHNpbmdsZQo+IGltcGxlbWVudGF0aW9uIG9m
+IHRoZSBzYW1lIGZ1bmN0aW9uYWxpdHkgZm9yIGFsbC4KPgo+IFRoaXMgcGF0Y2ggaW50cm9kdWNl
+cyBjb2RlIHdoaWNoIGlzIHVzZWQgYnkgc291bmQgYW5kIGRpc3BsYXkKPiBmcm9udGVuZCBkcml2
+ZXJzIHdpdGhvdXQgZnVuY3Rpb25hbCBjaGFuZ2VzIHdpdGggdGhlIGludGVudGlvbgo+IHRvIHJl
+bW92ZSBzaGFyZWQgY29kZSBmcm9tIHRoZSBjb3JyZXNwb25kaW5nIGRyaXZlcnMuCj4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyA8b2xla3NhbmRyX2FuZHJ1c2hjaGVu
+a29AZXBhbS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL3hlbi9LY29uZmlnICAgICAgICAgICAgICAg
+ICB8ICAgMyArCj4gICBkcml2ZXJzL3hlbi9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAgMSAr
+Cj4gICBkcml2ZXJzL3hlbi94ZW4tZnJvbnQtcGdkaXItc2hidWYuYyB8IDU1MyArKysrKysrKysr
+KysrKysrKysrKysrKysrKysrCj4gICBpbmNsdWRlL3hlbi94ZW4tZnJvbnQtcGdkaXItc2hidWYu
+aCB8ICA4OSArKysrKwo+ICAgNCBmaWxlcyBjaGFuZ2VkLCA2NDYgaW5zZXJ0aW9ucygrKQo+ICAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMveGVuL3hlbi1mcm9udC1wZ2Rpci1zaGJ1Zi5jCj4g
+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS94ZW4veGVuLWZyb250LXBnZGlyLXNoYnVmLmgK
+Pgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3hlbi9LY29uZmlnIGIvZHJpdmVycy94ZW4vS2NvbmZp
+Zwo+IGluZGV4IDgxNWI5ZTliYjk3NS4uODM4YjY2YTlhMGU3IDEwMDY0NAo+IC0tLSBhL2RyaXZl
+cnMveGVuL0tjb25maWcKPiArKysgYi9kcml2ZXJzL3hlbi9LY29uZmlnCj4gQEAgLTM0MCw0ICsz
+NDAsNyBAQCBjb25maWcgWEVOX1NZTVMKPiAgIGNvbmZpZyBYRU5fSEFWRV9WUE1VCj4gICAgICAg
+ICAgYm9vbAo+ICAgCj4gK2NvbmZpZyBYRU5fRlJPTlRfUEdESVJfU0hCVUYKPiArCXRyaXN0YXRl
+Cj4gKwo+ICAgZW5kbWVudQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3hlbi9NYWtlZmlsZSBiL2Ry
+aXZlcnMveGVuL01ha2VmaWxlCj4gaW5kZXggM2U1NDJmNjBmMjlmLi5jNDg5MjdhNThlMTAgMTAw
+NjQ0Cj4gLS0tIGEvZHJpdmVycy94ZW4vTWFrZWZpbGUKPiArKysgYi9kcml2ZXJzL3hlbi9NYWtl
+ZmlsZQo+IEBAIC00NCwzICs0NCw0IEBAIHhlbi1nbnRkZXYteQkJCQk6PSBnbnRkZXYubwo+ICAg
+eGVuLWdudGRldi0kKENPTkZJR19YRU5fR05UREVWX0RNQUJVRikJKz0gZ250ZGV2LWRtYWJ1Zi5v
+Cj4gICB4ZW4tZ250YWxsb2MteQkJCQk6PSBnbnRhbGxvYy5vCj4gICB4ZW4tcHJpdmNtZC15CQkJ
+CTo9IHByaXZjbWQubyBwcml2Y21kLWJ1Zi5vCj4gK29iai0kKENPTkZJR19YRU5fRlJPTlRfUEdE
+SVJfU0hCVUYpCSs9IHhlbi1mcm9udC1wZ2Rpci1zaGJ1Zi5vCj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMveGVuL3hlbi1mcm9udC1wZ2Rpci1zaGJ1Zi5jIGIvZHJpdmVycy94ZW4veGVuLWZyb250LXBn
+ZGlyLXNoYnVmLmMKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4u
+NDhhNjU4ZGM3Y2NmCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2RyaXZlcnMveGVuL3hlbi1mcm9u
+dC1wZ2Rpci1zaGJ1Zi5jCj4gQEAgLTAsMCArMSw1NTMgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjAgT1IgTUlUCj4gKwo+ICsvKgo+ICsgKiBYZW4gZnJvbnRlbmQvYmFj
+a2VuZCBwYWdlIGRpcmVjdG9yeSBiYXNlZCBzaGFyZWQgYnVmZmVyCj4gKyAqIGhlbHBlciBtb2R1
+bGUuCj4gKyAqCj4gKyAqIENvcHlyaWdodCAoQykgMjAxOCBFUEFNIFN5c3RlbXMgSW5jLgo+ICsg
+Kgo+ICsgKiBBdXRob3I6IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVz
+aGNoZW5rb0BlcGFtLmNvbT4KPiArICovCj4gKwo+ICsjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+
+Cj4gKyNpbmNsdWRlIDxsaW51eC9lcnJuby5oPgo+ICsjaW5jbHVkZSA8bGludXgvbW0uaD4KPiAr
+Cj4gKyNpbmNsdWRlIDxhc20veGVuL2h5cGVydmlzb3IuaD4KPiArI2luY2x1ZGUgPHhlbi9iYWxs
+b29uLmg+Cj4gKyNpbmNsdWRlIDx4ZW4veGVuLmg+Cj4gKyNpbmNsdWRlIDx4ZW4veGVuYnVzLmg+
+Cj4gKyNpbmNsdWRlIDx4ZW4vaW50ZXJmYWNlL2lvL3JpbmcuaD4KPiArCj4gKyNpbmNsdWRlIDx4
+ZW4veGVuLWZyb250LXBnZGlyLXNoYnVmLmg+Cj4gKwo+ICsjaWZuZGVmIEdSQU5UX0lOVkFMSURf
+UkVGCj4gKy8qCj4gKyAqIEZJWE1FOiB1c2FnZSBvZiBncmFudCByZWZlcmVuY2UgMCBhcyBpbnZh
+bGlkIGdyYW50IHJlZmVyZW5jZToKPiArICogZ3JhbnQgcmVmZXJlbmNlIDAgaXMgdmFsaWQsIGJ1
+dCBuZXZlciBleHBvc2VkIHRvIGEgUFYgZHJpdmVyLAo+ICsgKiBiZWNhdXNlIG9mIHRoZSBmYWN0
+IGl0IGlzIGFscmVhZHkgaW4gdXNlL3Jlc2VydmVkIGJ5IHRoZSBQViBjb25zb2xlLgo+ICsgKi8K
+PiArI2RlZmluZSBHUkFOVF9JTlZBTElEX1JFRgkwCj4gKyNlbmRpZgo+ICsKPiArLyoqCj4gKyAq
+IFRoaXMgc3RydWN0dXJlIHJlcHJlc2VudHMgdGhlIHN0cnVjdHVyZSBvZiBhIHNoYXJlZCBwYWdl
+Cj4gKyAqIHRoYXQgY29udGFpbnMgZ3JhbnQgcmVmZXJlbmNlcyB0byB0aGUgcGFnZXMgb2YgdGhl
+IHNoYXJlZAo+ICsgKiBidWZmZXIuIFRoaXMgc3RydWN0dXJlIGlzIGNvbW1vbiB0byBtYW55IFhl
+biBwYXJhLXZpcnR1YWxpemVkCj4gKyAqIHByb3RvY29scyBhdCBpbmNsdWRlL3hlbi9pbnRlcmZh
+Y2UvaW8vCj4gKyAqLwo+ICtzdHJ1Y3QgeGVuX3BhZ2VfZGlyZWN0b3J5IHsKPiArCWdyYW50X3Jl
+Zl90IGdyZWZfZGlyX25leHRfcGFnZTsKPiArCWdyYW50X3JlZl90IGdyZWZbMV07IC8qIFZhcmlh
+YmxlIGxlbmd0aCAqLwo+ICt9Owo+ICsKPiArLyoqCj4gKyAqIFNoYXJlZCBidWZmZXIgb3BzIHdo
+aWNoIGFyZSBkaWZmZXJlbnRseSBpbXBsZW1lbnRlZAo+ICsgKiBkZXBlbmRpbmcgb24gdGhlIGFs
+bG9jYXRpb24gbW9kZSwgZS5nLiBpZiB0aGUgYnVmZmVyCj4gKyAqIGlzIGFsbG9jYXRlZCBieSB0
+aGUgY29ycmVzcG9uZGluZyBiYWNrZW5kIG9yIGZyb250ZW5kLgo+ICsgKiBTb21lIG9mIHRoZSBv
+cGVyYXRpb25zLgo+ICsgKi8KPiArc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9vcHMgewo+
+ICsJLyoKPiArCSAqIENhbGN1bGF0ZSBudW1iZXIgb2YgZ3JlZnMgcmVxdWlyZWQgdG8gaGFuZGxl
+IHRoaXMgYnVmZmVyLAo+ICsJICogZS5nLiBpZiBncmVmcyBhcmUgcmVxdWlyZWQgZm9yIHBhZ2Ug
+ZGlyZWN0b3J5IG9ubHkgb3IgdGhlIGJ1ZmZlcgo+ICsJICogcGFnZXMgYXMgd2VsbC4KPiArCSAq
+Lwo+ICsJdm9pZCAoKmNhbGNfbnVtX2dyZWZzKShzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVm
+ICpidWYpOwo+ICsKPiArCS8qIEZpbGwgcGFnZSBkaXJlY3RvcnkgYWNjb3JkaW5nIHRvIHBhcmEt
+dmlydHVhbCBkaXNwbGF5IHByb3RvY29sLiAqLwo+ICsJdm9pZCAoKmZpbGxfcGFnZV9kaXIpKHN0
+cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7Cj4gKwo+ICsJLyogQ2xhaW0gZ3JhbnQg
+cmVmZXJlbmNlcyBmb3IgdGhlIHBhZ2VzIG9mIHRoZSBidWZmZXIuICovCj4gKwlpbnQgKCpncmFu
+dF9yZWZzX2Zvcl9idWZmZXIpKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZiwKPiAr
+CQkJCSAgICAgZ3JhbnRfcmVmX3QgKnByaXZfZ3JlZl9oZWFkLCBpbnQgZ3JlZl9pZHgpOwo+ICsK
+PiArCS8qIE1hcCBncmFudCByZWZlcmVuY2VzIG9mIHRoZSBidWZmZXIuICovCj4gKwlpbnQgKCpt
+YXApKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7Cj4gKwo+ICsJLyogVW5tYXAg
+Z3JhbnQgcmVmZXJlbmNlcyBvZiB0aGUgYnVmZmVyLiAqLwo+ICsJaW50ICgqdW5tYXApKHN0cnVj
+dCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1Zik7Cj4gK307Cj4gKwo+ICsvKioKPiArICogR2V0
+IGdyYW50ZWQgcmVmZXJlbmNlIHRvIHRoZSB2ZXJ5IGZpcnN0IHBhZ2Ugb2YgdGhlCj4gKyAqIHBh
+Z2UgZGlyZWN0b3J5LiBVc3VhbGx5IHRoaXMgaXMgcGFzc2VkIHRvIHRoZSBiYWNrZW5kLAo+ICsg
+KiBzbyBpdCBjYW4gZmluZC9maWxsIHRoZSBncmFudCByZWZlcmVuY2VzIHRvIHRoZSBidWZmZXIn
+cwo+ICsgKiBwYWdlcy4KPiArICoKPiArICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyIHdoaWNo
+IHBhZ2UgZGlyZWN0b3J5IGlzIG9mIGludGVyZXN0Lgo+ICsgKiBccmV0dXJuIGdyYW50ZWQgcmVm
+ZXJlbmNlIHRvIHRoZSB2ZXJ5IGZpcnN0IHBhZ2Ugb2YgdGhlCj4gKyAqIHBhZ2UgZGlyZWN0b3J5
+Lgo+ICsgKi8KPiArZ3JhbnRfcmVmX3QKPiAreGVuX2Zyb250X3BnZGlyX3NoYnVmX2dldF9kaXJf
+c3RhcnQoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKQo+ICt7Cj4gKwlpZiAoIWJ1
+Zi0+Z3JlZnMpCj4gKwkJcmV0dXJuIEdSQU5UX0lOVkFMSURfUkVGOwo+ICsKPiArCXJldHVybiBi
+dWYtPmdyZWZzWzBdOwo+ICt9Cj4gK0VYUE9SVF9TWU1CT0xfR1BMKHhlbl9mcm9udF9wZ2Rpcl9z
+aGJ1Zl9nZXRfZGlyX3N0YXJ0KTsKPiArCj4gKy8qKgo+ICsgKiBNYXAgZ3JhbnRlZCByZWZlcmVu
+Y2VzIG9mIHRoZSBzaGFyZWQgYnVmZmVyLgo+ICsgKgo+ICsgKiBEZXBlbmRpbmcgb24gdGhlIHNo
+YXJlZCBidWZmZXIgbW9kZSBvZiBhbGxvY2F0aW9uCj4gKyAqIChiZV9hbGxvYyBmbGFnKSB0aGlz
+IGNhbiBlaXRoZXIgZG8gbm90aGluZyAoZm9yIGJ1ZmZlcnMKPiArICogc2hhcmVkIGJ5IHRoZSBm
+cm9udGVuZCBpdHNlbGYpIG9yIG1hcCB0aGUgcHJvdmlkZWQgZ3JhbnRlZAo+ICsgKiByZWZlcmVu
+Y2VzIG9udG8gdGhlIGJhY2tpbmcgc3RvcmFnZSAoYnVmLT5wYWdlcykuCj4gKyAqCj4gKyAqIFxw
+YXJhbSBidWYgc2hhcmVkIGJ1ZmZlciB3aGljaCBncmFudHMgdG8gYmUgbWFwZWQuCj4gKyAqIFxy
+ZXR1cm4gemVybyBvbiBzdWNjZXNzIG9yIGEgbmVnYXRpdmUgbnVtYmVyIG9uIGZhaWx1cmUuCj4g
+KyAqLwo+ICtpbnQgeGVuX2Zyb250X3BnZGlyX3NoYnVmX21hcChzdHJ1Y3QgeGVuX2Zyb250X3Bn
+ZGlyX3NoYnVmICpidWYpCj4gK3sKPiArCWlmIChidWYtPm9wcyAmJiBidWYtPm9wcy0+bWFwKQo+
+ICsJCXJldHVybiBidWYtPm9wcy0+bWFwKGJ1Zik7Cj4gKwo+ICsJLyogTm8gbmVlZCB0byBtYXAg
+b3duIGdyYW50IHJlZmVyZW5jZXMuICovCj4gKwlyZXR1cm4gMDsKPiArfQo+ICtFWFBPUlRfU1lN
+Qk9MX0dQTCh4ZW5fZnJvbnRfcGdkaXJfc2hidWZfbWFwKTsKPiArCj4gKy8qKgo+ICsgKiBVbm1h
+cCBncmFudGVkIHJlZmVyZW5jZXMgb2YgdGhlIHNoYXJlZCBidWZmZXIuCj4gKyAqCj4gKyAqIERl
+cGVuZGluZyBvbiB0aGUgc2hhcmVkIGJ1ZmZlciBtb2RlIG9mIGFsbG9jYXRpb24KPiArICogKGJl
+X2FsbG9jIGZsYWcpIHRoaXMgY2FuIGVpdGhlciBkbyBub3RoaW5nIChmb3IgYnVmZmVycwo+ICsg
+KiBzaGFyZWQgYnkgdGhlIGZyb250ZW5kIGl0c2VsZikgb3IgdW5tYXAgdGhlIHByb3ZpZGVkIGdy
+YW50ZWQKPiArICogcmVmZXJlbmNlcy4KPiArICoKPiArICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVm
+ZmVyIHdoaWNoIGdyYW50cyB0byBiZSB1bm1hcGVkLgo+ICsgKiBccmV0dXJuIHplcm8gb24gc3Vj
+Y2VzcyBvciBhIG5lZ2F0aXZlIG51bWJlciBvbiBmYWlsdXJlLgo+ICsgKi8KPiAraW50IHhlbl9m
+cm9udF9wZ2Rpcl9zaGJ1Zl91bm1hcChzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpidWYp
+Cj4gK3sKPiArCWlmIChidWYtPm9wcyAmJiBidWYtPm9wcy0+dW5tYXApCj4gKwkJcmV0dXJuIGJ1
+Zi0+b3BzLT51bm1hcChidWYpOwo+ICsKPiArCS8qIE5vIG5lZWQgdG8gdW5tYXAgb3duIGdyYW50
+IHJlZmVyZW5jZXMuICovCj4gKwlyZXR1cm4gMDsKPiArfQo+ICtFWFBPUlRfU1lNQk9MX0dQTCh4
+ZW5fZnJvbnRfcGdkaXJfc2hidWZfdW5tYXApOwo+ICsKPiArLyoqCj4gKyAqIEZyZWUgYWxsIHRo
+ZSByZXNvdXJjZXMgb2YgdGhlIHNoYXJlZCBidWZmZXIuCj4gKyAqCj4gKyAqIFxwYXJhbSBidWYg
+c2hhcmVkIGJ1ZmZlciB3aGljaCByZXNvdXJjZXMgdG8gYmUgZnJlZWQuCj4gKyAqLwo+ICt2b2lk
+IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9mcmVlKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYg
+KmJ1ZikKPiArewo+ICsJaWYgKGJ1Zi0+Z3JlZnMpIHsKPiArCQlpbnQgaTsKPiArCj4gKwkJZm9y
+IChpID0gMDsgaSA8IGJ1Zi0+bnVtX2dyZWZzOyBpKyspCj4gKwkJCWlmIChidWYtPmdyZWZzW2ld
+ICE9IEdSQU5UX0lOVkFMSURfUkVGKQo+ICsJCQkJZ250dGFiX2VuZF9mb3JlaWduX2FjY2Vzcyhi
+dWYtPmdyZWZzW2ldLAo+ICsJCQkJCQkJICAwLCAwVUwpOwo+ICsJfQo+ICsJa2ZyZWUoYnVmLT5n
+cmVmcyk7Cj4gKwlrZnJlZShidWYtPmRpcmVjdG9yeSk7Cj4gK30KPiArRVhQT1JUX1NZTUJPTF9H
+UEwoeGVuX2Zyb250X3BnZGlyX3NoYnVmX2ZyZWUpOwo+ICsKPiArLyoKPiArICogTnVtYmVyIG9m
+IGdyZWZzIGEgcGFnZSBjYW4gaG9sZCB3aXRoIHJlc3BlY3QgdG8gdGhlCj4gKyAqIHN0cnVjdCB4
+ZW5fcGFnZV9kaXJlY3RvcnkgaGVhZGVyLgo+ICsgKi8KPiArI2RlZmluZSBYRU5fTlVNX0dSRUZT
+X1BFUl9QQUdFICgoUEFHRV9TSVpFIC0gXAo+ICsJCQkJIG9mZnNldG9mKHN0cnVjdCB4ZW5fcGFn
+ZV9kaXJlY3RvcnksIFwKPiArCQkJCQkgIGdyZWYpKSAvIHNpemVvZihncmFudF9yZWZfdCkpCj4g
+Kwo+ICsvKioKPiArICogR2V0IHRoZSBudW1iZXIgb2YgcGFnZXMgdGhlIHBhZ2UgZGlyZWN0b3J5
+IGNvbnN1bWVzIGl0c2VsZi4KPiArICoKPiArICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgo+
+ICsgKi8KPiArc3RhdGljIGludCBnZXRfbnVtX3BhZ2VzX2RpcihzdHJ1Y3QgeGVuX2Zyb250X3Bn
+ZGlyX3NoYnVmICpidWYpCj4gK3sKPiArCXJldHVybiBESVZfUk9VTkRfVVAoYnVmLT5udW1fcGFn
+ZXMsIFhFTl9OVU1fR1JFRlNfUEVSX1BBR0UpOwo+ICt9Cj4gKwo+ICsvKioKPiArICogQ2FsY3Vs
+YXRlIHRoZSBudW1iZXIgb2YgZ3JhbnQgcmVmZXJlbmNlcyBuZWVkZWQgdG8gc2hhcmUgdGhlIGJ1
+ZmZlcgo+ICsgKiBhbmQgaXRzIHBhZ2VzIHdoZW4gYmFja2VuZCBhbGxvY2F0ZXMgdGhlIGJ1ZmZl
+ci4KPiArICoKPiArICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgo+ICsgKi8KPiArc3RhdGlj
+IHZvaWQgYmFja2VuZF9jYWxjX251bV9ncmVmcyhzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVm
+ICpidWYpCj4gK3sKPiArCS8qIE9ubHkgZm9yIHBhZ2VzIHRoZSBwYWdlIGRpcmVjdG9yeSBjb25z
+dW1lcyBpdHNlbGYuICovCj4gKwlidWYtPm51bV9ncmVmcyA9IGdldF9udW1fcGFnZXNfZGlyKGJ1
+Zik7Cj4gK30KPiArCj4gKy8qKgo+ICsgKiBDYWxjdWxhdGUgdGhlIG51bWJlciBvZiBncmFudCBy
+ZWZlcmVuY2VzIG5lZWRlZCB0byBzaGFyZSB0aGUgYnVmZmVyCj4gKyAqIGFuZCBpdHMgcGFnZXMg
+d2hlbiBmcm9udGVuZCBhbGxvY2F0ZXMgdGhlIGJ1ZmZlci4KPiArICoKPiArICogXHBhcmFtIGJ1
+ZiBzaGFyZWQgYnVmZmVyLgo+ICsgKi8KPiArc3RhdGljIHZvaWQgZ3Vlc3RfY2FsY19udW1fZ3Jl
+ZnMoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKQo+ICt7Cj4gKwkvKgo+ICsJICog
+TnVtYmVyIG9mIHBhZ2VzIHRoZSBwYWdlIGRpcmVjdG9yeSBjb25zdW1lcyBpdHNlbGYKPiArCSAq
+IHBsdXMgZ3JlZnMgZm9yIHRoZSBidWZmZXIgcGFnZXMuCj4gKwkgKi8KPiArCWJ1Zi0+bnVtX2dy
+ZWZzID0gZ2V0X251bV9wYWdlc19kaXIoYnVmKSArIGJ1Zi0+bnVtX3BhZ2VzOwo+ICt9Cj4gKwo+
+ICsjZGVmaW5lIHhlbl9wYWdlX3RvX3ZhZGRyKHBhZ2UpIFwKPiArCSgodWludHB0cl90KXBmbl90
+b19rYWRkcihwYWdlX3RvX3hlbl9wZm4ocGFnZSkpKQo+ICsKPiArLyoqCj4gKyAqIFVubWFwIHRo
+ZSBidWZmZXIgcHJldmlvdXNseSBtYXBwZWQgd2l0aCBncmFudCByZWZlcmVuY2VzCj4gKyAqIHBy
+b3ZpZGVkIGJ5IHRoZSBiYWNrZW5kLgo+ICsgKgo+ICsgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZm
+ZXIuCj4gKyAqIFxyZXR1cm4gemVybyBvbiBzdWNjZXNzIG9yIGEgbmVnYXRpdmUgbnVtYmVyIG9u
+IGZhaWx1cmUuCj4gKyAqLwo+ICtzdGF0aWMgaW50IGJhY2tlbmRfdW5tYXAoc3RydWN0IHhlbl9m
+cm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKQo+ICt7Cj4gKwlzdHJ1Y3QgZ250dGFiX3VubWFwX2dyYW50
+X3JlZiAqdW5tYXBfb3BzOwo+ICsJaW50IGksIHJldDsKPiArCj4gKwlpZiAoIWJ1Zi0+cGFnZXMg
+fHwgIWJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlcyB8fCAhYnVmLT5ncmVmcykKPiArCQlyZXR1cm4g
+MDsKPiArCj4gKwl1bm1hcF9vcHMgPSBrY2FsbG9jKGJ1Zi0+bnVtX3BhZ2VzLCBzaXplb2YoKnVu
+bWFwX29wcyksCj4gKwkJCSAgICBHRlBfS0VSTkVMKTsKPiArCWlmICghdW5tYXBfb3BzKQo+ICsJ
+CXJldHVybiAtRU5PTUVNOwo+ICsKPiArCWZvciAoaSA9IDA7IGkgPCBidWYtPm51bV9wYWdlczsg
+aSsrKSB7Cj4gKwkJcGh5c19hZGRyX3QgYWRkcjsKPiArCj4gKwkJYWRkciA9IHhlbl9wYWdlX3Rv
+X3ZhZGRyKGJ1Zi0+cGFnZXNbaV0pOwo+ICsJCWdudHRhYl9zZXRfdW5tYXBfb3AoJnVubWFwX29w
+c1tpXSwgYWRkciwgR05UTUFQX2hvc3RfbWFwLAo+ICsJCQkJICAgIGJ1Zi0+YmFja2VuZF9tYXBf
+aGFuZGxlc1tpXSk7Cj4gKwl9Cj4gKwo+ICsJcmV0ID0gZ250dGFiX3VubWFwX3JlZnModW5tYXBf
+b3BzLCBOVUxMLCBidWYtPnBhZ2VzLAo+ICsJCQkJYnVmLT5udW1fcGFnZXMpOwo+ICsKPiArCWZv
+ciAoaSA9IDA7IGkgPCBidWYtPm51bV9wYWdlczsgaSsrKSB7Cj4gKwkJaWYgKHVubGlrZWx5KHVu
+bWFwX29wc1tpXS5zdGF0dXMgIT0gR05UU1Rfb2theSkpCj4gKwkJCWRldl9lcnIoJmJ1Zi0+eGJf
+ZGV2LT5kZXYsCj4gKwkJCQkiRmFpbGVkIHRvIHVubWFwIHBhZ2UgJWQ6ICVkXG4iLAo+ICsJCQkJ
+aSwgdW5tYXBfb3BzW2ldLnN0YXR1cyk7Cj4gKwl9Cj4gKwo+ICsJaWYgKHJldCkKPiArCQlkZXZf
+ZXJyKCZidWYtPnhiX2Rldi0+ZGV2LAo+ICsJCQkiRmFpbGVkIHRvIHVubWFwIGdyYW50IHJlZmVy
+ZW5jZXMsIHJldCAlZCIsIHJldCk7Cj4gKwo+ICsJa2ZyZWUodW5tYXBfb3BzKTsKPiArCWtmcmVl
+KGJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlcyk7Cj4gKwlidWYtPmJhY2tlbmRfbWFwX2hhbmRsZXMg
+PSBOVUxMOwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICsKPiArLyoqCj4gKyAqIE1hcCB0aGUgYnVm
+ZmVyIHdpdGggZ3JhbnQgcmVmZXJlbmNlcyBwcm92aWRlZCBieSB0aGUgYmFja2VuZC4KPiArICoK
+PiArICogXHBhcmFtIGJ1ZiBzaGFyZWQgYnVmZmVyLgo+ICsgKiBccmV0dXJuIHplcm8gb24gc3Vj
+Y2VzcyBvciBhIG5lZ2F0aXZlIG51bWJlciBvbiBmYWlsdXJlLgo+ICsgKi8KPiArc3RhdGljIGlu
+dCBiYWNrZW5kX21hcChzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpidWYpCj4gK3sKPiAr
+CXN0cnVjdCBnbnR0YWJfbWFwX2dyYW50X3JlZiAqbWFwX29wcyA9IE5VTEw7Cj4gKwl1bnNpZ25l
+ZCBjaGFyICpwdHI7Cj4gKwlpbnQgcmV0LCBjdXJfZ3JlZiwgY3VyX2Rpcl9wYWdlLCBjdXJfcGFn
+ZSwgZ3JlZnNfbGVmdDsKPiArCj4gKwltYXBfb3BzID0ga2NhbGxvYyhidWYtPm51bV9wYWdlcywg
+c2l6ZW9mKCptYXBfb3BzKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIW1hcF9vcHMpCj4gKwkJcmV0
+dXJuIC1FTk9NRU07Cj4gKwo+ICsJYnVmLT5iYWNrZW5kX21hcF9oYW5kbGVzID0ga2NhbGxvYyhi
+dWYtPm51bV9wYWdlcywKPiArCQkJCQkgICBzaXplb2YoKmJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxl
+cyksCj4gKwkJCQkJICAgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIWJ1Zi0+YmFja2VuZF9tYXBfaGFu
+ZGxlcykgewo+ICsJCWtmcmVlKG1hcF9vcHMpOwo+ICsJCXJldHVybiAtRU5PTUVNOwo+ICsJfQo+
+ICsKPiArCS8qCj4gKwkgKiBSZWFkIHBhZ2UgZGlyZWN0b3J5IHRvIGdldCBncmVmcyBmcm9tIHRo
+ZSBiYWNrZW5kOiBmb3IgZXh0ZXJuYWwKPiArCSAqIGJ1ZmZlciB3ZSBvbmx5IGFsbG9jYXRlIGJ1
+Zi0+Z3JlZnMgZm9yIHRoZSBwYWdlIGRpcmVjdG9yeSwKPiArCSAqIHNvIGJ1Zi0+bnVtX2dyZWZz
+IGhhcyBudW1iZXIgb2YgcGFnZXMgaW4gdGhlIHBhZ2UgZGlyZWN0b3J5IGl0c2VsZi4KPiArCSAq
+Lwo+ICsJcHRyID0gYnVmLT5kaXJlY3Rvcnk7Cj4gKwlncmVmc19sZWZ0ID0gYnVmLT5udW1fcGFn
+ZXM7Cj4gKwljdXJfcGFnZSA9IDA7Cj4gKwlmb3IgKGN1cl9kaXJfcGFnZSA9IDA7IGN1cl9kaXJf
+cGFnZSA8IGJ1Zi0+bnVtX2dyZWZzOyBjdXJfZGlyX3BhZ2UrKykgewo+ICsJCXN0cnVjdCB4ZW5f
+cGFnZV9kaXJlY3RvcnkgKnBhZ2VfZGlyID0KPiArCQkJKHN0cnVjdCB4ZW5fcGFnZV9kaXJlY3Rv
+cnkgKilwdHI7Cj4gKwkJaW50IHRvX2NvcHkgPSBYRU5fTlVNX0dSRUZTX1BFUl9QQUdFOwo+ICsK
+PiArCQlpZiAodG9fY29weSA+IGdyZWZzX2xlZnQpCj4gKwkJCXRvX2NvcHkgPSBncmVmc19sZWZ0
+Owo+ICsKPiArCQlmb3IgKGN1cl9ncmVmID0gMDsgY3VyX2dyZWYgPCB0b19jb3B5OyBjdXJfZ3Jl
+ZisrKSB7Cj4gKwkJCXBoeXNfYWRkcl90IGFkZHI7Cj4gKwo+ICsJCQlhZGRyID0geGVuX3BhZ2Vf
+dG9fdmFkZHIoYnVmLT5wYWdlc1tjdXJfcGFnZV0pOwo+ICsJCQlnbnR0YWJfc2V0X21hcF9vcCgm
+bWFwX29wc1tjdXJfcGFnZV0sIGFkZHIsCj4gKwkJCQkJICBHTlRNQVBfaG9zdF9tYXAsCj4gKwkJ
+CQkJICBwYWdlX2Rpci0+Z3JlZltjdXJfZ3JlZl0sCj4gKwkJCQkJICBidWYtPnhiX2Rldi0+b3Ro
+ZXJlbmRfaWQpOwo+ICsJCQljdXJfcGFnZSsrOwo+ICsJCX0KPiArCj4gKwkJZ3JlZnNfbGVmdCAt
+PSB0b19jb3B5Owo+ICsJCXB0ciArPSBQQUdFX1NJWkU7Cj4gKwl9Cj4gKwlyZXQgPSBnbnR0YWJf
+bWFwX3JlZnMobWFwX29wcywgTlVMTCwgYnVmLT5wYWdlcywgYnVmLT5udW1fcGFnZXMpOwo+ICsK
+PiArCS8qIFNhdmUgaGFuZGxlcyBldmVuIGlmIGVycm9yLCBzbyB3ZSBjYW4gdW5tYXAuICovCj4g
+Kwlmb3IgKGN1cl9wYWdlID0gMDsgY3VyX3BhZ2UgPCBidWYtPm51bV9wYWdlczsgY3VyX3BhZ2Ur
+Kykgewo+ICsJCWJ1Zi0+YmFja2VuZF9tYXBfaGFuZGxlc1tjdXJfcGFnZV0gPSBtYXBfb3BzW2N1
+cl9wYWdlXS5oYW5kbGU7Cj4gKwkJaWYgKHVubGlrZWx5KG1hcF9vcHNbY3VyX3BhZ2VdLnN0YXR1
+cyAhPSBHTlRTVF9va2F5KSkKPiArCQkJZGV2X2VycigmYnVmLT54Yl9kZXYtPmRldiwKPiArCQkJ
+CSJGYWlsZWQgdG8gbWFwIHBhZ2UgJWQ6ICVkXG4iLAo+ICsJCQkJY3VyX3BhZ2UsIG1hcF9vcHNb
+Y3VyX3BhZ2VdLnN0YXR1cyk7Cj4gKwl9Cj4gKwo+ICsJaWYgKHJldCkgewo+ICsJCWRldl9lcnIo
+JmJ1Zi0+eGJfZGV2LT5kZXYsCj4gKwkJCSJGYWlsZWQgdG8gbWFwIGdyYW50IHJlZmVyZW5jZXMs
+IHJldCAlZCIsIHJldCk7Cj4gKwkJYmFja2VuZF91bm1hcChidWYpOwo+ICsJfQo+ICsKPiArCWtm
+cmVlKG1hcF9vcHMpOwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICsKPiArLyoqCj4gKyAqIEZpbGwg
+cGFnZSBkaXJlY3Rvcnkgd2l0aCBncmFudCByZWZlcmVuY2VzIHRvIHRoZSBwYWdlcyBvZiB0aGUK
+PiArICogcGFnZSBkaXJlY3RvcnkgaXRzZWxmLgo+ICsgKgo+ICsgKiBUaGUgZ3JhbnQgcmVmZXJl
+bmNlcyB0byB0aGUgYnVmZmVyIHBhZ2VzIGFyZSBwcm92aWRlZCBieSB0aGUKPiArICogYmFja2Vu
+ZCBpbiB0aGlzIGNhc2UuCj4gKyAqCj4gKyAqIFxwYXJhbSBidWYgc2hhcmVkIGJ1ZmZlci4KPiAr
+ICovCj4gK3N0YXRpYyB2b2lkIGJhY2tlbmRfZmlsbF9wYWdlX2RpcihzdHJ1Y3QgeGVuX2Zyb250
+X3BnZGlyX3NoYnVmICpidWYpCj4gK3sKPiArCXN0cnVjdCB4ZW5fcGFnZV9kaXJlY3RvcnkgKnBh
+Z2VfZGlyOwo+ICsJdW5zaWduZWQgY2hhciAqcHRyOwo+ICsJaW50IGksIG51bV9wYWdlc19kaXI7
+Cj4gKwo+ICsJcHRyID0gYnVmLT5kaXJlY3Rvcnk7Cj4gKwludW1fcGFnZXNfZGlyID0gZ2V0X251
+bV9wYWdlc19kaXIoYnVmKTsKPiArCj4gKwkvKiBGaWxsIG9ubHkgZ3JlZnMgZm9yIHRoZSBwYWdl
+IGRpcmVjdG9yeSBpdHNlbGYuICovCj4gKwlmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzX2RpciAt
+IDE7IGkrKykgewo+ICsJCXBhZ2VfZGlyID0gKHN0cnVjdCB4ZW5fcGFnZV9kaXJlY3RvcnkgKilw
+dHI7Cj4gKwo+ICsJCXBhZ2VfZGlyLT5ncmVmX2Rpcl9uZXh0X3BhZ2UgPSBidWYtPmdyZWZzW2kg
+KyAxXTsKPiArCQlwdHIgKz0gUEFHRV9TSVpFOwo+ICsJfQo+ICsJLyogTGFzdCBwYWdlIG11c3Qg
+c2F5IHRoZXJlIGlzIG5vIG1vcmUgcGFnZXMuICovCj4gKwlwYWdlX2RpciA9IChzdHJ1Y3QgeGVu
+X3BhZ2VfZGlyZWN0b3J5ICopcHRyOwo+ICsJcGFnZV9kaXItPmdyZWZfZGlyX25leHRfcGFnZSA9
+IEdSQU5UX0lOVkFMSURfUkVGOwo+ICt9Cj4gKwo+ICsvKioKPiArICogRmlsbCBwYWdlIGRpcmVj
+dG9yeSB3aXRoIGdyYW50IHJlZmVyZW5jZXMgdG8gdGhlIHBhZ2VzIG9mIHRoZQo+ICsgKiBwYWdl
+IGRpcmVjdG9yeSBhbmQgdGhlIGJ1ZmZlciB3ZSBzaGFyZSB3aXRoIHRoZSBiYWNrZW5kLgo+ICsg
+Kgo+ICsgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCj4gKyAqLwo+ICtzdGF0aWMgdm9pZCBn
+dWVzdF9maWxsX3BhZ2VfZGlyKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZikKPiAr
+ewo+ICsJdW5zaWduZWQgY2hhciAqcHRyOwo+ICsJaW50IGN1cl9ncmVmLCBncmVmc19sZWZ0LCB0
+b19jb3B5LCBpLCBudW1fcGFnZXNfZGlyOwo+ICsKPiArCXB0ciA9IGJ1Zi0+ZGlyZWN0b3J5Owo+
+ICsJbnVtX3BhZ2VzX2RpciA9IGdldF9udW1fcGFnZXNfZGlyKGJ1Zik7Cj4gKwo+ICsJLyoKPiAr
+CSAqIFdoaWxlIGNvcHlpbmcsIHNraXAgZ3JlZnMgYXQgc3RhcnQsIHRoZXkgYXJlIGZvciBwYWdl
+cwo+ICsJICogZ3JhbnRlZCBmb3IgdGhlIHBhZ2UgZGlyZWN0b3J5IGl0c2VsZi4KPiArCSAqLwo+
+ICsJY3VyX2dyZWYgPSBudW1fcGFnZXNfZGlyOwo+ICsJZ3JlZnNfbGVmdCA9IGJ1Zi0+bnVtX3Bh
+Z2VzOwo+ICsJZm9yIChpID0gMDsgaSA8IG51bV9wYWdlc19kaXI7IGkrKykgewo+ICsJCXN0cnVj
+dCB4ZW5fcGFnZV9kaXJlY3RvcnkgKnBhZ2VfZGlyID0KPiArCQkJKHN0cnVjdCB4ZW5fcGFnZV9k
+aXJlY3RvcnkgKilwdHI7Cj4gKwo+ICsJCWlmIChncmVmc19sZWZ0IDw9IFhFTl9OVU1fR1JFRlNf
+UEVSX1BBR0UpIHsKPiArCQkJdG9fY29weSA9IGdyZWZzX2xlZnQ7Cj4gKwkJCXBhZ2VfZGlyLT5n
+cmVmX2Rpcl9uZXh0X3BhZ2UgPSBHUkFOVF9JTlZBTElEX1JFRjsKPiArCQl9IGVsc2Ugewo+ICsJ
+CQl0b19jb3B5ID0gWEVOX05VTV9HUkVGU19QRVJfUEFHRTsKPiArCQkJcGFnZV9kaXItPmdyZWZf
+ZGlyX25leHRfcGFnZSA9IGJ1Zi0+Z3JlZnNbaSArIDFdOwo+ICsJCX0KPiArCQltZW1jcHkoJnBh
+Z2VfZGlyLT5ncmVmLCAmYnVmLT5ncmVmc1tjdXJfZ3JlZl0sCj4gKwkJICAgICAgIHRvX2NvcHkg
+KiBzaXplb2YoZ3JhbnRfcmVmX3QpKTsKPiArCQlwdHIgKz0gUEFHRV9TSVpFOwo+ICsJCWdyZWZz
+X2xlZnQgLT0gdG9fY29weTsKPiArCQljdXJfZ3JlZiArPSB0b19jb3B5Owo+ICsJfQo+ICt9Cj4g
+Kwo+ICsvKioKPiArICogR3JhbnQgcmVmZXJlbmNlcyB0byB0aGUgZnJvbnRlbmQncyBidWZmZXIg
+cGFnZXMuCj4gKyAqCj4gKyAqIFRoZXNlIHdpbGwgYmUgc2hhcmVkIHdpdGggdGhlIGJhY2tlbmQs
+IHNvIGl0IGNhbgo+ICsgKiBhY2Nlc3MgdGhlIGJ1ZmZlcidzIGRhdGEuCj4gKyAqCj4gKyAqIFxw
+YXJhbSBidWYgc2hhcmVkIGJ1ZmZlci4KPiArICogXHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3Mgb3Ig
+YSBuZWdhdGl2ZSBudW1iZXIgb24gZmFpbHVyZS4KPiArICovCj4gK3N0YXRpYyBpbnQgZ3Vlc3Rf
+Z3JhbnRfcmVmc19mb3JfYnVmZmVyKHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWYgKmJ1ZiwK
+PiArCQkJCSAgICAgICBncmFudF9yZWZfdCAqcHJpdl9ncmVmX2hlYWQsCj4gKwkJCQkgICAgICAg
+aW50IGdyZWZfaWR4KQo+ICt7Cj4gKwlpbnQgaSwgY3VyX3JlZiwgb3RoZXJlbmRfaWQ7Cj4gKwo+
+ICsJb3RoZXJlbmRfaWQgPSBidWYtPnhiX2Rldi0+b3RoZXJlbmRfaWQ7Cj4gKwlmb3IgKGkgPSAw
+OyBpIDwgYnVmLT5udW1fcGFnZXM7IGkrKykgewo+ICsJCWN1cl9yZWYgPSBnbnR0YWJfY2xhaW1f
+Z3JhbnRfcmVmZXJlbmNlKHByaXZfZ3JlZl9oZWFkKTsKPiArCQlpZiAoY3VyX3JlZiA8IDApCj4g
+KwkJCXJldHVybiBjdXJfcmVmOwo+ICsKPiArCQlnbnR0YWJfZ3JhbnRfZm9yZWlnbl9hY2Nlc3Nf
+cmVmKGN1cl9yZWYsIG90aGVyZW5kX2lkLAo+ICsJCQkJCQl4ZW5fcGFnZV90b19nZm4oYnVmLT5w
+YWdlc1tpXSksCj4gKwkJCQkJCTApOwo+ICsJCWJ1Zi0+Z3JlZnNbZ3JlZl9pZHgrK10gPSBjdXJf
+cmVmOwo+ICsJfQo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qKgo+ICsgKiBHcmFudCBhbGwg
+dGhlIHJlZmVyZW5jZXMgbmVlZGVkIHRvIHNoYXJlIHRoZSBidWZmZXIuCj4gKyAqCj4gKyAqIEdy
+YW50IHJlZmVyZW5jZXMgdG8gdGhlIHBhZ2UgZGlyZWN0b3J5IHBhZ2VzIGFuZCwgaWYKPiArICog
+bmVlZGVkLCBhbHNvIHRvIHRoZSBwYWdlcyBvZiB0aGUgc2hhcmVkIGJ1ZmZlciBkYXRhLgo+ICsg
+Kgo+ICsgKiBccGFyYW0gYnVmIHNoYXJlZCBidWZmZXIuCj4gKyAqIFxyZXR1cm4gemVybyBvbiBz
+dWNjZXNzIG9yIGEgbmVnYXRpdmUgbnVtYmVyIG9uIGZhaWx1cmUuCj4gKyAqLwo+ICtzdGF0aWMg
+aW50IGdyYW50X3JlZmVyZW5jZXMoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKQo+
+ICt7Cj4gKwlncmFudF9yZWZfdCBwcml2X2dyZWZfaGVhZDsKPiArCWludCByZXQsIGksIGosIGN1
+cl9yZWY7Cj4gKwlpbnQgb3RoZXJlbmRfaWQsIG51bV9wYWdlc19kaXI7Cj4gKwo+ICsJcmV0ID0g
+Z250dGFiX2FsbG9jX2dyYW50X3JlZmVyZW5jZXMoYnVmLT5udW1fZ3JlZnMsICZwcml2X2dyZWZf
+aGVhZCk7Cj4gKwlpZiAocmV0IDwgMCkgewo+ICsJCWRldl9lcnIoJmJ1Zi0+eGJfZGV2LT5kZXYs
+Cj4gKwkJCSJDYW5ub3QgYWxsb2NhdGUgZ3JhbnQgcmVmZXJlbmNlc1xuIik7Cj4gKwkJcmV0dXJu
+IHJldDsKPiArCX0KPiArCj4gKwlvdGhlcmVuZF9pZCA9IGJ1Zi0+eGJfZGV2LT5vdGhlcmVuZF9p
+ZDsKPiArCWogPSAwOwo+ICsJbnVtX3BhZ2VzX2RpciA9IGdldF9udW1fcGFnZXNfZGlyKGJ1Zik7
+Cj4gKwlmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzX2RpcjsgaSsrKSB7Cj4gKwkJdW5zaWduZWQg
+bG9uZyBmcmFtZTsKPiArCj4gKwkJY3VyX3JlZiA9IGdudHRhYl9jbGFpbV9ncmFudF9yZWZlcmVu
+Y2UoJnByaXZfZ3JlZl9oZWFkKTsKPiArCQlpZiAoY3VyX3JlZiA8IDApCj4gKwkJCXJldHVybiBj
+dXJfcmVmOwo+ICsKPiArCQlmcmFtZSA9IHhlbl9wYWdlX3RvX2dmbih2aXJ0X3RvX3BhZ2UoYnVm
+LT5kaXJlY3RvcnkgKwo+ICsJCQkJCQkgICAgIFBBR0VfU0laRSAqIGkpKTsKPiArCQlnbnR0YWJf
+Z3JhbnRfZm9yZWlnbl9hY2Nlc3NfcmVmKGN1cl9yZWYsIG90aGVyZW5kX2lkLCBmcmFtZSwgMCk7
+Cj4gKwkJYnVmLT5ncmVmc1tqKytdID0gY3VyX3JlZjsKPiArCX0KPiArCj4gKwlpZiAoYnVmLT5v
+cHMtPmdyYW50X3JlZnNfZm9yX2J1ZmZlcikgewo+ICsJCXJldCA9IGJ1Zi0+b3BzLT5ncmFudF9y
+ZWZzX2Zvcl9idWZmZXIoYnVmLCAmcHJpdl9ncmVmX2hlYWQsIGopOwo+ICsJCWlmIChyZXQpCj4g
+KwkJCXJldHVybiByZXQ7Cj4gKwl9Cj4gKwo+ICsJZ250dGFiX2ZyZWVfZ3JhbnRfcmVmZXJlbmNl
+cyhwcml2X2dyZWZfaGVhZCk7Cj4gKwlyZXR1cm4gMDsKPiArfQo+ICsKPiArLyoqCj4gKyAqIEFs
+bG9jYXRlIGFsbCByZXF1aXJlZCBzdHJ1Y3R1cmVzIHRvIG1hbmdlIHNoYXJlZCBidWZmZXIuCj4g
+KyAqCj4gKyAqIFxwYXJhbSBidWYgc2hhcmVkIGJ1ZmZlci4KPiArICogXHJldHVybiB6ZXJvIG9u
+IHN1Y2Nlc3Mgb3IgYSBuZWdhdGl2ZSBudW1iZXIgb24gZmFpbHVyZS4KPiArICovCj4gK3N0YXRp
+YyBpbnQgYWxsb2Nfc3RvcmFnZShzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpidWYpCj4g
+K3sKPiArCWJ1Zi0+Z3JlZnMgPSBrY2FsbG9jKGJ1Zi0+bnVtX2dyZWZzLCBzaXplb2YoKmJ1Zi0+
+Z3JlZnMpLCBHRlBfS0VSTkVMKTsKPiArCWlmICghYnVmLT5ncmVmcykKPiArCQlyZXR1cm4gLUVO
+T01FTTsKPiArCj4gKwlidWYtPmRpcmVjdG9yeSA9IGtjYWxsb2MoZ2V0X251bV9wYWdlc19kaXIo
+YnVmKSwgUEFHRV9TSVpFLCBHRlBfS0VSTkVMKTsKPiArCWlmICghYnVmLT5kaXJlY3RvcnkpCj4g
+KwkJcmV0dXJuIC1FTk9NRU07Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qCj4gKyAq
+IEZvciBiYWNrZW5kIGFsbG9jYXRlZCBidWZmZXJzIHdlIGRvbid0IG5lZWQgZ3JhbnRfcmVmc19m
+b3JfYnVmZmVyCj4gKyAqIGFzIHRob3NlIGdyYW50IHJlZmVyZW5jZXMgYXJlIGFsbG9jYXRlZCBh
+dCBiYWNrZW5kIHNpZGUuCj4gKyAqLwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHhlbl9mcm9udF9w
+Z2Rpcl9zaGJ1Zl9vcHMgYmFja2VuZF9vcHMgPSB7Cj4gKwkuY2FsY19udW1fZ3JlZnMgPSBiYWNr
+ZW5kX2NhbGNfbnVtX2dyZWZzLAo+ICsJLmZpbGxfcGFnZV9kaXIgPSBiYWNrZW5kX2ZpbGxfcGFn
+ZV9kaXIsCj4gKwkubWFwID0gYmFja2VuZF9tYXAsCj4gKwkudW5tYXAgPSBiYWNrZW5kX3VubWFw
+Cj4gK307Cj4gKwo+ICsvKgo+ICsgKiBGb3IgbG9jYWxseSBncmFudGVkIHJlZmVyZW5jZXMgd2Ug
+ZG8gbm90IG5lZWQgdG8gbWFwL3VubWFwCj4gKyAqIHRoZSByZWZlcmVuY2VzLgo+ICsgKi8KPiAr
+c3RhdGljIGNvbnN0IHN0cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfb3BzIGxvY2FsX29wcyA9
+IHsKPiArCS5jYWxjX251bV9ncmVmcyA9IGd1ZXN0X2NhbGNfbnVtX2dyZWZzLAo+ICsJLmZpbGxf
+cGFnZV9kaXIgPSBndWVzdF9maWxsX3BhZ2VfZGlyLAo+ICsJLmdyYW50X3JlZnNfZm9yX2J1ZmZl
+ciA9IGd1ZXN0X2dyYW50X3JlZnNfZm9yX2J1ZmZlciwKPiArfTsKPiArCj4gKy8qKgo+ICsgKiBB
+bGxvY2F0ZSBhIG5ldyBpbnN0YW5jZSBvZiBhIHNoYXJlZCBidWZmZXIuCj4gKyAqCj4gKyAqIFxw
+YXJhbSBjZmcgY29uZmlndXJhdGlvbiB0byBiZSB1c2VkIHdoaWxlIGFsbG9jYXRpbmcgYSBuZXcg
+c2hhcmVkIGJ1ZmZlci4KPiArICogXHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3Mgb3IgYSBuZWdhdGl2
+ZSBudW1iZXIgb24gZmFpbHVyZS4KPiArICovCj4gK2ludCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZf
+YWxsb2Moc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9jZmcgKmNmZykKPiArewo+ICsJc3Ry
+dWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmID0gY2ZnLT5wZ2RpcjsKPiArCWludCByZXQ7
+Cj4gKwo+ICsJaWYgKGNmZy0+YmVfYWxsb2MpCj4gKwkJYnVmLT5vcHMgPSAmYmFja2VuZF9vcHM7
+Cj4gKwllbHNlCj4gKwkJYnVmLT5vcHMgPSAmbG9jYWxfb3BzOwo+ICsJYnVmLT54Yl9kZXYgPSBj
+ZmctPnhiX2RldjsKPiArCWJ1Zi0+bnVtX3BhZ2VzID0gY2ZnLT5udW1fcGFnZXM7Cj4gKwlidWYt
+PnBhZ2VzID0gY2ZnLT5wYWdlczsKPiArCj4gKwlidWYtPm9wcy0+Y2FsY19udW1fZ3JlZnMoYnVm
+KTsKPiArCj4gKwlyZXQgPSBhbGxvY19zdG9yYWdlKGJ1Zik7Cj4gKwlpZiAocmV0KQo+ICsJCWdv
+dG8gZmFpbDsKPiArCj4gKwlyZXQgPSBncmFudF9yZWZlcmVuY2VzKGJ1Zik7Cj4gKwlpZiAocmV0
+KQo+ICsJCWdvdG8gZmFpbDsKPiArCj4gKwlidWYtPm9wcy0+ZmlsbF9wYWdlX2RpcihidWYpOwo+
+ICsKPiArCXJldHVybiAwOwo+ICsKPiArZmFpbDoKPiArCXhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9m
+cmVlKGJ1Zik7Cj4gKwlyZXR1cm4gcmV0Owo+ICt9Cj4gK0VYUE9SVF9TWU1CT0xfR1BMKHhlbl9m
+cm9udF9wZ2Rpcl9zaGJ1Zl9hbGxvYyk7Cj4gKwo+ICtNT0RVTEVfREVTQ1JJUFRJT04oIlhlbiBm
+cm9udGVuZC9iYWNrZW5kIHBhZ2UgZGlyZWN0b3J5IGJhc2VkICIKPiArCQkgICAic2hhcmVkIGJ1
+ZmZlciBoYW5kbGluZyIpOwo+ICtNT0RVTEVfQVVUSE9SKCJPbGVrc2FuZHIgQW5kcnVzaGNoZW5r
+byIpOwo+ICtNT0RVTEVfTElDRU5TRSgiR1BMIik7Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUveGVu
+L3hlbi1mcm9udC1wZ2Rpci1zaGJ1Zi5oIGIvaW5jbHVkZS94ZW4veGVuLWZyb250LXBnZGlyLXNo
+YnVmLmgKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uMTUwZWY3
+ZWM1MWVjCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2luY2x1ZGUveGVuL3hlbi1mcm9udC1wZ2Rp
+ci1zaGJ1Zi5oCj4gQEAgLTAsMCArMSw4OSBAQAo+ICsvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
+cjogR1BMLTIuMCBPUiBNSVQgKi8KPiArCj4gKy8qCj4gKyAqIFhlbiBmcm9udGVuZC9iYWNrZW5k
+IHBhZ2UgZGlyZWN0b3J5IGJhc2VkIHNoYXJlZCBidWZmZXIKPiArICogaGVscGVyIG1vZHVsZS4K
+PiArICoKPiArICogQ29weXJpZ2h0IChDKSAyMDE4IEVQQU0gU3lzdGVtcyBJbmMuCj4gKyAqCj4g
+KyAqIEF1dGhvcjogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hl
+bmtvQGVwYW0uY29tPgo+ICsgKi8KPiArCj4gKyNpZm5kZWYgX19YRU5fRlJPTlRfUEdESVJfU0hC
+VUZfSF8KPiArI2RlZmluZSBfX1hFTl9GUk9OVF9QR0RJUl9TSEJVRl9IXwo+ICsKPiArI2luY2x1
+ZGUgPGxpbnV4L2tlcm5lbC5oPgo+ICsKPiArI2luY2x1ZGUgPHhlbi9ncmFudF90YWJsZS5oPgo+
+ICsKPiArc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9vcHM7Cj4gKwo+ICtzdHJ1Y3QgeGVu
+X2Zyb250X3BnZGlyX3NoYnVmIHsKPiArCS8qCj4gKwkgKiBOdW1iZXIgb2YgcmVmZXJlbmNlcyBn
+cmFudGVkIGZvciB0aGUgYmFja2VuZCB1c2U6Cj4gKwkgKgo+ICsJICogIC0gZm9yIGZyb250ZW5k
+IGFsbG9jYXRlZC9pbXBvcnRlZCBidWZmZXJzIHRoaXMgaG9sZHMgdGhlIG51bWJlcgo+ICsJICog
+ICAgb2YgZ3JhbnQgcmVmZXJlbmNlcyBmb3IgdGhlIHBhZ2UgZGlyZWN0b3J5IGFuZCB0aGUgcGFn
+ZXMKPiArCSAqICAgIG9mIHRoZSBidWZmZXIKPiArCSAqCj4gKwkgKiAgLSBmb3IgdGhlIGJ1ZmZl
+ciBwcm92aWRlZCBieSB0aGUgYmFja2VuZCB0aGlzIG9ubHkgaG9sZHMgdGhlIG51bWJlcgo+ICsJ
+ICogICAgb2YgZ3JhbnQgcmVmZXJlbmNlcyBmb3IgdGhlIHBhZ2UgZGlyZWN0b3J5IGl0c2VsZiBh
+cyBncmFudAo+ICsJICogICAgcmVmZXJlbmNlcyBmb3IgdGhlIGJ1ZmZlciB3aWxsIGJlIHByb3Zp
+ZGVkIGJ5IHRoZSBiYWNrZW5kLgo+ICsJICovCj4gKwlpbnQgbnVtX2dyZWZzOwo+ICsJZ3JhbnRf
+cmVmX3QgKmdyZWZzOwo+ICsJLyogUGFnZSBkaXJlY3RvcnkgYmFja2luZyBzdG9yYWdlLiAqLwo+
+ICsJdTggKmRpcmVjdG9yeTsKPiArCj4gKwkvKgo+ICsJICogTnVtYmVyIG9mIHBhZ2VzIGZvciB0
+aGUgc2hhcmVkIGJ1ZmZlciBpdHNlbGYgKGV4Y2x1ZGluZyB0aGUgcGFnZQo+ICsJICogZGlyZWN0
+b3J5KS4KPiArCSAqLwo+ICsJaW50IG51bV9wYWdlczsKPiArCS8qCj4gKwkgKiBCYWNraW5nIHN0
+b3JhZ2Ugb2YgdGhlIHNoYXJlZCBidWZmZXI6IHRoZXNlIGFyZSB0aGUgcGFnZXMgYmVpbmcKPiAr
+CSAqIHNoYXJlZC4KPiArCSAqLwo+ICsJc3RydWN0IHBhZ2UgKipwYWdlczsKPiArCj4gKwlzdHJ1
+Y3QgeGVuYnVzX2RldmljZSAqeGJfZGV2Owo+ICsKPiArCS8qIFRoZXNlIGFyZSB0aGUgb3BzIHVz
+ZWQgaW50ZXJuYWxseSBkZXBlbmRpbmcgb24gYmVfYWxsb2MgbW9kZS4gKi8KPiArCWNvbnN0IHN0
+cnVjdCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfb3BzICpvcHM7Cj4gKwo+ICsJLyogWGVuIG1hcCBo
+YW5kbGVzIGZvciB0aGUgYnVmZmVyIGFsbG9jYXRlZCBieSB0aGUgYmFja2VuZC4gKi8KPiArCWdy
+YW50X2hhbmRsZV90ICpiYWNrZW5kX21hcF9oYW5kbGVzOwo+ICt9Owo+ICsKPiArc3RydWN0IHhl
+bl9mcm9udF9wZ2Rpcl9zaGJ1Zl9jZmcgewo+ICsJc3RydWN0IHhlbmJ1c19kZXZpY2UgKnhiX2Rl
+djsKPiArCj4gKwkvKiBOdW1iZXIgb2YgcGFnZXMgb2YgdGhlIGJ1ZmZlciBiYWNraW5nIHN0b3Jh
+Z2UuICovCj4gKwlpbnQgbnVtX3BhZ2VzOwo+ICsJLyogUGFnZXMgb2YgdGhlIGJ1ZmZlciB0byBi
+ZSBzaGFyZWQuICovCj4gKwlzdHJ1Y3QgcGFnZSAqKnBhZ2VzOwo+ICsKPiArCS8qCj4gKwkgKiBU
+aGlzIGlzIGFsbG9jYXRlZCBvdXRzaWRlIGJlY2F1c2UgdGhlcmUgYXJlIHVzZS1jYXNlcyB3aGVu
+Cj4gKwkgKiB0aGUgYnVmZmVyIHN0cnVjdHVyZSBpcyBhbGxvY2F0ZWQgYXMgYSBwYXJ0IG9mIGEg
+YmlnZ2VyIG9uZS4KPiArCSAqLwo+ICsJc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqcGdk
+aXI7Cj4gKwkvKgo+ICsJICogTW9kZSBvZiBncmFudCByZWZlcmVuY2Ugc2hhcmluZzogaWYgc2V0
+IHRoZW4gYmFja2VuZCB3aWxsIHNoYXJlCj4gKwkgKiBncmFudCByZWZlcmVuY2VzIHRvIHRoZSBi
+dWZmZXIgd2l0aCB0aGUgZnJvbnRlbmQuCj4gKwkgKi8KPiArCWludCBiZV9hbGxvYzsKPiArfTsK
+PiArCj4gK2ludCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfYWxsb2Moc3RydWN0IHhlbl9mcm9udF9w
+Z2Rpcl9zaGJ1Zl9jZmcgKmNmZyk7Cj4gKwo+ICtncmFudF9yZWZfdAo+ICt4ZW5fZnJvbnRfcGdk
+aXJfc2hidWZfZ2V0X2Rpcl9zdGFydChzdHJ1Y3QgeGVuX2Zyb250X3BnZGlyX3NoYnVmICpidWYp
+Owo+ICsKPiAraW50IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1Zl9tYXAoc3RydWN0IHhlbl9mcm9udF9w
+Z2Rpcl9zaGJ1ZiAqYnVmKTsKPiArCj4gK2ludCB4ZW5fZnJvbnRfcGdkaXJfc2hidWZfdW5tYXAo
+c3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKTsKPiArCj4gK3ZvaWQgeGVuX2Zyb250
+X3BnZGlyX3NoYnVmX2ZyZWUoc3RydWN0IHhlbl9mcm9udF9wZ2Rpcl9zaGJ1ZiAqYnVmKTsKPiAr
+Cj4gKyNlbmRpZiAvKiBfX1hFTl9GUk9OVF9QR0RJUl9TSEJVRl9IXyAqLwoKWzFdIGh0dHBzOi8v
+bGttbC5vcmcvbGttbC8yMDE4LzExLzI3LzgxMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4v
+bGlzdGluZm8vZHJpLWRldmVsCg==
