@@ -1,112 +1,189 @@
-From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: [V3] ASoC: max98373: Added max98373_reset for stable amp reset
-Date: Fri, 30 Nov 2018 03:21:09 +0000
-Message-ID: <20181130031831.7813-1-ryans.lee@maximintegrated.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: HDA headset button support
+Date: Fri, 30 Nov 2018 06:45:04 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A1841FC1F@RTITMBSV02.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A1841FAEF@RTITMBSV02.realtek.com.tw>
+ <s5ho9a9uwkr.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1841FB60@RTITMBSV02.realtek.com.tw>
+ <s5hftvk49ag.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A1841FB90@RTITMBSV02.realtek.com.tw>
+ <s5hd0qo47ax.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ryan Lee <RyanS.Lee@maximintegrated.com>, Grant Grundler <grundler@chromium.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5A25267B85
+ for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2018 07:45:14 +0100 (CET)
+In-Reply-To: <s5hd0qo47ax.wl-tiwai@suse.de>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch added max98373_reset function to avoid amp software reset failur=
-e and code duplication.
-Reset verification step has been added for stable amp reset and it repeats =
-verification maximum 3 times when it is failed.
-Chip revision ID is available when the amp is in the idle state which means=
- software reset is completed well.
-Additional 10ms delay was added for every retrial and maximum 30ms delay ca=
-n be applied.
+Hi Takashi,
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
+Intel say .... it was not show headset plug and unplug.
+Is that necessary to show headphone and MIC plug and unplug {Event type 5 (EV_SW)}?
 
-Changes since v2:
-- Added commit message.
-Changes since v1:
-- Removed unusual repeat for amp software reset and verification.
-- Amp software reset will be performed once and it repeats verification max=
-imum 3 times if it is failed.
-- Wait 10ms before every verification trial. Maximum 30ms delay will be app=
-lied to wait AMP idle state.
-Changes:
-- Created max98373_reset function to minimize code duplication.
-- Changed regmap_write to regmap_update_bits. Other bits except LSB need to=
- be masked.
-- Added reset verification step to make sure software reset is completed we=
-ll. Software reset is done in 10ms in normal case.
-- Revision ID is available when the amp is in the idle state which means so=
-ftware reset is completed.
-- Software reset will be performed maximum 3 times to avoid amp reset failu=
-re. Generally it is done in the first trial.
-- sleep time after software reset is increased + 30ms for every retrial. Ma=
-ximum possible msleep time is 100 ms (initial 10 ms + 30 ms * 3 times).
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+    Event code 114 (KEY_VOLUMEDOWN)
+    Event code 115 (KEY_VOLUMEUP)
+    Event code 164 (KEY_PLAYPAUSE)
+    Event code 582 (?)
+  Event type 5 (EV_SW)
+    Event code 2 (SW_HEADPHONE_INSERT)
+    Event code 4 (SW_MICROPHONE_INSERT)
+Properties:
+Testing ... (interrupt to exit)
+***Following block of events is for one single event: pressing one of the buttons on headset***
+Event: time 1543528786.148227, type 1 (EV_KEY), code 115 (KEY_VOLUMEUP), value 1
+Event: time 1543528786.148227, -------------- SYN_REPORT ------------
+Event: time 1543528786.148249, type 1 (EV_KEY), code 115 (KEY_VOLUMEUP), value 0
+Event: time 1543528786.148249, -------------- SYN_REPORT ------------
+***No events show on evtest when plug or unplug jack***
 
- sound/soc/codecs/max98373.c | 35 +++++++++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 6 deletions(-)
+BR,
+Kailang
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index a09d013..9c8616a 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -724,14 +724,39 @@ static struct snd_soc_dai_driver max98373_dai[] =3D {
- 	}
- };
-=20
-+static void max98373_reset(struct max98373_priv *max98373, struct device *=
-dev)
-+{
-+	int ret, reg, count;
-+
-+	/* Software Reset */
-+	ret =3D regmap_update_bits(max98373->regmap,
-+		MAX98373_R2000_SW_RESET,
-+		MAX98373_SOFT_RESET,
-+		MAX98373_SOFT_RESET);
-+	if (ret)
-+		dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
-+
-+	count =3D 0;
-+	while (count < 3) {
-+		usleep_range(10000, 11000);
-+		/* Software Reset Verification */
-+		ret =3D regmap_read(max98373->regmap,
-+			MAX98373_R21FF_REV_ID, &reg);
-+		if (!ret) {
-+			dev_info(dev, "Reset completed (retry:%d)\n", count);
-+			return;
-+		}
-+		count++;
-+	}
-+	dev_err(dev, "Reset failed. (ret:%d)\n", ret);
-+}
-+
- static int max98373_probe(struct snd_soc_component *component)
- {
- 	struct max98373_priv *max98373 =3D snd_soc_component_get_drvdata(componen=
-t);
-=20
- 	/* Software Reset */
--	regmap_write(max98373->regmap,
--		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
--	usleep_range(10000, 11000);
-+	max98373_reset(max98373, component->dev);
-=20
- 	/* IV default slot configuration */
- 	regmap_write(max98373->regmap,
-@@ -818,9 +843,7 @@ static int max98373_resume(struct device *dev)
- {
- 	struct max98373_priv *max98373 =3D dev_get_drvdata(dev);
-=20
--	regmap_write(max98373->regmap,
--		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
--	usleep_range(10000, 11000);
-+	max98373_reset(max98373, dev);
- 	regcache_cache_only(max98373->regmap, false);
- 	regcache_sync(max98373->regmap);
- 	return 0;
---=20
-2.7.4
+-----Original Message-----
+From: Takashi Iwai <tiwai@suse.de> 
+Sent: Thursday, November 29, 2018 4:28 PM
+To: Kailang <kailang@realtek.com>
+Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+Subject: Re: HDA headset button support
+
+On Thu, 29 Nov 2018 09:21:51 +0100,
+Kailang wrote:
+> 
+> Hi Takashi,
+> 
+> It looks no issue now.
+> Could I need to generate new patch for you?
+
+You can fold into mine.  I'll need to resubmit to ML in anyway before merging.
+
+> I will send this patch to Intel to do the test.
+
+OK, let me know the results (and preferably tested-by tag or such).
+
+
+thanks,
+
+Takashi
+
+
+> 
+> BR,
+> Kailang
+> 
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Thursday, November 29, 2018 3:45 PM
+> To: Kailang <kailang@realtek.com>
+> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: Re: HDA headset button support
+> 
+> On Thu, 29 Nov 2018 08:22:39 +0100,
+> Kailang wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > I test the patch.
+> > It will go to Max or Min volume when I press HS button up or down.
+> > 
+> > +			state = jack->button_state;
+> > +			if (get_jack_plug_state(jack->pin_sense))
+> > +				state |= jack->type;
+> > +			snd_jack_report(jack->jack, state);
+> > 			If (jack->nid == 0x55)
+> > 				snd_jack_report(jack->jack, 0); ==> Add this will solve keep volume up and down.
+> > 
+> > If the pin sense active, it will update Mic and Headphone state. 
+> > (Upper code) But it still had chance to update 0x55 during unplug and plug state.
+> > So, Maybe need to clear the Button state. I guess.
+> 
+> As we don't receive button-release events, it makes sense to send the button clear at each time, yes.
+> 
+> For the one-shot button event, you can handle like below.
+> 
+> --- a/sound/pci/hda/hda_jack.c
+> +++ b/sound/pci/hda/hda_jack.c
+> @@ -343,6 +343,11 @@ void snd_hda_jack_report_sync(struct hda_codec *codec)
+>  			if (get_jack_plug_state(jack->pin_sense))
+>  				state |= jack->type;
+>  			snd_jack_report(jack->jack, state);
+> +			if (jack->button_state) {
+> +				snd_jack_report(jack->jack,
+> +						state & ~jack->button_state);
+> +				jack->button_state = 0; /* button released */
+> +			}
+>  		}
+>  }
+>  EXPORT_SYMBOL_GPL(snd_hda_jack_report_sync);
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > BR,
+> > Kailang
+> > 
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Sent: Wednesday, November 28, 2018 10:05 PM
+> > To: Kailang <kailang@realtek.com>
+> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > Subject: Re: HDA headset button support
+> > 
+> > On Wed, 28 Nov 2018 13:03:58 +0100,
+> > Kailang wrote:
+> > > 
+> > > Hi Takashi,
+> > > 
+> > > >I'd rather like to extend snd_hda_jack_add_kctl() with the key 
+> > > >support (maybe adding a new function).  You can pass there the 
+> > > >combination of SND_JACK_BTN_X with KEY_XXX in an array.
+> > > 
+> > > Do you mean create new function like below?
+> > > snd_hda_jack_add_key_kctl()
+> > > 
+> > > It couldn't use snd_hda_jack_add_kctl() directly.
+> > > Because it had report pin state and get type from NID.
+> > > 
+> > > 	type = get_input_jack_type(codec, nid);
+> > >         .....
+> > >         .....
+> > >  	state = snd_hda_jack_detect(codec, nid);
+> > > 	snd_jack_report(jack->jack, state ? jack->type : 0);
+> > > 
+> > > So, to create a new function in hda_jack.c was better.
+> > 
+> > Well, this seems more deeper than I thought.
+> > 
+> > Below is my quick attempt to add the infrastructure.  This adds more flexibility but still easiness for other possible button implementations, hopefully.
+> > 
+> > Could you check the series below?
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > 
+> > ------Please consider the environment before printing this e-mail.
+> > 
+> 
