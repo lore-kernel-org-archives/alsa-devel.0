@@ -1,78 +1,57 @@
 From: Ryan Lee <RyanS.Lee@maximintegrated.com>
 Subject: RE: [PATCH V2] ASoC: max98373: Added max98373_reset for stable amp
  reset
-Date: Fri, 30 Nov 2018 03:10:24 +0000
-Message-ID: <DM6PR11MB313188E9EECC884D2A874FEBE7D30@DM6PR11MB3131.namprd11.prod.outlook.com>
+Date: Fri, 30 Nov 2018 03:17:57 +0000
+Message-ID: <DM6PR11MB3131F092601136FF5E626A96E7D30@DM6PR11MB3131.namprd11.prod.outlook.com>
 References: <20181128031926.7157-1-ryans.lee@maximintegrated.com>
  <20181128094955.GG6828@sirena.org.uk>
  <DM6PR11MB3131E267C1EDF9254BC7D313E7D10@DM6PR11MB3131.namprd11.prod.outlook.com>
  <CANEJEGse1DGQE6K=sn=bfJuQW=-gM6zps+kvKd8y=yzXjrsTZQ@mail.gmail.com>
+ <20181129112612.GB10570@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CANEJEGse1DGQE6K=sn=bfJuQW=-gM6zps+kvKd8y=yzXjrsTZQ@mail.gmail.com>
+In-Reply-To: <20181129112612.GB10570@sirena.org.uk>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Grant Grundler <grundler@chromium.org>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Grant Grundler <grundler@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Benson Leung <bleung@chromium.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogR3JhbnQgR3J1bmRsZXIgPGdydW5k
-bGVyQGNocm9taXVtLm9yZz4NCj5TZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDI4LCAyMDE4IDU6
-NTYgUE0NCj5UbzogUnlhbiBMZWUgPFJ5YW5TLkxlZUBtYXhpbWludGVncmF0ZWQuY29tPg0KPkNj
-OiBicm9vbmllQGtlcm5lbC5vcmc7IExpYW0gR2lyZHdvb2QgPGxnaXJkd29vZEBnbWFpbC5jb20+
-Ow0KPnBlcmV4QHBlcmV4LmN6OyB0aXdhaUBzdXNlLmNvbTsgR3JhbnQgR3J1bmRsZXINCj48Z3J1
-bmRsZXJAY2hyb21pdW0ub3JnPjsgS3VuaW5vcmkgTW9yaW1vdG8NCj48a3VuaW5vcmkubW9yaW1v
-dG8uZ3hAcmVuZXNhcy5jb20+OyBCZW5zb24gTGV1bmcNCj48YmxldW5nQGNocm9taXVtLm9yZz47
-IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTEtNTCA8bGludXgtDQo+a2VybmVsQHZnZXIu
-a2VybmVsLm9yZz47IHJ5YW4ubGVlLm1heGltQGdtYWlsLmNvbQ0KPlN1YmplY3Q6IFJlOiBbUEFU
-Q0ggVjJdIEFTb0M6IG1heDk4MzczOiBBZGRlZCBtYXg5ODM3M19yZXNldCBmb3Igc3RhYmxlDQo+
-YW1wIHJlc2V0DQo+DQo+RVhURVJOQUwgRU1BSUwNCj4NCj4NCj4NCj5PbiBXZWQsIE5vdiAyOCwg
-MjAxOCBhdCA5OjA3IEFNIFJ5YW4gTGVlDQo+PFJ5YW5TLkxlZUBtYXhpbWludGVncmF0ZWQuY29t
-PiB3cm90ZToNCj4+DQo+PiA+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4+ID5Gcm9tOiBN
-YXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+DQo+PiA+U2VudDogV2VkbmVzZGF5LCBOb3Zl
-bWJlciAyOCwgMjAxOCAxOjUwIEFNDQo+PiA+VG86IFJ5YW4gTGVlIDxSeWFuUy5MZWVAbWF4aW1p
-bnRlZ3JhdGVkLmNvbT4NCj4+ID5DYzogTGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNv
-bT47IEphcm9zbGF2IEt5c2VsYQ0KPj4gPjxwZXJleEBwZXJleC5jej47IFRha2FzaGkgSXdhaSA8
-dGl3YWlAc3VzZS5jb20+OyBHcmFudCBHcnVuZGxlcg0KPj4gPjxncnVuZGxlckBjaHJvbWl1bS5v
-cmc+OyBLdW5pbm9yaSBNb3JpbW90bw0KPj4gPjxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2Fz
-LmNvbT47IEJlbnNvbiBMZXVuZw0KPj4gPjxibGV1bmdAY2hyb21pdW0ub3JnPjsgYWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC0NCj4+ID5rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBy
-eWFuLmxlZS5tYXhpbUBnbWFpbC5jb20NCj4+ID5TdWJqZWN0OiBSZTogW1BBVENIIFYyXSBBU29D
-OiBtYXg5ODM3MzogQWRkZWQgbWF4OTgzNzNfcmVzZXQgZm9yDQo+PiA+c3RhYmxlIGFtcCByZXNl
-dA0KPj4gPg0KPj4gPk9uIFdlZCwgTm92IDI4LCAyMDE4IGF0IDAzOjIwOjE2QU0gKzAwMDAsIFJ5
-YW4gTGVlIHdyb3RlOg0KPj4gPj4gU2lnbmVkLW9mZi1ieTogUnlhbiBMZWUgPHJ5YW5zLmxlZUBt
-YXhpbWludGVncmF0ZWQuY29tPg0KPj4gPj4gLS0tDQo+PiA+DQo+PiA+Tm90IHNlZWluZyBhIGNo
-YW5nZWxvZyBoZXJlIGxpa2UgSSBhc2tlZCBmb3IgOigNCj4+DQo+PiBBY3R1YWxseSBJIGFkZGVk
-IGNoYW5nZWxvZyBhcyBiZWxvdy4gRG8geW91IG1lYW4gdGhpcyBpcyBub3Qgc3VmZmljaWVudD8N
-Cj4NCj5UaGUgdGV4dCBpcyBwcm9iYWJseSBzdWZmaWNpZW50IGJ1dCBub3QgaW4gYSBmb3JtYXQg
-dGhhdCBNYXJrIGNhbiBkaXJlY3RseSBhcHBseS4NCj5QbGVhc2UgdGFrZSBhIHF1aWNrIGxvb2sg
-YXQgRG9jdW1lbnRhdGlvbi9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5yc3QuDQo+DQo+TWFy
-ayB3YW50cyB0aGUgImNvbW1pdCBtZXNzYWdlIiB0byBiZSBiZWZvcmUgdGhlICctLS0nIGxpbmUu
-IFNvIG1vdmUgdGhlDQo+IkNoYW5nZXM6IiB0ZXh0IHVwIHRvIGJlY29tZSB0aGUgY29tbWl0IG1l
-c3NhZ2UgYW5kIGRyb3AgdGhlICJDaGFuZ2VzIg0KPmxpbmUuIFRoYXQgc2hvdWxkIGV4cGxhaW4g
-d2h5IHRoaXMgY29tbWl0IGlzIG5lZWRlZCBhbmQgaW5jbHVkZSB0aGUgUy1vLUIgbGluZS4NClRo
-YW5rcyBmb3IgeW91ciBoZWxwLiBJIHdpbGwgZml4IGl0Lg0KPg0KPmNoZWVycywNCj5ncmFudA0K
-Pg0KPj4NCj4+IENoYW5nZXMgc2luY2UgdjEgOiBSZW1vdmVkIHVudXN1YWwgcmVwZWF0IGZvciBh
-bXAgc29mdHdhcmUgcmVzZXQgYW5kDQo+dmVyaWZpY2F0aW9uLg0KPj4gICAgICAgICAgICAgICAg
-ICAgIEFtcCBzb2Z0d2FyZSByZXNldCB3aWxsIGJlIHBlcmZvcm1lZCBvbmNlIGFuZCBpdCByZXBl
-YXRzDQo+dmVyaWZpY2F0aW9uIG1heGltdW0gMyB0aW1lcyBpZiBpdCBpcyBmYWlsZWQuDQo+PiAg
-ICAgICAgICAgICAgICAgICAgV2FpdCAxMG1zIGJlZm9yZSBldmVyeSB2ZXJpZmljYXRpb24gdHJp
-YWwuIE1heGltdW0gMzBtcyBkZWxheSB3aWxsDQo+YmUgYXBwbGllZCB0byB3YWl0IEFNUCBpZGxl
-IHN0YXRlLg0KPj4NCj4+ID4NCj4+ID4+IENoYW5nZXMgOiBDcmVhdGVkIG1heDk4MzczX3Jlc2V0
-IGZ1bmN0aW9uIHRvIG1pbmltaXplIGNvZGUgZHVwbGljYXRpb24uDQo+PiA+PiAgICAgICAgICAg
-Q2hhbmdlZCByZWdtYXBfd3JpdGUgdG8gcmVnbWFwX3VwZGF0ZV9iaXRzLiBPdGhlciBiaXRzDQo+
-PiA+PiBleGNlcHQgTFNCDQo+PiA+bmVlZCB0byBiZSBtYXNrZWQuDQo+PiA+PiAgICAgICAgICAg
-QWRkZWQgcmVzZXQgdmVyaWZpY2F0aW9uIHN0ZXAgdG8gbWFrZSBzdXJlIHNvZnR3YXJlIHJlc2V0
-DQo+PiA+PiBpcyBjb21wbGV0ZWQNCj4+ID53ZWxsLiBTb2Z0d2FyZSByZXNldCBpcyBkb25lIGlu
-IDEwbXMgaW4gbm9ybWFsIGNhc2UuDQo+PiA+PiAgICAgICAgICAgUmV2aXNpb24gSUQgaXMgYXZh
-aWxhYmxlIHdoZW4gdGhlIGFtcCBpcyBpbiB0aGUgaWRsZQ0KPj4gPj4gc3RhdGUgd2hpY2ggbWVh
-bnMNCj4+ID5zb2Z0d2FyZSByZXNldCBpcyBjb21wbGV0ZWQuDQo+PiA+PiAgICAgICAgICAgU29m
-dHdhcmUgcmVzZXQgd2lsbCBiZSBwZXJmb3JtZWQgbWF4aW11bSAzIHRpbWVzIHRvIGF2b2lkDQo+
-PiA+PiBhbXAgcmVzZXQNCj4+ID5mYWlsdXJlLiBHZW5lcmFsbHkgaXQgaXMgZG9uZSBpbiB0aGUg
-Zmlyc3QgdHJpYWwuDQo+PiA+PiAgICAgICAgICAgc2xlZXAgdGltZSBhZnRlciBzb2Z0d2FyZSBy
-ZXNldCBpcyBpbmNyZWFzZWQgKyAzMG1zIGZvciBldmVyeSByZXRyaWFsLg0KPj4gPk1heGltdW0g
-cG9zc2libGUgbXNsZWVwIHRpbWUgaXMgMTAwIG1zIChpbml0aWFsIDEwIG1zICsgMzAgbXMgKiAz
-IHRpbWVzKS4NCj4+ID4NCj4+ID5UaGlzIGxvb2tzIGxpa2UgaXQncyBzdXBwb3NlZCB0byBiZSBh
-IGNoYW5nZWxvZyBidXQgaXQgaXNuJ3Qgb25lPw0K
+>-----Original Message-----
+>From: Mark Brown <broonie@kernel.org>
+>Sent: Thursday, November 29, 2018 3:26 AM
+>To: Grant Grundler <grundler@chromium.org>
+>Cc: Ryan Lee <RyanS.Lee@maximintegrated.com>; Liam Girdwood
+><lgirdwood@gmail.com>; perex@perex.cz; tiwai@suse.com; Kuninori
+>Morimoto <kuninori.morimoto.gx@renesas.com>; Benson Leung
+><bleung@chromium.org>; alsa-devel@alsa-project.org; LKML <linux-
+>kernel@vger.kernel.org>; ryan.lee.maxim@gmail.com
+>Subject: Re: [PATCH V2] ASoC: max98373: Added max98373_reset for stable
+>amp reset
+>
+>On Wed, Nov 28, 2018 at 05:55:48PM -0800, Grant Grundler wrote:
+>> On Wed, Nov 28, 2018 at 9:07 AM Ryan Lee
+><RyanS.Lee@maximintegrated.com> wrote:
+>
+>> > >Not seeing a changelog here like I asked for :(
+>
+>> > Actually I added changelog as below. Do you mean this is not sufficien=
+t?
+>
+>> The text is probably sufficient but not in a format that Mark can
+>> directly apply.
+>> Please take a quick look at Documentation/process/submitting-patches.rst=
+.
+>
+>> Mark wants the "commit message" to be before the '---' line. So move
+>> the "Changes:" text up to become the commit message and drop the
+>> "Changes" line. That should explain why this commit is needed and
+>> include the S-o-B line.
+>
+>Right.  If you compare what's in git and what you're sending with other
+>commits and mails and make sure everything looks similar you're probably o=
+n
+>the right track.
+I'm sorry for the mistake. Let me fix it.
