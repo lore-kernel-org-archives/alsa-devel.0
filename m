@@ -1,33 +1,29 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v3 0/5] ASoC: qdsp6: add compress offload support
-Date: Fri, 30 Nov 2018 17:52:20 +0530
-Message-ID: <20181130122220.GO3175@vkoul-mobl.Dlink>
-References: <20181115181324.26784-1-srinivas.kandagatla@linaro.org>
+From: Jeremy Cline <jcline@redhat.com>
+Subject: Regression: very quiet speakers on Thinkpad T570s
+Date: Fri, 30 Nov 2018 09:49:17 -0500
+Message-ID: <bbba2653-d57b-5fab-8c06-5fd22ae80aa5@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181115181324.26784-1-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, srini@kernel.org
+To: Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: Tim Van den Eynde <redhat@vdeynde.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 15-11-18, 18:13, Srinivas Kandagatla wrote:
-> This patchset adds support to very basic MP3 playback compress offload
-> support via QDSP ASM module.
-> 
-> Tested this patchset on DB410c with APQ8016 and DB820c with APQ8096 using
-> tinycompress library.
-> 
-> Adding other codec support should be trivial w.r.t qdsp6 side, however
-> there are other dependencies like compress UAPI header changes and
-> FastRPC which are being worked in parallel. Once ready will post them!
+Hi,
 
-Thanks Srini, with this we will have compress support upstream for a
-public board.
+Some folks have reported on the Fedora bug tracker[0] that the laptop
+speaker volume is very low on the Thinkpad T570 when running a kernel
+that includes commit 61fcf8ece9b6 ("ALSA: hda/realtek - Enable Thinkpad
+Dock device for ALC298 platform").
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+alsa-info.sh from v4.15.4 (just before commit 61fcf8ece9b6 arrived in
+stable) and v4.19.4 with the issue present are attached to the bugzilla.
+I've also Cc'd Tim, who uploaded them and has the laptop in question.
 
--- 
-~Vinod
+[0] https://bugzilla.redhat.com/show_bug.cgi?id=1554304
+
+Regards,
+Jeremy
