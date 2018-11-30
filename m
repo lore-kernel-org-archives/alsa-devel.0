@@ -1,50 +1,49 @@
-From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v8 3/3] ALSA: hda: add support for Huawei WMI micmute LED
-Date: Thu, 29 Nov 2018 18:57:38 -0500
-Message-ID: <20181129235742.14332-4-ayman.bagabas@gmail.com>
-References: <20181129235742.14332-1-ayman.bagabas@gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/4] ASoC: audio-graph-scu-card: care link
+	/ dai count
+Date: Fri, 30 Nov 2018 00:31:28 +0000
+Message-ID: <87a7lr1kke.wl-kuninori.morimoto.gx@renesas.com>
+References: <87bm6c30kz.wl-kuninori.morimoto.gx@renesas.com>
+ <87a7lw30k9.wl-kuninori.morimoto.gx@renesas.com>
+ <20181128104629.GH6828@sirena.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181129235742.14332-1-ayman.bagabas@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ayman.bagabas@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400108.outbound.protection.outlook.com [40.107.140.108])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBA55267B82
+ for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2018 01:31:32 +0100 (CET)
+In-Reply-To: <20181128104629.GH6828@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <12A88F4819CFB84885A24027B900D81F@jpnprd01.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some of Huawei laptops come with a LED in the micmute key. This patch
-enables the use of micmute LED for these devices:
-1. Matebook X (19e5:3200), (19e5:3201)
-2. Matebook X Pro (19e5:3204)
 
-Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+Hi Mark
+
+> > -static int asoc_graph_get_dais_count(struct device *dev)
+> > +static void asoc_graph_get_dais_count(struct device *dev,
+> > +				      int *link_num,
+> > +				      int *dais_num,
+> > +				      int *ccnf_num)
+> 
+> I can't tell what a "ccnf" is reading this and there's no documentation :(
+
+It means "snd_soc_codec_conf number" -> "codec_conf number" -> "ccnf_num".
+I aligned it. I can update if it is better
+
+Best regards
 ---
- sound/pci/hda/patch_realtek.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1326f32f4574..9766fd249bdf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5776,7 +5776,9 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{0x1e, 0x411111f0},
- 			{0x21, 0x04211020},
- 			{ }
--		}
-+		},
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_MIC_MUTE_LED
- 	},
- 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -6608,6 +6610,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
-+	SND_PCI_QUIRK(0x19e5, 0x3200, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
-+	SND_PCI_QUIRK(0x19e5, 0x3201, "Huawei MBX", ALC255_FIXUP_MIC_MUTE_LED),
- 	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 
--- 
-2.19.1
+Kuninori Morimoto
