@@ -1,23 +1,18 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 1/4] ASoC: audio-graph-scu-card: care
- link	/ dai count
-Date: Fri, 30 Nov 2018 00:52:08 +0000
-Message-ID: <875zwf1jlt.wl-kuninori.morimoto.gx@renesas.com>
-References: <87bm6c30kz.wl-kuninori.morimoto.gx@renesas.com>
- <87a7lw30k9.wl-kuninori.morimoto.gx@renesas.com>
- <20181128104629.GH6828@sirena.org.uk>
- <87a7lr1kke.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 0/5] ASoC: merge audio-graph-scu into
+	audio-graph - step3
+Date: Fri, 30 Nov 2018 02:02:43 +0000
+Message-ID: <87zhtrz5yt.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from JPN01-TY1-obe.outbound.protection.outlook.com
- (mail-eopbgr1400124.outbound.protection.outlook.com [40.107.140.124])
- by alsa0.perex.cz (Postfix) with ESMTP id 12E9E267B82
- for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2018 01:52:11 +0100 (CET)
-In-Reply-To: <87a7lr1kke.wl-kuninori.morimoto.gx@renesas.com>
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com
+ (mail-eopbgr1410124.outbound.protection.outlook.com [40.107.141.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 833F8267B85
+ for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2018 03:02:48 +0100 (CET)
 Content-Language: en-US
-Content-ID: <24397C6E302F81428146029E63FEE835@jpnprd01.prod.outlook.com>
+Content-ID: <54C06E6547ADE541BF275CAF51E24E99@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,26 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi Mark, again
+Hi Mark
 
-> > > -static int asoc_graph_get_dais_count(struct device *dev)
-> > > +static void asoc_graph_get_dais_count(struct device *dev,
-> > > +				      int *link_num,
-> > > +				      int *dais_num,
-> > > +				      int *ccnf_num)
-> > 
-> > I can't tell what a "ccnf" is reading this and there's no documentation :(
-> 
-> It means "snd_soc_codec_conf number" -> "codec_conf number" -> "ccnf_num".
-> I aligned it. I can update if it is better
+audio-graph     card can handle normal sound card, and
+audio-graph-scu card can handle DPCM   sound card.
+But, we can't use these feature in same time now.
 
-I will post v2 patch which has documentation
+This is v2 of step3 patches.
 
-Best regards
----
-Kuninori Morimoto
+I mentioned that step4 patch-set will be based on OF-graph
+posted patch, but, I could solve it without posted patch.
+There is no blocker anymore.
+Thus, I included blocked patch on step3.
+
+Kuninori Morimoto (5):
+  ASoC: simple-card-utils: fixup asoc_simple_card_get_dai_id() counting
+  ASoC: audio-graph-scu-card: care link / dai count
+  ASoC: audio-graph-scu-card: use cpu/codec pointer on graph_dai_props
+  ASoC: audio-graph-scu-card: care multi DPCM codec_conf
+  ASoC: audio-graph-card: use cpu/codec pointer on graph_dai_props
+
+ sound/soc/generic/audio-graph-card.c     |  57 ++++++----
+ sound/soc/generic/audio-graph-scu-card.c | 180 +++++++++++++++++++++++--------
+ sound/soc/generic/simple-card-utils.c    |  22 +---
+ 3 files changed, 173 insertions(+), 86 deletions(-)
+
+-- 
+2.7.4
