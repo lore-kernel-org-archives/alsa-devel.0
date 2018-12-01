@@ -1,14 +1,23 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: pxa: remove raumfeld machine driver
-Date: Sat,  1 Dec 2018 15:08:46 +0100
-Message-ID: <20181201140846.20910-1-daniel@zonque.org>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Well-known LED names was Re: [PATCH 0/6] Introduce
+ audio-mute LED trigger (and conversions to it)
+Date: Sat, 1 Dec 2018 15:41:01 +0100
+Message-ID: <20181201144101.GD31631@amd>
+References: <20181127084418.GA20504@amd> <20181128111806.cb3cncpjeq73sptg@pali>
+ <s5hy39dv3dg.wl-tiwai@suse.de> <20181128122505.GA1193@amd>
+ <8bb45cc6-9f98-9fed-9676-7f1429328c4a@gmail.com>
+ <20181128203410.GA20670@amd> <20181128204612.l3bayhop4qmep2hj@pali>
+ <0ed37870-c7b6-fd6b-2f6e-7325fdde3629@gmail.com>
+ <20181128212212.GE20670@amd>
+ <5f8eece3-95af-7866-d7d0-02cc3cb695ca@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4358365166168736433=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 37EC426770D
- for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2018 15:08:55 +0100 (CET)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2301226770D
+ for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2018 15:41:02 +0100 (CET)
+In-Reply-To: <5f8eece3-95af-7866-d7d0-02cc3cb695ca@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,377 +27,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>, haojian.zhuang@gmail.com
+To: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, Takashi Iwai <tiwai@suse.de>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These boards are now fully ported to devicetree and make use of the
-simple-card driver, so the platform specific machine driver can be
-removed.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- sound/soc/pxa/Kconfig    |  10 --
- sound/soc/pxa/Makefile   |   1 -
- sound/soc/pxa/raumfeld.c | 318 ---------------------------------------
- 3 files changed, 329 deletions(-)
- delete mode 100644 sound/soc/pxa/raumfeld.c
+--===============4358365166168736433==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lc9FT7cWel8HagAv"
+Content-Disposition: inline
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 943b44de1464..a6968bfe1d2d 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -169,16 +169,6 @@ config SND_SOC_ZYLONITE
- 	  Say Y if you want to add support for SoC audio on the
- 	  Marvell Zylonite reference platform.
- 
--config SND_SOC_RAUMFELD
--	tristate "SoC Audio support Raumfeld audio adapter"
--	depends on SND_PXA2XX_SOC && (MACH_RAUMFELD_SPEAKER || MACH_RAUMFELD_CONNECTOR)
--	depends on I2C && SPI_MASTER
--	select SND_PXA_SOC_SSP
--	select SND_SOC_CS4270
--	select SND_SOC_AK4104
--	help
--	  Say Y if you want to add support for SoC audio on Raumfeld devices
--
- config SND_PXA2XX_SOC_HX4700
- 	tristate "SoC Audio support for HP iPAQ hx4700"
- 	depends on SND_PXA2XX_SOC && MACH_H4700 && I2C
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 5b265662f04f..0ab2a9dcb720 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -49,6 +49,5 @@ obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
- obj-$(CONFIG_SND_PXA2XX_SOC_Z2) += snd-soc-z2.o
- obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
- obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
--obj-$(CONFIG_SND_SOC_RAUMFELD) += snd-soc-raumfeld.o
- obj-$(CONFIG_SND_MMP_SOC_BROWNSTONE) += snd-soc-brownstone.o
- obj-$(CONFIG_SND_SOC_TTC_DKB) += snd-soc-ttc-dkb.o
-diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
-deleted file mode 100644
-index 111a907c4eb9..000000000000
---- a/sound/soc/pxa/raumfeld.c
-+++ /dev/null
-@@ -1,318 +0,0 @@
--/*
-- * raumfeld_audio.c  --  SoC audio for Raumfeld audio devices
-- *
-- * Copyright (c) 2009 Daniel Mack <daniel@caiaq.de>
-- *
-- * based on code from:
-- *
-- *    Wolfson Microelectronics PLC.
-- *    Openedhand Ltd.
-- *    Liam Girdwood <lrg@slimlogic.co.uk>
-- *    Richard Purdie <richard@openedhand.com>
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/i2c.h>
--#include <linux/delay.h>
--#include <linux/gpio.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include <asm/mach-types.h>
--
--#include "pxa-ssp.h"
--
--#define GPIO_SPDIF_RESET	(38)
--#define GPIO_MCLK_RESET		(111)
--#define GPIO_CODEC_RESET	(120)
--
--static struct i2c_client *max9486_client;
--static struct i2c_board_info max9486_hwmon_info = {
--	I2C_BOARD_INFO("max9485", 0x63),
--};
--
--#define MAX9485_MCLK_FREQ_112896 0x22
--#define MAX9485_MCLK_FREQ_122880 0x23
--#define MAX9485_MCLK_FREQ_225792 0x32
--#define MAX9485_MCLK_FREQ_245760 0x33
--
--static void set_max9485_clk(char clk)
--{
--	i2c_master_send(max9486_client, &clk, 1);
--}
--
--static void raumfeld_enable_audio(bool en)
--{
--	if (en) {
--		gpio_set_value(GPIO_MCLK_RESET, 1);
--
--		/* wait some time to let the clocks become stable */
--		msleep(100);
--
--		gpio_set_value(GPIO_SPDIF_RESET, 1);
--		gpio_set_value(GPIO_CODEC_RESET, 1);
--	} else {
--		gpio_set_value(GPIO_MCLK_RESET, 0);
--		gpio_set_value(GPIO_SPDIF_RESET, 0);
--		gpio_set_value(GPIO_CODEC_RESET, 0);
--	}
--}
--
--/* CS4270 */
--static int raumfeld_cs4270_startup(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	/* set freq to 0 to enable all possible codec sample rates */
--	return snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
--}
--
--static void raumfeld_cs4270_shutdown(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	/* set freq to 0 to enable all possible codec sample rates */
--	snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
--}
--
--static int raumfeld_cs4270_hw_params(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int clk = 0;
--	int ret = 0;
--
--	switch (params_rate(params)) {
--	case 44100:
--		set_max9485_clk(MAX9485_MCLK_FREQ_112896);
--		clk = 11289600;
--		break;
--	case 48000:
--		set_max9485_clk(MAX9485_MCLK_FREQ_122880);
--		clk = 12288000;
--		break;
--	case 88200:
--		set_max9485_clk(MAX9485_MCLK_FREQ_225792);
--		clk = 22579200;
--		break;
--	case 96000:
--		set_max9485_clk(MAX9485_MCLK_FREQ_245760);
--		clk = 24576000;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk, 0);
--	if (ret < 0)
--		return ret;
--
--	/* setup the CPU DAI */
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, PXA_SSP_DIV_SCR, 4);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_EXT, clk, 1);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static const struct snd_soc_ops raumfeld_cs4270_ops = {
--	.startup = raumfeld_cs4270_startup,
--	.shutdown = raumfeld_cs4270_shutdown,
--	.hw_params = raumfeld_cs4270_hw_params,
--};
--
--static int raumfeld_analog_suspend(struct snd_soc_card *card)
--{
--	raumfeld_enable_audio(false);
--	return 0;
--}
--
--static int raumfeld_analog_resume(struct snd_soc_card *card)
--{
--	raumfeld_enable_audio(true);
--	return 0;
--}
--
--/* AK4104 */
--
--static int raumfeld_ak4104_hw_params(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int ret = 0, clk = 0;
--
--	switch (params_rate(params)) {
--	case 44100:
--		set_max9485_clk(MAX9485_MCLK_FREQ_112896);
--		clk = 11289600;
--		break;
--	case 48000:
--		set_max9485_clk(MAX9485_MCLK_FREQ_122880);
--		clk = 12288000;
--		break;
--	case 88200:
--		set_max9485_clk(MAX9485_MCLK_FREQ_225792);
--		clk = 22579200;
--		break;
--	case 96000:
--		set_max9485_clk(MAX9485_MCLK_FREQ_245760);
--		clk = 24576000;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	/* setup the CPU DAI */
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, PXA_SSP_DIV_SCR, 4);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_EXT, clk, 1);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops raumfeld_ak4104_ops = {
--	.hw_params = raumfeld_ak4104_hw_params,
--};
--
--#define DAI_LINK_CS4270		\
--{							\
--	.name		= "CS4270",			\
--	.stream_name	= "CS4270",			\
--	.cpu_dai_name	= "pxa-ssp-dai.0",		\
--	.platform_name	= "pxa-pcm-audio",		\
--	.codec_dai_name	= "cs4270-hifi",		\
--	.codec_name	= "cs4270.0-0048",	\
--	.dai_fmt	= SND_SOC_DAIFMT_I2S |		\
--			  SND_SOC_DAIFMT_NB_NF |        \
--			  SND_SOC_DAIFMT_CBS_CFS,       \
--	.ops		= &raumfeld_cs4270_ops,		\
--}
--
--#define DAI_LINK_AK4104		\
--{							\
--	.name		= "ak4104",			\
--	.stream_name	= "Playback",			\
--	.cpu_dai_name	= "pxa-ssp-dai.1",		\
--	.codec_dai_name	= "ak4104-hifi",		\
--	.platform_name	= "pxa-pcm-audio",		\
--	.dai_fmt	= SND_SOC_DAIFMT_I2S |		\
--			  SND_SOC_DAIFMT_NB_NF |	\
--			  SND_SOC_DAIFMT_CBS_CFS,       \
--	.ops		= &raumfeld_ak4104_ops,		\
--	.codec_name	= "spi0.0",			\
--}
--
--static struct snd_soc_dai_link snd_soc_raumfeld_connector_dai[] = {
--	DAI_LINK_CS4270,
--	DAI_LINK_AK4104,
--};
--
--static struct snd_soc_dai_link snd_soc_raumfeld_speaker_dai[] = {
--	DAI_LINK_CS4270,
--};
--
--static struct snd_soc_card snd_soc_raumfeld_connector = {
--	.name		= "Raumfeld Connector",
--	.owner		= THIS_MODULE,
--	.dai_link	= snd_soc_raumfeld_connector_dai,
--	.num_links	= ARRAY_SIZE(snd_soc_raumfeld_connector_dai),
--	.suspend_post	= raumfeld_analog_suspend,
--	.resume_pre	= raumfeld_analog_resume,
--};
--
--static struct snd_soc_card snd_soc_raumfeld_speaker = {
--	.name		= "Raumfeld Speaker",
--	.owner		= THIS_MODULE,
--	.dai_link	= snd_soc_raumfeld_speaker_dai,
--	.num_links	= ARRAY_SIZE(snd_soc_raumfeld_speaker_dai),
--	.suspend_post	= raumfeld_analog_suspend,
--	.resume_pre	= raumfeld_analog_resume,
--};
--
--static struct platform_device *raumfeld_audio_device;
--
--static int __init raumfeld_audio_init(void)
--{
--	int ret;
--
--	if (!machine_is_raumfeld_speaker() &&
--	    !machine_is_raumfeld_connector())
--		return 0;
--
--	max9486_client = i2c_new_device(i2c_get_adapter(0),
--					&max9486_hwmon_info);
--
--	if (!max9486_client)
--		return -ENOMEM;
--
--	set_max9485_clk(MAX9485_MCLK_FREQ_122880);
--
--	/* Register analog device */
--	raumfeld_audio_device = platform_device_alloc("soc-audio", 0);
--	if (!raumfeld_audio_device)
--		return -ENOMEM;
--
--	if (machine_is_raumfeld_speaker())
--		platform_set_drvdata(raumfeld_audio_device,
--				     &snd_soc_raumfeld_speaker);
--
--	if (machine_is_raumfeld_connector())
--		platform_set_drvdata(raumfeld_audio_device,
--				     &snd_soc_raumfeld_connector);
--
--	ret = platform_device_add(raumfeld_audio_device);
--	if (ret < 0) {
--		platform_device_put(raumfeld_audio_device);
--		return ret;
--	}
--
--	raumfeld_enable_audio(true);
--	return 0;
--}
--
--static void __exit raumfeld_audio_exit(void)
--{
--	raumfeld_enable_audio(false);
--
--	platform_device_unregister(raumfeld_audio_device);
--
--	i2c_unregister_device(max9486_client);
--
--	gpio_free(GPIO_MCLK_RESET);
--	gpio_free(GPIO_CODEC_RESET);
--	gpio_free(GPIO_SPDIF_RESET);
--}
--
--module_init(raumfeld_audio_init);
--module_exit(raumfeld_audio_exit);
--
--/* Module information */
--MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("Raumfeld audio SoC");
--MODULE_LICENSE("GPL");
--- 
-2.19.2
+
+--lc9FT7cWel8HagAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> >>> If external USB keyboard is identified as "input7" device, then
+> >>> "input7::mute" is a good name for mute key. But "sys::mute" does not =
+say
+> >>> anything to which device or hardware it belongs nor does not solve
+> >>> problem that which device/driver/subsystem should have privilege to t=
+ake
+> >>> this "sys" name.
+> >>
+> >> How about just "platform" for the LEDs being part of the device
+> >> on which the system is running?
+> >=20
+> > "platform" works for me.
+> >=20
+> > Are we in agreement that this name will be used for all similar LEDs,
+> > as long as they are on the "main box" of the device, no matter if they
+> > are connected using acpi, gpio, i2c, ...?
+>=20
+> One doubt: say we have hdd activity LED on the "main box" - it
+> would be named "platform::disk".
+>=20
+> Now, we add external USB disk. Previously we were considering
+> the naming for disk LEDs in the form e.g. "sdb::disk".
+>=20
+> If so, there would be discrepancy between internal and external disk
+> LED names. Similarly in case of eth/adsl/wlan/camera LEDs.
+
+Well, it really depends if the "plaform::disk" is for all the disks,
+or if it is for sda. In the second case, it might be better to name it
+sda::disk...
+
+Anyway... I believe we should start documenting good and bad LEDs, so
+that patch authors know what is there, and can try to be consistent,
+and so that userland knows what names to probe for.
+
+What about following? Any other LEDs worth mentioning?
+
+commit c56708addf9c312cefd760bca218a0545258b217
+Author: Pavel <pavel@ucw.cz>
+Date:   Sat Dec 1 15:32:13 2018 +0100
+
+leds: Add list of well-known LED names
+   =20
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+diff --git a/Documentation/leds/well-known-leds.txt b/Documentation/leds/we=
+ll-known-leds.txt
+new file mode 100644
+index 0000000..9a262db
+--- /dev/null
++++ b/Documentation/leds/well-known-leds.txt
+@@ -0,0 +1,42 @@
++-*- org -*-
++
++It is somehow important to provide consistent interface to the
++userland. LED devices have one problem there, and that is naming of
++directories in /sys/class/leds. It would be nice if userland would
++just know right "name" for given LED function, but situation got more
++complex.
++
++Anyway, if backwards compatibility is not an issue, new code should
++use one of the "good" names from this list, and you should extend the
++list where applicable.
++
++Bad names are listed, too, in case you are writing application that
++wants to use particular feature, you should probe for good name first
++but then try the bad ones, too".
++
++* Keyboards
++
++Good: "input*:*:capslock"
++Good: "input*:*:scrolllock"
++Good: "input*:*:numlock"
++
++Set of common keyboard LEDs, going back to PC AT or so.
++
++Bad: "tpacpi::thinklight" (IBM/Lenovo Thinkpads)
++Bad: "lp5523:kb{1,2,3,4,5,6,7}" (Nokia N900)
++
++Keyboard frontlight/backlight.
++
++* Sound subsystem
++
++Good: "platform:*:mute"
++Good: "platform:*:micmute"
++
++LEDs on notebook body, indicating that sound input / output is muted.
++
++* System notification
++
++Good: "status-led:{red,green,blue}" (Motorola Droid 4)
++Bad: "lp5523:{r,g,b}" (Nokia N900)
++
++Phones usually have multi-color status LED.
+
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--lc9FT7cWel8HagAv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlwCnX0ACgkQMOfwapXb+vLo0wCghl7pPkG4xPiXLjZ2qehtFOtL
+z60AoJXadfpQ0Yyu7oJ0vKOW1QPv4sHB
+=5o7d
+-----END PGP SIGNATURE-----
+
+--lc9FT7cWel8HagAv--
+
+--===============4358365166168736433==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4358365166168736433==--
