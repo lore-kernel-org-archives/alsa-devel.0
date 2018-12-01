@@ -1,17 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: common: add ACPI matching
-	tables for ICL
-Date: Fri, 30 Nov 2018 18:54:37 -0600
-Message-ID: <20181201005437.5198-3-pierre-louis.bossart@linux.intel.com>
-References: <20181201005437.5198-1-pierre-louis.bossart@linux.intel.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ASoC: pxa: remove raumfeld machine driver
+Date: Sat,  1 Dec 2018 15:08:46 +0100
+Message-ID: <20181201140846.20910-1-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 73E10267B9E
- for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2018 01:54:59 +0100 (CET)
-In-Reply-To: <20181201005437.5198-1-pierre-louis.bossart@linux.intel.com>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37EC426770D
+ for <alsa-devel@alsa-project.org>; Sat,  1 Dec 2018 15:08:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,82 +18,377 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>, haojian.zhuang@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Entry needed for ICL RVP w/ RT274
+These boards are now fully ported to devicetree and make use of the
+simple-card driver, so the platform specific machine driver can be
+removed.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- include/sound/soc-acpi-intel-match.h          |  1 +
- sound/soc/intel/common/Makefile               |  2 +-
- .../intel/common/soc-acpi-intel-icl-match.c   | 32 +++++++++++++++++++
- 3 files changed, 34 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-icl-match.c
+ sound/soc/pxa/Kconfig    |  10 --
+ sound/soc/pxa/Makefile   |   1 -
+ sound/soc/pxa/raumfeld.c | 318 ---------------------------------------
+ 3 files changed, 329 deletions(-)
+ delete mode 100644 sound/soc/pxa/raumfeld.c
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index f48f59e5b7b0..bb5e1e4ce8bf 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -24,6 +24,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[];
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 943b44de1464..a6968bfe1d2d 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -169,16 +169,6 @@ config SND_SOC_ZYLONITE
+ 	  Say Y if you want to add support for SoC audio on the
+ 	  Marvell Zylonite reference platform.
  
- /*
-  * generic table used for HDA codec-based platforms, possibly with
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index c1f50a079d34..56c81e20b5bf 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -7,7 +7,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-hsw-bdw-match.o \
- 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
- 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
--	soc-acpi-intel-cnl-match.o \
-+	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
- 	soc-acpi-intel-hda-match.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-new file mode 100644
-index 000000000000..33b441dca4d3
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * soc-apci-intel-icl-match.c - tables and support for ICL ACPI enumeration.
-+ *
-+ * Copyright (c) 2018, Intel Corporation.
-+ *
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+#include "../skylake/skl.h"
-+
-+static struct skl_machine_pdata icl_pdata = {
-+	.use_tplg_pcm = true,
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "icl_rt274",
-+		.fw_filename = "intel/dsp_fw_icl.bin",
-+		.pdata = &icl_pdata,
-+		.sof_fw_filename = "intel/sof-icl.ri",
-+		.sof_tplg_filename = "intel/sof-icl-rt274.tplg",
-+		.asoc_plat_name = "0000:00:1f.3",
-+	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Intel Common ACPI Match module");
+-config SND_SOC_RAUMFELD
+-	tristate "SoC Audio support Raumfeld audio adapter"
+-	depends on SND_PXA2XX_SOC && (MACH_RAUMFELD_SPEAKER || MACH_RAUMFELD_CONNECTOR)
+-	depends on I2C && SPI_MASTER
+-	select SND_PXA_SOC_SSP
+-	select SND_SOC_CS4270
+-	select SND_SOC_AK4104
+-	help
+-	  Say Y if you want to add support for SoC audio on Raumfeld devices
+-
+ config SND_PXA2XX_SOC_HX4700
+ 	tristate "SoC Audio support for HP iPAQ hx4700"
+ 	depends on SND_PXA2XX_SOC && MACH_H4700 && I2C
+diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
+index 5b265662f04f..0ab2a9dcb720 100644
+--- a/sound/soc/pxa/Makefile
++++ b/sound/soc/pxa/Makefile
+@@ -49,6 +49,5 @@ obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_Z2) += snd-soc-z2.o
+ obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
+-obj-$(CONFIG_SND_SOC_RAUMFELD) += snd-soc-raumfeld.o
+ obj-$(CONFIG_SND_MMP_SOC_BROWNSTONE) += snd-soc-brownstone.o
+ obj-$(CONFIG_SND_SOC_TTC_DKB) += snd-soc-ttc-dkb.o
+diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
+deleted file mode 100644
+index 111a907c4eb9..000000000000
+--- a/sound/soc/pxa/raumfeld.c
++++ /dev/null
+@@ -1,318 +0,0 @@
+-/*
+- * raumfeld_audio.c  --  SoC audio for Raumfeld audio devices
+- *
+- * Copyright (c) 2009 Daniel Mack <daniel@caiaq.de>
+- *
+- * based on code from:
+- *
+- *    Wolfson Microelectronics PLC.
+- *    Openedhand Ltd.
+- *    Liam Girdwood <lrg@slimlogic.co.uk>
+- *    Richard Purdie <richard@openedhand.com>
+- *
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/i2c.h>
+-#include <linux/delay.h>
+-#include <linux/gpio.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-
+-#include <asm/mach-types.h>
+-
+-#include "pxa-ssp.h"
+-
+-#define GPIO_SPDIF_RESET	(38)
+-#define GPIO_MCLK_RESET		(111)
+-#define GPIO_CODEC_RESET	(120)
+-
+-static struct i2c_client *max9486_client;
+-static struct i2c_board_info max9486_hwmon_info = {
+-	I2C_BOARD_INFO("max9485", 0x63),
+-};
+-
+-#define MAX9485_MCLK_FREQ_112896 0x22
+-#define MAX9485_MCLK_FREQ_122880 0x23
+-#define MAX9485_MCLK_FREQ_225792 0x32
+-#define MAX9485_MCLK_FREQ_245760 0x33
+-
+-static void set_max9485_clk(char clk)
+-{
+-	i2c_master_send(max9486_client, &clk, 1);
+-}
+-
+-static void raumfeld_enable_audio(bool en)
+-{
+-	if (en) {
+-		gpio_set_value(GPIO_MCLK_RESET, 1);
+-
+-		/* wait some time to let the clocks become stable */
+-		msleep(100);
+-
+-		gpio_set_value(GPIO_SPDIF_RESET, 1);
+-		gpio_set_value(GPIO_CODEC_RESET, 1);
+-	} else {
+-		gpio_set_value(GPIO_MCLK_RESET, 0);
+-		gpio_set_value(GPIO_SPDIF_RESET, 0);
+-		gpio_set_value(GPIO_CODEC_RESET, 0);
+-	}
+-}
+-
+-/* CS4270 */
+-static int raumfeld_cs4270_startup(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-	/* set freq to 0 to enable all possible codec sample rates */
+-	return snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
+-}
+-
+-static void raumfeld_cs4270_shutdown(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-	/* set freq to 0 to enable all possible codec sample rates */
+-	snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
+-}
+-
+-static int raumfeld_cs4270_hw_params(struct snd_pcm_substream *substream,
+-				     struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	unsigned int clk = 0;
+-	int ret = 0;
+-
+-	switch (params_rate(params)) {
+-	case 44100:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_112896);
+-		clk = 11289600;
+-		break;
+-	case 48000:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_122880);
+-		clk = 12288000;
+-		break;
+-	case 88200:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_225792);
+-		clk = 22579200;
+-		break;
+-	case 96000:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_245760);
+-		clk = 24576000;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk, 0);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* setup the CPU DAI */
+-	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, PXA_SSP_DIV_SCR, 4);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_EXT, clk, 1);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static const struct snd_soc_ops raumfeld_cs4270_ops = {
+-	.startup = raumfeld_cs4270_startup,
+-	.shutdown = raumfeld_cs4270_shutdown,
+-	.hw_params = raumfeld_cs4270_hw_params,
+-};
+-
+-static int raumfeld_analog_suspend(struct snd_soc_card *card)
+-{
+-	raumfeld_enable_audio(false);
+-	return 0;
+-}
+-
+-static int raumfeld_analog_resume(struct snd_soc_card *card)
+-{
+-	raumfeld_enable_audio(true);
+-	return 0;
+-}
+-
+-/* AK4104 */
+-
+-static int raumfeld_ak4104_hw_params(struct snd_pcm_substream *substream,
+-				     struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, clk = 0;
+-
+-	switch (params_rate(params)) {
+-	case 44100:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_112896);
+-		clk = 11289600;
+-		break;
+-	case 48000:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_122880);
+-		clk = 12288000;
+-		break;
+-	case 88200:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_225792);
+-		clk = 22579200;
+-		break;
+-	case 96000:
+-		set_max9485_clk(MAX9485_MCLK_FREQ_245760);
+-		clk = 24576000;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	/* setup the CPU DAI */
+-	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, PXA_SSP_DIV_SCR, 4);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_EXT, clk, 1);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static struct snd_soc_ops raumfeld_ak4104_ops = {
+-	.hw_params = raumfeld_ak4104_hw_params,
+-};
+-
+-#define DAI_LINK_CS4270		\
+-{							\
+-	.name		= "CS4270",			\
+-	.stream_name	= "CS4270",			\
+-	.cpu_dai_name	= "pxa-ssp-dai.0",		\
+-	.platform_name	= "pxa-pcm-audio",		\
+-	.codec_dai_name	= "cs4270-hifi",		\
+-	.codec_name	= "cs4270.0-0048",	\
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S |		\
+-			  SND_SOC_DAIFMT_NB_NF |        \
+-			  SND_SOC_DAIFMT_CBS_CFS,       \
+-	.ops		= &raumfeld_cs4270_ops,		\
+-}
+-
+-#define DAI_LINK_AK4104		\
+-{							\
+-	.name		= "ak4104",			\
+-	.stream_name	= "Playback",			\
+-	.cpu_dai_name	= "pxa-ssp-dai.1",		\
+-	.codec_dai_name	= "ak4104-hifi",		\
+-	.platform_name	= "pxa-pcm-audio",		\
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S |		\
+-			  SND_SOC_DAIFMT_NB_NF |	\
+-			  SND_SOC_DAIFMT_CBS_CFS,       \
+-	.ops		= &raumfeld_ak4104_ops,		\
+-	.codec_name	= "spi0.0",			\
+-}
+-
+-static struct snd_soc_dai_link snd_soc_raumfeld_connector_dai[] = {
+-	DAI_LINK_CS4270,
+-	DAI_LINK_AK4104,
+-};
+-
+-static struct snd_soc_dai_link snd_soc_raumfeld_speaker_dai[] = {
+-	DAI_LINK_CS4270,
+-};
+-
+-static struct snd_soc_card snd_soc_raumfeld_connector = {
+-	.name		= "Raumfeld Connector",
+-	.owner		= THIS_MODULE,
+-	.dai_link	= snd_soc_raumfeld_connector_dai,
+-	.num_links	= ARRAY_SIZE(snd_soc_raumfeld_connector_dai),
+-	.suspend_post	= raumfeld_analog_suspend,
+-	.resume_pre	= raumfeld_analog_resume,
+-};
+-
+-static struct snd_soc_card snd_soc_raumfeld_speaker = {
+-	.name		= "Raumfeld Speaker",
+-	.owner		= THIS_MODULE,
+-	.dai_link	= snd_soc_raumfeld_speaker_dai,
+-	.num_links	= ARRAY_SIZE(snd_soc_raumfeld_speaker_dai),
+-	.suspend_post	= raumfeld_analog_suspend,
+-	.resume_pre	= raumfeld_analog_resume,
+-};
+-
+-static struct platform_device *raumfeld_audio_device;
+-
+-static int __init raumfeld_audio_init(void)
+-{
+-	int ret;
+-
+-	if (!machine_is_raumfeld_speaker() &&
+-	    !machine_is_raumfeld_connector())
+-		return 0;
+-
+-	max9486_client = i2c_new_device(i2c_get_adapter(0),
+-					&max9486_hwmon_info);
+-
+-	if (!max9486_client)
+-		return -ENOMEM;
+-
+-	set_max9485_clk(MAX9485_MCLK_FREQ_122880);
+-
+-	/* Register analog device */
+-	raumfeld_audio_device = platform_device_alloc("soc-audio", 0);
+-	if (!raumfeld_audio_device)
+-		return -ENOMEM;
+-
+-	if (machine_is_raumfeld_speaker())
+-		platform_set_drvdata(raumfeld_audio_device,
+-				     &snd_soc_raumfeld_speaker);
+-
+-	if (machine_is_raumfeld_connector())
+-		platform_set_drvdata(raumfeld_audio_device,
+-				     &snd_soc_raumfeld_connector);
+-
+-	ret = platform_device_add(raumfeld_audio_device);
+-	if (ret < 0) {
+-		platform_device_put(raumfeld_audio_device);
+-		return ret;
+-	}
+-
+-	raumfeld_enable_audio(true);
+-	return 0;
+-}
+-
+-static void __exit raumfeld_audio_exit(void)
+-{
+-	raumfeld_enable_audio(false);
+-
+-	platform_device_unregister(raumfeld_audio_device);
+-
+-	i2c_unregister_device(max9486_client);
+-
+-	gpio_free(GPIO_MCLK_RESET);
+-	gpio_free(GPIO_CODEC_RESET);
+-	gpio_free(GPIO_SPDIF_RESET);
+-}
+-
+-module_init(raumfeld_audio_init);
+-module_exit(raumfeld_audio_exit);
+-
+-/* Module information */
+-MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("Raumfeld audio SoC");
+-MODULE_LICENSE("GPL");
 -- 
-2.17.1
+2.19.2
