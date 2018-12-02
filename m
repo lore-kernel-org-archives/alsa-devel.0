@@ -1,13 +1,12 @@
 From: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [RFC PATCH 04/10] dma-engine: sun4i: Add support for
- Allwinner suniv F1C100s
-Date: Mon,  3 Dec 2018 00:23:11 +0300
-Message-ID: <df1e5fbb2b04b0e5d392ce988d04a39f1d8e5f8d.1543782328.git.mesihkilinc@gmail.com>
+Subject: [RFC PATCH 06/10] ASoC: sun4i-codec: Add DMA Max Burst field
+Date: Mon,  3 Dec 2018 00:23:13 +0300
+Message-ID: <b36cd894f89f572c44318e7999e7724b80ba857e.1543782328.git.mesihkilinc@gmail.com>
 References: <cover.1543782328.git.mesihkilinc@gmail.com>
 Reply-To: mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDI4VHO5SYLBBWU2SHQAKGQE2KUZCGA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBDI4VHO5SYLBBXM2SHQAKGQEQO6LBRI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <cover.1543782328.git.mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -20,153 +19,98 @@ To: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z
 Cc: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Vinod Koul <vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-DMA of Allwinner suniv F1C100s is similar to sun4i. It has 4 NDMA, 4
-DDMA channels and endpoints are different. Also F1C100s has reset bit
-for DMA in CCU. Add support for it.
+Allwinner suniv F1C100s has similar DMA engine to sun4i but it has
+smaller max burst size compared to sun4i. Add a quirk field to
+differantitate between them.
 
 Signed-off-by: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- drivers/dma/Kconfig     |  4 ++--
- drivers/dma/sun4i-dma.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index de511db..f8a65d2 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -163,8 +163,8 @@ config DMA_SA11X0
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 9a3cb77..7a9f84e 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -224,6 +224,8 @@
  
- config DMA_SUN4I
- 	tristate "Allwinner A10 DMA SoCs support"
--	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I
--	default (MACH_SUN4I || MACH_SUN5I || MACH_SUN7I)
-+	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNIV
-+	default (MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNIV)
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
- 	help
-diff --git a/drivers/dma/sun4i-dma.c b/drivers/dma/sun4i-dma.c
-index d267ff9..c0452c9 100644
---- a/drivers/dma/sun4i-dma.c
-+++ b/drivers/dma/sun4i-dma.c
-@@ -36,7 +36,11 @@
- #define SUN4I_DMA_CFG_SRC_ADDR_MODE(mode)	((mode) << 5)
- #define SUN4I_DMA_CFG_SRC_DRQ_TYPE(type)	(type)
+ /* TODO H3 DAP (Digital Audio Processing) bits */
  
-+#define SUNIV_DMA_CFG_DST_DATA_WIDTH(width)	((width) << 24)
-+#define SUNIV_DMA_CFG_SRC_DATA_WIDTH(width)	((width) << 8)
++#define SUN4I_DMA_MAX_BURST			(8)
 +
- #define SUN4I_MAX_BURST	8
-+#define SUNIV_MAX_BURST	4
- 
- /** Normal DMA register values **/
- 
-@@ -44,6 +48,9 @@
- #define SUN4I_NDMA_DRQ_TYPE_SDRAM		0x16
- #define SUN4I_NDMA_DRQ_TYPE_LIMIT		(0x1F + 1)
- 
-+#define SUNIV_NDMA_DRQ_TYPE_SDRAM		0x11
-+#define SUNIV_NDMA_DRQ_TYPE_LIMIT		(0x17 + 1)
-+
- /** Normal DMA register layout **/
- 
- /* Dedicated DMA source/destination address mode values */
-@@ -57,6 +64,9 @@
- #define SUN4I_NDMA_CFG_BYTE_COUNT_MODE_REMAIN	BIT(15)
- #define SUN4I_NDMA_CFG_SRC_NON_SECURE		BIT(6)
- 
-+#define SUNIV_NDMA_CFG_CONT_MODE		BIT(29)
-+#define SUNIV_NDMA_CFG_WAIT_STATE(n)		((n) << 26)
-+
- /** Dedicated DMA register values **/
- 
- /* Dedicated DMA source/destination address mode values */
-@@ -69,6 +79,9 @@
- #define SUN4I_DDMA_DRQ_TYPE_SDRAM		0x1
- #define SUN4I_DDMA_DRQ_TYPE_LIMIT		(0x1F + 1)
- 
-+#define SUNIV_DDMA_DRQ_TYPE_SDRAM		0x1
-+#define SUNIV_DDMA_DRQ_TYPE_LIMIT		(0x9 + 1)
-+
- /** Dedicated DMA register layout **/
- 
- /* Dedicated DMA configuration register layout */
-@@ -122,6 +135,11 @@
- #define SUN4I_DMA_NR_MAX_VCHANS						\
- 	(SUN4I_NDMA_NR_MAX_VCHANS + SUN4I_DDMA_NR_MAX_VCHANS)
- 
-+#define SUNIV_NDMA_NR_MAX_CHANNELS	4
-+#define SUNIV_DDMA_NR_MAX_CHANNELS	4
-+#define SUNIV_NDMA_NR_MAX_VCHANS	(24 * 2 - 1)
-+#define SUNIV_DDMA_NR_MAX_VCHANS	10
-+
- /* This set of SUN4I_DDMA timing parameters were found experimentally while
-  * working with the SPI driver and seem to make it behave correctly */
- #define SUN4I_DDMA_MAGIC_SPI_PARAMETERS \
-@@ -236,6 +254,16 @@ static void set_src_data_width_a10(u32 *p_cfg, s8 data_width)
- 	*p_cfg |= SUN4I_DMA_CFG_SRC_DATA_WIDTH(data_width);
- }
- 
-+static void set_dst_data_width_f1c100s(u32 *p_cfg, s8 data_width)
-+{
-+	*p_cfg |= SUNIV_DMA_CFG_DST_DATA_WIDTH(data_width);
-+}
-+
-+static void set_src_data_width_f1c100s(u32 *p_cfg, s8 data_width)
-+{
-+	*p_cfg |= SUNIV_DMA_CFG_SRC_DATA_WIDTH(data_width);
-+}
-+
- static int convert_burst_a10(u32 maxburst)
- {
- 	if (maxburst > 8)
-@@ -245,6 +273,15 @@ static int convert_burst_a10(u32 maxburst)
- 	return (maxburst >> 2);
- }
- 
-+static int convert_burst_f1c100s(u32 maxburst)
-+{
-+	if (maxburst > 4)
-+		return -EINVAL;
-+
-+	/* 1 -> 0, 4 -> 1 */
-+	return (maxburst >> 2);
-+}
-+
- static int convert_buswidth(enum dma_slave_buswidth addr_width)
- {
- 	if (addr_width > DMA_SLAVE_BUSWIDTH_4_BYTES)
-@@ -1364,8 +1401,31 @@ static struct sun4i_dma_config sun4i_a10_dma_cfg = {
- 	.has_reset		= false,
+ struct sun4i_codec {
+ 	struct device	*dev;
+ 	struct regmap	*regmap;
+@@ -1462,6 +1464,7 @@ struct sun4i_codec_quirks {
+ 	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
+ 	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
+ 	bool has_reset;
++	u32 dma_max_burst;
  };
  
-+static struct sun4i_dma_config suniv_f1c100s_dma_cfg = {
-+	.ndma_nr_max_channels	= SUNIV_NDMA_NR_MAX_CHANNELS,
-+	.ndma_nr_max_vchans	= SUNIV_NDMA_NR_MAX_VCHANS,
-+
-+	.ddma_nr_max_channels	= SUNIV_DDMA_NR_MAX_CHANNELS,
-+	.ddma_nr_max_vchans	= SUNIV_DDMA_NR_MAX_VCHANS,
-+
-+	.dma_nr_max_channels	= SUNIV_NDMA_NR_MAX_CHANNELS +
-+		SUNIV_DDMA_NR_MAX_CHANNELS,
-+
-+	.set_dst_data_width	= set_dst_data_width_f1c100s,
-+	.set_src_data_width	= set_src_data_width_f1c100s,
-+	.convert_burst		= convert_burst_f1c100s,
-+
-+	.ndma_drq_sdram		= SUNIV_NDMA_DRQ_TYPE_SDRAM,
-+	.ddma_drq_sdram		= SUNIV_DDMA_DRQ_TYPE_SDRAM,
-+
-+	.max_burst		= SUNIV_MAX_BURST,
-+	.has_reset		= true,
-+};
-+
- static const struct of_device_id sun4i_dma_match[] = {
- 	{ .compatible = "allwinner,sun4i-a10-dma", .data = &sun4i_a10_dma_cfg },
-+	{ .compatible = "allwinner,suniv-f1c100s-dma",
-+		.data = &suniv_f1c100s_dma_cfg },
- 	{ /* sentinel */ },
+ static const struct sun4i_codec_quirks sun4i_codec_quirks = {
+@@ -1471,6 +1474,7 @@ static const struct sun4i_codec_quirks sun4i_codec_quirks = {
+ 	.reg_adc_fifoc	= REG_FIELD(SUN4I_CODEC_ADC_FIFOC, 0, 31),
+ 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
  };
- MODULE_DEVICE_TABLE(of, sun4i_dma_match);
+ 
+ static const struct sun4i_codec_quirks sun6i_a31_codec_quirks = {
+@@ -1481,6 +1485,7 @@ static const struct sun4i_codec_quirks sun6i_a31_codec_quirks = {
+ 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
+ 	.has_reset	= true,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
+ };
+ 
+ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
+@@ -1490,6 +1495,7 @@ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
+ 	.reg_adc_fifoc	= REG_FIELD(SUN4I_CODEC_ADC_FIFOC, 0, 31),
+ 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
+ };
+ 
+ static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
+@@ -1500,6 +1506,7 @@ static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
+ 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
+ 	.has_reset	= true,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
+ };
+ 
+ static const struct sun4i_codec_quirks sun8i_h3_codec_quirks = {
+@@ -1515,6 +1522,7 @@ static const struct sun4i_codec_quirks sun8i_h3_codec_quirks = {
+ 	.reg_dac_txdata	= SUN8I_H3_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
+ 	.has_reset	= true,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
+ };
+ 
+ static const struct sun4i_codec_quirks sun8i_v3s_codec_quirks = {
+@@ -1529,6 +1537,7 @@ static const struct sun4i_codec_quirks sun8i_v3s_codec_quirks = {
+ 	.reg_dac_txdata	= SUN8I_H3_CODEC_DAC_TXDATA,
+ 	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
+ 	.has_reset	= true,
++	.dma_max_burst	= SUN4I_DMA_MAX_BURST,
+ };
+ 
+ static const struct of_device_id sun4i_codec_of_match[] = {
+@@ -1655,12 +1664,12 @@ static int sun4i_codec_probe(struct platform_device *pdev)
+ 
+ 	/* DMA configuration for TX FIFO */
+ 	scodec->playback_dma_data.addr = res->start + quirks->reg_dac_txdata;
+-	scodec->playback_dma_data.maxburst = 8;
++	scodec->playback_dma_data.maxburst = quirks->dma_max_burst;
+ 	scodec->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 
+ 	/* DMA configuration for RX FIFO */
+ 	scodec->capture_dma_data.addr = res->start + quirks->reg_adc_rxdata;
+-	scodec->capture_dma_data.maxburst = 8;
++	scodec->capture_dma_data.maxburst = quirks->dma_max_burst;
+ 	scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, quirks->codec,
 -- 
 2.7.4
