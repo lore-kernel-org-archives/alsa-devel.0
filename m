@@ -1,89 +1,71 @@
-From: Jeremy Cline <jcline@redhat.com>
-Subject: Re: Regression: very quiet speakers on Thinkpad T570s
-Date: Sun, 2 Dec 2018 11:57:06 -0500
-Message-ID: <dd981d45-7e2c-5a93-4c36-83433a7aa9ff@redhat.com>
-References: <bbba2653-d57b-5fab-8c06-5fd22ae80aa5@redhat.com>
- <s5h36riy2qh.wl-tiwai@suse.de>
- <f14c37de-29ce-529b-8b37-40efd29ff1cb@redhat.com>
- <s5hmupp1f33.wl-tiwai@suse.de>
+From: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [RFC PATCH 00/10] Add support for DMA and audio codec
+ of F1C100s
+Date: Mon,  3 Dec 2018 00:23:07 +0300
+Message-ID: <cover.1543782328.git.mesihkilinc@gmail.com>
+Reply-To: mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hmupp1f33.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Kailang Yang <kailang@realtek.com>, Jaroslav Kysela <perex@perex.cz>, Tim Van den Eynde <redhat@vdeynde.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBDI4VHO5SYLBBU42SHQAKGQEDT7R33Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Vinod Koul <vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/1/18 9:44 AM, Takashi Iwai wrote:
-> On Fri, 30 Nov 2018 17:51:33 +0100,
-> Jeremy Cline wrote:
->>
->> On 11/30/18 11:00 AM, Takashi Iwai wrote:
->>> On Fri, 30 Nov 2018 15:49:17 +0100,
->>> Jeremy Cline wrote:
->>>>
->>>> Hi,
->>>>
->>>> Some folks have reported on the Fedora bug tracker[0] that the laptop
->>>> speaker volume is very low on the Thinkpad T570 when running a kernel
->>>> that includes commit 61fcf8ece9b6 ("ALSA: hda/realtek - Enable Thinkpad
->>>> Dock device for ALC298 platform").
->>>>
->>>> alsa-info.sh from v4.15.4 (just before commit 61fcf8ece9b6 arrived in
->>>> stable) and v4.19.4 with the issue present are attached to the bugzilla.
->>>> I've also Cc'd Tim, who uploaded them and has the laptop in question.
->>>>
->>>> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1554304
->>>
->>> Could you pinpoint which kernel version started showing the
->>> regression, at least?  The diffs are fairly wide between 4.15 and
->>> 4.19.
->>
->> Ah, sorry for not being more clear. The regression appears to be
->> introduced by commit 61fcf8ece9b6, which got backported to v4.15.5
->> because it addressed a bug with the dock[0]. v4.19.4 with that commit
->> reverted works, according to the bug reporter.
->>
->> [0] https://bugzilla.kernel.org/show_bug.cgi?id=195161
-> 
-> OK, then this seems to be the change of DAC assignment.
-> 
-> Maybe the hardware has some implicit assumption of NID 0x03 bound with
-> the speaker pin.  Below is a patch for fixing the pin / DAC mapping.
-> Please give it a try.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 06f93032d0cc..50bc2e97d799 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -4988,9 +4988,14 @@ static void alc_fixup_tpt470_dock(struct hda_codec *codec,
->  		{ 0x19, 0x21a11010 }, /* dock mic */
->  		{ }
->  	};
-> +	static hda_nid_t preferred_pairs[] = {
-> +		0x14, 0x03, 0x17, 0x02, 0x21, 0x02,
-> +		0
-> +	};
->  	struct alc_spec *spec = codec->spec;
->  
->  	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-> +		spec->gen.preferred_dacs = preferred_pairs;
->  		spec->parse_flags = HDA_PINCFG_NO_HP_FIXUP;
->  		snd_hda_apply_pincfgs(codec, pincfgs);
->  	} else if (action == HDA_FIXUP_ACT_INIT) {
-> 
+This is RFC patchset for Allwinner suniv F1C100s to support DMA and
+audio codec.
 
-That patch does indeed fix the problem according to the original
-reporter.
+Allwinner F1C100s has a audio codec that has necessary digital and
+analog parts. It has r-l headphone output and microphone, line, r-l
+FM inputs. ADC can capture any inputs and also output channels via mux.
+Any input channels or DAC samples can feed output channels. 
 
-Thanks,
-Jeremy
+Add support for this audio codec.
+
+F1C100s utilizes DMA channels to send and receive ADC-DAC samples. So
+DMA support needed. Patch 1~5 adds support for DMA. Suniv F1C100s has 
+very similar DMA to sun4i. But there is some dissimilarities also. 
+Suniv features a DMA reset bit in clock  control unit. It has smaller 
+number of DMA channels. Several registers has different addresses. 
+It's max burst size is 4 instead of 8. Also DMA endpoint numbers are 
+different.
+
+Patch 6 adds DMA max burst option to sun4i-codec.
+
+Patch 7~8 Add support for suniv F1C100s audio codec.
+
+Patch 9 adds audio codec to suniv-f1c100s.dtsi
+
+Patch 10 adds audio codec support to Lichee Pi Nano board.
+ 
+Thanks!
+
+Mesih Kilinc (10):
+  dma-engine: sun4i: Add a quirk to support different chips
+  dma-engine: sun4i: Add has_reset option to quirk
+  dt-bindings: dmaengine: Add Allwinner suniv F1C100s DMA
+  dma-engine: sun4i: Add support for Allwinner suniv F1C100s
+  ARM: dts: suniv: f1c100s: Add support for DMA
+  ASoC: sun4i-codec: Add DMA Max Burst field
+  dt-bindigs: sound: Add Allwinner suniv F1C100s Audio Codec
+  ASoC: sun4i-codec: Add support for Allwinner suniv F1C100s
+  ARM: dts: suniv: f1c100s: Add support for Audio Codec
+  ARM: dts: suniv: f1c100s: Activate Audio Codec for Lichee Pi Nano
+
+ .../devicetree/bindings/dma/sun4i-dma.txt          |   4 +-
+ .../devicetree/bindings/sound/sun4i-codec.txt      |   5 +
+ arch/arm/boot/dts/suniv-f1c100s-licheepi-nano.dts  |   8 +
+ arch/arm/boot/dts/suniv-f1c100s.dtsi               |  25 ++
+ drivers/dma/Kconfig                                |   4 +-
+ drivers/dma/sun4i-dma.c                            | 221 ++++++++++--
+ sound/soc/sunxi/sun4i-codec.c                      | 371 ++++++++++++++++++++-
+ 7 files changed, 601 insertions(+), 37 deletions(-)
+
+-- 
+2.7.4
