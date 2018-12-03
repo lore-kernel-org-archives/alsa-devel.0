@@ -1,51 +1,38 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next v2 0/6] clk: renesas: adg: add AVB
-	Clock
-Date: Mon, 3 Dec 2018 20:21:54 +0900
-Message-ID: <20181203112200.18220-1-jiada_wang@mentor.com>
+Subject: [PATCH linux-next v2 4/6] clk: renesas: r8a77995: Add ADG clock
+Date: Mon, 3 Dec 2018 20:21:58 +0900
+Message-ID: <20181203112200.18220-5-jiada_wang@mentor.com>
+References: <20181203112200.18220-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 6316826770D
- for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2018 12:21:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181203112200.18220-1-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com, vladimir_zapolskiy@mentor.com
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogSmlhZGEgV2FuZyA8amlhZGFfd2FuZ0BtZW50b3IuY29tPgoKb24gUi1DYXIgU29DcyB0
-aGVyZSBhcmUgQVZCIENvdW50ZXIgQ2xvY2tzLCBlYWNoIGNsb2NrIGhhcyAxMmJpdHMgaW50ZWdy
-YWwKYW5kIDggYml0cyBmcmFjdGlvbmFsIGRpdmlkZXJzIHdoaWNoIG9wZXJhdGVzIHdpdGggUzBE
-Mc+VIGNsb2NrLgoKVGhpcyBwYXRjaC1zZXQgYWRkcyAnYWRnJyBjbG9jayB0byBSLUNhciBTb2Ms
-IGFuZCBjaGFuZ2VzIGFkZyBkcml2ZXIgdG8KcmVnaXN0ZXIgYXZiIGNsb2NrcyB3aGVuIGNsb2Nr
-LWNlbGxzIG9mIHJjYXJfc291bmQgbm9kZSBpcyAyLgoKLS0tCnYyOgotIGV4cGVuZHMgYWRnIHJl
-Z2lzdGVyIHNpemUgYW5kIHJlZ2lzdGVyIGF2YiBjbG9ja3MgaW5zdGVhZCBvZgogIGFkZCBuZXcg
-Y2xrLWF2YiBkcml2ZXIKLSBBZGQgYWRnIGNsb2NrIAoKdjE6IGluaXRpYWwgdmVyc2lvbgoKSmlh
-ZGEgV2FuZyAoMik6CiAgZHQtYmluZGluZ3M6IGNsb2NrOiBhZGQgY2xvY2sgaWQgZm9yIHJlbmVz
-YXMgYWRnIGNsb2NrcwogIEFTb0M6IHJzbmQ6IGFkZCBhdmIgY2xvY2tzCgpUYWtlc2hpIEtpaGFy
-YSAoNCk6CiAgY2xrOiByZW5lc2FzOiByOGE3Nzk1OiBBZGQgQURHIGNsb2NrCiAgY2xrOiByZW5l
-c2FzOiByOGE3Nzk2OiBBZGQgQURHIGNsb2NrCiAgY2xrOiByZW5lc2FzOiByOGE3Nzk5MDogQWRk
-IEFERyBjbG9ja3MKICBjbGs6IHJlbmVzYXM6IHI4YTc3OTk1OiBBZGQgQURHIGNsb2NrCgogZHJp
-dmVycy9jbGsvcmVuZXNhcy9yOGE3Nzk1LWNwZy1tc3NyLmMgIHwgICAxICsKIGRyaXZlcnMvY2xr
-L3JlbmVzYXMvcjhhNzc5Ni1jcGctbXNzci5jICB8ICAgMSArCiBkcml2ZXJzL2Nsay9yZW5lc2Fz
-L3I4YTc3OTkwLWNwZy1tc3NyLmMgfCAgIDEgKwogZHJpdmVycy9jbGsvcmVuZXNhcy9yOGE3Nzk5
-NS1jcGctbXNzci5jIHwgICAxICsKIGluY2x1ZGUvZHQtYmluZGluZ3MvY2xvY2svcmVuZXNhcy1h
-ZGcuaCB8ICAxMSArCiBzb3VuZC9zb2Mvc2gvcmNhci9hZGcuYyAgICAgICAgICAgICAgICAgfCAz
-MDYgKysrKysrKysrKysrKysrKysrKysrKystCiBzb3VuZC9zb2Mvc2gvcmNhci9nZW4uYyAgICAg
-ICAgICAgICAgICAgfCAgIDkgKwogc291bmQvc29jL3NoL3JjYXIvcnNuZC5oICAgICAgICAgICAg
-ICAgIHwgICA5ICsKIDggZmlsZXMgY2hhbmdlZCwgMzMwIGluc2VydGlvbnMoKyksIDkgZGVsZXRp
-b25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5kaW5ncy9jbG9jay9yZW5l
-c2FzLWFkZy5oCgotLSAKMi4xNy4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+From: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+
+This patch adds ADG clock to the R8A77995 SoC.
+
+Signed-off-by: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ drivers/clk/renesas/r8a77995-cpg-mssr.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/renesas/r8a77995-cpg-mssr.c b/drivers/clk/renesas/r8a77995-cpg-mssr.c
+index 47e60e3dbe05..933084d896e3 100644
+--- a/drivers/clk/renesas/r8a77995-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a77995-cpg-mssr.c
+@@ -165,6 +165,7 @@ static const struct mssr_mod_clk r8a77995_mod_clks[] __initconst = {
+ 	DEF_MOD("can-fd",		 914,	R8A77995_CLK_S3D2),
+ 	DEF_MOD("can-if1",		 915,	R8A77995_CLK_S3D4),
+ 	DEF_MOD("can-if0",		 916,	R8A77995_CLK_S3D4),
++	DEF_MOD("adg",			 922,   R8A77995_CLK_ZA8),
+ 	DEF_MOD("i2c3",			 928,	R8A77995_CLK_S3D2),
+ 	DEF_MOD("i2c2",			 929,	R8A77995_CLK_S3D2),
+ 	DEF_MOD("i2c1",			 930,	R8A77995_CLK_S3D2),
+-- 
+2.17.0
