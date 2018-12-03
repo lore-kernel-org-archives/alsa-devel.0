@@ -1,58 +1,126 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add
- pmc_plt_clk_0 quirk for Chromebook Clapper
-Date: Mon, 3 Dec 2018 09:25:20 -0600
-Message-ID: <f90376f4-fd8f-72db-3930-9c545b8fe4b8@linux.intel.com>
-References: <20181202122122.17808-1-hdegoede@redhat.com>
+From: ayman.bagabas@gmail.com
+Subject: Re: [PATCH v8 2/3] x86: add support for Huawei WMI hotkeys.
+Date: Mon, 03 Dec 2018 10:46:01 -0500
+Message-ID: <eaa9d7a8898df9487031995429ff11892c9cd0ca.camel@gmail.com>
+References: <20181129235742.14332-1-ayman.bagabas@gmail.com>
+         <20181129235742.14332-3-ayman.bagabas@gmail.com>
+         <s5hftvezupj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20181202122122.17808-1-hdegoede@redhat.com>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hftvezupj.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2018-12-03 at 13:00 +0100, Takashi Iwai wrote:
+> On Fri, 30 Nov 2018 00:57:37 +0100,
+> Ayman Bagabas wrote:
+> > This driver adds support for missing hotkeys on some Huawei
+> > laptops.
+> > Laptops such as the Matebook X have non functioning hotkeys.
+> > Whereas
+> > newer laptops such as the Matebook X Pro come with working hotkeys
+> > out
+> > of the box.
+> > 
+> > Old laptops, such as the Matebook X, report hotkey events through
+> > ACPI
+> > device "\WMI0". However, new laptops, such as the Matebook X Pro,
+> > does not have this WMI device.
+> > 
+> > All the hotkeys on the Matebook X Pro work fine
+> > without this patch except (micmute, wlan, and huawei key). These
+> > keys
+> > and the brightness keys report events to "\AMW0" ACPI device. One
+> > problem is that brightness keys on the Matebook X Pro work without
+> > this
+> > patch. This results in reporting two brightness key press
+> > events one is captured by ACPI and another by this driver.
+> > 
+> > A solution would be to check if such event came from the "\AMW0"
+> > WMI driver
+> > then skip reporting event. Another solution would be to leave this
+> > to user-space to handle. Which
+> > can be achieved by using "hwdb" tables and remap those keys to
+> > "unknown".
+> > This solution seems more natural to me because it leaves the
+> > decision to
+> > user-space.
+> > 
+> > Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+> 
+> The new patch looks much better than the previous one, thanks for
+> working on it.
+> 
+> Just a few comments:
+> 
+> > +struct huawei_wmi_priv {
+> > +	struct input_dev *idev;
+> > +	struct led_classdev cdev;
+> > +	acpi_handle handle;
+> 
+> Is this handle set in anywhere?  I couldn't see it in your patch.
+> If it's supposed to be NULL, passing NULL explicitly makes your
+> intention clearer.
+> 
+> 
+> > +static int huawei_wmi_leds_setup(struct wmi_device *wdev)
+> > +{
+> > +	struct huawei_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> > +	acpi_status status;
+> > +
+> > +	// Skip registering LED subsystem if no ACPI method was found.
+> > +	status = acpi_get_handle(priv->handle, "\\_SB.PCI0.LPCB.EC0",
+> > &priv->handle);
+> > +	if (ACPI_FAILURE(status))
+> > +		return 0;
+> > +
+> > +	if (acpi_has_method(priv->handle, "SPIN"))
+> > +		priv->acpi_method = "SPIN";
+> > +	else if (acpi_has_method(priv->handle, "WPIN"))
+> > +		priv->acpi_method = "WPIN";
+> > +	else
+> > +		return 0;
+> > +
+> > +	priv->cdev.name = "platform::micmute";
+> > +	priv->cdev.max_brightness = 1;
+> > +	priv->cdev.brightness_set_blocking =
+> > huawei_wmi_micmute_led_set;
+> > +	priv->cdev.default_trigger = "audio-micmute";
+> > +	priv->cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+> > +	priv->cdev.dev = &wdev->dev;
+> 
+> What about suspend/resume?
+> When the driver is bound wit HD-audio, the HD-audio will restore the
+> state at resume, so it would work.  But, by providing the LED class
+> device, it is supposed to work even without HD-audio, so it might
+> make
+> sense to pass LED_CORE_SUSPENDRESUME, too.
 
-On 12/2/18 6:21 AM, Hans de Goede wrote:
-> The Clapper model Chromebook uses pmc_plt_clk_0 instead of pmc_plt_clk_3
-> for the mclk, just like the Swanky model.
->
-> This commit adds a DMI based quirk for this.
->
-> This fixing audio no longer working on these devices after
-> commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-> that commit fixes us unnecessary keeping unused clocks on, but in case of
-> the Clapper that was breaking audio support since we were not using the
-> right clock in the cht_bsw_max98090_ti machine driver.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Besides that, is there anything needed for wmi_device suspend/resume?
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> 
+> > +static int __init huawei_wmi_init(void)
+> > +{
+> > +	if (!(wmi_has_guid(WMI0_EVENT_GUID) ||
+> > wmi_has_guid(AMW0_EVENT_GUID))) {
+> > +		pr_debug("Compatible WMI GUID not found\n");
+> > +		return -ENODEV;
+> > +	}
+> 
+> This is superfluous when you implement with wmi_driver.
+> In theory, the supported GUID can be added dynamically via sysfs,
+> too.
+> 
 
-> ---
->   sound/soc/intel/boards/cht_bsw_max98090_ti.c | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> index 9d9f6e41d81c..ad0c98383853 100644
-> --- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> +++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> @@ -389,6 +389,13 @@ static struct snd_soc_card snd_soc_card_cht = {
->   };
->   
->   static const struct dmi_system_id cht_max98090_quirk_table[] = {
-> +	{
-> +		/* Clapper model Chromebook */
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Clapper"),
-> +		},
-> +		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-> +	},
->   	{
->   		/* Swanky model Chromebook (Toshiba Chromebook 2) */
->   		.matches = {
+I left it that way so it doesn't insert the module if these GUIDs were
+not found. Should I drop that and use module_wmi_driver instead?
+
+> 
+> thanks,
+> 
+> Takashi
