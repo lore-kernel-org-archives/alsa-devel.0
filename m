@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [RFC PATCH 01/10] dma-engine: sun4i: Add a quirk to
- support different chips
-Date: Mon, 3 Dec 2018 11:54:40 +0100
-Message-ID: <20181203105440.jxy6ue75ic2fc5t5@flea>
+Subject: Re: [RFC PATCH 04/10] dma-engine: sun4i: Add support
+ for Allwinner suniv F1C100s
+Date: Mon, 3 Dec 2018 11:56:01 +0100
+Message-ID: <20181203105601.mls67gdr4wu4sqvy@flea>
 References: <cover.1543782328.git.mesihkilinc@gmail.com>
- <864e28404a31ba24094f74fd060d11c16562e965.1543782328.git.mesihkilinc@gmail.com>
+ <df1e5fbb2b04b0e5d392ce988d04a39f1d8e5f8d.1543782328.git.mesihkilinc@gmail.com>
 Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kzmbnq5naxbvf7yw"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBB64WSTQAKGQEMYZ4Y5Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="immwmaskuc6nscn3"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBTMXSTQAKGQEETTORWI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <864e28404a31ba24094f74fd060d11c16562e965.1543782328.git.mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <df1e5fbb2b04b0e5d392ce988d04a39f1d8e5f8d.1543782328.git.mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,350 +24,132 @@ Cc: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z
 List-Id: alsa-devel@alsa-project.org
 
 
---kzmbnq5naxbvf7yw
+--immwmaskuc6nscn3
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-Hi,
-
-(you don't really need the RFC tag. RFC tags are usually meant to ask
-comments on the general approach, not the implementation).
-
-On Mon, Dec 03, 2018 at 12:23:08AM +0300, Mesih Kilinc wrote:
-> Allwinner suniv F1C100s has similar DMA engine to sun4i. Several
-> registers has different addresses. Total dma channels, endpoint counts
-> and max burst counts are also different.
-> 
-> In order to support F1C100s add a quirk structure to hold IC specific
-> data.
+On Mon, Dec 03, 2018 at 12:23:11AM +0300, Mesih Kilinc wrote:
+> DMA of Allwinner suniv F1C100s is similar to sun4i. It has 4 NDMA, 4
+> DDMA channels and endpoints are different. Also F1C100s has reset bit
+> for DMA in CCU. Add support for it.
 > 
 > Signed-off-by: Mesih Kilinc <mesihkilinc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 > ---
->  drivers/dma/sun4i-dma.c | 138 +++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 106 insertions(+), 32 deletions(-)
+>  drivers/dma/Kconfig     |  4 ++--
+>  drivers/dma/sun4i-dma.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 62 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index de511db..f8a65d2 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -163,8 +163,8 @@ config DMA_SA11X0
+>  
+>  config DMA_SUN4I
+>  	tristate "Allwinner A10 DMA SoCs support"
+> -	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I
+> -	default (MACH_SUN4I || MACH_SUN5I || MACH_SUN7I)
+> +	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNIV
+> +	default (MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNIV)
+>  	select DMA_ENGINE
+>  	select DMA_VIRTUAL_CHANNELS
+>  	help
 > diff --git a/drivers/dma/sun4i-dma.c b/drivers/dma/sun4i-dma.c
-> index f4ed3f1..e86b424 100644
+> index d267ff9..c0452c9 100644
 > --- a/drivers/dma/sun4i-dma.c
 > +++ b/drivers/dma/sun4i-dma.c
-> @@ -16,6 +16,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
->  #include <linux/of_dma.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> @@ -34,6 +35,8 @@
+> @@ -36,7 +36,11 @@
 >  #define SUN4I_DMA_CFG_SRC_ADDR_MODE(mode)	((mode) << 5)
 >  #define SUN4I_DMA_CFG_SRC_DRQ_TYPE(type)	(type)
 >  
-> +#define SUN4I_MAX_BURST	8
+> +#define SUNIV_DMA_CFG_DST_DATA_WIDTH(width)	((width) << 24)
+> +#define SUNIV_DMA_CFG_SRC_DATA_WIDTH(width)	((width) << 8)
 > +
+>  #define SUN4I_MAX_BURST	8
+> +#define SUNIV_MAX_BURST	4
+>  
 >  /** Normal DMA register values **/
 >  
->  /* Normal DMA source/destination data request type values */
-> @@ -126,6 +129,32 @@
->  	 SUN4I_DDMA_PARA_DST_WAIT_CYCLES(2) |				\
->  	 SUN4I_DDMA_PARA_SRC_WAIT_CYCLES(2))
+> @@ -44,6 +48,9 @@
+>  #define SUN4I_NDMA_DRQ_TYPE_SDRAM		0x16
+>  #define SUN4I_NDMA_DRQ_TYPE_LIMIT		(0x1F + 1)
 >  
-> +/*
-> + * Hardware channels / ports representation
-> + *
-> + * The hardware is used in several SoCs, with differing numbers
-> + * of channels and endpoints. This structure ties those numbers
-> + * to a certain compatible string.
-> + */
-> +struct sun4i_dma_config {
-> +	u32 ndma_nr_max_channels;
-> +	u32 ndma_nr_max_vchans;
+> +#define SUNIV_NDMA_DRQ_TYPE_SDRAM		0x11
+> +#define SUNIV_NDMA_DRQ_TYPE_LIMIT		(0x17 + 1)
 > +
-> +	u32 ddma_nr_max_channels;
-> +	u32 ddma_nr_max_vchans;
-> +
-> +	u32 dma_nr_max_channels;
-> +
-> +        void (*set_dst_data_width)(u32 *p_cfg, s8 data_width);
-> +        void (*set_src_data_width)(u32 *p_cfg, s8 data_width);
-
-This should be indented with tabs, not spaces.
-
-> +	int (*convert_burst)(u32 maxburst);
-> +
-> +	u8 ndma_drq_sdram;
-> +	u8 ddma_drq_sdram;
-> +
-> +	u8 max_burst;
-
-You'd be better off using a bitmask wit hthe supported bursts, like
-we're doing in sun6i-dma.
-
-> +};
-> +
->  struct sun4i_dma_pchan {
->  	/* Register base of channel */
->  	void __iomem			*base;
-> @@ -163,7 +192,7 @@ struct sun4i_dma_contract {
->  };
+>  /** Normal DMA register layout **/
 >  
->  struct sun4i_dma_dev {
-> -	DECLARE_BITMAP(pchans_used, SUN4I_DMA_NR_MAX_CHANNELS);
-> +	unsigned long *pchans_used;
->  	struct dma_device		slave;
->  	struct sun4i_dma_pchan		*pchans;
->  	struct sun4i_dma_vchan		*vchans;
-> @@ -171,6 +200,7 @@ struct sun4i_dma_dev {
->  	struct clk			*clk;
->  	int				irq;
->  	spinlock_t			lock;
-> +	const struct sun4i_dma_config *cfg;
-
-This should be aligned to the rest of the members, using tabs.
-
->  };
+>  /* Dedicated DMA source/destination address mode values */
+> @@ -57,6 +64,9 @@
+>  #define SUN4I_NDMA_CFG_BYTE_COUNT_MODE_REMAIN	BIT(15)
+>  #define SUN4I_NDMA_CFG_SRC_NON_SECURE		BIT(6)
 >  
->  static struct sun4i_dma_dev *to_sun4i_dma_dev(struct dma_device *dev)
-> @@ -193,7 +223,17 @@ static struct device *chan2dev(struct dma_chan *chan)
->  	return &chan->dev->device;
+> +#define SUNIV_NDMA_CFG_CONT_MODE		BIT(29)
+> +#define SUNIV_NDMA_CFG_WAIT_STATE(n)		((n) << 26)
+> +
+>  /** Dedicated DMA register values **/
+>  
+>  /* Dedicated DMA source/destination address mode values */
+> @@ -69,6 +79,9 @@
+>  #define SUN4I_DDMA_DRQ_TYPE_SDRAM		0x1
+>  #define SUN4I_DDMA_DRQ_TYPE_LIMIT		(0x1F + 1)
+>  
+> +#define SUNIV_DDMA_DRQ_TYPE_SDRAM		0x1
+> +#define SUNIV_DDMA_DRQ_TYPE_LIMIT		(0x9 + 1)
+> +
+>  /** Dedicated DMA register layout **/
+>  
+>  /* Dedicated DMA configuration register layout */
+> @@ -122,6 +135,11 @@
+>  #define SUN4I_DMA_NR_MAX_VCHANS						\
+>  	(SUN4I_NDMA_NR_MAX_VCHANS + SUN4I_DDMA_NR_MAX_VCHANS)
+>  
+> +#define SUNIV_NDMA_NR_MAX_CHANNELS	4
+> +#define SUNIV_DDMA_NR_MAX_CHANNELS	4
+> +#define SUNIV_NDMA_NR_MAX_VCHANS	(24 * 2 - 1)
+> +#define SUNIV_DDMA_NR_MAX_VCHANS	10
+> +
+>  /* This set of SUN4I_DDMA timing parameters were found experimentally while
+>   * working with the SPI driver and seem to make it behave correctly */
+>  #define SUN4I_DDMA_MAGIC_SPI_PARAMETERS \
+> @@ -236,6 +254,16 @@ static void set_src_data_width_a10(u32 *p_cfg, s8 data_width)
+>  	*p_cfg |= SUN4I_DMA_CFG_SRC_DATA_WIDTH(data_width);
 >  }
 >  
-> -static int convert_burst(u32 maxburst)
-> +static void set_dst_data_width_a10(u32 *p_cfg, s8 data_width)
+> +static void set_dst_data_width_f1c100s(u32 *p_cfg, s8 data_width)
 > +{
-> +	*p_cfg |= SUN4I_DMA_CFG_DST_DATA_WIDTH(data_width);
+> +	*p_cfg |= SUNIV_DMA_CFG_DST_DATA_WIDTH(data_width);
 > +}
 > +
-> +static void set_src_data_width_a10(u32 *p_cfg, s8 data_width)
+> +static void set_src_data_width_f1c100s(u32 *p_cfg, s8 data_width)
 > +{
-> +	*p_cfg |= SUN4I_DMA_CFG_SRC_DATA_WIDTH(data_width);
+> +	*p_cfg |= SUNIV_DMA_CFG_SRC_DATA_WIDTH(data_width);
 > +}
 > +
-> +static int convert_burst_a10(u32 maxburst)
+>  static int convert_burst_a10(u32 maxburst)
 >  {
 >  	if (maxburst > 8)
->  		return -EINVAL;
-> @@ -226,15 +266,15 @@ static struct sun4i_dma_pchan *find_and_use_pchan(struct sun4i_dma_dev *priv,
->  	int i, max;
+> @@ -245,6 +273,15 @@ static int convert_burst_a10(u32 maxburst)
+>  	return (maxburst >> 2);
+>  }
 >  
->  	/*
-> -	 * pchans 0-SUN4I_NDMA_NR_MAX_CHANNELS are normal, and
-> -	 * SUN4I_NDMA_NR_MAX_CHANNELS+ are dedicated ones
-> +	 * pchans 0-priv->cfg->ndma_nr_max_channels are normal, and
-> +	 * priv->cfg->ndma_nr_max_channels+ are dedicated ones
-
-This should be next to the structure you just created.
-
->  	 */
->  	if (vchan->is_dedicated) {
-> -		i = SUN4I_NDMA_NR_MAX_CHANNELS;
-> -		max = SUN4I_DMA_NR_MAX_CHANNELS;
-> +		i = priv->cfg->ndma_nr_max_channels;
-> +		max = priv->cfg->dma_nr_max_channels;
->  	} else {
->  		i = 0;
-> -		max = SUN4I_NDMA_NR_MAX_CHANNELS;
-> +		max = priv->cfg->ndma_nr_max_channels;
->  	}
->  
->  	spin_lock_irqsave(&priv->lock, flags);
-> @@ -437,6 +477,7 @@ generate_ndma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  		      size_t len, struct dma_slave_config *sconfig,
->  		      enum dma_transfer_direction direction)
->  {
-> +	struct sun4i_dma_dev *priv = to_sun4i_dma_dev(chan->device);
->  	struct sun4i_dma_promise *promise;
->  	int ret;
->  
-> @@ -460,13 +501,13 @@ generate_ndma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  		sconfig->src_addr_width, sconfig->dst_addr_width);
->  
->  	/* Source burst */
-> -	ret = convert_burst(sconfig->src_maxburst);
-> +	ret = priv->cfg->convert_burst(sconfig->src_maxburst);
->  	if (ret < 0)
->  		goto fail;
->  	promise->cfg |= SUN4I_DMA_CFG_SRC_BURST_LENGTH(ret);
->  
->  	/* Destination burst */
-> -	ret = convert_burst(sconfig->dst_maxburst);
-> +	ret = priv->cfg->convert_burst(sconfig->dst_maxburst);
->  	if (ret < 0)
->  		goto fail;
->  	promise->cfg |= SUN4I_DMA_CFG_DST_BURST_LENGTH(ret);
-> @@ -475,13 +516,13 @@ generate_ndma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  	ret = convert_buswidth(sconfig->src_addr_width);
->  	if (ret < 0)
->  		goto fail;
-> -	promise->cfg |= SUN4I_DMA_CFG_SRC_DATA_WIDTH(ret);
-> +	priv->cfg->set_src_data_width(&promise->cfg, ret);
->  
->  	/* Destination bus width */
->  	ret = convert_buswidth(sconfig->dst_addr_width);
->  	if (ret < 0)
->  		goto fail;
-> -	promise->cfg |= SUN4I_DMA_CFG_DST_DATA_WIDTH(ret);
-> +	priv->cfg->set_dst_data_width(&promise->cfg, ret);
->  
->  	return promise;
->  
-> @@ -503,6 +544,7 @@ static struct sun4i_dma_promise *
->  generate_ddma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  		      size_t len, struct dma_slave_config *sconfig)
->  {
-> +	struct sun4i_dma_dev *priv = to_sun4i_dma_dev(chan->device);
->  	struct sun4i_dma_promise *promise;
->  	int ret;
->  
-> @@ -517,13 +559,13 @@ generate_ddma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  		SUN4I_DDMA_CFG_BYTE_COUNT_MODE_REMAIN;
->  
->  	/* Source burst */
-> -	ret = convert_burst(sconfig->src_maxburst);
-> +	ret = priv->cfg->convert_burst(sconfig->src_maxburst);
->  	if (ret < 0)
->  		goto fail;
->  	promise->cfg |= SUN4I_DMA_CFG_SRC_BURST_LENGTH(ret);
->  
->  	/* Destination burst */
-> -	ret = convert_burst(sconfig->dst_maxburst);
-> +	ret = priv->cfg->convert_burst(sconfig->dst_maxburst);
->  	if (ret < 0)
->  		goto fail;
->  	promise->cfg |= SUN4I_DMA_CFG_DST_BURST_LENGTH(ret);
-> @@ -532,13 +574,13 @@ generate_ddma_promise(struct dma_chan *chan, dma_addr_t src, dma_addr_t dest,
->  	ret = convert_buswidth(sconfig->src_addr_width);
->  	if (ret < 0)
->  		goto fail;
-> -	promise->cfg |= SUN4I_DMA_CFG_SRC_DATA_WIDTH(ret);
-> +	priv->cfg->set_src_data_width(&promise->cfg, ret);
->  
->  	/* Destination bus width */
->  	ret = convert_buswidth(sconfig->dst_addr_width);
->  	if (ret < 0)
->  		goto fail;
-> -	promise->cfg |= SUN4I_DMA_CFG_DST_DATA_WIDTH(ret);
-> +	priv->cfg->set_dst_data_width(&promise->cfg, ret);
->  
->  	return promise;
->  
-> @@ -615,6 +657,7 @@ static struct dma_async_tx_descriptor *
->  sun4i_dma_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest,
->  			  dma_addr_t src, size_t len, unsigned long flags)
->  {
-> +	struct sun4i_dma_dev *priv = to_sun4i_dma_dev(chan->device);
->  	struct sun4i_dma_vchan *vchan = to_sun4i_dma_vchan(chan);
->  	struct dma_slave_config *sconfig = &vchan->cfg;
->  	struct sun4i_dma_promise *promise;
-> @@ -631,8 +674,8 @@ sun4i_dma_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest,
->  	 */
->  	sconfig->src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->  	sconfig->dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> -	sconfig->src_maxburst = 8;
-> -	sconfig->dst_maxburst = 8;
-> +	sconfig->src_maxburst = priv->cfg->max_burst;
-> +	sconfig->dst_maxburst = priv->cfg->max_burst;
->  
->  	if (vchan->is_dedicated)
->  		promise = generate_ddma_promise(chan, src, dest, len, sconfig);
-> @@ -647,11 +690,13 @@ sun4i_dma_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dest,
->  
->  	/* Configure memcpy mode */
->  	if (vchan->is_dedicated) {
-> -		promise->cfg |= SUN4I_DMA_CFG_SRC_DRQ_TYPE(SUN4I_DDMA_DRQ_TYPE_SDRAM) |
-> -				SUN4I_DMA_CFG_DST_DRQ_TYPE(SUN4I_DDMA_DRQ_TYPE_SDRAM);
-> +		promise->cfg |=
-> +			SUN4I_DMA_CFG_SRC_DRQ_TYPE(priv->cfg->ddma_drq_sdram) |
-> +			SUN4I_DMA_CFG_DST_DRQ_TYPE(priv->cfg->ddma_drq_sdram);
->  	} else {
-> -		promise->cfg |= SUN4I_DMA_CFG_SRC_DRQ_TYPE(SUN4I_NDMA_DRQ_TYPE_SDRAM) |
-> -				SUN4I_DMA_CFG_DST_DRQ_TYPE(SUN4I_NDMA_DRQ_TYPE_SDRAM);
-> +		promise->cfg |=
-> +			SUN4I_DMA_CFG_SRC_DRQ_TYPE(priv->cfg->ndma_drq_sdram) |
-> +			SUN4I_DMA_CFG_DST_DRQ_TYPE(priv->cfg->ndma_drq_sdram);
->  	}
->  
->  	/* Fill the contract with our only promise */
-> @@ -666,6 +711,7 @@ sun4i_dma_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf, size_t len,
->  			  size_t period_len, enum dma_transfer_direction dir,
->  			  unsigned long flags)
->  {
-> +	struct sun4i_dma_dev *priv = to_sun4i_dma_dev(chan->device);
->  	struct sun4i_dma_vchan *vchan = to_sun4i_dma_vchan(chan);
->  	struct dma_slave_config *sconfig = &vchan->cfg;
->  	struct sun4i_dma_promise *promise;
-> @@ -701,7 +747,7 @@ sun4i_dma_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf, size_t len,
->  	if (dir == DMA_MEM_TO_DEV) {
->  		src = buf;
->  		dest = sconfig->dst_addr;
-> -		endpoints = SUN4I_DMA_CFG_SRC_DRQ_TYPE(SUN4I_NDMA_DRQ_TYPE_SDRAM) |
-> +		endpoints = SUN4I_DMA_CFG_SRC_DRQ_TYPE(priv->cfg->ndma_drq_sdram) |
->  			    SUN4I_DMA_CFG_DST_DRQ_TYPE(vchan->endpoint) |
->  			    SUN4I_DMA_CFG_DST_ADDR_MODE(SUN4I_NDMA_ADDR_MODE_IO);
->  	} else {
-> @@ -709,7 +755,7 @@ sun4i_dma_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t buf, size_t len,
->  		dest = buf;
->  		endpoints = SUN4I_DMA_CFG_SRC_DRQ_TYPE(vchan->endpoint) |
->  			    SUN4I_DMA_CFG_SRC_ADDR_MODE(SUN4I_NDMA_ADDR_MODE_IO) |
-> -			    SUN4I_DMA_CFG_DST_DRQ_TYPE(SUN4I_NDMA_DRQ_TYPE_SDRAM);
-> +			    SUN4I_DMA_CFG_DST_DRQ_TYPE(priv->cfg->ndma_drq_sdram);
->  	}
->  
->  	/*
-> @@ -772,6 +818,7 @@ sun4i_dma_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
->  			unsigned int sg_len, enum dma_transfer_direction dir,
->  			unsigned long flags, void *context)
->  {
-> +	struct sun4i_dma_dev *priv = to_sun4i_dma_dev(chan->device);
->  	struct sun4i_dma_vchan *vchan = to_sun4i_dma_vchan(chan);
->  	struct dma_slave_config *sconfig = &vchan->cfg;
->  	struct sun4i_dma_promise *promise;
-> @@ -797,11 +844,11 @@ sun4i_dma_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
->  	if (vchan->is_dedicated) {
->  		io_mode = SUN4I_DDMA_ADDR_MODE_IO;
->  		linear_mode = SUN4I_DDMA_ADDR_MODE_LINEAR;
-> -		ram_type = SUN4I_DDMA_DRQ_TYPE_SDRAM;
-> +		ram_type = priv->cfg->ddma_drq_sdram;
->  	} else {
->  		io_mode = SUN4I_NDMA_ADDR_MODE_IO;
->  		linear_mode = SUN4I_NDMA_ADDR_MODE_LINEAR;
-> -		ram_type = SUN4I_NDMA_DRQ_TYPE_SDRAM;
-> +		ram_type = priv->cfg->ndma_drq_sdram;
->  	}
->  
->  	if (dir == DMA_MEM_TO_DEV)
-> @@ -1130,6 +1177,10 @@ static int sun4i_dma_probe(struct platform_device *pdev)
->  	if (!priv)
->  		return -ENOMEM;
->  
-> +	priv->cfg = of_device_get_match_data(&pdev->dev);
-> +	if (!priv->cfg)
-> +		return -ENODEV;
+> +static int convert_burst_f1c100s(u32 maxburst)
+> +{
+> +	if (maxburst > 4)
+> +		return -EINVAL;
 > +
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	priv->base = devm_ioremap_resource(&pdev->dev, res);
->  	if (IS_ERR(priv->base))
-> @@ -1178,23 +1229,26 @@ static int sun4i_dma_probe(struct platform_device *pdev)
->  
->  	priv->slave.dev = &pdev->dev;
->  
-> -	priv->pchans = devm_kcalloc(&pdev->dev, SUN4I_DMA_NR_MAX_CHANNELS,
-> +	priv->pchans = devm_kcalloc(&pdev->dev, priv->cfg->dma_nr_max_channels,
->  				    sizeof(struct sun4i_dma_pchan), GFP_KERNEL);
->  	priv->vchans = devm_kcalloc(&pdev->dev, SUN4I_DMA_NR_MAX_VCHANS,
->  				    sizeof(struct sun4i_dma_vchan), GFP_KERNEL);
-> -	if (!priv->vchans || !priv->pchans)
-> +	priv->pchans_used = devm_kcalloc(&pdev->dev,
-> +			BITS_TO_LONGS(priv->cfg->dma_nr_max_channels),
-> +			sizeof(unsigned long), GFP_KERNEL);
+> +	/* 1 -> 0, 4 -> 1 */
+> +	return (maxburst >> 2);
+> +}
+> +
 
-I'm not sure we really need a dynamic allocation here. Just keep the
-bitmap, and use the bigger size.
-
-Thanks!
-Maxime
+This is essentially the same function than for the A10, with a
+different limit. Like a was saying, use a bitmask for the supported
+bursts length, and test whether the burst is supported against that
+mask. You won't have to duplicate those functions anymore.
 
 -- 
 Maxime Ripard, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
---kzmbnq5naxbvf7yw--
+--immwmaskuc6nscn3--
