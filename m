@@ -1,45 +1,40 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v8 2/3] x86: add support for Huawei WMI hotkeys.
-Date: Mon, 3 Dec 2018 16:23:46 +0200
-Message-ID: <CAHp75Vfg7K=7U1P2+N+wsxHV4rwQ4z3rvFuaUXz+znpgiN19YA@mail.gmail.com>
-References: <20181129235742.14332-1-ayman.bagabas@gmail.com>
- <20181129235742.14332-3-ayman.bagabas@gmail.com> <s5hftvezupj.wl-tiwai@suse.de>
- <CAHp75Vf7WW8ezL_H_iw_=nSVARuvhugUY5sTkQ=usU96Wj2YSA@mail.gmail.com> <s5hlg56y9k3.wl-tiwai@suse.de>
+From: GitHub pull_request - opened <github@alsa-project.org>
+Subject: cplay: Always write whole buffer requested by user
+Date: Mon,  3 Dec 2018 16:14:37 +0100 (CET)
+Message-ID: <20181203151437.A2B88267AAA@alsa0.perex.cz>
+References: <1543850074722342014-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hlg56y9k3.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ayman Bagabas <ayman.bagabas@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Kailang Yang <kailang@realtek.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
+ [192.168.100.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C736267A77
+ for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2018 16:14:34 +0100 (CET)
+In-Reply-To: <1543850074722342014-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 3, 2018 at 4:22 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 03 Dec 2018 15:18:54 +0100,
-> Andy Shevchenko wrote:
-> >
-> > On Mon, Dec 3, 2018 at 2:00 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Fri, 30 Nov 2018 00:57:37 +0100,
-> > > Ayman Bagabas wrote:
-> >
-> > > > +struct huawei_wmi_priv {
-> > > > +     struct input_dev *idev;
-> > > > +     struct led_classdev cdev;
-> > > > +     acpi_handle handle;
-> > >
-> > > Is this handle set in anywhere?  I couldn't see it in your patch.
-> > > If it's supposed to be NULL, passing NULL explicitly makes your
-> > > intention clearer.
-> >
-> > Isn't below an answer?
-> >
-> > > > +     // Skip registering LED subsystem if no ACPI method was found.
-> > > > +     status = acpi_get_handle(priv->handle, "\\_SB.PCI0.LPCB.EC0", &priv->handle);
->
-> Oh indeed, but why it passes priv->handle at the first argument...?
+alsa-project/tinycompress pull request #1 was opened from dbaluta:
 
-Yes, since it's an absolute, I guess NULL in this case will be OK.
+cplay first writes frag * fragment_size and then
+it only writes one fragment at a time.
 
--- 
-With Best Regards,
-Andy Shevchenko
+This means for example than if the user supplied a buffer_size
+it will only be used for the first write.
+
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+
+Request URL   : https://github.com/alsa-project/tinycompress/pull/1
+Patch URL     : https://github.com/alsa-project/tinycompress/pull/1.patch
+Repository URL: https://github.com/alsa-project/tinycompress
