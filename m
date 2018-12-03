@@ -1,59 +1,71 @@
 From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Subject: [PATCH v9 0/3] Huawei laptops
-Date: Mon,  3 Dec 2018 13:53:37 -0500
-Message-ID: <20181203185344.3521-1-ayman.bagabas@gmail.com>
+Subject: [PATCH v9 1/3] ALSA: hda: fix front speakers on Huawei MBXP.
+Date: Mon,  3 Dec 2018 13:53:38 -0500
+Message-ID: <20181203185344.3521-2-ayman.bagabas@gmail.com>
+References: <20181203185344.3521-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181203185344.3521-1-ayman.bagabas@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: ayman.bagabas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch set is based on new audio LED triggers in branch topic/leds-trigger from
-        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+This patch solves bug 200501 'Only 2 of 4 speakers playing sound.'
+https://bugzilla.kernel.org/show_bug.cgi?id=200501
+It enables the front speakers on Huawei Matebook X Pro laptops.
+These laptops come with Dolby Atmos sound system and these pins
+configuration enables the front speakers.
 
-Changes from v8:
-* Explicitly use NULL in acpi_get_handle
-* Drop __initconst from huawei_wmi_keymap
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Changes from v7:
-* Switch to wmi_driver
-* Use devm to allocate and manage devices
-* Skip registering LED subsystem if a ACPI controller method was not found
-
-Changes from v6:
-* Use audio LED triggers patch set
-* Use KEY_CONFIG (XF86Tools) instead of KEY_PROG1.
- In Windows, the key is used to launch Huawei PC manager. XF86Tools is
- used by default on most desktop environments i.e. Gnome.
-
-Changes from v5:
-* Review tags
-
-Changes from v4:
-* Consistency in file names
-* How module would be enabled (Kconfig)
-* Match license in SPDX and MODULE_LICENSE 
-
-Changes from v3:
-* Code formatting
-
-Changes from v2:
-* Support for Huawei MBX
-* Style and formatting issues
-
-Ayman Bagabas (3):
-  ALSA: hda: fix front speakers on Huawei MBXP.
-  x86: add support for Huawei WMI hotkeys.
-  ALSA: hda: add support for Huawei WMI micmute LED
-
- drivers/platform/x86/Kconfig      |  16 +++
- drivers/platform/x86/Makefile     |   1 +
- drivers/platform/x86/huawei-wmi.c | 226 ++++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c     |  22 +++
- 4 files changed, 265 insertions(+)
- create mode 100644 drivers/platform/x86/huawei-wmi.c
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 993d34c141c2..1326f32f4574 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5490,6 +5490,7 @@ enum {
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
++	ALC256_FIXUP_HUAWEI_MBXP_PINS,
+ 	ALC295_FIXUP_HP_X360,
+ 	ALC221_FIXUP_HP_HEADSET_MIC,
+ };
+@@ -5761,6 +5762,22 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC256_FIXUP_HUAWEI_MBXP_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{0x12, 0x90a60130},
++			{0x13, 0x40000000},
++			{0x14, 0x90170110},
++			{0x18, 0x411111f0},
++			{0x19, 0x04a11040},
++			{0x1a, 0x411111f0},
++			{0x1b, 0x90170112},
++			{0x1d, 0x40759a05},
++			{0x1e, 0x411111f0},
++			{0x21, 0x04211020},
++			{ }
++		}
++	},
+ 	[ALC269_FIXUP_ASUS_X101_FUNC] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_x101_headset_mic,
+@@ -6591,6 +6608,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
++	SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MBXP", ALC256_FIXUP_HUAWEI_MBXP_PINS),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+ 
+ #if 0
 -- 
 2.19.2
