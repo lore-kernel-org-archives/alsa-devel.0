@@ -1,70 +1,51 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH RESEND 5/5] ASoC: max9867: Add copyright and
-	module author
-Date: Tue, 4 Dec 2018 19:22:00 +0100
-Message-ID: <20181204182200.GF1136@lenoch>
-References: <20181204181725.GA1136@lenoch>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: [PATCH 1/2] ASoC: Fix function return type
+Date: Tue, 4 Dec 2018 18:33:14 +0000
+Message-ID: <1543948103-20752-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E5C1267B74
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 19:22:13 +0100 (CET)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23993882AbeLDSWBpVKjp (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Tue, 4 Dec 2018 19:22:01 +0100
-Content-Disposition: inline
-In-Reply-To: <20181204181725.GA1136@lenoch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson@diasemi.com" <Adam.Thomson@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Driver rewritten, assign copyright notice and change module author
-as original one remains silent and I want to be notified about bugs.
+Function returns -1 on error and the return type
+should be int.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
- sound/soc/codecs/max9867.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ include/sound/soc.h | 2 +-
+ sound/soc/soc-io.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 7a08e2c70e17..36e73671a006 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -1,11 +1,9 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-  * max9867.c -- max9867 ALSA SoC Audio driver
-  *
-  * Copyright 2013-15 Maxim Integrated Products
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-+ * Copyright 2018 Ladislav Michl <ladis@linux-mips.org>
-  */
- 
- #include <linux/delay.h>
-@@ -551,6 +549,6 @@ static struct i2c_driver max9867_i2c_driver = {
- 
- module_i2c_driver(max9867_i2c_driver);
- 
--MODULE_AUTHOR("anish kumar <yesanishhere@gmail.com>");
--MODULE_DESCRIPTION("ALSA SoC MAX9867 driver");
-+MODULE_AUTHOR("Ladislav Michl <ladis@linux-mips.org>");
-+MODULE_DESCRIPTION("ASoC MAX9867 driver");
- MODULE_LICENSE("GPL");
--- 
-2.20.0.rc2
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8ec1de8..591d743 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1341,7 +1341,7 @@ static inline int snd_soc_component_cache_sync(
+ /* component IO */
+ int snd_soc_component_read(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int *val);
+-unsigned int snd_soc_component_read32(struct snd_soc_component *component,
++int snd_soc_component_read32(struct snd_soc_component *component,
+ 				      unsigned int reg);
+ int snd_soc_component_write(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int val);
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 1ff9175..d08f5b1 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -38,7 +38,7 @@ int snd_soc_component_read(struct snd_soc_component *comp=
+onent,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_read);
+=20
+-unsigned int snd_soc_component_read32(struct snd_soc_component *component,
++int snd_soc_component_read32(struct snd_soc_component *component,
+ 				      unsigned int reg)
+ {
+ 	unsigned int val;
+--=20
+1.9.1
