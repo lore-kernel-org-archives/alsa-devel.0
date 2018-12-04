@@ -1,51 +1,87 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
-Date: Tue, 4 Dec 2018 09:46:27 +0800
-Message-ID: <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
-References: <20181127120041.90759-1-cychiang@chromium.org> <20181128093411.GC4272@dell>
- <20181203111919.GL26661@dell>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v2 6/6] ASoC: rsnd: add avb clocks
+Date: Tue, 4 Dec 2018 01:52:40 +0000
+Message-ID: <87o9a22hjt.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181203112427.18324-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181203111919.GL26661@dell>
+In-Reply-To: <20181203112427.18324-1-jiada_wang@mentor.com>
+Content-Language: en-US
+Content-ID: <B65D6B7D15E5ED4093FC71E115BBC515@jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lee.jones@linaro.org
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
+To: "jiada_wang@mentor.com" <jiada_wang@mentor.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 3, 2018 at 7:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Wed, 28 Nov 2018, Lee Jones wrote:
->
-> > On Tue, 27 Nov 2018, Cheng-Yi Chiang wrote:
-> >
-> > > Add EC host commands to control codec on EC.
-> > >
-> > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > > ---
-> > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 94 insertions(+)
-> >
-> > Applied, thanks.
->
-> Turns out that this does not actually apply.
->
-> What is it based on?
-
-Hi Lee,
-I am sorry about that!
-The patch series was based on Mark Brown's tree (
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git )
-for-next branch.
-I will rebase it on upstream master branch in v2 when I address other
-comments in codec driver.
-Thanks!
-
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+DQpIaSBKaWFkYQ0KDQo+IFRoZXJlIGFyZSBBVkIgQ291bnRlciBDbG9ja3MgaW4gQURHLCBlYWNo
+IGNsb2NrIGhhcyAxMmJpdHMgaW50ZWdyYWwNCj4gYW5kIDggYml0cyBmcmFjdGlvbmFsIGRpdmlk
+ZXJzIHdoaWNoIG9wZXJhdGVzIHdpdGggUzBEMc+VIGNsb2NrLg0KPiANCj4gVGhpcyBwYXRjaCBy
+ZWdpc3RlcnMgOCBBVkIgQ291bnRlciBDbG9ja3Mgd2hlbiBjbG9jay1jZWxscyBvZg0KPiByY2Fy
+X3NvdW5kIG5vZGUgaXMgMiwNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYWRhIFdhbmcgPGppYWRh
+X3dhbmdAbWVudG9yLmNvbT4NCj4gLS0tDQooc25pcCkNCj4gK3N0cnVjdCBjbGtfYXZiIHsNCj4g
+KwlzdHJ1Y3QgY2xrX2h3IGh3Ow0KPiArCXVuc2lnbmVkIGludCBpZHg7DQo+ICsJc3RydWN0IHJz
+bmRfbW9kICptb2Q7DQo+ICsJLyogbG9jayByZWcgYWNjZXNzICovDQo+ICsJc3BpbmxvY2tfdCAq
+bG9jazsNCj4gK307DQo+ICsNCj4gKyNkZWZpbmUgdG9fY2xrX2F2YihfaHcpIGNvbnRhaW5lcl9v
+ZihfaHcsIHN0cnVjdCBjbGtfYXZiLCBodykNCg0KSSBsaWtlICJod190b19hdmIoKSINCg0KPiAr
+c3RhdGljIHN0cnVjdCBjbGsgKnJzbmRfYWRnX2Nsa19zcmNfdHdvY2VsbF9nZXQoc3RydWN0IG9m
+X3BoYW5kbGVfYXJncyAqY2xrc3BlYywNCj4gKwkJCQkJCXZvaWQgKmRhdGEpDQo+ICt7DQo+ICsJ
+dW5zaWduZWQgaW50IGNsa2lkeCA9IGNsa3NwZWMtPmFyZ3NbMV07DQo+ICsJc3RydWN0IHJzbmRf
+YWRnICphZGcgPSBkYXRhOw0KPiArCWNvbnN0IGNoYXIgKnR5cGU7DQo+ICsJc3RydWN0IGNsayAq
+Y2xrOw0KPiArDQo+ICsJc3dpdGNoIChjbGtzcGVjLT5hcmdzWzBdKSB7DQo+ICsJY2FzZSBBREdf
+RklYOg0KPiArCQl0eXBlID0gImZpeGVkIjsNCj4gKwkJaWYgKGNsa2lkeCA+PSBDTEtPVVRNQVgp
+IHsNCj4gKwkJCXByX2VycigiSW52YWxpZCAlcyBjbG9jayBpbmRleCAldVxuIiwgdHlwZSwNCj4g
+KwkJCSAgICAgICBjbGtpZHgpOw0KPiArCQkJcmV0dXJuIEVSUl9QVFIoLUVJTlZBTCk7DQo+ICsJ
+CX0NCj4gKwkJY2xrID0gYWRnLT5jbGtvdXRbY2xraWR4XTsNCj4gKwkJYnJlYWs7DQo+ICsJY2Fz
+ZSBBREdfQVZCOg0KPiArCQl0eXBlID0gImF2YiI7DQo+ICsJCWlmIChjbGtpZHggPj0gQVZCX0NM
+S19OVU0pIHsNCj4gKwkJCXByX2VycigiSW52YWxpZCAlcyBjbG9jayBpbmRleCAldVxuIiwgdHlw
+ZSwNCj4gKwkJCSAgICAgICBjbGtpZHgpOw0KPiArCQkJcmV0dXJuIEVSUl9QVFIoLUVJTlZBTCk7
+DQo+ICsJCX0NCj4gKwkJY2xrID0gYWRnLT5jbGthdmJbY2xraWR4XTsNCj4gKwkJYnJlYWs7DQo+
+ICsJZGVmYXVsdDoNCj4gKwkJcHJfZXJyKCJJbnZhbGlkIEFERyBjbG9jayB0eXBlICV1XG4iLCBj
+bGtzcGVjLT5hcmdzWzBdKTsNCj4gKwkJcmV0dXJuIEVSUl9QVFIoLUVJTlZBTCk7DQo+ICsJfQ0K
+PiArDQo+ICsJcmV0dXJuIGNsazsNCj4gK30NCg0KSW4gdGhpcyBmdW5jdGlvbg0KMSkgSSBkb24n
+dCB0aGluayB5b3UgbmVlZCB0byB1c2UgImNoYXIgKnR5cGUiLg0KMikgSWYgeW91IHVzZSAiY2xr
+aWR4ID0gY2xrc3BlYy0+YXJnc1sxXSIsIGhhdmluZyBzYW1lIG5hbWUgZm9yICJjbGtzcGVjLT5h
+cmdzWzBdIg0KICAgaXMgcmVhZGFibGUuDQozKSBwbGVhc2UgdXNlIGRldl9lcnIoKSBpbnN0YWQg
+b2YgcHJfZXJyKCkNCiAgIEkgdGhpbmsgZGF0YSBjYW4gYmUgcHJpdiwgYW5kIHlvdSBjYW4gdXNl
+IHJzbmRfcHJpdl90b19hZGcoKSwgcnNuZF9wcml2X3RvX2RldigpDQoNCj4gK3N0YXRpYyB2b2lk
+IGNsa19hdmJfZGl2X3dyaXRlKHN0cnVjdCByc25kX21vZCAqbW9kLCB1MzIgZGF0YSwgaW50IGlk
+eCkNCihzbmlwKQ0KPiArc3RhdGljIHUzMiBjbGtfYXZiX2Rpdl9yZWFkKHN0cnVjdCByc25kX21v
+ZCAqbW9kLCBpbnQgaWR4KQ0KDQpUbyByZWR1Y2UgY29uZnVzaW9uLCBhbmQgYmUgbW9yZSByZWRh
+YmxlIGNvZGUsDQpJIHRoaW5rIHRoZXNlIGZ1bmN0aW9uIGNhbiBiZQ0KDQoJY2xrX2F2Yl9kaXZf
+d3JpdGUoc3RydWN0IHJzbmRfYWRnICphZGcsIHUzMiBkYXRhKTsNCgljbGtfYXZiX2Rpdl9yZWFk
+KHN0cnVjdCByc25kX2FkZyAqYWRnKTsNCg0KPiArc3RhdGljIGludCBjbGtfYXZiX3NldF9yYXRl
+KHN0cnVjdCBjbGtfaHcgKmh3LCB1bnNpZ25lZCBsb25nIHJhdGUsDQo+ICsJCQkgICAgdW5zaWdu
+ZWQgbG9uZyBwYXJlbnRfcmF0ZSkNCj4gK3sNCj4gKwlzdHJ1Y3QgY2xrX2F2YiAqYXZiID0gdG9f
+Y2xrX2F2Yihodyk7DQo+ICsJdW5zaWduZWQgaW50IGRpdiA9IGNsa19hdmJfY2FsY19kaXYocmF0
+ZSwgcGFyZW50X3JhdGUpOw0KPiArCXUzMiB2YWw7DQo+ICsNCj4gKwl2YWwgPSBjbGtfYXZiX2Rp
+dl9yZWFkKGF2Yi0+bW9kLCBhdmItPmlkeCkgJiB+QVZCX0RJVl9NQVNLOw0KPiArCWNsa19hdmJf
+ZGl2X3dyaXRlKGF2Yi0+bW9kLCB2YWwgfCBkaXYsIGF2Yi0+aWR4KTsNCj4gKw0KPiArCXJldHVy
+biAwOw0KPiArfQ0KDQpXaHkgZG8gd2UgbmVlZCB0byBjYXJlIGFib3V0IH5BVkJfRElWX01BU0sg
+YXJlYSA/DQpUaGVzZSBhcmUgMCBSZXNlcnZlZCwgSSB0aGluay4NCg0KPiArc3RhdGljIGNvbnN0
+IHN0cnVjdCBjbGtfb3BzIGNsa19hdmJfb3BzID0gew0KPiArCS5lbmFibGUgPSBjbGtfYXZiX2Vu
+YWJsZSwNCj4gKwkuZGlzYWJsZSA9IGNsa19hdmJfZGlzYWJsZSwNCj4gKwkuaXNfZW5hYmxlZCA9
+IGNsa19hdmJfaXNfZW5hYmxlZCwNCj4gKwkucmVjYWxjX3JhdGUgPSBjbGtfYXZiX3JlY2FsY19y
+YXRlLA0KPiArCS5yb3VuZF9yYXRlID0gY2xrX2F2Yl9yb3VuZF9yYXRlLA0KPiArCS5zZXRfcmF0
+ZSA9IGNsa19hdmJfc2V0X3JhdGUsDQo+ICt9Ow0KDQpUaGlzIGlzIG5vdCBhIGJpZyBkZWFsLCBi
+dXQgSSBsaWtlIHRhYiBhbGlnbmVkIG9wcw0KDQo+ICtzdGF0aWMgc3RydWN0IGNsayAqY2xrX3Jl
+Z2lzdGVyX2F2YihzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCByc25kX21vZCAqbW9kLA0KPiAr
+CQkJCSAgICB1bnNpZ25lZCBpbnQgaWQsIHNwaW5sb2NrX3QgKmxvY2spDQo+ICt7DQo+ICsJc3Ry
+dWN0IGNsa19pbml0X2RhdGEgaW5pdDsNCj4gKwlzdHJ1Y3QgY2xrX2F2YiAqYXZiOw0KPiArCXN0
+cnVjdCBjbGsgKmNsazsNCj4gKwljaGFyIG5hbWVbQVZCX0NMS19OQU1FX1NJWkVdOw0KPiArCWNv
+bnN0IGNoYXIgKnBhcmVudF9uYW1lID0gQURHX0NMS19OQU1FOw0KPiArDQo+ICsJYXZiID0gZGV2
+bV9remFsbG9jKGRldiwgc2l6ZW9mKCphdmIpLCBHRlBfS0VSTkVMKTsNCj4gKwlpZiAoIWF2YikN
+Cj4gKwkJcmV0dXJuIEVSUl9QVFIoLUVOT01FTSk7DQo+ICsNCj4gKwlzbnByaW50ZihuYW1lLCBB
+VkJfQ0xLX05BTUVfU0laRSwgIiVzJXUiLCBBVkJfQ0xLX05BTUUsIGlkKTsNCj4gKw0KPiArCWF2
+Yi0+aWR4ID0gaWQ7DQo+ICsJYXZiLT5sb2NrID0gbG9jazsNCj4gKwlhdmItPm1vZCA9IG1vZDsN
+Cj4gKw0KPiArCS8qIFJlZ2lzdGVyIHRoZSBjbG9jay4gKi8NCj4gKwlpbml0Lm5hbWUgPSBuYW1l
+Ow0KPiArCWluaXQub3BzID0gJmNsa19hdmJfb3BzOw0KPiArCWluaXQuZmxhZ3MgPSBDTEtfSVNf
+QkFTSUM7DQo+ICsJaW5pdC5wYXJlbnRfbmFtZXMgPSAmcGFyZW50X25hbWU7DQo+ICsJaW5pdC5u
+dW1fcGFyZW50cyA9IDE7DQo+ICsNCj4gKwlhdmItPmh3LmluaXQgPSAmaW5pdDsNCj4gKw0KPiAr
+CS8qIGluaXQgRElWIHRvIGEgdmFsaWQgc3RhdGUgKi8NCj4gKwljbGtfYXZiX2Rpdl93cml0ZShh
+dmItPm1vZCwgYXZiLT5pZHgsIEFWQl9NQVhfRElWKTsNCg0KUGxlYXNlIGNoZWNrIHBhcmFtZXRl
+ciwgSSB0aGluayB5b3Ugd2FudCB0byBkbyBpcw0KDQoJLSBjbGtfYXZiX2Rpdl93cml0ZShhdmIt
+Pm1vZCwgYXZiLT5pZHgsIEFWQl9NQVhfRElWKTsNCgkrIGNsa19hdmJfZGl2X3dyaXRlKGF2Yi0+
+bW9kLCBBVkJfTUFYX0RJViwgYXZiLT5pZHgpOw0KDQpCZXN0IHJlZ2FyZHMNCi0tLQ0KS3VuaW5v
+cmkgTW9yaW1vdG8NCg==
