@@ -1,63 +1,28 @@
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Subject: How to inform application about sample rate changed
-	from device.
-Date: Tue, 4 Dec 2018 07:23:22 +0530
-Message-ID: <CALW20Z0zm5u_NmT5b=xQyY8daS0pWXoApyr09ES6rvayw2M2CA@mail.gmail.com>
-References: <CALW20Z03dWeGNjZJpPaN=aH2xwDtSJCi=VU0uKYw77Yx9ureqg@mail.gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v2 6/6] ASoC: rsnd: add avb clocks
+Date: Tue, 4 Dec 2018 01:54:43 +0000
+Message-ID: <87mupm2hgd.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181203112427.18324-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com
- [209.85.215.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DE12267B0B
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 02:53:36 +0100 (CET)
-Received: by mail-pg1-f182.google.com with SMTP id n2so6602939pgm.3
- for <alsa-devel@alsa-project.org>; Mon, 03 Dec 2018 17:53:36 -0800 (PST)
-In-Reply-To: <CALW20Z03dWeGNjZJpPaN=aH2xwDtSJCi=VU0uKYw77Yx9ureqg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181203112427.18324-1-jiada_wang@mentor.com>
+Content-Language: en-US
+Content-ID: <056E9E466B1CAA49B17C11C6C9C631A6@jpnprd01.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "jiada_wang@mentor.com" <jiada_wang@mentor.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi ,
-
-
-
-
-I'm working in FPGA device, which can provide raw video and pcm data.
-I'm using v4l2 and alsa framework for video and audio respectively.
-Audio flow path is using ALSA framework and video flow path is using
-v4l2 framework. Device can generate different audio sample rate such
-as 44.1KHz, 48KHz and 96KHz.
-
-VLC can render video and audio smoothly with 48KHz of sample rate, 2
-channel and video with FHD(1920x1080).
-
-When device is set with 44.1KHz and 96KHz then vlc audio is
-breaking.I'm using vlc version as 2.2.8 and there is no way to inform
-how to set the sample rate for audio device.
-
-Below are queries:
-
-1) When device is generating audio sample rate of 44.1KHz then how to
-inform VLC that use 44.1KHz sample rate(same is for 96KHz)
-
-2) what is command for vlc with video and audio device setting for
-width=1920 height= 1080 colorspace = RV24, channel =2,sample rate
-44.1KHz. Assume video device is (/dev/video0 and audio device is
-hw:1.0)
-
-
--- 
-Thanks and Regards
-Chakravarthi Pradeep.K
-Ph: 91 9980434900
+DQpISSBKaWFkYQ0KDQo+IFRoZXJlIGFyZSBBVkIgQ291bnRlciBDbG9ja3MgaW4gQURHLCBlYWNo
+IGNsb2NrIGhhcyAxMmJpdHMgaW50ZWdyYWwNCj4gYW5kIDggYml0cyBmcmFjdGlvbmFsIGRpdmlk
+ZXJzIHdoaWNoIG9wZXJhdGVzIHdpdGggUzBEMc+VIGNsb2NrLg0KPiANCj4gVGhpcyBwYXRjaCBy
+ZWdpc3RlcnMgOCBBVkIgQ291bnRlciBDbG9ja3Mgd2hlbiBjbG9jay1jZWxscyBvZg0KPiByY2Fy
+X3NvdW5kIG5vZGUgaXMgMiwNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYWRhIFdhbmcgPGppYWRh
+X3dhbmdAbWVudG9yLmNvbT4NCj4gLS0tDQo+ICBzb3VuZC9zb2Mvc2gvcmNhci9hZGcuYyAgfCAz
+MDYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tDQo+ICBzb3VuZC9zb2Mv
+c2gvcmNhci9nZW4uYyAgfCAgIDkgKysNCj4gIHNvdW5kL3NvYy9zaC9yY2FyL3JzbmQuaCB8ICAg
+OSArKw0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAzMTUgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMo
+LSkNCg0KUGxlYXNlIHVwZGF0ZSBEVCBiaW5kaW5nIHR4dCwgdG9vDQoNCkJlc3QgcmVnYXJkcw0K
+LS0tDQpLdW5pbm9yaSBNb3JpbW90bw0K
