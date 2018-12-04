@@ -1,18 +1,18 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: rsnd: fixup mod ID for CTU regmap
-	read/write
-Date: Tue, 4 Dec 2018 08:00:47 +0000
-Message-ID: <87in093f2p.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: rsnd: add missing TDM Split mode support
+ for simple-card
+Date: Tue, 4 Dec 2018 08:02:43 +0000
+Message-ID: <87h8ft3ezh.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-eopbgr1410125.outbound.protection.outlook.com [40.107.141.125])
- by alsa0.perex.cz (Postfix) with ESMTP id E63F626789B
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 09:00:49 +0100 (CET)
+ (mail-eopbgr1410095.outbound.protection.outlook.com [40.107.141.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61B6826789B
+ for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 09:02:51 +0100 (CET)
 Content-Language: en-US
-Content-ID: <C40AE6A58D10914394E2005B8815F655@jpnprd01.prod.outlook.com>
+Content-ID: <BEBFF7A4A8F9644A989937C22C3EA286@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,95 +26,90 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-commit c16015f36cc12824 ("ASoC: rsnd: add .get_id/.get_id_sub")
-add new .get_id/.get_id_sub to indicate module ID/subID.
-It is used for SSIU and CTU. In SSIU case, subID indicates BUSIF,
-but register settings is based on SSIU ID.
-OTOH, in CTU case, subID indicates CTU channel, and register settings
-is based on it. This means regmap read/write function needs to care it.
-This patch fixup this issue. It can't play MIXed sound without this
-patch.
+commit f69f452243e4e1 ("ASoC: rsnd: add TDM Split mode support")
+added TDM Split mode support for rsnd driver.
+But, it cares audio-graph-card style only. We can't use TDM Split
+mode on simple-card style now.
+This patch fixup this issue.
 
-Fixes: c16015f36cc12824 ("ASoC: rsnd: add .get_id/.get_id_sub")
+Fixes: f69f452243e4e1 ("ASoC: rsnd: add TDM Split mode support")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/ctu.c  |  1 +
- sound/soc/sh/rcar/gen.c  | 14 +++++++++++---
- sound/soc/sh/rcar/rsnd.h |  1 +
- 3 files changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 51 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index 4dda7d9..ff41a5e 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -317,6 +317,7 @@ static struct rsnd_mod_ops rsnd_ctu_ops = {
- 	.get_status	= rsnd_mod_get_status,
- 	.id		= rsnd_ctu_id,
- 	.id_sub		= rsnd_ctu_id_sub,
-+	.id_cmd		= rsnd_mod_id_raw,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 031cd5b..59e250c 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1031,6 +1031,49 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.prepare	= rsnd_soc_dai_prepare,
  };
  
- struct rsnd_mod *rsnd_ctu_mod_get(struct rsnd_priv *priv, int id)
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index ca63940..3283d67 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -71,6 +71,14 @@ static int rsnd_is_accessible_reg(struct rsnd_priv *priv,
- 	return 1;
- }
- 
-+static int rsnd_mod_id_cmd(struct rsnd_mod *mod)
++static void rsnd_parse_connect_simple(struct rsnd_priv *priv,
++				      struct device_node *dai_np,
++				      int dai_i, int is_play)
 +{
-+	if (mod->ops->id_cmd)
-+		return mod->ops->id_cmd(mod);
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
++	struct rsnd_dai_stream *io = is_play ?
++		&rdai->playback :
++		&rdai->capture;
++	struct device_node *ssiu_np = rsnd_ssiu_of_node(priv);
++	struct device_node *np;
++	int i, j;
 +
-+	return rsnd_mod_id(mod);
++	if (!ssiu_np)
++		return;
++
++	if (!rsnd_io_to_mod_ssi(io))
++		return;
++
++	/*
++	 * This driver assumes that it is TDM Split mode
++	 * if it includes ssiu node
++	 */
++	for (i = 0;; i++) {
++		struct device_node *node = is_play ?
++			of_parse_phandle(dai_np, "playback", i) :
++			of_parse_phandle(dai_np, "capture",  i);
++
++		if (!node)
++			break;
++
++		j = 0;
++		for_each_child_of_node(ssiu_np, np) {
++			if (np == node) {
++				rsnd_flags_set(io, RSND_STREAM_TDM_SPLIT);
++				dev_dbg(dev, "%s is part of TDM Split\n", io->name);
++			}
++			j++;
++		}
++
++	}
 +}
 +
- u32 rsnd_read(struct rsnd_priv *priv,
- 	      struct rsnd_mod *mod, enum rsnd_reg reg)
- {
-@@ -81,7 +89,7 @@ u32 rsnd_read(struct rsnd_priv *priv,
- 	if (!rsnd_is_accessible_reg(priv, gen, reg))
- 		return 0;
+ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
+ 				     struct rsnd_dai_stream *io,
+ 				     struct device_node *endpoint)
+@@ -1246,8 +1289,14 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 			dai_i++;
+ 		}
+ 	} else {
+-		for_each_child_of_node(dai_node, dai_np)
+-			__rsnd_dai_probe(priv, dai_np, dai_i++);
++		for_each_child_of_node(dai_node, dai_np) {
++			__rsnd_dai_probe(priv, dai_np, dai_i);
++			if (rsnd_is_gen3(priv)) {
++				rsnd_parse_connect_simple(priv, dai_np, dai_i, 1);
++				rsnd_parse_connect_simple(priv, dai_np, dai_i, 0);
++			}
++			dai_i++;
++		}
+ 	}
  
--	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
-+	regmap_fields_read(gen->regs[reg], rsnd_mod_id_cmd(mod), &val);
- 
- 	dev_dbg(dev, "r %s - %-18s (%4d) : %08x\n",
- 		rsnd_mod_name(mod),
-@@ -100,7 +108,7 @@ void rsnd_write(struct rsnd_priv *priv,
- 	if (!rsnd_is_accessible_reg(priv, gen, reg))
- 		return;
- 
--	regmap_fields_force_write(gen->regs[reg], rsnd_mod_id(mod), data);
-+	regmap_fields_force_write(gen->regs[reg], rsnd_mod_id_cmd(mod), data);
- 
- 	dev_dbg(dev, "w %s - %-18s (%4d) : %08x\n",
- 		rsnd_mod_name(mod),
-@@ -117,7 +125,7 @@ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
- 		return;
- 
- 	regmap_fields_force_update_bits(gen->regs[reg],
--					rsnd_mod_id(mod), mask, data);
-+					rsnd_mod_id_cmd(mod), mask, data);
- 
- 	dev_dbg(dev, "b %s - %-18s (%4d) : %08x/%08x\n",
- 		rsnd_mod_name(mod),
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 3c57129..94d51fe 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -306,6 +306,7 @@ struct rsnd_mod_ops {
- 			   enum rsnd_mod_type type);
- 	int (*id)(struct rsnd_mod *mod);
- 	int (*id_sub)(struct rsnd_mod *mod);
-+	int (*id_cmd)(struct rsnd_mod *mod);
- };
- 
- struct rsnd_dai_stream;
+ 	return 0;
 -- 
 2.7.4
