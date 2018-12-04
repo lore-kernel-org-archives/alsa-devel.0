@@ -1,19 +1,21 @@
 From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH v2 0/5] max9867 driver update
-Date: Tue, 4 Dec 2018 19:17:25 +0100
-Message-ID: <20181204181725.GA1136@lenoch>
+Subject: [PATCH 1/5] ASoC: max9867: Remove useless assignment
+Date: Tue, 4 Dec 2018 19:18:17 +0100
+Message-ID: <20181204181817.GB1136@lenoch>
+References: <20181204181725.GA1136@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 831F6267B4E
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 19:17:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DCBC6267B4E
+ for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 19:18:18 +0100 (CET)
 Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
  (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23993048AbeLDSRbusT0p (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Tue, 4 Dec 2018 19:17:31 +0100
+ id S23990411AbeLDSSSlN86p (ORCPT
+ <rfc822;alsa-devel@alsa-project.org>); Tue, 4 Dec 2018 19:18:18 +0100
 Content-Disposition: inline
+In-Reply-To: <20181204181725.GA1136@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,15 +29,35 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+ret is assigned later, no need to initialize it.
+---
+ sound/soc/codecs/max9867.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-this is yet another round of driver update. Tested on AT91SAM9G20
-based board with codec in master mode. All implemeted controls do
-work now. Comments from previous serie taken into account.
-
-Ladislav Michl (5):
-  ASoC: max9867: Remove useless assignment
-  ASoC: max9867: Fix power management
-  ASoC: max9867: Calculate LRCLK divider
-  ASoC: max9867: Fix signal paths
-  ASoC: max9867: Add copyright and module author
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 1cda54b59854..1b155f40b106 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -476,7 +476,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
+ 		const struct i2c_device_id *id)
+ {
+ 	struct max9867_priv *max9867;
+-	int ret = 0, reg;
++	int ret, reg;
+ 
+ 	max9867 = devm_kzalloc(&i2c->dev, sizeof(*max9867), GFP_KERNEL);
+ 	if (!max9867)
+@@ -497,10 +497,8 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
+ 	dev_info(&i2c->dev, "device revision: %x\n", reg);
+ 	ret = devm_snd_soc_register_component(&i2c->dev, &max9867_component,
+ 			max9867_dai, ARRAY_SIZE(max9867_dai));
+-	if (ret < 0) {
++	if (ret < 0)
+ 		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
+-		return ret;
+-	}
+ 	return ret;
+ }
+ 
+-- 
+2.20.0.rc2
