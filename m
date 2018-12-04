@@ -1,19 +1,20 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next v2 0/6] clk: renesas: adg: add
-	AVB Clock
-Date: Tue, 4 Dec 2018 17:24:23 +0900
-Message-ID: <fb9fee84-7508-03dc-c1e7-30de3d2ee958@mentor.com>
-References: <20181203112200.18220-1-jiada_wang@mentor.com>
- <d63c751b-fab4-cf88-459e-efe5a3e83da4@mentor.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 7/7] ASoC: simple-scu-card: care multi DPCM
+	codec_conf
+Date: Tue, 4 Dec 2018 08:25:02 +0000
+Message-ID: <874lbt3dya.wl-kuninori.morimoto.gx@renesas.com>
+References: <87efax3e85.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 91B98267B49
- for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 09:24:32 +0100 (CET)
-In-Reply-To: <d63c751b-fab4-cf88-459e-efe5a3e83da4@mentor.com>
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400110.outbound.protection.outlook.com [40.107.140.110])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4B84267B49
+ for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2018 09:25:04 +0100 (CET)
+In-Reply-To: <87efax3e85.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
+Content-ID: <630482A77840424E98E1D1D2EF93876B@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +24,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVmxhZGltaXIKClRoYW5rcyBmb3IgeW91ciBjb21tZW50cwoKT24gMjAxOC8xMi8wMyAyMTox
-MSwgVmxhZGltaXIgWmFwb2xza2l5IHdyb3RlOgo+IEhpIEppYWRhLAo+Cj4gT24gMTIvMDMvMjAx
-OCAwMToyMSBQTSwgamlhZGFfd2FuZ0BtZW50b3IuY29tIHdyb3RlOgo+PiBGcm9tOiBKaWFkYSBX
-YW5nIDxqaWFkYV93YW5nQG1lbnRvci5jb20+Cj4+Cj4+IG9uIFItQ2FyIFNvQ3MgdGhlcmUgYXJl
-IEFWQiBDb3VudGVyIENsb2NrcywgZWFjaCBjbG9jayBoYXMgMTJiaXRzIGludGVncmFsCj4+IGFu
-ZCA4IGJpdHMgZnJhY3Rpb25hbCBkaXZpZGVycyB3aGljaCBvcGVyYXRlcyB3aXRoIFMwRDHPlSBj
-bG9jay4KPj4KPj4gVGhpcyBwYXRjaC1zZXQgYWRkcyAnYWRnJyBjbG9jayB0byBSLUNhciBTb2Ms
-IGFuZCBjaGFuZ2VzIGFkZyBkcml2ZXIgdG8KPj4gcmVnaXN0ZXIgYXZiIGNsb2NrcyB3aGVuIGNs
-b2NrLWNlbGxzIG9mIHJjYXJfc291bmQgbm9kZSBpcyAyLgo+Pgo+PiAtLS0KPj4gdjI6Cj4+IC0g
-ZXhwZW5kcyBhZGcgcmVnaXN0ZXIgc2l6ZSBhbmQgcmVnaXN0ZXIgYXZiIGNsb2NrcyBpbnN0ZWFk
-IG9mCj4+ICAgIGFkZCBuZXcgY2xrLWF2YiBkcml2ZXIKPj4gLSBBZGQgYWRnIGNsb2NrCj4+Cj4+
-IHYxOiBpbml0aWFsIHZlcnNpb24KPj4KPj4gSmlhZGEgV2FuZyAoMik6Cj4+ICAgIGR0LWJpbmRp
-bmdzOiBjbG9jazogYWRkIGNsb2NrIGlkIGZvciByZW5lc2FzIGFkZyBjbG9ja3MKPj4gICAgQVNv
-QzogcnNuZDogYWRkIGF2YiBjbG9ja3MKPj4KPj4gVGFrZXNoaSBLaWhhcmEgKDQpOgo+PiAgICBj
-bGs6IHJlbmVzYXM6IHI4YTc3OTU6IEFkZCBBREcgY2xvY2sKPj4gICAgY2xrOiByZW5lc2FzOiBy
-OGE3Nzk2OiBBZGQgQURHIGNsb2NrCj4+ICAgIGNsazogcmVuZXNhczogcjhhNzc5OTA6IEFkZCBB
-REcgY2xvY2tzCj4+ICAgIGNsazogcmVuZXNhczogcjhhNzc5OTU6IEFkZCBBREcgY2xvY2sKPj4K
-PiBwbHVyYWwgJ2Nsb2NrcycgZm9yIHI4YTc3OTkwIHZzLiAnY2xvY2snIGluIG90aGVyIGNhc2Vz
-LCBwbGVhc2UgdW5pZnkgc3ViamVjdHMuCj4KPiBZb3UgY2FuIGNvbnNpZGVyIHRvIGFkZCB0aGUg
-QURHIGNsb2NrIGRlc2NyaXB0aW9uIGZvciByOGE3Nzk2NSAvIE0zLU4gYXMgd2VsbC4Kd2lsbCB1
-bmlmeSB0aGUgc3ViamVjdHMgYW5kIGFkZCBBREcgY2xvY2sgdG8gcjhhNzc5NjUgaW4gbmV4dCB2
-ZXJzaW9uCj4+ICAgZHJpdmVycy9jbGsvcmVuZXNhcy9yOGE3Nzk1LWNwZy1tc3NyLmMgIHwgICAx
-ICsKPj4gICBkcml2ZXJzL2Nsay9yZW5lc2FzL3I4YTc3OTYtY3BnLW1zc3IuYyAgfCAgIDEgKwo+
-PiAgIGRyaXZlcnMvY2xrL3JlbmVzYXMvcjhhNzc5OTAtY3BnLW1zc3IuYyB8ICAgMSArCj4+ICAg
-ZHJpdmVycy9jbGsvcmVuZXNhcy9yOGE3Nzk5NS1jcGctbXNzci5jIHwgICAxICsKPj4gICBpbmNs
-dWRlL2R0LWJpbmRpbmdzL2Nsb2NrL3JlbmVzYXMtYWRnLmggfCAgMTEgKwo+IFRoZSBuZXcgaGVh
-ZGVyIGZpbGUgYWRkZWQgYWJvdmUgaXMgbm90IG5lZWRlZCBpbiBteSBvcGluaW9uLgo+Cj4+ICAg
-c291bmQvc29jL3NoL3JjYXIvYWRnLmMgICAgICAgICAgICAgICAgIHwgMzA2ICsrKysrKysrKysr
-KysrKysrKysrKysrLQo+PiAgIHNvdW5kL3NvYy9zaC9yY2FyL2dlbi5jICAgICAgICAgICAgICAg
-ICB8ICAgOSArCj4+ICAgc291bmQvc29jL3NoL3JjYXIvcnNuZC5oICAgICAgICAgICAgICAgIHwg
-ICA5ICsKPj4gICA4IGZpbGVzIGNoYW5nZWQsIDMzMCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9u
-cygtKQo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL2Nsb2NrL3Jl
-bmVzYXMtYWRnLmgKPj4KPiAtLQo+IEJlc3Qgd2lzaGVzLAo+IFZsYWRpbWlyCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+Current simple-scu-card didn't care about codec_conf
+for multi DPCM case. This patch cares it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/generic/simple-scu-card.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 944a6f4..9d7299d 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -21,17 +21,18 @@
+ 
+ struct simple_card_data {
+ 	struct snd_soc_card snd_card;
+-	struct snd_soc_codec_conf codec_conf;
+ 	struct simple_dai_props {
+ 		struct asoc_simple_dai *cpu_dai;
+ 		struct asoc_simple_dai *codec_dai;
+ 		struct snd_soc_dai_link_component codecs;
+ 		struct snd_soc_dai_link_component platform;
+ 		struct asoc_simple_card_data adata;
++		struct snd_soc_codec_conf *codec_conf;
+ 	} *dai_props;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_dai *dais;
+ 	struct asoc_simple_card_data adata;
++	struct snd_soc_codec_conf *codec_conf;
+ };
+ 
+ #define simple_priv_to_card(priv) (&(priv)->snd_card)
+@@ -116,7 +117,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ 					struct device_node *np,
+ 					struct device_node *codec,
+ 					struct simple_card_data *priv,
+-					int *dai_idx, int link_idx, int is_fe,
++					int *dai_idx, int link_idx,
++					int *conf_idx, int is_fe,
+ 					bool is_top_level_node)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+@@ -165,6 +167,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ 
+ 		asoc_simple_card_canonicalize_cpu(dai_link, is_single_links);
+ 	} else {
++		struct snd_soc_codec_conf *cconf;
++
+ 		/* FE is dummy */
+ 		dai_link->cpu_of_node		= NULL;
+ 		dai_link->cpu_dai_name		= "snd-soc-dummy-dai";
+@@ -177,6 +181,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ 		dai =
+ 		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
+ 
++		cconf =
++		dai_props->codec_conf	= &priv->codec_conf[(*conf_idx)++];
++
+ 		ret = asoc_simple_card_parse_codec(np, dai_link, DAI, CELL);
+ 		if (ret < 0)
+ 			return ret;
+@@ -192,14 +199,12 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ 			return ret;
+ 
+ 		/* check "prefix" from top node */
+-		snd_soc_of_parse_audio_prefix(card,
+-					      &priv->codec_conf,
++		snd_soc_of_parse_audio_prefix(card, cconf,
+ 					      dai_link->codecs->of_node,
+ 					      PREFIX "prefix");
+ 		/* check "prefix" from each node if top doesn't have */
+-		if (!priv->codec_conf.of_node)
+-			snd_soc_of_parse_node_prefix(np,
+-						     &priv->codec_conf,
++		if (!cconf->of_node)
++			snd_soc_of_parse_node_prefix(np, cconf,
+ 						     dai_link->codecs->of_node,
+ 						     "prefix");
+ 	}
+@@ -238,7 +243,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	struct snd_soc_card *card = simple_priv_to_card(priv);
+ 	bool is_fe;
+ 	int ret, loop;
+-	int dai_idx, link_idx;
++	int dai_idx, link_idx, conf_idx;
+ 
+ 	if (!top)
+ 		return -EINVAL;
+@@ -256,6 +261,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	loop = 1;
+ 	link_idx = 0;
+ 	dai_idx = 0;
++	conf_idx = 0;
+ 	node = of_get_child_by_name(top, PREFIX "dai-link");
+ 	if (!node) {
+ 		node = dev->of_node;
+@@ -273,6 +279,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 
+ 			ret = asoc_simple_card_dai_link_of(node, np, codec, priv,
+ 							   &dai_idx, link_idx++,
++							   &conf_idx,
+ 							   is_fe, !loop);
+ 			if (ret < 0)
+ 				return ret;
+@@ -368,6 +375,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct simple_dai_props *dai_props;
+ 	struct asoc_simple_dai *dais;
+ 	struct snd_soc_card *card;
++	struct snd_soc_codec_conf *cconf;
+ 	struct device *dev = &pdev->dev;
+ 	int ret, i;
+ 	int lnum = 0, dnum = 0, cnum = 0;
+@@ -384,6 +392,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
+ 	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link), GFP_KERNEL);
+ 	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
++	cconf     = devm_kcalloc(dev, cnum, sizeof(*cconf),     GFP_KERNEL);
+ 	if (!dai_props || !dai_link || !dais)
+ 		return -ENOMEM;
+ 
+@@ -402,6 +411,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	priv->dai_props				= dai_props;
+ 	priv->dai_link				= dai_link;
+ 	priv->dais				= dais;
++	priv->codec_conf			= cconf;
+ 
+ 	/* Init snd_soc_card */
+ 	card = simple_priv_to_card(priv);
+@@ -409,8 +419,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+ 	card->num_links		= lnum;
+-	card->codec_conf	= &priv->codec_conf;
+-	card->num_configs	= 1;
++	card->codec_conf	= cconf;
++	card->num_configs	= cnum;
+ 
+ 	ret = asoc_simple_card_parse_of(priv);
+ 	if (ret < 0) {
+-- 
+2.7.4
