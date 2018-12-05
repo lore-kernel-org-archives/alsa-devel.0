@@ -1,74 +1,39 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
-Date: Wed, 5 Dec 2018 17:01:47 +0800
-Message-ID: <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
-References: <20181127120041.90759-1-cychiang@chromium.org> <20181128093411.GC4272@dell>
- <20181203111919.GL26661@dell> <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v3 7/7] clk: renesas: Add binding document for
+ ADG
+Date: Wed, 5 Dec 2018 09:04:00 +0000
+Message-ID: <87tvjsbbgh.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181205074947.28151-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
+In-Reply-To: <20181205074947.28151-1-jiada_wang@mentor.com>
+Content-Language: en-US
+Content-ID: <D8D42DA6DCBFCF47B978DD4AC916FAFD@jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
 
-I tried to apply this patch based on
-for-mfd-next branch of mfd tree (
-git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git )
-Then, I tried to compile all modules by
+Hi Jiada
 
- ARCH=3Dx86_64 make allyesconfig
- ARCH=3Dx86_64 make -j64
+> Add device tree bindings for Audio Clock Generator (ADG)
+> of R-Car Socs.
+>=20
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+>  .../clock/renesas,rcar-adg-clocks.txt         | 24 +++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/renesas,rcar-=
+adg-clocks.txt
 
-There was no error.
-Could you please let me know what was the error when you failed to
-apply this patch ?
+We want to have this document on rsnd.txt instead of
+not-exist-driver file
 
-Thanks!
+	/Documentation/devicetree/bindings/sound/renesas,rsnd.txt   =20
 
-
-
-
-
-On Tue, Dec 4, 2018 at 9:46 AM Cheng-yi Chiang <cychiang@chromium.org> wrot=
-e:
->
-> On Mon, Dec 3, 2018 at 7:19 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Wed, 28 Nov 2018, Lee Jones wrote:
-> >
-> > > On Tue, 27 Nov 2018, Cheng-Yi Chiang wrote:
-> > >
-> > > > Add EC host commands to control codec on EC.
-> > > >
-> > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > > > ---
-> > > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++=
-++++
-> > > >  1 file changed, 94 insertions(+)
-> > >
-> > > Applied, thanks.
-> >
-> > Turns out that this does not actually apply.
-> >
-> > What is it based on?
->
-> Hi Lee,
-> I am sorry about that!
-> The patch series was based on Mark Brown's tree (
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git )
-> for-next branch.
-> I will rebase it on upstream master branch in v2 when I address other
-> comments in codec driver.
-> Thanks!
->
-> >
-> > --
-> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> > Linaro Services Technical Lead
-> > Linaro.org =E2=94=82 Open source software for ARM SoCs
-> > Follow Linaro: Facebook | Twitter | Blog
+Best regards
+---
+Kuninori Morimoto
