@@ -1,48 +1,74 @@
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH linux-next v3 6/7] ASoC: rsnd: add avb clocks
-Date: Wed, 5 Dec 2018 08:58:44 +0000
-Message-ID: <87va48bbpa.wl-kuninori.morimoto.gx@renesas.com>
-References: <20181205074932.28098-1-jiada_wang@mentor.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
+Date: Wed, 5 Dec 2018 17:01:47 +0800
+Message-ID: <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
+References: <20181127120041.90759-1-cychiang@chromium.org> <20181128093411.GC4272@dell>
+ <20181203111919.GL26661@dell> <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181205074932.28098-1-jiada_wang@mentor.com>
-Content-Language: en-US
-Content-ID: <D8ADCEF26383C647801614EEBC277C64@jpnprd01.prod.outlook.com>
+In-Reply-To: <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-DQpIaSBKaWFkYQ0KDQo+IFRoZXJlIGFyZSBBVkIgQ291bnRlciBDbG9ja3MgaW4gQURHLCBlYWNo
-IGNsb2NrIGhhcyAxMmJpdHMgaW50ZWdyYWwNCj4gYW5kIDggYml0cyBmcmFjdGlvbmFsIGRpdmlk
-ZXJzIHdoaWNoIG9wZXJhdGVzIHdpdGggUzBEMc+VIGNsb2NrLg0KPiANCj4gVGhpcyBwYXRjaCBy
-ZWdpc3RlcnMgOCBBVkIgQ291bnRlciBDbG9ja3Mgd2hlbiBjbG9jay1jZWxscyBvZg0KPiByY2Fy
-X3NvdW5kIG5vZGUgaXMgMiwNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYWRhIFdhbmcgPGppYWRh
-X3dhbmdAbWVudG9yLmNvbT4NCj4gLS0tDQoNCg0KPiArc3RhdGljIHZvaWQgY2xrX2F2Yl9kaXZf
-d3JpdGUoc3RydWN0IHJzbmRfYWRnICphZGcsIHUzMiBkYXRhLCB1bnNpZ25lZCBpbnQgaWR4KQ0K
-KHNuaXApDQo+ICtzdGF0aWMgdTMyIGNsa19hdmJfZGl2X3JlYWQoc3RydWN0IHJzbmRfYWRnICph
-ZGcsIHVuc2lnbmVkIGludCBpZHgpDQoNCkFzIEkgbWVudGlvbmVkIGJlZm9yZSwgSSB0aGluayB3
-ZSBjYW4gYXZvaWQgY29uZnVzYWJsZSBwYXJhbWV0ZXIgYnkNCg0KCXN0YXRpYyB2b2lkIGNsa19h
-dmJfZGl2X3dyaXRlKHN0cnVjdCBjbGtfYXZiICphdmIsIHUzMiBkYXRhKQ0KCXN0YXRpYyB1MzIg
-Y2xrX2F2Yl9kaXZfcmVhZChzdHJ1Y3QgY2xrX2F2YikJDQoNCglkaXYgPSBjbGtfYXZiX2Rpdl9y
-ZWFkKGF2Yik7DQoJY2xrX2F2Yl9kaXZfd3JpdGUoYXZiLCB2YWwgfCBkaXYpOw0KDQo+ICtzdGF0
-aWMgc3RydWN0IGNsayAqY2xrX3JlZ2lzdGVyX2F2YihzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVj
-dCByc25kX2FkZyAqYWRnLA0KPiArCQkJCSAgICB1bnNpZ25lZCBpbnQgaWQsIHNwaW5sb2NrX3Qg
-KmxvY2spDQo+ICt7DQo+ICsJc3RydWN0IGNsa19pbml0X2RhdGEgaW5pdDsNCj4gKwlzdHJ1Y3Qg
-Y2xrX2F2YiAqYXZiOw0KPiArCXN0cnVjdCBjbGsgKmNsazsNCj4gKwljaGFyIG5hbWVbOF07DQo+
-ICsJY29uc3QgY2hhciAqcGFyZW50X25hbWU7DQo+ICsNCj4gKwlpZiAoSVNfRVJSKGFkZy0+Y2xr
-YWRnKSkNCj4gKwkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7DQoNCkkgdGhpbmsgYWRnLT5jbGth
-ZGcgd2lsbCBuZXZlciBoaXQgdG8gSVNfRVJSKCkuDQpJdCB3aWxsIGhhdmUgTlVMTCBvciBjb3Jy
-ZWN0IHBvaW50ZXIuDQoNCgljbGsgPSBkZXZtX2Nsa19nZXQoZGV2LCAiYWRnIik7DQoJaWYgKCFJ
-U19FUlIoY2xrKSkNCgkJYWRnLT5jbGthZGcgPSBjbGs7DQoNCkFuZCB0aGlzICJhZGciIGNsb2Nr
-IGlzIHN0cmFuZ2UuDQpzZWUgYmVsb3cNCg0KPiArCWF2YiA9IGRldm1fa3phbGxvYyhkZXYsIHNp
-emVvZigqYXZiKSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFhdmIpDQo+ICsJCXJldHVybiBFUlJf
-UFRSKC1FTk9NRU0pOw0KPiArDQo+ICsJcGFyZW50X25hbWUgPSBfX2Nsa19nZXRfbmFtZShhZGct
-PmNsa2FkZyk7DQoNClRoaXMgcGFyZW50X25hbWUgaXMgdmVyeSBzdHJhbmdlIHRvIG1lLg0KQVZC
-IHBhcmVudCBjbGsgaXMgIkFVRElPX0NMS19BL0IvQy9JIiAoPSBjbGtfYS9iL2MvaSBpbiB0aGlz
-IGRyaXZlcikNCm9yICJBVURJT19DTEtfT1VUX0EvQi9DL0QiICg9IGF1ZGlvX2Nsa291dC8xLzIv
-MyBpbiB0aGlzIGRyaXZlcikuDQpBbmQgd2UgZG9uJ3QgaGF2ZSAiYWRnIiBjbG9jay4NClBsZWFz
-ZSBkb3VibGUgY2hlY2sgaXQuDQoNCkJlc3QgcmVnYXJkcw0KLS0tDQpLdW5pbm9yaSBNb3JpbW90
-bw0K
+Hi Lee,
+
+I tried to apply this patch based on
+for-mfd-next branch of mfd tree (
+git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git )
+Then, I tried to compile all modules by
+
+ ARCH=3Dx86_64 make allyesconfig
+ ARCH=3Dx86_64 make -j64
+
+There was no error.
+Could you please let me know what was the error when you failed to
+apply this patch ?
+
+Thanks!
+
+
+
+
+
+On Tue, Dec 4, 2018 at 9:46 AM Cheng-yi Chiang <cychiang@chromium.org> wrot=
+e:
+>
+> On Mon, Dec 3, 2018 at 7:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Wed, 28 Nov 2018, Lee Jones wrote:
+> >
+> > > On Tue, 27 Nov 2018, Cheng-Yi Chiang wrote:
+> > >
+> > > > Add EC host commands to control codec on EC.
+> > > >
+> > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > > > ---
+> > > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 94 insertions(+)
+> > >
+> > > Applied, thanks.
+> >
+> > Turns out that this does not actually apply.
+> >
+> > What is it based on?
+>
+> Hi Lee,
+> I am sorry about that!
+> The patch series was based on Mark Brown's tree (
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git )
+> for-next branch.
+> I will rebase it on upstream master branch in v2 when I address other
+> comments in codec driver.
+> Thanks!
+>
+> >
+> > --
+> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> > Linaro Services Technical Lead
+> > Linaro.org =E2=94=82 Open source software for ARM SoCs
+> > Follow Linaro: Facebook | Twitter | Blog
