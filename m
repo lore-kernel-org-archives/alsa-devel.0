@@ -1,126 +1,105 @@
 From: Rob Herring <robh@kernel.org>
-Subject: [PATCH] ALSA: Use of_node_name_eq for node name
-	comparisons
-Date: Wed,  5 Dec 2018 13:50:46 -0600
-Message-ID: <20181205195050.4759-30-robh@kernel.org>
+Subject: [PATCH] ALSA: soundbus: Remove direct OF name and type accesses
+Date: Wed,  5 Dec 2018 13:50:48 -0600
+Message-ID: <20181205195050.4759-32-robh@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
- [209.85.167.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 235FE267BA5
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 20:51:25 +0100 (CET)
-Received: by mail-oi1-f194.google.com with SMTP id u18so18624460oie.10
- for <alsa-devel@alsa-project.org>; Wed, 05 Dec 2018 11:51:25 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Michael Ellerman <mpe@ellerman.id.au>, Takashi Iwai <tiwai@suse.com>, Paul Mackerras <paulus@samba.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+Cc: Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Convert string compares of DT node names to use of_node_name_eq helper
-instead. This removes direct access to the node name pointer.
-
-A couple of open coded iterating thru the child node names are converted
-to use for_each_child_of_node() instead.
+Convert soundbus uevent and sysfs OF node name and device type usage to
+use printf specifier and helper functions instead of directly accessing
+the name and type pointers. This will allow the eventual removal of the
+pointers.
 
 Cc: Johannes Berg <johannes@sipsolutions.net>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: linuxppc-dev@lists.ozlabs.org
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- sound/aoa/fabrics/layout.c       | 2 +-
- sound/aoa/soundbus/i2sbus/core.c | 6 +++---
- sound/ppc/pmac.c                 | 4 ++--
- sound/ppc/tumbler.c              | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ sound/aoa/soundbus/core.c  |  2 +-
+ sound/aoa/soundbus/sysfs.c | 34 +++++++++++++++++++++-------------
+ 2 files changed, 22 insertions(+), 14 deletions(-)
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 3a23fd032611..8797d42e2b76 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -776,7 +776,7 @@ static int check_codec(struct aoa_codec *codec,
- 	struct codec_connection *cc;
+diff --git a/sound/aoa/soundbus/core.c b/sound/aoa/soundbus/core.c
+index f3076a3f7f2f..065d3a55725e 100644
+--- a/sound/aoa/soundbus/core.c
++++ b/sound/aoa/soundbus/core.c
+@@ -74,7 +74,7 @@ static int soundbus_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	of = &soundbus_dev->ofdev;
  
- 	/* if the codec has a 'codec' node, we require a reference */
--	if (codec->node && (strcmp(codec->node->name, "codec") == 0)) {
-+	if (of_node_name_eq(codec->node, "codec")) {
- 		snprintf(propname, sizeof(propname),
- 			 "platform-%s-codec-ref", codec->name);
- 		ref = of_get_property(ldev->sound, propname, NULL);
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index bd7c5029fc59..c3f57a3fb1a5 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -154,7 +154,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 			  struct device_node *np)
+ 	/* stuff we want to pass to /sbin/hotplug */
+-	retval = add_uevent_var(env, "OF_NAME=%s", of->dev.of_node->name);
++	retval = add_uevent_var(env, "OF_NAME=%pOFn", of->dev.of_node);
+ 	if (retval)
+ 		return retval;
+ 
+diff --git a/sound/aoa/soundbus/sysfs.c b/sound/aoa/soundbus/sysfs.c
+index 81da020bddef..a2d55e15afbb 100644
+--- a/sound/aoa/soundbus/sysfs.c
++++ b/sound/aoa/soundbus/sysfs.c
+@@ -1,18 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/kernel.h>
++#include <linux/of.h>
+ #include <linux/stat.h>
+ /* FIX UP */
+ #include "soundbus.h"
+ 
+-#define soundbus_config_of_attr(field, format_string)			\
+-static ssize_t								\
+-field##_show (struct device *dev, struct device_attribute *attr,	\
+-              char *buf)						\
+-{									\
+-	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
+-	return sprintf (buf, format_string, mdev->ofdev.dev.of_node->field); \
+-}
+-
+ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+ 			     char *buf)
  {
- 	struct i2sbus_dev *dev;
--	struct device_node *child = NULL, *sound = NULL;
-+	struct device_node *child, *sound = NULL;
- 	struct resource *r;
- 	int i, layout = 0, rlen, ok = force;
- 	char node_name[6];
-@@ -177,8 +177,8 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 		return 0;
+@@ -25,17 +17,33 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+ 		strcat(buf, "\n");
+ 		length = strlen(buf);
+ 	} else {
+-		length = sprintf(buf, "of:N%sT%s\n",
+-				 of->dev.of_node->name, of->dev.of_node->type);
++		length = sprintf(buf, "of:N%pOFn%c%s\n",
++				 of->dev.of_node, 'T',
++                                 of_node_get_device_type(of->dev.of_node));
+ 	}
  
- 	i = 0;
--	while ((child = of_get_next_child(np, child))) {
--		if (strcmp(child->name, "sound") == 0) {
-+	for_each_child_of_node(np, child) {
-+		if (of_node_name_eq(child, "sound")) {
- 			i++;
- 			sound = child;
- 		}
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index 48dd44f8e914..d692e4070167 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -908,7 +908,7 @@ static void detect_byte_swap(struct snd_pmac *chip)
+ 	return length;
+ }
+ static DEVICE_ATTR_RO(modalias);
  
- 	/* if seems that Keylargo can't byte-swap  */
- 	for (mio = chip->node->parent; mio; mio = mio->parent) {
--		if (strcmp(mio->name, "mac-io") == 0) {
-+		if (of_node_name_eq(mio, "mac-io")) {
- 			if (of_device_is_compatible(mio, "Keylargo"))
- 				chip->can_byte_swap = 0;
- 			break;
-@@ -1313,7 +1313,7 @@ int snd_pmac_new(struct snd_card *card, struct snd_pmac **chip_return)
- 	} else if (chip->is_pbook_G3) {
- 		struct device_node* mio;
- 		for (mio = chip->node->parent; mio; mio = mio->parent) {
--			if (strcmp(mio->name, "mac-io") == 0) {
-+			if (of_node_name_eq(mio, "mac-io")) {
- 				struct resource r;
- 				if (of_address_to_resource(mio, 0, &r) == 0)
- 					chip->macio_base =
-diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-index 0779a2912237..6d7ffffcce95 100644
---- a/sound/ppc/tumbler.c
-+++ b/sound/ppc/tumbler.c
-@@ -1365,8 +1365,8 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
- 	mix->anded_reset = 0;
- 	mix->reset_on_sleep = 1;
+-soundbus_config_of_attr (name, "%s\n");
++static ssize_t name_show(struct device *dev,
++			 struct device_attribute *attr, char *buf)
++{
++	struct soundbus_dev *sdev = to_soundbus_device(dev);
++	struct platform_device *of = &sdev->ofdev;
++
++	return sprintf(buf, "%pOFn\n", of->dev.of_node);
++}
+ static DEVICE_ATTR_RO(name);
+-soundbus_config_of_attr (type, "%s\n");
++
++static ssize_t type_show(struct device *dev,
++			 struct device_attribute *attr, char *buf)
++{
++	struct soundbus_dev *sdev = to_soundbus_device(dev);
++	struct platform_device *of = &sdev->ofdev;
++
++	return sprintf(buf, "%s\n", of_node_get_device_type(of->dev.of_node));
++}
+ static DEVICE_ATTR_RO(type);
  
--	for (np = chip->node->child; np; np = np->sibling) {
--		if (!strcmp(np->name, "sound")) {
-+	for_each_child_of_node(chip->node, np) {
-+		if (of_node_name_eq(np, "sound")) {
- 			if (of_get_property(np, "has-anded-reset", NULL))
- 				mix->anded_reset = 1;
- 			if (of_get_property(np, "layout-id", NULL))
+ struct attribute *soundbus_dev_attrs[] = {
 -- 
 2.19.1
