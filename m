@@ -1,7 +1,7 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH linux-next v3 5/7] clk: renesas: r8a77965: Add ADG clock
-Date: Wed, 5 Dec 2018 16:49:19 +0900
-Message-ID: <20181205074919.28038-1-jiada_wang@mentor.com>
+Subject: [PATCH linux-next v3 7/7] clk: renesas: Add binding document for ADG
+Date: Wed, 5 Dec 2018 16:49:47 +0900
+Message-ID: <20181205074947.28151-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -11,27 +11,44 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kun
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jiada_wang@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+Add device tree bindings for Audio Clock Generator (ADG)
+of R-Car Socs.
 
-This patch adds ADG clock to the R8A77965 SoC.
-
-Signed-off-by: Takeshi Kihara <takeshi.kihara.df@renesas.com>
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- drivers/clk/renesas/r8a77965-cpg-mssr.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../clock/renesas,rcar-adg-clocks.txt         | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/renesas,rcar-adg-clocks.txt
 
-diff --git a/drivers/clk/renesas/r8a77965-cpg-mssr.c b/drivers/clk/renesas/r8a77965-cpg-mssr.c
-index 1fcc411502da..3ce8b0b31647 100644
---- a/drivers/clk/renesas/r8a77965-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a77965-cpg-mssr.c
-@@ -211,6 +211,7 @@ static const struct mssr_mod_clk r8a77965_mod_clks[] __initconst = {
- 	DEF_MOD("can-if0",		916,	R8A77965_CLK_S3D4),
- 	DEF_MOD("i2c6",			918,	R8A77965_CLK_S0D6),
- 	DEF_MOD("i2c5",			919,	R8A77965_CLK_S0D6),
-+	DEF_MOD("adg",			922,	R8A77965_CLK_S0D1),
- 	DEF_MOD("i2c-dvfs",		926,	R8A77965_CLK_CP),
- 	DEF_MOD("i2c4",			927,	R8A77965_CLK_S0D6),
- 	DEF_MOD("i2c3",			928,	R8A77965_CLK_S0D6),
+diff --git a/Documentation/devicetree/bindings/clock/renesas,rcar-adg-clocks.txt b/Documentation/devicetree/bindings/clock/renesas,rcar-adg-clocks.txt
+new file mode 100644
+index 000000000000..76fc4f8964e9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/renesas,rcar-adg-clocks.txt
+@@ -0,0 +1,24 @@
++* Renesas R-Car Audio Clock Generator (ADG)
++
++The Audio Clock Generator (ADG) is part of R-Car Audio module, it
++selects and supplies the necessary clock for the SSIU, EAVB-IF, SCU,
++ADSP or DTCP module. It also divides the frequency of the selected
++clock and sends it outside the chip.
++
++Required Properties:
++
++  - compatible: Must be one of
++    - "renesas,rcar_sound-gen1" for the R-Car GEN1 SoCs
++    - "renesas,rcar_sound-gen2" for the R-Car GEN2 SoCs
++    - "renesas,rcar_sound-gen3" for the R-Car GEN3 SoCs
++
++  - reg: Base address and length of the memory resource used by the ADG
++
++  - clocks: References to the parent clock S0D1.
++  - clock-names: ADG refer to its parent clock by name "adg".
++  - #clock-cells: Can be 0, 1 or 2
++    - When clock-cells = 0, ADG registers one fixed clock out
++    - When clock-cells = 1, ADG registers 3 fixed clock out
++    - When clock-cells = 2, ADG registers 3 fixed clock out and 8 AVB clocks
++      second clock specifier need to be 0 to refer to fixed clock out, need
++      to be 1 to refer to AVB clocks
 -- 
 2.19.2
