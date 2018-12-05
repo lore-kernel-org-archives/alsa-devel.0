@@ -1,23 +1,20 @@
-From: Andrey L <alsa-list@lelik.org>
-Subject: Re: No audio on iMac18,1 (A1418) with kernel 4.15.14
-Date: Wed, 5 Dec 2018 15:09:53 +0300
-Message-ID: <999c41c4-71b2-74d2-9683-92d890ed1892@lelik.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [resend PATCH] dt-bindings: sound: Add
+ documentation for pcm3060 property out-single-ended
+Date: Wed, 5 Dec 2018 15:42:29 +0000
+Message-ID: <20181205154229.GG6205@sirena.org.uk>
+References: <20181115071253.22558-1-kmarinushkin@birdec.tech>
+ <20181204214313.GA7847@bogus>
+ <7cbf1452-354f-07d6-2310-cadc4358433e@birdec.tech>
+ <CAL_JsqLirgcDwANbORiez0xtO1tEHDL-O8XdbZSP6R+WZF_HLQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4554455705623965617=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.sm.hc.ru (relay.sm.hc.ru [89.111.178.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C4BC26789B
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 13:10:00 +0100 (CET)
-Received: from [89.111.176.246] (port=57471 helo=cf39.hc.ru)
- by relay.sm.hc.ru with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.89) (envelope-from <alsa-list@lelik.org>) id 1gUW07-0005oK-3I
- for alsa-devel@alsa-project.org; Wed, 05 Dec 2018 15:10:00 +0300
-Received: from [46.39.228.78] (port=27021 helo=[192.168.4.5])
- by cf39.hc.ru with esmtpsa (TLSv1.2:AES128-SHA:128) (Exim 4.86_1)
- (envelope-from <alsa-list@lelik.org>) id 1gUW01-001yEg-Au
- for alsa-devel@alsa-project.org; Wed, 05 Dec 2018 15:09:56 +0300
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FBFD267A75
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 16:42:31 +0100 (CET)
+In-Reply-To: <CAL_JsqLirgcDwANbORiez0xtO1tEHDL-O8XdbZSP6R+WZF_HLQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Kirill Marinushkin <kmarinushkin@birdec.tech>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-R29vZCBkYXkuIEknbSB5ZXQgYW5vdGhlciBvd25lciBvZiAyMDE4IGlNYWMgd2hvIGNhbid0IGdl
-dCBzb3VuZCB0byAKd29yay4gSSB3YXMgd29uZGVyaW5nIGlmIHNvbWVvbmUgd2l0aCB0aGUgZXhw
-ZXJ0aXNlIGNhbiBjb21tZW50IHdoZXRoZXIgCml0IGlzIHBvc3NpYmxlIGF0IGFsbC4gUmVsZXZh
-bnQgZWFybGllciB0aHJlYWRzOgoKaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvYWxzYS1k
-ZXZlbC9tc2c3NjMwOC5odG1sCgpodHRwczovL2Jicy5hcmNobGludXgub3JnL3ZpZXd0b3BpYy5w
-aHA/aWQ9MjMzNDQ5CgpMaWtlIG90aGVycyBiZWZvcmUgSSB0cmllZCBwcmV0dHkgbXVjaCBhbGwg
-b3B0aW9ucyBvZiBzbmQtaGRhLWludGVsIHdpdGggCm5vIHN1Y2Nlc3MuIFRoZSBzb3VuZCBob3dl
-dmVyIHdvcmtzIG9uIHdpbmRvd3MsIHNvIEkgZGVjaWRlZCB0byBsb29rIAp0aGVyZS4gVGhlIGNv
-ZGVjIGNoaXAgaXMgQ2lycnVzIENTNDIwOCwgYW5kIHdpdGhvdXQgaW5zdGFsbGluZyBjaGlwIApk
-cml2ZXJzLCB0aGVyZSB3YXMgbm8gYXVkaW8gaW4gd2luZG93cyBhcyB3ZWxsLiBJdCB0dXJucyBv
-dXQgdGhhdCAKd2luZG93cyBkcml2ZXIgaXMgYSBnZW5lcmljIGNoaXAgZHJpdmVyLCB3aGVyZSBh
-bGwgaGFyZHdhcmUgCmNvbmZpZ3VyYXRpb24gaXMgc3RvcmVkIGluIHJlZ2lzdHJ5IChiaW5hcnkg
-Y29uZmlnIGZpbGUpLiBUaGVzZSBzZXR0aW5ncyAKYXJlIGNvbmZpZ3VyZWQgaW4gaW5zdGFsbGF0
-aW9uIGluZiBmaWxlICh0ZXh0IGNvbmZpZyBmaWxlKSAsIGFuZCB3aGF0IGlzIAppbXBvcnRhbnQg
-4oCTIHRoZXkgYXJlIGhlYXZpbHkgY29tbWVudGVkLgoKVW5mb3J0dW5hdGVseSBJIGRvIGxhY2sg
-ZG9tYWluIGtub3dsZWRnZSBhYm91dCBoZGEtaW50ZWwgLyBjb2RlYyAvIAplbmRwb2ludCBvciBh
-bHNhIGFyY2hpdGVjdHVyZSwgbm9yIGhhdmUgSSBhbnkgZGVzaXJlIHRvIGxlYXJuIHRoaXMgYXJl
-YS4gCkkgd291bGQgYXBwcmVjaWF0ZSBpZiBhbnlvbmUgY2FuIGxvb2sgYXQgbXkgZmluZGluZ3Mg
-YW5kIHRlbGwgd2hldGhlciAKY3VycmVudCBsaW51eCBkcml2ZXJzIGNhbiBiZSBoYWNrZWQgdG8g
-c3VwcG9ydCB0aGlzIGNvbmZpZ3VyYXRpb24uCgpJ4oCZdmUgY29waWVkIGFuZCBzb3J0ZWQgYWxs
-IHJlbGV2YW50IHNlY3Rpb25zIGZyb20gaW5mIGZpbGUgaGVyZSAtIApodHRwczovL3Bhc3RlYmlu
-LmNvbS9wNzRxU2R6YwoKSGVyZSBpcyB3aGF0IElORiBmaWxlIGRlZmluZXM6CgpUaGUgY2hpcCBp
-cyBDUzQyMDgsIGJ1dCBpdCBpcyBhbHNvIHJlZmVyZW5jZWQgYXMgIkNpcnJ1cyBMb2dpYyBDUzg0
-MDkgCihBQiAxNikiIC4KClRoZXJlIGFyZSA0IGludGVyZmFjZXM6IHNwZWFrZXIsIGhlYWRwaG9u
-ZXMsIG1pYyBhbmQgZC1taWMuCgpIZWFkcGhvbmVzIGFyZSBzdGVyZW8uIFNwZWFrZXJzIGFyZSBx
-dWFkKCEhISkg4oCccXVhZCAoRkwvRlIgLSB3b29mZXJzLCAKUkwvUlIg4oCTIHR3ZWV0ZXJzKeKA
-nS4KCgpUaGUgSU5GIGZpbGUgY29udGFpbnMgZm9sbG93aW5nIHNlY3Rpb25zOgoKQ09ORl8wOTEw
-LkluaXRWZXJicyDigJMgYXBwYXJlbnRseSBjb25maWd1cmF0aW9uIGluaXRpYWxpemF0aW9uIHNl
-cXVlbmNlLCAKbGlzdHMgcmVnaXN0ZXItdmFsdWUgcGFpcnMgd3JpdHRlbiBieSBkcml2ZXIgYXQg
-c3RhcnR1cC4KClNldHRpbmdzQ1M4NDA5RXhpdCDigJMgc2FtZSBmb3Igc2h1dGRvd24KCgpDT05G
-XzA5MDAuR3BpbywgQ09ORl8wOTEwLkdwaW8g4oCTIGNvbmZpZ3VyYXRpb24gb2YgR1BJTyB3aXRo
-IGNvbW1lbnRzCgoKQ09ORl8wOTAwLlRYUlgg4oCTIFdpZGdldHMscGlucyBhbmQgYW1wcyBjYXBz
-IChJIGhhdmUgbm8gY2x1ZSB3aGF0IGl0IGlzKSwgCmJ1dCBmcm9tIGNvbW1lbnRzIHRoaXMgc2Vj
-dGlvbiBzZWVtcyB0byBkZWZpbmUgYWxsIGNoaXAgY29ubmVjdGlvbnMuCgoKQ09ORl8wOXh4Lkky
-QyDigJMgcmF3IGkyYyBjb21tYW5kcyBmb3IgdmFyaW91cyBzY2VuYXJpb3MgKGNoaXAgcG93ZXIg
-dXAsIApzdGFydC9zdG9wIHN0cmVhbWluZywgZXRjKS4KCgpTbyB0aGUgcXVlc3Rpb24gaXMsIGlz
-IHRoaXMgZGF0YSBvZiBhbnkgaGVscD8gQ2FuIHRoaXMgYmUgc29tZWhvdyAKcGx1Z2dlZCBpbnRv
-IGV4aXN0aW5nIGhkYS1pbnRlbCBvciBjczQyMDcgZHJpdmVycyB0byBnZXQgdGhlIHNvdW5kPwoK
-ClRoYW5rcy4KCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+
+--===============4554455705623965617==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Y+xroYBkGM9OatJL"
+Content-Disposition: inline
+
+
+--Y+xroYBkGM9OatJL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 05, 2018 at 09:28:51AM -0600, Rob Herring wrote:
+> On Wed, Dec 5, 2018 at 1:02 AM Kirill Marinushkin
+
+> > Mark already applied this patch, with a slightly modified subject:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commi=
+t/?h=3Dfor-next&id=3Dfd7de6370cb62b147185834d60069568a21acacd
+
+> Humm, I wonder why I didn't have Mark's "Applied ..." email for it?
+> Otherwise, my scripts rely on the subject matching which breaks when
+> maintainers edit subjects.
+
+Probably due to some problem contacting patchwork, the CC list comes
+=66rom patchwork so if that (or the network to it) is unstable then the
+scripts can't get anything that's not in the actual commit.
+
+--Y+xroYBkGM9OatJL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwH8eQACgkQJNaLcl1U
+h9DWJAf+OJOWPgoV+KEapu9aBDq3wx+p4krlactixoGKLRZdy1B4LbFyTjHAPom/
+S8FqictKN1mSH0ukT2pYUoGz6YfrFV4q0pzX8+VQvvBjh97x+f9HvG1WC3AVwUgQ
+Z9SkBEUfDxU3j2i4HSALDvcraf/+Dr6G7o/dTSOaQcfu9sLvk4lrcSap8HTOL90q
+EvYclU6B5xMPaA4WIKWqd5B7h9+REDDF+THSQrOY5O5SWjOtT+z+WQlHYCg3vDD+
+E4MZOYYKtYDR0xK1dC8iVA56c7j1IeRZHYg984xNvWca4A/fo6VfRAGeTupyQiNI
+5M0XAglUr8vBXx1o4W/smtSPjwTm6A==
+=VSjm
+-----END PGP SIGNATURE-----
+
+--Y+xroYBkGM9OatJL--
+
+--===============4554455705623965617==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4554455705623965617==--
