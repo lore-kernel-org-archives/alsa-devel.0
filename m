@@ -1,67 +1,62 @@
-From: Yu Zhao <yuzhao@google.com>
-Subject: [PATCH 2/2] ASoC: use dma_ops of parent device for acp_audio_dma
-Date: Tue,  4 Dec 2018 15:42:53 -0700
-Message-ID: <20181204224253.216075-2-yuzhao@google.com>
-References: <20181204224253.216075-1-yuzhao@google.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add
+ pmc_plt_clk_0 quirk for Chromebook Gnawty
+Date: Tue, 4 Dec 2018 16:26:39 -0800
+Message-ID: <53250f61-e23c-77f2-b210-500b8b3b03e7@linux.intel.com>
+References: <20181203204514.3991-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181204224253.216075-1-yuzhao@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, aroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Daniel Kurtz <djkurtz@chromium.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583A8267B7E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 01:26:42 +0100 (CET)
+In-Reply-To: <20181203204514.3991-1-hdegoede@redhat.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-AMD platform device acp_audio_dma can only be created by parent PCI
-device driver (drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c). Pass struct
-device of the parent to snd_pcm_lib_preallocate_pages() so
-dma_alloc_coherent() can use correct dma_ops. Otherwise, it will
-use default dma_ops which is nommu_dma_ops on x86_64 even when
-IOMMU is enabled and set to non passthrough mode.
-
-Though platform device inherits some dma related fields during its
-creation in mfd_add_device(), we can't simply pass its struct device
-to snd_pcm_lib_preallocate_pages() because dma_ops is not among the
-inherited fields. Even it were, drivers/iommu/amd_iommu.c would
-ignore it because get_device_id() doesn't handle platform device.
-
-This change shouldn't give us any trouble even struct device of the
-parent becomes null or represents some non PCI device in the future,
-because get_dma_ops() correctly handles null struct device or uses
-the default dma_ops if struct device doesn't have it set.
-
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- sound/soc/amd/acp-pcm-dma.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index fd3db4c37882..f4011bebc7ec 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1146,18 +1146,21 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
- 								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
-+	struct device *parent = component->dev->parent;
- 
- 	switch (adata->asic_type) {
- 	case CHIP_STONEY:
- 		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
- 							    SNDRV_DMA_TYPE_DEV,
--							    NULL, ST_MIN_BUFFER,
-+							    parent,
-+							    ST_MIN_BUFFER,
- 							    ST_MAX_BUFFER);
- 		break;
- 	default:
- 		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
- 							    SNDRV_DMA_TYPE_DEV,
--							    NULL, MIN_BUFFER,
-+							    parent,
-+							    MIN_BUFFER,
- 							    MAX_BUFFER);
- 		break;
- 	}
--- 
-2.20.0.rc1.387.gf8505762e3-goog
+T24gMTIvMy8xOCAxMjo0NSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPiBUaGUgR25hd3R5IG1v
+ZGVsIENocm9tZWJvb2sgdXNlcyBwbWNfcGx0X2Nsa18wIGluc3RlYWQgb2YgcG1jX3BsdF9jbGtf
+Mwo+IGZvciB0aGUgbWNsaywganVzdCBsaWtlIHRoZSBDbGFwcGVyIGFuZCBTd2Fua3kgbW9kZWxz
+Lgo+IAo+IFRoaXMgY29tbWl0IGFkZHMgYSBETUkgYmFzZWQgcXVpcmsgZm9yIHRoaXMuCj4gCj4g
+VGhpcyBmaXhpbmcgYXVkaW8gbm8gbG9uZ2VyIHdvcmtpbmcgb24gdGhlc2UgZGV2aWNlcyBhZnRl
+cgo+IGNvbW1pdCA2NDhlOTIxODg4YWQgKCJjbGs6IHg4NjogU3RvcCBtYXJraW5nIGNsb2NrcyBh
+cyBDTEtfSVNfQ1JJVElDQUwiKQo+IHRoYXQgY29tbWl0IGZpeGVzIHVzIHVubmVjZXNzYXJ5IGtl
+ZXBpbmcgdW51c2VkIGNsb2NrcyBvbiwgYnV0IGluIGNhc2Ugb2YKPiB0aGUgR25hd3R5IHRoYXQg
+d2FzIGJyZWFraW5nIGF1ZGlvIHN1cHBvcnQgc2luY2Ugd2Ugd2VyZSBub3QgdXNpbmcgdGhlCj4g
+cmlnaHQgY2xvY2sgaW4gdGhlIGNodF9ic3dfbWF4OTgwOTBfdGkgbWFjaGluZSBkcml2ZXIuCj4g
+Cj4gQnVnTGluazogaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0y
+MDE3ODcKPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IEZpeGVzOiA2NDhlOTIxODg4YWQg
+KCJjbGs6IHg4NjogU3RvcCBtYXJraW5nIGNsb2NrcyBhcyBDTEtfSVNfQ1JJVElDQUwiKQo+IFJl
+cG9ydGVkLWFuZC10ZXN0ZWQtYnk6IEphaW1lIFDDqXJleiA8MTkuamFpbWUuOTFAZ21haWwuY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+CgpB
+Y2tlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4
+LmludGVsLmNvbT4KCj4gLS0tCj4gICBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfbWF4
+OTgwOTBfdGkuYyB8IDcgKysrKysrKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygr
+KQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfbWF4OTgw
+OTBfdGkuYyBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvY2h0X2Jzd19tYXg5ODA5MF90aS5jCj4g
+aW5kZXggYWQwYzk4MzgzODUzLi4wOGE1MTUyZTYzNWEgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
+L2ludGVsL2JvYXJkcy9jaHRfYnN3X21heDk4MDkwX3RpLmMKPiArKysgYi9zb3VuZC9zb2MvaW50
+ZWwvYm9hcmRzL2NodF9ic3dfbWF4OTgwOTBfdGkuYwo+IEBAIC0zOTYsNiArMzk2LDEzIEBAIHN0
+YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBjaHRfbWF4OTgwOTBfcXVpcmtfdGFibGVb
+XSA9IHsKPiAgIAkJfSwKPiAgIAkJLmRyaXZlcl9kYXRhID0gKHZvaWQgKilRVUlSS19QTUNfUExU
+X0NMS18wLAo+ICAgCX0sCj4gKwl7Cj4gKwkJLyogR25hd3R5IG1vZGVsIENocm9tZWJvb2sgKEFj
+ZXIgQ2hyb21lYm9vayBDQjMtMTExKSAqLwo+ICsJCS5tYXRjaGVzID0gewo+ICsJCQlETUlfTUFU
+Q0goRE1JX1BST0RVQ1RfTkFNRSwgIkduYXd0eSIpLAo+ICsJCX0sCj4gKwkJLmRyaXZlcl9kYXRh
+ID0gKHZvaWQgKilRVUlSS19QTUNfUExUX0NMS18wLAo+ICsJfSwKPiAgIAl7Cj4gICAJCS8qIFN3
+YW5reSBtb2RlbCBDaHJvbWVib29rIChUb3NoaWJhIENocm9tZWJvb2sgMikgKi8KPiAgIAkJLm1h
+dGNoZXMgPSB7Cj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
