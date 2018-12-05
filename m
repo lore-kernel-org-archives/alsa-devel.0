@@ -1,18 +1,18 @@
-From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: Re: [Xen-devel][PATCH v2 1/3] xen: Introduce shared
- buffer helpers for page directory...
-Date: Tue, 4 Dec 2018 19:28:05 -0500
-Message-ID: <ab1b0d28-f3a1-41ec-82df-2474553dbefe@oracle.com>
-References: <20181130074205.20496-1-andr2000@gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/6] ASoC: merge audio-graph-scu into
+	audio-graph - final step
+Date: Wed, 5 Dec 2018 01:29:37 +0000
+Message-ID: <871s6wepmp.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 02614267B88
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 01:28:17 +0100 (CET)
-In-Reply-To: <20181130074205.20496-1-andr2000@gmail.com>
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400114.outbound.protection.outlook.com [40.107.140.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 125CB267B88
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 02:29:44 +0100 (CET)
 Content-Language: en-US
+Content-ID: <D65EB83D1C46A74F80A44F86811113D1@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, jgross@suse.com
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/30/18 2:42 AM, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->
-> based frontends. Currently the frontends which implement
-> similar code for sharing big buffers between frontend and
-> backend are para-virtualized DRM and sound drivers.
-> Both define the same way to share grant references of a
-> data buffer with the corresponding backend with little
-> differences.
->
-> Move shared code into a helper module, so there is a single
-> implementation of the same functionality for all.
->
-> This patch introduces code which is used by sound and display
-> frontend drivers without functional changes with the intention
-> to remove shared code from the corresponding drivers.
->
-> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Acked-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Hi Mark
+
+audio-graph     card can handle normal sound card, and
+audio-graph-scu card can handle DPCM   sound card.
+But, we can't use these feature in same time now.
+
+This is final step patches.
+
+Kuninori Morimoto (6):
+  ASoC: audio-graph-card: merge audio-graph-scu-card on Doc
+  ASoC: audio-graph-card: merge audio-graph-scu-card
+  ASoC: audio-graph-card: tidyup mclk-fs method
+  ASoC: audio-graph-card: tidyup convert_rate/channel method
+  ASoC: audio-graph-scu-card: remove audio-graph-scu-card on Doc
+  ASoC: audio-graph-scu-card: remove audio-graph-scu-card
+
+ .../devicetree/bindings/sound/audio-graph-card.txt | 222 +++++++++
+ .../bindings/sound/audio-graph-scu-card.txt        | 123 -----
+ sound/soc/generic/Kconfig                          |  10 +-
+ sound/soc/generic/Makefile                         |   2 -
+ sound/soc/generic/audio-graph-card.c               | 397 +++++++++++++---
+ sound/soc/generic/audio-graph-scu-card.c           | 501 ---------------------
+ 6 files changed, 563 insertions(+), 692 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+ delete mode 100644 sound/soc/generic/audio-graph-scu-card.c
+
+-- 
+2.7.4
