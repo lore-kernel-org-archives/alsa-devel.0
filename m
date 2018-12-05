@@ -1,44 +1,92 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next v3 7/7] clk: renesas: Add binding document for
- ADG
-Date: Wed, 5 Dec 2018 21:16:51 +0900
-Message-ID: <3b2941db-4cd5-0975-c88d-4a23c1ff4907@mentor.com>
-References: <20181205074947.28151-1-jiada_wang@mentor.com>
- <87tvjsbbgh.wl-kuninori.morimoto.gx@renesas.com>
+From: Kailang <kailang@realtek.com>
+Subject: RE: [PATCH 1/4] ALSA: hda/realtek: ALC286 mic and headset-mode fixups for Acer Aspire U27-880
+Date: Wed, 5 Dec 2018 12:37:43 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184200F7@RTITMBSV02.realtek.com.tw>
+References: <20181205064856.19380-1-jian-hong@endlessm.com>
+        <6FAB7C47BCF00940BB0999A99BE3547A184200B5@RTITMBSV02.realtek.com.tw>,<s5hsgzcuxmx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87tvjsbbgh.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+In-Reply-To: <s5hsgzcuxmx.wl-tiwai@suse.de>
+Content-Language: zh-TW
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jian-Hong Pan <jian-hong@endlessm.com>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Hui Wang <hui.wang@canonical.com>, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>, "linux@endlessm.com" <linux@endlessm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san
-
-will rename dt bindings doc in next version
-
-Thanks.
-Jiada
-
-On 2018/12/05 18:04, Kuninori Morimoto wrote:
-> Hi Jiada
->
->> Add device tree bindings for Audio Clock Generator (ADG)
->> of R-Car Socs.
->>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
->>   .../clock/renesas,rcar-adg-clocks.txt         | 24 +++++++++++++++++++
->>   1 file changed, 24 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/clock/renesas,rcar-adg-clocks.txt
-> We want to have this document on rsnd.txt instead of
-> not-exist-driver file
->
-> 	/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
->
-> Best regards
-> ---
-> Kuninori Morimoto
+SGkgVGFrYXNoaSwKCllvdSBzaG91bGQgYXBwbHkgYWxjMjg2IHBsYXRmb3JtIGZpcnN0LgpJIHRo
+aW5rIHRoZXkgaGFkIHRlc3QgcGFzc2VkIGFscmVhZHkuCkFMQzI5NCBwbGF0Zm9ybSBqdXN0IHdh
+aXQgZm9yIHRlc3QgdmlhIGNoYW5nZSBtb2RlbC4KCkJSLApLYWlsYW5nCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KsXE6IFRha2FzaGkgSXdhaSBbdGl3YWlAc3VzZS5k
+ZV0KsUil86TptME6IDIwMTimfjEypOs1pOkgpFWkyCAwNTozMgqm3DogS2FpbGFuZwqwxqW7OiBK
+aWFuLUhvbmcgUGFuOyBKYXJvc2xhdiBLeXNlbGE7IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZzsgSHVpIFdhbmc7IENocmlzIENoaXU7IERhbmllbCBEcmFrZTsgbGludXhAZW5kbGVzc20uY29t
+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCqVEpq46IFJlOiBbUEFUQ0ggMS80XSBBTFNB
+OiBoZGEvcmVhbHRlazogQUxDMjg2IG1pYyBhbmQgaGVhZHNldC1tb2RlIGZpeHVwcyBmb3IgQWNl
+ciBBc3BpcmUgVTI3LTg4MAoKT24gV2VkLCAwNSBEZWMgMjAxOCAxMDowNjoxNCArMDEwMCwKS2Fp
+bGFuZyB3cm90ZToKPgo+IFNvcnJ5ISEKPiBEb24ndCBjaGFuZ2UgdGhpcy4KCkhtLCBzaG91bGQg
+SSBhcHBseSB0aGVzZSBzZXJpZXMgb3Igbm90PwoKCnRoYW5rcywKClRha2FzaGkKCj4KPiAtLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IEthaWxhbmcKPiBTZW50OiBXZWRuZXNkYXks
+IERlY2VtYmVyIDUsIDIwMTggNDo1MiBQTQo+IFRvOiAnSmlhbi1Ib25nIFBhbicgPGppYW4taG9u
+Z0BlbmRsZXNzbS5jb20+OyBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PjsgVGFrYXNo
+aSBJd2FpIDx0aXdhaUBzdXNlLmNvbT4KPiBDYzogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9uaWNh
+bC5jb20+OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmc7IGxpbnV4QGVuZGxlc3NtLmNvbTsgQ2hyaXMgQ2hpdSA8Y2hpdUBlbmRsZXNzbS5j
+b20+OyBEYW5pZWwgRHJha2UgPGRyYWtlQGVuZGxlc3NtLmNvbT4KPiBTdWJqZWN0OiBSRTogW1BB
+VENIIDEvNF0gQUxTQTogaGRhL3JlYWx0ZWs6IEFMQzI4NiBtaWMgYW5kIGhlYWRzZXQtbW9kZSBm
+aXh1cHMgZm9yIEFjZXIgQXNwaXJlIFUyNy04ODAKPgo+IEhpIEppYW4gSG9uZywKPgo+IFBsZWFz
+ZSBhbHNvIHRyeSB0byBjaGFuZ2UgbW9kZWwgdG8gQUxDMjY5X0ZJWFVQX0hFQURTRVRfTU9ERV9O
+T19IUF9NSUMuCj4KPiArICAgICAgICAgICAgIC5jaGFpbl9pZCA9IEFMQzI2OV9GSVhVUF9IRUFE
+U0VUX01JQyAgPT0+IGNoYW5nZSB0byAgQUxDMjY5X0ZJWFVQX0hFQURTRVRfTU9ERV9OT19IUF9N
+SUMKPgo+IEJSLAo+IEthaWxhbmcKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206
+IEppYW4tSG9uZyBQYW4gPGppYW4taG9uZ0BlbmRsZXNzbS5jb20+Cj4gU2VudDogV2VkbmVzZGF5
+LCBEZWNlbWJlciA1LCAyMDE4IDI6NDkgUE0KPiBUbzogSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBw
+ZXJleC5jej47IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5jb20+Cj4gQ2M6IEthaWxhbmcgPGth
+aWxhbmdAcmVhbHRlay5jb20+OyBIdWkgV2FuZyA8aHVpLndhbmdAY2Fub25pY2FsLmNvbT47IGFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsg
+bGludXhAZW5kbGVzc20uY29tOyBDaHJpcyBDaGl1IDxjaGl1QGVuZGxlc3NtLmNvbT47IEppYW4t
+SG9uZyBQYW4gPGppYW4taG9uZ0BlbmRsZXNzbS5jb20+OyBEYW5pZWwgRHJha2UgPGRyYWtlQGVu
+ZGxlc3NtLmNvbT4KPiBTdWJqZWN0OiBbUEFUQ0ggMS80XSBBTFNBOiBoZGEvcmVhbHRlazogQUxD
+Mjg2IG1pYyBhbmQgaGVhZHNldC1tb2RlIGZpeHVwcyBmb3IgQWNlciBBc3BpcmUgVTI3LTg4MAo+
+Cj4gRnJvbTogQ2hyaXMgQ2hpdSA8Y2hpdUBlbmRsZXNzbS5jb20+Cj4KPiBBY2VyIEFzcGlyZSBV
+MjctODgwKEFJTykgd2l0aCBBTEMyODYgY29kZWMgY2FuIG5vdCBkZXRlY3QgaGVhZHNldCBtaWMg
+YW5kIGludGVybmFsIG1pYyBub3Qgd29ya2luZyBlaXRoZXIuIEl0IG5lZWRzIHRoZSBzaW1pbGFy
+IHF1aXJrIGxpa2UgU29ueSBsYXB0b3BzIHRvIGZpeCBoZWFkcGhvbmUgamFjayBzZW5zaW5nIGFu
+ZCBlbmFibGVzIHVzZSBvZiB0aGUgaW50ZXJuYWwgbWljcm9waG9uZS4KPgo+IFVuZm9ydHVuYXRl
+bHkgamFjayBzZW5zaW5nIGZvciB0aGUgaGVhZHNldCBtaWMgaXMgc3RpbGwgbm90IHdvcmtpbmcu
+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBKaWFuLUhvbmcgUGFuIDxqaWFuLWhvbmdAZW5kbGVzc20uY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBEcmFrZSA8ZHJha2VAZW5kbGVzc20uY29tPgo+IFNp
+Z25lZC1vZmYtYnk6IENocmlzIENoaXUgPGNoaXVAZW5kbGVzc20uY29tPgo+IC0tLQo+ICBzb3Vu
+ZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDE0ICsrKysrKysrKysrKysrCj4gIDEgZmlsZSBj
+aGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBpbmRleCBjMGIy
+ODliYTM5N2YuLmYyMWQ1MmViMmVkMyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNo
+X3JlYWx0ZWsuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4gQEAgLTU1
+MTYsNiArNTUxNiw3IEBAIGVudW0gewo+ICAgICAgIEFMQzIyMV9GSVhVUF9IUF9IRUFEU0VUX01J
+QywKPiAgICAgICBBTEMyODVfRklYVVBfTEVOT1ZPX0hFQURQSE9ORV9OT0lTRSwKPiAgICAgICBB
+TEMyOTVfRklYVVBfSFBfQVVUT19NVVRFLAo+ICsgICAgIEFMQzI4Nl9GSVhVUF9BQ0VSX0FJT19N
+SUNfTk9fUFJFU0VOQ0UsCj4gIH07Cj4KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAg
+YWxjMjY5X2ZpeHVwc1tdID0geyBAQCAtNjM5Myw2ICs2Mzk0LDE1IEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKPiAgICAgICAgICAgICAgIC50eXBl
+ID0gSERBX0ZJWFVQX0ZVTkMsCj4gICAgICAgICAgICAgICAudi5mdW5jID0gYWxjX2ZpeHVwX2F1
+dG9fbXV0ZV92aWFfYW1wLAo+ICAgICAgIH0sCj4gKyAgICAgW0FMQzI4Nl9GSVhVUF9BQ0VSX0FJ
+T19NSUNfTk9fUFJFU0VOQ0VdID0gewo+ICsgICAgICAgICAgICAgLnR5cGUgPSBIREFfRklYVVBf
+UElOUywKPiArICAgICAgICAgICAgIC52LnBpbnMgPSAoY29uc3Qgc3RydWN0IGhkYV9waW50Ymxb
+XSkgewo+ICsgICAgICAgICAgICAgICAgICAgICB7IDB4MTgsIDB4MDFhMTkxM2MgfSwgLyogdXNl
+IGFzIGhlYWRzZXQgbWljLCB3aXRob3V0IGl0cyBvd24gamFjayBkZXRlY3QgKi8KPiArICAgICAg
+ICAgICAgICAgICAgICAgeyB9Cj4gKyAgICAgICAgICAgICB9LAo+ICsgICAgICAgICAgICAgLmNo
+YWluZWQgPSB0cnVlLAo+ICsgICAgICAgICAgICAgLmNoYWluX2lkID0gQUxDMjY5X0ZJWFVQX0hF
+QURTRVRfTUlDCj4gKyAgICAgfSwKPiAgfTsKPgo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9w
+Y2lfcXVpcmsgYWxjMjY5X2ZpeHVwX3RibFtdID0geyBAQCAtNzA3MSw2ICs3MDgxLDEwIEBAIHN0
+YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2hkYV9waW5fcXVpcmsgYWxjMjY5X3Bpbl9maXh1cF90Ymxb
+XSA9IHsKPiAgICAgICAgICAgICAgIHsweDE0LCAweDkwMTcwMTEwfSwKPiAgICAgICAgICAgICAg
+IHsweDE5LCAweDA0YTExMDQwfSwKPiAgICAgICAgICAgICAgIHsweDIxLCAweDA0MjExMDIwfSks
+Cj4gKyAgICAgU05EX0hEQV9QSU5fUVVJUksoMHgxMGVjMDI4NiwgMHgxMDI1LCAiQWNlciIsIEFM
+QzI4Nl9GSVhVUF9BQ0VSX0FJT19NSUNfTk9fUFJFU0VOQ0UsCj4gKyAgICAgICAgICAgICB7MHgx
+MiwgMHg5MGE2MDEzMH0sCj4gKyAgICAgICAgICAgICB7MHgxNywgMHg5MDE3MDExMH0sCj4gKyAg
+ICAgICAgICAgICB7MHgyMSwgMHgwMjIxMTAyMH0pLAo+ICAgICAgIFNORF9IREFfUElOX1FVSVJL
+KDB4MTBlYzAyODgsIDB4MTAyOCwgIkRlbGwiLCBBTEMyODhfRklYVVBfREVMTDFfTUlDX05PX1BS
+RVNFTkNFLAo+ICAgICAgICAgICAgICAgezB4MTIsIDB4OTBhNjAxMjB9LAo+ICAgICAgICAgICAg
+ICAgezB4MTQsIDB4OTAxNzAxMTB9LAo+IC0tCj4gMi4xMS4wCj4KPgoKLS0tLS0tUGxlYXNlIGNv
+bnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuCg==
