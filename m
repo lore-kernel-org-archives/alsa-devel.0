@@ -1,17 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add
- pmc_plt_clk_0 quirk for Chromebook Gnawty
-Date: Tue, 4 Dec 2018 16:26:39 -0800
-Message-ID: <53250f61-e23c-77f2-b210-500b8b3b03e7@linux.intel.com>
-References: <20181203204514.3991-1-hdegoede@redhat.com>
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [Xen-devel][PATCH v2 1/3] xen: Introduce shared
+ buffer helpers for page directory...
+Date: Tue, 4 Dec 2018 19:28:05 -0500
+Message-ID: <ab1b0d28-f3a1-41ec-82df-2474553dbefe@oracle.com>
+References: <20181130074205.20496-1-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 583A8267B7E
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 01:26:42 +0100 (CET)
-In-Reply-To: <20181203204514.3991-1-hdegoede@redhat.com>
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02614267B88
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 01:28:17 +0100 (CET)
+In-Reply-To: <20181130074205.20496-1-andr2000@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,41 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, jgross@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTIvMy8xOCAxMjo0NSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPiBUaGUgR25hd3R5IG1v
-ZGVsIENocm9tZWJvb2sgdXNlcyBwbWNfcGx0X2Nsa18wIGluc3RlYWQgb2YgcG1jX3BsdF9jbGtf
-Mwo+IGZvciB0aGUgbWNsaywganVzdCBsaWtlIHRoZSBDbGFwcGVyIGFuZCBTd2Fua3kgbW9kZWxz
-Lgo+IAo+IFRoaXMgY29tbWl0IGFkZHMgYSBETUkgYmFzZWQgcXVpcmsgZm9yIHRoaXMuCj4gCj4g
-VGhpcyBmaXhpbmcgYXVkaW8gbm8gbG9uZ2VyIHdvcmtpbmcgb24gdGhlc2UgZGV2aWNlcyBhZnRl
-cgo+IGNvbW1pdCA2NDhlOTIxODg4YWQgKCJjbGs6IHg4NjogU3RvcCBtYXJraW5nIGNsb2NrcyBh
-cyBDTEtfSVNfQ1JJVElDQUwiKQo+IHRoYXQgY29tbWl0IGZpeGVzIHVzIHVubmVjZXNzYXJ5IGtl
-ZXBpbmcgdW51c2VkIGNsb2NrcyBvbiwgYnV0IGluIGNhc2Ugb2YKPiB0aGUgR25hd3R5IHRoYXQg
-d2FzIGJyZWFraW5nIGF1ZGlvIHN1cHBvcnQgc2luY2Ugd2Ugd2VyZSBub3QgdXNpbmcgdGhlCj4g
-cmlnaHQgY2xvY2sgaW4gdGhlIGNodF9ic3dfbWF4OTgwOTBfdGkgbWFjaGluZSBkcml2ZXIuCj4g
-Cj4gQnVnTGluazogaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0y
-MDE3ODcKPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IEZpeGVzOiA2NDhlOTIxODg4YWQg
-KCJjbGs6IHg4NjogU3RvcCBtYXJraW5nIGNsb2NrcyBhcyBDTEtfSVNfQ1JJVElDQUwiKQo+IFJl
-cG9ydGVkLWFuZC10ZXN0ZWQtYnk6IEphaW1lIFDDqXJleiA8MTkuamFpbWUuOTFAZ21haWwuY29t
-Pgo+IFNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+CgpB
-Y2tlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4
-LmludGVsLmNvbT4KCj4gLS0tCj4gICBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfbWF4
-OTgwOTBfdGkuYyB8IDcgKysrKysrKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygr
-KQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfbWF4OTgw
-OTBfdGkuYyBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvY2h0X2Jzd19tYXg5ODA5MF90aS5jCj4g
-aW5kZXggYWQwYzk4MzgzODUzLi4wOGE1MTUyZTYzNWEgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
-L2ludGVsL2JvYXJkcy9jaHRfYnN3X21heDk4MDkwX3RpLmMKPiArKysgYi9zb3VuZC9zb2MvaW50
-ZWwvYm9hcmRzL2NodF9ic3dfbWF4OTgwOTBfdGkuYwo+IEBAIC0zOTYsNiArMzk2LDEzIEBAIHN0
-YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBjaHRfbWF4OTgwOTBfcXVpcmtfdGFibGVb
-XSA9IHsKPiAgIAkJfSwKPiAgIAkJLmRyaXZlcl9kYXRhID0gKHZvaWQgKilRVUlSS19QTUNfUExU
-X0NMS18wLAo+ICAgCX0sCj4gKwl7Cj4gKwkJLyogR25hd3R5IG1vZGVsIENocm9tZWJvb2sgKEFj
-ZXIgQ2hyb21lYm9vayBDQjMtMTExKSAqLwo+ICsJCS5tYXRjaGVzID0gewo+ICsJCQlETUlfTUFU
-Q0goRE1JX1BST0RVQ1RfTkFNRSwgIkduYXd0eSIpLAo+ICsJCX0sCj4gKwkJLmRyaXZlcl9kYXRh
-ID0gKHZvaWQgKilRVUlSS19QTUNfUExUX0NMS18wLAo+ICsJfSwKPiAgIAl7Cj4gICAJCS8qIFN3
-YW5reSBtb2RlbCBDaHJvbWVib29rIChUb3NoaWJhIENocm9tZWJvb2sgMikgKi8KPiAgIAkJLm1h
-dGNoZXMgPSB7Cj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 11/30/18 2:42 AM, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>
+> based frontends. Currently the frontends which implement
+> similar code for sharing big buffers between frontend and
+> backend are para-virtualized DRM and sound drivers.
+> Both define the same way to share grant references of a
+> data buffer with the corresponding backend with little
+> differences.
+>
+> Move shared code into a helper module, so there is a single
+> implementation of the same functionality for all.
+>
+> This patch introduces code which is used by sound and display
+> frontend drivers without functional changes with the intention
+> to remove shared code from the corresponding drivers.
+>
+> Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+
+Acked-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
