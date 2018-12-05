@@ -1,65 +1,35 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
-Date: Wed, 5 Dec 2018 11:34:06 +0000
-Message-ID: <20181205113406.GE26661@dell>
-References: <20181127120041.90759-1-cychiang@chromium.org>
- <20181128093411.GC4272@dell>
- <20181203111919.GL26661@dell>
- <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
- <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
- <20181205113045.GD26661@dell>
+From: Kailang <kailang@realtek.com>
+Subject: RE: [PATCH 1/3] ALSA: hda/realtek: ALC294 mic and headset-mode fixups for ASUS X542UN
+Date: Wed, 5 Dec 2018 11:42:37 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184200EB@RTITMBSV02.realtek.com.tw>
+References: <20181205074212.31104-1-jian-hong@endlessm.com>
+ <20181205074212.31104-2-jian-hong@endlessm.com>
+ <6FAB7C47BCF00940BB0999A99BE3547A18420099@RTITMBSV02.realtek.com.tw>,<CAPpJ_ed5qbhxUONdoACcQhH8jv1J_vvw4M-Vp4QwDsgQ1w8Vdw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181205113045.GD26661@dell>
+In-Reply-To: <CAPpJ_ed5qbhxUONdoACcQhH8jv1J_vvw4M-Vp4QwDsgQ1w8Vdw@mail.gmail.com>
+Content-Language: zh-TW
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
+To: Jian-Hong Pan <jian-hong@endlessm.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 05 Dec 2018, Lee Jones wrote:
-
-> On Wed, 05 Dec 2018, Cheng-yi Chiang wrote:
-> 
-> > Hi Lee,
-> > 
-> > I tried to apply this patch based on
-> > for-mfd-next branch of mfd tree (
-> > git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git )
-> > Then, I tried to compile all modules by
-> > 
-> >  ARCH=x86_64 make allyesconfig
-> >  ARCH=x86_64 make -j64
-> > 
-> > There was no error.
-> > Could you please let me know what was the error when you failed to
-> > apply this patch ?
-> 
-> Doesn't work for me.
-> 
-> lee@host:~/projects/kernel [for-mfd-next]$ formfdnext
-> Applying: mfd: cros_ec: Add commands to control codec
-> error: sha1 information is lacking or useless (include/linux/mfd/cros_ec_commands.h).
-> error: could not build fake ancestor
-> Patch failed at 0001 mfd: cros_ec: Add commands to control codec
-> Use 'git am --show-current-patch' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
-
-Not that the following lines (as seen in your patch) are not present
-in the Mainline kernel.
-
-> @@ -4077,6 +4077,100 @@ struct __ec_align1 ec_response_i2c_passthru_protect {
->  	uint8_t status;		/* Status flags (0: unlocked, 1: locked) */
->  };
-
-Do you have other patches applied to your tree?
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ck5vLgpEb24ndCB0cnkgIEFMQzI2OV9GSVhVUF9IRUFEU0VUX01PREVfTk9fSFBfTUlDIG1vZGVs
+IGZvciBBTEMyODYgcGxhdGZvcm0uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCrFxOiBKaWFuLUhvbmcgUGFuIFtqaWFuLWhvbmdAZW5kbGVzc20uY29tXQqxSKXzpOm0
+wTogMjAxOKZ+MTKk6zWk6SCkVaTIIDA1OjMzCqbcOiBLYWlsYW5nCrDGpbs6IEphcm9zbGF2IEt5
+c2VsYTsgdGl3YWlAc3VzZS5jb207IEh1aSBXYW5nOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmc7IExpbnV4IEtlcm5lbDsgTGludXggVXBzdHJlYW1pbmcgVGVhbTsgQ2hyaXMgQ2hpdTsgRGFu
+aWVsIERyYWtlCqVEpq46IFJlOiBbUEFUQ0ggMS8zXSBBTFNBOiBoZGEvcmVhbHRlazogQUxDMjk0
+IG1pYyBhbmQgaGVhZHNldC1tb2RlIGZpeHVwcyBmb3IgQVNVUyBYNTQyVU4KCkthaWxhbmcgPGth
+aWxhbmdAcmVhbHRlay5jb20+IKnzIDIwMTimfjEypOs1pOkgtmekVCCkVaTINDozNrxnuUShRwo+
+Cj4gSGkgSmlhbi1Ib25nLAo+Cj4gQ291bGQgeW91IHRlc3QgdG8gY2hhbmdlIHRoZSBtb2RlbCB0
+byBBTEMyNjlfRklYVVBfSEVBRFNFVF9NT0RFX05PX0hQX01JQz8KPgo+IC5jaGFpbl9pZCA9IEFM
+QzI1Nl9GSVhVUF9BU1VTX0hFQURTRVRfTU9ERSAgPT0+IGNoYW5nZSB0byBBTEMyNjlfRklYVVBf
+SEVBRFNFVF9NT0RFX05PX0hQX01JQwoKQWNjb3JkaW5nIHRvIHRoZSBjb21tZW50Cmh0dHBzOi8v
+cGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTA3MTMwODcvIzIyMzYwMjUzICwgc2hvdWxkIEkg
+dHJ5CkFMQzI2OV9GSVhVUF9IRUFEU0VUX01PREVfTk9fSFBfTUlDIG9uIHRoaXMgbW9kZWw/CgpK
+aWFuLUhvbmcgUGFuCgotLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9y
+ZSBwcmludGluZyB0aGlzIGUtbWFpbC4K
