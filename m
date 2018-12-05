@@ -1,20 +1,20 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/6] ASoC: audio-graph-card: tidyup
- convert_rate/channel method
-Date: Wed, 5 Dec 2018 01:32:10 +0000
-Message-ID: <87va48daxz.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 5/6] ASoC: audio-graph-scu-card: remove
+ audio-graph-scu-card on Doc
+Date: Wed, 5 Dec 2018 01:32:28 +0000
+Message-ID: <87tvjsdaxi.wl-kuninori.morimoto.gx@renesas.com>
 References: <871s6wepmp.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-eopbgr1410139.outbound.protection.outlook.com [40.107.141.139])
- by alsa0.perex.cz (Postfix) with ESMTP id E78B6267BDB
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 02:32:12 +0100 (CET)
+ (mail-eopbgr1410114.outbound.protection.outlook.com [40.107.141.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B929267BD8
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 02:32:31 +0100 (CET)
 In-Reply-To: <871s6wepmp.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Content-ID: <03CAF1A9BCB16F448A22B1F34D1241A9@jpnprd01.prod.outlook.com>
+Content-ID: <36020B0939B0894F85AF0A067417B5CD@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,87 +30,143 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current audio-graph-card is handling "convert_rate/channel"
-by many ways. But, it is not useful and readable.
-We want to do is that allow having it everywere.
-This patch support it.
-It will be overwrote if lower node has it.
-
-sound {
-	convert-channels = <xxx>; // initial
-};
-
-codec {
-	audio-graph-card,convert-channels = <xxx>; // overwrite
-	ports {
-		convert_channels = <xxx>; // overwrite
-		port {
-			convert_channels = <xxx>; // overwrite
-			endpoint {
-				convert_channels = <xxx>; // overwrite
-			};
-		};
-	};
-};
+It is already merged into audio-graph-card.
+audio-graph-scu-card is no longer needed.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/audio-graph-card.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ .../bindings/sound/audio-graph-scu-card.txt        | 123 ---------------------
+ 1 file changed, 123 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index efa6be6..24f1a72 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -35,7 +35,6 @@ struct graph_card_data {
- 	struct asoc_simple_jack mic_jack;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dais;
--	struct asoc_simple_card_data adata;
- 	struct snd_soc_codec_conf *codec_conf;
- 	struct gpio_desc *pa_gpio;
- };
-@@ -167,9 +166,6 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 
- 	asoc_simple_card_convert_fixup(&dai_props->adata, params);
- 
--	/* overwrite by top level adata if exist */
--	asoc_simple_card_convert_fixup(&priv->adata, params);
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+deleted file mode 100644
+index 62d4276..0000000
+--- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
++++ /dev/null
+@@ -1,123 +0,0 @@
+-Audio-Graph-SCU-Card:
 -
- 	return 0;
- }
- 
-@@ -197,6 +193,13 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 	of_property_read_u32(ports, "mclk-fs", &dai_props->mclk_fs);
- 	of_property_read_u32(port,  "mclk-fs", &dai_props->mclk_fs);
- 	of_property_read_u32(ep,    "mclk-fs", &dai_props->mclk_fs);
-+
-+	asoc_simple_card_parse_convert(dev, top,   NULL,   &dai_props->adata);
-+	asoc_simple_card_parse_convert(dev, node,  PREFIX, &dai_props->adata);
-+	asoc_simple_card_parse_convert(dev, ports, NULL,   &dai_props->adata);
-+	asoc_simple_card_parse_convert(dev, port,  NULL,   &dai_props->adata);
-+	asoc_simple_card_parse_convert(dev, ep,    NULL,   &dai_props->adata);
-+
- 	of_node_put(ports);
- 	of_node_put(port);
- 
-@@ -276,8 +279,6 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 						     PREFIX "prefix");
- 	}
- 
--	asoc_simple_card_parse_convert(dev, node, PREFIX, &dai_props->adata);
+-Audio-Graph-SCU-Card is "Audio-Graph-Card" + "ALSA DPCM".
 -
- 	ret = asoc_simple_card_of_parse_tdm(ep, dai);
- 	if (ret)
- 		return ret;
-@@ -409,8 +410,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	asoc_simple_card_parse_convert(dev, node, NULL, &priv->adata);
+-It is based on common bindings for device graphs.
+-see ${LINUX}/Documentation/devicetree/bindings/graph.txt
 -
- 	link_idx	= 0;
- 	dai_idx		= 0;
- 	conf_idx	= 0;
+-Basically, Audio-Graph-SCU-Card property is same as
+-Simple-Card / Simple-SCU-Card / Audio-Graph-Card.
+-see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+-    ${LINUX}/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+-    ${LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+-
+-Below are same as Simple-Card / Audio-Graph-Card.
+-
+-- label
+-- dai-format
+-- frame-master
+-- bitclock-master
+-- bitclock-inversion
+-- frame-inversion
+-- dai-tdm-slot-num
+-- dai-tdm-slot-width
+-- clocks / system-clock-frequency
+-
+-Below are same as Simple-SCU-Card.
+-
+-- convert-rate
+-- convert-channels
+-- prefix
+-- routing
+-
+-Required properties:
+-
+-- compatible				: "audio-graph-scu-card";
+-- dais					: list of CPU DAI port{s}
+-
+-Example 1. Sampling Rate Conversion
+-
+-	sound_card {
+-		compatible = "audio-graph-scu-card";
+-
+-		label = "sound-card";
+-		prefix = "codec";
+-		routing = "codec Playback", "DAI0 Playback",
+-			  "DAI0 Capture",   "codec Capture";
+-		convert-rate = <48000>;
+-
+-		dais = <&cpu_port>;
+-	};
+-
+-	audio-codec {
+-		...
+-
+-		port {
+-			codec_endpoint: endpoint {
+-				remote-endpoint = <&cpu_endpoint>;
+-			};
+-		};
+-	};
+-
+-	dai-controller {
+-		...
+-		cpu_port: port {
+-			cpu_endpoint: endpoint {
+-				remote-endpoint = <&codec_endpoint>;
+-
+-				dai-format = "left_j";
+-				...
+-			};
+-		};
+-	};
+-
+-Example 2. 2 CPU 1 Codec (Mixing)
+-
+-	sound_card {
+-		compatible = "audio-graph-scu-card";
+-
+-		label = "sound-card";
+-		routing = "codec Playback", "DAI0 Playback",
+-			  "codec Playback", "DAI1 Playback",
+-			  "DAI0 Capture",   "codec Capture";
+-
+-		dais = <&cpu_port0
+-			&cpu_port1>;
+-	};
+-
+-	audio-codec {
+-		...
+-
+-		audio-graph-card,prefix = "codec";
+-		audio-graph-card,convert-rate = <48000>;
+-		port {
+-			codec_endpoint0: endpoint {
+-				remote-endpoint = <&cpu_endpoint0>;
+-			};
+-			codec_endpoint1: endpoint {
+-				remote-endpoint = <&cpu_endpoint1>;
+-			};
+-		};
+-	};
+-
+-	dai-controller {
+-		...
+-		ports {
+-			cpu_port0: port {
+-				cpu_endpoint0: endpoint {
+-					remote-endpoint = <&codec_endpoint0>;
+-
+-					dai-format = "left_j";
+-					...
+-				};
+-			};
+-			cpu_port1: port {
+-				cpu_endpoint1: endpoint {
+-					remote-endpoint = <&codec_endpoint1>;
+-
+-					dai-format = "left_j";
+-					...
+-				};
+-			};
+-		};
+-	};
 -- 
 2.7.4
