@@ -1,85 +1,91 @@
 From: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH 1/2] ASoC: use DMA addr rather than CPU pa for
- acp_audio_dma
-Date: Wed, 5 Dec 2018 06:42:43 +0000
-Message-ID: <0282a69b-51dc-b1e9-a017-2f18c08b9c50@amd.com>
+Subject: Re: [PATCH 2/2] ASoC: use dma_ops of parent device for
+	acp_audio_dma
+Date: Wed, 5 Dec 2018 06:45:59 +0000
+Message-ID: <cc34f15e-c8a3-da32-4a61-a6c34bed8281@amd.com>
 References: <20181204224253.216075-1-yuzhao@google.com>
+ <20181204224253.216075-2-yuzhao@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181204224253.216075-1-yuzhao@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr800085.outbound.protection.outlook.com [40.107.80.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3197267B92
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 07:46:03 +0100 (CET)
+In-Reply-To: <20181204224253.216075-2-yuzhao@google.com>
 Content-Language: en-US
-Content-ID: <9E23759D90C2E84B8321C9A4F5666CEB@namprd12.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-ID: <79023FCB5CE2AD42A6B87E2AFFB67F79@namprd12.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Yu Zhao <yuzhao@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, aroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Daniel Kurtz <djkurtz@chromium.org>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Kurtz <djkurtz@chromium.org>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCk9uIDA1LzEyLzE4IDQ6MTIgQU0sIFl1IFpoYW8gd3JvdGU6DQo+IFdlIHNob3VsZG4ndCBh
-c3N1bWUgQ1BVIHBoeXNpY2FsIGFkZHJlc3Mgd2UgZ2V0IGZyb20gcGFnZV90b19waHlzKCkNCj4g
-aXMgc2FtZSBhcyBETUEgYWRkcmVzcyB3ZSBnZXQgZnJvbSBkbWFfYWxsb2NfY29oZXJlbnQoKS4g
-T24geDg2XzY0LA0KPiB3ZSB3b24ndCBydW4gaW50byBhbnkgcHJvYmxlbSB3aXRoIHRoZSBhc3N1
-bXB0aW9uIHdoZW4gZG1hX29wcyBpcw0KPiBub21tdV9kbWFfb3BzLiBIb3dldmVyLCBETUEgYWRk
-cmVzcyBpcyBJT1ZBIHdoZW4gSU9NTVUgaXMgZW5hYmxlZC4NCj4gQW5kIGl0J3MgbW9zdCBsaWtl
-bHkgZGlmZmVyZW50IGZyb20gQ1BVIHBoeXNpY2FsIGFkZHJlc3Mgd2hlbiBBTUQNCj4gSU9NTVUg
-aXMgbm90IGluIHBhc3N0aHJvdWdoIG1vZGUuDQoNClRoaXMgaXMgcmVhbGx5IGEgZ29vZCBmaXgu
-IFdlIHdpbGwgYXBwbHkgdGhpcyBwYXRjaCBjaGFuZ2VzIGZvciBSYXZlbiANCnBsYXRmb3JtIGFs
-c28uDQoNClRoYW5rcywNClZpamVuZGFyDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZdSBaaGFvIDx5
-dXpoYW9AZ29vZ2xlLmNvbT4NCj4gLS0tDQo+ICAgc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5j
-IHwgMTUgKysrKystLS0tLS0tLS0tDQo+ICAgc291bmQvc29jL2FtZC9hY3AuaCAgICAgICAgIHwg
-IDIgKy0NCj4gICAyIGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25z
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jIGIvc291
-bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jDQo+IGluZGV4IGNkZWJhYjJmOGNlNS4uZmQzZGI0YzM3
-ODgyIDEwMDY0NA0KPiAtLS0gYS9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMNCj4gKysrIGIv
-c291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jDQo+IEBAIC0zMDMsMTEgKzMwMywxMCBAQCBzdGF0
-aWMgdm9pZCBzZXRfYWNwX3RvX2kyc19kbWFfZGVzY3JpcHRvcnModm9pZCBfX2lvbWVtICphY3Bf
-bW1pbywgdTMyIHNpemUsDQo+ICAgfQ0KPiAgIA0KPiAgIC8qIENyZWF0ZSBwYWdlIHRhYmxlIGVu
-dHJpZXMgaW4gQUNQIFNSQU0gZm9yIHRoZSBhbGxvY2F0ZWQgbWVtb3J5ICovDQo+IC1zdGF0aWMg
-dm9pZCBhY3BfcHRlX2NvbmZpZyh2b2lkIF9faW9tZW0gKmFjcF9tbWlvLCBzdHJ1Y3QgcGFnZSAq
-cGcsDQo+ICtzdGF0aWMgdm9pZCBhY3BfcHRlX2NvbmZpZyh2b2lkIF9faW9tZW0gKmFjcF9tbWlv
-LCBkbWFfYWRkcl90IGFkZHIsDQo+ICAgCQkJICAgdTE2IG51bV9vZl9wYWdlcywgdTMyIHB0ZV9v
-ZmZzZXQpDQo+ICAgew0KPiAgIAl1MTYgcGFnZV9pZHg7DQo+IC0JdTY0IGFkZHI7DQo+ICAgCXUz
-MiBsb3c7DQo+ICAgCXUzMiBoaWdoOw0KPiAgIAl1MzIgb2Zmc2V0Ow0KPiBAQCAtMzE3LDcgKzMx
-Niw2IEBAIHN0YXRpYyB2b2lkIGFjcF9wdGVfY29uZmlnKHZvaWQgX19pb21lbSAqYWNwX21taW8s
-IHN0cnVjdCBwYWdlICpwZywNCj4gICAJCS8qIExvYWQgdGhlIGxvdyBhZGRyZXNzIG9mIHBhZ2Ug
-aW50IEFDUCBTUkFNIHRocm91Z2ggU1JCTSAqLw0KPiAgIAkJYWNwX3JlZ193cml0ZSgob2Zmc2V0
-ICsgKHBhZ2VfaWR4ICogOCkpLA0KPiAgIAkJCSAgICAgIGFjcF9tbWlvLCBtbUFDUF9TUkJNX1Rh
-cmdfSWR4X0FkZHIpOw0KPiAtCQlhZGRyID0gcGFnZV90b19waHlzKHBnKTsNCj4gICANCj4gICAJ
-CWxvdyA9IGxvd2VyXzMyX2JpdHMoYWRkcik7DQo+ICAgCQloaWdoID0gdXBwZXJfMzJfYml0cyhh
-ZGRyKTsNCj4gQEAgLTMzMyw3ICszMzEsNyBAQCBzdGF0aWMgdm9pZCBhY3BfcHRlX2NvbmZpZyh2
-b2lkIF9faW9tZW0gKmFjcF9tbWlvLCBzdHJ1Y3QgcGFnZSAqcGcsDQo+ICAgCQlhY3BfcmVnX3dy
-aXRlKGhpZ2gsIGFjcF9tbWlvLCBtbUFDUF9TUkJNX1RhcmdfSWR4X0RhdGEpOw0KPiAgIA0KPiAg
-IAkJLyogTW92ZSB0byBuZXh0IHBoeXNpY2FsbHkgY29udGlndW9zIHBhZ2UgKi8NCj4gLQkJcGcr
-KzsNCj4gKwkJYWRkciArPSBQQUdFX1NJWkU7DQo+ICAgCX0NCj4gICB9DQo+ICAgDQo+IEBAIC0z
-NDMsNyArMzQxLDcgQEAgc3RhdGljIHZvaWQgY29uZmlnX2FjcF9kbWEodm9pZCBfX2lvbWVtICph
-Y3BfbW1pbywNCj4gICB7DQo+ICAgCXUxNiBjaF9hY3Bfc3lzbWVtLCBjaF9hY3BfaTJzOw0KPiAg
-IA0KPiAtCWFjcF9wdGVfY29uZmlnKGFjcF9tbWlvLCBydGQtPnBnLCBydGQtPm51bV9vZl9wYWdl
-cywNCj4gKwlhY3BfcHRlX2NvbmZpZyhhY3BfbW1pbywgcnRkLT5kbWFfYWRkciwgcnRkLT5udW1f
-b2ZfcGFnZXMsDQo+ICAgCQkgICAgICAgcnRkLT5wdGVfb2Zmc2V0KTsNCj4gICANCj4gICAJaWYg
-KHJ0ZC0+ZGlyZWN0aW9uID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsNCj4gQEAgLTg1
-MCw3ICs4NDgsNiBAQCBzdGF0aWMgaW50IGFjcF9kbWFfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNt
-X3N1YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiAgIAlpbnQgc3RhdHVzOw0KPiAgIAl1aW50NjRfdCBz
-aXplOw0KPiAgIAl1MzIgdmFsID0gMDsNCj4gLQlzdHJ1Y3QgcGFnZSAqcGc7DQo+ICAgCXN0cnVj
-dCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWU7DQo+ICAgCXN0cnVjdCBhdWRpb19zdWJzdHJlYW1f
-ZGF0YSAqcnRkOw0KPiAgIAlzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcHJ0ZCA9IHN1YnN0
-cmVhbS0+cHJpdmF0ZV9kYXRhOw0KPiBAQCAtOTg2LDE2ICs5ODMsMTQgQEAgc3RhdGljIGludCBh
-Y3BfZG1hX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4g
-ICAJCXJldHVybiBzdGF0dXM7DQo+ICAgDQo+ICAgCW1lbXNldChzdWJzdHJlYW0tPnJ1bnRpbWUt
-PmRtYV9hcmVhLCAwLCBwYXJhbXNfYnVmZmVyX2J5dGVzKHBhcmFtcykpOw0KPiAtCXBnID0gdmly
-dF90b19wYWdlKHN1YnN0cmVhbS0+ZG1hX2J1ZmZlci5hcmVhKTsNCj4gICANCj4gLQlpZiAocGcp
-IHsNCj4gKwlpZiAoc3Vic3RyZWFtLT5kbWFfYnVmZmVyLmFyZWEpIHsNCj4gICAJCWFjcF9zZXRf
-c3JhbV9iYW5rX3N0YXRlKHJ0ZC0+YWNwX21taW8sIDAsIHRydWUpOw0KPiAgIAkJLyogU2F2ZSBm
-b3IgcnVudGltZSBwcml2YXRlIGRhdGEgKi8NCj4gLQkJcnRkLT5wZyA9IHBnOw0KPiArCQlydGQt
-PmRtYV9hZGRyID0gc3Vic3RyZWFtLT5kbWFfYnVmZmVyLmFkZHI7DQo+ICAgCQlydGQtPm9yZGVy
-ID0gZ2V0X29yZGVyKHNpemUpOw0KPiAgIA0KPiAgIAkJLyogRmlsbCB0aGUgcGFnZSB0YWJsZSBl
-bnRyaWVzIGluIEFDUCBTUkFNICovDQo+IC0JCXJ0ZC0+cGcgPSBwZzsNCj4gICAJCXJ0ZC0+c2l6
-ZSA9IHNpemU7DQo+ICAgCQlydGQtPm51bV9vZl9wYWdlcyA9IFBBR0VfQUxJR04oc2l6ZSkgPj4g
-UEFHRV9TSElGVDsNCj4gICAJCXJ0ZC0+ZGlyZWN0aW9uID0gc3Vic3RyZWFtLT5zdHJlYW07DQo+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL2FjcC5oIGIvc291bmQvc29jL2FtZC9hY3AuaA0K
-PiBpbmRleCBkYmJiMWE4NTYzOGQuLmU1YWI2YzYwNDBhNiAxMDA2NDQNCj4gLS0tIGEvc291bmQv
-c29jL2FtZC9hY3AuaA0KPiArKysgYi9zb3VuZC9zb2MvYW1kL2FjcC5oDQo+IEBAIC0xMjMsNyAr
-MTIzLDcgQEAgZW51bSBhY3BfZG1hX3ByaW9yaXR5X2xldmVsIHsNCj4gICB9Ow0KPiAgIA0KPiAg
-IHN0cnVjdCBhdWRpb19zdWJzdHJlYW1fZGF0YSB7DQo+IC0Jc3RydWN0IHBhZ2UgKnBnOw0KPiAr
-CWRtYV9hZGRyX3QgZG1hX2FkZHI7DQo+ICAgCXVuc2lnbmVkIGludCBvcmRlcjsNCj4gICAJdTE2
-IG51bV9vZl9wYWdlczsNCj4gICAJdTE2IGkyc19pbnN0YW5jZTsNCj4gDQo=
+
+
+On 05/12/18 4:12 AM, Yu Zhao wrote:
+> AMD platform device acp_audio_dma can only be created by parent PCI
+> device driver (drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c). Pass struct
+> device of the parent to snd_pcm_lib_preallocate_pages() so
+> dma_alloc_coherent() can use correct dma_ops. Otherwise, it will
+> use default dma_ops which is nommu_dma_ops on x86_64 even when
+> IOMMU is enabled and set to non passthrough mode.
+> 
+> Though platform device inherits some dma related fields during its
+> creation in mfd_add_device(), we can't simply pass its struct device
+> to snd_pcm_lib_preallocate_pages() because dma_ops is not among the
+> inherited fields. Even it were, drivers/iommu/amd_iommu.c would
+> ignore it because get_device_id() doesn't handle platform device.
+> 
+> This change shouldn't give us any trouble even struct device of the
+> parent becomes null or represents some non PCI device in the future,
+> because get_dma_ops() correctly handles null struct device or uses
+> the default dma_ops if struct device doesn't have it set.
+> 
+
+This is really a good fix. We will also apply this fix for Raven platform.
+
+Thanks,
+Vijendar
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
+> ---
+>   sound/soc/amd/acp-pcm-dma.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+> index fd3db4c37882..f4011bebc7ec 100644
+> --- a/sound/soc/amd/acp-pcm-dma.c
+> +++ b/sound/soc/amd/acp-pcm-dma.c
+> @@ -1146,18 +1146,21 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
+>   	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
+>   								    DRV_NAME);
+>   	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
+> +	struct device *parent = component->dev->parent;
+>   
+>   	switch (adata->asic_type) {
+>   	case CHIP_STONEY:
+>   		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
+>   							    SNDRV_DMA_TYPE_DEV,
+> -							    NULL, ST_MIN_BUFFER,
+> +							    parent,
+> +							    ST_MIN_BUFFER,
+>   							    ST_MAX_BUFFER);
+>   		break;
+>   	default:
+>   		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
+>   							    SNDRV_DMA_TYPE_DEV,
+> -							    NULL, MIN_BUFFER,
+> +							    parent,
+> +							    MIN_BUFFER,
+>   							    MAX_BUFFER);
+>   		break;
+>   	}
+> 
