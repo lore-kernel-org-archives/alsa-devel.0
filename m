@@ -1,84 +1,85 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: DA7219: Implement error check on
- reg read and write
-Date: Wed, 5 Dec 2018 11:28:32 +0000
-Message-ID: <20181205112832.GA6205@sirena.org.uk>
-References: <1543948103-20752-1-git-send-email-akshu.agrawal@amd.com>
- <1543948103-20752-2-git-send-email-akshu.agrawal@amd.com>
- <AM5PR1001MB099412DDC3B33069BCFDC38B80AF0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
- <50cffd9e-74f4-b0af-5eed-3dad5f32d8f9@amd.com>
- <AM5PR1001MB0994CDEC9FB92DBCEB83892280A80@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
+Date: Wed, 5 Dec 2018 11:30:45 +0000
+Message-ID: <20181205113045.GD26661@dell>
+References: <20181127120041.90759-1-cychiang@chromium.org>
+ <20181128093411.GC4272@dell>
+ <20181203111919.GL26661@dell>
+ <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
+ <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8891999526694040869=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 890D526789B
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 12:28:35 +0100 (CET)
-In-Reply-To: <AM5PR1001MB0994CDEC9FB92DBCEB83892280A80@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>, "Agrawal,
- Akshu" <Akshu.Agrawal@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 05 Dec 2018, Cheng-yi Chiang wrote:
 
---===============8891999526694040869==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
-Content-Disposition: inline
+> Hi Lee,
+> 
+> I tried to apply this patch based on
+> for-mfd-next branch of mfd tree (
+> git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git )
+> Then, I tried to compile all modules by
+> 
+>  ARCH=x86_64 make allyesconfig
+>  ARCH=x86_64 make -j64
+> 
+> There was no error.
+> Could you please let me know what was the error when you failed to
+> apply this patch ?
 
+Doesn't work for me.
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+lee@host:~/projects/kernel [for-mfd-next]$ formfdnext
+Applying: mfd: cros_ec: Add commands to control codec
+error: sha1 information is lacking or useless (include/linux/mfd/cros_ec_commands.h).
+error: could not build fake ancestor
+Patch failed at 0001 mfd: cros_ec: Add commands to control codec
+Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
-On Wed, Dec 05, 2018 at 10:21:04AM +0000, Adam Thomson wrote:
+> On Tue, Dec 4, 2018 at 9:46 AM Cheng-yi Chiang <cychiang@chromium.org> wrote:
+> >
+> > On Mon, Dec 3, 2018 at 7:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Wed, 28 Nov 2018, Lee Jones wrote:
+> > >
+> > > > On Tue, 27 Nov 2018, Cheng-Yi Chiang wrote:
+> > > >
+> > > > > Add EC host commands to control codec on EC.
+> > > > >
+> > > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > > > > ---
+> > > > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
+> > > > >  1 file changed, 94 insertions(+)
+> > > >
+> > > > Applied, thanks.
+> > >
+> > > Turns out that this does not actually apply.
+> > >
+> > > What is it based on?
+> >
+> > Hi Lee,
+> > I am sorry about that!
+> > The patch series was based on Mark Brown's tree (
+> > https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git )
+> > for-next branch.
+> > I will rebase it on upstream master branch in v2 when I address other
+> > comments in codec driver.
+> > Thanks!
+> >
+> > >
 
-> If the previous I2C access failed, how can we be sure that the write back to HW
-> of 0xFF even succeeds? More importantly these error returns won't necessarily
-> stop subsequent calls to controls within the Codec I believe, so you could still
-> see unwanted writes to HW via I2C, if I2C is sporadically operational. Again I
-> don't see this update resolving that. The key thing is to resolve why even just
-> one I2C transaction fails.
-
-Right, it's just not clear what we can constructively do if the I2C bus
-falls to bits other than log things and the I2C controllers will
-generally do that themselves.  There's no guarantee what made it
-through to the device or what will in future make it through to the
-device.
-
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwHtl8ACgkQJNaLcl1U
-h9DiPgf/dRdws2pJQNwVjMZCeXaIWamfcvHKqKCY0obEy89cZkRWM/SWVu/M1bj3
-5pzLBIjk5b/tJh4/yFcK1ioJjiEpCk76HGlFnUp9+wDFeO8TOJVNppe72gmN9QrA
-fq2PjmoDPV3STxHwDzy0/5Q4pCiS3K1qFLTfY/pK8PFowuk+y/SLVNnsb34HlH7c
-6OOIGiUJNn3a6cKBTeyN2VH9tasRbsBeap4q8DZJRt2Q6+6Jp3/cLtSO7HKqLghK
-hDkNILIx9pymLYIn9zGntO46IyP+R28+TP6lGafnFvfj/eoz+BJTYsxg26qdRP+0
-WIuaOyr/YmzRZ3yjFs8Pn7SdVXj1Kw==
-=0djV
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
-
---===============8891999526694040869==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8891999526694040869==--
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
