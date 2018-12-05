@@ -1,20 +1,20 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 3/6] ASoC: audio-graph-card: tidyup mclk-fs
-	method
-Date: Wed, 5 Dec 2018 01:31:54 +0000
-Message-ID: <87wooodayg.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 4/6] ASoC: audio-graph-card: tidyup
+ convert_rate/channel method
+Date: Wed, 5 Dec 2018 01:32:10 +0000
+Message-ID: <87va48daxz.wl-kuninori.morimoto.gx@renesas.com>
 References: <871s6wepmp.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from JPN01-TY1-obe.outbound.protection.outlook.com
- (mail-eopbgr1400097.outbound.protection.outlook.com [40.107.140.97])
- by alsa0.perex.cz (Postfix) with ESMTP id 5366B267BD4
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 02:31:56 +0100 (CET)
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com
+ (mail-eopbgr1410139.outbound.protection.outlook.com [40.107.141.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id E78B6267BDB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 02:32:12 +0100 (CET)
 In-Reply-To: <871s6wepmp.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Content-ID: <8E1F378C28376C429605EE503ED5AFDA@jpnprd01.prod.outlook.com>
+Content-ID: <03CAF1A9BCB16F448A22B1F34D1241A9@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,26 +28,26 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current audio-graph-card is handling "mclk-fs" by many way.
-But, it is not useful and readable.
-We want to do is that allow having mclk-fs everywere.
+Current audio-graph-card is handling "convert_rate/channel"
+by many ways. But, it is not useful and readable.
+We want to do is that allow having it everywere.
 This patch support it.
 It will be overwrote if lower node has it.
 
 sound {
-	mclk-fs = <xxx>; // initial
+	convert-channels = <xxx>; // initial
 };
 
 codec {
+	audio-graph-card,convert-channels = <xxx>; // overwrite
 	ports {
-		mclk-fs = <xxx>; // overwrite
+		convert_channels = <xxx>; // overwrite
 		port {
-			mclk-fs = <xxx>; // overwrite
+			convert_channels = <xxx>; // overwrite
 			endpoint {
-				mclk-fs = <xxx>; // overwrite
+				convert_channels = <xxx>; // overwrite
 			};
 		};
 	};
@@ -55,159 +55,62 @@ codec {
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/audio-graph-card.c | 52 ++++++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 17 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 5b8e7a1..efa6be6 100644
+index efa6be6..24f1a72 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -31,7 +31,6 @@ struct graph_card_data {
- 		struct snd_soc_codec_conf *codec_conf;
- 		unsigned int mclk_fs;
- 	} *dai_props;
--	unsigned int mclk_fs;
- 	struct asoc_simple_jack hp_jack;
+@@ -35,7 +35,6 @@ struct graph_card_data {
  	struct asoc_simple_jack mic_jack;
  	struct snd_soc_dai_link *dai_link;
-@@ -115,9 +114,7 @@ static int asoc_graph_card_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int mclk, mclk_fs = 0;
- 	int ret = 0;
+ 	struct asoc_simple_dai *dais;
+-	struct asoc_simple_card_data adata;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	struct gpio_desc *pa_gpio;
+ };
+@@ -167,9 +166,6 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
  
--	if (priv->mclk_fs)
--		mclk_fs = priv->mclk_fs;
--	else if (dai_props->mclk_fs)
-+	if (dai_props->mclk_fs)
- 		mclk_fs = dai_props->mclk_fs;
+ 	asoc_simple_card_convert_fixup(&dai_props->adata, params);
  
- 	if (mclk_fs) {
-@@ -176,7 +173,8 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+-	/* overwrite by top level adata if exist */
+-	asoc_simple_card_convert_fixup(&priv->adata, params);
+-
  	return 0;
  }
  
--static int asoc_graph_card_dai_link_of_dpcm(struct device_node *cpu_ep,
-+static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
-+					    struct device_node *cpu_ep,
- 					    struct device_node *codec_ep,
- 					    struct graph_card_data *priv,
- 					    int *dai_idx, int link_idx,
-@@ -187,12 +185,21 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *cpu_ep,
- 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
- 	struct snd_soc_card *card = graph_priv_to_card(priv);
- 	struct device_node *ep = is_cpu ? cpu_ep : codec_ep;
-+	struct device_node *port = of_get_parent(ep);
-+	struct device_node *ports = of_get_parent(port);
- 	struct device_node *node = of_graph_get_port_parent(ep);
- 	struct asoc_simple_dai *dai;
- 	int ret;
- 
- 	dev_dbg(dev, "link_of DPCM (for %s)\n", is_cpu ? "CPU" : "Codec");
- 
-+	of_property_read_u32(top,   "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(ports, "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(port,  "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(ep,    "mclk-fs", &dai_props->mclk_fs);
-+	of_node_put(ports);
-+	of_node_put(port);
+@@ -197,6 +193,13 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	of_property_read_u32(ports, "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(port,  "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(ep,    "mclk-fs", &dai_props->mclk_fs);
 +
- 	if (is_cpu) {
- 		struct snd_soc_dai_link_component *codecs;
- 
-@@ -279,8 +286,6 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *cpu_ep,
- 	if (ret < 0)
- 		return ret;
- 
--	of_property_read_u32(ep,   "mclk-fs", &dai_props->mclk_fs);
--
- 	ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
- 					    NULL, &dai_link->dai_fmt);
- 	if (ret < 0)
-@@ -294,7 +299,8 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *cpu_ep,
- 	return 0;
- }
- 
--static int asoc_graph_card_dai_link_of(struct device_node *cpu_ep,
-+static int asoc_graph_card_dai_link_of(struct device_node *top,
-+					struct device_node *cpu_ep,
- 					struct device_node *codec_ep,
- 					struct graph_card_data *priv,
- 					int *dai_idx, int link_idx)
-@@ -302,6 +308,10 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_ep,
- 	struct device *dev = graph_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, link_idx);
- 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
-+	struct device_node *cpu_port = of_get_parent(cpu_ep);
-+	struct device_node *codec_port = of_get_parent(codec_ep);
-+	struct device_node *cpu_ports = of_get_parent(cpu_port);
-+	struct device_node *codec_ports = of_get_parent(codec_port);
- 	struct asoc_simple_dai *cpu_dai;
- 	struct asoc_simple_dai *codec_dai;
- 	int ret;
-@@ -313,14 +323,24 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_ep,
- 	codec_dai		=
- 	dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
- 
-+	/* Factor to mclk, used in hw_params() */
-+	of_property_read_u32(top,         "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(cpu_ports,   "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(codec_ports, "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(cpu_port,    "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(codec_port,  "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(cpu_ep,      "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(codec_ep,    "mclk-fs", &dai_props->mclk_fs);
-+	of_node_put(cpu_port);
-+	of_node_put(cpu_ports);
-+	of_node_put(codec_port);
-+	of_node_put(codec_ports);
++	asoc_simple_card_parse_convert(dev, top,   NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, node,  PREFIX, &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, ports, NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, port,  NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, ep,    NULL,   &dai_props->adata);
 +
- 	ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
- 					    NULL, &dai_link->dai_fmt);
- 	if (ret < 0)
- 		return ret;
+ 	of_node_put(ports);
+ 	of_node_put(port);
  
--	of_property_read_u32(cpu_ep,   "mclk-fs", &dai_props->mclk_fs);
--	of_property_read_u32(codec_ep, "mclk-fs", &dai_props->mclk_fs);
+@@ -276,8 +279,6 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 						     PREFIX "prefix");
+ 	}
+ 
+-	asoc_simple_card_parse_convert(dev, node, PREFIX, &dai_props->adata);
 -
- 	ret = asoc_simple_card_parse_graph_cpu(cpu_ep, dai_link);
+ 	ret = asoc_simple_card_of_parse_tdm(ep, dai);
+ 	if (ret)
+ 		return ret;
+@@ -409,8 +410,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
  	if (ret < 0)
  		return ret;
-@@ -370,7 +390,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	struct of_phandle_iterator it;
- 	struct device *dev = graph_priv_to_dev(priv);
- 	struct snd_soc_card *card = graph_priv_to_card(priv);
--	struct device_node *node = dev->of_node;
-+	struct device_node *top = dev->of_node;
-+	struct device_node *node = top;
- 	struct device_node *cpu_port;
- 	struct device_node *cpu_ep		= NULL;
- 	struct device_node *codec_ep		= NULL;
-@@ -390,9 +411,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
  
- 	asoc_simple_card_parse_convert(dev, node, NULL, &priv->adata);
- 
--	/* Factor to mclk, used in hw_params() */
--	of_property_read_u32(node, "mclk-fs", &priv->mclk_fs);
+-	asoc_simple_card_parse_convert(dev, node, NULL, &priv->adata);
 -
  	link_idx	= 0;
  	dai_idx		= 0;
  	conf_idx	= 0;
-@@ -434,7 +452,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 					codec_port_old = codec_port;
- 				}
- 				ret = asoc_graph_card_dai_link_of_dpcm(
--					cpu_ep, codec_ep, priv,
-+					top, cpu_ep, codec_ep, priv,
- 					&dai_idx, link_idx++,
- 					&conf_idx, cpu);
- 			} else if (cpu) {
-@@ -442,7 +460,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 				 * for Normal sound
- 				 */
- 				ret = asoc_graph_card_dai_link_of(
--					cpu_ep, codec_ep, priv,
-+					top, cpu_ep, codec_ep, priv,
- 					&dai_idx, link_idx++);
- 			}
- 			if (ret < 0)
 -- 
 2.7.4
