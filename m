@@ -1,130 +1,103 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH v2] mfd: cros_ec: Add commands to control codec
-Date: Thu,  6 Dec 2018 12:05:40 +0800
-Message-ID: <20181206040540.84632-1-cychiang@chromium.org>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH linux-next v3 6/7] ASoC: rsnd: add avb
+	clocks
+Date: Thu, 6 Dec 2018 14:04:32 +0900
+Message-ID: <011cfbf7-70d0-a649-52de-1689cdb5a10b@mentor.com>
+References: <20181205074932.28098-1-jiada_wang@mentor.com>
+ <87va48bbpa.wl-kuninori.morimoto.gx@renesas.com>
+ <612ee648-c217-e9b4-224c-87183e43d83d@mentor.com>
+ <878t13jx6y.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id A14EC267B9E
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 06:04:41 +0100 (CET)
+In-Reply-To: <878t13jx6y.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add EC host commands to control codec on EC.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- V2 fixed the wrong ancestor issue so the patch can be applied cleanly on mfd tree.
- Codec driver that uses these commands will be sent separately.
- Thanks!
-
- include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
-
-diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
-index 9a9631f0559e2..fc91082d4c357 100644
---- a/include/linux/mfd/cros_ec_commands.h
-+++ b/include/linux/mfd/cros_ec_commands.h
-@@ -2790,6 +2790,100 @@ struct ec_response_battery_vendor_param {
- 	uint32_t value;
- } __packed;
- 
-+/*****************************************************************************/
-+/* Commands for I2S recording on audio codec. */
-+
-+#define EC_CMD_CODEC_I2S 0x00BC
-+
-+enum ec_codec_i2s_subcmd {
-+	EC_CODEC_SET_SAMPLE_DEPTH = 0x0,
-+	EC_CODEC_SET_GAIN = 0x1,
-+	EC_CODEC_GET_GAIN = 0x2,
-+	EC_CODEC_I2S_ENABLE = 0x3,
-+	EC_CODEC_I2S_SET_CONFIG = 0x4,
-+	EC_CODEC_I2S_SET_TDM_CONFIG = 0x5,
-+	EC_CODEC_I2S_SET_BCLK = 0x6,
-+};
-+
-+enum ec_sample_depth_value {
-+	EC_CODEC_SAMPLE_DEPTH_16 = 0,
-+	EC_CODEC_SAMPLE_DEPTH_24 = 1,
-+};
-+
-+enum ec_i2s_config {
-+	EC_DAI_FMT_I2S = 0,
-+	EC_DAI_FMT_RIGHT_J = 1,
-+	EC_DAI_FMT_LEFT_J = 2,
-+	EC_DAI_FMT_PCM_A = 3,
-+	EC_DAI_FMT_PCM_B = 4,
-+	EC_DAI_FMT_PCM_TDM = 5,
-+};
-+
-+struct ec_param_codec_i2s {
-+	/*
-+	 * enum ec_codec_i2s_subcmd
-+	 */
-+	uint8_t cmd;
-+	union {
-+		/*
-+		 * EC_CODEC_SET_SAMPLE_DEPTH
-+		 * Value should be one of ec_sample_depth_value.
-+		 */
-+		uint8_t depth;
-+
-+		/*
-+		 * EC_CODEC_SET_GAIN
-+		 * Value should be 0~43 for both channels.
-+		 */
-+		struct ec_param_codec_i2s_set_gain {
-+			uint8_t left;
-+			uint8_t right;
-+		} __packed gain;
-+
-+		/*
-+		 * EC_CODEC_I2S_ENABLE
-+		 * 1 to enable, 0 to disable.
-+		 */
-+		uint8_t i2s_enable;
-+
-+		/*
-+		 * EC_CODEC_I2S_SET_COFNIG
-+		 * Value should be one of ec_i2s_config.
-+		 */
-+		uint8_t i2s_config;
-+
-+		/*
-+		 * EC_CODEC_I2S_SET_TDM_CONFIG
-+		 * Value should be one of ec_i2s_config.
-+		 */
-+		struct ec_param_codec_i2s_tdm {
-+			/*
-+			 * 0 to 496
-+			 */
-+			int16_t ch0_delay;
-+			/*
-+			 * -1 to 496
-+			 */
-+			int16_t ch1_delay;
-+			uint8_t adjacent_to_ch0;
-+			uint8_t adjacent_to_ch1;
-+		} __packed tdm_param;
-+
-+		/*
-+		 * EC_CODEC_I2S_SET_BCLK
-+		 */
-+		uint32_t bclk;
-+	};
-+} __packed;
-+
-+/*
-+ * For subcommand EC_CODEC_GET_GAIN.
-+ */
-+struct ec_response_codec_gain {
-+	uint8_t left;
-+	uint8_t right;
-+} __packed;
-+
- /*****************************************************************************/
- /* System commands */
- 
--- 
-2.20.0.rc1.387.gf8505762e3-goog
+SGkgTW9yaW1vdG8tc2FuCgpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMKCk9uIDIwMTgvMTIvMDYg
+OTo1OSwgS3VuaW5vcmkgTW9yaW1vdG8gd3JvdGU6Cj4gSGkgSmlhZGEKPgo+Pj4+ICsJYXZiID0g
+ZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCphdmIpLCBHRlBfS0VSTkVMKTsKPj4+PiArCWlmICgh
+YXZiKQo+Pj4+ICsJCXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOwo+Pj4+ICsKPj4+PiArCXBhcmVu
+dF9uYW1lID0gX19jbGtfZ2V0X25hbWUoYWRnLT5jbGthZGcpOwo+Pj4gVGhpcyBwYXJlbnRfbmFt
+ZSBpcyB2ZXJ5IHN0cmFuZ2UgdG8gbWUuCj4+PiBBVkIgcGFyZW50IGNsayBpcyAiQVVESU9fQ0xL
+X0EvQi9DL0kiICg9IGNsa19hL2IvYy9pIGluIHRoaXMgZHJpdmVyKQo+Pj4gb3IgIkFVRElPX0NM
+S19PVVRfQS9CL0MvRCIgKD0gYXVkaW9fY2xrb3V0LzEvMi8zIGluIHRoaXMgZHJpdmVyKS4KPj4+
+IEFuZCB3ZSBkb24ndCBoYXZlICJhZGciIGNsb2NrLgo+Pj4gUGxlYXNlIGRvdWJsZSBjaGVjayBp
+dC4KPj4gSSBoYXZlIHNvbWUgbG9jYWwgZGV2aWNlLXRyZWUgY2hhbmdlLCB3aGljaCBleHBlbmRz
+ICdhZGcnIHJlZ2lzdGVyCj4+IHJhbmdlIGFuZCBhZGQKPj4gImFkZyIgY2xvY2sgdG8gcmNhcl9z
+b3VuZCBub2RlIHdoaWNoIHJlZmVyIHRvIG5ld2x5IGFkZGVkICdhZGcnIGNsb2NrCj4+IChTMEQx
+z5UpIGluIHRoaXMgcGF0Y2gtc2V0Cj4gKHNuaXApCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JmNwZyBDUEdfTU9EIDEwMDU+LAo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2xvY2tzID0gPCZj
+cGcgQ1BHX01PRCA5MjI+LCA8JmNwZyBDUEdfTU9EIDEwMDU+LAo+PiAgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNwZyBD
+UEdfTU9EIDEwMDY+LCA8JmNwZyBDUEdfTU9EIDEwMDc+LAo+PiAgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNwZyBDUEdf
+TU9EIDEwMDg+LCA8JmNwZyBDUEdfTU9EIDEwMDk+LAo+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNwZyBDUEdfTU9E
+IDEwMTA+LCA8JmNwZyBDUEdfTU9EIDEwMTE+LAo+PiBAQCAtMTg1Niw3ICsxODU2LDcgQEAKPj4g
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgPCZhdWRpb19jbGtfYT4sIDwmYXVkaW9fY2xrX2I+LAo+PiAgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmF1
+ZGlvX2Nsa19jPiwKPj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgPCZjcGcgQ1BHX0NPUkUgUjhBNzc5NV9DTEtfUzBEND47
+Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9jay1u
+YW1lcyA9ICJzc2ktYWxsIiwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gImFkZyIsICJzc2ktYWxsIiwKPj4gIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgICJzc2kuOSIsICJzc2kuOCIsICJzc2kuNyIsICJzc2kuNiIsCj4+ICDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAic3NpLjUiLCAic3NpLjQiLCAic3NpLjMiLCAic3NpLjIiLAo+PiAgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgInNzaS4xIiwgInNzaS4wIiwKPiBOb29vbyAhIQo+IEl0IGJyZWFrcyBzb3VuZCBj
+bG9jayAvIG1vZHVsZSBzdG9wIGNvbnRyb2xpbmcgISEKQ2FuIHlvdSBsZXQgbWUga25vdyBob3cg
+aXQgYnJlYWtzIHNvdW5kIGNsb2NrIC8gbW9kdWxlIHN0b3AKc28gdGhhdCBJIGNhbiBjb21lIHVw
+IHdpdGggYSBmaXgKPiBPSywgbm93IEkgY2hlY2tlZCBtb3JlIGRldGFpbCBvZiBBREcgZm9yIEVB
+VkIvSUYuCj4KPiAxc3QsIEkgZG9uJ3QgdGhpbmsgd2UgbmVlZCB0byBhZGQgImFkZyIgY2xvY2su
+Cj4gSXQgaXMgbm90IGV4aXN0IG9uIEdlbjIsIGFuZCBkZWZhdWx0IE9OIG9uIEdlbjMuCj4gSWYg
+eW91IHdhbnQgdG8gYWRkIGl0LCBwbGVhc2UgYWRkIGl0IHRvICJsYXN0IiBvZiBjbG9ja3MsIG5v
+dCAiZmlyc3QiLgo+ICJmaXJzdCIgY2xvY2sgaXMgaGFuZGxpbmcgd2hvbGUgU1NJIHBvd2VyLgph
+cyB0aGlzIGRldmljZS10cmVlIGNoYW5nZSBpcyBvbmx5IGxvY2FsLCBJIHdpbGwgbW92ZSAnYWRn
+JyBjbG9jayB0byAKJ2xhc3QnIG9mIGNsb2NrcywKd2hlbiBJIHN1Ym1pdCBpdC4KPiAybmQsIGl0
+IGlzICJNb2R1bGUgc3RvcCBjbG9jayIsIG5vdCAiUzBEMc+VIi4KPiBXZSBhbHJlYWR5IGhhbmRs
+aW5nIGl0IGFzICJjbGtfaSIuClNNU1RQQ1I5MjIgY29udHJvbHMgaW5wdXQgb2YgdHdvIGNsb2Nr
+cyAiUzBEMc+VIiBhbmQgIlMwRDTPlSIsCiJTMEQ0z5UiIGlzIGlucHV0IHRvIEJSR0EsCiJTMEQx
+z5UiIGlzIGlucHV0IHRvIGF2Yl9jb3VudGVyOAo+Cj4gM3JkLCB3ZSBuZWVkIHRvIGNyZWF0ZSBu
+ZXcgY2xvY2svaGFuZGxlciBmb3IKPiBhdmJfY291bnRlcjggLyBhdWRpb19jbGtfZGl2MyAvIGF2
+Yl9kaXY4IGZvciAiaW50ZXJuYWwiIHB1cnBvc2UsCj4gYW5kIG5lZWQgdG8gY3JlYXRlIGF2Yl9h
+ZGdfc3luW10gY2xvY2sgZm9yICJleHRlcm5hbCIgcHVycG9zZSBmb3IgRUFWQi9JRi4KPiBZb3Vy
+IGNvZGUgaXMgY3JlYXRpbmcgLyByZWdpc3RlcmluZyBhZGctPmNsa2F2YltdLAo+IGJ1dCBpdCBp
+cyBmb3IgYXZiX2NvdW50ZXI4IGluIG15IHVuZGVyc3RhbmRpbmcuCj4gV2UgZG9uJ3QgbmVlZCB0
+byByZWdpc3RlciBpdCBhcyBmb3JtYWwgY2xvY2sgSU1PLgpJIGFncmVlLCBiZXNpZGVzIGF2Yl9j
+b3VudGVyOCB0aGVyZSBhcmUgb3RoZXIgY2xvY2tzIHdoaWNoIG5lZWQgdG8gYmUgCmFkZGVkIGFz
+IHlvdSBoYXZlIG1lbnRpb25lZCwKaW4gdGhpcyBwYXRjaC1zZXQsIEkgb25seSBhZGRlZCBhdmJf
+Y291bnRlcjgsIGJlY2F1c2UgSSB3YW50IHRvIGtlZXAgdGhlIApwYXRjaC1zZXQgc2ltcGxlLApv
+dGhlciBjbG9ja3MgY2FuIGJlIGFkZGVkIGxhdGVyLgoKYXZiX2NvdW50ZXI4IGlzIHJlZ2lzdGVy
+ZWQgYXMgZm9ybWFsIGNsb2NrIGlzIGJlY2F1c2UsCnRoZXJlIGlzIHVzZSBjYXNlIHRoYXQgRUFW
+Qi1JRiBtYXkgdXNlIGF2Yl9kaXY4LCBhbmQgYXZiX2NvdW50ZXI4IGlzIAppbnB1dCB0byBhdmJf
+ZGl2OC4KaWYga2VlcHMgYXZiX2NvdW50ZXI4ICdpbnRlcm5hbCcsIEkgYW0gbm90IHN1cmUgaG93
+IEVBVkItSUYgY2FuIHNldCAKY2xvY2sgcmF0ZSBmb3IgYXZiX2NvdW50ZXI4Cj4gNHRoLCBFQVZC
+IGRyaXZlciBuZWVkIHRvIGdldCBjbG9jayBmcm9tIEFWQiB2aWEgRFQKPiBhcyAiYXZiX2FkZ19z
+eW5bXSIgY2xvY2ssIG5vdCAiYXZiX2NvdW50ZXI4Ii4KPgo+IEknbSBub3Qgc3VyZSBFQVZCIHNp
+ZGUgZHJpdmVyLCBidXQgcGxlYXNlIGRvdWJsZSBjaGVjayB0aGVzZS4KeWVzLCBFQVZCIGRyaXZl
+ciBvbmx5IG5lZWRzIHRvIGdldCAnYXZiX2FkZ19zeW5jW10nIGNsb2NrLAphbmQgYXZiX2FkZ19z
+eW5jIGNsb2NrIGlzIGNoaWxkIGNsb2NrIG9mIGF1ZGlvX2Nsa19kaXYzIC8gYXZiX2RpdjgKCgpU
+aGFua3MsCkppYWRhCj4KPgo+IEJlc3QgcmVnYXJkcwo+IC0tLQo+IEt1bmlub3JpIE1vcmltb3Rv
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
