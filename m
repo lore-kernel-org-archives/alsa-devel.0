@@ -1,46 +1,44 @@
 From: shuah <shuah@kernel.org>
-Subject: Re: [RFC PATCH v8 1/4] media: Media Device Allocator API
-Date: Thu, 6 Dec 2018 08:33:14 -0700
-Message-ID: <73c22137-9c7a-75c8-8cd1-3736c63c2d40@kernel.org>
-References: <cover.1541109584.git.shuah@kernel.org>
- <e474dd16f1d6443c12b1361376193c9d0efcced6.1541109584.git.shuah@kernel.org>
- <20181119085931.GA28607@amd>
+Subject: Re: [RFC PATCH v8 4/4] sound/usb: Use Media Controller API to share
+ media resources
+Date: Thu, 6 Dec 2018 08:34:57 -0700
+Message-ID: <3aef49a1-2dd7-c6c6-7c2e-5ba3cc76a695@kernel.org>
+References: <cover.1541118238.git.shuah@kernel.org>
+ <ba3bb65b4250fa470c7319d50ebdf1047793efad.1541109584.git.shuah@kernel.org>
+ <0b919080-669a-a266-c85c-66dc724a536b@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181119085931.GA28607@amd>
+In-Reply-To: <0b919080-669a-a266-c85c-66dc724a536b@xs4all.nl>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/19/18 1:59 AM, Pavel Machek wrote:
-> On Thu 2018-11-01 18:31:30, shuah@kernel.org wrote:
+Hi Hans,
+
+On 11/20/18 4:54 AM, Hans Verkuil wrote:
+> On 11/02/2018 01:31 AM, shuah@kernel.org wrote:
 >> From: Shuah Khan <shuah@kernel.org>
 >>
->> Media Device Allocator API to allows multiple drivers share a media device.
->> Using this API, drivers can allocate a media device with the shared struct
->> device as the key. Once the media device is allocated by a driver, other
->> drivers can get a reference to it. The media device is released when all
->> the references are released.
-> 
-> Sounds like a ... bad idea?
-> 
-> That's what new "media control" framework is for, no?
-> 
-> Why do you need this?
-> 								Pavel
-> 
+>> Change ALSA driver to use Media Controller API to share media resources
+>> with DVB, and V4L2 drivers on a AU0828 media device.
+>>
+>> Media Controller specific initialization is done after sound card is
+>> registered. ALSA creates Media interface and entity function graph
+>> nodes for Control, Mixer, PCM Playback, and PCM Capture devices.
+>>
+>> snd_usb_hw_params() will call Media Controller enable source handler
+>> interface to request the media resource. If resource request is granted,
+>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
+>> returned.
+>>
+>> Media specific cleanup is done in usb_audio_disconnect().
+>>
+>> Signed-off-by: Shuah Khan <shuah@kernel.org>
 
-Media control framework doesn't address this problem of ownership of the 
-media device when non-media drivers have to own the pipeline. In this 
-case, snd-usb owns the audio pipeline when an audio application is using 
-the device. Without this work, media drivers won't be able to tell if 
-snd-usb is using the tuner and owns the media pipeline.
+Thanks for the review. Fixing them all in the next revision.
 
-I am going to clarify this in the commit log.
-
-thanks,
 -- Shuah
