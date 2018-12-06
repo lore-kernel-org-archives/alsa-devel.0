@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/5] ASoC: qcom: sdm845: Add board
- specific dapm widgets
-Date: Thu, 6 Dec 2018 20:23:56 +0000
-Message-ID: <20181206202356.GE3084@sirena.org.uk>
-References: <20181128090037.257359-1-cychiang@chromium.org>
- <a6401825-6ca4-d187-5626-4843c660c7fb@linaro.org>
+Subject: Applied "ASoC: sdm845: Add configuration for headset
+	codec" to the asoc tree
+Date: Thu,  6 Dec 2018 20:25:42 +0000 (GMT)
+Message-ID: <20181206202542.5151311252F7@debutante.sirena.org.uk>
+References: <20181128090037.257359-4-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0224272515262480516=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 56544267C9B
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:23:57 +0100 (CET)
-In-Reply-To: <a6401825-6ca4-d187-5626-4843c660c7fb@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AAC3267C9B
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:43 +0100 (CET)
+In-Reply-To: <20181128090037.257359-4-cychiang@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org, Cheng-Yi Chiang <cychiang@chromium.org>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0224272515262480516==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
-Content-Disposition: inline
+   ASoC: sdm845: Add configuration for headset codec
 
+has been applied to the asoc tree at
 
---SNIs70sCzqvszXB4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 05, 2018 at 02:18:25PM +0000, Srinivas Kandagatla wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Am not sure why are you sending patches that are already applied to https=
-://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=3Dfor-n=
-ext
->=20
-> It just wastes other people time in looking at something which is already
-> applied.
-> Also it looks like you have not picked acked-bys on some of the patches!
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I've applied the patches with acks, please resend anything else that
-needs applying.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---SNIs70sCzqvszXB4
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwJhVsACgkQJNaLcl1U
-h9AFcgf/YwR4tIgN43bL0L0pFZzYILi0HDhYxOnPXjuJw36pSk8zWEDWgaw545y2
-DPik2niXxq9q9TY78W3g4mx6HvAwbkKAKNrMU903H99Y5q/aaoNTHkwFCkzsElPe
-ArioextoNV4nV3bQJ+epDvxMwcEwQLhEgvqs8vaI0P7BgKHyc4C+qpXS5sqk3j1p
-tSWFql47B2UT4T/ZePfGJuqcyqHpgXs/zvIAbmY3XWkyJVwWi2T71BQvxpKQEJLV
-b/wbHXj7ZMIK0wDjs89giEQzIAprF4dOWoj2PP9mu/kzdXZORPzJSqIBXOt0UGaJ
-oOki1M2Crg5lsQ77fFKH/9y5Xu33mg==
-=2i0x
------END PGP SIGNATURE-----
+>From f7485875a68792d3e5d3984d521f2498ee385fa3 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Wed, 28 Nov 2018 17:00:36 +0800
+Subject: [PATCH] ASoC: sdm845: Add configuration for headset codec
 
---SNIs70sCzqvszXB4--
+Set DAI format and sysclk for headset codec.
 
---===============0224272515262480516==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/sdm845.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-
---===============0224272515262480516==--
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index d0df7ec6042e..1db8ef668223 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -14,6 +14,7 @@
+ #include <uapi/linux/input-event-codes.h>
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
++#include "../codecs/rt5663.h"
+ 
+ #define DEFAULT_SAMPLE_RATE_48K		48000
+ #define DEFAULT_MCLK_RATE		24576000
+@@ -125,9 +126,27 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret = 0;
+ 
+ 	switch (cpu_dai->id) {
++	case PRIMARY_MI2S_RX:
++	case PRIMARY_MI2S_TX:
++		/*
++		 * Use ASRC for internal clocks, as PLL rate isn't multiple
++		 * of BCLK.
++		 */
++		rt5663_sel_asrc_clk_src(
++			codec_dai->component,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
++		ret = snd_soc_dai_set_sysclk(
++			codec_dai, RT5663_SCLK_S_MCLK, DEFAULT_MCLK_RATE,
++			SND_SOC_CLOCK_IN);
++		if (ret < 0)
++			dev_err(rtd->dev,
++				"snd_soc_dai_set_sysclk err = %d\n", ret);
++		break;
+ 	case QUATERNARY_TDM_RX_0:
+ 	case QUATERNARY_TDM_TX_0:
+ 		ret = sdm845_tdm_snd_hw_params(substream, params);
+@@ -202,6 +221,7 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 	switch (cpu_dai->id) {
+ 	case PRIMARY_MI2S_RX:
+ 	case PRIMARY_MI2S_TX:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF;
+ 		if (++(data->pri_mi2s_clk_count) == 1) {
+ 			snd_soc_dai_set_sysclk(cpu_dai,
+ 				Q6AFE_LPASS_CLK_ID_MCLK_1,
+@@ -211,6 +231,7 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 				MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
++		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
+ 		break;
+ 
+ 	case SECONDARY_MI2S_TX:
+-- 
+2.19.0.rc2
