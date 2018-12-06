@@ -1,48 +1,46 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] tinycompress: Fix missing '}' around extern C
-Date: Thu, 6 Dec 2018 10:04:27 +0000
-Message-ID: <20181206100427.18472-1-ckeepax@opensource.cirrus.com>
+From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add ASoC maintainers for sound dt-bindings
+Date: Thu, 6 Dec 2018 12:45:34 +0100
+Message-ID: <CAJiuCceKdd4P_Bih138cUZWLRrXkmvysgmrneQ+2w4oduhbuOA@mail.gmail.com>
+References: <20181117121452.6101-1-peron.clem@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 76279267C5D
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 11:04:32 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181117121452.6101-1-peron.clem@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "David S . Miller" <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>, Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
+Gentle up,
 
-Signed-off-by: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- include/tinycompress/tinycompress.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
-index 780dce6..f0fae30 100644
---- a/include/tinycompress/tinycompress.h
-+++ b/include/tinycompress/tinycompress.h
-@@ -276,4 +276,8 @@ int is_compress_ready(struct compress *compress);
- /* Returns a human readable reason for the last error */
- const char *compress_get_error(struct compress *compress);
- 
-+#if defined(__cplusplus)
-+} // extern "C"
-+#endif
-+
- #endif
--- 
-2.11.0
+Thanks
+On Sat, 17 Nov 2018 at 13:15, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com=
+> wrote:
+>
+> Sound dt-bindings are applied by ASoC maintainers and should be
+> submit to ASoC list in addition to the devicetree list.
+>
+> Hence, add this information into the MAINTAINERS file.
+>
+> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0abecc528dac..62701e0135af 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13930,6 +13930,7 @@ S:      Supported
+>  F:     Documentation/devicetree/bindings/sound/
+>  F:     Documentation/sound/soc/
+>  F:     sound/soc/
+> +F:     include/dt-bindings/sound/
+>  F:     include/sound/soc*
+>
+>  SOUNDWIRE SUBSYSTEM
+> --
+> 2.19.1
+>
