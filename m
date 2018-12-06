@@ -1,70 +1,42 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH linux-next v3 6/7] ASoC: rsnd: add avb clocks
-Date: Thu, 6 Dec 2018 00:59:44 +0000
-Message-ID: <878t13jx6y.wl-kuninori.morimoto.gx@renesas.com>
-References: <20181205074932.28098-1-jiada_wang@mentor.com>
-        <87va48bbpa.wl-kuninori.morimoto.gx@renesas.com>
-        <612ee648-c217-e9b4-224c-87183e43d83d@mentor.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Use of_node_name_eq for node name
+        comparisons
+Date: Thu, 6 Dec 2018 01:30:48 +0000
+Message-ID: <875zw7jvr1.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181205195050.4759-33-robh@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <612ee648-c217-e9b4-224c-87183e43d83d@mentor.com>
+In-Reply-To: <20181205195050.4759-33-robh@kernel.org>
 Content-Language: en-US
-Content-ID: <D115A518988F4147A0B678A391742412@jpnprd01.prod.outlook.com>
+Content-ID: <FFD6A0F1D3827746B1DACBD7F8675846@jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-DQpIaSBKaWFkYQ0KDQo+ID4+ICsJYXZiID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCphdmIp
-LCBHRlBfS0VSTkVMKTsNCj4gPj4gKwlpZiAoIWF2YikNCj4gPj4gKwkJcmV0dXJuIEVSUl9QVFIo
-LUVOT01FTSk7DQo+ID4+ICsNCj4gPj4gKwlwYXJlbnRfbmFtZSA9IF9fY2xrX2dldF9uYW1lKGFk
-Zy0+Y2xrYWRnKTsNCj4gPiBUaGlzIHBhcmVudF9uYW1lIGlzIHZlcnkgc3RyYW5nZSB0byBtZS4N
-Cj4gPiBBVkIgcGFyZW50IGNsayBpcyAiQVVESU9fQ0xLX0EvQi9DL0kiICg9IGNsa19hL2IvYy9p
-IGluIHRoaXMgZHJpdmVyKQ0KPiA+IG9yICJBVURJT19DTEtfT1VUX0EvQi9DL0QiICg9IGF1ZGlv
-X2Nsa291dC8xLzIvMyBpbiB0aGlzIGRyaXZlcikuDQo+ID4gQW5kIHdlIGRvbid0IGhhdmUgImFk
-ZyIgY2xvY2suDQo+ID4gUGxlYXNlIGRvdWJsZSBjaGVjayBpdC4NCj4gSSBoYXZlIHNvbWUgbG9j
-YWwgZGV2aWNlLXRyZWUgY2hhbmdlLCB3aGljaCBleHBlbmRzICdhZGcnIHJlZ2lzdGVyDQo+IHJh
-bmdlIGFuZCBhZGQNCj4gImFkZyIgY2xvY2sgdG8gcmNhcl9zb3VuZCBub2RlIHdoaWNoIHJlZmVy
-IHRvIG5ld2x5IGFkZGVkICdhZGcnIGNsb2NrDQo+IChTMEQxz5UpIGluIHRoaXMgcGF0Y2gtc2V0
-DQooc25pcCkNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IGNsb2NrcyA9IDwmY3BnIENQR19NT0QgMTAwNT4sDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JmNwZyBDUEdfTU9EIDkyMj4sIDwmY3Bn
-IENQR19NT0QgMTAwNT4sDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgPCZjcGcgQ1BHX01PRCAxMDA2PiwgPCZjcGcgQ1BH
-X01PRCAxMDA3PiwNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNwZyBDUEdfTU9EIDEwMDg+LCA8JmNwZyBDUEdfTU9E
-IDEwMDk+LA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIDwmY3BnIENQR19NT0QgMTAxMD4sIDwmY3BnIENQR19NT0QgMTAx
-MT4sDQo+IEBAIC0xODU2LDcgKzE4NTYsNyBAQA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwmYXVkaW9fY2xrX2E+LCA8
-JmF1ZGlvX2Nsa19iPiwNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmF1ZGlvX2Nsa19jPiwNCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNw
-ZyBDUEdfQ09SRSBSOEE3Nzk1X0NMS19TMEQ0PjsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gInNzaS1hbGwiLA0KPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiYWRn
-IiwgInNzaS1hbGwiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjkiLCAic3NpLjgiLCAic3Np
-LjciLCAic3NpLjYiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjUiLCAic3NpLjQiLCAic3Np
-LjMiLCAic3NpLjIiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjEiLCAic3NpLjAiLA0KDQpO
-b29vbyAhIQ0KSXQgYnJlYWtzIHNvdW5kIGNsb2NrIC8gbW9kdWxlIHN0b3AgY29udHJvbGluZyAh
-IQ0KDQpPSywgbm93IEkgY2hlY2tlZCBtb3JlIGRldGFpbCBvZiBBREcgZm9yIEVBVkIvSUYuDQoN
-CjFzdCwgSSBkb24ndCB0aGluayB3ZSBuZWVkIHRvIGFkZCAiYWRnIiBjbG9jay4NCkl0IGlzIG5v
-dCBleGlzdCBvbiBHZW4yLCBhbmQgZGVmYXVsdCBPTiBvbiBHZW4zLg0KSWYgeW91IHdhbnQgdG8g
-YWRkIGl0LCBwbGVhc2UgYWRkIGl0IHRvICJsYXN0IiBvZiBjbG9ja3MsIG5vdCAiZmlyc3QiLg0K
-ImZpcnN0IiBjbG9jayBpcyBoYW5kbGluZyB3aG9sZSBTU0kgcG93ZXIuDQoNCjJuZCwgaXQgaXMg
-Ik1vZHVsZSBzdG9wIGNsb2NrIiwgbm90ICJTMEQxz5UiLg0KV2UgYWxyZWFkeSBoYW5kbGluZyBp
-dCBhcyAiY2xrX2kiLg0KDQozcmQsIHdlIG5lZWQgdG8gY3JlYXRlIG5ldyBjbG9jay9oYW5kbGVy
-IGZvcg0KYXZiX2NvdW50ZXI4IC8gYXVkaW9fY2xrX2RpdjMgLyBhdmJfZGl2OCBmb3IgImludGVy
-bmFsIiBwdXJwb3NlLA0KYW5kIG5lZWQgdG8gY3JlYXRlIGF2Yl9hZGdfc3luW10gY2xvY2sgZm9y
-ICJleHRlcm5hbCIgcHVycG9zZSBmb3IgRUFWQi9JRi4NCllvdXIgY29kZSBpcyBjcmVhdGluZyAv
-IHJlZ2lzdGVyaW5nIGFkZy0+Y2xrYXZiW10sDQpidXQgaXQgaXMgZm9yIGF2Yl9jb3VudGVyOCBp
-biBteSB1bmRlcnN0YW5kaW5nLg0KV2UgZG9uJ3QgbmVlZCB0byByZWdpc3RlciBpdCBhcyBmb3Jt
-YWwgY2xvY2sgSU1PLg0KDQo0dGgsIEVBVkIgZHJpdmVyIG5lZWQgdG8gZ2V0IGNsb2NrIGZyb20g
-QVZCIHZpYSBEVA0KYXMgImF2Yl9hZGdfc3luW10iIGNsb2NrLCBub3QgImF2Yl9jb3VudGVyOCIu
-DQoNCkknbSBub3Qgc3VyZSBFQVZCIHNpZGUgZHJpdmVyLCBidXQgcGxlYXNlIGRvdWJsZSBjaGVj
-ayB0aGVzZS4NCg0KDQpCZXN0IHJlZ2FyZHMNCi0tLQ0KS3VuaW5vcmkgTW9yaW1vdG8NCg==
+
+Hi Rob
+
+> Convert string compares of DT node names to use of_node_name_eq helper
+> instead. This removes direct access to the node name pointer.
+>=20
+> For the FSL ASoC card, the full node names appear to be "ssi", "esai",
+> and "sai", so there's not any reason to use strstr and of_node_name_eq
+> can be used instead.
+
+I guess this patch is for FSL ?
+
+> ---
+>  sound/soc/fsl/fsl-asoc-card.c       | 6 +++---
+>  sound/soc/generic/simple-scu-card.c | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+
+But, this patch is including simple-scu-card.
+Is this miss ?
+
+
+Best regards
+---
+Kuninori Morimoto
