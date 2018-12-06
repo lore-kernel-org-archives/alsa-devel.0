@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: cht_bsw_max98090_ti: Add pmc_plt_clk_0 quirk for Chromebook Gnawty" to the asoc tree
-Date: Thu,  6 Dec 2018 20:26:07 +0000 (GMT)
-Message-ID: <20181206202607.E134511252F7@debutante.sirena.org.uk>
-References: <20181203204514.3991-1-hdegoede@redhat.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20181203204514.3991-1-hdegoede@redhat.com>
-Sender: stable-owner@vger.kernel.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: stable@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>stable@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: codecs: cs4270: move to GPIO consumer
+	API" to the asoc tree
+Date: Thu,  6 Dec 2018 20:25:58 +0000 (GMT)
+Message-ID: <20181206202558.B6A8311252F7@debutante.sirena.org.uk>
+References: <20181206122426.28194-2-daniel@zonque.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 555A9267CCD
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:59 +0100 (CET)
+In-Reply-To: <20181206122426.28194-2-daniel@zonque.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: cht_bsw_max98090_ti: Add pmc_plt_clk_0 quirk for Chromebook Gnawty
+   ASoC: codecs: cs4270: move to GPIO consumer API
 
 has been applied to the asoc tree at
 
@@ -37,54 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 94ea56cff506c769a509c5dd87904c7fe3806a81 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Mon, 3 Dec 2018 21:45:14 +0100
-Subject: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Add pmc_plt_clk_0 quirk for
- Chromebook Gnawty
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From f98acd8a3115e1de780083ced42039522075d155 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Thu, 6 Dec 2018 13:24:26 +0100
+Subject: [PATCH] ASoC: codecs: cs4270: move to GPIO consumer API
 
-The Gnawty model Chromebook uses pmc_plt_clk_0 instead of pmc_plt_clk_3
-for the mclk, just like the Clapper and Swanky models.
+Get the reset GPIO through the GPIO consumer API. This allows specifying the
+DT property as "reset-gpios" without breaking existing DT users.
 
-This commit adds a DMI based quirk for this.
-
-This fixing audio no longer working on these devices after
-commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-that commit fixes us unnecessary keeping unused clocks on, but in case of
-the Gnawty that was breaking audio support since we were not using the
-right clock in the cht_bsw_max98090_ti machine driver.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201787
-Cc: stable@vger.kernel.org
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Reported-and-tested-by: Jaime Pérez <19.jaime.91@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs4270.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index ad0c98383853..08a5152e635a 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -396,6 +396,13 @@ static const struct dmi_system_id cht_max98090_quirk_table[] = {
- 		},
- 		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
- 	},
-+	{
-+		/* Gnawty model Chromebook (Acer Chromebook CB3-111) */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Gnawty"),
-+		},
-+		.driver_data = (void *)QUIRK_PMC_PLT_CLK_0,
-+	},
- 	{
- 		/* Swanky model Chromebook (Toshiba Chromebook 2) */
- 		.matches = {
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 3c266eeb89bf..33d74f163bd7 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -29,8 +29,8 @@
+ #include <linux/i2c.h>
+ #include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/of_device.h>
+-#include <linux/of_gpio.h>
+ 
+ /*
+  * The codec isn't really big-endian or little-endian, since the I2S
+@@ -658,8 +658,8 @@ static const struct regmap_config cs4270_regmap = {
+ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+ 	const struct i2c_device_id *id)
+ {
+-	struct device_node *np = i2c_client->dev.of_node;
+ 	struct cs4270_private *cs4270;
++	struct gpio_desc *reset_gpiod;
+ 	unsigned int val;
+ 	int ret, i;
+ 
+@@ -678,20 +678,11 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* See if we have a way to bring the codec out of reset */
+-	if (np) {
+-		enum of_gpio_flags flags;
+-		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
+-
+-		if (gpio_is_valid(gpio)) {
+-			ret = devm_gpio_request_one(&i2c_client->dev, gpio,
+-				     flags & OF_GPIO_ACTIVE_LOW ?
+-					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
+-				     "cs4270 reset");
+-			if (ret < 0)
+-				return ret;
+-		}
+-	}
++	reset_gpiod = devm_gpiod_get_optional(&i2c_client->dev, "reset",
++					      GPIOD_OUT_HIGH);
++	if (IS_ERR(reset_gpiod) &&
++	    PTR_ERR(reset_gpiod) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
+ 
+ 	cs4270->regmap = devm_regmap_init_i2c(i2c_client, &cs4270_regmap);
+ 	if (IS_ERR(cs4270->regmap))
 -- 
 2.19.0.rc2
