@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Remove useless assignment" to
-	the asoc tree
-Date: Thu,  6 Dec 2018 20:25:53 +0000 (GMT)
-Message-ID: <20181206202553.48A9F11252F7@debutante.sirena.org.uk>
-References: <20181204181817.GB1136@lenoch>
+Subject: Applied "ASoC: codecs: ak4104: move to GPIO consumer
+	API" to the asoc tree
+Date: Thu,  6 Dec 2018 20:25:55 +0000 (GMT)
+Message-ID: <20181206202555.1F4E611252F7@debutante.sirena.org.uk>
+References: <20181206122457.28269-2-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C6D98267CB5
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:53 +0100 (CET)
-In-Reply-To: <20181204181817.GB1136@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 944BB267CC4
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:55 +0100 (CET)
+In-Reply-To: <20181206122457.28269-2-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: Remove useless assignment
+   ASoC: codecs: ak4104: move to GPIO consumer API
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 972fd1f582679c73b5c75c6a42b72cc554e15673 Mon Sep 17 00:00:00 2001
-From: Ladislav Michl <ladis@linux-mips.org>
-Date: Tue, 4 Dec 2018 19:18:17 +0100
-Subject: [PATCH] ASoC: max9867: Remove useless assignment
+>From d8f2c8592b95fd1fb06f0fea19738bf447bbc5f2 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Thu, 6 Dec 2018 13:24:57 +0100
+Subject: [PATCH] ASoC: codecs: ak4104: move to GPIO consumer API
 
-ret is assigned later, no need to initialize it.
+Get the reset GPIO through the GPIO consumer API. This allows specifying the
+DT property as "reset-gpios" without breaking existing DT users.
 
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ak4104.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 1cda54b59854..1b155f40b106 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -476,7 +476,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 		const struct i2c_device_id *id)
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index 32bc545c19cf..6dec8a65eafc 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -13,7 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/spi/spi.h>
+ #include <linux/of_device.h>
+-#include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/asoundef.h>
+ #include <sound/core.h>
+@@ -268,8 +268,8 @@ static const struct regmap_config ak4104_regmap = {
+ 
+ static int ak4104_spi_probe(struct spi_device *spi)
  {
- 	struct max9867_priv *max9867;
--	int ret = 0, reg;
-+	int ret, reg;
+-	struct device_node *np = spi->dev.of_node;
+ 	struct ak4104_private *ak4104;
++	struct gpio_desc *reset_gpiod;
+ 	unsigned int val;
+ 	int ret;
  
- 	max9867 = devm_kzalloc(&i2c->dev, sizeof(*max9867), GFP_KERNEL);
- 	if (!max9867)
-@@ -497,10 +497,8 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 	dev_info(&i2c->dev, "device revision: %x\n", reg);
- 	ret = devm_snd_soc_register_component(&i2c->dev, &max9867_component,
- 			max9867_dai, ARRAY_SIZE(max9867_dai));
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
--		return ret;
+@@ -297,19 +297,11 @@ static int ak4104_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
+-	if (np) {
+-		enum of_gpio_flags flags;
+-		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
+-
+-		if (gpio_is_valid(gpio)) {
+-			ret = devm_gpio_request_one(&spi->dev, gpio,
+-				     flags & OF_GPIO_ACTIVE_LOW ?
+-					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
+-				     "ak4104 reset");
+-			if (ret < 0)
+-				return ret;
+-		}
 -	}
- 	return ret;
- }
++	reset_gpiod = devm_gpiod_get_optional(&spi->dev, "reset",
++					      GPIOD_OUT_HIGH);
++	if (IS_ERR(reset_gpiod) &&
++	    PTR_ERR(reset_gpiod) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
  
+ 	/* read the 'reserved' register - according to the datasheet, it
+ 	 * should contain 0x5b. Not a good way to verify the presence of
 -- 
 2.19.0.rc2
