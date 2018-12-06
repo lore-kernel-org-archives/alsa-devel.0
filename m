@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: use dma_ops of parent device for acp_audio_dma" to the asoc tree
-Date: Thu,  6 Dec 2018 20:26:04 +0000 (GMT)
-Message-ID: <20181206202604.3B4DD11252F7@debutante.sirena.org.uk>
-References: <20181204224253.216075-2-yuzhao@google.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181204224253.216075-2-yuzhao@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Yu Zhao <yuzhao@google.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, aroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5660: Add a new ACPI match ID" to the
+	asoc tree
+Date: Thu,  6 Dec 2018 20:25:46 +0000 (GMT)
+Message-ID: <20181206202546.05AC811252F7@debutante.sirena.org.uk>
+References: <20181206145207.4477-1-hui.wang@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA3AF267CBB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:51 +0100 (CET)
+In-Reply-To: <20181206145207.4477-1-hui.wang@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hui Wang <hui.wang@canonical.com>
+Cc: tiwai@suse.de, naveen.m@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use dma_ops of parent device for acp_audio_dma
+   ASoC: rt5660: Add a new ACPI match ID
 
 has been applied to the asoc tree at
 
@@ -37,62 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 23aa128bb28d9da69bb1bdb2b70e50128857884a Mon Sep 17 00:00:00 2001
-From: Yu Zhao <yuzhao@google.com>
-Date: Tue, 4 Dec 2018 15:42:53 -0700
-Subject: [PATCH] ASoC: use dma_ops of parent device for acp_audio_dma
+>From a01b8d1d24451bfc00d3a975d107f9b1590bf826 Mon Sep 17 00:00:00 2001
+From: Hui Wang <hui.wang@canonical.com>
+Date: Thu, 6 Dec 2018 22:52:05 +0800
+Subject: [PATCH] ASoC: rt5660: Add a new ACPI match ID
 
-AMD platform device acp_audio_dma can only be created by parent PCI
-device driver (drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c). Pass struct
-device of the parent to snd_pcm_lib_preallocate_pages() so
-dma_alloc_coherent() can use correct dma_ops. Otherwise, it will
-use default dma_ops which is nommu_dma_ops on x86_64 even when
-IOMMU is enabled and set to non passthrough mode.
+The Realtek codec ALC3277 is 100% compatible with the codec RT5660
+in I2S mode. And on the Dell IoT platform, the codec is ALC3277,
+and the HID of the codec in the BIOS is 10EC3277, so adding this
+ID to the ACPI match table.
 
-Though platform device inherits some dma related fields during its
-creation in mfd_add_device(), we can't simply pass its struct device
-to snd_pcm_lib_preallocate_pages() because dma_ops is not among the
-inherited fields. Even it were, drivers/iommu/amd_iommu.c would
-ignore it because get_device_id() doesn't handle platform device.
-
-This change shouldn't give us any trouble even struct device of the
-parent becomes null or represents some non PCI device in the future,
-because get_dma_ops() correctly handles null struct device or uses
-the default dma_ops if struct device doesn't have it set.
-
-Signed-off-by: Yu Zhao <yuzhao@google.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5660.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index fd3db4c37882..f4011bebc7ec 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1146,18 +1146,21 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
- 								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
-+	struct device *parent = component->dev->parent;
+diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
+index 20a755137e63..ba1e9d89ad1b 100644
+--- a/sound/soc/codecs/rt5660.c
++++ b/sound/soc/codecs/rt5660.c
+@@ -1245,6 +1245,7 @@ MODULE_DEVICE_TABLE(of, rt5660_of_match);
  
- 	switch (adata->asic_type) {
- 	case CHIP_STONEY:
- 		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
- 							    SNDRV_DMA_TYPE_DEV,
--							    NULL, ST_MIN_BUFFER,
-+							    parent,
-+							    ST_MIN_BUFFER,
- 							    ST_MAX_BUFFER);
- 		break;
- 	default:
- 		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
- 							    SNDRV_DMA_TYPE_DEV,
--							    NULL, MIN_BUFFER,
-+							    parent,
-+							    MIN_BUFFER,
- 							    MAX_BUFFER);
- 		break;
- 	}
+ static const struct acpi_device_id rt5660_acpi_match[] = {
+ 	{ "10EC5660", 0 },
++	{ "10EC3277", 0 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
 -- 
 2.19.0.rc2
