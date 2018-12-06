@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: cs4270: move to GPIO consumer
-	API" to the asoc tree
-Date: Thu,  6 Dec 2018 20:25:58 +0000 (GMT)
-Message-ID: <20181206202558.B6A8311252F7@debutante.sirena.org.uk>
-References: <20181206122426.28194-2-daniel@zonque.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 555A9267CCD
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:59 +0100 (CET)
-In-Reply-To: <20181206122426.28194-2-daniel@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: use DMA addr rather than CPU pa for acp_audio_dma" to the asoc tree
+Date: Thu,  6 Dec 2018 20:26:06 +0000 (GMT)
+Message-ID: <20181206202606.16A7511252F7@debutante.sirena.org.uk>
+References: <20181204224253.216075-1-yuzhao@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181204224253.216075-1-yuzhao@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yu Zhao <yuzhao@google.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, aroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: cs4270: move to GPIO consumer API
+   ASoC: use DMA addr rather than CPU pa for acp_audio_dma
 
 has been applied to the asoc tree at
 
@@ -53,69 +37,107 @@ to this mail.
 Thanks,
 Mark
 
->From f98acd8a3115e1de780083ced42039522075d155 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Thu, 6 Dec 2018 13:24:26 +0100
-Subject: [PATCH] ASoC: codecs: cs4270: move to GPIO consumer API
+>From d6d08273996b3363178b920ccfa74acabaf67963 Mon Sep 17 00:00:00 2001
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 4 Dec 2018 15:42:52 -0700
+Subject: [PATCH] ASoC: use DMA addr rather than CPU pa for acp_audio_dma
 
-Get the reset GPIO through the GPIO consumer API. This allows specifying the
-DT property as "reset-gpios" without breaking existing DT users.
+We shouldn't assume CPU physical address we get from page_to_phys()
+is same as DMA address we get from dma_alloc_coherent(). On x86_64,
+we won't run into any problem with the assumption when dma_ops is
+nommu_dma_ops. However, DMA address is IOVA when IOMMU is enabled.
+And it's most likely different from CPU physical address when AMD
+IOMMU is not in passthrough mode.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4270.c | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 15 +++++----------
+ sound/soc/amd/acp.h         |  2 +-
+ 2 files changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 3c266eeb89bf..33d74f163bd7 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -29,8 +29,8 @@
- #include <linux/i2c.h>
- #include <linux/delay.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of_device.h>
--#include <linux/of_gpio.h>
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index cdebab2f8ce5..fd3db4c37882 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -303,11 +303,10 @@ static void set_acp_to_i2s_dma_descriptors(void __iomem *acp_mmio, u32 size,
+ }
  
- /*
-  * The codec isn't really big-endian or little-endian, since the I2S
-@@ -658,8 +658,8 @@ static const struct regmap_config cs4270_regmap = {
- static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- 	const struct i2c_device_id *id)
+ /* Create page table entries in ACP SRAM for the allocated memory */
+-static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
++static void acp_pte_config(void __iomem *acp_mmio, dma_addr_t addr,
+ 			   u16 num_of_pages, u32 pte_offset)
  {
--	struct device_node *np = i2c_client->dev.of_node;
- 	struct cs4270_private *cs4270;
-+	struct gpio_desc *reset_gpiod;
- 	unsigned int val;
- 	int ret, i;
+ 	u16 page_idx;
+-	u64 addr;
+ 	u32 low;
+ 	u32 high;
+ 	u32 offset;
+@@ -317,7 +316,6 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
+ 		/* Load the low address of page int ACP SRAM through SRBM */
+ 		acp_reg_write((offset + (page_idx * 8)),
+ 			      acp_mmio, mmACP_SRBM_Targ_Idx_Addr);
+-		addr = page_to_phys(pg);
  
-@@ -678,20 +678,11 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
- 	if (ret < 0)
- 		return ret;
+ 		low = lower_32_bits(addr);
+ 		high = upper_32_bits(addr);
+@@ -333,7 +331,7 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
+ 		acp_reg_write(high, acp_mmio, mmACP_SRBM_Targ_Idx_Data);
  
--	/* See if we have a way to bring the codec out of reset */
--	if (np) {
--		enum of_gpio_flags flags;
--		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
--
--		if (gpio_is_valid(gpio)) {
--			ret = devm_gpio_request_one(&i2c_client->dev, gpio,
--				     flags & OF_GPIO_ACTIVE_LOW ?
--					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
--				     "cs4270 reset");
--			if (ret < 0)
--				return ret;
--		}
--	}
-+	reset_gpiod = devm_gpiod_get_optional(&i2c_client->dev, "reset",
-+					      GPIOD_OUT_HIGH);
-+	if (IS_ERR(reset_gpiod) &&
-+	    PTR_ERR(reset_gpiod) == -EPROBE_DEFER)
-+		return -EPROBE_DEFER;
+ 		/* Move to next physically contiguos page */
+-		pg++;
++		addr += PAGE_SIZE;
+ 	}
+ }
  
- 	cs4270->regmap = devm_regmap_init_i2c(i2c_client, &cs4270_regmap);
- 	if (IS_ERR(cs4270->regmap))
+@@ -343,7 +341,7 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ {
+ 	u16 ch_acp_sysmem, ch_acp_i2s;
+ 
+-	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
++	acp_pte_config(acp_mmio, rtd->dma_addr, rtd->num_of_pages,
+ 		       rtd->pte_offset);
+ 
+ 	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+@@ -850,7 +848,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 	int status;
+ 	uint64_t size;
+ 	u32 val = 0;
+-	struct page *pg;
+ 	struct snd_pcm_runtime *runtime;
+ 	struct audio_substream_data *rtd;
+ 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
+@@ -986,16 +983,14 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 		return status;
+ 
+ 	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
+-	pg = virt_to_page(substream->dma_buffer.area);
+ 
+-	if (pg) {
++	if (substream->dma_buffer.area) {
+ 		acp_set_sram_bank_state(rtd->acp_mmio, 0, true);
+ 		/* Save for runtime private data */
+-		rtd->pg = pg;
++		rtd->dma_addr = substream->dma_buffer.addr;
+ 		rtd->order = get_order(size);
+ 
+ 		/* Fill the page table entries in ACP SRAM */
+-		rtd->pg = pg;
+ 		rtd->size = size;
+ 		rtd->num_of_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
+ 		rtd->direction = substream->stream;
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index dbbb1a85638d..e5ab6c6040a6 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -123,7 +123,7 @@ enum acp_dma_priority_level {
+ };
+ 
+ struct audio_substream_data {
+-	struct page *pg;
++	dma_addr_t dma_addr;
+ 	unsigned int order;
+ 	u16 num_of_pages;
+ 	u16 i2s_instance;
 -- 
 2.19.0.rc2
