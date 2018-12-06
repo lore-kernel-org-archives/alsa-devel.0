@@ -1,53 +1,41 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH v2] ASoC: max9867: Remove useless assignment
-Date: Thu, 6 Dec 2018 23:24:22 +0100
-Message-ID: <20181206222422.GA29787@lenoch>
-References: <20181207080122.20d3d342@canb.auug.org.au>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v8 3/7] ASoC: dt-bindings: make enable-gpio
+ optional for simple amplifier
+Date: Thu, 6 Dec 2018 17:43:45 -0600
+Message-ID: <20181206234345.GA1842@bogus>
+References: <20181121051752.18387-1-anarsoul@gmail.com>
+ <20181121051752.18387-4-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
+ [209.85.167.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30638267CA4
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 00:43:47 +0100 (CET)
+Received: by mail-oi1-f194.google.com with SMTP id j21so1968763oii.8
+ for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2018 15:43:47 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20181207080122.20d3d342@canb.auug.org.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20181121051752.18387-4-anarsoul@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vasily Khoruzhick <anarsoul@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-ret is assigned later, no need to initialize it.
+On Tue, 20 Nov 2018 21:17:48 -0800, Vasily Khoruzhick wrote:
+> Amplifier may have no enable GPIO, so make this property optional
+> 
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/sound/simple-amplifier.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- CHANGES:
- -v2: add missing Signed-off-by
- (I'm sorry for that...)
-
- sound/soc/codecs/max9867.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 1cda54b59854..1b155f40b106 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -476,7 +476,7 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 		const struct i2c_device_id *id)
- {
- 	struct max9867_priv *max9867;
--	int ret = 0, reg;
-+	int ret, reg;
- 
- 	max9867 = devm_kzalloc(&i2c->dev, sizeof(*max9867), GFP_KERNEL);
- 	if (!max9867)
-@@ -497,10 +497,8 @@ static int max9867_i2c_probe(struct i2c_client *i2c,
- 	dev_info(&i2c->dev, "device revision: %x\n", reg);
- 	ret = devm_snd_soc_register_component(&i2c->dev, &max9867_component,
- 			max9867_dai, ARRAY_SIZE(max9867_dai));
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
--		return ret;
--	}
- 	return ret;
- }
- 
--- 
-2.20.0.rc2
+Reviewed-by: Rob Herring <robh@kernel.org>
