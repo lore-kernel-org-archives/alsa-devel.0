@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5660: Add a new ACPI match ID" to the
-	asoc tree
-Date: Thu,  6 Dec 2018 20:25:46 +0000 (GMT)
-Message-ID: <20181206202546.05AC811252F7@debutante.sirena.org.uk>
-References: <20181206145207.4477-1-hui.wang@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DA3AF267CBB
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:25:51 +0100 (CET)
-In-Reply-To: <20181206145207.4477-1-hui.wang@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: tiwai@suse.de, naveen.m@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Subject: Applied "ASoC: Use of_node_name_eq for node name comparisons" to the asoc tree
+Date: Thu,  6 Dec 2018 20:26:02 +0000 (GMT)
+Message-ID: <20181206202602.639D711252F7@debutante.sirena.org.uk>
+References: <20181205195050.4759-33-robh@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181205195050.4759-33-robh@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.orgTimur Tabi <timur@kernel.org>Xiubo Li <Xiubo.Lee@gmail.com>Takashi Iwai <tiwai@suse.com>Liam Girdwood <lgirdwood@gmail.com>Nicolin Chen <nicoleotsuka@gmail.com>Mark Brown <broonie@kernel.org>Fabio Estevam <fabio.estevam@nxp.com>linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5660: Add a new ACPI match ID
+   ASoC: Use of_node_name_eq for node name comparisons
 
 has been applied to the asoc tree at
 
@@ -53,33 +37,72 @@ to this mail.
 Thanks,
 Mark
 
->From a01b8d1d24451bfc00d3a975d107f9b1590bf826 Mon Sep 17 00:00:00 2001
-From: Hui Wang <hui.wang@canonical.com>
-Date: Thu, 6 Dec 2018 22:52:05 +0800
-Subject: [PATCH] ASoC: rt5660: Add a new ACPI match ID
+>From 1d52a74ea2300158f87196fa381cde52d98cf4e4 Mon Sep 17 00:00:00 2001
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 5 Dec 2018 13:50:49 -0600
+Subject: [PATCH] ASoC: Use of_node_name_eq for node name comparisons
 
-The Realtek codec ALC3277 is 100% compatible with the codec RT5660
-in I2S mode. And on the Dell IoT platform, the codec is ALC3277,
-and the HID of the codec in the BIOS is 10EC3277, so adding this
-ID to the ACPI match table.
+Convert string compares of DT node names to use of_node_name_eq helper
+instead. This removes direct access to the node name pointer.
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+For the FSL ASoC card, the full node names appear to be "ssi", "esai",
+and "sai", so there's not any reason to use strstr and of_node_name_eq
+can be used instead.
+
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5660.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/fsl-asoc-card.c       | 6 +++---
+ sound/soc/generic/simple-scu-card.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 20a755137e63..ba1e9d89ad1b 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -1245,6 +1245,7 @@ MODULE_DEVICE_TABLE(of, rt5660_of_match);
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 44433b20435c..81f2fe2c6d23 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -571,17 +571,17 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	}
  
- static const struct acpi_device_id rt5660_acpi_match[] = {
- 	{ "10EC5660", 0 },
-+	{ "10EC3277", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
+ 	/* Common settings for corresponding Freescale CPU DAI driver */
+-	if (strstr(cpu_np->name, "ssi")) {
++	if (of_node_name_eq(cpu_np, "ssi")) {
+ 		/* Only SSI needs to configure AUDMUX */
+ 		ret = fsl_asoc_card_audmux_init(np, priv);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to init audmux\n");
+ 			goto asrc_fail;
+ 		}
+-	} else if (strstr(cpu_np->name, "esai")) {
++	} else if (of_node_name_eq(cpu_np, "esai")) {
+ 		priv->cpu_priv.sysclk_id[1] = ESAI_HCKT_EXTAL;
+ 		priv->cpu_priv.sysclk_id[0] = ESAI_HCKR_EXTAL;
+-	} else if (strstr(cpu_np->name, "sai")) {
++	} else if (of_node_name_eq(cpu_np, "sai")) {
+ 		priv->cpu_priv.sysclk_id[1] = FSL_SAI_CLK_MAST1;
+ 		priv->cpu_priv.sysclk_id[0] = FSL_SAI_CLK_MAST1;
+ 	}
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 7ae1901b2f85..656abe2015e1 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -223,7 +223,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	i = 0;
+ 	for_each_child_of_node(node, np) {
+ 		is_fe = false;
+-		if (strcmp(np->name, PREFIX "cpu") == 0)
++		if (of_node_name_eq(np, PREFIX "cpu"))
+ 			is_fe = true;
+ 
+ 		ret = asoc_simple_card_dai_link_of(np, priv, daifmt, i, is_fe);
 -- 
 2.19.0.rc2
