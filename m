@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: cs4270: use 'reset-gpios'
-	rather than 'reset-gpio'" to the asoc tree
-Date: Thu,  6 Dec 2018 20:26:00 +0000 (GMT)
-Message-ID: <20181206202600.8A63A11252F7@debutante.sirena.org.uk>
-References: <20181206122426.28194-1-daniel@zonque.org>
+From: James Schulman <james.schulman@cirrus.com>
+Subject: [PATCH v2 2/2] ASoC: cs35l36: Add device tree
+	documentation for CS35L36
+Date: Thu, 6 Dec 2018 15:04:47 -0600
+Message-ID: <1544130287-7303-2-git-send-email-james.schulman@cirrus.com>
+References: <1544130287-7303-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BA78267CCA
- for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 21:26:01 +0100 (CET)
-In-Reply-To: <20181206122426.28194-1-daniel@zonque.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5317F267CA6
+ for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2018 22:04:42 +0100 (CET)
+In-Reply-To: <1544130287-7303-1-git-send-email-james.schulman@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +22,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, paul.handrigan@cirrus.com, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Add device tree documentation for Cirrus Logic CS35L36
+speaker amplifier
 
-   ASoC: dt-bindings: cs4270: use 'reset-gpios' rather than 'reset-gpio'
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From eab8e354a8c7b4496cb68a6f5adc5ec3a1f59151 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Thu, 6 Dec 2018 13:24:25 +0100
-Subject: [PATCH] ASoC: dt-bindings: cs4270: use 'reset-gpios' rather than
- 'reset-gpio'
-
-Bindings should use 'reset-gpios', not 'reset-gpio'. The driver needs to
-switch to the gpiod consume API to handle this correctly.
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: James Schulman <james.schulman@cirrus.com>
 ---
- Documentation/devicetree/bindings/sound/cs4270.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/cs35l36.txt          | 193 +++++++++++++++++++++
+ 1 file changed, 193 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l36.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/cs4270.txt b/Documentation/devicetree/bindings/sound/cs4270.txt
-index 6b222f9b8ef5..c33770ec4c3c 100644
---- a/Documentation/devicetree/bindings/sound/cs4270.txt
-+++ b/Documentation/devicetree/bindings/sound/cs4270.txt
-@@ -10,8 +10,8 @@ Required properties:
- 
- Optional properties:
- 
--  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
--		 deasserted before communication to the codec starts.
-+  - reset-gpios : a GPIO spec for the reset pin. If specified, it will be
-+		  deasserted before communication to the codec starts.
- 
- Example:
- 
+diff --git a/Documentation/devicetree/bindings/sound/cs35l36.txt b/Documentation/devicetree/bindings/sound/cs35l36.txt
+new file mode 100644
+index 0000000..41726fa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l36.txt
+@@ -0,0 +1,193 @@
++CS35L36 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l36"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++  - cirrus,multi-amp-mode : Boolean to determine if there are more than
++  one amplifier in the system. If more than one it is best to Hi-Z the ASP
++  port to prevent bus contention on the output signal
++
++  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
++  converter's output voltage in mV. The range is from 2550mV to 12000mV with
++  increments of 50mV.
++  (Default) VP
++
++  - cirrus,boost-ctl-select : Boost conerter control source selection.
++  Selects the source of the BST_CTL target VBST voltage for the boost
++  converter to generate.
++  0x00 - Control Port Value
++  0x01 - Class H Tracking (Default)
++  0x10 - MultiDevice Sync Value
++
++  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
++  Configures the peak current by monitoring the current through the boost FET.
++  Range starts at 1600mA and goes to a maximum of 4500mA with increments of
++  50mA.
++  (Default) 4.50 Amps
++
++  - cirrus,boost-ind-nanohenry : Inductor estimation LBST reference value.
++  Seeds the digital boost converter's inductor estimation block with the initial
++  inductance value to reference.
++
++  1000 = 1uH (Default)
++  1200 = 1.2uH
++
++  - cirrus,amp-pcm-inv : Boolean to determine Amplifier will invert incoming
++  PCM data
++
++  - cirrus,imon-pol-inv : Boolean to determine Amplifier will invert the
++  polarity of outbound IMON feedback data
++
++  - cirrus,vmon-pol-inv : Boolean to determine Amplifier will invert the
++  polarity of outbound VMON feedback data
++
++  - cirrus,dcm-mode-enable : Boost converter automatic DCM Mode enable.
++  This enables the digital boost converter to operate in a low power
++  (Discontinuous Conduction) mode during low loading conditions.
++
++  - cirrus,weak-fet-disable : Boolean : The strength of the output drivers is
++  reduced when operating in a Weak-FET Drive Mode and must not be used to drive
++  a large load.
++
++  - cirrus,classh-wk-fet-delay :  Weak-FET entry delay. Controls the delay
++  (in ms) before the Class H algorithm switches to the weak-FET voltage
++  (after the audio falls and remains below the value specified in WKFET_AMP_THLD).
++
++  0 = 0ms
++  1 = 5ms
++  2 = 10ms
++  3 = 50ms
++  4 = 100ms (Default)
++  5 = 200ms
++  6 = 500ms
++  7 = 1000ms
++
++  - cirrus,classh-weak-fet-thld-millivolt : Weak-FET amplifier drive threshold.
++  Configures the signal threshold at which the PWM output stage enters
++  weak-FET operation. The range is 50mV to 700mV in 50mV increments.
++
++  - cirrus,temp-warn-threshold :  Amplifier overtemperature warning threshold.
++  Configures the threshold at which the overtemperature warning condition occurs.
++  When the threshold is met, the overtemperature warning attenuation is applied
++  and the TEMP_WARN_EINT interrupt status bit is set.
++  If TEMP_WARN_MASK = 0, INTb is asserted.
++
++  0 = 105C
++  1 = 115C
++  2 = 125C (Default)
++  3 = 135C
++
++Optional properties for the "cirrus,vpbr-config" Sub-node
++
++  - cirrus,vpbr-en : VBST brownout prevention enable. Configures whether the
++  VBST brownout prevention algorithm is enabled or disabled.
++
++  0 = VBST brownout prevention disabled (default)
++  1 = VBST brownout prevention enabled
++
++  See Section 7.31.1 VPBR Config for configuration options & further details
++
++  - cirrus,vpbr-thld : Initial VPBR threshold. Configures the VP brownout
++  threshold voltage
++
++  - cirrus,cirrus,vpbr-atk-rate : Attenuation attack step rate. Configures the
++  amount delay between consecutive volume attenuation steps when a brownout
++  condition is present and the VP brownout condition is in an attacking state.
++
++  - cirrus,vpbr-atk-vol : VP brownout prevention step size. Configures the VP
++  brownout prevention attacking attenuation step size when operating in either
++  digital volume or analog gain modes.
++
++  - cirrus,vpbr-max-attn : Maximum attenuation that the VP brownout prevention
++  can apply to the audio signal.
++
++  - cirrus,vpbr-wait : Configures the delay time between a brownout condition
++  no longer being present and the VP brownout prevention entering an attenuation
++  release state.
++
++  - cirrus,vpbr-rel-rate : Attenuation release step rate. Configures the delay
++  between consecutive volume attenuation release steps when a brownout condition
++  is not longer present and the VP brownout is in an attenuation release state.
++
++  - cirrus,vpbr-mute-en : During the attack state, if the vpbr-max-attn value
++  is reached, the error condition still remains, and this bit is set, the audio
++  is muted.
++
++Optional properties for the "cirrus,irq-config" Sub-node
++
++  - cirrus,irq-drive-select : Selects the driver type of the selected interrupt
++  output.
++
++  0 = Open-drain
++  1 = Push-pull (Default)
++
++  - cirrus,irq-polarity : Selects the polarity of the selected interrupt output
++  when in push-pull mode. Note - when the selected interrupt output is in
++  open-drain mode, INT_POL_SEL must be set to 0.
++
++  0 = Active-low (Default)
++  1 = Active-high
++
++  - cirrus,irq-gpio-select : Selects the pin to serve as the programmable
++  interrupt output.
++
++  0 = PDM_DATA / SWIRE_SD / INT (Default)
++  1 = GPIO
++
++  - cirrus,irq-output-enable : Enables or disables the selected interrupt output
++
++  0 = Disabled (Default)
++  1 = Enabled
++
++  - cirrus,irq-src-select : Selects the source of the selected interrupt output.
++
++  0 = PAC-based interrupt output
++  1 = Interrupt handler (Default)
++
++Example:
++
++cs35l36: cs35l36@40 {
++	compatible = "cirrus,cs35l36";
++	reg = <0x40>;
++	VA-supply = <&dummy_vreg>;
++	VP-supply = <&dummy_vreg>;
++	reset-gpios = <&gpio0 54 0>;
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++	cirrus,boost-ind-nanohenry = <1000>;
++	cirrus,boost-ctl-millivolt = <10000>;
++	cirrus,boost-ctl-select = <0x00>;
++	cirrus,boost-peak-milliamp = <4500>;
++	cirrus,weak-fet-delay = <0x04>;
++	cirrus,weak-fet-thld = <0x01>;
++	cirrus,temp-warn-threshold = <0x01>;
++	cirrus,multi-amp-mode;
++
++	cirrus,vpbr-config {
++		cirrus,vpbr-en = <0x00>;
++		cirrus,vpbr-thld = <0x05>;
++		cirrus,vpbr-atk-rate = <0x02>;
++		cirrus,vpbr-atk-vol = <0x01>;
++		cirrus,vpbr-max-attn = <0x09>;
++		cirrus,vpbr-wait = <0x01>;
++		cirrus,vpbr-rel-rate = <0x05>;
++		cirrus,vpbr-mute-en = <0x00>;
++	};
++
++	cirrus,irq-config {
++		cirrus,irq-drive-select = <0x01>;
++		cirrus,irq-polarity = <0x00>;
++		cirrus,irq-gpio-select = <0x01>;
++		cirrus,irq-output-enable = <0x01>;
++		cirrus,irq-src-select = <0x01>;
++	};
++};
 -- 
-2.19.0.rc2
+1.9.1
