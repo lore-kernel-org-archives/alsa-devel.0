@@ -1,68 +1,70 @@
-From: GitHub pull_request - opened <github@alsa-project.org>
-Subject: alsa-utils: axfer: add manuals
-Date: Wed,  5 Dec 2018 22:46:40 +0100 (CET)
-Message-ID: <20181205214640.D1508267C4D@alsa0.perex.cz>
-References: <1544046398697707891-webhooks-bot@alsa-project.org>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v3 6/7] ASoC: rsnd: add avb clocks
+Date: Thu, 6 Dec 2018 00:59:44 +0000
+Message-ID: <878t13jx6y.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181205074932.28098-1-jiada_wang@mentor.com>
+        <87va48bbpa.wl-kuninori.morimoto.gx@renesas.com>
+        <612ee648-c217-e9b4-224c-87183e43d83d@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
- [192.168.100.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D64B267BA8
- for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2018 22:46:38 +0100 (CET)
-In-Reply-To: <1544046398697707891-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <612ee648-c217-e9b4-224c-87183e43d83d@mentor.com>
+Content-Language: en-US
+Content-ID: <D115A518988F4147A0B678A391742412@jpnprd01.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "vladimir_zapolskiy@mentor.com" <vladimir_zapolskiy@mentor.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-utils pull request #6 was opened from takaswie:
-
-alsa-utils: axfer: add manuals
-
-This patchset adds manuals. As a result, users can refer to documents
-by man(1):
-
-```
- $ man 1 axfer
- $ man 1 axfer-list
- $ man 1 axfer-transfer
-```
-
-The manuals are written according to groff_man(7) and man-pages(7),
-however in some points they don't follow the guideline; e.g. usage
-of hyphen-minus ('-') without backslash '\' in pre-formatted text.
-I'll welcome any fixes.
-
-In this time, description of each backend in transfer subcommand is
-not yet added. It will be added in later work.
-
-```
-Takashi Sakamoto (5):
-  axfer: add a manual for entry point
-  axfer: add a manual for list subcommand
-  axfer: add a manual for transfer subcommand
-  axfer: add a section to describe compatibility to aplay(1)
-  axfer: add a section about design of transfer subcommand
-
- axfer/Makefile.am      |  10 +
- axfer/axfer-list.1     |  86 +++++++
- axfer/axfer-transfer.1 | 500 +++++++++++++++++++++++++++++++++++++++++
- axfer/axfer.1          | 132 +++++++++++
- 4 files changed, 728 insertions(+)
- create mode 100644 axfer/axfer-list.1
- create mode 100644 axfer/axfer-transfer.1
- create mode 100644 axfer/axfer.1
-```
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/6
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/6.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+DQpIaSBKaWFkYQ0KDQo+ID4+ICsJYXZiID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCphdmIp
+LCBHRlBfS0VSTkVMKTsNCj4gPj4gKwlpZiAoIWF2YikNCj4gPj4gKwkJcmV0dXJuIEVSUl9QVFIo
+LUVOT01FTSk7DQo+ID4+ICsNCj4gPj4gKwlwYXJlbnRfbmFtZSA9IF9fY2xrX2dldF9uYW1lKGFk
+Zy0+Y2xrYWRnKTsNCj4gPiBUaGlzIHBhcmVudF9uYW1lIGlzIHZlcnkgc3RyYW5nZSB0byBtZS4N
+Cj4gPiBBVkIgcGFyZW50IGNsayBpcyAiQVVESU9fQ0xLX0EvQi9DL0kiICg9IGNsa19hL2IvYy9p
+IGluIHRoaXMgZHJpdmVyKQ0KPiA+IG9yICJBVURJT19DTEtfT1VUX0EvQi9DL0QiICg9IGF1ZGlv
+X2Nsa291dC8xLzIvMyBpbiB0aGlzIGRyaXZlcikuDQo+ID4gQW5kIHdlIGRvbid0IGhhdmUgImFk
+ZyIgY2xvY2suDQo+ID4gUGxlYXNlIGRvdWJsZSBjaGVjayBpdC4NCj4gSSBoYXZlIHNvbWUgbG9j
+YWwgZGV2aWNlLXRyZWUgY2hhbmdlLCB3aGljaCBleHBlbmRzICdhZGcnIHJlZ2lzdGVyDQo+IHJh
+bmdlIGFuZCBhZGQNCj4gImFkZyIgY2xvY2sgdG8gcmNhcl9zb3VuZCBub2RlIHdoaWNoIHJlZmVy
+IHRvIG5ld2x5IGFkZGVkICdhZGcnIGNsb2NrDQo+IChTMEQxz5UpIGluIHRoaXMgcGF0Y2gtc2V0
+DQooc25pcCkNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGNsb2NrcyA9IDwmY3BnIENQR19NT0QgMTAwNT4sDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JmNwZyBDUEdfTU9EIDkyMj4sIDwmY3Bn
+IENQR19NT0QgMTAwNT4sDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgPCZjcGcgQ1BHX01PRCAxMDA2PiwgPCZjcGcgQ1BH
+X01PRCAxMDA3PiwNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNwZyBDUEdfTU9EIDEwMDg+LCA8JmNwZyBDUEdfTU9E
+IDEwMDk+LA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIDwmY3BnIENQR19NT0QgMTAxMD4sIDwmY3BnIENQR19NT0QgMTAx
+MT4sDQo+IEBAIC0xODU2LDcgKzE4NTYsNyBAQA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwmYXVkaW9fY2xrX2E+LCA8
+JmF1ZGlvX2Nsa19iPiwNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmF1ZGlvX2Nsa19jPiwNCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA8JmNw
+ZyBDUEdfQ09SRSBSOEE3Nzk1X0NMS19TMEQ0PjsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gInNzaS1hbGwiLA0KPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiYWRn
+IiwgInNzaS1hbGwiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjkiLCAic3NpLjgiLCAic3Np
+LjciLCAic3NpLjYiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjUiLCAic3NpLjQiLCAic3Np
+LjMiLCAic3NpLjIiLA0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAic3NpLjEiLCAic3NpLjAiLA0KDQpO
+b29vbyAhIQ0KSXQgYnJlYWtzIHNvdW5kIGNsb2NrIC8gbW9kdWxlIHN0b3AgY29udHJvbGluZyAh
+IQ0KDQpPSywgbm93IEkgY2hlY2tlZCBtb3JlIGRldGFpbCBvZiBBREcgZm9yIEVBVkIvSUYuDQoN
+CjFzdCwgSSBkb24ndCB0aGluayB3ZSBuZWVkIHRvIGFkZCAiYWRnIiBjbG9jay4NCkl0IGlzIG5v
+dCBleGlzdCBvbiBHZW4yLCBhbmQgZGVmYXVsdCBPTiBvbiBHZW4zLg0KSWYgeW91IHdhbnQgdG8g
+YWRkIGl0LCBwbGVhc2UgYWRkIGl0IHRvICJsYXN0IiBvZiBjbG9ja3MsIG5vdCAiZmlyc3QiLg0K
+ImZpcnN0IiBjbG9jayBpcyBoYW5kbGluZyB3aG9sZSBTU0kgcG93ZXIuDQoNCjJuZCwgaXQgaXMg
+Ik1vZHVsZSBzdG9wIGNsb2NrIiwgbm90ICJTMEQxz5UiLg0KV2UgYWxyZWFkeSBoYW5kbGluZyBp
+dCBhcyAiY2xrX2kiLg0KDQozcmQsIHdlIG5lZWQgdG8gY3JlYXRlIG5ldyBjbG9jay9oYW5kbGVy
+IGZvcg0KYXZiX2NvdW50ZXI4IC8gYXVkaW9fY2xrX2RpdjMgLyBhdmJfZGl2OCBmb3IgImludGVy
+bmFsIiBwdXJwb3NlLA0KYW5kIG5lZWQgdG8gY3JlYXRlIGF2Yl9hZGdfc3luW10gY2xvY2sgZm9y
+ICJleHRlcm5hbCIgcHVycG9zZSBmb3IgRUFWQi9JRi4NCllvdXIgY29kZSBpcyBjcmVhdGluZyAv
+IHJlZ2lzdGVyaW5nIGFkZy0+Y2xrYXZiW10sDQpidXQgaXQgaXMgZm9yIGF2Yl9jb3VudGVyOCBp
+biBteSB1bmRlcnN0YW5kaW5nLg0KV2UgZG9uJ3QgbmVlZCB0byByZWdpc3RlciBpdCBhcyBmb3Jt
+YWwgY2xvY2sgSU1PLg0KDQo0dGgsIEVBVkIgZHJpdmVyIG5lZWQgdG8gZ2V0IGNsb2NrIGZyb20g
+QVZCIHZpYSBEVA0KYXMgImF2Yl9hZGdfc3luW10iIGNsb2NrLCBub3QgImF2Yl9jb3VudGVyOCIu
+DQoNCkknbSBub3Qgc3VyZSBFQVZCIHNpZGUgZHJpdmVyLCBidXQgcGxlYXNlIGRvdWJsZSBjaGVj
+ayB0aGVzZS4NCg0KDQpCZXN0IHJlZ2FyZHMNCi0tLQ0KS3VuaW5vcmkgTW9yaW1vdG8NCg==
