@@ -1,75 +1,130 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control codec
-Date: Thu, 6 Dec 2018 10:36:22 +0800
-Message-ID: <CAFv8NwKgspykPHWfdjapzY-wCAp8MmduKq_yhrvWct2r7yFCzA@mail.gmail.com>
-References: <20181127120041.90759-1-cychiang@chromium.org> <20181128093411.GC4272@dell>
- <20181203111919.GL26661@dell> <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
- <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
- <20181205113045.GD26661@dell> <20181205113406.GE26661@dell>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v2] mfd: cros_ec: Add commands to control codec
+Date: Thu,  6 Dec 2018 12:05:40 +0800
+Message-ID: <20181206040540.84632-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181205113406.GE26661@dell>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, rohitkr@codeaurora.org
+To: linux-kernel@vger.kernel.org
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 5, 2018 at 7:34 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Wed, 05 Dec 2018, Lee Jones wrote:
->
-> > On Wed, 05 Dec 2018, Cheng-yi Chiang wrote:
-> >
-> > > Hi Lee,
-> > >
-> > > I tried to apply this patch based on
-> > > for-mfd-next branch of mfd tree (
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git )
-> > > Then, I tried to compile all modules by
-> > >
-> > >  ARCH=3Dx86_64 make allyesconfig
-> > >  ARCH=3Dx86_64 make -j64
-> > >
-> > > There was no error.
-> > > Could you please let me know what was the error when you failed to
-> > > apply this patch ?
-> >
-> > Doesn't work for me.
-> >
-> > lee@host:~/projects/kernel [for-mfd-next]$ formfdnext
-> > Applying: mfd: cros_ec: Add commands to control codec
-> > error: sha1 information is lacking or useless (include/linux/mfd/cros_e=
-c_commands.h).
-> > error: could not build fake ancestor
-> > Patch failed at 0001 mfd: cros_ec: Add commands to control codec
-> > Use 'git am --show-current-patch' to see the failed patch
-> > When you have resolved this problem, run "git am --continue".
-> > If you prefer to skip this patch, run "git am --skip" instead.
-> > To restore the original branch and stop patching, run "git am --abort".
->
-> Not that the following lines (as seen in your patch) are not present
-> in the Mainline kernel.
->
-> > @@ -4077,6 +4077,100 @@ struct __ec_align1 ec_response_i2c_passthru_pro=
-tect {
-> >       uint8_t status;         /* Status flags (0: unlocked, 1: locked) =
-*/
-> >  };
->
-> Do you have other patches applied to your tree?
+Add EC host commands to control codec on EC.
 
-Hi Lee,
-Sorry, I see the problem.
-I was using git am -3 which solves the conflict by itself.
-I will resend a patch based on your for-mfd-next branch so we can keep
-the patch clean.
-Thanks for your time.
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ V2 fixed the wrong ancestor issue so the patch can be applied cleanly on mfd tree.
+ Codec driver that uses these commands will be sent separately.
+ Thanks!
 
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+ include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+
+diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
+index 9a9631f0559e2..fc91082d4c357 100644
+--- a/include/linux/mfd/cros_ec_commands.h
++++ b/include/linux/mfd/cros_ec_commands.h
+@@ -2790,6 +2790,100 @@ struct ec_response_battery_vendor_param {
+ 	uint32_t value;
+ } __packed;
+ 
++/*****************************************************************************/
++/* Commands for I2S recording on audio codec. */
++
++#define EC_CMD_CODEC_I2S 0x00BC
++
++enum ec_codec_i2s_subcmd {
++	EC_CODEC_SET_SAMPLE_DEPTH = 0x0,
++	EC_CODEC_SET_GAIN = 0x1,
++	EC_CODEC_GET_GAIN = 0x2,
++	EC_CODEC_I2S_ENABLE = 0x3,
++	EC_CODEC_I2S_SET_CONFIG = 0x4,
++	EC_CODEC_I2S_SET_TDM_CONFIG = 0x5,
++	EC_CODEC_I2S_SET_BCLK = 0x6,
++};
++
++enum ec_sample_depth_value {
++	EC_CODEC_SAMPLE_DEPTH_16 = 0,
++	EC_CODEC_SAMPLE_DEPTH_24 = 1,
++};
++
++enum ec_i2s_config {
++	EC_DAI_FMT_I2S = 0,
++	EC_DAI_FMT_RIGHT_J = 1,
++	EC_DAI_FMT_LEFT_J = 2,
++	EC_DAI_FMT_PCM_A = 3,
++	EC_DAI_FMT_PCM_B = 4,
++	EC_DAI_FMT_PCM_TDM = 5,
++};
++
++struct ec_param_codec_i2s {
++	/*
++	 * enum ec_codec_i2s_subcmd
++	 */
++	uint8_t cmd;
++	union {
++		/*
++		 * EC_CODEC_SET_SAMPLE_DEPTH
++		 * Value should be one of ec_sample_depth_value.
++		 */
++		uint8_t depth;
++
++		/*
++		 * EC_CODEC_SET_GAIN
++		 * Value should be 0~43 for both channels.
++		 */
++		struct ec_param_codec_i2s_set_gain {
++			uint8_t left;
++			uint8_t right;
++		} __packed gain;
++
++		/*
++		 * EC_CODEC_I2S_ENABLE
++		 * 1 to enable, 0 to disable.
++		 */
++		uint8_t i2s_enable;
++
++		/*
++		 * EC_CODEC_I2S_SET_COFNIG
++		 * Value should be one of ec_i2s_config.
++		 */
++		uint8_t i2s_config;
++
++		/*
++		 * EC_CODEC_I2S_SET_TDM_CONFIG
++		 * Value should be one of ec_i2s_config.
++		 */
++		struct ec_param_codec_i2s_tdm {
++			/*
++			 * 0 to 496
++			 */
++			int16_t ch0_delay;
++			/*
++			 * -1 to 496
++			 */
++			int16_t ch1_delay;
++			uint8_t adjacent_to_ch0;
++			uint8_t adjacent_to_ch1;
++		} __packed tdm_param;
++
++		/*
++		 * EC_CODEC_I2S_SET_BCLK
++		 */
++		uint32_t bclk;
++	};
++} __packed;
++
++/*
++ * For subcommand EC_CODEC_GET_GAIN.
++ */
++struct ec_response_codec_gain {
++	uint8_t left;
++	uint8_t right;
++} __packed;
++
+ /*****************************************************************************/
+ /* System commands */
+ 
+-- 
+2.20.0.rc1.387.gf8505762e3-goog
