@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Calculate LRCLK divider" to
-	the asoc tree
-Date: Fri,  7 Dec 2018 12:23:22 +0000 (GMT)
-Message-ID: <20181207122322.194B811253E4@debutante.sirena.org.uk>
+Subject: Applied "ASoC: max9867: Fix power management" to the
+	asoc tree
+Date: Fri,  7 Dec 2018 12:23:24 +0000 (GMT)
+Message-ID: <20181207122324.0624B11253E4@debutante.sirena.org.uk>
+References: <20181204181951.GC1136@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A4562267BB3
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 13:23:22 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C93F267D18
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 13:23:24 +0100 (CET)
+In-Reply-To: <20181204181951.GC1136@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: Calculate LRCLK divider
+   ASoC: max9867: Fix power management
 
 has been applied to the asoc tree at
 
@@ -52,375 +53,159 @@ to this mail.
 Thanks,
 Mark
 
->From 715ee1916b95bfd0773487397a0354ad9a4660e6 Mon Sep 17 00:00:00 2001
+>From 29f58ff06795a923407d011d4721eaf3e8d39acc Mon Sep 17 00:00:00 2001
 From: Ladislav Michl <ladis@linux-mips.org>
-Date: Tue, 4 Dec 2018 19:21:04 +0100
-Subject: [PATCH] ASoC: max9867: Calculate LRCLK divider
+Date: Tue, 4 Dec 2018 19:19:51 +0100
+Subject: [PATCH] ASoC: max9867: Fix power management
 
-Drop "Common NI Values Table" and calculate LRCLK divider, then
-add allowed rate constraints based on master clock frequency.
+Implement set_bias_level to drive shutdown bit, so device is
+put to sleep when unused.
 
 Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 207 ++++++++++++++++++-------------------
- sound/soc/codecs/max9867.h |  31 ++----
- 2 files changed, 110 insertions(+), 128 deletions(-)
+ sound/soc/codecs/max9867.c | 72 ++++++++++++++++++++++++--------------
+ sound/soc/codecs/max9867.h |  2 +-
+ 2 files changed, 46 insertions(+), 28 deletions(-)
 
 diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index c454de434d76..faec094161c1 100644
+index 1b155f40b106..c454de434d76 100644
 --- a/sound/soc/codecs/max9867.c
 +++ b/sound/soc/codecs/max9867.c
-@@ -126,124 +126,106 @@ static const struct snd_soc_dapm_route max9867_audio_map[] = {
- 	{"LINE_IN", NULL, "Right Line"},
- };
- 
--enum rates {
--	pcm_rate_8, pcm_rate_16, pcm_rate_24,
--	pcm_rate_32, pcm_rate_44,
--	pcm_rate_48, max_pcm_rate,
-+static const unsigned int max9867_rates_44k1[] = {
-+	11025, 22050, 44100,
- };
- 
--static const struct ni_div_rates {
--	u32 mclk;
--	u16 ni[max_pcm_rate];
--} ni_div[] = {
--	{11289600, {0x116A, 0x22D4, 0x343F, 0x45A9, 0x6000, 0x687D} },
--	{12000000, {0x1062, 0x20C5, 0x3127, 0x4189, 0x5A51, 0x624E} },
--	{12288000, {0x1000, 0x2000, 0x3000, 0x4000, 0x5833, 0x6000} },
--	{13000000, {0x0F20, 0x1E3F, 0x2D5F, 0x3C7F, 0x535F, 0x5ABE} },
--	{19200000, {0x0A3D, 0x147B, 0x1EB8, 0x28F6, 0x3873, 0x3D71} },
--	{24000000, {0x1062, 0x20C5, 0x1893, 0x4189, 0x5A51, 0x624E} },
--	{26000000, {0x0F20, 0x1E3F, 0x16AF, 0x3C7F, 0x535F, 0x5ABE} },
--	{27000000, {0x0E90, 0x1D21, 0x15D8, 0x3A41, 0x5048, 0x5762} },
-+static const struct snd_pcm_hw_constraint_list max9867_constraints_44k1 = {
-+	.list = max9867_rates_44k1,
-+	.count = ARRAY_SIZE(max9867_rates_44k1),
- };
- 
--static inline int get_ni_value(int mclk, int rate)
-+static const unsigned int max9867_rates_48k[] = {
-+	8000, 16000, 32000, 48000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list max9867_constraints_48k = {
-+	.list = max9867_rates_48k,
-+	.count = ARRAY_SIZE(max9867_rates_48k),
-+};
-+
-+struct max9867_priv {
-+	struct regmap *regmap;
-+	const struct snd_pcm_hw_constraint_list *constraints;
-+	unsigned int sysclk, pclk;
-+	bool master, dsp_a;
-+};
-+
-+static int max9867_startup(struct snd_pcm_substream *substream,
-+			   struct snd_soc_dai *dai)
- {
--	int i, ret = 0;
-+        struct max9867_priv *max9867 =
-+		snd_soc_component_get_drvdata(dai->component);
- 
--	/* find the closest rate index*/
--	for (i = 0; i < ARRAY_SIZE(ni_div); i++) {
--		if (ni_div[i].mclk >= mclk)
--			break;
--	}
--	if (i == ARRAY_SIZE(ni_div))
--		return -EINVAL;
-+	if (max9867->constraints)
-+		snd_pcm_hw_constraint_list(substream->runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE, max9867->constraints);
- 
--	switch (rate) {
--	case 8000:
--		return ni_div[i].ni[pcm_rate_8];
--	case 16000:
--		return ni_div[i].ni[pcm_rate_16];
--	case 32000:
--		return ni_div[i].ni[pcm_rate_32];
--	case 44100:
--		return ni_div[i].ni[pcm_rate_44];
--	case 48000:
--		return ni_div[i].ni[pcm_rate_48];
--	default:
--		pr_err("%s wrong rate %d\n", __func__, rate);
--		ret = -EINVAL;
--	}
--	return ret;
-+	return 0;
+@@ -248,17 +248,6 @@ static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
- static int max9867_dai_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+-static int max9867_prepare(struct snd_pcm_substream *substream,
+-			 struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_component *component = dai->component;
+-	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
+-
+-	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
+-		MAX9867_SHTDOWN_MASK, MAX9867_SHTDOWN_MASK);
+-	return 0;
+-}
+-
+ static int max9867_mute(struct snd_soc_dai *dai, int mute)
  {
-+	int value;
-+	unsigned long int rate, ratio;
  	struct snd_soc_component *component = dai->component;
- 	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
--	unsigned int ni_h, ni_l;
--	int value;
-+	unsigned int ni = DIV_ROUND_CLOSEST_ULL(96ULL * 0x10000 * params_rate(params),
-+						max9867->pclk);
- 
--	value = get_ni_value(max9867->sysclk, params_rate(params));
--	if (value < 0)
--		return value;
--
--	ni_h = (0xFF00 & value) >> 8;
--	ni_l = 0x00FF & value;
- 	/* set up the ni value */
- 	regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
--		MAX9867_NI_HIGH_MASK, ni_h);
-+		MAX9867_NI_HIGH_MASK, (0xFF00 & ni) >> 8);
- 	regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKLOW,
--		MAX9867_NI_LOW_MASK, ni_l);
--	if (!max9867->master) {
--		/*
--		 * digital pll locks on to any externally supplied LRCLK signal
--		 * and also enable rapid lock mode.
--		 */
--		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKLOW,
--			MAX9867_RAPID_LOCK, MAX9867_RAPID_LOCK);
--		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
--			MAX9867_PLL, MAX9867_PLL);
--	} else {
--		unsigned long int bclk_rate, pclk_bclk_ratio;
--		int bclk_value;
--
--		bclk_rate = params_rate(params) * 2 * params_width(params);
--		pclk_bclk_ratio = max9867->pclk/bclk_rate;
--		switch (params_width(params)) {
--		case 8:
--		case 16:
--			switch (pclk_bclk_ratio) {
--			case 2:
--				bclk_value = MAX9867_IFC1B_PCLK_2;
--				break;
--			case 4:
--				bclk_value = MAX9867_IFC1B_PCLK_4;
--				break;
-+		MAX9867_NI_LOW_MASK, 0x00FF & ni);
-+	if (max9867->master) {
-+		if (max9867->dsp_a) {
-+			value = MAX9867_IFC1B_48X;
-+		} else {
-+			rate = params_rate(params) * 2 * params_width(params);
-+			ratio = max9867->pclk / rate;
-+			switch (params_width(params)) {
- 			case 8:
--				bclk_value = MAX9867_IFC1B_PCLK_8;
--				break;
- 			case 16:
--				bclk_value = MAX9867_IFC1B_PCLK_16;
-+				switch (ratio) {
-+				case 2:
-+					value = MAX9867_IFC1B_PCLK_2;
-+					break;
-+				case 4:
-+					value = MAX9867_IFC1B_PCLK_4;
-+					break;
-+				case 8:
-+					value = MAX9867_IFC1B_PCLK_8;
-+					break;
-+				case 16:
-+					value = MAX9867_IFC1B_PCLK_16;
-+					break;
-+				default:
-+					return -EINVAL;
-+				}
-+				break;
-+			case 24:
-+				value = MAX9867_IFC1B_48X;
-+				break;
-+			case 32:
-+				value = MAX9867_IFC1B_64X;
- 				break;
- 			default:
--				dev_err(component->dev,
--					"unsupported sampling rate\n");
- 				return -EINVAL;
- 			}
--			break;
--		case 24:
--			bclk_value = MAX9867_IFC1B_24BIT;
--			break;
--		case 32:
--			bclk_value = MAX9867_IFC1B_32BIT;
--			break;
--		default:
--			dev_err(component->dev, "unsupported sampling rate\n");
--			return -EINVAL;
- 		}
- 		regmap_update_bits(max9867->regmap, MAX9867_IFC1B,
--			MAX9867_IFC1B_BCLK_MASK, bclk_value);
-+			MAX9867_IFC1B_BCLK_MASK, value);
-+	} else {
-+		/*
-+		 * digital pll locks on to any externally supplied LRCLK signal
-+		 * and also enable rapid lock mode.
-+		 */
-+		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKLOW,
-+			MAX9867_RAPID_LOCK, MAX9867_RAPID_LOCK);
-+		regmap_update_bits(max9867->regmap, MAX9867_AUDIOCLKHIGH,
-+			MAX9867_PLL, MAX9867_PLL);
- 	}
- 	return 0;
- }
-@@ -285,8 +267,16 @@ static int max9867_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 			freq);
- 		return -EINVAL;
- 	}
--	value = value << MAX9867_PSCLK_SHIFT;
-+	if (freq % 48000 == 0)
-+		max9867->constraints = &max9867_constraints_48k;
-+	else if (freq % 44100 == 0)
-+		max9867->constraints = &max9867_constraints_44k1;
-+	else
-+		dev_warn(component->dev,
-+			 "Unable to set exact rate with %uHz clock frequency\n",
-+			 freq);
- 	max9867->sysclk = freq;
-+	value = value << MAX9867_PSCLK_SHIFT;
- 	/* exact integer mode is not supported */
- 	value &= ~MAX9867_FREQ_MASK;
- 	regmap_update_bits(max9867->regmap, MAX9867_SYSCLK,
-@@ -299,16 +289,17 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- {
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
--	u8 iface1A = 0, iface1B = 0;
-+	u8 iface1A, iface1B;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		max9867->master = 1;
--		iface1A |= MAX9867_MASTER;
-+		max9867->master = true;
-+		iface1A = MAX9867_MASTER;
-+		iface1B = MAX9867_IFC1B_48X;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
--		max9867->master = 0;
--		iface1A &= ~MAX9867_MASTER;
-+		max9867->master = false;
-+		iface1A = iface1B = 0;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -316,9 +307,11 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-+		max9867->dsp_a = false;
- 		iface1A |= MAX9867_I2S_DLY;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
-+		max9867->dsp_a = true;
- 		iface1A |= MAX9867_TDM_MODE | MAX9867_SDOUT_HIZ;
- 		break;
- 	default:
-@@ -344,20 +337,18 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 
- 	regmap_write(max9867->regmap, MAX9867_IFC1A, iface1A);
- 	regmap_write(max9867->regmap, MAX9867_IFC1B, iface1B);
-+
- 	return 0;
- }
- 
+@@ -361,7 +350,6 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
  static const struct snd_soc_dai_ops max9867_dai_ops = {
--	.set_fmt = max9867_dai_set_fmt,
+ 	.set_fmt = max9867_dai_set_fmt,
  	.set_sysclk	= max9867_set_dai_sysclk,
-+	.set_fmt	= max9867_dai_set_fmt,
+-	.prepare	= max9867_prepare,
  	.digital_mute	= max9867_mute,
--	.hw_params = max9867_dai_hw_params,
-+	.startup	= max9867_startup,
-+	.hw_params	= max9867_dai_hw_params,
+ 	.hw_params = max9867_dai_hw_params,
+ };
+@@ -392,27 +380,59 @@ static struct snd_soc_dai_driver max9867_dai[] = {
+ 	}
  };
  
--#define MAX9867_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
--	SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
--#define MAX9867_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+-#ifdef CONFIG_PM_SLEEP
+-static int max9867_suspend(struct device *dev)
++#ifdef CONFIG_PM
++static int max9867_suspend(struct snd_soc_component *component)
+ {
+-	struct max9867_priv *max9867 = dev_get_drvdata(dev);
++	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
+ 
+-	/* Drop down to power saving mode when system is suspended */
+-	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
+-		MAX9867_SHTDOWN_MASK, ~MAX9867_SHTDOWN_MASK);
+ 	return 0;
+ }
+ 
+-static int max9867_resume(struct device *dev)
++static int max9867_resume(struct snd_soc_component *component)
+ {
+-	struct max9867_priv *max9867 = dev_get_drvdata(dev);
++	snd_soc_component_force_bias_level(component, SND_SOC_BIAS_STANDBY);
+ 
+-	regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
+-		MAX9867_SHTDOWN_MASK, MAX9867_SHTDOWN_MASK);
+ 	return 0;
+ }
++#else
++#define max9867_suspend	NULL
++#define max9867_resume	NULL
+ #endif
+ 
++static int max9867_set_bias_level(struct snd_soc_component *component,
++				  enum snd_soc_bias_level level)
++{
++	int err;
++	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
++
++	switch (level) {
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
++			err = regcache_sync(max9867->regmap);
++			if (err)
++				return err;
++
++			err = regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++						 MAX9867_SHTDOWN, MAX9867_SHTDOWN);
++			if (err)
++				return err;
++		}
++		break;
++	case SND_SOC_BIAS_OFF:
++		err = regmap_update_bits(max9867->regmap, MAX9867_PWRMAN,
++					 MAX9867_SHTDOWN, 0);
++		if (err)
++			return err;
++
++		regcache_mark_dirty(max9867->regmap);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_component_driver max9867_component = {
+ 	.controls		= max9867_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(max9867_snd_controls),
+@@ -420,6 +440,9 @@ static const struct snd_soc_component_driver max9867_component = {
+ 	.num_dapm_routes	= ARRAY_SIZE(max9867_audio_map),
+ 	.dapm_widgets		= max9867_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(max9867_dapm_widgets),
++	.suspend		= max9867_suspend,
++	.resume			= max9867_resume,
++	.set_bias_level		= max9867_set_bias_level,
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+@@ -514,15 +537,10 @@ static const struct of_device_id max9867_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, max9867_of_match);
+ 
+-static const struct dev_pm_ops max9867_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(max9867_suspend, max9867_resume)
+-};
 -
- static struct snd_soc_dai_driver max9867_dai[] = {
- 	{
- 	.name = "max9867-aif1",
-@@ -365,15 +356,15 @@ static struct snd_soc_dai_driver max9867_dai[] = {
- 		.stream_name = "HiFi Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = MAX9867_RATES,
--		.formats = MAX9867_FORMATS,
-+		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ static struct i2c_driver max9867_i2c_driver = {
+ 	.driver = {
+ 		.name = "max9867",
+ 		.of_match_table = of_match_ptr(max9867_of_match),
+-		.pm = &max9867_pm_ops,
  	},
- 	.capture = {
- 		.stream_name = "HiFi Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = MAX9867_RATES,
--		.formats = MAX9867_FORMATS,
-+		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &max9867_dai_ops,
- 	.symmetric_rates = 1,
+ 	.probe  = max9867_i2c_probe,
+ 	.id_table = max9867_i2c_id,
 diff --git a/sound/soc/codecs/max9867.h b/sound/soc/codecs/max9867.h
-index d9170850c96e..7f037ab701a5 100644
+index 55cd9976ff47..d9170850c96e 100644
 --- a/sound/soc/codecs/max9867.h
 +++ b/sound/soc/codecs/max9867.h
-@@ -26,13 +26,11 @@
- #define MAX9867_PSCLK_10_20  0x1
- #define MAX9867_PSCLK_20_40  0x2
- #define MAX9867_PSCLK_40_60  0x3
--#define MAX9867_AUDIOCLKHIGH 0x06
--#define MAX9867_NI_HIGH_WIDTH 0x7
--#define MAX9867_NI_HIGH_MASK 0x7F
--#define MAX9867_NI_LOW_MASK 0x7F
--#define MAX9867_NI_LOW_SHIFT 0x1
--#define MAX9867_PLL     (1<<7)
--#define MAX9867_AUDIOCLKLOW  0x07
-+#define MAX9867_AUDIOCLKHIGH	0x06
-+#define MAX9867_NI_HIGH_MASK	0x7F
-+#define MAX9867_NI_LOW_MASK	0xFE
-+#define MAX9867_PLL		(1<<7)
-+#define MAX9867_AUDIOCLKLOW	0x07
- #define MAX9867_RAPID_LOCK   0x01
- #define MAX9867_IFC1A        0x08
- #define MAX9867_MASTER       (1<<7)
-@@ -43,12 +41,12 @@
- #define MAX9867_BCI_MODE     (1<<5)
- #define MAX9867_IFC1B        0x09
- #define MAX9867_IFC1B_BCLK_MASK 7
--#define MAX9867_IFC1B_32BIT  0x01
--#define MAX9867_IFC1B_24BIT  0x02
--#define MAX9867_IFC1B_PCLK_2 4
--#define MAX9867_IFC1B_PCLK_4 5
--#define MAX9867_IFC1B_PCLK_8 6
--#define MAX9867_IFC1B_PCLK_16 7
-+#define MAX9867_IFC1B_64X	0x01
-+#define MAX9867_IFC1B_48X	0x02
-+#define MAX9867_IFC1B_PCLK_2	0x04
-+#define MAX9867_IFC1B_PCLK_4	0x05
-+#define MAX9867_IFC1B_PCLK_8	0x06
-+#define MAX9867_IFC1B_PCLK_16	0x07
- #define MAX9867_CODECFLTR    0x0a
- #define MAX9867_DACGAIN      0x0b
- #define MAX9867_DACLEVEL     0x0c
-@@ -72,11 +70,4 @@
+@@ -67,7 +67,7 @@
+ #define MAX9867_MICCONFIG    0x15
+ #define MAX9867_MODECONFIG   0x16
+ #define MAX9867_PWRMAN       0x17
+-#define MAX9867_SHTDOWN_MASK (1<<7)
++#define MAX9867_SHTDOWN      0x80
+ #define MAX9867_REVISION     0xff
  
  #define MAX9867_CACHEREGNUM 10
- 
--/* codec private data */
--struct max9867_priv {
--	struct regmap *regmap;
--	unsigned int sysclk;
--	unsigned int pclk;
--	unsigned int master;
--};
- #endif
 -- 
 2.19.0.rc2
