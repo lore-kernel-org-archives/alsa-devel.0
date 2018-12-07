@@ -1,68 +1,57 @@
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH] ASoC: pcm3060: Add powersaving widgets for DAC and ADC
-Date: Fri,  7 Dec 2018 20:02:34 +0100
-Message-ID: <20181207190234.12040-1-kmarinushkin@birdec.tech>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/6] ASoC: Intel: Skylake: probe and Kconfig
+	simplifications
+Date: Fri,  7 Dec 2018 17:50:02 -0600
+Message-ID: <20181207235008.22988-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0D1E267D20
+ for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 00:51:01 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable DAC/ADC only when playing/capturing
+The patches add support for CoffeeLake, harden and simplify the probe
+for the Skylake driver, introduce more compile-time granularity so
+that platforms can be selected individually.
 
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
----
- sound/soc/codecs/pcm3060.c | 14 ++++++++++----
- sound/soc/codecs/pcm3060.h |  2 ++
- 2 files changed, 12 insertions(+), 4 deletions(-)
+The main difference since the RFC posted on November 20 is the
+addition of the pci class/subclass/prog-if information. This greatly
+simplifies the detection of the DSP and will allow for an automatic
+selection between HDaudio legacy and Skylake drivers. As suggested by
+Takashi this automatic selection will be posted separately (it will
+result on changes on both sound/pci/hda and sound/soc/intel sides)
 
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 1dd851a7b43b..6714aa8d9026 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -198,19 +198,25 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
- };
- 
- static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", PCM3060_REG64,
-+			 PCM3060_REG_SHIFT_DAPSV, 1),
-+
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
- 
- 	SND_SOC_DAPM_INPUT("INL"),
- 	SND_SOC_DAPM_INPUT("INR"),
-+
-+	SND_SOC_DAPM_ADC("ADC", "Capture", PCM3060_REG64,
-+			 PCM3060_REG_SHIFT_ADPSV, 1),
- };
- 
- static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
--	{ "OUTL", NULL, "Playback" },
--	{ "OUTR", NULL, "Playback" },
-+	{ "OUTL", NULL, "DAC" },
-+	{ "OUTR", NULL, "DAC" },
- 
--	{ "Capture", NULL, "INL" },
--	{ "Capture", NULL, "INR" },
-+	{ "ADC", NULL, "INL" },
-+	{ "ADC", NULL, "INR" },
- };
- 
- /* soc component */
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index c895cf40ee10..6a027b4a845d 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -37,7 +37,9 @@ int pcm3060_remove(struct device *dev);
- #define PCM3060_REG_MRST		0x80
- #define PCM3060_REG_SRST		0x40
- #define PCM3060_REG_ADPSV		0x20
-+#define PCM3060_REG_SHIFT_ADPSV	0x05
- #define PCM3060_REG_DAPSV		0x10
-+#define PCM3060_REG_SHIFT_DAPSV	0x04
- #define PCM3060_REG_SE			0x01
- 
- #define PCM3060_REG65			0x41
+Pierre-Louis Bossart (5):
+  ASoC: Intel: Skylake: Harden DSP detection with PCI class/subclass
+    info
+  ASoC: Intel: Skylake: stop probe if HDaudio capabilities don't exist
+  ASoC: Intel: Skylake: remove useless tests on HDaudio capabilities
+  ASoC: Intel: Skylake: add error logs on probe, remove dependency on
+    NHLT
+  ASoC: Intel: Skylake: Add more platform granularity
+
+Takashi Iwai (1):
+  ASoC: Intel: Skylake: Add CFL-S support
+
+ sound/soc/intel/Kconfig                |  73 +++++++++++++--
+ sound/soc/intel/boards/Kconfig         |  16 +++-
+ sound/soc/intel/skylake/skl-messages.c |   8 ++
+ sound/soc/intel/skylake/skl-nhlt.c     |   3 +
+ sound/soc/intel/skylake/skl.c          | 125 +++++++++++++++++--------
+ 5 files changed, 179 insertions(+), 46 deletions(-)
+
 -- 
-2.13.6
+2.17.1
