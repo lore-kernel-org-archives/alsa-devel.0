@@ -1,123 +1,96 @@
-From: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: Re: [PATCH v2 2/3] ALSA: hda/realtek: Enable audio jacks of ASUS
- UX533FD with ALC294
-Date: Fri, 7 Dec 2018 11:48:08 +0800
-Message-ID: <CAPpJ_ed36NyopArw98qhkstAm=L9A4=xiLPaa2ju0+qMR0tE9Q@mail.gmail.com>
-References: <CAPpJ_eez=1ie2B8rA=GeW+hx7kQU0wBAhW3XCBX3zGPW+kXDZA@mail.gmail.com>
- <20181206084554.4728-1-jian-hong@endlessm.com> <20181206084554.4728-3-jian-hong@endlessm.com>
- <6FAB7C47BCF00940BB0999A99BE3547A18420211@RTITMBSV02.realtek.com.tw>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 2/3] ASoC: Intel:
+ kbl_da7219_max98357a_rt5660: Add a new codec rt5660
+Date: Fri, 7 Dec 2018 12:32:24 +0800
+Message-ID: <f2348c0d-3473-46e3-b6af-bc31717d62da@canonical.com>
+References: <20181206145207.4477-1-hui.wang@canonical.com>
+ <20181206145207.4477-2-hui.wang@canonical.com>
+ <b0ff8dad-554a-2117-def3-e2ae880b3cc3@linux.intel.com>
+ <18163dfe-9fc1-c28a-c5d2-d89f797f93a0@canonical.com>
+ <d62d3f85-5a26-048a-2fef-caa4d98dc32a@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18420211@RTITMBSV02.realtek.com.tw>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kailang Yang <kailang@realtek.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, Daniel Drake <drake@endlessm.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58954267CC0
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 05:32:35 +0100 (CET)
+In-Reply-To: <d62d3f85-5a26-048a-2fef-caa4d98dc32a@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Kailang <kailang@realtek.com> =E6=96=BC 2018=E5=B9=B412=E6=9C=887=E6=97=A5 =
-=E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8811:32=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi Jian Hong,
->
-> Could I know who give you the value as below?
->
-> +                       { 0x20, AC_VERB_SET_COEF_INDEX, 0x10 },
-> +                       { 0x20, 0x4c4, 0x20 },
-> +                       { 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
-> +                       { 0x20, 0x488, 0x00 },
-
-A module maker.
-
-Regards,
-Jian-Hong Pan
-
-> -----Original Message-----
-> From: Jian-Hong Pan <jian-hong@endlessm.com>
-> Sent: Thursday, December 6, 2018 4:46 PM
-> To: Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Kail=
-ang <kailang@realtek.com>
-> Cc: Hui Wang <hui.wang@canonical.com>; alsa-devel@alsa-project.org; linux=
--kernel@vger.kernel.org; linux@endlessm.com; Jian-Hong Pan <jian-hong@endle=
-ssm.com>; Daniel Drake <drake@endlessm.com>
-> Subject: [PATCH v2 2/3] ALSA: hda/realtek: Enable audio jacks of ASUS UX5=
-33FD with ALC294
->
-> The ASUS UX533FD with ALC294 cannot detect the headset MIC and output thr=
-ough the internal speaker and the headphone until ALC294_FIXUP_ASUS_SPK_NOI=
-SE quirk applied.
->
-> Signed-off-by: Daniel Drake <drake@endlessm.com>
-> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-> ---
-> v2:
-> - Modify the HDA verbs for UX333FA support
-> - Make a new ALC294_FIXUP_ASUS_HEADSET_MIC quirk for ALC294 chain
-> - .chain_id =3D ALC256_FIXUP_ASUS_HEADSET_MODE  =3D=3D> change to ALC269_=
-FIXUP_HEADSET_MODE_NO_HP_MIC
->
->  sound/pci/hda/patch_realtek.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c index d32e50b1ed60..1525bcdf96e8 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -5518,6 +5518,8 @@ enum {
->         ALC295_FIXUP_HP_AUTO_MUTE,
->         ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE,
->         ALC294_FIXUP_ASUS_MIC,
-> +       ALC294_FIXUP_ASUS_HEADSET_MIC,
-> +       ALC294_FIXUP_ASUS_SPK_NOISE,
->  };
->
->  static const struct hda_fixup alc269_fixups[] =3D { @@ -6414,6 +6416,28 =
-@@ static const struct hda_fixup alc269_fixups[] =3D {
->                 .chained =3D true,
->                 .chain_id =3D ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
->         },
-> +       [ALC294_FIXUP_ASUS_HEADSET_MIC] =3D {
-> +               .type =3D HDA_FIXUP_PINS,
-> +               .v.pins =3D (const struct hda_pintbl[]) {
-> +                       { 0x19, 0x01a1113c }, /* use as headset mic, with=
-out its own jack detect */
-> +                       { }
-> +               },
-> +               .chained =3D true,
-> +               .chain_id =3D ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-> +       },
-> +       [ALC294_FIXUP_ASUS_SPK_NOISE] =3D {
-> +               .type =3D HDA_FIXUP_VERBS,
-> +               .v.verbs =3D (const struct hda_verb[]) {
-> +                       /* Set EAPD high */
-> +                       { 0x20, AC_VERB_SET_COEF_INDEX, 0x10 },
-> +                       { 0x20, 0x4c4, 0x20 },
-> +                       { 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
-> +                       { 0x20, 0x488, 0x00 },
-> +                       { }
-> +               },
-> +               .chained =3D true,
-> +               .chain_id =3D ALC294_FIXUP_ASUS_HEADSET_MIC
-> +       },
->  };
->
->  static const struct snd_pci_quirk alc269_fixup_tbl[] =3D { @@ -6556,6 +6=
-580,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =3D {
->         SND_PCI_QUIRK(0x1043, 0x12e0, "ASUS X541SA", ALC256_FIXUP_ASUS_MI=
-C),
->         SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MI=
-C),
->         SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXU=
-P_ASUS_ZENBOOK),
-> +       SND_PCI_QUIRK(0x1043, 0x14a1, "ASUS UX533FD",
-> +ALC294_FIXUP_ASUS_SPK_NOISE),
->         SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXU=
-P_ASUS_ZENBOOK_UX31A),
->         SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DM=
-IC),
->         SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73=
-JW),
-> --
-> 2.11.0
->
+Ck9uIDIwMTgvMTIvNyDkuIrljYg5OjE4LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPgo+
+IE9uIDEyLzYvMTggNzowMSBQTSwgSHVpIFdhbmcgd3JvdGU6Cj4+IE9uIDIwMTgvMTIvNiDkuIvl
+jYgxMTowOCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+PiBPbiAxMi82LzE4IDg6NTIg
+QU0sIEh1aSBXYW5nIHdyb3RlOgo+Pj4+IFRoZSBuZXcgRGVsbCBJb1QgcGxhdGZvcm0gdXNlcyBr
+YWJ5bGFrZSArIGFsYzMyNzcgY29kZWMsIGFuZCBhbGMzMjc3Cj4+Pj4gc2hhcmVzIHRoZSBkcml2
+ZXIgd2l0aCB0aGUgY29kZWMgcnQ1NjYwLCBoZXJlIHdlIGNob29zZSB0aGUKPj4+PiBjbG9zZXN0
+IG1hY2hpbmUgZHJpdmVyIGtibF9kYTcyMTlfbWF4OTgzNTdhLCBhbmQgYmFzZWQgb24gdGhpcyBk
+cml2ZXIsCj4+Pj4gd2UgYWRkIGEgbmV3IGNvZGVjIHJ0NTY2MCB0byBpdC4KPj4+Pgo+Pj4+IFRo
+ZSBhdWRpbyBkZXNpZ24gb24gdGhpcyBJb1QgcGxhdGZvcm0gaXMgYXMgYmVsb3c6Cj4+Pj4gwqAg
+LSBJbnRlbCBrYWJ5bGFrZSBwbGF0Zm9ybQo+Pj4+IMKgIC0gY29ubmVjdCB0aGUgY29kZWMgQUxD
+MzI3NyB2aWEgU1NQMAo+Pj4+IMKgIC0gbGluZS1vdXQgYW5kIGxpbmUtaW4gd2l0aCBNaWNiaWFz
+IGphY2tzCj4+Pj4gwqAgLSBsaW5lLW91dCBtdXRlIGNvbnRyb2wgYW5kIGphY2sgZGV0ZWN0aW9u
+IG9mIGxpbmUtb3V0IGFuZCBsaW5lLWluCj4+Pj4gwqAgLSB0d28gSERNSSBwb3J0cyB3aXRoIGF1
+ZGlvIGNhcGFiaWxpdHkKPj4+Cj4+PiBJIGFtIG5vdCBzdXJlIGl0IG1ha2VzIHNlbnNlIHRvIHN0
+dWZmIHRoZSBydDU2NjAgc3VwcG9ydCBpbiBhIAo+Pj4gbWFjaGluZSBkcml2ZXIgdGhhdCdzIG1l
+YW50IG1vc3RseSBmb3IgQ2hyb21lYm9va3MsIGFuZCBJIGFtIG5vdCAKPj4+IHN1cmUgd2h5IHlv
+dSBwaWNrZWQgdGhpcyBvbmUgc3BlY2lmaWNhbGx5Lgo+Pgo+PiBTaW5jZSB0aGlzIGlzIGEga2Fi
+eWxha2UgcGxhdGZvcm0sIHdlIGhhdmUgNCBjYW5kaWRhdGVzIHRvIGNob29zZSBpZiAKPj4gd2Ug
+d2FudCB0byBzdHVmZiB0aGUgY29kZSBpbnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCB0
+aGV5IGFyZToKPj4KPj4ga2JsX2RhNzIxOV9tYXg5ODM1N2EuY8KgIGtibF9kYTcyMTlfbWF4OTg5
+MjcuYyBrYmxfcnQ1NjYzX21heDk4OTI3LmPCoCAKPj4ga2JsX3J0NTY2M19ydDU1MTRfbWF4OTg5
+MjcuYwo+Pgo+PiBrYmxfZGE3MjE5X21heDk4OTI3LmM6IGl0IGNvbm5lY3RzIDIgY29kZWNzIHZp
+YSBTU1AwLCBzbyB3ZSBjYW4ndCAKPj4gc2hhcmUgdGhlIHNzcDBfaHdfcGFyYW1zIGFuZCBzc3Bf
+Zml4dXAgZnVuY3Rpb25zIHdpdGggdGhpcyBEZWxsIElvVCAKPj4gZGVzaWduCj4+Cj4+IGtibF9y
+dDU2NjNfbWF4OTg5MjcuYzrCoCBpdCBjb25uZWN0cyAyIGNvZGVzIHZpYSBTU1AwLCBhbmQgdGhl
+IHJ0NTY2MyAKPj4gaXMgY29ubmVjdGVkIHRvIFNTUDEswqAgd2UgY2FuJ3Qgc2hhcmUgdGhlIHNz
+cDBfaHdfcGFyYW1zIGFuZCAKPj4gc3NwX2ZpeHVwIGZ1bmN0aW9ucyB3aXRoIHRoaXMgRGVsbCBJ
+b1QgZGVzaWduLCBtb3JlIG92ZXIsIGl0IHJlcXVpcmVzIAo+PiB0aGUgY2xvY2sgb2YgInNzcDFf
+bWNsayIgYW5kICJzc3AxX3NjbGsiIHdoaWNoIGlzIG5vdCBuZWVkZWQgb24gRGVsbCAKPj4gSW9U
+Lgo+Pgo+PiBrYmxfcnQ1NjYzX3J0NTUxNF9tYXg5ODkyNy5jOsKgIG5lYXJseSBzYW1lIGFzIGti
+bF9ydDU2NjNfbWF4OTg5MjcuYwo+Pgo+PiBTbyBpbiBvcmRlciB0byBzaGFyZSB0aGUgZXhpc3Rp
+bmcgY29kZSB3aXRoIERlbGwgSW9UIG1heGltdW1seSwgSSAKPj4gY2hvb3NlIGtibF9kYTcyMTlf
+bWF4OTgzNTdhLmMsIGl0IGNvbm5lY3RzIDEgY29kZWMgdmlhIFNTUDAgd2l0aCAKPj4gU05EX1NP
+Q19EQUlGTVRfSTJTX0IsIHRoaXMgaXMgc2FtZSBhcyB0aGUgRGVsbCBJb1QncyBkZXNpZ24uCj4g
+VGhpcyBkZXNjcmlwdGlvbiBzaG93cyB5b3UndmUgZG9uZSB5b3VyIGhvbWV3b3JrLCBidXQuLi4K
+Pj4KPj4KPj4+IFNpbmNlIHRoZXJlIGlzIG5vIHJldXNlIG9mIHRoZSBEQTcyMTksIERNSUMgb3Ig
+TUFYOTgzNTdhLCBJIHdvdWxkIAo+Pj4gYXJndWUgdGhhdCB5b3Ugd2FudCB0byBkZWZpbmUgYSBu
+ZXcgbWFjaGluZSBkcml2ZXIgc28gdGhhdCB5b3Ugb25seSAKPj4+IHNlbGVjdCBhbmQgY29tcGls
+ZSBpbiB3aGF0IHlvdSBuZWVkLCBub3QgdG8gbWVudGlvbiB0aGF0IGl0J2xsIGJlIAo+Pj4gZWFz
+aWVyIHRvIG1haW50YWluLCBib3RoIGZvciB1cHN0cmVhbSBhbmQgZm9yIENocm9tZSBiYWNrcG9y
+dHMuCj4+Cj4+IFllcywgYSBzdGFuZGFsb25lIGRyaXZlciBmb3IgYSBzcGVjaWZpYyBIVyBpcyBl
+YXN5IHRvIG1haW50YWluLCBidXQgCj4+IGl0IHdpbGwgYWRkIGxvdHMgb2YgY29weS1hbmQtcGFz
+dGUgY29kZS4gSWYgaXQgaXMgcmVhbGx5IG5vdCBnb29kIHRvIAo+PiBzdHVmZiBEZWxsIElvVCBp
+bnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCBJIHdpbGwgcHJlcGFyZSBhIAo+PiBzdGFu
+ZGFsb25lIG1hY2hpbmUgZHJpdmVyIGZvciBpdCBpbiB0aGUgVjIuCj4+Cj4gLi4udGhlIG9ubHkg
+dGhpbmcgdGhhdCdzIHJlYWxseSBjb3B5LXBhc3RlIGlzIHRoZSBIRE1JIHBhcnQsIHdoaWNoIGNh
+biAKPiBiZSBmYWN0b3JlZCB3aXRob3V0IHRvbyBtYW55IGlzc3Vlcy4gQWxsIHRoZSBtYXBzLCBy
+b3V0aW5nLCBjb2RlYyAKPiBjb250cm9scyBhcmUgZGlmZmVyZW50LCBhbmQgdGhlcmUgaXMgbm8g
+YmVuZWZpdCBpbiBoYXZpbmcgdGhlbSBpbiBhIAo+IHNpbmdsZSBmaWxlLiBUaGVyZSBhcmUgbXVs
+dGlwbGUgZGVyaXZhdGl2ZXMgb2YgdGhvc2UgQ2hyb21lYm9vayAKPiBkZXNpZ25zIGFuZCB5b3Ug
+cmVhbGx5IGRvbid0IHdhbnQgdG8gaGF2ZSB0byBkZWFsIHdpdGggdGhlaXIgdXBkYXRlcy4gCj4g
+QW5kIGxhc3QgdGhlIGRvd25zaWRlIGlzIHJlYWxseSBtb3JlIGNvbXBsaWNhdGVkIEtjb25maWcg
+ZGVwZW5kZW5jaWVzLgo+Cj4gSSBhbSBhbGwgZm9yIHJldXNlLCBhbmQganVzdCBzcGVudCB0aGUg
+bGFzdCBob3VyIG1ha2luZyBzdXJlIHdlIGNhbiAKPiByZXVzZSBiZXR3ZWVuIEFQTCBhbmQgR0xL
+LCBidXQgaW4gdGhpcyBjYXNlIEkgcmVhbGx5IHN0cm9uZ2x5IAo+IGVuY291cmFnZSB5b3UgdG8g
+aGF2ZSBhIGRpZmZlcmVudCBtYWNoaW5lIGRyaXZlciwgaXQnbGwgYmUgc2ltcGxlciB0byAKPiBy
+ZXZpZXcgYW5kIG1haW50YWluLgo+Ck9LLCBnb3QgaXQuIHdpbGwgaW1wbGVtZW50IGEgbmV3IGMg
+ZmlsZSBpbiB0aGUgVjIuCgpUaGFua3MsCgpIdWkuCgo+IFRoYW5rcwo+Cj4gLVBpZXJyZQo+Cj4K
+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
