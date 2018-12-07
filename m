@@ -1,17 +1,26 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [GIT PULL] soundwire updates
-Date: Fri, 7 Dec 2018 08:10:51 +0100
-Message-ID: <20181207071051.GB8802@kroah.com>
-References: <20181206171621.GA2847@vkoul-mobl>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/3] mfd: cros_ec: Add commands to control
+	codec
+Date: Fri, 7 Dec 2018 07:23:07 +0000
+Message-ID: <20181207072307.GF26661@dell>
+References: <20181127120041.90759-1-cychiang@chromium.org>
+ <20181128093411.GC4272@dell> <20181203111919.GL26661@dell>
+ <CAFv8NwLEQ7EUSTRfAf42w2BY0aEPi_pjcMkPzzCNb=17pfzQXw@mail.gmail.com>
+ <CAFv8NwLZc7YmCbFi-4nCOG5GUwrRbc+JdXLBKv2JA8d6eC3SDg@mail.gmail.com>
+ <20181205113045.GD26661@dell> <20181205113406.GE26661@dell>
+ <CAFv8NwKgspykPHWfdjapzY-wCAp8MmduKq_yhrvWct2r7yFCzA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A216267CED
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 08:20:26 +0100 (CET)
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE9D5267CE1
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 08:23:10 +0100 (CET)
+Received: by mail-wr1-f66.google.com with SMTP id l9so2750137wrt.13
+ for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2018 23:23:10 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <20181206171621.GA2847@vkoul-mobl>
+In-Reply-To: <CAFv8NwKgspykPHWfdjapzY-wCAp8MmduKq_yhrvWct2r7yFCzA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,24 +30,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, rohitkr@codeaurora.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 06, 2018 at 10:46:21PM +0530, Vinod Koul wrote:
-> Hey Greg,
-> 
-> Please pull to receive a single commit for soundwire tree for this
-> cycle. Am off next week so sending this bit early
-> 
-> The following changes since commit 651022382c7f8da46cb4872a545ee1da6d097d2a:
-> 
->   Linux 4.20-rc1 (2018-11-04 15:37:52 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-4.21-rc1
-
-Now pulled, thanks.
-
-greg k-h
+T24gVGh1LCAwNiBEZWMgMjAxOCwgQ2hlbmcteWkgQ2hpYW5nIHdyb3RlOgoKPiBPbiBXZWQsIERl
+YyA1LCAyMDE4IGF0IDc6MzQgUE0gTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4gd3Jv
+dGU6Cj4gPgo+ID4gT24gV2VkLCAwNSBEZWMgMjAxOCwgTGVlIEpvbmVzIHdyb3RlOgo+ID4KPiA+
+ID4gT24gV2VkLCAwNSBEZWMgMjAxOCwgQ2hlbmcteWkgQ2hpYW5nIHdyb3RlOgo+ID4gPgo+ID4g
+PiA+IEhpIExlZSwKPiA+ID4gPgo+ID4gPiA+IEkgdHJpZWQgdG8gYXBwbHkgdGhpcyBwYXRjaCBi
+YXNlZCBvbgo+ID4gPiA+IGZvci1tZmQtbmV4dCBicmFuY2ggb2YgbWZkIHRyZWUgKAo+ID4gPiA+
+IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9sZWUvbWZkLmdp
+dCApCj4gPiA+ID4gVGhlbiwgSSB0cmllZCB0byBjb21waWxlIGFsbCBtb2R1bGVzIGJ5Cj4gPiA+
+ID4KPiA+ID4gPiAgQVJDSD14ODZfNjQgbWFrZSBhbGx5ZXNjb25maWcKPiA+ID4gPiAgQVJDSD14
+ODZfNjQgbWFrZSAtajY0Cj4gPiA+ID4KPiA+ID4gPiBUaGVyZSB3YXMgbm8gZXJyb3IuCj4gPiA+
+ID4gQ291bGQgeW91IHBsZWFzZSBsZXQgbWUga25vdyB3aGF0IHdhcyB0aGUgZXJyb3Igd2hlbiB5
+b3UgZmFpbGVkIHRvCj4gPiA+ID4gYXBwbHkgdGhpcyBwYXRjaCA/Cj4gPiA+Cj4gPiA+IERvZXNu
+J3Qgd29yayBmb3IgbWUuCj4gPiA+Cj4gPiA+IGxlZUBob3N0On4vcHJvamVjdHMva2VybmVsIFtm
+b3ItbWZkLW5leHRdJCBmb3JtZmRuZXh0Cj4gPiA+IEFwcGx5aW5nOiBtZmQ6IGNyb3NfZWM6IEFk
+ZCBjb21tYW5kcyB0byBjb250cm9sIGNvZGVjCj4gPiA+IGVycm9yOiBzaGExIGluZm9ybWF0aW9u
+IGlzIGxhY2tpbmcgb3IgdXNlbGVzcyAoaW5jbHVkZS9saW51eC9tZmQvY3Jvc19lY19jb21tYW5k
+cy5oKS4KPiA+ID4gZXJyb3I6IGNvdWxkIG5vdCBidWlsZCBmYWtlIGFuY2VzdG9yCj4gPiA+IFBh
+dGNoIGZhaWxlZCBhdCAwMDAxIG1mZDogY3Jvc19lYzogQWRkIGNvbW1hbmRzIHRvIGNvbnRyb2wg
+Y29kZWMKPiA+ID4gVXNlICdnaXQgYW0gLS1zaG93LWN1cnJlbnQtcGF0Y2gnIHRvIHNlZSB0aGUg
+ZmFpbGVkIHBhdGNoCj4gPiA+IFdoZW4geW91IGhhdmUgcmVzb2x2ZWQgdGhpcyBwcm9ibGVtLCBy
+dW4gImdpdCBhbSAtLWNvbnRpbnVlIi4KPiA+ID4gSWYgeW91IHByZWZlciB0byBza2lwIHRoaXMg
+cGF0Y2gsIHJ1biAiZ2l0IGFtIC0tc2tpcCIgaW5zdGVhZC4KPiA+ID4gVG8gcmVzdG9yZSB0aGUg
+b3JpZ2luYWwgYnJhbmNoIGFuZCBzdG9wIHBhdGNoaW5nLCBydW4gImdpdCBhbSAtLWFib3J0Ii4K
+PiA+Cj4gPiBOb3QgdGhhdCB0aGUgZm9sbG93aW5nIGxpbmVzIChhcyBzZWVuIGluIHlvdXIgcGF0
+Y2gpIGFyZSBub3QgcHJlc2VudAo+ID4gaW4gdGhlIE1haW5saW5lIGtlcm5lbC4KPiA+Cj4gPiA+
+IEBAIC00MDc3LDYgKzQwNzcsMTAwIEBAIHN0cnVjdCBfX2VjX2FsaWduMSBlY19yZXNwb25zZV9p
+MmNfcGFzc3RocnVfcHJvdGVjdCB7Cj4gPiA+ICAgICAgIHVpbnQ4X3Qgc3RhdHVzOyAgICAgICAg
+IC8qIFN0YXR1cyBmbGFncyAoMDogdW5sb2NrZWQsIDE6IGxvY2tlZCkgKi8KPiA+ID4gIH07Cj4g
+Pgo+ID4gRG8geW91IGhhdmUgb3RoZXIgcGF0Y2hlcyBhcHBsaWVkIHRvIHlvdXIgdHJlZT8KPiAK
+PiBIaSBMZWUsCj4gU29ycnksIEkgc2VlIHRoZSBwcm9ibGVtLgo+IEkgd2FzIHVzaW5nIGdpdCBh
+bSAtMyB3aGljaCBzb2x2ZXMgdGhlIGNvbmZsaWN0IGJ5IGl0c2VsZi4KClRoYXQncyB3aGF0IEkg
+dXNlLCBidXQgaXQgc3RpbGwgaGFkIGlzc3Vlcy4KCkdpdCBpcyBwcm9iYWJseSB1c2luZyBhIHBy
+ZXZpb3VzIHJlc29sdXRpb24gaW4geW91ciBjYXNlLgoKPiBJIHdpbGwgcmVzZW5kIGEgcGF0Y2gg
+YmFzZWQgb24geW91ciBmb3ItbWZkLW5leHQgYnJhbmNoIHNvIHdlIGNhbiBrZWVwCj4gdGhlIHBh
+dGNoIGNsZWFuLgo+IFRoYW5rcyBmb3IgeW91ciB0aW1lLgoKLS0gCkxlZSBKb25lcyBb5p2O55C8
+5pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBz
+b3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdp
+dHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
