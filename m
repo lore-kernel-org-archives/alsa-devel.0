@@ -1,81 +1,68 @@
-From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Subject: [PATCH 3/3] ASoC: xlnx: enable i2s driver build
-Date: Sat, 8 Dec 2018 00:02:38 +0530
-Message-ID: <1544207558-72508-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-References: <1544207558-72508-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1544207558-72508-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Subject: [PATCH] ASoC: pcm3060: Add powersaving widgets for DAC and ADC
+Date: Fri,  7 Dec 2018 20:02:34 +0100
+Message-ID: <20181207190234.12040-1-kmarinushkin@birdec.tech>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kirill Marinushkin <kmarinushkin@birdec.tech>
 List-Id: alsa-devel@alsa-project.org
 
-Enabled i2s driver build option.
+Enable DAC/ADC only when playing/capturing
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 ---
- sound/soc/Kconfig         | 1 +
- sound/soc/Makefile        | 1 +
- sound/soc/xilinx/Kconfig  | 8 ++++++++
- sound/soc/xilinx/Makefile | 2 ++
- 4 files changed, 12 insertions(+)
- create mode 100644 sound/soc/xilinx/Kconfig
- create mode 100644 sound/soc/xilinx/Makefile
+ sound/soc/codecs/pcm3060.c | 14 ++++++++++----
+ sound/soc/codecs/pcm3060.h |  2 ++
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 1cf11cf..d21659f 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -73,6 +73,7 @@ source "sound/soc/tegra/Kconfig"
- source "sound/soc/txx9/Kconfig"
- source "sound/soc/uniphier/Kconfig"
- source "sound/soc/ux500/Kconfig"
-+source "sound/soc/xilinx/Kconfig"
- source "sound/soc/xtensa/Kconfig"
- source "sound/soc/zte/Kconfig"
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 1dd851a7b43b..6714aa8d9026 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -198,19 +198,25 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
+ };
  
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 62a5f87..aff7b19 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -57,5 +57,6 @@ obj-$(CONFIG_SND_SOC)	+= tegra/
- obj-$(CONFIG_SND_SOC)	+= txx9/
- obj-$(CONFIG_SND_SOC)	+= uniphier/
- obj-$(CONFIG_SND_SOC)	+= ux500/
-+obj-$(CONFIG_SND_SOC)	+= xilinx/
- obj-$(CONFIG_SND_SOC)	+= xtensa/
- obj-$(CONFIG_SND_SOC)	+= zte/
-diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
-new file mode 100644
-index 0000000..25e287f
---- /dev/null
-+++ b/sound/soc/xilinx/Kconfig
-@@ -0,0 +1,8 @@
-+config SND_SOC_XILINX_I2S
-+	tristate "Audio support for the the Xilinx I2S"
-+	help
-+	  Select this option to enable Xilinx I2S Audio. This enables
-+	  I2S playback and capture using xilinx soft IP. In transmitter
-+	  mode, IP receives audio in AES format, extracts PCM and sends
-+	  PCM data. In receiver mode, IP receives PCM audio and
-+	  encapsulates PCM in AES format and sends AES data.
-diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
-new file mode 100644
-index 0000000..6c1209b
---- /dev/null
-+++ b/sound/soc/xilinx/Makefile
-@@ -0,0 +1,2 @@
-+snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
-+obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
+ static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC("DAC", "Playback", PCM3060_REG64,
++			 PCM3060_REG_SHIFT_DAPSV, 1),
++
+ 	SND_SOC_DAPM_OUTPUT("OUTL"),
+ 	SND_SOC_DAPM_OUTPUT("OUTR"),
+ 
+ 	SND_SOC_DAPM_INPUT("INL"),
+ 	SND_SOC_DAPM_INPUT("INR"),
++
++	SND_SOC_DAPM_ADC("ADC", "Capture", PCM3060_REG64,
++			 PCM3060_REG_SHIFT_ADPSV, 1),
+ };
+ 
+ static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
+-	{ "OUTL", NULL, "Playback" },
+-	{ "OUTR", NULL, "Playback" },
++	{ "OUTL", NULL, "DAC" },
++	{ "OUTR", NULL, "DAC" },
+ 
+-	{ "Capture", NULL, "INL" },
+-	{ "Capture", NULL, "INR" },
++	{ "ADC", NULL, "INL" },
++	{ "ADC", NULL, "INR" },
+ };
+ 
+ /* soc component */
+diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
+index c895cf40ee10..6a027b4a845d 100644
+--- a/sound/soc/codecs/pcm3060.h
++++ b/sound/soc/codecs/pcm3060.h
+@@ -37,7 +37,9 @@ int pcm3060_remove(struct device *dev);
+ #define PCM3060_REG_MRST		0x80
+ #define PCM3060_REG_SRST		0x40
+ #define PCM3060_REG_ADPSV		0x20
++#define PCM3060_REG_SHIFT_ADPSV	0x05
+ #define PCM3060_REG_DAPSV		0x10
++#define PCM3060_REG_SHIFT_DAPSV	0x04
+ #define PCM3060_REG_SE			0x01
+ 
+ #define PCM3060_REG65			0x41
 -- 
-2.7.4
+2.13.6
