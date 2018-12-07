@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/6] ASoC: Intel: Skylake: Harden DSP detection
-	with PCI class/subclass info
-Date: Fri,  7 Dec 2018 17:50:04 -0600
-Message-ID: <20181207235008.22988-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: Intel: Skylake: stop probe if
+	HDaudio capabilities don't exist
+Date: Fri,  7 Dec 2018 17:50:05 -0600
+Message-ID: <20181207235008.22988-4-pierre-louis.bossart@linux.intel.com>
 References: <20181207235008.22988-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 91732267D2D
+ by alsa0.perex.cz (Postfix) with ESMTP id DC180267D2F
  for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 00:51:04 +0100 (CET)
 In-Reply-To: <20181207235008.22988-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,44 +25,69 @@ To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The existing PPCAP and GCAP fields cannot be used reliably to
-determine if the DSP is enabled by the BIOS. Instead rely on the
-class/subclass information to find out if this driver can run or
-not. The values in the code don't seem to be documented in publicly
-available documents but are part of recommendations made to BIOS
-writers and have been verified to be accurate on a number of
-platforms.
+Check immediately if required HDaudio capabilities can't be found (no
+PPCAP or no streams exposed in GCAP), and move all DMA inits after the
+error tests.
+
+PPCAP and GCAP are not reliable indicators of DSP presence, but if
+they don't exist then the driver will not work.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/intel/skylake/skl.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index df36b8fe6d5e..41a084b3d48f 100644
+index 41a084b3d48f..72e366bbba33 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -916,6 +916,21 @@ static int skl_first_init(struct hdac_bus *bus)
- 	unsigned short gcap;
- 	int cp_streams, pb_streams, start_idx;
+@@ -946,6 +946,12 @@ static int skl_first_init(struct hdac_bus *bus)
  
-+	/*
-+	 * detect DSP by checking class/subclass/prog-id information
-+	 * class=04 subclass 03 prog-if 00: no DSP, legacy driver needs to be used
-+	 * class=04 subclass 01 prog-if 00: DSP is present (and may be required e.g. for DMIC or SSP support)
-+	 * class=04 subclass 03 prog-if 80: either of DSP or legacy mode can be used
-+	 */
-+	if (pci->class == 0x040300) {
-+		dev_err(bus->dev, "The DSP is not enabled on this platform, aborting probe\n");
-+		return -ENODEV;
-+	} else if (pci->class != 0x040100 && pci->class != 0x040380) {
-+		dev_err(bus->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, aborting probe\n", pci->class);
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
++	/* check if PPCAP exists */
++	if (!bus->ppcap) {
++		dev_err(bus->dev, "bus ppcap not set, HDaudio or DSP not present?\n");
 +		return -ENODEV;
 +	}
-+	dev_info(bus->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
 +
- 	err = pci_request_regions(pci, "Skylake HD audio");
- 	if (err < 0)
- 		return err;
+ 	if (skl_acquire_irq(bus, 0) < 0)
+ 		return -EBUSY;
+ 
+@@ -955,23 +961,25 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	gcap = snd_hdac_chip_readw(bus, GCAP);
+ 	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
+ 
+-	/* allow 64bit DMA address if supported by H/W */
+-	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
+-		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
+-	} else {
+-		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
+-		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
+-	}
+-
+ 	/* read number of streams from GCAP register */
+ 	cp_streams = (gcap >> 8) & 0x0f;
+ 	pb_streams = (gcap >> 12) & 0x0f;
+ 
+-	if (!pb_streams && !cp_streams)
++	if (!pb_streams && !cp_streams) {
++		dev_err(bus->dev, "no streams found in GCAP definitions?\n");
+ 		return -EIO;
++	}
+ 
+ 	bus->num_streams = cp_streams + pb_streams;
+ 
++	/* allow 64bit DMA address if supported by H/W */
++	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
++		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
++	} else {
++		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
++		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
++	}
++
+ 	/* initialize streams */
+ 	snd_hdac_ext_stream_init_all
+ 		(bus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
 -- 
 2.17.1
