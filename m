@@ -1,22 +1,21 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v8 3/7] ASoC: dt-bindings: make enable-gpio
- optional for simple amplifier
-Date: Thu, 6 Dec 2018 17:43:45 -0600
-Message-ID: <20181206234345.GA1842@bogus>
-References: <20181121051752.18387-1-anarsoul@gmail.com>
- <20181121051752.18387-4-anarsoul@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 2/3] ASoC: Intel:
+ kbl_da7219_max98357a_rt5660: Add a new codec rt5660
+Date: Fri, 7 Dec 2018 09:01:56 +0800
+Message-ID: <18163dfe-9fc1-c28a-c5d2-d89f797f93a0@canonical.com>
+References: <20181206145207.4477-1-hui.wang@canonical.com>
+ <20181206145207.4477-2-hui.wang@canonical.com>
+ <b0ff8dad-554a-2117-def3-e2ae880b3cc3@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
- [209.85.167.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 30638267CA4
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 00:43:47 +0100 (CET)
-Received: by mail-oi1-f194.google.com with SMTP id j21so1968763oii.8
- for <alsa-devel@alsa-project.org>; Thu, 06 Dec 2018 15:43:47 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20181121051752.18387-4-anarsoul@gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83582267CA4
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 02:02:04 +0100 (CET)
+In-Reply-To: <b0ff8dad-554a-2117-def3-e2ae880b3cc3@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,16 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vasily Khoruzhick <anarsoul@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Nov 2018 21:17:48 -0800, Vasily Khoruzhick wrote:
-> Amplifier may have no enable GPIO, so make this property optional
-> 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
->  Documentation/devicetree/bindings/sound/simple-amplifier.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+T24gMjAxOC8xMi82IOS4i+WNiDExOjA4LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiBP
+biAxMi82LzE4IDg6NTIgQU0sIEh1aSBXYW5nIHdyb3RlOgo+PiBUaGUgbmV3IERlbGwgSW9UIHBs
+YXRmb3JtIHVzZXMga2FieWxha2UgKyBhbGMzMjc3IGNvZGVjLCBhbmQgYWxjMzI3Nwo+PiBzaGFy
+ZXMgdGhlIGRyaXZlciB3aXRoIHRoZSBjb2RlYyBydDU2NjAsIGhlcmUgd2UgY2hvb3NlIHRoZQo+
+PiBjbG9zZXN0IG1hY2hpbmUgZHJpdmVyIGtibF9kYTcyMTlfbWF4OTgzNTdhLCBhbmQgYmFzZWQg
+b24gdGhpcyBkcml2ZXIsCj4+IHdlIGFkZCBhIG5ldyBjb2RlYyBydDU2NjAgdG8gaXQuCj4+Cj4+
+IFRoZSBhdWRpbyBkZXNpZ24gb24gdGhpcyBJb1QgcGxhdGZvcm0gaXMgYXMgYmVsb3c6Cj4+IMKg
+IC0gSW50ZWwga2FieWxha2UgcGxhdGZvcm0KPj4gwqAgLSBjb25uZWN0IHRoZSBjb2RlYyBBTEMz
+Mjc3IHZpYSBTU1AwCj4+IMKgIC0gbGluZS1vdXQgYW5kIGxpbmUtaW4gd2l0aCBNaWNiaWFzIGph
+Y2tzCj4+IMKgIC0gbGluZS1vdXQgbXV0ZSBjb250cm9sIGFuZCBqYWNrIGRldGVjdGlvbiBvZiBs
+aW5lLW91dCBhbmQgbGluZS1pbgo+PiDCoCAtIHR3byBIRE1JIHBvcnRzIHdpdGggYXVkaW8gY2Fw
+YWJpbGl0eQo+Cj4gSSBhbSBub3Qgc3VyZSBpdCBtYWtlcyBzZW5zZSB0byBzdHVmZiB0aGUgcnQ1
+NjYwIHN1cHBvcnQgaW4gYSBtYWNoaW5lIAo+IGRyaXZlciB0aGF0J3MgbWVhbnQgbW9zdGx5IGZv
+ciBDaHJvbWVib29rcywgYW5kIEkgYW0gbm90IHN1cmUgd2h5IHlvdSAKPiBwaWNrZWQgdGhpcyBv
+bmUgc3BlY2lmaWNhbGx5LgoKU2luY2UgdGhpcyBpcyBhIGthYnlsYWtlIHBsYXRmb3JtLCB3ZSBo
+YXZlIDQgY2FuZGlkYXRlcyB0byBjaG9vc2UgaWYgd2UgCndhbnQgdG8gc3R1ZmYgdGhlIGNvZGUg
+aW50byBhbiBleGlzdGluZyBtYWNoaW5lIGRyaXZlciwgdGhleSBhcmU6CgprYmxfZGE3MjE5X21h
+eDk4MzU3YS5jwqAga2JsX2RhNzIxOV9tYXg5ODkyNy5jIGtibF9ydDU2NjNfbWF4OTg5MjcuY8Kg
+IAprYmxfcnQ1NjYzX3J0NTUxNF9tYXg5ODkyNy5jCgprYmxfZGE3MjE5X21heDk4OTI3LmM6IGl0
+IGNvbm5lY3RzIDIgY29kZWNzIHZpYSBTU1AwLCBzbyB3ZSBjYW4ndCBzaGFyZSAKdGhlIHNzcDBf
+aHdfcGFyYW1zIGFuZCBzc3BfZml4dXAgZnVuY3Rpb25zIHdpdGggdGhpcyBEZWxsIElvVCBkZXNp
+Z24KCmtibF9ydDU2NjNfbWF4OTg5MjcuYzrCoCBpdCBjb25uZWN0cyAyIGNvZGVzIHZpYSBTU1Aw
+LCBhbmQgdGhlIHJ0NTY2MyBpcyAKY29ubmVjdGVkIHRvIFNTUDEswqAgd2UgY2FuJ3Qgc2hhcmUg
+dGhlIHNzcDBfaHdfcGFyYW1zIGFuZCBzc3BfZml4dXAgCmZ1bmN0aW9ucyB3aXRoIHRoaXMgRGVs
+bCBJb1QgZGVzaWduLCBtb3JlIG92ZXIsIGl0IHJlcXVpcmVzIHRoZSBjbG9jayBvZiAKInNzcDFf
+bWNsayIgYW5kICJzc3AxX3NjbGsiIHdoaWNoIGlzIG5vdCBuZWVkZWQgb24gRGVsbCBJb1QuCgpr
+YmxfcnQ1NjYzX3J0NTUxNF9tYXg5ODkyNy5jOsKgIG5lYXJseSBzYW1lIGFzIGtibF9ydDU2NjNf
+bWF4OTg5MjcuYwoKU28gaW4gb3JkZXIgdG8gc2hhcmUgdGhlIGV4aXN0aW5nIGNvZGUgd2l0aCBE
+ZWxsIElvVCBtYXhpbXVtbHksIEkgY2hvb3NlIAprYmxfZGE3MjE5X21heDk4MzU3YS5jLCBpdCBj
+b25uZWN0cyAxIGNvZGVjIHZpYSBTU1AwIHdpdGggClNORF9TT0NfREFJRk1UX0kyU19CLCB0aGlz
+IGlzIHNhbWUgYXMgdGhlIERlbGwgSW9UJ3MgZGVzaWduLgoKCj4gU2luY2UgdGhlcmUgaXMgbm8g
+cmV1c2Ugb2YgdGhlIERBNzIxOSwgRE1JQyBvciBNQVg5ODM1N2EsIEkgd291bGQgCj4gYXJndWUg
+dGhhdCB5b3Ugd2FudCB0byBkZWZpbmUgYSBuZXcgbWFjaGluZSBkcml2ZXIgc28gdGhhdCB5b3Ug
+b25seSAKPiBzZWxlY3QgYW5kIGNvbXBpbGUgaW4gd2hhdCB5b3UgbmVlZCwgbm90IHRvIG1lbnRp
+b24gdGhhdCBpdCdsbCBiZSAKPiBlYXNpZXIgdG8gbWFpbnRhaW4sIGJvdGggZm9yIHVwc3RyZWFt
+IGFuZCBmb3IgQ2hyb21lIGJhY2twb3J0cy4KClllcywgYSBzdGFuZGFsb25lIGRyaXZlciBmb3Ig
+YSBzcGVjaWZpYyBIVyBpcyBlYXN5IHRvIG1haW50YWluLCBidXQgaXQgCndpbGwgYWRkIGxvdHMg
+b2YgY29weS1hbmQtcGFzdGUgY29kZS4gSWYgaXQgaXMgcmVhbGx5IG5vdCBnb29kIHRvIHN0dWZm
+IApEZWxsIElvVCBpbnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCBJIHdpbGwgcHJlcGFy
+ZSBhIHN0YW5kYWxvbmUgCm1hY2hpbmUgZHJpdmVyIGZvciBpdCBpbiB0aGUgVjIuCgoKVGhhbmtz
+IGZvciByZXZpZXdpbmcsIGFuZCBleHBlY3QgeW91ciBjb21tZW50IGFuZCBkaXJlY3Rpb24uCgpS
+ZWdhcmRzLAoKSHVpLgoKPiBUaGFua3MhCj4gLVBpZXJyZQo+Cj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IEh1aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwuY29tPgo+PiAtLS0KPj4gwqAgc291bmQvc29j
+L2ludGVsL2JvYXJkcy9LY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKg
+IDcgKy0KPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9NYWtlZmlsZcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgfMKgwqAgNCArLSAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
