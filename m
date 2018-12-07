@@ -1,21 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/3] ASoC: Intel:
- kbl_da7219_max98357a_rt5660: Add a new codec rt5660
-Date: Thu, 6 Dec 2018 19:18:46 -0600
-Message-ID: <d62d3f85-5a26-048a-2fef-caa4d98dc32a@linux.intel.com>
-References: <20181206145207.4477-1-hui.wang@canonical.com>
- <20181206145207.4477-2-hui.wang@canonical.com>
- <b0ff8dad-554a-2117-def3-e2ae880b3cc3@linux.intel.com>
- <18163dfe-9fc1-c28a-c5d2-d89f797f93a0@canonical.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: [PATCH v2 2/3] ALSA: hda/realtek: Enable audio
+	jacks of ASUS UX533FD with ALC294
+Date: Fri, 7 Dec 2018 03:31:47 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18420211@RTITMBSV02.realtek.com.tw>
+References: <CAPpJ_eez=1ie2B8rA=GeW+hx7kQU0wBAhW3XCBX3zGPW+kXDZA@mail.gmail.com>
+ <20181206084554.4728-1-jian-hong@endlessm.com>
+ <20181206084554.4728-3-jian-hong@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E3D96267CA4
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 02:18:48 +0100 (CET)
-In-Reply-To: <18163dfe-9fc1-c28a-c5d2-d89f797f93a0@canonical.com>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B3E5267CC0
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 04:31:56 +0100 (CET)
+In-Reply-To: <20181206084554.4728-3-jian-hong@endlessm.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,64 +24,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
+To: Jian-Hong Pan <jian-hong@endlessm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Hui Wang <hui.wang@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux@endlessm.com" <linux@endlessm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzYvMTggNzowMSBQTSwgSHVpIFdhbmcgd3JvdGU6Cj4gT24gMjAxOC8xMi82IOS4i+WN
-iDExOjA4LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4gT24gMTIvNi8xOCA4OjUyIEFN
-LCBIdWkgV2FuZyB3cm90ZToKPj4+IFRoZSBuZXcgRGVsbCBJb1QgcGxhdGZvcm0gdXNlcyBrYWJ5
-bGFrZSArIGFsYzMyNzcgY29kZWMsIGFuZCBhbGMzMjc3Cj4+PiBzaGFyZXMgdGhlIGRyaXZlciB3
-aXRoIHRoZSBjb2RlYyBydDU2NjAsIGhlcmUgd2UgY2hvb3NlIHRoZQo+Pj4gY2xvc2VzdCBtYWNo
-aW5lIGRyaXZlciBrYmxfZGE3MjE5X21heDk4MzU3YSwgYW5kIGJhc2VkIG9uIHRoaXMgZHJpdmVy
-LAo+Pj4gd2UgYWRkIGEgbmV3IGNvZGVjIHJ0NTY2MCB0byBpdC4KPj4+Cj4+PiBUaGUgYXVkaW8g
-ZGVzaWduIG9uIHRoaXMgSW9UIHBsYXRmb3JtIGlzIGFzIGJlbG93Ogo+Pj4gwqAgLSBJbnRlbCBr
-YWJ5bGFrZSBwbGF0Zm9ybQo+Pj4gwqAgLSBjb25uZWN0IHRoZSBjb2RlYyBBTEMzMjc3IHZpYSBT
-U1AwCj4+PiDCoCAtIGxpbmUtb3V0IGFuZCBsaW5lLWluIHdpdGggTWljYmlhcyBqYWNrcwo+Pj4g
-wqAgLSBsaW5lLW91dCBtdXRlIGNvbnRyb2wgYW5kIGphY2sgZGV0ZWN0aW9uIG9mIGxpbmUtb3V0
-IGFuZCBsaW5lLWluCj4+PiDCoCAtIHR3byBIRE1JIHBvcnRzIHdpdGggYXVkaW8gY2FwYWJpbGl0
-eQo+Pgo+PiBJIGFtIG5vdCBzdXJlIGl0IG1ha2VzIHNlbnNlIHRvIHN0dWZmIHRoZSBydDU2NjAg
-c3VwcG9ydCBpbiBhIG1hY2hpbmUgCj4+IGRyaXZlciB0aGF0J3MgbWVhbnQgbW9zdGx5IGZvciBD
-aHJvbWVib29rcywgYW5kIEkgYW0gbm90IHN1cmUgd2h5IHlvdSAKPj4gcGlja2VkIHRoaXMgb25l
-IHNwZWNpZmljYWxseS4KPgo+IFNpbmNlIHRoaXMgaXMgYSBrYWJ5bGFrZSBwbGF0Zm9ybSwgd2Ug
-aGF2ZSA0IGNhbmRpZGF0ZXMgdG8gY2hvb3NlIGlmIAo+IHdlIHdhbnQgdG8gc3R1ZmYgdGhlIGNv
-ZGUgaW50byBhbiBleGlzdGluZyBtYWNoaW5lIGRyaXZlciwgdGhleSBhcmU6Cj4KPiBrYmxfZGE3
-MjE5X21heDk4MzU3YS5jwqAga2JsX2RhNzIxOV9tYXg5ODkyNy5jIGtibF9ydDU2NjNfbWF4OTg5
-MjcuY8KgIAo+IGtibF9ydDU2NjNfcnQ1NTE0X21heDk4OTI3LmMKPgo+IGtibF9kYTcyMTlfbWF4
-OTg5MjcuYzogaXQgY29ubmVjdHMgMiBjb2RlY3MgdmlhIFNTUDAsIHNvIHdlIGNhbid0IAo+IHNo
-YXJlIHRoZSBzc3AwX2h3X3BhcmFtcyBhbmQgc3NwX2ZpeHVwIGZ1bmN0aW9ucyB3aXRoIHRoaXMg
-RGVsbCBJb1QgCj4gZGVzaWduCj4KPiBrYmxfcnQ1NjYzX21heDk4OTI3LmM6wqAgaXQgY29ubmVj
-dHMgMiBjb2RlcyB2aWEgU1NQMCwgYW5kIHRoZSBydDU2NjMgCj4gaXMgY29ubmVjdGVkIHRvIFNT
-UDEswqAgd2UgY2FuJ3Qgc2hhcmUgdGhlIHNzcDBfaHdfcGFyYW1zIGFuZCBzc3BfZml4dXAgCj4g
-ZnVuY3Rpb25zIHdpdGggdGhpcyBEZWxsIElvVCBkZXNpZ24sIG1vcmUgb3ZlciwgaXQgcmVxdWly
-ZXMgdGhlIGNsb2NrIAo+IG9mICJzc3AxX21jbGsiIGFuZCAic3NwMV9zY2xrIiB3aGljaCBpcyBu
-b3QgbmVlZGVkIG9uIERlbGwgSW9ULgo+Cj4ga2JsX3J0NTY2M19ydDU1MTRfbWF4OTg5MjcuYzrC
-oCBuZWFybHkgc2FtZSBhcyBrYmxfcnQ1NjYzX21heDk4OTI3LmMKPgo+IFNvIGluIG9yZGVyIHRv
-IHNoYXJlIHRoZSBleGlzdGluZyBjb2RlIHdpdGggRGVsbCBJb1QgbWF4aW11bWx5LCBJIAo+IGNo
-b29zZSBrYmxfZGE3MjE5X21heDk4MzU3YS5jLCBpdCBjb25uZWN0cyAxIGNvZGVjIHZpYSBTU1Aw
-IHdpdGggCj4gU05EX1NPQ19EQUlGTVRfSTJTX0IsIHRoaXMgaXMgc2FtZSBhcyB0aGUgRGVsbCBJ
-b1QncyBkZXNpZ24uClRoaXMgZGVzY3JpcHRpb24gc2hvd3MgeW91J3ZlIGRvbmUgeW91ciBob21l
-d29yaywgYnV0Li4uCj4KPgo+PiBTaW5jZSB0aGVyZSBpcyBubyByZXVzZSBvZiB0aGUgREE3MjE5
-LCBETUlDIG9yIE1BWDk4MzU3YSwgSSB3b3VsZCAKPj4gYXJndWUgdGhhdCB5b3Ugd2FudCB0byBk
-ZWZpbmUgYSBuZXcgbWFjaGluZSBkcml2ZXIgc28gdGhhdCB5b3Ugb25seSAKPj4gc2VsZWN0IGFu
-ZCBjb21waWxlIGluIHdoYXQgeW91IG5lZWQsIG5vdCB0byBtZW50aW9uIHRoYXQgaXQnbGwgYmUg
-Cj4+IGVhc2llciB0byBtYWludGFpbiwgYm90aCBmb3IgdXBzdHJlYW0gYW5kIGZvciBDaHJvbWUg
-YmFja3BvcnRzLgo+Cj4gWWVzLCBhIHN0YW5kYWxvbmUgZHJpdmVyIGZvciBhIHNwZWNpZmljIEhX
-IGlzIGVhc3kgdG8gbWFpbnRhaW4sIGJ1dCBpdCAKPiB3aWxsIGFkZCBsb3RzIG9mIGNvcHktYW5k
-LXBhc3RlIGNvZGUuIElmIGl0IGlzIHJlYWxseSBub3QgZ29vZCB0byAKPiBzdHVmZiBEZWxsIElv
-VCBpbnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCBJIHdpbGwgcHJlcGFyZSBhIAo+IHN0
-YW5kYWxvbmUgbWFjaGluZSBkcml2ZXIgZm9yIGl0IGluIHRoZSBWMi4KPgouLi50aGUgb25seSB0
-aGluZyB0aGF0J3MgcmVhbGx5IGNvcHktcGFzdGUgaXMgdGhlIEhETUkgcGFydCwgd2hpY2ggY2Fu
-IApiZSBmYWN0b3JlZCB3aXRob3V0IHRvbyBtYW55IGlzc3Vlcy4gQWxsIHRoZSBtYXBzLCByb3V0
-aW5nLCBjb2RlYyAKY29udHJvbHMgYXJlIGRpZmZlcmVudCwgYW5kIHRoZXJlIGlzIG5vIGJlbmVm
-aXQgaW4gaGF2aW5nIHRoZW0gaW4gYSAKc2luZ2xlIGZpbGUuIFRoZXJlIGFyZSBtdWx0aXBsZSBk
-ZXJpdmF0aXZlcyBvZiB0aG9zZSBDaHJvbWVib29rIGRlc2lnbnMgCmFuZCB5b3UgcmVhbGx5IGRv
-bid0IHdhbnQgdG8gaGF2ZSB0byBkZWFsIHdpdGggdGhlaXIgdXBkYXRlcy4gQW5kIGxhc3QgCnRo
-ZSBkb3duc2lkZSBpcyByZWFsbHkgbW9yZSBjb21wbGljYXRlZCBLY29uZmlnIGRlcGVuZGVuY2ll
-cy4KCkkgYW0gYWxsIGZvciByZXVzZSwgYW5kIGp1c3Qgc3BlbnQgdGhlIGxhc3QgaG91ciBtYWtp
-bmcgc3VyZSB3ZSBjYW4gCnJldXNlIGJldHdlZW4gQVBMIGFuZCBHTEssIGJ1dCBpbiB0aGlzIGNh
-c2UgSSByZWFsbHkgc3Ryb25nbHkgZW5jb3VyYWdlIAp5b3UgdG8gaGF2ZSBhIGRpZmZlcmVudCBt
-YWNoaW5lIGRyaXZlciwgaXQnbGwgYmUgc2ltcGxlciB0byByZXZpZXcgYW5kIAptYWludGFpbi4K
-ClRoYW5rcwoKLVBpZXJyZQoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Hi Jian Hong,
+
+Could I know who give you the value as below?
+
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x10 },
++			{ 0x20, 0x4c4, 0x20 },
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
++			{ 0x20, 0x488, 0x00 },
+
+BR,
+Kailang
+
+-----Original Message-----
+From: Jian-Hong Pan <jian-hong@endlessm.com> 
+Sent: Thursday, December 6, 2018 4:46 PM
+To: Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Kailang <kailang@realtek.com>
+Cc: Hui Wang <hui.wang@canonical.com>; alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; linux@endlessm.com; Jian-Hong Pan <jian-hong@endlessm.com>; Daniel Drake <drake@endlessm.com>
+Subject: [PATCH v2 2/3] ALSA: hda/realtek: Enable audio jacks of ASUS UX533FD with ALC294
+
+The ASUS UX533FD with ALC294 cannot detect the headset MIC and output through the internal speaker and the headphone until ALC294_FIXUP_ASUS_SPK_NOISE quirk applied.
+
+Signed-off-by: Daniel Drake <drake@endlessm.com>
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+v2:
+- Modify the HDA verbs for UX333FA support
+- Make a new ALC294_FIXUP_ASUS_HEADSET_MIC quirk for ALC294 chain
+- .chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE  ==> change to ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+
+ sound/pci/hda/patch_realtek.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c index d32e50b1ed60..1525bcdf96e8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5518,6 +5518,8 @@ enum {
+ 	ALC295_FIXUP_HP_AUTO_MUTE,
+ 	ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE,
+ 	ALC294_FIXUP_ASUS_MIC,
++	ALC294_FIXUP_ASUS_HEADSET_MIC,
++	ALC294_FIXUP_ASUS_SPK_NOISE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = { @@ -6414,6 +6416,28 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+ 	},
++	[ALC294_FIXUP_ASUS_HEADSET_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1113c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
++	},
++	[ALC294_FIXUP_ASUS_SPK_NOISE] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			/* Set EAPD high */
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x10 },
++			{ 0x20, 0x4c4, 0x20 },
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
++			{ 0x20, 0x488, 0x00 },
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = { @@ -6556,6 +6580,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x12e0, "ASUS X541SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
++	SND_PCI_QUIRK(0x1043, 0x14a1, "ASUS UX533FD", 
++ALC294_FIXUP_ASUS_SPK_NOISE),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+--
+2.11.0
