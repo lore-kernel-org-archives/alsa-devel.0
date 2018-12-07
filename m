@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: Add copyright and module
-	author" to the asoc tree
-Date: Fri,  7 Dec 2018 12:23:14 +0000 (GMT)
-Message-ID: <20181207122314.A2B5C11253E4@debutante.sirena.org.uk>
-References: <20181206210638.GA26880@lenoch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8557B267BB3
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 13:23:16 +0100 (CET)
-In-Reply-To: <20181206210638.GA26880@lenoch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, anish kumar <yesanishhere@gmail.com>
+Subject: Applied "ASoC: sdm845: Add configuration for headset codec" to the asoc tree
+Date: Fri,  7 Dec 2018 12:23:16 +0000 (GMT)
+Message-ID: <20181207122316.7C37811253E4@debutante.sirena.org.uk>
+References: <20181128090037.257359-4-cychiang@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181128090037.257359-4-cychiang@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@chromium.orgMark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: Add copyright and module author
+   ASoC: sdm845: Add configuration for headset codec
 
 has been applied to the asoc tree at
 
@@ -53,52 +37,75 @@ to this mail.
 Thanks,
 Mark
 
->From 8084945d3c934cf730cd5fdfb5cc11ebfc4cc386 Mon Sep 17 00:00:00 2001
-From: Ladislav Michl <ladis@linux-mips.org>
-Date: Thu, 6 Dec 2018 22:06:38 +0100
-Subject: [PATCH] ASoC: max9867: Add copyright and module author
+>From ce55698d32329b83ea695e0011b58d1bc11189b8 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Wed, 28 Nov 2018 17:00:36 +0800
+Subject: [PATCH] ASoC: sdm845: Add configuration for headset codec
 
-Driver rewritten, assign copyright notice and change module author
-as original one remains silent and I want to be notified about bugs.
+Set DAI format and sysclk for headset codec.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/qcom/sdm845.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 7a08e2c70e17..8600c5439e1e 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -1,12 +1,10 @@
--/*
-- * max9867.c -- max9867 ALSA SoC Audio driver
-- *
-- * Copyright 2013-15 Maxim Integrated Products
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// MAX9867 ALSA SoC codec driver
-+//
-+// Copyright 2013-2015 Maxim Integrated Products
-+// Copyright 2018 Ladislav Michl <ladis@linux-mips.org>
-+//
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index d0df7ec6042e..1db8ef668223 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -14,6 +14,7 @@
+ #include <uapi/linux/input-event-codes.h>
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
++#include "../codecs/rt5663.h"
  
- #include <linux/delay.h>
- #include <linux/i2c.h>
-@@ -551,6 +549,6 @@ static struct i2c_driver max9867_i2c_driver = {
+ #define DEFAULT_SAMPLE_RATE_48K		48000
+ #define DEFAULT_MCLK_RATE		24576000
+@@ -125,9 +126,27 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret = 0;
  
- module_i2c_driver(max9867_i2c_driver);
+ 	switch (cpu_dai->id) {
++	case PRIMARY_MI2S_RX:
++	case PRIMARY_MI2S_TX:
++		/*
++		 * Use ASRC for internal clocks, as PLL rate isn't multiple
++		 * of BCLK.
++		 */
++		rt5663_sel_asrc_clk_src(
++			codec_dai->component,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
++		ret = snd_soc_dai_set_sysclk(
++			codec_dai, RT5663_SCLK_S_MCLK, DEFAULT_MCLK_RATE,
++			SND_SOC_CLOCK_IN);
++		if (ret < 0)
++			dev_err(rtd->dev,
++				"snd_soc_dai_set_sysclk err = %d\n", ret);
++		break;
+ 	case QUATERNARY_TDM_RX_0:
+ 	case QUATERNARY_TDM_TX_0:
+ 		ret = sdm845_tdm_snd_hw_params(substream, params);
+@@ -202,6 +221,7 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 	switch (cpu_dai->id) {
+ 	case PRIMARY_MI2S_RX:
+ 	case PRIMARY_MI2S_TX:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF;
+ 		if (++(data->pri_mi2s_clk_count) == 1) {
+ 			snd_soc_dai_set_sysclk(cpu_dai,
+ 				Q6AFE_LPASS_CLK_ID_MCLK_1,
+@@ -211,6 +231,7 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 				MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
++		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
+ 		break;
  
--MODULE_AUTHOR("anish kumar <yesanishhere@gmail.com>");
--MODULE_DESCRIPTION("ALSA SoC MAX9867 driver");
-+MODULE_AUTHOR("Ladislav Michl <ladis@linux-mips.org>");
-+MODULE_DESCRIPTION("ASoC MAX9867 driver");
- MODULE_LICENSE("GPL");
+ 	case SECONDARY_MI2S_TX:
 -- 
 2.19.0.rc2
