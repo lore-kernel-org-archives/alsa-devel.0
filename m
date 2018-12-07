@@ -1,42 +1,46 @@
-From: Zhuohao Lee <zhuohao@chromium.org>
-Subject: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: fix the audio jack button remapping
-Date: Fri,  7 Dec 2018 17:05:52 +0800
-Message-ID: <20181207090552.105205-1-zhuohao@chromium.org>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: Re: [PATCH v2 2/3] ALSA: hda/realtek: Enable audio jacks of ASUS
+ UX533FD with ALC294
+Date: Fri, 7 Dec 2018 17:13:14 +0800
+Message-ID: <CAPpJ_edVC+zgVrh3TwOL3NsM_6yeq-P0sgmX0L-5OE-QFDN3Zg@mail.gmail.com>
+References: <CAPpJ_eez=1ie2B8rA=GeW+hx7kQU0wBAhW3XCBX3zGPW+kXDZA@mail.gmail.com>
+ <20181206084554.4728-1-jian-hong@endlessm.com> <20181206084554.4728-3-jian-hong@endlessm.com>
+ <6FAB7C47BCF00940BB0999A99BE3547A18420211@RTITMBSV02.realtek.com.tw>
+ <CAPpJ_ed36NyopArw98qhkstAm=L9A4=xiLPaa2ju0+qMR0tE9Q@mail.gmail.com> <6FAB7C47BCF00940BB0999A99BE3547A1842025B@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A1842025B@RTITMBSV02.realtek.com.tw>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Dan Carpenter <dan.carpenter@oracle.com>, Max Chang <changmax@chromium.org>, Oder Chiou <oder_chiou@realtek.com>, Zhuohao Lee <zhuohao@chromium.org>, linux-kernel@vger.kernel.org
+To: Kailang Yang <kailang@realtek.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, Daniel Drake <drake@endlessm.com>, josh@wtmec.com
 List-Id: alsa-devel@alsa-project.org
 
->From the da7219 spec, the button A, B, C and D are remapped to
-0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
-B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND
+> Hi Jian Hong,
+>
+> I call our agent guy @ WTMEC.
+> Please modify as bellowing then test again.
+> Remove EAPD control by hidden.
+> If this modify patch was pass audio test, please regenerate patch to Takashi.
+> If this patch will solve the speaker no sound issue, I think the model name maybe could rename to ALC294_FIXUP_ASUS_SPK.
+> Because it doesn't relate with Noise.
+>
+> > +       [ALC294_FIXUP_ASUS_SPK_NOISE] = {
+> > +               .type = HDA_FIXUP_VERBS,
+> > +               .v.verbs = (const struct hda_verb[]) {
+> > +                       { 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
+> > +                       { 0x20, AC_VERB_SET_PROC_COEF, 0x8800 },
+> > +                       { }
+> > +               },
+> > +               .chained = true,
+> > +               .chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
+> > +       },
+> >  };
+>
 
-Change-Id: I67f929f226883bd289cb7beb0a7b23f40e7121e2
-Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
-Signed-off-by: Max Chang  <changmax@chromium.org>
----
- sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks for the help!
+I have tried the new verbs, and they work on the laptops.
+I am going to send the new patches.
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 3fa1c3ca6d37..d3531f0eb357 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	jack = &ctx->kabylake_headset;
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
- 
- 	da7219_aad_jack_det(component, &ctx->kabylake_headset);
- 
--- 
-2.20.0.rc2.403.gdbc3b29805-goog
+Regards,
+Jian-Hong Pan
