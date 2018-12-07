@@ -1,23 +1,18 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH 2/3] ASoC: Intel:
- kbl_da7219_max98357a_rt5660: Add a new codec rt5660
-Date: Fri, 7 Dec 2018 12:32:24 +0800
-Message-ID: <f2348c0d-3473-46e3-b6af-bc31717d62da@canonical.com>
-References: <20181206145207.4477-1-hui.wang@canonical.com>
- <20181206145207.4477-2-hui.wang@canonical.com>
- <b0ff8dad-554a-2117-def3-e2ae880b3cc3@linux.intel.com>
- <18163dfe-9fc1-c28a-c5d2-d89f797f93a0@canonical.com>
- <d62d3f85-5a26-048a-2fef-caa4d98dc32a@linux.intel.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] tinycompress: Fix missing '}' around
+ extern C
+Date: Fri, 7 Dec 2018 10:40:31 +0530
+Message-ID: <20181207051031.GC2847@vkoul-mobl>
+References: <20181206100427.18472-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 58954267CC0
- for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 05:32:35 +0100 (CET)
-In-Reply-To: <d62d3f85-5a26-048a-2fef-caa4d98dc32a@linux.intel.com>
-Content-Language: en-US
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C7CC267CC0
+ for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2018 06:10:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20181206100427.18472-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,70 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTgvMTIvNyDkuIrljYg5OjE4LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPgo+
-IE9uIDEyLzYvMTggNzowMSBQTSwgSHVpIFdhbmcgd3JvdGU6Cj4+IE9uIDIwMTgvMTIvNiDkuIvl
-jYgxMTowOCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+PiBPbiAxMi82LzE4IDg6NTIg
-QU0sIEh1aSBXYW5nIHdyb3RlOgo+Pj4+IFRoZSBuZXcgRGVsbCBJb1QgcGxhdGZvcm0gdXNlcyBr
-YWJ5bGFrZSArIGFsYzMyNzcgY29kZWMsIGFuZCBhbGMzMjc3Cj4+Pj4gc2hhcmVzIHRoZSBkcml2
-ZXIgd2l0aCB0aGUgY29kZWMgcnQ1NjYwLCBoZXJlIHdlIGNob29zZSB0aGUKPj4+PiBjbG9zZXN0
-IG1hY2hpbmUgZHJpdmVyIGtibF9kYTcyMTlfbWF4OTgzNTdhLCBhbmQgYmFzZWQgb24gdGhpcyBk
-cml2ZXIsCj4+Pj4gd2UgYWRkIGEgbmV3IGNvZGVjIHJ0NTY2MCB0byBpdC4KPj4+Pgo+Pj4+IFRo
-ZSBhdWRpbyBkZXNpZ24gb24gdGhpcyBJb1QgcGxhdGZvcm0gaXMgYXMgYmVsb3c6Cj4+Pj4gwqAg
-LSBJbnRlbCBrYWJ5bGFrZSBwbGF0Zm9ybQo+Pj4+IMKgIC0gY29ubmVjdCB0aGUgY29kZWMgQUxD
-MzI3NyB2aWEgU1NQMAo+Pj4+IMKgIC0gbGluZS1vdXQgYW5kIGxpbmUtaW4gd2l0aCBNaWNiaWFz
-IGphY2tzCj4+Pj4gwqAgLSBsaW5lLW91dCBtdXRlIGNvbnRyb2wgYW5kIGphY2sgZGV0ZWN0aW9u
-IG9mIGxpbmUtb3V0IGFuZCBsaW5lLWluCj4+Pj4gwqAgLSB0d28gSERNSSBwb3J0cyB3aXRoIGF1
-ZGlvIGNhcGFiaWxpdHkKPj4+Cj4+PiBJIGFtIG5vdCBzdXJlIGl0IG1ha2VzIHNlbnNlIHRvIHN0
-dWZmIHRoZSBydDU2NjAgc3VwcG9ydCBpbiBhIAo+Pj4gbWFjaGluZSBkcml2ZXIgdGhhdCdzIG1l
-YW50IG1vc3RseSBmb3IgQ2hyb21lYm9va3MsIGFuZCBJIGFtIG5vdCAKPj4+IHN1cmUgd2h5IHlv
-dSBwaWNrZWQgdGhpcyBvbmUgc3BlY2lmaWNhbGx5Lgo+Pgo+PiBTaW5jZSB0aGlzIGlzIGEga2Fi
-eWxha2UgcGxhdGZvcm0sIHdlIGhhdmUgNCBjYW5kaWRhdGVzIHRvIGNob29zZSBpZiAKPj4gd2Ug
-d2FudCB0byBzdHVmZiB0aGUgY29kZSBpbnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCB0
-aGV5IGFyZToKPj4KPj4ga2JsX2RhNzIxOV9tYXg5ODM1N2EuY8KgIGtibF9kYTcyMTlfbWF4OTg5
-MjcuYyBrYmxfcnQ1NjYzX21heDk4OTI3LmPCoCAKPj4ga2JsX3J0NTY2M19ydDU1MTRfbWF4OTg5
-MjcuYwo+Pgo+PiBrYmxfZGE3MjE5X21heDk4OTI3LmM6IGl0IGNvbm5lY3RzIDIgY29kZWNzIHZp
-YSBTU1AwLCBzbyB3ZSBjYW4ndCAKPj4gc2hhcmUgdGhlIHNzcDBfaHdfcGFyYW1zIGFuZCBzc3Bf
-Zml4dXAgZnVuY3Rpb25zIHdpdGggdGhpcyBEZWxsIElvVCAKPj4gZGVzaWduCj4+Cj4+IGtibF9y
-dDU2NjNfbWF4OTg5MjcuYzrCoCBpdCBjb25uZWN0cyAyIGNvZGVzIHZpYSBTU1AwLCBhbmQgdGhl
-IHJ0NTY2MyAKPj4gaXMgY29ubmVjdGVkIHRvIFNTUDEswqAgd2UgY2FuJ3Qgc2hhcmUgdGhlIHNz
-cDBfaHdfcGFyYW1zIGFuZCAKPj4gc3NwX2ZpeHVwIGZ1bmN0aW9ucyB3aXRoIHRoaXMgRGVsbCBJ
-b1QgZGVzaWduLCBtb3JlIG92ZXIsIGl0IHJlcXVpcmVzIAo+PiB0aGUgY2xvY2sgb2YgInNzcDFf
-bWNsayIgYW5kICJzc3AxX3NjbGsiIHdoaWNoIGlzIG5vdCBuZWVkZWQgb24gRGVsbCAKPj4gSW9U
-Lgo+Pgo+PiBrYmxfcnQ1NjYzX3J0NTUxNF9tYXg5ODkyNy5jOsKgIG5lYXJseSBzYW1lIGFzIGti
-bF9ydDU2NjNfbWF4OTg5MjcuYwo+Pgo+PiBTbyBpbiBvcmRlciB0byBzaGFyZSB0aGUgZXhpc3Rp
-bmcgY29kZSB3aXRoIERlbGwgSW9UIG1heGltdW1seSwgSSAKPj4gY2hvb3NlIGtibF9kYTcyMTlf
-bWF4OTgzNTdhLmMsIGl0IGNvbm5lY3RzIDEgY29kZWMgdmlhIFNTUDAgd2l0aCAKPj4gU05EX1NP
-Q19EQUlGTVRfSTJTX0IsIHRoaXMgaXMgc2FtZSBhcyB0aGUgRGVsbCBJb1QncyBkZXNpZ24uCj4g
-VGhpcyBkZXNjcmlwdGlvbiBzaG93cyB5b3UndmUgZG9uZSB5b3VyIGhvbWV3b3JrLCBidXQuLi4K
-Pj4KPj4KPj4+IFNpbmNlIHRoZXJlIGlzIG5vIHJldXNlIG9mIHRoZSBEQTcyMTksIERNSUMgb3Ig
-TUFYOTgzNTdhLCBJIHdvdWxkIAo+Pj4gYXJndWUgdGhhdCB5b3Ugd2FudCB0byBkZWZpbmUgYSBu
-ZXcgbWFjaGluZSBkcml2ZXIgc28gdGhhdCB5b3Ugb25seSAKPj4+IHNlbGVjdCBhbmQgY29tcGls
-ZSBpbiB3aGF0IHlvdSBuZWVkLCBub3QgdG8gbWVudGlvbiB0aGF0IGl0J2xsIGJlIAo+Pj4gZWFz
-aWVyIHRvIG1haW50YWluLCBib3RoIGZvciB1cHN0cmVhbSBhbmQgZm9yIENocm9tZSBiYWNrcG9y
-dHMuCj4+Cj4+IFllcywgYSBzdGFuZGFsb25lIGRyaXZlciBmb3IgYSBzcGVjaWZpYyBIVyBpcyBl
-YXN5IHRvIG1haW50YWluLCBidXQgCj4+IGl0IHdpbGwgYWRkIGxvdHMgb2YgY29weS1hbmQtcGFz
-dGUgY29kZS4gSWYgaXQgaXMgcmVhbGx5IG5vdCBnb29kIHRvIAo+PiBzdHVmZiBEZWxsIElvVCBp
-bnRvIGFuIGV4aXN0aW5nIG1hY2hpbmUgZHJpdmVyLCBJIHdpbGwgcHJlcGFyZSBhIAo+PiBzdGFu
-ZGFsb25lIG1hY2hpbmUgZHJpdmVyIGZvciBpdCBpbiB0aGUgVjIuCj4+Cj4gLi4udGhlIG9ubHkg
-dGhpbmcgdGhhdCdzIHJlYWxseSBjb3B5LXBhc3RlIGlzIHRoZSBIRE1JIHBhcnQsIHdoaWNoIGNh
-biAKPiBiZSBmYWN0b3JlZCB3aXRob3V0IHRvbyBtYW55IGlzc3Vlcy4gQWxsIHRoZSBtYXBzLCBy
-b3V0aW5nLCBjb2RlYyAKPiBjb250cm9scyBhcmUgZGlmZmVyZW50LCBhbmQgdGhlcmUgaXMgbm8g
-YmVuZWZpdCBpbiBoYXZpbmcgdGhlbSBpbiBhIAo+IHNpbmdsZSBmaWxlLiBUaGVyZSBhcmUgbXVs
-dGlwbGUgZGVyaXZhdGl2ZXMgb2YgdGhvc2UgQ2hyb21lYm9vayAKPiBkZXNpZ25zIGFuZCB5b3Ug
-cmVhbGx5IGRvbid0IHdhbnQgdG8gaGF2ZSB0byBkZWFsIHdpdGggdGhlaXIgdXBkYXRlcy4gCj4g
-QW5kIGxhc3QgdGhlIGRvd25zaWRlIGlzIHJlYWxseSBtb3JlIGNvbXBsaWNhdGVkIEtjb25maWcg
-ZGVwZW5kZW5jaWVzLgo+Cj4gSSBhbSBhbGwgZm9yIHJldXNlLCBhbmQganVzdCBzcGVudCB0aGUg
-bGFzdCBob3VyIG1ha2luZyBzdXJlIHdlIGNhbiAKPiByZXVzZSBiZXR3ZWVuIEFQTCBhbmQgR0xL
-LCBidXQgaW4gdGhpcyBjYXNlIEkgcmVhbGx5IHN0cm9uZ2x5IAo+IGVuY291cmFnZSB5b3UgdG8g
-aGF2ZSBhIGRpZmZlcmVudCBtYWNoaW5lIGRyaXZlciwgaXQnbGwgYmUgc2ltcGxlciB0byAKPiBy
-ZXZpZXcgYW5kIG1haW50YWluLgo+Ck9LLCBnb3QgaXQuIHdpbGwgaW1wbGVtZW50IGEgbmV3IGMg
-ZmlsZSBpbiB0aGUgVjIuCgpUaGFua3MsCgpIdWkuCgo+IFRoYW5rcwo+Cj4gLVBpZXJyZQo+Cj4K
-Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 06-12-18, 10:04, Charles Keepax wrote:
+> From: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
+
+Applied, thanks.
+
+Charles please do fix you address book though!
+
+> Signed-off-by: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  include/tinycompress/tinycompress.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/tinycompress/tinycompress.h b/include/tinycompress/tinycompress.h
+> index 780dce6..f0fae30 100644
+> --- a/include/tinycompress/tinycompress.h
+> +++ b/include/tinycompress/tinycompress.h
+> @@ -276,4 +276,8 @@ int is_compress_ready(struct compress *compress);
+>  /* Returns a human readable reason for the last error */
+>  const char *compress_get_error(struct compress *compress);
+>  
+> +#if defined(__cplusplus)
+> +} // extern "C"
+> +#endif
+> +
+>  #endif
+> -- 
+> 2.11.0
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
+~Vinod
