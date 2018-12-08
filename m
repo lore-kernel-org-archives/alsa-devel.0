@@ -1,17 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 6/6] ASoC: Intel: Skylake: Add more platform
-	granularity
-Date: Fri,  7 Dec 2018 17:50:08 -0600
-Message-ID: <20181207235008.22988-7-pierre-louis.bossart@linux.intel.com>
-References: <20181207235008.22988-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/2] ALSA: HDAudio: enable dynamic selection
+	between legacy and Skylake drivers
+Date: Fri,  7 Dec 2018 18:00:37 -0600
+Message-ID: <20181208000039.23384-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F3B4267D2C
- for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 00:51:08 +0100 (CET)
-In-Reply-To: <20181207235008.22988-1-pierre-louis.bossart@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBDED267D20
+ for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 01:00:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,214 +23,33 @@ To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The current SKYLAKE kconfig is a all-you-can-eat selection that will
-support all known plaforms. This is however not necessarily a good
-thing: most platforms for SKL and KBL don't support the DSP, but a
-number of CNL/WHL ones do. Selecting this driver in all cases isn't
-really smart and will require users to muck with blacklists.
+This patchset depends on the "ASoC: Intel: Skylake: probe and Kconfig
+simplifications" series.
 
-Partition the configs to allow distributions to select on which
-platform this driver is used. Keep the existing SND_SOC_INTEL_SKYLAKE
-config to select everything for backwards compatibility. This patch does
-not provide new functionality, only finer-grained choices in supported
-platforms.
+Add the same logic based on PCI class/subclass/prog-if in the HDaudio
+legacy probe, and add a module parameter to bypass or force the
+automatic detection should it ever fail.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/Kconfig        | 73 ++++++++++++++++++++++++++++++----
- sound/soc/intel/boards/Kconfig | 16 +++++++-
- sound/soc/intel/skylake/skl.c  | 12 ++++++
- 3 files changed, 92 insertions(+), 9 deletions(-)
+This patchset was tested on a SKL device with the DSP disabled and a
+WHL device with the DSP enabled. All 6 combinations of
+module parameters provided the expected behavior.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 18e717703685..99a62ba409df 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -102,15 +102,74 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
- 	  recommended option
- 
- config SND_SOC_INTEL_SKYLAKE
--	tristate "SKL/BXT/KBL/GLK/CNL... Platforms"
-+	tristate "All Skylake/SST Platforms"
- 	depends on PCI && ACPI
--	select SND_SOC_INTEL_SKYLAKE_COMMON
-+	select SND_SOC_INTEL_SKL
-+	select SND_SOC_INTEL_APL
-+	select SND_SOC_INTEL_KBL
-+	select SND_SOC_INTEL_GLK
-+	select SND_SOC_INTEL_CNL
-+	select SND_SOC_INTEL_CFL
- 	help
--	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
--	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
--	  then enable this option by saying Y or m.
-+          This is a backwards-compatible option to select all devices
-+	  supported by the Intel SST/Skylake driver. This option is no
-+	  longer recommended and will be deprecated when the SOF
-+	  driver is introduced.  Distributions should explicitly
-+	  select which platform uses this driver.
-+
-+config SND_SOC_INTEL_SKL
-+	tristate "Skylake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Skylake platform with the DSP enabled
-+	  in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_APL
-+	tristate "Broxton/ApolloLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Broxton/ApolloLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_KBL
-+	tristate "Kabylake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Kabylake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_GLK
-+	tristate "GeminiLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel GeminiLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_CNL
-+	tristate "CannonLake/WhiskyLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CNL/WHL platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_CFL
-+	tristate "CoffeeLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CoffeeLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_SKYLAKE_FAMILY
-+	tristate
-+	select SND_SOC_INTEL_SKYLAKE_COMMON
- 
--if  SND_SOC_INTEL_SKYLAKE
-+if SND_SOC_INTEL_SKYLAKE_FAMILY
- 
- config SND_SOC_INTEL_SKYLAKE_SSP_CLK
- 	tristate
-@@ -135,7 +194,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
- 	  then enable this option by saying Y or m.
- 
--endif ## SND_SOC_INTEL_SKYLAKE
-+endif ## SND_SOC_INTEL_SKYLAKE_FAMILY
- 
- config SND_SOC_ACPI_INTEL_MATCH
- 	tristate
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index b177db2a0dbb..980bccaeb7aa 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -172,7 +172,7 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
- 
- endif ## SND_SST_ATOM_HIFI2_PLATFORM
- 
--if SND_SOC_INTEL_SKYLAKE
-+if SND_SOC_INTEL_SKL
- 
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "SKL with RT286 I2S mode"
-@@ -212,6 +212,10 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
-+endif ## SND_SOC_INTEL_SKL
-+
-+if SND_SOC_INTEL_APL
-+
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -239,6 +243,10 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
-+endif ## SND_SOC_INTEL_APL
-+
-+if SND_SOC_INTEL_KBL
-+
- config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	tristate "KBL with RT5663 and MAX98927 in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -293,6 +301,10 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-+endif ## SND_SOC_INTEL_KBL
-+
-+if SND_SOC_INTEL_GLK
-+
- config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -307,7 +319,7 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	   Say Y if you have such a device.
- 	   If unsure select "N".
- 
--endif ## SND_SOC_INTEL_SKYLAKE
-+endif ## SND_SOC_INTEL_GLK
- 
- if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index f9888b1d5521..5abd35ca4e41 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1142,24 +1142,36 @@ static void skl_remove(struct pci_dev *pci)
- 
- /* PCI IDs */
- static const struct pci_device_id skl_ids[] = {
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_skl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
- 	/* BXT-P */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_bxt_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
- 	/* KBL */
- 	{ PCI_DEVICE(0x8086, 0x9D71),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_kbl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
- 	/* GLK */
- 	{ PCI_DEVICE(0x8086, 0x3198),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_glk_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CNL)
- 	/* CNL */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CFL)
- 	/* CFL */
- 	{ PCI_DEVICE(0x8086, 0xa348),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
+The SOF driver will use exactly the same mechanism, and add a mutual
+exclusion with the Skylake/SST driver to avoid having 3 drivers for
+the same PCI ID. Two is complicated enough.
+
+Pierre-Louis Bossart (2):
+  ALSA: HD-Audio: SKL+: abort probe if DSP is present and Skylake driver
+    selected
+  ALSA: HD-Audio: SKL+: force HDaudio legacy or SKL+ driver selection
+
+ include/sound/hdaudio.h        |  6 ++++
+ sound/pci/hda/Kconfig          | 46 +++++++++++++++++++++++++++++
+ sound/pci/hda/hda_controller.h |  2 +-
+ sound/pci/hda/hda_intel.c      | 53 +++++++++++++++++++++++++++++-----
+ sound/soc/intel/Kconfig        |  6 ++++
+ sound/soc/intel/skylake/skl.c  | 44 +++++++++++++++++++---------
+ 6 files changed, 135 insertions(+), 22 deletions(-)
+
 -- 
 2.17.1
