@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: HD-Audio: SKL+: abort probe if DSP
-	is present and Skylake driver selected
-Date: Fri,  7 Dec 2018 18:00:38 -0600
-Message-ID: <20181208000039.23384-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: HD-Audio: SKL+: force HDaudio legacy
+	or SKL+ driver selection
+Date: Fri,  7 Dec 2018 18:00:39 -0600
+Message-ID: <20181208000039.23384-3-pierre-louis.bossart@linux.intel.com>
 References: <20181208000039.23384-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B348D267D2C
- for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 01:00:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AD5F5267D20
+ for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 01:00:55 +0100 (CET)
 In-Reply-To: <20181208000039.23384-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,192 +25,152 @@ To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now that the SST/Skylake driver supports per platform selectors, we
-can add logic to automatically select the right driver.
+For HDaudio and Skylake drivers, add module parameter "pci_binding"
 
-If the Skylake driver is selected, and the DSP is enable, the legacy
-HDaudio driver aborts the probe. This will result in a single driver
-probing and remove the need for modprobe blacklists.
+When pci_binding == 0 (AUTO), the PCI class/subclass info is used to
+select drivers based on the presence of the DSP.
 
-Follow-up patches will add a module parameter to bypass the logic if
-this automatic detection fails, or if the Skylake driver is unable to
-actually support the platform (firmware authentication, missing
-topology file, hardware issue, etc).
+pci_binding == 1 (LEGACY) forces the use of the HDAudio legacy driver,
+even if the DSP is present.
+
+pci_binding == 2 (ASOC) forces the use of the ASOC driver. The
+information on the DSP presence is bypassed.
+
+The value for the module parameter needs to be identical for both
+drivers. This parameter is intended as a back-up solution if the
+automatic detection fails or when the DSP usage fails. Such cases
+should be reported on the alsa-devel mailing list for analysis.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/Kconfig          | 46 ++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_controller.h |  2 +-
- sound/pci/hda/hda_intel.c      | 34 +++++++++++++++++++------
- sound/soc/intel/Kconfig        |  6 +++++
- 4 files changed, 80 insertions(+), 8 deletions(-)
+ include/sound/hdaudio.h       |  6 +++++
+ sound/pci/hda/hda_intel.c     | 25 +++++++++++++++++---
+ sound/soc/intel/skylake/skl.c | 44 ++++++++++++++++++++++++-----------
+ 3 files changed, 58 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 4235907b7858..634b7fe6a936 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -226,6 +226,52 @@ config SND_HDA_POWER_SAVE_DEFAULT
- 	  The default time-out value in seconds for HD-audio automatic
- 	  power-save mode.  0 means to disable the power-save mode.
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index cd1773d0e08f..5934d7f228f0 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -99,6 +99,12 @@ enum {
+ 	HDA_DEV_ASOC,
+ };
  
-+if SND_HDA_INTEL
++enum {
++	SND_SKL_PCI_BIND_AUTO,	/* automatic selection based on pci class */
++	SND_SKL_PCI_BIND_LEGACY,/* bind only with legacy driver */
++	SND_SKL_PCI_BIND_ASOC	/* bind only with ASoC driver */
++};
 +
-+config SND_HDA_INTEL_DISABLE_SKL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  Skylake machines
-+
-+config SND_HDA_INTEL_DISABLE_APL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  Broxton/ApolloLake machines
-+
-+config SND_HDA_INTEL_DISABLE_KBL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  KabyLake machines
-+
-+config SND_HDA_INTEL_DISABLE_GLK
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  GeminiLake machines
-+
-+config SND_HDA_INTEL_DISABLE_CNL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  CannonLake machines
-+
-+config SND_HDA_INTEL_DISABLE_CFL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  CoffeeLake machines
-+
-+config SND_HDA_INTEL_DISABLE_ICL
-+	bool
-+	help
-+	  This option disables HD-audio legacy for
-+	  IceLake machines
-+
-+endif ## SND_HDA_INTEL
-+
- endif
- 
- endmenu
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index c95097bb5a0c..2351115f922e 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -37,7 +37,7 @@
- #else
- #define AZX_DCAPS_I915_COMPONENT 0		/* NOP */
- #endif
--/* 14 unused */
-+#define AZX_DCAPS_INTEL_SHARED	(1 << 14)	/* shared with ASoC */
- #define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
- #define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
- /* 17 unused */
+ /* direction */
+ enum {
+ 	HDA_INPUT, HDA_OUTPUT
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d8eb2b5f51ae..0c76713ac5c0 100644
+index 0c76713ac5c0..4e1aee5167a1 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -360,6 +360,7 @@ enum {
- 	 AZX_DCAPS_NO_64BIT |\
- 	 AZX_DCAPS_4K_BDLE_BOUNDARY | AZX_DCAPS_SNOOP_OFF)
+@@ -172,6 +172,9 @@ module_param_array(beep_mode, bool, NULL, 0444);
+ MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
+ 			    "(0=off, 1=on) (default=1).");
+ #endif
++static int skl_pci_binding;
++module_param_named(pci_binding, skl_pci_binding, int, 0444);
++MODULE_PARM_DESC(legacy, "PCI binding (0=auto, 1=only legacy, 2=only asoc");
  
-+#define AZX_DCAPS_INTEL_LEGACY_DISABLE(conf) (IS_ENABLED(CONFIG_SND_HDA_INTEL_DISABLE_##conf) ? AZX_DCAPS_INTEL_SHARED : 0)
- /*
-  * vga_switcheroo support
-  */
-@@ -2091,6 +2092,11 @@ static int azx_probe(struct pci_dev *pci,
- 	bool schedule_probe;
+ #ifdef CONFIG_PM
+ static int param_set_xint(const char *val, const struct kernel_param *kp);
+@@ -2093,9 +2096,25 @@ static int azx_probe(struct pci_dev *pci,
  	int err;
  
-+	/* check if this driver can be used on SKL+ Intel platforms */
-+	if ((pci_id->driver_data & AZX_DCAPS_INTEL_SHARED) &&
-+	    pci->class != 0x040300)
-+		return -ENODEV;
-+
+ 	/* check if this driver can be used on SKL+ Intel platforms */
+-	if ((pci_id->driver_data & AZX_DCAPS_INTEL_SHARED) &&
+-	    pci->class != 0x040300)
+-		return -ENODEV;
++	if (pci_id->driver_data & AZX_DCAPS_INTEL_SHARED) {
++		switch (skl_pci_binding) {
++		case SND_SKL_PCI_BIND_AUTO:
++			if (pci->class != 0x040300) {
++				dev_warn(&pci->dev, "The DSP is enabled on this platform, aborting probe\n");
++				return -ENODEV;
++			}
++			break;
++		case SND_SKL_PCI_BIND_LEGACY:
++			dev_warn(&pci->dev, "Module parameter forced binding with HDaudio legacy, bypassed detection logic\n");
++			break;
++		case SND_SKL_PCI_BIND_ASOC:
++			dev_err(&pci->dev, "Module parameter forced binding with SKL+ ASoC driver, aborting probe\n");
++			return -ENODEV;
++		default:
++			dev_err(&pci->dev, "invalid value for skl_pci_binding module parameter, ignored\n");
++			break;
++		}
++	}
+ 
  	if (dev >= SNDRV_CARDS)
  		return -ENODEV;
- 	if (!enable[dev]) {
-@@ -2406,34 +2412,48 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(SKL)
-+	},
- 	/* Kabylake */
- 	{ PCI_DEVICE(0x8086, 0xa171),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Kabylake-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d71),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(KBL)
-+	},
- 	/* Kabylake-H */
- 	{ PCI_DEVICE(0x8086, 0xa2f0),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Coffelake */
- 	{ PCI_DEVICE(0x8086, 0xa348),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(CFL)
-+	},
- 	/* Cannonlake */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(CNL)
-+	},
- 	/* Icelake */
- 	{ PCI_DEVICE(0x8086, 0x34c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(ICL)
-+	},
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(APL)
-+	},
- 	/* Broxton-T */
- 	{ PCI_DEVICE(0x8086, 0x1a98),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Gemini-Lake */
- 	{ PCI_DEVICE(0x8086, 0x3198),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON |
-+	  AZX_DCAPS_INTEL_LEGACY_DISABLE(GLK)
-+	},
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 99a62ba409df..f817bda5cab5 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -188,6 +188,12 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_INTEL_SST
- 	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
-+	select SND_HDA_INTEL_DISABLE_SKL if SND_SOC_INTEL_SKL
-+	select SND_HDA_INTEL_DISABLE_APL if SND_SOC_INTEL_APL
-+	select SND_HDA_INTEL_DISABLE_KBL if SND_SOC_INTEL_KBL
-+	select SND_HDA_INTEL_DISABLE_GLK if SND_SOC_INTEL_GLK
-+	select SND_HDA_INTEL_DISABLE_CNL if SND_SOC_INTEL_CNL
-+	select SND_HDA_INTEL_DISABLE_CFL if SND_SOC_INTEL_CFL
- 	select SND_SOC_ACPI_INTEL_MATCH
- 	help
- 	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index bb8257013c8b..ff5b8012eb2f 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -40,6 +40,9 @@
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
+ #include "../../../soc/codecs/hdac_hda.h"
+ #endif
++static int skl_pci_binding;
++module_param_named(pci_binding, skl_pci_binding, int, 0444);
++MODULE_PARM_DESC(legacy, "PCI binding (0=auto, 1=only legacy, 2=only asoc");
+ 
+ /*
+  * initialize the PCI registers
+@@ -987,22 +990,35 @@ static int skl_probe(struct pci_dev *pci,
+ 	struct hdac_bus *bus = NULL;
+ 	int err;
+ 
+-	/*
+-	 * detect DSP by checking class/subclass/prog-id information
+-	 * class=04 subclass 03 prog-if 00: no DSP, legacy driver required
+-	 * class=04 subclass 01 prog-if 00: DSP is present
+-	 *   (and may be required e.g. for DMIC or SSP support)
+-	 * class=04 subclass 03 prog-if 80: DSP or legacy mode can be used
+-	 */
+-	if (pci->class == 0x040300) {
+-		dev_err(&pci->dev, "The DSP is not enabled on this platform, aborting probe\n");
+-		return -ENODEV;
+-	}
+-	if (pci->class != 0x040100 && pci->class != 0x040380) {
+-		dev_err(&pci->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, aborting probe\n", pci->class);
++	switch (skl_pci_binding) {
++	case SND_SKL_PCI_BIND_AUTO:
++		/*
++		 * detect DSP by checking class/subclass/prog-id information
++		 * class=04 subclass 03 prog-if 00: no DSP, legacy driver required
++		 * class=04 subclass 01 prog-if 00: DSP is present
++		 *   (and may be required e.g. for DMIC or SSP support)
++		 * class=04 subclass 03 prog-if 80: DSP or legacy mode can be used
++		 */
++		if (pci->class == 0x040300) {
++			dev_err(&pci->dev, "The DSP is not enabled on this platform, aborting probe\n");
++			return -ENODEV;
++		}
++		if (pci->class != 0x040100 && pci->class != 0x040380) {
++			dev_err(&pci->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, aborting probe\n", pci->class);
++			return -ENODEV;
++		}
++		dev_info(&pci->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
++		break;
++	case SND_SKL_PCI_BIND_LEGACY:
++		dev_warn(&pci->dev, "Module parameter forced binding with HDaudio legacy, aborting probe\n");
+ 		return -ENODEV;
++	case SND_SKL_PCI_BIND_ASOC:
++		dev_warn(&pci->dev, "Module parameter forced binding with SKL driver, bypassed detection logic\n");
++		break;
++	default:
++		dev_err(&pci->dev, "invalid value for skl_pci_binding module parameter, ignored\n");
++		break;
+ 	}
+-	dev_info(&pci->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
+ 
+ 	/* we use ext core ops, so provide NULL for ops here */
+ 	err = skl_create(pci, NULL, &skl);
 -- 
 2.17.1
