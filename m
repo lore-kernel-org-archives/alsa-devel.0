@@ -1,17 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/7] ALSA: hda: Make snd_hdac_display_power()
-	void function
-Date: Sun,  9 Dec 2018 10:33:16 +0100
-Message-ID: <20181209093318.27829-6-tiwai@suse.de>
-References: <20181209093318.27829-1-tiwai@suse.de>
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [RFC PATCH v8 1/4] media: Media Device Allocator
+	API
+Date: Sun, 9 Dec 2018 09:27:36 -0200
+Message-ID: <20181209092715.50a7e4e4@coco.lan>
+References: <cover.1541109584.git.shuah@kernel.org>
+ <e474dd16f1d6443c12b1361376193c9d0efcced6.1541109584.git.shuah@kernel.org>
+ <20181119085931.GA28607@amd>
+ <73c22137-9c7a-75c8-8cd1-3736c63c2d40@kernel.org>
+ <20181209080944.GA7561@amd>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DEA96267AB7
- for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2018 10:33:29 +0100 (CET)
-In-Reply-To: <20181209093318.27829-1-tiwai@suse.de>
+Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FE522677E4
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2018 12:27:52 +0100 (CET)
+In-Reply-To: <20181209080944.GA7561@amd>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,247 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, shuah <shuah@kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-After the recent refactoring, snd_hdac_display_power() doesn't return
-any error, hence it can be defined to return void.
-This makes many error checks redundant and allows us to reduce them
-gracefully.
+Em Sun, 9 Dec 2018 09:09:44 +0100
+Pavel Machek <pavel@ucw.cz> escreveu:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/hda_component.h |  9 ++++----
- sound/hda/hdac_component.c    |  8 ++-----
- sound/pci/hda/hda_intel.c     |  9 +-------
- sound/soc/codecs/hdac_hdmi.c  | 21 +++++-------------
- sound/soc/intel/skylake/skl.c | 40 ++++++++++-------------------------
- 5 files changed, 23 insertions(+), 64 deletions(-)
+> On Thu 2018-12-06 08:33:14, shuah wrote:
+> > On 11/19/18 1:59 AM, Pavel Machek wrote:  
+> > >On Thu 2018-11-01 18:31:30, shuah@kernel.org wrote:  
+> > >>From: Shuah Khan <shuah@kernel.org>
+> > >>
+> > >>Media Device Allocator API to allows multiple drivers share a media device.
+> > >>Using this API, drivers can allocate a media device with the shared struct
+> > >>device as the key. Once the media device is allocated by a driver, other
+> > >>drivers can get a reference to it. The media device is released when all
+> > >>the references are released.  
+> > >
+> > >Sounds like a ... bad idea?
+> > >
+> > >That's what new "media control" framework is for, no?
+> > >
+> > >Why do you need this?  
+> > 
+> > Media control framework doesn't address this problem of ownership of the
+> > media device when non-media drivers have to own the pipeline. In this case,
+> > snd-usb owns the audio pipeline when an audio application is using the
+> > device. Without this work, media drivers won't be able to tell if snd-usb is
+> > using the tuner and owns the media pipeline.
+> > 
+> > I am going to clarify this in the commit log.  
+> 
+> I guess I'll need the explanation, yes.
+> 
+> How can usb soundcard use the tuner? I thought we'd always have
+> userspace component active and moving data between tuner and usb sound
+> card?
 
-diff --git a/include/sound/hda_component.h b/include/sound/hda_component.h
-index b78add315b1f..1916f4928bf3 100644
---- a/include/sound/hda_component.h
-+++ b/include/sound/hda_component.h
-@@ -10,8 +10,8 @@
- 
- #ifdef CONFIG_SND_HDA_COMPONENT
- int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
--int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
--			   bool enable);
-+void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
-+			    bool enable);
- int snd_hdac_sync_audio_rate(struct hdac_device *codec, hda_nid_t nid,
- 			     int dev_id, int rate);
- int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid, int dev_id,
-@@ -28,10 +28,9 @@ static inline int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
- {
- 	return 0;
- }
--static inline int snd_hdac_display_power(struct hdac_bus *bus,
--					 unsigned int idx, bool enable)
-+static inline void snd_hdac_display_power(struct hdac_bus *bus,
-+					  unsigned int idx, bool enable)
- {
--	return 0;
- }
- static inline int snd_hdac_sync_audio_rate(struct hdac_device *codec,
- 					   hda_nid_t nid, int dev_id, int rate)
-diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
-index dd766414436b..a6d37b9d6413 100644
---- a/sound/hda/hdac_component.c
-+++ b/sound/hda/hdac_component.c
-@@ -62,10 +62,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_set_codec_wakeup);
-  *
-  * This function updates the power status, and calls the get_power() and
-  * put_power() ops accordingly, toggling the codec wakeup, too.
-- *
-- * Returns zero for success or a negative error code.
-  */
--int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
-+void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- {
- 	struct drm_audio_component *acomp = bus->audio_component;
- 
-@@ -77,7 +75,7 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- 		clear_bit(idx, &bus->display_power_status);
- 
- 	if (!acomp || !acomp->ops)
--		return 0;
-+		return;
- 
- 	if (bus->display_power_status) {
- 		if (!bus->display_power_active) {
-@@ -94,8 +92,6 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- 			bus->display_power_active = false;
- 		}
- 	}
--
--	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_display_power);
- 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 48b29f02f72d..e89b8933b464 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2222,12 +2222,7 @@ static int azx_probe_continue(struct azx *chip)
- 	 * this power. For other platforms, like Baytrail/Braswell, only the
- 	 * display codec needs the power and it can be released after probe.
- 	 */
--	err = display_power(chip, true);
--	if (err < 0) {
--		dev_err(chip->card->dev,
--			"Cannot turn on display power on i915\n");
--		goto i915_power_fail;
--	}
-+	display_power(chip, true);
- 
- 	err = azx_first_init(chip);
- 	if (err < 0)
-@@ -2277,8 +2272,6 @@ static int azx_probe_continue(struct azx *chip)
- out_free:
- 	if (err < 0 || !hda->need_i915_power)
- 		display_power(chip, false);
--
--i915_power_fail:
- 	if (err < 0)
- 		hda->init_failed = 1;
- 	complete_all(&hda->probe_wait);
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c3d551d2af7f..adce94a3b289 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2031,13 +2031,8 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
- 	 * Turned off in the runtime_suspend during the first explicit
- 	 * pm_runtime_suspend call.
- 	 */
--	ret = snd_hdac_display_power(hdev->bus, hdev->addr, true);
--	if (ret < 0) {
--		dev_err(&hdev->dev,
--			"Cannot turn on display power on i915 err: %d\n",
--			ret);
--		return ret;
--	}
-+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
-+
- 	ret = hdac_hdmi_parse_and_map_nid(hdev, &hdmi_dais, &num_dais);
- 	if (ret < 0) {
- 		dev_err(&hdev->dev,
-@@ -2195,11 +2190,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 
- 	snd_hdac_ext_bus_link_put(bus, hlink);
- 
--	err = snd_hdac_display_power(bus, hdev->addr, false);
--	if (err < 0)
--		dev_err(dev, "Cannot turn off display power on i915\n");
-+	snd_hdac_display_power(bus, hdev->addr, false);
- 
--	return err;
-+	return 0;
- }
- 
- static int hdac_hdmi_runtime_resume(struct device *dev)
-@@ -2223,11 +2216,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 
- 	snd_hdac_ext_bus_link_get(bus, hlink);
- 
--	err = snd_hdac_display_power(bus, hdev->addr, true);
--	if (err < 0) {
--		dev_err(dev, "Cannot turn on display power on i915\n");
--		return err;
--	}
-+	snd_hdac_display_power(bus, hdev->addr, true);
- 
- 	hdac_hdmi_skl_enable_all_pins(hdev);
- 	hdac_hdmi_skl_enable_dp12(hdev);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 64f8433ae921..5c224a0e1c7a 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -311,7 +311,7 @@ static int skl_suspend(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_bus *bus = pci_get_drvdata(pci);
- 	struct skl *skl  = bus_to_skl(bus);
--	int ret = 0;
-+	int ret;
- 
- 	/*
- 	 * Do not suspend if streams which are marked ignore suspend are
-@@ -333,14 +333,10 @@ static int skl_suspend(struct device *dev)
- 		skl->skl_sst->fw_loaded = false;
- 	}
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
--		if (ret < 0)
--			dev_err(bus->dev,
--				"Cannot turn OFF display power on i915\n");
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- 
--	return ret;
-+	return 0;
- }
- 
- static int skl_resume(struct device *dev)
-@@ -352,14 +348,8 @@ static int skl_resume(struct device *dev)
- 	int ret;
- 
- 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--		if (ret < 0) {
--			dev_err(bus->dev,
--				"Cannot turn on display power on i915\n");
--			return ret;
--		}
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 
- 	/*
- 	 * resume only when we are not in suspend active, otherwise need to
-@@ -783,11 +773,9 @@ static int skl_i915_init(struct hdac_bus *bus)
- 	if (err < 0)
- 		return err;
- 
--	err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--	if (err < 0)
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 
--	return err;
-+	return 0;
- }
- 
- static void skl_probe_work(struct work_struct *work)
-@@ -837,14 +825,8 @@ static void skl_probe_work(struct work_struct *work)
- 	list_for_each_entry(hlink, &bus->hlink_list, list)
- 		snd_hdac_ext_bus_link_put(bus, hlink);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
--		if (err < 0) {
--			dev_err(bus->dev, "Cannot turn off display power on i915\n");
--			skl_machine_device_unregister(skl);
--			return;
--		}
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- 
- 	/* configure PM */
- 	pm_runtime_put_noidle(bus->dev);
-@@ -855,7 +837,7 @@ static void skl_probe_work(struct work_struct *work)
- 
- out_err:
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- }
- 
- /*
--- 
-2.19.2
+It sounds that the description of the patch is not 100%, as it seems
+that you're not seeing the hole picture.
+
+This is designed to solve a very common usecase for media devices
+where one physical device (an USB stick) provides both audio
+and video.
+
+That's, for example, the case of cameras with microphones and 
+TV USB devices. Those usually expose the audio via standard
+USB Audio Class, and video either via USB Video Class or via
+some proprietary vendor class.
+
+Due to the way USB Audio Class is handled, it means that two
+independent drivers will provide the pipelines for a single
+physical USB bridge.
+
+The same problem also applies to more sophisticated embedded devices,
+like on  SOCs designed to be used on TVs and Set Top Boxes, where the
+hardware pipeline has both audio and video components on it, logically
+mapped into different drivers (using Linux DTV API, V4L2 API and ALSA).
+
+On such kind of devices, it is important to have a way to see
+and control the entire audio and video pipeline present on them 
+through a single media controller device, specially if one wants
+to provide a hardware pipeline within the SoC that won't be 
+copying data between Kernel-userspace.
+
+Now, if the audio is implemented on a separate device (like an
+Intel HDA compatible chipset at the motherboard), it should
+be exposed as a separate media controller.
+
+So, for example, a system that has both an USB audio/video
+stick and an Intel HDA-compatible chipset, both exposed via
+the media controller, will have two media controller devices,
+one for each physically independent device.
+
+On the other hand, an SoC designed for TV products will likely
+expose a single media controller, even if each part of the
+pipeline is exposed via independent Linux device drivers.
+
+Thanks,
+Mauro
