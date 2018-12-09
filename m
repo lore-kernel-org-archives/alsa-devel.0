@@ -1,26 +1,16 @@
-From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: Well-known LED names was Re: [PATCH 0/6] Introduce
- audio-mute LED trigger (and conversions to it)
-Date: Sat, 8 Dec 2018 22:59:59 +0100
-Message-ID: <f8cd3214-3014-3d22-1308-1673a07f6d10@gmail.com>
-References: <20181127084418.GA20504@amd>
- <20181128111806.cb3cncpjeq73sptg@pali> <s5hy39dv3dg.wl-tiwai@suse.de>
- <20181128122505.GA1193@amd> <8bb45cc6-9f98-9fed-9676-7f1429328c4a@gmail.com>
- <20181128203410.GA20670@amd> <20181128204612.l3bayhop4qmep2hj@pali>
- <0ed37870-c7b6-fd6b-2f6e-7325fdde3629@gmail.com> <20181128212212.GE20670@amd>
- <5f8eece3-95af-7866-d7d0-02cc3cb695ca@gmail.com> <20181201144101.GD31631@amd>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - Fix the mute LED regresion
+	on Lenovo X1 Carbon
+Date: Sun,  9 Dec 2018 09:16:43 +0800
+Message-ID: <20181209011643.4733-1-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f196.google.com (mail-lj1-f196.google.com
- [209.85.208.196])
- by alsa0.perex.cz (Postfix) with ESMTP id BC46426751A
- for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2018 23:00:03 +0100 (CET)
-Received: by mail-lj1-f196.google.com with SMTP id g11-v6so6472184ljk.3
- for <alsa-devel@alsa-project.org>; Sat, 08 Dec 2018 14:00:03 -0800 (PST)
-In-Reply-To: <20181201144101.GD31631@amd>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 011E626751A
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2018 02:17:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,135 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Ayman Bagabas <ayman.bagabas@gmail.com>, Takashi Iwai <tiwai@suse.de>, platform-driver-x86@vger.kernel.org, Hui Wang <hui.wang@canonical.com>, ibm-acpi-devel@lists.sourceforge.net, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-leds@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pavel,
+Users reported a mute LED regression on Lenovo X1 Carbon, the root
+cause is we applied the fixup of ALC285_FIXUP_LENOVO_HEADPHONE_NOISE
+to this machine, then the machine can't apply the fixup of
+ALC269_FIXUP_THINKPAD_ACPI anymore. To fix it, we chain two fixup
+together.
 
-On 12/1/18 3:41 PM, Pavel Machek wrote:
-> Hi!
-> 
->>>>> If external USB keyboard is identified as "input7" device, then
->>>>> "input7::mute" is a good name for mute key. But "sys::mute" does not say
->>>>> anything to which device or hardware it belongs nor does not solve
->>>>> problem that which device/driver/subsystem should have privilege to take
->>>>> this "sys" name.
->>>>
->>>> How about just "platform" for the LEDs being part of the device
->>>> on which the system is running?
->>>
->>> "platform" works for me.
->>>
->>> Are we in agreement that this name will be used for all similar LEDs,
->>> as long as they are on the "main box" of the device, no matter if they
->>> are connected using acpi, gpio, i2c, ...?
->>
->> One doubt: say we have hdd activity LED on the "main box" - it
->> would be named "platform::disk".
->>
->> Now, we add external USB disk. Previously we were considering
->> the naming for disk LEDs in the form e.g. "sdb::disk".
->>
->> If so, there would be discrepancy between internal and external disk
->> LED names. Similarly in case of eth/adsl/wlan/camera LEDs.
-> 
-> Well, it really depends if the "plaform::disk" is for all the disks,
-> or if it is for sda. In the second case, it might be better to name it
-> sda::disk...
-> 
-> Anyway... I believe we should start documenting good and bad LEDs, so
-> that patch authors know what is there, and can try to be consistent,
-> and so that userland knows what names to probe for.
+Fixes: c4cfcf6f4297 ("ALSA: hda/realtek - fix the pop noise on headphone for lenovo laptops")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The idea looks reasonable. In addition to that, I'd change one
-thing in the LED naming pattern - replace "devicename " with
-"affiliation". AFAICS that would fit best for both "platform"
-and e.g. "input*".
-
-Also in the DT we would need related "affiliation" property.
-In most cases it would be "platform" probably.
-Possible is also "camera" - but we would have to state it clear
-how to proceed in case of video devices - shouldn't v4l2
-drivers create LEDs similarly to how network drivers do that.
-Then it would be possible to provide videoN name.
-
-> What about following? Any other LEDs worth mentioning?
-disk: sdX
-network devices: ethN, adslN
-
-These "affiliations" would have to be provided by the
-network drivers creating LED class devices.
-
-> commit c56708addf9c312cefd760bca218a0545258b217
-> Author: Pavel <pavel@ucw.cz>
-> Date:   Sat Dec 1 15:32:13 2018 +0100
-> 
-> leds: Add list of well-known LED names
->      
-> Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> 
-> diff --git a/Documentation/leds/well-known-leds.txt b/Documentation/leds/well-known-leds.txt
-> new file mode 100644
-> index 0000000..9a262db
-> --- /dev/null
-> +++ b/Documentation/leds/well-known-leds.txt
-> @@ -0,0 +1,42 @@
-> +-*- org -*-
-> +
-> +It is somehow important to provide consistent interface to the
-> +userland. LED devices have one problem there, and that is naming of
-> +directories in /sys/class/leds. It would be nice if userland would
-> +just know right "name" for given LED function, but situation got more
-> +complex.
-> +
-> +Anyway, if backwards compatibility is not an issue, new code should
-> +use one of the "good" names from this list, and you should extend the
-> +list where applicable.
-> +
-> +Bad names are listed, too, in case you are writing application that
-> +wants to use particular feature, you should probe for good name first
-> +but then try the bad ones, too".
-> +
-> +* Keyboards
-> +
-> +Good: "input*:*:capslock"
-> +Good: "input*:*:scrolllock"
-> +Good: "input*:*:numlock"
-> +
-> +Set of common keyboard LEDs, going back to PC AT or so.
-> +
-> +Bad: "tpacpi::thinklight" (IBM/Lenovo Thinkpads)
-> +Bad: "lp5523:kb{1,2,3,4,5,6,7}" (Nokia N900)
-> +
-> +Keyboard frontlight/backlight.
-
-Isn't example missing here?
-
-> +
-> +* Sound subsystem
-> +
-> +Good: "platform:*:mute"
-> +Good: "platform:*:micmute"
-> +
-> +LEDs on notebook body, indicating that sound input / output is muted.
-> +
-> +* System notification
-> +
-> +Good: "status-led:{red,green,blue}" (Motorola Droid 4)
-
-Two problems here:
-- "status-led" is in place of "devicename" instead of "function"
-- "-led" is obvious and non-generic - we will have "status"
-   in the "functions.h"
-
-> +Bad: "lp5523:{r,g,b}" (Nokia N900)
-> +
-> +Phones usually have multi-color status LED.
-> 
-> 
->
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 56882d9b1e43..5b13d9e8d6c7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6450,6 +6450,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC285_FIXUP_LENOVO_HEADPHONE_NOISE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_invalidate_dacs,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
+ 	},
+ 	[ALC295_FIXUP_HP_AUTO_MUTE] = {
+ 		.type = HDA_FIXUP_FUNC,
 -- 
-Best regards,
-Jacek Anaszewski
+2.17.1
