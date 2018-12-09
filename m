@@ -1,15 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/7] ALSA: hda/intel: Refactoring PM code
-Date: Sun,  9 Dec 2018 10:33:12 +0100
-Message-ID: <20181209093318.27829-2-tiwai@suse.de>
+Subject: [PATCH 5/7] ALSA: hda: Make snd_hdac_display_power()
+	void function
+Date: Sun,  9 Dec 2018 10:33:16 +0100
+Message-ID: <20181209093318.27829-6-tiwai@suse.de>
 References: <20181209093318.27829-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B0BAF267AAB
- for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2018 10:33:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DEA96267AB7
+ for <alsa-devel@alsa-project.org>; Sun,  9 Dec 2018 10:33:29 +0100 (CET)
 In-Reply-To: <20181209093318.27829-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,272 +25,243 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make unified suspend / resume helpers and call them from both the
-runtime- and the system-PM callbacks for simplifying code.
-
-There are slight changes of call orders, but there shouldn't be any
-functional difference after refactoring.
+After the recent refactoring, snd_hdac_display_power() doesn't return
+any error, hence it can be defined to return void.
+This makes many error checks redundant and allows us to reduce them
+gracefully.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_intel.c | 160 ++++++++++++++++----------------------
- 1 file changed, 69 insertions(+), 91 deletions(-)
+ include/sound/hda_component.h |  9 ++++----
+ sound/hda/hdac_component.c    |  8 ++-----
+ sound/pci/hda/hda_intel.c     |  9 +-------
+ sound/soc/codecs/hdac_hdmi.c  | 21 +++++-------------
+ sound/soc/intel/skylake/skl.c | 40 ++++++++++-------------------------
+ 5 files changed, 23 insertions(+), 64 deletions(-)
 
+diff --git a/include/sound/hda_component.h b/include/sound/hda_component.h
+index b78add315b1f..1916f4928bf3 100644
+--- a/include/sound/hda_component.h
++++ b/include/sound/hda_component.h
+@@ -10,8 +10,8 @@
+ 
+ #ifdef CONFIG_SND_HDA_COMPONENT
+ int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
+-int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
+-			   bool enable);
++void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
++			    bool enable);
+ int snd_hdac_sync_audio_rate(struct hdac_device *codec, hda_nid_t nid,
+ 			     int dev_id, int rate);
+ int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid, int dev_id,
+@@ -28,10 +28,9 @@ static inline int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
+ {
+ 	return 0;
+ }
+-static inline int snd_hdac_display_power(struct hdac_bus *bus,
+-					 unsigned int idx, bool enable)
++static inline void snd_hdac_display_power(struct hdac_bus *bus,
++					  unsigned int idx, bool enable)
+ {
+-	return 0;
+ }
+ static inline int snd_hdac_sync_audio_rate(struct hdac_device *codec,
+ 					   hda_nid_t nid, int dev_id, int rate)
+diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
+index dd766414436b..a6d37b9d6413 100644
+--- a/sound/hda/hdac_component.c
++++ b/sound/hda/hdac_component.c
+@@ -62,10 +62,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_set_codec_wakeup);
+  *
+  * This function updates the power status, and calls the get_power() and
+  * put_power() ops accordingly, toggling the codec wakeup, too.
+- *
+- * Returns zero for success or a negative error code.
+  */
+-int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
++void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
+ {
+ 	struct drm_audio_component *acomp = bus->audio_component;
+ 
+@@ -77,7 +75,7 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
+ 		clear_bit(idx, &bus->display_power_status);
+ 
+ 	if (!acomp || !acomp->ops)
+-		return 0;
++		return;
+ 
+ 	if (bus->display_power_status) {
+ 		if (!bus->display_power_active) {
+@@ -94,8 +92,6 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
+ 			bus->display_power_active = false;
+ 		}
+ 	}
+-
+-	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_display_power);
+ 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 76f03abd15ab..cc06a323c817 100644
+index 48b29f02f72d..e89b8933b464 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -930,35 +930,82 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
- 	mutex_unlock(&card_list_lock);
- 	return 0;
- }
--#else
--#define azx_add_card_list(chip) /* NOP */
--#define azx_del_card_list(chip) /* NOP */
--#endif /* CONFIG_PM */
+@@ -2222,12 +2222,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	 * this power. For other platforms, like Baytrail/Braswell, only the
+ 	 * display codec needs the power and it can be released after probe.
+ 	 */
+-	err = display_power(chip, true);
+-	if (err < 0) {
+-		dev_err(chip->card->dev,
+-			"Cannot turn on display power on i915\n");
+-		goto i915_power_fail;
+-	}
++	display_power(chip, true);
  
--#ifdef CONFIG_PM_SLEEP
+ 	err = azx_first_init(chip);
+ 	if (err < 0)
+@@ -2277,8 +2272,6 @@ static int azx_probe_continue(struct azx *chip)
+ out_free:
+ 	if (err < 0 || !hda->need_i915_power)
+ 		display_power(chip, false);
+-
+-i915_power_fail:
+ 	if (err < 0)
+ 		hda->init_failed = 1;
+ 	complete_all(&hda->probe_wait);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c3d551d2af7f..adce94a3b289 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2031,13 +2031,8 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
+ 	 * Turned off in the runtime_suspend during the first explicit
+ 	 * pm_runtime_suspend call.
+ 	 */
+-	ret = snd_hdac_display_power(hdev->bus, hdev->addr, true);
+-	if (ret < 0) {
+-		dev_err(&hdev->dev,
+-			"Cannot turn on display power on i915 err: %d\n",
+-			ret);
+-		return ret;
+-	}
++	snd_hdac_display_power(hdev->bus, hdev->addr, true);
++
+ 	ret = hdac_hdmi_parse_and_map_nid(hdev, &hdmi_dais, &num_dais);
+ 	if (ret < 0) {
+ 		dev_err(&hdev->dev,
+@@ -2195,11 +2190,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 
+ 	snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+-	err = snd_hdac_display_power(bus, hdev->addr, false);
+-	if (err < 0)
+-		dev_err(dev, "Cannot turn off display power on i915\n");
++	snd_hdac_display_power(bus, hdev->addr, false);
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static int hdac_hdmi_runtime_resume(struct device *dev)
+@@ -2223,11 +2216,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 
+ 	snd_hdac_ext_bus_link_get(bus, hlink);
+ 
+-	err = snd_hdac_display_power(bus, hdev->addr, true);
+-	if (err < 0) {
+-		dev_err(dev, "Cannot turn on display power on i915\n");
+-		return err;
+-	}
++	snd_hdac_display_power(bus, hdev->addr, true);
+ 
+ 	hdac_hdmi_skl_enable_all_pins(hdev);
+ 	hdac_hdmi_skl_enable_dp12(hdev);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 64f8433ae921..5c224a0e1c7a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -311,7 +311,7 @@ static int skl_suspend(struct device *dev)
+ 	struct pci_dev *pci = to_pci_dev(dev);
+ 	struct hdac_bus *bus = pci_get_drvdata(pci);
+ 	struct skl *skl  = bus_to_skl(bus);
+-	int ret = 0;
++	int ret;
+ 
+ 	/*
+ 	 * Do not suspend if streams which are marked ignore suspend are
+@@ -333,14 +333,10 @@ static int skl_suspend(struct device *dev)
+ 		skl->skl_sst->fw_loaded = false;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+-		if (ret < 0)
+-			dev_err(bus->dev,
+-				"Cannot turn OFF display power on i915\n");
+-	}
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int skl_resume(struct device *dev)
+@@ -352,14 +348,8 @@ static int skl_resume(struct device *dev)
+ 	int ret;
+ 
+ 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-		if (ret < 0) {
+-			dev_err(bus->dev,
+-				"Cannot turn on display power on i915\n");
+-			return ret;
+-		}
+-	}
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+ 
+ 	/*
+ 	 * resume only when we are not in suspend active, otherwise need to
+@@ -783,11 +773,9 @@ static int skl_i915_init(struct hdac_bus *bus)
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-	if (err < 0)
+-		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static void skl_probe_work(struct work_struct *work)
+@@ -837,14 +825,8 @@ static void skl_probe_work(struct work_struct *work)
+ 	list_for_each_entry(hlink, &bus->hlink_list, list)
+ 		snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+-		if (err < 0) {
+-			dev_err(bus->dev, "Cannot turn off display power on i915\n");
+-			skl_machine_device_unregister(skl);
+-			return;
+-		}
+-	}
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+ 
+ 	/* configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+@@ -855,7 +837,7 @@ static void skl_probe_work(struct work_struct *work)
+ 
+ out_err:
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+ }
+ 
  /*
-  * power management
-  */
--static int azx_suspend(struct device *dev)
-+static bool azx_is_pm_ready(struct snd_card *card)
- {
--	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
- 	struct hda_intel *hda;
--	struct hdac_bus *bus;
- 
- 	if (!card)
--		return 0;
--
-+		return false;
- 	chip = card->private_data;
- 	hda = container_of(chip, struct hda_intel, chip);
- 	if (chip->disabled || hda->init_failed || !chip->running)
-+		return false;
-+	return true;
-+}
-+
-+static void __azx_runtime_suspend(struct azx *chip)
-+{
-+	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-+
-+	azx_stop_chip(chip);
-+	azx_enter_link_reset(chip);
-+	azx_clear_irq_pending(chip);
-+	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL) &&
-+	    hda->need_i915_power)
-+		snd_hdac_display_power(azx_bus(chip), false);
-+}
-+
-+static void __azx_runtime_resume(struct azx *chip)
-+{
-+	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-+	struct hdac_bus *bus = azx_bus(chip);
-+	struct hda_codec *codec;
-+	int status;
-+
-+	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
-+		snd_hdac_display_power(bus, true);
-+		if (hda->need_i915_power)
-+			snd_hdac_i915_set_bclk(bus);
-+	}
-+
-+	/* Read STATESTS before controller reset */
-+	status = azx_readw(chip, STATESTS);
-+
-+	azx_init_pci(chip);
-+	hda_intel_init_chip(chip, true);
-+
-+	if (status) {
-+		list_for_each_codec(codec, &chip->bus)
-+			if (status & (1 << codec->addr))
-+				schedule_delayed_work(&codec->jackpoll_work,
-+						      codec->jackpoll_interval);
-+	}
-+
-+	/* power down again for link-controlled chips */
-+	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL) &&
-+	    !hda->need_i915_power)
-+		snd_hdac_display_power(bus, false);
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int azx_suspend(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip;
-+	struct hdac_bus *bus;
-+
-+	if (!azx_is_pm_ready(card))
- 		return 0;
- 
-+	chip = card->private_data;
- 	bus = azx_bus(chip);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	azx_clear_irq_pending(chip);
--	azx_stop_chip(chip);
--	azx_enter_link_reset(chip);
-+	__azx_runtime_suspend(chip);
- 	if (bus->irq >= 0) {
- 		free_irq(bus->irq, chip);
- 		bus->irq = -1;
-@@ -966,9 +1013,6 @@ static int azx_suspend(struct device *dev)
- 
- 	if (chip->msi)
- 		pci_disable_msi(chip->pci);
--	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
--		&& hda->need_i915_power)
--		snd_hdac_display_power(bus, false);
- 
- 	trace_azx_suspend(chip);
- 	return 0;
-@@ -976,41 +1020,19 @@ static int azx_suspend(struct device *dev)
- 
- static int azx_resume(struct device *dev)
- {
--	struct pci_dev *pci = to_pci_dev(dev);
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	struct hda_intel *hda;
--	struct hdac_bus *bus;
- 
--	if (!card)
-+	if (!azx_is_pm_ready(card))
- 		return 0;
- 
- 	chip = card->private_data;
--	hda = container_of(chip, struct hda_intel, chip);
--	bus = azx_bus(chip);
--	if (chip->disabled || hda->init_failed || !chip->running)
--		return 0;
--
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
--		snd_hdac_display_power(bus, true);
--		if (hda->need_i915_power)
--			snd_hdac_i915_set_bclk(bus);
--	}
--
- 	if (chip->msi)
--		if (pci_enable_msi(pci) < 0)
-+		if (pci_enable_msi(chip->pci) < 0)
- 			chip->msi = 0;
- 	if (azx_acquire_irq(chip, 1) < 0)
- 		return -EIO;
--	azx_init_pci(chip);
--
--	hda_intel_init_chip(chip, true);
--
--	/* power down again for link-controlled chips */
--	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL) &&
--	    !hda->need_i915_power)
--		snd_hdac_display_power(bus, false);
--
-+	__azx_runtime_resume(chip);
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 
- 	trace_azx_resume(chip);
-@@ -1045,21 +1067,14 @@ static int azx_thaw_noirq(struct device *dev)
- }
- #endif /* CONFIG_PM_SLEEP */
- 
--#ifdef CONFIG_PM
- static int azx_runtime_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	struct hda_intel *hda;
- 
--	if (!card)
-+	if (!azx_is_pm_ready(card))
- 		return 0;
--
- 	chip = card->private_data;
--	hda = container_of(chip, struct hda_intel, chip);
--	if (chip->disabled || hda->init_failed)
--		return 0;
--
- 	if (!azx_has_pm_runtime(chip))
- 		return 0;
- 
-@@ -1067,13 +1082,7 @@ static int azx_runtime_suspend(struct device *dev)
- 	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
- 		  STATESTS_INT_MASK);
- 
--	azx_stop_chip(chip);
--	azx_enter_link_reset(chip);
--	azx_clear_irq_pending(chip);
--	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
--		&& hda->need_i915_power)
--		snd_hdac_display_power(azx_bus(chip), false);
--
-+	__azx_runtime_suspend(chip);
- 	trace_azx_runtime_suspend(chip);
- 	return 0;
- }
-@@ -1082,51 +1091,18 @@ static int azx_runtime_resume(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	struct hda_intel *hda;
--	struct hdac_bus *bus;
--	struct hda_codec *codec;
--	int status;
- 
--	if (!card)
-+	if (!azx_is_pm_ready(card))
- 		return 0;
--
- 	chip = card->private_data;
--	hda = container_of(chip, struct hda_intel, chip);
--	bus = azx_bus(chip);
--	if (chip->disabled || hda->init_failed)
--		return 0;
--
- 	if (!azx_has_pm_runtime(chip))
- 		return 0;
--
--	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
--		snd_hdac_display_power(bus, true);
--		if (hda->need_i915_power)
--			snd_hdac_i915_set_bclk(bus);
--	}
--
--	/* Read STATESTS before controller reset */
--	status = azx_readw(chip, STATESTS);
--
--	azx_init_pci(chip);
--	hda_intel_init_chip(chip, true);
--
--	if (status) {
--		list_for_each_codec(codec, &chip->bus)
--			if (status & (1 << codec->addr))
--				schedule_delayed_work(&codec->jackpoll_work,
--						      codec->jackpoll_interval);
--	}
-+	__azx_runtime_resume(chip);
- 
- 	/* disable controller Wake Up event*/
- 	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
- 			~STATESTS_INT_MASK);
- 
--	/* power down again for link-controlled chips */
--	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL) &&
--	    !hda->need_i915_power)
--		snd_hdac_display_power(bus, false);
--
- 	trace_azx_runtime_resume(chip);
- 	return 0;
- }
-@@ -1167,6 +1143,8 @@ static const struct dev_pm_ops azx_pm = {
- 
- #define AZX_PM_OPS	&azx_pm
- #else
-+#define azx_add_card_list(chip) /* NOP */
-+#define azx_del_card_list(chip) /* NOP */
- #define AZX_PM_OPS	NULL
- #endif /* CONFIG_PM */
- 
 -- 
 2.19.2
