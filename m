@@ -1,17 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk
- for the Prowise PT301 tablet
-Date: Mon, 10 Dec 2018 08:35:01 -0600
-Message-ID: <d79e64b3-72bc-9ae6-7ad5-5b50d7ab3585@linux.intel.com>
-References: <20181208130114.6612-1-hdegoede@redhat.com>
+Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: fix
+ the audio jack button remapping
+Date: Mon, 10 Dec 2018 08:41:23 -0600
+Message-ID: <c11cb754-b01f-3e53-f07f-7fd186b45bdf@linux.intel.com>
+References: <20181207090552.105205-1-zhuohao@chromium.org>
+ <90b46425-5dbd-2ba7-d57d-270d0ab68632@linux.intel.com>
+ <CABD5ybm1E4=XQRt0zhviLzgXvUmo+C06AHr4wnXHF2QYbF=d8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 14AA6267AF7
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:35:03 +0100 (CET)
-In-Reply-To: <20181208130114.6612-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D4DCF267AF4
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:41:26 +0100 (CET)
+In-Reply-To: <CABD5ybm1E4=XQRt0zhviLzgXvUmo+C06AHr4wnXHF2QYbF=d8Q@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,54 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Zhuohao Lee <zhuohao@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Max Chang <changmax@chromium.org>, Naveen M <naveen.m@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
-On 12/8/18 7:01 AM, Hans de Goede wrote:
-> Add a quirk for the Prowise PT301 tablet, this BYTCR tablet has no CHAN
-> package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
-> is the default for BYTCR devices.
->
-> Also it uses IN1 for its MIC and JD2 for jack-detect, rather then the
-> default IN3 and JD1.
-
-Looks like someone was trying hard to avoid using defaults...Oh well.
-
-Both patch 1 and 2
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-
->
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
->
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 8587bd3d1cc1..6df902e3a380 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -674,6 +674,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_SSP0_AIF2 |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{
-> +		/* Prowise PT301 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Prowise"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "PT301"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-> +					BYT_RT5640_JD_SRC_JD2_IN4N |
-> +					BYT_RT5640_OVCD_TH_2000UA |
-> +					BYT_RT5640_OVCD_SF_0P75 |
-> +					BYT_RT5640_DIFF_MIC |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{
->   		.matches = {
->   			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
+Ck9uIDEyLzkvMTggMTA6MjkgUE0sIFpodW9oYW8gTGVlIHdyb3RlOgo+IFRoYW5rcyBQaWVycmUt
+TG91aXMuCj4gSSBzYXcgYSBwYXRjaCBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNo
+LzEwNDkzMTM1LyB3aGljaCAKPiBjaGFuZ2VkIHRoZSBLRVlfTUVESUEgdG8gS0VZX1BMQVlQQVVT
+RSwgd2lsbCB5b3UgbWVyZ2UgdGhhdCBwYXRjaD8KPiBDb21iaW5lZCB3aXRoIHRoaXMgcGF0Y2gs
+IHRoZSBrZXkgcmVtYXBwaW5nIHNob3VsZCBiZSBjb25zaXN0ZW50LgoKSSBkb24ndCBoYXZlIG1l
+cmdlIHN1cGVycG93ZXJzIGhlcmUsIGFuZCBJIGRvbid0IHdhbnQgdG8gc3VibWl0IApzb21ldGhp
+bmcgSSBjYW5ub3QgdGVzdC4KCkkgd2FzIG9ubHkgZmxhZ2dpbmcgdGhhdCB0aGUgYmVoYXZpb3Ig
+aXMgbm90IGFsaWduZWQgYWNyb3NzIHBhdGNoZXMsIGFuZCAKc29tZSBvZiB0aGVzZSBwYXRjaGVz
+IHdlcmUgbmV2ZXIgbWVyZ2VkIChzb21lIHNpbmNlIEFwcmlsKS4gWW9uZyBaaGkgYW5kIApOYXZl
+ZW4gTSwgY2FuIHlvdSBoZWxwIHJlc3VibWl0IGEgcGF0Y2hzZXQgdGhhdCBhbGlnbnMgdGhlIGhh
+bmRsaW5nIG9mIApidXR0b25zIGZvciBEQTcyMTktYmFzZWQgZGV2aWNlcz8KClRoYW5rcyEKCgo+
+Cj4gSSdsbCBzdWJtaXQgYSBwYXRjaCB0byByZW1vdmUgdGhlIENoYW5nZS1JZC4KPgo+IE9uIFNh
+dCwgRGVjIDgsIDIwMTggYXQgMTo1NyBBTSBQaWVycmUtTG91aXMgQm9zc2FydCAKPiA8cGllcnJl
+LWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tIAo+IDxtYWlsdG86cGllcnJlLWxvdWlzLmJv
+c3NhcnRAbGludXguaW50ZWwuY29tPj4gd3JvdGU6Cj4KPgo+ICAgICBPbiAxMi83LzE4IDM6MDUg
+QU0sIFpodW9oYW8gTGVlIHdyb3RlOgo+ICAgICA+wqAgRnJvbSB0aGUgZGE3MjE5IHNwZWMsIHRo
+ZSBidXR0b24gQSwgQiwgQyBhbmQgRCBhcmUgcmVtYXBwZWQgdG8KPiAgICAgPiAwLCAxLCAyIGFu
+ZCAzIHJlc3BlY3RpdmVseSB3aGVyZSBidXR0b24gQSBpcyBLRVlfUExBWVBBVVNFLAo+ICAgICA+
+IEIgaXMgS0VZX1ZPTFVNRVVQLCBDIGlzIEtFWV9WT0xVTUVET1dOIGFuZCBEIGlzIEtFWV9WT0lD
+RUNPTU1BTkQKPgo+ICAgICBPaywgYnV0IGNvdWxkIGZpeCBhbGwgZGE3MjE5LWJhc2VkIG1hY2hp
+bmUgZHJpdmVycyB0aGVuLCB0aGUgbWFwcGluZ3MKPiAgICAgYXJlIGNvbXBsZXRlbHkgaW5jb25z
+aXN0ZW50Ogo+Cj4gICAgIGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3Nl
+dF9rZXkoamFjay0+amFjaywKPiAgICAgU05EX0pBQ0tfQlROXzAsCj4gICAgIEtFWV9NRURJQSk7
+Cj4gICAgIGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3NldF9rZXkoamFj
+ay0+amFjaywKPiAgICAgU05EX0pBQ0tfQlROXzEsCj4gICAgIEtFWV9WT0xVTUVVUCk7Cj4gICAg
+IGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFj
+aywKPiAgICAgU05EX0pBQ0tfQlROXzIsCj4gICAgIEtFWV9WT0xVTUVET1dOKTsKPiAgICAga2Js
+X2RhNzIxOV9tYXg5ODM1N2EuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+
+ICAgICBTTkRfSkFDS19CVE5fMywKPiAgICAgS0VZX1ZPSUNFQ09NTUFORCk7Cj4gICAgIGtibF9k
+YTcyMTlfbWF4OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAg
+ICBTTkRfSkFDS19CVE5fMCwKPiAgICAgS0VZX1BMQVlQQVVTRSk7Cj4gICAgIGtibF9kYTcyMTlf
+bWF4OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAgICBTTkRf
+SkFDS19CVE5fMSwKPiAgICAgS0VZX1ZPSUNFQ09NTUFORCk7Cj4gICAgIGtibF9kYTcyMTlfbWF4
+OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAgICBTTkRfSkFD
+S19CVE5fMiwKPiAgICAgS0VZX1ZPTFVNRVVQKTsKPiAgICAga2JsX2RhNzIxOV9tYXg5ODkyNy5j
+OsKgwqDCoCBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssCj4gICAgIFNORF9KQUNLX0JUTl8z
+LAo+ICAgICBLRVlfVk9MVU1FRE9XTik7Cj4KPiAgICAgVGhhbmtzIQo+Cj4gICAgID4KPiAgICAg
+PiBDaGFuZ2UtSWQ6IEk2N2Y5MjlmMjI2ODgzYmQyODljYjdiZWIwYTdiMjNmNDBlNzEyMWUyCj4g
+ICAgIFlvdSB3YW50IHRvIHJlbW92ZSB0aG9zZSBDaGFuZ2UtSWRzIGZvciB1cHN0cmVhbS4KPiAg
+ICAgPiBTaWduZWQtb2ZmLWJ5OiBaaHVvaGFvIExlZSA8emh1b2hhb0BjaHJvbWl1bS5vcmcKPiAg
+ICAgPG1haWx0bzp6aHVvaGFvQGNocm9taXVtLm9yZz4+Cj4gICAgID4gU2lnbmVkLW9mZi1ieTog
+TWF4IENoYW5nwqAgPGNoYW5nbWF4QGNocm9taXVtLm9yZwo+ICAgICA8bWFpbHRvOmNoYW5nbWF4
+QGNocm9taXVtLm9yZz4+Cj4gICAgID4gLS0tCj4gICAgID7CoCDCoHNvdW5kL3NvYy9pbnRlbC9i
+b2FyZHMva2JsX2RhNzIxOV9tYXg5ODkyNy5jIHwgNiArKystLS0KPiAgICAgPsKgIMKgMSBmaWxl
+IGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiAgICAgPgo+ICAgICA+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTg5Mjcu
+Ywo+ICAgICBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMva2JsX2RhNzIxOV9tYXg5ODkyNy5jCj4g
+ICAgID4gaW5kZXggM2ZhMWMzY2E2ZDM3Li5kMzUzMWYwZWIzNTcgMTAwNjQ0Cj4gICAgID4gLS0t
+IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4OTI3LmMKPiAgICAgPiAr
+KysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTg5MjcuYwo+ICAgICA+
+IEBAIC0yNjIsOSArMjYyLDkgQEAgc3RhdGljIGludCBrYWJ5bGFrZV9kYTcyMTlfY29kZWNfaW5p
+dChzdHJ1Y3QKPiAgICAgc25kX3NvY19wY21fcnVudGltZSAqcnRkKQo+ICAgICA+Cj4gICAgID7C
+oCDCoCDCoCDCoGphY2sgPSAmY3R4LT5rYWJ5bGFrZV9oZWFkc2V0Owo+ICAgICA+wqAgwqAgwqAg
+wqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8wLCBLRVlfUExBWVBB
+VVNFKTsKPiAgICAgPiAtwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9K
+QUNLX0JUTl8xLAo+ICAgICBLRVlfVk9JQ0VDT01NQU5EKTsKPiAgICAgPiAtwqAgwqAgwqBzbmRf
+amFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8yLCBLRVlfVk9MVU1FVVApOwo+
+ICAgICA+IC3CoCDCoCDCoHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFjaywgU05EX0pBQ0tfQlRO
+XzMsIEtFWV9WT0xVTUVET1dOKTsKPiAgICAgPiArwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGph
+Y2stPmphY2ssIFNORF9KQUNLX0JUTl8xLCBLRVlfVk9MVU1FVVApOwo+ICAgICA+ICvCoCDCoCDC
+oHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFjaywgU05EX0pBQ0tfQlROXzIsIEtFWV9WT0xVTUVE
+T1dOKTsKPiAgICAgPiArwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9K
+QUNLX0JUTl8zLAo+ICAgICBLRVlfVk9JQ0VDT01NQU5EKTsKPiAgICAgPgo+ICAgICA+wqAgwqAg
+wqAgwqBkYTcyMTlfYWFkX2phY2tfZGV0KGNvbXBvbmVudCwgJmN0eC0+a2FieWxha2VfaGVhZHNl
+dCk7Cj4gICAgID4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
