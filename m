@@ -1,98 +1,55 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: fix
- the audio jack button remapping
-Date: Mon, 10 Dec 2018 08:41:23 -0600
-Message-ID: <c11cb754-b01f-3e53-f07f-7fd186b45bdf@linux.intel.com>
-References: <20181207090552.105205-1-zhuohao@chromium.org>
- <90b46425-5dbd-2ba7-d57d-270d0ab68632@linux.intel.com>
- <CABD5ybm1E4=XQRt0zhviLzgXvUmo+C06AHr4wnXHF2QYbF=d8Q@mail.gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: kbl_da7219_max98927: fix the
+ audio jack button remapping
+Date: Mon, 10 Dec 2018 08:44:01 -0600
+Message-ID: <83955ba8-93f3-26ec-bba6-adf09ba839da@linux.intel.com>
+References: <20181210043213.243881-1-zhuohao@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D4DCF267AF4
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:41:26 +0100 (CET)
-In-Reply-To: <CABD5ybm1E4=XQRt0zhviLzgXvUmo+C06AHr4wnXHF2QYbF=d8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181210043213.243881-1-zhuohao@chromium.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Zhuohao Lee <zhuohao@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Max Chang <changmax@chromium.org>, Naveen M <naveen.m@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>, yong.zhi@intel.com
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Dan Carpenter <dan.carpenter@oracle.com>, Max Chang <changmax@chromium.org>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzkvMTggMTA6MjkgUE0sIFpodW9oYW8gTGVlIHdyb3RlOgo+IFRoYW5rcyBQaWVycmUt
-TG91aXMuCj4gSSBzYXcgYSBwYXRjaCBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNo
-LzEwNDkzMTM1LyB3aGljaCAKPiBjaGFuZ2VkIHRoZSBLRVlfTUVESUEgdG8gS0VZX1BMQVlQQVVT
-RSwgd2lsbCB5b3UgbWVyZ2UgdGhhdCBwYXRjaD8KPiBDb21iaW5lZCB3aXRoIHRoaXMgcGF0Y2gs
-IHRoZSBrZXkgcmVtYXBwaW5nIHNob3VsZCBiZSBjb25zaXN0ZW50LgoKSSBkb24ndCBoYXZlIG1l
-cmdlIHN1cGVycG93ZXJzIGhlcmUsIGFuZCBJIGRvbid0IHdhbnQgdG8gc3VibWl0IApzb21ldGhp
-bmcgSSBjYW5ub3QgdGVzdC4KCkkgd2FzIG9ubHkgZmxhZ2dpbmcgdGhhdCB0aGUgYmVoYXZpb3Ig
-aXMgbm90IGFsaWduZWQgYWNyb3NzIHBhdGNoZXMsIGFuZCAKc29tZSBvZiB0aGVzZSBwYXRjaGVz
-IHdlcmUgbmV2ZXIgbWVyZ2VkIChzb21lIHNpbmNlIEFwcmlsKS4gWW9uZyBaaGkgYW5kIApOYXZl
-ZW4gTSwgY2FuIHlvdSBoZWxwIHJlc3VibWl0IGEgcGF0Y2hzZXQgdGhhdCBhbGlnbnMgdGhlIGhh
-bmRsaW5nIG9mIApidXR0b25zIGZvciBEQTcyMTktYmFzZWQgZGV2aWNlcz8KClRoYW5rcyEKCgo+
-Cj4gSSdsbCBzdWJtaXQgYSBwYXRjaCB0byByZW1vdmUgdGhlIENoYW5nZS1JZC4KPgo+IE9uIFNh
-dCwgRGVjIDgsIDIwMTggYXQgMTo1NyBBTSBQaWVycmUtTG91aXMgQm9zc2FydCAKPiA8cGllcnJl
-LWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tIAo+IDxtYWlsdG86cGllcnJlLWxvdWlzLmJv
-c3NhcnRAbGludXguaW50ZWwuY29tPj4gd3JvdGU6Cj4KPgo+ICAgICBPbiAxMi83LzE4IDM6MDUg
-QU0sIFpodW9oYW8gTGVlIHdyb3RlOgo+ICAgICA+wqAgRnJvbSB0aGUgZGE3MjE5IHNwZWMsIHRo
-ZSBidXR0b24gQSwgQiwgQyBhbmQgRCBhcmUgcmVtYXBwZWQgdG8KPiAgICAgPiAwLCAxLCAyIGFu
-ZCAzIHJlc3BlY3RpdmVseSB3aGVyZSBidXR0b24gQSBpcyBLRVlfUExBWVBBVVNFLAo+ICAgICA+
-IEIgaXMgS0VZX1ZPTFVNRVVQLCBDIGlzIEtFWV9WT0xVTUVET1dOIGFuZCBEIGlzIEtFWV9WT0lD
-RUNPTU1BTkQKPgo+ICAgICBPaywgYnV0IGNvdWxkIGZpeCBhbGwgZGE3MjE5LWJhc2VkIG1hY2hp
-bmUgZHJpdmVycyB0aGVuLCB0aGUgbWFwcGluZ3MKPiAgICAgYXJlIGNvbXBsZXRlbHkgaW5jb25z
-aXN0ZW50Ogo+Cj4gICAgIGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3Nl
-dF9rZXkoamFjay0+amFjaywKPiAgICAgU05EX0pBQ0tfQlROXzAsCj4gICAgIEtFWV9NRURJQSk7
-Cj4gICAgIGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3NldF9rZXkoamFj
-ay0+amFjaywKPiAgICAgU05EX0pBQ0tfQlROXzEsCj4gICAgIEtFWV9WT0xVTUVVUCk7Cj4gICAg
-IGtibF9kYTcyMTlfbWF4OTgzNTdhLmM6wqDCoMKgIHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFj
-aywKPiAgICAgU05EX0pBQ0tfQlROXzIsCj4gICAgIEtFWV9WT0xVTUVET1dOKTsKPiAgICAga2Js
-X2RhNzIxOV9tYXg5ODM1N2EuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+
-ICAgICBTTkRfSkFDS19CVE5fMywKPiAgICAgS0VZX1ZPSUNFQ09NTUFORCk7Cj4gICAgIGtibF9k
-YTcyMTlfbWF4OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAg
-ICBTTkRfSkFDS19CVE5fMCwKPiAgICAgS0VZX1BMQVlQQVVTRSk7Cj4gICAgIGtibF9kYTcyMTlf
-bWF4OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAgICBTTkRf
-SkFDS19CVE5fMSwKPiAgICAgS0VZX1ZPSUNFQ09NTUFORCk7Cj4gICAgIGtibF9kYTcyMTlfbWF4
-OTg5MjcuYzrCoMKgwqAgc25kX2phY2tfc2V0X2tleShqYWNrLT5qYWNrLAo+ICAgICBTTkRfSkFD
-S19CVE5fMiwKPiAgICAgS0VZX1ZPTFVNRVVQKTsKPiAgICAga2JsX2RhNzIxOV9tYXg5ODkyNy5j
-OsKgwqDCoCBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssCj4gICAgIFNORF9KQUNLX0JUTl8z
-LAo+ICAgICBLRVlfVk9MVU1FRE9XTik7Cj4KPiAgICAgVGhhbmtzIQo+Cj4gICAgID4KPiAgICAg
-PiBDaGFuZ2UtSWQ6IEk2N2Y5MjlmMjI2ODgzYmQyODljYjdiZWIwYTdiMjNmNDBlNzEyMWUyCj4g
-ICAgIFlvdSB3YW50IHRvIHJlbW92ZSB0aG9zZSBDaGFuZ2UtSWRzIGZvciB1cHN0cmVhbS4KPiAg
-ICAgPiBTaWduZWQtb2ZmLWJ5OiBaaHVvaGFvIExlZSA8emh1b2hhb0BjaHJvbWl1bS5vcmcKPiAg
-ICAgPG1haWx0bzp6aHVvaGFvQGNocm9taXVtLm9yZz4+Cj4gICAgID4gU2lnbmVkLW9mZi1ieTog
-TWF4IENoYW5nwqAgPGNoYW5nbWF4QGNocm9taXVtLm9yZwo+ICAgICA8bWFpbHRvOmNoYW5nbWF4
-QGNocm9taXVtLm9yZz4+Cj4gICAgID4gLS0tCj4gICAgID7CoCDCoHNvdW5kL3NvYy9pbnRlbC9i
-b2FyZHMva2JsX2RhNzIxOV9tYXg5ODkyNy5jIHwgNiArKystLS0KPiAgICAgPsKgIMKgMSBmaWxl
-IGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiAgICAgPgo+ICAgICA+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTg5Mjcu
-Ywo+ICAgICBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMva2JsX2RhNzIxOV9tYXg5ODkyNy5jCj4g
-ICAgID4gaW5kZXggM2ZhMWMzY2E2ZDM3Li5kMzUzMWYwZWIzNTcgMTAwNjQ0Cj4gICAgID4gLS0t
-IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4OTI3LmMKPiAgICAgPiAr
-KysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTg5MjcuYwo+ICAgICA+
-IEBAIC0yNjIsOSArMjYyLDkgQEAgc3RhdGljIGludCBrYWJ5bGFrZV9kYTcyMTlfY29kZWNfaW5p
-dChzdHJ1Y3QKPiAgICAgc25kX3NvY19wY21fcnVudGltZSAqcnRkKQo+ICAgICA+Cj4gICAgID7C
-oCDCoCDCoCDCoGphY2sgPSAmY3R4LT5rYWJ5bGFrZV9oZWFkc2V0Owo+ICAgICA+wqAgwqAgwqAg
-wqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8wLCBLRVlfUExBWVBB
-VVNFKTsKPiAgICAgPiAtwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9K
-QUNLX0JUTl8xLAo+ICAgICBLRVlfVk9JQ0VDT01NQU5EKTsKPiAgICAgPiAtwqAgwqAgwqBzbmRf
-amFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9KQUNLX0JUTl8yLCBLRVlfVk9MVU1FVVApOwo+
-ICAgICA+IC3CoCDCoCDCoHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFjaywgU05EX0pBQ0tfQlRO
-XzMsIEtFWV9WT0xVTUVET1dOKTsKPiAgICAgPiArwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGph
-Y2stPmphY2ssIFNORF9KQUNLX0JUTl8xLCBLRVlfVk9MVU1FVVApOwo+ICAgICA+ICvCoCDCoCDC
-oHNuZF9qYWNrX3NldF9rZXkoamFjay0+amFjaywgU05EX0pBQ0tfQlROXzIsIEtFWV9WT0xVTUVE
-T1dOKTsKPiAgICAgPiArwqAgwqAgwqBzbmRfamFja19zZXRfa2V5KGphY2stPmphY2ssIFNORF9K
-QUNLX0JUTl8zLAo+ICAgICBLRVlfVk9JQ0VDT01NQU5EKTsKPiAgICAgPgo+ICAgICA+wqAgwqAg
-wqAgwqBkYTcyMTlfYWFkX2phY2tfZGV0KGNvbXBvbmVudCwgJmN0eC0+a2FieWxha2VfaGVhZHNl
-dCk7Cj4gICAgID4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+
+On 12/9/18 10:32 PM, Zhuohao Lee wrote:
+>  From the da7219 spec, the button A, B, C and D are remapped to
+> 0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
+> B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND.
+>
+> Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
+> Signed-off-by: Max Chang  <changmax@chromium.org>
+
+I guess this is the v2
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+As discussed in the v1 thread, we'll need to align other DA7219-based 
+devices to use the same mapping.
+
+
+> ---
+>   sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> index 3fa1c3ca6d37..d3531f0eb357 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> @@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+>   
+>   	jack = &ctx->kabylake_headset;
+>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+>   
+>   	da7219_aad_jack_det(component, &ctx->kabylake_headset);
+>   
