@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/7] ALSA: hda: Refactor display power
- management
-Date: Mon, 10 Dec 2018 14:52:05 -0600
-Message-ID: <1ff2c83b-fb5e-2972-77d0-e32c247e9912@linux.intel.com>
-References: <20181209093318.27829-1-tiwai@suse.de>
- <20181209093318.27829-3-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: hda/ca0132 - make pci_iounmap() call
+	conditional
+Date: Mon, 10 Dec 2018 21:54:25 +0100
+Message-ID: <20181210205445.2913413-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id EE974267AFE
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 21:52:07 +0100 (CET)
-In-Reply-To: <20181209093318.27829-3-tiwai@suse.de>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id C699C267AFE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 21:54:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,36 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+When building without CONFIG_PCI, we can (depending on the architecture)
+get a link failure:
 
-On 12/9/18 3:33 AM, Takashi Iwai wrote:
-> The current HD-audio code manages the DRM audio power via too complex
-> redirections, and this seems even still unbalanced in a corner case as
-> Intel DRM CI has been intermittently reporting.  This patch is a big
-> surgery for addressing the complexity and the possible unbalance.
->
-> Basically the patch changes the display PM in the following ways:
->
-> - Both HD-audio controller and codec drivers call a single helper,
->    snd_hdac_display_power().  (Formerly, the display power control from
->    a codec was done indirectly via link_power bus ops.)
->
-> - snd_hdac_display_power() receives the codec address index.  For
->    turning on/off from the controller, pass HDA_CODEC_IDX_CONTROLLER.
+ERROR: "pci_iounmap" [sound/pci/hda/snd-hda-codec-ca0132.ko] undefined!
 
-The need for this virtual index==16 isn't fully clear to me, especially 
-if you use the bitfields instead of reference counts.
+Adding a compile-time check for PCI gets it to work correctly on
+32-bit ARM.
 
-Isn't there a risk of the controller setting the bit16 to zero, but you 
-still have bit4 on (assuming the idx is 4). If you use this virtual 
-index, it should override the actual physical bits when set/cleared.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/pci/hda/patch_ca0132.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Or is this meant to actually implement a preemption mechanism, where the 
-display power remains on for as long as the controller wishes, 
-regardless of what the patch_hdmi and hdac_hdmi code requests?
-
-Also don't we already have the HDMI codec address already after the 
-probe, so couldn't we provide the address directly?
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index c40cb6336017..e5bdbc245682 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -8451,7 +8451,7 @@ static void ca0132_free(struct hda_codec *codec)
+ 	ca0132_exit_chip(codec);
+ 
+ 	snd_hda_power_down(codec);
+-	if (spec->mem_base)
++	if (IS_ENABLED(CONFIG_PCI) && spec->mem_base)
+ 		pci_iounmap(codec->bus->pci, spec->mem_base);
+ 	kfree(spec->spec_init_verbs);
+ 	kfree(codec->spec);
+-- 
+2.20.0
