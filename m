@@ -1,17 +1,15 @@
 From: Cosmin Samoila <cosmin.samoila@nxp.com>
-Subject: [RFC 1/2] ASoC: micfil: Add bindings for MICFIL DAI
-Date: Mon, 10 Dec 2018 09:21:14 +0000
-Message-ID: <1544433661-32496-2-git-send-email-cosmin.samoila@nxp.com>
-References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
+Subject: [RFC 0/2] Add MICFIL DAI support
+Date: Mon, 10 Dec 2018 09:21:13 +0000
+Message-ID: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00070.outbound.protection.outlook.com [40.107.0.70])
- by alsa0.perex.cz (Postfix) with ESMTP id ED2F5267AD5
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 10:21:16 +0100 (CET)
-In-Reply-To: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
+ (mail-eopbgr00069.outbound.protection.outlook.com [40.107.0.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EF4C267ACB
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 10:21:14 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,57 +24,38 @@ To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <al
 Cc: Cosmin Samoila <cosmin.samoila@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Document the bindings for MICFIL DAI.
+PDM is a popular way to deliver audio from microphones to the processor
+in several applications, such as mobile telephones. However, current
+digital-audio systems use multibit audio signal (also known as multibit
+PCM) to represent the signal. For this purpose a set of FIR, CIC or/and
+Half Band filters are usually implemented on DSPs or software. This block
+implements the required digital interface to provide a 16-bit audio signal
+from a PDM microphone bitstream in a configurable output sampling rate.
+The implementation of this digital interface is based on the application
+of digital signal processing techniques in hardware. The PDM Microphone
+Interface architecture was designed to gate saving and minimal power
+consumption. It implements a bunch of filters to transform a 1-bit PDM
+bitstream to a 16-bit PCM signal in the audio band. To avoid aliasing
+frequencies in passband, the overall filter has 80 dB stopband attenuation
+and passband ripple less than 0.2dB.
+The whole module is implemented to work in a multichannel mode. All
+channels have the same configuration but each input channel could be turned
+on/off independently.
 
-Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
----
- .../devicetree/bindings/sound/fsl,micfil.txt       | 38 ++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+
+Cosmin-Gabriel Samoila (2):
+  ASoC: micfil: Add bindings for MICFIL DAI
+  ASoC: Add MICFIL SoC Digital Audio Interface driver.
+
+ .../devicetree/bindings/sound/fsl,micfil.txt       |   38 +
+ sound/soc/fsl/Kconfig                              |    9 +
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/fsl_micfil.c                         | 2451 ++++++++++++++++++++
+ sound/soc/fsl/fsl_micfil.h                         |  317 +++
+ 5 files changed, 2817 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/fsl,micfil.txt
+ create mode 100644 sound/soc/fsl/fsl_micfil.c
+ create mode 100644 sound/soc/fsl/fsl_micfil.h
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.txt b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-new file mode 100644
-index 0000000..2aa4526
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-@@ -0,0 +1,38 @@
-+NXP MICFIL Digital Audio Interface (MICFIL).
-+
-+The MICFIL digital interface provides a 16-bit audio signal from a PDM
-+microphone bitstream in a configurable output sampling rate.
-+
-+Required properties:
-+
-+  - compatible		: Compatible list, contains "fsl,imx8mm-micfil"
-+
-+  - reg			: Offset and length of the register set for the device.
-+
-+  - interrupts		: Contains the micfil interrupts.
-+
-+  - clocks		: Must contain an entry for each entry in clock-names.
-+
-+  - clock-names		: Must include the "ipg_clk" for register access and
-+			  "ipg_clk_app" for internal micfil clock.
-+
-+  - dmas		: Generic dma devicetree binding as described in
-+			  Documentation/devicetree/bindings/dma/dma.txt.
-+
-+  - dma-names		: One "rx" dma must be configured.
-+
-+Example:
-+micfil: micfil@30080000 {
-+	compatible = "fsl,imx8mm-micfil";
-+	reg = <0x0 0x30080000 0x0 0x10000>;
-+	interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+	clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-+		 <&clk IMX8MM_CLK_PDM_ROOT>;
-+	clock-names = "ipg_clk", "ipg_clk_app";
-+	dmas = <&sdma2 24 26 0x80000000>;
-+	dma-names = "rx";
-+	status = "disabled";
-+};
 -- 
 2.7.4
