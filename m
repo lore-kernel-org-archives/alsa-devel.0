@@ -1,21 +1,19 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk
- for the Prowise PT301 tablet
-Date: Mon, 10 Dec 2018 15:54:13 +0100
-Message-ID: <5c9fb1aa-f9a4-e87a-6068-01988d5840ea@redhat.com>
-References: <20181208130114.6612-1-hdegoede@redhat.com>
- <d79e64b3-72bc-9ae6-7ad5-5b50d7ab3585@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ALSA: HD-Audio: SKL+: abort probe if
+ DSP is present and Skylake driver selected
+Date: Mon, 10 Dec 2018 08:31:08 -0600
+Message-ID: <8fdcc781-ff56-f28e-aa1a-7df6e3694836@linux.intel.com>
+References: <20181208000039.23384-1-pierre-louis.bossart@linux.intel.com>
+ <20181208000039.23384-2-pierre-louis.bossart@linux.intel.com>
+ <s5hin04fo4k.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F12B267AFE
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:54:15 +0100 (CET)
-Received: by mail-wr1-f66.google.com with SMTP id b14so10760559wru.12
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 06:54:15 -0800 (PST)
-In-Reply-To: <d79e64b3-72bc-9ae6-7ad5-5b50d7ab3585@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CC92267AFE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:55:34 +0100 (CET)
+In-Reply-To: <s5hin04fo4k.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,56 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, Chris Chiu <chiu@endlessm.com>, alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMC0xMi0xOCAxNTozNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
-T24gMTIvOC8xOCA3OjAxIEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBBZGQgYSBxdWlyayBm
-b3IgdGhlIFByb3dpc2UgUFQzMDEgdGFibGV0LCB0aGlzIEJZVENSIHRhYmxldCBoYXMgbm8gQ0hB
-Tgo+PiBwYWNrYWdlIGluIGl0cyBBQ1BJIHRhYmxlcyBhbmQgdXNlcyBTU1AwLUFJRjEgcmF0aGVy
-IHRoZW4gU1NQMC1BSUYyIHdoaWNoCj4+IGlzIHRoZSBkZWZhdWx0IGZvciBCWVRDUiBkZXZpY2Vz
-Lgo+Pgo+PiBBbHNvIGl0IHVzZXMgSU4xIGZvciBpdHMgTUlDIGFuZCBKRDIgZm9yIGphY2stZGV0
-ZWN0LCByYXRoZXIgdGhlbiB0aGUKPj4gZGVmYXVsdCBJTjMgYW5kIEpEMS4KPiAKPiBMb29rcyBs
-aWtlIHNvbWVvbmUgd2FzIHRyeWluZyBoYXJkIHRvIGF2b2lkIHVzaW5nIGRlZmF1bHRzLi4uT2gg
-d2VsbC4KCkZXSVc6CgpXZWxsIGluIHByYWN0aWNlIG1vcmUgQllUQ1IgZGV2aWNlcyBzZWVtIHRv
-IHVzZSBTU1AwLUFJRjEgcmF0aGVyIHRoZW4KU1NQMC1BSUYyLCBidXQgSSBkb24ndCB3YW50IHRv
-IGNoYW5nZSB0aGUgZHJpdmVyIGRlZmF1bHRzIGF0IHRoaXMgcG9pbnQKYW5kIG1vc3QgQllUQ1Ig
-ZGV2aWNlcyBkbyBoYXZlIGEgQ0hBTiBwYWNrYWdlIGluIHRoZWlyIEFDUEkgdGFibGVzLgoKQXMg
-Zm9yIHVzaW5nIElOMStKRDIgcmF0aGVyIHRoZW4gSU4zK0pEMSAod2hpY2ggc2VlbSB0byBiZSB0
-aGUgbW9zdAppZiBub3Qgb25seSB1c2VkIGNvbWJvcykgaW4gbXkgZXhwZXJpZW5jZSB0aGVyZSBp
-cyBwcmV0dHkgbXVjaCBhIDUwLzUwCnNwbGl0IGluIHdoaWNoIGRldmljZXMgdXNlcyB3aGljaCBj
-b21iby4KCkkndmUgYSB0YWJsZSB3aXRoIHRoZSBjb3JyZWN0IHNldHRpbmdzIGZvciBtb3N0IG9m
-IHRoZSBkZXZpY2Ugd2hpY2ggSSBoYXZlCmhlcmU6IGh0dHBzOi8vZ2l0aHViLmNvbS9qd3JkZWdv
-ZWRlL3N1bnhpLWZlZG9yYS1zY3JpcHRzL2Jsb2IvbWFzdGVyL3g4Ni1jb2RlYy1pbmZvCgo+IEJv
-dGggcGF0Y2ggMSBhbmQgMgo+IAo+IEFja2VkLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGll
-cnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgoKVGhhbmtzLgoKUmVnYXJkcywKCkhh
-bnMKCgo+PiBTaWduZWQtb2ZmLWJ5OiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQuY29t
-Pgo+PiAtLS0KPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYyB8IDE0
-ICsrKysrKysrKysrKysrCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspCj4+
-Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIv
-c291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCA4NTg3YmQzZDFj
-YzEuLjZkZjkwMmUzYTM4MCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9i
-eXRjcl9ydDU2NDAuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0
-MC5jCj4+IEBAIC02NzQsNiArNjc0LDIwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3Rl
-bV9pZCBieXRfcnQ1NjQwX3F1aXJrX3RhYmxlW10gPSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX1NTUDBfQUlGMiB8Cj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX01DTEtfRU4pLAo+
-PiDCoMKgwqDCoMKgIH0sCj4+ICvCoMKgwqAgewo+PiArwqDCoMKgwqDCoMKgwqAgLyogUHJvd2lz
-ZSBQVDMwMSAqLwo+PiArwqDCoMKgwqDCoMKgwqAgLm1hdGNoZXMgPSB7Cj4+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIERNSV9NQVRDSChETUlfU1lTX1ZFTkRPUiwgIlByb3dpc2UiKSwKPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgRE1JX01BVENIKERNSV9QUk9EVUNUX05BTUUsICJQVDMwMSIp
-LAo+PiArwqDCoMKgwqDCoMKgwqAgfSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5kcml2ZXJfZGF0YSA9
-ICh2b2lkICopKEJZVF9SVDU2NDBfSU4xX01BUCB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0pEX1NSQ19KRDJfSU40TiB8Cj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX09WQ0RfVEhfMjAwMFVB
-IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBf
-T1ZDRF9TRl8wUDc1IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IEJZVF9SVDU2NDBfRElGRl9NSUMgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgQllUX1JUNTY0MF9TU1AwX0FJRjEgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgQllUX1JUNTY0MF9NQ0xLX0VOKSwKPj4gK8KgwqDCoCB9LAo+PiDC
-oMKgwqDCoMKgIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBETUlfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIlRFQ0xBU1Qi
-KSwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+On 12/8/18 1:56 AM, Takashi Iwai wrote:
+> On Sat, 08 Dec 2018 01:00:38 +0100,
+> Pierre-Louis Bossart wrote:
+>> Now that the SST/Skylake driver supports per platform selectors, we
+>> can add logic to automatically select the right driver.
+>>
+>> If the Skylake driver is selected, and the DSP is enable, the legacy
+>> HDaudio driver aborts the probe. This will result in a single driver
+>> probing and remove the need for modprobe blacklists.
+>>
+>> Follow-up patches will add a module parameter to bypass the logic if
+>> this automatic detection fails, or if the Skylake driver is unable to
+>> actually support the platform (firmware authentication, missing
+>> topology file, hardware issue, etc).
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/pci/hda/Kconfig          | 46 ++++++++++++++++++++++++++++++++++
+>>   sound/pci/hda/hda_controller.h |  2 +-
+>>   sound/pci/hda/hda_intel.c      | 34 +++++++++++++++++++------
+>>   sound/soc/intel/Kconfig        |  6 +++++
+>>   4 files changed, 80 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+>> index 4235907b7858..634b7fe6a936 100644
+>> --- a/sound/pci/hda/Kconfig
+>> +++ b/sound/pci/hda/Kconfig
+>> @@ -226,6 +226,52 @@ config SND_HDA_POWER_SAVE_DEFAULT
+>>   	  The default time-out value in seconds for HD-audio automatic
+>>   	  power-save mode.  0 means to disable the power-save mode.
+>>   
+>> +if SND_HDA_INTEL
+>> +
+>> +config SND_HDA_INTEL_DISABLE_SKL
+>> +	bool
+>> +	help
+>> +	  This option disables HD-audio legacy for
+>> +	  Skylake machines
+> I'm not sure whether we need the selection of this disablement for
+> each model.  Distros would choose these unlikely, and individual users
+> don't have to select multiple of them but only for their machine's
+> model.  So, in the end, the choice would be either yes or no.
+
+Ah yes, maybe I wasn't clear. This wasn't intended to be selected by the 
+user, but selected when when the SND_SOC_INTEL_KBL or SND_SOC_SOF_CNL 
+options are set. See the conditions below.
+
+The main idea what to only deal with the conflict resolution when we 
+indeed have a conflict. I also introduced this option on the 
+sound/pci/hda side so that SOF can use the same mechanisms, i.e. it's 
+the legacy driver doesn't need to know if the conflict happens with the 
+SST/Skylake or SOF driver.
+
+>> @@ -188,6 +188,12 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+>>   	select SND_SOC_TOPOLOGY
+>>   	select SND_SOC_INTEL_SST
+>>   	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
+>> +	select SND_HDA_INTEL_DISABLE_SKL if SND_SOC_INTEL_SKL
+>> +	select SND_HDA_INTEL_DISABLE_APL if SND_SOC_INTEL_APL
+>> +	select SND_HDA_INTEL_DISABLE_KBL if SND_SOC_INTEL_KBL
+>> +	select SND_HDA_INTEL_DISABLE_GLK if SND_SOC_INTEL_GLK
+>> +	select SND_HDA_INTEL_DISABLE_CNL if SND_SOC_INTEL_CNL
+>> +	select SND_HDA_INTEL_DISABLE_CFL if SND_SOC_INTEL_CFL
+>>   	select SND_SOC_ACPI_INTEL_MATCH
+>>   	help
+>>   	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+>> -- 
+>> 2.17.1
+>>
