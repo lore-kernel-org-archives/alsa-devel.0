@@ -1,126 +1,119 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/2] ALSA: HD-Audio: SKL+: abort probe if
- DSP is present and Skylake driver selected
-Date: Mon, 10 Dec 2018 10:12:04 -0600
-Message-ID: <b3beabcc-66ca-3454-c075-afd9451cc8a1@linux.intel.com>
-References: <20181208000039.23384-1-pierre-louis.bossart@linux.intel.com>
- <20181208000039.23384-2-pierre-louis.bossart@linux.intel.com>
- <s5hin04fo4k.wl-tiwai@suse.de>
- <8fdcc781-ff56-f28e-aa1a-7df6e3694836@linux.intel.com>
- <s5ho99tmnax.wl-tiwai@suse.de>
- <1fc06f8b-c03b-3912-dc97-16fdf51ddb7d@linux.intel.com>
- <s5hftv5mkpf.wl-tiwai@suse.de> <s5hefapmkml.wl-tiwai@suse.de>
+From: Naveen M <naveen.m@intel.com>
+Subject: Re: [alsa-devel] [PATCH v1] ASoC: Intel: kbl_da7219_max98927: fix
+ the audio jack button remapping
+Date: Mon, 10 Dec 2018 22:08:43 +0530
+Message-ID: <20181210163837.GA11058@intel.com>
+References: <20181207090552.105205-1-zhuohao@chromium.org>
+ <90b46425-5dbd-2ba7-d57d-270d0ab68632@linux.intel.com>
+ <CABD5ybm1E4=XQRt0zhviLzgXvUmo+C06AHr4wnXHF2QYbF=d8Q@mail.gmail.com>
+ <c11cb754-b01f-3e53-f07f-7fd186b45bdf@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EB4026770D
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 17:12:06 +0100 (CET)
-In-Reply-To: <s5hefapmkml.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, Chris Chiu <chiu@endlessm.com>, alsa-devel@alsa-project.org, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c11cb754-b01f-3e53-f07f-7fd186b45bdf@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Zhuohao Lee <zhuohao@chromium.org>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Dan Carpenter <dan.carpenter@oracle.com>, Max Chang <changmax@chromium.org>, Oder Chiou <oder_chiou@realtek.com>, linux-kernel@vger.kernel.org, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Dec 10, 2018 at 08:41:23AM -0600, Pierre-Louis Bossart wrote:
+> 
+> On 12/9/18 10:29 PM, Zhuohao Lee wrote:
+> > Thanks Pierre-Louis.
+> > I saw a patch https://patchwork.kernel.org/patch/10493135/ which changed
+> > the KEY_MEDIA to KEY_PLAYPAUSE, will you merge that patch?
+> > Combined with this patch, the key remapping should be consistent.
+> 
+> I don't have merge superpowers here, and I don't want to submit something I
+> cannot test.
+> 
+> I was only flagging that the behavior is not aligned across patches, and
+> some of these patches were never merged (some since April). Yong Zhi and
+> Naveen M, can you help resubmit a patchset that aligns the handling of
+> buttons for DA7219-based devices?
+> 
+> Thanks!
+> 
+> 
+Sure Pierre, we will soon post the change for all DA7219 based boards.
+Thanks
+> > 
+> > I'll submit a patch to remove the Change-Id.
+> > 
+> > On Sat, Dec 8, 2018 at 1:57 AM Pierre-Louis Bossart
+> > <pierre-louis.bossart@linux.intel.com
+> > <mailto:pierre-louis.bossart@linux.intel.com>> wrote:
+> > 
+> > 
+> >     On 12/7/18 3:05 AM, Zhuohao Lee wrote:
+> >     >  From the da7219 spec, the button A, B, C and D are remapped to
+> >     > 0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
+> >     > B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND
+> > 
+> >     Ok, but could fix all da7219-based machine drivers then, the mappings
+> >     are completely inconsistent:
+> > 
+> >     kbl_da7219_max98357a.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_0,
+> >     KEY_MEDIA);
+> >     kbl_da7219_max98357a.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_1,
+> >     KEY_VOLUMEUP);
+> >     kbl_da7219_max98357a.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_2,
+> >     KEY_VOLUMEDOWN);
+> >     kbl_da7219_max98357a.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_3,
+> >     KEY_VOICECOMMAND);
+> >     kbl_da7219_max98927.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_0,
+> >     KEY_PLAYPAUSE);
+> >     kbl_da7219_max98927.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_1,
+> >     KEY_VOICECOMMAND);
+> >     kbl_da7219_max98927.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_2,
+> >     KEY_VOLUMEUP);
+> >     kbl_da7219_max98927.c:    snd_jack_set_key(jack->jack,
+> >     SND_JACK_BTN_3,
+> >     KEY_VOLUMEDOWN);
+> > 
+> >     Thanks!
+> > 
+> >     >
+> >     > Change-Id: I67f929f226883bd289cb7beb0a7b23f40e7121e2
+> >     You want to remove those Change-Ids for upstream.
+> >     > Signed-off-by: Zhuohao Lee <zhuohao@chromium.org
+> >     <mailto:zhuohao@chromium.org>>
+> >     > Signed-off-by: Max Chang  <changmax@chromium.org
+> >     <mailto:changmax@chromium.org>>
+> >     > ---
+> >     >   sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
+> >     >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >     >
+> >     > diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c
+> >     b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> >     > index 3fa1c3ca6d37..d3531f0eb357 100644
+> >     > --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
+> >     > +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> >     > @@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct
+> >     snd_soc_pcm_runtime *rtd)
+> >     >
+> >     >       jack = &ctx->kabylake_headset;
+> >     >       snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> >     > -     snd_jack_set_key(jack->jack, SND_JACK_BTN_1,
+> >     KEY_VOICECOMMAND);
+> >     > -     snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> >     > -     snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+> >     > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+> >     > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+> >     > +     snd_jack_set_key(jack->jack, SND_JACK_BTN_3,
+> >     KEY_VOICECOMMAND);
+> >     >
+> >     >       da7219_aad_jack_det(component, &ctx->kabylake_headset);
+> >     >
+> > 
 
-On 12/10/18 10:06 AM, Takashi Iwai wrote:
-> On Mon, 10 Dec 2018 17:05:00 +0100,
-> Takashi Iwai wrote:
->> On Mon, 10 Dec 2018 16:57:49 +0100,
->> Pierre-Louis Bossart wrote:
->>>
->>> On 12/10/18 9:08 AM, Takashi Iwai wrote:
->>>> On Mon, 10 Dec 2018 15:31:08 +0100,
->>>> Pierre-Louis Bossart wrote:
->>>>> On 12/8/18 1:56 AM, Takashi Iwai wrote:
->>>>>> On Sat, 08 Dec 2018 01:00:38 +0100,
->>>>>> Pierre-Louis Bossart wrote:
->>>>>>> Now that the SST/Skylake driver supports per platform selectors, we
->>>>>>> can add logic to automatically select the right driver.
->>>>>>>
->>>>>>> If the Skylake driver is selected, and the DSP is enable, the legacy
->>>>>>> HDaudio driver aborts the probe. This will result in a single driver
->>>>>>> probing and remove the need for modprobe blacklists.
->>>>>>>
->>>>>>> Follow-up patches will add a module parameter to bypass the logic if
->>>>>>> this automatic detection fails, or if the Skylake driver is unable to
->>>>>>> actually support the platform (firmware authentication, missing
->>>>>>> topology file, hardware issue, etc).
->>>>>>>
->>>>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>>>>> ---
->>>>>>>     sound/pci/hda/Kconfig          | 46 ++++++++++++++++++++++++++++++++++
->>>>>>>     sound/pci/hda/hda_controller.h |  2 +-
->>>>>>>     sound/pci/hda/hda_intel.c      | 34 +++++++++++++++++++------
->>>>>>>     sound/soc/intel/Kconfig        |  6 +++++
->>>>>>>     4 files changed, 80 insertions(+), 8 deletions(-)
->>>>>>>
->>>>>>> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
->>>>>>> index 4235907b7858..634b7fe6a936 100644
->>>>>>> --- a/sound/pci/hda/Kconfig
->>>>>>> +++ b/sound/pci/hda/Kconfig
->>>>>>> @@ -226,6 +226,52 @@ config SND_HDA_POWER_SAVE_DEFAULT
->>>>>>>     	  The default time-out value in seconds for HD-audio automatic
->>>>>>>     	  power-save mode.  0 means to disable the power-save mode.
->>>>>>>     +if SND_HDA_INTEL
->>>>>>> +
->>>>>>> +config SND_HDA_INTEL_DISABLE_SKL
->>>>>>> +	bool
->>>>>>> +	help
->>>>>>> +	  This option disables HD-audio legacy for
->>>>>>> +	  Skylake machines
->>>>>> I'm not sure whether we need the selection of this disablement for
->>>>>> each model.  Distros would choose these unlikely, and individual users
->>>>>> don't have to select multiple of them but only for their machine's
->>>>>> model.  So, in the end, the choice would be either yes or no.
->>>>> Ah yes, maybe I wasn't clear. This wasn't intended to be selected by
->>>>> the user, but selected when when the SND_SOC_INTEL_KBL or
->>>>> SND_SOC_SOF_CNL options are set. See the conditions below.
->>>>>
->>>>> The main idea what to only deal with the conflict resolution when we
->>>>> indeed have a conflict. I also introduced this option on the
->>>>> sound/pci/hda side so that SOF can use the same mechanisms, i.e. it's
->>>>> the legacy driver doesn't need to know if the conflict happens with
->>>>> the SST/Skylake or SOF driver.
->>>> OK, that makes sense.
->>>>
->>>> But then better to rephrase the help texts there for avoiding
->>>> confusion.  Currently it sounds as if the kconfig always disables the
->>>> support of the given chipset.  But the actual behavior is to disable
->>>> the binding with the legacy driver *only if* the PCI device class is
->>>> declared for Intel DSP.
->>> ok, will respin the help text.
->>>
->>> I was wondering if my email client ate your answers, was is the only
->>> change you wanted? In reply to the cover letter you mentioned "some
->>> comments" but I only see this one that needs an update, and no
->>> comments for the initial series of Skylake-specific patches.
->> Maybe you missed my comments for the second and later hunks of
->> patch#2?  It was about some dev_warn() and dev_err() usages, which I
->> suggested to degrade to dev_info().
-Ah yes, sorry. I knew I was missing something.
-> Oh, BTW, did the fallback mechanism work properly with your patches on
-> the actual machines?
->
-> At the last time I tried on SKL, the fallback failed by some reason,
-> the driver core didn't try to load and bind two drivers.
-
-I tested on two platforms, one WHL with DSP and one without (Skylake HP 
-device), and the 3 values and didn't see any errors. lspci -vvv reports 
-the two drivers registered but only the one I wanted as 'in use'.
-
-I'll run more experiments on KBL and APL NUCs.
-
->
->
-> Takashi
+-- 
