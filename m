@@ -1,15 +1,19 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: hda/ca0132 - make pci_iounmap() call
-	conditional
-Date: Mon, 10 Dec 2018 21:54:25 +0100
-Message-ID: <20181210205445.2913413-1-arnd@arndb.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 3/7] ALSA: hda/intel: Drop superfluous
+ AZX_DCAPS_I915_POWERWELL checks
+Date: Mon, 10 Dec 2018 14:56:15 -0600
+Message-ID: <de4f3514-ce46-f0b0-ce4d-b318ed322888@linux.intel.com>
+References: <20181209093318.27829-1-tiwai@suse.de>
+ <20181209093318.27829-4-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C699C267AFE
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 21:54:56 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 140CB267AFE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 21:56:17 +0100 (CET)
+In-Reply-To: <20181209093318.27829-4-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-When building without CONFIG_PCI, we can (depending on the architecture)
-get a link failure:
-
-ERROR: "pci_iounmap" [sound/pci/hda/snd-hda-codec-ca0132.ko] undefined!
-
-Adding a compile-time check for PCI gets it to work correctly on
-32-bit ARM.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/hda/patch_ca0132.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index c40cb6336017..e5bdbc245682 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -8451,7 +8451,7 @@ static void ca0132_free(struct hda_codec *codec)
- 	ca0132_exit_chip(codec);
- 
- 	snd_hda_power_down(codec);
--	if (spec->mem_base)
-+	if (IS_ENABLED(CONFIG_PCI) && spec->mem_base)
- 		pci_iounmap(codec->bus->pci, spec->mem_base);
- 	kfree(spec->spec_init_verbs);
- 	kfree(codec->spec);
--- 
-2.20.0
+Ck9uIDEyLzkvMTggMzozMyBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IFNpbmNlIHNuZF9oZGFj
+X2Rpc3BsYXlfcG93ZXIoKSBjYW4gYmUgY2FsbGVkIGV2ZW4gZm9yIGEgSERBIGNvbnRyb2xsZXIK
+PiB3aXRob3V0IERSTSBiaW5kaW5nLCBsb3RzIG9mIHN1cGVyZmx1b3VzIEFaWF9EQ0FQU19JOTE1
+X1BPV0VSV0VMTAo+IGNoZWNrcyBpbiBoZGFfaW50ZWwuYyBjYW4gYmUgZHJvcHBlZC4gIFRoaXMg
+c2ltcGxpZmllcyB0aGUgY29kZSBhCj4gbG90Lgo+Cj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJ
+d2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0tLQo+ICAgc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyB8
+IDQzICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNo
+YW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDI3IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCj4g
+aW5kZXggMTUxYzZjYTg1ZWM2Li5jYWNlZTMzYTc0YTggMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNp
+L2hkYS9oZGFfaW50ZWwuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiBAQCAt
+OTQ4LDkgKzk0OCw3IEBAIHN0YXRpYyB2b2lkIF9fYXp4X3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3Qg
+YXp4ICpjaGlwKQo+ICAgCWF6eF9zdG9wX2NoaXAoY2hpcCk7Cj4gICAJYXp4X2VudGVyX2xpbmtf
+cmVzZXQoY2hpcCk7Cj4gICAJYXp4X2NsZWFyX2lycV9wZW5kaW5nKGNoaXApOwo+IC0JaWYgKChj
+aGlwLT5kcml2ZXJfY2FwcyAmIEFaWF9EQ0FQU19JOTE1X1BPV0VSV0VMTCkgJiYKPiAtCSAgICBo
+ZGEtPm5lZWRfaTkxNV9wb3dlcikKPiAtCQlkaXNwbGF5X3Bvd2VyKGNoaXAsIGZhbHNlKTsKPiAr
+CWRpc3BsYXlfcG93ZXIoY2hpcCwgZmFsc2UpOwo+ICAgfQo+ICAgCj4gICBzdGF0aWMgdm9pZCBf
+X2F6eF9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgYXp4ICpjaGlwKQo+IEBAIC05NjAsMTEgKzk1OCw5
+IEBAIHN0YXRpYyB2b2lkIF9fYXp4X3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBhenggKmNoaXApCj4g
+ICAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWM7Cj4gICAJaW50IHN0YXR1czsKPiAgIAo+IC0JaWYg
+KGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5MTVfUE9XRVJXRUxMKSB7Cj4gLQkJZGlz
+cGxheV9wb3dlcihjaGlwLCB0cnVlKTsKPiAtCQlpZiAoaGRhLT5uZWVkX2k5MTVfcG93ZXIpCj4g
+LQkJCXNuZF9oZGFjX2k5MTVfc2V0X2JjbGsoYnVzKTsKPiAtCX0KPiArCWRpc3BsYXlfcG93ZXIo
+Y2hpcCwgdHJ1ZSk7Cj4gKwlpZiAoaGRhLT5uZWVkX2k5MTVfcG93ZXIpCj4gKwkJc25kX2hkYWNf
+aTkxNV9zZXRfYmNsayhidXMpOwoKUXVlc3Rpb246IEkgc3RpbGwgc2VlIHRoaXMgJ29sZCBzdHls
+ZScgaW5pdCBpbiBoZGFfaW50ZWwuYyBldmVuIHdpdGggYWxsIAp0aGUgcGF0Y2hlcyBhcHBsaWVk
+LgoKIMKgwqDCoCAvKiBpbml0aWFsaXplIGNoaXAgKi8KIMKgwqDCoCBhenhfaW5pdF9wY2koY2hp
+cCk7CgogwqDCoMKgIGlmIChjaGlwLT5kcml2ZXJfY2FwcyAmIEFaWF9EQ0FQU19JOTE1X1BPV0VS
+V0VMTCkKIMKgwqDCoCDCoMKgwqAgc25kX2hkYWNfaTkxNV9zZXRfYmNsayhidXMpOwoKaXMgdGhp
+cyBpbnRlbnRpb25hbCBvciBhIG1pc3M/CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
