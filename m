@@ -1,55 +1,81 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: kbl_da7219_max98927: fix the
- audio jack button remapping
-Date: Mon, 10 Dec 2018 08:44:01 -0600
-Message-ID: <83955ba8-93f3-26ec-bba6-adf09ba839da@linux.intel.com>
-References: <20181210043213.243881-1-zhuohao@chromium.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk
+ for the Prowise PT301 tablet
+Date: Mon, 10 Dec 2018 15:54:13 +0100
+Message-ID: <5c9fb1aa-f9a4-e87a-6068-01988d5840ea@redhat.com>
+References: <20181208130114.6612-1-hdegoede@redhat.com>
+ <d79e64b3-72bc-9ae6-7ad5-5b50d7ab3585@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181210043213.243881-1-zhuohao@chromium.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F12B267AFE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 15:54:15 +0100 (CET)
+Received: by mail-wr1-f66.google.com with SMTP id b14so10760559wru.12
+ for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 06:54:15 -0800 (PST)
+In-Reply-To: <d79e64b3-72bc-9ae6-7ad5-5b50d7ab3585@linux.intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Zhuohao Lee <zhuohao@chromium.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Dan Carpenter <dan.carpenter@oracle.com>, Max Chang <changmax@chromium.org>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 12/9/18 10:32 PM, Zhuohao Lee wrote:
->  From the da7219 spec, the button A, B, C and D are remapped to
-> 0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
-> B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND.
->
-> Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
-> Signed-off-by: Max Chang  <changmax@chromium.org>
-
-I guess this is the v2
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-As discussed in the v1 thread, we'll need to align other DA7219-based 
-devices to use the same mapping.
-
-
-> ---
->   sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-> index 3fa1c3ca6d37..d3531f0eb357 100644
-> --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-> @@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
->   
->   	jack = &ctx->kabylake_headset;
->   	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
->   
->   	da7219_aad_jack_det(component, &ctx->kabylake_headset);
->   
+SGksCgpPbiAxMC0xMi0xOCAxNTozNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
+T24gMTIvOC8xOCA3OjAxIEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBBZGQgYSBxdWlyayBm
+b3IgdGhlIFByb3dpc2UgUFQzMDEgdGFibGV0LCB0aGlzIEJZVENSIHRhYmxldCBoYXMgbm8gQ0hB
+Tgo+PiBwYWNrYWdlIGluIGl0cyBBQ1BJIHRhYmxlcyBhbmQgdXNlcyBTU1AwLUFJRjEgcmF0aGVy
+IHRoZW4gU1NQMC1BSUYyIHdoaWNoCj4+IGlzIHRoZSBkZWZhdWx0IGZvciBCWVRDUiBkZXZpY2Vz
+Lgo+Pgo+PiBBbHNvIGl0IHVzZXMgSU4xIGZvciBpdHMgTUlDIGFuZCBKRDIgZm9yIGphY2stZGV0
+ZWN0LCByYXRoZXIgdGhlbiB0aGUKPj4gZGVmYXVsdCBJTjMgYW5kIEpEMS4KPiAKPiBMb29rcyBs
+aWtlIHNvbWVvbmUgd2FzIHRyeWluZyBoYXJkIHRvIGF2b2lkIHVzaW5nIGRlZmF1bHRzLi4uT2gg
+d2VsbC4KCkZXSVc6CgpXZWxsIGluIHByYWN0aWNlIG1vcmUgQllUQ1IgZGV2aWNlcyBzZWVtIHRv
+IHVzZSBTU1AwLUFJRjEgcmF0aGVyIHRoZW4KU1NQMC1BSUYyLCBidXQgSSBkb24ndCB3YW50IHRv
+IGNoYW5nZSB0aGUgZHJpdmVyIGRlZmF1bHRzIGF0IHRoaXMgcG9pbnQKYW5kIG1vc3QgQllUQ1Ig
+ZGV2aWNlcyBkbyBoYXZlIGEgQ0hBTiBwYWNrYWdlIGluIHRoZWlyIEFDUEkgdGFibGVzLgoKQXMg
+Zm9yIHVzaW5nIElOMStKRDIgcmF0aGVyIHRoZW4gSU4zK0pEMSAod2hpY2ggc2VlbSB0byBiZSB0
+aGUgbW9zdAppZiBub3Qgb25seSB1c2VkIGNvbWJvcykgaW4gbXkgZXhwZXJpZW5jZSB0aGVyZSBp
+cyBwcmV0dHkgbXVjaCBhIDUwLzUwCnNwbGl0IGluIHdoaWNoIGRldmljZXMgdXNlcyB3aGljaCBj
+b21iby4KCkkndmUgYSB0YWJsZSB3aXRoIHRoZSBjb3JyZWN0IHNldHRpbmdzIGZvciBtb3N0IG9m
+IHRoZSBkZXZpY2Ugd2hpY2ggSSBoYXZlCmhlcmU6IGh0dHBzOi8vZ2l0aHViLmNvbS9qd3JkZWdv
+ZWRlL3N1bnhpLWZlZG9yYS1zY3JpcHRzL2Jsb2IvbWFzdGVyL3g4Ni1jb2RlYy1pbmZvCgo+IEJv
+dGggcGF0Y2ggMSBhbmQgMgo+IAo+IEFja2VkLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGll
+cnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgoKVGhhbmtzLgoKUmVnYXJkcywKCkhh
+bnMKCgo+PiBTaWduZWQtb2ZmLWJ5OiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQuY29t
+Pgo+PiAtLS0KPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYyB8IDE0
+ICsrKysrKysrKysrKysrCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspCj4+
+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIv
+c291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCA4NTg3YmQzZDFj
+YzEuLjZkZjkwMmUzYTM4MCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9i
+eXRjcl9ydDU2NDAuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0
+MC5jCj4+IEBAIC02NzQsNiArNjc0LDIwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3Rl
+bV9pZCBieXRfcnQ1NjQwX3F1aXJrX3RhYmxlW10gPSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX1NTUDBfQUlGMiB8Cj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX01DTEtfRU4pLAo+
+PiDCoMKgwqDCoMKgIH0sCj4+ICvCoMKgwqAgewo+PiArwqDCoMKgwqDCoMKgwqAgLyogUHJvd2lz
+ZSBQVDMwMSAqLwo+PiArwqDCoMKgwqDCoMKgwqAgLm1hdGNoZXMgPSB7Cj4+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIERNSV9NQVRDSChETUlfU1lTX1ZFTkRPUiwgIlByb3dpc2UiKSwKPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgRE1JX01BVENIKERNSV9QUk9EVUNUX05BTUUsICJQVDMwMSIp
+LAo+PiArwqDCoMKgwqDCoMKgwqAgfSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5kcml2ZXJfZGF0YSA9
+ICh2b2lkICopKEJZVF9SVDU2NDBfSU4xX01BUCB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0pEX1NSQ19KRDJfSU40TiB8Cj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX09WQ0RfVEhfMjAwMFVB
+IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBf
+T1ZDRF9TRl8wUDc1IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IEJZVF9SVDU2NDBfRElGRl9NSUMgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgQllUX1JUNTY0MF9TU1AwX0FJRjEgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgQllUX1JUNTY0MF9NQ0xLX0VOKSwKPj4gK8KgwqDCoCB9LAo+PiDC
+oMKgwqDCoMKgIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBETUlfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIlRFQ0xBU1Qi
+KSwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
