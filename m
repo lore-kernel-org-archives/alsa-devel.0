@@ -1,17 +1,23 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 5/7] ALSA: hda: Make
-	snd_hdac_display_power() void function
-Date: Tue, 11 Dec 2018 14:53:39 +0100
-Message-ID: <20181211135341.11383-6-tiwai@suse.de>
-References: <20181211135341.11383-1-tiwai@suse.de>
+From: Jean Manuel JACINTO <jjacinto@free.fr>
+Subject: Sound card init
+Date: Tue, 11 Dec 2018 14:58:18 +0100
+Message-ID: <34FFE258-109F-465C-8093-FB31095E877A@free.fr>
+References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
+ <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
+ <20181211010855.GF3004@sirena.org.uk>
+ <CAEnQRZD2GNLLYSOsa2czekAN75Nn6fQTDFWaPweMsva3yc+uDw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A05E267BB8
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:53:51 +0100 (CET)
-In-Reply-To: <20181211135341.11383-1-tiwai@suse.de>
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id B250526770D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:58:22 +0100 (CET)
+Received: from [100.96.192.172] (unknown [80.215.199.79])
+ (Authenticated sender: jjacinto@free.fr)
+ by smtp5-g21.free.fr (Postfix) with ESMTPSA id 36C4C5FFAC
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:58:20 +0100 (CET)
+In-Reply-To: <CAEnQRZD2GNLLYSOsa2czekAN75Nn6fQTDFWaPweMsva3yc+uDw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,264 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-After the recent refactoring, snd_hdac_display_power() doesn't return
-any error, hence it can be defined to return void.
-This makes many error checks redundant and allows us to reduce them
-gracefully.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: Fix compile warnings wrt unused variables
-
- include/sound/hda_component.h |  9 ++++----
- sound/hda/hdac_component.c    |  8 ++-----
- sound/pci/hda/hda_intel.c     |  9 +-------
- sound/soc/codecs/hdac_hdmi.c  | 23 +++++---------------
- sound/soc/intel/skylake/skl.c | 40 ++++++++++-------------------------
- 5 files changed, 23 insertions(+), 66 deletions(-)
-
-diff --git a/include/sound/hda_component.h b/include/sound/hda_component.h
-index 767c8d8a0230..2ec31b358950 100644
---- a/include/sound/hda_component.h
-+++ b/include/sound/hda_component.h
-@@ -12,8 +12,8 @@
- 
- #ifdef CONFIG_SND_HDA_COMPONENT
- int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
--int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
--			   bool enable);
-+void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
-+			    bool enable);
- int snd_hdac_sync_audio_rate(struct hdac_device *codec, hda_nid_t nid,
- 			     int dev_id, int rate);
- int snd_hdac_acomp_get_eld(struct hdac_device *codec, hda_nid_t nid, int dev_id,
-@@ -30,10 +30,9 @@ static inline int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
- {
- 	return 0;
- }
--static inline int snd_hdac_display_power(struct hdac_bus *bus,
--					 unsigned int idx, bool enable)
-+static inline void snd_hdac_display_power(struct hdac_bus *bus,
-+					  unsigned int idx, bool enable)
- {
--	return 0;
- }
- static inline int snd_hdac_sync_audio_rate(struct hdac_device *codec,
- 					   hda_nid_t nid, int dev_id, int rate)
-diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
-index dd766414436b..a6d37b9d6413 100644
---- a/sound/hda/hdac_component.c
-+++ b/sound/hda/hdac_component.c
-@@ -62,10 +62,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_set_codec_wakeup);
-  *
-  * This function updates the power status, and calls the get_power() and
-  * put_power() ops accordingly, toggling the codec wakeup, too.
-- *
-- * Returns zero for success or a negative error code.
-  */
--int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
-+void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- {
- 	struct drm_audio_component *acomp = bus->audio_component;
- 
-@@ -77,7 +75,7 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- 		clear_bit(idx, &bus->display_power_status);
- 
- 	if (!acomp || !acomp->ops)
--		return 0;
-+		return;
- 
- 	if (bus->display_power_status) {
- 		if (!bus->display_power_active) {
-@@ -94,8 +92,6 @@ int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
- 			bus->display_power_active = false;
- 		}
- 	}
--
--	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_display_power);
- 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5399d0180434..e784130ea4e0 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2216,12 +2216,7 @@ static int azx_probe_continue(struct azx *chip)
- 	 * this power. For other platforms, like Baytrail/Braswell, only the
- 	 * display codec needs the power and it can be released after probe.
- 	 */
--	err = display_power(chip, true);
--	if (err < 0) {
--		dev_err(chip->card->dev,
--			"Cannot turn on display power on i915\n");
--		goto i915_power_fail;
--	}
-+	display_power(chip, true);
- 
- 	err = azx_first_init(chip);
- 	if (err < 0)
-@@ -2271,8 +2266,6 @@ static int azx_probe_continue(struct azx *chip)
- out_free:
- 	if (err < 0 || !hda->need_i915_power)
- 		display_power(chip, false);
--
--i915_power_fail:
- 	if (err < 0)
- 		hda->init_failed = 1;
- 	complete_all(&hda->probe_wait);
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c3d551d2af7f..552ed1968bc4 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2031,13 +2031,8 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
- 	 * Turned off in the runtime_suspend during the first explicit
- 	 * pm_runtime_suspend call.
- 	 */
--	ret = snd_hdac_display_power(hdev->bus, hdev->addr, true);
--	if (ret < 0) {
--		dev_err(&hdev->dev,
--			"Cannot turn on display power on i915 err: %d\n",
--			ret);
--		return ret;
--	}
-+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
-+
- 	ret = hdac_hdmi_parse_and_map_nid(hdev, &hdmi_dais, &num_dais);
- 	if (ret < 0) {
- 		dev_err(&hdev->dev,
-@@ -2169,7 +2164,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
- 	struct hdac_bus *bus = hdev->bus;
- 	struct hdac_ext_link *hlink = NULL;
--	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
- 
-@@ -2195,11 +2189,9 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 
- 	snd_hdac_ext_bus_link_put(bus, hlink);
- 
--	err = snd_hdac_display_power(bus, hdev->addr, false);
--	if (err < 0)
--		dev_err(dev, "Cannot turn off display power on i915\n");
-+	snd_hdac_display_power(bus, hdev->addr, false);
- 
--	return err;
-+	return 0;
- }
- 
- static int hdac_hdmi_runtime_resume(struct device *dev)
-@@ -2207,7 +2199,6 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
- 	struct hdac_bus *bus = hdev->bus;
- 	struct hdac_ext_link *hlink = NULL;
--	int err;
- 
- 	dev_dbg(dev, "Enter: %s\n", __func__);
- 
-@@ -2223,11 +2214,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
- 
- 	snd_hdac_ext_bus_link_get(bus, hlink);
- 
--	err = snd_hdac_display_power(bus, hdev->addr, true);
--	if (err < 0) {
--		dev_err(dev, "Cannot turn on display power on i915\n");
--		return err;
--	}
-+	snd_hdac_display_power(bus, hdev->addr, true);
- 
- 	hdac_hdmi_skl_enable_all_pins(hdev);
- 	hdac_hdmi_skl_enable_dp12(hdev);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 64f8433ae921..5c224a0e1c7a 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -311,7 +311,7 @@ static int skl_suspend(struct device *dev)
- 	struct pci_dev *pci = to_pci_dev(dev);
- 	struct hdac_bus *bus = pci_get_drvdata(pci);
- 	struct skl *skl  = bus_to_skl(bus);
--	int ret = 0;
-+	int ret;
- 
- 	/*
- 	 * Do not suspend if streams which are marked ignore suspend are
-@@ -333,14 +333,10 @@ static int skl_suspend(struct device *dev)
- 		skl->skl_sst->fw_loaded = false;
- 	}
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
--		if (ret < 0)
--			dev_err(bus->dev,
--				"Cannot turn OFF display power on i915\n");
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- 
--	return ret;
-+	return 0;
- }
- 
- static int skl_resume(struct device *dev)
-@@ -352,14 +348,8 @@ static int skl_resume(struct device *dev)
- 	int ret;
- 
- 	/* Turned OFF in HDMI codec driver after codec reconfiguration */
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		ret = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--		if (ret < 0) {
--			dev_err(bus->dev,
--				"Cannot turn on display power on i915\n");
--			return ret;
--		}
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 
- 	/*
- 	 * resume only when we are not in suspend active, otherwise need to
-@@ -783,11 +773,9 @@ static int skl_i915_init(struct hdac_bus *bus)
- 	if (err < 0)
- 		return err;
- 
--	err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--	if (err < 0)
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 
--	return err;
-+	return 0;
- }
- 
- static void skl_probe_work(struct work_struct *work)
-@@ -837,14 +825,8 @@ static void skl_probe_work(struct work_struct *work)
- 	list_for_each_entry(hlink, &bus->hlink_list, list)
- 		snd_hdac_ext_bus_link_put(bus, hlink);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
--		if (err < 0) {
--			dev_err(bus->dev, "Cannot turn off display power on i915\n");
--			skl_machine_device_unregister(skl);
--			return;
--		}
--	}
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- 
- 	/* configure PM */
- 	pm_runtime_put_noidle(bus->dev);
-@@ -855,7 +837,7 @@ static void skl_probe_work(struct work_struct *work)
- 
- out_err:
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		err = snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
-+		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- }
- 
- /*
--- 
-2.19.2
+SGVsbG8gYWxzYSB0ZWFtLgpJJ20gbm90IHN1cmUgdG8gd3JpdGUgYXQgdGhlIHJpZ2h0IHBsYWNl
+LCBzbyBwbGVhc2UgYXBvbG9naXplIGlmIGknbSBiZWluZyBvZmYtdG9waWMuCkknbSB1c2luZyBh
+IHN1cHBvc2VkbHkgIHN0YW5kYXJkLWNvbXBsaWFudCBzb3VuZGNhcmQgd2l0aCBhbHNhIG9uIGxp
+bnV4LCBhbmQgcGxheWJhY2sgaXMgZ29pbmcgdmVyeSBmaW5lIHdpdGhvdXQgaXNzdWUgb24gdGhl
+IDQgY2hhbm5lbHMuCgpIb3dldmVyLCBpbnB1dHMgYXJlIG5vdCBiZWhhdmluZyB3ZWxsLiBDYXB0
+dXJlZCBzb3VuZCBpcyAnY2hvcHB5JyAobGlrZSBzbWFsbCBoaWdoIHBpdGNoZWQgZGlzY29udGlu
+dW91cyBjaHVua3MpLgpBZnRlciBtYW55IHRyaWVzIGkgZmlndXJlZCBhIHdvcmthcm91bmQgOiBp
+ZiBpIHBsdWcgdGhlIGNhcmQgdG8gYSB3aW5kb3dzIHBjLCBldmVuIHdpdGhvdXQgdXNpbmcgaXQs
+IGl0IHdpbGwgdGhlbiBjYXB0dXJlIHBlcmZlY3RseSBmcm9tIHRoZSBsaW51eCBzdGF0aW9uLgoK
+U28gaSBzdXBwb3NlIHRoZSB3aW5kb3dzIGRyaXZlciBpcyBkb2luZyBzb21lIGluaXRpYWxpemF0
+aW9uLiBQb3NzaWJseSBzZXR0aW5nIGEgbGF0ZW5jeSB2YWx1ZSAoaSdtIHN1cHBvc2luZyB0aGF0
+IGJlY2F1c2UgdGhpcyB2YWx1ZSBpcyBzZWxlY3RhYmxlIGZyb20gdGhlIGRyaXZlciB0cmF5IGlj
+b24pCgpBcyBzb21lIGV4cGVydHMgbWlnaHQgYmUgb24gdGhpcyBsaXN0LCBpIHdhbnRlZCB0byBh
+c2sgaWYgeW91IGtub3cgYSB3YXkgdG8gJ3NuaWZmJyBob3cgdGhlIHdpbiBkcml2ZXIgaXMgZG9p
+bmcgdGhlIGluaXQuIFNvIGlkIGJlIGFibGUgdG8gcmVwbGF5IGl0IHdpdGggYWxzYWN0bCBvciBj
+dXN0b20gY29kZSA/CgpUaGFua3MsIGFuZCBzb3JyeSBhZ2FpbiBpZiBpJ20gYXNraW5nIGluIHRo
+ZSB3cm9uZyBwbGFjZS4KClJlZ2FyZHMsCkpNCgpMZSAxMSBkw6ljZW1icmUgMjAxOCAxMDo1ODoz
+NyBHTVQrMDE6MDAsIERhbmllbCBCYWx1dGEgPGRhbmllbC5iYWx1dGFAZ21haWwuY29tPiBhIMOp
+Y3JpdCA6Cj5PbiBUdWUsIERlYyAxMSwgMjAxOCBhdCAzOjA5IEFNIE1hcmsgQnJvd24gPGJyb29u
+aWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4+Cj4+IE9uIE1vbiwgRGVjIDEwLCAyMDE4IGF0IDA5OjIx
+OjE1QU0gKzAwMDAsIENvc21pbiBTYW1vaWxhIHdyb3RlOgo+PiA+IEFkZCBEaWdpdGFsIEF1ZGlv
+IEludGVyZmFjZSBkcml2ZXIgdGhhdCBjb252ZXJzIFBETSBiaXRzdHJlYW0gdG8KPlBDTQo+PiA+
+IGZvcm1hdC4KPj4KPj4gSSdtIG1pc3NpbmcgcGF0Y2ggMS8yIGhlcmUgLSB3aGF0J3MgZ29pbmcg
+b24gd2l0aCBkZXBlbmRlbmNpZXM/Cj4KPkhtbSwgdGhhdCdzIHN0cmFuZ2UuIEkgZ290IHBhdGNo
+IDEvMiBhbmQgaXQgYWxzbyBhcHBlYXJzIHRvIGJlIG9uCj50aGUgbWFpbGluZyBsaXN0IGFyY2hp
+dmUuCj4KPmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2
+ZWwvMjAxOC1EZWNlbWJlci8xNDI3NjUuaHRtbAo+Cj5NYXliZSBpdCBnb3QgZmlsdGVyZWQgc29t
+ZWhvdyB0byBhbm90aGVyIGRpcmVjdG9yeSBpbnNpZGUgeW91ciBlbWFpbAo+YWNjb3VudD8KPgo+
+dGhhbmtzLAo+RGFuaWVsLgo+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj5BbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKPmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
