@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 05/21] ASoC: SOF: Intel: Add HDA controller for
-	Intel DSP
-Date: Tue, 11 Dec 2018 15:30:13 -0600
-Message-ID: <20181211213029.28801-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/21] ASoC: SOF: Intel: Add Intel specific HDA
+	IPC mechanisms.
+Date: Tue, 11 Dec 2018 15:30:15 -0600
+Message-ID: <20181211213029.28801-8-pierre-louis.bossart@linux.intel.com>
 References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,23 +24,22 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Support HDA controller operations for DSP and provide space for future
-DSP HDA FW integration.
+Add HDA specific IPC mechanism for Intel DSP HW.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 166 +++++++++++++++++++++++++++++++++
- 1 file changed, 166 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-ctrl.c
+ sound/soc/sof/intel/hda-ipc.c | 387 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 387 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-ipc.c
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
 new file mode 100644
-index 000000000000..e8f27012ec11
+index 000000000000..5673905046cf
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -0,0 +1,166 @@
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -0,0 +1,387 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -58,154 +57,375 @@ index 000000000000..e8f27012ec11
 + * Hardware interface for generic Intel audio DSP HDA IP
 + */
 +
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
 +#include "../ops.h"
 +#include "hda.h"
 +
-+/*
-+ * HDA Operations.
-+ */
-+
-+int hda_dsp_ctrl_link_reset(struct snd_sof_dev *sdev, bool reset)
++int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir)
 +{
-+	unsigned long timeout;
-+	u32 gctl = 0;
-+	u32 val;
++	if (dir == SOF_IPC_HOST_REPLY) {
++		/*
++		 * tell DSP cmd is done - clear busy
++		 * interrupt and send reply msg to dsp
++		 */
++		snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++					       HDA_DSP_REG_HIPCT,
++					       HDA_DSP_REG_HIPCT_BUSY,
++					       HDA_DSP_REG_HIPCT_BUSY);
 +
-+	/* 0 to enter reset and 1 to exit reset */
-+	val = reset ? 0 : SOF_HDA_GCTL_RESET;
++		/* unmask BUSY interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_BUSY,
++					HDA_DSP_REG_HIPCCTL_BUSY);
++	} else {
++		/*
++		 * set DONE bit - tell DSP we have received the reply msg
++		 * from DSP, and processed it, don't send more reply to host
++		 */
++		snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++					       HDA_DSP_REG_HIPCIE,
++					       HDA_DSP_REG_HIPCIE_DONE,
++					       HDA_DSP_REG_HIPCIE_DONE);
 +
-+	/* enter/exit HDA controller reset */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCTL,
-+				SOF_HDA_GCTL_RESET, val);
-+
-+	/* wait to enter/exit reset */
-+	timeout = jiffies + msecs_to_jiffies(HDA_DSP_CTRL_RESET_TIMEOUT);
-+	while (time_before(jiffies, timeout)) {
-+		gctl = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCTL);
-+		if ((gctl & SOF_HDA_GCTL_RESET) == val)
-+			return 0;
-+		usleep_range(500, 1000);
++		/* unmask Done interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_DONE,
++					HDA_DSP_REG_HIPCCTL_DONE);
 +	}
 +
-+	/* enter/exit reset failed */
-+	dev_err(sdev->dev, "error: failed to %s HDA controller gctl 0x%x\n",
-+		reset ? "reset" : "ready", gctl);
-+	return -EIO;
++	return 0;
 +}
 +
-+int hda_dsp_ctrl_get_caps(struct snd_sof_dev *sdev)
++int hda_dsp_ipc_is_ready(struct snd_sof_dev *sdev)
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	u32 cap, offset, feature;
-+	int count = 0;
++	u64 busy, done;
 +
-+	offset = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_LLCH);
++	/* is DSP ready for next IPC command */
++	busy = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
++	done = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCIE);
++	if ((busy & HDA_DSP_REG_HIPCI_BUSY) ||
++	    (done & HDA_DSP_REG_HIPCIE_DONE))
++		return 0;
 +
-+	do {
-+		cap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, offset);
++	return 1;
++}
 +
-+		dev_dbg(sdev->dev, "checking for capabilities at offset 0x%x\n",
-+			offset & SOF_HDA_CAP_NEXT_MASK);
++int hda_dsp_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
++{
++	u32 cmd = msg->header;
 +
-+		feature = (cap & SOF_HDA_CAP_ID_MASK) >> SOF_HDA_CAP_ID_OFF;
++	/* send IPC message to DSP */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI,
++			  cmd | HDA_DSP_REG_HIPCI_BUSY);
 +
-+		switch (feature) {
-+		case SOF_HDA_PP_CAP_ID:
-+			dev_dbg(sdev->dev, "found DSP capability at 0x%x\n",
-+				offset);
-+			bus->ppcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_PP_BAR] = bus->ppcap;
-+			break;
-+		case SOF_HDA_SPIB_CAP_ID:
-+			dev_dbg(sdev->dev, "found SPIB capability at 0x%x\n",
-+				offset);
-+			bus->spbcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_SPIB_BAR] = bus->spbcap;
-+			break;
-+		case SOF_HDA_DRSM_CAP_ID:
-+			dev_dbg(sdev->dev, "found DRSM capability at 0x%x\n",
-+				offset);
-+			bus->drsmcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_DRSM_BAR] = bus->drsmcap;
-+			break;
-+		case SOF_HDA_GTS_CAP_ID:
-+			dev_dbg(sdev->dev, "found GTS capability at 0x%x\n",
-+				offset);
-+			bus->gtscap = bus->remap_addr + offset;
-+			break;
-+		case SOF_HDA_ML_CAP_ID:
-+			dev_dbg(sdev->dev, "found ML capability at 0x%x\n",
-+				offset);
-+			bus->mlcap = bus->remap_addr + offset;
-+			break;
-+		default:
-+			dev_vdbg(sdev->dev, "found capability %d at 0x%x\n",
-+				 feature, offset);
-+			break;
++	return 0;
++}
++
++int hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev,
++			  struct snd_sof_ipc_msg *msg)
++{
++	struct sof_ipc_reply reply;
++	int ret = 0;
++	u32 size;
++
++	/* get IPC reply from DSP in the mailbox */
++	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
++	if (reply.error < 0) {
++		size = sizeof(reply);
++		ret = reply.error;
++	} else {
++		/* reply correct size ? */
++		if (reply.hdr.size != msg->reply_size) {
++			dev_err(sdev->dev, "error: reply expected 0x%zx got 0x%x bytes\n",
++				msg->reply_size, reply.hdr.size);
++			size = msg->reply_size;
++			ret = -EINVAL;
++		} else {
++			size = reply.hdr.size;
 +		}
++	}
 +
-+		offset = cap & SOF_HDA_CAP_NEXT_MASK;
-+	} while (count++ <= SOF_HDA_MAX_CAPS && offset);
-+
-+	return 0;
-+}
-+
-+void hda_dsp_ctrl_misc_clock_gating(struct snd_sof_dev *sdev, bool enable)
-+{
-+	u32 val = enable ? PCI_CGCTL_MISCBDCGE_MASK : 0;
-+
-+	snd_sof_pci_update_bits(sdev, PCI_CGCTL, PCI_CGCTL_MISCBDCGE_MASK, val);
-+}
-+
-+/*
-+ * enable/disable audio dsp clock gating and power gating bits.
-+ * This allows the HW to opportunistically power and clock gate
-+ * the audio dsp when it is idle
-+ */
-+int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
-+{
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+#endif
-+	u32 val;
-+
-+	/* enable/disable audio dsp clock gating */
-+	val = enable ? PCI_CGCTL_ADSPDCGE : 0;
-+	snd_sof_pci_update_bits(sdev, PCI_CGCTL, PCI_CGCTL_ADSPDCGE, val);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* enable/disable L1 support */
-+	val = enable ? SOF_HDA_VS_EM2_L1SEN : 0;
-+	snd_hdac_chip_updatel(bus, VS_EM2, SOF_HDA_VS_EM2_L1SEN, val);
-+#endif
-+
-+	/* enable/disable audio dsp power gating */
-+	val = enable ? 0 : PCI_PGCTL_ADSPPGD;
-+	snd_sof_pci_update_bits(sdev, PCI_PGCTL, PCI_PGCTL_ADSPPGD, val);
-+
-+	return 0;
-+}
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+/*
-+ * While performing reset, controller may not come back properly and causing
-+ * issues, so recommendation is to set CGCTL.MISCBDCGE to 0 then do reset
-+ * (init chip) and then again set CGCTL.MISCBDCGE to 1
-+ */
-+int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int ret;
-+
-+	hda_dsp_ctrl_misc_clock_gating(sdev, false);
-+	ret = snd_hdac_bus_init_chip(bus, full_reset);
-+	hda_dsp_ctrl_misc_clock_gating(sdev, true);
++	/* read the message */
++	if (msg->msg_data && size > 0)
++		sof_mailbox_read(sdev, sdev->host_box.offset,
++				 msg->reply_data, size);
 +
 +	return ret;
 +}
-+#endif
 +
++/* IPC handler thread */
++irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = (struct snd_sof_dev *)context;
++	u32 hipci, hipcie, hipct, hipcte, hipcctl, msg = 0, msg_ext = 0;
++	irqreturn_t ret = IRQ_NONE;
++	int reply = -EINVAL;
++
++	/* here we handle IPC interrupts only */
++	if (!(sdev->irq_status & HDA_DSP_ADSPIS_IPC))
++		return ret;
++
++	/* read IPC status */
++	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++				  HDA_DSP_REG_HIPCIE);
++	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
++	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
++
++	/* is this a reply message from the DSP */
++	if (hipcie & HDA_DSP_REG_HIPCIE_DONE &&
++	    hipcctl & HDA_DSP_REG_HIPCCTL_DONE) {
++
++		hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_REG_HIPCI);
++		msg = hipci & HDA_DSP_REG_HIPCI_MSG_MASK;
++		msg_ext = hipcie & HDA_DSP_REG_HIPCIE_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware response, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* mask Done interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_DONE, 0);
++
++		/* handle immediate reply from DSP core - ignore ROM messages */
++		if (msg != 0x1004000)
++			reply = snd_sof_ipc_reply(sdev, msg);
++
++		/*
++		 * handle immediate reply from DSP core. If the msg is
++		 * found, set done bit in cmd_done which is called at the
++		 * end of message processing function, else set it here
++		 * because the done bit can't be set in cmd_done function
++		 * which is triggered by msg
++		 */
++		if (reply)
++			hda_dsp_ipc_cmd_done(sdev, SOF_IPC_DSP_REPLY);
++
++		ret = IRQ_HANDLED;
++	}
++
++	/* is this a new message from DSP */
++	if (hipct & HDA_DSP_REG_HIPCT_BUSY &&
++	    hipcctl & HDA_DSP_REG_HIPCCTL_BUSY) {
++
++		hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					  HDA_DSP_REG_HIPCTE);
++		msg = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
++		msg_ext = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware initiated, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* mask BUSY interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					HDA_DSP_REG_HIPCCTL,
++					HDA_DSP_REG_HIPCCTL_BUSY, 0);
++
++		/* handle messages from DSP */
++		if ((hipct & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
++			/* this is a PANIC message !! */
++			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext));
++		} else {
++			/* normal message - process normally*/
++			snd_sof_ipc_msgs_rx(sdev);
++		}
++
++		ret = IRQ_HANDLED;
++	}
++
++	if (ret == IRQ_HANDLED) {
++		/* reenable IPC interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
++					HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
++	}
++
++	/* wake up sleeper if we are loading code */
++	if (sdev->code_loading)	{
++		sdev->code_loading = 0;
++		wake_up(&sdev->waitq);
++	}
++
++	return ret;
++}
++
++/* is this IRQ for ADSP ? - we only care about IPC here */
++irqreturn_t hda_dsp_ipc_irq_handler(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = (struct snd_sof_dev *)context;
++	int ret = IRQ_NONE;
++
++	spin_lock(&sdev->hw_lock);
++
++	/* store status */
++	sdev->irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					    HDA_DSP_REG_ADSPIS);
++
++	/* invalid message ? */
++	if (sdev->irq_status == 0xffffffff)
++		goto out;
++
++	/* IPC message ? */
++	if (sdev->irq_status & HDA_DSP_ADSPIS_IPC) {
++		/* disable IPC interrupt */
++		snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
++						 HDA_DSP_REG_ADSPIC,
++						 HDA_DSP_ADSPIC_IPC, 0);
++		ret = IRQ_WAKE_THREAD;
++	}
++
++out:
++	spin_unlock(&sdev->hw_lock);
++	return ret;
++}
++
++/*
++ * IPC Firmware ready.
++ */
++
++static void ipc_get_windows(struct snd_sof_dev *sdev)
++{
++	struct sof_ipc_window_elem *elem;
++	u32 outbox_offset = 0;
++	u32 stream_offset = 0;
++	u32 inbox_offset = 0;
++	u32 outbox_size = 0;
++	u32 stream_size = 0;
++	u32 inbox_size = 0;
++	int i;
++
++	if (!sdev->info_window) {
++		dev_err(sdev->dev, "error: have no window info\n");
++		return;
++	}
++
++	for (i = 0; i < sdev->info_window->num_windows; i++) {
++		elem = &sdev->info_window->window[i];
++
++		switch (elem->type) {
++		case SOF_IPC_REGION_UPBOX:
++			inbox_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			inbox_size = elem->size;
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       inbox_offset,
++						       elem->size, "inbox");
++			break;
++		case SOF_IPC_REGION_DOWNBOX:
++			outbox_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			outbox_size = elem->size;
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       outbox_offset,
++						       elem->size, "outbox");
++			break;
++		case SOF_IPC_REGION_TRACE:
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       elem->offset +
++						       SRAM_WINDOW_OFFSET
++						       (elem->id),
++						       elem->size, "etrace");
++			break;
++		case SOF_IPC_REGION_DEBUG:
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       elem->offset +
++						       SRAM_WINDOW_OFFSET
++						       (elem->id),
++						       elem->size, "debug");
++			break;
++		case SOF_IPC_REGION_STREAM:
++			stream_offset =
++				elem->offset + SRAM_WINDOW_OFFSET(elem->id);
++			stream_size = elem->size;
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       elem->offset +
++						       SRAM_WINDOW_OFFSET
++						       (elem->id),
++						       elem->size, "stream");
++			break;
++		case SOF_IPC_REGION_REGS:
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       elem->offset +
++						       SRAM_WINDOW_OFFSET
++						       (elem->id),
++						       elem->size, "regs");
++			break;
++		case SOF_IPC_REGION_EXCEPTION:
++			sdev->dsp_oops_offset = elem->offset +
++						SRAM_WINDOW_OFFSET(elem->id);
++			snd_sof_debugfs_io_create_item(sdev,
++						       sdev->bar[HDA_DSP_BAR] +
++						       elem->offset +
++						       SRAM_WINDOW_OFFSET
++						       (elem->id),
++						       elem->size, "exception");
++			break;
++		default:
++			dev_err(sdev->dev, "error: get illegal window info\n");
++			return;
++		}
++	}
++
++	if (outbox_size == 0 || inbox_size == 0) {
++		dev_err(sdev->dev, "error: get illegal mailbox window\n");
++		return;
++	}
++
++	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
++				 outbox_offset, outbox_size);
++	sdev->stream_box.offset = stream_offset;
++	sdev->stream_box.size = stream_size;
++
++	dev_dbg(sdev->dev, " mailbox upstream 0x%x - size 0x%x\n",
++		inbox_offset, inbox_size);
++	dev_dbg(sdev->dev, " mailbox downstream 0x%x - size 0x%x\n",
++		outbox_offset, outbox_size);
++	dev_dbg(sdev->dev, " stream region 0x%x - size 0x%x\n",
++		stream_offset, stream_size);
++}
++
++int hda_dsp_ipc_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
++{
++	struct sof_ipc_fw_ready *fw_ready = &sdev->fw_ready;
++	u32 offset;
++	int ret;
++
++	/* mailbox must be on 4k boundary */
++	offset = HDA_DSP_MBOX_UPLINK_OFFSET;
++
++	dev_dbg(sdev->dev, "ipc: DSP is ready 0x%8.8x offset 0x%x\n",
++		msg_id, offset);
++
++	/* no need to re-check version/ABI for subsequent boots */
++	if (!sdev->first_boot)
++		return 0;
++
++	/* copy data from the DSP FW ready offset */
++	sof_block_read(sdev, offset, fw_ready,	sizeof(*fw_ready));
++
++	/* make sure ABI version is compatible */
++	ret = snd_sof_ipc_valid(sdev);
++	if (ret < 0)
++		return ret;
++
++	/* now check for extended data */
++	snd_sof_fw_parse_ext_data(sdev, HDA_DSP_MBOX_UPLINK_OFFSET +
++				  sizeof(struct sof_ipc_fw_ready));
++
++	ipc_get_windows(sdev);
++
++	return 0;
++}
 -- 
 2.17.1
