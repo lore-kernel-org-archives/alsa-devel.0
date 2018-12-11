@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/21] ASoC: SOF: Intel: SKL, CNL,
-	APL platform DAIs
-Date: Tue, 11 Dec 2018 15:30:22 -0600
-Message-ID: <20181211213029.28801-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 15/21] ASoC: SOF: Intel: Add platform
+	differentiation for SKL, APL and CNL
+Date: Tue, 11 Dec 2018 15:30:23 -0600
+Message-ID: <20181211213029.28801-16-pierre-louis.bossart@linux.intel.com>
 References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,24 +22,29 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add declarations for DAIs and utilities for link DMA management
+Add platform differentiation operations for different Intel HDA DSP
+platforms.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 368 ++++++++++++++++++++++++++++++++++
- 1 file changed, 368 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-dai.c
+ sound/soc/sof/intel/apl.c |  99 ++++++++++++++++
+ sound/soc/sof/intel/cnl.c | 242 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/skl.c |  92 +++++++++++++++
+ 3 files changed, 433 insertions(+)
+ create mode 100644 sound/soc/sof/intel/apl.c
+ create mode 100644 sound/soc/sof/intel/cnl.c
+ create mode 100644 sound/soc/sof/intel/skl.c
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
 new file mode 100644
-index 000000000000..801d45e0218e
+index 000000000000..61832da260d8
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -0,0 +1,368 @@
++++ b/sound/soc/sof/intel/apl.c
+@@ -0,0 +1,99 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -47,366 +52,443 @@ index 000000000000..801d45e0218e
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Keyon Jie <yang.jie@linux.intel.com>
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+#include <sound/pcm_params.h>
-+#include <sound/hdaudio_ext.h>
++/*
++ * Hardware interface for audio DSP on Apollolake and GeminiLake
++ */
++
 +#include "../sof-priv.h"
 +#include "hda.h"
 +
-+#define SKL_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
-+	SNDRV_PCM_FMTBIT_S32_LE)
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+
-+struct hda_pipe_params {
-+	u8 host_dma_id;
-+	u8 link_dma_id;
-+	u32 ch;
-+	u32 s_freq;
-+	u32 s_fmt;
-+	u8 linktype;
-+	snd_pcm_format_t format;
-+	int link_index;
-+	int stream;
-+	unsigned int host_bps;
-+	unsigned int link_bps;
++static const struct snd_sof_debugfs_map apl_dsp_debugfs[] = {
++	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000},
++	{"pp", HDA_DSP_PP_BAR,  0, 0x1000},
++	{"dsp", HDA_DSP_BAR,  0, 0x10000},
 +};
 +
-+/* Unlike GP dma, there is a set of stream registers in hda controller to
-+ * control the link dma channels. Each register controls one link dma
-+ * channel and the relation is fixed. To make sure FW uses the correct
-+ * link dma channel, host allocates stream register and sends the
-+ * corresponding link dma channel to FW to allocate link dma channel
-+ *
-+ * FIXME: this API is abused in the sense that tx_num and rx_num are
-+ * passed as arguments, not returned. We need to find a better way to
-+ * retrieve the stream tag allocated for the link DMA
-+ *
-+ */
-+static int hda_link_dma_get_channels(struct snd_soc_dai *dai,
-+				     unsigned int *tx_num,
-+				     unsigned int *tx_slot,
-+				     unsigned int *rx_num,
-+				     unsigned int *rx_slot)
-+{
-+	struct hdac_bus *bus;
-+	struct hdac_ext_stream *stream;
-+	struct snd_pcm_substream substream;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
++/* apollolake ops */
++struct snd_sof_dsp_ops sof_apl_ops = {
++	/* probe and remove */
++	.probe		= hda_dsp_probe,
++	.remove		= hda_dsp_remove,
 +
-+	bus = sof_to_bus(sdev);
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
 +
-+	memset(&substream, 0, sizeof(substream));
-+	if (*tx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for playback");
-+			return -EBUSY;
-+		}
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, (void *)stream);
-+		*tx_slot = hdac_stream(stream)->stream_tag - 1;
++	/* doorbell */
++	.irq_handler	= hda_dsp_ipc_irq_handler,
++	.irq_thread	= hda_dsp_ipc_irq_thread,
 +
-+		dev_dbg(bus->dev, "link dma channel %d for playback", *tx_slot);
-+	}
++	/* mailbox */
++	.mailbox_read	= sof_mailbox_read,
++	.mailbox_write	= sof_mailbox_write,
 +
-+	if (*rx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for capture");
-+			return -EBUSY;
-+		}
++	/* ipc */
++	.send_msg	= hda_dsp_ipc_send_msg,
++	.get_reply	= hda_dsp_ipc_get_reply,
++	.fw_ready	= hda_dsp_ipc_fw_ready,
++	.is_ready	= hda_dsp_ipc_is_ready,
++	.cmd_done	= hda_dsp_ipc_cmd_done,
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, (void *)stream);
-+		*rx_slot = hdac_stream(stream)->stream_tag - 1;
++	/* debug */
++	.debug_map	= apl_dsp_debugfs,
++	.debug_map_count	= ARRAY_SIZE(apl_dsp_debugfs),
++	.dbg_dump	= hda_dsp_dump,
 +
-+		dev_dbg(bus->dev, "link dma channel %d for capture", *rx_slot);
-+	}
++	/* stream callbacks */
++	.pcm_open	= hda_dsp_pcm_open,
++	.pcm_close	= hda_dsp_pcm_close,
++	.pcm_hw_params	= hda_dsp_pcm_hw_params,
++	.pcm_trigger	= hda_dsp_pcm_trigger,
++	.pcm_pointer	= hda_dsp_pcm_pointer,
 +
-+	return 0;
-+}
++	/* firmware loading */
++	.load_firmware = hda_dsp_cl_load_fw,
 +
-+static int hda_link_dma_params(struct hdac_ext_stream *stream,
-+			       struct hda_pipe_params *params)
-+{
-+	struct hdac_stream *hstream = &stream->hstream;
-+	struct hdac_bus *bus = hstream->bus;
-+	unsigned int format_val;
-+	struct hdac_ext_link *link;
++	/* firmware run */
++	.run = hda_dsp_cl_boot_firmware,
 +
-+	snd_hdac_ext_stream_decouple(bus, stream, true);
-+	snd_hdac_ext_link_stream_reset(stream);
++	/* pre/post fw run */
++	.pre_fw_run = hda_dsp_pre_fw_run,
++	.post_fw_run = hda_dsp_post_fw_run,
 +
-+	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
-+						 params->format,
-+						 params->link_bps, 0);
++	/* dsp core power up/down */
++	.core_power_up = hda_dsp_enable_core,
++	.core_power_down = hda_dsp_core_reset_power_down,
 +
-+	dev_dbg(bus->dev, "format_val=%d, rate=%d, ch=%d, format=%d\n",
-+		format_val, params->s_freq, params->ch, params->format);
++	/* trace callback */
++	.trace_init = hda_dsp_trace_init,
++	.trace_release = hda_dsp_trace_release,
++	.trace_trigger = hda_dsp_trace_trigger,
 +
-+	snd_hdac_ext_link_stream_setup(stream, format_val);
++	/* DAI drivers */
++	.drv		= skl_dai,
++	.num_drv	= SOF_SKL_NUM_DAIS,
 +
-+	list_for_each_entry(link, &bus->hlink_list, list) {
-+		if (link->index == params->link_index)
-+			snd_hdac_ext_link_set_stream_id(link,
-+							hstream->stream_tag);
-+	}
-+
-+	stream->link_prepared = 1;
-+
-+	return 0;
-+}
-+
-+static int hda_link_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct hda_pipe_params p_params = {0};
-+	struct hdac_ext_link *link;
-+	int stream_tag;
-+
-+	link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
-+	if (!link)
-+		return -EINVAL;
-+
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
-+
-+	/* set the stream tag in the codec dai dma params  */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
-+
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = stream_tag - 1;
-+	p_params.link_index = link->index;
-+	p_params.format = params_format(params);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		p_params.link_bps = codec_dai->driver->playback.sig_bits;
-+	else
-+		p_params.link_bps = codec_dai->driver->capture.sig_bits;
-+
-+	return hda_link_dma_params(link_dev, &p_params);
-+}
-+
-+static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_stream *stream = stream_to_hdac_ext_stream(hstream);
-+
-+	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_hdac_ext_link_stream_start(link_dev);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_hdac_ext_link_stream_clear(link_dev);
-+		if (cmd == SNDRV_PCM_TRIGGER_SUSPEND)
-+			snd_hdac_ext_stream_decouple(bus, stream, false);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
++	/* PM */
++	.suspend		= hda_dsp_suspend,
++	.resume			= hda_dsp_resume,
++	.runtime_suspend	= hda_dsp_runtime_suspend,
++	.runtime_resume		= hda_dsp_runtime_resume,
++};
++EXPORT_SYMBOL(sof_apl_ops);
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+new file mode 100644
+index 000000000000..8e10441d6c84
+--- /dev/null
++++ b/sound/soc/sof/intel/cnl.c
+@@ -0,0 +1,242 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
++//
 +
 +/*
-+ * FIXME: This API is also abused since it's used for two purposes.
-+ * when the substream argument is NULL this function is used for cleanups
-+ * that aren't necessarily required, and called explicitly by handling
-+ * ASoC core structures, which is not recommended.
-+ * This part will be reworked in follow-up patches.
++ * Hardware interface for audio DSP on Cannonlake.
 + */
-+static int hda_link_hw_free(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *dai)
++
++#include "../ops.h"
++#include "hda.h"
++
++static const struct snd_sof_debugfs_map cnl_dsp_debugfs[] = {
++	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000},
++	{"pp", HDA_DSP_PP_BAR,  0, 0x1000},
++	{"dsp", HDA_DSP_BAR,  0, 0x10000},
++};
++
++static int cnl_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
++
++static irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
 +{
-+	const char *name;
-+	unsigned int stream_tag;
-+	struct hdac_bus *bus;
-+	struct hdac_ext_link *link;
-+	struct snd_sof_dev *sdev;
-+	struct hdac_stream *hstream;
-+	struct hdac_ext_stream *stream;
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_pcm_substream pcm_substream;
++	struct snd_sof_dev *sdev = (struct snd_sof_dev *)context;
++	u32 hipci, hipcctl, hipcida, hipctdr, hipctdd, msg = 0, msg_ext = 0;
++	irqreturn_t ret = IRQ_NONE;
 +
-+	memset(&pcm_substream, 0, sizeof(pcm_substream));
-+	if (substream) {
-+		hstream = substream->runtime->private_data;
-+		bus = hstream->bus;
-+		rtd = snd_pcm_substream_chip(substream);
-+		link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+		name = rtd->codec_dai->component->name;
-+		link = snd_hdac_ext_bus_get_link(bus, name);
-+		if (!link)
-+			return -EINVAL;
++	/* here we handle IPC interrupts only */
++	if (!(sdev->irq_status & HDA_DSP_ADSPIS_IPC))
++		return ret;
 +
-+		stream_tag = hdac_stream(link_dev)->stream_tag;
-+		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
++	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
 +
-+		link_dev->link_prepared = 0;
++	/* reply message from DSP */
++	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE &&
++	    hipcctl & CNL_DSP_REG_HIPCCTL_DONE) {
++		hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 CNL_DSP_REG_HIPCIDR);
++		msg_ext = hipci & CNL_DSP_REG_HIPCIDR_MSG_MASK;
++		msg = hipcida & CNL_DSP_REG_HIPCIDA_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware response, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* mask Done interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					CNL_DSP_REG_HIPCCTL,
++					CNL_DSP_REG_HIPCCTL_DONE, 0);
++
++		/*
++		 * handle immediate reply from DSP core. If the msg is
++		 * found, set done bit in cmd_done which is called at the
++		 * end of message processing function, else set it here
++		 * because the done bit can't be set in cmd_done function
++		 * which is triggered by msg
++		 */
++		if (snd_sof_ipc_reply(sdev, msg))
++			cnl_ipc_cmd_done(sdev, SOF_IPC_DSP_REPLY);
++
++		ret = IRQ_HANDLED;
++	}
++
++	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
++
++	/* new message from DSP */
++	if (hipctdr & CNL_DSP_REG_HIPCTDR_BUSY) {
++		hipctdd = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					   CNL_DSP_REG_HIPCTDD);
++		msg = hipctdr & CNL_DSP_REG_HIPCTDR_MSG_MASK;
++		msg_ext = hipctdd & CNL_DSP_REG_HIPCTDD_MSG_MASK;
++
++		dev_vdbg(sdev->dev,
++			 "ipc: firmware initiated, msg:0x%x, msg_ext:0x%x\n",
++			 msg, msg_ext);
++
++		/* handle messages from DSP */
++		if ((hipctdr & SOF_IPC_PANIC_MAGIC_MASK) ==
++		   SOF_IPC_PANIC_MAGIC) {
++			snd_sof_dsp_panic(sdev, HDA_DSP_PANIC_OFFSET(msg_ext));
++		} else {
++			snd_sof_ipc_msgs_rx(sdev);
++		}
++
++		/*
++		 * clear busy interrupt to tell dsp controller this
++		 * interrupt has been accepted, not trigger it again
++		 */
++		snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++					       CNL_DSP_REG_HIPCTDR,
++					       CNL_DSP_REG_HIPCTDR_BUSY,
++					       CNL_DSP_REG_HIPCTDR_BUSY);
++
++		ret = IRQ_HANDLED;
++	}
++
++	if (ret == IRQ_HANDLED) {
++		/* reenable IPC interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
++					HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
++	}
++
++	if (sdev->code_loading)	{
++		sdev->code_loading = 0;
++		wake_up(&sdev->waitq);
++	}
++
++	return ret;
++}
++
++static int cnl_ipc_cmd_done(struct snd_sof_dev *sdev, int dir)
++{
++	if (dir == SOF_IPC_HOST_REPLY) {
++		/*
++		 * set done bit to ack dsp the msg has been
++		 * processed and send reply msg to dsp
++		 */
++		snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++					       CNL_DSP_REG_HIPCTDA,
++					       CNL_DSP_REG_HIPCTDA_DONE,
++					       CNL_DSP_REG_HIPCTDA_DONE);
 +	} else {
-+		/* release all hda streams when dai link is unloaded */
-+		sdev = snd_soc_component_get_drvdata(dai->component);
-+		pcm_substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
++		/*
++		 * set DONE bit - tell DSP we have received the reply msg
++		 * from DSP, and processed it, don't send more reply to host
++		 */
++		snd_sof_dsp_update_bits_forced(sdev, HDA_DSP_BAR,
++					       CNL_DSP_REG_HIPCIDA,
++					       CNL_DSP_REG_HIPCIDA_DONE,
++					       CNL_DSP_REG_HIPCIDA_DONE);
 +
-+		pcm_substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
++		/* unmask Done interrupt */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
++					CNL_DSP_REG_HIPCCTL,
++					CNL_DSP_REG_HIPCCTL_DONE,
++					CNL_DSP_REG_HIPCCTL_DONE);
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops hda_link_dai_ops = {
-+	.hw_params = hda_link_hw_params,
-+	.hw_free = hda_link_hw_free,
-+	.trigger = hda_link_pcm_trigger,
-+	.get_channel_map = hda_link_dma_get_channels,
++static int cnl_ipc_is_ready(struct snd_sof_dev *sdev)
++{
++	u64 busy, done;
++
++	busy = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR);
++	done = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
++	if ((busy & CNL_DSP_REG_HIPCIDR_BUSY) ||
++	    (done & CNL_DSP_REG_HIPCIDA_DONE))
++		return 0;
++
++	return 1;
++}
++
++static int cnl_ipc_send_msg(struct snd_sof_dev *sdev,
++			    struct snd_sof_ipc_msg *msg)
++{
++	u32 cmd = msg->header;
++
++	/* send the message */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR,
++			  cmd | CNL_DSP_REG_HIPCIDR_BUSY);
++
++	return 0;
++}
++
++/* cannonlake ops */
++struct snd_sof_dsp_ops sof_cnl_ops = {
++	/* probe and remove */
++	.probe		= hda_dsp_probe,
++	.remove		= hda_dsp_remove,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_handler	= hda_dsp_ipc_irq_handler,
++	.irq_thread	= cnl_ipc_irq_thread,
++
++	/* mailbox */
++	.mailbox_read	= sof_mailbox_read,
++	.mailbox_write	= sof_mailbox_write,
++
++	/* ipc */
++	.send_msg	= cnl_ipc_send_msg,
++	.get_reply	= hda_dsp_ipc_get_reply,
++	.fw_ready	= hda_dsp_ipc_fw_ready,
++	.is_ready	= cnl_ipc_is_ready,
++	.cmd_done	= cnl_ipc_cmd_done,
++
++	/* debug */
++	.debug_map	= cnl_dsp_debugfs,
++	.debug_map_count	= ARRAY_SIZE(cnl_dsp_debugfs),
++	.dbg_dump	= hda_dsp_dump,
++
++	/* stream callbacks */
++	.pcm_open	= hda_dsp_pcm_open,
++	.pcm_close	= hda_dsp_pcm_close,
++	.pcm_hw_params	= hda_dsp_pcm_hw_params,
++	.pcm_trigger	= hda_dsp_pcm_trigger,
++
++	/* firmware loading */
++	.load_firmware = hda_dsp_cl_load_fw,
++
++	/* pre/post fw run */
++	.pre_fw_run = hda_dsp_pre_fw_run,
++	.post_fw_run = hda_dsp_post_fw_run,
++
++	/* dsp core power up/down */
++	.core_power_up = hda_dsp_enable_core,
++	.core_power_down = hda_dsp_core_reset_power_down,
++
++	/* firmware run */
++	.run = hda_dsp_cl_boot_firmware,
++
++	/* trace callback */
++	.trace_init = hda_dsp_trace_init,
++	.trace_release = hda_dsp_trace_release,
++	.trace_trigger = hda_dsp_trace_trigger,
++
++	/* DAI drivers */
++	.drv		= skl_dai,
++	.num_drv	= SOF_SKL_NUM_DAIS,
 +};
-+#endif
++EXPORT_SYMBOL(sof_cnl_ops);
+diff --git a/sound/soc/sof/intel/skl.c b/sound/soc/sof/intel/skl.c
+new file mode 100644
+index 000000000000..f876bee744d3
+--- /dev/null
++++ b/sound/soc/sof/intel/skl.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
++//
 +
 +/*
-+ * common dai driver for skl+ platforms.
-+ * some products who use this DAI array only physically have a subset of
-+ * the DAIs, but no harm is done here by adding the whole set.
++ * Hardware interface for audio DSP on Skylake and Kabylake.
 + */
-+struct snd_soc_dai_driver skl_dai[] = {
-+{
-+	.name = "SSP0 Pin",
-+	.playback = SOF_DAI_STREAM("ssp0 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp0 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "SSP1 Pin",
-+	.playback = SOF_DAI_STREAM("ssp1 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp1 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "SSP2 Pin",
-+	.playback = SOF_DAI_STREAM("ssp2 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp2 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "SSP3 Pin",
-+	.playback = SOF_DAI_STREAM("ssp3 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp3 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "SSP4 Pin",
-+	.playback = SOF_DAI_STREAM("ssp4 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp4 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "SSP5 Pin",
-+	.playback = SOF_DAI_STREAM("ssp5 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("ssp5 Rx", 1, 8,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "DMIC01 Pin",
-+	.capture = SOF_DAI_STREAM("DMIC01 Rx", 1, 4,
-+				  SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "DMIC16k Pin",
-+	.capture = SOF_DAI_STREAM("DMIC16k Rx", 1, 4,
-+				  SNDRV_PCM_RATE_16000, SKL_FORMATS),
-+},
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+{
-+	.name = "iDisp1 Pin",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("iDisp1 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "iDisp2 Pin",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("iDisp2 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "iDisp3 Pin",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("iDisp3 Tx", 1, 8,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("Analog CPU Playback", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("Analog CPU Capture", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("Digital CPU Playback", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("Digital CPU Capture", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+	.playback = SOF_DAI_STREAM("Alt Analog CPU Playback", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+	.capture = SOF_DAI_STREAM("Alt Analog CPU Capture", 1, 16,
-+				   SNDRV_PCM_RATE_8000_192000, SKL_FORMATS),
-+},
-+#endif
++
++#include "../sof-priv.h"
++#include "hda.h"
++
++static const struct snd_sof_debugfs_map skl_dsp_debugfs[] = {
++	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000},
++	{"pp", HDA_DSP_PP_BAR,  0, 0x1000},
++	{"dsp", HDA_DSP_BAR,  0, 0x10000},
 +};
++
++/* skylake ops */
++struct snd_sof_dsp_ops sof_skl_ops = {
++	/* probe and remove */
++	.probe		= hda_dsp_probe,
++	.remove		= hda_dsp_remove,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_handler	= hda_dsp_ipc_irq_handler,
++	.irq_thread	= hda_dsp_ipc_irq_thread,
++
++	/* mailbox */
++	.mailbox_read	= sof_mailbox_read,
++	.mailbox_write	= sof_mailbox_write,
++
++	/* ipc */
++	.send_msg	= hda_dsp_ipc_send_msg,
++	.get_reply	= hda_dsp_ipc_get_reply,
++	.fw_ready	= hda_dsp_ipc_fw_ready,
++	.is_ready	= hda_dsp_ipc_is_ready,
++	.cmd_done	= hda_dsp_ipc_cmd_done,
++
++	/* debug */
++	.debug_map	= skl_dsp_debugfs,
++	.debug_map_count	= ARRAY_SIZE(skl_dsp_debugfs),
++	.dbg_dump	= hda_dsp_dump_skl,
++
++	/* stream callbacks */
++	.pcm_open	= hda_dsp_pcm_open,
++	.pcm_close	= hda_dsp_pcm_close,
++	.pcm_hw_params	= hda_dsp_pcm_hw_params,
++	.pcm_trigger	= hda_dsp_pcm_trigger,
++
++	/* firmware loading */
++	.load_firmware = hda_dsp_cl_load_fw,
++
++	/* pre/post fw run */
++	.pre_fw_run = hda_dsp_pre_fw_run,
++	.post_fw_run = hda_dsp_post_fw_run,
++
++	/* dsp core power up/down */
++	.core_power_up = hda_dsp_enable_core,
++	.core_power_down = hda_dsp_core_reset_power_down,
++
++	/* firmware run */
++	.run = hda_dsp_cl_boot_firmware_skl,
++
++	/* trace callback */
++	.trace_init = hda_dsp_trace_init,
++	.trace_release = hda_dsp_trace_release,
++	.trace_trigger = hda_dsp_trace_trigger,
++
++	/* DAI drivers */
++	.drv		= skl_dai,
++	.num_drv	= SOF_SKL_NUM_DAIS,
++};
++EXPORT_SYMBOL(sof_skl_ops);
 -- 
 2.17.1
