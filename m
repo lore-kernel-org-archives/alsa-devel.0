@@ -1,17 +1,22 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: kbl_rt5660: Add a new
- machine driver for kbl with rt5660
-Date: Tue, 11 Dec 2018 08:30:37 -0600
-Message-ID: <9308d875-9c04-d2d0-168b-6032708bca6b@linux.intel.com>
-References: <20181208024814.17843-1-hui.wang@canonical.com>
+Subject: Re: [PATCH 2/7] ALSA: hda: Refactor display power
+ management
+Date: Tue, 11 Dec 2018 08:34:44 -0600
+Message-ID: <a650e6aa-60fe-7f60-ca23-5c819c9e353d@linux.intel.com>
+References: <20181209093318.27829-1-tiwai@suse.de>
+ <20181209093318.27829-3-tiwai@suse.de>
+ <1ff2c83b-fb5e-2972-77d0-e32c247e9912@linux.intel.com>
+ <s5ha7lcwo34.wl-tiwai@suse.de>
+ <1eada34e-94fb-a6dd-dde9-3a6e40b9bc50@linux.intel.com>
+ <s5hftv4kvls.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 67497267BCC
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 15:30:39 +0100 (CET)
-In-Reply-To: <20181208024814.17843-1-hui.wang@canonical.com>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21558267BCB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 15:34:46 +0100 (CET)
+In-Reply-To: <s5hftv4kvls.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,107 +27,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSHVpLAoKTG9va3MgbW9zdGx5IGdvb2QsIGNvdXBsZSBvZiBjb21tZW50cyBiZWxvdy4gSSBk
-aWRuJ3QgbG9vayBhdCB0aGUgR1BJTyAKcGFydHMgc2luY2UgSSBhbSBub3QgZmFtaWxpYXIgd2l0
-aCB0aGUgZnJhbWV3b3JrLgoKVGhhbmtzCgotUGllcnJlCgoKPiArKysgYi9zb3VuZC9zb2MvaW50
-ZWwvYm9hcmRzL2tibF9ydDU2NjAuYwo+IEBAIC0wLDAgKzEsNTM2IEBACj4gKy8vIFNQRFgtTGlj
-ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4gKy8vIENvcHlyaWdodChjKSAyMDE4LTE5IEludGVs
-IENvcnBvcmF0aW9uLgoKTm90IHN1cmUgdGhpcyBpcyBjb3JyZWN0IHNpbmNlIHlvdSBkaWQgdGhl
-IHdvcms/Cgo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcga2FieWxha2Vf
-cnQ1NjYwX2NvbnRyb2xzW10gPSB7Cj4gKwlTT0NfREFQTV9QSU5fU1dJVENIKCJMaW5lIEluIiks
-Cj4gKwlTT0NfREFQTV9QSU5fU1dJVENIKCJMaW5lIE91dCIpLAo+ICt9Owo+ICsKPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IGthYnlsYWtlX3J0NTY2MF93aWRnZXRz
-W10gPSB7Cj4gKwlTTkRfU09DX0RBUE1fTUlDKCJMaW5lIEluIiwgTlVMTCksCj4gKwlTTkRfU09D
-X0RBUE1fTElORSgiTGluZSBPdXQiLCBrYWJ5bGFrZV81NjYwX2V2ZW50X2xpbmVvdXQpLAo+ICsJ
-U05EX1NPQ19EQVBNX1NQSygiRFAiLCBOVUxMKSwKPiArCVNORF9TT0NfREFQTV9TUEsoIkhETUki
-LCBOVUxMKSwKCkkgc2VlIGluIG90aGVyIG1hY2hpbmUgZHJpdmVycyB0aGF0IHdoZW4gdGhpcyBE
-UCBzdHVmZiBpcyB1c2VkIHRoZXJlIGlzIAphbHNvIGEgbWF0Y2hpbmcgcm91dGUgd2hpY2ggeW91
-IGRvbid0IGhhdmUuCgprYmxfZGE3MjE5X21heDk4MzU3YS5jOjk0OsKgwqDCoCBTTkRfU09DX0RB
-UE1fU1BLKCJEUCIsIE5VTEwpLAprYmxfZGE3MjE5X21heDk4MzU3YS5jOjExMzrCoMKgwqAgeyAi
-RFAiLCBOVUxMLCAiaGlmNiBPdXRwdXQiIH0sCmtibF9kYTcyMTlfbWF4OTg5MjcuYzoxMDk6wqDC
-oMKgIFNORF9TT0NfREFQTV9TUEsoIkRQIiwgTlVMTCksCmtibF9kYTcyMTlfbWF4OTg5MjcuYzox
-MjU6wqDCoMKgIHsgIkRQIiwgTlVMTCwgImhpZjYgT3V0cHV0IiB9LAprYmxfcnQ1NjYzX21heDk4
-OTI3LmM6MjA1OsKgwqDCoCBTTkRfU09DX0RBUE1fU1BLKCJEUCIsIE5VTEwpLAprYmxfcnQ1NjYz
-X21heDk4OTI3LmM6MjIzOsKgwqDCoCB7ICJEUCIsIE5VTEwsICJoaWY2IE91dHB1dCIgfSwKCkkg
-bmV2ZXIgbm90aWNlZCB0aGlzIGluIEludGVsIG1hY2hpbmUgZHJpdmVycywgeWV0IGFub3RoZXIg
-d2VpcmQgdGhpbmcgCnRvIHJldmVyc2UgZW5naW5lZXIuLi5JIGhhdmUgbm8gaWRlYSB3aHkgaXQg
-d2FzIG1vZGVsZWQgdGhpcyB3YXksIHRoZSAKaW50ZXJmYWNlIGF0IHRoZSBEU1AgbGV2ZWwgZG9l
-cyBub3Qga25vdyBvciBuZWVkIHRvIGNhcmUgd2hhdCB0aGUgYWN0dWFsIApsaW5rIGlzLCBpdCBm
-aXJzdCBnb2VzIG92ZXIgYW4gaURJU1AvSERBdWRpbyBsaW5rLgoKTmF2ZWVuLCBhbnkgaWRlYSBv
-biB0aGlzPwoKPiArfTsKPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3Jv
-dXRlIGthYnlsYWtlX3J0NTY2MF9tYXBbXSA9IHsKPiArCS8qIG90aGVyIGphY2tzICovCj4gKwl7
-IklOMVAiLCBOVUxMLCAiTGluZSBJbiJ9LAo+ICsJeyJJTjJQIiwgTlVMTCwgIkxpbmUgSW4ifSwK
-PiArCXsiTGluZSBPdXQiLCBOVUxMLCAiTE9VVFIifSwKPiArCXsiTGluZSBPdXQiLCBOVUxMLCAi
-TE9VVEwifSwKPiArCj4gKwkvKiBDT0RFQyBCRSBjb25uZWN0aW9ucyAqLwo+ICsJeyAiQUlGMSBQ
-bGF5YmFjayIsIE5VTEwsICJzc3AwIFR4In0sCj4gKwl7ICJzc3AwIFR4IiwgTlVMTCwgImNvZGVj
-MF9vdXQifSwKPiArCj4gKwl7ICJjb2RlYzBfaW4iLCBOVUxMLCAic3NwMCBSeCIgfSwKPiArCXsg
-InNzcDAgUngiLCBOVUxMLCAiQUlGMSBDYXB0dXJlIiB9LAo+ICsKPiArCXsgImhpZmkyIiwgTlVM
-TCwgImlEaXNwMiBUeCJ9LAo+ICsJeyAiaURpc3AyIFR4IiwgTlVMTCwgImlEaXNwMl9vdXQifSwK
-PiArCXsgImhpZmkxIiwgTlVMTCwgImlEaXNwMSBUeCJ9LAo+ICsJeyAiaURpc3AxIFR4IiwgTlVM
-TCwgImlEaXNwMV9vdXQifSwKYXJlbid0IHlvdSBtaXNzaW5nIHRoZSByb3V0ZXMgZm9yIHRoZSBI
-RE1JMyB3aGljaCBhcmUgbGlzdGVkIGluIHRoZSByZXN0IApvZiB0aGUgcGF0Y2g/Cj4gKwo+ICtz
-dGF0aWMgaW50IGthYnlsYWtlX3J0NTY2MF9jb2RlY19pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9y
-dW50aW1lICpydGQpCj4gK3sKPiArCWludCByZXQ7Cj4gKwlzdHJ1Y3Qga2JsX2NvZGVjX3ByaXZh
-dGUgKmN0eCA9IHNuZF9zb2NfY2FyZF9nZXRfZHJ2ZGF0YShydGQtPmNhcmQpOwo+ICsJc3RydWN0
-IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQgPSBydGQtPmNvZGVjX2RhaS0+Y29tcG9uZW50
-Owo+ICsJc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0ICpkYXBtID0gc25kX3NvY19jb21wb25l
-bnRfZ2V0X2RhcG0oY29tcG9uZW50KTsKPiArCj4gKwlyZXQgPSBkZXZtX2FjcGlfZGV2X2FkZF9k
-cml2ZXJfZ3Bpb3MoY29tcG9uZW50LT5kZXYsIGFjcGlfcnQ1NjYwX2dwaW9zKTsKPiArCWlmIChy
-ZXQpCj4gKwkJZGV2X3dhcm4oY29tcG9uZW50LT5kZXYsICJGYWlsZWQgdG8gYWRkIGRyaXZlciBn
-cGlvc1xuIik7Cj4gKwo+ICsJLyogUmVxdWVzdCBydDU2NjAgR1BJTyBmb3IgbGluZW91dCBtdXRl
-IGNvbnRyb2wgKi8KPiArCWN0eC0+Z3Bpb19sb19tdXRlID0gZGV2bV9ncGlvZF9nZXQoY29tcG9u
-ZW50LT5kZXYsICJsaW5lb3V0LW11dGUiLAo+ICsJCQlHUElPRF9PVVRfSElHSCk7Cj4gKwlpZiAo
-SVNfRVJSKGN0eC0+Z3Bpb19sb19tdXRlKSkgewo+ICsJCWRldl9lcnIoY29tcG9uZW50LT5kZXYs
-ICJDYW4ndCBmaW5kIEdQSU9fTVVURSMgZ3Bpb1xuIik7Cj4gKwkJcmV0dXJuIFBUUl9FUlIoY3R4
-LT5ncGlvX2xvX211dGUpOwo+ICsJfQpIZXJlIHlvdSBleGl0IHdpdGggYW4gZXJyb3IsIGJ1dCBz
-ZWUgWzFdIGJlbG93Cj4gKwo+ICsJLyogQ3JlYXRlIGFuZCBpbml0aWFsaXplIGhlYWRwaG9uZSBq
-YWNrICovCj4gKwlpZiAoIXNuZF9zb2NfY2FyZF9qYWNrX25ldyhydGQtPmNhcmQsICJMaW5lb3V0
-IEphY2siLAo+ICsJCQlTTkRfSkFDS19MSU5FT1VULCAmbGluZW91dF9qYWNrLAo+ICsJCQkmbGlu
-ZW91dF9qYWNrX3BpbiwgMSkpIHsKPiArCQlsaW5lb3V0X2phY2tfZ3Bpby5ncGlvZF9kZXYgPSBj
-b21wb25lbnQtPmRldjsKPiArCQlpZiAoc25kX3NvY19qYWNrX2FkZF9ncGlvcygmbGluZW91dF9q
-YWNrLCAxLAo+ICsJCQkJJmxpbmVvdXRfamFja19ncGlvKSkKPiArCQkJZGV2X2Vycihjb21wb25l
-bnQtPmRldiwgIkNhbid0IGFkZCBMaW5lb3V0IGphY2sgZ3Bpb1xuIik7Cj4gKwl9IGVsc2UKPiAr
-CQlkZXZfZXJyKGNvbXBvbmVudC0+ZGV2LCAiQ2FuJ3QgY3JlYXRlIExpbmVvdXQgamFja1xuIik7
-Cgp0aGUgdGVzdHMgZm9yIHNuZF9zb2NfamFja19uZXcgYXJlIG9kZC4gSXQncyBtb3JlIHVzdWFs
-IHRvIHNlZQoKcmV0ID0gc25kX3NvY19jYXJkX2phY2tfbmV3KCk7CgppZiAocmV0KXsKCiDCoMKg
-wqAgZGV2X2VycihibGFoKQoKIMKgwqDCoCByZXR1cm4gcmV0OwoKfQoKSSBndWVzcyB5b3UgdG9v
-ayBhcyBleGFtcGxlIGJkdy1ydDU2NzcgYnV0IGl0J3MgdGhlIG9ubHkgb25lIGZvbGxvd2luZyAK
-dGhlIHBhdHRlcm4geW91IHVzZWQuCgo+ICsKPiArCS8qIENyZWF0ZSBhbmQgaW5pdGlhbGl6ZSBt
-aWMgamFjayAqLwo+ICsJaWYgKCFzbmRfc29jX2NhcmRfamFja19uZXcocnRkLT5jYXJkLCAiTWlj
-IEphY2siLAo+ICsJCQlTTkRfSkFDS19NSUNST1BIT05FLCAmbWljX2phY2ssCj4gKwkJCSZtaWNf
-amFja19waW4sIDEpKSB7Cj4gKwkJbWljX2phY2tfZ3Bpby5ncGlvZF9kZXYgPSBjb21wb25lbnQt
-PmRldjsKPiArCQlpZiAoc25kX3NvY19qYWNrX2FkZF9ncGlvcygmbWljX2phY2ssIDEsICZtaWNf
-amFja19ncGlvKSkKPiArCQkJZGV2X2Vycihjb21wb25lbnQtPmRldiwgIkNhbid0IGFkZCBtaWMg
-amFjayBncGlvXG4iKTsKPiArCX0gZWxzZQo+ICsJCWRldl9lcnIoY29tcG9uZW50LT5kZXYsICJD
-YW4ndCBjcmVhdGUgbWljIGphY2tcbiIpOwoKWzFdIC4uLiBmb3IgYm90aCBvZiB0aGUgamFja3Mg
-eW91IGRvbid0IGV4aXQuIElzIHRoaXMgaW50ZW50aW9uYWw/Cgo+ICsKPiArCXNuZF9zb2NfZGFw
-bV9mb3JjZV9lbmFibGVfcGluKGRhcG0sICJNSUNCSUFTMSIpOwo+ICsJc25kX3NvY19kYXBtX2Zv
-cmNlX2VuYWJsZV9waW4oZGFwbSwgIkJTVDEiKTsKPiArCXNuZF9zb2NfZGFwbV9mb3JjZV9lbmFi
-bGVfcGluKGRhcG0sICJCU1QyIik7CgpBcmUgdGhvc2UgaW5pdGlhbGl6YXRpb25zIHJlcXVpcmVk
-PwoKPiArCj4gKwlyZXR1cm4gMDsKPiArfQo+Cj4gK3N0YXRpYyBpbnQga2JsX2ZlX3N0YXJ0dXAo
-c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCj4gK3sKPiArCXN0cnVjdCBzbmRf
-cGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7Cj4gKwo+ICsJLyoKPiAr
-CSAqIE9uIHRoaXMgcGxhdGZvcm0gZm9yIFBDTSBkZXZpY2Ugd2Ugc3VwcG9ydCwKPiArCSAqIDQ4
-S2h6Cj4gKwkgKiBzdGVyZW8KPiArCSAqIDE2IGJpdCBhdWRpbwo+ICsJICovCj4gKwo+ICsJcnVu
-dGltZS0+aHcuY2hhbm5lbHNfbWF4ID0gRFVBTF9DSEFOTkVMOwo+ICsJc25kX3BjbV9od19jb25z
-dHJhaW50X2xpc3QocnVudGltZSwgMCwgU05EUlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTLAo+ICsJ
-CQkJCSAgICZjb25zdHJhaW50c19jaGFubmVscyk7Cj4gKwo+ICsJcnVudGltZS0+aHcuZm9ybWF0
-cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFOwo+ICsJc25kX3BjbV9od19jb25zdHJhaW50X21z
-Yml0cyhydW50aW1lLCAwLCAxNiwgMTYpOwp0aGF0IHBhcnQgaXMgb2RkLCB0aGUgU1NQIGlzIGNv
-bmZpZ3VyZWQgdG8gd29yayB3aXRoIDI0IGJpdHMgYnV0IHNvbWVob3cgCml0J3MgY29uc3RyYWlu
-ZWQgaGVyZSB0byAxNiBiaXRzLiBpdCBtdXN0IGJlIGNvcHkvcGFzdGUgZnJvbSBvdGhlciAKbWFj
-aGluZSBkcml2ZXJzLCBidXQgbm90IHN1cmUgaWYgdGhpcyBpcyByZXF1aXJlZCBoZXJlLgo+IC0t
-LSBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwta2JsLW1hdGNoLmMKPiAr
-KysgYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWtibC1tYXRjaC5jCj4g
-QEAgLTk2LDYgKzk2LDExIEBAIHN0cnVjdCBzbmRfc29jX2FjcGlfbWFjaCBzbmRfc29jX2FjcGlf
-aW50ZWxfa2JsX21hY2hpbmVzW10gPSB7Cj4gICAJCS5xdWlya19kYXRhID0gJmtibF83MjE5Xzk4
-OTI3X2NvZGVjcywKPiAgIAkJLnBkYXRhID0gJnNrbF9kbWljX2RhdGEKPiAgIAl9LAo+ICsJewo+
-ICsJCS5pZCA9ICIxMEVDMzI3NyIsCj4gKwkJLmRydl9uYW1lID0gImtibF9ydDU2NjAiLAo+ICsJ
-CS5md19maWxlbmFtZSA9ICJpbnRlbC9kc3BfZndfa2JsLmJpbiIsCmNhbiB3ZSBhbHNvIGFkZCBh
-biBlbnRyeSBmb3IgMTBFQzU2NjAgc2luY2UgaXQncyBhbHJlYWR5IGEga25vd24gQUNQSSBJRD8K
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+>>>>>      a codec was done indirectly via link_power bus ops.)
+>>>>>
+>>>>> - snd_hdac_display_power() receives the codec address index.  For
+>>>>>      turning on/off from the controller, pass HDA_CODEC_IDX_CONTROLLER.
+>>>> The need for this virtual index==16 isn't fully clear to me,
+>>>> especially if you use the bitfields instead of reference counts.
+>>>>
+>>>> Isn't there a risk of the controller setting the bit16 to zero, but
+>>>> you still have bit4 on (assuming the idx is 4). If you use this
+>>>> virtual index, it should override the actual physical bits when
+>>>> set/cleared.
+>>> This is the index for a controller, i.e. we'd need bits for the max
+>>> number of codecs + 1.
+>>>
+>>> Actually we do support only up to 8 codecs (HDA_MAX_CODECS), so it
+>>> should be 8, instead of 16, too.  I'll update to be HDA_MAX_CODECS.
+>>>
+>>>> Or is this meant to actually implement a preemption mechanism, where
+>>>> the display power remains on for as long as the controller wishes,
+>>>> regardless of what the patch_hdmi and hdac_hdmi code requests?
+>>> Right.  That's the mechanism at the initial phase, we need the display
+>>> power on while probing the codec, i.e. before identifying the codec
+>>> ID.
+>>>
+>>>> Also don't we already have the HDMI codec address already after the
+>>>> probe, so couldn't we provide the address directly?
+>>> The resume seemed requiring the controller to take the display power
+>>> at first, so the same mechanism is used.
+>> ok, makes sense, thanks for the explanations.
+>>
+>> So I guess for the SOF patches, the only change would be to add the
+>> second argument HDA_CODEC_IDX_CONTROLLER to snd_hdac_display_power()
+>> calls, the rest looks unchanged or hidden inside the hdac library or
+>> hdac_hdmi parts.
+> Yes, other than that, this change makes things easier.
+>
+> Since we don't manage with refcount, the only important point is to
+> turn off/on properly at suspend/resume (also off at remove), no matter
+> how many times it gets called.
+Ah yes, we are missing this on remove since we assumed the refcount 
+would already be zero. I guess we'll have to revalidate this part 
+anyways once your patches are merged (already have an SOF issue filed to 
+track this change).
