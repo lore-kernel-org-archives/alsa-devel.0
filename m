@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/8] ALSA: fireface: share register for async
-	transaction of MIDI messages
-Date: Tue, 11 Dec 2018 19:17:32 +0900
-Message-ID: <20181211101735.13735-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH 6/8] ALSA: fireface: add driver data for
+	register for MIDI high address
+Date: Tue, 11 Dec 2018 19:17:33 +0900
+Message-ID: <20181211101735.13735-7-o-takashi@sakamocchi.jp>
 References: <20181211101735.13735-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com
  [209.85.215.196])
- by alsa0.perex.cz (Postfix) with ESMTP id C17F1267B8B
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 11:17:53 +0100 (CET)
-Received: by mail-pg1-f196.google.com with SMTP id n2so6431714pgm.3
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:17:53 -0800 (PST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EFDA267B8B
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 11:17:55 +0100 (CET)
+Received: by mail-pg1-f196.google.com with SMTP id w7so6413804pgp.13
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:17:55 -0800 (PST)
 In-Reply-To: <20181211101735.13735-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,77 +28,169 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-As long as investigating packet dumps from Fireface 400/800, a register
-to receive asynchronous transactions for MIDI messages is the same. For
-Fireface 800, minor register is used.
+Fireface 400 and 800 have the same mechanism to decide address to which
+asynchronous transactions are sent for MIDI messages, however they use
+different registers for controllers to notify higher 4 byte of the
+address.
 
-This commit declares macros for the transactions and obsoletes
-model-specific parameters.
+This commit adds a model-specific parameter to represent the address.
+Additionally, it corrects some comments. I note that these two models have
+a difference to enable/disable the transaction.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-protocol-ff400.c | 4 ----
- sound/firewire/fireface/ff-transaction.c    | 7 +++++--
- sound/firewire/fireface/ff.h                | 2 --
- 3 files changed, 5 insertions(+), 8 deletions(-)
+ sound/firewire/fireface/ff-protocol-ff400.c |  4 --
+ sound/firewire/fireface/ff-transaction.c    | 53 ++++++++++-----------
+ sound/firewire/fireface/ff.c                |  3 ++
+ sound/firewire/fireface/ff.h                |  8 +++-
+ 4 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/sound/firewire/fireface/ff-protocol-ff400.c b/sound/firewire/fireface/ff-protocol-ff400.c
-index d2fbb0382223..5cbaff9d6a40 100644
+index 5cbaff9d6a40..b283762e785c 100644
 --- a/sound/firewire/fireface/ff-protocol-ff400.c
 +++ b/sound/firewire/fireface/ff-protocol-ff400.c
-@@ -16,8 +16,6 @@
+@@ -15,8 +15,6 @@
+ #define FF400_TX_PACKET_FORMAT	0x00008010050cull
  #define FF400_ISOC_COMM_STOP	0x000080100510ull
  
- #define FF400_MIDI_HIGH_ADDR	0x0000801003f4ull
--#define FF400_MIDI_RX_PORT_0	0x000080180000ull
--#define FF400_MIDI_RX_PORT_1	0x000080190000ull
- 
+-#define FF400_MIDI_HIGH_ADDR	0x0000801003f4ull
+-
  static int ff400_begin_session(struct snd_ff *ff, unsigned int rate)
  {
-@@ -115,6 +113,4 @@ const struct snd_ff_protocol snd_ff_protocol_ff400 = {
+ 	__le32 reg;
+@@ -111,6 +109,4 @@ const struct snd_ff_protocol snd_ff_protocol_ff400 = {
+ 	.begin_session		= ff400_begin_session,
+ 	.finish_session		= ff400_finish_session,
  	.switch_fetching_mode	= ff400_switch_fetching_mode,
- 
- 	.midi_high_addr_reg	= FF400_MIDI_HIGH_ADDR,
--	.midi_rx_port_0_reg	= FF400_MIDI_RX_PORT_0,
--	.midi_rx_port_1_reg	= FF400_MIDI_RX_PORT_1,
+-
+-	.midi_high_addr_reg	= FF400_MIDI_HIGH_ADDR,
  };
 diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
-index 751662b62389..fa0bc956696f 100644
+index fa0bc956696f..1ce4cef6ca35 100644
 --- a/sound/firewire/fireface/ff-transaction.c
 +++ b/sound/firewire/fireface/ff-transaction.c
-@@ -8,6 +8,9 @@
+@@ -269,36 +269,33 @@ static int allocate_own_address(struct snd_ff *ff, int i)
+ }
  
- #include "ff.h"
- 
-+#define SND_FF_REG_MIDI_RX_PORT_0	0x000080180000ull
-+#define SND_FF_REG_MIDI_RX_PORT_1	0x000080190000ull
-+
- int snd_ff_transaction_get_clock(struct snd_ff *ff, unsigned int *rate,
- 				 enum snd_ff_clock_src *src)
+ /*
+- * The configuration to start asynchronous transactions for MIDI messages is in
+- * 0x'0000'8010'051c. This register includes the other options, thus this driver
+- * doesn't touch it and leaves the decision to userspace. The userspace MUST add
+- * 0x04000000 to write transactions to the register to receive any MIDI
+- * messages.
+- *
+- * Here, I just describe MIDI-related offsets of the register, in little-endian
+- * order.
+- *
+  * Controllers are allowed to register higher 4 bytes of address to receive
+- * the transactions. The register is 0x'0000'8010'03f4. On the other hand, the
+- * controllers are not allowed to register lower 4 bytes of the address. They
+- * are forced to select from 4 options by writing corresponding bits to
+- * 0x'0000'8010'051c.
++ * the transactions. Different models have different registers for this purpose;
++ * e.g. 0x'0000'8010'03f4 for Fireface 400.
++ * The controllers are not allowed to register lower 4 bytes of the address.
++ * They are forced to select one of 4 options for the part of address by writing
++ * corresponding bits to 0x'0000'8010'051f.
++ *
++ * The 3rd-6th bits of this register are flags to indicate lower 4 bytes of
++ * address to which the device transferrs the transactions. In short:
++ *  - 0x20: 0x'....'....'0000'0180
++ *  - 0x10: 0x'....'....'0000'0100
++ *  - 0x08: 0x'....'....'0000'0080
++ *  - 0x04: 0x'....'....'0000'0000
+  *
+- * The 3rd-6th bits in MSB of this register are used to indicate lower 4 bytes
+- * of address to which the device transferrs the transactions.
+- *  - 6th: 0x'....'....'0000'0180
+- *  - 5th: 0x'....'....'0000'0100
+- *  - 4th: 0x'....'....'0000'0080
+- *  - 3rd: 0x'....'....'0000'0000
++ * This driver configure 0x'....'....'0000'0000 to receive MIDI messages from
++ * units. The 3rd bit of the register should be configured, however this driver
++ * deligates this task to userspace applications due to a restriction that this
++ * register is write-only and the other bits have own effects.
+  *
+- * This driver configure 0x'....'....'0000'0000 for units to receive MIDI
+- * messages. 3rd bit of the register should be configured, however this driver
+- * deligates this task to user space applications due to a restriction that
+- * this register is write-only and the other bits have own effects.
++ * Unlike Fireface 800, Fireface 400 cancels transferring asynchronous
++ * transactions when the 1st and 2nd of the register stand. These two bits have
++ * the same effect.
++ *  - 0x02, 0x01: cancel transferring
+  *
+- * The 1st and 2nd bits in LSB of this register are used to cancel transferring
+- * asynchronous transactions. These two bits have the same effect.
+- *  - 1st/2nd: cancel transferring
++ * On the other hand, the bits have no effect on Fireface 800. This model
++ * cancels asynchronous transactions when the higher 4 bytes of address is
++ * overwritten with zero.
+  */
+ int snd_ff_transaction_reregister(struct snd_ff *ff)
  {
-@@ -153,10 +156,10 @@ static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
- 		fill_midi_buf(ff, port, i, buf[i]);
+@@ -313,7 +310,7 @@ int snd_ff_transaction_reregister(struct snd_ff *ff)
+ 	addr = (fw_card->node_id << 16) | (ff->async_handler.offset >> 32);
+ 	reg = cpu_to_le32(addr);
+ 	return snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
+-				  ff->spec->protocol->midi_high_addr_reg,
++				  ff->spec->regs[SND_FF_REG_TYPE_MIDI_HIGH_ADDR],
+ 				  &reg, sizeof(reg), 0);
+ }
  
- 	if (port == 0) {
--		addr = ff->spec->protocol->midi_rx_port_0_reg;
-+		addr = SND_FF_REG_MIDI_RX_PORT_0;
- 		callback = finish_transmit_midi0_msg;
- 	} else {
--		addr = ff->spec->protocol->midi_rx_port_1_reg;
-+		addr = SND_FF_REG_MIDI_RX_PORT_1;
- 		callback = finish_transmit_midi1_msg;
- 	}
+@@ -354,7 +351,7 @@ void snd_ff_transaction_unregister(struct snd_ff *ff)
+ 	/* Release higher 4 bytes of address. */
+ 	reg = cpu_to_le32(0x00000000);
+ 	snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
+-			   ff->spec->protocol->midi_high_addr_reg,
++			   ff->spec->regs[SND_FF_REG_TYPE_MIDI_HIGH_ADDR],
+ 			   &reg, sizeof(reg), 0);
  
+ 	fw_core_remove_address_handler(&ff->async_handler);
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 3f61cfeace69..2ce5e115b0eb 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -152,6 +152,9 @@ static const struct snd_ff_spec spec_ff400 = {
+ 	.midi_in_ports = 2,
+ 	.midi_out_ports = 2,
+ 	.protocol = &snd_ff_protocol_ff400,
++	.regs = {
++		[SND_FF_REG_TYPE_MIDI_HIGH_ADDR] = 0x0000801003f4ull,
++	},
+ };
+ 
+ static const struct ieee1394_device_id snd_ff_id_table[] = {
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 95cf90b4b533..ea905285beab 100644
+index ea905285beab..466304c72d76 100644
 --- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -107,8 +107,6 @@ struct snd_ff_protocol {
- 	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
+@@ -42,6 +42,11 @@
+ #define SND_FF_REG_FETCH_PCM_FRAMES	0x0000801c0000ull
+ #define SND_FF_REG_CLOCK_CONFIG		0x0000801c0004ull
  
- 	u64 midi_high_addr_reg;
--	u64 midi_rx_port_0_reg;
--	u64 midi_rx_port_1_reg;
++enum snd_ff_reg_type {
++	SND_FF_REG_TYPE_MIDI_HIGH_ADDR = 0,
++	SND_FF_REG_TYPE_COUNT,
++};
++
+ struct snd_ff_protocol;
+ struct snd_ff_spec {
+ 	const char *const name;
+@@ -53,6 +58,7 @@ struct snd_ff_spec {
+ 	unsigned int midi_out_ports;
+ 
+ 	const struct snd_ff_protocol *protocol;
++	u64 regs[SND_FF_REG_TYPE_COUNT];
+ };
+ 
+ struct snd_ff {
+@@ -105,8 +111,6 @@ struct snd_ff_protocol {
+ 	int (*begin_session)(struct snd_ff *ff, unsigned int rate);
+ 	void (*finish_session)(struct snd_ff *ff);
+ 	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
+-
+-	u64 midi_high_addr_reg;
  };
  
  extern const struct snd_ff_protocol snd_ff_protocol_ff400;
