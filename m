@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: add dai-link support"
-	to the asoc tree
-Date: Tue, 11 Dec 2018 20:36:50 +0000 (GMT)
-Message-ID: <20181211203650.CDCCC112540E@debutante.sirena.org.uk>
-References: <87a7lcbvpg.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: RME Fireface alsa driver
+Date: Wed, 12 Dec 2018 05:43:44 +0900
+Message-ID: <20181211204344.GA16818@workstation>
+References: <53dc5ff5-bee5-5998-dcd4-1dd1f926c857@halfshavedyaks.xyz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 271B8267BEB
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 21:36:51 +0100 (CET)
-In-Reply-To: <87a7lcbvpg.wl-kuninori.morimoto.gx@renesas.com>
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com
+ [209.85.215.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96227267BE2
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 21:43:53 +0100 (CET)
+Received: by mail-pg1-f178.google.com with SMTP id n2so7188974pgm.3
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 12:43:52 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <53dc5ff5-bee5-5998-dcd4-1dd1f926c857@halfshavedyaks.xyz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,125 +24,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: thet <parenthetical@halfshavedyaks.xyz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: simple-scu-card: add dai-link support
+On Tue, Dec 11, 2018 at 07:51:25PM +0000, thet wrote:
+> I posted this a couple of weeks ago in the alsa users list but there was
+> no response. I hope someone here can help.
+> =
 
-has been applied to the asoc tree at
+> I have a FF400 and I have been using ffado with it.
+> =
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> It came to my attention that there exists a ALSA driver for the FF400
+> since the midi was working over alsa and midi is not supported in the
+> ffado driver.
+> =
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> Also my system can see the FF400 in the sound control panel without jack
+> or ffado running.
+> =
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> I am using Mint 19 cinnamon and the liquorix kernel. (though so far I
+> have not noticed any difference between the liquorix kernel and the
+> generic one except pre-empt performance).
+>
+> I would like to try using just the alsa driver and not ffado. Since I'm
+> using the alsa midi support anyway it would be less total software to
+> use the alsa driver for everything - assuming it supports everything I ne=
+ed
+> for serious music recording.
+> =
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> However I can't get any sound out of the FF400 using the ALSA driver -
+> it works ok with FFADO though. Also the midi works - presumably using
+> the alsa driver.
+> =
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> I have tried using alsa directly in the sound control panel, using the
+> alsa output from audacious, and the alsa driver from jack.
+> =
 
-Thanks,
-Mark
+> I get an error about setting the frames/period/buffer size.
+ =
 
->From da32d6537802a257879e9ba91a5e351a24ada889 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Dec 2018 03:24:57 +0000
-Subject: [PATCH] ASoC: simple-scu-card: add dai-link support
+Please share the 'error' with your command line. It's the most
+important. Furthermore, please check kernel message with journalctl(1).
 
-simple-card is supporting dai-link support, but simple-scu-card
-doesn't have it.
-This patch support it. This is prepare for merging simple-card
-and simple-scu-card.
+> The red light on the FF400 that shows no connection to a host stays on=A0=
+ -
+> even though the system can see it is present. This light goes off if I
+> start ffado and jack, or if I start ffado mixer.
+> =
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/generic/simple-scu-card.c | 46 ++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+> Is there a guide somewhere on how to set up the ALSA drivers for the FF40=
+0?
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 24099e61d1b1..666ace6175be 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -202,14 +202,15 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 
- {
- 	struct device *dev = simple_priv_to_dev(priv);
--	struct device_node *node = dev->of_node;
-+	struct device_node *top = dev->of_node;
-+	struct device_node *node;
- 	struct device_node *np;
- 	struct device_node *codec;
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	bool is_fe;
--	int ret, i;
-+	int ret, i, loop;
- 
--	if (!node)
-+	if (!top)
- 		return -EINVAL;
- 
- 	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
-@@ -220,25 +221,34 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	asoc_simple_card_parse_convert(dev, node, PREFIX, &priv->adata);
-+	asoc_simple_card_parse_convert(dev, top, PREFIX, &priv->adata);
- 
-+	loop = 1;
- 	i = 0;
--	codec = of_get_child_by_name(node, PREFIX "codec");
--	if (!codec)
--		return -ENODEV;
--
--	for_each_child_of_node(node, np) {
--		is_fe = false;
--		if (of_node_name_eq(np, PREFIX "cpu"))
--			is_fe = true;
--
--		ret = asoc_simple_card_dai_link_of(node, np, codec, priv,
--						   i, is_fe, true);
--		if (ret < 0)
--			return ret;
--		i++;
-+	node = of_get_child_by_name(top, PREFIX "dai-link");
-+	if (!node) {
-+		node = dev->of_node;
-+		loop = 0;
- 	}
- 
-+	do  {
-+		codec = of_get_child_by_name(node,
-+					     loop ? "codec" : PREFIX "codec");
-+		if (!codec)
-+			return -ENODEV;
-+
-+		for_each_child_of_node(node, np) {
-+			is_fe = (np != codec);
-+
-+			ret = asoc_simple_card_dai_link_of(node, np, codec, priv,
-+							   i, is_fe, !loop);
-+			if (ret < 0)
-+				return ret;
-+			i++;
-+		}
-+		node = of_get_next_child(top, node);
-+	} while (loop && node);
-+
- 	ret = asoc_simple_card_parse_card_name(card, PREFIX);
- 	if (ret < 0)
- 		return ret;
--- 
-2.19.0.rc2
+I left the device already[2] and can't regenerate this issue, but in my
+memory the device can generate sound when the red LED turns on. =
+
+
+
+Some registers on Fireface 400 for configuration are write-only. To
+avoid interrupting userspace software such as ffado stuffs, ALSA
+fireface driver is programmed not to touch such registers. This means
+that the driver requires some assists of userspace.
+
+The red LED labeled 'HOST' is put off when writing a byte to a register =
+
+In a case of Fireface 400, 0x'0000'8010'03fc is the register. But this
+includes some settings for output signal of S/PDIF in coaxial interface.
+You can set the register with linux-firewire-utils[1], for example.
+
+$ ./firewire-request /dev/fw1 write 0x0000801003fc 0x1f
+(The unit allows block request for 1 byte access.)
+
+Or install 'libhinawa1' and 'gir1.2-hinawa-2.0' package and run below
+script.
+
+```
+#!/usr/bin/python3
+
+import gi
+gi.require_version('Hinawa', '2.0')
+from gi.repository import Hinawa
+
+unit =3D Hinawa.FwUnit()
+unit.open('/dev/fw1')
+unit.listen()
+
+req =3D Hinawa.FwReq()
+req.append(0x1f)
+req.write(unit, 0x0000801003fc, 0x1f)
+```
+
+[1] https://github.com/cladisch/linux-firewire-utils
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/1022=
+61.html
+
+
+Regards
+
+Takashi Sakamoto
