@@ -1,22 +1,18 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 3/7] ASoC: simple-scu-card: add dai-link
-	support
-Date: Tue, 11 Dec 2018 03:04:45 +0000
-Message-ID: <87efaobwn4.wl-kuninori.morimoto.gx@renesas.com>
-References: <87efax3e85.wl-kuninori.morimoto.gx@renesas.com>
- <87a7ll3e5y.wl-kuninori.morimoto.gx@renesas.com>
- <20181211011259.GG3004@sirena.org.uk>
+Subject: [PATCH 0/5 v2] ASoC: merge simple-scu-card into
+	simple-card - step1
+Date: Tue, 11 Dec 2018 03:24:32 +0000
+Message-ID: <87bm5sbvq6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-eopbgr1410104.outbound.protection.outlook.com [40.107.141.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DD8126770D
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 04:04:48 +0100 (CET)
-In-Reply-To: <20181211011259.GG3004@sirena.org.uk>
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-eopbgr1400124.outbound.protection.outlook.com [40.107.140.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1095626770D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 04:24:37 +0100 (CET)
 Content-Language: en-US
-Content-ID: <C08D9755DCE4ED4688A38505F3FAB99E@jpnprd01.prod.outlook.com>
+Content-ID: <64AA0F7674300649A841E3332D700A09@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,14 +29,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Mark
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > simple-card is supporting dai-link support, but simple-scu-card
-> > doesn't have it.
-> > This patch support it. This is prepare for merging simple-card
-> > and simple-scu-card.
-> 
-> I'm getting a conflict applying this one - can you please check and
-> resend?
+These are based on latest "for-4.21" branch.
 
-OK, will do
+Kuninori Morimoto (5):
+  ASoC: simple-scu-card: add dai-link support
+  ASoC: simple-scu-card: care link / dai count
+  ASoC: simple-scu-card: tidyup "convert-rate/channels" parsing
+  ASoC: simple-scu-card: use cpu/codec pointer on graph_dai_props
+  ASoC: simple-scu-card: care multi DPCM codec_conf
+
+ sound/soc/generic/simple-scu-card.c | 240 +++++++++++++++++++++++++++---------
+ 1 file changed, 185 insertions(+), 55 deletions(-)
+
+-- 
+2.7.4
+
+
+
+Best regards
+---
+Kuninori Morimoto
