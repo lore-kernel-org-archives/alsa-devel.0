@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: tidyup
-	"convert-rate/channels" parsing" to the asoc tree
-Date: Tue, 11 Dec 2018 20:36:47 +0000 (GMT)
-Message-ID: <20181211203647.2C2D7112540E@debutante.sirena.org.uk>
+Subject: Applied "ASoC: simple-scu-card: care link / dai count"
+	to the asoc tree
+Date: Tue, 11 Dec 2018 20:36:48 +0000 (GMT)
+Message-ID: <20181211203648.F37D3112540E@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CC973267BDC
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 21:36:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 88061267BDC
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 21:36:49 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: tidyup "convert-rate/channels" parsing
+   ASoC: simple-scu-card: care link / dai count
 
 has been applied to the asoc tree at
 
@@ -52,60 +52,152 @@ to this mail.
 Thanks,
 Mark
 
->From 09ee833679761f4995daaa6fd6200c77b8fcdaef Mon Sep 17 00:00:00 2001
+>From b8d8f9a58fd971ec215fb8bfec5a4fb6e539a3ab Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Dec 2018 03:25:18 +0000
-Subject: [PATCH] ASoC: simple-scu-card: tidyup "convert-rate/channels" parsing
+Date: Tue, 11 Dec 2018 03:25:08 +0000
+Subject: [PATCH] ASoC: simple-scu-card: care link / dai count
 
-simple-scu-card.c is supporting "convert-rate/channels" which is
-used for DPCM.
-But, sound card might have multi codecs, and each codec might need
-each convert-rate/channels.
-
-This patch supports each codec's convert-rate/channles support.
-top node convert-rate/channels will overwrite settings if exist.
-
-It can't support each codec's convert-rate/channels if sound card had
-multi codecs without this patch.
+In DPCM case, it uses CPU-dummy / dummy-Codec dai links.
+If sound card is caring only DPCM, link count = dai count,
+but, if non DPCM case, link count != dai count.
+Now, we want to merge simple-card and simple-scu-card,
+then, we need to care both link / dai count more carefly
+This patch cares it, and prepare for merging simple card
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/generic/simple-scu-card.c | 90 ++++++++++++++++++++++++++---
+ 1 file changed, 83 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 1c6382fa54a0..3c4e28995872 100644
+index 666ace6175be..1c6382fa54a0 100644
 --- a/sound/soc/generic/simple-scu-card.c
 +++ b/sound/soc/generic/simple-scu-card.c
-@@ -26,6 +26,7 @@ struct simple_card_data {
- 		struct asoc_simple_dai dai;
- 		struct snd_soc_dai_link_component codecs;
- 		struct snd_soc_dai_link_component platform;
-+		struct asoc_simple_card_data adata;
- 	} *dai_props;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_card_data adata;
-@@ -86,7 +87,11 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 					struct snd_pcm_hw_params *params)
- {
- 	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
-+	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
- 
-+	asoc_simple_card_convert_fixup(&dai_props->adata, params);
-+
-+	/* overwrite by top level adata if exist */
- 	asoc_simple_card_convert_fixup(&priv->adata, params);
- 
+@@ -256,6 +256,80 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  	return 0;
-@@ -177,6 +182,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
- 						     "prefix");
- 	}
+ }
  
-+	asoc_simple_card_parse_convert(dev, link, prefix, &dai_props->adata);
++static void asoc_simple_card_get_dais_count(struct device *dev,
++					    int *link_num,
++					    int *dais_num,
++					    int *ccnf_num)
++{
++	struct device_node *top = dev->of_node;
++	struct device_node *node;
++	int loop;
++	int num;
 +
- 	ret = asoc_simple_card_of_parse_tdm(np, &dai_props->dai);
- 	if (ret)
- 		return ret;
++	/*
++	 * link_num :	number of links.
++	 *		CPU-Codec / CPU-dummy / dummy-Codec
++	 * dais_num :	number of DAIs
++	 * ccnf_num :	number of codec_conf
++	 *		same number for "dummy-Codec"
++	 *
++	 * ex1)
++	 * CPU0 --- Codec0	link : 5
++	 * CPU1 --- Codec1	dais : 7
++	 * CPU2 -/		ccnf : 1
++	 * CPU3 --- Codec2
++	 *
++	 *	=> 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
++	 *	=> 7 DAIs  = 4xCPU + 3xCodec
++	 *	=> 1 ccnf  = 1xdummy-Codec
++	 *
++	 * ex2)
++	 * CPU0 --- Codec0	link : 5
++	 * CPU1 --- Codec1	dais : 6
++	 * CPU2 -/		ccnf : 1
++	 * CPU3 -/
++	 *
++	 *	=> 5 links = 1xCPU-Codec + 3xCPU-dummy + 1xdummy-Codec
++	 *	=> 6 DAIs  = 4xCPU + 2xCodec
++	 *	=> 1 ccnf  = 1xdummy-Codec
++	 *
++	 * ex3)
++	 * CPU0 --- Codec0	link : 6
++	 * CPU1 -/		dais : 6
++	 * CPU2 --- Codec1	ccnf : 2
++	 * CPU3 -/
++	 *
++	 *	=> 6 links = 0xCPU-Codec + 4xCPU-dummy + 2xdummy-Codec
++	 *	=> 6 DAIs  = 4xCPU + 2xCodec
++	 *	=> 2 ccnf  = 2xdummy-Codec
++	 */
++	if (!top) {
++		(*link_num) = 1;
++		(*dais_num) = 2;
++		(*ccnf_num) = 0;
++		return;
++	}
++
++	loop = 1;
++	node = of_get_child_by_name(top, PREFIX "dai-link");
++	if (!node) {
++		node = top;
++		loop = 0;
++	}
++
++	do {
++		num = of_get_child_count(node);
++		(*dais_num) += num;
++		if (num > 2) {
++			(*link_num) += num;
++			(*ccnf_num)++;
++		} else {
++			(*link_num)++;
++		}
++		node = of_get_next_child(top, node);
++	} while (loop && node);
++}
++
+ static int asoc_simple_card_probe(struct platform_device *pdev)
+ {
+ 	struct simple_card_data *priv;
+@@ -263,18 +337,20 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct simple_dai_props *dai_props;
+ 	struct snd_soc_card *card;
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *np = dev->of_node;
+-	int num, ret, i;
++	int ret, i;
++	int lnum = 0, dnum = 0, cnum = 0;
+ 
+ 	/* Allocate the private data */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	num = of_get_child_count(np);
++	asoc_simple_card_get_dais_count(dev, &lnum, &dnum, &cnum);
++	if (!lnum || !dnum)
++		return -EINVAL;
+ 
+-	dai_props = devm_kcalloc(dev, num, sizeof(*dai_props), GFP_KERNEL);
+-	dai_link  = devm_kcalloc(dev, num, sizeof(*dai_link), GFP_KERNEL);
++	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
++	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link), GFP_KERNEL);
+ 	if (!dai_props || !dai_link)
+ 		return -ENOMEM;
+ 
+@@ -284,7 +360,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	 * see
+ 	 *	soc-core.c :: snd_soc_init_multicodec()
+ 	 */
+-	for (i = 0; i < num; i++) {
++	for (i = 0; i < lnum; i++) {
+ 		dai_link[i].codecs	= &dai_props[i].codecs;
+ 		dai_link[i].num_codecs	= 1;
+ 		dai_link[i].platform	= &dai_props[i].platform;
+@@ -298,7 +374,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+-	card->num_links		= num;
++	card->num_links		= lnum;
+ 	card->codec_conf	= &priv->codec_conf;
+ 	card->num_configs	= 1;
+ 
 -- 
 2.19.0.rc2
