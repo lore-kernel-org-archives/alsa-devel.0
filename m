@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: fix build warning
-	without CONFIG_OF" to the asoc tree
-Date: Tue, 11 Dec 2018 01:15:45 +0000 (GMT)
-Message-ID: <20181211011545.C4DD111254C7@debutante.sirena.org.uk>
-References: <20181210204640.2407929-1-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F2242267B4A
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:48 +0100 (CET)
-In-Reply-To: <20181210204640.2407929-1-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: sdm845: add rt5663 codec select" to the asoc tree
+Date: Tue, 11 Dec 2018 01:15:47 +0000 (GMT)
+Message-ID: <20181211011547.9A1E311254C7@debutante.sirena.org.uk>
+References: <20181210204943.2581826-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181210204943.2581826-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rohit kumar <rohitkr@codeaurora.org>, Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: fix build warning without CONFIG_OF
+   ASoC: sdm845: add rt5663 codec select
 
 has been applied to the asoc tree at
 
@@ -53,43 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 2b320e046495e6cf02d1f0b1abf07042ac5635ea Mon Sep 17 00:00:00 2001
+>From e9dc919043c56dccedce93fe402e6c94423a70b0 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 10 Dec 2018 21:46:10 +0100
-Subject: [PATCH] ASoC: simple-card-utils: fix build warning without CONFIG_OF
+Date: Mon, 10 Dec 2018 21:49:28 +0100
+Subject: [PATCH] ASoC: sdm845: add rt5663 codec select
 
-When CONFIG_OF is disabled, of_graph_parse_endpoint() does not
-initialize 'info', and gcc can see that:
+Calling into the codec driver adds a dependency on that being reachable
+from the module:
 
-sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_card_parse_graph_dai':
-sound/soc/generic/simple-card-utils.c:284:13: error: 'info.port' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+ERROR: "rt5663_sel_asrc_clk_src" [sound/soc/qcom/snd-soc-sdm845.ko]
+undefined!
 
-It's probably best to check the return code anyway, and that also
-takes care of the warning.
+Add the corresponding select statement, as it is done in the other user
+(Intel).
 
-Fixes: b6f3fc005a2c ("ASoC: simple-card-utils: fixup asoc_simple_card_get_dai_id() counting")
+Fixes: f7485875a687 ("ASoC: sdm845: Add configuration for headset codec")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/qcom/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 6a31d07976b9..17d8aee43835 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -280,7 +280,10 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
- 	 * Non HDMI sound case, counting port/endpoint on its DT
- 	 * is enough. Let's count it.
- 	 */
--	of_graph_parse_endpoint(ep, &info);
-+	ret = of_graph_parse_endpoint(ep, &info);
-+	if (ret)
-+		return -ENXIO;
-+
- 	return info.port;
- }
- 
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 2a4c912d1e48..1b9fc0665792 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -100,6 +100,7 @@ config SND_SOC_SDM845
+ 	depends on QCOM_APR
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
++	select SND_SOC_RT5663
+ 	help
+ 	  To add support for audio on Qualcomm Technologies Inc.
+ 	  SDM845 SoC-based systems.
 -- 
 2.19.0.rc2
