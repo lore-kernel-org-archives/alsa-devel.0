@@ -1,62 +1,38 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/7] ALSA: hda/intel: Drop superfluous
- AZX_DCAPS_I915_POWERWELL checks
-Date: Mon, 10 Dec 2018 14:56:15 -0600
-Message-ID: <de4f3514-ce46-f0b0-ce4d-b318ed322888@linux.intel.com>
-References: <20181209093318.27829-1-tiwai@suse.de>
- <20181209093318.27829-4-tiwai@suse.de>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: simple-card-utils: fix build warning without
+ CONFIG_OF
+Date: Tue, 11 Dec 2018 00:25:14 +0000
+Message-ID: <87k1kgc415.wl-kuninori.morimoto.gx@renesas.com>
+References: <20181210204640.2407929-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 140CB267AFE
- for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2018 21:56:17 +0100 (CET)
-In-Reply-To: <20181209093318.27829-4-tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181210204640.2407929-1-arnd@arndb.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+Content-ID: <80F3DADD8AC5934BA270CB4584F12BFC@jpnprd01.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzkvMTggMzozMyBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IFNpbmNlIHNuZF9oZGFj
-X2Rpc3BsYXlfcG93ZXIoKSBjYW4gYmUgY2FsbGVkIGV2ZW4gZm9yIGEgSERBIGNvbnRyb2xsZXIK
-PiB3aXRob3V0IERSTSBiaW5kaW5nLCBsb3RzIG9mIHN1cGVyZmx1b3VzIEFaWF9EQ0FQU19JOTE1
-X1BPV0VSV0VMTAo+IGNoZWNrcyBpbiBoZGFfaW50ZWwuYyBjYW4gYmUgZHJvcHBlZC4gIFRoaXMg
-c2ltcGxpZmllcyB0aGUgY29kZSBhCj4gbG90Lgo+Cj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJ
-d2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0tLQo+ICAgc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyB8
-IDQzICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNo
-YW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDI3IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCj4g
-aW5kZXggMTUxYzZjYTg1ZWM2Li5jYWNlZTMzYTc0YTggMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNp
-L2hkYS9oZGFfaW50ZWwuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiBAQCAt
-OTQ4LDkgKzk0OCw3IEBAIHN0YXRpYyB2b2lkIF9fYXp4X3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3Qg
-YXp4ICpjaGlwKQo+ICAgCWF6eF9zdG9wX2NoaXAoY2hpcCk7Cj4gICAJYXp4X2VudGVyX2xpbmtf
-cmVzZXQoY2hpcCk7Cj4gICAJYXp4X2NsZWFyX2lycV9wZW5kaW5nKGNoaXApOwo+IC0JaWYgKChj
-aGlwLT5kcml2ZXJfY2FwcyAmIEFaWF9EQ0FQU19JOTE1X1BPV0VSV0VMTCkgJiYKPiAtCSAgICBo
-ZGEtPm5lZWRfaTkxNV9wb3dlcikKPiAtCQlkaXNwbGF5X3Bvd2VyKGNoaXAsIGZhbHNlKTsKPiAr
-CWRpc3BsYXlfcG93ZXIoY2hpcCwgZmFsc2UpOwo+ICAgfQo+ICAgCj4gICBzdGF0aWMgdm9pZCBf
-X2F6eF9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgYXp4ICpjaGlwKQo+IEBAIC05NjAsMTEgKzk1OCw5
-IEBAIHN0YXRpYyB2b2lkIF9fYXp4X3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBhenggKmNoaXApCj4g
-ICAJc3RydWN0IGhkYV9jb2RlYyAqY29kZWM7Cj4gICAJaW50IHN0YXR1czsKPiAgIAo+IC0JaWYg
-KGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5MTVfUE9XRVJXRUxMKSB7Cj4gLQkJZGlz
-cGxheV9wb3dlcihjaGlwLCB0cnVlKTsKPiAtCQlpZiAoaGRhLT5uZWVkX2k5MTVfcG93ZXIpCj4g
-LQkJCXNuZF9oZGFjX2k5MTVfc2V0X2JjbGsoYnVzKTsKPiAtCX0KPiArCWRpc3BsYXlfcG93ZXIo
-Y2hpcCwgdHJ1ZSk7Cj4gKwlpZiAoaGRhLT5uZWVkX2k5MTVfcG93ZXIpCj4gKwkJc25kX2hkYWNf
-aTkxNV9zZXRfYmNsayhidXMpOwoKUXVlc3Rpb246IEkgc3RpbGwgc2VlIHRoaXMgJ29sZCBzdHls
-ZScgaW5pdCBpbiBoZGFfaW50ZWwuYyBldmVuIHdpdGggYWxsIAp0aGUgcGF0Y2hlcyBhcHBsaWVk
-LgoKIMKgwqDCoCAvKiBpbml0aWFsaXplIGNoaXAgKi8KIMKgwqDCoCBhenhfaW5pdF9wY2koY2hp
-cCk7CgogwqDCoMKgIGlmIChjaGlwLT5kcml2ZXJfY2FwcyAmIEFaWF9EQ0FQU19JOTE1X1BPV0VS
-V0VMTCkKIMKgwqDCoCDCoMKgwqAgc25kX2hkYWNfaTkxNV9zZXRfYmNsayhidXMpOwoKaXMgdGhp
-cyBpbnRlbnRpb25hbCBvciBhIG1pc3M/CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+Hi
+
+> When CONFIG_OF is disabled, of_graph_parse_endpoint() does not
+> initialize 'info', and gcc can see that:
+>=20
+> sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_card_pars=
+e_graph_dai':
+> sound/soc/generic/simple-card-utils.c:284:13: error: 'info.port' may be u=
+sed uninitialized in this function [-Werror=3Dmaybe-uninitialized]
+>=20
+> It's probably best to check the return code anyway, and that also
+> takes care of the warning.
+>=20
+> Fixes: b6f3fc005a2c ("ASoC: simple-card-utils: fixup asoc_simple_card_get=
+_dai_id() counting")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
