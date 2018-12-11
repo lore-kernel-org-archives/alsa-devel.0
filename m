@@ -1,16 +1,16 @@
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH v3 03/14] ASoC: SOF: Add driver debug
-	support.
-Date: Wed, 12 Dec 2018 00:32:23 +0200
-Message-ID: <20181211223223.GI10650@smile.fi.intel.com>
+Subject: Re: [PATCH v3 09/14] ASoC: SOF: Add firmware loader
+	support
+Date: Wed, 12 Dec 2018 00:38:29 +0200
+Message-ID: <20181211223829.GJ10650@smile.fi.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-4-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <20181211212318.28644-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,83 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 11, 2018 at 03:23:07PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Dec 11, 2018 at 03:23:13PM -0600, Pierre-Louis Bossart wrote:
 > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 > 
-> Add debugFS files that can be used to expose DSP memories and
-> and peripherals to userspace to assist with firmware debugging.
-> 
-> TODO: The runtime_pm parts are not final and will be updated.
+> The firmware loader exports APIs that can be called by core to load and
+> process multiple different file formats.
 
-> +	if (count > size - pos)
-> +		count = size - pos;
+> +static int get_ext_windows(struct snd_sof_dev *sdev,
+> +			   struct sof_ipc_ext_data_hdr *ext_hdr)
+> +{
+> +	struct sof_ipc_window *w = (struct sof_ipc_window *)ext_hdr;
+> +
 
-max() / min()
+> +	int ret = 0;
 
-> +	/* intermediate buffer size must be u32 multiple */
-> +	size = (count + 3) & ~3;
+I don't see how it's used. Perhaps you need to check code with `make W=1`.
 
-Hmm, don't we have something like round_up()?
-
-> +	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
-> +					     dfse, &sof_dfs_fops);
-> +	if (!dfse->dfsentry) {
-> +		dev_err(sdev->dev, "error: cannot create debugfs entry.\n");
-> +		return -ENODEV;
-> +	}
-
-We shouldn't rely on debugfs files.
-Thus, error checking needs to be removed.
-
-Something like
-
-void ()
-{
-struct dentry *d;
-
-d = debugfs_...();
-if (!d)
-	dev_err();
-}
-
-
-> +	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
-> +					     dfse, &sof_dfs_fops);
-> +	if (!dfse->dfsentry) {
-> +		dev_err(sdev->dev, "error: cannot create debugfs entry.\n");
-> +		return -ENODEV;
-> +	}
-
-Ditto.
-
-> +	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
-> +	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
-> +		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
+> +	size_t size;
+> +
+> +	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
 > +		return -EINVAL;
-> +	}
 > +
-> +	/* create debugFS files for platform specific MMIO/DSP memories */
-> +	for (i = 0; i < ops->debug_map_count; i++) {
-> +		map = &ops->debug_map[i];
+> +	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
 > +
-
-> +		err = snd_sof_debugfs_io_create_item(sdev, sdev->bar[map->bar] +
-> +						  map->offset, map->size,
-> +						  map->name);
-> +		if (err < 0)
-> +			dev_err(sdev->dev, "error: cannot create debugfs for %s\n",
-> +				map->name);
-
-Ditto (error message dups above).
-
-> +	}
+> +	/* keep a local copy of the data */
+> +	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
+> +	if (!sdev->info_window)
+> +		return -ENOMEM;
 > +
-> +	return err;
+> +	return ret;
 > +}
-> +EXPORT_SYMBOL(snd_sof_dbg_init);
+
+> +			dev_warn(sdev->dev,
+> +				 "warning: block %d size zero\n", count);
+> +			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
+> +				 block->type, block->offset);
+
+Hmm... Why do we need a kernel level duplication in words?
+
+> +int snd_sof_load_firmware(struct snd_sof_dev *sdev)
+> +{
+
+> +	dev_dbg(sdev->dev, "loading firmware\n");
+
+Noise.
+Better to introduce a trace points and drop all these kind of messages.
+
+> +
+> +	if (sdev->ops->load_firmware)
+> +		return sdev->ops->load_firmware(sdev);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(snd_sof_load_firmware);
 
 -- 
 With Best Regards,
