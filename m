@@ -1,337 +1,88 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v10 2/3] x86: add support for Huawei WMI hotkeys.
-Date: Tue, 11 Dec 2018 12:14:33 +0200
-Message-ID: <CAHp75VcNstKd3JW-D8QSQWez-TxrwsKrkA-a1D11kZW72fSqfw@mail.gmail.com>
-References: <20181211060125.28671-1-ayman.bagabas@gmail.com> <20181211060125.28671-3-ayman.bagabas@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/8] ALSA: fireface: add support for Fireface
+	800 with MIDI functionality only
+Date: Tue, 11 Dec 2018 19:17:27 +0900
+Message-ID: <20181211101735.13735-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181211060125.28671-3-ayman.bagabas@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ayman Bagabas <ayman.bagabas@gmail.com>
-Cc: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 886D8267ACE
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 11:17:44 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id 80so6436730pge.4
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:17:44 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 11, 2018 at 8:02 AM Ayman Bagabas <ayman.bagabas@gmail.com> wrote:
->
-> This driver adds support for missing hotkeys on some Huawei laptops.
-> Laptops such as the Matebook X have non functioning hotkeys. Whereas
-> newer laptops such as the Matebook X Pro come with working hotkeys out
-> of the box.
->
-> Old laptops, such as the Matebook X, report hotkey events through ACPI
-> device "\WMI0". However, new laptops, such as the Matebook X Pro,
-> does not have this WMI device.
->
-> All the hotkeys on the Matebook X Pro work fine
-> without this patch except (micmute, wlan, and huawei key). These keys
-> and the brightness keys report events to "\AMW0" ACPI device. One
-> problem is that brightness keys on the Matebook X Pro work without this
-> patch. This results in reporting two brightness key press
-> events one is captured by ACPI and another by this driver.
->
-> A solution would be to check if such event came from the "\AMW0" WMI driver
-> then skip reporting event. Another solution would be to leave this to
-> user-space to handle. Which can be achieved by using "hwdb" tables and
-> remap those keys to "unknown". This solution seems more natural to me
-> because it leaves the decision to user-space.
->
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
-> ---
->  drivers/platform/x86/Kconfig      |  17 +++
->  drivers/platform/x86/Makefile     |   1 +
->  drivers/platform/x86/huawei-wmi.c | 220 ++++++++++++++++++++++++++++++
->  3 files changed, 238 insertions(+)
->  create mode 100644 drivers/platform/x86/huawei-wmi.c
->
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 87f70e8f4dd0..45ef4d22f14c 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1292,6 +1292,23 @@ config INTEL_ATOMISP2_PM
->           To compile this driver as a module, choose M here: the module
->           will be called intel_atomisp2_pm.
->
-> +config HUAWEI_WMI
-> +       tristate "Huawei WMI hotkeys driver"
-> +       depends on ACPI_WMI
-> +       depends on INPUT
-> +       select INPUT_SPARSEKMAP
-> +       select LEDS_CLASS
-> +       select LEDS_TRIGGERS
-> +       select LEDS_TRIGGER_AUDIO
-> +       select NEW_LEDS
-> +       help
-> +         This driver provides support for Huawei WMI hotkeys.
-> +         It enables the missing keys and adds support to the micmute
-> +         LED found on some of these laptops.
-> +
-> +         To compile this driver as a module, choose M here: the module
-> +         will be called huawei-wmi.
-> +
->  endif # X86_PLATFORM_DEVICES
->
->  config PMC_ATOM
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 39ae94135406..d841c550e3cc 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -32,6 +32,7 @@ obj-$(CONFIG_ACERHDF)         += acerhdf.o
->  obj-$(CONFIG_HP_ACCEL)         += hp_accel.o
->  obj-$(CONFIG_HP_WIRELESS)      += hp-wireless.o
->  obj-$(CONFIG_HP_WMI)           += hp-wmi.o
-> +obj-$(CONFIG_HUAWEI_WMI)               += huawei-wmi.o
->  obj-$(CONFIG_AMILO_RFKILL)     += amilo-rfkill.o
->  obj-$(CONFIG_GPD_POCKET_FAN)   += gpd-pocket-fan.o
->  obj-$(CONFIG_TC1100_WMI)       += tc1100-wmi.o
-> diff --git a/drivers/platform/x86/huawei-wmi.c b/drivers/platform/x86/huawei-wmi.c
-> new file mode 100644
-> index 000000000000..89ba7ea33499
-> --- /dev/null
-> +++ b/drivers/platform/x86/huawei-wmi.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Huawei WMI hotkeys
-> + *
-> + *  Copyright (C) 2018       Ayman Bagabas <ayman.bagabas@gmail.com>
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/input.h>
-> +#include <linux/input/sparse-keymap.h>
-> +#include <linux/leds.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +/*
-> + * Huawei WMI GUIDs
-> + */
-> +#define WMI0_EVENT_GUID "59142400-C6A3-40fa-BADB-8A2652834100"
-> +#define AMW0_EVENT_GUID "ABBC0F5C-8EA1-11D1-A000-C90629100000"
-> +
-> +#define WMI0_EXPENSIVE_GUID "39142400-C6A3-40fa-BADB-8A2652834100"
-> +
-> +struct huawei_wmi_priv {
-> +       struct input_dev *idev;
-> +       struct led_classdev cdev;
-> +       acpi_handle handle;
-> +       char *acpi_method;
-> +};
-> +
-> +static const struct key_entry huawei_wmi_keymap[] = {
-> +       { KE_KEY,    0x281, { KEY_BRIGHTNESSDOWN } },
-> +       { KE_KEY,    0x282, { KEY_BRIGHTNESSUP } },
-> +       { KE_KEY,    0x284, { KEY_MUTE } },
-> +       { KE_KEY,    0x285, { KEY_VOLUMEDOWN } },
-> +       { KE_KEY,    0x286, { KEY_VOLUMEUP } },
-> +       { KE_KEY,    0x287, { KEY_MICMUTE } },
-> +       { KE_KEY,    0x289, { KEY_WLAN } },
-> +       // Huawei |M| key
-> +       { KE_KEY,    0x28a, { KEY_CONFIG } },
-> +       // Keyboard backlight
-> +       { KE_IGNORE, 0x293, { KEY_KBDILLUMTOGGLE } },
-> +       { KE_IGNORE, 0x294, { KEY_KBDILLUMUP } },
-> +       { KE_IGNORE, 0x295, { KEY_KBDILLUMUP } },
-> +       { KE_END,        0 }
-> +};
-> +
-> +static int huawei_wmi_micmute_led_set(struct led_classdev *led_cdev,
-> +               enum led_brightness brightness)
-> +{
-> +       struct huawei_wmi_priv *priv = dev_get_drvdata(led_cdev->dev->parent);
-> +       acpi_status status;
-> +       union acpi_object args[3];
-> +       struct acpi_object_list arg_list = {
-> +               .pointer = args,
-> +               .count = ARRAY_SIZE(args),
-> +       };
-> +
-> +       args[0].type = args[1].type = args[2].type = ACPI_TYPE_INTEGER;
-> +       args[1].integer.value = 0x04;
-> +
-> +       if (strcmp(priv->acpi_method, "SPIN") == 0) {
-> +               args[0].integer.value = 0;
-> +               args[2].integer.value = brightness ? 1 : 0;
-> +       } else if (strcmp(priv->acpi_method, "WPIN") == 0) {
-> +               args[0].integer.value = 1;
-> +               args[2].integer.value = brightness ? 0 : 1;
-> +       } else {
-> +               return -EINVAL;
-> +       }
-> +
-> +       status = acpi_evaluate_object(priv->handle, priv->acpi_method, &arg_list, NULL);
-> +       if (ACPI_FAILURE(status))
-> +               return -ENXIO;
-> +
-> +       return 0;
-> +}
-> +
-> +static int huawei_wmi_leds_setup(struct wmi_device *wdev)
-> +{
-> +       struct huawei_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-> +       acpi_status status;
-> +
+Hi,
 
-> +       /* Skip registering LED subsystem if no ACPI method was found.
-> +        * ec_get_handle() returns the first embedded controller device
-> +        * handle which then used to locate SPIN and WPIN methods.
-> +        */
+In 2004, RME GmbH shipped Fireface 800 as a flagship model of its
+Fireface series. This model consists of some chips:
+ - TI TSB81BA3D for physical layer on cable environment of EEE 1394 bus
+ - TI TSB82AA2 for link layer for 1394 OHCI bus bridge to PCI bus
+ - Xilinx Spartan-3 FPGA XC3S400
+ - Xilinx High-Performance CPLD XC9572XL
 
-Comment style is cripple here.
-All issues we may fix when applying.
+A remarkable point of this model is that its physical/link layer
+support S800 (800Mbps) mode of IEEE 1394b. Within devices of audio
+and music unit on IEEE 1394 bus, this is an unique model to support it,
+as long as I know.
 
-> +       priv->handle = ec_get_handle();
-> +       if (!priv->handle)
-> +               return 0;
-> +
-> +       if (acpi_has_method(priv->handle, "SPIN"))
-> +               priv->acpi_method = "SPIN";
-> +       else if (acpi_has_method(priv->handle, "WPIN"))
-> +               priv->acpi_method = "WPIN";
-> +       else
-> +               return 0;
-> +
-> +       priv->cdev.name = "platform::micmute";
-> +       priv->cdev.max_brightness = 1;
-> +       priv->cdev.brightness_set_blocking = huawei_wmi_micmute_led_set;
-> +       priv->cdev.default_trigger = "audio-micmute";
-> +       priv->cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
-> +       priv->cdev.dev = &wdev->dev;
-> +       priv->cdev.flags = LED_CORE_SUSPENDRESUME;
-> +
-> +       return devm_led_classdev_register(&wdev->dev, &priv->cdev);
-> +}
-> +
-> +static void huawei_wmi_process_key(struct wmi_device *wdev, int code)
-> +{
-> +       struct huawei_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-> +       const struct key_entry *key;
-> +
-> +       /*
-> +        * WMI0 uses code 0x80 to indicate a hotkey event.
-> +        * The actual key is fetched from the method WQ00
-> +        * using WMI0_EXPENSIVE_GUID.
-> +        */
-> +       if (code == 0x80) {
-> +               struct acpi_buffer response = { ACPI_ALLOCATE_BUFFER, NULL };
-> +               union acpi_object *obj;
-> +               acpi_status status;
-> +
-> +               status = wmi_query_block(WMI0_EXPENSIVE_GUID, 0, &response);
-> +               if (ACPI_FAILURE(status))
-> +                       return;
-> +
-> +               obj = (union acpi_object *)response.pointer;
-> +               if (obj && obj->type == ACPI_TYPE_INTEGER)
-> +                       code = obj->integer.value;
-> +
-> +               kfree(response.pointer);
-> +       }
-> +
-> +       key = sparse_keymap_entry_from_scancode(priv->idev, code);
-> +       if (!key) {
-> +               dev_info(&wdev->dev, "Unknown key pressed, code: 0x%04x\n", code);
-> +               return;
-> +       }
-> +
-> +       sparse_keymap_report_entry(priv->idev, key, 1, true);
-> +}
-> +
-> +static void huawei_wmi_notify(struct wmi_device *wdev,
-> +               union acpi_object *obj)
-> +{
-> +       if (obj->type == ACPI_TYPE_INTEGER)
-> +               huawei_wmi_process_key(wdev, obj->integer.value);
-> +       else
-> +               dev_info(&wdev->dev, "Bad response type %d\n", obj->type);
-> +}
-> +
-> +static int huawei_wmi_input_setup(struct wmi_device *wdev)
-> +{
-> +       struct huawei_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-> +       int err;
-> +
-> +       priv->idev = devm_input_allocate_device(&wdev->dev);
-> +       if (!priv->idev)
-> +               return -ENOMEM;
-> +
-> +       priv->idev->name = "Huawei WMI hotkeys";
-> +       priv->idev->phys = "wmi/input0";
-> +       priv->idev->id.bustype = BUS_HOST;
-> +       priv->idev->dev.parent = &wdev->dev;
-> +
-> +       err = sparse_keymap_setup(priv->idev, huawei_wmi_keymap, NULL);
-> +       if (err)
-> +               return err;
-> +
+This commit adds support for the model with its MIDI functionality only.
+The functionality is quite similar to the one of Fireface 400. In patch
+01-06, some codes specific to Fireface 400 are arranged to be shared by
+both models.
 
-> +       err = input_register_device(priv->idev);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
+On the other hand, there're some differences. The largest difference is
+that the model has no register to switch enabling/disabling tx
+asynchronous transactions for MIDI messages. Therefore the functionality
+work well without any assist by userspace.
 
-return input_register_device(...);
+For this work, I use v2.77 firmware and v3.1.24 driver shipped by RME
+GmbH. If finding some differences between older firmware, please report
+it with enough information for debug. To help users for test, I prepare
+a remote branch including these patches. This can be backport to Linux
+v4.17 or later.
+https://github.com/takaswie/snd-firewire-improve/tree/topic/ff800-midi
 
-> +}
-> +
-> +static int huawei_wmi_probe(struct wmi_device *wdev)
-> +{
-> +       struct huawei_wmi_priv *priv;
-> +       int err;
-> +
-> +       priv = devm_kzalloc(&wdev->dev, sizeof(struct huawei_wmi_priv), GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
+Takashi Sakamoto (8):
+  ALSA: fireface: share some registers for status of clock
+    synchronization
+  ALSA: fireface: share status and configuration dump
+  ALSA: fireface: share helper function to get current sampling rate and
+    clock source
+  ALSA: fireface: add support for second optical interface for ADAT
+    stream
+  ALSA: fireface: share register for async transaction of MIDI messages
+  ALSA: fireface: add driver data for register for MIDI high address
+  ALSA: fireface: localize a handler for MIDI messages on tx transaction
+  ALSA: fireface: add support for Fireface 800 with MIDI functionality
+    only
 
-+ blank line.
-
-> +       dev_set_drvdata(&wdev->dev, priv);
-> +
-> +       err = huawei_wmi_input_setup(wdev);
-> +       if (err)
-> +               return err;
-> +
-
-> +       err = huawei_wmi_leds_setup(wdev);
-> +       if (err)
-> +               return err;
-> +
-> +       return 0;
-
-return huawei_wmi_leds_setup(...);
-
-> +}
-> +
-> +static const struct wmi_device_id huawei_wmi_id_table[] = {
-> +       { .guid_string = WMI0_EVENT_GUID },
-> +       { .guid_string = AMW0_EVENT_GUID },
-> +       {  }
-> +};
-> +
-> +static struct wmi_driver huawei_wmi_driver = {
-> +       .driver = {
-> +               .name = "huawei-wmi",
-> +       },
-> +       .id_table = huawei_wmi_id_table,
-> +       .probe = huawei_wmi_probe,
-> +       .notify = huawei_wmi_notify,
-> +};
-> +
-> +module_wmi_driver(huawei_wmi_driver);
-> +
-> +MODULE_ALIAS("wmi:"WMI0_EVENT_GUID);
-> +MODULE_ALIAS("wmi:"AMW0_EVENT_GUID);
-> +MODULE_AUTHOR("Ayman Bagabas <ayman.bagabas@gmail.com>");
-> +MODULE_DESCRIPTION("Huawei WMI hotkeys");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.19.2
->
-
+ sound/firewire/Kconfig                      |   1 +
+ sound/firewire/fireface/Makefile            |   3 +-
+ sound/firewire/fireface/ff-pcm.c            |   2 +-
+ sound/firewire/fireface/ff-proc.c           | 193 +++++++++++++-
+ sound/firewire/fireface/ff-protocol-ff400.c | 282 ++------------------
+ sound/firewire/fireface/ff-protocol-ff800.c |  27 ++
+ sound/firewire/fireface/ff-stream.c         |   2 +-
+ sound/firewire/fireface/ff-transaction.c    | 157 ++++++-----
+ sound/firewire/fireface/ff.c                |  54 +++-
+ sound/firewire/fireface/ff.h                |  31 ++-
+ 10 files changed, 406 insertions(+), 346 deletions(-)
+ create mode 100644 sound/firewire/fireface/ff-protocol-ff800.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.19.1
