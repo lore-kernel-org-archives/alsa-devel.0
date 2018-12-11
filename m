@@ -1,23 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/7] ALSA: hda: Refactor display power
- management
-Date: Tue, 11 Dec 2018 08:34:44 -0600
-Message-ID: <a650e6aa-60fe-7f60-ca23-5c819c9e353d@linux.intel.com>
-References: <20181209093318.27829-1-tiwai@suse.de>
- <20181209093318.27829-3-tiwai@suse.de>
- <1ff2c83b-fb5e-2972-77d0-e32c247e9912@linux.intel.com>
- <s5ha7lcwo34.wl-tiwai@suse.de>
- <1eada34e-94fb-a6dd-dde9-3a6e40b9bc50@linux.intel.com>
- <s5hftv4kvls.wl-tiwai@suse.de>
+From: thet <parenthetical@halfshavedyaks.xyz>
+Subject: RME Fireface alsa driver
+Date: Tue, 11 Dec 2018 19:51:25 +0000
+Message-ID: <53dc5ff5-bee5-5998-dcd4-1dd1f926c857@halfshavedyaks.xyz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 21558267BCB
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 15:34:46 +0100 (CET)
-In-Reply-To: <s5hftv4kvls.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-02.1984.is (mail-02.1984.is [185.112.145.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9FB1267B85
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 20:51:34 +0100 (CET)
+Received: from localhost
+ by mail-02.1984.is with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ (Exim 4.89) (envelope-from <parenthetical@halfshavedyaks.xyz>)
+ id 1gWo3z-0002O1-0T
+ for alsa-devel@alsa-project.org; Tue, 11 Dec 2018 19:51:27 +0000
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
->>>>>      a codec was done indirectly via link_power bus ops.)
->>>>>
->>>>> - snd_hdac_display_power() receives the codec address index.  For
->>>>>      turning on/off from the controller, pass HDA_CODEC_IDX_CONTROLLER.
->>>> The need for this virtual index==16 isn't fully clear to me,
->>>> especially if you use the bitfields instead of reference counts.
->>>>
->>>> Isn't there a risk of the controller setting the bit16 to zero, but
->>>> you still have bit4 on (assuming the idx is 4). If you use this
->>>> virtual index, it should override the actual physical bits when
->>>> set/cleared.
->>> This is the index for a controller, i.e. we'd need bits for the max
->>> number of codecs + 1.
->>>
->>> Actually we do support only up to 8 codecs (HDA_MAX_CODECS), so it
->>> should be 8, instead of 16, too.  I'll update to be HDA_MAX_CODECS.
->>>
->>>> Or is this meant to actually implement a preemption mechanism, where
->>>> the display power remains on for as long as the controller wishes,
->>>> regardless of what the patch_hdmi and hdac_hdmi code requests?
->>> Right.  That's the mechanism at the initial phase, we need the display
->>> power on while probing the codec, i.e. before identifying the codec
->>> ID.
->>>
->>>> Also don't we already have the HDMI codec address already after the
->>>> probe, so couldn't we provide the address directly?
->>> The resume seemed requiring the controller to take the display power
->>> at first, so the same mechanism is used.
->> ok, makes sense, thanks for the explanations.
->>
->> So I guess for the SOF patches, the only change would be to add the
->> second argument HDA_CODEC_IDX_CONTROLLER to snd_hdac_display_power()
->> calls, the rest looks unchanged or hidden inside the hdac library or
->> hdac_hdmi parts.
-> Yes, other than that, this change makes things easier.
->
-> Since we don't manage with refcount, the only important point is to
-> turn off/on properly at suspend/resume (also off at remove), no matter
-> how many times it gets called.
-Ah yes, we are missing this on remove since we assumed the refcount 
-would already be zero. I guess we'll have to revalidate this part 
-anyways once your patches are merged (already have an SOF issue filed to 
-track this change).
+SSBwb3N0ZWQgdGhpcyBhIGNvdXBsZSBvZiB3ZWVrcyBhZ28gaW4gdGhlIGFsc2EgdXNlcnMgbGlz
+dCBidXQgdGhlcmUgd2FzCm5vIHJlc3BvbnNlLiBJIGhvcGUgc29tZW9uZSBoZXJlIGNhbiBoZWxw
+LgoKSSBoYXZlIGEgRkY0MDAgYW5kIEkgaGF2ZSBiZWVuIHVzaW5nIGZmYWRvIHdpdGggaXQuCgpJ
+dCBjYW1lIHRvIG15IGF0dGVudGlvbiB0aGF0IHRoZXJlIGV4aXN0cyBhIEFMU0EgZHJpdmVyIGZv
+ciB0aGUgRkY0MDAKc2luY2UgdGhlIG1pZGkgd2FzIHdvcmtpbmcgb3ZlciBhbHNhIGFuZCBtaWRp
+IGlzIG5vdCBzdXBwb3J0ZWQgaW4gdGhlCmZmYWRvIGRyaXZlci4KCkFsc28gbXkgc3lzdGVtIGNh
+biBzZWUgdGhlIEZGNDAwIGluIHRoZSBzb3VuZCBjb250cm9sIHBhbmVsIHdpdGhvdXQgamFjawpv
+ciBmZmFkbyBydW5uaW5nLgoKSSBhbSB1c2luZyBNaW50IDE5IGNpbm5hbW9uIGFuZCB0aGUgbGlx
+dW9yaXgga2VybmVsLiAodGhvdWdoIHNvIGZhciBJCmhhdmUgbm90IG5vdGljZWQgYW55IGRpZmZl
+cmVuY2UgYmV0d2VlbiB0aGUgbGlxdW9yaXgga2VybmVsIGFuZCB0aGUKZ2VuZXJpYyBvbmUgZXhj
+ZXB0IHByZS1lbXB0IHBlcmZvcm1hbmNlKS4KCkkgd291bGQgbGlrZSB0byB0cnkgdXNpbmcganVz
+dCB0aGUgYWxzYSBkcml2ZXIgYW5kIG5vdCBmZmFkby4gU2luY2UgSSdtCnVzaW5nIHRoZSBhbHNh
+IG1pZGkgc3VwcG9ydCBhbnl3YXkgaXQgd291bGQgYmUgbGVzcyB0b3RhbCBzb2Z0d2FyZSB0bwp1
+c2UgdGhlIGFsc2EgZHJpdmVyIGZvciBldmVyeXRoaW5nIC0gYXNzdW1pbmcgaXQgc3VwcG9ydHMg
+ZXZlcnl0aGluZyBJIG5lZWQKZm9yIHNlcmlvdXMgbXVzaWMgcmVjb3JkaW5nLgoKSG93ZXZlciBJ
+IGNhbid0IGdldCBhbnkgc291bmQgb3V0IG9mIHRoZSBGRjQwMCB1c2luZyB0aGUgQUxTQSBkcml2
+ZXIgLQppdCB3b3JrcyBvayB3aXRoIEZGQURPIHRob3VnaC4gQWxzbyB0aGUgbWlkaSB3b3JrcyAt
+IHByZXN1bWFibHkgdXNpbmcKdGhlIGFsc2EgZHJpdmVyLgoKSSBoYXZlIHRyaWVkIHVzaW5nIGFs
+c2EgZGlyZWN0bHkgaW4gdGhlIHNvdW5kIGNvbnRyb2wgcGFuZWwsIHVzaW5nIHRoZQphbHNhIG91
+dHB1dCBmcm9tIGF1ZGFjaW91cywgYW5kIHRoZSBhbHNhIGRyaXZlciBmcm9tIGphY2suCgpJIGdl
+dCBhbiBlcnJvciBhYm91dCBzZXR0aW5nIHRoZSBmcmFtZXMvcGVyaW9kL2J1ZmZlciBzaXplLgoK
+VGhlIHJlZCBsaWdodCBvbiB0aGUgRkY0MDAgdGhhdCBzaG93cyBubyBjb25uZWN0aW9uIHRvIGEg
+aG9zdCBzdGF5cyBvbsKgIC0KZXZlbiB0aG91Z2ggdGhlIHN5c3RlbSBjYW4gc2VlIGl0IGlzIHBy
+ZXNlbnQuIFRoaXMgbGlnaHQgZ29lcyBvZmYgaWYgSQpzdGFydCBmZmFkbyBhbmQgamFjaywgb3Ig
+aWYgSSBzdGFydCBmZmFkbyBtaXhlci4KCklzIHRoZXJlIGEgZ3VpZGUgc29tZXdoZXJlIG9uIGhv
+dyB0byBzZXQgdXAgdGhlIEFMU0EgZHJpdmVycyBmb3IgdGhlIEZGNDAwPwoKdGhhbmtzIQoKVGhl
+dAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
