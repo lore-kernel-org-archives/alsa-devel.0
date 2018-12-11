@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware logger
-	support
-Date: Tue, 11 Dec 2018 15:23:11 -0600
-Message-ID: <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 08/14] ASoC: SOF: Add DSP HW abstraction
+	operations
+Date: Tue, 11 Dec 2018 15:23:12 -0600
+Message-ID: <20181211212318.28644-9-pierre-louis.bossart@linux.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,38 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-This patch adds support for real-time DSP logging (timestamped events
-and bespoke binary data) for firmware debug. The current solution
-relies on DMA transfers to system memory that is then accessed by
-userspace tools such as sof-logger. For Intel platforms, two types of
-DMAs are currently used (GP-DMA for Baytrail/CherryTrail and HDaudio
-DMA for SKL+)
+Add operation pointers that can be called by core to control a wide
+variety of DSP targets. The DSP HW drivers will fill in these
+operations.
 
-Due to historical reasons, the driver code follows the DSP firmware
-conventions and refers to 'traces', but it is currently unrelated to
-the Linux trace subsystem. Future solutions will include support for
-more advanced hardware (e.g. MIPI Sys-T), additional formats and the
-ability to enable/disable specific traces dynamically.
-
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/trace.c | 295 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 295 insertions(+)
- create mode 100644 sound/soc/sof/trace.c
+ sound/soc/sof/ops.c | 200 +++++++++++++++++++++++
+ sound/soc/sof/ops.h | 379 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 579 insertions(+)
+ create mode 100644 sound/soc/sof/ops.c
+ create mode 100644 sound/soc/sof/ops.h
 
-diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
 new file mode 100644
-index 000000000000..9871a174f9ca
+index 000000000000..41143fd97772
 --- /dev/null
-+++ b/sound/soc/sof/trace.c
-@@ -0,0 +1,295 @@
++++ b/sound/soc/sof/ops.c
+@@ -0,0 +1,200 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -61,290 +53,580 @@ index 000000000000..9871a174f9ca
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
-+#include <linux/debugfs.h>
-+#include <linux/sched/signal.h>
-+#include "sof-priv.h"
++#include <linux/pci.h>
 +#include "ops.h"
 +
-+static size_t sof_wait_trace_avail(struct snd_sof_dev *sdev,
-+				   loff_t pos, size_t buffer_size)
++int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
++				     u32 mask, u32 value)
 +{
-+	wait_queue_entry_t wait;
++	bool change;
++	unsigned int old, new;
++	u32 ret = ~0; /* explicit init to remove uninitialized use warnings */
++
++	pci_read_config_dword(sdev->pci, offset, &ret);
++	dev_dbg(sdev->dev, "Debug PCIR: %8.8x at  %8.8x\n",
++		pci_read_config_dword(sdev->pci, offset, &ret), offset);
++
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
++
++	change = (old != new);
++	if (change) {
++		pci_write_config_dword(sdev->pci, offset, new);
++		dev_dbg(sdev->dev, "Debug PCIW: %8.8x at  %8.8x\n", value,
++			offset);
++	}
++
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_pci_update_bits_unlocked);
++
++int snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			    u32 mask, u32 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_pci_update_bits_unlocked(sdev, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_pci_update_bits);
++
++int snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 mask, u32 value)
++{
++	bool change;
++	unsigned int old, new;
++	u32 ret;
++
++	ret = snd_sof_dsp_read(sdev, bar, offset);
++
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
++
++	change = (old != new);
++	if (change)
++		snd_sof_dsp_write(sdev, bar, offset, new);
++
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_unlocked);
++
++int snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 mask, u64 value)
++{
++	bool change;
++	u64 old, new;
++
++	old = snd_sof_dsp_read64(sdev, bar, offset);
++
++	new = (old & (~mask)) | (value & mask);
++
++	change = (old != new);
++	if (change)
++		snd_sof_dsp_write64(sdev, bar, offset, new);
++
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64_unlocked);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					     u32 offset, u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
++
++	ret = snd_sof_dsp_read(sdev, bar, offset);
++
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
++
++	snd_sof_dsp_write(sdev, bar, offset, new);
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced_unlocked);
++
++int snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			    u32 mask, u32 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits_unlocked(sdev, bar, offset, mask,
++						  value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits);
++
++int snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u64 mask, u64 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits64_unlocked(sdev, bar, offset, mask,
++						    value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	snd_sof_dsp_update_bits_forced_unlocked(sdev, bar, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced);
++
++int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u32 mask, u32 target, u32 timeout)
++{
++	int time, ret;
 +
 +	/*
-+	 * If host offset is less than local pos, it means write pointer of
-+	 * host DMA buffer has been wrapped. We should output the trace data
-+	 * at the end of host DMA buffer at first.
++	 * we will poll for couple of ms using mdelay, if not successful
++	 * then go to longer sleep using usleep_range
 +	 */
-+	if (sdev->host_offset < pos)
-+		return buffer_size - pos;
 +
-+	/* If there is available trace data now, it is unnecessary to wait. */
-+	if (sdev->host_offset > pos)
-+		return sdev->host_offset - pos;
-+
-+	/* wait for available trace data from FW */
-+	init_waitqueue_entry(&wait, current);
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	add_wait_queue(&sdev->trace_sleep, &wait);
-+
-+	if (signal_pending(current)) {
-+		remove_wait_queue(&sdev->trace_sleep, &wait);
-+		goto out;
++	/* check if set state successful */
++	for (time = 5; time > 0; time--) {
++		if ((snd_sof_dsp_read(sdev, bar, offset) & mask) == target)
++			break;
++		msleep(20);
 +	}
 +
-+	/* set timeout to max value, no error code */
-+	schedule_timeout(MAX_SCHEDULE_TIMEOUT);
-+	remove_wait_queue(&sdev->trace_sleep, &wait);
++	if (!time) {
++		/* sleeping in 10ms steps so adjust timeout value */
++		timeout /= 10;
 +
-+out:
-+	/* return bytes available for copy */
-+	if (sdev->host_offset < pos)
-+		return buffer_size - pos;
++		for (time = timeout; time > 0; time--) {
++			if ((snd_sof_dsp_read(sdev, bar, offset) & mask) ==
++				target)
++				break;
 +
-+	return sdev->host_offset - pos;
-+}
-+
-+static ssize_t sof_dfsentry_trace_read(struct file *file, char __user *buffer,
-+				       size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry_buf *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	unsigned long rem;
-+	loff_t lpos = *ppos;
-+	size_t avail, buffer_size = dfse->size;
-+	u64 lpos_64;
-+
-+	/* make sure we know about any failures on the DSP side */
-+	sdev->dtrace_error = false;
-+
-+	/* check pos and count */
-+	if (lpos < 0)
-+		return -EINVAL;
-+	if (!count)
-+		return 0;
-+
-+	/* check for buffer wrap and count overflow */
-+	lpos_64 = lpos;
-+	lpos = do_div(lpos_64, buffer_size);
-+
-+	if (count > buffer_size - lpos)
-+		count = buffer_size - lpos;
-+
-+	/* get available count based on current host offset */
-+	avail = sof_wait_trace_avail(sdev, lpos, buffer_size);
-+	if (sdev->dtrace_error) {
-+		dev_err(sdev->dev, "error: trace IO error\n");
-+		return -EIO;
++			usleep_range(5000, 10000);
++		}
 +	}
 +
-+	/* make sure count is <= avail */
-+	count = avail > count ? count : avail;
++	ret = time ? 0 : -ETIME;
 +
-+	/* copy available trace data to debugfs */
-+	rem = copy_to_user(buffer, dfse->buf + lpos, count);
-+	if (rem == count)
-+		return -EFAULT;
-+
-+	*ppos += count;
-+
-+	/* move debugfs reading position */
-+	return count;
-+}
-+
-+static const struct file_operations sof_dfs_trace_fops = {
-+	.open = simple_open,
-+	.read = sof_dfsentry_trace_read,
-+	.llseek = default_llseek,
-+};
-+
-+static int trace_debugfs_create(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_dfsentry_buf *dfse;
-+
-+	if (!sdev)
-+		return -EINVAL;
-+
-+	dfse = kzalloc(sizeof(*dfse), GFP_KERNEL);
-+	if (!dfse)
-+		return -ENOMEM;
-+
-+	dfse->buf = sdev->dmatb.area;
-+	dfse->size = sdev->dmatb.bytes;
-+	dfse->sdev = sdev;
-+
-+	dfse->dfsentry = debugfs_create_file("trace", 0444, sdev->debugfs_root,
-+					     dfse, &sof_dfs_trace_fops);
-+	if (!dfse->dfsentry) {
-+		dev_err(sdev->dev,
-+			"error: cannot create debugfs entry for trace\n");
-+		kfree(dfse);
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc_dma_trace_params params;
-+	struct sof_ipc_reply ipc_reply;
-+	int ret;
-+
-+	if (sdev->dtrace_is_enabled)
-+		return -EINVAL;
-+
-+	/* set IPC parameters */
-+	params.hdr.size = sizeof(params);
-+	params.hdr.cmd = SOF_IPC_GLB_TRACE_MSG | SOF_IPC_TRACE_DMA_PARAMS;
-+	params.buffer.phy_addr = sdev->dmatp.addr;
-+	params.buffer.size = sdev->dmatb.bytes;
-+	params.buffer.offset = 0;
-+	params.buffer.pages = sdev->dma_trace_pages;
-+	params.stream_tag = 0;
-+
-+	sdev->host_offset = 0;
-+
-+	ret = snd_sof_dma_trace_init(sdev, &params.stream_tag);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: fail in snd_sof_dma_trace_init %d\n", ret);
-+		return ret;
-+	}
-+	dev_dbg(sdev->dev, "stream_tag: %d\n", params.stream_tag);
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 params.hdr.cmd, &params, sizeof(params),
-+				 &ipc_reply, sizeof(ipc_reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: can't set params for DMA for trace %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_sof_dma_trace_trigger(sdev, SNDRV_PCM_TRIGGER_START);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: snd_sof_dma_trace_trigger: start: %d\n", ret);
-+		return ret;
-+	}
-+
-+	sdev->dtrace_is_enabled = true;
-+
-+	return 0;
-+}
-+
-+int snd_sof_init_trace(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+
-+	/* set false before start initialization */
-+	sdev->dtrace_is_enabled = false;
-+
-+	/* allocate trace page table buffer */
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, sdev->parent,
-+				  PAGE_SIZE, &sdev->dmatp);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: can't alloc page table for trace %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* allocate trace data buffer */
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, sdev->parent,
-+				  DMA_BUF_SIZE_FOR_TRACE, &sdev->dmatb);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: can't alloc buffer for trace %d\n", ret);
-+		goto page_err;
-+	}
-+
-+	/* craete compressed page table for audio firmware */
-+	ret = snd_sof_create_page_table(sdev, &sdev->dmatb, sdev->dmatp.area,
-+					sdev->dmatb.bytes);
-+	if (ret < 0)
-+		goto table_err;
-+
-+	sdev->dma_trace_pages = ret;
-+	dev_dbg(sdev->dev, "dma_trace_pages: %d\n", sdev->dma_trace_pages);
-+
-+	if (sdev->first_boot) {
-+		ret = trace_debugfs_create(sdev);
-+		if (ret < 0)
-+			goto table_err;
-+	}
-+
-+	init_waitqueue_head(&sdev->trace_sleep);
-+
-+	ret = snd_sof_init_trace_ipc(sdev);
-+	if (ret < 0)
-+		goto table_err;
-+
-+	return 0;
-+table_err:
-+	snd_dma_free_pages(&sdev->dmatb);
-+page_err:
-+	snd_dma_free_pages(&sdev->dmatp);
 +	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_init_trace);
++EXPORT_SYMBOL(snd_sof_dsp_register_poll);
 +
-+int snd_sof_trace_update_pos(struct snd_sof_dev *sdev,
-+			     struct sof_ipc_dma_trace_posn *posn)
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
 +{
-+	if (sdev->dtrace_is_enabled && sdev->host_offset != posn->host_offset) {
-+		sdev->host_offset = posn->host_offset;
-+		wake_up(&sdev->trace_sleep);
-+	}
++	dev_err(sdev->dev, "error : DSP panic!\n");
 +
-+	if (posn->overflow != 0)
-+		dev_err(sdev->dev,
-+			"error: DSP trace buffer overflow %u bytes. Total messages %d\n",
-+			posn->overflow, posn->messages);
++	/* check if DSP is not ready and did not set the dsp_oops_offset.
++	 * if the dsp_oops_offset is not set, set it from the panic message.
++	 * Also add a check to memory window setting with panic message.
++	 */
++	if (!sdev->dsp_oops_offset)
++		sdev->dsp_oops_offset = offset;
++	else
++		dev_dbg(sdev->dev, "panic: dsp_oops_offset %zu offset %d\n",
++			sdev->dsp_oops_offset, offset);
++
++	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
++	snd_sof_trace_notify_for_error(sdev);
++	snd_sof_dsp_cmd_done(sdev, SOF_IPC_HOST_REPLY);
++}
++EXPORT_SYMBOL(snd_sof_dsp_panic);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+new file mode 100644
+index 000000000000..405e39155645
+--- /dev/null
++++ b/sound/soc/sof/ops.h
+@@ -0,0 +1,379 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ *
++ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++ */
++
++#ifndef __SOUND_SOC_SOF_IO_H
++#define __SOUND_SOC_SOF_IO_H
++
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <sound/pcm.h>
++#include "sof-priv.h"
++
++/* init */
++static inline int snd_sof_probe(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->probe)
++		return sdev->ops->probe(sdev);
 +
 +	return 0;
 +}
 +
-+/* an error has occurred within the DSP that prevents further trace */
-+void snd_sof_trace_notify_for_error(struct snd_sof_dev *sdev)
++static inline int snd_sof_remove(struct snd_sof_dev *sdev)
 +{
-+	if (sdev->dtrace_is_enabled) {
-+		dev_err(sdev->dev, "error: waking up any trace sleepers\n");
-+		sdev->dtrace_error = true;
-+		wake_up(&sdev->trace_sleep);
++	if (sdev->ops->remove)
++		return sdev->ops->remove(sdev);
++
++	return 0;
++}
++
++/* control */
++static inline int snd_sof_dsp_run(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->run)
++		return sdev->ops->run(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_stall(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->stall)
++		return sdev->ops->stall(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_reset(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->reset)
++		return sdev->ops->reset(sdev);
++
++	return 0;
++}
++
++/* dsp core power up/power down */
++static inline int snd_sof_dsp_core_power_up(struct snd_sof_dev *sdev,
++					    unsigned int core_mask)
++{
++	if (sdev->ops->core_power_up)
++		return sdev->ops->core_power_up(sdev, core_mask);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_core_power_down(struct snd_sof_dev *sdev,
++					      unsigned int core_mask)
++{
++	if (sdev->ops->core_power_down)
++		return sdev->ops->core_power_down(sdev, core_mask);
++
++	return 0;
++}
++
++/* pre/post fw load */
++static inline int snd_sof_dsp_pre_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->pre_fw_run)
++		return sdev->ops->pre_fw_run(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_post_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->post_fw_run)
++		return sdev->ops->post_fw_run(sdev);
++
++	return 0;
++}
++
++/* power management */
++static inline int snd_sof_dsp_resume(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->resume)
++		return sdev->ops->resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_suspend(struct snd_sof_dev *sdev, int state)
++{
++	if (sdev->ops->suspend)
++		return sdev->ops->suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_resume(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->runtime_resume)
++		return sdev->ops->runtime_resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
++					      int state)
++{
++	if (sdev->ops->runtime_suspend)
++		return sdev->ops->runtime_suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_set_clk(struct snd_sof_dev *sdev, u32 freq)
++{
++	if (sdev->ops->set_clk)
++		return sdev->ops->set_clk(sdev, freq);
++
++	return 0;
++}
++
++/* debug */
++static inline void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	if (sdev->ops->dbg_dump)
++		return sdev->ops->dbg_dump(sdev, flags);
++}
++
++/* register IO */
++static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 value)
++{
++	if (sdev->ops->write)
++		sdev->ops->write(sdev, sdev->bar[bar] + offset, value);
++}
++
++static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 value)
++{
++	if (sdev->ops->write64)
++		sdev->ops->write64(sdev,
++			sdev->bar[bar] + offset, value);
++}
++
++static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
++				   u32 offset)
++{
++	if (sdev->ops->read)
++		return sdev->ops->read(sdev, sdev->bar[bar] + offset);
++
++	return 0;
++}
++
++static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset)
++{
++	if (sdev->ops->read64)
++		return sdev->ops->read64(sdev, sdev->bar[bar] + offset);
++
++	return 0;
++}
++
++/* block IO */
++static inline void snd_sof_dsp_block_read(struct snd_sof_dev *sdev,
++					  u32 offset, void *dest, size_t bytes)
++{
++	if (sdev->ops->block_read)
++		sdev->ops->block_read(sdev, offset, dest, bytes);
++}
++
++static inline void snd_sof_dsp_block_write(struct snd_sof_dev *sdev,
++					   u32 offset, void *src, size_t bytes)
++{
++	if (sdev->ops->block_write)
++		sdev->ops->block_write(sdev, offset, src, bytes);
++}
++
++/* mailbox */
++static inline void snd_sof_dsp_mailbox_read(struct snd_sof_dev *sdev,
++					    u32 offset, void *message,
++					    size_t bytes)
++{
++	if (sdev->ops->mailbox_read)
++		sdev->ops->mailbox_read(sdev, offset, message, bytes);
++}
++
++static inline void snd_sof_dsp_mailbox_write(struct snd_sof_dev *sdev,
++					     u32 offset, void *message,
++					     size_t bytes)
++{
++	if (sdev->ops->mailbox_write)
++		sdev->ops->mailbox_write(sdev, offset, message, bytes);
++}
++
++/* ipc */
++static inline int snd_sof_dsp_send_msg(struct snd_sof_dev *sdev,
++				       struct snd_sof_ipc_msg *msg)
++{
++	if (sdev->ops->send_msg)
++		return sdev->ops->send_msg(sdev, msg);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_get_reply(struct snd_sof_dev *sdev,
++					struct snd_sof_ipc_msg *msg)
++{
++	if (sdev->ops->get_reply)
++		return sdev->ops->get_reply(sdev, msg);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_is_ready(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->is_ready)
++		return sdev->ops->is_ready(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_cmd_done(struct snd_sof_dev *sdev,
++				       int dir)
++{
++	if (sdev->ops->cmd_done)
++		return sdev->ops->cmd_done(sdev, dir);
++
++	return 0;
++}
++
++/* host DMA trace */
++static inline int snd_sof_dma_trace_init(struct snd_sof_dev *sdev,
++					 u32 *stream_tag)
++{
++	if (sdev->ops->trace_init)
++		return sdev->ops->trace_init(sdev, stream_tag);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_release(struct snd_sof_dev *sdev)
++{
++	if (sdev->ops->trace_release)
++		return sdev->ops->trace_release(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_trigger(struct snd_sof_dev *sdev, int cmd)
++{
++	if (sdev->ops->trace_trigger)
++		return sdev->ops->trace_trigger(sdev, cmd);
++
++	return 0;
++}
++
++/* host PCM ops */
++static inline int
++snd_sof_pcm_platform_open(struct snd_sof_dev *sdev,
++			  struct snd_pcm_substream *substream)
++{
++	if (sdev->ops && sdev->ops->pcm_open)
++		return sdev->ops->pcm_open(sdev, substream);
++
++	return 0;
++}
++
++/* disconnect pcm substream to a host stream */
++static inline int
++snd_sof_pcm_platform_close(struct snd_sof_dev *sdev,
++			   struct snd_pcm_substream *substream)
++{
++	if (sdev->ops && sdev->ops->pcm_close)
++		return sdev->ops->pcm_close(sdev, substream);
++
++	return 0;
++}
++
++/* host stream hw params */
++static inline int
++snd_sof_pcm_platform_hw_params(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params,
++			       struct sof_ipc_stream_params *ipc_params)
++{
++	if (sdev->ops && sdev->ops->pcm_hw_params)
++		return sdev->ops->pcm_hw_params(sdev, substream,
++						params, ipc_params);
++
++	return 0;
++}
++
++/* host stream trigger */
++static inline int
++snd_sof_pcm_platform_trigger(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream, int cmd)
++{
++	if (sdev->ops && sdev->ops->pcm_trigger)
++		return sdev->ops->pcm_trigger(sdev, substream, cmd);
++
++	return 0;
++}
++
++/* host stream pointer */
++static inline snd_pcm_uframes_t
++snd_sof_pcm_platform_pointer(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream)
++{
++	if (sdev->ops && sdev->ops->pcm_pointer)
++		return sdev->ops->pcm_pointer(sdev, substream);
++
++	return 0;
++}
++
++static inline struct snd_sof_dsp_ops
++*sof_get_ops(const struct sof_dev_desc *d,
++	     const struct sof_ops_table mach_ops[], int asize)
++{
++	int i;
++
++	for (i = 0; i < asize; i++) {
++		if (d == mach_ops[i].desc)
++			return mach_ops[i].ops;
 +	}
++
++	/* not found */
++	return NULL;
 +}
-+EXPORT_SYMBOL(snd_sof_trace_notify_for_error);
 +
-+void snd_sof_release_trace(struct snd_sof_dev *sdev)
-+{
-+	int ret;
++int snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 mask, u32 value);
 +
-+	if (!sdev->dtrace_is_enabled)
-+		return;
++int snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 mask, u64 value);
 +
-+	ret = snd_sof_dma_trace_trigger(sdev, SNDRV_PCM_TRIGGER_STOP);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: snd_sof_dma_trace_trigger: stop: %d\n", ret);
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					     u32 offset, u32 mask, u32 value);
 +
-+	ret = snd_sof_dma_trace_release(sdev);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: fail in snd_sof_dma_trace_release %d\n", ret);
++int snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			    u32 mask, u32 value);
 +
-+	sdev->dtrace_is_enabled = false;
-+}
-+EXPORT_SYMBOL(snd_sof_release_trace);
++int snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar,
++			      u32 offset, u64 mask, u64 value);
 +
-+void snd_sof_free_trace(struct snd_sof_dev *sdev)
-+{
-+	snd_sof_release_trace(sdev);
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value);
 +
-+	snd_dma_free_pages(&sdev->dmatb);
-+	snd_dma_free_pages(&sdev->dmatp);
-+}
-+EXPORT_SYMBOL(snd_sof_free_trace);
++int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
++				     u32 mask, u32 value);
++
++int snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			    u32 mask, u32 value);
++
++int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u32 mask, u32 target, u32 timeout);
++
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset);
++#endif
 -- 
 2.17.1
