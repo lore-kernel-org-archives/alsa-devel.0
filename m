@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 7/8] ALSA: fireface: localize a handler for
-	MIDI messages on tx transaction
-Date: Tue, 11 Dec 2018 19:17:34 +0900
-Message-ID: <20181211101735.13735-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH 8/8] ALSA: fireface: add support for Fireface
+	800 with MIDI functionality only
+Date: Tue, 11 Dec 2018 19:17:35 +0900
+Message-ID: <20181211101735.13735-9-o-takashi@sakamocchi.jp>
 References: <20181211101735.13735-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
- [209.85.214.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A26D267BA8
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 11:17:57 +0100 (CET)
-Received: by mail-pl1-f196.google.com with SMTP id u6so6710919plm.8
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:17:57 -0800 (PST)
+Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
+ [209.85.215.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5E0267BA4
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 11:17:59 +0100 (CET)
+Received: by mail-pg1-f194.google.com with SMTP id t13so6418280pgr.11
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:17:59 -0800 (PST)
 In-Reply-To: <20181211101735.13735-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,128 +28,201 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Content of asynchronous transaction for MIDI messages differs between
-Fireface 400 and 800.
+Fireface 800 is a flagship model of RME GmbH for audio and music units
+on IEEE 1394 bus, shipped 2004. This model consists of four chips:
+ - TI TSB81BA3D for physical layer on cable environment of EEE 1394 bus
+ - TI TSB82AA2 for link layer for 1394 OHCI bus bridge to PCI bus
+ - Xilinx Spartan-3 FPGA XC3S400
+ - Xilinx High-Performance CPLD XC9572XL
 
-This commit adds a model-specific handler for the transaction and adds
-arrangement.
+This commit adds support Fireface 800. In this time, the support is
+restricted to its MIDI functionality, thus this commit adds some
+condition statements to avoid touching streaming functionality.
+
+Unlike Fireface 400, Fireface 800 has no functionality to suppress
+asynchronous transactions for MIDI messages except for unregister of
+listen address in controller side, thus the feature is available as is.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-protocol-ff400.c | 38 +++++++++++++++++++++
- sound/firewire/fireface/ff-transaction.c    | 34 +-----------------
+ sound/firewire/Kconfig                      |  1 +
+ sound/firewire/fireface/Makefile            |  3 +-
+ sound/firewire/fireface/ff-protocol-ff800.c | 27 +++++++++++
+ sound/firewire/fireface/ff.c                | 51 ++++++++++++++++-----
  sound/firewire/fireface/ff.h                |  1 +
- 3 files changed, 40 insertions(+), 33 deletions(-)
+ 5 files changed, 70 insertions(+), 13 deletions(-)
+ create mode 100644 sound/firewire/fireface/ff-protocol-ff800.c
 
-diff --git a/sound/firewire/fireface/ff-protocol-ff400.c b/sound/firewire/fireface/ff-protocol-ff400.c
-index b283762e785c..8f34174ee813 100644
---- a/sound/firewire/fireface/ff-protocol-ff400.c
-+++ b/sound/firewire/fireface/ff-protocol-ff400.c
-@@ -105,7 +105,45 @@ static int ff400_switch_fetching_mode(struct snd_ff *ff, bool enable)
- 	return err;
- }
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 44cedb65bb88..052e00590259 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -162,5 +162,6 @@ config SND_FIREFACE
+ 	help
+ 	 Say Y here to include support for RME fireface series.
+ 	  * Fireface 400
++	  * Fireface 800
  
-+static void ff400_handle_midi_msg(struct snd_ff *ff, __le32 *buf, size_t length)
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
+index 8f807284ba54..79a7d6d99d72 100644
+--- a/sound/firewire/fireface/Makefile
++++ b/sound/firewire/fireface/Makefile
+@@ -1,3 +1,4 @@
+ snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o \
+-		     ff-stream.o ff-pcm.o ff-hwdep.o ff-protocol-ff400.o
++		     ff-stream.o ff-pcm.o ff-hwdep.o ff-protocol-ff400.o \
++		     ff-protocol-ff800.o
+ obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
+diff --git a/sound/firewire/fireface/ff-protocol-ff800.c b/sound/firewire/fireface/ff-protocol-ff800.c
+new file mode 100644
+index 000000000000..d24439734304
+--- /dev/null
++++ b/sound/firewire/fireface/ff-protocol-ff800.c
+@@ -0,0 +1,27 @@
++/*
++ * ff-protocol-ff800.c - a part of driver for RME Fireface series
++ *
++ * Copyright (c) 2018 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "ff.h"
++
++static void ff800_handle_midi_msg(struct snd_ff *ff, __le32 *buf, size_t length)
 +{
 +	int i;
 +
 +	for (i = 0; i < length / 4; i++) {
-+		u32 quad = le32_to_cpu(buf[i]);
-+		u8 byte;
-+		unsigned int index;
++		u8 byte = le32_to_cpu(buf[i]) & 0xff;
 +		struct snd_rawmidi_substream *substream;
 +
-+		/* Message in first port. */
-+		/*
-+		 * This value may represent the index of this unit when the same
-+		 * units are on the same IEEE 1394 bus. This driver doesn't use
-+		 * it.
-+		 */
-+		index = (quad >> 8) & 0xff;
-+		if (index > 0) {
-+			substream = READ_ONCE(ff->tx_midi_substreams[0]);
-+			if (substream != NULL) {
-+				byte = quad & 0xff;
-+				snd_rawmidi_receive(substream, &byte, 1);
-+			}
-+		}
-+
-+		/* Message in second port. */
-+		index = (quad >> 24) & 0xff;
-+		if (index > 0) {
-+			substream = READ_ONCE(ff->tx_midi_substreams[1]);
-+			if (substream != NULL) {
-+				byte = (quad >> 16) & 0xff;
-+				snd_rawmidi_receive(substream, &byte, 1);
-+			}
-+		}
++		substream = READ_ONCE(ff->tx_midi_substreams[0]);
++		if (substream)
++			snd_rawmidi_receive(substream, &byte, 1);
 +	}
 +}
 +
- const struct snd_ff_protocol snd_ff_protocol_ff400 = {
-+	.handle_midi_msg	= ff400_handle_midi_msg,
- 	.begin_session		= ff400_begin_session,
- 	.finish_session		= ff400_finish_session,
- 	.switch_fetching_mode	= ff400_switch_fetching_mode,
-diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
-index 1ce4cef6ca35..d8768348067b 100644
---- a/sound/firewire/fireface/ff-transaction.c
-+++ b/sound/firewire/fireface/ff-transaction.c
-@@ -206,42 +206,10 @@ static void handle_midi_msg(struct fw_card *card, struct fw_request *request,
++const struct snd_ff_protocol snd_ff_protocol_ff800 = {
++	.handle_midi_msg	= ff800_handle_midi_msg,
++};
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 2ce5e115b0eb..d486984c0e5b 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -31,7 +31,8 @@ static void ff_card_free(struct snd_card *card)
  {
- 	struct snd_ff *ff = callback_data;
- 	__le32 *buf = data;
--	u32 quad;
--	u8 byte;
--	unsigned int index;
--	struct snd_rawmidi_substream *substream;
--	int i;
+ 	struct snd_ff *ff = card->private_data;
  
- 	fw_send_response(card, request, RCODE_COMPLETE);
- 
--	for (i = 0; i < length / 4; i++) {
--		quad = le32_to_cpu(buf[i]);
--
--		/* Message in first port. */
--		/*
--		 * This value may represent the index of this unit when the same
--		 * units are on the same IEEE 1394 bus. This driver doesn't use
--		 * it.
--		 */
--		index = (quad >> 8) & 0xff;
--		if (index > 0) {
--			substream = READ_ONCE(ff->tx_midi_substreams[0]);
--			if (substream != NULL) {
--				byte = quad & 0xff;
--				snd_rawmidi_receive(substream, &byte, 1);
--			}
--		}
--
--		/* Message in second port. */
--		index = (quad >> 24) & 0xff;
--		if (index > 0) {
--			substream = READ_ONCE(ff->tx_midi_substreams[1]);
--			if (substream != NULL) {
--				byte = (quad >> 16) & 0xff;
--				snd_rawmidi_receive(substream, &byte, 1);
--			}
--		}
--	}
-+	ff->spec->protocol->handle_midi_msg(ff, buf, length);
+-	snd_ff_stream_destroy_duplex(ff);
++	if (ff->spec->protocol->begin_session)
++		snd_ff_stream_destroy_duplex(ff);
+ 	snd_ff_transaction_unregister(ff);
  }
  
- static int allocate_own_address(struct snd_ff *ff, int i)
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 466304c72d76..178a96cb6e2a 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -108,6 +108,7 @@ enum snd_ff_clock_src {
+@@ -56,9 +57,11 @@ static void do_registration(struct work_struct *work)
+ 
+ 	name_card(ff);
+ 
+-	err = snd_ff_stream_init_duplex(ff);
+-	if (err < 0)
+-		goto error;
++	if (ff->spec->protocol->begin_session) {
++		err = snd_ff_stream_init_duplex(ff);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	snd_ff_proc_init(ff);
+ 
+@@ -66,13 +69,15 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_ff_create_pcm_devices(ff);
+-	if (err < 0)
+-		goto error;
++	if (ff->spec->protocol->begin_session) {
++		err = snd_ff_create_pcm_devices(ff);
++		if (err < 0)
++			goto error;
+ 
+-	err = snd_ff_create_hwdep_devices(ff);
+-	if (err < 0)
+-		goto error;
++		err = snd_ff_create_hwdep_devices(ff);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	err = snd_card_register(ff->card);
+ 	if (err < 0)
+@@ -121,7 +126,7 @@ static void snd_ff_update(struct fw_unit *unit)
+ 
+ 	snd_ff_transaction_reregister(ff);
+ 
+-	if (ff->registered)
++	if (ff->registered && ff->spec->protocol->begin_session)
+ 		snd_ff_stream_update_duplex(ff);
+ }
+ 
+@@ -145,6 +150,16 @@ static void snd_ff_remove(struct fw_unit *unit)
+ 	fw_unit_put(ff->unit);
+ }
+ 
++static const struct snd_ff_spec spec_ff800 = {
++	.name = "Fireface800",
++	.midi_in_ports = 1,
++	.midi_out_ports = 1,
++	.protocol = &snd_ff_protocol_ff800,
++	.regs = {
++		[SND_FF_REG_TYPE_MIDI_HIGH_ADDR] = 0x000200000320ull,
++	},
++};
++
+ static const struct snd_ff_spec spec_ff400 = {
+ 	.name = "Fireface400",
+ 	.pcm_capture_channels = {18, 14, 10},
+@@ -158,6 +173,18 @@ static const struct snd_ff_spec spec_ff400 = {
  };
  
- struct snd_ff_protocol {
-+	void (*handle_midi_msg)(struct snd_ff *ff, __le32 *buf, size_t length);
- 	int (*begin_session)(struct snd_ff *ff, unsigned int rate);
- 	void (*finish_session)(struct snd_ff *ff);
+ static const struct ieee1394_device_id snd_ff_id_table[] = {
++	/* Fireface 800 */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_SPECIFIER_ID |
++				  IEEE1394_MATCH_VERSION |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_RME,
++		.specifier_id	= OUI_RME,
++		.version	= 0x000001,
++		.model_id	= 0x101800,
++		.driver_data	= (kernel_ulong_t)&spec_ff800,
++	},
+ 	/* Fireface 400 */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+@@ -165,7 +192,7 @@ static const struct ieee1394_device_id snd_ff_id_table[] = {
+ 				  IEEE1394_MATCH_VERSION |
+ 				  IEEE1394_MATCH_MODEL_ID,
+ 		.vendor_id	= OUI_RME,
+-		.specifier_id	= 0x000a35,
++		.specifier_id	= OUI_RME,
+ 		.version	= 0x000002,
+ 		.model_id	= 0x101800,
+ 		.driver_data	= (kernel_ulong_t)&spec_ff400,
+diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
+index 178a96cb6e2a..6e4a8197d3ca 100644
+--- a/sound/firewire/fireface/ff.h
++++ b/sound/firewire/fireface/ff.h
+@@ -114,6 +114,7 @@ struct snd_ff_protocol {
  	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
+ };
+ 
++extern const struct snd_ff_protocol snd_ff_protocol_ff800;
+ extern const struct snd_ff_protocol snd_ff_protocol_ff400;
+ 
+ int snd_ff_transaction_get_clock(struct snd_ff *ff, unsigned int *rate,
 -- 
 2.19.1
