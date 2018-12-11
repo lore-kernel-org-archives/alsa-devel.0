@@ -1,56 +1,63 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 0/2] Graph fixes for using multiple endpoints per port
-Date: Mon, 10 Dec 2018 21:44:37 -0800
-Message-ID: <20181211054437.GK6707@atomide.com>
-References: <20181211020557.61783-1-tony@atomide.com>
- <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
- <20181211045220.GI6707@atomide.com>
- <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
- <87zhtcabc0.wl-kuninori.morimoto.gx@renesas.com>
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: [PATCH v10 0/3] Huawei laptops
+Date: Tue, 11 Dec 2018 01:01:19 -0500
+Message-ID: <20181211060125.28671-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87zhtcabc0.wl-kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Sebastian Reichel <sre@kernel.org>
+To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ayman.bagabas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-* Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> [181211 05:30]:
-> 
-> Hi Tony, again
-> 
-> > >  	mcbsp3_port: port {
-> > > -		cpu_dai3: endpoint {
-> > > +		cpu_dai3: endpoint@0 {
-> > >  			dai-format = "dsp_a";
-> > >  			frame-master = <&cpcap_audio_codec1>;
-> > >  			bitclock-master = <&cpcap_audio_codec1>;
-> > >  			remote-endpoint = <&cpcap_audio_codec1>;
-> > >  		};
-> > > +		cpu_dai_mdm: endpoint@1 {
-> > > +			dai-format = "dsp_a";
-> > > +			frame-master = <&cpcap_audio_codec1>;
-> > > +			bitclock-master = <&cpcap_audio_codec1>;
-> > > +			remote-endpoint = <&mot_mdm6600_audio_codec0>;
-> > > +		};
-> 
-> audio-graph-scu-card and my posting merged audio-graph-card
-> are assuming multi-endpoint will be used for DPCM purpose.
-> 
-> But, above endpoint connection seems you want to is
-> not DPCM (?), I'm not sure.
+This patch set is based on the new audio LED triggers in topic/leds-trigger branch from
+        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 
-Yes DPCM should work nicely here :)
+Changes in v10:
+* Use ec_get_handle instead of acpi_get_handle since we are using the ec device
+* Switch to WMI0_EXPENSIVE_GUID and wmi_query_block to fetch keycode when WMI0 is used
 
-So to recap, Sebastian already added the cpcap codec a while back,
-please see arch/arm/boot/dts/omap4-droid4-xt894.dts for the soundcard
-node. Then see the link below for an earlier email describing how the
-various components are wired for TDM [0].
+Changes in v9:
+* Explicitly use NULL in acpi_get_handle
+* Drop __initconst from huawei_wmi_keymap
 
-Hope that clarifies things a bit more,
+Changes in v8:
+* Switch to wmi_driver
+* Use devm to allocate and manage devices
+* Skip registering LED subsystem if a ACPI controller method was not found
 
-Tony
+Changes in v7:
+* Use audio LED triggers patch set
+* Use KEY_CONFIG (XF86Tools) instead of KEY_PROG1.
+ In Windows, the key is used to launch Huawei PC manager. XF86Tools is
+ used by default on most desktop environments i.e. Gnome.
 
-[0] https://lkml.org/lkml/2018/3/28/405
+Changes in v6:
+* Review tags
+
+Changes in v5:
+* Consistency in file names
+* How module would be enabled (Kconfig)
+* Match license in SPDX and MODULE_LICENSE 
+
+Changes in v4:
+* Code formatting
+
+Changes in v3:
+* Support for Huawei MBX
+* Style and formatting issues
+
+Ayman Bagabas (3):
+  ALSA: hda: fix front speakers on Huawei MBXP.
+  x86: add support for Huawei WMI hotkeys.
+  ALSA: hda: add support for Huawei WMI micmute LED
+
+ drivers/platform/x86/Kconfig      |  17 +++
+ drivers/platform/x86/Makefile     |   1 +
+ drivers/platform/x86/huawei-wmi.c | 220 ++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c     |  22 +++
+ 4 files changed, 260 insertions(+)
+ create mode 100644 drivers/platform/x86/huawei-wmi.c
+
+-- 
+2.19.2
