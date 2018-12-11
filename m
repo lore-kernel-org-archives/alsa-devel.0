@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sdm845: add rt5663 codec select" to the asoc tree
-Date: Tue, 11 Dec 2018 01:15:47 +0000 (GMT)
-Message-ID: <20181211011547.9A1E311254C7@debutante.sirena.org.uk>
-References: <20181210204943.2581826-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181210204943.2581826-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rohit kumar <rohitkr@codeaurora.org>, Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: kbl_da7219_max98927: fix the
+	audio jack button remapping" to the asoc tree
+Date: Tue, 11 Dec 2018 01:15:49 +0000 (GMT)
+Message-ID: <20181211011549.667FB11254C7@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A2A1267B4A
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:50 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Zhuohao Lee <zhuohao@chromium.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Max Chang <changmax@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sdm845: add rt5663 codec select
+   ASoC: Intel: kbl_da7219_max98927: fix the audio jack button remapping
 
 has been applied to the asoc tree at
 
@@ -37,38 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From e9dc919043c56dccedce93fe402e6c94423a70b0 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 10 Dec 2018 21:49:28 +0100
-Subject: [PATCH] ASoC: sdm845: add rt5663 codec select
+>From 7f63196eaa83e033de523602324ff91288390a67 Mon Sep 17 00:00:00 2001
+From: Zhuohao Lee <zhuohao@chromium.org>
+Date: Mon, 10 Dec 2018 12:32:13 +0800
+Subject: [PATCH] ASoC: Intel: kbl_da7219_max98927: fix the audio jack button
+ remapping
 
-Calling into the codec driver adds a dependency on that being reachable
-from the module:
+>From the da7219 spec, the button A, B, C and D are remapped to
+0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
+B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND.
 
-ERROR: "rt5663_sel_asrc_clk_src" [sound/soc/qcom/snd-soc-sdm845.ko]
-undefined!
-
-Add the corresponding select statement, as it is done in the other user
-(Intel).
-
-Fixes: f7485875a687 ("ASoC: sdm845: Add configuration for headset codec")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
+Signed-off-by: Max Chang  <changmax@chromium.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 2a4c912d1e48..1b9fc0665792 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -100,6 +100,7 @@ config SND_SOC_SDM845
- 	depends on QCOM_APR
- 	select SND_SOC_QDSP6
- 	select SND_SOC_QCOM_COMMON
-+	select SND_SOC_RT5663
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SDM845 SoC-based systems.
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 58eb0fe69978..723a4935ed76 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	jack = &ctx->kabylake_headset;
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+ 
+ 	da7219_aad_jack_det(component, &ctx->kabylake_headset);
+ 
 -- 
 2.19.0.rc2
