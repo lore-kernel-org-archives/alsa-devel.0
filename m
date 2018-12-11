@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
-	Point of View Mobii TAB-P1005W-232" to the asoc tree
-Date: Tue, 11 Dec 2018 01:15:51 +0000 (GMT)
-Message-ID: <20181211011551.3BE0E11254C7@debutante.sirena.org.uk>
-References: <20181208130114.6612-2-hdegoede@redhat.com>
+	Prowise PT301 tablet" to the asoc tree
+Date: Tue, 11 Dec 2018 01:15:53 +0000 (GMT)
+Message-ID: <20181211011553.2E19711254C7@debutante.sirena.org.uk>
+References: <20181208130114.6612-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 02883267B58
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:52 +0100 (CET)
-In-Reply-To: <20181208130114.6612-2-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6489A267B60
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:53 +0100 (CET)
+In-Reply-To: <20181208130114.6612-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Add quirk for the Point of View Mobii TAB-P1005W-232
+   ASoC: Intel: bytcr_rt5640: Add quirk for the Prowise PT301 tablet
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 02e5af6575627ca0692d5b93e7c3fc3b86f62f40 Mon Sep 17 00:00:00 2001
+>From 271248f4c2bf56dc6b3582e37c7ac19dd483d989 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sat, 8 Dec 2018 14:01:14 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Point of View
- Mobii TAB-P1005W-232
+Date: Sat, 8 Dec 2018 14:01:13 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Prowise PT301
+ tablet
 
-Add a quirk for the Point of View Mobii TAB-P1005W-232 v2.0 tablet, this
-BYTCR device uses IN1 for its MIC and JD2 for jack-detect, rather then the
+Add a quirk for the Prowise PT301 tablet, this BYTCR tablet has no CHAN
+package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
+is the default for BYTCR devices.
+
+Also it uses IN1 for its MIC and JD2 for jack-detect, rather then the
 default IN3 and JD1.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index a48ea8ef21ce..a22366ce33c4 100644
+index 09591144ea7d..a48ea8ef21ce 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -673,6 +673,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+@@ -673,6 +673,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
  					BYT_RT5640_SSP0_AIF2 |
  					BYT_RT5640_MCLK_EN),
  	},
-+	{	/* Point of View Mobii TAB-P1005W-232 (V2.0) */
++	{
++		/* Prowise PT301 */
 +		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "POV"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "I102A"),
++			DMI_MATCH(DMI_SYS_VENDOR, "Prowise"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "PT301"),
 +		},
 +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
 +					BYT_RT5640_JD_SRC_JD2_IN4N |
@@ -92,7 +96,7 @@ index a48ea8ef21ce..a22366ce33c4 100644
 +					BYT_RT5640_MCLK_EN),
 +	},
  	{
- 		/* Prowise PT301 */
  		.matches = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
 -- 
 2.19.0.rc2
