@@ -1,43 +1,51 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH v2] ASoC: Intel: kbl_rt5660: Add a new
- machine driver for kbl with rt5660
-Date: Tue, 11 Dec 2018 21:03:19 +0800
-Message-ID: <0ffa8568-f40e-ea22-2bbd-45e7c0737606@canonical.com>
-References: <20181208024814.17843-1-hui.wang@canonical.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 0/4] ASoC: meson: add axg spdif input support
+Date: Tue, 11 Dec 2018 14:47:09 +0100
+Message-ID: <20181211134713.4908-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FD1326770D
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:03:33 +0100 (CET)
-In-Reply-To: <20181208024814.17843-1-hui.wang@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, naveen.m@intel.com
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gUGllcnJlLWxvdWlzLAoKUGxlYXNlIHRha2UgYSBsb29rIGF0IHRoaXMgcGF0Y2ggd2hl
-biB5b3UgaGF2ZSB0aW1lLiA6LSkKClRoYW5rcywKSHVpLgoKT24gMjAxOC8xMi84IOS4iuWNiDEw
-OjQ4LCBIdWkgV2FuZyB3cm90ZToKPiBUaGUgbmV3IERlbGwgSW9UIHBsYXRmb3JtIHVzZXMga2Fi
-eWxha2UgKyBhbGMzMjc3IGNvZGVjLCBhbmQgYWxjMzI3Nwo+IHNoYXJlcyB0aGUgZHJpdmVyIHdp
-dGggdGhlIGNvZGVjIHJ0NTY2MCwgaGVyZSB3ZSBnZW5lcmF0ZSBhIG5ldwo+IG1hY2hpbmUgZHJp
-dmVyIGJhc2VkIG9uIGtibF9kYTcyMTlfbWF4OTgzNTdhLgo+Cj4gVGhlIGF1ZGlvIGRlc2lnbiBv
-biB0aGlzIElvVCBwbGF0Zm9ybSBpcyBhcyBiZWxvdzoKPiAgIC0gSW50ZWwga2FieWxha2UgcGxh
-dGZvcm0KPiAgIC0gY29ubmVjdCB0aGUgY29kZWMgQUxDMzI3NyB2aWEgU1NQMAo+ICAgLSBsaW5l
-LW91dCBhbmQgbGluZS1pbiB3aXRoIE1pY2JpYXMgamFja3MKPiAgIC0gbGluZS1vdXQgbXV0ZSBj
-b250cm9sIGFuZCBqYWNrIGRldGVjdGlvbiBvZiBsaW5lLW91dCBhbmQgbGluZS1pbgo+ICAgLSB0
-d28gSERNSSBwb3J0cyB3aXRoIGF1ZGlvIGNhcGFiaWxpdHkKPgo+IFNpZ25lZC1vZmYtYnk6IEh1
-aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwuY29tPgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patchset adds the initial support the spdif input found on the
+axg SoC family.
+
+The capture itself works well but the rate detection could be enhanced in
+the future.
+
+Like several other drivers of this type, no check is done to verify if the
+rate of the input stream is consistent with the rate requested in
+hw_params()
+
+The automatic rate detection mechanism of this device and the related IRQ
+proved difficult to work with, as documented in the driver. Several
+approaches to work around this minor issue have been tried but none
+provided a complete and reliable solution so far. Hopefully more eyes on
+this will help figure this out.
+
+Since I authored all Amlogic ASoC drivers (and the related bugs) merged
+so far, I have added myself as maintainer of them in the last patch of this
+series.
+
+Jerome Brunet (4):
+  ASoC: meson: axg-toddr: add support for spdifin backend
+  ASoC: meson: add axg spdif input DT binding documentation
+  ASoC: meson: add axg spdif input
+  MAINTAINERS: Add Amlogic sound drivers entry
+
+ .../bindings/sound/amlogic,axg-spdifin.txt    |  22 +
+ MAINTAINERS                                   |   7 +
+ sound/soc/meson/Kconfig                       |   9 +-
+ sound/soc/meson/Makefile                      |   2 +
+ sound/soc/meson/axg-fifo.h                    |   3 +-
+ sound/soc/meson/axg-spdifin.c                 | 521 ++++++++++++++++++
+ sound/soc/meson/axg-toddr.c                   |  15 +-
+ 7 files changed, 567 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
+ create mode 100644 sound/soc/meson/axg-spdifin.c
+
+-- 
+2.19.2
