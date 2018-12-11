@@ -1,102 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
-	Prowise PT301 tablet" to the asoc tree
-Date: Tue, 11 Dec 2018 01:15:53 +0000 (GMT)
-Message-ID: <20181211011553.2E19711254C7@debutante.sirena.org.uk>
-References: <20181208130114.6612-1-hdegoede@redhat.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 0/2] Graph fixes for using multiple endpoints per port
+Date: Mon, 10 Dec 2018 18:05:55 -0800
+Message-ID: <20181211020557.61783-1-tony@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6489A267B60
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:53 +0100 (CET)
-In-Reply-To: <20181208130114.6612-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi all,
 
-   ASoC: Intel: bytcr_rt5640: Add quirk for the Prowise PT301 tablet
+Here are two fixes that allow me to have multiple endpoints defined in
+the dts file for audio-graph-card. To do that, we need to fix up few
+issues as the graph binding Documentation/devicetree/bindings/graph.txt
+allows multiple endpoints per port. This allows configuring TDM codecs
+for I2S for example.
 
-has been applied to the asoc tree at
+Kuninori-san, can you please check if this makes sense to you and
+compare against the graph binding?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Cheers,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Tony
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Tony Lindgren (2):
+  ASoC: simple-card-utils: revert port changes to follow graph binding
+  ASoC: audio-graph-card: Fix parsing of multiple endpoints
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ sound/soc/generic/audio-graph-card.c  | 41 +++++++++++++++++++++++----
+ sound/soc/generic/simple-card-utils.c | 22 ++++++++++++--
+ 2 files changed, 55 insertions(+), 8 deletions(-)
 
-Thanks,
-Mark
-
->From 271248f4c2bf56dc6b3582e37c7ac19dd483d989 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sat, 8 Dec 2018 14:01:13 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Prowise PT301
- tablet
-
-Add a quirk for the Prowise PT301 tablet, this BYTCR tablet has no CHAN
-package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
-is the default for BYTCR devices.
-
-Also it uses IN1 for its MIC and JD2 for jack-detect, rather then the
-default IN3 and JD1.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 09591144ea7d..a48ea8ef21ce 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -673,6 +673,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF2 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		/* Prowise PT301 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Prowise"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "PT301"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_DIFF_MIC |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
 -- 
-2.19.0.rc2
+2.19.2
