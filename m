@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl_da7219_max98927: fix the
-	audio jack button remapping" to the asoc tree
-Date: Tue, 11 Dec 2018 01:15:49 +0000 (GMT)
-Message-ID: <20181211011549.667FB11254C7@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
+	Point of View Mobii TAB-P1005W-232" to the asoc tree
+Date: Tue, 11 Dec 2018 01:15:51 +0000 (GMT)
+Message-ID: <20181211011551.3BE0E11254C7@debutante.sirena.org.uk>
+References: <20181208130114.6612-2-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A2A1267B4A
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:50 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 02883267B58
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:15:52 +0100 (CET)
+In-Reply-To: <20181208130114.6612-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Zhuohao Lee <zhuohao@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Max Chang <changmax@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl_da7219_max98927: fix the audio jack button remapping
+   ASoC: Intel: bytcr_rt5640: Add quirk for the Point of View Mobii TAB-P1005W-232
 
 has been applied to the asoc tree at
 
@@ -52,40 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 7f63196eaa83e033de523602324ff91288390a67 Mon Sep 17 00:00:00 2001
-From: Zhuohao Lee <zhuohao@chromium.org>
-Date: Mon, 10 Dec 2018 12:32:13 +0800
-Subject: [PATCH] ASoC: Intel: kbl_da7219_max98927: fix the audio jack button
- remapping
+>From 02e5af6575627ca0692d5b93e7c3fc3b86f62f40 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sat, 8 Dec 2018 14:01:14 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Point of View
+ Mobii TAB-P1005W-232
 
->From the da7219 spec, the button A, B, C and D are remapped to
-0, 1, 2 and 3 respectively where button A is KEY_PLAYPAUSE,
-B is KEY_VOLUMEUP, C is KEY_VOLUMEDOWN and D is KEY_VOICECOMMAND.
+Add a quirk for the Point of View Mobii TAB-P1005W-232 v2.0 tablet, this
+BYTCR device uses IN1 for its MIC and JD2 for jack-detect, rather then the
+default IN3 and JD1.
 
-Signed-off-by: Zhuohao Lee <zhuohao@chromium.org>
-Signed-off-by: Max Chang  <changmax@chromium.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98927.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 58eb0fe69978..723a4935ed76 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -262,9 +262,9 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	jack = &ctx->kabylake_headset;
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
- 
- 	da7219_aad_jack_det(component, &ctx->kabylake_headset);
- 
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a48ea8ef21ce..a22366ce33c4 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -673,6 +673,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF2 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Point of View Mobii TAB-P1005W-232 (V2.0) */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "POV"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "I102A"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		/* Prowise PT301 */
+ 		.matches = {
 -- 
 2.19.0.rc2
