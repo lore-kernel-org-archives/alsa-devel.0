@@ -1,20 +1,17 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 2/4] ASoC: meson: add axg spdif input DT
-	binding documentation
-Date: Tue, 11 Dec 2018 14:47:11 +0100
-Message-ID: <20181211134713.4908-3-jbrunet@baylibre.com>
-References: <20181211134713.4908-1-jbrunet@baylibre.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 4/7] ALSA: hda/intel: Properly free the
+	display power at error path
+Date: Tue, 11 Dec 2018 14:53:38 +0100
+Message-ID: <20181211135341.11383-5-tiwai@suse.de>
+References: <20181211135341.11383-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com
- [209.85.128.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 1678C26770D
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:47:27 +0100 (CET)
-Received: by mail-wm1-f66.google.com with SMTP id s14so2292496wmh.1
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 05:47:27 -0800 (PST)
-In-Reply-To: <20181211134713.4908-1-jbrunet@baylibre.com>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5910267BAB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 14:53:49 +0100 (CET)
+In-Reply-To: <20181211135341.11383-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the DT binding documentation for axg's SPDIF input.
+When an error occurs in azx_probe_continue(), we should release the
+display power.  However, the current code ignores it and releases the
+display power only for HSW/BDW cases.  Fix it.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../bindings/sound/amlogic,axg-spdifin.txt    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
+ sound/pci/hda/hda_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
-new file mode 100644
-index 000000000000..2e6cb7d9b202
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
-@@ -0,0 +1,22 @@
-+* Amlogic Audio SPDIF Input
-+
-+Required properties:
-+- compatible: 'amlogic,axg-spdifin'
-+- interrupts: interrupt specifier for the spdif input.
-+- clocks: list of clock phandle, one for each entry clock-names.
-+- clock-names: should contain the following:
-+  * "pclk" : peripheral clock.
-+  * "refclk" : spdif input reference clock
-+- #sound-dai-cells: must be 0.
-+
-+Example on the A113 SoC:
-+
-+spdifin: audio-controller@400 {
-+	compatible = "amlogic,axg-spdifin";
-+	reg = <0x0 0x400 0x0 0x30>;
-+	#sound-dai-cells = <0>;
-+	interrupts = <GIC_SPI 87 IRQ_TYPE_EDGE_RISING>;
-+	clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
-+		 <&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
-+	clock-names = "pclk", "refclk";
-+};
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 663e86effa1f..5399d0180434 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2269,7 +2269,7 @@ static int azx_probe_continue(struct azx *chip)
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 
+ out_free:
+-	if (!hda->need_i915_power)
++	if (err < 0 || !hda->need_i915_power)
+ 		display_power(chip, false);
+ 
+ i915_power_fail:
 -- 
 2.19.2
