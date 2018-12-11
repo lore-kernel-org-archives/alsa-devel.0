@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 2/2] ASoC: Add MICFIL SoC Digital Audio
-	Interface driver.
-Date: Tue, 11 Dec 2018 01:08:55 +0000
-Message-ID: <20181211010855.GF3004@sirena.org.uk>
-References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
- <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
+Subject: Re: [PATCH 3/7] ASoC: simple-scu-card: add dai-link
+	support
+Date: Tue, 11 Dec 2018 01:12:59 +0000
+Message-ID: <20181211011259.GG3004@sirena.org.uk>
+References: <87efax3e85.wl-kuninori.morimoto.gx@renesas.com>
+ <87a7ll3e5y.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0292848368163291906=="
+Content-Type: multipart/mixed; boundary="===============1387530514448123333=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D79A26770D
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:08:56 +0100 (CET)
-In-Reply-To: <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C695426770D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 02:13:00 +0100 (CET)
+In-Reply-To: <87a7ll3e5y.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cosmin Samoila <cosmin.samoila@nxp.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh@kernel.org" <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0292848368163291906==
+--===============1387530514448123333==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QXO0/MSS4VvK6f+D"
+	protocol="application/pgp-signature"; boundary="w/VI3ydZO+RcZ3Ux"
 Content-Disposition: inline
 
 
---QXO0/MSS4VvK6f+D
+--w/VI3ydZO+RcZ3Ux
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 10, 2018 at 09:21:15AM +0000, Cosmin Samoila wrote:
-> Add Digital Audio Interface driver that convers PDM bitstream to PCM
-> format.
+On Tue, Dec 04, 2018 at 08:20:26AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> simple-card is supporting dai-link support, but simple-scu-card
+> doesn't have it.
+> This patch support it. This is prepare for merging simple-card
+> and simple-scu-card.
 
-I'm missing patch 1/2 here - what's going on with dependencies?
+I'm getting a conflict applying this one - can you please check and
+resend?
 
---QXO0/MSS4VvK6f+D
+--w/VI3ydZO+RcZ3Ux
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwPDiYACgkQJNaLcl1U
-h9Bs7gf/UU8JbgSuLvWPFOxZnCqiRw5Sw1GPXJb7V4d3sVKXbJTendN615yEPKkm
-RiAXF1M3j709zvVHALZ6fN9RU5Mc55t3uzDzzOwCwLuX15olRsa1/zRDiyZJkzND
-gdFMulEOQmLqLNLRfOvtRPsmjMdf52yHeyczkz1A8yR6NT160Ey1fqEWNKfkvjN+
-Eqb0mOkyMk+5vwct6rJB+3KHFCiPILETFhDmPTeM9afQWrk1MBLD9Htrsnh1PKnj
-BKJiAg00cVJprcOGDNCmBSUppu74VYOXN6/mXsQbNnWVROqTYloR9PqXb/oNQbj/
-jRUoeTJk7tdh8kEgGwZjU5eipWDXqg==
-=lXVQ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwPDxoACgkQJNaLcl1U
+h9DORggAhY45m5cNu2Rjsie0IYmm6sl3jUXcSrKHZ324KqDBFHz06xcnc/XdFG2z
+VaPzdH7Oh2iZbWTt7NxpfXNU9GOCfssOBPRuuBWYZj/mzrrjX93pBWko1H838Zwq
+Iuu6f4z3zEWP11BQbfnhvglo99o98RtOnMM65nGYvoW5c76tIf4RQEOEV2T04qdC
+S1OwhpTnMaV2dbScyxVfjhN2QAcXA8YccPIwWuRJudm7t/upR09kJfQL/+DSYghX
+wwmlip0mNoevU3TKsNZ7z2SQTsVxCV4JbTcOA9d1n+eRZoiepsfFiwe3BSkkUP4J
+NoVmdENgXtOCwsO+cGBNg7UNJjku8Q==
+=pu/t
 -----END PGP SIGNATURE-----
 
---QXO0/MSS4VvK6f+D--
+--w/VI3ydZO+RcZ3Ux--
 
---===============0292848368163291906==
+--===============1387530514448123333==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0292848368163291906==--
+--===============1387530514448123333==--
