@@ -1,16 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH v3 04/14] ASoC: SOF: Add support for IPC IO
- between DSP and Host
-Date: Wed, 12 Dec 2018 00:57:33 +0200
-Message-ID: <20181211225733.GK10650@smile.fi.intel.com>
+Subject: Re: [PATCH v3 14/14] ASoC: SOF: Add utils
+Date: Wed, 12 Dec 2018 01:06:09 +0200
+Message-ID: <20181211230609.GL10650@smile.fi.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-15-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20181211212318.28644-15-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,174 +20,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 11, 2018 at 03:23:08PM -0600, Pierre-Louis Bossart wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> Define an IPC ABI for all host <--> DSP communication. This ABI should
-> be transport agnostic. i.e. it should work on MMIO and SPI/I2C style
-> interfaces.
+On Tue, Dec 11, 2018 at 03:23:18PM -0600, Pierre-Louis Bossart wrote:
+> Helpers to set-up back-ends, create platform devices and common
+> IO/block read/write operations
 
-> + /* ssc1: TINTE */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_TINTE		(1 << 0)
-> + /* ssc1: PINTE */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_PINTE		(1 << 1)
-> + /* ssc2: SMTATF */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_SMTATF		(1 << 2)
-> + /* ssc2: MMRATF */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_MMRATF		(1 << 3)
-> + /* ssc2: PSPSTWFDFD */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_PSPSTWFDFD	(1 << 4)
-> + /* ssc2: PSPSRWFDFD */
-> +#define SOF_DAI_INTEL_SSP_QUIRK_PSPSRWFDFD	(1 << 5)
-
-Style mismatch. Looks like a candidate for BIT()
-
-> +#define SOF_DAI_FMT_FORMAT_MASK		0x000f
-> +#define SOF_DAI_FMT_CLOCK_MASK		0x00f0
-> +#define SOF_DAI_FMT_INV_MASK		0x0f00
-> +#define SOF_DAI_FMT_MASTER_MASK		0xf000
-
-GENMASK() ?
-
-> +/* flags indicating which time stamps are in sync with each other */
-> +#define	SOF_TIME_HOST_SYNC	(1 << 0)
-> +#define	SOF_TIME_DAI_SYNC	(1 << 1)
-> +#define	SOF_TIME_WALL_SYNC	(1 << 2)
-> +#define	SOF_TIME_STAMP_SYNC	(1 << 3)
-> +
-> +/* flags indicating which time stamps are valid */
-> +#define	SOF_TIME_HOST_VALID	(1 << 8)
-> +#define	SOF_TIME_DAI_VALID	(1 << 9)
-> +#define	SOF_TIME_WALL_VALID	(1 << 10)
-> +#define	SOF_TIME_STAMP_VALID	(1 << 11)
-> +
-> +/* flags indicating time stamps are 64bit else 3use low 32bit */
-> +#define	SOF_TIME_HOST_64	(1 << 16)
-> +#define	SOF_TIME_DAI_64		(1 << 17)
-> +#define	SOF_TIME_WALL_64	(1 << 18)
-> +#define	SOF_TIME_STAMP_64	(1 << 19)
-
-BIT() ?
-
-
-> +#define SOF_IPC_PANIC_MAGIC_MASK		0x0ffff000
-> +#define SOF_IPC_PANIC_CODE_MASK			0x00000fff
-
-GENMASK() ?
-
-> +#define IPC_TIMEOUT_MSECS	300
-
-Simple _MS ?
-
-> +/* find original TX message from DSP reply */
-> +static struct snd_sof_ipc_msg *sof_ipc_reply_find_msg(struct snd_sof_ipc *ipc,
-> +						      u32 header)
+> +int sof_bes_setup(struct device *dev, struct snd_sof_dsp_ops *ops,
+> +		  struct snd_soc_dai_link *links, int link_num,
+> +		  struct snd_soc_card *card)
 > +{
-> +	struct snd_sof_dev *sdev = ipc->sdev;
-> +	struct snd_sof_ipc_msg *msg;
+> +	char name[32];
+> +	int i;
 > +
-> +	header = SOF_IPC_MESSAGE_ID(header);
-> +
-
-> +	if (list_empty(&ipc->reply_list))
-> +		goto err;
-
-Redundant. list_for_each_*() have this check already.
-
-> +
-> +	list_for_each_entry(msg, &ipc->reply_list, list) {
-> +		if (SOF_IPC_MESSAGE_ID(msg->header) == header)
-> +			return msg;
-> +	}
-> +
-> +err:
-> +	dev_err(sdev->dev, "error: rx list empty but received 0x%x\n",
-> +		header);
-> +	return NULL;
-> +}
-
-> +int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
-> +{
-> +	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
-> +	struct sof_ipc_fw_version *v = &ready->version;
-> +
-
-> +	dev_info(sdev->dev,
-> +		 " Firmware info: version %d:%d:%d-%s\n",  v->major, v->minor,
-
-Indentation issues.
-
-> +		 v->micro, v->tag);
-> +	dev_info(sdev->dev,
-> +		 " Firmware: ABI %d:%d:%d Kernel ABI %d:%d:%d\n",
-> +		 SOF_ABI_VERSION_MAJOR(v->abi_version),
-> +		 SOF_ABI_VERSION_MINOR(v->abi_version),
-> +		 SOF_ABI_VERSION_PATCH(v->abi_version),
-> +		 SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH);
-> +
-> +	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, v->abi_version)) {
-> +		dev_err(sdev->dev, "error: incompatible FW ABI version\n");
+> +	if (!ops || !links || !card)
 > +		return -EINVAL;
+> +
+> +	/* set up BE dai_links */
+> +	for (i = 0; i < link_num; i++) {
+
+> +		snprintf(name, 32, "NoCodec-%d", i);
+
+sizeof(name) ?
+
+> +		links[i].name = devm_kstrdup(dev, name, GFP_KERNEL);
+> +		if (!links[i].name)
+> +			return -ENOMEM;
+
+...or better devm_kasprintf().
+
+> +
+> +		links[i].id = i;
+> +		links[i].no_pcm = 1;
+> +		links[i].cpu_dai_name = ops->drv[i].name;
+> +		links[i].platform_name = "sof-audio";
+> +		links[i].codec_dai_name = "snd-soc-dummy-dai";
+> +		links[i].codec_name = "snd-soc-dummy";
+> +		links[i].dpcm_playback = 1;
+> +		links[i].dpcm_capture = 1;
 > +	}
 > +
-> +	if (ready->debug.bits.build) {
-> +		dev_info(sdev->dev,
-> +			 " Firmware debug build %d on %s-%s - options:\n"
-> +			 "  GDB: %s\n"
-> +			 "  lock debug: %s\n"
-> +			 "  lock vdebug: %s\n",
-> +			 v->build, v->date, v->time,
-> +			 ready->debug.bits.gdb ? "enabled" : "disabled",
-> +			 ready->debug.bits.locks ? "enabled" : "disabled",
-
-> +			 ready->debug.bits.locks_verbose ?
-> +			 "enabled" : "disabled");
-
-I would leave it on one line (only 3 characters more, but better readability).
-
-			 ready->debug.bits.locks_verbose ? "enabled" : "disabled");
-
-> +	}
-> +
-> +	/* copy the fw_version into debugfs at first boot */
-> +	memcpy(&sdev->fw_version, v, sizeof(*v));
+> +	card->dai_link = links;
+> +	card->num_links = link_num;
 > +
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL(snd_sof_ipc_valid);
-
-> +	dev_dbg(sdev->dev, "pre-allocate %d IPC messages\n",
-> +		IPC_EMPTY_LIST_SIZE);
-
-Noise.
-
+> +EXPORT_SYMBOL(sof_bes_setup);
 > +
-> +	/* pre-allocate message data */
-> +	for (i = 0; i < IPC_EMPTY_LIST_SIZE; i++) {
-> +		msg->msg_data = devm_kzalloc(sdev->dev, PAGE_SIZE, GFP_KERNEL);
-> +		if (!msg->msg_data)
-> +			return NULL;
+> +/* register sof platform device */
+> +int sof_create_platform_device(struct sof_platform_priv *priv)
+> +{
+> +	struct snd_sof_pdata *sof_pdata = priv->sof_pdata;
+> +	struct device *dev = sof_pdata->dev;
 > +
-> +		msg->reply_data = devm_kzalloc(sdev->dev, PAGE_SIZE,
-> +					       GFP_KERNEL);
-> +		if (!msg->reply_data)
-> +			return NULL;
+> +	priv->pdev_pcm =
+> +		platform_device_register_data(dev, "sof-audio", -1,
+> +					      sof_pdata, sizeof(*sof_pdata));
+> +	if (IS_ERR(priv->pdev_pcm)) {
+> +		dev_err(dev, "error: cannot register device sof-audio. Error %d\n",
+> +			(int)PTR_ERR(priv->pdev_pcm));
 
-Can't you just get enough (non-continuous?) pages at once via get_free_pages interface?
-I didn't know that one, so, consider rather a way to look into.
+Instead of casting perhaps use %ld?
 
-> +
-> +		init_waitqueue_head(&msg->waitq);
-> +		list_add(&msg->list, &ipc->empty_list);
-> +		msg++;
+> +		return PTR_ERR(priv->pdev_pcm);
 > +	}
 > +
-> +	return ipc;
+> +	return 0;
 > +}
-> +EXPORT_SYMBOL(snd_sof_ipc_init);
+> +EXPORT_SYMBOL(sof_create_platform_device);
+
+> +void sof_io_write64(struct snd_sof_dev *sdev, void __iomem *addr, u64 value)
+> +{
+> +#ifdef CONFIG_64BIT
+> +	writeq(value, addr);
+> +#else
+> +	memcpy_toio(addr, &value, sizeof(value));
+> +#endif
+
+This ifdef sounds strange.
+Just include io64-nonatomic-lo-hi.h and use readq() w/o limitations.
+
+> +}
+> +EXPORT_SYMBOL(sof_io_write64);
+> +
+> +u64 sof_io_read64(struct snd_sof_dev *sdev, void __iomem *addr)
+> +{
+> +#ifdef CONFIG_64BIT
+> +	return readq(addr);
+> +#else
+> +	u64 val;
+> +
+> +	memcpy_fromio(&val, addr, sizeof(val));
+> +	return val;
+> +#endif
+
+Ditto.
+
+> +}
+> +EXPORT_SYMBOL(sof_io_read64);
+
+> +		affected_mask = (1 << (8 * n)) - 1;
+> +
+> +		/* first read the 32bit data of dest, then change affected
+> +		 * bytes, and write back to dest. For unaffected bytes, it
+> +		 * should not be changed
+> +		 */
+
+> +		__ioread32_copy(&tmp, dest + m * 4, 1);
+> +		tmp &= ~affected_mask;
+> +
+> +		tmp |= *(u32 *)(src_byte + m * 4) & affected_mask;
+> +		__iowrite32_copy(dest + m * 4, &tmp, 1);
+
+Ain't these equivalents to simple ioread32() / iowrite32() ?
 
 -- 
 With Best Regards,
