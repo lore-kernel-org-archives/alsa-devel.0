@@ -1,20 +1,20 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/5] ASoC: simple-scu-card: use cpu/codec
- pointer on graph_dai_props
-Date: Tue, 11 Dec 2018 03:25:27 +0000
-Message-ID: <875zw0bvol.wl-kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 5/5] ASoC: simple-scu-card: care multi DPCM
+	codec_conf
+Date: Tue, 11 Dec 2018 03:25:37 +0000
+Message-ID: <874lbkbvoc.wl-kuninori.morimoto.gx@renesas.com>
 References: <87bm5sbvq6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-eopbgr1410092.outbound.protection.outlook.com [40.107.141.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 2452526770D
- for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 04:25:30 +0100 (CET)
+ (mail-eopbgr1410127.outbound.protection.outlook.com [40.107.141.127])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C3BD267B74
+ for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2018 04:25:40 +0100 (CET)
 In-Reply-To: <87bm5sbvq6.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Content-ID: <80362DCC054A6F40A242BCC8398577F4@jpnprd01.prod.outlook.com>
+Content-ID: <51D1810DA2D62240A66648C21D37BD49@jpnprd01.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,225 +28,147 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-In  DPCM case, it uses CPU-dummy / dummy-Codec dai links, and
-non DPCM case, it uses CPU-Codec dai links.
-
-Now, we want to merge simple-card and simple-scu-card.
-
-These sound cards are using silimar but not same logic on each functions.
-Then, of course we want to share same logic.
-To compromise, this patch uses cpu/codec pointer on simple-scu-card.
-It is same logic with simple-card, thus easy merging.
-This is prepare for merging simple card
+Current simple-scu-card didn't care about codec_conf
+for multi DPCM case. This patch cares it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/simple-scu-card.c | 77 +++++++++++++++++++++++++------------
- 1 file changed, 52 insertions(+), 25 deletions(-)
+ sound/soc/generic/simple-scu-card.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 3c4e289..944a6f4 100644
+index 944a6f4..9d7299d 100644
 --- a/sound/soc/generic/simple-scu-card.c
 +++ b/sound/soc/generic/simple-scu-card.c
-@@ -23,12 +23,14 @@ struct simple_card_data {
+@@ -21,17 +21,18 @@
+ 
+ struct simple_card_data {
  	struct snd_soc_card snd_card;
- 	struct snd_soc_codec_conf codec_conf;
+-	struct snd_soc_codec_conf codec_conf;
  	struct simple_dai_props {
--		struct asoc_simple_dai dai;
-+		struct asoc_simple_dai *cpu_dai;
-+		struct asoc_simple_dai *codec_dai;
+ 		struct asoc_simple_dai *cpu_dai;
+ 		struct asoc_simple_dai *codec_dai;
  		struct snd_soc_dai_link_component codecs;
  		struct snd_soc_dai_link_component platform;
  		struct asoc_simple_card_data adata;
++		struct snd_soc_codec_conf *codec_conf;
  	} *dai_props;
  	struct snd_soc_dai_link *dai_link;
-+	struct asoc_simple_dai *dais;
+ 	struct asoc_simple_dai *dais;
  	struct asoc_simple_card_data adata;
++	struct snd_soc_codec_conf *codec_conf;
  };
  
-@@ -47,8 +49,17 @@ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
- 	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
- 	struct simple_dai_props *dai_props =
- 		simple_priv_to_props(priv, rtd->num);
-+	int ret;
-+
-+	ret = asoc_simple_card_clk_enable(dai_props->cpu_dai);
-+	if (ret)
-+		return ret;
-+
-+	ret = asoc_simple_card_clk_enable(dai_props->codec_dai);
-+	if (ret)
-+		asoc_simple_card_clk_disable(dai_props->cpu_dai);
- 
--	return asoc_simple_card_clk_enable(&dai_props->dai);
-+	return ret;
- }
- 
- static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
-@@ -58,7 +69,9 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
- 	struct simple_dai_props *dai_props =
- 		simple_priv_to_props(priv, rtd->num);
- 
--	asoc_simple_card_clk_disable(&dai_props->dai);
-+	asoc_simple_card_clk_disable(dai_props->cpu_dai);
-+
-+	asoc_simple_card_clk_disable(dai_props->codec_dai);
- }
- 
- static const struct snd_soc_ops asoc_simple_card_ops = {
-@@ -68,19 +81,21 @@ static const struct snd_soc_ops asoc_simple_card_ops = {
- 
- static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
--	struct snd_soc_dai *dai;
--	struct snd_soc_dai_link *dai_link;
--	struct simple_dai_props *dai_props;
--	int num = rtd->num;
-+	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
-+	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
-+	int ret;
- 
--	dai_link	= simple_priv_to_link(priv, num);
--	dai_props	= simple_priv_to_props(priv, num);
--	dai		= dai_link->dynamic ?
--				rtd->cpu_dai :
--				rtd->codec_dai;
-+	ret = asoc_simple_card_init_dai(rtd->codec_dai,
-+					dai_props->codec_dai);
-+	if (ret < 0)
-+		return ret;
- 
--	return asoc_simple_card_init_dai(dai, &dai_props->dai);
-+	ret = asoc_simple_card_init_dai(rtd->cpu_dai,
-+					dai_props->cpu_dai);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- }
- 
- static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -101,13 +116,14 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ #define simple_priv_to_card(priv) (&(priv)->snd_card)
+@@ -116,7 +117,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
  					struct device_node *np,
  					struct device_node *codec,
  					struct simple_card_data *priv,
--					int idx, bool is_fe,
-+					int *dai_idx, int link_idx, int is_fe,
+-					int *dai_idx, int link_idx, int is_fe,
++					int *dai_idx, int link_idx,
++					int *conf_idx, int is_fe,
  					bool is_top_level_node)
  {
  	struct device *dev = simple_priv_to_dev(priv);
--	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, idx);
--	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
-+	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, link_idx);
-+	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
-+	struct asoc_simple_dai *dai;
- 	char *prefix = "";
- 	int ret;
+@@ -165,6 +167,8 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
  
-@@ -129,12 +145,15 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
- 		dai_link->dynamic		= 1;
- 		dai_link->dpcm_merged_format	= 1;
- 
-+		dai =
-+		dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
+ 		asoc_simple_card_canonicalize_cpu(dai_link, is_single_links);
+ 	} else {
++		struct snd_soc_codec_conf *cconf;
 +
- 		ret = asoc_simple_card_parse_cpu(np, dai_link, DAI, CELL,
- 						 &is_single_links);
- 		if (ret)
- 			return ret;
+ 		/* FE is dummy */
+ 		dai_link->cpu_of_node		= NULL;
+ 		dai_link->cpu_dai_name		= "snd-soc-dummy-dai";
+@@ -177,6 +181,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
+ 		dai =
+ 		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
  
--		ret = asoc_simple_card_parse_clk_cpu(dev, np, dai_link, &dai_props->dai);
-+		ret = asoc_simple_card_parse_clk_cpu(dev, np, dai_link, dai);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -155,11 +174,14 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
- 		dai_link->no_pcm		= 1;
- 		dai_link->be_hw_params_fixup	= asoc_simple_card_be_hw_params_fixup;
- 
-+		dai =
-+		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
++		cconf =
++		dai_props->codec_conf	= &priv->codec_conf[(*conf_idx)++];
 +
  		ret = asoc_simple_card_parse_codec(np, dai_link, DAI, CELL);
  		if (ret < 0)
  			return ret;
- 
--		ret = asoc_simple_card_parse_clk_codec(dev, np, dai_link, &dai_props->dai);
-+		ret = asoc_simple_card_parse_clk_codec(dev, np, dai_link, dai);
- 		if (ret < 0)
+@@ -192,14 +199,12 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
  			return ret;
  
-@@ -184,7 +206,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *link,
- 
- 	asoc_simple_card_parse_convert(dev, link, prefix, &dai_props->adata);
- 
--	ret = asoc_simple_card_of_parse_tdm(np, &dai_props->dai);
-+	ret = asoc_simple_card_of_parse_tdm(np, dai);
- 	if (ret)
- 		return ret;
- 
-@@ -215,7 +237,8 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	struct device_node *codec;
+ 		/* check "prefix" from top node */
+-		snd_soc_of_parse_audio_prefix(card,
+-					      &priv->codec_conf,
++		snd_soc_of_parse_audio_prefix(card, cconf,
+ 					      dai_link->codecs->of_node,
+ 					      PREFIX "prefix");
+ 		/* check "prefix" from each node if top doesn't have */
+-		if (!priv->codec_conf.of_node)
+-			snd_soc_of_parse_node_prefix(np,
+-						     &priv->codec_conf,
++		if (!cconf->of_node)
++			snd_soc_of_parse_node_prefix(np, cconf,
+ 						     dai_link->codecs->of_node,
+ 						     "prefix");
+ 	}
+@@ -238,7 +243,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  	struct snd_soc_card *card = simple_priv_to_card(priv);
  	bool is_fe;
--	int ret, i, loop;
-+	int ret, loop;
-+	int dai_idx, link_idx;
+ 	int ret, loop;
+-	int dai_idx, link_idx;
++	int dai_idx, link_idx, conf_idx;
  
  	if (!top)
  		return -EINVAL;
-@@ -231,7 +254,8 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	asoc_simple_card_parse_convert(dev, top, PREFIX, &priv->adata);
- 
+@@ -256,6 +261,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  	loop = 1;
--	i = 0;
-+	link_idx = 0;
-+	dai_idx = 0;
+ 	link_idx = 0;
+ 	dai_idx = 0;
++	conf_idx = 0;
  	node = of_get_child_by_name(top, PREFIX "dai-link");
  	if (!node) {
  		node = dev->of_node;
-@@ -248,10 +272,10 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 			is_fe = (np != codec);
+@@ -273,6 +279,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  
  			ret = asoc_simple_card_dai_link_of(node, np, codec, priv,
--							   i, is_fe, !loop);
-+							   &dai_idx, link_idx++,
-+							   is_fe, !loop);
+ 							   &dai_idx, link_idx++,
++							   &conf_idx,
+ 							   is_fe, !loop);
  			if (ret < 0)
  				return ret;
--			i++;
- 		}
- 		node = of_get_next_child(top, node);
- 	} while (loop && node);
-@@ -342,6 +366,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	struct simple_card_data *priv;
- 	struct snd_soc_dai_link *dai_link;
+@@ -368,6 +375,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	struct simple_dai_props *dai_props;
-+	struct asoc_simple_dai *dais;
+ 	struct asoc_simple_dai *dais;
  	struct snd_soc_card *card;
++	struct snd_soc_codec_conf *cconf;
  	struct device *dev = &pdev->dev;
  	int ret, i;
-@@ -358,7 +383,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 
+ 	int lnum = 0, dnum = 0, cnum = 0;
+@@ -384,6 +392,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
  	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link), GFP_KERNEL);
--	if (!dai_props || !dai_link)
-+	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
-+	if (!dai_props || !dai_link || !dais)
+ 	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
++	cconf     = devm_kcalloc(dev, cnum, sizeof(*cconf),     GFP_KERNEL);
+ 	if (!dai_props || !dai_link || !dais)
  		return -ENOMEM;
  
- 	/*
-@@ -375,6 +401,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 
+@@ -402,6 +411,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	priv->dai_props				= dai_props;
  	priv->dai_link				= dai_link;
-+	priv->dais				= dais;
+ 	priv->dais				= dais;
++	priv->codec_conf			= cconf;
  
  	/* Init snd_soc_card */
  	card = simple_priv_to_card(priv);
+@@ -409,8 +419,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+ 	card->num_links		= lnum;
+-	card->codec_conf	= &priv->codec_conf;
+-	card->num_configs	= 1;
++	card->codec_conf	= cconf;
++	card->num_configs	= cnum;
+ 
+ 	ret = asoc_simple_card_parse_of(priv);
+ 	if (ret < 0) {
 -- 
 2.7.4
