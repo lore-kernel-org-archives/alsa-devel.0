@@ -1,14 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 21/21] ASoC: SOF: Add Build support for SOF
-	core and Intel drivers
-Date: Tue, 11 Dec 2018 15:30:29 -0600
-Message-ID: <20181211213029.28801-22-pierre-louis.bossart@linux.intel.com>
-References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: Re: [PATCH v3 01/14] ASoC: SOF: Add Sound Open
+	Firmware driver core
+Date: Wed, 12 Dec 2018 00:20:30 +0200
+Message-ID: <20181211222030.GG10650@smile.fi.intel.com>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
+Content-Disposition: inline
+In-Reply-To: <20181211212318.28644-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,328 +20,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+On Tue, Dec 11, 2018 at 03:23:05PM -0600, Pierre-Louis Bossart wrote:
+> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> 
+> The Sound Open Firmware driver core is a generic architecture
+> independent layer that allows SOF to be used on many different different
+> architectures and platforms. It abstracts DSP operations and IO methods
+> so that the target DSP can be an internal memory mapped or external SPI
+> or I2C based device. This abstraction also allows SOF to be run on
+> many different VMs on the same physical HW.
+> 
+> SOF also requires some data in ASoC PCM runtime data for looking up
+> SOF data during ASoC PCM operations.
 
-Build SOF core and Intel-specific drivers.
+> +/* SOF defaults if not provided by the platform in ms */
+> +#define TIMEOUT_DEFAULT_IPC	5
+> +#define TIMEOUT_DEFAULT_BOOT	100
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/Kconfig            |   1 +
- sound/soc/Makefile           |   1 +
- sound/soc/sof/Kconfig        |  82 +++++++++++++++++++++
- sound/soc/sof/Makefile       |  17 +++++
- sound/soc/sof/intel/Kconfig  | 136 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/Makefile |  17 +++++
- 6 files changed, 254 insertions(+)
- create mode 100644 sound/soc/sof/Kconfig
- create mode 100644 sound/soc/sof/Makefile
- create mode 100644 sound/soc/sof/intel/Kconfig
- create mode 100644 sound/soc/sof/intel/Makefile
+Perhaps _MS at the end?
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 1cf11cf51e1d..32eab7d21aaa 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -65,6 +65,7 @@ source "sound/soc/rockchip/Kconfig"
- source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
-+source "sound/soc/sof/Kconfig"
- source "sound/soc/spear/Kconfig"
- source "sound/soc/sti/Kconfig"
- source "sound/soc/stm/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 62a5f87c3cfc..cb336e803d5a 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -49,6 +49,7 @@ obj-$(CONFIG_SND_SOC)	+= rockchip/
- obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
-+obj-$(CONFIG_SND_SOC)	+= sof/
- obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= stm/
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-new file mode 100644
-index 000000000000..1742df4e2536
---- /dev/null
-+++ b/sound/soc/sof/Kconfig
-@@ -0,0 +1,82 @@
-+config SND_SOC_SOF_PCI
-+	tristate
-+
-+config SND_SOC_SOF_ACPI
-+	tristate
-+
-+config SND_SOC_SOF
-+	tristate "Sound Open Firmware Support"
-+	select SND_SOC_TOPOLOGY
-+	help
-+          This adds support for Sound Open Firmware (SOF). SOF is a free and
-+	  generic open source audio DSP firmware for multiple devices.
-+          Say Y if you have such a device that is supported by SOF.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_NOCODEC
-+	tristate "SOF nocodec mode Support"
-+	depends on SND_SOC_SOF
-+	help
-+          This adds support for a dummy/nocodec machine driver fallback
-+	  option if no known codec is detected. This is typically only
-+	  enabled for developers or devices where the sound card is
-+	  controlled externally
-+          Say Y if you need this nocodec fallback option
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG
-+	bool "SOF debugging features"
-+	depends on SND_SOC_SOF
-+	help
-+	  This option can be used to enable or disable individual SOF firmware
-+	  and driver debugging options.
-+	  Say Y if you are debugging SOF FW or drivers.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_FORCE_NOCODEC_MODE
-+	bool "SOF force nocodec Mode"
-+	depends on SND_SOC_SOF_NOCODEC
-+	depends on SND_SOC_SOF_DEBUG
-+	help
-+          This forces SOF to use dummy/nocodec as machine driver, even
-+	  though there is a codec detected on the real platform. This is
-+	  typically only enabled for developers for debug purposes, before
-+	  codec/machine driver is ready, or to exclude the impact of those
-+	  drivers
-+          Say Y if you need this force nocodec mode option
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_XRUN_STOP
-+	bool "SOF stop on XRUN"
-+	depends on SND_SOC_SOF_DEBUG
-+	help
-+	  This option forces PCMs to stop on any XRUN event. This is useful to
-+	  preserve any trace data ond pipeline status prior to the XRUN.
-+	  Say Y if you are debugging SOF FW pipeline XRUNs.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_VERBOSE_IPC
-+	bool "SOF verbose IPC logs"
-+	depends on SND_SOC_SOF_DEBUG
-+	help
-+	  This option enables more verbose IPC logs, with command types in
-+	  human-readable form instead of just 32-bit hex dumps. This is useful
-+	  if you are trying to debug IPC with the DSP firmware.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION
-+	bool "SOF force to use IPC for position update on SKL+"
-+	depends on SND_SOC_SOF_DEBUG
-+	default n
-+	help
-+	  This option force to handle stream position update IPCs and run pcm
-+	  elapse to inform ALSA about that, on platforms (e.g. Intel SKL+) that
-+	  with other approach (e.g. HDAC DPIB/posbuf) to elapse PCM.
-+	  On platforms (e.g. Intel SKL-) where position update IPC is the only
-+	  one choice, this setting won't impact anything.
-+	  if you are trying to debug pointer update with position IPCs or where
-+	  DPIB/posbuf is not ready, select "Y".
-+          If unsure select "N".
-+
-+source "sound/soc/sof/intel/Kconfig"
-+source "sound/soc/sof/xtensa/Kconfig"
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-new file mode 100644
-index 000000000000..2831e6257cb8
---- /dev/null
-+++ b/sound/soc/sof/Makefile
-@@ -0,0 +1,17 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
-+		control.o trace.o utils.o
-+
-+snd-sof-pci-objs := sof-pci-dev.o
-+snd-sof-acpi-objs := sof-acpi-dev.o
-+snd-sof-nocodec-objs := nocodec.o
-+
-+obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
-+obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_ACPI) += sof-acpi-dev.o
-+obj-$(CONFIG_SND_SOC_SOF_PCI) += sof-pci-dev.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_INTEL)	+= intel/
-+obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-new file mode 100644
-index 000000000000..23b7c5915aac
---- /dev/null
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -0,0 +1,136 @@
-+config SND_SOC_SOF_INTEL
-+	tristate "SOF support for Intel audio DSPs"
-+	depends on SND_SOC_SOF
-+	depends on SND_DMA_SGBUF
-+	select SND_SOC_INTEL_MACH
-+	select SND_SOC_SOF_XTENSA
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+if SND_SOC_SOF_INTEL
-+
-+config SND_SOC_SOF_BAYTRAIL
-+	tristate "SOF support for Baytrail, Braswell and Cherrytrail"
-+	select SND_SOC_SOF_ACPI
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Baytrail, Braswell or Cherrytrail processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_HASWELL
-+	tristate "SOF support for Haswell"
-+	select SND_SOC_SOF_ACPI
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Haswell processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_BROADWELL
-+	tristate "SOF support for Broadwell"
-+	depends on SND_SOC_SOF_INTEL
-+	select SND_SOC_SOF_ACPI
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Broadwell processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_APOLLOLAKE
-+	tristate "SOF support for Apollolake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Apollolake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_GEMINILAKE
-+	tristate "SOF support for GeminiLake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Geminilake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_CANNONLAKE
-+	tristate "SOF support for Cannonlake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Cannonlake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_KABYLAKE
-+	tristate "SOF support for Kabylake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Kabylake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_SKYLAKE
-+	tristate "SOF support for Skylake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Skylake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_ICELAKE
-+	tristate "SOF support for Icelake"
-+	select SND_SOC_SOF_HDA_COMMON
-+	help
-+          This adds support for Sound Open Firmware for Intel(R) platforms
-+          using the Icelake processors.
-+          Say Y if you have such a device.
-+          If unsure select "N".
-+
-+config SND_SOC_SOF_HDA_COMMON
-+	tristate
-+	select SND_SOC_SOF_PCI
-+	select SND_SOC_ACPI_INTEL_MATCH
-+	select SND_SOC_SOF_HDA_LINK_BASELINE
-+
-+if SND_SOC_SOF_HDA_COMMON
-+
-+config SND_SOC_SOF_HDA_LINK
-+	bool "SOF support for HDA Links(HDA/HDMI)"
-+	help
-+          This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
-+		  for Intel(R) platforms.
-+          Say Y if you want to enble HDA links with SOF.
-+          If unsure select "N".
-+
-+if SND_SOC_SOF_HDA_LINK
-+config SND_SOC_SOF_HDA_AUDIO_CODEC
-+	bool "SOF support for HDAudio codecs"
-+	help
-+          This adds support for HDAudio codecs with Sound Open Firmware
-+		  for Intel(R) platforms.
-+          Say Y if you want to enble HDAudio codecs with SOF.
-+          If unsure select "N".
-+endif ## SND_SOC_SOF_HDA_LINK
-+
-+endif ## SND_SOC_SOF_HDA_COMMON
-+
-+config SND_SOC_SOF_HDA_LINK_BASELINE
-+	tristate
-+	select SND_SOC_SOF_HDA if SND_SOC_SOF_HDA_LINK
-+
-+config SND_SOC_SOF_HDA
-+	tristate
-+	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
-+	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-+
-+endif ## SND_SOC_SOF_INTEL
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-new file mode 100644
-index 000000000000..78f5fb3d3571
---- /dev/null
-+++ b/sound/soc/sof/intel/Makefile
-@@ -0,0 +1,17 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+snd-sof-intel-byt-objs := byt.o
-+snd-sof-intel-hsw-objs := hsw.o
-+snd-sof-intel-bdw-objs := bdw.o
-+snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
-+				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
-+				 hda-dai.o hda-bus.o hda-loader-skl.o \
-+				 skl.o apl.o cnl.o
-+
-+snd-sof-intel-hda-objs := hda-codec.o
-+
-+obj-$(CONFIG_SND_SOC_SOF_BAYTRAIL) += snd-sof-intel-byt.o
-+obj-$(CONFIG_SND_SOC_SOF_HASWELL) += snd-sof-intel-hsw.o
-+obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-intel-bdw.o
-+obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
-+obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
+> +struct snd_sof_dai *snd_sof_find_dai(struct snd_sof_dev *sdev,
+> +				     char *name)
+> +{
+> +	struct snd_sof_dai *dai = NULL;
+> +
+> +	list_for_each_entry(dai, &sdev->dai_list, list) {
+
+> +		if (!dai->name)
+> +			continue;
+> +
+> +		if (strcmp(name, dai->name) == 0)
+> +			return dai;
+
+Perhaps
+
+	if (dai->name && strcmp(...))
+
+> +	}
+> +
+> +	return NULL;
+> +}
+
+> +int snd_sof_create_page_table(struct snd_sof_dev *sdev,
+> +			      struct snd_dma_buffer *dmab,
+> +			      unsigned char *page_table, size_t size)
+> +{
+> +	int i, pages;
+> +
+> +	pages = snd_sgbuf_aligned_pages(size);
+> +
+> +	dev_dbg(sdev->dev, "generating page table for %p size 0x%zx pages %d\n",
+> +		dmab->area, size, pages);
+> +
+> +	for (i = 0; i < pages; i++) {
+
+> +		u32 idx = (((i << 2) + i)) >> 1;
+
+Looks like
+
+	u32 idx = (5 * i) >> 1;
+
+> +		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
+> +		u32 *pg_table;
+> +
+> +		dev_vdbg(sdev->dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
+> +
+> +		pg_table = (u32 *)(page_table + idx);
+> +
+> +		if (i & 1)
+> +			*pg_table |= (pfn << 4);
+> +		else
+> +			*pg_table |= pfn;
+> +	}
+> +
+> +	return pages;
+> +}
+
+> +	if (plat_data->type == SOF_DEVICE_PCI)
+> +		sdev->pci = container_of(plat_data->dev, struct pci_dev, dev);
+
+Why not to use generic functions?
+	dev_is_pci()
+	to_pci_dev()
+
+> +	/* register machine driver, pass machine info as pdata */
+> +	plat_data->pdev_mach =
+> +		platform_device_register_data(sdev->dev, drv_name,
+> +					      -1, mach, size);
+
+PLATFORM_DEVID_AUTO (IIRC the name)?
+
+> +static int sof_remove(struct platform_device *pdev)
+> +{
+> +	struct snd_sof_dev *sdev = dev_get_drvdata(&pdev->dev);
+> +	struct snd_sof_pdata *pdata = sdev->pdata;
+> +
+
+> +	if (pdata && !IS_ERR(pdata->pdev_mach))
+> +		platform_device_unregister(pdata->pdev_mach);
+
+I'm wondering if pdata could be ever NULL here.
+Also, as I mentioned internally the patch to accept error pointers would be in
+v4.21.
+
+> +
+> +	snd_soc_unregister_component(&pdev->dev);
+> +	snd_sof_fw_unload(sdev);
+> +	snd_sof_ipc_free(sdev);
+> +	snd_sof_free_debug(sdev);
+> +	snd_sof_free_trace(sdev);
+> +	snd_sof_remove(sdev);
+> +	return 0;
+> +}
+> +
+
+> +void snd_sof_shutdown(struct device *dev)
+> +{
+> +}
+> +EXPORT_SYMBOL(snd_sof_shutdown);
+
+No need to provide an empty stub. Why not to add when it would have something useful?
+
+> +/* max BARs mmaped devices can use */
+> +#define SND_SOF_BARS	8
+> +
+> +/* time in ms for runtime suspend delay */
+> +#define SND_SOF_SUSPEND_DELAY	2000
+
+_MS ?
+
+> +	struct mutex mutex;	/* access mutex */
+> +	struct list_head list;	/* list in sdev pcm list */
+> +	struct snd_pcm_hw_params params[2];
+> +	int restore_stream[2]; /* restore hw_params for paused stream */
+
+> +	u32 readback_offset; /* offset to mmaped data if used */
+> +	struct sof_ipc_ctrl_data *control_data;
+> +	u32 size;	/* cdata size */
+> +	enum sof_ipc_ctrl_cmd cmd;
+> +	u32 *volume_table; /* volume table computed from tlv data*/
+> +
+> +	struct mutex mutex;	/* access mutex */
+> +	struct list_head list;	/* list in sdev control list */
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
