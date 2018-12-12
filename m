@@ -1,147 +1,66 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 01/14] ASoC: SOF: Add Sound Open
- Firmware driver core
-Date: Wed, 12 Dec 2018 16:35:45 -0600
-Message-ID: <d51998a3-433d-8d57-6afd-2b5a7087e83a@linux.intel.com>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-2-pierre-louis.bossart@linux.intel.com>
- <CAEnQRZCErG3MGpMG229Lmcf38tmS_MQeo9Z5-Egd0vSGzt6W-w@mail.gmail.com>
+From: Ayman Bagabas <ayman.bagabas@gmail.com>
+Subject: [PATCH v11 0/3] Huawei laptops
+Date: Wed, 12 Dec 2018 18:07:56 -0500
+Message-ID: <20181212230802.21140-1-ayman.bagabas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <CAEnQRZCErG3MGpMG229Lmcf38tmS_MQeo9Z5-Egd0vSGzt6W-w@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, alan@linux.intel.com, sound-open-firmware@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>, Hui Wang <hui.wang@canonical.com>, linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ayman.bagabas@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGFuaWVsLAoKT24gMTIvMTIvMTggMjo0MiBQTSwgRGFuaWVsIEJhbHV0YSB3cm90ZToKPiBU
-aGFua3MgYSBsb3QgUGllcnJlLCBMaWFtIGFuZCBhbGwgdGhlIHBlb3BsZSBhdCBJbnRlbCBmb3Ig
-ZG9lcyBzdWNoIGEgZ3JlYXQgam9iCj4gd2l0aCB0aGlzIHByb2plY3QhCnlvdSdyZSB3ZWxjb21l
-LCB0aGFua3MgZm9yIHRoZSBjb21tZW50cwo+Cj4gRmV3IGNvbW1lbnRzIGlubGluZToKPgo+IDxz
-bmlwPgo+Cj4+ICsvKiBTT0YgcHJvYmUgdHlwZSAqLwo+PiArZW51bSBzb2ZfZGV2aWNlX3R5cGUg
-ewo+PiArICAgICAgIFNPRl9ERVZJQ0VfUENJID0gMCwKPj4gKyAgICAgICBTT0ZfREVWSUNFX0FQ
-Q0ksCj4+ICsgICAgICAgU09GX0RFVklDRV9TUEkKPiBNYXliZSBjb21tYSBhZnRlciBsYXN0IGVs
-ZW1lbnQgaGVyZT8gV2UgaGF2ZSBhdCBsZWFzdCBvbmUgbW9yZTogU09GX0RFVklDRV9EVC4KQmFz
-ZWQgb24gdGhlIGNvbW1lbnRzIGZyb20gQW5keSwgd2UndmUgYWxyZWFkeSByZW1vdmVkIHRoaXMg
-dHlwZSBzaW5jZSAKaXQncyBub3QgcmVhbGx5IG5lZWRlZCBhbnkgbG9uZ2VyLiBXZSB3b3VsZCBw
-cm9iYWJseSBuZWVkIHRvIGhhdmUgYSAKc29mLWR0LWRldi5jIGZpbGUgdG8gZGVhbCB3aXRoIHRo
-ZSBkaWZmZXJlbnQgZW51bWVyYXRpb24gc3R5bGUgYnV0IHdlJ2QgCm5lZWQgYSBwbGF0Zm9ybSB0
-byB3b3JrIHdpdGggKG9yIHBhdGNoZXMgd2VsY29tZSkuIEhpbnQgaGludCB3aW5rIHdpbmsuCj4K
-Pj4gK3N0YXRpYyBpbnQgc29mX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+
-ICt7Cj4+ICsgICAgICAgc3RydWN0IHNuZF9zb2ZfcGRhdGEgKnBsYXRfZGF0YSA9IGRldl9nZXRf
-cGxhdGRhdGEoJnBkZXYtPmRldik7Cj4+ICsgICAgICAgc3RydWN0IHNuZF9zb2ZfZGV2ICpzZGV2
-Owo+PiArICAgICAgIGNvbnN0IGNoYXIgKmRydl9uYW1lOwo+PiArICAgICAgIGNvbnN0IHZvaWQg
-Km1hY2g7Cj4+ICsgICAgICAgaW50IHNpemU7Cj4+ICsgICAgICAgaW50IHJldDsKPj4gKwo+PiAr
-ICAgICAgIHNkZXYgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwgc2l6ZW9mKCpzZGV2KSwgR0ZQ
-X0tFUk5FTCk7Cj4+ICsgICAgICAgaWYgKCFzZGV2KQo+PiArICAgICAgICAgICAgICAgcmV0dXJu
-IC1FTk9NRU07Cj4+ICsKPj4gKyAgICAgICBkZXZfZGJnKCZwZGV2LT5kZXYsICJwcm9iaW5nIFNP
-RiBEU1AgZGV2aWNlLi4uLlxuIik7Cj4+ICsKPj4gKyAgICAgICAvKiBpbml0aWFsaXplIHNvZiBk
-ZXZpY2UgKi8KPj4gKyAgICAgICBzZGV2LT5kZXYgPSAmcGRldi0+ZGV2Owo+PiArICAgICAgIHNk
-ZXYtPnBhcmVudCA9IHBsYXRfZGF0YS0+ZGV2Owo+PiArICAgICAgIGlmIChwbGF0X2RhdGEtPnR5
-cGUgPT0gU09GX0RFVklDRV9QQ0kpCj4+ICsgICAgICAgICAgICAgICBzZGV2LT5wY2kgPSBjb250
-YWluZXJfb2YocGxhdF9kYXRhLT5kZXYsIHN0cnVjdCBwY2lfZGV2LCBkZXYpOwo+PiArICAgICAg
-IHNkZXYtPm9wcyA9IHBsYXRfZGF0YS0+bWFjaGluZS0+cGRhdGE7Cj4+ICsKPj4gKyAgICAgICBz
-ZGV2LT5wZGF0YSA9IHBsYXRfZGF0YTsKPj4gKyAgICAgICBzZGV2LT5maXJzdF9ib290ID0gdHJ1
-ZTsKPj4gKyAgICAgICBJTklUX0xJU1RfSEVBRCgmc2Rldi0+cGNtX2xpc3QpOwo+PiArICAgICAg
-IElOSVRfTElTVF9IRUFEKCZzZGV2LT5rY29udHJvbF9saXN0KTsKPj4gKyAgICAgICBJTklUX0xJ
-U1RfSEVBRCgmc2Rldi0+d2lkZ2V0X2xpc3QpOwo+PiArICAgICAgIElOSVRfTElTVF9IRUFEKCZz
-ZGV2LT5kYWlfbGlzdCk7Cj4+ICsgICAgICAgSU5JVF9MSVNUX0hFQUQoJnNkZXYtPnJvdXRlX2xp
-c3QpOwo+PiArICAgICAgIGRldl9zZXRfZHJ2ZGF0YSgmcGRldi0+ZGV2LCBzZGV2KTsKPj4gKyAg
-ICAgICBzcGluX2xvY2tfaW5pdCgmc2Rldi0+aXBjX2xvY2spOwo+PiArICAgICAgIHNwaW5fbG9j
-a19pbml0KCZzZGV2LT5od19sb2NrKTsKPj4gKwo+PiArICAgICAgIC8qIHNldCB1cCBwbGF0Zm9y
-bSBjb21wb25lbnQgZHJpdmVyICovCj4+ICsgICAgICAgc25kX3NvZl9uZXdfcGxhdGZvcm1fZHJ2
-KHNkZXYpOwo+PiArCj4+ICsgICAgICAgLyogc2V0IGRlZmF1bHQgdGltZW91dHMgaWYgbm9uZSBw
-cm92aWRlZCAqLwo+PiArICAgICAgIGlmIChwbGF0X2RhdGEtPmRlc2MtPmlwY190aW1lb3V0ID09
-IDApCj4+ICsgICAgICAgICAgICAgICBzZGV2LT5pcGNfdGltZW91dCA9IFRJTUVPVVRfREVGQVVM
-VF9JUEM7Cj4+ICsgICAgICAgZWxzZQo+PiArICAgICAgICAgICAgICAgc2Rldi0+aXBjX3RpbWVv
-dXQgPSBwbGF0X2RhdGEtPmRlc2MtPmlwY190aW1lb3V0Owo+PiArICAgICAgIGlmIChwbGF0X2Rh
-dGEtPmRlc2MtPmJvb3RfdGltZW91dCA9PSAwKQo+PiArICAgICAgICAgICAgICAgc2Rldi0+Ym9v
-dF90aW1lb3V0ID0gVElNRU9VVF9ERUZBVUxUX0JPT1Q7Cj4+ICsgICAgICAgZWxzZQo+PiArICAg
-ICAgICAgICAgICAgc2Rldi0+Ym9vdF90aW1lb3V0ID0gcGxhdF9kYXRhLT5kZXNjLT5ib290X3Rp
-bWVvdXQ7Cj4+ICsKPj4gKyAgICAgICAvKiBwcm9iZSB0aGUgRFNQIGhhcmR3YXJlICovCj4+ICsg
-ICAgICAgcmV0ID0gc25kX3NvZl9wcm9iZShzZGV2KTsKPiBTb21ldGhpbmcgbG9va3MgZmlzaHkg
-aGVyZS4KPgo+IEkgY291bGRuJ3QgZmluZCB0aGlzIGZ1bmN0aW9uJ3MgZGVmaW5pdGlvbiBhbnl3
-aGVyZSBpbiB0aGUgZmlyc3QKPiBwYXRjaCB3aGljaCBtZWFucyB0aGF0IGFmdGVyIGZpcnN0IHBh
-dGNoIHRoZSBjb2RlIGRvZXNuJ3QgY29tcGlsZSA6RC4KPgo+IEZvciBiaXNlY3Rpb24gcmVhc29u
-cyB3b3VsZCBiZSBncmVhdCBpZiB0aGUgY29kZSBjb21waWxlcyBhZnRlciBlYWNoIHBhdGNoLgoK
-dGhlIGJ1aWxkIGlzIG9ubHkgYWRkZWQgbGFzdCAoaW4gdGhlIDM3dGggcGF0Y2gpLiBXZSBkaWRu
-J3QgcmVhbGx5IHBsYW4gCnRvIGJlIGFibGUgdG8gY29tcGlsZSB0aGUgaW5pdGlhbCBwYXRjaGVz
-IG9uZSBhZnRlciB0aGUgb3RoZXIuIHdlIAoqY291bGQqIGFkZCB0aGUgY29yZSBjb21waWxhdGlv
-biBlYXJsaWVyIGFuZCBhZGQgc3VwcG9ydCBmb3IgZWFjaCBkZXZpY2UgCmluY3JlbWVudGFsbHks
-IGJ1dCB5b3UgbmVlZCBhIHNldCBvZiBmaWxlcyB0aGF0IGFyZSBzb21ld2hhdCAKaW50ZXJkZXBl
-bmRlbnQgZmlyc3QuCgoKPgo+IDxzbmlwPgo+Cj4+ICsgICAgICAgLyogbm93IHJlZ2lzdGVyIGF1
-ZGlvIERTUCBwbGF0Zm9ybSBkcml2ZXIgYW5kIGRhaSAqLwo+PiArICAgICAgIHJldCA9IHNuZF9z
-b2NfcmVnaXN0ZXJfY29tcG9uZW50KCZwZGV2LT5kZXYsICAmc2Rldi0+cGxhdF9kcnYsCj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2Rldi0+b3BzLT5kcnYsCj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2Rldi0+b3BzLT5udW1f
-ZHJ2KTsKPj4gKyAgICAgICBpZiAocmV0IDwgMCkgewo+PiArICAgICAgICAgICAgICAgZGV2X2Vy
-cihzZGV2LT5kZXYsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICJlcnJvcjogZmFpbGVkIHRv
-IHJlZ2lzdGVyIERTUCBEQUkgZHJpdmVyICVkXG4iLCByZXQpOwo+PiArICAgICAgICAgICAgICAg
-Z290byBjb21wX2VycjsKPiBUaGlzIGdvZXMgdG8gc25kX3NvY191bnJlZ2lzdGVyX2NvbXBvbmVu
-dCB3aGljaCBpcyBub3QgcmVhbGx5IG5lZWRlZCBiZWNhdXNlCj4gdGhlIGNvbXBvbmVudCBkaWRu
-J3QgcmVnaXN0ZXIgc3VjY2Nlc2Z1bGx5LgpSaWdodC4gd2Ugd2VudCB0aHJvdWdoIGEgc2VyaWVz
-IG9mIGNoZWNrcyBmb3IgZXJyb3IgZmxvd3MgYW5kIG1pc3NlZCAKdGhpcyBvbmUuIFRoYW5rcyBm
-b3IgcmVwb3J0aW5nIHRoaXMuCj4KPiA8c25kPgo+Cj4+ICtjb21wX2VycjoKPj4gKyAgICAgICBz
-bmRfc29jX3VucmVnaXN0ZXJfY29tcG9uZW50KCZwZGV2LT5kZXYpOwo+PiArICAgICAgIHNuZF9z
-b2ZfZnJlZV90b3BvbG9neShzZGV2KTsKPiBJdCBpcyBub3QgdmVyeSBjbGVhciB0byBtZSB3aGVy
-ZSBkb2VzIHRoZSBzbmRfc29mX2xvYWRfdG9wb2xvZ3kgaXQgaXMgY2FsbGVkCj4gc28gdGhhdCB0
-aGVyZSBpcyBhIG5lZWQgdG8gZnJlZSBpdCBoZXJlLgp0aGUgZnJlZV90b3BvbG9neSBwYXJ0IGlz
-IHNvbWV0aGluZyB3ZSBhcmUgY3VycmVudGx5IGxvb2tpbmcgaXQuIEl0IApzZWVtcyB0aGF0IHRo
-ZSBmcmFtZXdvcmsgZnJlZXMgYWxtb3N0IGV2ZXJ5dGhpbmcuIEl0J3Mgb25lIG9mIHRoZSAKZGlm
-ZmljdWx0aWVzIHdlIGFyZSBmYWNpbmcsIGl0J3Mgbm90IGFsd2F5cyBvYnZpb3VzIHdoYXQgdGhl
-IHRvcG9sb2d5IApmcmFtZXdvcmsgZG9lcyBmb3IgeW91IGFuZCB3aGF0IG5lZWRzIHRvIGJlIGZy
-ZWVkIG1hbnVhbGx5LsKgIEl0J3MgYSAKa25vd24gb3BlbiB3ZSB3aWxsIGZpeCBzaG9ydGx5Lgo+
-Cj4+ICtzdGF0aWMgaW50IHNvZl9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikK
-Pj4gK3sKPj4gKyAgICAgICBzdHJ1Y3Qgc25kX3NvZl9kZXYgKnNkZXYgPSBkZXZfZ2V0X2RydmRh
-dGEoJnBkZXYtPmRldik7Cj4+ICsgICAgICAgc3RydWN0IHNuZF9zb2ZfcGRhdGEgKnBkYXRhID0g
-c2Rldi0+cGRhdGE7Cj4+ICsKPj4gKyAgICAgICBpZiAocGRhdGEgJiYgIUlTX0VSUihwZGF0YS0+
-cGRldl9tYWNoKSkKPj4gKyAgICAgICAgICAgICAgIHBsYXRmb3JtX2RldmljZV91bnJlZ2lzdGVy
-KHBkYXRhLT5wZGV2X21hY2gpOwo+PiArCj4+ICsgICAgICAgc25kX3NvY191bnJlZ2lzdGVyX2Nv
-bXBvbmVudCgmcGRldi0+ZGV2KTsKPj4gKyAgICAgICBzbmRfc29mX2Z3X3VubG9hZChzZGV2KTsK
-Pj4gKyAgICAgICBzbmRfc29mX2lwY19mcmVlKHNkZXYpOwo+PiArICAgICAgIHNuZF9zb2ZfZnJl
-ZV9kZWJ1ZyhzZGV2KTsKPj4gKyAgICAgICBzbmRfc29mX2ZyZWVfdHJhY2Uoc2Rldik7Cj4+ICsg
-ICAgICAgc25kX3NvZl9yZW1vdmUoc2Rldik7Cj4gVGhlcmUgaXMgbm8gc25kX3NvZl9mcmVlX3Rv
-cG9sb2d5IGhlcmUuIFdoaWNoIG1lYW5zIHRoYXQgZWl0aGVyIHRoaXMKPiBjYWxsIGlzIG5vdCBu
-ZWVkZWQgaW4gdGhlCj4gcHJvYmUgZnVuY3Rpb24gb3IgaXQgaXMgbWlzc2luZyBmcm9tIGhlcmUu
-CgpUaGUgdG9wb2xvZ3kgaXMgbGVhZGVkIGluIHNvZl9wY21fcHJvYmUgYW5kIHJlbGVhc2VkIGlu
-IHNvZl9wY21fcmVtb3ZlLgoKQnV0IGxpa2UgSSBzYWlkIGFib3ZlIGl0J3Mgbm90IGNsZWFyIGlm
-IHdlIG5lZWQgdG8gcmVhbGx5IGZyZWUgYW55dGhpbmcuLi4KCj4KPj4gK3ZvaWQgc25kX3NvZl9z
-aHV0ZG93bihzdHJ1Y3QgZGV2aWNlICpkZXYpCj4+ICt7Cj4+ICt9Cj4+ICtFWFBPUlRfU1lNQk9M
-KHNuZF9zb2Zfc2h1dGRvd24pOwo+IEkgd291bGQgYXZvaWQgdGhpcyBlbXB0eSBmdW5jdGlvbiBj
-YWxscyBmb3IgdGhlIG1vbWVudC4KPiBXaWxsIGFkZCBpdCBsYXRlciB3aGVuIHRoZXJlIGlzIGEg
-bmVlZCBmb3IgaXQuCnllcywgd2UgcmVtb3ZlZCBpdCBhbHJlYWR5Lgo+Cj4gPHNuaXA+Cj4KPj4g
-Ky8qCj4+ICsgKiBTT0YgRGV2aWNlIExldmVsLgo+PiArICovCj4+ICtzdHJ1Y3Qgc25kX3NvZl9k
-ZXYgewo+PiArICAgICAgIHN0cnVjdCBkZXZpY2UgKmRldjsKPj4gKyAgICAgICBzdHJ1Y3QgZGV2
-aWNlICpwYXJlbnQ7Cj4+ICsgICAgICAgc3BpbmxvY2tfdCBpcGNfbG9jazsgICAgLyogbG9jayBm
-b3IgSVBDIHVzZXJzICovCj4+ICsgICAgICAgc3BpbmxvY2tfdCBod19sb2NrOyAgICAgLyogbG9j
-ayBmb3IgSFcgSU8gYWNjZXNzICovCj4+ICsgICAgICAgc3RydWN0IHBjaV9kZXYgKnBjaTsKPj4g
-Kwo+PiArICAgICAgIC8qIEFTb0MgY29tcG9uZW50cyAqLwo+PiArICAgICAgIHN0cnVjdCBzbmRf
-c29jX2NvbXBvbmVudF9kcml2ZXIgcGxhdF9kcnY7Cj4+ICsKPj4gKyAgICAgICAvKiBEU1AgZmly
-bXdhcmUgYm9vdCAqLwo+PiArICAgICAgIHdhaXRfcXVldWVfaGVhZF90IGJvb3Rfd2FpdDsKPj4g
-KyAgICAgICB1MzIgYm9vdF9jb21wbGV0ZTsKPj4gKyAgICAgICB1MzIgZmlyc3RfYm9vdDsKPj4g
-Kwo+PiArICAgICAgIC8qIERTUCBIVyBkaWZmZXJlbnRpYXRpb24gKi8KPj4gKyAgICAgICBzdHJ1
-Y3Qgc25kX3NvZl9wZGF0YSAqcGRhdGE7Cj4+ICsgICAgICAgY29uc3Qgc3RydWN0IHNuZF9zb2Zf
-ZHNwX29wcyAqb3BzOwo+PiArICAgICAgIHN0cnVjdCBzb2ZfaW50ZWxfaGRhX2RldiAqaGRhOyAg
-LyogZm9yIEhEQSBiYXNlZCBEU1AgSFcgKi8KPiBKdXN0IGEgZGVzaWduIHF1ZXN0aW9uLiBJcyBp
-dCBvayB0byBob2xkIFNPQyBzcGVjaWZpYyBkYXRhIGhlcmU/IEZvciBleGFtcGxlIG9uCj4gYXJt
-IHRoZXJlIGlzIG5vIEhEQSBidXQgdGhlcmUgaXMgc29tZSBvdGhlciBEQUkuIFdvdWxkIGl0IGJl
-IG9rIGZvciBtZSB0byBqdXN0Cj4gYWRkIGl0IGhlcmU/CgpEYXJuLCB0aGlzIHdhcyBhZGRlZCBt
-b3JlIHRoYW4gYSB5ZWFyIGFnbyBhbmQgc2hvdWxkIGhhdmUgYmVlbiAKY2xlYW5lZC11cC4gVGhl
-cmUgaXMgYWJzb2x1dGVseSBubyByZWFzb24gd2h5IHdlIGhhdmUgYW4gSW50ZWwtc3BlY2lmaWMg
-CmRlZmluaXRpb24gaW4gdGhlcmUsIGFzIHlvdSBtZW50aW9uZWQgaXQgaXQgc2hvdWxkIGhhdmUg
-YmVlbiBhIHBvaW50ZXIgCnRvIFNvQy1zcGVjaWZpYyBkYXRhLiB3ZSdsbCBmaXggdGhpcy4gbmlj
-ZSBjYXRjaCwgbXVjaCBhcHByZWNpYXRlZC4KCi1QaWVycmUKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch set is based on the new audio LED triggers in topic/leds-trigger branch from
+        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+
+Changes in v11:
+* Minor code changes
+
+Changes in v10:
+* Use ec_get_handle instead of acpi_get_handle since we are using the ec device
+* Switch to WMI0_EXPENSIVE_GUID and wmi_query_block to fetch keycode when WMI0 is used
+
+Changes in v9:
+* Explicitly use NULL in acpi_get_handle
+* Drop __initconst from huawei_wmi_keymap
+
+Changes in v8:
+* Switch to wmi_driver
+* Use devm to allocate and manage devices
+* Skip registering LED subsystem if a ACPI controller method was not found
+
+Changes in v7:
+* Use audio LED triggers patch set
+* Use KEY_CONFIG (XF86Tools) instead of KEY_PROG1.
+ In Windows, the key is used to launch Huawei PC manager. XF86Tools is
+ used by default on most desktop environments i.e. Gnome.
+
+Changes in v6:
+* Review tags
+
+Changes in v5:
+* Consistency in file names
+* How module would be enabled (Kconfig)
+* Match license in SPDX and MODULE_LICENSE 
+
+Changes in v4:
+* Code formatting
+
+Changes in v3:
+* Support for Huawei MBX
+* Style and formatting issues
+
+Ayman Bagabas (3):
+  ALSA: hda: fix front speakers on Huawei MBXP.
+  x86: add support for Huawei WMI hotkeys.
+  ALSA: hda: add support for Huawei WMI micmute LED
+
+ drivers/platform/x86/Kconfig      |  17 +++
+ drivers/platform/x86/Makefile     |   1 +
+ drivers/platform/x86/huawei-wmi.c | 208 ++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c     |  22 ++++
+ 4 files changed, 248 insertions(+)
+ create mode 100644 drivers/platform/x86/huawei-wmi.c
+
+-- 
+2.19.2
