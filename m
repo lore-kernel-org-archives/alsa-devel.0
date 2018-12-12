@@ -1,76 +1,149 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 04/14] ASoC: SOF: Add support for IPC IO
- between DSP and Host
-Date: Wed, 12 Dec 2018 09:19:45 -0600
-Message-ID: <cbf58c2f-18fe-9963-a381-d92e80e8a8c5@linux.intel.com>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
- <s5hbm5rupjg.wl-tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [alsa-devel] [PATCH 0/2] Graph fixes for using multiple
+        endpoints per port
+Date: Wed, 12 Dec 2018 07:27:25 -0800
+Message-ID: <20181212152725.GE6707@atomide.com>
+References: <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211045220.GI6707@atomide.com>
+ <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211053536.GJ6707@atomide.com>
+ <87wooga9an.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211141649.GL6707@atomide.com>
+ <87ftv33bpg.wl-kuninori.morimoto.gx@renesas.com>
+ <20181212001950.GX6707@atomide.com>
+ <877egf33m9.wl-kuninori.morimoto.gx@renesas.com>
+ <87k1kfs0u5.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hbm5rupjg.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Keyon Jie <yang.jie@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87k1kfs0u5.wl-kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvZi9jb250cm9sLmggYi9pbmNsdWRlL3Nv
-dW5kL3NvZi9jb250cm9sLmgKPj4KPj4gKy8qIGdlbmVyaWMgY2hhbm5lbCBtYXBwZWQgdmFsdWUg
-ZGF0YSAqLwo+PiArc3RydWN0IHNvZl9pcGNfY3RybF92YWx1ZV9jaGFuIHsKPj4gKwl1aW50MzJf
-dCBjaGFubmVsOwkvKio8IGNoYW5uZWwgbWFwIC0gZW51bSBzb2ZfaXBjX2NobWFwICovCj4+ICsJ
-dWludDMyX3QgdmFsdWU7Cj4gQW55IHJlYXNvbiB0byBhdm9pZCBzMzIgYW5kIHUzMj8KPiBJZiB0
-aGlzIGlzIHN1cHBvc2VkIHRvIGJlIHNoYXJlZCB3aXRoIHVzZXItc3BhY2UgKG9yIHVzZXItc3Bh
-Y2UgbWF5Cj4gdXNlIHRoaXMgYXMgYSByZWZlcmVuY2Ugb2YgZGF0YSBzdHJ1Y3QpLCB3ZSBzaG91
-bGQgY29uc2lkZXIgcGxhY2luZyBpbgo+IHVhcGkgZGlyZWN0b3J5LCB0b28uCgppdCdzIGludGVu
-dGlvbmFsCgpUaGUgaW5jbHVkZXMgc2hhcmVkIHdpdGggdXNlcnNwYWNlIGFyZSBpbiBpbmNsdWRl
-L3VhcGkvc291bmQvc29mLgoKQWxsIHRoZSBmaWxlcyBpbiBpbmNsdWRlL3NvdW5kL3NvZiwgYW5k
-IHRoaXMgb25lIGluIHBhcnRpY3VsYXIsIGFyZSBtb3JlIApmb3IgaG9zdC1kc3AgSVBDLgoKSW4g
-dGhvc2UgdHdvIGNhc2VzLCB1YXBpIGFuZCBJUEMgZmlsZXMsIHdlIGRvbid0IHVzZSBzMzIgYW5k
-IHUzMi4gd2UgCmNvdWxkIG1vdmUgdGhpcyBkaXJlY3RvcnkgdW5kZXIgaW5jbHVkZS91YXBpL3Nv
-dW5kL3NvZi1pcGMgaWYgeW91IHByZWZlcj8KCj4KPgo+PiArLyogd2FpdCBmb3IgSVBDIG1lc3Nh
-Z2UgcmVwbHkgKi8KPj4gK3N0YXRpYyBpbnQgdHhfd2FpdF9kb25lKHN0cnVjdCBzbmRfc29mX2lw
-YyAqaXBjLCBzdHJ1Y3Qgc25kX3NvZl9pcGNfbXNnICptc2csCj4+ICsJCQl2b2lkICpyZXBseV9k
-YXRhKQo+PiArewo+PiArCXN0cnVjdCBzbmRfc29mX2RldiAqc2RldiA9IGlwYy0+c2RldjsKPj4g
-KwlzdHJ1Y3Qgc29mX2lwY19jbWRfaGRyICpoZHIgPSAoc3RydWN0IHNvZl9pcGNfY21kX2hkciAq
-KW1zZy0+bXNnX2RhdGE7Cj4+ICsJdW5zaWduZWQgbG9uZyBmbGFnczsKPj4gKwlpbnQgcmV0Owo+
-PiArCj4+ICsJLyogd2FpdCBmb3IgRFNQIElQQyBjb21wbGV0aW9uICovCj4+ICsJcmV0ID0gd2Fp
-dF9ldmVudF90aW1lb3V0KG1zZy0+d2FpdHEsIG1zZy0+aXBjX2NvbXBsZXRlLAo+PiArCQkJCSBt
-c2Vjc190b19qaWZmaWVzKElQQ19USU1FT1VUX01TRUNTKSk7Cj4+ICsKPj4gKwlzcGluX2xvY2tf
-aXJxc2F2ZSgmc2Rldi0+aXBjX2xvY2ssIGZsYWdzKTsKPiBTaW5jZSB0aGlzIG11c3QgYmUgYSBz
-bGVlcGFibGUgY29udGV4dCwgeW91IGNhbiBzYWZlbHkgdXNlCj4gc3Bpbl9sb2NrX2lycSgpIGhl
-cmUuCj4KPj4gKy8qIHNlbmQgSVBDIG1lc3NhZ2UgZnJvbSBob3N0IHRvIERTUCAqLwo+PiAraW50
-IHNvZl9pcGNfdHhfbWVzc2FnZShzdHJ1Y3Qgc25kX3NvZl9pcGMgKmlwYywgdTMyIGhlYWRlciwK
-Pj4gKwkJICAgICAgIHZvaWQgKm1zZ19kYXRhLCBzaXplX3QgbXNnX2J5dGVzLCB2b2lkICpyZXBs
-eV9kYXRhLAo+PiArCQkgICAgICAgc2l6ZV90IHJlcGx5X2J5dGVzKQo+PiArewo+PiArCXN0cnVj
-dCBzbmRfc29mX2RldiAqc2RldiA9IGlwYy0+c2RldjsKPj4gKwlzdHJ1Y3Qgc25kX3NvZl9pcGNf
-bXNnICptc2c7Cj4+ICsJdW5zaWduZWQgbG9uZyBmbGFnczsKPj4gKwo+PiArCXNwaW5fbG9ja19p
-cnFzYXZlKCZzZGV2LT5pcGNfbG9jaywgZmxhZ3MpOwo+IERpdHRvLiAgVGhpcyBvbmUgY2FsbHMg
-dHhfd2FpdF9kb25lKCkgbGF0ZXIuCj4KPiBJdCdzIGJldHRlciB0byBkZWZpbmUgbW9yZSBzdHJp
-Y3RseSB3aGljaCBvbmUgY2FuIGJlIGNhbGxlZCBmcm9tIHRoZQo+IHNwaW5sb2NrZWQgY29udGV4
-dCBhbmQgd2hpY2ggbm90LgoKVGhpcyBvbmUgaXMgZm9yIEtleW9uIGFuZCB0ZWFtLiBJJ3ZlIGFz
-a2VkIHRoYXQgcXVlc3Rpb24gbXVsdGlwbGUgdGltZXMgCmFuZCB3YXMgdG9sZCB0aGUgaXJxc2F2
-ZSB3YXMgbmVlZGVkLiBLZXlvbiwgY2FuIHlvdSBwbGVhc2UgY2hpbWUgaW4/Cgo+Cj4KPj4gK3Zv
-aWQgc25kX3NvZl9pcGNfZnJlZShzdHJ1Y3Qgc25kX3NvZl9kZXYgKnNkZXYpCj4+ICt7Cj4+ICsJ
-Y2FuY2VsX3dvcmtfc3luYygmc2Rldi0+aXBjLT50eF9rd29yayk7Cj4+ICsJY2FuY2VsX3dvcmtf
-c3luYygmc2Rldi0+aXBjLT5yeF9rd29yayk7Cj4+ICt9Cj4+ICtFWFBPUlRfU1lNQk9MKHNuZF9z
-b2ZfaXBjX2ZyZWUpOwo+IE5vdCBzcGVjaWZpYyB0byB0aGlzIGZ1bmN0aW9uIGJ1dCBhIGdlbmVy
-YWwgcXVlc3Rpb246Cj4gd2h5IG5vdCBFWFBPUlRfU1lNQk9MX0dQTCgpIGluIGdlbmVyYWwgaW4g
-dGhlIHdob2xlIFNPRiBjb2Rlcz8KCldlIHVzZSBhIGR1YWwgbGljZW5zZSAoY29waWVkIGJlbG93
-KQoKLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0zLUNsYXVzZSkK
-Ly8KLy8gVGhpcyBmaWxlIGlzIHByb3ZpZGVkIHVuZGVyIGEgZHVhbCBCU0QvR1BMdjIgbGljZW5z
-ZS7CoCBXaGVuIHVzaW5nIG9yCi8vIHJlZGlzdHJpYnV0aW5nIHRoaXMgZmlsZSwgeW91IG1heSBk
-byBzbyB1bmRlciBlaXRoZXIgbGljZW5zZS4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+* Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> [181212 06:52]:
+> 
+> Hi Tony, again
+> 
+> > > > 	https://patchwork.kernel.org/patch/10712877/
+> > > 
+> > > Hmm, so do you have multiple separate ports at the "&sound" node
+> > > hardware? If so then yeah multiple ports make sense.
+> > >
+> > > But if you only a single physical (I2S?) port at the
+> > > "&sound" node hardware, then IMO you should only have one
+> > > port and multiple endpoints there according to the graph.txt
+> > > binding doc.
+> > > 
+> > > In my McBSP case there is only a single physical I2S port
+> > > that can be TDM split into timeslots.
+> > 
+> > Mine has 4 DAIs. Each DAI can output 2ch.
+> > These will be merged and wil be 8ch TDM and goes to Codec.
+> > But hmm.. it is 4 DAIs, but 1 "physical" interface...
+> > 
+> > So, your patch seems correct, but will breaks DPCM...
+> > I will confirm it.
+> 
+> I thought "port" = "DAI", but yeah, "port" = "physical interface".
+
+OK good to hear :)
+
+> Then, my issue is that we can't judge DAI size from DT.
+> For example, MIXer case, 2 CPU DAIs are connected to 1 Codec.
+> 
+> 	DAI0 --- CPU --- Codec
+> 	DAI1 /
+> 
+> In this case, CPU side needs 2 DAIs,
+> Codec side needs 1 DAI only.
+
+Oh so the other way around compared to my use case. Hmm.
+
+> For both CPU/Codec case, OF graph will be like below,
+> and we can't judge DAIs size from this.
+> 
+> 	port {
+> 		ep0: endpint@0 {
+> 			remote-endpoint = <xxx>;
+> 		};
+> 		ep1: endpint@1 {
+> 			remote-endpoint = <xxx>;
+> 		};
+> 	}
+
+Hmm I too need to add secondary DAIs for McBSP in addition to the
+primary DAI controlling the McBSP hardware resources.
+
+> To solve this issue, we need to use "reg" for it.
+> Then, we can get correct DAI ID.
+
+Hmm yeah maybe. Just to think of other options, maybe also the
+#size-cells could be used?
+
+As the binding allows adding #address-cells and #size-cells to
+the port node.. Usually if you refer a subnode of a device you
+just use #address=cells = <2> where the second field would be for
+the offset. So maybe this could be used for 1 DAI this way:
+
+ 	/* Codec has 1 DAI */
+ 	Codec {
+ 		port {
+			#address-cells = <2>;
+			#size-cells = <1>;
+
+ 			ep: endpoint {
+ 				remote-endpoint = <xxx>;
+ 			};
+ 		};
+ 	}
+
+Where this codec would then need to be referenced with just an
+additional instance number:
+
+foo = <&ep 0>;
+bar = <&ep 1>;
+...
+
+And then for a codec with 2 DAIs the usual #size-cells = <1>
+would be used with numbered endpoints for each DAI the way
+you already described:
+
+ 	port {
+ 		ep0: endpint@0 {
+ 			remote-endpoint = <xxx>;
+ 		};
+ 		ep1: endpint@1 {
+ 			remote-endpoint = <xxx>;
+ 		};
+ 	}
+
+Do you think that would work?
+
+> Can you agree this ? we need extra patch,
+> but it can solve your / my problem.
+
+Yes it's starting to make sense :)
+
+> Now I'm posting patches to merging
+> "audio-graph-card" and "DPCM ver audio-graph-card".
+> If you are OK, I will include above solution patch
+> to this patch-set.
+
+Sure, maybe please first check if the #size-cells = <2>
+option would work though?
+
+> Current audio-graph doesn't expect your use-case,
+> and I want to avoid conflict.
+> 
+> So, "merged" audio-graph should solve your use-case.
+> If you can agree about this, I will post patch-set.
+
+Yeah I agree, just still wondering what might be the best
+way to represent 1 DAI vs 2 DAIs.
+
+Regards,
+
+Tony
