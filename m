@@ -1,19 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v3 07/14] ASoC: SOF:
- Add DSP firmware logger support
-Date: Wed, 12 Dec 2018 11:01:15 -0600
-Message-ID: <647a8beb-1653-bb36-eed0-0e847ba5c7ea@linux.intel.com>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
- <s5hva3zj8y3.wl-tiwai@suse.de>
- <a5828bbb-e9c1-05ed-e50b-ae7ea93189ad@linux.intel.com>
- <s5h1s6mk9kz.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] ASoC: cs35l36: Add support for
+ Cirrus CS35L36 Amplifier
+Date: Wed, 12 Dec 2018 17:07:41 +0000
+Message-ID: <20181212170741.GS16508@imbe.wolfsonmicro.main>
+References: <1544130287-7303-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5h1s6mk9kz.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEDF3267C35
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2018 18:07:44 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1544130287-7303-1-git-send-email-james.schulman@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: James Schulman <james.schulman@cirrus.com>
+Cc: mark.rutland@arm.com, brian.austin@cirrus.com, alsa-devel@alsa-project.org, paul.handrigan@cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Dec 06, 2018 at 03:04:46PM -0600, James Schulman wrote:
+> Add driver support for Cirrus Logic CS35L36 boosted
+> speaker amplifier
+> 
+> Signed-off-by: James Schulman <james.schulman@cirrus.com>
+> ---
 
-On 12/12/18 10:12 AM, Takashi Iwai wrote:
-> On Wed, 12 Dec 2018 17:04:42 +0100,
-> Pierre-Louis Bossart wrote:
->>
->> On 12/12/18 5:11 AM, Takashi Iwai wrote:
->>> On Tue, 11 Dec 2018 22:23:11 +0100,
->>> Pierre-Louis Bossart wrote:
->>>> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
->>>>
->>>> This patch adds support for real-time DSP logging (timestamped events
->>>> and bespoke binary data) for firmware debug. The current solution
->>>> relies on DMA transfers to system memory that is then accessed by
->>>> userspace tools such as sof-logger. For Intel platforms, two types of
->>>> DMAs are currently used (GP-DMA for Baytrail/CherryTrail and HDaudio
->>>> DMA for SKL+)
->>>>
->>>> Due to historical reasons, the driver code follows the DSP firmware
->>>> conventions and refers to 'traces', but it is currently unrelated to
->>>> the Linux trace subsystem. Future solutions will include support for
->>>> more advanced hardware (e.g. MIPI Sys-T), additional formats and the
->>>> ability to enable/disable specific traces dynamically.
->>> So what's the reason not to use Linux standard tracing infrastructure?
->> I obviously failed to convey the intent in the commit message :-(
->>
->> What we have today is just a DMA-based transfers of 'trace' data into
->> a ring buffer. That's it. it's very similar to what always existed on
->> Atom and Skylake, just more transparent and released for upstream
->> reviews this time.
->>
->> Is it optimal or final? Absolutely not. There will be evolutions such as
->>
->> A) support for multi-cores on the DSP side, each with their own
->> 'trace' capability.
->>
->> B) support for other hardware platforms which may not have a DMA.
->>
->> C) support for 'probes' to retrieve and inject PCM data into specific
->> firmware nodes.
->>
->> This patch does not create a new generic tracing infrastructure for
->> Linux. We are exploring ways by which this standard tracing
->> infrastructure can be used, we just haven't had time to look into it
->> as we focused on runtime_pm and new platforms first.
->>
->> Also we need to make sure the DSP traces are not defined for Linux
->> only, it's intended that the SOF firmware is used in non-Linux
->> environments, so we want to use what Linux provides, but not constrain
->> SOF to work for Linux only.
->>
->> Does this help?
-> OK, that's fine.  Liam and I talked about Linux tracing for SOF, and I
-> thought this might be that.  But this is rather a hardware data
-> logging, so it's a different beast.
-Thanks. I'll rework the commit message for the third time to be clearer...
+Again just a couple of very minor nit picks from me.
+
+> +static int cs35l36_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+> +				  unsigned int freq, int dir)
+> +{
+> +	struct snd_soc_component *component = dai->component;
+> +	struct cs35l36_private *cs35l36 =
+> +			snd_soc_component_get_drvdata(component);
+> +	int fs1, fs2, reg;
+> +
+> +	if (freq > CS35L36_FS_NOM_6MHZ) {
+> +		fs1 = CS35L36_FS1_DEFAULT_VAL;
+> +		fs2 = CS35L36_FS2_DEFAULT_VAL;
+> +	} else {
+> +		fs1 = 3 * ((CS35L36_FS_NOM_6MHZ * 4 + freq - 1) / freq) + 4;
+> +		fs2 = 5 * ((CS35L36_FS_NOM_6MHZ * 4 + freq - 1) / freq) + 4;
+> +	}
+> +
+> +	regmap_write(cs35l36->regmap, CS35L36_TESTKEY_CTRL,
+> +			CS35L36_TEST_UNLOCK1);
+> +	regmap_write(cs35l36->regmap, CS35L36_TESTKEY_CTRL,
+> +			CS35L36_TEST_UNLOCK2);
+> +
+> +	regmap_read(cs35l36->regmap, CS35L36_TST_FS_MON0, &reg);
+> +	reg &= ~(CS35L36_FS1_WINDOW_MASK | CS35L36_FS2_WINDOW_MASK);
+> +	reg |= ((fs1 & CS35L36_FS1_WINDOW_MASK) |
+> +		(fs2 << CS35L36_FS2_WINDOW_SHIFT & CS35L36_FS2_WINDOW_MASK));
+> +	regmap_write(cs35l36->regmap, CS35L36_TST_FS_MON0, reg);
+
+This is just open coding update_bits probably better to just use
+update_bits.
+
+> +
+> +	regmap_write(cs35l36->regmap, CS35L36_TESTKEY_CTRL,
+> +			CS35L36_TEST_LOCK1);
+> +	regmap_write(cs35l36->regmap, CS35L36_TESTKEY_CTRL,
+> +			CS35L36_TEST_LOCK2);
+> +	return 0;
+> +}
+> +
+
+> +typedef char CS35L36_MAX_NUM_REGS[__LINE__];
+
+Not sure I am the greatest fan of this, is it perhaps just worth
+combining the tables file and the regular file? Then you don't
+need any fancyness.
+
+Thanks,
+Charles
