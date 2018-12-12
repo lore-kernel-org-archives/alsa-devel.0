@@ -1,61 +1,61 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 06/21] ASoC: SOF: Intel: Add Intel specific
- HDA DSP HW operations
-Date: Wed, 12 Dec 2018 08:48:42 -0600
-Message-ID: <3b47644d-262b-d6a8-d90d-bacc942b3770@linux.intel.com>
-References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
- <20181211213029.28801-7-pierre-louis.bossart@linux.intel.com>
- <s5hpnu7j6is.wl-tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 0/2] Graph fixes for using multiple endpoints per port
+Date: Wed, 12 Dec 2018 06:50:22 -0800
+Message-ID: <20181212145022.GB6707@atomide.com>
+References: <20181211020557.61783-1-tony@atomide.com>
+ <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211045220.GI6707@atomide.com>
+ <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211053536.GJ6707@atomide.com>
+ <87wooga9an.wl-kuninori.morimoto.gx@renesas.com>
+ <20181211141649.GL6707@atomide.com>
+ <87ftv33bpg.wl-kuninori.morimoto.gx@renesas.com>
+ <20181212001950.GX6707@atomide.com>
+ <01e3f547-318e-8988-b48a-e10c0a2904d6@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hpnu7j6is.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <01e3f547-318e-8988-b48a-e10c0a2904d6@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Sebastian Reichel <sre@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the reviews Takashi.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [181212 13:03]:
+> On 12/12/2018 2.19, Tony Lindgren wrote:
+> > In my McBSP case there is only a single physical I2S port
+> > that can be TDM split into timeslots.
+> 
+> So what is missing from the McBSP driver is to configure the TDM. We
+> never had a hardware which would require it so it is _not_ implemented.
 
-On 12/12/18 6:04 AM, Takashi Iwai wrote:
-> On Tue, 11 Dec 2018 22:30:14 +0100,
-> Pierre-Louis Bossart wrote:
->> +int hda_dsp_resume(struct snd_sof_dev *sdev)
->> +{
->> +	struct hdac_bus *bus = sof_to_bus(sdev);
->> +	int ret;
->> +
->> +	/* turn display power on */
->> +	ret = hda_codec_i915_get(sdev);
-> OK, we need to change this one for following my latest HD-audio PM
-> refactoring...
-Yes, it's already tracked as an item to fix. We might change the name 
-even since there is no reference count any longer, so something like 
-hda_codec_i915_power would make more sense.
->
->> +	if (ret < 0) {
->> +		dev_err(bus->dev, "error: cannot turn on display power on i915 after resume\n");
->> +		return ret;
->> +	}
->> +
->> +	/* init hda controller and power dsp up */
->> +	return hda_resume(sdev);
->> +}
->> +
->> +int hda_dsp_runtime_resume(struct snd_sof_dev *sdev)
->> +{
->> +	/* init hda controller and power dsp up */
->> +	return hda_resume(sdev);
->> +}
-> But why can't runtime PM turn on/off the display power?
-I think it does? We'll double-check this.
+Curiously.. Nothing needs to be done in the McBSP driver for the droid
+4 TDM configuration AFAIK.
+
+The CPCAP PMIC is the clock master, and only the PMIC registers need to
+be configured in this case for the timeslot to switch between codecs
+connected to McBSP3.
+
+> imho the 'only' thing is to implement the set_tdm_slot callback for the
+> McBSP DAI. In DT you would have single card with two dai_link section
+> and each section would set different tdm slots to use for the codecs
+> listening on different slots.
+> 
+> There is one issue for sure with this setup: the two PCM can not be used
+> at the same time. But we have one DMA channel so if you would open both
+> the PCM stream need to be set up in a way to match with the HW or create
+> a asound.conf file to do some mapping.
+
+Yes in the droid 4 TDM case only one device can be used at a time
+and all that configuration is done in the PMIC codec .set_tdm_slot
+function.
+
+I think it's possible to do more complex configurations where McBSP
+is the master and would implement a .set_tdm_slot function. But I
+don't know anything about that and I'm not aware of any such use
+cases in the mainline kernel.
+
+Regards,
+
+Tony
