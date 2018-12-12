@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 01/21] ASoC: SOF: Intel: Add BYT,
- CHT and BSW DSP HW support.
-Date: Wed, 12 Dec 2018 08:45:58 -0600
-Message-ID: <9dd7358b-45e9-2d66-09b5-1ce17aa592eb@linux.intel.com>
+Subject: Re: [PATCH 06/21] ASoC: SOF: Intel: Add Intel specific
+ HDA DSP HW operations
+Date: Wed, 12 Dec 2018 08:48:42 -0600
+Message-ID: <3b47644d-262b-d6a8-d90d-bacc942b3770@linux.intel.com>
 References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
- <20181211213029.28801-2-pierre-louis.bossart@linux.intel.com>
- <1d099b6a-40f5-689f-e2bd-2e5345893310@sakamocchi.jp>
+ <20181211213029.28801-7-pierre-louis.bossart@linux.intel.com>
+ <s5hpnu7j6is.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1d099b6a-40f5-689f-e2bd-2e5345893310@sakamocchi.jp>
+In-Reply-To: <s5hpnu7j6is.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,48 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, Keyon Jie <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review.
+Thanks for the reviews Takashi.
 
->> +++ b/sound/soc/sof/intel/shim.h
->> @@ -0,0 +1,159 @@
->> ...
->> +extern struct snd_sof_dsp_ops sof_byt_ops;
->> +extern struct snd_sof_dsp_ops sof_cht_ops;
->
-> These two symbols are found in this patch.
->
->> +extern struct snd_sof_dsp_ops sof_hsw_ops;
->
-> This symbol is added in second patch and this first patch has
-> no reference to it.
->
->> +extern struct snd_sof_dsp_ops sof_bdw_ops;
->
-> This symbol is added in third patch and this first patch has
-> no reference to it.
->
+On 12/12/18 6:04 AM, Takashi Iwai wrote:
+> On Tue, 11 Dec 2018 22:30:14 +0100,
+> Pierre-Louis Bossart wrote:
+>> +int hda_dsp_resume(struct snd_sof_dev *sdev)
+>> +{
+>> +	struct hdac_bus *bus = sof_to_bus(sdev);
+>> +	int ret;
 >> +
->> +#endif
+>> +	/* turn display power on */
+>> +	ret = hda_codec_i915_get(sdev);
+> OK, we need to change this one for following my latest HD-audio PM
+> refactoring...
+Yes, it's already tracked as an item to fix. We might change the name 
+even since there is no reference count any longer, so something like 
+hda_codec_i915_power would make more sense.
 >
-> I think it better to add these extern declarations when adding
-> corresponding symbols (Of course no issues as is).
-Yes, that's no big deal. It won't break as is though since the build is 
-added in the last patch.
->
-> Furthermore, if you have no plan to change contents of these symbols in
-> kernel run time, it's better to have 'const' qualifier to locate the
-> symbol to readonly section. However, user of these symbols is machine
-> driver and you have a plan to implement it later. They can get 'const'
-> when you work for arrangement of existent/new codes.
-Good point, I don't think the ops are changed, ever. I'll double-check 
-and change if indeed this is the case, thanks for the suggestion.
->
-> In this meaning, it might be good to add a new member to 'struct
-> snd_soc_acpi_mach' for new drivers to refer to the const ops, then
-> 'pdata' member is used from the existent drivers.
-Sorry, I don't get your point. the ops structure is included in the 
-sof_ops_table, not the snd_soc_acpi_mach.
+>> +	if (ret < 0) {
+>> +		dev_err(bus->dev, "error: cannot turn on display power on i915 after resume\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* init hda controller and power dsp up */
+>> +	return hda_resume(sdev);
+>> +}
+>> +
+>> +int hda_dsp_runtime_resume(struct snd_sof_dev *sdev)
+>> +{
+>> +	/* init hda controller and power dsp up */
+>> +	return hda_resume(sdev);
+>> +}
+> But why can't runtime PM turn on/off the display power?
+I think it does? We'll double-check this.
