@@ -1,17 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 02/14] ASoC: SOF: Add Sound Open
- Firmware KControl support
-Date: Wed, 12 Dec 2018 14:18:50 -0600
-Message-ID: <6b05e327-8c6e-1424-432d-ed3d9a2c456b@linux.intel.com>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-3-pierre-louis.bossart@linux.intel.com>
- <20181211222308.GH10650@smile.fi.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: Fix SND_SOC_EUKREA_TLV320 build
+	error on i.MX8M
+Date: Wed, 12 Dec 2018 18:40:53 -0200
+Message-ID: <1544647253-3806-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20181211222308.GH10650@smile.fi.intel.com>
-Content-Language: en-US
+Received: from mail-qt1-f196.google.com (mail-qt1-f196.google.com
+ [209.85.160.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48350267C06
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2018 21:40:57 +0100 (CET)
+Received: by mail-qt1-f196.google.com with SMTP id v11so22104225qtc.2
+ for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2018 12:40:56 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, shawnguo@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4+ICsJbWF4X3NpemUgPSAoYmUtPm1heCA8IG1heF9zaXplKSA/IGJlLT5tYXggOiBtYXhfc2l6
-ZTsKPiBtaW4oKSAvIG1heCgpID8KPgpUaGUgdXNlIG9mIG1pbigpIGFuZCBtaW4zKCkgc2VlbXMg
-dG8gZ2VuZXJhdGUgdG9ucyBvZiBzcGFyc2Ugd2FybmluZ3MgCihzZWUgYmVsb3cpLCBzbyBJJ2xs
-IGxlYXZlIHRoZSBjb2RlIHdpdGggYW4gZXhwbGljaXQgdGVzdCBhbmQgYSBjb21tZW50IApzdGF0
-aW5nIHdoeS4KCnNwYXJzZSBoZWxwZWQgdXMgZmluZCBxdWl0ZSBhIGZldyBpc3N1ZXMgd2l0aCBl
-bmRpYW5lc3MsIGNvbnN0LCBpb21lbSAKcXVhbGlmaWVycywgSSdkIGxpa2UgdG8ga2VlcCBpdCBx
-dWlldCBvbiBub24taXNzdWVzLgoKIMKgIENIRUNLwqDCoCBzb3VuZC9zb2Mvc29mL2NvbnRyb2wu
-Ywpzb3VuZC9zb2Mvc29mL2NvbnRyb2wuYzozMDA6MjA6IHdhcm5pbmc6IGV4cHJlc3Npb24gdXNp
-bmcgc2l6ZW9mKHZvaWQpCnNvdW5kL3NvYy9zb2YvY29udHJvbC5jOjMwMDoyMDogd2FybmluZzog
-ZXhwcmVzc2lvbiB1c2luZyBzaXplb2Yodm9pZCkKc291bmQvc29jL3NvZi9jb250cm9sLmM6Mzk2
-OjIwOiB3YXJuaW5nOiBleHByZXNzaW9uIHVzaW5nIHNpemVvZih2b2lkKQpzb3VuZC9zb2Mvc29m
-L2NvbnRyb2wuYzozOTY6MjA6IHdhcm5pbmc6IGV4cHJlc3Npb24gdXNpbmcgc2l6ZW9mKHZvaWQp
-CnNvdW5kL3NvYy9zb2YvY29udHJvbC5jOjM5NjoyMDogd2FybmluZzogZXhwcmVzc2lvbiB1c2lu
-ZyBzaXplb2Yodm9pZCkKc291bmQvc29jL3NvZi9jb250cm9sLmM6Mzk2OjIwOiB3YXJuaW5nOiBl
-eHByZXNzaW9uIHVzaW5nIHNpemVvZih2b2lkKQpzb3VuZC9zb2Mvc29mL2NvbnRyb2wuYzozOTY6
-MjA6IHdhcm5pbmc6IGV4cHJlc3Npb24gdXNpbmcgc2l6ZW9mKHZvaWQpCnNvdW5kL3NvYy9zb2Yv
-Y29udHJvbC5jOjM5NjoyMDogd2FybmluZzogZXhwcmVzc2lvbiB1c2luZyBzaXplb2Yodm9pZCkK
-c291bmQvc29jL3NvZi9jb250cm9sLmM6Mzk2OjIwOiB3YXJuaW5nOiBleHByZXNzaW9uIHVzaW5n
-IHNpemVvZih2b2lkKQpzb3VuZC9zb2Mvc29mL2NvbnRyb2wuYzozOTY6MjA6IHdhcm5pbmc6IGV4
-cHJlc3Npb24gdXNpbmcgc2l6ZW9mKHZvaWQpCnNvdW5kL3NvYy9zb2YvY29udHJvbC5jOjM5Njoy
-MDogd2FybmluZzogZXhwcmVzc2lvbiB1c2luZyBzaXplb2Yodm9pZCkKc291bmQvc29jL3NvZi9j
-b250cm9sLmM6Mzk2OjIwOiB3YXJuaW5nOiBleHByZXNzaW9uIHVzaW5nIHNpemVvZih2b2lkKQpz
-b3VuZC9zb2Mvc29mL2NvbnRyb2wuYzozOTY6MjA6IHdhcm5pbmc6IGV4cHJlc3Npb24gdXNpbmcg
-c2l6ZW9mKHZvaWQpCnNvdW5kL3NvYy9zb2YvY29udHJvbC5jOjM5NjoyMDogd2FybmluZzogZXhw
-cmVzc2lvbiB1c2luZyBzaXplb2Yodm9pZCkKc291bmQvc29jL3NvZi9jb250cm9sLmM6Mzk2OjIw
-OiB3YXJuaW5nOiBleHByZXNzaW9uIHVzaW5nIHNpemVvZih2b2lkKQpzb3VuZC9zb2Mvc29mL2Nv
-bnRyb2wuYzozOTY6MjA6IHdhcm5pbmc6IGV4cHJlc3Npb24gdXNpbmcgc2l6ZW9mKHZvaWQpCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+eukrea-tlv320.c machine driver runs on non-DT platforms
+and include <asm/mach-types.h> header file in order to be able
+to use some machine_is_eukrea_xxx() macros.
+
+Since commit 0e1532bfecf4 ("arm64: add basic Kconfig symbols for i.MX8")
+the ARCH_MXC symbol is visible on ARM64 too.
+
+Building it for ARM64 causes the following build error:
+
+sound/soc/fsl/eukrea-tlv320.c:28:10: fatal error: asm/mach-types.h: No such file or directory
+
+Avoid this error by not allowing to build the SND_SOC_EUKREA_TLV320
+driver when ARM64 is selected.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Hi Mark,
+
+Commit commit 0e1532bfecf4 ("arm64: add basic Kconfig symbols for i.MX8")
+is present in Shawn's tree, so maybe this should be taken by Shawn?
+
+ sound/soc/fsl/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 6ec19fb..2e75b5b 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -221,7 +221,7 @@ config SND_SOC_PHYCORE_AC97
+ 
+ config SND_SOC_EUKREA_TLV320
+ 	tristate "Eukrea TLV320"
+-	depends on ARCH_MXC && I2C
++	depends on ARCH_MXC && !ARM64 && I2C
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+-- 
+2.7.4
