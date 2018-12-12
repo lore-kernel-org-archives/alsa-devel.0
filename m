@@ -1,16 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v3 09/14] ASoC: SOF:
- Add firmware loader support
-Date: Wed, 12 Dec 2018 10:06:10 -0600
-Message-ID: <3346a045-20cb-a664-2339-e1a9ffb6100d@linux.intel.com>
+Subject: Re: [PATCH v3 11/14] ASoC: SOF: Add PM support
+Date: Wed, 12 Dec 2018 10:08:01 -0600
+Message-ID: <11a26786-7d1a-02d6-4217-4780edbc2911@linux.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
- <s5htvjjj8ei.wl-tiwai@suse.de>
+ <20181211212318.28644-12-pierre-louis.bossart@linux.intel.com>
+ <s5hsgz3j809.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5htvjjj8ei.wl-tiwai@suse.de>
+In-Reply-To: <s5hsgz3j809.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,67 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 12/12/18 5:23 AM, Takashi Iwai wrote:
-> On Tue, 11 Dec 2018 22:23:13 +0100,
+On 12/12/18 5:32 AM, Takashi Iwai wrote:
+> On Tue, 11 Dec 2018 22:23:15 +0100,
 > Pierre-Louis Bossart wrote:
->> +/* generic module parser for mmaped DSPs */
->> +int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
->> +				struct snd_sof_mod_hdr *module)
->> +{
->> +	struct snd_sof_blk_hdr *block;
->> +	int count;
->> +	u32 offset;
->> +
->> +	dev_dbg(sdev->dev, "new module size 0x%x blocks 0x%x type 0x%x\n",
->> +		module->size, module->num_blocks, module->type);
->> +
->> +	block = (void *)module + sizeof(*module);
->> +
->> +	for (count = 0; count < module->num_blocks; count++) {
-> Need a sanity check that it won't go beyond the actual firmware size.
-> User may pass a malicious module data, e.g. with extra large
-> num_blocks.
-Good point, will check.
+>> +#define RUNTIME_PM 1
+> What's this?  This seems used in snd_soc_runtime_suspend() and
+> _resume().  But it's a just normal boolean flag, no?
+
+yes, it's useless. I saw it in one of my checks and forgot about it, 
+will fix.
+
 >
->> +		if (block->size == 0) {
->> +			dev_warn(sdev->dev,
->> +				 "warning: block %d size zero\n", count);
->> +			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
->> +				 block->type, block->offset);
->> +			continue;
+>> +static void sof_suspend_streams(struct snd_sof_dev *sdev)
+>> +{
+>> +	struct snd_sof_pcm *spcm;
+>> +	struct snd_pcm_substream *substream;
+>> +	int dir;
+>> +
+>> +	/* suspend all running streams */
+>> +	list_for_each_entry(spcm, &sdev->pcm_list, list) {
+>> +
+>> +		mutex_lock(&spcm->mutex);
+>> +
+>> +		/* suspend running playback stream */
+>> +		dir = SNDRV_PCM_STREAM_PLAYBACK;
+>> +		substream = spcm->stream[dir].substream;
+>> +
+>> +		if (substream && substream->runtime) {
+>> +
+>> +			snd_pcm_suspend(substream);
+>> +
+>> +			/*
+>> +			 * set restore_stream so that hw_params can be
+>> +			 * restored during resume
+>> +			 */
+>> +			spcm->restore_stream[dir] = 1;
 >> +		}
 >> +
->> +		switch (block->type) {
->> +		case SOF_BLK_IMAGE:
->> +		case SOF_BLK_CACHE:
->> +		case SOF_BLK_REGS:
->> +		case SOF_BLK_SIG:
->> +		case SOF_BLK_ROM:
->> +			continue;	/* not handled atm */
->> +		case SOF_BLK_TEXT:
->> +		case SOF_BLK_DATA:
->> +			offset = block->offset;
->> +			break;
->> +		default:
->> +			dev_err(sdev->dev, "error: bad type 0x%x for block 0x%x\n",
->> +				block->type, count);
->> +			return -EINVAL;
+>> +		/* suspend running capture stream */
+>> +		dir = SNDRV_PCM_STREAM_CAPTURE;
+>> +		substream = spcm->stream[dir].substream;
+>> +
+>> +		if (substream && substream->runtime) {
+>> +
+>> +			snd_pcm_suspend(substream);
+>> +
+>> +			/*
+>> +			 * set restore_stream so that hw_params can be
+>> +			 * restored during resume
+>> +			 */
+>> +			spcm->restore_stream[dir] = 1;
 >> +		}
->> +
->> +		dev_dbg(sdev->dev,
->> +			"block %d type 0x%x size 0x%x ==>  offset 0x%x\n",
->> +			count, block->type, block->size, offset);
->> +
->> +		snd_sof_dsp_block_write(sdev, offset,
->> +					(void *)block + sizeof(*block),
->> +					block->size);
->> +
->> +		/* next block */
->> +		block = (void *)block + sizeof(*block) + block->size;
-> This may lead to an unaligned access.
-> Also how is the endianess guaranteed?
-Will check, valid points.
+> Both playback and capture do the same thing, so this can be a loop of
+> dir.
+yes, valid point, will fix.
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
