@@ -1,149 +1,104 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [alsa-devel] [PATCH 0/2] Graph fixes for using multiple
-        endpoints per port
-Date: Wed, 12 Dec 2018 07:27:25 -0800
-Message-ID: <20181212152725.GE6707@atomide.com>
-References: <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
- <20181211045220.GI6707@atomide.com>
- <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
- <20181211053536.GJ6707@atomide.com>
- <87wooga9an.wl-kuninori.morimoto.gx@renesas.com>
- <20181211141649.GL6707@atomide.com>
- <87ftv33bpg.wl-kuninori.morimoto.gx@renesas.com>
- <20181212001950.GX6707@atomide.com>
- <877egf33m9.wl-kuninori.morimoto.gx@renesas.com>
- <87k1kfs0u5.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v3 05/14] ASoC: SOF:
+ Add PCM operations support
+Date: Wed, 12 Dec 2018 09:29:23 -0600
+Message-ID: <0e727a47-26b1-7772-1a8c-ca49a0e805af@linux.intel.com>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-6-pierre-louis.bossart@linux.intel.com>
+ <s5hd0q7uq5l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87k1kfs0u5.wl-kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <s5hd0q7uq5l.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> [181212 06:52]:
-> 
-> Hi Tony, again
-> 
-> > > > 	https://patchwork.kernel.org/patch/10712877/
-> > > 
-> > > Hmm, so do you have multiple separate ports at the "&sound" node
-> > > hardware? If so then yeah multiple ports make sense.
-> > >
-> > > But if you only a single physical (I2S?) port at the
-> > > "&sound" node hardware, then IMO you should only have one
-> > > port and multiple endpoints there according to the graph.txt
-> > > binding doc.
-> > > 
-> > > In my McBSP case there is only a single physical I2S port
-> > > that can be TDM split into timeslots.
-> > 
-> > Mine has 4 DAIs. Each DAI can output 2ch.
-> > These will be merged and wil be 8ch TDM and goes to Codec.
-> > But hmm.. it is 4 DAIs, but 1 "physical" interface...
-> > 
-> > So, your patch seems correct, but will breaks DPCM...
-> > I will confirm it.
-> 
-> I thought "port" = "DAI", but yeah, "port" = "physical interface".
 
-OK good to hear :)
-
-> Then, my issue is that we can't judge DAI size from DT.
-> For example, MIXer case, 2 CPU DAIs are connected to 1 Codec.
-> 
-> 	DAI0 --- CPU --- Codec
-> 	DAI1 /
-> 
-> In this case, CPU side needs 2 DAIs,
-> Codec side needs 1 DAI only.
-
-Oh so the other way around compared to my use case. Hmm.
-
-> For both CPU/Codec case, OF graph will be like below,
-> and we can't judge DAIs size from this.
-> 
-> 	port {
-> 		ep0: endpint@0 {
-> 			remote-endpoint = <xxx>;
-> 		};
-> 		ep1: endpint@1 {
-> 			remote-endpoint = <xxx>;
-> 		};
-> 	}
-
-Hmm I too need to add secondary DAIs for McBSP in addition to the
-primary DAI controlling the McBSP hardware resources.
-
-> To solve this issue, we need to use "reg" for it.
-> Then, we can get correct DAI ID.
-
-Hmm yeah maybe. Just to think of other options, maybe also the
-#size-cells could be used?
-
-As the binding allows adding #address-cells and #size-cells to
-the port node.. Usually if you refer a subnode of a device you
-just use #address=cells = <2> where the second field would be for
-the offset. So maybe this could be used for 1 DAI this way:
-
- 	/* Codec has 1 DAI */
- 	Codec {
- 		port {
-			#address-cells = <2>;
-			#size-cells = <1>;
-
- 			ep: endpoint {
- 				remote-endpoint = <xxx>;
- 			};
- 		};
- 	}
-
-Where this codec would then need to be referenced with just an
-additional instance number:
-
-foo = <&ep 0>;
-bar = <&ep 1>;
-...
-
-And then for a codec with 2 DAIs the usual #size-cells = <1>
-would be used with numbered endpoints for each DAI the way
-you already described:
-
- 	port {
- 		ep0: endpint@0 {
- 			remote-endpoint = <xxx>;
- 		};
- 		ep1: endpint@1 {
- 			remote-endpoint = <xxx>;
- 		};
- 	}
-
-Do you think that would work?
-
-> Can you agree this ? we need extra patch,
-> but it can solve your / my problem.
-
-Yes it's starting to make sense :)
-
-> Now I'm posting patches to merging
-> "audio-graph-card" and "DPCM ver audio-graph-card".
-> If you are OK, I will include above solution patch
-> to this patch-set.
-
-Sure, maybe please first check if the #size-cells = <2>
-option would work though?
-
-> Current audio-graph doesn't expect your use-case,
-> and I want to avoid conflict.
-> 
-> So, "merged" audio-graph should solve your use-case.
-> If you can agree about this, I will post patch-set.
-
-Yeah I agree, just still wondering what might be the best
-way to represent 1 DAI vs 2 DAIs.
-
-Regards,
-
-Tony
+On 12/12/18 2:04 AM, Takashi Iwai wrote:
+> On Tue, 11 Dec 2018 22:23:09 +0100,
+> Pierre-Louis Bossart wrote:
+>> +	/* number of pages should be rounded up */
+>> +	if (runtime->dma_bytes % PAGE_SIZE)
+>> +		pcm.params.buffer.pages = (runtime->dma_bytes / PAGE_SIZE) + 1;
+>> +	else
+>> +		pcm.params.buffer.pages = runtime->dma_bytes / PAGE_SIZE;
+> There is likely some nice macro for this :)
+Yes, will fix.
+>
+>> +	/* firmware already configured host stream */
+>> +	ret = snd_sof_pcm_platform_hw_params(sdev,
+>> +					     substream,
+>> +					     params,
+>> +					     &pcm.params);
+>> +	dev_dbg(sdev->dev, "stream_tag %d", pcm.params.stream_tag);
+> This error can be ignored?
+will double-check.
+>
+>> +	/* send IPC to the DSP */
+>> +	ret = sof_ipc_tx_message(sdev->ipc, pcm.hdr.cmd, &pcm, sizeof(pcm),
+>> +				 &ipc_params_reply, sizeof(ipc_params_reply));
+> This error value isn't evaluated immediately but passed until the
+> last.  Is it intentional?
+Not sure, will double-check. Now that I read the code again this looks 
+odds, and if it was intentional then we need an explicit comment. Thanks 
+for the sighting.
+>
+>> +	/* validate offset */
+>> +	posn_offset = ipc_params_reply.posn_offset;
+>> +
+>> +	/* check if offset is overflow or it is not aligned */
+>> +	if (posn_offset > sdev->stream_box.size ||
+>> +	    posn_offset % sizeof(struct sof_ipc_stream_posn) != 0) {
+>> +		dev_err(sdev->dev, "error: got wrong posn offset 0x%x for PCM %d\n",
+>> +			posn_offset, ret);
+>> +		return ret;
+> Here you return an error after checking more things.
+>
+>> +	}
+>> +	spcm->posn_offset[substream->stream] =
+>> +		sdev->stream_box.offset + posn_offset;
+>> +
+>> +	/* save pcm hw_params */
+>> +	memcpy(&spcm->params[substream->stream], params, sizeof(*params));
+>> +
+>> +	return ret;
+> Even here returns an error after saving as if done properly.
+will double-check this entire sequence.
+>
+>
+>> +static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+>> +{
+> ....
+>> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>> +
+>> +		/* check if the stream hw_params needs to be restored */
+>> +		if (spcm->restore_stream[substream->stream]) {
+>> +
+>> +			/* restore hw_params */
+>> +			ret = sof_restore_hw_params(substream, spcm, sdev);
+> This calls the hw_params that is supposed to be non-atomic.
+>
+>> +	snd_sof_pcm_platform_trigger(sdev, substream, cmd);
+>> +
+>> +	/* send IPC to the DSP */
+>> +	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
+>> +				 sizeof(stream), &reply, sizeof(reply));
+>> +
+>> +	return ret;
+> ... so the whole trigger action is non-atomic PCM only?
+Not sure if I fully understand your point here. The trigger does indeed 
+need an IPC to proceed, but the front-ends are marked as such with the 
+.nonatomic field set to true. Not sure how different this is from 
+existing atom/sst or Skylake drivers.
