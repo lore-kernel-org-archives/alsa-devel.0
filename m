@@ -1,26 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/2] Graph fixes for using multiple
-	endpoints per port
-Date: Wed, 12 Dec 2018 15:05:16 +0200
-Message-ID: <01e3f547-318e-8988-b48a-e10c0a2904d6@ti.com>
-References: <20181211020557.61783-1-tony@atomide.com>
- <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
- <20181211045220.GI6707@atomide.com>
- <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
- <20181211053536.GJ6707@atomide.com>
- <87wooga9an.wl-kuninori.morimoto.gx@renesas.com>
- <20181211141649.GL6707@atomide.com>
- <87ftv33bpg.wl-kuninori.morimoto.gx@renesas.com>
- <20181212001950.GX6707@atomide.com>
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+Subject: Re: [PATCH v3 05/14] ASoC: SOF: Add PCM operations
+	support
+Date: Wed, 12 Dec 2018 15:12:22 +0200
+Message-ID: <20181212131222.GQ10650@smile.fi.intel.com>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-6-pierre-louis.bossart@linux.intel.com>
+ <s5hd0q7uq5l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
- by alsa0.perex.cz (Postfix) with ESMTP id C81B6267C1A
- for <alsa-devel@alsa-project.org>; Wed, 12 Dec 2018 14:03:40 +0100 (CET)
-In-Reply-To: <20181212001950.GX6707@atomide.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <s5hd0q7uq5l.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,52 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xMi8yMDE4IDIuMTksIFRvbnkgTGluZGdyZW4gd3JvdGU6Cj4gKiBLdW5pbm9yaSBN
-b3JpbW90byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+IFsxODEyMTEgMjM6MTZd
-Ogo+Pgo+PiBIaSBUb255Cj4+Cj4+PiBUaGUgaXNzdWUgSSBoYXZlIHdpdGggdGhhdCBpdCBkb2Vz
-IG5vdCB0aGVuIGZvbGxvdyB0aGUgYmluZGluZyBkb2MgOikKPj4+Cj4+PiBTZWUgdGhpcyBwYXJ0
-IGluIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ncmFwaC50eHQ6Cj4+Pgo+Pj4g
-ICJJZiBhIHNpbmdsZSBwb3J0IGlzIGNvbm5lY3RlZCB0byBtb3JlIHRoYW4gb25lIHJlbW90ZSBk
-ZXZpY2UsIGFuCj4+PiAgJ2VuZHBvaW50JyBjaGlsZCBub2RlIG11c3QgYmUgcHJvdmlkZWQgZm9y
-IGVhY2ggbGluay4iCj4+Pgo+Pj4gSXNuJ3QgdGhlIEkyQyBURE0gY2FzZSB0aGUgc2FtZSBhcyAi
-c2luZ2xlIHBvcnQgY29ubmVjZWN0ZWQgdG8KPj4+IG1vcmUgdGhhbiBvbmUgcmVtb3RlIGRldmlj
-ZSIgcmF0aGVyIHRoYW4gbXVsdGlwbGUgcG9ydHM/Cj4+Pgo+Pj4gVG8gbWUgaXQgc2VlbXMgd2Un
-cmUgY3VycmVudGx5IG9ubHkgaGFuZGxpbmcgdGhlIG11bHRpcGxlIHBvcnRzCj4+PiBjYXNlLCBh
-bmQgbm90IG11bHRpcGxlIGVuZHBvaW50cyBmb3IgYSBwb3J0LiBPdGhlciB0aGFuIGZpeGluZwo+
-Pj4gdGhhdCwgdGhpbmdzIHNob3VsZCB3b3JrIGp1c3QgYXMgZWFybGllciB3aXRoIG15IHR3byBw
-YXRjaGVzLgo+Pj4gVGhhdCBpcyB1bmxlc3MgSSBhY2NpZGVudGFsbHkgYnJva2Ugc29tZXRoaW5n
-Lgo+Pj4KPj4+IFNvIGp1c3QgdHJ5aW5nIHRvIGNvcnJlY3QgdGhlIGJpbmRpbmcgdXNhZ2UuIE9y
-IGFtIEkgbWlzc2luZwo+Pj4gc29tZXRoaW5nPwo+Pgo+PiBJJ20gbm90IDEwMCUgc3VyZSB5b3Vy
-ICJJMkMgVERNIGNhc2UiLCBidXQgeW91IGNhbiBjaGVjawo+PiBtdWx0aS1lbmRwb2ludCBzYW1w
-bGUgb24gIkV4YW1wbGU6IE11bHRpIERBSSB3aXRoIERQQ00iIGJlbG93Lgo+PiAicGNtMzE2OGEi
-IGlzIHVzaW5nIG11bHRpLWVuZHBvaW50Lgo+PiBEb2VzIHRoaXMgaGVscCB5b3UgPwo+Pgo+PiAJ
-aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMDcxMjg3Ny8KPiAKPiBIbW0sIHNv
-IGRvIHlvdSBoYXZlIG11bHRpcGxlIHNlcGFyYXRlIHBvcnRzIGF0IHRoZSAiJnNvdW5kIiBub2Rl
-Cj4gaGFyZHdhcmU/IElmIHNvIHRoZW4geWVhaCBtdWx0aXBsZSBwb3J0cyBtYWtlIHNlbnNlLgo+
-IAo+IEJ1dCBpZiB5b3Ugb25seSBhIHNpbmdsZSBwaHlzaWNhbCAoSTJTPykgcG9ydCBhdCB0aGUK
-PiAiJnNvdW5kIiBub2RlIGhhcmR3YXJlLCB0aGVuIElNTyB5b3Ugc2hvdWxkIG9ubHkgaGF2ZSBv
-bmUKPiBwb3J0IGFuZCBtdWx0aXBsZSBlbmRwb2ludHMgdGhlcmUgYWNjb3JkaW5nIHRvIHRoZSBn
-cmFwaC50eHQKPiBiaW5kaW5nIGRvYy4KPiAKPiBJbiBteSBNY0JTUCBjYXNlIHRoZXJlIGlzIG9u
-bHkgYSBzaW5nbGUgcGh5c2ljYWwgSTJTIHBvcnQKPiB0aGF0IGNhbiBiZSBURE0gc3BsaXQgaW50
-byB0aW1lc2xvdHMuCgpTbyB3aGF0IGlzIG1pc3NpbmcgZnJvbSB0aGUgTWNCU1AgZHJpdmVyIGlz
-IHRvIGNvbmZpZ3VyZSB0aGUgVERNLiBXZQpuZXZlciBoYWQgYSBoYXJkd2FyZSB3aGljaCB3b3Vs
-ZCByZXF1aXJlIGl0IHNvIGl0IGlzIF9ub3RfIGltcGxlbWVudGVkLgoKaW1obyB0aGUgJ29ubHkn
-IHRoaW5nIGlzIHRvIGltcGxlbWVudCB0aGUgc2V0X3RkbV9zbG90IGNhbGxiYWNrIGZvciB0aGUK
-TWNCU1AgREFJLiBJbiBEVCB5b3Ugd291bGQgaGF2ZSBzaW5nbGUgY2FyZCB3aXRoIHR3byBkYWlf
-bGluayBzZWN0aW9uCmFuZCBlYWNoIHNlY3Rpb24gd291bGQgc2V0IGRpZmZlcmVudCB0ZG0gc2xv
-dHMgdG8gdXNlIGZvciB0aGUgY29kZWNzCmxpc3RlbmluZyBvbiBkaWZmZXJlbnQgc2xvdHMuCgpU
-aGVyZSBpcyBvbmUgaXNzdWUgZm9yIHN1cmUgd2l0aCB0aGlzIHNldHVwOiB0aGUgdHdvIFBDTSBj
-YW4gbm90IGJlIHVzZWQKYXQgdGhlIHNhbWUgdGltZS4gQnV0IHdlIGhhdmUgb25lIERNQSBjaGFu
-bmVsIHNvIGlmIHlvdSB3b3VsZCBvcGVuIGJvdGgKdGhlIFBDTSBzdHJlYW0gbmVlZCB0byBiZSBz
-ZXQgdXAgaW4gYSB3YXkgdG8gbWF0Y2ggd2l0aCB0aGUgSFcgb3IgY3JlYXRlCmEgYXNvdW5kLmNv
-bmYgZmlsZSB0byBkbyBzb21lIG1hcHBpbmcuCgo+IAo+IFJlZ2FyZHMsCj4gCj4gVG9ueQo+IAoK
-LSBQw6l0ZXIKClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIs
-IDAwMTgwIEhlbHNpbmtpLgpZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFp
-a2thL0RvbWljaWxlOiBIZWxzaW5raQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On Wed, Dec 12, 2018 at 09:04:38AM +0100, Takashi Iwai wrote:
+> On Tue, 11 Dec 2018 22:23:09 +0100,
+> Pierre-Louis Bossart wrote:
+> > 
+> > +	/* number of pages should be rounded up */
+> > +	if (runtime->dma_bytes % PAGE_SIZE)
+> > +		pcm.params.buffer.pages = (runtime->dma_bytes / PAGE_SIZE) + 1;
+> > +	else
+> > +		pcm.params.buffer.pages = runtime->dma_bytes / PAGE_SIZE;
+> 
+> There is likely some nice macro for this :)
+
+DIV_ROUND_UP() ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
