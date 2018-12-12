@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 02/14] ASoC: SOF: Add Sound Open
- Firmware KControl support
-Date: Wed, 12 Dec 2018 09:01:25 -0600
-Message-ID: <e352861d-b34d-9ad2-ae16-6e51a52ce3d5@linux.intel.com>
+Subject: Re: [PATCH v3 04/14] ASoC: SOF: Add support for IPC IO
+ between DSP and Host
+Date: Wed, 12 Dec 2018 09:19:45 -0600
+Message-ID: <cbf58c2f-18fe-9963-a381-d92e80e8a8c5@linux.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-3-pierre-louis.bossart@linux.intel.com>
- <s5hftv3urib.wl-tiwai@suse.de>
+ <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
+ <s5hbm5rupjg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hftv3urib.wl-tiwai@suse.de>
+In-Reply-To: <s5hbm5rupjg.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,107 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Keyon Jie <yang.jie@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 12/12/18 1:35 AM, Takashi Iwai wrote:
-> On Tue, 11 Dec 2018 22:23:06 +0100,
-> Pierre-Louis Bossart wrote:
->> +int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
->> +		     struct snd_ctl_elem_value *ucontrol)
->> +{
-> ....
->> +	/* read back each channel */
->> +	for (i = 0; i < channels; i++)
->> +		ucontrol->value.integer.value[i] = cdata->chanv[i].value;
-> enum type needs to access ucontrol->value.enumerated.item[i].
-> This has a different size, hence using integer.value[] would be broken
-> on BE archs.
-oops. likely a copy/paste...
->
->> +int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
->> +		     struct snd_ctl_elem_value *ucontrol)
->> +{
-> ....
->> +	/* update each channel */
->> +	for (i = 0; i < channels; i++)
->> +		cdata->chanv[i].value = ucontrol->value.integer.value[i];
-> Ditto.
-same here
->
->> +int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
->> +		      struct snd_ctl_elem_value *ucontrol)
->> +{
-> ....
->> +	size = data->size + sizeof(*data);
->> +	if (size > be->max) {
->> +		dev_err(sdev->dev, "error: DSP sent %zu bytes max is %d\n",
->> +			size, be->max);
->> +		ret = -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +	/* copy back to kcontrol */
->> +	memcpy(ucontrol->value.bytes.data, data, size);
-> I *hope* that the data size max was already examined not to exceed
-> ucontrol data array size beforehand.  But a sanity check to catch a
-> buffer overflow here won't hurt.
-> Ditto for *_put().
-i think we do just that in the 'if' case just above the memcpy, but 
-we'll double-check.
->
->> +int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
->> +			  const unsigned int __user *binary_data,
->> +			  unsigned int size)
->> +{
->> +	struct soc_bytes_ext *be =
->> +		(struct soc_bytes_ext *)kcontrol->private_value;
->> +	struct snd_sof_control *scontrol = be->dobj.private;
->> +	struct snd_sof_dev *sdev = scontrol->sdev;
->> +	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
->> +	struct snd_ctl_tlv header;
->> +	struct snd_ctl_tlv __user *tlvd =
->> +		(struct snd_ctl_tlv __user *)binary_data;
-> Don't drop const.
-
-Ah, I added this cast to make a sparse warning go away, not sure why the 
-const was removed.
-
-I'll double-check again, thanks.
-
->
->> +	int ret;
->> +	int err;
->> +	int max_size = SOF_IPC_MSG_MAX_SIZE -
->> +		sizeof(const struct sof_ipc_ctrl_data);
->> +
->> +	ret = pm_runtime_get_sync(sdev->dev);
->> +	if (ret < 0) {
->> +		dev_err(sdev->dev, "error: bytes_ext put failed to resume %d\n",
->> +			ret);
->> +		return ret;
->> +	}
->> +
->> +	/* The beginning of bytes data contains a header from where
->> +	 * the length (as bytes) is needed to know the correct copy
->> +	 * length of data from tlvd->tlv.
->> +	 */
->> +	if (copy_from_user(&header, tlvd, sizeof(const struct snd_ctl_tlv))) {
->> +		ret = -EFAULT;
->> +		goto out;
->> +	}
->> +	/* The maximum length that can be copied is limited by IPC max
->> +	 * length and topology defined length for ext bytes control.
->> +	 */
->> +	max_size = (be->max < max_size) ? be->max : max_size;
->> +	if (header.length > max_size) {
->> +		dev_err(sdev->dev, "error: Bytes data size %d exceeds max %d.\n",
->> +			header.length, max_size);
->> +		ret = -EINVAL;
->> +		goto out;
-> Here user can pass a malicious data, and printing the error at each
-> time would flood the kernel log.  The error message can be dropped or
-> make debug, or use ratelimited version.
-> Ditto for the rest checks.
-Good point, we'll fix this.
+Cj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvZi9jb250cm9sLmggYi9pbmNsdWRlL3Nv
+dW5kL3NvZi9jb250cm9sLmgKPj4KPj4gKy8qIGdlbmVyaWMgY2hhbm5lbCBtYXBwZWQgdmFsdWUg
+ZGF0YSAqLwo+PiArc3RydWN0IHNvZl9pcGNfY3RybF92YWx1ZV9jaGFuIHsKPj4gKwl1aW50MzJf
+dCBjaGFubmVsOwkvKio8IGNoYW5uZWwgbWFwIC0gZW51bSBzb2ZfaXBjX2NobWFwICovCj4+ICsJ
+dWludDMyX3QgdmFsdWU7Cj4gQW55IHJlYXNvbiB0byBhdm9pZCBzMzIgYW5kIHUzMj8KPiBJZiB0
+aGlzIGlzIHN1cHBvc2VkIHRvIGJlIHNoYXJlZCB3aXRoIHVzZXItc3BhY2UgKG9yIHVzZXItc3Bh
+Y2UgbWF5Cj4gdXNlIHRoaXMgYXMgYSByZWZlcmVuY2Ugb2YgZGF0YSBzdHJ1Y3QpLCB3ZSBzaG91
+bGQgY29uc2lkZXIgcGxhY2luZyBpbgo+IHVhcGkgZGlyZWN0b3J5LCB0b28uCgppdCdzIGludGVu
+dGlvbmFsCgpUaGUgaW5jbHVkZXMgc2hhcmVkIHdpdGggdXNlcnNwYWNlIGFyZSBpbiBpbmNsdWRl
+L3VhcGkvc291bmQvc29mLgoKQWxsIHRoZSBmaWxlcyBpbiBpbmNsdWRlL3NvdW5kL3NvZiwgYW5k
+IHRoaXMgb25lIGluIHBhcnRpY3VsYXIsIGFyZSBtb3JlIApmb3IgaG9zdC1kc3AgSVBDLgoKSW4g
+dGhvc2UgdHdvIGNhc2VzLCB1YXBpIGFuZCBJUEMgZmlsZXMsIHdlIGRvbid0IHVzZSBzMzIgYW5k
+IHUzMi4gd2UgCmNvdWxkIG1vdmUgdGhpcyBkaXJlY3RvcnkgdW5kZXIgaW5jbHVkZS91YXBpL3Nv
+dW5kL3NvZi1pcGMgaWYgeW91IHByZWZlcj8KCj4KPgo+PiArLyogd2FpdCBmb3IgSVBDIG1lc3Nh
+Z2UgcmVwbHkgKi8KPj4gK3N0YXRpYyBpbnQgdHhfd2FpdF9kb25lKHN0cnVjdCBzbmRfc29mX2lw
+YyAqaXBjLCBzdHJ1Y3Qgc25kX3NvZl9pcGNfbXNnICptc2csCj4+ICsJCQl2b2lkICpyZXBseV9k
+YXRhKQo+PiArewo+PiArCXN0cnVjdCBzbmRfc29mX2RldiAqc2RldiA9IGlwYy0+c2RldjsKPj4g
+KwlzdHJ1Y3Qgc29mX2lwY19jbWRfaGRyICpoZHIgPSAoc3RydWN0IHNvZl9pcGNfY21kX2hkciAq
+KW1zZy0+bXNnX2RhdGE7Cj4+ICsJdW5zaWduZWQgbG9uZyBmbGFnczsKPj4gKwlpbnQgcmV0Owo+
+PiArCj4+ICsJLyogd2FpdCBmb3IgRFNQIElQQyBjb21wbGV0aW9uICovCj4+ICsJcmV0ID0gd2Fp
+dF9ldmVudF90aW1lb3V0KG1zZy0+d2FpdHEsIG1zZy0+aXBjX2NvbXBsZXRlLAo+PiArCQkJCSBt
+c2Vjc190b19qaWZmaWVzKElQQ19USU1FT1VUX01TRUNTKSk7Cj4+ICsKPj4gKwlzcGluX2xvY2tf
+aXJxc2F2ZSgmc2Rldi0+aXBjX2xvY2ssIGZsYWdzKTsKPiBTaW5jZSB0aGlzIG11c3QgYmUgYSBz
+bGVlcGFibGUgY29udGV4dCwgeW91IGNhbiBzYWZlbHkgdXNlCj4gc3Bpbl9sb2NrX2lycSgpIGhl
+cmUuCj4KPj4gKy8qIHNlbmQgSVBDIG1lc3NhZ2UgZnJvbSBob3N0IHRvIERTUCAqLwo+PiAraW50
+IHNvZl9pcGNfdHhfbWVzc2FnZShzdHJ1Y3Qgc25kX3NvZl9pcGMgKmlwYywgdTMyIGhlYWRlciwK
+Pj4gKwkJICAgICAgIHZvaWQgKm1zZ19kYXRhLCBzaXplX3QgbXNnX2J5dGVzLCB2b2lkICpyZXBs
+eV9kYXRhLAo+PiArCQkgICAgICAgc2l6ZV90IHJlcGx5X2J5dGVzKQo+PiArewo+PiArCXN0cnVj
+dCBzbmRfc29mX2RldiAqc2RldiA9IGlwYy0+c2RldjsKPj4gKwlzdHJ1Y3Qgc25kX3NvZl9pcGNf
+bXNnICptc2c7Cj4+ICsJdW5zaWduZWQgbG9uZyBmbGFnczsKPj4gKwo+PiArCXNwaW5fbG9ja19p
+cnFzYXZlKCZzZGV2LT5pcGNfbG9jaywgZmxhZ3MpOwo+IERpdHRvLiAgVGhpcyBvbmUgY2FsbHMg
+dHhfd2FpdF9kb25lKCkgbGF0ZXIuCj4KPiBJdCdzIGJldHRlciB0byBkZWZpbmUgbW9yZSBzdHJp
+Y3RseSB3aGljaCBvbmUgY2FuIGJlIGNhbGxlZCBmcm9tIHRoZQo+IHNwaW5sb2NrZWQgY29udGV4
+dCBhbmQgd2hpY2ggbm90LgoKVGhpcyBvbmUgaXMgZm9yIEtleW9uIGFuZCB0ZWFtLiBJJ3ZlIGFz
+a2VkIHRoYXQgcXVlc3Rpb24gbXVsdGlwbGUgdGltZXMgCmFuZCB3YXMgdG9sZCB0aGUgaXJxc2F2
+ZSB3YXMgbmVlZGVkLiBLZXlvbiwgY2FuIHlvdSBwbGVhc2UgY2hpbWUgaW4/Cgo+Cj4KPj4gK3Zv
+aWQgc25kX3NvZl9pcGNfZnJlZShzdHJ1Y3Qgc25kX3NvZl9kZXYgKnNkZXYpCj4+ICt7Cj4+ICsJ
+Y2FuY2VsX3dvcmtfc3luYygmc2Rldi0+aXBjLT50eF9rd29yayk7Cj4+ICsJY2FuY2VsX3dvcmtf
+c3luYygmc2Rldi0+aXBjLT5yeF9rd29yayk7Cj4+ICt9Cj4+ICtFWFBPUlRfU1lNQk9MKHNuZF9z
+b2ZfaXBjX2ZyZWUpOwo+IE5vdCBzcGVjaWZpYyB0byB0aGlzIGZ1bmN0aW9uIGJ1dCBhIGdlbmVy
+YWwgcXVlc3Rpb246Cj4gd2h5IG5vdCBFWFBPUlRfU1lNQk9MX0dQTCgpIGluIGdlbmVyYWwgaW4g
+dGhlIHdob2xlIFNPRiBjb2Rlcz8KCldlIHVzZSBhIGR1YWwgbGljZW5zZSAoY29waWVkIGJlbG93
+KQoKLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0zLUNsYXVzZSkK
+Ly8KLy8gVGhpcyBmaWxlIGlzIHByb3ZpZGVkIHVuZGVyIGEgZHVhbCBCU0QvR1BMdjIgbGljZW5z
+ZS7CoCBXaGVuIHVzaW5nIG9yCi8vIHJlZGlzdHJpYnV0aW5nIHRoaXMgZmlsZSwgeW91IG1heSBk
+byBzbyB1bmRlciBlaXRoZXIgbGljZW5zZS4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
