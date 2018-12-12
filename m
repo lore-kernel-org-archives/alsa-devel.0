@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 21/21] ASoC: SOF: Add Build support for SOF
- core and Intel drivers
-Date: Wed, 12 Dec 2018 08:51:50 -0600
-Message-ID: <a3f5697b-e849-7d7b-c9e1-c698ac18fcd4@linux.intel.com>
-References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
- <20181211213029.28801-22-pierre-louis.bossart@linux.intel.com>
- <s5hr2enj75g.wl-tiwai@suse.de>
+Subject: Re: [PATCH v3 01/14] ASoC: SOF: Add Sound Open
+ Firmware driver core
+Date: Wed, 12 Dec 2018 08:53:27 -0600
+Message-ID: <95239c7f-7449-fb51-c7a2-80d428ca9df1@linux.intel.com>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-2-pierre-louis.bossart@linux.intel.com>
+ <s5hefanuqrt.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hr2enj75g.wl-tiwai@suse.de>
+In-Reply-To: <s5hefanuqrt.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,72 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 12/12/18 5:50 AM, Takashi Iwai wrote:
-> On Tue, 11 Dec 2018 22:30:29 +0100,
+On 12/12/18 1:51 AM, Takashi Iwai wrote:
+> On Tue, 11 Dec 2018 22:23:05 +0100,
 > Pierre-Louis Bossart wrote:
->> --- /dev/null
->> +++ b/sound/soc/sof/Kconfig
->> @@ -0,0 +1,82 @@
->> +config SND_SOC_SOF_PCI
->> +	tristate
->> +
->> +config SND_SOC_SOF_ACPI
->> +	tristate
->> +
->> +config SND_SOC_SOF
->> +	tristate "Sound Open Firmware Support"
->> +	select SND_SOC_TOPOLOGY
->> +	help
->> +          This adds support for Sound Open Firmware (SOF). SOF is a free and
->> +	  generic open source audio DSP firmware for multiple devices.
->> +          Say Y if you have such a device that is supported by SOF.
->> +          If unsure select "N".
-> You can put
->    if SND_SOC_SOF
-> at this point.  This will reduce lots of "depends on SND_SOC_SOF"
-> lines.
-Yes. I tend to use 'ifs' and others 'depends on', will align.
->
->> +config SND_SOC_SOF_NOCODEC
->> +	tristate "SOF nocodec mode Support"
->> +	depends on SND_SOC_SOF
+>> +static int sof_probe(struct platform_device *pdev)
+>> +{
 > ....
->> +source "sound/soc/sof/intel/Kconfig"
->> +source "sound/soc/sof/xtensa/Kconfig"
-> ... the endif for SND_SOC_SOF can be put here, then both Kconfigs are
-> covered by SND_SOC_SOF condition.
+>> +	/* register any debug/trace capabilities */
+>> +	ret = snd_sof_dbg_init(sdev);
+>> +	if (ret < 0) {
+>> +		dev_err(sdev->dev, "error: failed to init DSP trace/debug %d\n",
+>> +			ret);
+>> +		goto dbg_err;
+>> +	}
+> So that's the problem Andy suggested.
+> snd_sof_dbg_init() returns an error for whatever reason, and this is
+> considered as a fatal error and the probe fails.  The error about
+> debugfs is no fatal error, it should continue.
 >
->
-> OTOH, the usage of if-block below is an overkill.
->
->> --- /dev/null
->> +++ b/sound/soc/sof/intel/Kconfig
-> ....
->> +if SND_SOC_SOF_HDA_COMMON
->> +
->> +config SND_SOC_SOF_HDA_LINK
->> +	bool "SOF support for HDA Links(HDA/HDMI)"
->> +	help
->> +          This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
->> +		  for Intel(R) platforms.
->> +          Say Y if you want to enble HDA links with SOF.
->> +          If unsure select "N".
->> +
->> +if SND_SOC_SOF_HDA_LINK
->> +config SND_SOC_SOF_HDA_AUDIO_CODEC
->> +	bool "SOF support for HDAudio codecs"
->> +	help
->> +          This adds support for HDAudio codecs with Sound Open Firmware
->> +		  for Intel(R) platforms.
->> +          Say Y if you want to enble HDAudio codecs with SOF.
->> +          If unsure select "N".
->> +endif ## SND_SOC_SOF_HDA_LINK
->> +
->> +endif ## SND_SOC_SOF_HDA_COMMON
-> For single items, just use depends on.  It's easier to read.
-Agree, we could remove the nested one. I tend to use 'ifs' when there 
-are two or more configs, here it's not really needed.
+> Moreover, as I mentioned for another patch (I read that before this
+> one due to the mail delivery order :), it would fail always when
+> CONFIG_DEBUGFS=n.  At best, create a wrapper for CONFIG_DEBUGFS=n to
+> return 0 (and void for free).
+ok. we'll fix this, point taken.
