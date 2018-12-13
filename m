@@ -1,18 +1,22 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH v3 1/1] ASoC: Intel: kbl_rt5660: Add a new
-	machine driver for kbl with rt5660
-Date: Thu, 13 Dec 2018 21:02:16 +0800
-Message-ID: <20181213130216.4558-2-hui.wang@canonical.com>
-References: <20181213130216.4558-1-hui.wang@canonical.com>
+From: Cosmin Samoila <cosmin.samoila@nxp.com>
+Subject: Re: [RFC 2/2] ASoC: Add MICFIL SoC Digital Audio
+	Interface driver.
+Date: Thu, 13 Dec 2018 13:57:56 +0000
+Message-ID: <1544709475.7700.35.camel@nxp.com>
+References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
+ <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
+ <20181212181414.GE6920@sirena.org.uk> <1544696446.7700.31.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B83B6267BB0
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 14:02:27 +0100 (CET)
-In-Reply-To: <20181213130216.4558-1-hui.wang@canonical.com>
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr140041.outbound.protection.outlook.com [40.107.14.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23F2A26784E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 14:57:57 +0100 (CET)
+In-Reply-To: <1544696446.7700.31.camel@nxp.com>
+Content-Language: en-US
+Content-ID: <9163FA65C8586A45BD6FC1B2F96237BC@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,639 +26,231 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, naveen.m@intel.com
+To: "broonie@kernel.org" <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh@kernel.org" <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The new Dell IoT platform uses kabylake + alc3277 codec, and alc3277
-shares the driver with the codec rt5660, here we generate a new
-machine driver based on kbl_da7219_max98357a.
-
-The audio design on this IoT platform is as below:
- - Intel kabylake platform
- - connect the codec ALC3277 via SSP0
- - line-out and line-in with Micbias jacks
- - line-out mute control and jack detection of line-out and line-in
- - two HDMI ports with audio capability
-
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/soc/intel/boards/Kconfig                |  10 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/kbl_rt5660.c           | 543 ++++++++++++++++++
- .../intel/common/soc-acpi-intel-kbl-match.c   |  10 +
- 4 files changed, 565 insertions(+)
- create mode 100644 sound/soc/intel/boards/kbl_rt5660.c
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index b177db2a0dbb..3839d6205fcf 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -293,6 +293,16 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-+config SND_SOC_INTEL_KBL_RT5660_MACH
-+	tristate "KBL with RT5660 in I2S Mode"
-+	depends on MFD_INTEL_LPSS && I2C && ACPI
-+	select SND_SOC_RT5660
-+	select SND_SOC_HDAC_HDMI
-+	help
-+	  This adds support for ASoC Onboard Codec I2S machine driver. This will
-+	  create an alsa sound card for RT5660 I2S audio codec.
-+	  Say Y if you have such a device.
-+
- config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 5381e27df9cc..bf072ea299b7 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -20,6 +20,7 @@ snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
- snd-soc-kbl_da7219_max98927-objs := kbl_da7219_max98927.o
- snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
- snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
-+snd-soc-kbl_rt5660-objs := kbl_rt5660.o
- snd-soc-skl_rt286-objs := skl_rt286.o
- snd-soc-skl_hda_dsp-objs := skl_hda_dsp_generic.o skl_hda_dsp_common.o
- snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
-@@ -46,6 +47,7 @@ obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max9
- obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH) += snd-soc-kbl_da7219_max98927.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH) += snd-soc-kbl_rt5663_max98927.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt5663_rt5514_max98927.o
-+obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5660_MACH) += snd-soc-kbl_rt5660.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
-diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
-new file mode 100644
-index 000000000000..3255e0029276
---- /dev/null
-+++ b/sound/soc/intel/boards/kbl_rt5660.c
-@@ -0,0 +1,543 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2018-19 Canonical Corporation.
-+
-+/*
-+ * Intel Kabylake I2S Machine Driver with RT5660 Codec
-+ *
-+ * Modified from:
-+ *   Intel Kabylake I2S Machine driver supporting MAXIM98357a and
-+ *   DA7219 codecs
-+ * Also referred to:
-+ *   Intel Broadwell I2S Machine driver supporting RT5677 codec
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/acpi.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "../../codecs/hdac_hdmi.h"
-+#include "../../codecs/rt5660.h"
-+
-+#define KBL_RT5660_CODEC_DAI "rt5660-aif1"
-+#define DUAL_CHANNEL 2
-+
-+static struct snd_soc_card *kabylake_audio_card;
-+static struct snd_soc_jack skylake_hdmi[3];
-+static struct snd_soc_jack lineout_jack;
-+static struct snd_soc_jack mic_jack;
-+
-+struct kbl_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	int device;
-+};
-+
-+struct kbl_codec_private {
-+	struct gpio_desc *gpio_lo_mute;
-+	struct list_head hdmi_pcm_list;
-+};
-+
-+enum {
-+	KBL_DPCM_AUDIO_PB = 0,
-+	KBL_DPCM_AUDIO_CP,
-+	KBL_DPCM_AUDIO_HDMI1_PB,
-+	KBL_DPCM_AUDIO_HDMI2_PB,
-+	KBL_DPCM_AUDIO_HDMI3_PB,
-+};
-+
-+#define GPIO_LINEOUT_MUTE_INDEX 0
-+#define GPIO_LINEOUT_DET_INDEX 3
-+#define GPIO_LINEIN_DET_INDEX 4
-+
-+static const struct acpi_gpio_params lineout_mute_gpio = { GPIO_LINEOUT_MUTE_INDEX, 0, true };
-+static const struct acpi_gpio_params lineout_det_gpio = { GPIO_LINEOUT_DET_INDEX, 0, false };
-+static const struct acpi_gpio_params mic_det_gpio = { GPIO_LINEIN_DET_INDEX, 0, false };
-+
-+
-+static const struct acpi_gpio_mapping acpi_rt5660_gpios[] = {
-+	{ "lineout-mute-gpios", &lineout_mute_gpio, 1 },
-+	{ "lineout-det-gpios", &lineout_det_gpio, 1 },
-+	{ "mic-det-gpios", &mic_det_gpio, 1 },
-+	{ NULL },
-+};
-+
-+static struct snd_soc_jack_pin lineout_jack_pin = {
-+	.pin	= "Line Out",
-+	.mask	= SND_JACK_LINEOUT,
-+};
-+
-+static struct snd_soc_jack_pin mic_jack_pin = {
-+	.pin	= "Line In",
-+	.mask	= SND_JACK_MICROPHONE,
-+};
-+
-+static struct snd_soc_jack_gpio lineout_jack_gpio = {
-+	.name			= "lineout-det",
-+	.report			= SND_JACK_LINEOUT,
-+	.debounce_time		= 200,
-+};
-+
-+static struct snd_soc_jack_gpio mic_jack_gpio = {
-+	.name			= "mic-det",
-+	.report			= SND_JACK_MICROPHONE,
-+	.debounce_time		= 200,
-+};
-+
-+static int kabylake_5660_event_lineout(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(dapm->card);
-+
-+	gpiod_set_value_cansleep(priv->gpio_lo_mute,
-+			!(SND_SOC_DAPM_EVENT_ON(event)));
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new kabylake_rt5660_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Line In"),
-+	SOC_DAPM_PIN_SWITCH("Line Out"),
-+};
-+
-+static const struct snd_soc_dapm_widget kabylake_rt5660_widgets[] = {
-+	SND_SOC_DAPM_MIC("Line In", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", kabylake_5660_event_lineout),
-+};
-+
-+static const struct snd_soc_dapm_route kabylake_rt5660_map[] = {
-+	/* other jacks */
-+	{"IN1P", NULL, "Line In"},
-+	{"IN2P", NULL, "Line In"},
-+	{"Line Out", NULL, "LOUTR"},
-+	{"Line Out", NULL, "LOUTL"},
-+
-+	/* CODEC BE connections */
-+	{ "AIF1 Playback", NULL, "ssp0 Tx"},
-+	{ "ssp0 Tx", NULL, "codec0_out"},
-+
-+	{ "codec0_in", NULL, "ssp0 Rx" },
-+	{ "ssp0 Rx", NULL, "AIF1 Capture" },
-+
-+	{ "hifi1", NULL, "iDisp1 Tx"},
-+	{ "iDisp1 Tx", NULL, "iDisp1_out"},
-+	{ "hifi2", NULL, "iDisp2 Tx"},
-+	{ "iDisp2 Tx", NULL, "iDisp2_out"},
-+	{ "hifi3", NULL, "iDisp3 Tx"},
-+	{ "iDisp3 Tx", NULL, "iDisp3_out"},
-+};
-+
-+static int kabylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
-+			struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	/* The ADSP will convert the FE rate to 48k, stereo */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = DUAL_CHANNEL;
-+
-+	/* set SSP0 to 24 bit */
-+	snd_mask_none(fmt);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static int kabylake_rt5660_codec_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	int ret;
-+	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+
-+	ret = devm_acpi_dev_add_driver_gpios(component->dev, acpi_rt5660_gpios);
-+	if (ret)
-+		dev_warn(component->dev, "Failed to add driver gpios\n");
-+
-+	/* Request rt5660 GPIO for lineout mute control, return if fails */
-+	ctx->gpio_lo_mute = devm_gpiod_get(component->dev, "lineout-mute",
-+					   GPIOD_OUT_HIGH);
-+	if (IS_ERR(ctx->gpio_lo_mute)) {
-+		dev_err(component->dev, "Can't find GPIO_MUTE# gpio\n");
-+		return PTR_ERR(ctx->gpio_lo_mute);
-+	}
-+
-+	/* Create and initialize headphone jack, this jack is not mandatory, don't return if fails */
-+	ret = snd_soc_card_jack_new(rtd->card, "Lineout Jack",
-+				    SND_JACK_LINEOUT, &lineout_jack,
-+				    &lineout_jack_pin, 1);
-+	if (ret)
-+		dev_warn(component->dev, "Can't create Lineout jack\n");
-+	else {
-+		lineout_jack_gpio.gpiod_dev = component->dev;
-+		ret = snd_soc_jack_add_gpios(&lineout_jack, 1,
-+					     &lineout_jack_gpio);
-+		if (ret)
-+			dev_warn(component->dev, "Can't add Lineout jack gpio\n");
-+	}
-+
-+	/* Create and initialize mic jack, this jack is not mandatory, don't return if fails */
-+	ret = snd_soc_card_jack_new(rtd->card, "Mic Jack",
-+				    SND_JACK_MICROPHONE, &mic_jack,
-+				    &mic_jack_pin, 1);
-+	if (ret)
-+		dev_warn(component->dev, "Can't create mic jack\n");
-+	else {
-+		mic_jack_gpio.gpiod_dev = component->dev;
-+		ret = snd_soc_jack_add_gpios(&mic_jack, 1, &mic_jack_gpio);
-+		if (ret)
-+			dev_warn(component->dev, "Can't add mic jack gpio\n");
-+	}
-+
-+	/* Here we enable some dapms in advance to reduce the pop noise for recording via line-in */
-+	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
-+	snd_soc_dapm_force_enable_pin(dapm, "BST1");
-+	snd_soc_dapm_force_enable_pin(dapm, "BST2");
-+
-+	return 0;
-+}
-+
-+static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
-+{
-+	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct kbl_hdmi_pcm *pcm;
-+
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->device = device;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
-+}
-+
-+static int kabylake_hdmi1_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI1_PB);
-+}
-+
-+static int kabylake_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI2_PB);
-+}
-+
-+static int kabylake_hdmi3_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI3_PB);
-+}
-+
-+static int kabylake_rt5660_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai,
-+				     RT5660_SCLK_S_PLL1, params_rate(params) * 512,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, 0,
-+				  RT5660_PLL1_S_BCLK,
-+				  params_rate(params) * 50,
-+				  params_rate(params) * 512);
-+	if (ret < 0)
-+		dev_err(codec_dai->dev, "can't set codec pll: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_ops kabylake_rt5660_ops = {
-+	.hw_params = kabylake_rt5660_hw_params,
-+};
-+
-+static const unsigned int rates[] = {
-+	48000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
-+	.count = ARRAY_SIZE(rates),
-+	.list  = rates,
-+	.mask = 0,
-+};
-+
-+static const unsigned int channels[] = {
-+	DUAL_CHANNEL,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
-+	.count = ARRAY_SIZE(channels),
-+	.list = channels,
-+	.mask = 0,
-+};
-+
-+static int kbl_fe_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	/*
-+	 * On this platform for PCM device we support,
-+	 * 48Khz
-+	 * stereo
-+	 * 16 bit audio
-+	 */
-+
-+	runtime->hw.channels_max = DUAL_CHANNEL;
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+					   &constraints_channels);
-+
-+	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
-+
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops kabylake_rt5660_fe_ops = {
-+	.startup = kbl_fe_startup,
-+};
-+
-+/* kabylake digital audio interface glue - connects rt5660 codec <--> CPU */
-+static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
-+	/* Front End DAI links */
-+	[KBL_DPCM_AUDIO_PB] = {
-+		.name = "Kbl Audio Port",
-+		.stream_name = "Audio",
-+		.cpu_dai_name = "System Pin",
-+		.platform_name = "0000:00:1f.3",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.nonatomic = 1,
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_playback = 1,
-+		.ops = &kabylake_rt5660_fe_ops,
-+	},
-+	[KBL_DPCM_AUDIO_CP] = {
-+		.name = "Kbl Audio Capture Port",
-+		.stream_name = "Audio Record",
-+		.cpu_dai_name = "System Pin",
-+		.platform_name = "0000:00:1f.3",
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.nonatomic = 1,
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_capture = 1,
-+		.ops = &kabylake_rt5660_fe_ops,
-+	},
-+	[KBL_DPCM_AUDIO_HDMI1_PB] = {
-+		.name = "Kbl HDMI Port1",
-+		.stream_name = "Hdmi1",
-+		.cpu_dai_name = "HDMI1 Pin",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.init = NULL,
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.nonatomic = 1,
-+		.dynamic = 1,
-+	},
-+	[KBL_DPCM_AUDIO_HDMI2_PB] = {
-+		.name = "Kbl HDMI Port2",
-+		.stream_name = "Hdmi2",
-+		.cpu_dai_name = "HDMI2 Pin",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.init = NULL,
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.nonatomic = 1,
-+		.dynamic = 1,
-+	},
-+	[KBL_DPCM_AUDIO_HDMI3_PB] = {
-+		.name = "Kbl HDMI Port3",
-+		.stream_name = "Hdmi3",
-+		.cpu_dai_name = "HDMI3 Pin",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "0000:00:1f.3",
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-+		.dpcm_playback = 1,
-+		.init = NULL,
-+		.nonatomic = 1,
-+		.dynamic = 1,
-+	},
-+
-+	/* Back End DAI links */
-+	{
-+		/* SSP0 - Codec */
-+		.name = "SSP0-Codec",
-+		.id = 0,
-+		.cpu_dai_name = "SSP0 Pin",
-+		.platform_name = "0000:00:1f.3",
-+		.no_pcm = 1,
-+		.codec_name = "i2c-10EC3277:00",
-+		.codec_dai_name = KBL_RT5660_CODEC_DAI,
-+		.init = kabylake_rt5660_codec_init,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBS_CFS,
-+		.ignore_pmdown_time = 1,
-+		.be_hw_params_fixup = kabylake_ssp0_fixup,
-+		.ops = &kabylake_rt5660_ops,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+	},
-+	{
-+		.name = "iDisp1",
-+		.id = 1,
-+		.cpu_dai_name = "iDisp1 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi1",
-+		.platform_name = "0000:00:1f.3",
-+		.dpcm_playback = 1,
-+		.init = kabylake_hdmi1_init,
-+		.no_pcm = 1,
-+	},
-+	{
-+		.name = "iDisp2",
-+		.id = 2,
-+		.cpu_dai_name = "iDisp2 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi2",
-+		.platform_name = "0000:00:1f.3",
-+		.init = kabylake_hdmi2_init,
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+	{
-+		.name = "iDisp3",
-+		.id = 3,
-+		.cpu_dai_name = "iDisp3 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi3",
-+		.platform_name = "0000:00:1f.3",
-+		.init = kabylake_hdmi3_init,
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+};
-+
-+
-+#define NAME_SIZE	32
-+static int kabylake_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct kbl_hdmi_pcm *pcm;
-+	struct snd_soc_component *component = NULL;
-+	int err, i = 0;
-+	char jack_name[NAME_SIZE];
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		component = pcm->codec_dai->component;
-+		snprintf(jack_name, sizeof(jack_name),
-+			"HDMI/DP, pcm=%d Jack", pcm->device);
-+		err = snd_soc_card_jack_new(card, jack_name,
-+					SND_JACK_AVOUT, &skylake_hdmi[i],
-+					NULL, 0);
-+
-+		if (err)
-+			return err;
-+
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-+				&skylake_hdmi[i]);
-+		if (err < 0)
-+			return err;
-+
-+		i++;
-+
-+	}
-+
-+	if (!component)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(component, &card->dapm);
-+}
-+
-+/* kabylake audio machine driver for rt5660 */
-+static struct snd_soc_card kabylake_audio_card_rt5660 = {
-+	.name = "kblrt5660",
-+	.owner = THIS_MODULE,
-+	.dai_link = kabylake_rt5660_dais,
-+	.num_links = ARRAY_SIZE(kabylake_rt5660_dais),
-+	.controls = kabylake_rt5660_controls,
-+	.num_controls = ARRAY_SIZE(kabylake_rt5660_controls),
-+	.dapm_widgets = kabylake_rt5660_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(kabylake_rt5660_widgets),
-+	.dapm_routes = kabylake_rt5660_map,
-+	.num_dapm_routes = ARRAY_SIZE(kabylake_rt5660_map),
-+	.fully_routed = true,
-+	.late_probe = kabylake_card_late_probe,
-+};
-+
-+static int kabylake_audio_probe(struct platform_device *pdev)
-+{
-+	struct kbl_codec_private *ctx;
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+
-+	kabylake_audio_card =
-+		(struct snd_soc_card *)pdev->id_entry->driver_data;
-+
-+	kabylake_audio_card->dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
-+	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
-+}
-+
-+static const struct platform_device_id kbl_board_ids[] = {
-+	{
-+		.name = "kbl_rt5660",
-+		.driver_data =
-+			(kernel_ulong_t)&kabylake_audio_card_rt5660,
-+	},
-+	{ }
-+};
-+
-+static struct platform_driver kabylake_audio = {
-+	.probe = kabylake_audio_probe,
-+	.driver = {
-+		.name = "kbl_rt5660",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.id_table = kbl_board_ids,
-+};
-+
-+module_platform_driver(kabylake_audio)
-+
-+/* Module information */
-+MODULE_DESCRIPTION("Audio Machine driver-RT5660 in I2S mode");
-+MODULE_AUTHOR("Hui Wang <hui.wang@canonical.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:kbl_rt5660");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-index a317b7790fce..e6fa6f470526 100644
---- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-@@ -96,6 +96,16 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
- 		.quirk_data = &kbl_7219_98927_codecs,
- 		.pdata = &skl_dmic_data
- 	},
-+	{
-+		.id = "10EC5660",
-+		.drv_name = "kbl_rt5660",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+	},
-+	{
-+		.id = "10EC3277",
-+		.drv_name = "kbl_rt5660",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_kbl_machines);
--- 
-2.17.1
+SGVsbG8gTWFyaw0KDQpPbmUgcXVlc3Rpb24gaW5saW5lLg0KDQpUaGFuayB5b3UsDQpDb3NtaW4N
+Cg0KT24gSm8sIDIwMTgtMTItMTMgYXQgMTI6MjAgKzAyMDAsIENvc21pbiBTYW1vaWxhIHdyb3Rl
+Og0KPiBIZWxsbyBNYXJrLA0KPiANCj4gVGhhbmsgeW91IGZvciB0aGUgcmV2aWV3Lg0KPiBQbGVh
+c2Ugc2VlIG15IGNvbW1lbnRzIGlubGluZS4NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gQ29zbWlu
+DQo+IA0KPiBPbiBNaSwgMjAxOC0xMi0xMiBhdCAxODoxNCArMDAwMCwgTWFyayBCcm93biB3cm90
+ZToNCj4gPiANCj4gPiBPbiBNb24sIERlYyAxMCwgMjAxOCBhdCAwOToyMToxNUFNICswMDAwLCBD
+b3NtaW4gU2Ftb2lsYSB3cm90ZToNCj4gPiANCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiArc3RhdGlj
+IGNoYXIgKmVudnBbXSA9IHsNCj4gPiA+ICsJCSJFVkVOVD1QRE1fVk9JQ0VfREVURUNUIiwNCj4g
+PiA+ICsJCU5VTEwsDQo+ID4gPiArCX07DQo+ID4gVGhlIGluZGVudGF0aW9uIGhlcmUgaXMgd2Vp
+cmQuDQo+IFdpbGwgZml4IGl0Lg0KPiANCj4gPiANCj4gPiANCj4gPiA+IA0KPiA+ID4gDQo+ID4g
+PiArc3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCBtaWNmaWxfaHd2YWRfemNkX2VuYWJsZVtdID0g
+ew0KPiA+ID4gKwkiT0ZGIiwgIk9OIiwNCj4gPiA+ICt9Ow0KPiA+IFNpbXBsZSBvbi9vZmYgc3dp
+dGNoZXMgc2hvdWxkIGp1c3QgYmUgcmVndWxhciBjb250cm9scyB3aXRoDQo+ID4gIlN3aXRjaCIN
+Cj4gPiBhdA0KPiA+IHRoZSBlbmQgb2YgdGhlaXIgbmFtZSBzbyB1c2Vyc3BhY2UgY2FuIGhhbmRs
+ZSB0aGVtLg0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+ICtzdGF0aWMgY29uc3QgY2hhciAq
+IGNvbnN0IG1pY2ZpbF9od3ZhZF9ub2lzZV9kZWNpbWF0aW9uW10gPSB7DQo+ID4gPiArCSJEaXNh
+YmxlZCIsICJFbmFibGVkIiwNCj4gPiA+ICt9Ow0KPiA+IFNhbWUgaGVyZS4NCj4gV2lsbCBmaXgg
+aXQuDQoNCldoYXQgZG8geW91IG1lYW4gYnkgInJlZ3VsYXIgY29udHJvbHMiIHdpdGggIlN3aXRj
+aCI/DQpJIGNhbiBhZGQgc3dpdGNoIGluIHRoZSBuYW1pbmcgYnV0IHdlIG5lZWQgdG8gc2F2ZSB0
+aGUgdXNlcg0KY29uZmlndXJhdGlvbiB3aGVuIGRvaW5nIHRoZSBpbml0aWFsaXphdGlvbiAoaS5l
+LiBoYXZpbmcgY3VzdG9tIHB1dCAmDQpnZXQpLg0KDQo+ID4gDQo+ID4gDQo+ID4gPiANCj4gPiA+
+IA0KPiA+ID4gKy8qIHdoZW4gYWRkaW5nIG5ldyByYXRlIHRleHQsIGFsc28gYWRkIGl0IHRvIHRo
+ZQ0KPiA+ID4gKyAqIG1pY2ZpbF9od3ZhZF9yYXRlX2ludHMNCj4gPiA+ICsgKi8NCj4gPiA+ICtz
+dGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IG1pY2ZpbF9od3ZhZF9yYXRlW10gPSB7DQo+ID4gPiAr
+CSI0OEtIeiIsICI0NC4xS0h6IiwNCj4gPiA+ICt9Ow0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyBj
+b25zdCBpbnQgbWljZmlsX2h3dmFkX3JhdGVfaW50c1tdID0gew0KPiA+ID4gKwk0ODAwMCwgNDQx
+MDAsDQo+ID4gPiArfTsNCj4gPiBDYW4gdGhlIGRyaXZlciBub3QgZGV0ZXJtaW5lIHRoaXMgYXV0
+b21hdGljYWxseSBmcm9tIHNhbXBsZSByYXRlcz8NCj4gSSB0aGluayBJIGNvdWxkIGFkZCAiNDgw
+MDAiLCAiNDQxMDAiIGluc3RlYWQgb2YgIjQ4S0h6IiwgIjQ0LjFLSHoiDQo+IGFuZA0KPiB1c2Ug
+a3N0cnRvbCgpDQo+IA0KPiA+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+ICtzdGF0aWMg
+Y29uc3QgY2hhciAqIGNvbnN0IG1pY2ZpbF9jbGtfc3JjX3RleHRzW10gPSB7DQo+ID4gPiArCSJB
+dXRvIiwgIkF1ZGlvUExMMSIsICJBdWRpb1BMTDIiLCAiRXh0Q2xrMyIsDQo+ID4gPiArfTsNCj4g
+PiBJcyB0aGlzIHNvbWV0aGluZyB0aGF0IHNob3VsZCBiZSB1c2VyIHNlbGVjdGFibGUgb3IgaXMg
+aXQgZ29pbmcgdG8NCj4gPiBiZQ0KPiA+IGNvbnRyb2xsZWQgYnkgdGhlIGJvYXJkIGRlc2lnbj8N
+Cj4gVXNlciBzaG91bGQgYmUgYWJsZSB0byBzZWxlY3QgdGhlIGNsb2NrIHNvdXJjZSBzaW5jZSwg
+aW4gdGhlb3J5LA0KPiBoYXJkd2FyZSBjb3VsZCBzdXBwb3J0IGFueSBjdXN0b20gcmF0ZSBhcyBs
+b25nIGFzIHlvdSBjYW4gcHJvdmlkZSB0aGUNCj4gY2xvY2sgb24gZXh0Y2xrLg0KPiDCoA0KPiA+
+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+ICtzdGF0aWMgaW50IGh3dmFkX3B1dF9ocGYo
+c3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsDQo+ID4gPiArCQkJwqBzdHJ1Y3Qgc25kX2N0
+bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkNCj4gPiA+ICt7DQo+ID4gPiArCXN0cnVjdCBzbmRfc29j
+X2NvbXBvbmVudCAqY29tcCA9DQo+ID4gPiBzbmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7DQo+
+ID4gPiArCXN0cnVjdCBzb2NfZW51bSAqZSA9IChzdHJ1Y3Qgc29jX2VudW0gKilrY29udHJvbC0N
+Cj4gPiA+ID4gDQo+ID4gPiA+IHByaXZhdGVfdmFsdWU7DQo+ID4gPiArCXVuc2lnbmVkIGludCAq
+aXRlbSA9IHVjb250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW07DQo+ID4gPiArCXN0cnVjdCBm
+c2xfbWljZmlsICptaWNmaWwgPQ0KPiA+ID4gc25kX3NvY19jb21wb25lbnRfZ2V0X2RydmRhdGEo
+Y29tcCk7DQo+ID4gPiArCWludCB2YWwgPSBzbmRfc29jX2VudW1faXRlbV90b192YWwoZSwgaXRl
+bVswXSk7DQo+ID4gPiArDQo+ID4gPiArCS8qIDAwIC0gSFBGIEJ5cGFzcw0KPiA+ID4gKwnCoCog
+MDEgLSBDdXQtb2ZmIGZyZXF1ZW5jeSAxNzUwSHoNCj4gPiA+ICsJwqAqIDEwIC0gQ3V0LW9mZiBm
+cmVxdWVuY3kgMjE1SHoNCj4gPiA+ICsJwqAqIDExIC0gQ3V0LW9mZiBmcmVxdWVuY3kgMTAySHoN
+Cj4gPiA+ICsJwqAqLw0KPiA+ID4gKwltaWNmaWwtPnZhZF9ocGYgPSB2YWw7DQo+ID4gPiArDQo+
+ID4gPiArCXJldHVybiAwOw0KPiA+ID4gK30NCj4gPiBXaGF0IGhhcHBlbnMgaWYgdGhpcyBnZXRz
+IGNoYW5nZWQgd2hpbGUgYSBzdHJlYW0gaXMgYWN0aXZlIC0gdGhlDQo+ID4gdXNlcg0KPiA+IHdp
+bGwgdGhpbmsgdGhleSBjaGFuZ2VkIHRoZSBjb25maWd1cmF0aW9uIGJ1dCBpdCB3b24ndCB0YWtl
+IGVmZmVjdA0KPiA+IHVudGlsDQo+ID4gdGhlIG5leHQgc3RyZWFtIGlzIHN0YXJ0ZWQgQUZBSUNU
+Pw0KPiBJZiB0aGUgc3RyZWFtIGlzIGFjdGl2ZSwgdGhlIGNvbmZpZ3VyYXRpb24gd2lsbCBpbmRl
+ZWQgdGFrZSBlZmVjdCBvbg0KPiB0aGUgbmV4dCBzdHJlYW0gYnV0IHRoaXMgaXMgdGhlIGRlc2ly
+ZWQgYmVoYXZpb3IuIElmIHdlIHdvdWxkIHdhbnQgdG8NCj4gZG8gdGhlIGNvbmZpZyBvbiB0aGUg
+Zmx5LCB3ZSBzaG91bGQgdXNlIHN5bmMgZnVuY3Rpb25zIHRoYXQgYWxzbw0KPiByZXNldHMNCj4g
+dGhlIHBkbSBtb2R1bGUgd2hpY2ggaXMgbm90IHdoYXQgd2UgaW50ZW5kLg0KPiBVc2VyIG11c3Qg
+Zmlyc3QgY29uZmlndXJlIHRoZSBtb2R1bGUgdGhlbiBzdGFydCB0aGUgcmVjb3JkaW5nIHNpbmNl
+DQo+IHRoaXMgc2VlbXMgdG8gYmUgdGhlIG5hdHVyYWwgZmxvdy4NCj4gDQo+ID4gDQo+ID4gDQo+
+ID4gPiANCj4gPiA+IA0KPiA+ID4gKwkvKiBhIHZhbHVlIHJlbWFwcGluZyBtdXN0IGJlIGRvbmUg
+c2luY2UgdGhlIGdhaW4gZmllbGQNCj4gPiA+IGhhdmUNCj4gPiA+ICsJwqAqIHRoZSBmb2xsb3dp
+bmcgbWVhbmluZzoNCj4gPiA+ICsJwqAqICogMCA6IG5vIGdhaW4NCj4gPiA+ICsJwqAqICogMSAt
+IDcgOiArMSB0byArNyBiaXRzIGdhaW4NCj4gPiA+ICsJwqAqICogOCAtIDE1IDogLTggdG8gLTEg
+Yml0cyBnYWluDQo+ID4gPiArCcKgKiBBZnRlciB0aGUgcmVtYXBwLCB0aGUgc2NhbGUgc2hvdWxk
+IHN0YXJ0IGZyb20gLTggdG8NCj4gPiA+ICs3DQo+ID4gPiArCcKgKi8NCj4gPiBUaGlzIGxvb2tz
+IGxpa2UgYSBzaWduZWQgdmFsdWUgc28gb25lIG9mIHRoZSBfU19WQUxVRSBtYWNyb3Mgc2hvdWxk
+DQo+ID4gaGFuZGxlIHRoaW5ncyBJIHRoaW5rPw0KPiA+IA0KPiBPay4NCj4gDQo+ID4gDQo+ID4g
+PiANCj4gPiA+IA0KPiA+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBm
+c2xfbWljZmlsX3NuZF9jb250cm9sc1tdID0NCj4gPiA+IHsNCj4gPiA+ICsJU09DX1NJTkdMRV9S
+QU5HRV9FWFRfVExWKCJDSDAgR2FpbiIsIC0xLA0KPiA+ID4gTUlDRklMX09VVEdBSU5fQ0hYX1NI
+SUZUKDApLA0KPiA+ID4gKwkJCQnCoDB4MCwgMHhGLCAwLA0KPiA+ID4gKwkJCQnCoGdldF9jaGFu
+bmVsX2dhaW4sDQo+ID4gPiBwdXRfY2hhbm5lbF9nYWluLCBnYWluX3RsdiksDQo+ID4gQWxsIHZv
+bHVtZSBjb250cm9scyBzaG91bGQgaGF2ZSBuYW1lcyBlbmRpbmcgaW4gVm9sdW1lIHNvIHVzZXJz
+cGFjZQ0KPiA+IGtub3dzIGhvdyB0byBoYW5kbGUgdGhlbS4NCj4gT2ssIEkgd2lsbCBjaGFuZ2Ug
+dGhlIG5hbWUuDQo+IA0KPiA+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+ICsvKiBIYXJk
+d2FyZSBWb2ljZSBBY3RpdmUgRGV0ZWN0aW9uOiBUaGUgSFdWQUQgdGFrZXMgZGF0YSBmcm9tDQo+
+ID4gPiB0aGUNCj4gPiA+IGlucHV0DQo+ID4gPiArICogb2YgYSBzZWxlY3RlZCBQRE0gbWljcm9w
+aG9uZSB0byBkZXRlY3QgaWYgdGhlcmUgaXMgYW55DQo+ID4gPiArICogdm9pY2UgYWN0aXZpdHku
+IFdoZW4gYSB2b2ljZSBhY3Rpdml0eSBpcyBkZXRlY3RlZCwgYW4NCj4gPiA+IGludGVycnVwdA0K
+PiA+ID4gY291bGQNCj4gPiA+ICsgKiBiZSBkZWxpdmVyZWQgdG8gdGhlIHN5c3RlbS4gSW5pdGlh
+bGl6YXRpb24gaW4gc2VjdGlvbiA4LjQ6DQo+ID4gPiArICogQ2FuIHdvcmsgaW4gdHdvIG1vZGVz
+Og0KPiA+ID4gKyAqwqDCoC0+IEVuZXZlb3BlLWJhc2VkIG1vZGUgKHNlY3Rpb24gOC40LjEpDQo+
+ID4gPiArICrCoMKgLT4gRW5lcmd5LWJhc2VkIG1vZGUgKHNlY3Rpb24gOC40LjIpDQo+ID4gPiAr
+ICoNCj4gPiA+ICsgKiBJdCBpcyBpbXBvcnRhbnQgdG8gcmVtYXJrIHRoYXQgdGhlIEhXVkFEIGRl
+dGVjdG9yIGNvdWxkIGJlDQo+ID4gPiBlbmFibGVkDQo+ID4gPiArICogb3IgcmVzZXQgb25seSB3
+aGVuIHRoZSBNSUNGSUwgaXNuJ3QgcnVubmluZyBpLmUuIHdoZW4gdGhlDQo+ID4gPiBCU1lfRklM
+DQo+ID4gPiArICogYml0IGluIFNUQVQgcmVnaXN0ZXIgaXMgY2xlYXJlZA0KPiA+ID4gKyAqLw0K
+PiA+ID4gK3N0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgaW5pdF9od3ZhZChzdHJ1Y3QgZGV2aWNl
+ICpkZXYpDQo+ID4gV2h5IGlzIHRoaXMgYW5ub3RhdGVkIF9fbWF5YmV5X3VudXNlZD8NCj4gPiAN
+Cj4gSXQgcmVtYWluZWQgZnJvbSBlYXJseSBzdGFnZXMgb2YgZGV2ZWxvcG1lbnQgd2hlbiBIV1ZB
+RCB3YXMgbm90DQo+IHN1cHBvcnRlZCBpbiBmaXJzdCB2ZXJzaW9uIGFuZCB3ZSBvbmx5IGRlZmlu
+ZWQgdGhlIEFQSS4NCj4gSSB3aWxsIHJlbW92ZSB0aGUgYW5ub3RhdGlvbi4NCj4gDQo+ID4gDQo+
+ID4gPiANCj4gPiA+IA0KPiA+ID4gK3N0YXRpYyBpbnQgZnNsX21pY2ZpbF9od19mcmVlKHN0cnVj
+dCBzbmRfcGNtX3N1YnN0cmVhbQ0KPiA+ID4gKnN1YnN0cmVhbSwNCj4gPiA+ICsJCQnCoMKgwqDC
+oMKgwqBzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkNCj4gPiA+ICt7DQo+ID4gPiArCXN0cnVjdCBm
+c2xfbWljZmlsICptaWNmaWwgPQ0KPiA+ID4gc25kX3NvY19kYWlfZ2V0X2RydmRhdGEoZGFpKTsN
+Cj4gPiA+ICsNCj4gPiA+ICsJYXRvbWljX3NldCgmbWljZmlsLT5yZWNvcmRpbmdfc3RhdGUsDQo+
+ID4gPiBNSUNGSUxfUkVDT1JESU5HX09GRik7DQo+ID4gPiArDQo+ID4gPiArCXJldHVybiAwOw0K
+PiA+ID4gK30NCj4gPiBBcmUgeW91ICpzdXJlKiB5b3UgbmVlZCB0byBhbmQgd2FudCB0byB1c2Ug
+YXRvbWljX3NldCgpIGhlcmUgYW5kDQo+ID4gdGhhdA0KPiA+IHRoZXJlJ3Mgbm8gcmFjZSBjb25k
+aXRpb25zIHJlc3VsdGluZyBmcm9tIHRyeWluZyB0byB1c2UgYW4gYXRvbWljDQo+ID4gdmFyaWFi
+bGU/wqDCoEl0J3MgbXVjaCBzaW1wbGVyIGFuZCBjbGVhcmVyIHRvIHVzZSBtdXRleGVzLCBpZiBm
+b3INCj4gPiBzb21lDQo+ID4gcmVhc29uIGF0b21pYyB2YXJpYWJsZXMgbWFrZSBzZW5zZSB0aGVu
+IHRoZSByZWFzb25pbmcgbmVlZHMgdG8gYmUNCj4gPiBjbGVhcmx5IGRvY3VtZW50ZWQgYXMgdGhl
+eSdyZSBxdWl0ZSB0cmlja3kgYW5kIGVhc3kgdG8gYnJlYWsgb3INCj4gPiBtaXN1bmRlcnN0YW5k
+Lg0KPiA+IA0KPiBXZSB3YW50IHRvIGtlZXAgdHJhY2sgb2YgdGhlIHJlY29yZGluZyBzdGF0ZSBh
+bmQgdGhlIGh3dmFkIHN0YXRlDQo+IHNpbmNlDQo+IHJlY29yZGluZyBhbmQgdm9pY2UgZGV0ZWN0
+aW9uIGNhbiB3b3JrIGluIHBhcmFsbGVsLiBUaGUgbWFpbiByZWFzb24NCj4gd2h5DQo+IHdlIHdh
+bnQgdG8ga2VlcCB0cmFjayBpcyBiZWNhdXNlIHRoZSByZWNvcmRpbmcgYW5kIGh3dmFkIHNoYXJl
+IHRoZQ0KPiBzYW1lDQo+IGNsb2NrIGFuZCB3ZSBzaG91bGQgbm90IHRvdWNoIHRoZSBjbG9jayB3
+aGVuIG9uZSBvciBhbm90aGVyIGlzIG9uLg0KPiBBbm90aGVyIHJlc3RyaWN0aW9uIGlzIHRoYXQg
+d2Ugd2FudCB0byBtYWtlIHN1cmUgd2UgdXNlIHRoZSBzYW1lIHJhdGUNCj4gZm9yIHJlY29yZGlu
+ZyBhbmQgdm9pY2UgZGV0ZWN0aW9uIHdoZW4gZG9pbmcgaXQgaW4gcGFyYWxsZWwuDQo+IFRoaXMg
+d2FzIHRoZSBvbmx5IHNvbHV0aW9uIHdlIGZvdW5kIHZpYWJsZSBhdCB0aGF0IHRpbWUgYW5kIGl0
+IHdvcmtlZA0KPiBpbiBhbnkgc3VwcG9ydGVkIHNjZW5hcmlvcyBidXQgd2UgYXJlIG9wZW4gZm9y
+IHN1Z2dlc3Rpb25zIGlmIHRoZQ0KPiBmdW5jdGlvbmFsaXR5IGlzIGtlcHQgYW5kIGNvZGUgd2ls
+bCBoYXZlIGEgYmV0dGVyIHF1YWxpdHkuDQo+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+
+ICtzdGF0aWMgaW50IGZzbF9taWNmaWxfc2V0X2RhaV9mbXQoc3RydWN0IHNuZF9zb2NfZGFpICpk
+YWksDQo+ID4gPiB1bnNpZ25lZCBpbnQgZm10KQ0KPiA+ID4gK3sNCj4gPiA+ICsJc3RydWN0IGZz
+bF9taWNmaWwgKm1pY2ZpbCA9DQo+ID4gPiBzbmRfc29jX2RhaV9nZXRfZHJ2ZGF0YShkYWkpOw0K
+PiA+ID4gKw0KPiA+ID4gKwkvKiBEQUkgTU9ERSAqLw0KPiA+ID4gKwlzd2l0Y2ggKGZtdCAmIFNO
+RF9TT0NfREFJRk1UX0ZPUk1BVF9NQVNLKSB7DQo+ID4gPiArCWNhc2UgU05EX1NPQ19EQUlGTVRf
+STJTOg0KPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiArCWRlZmF1bHQ6DQo+ID4gPiArCQlyZXR1cm4g
+LUVJTlZBTDsNCj4gPiA+ICsJfQ0KPiA+IElzIHRoaXMgYWN0dWFsbHkgYW4gSTJTIGNvbnRyb2xs
+ZXI/wqDCoEl0IGxvb2tzIGxpa2UgYSBQRE0gY29udHJvbGxlcg0KPiA+IHRvDQo+ID4gbWUgYW5k
+IHRoYXQncyB3aGF0IHlvdXIgY292ZXIgbGV0dGVyIHNhaWQuwqDCoEp1c3Qgb21pdCB0aGlzIGVu
+dGlyZWx5DQo+ID4gaWYNCj4gPiB0aGUgREFJIGZvcm1hdCBpc24ndCBjb25maWd1cmFibGUgaW4g
+dGhlIGhhcmR3YXJlLg0KPiBZZXMsIHRoaXMgc2hvdWxkIGJlIHJlbW92ZWQNCj4gDQo+ID4gDQo+
+ID4gDQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gKwkvKiBzZXQgZGVmYXVsdCBnYWluIHRvIG1heF9n
+YWluICovDQo+ID4gPiArCXJlZ21hcF93cml0ZShtaWNmaWwtPnJlZ21hcCwgUkVHX01JQ0ZJTF9P
+VVRfQ1RSTCwNCj4gPiA+IDB4Nzc3Nzc3NzcpOw0KPiA+ID4gKwlmb3IgKGkgPSAwOyBpIDwgODsg
+aSsrKQ0KPiA+ID4gKwkJbWljZmlsLT5jaGFubmVsX2dhaW5baV0gPSAweEY7DQo+ID4gSSdtIGFz
+c3VtaW5nIHRoZSBoYXJkd2FyZSBoYXMgbm8gZGVmYXVsdHMgaGVyZSBidXQgaWYgd2UndmUgZ290
+IHRvDQo+ID4gcGljaw0KPiA+IGEgZ2FpbiB3b3VsZG4ndCBhIGxvdyBnYWluIGJlIGxlc3MgbGlr
+ZWx5IHRvIGJsYXN0IG91dCBzb21lb25lJ3MNCj4gPiBlYXJkcnVtcyB0aGFuIGEgbWF4aW11bSBn
+YWluPw0KPiA+IA0KPiBGYWlyIGVub3VnaC4gV2UgZGlkIHRoaXMgYmVjYXVzZSB0aGUgbWF4aW11
+bSBvdXRwdXQgdm9sdW1lIGlzbid0IHRoYXQNCj4gaGlnaCBidXQgSSBndWVzcyB3ZSBzaG91bGQg
+c2V0IGl0IHRvIG1pbmltdW0gYW5kIHVzZXIgc2hvdWxkIHNldA0KPiB2b2x1bWUNCj4gdmlhIGFt
+aXhlci4NCj4gDQo+ID4gDQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gK3N0YXRpYyBpcnFyZXR1cm5f
+dCB2b2ljZV9kZXRlY3RlZF9mbihpbnQgaXJxLCB2b2lkICpkZXZpZCkNCj4gPiA+ICt7DQo+ID4g
+PiArCXN0cnVjdCBmc2xfbWljZmlsICptaWNmaWwgPSAoc3RydWN0IGZzbF9taWNmaWwgKilkZXZp
+ZDsNCj4gPiA+ICsJc3RydWN0IGRldmljZSAqZGV2ID0gJm1pY2ZpbC0+cGRldi0+ZGV2Ow0KPiA+
+ID4gKwlpbnQgcmV0Ow0KPiA+ID4gKw0KPiA+ID4gKwkvKiBkaXNhYmxlIGh3dmFkICovDQo+ID4g
+PiArCXJldCA9IGRpc2FibGVfaHd2YWQoZGV2LCB0cnVlKTsNCj4gPiA+ICsJaWYgKHJldCkNCj4g
+PiA+ICsJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGRpc2FibGUgSFdWQUQNCj4gPiA+IG1vZHVs
+ZVxuIik7DQo+ID4gPiArDQo+ID4gPiArCS8qIG5vdGlmeSB1c2Vyc3BhY2UgdGhhdCB2b2ljZSB3
+YXMgZGV0ZWN0ZWQgKi8NCj4gPiA+ICsJa29iamVjdF91ZXZlbnRfZW52KCZkZXYtPmtvYmosIEtP
+QkpfQ0hBTkdFLCBlbnZwKTsNCj4gPiA+ICsNCj4gPiA+ICsJcmV0dXJuIElSUV9IQU5ETEVEOw0K
+PiA+ID4gK30NCj4gPiBTbywgdGhpcyBsb29rcyBsaWtlIGl0J3MgaW50ZW5kZWQgdG8gYmUgdXNl
+ZCBmb3Iga2V5d29yZCBkZXRlY3Rpb24NCj4gPiB0eXBlDQo+ID4gYXBwbGljYXRpb25zICh0aG91
+Z2ggd2l0aG91dCB0aGUgb2ZmbG9hZCBEU1AgdGhhdCB0aG9zZSB0ZW5kIHRvDQo+ID4gaGF2ZSku
+DQo+ID4gV2hhdCB0aGUgb3RoZXIgaW1wbGVtZW50YXRpb25zIEkndmUgc2VlbiBoYXZlIGVuZGVk
+IHVwIGRvaW5nIGlzDQo+ID4gdXNpbmcNCj4gPiBhDQo+ID4gY29tcHJlc3NlZCBhdWRpbyBzdHJl
+YW0gdG8gcmV0dXJuIHRoZSBhdWRpbyBkYXRhIHRvIHVzZXJzcGFjZSwNCj4gPiBhbGxvd2luZw0K
+PiA+IHRoZSBhdWRpb24gc3RyZWFtIHRvIGJlIHBhdXNlZCB3aGVuIG5vIGF1ZGlvIGlzIGRldGVj
+dGVkLsKgwqBZb3VyDQo+ID4gYXBwcm9hY2gNCj4gPiBoZXJlIGlzIGEgYml0IG1vcmUgbWFudWFs
+IGFuZCBtYXkgYmUgbW9yZSBzZW5zaWJsZSBmb3Igc3lzdGVtcw0KPiA+IHdpdGhvdXQNCj4gPiB0
+aGUgb2ZmbG9hZCBEU1AgaG93ZXZlciB0aGUgZGVjaXNpb24gdG8gZ28gb3V0c2lkZSBBTFNBIGFu
+ZCB1c2UgYQ0KPiA+IGtvYmplY3QgbmVlZHMgdG8gYmUgdGhvdWdodCBhYm91dCBhIGJpdCwgd2Un
+ZCB3YW50IHRvIGVuc3VyZSB0aGF0DQo+ID4gdGhlcmUncyBhIHN0YW5kYXJkIHdheSBvZiBoYW5k
+bGluZyBoYXJkd2FyZSBsaWtlIHRoaXMgc28NCj4gPiBhcHBsaWNhdGlvbnMNCj4gPiBjYW4gd29y
+ayBhcyBjb25zaXN0ZW50bHkgYXMgcG9zc2libGUgd2l0aCB0aGVtLg0KPiA+IA0KPiA+IEl0J3Mg
+cHJvYmFibHkgYmVzdCB0byBzcGxpdCBhbGwgdGhpcyBWQUQgaGFuZGxpbmcgY29kZSBvdXQgaW50
+byBhDQo+ID4gc2VwYXJhdGUgcGF0Y2ggc28gdGhhdCB0aGUgYmFzaWMgc3VwcG9ydCBjYW4gZ2V0
+IG1lcmdlZCBhbmQgdGhpcw0KPiA+IGNhbg0KPiA+IGJlDQo+ID4gcmV2aWV3ZWQgc2VwYXJhdGVs
+eS7CoMKgVGhlIHJlc3Qgb2YgdGhlIGRyaXZlciBoYXMgc29tZSBtaW5vciBpc3N1ZXMNCj4gPiBi
+dXQNCj4gPiBpdCBsb29rcyBsaWtlIGFsbCB0aGUgY29tcGxleGl0eSBpcyBpbiB0aGlzIFZBRCBj
+b2RlLg0KPiBJIHdhcyBhbHNvIHRoaW5raW5nIHRvIHNwbGl0IHRoZSBWQUQgZnJvbSBkcml2ZXIg
+YW5kIHNlbnQgaXQgaW4gYQ0KPiBsYXRlcg0KPiB2ZXJzaW9uIHNpbmNlIHRoaXMgaGFyZHdhcmUg
+aGFzIHR3byBpbmRlcGVuZGVudCBmdW5jdGlvbmFsaXRpZXM6DQo+IHJlY29yZGluZyBhbmQgdm9p
+Y2UgZGV0ZWN0aW9uLg0KPiBXZSBoYXZlIGNob3NlbiB0aGlzIGFwcHJvYWNoIGJlY2F1c2Ugd2Ug
+Y2FuIGFsc28gc3VwcG9ydCB0aGUNCj4gcmVjb3JkaW5nDQo+IGluIHBhcmFsbGVsIGFuZCBpdCBp
+cyB1c2VyJ3MgY2hvaWNlIGhvdyB0byBoYW5kbGUgdGhlIFZPSUNFX0RFVEVDVEVEDQo+IGV2ZW50
+Lg0KPiBIb3dldmVyLCB3ZSBhcmUgb3BlbiBmb3Igc3VnZ2VzdGlvbnMgb24gaG93IHRvIGhhbmRs
+ZSB0aGUgZGV0ZWN0aW9uDQo+IGV2ZW50IGFuZCBob3cgdG8gbm90aWZ5IHRoZSB1c2Vyc3BhY2Uu
+IEkgYW0gcHJldHR5IHN1cmUgdGhhdCB3aXRoIHRoZQ0KPiBjdXJyZW50IGhhcmR3YXJlIGl0IGlz
+IGhhcmQgdG8gcmV0dXJuIHRoZSBzdHJlYW0gYmFjayB0byB1c2VyIHNpbmNlDQo+IHlvdQ0KPiB3
+aWxsIG9ubHkgaGF2ZSBhY2Nlc3MgdG8gc2FtcGxlcyBzdG9yZWQgaW4gaW50ZXJuYWwgYnVmZmVy
+cywgcHJvYmFibHkNCj4gbGVzcyB0aGFuIDEwMCBpbiB0aGUgYmVzdCBjYXNlIHNjZW5hcmlvLg0K
+PiANCj4gSWYgdGhpcyBpcyBvayBmb3IgeW91LCB3ZSB3aWxsIGRyb3AgdGhlIEhXVkFEIGNoYW5n
+ZXMgZm9yIHRoZSBtb21lbnQNCj4gYW5kIHNlbmQgdGhlIG5leHQgdmVyc2lvbiBvbmx5IGZvciBy
+ZWNvcmRpbmcgZnVuY3Rpb25hbGl0eS4gV2Ugd2lsbA0KPiBzZW5kIGEgZGlmZmVyZW50IHBhdGNo
+IHdoZW4gdGhpcyBnZXRzIGFjY2VwdGVkIHdpdGggdm9pY2UgZGV0ZWN0aW9uDQo+IHN1cHBvcnQu
+DQo+IA0KPiA+IA0KPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+ICtzdGF0aWMgaXJxcmV0dXJu
+X3QgbWljZmlsX2Vycl9pc3IoaW50IGlycSwgdm9pZCAqZGV2aWQpDQo+ID4gPiArew0KPiA+ID4g
+KwlzdHJ1Y3QgZnNsX21pY2ZpbCAqbWljZmlsID0gKHN0cnVjdCBmc2xfbWljZmlsICopZGV2aWQ7
+DQo+ID4gPiArCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYgPSBtaWNmaWwtPnBkZXY7DQo+
+ID4gPiArCXUzMiBzdGF0X3JlZzsNCj4gPiA+ICsNCj4gPiA+ICsJcmVnbWFwX3JlYWQobWljZmls
+LT5yZWdtYXAsIFJFR19NSUNGSUxfU1RBVCwgJnN0YXRfcmVnKTsNCj4gPiA+ICsNCj4gPiA+ICsJ
+aWYgKHN0YXRfcmVnICYgTUlDRklMX1NUQVRfQlNZX0ZJTF9NQVNLKQ0KPiA+ID4gKwkJZGV2X2Ri
+ZygmcGRldi0+ZGV2LCAiaXNyOiBEZWNpbWF0aW9uIEZpbHRlciBpcw0KPiA+ID4gcnVubmluZ1xu
+Iik7DQo+ID4gPiArDQo+ID4gPiArCWlmIChzdGF0X3JlZyAmIE1JQ0ZJTF9TVEFUX0ZJUl9SRFlf
+TUFTSykNCj4gPiA+ICsJCWRldl9kYmcoJnBkZXYtPmRldiwgImlzcjogRklSIEZpbHRlciBEYXRh
+DQo+ID4gPiByZWFkeVxuIik7DQo+ID4gPiArDQo+ID4gPiArCWlmIChzdGF0X3JlZyAmIE1JQ0ZJ
+TF9TVEFUX0xPV0ZSRVFGX01BU0spIHsNCj4gPiA+ICsJCWRldl9kYmcoJnBkZXYtPmRldiwgImlz
+cjogaXBnX2Nsa19hcHAgaXMgdG9vDQo+ID4gPiBsb3dcbiIpOw0KPiA+ID4gKwkJcmVnbWFwX3dy
+aXRlX2JpdHMobWljZmlsLT5yZWdtYXAsDQo+ID4gPiBSRUdfTUlDRklMX1NUQVQsDQo+ID4gPiAr
+CQkJCcKgwqBNSUNGSUxfU1RBVF9MT1dGUkVRRl9NQVNLLCAxKTsNCj4gPiA+ICsJfQ0KPiA+ID4g
+Kw0KPiA+ID4gKwlyZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4gPiArfQ0KPiA+IFRoaXMgd2lsbCB1
+bmNvbmR0aW9uYWxseSByZXBvcnQgdGhlIGludGVycnVwdCBhcyBoYW5kbGVkIGJ1dCBpZiBpdA0K
+PiA+IHNlZXMNCj4gPiBhbiBlcnJvciBpdCBkb2Vzbid0IHJlY29nbml6ZSBpdCB3b24ndCBsb2cg
+YW55dGhpbmcgLSB0aGF0IHNlZW1zDQo+ID4gbm90DQo+ID4gaWRlYWwsIGl0J2QgYmUgYmV0dGVy
+IHRvIGxvZyB0aGUgdmFsdWUgd2UgcmVhZCBpbiBjYXNlIHRoZXJlJ3MNCj4gPiBzb21ldGhpbmcN
+Cj4gPiBlbHNlIGdvZXMgd3JvbmcgdG8gYWlkIGRlYnVnLg0KPiBPay4gV2lsbCBkbyBpdC4NCj4g
+DQo+ID4gDQo+ID4gDQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gK3N0YXRpYyBpbnQgZW5hYmxlX2h3
+dmFkKHN0cnVjdCBkZXZpY2UgKmRldiwgYm9vbCBzeW5jKQ0KPiA+ID4gK3sNCj4gPiA+ICsJc3Ry
+dWN0IGZzbF9taWNmaWwgKm1pY2ZpbCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+ID4gKwlp
+bnQgcmV0Ow0KPiA+ID4gKwlpbnQgcmF0ZTsNCj4gPiA+ICsJdTMyIHN0YXRlOw0KPiA+ID4gKw0K
+PiA+ID4gKwlpZiAoc3luYykNCj4gPiA+ICsJCXBtX3J1bnRpbWVfZ2V0X3N5bmMoZGV2KTsNCj4g
+PiA+ICsNCj4gPiA+ICsJc3RhdGUgPSBhdG9taWNfY21weGNoZygmbWljZmlsLT5od3ZhZF9zdGF0
+ZSwNCj4gPiA+ICsJCQnCoMKgwqDCoMKgwqDCoE1JQ0ZJTF9IV1ZBRF9PRkYsDQo+ID4gPiArCQkJ
+wqDCoMKgwqDCoMKgwqBNSUNGSUxfSFdWQURfT04pOw0KPiA+IFRoaXMgKnJlYWxseSogbmVlZHMg
+c29tZSBkb2N1bWVudGF0aW9uIGFib3V0IHdoYXQncyBnb2luZyBvbiBmb3INCj4gPiBjb25jdXJy
+ZW5jeSBoZXJlLg0KPiBUaGUgaHd2YWRfc3RhdGUgaXMgdXNlZCBhcyBJIGhhdmUgZXhwbGFpbmVk
+IGZvciByZWNvZGluZ19zdGF0ZSBhbmQgaXQNCj4gYWxzbyBoZWxwcyB1cyB0byBkZWNpZGUgd2hh
+dCBoYXBwZW5zIHdpdGggaHd2YWQgZHVyaW5nDQo+IHN1c3BlbmQvcmVzdW1lLg0KPiBBdCB0aGlz
+IG1vbWVudCwgd2UgaGF2ZSBkZWNpZGVkIHRvIGRpc2FibGUgaXQgYXQgc3VzcGVuZCBhbmQgcmUt
+DQo+IGVuYWJsZQ0KPiBhdCByZXN1bWUgYnV0IHdlIG1pY2ZpbCBjb3VsZCBhbHNvIHdvcmsgYXMg
+d2FrZS11cCBzb3VyY2UgKGJ1dCBpdCBpcw0KPiBub3QgaW1wbGVtZW50ZWQgeWV0IGluIGRyaXZl
+cikuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
