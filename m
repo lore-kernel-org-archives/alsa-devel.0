@@ -1,18 +1,15 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: Bug#916052: alsa-oss FTBFS with glibc 2.28
-Date: Thu, 13 Dec 2018 11:43:29 +0100
-Message-ID: <20181213104329.rvxqwcbvcke2eok5@toy.home.lxtec.de>
-References: <20181212133743.n2znyydhwch6e2io@toy.home.lxtec.de>
- <20181212223257.GA6732@workstation>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: fsl: Add a dependency on ARM for Eukrea
+Date: Thu, 13 Dec 2018 10:58:55 +0000
+Message-ID: <20181213105855.11657-1-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.hostsharing.net (mailout3.hostsharing.net
- [176.9.242.54]) by alsa0.perex.cz (Postfix) with ESMTP id 1044F267BA5
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 11:43:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20181212223257.GA6732@workstation>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B0F6267B81
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 11:59:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 916052@bugs.debian.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-* Takashi Sakamoto <o-takashi@sakamocchi.jp> [2018-12-13 07:32 +0900]:
+The MXC architecture became buildable on arm64 which doesn't have a
+mach-types.h so add an explicit 32 bit dependency.
 
-[...]
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > In file included from alsa-oss.c:736:
-> > stdioemu.c:40:10: fatal error: libio.h: No such file or directory
-> >  #include <libio.h>
-> >           ^~~~~~~~~
-> > compilation terminated.
-> > make[2]: *** [Makefile:517: alsa-oss.lo] Error 1
-> > 
-> 
-> In glibc upstream, libio/libio.h had been deprecated for applications and
-> became internal header in its v2.28 release. We can see below message in
-> its release note[1].
-> 
-> ```
-> * The nonstandard header files <libio.h> and <_G_config.h> are no longer
->   installed.  Software that was using either header should be updated to
->   use standard <stdio.h> interfaces instead.
-> ```
-> 
-> I posted PR to fix the FTBFS into github.com repository[1]. (In last month
-> we introduced github service to our workload for reviewing/merging tasks
-> just for userspace stuffs.)
-> 
-> In next release (v1.1.7), the fix will be merged and released.
-> 
-> [1] https://www.sourceware.org/ml/libc-alpha/2018-08/msg00003.html
-> [2] https://github.com/alsa-project/alsa-oss/pull/1
-
-Many thanks for cooperation!
-
-Elimar
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 6ec19fb4a934..ff2d4a8783f9 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -221,7 +221,7 @@ config SND_SOC_PHYCORE_AC97
+ 
+ config SND_SOC_EUKREA_TLV320
+ 	tristate "Eukrea TLV320"
+-	depends on ARCH_MXC && I2C
++	depends on ARCH_ARM && ARCH_MXC && I2C
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
 -- 
-  "Talking much about oneself can also
-   be a means to conceal oneself."
-         -Friedrich Nietzsche
+2.19.0.rc2
