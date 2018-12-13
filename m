@@ -1,50 +1,49 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: meson: fix do_div warning in spdifin
-Date: Thu, 13 Dec 2018 16:44:28 +0100
-Message-ID: <20181213154428.6070-1-jbrunet@baylibre.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 0/7 v2] ASoC: merge audio-graph-scu into
+ audio-graph - final step
+Date: Thu, 13 Dec 2018 08:05:07 -0800
+Message-ID: <20181213160507.GR39861@atomide.com>
+References: <87ftv22p6q.wl-kuninori.morimoto.gx@renesas.com>
+ <20181213030219.GJ39861@atomide.com>
+ <20181213033750.GK39861@atomide.com>
+ <87zhta14la.wl-kuninori.morimoto.gx@renesas.com>
+ <20181213043445.GL39861@atomide.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AF4C26789F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 17:05:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20181213043445.GL39861@atomide.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Even if this spdif input driver is only supposed to be used on 64bits
-platform, there is possible problem with 32bits and do_div, as reported
-by the kbuild robot. Just fix it.
+* Tony Lindgren <tony@atomide.com> [181212 20:34]:
+> No idea why audio no longer works.. It's like clocks suddenly don't work
+> or as if something was still mapped to a wrong codec.
 
-Fixes: 5ce5658375e6 ("ASoC: meson: add axg spdif input")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
+OK found out that loading my WIP codec driver related
+modules automatically on boot does not work. And
+loading the modules manually after boot works.. So
+it seems to be some -EPROBE_DEFER type issue somewhere
+unrelated to the graph changes and I was able to test
+this series.
 
- Hi Mark,
+Patches 1 & 3 work just great for me now, I'll
+reply separately with my acks for those two.
 
- This fixes the problem reported by kbuild robot [0].
- Sorry for not catching this earlier.
+Thanks,
 
- Regards
- Jerome
-
- [0]: https://lkml.kernel.org/r/201812132245.lBYydcs3%fengguang.wu@intel.com
-
- sound/soc/meson/axg-spdifin.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
-index 09f385a2bbba..01b2035fa841 100644
---- a/sound/soc/meson/axg-spdifin.c
-+++ b/sound/soc/meson/axg-spdifin.c
-@@ -146,8 +146,8 @@ static void axg_spdifin_write_mode_param(struct regmap *map, int mode,
- 					 unsigned int base_reg,
- 					 unsigned int width)
- {
--	unsigned int offset = mode, rem;
--	unsigned int reg, shift;
-+	uint64_t offset = mode;
-+	unsigned int reg, shift, rem;
- 
- 	rem = do_div(offset, num_per_reg);
- 
--- 
-2.19.2
+Tony
