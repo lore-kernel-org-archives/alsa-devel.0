@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: Dereference pointer for
-	memcpy sizeof in asoc_simple_card_probe" to the asoc tree
-Date: Thu, 13 Dec 2018 12:08:47 +0000 (GMT)
-Message-ID: <20181213120847.3393A11254D1@debutante.sirena.org.uk>
-References: <87wooe10f7.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: fsl-sai: Fix typo in "transmitter"" to
+	the asoc tree
+Date: Thu, 13 Dec 2018 12:08:49 +0000 (GMT)
+Message-ID: <20181213120849.0E43A11254D1@debutante.sirena.org.uk>
+References: <1544697398-10653-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DCAA267BA5
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 13:08:48 +0100 (CET)
-In-Reply-To: <87wooe10f7.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AE4C267C38
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 13:08:49 +0100 (CET)
+In-Reply-To: <1544697398-10653-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nathan Chancellor <natechancellor@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: Dereference pointer for memcpy sizeof in asoc_simple_card_probe
+   ASoC: fsl-sai: Fix typo in "transmitter"
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 869858f84a65b646052eff1ec75c1f49e638b62b Mon Sep 17 00:00:00 2001
-From: Nathan Chancellor <natechancellor@gmail.com>
-Date: Thu, 13 Dec 2018 14:15:20 +0900
-Subject: [PATCH] ASoC: simple-card: Dereference pointer for memcpy sizeof in
- asoc_simple_card_probe
+>From f0b3f8418711d2e482bd57d6c0b5790947ca6863 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 13 Dec 2018 08:36:38 -0200
+Subject: [PATCH] ASoC: fsl-sai: Fix typo in "transmitter"
 
-Commit 4fb7f4df49d3 ("ASoC: simple-card: use cpu/codec pointer on
-simple_dai_props") updated {cpu,codec}_dai to be pointers in struct
-simple_dai_props but didn't update these locations to dereference the
-pointers.
-This patch fixup it for non DT simple-card use case.
+Fix the spelling of "transmitter".
 
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 766123485d7c..93d68161f953 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -429,6 +429,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 		struct asoc_simple_card_info *cinfo;
- 		struct snd_soc_dai_link_component *codecs;
- 		struct snd_soc_dai_link_component *platform;
-+		int dai_idx = 0;
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index dd9e59738e08..2e726b983845 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -35,13 +35,13 @@ Required properties:
  
- 		cinfo = dev->platform_data;
- 		if (!cinfo) {
-@@ -445,6 +446,9 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 			return -EINVAL;
- 		}
+   - fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
+ 			  that SAI will work in the synchronous mode (sync Tx
+-			  with Rx) which means both the transimitter and the
++			  with Rx) which means both the transmitter and the
+ 			  receiver will send and receive data by following
+ 			  receiver's bit clocks and frame sync clocks.
  
-+		dai_props->cpu_dai	= &priv->dais[dai_idx++];
-+		dai_props->codec_dai	= &priv->dais[dai_idx++];
-+
- 		codecs			= dai_link->codecs;
- 		codecs->name		= cinfo->codec;
- 		codecs->dai_name	= cinfo->codec_dai.name;
-@@ -458,10 +462,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 		dai_link->cpu_dai_name	= cinfo->cpu_dai.name;
- 		dai_link->dai_fmt	= cinfo->daifmt;
- 		dai_link->init		= asoc_simple_card_dai_init;
--		memcpy(&priv->dai_props->cpu_dai, &cinfo->cpu_dai,
--					sizeof(priv->dai_props->cpu_dai));
--		memcpy(&priv->dai_props->codec_dai, &cinfo->codec_dai,
--					sizeof(priv->dai_props->codec_dai));
-+		memcpy(priv->dai_props->cpu_dai, &cinfo->cpu_dai,
-+					sizeof(*priv->dai_props->cpu_dai));
-+		memcpy(priv->dai_props->codec_dai, &cinfo->codec_dai,
-+					sizeof(*priv->dai_props->codec_dai));
- 	}
+   - fsl,sai-asynchronous: This is a boolean property. If present, indicating
+ 			  that SAI will work in the asynchronous mode, which
+-			  means both transimitter and receiver will send and
++			  means both transmitter and receiver will send and
+ 			  receive data by following their own bit clocks and
+ 			  frame sync clocks separately.
  
- 	snd_soc_card_set_drvdata(card, priv);
+@@ -58,8 +58,8 @@ Optional properties (for mx6ul):
+ Note:
+ - If both fsl,sai-asynchronous and fsl,sai-synchronous-rx are absent, the
+   default synchronous mode (sync Rx with Tx) will be used, which means both
+-  transimitter and receiver will send and receive data by following clocks
+-  of transimitter.
++  transmitter and receiver will send and receive data by following clocks
++  of transmitter.
+ - fsl,sai-asynchronous and fsl,sai-synchronous-rx are exclusive.
+ 
+ Example:
 -- 
 2.19.0.rc2
