@@ -1,28 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/2] Graph fixes for using multiple
-	endpoints per port
-Date: Thu, 13 Dec 2018 08:53:38 +0200
-Message-ID: <34191403-3c56-47ac-77d9-e900d88f2ae5@ti.com>
-References: <20181211020557.61783-1-tony@atomide.com>
- <8736r4bvf3.wl-kuninori.morimoto.gx@renesas.com>
- <20181211045220.GI6707@atomide.com>
- <871s6obqkb.wl-kuninori.morimoto.gx@renesas.com>
- <20181211053536.GJ6707@atomide.com>
- <87wooga9an.wl-kuninori.morimoto.gx@renesas.com>
- <20181211141649.GL6707@atomide.com>
- <87ftv33bpg.wl-kuninori.morimoto.gx@renesas.com>
- <20181212001950.GX6707@atomide.com>
- <01e3f547-318e-8988-b48a-e10c0a2904d6@ti.com>
- <20181212145022.GB6707@atomide.com>
+From: Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH v2] ASoC: fsl: Fix SND_SOC_EUKREA_TLV320
+ build error on i.MX8M
+Date: Thu, 13 Dec 2018 15:12:41 +0800
+Message-ID: <20181213071240.GA12458@dragon>
+References: <1544666918-10783-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ED78267B8E
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 07:52:02 +0100 (CET)
-In-Reply-To: <20181212145022.GB6707@atomide.com>
-Content-Language: en-US
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB7F9267C0C
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 08:13:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1544666918-10783-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,61 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, linux-imx@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xMi8yMDE4IDE2LjUwLCBUb255IExpbmRncmVuIHdyb3RlOgo+ICogUGV0ZXIgVWpm
-YWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4gWzE4MTIxMiAxMzowM106Cj4+IE9uIDEyLzEy
-LzIwMTggMi4xOSwgVG9ueSBMaW5kZ3JlbiB3cm90ZToKPj4+IEluIG15IE1jQlNQIGNhc2UgdGhl
-cmUgaXMgb25seSBhIHNpbmdsZSBwaHlzaWNhbCBJMlMgcG9ydAo+Pj4gdGhhdCBjYW4gYmUgVERN
-IHNwbGl0IGludG8gdGltZXNsb3RzLgo+Pgo+PiBTbyB3aGF0IGlzIG1pc3NpbmcgZnJvbSB0aGUg
-TWNCU1AgZHJpdmVyIGlzIHRvIGNvbmZpZ3VyZSB0aGUgVERNLiBXZQo+PiBuZXZlciBoYWQgYSBo
-YXJkd2FyZSB3aGljaCB3b3VsZCByZXF1aXJlIGl0IHNvIGl0IGlzIF9ub3RfIGltcGxlbWVudGVk
-Lgo+IAo+IEN1cmlvdXNseS4uIE5vdGhpbmcgbmVlZHMgdG8gYmUgZG9uZSBpbiB0aGUgTWNCU1Ag
-ZHJpdmVyIGZvciB0aGUgZHJvaWQKPiA0IFRETSBjb25maWd1cmF0aW9uIEFGQUlLLgoKU28geW91
-IGFsd2F5cyBoYXZlIDQgdGltZXNsb3QgYW5kIHRoYXQncyBpdD8KCj4gVGhlIENQQ0FQIFBNSUMg
-aXMgdGhlIGNsb2NrIG1hc3RlciwgYW5kIG9ubHkgdGhlIFBNSUMgcmVnaXN0ZXJzIG5lZWQgdG8K
-PiBiZSBjb25maWd1cmVkIGluIHRoaXMgY2FzZSBmb3IgdGhlIHRpbWVzbG90IHRvIHN3aXRjaCBi
-ZXR3ZWVuIGNvZGVjcwo+IGNvbm5lY3RlZCB0byBNY0JTUDMuCgpUaGUgTWNCU1AgVERNIGNvbmZp
-Z3VyYXRpb24gaXMgbm90IG1hc3RlciBvbmx5LgpZb3UgYmFzaWNhbGx5IHRlbGwgTWNCU1Agb24g
-d2hpY2ggdGltZXNsb3QgdG8gdHJhbnNtaXQvcmVjZWl2ZS4KTGV0J3Mgc2F5IHlvdSBoYXZlIHR3
-byBjb2RlY3MgY29ubmVjdGVkIHRvIGEgc2luZ2xlIE1jQlNQLgpjb2RlYzEgaXMgY29uZmlndXJl
-ZCB0byBsaXN0ZW4gZm9yIHRpbWVzbG90IDAvMQpjb2RlYzIgaXMgY29uZmlndXJlZCB0byBsaXN0
-ZW4gZm9yIHRpbWVzbG90IDIvMwoKSWYgeW91IG9wZW4gYSBzdGVyZW8gc3RyZWFtIHRvIGNvZGVj
-MSB0aGVuIHlvdSB0ZWxsIE1jQlNQIHRvCnNlbmQvcmVjZWl2ZSB0aGUgZGF0YSB1bmRlciB0aW1l
-c2xvdCAwLzEgYW5kIGlnbm9yZSBhbnkgb3RoZXIgdGltZXNsb3RzLgoKSWYgeW91IG9wZW4gYSBz
-dGVyZW8gc3RyZWFtIHRvIGNvZGVjMiB0aGVuIHlvdSB0ZWxsIE1jQlNQIHRvCnNlbmQvcmVjZWl2
-ZSB0aGUgZGF0YSB1bmRlciB0aW1lc2xvdCAyLzMgYW5kIGlnbm9yZSBhbnkgb3RoZXIgdGltZXNs
-b3RzLgoKRm9yIGNvZGVjMSB5b3UgZG9uJ3QgcmVhbGx5IG5lZWQgYW55dGhpbmcgcmVnYXJkaW5n
-IHRvIFRETSBjb25maWd1cmF0aW9uCmFzIE1jQlNQIHdpbGwgc2VuZC9yZWNlaXZlIHJpZ2h0IGFm
-dGVyIHRoZSBzdGFydCBjb25kaXRpb24gb24gdGhlIEZTLApidXQgZm9yIGNvZGVjMiB5b3UgbmVl
-ZCB0byBjb25maWd1cmUgdGhlIFRETSBtb2RlIG9mIE1jQlNQIHRvIGlnbm9yZQp0aW1lc2xvdCAw
-LzEKCj4+IGltaG8gdGhlICdvbmx5JyB0aGluZyBpcyB0byBpbXBsZW1lbnQgdGhlIHNldF90ZG1f
-c2xvdCBjYWxsYmFjayBmb3IgdGhlCj4+IE1jQlNQIERBSS4gSW4gRFQgeW91IHdvdWxkIGhhdmUg
-c2luZ2xlIGNhcmQgd2l0aCB0d28gZGFpX2xpbmsgc2VjdGlvbgo+PiBhbmQgZWFjaCBzZWN0aW9u
-IHdvdWxkIHNldCBkaWZmZXJlbnQgdGRtIHNsb3RzIHRvIHVzZSBmb3IgdGhlIGNvZGVjcwo+PiBs
-aXN0ZW5pbmcgb24gZGlmZmVyZW50IHNsb3RzLgo+Pgo+PiBUaGVyZSBpcyBvbmUgaXNzdWUgZm9y
-IHN1cmUgd2l0aCB0aGlzIHNldHVwOiB0aGUgdHdvIFBDTSBjYW4gbm90IGJlIHVzZWQKPj4gYXQg
-dGhlIHNhbWUgdGltZS4gQnV0IHdlIGhhdmUgb25lIERNQSBjaGFubmVsIHNvIGlmIHlvdSB3b3Vs
-ZCBvcGVuIGJvdGgKPj4gdGhlIFBDTSBzdHJlYW0gbmVlZCB0byBiZSBzZXQgdXAgaW4gYSB3YXkg
-dG8gbWF0Y2ggd2l0aCB0aGUgSFcgb3IgY3JlYXRlCj4+IGEgYXNvdW5kLmNvbmYgZmlsZSB0byBk
-byBzb21lIG1hcHBpbmcuCj4gCj4gWWVzIGluIHRoZSBkcm9pZCA0IFRETSBjYXNlIG9ubHkgb25l
-IGRldmljZSBjYW4gYmUgdXNlZCBhdCBhIHRpbWUKPiBhbmQgYWxsIHRoYXQgY29uZmlndXJhdGlv
-biBpcyBkb25lIGluIHRoZSBQTUlDIGNvZGVjIC5zZXRfdGRtX3Nsb3QKPiBmdW5jdGlvbi4KCkhy
-bSwgZG8geW91IGhhdmUgdHdvIERBSXMgb24gdGhlIFBNSUMgc2lkZSBvciBkaWZmZXJlbnQgdGlt
-ZXNsb3RzIGZyb20KdGhlIFRETSBzdHJlYW0gaXMgcm91dGVkIHRvIGRpZmZlcmVudCBvdXRwdXRz
-LCBzaW1pbGFybHkgdG8gdHdsNjA0MAp3aGVyZSB0aW1lc2xvdCAwLzEgaXMgSGVhZHNldCwgdGlt
-ZXNsb3QgMi8zIGlzIEhhbmRzZnJlZSBhbmQgdGltZXNsb3QgNQppcyB0byBkcml2ZSBhIHZpYnJh
-PwoKPiBJIHRoaW5rIGl0J3MgcG9zc2libGUgdG8gZG8gbW9yZSBjb21wbGV4IGNvbmZpZ3VyYXRp
-b25zIHdoZXJlIE1jQlNQCj4gaXMgdGhlIG1hc3RlciBhbmQgd291bGQgaW1wbGVtZW50IGEgLnNl
-dF90ZG1fc2xvdCBmdW5jdGlvbi4gQnV0IEkKPiBkb24ndCBrbm93IGFueXRoaW5nIGFib3V0IHRo
-YXQgYW5kIEknbSBub3QgYXdhcmUgb2YgYW55IHN1Y2ggdXNlCj4gY2FzZXMgaW4gdGhlIG1haW5s
-aW5lIGtlcm5lbC4KCk5vLCB0aGUgc2V0X3RkbV9zbG90IGlzIGFwcGxpY2FibGUgZm9yIGJvdGgg
-bWFzdGVyIGFuZCBzbGF2ZSBtb2RlIG9mIE1jQlNQLgoKPiAKPiBSZWdhcmRzLAo+IAo+IFRvbnkK
-PiAKCi0gUMOpdGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1
-IDIyLCAwMDE4MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290
-aXBhaWtrYS9Eb21pY2lsZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On Thu, Dec 13, 2018 at 12:08:38AM -0200, Fabio Estevam wrote:
+> eukrea-tlv320.c machine driver runs on non-DT platforms
+> and include <asm/mach-types.h> header file in order to be able
+> to use some machine_is_eukrea_xxx() macros.
+> 
+> Building it for ARM64 causes the following build error:
+> 
+> sound/soc/fsl/eukrea-tlv320.c:28:10: fatal error: asm/mach-types.h: No such file or directory
+> 
+> Avoid this error by not allowing to build the SND_SOC_EUKREA_TLV320
+> driver when ARM64 is selected.
+> 
+> This is needed in preparation for the i.MX8M support.
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Fabio Estevam <festevam@gmail.com>
+
+Acked-by: Shawn Guo <shawnguo@kernel.org>
