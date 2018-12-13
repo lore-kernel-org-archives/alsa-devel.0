@@ -1,33 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove useless tests on
-	HDaudio capabilities" to the asoc tree
-Date: Thu, 13 Dec 2018 18:11:04 +0000 (GMT)
-Message-ID: <20181213181104.CF66411254D1@debutante.sirena.org.uk>
+Subject: Applied "dt-bindings: ASoC: xlnx,
+ i2s: Document i2s bindings" to the asoc tree
+Date: Thu, 13 Dec 2018 18:11:17 +0000 (GMT)
+Message-ID: <20181213181117.D38D311254D1@debutante.sirena.org.uk>
+References: <1544207558-72508-2-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A05B4267C94
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:11:05 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1544207558-72508-2-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Michal Simek <michal.simek@xilinx.com>, Vishal Sagar <vsagar@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: remove useless tests on HDaudio capabilities
+   dt-bindings: ASoC: xlnx, i2s: Document i2s bindings
 
 has been applied to the asoc tree at
 
@@ -52,81 +49,53 @@ to this mail.
 Thanks,
 Mark
 
->From 7f981bdcf55fda28a9a70c9e8151dd200771a0a8 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 7 Dec 2018 17:50:06 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: remove useless tests on HDaudio
- capabilities
+>From 644c2dcf2f2ea113602aa24170d3203942d3d140 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Sat, 8 Dec 2018 00:02:36 +0530
+Subject: [PATCH] dt-bindings: ASoC: xlnx, i2s: Document i2s bindings
 
-bus->ppcap is now tested upfront, there is no need to re-check if the
-hardware is exposed as needed. Remove tests and remove indentation.
+Added documentation for I2S IP core DT bindings.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 40 ++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+ .../devicetree/bindings/sound/xlnx,i2s.txt    | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,i2s.txt
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 72e366bbba33..f04e9ec4432b 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -826,12 +826,10 @@ static void skl_probe_work(struct work_struct *work)
- 		return;
- 	}
- 
--	if (bus->ppcap) {
--		err = skl_machine_device_register(skl);
--		if (err < 0) {
--			dev_err(bus->dev, "machine register failed: %d\n", err);
--			goto out_err;
--		}
-+	err = skl_machine_device_register(skl);
-+	if (err < 0) {
-+		dev_err(bus->dev, "machine register failed: %d\n", err);
-+		goto out_err;
- 	}
- 
- 	/*
-@@ -1034,25 +1032,23 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, bus);
- 
--	/* check if dsp is there */
--	if (bus->ppcap) {
--		/* create device for dsp clk */
--		err = skl_clock_device_register(skl);
--		if (err < 0)
--			goto out_clk_free;
-+	/* create device for dsp clk */
-+	err = skl_clock_device_register(skl);
-+	if (err < 0)
-+		goto out_clk_free;
- 
--		err = skl_find_machine(skl, (void *)pci_id->driver_data);
--		if (err < 0)
--			goto out_nhlt_free;
-+	err = skl_find_machine(skl, (void *)pci_id->driver_data);
-+	if (err < 0)
-+		goto out_nhlt_free;
- 
--		err = skl_init_dsp(skl);
--		if (err < 0) {
--			dev_dbg(bus->dev, "error failed to register dsp\n");
--			goto out_nhlt_free;
--		}
--		skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
--		skl->skl_sst->clock_power_gating = skl_clock_power_gating;
-+	err = skl_init_dsp(skl);
-+	if (err < 0) {
-+		dev_dbg(bus->dev, "error failed to register dsp\n");
-+		goto out_nhlt_free;
- 	}
-+	skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
-+	skl->skl_sst->clock_power_gating = skl_clock_power_gating;
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,i2s.txt b/Documentation/devicetree/bindings/sound/xlnx,i2s.txt
+new file mode 100644
+index 000000000000..5e7c7d5bb60a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,i2s.txt
+@@ -0,0 +1,28 @@
++Device-Tree bindings for Xilinx I2S PL block
 +
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
- 
++The IP supports I2S based playback/capture audio
++
++Required property:
++ - compatible: "xlnx,i2s-transmitter-1.0" for playback and
++	       "xlnx,i2s-receiver-1.0" for capture
++
++Required property common to both I2S playback and capture:
++ - reg: Base address and size of the IP core instance.
++ - xlnx,dwidth: sample data width. Can be any of 16, 24.
++ - xlnx,num-channels: Number of I2S streams. Can be any of 1, 2, 3, 4.
++		      supported channels = 2 * xlnx,num-channels
++
++Example:
++
++	i2s_receiver@a0080000 {
++		compatible = "xlnx,i2s-receiver-1.0";
++		reg = <0x0 0xa0080000 0x0 0x10000>;
++		xlnx,dwidth = <0x18>;
++		xlnx,num-channels = <1>;
++	};
++	i2s_transmitter@a0090000 {
++		compatible = "xlnx,i2s-transmitter-1.0";
++		reg = <0x0 0xa0090000 0x0 0x10000>;
++		xlnx,dwidth = <0x18>;
++		xlnx,num-channels = <1>;
++	};
 -- 
 2.19.0.rc2
