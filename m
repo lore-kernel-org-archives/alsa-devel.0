@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: About graph node issue without 'reg' property
-Date: Thu, 13 Dec 2018 18:27:39 +0000
-Message-ID: <20181213182739.GZ10669@sirena.org.uk>
-References: <20181213193944.CCC9.4A936039@socionext.com>
- <20181213162428.GR10669@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2] ASoC: Intel: Skylake: Add more platform
+	granularity
+Date: Thu, 13 Dec 2018 13:03:00 -0600
+Message-ID: <20181213190300.24999-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4337223466521513132=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D02F26789E
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:27:40 +0100 (CET)
-In-Reply-To: <20181213162428.GR10669@sirena.org.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FFB526789E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 20:03:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +19,220 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The current SKYLAKE kconfig is a all-you-can-eat selection that will
+support all known plaforms. This is however not necessarily a good
+thing: most platforms for SKL and KBL don't support the DSP, but a
+number of CNL/WHL ones do. Selecting this driver in all cases isn't
+really smart and will require users to muck with blacklists.
 
---===============4337223466521513132==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+vcRm3WFmV0Q/ShD"
-Content-Disposition: inline
+Partition the configs to allow distributions to select on which
+platform this driver is used. Keep the existing SND_SOC_INTEL_SKYLAKE
+config to select everything for backwards compatibility. This patch does
+not provide new functionality, only finer-grained choices in supported
+platforms.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+v2: solve Kconfig conflict with Hui Wang's patchset for KBL/RT5660 support
 
---+vcRm3WFmV0Q/ShD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ sound/soc/intel/Kconfig        | 73 ++++++++++++++++++++++++++++++----
+ sound/soc/intel/boards/Kconfig | 16 +++++++-
+ sound/soc/intel/skylake/skl.c  | 12 ++++++
+ 3 files changed, 92 insertions(+), 9 deletions(-)
 
-On Thu, Dec 13, 2018 at 04:24:28PM +0000, Mark Brown wrote:
-> On Thu, Dec 13, 2018 at 07:39:45PM +0900, Kunihiko Hayashi wrote:
->=20
-> > Maybe I think that we'd better add 'reg' properties to each port,
-> > however, there might be same matter in other SoCs, so I'm not sure
-> > whether your patch breaks the backword compatibility or
-> > our devicetrees are wrong.
-
-> > I'd be glad if I could hear something about this issue from you.
-
-> There's an ongoing thread between Morimoto-san and Tony Lindgren around
-> the graph card including this issue, there Morimoto-san proposed some
-> code which would let the reg property be optional.  Device trees should
-> still be updated but that way we wouldn't actually break anything which
-> would be good.
-
-There's a patch now - "[PATCH][RFC] ASoC: simple-card-utils: fixup
-asoc_simple_card_get_dai_id() ID method".
-
---+vcRm3WFmV0Q/ShD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwSpJoACgkQJNaLcl1U
-h9AZSgf8DJV2egX6ENTCZAe8EPXaS+WF0cef6t51L9ocKvhAOeHoUehO7HvT9gMG
-xBO9cd7tIfw7+HwqH0sBSdDAKBP246DDM08+oQyVKhr+w61RVd8mV/nUA9JBtNVC
-yA9H3bryGOQck8Z01mHvL9D+ksFdsVQSBXprSiHb/YjxVcVwJSeoS5rXOZbrB+qL
-VP9+z5P6dqs3Fbw21dE3TrfayK32TyYPbGrV138KpQRjdNDSVDkTrnivlg8sMrfV
-MbEWHxcTcAOYxJIHSudYnXzNyea5c6YTFrz+0eCWSMGISEQ8GFtqcL+AMhb9fsWk
-qJmrndRUNuiWBbOkVM0tngVTGdd8Bg==
-=/9Qs
------END PGP SIGNATURE-----
-
---+vcRm3WFmV0Q/ShD--
-
---===============4337223466521513132==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4337223466521513132==--
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 18e717703685..99a62ba409df 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -102,15 +102,74 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+ 	  recommended option
+ 
+ config SND_SOC_INTEL_SKYLAKE
+-	tristate "SKL/BXT/KBL/GLK/CNL... Platforms"
++	tristate "All Skylake/SST Platforms"
+ 	depends on PCI && ACPI
+-	select SND_SOC_INTEL_SKYLAKE_COMMON
++	select SND_SOC_INTEL_SKL
++	select SND_SOC_INTEL_APL
++	select SND_SOC_INTEL_KBL
++	select SND_SOC_INTEL_GLK
++	select SND_SOC_INTEL_CNL
++	select SND_SOC_INTEL_CFL
+ 	help
+-	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+-	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+-	  then enable this option by saying Y or m.
++          This is a backwards-compatible option to select all devices
++	  supported by the Intel SST/Skylake driver. This option is no
++	  longer recommended and will be deprecated when the SOF
++	  driver is introduced.  Distributions should explicitly
++	  select which platform uses this driver.
++
++config SND_SOC_INTEL_SKL
++	tristate "Skylake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel Skylake platform with the DSP enabled
++	  in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_APL
++	tristate "Broxton/ApolloLake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel Broxton/ApolloLake platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_KBL
++	tristate "Kabylake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel Kabylake platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_GLK
++	tristate "GeminiLake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel GeminiLake platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_CNL
++	tristate "CannonLake/WhiskyLake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel CNL/WHL platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_CFL
++	tristate "CoffeeLake Platforms"
++	depends on PCI && ACPI
++	select SND_SOC_INTEL_SKYLAKE_FAMILY
++	help
++	  If you have a Intel CoffeeLake platform with the DSP
++	  enabled in the BIOS then enable this option by saying Y or m.
++
++config SND_SOC_INTEL_SKYLAKE_FAMILY
++	tristate
++	select SND_SOC_INTEL_SKYLAKE_COMMON
+ 
+-if  SND_SOC_INTEL_SKYLAKE
++if SND_SOC_INTEL_SKYLAKE_FAMILY
+ 
+ config SND_SOC_INTEL_SKYLAKE_SSP_CLK
+ 	tristate
+@@ -135,7 +194,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+ 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+ 	  then enable this option by saying Y or m.
+ 
+-endif ## SND_SOC_INTEL_SKYLAKE
++endif ## SND_SOC_INTEL_SKYLAKE_FAMILY
+ 
+ config SND_SOC_ACPI_INTEL_MATCH
+ 	tristate
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 3839d6205fcf..0a7e40d06395 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -172,7 +172,7 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 
+ endif ## SND_SST_ATOM_HIFI2_PLATFORM
+ 
+-if SND_SOC_INTEL_SKYLAKE
++if SND_SOC_INTEL_SKL
+ 
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "SKL with RT286 I2S mode"
+@@ -212,6 +212,10 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+ 
++endif ## SND_SOC_INTEL_SKL
++
++if SND_SOC_INTEL_APL
++
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
+ 	depends on MFD_INTEL_LPSS && I2C && ACPI
+@@ -239,6 +243,10 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	   Say Y or m if you have such a device. This is a recommended option.
+ 	   If unsure select "N".
+ 
++endif ## SND_SOC_INTEL_APL
++
++if SND_SOC_INTEL_KBL
++
+ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	tristate "KBL with RT5663 and MAX98927 in I2S Mode"
+ 	depends on MFD_INTEL_LPSS && I2C && ACPI
+@@ -303,6 +311,10 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
+ 	  create an alsa sound card for RT5660 I2S audio codec.
+ 	  Say Y if you have such a device.
+ 
++endif ## SND_SOC_INTEL_KBL
++
++if SND_SOC_INTEL_GLK
++
+ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
+ 	depends on MFD_INTEL_LPSS && I2C && ACPI
+@@ -317,7 +329,7 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	   Say Y if you have such a device.
+ 	   If unsure select "N".
+ 
+-endif ## SND_SOC_INTEL_SKYLAKE
++endif ## SND_SOC_INTEL_GLK
+ 
+ if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
+ 
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index f9888b1d5521..5abd35ca4e41 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1142,24 +1142,36 @@ static void skl_remove(struct pci_dev *pci)
+ 
+ /* PCI IDs */
+ static const struct pci_device_id skl_ids[] = {
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
+ 	/* Sunrise Point-LP */
+ 	{ PCI_DEVICE(0x8086, 0x9d70),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_skl_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+ 	/* BXT-P */
+ 	{ PCI_DEVICE(0x8086, 0x5a98),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_bxt_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
+ 	/* KBL */
+ 	{ PCI_DEVICE(0x8086, 0x9D71),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_kbl_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
+ 	/* GLK */
+ 	{ PCI_DEVICE(0x8086, 0x3198),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_glk_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CNL)
+ 	/* CNL */
+ 	{ PCI_DEVICE(0x8086, 0x9dc8),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CFL)
+ 	/* CFL */
+ 	{ PCI_DEVICE(0x8086, 0xa348),
+ 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
++#endif
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, skl_ids);
+-- 
+2.17.1
