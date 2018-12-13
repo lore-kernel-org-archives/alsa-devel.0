@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add CFL-S support" to
-	the asoc tree
-Date: Thu, 13 Dec 2018 18:11:10 +0000 (GMT)
-Message-ID: <20181213181110.6370211254D1@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: Skylake: Harden DSP detection
+	with PCI class/subclass info" to the asoc tree
+Date: Thu, 13 Dec 2018 18:11:08 +0000 (GMT)
+Message-ID: <20181213181108.9187911254D1@debutante.sirena.org.uk>
+References: <20181207235008.22988-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EE6BA267C99
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:11:10 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id EA4A9267CB8
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:11:11 +0100 (CET)
+In-Reply-To: <20181207235008.22988-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add CFL-S support
+   ASoC: Intel: Skylake: Harden DSP detection with PCI class/subclass info
 
 has been applied to the asoc tree at
 
@@ -52,56 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From e6b98db945124987b1ecec3f5f030877627e01a9 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Fri, 7 Dec 2018 17:50:03 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: Add CFL-S support
+>From c746de8dbc7b0ae9df491f7a99a6dab34203b51b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 7 Dec 2018 17:50:04 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: Harden DSP detection with PCI
+ class/subclass info
 
-It's with CNP, supposed to be equivalent with CNL entry.
+The existing PPCAP and GCAP fields cannot be used reliably to
+determine if the DSP is enabled by the BIOS. Instead rely on the
+class/subclass information to find out if this driver can run or
+not. The values in the code don't seem to be documented in publicly
+available documents but are part of recommendations made to BIOS
+writers and have been verified to be accurate on a number of
+platforms.
 
-Keep the existing declaration style for now, at a later point we may
-transition and use PCI_DEVICE_DATA().
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 8 ++++++++
- sound/soc/intel/skylake/skl.c          | 3 +++
- 2 files changed, 11 insertions(+)
+ sound/soc/intel/skylake/skl.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 8bfb8b0fa3d5..b0e6fb93eaf8 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -247,6 +247,14 @@ static const struct skl_dsp_ops dsp_ops[] = {
- 		.init_fw = cnl_sst_init_fw,
- 		.cleanup = cnl_sst_dsp_cleanup
- 	},
-+	{
-+		.id = 0xa348,
-+		.num_cores = 4,
-+		.loader_ops = bxt_get_loader_ops,
-+		.init = cnl_sst_dsp_init,
-+		.init_fw = cnl_sst_init_fw,
-+		.cleanup = cnl_sst_dsp_cleanup
-+	},
- };
- 
- const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 3f0ac1312982..df36b8fe6d5e 100644
+index df36b8fe6d5e..41a084b3d48f 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -1121,6 +1121,9 @@ static const struct pci_device_id skl_ids[] = {
- 	/* CNL */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+	/* CFL */
-+	{ PCI_DEVICE(0x8086, 0xa348),
-+		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
+@@ -916,6 +916,21 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	unsigned short gcap;
+ 	int cp_streams, pb_streams, start_idx;
+ 
++	/*
++	 * detect DSP by checking class/subclass/prog-id information
++	 * class=04 subclass 03 prog-if 00: no DSP, legacy driver needs to be used
++	 * class=04 subclass 01 prog-if 00: DSP is present (and may be required e.g. for DMIC or SSP support)
++	 * class=04 subclass 03 prog-if 80: either of DSP or legacy mode can be used
++	 */
++	if (pci->class == 0x040300) {
++		dev_err(bus->dev, "The DSP is not enabled on this platform, aborting probe\n");
++		return -ENODEV;
++	} else if (pci->class != 0x040100 && pci->class != 0x040380) {
++		dev_err(bus->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, aborting probe\n", pci->class);
++		return -ENODEV;
++	}
++	dev_info(bus->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
++
+ 	err = pci_request_regions(pci, "Skylake HD audio");
+ 	if (err < 0)
+ 		return err;
 -- 
 2.19.0.rc2
