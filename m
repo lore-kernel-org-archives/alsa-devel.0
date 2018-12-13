@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Add powersaving widgets for DAC and ADC" to the asoc tree
-Date: Thu, 13 Dec 2018 18:11:12 +0000 (GMT)
-Message-ID: <20181213181112.3561611254D1@debutante.sirena.org.uk>
-References: <20181207190234.12040-1-kmarinushkin@birdec.tech>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181207190234.12040-1-kmarinushkin@birdec.tech>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: remove useless tests on
+	HDaudio capabilities" to the asoc tree
+Date: Thu, 13 Dec 2018 18:11:04 +0000 (GMT)
+Message-ID: <20181213181104.CF66411254D1@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A05B4267C94
+ for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:11:05 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Add powersaving widgets for DAC and ADC
+   ASoC: Intel: Skylake: remove useless tests on HDaudio capabilities
 
 has been applied to the asoc tree at
 
@@ -37,67 +52,81 @@ to this mail.
 Thanks,
 Mark
 
->From bb9963b850ea9e1ef39f4368eae83a9462f60166 Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Fri, 7 Dec 2018 20:02:34 +0100
-Subject: [PATCH] ASoC: pcm3060: Add powersaving widgets for DAC and ADC
+>From 7f981bdcf55fda28a9a70c9e8151dd200771a0a8 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 7 Dec 2018 17:50:06 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: remove useless tests on HDaudio
+ capabilities
 
-Enable DAC/ADC only when playing/capturing
+bus->ppcap is now tested upfront, there is no need to re-check if the
+hardware is exposed as needed. Remove tests and remove indentation.
 
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060.c | 14 ++++++++++----
- sound/soc/codecs/pcm3060.h |  2 ++
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl.c | 40 ++++++++++++++++-------------------
+ 1 file changed, 18 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 1dd851a7b43b..6714aa8d9026 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -198,19 +198,25 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
- };
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 72e366bbba33..f04e9ec4432b 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -826,12 +826,10 @@ static void skl_probe_work(struct work_struct *work)
+ 		return;
+ 	}
  
- static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", PCM3060_REG64,
-+			 PCM3060_REG_SHIFT_DAPSV, 1),
+-	if (bus->ppcap) {
+-		err = skl_machine_device_register(skl);
+-		if (err < 0) {
+-			dev_err(bus->dev, "machine register failed: %d\n", err);
+-			goto out_err;
+-		}
++	err = skl_machine_device_register(skl);
++	if (err < 0) {
++		dev_err(bus->dev, "machine register failed: %d\n", err);
++		goto out_err;
+ 	}
+ 
+ 	/*
+@@ -1034,25 +1032,23 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	pci_set_drvdata(skl->pci, bus);
+ 
+-	/* check if dsp is there */
+-	if (bus->ppcap) {
+-		/* create device for dsp clk */
+-		err = skl_clock_device_register(skl);
+-		if (err < 0)
+-			goto out_clk_free;
++	/* create device for dsp clk */
++	err = skl_clock_device_register(skl);
++	if (err < 0)
++		goto out_clk_free;
+ 
+-		err = skl_find_machine(skl, (void *)pci_id->driver_data);
+-		if (err < 0)
+-			goto out_nhlt_free;
++	err = skl_find_machine(skl, (void *)pci_id->driver_data);
++	if (err < 0)
++		goto out_nhlt_free;
+ 
+-		err = skl_init_dsp(skl);
+-		if (err < 0) {
+-			dev_dbg(bus->dev, "error failed to register dsp\n");
+-			goto out_nhlt_free;
+-		}
+-		skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
+-		skl->skl_sst->clock_power_gating = skl_clock_power_gating;
++	err = skl_init_dsp(skl);
++	if (err < 0) {
++		dev_dbg(bus->dev, "error failed to register dsp\n");
++		goto out_nhlt_free;
+ 	}
++	skl->skl_sst->enable_miscbdcge = skl_enable_miscbdcge;
++	skl->skl_sst->clock_power_gating = skl_clock_power_gating;
 +
- 	SND_SOC_DAPM_OUTPUT("OUTL"),
- 	SND_SOC_DAPM_OUTPUT("OUTR"),
+ 	if (bus->mlcap)
+ 		snd_hdac_ext_bus_get_ml_capabilities(bus);
  
- 	SND_SOC_DAPM_INPUT("INL"),
- 	SND_SOC_DAPM_INPUT("INR"),
-+
-+	SND_SOC_DAPM_ADC("ADC", "Capture", PCM3060_REG64,
-+			 PCM3060_REG_SHIFT_ADPSV, 1),
- };
- 
- static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
--	{ "OUTL", NULL, "Playback" },
--	{ "OUTR", NULL, "Playback" },
-+	{ "OUTL", NULL, "DAC" },
-+	{ "OUTR", NULL, "DAC" },
- 
--	{ "Capture", NULL, "INL" },
--	{ "Capture", NULL, "INR" },
-+	{ "ADC", NULL, "INL" },
-+	{ "ADC", NULL, "INR" },
- };
- 
- /* soc component */
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index c895cf40ee10..6a027b4a845d 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -37,7 +37,9 @@ int pcm3060_remove(struct device *dev);
- #define PCM3060_REG_MRST		0x80
- #define PCM3060_REG_SRST		0x40
- #define PCM3060_REG_ADPSV		0x20
-+#define PCM3060_REG_SHIFT_ADPSV	0x05
- #define PCM3060_REG_DAPSV		0x10
-+#define PCM3060_REG_SHIFT_DAPSV	0x04
- #define PCM3060_REG_SE			0x01
- 
- #define PCM3060_REG65			0x41
 -- 
 2.19.0.rc2
