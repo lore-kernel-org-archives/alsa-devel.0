@@ -1,34 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: stop probe if HDaudio
-	capabilities don't exist" to the asoc tree
-Date: Thu, 13 Dec 2018 18:11:06 +0000 (GMT)
-Message-ID: <20181213181106.AB6AE11254D1@debutante.sirena.org.uk>
-References: <20181207235008.22988-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: xlnx: enable i2s driver build" to the asoc tree
+Date: Thu, 13 Dec 2018 18:11:14 +0000 (GMT)
+Message-ID: <20181213181114.1210211254D1@debutante.sirena.org.uk>
+References: <1544207558-72508-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 32715267CAD
- for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2018 19:11:09 +0100 (CET)
-In-Reply-To: <20181207235008.22988-4-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1544207558-72508-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Michal Simek <michal.simek@xilinx.com>, Vishal Sagar <vsagar@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: stop probe if HDaudio capabilities don't exist
+   ASoC: xlnx: enable i2s driver build
 
 has been applied to the asoc tree at
 
@@ -53,76 +48,68 @@ to this mail.
 Thanks,
 Mark
 
->From fa11ab5688f744bc868356f3f14c3bb9f283a780 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 7 Dec 2018 17:50:05 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: stop probe if HDaudio capabilities
- don't exist
+>From 33f8db9a89200c18ff65d494a3dbd325d129e15e Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Sat, 8 Dec 2018 00:02:38 +0530
+Subject: [PATCH] ASoC: xlnx: enable i2s driver build
 
-Check immediately if required HDaudio capabilities can't be found (no
-PPCAP or no streams exposed in GCAP), and move all DMA inits after the
-error tests.
+Enabled i2s driver build option.
 
-PPCAP and GCAP are not reliable indicators of DSP presence, but if
-they don't exist then the driver will not work.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ sound/soc/Kconfig         | 1 +
+ sound/soc/Makefile        | 1 +
+ sound/soc/xilinx/Kconfig  | 8 ++++++++
+ sound/soc/xilinx/Makefile | 2 ++
+ 4 files changed, 12 insertions(+)
+ create mode 100644 sound/soc/xilinx/Kconfig
+ create mode 100644 sound/soc/xilinx/Makefile
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 41a084b3d48f..72e366bbba33 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -946,6 +946,12 @@ static int skl_first_init(struct hdac_bus *bus)
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 1cf11cf51e1d..d21659f5a7e2 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -73,6 +73,7 @@ source "sound/soc/tegra/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+ source "sound/soc/uniphier/Kconfig"
+ source "sound/soc/ux500/Kconfig"
++source "sound/soc/xilinx/Kconfig"
+ source "sound/soc/xtensa/Kconfig"
+ source "sound/soc/zte/Kconfig"
  
- 	snd_hdac_bus_parse_capabilities(bus);
- 
-+	/* check if PPCAP exists */
-+	if (!bus->ppcap) {
-+		dev_err(bus->dev, "bus ppcap not set, HDaudio or DSP not present?\n");
-+		return -ENODEV;
-+	}
-+
- 	if (skl_acquire_irq(bus, 0) < 0)
- 		return -EBUSY;
- 
-@@ -955,23 +961,25 @@ static int skl_first_init(struct hdac_bus *bus)
- 	gcap = snd_hdac_chip_readw(bus, GCAP);
- 	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
- 
--	/* allow 64bit DMA address if supported by H/W */
--	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
--	} else {
--		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
--	}
--
- 	/* read number of streams from GCAP register */
- 	cp_streams = (gcap >> 8) & 0x0f;
- 	pb_streams = (gcap >> 12) & 0x0f;
- 
--	if (!pb_streams && !cp_streams)
-+	if (!pb_streams && !cp_streams) {
-+		dev_err(bus->dev, "no streams found in GCAP definitions?\n");
- 		return -EIO;
-+	}
- 
- 	bus->num_streams = cp_streams + pb_streams;
- 
-+	/* allow 64bit DMA address if supported by H/W */
-+	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
-+		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
-+	} else {
-+		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
-+		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
-+	}
-+
- 	/* initialize streams */
- 	snd_hdac_ext_stream_init_all
- 		(bus, 0, cp_streams, SNDRV_PCM_STREAM_CAPTURE);
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 62a5f87c3cfc..aff7b1989436 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -57,5 +57,6 @@ obj-$(CONFIG_SND_SOC)	+= tegra/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+ obj-$(CONFIG_SND_SOC)	+= uniphier/
+ obj-$(CONFIG_SND_SOC)	+= ux500/
++obj-$(CONFIG_SND_SOC)	+= xilinx/
+ obj-$(CONFIG_SND_SOC)	+= xtensa/
+ obj-$(CONFIG_SND_SOC)	+= zte/
+diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
+new file mode 100644
+index 000000000000..25e287feb58c
+--- /dev/null
++++ b/sound/soc/xilinx/Kconfig
+@@ -0,0 +1,8 @@
++config SND_SOC_XILINX_I2S
++	tristate "Audio support for the the Xilinx I2S"
++	help
++	  Select this option to enable Xilinx I2S Audio. This enables
++	  I2S playback and capture using xilinx soft IP. In transmitter
++	  mode, IP receives audio in AES format, extracts PCM and sends
++	  PCM data. In receiver mode, IP receives PCM audio and
++	  encapsulates PCM in AES format and sends AES data.
+diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
+new file mode 100644
+index 000000000000..6c1209b9ee75
+--- /dev/null
++++ b/sound/soc/xilinx/Makefile
+@@ -0,0 +1,2 @@
++snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
++obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
 -- 
 2.19.0.rc2
