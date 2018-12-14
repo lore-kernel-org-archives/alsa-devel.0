@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: q6asm-dai: dt-bindings: Add support to
-	compress dais" to the asoc tree
-Date: Fri, 14 Dec 2018 12:44:16 +0000 (GMT)
-Message-ID: <20181214124416.EB3AB11258A2@debutante.sirena.org.uk>
+Subject: Applied "ALSA: compress: make use of runtime buffer
+	for copy" to the asoc tree
+Date: Fri, 14 Dec 2018 12:44:18 +0000 (GMT)
+Message-ID: <20181214124418.B877711258A2@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 780CF2678D5
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:44:17 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 526BA267A76
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:44:19 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: q6asm-dai: dt-bindings: Add support to compress dais
+   ALSA: compress: make use of runtime buffer for copy
 
 has been applied to the asoc tree at
 
@@ -52,72 +52,64 @@ to this mail.
 Thanks,
 Mark
 
->From ee23cf37fd586769febab95e2fbbbb50da5f9f2d Mon Sep 17 00:00:00 2001
+>From d00f749b00f7802bf944688ad2971455f84fdacb Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 15 Nov 2018 18:13:22 +0000
-Subject: [PATCH] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
+Date: Thu, 15 Nov 2018 18:13:21 +0000
+Subject: [PATCH] ALSA: compress: make use of runtime buffer for copy
 
-This patch adds board specific bindings required for dais, In particular
-for compressed dais and dai direction.
-
-Board specific setup involves setting up some of dais as compressed dais
-and also specify direction of any dai. Some of the dais might only
-support capture/playback depending on the board level wiring.
-
-These two new dt properties will allow such flexibilty at board level dts.
+Default copy function uses kmalloc to allocate buffers, lets check
+if the runtime buffers are setup before making this allocations.
+This can be useful if the buffers are dma buffers.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Acked-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ sound/core/compress_offload.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index f9c7bd8c1bc0..9f5378c51686 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -27,6 +27,28 @@ used by the apr service device.
- 	Value type: <u32>
- 	Definition: Must be 1
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 26b5e245b074..a5b09e75e787 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -171,7 +171,8 @@ static int snd_compr_free(struct inode *inode, struct file *f)
+ 	}
  
-+== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
-+configuration of each dai. Must contain the following properties.
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be dai id
-+
-+- direction:
-+	Usage: Required for Compress offload dais
-+	Value type: <u32>
-+	Definition: Specifies the direction of the dai stream
-+			0 for both tx and rx
-+			1 for only tx (Capture/Encode)
-+			2 for only rx (Playback/Decode)
-+
-+- is-compress-dai:
-+	Usage: Required for Compress offload dais
-+	Value type: <boolean>
-+	Definition: present for Compress offload dais
-+
-+
- = EXAMPLE
+ 	data->stream.ops->free(&data->stream);
+-	kfree(data->stream.runtime->buffer);
++	if (!data->stream.runtime->dma_buffer_p)
++		kfree(data->stream.runtime->buffer);
+ 	kfree(data->stream.runtime);
+ 	kfree(data);
+ 	return 0;
+@@ -505,7 +506,7 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+ 		struct snd_compr_params *params)
+ {
+ 	unsigned int buffer_size;
+-	void *buffer;
++	void *buffer = NULL;
  
- q6asm@7 {
-@@ -35,5 +57,10 @@ q6asm@7 {
- 	q6asmdai: dais {
- 		compatible = "qcom,q6asm-dais";
- 		#sound-dai-cells = <1>;
-+		mm@0 {
-+			reg = <0>;
-+			direction = <2>;
-+			is-compress-dai;
-+		};
- 	};
- };
+ 	buffer_size = params->buffer.fragment_size * params->buffer.fragments;
+ 	if (stream->ops->copy) {
+@@ -514,7 +515,18 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+ 		 * the data from core
+ 		 */
+ 	} else {
+-		buffer = kmalloc(buffer_size, GFP_KERNEL);
++		if (stream->runtime->dma_buffer_p) {
++
++			if (buffer_size > stream->runtime->dma_buffer_p->bytes)
++				dev_err(&stream->device->dev,
++						"Not enough DMA buffer");
++			else
++				buffer = stream->runtime->dma_buffer_p->area;
++
++		} else {
++			buffer = kmalloc(buffer_size, GFP_KERNEL);
++		}
++
+ 		if (!buffer)
+ 			return -ENOMEM;
+ 	}
 -- 
 2.19.0.rc2
