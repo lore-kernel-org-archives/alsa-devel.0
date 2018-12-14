@@ -1,7 +1,7 @@
 From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH 2/4] ASoC: qdsp6: qdafe: add support for display_port_rx
-Date: Fri, 14 Dec 2018 17:59:27 +0530
-Message-ID: <1544790569-10608-3-git-send-email-rohitkr@codeaurora.org>
+Subject: [PATCH 3/4] ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
+Date: Fri, 14 Dec 2018 17:59:28 +0530
+Message-ID: <1544790569-10608-4-git-send-email-rohitkr@codeaurora.org>
 References: <1544790569-10608-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1544790569-10608-1-git-send-email-rohitkr@codeaurora.org>
@@ -10,43 +10,67 @@ To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@k
 Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for Display_Port_Rx
-port in AFE.
+This patch adds support of AFE DAI for Display_port_rx port.
 
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 829b5e987..e0945f7a 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -71,6 +71,7 @@
- /* Port IDs */
- #define AFE_API_VERSION_HDMI_CONFIG	0x1
- #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
-+#define AFE_PORT_ID_HDMI_OVER_DP_RX	0x6020
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index bfc3bbf..dc645ba 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -341,6 +341,7 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
  
- #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
- /* Clock set API version */
-@@ -704,6 +705,8 @@ struct afe_port_map {
- 				QUINARY_TDM_RX_7, 1, 1},
- 	[QUINARY_TDM_TX_7] =  { AFE_PORT_ID_QUINARY_TDM_TX_7,
- 				QUINARY_TDM_TX_7, 0, 1},
-+	[DISPLAY_PORT_RX] = { AFE_PORT_ID_HDMI_OVER_DP_RX,
-+				DISPLAY_PORT_RX, 1, 1},
+ 	switch (dai->id) {
+ 	case HDMI_RX:
++	case DISPLAY_PORT_RX:
+ 		q6afe_hdmi_port_prepare(dai_data->port[dai->id],
+ 					&dai_data->port_config[dai->id].hdmi);
+ 		break;
+@@ -445,6 +446,7 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
+ 
+ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"HDMI Playback", NULL, "HDMI_RX"},
++	{"Display Port Playback", NULL, "DISPLAY_PORT_RX"},
+ 	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
+ 	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
+ 	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
+@@ -1090,6 +1092,25 @@ static int msm_dai_q6_dai_remove(struct snd_soc_dai *dai)
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 5, QUINARY_TDM_TX_5),
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 6, QUINARY_TDM_TX_6),
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 7, QUINARY_TDM_TX_7),
++	{
++		.playback = {
++			.stream_name = "Display Port Playback",
++			.rates = SNDRV_PCM_RATE_48000 |
++				 SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 2,
++			.channels_max = 8,
++			.rate_max =     192000,
++			.rate_min =	48000,
++		},
++		.ops = &q6hdmi_ops,
++		.id = DISPLAY_PORT_RX,
++		.name = "DISPLAY_PORT",
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	},
  };
  
- static void q6afe_port_free(struct kref *ref)
-@@ -1384,6 +1387,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+@@ -1311,6 +1332,7 @@ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+ 						0, 0, 0, 0),
+ 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
+ };
  
- 	switch (port_id) {
- 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
-+	case AFE_PORT_ID_HDMI_OVER_DP_RX:
- 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
- 		break;
- 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX:
+ static const struct snd_soc_component_driver q6afe_dai_component = {
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
