@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: merge simple-scu-card on
-	Doc" to the asoc tree
-Date: Fri, 14 Dec 2018 12:37:33 +0000 (GMT)
-Message-ID: <20181214123733.CA2E711258A1@debutante.sirena.org.uk>
-References: <87bm5o975g.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-card: tidyup prefix for
+	snd_soc_codec_conf" to the asoc tree
+Date: Fri, 14 Dec 2018 12:37:35 +0000 (GMT)
+Message-ID: <20181214123735.A60CE11258A1@debutante.sirena.org.uk>
+References: <87efak979e.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 47E9A267A78
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:34 +0100 (CET)
-In-Reply-To: <87bm5o975g.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C1EA267AB2
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:36 +0100 (CET)
+In-Reply-To: <87efak979e.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: merge simple-scu-card on Doc
+   ASoC: audio-graph-card: tidyup prefix for snd_soc_codec_conf
 
 has been applied to the asoc tree at
 
@@ -53,196 +53,93 @@ to this mail.
 Thanks,
 Mark
 
->From c4e8ebb9f2624da8302b6683ecb5ead7108ccb79 Mon Sep 17 00:00:00 2001
+>From 66164a4da30dd295a1b60568c02bee37cfd9895a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 14 Dec 2018 11:35:05 +0900
-Subject: [PATCH] ASoC: simple-card: merge simple-scu-card on Doc
+Date: Fri, 14 Dec 2018 11:32:43 +0900
+Subject: [PATCH] ASoC: audio-graph-card: tidyup prefix for snd_soc_codec_conf
 
-simple-card and simple-scu-card are very similar driver,
-but the former is supporting normal sound card,
-the latter is supporting DPCM sound card.
+Current audio-graph-card is handling "prefix" by many ways.
+But, it is not useful and readable.
+We want to do is that allow having it everywere.
+This patch supports it.
+It will be overwrote if lower node has it.
 
-We couldn't use normal sound and DPCM sound in same time by
-one sound card. This patch merges both sound card into
-simple-card. Now we can use both feature on same driver.
+	sound {
+		prefix = "xxx"; // initial
+	};
 
-simple-card is now supporting .compatible = "simple-scu-audio-card".
+	codec {
+		audio-graph-card,prefix = "xxx"; // overwrite
+		ports {
+			prefix = "xxx"; // overwrite
+			port {
+				prefix = "xxx"; // overwrite
+			};
+		};
+	};
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/simple-card.txt | 137 ++++++++++++++++++
- 1 file changed, 137 insertions(+)
+ sound/soc/generic/audio-graph-card.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index a4c72d09cd45..4629c8f8a6b6 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -95,7 +95,9 @@ Optional CPU/CODEC subnodes properties:
- 					  initialization. It is useful for some aCPUs with
- 					  fixed clocks.
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 368b8ae463af..0d6144560a1e 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -179,12 +179,12 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	struct device *dev = graph_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, link_idx);
+ 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
+-	struct snd_soc_card *card = graph_priv_to_card(priv);
+ 	struct device_node *ep = is_cpu ? cpu_ep : codec_ep;
+ 	struct device_node *port = of_get_parent(ep);
+ 	struct device_node *ports = of_get_parent(port);
+ 	struct device_node *node = of_graph_get_port_parent(ep);
+ 	struct asoc_simple_dai *dai;
++	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+ 	int ret;
  
-+-------------------------------------------
- Example 1 - single DAI link:
-+-------------------------------------------
+ 	dev_dbg(dev, "link_of DPCM (for %s)\n", is_cpu ? "CPU" : "Codec");
+@@ -204,10 +204,8 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	of_node_put(port);
  
- sound {
- 	compatible = "simple-audio-card";
-@@ -138,7 +140,9 @@ sh_fsi2: sh_fsi2@ec230000 {
- 	interrupts = <0 146 0x4>;
- };
+ 	if (is_cpu) {
+-		struct snd_soc_dai_link_component *codecs;
  
-+-------------------------------------------
- Example 2 - many DAI links:
-+-------------------------------------------
+ 		/* BE is dummy */
+-		codecs			= dai_link->codecs;
+ 		codecs->of_node		= NULL;
+ 		codecs->dai_name	= "snd-soc-dummy-dai";
+ 		codecs->name		= "snd-soc-dummy";
+@@ -264,19 +262,19 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
  
- sound {
- 	compatible = "simple-audio-card";
-@@ -176,8 +180,10 @@ sound {
- 	};
- };
+ 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 							"be.%s",
+-							dai_link->codecs->dai_name);
++							codecs->dai_name);
+ 		if (ret < 0)
+ 			return ret;
  
-+-------------------------------------------
- Example 3 - route audio from IMX6 SSI2 through TLV320DAC3100 codec
- through TPA6130A2 amplifier to headphones:
-+-------------------------------------------
+ 		/* check "prefix" from top node */
+-		snd_soc_of_parse_audio_prefix(card, cconf,
+-					      dai_link->codecs->of_node,
++		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
+ 					      "prefix");
+-		/* check "prefix" from each node if top doesn't have */
+-		if (!cconf->of_node)
+-			snd_soc_of_parse_node_prefix(node, cconf,
+-						     dai_link->codecs->of_node,
+-						     PREFIX "prefix");
++		snd_soc_of_parse_node_prefix(node, cconf, codecs->of_node,
++					     PREFIX "prefix");
++		snd_soc_of_parse_node_prefix(ports, cconf, codecs->of_node,
++					     "prefix");
++		snd_soc_of_parse_node_prefix(port, cconf, codecs->of_node,
++					     "prefix");
+ 	}
  
- &i2c0 {
- 	codec: tlv320dac3100@18 {
-@@ -210,3 +216,134 @@ sound {
- 		clocks = ...
- 	};
- };
-+
-+-------------------------------------------
-+Example 4. Sampling Rate Conversion
-+-------------------------------------------
-+
-+sound {
-+	compatible = "simple-audio-card";
-+
-+	simple-audio-card,name = "rsnd-ak4643";
-+	simple-audio-card,format = "left_j";
-+	simple-audio-card,bitclock-master = <&sndcodec>;
-+	simple-audio-card,frame-master = <&sndcodec>;
-+
-+	simple-audio-card,convert-rate = <48000>;
-+
-+	simple-audio-card,prefix = "ak4642";
-+	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
-+			"DAI0 Capture", "ak4642 Capture";
-+
-+	sndcpu: simple-audio-card,cpu {
-+		sound-dai = <&rcar_sound>;
-+	};
-+
-+	sndcodec: simple-audio-card,codec {
-+		sound-dai = <&ak4643>;
-+		system-clock-frequency = <11289600>;
-+	};
-+};
-+
-+-------------------------------------------
-+Example 5. 2 CPU 1 Codec (Mixing)
-+-------------------------------------------
-+sound {
-+	compatible = "simple-audio-card";
-+
-+	simple-audio-card,name = "rsnd-ak4643";
-+	simple-audio-card,format = "left_j";
-+	simple-audio-card,bitclock-master = <&dpcmcpu>;
-+	simple-audio-card,frame-master = <&dpcmcpu>;
-+
-+	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
-+			"ak4642 Playback", "DAI1 Playback";
-+
-+	dpcmcpu: cpu@0 {
-+		sound-dai = <&rcar_sound 0>;
-+	};
-+
-+	cpu@1 {
-+		sound-dai = <&rcar_sound 1>;
-+	};
-+
-+	codec {
-+		prefix = "ak4642";
-+		sound-dai = <&ak4643>;
-+		clocks = <&audio_clock>;
-+	};
-+};
-+
-+-------------------------------------------
-+Example 6 - many DAI links with DPCM:
-+-------------------------------------------
-+
-+CPU0 ------ ak4613
-+CPU1 ------ PCM3168A-p  /* DPCM 1ch/2ch */
-+CPU2 --/                /* DPCM 3ch/4ch */
-+CPU3 --/                /* DPCM 5ch/6ch */
-+CPU4 --/                /* DPCM 7ch/8ch */
-+CPU5 ------ PCM3168A-c
-+
-+sound {
-+	compatible = "simple-audio-card";
-+
-+	simple-audio-card,routing =
-+		  "pcm3168a Playback", "DAI1 Playback",
-+		  "pcm3168a Playback", "DAI2 Playback",
-+		  "pcm3168a Playback", "DAI3 Playback",
-+		  "pcm3168a Playback", "DAI4 Playback";
-+
-+	simple-audio-card,dai-link@0 {
-+		format = "left_j";
-+		bitclock-master = <&sndcpu0>;
-+		frame-master = <&sndcpu0>;
-+
-+		sndcpu0: cpu {
-+			sound-dai = <&rcar_sound 0>;
-+		};
-+		codec {
-+			sound-dai = <&ak4613>;
-+		};
-+	};
-+	simple-audio-card,dai-link@1 {
-+		format = "i2s";
-+		bitclock-master = <&sndcpu1>;
-+		frame-master = <&sndcpu1>;
-+
-+		convert-channels = <8>; /* TDM Split */
-+
-+		sndcpu1: cpu@0 {
-+			sound-dai = <&rcar_sound 1>;
-+		};
-+		cpu@1 {
-+			sound-dai = <&rcar_sound 2>;
-+		};
-+		cpu@2 {
-+			sound-dai = <&rcar_sound 3>;
-+		};
-+		cpu@3 {
-+			sound-dai = <&rcar_sound 4>;
-+		};
-+		codec {
-+			mclk-fs = <512>;
-+			prefix = "pcm3168a";
-+			dai-tdm-slot-num = <8>;
-+			sound-dai = <&pcm3168a 0>;
-+		};
-+	};
-+	simple-audio-card,dai-link@2 {
-+		format = "i2s";
-+		bitclock-master = <&sndcpu2>;
-+		frame-master = <&sndcpu2>;
-+
-+		sndcpu2: cpu {
-+			sound-dai = <&rcar_sound 5>;
-+		};
-+		codec {
-+			mclk-fs = <512>;
-+			prefix = "pcm3168a";
-+			sound-dai = <&pcm3168a 1>;
-+		};
-+	};
-+};
+ 	ret = asoc_simple_card_of_parse_tdm(ep, dai);
 -- 
 2.19.0.rc2
