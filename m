@@ -1,50 +1,52 @@
 From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH 1/4] ASoC: qdsp6: dt-bindings: Add q6afe
-	display_port dt binding
-Date: Fri, 14 Dec 2018 17:59:26 +0530
-Message-ID: <1544790569-10608-2-git-send-email-rohitkr@codeaurora.org>
+Subject: [PATCH 2/4] ASoC: qdsp6: qdafe: add support for display_port_rx
+Date: Fri, 14 Dec 2018 17:59:27 +0530
+Message-ID: <1544790569-10608-3-git-send-email-rohitkr@codeaurora.org>
 References: <1544790569-10608-1-git-send-email-rohitkr@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E82026798A
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:30:01 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1544790569-10608-1-git-send-email-rohitkr@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, asishb@codeaurora.org
 Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings required for DISPLAY_PORT_RX
-port on AFE.
+This patch adds support for Display_Port_Rx
+port in AFE.
 
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- include/dt-bindings/sound/qcom,q6afe.h | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/qdsp6/q6afe.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index e2d3892..1df06f8 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -106,6 +106,7 @@
- #define QUINARY_TDM_TX_6	101
- #define QUINARY_TDM_RX_7	102
- #define QUINARY_TDM_TX_7	103
-+#define DISPLAY_PORT_RX		104
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 829b5e987..e0945f7a 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -71,6 +71,7 @@
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
++#define AFE_PORT_ID_HDMI_OVER_DP_RX	0x6020
  
- #endif /* __DT_BINDINGS_Q6_AFE_H__ */
+ #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
+ /* Clock set API version */
+@@ -704,6 +705,8 @@ struct afe_port_map {
+ 				QUINARY_TDM_RX_7, 1, 1},
+ 	[QUINARY_TDM_TX_7] =  { AFE_PORT_ID_QUINARY_TDM_TX_7,
+ 				QUINARY_TDM_TX_7, 0, 1},
++	[DISPLAY_PORT_RX] = { AFE_PORT_ID_HDMI_OVER_DP_RX,
++				DISPLAY_PORT_RX, 1, 1},
+ };
  
+ static void q6afe_port_free(struct kref *ref)
+@@ -1384,6 +1387,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 
+ 	switch (port_id) {
+ 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
++	case AFE_PORT_ID_HDMI_OVER_DP_RX:
+ 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
+ 		break;
+ 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX:
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
