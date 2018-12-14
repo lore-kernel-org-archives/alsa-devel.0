@@ -1,74 +1,67 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH v3 1/1] ASoC: Intel: kbl_rt5660: Add a new
- machine driver for kbl with rt5660
-Date: Fri, 14 Dec 2018 09:53:38 +0800
-Message-ID: <9ef7f2d7-c960-b70e-5ef4-f7b226378d5f@canonical.com>
-References: <20181213130216.4558-1-hui.wang@canonical.com>
- <20181213130216.4558-2-hui.wang@canonical.com>
- <3c63f754-5a75-dc3b-c237-5ee1382fbc74@linux.intel.com>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: Re: ASoC: About graph node issue without 'reg' property
+Date: Fri, 14 Dec 2018 11:13:59 +0900
+Message-ID: <20181214111358.FB47.4A936039@socionext.com>
+References: <20181213182739.GZ10669@sirena.org.uk> <87tvjh7zj2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C35126789E
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 02:53:48 +0100 (CET)
-In-Reply-To: <3c63f754-5a75-dc3b-c237-5ee1382fbc74@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87tvjh7zj2.wl-kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Masami Hiramatsu <masami.hiramatsu@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOC8xMi8xMyDkuIvljYgxMDozMiwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4K
-PiBPbiAxMi8xMy8xOCA3OjAyIEFNLCBIdWkgV2FuZyB3cm90ZToKPj4gVGhlIG5ldyBEZWxsIElv
-VCBwbGF0Zm9ybSB1c2VzIGthYnlsYWtlICsgYWxjMzI3NyBjb2RlYywgYW5kIGFsYzMyNzcKPj4g
-c2hhcmVzIHRoZSBkcml2ZXIgd2l0aCB0aGUgY29kZWMgcnQ1NjYwLCBoZXJlIHdlIGdlbmVyYXRl
-IGEgbmV3Cj4+IG1hY2hpbmUgZHJpdmVyIGJhc2VkIG9uIGtibF9kYTcyMTlfbWF4OTgzNTdhLgo+
-Pgo+PiBUaGUgYXVkaW8gZGVzaWduIG9uIHRoaXMgSW9UIHBsYXRmb3JtIGlzIGFzIGJlbG93Ogo+
-PiDCoCAtIEludGVsIGthYnlsYWtlIHBsYXRmb3JtCj4+IMKgIC0gY29ubmVjdCB0aGUgY29kZWMg
-QUxDMzI3NyB2aWEgU1NQMAo+PiDCoCAtIGxpbmUtb3V0IGFuZCBsaW5lLWluIHdpdGggTWljYmlh
-cyBqYWNrcwo+PiDCoCAtIGxpbmUtb3V0IG11dGUgY29udHJvbCBhbmQgamFjayBkZXRlY3Rpb24g
-b2YgbGluZS1vdXQgYW5kIGxpbmUtaW4KPj4gwqAgLSB0d28gSERNSSBwb3J0cyB3aXRoIGF1ZGlv
-IGNhcGFiaWxpdHkKPj4KPj4gU2lnbmVkLW9mZi1ieTogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9u
-aWNhbC5jb20+Cj4KPiBMb29rcyBnb29kIHRvIG1lLCB0aGFua3MgZm9yIHRoZSB1cGRhdGVzLgo+
-Cj4gQWNrZWQtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBs
-aW51eC5pbnRlbC5jb20+Cj4KPiBPbmUgcXVlc3Rpb24gZm9yIEh1aTogYXJlIHlvdSBwbGFubmlu
-ZyB0byBwcm92aWRlIHRoZSB0b3BvbG9neSBmaWxlIAo+IGFuZCBVQ00gc2V0dGluZ3MgZm9yIHRo
-aXMgcGxhdGZvcm0/IEkndmUgYmVlbiB0cnlpbmcgdG8gZXhwYW5kIHRoZSAKPiB0ZXN0cyBsYXRl
-bHkgYW5kIHdpdGhvdXQgdGhvc2UgdHdvIGNvbmZpZ3VyYXRpb24gZmlsZXMgaXQnbGwgYmUgCj4g
-ZGlmZmljdWx0IHRvIGFkZCB0aGlzIHBsYXRmb3JtLgoKRm9yIHRvcG9sb2d5IGZpbGUsIHdlIGp1
-c3QgdXNlZCB0aGUgZXhpc3RpbmcgZmlsZSBmb3Igc2tscnQyODYgKGFsc2F0cGxnIAotYyBza2xy
-dDI4Ni9za2xydDI4Ni5jb25mIC1PIC9saWIvZmlybXdhcmUvZGZ3X3NzdC5iaW4pLMKgIHRoZSBz
-a2xfcnQyODYgCmFsc28gY29ubmVjdHMgdGhlIGNvZGVjIHdpdGggU1NQMCBpbiBJMlMgbW9kZSwg
-aXQgaXMgYSBzaW1pbGFyIGRlc2lnbiBhcyAKdGhpcyBJb1QgYm9hcmQuIEFuZCB0aGUgZ2VuZXJh
-dGVkIGRmd19zc3QuYmluIHdvcmtlZCB3ZWxsIG9uIHRoaXMgSW9UIGJvYXJkLgoKU28gZmFyIHdl
-IGRvbid0IGhhdmUgYWJpbGl0eSB0byBlZGl0L2dlbmVyYXRlIHRvcG9sb2d5IGNvbmYgZmlsZSAK
-bWFudWFsbHkswqAgYW5kIHJlY2VudGx5IHdlIGhhZCBhIG5ldyBwcm9qZWN0IHRvIHN1cHBvcnQg
-dGhlIHNvYy1kbWljIG9uIApjYW5ub25sYWtlL2NvZmZlZWxha2UgKDgwODZhMzQ4KSwgb25lIG9m
-IHRoZSBibG9ja2VkIGlzc3VlcyBpcyB0aGUgCnRvcG9sb2d5IGZpcm13YXJlLMKgIHByb2JhYmx5
-IG5lZWQgeW91ciBoZWxwIGluIHRoZSBuZWFyIGZ1dHVyZS4KCgpGb3IgVUNNIHNldHRpbmcsIEkg
-cGxhbiB0byBzZW5kIGl0IHRvIHJldmlldyBuZXh0IHdlZWsuIFNpbmNlIHRoaXMgSW9UIApwbGF0
-Zm9ybSBvbmx5IHJ1bnMgdWJ1bnR1IGNvcmUgYW5kIHVidW50dSBzZXJ2ZXIsIHRoZXJlIGlzIG5v
-IHB1bHNlYXVkaW8gCm9uIGl0LMKgIHRoZXJlIGlzIG5vIG5lZWQgdG8gd3JpdGUgYSBVQ00gc2V0
-dGluZyBzbyBmYXIsIHdlIGp1c3QgZXhlY3V0ZWQgCiJhbWl4ZXIgc3NldCIgb3IgImFsc2FjdGwg
-LWMgYXNvdW5kLnN0YXRlLXdvcmstb2sgcmVzdG9yZSIgb24gY29tbWFuZCAKbGluZSwgSSBwbGFu
-IHRvIGluc3RhbGwgdWJ1bnR1IGRlc2t0b3Agb24gdGhpcyBJb1QgcGxhdGZvcm0gdG8gcHJlcGFy
-ZSAKVUNNIHNldHRpbmcgbmV4dCB3ZWVrLgoKClRoYW5rcywKCkh1aS4KCgo+Cj4+IC0tLQo+PiDC
-oCBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL0tjb25maWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgfMKgIDEwICsKPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9NYWtlZmlsZcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMiArCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9i
-b2FyZHMva2JsX3J0NTY2MC5jwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCA1NDMgKysrKysrKysrKysr
-KysrKysrCj4+IMKgIC4uLi9pbnRlbC9jb21tb24vc29jLWFjcGktaW50ZWwta2JsLW1hdGNoLmPC
-oMKgIHzCoCAxMCArIAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Hi Morimoto-san, Mark,
+
+On Fri, 14 Dec 2018 09:05:02 +0900 <kuninori.morimoto.gx@renesas.com> wrote:
+
+> 
+> Hi Hayashi-san
+> 
+> Sorry for my buggy patch.
+> I and Tony could confirm that my posted patch can solve
+> this issue. I will re-post it again as v3 patch-series.
+> I'm happy if you can test it (and give it Tested-by).
+> 
+> 	https://patchwork.kernel.org/patch/10727943/
+
+Thank you for your great effort, and sorry my cross-post before your RFC patch
+because I didn't catch it.
+
+I confirmed your RFC patch solved the issue.
+I'll also test your v3 patch-series on my environment.
+
+> > [1  <text/plain; us-ascii (quoted-printable)>]
+> > On Thu, Dec 13, 2018 at 04:24:28PM +0000, Mark Brown wrote:
+> > > On Thu, Dec 13, 2018 at 07:39:45PM +0900, Kunihiko Hayashi wrote:
+> > > 
+> > > > Maybe I think that we'd better add 'reg' properties to each port,
+> > > > however, there might be same matter in other SoCs, so I'm not sure
+> > > > whether your patch breaks the backword compatibility or
+> > > > our devicetrees are wrong.
+> > 
+> > > > I'd be glad if I could hear something about this issue from you.
+> > 
+> > > There's an ongoing thread between Morimoto-san and Tony Lindgren around
+> > > the graph card including this issue, there Morimoto-san proposed some
+> > > code which would let the reg property be optional.  Device trees should
+> > > still be updated but that way we wouldn't actually break anything which
+> > > would be good.
+
+Yes. It's desiable to add the reg property in spite of the fixes.
+I'll update our devicetrees.
+
+Thank you,
+
+> > 
+> > There's a patch now - "[PATCH][RFC] ASoC: simple-card-utils: fixup
+> > asoc_simple_card_get_dai_id() ID method".
+> > [2 signature.asc <application/pgp-signature (7bit)>]
+> > No public key for 24D68B725D5487D0 created at 2018-12-14T03:27:38+0900 using RSA
+
+
+---
+Best Regards,
+Kunihiko Hayashi
