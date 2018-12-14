@@ -1,43 +1,27 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2] mfd: cros_ec: Add commands to control codec
-Date: Fri, 14 Dec 2018 12:22:45 +0000
-Message-ID: <20181214122245.GU4497@dell>
-References: <20181206040540.84632-1-cychiang@chromium.org>
- <20181214122156.GT4497@dell>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH 0/4] ASoC: qdsp6: Add support for audio over DP
+Date: Fri, 14 Dec 2018 17:59:25 +0530
+Message-ID: <1544790569-10608-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181214122156.GT4497@dell>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, asishb@codeaurora.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 14 Dec 2018, Lee Jones wrote:
+Add support for Audio over display port AFE port
 
-> On Thu, 06 Dec 2018, Cheng-Yi Chiang wrote:
-> 
-> > Add EC host commands to control codec on EC.
-> > 
-> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > ---
-> >  V2 fixed the wrong ancestor issue so the patch can be applied cleanly on mfd tree.
-> >  Codec driver that uses these commands will be sent separately.
-> >  Thanks!
-> > 
-> >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
-> >  1 file changed, 94 insertions(+)
-> 
-> Would be good to have this reviewed by some more Chrome people.
+Rohit kumar (4):
+  ASoC: qdsp6: dt-bindings: Add q6afe display_port dt binding
+  ASoC: qdsp6: qdafe: add support for display_port_rx
+  ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
+  ASoC: qdsp6: q6routing: add display_port_rx port routing
 
-See this for reference:
-
-  https://lore.kernel.org/patchwork/patch/1024985/
+ include/dt-bindings/sound/qcom,q6afe.h |  1 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c       | 22 ++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.c           |  4 ++++
+ sound/soc/qcom/qdsp6/q6routing.c       |  9 +++++++++
+ 4 files changed, 36 insertions(+)
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
