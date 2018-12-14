@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm: add support to MP3
-	format" to the asoc tree
-Date: Fri, 14 Dec 2018 12:44:15 +0000 (GMT)
-Message-ID: <20181214124415.2B4C011258A2@debutante.sirena.org.uk>
-References: <20181115181324.26784-5-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: q6asm-dai: dt-bindings: Add support to
+	compress dais" to the asoc tree
+Date: Fri, 14 Dec 2018 12:44:16 +0000 (GMT)
+Message-ID: <20181214124416.EB3AB11258A2@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 40C0F2678D4
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:44:16 +0100 (CET)
-In-Reply-To: <20181115181324.26784-5-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 780CF2678D5
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:44:17 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org, srini@kernel.org
+Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm: add support to MP3 format
+   ASoC: q6asm-dai: dt-bindings: Add support to compress dais
 
 has been applied to the asoc tree at
 
@@ -53,49 +52,72 @@ to this mail.
 Thanks,
 Mark
 
->From f2e6c6aa0cb5f39e48627850680b87ec688070f8 Mon Sep 17 00:00:00 2001
+>From ee23cf37fd586769febab95e2fbbbb50da5f9f2d Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 15 Nov 2018 18:13:23 +0000
-Subject: [PATCH] ASoC: qdsp6: q6asm: add support to MP3 format
+Date: Thu, 15 Nov 2018 18:13:22 +0000
+Subject: [PATCH] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
 
-This patch adds support to mp3 format in ASM module.
+This patch adds board specific bindings required for dais, In particular
+for compressed dais and dai direction.
+
+Board specific setup involves setting up some of dais as compressed dais
+and also specify direction of any dai. Some of the dais might only
+support capture/playback depending on the board level wiring.
+
+These two new dt properties will allow such flexibilty at board level dts.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Acked-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index e1cfa846a1dc..4f85cb19a309 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -12,6 +12,7 @@
- #include <linux/kref.h>
- #include <linux/of.h>
- #include <uapi/sound/asound.h>
-+#include <uapi/sound/compress_params.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/mm.h>
-@@ -36,6 +37,7 @@
- #define ASM_PARAM_ID_ENCDEC_ENC_CFG_BLK_V2	0x00010DA3
- #define ASM_SESSION_CMD_RUN_V2			0x00010DAA
- #define ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2	0x00010DA5
-+#define ASM_MEDIA_FMT_MP3			0x00010BE9
- #define ASM_DATA_CMD_WRITE_V2			0x00010DAB
- #define ASM_DATA_CMD_READ_V2			0x00010DAC
- #define ASM_SESSION_CMD_SUSPEND			0x00010DEC
-@@ -868,6 +870,9 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format,
- 	open->postprocopo_id = ASM_NULL_POPP_TOPOLOGY;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+index f9c7bd8c1bc0..9f5378c51686 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+@@ -27,6 +27,28 @@ used by the apr service device.
+ 	Value type: <u32>
+ 	Definition: Must be 1
  
- 	switch (format) {
-+	case SND_AUDIOCODEC_MP3:
-+		open->dec_fmt_id = ASM_MEDIA_FMT_MP3;
-+		break;
- 	case FORMAT_LINEAR_PCM:
- 		open->dec_fmt_id = ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2;
- 		break;
++== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
++configuration of each dai. Must contain the following properties.
++
++- reg
++	Usage: required
++	Value type: <u32>
++	Definition: Must be dai id
++
++- direction:
++	Usage: Required for Compress offload dais
++	Value type: <u32>
++	Definition: Specifies the direction of the dai stream
++			0 for both tx and rx
++			1 for only tx (Capture/Encode)
++			2 for only rx (Playback/Decode)
++
++- is-compress-dai:
++	Usage: Required for Compress offload dais
++	Value type: <boolean>
++	Definition: present for Compress offload dais
++
++
+ = EXAMPLE
+ 
+ q6asm@7 {
+@@ -35,5 +57,10 @@ q6asm@7 {
+ 	q6asmdai: dais {
+ 		compatible = "qcom,q6asm-dais";
+ 		#sound-dai-cells = <1>;
++		mm@0 {
++			reg = <0>;
++			direction = <2>;
++			is-compress-dai;
++		};
+ 	};
+ };
 -- 
 2.19.0.rc2
