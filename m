@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: add support to
-	Display port RX dais" to the asoc tree
-Date: Fri, 14 Dec 2018 12:49:18 +0000 (GMT)
-Message-ID: <20181214124918.DFE7A11258A2@debutante.sirena.org.uk>
-References: <1544790569-10608-4-git-send-email-rohitkr@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CE8326799F
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:49:20 +0100 (CET)
-In-Reply-To: <1544790569-10608-4-git-send-email-rohitkr@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: qdsp6: qdafe: add support for display_port_rx" to the asoc tree
+Date: Fri, 14 Dec 2018 12:49:20 +0000 (GMT)
+Message-ID: <20181214124920.BE0F911258A2@debutante.sirena.org.uk>
+References: <1544790569-10608-3-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1544790569-10608-3-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, asishb@codeaurora.org
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.combroonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.comsrinivas.kandagatla@linaro.org, asishb@codeaurora.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
+   ASoC: qdsp6: qdafe: add support for display_port_rx
 
 has been applied to the asoc tree at
 
@@ -53,73 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From 32d2c61ba05944aa1e61d186611310dd911e1703 Mon Sep 17 00:00:00 2001
+>From 3f6856a28f5eeb4fcaeb3ae25118171747354e51 Mon Sep 17 00:00:00 2001
 From: Rohit kumar <rohitkr@codeaurora.org>
-Date: Fri, 14 Dec 2018 17:59:28 +0530
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
+Date: Fri, 14 Dec 2018 17:59:27 +0530
+Subject: [PATCH] ASoC: qdsp6: qdafe: add support for display_port_rx
 
-This patch adds support of AFE DAI for Display_port_rx port.
+This patch adds support for Display_Port_Rx
+port in AFE.
 
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index bfc3bbf1d4de..dc645ba4d8d0 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -341,6 +341,7 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 829b5e987b2a..e0945f7a58c8 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -71,6 +71,7 @@
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
++#define AFE_PORT_ID_HDMI_OVER_DP_RX	0x6020
  
- 	switch (dai->id) {
- 	case HDMI_RX:
-+	case DISPLAY_PORT_RX:
- 		q6afe_hdmi_port_prepare(dai_data->port[dai->id],
- 					&dai_data->port_config[dai->id].hdmi);
+ #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
+ /* Clock set API version */
+@@ -704,6 +705,8 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 				QUINARY_TDM_RX_7, 1, 1},
+ 	[QUINARY_TDM_TX_7] =  { AFE_PORT_ID_QUINARY_TDM_TX_7,
+ 				QUINARY_TDM_TX_7, 0, 1},
++	[DISPLAY_PORT_RX] = { AFE_PORT_ID_HDMI_OVER_DP_RX,
++				DISPLAY_PORT_RX, 1, 1},
+ };
+ 
+ static void q6afe_port_free(struct kref *ref)
+@@ -1384,6 +1387,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 
+ 	switch (port_id) {
+ 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
++	case AFE_PORT_ID_HDMI_OVER_DP_RX:
+ 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
  		break;
-@@ -445,6 +446,7 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
- 
- static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
- 	{"HDMI Playback", NULL, "HDMI_RX"},
-+	{"Display Port Playback", NULL, "DISPLAY_PORT_RX"},
- 	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
- 	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
- 	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
-@@ -1090,6 +1092,25 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
- 	Q6AFE_TDM_CAP_DAI("Quinary", 5, QUINARY_TDM_TX_5),
- 	Q6AFE_TDM_CAP_DAI("Quinary", 6, QUINARY_TDM_TX_6),
- 	Q6AFE_TDM_CAP_DAI("Quinary", 7, QUINARY_TDM_TX_7),
-+	{
-+		.playback = {
-+			.stream_name = "Display Port Playback",
-+			.rates = SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+				   SNDRV_PCM_FMTBIT_S24_LE,
-+			.channels_min = 2,
-+			.channels_max = 8,
-+			.rate_max =     192000,
-+			.rate_min =	48000,
-+		},
-+		.ops = &q6hdmi_ops,
-+		.id = DISPLAY_PORT_RX,
-+		.name = "DISPLAY_PORT",
-+		.probe = msm_dai_q6_dai_probe,
-+		.remove = msm_dai_q6_dai_remove,
-+	},
- };
- 
- static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
-@@ -1311,6 +1332,7 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
- 						0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_7", NULL,
- 						0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
- };
- 
- static const struct snd_soc_component_driver q6afe_dai_component = {
+ 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX:
 -- 
 2.19.0.rc2
