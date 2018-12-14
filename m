@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6routing: add display_port_rx
-	port routing" to the asoc tree
-Date: Fri, 14 Dec 2018 12:49:17 +0000 (GMT)
-Message-ID: <20181214124917.129B111258A2@debutante.sirena.org.uk>
-References: <1544790569-10608-5-git-send-email-rohitkr@codeaurora.org>
+Subject: Applied "ASoC: qdsp6: q6afe-dai: add support to
+	Display port RX dais" to the asoc tree
+Date: Fri, 14 Dec 2018 12:49:18 +0000 (GMT)
+Message-ID: <20181214124918.DFE7A11258A2@debutante.sirena.org.uk>
+References: <1544790569-10608-4-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F07226798A
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:49:19 +0100 (CET)
-In-Reply-To: <1544790569-10608-5-git-send-email-rohitkr@codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CE8326799F
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:49:20 +0100 (CET)
+In-Reply-To: <1544790569-10608-4-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6routing: add display_port_rx port routing
+   ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From 0718f87b0df49570cdcb96179997bd372cac1742 Mon Sep 17 00:00:00 2001
+>From 32d2c61ba05944aa1e61d186611310dd911e1703 Mon Sep 17 00:00:00 2001
 From: Rohit kumar <rohitkr@codeaurora.org>
-Date: Fri, 14 Dec 2018 17:59:29 +0530
-Subject: [PATCH] ASoC: qdsp6: q6routing: add display_port_rx port routing
+Date: Fri, 14 Dec 2018 17:59:28 +0530
+Subject: [PATCH] ASoC: qdsp6: q6afe-dai: add support to Display port RX dais
 
-This patch add support to Display_port_rx mixers required to
-select path between ASM stream and AFE ports.
+This patch adds support of AFE DAI for Display_port_rx port.
 
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index d61b8404f7da..ddcd9978cf57 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -453,6 +453,9 @@ static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
- static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
- 	Q6ROUTING_RX_MIXERS(HDMI_RX) };
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index bfc3bbf1d4de..dc645ba4d8d0 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -341,6 +341,7 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
  
-+static const struct snd_kcontrol_new display_port_mixer_controls[] = {
-+	Q6ROUTING_RX_MIXERS(DISPLAY_PORT_RX) };
-+
- static const struct snd_kcontrol_new primary_mi2s_rx_mixer_controls[] = {
- 	Q6ROUTING_RX_MIXERS(PRIMARY_MI2S_RX) };
+ 	switch (dai->id) {
+ 	case HDMI_RX:
++	case DISPLAY_PORT_RX:
+ 		q6afe_hdmi_port_prepare(dai_data->port[dai->id],
+ 					&dai_data->port_config[dai->id].hdmi);
+ 		break;
+@@ -445,6 +446,7 @@ static int q6afe_mi2s_set_sysclk(struct snd_soc_dai *dai,
  
-@@ -655,6 +658,10 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
- 			   hdmi_mixer_controls,
- 			   ARRAY_SIZE(hdmi_mixer_controls)),
+ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"HDMI Playback", NULL, "HDMI_RX"},
++	{"Display Port Playback", NULL, "DISPLAY_PORT_RX"},
+ 	{"Slimbus1 Playback", NULL, "SLIMBUS_1_RX"},
+ 	{"Slimbus2 Playback", NULL, "SLIMBUS_2_RX"},
+ 	{"Slimbus3 Playback", NULL, "SLIMBUS_3_RX"},
+@@ -1090,6 +1092,25 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 5, QUINARY_TDM_TX_5),
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 6, QUINARY_TDM_TX_6),
+ 	Q6AFE_TDM_CAP_DAI("Quinary", 7, QUINARY_TDM_TX_7),
++	{
++		.playback = {
++			.stream_name = "Display Port Playback",
++			.rates = SNDRV_PCM_RATE_48000 |
++				 SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 2,
++			.channels_max = 8,
++			.rate_max =     192000,
++			.rate_min =	48000,
++		},
++		.ops = &q6hdmi_ops,
++		.id = DISPLAY_PORT_RX,
++		.name = "DISPLAY_PORT",
++		.probe = msm_dai_q6_dai_probe,
++		.remove = msm_dai_q6_dai_remove,
++	},
+ };
  
-+	SND_SOC_DAPM_MIXER("DISPLAY_PORT_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
-+			   display_port_mixer_controls,
-+			   ARRAY_SIZE(display_port_mixer_controls)),
-+
- 	SND_SOC_DAPM_MIXER("SLIMBUS_0_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
- 			   slimbus_rx_mixer_controls,
- 			   ARRAY_SIZE(slimbus_rx_mixer_controls)),
-@@ -833,6 +840,8 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+@@ -1311,6 +1332,7 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+ 						0, 0, 0, 0),
+ 	SND_SOC_DAPM_AIF_OUT("QUIN_TDM_TX_7", NULL,
+ 						0, 0, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("DISPLAY_PORT_RX", "NULL", 0, 0, 0, 0),
+ };
  
- static const struct snd_soc_dapm_route intercon[] = {
- 	Q6ROUTING_RX_DAPM_ROUTE("HDMI Mixer", "HDMI_RX"),
-+	Q6ROUTING_RX_DAPM_ROUTE("DISPLAY_PORT_RX Audio Mixer",
-+				"DISPLAY_PORT_RX"),
- 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_0_RX Audio Mixer", "SLIMBUS_0_RX"),
- 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_1_RX Audio Mixer", "SLIMBUS_1_RX"),
- 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_2_RX Audio Mixer", "SLIMBUS_2_RX"),
+ static const struct snd_soc_component_driver q6afe_dai_component = {
 -- 
 2.19.0.rc2
