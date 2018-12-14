@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: tidyup prefix for
-	snd_soc_codec_conf" to the asoc tree
-Date: Fri, 14 Dec 2018 12:37:35 +0000 (GMT)
-Message-ID: <20181214123735.A60CE11258A1@debutante.sirena.org.uk>
-References: <87efak979e.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-card: tidyup
+	convert_rate/channel method" to the asoc tree
+Date: Fri, 14 Dec 2018 12:37:37 +0000 (GMT)
+Message-ID: <20181214123737.7DD4211258A1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C1EA267AB2
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:36 +0100 (CET)
-In-Reply-To: <87efak979e.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F32F6267A78
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:37 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: tidyup prefix for snd_soc_codec_conf
+   ASoC: audio-graph-card: tidyup convert_rate/channel method
 
 has been applied to the asoc tree at
 
@@ -53,93 +52,93 @@ to this mail.
 Thanks,
 Mark
 
->From 66164a4da30dd295a1b60568c02bee37cfd9895a Mon Sep 17 00:00:00 2001
+>From 7ced65ffb82fa58c6e314c16770288fe9ce3dfc8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 14 Dec 2018 11:32:43 +0900
-Subject: [PATCH] ASoC: audio-graph-card: tidyup prefix for snd_soc_codec_conf
+Date: Fri, 14 Dec 2018 11:32:36 +0900
+Subject: [PATCH] ASoC: audio-graph-card: tidyup convert_rate/channel method
 
-Current audio-graph-card is handling "prefix" by many ways.
-But, it is not useful and readable.
+Current audio-graph-card is handling "convert_rate/channel"
+by many ways. But, it is not useful and readable.
 We want to do is that allow having it everywere.
-This patch supports it.
+This patch support it.
 It will be overwrote if lower node has it.
 
-	sound {
-		prefix = "xxx"; // initial
-	};
+sound {
+	convert-channels = <xxx>; // initial
+};
 
-	codec {
-		audio-graph-card,prefix = "xxx"; // overwrite
-		ports {
-			prefix = "xxx"; // overwrite
-			port {
-				prefix = "xxx"; // overwrite
+codec {
+	audio-graph-card,convert-channels = <xxx>; // overwrite
+	ports {
+		convert_channels = <xxx>; // overwrite
+		port {
+			convert_channels = <xxx>; // overwrite
+			endpoint {
+				convert_channels = <xxx>; // overwrite
 			};
 		};
 	};
+};
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 368b8ae463af..0d6144560a1e 100644
+index 7e32380e7a6f..368b8ae463af 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -179,12 +179,12 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 	struct device *dev = graph_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, link_idx);
- 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
--	struct snd_soc_card *card = graph_priv_to_card(priv);
- 	struct device_node *ep = is_cpu ? cpu_ep : codec_ep;
- 	struct device_node *port = of_get_parent(ep);
- 	struct device_node *ports = of_get_parent(port);
- 	struct device_node *node = of_graph_get_port_parent(ep);
- 	struct asoc_simple_dai *dai;
-+	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
- 	int ret;
+@@ -35,7 +35,6 @@ struct graph_card_data {
+ 	struct asoc_simple_jack mic_jack;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_dai *dais;
+-	struct asoc_simple_card_data adata;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	struct gpio_desc *pa_gpio;
+ };
+@@ -167,9 +166,6 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
  
- 	dev_dbg(dev, "link_of DPCM (for %s)\n", is_cpu ? "CPU" : "Codec");
-@@ -204,10 +204,8 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	asoc_simple_card_convert_fixup(&dai_props->adata, params);
+ 
+-	/* overwrite by top level adata if exist */
+-	asoc_simple_card_convert_fixup(&priv->adata, params);
+-
+ 	return 0;
+ }
+ 
+@@ -197,6 +193,13 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	of_property_read_u32(ports, "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(port,  "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(ep,    "mclk-fs", &dai_props->mclk_fs);
++
++	asoc_simple_card_parse_convert(dev, top,   NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, node,  PREFIX, &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, ports, NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, port,  NULL,   &dai_props->adata);
++	asoc_simple_card_parse_convert(dev, ep,    NULL,   &dai_props->adata);
++
+ 	of_node_put(ports);
  	of_node_put(port);
  
- 	if (is_cpu) {
--		struct snd_soc_dai_link_component *codecs;
- 
- 		/* BE is dummy */
--		codecs			= dai_link->codecs;
- 		codecs->of_node		= NULL;
- 		codecs->dai_name	= "snd-soc-dummy-dai";
- 		codecs->name		= "snd-soc-dummy";
-@@ -264,19 +262,19 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 
- 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
- 							"be.%s",
--							dai_link->codecs->dai_name);
-+							codecs->dai_name);
- 		if (ret < 0)
- 			return ret;
- 
- 		/* check "prefix" from top node */
--		snd_soc_of_parse_audio_prefix(card, cconf,
--					      dai_link->codecs->of_node,
-+		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
- 					      "prefix");
--		/* check "prefix" from each node if top doesn't have */
--		if (!cconf->of_node)
--			snd_soc_of_parse_node_prefix(node, cconf,
--						     dai_link->codecs->of_node,
--						     PREFIX "prefix");
-+		snd_soc_of_parse_node_prefix(node, cconf, codecs->of_node,
-+					     PREFIX "prefix");
-+		snd_soc_of_parse_node_prefix(ports, cconf, codecs->of_node,
-+					     "prefix");
-+		snd_soc_of_parse_node_prefix(port, cconf, codecs->of_node,
-+					     "prefix");
+@@ -276,8 +279,6 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 						     PREFIX "prefix");
  	}
  
+-	asoc_simple_card_parse_convert(dev, node, PREFIX, &dai_props->adata);
+-
  	ret = asoc_simple_card_of_parse_tdm(ep, dai);
+ 	if (ret)
+ 		return ret;
+@@ -409,8 +410,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	asoc_simple_card_parse_convert(dev, node, NULL, &priv->adata);
+-
+ 	link_idx	= 0;
+ 	dai_idx		= 0;
+ 	conf_idx	= 0;
 -- 
 2.19.0.rc2
