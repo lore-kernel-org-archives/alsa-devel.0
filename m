@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: tidyup mclk-fs method" to
+Subject: Applied "ASoC: simple-card: merge simple-scu-card" to
 	the asoc tree
-Date: Fri, 14 Dec 2018 12:37:30 +0000 (GMT)
-Message-ID: <20181214123730.2783111258A1@debutante.sirena.org.uk>
-References: <878t0s9755.wl-kuninori.morimoto.gx@renesas.com>
+Date: Fri, 14 Dec 2018 12:37:31 +0000 (GMT)
+Message-ID: <20181214123731.F242311258A1@debutante.sirena.org.uk>
+References: <87a7l8975b.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BC0DB26798A
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:30 +0100 (CET)
-In-Reply-To: <878t0s9755.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 84D6326798A
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:32 +0100 (CET)
+In-Reply-To: <87a7l8975b.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: tidyup mclk-fs method
+   ASoC: simple-card: merge simple-scu-card
 
 has been applied to the asoc tree at
 
@@ -53,138 +53,470 @@ to this mail.
 Thanks,
 Mark
 
->From 79e834914d1fa2d078c586094ad347cc05aa428c Mon Sep 17 00:00:00 2001
+>From da215354eb55c382d3d5c426ea0e9aa7ef7c10e1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 14 Dec 2018 11:35:15 +0900
-Subject: [PATCH] ASoC: simple-card: tidyup mclk-fs method
+Date: Fri, 14 Dec 2018 11:35:10 +0900
+Subject: [PATCH] ASoC: simple-card: merge simple-scu-card
 
-Current simple-card is handling "mclk-fs" by many way.
-But, it is not useful and readable.
-We want to do is that allow having mclk-fs everywere.
-This patch support it.
-It will be overwrote if lower node has it.
+simple-card and simple-scu-card are very similar driver,
+but the former is supporting normal sound card,
+the latter is supporting DPCM sound card.
 
-sound {
-	simple-audio-card,mclk-fs = <xxx>; // for initial
+We couldn't use normal sound and DPCM sound in same time by
+one sound card. This patch merges both sound card into
+simple-card. Now we can use both feature on same driver.
 
-	simple-audio-card,dai-link {
-		mclk-fs = <xxx>; // overwrite
-		cpu {
-			mclk-fs = <xxx>; // overwrite
-		};
-		codec {
-			mclk-fs = <xxx>; // overwrite
-		};
-	};
-};
+simple-card is now supporting .compatible = "simple-scu-audio-card".
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ sound/soc/generic/Kconfig       |   1 +
+ sound/soc/generic/simple-card.c | 329 +++++++++++++++++++++++++++-----
+ 2 files changed, 284 insertions(+), 46 deletions(-)
 
+diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
+index 5395782424b4..92c2cf06f40a 100644
+--- a/sound/soc/generic/Kconfig
++++ b/sound/soc/generic/Kconfig
+@@ -6,6 +6,7 @@ config SND_SIMPLE_CARD
+ 	select SND_SIMPLE_CARD_UTILS
+ 	help
+ 	  This option enables generic simple sound card support
++	  It also support DPCM of multi CPU single Codec ststem.
+ 
+ config SND_SIMPLE_SCU_CARD
+ 	tristate "ASoC Simple SCU sound card support"
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index c93f2e7dec4b..8593d51e0c6c 100644
+index 93d68161f953..c93f2e7dec4b 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -26,7 +26,6 @@ struct simple_card_data {
- 		struct snd_soc_codec_conf *codec_conf;
+@@ -22,6 +22,8 @@ struct simple_card_data {
+ 		struct asoc_simple_dai *codec_dai;
+ 		struct snd_soc_dai_link_component codecs; /* single codec */
+ 		struct snd_soc_dai_link_component platform;
++		struct asoc_simple_card_data adata;
++		struct snd_soc_codec_conf *codec_conf;
  		unsigned int mclk_fs;
  	} *dai_props;
--	unsigned int mclk_fs;
- 	struct asoc_simple_jack hp_jack;
+ 	unsigned int mclk_fs;
+@@ -29,6 +31,8 @@ struct simple_card_data {
  	struct asoc_simple_jack mic_jack;
  	struct snd_soc_dai_link *dai_link;
-@@ -102,9 +101,7 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int mclk, mclk_fs = 0;
- 	int ret = 0;
+ 	struct asoc_simple_dai *dais;
++	struct asoc_simple_card_data adata;
++	struct snd_soc_codec_conf *codec_conf;
+ };
  
--	if (priv->mclk_fs)
--		mclk_fs = priv->mclk_fs;
--	else if (dai_props->mclk_fs)
-+	if (dai_props->mclk_fs)
- 		mclk_fs = dai_props->mclk_fs;
+ #define simple_priv_to_card(priv) (&(priv)->snd_card)
+@@ -74,6 +78,9 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
+ static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
+ 				    unsigned long rate)
+ {
++	if (!simple_dai)
++		return 0;
++
+ 	if (!simple_dai->clk)
+ 		return 0;
  
- 	if (mclk_fs) {
-@@ -172,7 +169,8 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -151,6 +158,141 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
  	return 0;
  }
  
--static int asoc_simple_card_dai_link_of_dpcm(struct device_node *node,
-+static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
-+					     struct device_node *node,
- 					     struct device_node *np,
- 					     struct device_node *codec,
- 					     struct simple_card_data *priv,
-@@ -185,6 +183,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *node,
- 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	struct asoc_simple_dai *dai;
-+	char prop[128];
- 	char *prefix = "";
- 	int ret;
- 
-@@ -278,7 +277,10 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *node,
- 	if (ret < 0)
- 		return ret;
- 
--	of_property_read_u32(np, "mclk-fs", &dai_props->mclk_fs);
-+	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
-+	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(node, prop, &dai_props->mclk_fs);
-+	of_property_read_u32(np,   prop, &dai_props->mclk_fs);
- 
- 	ret = asoc_simple_card_parse_daifmt(dev, node, codec,
- 					    prefix, &dai_link->dai_fmt);
-@@ -293,7 +295,8 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *node,
- 	return 0;
- }
- 
--static int asoc_simple_card_dai_link_of(struct device_node *node,
-+static int asoc_simple_card_dai_link_of(struct device_node *top,
-+					struct device_node *node,
++static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++					       struct snd_pcm_hw_params *params)
++{
++	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
++
++	asoc_simple_card_convert_fixup(&dai_props->adata, params);
++
++	/* overwrite by top level adata if exist */
++	asoc_simple_card_convert_fixup(&priv->adata, params);
++
++	return 0;
++}
++
++static int asoc_simple_card_dai_link_of_dpcm(struct device_node *node,
++					     struct device_node *np,
++					     struct device_node *codec,
++					     struct simple_card_data *priv,
++					     int *dai_idx, int link_idx,
++					     int *conf_idx, int is_fe,
++					     bool is_top_level_node)
++{
++	struct device *dev = simple_priv_to_dev(priv);
++	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, link_idx);
++	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
++	struct snd_soc_card *card = simple_priv_to_card(priv);
++	struct asoc_simple_dai *dai;
++	char *prefix = "";
++	int ret;
++
++	/* For single DAI link & old style of DT node */
++	if (is_top_level_node)
++		prefix = PREFIX;
++
++	if (is_fe) {
++		int is_single_links = 0;
++		struct snd_soc_dai_link_component *codecs;
++
++		/* BE is dummy */
++		codecs			= dai_link->codecs;
++		codecs->of_node		= NULL;
++		codecs->dai_name	= "snd-soc-dummy-dai";
++		codecs->name		= "snd-soc-dummy";
++
++		/* FE settings */
++		dai_link->dynamic		= 1;
++		dai_link->dpcm_merged_format	= 1;
++
++		dai =
++		dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
++
++		ret = asoc_simple_card_parse_cpu(np, dai_link, DAI, CELL,
++						 &is_single_links);
++		if (ret)
++			return ret;
++
++		ret = asoc_simple_card_parse_clk_cpu(dev, np, dai_link, dai);
++		if (ret < 0)
++			return ret;
++
++		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
++							"fe.%s",
++							dai_link->cpu_dai_name);
++		if (ret < 0)
++			return ret;
++
++		asoc_simple_card_canonicalize_cpu(dai_link, is_single_links);
++	} else {
++		struct snd_soc_codec_conf *cconf;
++
++		/* FE is dummy */
++		dai_link->cpu_of_node		= NULL;
++		dai_link->cpu_dai_name		= "snd-soc-dummy-dai";
++		dai_link->cpu_name		= "snd-soc-dummy";
++
++		/* BE settings */
++		dai_link->no_pcm		= 1;
++		dai_link->be_hw_params_fixup	= asoc_simple_card_be_hw_params_fixup;
++
++		dai =
++		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
++
++		cconf =
++		dai_props->codec_conf	= &priv->codec_conf[(*conf_idx)++];
++
++		ret = asoc_simple_card_parse_codec(np, dai_link, DAI, CELL);
++		if (ret < 0)
++			return ret;
++
++		ret = asoc_simple_card_parse_clk_codec(dev, np, dai_link, dai);
++		if (ret < 0)
++			return ret;
++
++		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
++							"be.%s",
++							dai_link->codecs->dai_name);
++		if (ret < 0)
++			return ret;
++
++		/* check "prefix" from top node */
++		snd_soc_of_parse_audio_prefix(card, cconf,
++					      dai_link->codecs->of_node,
++					      PREFIX "prefix");
++		/* check "prefix" from each node if top doesn't have */
++		if (!cconf->of_node)
++			snd_soc_of_parse_node_prefix(np, cconf,
++						     dai_link->codecs->of_node,
++						     "prefix");
++	}
++
++	asoc_simple_card_parse_convert(dev, node, prefix, &dai_props->adata);
++
++	ret = asoc_simple_card_of_parse_tdm(np, dai);
++	if (ret)
++		return ret;
++
++	ret = asoc_simple_card_canonicalize_dailink(dai_link);
++	if (ret < 0)
++		return ret;
++
++	of_property_read_u32(np, "mclk-fs", &dai_props->mclk_fs);
++
++	ret = asoc_simple_card_parse_daifmt(dev, node, codec,
++					    prefix, &dai_link->dai_fmt);
++	if (ret < 0)
++		return ret;
++
++	dai_link->dpcm_playback		= 1;
++	dai_link->dpcm_capture		= 1;
++	dai_link->ops			= &asoc_simple_card_ops;
++	dai_link->init			= asoc_simple_card_dai_init;
++
++	return 0;
++}
++
+ static int asoc_simple_card_dai_link_of(struct device_node *node,
  					struct simple_card_data *priv,
  					int *dai_idx, int link_idx,
- 					bool is_top_level_node)
-@@ -345,7 +348,11 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	of_property_read_u32(node, "mclk-fs", &dai_props->mclk_fs);
-+	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
-+	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(node,  prop, &dai_props->mclk_fs);
-+	of_property_read_u32(cpu,   prop, &dai_props->mclk_fs);
-+	of_property_read_u32(codec, prop, &dai_props->mclk_fs);
- 
- 	ret = asoc_simple_card_parse_cpu(cpu, dai_link,
- 					 DAI, CELL, &single_cpu);
-@@ -453,9 +460,6 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	/* Factor to mclk, used in hw_params() */
--	of_property_read_u32(top, PREFIX "mclk-fs", &priv->mclk_fs);
+@@ -291,63 +433,153 @@ static int asoc_simple_card_parse_aux_devs(struct device_node *node,
+ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
++	struct device_node *top = dev->of_node;
+ 	struct snd_soc_card *card = simple_priv_to_card(priv);
+-	struct device_node *dai_link;
+-	struct device_node *node = dev->of_node;
+-	int ret;
+-	int link_idx, dai_idx;
 -
- 	asoc_simple_card_parse_convert(dev, top, PREFIX, &priv->adata);
+-	if (!node)
++	struct device_node *node;
++	struct device_node *np;
++	struct device_node *codec;
++	bool is_fe;
++	int ret, loop;
++	int dai_idx, link_idx, conf_idx;
++
++	if (!top)
+ 		return -EINVAL;
+ 
+-	dai_link = of_get_child_by_name(node, PREFIX "dai-link");
+-
+ 	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
+ 	if (ret < 0)
+-		goto card_parse_end;
++		return ret;
+ 
+ 	ret = asoc_simple_card_of_parse_routing(card, PREFIX);
+ 	if (ret < 0)
+-		goto card_parse_end;
++		return ret;
+ 
+ 	/* Factor to mclk, used in hw_params() */
+-	of_property_read_u32(node, PREFIX "mclk-fs", &priv->mclk_fs);
++	of_property_read_u32(top, PREFIX "mclk-fs", &priv->mclk_fs);
++
++	asoc_simple_card_parse_convert(dev, top, PREFIX, &priv->adata);
  
  	/* Single/Muti DAI link(s) & New style of DT node */
-@@ -482,13 +486,13 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 				is_fe = (np != codec);
- 
- 				ret = asoc_simple_card_dai_link_of_dpcm(
--						node, np, codec, priv,
-+						top, node, np, codec, priv,
- 						&dai_idx, link_idx++, &conf_idx,
- 						is_fe, !loop);
+-	link_idx = 0;
+-	dai_idx  = 0;
+-	if (dai_link) {
+-		struct device_node *np = NULL;
+-
+-		for_each_child_of_node(node, np) {
+-			dev_dbg(dev, "\tlink %d:\n", link_idx);
+-			ret = asoc_simple_card_dai_link_of(np, priv,
+-						&dai_idx, link_idx++, false);
+-			if (ret < 0) {
+-				of_node_put(np);
+-				goto card_parse_end;
++	loop		= 1;
++	link_idx	= 0;
++	dai_idx		= 0;
++	conf_idx	= 0;
++	node = of_get_child_by_name(top, PREFIX "dai-link");
++	if (!node) {
++		node = dev->of_node;
++		loop = 0;
++	}
++
++	do  {
++		/* DPCM */
++		if (of_get_child_count(node) > 2) {
++			for_each_child_of_node(node, np) {
++				codec = of_get_child_by_name(node,
++							loop ?	"codec" :
++								PREFIX "codec");
++				if (!codec)
++					return -ENODEV;
++
++				is_fe = (np != codec);
++
++				ret = asoc_simple_card_dai_link_of_dpcm(
++						node, np, codec, priv,
++						&dai_idx, link_idx++, &conf_idx,
++						is_fe, !loop);
  			}
- 		} else {
- 			ret = asoc_simple_card_dai_link_of(
--						node, priv,
-+						top, node, priv,
- 						&dai_idx, link_idx++, !loop);
++		} else {
++			ret = asoc_simple_card_dai_link_of(
++						node, priv,
++						&dai_idx, link_idx++, !loop);
  		}
+-	} else {
+-		/* For single DAI link & old style of DT node */
+-		ret = asoc_simple_card_dai_link_of(node, priv,
+-						&dai_idx, link_idx++, true);
  		if (ret < 0)
+-			goto card_parse_end;
+-	}
++			return ret;
++
++		node = of_get_next_child(top, node);
++	} while (loop && node);
+ 
+ 	ret = asoc_simple_card_parse_card_name(card, PREFIX);
+ 	if (ret < 0)
+-		goto card_parse_end;
+-
+-	ret = asoc_simple_card_parse_aux_devs(node, priv);
++		return ret;
+ 
+-card_parse_end:
+-	of_node_put(dai_link);
++	ret = asoc_simple_card_parse_aux_devs(top, priv);
+ 
+ 	return ret;
+ }
+ 
++static void asoc_simple_card_get_dais_count(struct device *dev,
++					    int *link_num,
++					    int *dais_num,
++					    int *ccnf_num)
++{
++	struct device_node *top = dev->of_node;
++	struct device_node *node;
++	int loop;
++	int num;
++
++	/*
++	 * link_num :	number of links.
++	 *		CPU-Codec / CPU-dummy / dummy-Codec
++	 * dais_num :	number of DAIs
++	 * ccnf_num :	number of codec_conf
++	 *		same number for "dummy-Codec"
++	 *
++	 * ex1)
++	 * CPU0 --- Codec0	link : 5
++	 * CPU1 --- Codec1	dais : 7
++	 * CPU2 -/		ccnf : 1
++	 * CPU3 --- Codec2
++	 *
++	 *	=> 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
++	 *	=> 7 DAIs  = 4xCPU + 3xCodec
++	 *	=> 1 ccnf  = 1xdummy-Codec
++	 *
++	 * ex2)
++	 * CPU0 --- Codec0	link : 5
++	 * CPU1 --- Codec1	dais : 6
++	 * CPU2 -/		ccnf : 1
++	 * CPU3 -/
++	 *
++	 *	=> 5 links = 1xCPU-Codec + 3xCPU-dummy + 1xdummy-Codec
++	 *	=> 6 DAIs  = 4xCPU + 2xCodec
++	 *	=> 1 ccnf  = 1xdummy-Codec
++	 *
++	 * ex3)
++	 * CPU0 --- Codec0	link : 6
++	 * CPU1 -/		dais : 6
++	 * CPU2 --- Codec1	ccnf : 2
++	 * CPU3 -/
++	 *
++	 *	=> 6 links = 0xCPU-Codec + 4xCPU-dummy + 2xdummy-Codec
++	 *	=> 6 DAIs  = 4xCPU + 2xCodec
++	 *	=> 2 ccnf  = 2xdummy-Codec
++	 */
++	if (!top) {
++		(*link_num) = 1;
++		(*dais_num) = 2;
++		(*ccnf_num) = 0;
++		return;
++	}
++
++	loop = 1;
++	node = of_get_child_by_name(top, PREFIX "dai-link");
++	if (!node) {
++		node = top;
++		loop = 0;
++	}
++
++	do {
++		num = of_get_child_count(node);
++		(*dais_num) += num;
++		if (num > 2) {
++			(*link_num) += num;
++			(*ccnf_num)++;
++		} else {
++			(*link_num)++;
++		}
++		node = of_get_next_child(top, node);
++	} while (loop && node);
++}
++
+ static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
+ {
+ 	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
+@@ -373,22 +605,23 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	struct snd_soc_card *card;
+-	int num, ret, i;
+-
+-	/* Get the number of DAI links */
+-	if (np && of_get_child_by_name(np, PREFIX "dai-link"))
+-		num = of_get_child_count(np);
+-	else
+-		num = 1;
++	struct snd_soc_codec_conf *cconf;
++	int lnum = 0, dnum = 0, cnum = 0;
++	int ret, i;
+ 
+ 	/* Allocate the private data and the DAI link array */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	dai_props = devm_kcalloc(dev, num, sizeof(*dai_props), GFP_KERNEL);
+-	dai_link  = devm_kcalloc(dev, num, sizeof(*dai_link), GFP_KERNEL);
+-	dais      = devm_kcalloc(dev, num * 2, sizeof(*dais),      GFP_KERNEL);
++	asoc_simple_card_get_dais_count(dev, &lnum, &dnum, &cnum);
++	if (!lnum || !dnum)
++		return -EINVAL;
++
++	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
++	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link),  GFP_KERNEL);
++	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
++	cconf     = devm_kcalloc(dev, cnum, sizeof(*cconf),     GFP_KERNEL);
+ 	if (!dai_props || !dai_link || !dais)
+ 		return -ENOMEM;
+ 
+@@ -398,7 +631,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	 * see
+ 	 *	soc-core.c :: snd_soc_init_multicodec()
+ 	 */
+-	for (i = 0; i < num; i++) {
++	for (i = 0; i < lnum; i++) {
+ 		dai_link[i].codecs	= &dai_props[i].codecs;
+ 		dai_link[i].num_codecs	= 1;
+ 		dai_link[i].platform	= &dai_props[i].platform;
+@@ -407,13 +640,16 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	priv->dai_props			= dai_props;
+ 	priv->dai_link			= dai_link;
+ 	priv->dais			= dais;
++	priv->codec_conf		= cconf;
+ 
+ 	/* Init snd_soc_card */
+ 	card = simple_priv_to_card(priv);
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+-	card->num_links		= num;
++	card->num_links		= lnum;
++	card->codec_conf	= cconf;
++	card->num_configs	= cnum;
+ 	card->probe		= asoc_simple_soc_card_probe;
+ 
+ 	if (np && of_device_is_available(np)) {
+@@ -490,6 +726,7 @@ static int asoc_simple_card_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id asoc_simple_of_match[] = {
+ 	{ .compatible = "simple-audio-card", },
++	{ .compatible = "simple-scu-audio-card", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
 -- 
 2.19.0.rc2
