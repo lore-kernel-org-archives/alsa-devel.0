@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: soc-compress: add support to
-	snd_compr_set_runtime_buffer()" to the asoc tree
-Date: Fri, 14 Dec 2018 12:44:20 +0000 (GMT)
-Message-ID: <20181214124420.84B4411258A2@debutante.sirena.org.uk>
+Subject: Applied "ASoC: qdsp6: q6routing: add display_port_rx
+	port routing" to the asoc tree
+Date: Fri, 14 Dec 2018 12:49:17 +0000 (GMT)
+Message-ID: <20181214124917.129B111258A2@debutante.sirena.org.uk>
+References: <1544790569-10608-5-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 369CF267A79
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:44:21 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F07226798A
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:49:19 +0100 (CET)
+In-Reply-To: <1544790569-10608-5-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org, asishb@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: soc-compress: add support to snd_compr_set_runtime_buffer()
+   ASoC: qdsp6: q6routing: add display_port_rx port routing
 
 has been applied to the asoc tree at
 
@@ -52,69 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From ba02eed9f300b6512181d526311d4e11aaa9714f Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 15 Nov 2018 18:13:20 +0000
-Subject: [PATCH] ALSA: soc-compress: add support to
- snd_compr_set_runtime_buffer()
+>From 0718f87b0df49570cdcb96179997bd372cac1742 Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Fri, 14 Dec 2018 17:59:29 +0530
+Subject: [PATCH] ASoC: qdsp6: q6routing: add display_port_rx port routing
 
-Existing compress offload code allocates data buffers using simple kmalloc,
-however there are situations where these buffers have to be mapped
-in smmu. So provide a way to set the runtime buffer by the driver itself,
-simillar to what we do with pcm.
+This patch add support to Display_port_rx mixers required to
+select path between ASM stream and AFE ports.
 
-This patch adds support to set runtime dma buffer on compressed stream.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/compress_driver.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/soc/qcom/qdsp6/q6routing.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index ea8c93bbb0e0..0cdc3999ecfa 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -23,6 +23,7 @@ struct snd_compr_ops;
-  * struct snd_compr_runtime: runtime stream description
-  * @state: stream state
-  * @ops: pointer to DSP callbacks
-+ * @dma_buffer_p: runtime dma buffer pointer
-  * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
-  *	DSP doesn't implement copy
-  * @buffer_size: size of the above buffer
-@@ -37,6 +38,7 @@ struct snd_compr_ops;
- struct snd_compr_runtime {
- 	snd_pcm_state_t state;
- 	struct snd_compr_ops *ops;
-+	struct snd_dma_buffer *dma_buffer_p;
- 	void *buffer;
- 	u64 buffer_size;
- 	u32 fragment_size;
-@@ -175,6 +177,23 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	wake_up(&stream->runtime->sleep);
- }
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index d61b8404f7da..ddcd9978cf57 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -453,6 +453,9 @@ static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
+ static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
+ 	Q6ROUTING_RX_MIXERS(HDMI_RX) };
  
-+/**
-+ * snd_compr_set_runtime_buffer - Set the Compress runtime buffer
-+ * @substream: compress substream to set
-+ * @bufp: the buffer information, NULL to clear
-+ *
-+ * Copy the buffer information to runtime buffer when @bufp is non-NULL.
-+ * Otherwise it clears the current buffer information.
-+ */
-+static inline void snd_compr_set_runtime_buffer(
-+					struct snd_compr_stream *substream,
-+					struct snd_dma_buffer *bufp)
-+{
-+	struct snd_compr_runtime *runtime = substream->runtime;
++static const struct snd_kcontrol_new display_port_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(DISPLAY_PORT_RX) };
 +
-+	runtime->dma_buffer_p = bufp;
-+}
-+
- int snd_compr_stop_error(struct snd_compr_stream *stream,
- 			 snd_pcm_state_t state);
+ static const struct snd_kcontrol_new primary_mi2s_rx_mixer_controls[] = {
+ 	Q6ROUTING_RX_MIXERS(PRIMARY_MI2S_RX) };
  
+@@ -655,6 +658,10 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 			   hdmi_mixer_controls,
+ 			   ARRAY_SIZE(hdmi_mixer_controls)),
+ 
++	SND_SOC_DAPM_MIXER("DISPLAY_PORT_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
++			   display_port_mixer_controls,
++			   ARRAY_SIZE(display_port_mixer_controls)),
++
+ 	SND_SOC_DAPM_MIXER("SLIMBUS_0_RX Audio Mixer", SND_SOC_NOPM, 0, 0,
+ 			   slimbus_rx_mixer_controls,
+ 			   ARRAY_SIZE(slimbus_rx_mixer_controls)),
+@@ -833,6 +840,8 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 
+ static const struct snd_soc_dapm_route intercon[] = {
+ 	Q6ROUTING_RX_DAPM_ROUTE("HDMI Mixer", "HDMI_RX"),
++	Q6ROUTING_RX_DAPM_ROUTE("DISPLAY_PORT_RX Audio Mixer",
++				"DISPLAY_PORT_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_0_RX Audio Mixer", "SLIMBUS_0_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_1_RX Audio Mixer", "SLIMBUS_1_RX"),
+ 	Q6ROUTING_RX_DAPM_ROUTE("SLIMBUS_2_RX Audio Mixer", "SLIMBUS_2_RX"),
 -- 
 2.19.0.rc2
