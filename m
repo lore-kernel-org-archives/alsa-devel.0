@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add more platform
-	granularity" to the asoc tree
-Date: Fri, 14 Dec 2018 12:37:22 +0000 (GMT)
-Message-ID: <20181214123722.BC5A011258A1@debutante.sirena.org.uk>
-References: <20181213190300.24999-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: simple-card: tidyup prefix for
+	snd_soc_codec_conf" to the asoc tree
+Date: Fri, 14 Dec 2018 12:37:26 +0000 (GMT)
+Message-ID: <20181214123726.7112611258A1@debutante.sirena.org.uk>
+References: <875zvw974w.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BBF22678D5
- for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:25 +0100 (CET)
-In-Reply-To: <20181213190300.24999-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 233E72678D5
+ for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2018 13:37:27 +0100 (CET)
+In-Reply-To: <875zvw974w.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add more platform granularity
+   ASoC: simple-card: tidyup prefix for snd_soc_codec_conf
 
 has been applied to the asoc tree at
 
@@ -53,220 +53,88 @@ to this mail.
 Thanks,
 Mark
 
->From 35bc99aaa1a3af23cf78b6b56f14230b5da3993b Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 13 Dec 2018 13:03:00 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: Add more platform granularity
+>From cfc652a73331c3b465e3f8dd39a3d6b71e6b3a66 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 14 Dec 2018 11:35:24 +0900
+Subject: [PATCH] ASoC: simple-card: tidyup prefix for snd_soc_codec_conf
 
-The current SKYLAKE kconfig is a all-you-can-eat selection that will
-support all known plaforms. This is however not necessarily a good
-thing: most platforms for SKL and KBL don't support the DSP, but a
-number of CNL/WHL ones do. Selecting this driver in all cases isn't
-really smart and will require users to muck with blacklists.
+Current simple-card is handling "prefix" by many ways.
+But, it is not useful and readable.
+We want to do is that allow having it everywere.
+This patch supports it.
+It will be overwrote if lower node has it.
 
-Partition the configs to allow distributions to select on which
-platform this driver is used. Keep the existing SND_SOC_INTEL_SKYLAKE
-config to select everything for backwards compatibility. This patch does
-not provide new functionality, only finer-grained choices in supported
-platforms.
+sound {
+	simple-audio-card,prefix = "xxx"; // initial
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+	simple-audio-card,dai-link {
+		prefix = "xxx"; // overwrite
+		cpu {
+			...
+		};
+		codec {
+			prefix = "xxx"; // overwrite
+		};
+	};
+};
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig        | 73 ++++++++++++++++++++++++++++++----
- sound/soc/intel/boards/Kconfig | 16 +++++++-
- sound/soc/intel/skylake/skl.c  | 12 ++++++
- 3 files changed, 92 insertions(+), 9 deletions(-)
+ sound/soc/generic/simple-card.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 18e717703685..99a62ba409df 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -102,15 +102,74 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
- 	  recommended option
- 
- config SND_SOC_INTEL_SKYLAKE
--	tristate "SKL/BXT/KBL/GLK/CNL... Platforms"
-+	tristate "All Skylake/SST Platforms"
- 	depends on PCI && ACPI
--	select SND_SOC_INTEL_SKYLAKE_COMMON
-+	select SND_SOC_INTEL_SKL
-+	select SND_SOC_INTEL_APL
-+	select SND_SOC_INTEL_KBL
-+	select SND_SOC_INTEL_GLK
-+	select SND_SOC_INTEL_CNL
-+	select SND_SOC_INTEL_CFL
- 	help
--	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
--	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
--	  then enable this option by saying Y or m.
-+          This is a backwards-compatible option to select all devices
-+	  supported by the Intel SST/Skylake driver. This option is no
-+	  longer recommended and will be deprecated when the SOF
-+	  driver is introduced.  Distributions should explicitly
-+	  select which platform uses this driver.
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fb18e5148aad..37e001cf9cd1 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -177,8 +177,9 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, link_idx);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
+-	struct snd_soc_card *card = simple_priv_to_card(priv);
+ 	struct asoc_simple_dai *dai;
++	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
 +
-+config SND_SOC_INTEL_SKL
-+	tristate "Skylake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Skylake platform with the DSP enabled
-+	  in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_APL
-+	tristate "Broxton/ApolloLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Broxton/ApolloLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_KBL
-+	tristate "Kabylake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel Kabylake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_GLK
-+	tristate "GeminiLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel GeminiLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_CNL
-+	tristate "CannonLake/WhiskyLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CNL/WHL platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_CFL
-+	tristate "CoffeeLake Platforms"
-+	depends on PCI && ACPI
-+	select SND_SOC_INTEL_SKYLAKE_FAMILY
-+	help
-+	  If you have a Intel CoffeeLake platform with the DSP
-+	  enabled in the BIOS then enable this option by saying Y or m.
-+
-+config SND_SOC_INTEL_SKYLAKE_FAMILY
-+	tristate
-+	select SND_SOC_INTEL_SKYLAKE_COMMON
+ 	char prop[128];
+ 	char *prefix = "";
+ 	int ret;
+@@ -189,10 +190,8 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
  
--if  SND_SOC_INTEL_SKYLAKE
-+if SND_SOC_INTEL_SKYLAKE_FAMILY
+ 	if (is_fe) {
+ 		int is_single_links = 0;
+-		struct snd_soc_dai_link_component *codecs;
  
- config SND_SOC_INTEL_SKYLAKE_SSP_CLK
- 	tristate
-@@ -135,7 +194,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
- 	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
- 	  then enable this option by saying Y or m.
+ 		/* BE is dummy */
+-		codecs			= dai_link->codecs;
+ 		codecs->of_node		= NULL;
+ 		codecs->dai_name	= "snd-soc-dummy-dai";
+ 		codecs->name		= "snd-soc-dummy";
+@@ -248,19 +247,17 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
  
--endif ## SND_SOC_INTEL_SKYLAKE
-+endif ## SND_SOC_INTEL_SKYLAKE_FAMILY
+ 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 							"be.%s",
+-							dai_link->codecs->dai_name);
++							codecs->dai_name);
+ 		if (ret < 0)
+ 			return ret;
  
- config SND_SOC_ACPI_INTEL_MATCH
- 	tristate
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 3839d6205fcf..0a7e40d06395 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -172,7 +172,7 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 		/* check "prefix" from top node */
+-		snd_soc_of_parse_audio_prefix(card, cconf,
+-					      dai_link->codecs->of_node,
++		snd_soc_of_parse_node_prefix(top, cconf, codecs->of_node,
+ 					      PREFIX "prefix");
+-		/* check "prefix" from each node if top doesn't have */
+-		if (!cconf->of_node)
+-			snd_soc_of_parse_node_prefix(np, cconf,
+-						     dai_link->codecs->of_node,
+-						     "prefix");
++		snd_soc_of_parse_node_prefix(node, cconf, codecs->of_node,
++					     "prefix");
++		snd_soc_of_parse_node_prefix(np, cconf, codecs->of_node,
++					     "prefix");
+ 	}
  
- endif ## SND_SST_ATOM_HIFI2_PLATFORM
- 
--if SND_SOC_INTEL_SKYLAKE
-+if SND_SOC_INTEL_SKL
- 
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "SKL with RT286 I2S mode"
-@@ -212,6 +212,10 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	  Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
- 
-+endif ## SND_SOC_INTEL_SKL
-+
-+if SND_SOC_INTEL_APL
-+
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -239,6 +243,10 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
-+endif ## SND_SOC_INTEL_APL
-+
-+if SND_SOC_INTEL_KBL
-+
- config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	tristate "KBL with RT5663 and MAX98927 in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -303,6 +311,10 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
- 	  create an alsa sound card for RT5660 I2S audio codec.
- 	  Say Y if you have such a device.
- 
-+endif ## SND_SOC_INTEL_KBL
-+
-+if SND_SOC_INTEL_GLK
-+
- config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on MFD_INTEL_LPSS && I2C && ACPI
-@@ -317,7 +329,7 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	   Say Y if you have such a device.
- 	   If unsure select "N".
- 
--endif ## SND_SOC_INTEL_SKYLAKE
-+endif ## SND_SOC_INTEL_GLK
- 
- if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
- 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index f9888b1d5521..5abd35ca4e41 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1142,24 +1142,36 @@ static void skl_remove(struct pci_dev *pci)
- 
- /* PCI IDs */
- static const struct pci_device_id skl_ids[] = {
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_skl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
- 	/* BXT-P */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_bxt_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
- 	/* KBL */
- 	{ PCI_DEVICE(0x8086, 0x9D71),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_kbl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
- 	/* GLK */
- 	{ PCI_DEVICE(0x8086, 0x3198),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_glk_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CNL)
- 	/* CNL */
- 	{ PCI_DEVICE(0x8086, 0x9dc8),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CFL)
- 	/* CFL */
- 	{ PCI_DEVICE(0x8086, 0xa348),
- 		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
-+#endif
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
+ 	asoc_simple_card_parse_convert(dev, top,  PREFIX, &dai_props->adata);
 -- 
 2.19.0.rc2
