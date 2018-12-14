@@ -1,68 +1,108 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: dt-bindings: Add q6afe display_port dt binding" to the asoc tree
-Date: Fri, 14 Dec 2018 12:49:22 +0000 (GMT)
-Message-ID: <20181214124922.9B3BE11258A2@debutante.sirena.org.uk>
-References: <1544790569-10608-2-git-send-email-rohitkr@codeaurora.org>
+From: Josh Boyer <jwboyer@kernel.org>
+Subject: Re: [GIT PULL] Additional firmware files for CA0132 HD-audio codec
+Date: Fri, 14 Dec 2018 07:54:50 -0500
+Message-ID: <CA+5PVA7BNyoFK8CDxr+oDA7Von201qFxejbsEQi+CgeOo0xzxA@mail.gmail.com>
+References: <20181010174923.GA29921@connor-Z97X-Gaming-7> <s5hmur3pzg2.wl-tiwai@suse.de>
+ <CA+5PVA5xQvz+NftESMLUNY=5vR+A1x76sL64eXCR-KPqi6G+gg@mail.gmail.com>
+ <CAM8Agx38RCN5xUPwV-YP0JyMtxNj9tveou4fHCDK1zyvE0a+Tg@mail.gmail.com>
+ <CAM8Agx1VK3QNV52RmiSsrD8042oFRKZg-w6WFa7SPfebVa4hQQ@mail.gmail.com> <CAM8Agx2KYOZK97J7yiM9JvNF1bxiAKNtA_YDegtLMVAYiWKEXQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1544790569-10608-2-git-send-email-rohitkr@codeaurora.org>
+In-Reply-To: <CAM8Agx2KYOZK97J7yiM9JvNF1bxiAKNtA_YDegtLMVAYiWKEXQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.combroonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.comsrinivas.kandagatla@linaro.org, asishb@codeaurora.orgalsa-devel@alsa-project.org
+To: Connor McAdams <conmanx360@gmail.com>
+Cc: jwboyer@kernel.org, Takashi Iwai <tiwai@suse.de>, Linux Firmware <linux-firmware@kernel.org>, alsa-devel@alsa-project.org, "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Nov 9, 2018 at 2:49 PM Connor McAdams <conmanx360@gmail.com> wrote:
+>
+> Okay... So, my contact at Creative gave me an email as the 'sign-off
+> party' for firmware submission. As far as I'm aware, sign-offs also
+> need names attached, correct? So I'll ask for that. However, they
+> still want me to send it.
+>
+> Will that be okay? Would you be more comfortable if I get you in
+> contact with someone at Creative,Josh?
 
-   ASoC: qdsp6: dt-bindings: Add q6afe display_port dt binding
+It is common for someone to sign-off on a patch, but have someone else
+send it.  Having their Signed-off-by: <person> in the commit log is
+OK.
 
-has been applied to the asoc tree at
+josh
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 76119509d23cdd9fbc71585042b27b6511b44b4d Mon Sep 17 00:00:00 2001
-From: Rohit kumar <rohitkr@codeaurora.org>
-Date: Fri, 14 Dec 2018 17:59:26 +0530
-Subject: [PATCH] ASoC: qdsp6: dt-bindings: Add q6afe display_port dt binding
-
-This patch adds bindings required for DISPLAY_PORT_RX
-port on AFE.
-
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/dt-bindings/sound/qcom,q6afe.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-index e2d3892240b8..1df06f8ad5c3 100644
---- a/include/dt-bindings/sound/qcom,q6afe.h
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -106,6 +106,7 @@
- #define QUINARY_TDM_TX_6	101
- #define QUINARY_TDM_RX_7	102
- #define QUINARY_TDM_TX_7	103
-+#define DISPLAY_PORT_RX		104
- 
- #endif /* __DT_BINDINGS_Q6_AFE_H__ */
- 
--- 
-2.19.0.rc2
+>
+> I apologize for being kind of difficult, I'm doing what I can. Let me
+> know what I need to do, and I'll do my best.
+>
+> Thanks,
+> Connor.
+> On Sun, Nov 4, 2018 at 1:00 AM Connor McAdams <conmanx360@gmail.com> wrote:
+> >
+> > Okay, just got a response from the guy at Creative. He said they'll
+> > try to sort it out this week. Just a heads up. :)
+> > On Wed, Oct 24, 2018 at 12:22 PM Connor McAdams <conmanx360@gmail.com> wrote:
+> > >
+> > > Understood. I will see what I can do. I already had them contact
+> > > Takashi, but I will ask if they're willing to give a sign-off. If
+> > > they're having trouble, is it okay to have them contact you Josh?
+> > >
+> > > Let me know.
+> > > On Wed, Oct 24, 2018 at 9:44 AM Josh Boyer <jwboyer@kernel.org> wrote:
+> > > >
+> > > > On Wed, Oct 24, 2018 at 3:37 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Wed, 10 Oct 2018 19:49:23 +0200,
+> > > > > Connor McAdams wrote:
+> > > > > >
+> > > > > > The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
+> > > > > >
+> > > > > >   Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
+> > > > > >
+> > > > > > are available in the git repository at:
+> > > > > >
+> > > > > >   git@github.com:Conmanx360/linux-firmware.git
+> > > > > >
+> > > > > > for you to fetch changes up to cd8899323352e772c5989230f35b1c494e0ab196:
+> > > > > >
+> > > > > >   linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec (2018-10-09 14:41:12 -0400)
+> > > > > >
+> > > > > > ----------------------------------------------------------------
+> > > > > > These are additional firmware files for CA0132 based sound cards.
+> > > > > >
+> > > > > > Creative has given me permission through email to send these to the
+> > > > > > linux-firmware repository under the same license as the previous ca0132
+> > > > > > firmware. I asked my contact if they would sign-off on it, but they said
+> > > > > > to go ahead and submit it and that if there was any issue to contact
+> > > > > > them.
+> > > > > >
+> > > > > > If you need to contact them, or if there's more info needed, let me know
+> > > > > > and I can get see what I can do.
+> > > >
+> > > > I'd really like to see a Sign-off from someone at Creative.  It's not
+> > > > that I don't trust your word that they agreed to it, but we have
+> > > > nothing to go back and verify they actually agreed to allow this to be
+> > > > redistributable, etc.
+> > > >
+> > > > josh
+> > > >
+> > > > > > ----------------------------------------------------------------
+> > > > > > Connor McAdams (1):
+> > > > > >       linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec
+> > > > > >
+> > > > > >  WHENCE            |   2 ++
+> > > > > >  ctefx-desktop.bin | Bin 0 -> 655856 bytes
+> > > > > >  ctefx-r3di.bin    | Bin 0 -> 655816 bytes
+> > > > > >  3 files changed, 2 insertions(+)
+> > > > > >  create mode 100644 ctefx-desktop.bin
+> > > > > >  create mode 100644 ctefx-r3di.bin
+> > > > >
+> > > > > Please can anyone take a look at this pull request?
+> > > > >
+> > > > > It's mandatory for the CA0132-based cards that are now supported
+> > > > > better in the upstream kernel tree.
+> > > > >
+> > > > >
+> > > > > Thanks!
+> > > > >
+> > > > > Takashi
