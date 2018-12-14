@@ -1,38 +1,83 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 2/3] ASoC: xlnx: Add i2s driver
-Date: Fri, 14 Dec 2018 07:50:43 +0100
-Message-ID: <19c273d9-c52d-48be-a1e1-88e2b1f14cce@xilinx.com>
-References: <1544207558-72508-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
- <1544207558-72508-3-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
- <20181213153127.GN10669@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: sdm845: set jack only for a specific backend
+Date: Fri, 14 Dec 2018 15:31:43 +0530
+Message-ID: <1544781703-9585-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181213153127.GN10669@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, asishb@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Headset codec is connected over PRIMARY_MI2S interface. Call
+set_jack for codec associated with Primary Mi2s interface.
+Also, set_jack to NULL when jack is freed.
 
-On 13. 12. 18 16:31, Mark Brown wrote:
-> On Sat, Dec 08, 2018 at 12:02:37AM +0530, Maruthi Srinivas Bayyavarapu wrote:
-> 
->> @@ -0,0 +1,185 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Xilinx ASoC I2S audio support
->> + *
-> 
-> This looks otherwise good so I've applied it but please send a followup
-> patch converting the entire comment block to C++ style so this looks
-> more consistent.
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+---
+ sound/soc/qcom/sdm845.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-Is it the rule for your subsystems? Or did it come from any generic
-agreement how this should be handled in .c files?
-
-Thanks,
-Michal
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 1db8ef66..6f66a58 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -158,17 +158,24 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static void sdm845_jack_free(struct snd_jack *jack)
++{
++	struct snd_soc_component *component = jack->private_data;
++
++	snd_soc_component_set_jack(component, NULL, NULL);
++}
++
+ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_component *component;
+-	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	struct snd_soc_card *card = rtd->card;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(card);
+-	int i, rval;
++	struct snd_jack *jack;
++	int rval;
+ 
+ 	if (!pdata->jack_setup) {
+-		struct snd_jack *jack;
+-
+ 		rval = snd_soc_card_jack_new(card, "Headset Jack",
+ 				SND_JACK_HEADSET |
+ 				SND_JACK_HEADPHONE |
+@@ -190,16 +197,22 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 		pdata->jack_setup = true;
+ 	}
+ 
+-	for (i = 0 ; i < dai_link->num_codecs; i++) {
+-		struct snd_soc_dai *dai = rtd->codec_dais[i];
++	switch (cpu_dai->id) {
++	case PRIMARY_MI2S_RX:
++		jack  = pdata->jack.jack;
++		component = codec_dai->component;
+ 
+-		component = dai->component;
+-		rval = snd_soc_component_set_jack(
+-				component, &pdata->jack, NULL);
++		jack->private_data = component;
++		jack->private_free = sdm845_jack_free;
++		rval = snd_soc_component_set_jack(component,
++						  &pdata->jack, NULL);
+ 		if (rval != 0 && rval != -ENOTSUPP) {
+ 			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
+ 			return rval;
+ 		}
++		break;
++	default:
++		break;
+ 	}
+ 
+ 	return 0;
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
