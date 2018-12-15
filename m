@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: firewire-lib: fix wrong handling payload_length as payload_quadlet
-Date: Sat, 15 Dec 2018 19:03:19 +0900
-Message-ID: <20181215100321.1658-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] ALSA: firewire-lib: fix wrong assignment for 'out_packet_without_header' tracepoint
+Date: Sat, 15 Dec 2018 19:03:20 +0900
+Message-ID: <20181215100321.1658-3-o-takashi@sakamocchi.jp>
 References: <20181215100321.1658-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,44 +12,31 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-1/6 engine of ALSA firewire stack, a packet handler has a
-second argument for 'the number of bytes in payload of isochronous
-packet'. However, an incoming packet handler without CIP header uses the
-value as 'the number of quadlets in the payload'. This brings userspace
-applications to receive the number of PCM frames as four times against
-real time.
+An initial commit to add tracepoints for packets without CIP headers
+introduces a wrong assignment to 'data_blocks' value of
+'out_packet_without_header' tracepoint.
 
 This commit fixes the bug.
 
 Cc: <stable@vger.kernel.org> # v4.12+
-Fixes: 3b196c394dd ('ALSA: firewire-lib: add no-header packet processing')
+Fixes: b164d2fd6e49 ('ALSA: firewire_lib: add tracepoints for packets without CIP headers')
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/firewire/amdtp-stream-trace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 9be76c808fcc..3ada55ed5381 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -654,15 +654,17 @@ static int handle_in_packet(struct amdtp_stream *s,
- }
- 
- static int handle_in_packet_without_header(struct amdtp_stream *s,
--			unsigned int payload_quadlets, unsigned int cycle,
-+			unsigned int payload_length, unsigned int cycle,
- 			unsigned int index)
- {
- 	__be32 *buffer;
-+	unsigned int payload_quadlets;
- 	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
- 	unsigned int pcm_frames;
- 
- 	buffer = s->buffer.packets[s->packet_index].buffer;
-+	payload_quadlets = payload_length / 4;
- 	data_blocks = payload_quadlets / s->data_block_quadlets;
- 
- 	trace_in_packet_without_header(s, cycle, payload_quadlets, data_blocks,
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 54cdd4ffa9ce..c05b3da0aa1c 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -169,7 +169,7 @@ TRACE_EVENT(out_packet_without_header,
+ 		__entry->dest = fw_parent_device(s->unit)->node_id;
+ 		__entry->payload_quadlets = payload_length / 4;
+ 		__entry->data_blocks = data_blocks,
+-		__entry->data_blocks = s->data_block_counter,
++		__entry->data_block_counter = s->data_block_counter,
+ 		__entry->packet_index = s->packet_index;
+ 		__entry->irq = !!in_interrupt();
+ 		__entry->index = index;
 -- 
 2.19.1
