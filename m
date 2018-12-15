@@ -1,42 +1,52 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/3] ALSA: firewire-lib: use the same print format for 'without_header' tracepoints
-Date: Sat, 15 Dec 2018 19:03:21 +0900
-Message-ID: <20181215100321.1658-4-o-takashi@sakamocchi.jp>
-References: <20181215100321.1658-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/3] ALSA: firewire-lib: fixes for processing
+	packets without CIP header
+Date: Sat, 15 Dec 2018 19:03:18 +0900
+Message-ID: <20181215100321.1658-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20181215100321.1658-1-o-takashi@sakamocchi.jp>
-Sender: stable-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 250A7267A8E
+ for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2018 11:03:49 +0100 (CET)
+Received: by mail-pl1-f193.google.com with SMTP id gn14so3876900plb.10
+ for <alsa-devel@alsa-project.org>; Sat, 15 Dec 2018 02:03:49 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-An initial commit to add tracepoints for packets without CIP headers
-uses different print formats for added tracepoints. However this is not
-convenient for users/developers to prepare debug tools.
+Hi,
 
-This commit uses the same format for the two tracepoints.
+In kernel v4.12, a series of patch was applied to IEC 61883-1/6 packet
+streaming engine in ALSA firewire stack to process isochronous packet
+without CIP header. But this included some bugs. Especially, for capture
+PCM substream, the engine handles PCM frames for applications as four
+times against real time.
 
-Cc: <stable@vger.kernel.org> # v4.12+
-Fixes: b164d2fd6e49 ('ALSA: firewire_lib: add tracepoints for packets without CIP headers')
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream-trace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset fixes the bugs.
 
-diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
-index c05b3da0aa1c..ac20acf48fc6 100644
---- a/sound/firewire/amdtp-stream-trace.h
-+++ b/sound/firewire/amdtp-stream-trace.h
-@@ -131,7 +131,7 @@ TRACE_EVENT(in_packet_without_header,
- 		__entry->index = index;
- 	),
- 	TP_printk(
--		"%02u %04u %04x %04x %02d %03u %3u %3u %02u %01u %02u",
-+		"%02u %04u %04x %04x %02d %03u %02u %03u %02u %01u %02u",
- 		__entry->second,
- 		__entry->cycle,
- 		__entry->src,
+Takashi Sakamoto (3):
+  ALSA: firewire-lib: fix wrong handling payload_length as
+    payload_quadlet
+  ALSA: firewire-lib: fix wrong assignment for
+    'out_packet_without_header' tracepoint
+  ALSA: firewire-lib: use the same print format for 'without_header'
+    tracepoints
+
+ sound/firewire/amdtp-stream-trace.h | 4 ++--
+ sound/firewire/amdtp-stream.c       | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
 -- 
 2.19.1
