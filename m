@@ -1,18 +1,15 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
- device
-Date: Sun, 16 Dec 2018 23:03:50 +0100
-Message-ID: <20181216230350.a4138c5ceb9330b2a0b2872f@ao2.it>
-References: <20181216185429.GA20408@gerhold.net>
- <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/9] ASoC: Intel: fix Coccinelle and Sparse
+	warnings
+Date: Sun, 16 Dec 2018 16:49:01 -0600
+Message-ID: <20181216224910.16198-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (mail.ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 12C382677E4
- for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 23:03:53 +0100 (CET)
-In-Reply-To: <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21C8E2677E4
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 23:49:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 16 Dec 2018 20:07:30 +0100
-Hans de Goede <hdegoede@redhat.com> wrote:
+Make minor warnings go away to make sure Intel/SOF CI checks don't
+fail and new issues are detected.
 
-> Hi,
-> 
-> On 16-12-18 19:54, Stephan Gerhold wrote:
-[...] 
-> > Unlike many of the other DSDT dumps I've looked at, there is only one
-> > interrupt listed. Full ACPI DSDT table is at [1].
-> > 
-> > Since there is no IRQ at index 5, platform_get_irq will return -ENXIO.
-> > Couldn't we fall back to index 0 in this case? I would say that if the
-> > seemingly "correct" IRQ at index 5 does not even exist, we still have
-> > a better chance of picking the right one if we try the one at index 0.
-> > Or we could check the number of interrupts that are actually available.
-> 
-> If I'm not mistaken then you already mentioned in another thread
-> (the "tusb1210 probe of dwc3.0.auto.ulpi fails with EBUSY on 4.19+")
-> thread that the DSTD of this Andriod only device has several bugs in
-> there such as wrong GPIOs in some places, etc. and you need to do a
-> DSDT override anyways to get some things to work, right ?
-> 
-> In that case I believe it would be best to just also patch up this
-> part of the DSDT in your override and leave the current kernel code
-> as is.
-> 
+Sparse checks are not complete, the legacy stuff is just too messy to
+fix, we only check for soc/sof/intel/boards since it's the only part
+reused by SOF.
 
-FWIW that is what I did when playing with a Teclast X98 Air 3G some
-years ago, see:
-https://git.ao2.it/Teclast-X98-Air-3G_C6J6_custom_DSDT.git/
+Pierre-Louis Bossart (9):
+  ASoC: Intel: Skylake: remove useless cast
+  ASoC: Intel: Skylake: simplify boolean tests
+  ASoC: Intel: Haswell: remove unneeded semicolon
+  ASoC: Intel: Haswell: assign booleans to true/false
+  ASoC: Intel: Baytrail: remove unneeded variable
+  ASoC: Intel: Baytrail: simplify boolean test
+  ASoC: Intel: Atom: simplify boolean tests
+  ASoC: Intel: Atom: work-around Coccinelle false-alarm
+  ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
 
-In my case I just had to fix the ordering:
-https://git.ao2.it/Teclast-X98-Air-3G_C6J6_custom_DSDT.git/commitdiff/f718ea7d184cf266d7b5453124139b1c627221e6
+ sound/soc/intel/atom/sst-atom-controls.c      | 4 ++--
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c  | 2 +-
+ sound/soc/intel/atom/sst/sst_acpi.c           | 2 +-
+ sound/soc/intel/atom/sst/sst_drv_interface.c  | 2 +-
+ sound/soc/intel/atom/sst/sst_loader.c         | 2 +-
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c   | 3 +--
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c   | 2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
+ sound/soc/intel/haswell/sst-haswell-ipc.c     | 2 +-
+ sound/soc/intel/haswell/sst-haswell-pcm.c     | 4 ++--
+ sound/soc/intel/skylake/skl-messages.c        | 2 +-
+ sound/soc/intel/skylake/skl-pcm.c             | 2 +-
+ sound/soc/intel/skylake/skl-topology.c        | 2 +-
+ 14 files changed, 17 insertions(+), 18 deletions(-)
 
-It's been a while tho, I just committed and pushed the change now
-because I had forgotten back in the day.
 
-The Makefile in the repository contains some pointers about how to build
-a DSDT override, what is missing is that you still have to manually
-append the original initrd to the file created by the Makefile.
-
-Ciao,
-   Antonio
-
+base-commit: ba26f635bf7253b42b08135152b18a2c8082abb7
 -- 
-Antonio Ospite
-https://ao2.it
-https://twitter.com/ao2it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+2.17.1
