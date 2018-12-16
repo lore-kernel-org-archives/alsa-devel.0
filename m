@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: fireface: share helper function to
-	switch fetching mode
-Date: Sun, 16 Dec 2018 17:32:29 +0900
-Message-ID: <20181216083233.11358-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: fireface: code refactoring to handle
+	multiplier mode
+Date: Sun, 16 Dec 2018 17:32:30 +0900
+Message-ID: <20181216083233.11358-3-o-takashi@sakamocchi.jp>
 References: <20181216083233.11358-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
- [209.85.214.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A46726793A
- for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 09:32:50 +0100 (CET)
-Received: by mail-pl1-f193.google.com with SMTP id u18so4696302plq.7
- for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 00:32:50 -0800 (PST)
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20EDE26793A
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 09:32:52 +0100 (CET)
+Received: by mail-pl1-f195.google.com with SMTP id g9so4691910plo.3
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 00:32:52 -0800 (PST)
 In-Reply-To: <20181216083233.11358-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,135 +28,210 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Both of Fireface 400/800 have the same register to switch frame fetching
-mode regardless of difference of available number of PCM frames in
-rx isochronous packet.
+Fireface 400/800 use three modes against the number of data channels in
+data block for both tx/rx packets.
 
-This commit moves a helper function from model-dependent implementation.
+This commit adds refactoring for it. Some enumerators are added to
+represent each of mode and a function is added to calculate the mode
+from sampling frequency code (sfc).
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff-protocol-ff400.c | 30 ----------------
- sound/firewire/fireface/ff-stream.c         | 38 +++++++++++++++++++--
- sound/firewire/fireface/ff.h                |  1 -
- 3 files changed, 36 insertions(+), 33 deletions(-)
+ sound/firewire/fireface/ff-pcm.c    | 33 ++++++++++++++++---------
+ sound/firewire/fireface/ff-stream.c | 38 +++++++++++++++++++----------
+ sound/firewire/fireface/ff.h        | 15 +++++++++---
+ 3 files changed, 58 insertions(+), 28 deletions(-)
 
-diff --git a/sound/firewire/fireface/ff-protocol-ff400.c b/sound/firewire/fireface/ff-protocol-ff400.c
-index fd257051d4a4..374009545936 100644
---- a/sound/firewire/fireface/ff-protocol-ff400.c
-+++ b/sound/firewire/fireface/ff-protocol-ff400.c
-@@ -76,35 +76,6 @@ static void ff400_finish_session(struct snd_ff *ff)
- 			   FF400_ISOC_COMM_STOP, &reg, sizeof(reg), 0);
- }
+diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
+index 63b0be6f05e8..d0bc96b20a65 100644
+--- a/sound/firewire/fireface/ff-pcm.c
++++ b/sound/firewire/fireface/ff-pcm.c
+@@ -8,11 +8,6 @@
  
--static int ff400_switch_fetching_mode(struct snd_ff *ff, bool enable)
+ #include "ff.h"
+ 
+-static inline unsigned int get_multiplier_mode_with_index(unsigned int index)
 -{
--	__le32 *reg;
--	int i;
--	int err;
--
--	reg = kcalloc(18, sizeof(__le32), GFP_KERNEL);
--	if (reg == NULL)
--		return -ENOMEM;
--
--	if (!enable) {
--		/*
--		 * Each quadlet is corresponding to data channels in a data
--		 * blocks in reverse order. Precisely, quadlets for available
--		 * data channels should be enabled. Here, I take second best
--		 * to fetch PCM frames from all of data channels regardless of
--		 * stf.
--		 */
--		for (i = 0; i < 18; ++i)
--			reg[i] = cpu_to_le32(0x00000001);
--	}
--
--	err = snd_fw_transaction(ff->unit, TCODE_WRITE_BLOCK_REQUEST,
--				 SND_FF_REG_FETCH_PCM_FRAMES, reg,
--				 sizeof(__le32) * 18, 0);
--	kfree(reg);
--	return err;
+-	return ((int)index - 1) / 2;
 -}
 -
- static void ff400_handle_midi_msg(struct snd_ff *ff, __le32 *buf, size_t length)
+ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 			struct snd_pcm_hw_rule *rule)
  {
+@@ -24,10 +19,16 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	struct snd_interval t = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, mode;
++	unsigned int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
+-		mode = get_multiplier_mode_with_index(i);
++		enum snd_ff_stream_mode mode;
++		int err;
++
++		err = snd_ff_stream_get_multiplier_mode(i, &mode);
++		if (err < 0)
++			continue;
++
+ 		if (!snd_interval_test(c, pcm_channels[mode]))
+ 			continue;
+ 
+@@ -49,10 +50,16 @@ static int hw_rule_channels(struct snd_pcm_hw_params *params,
+ 	struct snd_interval t = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, mode;
++	unsigned int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
+-		mode = get_multiplier_mode_with_index(i);
++		enum snd_ff_stream_mode mode;
++		int err;
++
++		err = snd_ff_stream_get_multiplier_mode(i, &mode);
++		if (err < 0)
++			continue;
++
+ 		if (!snd_interval_test(r, amdtp_rate_table[i]))
+ 			continue;
+ 
+@@ -66,7 +73,6 @@ static int hw_rule_channels(struct snd_pcm_hw_params *params,
+ static void limit_channels_and_rates(struct snd_pcm_hardware *hw,
+ 				     const unsigned int *pcm_channels)
+ {
+-	unsigned int mode;
+ 	unsigned int rate, channels;
  	int i;
-@@ -146,5 +117,4 @@ const struct snd_ff_protocol snd_ff_protocol_ff400 = {
- 	.handle_midi_msg	= ff400_handle_midi_msg,
- 	.begin_session		= ff400_begin_session,
- 	.finish_session		= ff400_finish_session,
--	.switch_fetching_mode	= ff400_switch_fetching_mode,
- };
+ 
+@@ -76,7 +82,12 @@ static void limit_channels_and_rates(struct snd_pcm_hardware *hw,
+ 	hw->rate_max = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
+-		mode = get_multiplier_mode_with_index(i);
++		enum snd_ff_stream_mode mode;
++		int err;
++
++		err = snd_ff_stream_get_multiplier_mode(i, &mode);
++		if (err < 0)
++			continue;
+ 
+ 		channels = pcm_channels[mode];
+ 		if (pcm_channels[mode] == 0)
 diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
-index 59ca2e84d41c..e6fa6362dab7 100644
+index e6fa6362dab7..e6a8229a9d82 100644
 --- a/sound/firewire/fireface/ff-stream.c
 +++ b/sound/firewire/fireface/ff-stream.c
-@@ -73,10 +73,44 @@ static void release_resources(struct snd_ff *ff)
- 	fw_iso_resources_free(&ff->rx_resources);
- }
+@@ -10,19 +10,23 @@
  
-+static int switch_fetching_mode(struct snd_ff *ff, bool enable)
-+{
-+	unsigned int count;
-+	__le32 *reg;
-+	int i;
-+	int err;
-+
-+	count = 0;
-+	for (i = 0; i < SND_FF_STREAM_MODES; ++i)
-+		count = max(count, ff->spec->pcm_playback_channels[i]);
-+
-+	reg = kcalloc(count, sizeof(__le32), GFP_KERNEL);
-+	if (!reg)
-+		return -ENOMEM;
-+
-+	if (!enable) {
-+		/*
-+		 * Each quadlet is corresponding to data channels in a data
-+		 * blocks in reverse order. Precisely, quadlets for available
-+		 * data channels should be enabled. Here, I take second best
-+		 * to fetch PCM frames from all of data channels regardless of
-+		 * stf.
-+		 */
-+		for (i = 0; i < count; ++i)
-+			reg[i] = cpu_to_le32(0x00000001);
-+	}
-+
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				 SND_FF_REG_FETCH_PCM_FRAMES, reg,
-+				 sizeof(__le32) * count, 0);
-+	kfree(reg);
-+	return err;
-+}
-+
- static inline void finish_session(struct snd_ff *ff)
+ #define CALLBACK_TIMEOUT_MS	200
+ 
+-static int get_rate_mode(unsigned int rate, unsigned int *mode)
++int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
++				      enum snd_ff_stream_mode *mode)
  {
- 	ff->spec->protocol->finish_session(ff);
--	ff->spec->protocol->switch_fetching_mode(ff, false);
-+	switch_fetching_mode(ff, false);
+-	int i;
+-
+-	for (i = 0; i < CIP_SFC_COUNT; i++) {
+-		if (amdtp_rate_table[i] == rate)
+-			break;
+-	}
+-
+-	if (i == CIP_SFC_COUNT)
++	static const enum snd_ff_stream_mode modes[] = {
++		[CIP_SFC_32000] = SND_FF_STREAM_MODE_LOW,
++		[CIP_SFC_44100] = SND_FF_STREAM_MODE_LOW,
++		[CIP_SFC_48000] = SND_FF_STREAM_MODE_LOW,
++		[CIP_SFC_88200] = SND_FF_STREAM_MODE_MID,
++		[CIP_SFC_96000] = SND_FF_STREAM_MODE_MID,
++		[CIP_SFC_176400] = SND_FF_STREAM_MODE_HIGH,
++		[CIP_SFC_192000] = SND_FF_STREAM_MODE_HIGH,
++	};
++
++	if (sfc >= CIP_SFC_COUNT)
+ 		return -EINVAL;
+ 
+-	*mode = ((int)i - 1) / 2;
++	*mode = modes[sfc];
+ 
+ 	return 0;
  }
+@@ -33,10 +37,18 @@ static int get_rate_mode(unsigned int rate, unsigned int *mode)
+  */
+ static int keep_resources(struct snd_ff *ff, unsigned int rate)
+ {
+-	int mode;
++	enum snd_ff_stream_mode mode;
++	int i;
+ 	int err;
  
- static int init_stream(struct snd_ff *ff, enum amdtp_stream_direction dir)
-@@ -188,7 +222,7 @@ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
- 			goto error;
- 		}
+-	err = get_rate_mode(rate, &mode);
++	for (i = 0; i < CIP_SFC_COUNT; ++i) {
++		if (amdtp_rate_table[i] == rate)
++			break;
++	}
++	if (i == CIP_SFC_COUNT)
++		return -EINVAL;
++
++	err = snd_ff_stream_get_multiplier_mode(i, &mode);
+ 	if (err < 0)
+ 		return err;
  
--		err = ff->spec->protocol->switch_fetching_mode(ff, true);
-+		err = switch_fetching_mode(ff, true);
- 		if (err < 0)
- 			goto error;
- 	}
+@@ -81,7 +93,7 @@ static int switch_fetching_mode(struct snd_ff *ff, bool enable)
+ 	int err;
+ 
+ 	count = 0;
+-	for (i = 0; i < SND_FF_STREAM_MODES; ++i)
++	for (i = 0; i < SND_FF_STREAM_MODE_COUNT; ++i)
+ 		count = max(count, ff->spec->pcm_playback_channels[i]);
+ 
+ 	reg = kcalloc(count, sizeof(__le32), GFP_KERNEL);
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 6e4a8197d3ca..17332d9ae3f2 100644
+index 17332d9ae3f2..9fdda4fbdbba 100644
 --- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -111,7 +111,6 @@ struct snd_ff_protocol {
- 	void (*handle_midi_msg)(struct snd_ff *ff, __le32 *buf, size_t length);
- 	int (*begin_session)(struct snd_ff *ff, unsigned int rate);
- 	void (*finish_session)(struct snd_ff *ff);
--	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
- };
+@@ -31,8 +31,6 @@
+ #include "../amdtp-stream.h"
+ #include "../iso-resources.h"
  
- extern const struct snd_ff_protocol snd_ff_protocol_ff800;
+-#define SND_FF_STREAM_MODES		3
+-
+ #define SND_FF_MAXIMIM_MIDI_QUADS	9
+ #define SND_FF_IN_MIDI_PORTS		2
+ #define SND_FF_OUT_MIDI_PORTS		2
+@@ -42,6 +40,13 @@
+ #define SND_FF_REG_FETCH_PCM_FRAMES	0x0000801c0000ull
+ #define SND_FF_REG_CLOCK_CONFIG		0x0000801c0004ull
+ 
++enum snd_ff_stream_mode {
++	SND_FF_STREAM_MODE_LOW = 0,
++	SND_FF_STREAM_MODE_MID,
++	SND_FF_STREAM_MODE_HIGH,
++	SND_FF_STREAM_MODE_COUNT,
++};
++
+ enum snd_ff_reg_type {
+ 	SND_FF_REG_TYPE_MIDI_HIGH_ADDR = 0,
+ 	SND_FF_REG_TYPE_COUNT,
+@@ -51,8 +56,8 @@ struct snd_ff_protocol;
+ struct snd_ff_spec {
+ 	const char *const name;
+ 
+-	const unsigned int pcm_capture_channels[SND_FF_STREAM_MODES];
+-	const unsigned int pcm_playback_channels[SND_FF_STREAM_MODES];
++	const unsigned int pcm_capture_channels[SND_FF_STREAM_MODE_COUNT];
++	const unsigned int pcm_playback_channels[SND_FF_STREAM_MODE_COUNT];
+ 
+ 	unsigned int midi_in_ports;
+ 	unsigned int midi_out_ports;
+@@ -129,6 +134,8 @@ int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
+ int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		  enum amdtp_stream_direction dir);
+ 
++int snd_ff_stream_get_multiplier_mode(enum cip_sfc sfc,
++				      enum snd_ff_stream_mode *mode);
+ int snd_ff_stream_init_duplex(struct snd_ff *ff);
+ void snd_ff_stream_destroy_duplex(struct snd_ff *ff);
+ int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate);
 -- 
 2.19.1
