@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/9] ASoC: Intel: Baytrail: remove unneeded
-	variable
-Date: Sun, 16 Dec 2018 16:49:06 -0600
-Message-ID: <20181216224910.16198-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/9] ASoC: Intel: Baytrail: simplify boolean
+	test
+Date: Sun, 16 Dec 2018 16:49:07 -0600
+Message-ID: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
 References: <20181216224910.16198-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CE39267A79
- for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 23:49:21 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 05027267AB2
+ for <alsa-devel@alsa-project.org>; Sun, 16 Dec 2018 23:49:22 +0100 (CET)
 In-Reply-To: <20181216224910.16198-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,29 +29,21 @@ Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/baytrail/sst-baytrail-ipc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
-index 260447da32b8..2cd8f9668b50 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-ipc.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
-@@ -278,7 +278,6 @@ static int sst_byt_process_notification(struct sst_byt *byt,
- 	struct sst_byt_stream *stream;
- 	u64 header;
- 	u8 msg_id, stream_id;
--	int handled = 1;
- 
- 	header = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
- 	msg_id = sst_byt_header_msg_id(header);
-@@ -298,7 +297,7 @@ static int sst_byt_process_notification(struct sst_byt *byt,
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index aabb35bf6b96..498fb5346f1a 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -188,7 +188,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		sst_byt_stream_start(byt, pcm_data->stream, 0);
  		break;
- 	}
- 
--	return handled;
-+	return 1;
- }
- 
- static irqreturn_t sst_byt_irq_thread(int irq, void *context)
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		if (pdata->restore_stream == true)
++		if (pdata->restore_stream)
+ 			schedule_work(&pcm_data->work);
+ 		else
+ 			sst_byt_stream_resume(byt, pcm_data->stream);
 -- 
 2.17.1
