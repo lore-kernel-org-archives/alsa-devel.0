@@ -1,21 +1,17 @@
-From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: Re: [Xen-devel] [PATCH v2 2/3] drm/xen-front: Use Xen
- common shared buffer implementation
-Date: Mon, 17 Dec 2018 09:52:24 -0500
-Message-ID: <ce52ec2e-1b22-8a2f-7f99-d90fcfdbfebd@oracle.com>
-References: <20181130074205.20496-1-andr2000@gmail.com>
- <20181130074205.20496-2-andr2000@gmail.com>
- <3c69d924-11e1-7037-bfa5-276d22b245fe@gmail.com>
- <27491aa5-3548-4c39-13a2-132c738fae14@gmail.com>
- <71920419-f0ef-8489-35ff-ff8375cb7361@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+	device
+Date: Mon, 17 Dec 2018 08:52:46 -0600
+Message-ID: <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+References: <20181216185429.GA20408@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- by alsa0.perex.cz (Postfix) with ESMTP id A76B9267944
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 15:52:37 +0100 (CET)
-In-Reply-To: <71920419-f0ef-8489-35ff-ff8375cb7361@gmail.com>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D981267944
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 15:52:50 +0100 (CET)
+In-Reply-To: <20181216185429.GA20408@gerhold.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,29 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>, jgross@suse.com
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/17/18 5:19 AM, Oleksandr Andrushchenko wrote:
-> Hello, Juergen, Boris!
->
-> As this DRM part of the series is the only one which needs ack/nack
->
-> (and it might take quite some time to complete) could we please
->
-> merge the patches 1 and 3 now that already have ack/r-b?
->
-
-
-
-TBH I am not sure it makes sense to do this without the second patch.
-Refactoring (and IIUIC this series is purely refactoring --- is it not?)
-is done to reduce amount of code, and with only first and third patch we
-end up with quite a significant increase in the number of LoC. (I am
-going purely by diffstat)
-
-Of course, the other reason for refactoring is to eliminate code
-duplication, but without second patch that will not happen.
-
--boris
+Ck9uIDEyLzE2LzE4IDEyOjU0IFBNLCBTdGVwaGFuIEdlcmhvbGQgd3JvdGU6Cj4gSGksCj4KPiBJ
+IGhhdmUgYW4gSW50ZWwgQmF5IFRyYWlsIChCWVQtVCkgdGFibGV0IHRoYXQgd2FzIG9yaWdpbmFs
+bHkgc2hpcHBlZAo+IHdpdGggQW5kcm9pZC4gV2l0aCB0aGUgcmlnaHQgcXVpcmtzLCBieXRjci1y
+dDU2NDAgaXMgd29ya2luZyBmaW5lLCBidXQKPiB0aGVyZSBpcyBhIHByb2JsZW0gaW4gc3N0X2Fj
+cGkuYyB0aGF0IGlzIHByZXZlbnRpbmcgaXQgZnJvbSB3b3JraW5nCj4gd2l0aCBhIG1haW5saW5l
+IGtlcm5lbDoKPgo+IEV2ZW4gdGhvdWdoIHRoaXMgaXMgYSBCWVQtVCBkZXZpY2UsIHRoZXJlIGlz
+IG5vIElSUSBhdCBpbmRleCA1IGluIHRoZQo+IEFDUEkgRFNEVCB0YWJsZS4gVGhpcyBtZWFucyB0
+aGF0IFNTVCB3aWxsIGZhaWwgdG8gcHJvYmUsIGFuZCBhY3R1YWxseQo+IGxlYWRzIHRvIGEgTlVM
+TCBwb2ludGVyIGRlcmVmZXJlbmNlIGxhdGVyIHdoZW4gdGhlIEFMU0EgZGV2aWNlIGlzIGZpcnN0
+Cj4gb3BlbmVkLiAoSSBoYXZlIHN1Ym1pdHRlZCBhIHBvc3NpYmxlIHNvbHV0aW9uIGZvciB0aGlz
+IGFzCj4gIltQQVRDSF0gQVNvQzogSW50ZWw6IHNzdDogRGVsYXkgbWFjaGluZSBkZXZpY2UgY3Jl
+YXRpb24gdW50aWwgYWZ0ZXIKPiBpbml0aWFsaXphdGlvbiIpCj4KPiBUaGUgY29ycmVjdCBJUlEg
+aXMgYWN0dWFsbHkgbG9jYXRlZCBvbiBpbmRleCAwLCBqdXN0IGxpa2UgaXQgaXMgYWxyZWFkeQo+
+IGJlaW5nIHVzZWQgZm9yIEJZVC1DUiBkZXZpY2VzLiBTbyBpZiBJIGZvcmNlIGlzX2J5dF9jcigp
+IHRvIHJldHVybiBUUlVFLAo+IGV2ZXJ5dGhpbmcgd29ya3MgYXMgZXhwZWN0ZWQuCgpTbyB0aGUg
+cm9vdCBjYXVzZSBvZiB5b3VyIHByb2JsZW0gaXMgdGhhdCB0aGUgZGV0ZWN0aW9uIG9mIGJ5dC1j
+ciAKZG9lc24ndCB3b3JrPyBUaGF0IHdvdWxkIGJlIGEgZmlyc3QuCgpDYW4geW91IHBsZWFzZSBk
+b3VibGUtY2hlY2sgdGhhdCBDT05GSUdfSU9TRl9NQkkgaXMgZW5hYmxlZCBhbmQgcHJvdmlkZSAK
+YSB0cmFjZSBvZiB0aGUgYmlvcyBzdGF0dXMgaW4gdGhpcyBwaWVjZSBvZiBjb2RlOgoKIMKgwqDC
+oCAvKiBiaXRzIDI2OjI3IG1pcnJvciBQTUlDIG9wdGlvbnMgKi8KIMKgwqDCoCDCoMKgwqAgwqDC
+oMKgIGJpb3Nfc3RhdHVzID0gKGJpb3Nfc3RhdHVzID4+IDI2KSAmIDM7CgogwqDCoMKgIMKgwqDC
+oCDCoMKgwqAgaWYgKChiaW9zX3N0YXR1cyA9PSAxKSB8fCAoYmlvc19zdGF0dXMgPT0gMykpCiDC
+oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgKmJ5dGNyID0gdHJ1ZTsKIMKgwqDCoCDCoMKgwqAg
+wqDCoMKgIGVsc2UKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBkZXZfaW5mbyhkZXYsICJC
+WVQtQ1Igbm90IGRldGVjdGVkXG4iKTsKCj4KPiBIZXJlIGlzIHRoZSByZWxldmFudCBwYXJ0IGZy
+b20gdGhlIEFDUEkgRFNEVCB0YWJsZToKPgo+ICAgIE5hbWUgKF9BRFIsIFplcm8pICAvLyBfQURS
+OiBBZGRyZXNzCj4gICAgTmFtZSAoX0hJRCwgIjgwODYwRjI4IiAvKiBJbnRlbCBTU1QgQXVkaW8g
+RFNQICovKSAgLy8gX0hJRDogSGFyZHdhcmUgSUQKPiAgICBOYW1lIChfQ0lELCAiODA4NjBGMjgi
+IC8qIEludGVsIFNTVCBBdWRpbyBEU1AgKi8pICAvLyBfQ0lEOiBDb21wYXRpYmxlIElECj4gICAg
+TmFtZSAoX0RETiwgIkludGVsKFIpIExvdyBQb3dlciBBdWRpbyBDb250cm9sbGVyIC0gODA4NjBG
+MjgiKSAgLy8gX0RETjogRE9TIERldmljZSBOYW1lCj4gICAgTmFtZSAoX1NVQiwgIjgwODY3Mjcw
+IikgIC8vIF9TVUI6IFN1YnN5c3RlbSBJRAo+ICAgIE5hbWUgKF9VSUQsIE9uZSkgIC8vIF9VSUQ6
+IFVuaXF1ZSBJRAo+Cj4gICAgTmFtZSAoUkJVRiwgUmVzb3VyY2VUZW1wbGF0ZSAoKQo+ICAgIHsK
+PiAgICAgICAgTWVtb3J5MzJGaXhlZCAoUmVhZFdyaXRlLAo+ICAgICAgICAgICAgMHgxMjM0NTY3
+OCwgICAgICAgICAvLyBBZGRyZXNzIEJhc2UKPiAgICAgICAgICAgIDB4MDAyMDAwMDAsICAgICAg
+ICAgLy8gQWRkcmVzcyBMZW5ndGgKPiAgICAgICAgICAgIF9ZMDgpCj4gICAgICAgIE1lbW9yeTMy
+Rml4ZWQgKFJlYWRXcml0ZSwKPiAgICAgICAgICAgIDB4RkU4MzAwMDAsICAgICAgICAgLy8gQWRk
+cmVzcyBCYXNlCj4gICAgICAgICAgICAweDAwMDAxMDAwLCAgICAgICAgIC8vIEFkZHJlc3MgTGVu
+Z3RoCj4gICAgICAgICAgICBfWTA5KQo+ICAgICAgICBNZW1vcnkzMkZpeGVkIChSZWFkV3JpdGUs
+Cj4gICAgICAgICAgICAweDU1QUE1NUFBLCAgICAgICAgIC8vIEFkZHJlc3MgQmFzZQo+ICAgICAg
+ICAgICAgMHgwMDIwMDAwMCwgICAgICAgICAvLyBBZGRyZXNzIExlbmd0aAo+ICAgICAgICAgICAg
+X1kwQSkKPiAgICAgICAgSW50ZXJydXB0IChSZXNvdXJjZUNvbnN1bWVyLCBMZXZlbCwgQWN0aXZl
+TG93LCBFeGNsdXNpdmUsICwsICkKPiAgICAgICAgewo+ICAgICAgICAgICAgMHgwMDAwMDAxRCwK
+PiAgICAgICAgfQo+ICAgIH0pCj4KPiBVbmxpa2UgbWFueSBvZiB0aGUgb3RoZXIgRFNEVCBkdW1w
+cyBJJ3ZlIGxvb2tlZCBhdCwgdGhlcmUgaXMgb25seSBvbmUKPiBpbnRlcnJ1cHQgbGlzdGVkLiBG
+dWxsIEFDUEkgRFNEVCB0YWJsZSBpcyBhdCBbMV0uCj4KPiBTaW5jZSB0aGVyZSBpcyBubyBJUlEg
+YXQgaW5kZXggNSwgcGxhdGZvcm1fZ2V0X2lycSB3aWxsIHJldHVybiAtRU5YSU8uCj4gQ291bGRu
+J3Qgd2UgZmFsbCBiYWNrIHRvIGluZGV4IDAgaW4gdGhpcyBjYXNlPyBJIHdvdWxkIHNheSB0aGF0
+IGlmIHRoZQo+IHNlZW1pbmdseSAiY29ycmVjdCIgSVJRIGF0IGluZGV4IDUgZG9lcyBub3QgZXZl
+biBleGlzdCwgd2Ugc3RpbGwgaGF2ZQo+IGEgYmV0dGVyIGNoYW5jZSBvZiBwaWNraW5nIHRoZSBy
+aWdodCBvbmUgaWYgd2UgdHJ5IHRoZSBvbmUgYXQgaW5kZXggMC4KPiBPciB3ZSBjb3VsZCBjaGVj
+ayB0aGUgbnVtYmVyIG9mIGludGVycnVwdHMgdGhhdCBhcmUgYWN0dWFsbHkgYXZhaWxhYmxlLgo+
+Cj4gVGhlIG90aGVyIG9wdGlvbiB3b3VsZCBiZSBzb21lIGtpbmQgb2YgRE1JLWJhc2VkIHF1aXJr
+LCBidXQgcGVyc29uYWxseQo+IEkgd291bGQgcHJlZmVyIHRvIGF2b2lkIHRoYXQuLiAoSW4gbXkg
+b3BpbmlvbiwgdGhlcmUgaXMgd2F5IHRvbyBtdWNoCj4gZGV2aWNlIHNwZWNpZmljIGNvZGUgd2l0
+aCB0aGUgcXVpcmtzIGV0YyBhbHJlYWR5Li4uKQo+Cj4gT3IgZG8geW91IGhhdmUgYW55IG90aGVy
+IHN1Z2dlc3Rpb25zPwo+Cj4gVGhhbmtzLAo+IFN0ZXBoYW4KPgo+IFsxXTogaHR0cHM6Ly9naXRo
+dWIuY29tL21lMTc2Yy1kZXYvbWUxNzZjLWFjcGkvYmxvYi9mNDhjNzhjMTFiMDgxOWI4OTlmOTg4
+NDA3YjZlY2UzZDhjMmNjYTcxL2RzZHQuZHNsI0wzOTg5LUw0MDM1Cj4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
