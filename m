@@ -1,19 +1,20 @@
-From: Arnaud Rebillout <arnaud.rebillout@collabora.com>
-Subject: Re: snd_pcm_open() taking very long,
- starting from kernel 4.17
-Date: Mon, 17 Dec 2018 17:59:25 +0000
-Message-ID: <43924a4f-2f3e-cd6b-da46-fe2af175f8ee@collabora.com>
-References: <07c44175-c910-dc53-2f16-c4082000a313@collabora.com>
- <s5hr2egdrfx.wl-tiwai@suse.de>
+From: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+	device
+Date: Mon, 17 Dec 2018 19:03:31 +0100
+Message-ID: <20181217180330.GA845@gerhold.net>
+References: <20181216185429.GA20408@gerhold.net>
+ <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id D74F62678D5
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 18:59:29 +0100 (CET)
-In-Reply-To: <s5hr2egdrfx.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
+ [81.169.146.161])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DECF2678D5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:03:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,113 +24,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTIvMTcvMTggNDo1NCBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIEZyaSwgMTQgRGVj
-IDIwMTggMTg6MzY6MTEgKzAxMDAsCj4gQXJuYXVkIFJlYmlsbG91dCB3cm90ZToKPj4gwqAgRGVh
-ciBBTFNBIG1haW50YWluZXJzLAo+Pgo+PiBJIG5vdGljZWQgYmlnIGNoYW5nZSBpbiBob3cgbG9u
-ZyBgc25kX3BjbV9vcGVuKClgIHRha2VzLCBiZXR3ZWVuIGtlcm5lbCA0LjE2Cj4+IGFuZCA0LjE3
-LiBXaXRoIGEga2VybmVsIDQuMTYsIHRoaXMgZnVuY3Rpb24gY29uc2lzdGVudGx5IHJldHVybnMg
-aW4gbGVzcwo+PiB0aGFuIDEKPj4gbWlsbGlzZWNvbmQsIHdpdGggb2NjYXNpb25hbCwgYnV0IHJh
-cmUsIHBlYWtzIHRoYXQgZ28gdXAgdG8gMjVtcy4gV2hpbGUgd2l0aAo+PiBrZXJuZWwgNC4xNyBh
-bmQgYWJvdmUsIEkgbWVhc3VyZSBhbiBhdmVyYWdlIG9mIDQwbXMsIHdpdGggZnJlcXVlbnQgcGVh
-a3MKPj4gdG8gMXMuCj4+IFRoZSBtYXhpbXVtIEkgbWVhc3VyZWQgd2FzIDMgc2Vjb25kcyEKPj4K
-Pj4gSXMgdGhpcyBjaGFuZ2Uga25vd24sIGludGVuZGVkPyBPciBpcyBpdCBhIHJlZ3Jlc3Npb24/
-Cj4gSWYgdGhpcyBoYXBwZW5zIGF0IG9wZW5pbmcgdGhlIFBDTSBzdHJlYW0sIGl0J3MgbGlrZWx5
-IGEgc3RhbGwgaW4KPiBydW50aW1lIFBNIHJlc3VtZSBieSBzb21lIHJlYXNvbi4gIEJ1dCBJIGhh
-dmUgbm8gaWRlYSB3aGF0IGFjdHVhbGx5Cj4gYnJva2UuCj4KPiBBcmUgeW91IHN1cmUgdGhhdCBp
-dCdzIGEga2VybmVsIHJlZ3Jlc3Npb24sIGkuZS4gdGhpcyBkb2Vzbid0IGhhcHBlbgo+IGF0IGFs
-bCB3aGVuIGJvb3RpbmcgdGhlIG9sZCBrZXJuZWwgb24gdGhlIHNhbWUgc3lzdGVtPwoKMTAwJSBz
-dXJlLgoKPiBJZiB5ZXMsIHRoZSBiZXN0IHdvdWxkIGJlIHRvIHBlcmZvcm0gYmlzZWN0aW9uLiAg
-QXQgbGVhc3QgaXQnZCBiZQo+IGhlbHBmdWwgdG8gbmFycm93IHRoZSByZWdyZXNzaW9uIGEgYml0
-Lgo+Cj4gQW5kLCB0aGlzIG1pZ2h0IGJlIGEga25vd24gaXNzdWU7IEkgcmVtZW1iZXIgc29tZSBy
-ZXBvcnQgYWJvdXQgdGhlCj4gbG9uZyBydW50aW1lIFBNIHJlc3VtZSBvbiBEZWxsIFhQUywgd2hp
-Y2ggSSBjYW4ndCBzZWUgb24gb3RoZXIKPiBtYWNoaW5lcy4gIFNvIGl0IG1pZ2h0IGJlIGRldmlj
-ZS1zcGVjaWZpYy4KCk9LIEkgd2lsbCB0cnkgbW9yZSBEZWJpYW4ga2VybmVscyB0byBuYXJyb3cg
-ZG93biB0d28gdmVyc2lvbiwgSSB0aGluayBpdAp3aWxsIGJlIGJldHdlZW4gNC4xNiBhbmQgNC4x
-Ny4gVGhlbiBJIHdpbGwgdHJ5IHRvIGZpbmQgbXkgd2F5IGNvbXBpbGluZwphIGtlcm5lbCA6KQoK
-VGhhbmtzIGZvciB0aGUgcmVwbHksIEknbGwgYmUgYmFjayB3aGVuIEkgaGF2ZSBzbW9lIG1vcmUg
-ZGV0YWlscwoKwqAgQXJuYXVkCgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+Cj4+IFBsZWFzZSBy
-ZWFkIGJlbG93IGZvciBtb3JlIGRldGFpbHMsIHRoYW5rcy4KPj4KPj4gLS0tLQo+Pgo+PiDCoCBU
-aGUgbG9uZyBzdG9yeQo+Pgo+PiBTdGFydGluZyB3aXRoIGtlcm5lbCA0LjE3LCBJIHN0YXJ0ZWQg
-dG8gZXhwZXJpZW5jZSBmcmVxdWVudCBsYWdzIG9uCj4+IG15bGFwdG9wLAo+PiB3aGljaCBzZWVt
-ZWQgdG8gaGFwcGVuIGluIHRoZSB0ZXJtaW5hbCwgd2hpbGUgaGl0dGluZyB0aGUgVEFCIGZvcgo+
-PiBjb21wbGV0aW9uLgo+PiBJIGNsZWFybHkgZGlkbid0IGV4cGVyaWVuY2UgdGhpcyBiZWhhdmlv
-ciB3aXRoIDQuMTYuIExhdGVyIG9uLCA0LjE4IHdhcwo+PiByZWxlYXNlZCwgSSB0cmllZCBpdDog
-c2FtZSBpc3N1ZS4gU28gSSBrZXB0IHVzaW5nIHRoZSBrZXJuZWwgNC4xNi4KPj4KPj4gU28gaXQg
-dG9vayBtZSBhIHdoaWxlIHRvIGludmVzdGlnYXRlIHRoaXMgaXNzdWUuIFdoYXQgaGFwcGVucyBp
-cyB0aGF0Cj4+IHRoZSBHTk9NRQo+PiB0ZXJtaW5hbCwgb3IgRW1hY3MsIG1pZ2h0IGdlbmVyYXRl
-IGV2ZW50IHNvdW5kcyB3aGVuIHlvdSBoaXQgdGFiLCBvcgo+PiBzb21ldGhpbmcuCj4+IFRoaXMg
-aGFwcGVuIGZhaXJseSBvZnRlbiAoeW91IGtub3csIHRoaXMga2luZCBvZiBiZWxsIHNvdW5kKSwg
-aXQncyB2ZXJ5Cj4+IGFubm95aW5nLCBzbyB1c3VhbGx5IHRoZSBmaXJzdCB0aGluZyBJJ2QgZG8g
-aXMgdG8gZGlzYWJsZSB0aGVzZSBzb3VuZHMuCj4+Cj4+IFR1cm5zIG91dCB0aGF0LCBldmVuIHdo
-ZW4gZGlzYWJsZWQsIHRoaXMgc291bmRzIGFyZSBzdGlsbCBnZW5lcmF0ZWQsIGJlY2F1c2UKPj4g
-R05PTUUgZG9lc24ndCByZWFsbHkgZGlzYWJsZSBpdCwgaXQganVzdCBtdXRlcyBpdCBbMV0uCj4+
-Cj4+IEFmdGVyIHVuZGVyc3RhbmRpbmcgdGhhdCwgSSB0cmFja2VkIGRvd24gaG93IHRoZXNlIGV2
-ZW50IHNvdW5kcyBhcmUKPj4gZ2VuZXJhdGVkLgo+PiBBcyBpbmNyZWRpYmxlIGFzIGl0IHNlZW1z
-LCBpdCBhbGwgaGFwcGVucyBzeW5jaHJvbm91c2x5LCBmcm9tIHRoZQo+PiBjYWxsaW5nIGFwcCwK
-Pj4gdGhyb3VnaCBHVEssIHRoZW4gbXV0dGVyLCB0aGVuIGxpYmNhbmJlcnJhLCBhbmQgdWx0aW1h
-dGVseSB0aGUgY2FsbCBlbmRzCj4+IHVwIGluCj4+IHB1bHNlYXVkaW8uwqAgUHVsc2VhdWRpbyBp
-cyB0aGUgb25lIGNhbGxpbmcgYHNuZF9wY21fb3BlbigpYCwgc28gdGhhdCdzCj4+IHdoZXJlIEkK
-Pj4gZGlkIG15IG1lYXN1cmVtZW50cy4KPj4KPj4gTGlrZSBJIHNhaWQsIGl0J3MgYWxsIHN5bmNo
-cm9ub3VzLCBzbyB3aGVuIHRoZSBjYWxsIHRha2VzIDMgc2Vjb25kcyB0bwo+PiByZXR1cm4sCj4+
-IEkgd2FpdCAzIHNlY29uZHMgaW4gZnJvbnQgb2YgbXkgc2NyZWVuIDopIFB1bHNlYXVkaW8gaGFz
-IGEgcGx1Z2luCj4+IChlbmFibGVkIGJ5Cj4+IGRlZmF1bHQgaW4gbXkgZGlzdHJpYikgYHN1c3Bl
-bmQtb24taWRsZWAsIHdoaWNoIG1lYW5zIHRoYXQgaXQgY2xvc2VzIHRoZQo+PiBzb3VuZGNhcmQg
-Y29ubmVjdGlvbiBvbiBpbmFjdGl2aXR5LCBhbmQgcmUtb3BlbnMgaXQgYWdhaW4gd2l0aAo+PiBg
-c25kX3BjbV9vcGVuKClgCj4+IHdoZW4gYSBzb3VuZCBpcyBwbGF5ZWQuCj4+Cj4+IFNvLCB0byBz
-dW0gdGhhdCB1cDogZHVyaW5nIGEgbm9ybWFsIHdvcmtkYXkgb24gbXkgbGFwdG9wLCBQQSB3aWxs
-IGNvbnN0YW50bHkKPj4gY2xvc2UgdGhlIHNvdW5kY2FyZCBjb25uZWN0aW9uIChkdWUgdG8gdGhl
-IHN1c3BlbmQtb24taWRsZSBwbHVnaW4pLCBhbmQKPj4gb3BlbiBpdAo+PiBhZ2FpbiAoZHVlIHRv
-IGV2ZW50IHNvdW5kcyBnZW5lcmF0ZWQgYnkgR05PTUUsIGRlc3BpdGUgYmVpbmcgZGlzYWJsZWQp
-Lgo+PiBBbmQgYWxsCj4+IG9mIHRoYXQgc3luY2hyb25vdXNseSwgaW4gdGhlIEdUSyBtYWlubG9v
-cC4gV2hpbGUgdGhpcyBjb3VsZCBnbwo+PiB1bi1ub3RpY2VkIGZvcgo+PiBhIHdoaWxlLCBzdGFy
-dGluZyB3aXRoIGtlcm5lbCA0LjE3LCB0aGUgY2FsbCBgc25kX3BjbV9vcGVuKClgIG1pZ2h0IHRh
-a2UKPj4gdXAgdG8KPj4gMyBzZWNvbmRzIHRvIHJldHVybiwgYW5kIGl0IG1hZGUgbXkgc3lzdGVt
-IGFsbW9zdCB1bnVzYWJsZS4KPj4KPj4gSSBmb3VuZCBvdXQgdGhhdCBpdCdzIHBvc3NpYmxlIHRv
-IGRpc2FibGUgdGhlc2UgZXZlbnQgc291bmRzIGZpbmFsbHksCj4+IGl0J3MganVzdAo+PiBub3Qg
-cG9zc2libGUgdGhyb3VnaCB0aGUgR05PTUUgc2V0dGluZ3MsIGl0IG5lZWRzIHRvIGJlIGRvbmUg
-ZnJvbSB0aGUKPj4gY29tbWFuZC0KPj4gbGluZS4gU28gSSBsaXZlIGhhcHB5LCBubyBwcm9ibGVt
-IGZvciBtZS4gSSdtIG1lcmVseSByZXBvcnRpbmcgdGhlCj4+IHByb2JsZW0sIGFzCj4+IHlvdSBt
-aWdodCBiZSBpbnRlcmVzdGVkLgo+Pgo+PiBbMV0gaHR0cHM6Ly9naXRsYWIuZ25vbWUub3JnL0dO
-T01FL2dub21lLWNvbnRyb2wtY2VudGVyL2lzc3Vlcy8yNTkKPj4KPj4gLS0tLQo+Pgo+PiDCoCBT
-b21lIGhhcmR3YXJlIGRldGFpbHM6Cj4+Cj4+ICQgc3VkbyBkbWlkZWNvZGUgfCBncmVwICdTeXN0
-ZW0gSW5mb3JtYXRpb24nIC1BIDIKPj4gU3lzdGVtIEluZm9ybWF0aW9uCj4+IMKgwqDCoCBNYW51
-ZmFjdHVyZXI6IERlbGwgSW5jLgo+PiDCoMKgwqAgUHJvZHVjdCBOYW1lOiBYUFMgMTMgOTM2MAo+
-Pgo+PiAkIGNhdCAvcHJvYy9hc291bmQvY2FyZHMKPj4gwqAwIFtQQ0jCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIF06IEhEQS1JbnRlbCAtIEhEQSBJbnRlbCBQQ0gKPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEhEQSBJbnRlbCBQQ0ggYXQgMHhkYzQyODAwMCBpcnEg
-MTQ0Cj4+Cj4+ICQgYXBsYXkgLS1saXN0LWRldmljZXMKPj4gKioqKiBMaXN0IG9mIFBMQVlCQUNL
-IEhhcmR3YXJlIERldmljZXMgKioqKgo+PiBjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRl
-dmljZSAwOiBBTEMzMjQ2IEFuYWxvZyBbQUxDMzI0NiBBbmFsb2ddCj4+IMKgIFN1YmRldmljZXM6
-IDEvMQo+PiDCoCBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAo+PiBjYXJkIDA6IFBDSCBbSERB
-IEludGVsIFBDSF0sIGRldmljZSAzOiBIRE1JIDAgW0hETUkgMF0KPj4gwqAgU3ViZGV2aWNlczog
-MS8xCj4+IMKgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4+IGNhcmQgMDogUENIIFtIREEg
-SW50ZWwgUENIXSwgZGV2aWNlIDc6IEhETUkgMSBbSERNSSAxXQo+PiDCoCBTdWJkZXZpY2VzOiAx
-LzEKPj4gwqAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKPj4gY2FyZCAwOiBQQ0ggW0hEQSBJ
-bnRlbCBQQ0hdLCBkZXZpY2UgODogSERNSSAyIFtIRE1JIDJdCj4+IMKgIFN1YmRldmljZXM6IDEv
-MQo+PiDCoCBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAo+PiBjYXJkIDA6IFBDSCBbSERBIElu
-dGVsIFBDSF0sIGRldmljZSA5OiBIRE1JIDMgW0hETUkgM10KPj4gwqAgU3ViZGV2aWNlczogMS8x
-Cj4+IMKgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4+IGNhcmQgMDogUENIIFtIREEgSW50
-ZWwgUENIXSwgZGV2aWNlIDEwOiBIRE1JIDQgW0hETUkgNF0KPj4gwqAgU3ViZGV2aWNlczogMS8x
-Cj4+IMKgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCj4+Cj4+ICQgc3VkbyBsc3BjaSAtdiB8
-IGdyZXAgLWkgYXVkaW8gLUEgNwo+PiAwMDoxZi4zIEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9y
-YXRpb24gU3VucmlzZSBQb2ludC1MUCBIRCBBdWRpbyAocmV2Cj4+IDIxKSAocHJvZy1pZiA4MCkK
-Pj4gwqDCoMKgIFN1YnN5c3RlbTogRGVsbCBTdW5yaXNlIFBvaW50LUxQIEhEIEF1ZGlvCj4+IMKg
-wqDCoCBGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMzIsIElSUSAxMjgK
-Pj4gwqDCoMKgIE1lbW9yeSBhdCBkYzQyODAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKSBb
-c2l6ZT0xNktdCj4+IMKgwqDCoCBNZW1vcnkgYXQgZGM0MDAwMDAgKDY0LWJpdCwgbm9uLXByZWZl
-dGNoYWJsZSkgW3NpemU9NjRLXQo+PiDCoMKgwqAgQ2FwYWJpbGl0aWVzOiBbNTBdIFBvd2VyIE1h
-bmFnZW1lbnQgdmVyc2lvbiAzCj4+IMKgwqDCoCBDYXBhYmlsaXRpZXM6IFs2MF0gTVNJOiBFbmFi
-bGUrIENvdW50PTEvMSBNYXNrYWJsZS0gNjRiaXQrCj4+IMKgwqDCoCBLZXJuZWwgZHJpdmVyIGlu
-IHVzZTogc25kX2hkYV9pbnRlbAo+PiDCoMKgwqAgS2VybmVsIG1vZHVsZXM6IHNuZF9oZGFfaW50
-ZWwsIHNuZF9zb2Nfc2tsCj4+Cj4+IC0tLS0KPj4KPj4gRmVlbCBmcmVlIHRvIGFzayBtb3JlIGRl
-dGFpbHMsIEknZCBiZSBnbGFkIHRvIGhlbHAuCj4+Cj4+IEJlc3QgcmVnYXJkcywKPj4KPj4gwqAg
-QXJuYXVkCj4+Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sun, Dec 16, 2018 at 08:07:30PM +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 16-12-18 19:54, Stephan Gerhold wrote:
+> > Hi,
+> > 
+> > I have an Intel Bay Trail (BYT-T) tablet that was originally shipped
+> > with Android. With the right quirks, bytcr-rt5640 is working fine, but
+> > there is a problem in sst_acpi.c that is preventing it from working
+> > with a mainline kernel:
+> > 
+> > Even though this is a BYT-T device, there is no IRQ at index 5 in the
+> > ACPI DSDT table. This means that SST will fail to probe, and actually
+> > leads to a NULL pointer dereference later when the ALSA device is first
+> > opened. (I have submitted a possible solution for this as
+> > "[PATCH] ASoC: Intel: sst: Delay machine device creation until after
+> > initialization")
+> > 
+> > The correct IRQ is actually located on index 0, just like it is already
+> > being used for BYT-CR devices. So if I force is_byt_cr() to return TRUE,
+> > everything works as expected.
+> > 
+> > Here is the relevant part from the ACPI DSDT table:
+> > 
+> >    Name (_ADR, Zero)  // _ADR: Address
+> >    Name (_HID, "80860F28" /* Intel SST Audio DSP */)  // _HID: Hardware ID
+> >    Name (_CID, "80860F28" /* Intel SST Audio DSP */)  // _CID: Compatible ID
+> >    Name (_DDN, "Intel(R) Low Power Audio Controller - 80860F28")  // _DDN: DOS Device Name
+> >    Name (_SUB, "80867270")  // _SUB: Subsystem ID
+> >    Name (_UID, One)  // _UID: Unique ID
+> > 
+> >    Name (RBUF, ResourceTemplate ()
+> >    {
+> >        Memory32Fixed (ReadWrite,
+> >            0x12345678,         // Address Base
+> >            0x00200000,         // Address Length
+> >            _Y08)
+> >        Memory32Fixed (ReadWrite,
+> >            0xFE830000,         // Address Base
+> >            0x00001000,         // Address Length
+> >            _Y09)
+> >        Memory32Fixed (ReadWrite,
+> >            0x55AA55AA,         // Address Base
+> >            0x00200000,         // Address Length
+> >            _Y0A)
+> >        Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
+> >        {
+> >            0x0000001D,
+> >        }
+> >    })
+> > 
+> > Unlike many of the other DSDT dumps I've looked at, there is only one
+> > interrupt listed. Full ACPI DSDT table is at [1].
+> > 
+> > Since there is no IRQ at index 5, platform_get_irq will return -ENXIO.
+> > Couldn't we fall back to index 0 in this case? I would say that if the
+> > seemingly "correct" IRQ at index 5 does not even exist, we still have
+> > a better chance of picking the right one if we try the one at index 0.
+> > Or we could check the number of interrupts that are actually available.
+> 
+> If I'm not mistaken then you already mentioned in another thread
+> (the "tusb1210 probe of dwc3.0.auto.ulpi fails with EBUSY on 4.19+")
+> thread that the DSTD of this Andriod only device has several bugs in
+> there such as wrong GPIOs in some places, etc. and you need to do a
+> DSDT override anyways to get some things to work, right ?
+
+Yes, at the moment I use DSDT override to fix some things and add a few 
+missing GPIOs. For example I have not yet found a nice way to fixup the
+ACPI parent of the Bluetooth device (it's listed under the wrong UART 
+controller).
+
+Note that this is rather painful, especially because I can't share the 
+fixed table as-is with others (there is a memory address in there that 
+is different depending on the BIOS state or something).
+So I'm still trying to keep the necessary changes as minimal as possible,
+and have the majority of things working without it. Eventually, I will 
+find nicer workarounds and can stop doing this entirely in the future.
+
+> 
+> In that case I believe it would be best to just also patch up this
+> part of the DSDT in your override and leave the current kernel code
+> as is.
+
+I have just looked through a few other DSDTs of Android based Bay Trail 
+devices and have found this pattern in at least two more of them. So in 
+case someone tries to run mainline on those devices in the future,
+I believe it would be better to fix it on the kernel side in this case.
+(Getting sound working has been a rather painful process for me, and
+took a lot of time. I would like to make this easier for others...)
+
+I was thinking of something along the lines of:
+
+  if (platform_irq_count(pdev) == 1)
+  	byt_rvp_platform_data.res_info = &bytcr_res_info;
+
+Pretty simple, and since all currently supported devices are either 
+BYT-CR or have at least 5 IRQs listed, the change would not affect them 
+in any way.
+
+
+Side note:
+I have considered fixing this in the DSDT table a few times before but 
+have never tried it because it kind of feels wrong to me. It would 
+probably work, but I believe the kernel is at fault here:
+
+I've been fixing mistakes and adding missing GPIOs to the DSDT, but is 
+this really the case here? Everything that is needed for the driver 
+exists in the ACPI table. If this was a BYT-CR device, it would work 
+as-is, with no additional modifications.
+
+Now, in order to fulfill the current expectations for BYT-T devices,
+I would need to add 4 additional IRQs that would never be used.
+But which IRQs would I list there? Dummy/invalid IRQs? To me, that
+does not sound like the DSDT will become any more valid.
+
+Let me know what you think! :)
+
+> 
+> Regards,
+> 
+> Hans
+> 
