@@ -1,21 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: RME Fireface alsa driver
-Date: Mon, 17 Dec 2018 23:16:45 +0900 (JST)
-Message-ID: <alpine.DEB.2.21.1812172247580.1336@laptop>
-References: <53dc5ff5-bee5-5998-dcd4-1dd1f926c857@halfshavedyaks.xyz>
- <20181211204344.GA16818@workstation>
- <a61bd3e8-0ace-3ef1-ffa4-f56c3c67fd31@halfshavedyaks.xyz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Sound-open-firmware] [PATCH v3 13/14] ASoC: SOF:
+ Add xtensa support
+Date: Mon, 17 Dec 2018 14:24:40 +0000
+Message-ID: <20181217142440.GB27909@sirena.org.uk>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-14-pierre-louis.bossart@linux.intel.com>
+ <20181211230813.GM10650@smile.fi.intel.com>
+ <33d6f056-efce-6855-3d71-34649482ed58@linux.intel.com>
+ <93aff9af-c693-c951-4821-e9e334133ed0@linux.intel.com>
+ <9d4269b0-baca-fd4e-a8a2-5da7ea5a851a@linux.intel.com>
+ <s5hva3sfer6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1074611834827874589=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id B39032678D5
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 15:16:54 +0100 (CET)
-Received: by mail-pl1-f173.google.com with SMTP id a14so6195009plm.12
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 06:16:54 -0800 (PST)
-In-Reply-To: <a61bd3e8-0ace-3ef1-ffa4-f56c3c67fd31@halfshavedyaks.xyz>
+In-Reply-To: <s5hva3sfer6.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: thet <parenthetical@halfshavedyaks.xyz>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Andy Shevchenko <andriy.shevchenko@intel.com>, Pan Xiuli <xiuli.pan@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, sound-open-firmware@alsa-project.org, "rander.wang" <rander.wang@linux.intel.com>, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-(C.C.ed to alsa-devel)
 
-At first, I apologize that ALSA fireface driver since Linux kernel v4.12 
-includes some bugs for its packet handling for PCM capture substream[1].
-This bug can brings disorder of jackd process.
-
-Furthermore, even if handling rx packets correctly, Fireface 400 cannot 
-generate sounds because audio data frame is not picked up from 
-isochronous packets to DSP[2].
-
-I've already posted some patches to fix these bugs. The patches were 
-already merged to ALSA upstream and they'll be going to mainline in next 
-merge window for v4.21 kernel. They were also posted for stable kernel and 
-later you can receive patched kernel image if you use any stable kernels.
-
-If you'll test these patches in current your environment, please get 
-recent code from my remote repository for backport to Linux v4.17 or later:
-https://github.com/takaswie/snd-firewire-improve
-
-Your test will be great help to me because I've already left Fireface 400.
-(I rented it just for two weeks and I'll leave Fireface 800 soon as well.)
-
-On Fri, 14 Dec 2018, thet wrote:
-> OK I have the FF400 set up now.
-
-In my recent work for Fireface 800[3][4], I ensure that Fireface 800 
-can generate sounds even if the HOST LED turns on. This is the same
-experience with Fireface 400. Thus you can ignore whether the LED turn off
-or not.
-
-> What action should I take to create an error that is meaningful?
-> ..
-> when I start audacious from the terminal using the alsa output plugin
-> and the FF400 selected I get:
-
-Any GUI tools are not necessarily good for debugging. Please use 'aplay' 
-insted, like:
-
-$ aplay -v -D hw:Fireface400 -r 44100 -c 18 -f S32_LE /dev/urandom
-$ aplay -v -D hw:Fireface400 -r 88200 -c 14 -f S32_LE /dev/urandom
-$ aplay -v -D hw:Fireface400 -r 192000 -c 10 -f S32_LE /dev/urandom
-
-In the above cases, I expect your unit can generate noisy sounds with the
-latest code of driver.
-
-Anyway, I note you not to drop list address (alsa-devel@alsa-project.org) 
-from CC list. It's valuable to share experiences of errors/failures 
-because potentially they are good information for developers to seek bugs 
-in software and be going to fix them.
-
-[1] [alsa-devel] [PATCH 1/3] ALSA: firewire-lib: fix wrong handling 
-payload_length as payload_quadlet
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143147.html
-[2] [alsa-devel] [PATCH] ALSA: fireface: fix for state to fetch PCM frames
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143150.html
-[3] [alsa-devel] [PATCH 0/8] ALSA: fireface: add support for Fireface 800 
-with MIDI functionality only
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/142826.html
-[4] [alsa-devel] [PATCH 0/5] ALSA: fireface: add support for Fireface 800 
-with streaming functionality
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143154.html
+--===============1074611834827874589==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
+Content-Disposition: inline
 
 
-Regards
+--yNb1oOkm5a9FJOVX
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Takashi Sakamoto
+On Mon, Dec 17, 2018 at 02:45:49PM +0100, Takashi Iwai wrote:
+> rander.wang wrote:
+
+> > > [=A0=A0=A0 3.250889] sof-audio sof-audio: 0x0049fbcc: 0x80005ac5
+> > > 0x0049fc60 0x00000000 0x00000000
+
+> > Add more details: we use another tool to analysis the hex numbers with
+> > a ELF file to get the correct information, so we do it by ourself.
+
+> If the format is intentional and shouldn't be changed to the generic
+> one, this has to be mentioned in the code as some proper comment.
+
+> The use of hex_dump_to_buffer() or whatever the standard macro is a
+> "right thing" in general.  From what I can see, the home-baked code
+> does nothing but writing in 32bit words, so without the explanation,
+> no one can see the reason to stick with it.
+
+Or alternatively can the tool be changed to parse the more standard
+format if it's not too hard to get people to update?
+
+--yNb1oOkm5a9FJOVX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwXsacACgkQJNaLcl1U
+h9CmQAf/dyBeOQnNlvf2C8xwKdCwxhnk+phZhA/6vevOkYKzWp+WYC5DWFBzBIJ0
+VBdsmBokfFV15AS4coxCyboTh1p1oz7VpJN3lm+S7Pmx5hJyPa4NKMjr/Ns+J1xx
+Dxwgt785cGVo3/E1hmSqL+y8nIw9KmG7u01ar5n6gSnQ4pRRvm4RILeUzIcbcrWh
+1Vj74gpiwlsOZq349exjXwovK/Nlpd3XG6jWozMBBq2DlJj8ecYoT92UTYijDNjN
+prn+EJEtCzwgPh0Sw+MyYwnyeYukqsxLbpR8WKb2PRG87LIf8i80E83/XTv8zQ2k
+DbxxeodrE/Aw3WpFrVT22wT6JQdlmw==
+=ze1z
+-----END PGP SIGNATURE-----
+
+--yNb1oOkm5a9FJOVX--
+
+--===============1074611834827874589==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1074611834827874589==--
