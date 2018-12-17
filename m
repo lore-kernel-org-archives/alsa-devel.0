@@ -1,20 +1,20 @@
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
 	device
-Date: Mon, 17 Dec 2018 19:17:29 +0100
-Message-ID: <20181217181729.GB845@gerhold.net>
+Date: Mon, 17 Dec 2018 12:29:43 -0600
+Message-ID: <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
 References: <20181216185429.GA20408@gerhold.net>
  <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+ <20181217181729.GB845@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 48A922678D5
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:17:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD1BE267AC9
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:29:45 +0100 (CET)
+In-Reply-To: <20181217181729.GB845@gerhold.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,140 +24,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Stephan Gerhold <stephan@gerhold.net>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 17, 2018 at 08:52:46AM -0600, Pierre-Louis Bossart wrote:
-> =
-
-> On 12/16/18 12:54 PM, Stephan Gerhold wrote:
-> > Hi,
-> > =
-
-> > I have an Intel Bay Trail (BYT-T) tablet that was originally shipped
-> > with Android. With the right quirks, bytcr-rt5640 is working fine, but
-> > there is a problem in sst_acpi.c that is preventing it from working
-> > with a mainline kernel:
-> > =
-
-> > Even though this is a BYT-T device, there is no IRQ at index 5 in the
-> > ACPI DSDT table. This means that SST will fail to probe, and actually
-> > leads to a NULL pointer dereference later when the ALSA device is first
-> > opened. (I have submitted a possible solution for this as
-> > "[PATCH] ASoC: Intel: sst: Delay machine device creation until after
-> > initialization")
-> > =
-
-> > The correct IRQ is actually located on index 0, just like it is already
-> > being used for BYT-CR devices. So if I force is_byt_cr() to return TRUE,
-> > everything works as expected.
-> =
-
-> So the root cause of your problem is that the detection of byt-cr doesn't
-> work? That would be a first.
-
-No. is_byt_cr() works correctly, as my device is a BYT-T (not a BYT-CR)
-device. :)
-
-The problem here is that the kernel expects the IRQ at index 5 for BYT-T =
-
-devices, but my device has only a single IRQ listed. Forcing is_byt_cr() =
-
-to return TRUE is just a workaround to make it use the IRQ at index 0 =
-
-(which is the correct one).
-
-Currently, sst_acpi supports these two variations:
-  - BYT-T:  5 IRQs listed -> acpi_ipc_irq_index =3D 5
-  - BYT-CR: 5 IRQs listed -> acpi_ipc_irq_index =3D 0
-
-On my device (and a few other Android based BYT-T devices) I have found:
-  - BYT-T:  1 IRQ  listed -> acpi_ipc_irq_index =3D 0
-but at the moment the kernel attempts to use acpi_ipc_irq_index =3D 5 from
-BYT-T above.
-
-> =
-
-> Can you please double-check that CONFIG_IOSF_MBI is enabled and provide a
-> trace of the bios status in this piece of code:
-> =
-
-> =A0=A0=A0 /* bits 26:27 mirror PMIC options */
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 bios_status =3D (bios_status >> 26) & 3;
-> =
-
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 if ((bios_status =3D=3D 1) || (bios_status =
-=3D=3D 3))
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 *bytcr =3D true;
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 else
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dev_info(dev, "BYT-CR not detecte=
-d\n");
-> =
-
-> > =
-
-> > Here is the relevant part from the ACPI DSDT table:
-> > =
-
-> >    Name (_ADR, Zero)  // _ADR: Address
-> >    Name (_HID, "80860F28" /* Intel SST Audio DSP */)  // _HID: Hardware=
- ID
-> >    Name (_CID, "80860F28" /* Intel SST Audio DSP */)  // _CID: Compatib=
-le ID
-> >    Name (_DDN, "Intel(R) Low Power Audio Controller - 80860F28")  // _D=
-DN: DOS Device Name
-> >    Name (_SUB, "80867270")  // _SUB: Subsystem ID
-> >    Name (_UID, One)  // _UID: Unique ID
-> > =
-
-> >    Name (RBUF, ResourceTemplate ()
-> >    {
-> >        Memory32Fixed (ReadWrite,
-> >            0x12345678,         // Address Base
-> >            0x00200000,         // Address Length
-> >            _Y08)
-> >        Memory32Fixed (ReadWrite,
-> >            0xFE830000,         // Address Base
-> >            0x00001000,         // Address Length
-> >            _Y09)
-> >        Memory32Fixed (ReadWrite,
-> >            0x55AA55AA,         // Address Base
-> >            0x00200000,         // Address Length
-> >            _Y0A)
-> >        Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-> >        {
-> >            0x0000001D,
-> >        }
-> >    })
-> > =
-
-> > Unlike many of the other DSDT dumps I've looked at, there is only one
-> > interrupt listed. Full ACPI DSDT table is at [1].
-> > =
-
-> > Since there is no IRQ at index 5, platform_get_irq will return -ENXIO.
-> > Couldn't we fall back to index 0 in this case? I would say that if the
-> > seemingly "correct" IRQ at index 5 does not even exist, we still have
-> > a better chance of picking the right one if we try the one at index 0.
-> > Or we could check the number of interrupts that are actually available.
-> > =
-
-> > The other option would be some kind of DMI-based quirk, but personally
-> > I would prefer to avoid that.. (In my opinion, there is way too much
-> > device specific code with the quirks etc already...)
-> > =
-
-> > Or do you have any other suggestions?
-> > =
-
-> > Thanks,
-> > Stephan
-> > =
-
-> > [1]: https://github.com/me176c-dev/me176c-acpi/blob/f48c78c11b0819b899f=
-988407b6ece3d8c2cca71/dsdt.dsl#L3989-L4035
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Ck9uIDEyLzE3LzE4IDEyOjE3IFBNLCBTdGVwaGFuIEdlcmhvbGQgd3JvdGU6Cj4gT24gTW9uLCBE
+ZWMgMTcsIDIwMTggYXQgMDg6NTI6NDZBTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3Jv
+dGU6Cj4+IE9uIDEyLzE2LzE4IDEyOjU0IFBNLCBTdGVwaGFuIEdlcmhvbGQgd3JvdGU6Cj4+PiBI
+aSwKPj4+Cj4+PiBJIGhhdmUgYW4gSW50ZWwgQmF5IFRyYWlsIChCWVQtVCkgdGFibGV0IHRoYXQg
+d2FzIG9yaWdpbmFsbHkgc2hpcHBlZAo+Pj4gd2l0aCBBbmRyb2lkLiBXaXRoIHRoZSByaWdodCBx
+dWlya3MsIGJ5dGNyLXJ0NTY0MCBpcyB3b3JraW5nIGZpbmUsIGJ1dAo+Pj4gdGhlcmUgaXMgYSBw
+cm9ibGVtIGluIHNzdF9hY3BpLmMgdGhhdCBpcyBwcmV2ZW50aW5nIGl0IGZyb20gd29ya2luZwo+
+Pj4gd2l0aCBhIG1haW5saW5lIGtlcm5lbDoKPj4+Cj4+PiBFdmVuIHRob3VnaCB0aGlzIGlzIGEg
+QllULVQgZGV2aWNlLCB0aGVyZSBpcyBubyBJUlEgYXQgaW5kZXggNSBpbiB0aGUKPj4+IEFDUEkg
+RFNEVCB0YWJsZS4gVGhpcyBtZWFucyB0aGF0IFNTVCB3aWxsIGZhaWwgdG8gcHJvYmUsIGFuZCBh
+Y3R1YWxseQo+Pj4gbGVhZHMgdG8gYSBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgbGF0ZXIgd2hl
+biB0aGUgQUxTQSBkZXZpY2UgaXMgZmlyc3QKPj4+IG9wZW5lZC4gKEkgaGF2ZSBzdWJtaXR0ZWQg
+YSBwb3NzaWJsZSBzb2x1dGlvbiBmb3IgdGhpcyBhcwo+Pj4gIltQQVRDSF0gQVNvQzogSW50ZWw6
+IHNzdDogRGVsYXkgbWFjaGluZSBkZXZpY2UgY3JlYXRpb24gdW50aWwgYWZ0ZXIKPj4+IGluaXRp
+YWxpemF0aW9uIikKPj4+Cj4+PiBUaGUgY29ycmVjdCBJUlEgaXMgYWN0dWFsbHkgbG9jYXRlZCBv
+biBpbmRleCAwLCBqdXN0IGxpa2UgaXQgaXMgYWxyZWFkeQo+Pj4gYmVpbmcgdXNlZCBmb3IgQllU
+LUNSIGRldmljZXMuIFNvIGlmIEkgZm9yY2UgaXNfYnl0X2NyKCkgdG8gcmV0dXJuIFRSVUUsCj4+
+PiBldmVyeXRoaW5nIHdvcmtzIGFzIGV4cGVjdGVkLgo+PiBTbyB0aGUgcm9vdCBjYXVzZSBvZiB5
+b3VyIHByb2JsZW0gaXMgdGhhdCB0aGUgZGV0ZWN0aW9uIG9mIGJ5dC1jciBkb2Vzbid0Cj4+IHdv
+cms/IFRoYXQgd291bGQgYmUgYSBmaXJzdC4KPiBOby4gaXNfYnl0X2NyKCkgd29ya3MgY29ycmVj
+dGx5LCBhcyBteSBkZXZpY2UgaXMgYSBCWVQtVCAobm90IGEgQllULUNSKQo+IGRldmljZS4gOikK
+CldoYXQgaW5mb3JtYXRpb24gaXMgeW91ciBhbmFseXNpcyBiYXNlZCBvbiBhbmQgaG93IGRvIHlv
+dSBpbmZlciB0aGlzIApjb25jbHVzaW9uPyBUaGUgQllULVQgYW5kIEJZVC1DUiBzaWxpY29uIGRp
+ZXMgYXJlIGlkZW50aWNhbCwgcHJvZHVjdCAKZG9jdW1lbnRhdGlvbiBjYW4gYmFyZWx5IGJlIHRy
+dXN0ZWQgYW5kIGl0J3MgYSBwYWNrYWdlIGRpZmZlcmVuY2UgdGhhdCAKY2FuIG9ubHkgYmUgdGVz
+dGVkIGluZGlyZWN0bHkuCgpJIGRvbid0IG1lYW4gdG8gZGlzbWlzcyB5b3VyIGNsYWltLCBqdXN0
+IHdhbnQgdG8gZmluZCBvdXQgaWYgdGhpcyBpcyBhIApjYXNlIHdoZXJlIHRoZSBQTUlDLXR5cGUt
+YmFzZWQgYnl0X2NyIGRldGVjdGlvbiBmYWlscyBvciBpZiB3ZSBoYXZlIGEgCkJJT1MgaXNzdWUu
+IEFub3RoZXIgc21va2luZyBndW4gaXMgaWYgeW91IGZpbmQgaW4geW91ciBjb2RlIHRyYWNlcyBv
+ZiAKU1NQMCBiZWluZyB1c2VkLgoKPgo+IFRoZSBwcm9ibGVtIGhlcmUgaXMgdGhhdCB0aGUga2Vy
+bmVsIGV4cGVjdHMgdGhlIElSUSBhdCBpbmRleCA1IGZvciBCWVQtVAo+IGRldmljZXMsIGJ1dCBt
+eSBkZXZpY2UgaGFzIG9ubHkgYSBzaW5nbGUgSVJRIGxpc3RlZC4gRm9yY2luZyBpc19ieXRfY3Io
+KQo+IHRvIHJldHVybiBUUlVFIGlzIGp1c3QgYSB3b3JrYXJvdW5kIHRvIG1ha2UgaXQgdXNlIHRo
+ZSBJUlEgYXQgaW5kZXggMAo+ICh3aGljaCBpcyB0aGUgY29ycmVjdCBvbmUpLgo+Cj4gQ3VycmVu
+dGx5LCBzc3RfYWNwaSBzdXBwb3J0cyB0aGVzZSB0d28gdmFyaWF0aW9uczoKPiAgICAtIEJZVC1U
+OiAgNSBJUlFzIGxpc3RlZCAtPiBhY3BpX2lwY19pcnFfaW5kZXggPSA1Cj4gICAgLSBCWVQtQ1I6
+IDUgSVJRcyBsaXN0ZWQgLT4gYWNwaV9pcGNfaXJxX2luZGV4ID0gMAo+Cj4gT24gbXkgZGV2aWNl
+IChhbmQgYSBmZXcgb3RoZXIgQW5kcm9pZCBiYXNlZCBCWVQtVCBkZXZpY2VzKSBJIGhhdmUgZm91
+bmQ6Cj4gICAgLSBCWVQtVDogIDEgSVJRICBsaXN0ZWQgLT4gYWNwaV9pcGNfaXJxX2luZGV4ID0g
+MAo+IGJ1dCBhdCB0aGUgbW9tZW50IHRoZSBrZXJuZWwgYXR0ZW1wdHMgdG8gdXNlIGFjcGlfaXBj
+X2lycV9pbmRleCA9IDUgZnJvbQo+IEJZVC1UIGFib3ZlLgo+Cj4+IENhbiB5b3UgcGxlYXNlIGRv
+dWJsZS1jaGVjayB0aGF0IENPTkZJR19JT1NGX01CSSBpcyBlbmFibGVkIGFuZCBwcm92aWRlIGEK
+Pj4gdHJhY2Ugb2YgdGhlIGJpb3Mgc3RhdHVzIGluIHRoaXMgcGllY2Ugb2YgY29kZToKPj4KPj4g
+IMKgwqDCoCAvKiBiaXRzIDI2OjI3IG1pcnJvciBQTUlDIG9wdGlvbnMgKi8KPj4gIMKgwqDCoCDC
+oMKgwqAgwqDCoMKgIGJpb3Nfc3RhdHVzID0gKGJpb3Nfc3RhdHVzID4+IDI2KSAmIDM7Cj4+Cj4+
+ICDCoMKgwqAgwqDCoMKgIMKgwqDCoCBpZiAoKGJpb3Nfc3RhdHVzID09IDEpIHx8IChiaW9zX3N0
+YXR1cyA9PSAzKSkKPj4gIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCAqYnl0Y3IgPSB0cnVl
+Owo+PiAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgZWxzZQo+PiAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
+wqDCoMKgIGRldl9pbmZvKGRldiwgIkJZVC1DUiBub3QgZGV0ZWN0ZWRcbiIpOwo+Pgo+Pj4gSGVy
+ZSBpcyB0aGUgcmVsZXZhbnQgcGFydCBmcm9tIHRoZSBBQ1BJIERTRFQgdGFibGU6Cj4+Pgo+Pj4g
+ICAgIE5hbWUgKF9BRFIsIFplcm8pICAvLyBfQURSOiBBZGRyZXNzCj4+PiAgICAgTmFtZSAoX0hJ
+RCwgIjgwODYwRjI4IiAvKiBJbnRlbCBTU1QgQXVkaW8gRFNQICovKSAgLy8gX0hJRDogSGFyZHdh
+cmUgSUQKPj4+ICAgICBOYW1lIChfQ0lELCAiODA4NjBGMjgiIC8qIEludGVsIFNTVCBBdWRpbyBE
+U1AgKi8pICAvLyBfQ0lEOiBDb21wYXRpYmxlIElECj4+PiAgICAgTmFtZSAoX0RETiwgIkludGVs
+KFIpIExvdyBQb3dlciBBdWRpbyBDb250cm9sbGVyIC0gODA4NjBGMjgiKSAgLy8gX0RETjogRE9T
+IERldmljZSBOYW1lCj4+PiAgICAgTmFtZSAoX1NVQiwgIjgwODY3MjcwIikgIC8vIF9TVUI6IFN1
+YnN5c3RlbSBJRAo+Pj4gICAgIE5hbWUgKF9VSUQsIE9uZSkgIC8vIF9VSUQ6IFVuaXF1ZSBJRAo+
+Pj4KPj4+ICAgICBOYW1lIChSQlVGLCBSZXNvdXJjZVRlbXBsYXRlICgpCj4+PiAgICAgewo+Pj4g
+ICAgICAgICBNZW1vcnkzMkZpeGVkIChSZWFkV3JpdGUsCj4+PiAgICAgICAgICAgICAweDEyMzQ1
+Njc4LCAgICAgICAgIC8vIEFkZHJlc3MgQmFzZQo+Pj4gICAgICAgICAgICAgMHgwMDIwMDAwMCwg
+ICAgICAgICAvLyBBZGRyZXNzIExlbmd0aAo+Pj4gICAgICAgICAgICAgX1kwOCkKPj4+ICAgICAg
+ICAgTWVtb3J5MzJGaXhlZCAoUmVhZFdyaXRlLAo+Pj4gICAgICAgICAgICAgMHhGRTgzMDAwMCwg
+ICAgICAgICAvLyBBZGRyZXNzIEJhc2UKPj4+ICAgICAgICAgICAgIDB4MDAwMDEwMDAsICAgICAg
+ICAgLy8gQWRkcmVzcyBMZW5ndGgKPj4+ICAgICAgICAgICAgIF9ZMDkpCj4+PiAgICAgICAgIE1l
+bW9yeTMyRml4ZWQgKFJlYWRXcml0ZSwKPj4+ICAgICAgICAgICAgIDB4NTVBQTU1QUEsICAgICAg
+ICAgLy8gQWRkcmVzcyBCYXNlCj4+PiAgICAgICAgICAgICAweDAwMjAwMDAwLCAgICAgICAgIC8v
+IEFkZHJlc3MgTGVuZ3RoCj4+PiAgICAgICAgICAgICBfWTBBKQo+Pj4gICAgICAgICBJbnRlcnJ1
+cHQgKFJlc291cmNlQ29uc3VtZXIsIExldmVsLCBBY3RpdmVMb3csIEV4Y2x1c2l2ZSwgLCwgKQo+
+Pj4gICAgICAgICB7Cj4+PiAgICAgICAgICAgICAweDAwMDAwMDFELAo+Pj4gICAgICAgICB9Cj4+
+PiAgICAgfSkKPj4+Cj4+PiBVbmxpa2UgbWFueSBvZiB0aGUgb3RoZXIgRFNEVCBkdW1wcyBJJ3Zl
+IGxvb2tlZCBhdCwgdGhlcmUgaXMgb25seSBvbmUKPj4+IGludGVycnVwdCBsaXN0ZWQuIEZ1bGwg
+QUNQSSBEU0RUIHRhYmxlIGlzIGF0IFsxXS4KPj4+Cj4+PiBTaW5jZSB0aGVyZSBpcyBubyBJUlEg
+YXQgaW5kZXggNSwgcGxhdGZvcm1fZ2V0X2lycSB3aWxsIHJldHVybiAtRU5YSU8uCj4+PiBDb3Vs
+ZG4ndCB3ZSBmYWxsIGJhY2sgdG8gaW5kZXggMCBpbiB0aGlzIGNhc2U/IEkgd291bGQgc2F5IHRo
+YXQgaWYgdGhlCj4+PiBzZWVtaW5nbHkgImNvcnJlY3QiIElSUSBhdCBpbmRleCA1IGRvZXMgbm90
+IGV2ZW4gZXhpc3QsIHdlIHN0aWxsIGhhdmUKPj4+IGEgYmV0dGVyIGNoYW5jZSBvZiBwaWNraW5n
+IHRoZSByaWdodCBvbmUgaWYgd2UgdHJ5IHRoZSBvbmUgYXQgaW5kZXggMC4KPj4+IE9yIHdlIGNv
+dWxkIGNoZWNrIHRoZSBudW1iZXIgb2YgaW50ZXJydXB0cyB0aGF0IGFyZSBhY3R1YWxseSBhdmFp
+bGFibGUuCj4+Pgo+Pj4gVGhlIG90aGVyIG9wdGlvbiB3b3VsZCBiZSBzb21lIGtpbmQgb2YgRE1J
+LWJhc2VkIHF1aXJrLCBidXQgcGVyc29uYWxseQo+Pj4gSSB3b3VsZCBwcmVmZXIgdG8gYXZvaWQg
+dGhhdC4uIChJbiBteSBvcGluaW9uLCB0aGVyZSBpcyB3YXkgdG9vIG11Y2gKPj4+IGRldmljZSBz
+cGVjaWZpYyBjb2RlIHdpdGggdGhlIHF1aXJrcyBldGMgYWxyZWFkeS4uLikKPj4+Cj4+PiBPciBk
+byB5b3UgaGF2ZSBhbnkgb3RoZXIgc3VnZ2VzdGlvbnM/Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gU3Rl
+cGhhbgo+Pj4KPj4+IFsxXTogaHR0cHM6Ly9naXRodWIuY29tL21lMTc2Yy1kZXYvbWUxNzZjLWFj
+cGkvYmxvYi9mNDhjNzhjMTFiMDgxOWI4OTlmOTg4NDA3YjZlY2UzZDhjMmNjYTcxL2RzZHQuZHNs
+I0wzOTg5LUw0MDM1Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+IEFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwo+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
