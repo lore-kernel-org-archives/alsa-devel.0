@@ -1,20 +1,28 @@
-From: Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
-	device
-Date: Mon, 17 Dec 2018 19:03:31 +0100
-Message-ID: <20181217180330.GA845@gerhold.net>
-References: <20181216185429.GA20408@gerhold.net>
- <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Need help fixing pop/click artifacts in an ASOC
+ driver
+Date: Mon, 17 Dec 2018 12:08:36 -0600
+Message-ID: <273cb3d8-7cd6-867a-ebb4-22217f88e0a8@linux.intel.com>
+References: <20181114230255.GG2089@sirena.org.uk>
+ <b48bc9d6-767a-24df-692e-fe675afed22e@gmail.com>
+ <20181115003313.GH2089@sirena.org.uk>
+ <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
+ <20181115190403.GI2089@sirena.org.uk>
+ <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
+ <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
+ <20181213174229.GU10669@sirena.org.uk>
+ <fff018b4-c2e5-d3f3-0589-b837e62e9c5e@gmail.com>
+ <4b358258-d7ae-d82e-cd58-d4b9e3b6f148@linux.intel.com>
+ <20181217173930.GF27909@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [81.169.146.161])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DECF2678D5
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:03:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5211267B09
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:08:38 +0100 (CET)
+In-Reply-To: <20181217173930.GF27909@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,129 +32,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Dimitris Papavasiliou <dpapavas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 16, 2018 at 08:07:30PM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 16-12-18 19:54, Stephan Gerhold wrote:
-> > Hi,
-> > 
-> > I have an Intel Bay Trail (BYT-T) tablet that was originally shipped
-> > with Android. With the right quirks, bytcr-rt5640 is working fine, but
-> > there is a problem in sst_acpi.c that is preventing it from working
-> > with a mainline kernel:
-> > 
-> > Even though this is a BYT-T device, there is no IRQ at index 5 in the
-> > ACPI DSDT table. This means that SST will fail to probe, and actually
-> > leads to a NULL pointer dereference later when the ALSA device is first
-> > opened. (I have submitted a possible solution for this as
-> > "[PATCH] ASoC: Intel: sst: Delay machine device creation until after
-> > initialization")
-> > 
-> > The correct IRQ is actually located on index 0, just like it is already
-> > being used for BYT-CR devices. So if I force is_byt_cr() to return TRUE,
-> > everything works as expected.
-> > 
-> > Here is the relevant part from the ACPI DSDT table:
-> > 
-> >    Name (_ADR, Zero)  // _ADR: Address
-> >    Name (_HID, "80860F28" /* Intel SST Audio DSP */)  // _HID: Hardware ID
-> >    Name (_CID, "80860F28" /* Intel SST Audio DSP */)  // _CID: Compatible ID
-> >    Name (_DDN, "Intel(R) Low Power Audio Controller - 80860F28")  // _DDN: DOS Device Name
-> >    Name (_SUB, "80867270")  // _SUB: Subsystem ID
-> >    Name (_UID, One)  // _UID: Unique ID
-> > 
-> >    Name (RBUF, ResourceTemplate ()
-> >    {
-> >        Memory32Fixed (ReadWrite,
-> >            0x12345678,         // Address Base
-> >            0x00200000,         // Address Length
-> >            _Y08)
-> >        Memory32Fixed (ReadWrite,
-> >            0xFE830000,         // Address Base
-> >            0x00001000,         // Address Length
-> >            _Y09)
-> >        Memory32Fixed (ReadWrite,
-> >            0x55AA55AA,         // Address Base
-> >            0x00200000,         // Address Length
-> >            _Y0A)
-> >        Interrupt (ResourceConsumer, Level, ActiveLow, Exclusive, ,, )
-> >        {
-> >            0x0000001D,
-> >        }
-> >    })
-> > 
-> > Unlike many of the other DSDT dumps I've looked at, there is only one
-> > interrupt listed. Full ACPI DSDT table is at [1].
-> > 
-> > Since there is no IRQ at index 5, platform_get_irq will return -ENXIO.
-> > Couldn't we fall back to index 0 in this case? I would say that if the
-> > seemingly "correct" IRQ at index 5 does not even exist, we still have
-> > a better chance of picking the right one if we try the one at index 0.
-> > Or we could check the number of interrupts that are actually available.
-> 
-> If I'm not mistaken then you already mentioned in another thread
-> (the "tusb1210 probe of dwc3.0.auto.ulpi fails with EBUSY on 4.19+")
-> thread that the DSTD of this Andriod only device has several bugs in
-> there such as wrong GPIOs in some places, etc. and you need to do a
-> DSDT override anyways to get some things to work, right ?
 
-Yes, at the moment I use DSDT override to fix some things and add a few 
-missing GPIOs. For example I have not yet found a nice way to fixup the
-ACPI parent of the Bluetooth device (it's listed under the wrong UART 
-controller).
+On 12/17/18 11:39 AM, Mark Brown wrote:
+> On Mon, Dec 17, 2018 at 09:03:33AM -0600, Pierre-Louis Bossart wrote:
+>
+>> I started prototyping a different approach where the codec driver passes=
+ the
+>> regmap information to the clock driver. What's missing in the patchset is
+>> the addition of a clock control in the machine driver, and logic added so
+>> that rate=A0 change can only be done in a hw_params if there was a compl=
+ete
+>> stop and reset on a DAPM_OFF event. compile-tested only for now.
+>> https://github.com/plbossart/sound/commits/hifiberry/clks
+> That looks a lot like the CODEC should be exporting a GPIO driver so the
+> machine driver doesn't actually need the regmap?  The only register
+> touched is _GPIO_CONTROL_1.
 
-Note that this is rather painful, especially because I can't share the 
-fixed table as-is with others (there is a memory address in there that 
-is different depending on the BIOS state or something).
-So I'm still trying to keep the necessary changes as minimal as possible,
-and have the majority of things working without it. Eventually, I will 
-find nicer workarounds and can stop doing this entirely in the future.
+I am not sure what you meant by 'exporting a GPIO driver' (mostly =
 
-> 
-> In that case I believe it would be best to just also patch up this
-> part of the DSDT in your override and leave the current kernel code
-> as is.
+because I am not familiar with any GPIO framework) but indeed the local =
 
-I have just looked through a few other DSDTs of Android based Bay Trail 
-devices and have found this pattern in at least two more of them. So in 
-case someone tries to run mainline on those devices in the future,
-I believe it would be better to fix it on the kernel side in this case.
-(Getting sound working has been a rather painful process for me, and
-took a lot of time. I would like to make this easier for others...)
+oscillator choice is controlled by a single register accessible through =
 
-I was thinking of something along the lines of:
+regmap - and changes to that register should only happen when the device =
 
-  if (platform_irq_count(pdev) == 1)
-  	byt_rvp_platform_data.res_info = &bytcr_res_info;
+is a specific state to prevent click/pops.
 
-Pretty simple, and since all currently supported devices are either 
-BYT-CR or have at least 5 IRQs listed, the change would not affect them 
-in any way.
+The machine driver should use clk_set_rate() and not directly handle =
 
+regmap or codec stuff. If it does, or if the clock framework isn't =
 
-Side note:
-I have considered fixing this in the DSDT table a few times before but 
-have never tried it because it kind of feels wrong to me. It would 
-probably work, but I believe the kernel is at fault here:
+relevant here then we can simplify all this as suggested in =
 
-I've been fixing mistakes and adding missing GPIOs to the DSDT, but is 
-this really the case here? Everything that is needed for the driver 
-exists in the ACPI table. If this was a BYT-CR device, it would work 
-as-is, with no additional modifications.
+https://patchwork.kernel.org/patch/10444387/. What I was trying to do =
 
-Now, in order to fulfill the current expectations for BYT-T devices,
-I would need to add 4 additional IRQs that would never be used.
-But which IRQs would I list there? Dummy/invalid IRQs? To me, that
-does not sound like the DSDT will become any more valid.
+with the github update is to keep the clock framework, tie it closer =
 
-Let me know what you think! :)
+with the codec parts with a state variable that prevents wild changes =
 
-> 
-> Regards,
-> 
-> Hans
-> 
+without going back to a 'safe' idle state (similar idea as PulseAudio =
+
+clock changes, which can only happen when the PCM is not opened and used).
