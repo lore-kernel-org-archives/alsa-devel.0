@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC 2/2] ASoC: Add MICFIL SoC Digital Audio
- Interface driver.
-Date: Mon, 17 Dec 2018 12:18:58 +0000
-Message-ID: <20181217121858.GB13868@sirena.org.uk>
-References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
- <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
- <20181212181414.GE6920@sirena.org.uk>
- <f3a0f305-dc96-f8b9-3c57-e45256326e2f@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/9] ASoC/ARM: Merge the davinci and omap audio
+	directories
+Date: Mon, 17 Dec 2018 14:21:33 +0200
+Message-ID: <20181217122142.6652-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0190393745984609847=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D9EDD267A94
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 13:19:00 +0100 (CET)
-In-Reply-To: <f3a0f305-dc96-f8b9-3c57-e45256326e2f@linux.intel.com>
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFA3B267A94
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 13:20:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +19,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh@kernel.org" <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, tony@atomide.com, nsekhar@ti.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, jsarha@ti.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0190393745984609847==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
-Content-Disposition: inline
+Changes since RFC:
+- Added Jarkko's Acked-by/Tested-by for the {omap->ti} changes
+- Rebased on top of next-20181210 (20181214+ is not booting on any of my boards)
 
+For Texas Instruments audio support we have two directories at the moment:
+davinci
+omap
 
---KFztAG8eRSV9hGtP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In reality TI have the following SoC lines supported by Linux:
+daVinci
+OMAP
+Sitara
+Keystone
 
-On Fri, Dec 14, 2018 at 02:09:00PM -0600, Pierre-Louis Bossart wrote:
+We already needed to have cross directory 'links' for DRA7x/AM5 since they use
+McASP (davinci directory) and sDMA (omap directory).
+Keystone II line of SoCs are using drivers from davinci directory (McASP and
+EDMA). Which is kind of fine as they are in the same place.
 
-> There's no mention of any buffer so it's likely plain vanilla VAD here.
-> We've seen two choices to warn userspace of a acoustic event, either use a
-> uevent or a kcontrol. I believe we ended-up chosing the latter on the Intel
-> side in the past and that was also the plan for SOF.
+With the new AM654 (http://www.ti.com/lit/pdf/spruid7) we will have completely
+new DMA and there is no place to put that as it does not belong under davinci
+or omap, but it makes no sense to create yet another TI related directory just
+for the small udma-pcm.
 
-It sounded like there were some separate audio streams somewhere along
-the line, it wasn't super clear if that just went into a DSP that did
-the VAD and wasn't visible to the rest of the system or if it's
-something the system can see.  Generally we have gone for kcontrols for
-event signalling.
+Another issue with the current support is how the Kconfigs are written.
+The DAI drivers are depending on the ASoC platform drivers and it is a bit of a
+mess at the moment.
+For simple-sound-card one need to know what DMA is used and then select the DAI
+driver (if the Kconfig is right).
+I have also cleaned up the Kconfig prompts and comments a bit to be more
+precise.
 
-> In terms of configurations for the PDM we have completely different settings
-> since we pass explicit coefficients while this solution passes qualifiers
-> (cut-off, quality, etc), not sure if there is any point in trying to unify
-> those parameters.
+As can be seen in the diffstat I tried to do the merger with minimal code
+change, resisting the urge to rename the davinci-i2c driver to davinci-asp.
 
-Yes, I don't think the specific parameters are going to be joined up any
-time soon - it's more the overall shape of the solution.
+With the merger I have created a new Kconfig structure:
+- Submenu for TI related settings for clarity
+- Only the DAI drivers are selectable and the platform drivers are selected
+  based on the available (enabled) DMA engines
+- The remaining ASoC machine drivers are selecting the DAIs they need
+- The davinci-evm is now a single entry, combining all the various daVinci EVMS
+  it supports and selects the needed DAIs based on the enabled boards
 
---KFztAG8eRSV9hGtP
-Content-Type: application/pgp-signature; name="signature.asc"
+The series also includes patches to updated the arch/arm/ files (defconfigs,
+source files using audio Kconfig symbols).
 
------BEGIN PGP SIGNATURE-----
+I think I have catched all (I hope) issues regarding to Kconfig thanks to the
+various autobuild machines out there kindly testing my linux-next-wip branch.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwXlDIACgkQJNaLcl1U
-h9ClJgf+OLM4U6BF/ObfLIVklTQIFe3fnUCsAjOD91k7AY2TiZoQxvLazrtoOE+i
-dRjGs0PQwqS652wDuHAz8g3sB0IPsNekYqAk/dA5sy1vTSXGjOqljs5Gp6xnGZnv
-634cmVPiM3tKVqBsSb9QPLoy58Q7XTlzNnAp1bRvDdQXw1OPHs0M1NFY1KXEDshI
-HKwEmnw8R1G+661GVA2nnOcmsHDBYyY0Pf1oOjOGsekU8eCx+SfTL+5sHZxDaSto
-AlHuok6Qd8z5qm+DOdoFo2l5BV2Wa9ikc901Vouvy7Z+0Xp/inULSYBuFuIZknui
-/8a2LFoYBkHelcGJJwJorSFUzlCBLw==
-=WGuC
------END PGP SIGNATURE-----
+Mark, Tony, Sekhar: This series - as I mentioned - is based on next-20181210.
+Not sure what tag, branch, commit  I should base this, but I can resend v2 if
+needed.
 
---KFztAG8eRSV9hGtP--
+Regards,
+Peter
+---
+Peter Ujfalusi (9):
+  ASoC: ti: Merge davinci and omap directories
+  MAINTAINERS: Add entry for sound/soc/ti and update the OMAP audio
+    support
+  ARM: OMAP1: Makefile: Update for new MCBSP Kconfig option
+  ARM: OMAP2: Update for new MCBSP Kconfig option
+  ARM: davinci: dm365-evm: Update for the new ASoC Kcofnig options
+  ARM: omap2plus_defconfig: Update the audio options
+  ARM: omap1_defconfig: Do not select ASoC by default
+  ARM: davinci_all_defconfig: Update the audio options
+  ASoC: ti: Kconfig: Remove the deprecated options
 
---===============0190393745984609847==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ MAINTAINERS                                   |  11 +-
+ arch/arm/configs/davinci_all_defconfig        |   5 +-
+ arch/arm/configs/omap1_defconfig              |   2 -
+ arch/arm/configs/omap2plus_defconfig          |  14 +-
+ arch/arm/mach-davinci/board-dm365-evm.c       |   4 +-
+ arch/arm/mach-omap1/Makefile                  |   2 +-
+ arch/arm/mach-omap2/Makefile                  |   2 +-
+ arch/arm/mach-omap2/pdata-quirks.c            |   4 +-
+ sound/soc/Kconfig                             |   3 +-
+ sound/soc/Makefile                            |   3 +-
+ sound/soc/davinci/Kconfig                     | 106 ---------
+ sound/soc/davinci/Makefile                    |  16 --
+ sound/soc/omap/Kconfig                        | 120 ----------
+ sound/soc/omap/Makefile                       |  30 ---
+ sound/soc/ti/Kconfig                          | 209 ++++++++++++++++++
+ sound/soc/ti/Makefile                         |  44 ++++
+ sound/soc/{omap => ti}/ams-delta.c            |   0
+ sound/soc/{davinci => ti}/davinci-evm.c       |   4 +-
+ sound/soc/{davinci => ti}/davinci-i2s.c       |   0
+ sound/soc/{davinci => ti}/davinci-i2s.h       |   0
+ sound/soc/{davinci => ti}/davinci-mcasp.c     |  14 +-
+ sound/soc/{davinci => ti}/davinci-mcasp.h     |   0
+ sound/soc/{davinci => ti}/davinci-vcif.c      |   0
+ sound/soc/{davinci => ti}/edma-pcm.c          |   0
+ sound/soc/{davinci => ti}/edma-pcm.h          |   4 +-
+ sound/soc/{omap => ti}/n810.c                 |   0
+ sound/soc/{omap => ti}/omap-abe-twl6040.c     |   0
+ sound/soc/{omap => ti}/omap-dmic.c            |   0
+ sound/soc/{omap => ti}/omap-dmic.h            |   0
+ .../omap-hdmi-audio.c => ti/omap-hdmi.c}      |   0
+ sound/soc/{omap => ti}/omap-mcbsp-priv.h      |   0
+ sound/soc/{omap => ti}/omap-mcbsp-st.c        |   0
+ sound/soc/{omap => ti}/omap-mcbsp.c           |   0
+ sound/soc/{omap => ti}/omap-mcbsp.h           |   0
+ sound/soc/{omap => ti}/omap-mcpdm.c           |   0
+ sound/soc/{omap => ti}/omap-mcpdm.h           |   0
+ sound/soc/{omap => ti}/omap-twl4030.c         |   0
+ sound/soc/{omap => ti}/omap3pandora.c         |   0
+ sound/soc/{omap => ti}/osk5912.c              |   0
+ sound/soc/{omap => ti}/rx51.c                 |   0
+ sound/soc/{omap => ti}/sdma-pcm.c             |   0
+ sound/soc/{omap => ti}/sdma-pcm.h             |   4 +-
+ 42 files changed, 294 insertions(+), 307 deletions(-)
+ delete mode 100644 sound/soc/davinci/Kconfig
+ delete mode 100644 sound/soc/davinci/Makefile
+ delete mode 100644 sound/soc/omap/Kconfig
+ delete mode 100644 sound/soc/omap/Makefile
+ create mode 100644 sound/soc/ti/Kconfig
+ create mode 100644 sound/soc/ti/Makefile
+ rename sound/soc/{omap => ti}/ams-delta.c (100%)
+ rename sound/soc/{davinci => ti}/davinci-evm.c (99%)
+ rename sound/soc/{davinci => ti}/davinci-i2s.c (100%)
+ rename sound/soc/{davinci => ti}/davinci-i2s.h (100%)
+ rename sound/soc/{davinci => ti}/davinci-mcasp.c (99%)
+ rename sound/soc/{davinci => ti}/davinci-mcasp.h (100%)
+ rename sound/soc/{davinci => ti}/davinci-vcif.c (100%)
+ rename sound/soc/{davinci => ti}/edma-pcm.c (100%)
+ rename sound/soc/{davinci => ti}/edma-pcm.h (91%)
+ rename sound/soc/{omap => ti}/n810.c (100%)
+ rename sound/soc/{omap => ti}/omap-abe-twl6040.c (100%)
+ rename sound/soc/{omap => ti}/omap-dmic.c (100%)
+ rename sound/soc/{omap => ti}/omap-dmic.h (100%)
+ rename sound/soc/{omap/omap-hdmi-audio.c => ti/omap-hdmi.c} (100%)
+ rename sound/soc/{omap => ti}/omap-mcbsp-priv.h (100%)
+ rename sound/soc/{omap => ti}/omap-mcbsp-st.c (100%)
+ rename sound/soc/{omap => ti}/omap-mcbsp.c (100%)
+ rename sound/soc/{omap => ti}/omap-mcbsp.h (100%)
+ rename sound/soc/{omap => ti}/omap-mcpdm.c (100%)
+ rename sound/soc/{omap => ti}/omap-mcpdm.h (100%)
+ rename sound/soc/{omap => ti}/omap-twl4030.c (100%)
+ rename sound/soc/{omap => ti}/omap3pandora.c (100%)
+ rename sound/soc/{omap => ti}/osk5912.c (100%)
+ rename sound/soc/{omap => ti}/rx51.c (100%)
+ rename sound/soc/{omap => ti}/sdma-pcm.c (100%)
+ rename sound/soc/{omap => ti}/sdma-pcm.h (85%)
 
+-- 
+Peter
 
---===============0190393745984609847==--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
