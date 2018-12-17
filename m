@@ -1,20 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
-	device
-Date: Mon, 17 Dec 2018 12:29:43 -0600
-Message-ID: <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
-References: <20181216185429.GA20408@gerhold.net>
- <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
- <20181217181729.GB845@gerhold.net>
+From: James Schulman <james.schulman@cirrus.com>
+Subject: [PATCH v3 2/2] ASoC: cs35l36: Add device tree
+	documentation for CS35L36
+Date: Mon, 17 Dec 2018 12:55:32 -0600
+Message-ID: <1545072932-18474-2-git-send-email-james.schulman@cirrus.com>
+References: <1545072932-18474-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DD1BE267AC9
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:29:45 +0100 (CET)
-In-Reply-To: <20181217181729.GB845@gerhold.net>
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 102DE267B05
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 19:55:24 +0100 (CET)
+In-Reply-To: <1545072932-18474-1-git-send-email-james.schulman@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,99 +22,204 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephan Gerhold <stephan@gerhold.net>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, paul.handrigan@cirrus.com, brian.austin@cirrus.com, ckeepax@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzE3LzE4IDEyOjE3IFBNLCBTdGVwaGFuIEdlcmhvbGQgd3JvdGU6Cj4gT24gTW9uLCBE
-ZWMgMTcsIDIwMTggYXQgMDg6NTI6NDZBTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3Jv
-dGU6Cj4+IE9uIDEyLzE2LzE4IDEyOjU0IFBNLCBTdGVwaGFuIEdlcmhvbGQgd3JvdGU6Cj4+PiBI
-aSwKPj4+Cj4+PiBJIGhhdmUgYW4gSW50ZWwgQmF5IFRyYWlsIChCWVQtVCkgdGFibGV0IHRoYXQg
-d2FzIG9yaWdpbmFsbHkgc2hpcHBlZAo+Pj4gd2l0aCBBbmRyb2lkLiBXaXRoIHRoZSByaWdodCBx
-dWlya3MsIGJ5dGNyLXJ0NTY0MCBpcyB3b3JraW5nIGZpbmUsIGJ1dAo+Pj4gdGhlcmUgaXMgYSBw
-cm9ibGVtIGluIHNzdF9hY3BpLmMgdGhhdCBpcyBwcmV2ZW50aW5nIGl0IGZyb20gd29ya2luZwo+
-Pj4gd2l0aCBhIG1haW5saW5lIGtlcm5lbDoKPj4+Cj4+PiBFdmVuIHRob3VnaCB0aGlzIGlzIGEg
-QllULVQgZGV2aWNlLCB0aGVyZSBpcyBubyBJUlEgYXQgaW5kZXggNSBpbiB0aGUKPj4+IEFDUEkg
-RFNEVCB0YWJsZS4gVGhpcyBtZWFucyB0aGF0IFNTVCB3aWxsIGZhaWwgdG8gcHJvYmUsIGFuZCBh
-Y3R1YWxseQo+Pj4gbGVhZHMgdG8gYSBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgbGF0ZXIgd2hl
-biB0aGUgQUxTQSBkZXZpY2UgaXMgZmlyc3QKPj4+IG9wZW5lZC4gKEkgaGF2ZSBzdWJtaXR0ZWQg
-YSBwb3NzaWJsZSBzb2x1dGlvbiBmb3IgdGhpcyBhcwo+Pj4gIltQQVRDSF0gQVNvQzogSW50ZWw6
-IHNzdDogRGVsYXkgbWFjaGluZSBkZXZpY2UgY3JlYXRpb24gdW50aWwgYWZ0ZXIKPj4+IGluaXRp
-YWxpemF0aW9uIikKPj4+Cj4+PiBUaGUgY29ycmVjdCBJUlEgaXMgYWN0dWFsbHkgbG9jYXRlZCBv
-biBpbmRleCAwLCBqdXN0IGxpa2UgaXQgaXMgYWxyZWFkeQo+Pj4gYmVpbmcgdXNlZCBmb3IgQllU
-LUNSIGRldmljZXMuIFNvIGlmIEkgZm9yY2UgaXNfYnl0X2NyKCkgdG8gcmV0dXJuIFRSVUUsCj4+
-PiBldmVyeXRoaW5nIHdvcmtzIGFzIGV4cGVjdGVkLgo+PiBTbyB0aGUgcm9vdCBjYXVzZSBvZiB5
-b3VyIHByb2JsZW0gaXMgdGhhdCB0aGUgZGV0ZWN0aW9uIG9mIGJ5dC1jciBkb2Vzbid0Cj4+IHdv
-cms/IFRoYXQgd291bGQgYmUgYSBmaXJzdC4KPiBOby4gaXNfYnl0X2NyKCkgd29ya3MgY29ycmVj
-dGx5LCBhcyBteSBkZXZpY2UgaXMgYSBCWVQtVCAobm90IGEgQllULUNSKQo+IGRldmljZS4gOikK
-CldoYXQgaW5mb3JtYXRpb24gaXMgeW91ciBhbmFseXNpcyBiYXNlZCBvbiBhbmQgaG93IGRvIHlv
-dSBpbmZlciB0aGlzIApjb25jbHVzaW9uPyBUaGUgQllULVQgYW5kIEJZVC1DUiBzaWxpY29uIGRp
-ZXMgYXJlIGlkZW50aWNhbCwgcHJvZHVjdCAKZG9jdW1lbnRhdGlvbiBjYW4gYmFyZWx5IGJlIHRy
-dXN0ZWQgYW5kIGl0J3MgYSBwYWNrYWdlIGRpZmZlcmVuY2UgdGhhdCAKY2FuIG9ubHkgYmUgdGVz
-dGVkIGluZGlyZWN0bHkuCgpJIGRvbid0IG1lYW4gdG8gZGlzbWlzcyB5b3VyIGNsYWltLCBqdXN0
-IHdhbnQgdG8gZmluZCBvdXQgaWYgdGhpcyBpcyBhIApjYXNlIHdoZXJlIHRoZSBQTUlDLXR5cGUt
-YmFzZWQgYnl0X2NyIGRldGVjdGlvbiBmYWlscyBvciBpZiB3ZSBoYXZlIGEgCkJJT1MgaXNzdWUu
-IEFub3RoZXIgc21va2luZyBndW4gaXMgaWYgeW91IGZpbmQgaW4geW91ciBjb2RlIHRyYWNlcyBv
-ZiAKU1NQMCBiZWluZyB1c2VkLgoKPgo+IFRoZSBwcm9ibGVtIGhlcmUgaXMgdGhhdCB0aGUga2Vy
-bmVsIGV4cGVjdHMgdGhlIElSUSBhdCBpbmRleCA1IGZvciBCWVQtVAo+IGRldmljZXMsIGJ1dCBt
-eSBkZXZpY2UgaGFzIG9ubHkgYSBzaW5nbGUgSVJRIGxpc3RlZC4gRm9yY2luZyBpc19ieXRfY3Io
-KQo+IHRvIHJldHVybiBUUlVFIGlzIGp1c3QgYSB3b3JrYXJvdW5kIHRvIG1ha2UgaXQgdXNlIHRo
-ZSBJUlEgYXQgaW5kZXggMAo+ICh3aGljaCBpcyB0aGUgY29ycmVjdCBvbmUpLgo+Cj4gQ3VycmVu
-dGx5LCBzc3RfYWNwaSBzdXBwb3J0cyB0aGVzZSB0d28gdmFyaWF0aW9uczoKPiAgICAtIEJZVC1U
-OiAgNSBJUlFzIGxpc3RlZCAtPiBhY3BpX2lwY19pcnFfaW5kZXggPSA1Cj4gICAgLSBCWVQtQ1I6
-IDUgSVJRcyBsaXN0ZWQgLT4gYWNwaV9pcGNfaXJxX2luZGV4ID0gMAo+Cj4gT24gbXkgZGV2aWNl
-IChhbmQgYSBmZXcgb3RoZXIgQW5kcm9pZCBiYXNlZCBCWVQtVCBkZXZpY2VzKSBJIGhhdmUgZm91
-bmQ6Cj4gICAgLSBCWVQtVDogIDEgSVJRICBsaXN0ZWQgLT4gYWNwaV9pcGNfaXJxX2luZGV4ID0g
-MAo+IGJ1dCBhdCB0aGUgbW9tZW50IHRoZSBrZXJuZWwgYXR0ZW1wdHMgdG8gdXNlIGFjcGlfaXBj
-X2lycV9pbmRleCA9IDUgZnJvbQo+IEJZVC1UIGFib3ZlLgo+Cj4+IENhbiB5b3UgcGxlYXNlIGRv
-dWJsZS1jaGVjayB0aGF0IENPTkZJR19JT1NGX01CSSBpcyBlbmFibGVkIGFuZCBwcm92aWRlIGEK
-Pj4gdHJhY2Ugb2YgdGhlIGJpb3Mgc3RhdHVzIGluIHRoaXMgcGllY2Ugb2YgY29kZToKPj4KPj4g
-IMKgwqDCoCAvKiBiaXRzIDI2OjI3IG1pcnJvciBQTUlDIG9wdGlvbnMgKi8KPj4gIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIGJpb3Nfc3RhdHVzID0gKGJpb3Nfc3RhdHVzID4+IDI2KSAmIDM7Cj4+Cj4+
-ICDCoMKgwqAgwqDCoMKgIMKgwqDCoCBpZiAoKGJpb3Nfc3RhdHVzID09IDEpIHx8IChiaW9zX3N0
-YXR1cyA9PSAzKSkKPj4gIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCAqYnl0Y3IgPSB0cnVl
-Owo+PiAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgZWxzZQo+PiAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIGRldl9pbmZvKGRldiwgIkJZVC1DUiBub3QgZGV0ZWN0ZWRcbiIpOwo+Pgo+Pj4gSGVy
-ZSBpcyB0aGUgcmVsZXZhbnQgcGFydCBmcm9tIHRoZSBBQ1BJIERTRFQgdGFibGU6Cj4+Pgo+Pj4g
-ICAgIE5hbWUgKF9BRFIsIFplcm8pICAvLyBfQURSOiBBZGRyZXNzCj4+PiAgICAgTmFtZSAoX0hJ
-RCwgIjgwODYwRjI4IiAvKiBJbnRlbCBTU1QgQXVkaW8gRFNQICovKSAgLy8gX0hJRDogSGFyZHdh
-cmUgSUQKPj4+ICAgICBOYW1lIChfQ0lELCAiODA4NjBGMjgiIC8qIEludGVsIFNTVCBBdWRpbyBE
-U1AgKi8pICAvLyBfQ0lEOiBDb21wYXRpYmxlIElECj4+PiAgICAgTmFtZSAoX0RETiwgIkludGVs
-KFIpIExvdyBQb3dlciBBdWRpbyBDb250cm9sbGVyIC0gODA4NjBGMjgiKSAgLy8gX0RETjogRE9T
-IERldmljZSBOYW1lCj4+PiAgICAgTmFtZSAoX1NVQiwgIjgwODY3MjcwIikgIC8vIF9TVUI6IFN1
-YnN5c3RlbSBJRAo+Pj4gICAgIE5hbWUgKF9VSUQsIE9uZSkgIC8vIF9VSUQ6IFVuaXF1ZSBJRAo+
-Pj4KPj4+ICAgICBOYW1lIChSQlVGLCBSZXNvdXJjZVRlbXBsYXRlICgpCj4+PiAgICAgewo+Pj4g
-ICAgICAgICBNZW1vcnkzMkZpeGVkIChSZWFkV3JpdGUsCj4+PiAgICAgICAgICAgICAweDEyMzQ1
-Njc4LCAgICAgICAgIC8vIEFkZHJlc3MgQmFzZQo+Pj4gICAgICAgICAgICAgMHgwMDIwMDAwMCwg
-ICAgICAgICAvLyBBZGRyZXNzIExlbmd0aAo+Pj4gICAgICAgICAgICAgX1kwOCkKPj4+ICAgICAg
-ICAgTWVtb3J5MzJGaXhlZCAoUmVhZFdyaXRlLAo+Pj4gICAgICAgICAgICAgMHhGRTgzMDAwMCwg
-ICAgICAgICAvLyBBZGRyZXNzIEJhc2UKPj4+ICAgICAgICAgICAgIDB4MDAwMDEwMDAsICAgICAg
-ICAgLy8gQWRkcmVzcyBMZW5ndGgKPj4+ICAgICAgICAgICAgIF9ZMDkpCj4+PiAgICAgICAgIE1l
-bW9yeTMyRml4ZWQgKFJlYWRXcml0ZSwKPj4+ICAgICAgICAgICAgIDB4NTVBQTU1QUEsICAgICAg
-ICAgLy8gQWRkcmVzcyBCYXNlCj4+PiAgICAgICAgICAgICAweDAwMjAwMDAwLCAgICAgICAgIC8v
-IEFkZHJlc3MgTGVuZ3RoCj4+PiAgICAgICAgICAgICBfWTBBKQo+Pj4gICAgICAgICBJbnRlcnJ1
-cHQgKFJlc291cmNlQ29uc3VtZXIsIExldmVsLCBBY3RpdmVMb3csIEV4Y2x1c2l2ZSwgLCwgKQo+
-Pj4gICAgICAgICB7Cj4+PiAgICAgICAgICAgICAweDAwMDAwMDFELAo+Pj4gICAgICAgICB9Cj4+
-PiAgICAgfSkKPj4+Cj4+PiBVbmxpa2UgbWFueSBvZiB0aGUgb3RoZXIgRFNEVCBkdW1wcyBJJ3Zl
-IGxvb2tlZCBhdCwgdGhlcmUgaXMgb25seSBvbmUKPj4+IGludGVycnVwdCBsaXN0ZWQuIEZ1bGwg
-QUNQSSBEU0RUIHRhYmxlIGlzIGF0IFsxXS4KPj4+Cj4+PiBTaW5jZSB0aGVyZSBpcyBubyBJUlEg
-YXQgaW5kZXggNSwgcGxhdGZvcm1fZ2V0X2lycSB3aWxsIHJldHVybiAtRU5YSU8uCj4+PiBDb3Vs
-ZG4ndCB3ZSBmYWxsIGJhY2sgdG8gaW5kZXggMCBpbiB0aGlzIGNhc2U/IEkgd291bGQgc2F5IHRo
-YXQgaWYgdGhlCj4+PiBzZWVtaW5nbHkgImNvcnJlY3QiIElSUSBhdCBpbmRleCA1IGRvZXMgbm90
-IGV2ZW4gZXhpc3QsIHdlIHN0aWxsIGhhdmUKPj4+IGEgYmV0dGVyIGNoYW5jZSBvZiBwaWNraW5n
-IHRoZSByaWdodCBvbmUgaWYgd2UgdHJ5IHRoZSBvbmUgYXQgaW5kZXggMC4KPj4+IE9yIHdlIGNv
-dWxkIGNoZWNrIHRoZSBudW1iZXIgb2YgaW50ZXJydXB0cyB0aGF0IGFyZSBhY3R1YWxseSBhdmFp
-bGFibGUuCj4+Pgo+Pj4gVGhlIG90aGVyIG9wdGlvbiB3b3VsZCBiZSBzb21lIGtpbmQgb2YgRE1J
-LWJhc2VkIHF1aXJrLCBidXQgcGVyc29uYWxseQo+Pj4gSSB3b3VsZCBwcmVmZXIgdG8gYXZvaWQg
-dGhhdC4uIChJbiBteSBvcGluaW9uLCB0aGVyZSBpcyB3YXkgdG9vIG11Y2gKPj4+IGRldmljZSBz
-cGVjaWZpYyBjb2RlIHdpdGggdGhlIHF1aXJrcyBldGMgYWxyZWFkeS4uLikKPj4+Cj4+PiBPciBk
-byB5b3UgaGF2ZSBhbnkgb3RoZXIgc3VnZ2VzdGlvbnM/Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gU3Rl
-cGhhbgo+Pj4KPj4+IFsxXTogaHR0cHM6Ly9naXRodWIuY29tL21lMTc2Yy1kZXYvbWUxNzZjLWFj
-cGkvYmxvYi9mNDhjNzhjMTFiMDgxOWI4OTlmOTg4NDA3YjZlY2UzZDhjMmNjYTcxL2RzZHQuZHNs
-I0wzOTg5LUw0MDM1Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+IEFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwo+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+Add device tree documentation for Cirrus Logic CS35L36
+speaker amplifier
+
+Signed-off-by: James Schulman <james.schulman@cirrus.com>
+---
+ .../devicetree/bindings/sound/cs35l36.txt          | 181 +++++++++++++++++++++
+ 1 file changed, 181 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l36.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/cs35l36.txt b/Documentation/devicetree/bindings/sound/cs35l36.txt
+new file mode 100644
+index 0000000..9a0de2b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l36.txt
+@@ -0,0 +1,181 @@
++CS35L36 Speaker Amplifier
++
++Required properties:
++
++  - compatible : "cirrus,cs35l36"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++  - cirrus,multi-amp-mode : Boolean to determine if there are more than
++  one amplifier in the system. If more than one it is best to Hi-Z the ASP
++  port to prevent bus contention on the output signal
++
++  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
++  converter's output voltage in mV. The range is from 2550mV to 12000mV with
++  increments of 50mV.
++  (Default) VP
++
++  - cirrus,boost-ctl-select : Boost conerter control source selection.
++  Selects the source of the BST_CTL target VBST voltage for the boost
++  converter to generate.
++  0x00 - Control Port Value
++  0x01 - Class H Tracking (Default)
++  0x10 - MultiDevice Sync Value
++
++  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
++  Configures the peak current by monitoring the current through the boost FET.
++  Range starts at 1600mA and goes to a maximum of 4500mA with increments of
++  50mA.
++  (Default) 4.50 Amps
++
++  - cirrus,boost-ind-nanohenry : Inductor estimation LBST reference value.
++  Seeds the digital boost converter's inductor estimation block with the initial
++  inductance value to reference.
++
++  1000 = 1uH (Default)
++  1200 = 1.2uH
++
++  - cirrus,amp-pcm-inv : Boolean to determine Amplifier will invert incoming
++  PCM data
++
++  - cirrus,imon-pol-inv : Boolean to determine Amplifier will invert the
++  polarity of outbound IMON feedback data
++
++  - cirrus,vmon-pol-inv : Boolean to determine Amplifier will invert the
++  polarity of outbound VMON feedback data
++
++  - cirrus,dcm-mode-enable : Boost converter automatic DCM Mode enable.
++  This enables the digital boost converter to operate in a low power
++  (Discontinuous Conduction) mode during low loading conditions.
++
++  - cirrus,weak-fet-disable : Boolean : The strength of the output drivers is
++  reduced when operating in a Weak-FET Drive Mode and must not be used to drive
++  a large load.
++
++  - cirrus,classh-wk-fet-delay :  Weak-FET entry delay. Controls the delay
++  (in ms) before the Class H algorithm switches to the weak-FET voltage
++  (after the audio falls and remains below the value specified in WKFET_AMP_THLD).
++
++  0 = 0ms
++  1 = 5ms
++  2 = 10ms
++  3 = 50ms
++  4 = 100ms (Default)
++  5 = 200ms
++  6 = 500ms
++  7 = 1000ms
++
++  - cirrus,classh-weak-fet-thld-millivolt : Weak-FET amplifier drive threshold.
++  Configures the signal threshold at which the PWM output stage enters
++  weak-FET operation. The range is 50mV to 700mV in 50mV increments.
++
++  - cirrus,temp-warn-threshold :  Amplifier overtemperature warning threshold.
++  Configures the threshold at which the overtemperature warning condition occurs.
++  When the threshold is met, the overtemperature warning attenuation is applied
++  and the TEMP_WARN_EINT interrupt status bit is set.
++  If TEMP_WARN_MASK = 0, INTb is asserted.
++
++  0 = 105C
++  1 = 115C
++  2 = 125C (Default)
++  3 = 135C
++
++Optional properties for the "cirrus,vpbr-config" Sub-node
++
++  - cirrus,vpbr-en : VBST brownout prevention enable. Configures whether the
++  VBST brownout prevention algorithm is enabled or disabled.
++
++  0 = VBST brownout prevention disabled (default)
++  1 = VBST brownout prevention enabled
++
++  See Section 7.31.1 VPBR Config for configuration options & further details
++
++  - cirrus,vpbr-thld : Initial VPBR threshold. Configures the VP brownout
++  threshold voltage
++
++  - cirrus,cirrus,vpbr-atk-rate : Attenuation attack step rate. Configures the
++  amount delay between consecutive volume attenuation steps when a brownout
++  condition is present and the VP brownout condition is in an attacking state.
++
++  - cirrus,vpbr-atk-vol : VP brownout prevention step size. Configures the VP
++  brownout prevention attacking attenuation step size when operating in either
++  digital volume or analog gain modes.
++
++  - cirrus,vpbr-max-attn : Maximum attenuation that the VP brownout prevention
++  can apply to the audio signal.
++
++  - cirrus,vpbr-wait : Configures the delay time between a brownout condition
++  no longer being present and the VP brownout prevention entering an attenuation
++  release state.
++
++  - cirrus,vpbr-rel-rate : Attenuation release step rate. Configures the delay
++  between consecutive volume attenuation release steps when a brownout condition
++  is not longer present and the VP brownout is in an attenuation release state.
++
++  - cirrus,vpbr-mute-en : During the attack state, if the vpbr-max-attn value
++  is reached, the error condition still remains, and this bit is set, the audio
++  is muted.
++
++Optional properties for the "cirrus,irq-config" Sub-node
++
++  - cirrus,irq-drive-select : Selects the driver type of the selected interrupt
++  output.
++
++  0 = Open-drain
++  1 = Push-pull (Default)
++
++  - cirrus,irq-polarity : Selects the polarity of the selected interrupt output
++  when in push-pull mode. Note - when the selected interrupt output is in
++  open-drain mode, INT_POL_SEL must be set to 0.
++
++  0 = Active-low (Default)
++  1 = Active-high
++
++  - cirrus,irq-gpio-select : Selects the pin to serve as the programmable
++  interrupt output.
++
++  0 = PDM_DATA / SWIRE_SD / INT (Default)
++  1 = GPIO
++
++Example:
++
++cs35l36: cs35l36@40 {
++	compatible = "cirrus,cs35l36";
++	reg = <0x40>;
++	VA-supply = <&dummy_vreg>;
++	VP-supply = <&dummy_vreg>;
++	reset-gpios = <&gpio0 54 0>;
++	interrupt-parent = <&gpio8>;
++	interrupts = <3>;
++
++	cirrus,boost-ind-nanohenry = <1000>;
++	cirrus,boost-ctl-millivolt = <10000>;
++	cirrus,boost-ctl-select = <0x00>;
++	cirrus,boost-peak-milliamp = <4500>;
++	cirrus,weak-fet-delay = <0x04>;
++	cirrus,weak-fet-thld = <0x01>;
++	cirrus,temp-warn-threshold = <0x01>;
++	cirrus,multi-amp-mode;
++
++	cirrus,vpbr-config {
++		cirrus,vpbr-en = <0x00>;
++		cirrus,vpbr-thld = <0x05>;
++		cirrus,vpbr-atk-rate = <0x02>;
++		cirrus,vpbr-atk-vol = <0x01>;
++		cirrus,vpbr-max-attn = <0x09>;
++		cirrus,vpbr-wait = <0x01>;
++		cirrus,vpbr-rel-rate = <0x05>;
++		cirrus,vpbr-mute-en = <0x00>;
++	};
++
++	cirrus,irq-config {
++		cirrus,irq-drive-select = <0x01>;
++		cirrus,irq-polarity = <0x00>;
++		cirrus,irq-gpio-select = <0x01>;
++	};
++};
+-- 
+1.9.1
