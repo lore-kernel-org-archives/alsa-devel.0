@@ -1,27 +1,21 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Mon, 17 Dec 2018 13:14:08 -0600
-Message-ID: <4282752b-80fd-fe13-69a2-6814f5b85ee4@linux.intel.com>
-References: <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
- <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
- <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
- <20181213174229.GU10669@sirena.org.uk>
- <fff018b4-c2e5-d3f3-0589-b837e62e9c5e@gmail.com>
- <4b358258-d7ae-d82e-cd58-d4b9e3b6f148@linux.intel.com>
- <20181217173930.GF27909@sirena.org.uk>
- <273cb3d8-7cd6-867a-ebb4-22217f88e0a8@linux.intel.com>
- <20181217190248.GI27909@sirena.org.uk>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+ device
+Date: Mon, 17 Dec 2018 13:39:13 -0600
+Message-ID: <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
+References: <20181216185429.GA20408@gerhold.net>
+ <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+ <20181217181729.GB845@gerhold.net>
+ <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
+ <20181217191054.GA10938@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id CD4C2267AFC
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 20:14:09 +0100 (CET)
-In-Reply-To: <20181217190248.GI27909@sirena.org.uk>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB097267AF9
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 20:39:16 +0100 (CET)
+In-Reply-To: <20181217191054.GA10938@gerhold.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,46 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Dimitris Papavasiliou <dpapavas@gmail.com>
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 12/17/18 1:02 PM, Mark Brown wrote:
-> On Mon, Dec 17, 2018 at 12:08:36PM -0600, Pierre-Louis Bossart wrote:
->> On 12/17/18 11:39 AM, Mark Brown wrote:
->>> That looks a lot like the CODEC should be exporting a GPIO driver so the
->>> machine driver doesn't actually need the regmap?  The only register
->>> touched is _GPIO_CONTROL_1.
->> I am not sure what you meant by 'exporting a GPIO driver' (mostly because I
->> am not familiar with any GPIO framework) but indeed the local oscillator
->> choice is controlled by a single register accessible through regmap - and
->> changes to that register should only happen when the device is a specific
->> state to prevent click/pops.
-> The GPIO framework provides a fairly simple view of GPIOs - from a user
-> point of view it's just getting or setting the value of a line.  It
-> looks like the register you're controlling isn't actually controlling a
-> chip feature directly but rather is setting a GPIO on the chip which
-> controls an external clock generator.  I could be misparsing things,
-> though.  I did glance at the pcm512x datasheet and didn't see pins or
-> anything that looked like an oscillator but I could've missed something.
-You are correct, there are two variants of the Hifiberry DAC+, the 'PRO' 
-version with two oscillators on board (SoC configured as bitclock and 
-fsync slave) and the regular without (all clocks provided by the SoC in 
-that case). It's indeed a GPIO control of an external component, not an 
-on-chip capability.
->
->> The machine driver should use clk_set_rate() and not directly handle regmap
->> or codec stuff. If it does, or if the clock framework isn't relevant here
->> then we can simplify all this as suggested in
->> https://patchwork.kernel.org/patch/10444387/. What I was trying to do with
->> the github update is to keep the clock framework, tie it closer with the
->> codec parts with a state variable that prevents wild changes without going
->> back to a 'safe' idle state (similar idea as PulseAudio clock changes, which
->> can only happen when the PCM is not opened and used).
-> Right, I think bringing in the clock framework more is good -
-> effectively all I'm suggesting is changing the control interface used to
-> set the clock to add an indirection through gpiolib so you don't need to
-> pass the raw register map around.
-this looks elegant indeed, will look into it. I'll have to learn more on 
-gpios :-)
+VGhhbmtzIGZvciB0aGUgYWRkaXRpb25hbCBpbmZvcm1hdGlvbi4KPiBUaGUgY2FsbCB0byBpb3Nm
+X21iaV9yZWFkKCkgcmV0dXJucyAweDQwMGIwMTAwCj4KPiAJLyogYml0cyAyNjoyNyBtaXJyb3Ig
+UE1JQyBvcHRpb25zICovCj4gCWJpb3Nfc3RhdHVzID0gKGJpb3Nfc3RhdHVzID4+IDI2KSAmIDM7
+Cj4KPiBSZXN1bHRzIGluIGJpb3Nfc3RhdHVzID0gMHgwClNvIHRoYXQncyBhIGZhaWwuCj4KPiBU
+aGUgc3RvY2sga2VybmVsIHByaW50ZWQgdGhpcyBvbiBldmVyeSBzdGFydHVwOgo+Cj4gU1BJRCB1
+cGRhdGVkIGFjY29yZGluZyB0byBBQ1BJIFRhYmxlOgo+IAlzcGlkIGN1c3RvbWVyIGlkIDogMDAw
+MAo+IAlzcGlkIHZlbmRvciBpZCA6IDAwMDAKPiAJc3BpZCBtYW51ZmFjdHVyZXIgaWQgOiAwMGZm
+Cj4gCXNwaWQgcGxhdGZvcm0gZmFtaWx5IGlkIDogMDAwNyAtLT4gSU5URUxfQllUX1RBQkxFVAo+
+IAlzcGlkIHByb2R1Y3QgbGluZSBpZCA6IDAwMDAgLS0+IElOVEVMX0JZVF9UQUJMRVRfQkxLX1BS
+Two+IAlzcGlkIGhhcmR3YXJlIGlkIDogMDAwNCAtLT4gQllUX1RBQkxFVF9CTEtfOFBSMCAvKiBC
+YXkgTGFrZSBGRlJELTggUFIwICovCj4gCXNwaWQgZnJ1WzQuLjBdIDogMDAgMDAgMDAgMDAgMDAK
+PiAJc3BpZCBmcnVbOS4uNV0gOiAwMCAwMCAwMCAwMCAwMAo+Cj4gQmFzZWQgb24gc3BpZC5oIFsx
+XSBJIGFkZGVkIHRoZSAiLS0+IiBhYm92ZS4gVGhlbiBJIGd1ZXNzZWQgdGhhdCB0aGlzIGlzCj4g
+QllULVQgKHRoZXJlIGlzIGFub3RoZXIgIkJZVCBUIENSIFYyIiB2YWx1ZSksIGJ1dCB0byBiZSBo
+b25lc3QgSSBkb24ndAo+IGtub3cgZm9yIHN1cmUuCj4KPiBbMV06IGh0dHBzOi8vZ2l0aHViLmNv
+bS9tZTE3NmMtZGV2L21lMTc2Yy1rZXJuZWwvYmxvYi9zdG9jay9rZXJuZWwvYXJjaC94ODYvaW5j
+bHVkZS9hc20vc3BpZC5oCgpPaCBtYW4sIEJheSBMYWtlLi4udGhpcyBtdXN0IGJlIGF0IGxlYXN0
+IDYgeWVhcnMgb2xkIGFuZCAzMCsga2VybmVsIAp2ZXJzaW9ucyBiZWhpbmQuLi4gT25seSBhIGNv
+dXBsZSBvZiB5ZWFycyBhbmQgaXQnbGwgYmUgYSBjb2xsZWN0b3IgaXRlbcKgIDotKQoKSSBjYW4n
+dCByZWNhbGwgYW55IG9mIHRoZSBkZXRhaWxzIHNvIHdlJ2xsIGhhdmUgdG8gd2luZyBpdC4gaXQg
+Y291bGQgYmUgCnRoYXQgaXQgd2FzIGJheXRyYWlsLVQgYnV0IHdpdGggdGhlIHNvZnR3YXJlL0JJ
+T1MgZm9yIEJheXRyYWlsLUNyLCB3aG8gCmtub3dzLgoKPgo+PiBJIGRvbid0IG1lYW4gdG8gZGlz
+bWlzcyB5b3VyIGNsYWltLCBqdXN0IHdhbnQgdG8gZmluZCBvdXQgaWYgdGhpcyBpcyBhIGNhc2UK
+Pj4gd2hlcmUgdGhlIFBNSUMtdHlwZS1iYXNlZCBieXRfY3IgZGV0ZWN0aW9uIGZhaWxzIG9yIGlm
+IHdlIGhhdmUgYSBCSU9TIGlzc3VlLgo+PiBBbm90aGVyIHNtb2tpbmcgZ3VuIGlzIGlmIHlvdSBm
+aW5kIGluIHlvdXIgY29kZSB0cmFjZXMgb2YgU1NQMCBiZWluZyB1c2VkLgo+Pgo+IFRoZSBxdWly
+a3MgdG8gZ2V0IHNvdW5kIHdvcmtpbmcgd2l0aCBieXRjci1ydDU2NDAgb24gdGhhdCBkZXZpY2Ug
+YXJlOgo+IEJZVF9SVDU2NDBfU1NQMF9BSUYxIHwgQllUX1JUNTY0MF9JTjFfTUFQIHwgQllUX1JU
+NTY0MF9NQ0xLX0VOCj4KPiBJIGd1ZXNzIHRoaXMgbWVhbnMgdGhhdCBTU1AwIGlzIGJlaW5nIHVz
+ZWQ/CgpZZXMgaW5kZWVkLCBhbmQgdGhhdCBtYWtlcyBtZSB0aGluayB3ZSBzaG91bGQgZm9yY2Ug
+dGhpcyBkZXZpY2UgdG8gbG9vayAKbGlrZSBCYXl0cmFpbC1DUi4KCllvdSBjYW4gZG8gdGhpcyB3
+aXRoIGEgRE1JLWJhc2VkIHF1aXJrIChwcmVmZXJhYmx5IGluIGlzX2J5dF9jciBkaXJlY3RseSAK
+c28gdGhhdCBJIGNhbiByZXVzZSB0aGUgY29kZSB3aGVuIEkgbW92ZSBpdCB0byBhIGhlbHBlciBh
+dCBzb21lIHBvaW50KS4KCkFsc28gSSBndWVzcyB5b3UnZCBuZWVkIGEgc2Vjb25kIHF1aXJrIGlu
+IGJ5dGNyX3J0NTY0MCBzaW5jZSB0aGUgZGVmYXVsdCAKaXMgU1NQMC1BSUYyLgoKLVBpZXJyZQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
