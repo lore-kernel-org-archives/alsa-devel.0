@@ -1,30 +1,15 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Mon, 17 Dec 2018 14:58:03 +0200
-Message-ID: <7dbf7969-c0ea-fe13-2044-17f36e458e21@gmail.com>
-References: <c0546298-960e-df17-273f-fa0734050aac@gmail.com>
- <20181114230255.GG2089@sirena.org.uk>
- <b48bc9d6-767a-24df-692e-fe675afed22e@gmail.com>
- <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
- <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
- <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
- <20181213174229.GU10669@sirena.org.uk>
- <fff018b4-c2e5-d3f3-0589-b837e62e9c5e@gmail.com>
- <20181217123703.GF13868@sirena.org.uk>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH 01/21] ASoC: SOF: Intel: Add BYT,
+ CHT and BSW DSP HW support.
+Date: Mon, 17 Dec 2018 13:40:32 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952795153@SHSMSX103.ccr.corp.intel.com>
+References: <1d099b6a-40f5-689f-e2bd-2e5345893310@sakamocchi.jp>
+ <b8db627a-bd32-34d7-b45b-aeb2206b2b17@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com
- [209.85.221.45])
- by alsa0.perex.cz (Postfix) with ESMTP id E958026789E
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 13:58:06 +0100 (CET)
-Received: by mail-wr1-f45.google.com with SMTP id t6so11987867wrr.12
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 04:58:06 -0800 (PST)
-In-Reply-To: <20181217123703.GF13868@sirena.org.uk>
+In-Reply-To: <b8db627a-bd32-34d7-b45b-aeb2206b2b17@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,33 +20,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: "o-takashi@sakamocchi.jp" <o-takashi@sakamocchi.jp>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "daniel.baluta@gmail.com" <daniel.baluta@gmail.com>, "Shevchenko,
+ Andriy" <andriy.shevchenko@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "xiuli.pan@linux.intel.com" <xiuli.pan@linux.intel.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "vkoul@kernel.org" <vkoul@kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>, "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/17/18 2:37 PM, Mark Brown wrote:
-> On Mon, Dec 17, 2018 at 02:17:45PM +0200, Dimitris Papavasiliou wrote:
-> 
->> Even worse, it would let the pop through at full volume, as it
->> doesn't depend on the gain.  Still, there doesn't seem to be a
->> safe way to avoid the pop altogether, as far as I can see, since
->> the only way I have found to avoid it, is to suspend the chip
->> during the switch, and I can't synchronize access to the relevant
->> register by the machine and CODEC drivers.
-> 
->> If you have any other ideas/pointers on approaches I could
->> investigate, please let me know.
-> 
-> If you're doing this during DAPM there shouldn't be anything else
-> running on the card at the time.
+Hi Sakamoto,
 
-In general the clocks need to be switched during the hw_params
-callback (when the new callback specifies a new sample rate,
-which needs the other clock) and, as far as I can see, this can
-happen at more or less any time, i.e. in all power states and
-regardless of whether the device is opened or closed.
+>
+>-------- Forwarded Message --------
+>Subject: Re: [alsa-devel] [PATCH 01/21] ASoC: SOF: Intel: Add BYT, CHT and
+>BSW DSP HW support.
+>Date: Wed, 12 Dec 2018 13:08:48 +0900
+>From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+>alsa-devel@alsa-project.org
+>CC: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com,
+>tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
+>liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org,
+>sound-open-firmware@alsa-project.org, Rander Wang
+><rander.wang@linux.intel.com>, Alan Cox <alan@linux.intel.com>
+>
+>Hi,
+>
+>I have small nitpicking.
+>
+>On 2018/12/12 6:30, Pierre-Louis Bossart wrote:
+>> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>>
+>> Add support for the audio DSP hardware found on Intel Baytrail,
+>> Cherrytrail and Braswell based devices.
+>>
+>> Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+>> Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+>> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>> Signed-off-by: Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/soc/sof/intel/byt.c  | 805
+>+++++++++++++++++++++++++++++++++++++
+>>   sound/soc/sof/intel/shim.h | 159 ++++++++
+>>   2 files changed, 964 insertions(+)
+>>   create mode 100644 sound/soc/sof/intel/byt.c
+>>   create mode 100644 sound/soc/sof/intel/shim.h ..
+>> diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+>> new file mode 100644 index 000000000000..2fdcb2d262f4
+>> --- /dev/null
+>> +++ b/sound/soc/sof/intel/shim.h
+>> @@ -0,0 +1,159 @@
+>> ...
+>> +extern struct snd_sof_dsp_ops sof_byt_ops; extern struct
+>> +snd_sof_dsp_ops sof_cht_ops;
+>
+>These two symbols are found in this patch.
+>
+>> +extern struct snd_sof_dsp_ops sof_hsw_ops;
+>
+>This symbol is added in second patch and this first patch has no reference to it.
+>
+>> +extern struct snd_sof_dsp_ops sof_bdw_ops;
+>
+>This symbol is added in third patch and this first patch has no reference to it.
+>
+>> +
+>> +#endif
+>
+>I think it better to add these extern declarations when adding corresponding
+>symbols (Of course no issues as is).
+>
+>Furthermore, if you have no plan to change contents of these symbols in
+>kernel run time, it's better to have 'const' qualifier to locate the symbol to
+>readonly section. However, user of these symbols is machine driver and you
+>have a plan to implement it later. They can get 'const'
+>when you work for arrangement of existent/new codes.
+>
+>In this meaning, it might be good to add a new member to 'struct
+>snd_soc_acpi_mach' for new drivers to refer to the const ops, then 'pdata'
+>member is used from the existent drivers.
 
-I can't therefore depend on DAPM functionality to suspend the
-chip when needed, as far as I can see at least and apart from
-asking the DAPM to force-suspend the chip, as I've already
-suggested.
+I made a patch based on your suggestion. Could you please help review
+to see if my understanding is right?
+https://github.com/thesofproject/linux/pull/457
+
+Regards,
+Libin
+
+>
+>
+>Regards
+>
+>Takashi Sakamoto
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@alsa-project.org
+>http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
