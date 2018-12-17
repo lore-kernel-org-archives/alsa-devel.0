@@ -1,31 +1,20 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Mon, 17 Dec 2018 14:17:45 +0200
-Message-ID: <fff018b4-c2e5-d3f3-0589-b837e62e9c5e@gmail.com>
-References: <11a5bb5b-f8ad-d9cc-29df-8efeccb6228d@gmail.com>
- <20181114220640.GB2089@sirena.org.uk>
- <c0546298-960e-df17-273f-fa0734050aac@gmail.com>
- <20181114230255.GG2089@sirena.org.uk>
- <b48bc9d6-767a-24df-692e-fe675afed22e@gmail.com>
- <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
- <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
- <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
- <20181213174229.GU10669@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC 2/2] ASoC: Add MICFIL SoC Digital Audio
+ Interface driver.
+Date: Mon, 17 Dec 2018 12:18:58 +0000
+Message-ID: <20181217121858.GB13868@sirena.org.uk>
+References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
+ <1544433661-32496-3-git-send-email-cosmin.samoila@nxp.com>
+ <20181212181414.GE6920@sirena.org.uk>
+ <f3a0f305-dc96-f8b9-3c57-e45256326e2f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0190393745984609847=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com
- [209.85.128.66])
- by alsa0.perex.cz (Postfix) with ESMTP id C8B2826789E
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 13:17:48 +0100 (CET)
-Received: by mail-wm1-f66.google.com with SMTP id y139so12060435wmc.5
- for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 04:17:48 -0800 (PST)
-In-Reply-To: <20181213174229.GU10669@sirena.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9EDD267A94
+ for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2018 13:19:00 +0100 (CET)
+In-Reply-To: <f3a0f305-dc96-f8b9-3c57-e45256326e2f@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,28 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh@kernel.org" <robh@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/18 7:42 PM, Mark Brown wrote:
-> On Sat, Nov 24, 2018 at 10:17:49PM +0200, Dimitris Papavasiliou wrote:
-> 
->> discussion here.  I still feel that fixing the machine driver, so
->> that it doesn't generate the pop at all would be desirable, as
->> I'm not sure whether the digital_mute callback is guaranteed to
->> have muted the device when the clock source takes place.
-> 
-> Making the machine driver more robust is definitely better, it's more
-> robust in case the mute is for example just a very low gain which might
-> still let the pop through at a lower level.
 
-Even worse, it would let the pop through at full volume, as it
-doesn't depend on the gain.  Still, there doesn't seem to be a
-safe way to avoid the pop altogether, as far as I can see, since
-the only way I have found to avoid it, is to suspend the chip
-during the switch, and I can't synchronize access to the relevant
-register by the machine and CODEC drivers.
+--===============0190393745984609847==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
+Content-Disposition: inline
 
-If you have any other ideas/pointers on approaches I could
-investigate, please let me know.
+
+--KFztAG8eRSV9hGtP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Dec 14, 2018 at 02:09:00PM -0600, Pierre-Louis Bossart wrote:
+
+> There's no mention of any buffer so it's likely plain vanilla VAD here.
+> We've seen two choices to warn userspace of a acoustic event, either use a
+> uevent or a kcontrol. I believe we ended-up chosing the latter on the Intel
+> side in the past and that was also the plan for SOF.
+
+It sounded like there were some separate audio streams somewhere along
+the line, it wasn't super clear if that just went into a DSP that did
+the VAD and wasn't visible to the rest of the system or if it's
+something the system can see.  Generally we have gone for kcontrols for
+event signalling.
+
+> In terms of configurations for the PDM we have completely different settings
+> since we pass explicit coefficients while this solution passes qualifiers
+> (cut-off, quality, etc), not sure if there is any point in trying to unify
+> those parameters.
+
+Yes, I don't think the specific parameters are going to be joined up any
+time soon - it's more the overall shape of the solution.
+
+--KFztAG8eRSV9hGtP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwXlDIACgkQJNaLcl1U
+h9ClJgf+OLM4U6BF/ObfLIVklTQIFe3fnUCsAjOD91k7AY2TiZoQxvLazrtoOE+i
+dRjGs0PQwqS652wDuHAz8g3sB0IPsNekYqAk/dA5sy1vTSXGjOqljs5Gp6xnGZnv
+634cmVPiM3tKVqBsSb9QPLoy58Q7XTlzNnAp1bRvDdQXw1OPHs0M1NFY1KXEDshI
+HKwEmnw8R1G+661GVA2nnOcmsHDBYyY0Pf1oOjOGsekU8eCx+SfTL+5sHZxDaSto
+AlHuok6Qd8z5qm+DOdoFo2l5BV2Wa9ikc901Vouvy7Z+0Xp/inULSYBuFuIZknui
+/8a2LFoYBkHelcGJJwJorSFUzlCBLw==
+=WGuC
+-----END PGP SIGNATURE-----
+
+--KFztAG8eRSV9hGtP--
+
+--===============0190393745984609847==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0190393745984609847==--
