@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ARM: omap1_defconfig: Do not select ASoC by
-	default" to the asoc tree
-Date: Tue, 18 Dec 2018 12:23:38 +0000 (GMT)
-Message-ID: <20181218122338.AEC1011254FF@debutante.sirena.org.uk>
+Subject: Applied "ARM: omap2plus_defconfig: Update the audio
+	options" to the asoc tree
+Date: Tue, 18 Dec 2018 12:23:40 +0000 (GMT)
+Message-ID: <20181218122340.2E30211254FF@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A7B32678D4
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:39 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B136B26782E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:40 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ARM: omap1_defconfig: Do not select ASoC by default
+   ARM: omap2plus_defconfig: Update the audio options
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From eab5b50a13de4717cad5eda3d26d889f2f4ea37d Mon Sep 17 00:00:00 2001
+>From 3162b05fb74cd107b2a66f20485c62514b20048f Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 17 Dec 2018 14:21:40 +0200
-Subject: [PATCH] ARM: omap1_defconfig: Do not select ASoC by default
+Date: Mon, 17 Dec 2018 14:21:39 +0200
+Subject: [PATCH] ARM: omap2plus_defconfig: Update the audio options
 
-No audio support is enabled by default via ASoC, disable the code as well.
+Use the new options for default audio support and enable Nokia n900 audio
+as well.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm/configs/omap1_defconfig | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm/configs/omap2plus_defconfig | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/configs/omap1_defconfig b/arch/arm/configs/omap1_defconfig
-index 72f4bc83f467..cfc00b0961ec 100644
---- a/arch/arm/configs/omap1_defconfig
-+++ b/arch/arm/configs/omap1_defconfig
-@@ -175,8 +175,6 @@ CONFIG_SND_PCM_OSS=y
- # CONFIG_SND_VERBOSE_PROCFS is not set
- CONFIG_SND_DUMMY=y
- CONFIG_SND_USB_AUDIO=y
--CONFIG_SND_SOC=y
--CONFIG_SND_OMAP_SOC=y
- # CONFIG_USB_HID is not set
- CONFIG_USB=y
- CONFIG_USB_PHY=y
+diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+index 6491419b1dad..2274e45623f9 100644
+--- a/arch/arm/configs/omap2plus_defconfig
++++ b/arch/arm/configs/omap2plus_defconfig
+@@ -381,13 +381,13 @@ CONFIG_SND_VERBOSE_PRINTK=y
+ CONFIG_SND_DEBUG=y
+ CONFIG_SND_USB_AUDIO=m
+ CONFIG_SND_SOC=m
+-CONFIG_SND_EDMA_SOC=m
+-CONFIG_SND_AM33XX_SOC_EVM=m
+-CONFIG_SND_OMAP_SOC=m
+-CONFIG_SND_OMAP_SOC_HDMI_AUDIO=m
+-CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
+-CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=m
+-CONFIG_SND_OMAP_SOC_OMAP3_PANDORA=m
++CONFIG_SND_SOC_TLV320AIC3X=m
++CONFIG_SND_SOC_DAVINCI_MCASP=m
++CONFIG_SND_SOC_NOKIA_RX51=m
++CONFIG_SND_SOC_OMAP_HDMI=m
++CONFIG_SND_SOC_OMAP_ABE_TWL6040=m
++CONFIG_SND_SOC_OMAP3_PANDORA=m
++CONFIG_SND_SOC_OMAP3_TWL4030=m
+ CONFIG_SND_SOC_CPCAP=m
+ CONFIG_SND_SIMPLE_CARD=m
+ CONFIG_SND_AUDIO_GRAPH_CARD=m
 -- 
 2.19.0.rc2
