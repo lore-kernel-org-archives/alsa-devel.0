@@ -1,18 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Haswell/Broadwell: fix
- setting for .dynamic field
-Date: Tue, 18 Dec 2018 08:03:04 -0600
-Message-ID: <f5fa4780-9cd5-b913-8d8f-bfb5cf45b2b1@linux.intel.com>
-References: <20181218082454.49373-1-rander.wang@linux.intel.com>
+From: Mantas Gridinas <mgridinas@gmail.com>
+Subject: Regarding snd_soc_googlevoicechat_soundcard drivers
+ and arecord on Raspberry PI
+Date: Tue, 18 Dec 2018 16:08:33 +0200
+Message-ID: <CAE9hW8SQC+NWQquh6Mgk2sVvvNdBjVfDBm5ie1KB6i0EbPDbHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B42BB2677C8
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 15:03:06 +0100 (CET)
-In-Reply-To: <20181218082454.49373-1-rander.wang@linux.intel.com>
-Content-Language: en-US
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com
+ [209.85.166.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63E532677C8
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 15:08:35 +0100 (CET)
+Received: by mail-io1-f54.google.com with SMTP id x6so12825578ioa.9
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 06:08:35 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rander Wang <rander.wang@linux.intel.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-On 12/18/18 2:24 AM, Rander Wang wrote:
-> For some reason this field was set to zero when all other drivers use
-> .dynamic = 1 for front-ends. This change was tested on Dell XPS13 and
-> has no impact with the existing legacy driver. The SOF driver also works
-> with this change which enables it to override the fixed topology.
->
-> Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+I've been looking into how to record audio using arecord and the following
+audio card extension for Raspberry PI
+https://pinout.xyz/pinout/raspiaudio_audio_speakers_mic#. The guide in it
+seems to install snd_soc_googlevoicechat_soundcard driver and after
+recording for some minutes it throws this error:
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Dec 18 15:32:17 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c: snd_pcm_avail() returned
+a value that is exceptionally large: 7022640 bytes (18288 ms).
+Dec 18 15:32:17 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c: Most likely this is a bug
+in the ALSA driver 'snd_soc_googlevoicehat_soundcard'. Please report
+this issue to the ALSA developers.
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c: snd_pcm_dump():
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c: Hardware PCM card 0
+'snd_rpi_googlevoicehat_soundcar' device 0 subdevice 0
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c: Its setup is:
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   stream       : PLAYBACK
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   access       :
+MMAP_INTERLEAVED
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   format       : S32_LE
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   subformat    : STD
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   channels     : 2
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   rate         : 48000
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   exact rate   : 48000
+(48000/1)
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   msbits       : 32
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   buffer_size  : 65536
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   period_size  : 32768
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   period_time  : 682666
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   tstamp_mode  : ENABLE
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   tstamp_type  :
+MONOTONIC
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   period_step  : 1
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   avail_min    : 65345
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   period_event : 0
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   start_threshold  : -1
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   stop_threshold   :
+1073741824
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   silence_threshold: 0
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   silence_size : 0
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   boundary     :
+1073741824
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   appl_ptr     : 7938534
+Dec 18 15:32:22 homepie pulseaudio[8048]: [alsa-sink-Google voiceHAT
+SoundCard HiFi voicehat-hifi-0] alsa-util.c:   hw_ptr       : 8750828
 
-Note that this change is not needed for the bdw-rt5677 machine driver, 
-the "Loopback" front-end is not exposed.
+And I start the recording with the following command
+arecord -c 2 -r 48000 -f s32_le
 
-> ---
->   sound/soc/intel/boards/broadwell.c | 2 +-
->   sound/soc/intel/boards/haswell.c   | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-> index 68e6543e6cb0..99f2a0156ae8 100644
-> --- a/sound/soc/intel/boards/broadwell.c
-> +++ b/sound/soc/intel/boards/broadwell.c
-> @@ -192,7 +192,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
->   		.stream_name = "Loopback",
->   		.cpu_dai_name = "Loopback Pin",
->   		.platform_name = "haswell-pcm-audio",
-> -		.dynamic = 0,
-> +		.dynamic = 1,
->   		.codec_name = "snd-soc-dummy",
->   		.codec_dai_name = "snd-soc-dummy-dai",
->   		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-> index eab1f439dd3f..a4022983a7ce 100644
-> --- a/sound/soc/intel/boards/haswell.c
-> +++ b/sound/soc/intel/boards/haswell.c
-> @@ -146,7 +146,7 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
->   		.stream_name = "Loopback",
->   		.cpu_dai_name = "Loopback Pin",
->   		.platform_name = "haswell-pcm-audio",
-> -		.dynamic = 0,
-> +		.dynamic = 1,
->   		.codec_name = "snd-soc-dummy",
->   		.codec_dai_name = "snd-soc-dummy-dai",
->   		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+AlsaInfo output is available at
+http://www.alsa-project.org/db/?f=17a71c8e22f097d844906274a0bd78dbf124513c.
+Although after inspecting the provided log it seems that the Raspberry
+PI board is not included in the DMI, which is supposed to be BCM2835.
+I can't say anything else on on other details.
