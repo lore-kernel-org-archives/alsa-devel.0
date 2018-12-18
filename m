@@ -1,99 +1,50 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sdm845: set jack only for a specific backend
-Date: Tue, 18 Dec 2018 15:50:49 +0800
-Message-ID: <CAFv8Nw+Ydjbob2z5=eVpL8-OpVSPyDVkCLnPTu_asuwK3rCgmw@mail.gmail.com>
-References: <1544781703-9585-1-git-send-email-rohitkr@codeaurora.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: dma-sh7760: cleanup a debug printk
+Date: Tue, 18 Dec 2018 11:18:10 +0300
+Message-ID: <20181218081810.GB32567@kadam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1544781703-9585-1-git-send-email-rohitkr@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: plai@codeaurora.org, bgoswami@codeaurora.org, asishb@codeaurora.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Rohit Kumar <rohkumar@qti.qualcomm.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2F0226782E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 09:18:14 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 14, 2018 at 6:02 PM Rohit kumar <rohitkr@codeaurora.org> wrote:
->
-> Headset codec is connected over PRIMARY_MI2S interface. Call
-> set_jack for codec associated with Primary Mi2s interface.
-> Also, set_jack to NULL when jack is freed.
->
-> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-> ---
->  sound/soc/qcom/sdm845.c | 31 ++++++++++++++++++++++---------
->  1 file changed, 22 insertions(+), 9 deletions(-)
->
-> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-> index 1db8ef66..6f66a58 100644
-> --- a/sound/soc/qcom/sdm845.c
-> +++ b/sound/soc/qcom/sdm845.c
-> @@ -158,17 +158,24 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
->         return ret;
->  }
->
-> +static void sdm845_jack_free(struct snd_jack *jack)
-> +{
-> +       struct snd_soc_component *component = jack->private_data;
-> +
-> +       snd_soc_component_set_jack(component, NULL, NULL);
-> +}
-> +
->  static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
->  {
->         struct snd_soc_component *component;
-> -       struct snd_soc_dai_link *dai_link = rtd->dai_link;
->         struct snd_soc_card *card = rtd->card;
-> +       struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +       struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->         struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(card);
-> -       int i, rval;
-> +       struct snd_jack *jack;
-> +       int rval;
->
->         if (!pdata->jack_setup) {
-> -               struct snd_jack *jack;
-> -
->                 rval = snd_soc_card_jack_new(card, "Headset Jack",
->                                 SND_JACK_HEADSET |
->                                 SND_JACK_HEADPHONE |
-> @@ -190,16 +197,22 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
->                 pdata->jack_setup = true;
->         }
->
-> -       for (i = 0 ; i < dai_link->num_codecs; i++) {
-> -               struct snd_soc_dai *dai = rtd->codec_dais[i];
-> +       switch (cpu_dai->id) {
-> +       case PRIMARY_MI2S_RX:
-> +               jack  = pdata->jack.jack;
-> +               component = codec_dai->component;
->
-> -               component = dai->component;
-> -               rval = snd_soc_component_set_jack(
-> -                               component, &pdata->jack, NULL);
-> +               jack->private_data = component;
-> +               jack->private_free = sdm845_jack_free;
-> +               rval = snd_soc_component_set_jack(component,
-> +                                                 &pdata->jack, NULL);
->                 if (rval != 0 && rval != -ENOTSUPP) {
->                         dev_warn(card->dev, "Failed to set jack: %d\n", rval);
->                         return rval;
->                 }
-> +               break;
-> +       default:
-> +               break;
->         }
->
->         return 0;
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+The intent was to print the address as a hexadecimal but there is an
+extra "u" in the "0x%08ulx" format specification so it is displayed as
+decimal.
 
-Thanks a lot for the fix!
+Fixes: aef3b06ac697 ("[ALSA] SH7760 ASoC support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/soc/sh/dma-sh7760.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Tested-by: Cheng-Yi Chiang <cychiang@chromium.org>
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 922fb6aa3ed1..5aee11c94f2a 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -202,7 +202,7 @@ static int camelot_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 
+-	pr_debug("PCM data: addr 0x%08ulx len %d\n",
++	pr_debug("PCM data: addr 0x%08lx len %d\n",
+ 		 (u32)runtime->dma_addr, runtime->dma_bytes);
+  
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-- 
+2.17.1
