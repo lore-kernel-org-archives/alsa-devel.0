@@ -1,69 +1,65 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [Xen-devel] [PATCH v2 2/3] drm/xen-front: Use Xen common shared
- buffer implementation
-Date: Tue, 18 Dec 2018 10:47:43 +0200
-Message-ID: <e8c0ae01-a75d-ac08-b7d9-9ef4e1abd641@gmail.com>
-References: <20181130074205.20496-1-andr2000@gmail.com>
- <20181130074205.20496-2-andr2000@gmail.com>
- <3c69d924-11e1-7037-bfa5-276d22b245fe@gmail.com>
- <27491aa5-3548-4c39-13a2-132c738fae14@gmail.com>
- <71920419-f0ef-8489-35ff-ff8375cb7361@gmail.com>
- <ce52ec2e-1b22-8a2f-7f99-d90fcfdbfebd@oracle.com>
- <686a8b1e-3588-32bc-abc7-79221dc9c74e@gmail.com>
- <19501fdd-eae6-295e-7394-777c25ea4cf1@oracle.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2] mfd: cros_ec: Add commands to control codec
+Date: Tue, 18 Dec 2018 08:52:34 +0000
+Message-ID: <20181218084307.GH4497@dell>
+References: <20181206040540.84632-1-cychiang@chromium.org>
+ <20181214122156.GT4497@dell>
+ <20181214122245.GU4497@dell>
+ <CAFv8Nw+RbzKrjE1tsgxdRntXKWp9XVq8hbP7MZ3mZ=a2rMyG2Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <19501fdd-eae6-295e-7394-777c25ea4cf1@oracle.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <CAFv8Nw+RbzKrjE1tsgxdRntXKWp9XVq8hbP7MZ3mZ=a2rMyG2Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>, jgross@suse.com
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: bleung@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, scollyer@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/17/18 5:26 PM, Boris Ostrovsky wrote:
-> On 12/17/18 10:03 AM, Oleksandr Andrushchenko wrote:
->> On 12/17/18 4:52 PM, Boris Ostrovsky wrote:
->>> On 12/17/18 5:19 AM, Oleksandr Andrushchenko wrote:
->>>> Hello, Juergen, Boris!
->>>>
->>>> As this DRM part of the series is the only one which needs ack/nack
->>>>
->>>> (and it might take quite some time to complete) could we please
->>>>
->>>> merge the patches 1 and 3 now that already have ack/r-b?
->>>>
->>>
->>> TBH I am not sure it makes sense to do this without the second patch.
->>> Refactoring (and IIUIC this series is purely refactoring --- is it not?)
->>> is done to reduce amount of code, and with only first and third patch we
->>> end up with quite a significant increase in the number of LoC. (I am
->>> going purely by diffstat)
->>>
->>> Of course, the other reason for refactoring is to eliminate code
->>> duplication, but without second patch that will not happen.
->> Agree, but this is the basis for the new pv camera frontend
->>
->> I am working on now [1], so even if we do not remove the code from DRM
->>
->> then we at least do not add it to the camera driver
->
-> Since 1 and 3 are already ACKed you should be able to start the camera
-> series with these two patches as pre-requisites even if patch 2 is still
-> stalled by the time your camera code is posted (which I assume will be
-> 4.22 or later).
-Agreed, maybe by that time DRM part will also get its r-b/ack
->
->
-> -boris
->
->
->>> -boris
->> Thank you,
->>
->> Oleksandr
->>
->> [1]
->> https://github.com/andr2000/linux/blob/camera_front_v1/drivers/media/xen/Kconfig#L6
->>
+On Tue, 18 Dec 2018, Cheng-yi Chiang wrote:
+
+> +Benson, Guenter, Scott
+> 
+> On Fri, Dec 14, 2018 at 8:22 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Fri, 14 Dec 2018, Lee Jones wrote:
+> >
+> > > On Thu, 06 Dec 2018, Cheng-Yi Chiang wrote:
+> > >
+> > > > Add EC host commands to control codec on EC.
+> > > >
+> > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > > > ---
+> > > >  V2 fixed the wrong ancestor issue so the patch can be applied cleanly on mfd tree.
+> > > >  Codec driver that uses these commands will be sent separately.
+> > > >  Thanks!
+> > > >
+> > > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
+> > > >  1 file changed, 94 insertions(+)
+> > >
+> > > Would be good to have this reviewed by some more Chrome people.
+> >
+> > See this for reference:
+> >
+> >   https://lore.kernel.org/patchwork/patch/1024985/
+> 
+> Hi Benson and Guenter,
+> Could you please review this patch ?
+
+You haven't sent them the patch.
+
+Please resubmit as a [RESEND] and add them as recipients.
+
+> The corresponding implementation at EC side by Scott is at
+> https://chromium-review.googlesource.com/c/chromiumos/platform/ec/+/1356185
+> 
+> Thanks a lot!
+> 
+> >
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
