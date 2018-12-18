@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ARM: OMAP1: Makefile: Update for new MCBSP
-	Kconfig option" to the asoc tree
-Date: Tue, 18 Dec 2018 12:23:45 +0000 (GMT)
-Message-ID: <20181218122345.965E411254FF@debutante.sirena.org.uk>
+Subject: Applied "MAINTAINERS: Add entry for sound/soc/ti and
+	update the OMAP audio support" to the asoc tree
+Date: Tue, 18 Dec 2018 12:23:47 +0000 (GMT)
+Message-ID: <20181218122347.1DB5811254FF@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 24EE9267ABC
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AF0B8267AC5
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:47 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ARM: OMAP1: Makefile: Update for new MCBSP Kconfig option
+   MAINTAINERS: Add entry for sound/soc/ti and update the OMAP audio support
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,52 @@ to this mail.
 Thanks,
 Mark
 
->From c27ace2e95a29c3b359123363d4f88864452917d Mon Sep 17 00:00:00 2001
+>From ca1c4d6535249ad43068834687f78d0db82d9e2e Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 17 Dec 2018 14:21:36 +0200
-Subject: [PATCH] ARM: OMAP1: Makefile: Update for new MCBSP Kconfig option
+Date: Mon, 17 Dec 2018 14:21:35 +0200
+Subject: [PATCH] MAINTAINERS: Add entry for sound/soc/ti and update the OMAP
+ audio support
 
-The MCBSP config option has been changed.
+The sound/soc/davinci and omap directories are merged under sound/soc/ti.
+
+Add myself as maintainer and update the OMAP audio support section with the
+new path and file names.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm/mach-omap1/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-omap1/Makefile b/arch/arm/mach-omap1/Makefile
-index e8ccf51c6f29..a7e9c6d19fb5 100644
---- a/arch/arm/mach-omap1/Makefile
-+++ b/arch/arm/mach-omap1/Makefile
-@@ -8,7 +8,7 @@ obj-y := io.o id.o sram-init.o sram.o time.o irq.o mux.o flash.o \
- 	 serial.o devices.o dma.o fb.o
- obj-y += clock.o clock_data.o opp_data.o reset.o pm_bus.o timer.o
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ef17863af710..a6068f1f4b81 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10710,7 +10710,10 @@ M:	Jarkko Nikula <jarkko.nikula@bitmer.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	linux-omap@vger.kernel.org
+ S:	Maintained
+-F:	sound/soc/omap/
++F:	sound/soc/ti/omap*
++F:	sound/soc/ti/rx51.c
++F:	sound/soc/ti/n810.c
++F:	sound/soc/ti/sdma-pcm.*
  
--ifneq ($(CONFIG_SND_OMAP_SOC_MCBSP),)
-+ifneq ($(CONFIG_SND_SOC_OMAP_MCBSP),)
- obj-y += mcbsp.o
- endif
+ OMAP CLOCK FRAMEWORK SUPPORT
+ M:	Paul Walmsley <paul@pwsan.com>
+@@ -14737,6 +14740,12 @@ F:	Documentation/devicetree/bindings/clock/ti,sci-clk.txt
+ F:	drivers/clk/keystone/sci-clk.c
+ F:	drivers/reset/reset-ti-sci.c
  
++Texas Instruments ASoC drivers
++M:	Peter Ujfalusi <peter.ujfalusi@ti.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	sound/soc/ti/
++
+ THANKO'S RAREMONO AM/FM/SW RADIO RECEIVER USB DRIVER
+ M:	Hans Verkuil <hverkuil@xs4all.nl>
+ L:	linux-media@vger.kernel.org
 -- 
 2.19.0.rc2
