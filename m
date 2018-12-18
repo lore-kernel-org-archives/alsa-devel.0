@@ -1,67 +1,80 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ALSA: emu10k1: Fix potential Spectre v1 vulnerabilities
-Date: Tue, 18 Dec 2018 11:52:16 -0600
-Message-ID: <20181218175216.GA16070@embeddedor>
+From: shuah@kernel.org
+Subject: [PATCH v9 0/4] Media Device Allocator API
+Date: Tue, 18 Dec 2018 10:59:35 -0700
+Message-ID: <cover.1545154777.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
+Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ipcm->substream is indirectly controlled by user-space, hence leading to
-a potential exploitation of the Spectre variant 1 vulnerability.
+From: Shuah Khan <shuah@kernel.org>
 
-This issue was detected with the help of Smatch:
+Media Device Allocator API to allows multiple drivers share a media device.
+This API solves a very common use-case for media devices where one physical
+device (an USB stick) provides both audio and video. When such media device
+exposes a standard USB Audio class, a proprietary Video class, two or more
+independent drivers will share a single physical USB bridge. In such cases,
+it is necessary to coordinate access to the shared resource.
 
-sound/pci/emu10k1/emufx.c:1031 snd_emu10k1_ipcm_poke() warn: potential spectre issue 'emu->fx8010.pcm' [r] (local cap)
-sound/pci/emu10k1/emufx.c:1075 snd_emu10k1_ipcm_peek() warn: potential spectre issue 'emu->fx8010.pcm' [r] (local cap)
+Using this API, drivers can allocate a media device with the shared struct
+device as the key. Once the media device is allocated by a driver, other
+drivers can get a reference to it. The media device is released when all
+the references are released.
 
-Fix this by sanitizing ipcm->substream before using it to index emu->fx8010.pcm
+- Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+  arecord. When analog is streaming, digital and audio user-space
+  applications detect that the tuner is busy and exit. When digital
+  is streaming, analog and audio applications detect that the tuner is
+  busy and exit. When arecord is owns the tuner, digital and analog
+  detect that the tuner is busy and exit.
+- Tested media device allocator API with bind/unbind testing on
+  snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+  only when the last driver is unbound.
+- This patch series is tested on 4.20-rc6
+- Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+- Updated change log to describe the use-case more clearly.
+- No changes to 0001,0002 code since the v7 referenced below.
+- 0003 is a new patch to enable ALSA defines that have been
+  disabled for kernel between 4.9 and 4.19.
+- Minor merge conflict resolution in 0004.
+- Added SPDX to new files.
 
-Notice that given that speculation windows are large, the policy is
-to kill the speculation on the first load and not worry if it can be
-completed with a dependent load/store [1].
+References:
+https://lkml.org/lkml/2018/11/2/169
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
 
-[1] https://marc.info/?l=linux-kernel&m=152449131114778&w=2
+Shuah Khan (4):
+  media: Media Device Allocator API
+  media: change au0828 to use Media Device Allocator API
+  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+  sound/usb: Use Media Controller API to share media resources
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/pci/emu10k1/emufx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/media/kapi/mc-core.rst   |  41 ++++
+ drivers/media/Makefile                 |   4 +
+ drivers/media/media-dev-allocator.c    | 132 ++++++++++
+ drivers/media/usb/au0828/au0828-core.c |  12 +-
+ drivers/media/usb/au0828/au0828.h      |   1 +
+ include/media/media-dev-allocator.h    |  53 ++++
+ include/uapi/linux/media.h             |  25 +-
+ sound/usb/Kconfig                      |   4 +
+ sound/usb/Makefile                     |   2 +
+ sound/usb/card.c                       |  14 ++
+ sound/usb/card.h                       |   3 +
+ sound/usb/media.c                      | 321 +++++++++++++++++++++++++
+ sound/usb/media.h                      |  74 ++++++
+ sound/usb/mixer.h                      |   3 +
+ sound/usb/pcm.c                        |  29 ++-
+ sound/usb/quirks-table.h               |   1 +
+ sound/usb/stream.c                     |   2 +
+ sound/usb/usbaudio.h                   |   6 +
+ 18 files changed, 705 insertions(+), 22 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 6ebe817801ea..1f25e6d029d8 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -36,6 +36,7 @@
- #include <linux/init.h>
- #include <linux/mutex.h>
- #include <linux/moduleparam.h>
-+#include <linux/nospec.h>
- 
- #include <sound/core.h>
- #include <sound/tlv.h>
-@@ -1026,6 +1027,8 @@ static int snd_emu10k1_ipcm_poke(struct snd_emu10k1 *emu,
- 
- 	if (ipcm->substream >= EMU10K1_FX8010_PCM_COUNT)
- 		return -EINVAL;
-+	ipcm->substream = array_index_nospec(ipcm->substream,
-+					     EMU10K1_FX8010_PCM_COUNT);
- 	if (ipcm->channels > 32)
- 		return -EINVAL;
- 	pcm = &emu->fx8010.pcm[ipcm->substream];
-@@ -1072,6 +1075,8 @@ static int snd_emu10k1_ipcm_peek(struct snd_emu10k1 *emu,
- 
- 	if (ipcm->substream >= EMU10K1_FX8010_PCM_COUNT)
- 		return -EINVAL;
-+	ipcm->substream = array_index_nospec(ipcm->substream,
-+					     EMU10K1_FX8010_PCM_COUNT);
- 	pcm = &emu->fx8010.pcm[ipcm->substream];
- 	mutex_lock(&emu->fx8010.lock);
- 	spin_lock_irq(&emu->reg_lock);
 -- 
-2.19.2
+2.17.1
