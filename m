@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ARM: omap2plus_defconfig: Update the audio
-	options" to the asoc tree
-Date: Tue, 18 Dec 2018 12:23:40 +0000 (GMT)
-Message-ID: <20181218122340.2E30211254FF@debutante.sirena.org.uk>
+Subject: Applied "ARM: davinci: dm365-evm: Update for the new
+	ASoC Kcofnig options" to the asoc tree
+Date: Tue, 18 Dec 2018 12:23:41 +0000 (GMT)
+Message-ID: <20181218122341.F345711254FF@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B136B26782E
- for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C3F2726793C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 13:23:42 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ARM: omap2plus_defconfig: Update the audio options
+   ARM: davinci: dm365-evm: Update for the new ASoC Kcofnig options
 
 has been applied to the asoc tree at
 
@@ -52,45 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 3162b05fb74cd107b2a66f20485c62514b20048f Mon Sep 17 00:00:00 2001
+>From 4d8c1e7efb9f915034c3dba2bc85ed1f8509ae0c Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 17 Dec 2018 14:21:39 +0200
-Subject: [PATCH] ARM: omap2plus_defconfig: Update the audio options
+Date: Mon, 17 Dec 2018 14:21:38 +0200
+Subject: [PATCH] ARM: davinci: dm365-evm: Update for the new ASoC Kcofnig
+ options
 
-Use the new options for default audio support and enable Nokia n900 audio
-as well.
+The codec selection config options for DMA365 has been changed.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm/configs/omap2plus_defconfig | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/arm/mach-davinci/board-dm365-evm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
-index 6491419b1dad..2274e45623f9 100644
---- a/arch/arm/configs/omap2plus_defconfig
-+++ b/arch/arm/configs/omap2plus_defconfig
-@@ -381,13 +381,13 @@ CONFIG_SND_VERBOSE_PRINTK=y
- CONFIG_SND_DEBUG=y
- CONFIG_SND_USB_AUDIO=m
- CONFIG_SND_SOC=m
--CONFIG_SND_EDMA_SOC=m
--CONFIG_SND_AM33XX_SOC_EVM=m
--CONFIG_SND_OMAP_SOC=m
--CONFIG_SND_OMAP_SOC_HDMI_AUDIO=m
--CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
--CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=m
--CONFIG_SND_OMAP_SOC_OMAP3_PANDORA=m
-+CONFIG_SND_SOC_TLV320AIC3X=m
-+CONFIG_SND_SOC_DAVINCI_MCASP=m
-+CONFIG_SND_SOC_NOKIA_RX51=m
-+CONFIG_SND_SOC_OMAP_HDMI=m
-+CONFIG_SND_SOC_OMAP_ABE_TWL6040=m
-+CONFIG_SND_SOC_OMAP3_PANDORA=m
-+CONFIG_SND_SOC_OMAP3_TWL4030=m
- CONFIG_SND_SOC_CPCAP=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
+diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
+index 8143756ff38b..09e439d4abf5 100644
+--- a/arch/arm/mach-davinci/board-dm365-evm.c
++++ b/arch/arm/mach-davinci/board-dm365-evm.c
+@@ -794,9 +794,9 @@ static __init void dm365_evm_init(void)
+ 	/* maybe setup mmc1/etc ... _after_ mmc0 */
+ 	evm_init_cpld();
+ 
+-#ifdef CONFIG_SND_DM365_AIC3X_CODEC
++#ifdef CONFIG_SND_SOC_DM365_AIC3X_CODEC
+ 	dm365_init_asp();
+-#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
++#elif defined(CONFIG_SND_SOC_DM365_VOICE_CODEC)
+ 	dm365_init_vc();
+ #endif
+ 	dm365_init_rtc();
 -- 
 2.19.0.rc2
