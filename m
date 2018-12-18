@@ -1,65 +1,141 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2] mfd: cros_ec: Add commands to control codec
-Date: Tue, 18 Dec 2018 08:52:34 +0000
-Message-ID: <20181218084307.GH4497@dell>
-References: <20181206040540.84632-1-cychiang@chromium.org>
- <20181214122156.GT4497@dell>
- <20181214122245.GU4497@dell>
- <CAFv8Nw+RbzKrjE1tsgxdRntXKWp9XVq8hbP7MZ3mZ=a2rMyG2Q@mail.gmail.com>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [RESEND v2] mfd: cros_ec: Add commands to control codec
+Date: Tue, 18 Dec 2018 17:06:26 +0800
+Message-ID: <20181218090626.46625-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAFv8Nw+RbzKrjE1tsgxdRntXKWp9XVq8hbP7MZ3mZ=a2rMyG2Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-yi Chiang <cychiang@chromium.org>
-Cc: bleung@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, scollyer@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4ED726782E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 10:06:34 +0100 (CET)
+Received: by mail-pl1-f196.google.com with SMTP id 101so7538941pld.6
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 01:06:34 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, Benson Leung <bleung@chromium.org>, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Guenter Roeck <groeck@chromium.org>, dgreid@chromium.org, Lee Jones <lee.jones@linaro.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Dec 2018, Cheng-yi Chiang wrote:
+Add EC host commands to control codec on EC.
 
-> +Benson, Guenter, Scott
-> 
-> On Fri, Dec 14, 2018 at 8:22 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Fri, 14 Dec 2018, Lee Jones wrote:
-> >
-> > > On Thu, 06 Dec 2018, Cheng-Yi Chiang wrote:
-> > >
-> > > > Add EC host commands to control codec on EC.
-> > > >
-> > > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > > > ---
-> > > >  V2 fixed the wrong ancestor issue so the patch can be applied cleanly on mfd tree.
-> > > >  Codec driver that uses these commands will be sent separately.
-> > > >  Thanks!
-> > > >
-> > > >  include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
-> > > >  1 file changed, 94 insertions(+)
-> > >
-> > > Would be good to have this reviewed by some more Chrome people.
-> >
-> > See this for reference:
-> >
-> >   https://lore.kernel.org/patchwork/patch/1024985/
-> 
-> Hi Benson and Guenter,
-> Could you please review this patch ?
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ include/linux/mfd/cros_ec_commands.h | 94 ++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-You haven't sent them the patch.
-
-Please resubmit as a [RESEND] and add them as recipients.
-
-> The corresponding implementation at EC side by Scott is at
-> https://chromium-review.googlesource.com/c/chromiumos/platform/ec/+/1356185
-> 
-> Thanks a lot!
-> 
-> >
-
+diff --git a/include/linux/mfd/cros_ec_commands.h b/include/linux/mfd/cros_ec_commands.h
+index 9a9631f0559e2..fc91082d4c357 100644
+--- a/include/linux/mfd/cros_ec_commands.h
++++ b/include/linux/mfd/cros_ec_commands.h
+@@ -2790,6 +2790,100 @@ struct ec_response_battery_vendor_param {
+ 	uint32_t value;
+ } __packed;
+ 
++/*****************************************************************************/
++/* Commands for I2S recording on audio codec. */
++
++#define EC_CMD_CODEC_I2S 0x00BC
++
++enum ec_codec_i2s_subcmd {
++	EC_CODEC_SET_SAMPLE_DEPTH = 0x0,
++	EC_CODEC_SET_GAIN = 0x1,
++	EC_CODEC_GET_GAIN = 0x2,
++	EC_CODEC_I2S_ENABLE = 0x3,
++	EC_CODEC_I2S_SET_CONFIG = 0x4,
++	EC_CODEC_I2S_SET_TDM_CONFIG = 0x5,
++	EC_CODEC_I2S_SET_BCLK = 0x6,
++};
++
++enum ec_sample_depth_value {
++	EC_CODEC_SAMPLE_DEPTH_16 = 0,
++	EC_CODEC_SAMPLE_DEPTH_24 = 1,
++};
++
++enum ec_i2s_config {
++	EC_DAI_FMT_I2S = 0,
++	EC_DAI_FMT_RIGHT_J = 1,
++	EC_DAI_FMT_LEFT_J = 2,
++	EC_DAI_FMT_PCM_A = 3,
++	EC_DAI_FMT_PCM_B = 4,
++	EC_DAI_FMT_PCM_TDM = 5,
++};
++
++struct ec_param_codec_i2s {
++	/*
++	 * enum ec_codec_i2s_subcmd
++	 */
++	uint8_t cmd;
++	union {
++		/*
++		 * EC_CODEC_SET_SAMPLE_DEPTH
++		 * Value should be one of ec_sample_depth_value.
++		 */
++		uint8_t depth;
++
++		/*
++		 * EC_CODEC_SET_GAIN
++		 * Value should be 0~43 for both channels.
++		 */
++		struct ec_param_codec_i2s_set_gain {
++			uint8_t left;
++			uint8_t right;
++		} __packed gain;
++
++		/*
++		 * EC_CODEC_I2S_ENABLE
++		 * 1 to enable, 0 to disable.
++		 */
++		uint8_t i2s_enable;
++
++		/*
++		 * EC_CODEC_I2S_SET_COFNIG
++		 * Value should be one of ec_i2s_config.
++		 */
++		uint8_t i2s_config;
++
++		/*
++		 * EC_CODEC_I2S_SET_TDM_CONFIG
++		 * Value should be one of ec_i2s_config.
++		 */
++		struct ec_param_codec_i2s_tdm {
++			/*
++			 * 0 to 496
++			 */
++			int16_t ch0_delay;
++			/*
++			 * -1 to 496
++			 */
++			int16_t ch1_delay;
++			uint8_t adjacent_to_ch0;
++			uint8_t adjacent_to_ch1;
++		} __packed tdm_param;
++
++		/*
++		 * EC_CODEC_I2S_SET_BCLK
++		 */
++		uint32_t bclk;
++	};
++} __packed;
++
++/*
++ * For subcommand EC_CODEC_GET_GAIN.
++ */
++struct ec_response_codec_gain {
++	uint8_t left;
++	uint8_t right;
++} __packed;
++
+ /*****************************************************************************/
+ /* System commands */
+ 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.20.1.415.g653613c723-goog
