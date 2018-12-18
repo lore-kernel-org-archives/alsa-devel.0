@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dma-sh7760: cleanup a debug printk" to
-	the asoc tree
-Date: Tue, 18 Dec 2018 15:30:30 +0000 (GMT)
-Message-ID: <20181218153030.CCE211125500@debutante.sirena.org.uk>
+Subject: Applied "ASoC: xlnx: Grammar s/the the/the/" to the
+	asoc tree
+Date: Tue, 18 Dec 2018 15:30:29 +0000 (GMT)
+Message-ID: <20181218153029.073B31125500@debutante.sirena.org.uk>
+References: <20181218134743.13692-1-geert+renesas@glider.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DC162677C8
+ by alsa0.perex.cz (Postfix) with ESMTP id 164372677E4
  for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 16:30:32 +0100 (CET)
-In-Reply-To: 
+In-Reply-To: <20181218134743.13692-1-geert+renesas@glider.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dma-sh7760: cleanup a debug printk
+   ASoC: xlnx: Grammar s/the the/the/
 
 has been applied to the asoc tree at
 
@@ -52,34 +53,28 @@ to this mail.
 Thanks,
 Mark
 
->From 308424c9e0e17cff77f394d85ee0ff9b475397d4 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 18 Dec 2018 11:18:10 +0300
-Subject: [PATCH] ASoC: dma-sh7760: cleanup a debug printk
+>From 3930bdad68d0fb1d3cb34cd83bb7d552e5d28bb0 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Tue, 18 Dec 2018 14:47:43 +0100
+Subject: [PATCH] ASoC: xlnx: Grammar s/the the/the/
 
-The intent was to print the address as a hexadecimal but there is an
-extra "u" in the "0x%08ulx" format specification so it is displayed as
-decimal.
-
-Fixes: aef3b06ac697 ("[ALSA] SH7760 ASoC support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 33f8db9a89200c18 ("ASoC: xlnx: enable i2s driver build")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/dma-sh7760.c | 2 +-
+ sound/soc/xilinx/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
-index 922fb6aa3ed1..5aee11c94f2a 100644
---- a/sound/soc/sh/dma-sh7760.c
-+++ b/sound/soc/sh/dma-sh7760.c
-@@ -202,7 +202,7 @@ static int camelot_prepare(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
- 
--	pr_debug("PCM data: addr 0x%08ulx len %d\n",
-+	pr_debug("PCM data: addr 0x%08lx len %d\n",
- 		 (u32)runtime->dma_addr, runtime->dma_bytes);
-  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
+index 25e287feb58c..723a583a8d57 100644
+--- a/sound/soc/xilinx/Kconfig
++++ b/sound/soc/xilinx/Kconfig
+@@ -1,5 +1,5 @@
+ config SND_SOC_XILINX_I2S
+-	tristate "Audio support for the the Xilinx I2S"
++	tristate "Audio support for the Xilinx I2S"
+ 	help
+ 	  Select this option to enable Xilinx I2S Audio. This enables
+ 	  I2S playback and capture using xilinx soft IP. In transmitter
 -- 
 2.19.0.rc2
