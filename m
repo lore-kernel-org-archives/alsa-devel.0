@@ -1,29 +1,166 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [RFC PATCH 07/10] dt-bindigs: sound: Add Allwinner suniv F1C100s
- Audio Codec
-Date: Wed, 19 Dec 2018 08:04:39 -0600
-Message-ID: <20181219140439.GA6820@bogus>
-References: <cover.1543782328.git.mesihkilinc@gmail.com>
- <d0ce4b1f2a89a319d6becb5f88d7ca4184aa5595.1543782328.git.mesihkilinc@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+ device
+Date: Wed, 19 Dec 2018 08:04:35 -0600
+Message-ID: <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
+References: <20181216185429.GA20408@gerhold.net>
+ <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+ <20181217181729.GB845@gerhold.net>
+ <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
+ <20181217191054.GA10938@gerhold.net>
+ <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
+ <20181217203242.GB10938@gerhold.net> <20181217204320.GC10938@gerhold.net>
+ <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
+ <20181219130747.GA83656@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d0ce4b1f2a89a319d6becb5f88d7ca4184aa5595.1543782328.git.mesihkilinc@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mesih Kilinc <mesihkilinc@gmail.com>
-Cc: dmaengine@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sunxi@googlegroups.com, Vinod Koul <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB020267B08
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 15:04:45 +0100 (CET)
+In-Reply-To: <20181219130747.GA83656@gerhold.net>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 03, 2018 at 12:23:14AM +0300, Mesih Kilinc wrote:
-> Add compatible string for Allwinner suniv F1C100s audio codec.
-
-Typo in the subject. Otherwise,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+On 12/19/18 7:07 AM, Stephan Gerhold wrote:
+> On Mon, Dec 17, 2018 at 08:13:36PM -0600, Pierre-Louis Bossart wrote:
+>>
+>>>>>> The quirks to get sound working with bytcr-rt5640 on that device are:
+>>>>>> BYT_RT5640_SSP0_AIF1 | BYT_RT5640_IN1_MAP | BYT_RT5640_MCLK_EN
+>>>>>>
+>>>>>> I guess this means that SSP0 is being used?
+>>>>> Yes indeed, and that makes me think we should force this device to look like
+>>>>> Baytrail-CR.
+>>>>>
+>>>>> You can do this with a DMI-based quirk (preferably in is_byt_cr directly so
+>>>>> that I can reuse the code when I move it to a helper at some point).
+>>>> Okay - thanks! One last question:
+>>>> I was looking at the ACPI DSDT tables of some similar devices and have
+>>>> found two others that look the same (only one IRQ listed). In this case,
+>>>> the BYT-T acpi_ipc_irq_index = 5 will never work, and we will definitely
+>>>> have a better chances with trying Baytrail-CR.
+>>>>
+>>>> One of them actually had a similar patch proposed at [1] (although they
+>>>> did it in a weird way and also need an extra machine driver).
+>>>>
+>>>> We could also detect this situation in a generic way with something like
+>>>>
+>>>>     if (platform_irq_count(pdev) == 1) {
+>>>>     	*bytcr = true;
+>>>> 	return 0;
+>>>>     }
+>>>>
+>>>> ... instead of a DMI quirk. What do you think?
+>>>>
+>>> To avoid confusion: The existing PMIC-type based is_byt_cr() detection
+>>> would be used in all other cases (i.e. if irq_count != 1), so it won't
+>>> make any difference for the devices that are already working fine.
+>>> (Most BYT-CR devices seem to have 5 IRQs listed)
+>>>
+>>> So it's more like
+>>>
+>>>     if (platform_irq_count(pdev) == 1) {
+>>>     	*bytcr = true;
+>>>     } else {
+>>>     	// pmic-type based detection...
+>>>     }
+>>>
+>>> with platform_irq_count == 1 as condition for the "quirk".
+>>
+>> The solution seems appealing but
+>>
+>> 1) does it really work? I am not sure an index=5 means there are 5
+>> interrupts.
 > 
-> Signed-off-by: Mesih Kilinc <mesihkilinc@gmail.com>
-> ---
->  Documentation/devicetree/bindings/sound/sun4i-codec.txt | 5 +++++
->  1 file changed, 5 insertions(+)
+> Yes, I believe that it means that there need to be (at least) 5
+> interrupts.
+> 
+> I have checked the source code of platform_get_irq.
+> When you do platform_get_irq(pdev, /* index = */ 5) (as done for BYT-T)
+> it first calls
+> 
+>      platform_get_resource(/* type = */ IORESOURCE_IRQ, /* num = */ 5)
+> 
+> to lookup the resource. That method is really simple and looks like
+> 
+> 	for (i = 0; i < dev->num_resources; i++) {
+> 		struct resource *r = &dev->resource[i];
+> 
+> 		if (type == resource_type(r) && num-- == 0)
+> 			return r;
+> 	}
+> 
+> So when you request an IRQ at index=5, it loops through all resources,
+> skips the first 5 IRQs and returns the 6th one (on my device, it
+> returns NULL because there are not enough IRQs listed).
+> 
+> There is a bit more magic in platform_irq_count (it looks up all IRQs
+> and does not count invalid ones), so to be absolutely safe we could
+> just check platform_get_resource(IRQ, 5) == NULL early.
+> If it returns NULL, then platform_get_irq(pdev, 5) will also return
+> -ENXIO, so treating the device as BYT-T is guaranteed to fail.
+> In this case, we have better chances when we assume BYT-CR.
+> 
+> Example patch: (I have added it in probe instead of is_byt_cr() because
+> it requires the platform device, plus I think it might be better to
+> differentiate the messages in the kernel log..)
+> 
+> --- a/sound/soc/intel/atom/sst/sst_acpi.c
+> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
+> @@ -337,6 +337,16 @@ static int sst_acpi_probe(struct platform_device *pdev)
+>   	if (!((ret < 0) || (bytcr == false))) {
+>   		dev_info(dev, "Detected Baytrail-CR platform\n");
+> 
+>   		/* override resource info */
+>   		byt_rvp_platform_data.res_info = &bytcr_res_info;
+> +	} else if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
+> +		/*
+> +		 * Some devices detected as BYT-T have only a single IRQ listed.
+> +		 * In this case, platform_get_irq with index 5 will return -ENXIO.
+> +		 * Fall back to the BYT-CR resource info to use the correct IRQ.
+> +		 */
+> +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
+> +
+> +		/* override resource info */
+> +		byt_rvp_platform_data.res_info = &bytcr_res_info;
+>   	}
+> 
+>>
+>> 2) the test would affect all existing devices, and there's so much hardware
+>> proliferation that proving this change in harmless might be difficult. I
+>> personally only have one BYT-T (ASus T100) device left and it's not very
+>> reliable. Hans seems to have a ton of devices but they are mostly Byt-Cr?
+>>
+> 
+> With the updated patch above I believe there is literally no way this
+> can break sound on any device. The condition only evaluates to true if
+> SST would normally fail to probe later anyway.
+> 
+> I have tested the patch above on my device with:
+>   - as-is, without any modifications:
+>      -> "Falling back to Baytrail-CR platform", sound now working
+>   - a simulated "BYT-T" device: (copied the IRQs from the DSDT of the T100TA)
+>      -> "BYT-CR not detected" - uses 5th IRQ, sound working
+>   - a simulated "BYT-CR" device (made is_byt_cr() return "true" and
+>     copied the IRQs from the DSDT of the T100TAF)
+>      -> "Detected Baytrail-CR platform" - uses IRQ at index 0, sound working
+> 
+> Let me know what you think!
+
+Sounds good, playing with resources is what I had in mind rather than an 
+interrupt count which isn't necessarily safe. The only improvement I 
+would suggest is to add this test inside of is_byt_cr(). This routine 
+will be moved as a helper outside of sst_acpi to be reused for SOF, so 
+if we can make this test more self-contained it's more future-proof.
