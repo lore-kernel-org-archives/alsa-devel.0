@@ -1,18 +1,27 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: bebob: fix model-id of unit for Apogee
-	Ensemble
-Date: Wed, 19 Dec 2018 20:00:42 +0900
-Message-ID: <20181219110042.19996-1-o-takashi@sakamocchi.jp>
+From: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+ device
+Date: Wed, 19 Dec 2018 14:07:48 +0100
+Message-ID: <20181219130747.GA83656@gerhold.net>
+References: <20181216185429.GA20408@gerhold.net>
+ <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+ <20181217181729.GB845@gerhold.net>
+ <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
+ <20181217191054.GA10938@gerhold.net>
+ <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
+ <20181217203242.GB10938@gerhold.net>
+ <20181217204320.GC10938@gerhold.net>
+ <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F334E26782E
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 12:00:52 +0100 (CET)
-Received: by mail-pf1-f193.google.com with SMTP id q1so9663754pfi.5
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 03:00:52 -0800 (PST)
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
+ [81.169.146.160])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BACE2678D3
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 14:07:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +31,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This commit fixes hard-coded model-id for an unit of Apogee Ensemble with
-a correct value. This unit uses DM1500 ASIC produced ArchWave AG (formerly
-known as BridgeCo AG).
+On Mon, Dec 17, 2018 at 08:13:36PM -0600, Pierre-Louis Bossart wrote:
+> 
+> > > > > The quirks to get sound working with bytcr-rt5640 on that device are:
+> > > > > BYT_RT5640_SSP0_AIF1 | BYT_RT5640_IN1_MAP | BYT_RT5640_MCLK_EN
+> > > > > 
+> > > > > I guess this means that SSP0 is being used?
+> > > > Yes indeed, and that makes me think we should force this device to look like
+> > > > Baytrail-CR.
+> > > > 
+> > > > You can do this with a DMI-based quirk (preferably in is_byt_cr directly so
+> > > > that I can reuse the code when I move it to a helper at some point).
+> > > Okay - thanks! One last question:
+> > > I was looking at the ACPI DSDT tables of some similar devices and have
+> > > found two others that look the same (only one IRQ listed). In this case,
+> > > the BYT-T acpi_ipc_irq_index = 5 will never work, and we will definitely
+> > > have a better chances with trying Baytrail-CR.
+> > > 
+> > > One of them actually had a similar patch proposed at [1] (although they
+> > > did it in a weird way and also need an extra machine driver).
+> > > 
+> > > We could also detect this situation in a generic way with something like
+> > > 
+> > >    if (platform_irq_count(pdev) == 1) {
+> > >    	*bytcr = true;
+> > > 	return 0;
+> > >    }
+> > > 
+> > > ... instead of a DMI quirk. What do you think?
+> > > 
+> > To avoid confusion: The existing PMIC-type based is_byt_cr() detection
+> > would be used in all other cases (i.e. if irq_count != 1), so it won't
+> > make any difference for the devices that are already working fine.
+> > (Most BYT-CR devices seem to have 5 IRQs listed)
+> > 
+> > So it's more like
+> > 
+> >    if (platform_irq_count(pdev) == 1) {
+> >    	*bytcr = true;
+> >    } else {
+> >    	// pmic-type based detection...
+> >    }
+> > 
+> > with platform_irq_count == 1 as condition for the "quirk".
+> 
+> The solution seems appealing but
+> 
+> 1) does it really work? I am not sure an index=5 means there are 5
+> interrupts.
 
-I note that this model supports three modes in the number of data channels
-in tx/rx streams; 8 ch pairs, 10 ch pairs, 18 ch pairs. The mode is
-switched by Vendor-dependent AV/C command, like:
+Yes, I believe that it means that there need to be (at least) 5 
+interrupts.
 
-$ cd linux-firewire-utils
-$ ./firewire-request /dev/fw1 fcp 0x00ff000003dbeb0600000000 (8ch pairs)
-$ ./firewire-request /dev/fw1 fcp 0x00ff000003dbeb0601000000 (10ch pairs)
-$ ./firewire-request /dev/fw1 fcp 0x00ff000003dbeb0602000000 (18ch pairs)
+I have checked the source code of platform_get_irq.
+When you do platform_get_irq(pdev, /* index = */ 5) (as done for BYT-T) 
+it first calls
 
-When switching between different mode, the unit disappears from IEEE 1394
-bus, then appears on the bus with different combination of stream formats.
-In a mode of 18 ch pairs, available sampling rate is up to 96.0 kHz, else
-up to 192.0 kHz.
+    platform_get_resource(/* type = */ IORESOURCE_IRQ, /* num = */ 5)
 
-$ ./hinawa-config-rom-printer /dev/fw1
-{ 'bus-info': { 'adj': False,
-                'bmc': True,
-                'chip_ID': 21474898341,
-                'cmc': True,
-                'cyc_clk_acc': 100,
-                'generation': 2,
-                'imc': True,
-                'isc': True,
-                'link_spd': 2,
-                'max_ROM': 1,
-                'max_rec': 512,
-                'name': '1394',
-                'node_vendor_ID': 987,
-                'pmc': False},
-  'root-directory': [ ['HARDWARE_VERSION', 19],
-                      [ 'NODE_CAPABILITIES',
-                        { 'addressing': {'64': True, 'fix': True, 'prv': False},
-                          'misc': {'int': False, 'ms': False, 'spt': True},
-                          'state': { 'atn': False,
-                                     'ded': False,
-                                     'drq': True,
-                                     'elo': False,
-                                     'init': False,
-                                     'lst': True,
-                                     'off': False},
-                          'testing': {'bas': False, 'ext': False}}],
-                      ['VENDOR', 987],
-                      ['DESCRIPTOR', 'Apogee Electronics'],
-                      ['MODEL', 126702],
-                      ['DESCRIPTOR', 'Ensemble'],
-                      ['VERSION', 5297],
-                      [ 'UNIT',
-                        [ ['SPECIFIER_ID', 41005],
-                          ['VERSION', 65537],
-                          ['MODEL', 126702],
-                          ['DESCRIPTOR', 'Ensemble']]],
-                      [ 'DEPENDENT_INFO',
-                        [ ['SPECIFIER_ID', 2037],
-                          ['VERSION', 1],
-                          [(58, 'IMMEDIATE'), 16777159],
-                          [(59, 'IMMEDIATE'), 1048576],
-                          [(60, 'IMMEDIATE'), 16777159],
-                          [(61, 'IMMEDIATE'), 6291456]]]]}
+to lookup the resource. That method is really simple and looks like
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	for (i = 0; i < dev->num_resources; i++) {
+		struct resource *r = &dev->resource[i];
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 672d13488454..d91874275d2c 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -408,7 +408,7 @@ static const struct ieee1394_device_id bebob_id_table[] = {
- 	/* Apogee Electronics, DA/AD/DD-16X (X-FireWire card) */
- 	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00010048, &spec_normal),
- 	/* Apogee Electronics, Ensemble */
--	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x00001eee, &spec_normal),
-+	SND_BEBOB_DEV_ENTRY(VEN_APOGEE, 0x01eeee, &spec_normal),
- 	/* ESI, Quatafire610 */
- 	SND_BEBOB_DEV_ENTRY(VEN_ESI, 0x00010064, &spec_normal),
- 	/* AcousticReality, eARMasterOne */
--- 
-2.19.1
+		if (type == resource_type(r) && num-- == 0)
+			return r;
+	}
+
+So when you request an IRQ at index=5, it loops through all resources,
+skips the first 5 IRQs and returns the 6th one (on my device, it
+returns NULL because there are not enough IRQs listed).
+
+There is a bit more magic in platform_irq_count (it looks up all IRQs 
+and does not count invalid ones), so to be absolutely safe we could
+just check platform_get_resource(IRQ, 5) == NULL early.
+If it returns NULL, then platform_get_irq(pdev, 5) will also return 
+-ENXIO, so treating the device as BYT-T is guaranteed to fail.
+In this case, we have better chances when we assume BYT-CR.
+
+Example patch: (I have added it in probe instead of is_byt_cr() because 
+it requires the platform device, plus I think it might be better to 
+differentiate the messages in the kernel log..)
+
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -337,6 +337,16 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	if (!((ret < 0) || (bytcr == false))) {
+ 		dev_info(dev, "Detected Baytrail-CR platform\n");
+
+ 		/* override resource info */
+ 		byt_rvp_platform_data.res_info = &bytcr_res_info;
++	} else if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
++		/*
++		 * Some devices detected as BYT-T have only a single IRQ listed.
++		 * In this case, platform_get_irq with index 5 will return -ENXIO.
++		 * Fall back to the BYT-CR resource info to use the correct IRQ.
++		 */
++		dev_info(dev, "Falling back to Baytrail-CR platform\n");
++
++		/* override resource info */
++		byt_rvp_platform_data.res_info = &bytcr_res_info;
+ 	}
+
+> 
+> 2) the test would affect all existing devices, and there's so much hardware
+> proliferation that proving this change in harmless might be difficult. I
+> personally only have one BYT-T (ASus T100) device left and it's not very
+> reliable. Hans seems to have a ton of devices but they are mostly Byt-Cr?
+> 
+
+With the updated patch above I believe there is literally no way this 
+can break sound on any device. The condition only evaluates to true if 
+SST would normally fail to probe later anyway.
+
+I have tested the patch above on my device with:
+ - as-is, without any modifications:
+    -> "Falling back to Baytrail-CR platform", sound now working
+ - a simulated "BYT-T" device: (copied the IRQs from the DSDT of the T100TA)
+    -> "BYT-CR not detected" - uses 5th IRQ, sound working
+ - a simulated "BYT-CR" device (made is_byt_cr() return "true" and 
+   copied the IRQs from the DSDT of the T100TAF)
+    -> "Detected Baytrail-CR platform" - uses IRQ at index 0, sound working
+
+Let me know what you think!
