@@ -1,21 +1,26 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re:
- =?utf-8?q?Console_downloaders_give_*The_certificate_?=
- =?utf-8?b?b2Yg4oCYd3d3LmFsc2EtcHJvamVjdC5vcmfigJkgaGFzbid0IGdvdCBhIGtu?=
- =?utf-8?q?own_issuer=2E*?=
-Date: Wed, 19 Dec 2018 17:33:25 +0100
-Message-ID: <5f3c5ecd-ff8d-a65a-6821-52f6a9b10011@perex.cz>
-References: <cf0712c7-279b-bba9-588a-90b508ad0c2e@molgen.mpg.de>
- <a0d1fed4-d246-c6e1-c858-b7eee378cd85@perex.cz>
- <0173c785-52e8-3e10-d5b6-4d91f0419cbb@molgen.mpg.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+ device
+Date: Wed, 19 Dec 2018 10:54:55 -0600
+Message-ID: <65b445e8-2202-0554-b920-97ce0f7833ce@linux.intel.com>
+References: <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
+ <20181217181729.GB845@gerhold.net>
+ <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
+ <20181217191054.GA10938@gerhold.net>
+ <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
+ <20181217203242.GB10938@gerhold.net> <20181217204320.GC10938@gerhold.net>
+ <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
+ <20181219130747.GA83656@gerhold.net>
+ <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
+ <20181219150103.GA52375@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AFD4267ABE
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 17:33:28 +0100 (CET)
-In-Reply-To: <0173c785-52e8-3e10-d5b6-4d91f0419cbb@molgen.mpg.de>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 891A5267ABE
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 17:54:57 +0100 (CET)
+In-Reply-To: <20181219150103.GA52375@gerhold.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,48 +31,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <pmenzel@molgen.mpg.de>, alsa-devel@alsa-project.org
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDE5LjEyLjIwMTggdiAxNjowMSBQYXVsIE1lbnplbCBuYXBzYWwoYSk6Cj4gRGVhciBKYXJv
-c2xhdiwKPiAKPiAKPiBPbiAxMi8xOC8xOCAxOToxOCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+
-PiBEbmUgMTguMTIuMjAxOCB2IDE4OjMwIFBhdWwgTWVuemVsIG5hcHNhbChhKToKPj4+IFtQbGVh
-c2UgQ0MsIGFzIEkgYW0gbm90IHN1YnNjcmliZWQuXQo+IAo+Pj4gRGVzcGl0ZSB3b3JraW5nIGlu
-IHRoZSBicm93c2VyIChNb3ppbGxhIEZpcmVmb3gpLCBHTlUgV2dldCBhbmQgY3VybCBnaXZlCj4+
-PiB0aGUgZXJyb3IgYmVsb3cgdHJ5aW5nIHRvIGRvd25sb2FkIHRoZSBzY3JpcHQgYGFsc2EtaW5m
-by5zaGAuCj4+Pgo+Pj4gICAgICQgd2dldCBodHRwczovL3d3dy5hbHNhLXByb2plY3Qub3JnL2Fs
-c2EtaW5mby5zaAo+Pj4gICAgIC0tMjAxOC0xMi0xOCAxNzoyNzo1Ny0tICBodHRwczovL3d3dy5h
-bHNhLXByb2plY3Qub3JnL2Fsc2EtaW5mby5zaAo+Pj4gICAgIFJlc29sdmluZyB3d3cuYWxzYS1w
-cm9qZWN0Lm9yZyAod3d3LmFsc2EtcHJvamVjdC5vcmcpLi4uIDc3LjQ4LjIyNC4yNDMKPj4+ICAg
-ICBDb25uZWN0aW5nIHRvIHd3dy5hbHNhLXByb2plY3Qub3JnICh3d3cuYWxzYS1wcm9qZWN0Lm9y
-Zyl8NzcuNDguMjI0LjI0M3w6NDQzLi4uIGNvbm5lY3RlZC4KPj4+ICAgICBFUlJPUjogVGhlIGNl
-cnRpZmljYXRlIG9mIOKAmHd3dy5hbHNhLXByb2plY3Qub3Jn4oCZIGlzIG5vdCB0cnVzdGVkLgo+
-Pj4gICAgIEVSUk9SOiBUaGUgY2VydGlmaWNhdGUgb2Yg4oCYd3d3LmFsc2EtcHJvamVjdC5vcmfi
-gJkgaGFzbid0IGdvdCBhIGtub3duIGlzc3Vlci4KPiAKPj4gV2UgdXNlIExldCdzIEVuY3J5cHQg
-KGh0dHBzOi8vbGV0c2VuY3J5cHQub3JnKSBjZXJ0aWZpY2F0ZXMgYmFzZWQgb24gdGhlCj4+IGRv
-bWFpbiB2ZXJpZmljYXRpb24uIEl0IGFwcGVhcnMgdGhhdCB5b3VyIHN5c3RlbSBDQSBjZXJ0aWZp
-Y2F0ZSBwYWNrYWdlCj4+IGlzIG1pc3NpbmcgdGhlIGN1cnJlbnQgQ0Ega2V5Ogo+Pgo+PiBpc3N1
-ZXI9L0M9VVMvTz1MZXQncyBFbmNyeXB0L0NOPUxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzCj4+
-Cj4+IFlvdSBjYW4gZmluZCB0aGlzIENBIGNlcnRpZmljYXRlIGhlcmU6Cj4+Cj4+IGh0dHBzOi8v
-bGV0c2VuY3J5cHQub3JnL2NlcnRpZmljYXRlcy8KPj4KPj4gVGhlIGJyb3dzZXJzIGFyZSB1c2lu
-ZyBvd24gQ0EgY2VydGlmaWNhdGUgZGF0YWJhc2UsIGFuZCB0aGUgTGV0J3MKPj4gRW5jcnlwdCBD
-QSBjZXJ0aWZpY2F0ZSBpcyByZWd1bGFybHkgdXBkYXRlZCB0aGVyZS4KPiAKPiBJIGJlbGlldmUs
-IHlvdSBuZWVkIHRvIGFkZCB0aGF0IGNlcnRpZmljYXRlIHRvIHRoZSBjaGFpbi4gVGhlIG9ubGlu
-ZQo+IFNTTCB0ZXN0IGFsc28gZmFpbHMgYW5kIGNvbXBsYWlucyBhYm91dCBpbmNvbXBsZXRlIGNl
-cnRpZmljYXRlCj4gY2hhaW4gWzFdLgo+IAo+PiBUaGlzIHNlcnZlcidzIGNlcnRpZmljYXRlIGNo
-YWluIGlzIGluY29tcGxldGUuIEdyYWRlIGNhcHBlZCB0byBCLgo+IAo+IEhlcmUgaXMgd2hhdCB0
-aGUgdGVzdCB3aXRoIGBvcGVuc3NsYCBzaG93cy4KPiAKPiBgYGAKPiAkIG9wZW5zc2wgc19jbGll
-bnQgLWNvbm5lY3Qgd3d3LmFsc2EtcHJvamVjdC5vcmc6NDQzCj4gQ09OTkVDVEVEKDAwMDAwMDAz
-KQo+IGRlcHRoPTAgQ04gPSBhbHNhLXByb2plY3Qub3JnCj4gdmVyaWZ5IGVycm9yOm51bT0yMDp1
-bmFibGUgdG8gZ2V0IGxvY2FsIGlzc3VlciBjZXJ0aWZpY2F0ZQo+IHZlcmlmeSByZXR1cm46MQo+
-IGRlcHRoPTAgQ04gPSBhbHNhLXByb2plY3Qub3JnCj4gdmVyaWZ5IGVycm9yOm51bT0yMTp1bmFi
-bGUgdG8gdmVyaWZ5IHRoZSBmaXJzdCBjZXJ0aWZpY2F0ZQo+IHZlcmlmeSByZXR1cm46MQo+IC0t
-LQo+IENlcnRpZmljYXRlIGNoYWluCj4gIDAgczpDTiA9IGFsc2EtcHJvamVjdC5vcmcKPiAgICBp
-OkMgPSBVUywgTyA9IExldCdzIEVuY3J5cHQsIENOID0gTGV0J3MgRW5jcnlwdCBBdXRob3JpdHkg
-WDMKPiAtLS0KPiBb4oCmXQo+IGBgYAo+IAo+IERvZXMgdGhhdCB3b3JrIG9uIHlvdXIgc3lzdGVt
-PwoKWW91J3JlIHJpZ2h0LiBJdCBzaG91bGQgYmUgZml4ZWQgbm93LiBUaGFuayB5b3UgZm9yIHlv
-dXIgbm90aWNlLgoKCQkJCUphcm9zbGF2Ci0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4
-LmN6PgpMaW51eCBTb3VuZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+>   
+> -static int is_byt_cr(struct device *dev, bool *bytcr)
+> +static int is_byt_cr(struct platform_device *pdev, bool *bytcr)
+>   {
+> +	struct device *dev = &pdev->dev;
+>   	int status = 0;
+>   
+> +	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
+> +		/* This message is even shown if the device would be detected as BYT-CR below */
+> +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
+> +		*bytcr = true;
+> +		return status;
+> +	}
+> +
+>   	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+>   		u32 bios_status;
+
+This would be my preferred solution but if it doesn't work as Hans 
+mentions it then we need to think of alternatives.
+
+Baytrail platforms are so different (BIOS and hardware) that I don't 
+think we'll manage to pull this off without quirks.
