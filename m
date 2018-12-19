@@ -3,17 +3,18 @@ Subject: Re:
  =?utf-8?q?Console_downloaders_give_*The_certificate_?=
  =?utf-8?b?b2Yg4oCYd3d3LmFsc2EtcHJvamVjdC5vcmfigJkgaGFzbid0IGdvdCBhIGtu?=
  =?utf-8?q?own_issuer=2E*?=
-Date: Wed, 19 Dec 2018 16:01:37 +0100
-Message-ID: <0173c785-52e8-3e10-d5b6-4d91f0419cbb@molgen.mpg.de>
+Date: Wed, 19 Dec 2018 16:11:53 +0100
+Message-ID: <680fefb4-27c1-27b6-34ce-7a338875c4b0@molgen.mpg.de>
 References: <cf0712c7-279b-bba9-588a-90b508ad0c2e@molgen.mpg.de>
  <a0d1fed4-d246-c6e1-c858-b7eee378cd85@perex.cz>
+ <0173c785-52e8-3e10-d5b6-4d91f0419cbb@molgen.mpg.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1658905786829509957=="
+Content-Type: multipart/mixed; boundary="===============7419318524656996093=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id D09F526770D
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 16:01:38 +0100 (CET)
-In-Reply-To: <a0d1fed4-d246-c6e1-c858-b7eee378cd85@perex.cz>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97BC726770D
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 16:11:54 +0100 (CET)
+In-Reply-To: <0173c785-52e8-3e10-d5b6-4d91f0419cbb@molgen.mpg.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,12 +29,12 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a cryptographically signed message in MIME format.
 
---===============1658905786829509957==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms060102000702080605040404"
+--===============7419318524656996093==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070300010305000702080804"
 
 This is a cryptographically signed message in MIME format.
 
---------------ms060102000702080605040404
+--------------ms070300010305000702080804
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -41,67 +42,72 @@ Content-Transfer-Encoding: quoted-printable
 Dear Jaroslav,
 
 
-On 12/18/18 19:18, Jaroslav Kysela wrote:
-> Dne 18.12.2018 v 18:30 Paul Menzel napsal(a):
->> [Please CC, as I am not subscribed.]
+On 12/19/18 16:01, Paul Menzel wrote:
 
->> Despite working in the browser (Mozilla Firefox), GNU Wget and curl gi=
-ve
->> the error below trying to download the script `alsa-info.sh`.
->>
->>     $ wget https://www.alsa-project.org/alsa-info.sh
->>     --2018-12-18 17:27:57--  https://www.alsa-project.org/alsa-info.sh=
-
->>     Resolving www.alsa-project.org (www.alsa-project.org)... 77.48.224=
-=2E243
->>     Connecting to www.alsa-project.org (www.alsa-project.org)|77.48.22=
-4.243|:443... connected.
->>     ERROR: The certificate of =E2=80=98www.alsa-project.org=E2=80=99 i=
-s not trusted.
->>     ERROR: The certificate of =E2=80=98www.alsa-project.org=E2=80=99 h=
-asn't got a known issuer.
-
-> We use Let's Encrypt (https://letsencrypt.org) certificates based on th=
+> On 12/18/18 19:18, Jaroslav Kysela wrote:
+>> Dne 18.12.2018 v 18:30 Paul Menzel napsal(a):
+>>> [Please CC, as I am not subscribed.]
+>=20
+>>> Despite working in the browser (Mozilla Firefox), GNU Wget and curl g=
+ive
+>>> the error below trying to download the script `alsa-info.sh`.
+>>>
+>>>     $ wget https://www.alsa-project.org/alsa-info.sh
+>>>     --2018-12-18 17:27:57--  https://www.alsa-project.org/alsa-info.s=
+h
+>>>     Resolving www.alsa-project.org (www.alsa-project.org)... 77.48.22=
+4.243
+>>>     Connecting to www.alsa-project.org (www.alsa-project.org)|77.48.2=
+24.243|:443... connected.
+>>>     ERROR: The certificate of =E2=80=98www.alsa-project.org=E2=80=99 =
+is not trusted.
+>>>     ERROR: The certificate of =E2=80=98www.alsa-project.org=E2=80=99 =
+hasn't got a known issuer.
+>=20
+>> We use Let's Encrypt (https://letsencrypt.org) certificates based on t=
+he
+>> domain verification. It appears that your system CA certificate packag=
 e
-> domain verification. It appears that your system CA certificate package=
-
-> is missing the current CA key:
+>> is missing the current CA key:
+>>
+>> issuer=3D/C=3DUS/O=3DLet's Encrypt/CN=3DLet's Encrypt Authority X3
+>>
+>> You can find this CA certificate here:
+>>
+>> https://letsencrypt.org/certificates/
+>>
+>> The browsers are using own CA certificate database, and the Let's
+>> Encrypt CA certificate is regularly updated there.
 >=20
-> issuer=3D/C=3DUS/O=3DLet's Encrypt/CN=3DLet's Encrypt Authority X3
+> I believe, you need to add that certificate to the chain. The online
+> SSL test also fails and complains about incomplete certificate
+> chain [1].
 >=20
-> You can find this CA certificate here:
+>> This server's certificate chain is incomplete. Grade capped to B.
 >=20
-> https://letsencrypt.org/certificates/
+> Here is what the test with `openssl` shows.
 >=20
-> The browsers are using own CA certificate database, and the Let's
-> Encrypt CA certificate is regularly updated there.
+> ```
+> $ openssl s_client -connect www.alsa-project.org:443
+> CONNECTED(00000003)
+> depth=3D0 CN =3D alsa-project.org
+> verify error:num=3D20:unable to get local issuer certificate
+> verify return:1
+> depth=3D0 CN =3D alsa-project.org
+> verify error:num=3D21:unable to verify the first certificate
+> verify return:1
+> ---
+> Certificate chain
+>  0 s:CN =3D alsa-project.org
+>    i:C =3D US, O =3D Let's Encrypt, CN =3D Let's Encrypt Authority X3
+> ---
+> [=E2=80=A6]
+> ```
+>=20
+> Does that work on your system?
 
-I believe, you need to add that certificate to the chain. The online
-SSL test also fails and complains about incomplete certificate
-chain [1].
-
-> This server's certificate chain is incomplete. Grade capped to B.
-
-Here is what the test with `openssl` shows.
-
-```
-$ openssl s_client -connect www.alsa-project.org:443
-CONNECTED(00000003)
-depth=3D0 CN =3D alsa-project.org
-verify error:num=3D20:unable to get local issuer certificate
-verify return:1
-depth=3D0 CN =3D alsa-project.org
-verify error:num=3D21:unable to verify the first certificate
-verify return:1
----
-Certificate chain
- 0 s:CN =3D alsa-project.org
-   i:C =3D US, O =3D Let's Encrypt, CN =3D Let's Encrypt Authority X3
----
-[=E2=80=A6]
-```
-
-Does that work on your system?
+It does not work for me with the certificates downloaded from [2],
+which should use the Mozilla database, and with Debian Stretch/stable.
 
 
 Kind regards,
@@ -109,11 +115,11 @@ Kind regards,
 Paul
 
 
-[1]: https://www.ssllabs.com/ssltest/analyze.html?d=3Dwww.alsa-project.or=
-g
+> [1]: https://www.ssllabs.com/ssltest/analyze.html?d=3Dwww.alsa-project.=
+org
 
 
---------------ms060102000702080605040404
+--------------ms070300010305000702080804
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -201,27 +207,27 @@ fndPkrXx6XWDdU3S1LyKgHlLIFtarLFm2Hb5zAUR33h+26cN6ohcGqGEEzgIG8tXS8gztEaj
 EwJERTEPMA0GA1UECAwGQmF5ZXJuMREwDwYDVQQHDAhNdWVuY2hlbjEgMB4GA1UECgwXTWF4
 LVBsYW5jay1HZXNlbGxzY2hhZnQxFTATBgNVBAMMDE1QRyBDQSAtIEcwMgIMHipSSIX8pzzF
 RvyiMA0GCWCGSAFlAwQCAQUAoIIB8TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqG
-SIb3DQEJBTEPFw0xODEyMTkxNTAxMzdaMC8GCSqGSIb3DQEJBDEiBCCcPUVGb7QlkWABaRNO
-Cv9CLs/oP9dNBqOUvU7TmvMkKTBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglg
+SIb3DQEJBTEPFw0xODEyMTkxNTExNTNaMC8GCSqGSIb3DQEJBDEiBCCJ4hRFcRX5bSybfekT
+mOhPUULh3cqDoBMfLtrqB2EeRDBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglg
 hkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcG
 BSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGJBgkrBgEEAYI3EAQxfDB6MGoxCzAJBgNVBAYTAkRF
 MQ8wDQYDVQQIDAZCYXllcm4xETAPBgNVBAcMCE11ZW5jaGVuMSAwHgYDVQQKDBdNYXgtUGxh
 bmNrLUdlc2VsbHNjaGFmdDEVMBMGA1UEAwwMTVBHIENBIC0gRzAyAgweKlJIhfynPMVG/KIw
 gYsGCyqGSIb3DQEJEAILMXygejBqMQswCQYDVQQGEwJERTEPMA0GA1UECAwGQmF5ZXJuMREw
 DwYDVQQHDAhNdWVuY2hlbjEgMB4GA1UECgwXTWF4LVBsYW5jay1HZXNlbGxzY2hhZnQxFTAT
-BgNVBAMMDE1QRyBDQSAtIEcwMgIMHipSSIX8pzzFRvyiMA0GCSqGSIb3DQEBAQUABIIBAJ1b
-iRFO6AHmaAqOI1WHj0iePXrjftnUebJaENSlwjII9pvYuqDwrgS29BjKogvr640cp2F/HM4l
-y3HPOxgeRmz2+aN9G5gSvMX/7wE6/9us5WJKeg1UeoIbho8i1/WsS5r/o/AdgqrPrppLqMZ+
-d1ObY1zuCSXHEfxUHPZ24cULZPD7zP2oYCYmPawtsI6SpX7O0RhOQJDkXUBvZMaJu6kJpMBE
-gRfMvl5ovA1TrRwkABzZdDh1lqMQhENHKyqg8NfY5sJXClw7f1IXpJ75BYsCKQSAsEZfVsfr
-M2m7NZIGM9ZhBD8m4dVcH/IyGGNvAdRVLm+4rBvAmofJMJf89nIAAAAAAAA=
---------------ms060102000702080605040404--
+BgNVBAMMDE1QRyBDQSAtIEcwMgIMHipSSIX8pzzFRvyiMA0GCSqGSIb3DQEBAQUABIIBAH1I
+yj/xLWxKogmc19sqkDpGqOE16zyAD8bDf/GdSsQ6o/9T+UPqF7ur7M/wVO7cFlzNPQbmVzg+
+u1lneWCmpOy3r668fOaXk3ZCPko3Bvymnp64nfBJuXbvfxYK85JUjQttafn3XrFLGsonT85r
++I3OC6qkLYTJ1zvGby4kwUFdPIUixhIBlxuNADcLCKotRDJPiy99H0DAxcUY1azKxdz/cVAx
+lmcl+Pdfypcrn0emEwHgETZLyue3kgCQBMsyPyc2Tc7CgVTZPXv6i9nna7lN/8fxCi1ghMV8
+lirE+UTCcfd574r1lNM9IrhH4JcaXvG7fBVLhbr9IX/bdoJkMwkAAAAAAAA=
+--------------ms070300010305000702080804--
 
---===============1658905786829509957==
+--===============7419318524656996093==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1658905786829509957==--
+--===============7419318524656996093==--
