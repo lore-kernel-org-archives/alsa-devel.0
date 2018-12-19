@@ -1,19 +1,24 @@
-From: Wandrille RONCE <w@ndrille.fr>
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable audio jacks of
- ASUS UX391UA with, ALC294
-Date: Wed, 19 Dec 2018 03:00:31 +0100
-Message-ID: <7555e2d7-e361-f5f8-8b04-423a18453b1e@ndrille.fr>
-References: <489c2bed-b02b-c957-6c16-1dac5e57007d@ndrille.fr>
- <s5hwoo7c8ex.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: RME Fireface alsa driver
+Date: Wed, 19 Dec 2018 13:22:03 +0900
+Message-ID: <20181219042203.GA8794@workstation>
+References: <53dc5ff5-bee5-5998-dcd4-1dd1f926c857@halfshavedyaks.xyz>
+ <20181211204344.GA16818@workstation>
+ <a61bd3e8-0ace-3ef1-ffa4-f56c3c67fd31@halfshavedyaks.xyz>
+ <alpine.DEB.2.21.1812172247580.1336@laptop>
+ <c4a1e138-64b8-7926-2927-8af99134e817@halfshavedyaks.xyz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vanvan.co (vanvan.co [195.154.237.201])
- by alsa0.perex.cz (Postfix) with ESMTP id BD7BF26782E
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 03:00:35 +0100 (CET)
-In-Reply-To: <s5hwoo7c8ex.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3D44267946
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 05:22:12 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id c25so7347952pgb.4
+ for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2018 20:22:12 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <c4a1e138-64b8-7926-2927-8af99134e817@halfshavedyaks.xyz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: thet <parenthetical@halfshavedyaks.xyz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QnkgZGVmYXVsdCwgdGhlcmUgaXMgbm8gc291bmQgb24gQXN1cyBVWDM5MVVBIG9uIExpbnV4LgoK
-VGhpcyBwYXRjaCBhZGRzIHNvdW5kIHN1cHBvcnQgb24gQXN1cyBVWDM5MVVBLiBUZXN0ZWQgd29y
-a2luZyBieSB0aHJlZSAKZGlmZmVyZW50IHVzZXJzLgoKVGhlIHByb2JsZW0gaGFzIGFsc28gYmVl
-biBkZXNjcmliZWQgYXQgCmh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291cmNl
-L2Fsc2EtZHJpdmVyLytidWcvMTc4NDQ4NQoKVGhhbmtzCgoKIEZyb20gNDMzMzY1MzljOTE3NTll
-NmYwODQxYmNhZTc5Mzc3ODI0YjM1NzFlOCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTog
-V2FuZHJpbGxlIFJPTkNFIDx3QG5kcmlsbGUuZnI+CkRhdGU6IE1vbiwgMTcgRGVjIDIwMTggMTk6
-MDA6MDAgKzAxMDAKU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGEvcmVhbHRlazogRW5hYmxlIGF1
-ZGlvIGphY2tzIG9mIEFTVVMgVVgzOTFVQSB3aXRoCiDCoEFMQzI5NAoKU2lnbmVkLW9mZi1ieTog
-V2FuZHJpbGxlIFJPTkNFIDx3QG5kcmlsbGUuZnI+Ci0tLQogwqBzb3VuZC9wY2kvaGRhL3BhdGNo
-X3JlYWx0ZWsuYyB8IDEgKwogwqAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYg
-LS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfcmVhbHRlay5jCmluZGV4IDE1MDIxYzgzOTM3Mi4uOTBmMzBlNzY5YTQyIDEwMDY0NAotLS0g
-YS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNo
-X3JlYWx0ZWsuYwpAQCAtNjU4NCw2ICs2NTg0LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
-cGNpX3F1aXJrIAphbGMyNjlfZml4dXBfdGJsW10gPSB7CiDCoMKgwqDCoCBTTkRfUENJX1FVSVJL
-KDB4MTA0MywgMHgxM2IwLCAiQVNVUyBaNTUwU0EiLCBBTEMyNTZfRklYVVBfQVNVU19NSUMpLAog
-wqDCoMKgwqAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTQyNywgIkFzdXMgWmVuYm9vayBVWDMx
-RSIsIApBTEMyNjlWQl9GSVhVUF9BU1VTX1pFTkJPT0spLAogwqDCoMKgwqAgU05EX1BDSV9RVUlS
-SygweDEwNDMsIDB4MTRhMSwgIkFTVVMgVVg1MzNGRCIsIEFMQzI5NF9GSVhVUF9BU1VTX1NQSyks
-CivCoMKgwqAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTBhMSwgIkFTVVMgVVgzOTFVQSIsIEFM
-QzI5NF9GSVhVUF9BU1VTX1NQSyksCiDCoMKgwqDCoCBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgx
-NTE3LCAiQXN1cyBaZW5ib29rIFVYMzFBIiwgCkFMQzI2OVZCX0ZJWFVQX0FTVVNfWkVOQk9PS19V
-WDMxQSksCiDCoMKgwqDCoCBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxNmUzLCAiQVNVUyBVWDUw
-IiwgQUxDMjY5X0ZJWFVQX1NURVJFT19ETUlDKSwKIMKgwqDCoMKgIFNORF9QQ0lfUVVJUksoMHgx
-MDQzLCAweDFhMTMsICJBc3VzIEc3M0p3IiwgQUxDMjY5X0ZJWFVQX0FTVVNfRzczSlcpLAotLSAK
-Mi4xOS4xCgoKTGUgMTgvMTIvMjAxOCDDoCAxMzo0MywgVGFrYXNoaSBJd2FpIGEgw6ljcml0wqA6
-Cj4gT24gTW9uLCAxNyBEZWMgMjAxOCAyMjo1ODowNCArMDEwMCwKPiBXYW5kcmlsbGUgUk9OQ0Ug
-d3JvdGU6Cj4+ICBGcm9tIGM4N2NlMjExOWYwMTBkYjc4OTMzYzQyNGI4YmE2NzM4YzMwNTZkZmYg
-TW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4+IEZyb206IFdhbmRyaWxsZSBST05DRSA8d0BuZHJp
-bGxlLmZyPgo+PiBEYXRlOiBNb24sIDE3IERlYyAyMDE4IDE5OjAwOjAwICswMTAwCj4+IFN1Ympl
-Y3Q6IFtQQVRDSF0gQUxTQTogaGRhL3JlYWx0ZWs6IEVuYWJsZSBhdWRpbyBqYWNrcyBvZiBBU1VT
-IFVYMzkxVUEgd2l0aAo+PiAgwqBBTEMyOTQKPiBUaGUgZW1wdHkgbG9nIGlzIGFsd2F5cyBiYWQu
-ICBDb3VsZCB5b3UgZGVzY3JpYmUgd2hhdCBkb2VzIHlvdXIgcGF0Y2gKPiBkbywgZXNwZWNpYWxs
-eSB3aGF0IHByb2JsZW0gZG9lcyBpdCBmaXg/Cj4KPiBMYXN0IGJ1dCBub3QgbGVhc3QsIHBsZWFz
-ZSBnaXZlIHlvdXIgc2lnbi1vZmYuICBPdGhlcndpc2Ugd2UgY2FuJ3QKPiBtZXJnZSB0aGUgcGF0
-Y2guCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+Cj4+IC0tLQo+PiAgwqBzb3VuZC9wY2kv
-aGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDEgKwo+PiAgwqAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKykKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
-c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKPj4gaW5kZXggMTUwMjFjODM5MzcyLi45MGYz
-MGU3NjlhNDIgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4+
-ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4+IEBAIC02NTg0LDYgKzY1ODQs
-NyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsKPj4gYWxjMjY5X2ZpeHVwX3Ri
-bFtdID0gewo+PiAgwqDCoMKgwqAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTNiMCwgIkFTVVMg
-WjU1MFNBIiwgQUxDMjU2X0ZJWFVQX0FTVVNfTUlDKSwKPj4gIMKgwqDCoMKgIFNORF9QQ0lfUVVJ
-UksoMHgxMDQzLCAweDE0MjcsICJBc3VzIFplbmJvb2sgVVgzMUUiLAo+PiBBTEMyNjlWQl9GSVhV
-UF9BU1VTX1pFTkJPT0spLAo+PiAgwqDCoMKgwqAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTRh
-MSwgIkFTVVMgVVg1MzNGRCIsIEFMQzI5NF9GSVhVUF9BU1VTX1NQSyksCj4+ICvCoMKgwqAgU05E
-X1BDSV9RVUlSSygweDEwNDMsIDB4MTBhMSwgIkFTVVMgVVgzOTFVQSIsIEFMQzI5NF9GSVhVUF9B
-U1VTX1NQSyksCj4+ICDCoMKgwqDCoCBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxNTE3LCAiQXN1
-cyBaZW5ib29rIFVYMzFBIiwKPj4gQUxDMjY5VkJfRklYVVBfQVNVU19aRU5CT09LX1VYMzFBKSwK
-Pj4gIMKgwqDCoMKgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDE2ZTMsICJBU1VTIFVYNTAiLCBB
-TEMyNjlfRklYVVBfU1RFUkVPX0RNSUMpLAo+PiAgwqDCoMKgwqAgU05EX1BDSV9RVUlSSygweDEw
-NDMsIDB4MWExMywgIkFzdXMgRzczSnciLCBBTEMyNjlfRklYVVBfQVNVU19HNzNKVyksCj4+IC0t
-IAo+PiAyLjE5LjEKPj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Tue, Dec 18, 2018 at 11:38:47PM +0000, thet wrote:
+> I am not confident to do the backport, but I will test when the kernel
+> is available in a repo to install.
+> 
+> Or if you can send me a compiled kernel to test I can test it.
+
+I'm sorry but I have no interest in your system at all, thus I don't use
+my time for something of it. I'm a software developer, not your servant.
+
+
+If you voluntarily wish to compile and install out-of-tree codes in my
+repository and test built driver modules, I can give you a short
+instruction for them. But in this case, it's better for you to read
+README[1] at first and foremost.
+
+
+[1] https://github.com/takaswie/snd-firewire-improve/
+
+Thanks
+
+Takashi Sakamoto
