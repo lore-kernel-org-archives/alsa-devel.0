@@ -1,28 +1,16 @@
-From: Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
- device
-Date: Wed, 19 Dec 2018 18:35:02 +0100
-Message-ID: <20181219173502.GA44176@gerhold.net>
-References: <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
- <20181217191054.GA10938@gerhold.net>
- <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
- <20181217203242.GB10938@gerhold.net>
- <20181217204320.GC10938@gerhold.net>
- <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
- <20181219130747.GA83656@gerhold.net>
- <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
- <20181219150103.GA52375@gerhold.net>
- <65b445e8-2202-0554-b920-97ce0f7833ce@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH trivial] ASoC: xlnx: Grammar s/the the/the/
+Date: Wed, 19 Dec 2018 17:47:35 +0000
+Message-ID: <20181219174735.GJ8130@sirena.org.uk>
+References: <20181218134743.13692-1-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6829890368113700823=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [81.169.146.164])
- by alsa0.perex.cz (Postfix) with ESMTP id E271E267B14
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 18:35:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <65b445e8-2202-0554-b920-97ce0f7833ce@linux.intel.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AADD267B20
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 18:47:39 +0100 (CET)
+In-Reply-To: <20181218134743.13692-1-geert+renesas@glider.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,45 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 19, 2018 at 10:54:55AM -0600, Pierre-Louis Bossart wrote:
-> 
-> > -static int is_byt_cr(struct device *dev, bool *bytcr)
-> > +static int is_byt_cr(struct platform_device *pdev, bool *bytcr)
-> >   {
-> > +	struct device *dev = &pdev->dev;
-> >   	int status = 0;
-> > +	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
-> > +		/* This message is even shown if the device would be detected as BYT-CR below */
-> > +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
-> > +		*bytcr = true;
-> > +		return status;
-> > +	}
-> > +
-> >   	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
-> >   		u32 bios_status;
-> 
-> This would be my preferred solution but if it doesn't work as Hans mentions
-> it then we need to think of alternatives.
-> 
-> Baytrail platforms are so different (BIOS and hardware) that I don't think
-> we'll manage to pull this off without quirks.
-> 
 
-It definitely works on my device and the few others I have seen with 
-only one IRQ listed. But there might be devices out there which are not 
-covered by the pmic-type based detection but still have all 6 IRQs 
-listed.
+--===============6829890368113700823==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="T4IYkFBVPN84tP7K"
+Content-Disposition: inline
 
-As for the "Teclast X98 Air 3G": Antonio, you mentioned that you have 
-last tested mainline a few years back. Can you re-test without any 
-modifications to the DSDT table on a recent mainline kernel?
 
-I just wonder if it is really not covered by the pmic-type based 
-detection. It does have quirks in mainline that were added with the pull 
-request that also added the pmic-type based BYT-CR detection (see [1]).
+--T4IYkFBVPN84tP7K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
+On Tue, Dec 18, 2018 at 02:47:43PM +0100, Geert Uytterhoeven wrote:
+> Fixes: 33f8db9a89200c18 ("ASoC: xlnx: enable i2s driver build")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+I already applied a patch from someone else fixing this.
+
+--T4IYkFBVPN84tP7K
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwahDcACgkQJNaLcl1U
+h9DzNQf7BOUwzoVwK7vcxh3IXa8rveokxdiW5VZcQWw9KA/iWn3RaeYn4xGEtxJI
+5aPPTo3F+dEYViV3qolHMrC4MGOKKG8HdZIBoUFkb/t684OSfEGcq43+yxA9pF5V
+0mTPfdfQcQvJxsxyTMmjn6Ysw0YIzo0JnRwiQ8DShcl+N0o+dBlL29yxQu30G7G4
+YWih+WX5KoUFPrrCnxdkF5iecje0HfZ+YmT0GZo2pGrEe0aMBk27si4OLZiCNUlb
+FsUrMLVMnpsylSMrCjZ1kam4+WRyOBtyMt6rk+UhZSTpWJbrcUgCHMcSNi31X1wk
+/4U70V1kHBFn+ZTAjYSlng1PsM7HWQ==
+=TyWN
+-----END PGP SIGNATURE-----
+
+--T4IYkFBVPN84tP7K--
+
+--===============6829890368113700823==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6829890368113700823==--
