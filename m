@@ -1,30 +1,15 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
- device
-Date: Wed, 19 Dec 2018 15:23:13 +0100
-Message-ID: <fae4f9e7-5ec6-307f-c862-47f25dbc2cfc@redhat.com>
-References: <20181216185429.GA20408@gerhold.net>
- <3b96d716-1d9f-a569-2afa-82b386e752e4@linux.intel.com>
- <20181217181729.GB845@gerhold.net>
- <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
- <20181217191054.GA10938@gerhold.net>
- <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
- <20181217203242.GB10938@gerhold.net> <20181217204320.GC10938@gerhold.net>
- <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
- <20181219130747.GA83656@gerhold.net>
- <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: Loading coefficients for Audio IP
+Date: Wed, 19 Dec 2018 19:29:12 +0530
+Message-ID: <20181219135912.GT2472@vkoul-mobl>
+References: <CAEnQRZAr22Yg=zSPJ5LEoqnkSp2dskKVXHiwwW698Ta3Bd_GTQ@mail.gmail.com>
+ <s5ho99hbqk7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com
- [209.85.128.46])
- by alsa0.perex.cz (Postfix) with ESMTP id D3190267AE2
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 15:23:15 +0100 (CET)
-Received: by mail-wm1-f46.google.com with SMTP id p6so6359129wmc.1
- for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 06:23:15 -0800 (PST)
-In-Reply-To: <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <s5ho99hbqk7.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,121 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Stephan Gerhold <stephan@gerhold.net>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Cosmin Samoila <cosmin.samoila@nxp.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxOS0xMi0xOCAxNTowNCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
-MTIvMTkvMTggNzowNyBBTSwgU3RlcGhhbiBHZXJob2xkIHdyb3RlOgo+PiBPbiBNb24sIERlYyAx
-NywgMjAxOCBhdCAwODoxMzozNlBNIC0wNjAwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToK
-Pj4+Cj4+Pj4+Pj4gVGhlIHF1aXJrcyB0byBnZXQgc291bmQgd29ya2luZyB3aXRoIGJ5dGNyLXJ0
-NTY0MCBvbiB0aGF0IGRldmljZSBhcmU6Cj4+Pj4+Pj4gQllUX1JUNTY0MF9TU1AwX0FJRjEgfCBC
-WVRfUlQ1NjQwX0lOMV9NQVAgfCBCWVRfUlQ1NjQwX01DTEtfRU4KPj4+Pj4+Pgo+Pj4+Pj4+IEkg
-Z3Vlc3MgdGhpcyBtZWFucyB0aGF0IFNTUDAgaXMgYmVpbmcgdXNlZD8KPj4+Pj4+IFllcyBpbmRl
-ZWQsIGFuZCB0aGF0IG1ha2VzIG1lIHRoaW5rIHdlIHNob3VsZCBmb3JjZSB0aGlzIGRldmljZSB0
-byBsb29rIGxpa2UKPj4+Pj4+IEJheXRyYWlsLUNSLgo+Pj4+Pj4KPj4+Pj4+IFlvdSBjYW4gZG8g
-dGhpcyB3aXRoIGEgRE1JLWJhc2VkIHF1aXJrIChwcmVmZXJhYmx5IGluIGlzX2J5dF9jciBkaXJl
-Y3RseSBzbwo+Pj4+Pj4gdGhhdCBJIGNhbiByZXVzZSB0aGUgY29kZSB3aGVuIEkgbW92ZSBpdCB0
-byBhIGhlbHBlciBhdCBzb21lIHBvaW50KS4KPj4+Pj4gT2theSAtIHRoYW5rcyEgT25lIGxhc3Qg
-cXVlc3Rpb246Cj4+Pj4+IEkgd2FzIGxvb2tpbmcgYXQgdGhlIEFDUEkgRFNEVCB0YWJsZXMgb2Yg
-c29tZSBzaW1pbGFyIGRldmljZXMgYW5kIGhhdmUKPj4+Pj4gZm91bmQgdHdvIG90aGVycyB0aGF0
-IGxvb2sgdGhlIHNhbWUgKG9ubHkgb25lIElSUSBsaXN0ZWQpLiBJbiB0aGlzIGNhc2UsCj4+Pj4+
-IHRoZSBCWVQtVCBhY3BpX2lwY19pcnFfaW5kZXggPSA1IHdpbGwgbmV2ZXIgd29yaywgYW5kIHdl
-IHdpbGwgZGVmaW5pdGVseQo+Pj4+PiBoYXZlIGEgYmV0dGVyIGNoYW5jZXMgd2l0aCB0cnlpbmcg
-QmF5dHJhaWwtQ1IuCj4+Pj4+Cj4+Pj4+IE9uZSBvZiB0aGVtIGFjdHVhbGx5IGhhZCBhIHNpbWls
-YXIgcGF0Y2ggcHJvcG9zZWQgYXQgWzFdIChhbHRob3VnaCB0aGV5Cj4+Pj4+IGRpZCBpdCBpbiBh
-IHdlaXJkIHdheSBhbmQgYWxzbyBuZWVkIGFuIGV4dHJhIG1hY2hpbmUgZHJpdmVyKS4KPj4+Pj4K
-Pj4+Pj4gV2UgY291bGQgYWxzbyBkZXRlY3QgdGhpcyBzaXR1YXRpb24gaW4gYSBnZW5lcmljIHdh
-eSB3aXRoIHNvbWV0aGluZyBsaWtlCj4+Pj4+Cj4+Pj4+IMKgwqDCoCBpZiAocGxhdGZvcm1faXJx
-X2NvdW50KHBkZXYpID09IDEpIHsKPj4+Pj4gwqDCoMKgwqDCoMKgwqAgKmJ5dGNyID0gdHJ1ZTsK
-Pj4+Pj4gwqDCoMKgwqByZXR1cm4gMDsKPj4+Pj4gwqDCoMKgIH0KPj4+Pj4KPj4+Pj4gLi4uIGlu
-c3RlYWQgb2YgYSBETUkgcXVpcmsuIFdoYXQgZG8geW91IHRoaW5rPwo+Pj4+Pgo+Pj4+IFRvIGF2
-b2lkIGNvbmZ1c2lvbjogVGhlIGV4aXN0aW5nIFBNSUMtdHlwZSBiYXNlZCBpc19ieXRfY3IoKSBk
-ZXRlY3Rpb24KPj4+PiB3b3VsZCBiZSB1c2VkIGluIGFsbCBvdGhlciBjYXNlcyAoaS5lLiBpZiBp
-cnFfY291bnQgIT0gMSksIHNvIGl0IHdvbid0Cj4+Pj4gbWFrZSBhbnkgZGlmZmVyZW5jZSBmb3Ig
-dGhlIGRldmljZXMgdGhhdCBhcmUgYWxyZWFkeSB3b3JraW5nIGZpbmUuCj4+Pj4gKE1vc3QgQllU
-LUNSIGRldmljZXMgc2VlbSB0byBoYXZlIDUgSVJRcyBsaXN0ZWQpCj4+Pj4KPj4+PiBTbyBpdCdz
-IG1vcmUgbGlrZQo+Pj4+Cj4+Pj4gwqDCoMKgIGlmIChwbGF0Zm9ybV9pcnFfY291bnQocGRldikg
-PT0gMSkgewo+Pj4+IMKgwqDCoMKgwqDCoMKgICpieXRjciA9IHRydWU7Cj4+Pj4gwqDCoMKgIH0g
-ZWxzZSB7Cj4+Pj4gwqDCoMKgwqDCoMKgwqAgLy8gcG1pYy10eXBlIGJhc2VkIGRldGVjdGlvbi4u
-Lgo+Pj4+IMKgwqDCoCB9Cj4+Pj4KPj4+PiB3aXRoIHBsYXRmb3JtX2lycV9jb3VudCA9PSAxIGFz
-IGNvbmRpdGlvbiBmb3IgdGhlICJxdWlyayIuCj4+Pgo+Pj4gVGhlIHNvbHV0aW9uIHNlZW1zIGFw
-cGVhbGluZyBidXQKPj4+Cj4+PiAxKSBkb2VzIGl0IHJlYWxseSB3b3JrPyBJIGFtIG5vdCBzdXJl
-IGFuIGluZGV4PTUgbWVhbnMgdGhlcmUgYXJlIDUKPj4+IGludGVycnVwdHMuCj4+Cj4+IFllcywg
-SSBiZWxpZXZlIHRoYXQgaXQgbWVhbnMgdGhhdCB0aGVyZSBuZWVkIHRvIGJlIChhdCBsZWFzdCkg
-NQo+PiBpbnRlcnJ1cHRzLgo+Pgo+PiBJIGhhdmUgY2hlY2tlZCB0aGUgc291cmNlIGNvZGUgb2Yg
-cGxhdGZvcm1fZ2V0X2lycS4KPj4gV2hlbiB5b3UgZG8gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAv
-KiBpbmRleCA9ICovIDUpIChhcyBkb25lIGZvciBCWVQtVCkKPj4gaXQgZmlyc3QgY2FsbHMKPj4K
-Pj4gwqDCoMKgwqAgcGxhdGZvcm1fZ2V0X3Jlc291cmNlKC8qIHR5cGUgPSAqLyBJT1JFU09VUkNF
-X0lSUSwgLyogbnVtID0gKi8gNSkKPj4KPj4gdG8gbG9va3VwIHRoZSByZXNvdXJjZS4gVGhhdCBt
-ZXRob2QgaXMgcmVhbGx5IHNpbXBsZSBhbmQgbG9va3MgbGlrZQo+Pgo+PiDCoMKgwqDCoGZvciAo
-aSA9IDA7IGkgPCBkZXYtPm51bV9yZXNvdXJjZXM7IGkrKykgewo+PiDCoMKgwqDCoMKgwqDCoCBz
-dHJ1Y3QgcmVzb3VyY2UgKnIgPSAmZGV2LT5yZXNvdXJjZVtpXTsKPj4KPj4gwqDCoMKgwqDCoMKg
-wqAgaWYgKHR5cGUgPT0gcmVzb3VyY2VfdHlwZShyKSAmJiBudW0tLSA9PSAwKQo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHJldHVybiByOwo+PiDCoMKgwqDCoH0KPj4KPj4gU28gd2hlbiB5b3Ug
-cmVxdWVzdCBhbiBJUlEgYXQgaW5kZXg9NSwgaXQgbG9vcHMgdGhyb3VnaCBhbGwgcmVzb3VyY2Vz
-LAo+PiBza2lwcyB0aGUgZmlyc3QgNSBJUlFzIGFuZCByZXR1cm5zIHRoZSA2dGggb25lIChvbiBt
-eSBkZXZpY2UsIGl0Cj4+IHJldHVybnMgTlVMTCBiZWNhdXNlIHRoZXJlIGFyZSBub3QgZW5vdWdo
-IElSUXMgbGlzdGVkKS4KPj4KPj4gVGhlcmUgaXMgYSBiaXQgbW9yZSBtYWdpYyBpbiBwbGF0Zm9y
-bV9pcnFfY291bnQgKGl0IGxvb2tzIHVwIGFsbCBJUlFzCj4+IGFuZCBkb2VzIG5vdCBjb3VudCBp
-bnZhbGlkIG9uZXMpLCBzbyB0byBiZSBhYnNvbHV0ZWx5IHNhZmUgd2UgY291bGQKPj4ganVzdCBj
-aGVjayBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UoSVJRLCA1KSA9PSBOVUxMIGVhcmx5Lgo+PiBJZiBp
-dCByZXR1cm5zIE5VTEwsIHRoZW4gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCA1KSB3aWxsIGFsc28g
-cmV0dXJuCj4+IC1FTlhJTywgc28gdHJlYXRpbmcgdGhlIGRldmljZSBhcyBCWVQtVCBpcyBndWFy
-YW50ZWVkIHRvIGZhaWwuCj4+IEluIHRoaXMgY2FzZSwgd2UgaGF2ZSBiZXR0ZXIgY2hhbmNlcyB3
-aGVuIHdlIGFzc3VtZSBCWVQtQ1IuCj4+Cj4+IEV4YW1wbGUgcGF0Y2g6IChJIGhhdmUgYWRkZWQg
-aXQgaW4gcHJvYmUgaW5zdGVhZCBvZiBpc19ieXRfY3IoKSBiZWNhdXNlCj4+IGl0IHJlcXVpcmVz
-IHRoZSBwbGF0Zm9ybSBkZXZpY2UsIHBsdXMgSSB0aGluayBpdCBtaWdodCBiZSBiZXR0ZXIgdG8K
-Pj4gZGlmZmVyZW50aWF0ZSB0aGUgbWVzc2FnZXMgaW4gdGhlIGtlcm5lbCBsb2cuLikKPj4KPj4g
-LS0tIGEvc291bmQvc29jL2ludGVsL2F0b20vc3N0L3NzdF9hY3BpLmMKPj4gKysrIGIvc291bmQv
-c29jL2ludGVsL2F0b20vc3N0L3NzdF9hY3BpLmMKPj4gQEAgLTMzNyw2ICszMzcsMTYgQEAgc3Rh
-dGljIGludCBzc3RfYWNwaV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiDC
-oMKgwqDCoMKgIGlmICghKChyZXQgPCAwKSB8fCAoYnl0Y3IgPT0gZmFsc2UpKSkgewo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqAgZGV2X2luZm8oZGV2LCAiRGV0ZWN0ZWQgQmF5dHJhaWwtQ1IgcGxhdGZv
-cm1cbiIpOwo+Pgo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLyogb3ZlcnJpZGUgcmVzb3VyY2UgaW5m
-byAqLwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgYnl0X3J2cF9wbGF0Zm9ybV9kYXRhLnJlc19pbmZv
-ID0gJmJ5dGNyX3Jlc19pbmZvOwo+PiArwqDCoMKgIH0gZWxzZSBpZiAocGxhdGZvcm1fZ2V0X3Jl
-c291cmNlKHBkZXYsIElPUkVTT1VSQ0VfSVJRLCA1KSA9PSBOVUxMKSB7Cj4+ICvCoMKgwqDCoMKg
-wqDCoCAvKgo+PiArwqDCoMKgwqDCoMKgwqDCoCAqIFNvbWUgZGV2aWNlcyBkZXRlY3RlZCBhcyBC
-WVQtVCBoYXZlIG9ubHkgYSBzaW5nbGUgSVJRIGxpc3RlZC4KPj4gK8KgwqDCoMKgwqDCoMKgwqAg
-KiBJbiB0aGlzIGNhc2UsIHBsYXRmb3JtX2dldF9pcnEgd2l0aCBpbmRleCA1IHdpbGwgcmV0dXJu
-IC1FTlhJTy4KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKiBGYWxsIGJhY2sgdG8gdGhlIEJZVC1DUiBy
-ZXNvdXJjZSBpbmZvIHRvIHVzZSB0aGUgY29ycmVjdCBJUlEuCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-ICovCj4+ICvCoMKgwqDCoMKgwqDCoCBkZXZfaW5mbyhkZXYsICJGYWxsaW5nIGJhY2sgdG8gQmF5
-dHJhaWwtQ1IgcGxhdGZvcm1cbiIpOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCAvKiBvdmVycmlk
-ZSByZXNvdXJjZSBpbmZvICovCj4+ICvCoMKgwqDCoMKgwqDCoCBieXRfcnZwX3BsYXRmb3JtX2Rh
-dGEucmVzX2luZm8gPSAmYnl0Y3JfcmVzX2luZm87Cj4+IMKgwqDCoMKgwqAgfQo+Pgo+Pj4KPj4+
-IDIpIHRoZSB0ZXN0IHdvdWxkIGFmZmVjdCBhbGwgZXhpc3RpbmcgZGV2aWNlcywgYW5kIHRoZXJl
-J3Mgc28gbXVjaCBoYXJkd2FyZQo+Pj4gcHJvbGlmZXJhdGlvbiB0aGF0IHByb3ZpbmcgdGhpcyBj
-aGFuZ2UgaW4gaGFybWxlc3MgbWlnaHQgYmUgZGlmZmljdWx0LiBJCj4+PiBwZXJzb25hbGx5IG9u
-bHkgaGF2ZSBvbmUgQllULVQgKEFTdXMgVDEwMCkgZGV2aWNlIGxlZnQgYW5kIGl0J3Mgbm90IHZl
-cnkKPj4+IHJlbGlhYmxlLiBIYW5zIHNlZW1zIHRvIGhhdmUgYSB0b24gb2YgZGV2aWNlcyBidXQg
-dGhleSBhcmUgbW9zdGx5IEJ5dC1Dcj8KPj4+Cj4+Cj4+IFdpdGggdGhlIHVwZGF0ZWQgcGF0Y2gg
-YWJvdmUgSSBiZWxpZXZlIHRoZXJlIGlzIGxpdGVyYWxseSBubyB3YXkgdGhpcwo+PiBjYW4gYnJl
-YWsgc291bmQgb24gYW55IGRldmljZS4gVGhlIGNvbmRpdGlvbiBvbmx5IGV2YWx1YXRlcyB0byB0
-cnVlIGlmCj4+IFNTVCB3b3VsZCBub3JtYWxseSBmYWlsIHRvIHByb2JlIGxhdGVyIGFueXdheS4K
-Pj4KPj4gSSBoYXZlIHRlc3RlZCB0aGUgcGF0Y2ggYWJvdmUgb24gbXkgZGV2aWNlIHdpdGg6Cj4+
-IMKgIC0gYXMtaXMsIHdpdGhvdXQgYW55IG1vZGlmaWNhdGlvbnM6Cj4+IMKgwqDCoMKgIC0+ICJG
-YWxsaW5nIGJhY2sgdG8gQmF5dHJhaWwtQ1IgcGxhdGZvcm0iLCBzb3VuZCBub3cgd29ya2luZwo+
-PiDCoCAtIGEgc2ltdWxhdGVkICJCWVQtVCIgZGV2aWNlOiAoY29waWVkIHRoZSBJUlFzIGZyb20g
-dGhlIERTRFQgb2YgdGhlIFQxMDBUQSkKPj4gwqDCoMKgwqAgLT4gIkJZVC1DUiBub3QgZGV0ZWN0
-ZWQiIC0gdXNlcyA1dGggSVJRLCBzb3VuZCB3b3JraW5nCj4+IMKgIC0gYSBzaW11bGF0ZWQgIkJZ
-VC1DUiIgZGV2aWNlIChtYWRlIGlzX2J5dF9jcigpIHJldHVybiAidHJ1ZSIgYW5kCj4+IMKgwqDC
-oCBjb3BpZWQgdGhlIElSUXMgZnJvbSB0aGUgRFNEVCBvZiB0aGUgVDEwMFRBRikKPj4gwqDCoMKg
-wqAgLT4gIkRldGVjdGVkIEJheXRyYWlsLUNSIHBsYXRmb3JtIiAtIHVzZXMgSVJRIGF0IGluZGV4
-IDAsIHNvdW5kIHdvcmtpbmcKPj4KPj4gTGV0IG1lIGtub3cgd2hhdCB5b3UgdGhpbmshCj4gCj4g
-U291bmRzIGdvb2QsIHBsYXlpbmcgd2l0aCByZXNvdXJjZXMgaXMgd2hhdCBJIGhhZCBpbiBtaW5k
-IHJhdGhlciB0aGFuIGFuIGludGVycnVwdCBjb3VudCB3aGljaCBpc24ndCBuZWNlc3NhcmlseSBz
-YWZlLiBUaGUgb25seSBpbXByb3ZlbWVudCBJIHdvdWxkIHN1Z2dlc3QgaXMgdG8gYWRkIHRoaXMg
-dGVzdCBpbnNpZGUgb2YgaXNfYnl0X2NyKCkuIFRoaXMgcm91dGluZSB3aWxsIGJlIG1vdmVkIGFz
-IGEgaGVscGVyIG91dHNpZGUgb2Ygc3N0X2FjcGkgdG8gYmUgcmV1c2VkIGZvciBTT0YsIHNvIGlm
-IHdlIGNhbiBtYWtlIHRoaXMgdGVzdCBtb3JlIHNlbGYtY29udGFpbmVkIGl0J3MgbW9yZSBmdXR1
-cmUtcHJvb2YuCgpBRkFJQ1QgdGhpcyB3aWxsIG5vdCBmaXggYWxsIGNhc2VzIG9mIHRoaXMsIHNv
-IGl0IG1pZ2h0IGJlIGJldHRlciB0byBzZWUgaWYKd2UgY2FuIG1ha2UgaXNfYnl0X2NyKCkgcmV0
-dXJuIHRydWUgb24gdGhlc2UgZGV2aWNlcyBpbiBzb21lIG90aGVyIHdheS4KCkUuZy4gdGhlICJU
-ZWNsYXN0IFg5OCBBaXIgM0ciIEFudG9uaW8gcmVwb3J0ZWQgZG9lcyBsaXN0IDUgSVJRcywgYnV0
-IHdlCnNob3VsZCBzdGlsbCB1c2UgdGhlIGZpcnN0IElSUSBhbmQgbm90IHRoZSA1dC4KCkFudG9u
-aW8sIGRvIHlvdSBrbm93IGlmIHlvdXIgZGV2aWNlIHVzZXMgU1NQMCA/CgpSZWdhcmRzLAoKSGFu
-cwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 19-12-18, 14:21, Takashi Iwai wrote:
+> On Wed, 19 Dec 2018 09:46:37 +0100,
+> Daniel Baluta wrote:
+> > 
+> > Hello Pierre, Liam, Mark,
+> > 
+> > What is the standard ALSA way of loading tables of coefficients for
+> > various audio IPs?
+> > 
+> > We have IPs like PDM or ASRC which need large table of coefficients
+> > depending on configuration. This tables can reach up to 120K in size.
+> > 
+> > Creating this kind of tables as arrays of integers in kernel doesn't seem
+> > to be a common used solution and we will end up with large files that
+> > contains only numbers.
+> > 
+> > Another approach that we are thinking of is to create and compile this
+> > tables in userspace as raw binary files and then loading them in kernel
+> > using the firmware interface.
+> > 
+> > Would this be an acceptable approach?
+> 
+> This is a topic we discuss every year in the conference ;)
+
+Yeah and a deprecated solution exists. Daniel you *can* use TLV_BYTES
+which allow you to load any size bytes into kernel using a kcontrol.
+
+Again, it is deprecated and we are supposed to come with a cooler
+solution, so you would need to move then as well
+
+-- 
+~Vinod
