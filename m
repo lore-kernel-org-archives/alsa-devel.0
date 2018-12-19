@@ -1,48 +1,76 @@
-From: Maruthi Srinivas Bayyavarapu
-        <maruthi.srinivas.bayyavarapu@xilinx.com>
-Subject: [PATCH 3/3] ASoC: xlnx: enable audio formatter driver build
-Date: Wed, 19 Dec 2018 22:49:09 +0530
-Message-ID: <1545239949-112845-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-References: <1545239949-112845-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+From: Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
+ device
+Date: Wed, 19 Dec 2018 18:35:02 +0100
+Message-ID: <20181219173502.GA44176@gerhold.net>
+References: <b3cf2bc5-bde3-3c3d-fd6a-ff426281563c@linux.intel.com>
+ <20181217191054.GA10938@gerhold.net>
+ <d5755c1c-f9d6-5bed-73ee-00a24d36fccc@linux.intel.com>
+ <20181217203242.GB10938@gerhold.net>
+ <20181217204320.GC10938@gerhold.net>
+ <86b92282-5bc1-b8de-93e7-97e7ee17db4b@linux.intel.com>
+ <20181219130747.GA83656@gerhold.net>
+ <f3c2105e-ac56-9be3-eff7-78ef2b0560ac@linux.intel.com>
+ <20181219150103.GA52375@gerhold.net>
+ <65b445e8-2202-0554-b920-97ce0f7833ce@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1545239949-112845-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [81.169.146.164])
+ by alsa0.perex.cz (Postfix) with ESMTP id E271E267B14
+ for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2018 18:35:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <65b445e8-2202-0554-b920-97ce0f7833ce@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Antonio Ospite <ao2@ao2.it>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable audio formatter driver build.
+On Wed, Dec 19, 2018 at 10:54:55AM -0600, Pierre-Louis Bossart wrote:
+> 
+> > -static int is_byt_cr(struct device *dev, bool *bytcr)
+> > +static int is_byt_cr(struct platform_device *pdev, bool *bytcr)
+> >   {
+> > +	struct device *dev = &pdev->dev;
+> >   	int status = 0;
+> > +	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
+> > +		/* This message is even shown if the device would be detected as BYT-CR below */
+> > +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
+> > +		*bytcr = true;
+> > +		return status;
+> > +	}
+> > +
+> >   	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+> >   		u32 bios_status;
+> 
+> This would be my preferred solution but if it doesn't work as Hans mentions
+> it then we need to think of alternatives.
+> 
+> Baytrail platforms are so different (BIOS and hardware) that I don't think
+> we'll manage to pull this off without quirks.
+> 
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
----
- sound/soc/xilinx/Kconfig  | 7 +++++++
- sound/soc/xilinx/Makefile | 2 ++
- 2 files changed, 9 insertions(+)
+It definitely works on my device and the few others I have seen with 
+only one IRQ listed. But there might be devices out there which are not 
+covered by the pmic-type based detection but still have all 6 IRQs 
+listed.
 
-diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
-index 723a583..ac48d6a 100644
---- a/sound/soc/xilinx/Kconfig
-+++ b/sound/soc/xilinx/Kconfig
-@@ -6,3 +6,10 @@ config SND_SOC_XILINX_I2S
- 	  mode, IP receives audio in AES format, extracts PCM and sends
- 	  PCM data. In receiver mode, IP receives PCM audio and
- 	  encapsulates PCM in AES format and sends AES data.
-+
-+config SND_SOC_XILINX_AUDIO_FORMATTER
-+        tristate "Audio support for the the Xilinx audio formatter"
-+        help
-+          Select this option to enable Xilinx audio formatter
-+          support. This provides DMA platform device support for
-+          audio functionality.
-diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
-index 6c1209b..432693b 100644
---- a/sound/soc/xilinx/Makefile
-+++ b/sound/soc/xilinx/Makefile
-@@ -1,2 +1,4 @@
- snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
- obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
-+snd-soc-xlnx-formatter-pcm-objs := xlnx_formatter_pcm.o
-+obj-$(CONFIG_SND_SOC_XILINX_AUDIO_FORMATTER) += snd-soc-xlnx-formatter-pcm.o
--- 
-2.7.4
+As for the "Teclast X98 Air 3G": Antonio, you mentioned that you have 
+last tested mainline a few years back. Can you re-test without any 
+modifications to the DSDT table on a recent mainline kernel?
+
+I just wonder if it is really not covered by the pmic-type based 
+detection. It does have quirks in mainline that were added with the pull 
+request that also added the pmic-type based BYT-CR detection (see [1]).
+
+[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
