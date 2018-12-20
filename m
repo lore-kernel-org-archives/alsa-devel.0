@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: change license header format
-	style" to the asoc tree
-Date: Thu, 20 Dec 2018 16:00:07 +0000 (GMT)
-Message-ID: <20181220160007.193B81121B87@debutante.sirena.org.uk>
-References: <1545212440-109949-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+Subject: Applied "ASoC: cs4341: Add DT bindings documentation
+	for CS4341 DAC" to the asoc tree
+Date: Thu, 20 Dec 2018 16:00:08 +0000 (GMT)
+Message-ID: <20181220160008.EF0AF1121B87@debutante.sirena.org.uk>
+References: <20181220073708.12014-1-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ABC0F267AAA
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 17:00:09 +0100 (CET)
-In-Reply-To: <1545212440-109949-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 63066267AC5
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 17:00:14 +0100 (CET)
+In-Reply-To: <20181220073708.12014-1-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Michal Simek <michal.simek@xilinx.com>, Vishal Sagar <vsagar@xilinx.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: change license header format style
+   ASoC: cs4341: Add DT bindings documentation for CS4341 DAC
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From b5ac0078aa6c40ea46760dcebf1ac4022217a51d Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Wed, 19 Dec 2018 15:10:40 +0530
-Subject: [PATCH] ASoC: xlnx: change license header format style
+>From 8cbfce88b09295534225e0ecd74d60bf8d47e474 Mon Sep 17 00:00:00 2001
+From: Alexander Shiyan <shc_work@mail.ru>
+Date: Thu, 20 Dec 2018 10:37:08 +0300
+Subject: [PATCH] ASoC: cs4341: Add DT bindings documentation for CS4341 DAC
 
-Changed License header from C to C++ style comment block.
+This patch adds DT bindings documentation for Cirrus Logic
+CS4341 DAC.
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/xlnx_i2s.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/sound/cs4341.txt      | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4341.txt
 
-diff --git a/sound/soc/xilinx/xlnx_i2s.c b/sound/soc/xilinx/xlnx_i2s.c
-index d4ae9eff41ce..8b353166ad44 100644
---- a/sound/soc/xilinx/xlnx_i2s.c
-+++ b/sound/soc/xilinx/xlnx_i2s.c
-@@ -1,12 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * Xilinx ASoC I2S audio support
-- *
-- * Copyright (C) 2018 Xilinx, Inc.
-- *
-- * Author: Praveen Vuppala <praveenv@xilinx.com>
-- * Author: Maruthi Srinivas Bayyavarapu <maruthis@xilinx.com>
-- */
-+//
-+// Xilinx ASoC I2S audio support
-+//
-+// Copyright (C) 2018 Xilinx, Inc.
-+//
-+// Author: Praveen Vuppala <praveenv@xilinx.com>
-+// Author: Maruthi Srinivas Bayyavarapu <maruthis@xilinx.com>
- 
- #include <linux/io.h>
- #include <linux/module.h>
+diff --git a/Documentation/devicetree/bindings/sound/cs4341.txt b/Documentation/devicetree/bindings/sound/cs4341.txt
+new file mode 100644
+index 000000000000..12b4aa8ef0db
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs4341.txt
+@@ -0,0 +1,22 @@
++Cirrus Logic CS4341 audio DAC
++
++This device supports both I2C and SPI (configured with pin strapping
++on the board).
++
++Required properties:
++  - compatible: "cirrus,cs4341a"
++  - reg : the I2C address of the device for I2C, the chip select
++          number for SPI.
++
++For required properties on I2C-bus, please consult
++Documentation/devicetree/bindings/i2c/i2c.txt
++For required properties on SPI-bus, please consult
++Documentation/devicetree/bindings/spi/spi-bus.txt
++
++Example:
++	codec: cs4341@0 {
++		#sound-dai-cells = <0>;
++		compatible = "cirrus,cs4341a";
++		reg = <0>;
++		spi-max-frequency = <6000000>;
++	};
 -- 
 2.20.1
