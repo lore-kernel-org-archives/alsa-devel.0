@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: xlnx: add pcm formatter platform
-	driver
-Date: Thu, 20 Dec 2018 15:06:56 +0000
-Message-ID: <20181220150656.GB9325@sirena.org.uk>
-References: <1545239949-112845-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
- <1545239949-112845-3-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 09/14] ASoC: SOF: Add firmware,
+ loader support
+Date: Thu, 20 Dec 2018 09:07:54 -0600
+Message-ID: <05d38b48-559f-75ce-6299-e1dfd3a62c30@linux.intel.com>
+References: <mailman.3934.1544619824.753.alsa-devel@alsa-project.org>
+ <1ce21393-048f-6c04-b899-8cbfbf93983e@linux.intel.com>
+ <s5h8t0kobov.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0425014690054138336=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BA44226798A
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 16:07:00 +0100 (CET)
-In-Reply-To: <1545239949-112845-3-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+In-Reply-To: <s5h8t0kobov.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,96 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Michal Simek <michal.simek@xilinx.com>, Vishal Sagar <vsagar@xilinx.com>
+To: Takashi Iwai <tiwai@suse.de>, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: daniel.baluta@gmail.com, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0425014690054138336==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
-Content-Disposition: inline
+>>>> +		snd_sof_dsp_block_write(sdev, offset,
+>>>> +					(void *)block + sizeof(*block),
+>>>> +					block->size);
+>>>> +
+>>>> +		/* next block */
+>>>> +		block = (void *)block + sizeof(*block) + block->size;
+>>> This may lead to an unaligned access.
+>> Did you mean we should double check the block->size to
+>> prevent access to an invalid address?
+> You need two types of checks for the given data:
+> - The bounce check of block->size;
+>    We need to avoid out-of-bounce access.
+s/bounce/bounds ?
+>
+> - Alignment of block->size;
+>    For some non-x86 platforms, the access to an unaligned address might
+>    be illegal.
 
+Maybe I am missing something but I don't see any sort of explicit 
+restriction on alignment in the SOF tools. it looks implicit based on 
+address offsets and bases.
 
---E39vaYmALEf/7YXx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Liam, do you see any negative side effects if we enforce a 32-bit 
+alignment for all blocks (which essentially means all block sizes are 
+multiple of 4)? we can try and experiment but it's better if we have an 
+agreement on the design.
 
-On Wed, Dec 19, 2018 at 10:49:08PM +0530, Maruthi Srinivas Bayyavarapu wrote:
-
-This looks mostly good, a few small things but all pretty trivial:
-
-> +	switch (bits_per_sample) {
-> +	case 8:
-> +		val |= (BIT_DEPTH_8 << AUD_CTRL_DATA_WIDTH_SHIFT);
-> +		break;
-> +	case 16:
-> +		val |= (BIT_DEPTH_16 << AUD_CTRL_DATA_WIDTH_SHIFT);
-> +		break;
-> +	case 20:
-> +		val |= (BIT_DEPTH_20 << AUD_CTRL_DATA_WIDTH_SHIFT);
-> +		break;
-> +	case 24:
-> +		val |= (BIT_DEPTH_24 << AUD_CTRL_DATA_WIDTH_SHIFT);
-> +		break;
-> +	case 32:
-> +		val |= (BIT_DEPTH_32 << AUD_CTRL_DATA_WIDTH_SHIFT);
-> +		break;
-> +	}
-
-It'd be better to have a default case returning an error for unsupported
-sample sizes.
-
-> +		ret = devm_request_irq(dev, aud_drv_data->mm2s_irq,
-> +				       xlnx_mm2s_irq_handler, 0,
-> +				       "xlnx_formatter_pcm_mm2s_irq", dev);
-> +		if (ret) {
-> +			dev_err(dev, "xlnx audio mm2s irq request failed\n");
-> +			goto clk_err;
-> +		}
-> +		ret = xlnx_formatter_pcm_reset(aud_drv_data->mmio +
-> +					       XLNX_MM2S_OFFSET);
-> +		if (ret) {
-> +			dev_err(dev, "audio formatter reset failed\n");
-> +			goto clk_err;
-> +		}
-> +		xlnx_formatter_disable_irqs(aud_drv_data->mmio +
-> +					    XLNX_MM2S_OFFSET,
-> +					    SNDRV_PCM_STREAM_PLAYBACK);
-
-This requests the interrupt before we've reset and quiesced the hardware
-meaning the interrupt could fire immediately on request with the
-hardware in an unknown state; it'd be better to reset the hardware first
-then request the interrupt to minimize the risk that something goes
-wrong with the handler.
-
-> +	dev_info(dev, "pcm platform device registered\n");
-> +	return 0;
-
-This is just adding noise to the log.
-
---E39vaYmALEf/7YXx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwbsBAACgkQJNaLcl1U
-h9Cpegf/WpTeT0YeDGH0yu/OmjEIpOjD5J8UooYjuzyLJCdKXLgfQy+I8gCQhe2M
-Y+gOMrV1HtL2EayxfPee5P00+H/4RfTZ63nDEJY/SAQTRS7CA93lmYVqMAwPSm6/
-mzeQmaawJJMPSK2dZFDwU9mafYaJzEiItW/eKFpUPbQSdqhCLHu41yaLGdxouvNv
-ZaUOeOkI/y0w//PUWnJFlO2ddPjhC6PcdtkOstzxKzSTVu6tYrHZE0R4nBiAh4+S
-SEdqbixMoAnuq9g2MfKzs1jopzMOpNjmcBpEE858EbZyOzG9b1gcHyxu21ldu2VQ
-cPdurnYOp1tr986M/Y9yTc8PhxJoAg==
-=sW2Y
------END PGP SIGNATURE-----
-
---E39vaYmALEf/7YXx--
-
---===============0425014690054138336==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0425014690054138336==--
+>
+> Oh, and recently another thing is sometimes needed for avoiding
+> Spectre.  This can be covered by array_index_nospec().
+>
+>
+>>> Also how is the endianess guaranteed?
+>> Did you mean we should guarantee the driver can work no
+>> matter what kernel's endianess is?
+>> ie. Use le32_to_cpu() to handle it?
+> Depends on the implementation.  IIRC, topology API refuses the data
+> in a different endianess by checking the magic number at beginning.
+snd_sof_dsp_block_write() is implemented with a platform-specific 
+callback, I'd expect any endianess issues to be handled in that 
+platform-specific code?
