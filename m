@@ -1,21 +1,31 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [RFC 1/2] ASoC: micfil: Add bindings for MICFIL DAI
-Date: Thu, 20 Dec 2018 13:56:35 -0600
-Message-ID: <20181220195635.GA22978@bogus>
-References: <1544433661-32496-1-git-send-email-cosmin.samoila@nxp.com>
- <1544433661-32496-2-git-send-email-cosmin.samoila@nxp.com>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Subject: Re: Need help fixing pop/click artifacts in an ASOC
+ driver
+Date: Thu, 20 Dec 2018 22:41:40 +0200
+Message-ID: <c95346b8-335a-88c4-484b-9ad4e1aebc12@gmail.com>
+References: <20181217123703.GF13868@sirena.org.uk>
+ <7dbf7969-c0ea-fe13-2044-17f36e458e21@gmail.com>
+ <20181217141008.GA27909@sirena.org.uk>
+ <53b182ce-c12b-6b97-4e26-f80d0651e8fa@gmail.com>
+ <20181217154043.GC27909@sirena.org.uk>
+ <f743bf6b-b10a-6c00-57d7-3a0df67d7bba@gmail.com>
+ <20181217165257.GD27909@sirena.org.uk>
+ <5a2103c5-194b-cb21-672e-d472e91825a8@gmail.com>
+ <20181219161949.GD8130@sirena.org.uk>
+ <8c996338-19a3-996b-16dc-5535688ccea2@gmail.com>
+ <20181220153613.GC9325@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it1-f193.google.com (mail-it1-f193.google.com
- [209.85.166.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C18ED2678D4
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 20:56:38 +0100 (CET)
-Received: by mail-it1-f193.google.com with SMTP id g85so3798926ita.3
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 11:56:38 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1544433661-32496-2-git-send-email-cosmin.samoila@nxp.com>
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com
+ [209.85.128.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73C472678D4
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 21:41:43 +0100 (CET)
+Received: by mail-wm1-f67.google.com with SMTP id a62so3377920wmh.4
+ for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 12:41:43 -0800 (PST)
+In-Reply-To: <20181220153613.GC9325@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +35,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cosmin Samoila <cosmin.samoila@nxp.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 10, 2018 at 09:21:14AM +0000, Cosmin Samoila wrote:
-> Document the bindings for MICFIL DAI.
+On 12/20/18 5:36 PM, Mark Brown wrote:
+> On Wed, Dec 19, 2018 at 11:44:46PM +0200, Dimitris Papavasiliou wrote:
+>> I got pops even if I opened the stream, called hw_params and closed it
+>> on each iteration, but, as it turns out, that was in part because I
+>> was being lazy, using a Python script to do the above, which sneaked
+>> in a hw_params call immediately after opening the stream, to "reset"
+>> it to default values.
 > 
-> Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,micfil.txt       | 38 ++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,micfil.txt
+> Wow, that's...  interesting.
+
+I'm not sure if you're referring to the Python module's behavior, or to
+the fact that I was so careless and am now boring you with it, so I'm
+going to assume the former. :)
+
+>> So I've retried your suggested approach.  It looks like setting
+>> .ignore_pmdown_time = 1 in the snd_soc_dai_link of the machine driver
+>> is enough to cause immediate power ups/downs, but I get the following
+>> behavior: The device gets powered up immediately after the first
+>> hw_params call (even if nothing gets played subsequently) and it gets
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.txt b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-> new file mode 100644
-> index 0000000..2aa4526
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-> @@ -0,0 +1,38 @@
-> +NXP MICFIL Digital Audio Interface (MICFIL).
-> +
-> +The MICFIL digital interface provides a 16-bit audio signal from a PDM
-> +microphone bitstream in a configurable output sampling rate.
-> +
-> +Required properties:
-> +
-> +  - compatible		: Compatible list, contains "fsl,imx8mm-micfil"
-> +
-> +  - reg			: Offset and length of the register set for the device.
-> +
-> +  - interrupts		: Contains the micfil interrupts.
-> +
-> +  - clocks		: Must contain an entry for each entry in clock-names.
-> +
-> +  - clock-names		: Must include the "ipg_clk" for register access and
-> +			  "ipg_clk_app" for internal micfil clock.
-> +
-> +  - dmas		: Generic dma devicetree binding as described in
-> +			  Documentation/devicetree/bindings/dma/dma.txt.
-> +
-> +  - dma-names		: One "rx" dma must be configured.
-
-You don't need -names when there is only one.
-
-> +
-> +Example:
-> +micfil: micfil@30080000 {
-> +	compatible = "fsl,imx8mm-micfil";
-> +	reg = <0x0 0x30080000 0x0 0x10000>;
-> +	interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +	clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-> +		 <&clk IMX8MM_CLK_PDM_ROOT>;
-> +	clock-names = "ipg_clk", "ipg_clk_app";
-> +	dmas = <&sdma2 24 26 0x80000000>;
-> +	dma-names = "rx";
-> +	status = "disabled";
-
-Don't show status in examples.
-
-> +};
-> -- 
-> 2.7.4
+> Are you sure it's the hw_params() call itself?
 > 
+>[...]
+> 
+> This is what's supposed to happen.  DAPM is triggered in the prepare()
+> callback, you can call hw_params() as often as you like and it should
+> have no interaction with DAPM at all.
+
+Ah, well, the explanation then probably lies in the fact that
+snd_pcm_hw_params, according to the documentation also prepares the
+stream:
+
+> Install one PCM hardware configuration chosen from a configuration
+> space and snd_pcm_prepare it.
+
+As far as I can see there's no other way to call hw_params from
+userspace, except for snd_pcm_set_params, which is just a wrapper that
+calls snd_pcm_hw_params internally, so I suppose calling hw_params to
+configure the stream, must inevitably lead to the device being powered
+up.
+
+Unfortunately the documentation ("Writing an ALSA Driver") on the
+prepare callback even warns explicitly, to:
+
+> Be careful that this callback will be called many times at each
+> setup, too.
+
+I'm not sure if this implies that configuring the card in multiple
+steps when setting up the stream is expected behavior, but it could be
+interpreted that way.
+
+Should we then accept, that some pops will be generated and hope that
+they'll be suppressed by the digital_mute callback?
