@@ -1,94 +1,50 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Thu, 20 Dec 2018 22:41:40 +0200
-Message-ID: <c95346b8-335a-88c4-484b-9ad4e1aebc12@gmail.com>
-References: <20181217123703.GF13868@sirena.org.uk>
- <7dbf7969-c0ea-fe13-2044-17f36e458e21@gmail.com>
- <20181217141008.GA27909@sirena.org.uk>
- <53b182ce-c12b-6b97-4e26-f80d0651e8fa@gmail.com>
- <20181217154043.GC27909@sirena.org.uk>
- <f743bf6b-b10a-6c00-57d7-3a0df67d7bba@gmail.com>
- <20181217165257.GD27909@sirena.org.uk>
- <5a2103c5-194b-cb21-672e-d472e91825a8@gmail.com>
- <20181219161949.GD8130@sirena.org.uk>
- <8c996338-19a3-996b-16dc-5535688ccea2@gmail.com>
- <20181220153613.GC9325@sirena.org.uk>
+From: Ross Zwisler <zwisler@google.com>
+Subject: [PATCH] ASoC: rt5677: use more of the volume range from DACs
+Date: Thu, 20 Dec 2018 16:25:55 -0700
+Message-ID: <20181220232555.90030-1-zwisler@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com
- [209.85.128.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 73C472678D4
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 21:41:43 +0100 (CET)
-Received: by mail-wm1-f67.google.com with SMTP id a62so3377920wmh.4
- for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2018 12:41:43 -0800 (PST)
-In-Reply-To: <20181220153613.GC9325@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Dylan Reid <dgreid@chromium.org>, Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Hsinyu Chao <hychao@chromium.org>, Ross Zwisler <zwisler@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/20/18 5:36 PM, Mark Brown wrote:
-> On Wed, Dec 19, 2018 at 11:44:46PM +0200, Dimitris Papavasiliou wrote:
->> I got pops even if I opened the stream, called hw_params and closed it
->> on each iteration, but, as it turns out, that was in part because I
->> was being lazy, using a Python script to do the above, which sneaked
->> in a hw_params call immediately after opening the stream, to "reset"
->> it to default values.
-> 
-> Wow, that's...  interesting.
+From: Dylan Reid <dgreid@chromium.org>
 
-I'm not sure if you're referring to the Python module's behavior, or to
-the fact that I was so careless and am now boring you with it, so I'm
-going to assume the former. :)
+The DACs volume can go over 0, both according to the data sheet and
+real world testing.  The control can go up to +30dB.
 
->> So I've retried your suggested approach.  It looks like setting
->> .ignore_pmdown_time = 1 in the snd_soc_dai_link of the machine driver
->> is enough to cause immediate power ups/downs, but I get the following
->> behavior: The device gets powered up immediately after the first
->> hw_params call (even if nothing gets played subsequently) and it gets
-> 
-> Are you sure it's the hw_params() call itself?
-> 
->[...]
-> 
-> This is what's supposed to happen.  DAPM is triggered in the prepare()
-> callback, you can call hw_params() as often as you like and it should
-> have no interaction with DAPM at all.
+This was tested by playing audio at full volume on a samus chromebook.
 
-Ah, well, the explanation then probably lies in the fact that
-snd_pcm_hw_params, according to the documentation also prepares the
-stream:
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+Reviewed-by: Hsinyu Chao <hychao@chromium.org>
+Signed-off-by: Ross Zwisler <zwisler@google.com>
+---
+ sound/soc/codecs/rt5677.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> Install one PCM hardware configuration chosen from a configuration
-> space and snd_pcm_prepare it.
-
-As far as I can see there's no other way to call hw_params from
-userspace, except for snd_pcm_set_params, which is just a wrapper that
-calls snd_pcm_hw_params internally, so I suppose calling hw_params to
-configure the stream, must inevitably lead to the device being powered
-up.
-
-Unfortunately the documentation ("Writing an ALSA Driver") on the
-prepare callback even warns explicitly, to:
-
-> Be careful that this callback will be called many times at each
-> setup, too.
-
-I'm not sure if this implies that configuring the card in multiple
-steps when setting up the stream is expected behavior, but it could be
-interpreted that way.
-
-Should we then accept, that some pops will be generated and hope that
-they'll be suppressed by the digital_mute callback?
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 9b7a1833d3316..513fec86301e8 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -832,13 +832,13 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
+ 
+ 	/* DAC Digital Volume */
+ 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5677_DAC1_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5677_DAC2_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC3 Playback Volume", RT5677_DAC3_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_TLV("DAC4 Playback Volume", RT5677_DAC4_DIG_VOL,
+-		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
++		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
+ 
+ 	/* IN1/IN2 Control */
+ 	SOC_SINGLE_TLV("IN1 Boost", RT5677_IN1, RT5677_BST_SFT1, 8, 0, bst_tlv),
+-- 
+2.20.1.415.g653613c723-goog
