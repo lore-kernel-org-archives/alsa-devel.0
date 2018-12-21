@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: check "reg" property
-	on asoc_simple_card_get_dai_id()" to the asoc tree
-Date: Fri, 21 Dec 2018 18:15:37 +0000 (GMT)
-Message-ID: <20181221181537.A4A141121B93@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: Atom: simplify boolean tests" to
+	the asoc tree
+Date: Fri, 21 Dec 2018 18:15:41 +0000 (GMT)
+Message-ID: <20181221181541.568D31121B93@debutante.sirena.org.uk>
+References: <20181216224910.16198-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 361C4267B4F
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:38 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 50359267B52
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:45 +0100 (CET)
+In-Reply-To: <20181216224910.16198-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: check "reg" property on asoc_simple_card_get_dai_id()
+   ASoC: Intel: Atom: simplify boolean tests
 
 has been applied to the asoc tree at
 
@@ -52,67 +53,87 @@ to this mail.
 Thanks,
 Mark
 
->From a4ad6c42a7368b6e9ff5732c390b319a1b259134 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Dec 2018 10:45:42 +0900
-Subject: [PATCH] ASoC: simple-card-utils: check "reg" property on
- asoc_simple_card_get_dai_id()
+>From 724d68e11efe4385838d4cdcd3e2ab2168c40e27 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Sun, 16 Dec 2018 16:49:08 -0600
+Subject: [PATCH] ASoC: Intel: Atom: simplify boolean tests
 
-We will get DAI ID from "reg" property if it has on DT, otherwise get
-it by counting port/endpoint.
+Detected with Coccinelle
 
-But in below case, we need to get DAI ID = 0 via port reg = <0>, but
-current implementation returns ID = 1, because it can't judge ID = 0 was
-from "non reg" or "reg = <0>".
-Thus, it will count port/endpoint number as "non reg" case.
-
-of_graph_parse_endpoint() implementation itself is not a problem,
-but because asoc_simple_card_get_dai_id() need to count port/endpoint
-number when "non reg" case, it need to know ID = 0 was from
-"non reg" or "reg = <0>".
-This patch fix this issue.
-
-	port {
-		reg = <0>;
-		xxxx: endpoint@0 {
-		};
-=>		xxxx: endpoint@1 {
-		};
-	};
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-atom-controls.c     | 2 +-
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
+ sound/soc/intel/atom/sst/sst_acpi.c          | 2 +-
+ sound/soc/intel/atom/sst/sst_drv_interface.c | 2 +-
+ sound/soc/intel/atom/sst/sst_loader.c        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index b807a47515eb..336895f7fd1e 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -283,12 +283,20 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
- 	/* use endpoint/port reg if exist */
- 	ret = of_graph_parse_endpoint(ep, &info);
- 	if (ret == 0) {
--		if (info.id)
-+		/*
-+		 * Because it will count port/endpoint if it doesn't have "reg".
-+		 * But, we can't judge whether it has "no reg", or "reg = <0>"
-+		 * only of_graph_parse_endpoint().
-+		 * We need to check "reg" property
-+		 */
-+		if (of_get_property(ep,   "reg", NULL))
- 			return info.id;
--		if (info.port)
-+
-+		node = of_get_parent(ep);
-+		of_node_put(node);
-+		if (of_get_property(node, "reg", NULL))
- 			return info.port;
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index 3672d36b4b66..d1207ea53523 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -647,7 +647,7 @@ static int sst_swm_mixer_event(struct snd_soc_dapm_widget *w,
+ 		set_mixer = false;
  	}
--
- 	node = of_graph_get_port_parent(ep);
  
- 	/*
+-	if (set_mixer == false)
++	if (!set_mixer)
+ 		return 0;
+ 
+ 	if (SND_SOC_DAPM_EVENT_ON(event) ||
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index afc559866095..aefa5ce4cb59 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -190,7 +190,7 @@ int sst_fill_stream_params(void *substream,
+ 	map = ctx->pdata->pdev_strm_map;
+ 	map_size = ctx->pdata->strm_map_size;
+ 
+-	if (is_compress == true)
++	if (is_compress)
+ 		cstream = (struct snd_compr_stream *)substream;
+ 	else
+ 		pstream = (struct snd_pcm_substream *)substream;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index ac542535b9d5..3a95ebbfc45d 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -334,7 +334,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	ret = is_byt_cr(dev, &bytcr);
+-	if (!((ret < 0) || (bytcr == false))) {
++	if (!(ret < 0 || !bytcr)) {
+ 		dev_info(dev, "Detected Baytrail-CR platform\n");
+ 
+ 		/* override resource info */
+diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+index 5455d6e0ab53..a592df06aa58 100644
+--- a/sound/soc/intel/atom/sst/sst_drv_interface.c
++++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+@@ -146,7 +146,7 @@ static int sst_power_control(struct device *dev, bool state)
+ 	int ret = 0;
+ 	int usage_count = 0;
+ 
+-	if (state == true) {
++	if (state) {
+ 		ret = pm_runtime_get_sync(dev);
+ 		usage_count = GET_USAGE_COUNT(dev);
+ 		dev_dbg(ctx->dev, "Enable: pm usage count: %d\n", usage_count);
+diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
+index b8c456753f01..321c783cf833 100644
+--- a/sound/soc/intel/atom/sst/sst_loader.c
++++ b/sound/soc/intel/atom/sst/sst_loader.c
+@@ -269,7 +269,7 @@ static void sst_do_memcpy(struct list_head *memcpy_list)
+ 	struct sst_memcpy_list *listnode;
+ 
+ 	list_for_each_entry(listnode, memcpy_list, memcpylist) {
+-		if (listnode->is_io == true)
++		if (listnode->is_io)
+ 			memcpy32_toio((void __iomem *)listnode->dstn,
+ 					listnode->src, listnode->size);
+ 		else
 -- 
 2.20.1
