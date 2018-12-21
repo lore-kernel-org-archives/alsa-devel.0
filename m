@@ -1,20 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/4] ASoC: wm8904: Automatically enable FLL
 	when selected
-Date: Fri, 21 Dec 2018 11:52:27 +0000
-Message-ID: <20181221115227.GG16508@imbe.wolfsonmicro.main>
+Date: Fri, 21 Dec 2018 11:58:31 +0000
+Message-ID: <20181221115831.GD4996@sirena.org.uk>
 References: <cover.1545249666.git.mirq-linux@rere.qmqm.pl>
  <5353df1d654eae0bbbf26bc1a1d172e611c385db.1545249666.git.mirq-linux@rere.qmqm.pl>
+ <20181221115227.GG16508@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2523030256451064904=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A297A267A78
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 12:52:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <5353df1d654eae0bbbf26bc1a1d172e611c385db.1545249666.git.mirq-linux@rere.qmqm.pl>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05D25267A78
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 12:58:35 +0100 (CET)
+In-Reply-To: <20181221115227.GG16508@imbe.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,74 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBEZWMgMTksIDIwMTggYXQgMDk6MTE6MTVQTSArMDEwMCwgTWljaGHFgiBNaXJvc8WC
-YXcgd3JvdGU6Cj4gVGhpcyBtYWtlcyBGTEwgdGhlIGNsb2NrIHVzZWQgZnJvbSBhdWRpby1ncmFw
-aC1jYXJkIHBsYXRmb3JtIGRyaXZlcgo+IChpdCBleHBsaWNpdGx5IHVzZXMgY2xvY2sgaWQgMCku
-ICBPdGhlciBwbGF0Zm9ybSBkcml2ZXJzIHNlbGVjdCB0aGUKPiBjbG9jayBtYW51YWxseS4KPiAK
-PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYcWCIE1pcm9zxYJhdyA8bWlycS1saW51eEByZXJlLnFtcW0u
-cGw+Cj4gLS0tCgpJIHdvbmRlciBhIGxpdHRsZSBpZiB0aGlzIHBhcnQgaXMgcmVhbGx5IHN1aXRh
-YmxlIGZvciB1c2Ugd2l0aApzaW1wbGUgY2FyZC4KCj4gIHNvdW5kL3NvYy9jb2RlY3Mvd204OTA0
-LmMgfCAyMSArKysrKysrKysrKysrKysrKystLS0KPiAgc291bmQvc29jL2NvZGVjcy93bTg5MDQu
-aCB8ICAyICstCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
-bnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy93bTg5MDQuYyBiL3NvdW5k
-L3NvYy9jb2RlY3Mvd204OTA0LmMKPiBpbmRleCAyYTNlNWZiZDA0ZTQuLmY4YTE3ZmNkZmRlYiAx
-MDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3dtODkwNC5jCj4gKysrIGIvc291bmQvc29j
-L2NvZGVjcy93bTg5MDQuYwo+IEBAIC0zMTUsNiArMzE1LDkgQEAgc3RhdGljIGJvb2wgd204OTA0
-X3JlYWRhYmxlX3JlZ2lzdGVyKHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHJlZykK
-PiAgCX0KPiAgfQo+ICAKPiArc3RhdGljIGludCB3bTg5MDRfc2V0X2ZsbChzdHJ1Y3Qgc25kX3Nv
-Y19jb21wb25lbnQgKmNvbXBvbmVudCwgaW50IGZsbF9pZCwgaW50IHNvdXJjZSwKPiArCQkJICB1
-bnNpZ25lZCBpbnQgRnJlZiwgdW5zaWduZWQgaW50IEZvdXQpOwo+ICsKPiAgc3RhdGljIGludCB3
-bTg5MDRfY29uZmlndXJlX2Nsb2NraW5nKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9u
-ZW50KQo+ICB7Cj4gIAlzdHJ1Y3Qgd204OTA0X3ByaXYgKndtODkwNCA9IHNuZF9zb2NfY29tcG9u
-ZW50X2dldF9kcnZkYXRhKGNvbXBvbmVudCk7Cj4gQEAgLTMzOSw2ICszNDIsMTMgQEAgc3RhdGlj
-IGludCB3bTg5MDRfY29uZmlndXJlX2Nsb2NraW5nKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAq
-Y29tcG9uZW50KQo+ICAJCWJyZWFrOwo+ICAKPiAgCWNhc2UgV004OTA0X0NMS19GTEw6Cj4gKwkJ
-aWYgKCF3bTg5MDQtPmZsbF9mb3V0KSB7Cj4gKwkJCWludCByZXQgPSB3bTg5MDRfc2V0X2ZsbChj
-b21wb25lbnQsIFdNODkwNF9GTExfTUNMSywgV004OTA0X0ZMTF9NQ0xLLAo+ICsJCQkJCQkgY2xr
-X2dldF9yYXRlKHdtODkwNC0+bWNsayksIDEyMjg4MDAwKTsKPiArCQkJaWYgKHJldCkKPiArCQkJ
-CXJldHVybiByZXQ7Cj4gKwkJfQoKV2hhdCBpcyB5b3VyIHRoaW5raW5nIG9uIHNlbGVjdGluZyBh
-IDEyLjI4TUh6IGNsb2NrPyBXaWxsIHRoaXMKbm90IGNhdXNlIGlzc3VlcyB3aXRoIHNheSA0NC4x
-ayBwbGF5YmFjaz8KCj4gKwo+ICAJCWRldl9kYmcoY29tcG9uZW50LT5kZXYsICJVc2luZyAlZEh6
-IEZMTCBjbG9ja1xuIiwKPiAgCQkJd204OTA0LT5mbGxfZm91dCk7Cj4gIAo+IEBAIC0xNjc1LDEw
-ICsxNjg1LDkgQEAgc3RhdGljIGludCBmbGxfZmFjdG9ycyhzdHJ1Y3QgX2ZsbF9kaXYgKmZsbF9k
-aXYsIHVuc2lnbmVkIGludCBGcmVmLAo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4gLXN0YXRpYyBp
-bnQgd204OTA0X3NldF9mbGwoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksIGludCBmbGxfaWQsIGlu
-dCBzb3VyY2UsCj4gK3N0YXRpYyBpbnQgd204OTA0X3NldF9mbGwoc3RydWN0IHNuZF9zb2NfY29t
-cG9uZW50ICpjb21wb25lbnQsIGludCBmbGxfaWQsIGludCBzb3VyY2UsCj4gIAkJCSAgdW5zaWdu
-ZWQgaW50IEZyZWYsIHVuc2lnbmVkIGludCBGb3V0KQo+ICB7Cj4gLQlzdHJ1Y3Qgc25kX3NvY19j
-b21wb25lbnQgKmNvbXBvbmVudCA9IGRhaS0+Y29tcG9uZW50Owo+ICAJc3RydWN0IHdtODkwNF9w
-cml2ICp3bTg5MDQgPSBzbmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2ZGF0YShjb21wb25lbnQpOwo+
-ICAJc3RydWN0IF9mbGxfZGl2IGZsbF9kaXY7Cj4gIAlpbnQgcmV0LCB2YWw7Cj4gQEAgLTE4MTQs
-NiArMTgyMywxMiBAQCBzdGF0aWMgaW50IHdtODkwNF9zZXRfZmxsKHN0cnVjdCBzbmRfc29jX2Rh
-aSAqZGFpLCBpbnQgZmxsX2lkLCBpbnQgc291cmNlLAo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCj4g
-K3N0YXRpYyBpbnQgd204OTA0X3NldF9kYWlfZmxsKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLCBp
-bnQgZmxsX2lkLCBpbnQgc291cmNlLAo+ICsJCQkgICAgICB1bnNpZ25lZCBpbnQgRnJlZiwgdW5z
-aWduZWQgaW50IEZvdXQpCj4gK3sKPiArCXJldHVybiB3bTg5MDRfc2V0X2ZsbChkYWktPmNvbXBv
-bmVudCwgZmxsX2lkLCBzb3VyY2UsIEZyZWYsIEZvdXQpOwo+ICt9Cj4gKwo+ICBzdGF0aWMgaW50
-IHdtODkwNF9kaWdpdGFsX211dGUoc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksIGludCBt
-dXRlKQo+ICB7Cj4gIAlzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCA9IGNvZGVj
-X2RhaS0+Y29tcG9uZW50Owo+IEBAIC0xOTIxLDcgKzE5MzYsNyBAQCBzdGF0aWMgY29uc3Qgc3Ry
-dWN0IHNuZF9zb2NfZGFpX29wcyB3bTg5MDRfZGFpX29wcyA9IHsKPiAgCS5zZXRfc3lzY2xrID0g
-d204OTA0X3NldF9zeXNjbGssCj4gIAkuc2V0X2ZtdCA9IHdtODkwNF9zZXRfZm10LAo+ICAJLnNl
-dF90ZG1fc2xvdCA9IHdtODkwNF9zZXRfdGRtX3Nsb3QsCj4gLQkuc2V0X3BsbCA9IHdtODkwNF9z
-ZXRfZmxsLAo+ICsJLnNldF9wbGwgPSB3bTg5MDRfc2V0X2RhaV9mbGwsCj4gIAkuaHdfcGFyYW1z
-ID0gd204OTA0X2h3X3BhcmFtcywKPiAgCS5kaWdpdGFsX211dGUgPSB3bTg5MDRfZGlnaXRhbF9t
-dXRlLAo+ICB9Owo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtODkwNC5oIGIvc291
-bmQvc29jL2NvZGVjcy93bTg5MDQuaAo+IGluZGV4IGMyOWEwZTgxMzFjYS4uZWQzMjYwYmNhZTYy
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvd204OTA0LmgKPiArKysgYi9zb3VuZC9z
-b2MvY29kZWNzL3dtODkwNC5oCj4gQEAgLTEzLDggKzEzLDggQEAKPiAgI2lmbmRlZiBfV004OTA0
-X0gKPiAgI2RlZmluZSBfV004OTA0X0gKPiAgCj4gKyNkZWZpbmUgV004OTA0X0NMS19GTEwgIDAK
-PiAgI2RlZmluZSBXTTg5MDRfQ0xLX01DTEsgMQo+IC0jZGVmaW5lIFdNODkwNF9DTEtfRkxMICAy
-CgpBIGxpdHRsZSBuZXJ2b3VzIGFib3V0IG1ha2luZyBDTEtfRkxMIDAgdGhhdCBtZWFucyB0aGF0
-IHRoZXJlIGlzCm5vIGxvbmdlciBhbnkgY29uY2VwdCBvZiBhbiB1bmRlZmluZWQgc3lzY2xrX3Ny
-YywgcGVyaGFwcyB3ZQpzaG91bGQgYWxzbyBpbml0aWFsaXNlIHRoaW5ncyBpbiB0aGUgZHJpdmVy
-IHRvIG1haW50YWluIHRoYXQKY29uY2VwdC4KCj4gIAo+ICAjZGVmaW5lIFdNODkwNF9GTExfTUNM
-SyAgICAgICAgICAxCj4gICNkZWZpbmUgV004OTA0X0ZMTF9CQ0xLICAgICAgICAgIDIKPiAtLSAK
-PiAyLjE5LjIKClRoYW5rcywKQ2hhcmxlcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+--===============2523030256451064904==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vni90+aGYgRvsTuO"
+Content-Disposition: inline
+
+
+--vni90+aGYgRvsTuO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 21, 2018 at 11:52:27AM +0000, Charles Keepax wrote:
+> On Wed, Dec 19, 2018 at 09:11:15PM +0100, Micha=C5=82 Miros=C5=82aw wrote:
+
+> > +		if (!wm8904->fll_fout) {
+> > +			int ret =3D wm8904_set_fll(component, WM8904_FLL_MCLK, WM8904_FLL_M=
+CLK,
+> > +						 clk_get_rate(wm8904->mclk), 12288000);
+> > +			if (ret)
+> > +				return ret;
+> > +		}
+
+> What is your thinking on selecting a 12.28MHz clock? Will this
+> not cause issues with say 44.1k playback?
+
+The driver just shouldn't be making decisions like this at all, either
+generic code or a machine driver should do so.
+
+--vni90+aGYgRvsTuO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwc1WYACgkQJNaLcl1U
+h9BAaAf+PlpKcduMcse5TSx/0V3V2Q1NaHHyu1KAIUarJyTxDUGrz/YNVaM+KV6+
+BBMxvkvu0DryGT780p6xfFqrDGLwDnnUHTCsbfRHcebm2AAg+xsRQJ5Xn/0DeqSh
+NK9+LiNzlH0fJWCZZb439uaHBsIpM8j0KnQxYJ/YmZN7719oX8LOvwmPiC+5qu8q
+UV1qPwL1DdriD24fQEo7qB0TYPJhq1bmp1022c7AwkKVWDgUGfP1r6hs/GgGQQW6
+SHDPWZVmmemiyLE+7UF6w2odGDNh0zr6FNhYVq9TG/9FxnusS84Da0Wk/L+DtbY8
+qEAUZr992fqStRus9UYdAejkY+O+kg==
+=+/QD
+-----END PGP SIGNATURE-----
+
+--vni90+aGYgRvsTuO--
+
+--===============2523030256451064904==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2523030256451064904==--
