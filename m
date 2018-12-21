@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: Fix a NULL vs
-	IS_ERR() bug" to the asoc tree
-Date: Fri, 21 Dec 2018 13:42:27 +0000 (GMT)
-Message-ID: <20181221134227.DAF411121B93@debutante.sirena.org.uk>
-References: <20181221090516.GB2735@kadam>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: Off by one in
+	of_q6asm_parse_dai_data()" to the asoc tree
+Date: Fri, 21 Dec 2018 13:42:29 +0000 (GMT)
+Message-ID: <20181221134229.B95561121B93@debutante.sirena.org.uk>
+References: <20181221090442.GA2735@kadam>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EB97F267AC8
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 14:42:28 +0100 (CET)
-In-Reply-To: <20181221090516.GB2735@kadam>
+ by alsa0.perex.cz (Postfix) with ESMTP id DA2E5267A78
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 14:42:30 +0100 (CET)
+In-Reply-To: <20181221090442.GA2735@kadam>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: Fix a NULL vs IS_ERR() bug
+   ASoC: qdsp6: q6asm-dai: Off by one in of_q6asm_parse_dai_data()
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 168f6a0b0d2a9c662a6b5d839385dcce70e8c518 Mon Sep 17 00:00:00 2001
+>From 6f10aff97f5d2c9a26a4deff1482f845841b7307 Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 21 Dec 2018 12:05:16 +0300
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: Fix a NULL vs IS_ERR() bug
+Date: Fri, 21 Dec 2018 12:04:42 +0300
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: Off by one in
+ of_q6asm_parse_dai_data()
 
-The q6asm_audio_client_alloc() doesn't return NULL, it returns error
-pointers.
+The q6asm_fe_dais[] array has MAX_SESSIONS (8) elements so the >
+comparison should be >= or we access one element beyond the end of the
+array.
 
 Fixes: 22930c79ac5c ("ASoC: qdsp6: q6asm-dai: Add support to compress offload")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 9d738b4c1e05..3407e51b8861 100644
+index 5b986b74dd36..9d738b4c1e05 100644
 --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
 +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -570,10 +570,11 @@ static int q6asm_dai_compr_open(struct snd_compr_stream *stream)
- 	prtd->audio_client = q6asm_audio_client_alloc(dev,
- 					(q6asm_cb)compress_event_handler,
- 					prtd, stream_id, LEGACY_PCM_MODE);
--	if (!prtd->audio_client) {
-+	if (IS_ERR(prtd->audio_client)) {
- 		dev_err(dev, "Could not allocate memory\n");
-+		ret = PTR_ERR(prtd->audio_client);
- 		kfree(prtd);
--		return -ENOMEM;
-+		return ret;
- 	}
+@@ -874,7 +874,7 @@ static int of_q6asm_parse_dai_data(struct device *dev,
  
- 	size = COMPR_PLAYBACK_MAX_FRAGMENT_SIZE *
+ 	for_each_child_of_node(dev->of_node, node) {
+ 		ret = of_property_read_u32(node, "reg", &id);
+-		if (ret || id > MAX_SESSIONS || id < 0) {
++		if (ret || id >= MAX_SESSIONS || id < 0) {
+ 			dev_err(dev, "valid dai id not found:%d\n", ret);
+ 			continue;
+ 		}
 -- 
 2.20.1
