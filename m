@@ -1,50 +1,33 @@
-From: Ross Zwisler <zwisler@google.com>
-Subject: [PATCH] ASoC: rt5677: use more of the volume range from DACs
-Date: Thu, 20 Dec 2018 16:25:55 -0700
-Message-ID: <20181220232555.90030-1-zwisler@google.com>
+From: Maruthi Srinivas Bayyavarapu
+        <maruthi.srinivas.bayyavarapu@xilinx.com>
+Subject: [PATCH v2 0/3] add Xilinx audio formatter driver
+Date: Fri, 21 Dec 2018 14:27:26 +0530
+Message-ID: <1545382649-181411-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Dylan Reid <dgreid@chromium.org>, Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Hsinyu Chao <hychao@chromium.org>, Ross Zwisler <zwisler@google.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Dylan Reid <dgreid@chromium.org>
+Audio formatter IP supports two streaming interfaces - MM2S for playback
+and S2MM for capture. The driver enables DMA functionality for both the
+interfaces. Patchset includes devicetree bindings documentation, driver
+and build enablement.
 
-The DACs volume can go over 0, both according to the data sheet and
-real world testing.  The control can go up to +30dB.
+Maruthi Srinivas Bayyavarapu (3):
+  dt-bindings: ASoC: xlnx,audio-formatter: Document audio formatter
+    bindings
+  ASoC: xlnx: add pcm formatter platform driver
+  ASoC: xlnx: enable audio formatter driver build
 
-This was tested by playing audio at full volume on a samus chromebook.
+ .../bindings/sound/xlnx,audio-formatter.txt        |  29 ++
+ sound/soc/xilinx/Kconfig                           |   7 +
+ sound/soc/xilinx/Makefile                          |   2 +
+ sound/soc/xilinx/xlnx_formatter_pcm.c              | 565 +++++++++++++++++++++
+ 4 files changed, 603 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+ create mode 100644 sound/soc/xilinx/xlnx_formatter_pcm.c
 
-Signed-off-by: Dylan Reid <dgreid@chromium.org>
-Reviewed-by: Hsinyu Chao <hychao@chromium.org>
-Signed-off-by: Ross Zwisler <zwisler@google.com>
----
- sound/soc/codecs/rt5677.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 9b7a1833d3316..513fec86301e8 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -832,13 +832,13 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
- 
- 	/* DAC Digital Volume */
- 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5677_DAC1_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5677_DAC2_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC3 Playback Volume", RT5677_DAC3_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 	SOC_DOUBLE_TLV("DAC4 Playback Volume", RT5677_DAC4_DIG_VOL,
--		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 87, 0, dac_vol_tlv),
-+		RT5677_L_VOL_SFT, RT5677_R_VOL_SFT, 127, 0, dac_vol_tlv),
- 
- 	/* IN1/IN2 Control */
- 	SOC_SINGLE_TLV("IN1 Boost", RT5677_IN1, RT5677_BST_SFT1, 8, 0, bst_tlv),
 -- 
-2.20.1.415.g653613c723-goog
+2.7.4
