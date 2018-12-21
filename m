@@ -1,12 +1,14 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v3 0/9] ASoC: sun4i-i2s: Updates to the driver
-Date: Fri, 21 Dec 2018 16:21:01 +0100
-Message-ID: <20181221152110.17982-1-codekipper@gmail.com>
+Subject: [PATCH v3 1/9] ASoC: sun4i-i2s: Adjust regmap settings
+Date: Fri, 21 Dec 2018 16:21:02 +0100
+Message-ID: <20181221152110.17982-2-codekipper@gmail.com>
+References: <20181221152110.17982-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBB2MJ6TQAKGQEZAIAWBI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBB2UJ6TQAKGQEW4H3BFQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20181221152110.17982-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,69 +21,99 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi All,
+Bypass the regmap cache when flushing the i2s FIFOs and modify the tables
+to reflect this.
 
-here is a patch series to add some improvements to the sun4i-i2s driver
-found whilst getting slave clocking and hdmi audio working on the newer
-SoCs. Since the last push there has been some activity getting surround
-sound working and this is included.
-
-The functionality included with the new patch set has been extended to
-cover more sample resolutions, multi-lane data output for HDMI audio
-and some bug fixes that have been discovered along the way.
-
-I can see more usage of the tdm property since I last attempted to push
-these patches and the examples currently in mainline sort of the opposite
-to what I'm trying to achieve. When we first started looking at the i2s
-driver, the codecs that we were using allowed for the frame width to be
-determined based on the sampling resolution but in most use cases it
-seems that a fixed width is required(my highest priority should be to get
-HDMI audio support in). We're using the tdm property to override the old
-way to calculate the frame width. What I've seen in what has already been
-mainlined is that the i2s driver has a frame width that is fixed to 32
-bits and this can be overridden using the tdm property.
-
-Anyway, I've moved the more controversial patches to the top of the stack
-as I'm expecting feedback.
-
-Have a great Xmas and New Year,
-
-BR,
-CK
-
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
+ sound/soc/sunxi/sun4i-i2s.c | 29 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-v3 changes compared to v2 are:
- - added back slave mode changes
- - added back the use of tdm properties
- - changes to regmap and caching
- - removed loopback functionality
- - fixes to the channel offset mask
-
-v2 changes compared to v1 are:
- - removed slave mode changes which didn't set mclk and bclk div.
- - removed use of tdm and now use a dedicated property.
- - fix commit message to better explain reason for sign extending
- - add divider calculations for newer SoCs.
- - add support for multi-lane i2s data output.
- - add support for 20, 24 and 32 bit samples.
- - add loopback property so blocks can be tested without a codec.
-
----
-
-Marcus Cooper (9):
-  ASoC: sun4i-i2s: Adjust regmap settings
-  ASoC: sun4i-i2s: Add regmap field to sign extend sample
-  ASoc: sun4i-i2s: Add 20, 24 and 32 bit support
-  ASoC: sun4i-i2s: Fix offset mask
-  ASoC: sun4i-i2s: Correct divider calculations
-  ASoC: sun4i-i2s: Add multi-lane functionality
-  ASoC: sun4i-i2s: Do not divide clocks when slave
-  ASoC: sun4i-i2s: Add set_tdm_slot functionality
-  ASoC: sun4i-i2s: Add multichannel functionality
-
- sound/soc/sunxi/sun4i-i2s.c | 399 ++++++++++++++++++++++++------------
- 1 file changed, 267 insertions(+), 132 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index d5ec1a20499d..64d073cb2aee 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -548,9 +548,11 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+ {
+ 	/* Flush RX FIFO */
++	regcache_cache_bypass(i2s->regmap, true);
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_RX);
++	regcache_cache_bypass(i2s->regmap, false);
+ 
+ 	/* Clear RX counter */
+ 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CNT_REG, 0);
+@@ -569,9 +571,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+ static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
+ {
+ 	/* Flush TX FIFO */
++	regcache_cache_bypass(i2s->regmap, true);
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
+ 			   SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
++	regcache_cache_bypass(i2s->regmap, false);
+ 
+ 	/* Clear TX counter */
+ 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
+@@ -703,13 +707,7 @@ static const struct snd_soc_component_driver sun4i_i2s_component = {
+ 
+ static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
+ {
+-	switch (reg) {
+-	case SUN4I_I2S_FIFO_TX_REG:
+-		return false;
+-
+-	default:
+-		return true;
+-	}
++	return true;
+ }
+ 
+ static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
+@@ -728,6 +726,8 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case SUN4I_I2S_FIFO_RX_REG:
++	case SUN4I_I2S_FIFO_TX_REG:
++	case SUN4I_I2S_FIFO_STA_REG:
+ 	case SUN4I_I2S_INT_STA_REG:
+ 	case SUN4I_I2S_RX_CNT_REG:
+ 	case SUN4I_I2S_TX_CNT_REG:
+@@ -738,23 +738,12 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+-{
+-	switch (reg) {
+-	case SUN8I_I2S_FIFO_TX_REG:
+-		return false;
+-
+-	default:
+-		return true;
+-	}
+-}
+-
+ static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	if (reg == SUN8I_I2S_INT_STA_REG)
+ 		return true;
+ 	if (reg == SUN8I_I2S_FIFO_TX_REG)
+-		return false;
++		return true;
+ 
+ 	return sun4i_i2s_volatile_reg(dev, reg);
+ }
+@@ -809,7 +798,7 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+ 	.reg_defaults	= sun8i_i2s_reg_defaults,
+ 	.num_reg_defaults	= ARRAY_SIZE(sun8i_i2s_reg_defaults),
+ 	.writeable_reg	= sun4i_i2s_wr_reg,
+-	.readable_reg	= sun8i_i2s_rd_reg,
++	.readable_reg	= sun4i_i2s_rd_reg,
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
 -- 
 2.20.1
