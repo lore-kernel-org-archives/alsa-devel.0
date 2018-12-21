@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: support ACODEC for rk3328" to
+Subject: Applied "ASoC: simple-card: reduce naming prefix" to
 	the asoc tree
-Date: Fri, 21 Dec 2018 18:15:00 +0000 (GMT)
-Message-ID: <20181221181500.CBB301121B93@debutante.sirena.org.uk>
-References: <20181220153636.5213-1-katsuhiro@katsuster.net>
+Date: Fri, 21 Dec 2018 18:15:02 +0000 (GMT)
+Message-ID: <20181221181502.A97211121B93@debutante.sirena.org.uk>
+References: <87ftut7zc2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 92ADE267AB2
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:01 +0100 (CET)
-In-Reply-To: <20181220153636.5213-1-katsuhiro@katsuster.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id D271C267944
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:03 +0100 (CET)
+In-Reply-To: <87ftut7zc2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: support ACODEC for rk3328
+   ASoC: simple-card: reduce naming prefix
 
 has been applied to the asoc tree at
 
@@ -53,842 +53,429 @@ to this mail.
 Thanks,
 Mark
 
->From dc1b33660692441867a8ec5be147915dfa3bc8cb Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Fri, 21 Dec 2018 00:36:35 +0900
-Subject: [PATCH] ASoC: rockchip: support ACODEC for rk3328
+>From 982a98d009fd7c768621d06df806cbe5a8b59c8c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 20 Dec 2018 10:47:34 +0900
+Subject: [PATCH] ASoC: simple-card: reduce naming prefix
 
-This patch adds support for audio CODEC core of rk3328.
+Current simple-card is using asoc_simple_card_xxx() for
+function / data naming. Because of this long prefix, it is easy to be
+80 character over.
+Let's reduce prefix from asoc_simple_card_xxx() to simple_xxx().
 
-Rockchip does not publish detail specification of this core
-but driver source code is opened on their GitHub repository.
-  https://github.com/rockchip-linux/kernel
-
-So I ported this code to linux-next and added some trivial fixes.
-
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/rockchip,rk3328-codec.txt  |  23 +
- sound/soc/codecs/Kconfig                      |   5 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/rk3328_codec.c               | 517 ++++++++++++++++++
- sound/soc/codecs/rk3328_codec.h               | 210 +++++++
- 5 files changed, 757 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
- create mode 100644 sound/soc/codecs/rk3328_codec.c
- create mode 100644 sound/soc/codecs/rk3328_codec.h
+ sound/soc/generic/simple-card.c | 157 ++++++++++++++++----------------
+ 1 file changed, 79 insertions(+), 78 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
-new file mode 100644
-index 000000000000..2469588c7ccb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3328-codec.txt
-@@ -0,0 +1,23 @@
-+* Rockchip Rk3328 internal codec
-+
-+Required properties:
-+
-+- compatible: "rockchip,rk3328-codec"
-+- reg: physical base address of the controller and length of memory mapped
-+  region.
-+- rockchip,grf: the phandle of the syscon node for GRF register.
-+- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
-+- clock-names: should be "pclk".
-+- spk-depop-time-ms: speak depop time msec.
-+
-+Example for rk3328 internal codec:
-+
-+codec: codec@ff410000 {
-+	compatible = "rockchip,rk3328-codec";
-+	reg = <0x0 0xff410000 0x0 0x1000>;
-+	rockchip,grf = <&grf>;
-+	clocks = <&cru PCLK_ACODEC>;
-+	clock-names = "pclk";
-+	spk-depop-time-ms = 100;
-+	status = "disabled";
-+};
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index d46de3e04ff6..87cb9c51e6f5 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -130,6 +130,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_PCM5102A
- 	select SND_SOC_PCM512x_I2C if I2C
- 	select SND_SOC_PCM512x_SPI if SPI_MASTER
-+	select SND_SOC_RK3328
- 	select SND_SOC_RT274 if I2C
- 	select SND_SOC_RT286 if I2C
- 	select SND_SOC_RT298 if I2C
-@@ -806,6 +807,10 @@ config SND_SOC_PCM512x_SPI
- 	select SND_SOC_PCM512x
- 	select REGMAP_SPI
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index e796b1516b40..479de236e694 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -15,7 +15,7 @@
+ #include <sound/soc-dai.h>
+ #include <sound/soc.h>
  
-+config SND_SOC_RK3328
-+	tristate "Rockchip RK3328 audio CODEC"
-+	select REGMAP_MMIO
-+
- config SND_SOC_RL6231
- 	tristate
- 	default y if SND_SOC_RT5514=y
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index fbe36e6177b0..9bb3346fab2f 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -133,6 +133,7 @@ snd-soc-pcm5102a-objs := pcm5102a.o
- snd-soc-pcm512x-objs := pcm512x.o
- snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
- snd-soc-pcm512x-spi-objs := pcm512x-spi.o
-+snd-soc-rk3328-objs := rk3328_codec.o
- snd-soc-rl6231-objs := rl6231.o
- snd-soc-rl6347a-objs := rl6347a.o
- snd-soc-rt1305-objs := rt1305.o
-@@ -400,6 +401,7 @@ obj-$(CONFIG_SND_SOC_PCM5102A)	+= snd-soc-pcm5102a.o
- obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
- obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
- obj-$(CONFIG_SND_SOC_PCM512x_SPI)	+= snd-soc-pcm512x-spi.o
-+obj-$(CONFIG_SND_SOC_RK3328)	+= snd-soc-rk3328.o
- obj-$(CONFIG_SND_SOC_RL6231)	+= snd-soc-rl6231.o
- obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
- obj-$(CONFIG_SND_SOC_RT1305)	+= snd-soc-rt1305.o
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-new file mode 100644
-index 000000000000..71f3fc2d970c
---- /dev/null
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -0,0 +1,517 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// rk3328 ALSA SoC Audio driver
-+//
-+// Copyright (c) 2017, Fuzhou Rockchip Electronics Co., Ltd All rights reserved.
-+
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/syscon.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include "rk3328_codec.h"
-+
-+/*
-+ * volume setting
-+ * 0: -39dB
-+ * 26: 0dB
-+ * 31: 6dB
-+ * Step: 1.5dB
-+ */
-+#define OUT_VOLUME	(0x18)
-+#define RK3328_GRF_SOC_CON2	(0x0408)
-+#define RK3328_GRF_SOC_CON10	(0x0428)
-+#define INITIAL_FREQ	(11289600)
-+
-+struct rk3328_codec_priv {
-+	struct regmap *regmap;
-+	struct regmap *grf;
-+	struct clk *mclk;
-+	struct clk *pclk;
-+	unsigned int sclk;
-+	int spk_depop_time; /* msec */
-+};
-+
-+static const struct reg_default rk3328_codec_reg_defaults[] = {
-+	{ CODEC_RESET, 0x03 },
-+	{ DAC_INIT_CTRL1, 0x00 },
-+	{ DAC_INIT_CTRL2, 0x50 },
-+	{ DAC_INIT_CTRL3, 0x0e },
-+	{ DAC_PRECHARGE_CTRL, 0x01 },
-+	{ DAC_PWR_CTRL, 0x00 },
-+	{ DAC_CLK_CTRL, 0x00 },
-+	{ HPMIX_CTRL, 0x00 },
-+	{ HPOUT_CTRL, 0x00 },
-+	{ HPOUTL_GAIN_CTRL, 0x00 },
-+	{ HPOUTR_GAIN_CTRL, 0x00 },
-+	{ HPOUT_POP_CTRL, 0x11 },
-+};
-+
-+static int rk3328_codec_reset(struct rk3328_codec_priv *rk3328)
-+{
-+	regmap_write(rk3328->regmap, CODEC_RESET, 0x00);
-+	mdelay(10);
-+	regmap_write(rk3328->regmap, CODEC_RESET, 0x03);
-+
-+	return 0;
-+}
-+
-+static int rk3328_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(dai->component);
-+	unsigned int val;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		val = PIN_DIRECTION_IN | DAC_I2S_MODE_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		val = PIN_DIRECTION_OUT | DAC_I2S_MODE_MASTER;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(rk3328->regmap, DAC_INIT_CTRL1,
-+			   PIN_DIRECTION_MASK | DAC_I2S_MODE_MASK, val);
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+	case SND_SOC_DAIFMT_DSP_B:
-+		val = DAC_MODE_PCM;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		val = DAC_MODE_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		val = DAC_MODE_RJM;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		val = DAC_MODE_LJM;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(rk3328->regmap, DAC_INIT_CTRL2,
-+			   DAC_MODE_MASK, val);
-+
-+	return 0;
-+}
-+
-+static void rk3328_analog_output(struct rk3328_codec_priv *rk3328, int mute)
-+{
-+	unsigned int val = BIT(17);
-+
-+	if (mute)
-+		val |= BIT(1);
-+
-+	regmap_write(rk3328->grf, RK3328_GRF_SOC_CON10, val);
-+}
-+
-+static int rk3328_digital_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(dai->component);
-+	unsigned int val;
-+
-+	if (mute)
-+		val = HPOUTL_MUTE | HPOUTR_MUTE;
-+	else
-+		val = HPOUTL_UNMUTE | HPOUTR_UNMUTE;
-+
-+	regmap_update_bits(rk3328->regmap, HPOUT_CTRL,
-+			   HPOUTL_MUTE_MASK | HPOUTR_MUTE_MASK, val);
-+
-+	return 0;
-+}
-+
-+static int rk3328_codec_power_on(struct rk3328_codec_priv *rk3328, int wait_ms)
-+{
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_XCHARGE_MASK, DAC_CHARGE_PRECHARGE);
-+	mdelay(10);
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_CURRENT_ALL_MASK,
-+			   DAC_CHARGE_CURRENT_ALL_ON);
-+	mdelay(wait_ms);
-+
-+	return 0;
-+}
-+
-+static int rk3328_codec_power_off(struct rk3328_codec_priv *rk3328, int wait_ms)
-+{
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_XCHARGE_MASK, DAC_CHARGE_DISCHARGE);
-+	mdelay(10);
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_CURRENT_ALL_MASK,
-+			   DAC_CHARGE_CURRENT_ALL_ON);
-+	mdelay(wait_ms);
-+
-+	return 0;
-+}
-+
-+static const struct rk3328_reg_msk_val playback_open_list[] = {
-+	{ DAC_PWR_CTRL, DAC_PWR_MASK, DAC_PWR_ON },
-+	{ DAC_PWR_CTRL, DACL_PATH_REFV_MASK | DACR_PATH_REFV_MASK,
-+	  DACL_PATH_REFV_ON | DACR_PATH_REFV_ON },
-+	{ DAC_PWR_CTRL, HPOUTL_ZERO_CROSSING_MASK | HPOUTR_ZERO_CROSSING_MASK,
-+	  HPOUTL_ZERO_CROSSING_ON | HPOUTR_ZERO_CROSSING_ON },
-+	{ HPOUT_POP_CTRL, HPOUTR_POP_MASK | HPOUTL_POP_MASK,
-+	  HPOUTR_POP_WORK | HPOUTL_POP_WORK },
-+	{ HPMIX_CTRL, HPMIXL_MASK | HPMIXR_MASK, HPMIXL_EN | HPMIXR_EN },
-+	{ HPMIX_CTRL, HPMIXL_INIT_MASK | HPMIXR_INIT_MASK,
-+	  HPMIXL_INIT_EN | HPMIXR_INIT_EN },
-+	{ HPOUT_CTRL, HPOUTL_MASK | HPOUTR_MASK, HPOUTL_EN | HPOUTR_EN },
-+	{ HPOUT_CTRL, HPOUTL_INIT_MASK | HPOUTR_INIT_MASK,
-+	  HPOUTL_INIT_EN | HPOUTR_INIT_EN },
-+	{ DAC_CLK_CTRL, DACL_REFV_MASK | DACR_REFV_MASK,
-+	  DACL_REFV_ON | DACR_REFV_ON },
-+	{ DAC_CLK_CTRL, DACL_CLK_MASK | DACR_CLK_MASK,
-+	  DACL_CLK_ON | DACR_CLK_ON },
-+	{ DAC_CLK_CTRL, DACL_MASK | DACR_MASK, DACL_ON | DACR_ON },
-+	{ DAC_CLK_CTRL, DACL_INIT_MASK | DACR_INIT_MASK,
-+	  DACL_INIT_ON | DACR_INIT_ON },
-+	{ DAC_SELECT, DACL_SELECT_MASK | DACR_SELECT_MASK,
-+	  DACL_SELECT | DACR_SELECT },
-+	{ HPMIX_CTRL, HPMIXL_INIT2_MASK | HPMIXR_INIT2_MASK,
-+	  HPMIXL_INIT2_EN | HPMIXR_INIT2_EN },
-+	{ HPOUT_CTRL, HPOUTL_MUTE_MASK | HPOUTR_MUTE_MASK,
-+	  HPOUTL_UNMUTE | HPOUTR_UNMUTE },
-+};
-+
-+static int rk3328_codec_open_playback(struct rk3328_codec_priv *rk3328)
-+{
-+	int i;
-+
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_CURRENT_ALL_MASK,
-+			   DAC_CHARGE_CURRENT_I);
-+
-+	for (i = 0; i < ARRAY_SIZE(playback_open_list); i++) {
-+		regmap_update_bits(rk3328->regmap,
-+				   playback_open_list[i].reg,
-+				   playback_open_list[i].msk,
-+				   playback_open_list[i].val);
-+		mdelay(1);
-+	}
-+
-+	msleep(rk3328->spk_depop_time);
-+	rk3328_analog_output(rk3328, 1);
-+
-+	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
-+			   HPOUTL_GAIN_MASK, OUT_VOLUME);
-+	regmap_update_bits(rk3328->regmap, HPOUTR_GAIN_CTRL,
-+			   HPOUTR_GAIN_MASK, OUT_VOLUME);
-+
-+	return 0;
-+}
-+
-+static const struct rk3328_reg_msk_val playback_close_list[] = {
-+	{ HPMIX_CTRL, HPMIXL_INIT2_MASK | HPMIXR_INIT2_MASK,
-+	  HPMIXL_INIT2_DIS | HPMIXR_INIT2_DIS },
-+	{ DAC_SELECT, DACL_SELECT_MASK | DACR_SELECT_MASK,
-+	  DACL_UNSELECT | DACR_UNSELECT },
-+	{ HPOUT_CTRL, HPOUTL_MUTE_MASK | HPOUTR_MUTE_MASK,
-+	  HPOUTL_MUTE | HPOUTR_MUTE },
-+	{ HPOUT_CTRL, HPOUTL_INIT_MASK | HPOUTR_INIT_MASK,
-+	  HPOUTL_INIT_DIS | HPOUTR_INIT_DIS },
-+	{ HPOUT_CTRL, HPOUTL_MASK | HPOUTR_MASK, HPOUTL_DIS | HPOUTR_DIS },
-+	{ HPMIX_CTRL, HPMIXL_MASK | HPMIXR_MASK, HPMIXL_DIS | HPMIXR_DIS },
-+	{ DAC_CLK_CTRL, DACL_MASK | DACR_MASK, DACL_OFF | DACR_OFF },
-+	{ DAC_CLK_CTRL, DACL_CLK_MASK | DACR_CLK_MASK,
-+	  DACL_CLK_OFF | DACR_CLK_OFF },
-+	{ DAC_CLK_CTRL, DACL_REFV_MASK | DACR_REFV_MASK,
-+	  DACL_REFV_OFF | DACR_REFV_OFF },
-+	{ HPOUT_POP_CTRL, HPOUTR_POP_MASK | HPOUTL_POP_MASK,
-+	  HPOUTR_POP_XCHARGE | HPOUTL_POP_XCHARGE },
-+	{ DAC_PWR_CTRL, DACL_PATH_REFV_MASK | DACR_PATH_REFV_MASK,
-+	  DACL_PATH_REFV_OFF | DACR_PATH_REFV_OFF },
-+	{ DAC_PWR_CTRL, DAC_PWR_MASK, DAC_PWR_OFF },
-+	{ HPMIX_CTRL, HPMIXL_INIT_MASK | HPMIXR_INIT_MASK,
-+	  HPMIXL_INIT_DIS | HPMIXR_INIT_DIS },
-+	{ DAC_CLK_CTRL, DACL_INIT_MASK | DACR_INIT_MASK,
-+	  DACL_INIT_OFF | DACR_INIT_OFF },
-+};
-+
-+static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
-+{
-+	size_t i;
-+
-+	rk3328_analog_output(rk3328, 0);
-+
-+	regmap_update_bits(rk3328->regmap, HPOUTL_GAIN_CTRL,
-+			   HPOUTL_GAIN_MASK, 0);
-+	regmap_update_bits(rk3328->regmap, HPOUTR_GAIN_CTRL,
-+			   HPOUTR_GAIN_MASK, 0);
-+
-+	for (i = 0; i < ARRAY_SIZE(playback_close_list); i++) {
-+		regmap_update_bits(rk3328->regmap,
-+				   playback_close_list[i].reg,
-+				   playback_close_list[i].msk,
-+				   playback_close_list[i].val);
-+		mdelay(1);
-+	}
-+
-+	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
-+			   DAC_CHARGE_CURRENT_ALL_MASK,
-+			   DAC_CHARGE_CURRENT_I);
-+
-+	return 0;
-+}
-+
-+static int rk3328_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(dai->component);
-+	unsigned int val = 0;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		val = DAC_VDL_16BITS;
-+		break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		val = DAC_VDL_20BITS;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		val = DAC_VDL_24BITS;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		val = DAC_VDL_32BITS;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	regmap_update_bits(rk3328->regmap, DAC_INIT_CTRL2, DAC_VDL_MASK, val);
-+
-+	val = DAC_WL_32BITS | DAC_RST_DIS;
-+	regmap_update_bits(rk3328->regmap, DAC_INIT_CTRL3,
-+			   DAC_WL_MASK | DAC_RST_MASK, val);
-+
-+	return 0;
-+}
-+
-+static int rk3328_pcm_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(dai->component);
-+
-+	return rk3328_codec_open_playback(rk3328);
-+}
-+
-+static void rk3328_pcm_shutdown(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(dai->component);
-+
-+	rk3328_codec_close_playback(rk3328);
-+}
-+
-+static const struct snd_soc_dai_ops rk3328_dai_ops = {
-+	.hw_params = rk3328_hw_params,
-+	.set_fmt = rk3328_set_dai_fmt,
-+	.digital_mute = rk3328_digital_mute,
-+	.startup = rk3328_pcm_startup,
-+	.shutdown = rk3328_pcm_shutdown,
-+};
-+
-+static struct snd_soc_dai_driver rk3328_dai[] = {
-+	{
-+		.name = "rk3328-hifi",
-+		.id = RK3328_HIFI,
-+		.playback = {
-+			.stream_name = "HIFI Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = (SNDRV_PCM_FMTBIT_S16_LE |
-+				    SNDRV_PCM_FMTBIT_S20_3LE |
-+				    SNDRV_PCM_FMTBIT_S24_LE |
-+				    SNDRV_PCM_FMTBIT_S32_LE),
-+		},
-+		.capture = {
-+			.stream_name = "HIFI Capture",
-+			.channels_min = 2,
-+			.channels_max = 8,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = (SNDRV_PCM_FMTBIT_S16_LE |
-+				    SNDRV_PCM_FMTBIT_S20_3LE |
-+				    SNDRV_PCM_FMTBIT_S24_LE |
-+				    SNDRV_PCM_FMTBIT_S32_LE),
-+		},
-+		.ops = &rk3328_dai_ops,
-+	},
-+};
-+
-+static int rk3328_codec_probe(struct snd_soc_component *component)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	rk3328_codec_reset(rk3328);
-+	rk3328_codec_power_on(rk3328, 0);
-+
-+	return 0;
-+}
-+
-+static void rk3328_codec_remove(struct snd_soc_component *component)
-+{
-+	struct rk3328_codec_priv *rk3328 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	rk3328_codec_close_playback(rk3328);
-+	rk3328_codec_power_off(rk3328, 0);
-+}
-+
-+static const struct snd_soc_component_driver soc_codec_rk3328 = {
-+	.probe = rk3328_codec_probe,
-+	.remove = rk3328_codec_remove,
-+};
-+
-+static bool rk3328_codec_write_read_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CODEC_RESET:
-+	case DAC_INIT_CTRL1:
-+	case DAC_INIT_CTRL2:
-+	case DAC_INIT_CTRL3:
-+	case DAC_PRECHARGE_CTRL:
-+	case DAC_PWR_CTRL:
-+	case DAC_CLK_CTRL:
-+	case HPMIX_CTRL:
-+	case DAC_SELECT:
-+	case HPOUT_CTRL:
-+	case HPOUTL_GAIN_CTRL:
-+	case HPOUTR_GAIN_CTRL:
-+	case HPOUT_POP_CTRL:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool rk3328_codec_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CODEC_RESET:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct regmap_config rk3328_codec_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = HPOUT_POP_CTRL,
-+	.writeable_reg = rk3328_codec_write_read_reg,
-+	.readable_reg = rk3328_codec_write_read_reg,
-+	.volatile_reg = rk3328_codec_volatile_reg,
-+	.reg_defaults = rk3328_codec_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(rk3328_codec_reg_defaults),
-+	.cache_type = REGCACHE_FLAT,
-+};
-+
-+static int rk3328_platform_probe(struct platform_device *pdev)
-+{
-+	struct device_node *rk3328_np = pdev->dev.of_node;
-+	struct rk3328_codec_priv *rk3328;
-+	struct resource *res;
-+	struct regmap *grf;
-+	void __iomem *base;
-+	int ret = 0;
-+
-+	rk3328 = devm_kzalloc(&pdev->dev, sizeof(*rk3328), GFP_KERNEL);
-+	if (!rk3328)
-+		return -ENOMEM;
-+
-+	grf = syscon_regmap_lookup_by_phandle(rk3328_np,
-+					      "rockchip,grf");
-+	if (IS_ERR(grf)) {
-+		dev_err(&pdev->dev, "missing 'rockchip,grf'\n");
-+		return PTR_ERR(grf);
-+	}
-+	rk3328->grf = grf;
-+	/* enable i2s_acodec_en */
-+	regmap_write(grf, RK3328_GRF_SOC_CON2,
-+		     (BIT(14) << 16 | BIT(14)));
-+
-+	ret = of_property_read_u32(rk3328_np, "spk-depop-time-ms",
-+				   &rk3328->spk_depop_time);
-+	if (ret < 0) {
-+		dev_info(&pdev->dev, "spk_depop_time use default value.\n");
-+		rk3328->spk_depop_time = 200;
-+	}
-+
-+	rk3328_analog_output(rk3328, 0);
-+
-+	rk3328->mclk = devm_clk_get(&pdev->dev, "mclk");
-+	if (IS_ERR(rk3328->mclk))
-+		return PTR_ERR(rk3328->mclk);
-+
-+	ret = clk_prepare_enable(rk3328->mclk);
-+	if (ret)
-+		return ret;
-+	clk_set_rate(rk3328->mclk, INITIAL_FREQ);
-+
-+	rk3328->pclk = devm_clk_get(&pdev->dev, "pclk");
-+	if (IS_ERR(rk3328->pclk)) {
-+		dev_err(&pdev->dev, "can't get acodec pclk\n");
-+		return PTR_ERR(rk3328->pclk);
-+	}
-+
-+	ret = clk_prepare_enable(rk3328->pclk);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "failed to enable acodec pclk\n");
-+		return ret;
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	rk3328->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+					       &rk3328_codec_regmap_config);
-+	if (IS_ERR(rk3328->regmap))
-+		return PTR_ERR(rk3328->regmap);
-+
-+	platform_set_drvdata(pdev, rk3328);
-+
-+	return devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
-+					       rk3328_dai,
-+					       ARRAY_SIZE(rk3328_dai));
-+}
-+
-+static const struct of_device_id rk3328_codec_of_match[] = {
-+		{ .compatible = "rockchip,rk3328-codec", },
-+		{},
-+};
-+MODULE_DEVICE_TABLE(of, rk3328_codec_of_match);
-+
-+static struct platform_driver rk3328_codec_driver = {
-+	.driver = {
-+		   .name = "rk3328-codec",
-+		   .owner = THIS_MODULE,
-+		   .of_match_table = of_match_ptr(rk3328_codec_of_match),
-+	},
-+	.probe = rk3328_platform_probe,
-+};
-+module_platform_driver(rk3328_codec_driver);
-+
-+MODULE_AUTHOR("Sugar Zhang <sugar.zhang@rock-chips.com>");
-+MODULE_DESCRIPTION("ASoC rk3328 codec driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rk3328_codec.h b/sound/soc/codecs/rk3328_codec.h
-new file mode 100644
-index 000000000000..655103586241
---- /dev/null
-+++ b/sound/soc/codecs/rk3328_codec.h
-@@ -0,0 +1,210 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * rk3328 ALSA SoC Audio driver
-+ *
-+ * Copyright (c) 2017, Fuzhou Rockchip Electronics Co., Ltd All rights reserved.
-+ */
-+
-+#ifndef _RK3328_CODEC_H
-+#define _RK3328_CODEC_H
-+
-+#include <linux/bitfield.h>
-+
-+/* codec register */
-+#define CODEC_RESET			(0x00 << 2)
-+#define DAC_INIT_CTRL1			(0x03 << 2)
-+#define DAC_INIT_CTRL2			(0x04 << 2)
-+#define DAC_INIT_CTRL3			(0x05 << 2)
-+#define DAC_PRECHARGE_CTRL		(0x22 << 2)
-+#define DAC_PWR_CTRL			(0x23 << 2)
-+#define DAC_CLK_CTRL			(0x24 << 2)
-+#define HPMIX_CTRL			(0x25 << 2)
-+#define DAC_SELECT			(0x26 << 2)
-+#define HPOUT_CTRL			(0x27 << 2)
-+#define HPOUTL_GAIN_CTRL		(0x28 << 2)
-+#define HPOUTR_GAIN_CTRL		(0x29 << 2)
-+#define HPOUT_POP_CTRL			(0x2a << 2)
-+
-+/* REG00: CODEC_RESET */
-+#define PWR_RST_BYPASS_DIS		(0x0 << 6)
-+#define PWR_RST_BYPASS_EN		(0x1 << 6)
-+#define DIG_CORE_RST			(0x0 << 1)
-+#define DIG_CORE_WORK			(0x1 << 1)
-+#define SYS_RST				(0x0 << 0)
-+#define SYS_WORK			(0x1 << 0)
-+
-+/* REG03: DAC_INIT_CTRL1 */
-+#define PIN_DIRECTION_MASK		BIT(5)
-+#define PIN_DIRECTION_IN		(0x0 << 5)
-+#define PIN_DIRECTION_OUT		(0x1 << 5)
-+#define DAC_I2S_MODE_MASK		BIT(4)
-+#define DAC_I2S_MODE_SLAVE		(0x0 << 4)
-+#define DAC_I2S_MODE_MASTER		(0x1 << 4)
-+
-+/* REG04: DAC_INIT_CTRL2 */
-+#define DAC_I2S_LRP_MASK		BIT(7)
-+#define DAC_I2S_LRP_NORMAL		(0x0 << 7)
-+#define DAC_I2S_LRP_REVERSAL		(0x1 << 7)
-+#define DAC_VDL_MASK			GENMASK(6, 5)
-+#define DAC_VDL_16BITS			(0x0 << 5)
-+#define DAC_VDL_20BITS			(0x1 << 5)
-+#define DAC_VDL_24BITS			(0x2 << 5)
-+#define DAC_VDL_32BITS			(0x3 << 5)
-+#define DAC_MODE_MASK			GENMASK(4, 3)
-+#define DAC_MODE_RJM			(0x0 << 3)
-+#define DAC_MODE_LJM			(0x1 << 3)
-+#define DAC_MODE_I2S			(0x2 << 3)
-+#define DAC_MODE_PCM			(0x3 << 3)
-+#define DAC_LR_SWAP_MASK		BIT(2)
-+#define DAC_LR_SWAP_DIS			(0x0 << 2)
-+#define DAC_LR_SWAP_EN			(0x1 << 2)
-+
-+/* REG05: DAC_INIT_CTRL3 */
-+#define DAC_WL_MASK			GENMASK(3, 2)
-+#define DAC_WL_16BITS			(0x0 << 2)
-+#define DAC_WL_20BITS			(0x1 << 2)
-+#define DAC_WL_24BITS			(0x2 << 2)
-+#define DAC_WL_32BITS			(0x3 << 2)
-+#define DAC_RST_MASK			BIT(1)
-+#define DAC_RST_EN			(0x0 << 1)
-+#define DAC_RST_DIS			(0x1 << 1)
-+#define DAC_BCP_MASK			BIT(0)
-+#define DAC_BCP_NORMAL			(0x0 << 0)
-+#define DAC_BCP_REVERSAL		(0x1 << 0)
-+
-+/* REG22: DAC_PRECHARGE_CTRL */
-+#define DAC_CHARGE_XCHARGE_MASK		BIT(7)
-+#define DAC_CHARGE_DISCHARGE		(0x0 << 7)
-+#define DAC_CHARGE_PRECHARGE		(0x1 << 7)
-+#define DAC_CHARGE_CURRENT_64I_MASK	BIT(6)
-+#define DAC_CHARGE_CURRENT_64I		(0x1 << 6)
-+#define DAC_CHARGE_CURRENT_32I_MASK	BIT(5)
-+#define DAC_CHARGE_CURRENT_32I		(0x1 << 5)
-+#define DAC_CHARGE_CURRENT_16I_MASK	BIT(4)
-+#define DAC_CHARGE_CURRENT_16I		(0x1 << 4)
-+#define DAC_CHARGE_CURRENT_08I_MASK	BIT(3)
-+#define DAC_CHARGE_CURRENT_08I		(0x1 << 3)
-+#define DAC_CHARGE_CURRENT_04I_MASK	BIT(2)
-+#define DAC_CHARGE_CURRENT_04I		(0x1 << 2)
-+#define DAC_CHARGE_CURRENT_02I_MASK	BIT(1)
-+#define DAC_CHARGE_CURRENT_02I		(0x1 << 1)
-+#define DAC_CHARGE_CURRENT_I_MASK	BIT(0)
-+#define DAC_CHARGE_CURRENT_I		(0x1 << 0)
-+#define DAC_CHARGE_CURRENT_ALL_MASK	GENMASK(6, 0)
-+#define DAC_CHARGE_CURRENT_ALL_OFF	0x00
-+#define DAC_CHARGE_CURRENT_ALL_ON	0x7f
-+
-+/* REG23: DAC_PWR_CTRL */
-+#define DAC_PWR_MASK			BIT(6)
-+#define DAC_PWR_OFF			(0x0 << 6)
-+#define DAC_PWR_ON			(0x1 << 6)
-+#define DACL_PATH_REFV_MASK		BIT(5)
-+#define DACL_PATH_REFV_OFF		(0x0 << 5)
-+#define DACL_PATH_REFV_ON		(0x1 << 5)
-+#define HPOUTL_ZERO_CROSSING_MASK	BIT(4)
-+#define HPOUTL_ZERO_CROSSING_OFF	(0x0 << 4)
-+#define HPOUTL_ZERO_CROSSING_ON		(0x1 << 4)
-+#define DACR_PATH_REFV_MASK		BIT(1)
-+#define DACR_PATH_REFV_OFF		(0x0 << 1)
-+#define DACR_PATH_REFV_ON		(0x1 << 1)
-+#define HPOUTR_ZERO_CROSSING_MASK	BIT(0)
-+#define HPOUTR_ZERO_CROSSING_OFF	(0x0 << 0)
-+#define HPOUTR_ZERO_CROSSING_ON		(0x1 << 0)
-+
-+/* REG24: DAC_CLK_CTRL */
-+#define DACL_REFV_MASK			BIT(7)
-+#define DACL_REFV_OFF			(0x0 << 7)
-+#define DACL_REFV_ON			(0x1 << 7)
-+#define DACL_CLK_MASK			BIT(6)
-+#define DACL_CLK_OFF			(0x0 << 6)
-+#define DACL_CLK_ON			(0x1 << 6)
-+#define DACL_MASK			BIT(5)
-+#define DACL_OFF			(0x0 << 5)
-+#define DACL_ON				(0x1 << 5)
-+#define DACL_INIT_MASK			BIT(4)
-+#define DACL_INIT_OFF			(0x0 << 4)
-+#define DACL_INIT_ON			(0x1 << 4)
-+#define DACR_REFV_MASK			BIT(3)
-+#define DACR_REFV_OFF			(0x0 << 3)
-+#define DACR_REFV_ON			(0x1 << 3)
-+#define DACR_CLK_MASK			BIT(2)
-+#define DACR_CLK_OFF			(0x0 << 2)
-+#define DACR_CLK_ON			(0x1 << 2)
-+#define DACR_MASK			BIT(1)
-+#define DACR_OFF			(0x0 << 1)
-+#define DACR_ON				(0x1 << 1)
-+#define DACR_INIT_MASK			BIT(0)
-+#define DACR_INIT_OFF			(0x0 << 0)
-+#define DACR_INIT_ON			(0x1 << 0)
-+
-+/* REG25: HPMIX_CTRL*/
-+#define HPMIXL_MASK			BIT(6)
-+#define HPMIXL_DIS			(0x0 << 6)
-+#define HPMIXL_EN			(0x1 << 6)
-+#define HPMIXL_INIT_MASK		BIT(5)
-+#define HPMIXL_INIT_DIS			(0x0 << 5)
-+#define HPMIXL_INIT_EN			(0x1 << 5)
-+#define HPMIXL_INIT2_MASK		BIT(4)
-+#define HPMIXL_INIT2_DIS		(0x0 << 4)
-+#define HPMIXL_INIT2_EN			(0x1 << 4)
-+#define HPMIXR_MASK			BIT(2)
-+#define HPMIXR_DIS			(0x0 << 2)
-+#define HPMIXR_EN			(0x1 << 2)
-+#define HPMIXR_INIT_MASK		BIT(1)
-+#define HPMIXR_INIT_DIS			(0x0 << 1)
-+#define HPMIXR_INIT_EN			(0x1 << 1)
-+#define HPMIXR_INIT2_MASK		BIT(0)
-+#define HPMIXR_INIT2_DIS		(0x0 << 0)
-+#define HPMIXR_INIT2_EN			(0x1 << 0)
-+
-+/* REG26: DAC_SELECT */
-+#define DACL_SELECT_MASK		BIT(4)
-+#define DACL_UNSELECT			(0x0 << 4)
-+#define DACL_SELECT			(0x1 << 4)
-+#define DACR_SELECT_MASK		BIT(0)
-+#define DACR_UNSELECT			(0x0 << 0)
-+#define DACR_SELECT			(0x1 << 0)
-+
-+/* REG27: HPOUT_CTRL */
-+#define HPOUTL_MASK			BIT(7)
-+#define HPOUTL_DIS			(0x0 << 7)
-+#define HPOUTL_EN			(0x1 << 7)
-+#define HPOUTL_INIT_MASK		BIT(6)
-+#define HPOUTL_INIT_DIS			(0x0 << 6)
-+#define HPOUTL_INIT_EN			(0x1 << 6)
-+#define HPOUTL_MUTE_MASK		BIT(5)
-+#define HPOUTL_MUTE			(0x0 << 5)
-+#define HPOUTL_UNMUTE			(0x1 << 5)
-+#define HPOUTR_MASK			BIT(4)
-+#define HPOUTR_DIS			(0x0 << 4)
-+#define HPOUTR_EN			(0x1 << 4)
-+#define HPOUTR_INIT_MASK		BIT(3)
-+#define HPOUTR_INIT_DIS			(0x0 << 3)
-+#define HPOUTR_INIT_EN			(0x1 << 3)
-+#define HPOUTR_MUTE_MASK		BIT(2)
-+#define HPOUTR_MUTE			(0x0 << 2)
-+#define HPOUTR_UNMUTE			(0x1 << 2)
-+
-+/* REG28: HPOUTL_GAIN_CTRL */
-+#define HPOUTL_GAIN_MASK		GENMASK(4, 0)
-+
-+/* REG29: HPOUTR_GAIN_CTRL */
-+#define HPOUTR_GAIN_MASK		GENMASK(4, 0)
-+
-+/* REG2a: HPOUT_POP_CTRL */
-+#define HPOUTR_POP_MASK			GENMASK(5, 4)
-+#define HPOUTR_POP_XCHARGE		(0x1 << 4)
-+#define HPOUTR_POP_WORK			(0x2 << 4)
-+#define HPOUTL_POP_MASK			GENMASK(1, 0)
-+#define HPOUTL_POP_XCHARGE		(0x1 << 0)
-+#define HPOUTL_POP_WORK			(0x2 << 0)
-+
-+#define RK3328_HIFI			0
-+
-+struct rk3328_reg_msk_val {
-+	unsigned int reg;
-+	unsigned int msk;
-+	unsigned int val;
-+};
-+
-+#endif
+-struct simple_card_data {
++struct simple_priv {
+ 	struct snd_soc_card snd_card;
+ 	struct simple_dai_props {
+ 		struct asoc_simple_dai *cpu_dai;
+@@ -49,10 +49,10 @@ struct link_info {
+ #define CELL	"#sound-dai-cells"
+ #define PREFIX	"simple-audio-card,"
+ 
+-static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
++static int simple_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 	int ret;
+@@ -68,10 +68,10 @@ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
+ 	return ret;
+ }
+ 
+-static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
++static void simple_shutdown(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 
+@@ -80,8 +80,8 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
+ 	asoc_simple_card_clk_disable(dai_props->codec_dai);
+ }
+ 
+-static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
+-				    unsigned long rate)
++static int simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
++			       unsigned long rate)
+ {
+ 	if (!simple_dai)
+ 		return 0;
+@@ -95,13 +95,13 @@ static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
+ 	return clk_set_rate(simple_dai->clk, rate);
+ }
+ 
+-static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_hw_params *params)
++static int simple_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 	unsigned int mclk, mclk_fs = 0;
+@@ -113,11 +113,11 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 	if (mclk_fs) {
+ 		mclk = params_rate(params) * mclk_fs;
+ 
+-		ret = asoc_simple_set_clk_rate(dai_props->codec_dai, mclk);
++		ret = simple_set_clk_rate(dai_props->codec_dai, mclk);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = asoc_simple_set_clk_rate(dai_props->cpu_dai, mclk);
++		ret = simple_set_clk_rate(dai_props->cpu_dai, mclk);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -136,15 +136,15 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static const struct snd_soc_ops asoc_simple_card_ops = {
+-	.startup = asoc_simple_card_startup,
+-	.shutdown = asoc_simple_card_shutdown,
+-	.hw_params = asoc_simple_card_hw_params,
++static const struct snd_soc_ops simple_ops = {
++	.startup	= simple_startup,
++	.shutdown	= simple_shutdown,
++	.hw_params	= simple_hw_params,
+ };
+ 
+-static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
++static int simple_dai_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
+ 	int ret;
+ 
+@@ -161,10 +161,10 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+-					       struct snd_pcm_hw_params *params)
++static int simple_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				     struct snd_pcm_hw_params *params)
+ {
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
+ 
+ 	asoc_simple_card_convert_fixup(&dai_props->adata, params);
+@@ -172,9 +172,9 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static void asoc_simple_card_get_conversion(struct device *dev,
+-					    struct device_node *np,
+-					    struct asoc_simple_card_data *adata)
++static void simple_get_conversion(struct device *dev,
++				  struct device_node *np,
++				  struct asoc_simple_card_data *adata)
+ {
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node = of_get_parent(np);
+@@ -187,11 +187,11 @@ static void asoc_simple_card_get_conversion(struct device *dev,
+ 	of_node_put(node);
+ }
+ 
+-static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+-					     struct device_node *np,
+-					     struct device_node *codec,
+-					     struct link_info *li,
+-					     bool is_top)
++static int simple_dai_link_of_dpcm(struct simple_priv *priv,
++				   struct device_node *np,
++				   struct device_node *codec,
++				   struct link_info *li,
++				   bool is_top)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+@@ -264,7 +264,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 
+ 		/* BE settings */
+ 		dai_link->no_pcm		= 1;
+-		dai_link->be_hw_params_fixup	= asoc_simple_card_be_hw_params_fixup;
++		dai_link->be_hw_params_fixup	= simple_be_hw_params_fixup;
+ 
+ 		dai =
+ 		dai_props->codec_dai	= &priv->dais[li->dais++];
+@@ -295,7 +295,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 					     "prefix");
+ 	}
+ 
+-	asoc_simple_card_get_conversion(dev, np, &dai_props->adata);
++	simple_get_conversion(dev, np, &dai_props->adata);
+ 
+ 	ret = asoc_simple_card_of_parse_tdm(np, dai);
+ 	if (ret)
+@@ -317,17 +317,17 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 
+ 	dai_link->dpcm_playback		= 1;
+ 	dai_link->dpcm_capture		= 1;
+-	dai_link->ops			= &asoc_simple_card_ops;
+-	dai_link->init			= asoc_simple_card_dai_init;
++	dai_link->ops			= &simple_ops;
++	dai_link->init			= simple_dai_init;
+ 
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+-					struct device_node *np,
+-					struct device_node *codec,
+-					struct link_info *li,
+-					bool is_top)
++static int simple_dai_link_of(struct simple_priv *priv,
++			      struct device_node *np,
++			      struct device_node *codec,
++			      struct link_info *li,
++			      bool is_top)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+@@ -420,8 +420,8 @@ static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	dai_link->ops = &asoc_simple_card_ops;
+-	dai_link->init = asoc_simple_card_dai_init;
++	dai_link->ops = &simple_ops;
++	dai_link->init = simple_dai_init;
+ 
+ 	asoc_simple_card_canonicalize_cpu(dai_link, single_cpu);
+ 
+@@ -431,13 +431,13 @@ static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
++static int simple_for_each_link(struct simple_priv *priv,
+ 			struct link_info *li,
+-			int (*func_noml)(struct simple_card_data *priv,
++			int (*func_noml)(struct simple_priv *priv,
+ 					 struct device_node *np,
+ 					 struct device_node *codec,
+ 					 struct link_info *li, bool is_top),
+-			int (*func_dpcm)(struct simple_card_data *priv,
++			int (*func_dpcm)(struct simple_priv *priv,
+ 					 struct device_node *np,
+ 					 struct device_node *codec,
+ 					 struct link_info *li, bool is_top))
+@@ -473,7 +473,7 @@ static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
+ 		/* get convert-xxx property */
+ 		memset(&adata, 0, sizeof(adata));
+ 		for_each_child_of_node(node, np)
+-			asoc_simple_card_get_conversion(dev, np, &adata);
++			simple_get_conversion(dev, np, &adata);
+ 
+ 		/* loop for all CPU/Codec node */
+ 		for_each_child_of_node(node, np) {
+@@ -499,8 +499,8 @@ static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_parse_aux_devs(struct device_node *node,
+-					   struct simple_card_data *priv)
++static int simple_parse_aux_devs(struct device_node *node,
++				 struct simple_priv *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *aux_node;
+@@ -530,7 +530,7 @@ static int asoc_simple_card_parse_aux_devs(struct device_node *node,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_parse_of(struct simple_card_data *priv)
++static int simple_parse_of(struct simple_priv *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *top = dev->of_node;
+@@ -564,9 +564,9 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 		 * To avoid random sub-device numbering,
+ 		 * detect "dummy-Codec" in last;
+ 		 */
+-		ret = asoc_simple_card_for_each_link(priv, &li,
+-						     asoc_simple_card_dai_link_of,
+-						     asoc_simple_card_dai_link_of_dpcm);
++		ret = simple_for_each_link(priv, &li,
++					   simple_dai_link_of,
++					   simple_dai_link_of_dpcm);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -575,15 +575,15 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = asoc_simple_card_parse_aux_devs(top, priv);
++	ret = simple_parse_aux_devs(top, priv);
+ 
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_count_noml(struct simple_card_data *priv,
+-				       struct device_node *np,
+-				       struct device_node *codec,
+-				       struct link_info *li, bool is_top)
++static int simple_count_noml(struct simple_priv *priv,
++			     struct device_node *np,
++			     struct device_node *codec,
++			     struct link_info *li, bool is_top)
+ {
+ 	li->dais++; /* CPU or Codec */
+ 	if (np != codec)
+@@ -592,10 +592,10 @@ static int asoc_simple_card_count_noml(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_count_dpcm(struct simple_card_data *priv,
+-				       struct device_node *np,
+-				       struct device_node *codec,
+-				       struct link_info *li, bool is_top)
++static int simple_count_dpcm(struct simple_priv *priv,
++			     struct device_node *np,
++			     struct device_node *codec,
++			     struct link_info *li, bool is_top)
+ {
+ 	li->dais++; /* CPU or Codec */
+ 	li->link++; /* CPU-dummy or dummy-Codec */
+@@ -605,8 +605,8 @@ static int asoc_simple_card_count_dpcm(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static void asoc_simple_card_get_dais_count(struct simple_card_data *priv,
+-					    struct link_info *li)
++static void simple_get_dais_count(struct simple_priv *priv,
++				  struct link_info *li)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *top = dev->of_node;
+@@ -664,16 +664,17 @@ static void asoc_simple_card_get_dais_count(struct simple_card_data *priv,
+ 		return;
+ 	}
+ 
+-	asoc_simple_card_for_each_link(priv, li,
+-				       asoc_simple_card_count_noml,
+-				       asoc_simple_card_count_dpcm);
++	simple_for_each_link(priv, li,
++			     simple_count_noml,
++			     simple_count_dpcm);
++
+ 	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
+ 		li->link, li->dais, li->conf);
+ }
+ 
+-static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
++static int simple_soc_probe(struct snd_soc_card *card)
+ {
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(card);
+ 	int ret;
+ 
+ 	ret = asoc_simple_card_init_hp(card, &priv->hp_jack, PREFIX);
+@@ -687,9 +688,9 @@ static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_probe(struct platform_device *pdev)
++static int simple_probe(struct platform_device *pdev)
+ {
+-	struct simple_card_data *priv;
++	struct simple_priv *priv;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct simple_dai_props *dai_props;
+ 	struct asoc_simple_dai *dais;
+@@ -708,10 +709,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card = simple_priv_to_card(priv);
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+-	card->probe		= asoc_simple_soc_card_probe;
++	card->probe		= simple_soc_probe;
+ 
+ 	memset(&li, 0, sizeof(li));
+-	asoc_simple_card_get_dais_count(priv, &li);
++	simple_get_dais_count(priv, &li);
+ 	if (!li.link || !li.dais)
+ 		return -EINVAL;
+ 
+@@ -746,7 +747,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 
+ 	if (np && of_device_is_available(np)) {
+ 
+-		ret = asoc_simple_card_parse_of(priv);
++		ret = simple_parse_of(priv);
+ 		if (ret < 0) {
+ 			if (ret != -EPROBE_DEFER)
+ 				dev_err(dev, "parse error %d\n", ret);
+@@ -789,7 +790,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 		dai_link->stream_name	= cinfo->name;
+ 		dai_link->cpu_dai_name	= cinfo->cpu_dai.name;
+ 		dai_link->dai_fmt	= cinfo->daifmt;
+-		dai_link->init		= asoc_simple_card_dai_init;
++		dai_link->init		= simple_dai_init;
+ 		memcpy(priv->dai_props->cpu_dai, &cinfo->cpu_dai,
+ 					sizeof(*priv->dai_props->cpu_dai));
+ 		memcpy(priv->dai_props->codec_dai, &cinfo->codec_dai,
+@@ -809,28 +810,28 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_remove(struct platform_device *pdev)
++static int simple_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+ 	return asoc_simple_card_clean_reference(card);
+ }
+ 
+-static const struct of_device_id asoc_simple_of_match[] = {
++static const struct of_device_id simple_of_match[] = {
+ 	{ .compatible = "simple-audio-card", },
+ 	{ .compatible = "simple-scu-audio-card", },
+ 	{},
+ };
+-MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
++MODULE_DEVICE_TABLE(of, simple_of_match);
+ 
+ static struct platform_driver asoc_simple_card = {
+ 	.driver = {
+ 		.name = "asoc-simple-card",
+ 		.pm = &snd_soc_pm_ops,
+-		.of_match_table = asoc_simple_of_match,
++		.of_match_table = simple_of_match,
+ 	},
+-	.probe = asoc_simple_card_probe,
+-	.remove = asoc_simple_card_remove,
++	.probe = simple_probe,
++	.remove = simple_remove,
+ };
+ 
+ module_platform_driver(asoc_simple_card);
 -- 
 2.20.1
