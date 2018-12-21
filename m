@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Haswell: remove unneeded
-	semicolon" to the asoc tree
-Date: Fri, 21 Dec 2018 18:15:48 +0000 (GMT)
-Message-ID: <20181221181548.AAE231121B93@debutante.sirena.org.uk>
-References: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: remove useless cast" to
+	the asoc tree
+Date: Fri, 21 Dec 2018 18:15:52 +0000 (GMT)
+Message-ID: <20181221181552.5D8EB1121B93@debutante.sirena.org.uk>
+References: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AB4C7267B69
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:49 +0100 (CET)
-In-Reply-To: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07547267AC5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:53 +0100 (CET)
+In-Reply-To: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Haswell: remove unneeded semicolon
+   ASoC: Intel: Skylake: remove useless cast
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From fef363fc4efb28de3f40c8315df9b6a3102062b1 Mon Sep 17 00:00:00 2001
+>From 9a3bf4b889c088874064f8353ae48e305c670bbb Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:04 -0600
-Subject: [PATCH] ASoC: Intel: Haswell: remove unneeded semicolon
+Date: Sun, 16 Dec 2018 16:49:02 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: remove useless cast
 
 Detected with Coccinelle
+
+sound/soc/intel/skylake/skl-topology.c:3106:16-20: WARNING: casting
+value returned by memory allocation function to (char *) is useless.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index fe2c826e710c..fb9b8608eb3b 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -544,7 +544,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		dev_err(rtd->dev, "error: invalid DAI ID %d\n",
- 			rtd->cpu_dai->id);
- 		return -EINVAL;
--	};
-+	}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index cf8848b779dc..389f1862bc43 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3103,7 +3103,7 @@ static int skl_init_algo_data(struct device *dev, struct soc_bytes_ext *be,
+ 	ac->size = dfw_ac->max;
  
- 	ret = sst_hsw_stream_format(hsw, pcm_data->stream,
- 		path_id, stream_type, SST_HSW_STREAM_FORMAT_PCM_FORMAT);
+ 	if (ac->max) {
+-		ac->params = (char *) devm_kzalloc(dev, ac->max, GFP_KERNEL);
++		ac->params = devm_kzalloc(dev, ac->max, GFP_KERNEL);
+ 		if (!ac->params)
+ 			return -ENOMEM;
+ 
 -- 
 2.20.1
