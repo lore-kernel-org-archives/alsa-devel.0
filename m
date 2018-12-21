@@ -1,20 +1,19 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 3/4] ASoC: wm8904: save model id directly
- in of_device_id.data
-Date: Fri, 21 Dec 2018 11:27:59 +0000
-Message-ID: <20181221112759.GE16508@imbe.wolfsonmicro.main>
+Subject: Re: [PATCH 4/4] ASoC: wm8904: enable MCLK in STANDBY
+Date: Fri, 21 Dec 2018 11:30:45 +0000
+Message-ID: <20181221113045.GF16508@imbe.wolfsonmicro.main>
 References: <cover.1545249666.git.mirq-linux@rere.qmqm.pl>
- <30114be8a4e9eda7c6b2a6f555397f51f9a389f8.1545249666.git.mirq-linux@rere.qmqm.pl>
+ <af3940da408c4489678afcc82760356339e0dc0c.1545249666.git.mirq-linux@rere.qmqm.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id AE5E9267A78
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 12:28:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 011DC267A78
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 12:30:47 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <30114be8a4e9eda7c6b2a6f555397f51f9a389f8.1545249666.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <af3940da408c4489678afcc82760356339e0dc0c.1545249666.git.mirq-linux@rere.qmqm.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,10 +28,12 @@ Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <ti
 List-Id: alsa-devel@alsa-project.org
 
 T24gV2VkLCBEZWMgMTksIDIwMTggYXQgMDk6MTE6MTZQTSArMDEwMCwgTWljaGHFgiBNaXJvc8WC
-YXcgd3JvdGU6Cj4gU2F2ZSAyeCB1bnNpZ25lZCBpbnQgb2YgLnJvZGF0YS4KPiAKPiBTaWduZWQt
-b2ZmLWJ5OiBNaWNoYcWCIE1pcm9zxYJhdyA8bWlycS1saW51eEByZXJlLnFtcW0ucGw+Cj4gLS0t
-CgpBY2tlZC1ieTogQ2hhcmxlcyBLZWVwYXggPGNrZWVwYXhAb3BlbnNvdXJjZS5jaXJydXMuY29t
-PgoKVGhhbmtzLApDaGFybGVzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+YXcgd3JvdGU6Cj4gTUNMSyBpbnB1dCBpcyBuZWVkZWQgd2hlbiBhY2Nlc3NpbmcgYW55IHJlZ2lz
+dGVyIGFmdGVyIGVuYWJsaW5nIFNZU0NMSy4KPiAKPiBUaGlzIGFsc28gZml4ZXMgaW1iYWxhbmNl
+IG9mIGNsa19lbmFibGUgLyBjbGtfZGlzYWJsZSB3aGVuIHRyYW5zaXRpb25pbmcKPiBiZXR3ZWVu
+IE9OIC0+IFNUQU5EQlkgLT4gT04gYmlhcyBsZXZlbHMuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWlj
+aGHFgiBNaXJvc8WCYXcgPG1pcnEtbGludXhAcmVyZS5xbXFtLnBsPgo+IC0tLQoKQWNrZWQtYnk6
+IENoYXJsZXMgS2VlcGF4IDxja2VlcGF4QG9wZW5zb3VyY2UuY2lycnVzLmNvbT4KClRoYW5rcywK
+Q2hhcmxlcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
