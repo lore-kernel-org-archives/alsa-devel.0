@@ -1,90 +1,148 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v3 09/14] ASoC: SOF: Add firmware,
- loader support
-Date: Fri, 21 Dec 2018 15:43:16 +0000
-Message-ID: <8ce59b64ad855f9b6602318f78b3087f8181fdf2.camel@linux.intel.com>
-References: <mailman.3934.1544619824.753.alsa-devel@alsa-project.org>
- <1ce21393-048f-6c04-b899-8cbfbf93983e@linux.intel.com>
- <s5h8t0kobov.wl-tiwai@suse.de>
- <05d38b48-559f-75ce-6299-e1dfd3a62c30@linux.intel.com>
- <f715299c-d610-2dc2-d968-82c4cf75a5ea@linux.intel.com>
- <s5hfturmcc2.wl-tiwai@suse.de>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v3 1/9] ASoC: sun4i-i2s: Adjust regmap settings
+Date: Sat, 22 Dec 2018 00:44:07 +0800
+Message-ID: <CAGb2v66-JmONW9AYqoSmifrEj+nstREdsbkcy9ECwnJ47zxARA@mail.gmail.com>
+References: <20181221152110.17982-1-codekipper@gmail.com> <20181221152110.17982-2-codekipper@gmail.com>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hfturmcc2.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: daniel.baluta@gmail.com, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, alan@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBZVQ6TQAKGQETXLMKQY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20181221152110.17982-2-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2018-12-21 at 10:57 +0100, Takashi Iwai wrote:
-> On Fri, 21 Dec 2018 10:05:04 +0100,
-> Bard liao wrote:
-> > 
-> > On 12/20/2018 11:07 PM, Pierre-Louis Bossart wrote:
-> > > > > > > + snd_sof_dsp_block_write(sdev, offset,
-> > > > > > > +                    (void *)block + sizeof(*block),
-> > > > > > > +                    block->size);
-> > > > > > > +
-> > > > > > > +        /* next block */
-> > > > > > > +        block = (void *)block + sizeof(*block) + block->size;
-> > > > > > This may lead to an unaligned access.
-> > > > > Did you mean we should double check the block->size to
-> > > > > prevent access to an invalid address?
-> > > > You need two types of checks for the given data:
-> > > > - The bounce check of block->size;
-> > > >    We need to avoid out-of-bounce access.
-> > > s/bounce/bounds ?
-> > > > - Alignment of block->size;
-> > > >    For some non-x86 platforms, the access to an unaligned address might
-> > > >    be illegal.
-> > > 
-> > > Maybe I am missing something but I don't see any sort of explicit
-> > > restriction on alignment in the SOF tools. it looks implicit based
-> > > on address offsets and bases.
-> > 
-> > Maybe get_unaligned() is good enough to avoid unaligned access?
-> 
-> That's another option, but you'd need to put everywhere.
-> 
-> An alternative is to just copy the data on a new block header on the
-> stack temporarily and refer it.
-> 
-> Or simply assuring the alignment by checking block->size as Pierre
-> suggested...
+On Fri, Dec 21, 2018 at 11:21 PM <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> Bypass the regmap cache when flushing the i2s FIFOs and modify the tables
+> to reflect this.
+>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 29 +++++++++--------------------
+>  1 file changed, 9 insertions(+), 20 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index d5ec1a20499d..64d073cb2aee 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -548,9 +548,11 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+>  {
+>         /* Flush RX FIFO */
+> +       regcache_cache_bypass(i2s->regmap, true);
+>         regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+>                            SUN4I_I2S_FIFO_CTRL_FLUSH_RX,
+>                            SUN4I_I2S_FIFO_CTRL_FLUSH_RX);
+> +       regcache_cache_bypass(i2s->regmap, false);
 
-Yep, checking size is good for me too.
+IIRC the flush cache bit is self-clearing. So you likely want to mark
+this register as volatile. If it is marked as volatile, then all access
+to that register bypasses the cache, so the regcache_cache_bypass calls
+are unneeded.
 
-> 
-> 
-> Takashi
-> 
-> 
-> > > Liam, do you see any negative side effects if we enforce a 32-bit
-> > > alignment for all blocks (which essentially means all block sizes
-> > > are multiple of 4)? we can try and experiment but it's better if we
-> > > have an agreement on the design.
+However, looking at the code, the write would seem to be ignored if the
+regmap is in the cache_only state. We only set this when the bus clock
+is disabled. Under such a condition, bypassing the cache and forcing a
+write would be unwise, as the system either drops the write, or stalls
+altogether.
 
+>
+>         /* Clear RX counter */
+>         regmap_write(i2s->regmap, SUN4I_I2S_RX_CNT_REG, 0);
+> @@ -569,9 +571,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+>  static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
+>  {
+>         /* Flush TX FIFO */
+> +       regcache_cache_bypass(i2s->regmap, true);
+>         regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+>                            SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
+>                            SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
+> +       regcache_cache_bypass(i2s->regmap, false);
+>
+>         /* Clear TX counter */
+>         regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
+> @@ -703,13 +707,7 @@ static const struct snd_soc_component_driver sun4i_i2s_component = {
+>
+>  static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
+>  {
+> -       switch (reg) {
+> -       case SUN4I_I2S_FIFO_TX_REG:
+> -               return false;
+> -
+> -       default:
+> -               return true;
+> -       }
+> +       return true;
 
-This shouldn't cause any problems, iirc all block sizes are rounded up to
-nearest uint32_t anyway (as we have exception handler blocks that are 3 bytes of
-assembly in size and rounded up to 4).
+I don't understand why this is relevant. Do you need to read back from the TX
+FIFO?
 
-Liam
+If so, just drop the call-back altogether. If no callback is provided and no
+rd_table is provided either, it defaults to all registers under max_register
+(if max_register < 0) are readable.
 
-> > > 
-> > > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+However this seems like it deserves to be a separate patch (where you explain
+in the commit log why it's needed).
+
+Regards
+ChenYu
+
+>  }
+>
+>  static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
+> @@ -728,6 +726,8 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>  {
+>         switch (reg) {
+>         case SUN4I_I2S_FIFO_RX_REG:
+> +       case SUN4I_I2S_FIFO_TX_REG:
+> +       case SUN4I_I2S_FIFO_STA_REG:
+>         case SUN4I_I2S_INT_STA_REG:
+>         case SUN4I_I2S_RX_CNT_REG:
+>         case SUN4I_I2S_TX_CNT_REG:
+> @@ -738,23 +738,12 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>         }
+>  }
+>
+> -static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+> -{
+> -       switch (reg) {
+> -       case SUN8I_I2S_FIFO_TX_REG:
+> -               return false;
+> -
+> -       default:
+> -               return true;
+> -       }
+> -}
+> -
+>  static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>  {
+>         if (reg == SUN8I_I2S_INT_STA_REG)
+>                 return true;
+>         if (reg == SUN8I_I2S_FIFO_TX_REG)
+> -               return false;
+> +               return true;
+>
+>         return sun4i_i2s_volatile_reg(dev, reg);
+>  }
+> @@ -809,7 +798,7 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+>         .reg_defaults   = sun8i_i2s_reg_defaults,
+>         .num_reg_defaults       = ARRAY_SIZE(sun8i_i2s_reg_defaults),
+>         .writeable_reg  = sun4i_i2s_wr_reg,
+> -       .readable_reg   = sun8i_i2s_rd_reg,
+> +       .readable_reg   = sun4i_i2s_rd_reg,
+>         .volatile_reg   = sun8i_i2s_volatile_reg,
+>  };
+>
+> --
+> 2.20.1
+>
