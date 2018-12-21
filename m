@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: use snd_mask_set_format
-	in all machine drivers" to the asoc tree
-Date: Fri, 21 Dec 2018 18:15:39 +0000 (GMT)
-Message-ID: <20181221181539.7CB9B1121B93@debutante.sirena.org.uk>
-References: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Baytrail: remove unneeded
+	variable" to the asoc tree
+Date: Fri, 21 Dec 2018 18:15:44 +0000 (GMT)
+Message-ID: <20181221181545.008851121B93@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7229B267B63
+ by alsa0.perex.cz (Postfix) with ESMTP id DB592267B52
  for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:45 +0100 (CET)
-In-Reply-To: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
+   ASoC: Intel: Baytrail: remove unneeded variable
 
 has been applied to the asoc tree at
 
@@ -53,55 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From cbb5f163b512f1e1992253dd47b88ed089961649 Mon Sep 17 00:00:00 2001
+>From 1c66634069189b184ac6ea8ccbdbfefdb01ded07 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:10 -0600
-Subject: [PATCH] ASoC: Intel: boards: use snd_mask_set_format in all machine
- drivers
+Date: Sun, 16 Dec 2018 16:49:06 -0600
+Subject: [PATCH] ASoC: Intel: Baytrail: remove unneeded variable
 
-Fix Sparse warnings with two machine drivers which weren't updated
+Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c74c4f17316f..0739e3a75083 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -164,7 +164,7 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+index 260447da32b8..2cd8f9668b50 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-ipc.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+@@ -278,7 +278,6 @@ static int sst_byt_process_notification(struct sst_byt *byt,
+ 	struct sst_byt_stream *stream;
+ 	u64 header;
+ 	u8 msg_id, stream_id;
+-	int handled = 1;
  
- 	/* set SSP to 24 bit */
- 	snd_mask_none(fmt);
--	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 723a4935ed76..6dd5c69671b3 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -221,7 +221,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 		rate->min = rate->max = 48000;
- 		channels->min = channels->max = 2;
- 		snd_mask_none(fmt);
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 	header = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
+ 	msg_id = sst_byt_header_msg_id(header);
+@@ -298,7 +297,7 @@ static int sst_byt_process_notification(struct sst_byt *byt,
+ 		break;
  	}
  
- 	/*
-@@ -229,7 +229,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 * thus changing the mask here
- 	 */
- 	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
+-	return handled;
++	return 1;
  }
+ 
+ static irqreturn_t sst_byt_irq_thread(int irq, void *context)
 -- 
 2.20.1
