@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: add pcm formatter platform driver" to the asoc tree
-Date: Fri, 21 Dec 2018 18:15:24 +0000 (GMT)
-Message-ID: <20181221181524.F217B1121B93@debutante.sirena.org.uk>
-References: <1545382649-181411-3-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1545382649-181411-3-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: simple-card: add link_info" to the asoc
+	tree
+Date: Fri, 21 Dec 2018 18:15:08 +0000 (GMT)
+Message-ID: <20181221181508.36B271121B93@debutante.sirena.org.uk>
+References: <87k1k57zd6.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C18D7267AB2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:08 +0100 (CET)
+In-Reply-To: <87k1k57zd6.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: add pcm formatter platform driver
+   ASoC: simple-card: add link_info
 
 has been applied to the asoc tree at
 
@@ -37,593 +53,278 @@ to this mail.
 Thanks,
 Mark
 
->From 796175a94a7f128c696b793a90f9088005df774b Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Fri, 21 Dec 2018 14:27:28 +0530
-Subject: [PATCH] ASoC: xlnx: add pcm formatter platform driver
+>From ab55309e0d89b8ce538829ea489b0d1c11255921 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 20 Dec 2018 10:46:53 +0900
+Subject: [PATCH] ASoC: simple-card: add link_info
 
-The audio formatter PL IP supports DMA of two streams -
-mm2s and s2mm for playback and capture respectively. Apart from
-DMA, IP also does conversions like PCM to AES and viceversa.
-This patch adds DMA component driver for the IP.
+Current simple-card is parsing DAI link for both "normal sound" and
+"DPCM sound". On this driver, it needs to count and parse
+DAIs/Links/Codec Conf from each links.
+Then, counting/parsing link loop are very similar, but using different
+implementation. Because of this background, the link loop code is very
+mysterious. Mystery code will be trouble in the future.
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+To preparing cleanup code, this patch adds link_info which handles
+number of DAIs/Links/Codec Conf, and CPU/Codec turn.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/xlnx_formatter_pcm.c | 565 ++++++++++++++++++++++++++
- 1 file changed, 565 insertions(+)
- create mode 100644 sound/soc/xilinx/xlnx_formatter_pcm.c
+ sound/soc/generic/simple-card.c | 94 ++++++++++++++++++---------------
+ 1 file changed, 50 insertions(+), 44 deletions(-)
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-new file mode 100644
-index 000000000000..f7235f7664d7
---- /dev/null
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -0,0 +1,565 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Xilinx ASoC audio formatter support
-+//
-+// Copyright (C) 2018 Xilinx, Inc.
-+//
-+// Author: Maruthi Srinivas Bayyavarapu <maruthis@xilinx.com>
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/sizes.h>
-+
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+
-+#define DRV_NAME "xlnx_formatter_pcm"
-+
-+#define XLNX_S2MM_OFFSET	0
-+#define XLNX_MM2S_OFFSET	0x100
-+
-+#define XLNX_AUD_CORE_CONFIG	0x4
-+#define XLNX_AUD_CTRL		0x10
-+#define XLNX_AUD_STS		0x14
-+
-+#define AUD_CTRL_RESET_MASK	BIT(1)
-+#define AUD_CFG_MM2S_MASK	BIT(15)
-+#define AUD_CFG_S2MM_MASK	BIT(31)
-+
-+#define XLNX_AUD_FS_MULTIPLIER	0x18
-+#define XLNX_AUD_PERIOD_CONFIG	0x1C
-+#define XLNX_AUD_BUFF_ADDR_LSB	0x20
-+#define XLNX_AUD_BUFF_ADDR_MSB	0x24
-+#define XLNX_AUD_XFER_COUNT	0x28
-+#define XLNX_AUD_CH_STS_START	0x2C
-+#define XLNX_BYTES_PER_CH	0x44
-+
-+#define AUD_STS_IOC_IRQ_MASK	BIT(31)
-+#define AUD_STS_CH_STS_MASK	BIT(29)
-+#define AUD_CTRL_IOC_IRQ_MASK	BIT(13)
-+#define AUD_CTRL_TOUT_IRQ_MASK	BIT(14)
-+#define AUD_CTRL_DMA_EN_MASK	BIT(0)
-+
-+#define CFG_MM2S_CH_MASK	GENMASK(11, 8)
-+#define CFG_MM2S_CH_SHIFT	8
-+#define CFG_MM2S_XFER_MASK	GENMASK(14, 13)
-+#define CFG_MM2S_XFER_SHIFT	13
-+#define CFG_MM2S_PKG_MASK	BIT(12)
-+
-+#define CFG_S2MM_CH_MASK	GENMASK(27, 24)
-+#define CFG_S2MM_CH_SHIFT	24
-+#define CFG_S2MM_XFER_MASK	GENMASK(30, 29)
-+#define CFG_S2MM_XFER_SHIFT	29
-+#define CFG_S2MM_PKG_MASK	BIT(28)
-+
-+#define AUD_CTRL_DATA_WIDTH_SHIFT	16
-+#define AUD_CTRL_ACTIVE_CH_SHIFT	19
-+#define PERIOD_CFG_PERIODS_SHIFT	16
-+
-+#define PERIODS_MIN		2
-+#define PERIODS_MAX		6
-+#define PERIOD_BYTES_MIN	192
-+#define PERIOD_BYTES_MAX	(50 * 1024)
-+
-+enum bit_depth {
-+	BIT_DEPTH_8,
-+	BIT_DEPTH_16,
-+	BIT_DEPTH_20,
-+	BIT_DEPTH_24,
-+	BIT_DEPTH_32,
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index b15651409c7f..3820ad719059 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -33,6 +33,13 @@ struct simple_card_data {
+ 	struct snd_soc_codec_conf *codec_conf;
+ };
+ 
++struct link_info {
++	int dais; /* number of dai  */
++	int link; /* number of link */
++	int conf; /* number of codec_conf */
++	int cpu;  /* turn for CPU / Codec */
 +};
 +
-+struct xlnx_pcm_drv_data {
-+	void __iomem *mmio;
-+	bool s2mm_presence;
-+	bool mm2s_presence;
-+	unsigned int s2mm_irq;
-+	unsigned int mm2s_irq;
-+	struct snd_pcm_substream *play_stream;
-+	struct snd_pcm_substream *capture_stream;
-+	struct clk *axi_clk;
-+};
-+
-+/*
-+ * struct xlnx_pcm_stream_param - stream configuration
-+ * @mmio: base address offset
-+ * @interleaved: audio channels arrangement in buffer
-+ * @xfer_mode: data formatting mode during transfer
-+ * @ch_limit: Maximum channels supported
-+ * @buffer_size: stream ring buffer size
-+ */
-+struct xlnx_pcm_stream_param {
-+	void __iomem *mmio;
-+	bool interleaved;
-+	u32 xfer_mode;
-+	u32 ch_limit;
-+	u64 buffer_size;
-+};
-+
-+static const struct snd_pcm_hardware xlnx_pcm_hardware = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_BATCH | SNDRV_PCM_INFO_PAUSE |
-+		SNDRV_PCM_INFO_RESUME,
-+	.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-+		   SNDRV_PCM_FMTBIT_S24_LE,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.rates = SNDRV_PCM_RATE_8000_192000,
-+	.rate_min = 8000,
-+	.rate_max = 192000,
-+	.buffer_bytes_max = PERIODS_MAX * PERIOD_BYTES_MAX,
-+	.period_bytes_min = PERIOD_BYTES_MIN,
-+	.period_bytes_max = PERIOD_BYTES_MAX,
-+	.periods_min = PERIODS_MIN,
-+	.periods_max = PERIODS_MAX,
-+};
-+
-+static int xlnx_formatter_pcm_reset(void __iomem *mmio_base)
-+{
-+	u32 val, retries = 0;
-+
-+	val = readl(mmio_base + XLNX_AUD_CTRL);
-+	val |= AUD_CTRL_RESET_MASK;
-+	writel(val, mmio_base + XLNX_AUD_CTRL);
-+
-+	val = readl(mmio_base + XLNX_AUD_CTRL);
-+	/* Poll for maximum timeout of approximately 100ms (1 * 100)*/
-+	while ((val & AUD_CTRL_RESET_MASK) && (retries < 100)) {
-+		mdelay(1);
-+		retries++;
-+		val = readl(mmio_base + XLNX_AUD_CTRL);
-+	}
-+	if (val & AUD_CTRL_RESET_MASK)
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static void xlnx_formatter_disable_irqs(void __iomem *mmio_base, int stream)
-+{
-+	u32 val;
-+
-+	val = readl(mmio_base + XLNX_AUD_CTRL);
-+	val &= ~AUD_CTRL_IOC_IRQ_MASK;
-+	if (stream == SNDRV_PCM_STREAM_CAPTURE)
-+		val &= ~AUD_CTRL_TOUT_IRQ_MASK;
-+
-+	writel(val, mmio_base + XLNX_AUD_CTRL);
-+}
-+
-+static irqreturn_t xlnx_mm2s_irq_handler(int irq, void *arg)
-+{
-+	u32 val;
-+	void __iomem *reg;
-+	struct device *dev = arg;
-+	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(dev);
-+
-+	reg = adata->mmio + XLNX_MM2S_OFFSET + XLNX_AUD_STS;
-+	val = readl(reg);
-+	if (val & AUD_STS_IOC_IRQ_MASK) {
-+		writel(val & AUD_STS_IOC_IRQ_MASK, reg);
-+		if (adata->play_stream)
-+			snd_pcm_period_elapsed(adata->play_stream);
-+		return IRQ_HANDLED;
-+	}
-+
-+	return IRQ_NONE;
-+}
-+
-+static irqreturn_t xlnx_s2mm_irq_handler(int irq, void *arg)
-+{
-+	u32 val;
-+	void __iomem *reg;
-+	struct device *dev = arg;
-+	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(dev);
-+
-+	reg = adata->mmio + XLNX_S2MM_OFFSET + XLNX_AUD_STS;
-+	val = readl(reg);
-+	if (val & AUD_STS_IOC_IRQ_MASK) {
-+		writel(val & AUD_STS_IOC_IRQ_MASK, reg);
-+		if (adata->capture_stream)
-+			snd_pcm_period_elapsed(adata->capture_stream);
-+		return IRQ_HANDLED;
-+	}
-+
-+	return IRQ_NONE;
-+}
-+
-+static int xlnx_formatter_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	int err;
-+	u32 val, data_format_mode;
-+	u32 ch_count_mask, ch_count_shift, data_xfer_mode, data_xfer_shift;
-+	struct xlnx_pcm_stream_param *stream_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
-+								    DRV_NAME);
-+	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(component->dev);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-+	    !adata->mm2s_presence)
-+		return -ENODEV;
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+		 !adata->s2mm_presence)
-+		return -ENODEV;
-+
-+	stream_data = kzalloc(sizeof(*stream_data), GFP_KERNEL);
-+	if (!stream_data)
-+		return -ENOMEM;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ch_count_mask = CFG_MM2S_CH_MASK;
-+		ch_count_shift = CFG_MM2S_CH_SHIFT;
-+		data_xfer_mode = CFG_MM2S_XFER_MASK;
-+		data_xfer_shift = CFG_MM2S_XFER_SHIFT;
-+		data_format_mode = CFG_MM2S_PKG_MASK;
-+		stream_data->mmio = adata->mmio + XLNX_MM2S_OFFSET;
-+		adata->play_stream = substream;
-+
-+	} else {
-+		ch_count_mask = CFG_S2MM_CH_MASK;
-+		ch_count_shift = CFG_S2MM_CH_SHIFT;
-+		data_xfer_mode = CFG_S2MM_XFER_MASK;
-+		data_xfer_shift = CFG_S2MM_XFER_SHIFT;
-+		data_format_mode = CFG_S2MM_PKG_MASK;
-+		stream_data->mmio = adata->mmio + XLNX_S2MM_OFFSET;
-+		adata->capture_stream = substream;
-+	}
-+
-+	val = readl(adata->mmio + XLNX_AUD_CORE_CONFIG);
-+
-+	if (!(val & data_format_mode))
-+		stream_data->interleaved = true;
-+
-+	stream_data->xfer_mode = (val & data_xfer_mode) >> data_xfer_shift;
-+	stream_data->ch_limit = (val & ch_count_mask) >> ch_count_shift;
-+	dev_info(component->dev,
-+		 "stream %d : format = %d mode = %d ch_limit = %d\n",
-+		 substream->stream, stream_data->interleaved,
-+		 stream_data->xfer_mode, stream_data->ch_limit);
-+
-+	snd_soc_set_runtime_hwparams(substream, &xlnx_pcm_hardware);
-+	runtime->private_data = stream_data;
-+
-+	/* Resize the period size divisible by 64 */
-+	err = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64);
-+	if (err) {
-+		dev_err(component->dev,
-+			"unable to set constraint on period bytes\n");
-+		return err;
-+	}
-+
-+	/* enable DMA IOC irq */
-+	val = readl(stream_data->mmio + XLNX_AUD_CTRL);
-+	val |= AUD_CTRL_IOC_IRQ_MASK;
-+	writel(val, stream_data->mmio + XLNX_AUD_CTRL);
-+
-+	return 0;
-+}
-+
-+static int xlnx_formatter_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	int ret;
-+	struct xlnx_pcm_stream_param *stream_data =
-+			substream->runtime->private_data;
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
-+								    DRV_NAME);
-+
-+	ret = xlnx_formatter_pcm_reset(stream_data->mmio);
-+	if (ret) {
-+		dev_err(component->dev, "audio formatter reset failed\n");
-+		goto err_reset;
-+	}
-+	xlnx_formatter_disable_irqs(stream_data->mmio, substream->stream);
-+
-+err_reset:
-+	kfree(stream_data);
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t
-+xlnx_formatter_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	u32 pos;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
-+
-+	pos = readl(stream_data->mmio + XLNX_AUD_XFER_COUNT);
-+
-+	if (pos >= stream_data->buffer_size)
-+		pos = 0;
-+
-+	return bytes_to_frames(runtime, pos);
-+}
-+
-+static int xlnx_formatter_pcm_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	u32 low, high, active_ch, val, bytes_per_ch, bits_per_sample;
-+	int status;
-+	u64 size;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
-+
-+	active_ch = params_channels(params);
-+	if (active_ch > stream_data->ch_limit)
-+		return -EINVAL;
-+
-+	size = params_buffer_bytes(params);
-+	status = snd_pcm_lib_malloc_pages(substream, size);
-+	if (status < 0)
-+		return status;
-+
-+	stream_data->buffer_size = size;
-+
-+	low = lower_32_bits(substream->dma_buffer.addr);
-+	high = upper_32_bits(substream->dma_buffer.addr);
-+	writel(low, stream_data->mmio + XLNX_AUD_BUFF_ADDR_LSB);
-+	writel(high, stream_data->mmio + XLNX_AUD_BUFF_ADDR_MSB);
-+
-+	val = readl(stream_data->mmio + XLNX_AUD_CTRL);
-+	bits_per_sample = params_width(params);
-+	switch (bits_per_sample) {
-+	case 8:
-+		val |= (BIT_DEPTH_8 << AUD_CTRL_DATA_WIDTH_SHIFT);
-+		break;
-+	case 16:
-+		val |= (BIT_DEPTH_16 << AUD_CTRL_DATA_WIDTH_SHIFT);
-+		break;
-+	case 20:
-+		val |= (BIT_DEPTH_20 << AUD_CTRL_DATA_WIDTH_SHIFT);
-+		break;
-+	case 24:
-+		val |= (BIT_DEPTH_24 << AUD_CTRL_DATA_WIDTH_SHIFT);
-+		break;
-+	case 32:
-+		val |= (BIT_DEPTH_32 << AUD_CTRL_DATA_WIDTH_SHIFT);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val |= active_ch << AUD_CTRL_ACTIVE_CH_SHIFT;
-+	writel(val, stream_data->mmio + XLNX_AUD_CTRL);
-+
-+	val = (params_periods(params) << PERIOD_CFG_PERIODS_SHIFT)
-+		| params_period_bytes(params);
-+	writel(val, stream_data->mmio + XLNX_AUD_PERIOD_CONFIG);
-+	bytes_per_ch = DIV_ROUND_UP(params_period_bytes(params), active_ch);
-+	writel(bytes_per_ch, stream_data->mmio + XLNX_BYTES_PER_CH);
-+
-+	return 0;
-+}
-+
-+static int xlnx_formatter_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_lib_free_pages(substream);
-+}
-+
-+static int xlnx_formatter_pcm_trigger(struct snd_pcm_substream *substream,
-+				      int cmd)
-+{
-+	u32 val;
-+	struct xlnx_pcm_stream_param *stream_data =
-+			substream->runtime->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		val = readl(stream_data->mmio + XLNX_AUD_CTRL);
-+		val |= AUD_CTRL_DMA_EN_MASK;
-+		writel(val, stream_data->mmio + XLNX_AUD_CTRL);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		val = readl(stream_data->mmio + XLNX_AUD_CTRL);
-+		val &= ~AUD_CTRL_DMA_EN_MASK;
-+		writel(val, stream_data->mmio + XLNX_AUD_CTRL);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int xlnx_formatter_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
-+								    DRV_NAME);
-+	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+			SNDRV_DMA_TYPE_DEV, component->dev,
-+			xlnx_pcm_hardware.buffer_bytes_max,
-+			xlnx_pcm_hardware.buffer_bytes_max);
-+}
-+
-+static const struct snd_pcm_ops xlnx_formatter_pcm_ops = {
-+	.open = xlnx_formatter_pcm_open,
-+	.close = xlnx_formatter_pcm_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = xlnx_formatter_pcm_hw_params,
-+	.hw_free = xlnx_formatter_pcm_hw_free,
-+	.trigger = xlnx_formatter_pcm_trigger,
-+	.pointer = xlnx_formatter_pcm_pointer,
-+};
-+
-+static const struct snd_soc_component_driver xlnx_asoc_component = {
-+	.name = DRV_NAME,
-+	.ops = &xlnx_formatter_pcm_ops,
-+	.pcm_new = xlnx_formatter_pcm_new,
-+};
-+
-+static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	u32 val;
-+	struct xlnx_pcm_drv_data *aud_drv_data;
-+	struct resource *res;
-+	struct device *dev = &pdev->dev;
-+
-+	aud_drv_data = devm_kzalloc(dev, sizeof(*aud_drv_data), GFP_KERNEL);
-+	if (!aud_drv_data)
-+		return -ENOMEM;
-+
-+	aud_drv_data->axi_clk = devm_clk_get(dev, "s_axi_lite_aclk");
-+	if (IS_ERR(aud_drv_data->axi_clk)) {
-+		ret = PTR_ERR(aud_drv_data->axi_clk);
-+		dev_err(dev, "failed to get s_axi_lite_aclk(%d)\n", ret);
-+		return ret;
-+	}
-+	ret = clk_prepare_enable(aud_drv_data->axi_clk);
-+	if (ret) {
-+		dev_err(dev,
-+			"failed to enable s_axi_lite_aclk(%d)\n", ret);
-+		return ret;
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(dev, "audio formatter node:addr to resource failed\n");
-+		ret = -ENXIO;
-+		goto clk_err;
-+	}
-+	aud_drv_data->mmio = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(aud_drv_data->mmio)) {
-+		dev_err(dev, "audio formatter ioremap failed\n");
-+		ret = PTR_ERR(aud_drv_data->mmio);
-+		goto clk_err;
-+	}
-+
-+	val = readl(aud_drv_data->mmio + XLNX_AUD_CORE_CONFIG);
-+	if (val & AUD_CFG_MM2S_MASK) {
-+		aud_drv_data->mm2s_presence = true;
-+		ret = xlnx_formatter_pcm_reset(aud_drv_data->mmio +
-+					       XLNX_MM2S_OFFSET);
-+		if (ret) {
-+			dev_err(dev, "audio formatter reset failed\n");
-+			goto clk_err;
-+		}
-+		xlnx_formatter_disable_irqs(aud_drv_data->mmio +
-+					    XLNX_MM2S_OFFSET,
-+					    SNDRV_PCM_STREAM_PLAYBACK);
-+
-+		aud_drv_data->mm2s_irq = platform_get_irq_byname(pdev,
-+								 "irq_mm2s");
-+		if (aud_drv_data->mm2s_irq < 0) {
-+			dev_err(dev, "xlnx audio mm2s irq resource failed\n");
-+			ret = aud_drv_data->mm2s_irq;
-+			goto clk_err;
-+		}
-+		ret = devm_request_irq(dev, aud_drv_data->mm2s_irq,
-+				       xlnx_mm2s_irq_handler, 0,
-+				       "xlnx_formatter_pcm_mm2s_irq", dev);
-+		if (ret) {
-+			dev_err(dev, "xlnx audio mm2s irq request failed\n");
-+			goto clk_err;
-+		}
-+	}
-+	if (val & AUD_CFG_S2MM_MASK) {
-+		aud_drv_data->s2mm_presence = true;
-+		ret = xlnx_formatter_pcm_reset(aud_drv_data->mmio +
-+					       XLNX_S2MM_OFFSET);
-+		if (ret) {
-+			dev_err(dev, "audio formatter reset failed\n");
-+			goto clk_err;
-+		}
-+		xlnx_formatter_disable_irqs(aud_drv_data->mmio +
-+					    XLNX_S2MM_OFFSET,
-+					    SNDRV_PCM_STREAM_CAPTURE);
-+
-+		aud_drv_data->s2mm_irq = platform_get_irq_byname(pdev,
-+								 "irq_s2mm");
-+		if (aud_drv_data->s2mm_irq < 0) {
-+			dev_err(dev, "xlnx audio s2mm irq resource failed\n");
-+			ret = aud_drv_data->s2mm_irq;
-+			goto clk_err;
-+		}
-+		ret = devm_request_irq(dev, aud_drv_data->s2mm_irq,
-+				       xlnx_s2mm_irq_handler, 0,
-+				       "xlnx_formatter_pcm_s2mm_irq",
-+				       dev);
-+		if (ret) {
-+			dev_err(dev, "xlnx audio s2mm irq request failed\n");
-+			goto clk_err;
-+		}
-+	}
-+
-+	dev_set_drvdata(dev, aud_drv_data);
-+
-+	ret = devm_snd_soc_register_component(dev, &xlnx_asoc_component,
-+					      NULL, 0);
-+	if (ret) {
-+		dev_err(dev, "pcm platform device register failed\n");
-+		goto clk_err;
-+	}
-+
-+	return 0;
-+
-+clk_err:
-+	clk_disable_unprepare(aud_drv_data->axi_clk);
-+	return ret;
-+}
-+
-+static int xlnx_formatter_pcm_remove(struct platform_device *pdev)
-+{
-+	int ret = 0;
-+	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(&pdev->dev);
-+
-+	if (adata->s2mm_presence)
-+		ret = xlnx_formatter_pcm_reset(adata->mmio + XLNX_S2MM_OFFSET);
-+
-+	/* Try MM2S reset, even if S2MM  reset fails */
-+	if (adata->mm2s_presence)
-+		ret = xlnx_formatter_pcm_reset(adata->mmio + XLNX_MM2S_OFFSET);
-+
-+	if (ret)
-+		dev_err(&pdev->dev, "audio formatter reset failed\n");
-+
-+	clk_disable_unprepare(adata->axi_clk);
-+	return ret;
-+}
-+
-+static const struct of_device_id xlnx_formatter_pcm_of_match[] = {
-+	{ .compatible = "xlnx,audio-formatter-1.0"},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, xlnx_formatter_pcm_of_match);
-+
-+static struct platform_driver xlnx_formatter_pcm_driver = {
-+	.probe	= xlnx_formatter_pcm_probe,
-+	.remove	= xlnx_formatter_pcm_remove,
-+	.driver	= {
-+		.name	= DRV_NAME,
-+		.of_match_table	= xlnx_formatter_pcm_of_match,
-+	},
-+};
-+
-+module_platform_driver(xlnx_formatter_pcm_driver);
-+MODULE_AUTHOR("Maruthi Srinivas Bayyavarapu <maruthis@xilinx.com>");
-+MODULE_LICENSE("GPL v2");
+ #define simple_priv_to_card(priv) (&(priv)->snd_card)
+ #define simple_priv_to_props(priv, i) ((priv)->dai_props + (i))
+ #define simple_priv_to_dev(priv) (simple_priv_to_card(priv)->dev)
+@@ -185,25 +192,27 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
+ 					     struct device_node *np,
+ 					     struct device_node *codec,
+ 					     struct simple_card_data *priv,
+-					     int *dai_idx, int link_idx,
+-					     int *conf_idx, int is_fe,
++					     struct link_info *li,
+ 					     bool is_top_level_node)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+-	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, link_idx);
+-	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
++	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
++	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+ 	struct asoc_simple_dai *dai;
+ 	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+-
+ 	char prop[128];
+ 	char *prefix = "";
+ 	int ret;
+ 
++	dev_dbg(dev, "link_of DPCM (%pOF)\n", np);
++
++	li->link++;
++
+ 	/* For single DAI link & old style of DT node */
+ 	if (is_top_level_node)
+ 		prefix = PREFIX;
+ 
+-	if (is_fe) {
++	if (np != codec) {
+ 		int is_single_links = 0;
+ 
+ 		/* BE is dummy */
+@@ -216,7 +225,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
+ 		dai_link->dpcm_merged_format	= 1;
+ 
+ 		dai =
+-		dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
++		dai_props->cpu_dai	= &priv->dais[li->dais++];
+ 
+ 		ret = asoc_simple_card_parse_cpu(np, dai_link, DAI, CELL,
+ 						 &is_single_links);
+@@ -247,10 +256,10 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
+ 		dai_link->be_hw_params_fixup	= asoc_simple_card_be_hw_params_fixup;
+ 
+ 		dai =
+-		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
++		dai_props->codec_dai	= &priv->dais[li->dais++];
+ 
+ 		cconf =
+-		dai_props->codec_conf	= &priv->codec_conf[(*conf_idx)++];
++		dai_props->codec_conf	= &priv->codec_conf[li->conf++];
+ 
+ 		ret = asoc_simple_card_parse_codec(np, dai_link, DAI, CELL);
+ 		if (ret < 0)
+@@ -306,12 +315,12 @@ static int asoc_simple_card_dai_link_of_dpcm(struct device_node *top,
+ static int asoc_simple_card_dai_link_of(struct device_node *top,
+ 					struct device_node *node,
+ 					struct simple_card_data *priv,
+-					int *dai_idx, int link_idx,
++					struct link_info *li,
+ 					bool is_top_level_node)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+-	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, link_idx);
+-	struct simple_dai_props *dai_props = simple_priv_to_props(priv, link_idx);
++	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
++	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+ 	struct asoc_simple_dai *cpu_dai;
+ 	struct asoc_simple_dai *codec_dai;
+ 	struct device_node *cpu = NULL;
+@@ -321,6 +330,10 @@ static int asoc_simple_card_dai_link_of(struct device_node *top,
+ 	char *prefix = "";
+ 	int ret, single_cpu;
+ 
++	li->link++;
++
++	dev_dbg(dev, "link_of (%pOF)\n", node);
++
+ 	/* For single DAI link & old style of DT node */
+ 	if (is_top_level_node)
+ 		prefix = PREFIX;
+@@ -347,9 +360,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *top,
+ 	}
+ 
+ 	cpu_dai			=
+-	dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
++	dai_props->cpu_dai	= &priv->dais[li->dais++];
+ 	codec_dai		=
+-	dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
++	dai_props->codec_dai	= &priv->dais[li->dais++];
+ 
+ 	ret = asoc_simple_card_parse_daifmt(dev, node, codec,
+ 					    prefix, &dai_link->dai_fmt);
+@@ -454,9 +467,8 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	struct device_node *np;
+ 	struct device_node *codec;
+ 	struct asoc_simple_card_data adata;
+-	bool is_fe;
++	struct link_info li;
+ 	int ret, loop;
+-	int dai_idx, link_idx, conf_idx;
+ 
+ 	if (!top)
+ 		return -EINVAL;
+@@ -470,10 +482,8 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 		return ret;
+ 
+ 	/* Single/Muti DAI link(s) & New style of DT node */
++	memset(&li, 0, sizeof(li));
+ 	loop		= 1;
+-	link_idx	= 0;
+-	dai_idx		= 0;
+-	conf_idx	= 0;
+ 	node = of_get_child_by_name(top, PREFIX "dai-link");
+ 	if (!node) {
+ 		node = dev->of_node;
+@@ -495,19 +505,16 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 				if (!codec)
+ 					return -ENODEV;
+ 
+-				is_fe = (np != codec);
+-
+ 				ret = asoc_simple_card_dai_link_of_dpcm(
+ 						top, node, np, codec, priv,
+-						&dai_idx, link_idx++, &conf_idx,
+-						is_fe, !loop);
++						&li, !loop);
+ 				if (ret < 0)
+ 					return ret;
+ 			}
+ 		} else {
+ 			ret = asoc_simple_card_dai_link_of(
+ 						top, node, priv,
+-						&dai_idx, link_idx++, !loop);
++						&li, !loop);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
+@@ -525,9 +532,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ }
+ 
+ static void asoc_simple_card_get_dais_count(struct device *dev,
+-					    int *link_num,
+-					    int *dais_num,
+-					    int *ccnf_num)
++					    struct link_info *li)
+ {
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node;
+@@ -583,9 +588,9 @@ static void asoc_simple_card_get_dais_count(struct device *dev,
+ 	 *	=> 1 ccnf  = 1xdummy-Codec
+ 	 */
+ 	if (!top) {
+-		(*link_num) = 1;
+-		(*dais_num) = 2;
+-		(*ccnf_num) = 0;
++		li->link = 1;
++		li->dais = 2;
++		li->conf = 0;
+ 		return;
+ 	}
+ 
+@@ -602,13 +607,13 @@ static void asoc_simple_card_get_dais_count(struct device *dev,
+ 			asoc_simple_card_get_conversion(dev, np, &adata);
+ 
+ 		num = of_get_child_count(node);
+-		(*dais_num) += num;
++		li->dais += num;
+ 		if (num > 2 ||
+ 		    adata.convert_rate || adata.convert_channels) {
+-			(*link_num) += num;
+-			(*ccnf_num)++;
++			li->link += num;
++			li->conf++;
+ 		} else {
+-			(*link_num)++;
++			li->link++;
+ 		}
+ 		node = of_get_next_child(top, node);
+ 	} while (loop && node);
+@@ -640,7 +645,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct device_node *np = dev->of_node;
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_codec_conf *cconf;
+-	int lnum = 0, dnum = 0, cnum = 0;
++	struct link_info li;
+ 	int ret, i;
+ 
+ 	/* Allocate the private data and the DAI link array */
+@@ -648,14 +653,15 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	asoc_simple_card_get_dais_count(dev, &lnum, &dnum, &cnum);
+-	if (!lnum || !dnum)
++	memset(&li, 0, sizeof(li));
++	asoc_simple_card_get_dais_count(dev, &li);
++	if (!li.link || !li.dais)
+ 		return -EINVAL;
+ 
+-	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
+-	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link),  GFP_KERNEL);
+-	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
+-	cconf     = devm_kcalloc(dev, cnum, sizeof(*cconf),     GFP_KERNEL);
++	dai_props = devm_kcalloc(dev, li.link, sizeof(*dai_props), GFP_KERNEL);
++	dai_link  = devm_kcalloc(dev, li.link, sizeof(*dai_link),  GFP_KERNEL);
++	dais      = devm_kcalloc(dev, li.dais, sizeof(*dais),      GFP_KERNEL);
++	cconf     = devm_kcalloc(dev, li.conf, sizeof(*cconf),     GFP_KERNEL);
+ 	if (!dai_props || !dai_link || !dais)
+ 		return -ENOMEM;
+ 
+@@ -665,7 +671,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	 * see
+ 	 *	soc-core.c :: snd_soc_init_multicodec()
+ 	 */
+-	for (i = 0; i < lnum; i++) {
++	for (i = 0; i < li.link; i++) {
+ 		dai_link[i].codecs	= &dai_props[i].codecs;
+ 		dai_link[i].num_codecs	= 1;
+ 		dai_link[i].platform	= &dai_props[i].platform;
+@@ -681,9 +687,9 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+-	card->num_links		= lnum;
++	card->num_links		= li.link;
+ 	card->codec_conf	= cconf;
+-	card->num_configs	= cnum;
++	card->num_configs	= li.conf;
+ 	card->probe		= asoc_simple_soc_card_probe;
+ 
+ 	if (np && of_device_is_available(np)) {
 -- 
 2.20.1
