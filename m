@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: Off by one in
-	of_q6asm_parse_dai_data()" to the asoc tree
-Date: Fri, 21 Dec 2018 13:42:29 +0000 (GMT)
-Message-ID: <20181221134229.B95561121B93@debutante.sirena.org.uk>
-References: <20181221090442.GA2735@kadam>
+Subject: Applied "ASoC: pcm512x: Fix a double unlock in
+	pcm512x_digital_mute()" to the asoc tree
+Date: Fri, 21 Dec 2018 13:42:37 +0000 (GMT)
+Message-ID: <20181221134237.309881121B93@debutante.sirena.org.uk>
+References: <20181221091120.GG2735@kadam>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DA2E5267A78
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 14:42:30 +0100 (CET)
-In-Reply-To: <20181221090442.GA2735@kadam>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4810267ADF
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 14:42:44 +0100 (CET)
+In-Reply-To: <20181221091120.GG2735@kadam>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Dimitris Papavasiliou <dpapavas@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: Off by one in of_q6asm_parse_dai_data()
+   ASoC: pcm512x: Fix a double unlock in pcm512x_digital_mute()
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 6f10aff97f5d2c9a26a4deff1482f845841b7307 Mon Sep 17 00:00:00 2001
+>From 35c299625b68369518bf45f99b8052ec2394d10e Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 21 Dec 2018 12:04:42 +0300
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: Off by one in
- of_q6asm_parse_dai_data()
+Date: Fri, 21 Dec 2018 12:11:20 +0300
+Subject: [PATCH] ASoC: pcm512x: Fix a double unlock in pcm512x_digital_mute()
 
-The q6asm_fe_dais[] array has MAX_SESSIONS (8) elements so the >
-comparison should be >= or we access one element beyond the end of the
-array.
+We accidentally call mutex_unlock(&pcm512x->mutex); twice in a row.
 
-Fixes: 22930c79ac5c ("ASoC: qdsp6: q6asm-dai: Add support to compress offload")
+I re-wrote the error handling to use "goto unlock;" instead of returning
+directly.  Hopefully, it makes the code a little simpler.
+
+Fixes: 3500f1c589e9 ("ASoC: pcm512x: Implement the digital_mute interface")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviwed-by: Dimitris Papavasiliou <dpapavas@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/pcm512x.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 5b986b74dd36..9d738b4c1e05 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -874,7 +874,7 @@ static int of_q6asm_parse_dai_data(struct device *dev,
- 
- 	for_each_child_of_node(dev->of_node, node) {
- 		ret = of_property_read_u32(node, "reg", &id);
--		if (ret || id > MAX_SESSIONS || id < 0) {
-+		if (ret || id >= MAX_SESSIONS || id < 0) {
- 			dev_err(dev, "valid dai id not found:%d\n", ret);
- 			continue;
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 6cb1653be804..4cc24a5d5c31 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -1400,24 +1400,20 @@ static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
+ 		if (ret != 0) {
+ 			dev_err(component->dev,
+ 				"Failed to set digital mute: %d\n", ret);
+-			mutex_unlock(&pcm512x->mutex);
+-			return ret;
++			goto unlock;
  		}
+ 
+ 		regmap_read_poll_timeout(pcm512x->regmap,
+ 					 PCM512x_ANALOG_MUTE_DET,
+ 					 mute_det, (mute_det & 0x3) == 0,
+ 					 200, 10000);
+-
+-		mutex_unlock(&pcm512x->mutex);
+ 	} else {
+ 		pcm512x->mute &= ~0x1;
+ 		ret = pcm512x_update_mute(pcm512x);
+ 		if (ret != 0) {
+ 			dev_err(component->dev,
+ 				"Failed to update digital mute: %d\n", ret);
+-			mutex_unlock(&pcm512x->mutex);
+-			return ret;
++			goto unlock;
+ 		}
+ 
+ 		regmap_read_poll_timeout(pcm512x->regmap,
+@@ -1428,9 +1424,10 @@ static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
+ 					 200, 10000);
+ 	}
+ 
++unlock:
+ 	mutex_unlock(&pcm512x->mutex);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
 -- 
 2.20.1
