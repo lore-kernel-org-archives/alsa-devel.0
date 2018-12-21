@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove useless cast" to
-	the asoc tree
-Date: Fri, 21 Dec 2018 18:15:52 +0000 (GMT)
-Message-ID: <20181221181552.5D8EB1121B93@debutante.sirena.org.uk>
-References: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: simplify boolean tests"
+	to the asoc tree
+Date: Fri, 21 Dec 2018 18:15:50 +0000 (GMT)
+Message-ID: <20181221181550.817E31121B93@debutante.sirena.org.uk>
+References: <20181216224910.16198-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 07547267AC5
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:53 +0100 (CET)
-In-Reply-To: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D136D267B71
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:51 +0100 (CET)
+In-Reply-To: <20181216224910.16198-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: remove useless cast
+   ASoC: Intel: Skylake: simplify boolean tests
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 9a3bf4b889c088874064f8353ae48e305c670bbb Mon Sep 17 00:00:00 2001
+>From e7b6afc7472f2b0edaad443814451cd2bf7267ac Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:02 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: remove useless cast
+Date: Sun, 16 Dec 2018 16:49:03 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: simplify boolean tests
 
 Detected with Coccinelle
 
-sound/soc/intel/skylake/skl-topology.c:3106:16-20: WARNING: casting
-value returned by memory allocation function to (char *) is useless.
+skl-messages.c:419:5-32: WARNING: Comparison to bool
+skl-pcm.c:1426:6-33: WARNING: Comparison to bool
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index cf8848b779dc..389f1862bc43 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3103,7 +3103,7 @@ static int skl_init_algo_data(struct device *dev, struct soc_bytes_ext *be,
- 	ac->size = dfw_ac->max;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index b0e6fb93eaf8..28c4806b196a 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -416,7 +416,7 @@ int skl_resume_dsp(struct skl *skl)
+ 	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
  
- 	if (ac->max) {
--		ac->params = (char *) devm_kzalloc(dev, ac->max, GFP_KERNEL);
-+		ac->params = devm_kzalloc(dev, ac->max, GFP_KERNEL);
- 		if (!ac->params)
- 			return -ENOMEM;
+ 	/* check if DSP 1st boot is done */
+-	if (skl->skl_sst->is_first_boot == true)
++	if (skl->skl_sst->is_first_boot)
+ 		return 0;
  
+ 	/*
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 557f80c0bfe5..8e589d698c58 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1423,7 +1423,7 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
+ 		if (!ops)
+ 			return -EIO;
+ 
+-		if (skl->skl_sst->is_first_boot == false) {
++		if (!skl->skl_sst->is_first_boot) {
+ 			dev_err(component->dev, "DSP reports first boot done!!!\n");
+ 			return -EIO;
+ 		}
 -- 
 2.20.1
