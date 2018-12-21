@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm512x: Fix a double unlock in
- pcm512x_digital_mute()
-Date: Fri, 21 Dec 2018 12:10:50 +0000
-Message-ID: <20181221121050.GE4996@sirena.org.uk>
-References: <20181221091120.GG2735@kadam>
- <f8f14c6a-46c2-995d-2df4-4ae821e1b895@gmail.com>
- <20181221120056.GD2240@kadam>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 3/4] ASoC: qdsp6: q6asm-dai: Fix a small
+ memory leak
+Date: Fri, 21 Dec 2018 12:29:31 +0000
+Message-ID: <2630a14e-ba15-0ed2-11f7-d217569a31c0@linaro.org>
+References: <20181221090610.GC2735@kadam>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6293002783734069330=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DA32E267A78
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 13:10:53 +0100 (CET)
-In-Reply-To: <20181221120056.GD2240@kadam>
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com
+ [209.85.128.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE50A267A78
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 13:29:33 +0100 (CET)
+Received: by mail-wm1-f65.google.com with SMTP id m1so5158860wml.2
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 04:29:33 -0800 (PST)
+In-Reply-To: <20181221090610.GC2735@kadam>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Dimitris Papavasiliou <dpapavas@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6293002783734069330==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ey/N+yb7u/X9mFhi"
-Content-Disposition: inline
+
+On 21/12/2018 09:06, Dan Carpenter wrote:
+> We can't return directly if snd_dma_alloc_pages() fails; we first need
+> to free prtd->audio_client and prtd.
+> 
+> Fixes: 22930c79ac5c ("ASoC: qdsp6: q6asm-dai: Add support to compress offload")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 
 
---ey/N+yb7u/X9mFhi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the patch! I was due to send something similar!
 
-On Fri, Dec 21, 2018 at 03:00:56PM +0300, Dan Carpenter wrote:
-> On Fri, Dec 21, 2018 at 01:23:37PM +0200, Dimitris Papavasiliou wrote:
-
-> > Maintainers, please let me know if there's anything I need to do
-> > with respect to this.
-
-> All you need to is reply with a reviewed-by tag so we can mark on the
-> fix that you approved it.
-
-> Reviewed-by: Your Name <email>
-
-I've just gone and applied the tag but yeah, what Dan says - there's
-tools that can pick tags like this out of e-mail which is also useful.
-
---ey/N+yb7u/X9mFhi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwc2EkACgkQJNaLcl1U
-h9CHBAf9Emf/6IDm28ipzwOCjOsi6yS5BkX1Fndn2XHu8RVIcDIxR7khhyFPqJig
-MkqMs4l4f7jAwsZmL7ngvWNN66tObRni5vCPKHXqJOVXdfmY0fdPRO6KiqKGDRcH
-26FjXs+HvqVsF4zKqQqQs4yt7QabV5sXJ0GfFVxAHtfJRA1PUgikOV1dUVy4Pb0d
-/uDhxXNgddrtFF1oWrstAjz0lCbyIJ2C9TJVt79EdThU1yarynxNVWT8tCB0psL9
-2Q+E79hWhh2Y5cy5NY4O1vqmUqpBIdxCSAYZ0ufis4L+9PoYsrt8CyU0smd+C97H
-bi5pmbE2o7SYRh2RWfYSuPbqPDWloA==
-=TndT
------END PGP SIGNATURE-----
-
---ey/N+yb7u/X9mFhi--
-
---===============6293002783734069330==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6293002783734069330==--
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
