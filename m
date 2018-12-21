@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: enable audio formatter driver
-	build" to the asoc tree
-Date: Fri, 21 Dec 2018 18:15:23 +0000 (GMT)
-Message-ID: <20181221181523.19AAE1121B93@debutante.sirena.org.uk>
+Subject: Applied "dt-bindings: ASoC: xlnx,
+	audio-formatter: Document audio formatter bindings" to the asoc tree
+Date: Fri, 21 Dec 2018 18:15:26 +0000 (GMT)
+Message-ID: <20181221181526.C0FC61121B93@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D05FC267B1B
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D882267AE3
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 19:15:27 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: enable audio formatter driver build
+   dt-bindings: ASoC: xlnx, audio-formatter: Document audio formatter bindings
 
 has been applied to the asoc tree at
 
@@ -52,43 +52,55 @@ to this mail.
 Thanks,
 Mark
 
->From 8c2249fb84054f83b528171091a4b436ebb3e058 Mon Sep 17 00:00:00 2001
+>From 380e39f8c1d1f88b436e4bf0cf14f2079f6d1d57 Mon Sep 17 00:00:00 2001
 From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Fri, 21 Dec 2018 14:27:29 +0530
-Subject: [PATCH] ASoC: xlnx: enable audio formatter driver build
+Date: Fri, 21 Dec 2018 14:27:27 +0530
+Subject: [PATCH] dt-bindings: ASoC: xlnx, audio-formatter: Document audio
+ formatter bindings
 
-Enable audio formatter driver build.
+Added documentation for audio formatter IP core DT bindings.
 
 Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/Kconfig  | 7 +++++++
- sound/soc/xilinx/Makefile | 2 ++
- 2 files changed, 9 insertions(+)
+ .../bindings/sound/xlnx,audio-formatter.txt   | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
 
-diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
-index 723a583a8d57..ac48d6a00c36 100644
---- a/sound/soc/xilinx/Kconfig
-+++ b/sound/soc/xilinx/Kconfig
-@@ -6,3 +6,10 @@ config SND_SOC_XILINX_I2S
- 	  mode, IP receives audio in AES format, extracts PCM and sends
- 	  PCM data. In receiver mode, IP receives PCM audio and
- 	  encapsulates PCM in AES format and sends AES data.
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+new file mode 100644
+index 000000000000..cbc93c8f4963
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+@@ -0,0 +1,29 @@
++Device-Tree bindings for Xilinx PL audio formatter
 +
-+config SND_SOC_XILINX_AUDIO_FORMATTER
-+        tristate "Audio support for the the Xilinx audio formatter"
-+        help
-+          Select this option to enable Xilinx audio formatter
-+          support. This provides DMA platform device support for
-+          audio functionality.
-diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
-index 6c1209b9ee75..432693b1cc79 100644
---- a/sound/soc/xilinx/Makefile
-+++ b/sound/soc/xilinx/Makefile
-@@ -1,2 +1,4 @@
- snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
- obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
-+snd-soc-xlnx-formatter-pcm-objs := xlnx_formatter_pcm.o
-+obj-$(CONFIG_SND_SOC_XILINX_AUDIO_FORMATTER) += snd-soc-xlnx-formatter-pcm.o
++The IP core supports DMA, data formatting(AES<->PCM conversion)
++of audio samples.
++
++Required properties:
++ - compatible: "xlnx,audio-formatter-1.0"
++ - interrupt-names: Names specified to list of interrupts in same
++		    order mentioned under "interrupts".
++		    List of supported interrupt names are:
++		    "irq_mm2s" : interrupt from MM2S block
++		    "irq_s2mm" : interrupt from S2MM block
++ - interrupts-parent: Phandle for interrupt controller.
++ - interrupts: List of Interrupt numbers.
++ - reg: Base address and size of the IP core instance.
++ - clock-names: List of input clocks.
++   Required elements: "s_axi_lite_aclk", "aud_mclk"
++ - clocks: Input clock specifier. Refer to common clock bindings.
++
++Example:
++	audio_ss_0_audio_formatter_0: audio_formatter@80010000 {
++		compatible = "xlnx,audio-formatter-1.0";
++		interrupt-names = "irq_mm2s", "irq_s2mm";
++		interrupt-parent = <&gic>;
++		interrupts = <0 104 4>, <0 105 4>;
++		reg = <0x0 0x80010000 0x0 0x1000>;
++		clock-names = "s_axi_lite_aclk", "aud_mclk";
++		clocks = <&clk 71>, <&clk_wiz_1 0>;
++	};
 -- 
 2.20.1
