@@ -1,20 +1,20 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 2/2] ASoC: qdsp6: q6asm-dai: Fix a NULL vs
-	IS_ERR() bug
-Date: Fri, 21 Dec 2018 12:29:45 +0000
-Message-ID: <a9ebd36d-c13a-487d-79cc-72bd14134bab@linaro.org>
-References: <20181221090516.GB2735@kadam>
+Subject: Re: [PATCH 1/2] ASoC: qdsp6: q6asm-dai: Off by one in
+ of_q6asm_parse_dai_data()
+Date: Fri, 21 Dec 2018 12:31:13 +0000
+Message-ID: <034ee933-9e9c-0370-67d7-e0bb86f4c509@linaro.org>
+References: <20181221090442.GA2735@kadam>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com
- [209.85.128.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 574A9267AC2
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 13:29:47 +0100 (CET)
-Received: by mail-wm1-f65.google.com with SMTP id n190so5167406wmd.0
- for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 04:29:47 -0800 (PST)
-In-Reply-To: <20181221090516.GB2735@kadam>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72D01267AC5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 13:31:15 +0100 (CET)
+Received: by mail-wr1-f66.google.com with SMTP id p4so5093918wrt.7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2018 04:31:15 -0800 (PST)
+In-Reply-To: <20181221090442.GA2735@kadam>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,12 +31,14 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 21/12/2018 09:05, Dan Carpenter wrote:
-> The q6asm_audio_client_alloc() doesn't return NULL, it returns error
-> pointers.
+On 21/12/2018 09:04, Dan Carpenter wrote:
+> The q6asm_fe_dais[] array has MAX_SESSIONS (8) elements so the >
+> comparison should be >= or we access one element beyond the end of the
+> array.
 > 
 > Fixes: 22930c79ac5c ("ASoC: qdsp6: q6asm-dai: Add support to compress offload")
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 
 Thanks for the patch!
 
