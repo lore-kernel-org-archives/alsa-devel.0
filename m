@@ -1,58 +1,57 @@
 From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] ASoC: Intel: fix unmet dependencies in Kconfig
-Date: Fri, 21 Dec 2018 16:39:45 -0800
-Message-ID: <c4588b86-0746-f05a-6b3f-304d170ecca3@infradead.org>
-References: <20181221204955.30993-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v1 08/11] ASoC: Intel: Make PCI dependency
+	explicit
+Date: Fri, 21 Dec 2018 19:18:21 -0800
+Message-ID: <eb27ab03-4f42-2e2e-9873-16d9a6927e2b@infradead.org>
+References: <20181222001452.7474-1-okaya@kernel.org>
+ <20181222001452.7474-9-okaya@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181221204955.30993-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [198.137.202.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CE43267AC2
+ for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2018 04:18:30 +0100 (CET)
+In-Reply-To: <20181222001452.7474-9-okaya@kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sinan Kaya <okaya@kernel.org>, linux-next@vger.kernel.org
+Cc: "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-acpi@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/21/18 12:49 PM, Pierre-Louis Bossart wrote:
-> Remove warnings by selecting SND_HDA_INTEL_DSP_DETECTION_XYZ only when
-> SND_HDA_INTEL is part of the config.
-> 
-> Fixes: c337104b1a16 ('ALSA: HD-Audio: SKL+: abort probe if DSP is present and Skylake driver selected')
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 12/21/18 4:14 PM, Sinan Kaya wrote:
+> IOSF_MBI driver depends on CONFIG_PCI set but this is not specified
+> anywhere.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+wrong patch description...?
 
-Thanks.
-
+> Signed-off-by: Sinan Kaya <okaya@kernel.org>
 > ---
->  sound/soc/intel/Kconfig | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  sound/soc/intel/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 2fd1b61e8331..555cdb1d87d4 100644
+> index 2fd1b61e8331..b0764b2fe001 100644
 > --- a/sound/soc/intel/Kconfig
 > +++ b/sound/soc/intel/Kconfig
-> @@ -188,12 +188,12 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
->  	select SND_SOC_TOPOLOGY
->  	select SND_SOC_INTEL_SST
->  	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
-> -	select SND_HDA_INTEL_DSP_DETECTION_SKL if SND_SOC_INTEL_SKL
-> -	select SND_HDA_INTEL_DSP_DETECTION_APL if SND_SOC_INTEL_APL
-> -	select SND_HDA_INTEL_DSP_DETECTION_KBL if SND_SOC_INTEL_KBL
-> -	select SND_HDA_INTEL_DSP_DETECTION_GLK if SND_SOC_INTEL_GLK
-> -	select SND_HDA_INTEL_DSP_DETECTION_CNL if SND_SOC_INTEL_CNL
-> -	select SND_HDA_INTEL_DSP_DETECTION_CFL if SND_SOC_INTEL_CFL
-> +	select SND_HDA_INTEL_DSP_DETECTION_SKL if SND_SOC_INTEL_SKL && SND_HDA_INTEL
-> +	select SND_HDA_INTEL_DSP_DETECTION_APL if SND_SOC_INTEL_APL && SND_HDA_INTEL
-> +	select SND_HDA_INTEL_DSP_DETECTION_KBL if SND_SOC_INTEL_KBL && SND_HDA_INTEL
-> +	select SND_HDA_INTEL_DSP_DETECTION_GLK if SND_SOC_INTEL_GLK && SND_HDA_INTEL
-> +	select SND_HDA_INTEL_DSP_DETECTION_CNL if SND_SOC_INTEL_CNL && SND_HDA_INTEL
-> +	select SND_HDA_INTEL_DSP_DETECTION_CFL if SND_SOC_INTEL_CFL && SND_HDA_INTEL
+> @@ -91,7 +91,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
+>  config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>  	tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
+>  	default ACPI
+> -	depends on X86 && ACPI
+> +	depends on X86 && ACPI && PCI
+>  	select SND_SST_IPC_ACPI
+>  	select SND_SST_ATOM_HIFI2_PLATFORM
 >  	select SND_SOC_ACPI_INTEL_MATCH
->  	help
->  	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
 > 
 
 
