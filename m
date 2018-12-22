@@ -1,202 +1,183 @@
-From: Thorsten Glaser <tg@debian.org>
-Subject: Bug#870396: [Pkg-alsa-devel] Bug#870396: alsa-lib: fix SIGSEGV on x32 (and a minor typo in the testsuite)
-Date: Sat, 22 Dec 2018 19:56:22 +0000 (UTC)
-Message-ID: <Pine.BSM.4.64L.1812221945540.22404@herc.mirbsd.org>
-References: <150160433965.21991.1657492243954025255.reportbug@tglase.lan.tarent.de> <20181216120541.fjzy3cvnomlxraqj@toy.home.lxtec.de> <150160433965.21991.1657492243954025255.reportbug@tglase.lan.tarent.de>
-Reply-To: Thorsten Glaser <tg@debian.org>, 870396@bugs.debian.org
+From: Jonas Karlman <jonas@kwiboo.se>
+Subject: Re: [PATCH v3 1/9] ASoC: sun4i-i2s: Adjust regmap
+ settings
+Date: Sat, 22 Dec 2018 22:12:08 +0000
+Message-ID: <DB7PR03MB46813005FFDFC8609F67F111ACB90@DB7PR03MB4681.eurprd03.prod.outlook.com>
+References: <20181221152110.17982-1-codekipper@gmail.com>
+ <20181221152110.17982-2-codekipper@gmail.com>
+ <CAGb2v66-JmONW9AYqoSmifrEj+nstREdsbkcy9ECwnJ47zxARA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-860927789-1545508609=:22404"
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist2=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.870396.B870396.154550894619514@bugs.debian.org>
-In-Reply-To: <20181216120541.fjzy3cvnomlxraqj@toy.home.lxtec.de>
-Content-Language: de-DE-1901, en-GB
-List-URL: <https://lists.debian.org/debian-bugs-dist/>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Elimar Riesebieter <riesebie@lxtec.de>
-Cc: 870396@bugs.debian.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-oln040092067089.outbound.protection.outlook.com [40.92.67.89])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2240F26798A
+ for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2018 23:12:10 +0100 (CET)
+In-Reply-To: <CAGb2v66-JmONW9AYqoSmifrEj+nstREdsbkcy9ECwnJ47zxARA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <F307A1F0ECBB5B4EB50C38F5BE1EB0D6@eurprd03.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Chen-Yu Tsai <wens@csie.org>, Code Kipper <codekipper@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Andrea
+ Venturi (pers)" <be17068@iperbole.bo.it>, linux-sunxi <linux-sunxi@googlegroups.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2018-12-21 17:44, Chen-Yu Tsai wrote:
+> On Fri, Dec 21, 2018 at 11:21 PM <codekipper@gmail.com> wrote:
+>> From: Marcus Cooper <codekipper@gmail.com>
+>>
+>> Bypass the regmap cache when flushing the i2s FIFOs and modify the tables
+>> to reflect this.
+>>
+>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>> ---
+>>  sound/soc/sunxi/sun4i-i2s.c | 29 +++++++++--------------------
+>>  1 file changed, 9 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>> index d5ec1a20499d..64d073cb2aee 100644
+>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>> @@ -548,9 +548,11 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>>  static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+>>  {
+>>         /* Flush RX FIFO */
+>> +       regcache_cache_bypass(i2s->regmap, true);
+>>         regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+>>                            SUN4I_I2S_FIFO_CTRL_FLUSH_RX,
+>>                            SUN4I_I2S_FIFO_CTRL_FLUSH_RX);
+>> +       regcache_cache_bypass(i2s->regmap, false);
+> IIRC the flush cache bit is self-clearing. So you likely want to mark
+> this register as volatile. If it is marked as volatile, then all access
+> to that register bypasses the cache, so the regcache_cache_bypass calls
+> are unneeded.
 
---0-860927789-1545508609=:22404
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+I helped test this together with Marcus and when I tested with this
+register marked
+as volatile audio started to stutter, still unclear why audio starts to
+stutter.
 
-(For alsa-devel@alsa-project.org I=E2=80=99ve attached the diffs this
-eMail thread has been about, with hope you will apply them in
-the next upstream release.)
+Without this cache bypass the flush TX/RX bits gets cached and flush
+happens unexpectedly
+resulting in multi channel audio getting mapped to wrong speaker.
+Other ASoC codecs and fsl_spdif.c seems to use similar cache bypass for
+reset/flush.
 
+>
+> However, looking at the code, the write would seem to be ignored if the
+> regmap is in the cache_only state. We only set this when the bus clock
+> is disabled. Under such a condition, bypassing the cache and forcing a
+> write would be unwise, as the system either drops the write, or stalls
+> altogether.
+>
+>>         /* Clear RX counter */
+>>         regmap_write(i2s->regmap, SUN4I_I2S_RX_CNT_REG, 0);
+>> @@ -569,9 +571,11 @@ static void sun4i_i2s_start_capture(struct sun4i_i2s *i2s)
+>>  static void sun4i_i2s_start_playback(struct sun4i_i2s *i2s)
+>>  {
+>>         /* Flush TX FIFO */
+>> +       regcache_cache_bypass(i2s->regmap, true);
+>>         regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+>>                            SUN4I_I2S_FIFO_CTRL_FLUSH_TX,
+>>                            SUN4I_I2S_FIFO_CTRL_FLUSH_TX);
+>> +       regcache_cache_bypass(i2s->regmap, false);
+>>
+>>         /* Clear TX counter */
+>>         regmap_write(i2s->regmap, SUN4I_I2S_TX_CNT_REG, 0);
+>> @@ -703,13 +707,7 @@ static const struct snd_soc_component_driver sun4i_i2s_component = {
+>>
+>>  static bool sun4i_i2s_rd_reg(struct device *dev, unsigned int reg)
+>>  {
+>> -       switch (reg) {
+>> -       case SUN4I_I2S_FIFO_TX_REG:
+>> -               return false;
+>> -
+>> -       default:
+>> -               return true;
+>> -       }
+>> +       return true;
+> I don't understand why this is relevant. Do you need to read back from the TX
+> FIFO?
 
-Elimar Riesebieter dixit:
+This change was inspired by c66234cfedfc "ASoC: rockchip: i2s: fix
+playback after runtime resume" [1]
+On resume a cached sample would be written to FIFO_TX_REG unless it is
+marked volatile,
+the rockchip commit indicated that read is needed for volatile regs.
 
->it seems that you are an exclusive user of the x32 port ;-) Please
+[1]
+https://github.com/torvalds/linux/commit/c66234cfedfc3e6e3b62563a5f2c1562be09a35d
 
-If you actually read that thread you=E2=80=99d know I=E2=80=99m not. (I wro=
-te some
-eMails to it, too.)
-
->Does it really make sense to maintain code for a handful of users?
-
-It=E2=80=99s nothing architecture-specific if I recall, so it will reduce
-the chance of problems for all users.
-
-Lemme dissect the patch=E2=80=A6
-
-0009-fix-format-strings.patch: fixes, basically, this=E2=80=A6
-
-=09printf("%ld", some_long_long_value);
-
-=E2=80=A6 which is always an error, on platforms where time_t is larger
-than long (which is currently all *64ilp32 platforms (there=E2=80=99s
-x32, amd64ilp32, and a third one I forgot, already in existence),
-but *will* encompass all ILP32 architectures as we get closer to
-the year 2038).
-
-0010-fix-testcase-typo.patch: not actually x32-related, but
-noticed during porting.
-
-0011-distinguish-x32-from-amd64.patch: this is the most important
-one, and it=E2=80=99s a frigging oneliner:
-
--#elif defined(__x86_64__)
-+#elif defined(__x86_64__) && !defined(__ILP32__)
-
-This one literally only affects x32, indeed (so what I said above
-was proven misremembered) but it=E2=80=99s obviously non-harmful to anythin=
-g
-else and easy to carry and forward.
-
-So I=E2=80=99d wish you=E2=80=99d do that as it=E2=80=99s your duty as main=
-tainer of a Debian
-package, but alas=E2=80=A6 I=E2=80=99ll Cc the eMail address you told me an=
-d hope
-that someone picks it up.
-
-Blessed yuletide,
-//mirabilos
---=20
-=E2=80=9CIt is inappropriate to require that a time represented as
- seconds since the Epoch precisely represent the number of
- seconds between the referenced time and the Epoch.=E2=80=9D
-=09-- IEEE Std 1003.1b-1993 (POSIX) Section B.2.2.2
---0-860927789-1545508609=:22404
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=0009-fix-format-strings.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.BSM.4.64L.1812221956220.22404@herc.mirbsd.org>
-Content-Description: 
-Content-Disposition: attachment; filename=0009-fix-format-strings.patch
-
-IyBEUDogZml4IGxvbmcgdnMuIGxvbmcgbG9uZyBjb25mdXNpb24gd2hlbiB0
-aGVyZSBpcyBhIDY0LWJpdCB0aW1lX3QNCiMgRFA6IG9uIGEgMzItYml0IGxv
-bmcgc3lzdGVtLCBzdWNoIGFzIGFsbCBuZXdlciAzMi1iaXQgYXJjaGl0ZWN0
-dXJlcw0KDQotLS0gYS9zcmMvcGNtL3BjbS5jDQorKysgYi9zcmMvcGNtL3Bj
-bS5jDQpAQCAtMjI1NywxMSArMjI1NywxMSBAQCBpbnQgc25kX3BjbV9zdGF0
-dXNfZHVtcChzbmRfcGNtX3N0YXR1c190DQogew0KIAlhc3NlcnQoc3RhdHVz
-KTsNCiAJc25kX291dHB1dF9wcmludGYob3V0LCAiICBzdGF0ZSAgICAgICA6
-ICVzXG4iLCBzbmRfcGNtX3N0YXRlX25hbWUoKHNuZF9wY21fc3RhdGVfdCkg
-c3RhdHVzLT5zdGF0ZSkpOw0KLQlzbmRfb3V0cHV0X3ByaW50ZihvdXQsICIg
-IHRyaWdnZXJfdGltZTogJWxkLiUwNmxkXG4iLA0KLQkJCSAgc3RhdHVzLT50
-cmlnZ2VyX3RzdGFtcC50dl9zZWMsDQotCQkJICBzdGF0dXMtPnRyaWdnZXJf
-dHN0YW1wLnR2X25zZWMgLyAxMDAwKTsNCi0Jc25kX291dHB1dF9wcmludGYo
-b3V0LCAiICB0c3RhbXAgICAgICA6ICVsZC4lMDZsZFxuIiwNCi0JCXN0YXR1
-cy0+dHN0YW1wLnR2X3NlYywgc3RhdHVzLT50c3RhbXAudHZfbnNlYyAvIDEw
-MDApOw0KKwlzbmRfb3V0cHV0X3ByaW50ZihvdXQsICIgIHRyaWdnZXJfdGlt
-ZTogJWxsZC4lMDZsZFxuIiwNCisJCQkgIChsb25nIGxvbmcpc3RhdHVzLT50
-cmlnZ2VyX3RzdGFtcC50dl9zZWMsDQorCQkJICAobG9uZylzdGF0dXMtPnRy
-aWdnZXJfdHN0YW1wLnR2X25zZWMgLyAxMDAwTCk7DQorCXNuZF9vdXRwdXRf
-cHJpbnRmKG91dCwgIiAgdHN0YW1wICAgICAgOiAlbGxkLiUwNmxkXG4iLA0K
-KwkJKGxvbmcgbG9uZylzdGF0dXMtPnRzdGFtcC50dl9zZWMsIChsb25nKXN0
-YXR1cy0+dHN0YW1wLnR2X25zZWMgLyAxMDAwTCk7DQogCXNuZF9vdXRwdXRf
-cHJpbnRmKG91dCwgIiAgZGVsYXkgICAgICAgOiAlbGRcbiIsIChsb25nKXN0
-YXR1cy0+ZGVsYXkpOw0KIAlzbmRfb3V0cHV0X3ByaW50ZihvdXQsICIgIGF2
-YWlsICAgICAgIDogJWxkXG4iLCAobG9uZylzdGF0dXMtPmF2YWlsKTsNCiAJ
-c25kX291dHB1dF9wcmludGYob3V0LCAiICBhdmFpbF9tYXggICA6ICVsZFxu
-IiwgKGxvbmcpc3RhdHVzLT5hdmFpbF9tYXgpOw0KLS0tIGEvdGVzdC9sYXRl
-bmN5LmMNCisrKyBiL3Rlc3QvbGF0ZW5jeS5jDQpAQCAtMzI1LDEyICszMjUs
-MTIgQEAgdm9pZCBzZXRzY2hlZHVsZXIodm9pZCkNCiAJcHJpbnRmKCIhISFT
-Y2hlZHVsZXIgc2V0IHRvIFJvdW5kIFJvYmluIHdpdGggcHJpb3JpdHkgJWkg
-RkFJTEVEISEhXG4iLCBzY2hlZF9wYXJhbS5zY2hlZF9wcmlvcml0eSk7DQog
-fQ0KIA0KLWxvbmcgdGltZWRpZmYoc25kX3RpbWVzdGFtcF90IHQxLCBzbmRf
-dGltZXN0YW1wX3QgdDIpDQorbG9uZyBsb25nIHRpbWVkaWZmKHNuZF90aW1l
-c3RhbXBfdCB0MSwgc25kX3RpbWVzdGFtcF90IHQyKQ0KIHsNCi0Jc2lnbmVk
-IGxvbmcgbDsNCisJc2lnbmVkIGxvbmcgbG9uZyBsOw0KIA0KIAl0MS50dl9z
-ZWMgLT0gdDIudHZfc2VjOw0KLQlsID0gKHNpZ25lZCBsb25nKSB0MS50dl91
-c2VjIC0gKHNpZ25lZCBsb25nKSB0Mi50dl91c2VjOw0KKwlsID0gKHNpZ25l
-ZCBsb25nIGxvbmcpIHQxLnR2X3VzZWMgLSAoc2lnbmVkIGxvbmcgbG9uZykg
-dDIudHZfdXNlYzsNCiAJaWYgKGwgPCAwKSB7DQogCQl0MS50dl9zZWMtLTsN
-CiAJCWwgPSAxMDAwMDAwICsgbDsNCkBAIC02ODIsMTAgKzY4MiwxMCBAQCBp
-bnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KIAkJc25kX3BjbV9u
-b25ibG9jayhwaGFuZGxlLCAhYmxvY2sgPyAxIDogMCk7DQogCQlpZiAob2sp
-IHsNCiAjaWYgMQ0KLQkJCXByaW50ZigiUGxheWJhY2sgdGltZSA9ICVsaS4l
-aSwgUmVjb3JkIHRpbWUgPSAlbGkuJWksIGRpZmYgPSAlbGlcbiIsDQotCQkJ
-ICAgICAgIHBfdHN0YW1wLnR2X3NlYywNCisJCQlwcmludGYoIlBsYXliYWNr
-IHRpbWUgPSAlbGxpLiVpLCBSZWNvcmQgdGltZSA9ICVsbGkuJWksIGRpZmYg
-PSAlbGxpXG4iLA0KKwkJCSAgICAgICAobG9uZyBsb25nKXBfdHN0YW1wLnR2
-X3NlYywNCiAJCQkgICAgICAgKGludClwX3RzdGFtcC50dl91c2VjLA0KLQkJ
-CSAgICAgICBjX3RzdGFtcC50dl9zZWMsDQorCQkJICAgICAgIChsb25nIGxv
-bmcpY190c3RhbXAudHZfc2VjLA0KIAkJCSAgICAgICAoaW50KWNfdHN0YW1w
-LnR2X3VzZWMsDQogCQkJICAgICAgIHRpbWVkaWZmKHBfdHN0YW1wLCBjX3Rz
-dGFtcCkpOw0KICNlbmRpZg0KLS0tIGEvdGVzdC9xdWV1ZV90aW1lci5jDQor
-KysgYi90ZXN0L3F1ZXVlX3RpbWVyLmMNCkBAIC05OSwxMSArOTksMTEgQEAg
-bWFpbihpbnQgYXJnYyBBVFRSSUJVVEVfVU5VU0VELCBjaGFyICoqYQ0KIAlu
-b3JtYWxpemUoJmRpZmZkaWZmKTsNCiAJcHJldmRpZmYgPSBkaWZmOw0KIA0K
-LQlmcHJpbnRmKHN0ZGVyciwgIiByZWFsIHRpbWU6ICUxMmxkIHNlYyAlOGxk
-IHVzZWNcbnF1ZXVlIHRpbWU6ICUxMmxkIHNlYyAlOGxkIHVzZWNcbiAgICAg
-IGRpZmY6ICUxMmxkIHNlYyAlOGxkIHVzZWNcbiAgZGlmZmRpZmY6ICUxMmxk
-IHNlYyAlOGxkIHVzZWNcbiIsDQotCQl0di50dl9zZWMsIHR2LnR2X3VzZWMs
-DQotCQkobG9uZylydGltZS0+dHZfc2VjLCAobG9uZylydGltZS0+dHZfbnNl
-YyAvIDEwMDAsDQotCQlkaWZmLnR2X3NlYywgZGlmZi50dl91c2VjLA0KLQkJ
-KGxvbmcpZGlmZmRpZmYudHZfc2VjLCAobG9uZylkaWZmZGlmZi50dl91c2Vj
-KTsNCisJZnByaW50ZihzdGRlcnIsICIgcmVhbCB0aW1lOiAlMTJsbGQgc2Vj
-ICU4bGQgdXNlY1xucXVldWUgdGltZTogJTEybGxkIHNlYyAlOGxkIHVzZWNc
-biAgICAgIGRpZmY6ICUxMmxsZCBzZWMgJThsZCB1c2VjXG4gIGRpZmZkaWZm
-OiAlMTJsbGQgc2VjICU4bGQgdXNlY1xuIiwNCisJCShsb25nIGxvbmcpdHYu
-dHZfc2VjLCAobG9uZyl0di50dl91c2VjLA0KKwkJKGxvbmcgbG9uZylydGlt
-ZS0+dHZfc2VjLCAobG9uZylydGltZS0+dHZfbnNlYyAvIDEwMDAsDQorCQko
-bG9uZyBsb25nKWRpZmYudHZfc2VjLCAobG9uZylkaWZmLnR2X3VzZWMsDQor
-CQkobG9uZyBsb25nKWRpZmZkaWZmLnR2X3NlYywgKGxvbmcpZGlmZmRpZmYu
-dHZfdXNlYyk7DQogDQogCWlmIChkaWZmZGlmZi50dl91c2VjID4gIDUwMDAg
-fHwNCiAJICAgIGRpZmZkaWZmLnR2X3VzZWMgPCAtNTAwMCkgew0K
-
---0-860927789-1545508609=:22404
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=0010-fix-testcase-typo.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.BSM.4.64L.1812221956221.22404@herc.mirbsd.org>
-Content-Description: 
-Content-Disposition: attachment; filename=0010-fix-testcase-typo.patch
-
-IyBEUDogZml4IGFuIG9idmlvdXMgdHlwbw0KDQotLS0gYS90ZXN0L2xhdGVu
-Y3kuYw0KKysrIGIvdGVzdC9sYXRlbmN5LmMNCkBAIC02NzMsNyArNjczLDcg
-QEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCiAJCXByaW50
-ZigiQ2FwdHVyZTpcbiIpOw0KIAkJc2hvd3N0YXQoY2hhbmRsZSwgZnJhbWVz
-X2luKTsNCiAJCXNob3dpbm1heChpbl9tYXgpOw0KLQkJaWYgKHBfdHN0YW1w
-LnR2X3NlYyA9PSBwX3RzdGFtcC50dl9zZWMgJiYNCisJCWlmIChwX3RzdGFt
-cC50dl9zZWMgPT0gY190c3RhbXAudHZfc2VjICYmDQogCQkgICAgcF90c3Rh
-bXAudHZfdXNlYyA9PSBjX3RzdGFtcC50dl91c2VjKQ0KIAkJCXByaW50Zigi
-SGFyZHdhcmUgc3luY1xuIik7DQogCQlzbmRfcGNtX2Ryb3AoY2hhbmRsZSk7
-DQo=
-
---0-860927789-1545508609=:22404
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=0011-distinguish-x32-from-amd64.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.BSM.4.64L.1812221956222.22404@herc.mirbsd.org>
-Content-Description: 
-Content-Disposition: attachment; filename=0011-distinguish-x32-from-amd64.patch
-
-IyBEUDogZml4IHNlZ21lbnRhdGlvbiBmYXVsdCBjb21pbmcgZnJvbSB0aGlz
-IHVzaW5nIGFtZDY0IGFzc2VtYmx5IGNvZGUNCiMgRFA6IG9uIHgzMiBzeXN0
-ZW1zDQoNCi0tLSBhL3NyYy9wY20vcGNtX2RtaXguYw0KKysrIGIvc3JjL3Bj
-bS9wY21fZG1peC5jDQpAQCAtMTQyLDcgKzE0Miw3IEBAIHN0YXRpYyB2b2lk
-IGRtaXhfc2VydmVyX2ZyZWUoc25kX3BjbV9kaXINCiAjaW5jbHVkZSAicGNt
-X2RtaXhfZ2VuZXJpYy5jIg0KICNpZiBkZWZpbmVkKF9faTM4Nl9fKQ0KICNp
-bmNsdWRlICJwY21fZG1peF9pMzg2LmMiDQotI2VsaWYgZGVmaW5lZChfX3g4
-Nl82NF9fKQ0KKyNlbGlmIGRlZmluZWQoX194ODZfNjRfXykgJiYgIWRlZmlu
-ZWQoX19JTFAzMl9fKQ0KICNpbmNsdWRlICJwY21fZG1peF94ODZfNjQuYyIN
-CiAjZWxzZQ0KICNpZm5kZWYgRE9DX0hJRERFTg0K
-
---0-860927789-1545508609=:22404--
+>
+> If so, just drop the call-back altogether. If no callback is provided and no
+> rd_table is provided either, it defaults to all registers under max_register
+> (if max_register < 0) are readable.
+>
+> However this seems like it deserves to be a separate patch (where you explain
+> in the commit log why it's needed).
+>
+> Regards
+> ChenYu
+>
+>>  }
+>>
+>>  static bool sun4i_i2s_wr_reg(struct device *dev, unsigned int reg)
+>> @@ -728,6 +726,8 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>>  {
+>>         switch (reg) {
+>>         case SUN4I_I2S_FIFO_RX_REG:
+>> +       case SUN4I_I2S_FIFO_TX_REG:
+>> +       case SUN4I_I2S_FIFO_STA_REG:
+>>         case SUN4I_I2S_INT_STA_REG:
+>>         case SUN4I_I2S_RX_CNT_REG:
+>>         case SUN4I_I2S_TX_CNT_REG:
+>> @@ -738,23 +738,12 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>>         }
+>>  }
+>>
+>> -static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+>> -{
+>> -       switch (reg) {
+>> -       case SUN8I_I2S_FIFO_TX_REG:
+>> -               return false;
+>> -
+>> -       default:
+>> -               return true;
+>> -       }
+>> -}
+>> -
+>>  static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>>  {
+>>         if (reg == SUN8I_I2S_INT_STA_REG)
+>>                 return true;
+>>         if (reg == SUN8I_I2S_FIFO_TX_REG)
+>> -               return false;
+>> +               return true;
+>>
+>>         return sun4i_i2s_volatile_reg(dev, reg);
+>>  }
+>> @@ -809,7 +798,7 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+>>         .reg_defaults   = sun8i_i2s_reg_defaults,
+>>         .num_reg_defaults       = ARRAY_SIZE(sun8i_i2s_reg_defaults),
+>>         .writeable_reg  = sun4i_i2s_wr_reg,
+>> -       .readable_reg   = sun8i_i2s_rd_reg,
+>> +       .readable_reg   = sun4i_i2s_rd_reg,
+>>         .volatile_reg   = sun8i_i2s_volatile_reg,
+>>  };
+>>
+>> --
+>> 2.20.1
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+>
