@@ -1,37 +1,47 @@
-From: Sinan Kaya <okaya@kernel.org>
-Subject: [PATCH v2 08/11] ASoC: Intel: Make PCI dependency explicit
-Date: Sat, 22 Dec 2018 09:07:17 +0000
-Message-ID: <20181222090720.19234-9-okaya@kernel.org>
-References: <20181222090720.19234-1-okaya@kernel.org>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH v5 1/2] ASoC: cs35l36: Add support for
+ Cirrus CS35L36 Amplifier
+Date: Sat, 22 Dec 2018 18:40:30 +0000
+Message-ID: <63D76841-71C0-4207-89D3-25B5DF9998EF@cirrus.com>
+References: <1545422004-4272-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181222090720.19234-1-okaya@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-next@vger.kernel.org
-Cc: linux-acpi@vger.kernel.org, Sinan Kaya <okaya@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E82C26798A
+ for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2018 19:40:41 +0100 (CET)
+In-Reply-To: <1545422004-4272-1-git-send-email-james.schulman@cirrus.com>
+Content-Language: en-US
+Content-ID: <256FB3D8ED95234DAD581D9498A0521A@namprd02.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Schulman, James" <James.Schulman@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Code does unconditional select for IOSF_MBI. IOSF_MBI driver depends on
-CONFIG_PCI set but this is not specified anywhere.
+On 12/21/18, 1:53 PM, "James Schulman" <James.Schulman@cirrus.com> wrote:
 
-Signed-off-by: Sinan Kaya <okaya@kernel.org>
----
- sound/soc/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 2fd1b61e8331..b0764b2fe001 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -91,7 +91,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
- config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
- 	tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
- 	default ACPI
--	depends on X86 && ACPI
-+	depends on X86 && ACPI && PCI
- 	select SND_SST_IPC_ACPI
- 	select SND_SST_ATOM_HIFI2_PLATFORM
- 	select SND_SOC_ACPI_INTEL_MATCH
--- 
-2.19.0
+    Add driver support for Cirrus Logic CS35L36 boosted
+    speaker amplifier
+    
+    Signed-off-by: James Schulman <james.schulman@cirrus.com>
+    ---
+     include/sound/cs35l36.h    |   44 +
+     sound/soc/codecs/Kconfig   |    5 +
+     sound/soc/codecs/Makefile  |    2 +
+     sound/soc/codecs/cs35l36.c | 1959 ++++++++++++++++++++++++++++++++++++++++++++
+     sound/soc/codecs/cs35l36.h |  446 ++++++++++
+     5 files changed, 2456 insertions(+)
+     create mode 100644 include/sound/cs35l36.h
+     create mode 100644 sound/soc/codecs/cs35l36.c
+     create mode 100644 sound/soc/codecs/cs35l36.h
+    
+Acked-by: Brian Austin <brian.austin@cirrus.com>
