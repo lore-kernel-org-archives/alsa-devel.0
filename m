@@ -1,8 +1,8 @@
 From: Dimitris Papavasiliou <dpapavas@gmail.com>
 Subject: Re: Need help fixing pop/click artifacts in an ASOC
 	driver
-Date: Sun, 23 Dec 2018 22:11:56 +0200
-Message-ID: <CAHEwa0AfqH_ooaCxnBUi3TUk1fmTrhuWTGMvZgNmxypMpCVo=w@mail.gmail.com>
+Date: Sun, 23 Dec 2018 22:15:51 +0200
+Message-ID: <CAHEwa0BKxfUxe=bfShS2FHeXFJKq4b=-vjoSo2egX1hU9zk=fg@mail.gmail.com>
 References: <20181217154043.GC27909@sirena.org.uk>
  <f743bf6b-b10a-6c00-57d7-3a0df67d7bba@gmail.com>
  <20181217165257.GD27909@sirena.org.uk>
@@ -13,18 +13,18 @@ References: <20181217154043.GC27909@sirena.org.uk>
  <c95346b8-335a-88c4-484b-9ad4e1aebc12@gmail.com>
  <20181221105741.GB4996@sirena.org.uk>
  <5f783336-1786-862c-b238-2309381bfd94@gmail.com>
- <20181221173345.GF4996@sirena.org.uk>
+ <20181222144423.ugwgr5ab3run673a@camel2.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it1-f172.google.com (mail-it1-f172.google.com
- [209.85.166.172])
- by alsa0.perex.cz (Postfix) with ESMTP id ABC7D267960
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2018 21:12:12 +0100 (CET)
-Received: by mail-it1-f172.google.com with SMTP id a6so13278901itl.4
- for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2018 12:12:12 -0800 (PST)
-In-Reply-To: <20181221173345.GF4996@sirena.org.uk>
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com
+ [209.85.166.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94904267A65
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2018 21:16:07 +0100 (CET)
+Received: by mail-io1-f52.google.com with SMTP id s22so7762462ioc.8
+ for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2018 12:16:06 -0800 (PST)
+In-Reply-To: <20181222144423.ugwgr5ab3run673a@camel2.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,27 +34,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Matthias Reichl <hias@horus.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 21, 2018 at 7:33 PM Mark Brown <broonie@kernel.org> wrote:
+On Sat, Dec 22, 2018 at 4:44 PM Matthias Reichl <hias@horus.com> wrote:
+> I didn't upstream the patch as I wasn't really satisfied with it
+> and also think it's quite hackish.
 >
-> > I can apply the patch via merge, so bothering with this is not at all
-> > necessary, but if this change is useful, perhaps it's worth submitting
-> > another patch for it.  I doubt this though, as it looks a bit hackish
-> > to me.
+> [...]
 >
-> It's useful (that's a genuine issue) but it shouldn't be bodged by TDM
-> mode but should instead just be done as standard without the machine
-> driver needing to do TDM - check if the clock rate required is actually
-> generated then fall back to a less exact frame if that helps.  That way
-> everyone gets the benefit without needing custom configuration or code.
-> Basically it's doing the right thing in terms of configuring the
-> hardware but should be triggered differently.
+> I wouldn't mind at all if you do a proper implementation and submit it
+> upstream so the downstream patch can be dropped.
 
-I suspected as much; I'll need to read up a bit on clocking though if
-I'm going to give this a shot.  I'll be away from my computer during
-the holidays so, if time permits, I'll give it a try with the new year
-and open a new thread if I need feedback.  Thanks again for all your
-help so far.
+Thanks for chiming in Matthias!
