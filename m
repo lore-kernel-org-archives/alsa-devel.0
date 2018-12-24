@@ -1,7 +1,7 @@
 From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH 1/2] ASoC: soc-core: add snd_soc_of_lookup_component()
-Date: Mon, 24 Dec 2018 14:32:12 +0530
-Message-ID: <1545642133-16120-2-git-send-email-rohitkr@codeaurora.org>
+Subject: [PATCH 2/2] ASoC: qcom: defer probe if platform dai is not registered
+Date: Mon, 24 Dec 2018 14:32:13 +0530
+Message-ID: <1545642133-16120-3-git-send-email-rohitkr@codeaurora.org>
 References: <1545642133-16120-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1545642133-16120-1-git-send-email-rohitkr@codeaurora.org>
@@ -12,69 +12,44 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Ajit Pandey <ajitp@codeaurora.org>
 
-Soundcard should be registered after all components are registered.
-Add snd_soc_of_lookup_component() to get component info from
-device_node. This can be used by machine driver to make sure that
-card components are registered before calling snd_soc_register_card().
+Platform DAI component probe is not called if it is not
+present in component list during sound card registration.
+Check if component is registered for platform dai before
+soundcard registration.
 
 Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
 Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- include/sound/soc.h  |  1 +
- sound/soc/soc-core.c | 28 ++++++++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
+ sound/soc/qcom/common.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8ec1de8..dc251fc 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1502,6 +1502,7 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
- 			 const char **dai_name);
- int snd_soc_of_get_dai_name(struct device_node *of_node,
- 			    const char **dai_name);
-+struct snd_soc_component *snd_soc_of_lookup_component(struct device_node *np);
- int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 				   struct device_node *of_node,
- 				   struct snd_soc_dai_link *dai_link);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0462b3e..ab27bc5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3797,6 +3797,34 @@ int snd_soc_of_get_dai_name(struct device_node *of_node,
- EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_name);
- 
- /*
-+ * snd_soc_of_lookup_component - Lookup component with device node
-+ * @np: device node pointer
-+ *
-+ * This function looks up component based on given of_node
-+ *
-+ * Returns valid component pointer on success and NULL on failure to find one.
-+ */
-+struct snd_soc_component *snd_soc_of_lookup_component(struct device_node *np)
-+{
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 4715527..9e98458 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -11,6 +11,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 	struct device_node *codec = NULL;
+ 	struct device_node *platform = NULL;
+ 	struct device_node *cpu = NULL;
 +	struct snd_soc_component *component = NULL;
-+	bool found = false;
+ 	struct device *dev = card->dev;
+ 	struct snd_soc_dai_link *link;
+ 	struct of_phandle_args args;
+@@ -75,6 +76,14 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 				goto err;
+ 			}
+ 
++			component = snd_soc_of_lookup_component
++						(link->platform_of_node);
++			if (!component) {
++				ret = -EPROBE_DEFER;
++				dev_err(card->dev, "platform DAI not registered\n");
++				goto err;
++			}
 +
-+	if (!np)
-+		return NULL;
-+
-+	mutex_lock(&client_mutex);
-+	for_each_component(component)
-+		if (component->dev->of_node == np) {
-+			found = true;
-+			break;
-+		}
-+	mutex_unlock(&client_mutex);
-+
-+	return found ? component : NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_of_lookup_component);
-+
-+/*
-  * snd_soc_of_put_dai_link_codecs - Dereference device nodes in the codecs array
-  * @dai_link: DAI link
-  *
+ 			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+ 			if (ret < 0) {
+ 				dev_err(card->dev, "codec dai not found\n");
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
