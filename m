@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 6/7] ASoC: Intel: bytcr_rt5651: Add support for
-	jack-detect using an external GPIO
-Date: Mon, 24 Dec 2018 16:00:36 +0100
-Message-ID: <20181224150037.20275-6-hdegoede@redhat.com>
+Subject: [PATCH 7/7] ASoC: Intel: bytcr_rt5651: Add quirk for
+	PoV TAB-P1006W-232 (v1.0) tablet
+Date: Mon, 24 Dec 2018 16:00:37 +0100
+Message-ID: <20181224150037.20275-7-hdegoede@redhat.com>
 References: <20181224150037.20275-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 08A08267AFC
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E244267AEE
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:54 +0100 (CET)
 In-Reply-To: <20181224150037.20275-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,93 +25,123 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some board designs hook the jack-detect up to an external GPIO, rather
-then to one of the codec pins, add support for this.
+Add a DMI quirk for the Point of View TAB-P1006W-232 (v1.0) tablet, this
+tablet is special in a number of ways:
+
+1) It uses the 2nd GPIO resource in the ACPI tables for jack-detect rather
+then using the rt5651 codec's builtin jack-detect functionality
+
+2) It uses the 3th GPIO resource in the ACPI tables to control the
+external amplifier rather then the usual first non GpioInt resource and
+the GPIO is active-low.
+
+3) It is a BYTCR device, without a CHAN package and it uses SSP0-AIF1
+rather then the default SSP0-AIF2.
+
+4) Its internal mic is a digital mic (the first x86 rt5651 device that
+I'm aware of which does this), combined with having its headset-mic
+connected to IN2.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 40 +++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 48 ++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 6d8ef9dd106e..19702b5f8f1d 100644
+index 19702b5f8f1d..74341e88994e 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -91,6 +91,7 @@ enum {
- struct byt_rt5651_private {
- 	struct clk *mclk;
- 	struct gpio_desc *ext_amp_gpio;
-+	struct gpio_desc *hp_detect;
+@@ -95,6 +95,8 @@ struct byt_rt5651_private {
  	struct snd_soc_jack jack;
  };
  
-@@ -499,6 +500,7 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
-+	int report;
- 	int ret;
- 
- 	card->dapm.idle_bias_off = true;
-@@ -582,20 +584,27 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 			dev_err(card->dev, "unable to set MCLK rate\n");
- 	}
- 
--	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
-+	report = 0;
-+	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
-+		report = SND_JACK_HEADSET | SND_JACK_BTN_0;
-+	else if (priv->hp_detect)
-+		report = SND_JACK_HEADSET;
++static const struct acpi_gpio_mapping *byt_rt5651_gpios;
 +
-+	if (report) {
- 		ret = snd_soc_card_jack_new(runtime->card, "Headset",
--				    SND_JACK_HEADSET | SND_JACK_BTN_0,
--				    &priv->jack, bytcr_jack_pins,
-+				    report, &priv->jack, bytcr_jack_pins,
- 				    ARRAY_SIZE(bytcr_jack_pins));
- 		if (ret) {
- 			dev_err(runtime->dev, "jack creation failed %d\n", ret);
- 			return ret;
- 		}
+ /* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP;
+@@ -365,6 +367,22 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return byt_rt5651_prepare_and_enable_pll1(codec_dai, rate, bclk_ratio);
+ }
  
--		snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
--				 KEY_PLAYPAUSE);
-+		if (report & SND_JACK_BTN_0)
-+			snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
-+					 KEY_PLAYPAUSE);
++static const struct acpi_gpio_params pov_p1006w_hp_detect = { 1, 0, false };
++static const struct acpi_gpio_params pov_p1006w_ext_amp_en = { 2, 0, true };
++
++static const struct acpi_gpio_mapping byt_rt5651_pov_p1006w_gpios[] = {
++	{ "hp-detect-gpios", &pov_p1006w_hp_detect, 1, },
++	{ "ext-amp-enable-gpios", &pov_p1006w_ext_amp_en, 1, },
++	{ },
++};
++
++static int byt_rt5651_pov_p1006w_quirk_cb(const struct dmi_system_id *id)
++{
++	byt_rt5651_quirk = (unsigned long)id->driver_data;
++	byt_rt5651_gpios = byt_rt5651_pov_p1006w_gpios;
++	return 1;
++}
++
+ static int byt_rt5651_quirk_cb(const struct dmi_system_id *id)
+ {
+ 	byt_rt5651_quirk = (unsigned long)id->driver_data;
+@@ -440,6 +458,23 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 		.driver_data = (void *)(BYT_RT5651_MCLK_EN |
+ 					BYT_RT5651_IN1_MAP),
+ 	},
++	{
++		/* Point of View mobii wintab p1006w (v1.0) */
++		.callback = byt_rt5651_pov_p1006w_quirk_cb,
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BayTrail"),
++			/* Note 105b is Foxcon's USB/PCI vendor id */
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "105B"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "0E57"),
++		},
++		.driver_data = (void *)(BYT_RT5651_DMIC_MAP |
++					BYT_RT5651_OVCD_TH_2000UA |
++					BYT_RT5651_OVCD_SF_0P75 |
++					BYT_RT5651_DMIC_EN |
++					BYT_RT5651_MCLK_EN |
++					BYT_RT5651_SSP0_AIF1),
++	},
+ 	{
+ 		/* VIOS LTH17 */
+ 		.callback = byt_rt5651_quirk_cb,
+@@ -847,7 +882,7 @@ static int snd_byt_rt5651_acpi_resource(struct acpi_resource *ares, void *arg)
+ 	return 0;
+ }
  
--		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
-+		ret = snd_soc_component_set_jack(codec, &priv->jack,
-+						 priv->hp_detect);
- 		if (ret)
- 			return ret;
+-static void snd_byt_rt5651_mc_add_amp_en_gpio_mapping(struct device *codec)
++static void snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(struct device *codec)
+ {
+ 	struct byt_rt5651_acpi_resource_data data = { 0, -1 };
+ 	LIST_HEAD(resources);
+@@ -865,10 +900,10 @@ static void snd_byt_rt5651_mc_add_amp_en_gpio_mapping(struct device *codec)
+ 
+ 	switch (data.gpio_int_idx) {
+ 	case 0:
+-		devm_acpi_dev_add_driver_gpios(codec, byt_rt5651_amp_en_second);
++		byt_rt5651_gpios = byt_rt5651_amp_en_second;
+ 		break;
+ 	case 1:
+-		devm_acpi_dev_add_driver_gpios(codec, byt_rt5651_amp_en_first);
++		byt_rt5651_gpios = byt_rt5651_amp_en_first;
+ 		break;
+ 	default:
+ 		dev_warn(codec, "Unknown GpioInt index %d, not adding external amplifier GPIO mapping\n",
+@@ -1000,8 +1035,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  	}
-@@ -1012,6 +1021,25 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 				return ret_val;
- 			}
- 		}
-+		priv->hp_detect = devm_fwnode_get_index_gpiod_from_child(
-+						&pdev->dev, "hp-detect", 0,
-+						codec_dev->fwnode,
-+						GPIOD_IN, "hp-detect");
-+		if (IS_ERR(priv->hp_detect)) {
-+			ret_val = PTR_ERR(priv->hp_detect);
-+			switch (ret_val) {
-+			case -ENOENT:
-+				priv->hp_detect = NULL;
-+				break;
-+			default:
-+				dev_err(&pdev->dev, "Failed to get hp-detect GPIO: %d\n",
-+					ret_val);
-+				/* fall through */
-+			case -EPROBE_DEFER:
-+				put_device(codec_dev);
-+				return ret_val;
-+			}
-+		}
- 	}
  
- 	put_device(codec_dev);
+ 	/* Cherry Trail devices use an external amplifier enable gpio */
+-	if (x86_match_cpu(cherrytrail_cpu_ids)) {
+-		snd_byt_rt5651_mc_add_amp_en_gpio_mapping(codec_dev);
++	if (x86_match_cpu(cherrytrail_cpu_ids) && !byt_rt5651_gpios)
++		snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(codec_dev);
++
++	if (byt_rt5651_gpios) {
++		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
+ 		priv->ext_amp_gpio = devm_fwnode_get_index_gpiod_from_child(
+ 						&pdev->dev, "ext-amp-enable", 0,
+ 						codec_dev->fwnode,
 -- 
 2.20.1
