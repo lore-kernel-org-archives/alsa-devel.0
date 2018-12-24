@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5/7] ASoC: Intel: bytcr_rt5651: Add quirks
-	module parameter
-Date: Mon, 24 Dec 2018 16:00:35 +0100
-Message-ID: <20181224150037.20275-5-hdegoede@redhat.com>
+Subject: [PATCH 6/7] ASoC: Intel: bytcr_rt5651: Add support for
+	jack-detect using an external GPIO
+Date: Mon, 24 Dec 2018 16:00:36 +0100
+Message-ID: <20181224150037.20275-6-hdegoede@redhat.com>
 References: <20181224150037.20275-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 28A67267AEE
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 08A08267AFC
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:52 +0100 (CET)
 In-Reply-To: <20181224150037.20275-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,41 +25,93 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add quirks module parameter to allow manually specifying quirks
-from the kernel commandline (or modprobe.conf).
+Some board designs hook the jack-detect up to an external GPIO, rather
+then to one of the codec pins, add support for this.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 40 +++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 0ed844f2ad01..6d8ef9dd106e 100644
+index 6d8ef9dd106e..19702b5f8f1d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -98,6 +98,10 @@ struct byt_rt5651_private {
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
- 					BYT_RT5651_IN2_MAP;
+@@ -91,6 +91,7 @@ enum {
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
+ 	struct gpio_desc *ext_amp_gpio;
++	struct gpio_desc *hp_detect;
+ 	struct snd_soc_jack jack;
+ };
  
-+static unsigned int quirk_override;
-+module_param_named(quirk, quirk_override, uint, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
-+
- static void log_quirks(struct device *dev)
- {
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_DMIC_MAP)
-@@ -973,6 +977,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5651_quirk_table);
+@@ -499,6 +500,7 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
++	int report;
+ 	int ret;
  
-+	if (quirk_override) {
-+		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
-+			 (unsigned int)byt_rt5651_quirk, quirk_override);
-+		byt_rt5651_quirk = quirk_override;
-+	}
+ 	card->dapm.idle_bias_off = true;
+@@ -582,20 +584,27 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	}
+ 
+-	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
++	report = 0;
++	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
++		report = SND_JACK_HEADSET | SND_JACK_BTN_0;
++	else if (priv->hp_detect)
++		report = SND_JACK_HEADSET;
 +
- 	/* Must be called before register_card, also see declaration comment. */
- 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
- 	if (ret_val) {
++	if (report) {
+ 		ret = snd_soc_card_jack_new(runtime->card, "Headset",
+-				    SND_JACK_HEADSET | SND_JACK_BTN_0,
+-				    &priv->jack, bytcr_jack_pins,
++				    report, &priv->jack, bytcr_jack_pins,
+ 				    ARRAY_SIZE(bytcr_jack_pins));
+ 		if (ret) {
+ 			dev_err(runtime->dev, "jack creation failed %d\n", ret);
+ 			return ret;
+ 		}
+ 
+-		snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
+-				 KEY_PLAYPAUSE);
++		if (report & SND_JACK_BTN_0)
++			snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
++					 KEY_PLAYPAUSE);
+ 
+-		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
++		ret = snd_soc_component_set_jack(codec, &priv->jack,
++						 priv->hp_detect);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -1012,6 +1021,25 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 				return ret_val;
+ 			}
+ 		}
++		priv->hp_detect = devm_fwnode_get_index_gpiod_from_child(
++						&pdev->dev, "hp-detect", 0,
++						codec_dev->fwnode,
++						GPIOD_IN, "hp-detect");
++		if (IS_ERR(priv->hp_detect)) {
++			ret_val = PTR_ERR(priv->hp_detect);
++			switch (ret_val) {
++			case -ENOENT:
++				priv->hp_detect = NULL;
++				break;
++			default:
++				dev_err(&pdev->dev, "Failed to get hp-detect GPIO: %d\n",
++					ret_val);
++				/* fall through */
++			case -EPROBE_DEFER:
++				put_device(codec_dev);
++				return ret_val;
++			}
++		}
+ 	}
+ 
+ 	put_device(codec_dev);
 -- 
 2.20.1
