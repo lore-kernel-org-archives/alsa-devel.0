@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 4/7] ASoC: Intel: bytcr_rt5651: Revert "Fix
-	DMIC map headsetmic mapping"
-Date: Mon, 24 Dec 2018 16:00:34 +0100
-Message-ID: <20181224150037.20275-4-hdegoede@redhat.com>
+Subject: [PATCH 5/7] ASoC: Intel: bytcr_rt5651: Add quirks
+	module parameter
+Date: Mon, 24 Dec 2018 16:00:35 +0100
+Message-ID: <20181224150037.20275-5-hdegoede@redhat.com>
 References: <20181224150037.20275-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 3279E267A65
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:48 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 28A67267AEE
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 16:00:50 +0100 (CET)
 In-Reply-To: <20181224150037.20275-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,36 +25,41 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 37c7401e8c1f ("ASoC: Intel: bytcr_rt5651: Fix DMIC map
-headsetmic mapping"), changed the headsetmic mapping from IN3P to IN2P,
-this was based on the observation that all bytcr_rt5651 devices I have
-access to (7 devices) where all using IN3P for the headsetmic. This was
-an attempt to unifify / simplify the mapping, but it was wrong.
+Add quirks module parameter to allow manually specifying quirks
+from the kernel commandline (or modprobe.conf).
 
-None of those devices was actually using a digital internal mic. Now I've
-access to a Point of View TAB-P1006W-232 (v1.0) tabler, which does use a
-DMIC and it does have its headsetmic connected to IN2P, showing that the
-original mapping was correct, so this commit reverts the change changing
-the mapping back to IN2P.
-
-Fixes: 37c7401e8c1f ("ASoC: Intel: bytcr_rt5651: Fix DMIC map ... mapping")
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index e528995668b7..0ed844f2ad01 100644
+index 0ed844f2ad01..6d8ef9dd106e 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -266,7 +266,7 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
- static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
- 	{"DMIC L1", NULL, "Internal Mic"},
- 	{"DMIC R1", NULL, "Internal Mic"},
--	{"IN3P", NULL, "Headset Mic"},
-+	{"IN2P", NULL, "Headset Mic"},
- };
+@@ -98,6 +98,10 @@ struct byt_rt5651_private {
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP;
  
- static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
++static unsigned int quirk_override;
++module_param_named(quirk, quirk_override, uint, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
++
+ static void log_quirks(struct device *dev)
+ {
+ 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_DMIC_MAP)
+@@ -973,6 +977,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5651_quirk_table);
+ 
++	if (quirk_override) {
++		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
++			 (unsigned int)byt_rt5651_quirk, quirk_override);
++		byt_rt5651_quirk = quirk_override;
++	}
++
+ 	/* Must be called before register_card, also see declaration comment. */
+ 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
+ 	if (ret_val) {
 -- 
 2.20.1
