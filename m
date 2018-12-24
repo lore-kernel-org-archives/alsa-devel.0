@@ -1,20 +1,16 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 0/6] ASoC: rt5651: Various fixes and quirks
-Date: Mon, 24 Dec 2018 15:15:00 +0100
-Message-ID: <ed06b29d-5677-5044-2e0a-d7f3a50d2498@redhat.com>
-References: <20180718205542.12364-1-hdegoede@redhat.com>
+From: =?UTF-8?Q?Philippe_Lef=c3=a8vre?= <ph.l@libertysurf.fr>
+Subject: Message from ALSA found in my kernel logs
+Date: Mon, 24 Dec 2018 15:29:52 +0100
+Message-ID: <dd22a9d5-54b2-a088-a209-94918476651e@libertysurf.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
- [209.85.208.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B13D267A65
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 15:15:02 +0100 (CET)
-Received: by mail-ed1-f65.google.com with SMTP id f9so10126712eds.10
- for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 06:15:02 -0800 (PST)
-In-Reply-To: <20180718205542.12364-1-hdegoede@redhat.com>
-Content-Language: en-US
+Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
+ [80.12.242.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CB3D267A66
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 15:29:53 +0100 (CET)
+Content-Language: fr
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-On 18-07-18 22:55, Hans de Goede wrote:
-<snip>
-
-> Note that unfortunately my previous round of cleanup patches removed
-> 1 input mapping (of the 3 mappings in total it removed) which is
-> actually necessary. So this series re-introduces that 1 mapping. I did
-> not notice this before because UCM input profile switching does not work
-> reliably for some reason, something which I still need to investigate.
-
-While doing some bytcr_rt5651 work this weekend (the x86 ASoC work I
-do is a spare time project for me) I hit this again, so this time
-I've spend some time getting to the bottom of this. The cause is a
-pulseaudio bug, where pulseaudio uses a strncmp without first
-checking the lengths of the 2 strings match, causing it to see
-selecting the "InternalMic-IN1" UCM device as selecting both the
-"InternalMic-IN1" and the "InternalMic-IN12" device.
-
-A pull-req fixing this is here:
-https://gitlab.freedesktop.org/pulseaudio/pulseaudio/merge_requests/40
-
-Regards,
-
-Hans
+SGksCgpJIGZvdW5kIHRoaXMgbWVzc2FnZSBpbnRvIG15IGtlcm5lbCBsb2dzIHRoaXMgbW9ybmlu
+ZyBhbmQgaXQgaXMgc2FpZAp0aGF0IEkgc2hvdWQgcmVwb3J0IGl0IHRvIEFMU0EgZGV2ZWxvcGVy
+cy4KU29ycnksIGl0IGlzIEZyZW5jaC4gSSdtIGdvaW5nIHRvIHRyeSB0byB0cmFuc2xhdGUgaXQg
+OgoKMTgwMCBEZWMgMjQgMDg6MjI6MjAgcGhsc3lzIHB1bHNlYXVkaW9bMjI5MV06IEFMU0Egbm91
+cyBhIHLDqXZlaWxsw6kgcG91cgrDqWNyaXJlIGRlIG5vdXZlbGxlcyBkb25uw6llcyDDoCBwYXJ0
+aXIgZHUgcMOpcmlwaMOpcmlxdWUsIG1haXMgaWwgbid5IGF2YWl0CmVuIGZhaXQgcmllbiDDoCDD
+qWNyaXJlwqAhCjE4MDEgRGVjIDI0IDA4OjIyOjIwIHBobHN5cyBwdWxzZWF1ZGlvWzIyOTFdOiBJ
+bCBzJ2FnaXQgdHLDqHMKcHJvYmFibGVtZW50IGQndW4gYm9ndWUgZGFucyBsZSBwaWxvdGUgQUxT
+QSDCq8Kgc25kX3VzYl9hdWRpb8KgwrsuIFZldWlsbGV6CnJhcHBvcnRlciBjZSBwcm9ibMOobWUg
+YXV4IGTDqXZlbG9wcGV1cnMgZCdBTFNBLgoxODAyIERlYyAyNCAwODoyMjoyMCBwaGxzeXMgcHVs
+c2VhdWRpb1syMjkxXTogTm91cyBhdm9ucyDDqXTDqSByw6l2ZWlsbMOpcwphdmVjIFBPTExPVVQg
+YWN0aWYsIGNlcGVuZGFudCB1biBzbmRfcGNtX2F2YWlsKCkgdWx0w6lyaWV1ciBhIHJldG91cm7D
+qSAwCm91IHVuZSBhdXRyZSB2YWxldXIgPCBtaW5fYXZhaWwuCgoxODAwIC4uLiBBTFNBIHdha2Ug
+dXMgdXAgdG8gd3JpdGUgZGF0YXMgZnJvbSB0aGUgZGV2IGJ1dCB0aGVyZSB3YXMKbm90aGluZyB0
+byB3cml0ZSAhCjE4MDEgLi4uIFRoaXMgaXMgcHJvYmFibHkgYSBidWcgd2l0aGluIHRoZSBBTFNB
+IGRyaXZlciAic25iX3VzYl9hdWRpbyIuClBsZWFzZSByZXBvcnQgdGhpcyBpc3N1ZSB0byB0aGUg
+QUxTQSBkZXZlbG9wZXJzLgoxODAyIC4uLiBXZSB3ZXJlIHdha2VkIHVwIHdpdGggYW4gYWN0aXZl
+IFBPTExPVVQgaG93ZXZlciBhIHByZXZpb3VzCnNuZF9wY21fYXZhaWwoKSByZXR1cm5lZCAwIG9y
+IGFuIG90aGVyIHZhbHVlIDwgbWluX2F2YWlsLgoKSSdtIHJ1bm5pbmcgMy4xNi4wLTctYW1kNjQg
+IzEgU01QIERlYmlhbiAzLjE2LjU5LTEgKDIwMTgtMTAtMDMpIHg4Nl82NApHTlUvTGludXgKUGxl
+YXNlIGZpbmQgYXR0YWNoZWQgbXkgaGFyZGF3cmUgbGlzdC4KCldoaWxlIEknbSBhdCBpdCwgSSBh
+bHNvIHRyaWVkIHRvIHJlZ2lzdGVyIHRvIHd3dy4qYWxzYSotcHJvamVjdC5vcmcKd2l0aG91dCBz
+dWNjZXNzIGJlY2F1c2UgSSBtaWdodCBiZSBhYmxlIHRvIGJyaW5nIG15IGNvbXB1dGVyIHNraWxs
+cyB0bwp0aGF0IHByb2plY3QgZXZlbiBpZiBteSBza2lsbHMgcmVnYXJkaW5nIGFueSBzb3VuZCBz
+ZXJ2ZXIgYXJlIHZlcnkgbG93LgpUaGUgYm94ICN3cENhcHRjaGFXb3JkIChACmh0dHA6Ly93d3cu
+YWxzYS1wcm9qZWN0Lm9yZy9tYWluL2luZGV4LnBocD90aXRsZT1TcGVjaWFsOlVzZXJMb2dpbiZ0
+eXBlPXNpZ251cCZyZXR1cm50bz1NYWluK1BhZ2UpCnJlbWFpbnMgZW1wdHkuCihNeSBicm93c2Vy
+IChGaXJlZm94IERldikgZG8gbm90IGJsb2NrIGFueSBjb29raWUgbmVpdGhlciBmcm9tCnd3dy4q
+YWxzYSotcHJvamVjdC5vcmcgbm9yIGFjY291bnRzLmdvb2dsZS5jb20pCgpCZXN0IHJlZ2FyZHMg
+Li4uIGFuZCBoYXBweSBDaHJpc3RtYXMgOy0pCgpQaGlsaXBwZQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
