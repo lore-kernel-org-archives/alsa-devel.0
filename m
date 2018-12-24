@@ -1,75 +1,255 @@
-From: Alison Wang <alison.wang@nxp.com>
-Subject: [PATCH] ASoC: sgtl5000: Allow SCLK pad drive strength to be changed
-Date: Mon, 24 Dec 2018 15:42:04 +0800
-Message-ID: <20181224074204.3895-1-alison.wang@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: alison.wang@nxp.com
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [alsa-lib][PATCH] conf/ucm: kblrt5660: Add ucm setting
+	for Dell Edge IoT platform
+Date: Mon, 24 Dec 2018 16:34:46 +0800
+Message-ID: <20181224083446.5806-1-hui.wang@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 514C82678D5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2018 09:34:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces "sclk-strength" property to allow SCLK pad drive
-strength to be changed via device tree.
+The new generation of Dell Edge IoT platform is based on Intel
+Kabylake platform, and the audio codec is ALC3277 which is 100%
+compatible with RT5660 in I2S mode.
 
-When running playback test on LS1028ARDB, Tx Frame sync error interrupt
-will occur sometimes. Some noises also exist. After changing SCLK pad
-drive strength to the maximum value, the issues are gone.
+The audio design on this IoT platform is as below:
+ - Intel kabylake platform
+ - connect the codec ALC3277 via SSP0
+ - line-out and line-in with Micbias jacks
+ - line-out mute control and jack detection of line-out and line-in
+ - two HDMI ports with audio capability
 
-Signed-off-by: Alison Wang <alison.wang@nxp.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/soc/codecs/sgtl5000.c |   19 ++++++++++++++++++-
- 1 files changed, 18 insertions(+), 1 deletions(-)
+ configure.ac                          |  1 +
+ src/conf/ucm/Makefile.am              |  1 +
+ src/conf/ucm/kblrt5660/Hdmi1          | 20 +++++++
+ src/conf/ucm/kblrt5660/Hdmi2          | 20 +++++++
+ src/conf/ucm/kblrt5660/HiFi           | 85 +++++++++++++++++++++++++++
+ src/conf/ucm/kblrt5660/Makefile.am    |  4 ++
+ src/conf/ucm/kblrt5660/kblrt5660.conf | 18 ++++++
+ 7 files changed, 149 insertions(+)
+ create mode 100755 src/conf/ucm/kblrt5660/Hdmi1
+ create mode 100755 src/conf/ucm/kblrt5660/Hdmi2
+ create mode 100755 src/conf/ucm/kblrt5660/HiFi
+ create mode 100755 src/conf/ucm/kblrt5660/Makefile.am
+ create mode 100755 src/conf/ucm/kblrt5660/kblrt5660.conf
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index add18d6..a6a4748 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -116,6 +116,13 @@ enum  {
- 	I2S_LRCLK_STRENGTH_HIGH,
- };
- 
-+enum  {
-+	I2S_SCLK_STRENGTH_DISABLE,
-+	I2S_SCLK_STRENGTH_LOW,
-+	I2S_SCLK_STRENGTH_MEDIUM,
-+	I2S_SCLK_STRENGTH_HIGH,
-+};
+diff --git a/configure.ac b/configure.ac
+index d0cab2d6..6185a7eb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -745,6 +745,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/gpd-win-pocket-rt5645/Makefile \
+ 	  src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile \
+ 	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
++	  src/conf/ucm/kblrt5660/Makefile \
+ 	  src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile \
+ 	  src/conf/ucm/PandaBoard/Makefile \
+ 	  src/conf/ucm/PandaBoardES/Makefile \
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 85c15090..993d02bb 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -29,6 +29,7 @@ GoogleNyan \
+ gpd-win-pocket-rt5645 \
+ HDAudio-Gigabyte-ALC1220DualCodecs \
+ HDAudio-Lenovo-DualCodecs \
++kblrt5660 \
+ LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216 \
+ PandaBoard \
+ PandaBoardES \
+diff --git a/src/conf/ucm/kblrt5660/Hdmi1 b/src/conf/ucm/kblrt5660/Hdmi1
+new file mode 100755
+index 00000000..95e6187a
+--- /dev/null
++++ b/src/conf/ucm/kblrt5660/Hdmi1
+@@ -0,0 +1,20 @@
++# Usecase for device HDMI1/Display Port stereo playback on Intel KABYLAKE platforms
++# For Audio in I2S mode
 +
- /* sgtl5000 private structure in codec */
- struct sgtl5000_priv {
- 	int sysclk;	/* sysclk rate */
-@@ -129,6 +136,7 @@ struct sgtl5000_priv {
- 	u8 micbias_resistor;
- 	u8 micbias_voltage;
- 	u8 lrclk_strength;
-+	u8 sclk_strength;
- };
- 
- /*
-@@ -1302,7 +1310,9 @@ static int sgtl5000_probe(struct snd_soc_component *component)
- 			SGTL5000_DAC_MUTE_RIGHT |
- 			SGTL5000_DAC_MUTE_LEFT);
- 
--	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
-+	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT |
-+	       (sgtl5000->sclk_strength) << SGTL5000_PAD_I2S_SCLK_SHIFT |
-+	       0x1f);
- 	snd_soc_component_write(component, SGTL5000_CHIP_PAD_STRENGTH, reg);
- 
- 	snd_soc_component_write(component, SGTL5000_CHIP_ANA_CTRL,
-@@ -1542,6 +1552,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		sgtl5000->lrclk_strength = value;
- 	}
- 
-+	sgtl5000->sclk_strength = I2S_SCLK_STRENGTH_LOW;
-+	if (!of_property_read_u32(np, "sclk-strength", &value)) {
-+		if (value > I2S_SCLK_STRENGTH_HIGH)
-+			value = I2S_SCLK_STRENGTH_LOW;
-+		sgtl5000->sclk_strength = value;
++SectionDevice."Hdmi1" {
++        Comment "HDMI/Display Port 1 Stereo"
++
++        EnableSequence [
++        ]
++
++        DisableSequence [
++        ]
++
++        Value {
++                PlaybackPCM "hw:kblrt5660,2"
++                PlaybackChannels "2"
++                PlaybackPriority "2"
++                JackControl "HDMI/DP, pcm=4 Jack"
++        }
++}
++
+diff --git a/src/conf/ucm/kblrt5660/Hdmi2 b/src/conf/ucm/kblrt5660/Hdmi2
+new file mode 100755
+index 00000000..f6d2feee
+--- /dev/null
++++ b/src/conf/ucm/kblrt5660/Hdmi2
+@@ -0,0 +1,20 @@
++# Usecase for device HDMI2/Display Port stereo playback on Intel KABYLAKE platforms
++# For Audio in I2S mode
++
++SectionDevice."Hdmi2" {
++        Comment "HDMI/Display Port 2 Stereo"
++
++        EnableSequence [
++        ]
++
++        DisableSequence [
++        ]
++
++        Value {
++                PlaybackPCM "hw:kblrt5660,3"
++                PlaybackChannels "2"
++                PlaybackPriority "3"
++                JackControl "HDMI/DP, pcm=5 Jack"
++        }
++}
++
+diff --git a/src/conf/ucm/kblrt5660/HiFi b/src/conf/ucm/kblrt5660/HiFi
+new file mode 100755
+index 00000000..dbdb9006
+--- /dev/null
++++ b/src/conf/ucm/kblrt5660/HiFi
+@@ -0,0 +1,85 @@
++# UCM for Intel Kabylake platforms with RT5660
++# For Audio in I2S mode
++
++SectionVerb {
++
++	EnableSequence [
++	]
++
++	DisableSequence [
++	]
++
++	# ALSA PCM
++	Value {
++		# ALSA PCM device for HiFi
++		PlaybackPCM "hw:kblrt5660,0"
++		CapturePCM "hw:kblrt5660,1"
 +	}
++}
 +
- 	/* Ensure sgtl5000 will start with sane register values */
- 	sgtl5000_fill_defaults(client);
- 
++SectionDevice."LineOut" {
++	Comment "LineOut playback"
++
++	EnableSequence [
++		cdev "hw:kblrt5660"
++		cset "name='DAC1 Playback Volume' 30"
++		cset "name='OUT Playback Volume' 19"
++		cset "name='OUT Playback Switch' on"
++		cset "name='codec0_out mo media0_in mi Switch' on"
++		cset "name='DAC1 MIXL DAC1 Switch' on"
++		cset "name='DAC1 MIXR DAC1 Switch' on"
++		cset "name='Stereo DAC MIXL DAC L1 Switch' on"
++		cset "name='Stereo DAC MIXR DAC L1 Switch' off"
++		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
++		cset "name='Stereo DAC MIXL DAC R1 Switch' off"
++		cset "name='LOUT MIX DAC Switch' on"
++		cset "name='Line Out Switch' on"
++	]
++
++	DisableSequence [
++		cdev "hw:kblrt5660"
++		cset "name='Line Out Switch' off"
++		cset "name='DAC1 MIXL DAC1' off"
++		cset "name='DAC1 MIXR DAC1' off"
++	]
++
++	Value {
++		PlaybackChannels "2"
++		JackDev "rt5660-jack"
++		JackControl "Line Out Jack"
++	}
++}
++
++SectionDevice."LineIn" {
++	Comment "LineIn capture"
++
++	EnableSequence [
++		cdev "hw:kblrt5660"
++
++		cset "name='ADC Capture Volume' 30"
++		cset "name='IN1 Boost Volume' 30"
++		cset "name='IN2 Boost Volume' 30"
++		cset "name='STO1 ADC Boost Gain Volume' 1"
++		cset "name='RECMIXL BST1 Switch' off"
++		cset "name='RECMIXR BST1 Switch' on"
++		cset "name='RECMIXL BST2 Switch' on"
++		cset "name='RECMIXR BST2 Switch' off"
++		cset "name='Line In Switch' on"
++		cset "name='Sto1 ADC MIXR ADC1 Switch' on"
++		cset "name='Sto1 ADC MIXL ADC1 Switch' on"
++		cset "name='media0_out mo codec0_in mi Switch' on"
++	]
++
++	DisableSequence [
++		cdev "hw:kblrt5660"
++		cset "name='Line In Switch' off"
++		cset "name='Sto1 ADC MIXR ADC1 Switch' off"
++		cset "name='Sto1 ADC MIXL ADC1 Switch' off"
++	]
++
++	Value {
++		CaptureChannels "2"
++		JackDev "rt5660-jack"
++		JackControl "Line In Jack"
++	}
++}
+diff --git a/src/conf/ucm/kblrt5660/Makefile.am b/src/conf/ucm/kblrt5660/Makefile.am
+new file mode 100755
+index 00000000..83c3743a
+--- /dev/null
++++ b/src/conf/ucm/kblrt5660/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/kblrt5660
++ucm_DATA = kblrt5660.conf HiFi Hdmi1 Hdmi2
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/kblrt5660/kblrt5660.conf b/src/conf/ucm/kblrt5660/kblrt5660.conf
+new file mode 100755
+index 00000000..c5e9420e
+--- /dev/null
++++ b/src/conf/ucm/kblrt5660/kblrt5660.conf
+@@ -0,0 +1,18 @@
++SectionUseCase."HiFi" {
++	File "HiFi"
++	Comment "Play HiFi quality Music"
++}
++
++SectionUseCase."Hdmi1" {
++        File "Hdmi1"
++        Comment "Play on Hdmi/DP 1"
++}
++
++SectionUseCase."Hdmi2" {
++        File "Hdmi2"
++        Comment "Play on Hdmi/DP 2"
++}
++
++SectionDefaults [
++	cdev "hw:kblrt5660"
++]
 -- 
-1.7.1
+2.17.1
