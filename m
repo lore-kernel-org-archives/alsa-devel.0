@@ -1,126 +1,95 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] aplay: support no period wakeup option in
- argument
-Date: Wed, 26 Dec 2018 22:35:17 +0900
-Message-ID: <20181226133517.GA25888@workstation>
-References: <1545823678-15563-1-git-send-email-shengjiu.wang@nxp.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [RFC PATCH] ASoC: fsl: Add Audio Mixer CPU DAI driver
+Date: Thu, 27 Dec 2018 01:24:22 +0800
+Message-ID: <CAGoOwPQvc5w05NOVsp6Qw-Ee3CJJCcaU2Dtzwbf+7bUe_kFEbA@mail.gmail.com>
+References: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
- [209.85.210.195])
- by alsa0.perex.cz (Postfix) with ESMTP id F40032679EF
- for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 14:35:25 +0100 (CET)
-Received: by mail-pf1-f195.google.com with SMTP id c123so7889539pfb.0
- for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 05:35:25 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1545823678-15563-1-git-send-email-shengjiu.wang@nxp.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Viorel,
 
-On Wed, Dec 26, 2018 at 11:28:11AM +0000, S.j. Wang wrote:
-> In the case that alsa driver can't support period wakeup,
-> we need to set the no period wakeup flag
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  aplay/aplay.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+Sorry for the late response, having been on a long vacation.
+
+The code looks pretty clean. Just some small concerns/questions below.
+
+On Wed, Dec 19, 2018 at 12:30 AM Viorel Suman <viorel.suman@nxp.com> wrote:
 >
-> diff --git a/aplay/aplay.c b/aplay/aplay.c
-> index efc1eb4cae3a..4f562bfe2884 100644
-> --- a/aplay/aplay.c
-> +++ b/aplay/aplay.c
-> @@ -137,6 +137,7 @@ static int use_strftime = 0;
->  volatile static int recycle_capture_file = 0;
->  static long term_c_lflag = -1;
->  static int dump_hw_params = 0;
-> +static int no_period_wakeup = 0;
->  
->  static int fd = -1;
->  static off64_t pbrec_count = LLONG_MAX, fdcount;
-> @@ -243,6 +244,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
->  "    --use-strftime      apply the strftime facility to the output file name\n"
->  "    --dump-hw-params    dump hw_params of the device\n"
->  "    --fatal-errors      treat all errors as fatal\n"
-> +"    --no-period-wakeup  set no period wakeup flag if necessary\n"
->    )
->  		, command);
->  	printf(_("Recognized sample formats are:"));
-> @@ -429,6 +431,7 @@ enum {
->  	OPT_USE_STRFTIME,
->  	OPT_DUMP_HWPARAMS,
->  	OPT_FATAL_ERRORS,
-> +	OPT_NO_PERIOD_WAKEUP,
->  };
->  
->  /*
-> @@ -516,6 +519,7 @@ int main(int argc, char *argv[])
->  		{"interactive", 0, 0, 'i'},
->  		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
->  		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
-> +		{"no-period-wakeup", 0, 0, OPT_NO_PERIOD_WAKEUP},
->  #ifdef CONFIG_SUPPORT_CHMAP
->  		{"chmap", 1, 0, 'm'},
->  #endif
-> @@ -799,6 +803,9 @@ int main(int argc, char *argv[])
->  		case OPT_FATAL_ERRORS:
->  			fatal_errors = 1;
->  			break;
-> +		case OPT_NO_PERIOD_WAKEUP:
-> +			no_period_wakeup = 1;
-> +			break;
->  #ifdef CONFIG_SUPPORT_CHMAP
->  		case 'm':
->  			channel_map = snd_pcm_chmap_parse_string(optarg);
-> @@ -1396,6 +1403,12 @@ static void set_params(void)
->  							     &buffer_frames);
->  	}
->  	assert(err >= 0);
+> This patch implements Audio Mixer CPU DAI driver for NXP iMX8 SOCs.
+> The Audio Mixer is a on-chip functional module that allows mixing of
+> two audio streams into a single audio stream.
+>
+> Audio Mixer datasheet is available here:
+> https://www.nxp.com/docs/en/reference-manual/IMX8DQXPRM.pdf
+>
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,amix.txt         |  45 ++
+>  sound/soc/fsl/Kconfig                              |   7 +
+>  sound/soc/fsl/Makefile                             |   3 +
+>  sound/soc/fsl/fsl_amix.c                           | 554 +++++++++++++++++++++
+>  sound/soc/fsl/fsl_amix.h                           | 101 ++++
+
+I aimn't against the naming here, but it seems to be AUDMIX in RM?
+
+Would it be better to align with that? It's your decision though.
+
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,amix.txt b/Documentation/devicetree/bindings/sound/fsl,amix.txt
+> +=================================
+> +  - compatible         : Compatible list, contains "fsl,imx8qm-amix"
 > +
-> +	if (no_period_wakeup) {
-> +		err = snd_pcm_hw_params_set_period_wakeup(handle, params, 0);
-> +		assert(err >= 0);
-> +	}
+> +  - reg                        : Offset and length of the register set for the device.
 > +
->  	monotonic = snd_pcm_hw_params_is_monotonic(params);
->  	can_pause = snd_pcm_hw_params_can_pause(params);
->  	err = snd_pcm_hw_params(handle, params);
-> -- 
-> 1.9.1
+> +  - clocks             : Must contain an entry for each entry in clock-names.
+> +
+> +  - clock-names                : Must include the "ipg" for register access.
+> +
+> +  - power-domains      : Must contain the phandle to the AMIX power domain node
+> +
+> +Device driver configuration example:
+> +======================================
+> +  amix: amix@59840000 {
+> +    compatible = "fsl,imx8qm-amix";
+> +    reg = <0x0 0x59840000 0x0 0x10000>;
+> +    clocks = <&clk IMX8QXP_AUD_AMIX_IPG>;
+> +    clock-names = "ipg";
+> +    power-domains = <&pd_amix>;
+> +  };
 
-As of v4.21-rc1, runtime of PCM substream can't run no_period_wakeup
-mode unless two conditions are satisfied[1]:
- - driver supports SNDRV_PCM_INFO_NO_PERIOD_WAKEUP
- - PCM applications set SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP flag to
-   hardware parameter structure.
+>From the description of DT and RM, I don't see how it connects to SAIs.
 
-Neither alsa-lib nor the most of existent userspace applications set
-SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP without explicit call of helper
-API. In this point, I can get your intention for this patch. If a driver
-just supports no_period_wakeup mode, such driver can't work well.
+Are they fixed to SAI0 and SAI1 in imx8qm? Wondering if it'd be better
+to have such information in the doc.
 
-However, such driver is problematic because apparently it can not run
-with many existent userspace applications and alsa-lib. Before applying
-this patch, we have enough discussion to prevent problems to introduce
-such problematic drivers into Linux sound subsystem, in my opinion.
+> diff --git a/sound/soc/fsl/fsl_amix.c b/sound/soc/fsl/fsl_amix.c
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/sound/core/pcm_native.c?h=sound-4.21-rc1#n727
++static const char
++ *width_sel[] = { "16b", "18b", "20b", "24b", "32b", },
++ *pol_sel[] = { "Positive edge", "Negative edge", },
+[...]
++static const struct soc_enum fsl_amix_enum[] = {
++/* FSL_AMIX_CTR enums */
+[...]
++SOC_ENUM_SINGLE_S(FSL_AMIX_CTR, FSL_AMIX_CTR_OUTWIDTH_SHIFT, width_sel),
++SOC_ENUM_SINGLE_S(FSL_AMIX_CTR, FSL_AMIX_CTR_OUTCKPOL_SHIFT, pol_sel),
 
+Should we handle the width in hw_param()?
 
-Regards
+Why do we change pol here? It feels like against set_fmt().
 
-Takashi Sakamoto
+> +static int fsl_amix_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +       /* For playback the AMIX is slave, and for record is master */
+> +       switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +       case SND_SOC_DAIFMT_CBM_CFM:
+> +       case SND_SOC_DAIFMT_CBS_CFS:
+
+So it's used either for playback or capture only, not both at same time?
+
+Thanks
+Nicolin
