@@ -1,14 +1,17 @@
-From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH] ALSA: hda/tegra: clear pending irq handlers
-Date: Wed, 26 Dec 2018 16:04:49 +0530
-Message-ID: <1545820489-13292-1-git-send-email-spujar@nvidia.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: [PATCH] aplay: support no period wakeup option in
+	argument
+Date: Wed, 26 Dec 2018 11:28:11 +0000
+Message-ID: <1545823678-15563-1-git-send-email-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 92C032679EF
- for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 11:34:57 +0100 (CET)
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-eopbgr150058.outbound.protection.outlook.com [40.107.15.58])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17E272678D4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 12:28:12 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,41 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Even after disabling interrupts on the module, it could be possible
-that irq handlers are still running. System hang is seen during
-suspend path. It was found that, there were pending writes on the
-HDA bus and clock was disabled by that time.
+In the case that alsa driver can't support period wakeup,
+we need to set the no period wakeup flag
 
-Above mentioned issue is fixed by clearing any pending irq handlers
-before disabling clocks and returning from hda suspend.
-
-Suggested-by: Mohan Kumar <mkumard@nvidia.com>
-Suggested-by: Dara Ramesh <dramesh@nvidia.com>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/pci/hda/hda_tegra.c | 2 ++
- 1 file changed, 2 insertions(+)
+ aplay/aplay.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 83befd8..97a176d 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -234,10 +234,12 @@ static int hda_tegra_suspend(struct device *dev)
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip = card->private_data;
- 	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
-+	struct hdac_bus *bus = azx_bus(chip);
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index efc1eb4cae3a..4f562bfe2884 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -137,6 +137,7 @@ static int use_strftime = 0;
+ volatile static int recycle_capture_file = 0;
+ static long term_c_lflag = -1;
+ static int dump_hw_params = 0;
++static int no_period_wakeup = 0;
  
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ static int fd = -1;
+ static off64_t pbrec_count = LLONG_MAX, fdcount;
+@@ -243,6 +244,7 @@ _("Usage: %s [OPTION]... [FILE]...\n"
+ "    --use-strftime      apply the strftime facility to the output file name\n"
+ "    --dump-hw-params    dump hw_params of the device\n"
+ "    --fatal-errors      treat all errors as fatal\n"
++"    --no-period-wakeup  set no period wakeup flag if necessary\n"
+   )
+ 		, command);
+ 	printf(_("Recognized sample formats are:"));
+@@ -429,6 +431,7 @@ enum {
+ 	OPT_USE_STRFTIME,
+ 	OPT_DUMP_HWPARAMS,
+ 	OPT_FATAL_ERRORS,
++	OPT_NO_PERIOD_WAKEUP,
+ };
  
- 	azx_stop_chip(chip);
-+	synchronize_irq(bus->irq);
- 	azx_enter_link_reset(chip);
- 	hda_tegra_disable_clocks(hda);
- 
+ /*
+@@ -516,6 +519,7 @@ int main(int argc, char *argv[])
+ 		{"interactive", 0, 0, 'i'},
+ 		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
+ 		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
++		{"no-period-wakeup", 0, 0, OPT_NO_PERIOD_WAKEUP},
+ #ifdef CONFIG_SUPPORT_CHMAP
+ 		{"chmap", 1, 0, 'm'},
+ #endif
+@@ -799,6 +803,9 @@ int main(int argc, char *argv[])
+ 		case OPT_FATAL_ERRORS:
+ 			fatal_errors = 1;
+ 			break;
++		case OPT_NO_PERIOD_WAKEUP:
++			no_period_wakeup = 1;
++			break;
+ #ifdef CONFIG_SUPPORT_CHMAP
+ 		case 'm':
+ 			channel_map = snd_pcm_chmap_parse_string(optarg);
+@@ -1396,6 +1403,12 @@ static void set_params(void)
+ 							     &buffer_frames);
+ 	}
+ 	assert(err >= 0);
++
++	if (no_period_wakeup) {
++		err = snd_pcm_hw_params_set_period_wakeup(handle, params, 0);
++		assert(err >= 0);
++	}
++
+ 	monotonic = snd_pcm_hw_params_is_monotonic(params);
+ 	can_pause = snd_pcm_hw_params_can_pause(params);
+ 	err = snd_pcm_hw_params(handle, params);
 -- 
-2.7.4
+1.9.1
