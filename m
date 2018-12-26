@@ -1,39 +1,34 @@
 From: Kangjie Lu <kjlu@umn.edu>
-Subject: [PATCH] sound: atom: fix a missing check  of snd_pcm_lib_malloc_pages
-Date: Tue, 25 Dec 2018 20:29:48 -0600
-Message-ID: <20181226022950.71824-1-kjlu@umn.edu>
+Subject: [PATCH] sound: line6: fix a missing check of snd_card_register
+Date: Tue, 25 Dec 2018 21:31:40 -0600
+Message-ID: <20181226033142.73180-1-kjlu@umn.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kjlu@umn.edu
-Cc: pakki001@umn.edu, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: pakki001@umn.edu, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_lib_malloc_pages() may fail, so let's check its status and
-return its error code upstream.
+snd_card_register() may fail, so let's check its status and issue an
+error message if it fails.
 
 Signed-off-by: Kangjie Lu <kjlu@umn.edu>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/usb/line6/variax.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index afc559866095..91a2436ce952 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -399,7 +399,13 @@ static int sst_media_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
--	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+	int ret;
-+
-+	ret =
-+		snd_pcm_lib_malloc_pages(substream,
-+				params_buffer_bytes(params));
-+	if (ret)
-+		return ret;
- 	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
- 	return 0;
+diff --git a/sound/usb/line6/variax.c b/sound/usb/line6/variax.c
+index e8c852b2ce35..b0caa9ea1f5f 100644
+--- a/sound/usb/line6/variax.c
++++ b/sound/usb/line6/variax.c
+@@ -167,7 +167,8 @@ static void variax_startup6(struct work_struct *work)
+ 	CHECK_STARTUP_PROGRESS(variax->startup_progress, VARIAX_STARTUP_SETUP);
+ 
+ 	/* ALSA audio interface: */
+-	snd_card_register(variax->line6.card);
++	if (snd_card_register(variax->line6.card))
++		dev_err(variax->line6.ifcdev, "Failed to register variax card.\n");
  }
+ 
+ /*
 -- 
 2.17.2 (Apple Git-113)
