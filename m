@@ -1,67 +1,72 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 08/11] ASoC: Intel: atom: Make PCI dependency explicit
-Date: Wed, 26 Dec 2018 11:35:05 -0600
-Message-ID: <39200a36-6592-f010-8309-a249a8d514f4@linux.intel.com>
-References: <20181223232521.11320-1-okaya@kernel.org>
- <20181223232521.11320-9-okaya@kernel.org>
+Subject: Re: "ALSA: HD-Audio: SKL+: abort probe if DSP is
+ present and Skylake driver selected" breaks sound, suspend on Apollo Lake
+Date: Wed, 26 Dec 2018 11:53:03 -0600
+Message-ID: <f7c33cad-528e-6fa3-c020-7ffc636d67ed@linux.intel.com>
+References: <c2d25194-a779-aec0-59e8-a4d90326c811@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181223232521.11320-9-okaya@kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 811D926789E
+ for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 18:53:05 +0100 (CET)
+In-Reply-To: <c2d25194-a779-aec0-59e8-a4d90326c811@redhat.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sinan Kaya <okaya@kernel.org>, linux-next@vger.kernel.org
-Cc: linux-acpi@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 12/23/18 5:25 PM, Sinan Kaya wrote:
-> Code does unconditional select for IOSF_MBI. IOSF_MBI driver depends on
-> CONFIG_PCI set but this is not specified anywhere.
-
-Can you please share the .config that exposes this problem? This hasn't 
-changed in a long time and I wonder why this pops up now. You have 
-similar cases elsewhere, e.g. arch/x86/Kconfig
-
-config X86_INTEL_LPSS
-     bool "Intel Low Power Subsystem Support"
-     depends on X86 && ACPI
-     select COMMON_CLK
-     select PINCTRL
-     select IOSF_MBI
-
-or for the MMC.
-
-config MMC_SDHCI_ACPI
-     tristate "SDHCI support for ACPI enumerated SDHCI controllers"
-     depends on MMC_SDHCI && ACPI
-     select IOSF_MBI if X86
-
-The use of IOSF_MBI is only for the Baytrail-CR detection and there are 
-already in-flight patches to change the code and move it to a helper.
-
-My understanding is that for compilation you only need CONFIG_x86 since 
-there are fall-back routines available in iosf_mbi.h
-
-Thanks!
-
->
-> Signed-off-by: Sinan Kaya <okaya@kernel.org>
-> ---
->   sound/soc/intel/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 2fd1b61e8331..b0764b2fe001 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -91,7 +91,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
->   config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
->   	tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
->   	default ACPI
-> -	depends on X86 && ACPI
-> +	depends on X86 && ACPI && PCI
->   	select SND_SST_IPC_ACPI
->   	select SND_SST_ATOM_HIFI2_PLATFORM
->   	select SND_SOC_ACPI_INTEL_MATCH
+Ck9uIDEyLzI1LzE4IDc6MTAgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4gSGkgUGllcnJlLUxv
+dWlzLAo+Cj4gU2luY2UgSSByZWNlbnRseSBoYXZlIGJlZW4gZG9pbmcgYSBidW5jaCBvZiBpOTE1
+IHdvcmsgSSdtIGN1cnJlbnRseQo+IHJ1bm5pbmcgZHJtLXRpcC4gVGhpcyBicm91Z2h0IGluIHRo
+aXMgY29tbWl0IGZyb20gbmV4dDoKPgo+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvZHJt
+LXRpcC9jb21taXQvP2lkPWMzMzcxMDRiMWExNmJlY2M0ODZmZGM5NWQ1NDRjODM1YjE3MDIxZGIg
+Cj4KPgo+IFRoaXMgY2F1c2VzIHRoZSBoZGEgZHJpdmVyIHRvIG5vdCBiaW5kIHRvIHRoZSBhdWRp
+byBvbiBteSBBcG9sbG8gTGFrZQo+IGJhc2VkIGxhcHRvcCwgYW5kIHRoZSBhc29jIGRyaXZlciBl
+cnJvcnMgb3V0IHdpdGg6Cj4KPiBbwqDCoCAxOS4xNzY0MTddIHNrbF9oZGFfZHNwX2dlbmVyaWMg
+c2tsX2hkYV9kc3BfZ2VuZXJpYzogVW5zdXBwb3J0ZWQgCj4gSERBdWRpby9pRGlzcCBjb25maWd1
+cmF0aW9uIGZvdW5kCj4gW8KgwqAgMTkuMTc2NDI4XSBza2xfaGRhX2RzcF9nZW5lcmljOiBwcm9i
+ZSBvZiBza2xfaGRhX2RzcF9nZW5lcmljIAo+IGZhaWxlZCB3aXRoIGVycm9yIC0yMgo+Cj4gQWZ0
+ZXIgd2hpY2ggSSBnZXQgbm8gc291bmQgYW5kIHdvcnNlLCB0aGUgbWFjaGluZSBoYW5ncyBvbiBz
+dXNwZW5kLgo+IEl0IHNlZW1zIHRvIG5ldmVyIHJlYWNoIGl0cyBmdWxseSBzdXNwZW5kZWQgc3Rh
+dGUgKHRoZSBwb3dlci1sZWQKPiBuZXZlciBzdGFydHMgdG8gZmFkZSBvbi9vZmYgYXMgaXQgbm9y
+bWFsbHkgZG9lcyB3aGVuIHN1c3BlbmRlZCkuCj4KPiBJJ3ZlIGJlZW4gbG9va2luZyB0aHJvdWdo
+IHRoZSBLY29uZmlnIG9wdGlvbiBhbmQgaXQgc2VlbXMgdGhhdAo+IGN1cnJlbnRseSBzZWxlY3Rp
+bmcgU05EX1NPQ19JTlRFTF9BUEwgbWFrZXMgbGl0dGxlIHNlbnNlIHNpbmNlIHRoZXJlCj4gYXJl
+IDAgbWFjaGluZSBkcml2ZXJzIGZvciB0aGlzIHNldHVwID8KPgo+IEkgZ3Vlc3MgSSBjYW4gZml4
+IHRoaXMgYnkgdW5zZWxlY3RpbmcgU05EX1NPQ19JTlRFTF9TS1lMQUtFIGFuZAo+IHRoZW4gZHVy
+aW5nIHRoZSBtYW51YWwgcGxhdGZvcm0gc2VsZWN0aW9uIG5vdCBzZWxlY3RpbmcKPiBTTkRfU09D
+X0lOVEVMX0FQTCwgYnV0IElNSE8gd2UgbmVlZCB0byBwdXQgc29tZXRoaW5nIGluIHBsYWNlCj4g
+d2hlcmUgdGhlIGhkYSBkcml2ZXIgYWN0dWFsbHkgY2hlY2tzIGlmIHRoZXJlIGlzIGEgbWFjaGlu
+ZSBkcml2ZXIKPiBhbmQgaWYgdGhlcmUgaXNuJ3Qgb25lIHRoZW4gd2Ugc2hvdWxkIGtlZXAgdXNp
+bmcgdGhlIGhkYSBkcml2ZXIKPiBvbiB0aGUgbWFjaGluZSBpbiBxdWVzdGlvbi4KCkludGVyZXN0
+aW5nLCB0aGFua3MgZm9yIHRoZSBidWcgcmVwb3J0LgoKVGhlcmUgYXJlIHRocmVlIHByb2JsZW1z
+IGhlcmU6CgowLiBIb3cgZGlkIHRoaXMgd29yayBiZWZvcmU/IGlmIHlvdSBkaWRuJ3QgaGF2ZSBh
+IGJsYWNrbGlzdCwgeW91IGhhZCB0d28gCmRyaXZlcnMgcmVnaXN0ZXJpbmcgZm9yIHRoZSBzYW1l
+IFBDSSBJRCwgc28gd2VyZSByZWx5aW5nIG9uIGFuIGltcGxpY2l0IApiZWhhdmlvci4KCjEuIHdo
+eSBkb2VzIHRoZSBIRGF1ZGlvIHN1cHBvcnQgaW4gdGhlIFNLTCBkcml2ZXIgZmFpbD/CoCBJIGFt
+IG5vdCBzdXJlIAp3aGF0J3MgZ29pbmcgb24gaGVyZS4gSWYgeW91ciBkZXZpY2UgaGFzIHRoZSBE
+U1AgZW5hYmxlZCwgdGhlbiB0aGUgCkhEYXVkaW8gU0tMIHBhcnQgc2hvdWxkIGp1c3Qgd29yay4g
+SXQgd29ya3Mgb24gbXkgQVBMIE5VQy7CoCBXb3VsZCB5b3UgCm1pbmQgc2hhcmluZyB0aGUgLmNv
+bmZpZyBhbmQgZnVsbCBkbWVzZyBsb2cgd2l0aCAtRERFQlVHIGVuYWJsZWQgZm9yIApzb3VuZC9z
+b2MvY29kZWNzIGFuZCBzb3VuZC9zb2MvaW50ZWw/IFRoZSAidW5zdXBwb3J0ZWQgY29uZmlndXJh
+dGlvbiAKZm91bmQiIHR5cGljYWxseSBtZWFucyB0aGUgaTkxNSBkcml2ZXIgaXNuJ3Qgd29ya2lu
+ZyBvciBjcmVhdGluZyB0aGUgCmlESVNQIGNvZGVjIHNpbmNlIHdlIGFzc3VtZSBIRE1JIGlzIGFs
+d2F5cyBwcmVzZW50LgoKMi4gaG93IGRvIHdlICdiYWNrdHJhY2snIGluIGNhc2UgdGhlIFNLTCBk
+cml2ZXIgZmFpbHM/IFRoYXQgb25lIEkgZG9uJ3QgCmhhdmUgYSBnb29kIHNvbHV0aW9uIGZvci4g
+WW91IHNob3VsZCBiZSB3ZWxsIHBhc3QgdGhlIGZpcm13YXJlIAppbml0aWFsaXphdGlvbiBzdGVw
+cyBhbmQgYXQgdGhpcyBwb2ludCBpdCdzIHRvbyBsYXRlIHRvIHJldHVybiAtRU5PREVWIAp0byBs
+ZXQgdGhlIGxlZ2FjeSBhdWRpbyB0YWtlIG92ZXIuCgoKPgo+IFJlZ2FyZHMsCj4KPiBIYW5zCj4K
+Pgo+IHAucy4KPgo+IE1lcnJ5IENocmlzdG1hcyEKPgo+Cj4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
