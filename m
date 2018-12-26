@@ -1,72 +1,50 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: "ALSA: HD-Audio: SKL+: abort probe if DSP is
- present and Skylake driver selected" breaks sound, suspend on Apollo Lake
-Date: Wed, 26 Dec 2018 11:53:03 -0600
-Message-ID: <f7c33cad-528e-6fa3-c020-7ffc636d67ed@linux.intel.com>
-References: <c2d25194-a779-aec0-59e8-a4d90326c811@redhat.com>
+Subject: Re: [PATCH] sound: atom: fix a missing check of
+ snd_pcm_lib_malloc_pages
+Date: Wed, 26 Dec 2018 11:57:47 -0600
+Message-ID: <a684ebcb-7b7a-d5b5-8770-f87db0c5a480@linux.intel.com>
+References: <20181226022950.71824-1-kjlu@umn.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 811D926789E
- for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2018 18:53:05 +0100 (CET)
-In-Reply-To: <c2d25194-a779-aec0-59e8-a4d90326c811@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181226022950.71824-1-kjlu@umn.edu>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kangjie Lu <kjlu@umn.edu>
+Cc: pakki001@umn.edu, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzI1LzE4IDc6MTAgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4gSGkgUGllcnJlLUxv
-dWlzLAo+Cj4gU2luY2UgSSByZWNlbnRseSBoYXZlIGJlZW4gZG9pbmcgYSBidW5jaCBvZiBpOTE1
-IHdvcmsgSSdtIGN1cnJlbnRseQo+IHJ1bm5pbmcgZHJtLXRpcC4gVGhpcyBicm91Z2h0IGluIHRo
-aXMgY29tbWl0IGZyb20gbmV4dDoKPgo+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvZHJt
-LXRpcC9jb21taXQvP2lkPWMzMzcxMDRiMWExNmJlY2M0ODZmZGM5NWQ1NDRjODM1YjE3MDIxZGIg
-Cj4KPgo+IFRoaXMgY2F1c2VzIHRoZSBoZGEgZHJpdmVyIHRvIG5vdCBiaW5kIHRvIHRoZSBhdWRp
-byBvbiBteSBBcG9sbG8gTGFrZQo+IGJhc2VkIGxhcHRvcCwgYW5kIHRoZSBhc29jIGRyaXZlciBl
-cnJvcnMgb3V0IHdpdGg6Cj4KPiBbwqDCoCAxOS4xNzY0MTddIHNrbF9oZGFfZHNwX2dlbmVyaWMg
-c2tsX2hkYV9kc3BfZ2VuZXJpYzogVW5zdXBwb3J0ZWQgCj4gSERBdWRpby9pRGlzcCBjb25maWd1
-cmF0aW9uIGZvdW5kCj4gW8KgwqAgMTkuMTc2NDI4XSBza2xfaGRhX2RzcF9nZW5lcmljOiBwcm9i
-ZSBvZiBza2xfaGRhX2RzcF9nZW5lcmljIAo+IGZhaWxlZCB3aXRoIGVycm9yIC0yMgo+Cj4gQWZ0
-ZXIgd2hpY2ggSSBnZXQgbm8gc291bmQgYW5kIHdvcnNlLCB0aGUgbWFjaGluZSBoYW5ncyBvbiBz
-dXNwZW5kLgo+IEl0IHNlZW1zIHRvIG5ldmVyIHJlYWNoIGl0cyBmdWxseSBzdXNwZW5kZWQgc3Rh
-dGUgKHRoZSBwb3dlci1sZWQKPiBuZXZlciBzdGFydHMgdG8gZmFkZSBvbi9vZmYgYXMgaXQgbm9y
-bWFsbHkgZG9lcyB3aGVuIHN1c3BlbmRlZCkuCj4KPiBJJ3ZlIGJlZW4gbG9va2luZyB0aHJvdWdo
-IHRoZSBLY29uZmlnIG9wdGlvbiBhbmQgaXQgc2VlbXMgdGhhdAo+IGN1cnJlbnRseSBzZWxlY3Rp
-bmcgU05EX1NPQ19JTlRFTF9BUEwgbWFrZXMgbGl0dGxlIHNlbnNlIHNpbmNlIHRoZXJlCj4gYXJl
-IDAgbWFjaGluZSBkcml2ZXJzIGZvciB0aGlzIHNldHVwID8KPgo+IEkgZ3Vlc3MgSSBjYW4gZml4
-IHRoaXMgYnkgdW5zZWxlY3RpbmcgU05EX1NPQ19JTlRFTF9TS1lMQUtFIGFuZAo+IHRoZW4gZHVy
-aW5nIHRoZSBtYW51YWwgcGxhdGZvcm0gc2VsZWN0aW9uIG5vdCBzZWxlY3RpbmcKPiBTTkRfU09D
-X0lOVEVMX0FQTCwgYnV0IElNSE8gd2UgbmVlZCB0byBwdXQgc29tZXRoaW5nIGluIHBsYWNlCj4g
-d2hlcmUgdGhlIGhkYSBkcml2ZXIgYWN0dWFsbHkgY2hlY2tzIGlmIHRoZXJlIGlzIGEgbWFjaGlu
-ZSBkcml2ZXIKPiBhbmQgaWYgdGhlcmUgaXNuJ3Qgb25lIHRoZW4gd2Ugc2hvdWxkIGtlZXAgdXNp
-bmcgdGhlIGhkYSBkcml2ZXIKPiBvbiB0aGUgbWFjaGluZSBpbiBxdWVzdGlvbi4KCkludGVyZXN0
-aW5nLCB0aGFua3MgZm9yIHRoZSBidWcgcmVwb3J0LgoKVGhlcmUgYXJlIHRocmVlIHByb2JsZW1z
-IGhlcmU6CgowLiBIb3cgZGlkIHRoaXMgd29yayBiZWZvcmU/IGlmIHlvdSBkaWRuJ3QgaGF2ZSBh
-IGJsYWNrbGlzdCwgeW91IGhhZCB0d28gCmRyaXZlcnMgcmVnaXN0ZXJpbmcgZm9yIHRoZSBzYW1l
-IFBDSSBJRCwgc28gd2VyZSByZWx5aW5nIG9uIGFuIGltcGxpY2l0IApiZWhhdmlvci4KCjEuIHdo
-eSBkb2VzIHRoZSBIRGF1ZGlvIHN1cHBvcnQgaW4gdGhlIFNLTCBkcml2ZXIgZmFpbD/CoCBJIGFt
-IG5vdCBzdXJlIAp3aGF0J3MgZ29pbmcgb24gaGVyZS4gSWYgeW91ciBkZXZpY2UgaGFzIHRoZSBE
-U1AgZW5hYmxlZCwgdGhlbiB0aGUgCkhEYXVkaW8gU0tMIHBhcnQgc2hvdWxkIGp1c3Qgd29yay4g
-SXQgd29ya3Mgb24gbXkgQVBMIE5VQy7CoCBXb3VsZCB5b3UgCm1pbmQgc2hhcmluZyB0aGUgLmNv
-bmZpZyBhbmQgZnVsbCBkbWVzZyBsb2cgd2l0aCAtRERFQlVHIGVuYWJsZWQgZm9yIApzb3VuZC9z
-b2MvY29kZWNzIGFuZCBzb3VuZC9zb2MvaW50ZWw/IFRoZSAidW5zdXBwb3J0ZWQgY29uZmlndXJh
-dGlvbiAKZm91bmQiIHR5cGljYWxseSBtZWFucyB0aGUgaTkxNSBkcml2ZXIgaXNuJ3Qgd29ya2lu
-ZyBvciBjcmVhdGluZyB0aGUgCmlESVNQIGNvZGVjIHNpbmNlIHdlIGFzc3VtZSBIRE1JIGlzIGFs
-d2F5cyBwcmVzZW50LgoKMi4gaG93IGRvIHdlICdiYWNrdHJhY2snIGluIGNhc2UgdGhlIFNLTCBk
-cml2ZXIgZmFpbHM/IFRoYXQgb25lIEkgZG9uJ3QgCmhhdmUgYSBnb29kIHNvbHV0aW9uIGZvci4g
-WW91IHNob3VsZCBiZSB3ZWxsIHBhc3QgdGhlIGZpcm13YXJlIAppbml0aWFsaXphdGlvbiBzdGVw
-cyBhbmQgYXQgdGhpcyBwb2ludCBpdCdzIHRvbyBsYXRlIHRvIHJldHVybiAtRU5PREVWIAp0byBs
-ZXQgdGhlIGxlZ2FjeSBhdWRpbyB0YWtlIG92ZXIuCgoKPgo+IFJlZ2FyZHMsCj4KPiBIYW5zCj4K
-Pgo+IHAucy4KPgo+IE1lcnJ5IENocmlzdG1hcyEKPgo+Cj4KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+On 12/25/18 8:29 PM, Kangjie Lu wrote:
+> snd_pcm_lib_malloc_pages() may fail, so let's check its status and
+> return its error code upstream.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+
+>
+> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+> ---
+>   sound/soc/intel/atom/sst-mfld-platform-pcm.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> index afc559866095..91a2436ce952 100644
+> --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+> @@ -399,7 +399,13 @@ static int sst_media_hw_params(struct snd_pcm_substream *substream,
+>   				struct snd_pcm_hw_params *params,
+>   				struct snd_soc_dai *dai)
+>   {
+> -	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+> +	int ret;
+> +
+> +	ret =
+> +		snd_pcm_lib_malloc_pages(substream,
+> +				params_buffer_bytes(params));
+> +	if (ret)
+> +		return ret;
+>   	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
+>   	return 0;
+>   }
