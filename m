@@ -1,46 +1,148 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe
-Date: Wed, 26 Dec 2018 15:11:06 -0600
-Message-ID: <20181226211106.GA16692@embeddedor>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] aplay: support no period wakeup option in
+ argument
+Date: Thu, 27 Dec 2018 02:13:28 +0000
+Message-ID: <VI1PR0402MB339296BEB0F8566BBD97D1FAE3B60@VI1PR0402MB3392.eurprd04.prod.outlook.com>
+References: <1545823678-15563-1-git-send-email-shengjiu.wang@nxp.com>
+ <20181226133517.GA25888@workstation>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michal Simek <michal.simek@xilinx.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr130053.outbound.protection.outlook.com [40.107.13.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 352EA267B06
+ for <alsa-devel@alsa-project.org>; Thu, 27 Dec 2018 03:13:30 +0100 (CET)
+In-Reply-To: <20181226133517.GA25888@workstation>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, if platform_get_irq_byname() fails, the returned error
-turns into a huge value, once it is being store into a variable
-of type unsigned int, hence never actually reporting any error
-and causing unexpected behavior when using the values stored
-in aud_drv_data->s2mm_irq and aud_drv_data->mm2s_irq.
+Hi
 
-Fix this by changing the type of variables s2mm_irq and mm2s_irq in
-structure xlnx_pcm_drv_data from unsigned int to int.
+> -----Original Message-----
+> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Sent: Wednesday, December 26, 2018 9:35 PM
+> 
+> Hi,
+> 
+> On Wed, Dec 26, 2018 at 11:28:11AM +0000, S.j. Wang wrote:
+> > In the case that alsa driver can't support period wakeup, we need to
+> > set the no period wakeup flag
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  aplay/aplay.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/aplay/aplay.c b/aplay/aplay.c index
+> > efc1eb4cae3a..4f562bfe2884 100644
+> > --- a/aplay/aplay.c
+> > +++ b/aplay/aplay.c
+> > @@ -137,6 +137,7 @@ static int use_strftime = 0;  volatile static int
+> > recycle_capture_file = 0;  static long term_c_lflag = -1;  static int
+> > dump_hw_params = 0;
+> > +static int no_period_wakeup = 0;
+> >
+> >  static int fd = -1;
+> >  static off64_t pbrec_count = LLONG_MAX, fdcount; @@ -243,6 +244,7
+> @@
+> > _("Usage: %s [OPTION]... [FILE]...\n"
+> >  "    --use-strftime      apply the strftime facility to the output file name\n"
+> >  "    --dump-hw-params    dump hw_params of the device\n"
+> >  "    --fatal-errors      treat all errors as fatal\n"
+> > +"    --no-period-wakeup  set no period wakeup flag if necessary\n"
+> >    )
+> >  		, command);
+> >  	printf(_("Recognized sample formats are:")); @@ -429,6 +431,7 @@
+> > enum {
+> >  	OPT_USE_STRFTIME,
+> >  	OPT_DUMP_HWPARAMS,
+> >  	OPT_FATAL_ERRORS,
+> > +	OPT_NO_PERIOD_WAKEUP,
+> >  };
+> >
+> >  /*
+> > @@ -516,6 +519,7 @@ int main(int argc, char *argv[])
+> >  		{"interactive", 0, 0, 'i'},
+> >  		{"dump-hw-params", 0, 0, OPT_DUMP_HWPARAMS},
+> >  		{"fatal-errors", 0, 0, OPT_FATAL_ERRORS},
+> > +		{"no-period-wakeup", 0, 0, OPT_NO_PERIOD_WAKEUP},
+> >  #ifdef CONFIG_SUPPORT_CHMAP
+> >  		{"chmap", 1, 0, 'm'},
+> >  #endif
+> > @@ -799,6 +803,9 @@ int main(int argc, char *argv[])
+> >  		case OPT_FATAL_ERRORS:
+> >  			fatal_errors = 1;
+> >  			break;
+> > +		case OPT_NO_PERIOD_WAKEUP:
+> > +			no_period_wakeup = 1;
+> > +			break;
+> >  #ifdef CONFIG_SUPPORT_CHMAP
+> >  		case 'm':
+> >  			channel_map =
+> snd_pcm_chmap_parse_string(optarg);
+> > @@ -1396,6 +1403,12 @@ static void set_params(void)
+> >  							     &buffer_frames);
+> >  	}
+> >  	assert(err >= 0);
+> > +
+> > +	if (no_period_wakeup) {
+> > +		err = snd_pcm_hw_params_set_period_wakeup(handle,
+> params, 0);
+> > +		assert(err >= 0);
+> > +	}
+> > +
+> >  	monotonic = snd_pcm_hw_params_is_monotonic(params);
+> >  	can_pause = snd_pcm_hw_params_can_pause(params);
+> >  	err = snd_pcm_hw_params(handle, params);
+> > --
+> > 1.9.1
+> 
+> As of v4.21-rc1, runtime of PCM substream can't run no_period_wakeup
+> mode unless two conditions are satisfied[1]:
+>  - driver supports SNDRV_PCM_INFO_NO_PERIOD_WAKEUP
+>  - PCM applications set SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP
+> flag to
+>    hardware parameter structure.
+> 
+> Neither alsa-lib nor the most of existent userspace applications set
+> SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP without explicit call of
+> helper API. In this point, I can get your intention for this patch. If a driver
+> just supports no_period_wakeup mode, such driver can't work well.
+> 
+> However, such driver is problematic because apparently it can not run with
+> many existent userspace applications and alsa-lib. Before applying this
+> patch, we have enough discussion to prevent problems to introduce such
+> problematic drivers into Linux sound subsystem, in my opinion.
 
-Addresses-Coverity-ID: 1476096 ("Unsigned compared against 0")
-Fixes: 796175a94a7f ("ASoC: xlnx: add pcm formatter platform driver")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/soc/xilinx/xlnx_formatter_pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What is helper API?  I found that you have a similar function in axfer/xfer-libasound.c,
+Which is disable_period_wakeup().  Do you think I need to porting this function to
+Aplay? 
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index f7235f7664d7..d2194da928e7 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -76,8 +76,8 @@ struct xlnx_pcm_drv_data {
- 	void __iomem *mmio;
- 	bool s2mm_presence;
- 	bool mm2s_presence;
--	unsigned int s2mm_irq;
--	unsigned int mm2s_irq;
-+	int s2mm_irq;
-+	int mm2s_irq;
- 	struct snd_pcm_substream *play_stream;
- 	struct snd_pcm_substream *capture_stream;
- 	struct clk *axi_clk;
--- 
-2.20.1
+Best regards
+Wang shengjiu
+> 
+> [1]
+> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.
+> kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftiwai%2Fsound.git%2
+> Ftree%2Fsound%2Fcore%2Fpcm_native.c%3Fh%3Dsound-4.21-
+> rc1%23n727&amp;data=02%7C01%7Cshengjiu.wang%40nxp.com%7Cdaa8cb
+> 93830245f7b27108d66b36fe91%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C
+> 0%7C0%7C636814281289991663&amp;sdata=Qv2Jfrd2qXc91gpwJhu28bhMC
+> SJ5%2FgZJWDzP0gDT0Ws%3D&amp;reserved=0
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
