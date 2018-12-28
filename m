@@ -1,64 +1,41 @@
-From: h00249924 <hutenghui@huawei.com>
-Subject: [PATCH 1/2] arm64: dts: hi3660: Add i2s & sound device
-Date: Fri, 28 Dec 2018 14:30:45 +0800
-Message-ID: <1545978646-124051-1-git-send-email-hutenghui@huawei.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v5 2/2] ASoC: cs35l36: Add device tree
+ documentation for CS35L36
+Date: Fri, 28 Dec 2018 09:27:59 +0000
+Message-ID: <20181228092759.GJ16508@imbe.wolfsonmicro.main>
+References: <1545422004-4272-1-git-send-email-james.schulman@cirrus.com>
+ <1545422004-4272-2-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: suzhuangluan@hisilicon.com, kongfei@hisilicon.com, liyuequan@hisilicon.com, cash.qianli@hisilicon.com, huangli295@hisilicon.com, hantanglei@huawei.com, wangyoulin1@hisilicon.com, ninggaoyu@hisilicon.com, Youlin Wang <wwx575822@notesmail.huawei.com>, John Stultz <john.stultz@linaro.org>, Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E6FF267AAA
+ for <alsa-devel@alsa-project.org>; Fri, 28 Dec 2018 10:28:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1545422004-4272-2-git-send-email-james.schulman@cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: James Schulman <james.schulman@cirrus.com>
+Cc: mark.rutland@arm.com, brian.austin@cirrus.com, alsa-devel@alsa-project.org, paul.handrigan@cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Youlin Wang <wwx575822@notesmail.huawei.com>
+On Fri, Dec 21, 2018 at 01:53:24PM -0600, James Schulman wrote:
+> Add device tree documentation for Cirrus Logic CS35L36
+> speaker amplifier
+> 
+> Signed-off-by: James Schulman <james.schulman@cirrus.com>
+> ---
 
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Youlin Wang <wwx575822@notesmail.huawei.com>
-Signed-off-by: Tanglei Han <hantanglei@huawei.com>
-Cc: Wei Xu <xuwei5@hisilicon.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
----
- arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-index 5223e36..ae535da 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -1136,5 +1136,33 @@
- 			interrupt-names = "asp_dma_irq";
- 			status = "ok";
- 		};
-+
-+		i2s2: hisi_i2s {
-+			compatible = "hisilicon,hisi-i2s";
-+			reg = <0x0 0xe804f800 0x0 0x400>,
-+			      <0x0 0xe804e000 0x0 0x400>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&i2s2_pmx_func &i2s2_cfg_func>;
-+			dmas = <&asp_dmac 18 &asp_dmac 19>;
-+			dma-names = "rx", "tx";
-+			#sound-dai-cells = <0>;
-+		};
-+
-+		sound {
-+			compatible = "simple-audio-card";
-+			simple-audio-card,name = "hikey-hdmi";
-+			simple-audio-card,format = "i2s";
-+
-+			simple-audio-card,bitclock-master = <&sound_master>;
-+			simple-audio-card,frame-master = <&sound_master>;
-+
-+			sound_master: simple-audio-card,cpu {
-+				sound-dai = <&i2s2>;
-+			};
-+
-+			simple-audio-card,codec {
-+				sound-dai = <&adv7533>;
-+			};
-+		};
- 	};
- };
--- 
-1.9.1
+Thanks,
+Charles
