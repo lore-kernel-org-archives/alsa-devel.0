@@ -1,52 +1,92 @@
-From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
-Subject: Re: Coherence of status structure after SYNC_PTR
-Date: Fri, 28 Dec 2018 14:28:24 -0200
-Message-ID: <20181228162824.GA28189@localhost.localdomain>
-References: <20181227172224.GA18933@localhost.localdomain>
- <20181228034549.GA22203@workstation>
- <20181228042124.GA30249@workstation>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [RFC PATCH] ASoC: fsl: Add Audio Mixer CPU DAI driver
+Date: Fri, 28 Dec 2018 17:32:26 -0600
+Message-ID: <20181228233226.GA11728@bogus>
+References: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com
- [209.85.160.171])
- by alsa0.perex.cz (Postfix) with ESMTP id C066E267A78
- for <alsa-devel@alsa-project.org>; Fri, 28 Dec 2018 17:28:30 +0100 (CET)
-Received: by mail-qt1-f171.google.com with SMTP id u47so19207209qtj.6
- for <alsa-devel@alsa-project.org>; Fri, 28 Dec 2018 08:28:30 -0800 (PST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20181228042124.GA30249@workstation>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 28, 2018 at 01:21:24PM +0900, Takashi Sakamoto wrote:
-> On Fri, Dec 28, 2018 at 12:45:49PM +0900, Takashi Sakamoto wrote:
-> > I note that there're some levels of timestamp and autio timestamp.
-> > Additionally, audio timestamp is updated only in any hardware/software IRQs,
-> > thus it's not available with 'no-period-wakeup' runtime, FYI.
+On Tue, Dec 18, 2018 at 04:30:01PM +0000, Viorel Suman wrote:
+> This patch implements Audio Mixer CPU DAI driver for NXP iMX8 SOCs.
+> The Audio Mixer is a on-chip functional module that allows mixing of
+> two audio streams into a single audio stream.
 > 
-> Oops. No, the audio timestamp can be updated in updating process of
-> hardware pointer. A call of ioctl with SNDRV_PCM_IOCTL_STATUS and
-> SNDRV_PCM_IOCTL_STATUS_EXT can return updated audio timestamp.
+> Audio Mixer datasheet is available here:
+> https://www.nxp.com/docs/en/reference-manual/IMX8DQXPRM.pdf
+> 
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,amix.txt         |  45 ++
 
-Thank you for the explanation!
+This should be a separate patch.
 
-Regarding the alsa-lib, pcm_hw, htimestamp():
+>  sound/soc/fsl/Kconfig                              |   7 +
+>  sound/soc/fsl/Makefile                             |   3 +
+>  sound/soc/fsl/fsl_amix.c                           | 554 +++++++++++++++++++++
+>  sound/soc/fsl/fsl_amix.h                           | 101 ++++
+>  5 files changed, 710 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,amix.txt
+>  create mode 100644 sound/soc/fsl/fsl_amix.c
+>  create mode 100644 sound/soc/fsl/fsl_amix.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,amix.txt b/Documentation/devicetree/bindings/sound/fsl,amix.txt
+> new file mode 100644
+> index 0000000..049144f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl,amix.txt
+> @@ -0,0 +1,45 @@
+> +NXP Audio Mixer (AMIX).
+> +
+> +The Audio Mixer is a on-chip functional module that allows mixing of two
+> +audio streams into a single audio stream. Audio Mixer has two input serial
+> +audio interfaces. These are driven by two Synchronous Audio interface
+> +modules (SAI). Each input serial interface carries 8 audio channels in its
+> +frame in TDM manner. Mixer mixes audio samples of corresponding channels
+> +from two interfaces into a single sample. Before mixing, audio samples of
+> +two inputs can be attenuated based on configuration. The output of the
+> +Audio Mixer is also a serial audio interface. Like input interfaces it has
+> +the same TDM frame format. This output is used to drive the serial DAC TDM
+> +interface of audio codec and also sent to the external pins along with the
+> +receive path of normal audio SAI module for readback by the CPU.
+> +
+> +The output of Audio mixer can be selected from any of the three streams
+> + - serial audio input 1
+> + - serial audio input 2
+> + - Mixed audio
+> +
+> +Mixing operation is independent of audio sample rate but the two audio
+> +input streams must have same audio sample rate with same number of channels
+> +in TDM frame to be eligible for mixing.
+> +
+> +Device driver required properties:
+> +=================================
+> +  - compatible		: Compatible list, contains "fsl,imx8qm-amix"
+> +
+> +  - reg			: Offset and length of the register set for the device.
+> +
+> +  - clocks		: Must contain an entry for each entry in clock-names.
+> +
+> +  - clock-names		: Must include the "ipg" for register access.
 
-Although not needed, adding a 'break' in the loop when
-'mmap_status_fallbacked' is true would avoid another ioctl.
+Humm, no audio related clocks? 
 
-Cheers!
-
-	pasquali
+> +
+> +  - power-domains	: Must contain the phandle to the AMIX power domain node
+> +
+> +Device driver configuration example:
+> +======================================
+> +  amix: amix@59840000 {
+> +    compatible = "fsl,imx8qm-amix";
+> +    reg = <0x0 0x59840000 0x0 0x10000>;
+> +    clocks = <&clk IMX8QXP_AUD_AMIX_IPG>;
+> +    clock-names = "ipg";
+> +    power-domains = <&pd_amix>;
+> +  };
+> +
