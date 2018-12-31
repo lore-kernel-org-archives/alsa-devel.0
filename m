@@ -1,20 +1,18 @@
-From: Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH 1/2] ASoC: Intel: sst: Fallback to BYT-CR
- if IRQ 5 is missing
-Date: Mon, 31 Dec 2018 17:30:22 +0100
-Message-ID: <20181231163021.GA906@gerhold.net>
-References: <20181222144708.121732-1-stephan@gerhold.net>
- <42aa8bbb-433e-6eb7-e3ff-a52c14d87b61@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 08/11] ASoC: Intel: atom: Make PCI
+	dependency explicit
+Date: Mon, 31 Dec 2018 17:46:54 +0000
+Message-ID: <20181231174654.GH1846@sirena.org.uk>
+References: <20181230195612.6657-1-okaya@kernel.org>
+ <20181230195612.6657-9-okaya@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5095110652645496127=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [85.215.255.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C516C26789E
- for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 17:30:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <42aa8bbb-433e-6eb7-e3ff-a52c14d87b61@linux.intel.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8335326789E
+ for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 18:46:58 +0100 (CET)
+In-Reply-To: <20181230195612.6657-9-okaya@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,102 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: Sinan Kaya <okaya@kernel.org>
+Cc: "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-acpi@vger.kernel.org, linux-next@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 31, 2018 at 09:38:21AM -0600, Pierre-Louis Bossart wrote:
-> 
-> On 12/22/18 8:47 AM, Stephan Gerhold wrote:
-> > Some devices detected as BYT-T by the PMIC-type based detection
-> > have only a single IRQ listed in the 80860F28 ACPI device. This
-> > causes -ENXIO later when attempting to get the IRQ at index 5.
-> > It turns out these devices behave more like BYT-CR devices,
-> > and using the IRQ at index 0 makes sound work correctly.
-> > 
-> > This patch adds a fallback for these devices to is_byt_cr():
-> > If there is no IRQ resource at index 5, treating the device
-> > as BYT-T is guaranteed to fail later, so we can safely treat
-> > these devices as BYT-CR without breaking any working device.
-> > 
-> > Link: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143176.html
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> > Moved the "Detected Baytrail-CR platform" message to is_byt_cr()
-> > so we can log a different message if the fallback is used.
-> > 
-> > Tested this on my device as-is, and simulated a "normal"
-> > BYT-T and BYT-CR device (copied their IRQs to a custom DSDT).
-> > 
-> >   sound/soc/intel/atom/sst/sst_acpi.c | 24 ++++++++++++++++++------
-> >   1 file changed, 18 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-> > index 3a95ebbfc45d..755a396121ff 100644
-> > --- a/sound/soc/intel/atom/sst/sst_acpi.c
-> > +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-> > @@ -255,10 +255,22 @@ static int is_byt(void)
-> >   	return status;
-> >   }
-> > -static int is_byt_cr(struct device *dev, bool *bytcr)
-> > +static int is_byt_cr(struct platform_device *pdev, bool *bytcr)
-> >   {
-> > +	struct device *dev = &pdev->dev;
-> >   	int status = 0;
-> > +	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
-> > +		/*
-> > +		 * Some devices detected as BYT-T have only a single IRQ listed,
-> > +		 * causing platform_get_irq with index 5 to return -ENXIO.
-> > +		 * The correct IRQ in this case is at index 0, as used on BYT-CR.
-> > +		 */
-> > +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
-> > +		*bytcr = true;
-> > +		return status;
-> > +	}
-> > +
-> 
-> Isn't this going to bypass the PMIC-based detection on all BYT-CR devices?
-> Maybe move this code as a fallback used when the PMIC-based detection isn't
-> positive?
-> 
 
-Except for the message that is logged, it does not really make a 
-difference. PMIC-based detection is still used for most BYT-CR devices, 
-which usually have 6 IRQs listed. For the few that have not, the end 
-result (bytcr = true) is the same, even if they now use the fallback.
+--===============5095110652645496127==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dMyqICaxQaaUjrCL"
+Content-Disposition: inline
 
-I mentioned this in a previous mail when I asked you which option you 
-would prefer (see [1]). Since is_byt_cr() has multiple returns,
-I cannot just put it last without refactoring the entire method.
-(Which is something I wanted to avoid...)
 
-[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143339.html
+--dMyqICaxQaaUjrCL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> >   	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
-> >   		u32 bios_status;
-> > @@ -278,10 +290,12 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
-> >   			/* bits 26:27 mirror PMIC options */
-> >   			bios_status = (bios_status >> 26) & 3;
-> > -			if ((bios_status == 1) || (bios_status == 3))
-> > +			if ((bios_status == 1) || (bios_status == 3)) {
-> > +				dev_info(dev, "Detected Baytrail-CR platform\n");
-> >   				*bytcr = true;
-> > -			else
-> > +			} else {
-> >   				dev_info(dev, "BYT-CR not detected\n");
-> > +			}
-> >   		}
-> >   	} else {
-> >   		dev_info(dev, "IOSF_MBI not enabled, no BYT-CR detection\n");
-> > @@ -333,10 +347,8 @@ static int sst_acpi_probe(struct platform_device *pdev)
-> >   	if (ret < 0)
-> >   		return ret;
-> > -	ret = is_byt_cr(dev, &bytcr);
-> > +	ret = is_byt_cr(pdev, &bytcr);
-> >   	if (!(ret < 0 || !bytcr)) {
-> > -		dev_info(dev, "Detected Baytrail-CR platform\n");
-> > -
-> >   		/* override resource info */
-> >   		byt_rvp_platform_data.res_info = &bytcr_res_info;
-> >   	}
+On Sun, Dec 30, 2018 at 07:56:09PM +0000, Sinan Kaya wrote:
+> Code does unconditional select for IOSF_MBI. IOSF_MBI driver depends on
+> CONFIG_PCI set but this is not specified anywhere.
+
+I don't have the cover letter or anything for this series, what's going
+on with dependencies?
+
+--dMyqICaxQaaUjrCL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwqVgsACgkQJNaLcl1U
+h9DK0Qf5AdiTvdsqlkSq4ADpfxzrhXV9yrPpE9JaSk42vEizr7qzwrid+GFrVbLv
+7xnKpMDE8DAdWxtRf9UAqj+G3iuj5jU8fGbCeVbYrCxpgZdsJA7YWixJq3XlZ6Iw
+3Hvtscbn2u6N656P4L2fYcIpgFVHvMU3MdVVqs9LO3YknHVV+8j9/i8XKc5/KYx4
+y2yCc5BHiniwsLMeupbyii3HHrAHw4FMGlgeqLqVT9558m3Vj3hwoWhvI/emG8uV
+XhFI4OoiPPDtQlF5SU+fUKOnSjUF3vLNubC6peKLu8euzsC0kn5nNa9wtbDzoQ1c
+N4Tkr2/CS/k/IOD8QLNbkHGjXzuj0w==
+=9M9Q
+-----END PGP SIGNATURE-----
+
+--dMyqICaxQaaUjrCL--
+
+--===============5095110652645496127==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5095110652645496127==--
