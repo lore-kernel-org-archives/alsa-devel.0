@@ -1,87 +1,72 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: "ALSA: HD-Audio: SKL+: abort probe if DSP is
- present and Skylake driver selected" breaks sound, suspend on Apollo Lake
-Date: Mon, 31 Dec 2018 22:11:08 +0100
-Message-ID: <794e374d-6748-7028-2350-51dab2dd4c1d@redhat.com>
-References: <c2d25194-a779-aec0-59e8-a4d90326c811@redhat.com>
- <f7c33cad-528e-6fa3-c020-7ffc636d67ed@linux.intel.com>
- <0126159c-0eaa-aaf6-580c-19a75fb0ff8a@redhat.com>
- <ad047de1-2862-99d2-0429-cd0ca833db71@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 08/11] ASoC: Intel: atom: Make PCI dependency explicit
+Date: Mon, 31 Dec 2018 15:42:10 -0600
+Message-ID: <765ab3a1-f1f1-3b29-aabb-0f3328abd631@linux.intel.com>
+References: <20181230195612.6657-1-okaya@kernel.org>
+ <20181230195612.6657-9-okaya@kernel.org>
+ <20181231174654.GH1846@sirena.org.uk>
+ <CAK9iUCPHu0FV9LqMOKixKi7Cg_DC_F04OeXh50YSHOpgkGKejQ@mail.gmail.com>
+ <20181231193017.GN1846@sirena.org.uk>
+ <CAK9iUCNf9JqwvtL4O5KVHP9ZN3y66wZOTjOsGcXFc-T_g6xtEQ@mail.gmail.com>
+ <d288e6cf-158f-e832-6096-17d3faf9e3e9@linux.intel.com>
+ <CAK9iUCNhPg21ZFxkbqquTQ5aRRh7ojsSiFP4_RJ2_MsD4t=cYw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A7891267B66
- for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 22:11:10 +0100 (CET)
-Received: by mail-wr1-f66.google.com with SMTP id t27so27244372wra.6
- for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 13:11:10 -0800 (PST)
-In-Reply-To: <ad047de1-2862-99d2-0429-cd0ca833db71@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAK9iUCNhPg21ZFxkbqquTQ5aRRh7ojsSiFP4_RJ2_MsD4t=cYw@mail.gmail.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sinan Kaya <Okaya@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Linux Next Mailing List <linux-next@vger.kernel.org>, ACPI Devel Mailing List <linux-acpi@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMi8zMC8xOCAxMToxMCBQTSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4g
-T24gMTIvMzAvMTggODozOSBBTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4gSGksCj4+Cj4+IE9u
-IDI2LTEyLTE4IDE4OjUzLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+Cj4+PiBPbiAx
-Mi8yNS8xOCA3OjEwIEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4+IEhpIFBpZXJyZS1Mb3Vp
-cywKPj4+Pgo+Pj4+IFNpbmNlIEkgcmVjZW50bHkgaGF2ZSBiZWVuIGRvaW5nIGEgYnVuY2ggb2Yg
-aTkxNSB3b3JrIEknbSBjdXJyZW50bHkKPj4+PiBydW5uaW5nIGRybS10aXAuIFRoaXMgYnJvdWdo
-dCBpbiB0aGlzIGNvbW1pdCBmcm9tIG5leHQ6Cj4+Pj4KPj4+PiBodHRwczovL2NnaXQuZnJlZWRl
-c2t0b3Aub3JnL2RybS10aXAvY29tbWl0Lz9pZD1jMzM3MTA0YjFhMTZiZWNjNDg2ZmRjOTVkNTQ0
-YzgzNWIxNzAyMWRiCj4+Pj4KPj4+PiBUaGlzIGNhdXNlcyB0aGUgaGRhIGRyaXZlciB0byBub3Qg
-YmluZCB0byB0aGUgYXVkaW8gb24gbXkgQXBvbGxvIExha2UKPj4+PiBiYXNlZCBsYXB0b3AsIGFu
-ZCB0aGUgYXNvYyBkcml2ZXIgZXJyb3JzIG91dCB3aXRoOgo+Pj4+Cj4+Pj4gW8KgwqAgMTkuMTc2
-NDE3XSBza2xfaGRhX2RzcF9nZW5lcmljIHNrbF9oZGFfZHNwX2dlbmVyaWM6IFVuc3VwcG9ydGVk
-IEhEQXVkaW8vaURpc3AgY29uZmlndXJhdGlvbiBmb3VuZAo+Pj4+IFvCoMKgIDE5LjE3NjQyOF0g
-c2tsX2hkYV9kc3BfZ2VuZXJpYzogcHJvYmUgb2Ygc2tsX2hkYV9kc3BfZ2VuZXJpYyBmYWlsZWQg
-d2l0aCBlcnJvciAtMjIKPj4+Pgo+Pj4+IEFmdGVyIHdoaWNoIEkgZ2V0IG5vIHNvdW5kIGFuZCB3
-b3JzZSwgdGhlIG1hY2hpbmUgaGFuZ3Mgb24gc3VzcGVuZC4KPj4+PiBJdCBzZWVtcyB0byBuZXZl
-ciByZWFjaCBpdHMgZnVsbHkgc3VzcGVuZGVkIHN0YXRlICh0aGUgcG93ZXItbGVkCj4+Pj4gbmV2
-ZXIgc3RhcnRzIHRvIGZhZGUgb24vb2ZmIGFzIGl0IG5vcm1hbGx5IGRvZXMgd2hlbiBzdXNwZW5k
-ZWQpLgo+Pj4+Cj4+Pj4gSSd2ZSBiZWVuIGxvb2tpbmcgdGhyb3VnaCB0aGUgS2NvbmZpZyBvcHRp
-b24gYW5kIGl0IHNlZW1zIHRoYXQKPj4+PiBjdXJyZW50bHkgc2VsZWN0aW5nIFNORF9TT0NfSU5U
-RUxfQVBMIG1ha2VzIGxpdHRsZSBzZW5zZSBzaW5jZSB0aGVyZQo+Pj4+IGFyZSAwIG1hY2hpbmUg
-ZHJpdmVycyBmb3IgdGhpcyBzZXR1cCA/Cj4+Pj4KPj4+PiBJIGd1ZXNzIEkgY2FuIGZpeCB0aGlz
-IGJ5IHVuc2VsZWN0aW5nIFNORF9TT0NfSU5URUxfU0tZTEFLRSBhbmQKPj4+PiB0aGVuIGR1cmlu
-ZyB0aGUgbWFudWFsIHBsYXRmb3JtIHNlbGVjdGlvbiBub3Qgc2VsZWN0aW5nCj4+Pj4gU05EX1NP
-Q19JTlRFTF9BUEwsIGJ1dCBJTUhPIHdlIG5lZWQgdG8gcHV0IHNvbWV0aGluZyBpbiBwbGFjZQo+
-Pj4+IHdoZXJlIHRoZSBoZGEgZHJpdmVyIGFjdHVhbGx5IGNoZWNrcyBpZiB0aGVyZSBpcyBhIG1h
-Y2hpbmUgZHJpdmVyCj4+Pj4gYW5kIGlmIHRoZXJlIGlzbid0IG9uZSB0aGVuIHdlIHNob3VsZCBr
-ZWVwIHVzaW5nIHRoZSBoZGEgZHJpdmVyCj4+Pj4gb24gdGhlIG1hY2hpbmUgaW4gcXVlc3Rpb24u
-Cj4+Pgo+Pj4gSW50ZXJlc3RpbmcsIHRoYW5rcyBmb3IgdGhlIGJ1ZyByZXBvcnQuCj4+Pgo+Pj4g
-VGhlcmUgYXJlIHRocmVlIHByb2JsZW1zIGhlcmU6Cj4+Pgo+Pj4gMC4gSG93IGRpZCB0aGlzIHdv
-cmsgYmVmb3JlPyBpZiB5b3UgZGlkbid0IGhhdmUgYSBibGFja2xpc3QsIHlvdSBoYWQgdHdvIGRy
-aXZlcnMgcmVnaXN0ZXJpbmcgZm9yIHRoZSBzYW1lIFBDSSBJRCwgc28gd2VyZSByZWx5aW5nIG9u
-IGFuIGltcGxpY2l0IGJlaGF2aW9yLgo+Pgo+PiBZZXMgSSBiZWxpZXZlIHRoYXQgYmVmb3JlIHRo
-aXMgdXNlZCB0byB3b3JrIGJlY2F1c2UgdGhlIHNuZC1oZGEtaW50ZWwKPj4gbW9kdWxlIHNpbXBs
-eSBnb3QgbG9hZGVkIC8gYm91bmQgZmlyc3QuCj4+Cj4+IGxzIC1sIC9zeXMvYnVzL3BjaS9kZXZp
-Y2VzLzAwMDBcOjAwXDowZS4wL2RyaXZlcgo+Pgo+PiBTaG93cyBzbmRfaGRhX2ludGVsIGlzIGJv
-dW5kIHdpdGgga2VybmVsIDQuMTguMTMtMzAwLmZjMjkueDg2XzY0Cj4gCj4gQnVtbWVyLiBJdCBs
-b29rcyBsaWtlIEkgbWFkZSBhIHdyb25nIGFzc3VtcHRpb24gaGVyZS4gSSBhc3N1bWVkIG9ubHkg
-Q2hyb21lYm9va3MgZW5hYmxlZCB0aGUgQVNvQy1iYXNlZCBkcml2ZXIgd2l0aCB0aGUgU05EX1NP
-Q19TS1lMQUtFIG9wdGlvbiBhbmQgbm8gb3RoZXIgZGlzdHJpYnV0aW9uIGRpZCBzaW5jZSB0aGF0
-IGRyaXZlciB3b3VsZCBuZXZlciB3b3JrIChEU1Agbm90IGVuYWJsZWQgYW5kL29yIG1pc3Npbmcg
-dXNlcnNwYWNlIGZpbGVzKSwgb3IgdGhhdCBkaXN0cmlidXRpb25zIHVzZWQgYmxhY2tsaXN0cyB0
-byBhdm9pZCBjb25mbGljdHMuIElmIHRoZXkgZW5hYmxlZCBTS1lMQUtFIGFuZCBkaWRuJ3QgYWRk
-IGJsYWNrbGlzdHMgdGhlbiB0aGluZ3MganVzdCBoYXBwZW5lZCB0byB3b3JrIGJ5IGFjY2lkZW50
-IGFuZCBub3QgYnkgZGVzaWduLgoKWWVzIHRoYXQgc2VlbXMgdG8gYmUgdGhlIGNhc2UuIEkgc2Vl
-IHRoYXQgdGhlIGNoYW5nZXMgY2F1c2luZyB0aGUKcHJvYmxlbSB3aWxsIGJlIHJldmVydGVkIGZv
-ciBub3csIGJ1dCBzdGlsbCBpZiB0aGlzIGlzIGFuIG9wdGlvbiB3aGljaApkc2l0cm9zIHNob3Vs
-ZCBub3QgYmUgZW5hYmxlZCB0aGVuIG1heWJlIHRoZSBLY29uZmlnIGhlbHAgdGV4dCBuZWVkCnRv
-IGJlIHVwZGF0ZWQgdG8gcmVmbGVjdCB0aGlzID8KCklmIHlvdSBjYW4gd3JpdGUgc29tZXRoaW5n
-IGFib3V0IHdoeSB0aGlzIHNob3VsZCBub3QgYmUgZW5hYmxlZCBieQpkaXN0cm9zIHRoZW4gSSBj
-YW4gZ2V0IHRoZSBrZXJuZWwtY29uZmlnIGZvciBGZWRvcmEgdXBkYXRlZC4KClJlZ2FyZHMsCgpI
-YW5zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+On 12/31/18 2:35 PM, Sinan Kaya wrote:
+> On Mon, Dec 31, 2018 at 11:29 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>> On 12/31/18 1:35 PM, Sinan Kaya wrote:
+>>> On Mon, Dec 31, 2018 at 10:30 PM Mark Brown <broonie@kernel.org> wrote:
+>>>> On Mon, Dec 31, 2018 at 08:52:52PM +0300, Sinan Kaya wrote:
+>>>>> On Mon, Dec 31, 2018 at 8:47 PM Mark Brown <broonie@kernel.org> wrote:
+>>>>>> I don't have the cover letter or anything for this series, what's going
+>>>>>> on with dependencies?
+>>>>> Here is the executive summary:
+>>>>> I have a changeset that separates ACPI from PCI on 4.21. CONFIG_ACPI
+>>>>> used to select PCI. This is no longer true.
+>>>>> You can build an ACPI system without any PCI devices.
+>>>> So there's no dependency and I can just apply this?
+>>> The plan is to apply this patchset via ACPI tree. Need an Acked-by per patch.
+>> Anytime we change the Kconfig settings for audio, we get all kinds of
+>> problems with randconfig and 0day/kbuild due to depend/select issues.
+>> I'd like to give this a spin first, can you share a link to the entire
+>> series? Thanks!
+> Sure,
+>
+> You can find them here
+>
+> https://lore.kernel.org/patchwork/patch/1028330/
+>
+> Click related.
+
+Something must be missing, I get compilation errors when PCI is not 
+defined? And I see tons of references to pci stuff in drivers/acpi.
+
+drivers/acpi/reboot.c: In function ‘acpi_reboot’:
+drivers/acpi/reboot.c:37:10: error: implicit declaration of function 
+‘pci_find_bus’; did you mean ‘pci_find_next_bus’? 
+[-Werror=implicit-function-declaration]
+    bus0 = pci_find_bus(0, 0);
+           ^~~~~~~~~~~~
+           pci_find_next_bus
+drivers/acpi/reboot.c:37:8: warning: assignment makes pointer from 
+integer without a cast [-Wint-conversion]
+    bus0 = pci_find_bus(0, 0);
+         ^
+drivers/acpi/reboot.c:45:3: error: implicit declaration of function 
+‘pci_bus_write_config_byte’; did you mean ‘pci_write_config_byte’? 
+[-Werror=implicit-function-declaration]
+    pci_bus_write_config_byte(bus0, devfn,
+    ^~~~~~~~~~~~~~~~~~~~~~~~~
+    pci_write_config_byte
