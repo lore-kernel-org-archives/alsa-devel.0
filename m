@@ -1,18 +1,17 @@
-From: Arnaud Rebillout <arnaud.rebillout@collabora.com>
-Subject: Re: snd_pcm_open() taking very long,
- starting from kernel 4.17
-Date: Mon, 31 Dec 2018 15:58:54 +0100
-Message-ID: <fd704b08-2e16-5689-272c-ef04c91120a5@collabora.com>
-References: <07c44175-c910-dc53-2f16-c4082000a313@collabora.com>
- <s5hr2egdrfx.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: sst: Fallback to BYT-CR
+ if IRQ 5 is missing
+Date: Mon, 31 Dec 2018 09:38:21 -0600
+Message-ID: <42aa8bbb-433e-6eb7-e3ff-a52c14d87b61@linux.intel.com>
+References: <20181222144708.121732-1-stephan@gerhold.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id C40DE26789E
- for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 15:58:58 +0100 (CET)
-In-Reply-To: <s5hr2egdrfx.wl-tiwai@suse.de>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 759E026789E
+ for <alsa-devel@alsa-project.org>; Mon, 31 Dec 2018 16:38:25 +0100 (CET)
+In-Reply-To: <20181222144708.121732-1-stephan@gerhold.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,37 +22,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzE3LzE4IDU6NTQgUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBGcmksIDE0IERl
-YyAyMDE4IDE4OjM2OjExICswMTAwLAo+IEFybmF1ZCBSZWJpbGxvdXQgd3JvdGU6Cj4+IMKgIERl
-YXIgQUxTQSBtYWludGFpbmVycywKPj4KPj4gSSBub3RpY2VkIGJpZyBjaGFuZ2UgaW4gaG93IGxv
-bmcgYHNuZF9wY21fb3BlbigpYCB0YWtlcywgYmV0d2VlbiBrZXJuZWwgNC4xNgo+PiBhbmQgNC4x
-Ny4gV2l0aCBhIGtlcm5lbCA0LjE2LCB0aGlzIGZ1bmN0aW9uIGNvbnNpc3RlbnRseSByZXR1cm5z
-IGluIGxlc3MKPj4gdGhhbiAxCj4+IG1pbGxpc2Vjb25kLCB3aXRoIG9jY2FzaW9uYWwsIGJ1dCBy
-YXJlLCBwZWFrcyB0aGF0IGdvIHVwIHRvIDI1bXMuIFdoaWxlIHdpdGgKPj4ga2VybmVsIDQuMTcg
-YW5kIGFib3ZlLCBJIG1lYXN1cmUgYW4gYXZlcmFnZSBvZiA0MG1zLCB3aXRoIGZyZXF1ZW50IHBl
-YWtzCj4+IHRvIDFzLgo+PiBUaGUgbWF4aW11bSBJIG1lYXN1cmVkIHdhcyAzIHNlY29uZHMhCj4+
-Cj4+IElzIHRoaXMgY2hhbmdlIGtub3duLCBpbnRlbmRlZD8gT3IgaXMgaXQgYSByZWdyZXNzaW9u
-Pwo+IElmIHRoaXMgaGFwcGVucyBhdCBvcGVuaW5nIHRoZSBQQ00gc3RyZWFtLCBpdCdzIGxpa2Vs
-eSBhIHN0YWxsIGluCj4gcnVudGltZSBQTSByZXN1bWUgYnkgc29tZSByZWFzb24uICBCdXQgSSBo
-YXZlIG5vIGlkZWEgd2hhdCBhY3R1YWxseQo+IGJyb2tlLgo+Cj4gQXJlIHlvdSBzdXJlIHRoYXQg
-aXQncyBhIGtlcm5lbCByZWdyZXNzaW9uLCBpLmUuIHRoaXMgZG9lc24ndCBoYXBwZW4KPiBhdCBh
-bGwgd2hlbiBib290aW5nIHRoZSBvbGQga2VybmVsIG9uIHRoZSBzYW1lIHN5c3RlbT8KPgo+IElm
-IHllcywgdGhlIGJlc3Qgd291bGQgYmUgdG8gcGVyZm9ybSBiaXNlY3Rpb24uICBBdCBsZWFzdCBp
-dCdkIGJlCj4gaGVscGZ1bCB0byBuYXJyb3cgdGhlIHJlZ3Jlc3Npb24gYSBiaXQuCj4KPiBBbmQs
-IHRoaXMgbWlnaHQgYmUgYSBrbm93biBpc3N1ZTsgSSByZW1lbWJlciBzb21lIHJlcG9ydCBhYm91
-dCB0aGUKPiBsb25nIHJ1bnRpbWUgUE0gcmVzdW1lIG9uIERlbGwgWFBTLCB3aGljaCBJIGNhbid0
-IHNlZSBvbiBvdGhlcgo+IG1hY2hpbmVzLiAgU28gaXQgbWlnaHQgYmUgZGV2aWNlLXNwZWNpZmlj
-LgoKSSBmb3VuZCBvdXQgdGhhdCB0aGlzIGlzIGFjdHVhbGx5IGR1ZSB0byBhIGNoYW5nZSBpbiB0
-aGUgZGViaWFuIGtlcm5lbApjb25maWd1cmF0aW9uLiBTdGFydGluZyBmcm9tIHZlcnNpb24gNC4x
-NywgdGhlIGtlcm5lbCBpcyBjb25maWd1cmVkIHdpdGgKQ09ORklHX1NORF9IREFfUE9XRVJfU0FW
-RV9ERUZBVUxUPTEgKHdhcyA9MCBiZWZvcmUpLgoKSSBjb3VsZCBjb25maXJtIHRoYXQgdGhpcyBp
-cyB3aGF0IG1ha2VzIHNuZF9wY21fb3BlbigpIHRha2UgbXVjaCBtb3JlIHRpbWUuCgpJIG9wZW5l
-ZCBhIGJ1ZyBhdCBodHRwczovL2J1Z3MuZGViaWFuLm9yZy9jZ2ktYmluL2J1Z3JlcG9ydC5jZ2k/
-YnVnPTkxNzkwNi4KClRoYW5rcyBmb3IgdGhlIHN1cHBvcnQhCgrCoCBBcm5hdWQKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+On 12/22/18 8:47 AM, Stephan Gerhold wrote:
+> Some devices detected as BYT-T by the PMIC-type based detection
+> have only a single IRQ listed in the 80860F28 ACPI device. This
+> causes -ENXIO later when attempting to get the IRQ at index 5.
+> It turns out these devices behave more like BYT-CR devices,
+> and using the IRQ at index 0 makes sound work correctly.
+>
+> This patch adds a fallback for these devices to is_byt_cr():
+> If there is no IRQ resource at index 5, treating the device
+> as BYT-T is guaranteed to fail later, so we can safely treat
+> these devices as BYT-CR without breaking any working device.
+>
+> Link: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143176.html
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Moved the "Detected Baytrail-CR platform" message to is_byt_cr()
+> so we can log a different message if the fallback is used.
+>
+> Tested this on my device as-is, and simulated a "normal"
+> BYT-T and BYT-CR device (copied their IRQs to a custom DSDT).
+>
+>   sound/soc/intel/atom/sst/sst_acpi.c | 24 ++++++++++++++++++------
+>   1 file changed, 18 insertions(+), 6 deletions(-)
+>
+> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+> index 3a95ebbfc45d..755a396121ff 100644
+> --- a/sound/soc/intel/atom/sst/sst_acpi.c
+> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
+> @@ -255,10 +255,22 @@ static int is_byt(void)
+>   	return status;
+>   }
+>   
+> -static int is_byt_cr(struct device *dev, bool *bytcr)
+> +static int is_byt_cr(struct platform_device *pdev, bool *bytcr)
+>   {
+> +	struct device *dev = &pdev->dev;
+>   	int status = 0;
+>   
+> +	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
+> +		/*
+> +		 * Some devices detected as BYT-T have only a single IRQ listed,
+> +		 * causing platform_get_irq with index 5 to return -ENXIO.
+> +		 * The correct IRQ in this case is at index 0, as used on BYT-CR.
+> +		 */
+> +		dev_info(dev, "Falling back to Baytrail-CR platform\n");
+> +		*bytcr = true;
+> +		return status;
+> +	}
+> +
+
+Isn't this going to bypass the PMIC-based detection on all BYT-CR 
+devices? Maybe move this code as a fallback used when the PMIC-based 
+detection isn't positive?
+
+
+>   	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+>   		u32 bios_status;
+>   
+> @@ -278,10 +290,12 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
+>   			/* bits 26:27 mirror PMIC options */
+>   			bios_status = (bios_status >> 26) & 3;
+>   
+> -			if ((bios_status == 1) || (bios_status == 3))
+> +			if ((bios_status == 1) || (bios_status == 3)) {
+> +				dev_info(dev, "Detected Baytrail-CR platform\n");
+>   				*bytcr = true;
+> -			else
+> +			} else {
+>   				dev_info(dev, "BYT-CR not detected\n");
+> +			}
+>   		}
+>   	} else {
+>   		dev_info(dev, "IOSF_MBI not enabled, no BYT-CR detection\n");
+> @@ -333,10 +347,8 @@ static int sst_acpi_probe(struct platform_device *pdev)
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	ret = is_byt_cr(dev, &bytcr);
+> +	ret = is_byt_cr(pdev, &bytcr);
+>   	if (!(ret < 0 || !bytcr)) {
+> -		dev_info(dev, "Detected Baytrail-CR platform\n");
+> -
+>   		/* override resource info */
+>   		byt_rvp_platform_data.res_info = &bytcr_res_info;
+>   	}
