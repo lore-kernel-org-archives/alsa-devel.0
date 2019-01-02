@@ -1,18 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 1/3] ASoC: Intel: sst: Simplify
- is_byt_cr()
-Date: Wed, 2 Jan 2019 14:44:33 -0600
-Message-ID: <17ff00a4-efcf-56b8-33bc-e2b20df787f3@linux.intel.com>
-References: <20190102193904.50123-1-stephan@gerhold.net>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v5 08/11] ASoC: Intel: atom: Make PCI
+ dependency explicit
+Date: Wed, 2 Jan 2019 23:01:43 +0100
+Message-ID: <CAJZ5v0jniuqiLVnB3ufkAKY2nT4H6OJG-wWrL7GsaK5dAJ6ybA@mail.gmail.com>
+References: <20190102181038.4418-1-okaya@kernel.org>
+ <20190102181038.4418-9-okaya@kernel.org>
+ <57ed1d94-7f89-20e8-3289-7ef7efd18c20@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 4104D26782E
- for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2019 21:44:35 +0100 (CET)
-In-Reply-To: <20190102193904.50123-1-stephan@gerhold.net>
-Content-Language: en-US
+Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com
+ [209.85.210.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B4FE26782E
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2019 23:01:55 +0100 (CET)
+Received: by mail-ot1-f67.google.com with SMTP id w25so27858650otm.13
+ for <alsa-devel@alsa-project.org>; Wed, 02 Jan 2019 14:01:55 -0800 (PST)
+In-Reply-To: <57ed1d94-7f89-20e8-3289-7ef7efd18c20@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, Sinan Kaya <okaya@kernel.org>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux-Next Mailing List <linux-next@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 1/2/19 1:39 PM, Stephan Gerhold wrote:
-> is_byt_cr() and its usage can be simplified by returning the bool
-> directly, instead of through a pointer. This works because the
-> return value is just treated as bytcr = false and is not used
-> otherwise.
+On Wed, Jan 2, 2019 at 9:33 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
 >
-> This patch also removes the extra check of
-> IS_ENABLED(CONFIG_IOSF_MBI) in favor of checking
-> iosf_mbi_available() directly. The header already takes care
-> of returning false if the config option is not enabled.
+> I have three opens with this ACPI/PCI change
 >
-> No functional change.
+> 1. the baseline change fails on my cross-compilation checks, see below
+> the result of the attached script (simplification of the one I use to
+> avoid 0day reports).
+
+What baseline change?
+
+That failure is not related to PCI if I'm not missing anything.
+
+> 2. there are different patterns to express the dependency on PCI e.g.
 >
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+>   config MMC_SDHCI_ACPI
+>       tristate "SDHCI support for ACPI enumerated SDHCI controllers"
+>       depends on MMC_SDHCI && ACPI
+> -    select IOSF_MBI if X86
+> +    select IOSF_MBI if (X86 && PCI)
+>
+> but
+>
+> config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>       tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
+>       default ACPI
+> -    depends on X86 && ACPI
+> +    depends on X86 && ACPI && PCI
+>       select SND_SST_IPC_ACPI
+>       select SND_SST_ATOM_HIFI2_PLATFORM
+>       select SND_SOC_ACPI_INTEL_MATCH
+>
+> IOSF is only needed for Baytrail-CR detection, and the code will compile
+> fine without it, so maybe it'd be a better model if you used the
+> following diff?
+>
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index 2fd1b61e8331..68af0ea5c96c 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -95,7 +95,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>          select SND_SST_IPC_ACPI
+>          select SND_SST_ATOM_HIFI2_PLATFORM
+>          select SND_SOC_ACPI_INTEL_MATCH
+> -       select IOSF_MBI
+> +       select IOSF_MBI if PCI
 
-Nice cleanup!
+Well, does it actually make sense to ever set
+SND_SST_ATOM_HIFI2_PLATFORM_ACPI without PCI?
 
-All 3 patches
+> 3. All the Intel machine drivers depend on X86_INTEL_LPSS which depends
+> on PCI. But for Baytrail/Haswell/Broadwell we have only a dependency on
+> ACPI, so we expose drivers that can be selected but fail on probe since
+> there are no machine drivers. I am not sure if we want to be strict and
+> only expose meaningful configurations, or allow for more compilations
+> tests and corner cases?
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+I would only expose meaningful configurations to start with and then
+*maybe* relax that going forward as long as the benefit is worth it.
 
-The next step will be to move this helper to a common library at some 
-point, we'll need it for SOF as well.
+Cheers,
+Rafael
