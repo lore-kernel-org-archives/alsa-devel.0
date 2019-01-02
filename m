@@ -1,15 +1,18 @@
 From: Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2 1/3] ASoC: Intel: sst: Simplify is_byt_cr()
-Date: Wed,  2 Jan 2019 20:39:03 +0100
-Message-ID: <20190102193904.50123-1-stephan@gerhold.net>
+Subject: [PATCH v2 2/3] ASoC: Intel: sst: Fallback to BYT-CR if
+	IRQ 5 is missing
+Date: Wed,  2 Jan 2019 20:39:06 +0100
+Message-ID: <20190102193904.50123-2-stephan@gerhold.net>
+References: <20190102193904.50123-1-stephan@gerhold.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [85.215.255.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 87D86267B31
- for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2019 20:40:51 +0100 (CET)
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [85.215.255.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06B27267B31
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2019 20:41:57 +0100 (CET)
+In-Reply-To: <20190102193904.50123-1-stephan@gerhold.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,95 +26,65 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <bro
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Stephan Gerhold <stephan@gerhold.net>
 List-Id: alsa-devel@alsa-project.org
 
-is_byt_cr() and its usage can be simplified by returning the bool
-directly, instead of through a pointer. This works because the
-return value is just treated as bytcr = false and is not used
-otherwise.
+Some devices detected as BYT-T by the PMIC-type based detection
+have only a single IRQ listed in the 80860F28 ACPI device. This
+causes -ENXIO later when attempting to get the IRQ at index 5.
+It turns out these devices behave more like BYT-CR devices,
+and using the IRQ at index 0 makes sound work correctly.
 
-This patch also removes the extra check of
-IS_ENABLED(CONFIG_IOSF_MBI) in favor of checking
-iosf_mbi_available() directly. The header already takes care
-of returning false if the config option is not enabled.
+This patch adds a fallback for these devices to is_byt_cr():
+If there is no IRQ resource at index 5, treating the device
+as BYT-T is guaranteed to fail later, so we can safely treat
+these devices as BYT-CR without breaking any working device.
 
-No functional change.
-
+Link: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143176.html
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
-New patch in v2 to keep the necessary cleanup separate from the
-next patch.
+Changes in v2: Always run pmic-based detection, apply
+fallback last (if it wasn't positive).
 
- sound/soc/intel/atom/sst/sst_acpi.c | 33 ++++++++++++-----------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 3a95ebbfc45d..9eaac450f864 100644
+index 9eaac450f864..ae17ce4677a5 100644
 --- a/sound/soc/intel/atom/sst/sst_acpi.c
 +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -255,18 +255,15 @@ static int is_byt(void)
+@@ -255,8 +255,9 @@ static int is_byt(void)
  	return status;
  }
  
--static int is_byt_cr(struct device *dev, bool *bytcr)
-+static bool is_byt_cr(struct device *dev)
+-static bool is_byt_cr(struct device *dev)
++static bool is_byt_cr(struct platform_device *pdev)
  {
++	struct device *dev = &pdev->dev;
  	int status = 0;
  
--	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
--		u32 bios_status;
--
--		if (!is_byt() || !iosf_mbi_available()) {
--			/* bail silently */
--			return status;
--		}
-+	if (!is_byt())
-+		return false;
- 
-+	if (iosf_mbi_available()) {
-+		u32 bios_status;
- 		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
- 				       MBI_REG_READ, /* 0x10 */
- 				       0x006, /* BIOS_CONFIG */
-@@ -278,15 +275,17 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
- 			/* bits 26:27 mirror PMIC options */
- 			bios_status = (bios_status >> 26) & 3;
- 
--			if ((bios_status == 1) || (bios_status == 3))
--				*bytcr = true;
--			else
--				dev_info(dev, "BYT-CR not detected\n");
-+			if (bios_status == 1 || bios_status == 3) {
-+				dev_info(dev, "Detected Baytrail-CR platform\n");
-+				return true;
-+			}
-+
-+			dev_info(dev, "BYT-CR not detected\n");
- 		}
+ 	if (!is_byt())
+@@ -285,6 +286,17 @@ static bool is_byt_cr(struct device *dev)
  	} else {
--		dev_info(dev, "IOSF_MBI not enabled, no BYT-CR detection\n");
-+		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
+ 		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
  	}
--	return status;
-+	return false;
++
++	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
++		/*
++		 * Some devices detected as BYT-T have only a single IRQ listed,
++		 * causing platform_get_irq with index 5 to return -ENXIO.
++		 * The correct IRQ in this case is at index 0, as on BYT-CR.
++		 */
++		dev_info(dev, "Falling back to Baytrail-CR platform\n");
++		return true;
++	}
++
+ 	return false;
  }
  
- 
-@@ -301,7 +300,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	struct platform_device *plat_dev;
- 	struct sst_platform_info *pdata;
- 	unsigned int dev_id;
--	bool bytcr = false;
- 
- 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
- 	if (!id)
-@@ -333,10 +331,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
+@@ -331,7 +343,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
  	if (ret < 0)
  		return ret;
  
--	ret = is_byt_cr(dev, &bytcr);
--	if (!(ret < 0 || !bytcr)) {
--		dev_info(dev, "Detected Baytrail-CR platform\n");
--
-+	if (is_byt_cr(dev)) {
+-	if (is_byt_cr(dev)) {
++	if (is_byt_cr(pdev)) {
  		/* override resource info */
  		byt_rvp_platform_data.res_info = &bytcr_res_info;
  	}
