@@ -1,48 +1,30 @@
-From: <shumingf@realtek.com>
-Subject: [PATCH] ASoC: rt5682: Fix recording no sound issue
-Date: Wed, 2 Jan 2019 17:18:56 +0800
-Message-ID: <1546420736-32405-1-git-send-email-shumingf@realtek.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v4 08/11] ASoC: Intel: atom: Make PCI dependency explicit
+Date: Wed, 2 Jan 2019 10:34:40 +0100
+Message-ID: <CAJZ5v0hSpAPzi2EcFKD_Wh23SeYnoJCAaQMGW=fSqgmhmhr37A@mail.gmail.com>
+References: <20181230195612.6657-1-okaya@kernel.org> <20181230195612.6657-9-okaya@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 10877267B1D
- for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2019 10:19:23 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, albertchen@realtek.com, bard.liao@intel.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181230195612.6657-9-okaya@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sinan Kaya <okaya@kernel.org>
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shuming Fan <shumingf@realtek.com>
+On Sun, Dec 30, 2018 at 8:56 PM Sinan Kaya <okaya@kernel.org> wrote:
+>
+> Code does unconditional select for IOSF_MBI. IOSF_MBI driver depends on
+> CONFIG_PCI set but this is not specified anywhere.
 
-The ADC mixer setting needs to restore to default value
-after calibration.
+IMO it would be better to say
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt5682.c | 1 +
- 1 file changed, 1 insertion(+)
+"After commit 5d32a66541c46 (PCI/ACPI: Allow ACPI to be built without
+CONFIG_PCI set) dependencies on CONFIG_PCI that previously were
+satisfied implicitly through dependencies on CONFIG_ACPI have to be
+specified directly.  For this reason, add a direct dependency on
+CONFIG_PCI to the IOSF_MBI driver."
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 34cfaf8..89c43b2 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2512,6 +2512,7 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
- 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0000);
- 	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x2000);
- 	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x2005);
-+	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0xc0c4);
- 
- 	mutex_unlock(&rt5682->calibrate_mutex);
- 
--- 
-2.7.4
+If you did that, the reviewers would know upfront what this was about
+and that might save at least one back-and-forth e-mail exchange in
+each case.
