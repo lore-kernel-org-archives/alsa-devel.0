@@ -1,17 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [RFC 2/2] conf/ucm: bytcht-es8316: Add long-name UCM
-	profiles
-Date: Thu,  3 Jan 2019 14:50:15 +0100
-Message-ID: <20190103135015.14669-3-hdegoede@redhat.com>
-References: <20190103135015.14669-1-hdegoede@redhat.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: atom: Make PCI dependency
+	explicit" to the asoc tree
+Date: Thu,  3 Jan 2019 13:53:09 +0000 (GMT)
+Message-ID: <20190103135309.D9EF0440080@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CEC3267BFB
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 14:50:21 +0100 (CET)
-In-Reply-To: <20190103135015.14669-1-hdegoede@redhat.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CFDF267BBA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 14:53:11 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,289 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, linux@endlessm.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>
+To: Sinan Kaya <okaya@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-After recent kernel work, the kernel now sets a long-name for bytcht-es8316
-boards which indicates if a single (mono) speaker or stereo speakers are
-used and if in1 or in2 is used for the internal mic (the headset mic will
-be on the other input).
+The patch
 
-This commit adds UCM profiles for bytcht-es8316 boards using these new
-long-names, based on the generic bytcht-es8316 profile.
+   ASoC: Intel: atom: Make PCI dependency explicit
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6a444da7ddc6e478637a189a9c2898f2c3e0d399 Mon Sep 17 00:00:00 2001
+From: Sinan Kaya <okaya@kernel.org>
+Date: Wed, 2 Jan 2019 18:10:35 +0000
+Subject: [PATCH] ASoC: Intel: atom: Make PCI dependency explicit
+
+After 'commit 5d32a66541c4 ("PCI/ACPI: Allow ACPI to be built without
+CONFIG_PCI set")' dependencies on CONFIG_PCI that previously were
+satisfied implicitly through dependencies on CONFIG_ACPI have to be
+specified directly. This code relies on IOSF_MBI and IOSF_MBI depends
+on PCI. For this reason, add a direct dependency on CONFIG_PCI to the
+IOSF_MBI driver.
+
+Fixes: 5d32a66541c46 ("PCI/ACPI: Allow ACPI to be built without CONFIG_PCI set")
+Signed-off-by: Sinan Kaya <okaya@kernel.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- configure.ac                                  |  4 ++++
- src/conf/ucm/Makefile.am                      |  4 ++++
- .../bytcht-es8316-mono-spk-in1-mic/HiFi.conf  | 23 +++++++++++++++++++
- .../Makefile.am                               |  4 ++++
- .../bytcht-es8316-mono-spk-in1-mic.conf       |  8 +++++++
- .../bytcht-es8316-mono-spk-in2-mic/HiFi.conf  | 23 +++++++++++++++++++
- .../Makefile.am                               |  4 ++++
- .../bytcht-es8316-mono-spk-in2-mic.conf       |  8 +++++++
- .../HiFi.conf                                 | 23 +++++++++++++++++++
- .../Makefile.am                               |  4 ++++
- .../bytcht-es8316-stereo-spk-in1-mic.conf     |  8 +++++++
- .../HiFi.conf                                 | 23 +++++++++++++++++++
- .../Makefile.am                               |  4 ++++
- .../bytcht-es8316-stereo-spk-in2-mic.conf     |  8 +++++++
- 14 files changed, 148 insertions(+)
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/HiFi.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/Makefile.am
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/bytcht-es8316-mono-spk-in1-mic.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/HiFi.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/Makefile.am
- create mode 100644 src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/bytcht-es8316-mono-spk-in2-mic.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/HiFi.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/Makefile.am
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/bytcht-es8316-stereo-spk-in1-mic.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/HiFi.conf
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/Makefile.am
- create mode 100644 src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/bytcht-es8316-stereo-spk-in2-mic.conf
+ sound/soc/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index ff2e2799..9b099b7f 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -721,6 +721,10 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/broadwell-rt286/Makefile \
- 	  src/conf/ucm/broxton-rt298/Makefile \
- 	  src/conf/ucm/bytcht-es8316/Makefile \
-+	  src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/Makefile \
-+	  src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/Makefile \
-+	  src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/Makefile \
-+	  src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5640/Makefile \
- 	  src/conf/ucm/bytcr-rt5640-mono-spk-dmic1-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5640-mono-spk-in1-mic/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index b252f258..ee850ee6 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -5,6 +5,10 @@ ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN \
- broadwell-rt286 \
- broxton-rt298 \
- bytcht-es8316 \
-+bytcht-es8316-mono-spk-in1-mic \
-+bytcht-es8316-mono-spk-in2-mic \
-+bytcht-es8316-stereo-spk-in1-mic \
-+bytcht-es8316-stereo-spk-in2-mic \
- bytcr-rt5640 \
- bytcr-rt5640-mono-spk-dmic1-mic \
- bytcr-rt5640-mono-spk-in1-mic \
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/HiFi.conf
-new file mode 100644
-index 00000000..97899495
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/HiFi.conf
-@@ -0,0 +1,23 @@
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
-+		<codecs/es8316/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformDisableSeq.conf>
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytchtes8316"
-+		CapturePCM "hw:bytchtes8316"
-+	}
-+}
-+
-+<codecs/es8316/MonoSpeaker.conf>
-+<codecs/es8316/HeadPhones.conf>
-+
-+<codecs/es8316/IN1-InternalMic.conf>
-+<codecs/es8316/IN2-HeadsetMic.conf>
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/Makefile.am b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/Makefile.am
-new file mode 100644
-index 00000000..420592fc
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcht-es8316-mono-spk-in1-mic
-+ucm_DATA = bytcht-es8316-mono-spk-in1-mic.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/bytcht-es8316-mono-spk-in1-mic.conf b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/bytcht-es8316-mono-spk-in1-mic.conf
-new file mode 100644
-index 00000000..26d82ead
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in1-mic/bytcht-es8316-mono-spk-in1-mic.conf
-@@ -0,0 +1,8 @@
-+SectionUseCase."HiFi" {
-+	File "../bytcht-es8316-mono-spk-in1-mic/HiFi.conf"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytchtes8316"
-+]
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/HiFi.conf b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/HiFi.conf
-new file mode 100644
-index 00000000..2821eb51
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/HiFi.conf
-@@ -0,0 +1,23 @@
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
-+		<codecs/es8316/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformDisableSeq.conf>
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytchtes8316"
-+		CapturePCM "hw:bytchtes8316"
-+	}
-+}
-+
-+<codecs/es8316/MonoSpeaker.conf>
-+<codecs/es8316/HeadPhones.conf>
-+
-+<codecs/es8316/IN1-HeadsetMic.conf>
-+<codecs/es8316/IN2-InternalMic.conf>
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/Makefile.am b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/Makefile.am
-new file mode 100644
-index 00000000..939c8b7d
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcht-es8316-mono-spk-in2-mic
-+ucm_DATA = bytcht-es8316-mono-spk-in2-mic.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/bytcht-es8316-mono-spk-in2-mic.conf b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/bytcht-es8316-mono-spk-in2-mic.conf
-new file mode 100644
-index 00000000..b9885c2d
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-mono-spk-in2-mic/bytcht-es8316-mono-spk-in2-mic.conf
-@@ -0,0 +1,8 @@
-+SectionUseCase."HiFi" {
-+	File "../bytcht-es8316-mono-spk-in2-mic/HiFi.conf"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytchtes8316"
-+]
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/HiFi.conf
-new file mode 100644
-index 00000000..9f1801c9
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/HiFi.conf
-@@ -0,0 +1,23 @@
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
-+		<codecs/es8316/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformDisableSeq.conf>
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytchtes8316"
-+		CapturePCM "hw:bytchtes8316"
-+	}
-+}
-+
-+<codecs/es8316/Speaker.conf>
-+<codecs/es8316/HeadPhones.conf>
-+
-+<codecs/es8316/IN1-InternalMic.conf>
-+<codecs/es8316/IN2-HeadsetMic.conf>
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/Makefile.am b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/Makefile.am
-new file mode 100644
-index 00000000..d3fbb9e9
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcht-es8316-stereo-spk-in1-mic
-+ucm_DATA = bytcht-es8316-stereo-spk-in1-mic.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/bytcht-es8316-stereo-spk-in1-mic.conf b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/bytcht-es8316-stereo-spk-in1-mic.conf
-new file mode 100644
-index 00000000..9bd32664
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in1-mic/bytcht-es8316-stereo-spk-in1-mic.conf
-@@ -0,0 +1,8 @@
-+SectionUseCase."HiFi" {
-+	File "../bytcht-es8316-stereo-spk-in1-mic/HiFi.conf"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytchtes8316"
-+]
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/HiFi.conf b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/HiFi.conf
-new file mode 100644
-index 00000000..00d4b7fe
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/HiFi.conf
-@@ -0,0 +1,23 @@
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
-+		<codecs/es8316/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytchtes8316"
-+		<platforms/bytcr/PlatformDisableSeq.conf>
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytchtes8316"
-+		CapturePCM "hw:bytchtes8316"
-+	}
-+}
-+
-+<codecs/es8316/Speaker.conf>
-+<codecs/es8316/HeadPhones.conf>
-+
-+<codecs/es8316/IN1-HeadsetMic.conf>
-+<codecs/es8316/IN2-InternalMic.conf>
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/Makefile.am b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/Makefile.am
-new file mode 100644
-index 00000000..f92fab48
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcht-es8316-stereo-spk-in2-mic
-+ucm_DATA = bytcht-es8316-stereo-spk-in2-mic.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/bytcht-es8316-stereo-spk-in2-mic.conf b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/bytcht-es8316-stereo-spk-in2-mic.conf
-new file mode 100644
-index 00000000..a94f0f70
---- /dev/null
-+++ b/src/conf/ucm/bytcht-es8316-stereo-spk-in2-mic/bytcht-es8316-stereo-spk-in2-mic.conf
-@@ -0,0 +1,8 @@
-+SectionUseCase."HiFi" {
-+	File "../bytcht-es8316-stereo-spk-in2-mic/HiFi.conf"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytchtes8316"
-+]
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 99a62ba409df..bd9fd2035c55 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -91,7 +91,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
+ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+ 	tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
+ 	default ACPI
+-	depends on X86 && ACPI
++	depends on X86 && ACPI && PCI
+ 	select SND_SST_IPC_ACPI
+ 	select SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SOC_ACPI_INTEL_MATCH
 -- 
 2.20.1
