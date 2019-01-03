@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 03/10] ASoC: Intel: bytcht_es8316: Sort
-	includes alphabetically
-Date: Thu,  3 Jan 2019 14:45:28 +0100
-Message-ID: <20190103134535.13861-4-hdegoede@redhat.com>
+Subject: [PATCH 04/10] ASoC: Intel: bytcht_es8316: Minor
+	refactoring
+Date: Thu,  3 Jan 2019 14:45:29 +0100
+Message-ID: <20190103134535.13861-5-hdegoede@redhat.com>
 References: <20190103134535.13861-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F99B267BBA
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 14:45:45 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B627267BBA
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 14:45:46 +0100 (CET)
 In-Reply-To: <20190103134535.13861-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,36 +25,81 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux@endlessm.com, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-For lack of a better (non-random) way of sorting includes more and more
-files in the kernel are moving over to sorting the includes alphabetically.
-
-Move the bytcht_es8316 driver over to this sorting before we add a
-bunch of more includes.
+Some minor refactoring:
+1) Group the code setting the card dev and prive pointers together with
+   registering the card
+2) Properly put the comment about registering the card at the place where
+   we actually register the card and add a new comment for getting the clk
+3) Add a struct device *dev helper variable (this will be used more in
+   follow up commits)
+4) Reword error message to have the same "foo failed: %d" wording as others
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index adc26dfc7d65..5d8ecc100766 100644
+index 5d8ecc100766..e29f00560b00 100644
 --- a/sound/soc/intel/boards/bytcht_es8316.c
 +++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -19,13 +19,13 @@
-  *
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
-+#include <linux/clk.h>
-+#include <linux/device.h>
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/device.h>
- #include <linux/slab.h>
- #include <asm/platform_sst_audio.h>
--#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
+@@ -237,17 +237,18 @@ static char codec_name[SND_ACPI_I2C_ID_LEN];
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+ 	struct byt_cht_es8316_private *priv;
++	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *i2c_name = NULL;
+ 	int dai_index = 0;
+ 	int i;
+ 	int ret = 0;
+ 
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	mach = (&pdev->dev)->platform_data;
++	mach = dev->platform_data;
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+ 		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
+@@ -265,26 +266,25 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
+ 	}
+ 
+-	/* register the soc card */
+-	byt_cht_es8316_card.dev = &pdev->dev;
+-	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+-
+-	priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
++	/* get the clock */
++	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
+ 	if (IS_ERR(priv->mclk)) {
+ 		ret = PTR_ERR(priv->mclk);
+-		dev_err(&pdev->dev,
+-			"Failed to get MCLK from pmc_plt_clk_3: %d\n",
+-			ret);
++		dev_err(dev, "clk_get pmc_plt_clk_3 failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_card(&pdev->dev, &byt_cht_es8316_card);
++	/* register the soc card */
++	byt_cht_es8316_card.dev = dev;
++	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
++
++	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
++		dev_err(dev, "snd_soc_register_card failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 	platform_set_drvdata(pdev, &byt_cht_es8316_card);
+-	return ret;
++	return 0;
+ }
+ 
+ static struct platform_driver snd_byt_cht_es8316_mc_driver = {
 -- 
 2.20.1
