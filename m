@@ -1,20 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 10/10] ASoC: Intel: Add ACPI match table
- entry for ES8316 codec on BYTCR platform
-Date: Thu, 3 Jan 2019 11:04:13 -0600
-Message-ID: <96a435ee-450c-3294-c2f6-7c4e6a12c444@linux.intel.com>
+Subject: Re: [PATCH 00/10] ASoC: bytcht-es8316 fixes and
+ improvements
+Date: Thu, 3 Jan 2019 11:05:35 -0600
+Message-ID: <95b16e9c-9716-28de-b923-7fbd6dc5cbae@linux.intel.com>
 References: <20190103134535.13861-1-hdegoede@redhat.com>
- <20190103134535.13861-11-hdegoede@redhat.com>
- <ba03ffe0-abe6-84c2-dcc9-a788aceb0006@linux.intel.com>
- <2b2c82ed-dd0b-e3c5-a790-f5bc991acf81@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E8A5267BC7
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 18:04:16 +0100 (CET)
-In-Reply-To: <2b2c82ed-dd0b-e3c5-a790-f5bc991acf81@redhat.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5BE6267C0B
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 18:05:37 +0100 (CET)
+In-Reply-To: <20190103134535.13861-1-hdegoede@redhat.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,40 +26,13 @@ To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.in
 Cc: alsa-devel@alsa-project.org, linux@endlessm.com, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cj4+PiDCoMKgwqDCoMKgIH0sCj4+PiArwqDCoMKgIHsKPj4+ICvCoMKgwqDCoMKgwqDCoCAuaWQg
-PSAiRVNTWDgzMTYiLAo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5kcnZfbmFtZSA9ICJieXRjaHRfZXM4
-MzE2IiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuZndfZmlsZW5hbWUgPSAiaW50ZWwvZndfc3N0XzBm
-MjguYmluIiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuYm9hcmQgPSAiYnl0Y2h0X2VzODMxNiIsCj4+
-Cj4+IENvbWluZyBmcm9tIHRoZSBob2xpZGF5IGJyZWFrIEkgc2F3IHRoaXMgLmJvYXJkIGZpZWxk
-IGFuZCBjb3VsZG4ndCAKPj4gcmVjYWxsIHdoeSB3ZSBuZWVkZWQgaXQuIE5vbmUgb2YgdGhlIG1v
-cmUgcmVjZW50IGJvYXJkcyBzZXQgdGhpcyAKPj4gZmllbGQuIElzIHRoaXMgbGVnYWN5IHN0dWZm
-IHRoYXQgaXNuJ3QgdXNlZCBieSBhbnlvbmU/Cj4KPiBJIHdvdWxkIGV4cGVjdCB5b3UgdG8ga25v
-dyB0aGF0IGJldHRlciB0aGVuIEkgZG8gOinCoCBJIGp1c3QgY29waWVkIAo+IHRoaXMgZnJvbSB0
-aGUKPiBvdGhlciBlbnRyaWVzLgoKSSBkb24ndCwgaXQncyBhdCBsZWFzdCA1IHllYXJzIG9sZC4u
-Li4KClRoZSBpbml0aWFsIHRhYmxlcyBpbiBhdG9tL3NzdC9zc3RfYWNwaS5jIGhhZCB0aGlzIChB
-cHJpbCAyMDE1KS4KCitzdGF0aWMgc3RydWN0IHNzdF9tYWNoaW5lcyBzc3RfYWNwaV9ieXRjcltd
-ID0geworwqDCoMKgIHsiMTBFQzU2NDAiLCAiVDEwMCIsICJieXR0MTAwX3J0NTY0MCIsIE5VTEws
-ICJpbnRlbC9md19zc3RfMGYyOC5iaW4iLAorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgJmJ5dF9ydnBfcGxhdGZvcm1fZGF0YSB9LAorwqDCoMKgIHt9LAorfTsKCnRo
-ZW4gaXQgYmVjYW1lCgorc3RhdGljIHN0cnVjdCBzc3RfYWNwaV9tYWNoIHNzdF9hY3BpX2J5dGNy
-W10gPSB7CivCoMKgwqAgeyIxMEVDNTY0MCIsICJieXR0MTAwX3J0NTY0MCIsICJpbnRlbC9md19z
-c3RfMGYyOC5iaW4iLCAiVDEwMCIsIE5VTEwsCgp0aGVuCgogwqBzdGF0aWMgc3RydWN0IHNzdF9h
-Y3BpX21hY2ggc3N0X2FjcGlfYnl0Y3JbXSA9IHsKLcKgwqDCoCB7IjEwRUM1NjQwIiwgImJ5dHQx
-MDBfcnQ1NjQwIiwgImludGVsL2Z3X3NzdF8wZjI4LmJpbiIsICJUMTAwIiwgTlVMTCwKK8KgwqDC
-oCB7IjEwRUM1NjQwIiwgImJ5dGNyX3J0NTY0MCIsICJpbnRlbC9md19zc3RfMGYyOC5iaW4iLCAK
-ImJ5dGNyX3J0NTY0MCIsIE5VTEwsCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKg
-wqAgwqDCoMKgICZieXRfcnZwX3BsYXRmb3JtX2RhdGEgfSwKCmFuZCB0aGVuCgorwqDCoMKgIHsK
-K8KgwqDCoCDCoMKgwqAgLmlkID0gIjEwRUM1NjQwIiwKK8KgwqDCoCDCoMKgwqAgLmRydl9uYW1l
-ID0gImJ5dGNyX3J0NTY0MCIsCivCoMKgwqAgwqDCoMKgIC5md19maWxlbmFtZSA9ICJpbnRlbC9m
-d19zc3RfMGYyOC5iaW4iLAorwqDCoMKgIMKgwqDCoCAuYm9hcmQgPSAiYnl0Y3JfcnQ1NjQwIiwK
-K8KgwqDCoCDCoMKgwqAgLm1hY2hpbmVfcXVpcmsgPSBieXRfcXVpcmssCivCoMKgwqAgwqDCoMKg
-IC5wZGF0YSA9ICZieXRfcnZwX3BsYXRmb3JtX2RhdGEsCivCoMKgwqAgfSwKCndlIG9ubHkgdXNl
-IHRoZSBkcnZfbmFtZSB0byBzZWxlY3QgdGhlIG1hY2hpbmUgZHJpdmVyLgoKS2V5b24sIExpYW0s
-IGRvIHlvdSBoYXZlIGFueSBtZW1vcmllcyBvZiB3aHkgdGhpcyBib2FyZCBmaWVsZCB3YXMgbmVl
-ZGVkIAppbiB0aGUgZmlyc3QgcGxhY2U/Cgo+Cj4gSWYgeW91IHdhbnQgdG8gc3VibWl0IGEgcGF0
-Y2ggcmVtb3ZpbmcgdGhlIC5ib2FyZCBlbnRyaWVzIEknbSBhbGwgZm9yIGl0LgoKSSB3YXMgcGxh
-bm5pbmcgdG8gcmVtb3ZlIHRoZSBuZXdfbWFjaF9kYXRhIGFscmVhZHkgc28gdGhpcyBpcyB0aGUg
-c2Vjb25kIApzdHJpa2Ugb24gdGhpcyBzb2NfYWNwaV9tYWNoaW5lIHN0cnVjdHVyZS4uLgoKLVBp
-ZXJyZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+On 1/3/19 7:45 AM, Hans de Goede wrote:
+> Hi All,
+>
+> Here is a patch series which makes all the sound out and inputs on the
+> 1 BYT + ES8316 and 2 CHT + ES8316 devices which I have fully work.
+>
+Patches for the Intel parts (3..10)
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
