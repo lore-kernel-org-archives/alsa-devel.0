@@ -1,20 +1,21 @@
-From: Tom Yan <tom.ty89@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: virtuoso: add de-emphasis control
-Date: Thu, 3 Jan 2019 23:19:47 +0800
-Message-ID: <CAGnHSEk9=5WjE6Dd6OPeQpHg2mk+QoOhunb-YkRM2iKti24eeQ@mail.gmail.com>
-References: <5c2e0218.1c69fb81.b8dff.5bbb@mx.google.com>
- <s5htvip6fov.wl-tiwai@suse.de>
+From: Viorel Suman <viorel.suman@nxp.com>
+Subject: Re: [RFC PATCH] ASoC: fsl: Add Audio Mixer CPU DAI
+	driver
+Date: Thu, 3 Jan 2019 15:56:46 +0000
+Message-ID: <1546531006.14398.83.camel@nxp.com>
+References: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
+ <CAGoOwPQvc5w05NOVsp6Qw-Ee3CJJCcaU2Dtzwbf+7bUe_kFEbA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
- [209.85.208.66])
- by alsa0.perex.cz (Postfix) with ESMTP id AD50D267BD4
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 16:19:59 +0100 (CET)
-Received: by mail-ed1-f66.google.com with SMTP id a20so22497812edc.8
- for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2019 07:19:59 -0800 (PST)
-In-Reply-To: <s5htvip6fov.wl-tiwai@suse.de>
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr70045.outbound.protection.outlook.com [40.107.7.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id D97FA267BC7
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 16:56:49 +0100 (CET)
+In-Reply-To: <CAGoOwPQvc5w05NOVsp6Qw-Ee3CJJCcaU2Dtzwbf+7bUe_kFEbA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <715EE2B0FCEEE5478F6A6A47765F899E@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,165 +25,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Oh sorry. They are just resend. Thanks a lot!
-
-On Thu, 3 Jan 2019 at 21:20, Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 03 Jan 2019 13:37:26 +0100,
-> tom.ty89@gmail.com wrote:
-> >
-> > From: Tom Yan <tom.ty89@gmail.com>
-> >
-> > Add control for the de-emphasis filter in the PCM179x DACs
-> >
-> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
->
-> Is this just a resend of the previous same patch?
->
-> The patches are already tracked for post-4.21 material, so they'll be
-> merged after 4.21-rc1 release.  Just be patient for a while.
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > diff --git a/sound/pci/oxygen/pcm1796.h b/sound/pci/oxygen/pcm1796.h
-> > index 34d07dd2d22e..d5dcb09e44cd 100644
-> > --- a/sound/pci/oxygen/pcm1796.h
-> > +++ b/sound/pci/oxygen/pcm1796.h
-> > @@ -10,7 +10,6 @@
-> >  #define PCM1796_MUTE         0x01
-> >  #define PCM1796_DME          0x02
-> >  #define PCM1796_DMF_MASK     0x0c
-> > -#define PCM1796_DMF_DISABLED 0x00
-> >  #define PCM1796_DMF_48               0x04
-> >  #define PCM1796_DMF_441              0x08
-> >  #define PCM1796_DMF_32               0x0c
-> > diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
-> > index 24109d37ca09..a1c6b98b191e 100644
-> > --- a/sound/pci/oxygen/xonar_pcm179x.c
-> > +++ b/sound/pci/oxygen/xonar_pcm179x.c
-> > @@ -331,7 +331,7 @@ static void pcm1796_init(struct oxygen *chip)
-> >       struct xonar_pcm179x *data = chip->model_data;
-> >
-> >       data->pcm1796_regs[0][18 - PCM1796_REG_BASE] =
-> > -             PCM1796_DMF_DISABLED | PCM1796_FMT_24_I2S | PCM1796_ATLD;
-> > +             PCM1796_FMT_24_I2S | PCM1796_ATLD;
-> >       if (!data->broken_i2c)
-> >               data->pcm1796_regs[0][18 - PCM1796_REG_BASE] |= PCM1796_MUTE;
-> >       data->pcm1796_regs[0][19 - PCM1796_REG_BASE] =
-> > @@ -621,6 +621,23 @@ static void update_pcm1796_oversampling(struct oxygen *chip)
-> >               pcm1796_write_cached(chip, i, 20, reg);
-> >  }
-> >
-> > +static void update_pcm1796_deemph(struct oxygen *chip)
-> > +{
-> > +     struct xonar_pcm179x *data = chip->model_data;
-> > +     unsigned int i;
-> > +     u8 reg;
-> > +
-> > +     reg = data->pcm1796_regs[0][18 - PCM1796_REG_BASE] & ~PCM1796_DMF_MASK;
-> > +     if (data->current_rate == 48000)
-> > +             reg |= PCM1796_DMF_48;
-> > +     else if (data->current_rate == 44100)
-> > +             reg |= PCM1796_DMF_441;
-> > +     else if (data->current_rate == 32000)
-> > +             reg |= PCM1796_DMF_32;
-> > +     for (i = 0; i < data->dacs; ++i)
-> > +             pcm1796_write_cached(chip, i, 18, reg);
-> > +}
-> > +
-> >  static void set_pcm1796_params(struct oxygen *chip,
-> >                              struct snd_pcm_hw_params *params)
-> >  {
-> > @@ -629,6 +646,7 @@ static void set_pcm1796_params(struct oxygen *chip,
-> >       msleep(1);
-> >       data->current_rate = params_rate(params);
-> >       update_pcm1796_oversampling(chip);
-> > +     update_pcm1796_deemph(chip);
-> >  }
-> >
-> >  static void update_pcm1796_volume(struct oxygen *chip)
-> > @@ -653,9 +671,11 @@ static void update_pcm1796_mute(struct oxygen *chip)
-> >       unsigned int i;
-> >       u8 value;
-> >
-> > -     value = PCM1796_DMF_DISABLED | PCM1796_FMT_24_I2S | PCM1796_ATLD;
-> > +     value = data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
-> >       if (chip->dac_mute)
-> >               value |= PCM1796_MUTE;
-> > +     else
-> > +             value &= ~PCM1796_MUTE;
-> >       for (i = 0; i < data->dacs; ++i)
-> >               pcm1796_write_cached(chip, i, 18, value);
-> >  }
-> > @@ -777,6 +797,49 @@ static const struct snd_kcontrol_new rolloff_control = {
-> >       .put = rolloff_put,
-> >  };
-> >
-> > +static int deemph_get(struct snd_kcontrol *ctl,
-> > +                    struct snd_ctl_elem_value *value)
-> > +{
-> > +     struct oxygen *chip = ctl->private_data;
-> > +     struct xonar_pcm179x *data = chip->model_data;
-> > +
-> > +     value->value.integer.value[0] =
-> > +             !!(data->pcm1796_regs[0][18 - PCM1796_REG_BASE] & PCM1796_DME);
-> > +     return 0;
-> > +}
-> > +
-> > +static int deemph_put(struct snd_kcontrol *ctl,
-> > +                    struct snd_ctl_elem_value *value)
-> > +{
-> > +     struct oxygen *chip = ctl->private_data;
-> > +     struct xonar_pcm179x *data = chip->model_data;
-> > +     unsigned int i;
-> > +     int changed;
-> > +     u8 reg;
-> > +
-> > +     mutex_lock(&chip->mutex);
-> > +     reg = data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
-> > +     if (!value->value.integer.value[0])
-> > +             reg &= ~PCM1796_DME;
-> > +     else
-> > +             reg |= PCM1796_DME;
-> > +     changed = reg != data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
-> > +     if (changed) {
-> > +             for (i = 0; i < data->dacs; ++i)
-> > +                     pcm1796_write(chip, i, 18, reg);
-> > +     }
-> > +     mutex_unlock(&chip->mutex);
-> > +     return changed;
-> > +}
-> > +
-> > +static const struct snd_kcontrol_new deemph_control = {
-> > +     .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-> > +     .name = "De-emphasis Playback Switch",
-> > +     .info = snd_ctl_boolean_mono_info,
-> > +     .get = deemph_get,
-> > +     .put = deemph_put,
-> > +};
-> > +
-> >  static const struct snd_kcontrol_new hdav_hdmi_control = {
-> >       .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-> >       .name = "HDMI Playback Switch",
-> > @@ -1011,6 +1074,10 @@ static int add_pcm1796_controls(struct oxygen *chip)
-> >                                 snd_ctl_new1(&rolloff_control, chip));
-> >               if (err < 0)
-> >                       return err;
-> > +             err = snd_ctl_add(chip->card,
-> > +                               snd_ctl_new1(&deemph_control, chip));
-> > +             if (err < 0)
-> > +                     return err;
-> >       }
-> >       return 0;
-> >  }
-> > --
-> > 2.20.1
-> >
+SGkgTmljb2xpbiwNCg0KVGhhbmsgeW91IGZvciB5b3VyIGZlZWRiYWNrLCBzYW1lIGhlcmUgLSBq
+dXN0IGJhY2sgZnJvbSB2YWNhdGlvbi4NCg0KT24gSm8sIDIwMTgtMTItMjcgYXQgMDE6MjQgKzA4
+MDAsIE5pY29saW4gQ2hlbiB3cm90ZToNCj4gSGkgVmlvcmVsLA0KPiANCj4gU29ycnkgZm9yIHRo
+ZSBsYXRlIHJlc3BvbnNlLCBoYXZpbmcgYmVlbiBvbiBhIGxvbmcgdmFjYXRpb24uDQo+IA0KPiBU
+aGUgY29kZSBsb29rcyBwcmV0dHkgY2xlYW4uIEp1c3Qgc29tZSBzbWFsbCBjb25jZXJucy9xdWVz
+dGlvbnMNCj4gYmVsb3cuDQo+IA0KPiBPbiBXZWQsIERlYyAxOSwgMjAxOCBhdCAxMjozMCBBTSBW
+aW9yZWwgU3VtYW4gPHZpb3JlbC5zdW1hbkBueHAuY29tPg0KPiB3cm90ZToNCj4gPiANCj4gPiAN
+Cj4gPiBUaGlzIHBhdGNoIGltcGxlbWVudHMgQXVkaW8gTWl4ZXIgQ1BVIERBSSBkcml2ZXIgZm9y
+IE5YUCBpTVg4IFNPQ3MuDQo+ID4gVGhlIEF1ZGlvIE1peGVyIGlzIGEgb24tY2hpcCBmdW5jdGlv
+bmFsIG1vZHVsZSB0aGF0IGFsbG93cyBtaXhpbmcNCj4gPiBvZg0KPiA+IHR3byBhdWRpbyBzdHJl
+YW1zIGludG8gYSBzaW5nbGUgYXVkaW8gc3RyZWFtLg0KPiA+IA0KPiA+IEF1ZGlvIE1peGVyIGRh
+dGFzaGVldCBpcyBhdmFpbGFibGUgaGVyZToNCj4gPiBodHRwczovL3d3dy5ueHAuY29tL2RvY3Mv
+ZW4vcmVmZXJlbmNlLW1hbnVhbC9JTVg4RFFYUFJNLnBkZg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IFZpb3JlbCBTdW1hbiA8dmlvcmVsLnN1bWFuQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gwqAu
+Li4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wsYW1peC50eHTCoMKgwqDCoMKgwqDCoMKg
+wqB8wqDCoDQ1ICsrDQo+ID4gwqBzb3VuZC9zb2MvZnNsL0tjb25maWfCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoMKgNyArDQo+
+ID4gwqBzb3VuZC9zb2MvZnNsL01ha2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHzCoMKgwqAzICsNCj4gPiDCoHNvdW5kL3NvYy9m
+c2wvZnNsX2FtaXguY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHwgNTU0DQo+ID4gKysrKysrKysrKysrKysrKysrKysrDQo+ID4gwqBzb3VuZC9z
+b2MvZnNsL2ZzbF9hbWl4LmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqB8IDEwMSArKysrDQo+IEkgYWltbid0IGFnYWluc3QgdGhlIG5hbWluZyBo
+ZXJlLCBidXQgaXQgc2VlbXMgdG8gYmUgQVVETUlYIGluIFJNPw0KPiANCj4gV291bGQgaXQgYmUg
+YmV0dGVyIHRvIGFsaWduIHdpdGggdGhhdD8gSXQncyB5b3VyIGRlY2lzaW9uIHRob3VnaC4NCg0K
+VG8gbWUgIkFVRE1JWCIgc291bmRzIG1vcmUgbGlrZSBzb21lIFJUTCBoaWdoIGxldmVsIGludGVn
+cmF0aW9uIG1vZHVsZSwNCkkgd291bGQgcHJlZmVyIHRvIGtlZXAgaXQgYXMgaXQgaXMgaWYgdGhl
+cmUgaXMgbm8gc3Ryb25nIHJlYXNvbiB0b8KgDQpyZW5hbWUgaXQuDQoNCj4gDQo+ID4gDQo+ID4g
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2ws
+YW1peC50eHQNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9m
+c2wsYW1peC50eHQNCj4gPiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo+ID4g
+K8KgwqAtIGNvbXBhdGlibGXCoMKgwqDCoMKgwqDCoMKgwqA6IENvbXBhdGlibGUgbGlzdCwgY29u
+dGFpbnMgImZzbCxpbXg4cW0tDQo+ID4gYW1peCINCj4gPiArDQo+ID4gK8KgwqAtIHJlZ8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoDogT2Zmc2V0IGFuZCBs
+ZW5ndGggb2YgdGhlIHJlZ2lzdGVyDQo+ID4gc2V0IGZvciB0aGUgZGV2aWNlLg0KPiA+ICsNCj4g
+PiArwqDCoC0gY2xvY2tzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqA6IE11c3QgY29udGFpbiBh
+biBlbnRyeSBmb3IgZWFjaCBlbnRyeSBpbg0KPiA+IGNsb2NrLW5hbWVzLg0KPiA+ICsNCj4gPiAr
+wqDCoC0gY2xvY2stbmFtZXPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoDogTXVzdCBp
+bmNsdWRlIHRoZSAiaXBnIiBmb3INCj4gPiByZWdpc3RlciBhY2Nlc3MuDQo+ID4gKw0KPiA+ICvC
+oMKgLSBwb3dlci1kb21haW5zwqDCoMKgwqDCoMKgOiBNdXN0IGNvbnRhaW4gdGhlIHBoYW5kbGUg
+dG8gdGhlIEFNSVgNCj4gPiBwb3dlciBkb21haW4gbm9kZQ0KPiA+ICsNCj4gPiArRGV2aWNlIGRy
+aXZlciBjb25maWd1cmF0aW9uIGV4YW1wbGU6DQo+ID4gKz09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09DQo+ID4gK8KgwqBhbWl4OiBhbWl4QDU5ODQwMDAwIHsNCj4gPiArwqDC
+oMKgwqBjb21wYXRpYmxlID0gImZzbCxpbXg4cW0tYW1peCI7DQo+ID4gK8KgwqDCoMKgcmVnID0g
+PDB4MCAweDU5ODQwMDAwIDB4MCAweDEwMDAwPjsNCj4gPiArwqDCoMKgwqBjbG9ja3MgPSA8JmNs
+ayBJTVg4UVhQX0FVRF9BTUlYX0lQRz47DQo+ID4gK8KgwqDCoMKgY2xvY2stbmFtZXMgPSAiaXBn
+IjsNCj4gPiArwqDCoMKgwqBwb3dlci1kb21haW5zID0gPCZwZF9hbWl4PjsNCj4gPiArwqDCoH07
+DQo+IEZyb20gdGhlIGRlc2NyaXB0aW9uIG9mIERUIGFuZCBSTSwgSSBkb24ndCBzZWUgaG93IGl0
+IGNvbm5lY3RzIHRvDQo+IFNBSXMuDQo+IA0KPiBBcmUgdGhleSBmaXhlZCB0byBTQUkwIGFuZCBT
+QUkxIGluIGlteDhxbT8gV29uZGVyaW5nIGlmIGl0J2QgYmUNCj4gYmV0dGVyIHRvIGhhdmUgc3Vj
+aCBpbmZvcm1hdGlvbiBpbiB0aGUgZG9jLg0KDQpQbGVhc2UgY2hlY2sgY2hhcHRlciAiMTYuMS4y
+LjIgQXVkaW8gTWl4ZXIiIGluIFJNOiBpdCBoYXMgdHdvIGRlZGljYXRlZA0KU0FJIGludGVyZmFj
+ZXMsIFNBSTQgYW5kIFNBSTUuIEF1ZGlvIE1peGVyIG9wZXJhdGVzIG9uIGJpdCBjbG9jayBvZiBv
+bmUNCm9mIHRoZXNlIGludGVyZmFjZXMuDQoNCj4gDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL3Nv
+dW5kL3NvYy9mc2wvZnNsX2FtaXguYyBiL3NvdW5kL3NvYy9mc2wvZnNsX2FtaXguYw0KPiArc3Rh
+dGljIGNvbnN0IGNoYXINCj4gKyAqd2lkdGhfc2VsW10gPSB7ICIxNmIiLCAiMThiIiwgIjIwYiIs
+ICIyNGIiLCAiMzJiIiwgfSwNCj4gKyAqcG9sX3NlbFtdID0geyAiUG9zaXRpdmUgZWRnZSIsICJO
+ZWdhdGl2ZSBlZGdlIiwgfSwNCj4gWy4uLl0NCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc29jX2Vu
+dW0gZnNsX2FtaXhfZW51bVtdID0gew0KPiArLyogRlNMX0FNSVhfQ1RSIGVudW1zICovDQo+IFsu
+Li5dDQo+ICtTT0NfRU5VTV9TSU5HTEVfUyhGU0xfQU1JWF9DVFIsIEZTTF9BTUlYX0NUUl9PVVRX
+SURUSF9TSElGVCwNCj4gd2lkdGhfc2VsKSwNCj4gK1NPQ19FTlVNX1NJTkdMRV9TKEZTTF9BTUlY
+X0NUUiwgRlNMX0FNSVhfQ1RSX09VVENLUE9MX1NISUZULA0KPiBwb2xfc2VsKSwNCj4gDQo+IFNo
+b3VsZCB3ZSBoYW5kbGUgdGhlIHdpZHRoIGluIGh3X3BhcmFtKCk/DQoNClRoZSB3aWR0aCBvZiBB
+TUlYIG91dHB1dCAobWl4ZWQpIHN0cmVhbSBtYXkgYmUgZGlmZmVyZW50IHRoYW4gdGhlIHdpZHRo
+DQpvZiB0aGUgaW5wdXQgc3RyZWFtcywgdGhlIGFzc3VtcHRpb24gaXMgdGhhdCB0aGUgdXNlciBt
+YXkgd2FudCB0bw0KY29udHJvbCBpdCBmcm9tIHVzZXJzcGFjZS4NCg0KPiANCj4gV2h5IGRvIHdl
+IGNoYW5nZSBwb2wgaGVyZT8gSXQgZmVlbHMgbGlrZSBhZ2FpbnN0IHNldF9mbXQoKS4NCg0KWW91
+J3JlIHJpZ2h0LCB3aWxsIHJlbW92ZSBpdCBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KDQo+IA0KPiA+
+IA0KPiA+ICtzdGF0aWMgaW50IGZzbF9hbWl4X2RhaV9zZXRfZm10KHN0cnVjdCBzbmRfc29jX2Rh
+aSAqZGFpLCB1bnNpZ25lZA0KPiA+IGludCBmbXQpDQo+ID4gK3sNCj4gPiArwqDCoMKgwqDCoMKg
+wqAvKiBGb3IgcGxheWJhY2sgdGhlIEFNSVggaXMgc2xhdmUsIGFuZCBmb3IgcmVjb3JkIGlzIG1h
+c3Rlcg0KPiA+ICovDQo+ID4gK8KgwqDCoMKgwqDCoMKgc3dpdGNoIChmbXQgJiBTTkRfU09DX0RB
+SUZNVF9NQVNURVJfTUFTSykgew0KPiA+ICvCoMKgwqDCoMKgwqDCoGNhc2UgU05EX1NPQ19EQUlG
+TVRfQ0JNX0NGTToNCj4gPiArwqDCoMKgwqDCoMKgwqBjYXNlIFNORF9TT0NfREFJRk1UX0NCU19D
+RlM6DQo+IFNvIGl0J3MgdXNlZCBlaXRoZXIgZm9yIHBsYXliYWNrIG9yIGNhcHR1cmUgb25seSwg
+bm90IGJvdGggYXQgc2FtZQ0KPiB0aW1lPw0KDQpGcm9tIElQIGZ1bmN0aW9uYWwgcGVyc3BlY3Rp
+dmUgQU1JWCBjYXB0dXJlIGlzIHRoZSByZXN1bHQgb2YgQU1JWA0KcGxheWJhY2sgLSBBTUlYIG91
+dHB1dCByZXByZXNlbnRzIHRoZSByZXN1bHRpbmcgbWl4ZWQgYXVkaW8gc3RyZWFtDQpyb3V0ZWQg
+dG8gU0FJNCBSWCBzaWduYWxzIChiaXQgJiBmcmFtZSBjbG9ja3MgYW5kIGRhdGEpLiBTbyBvbmNl
+IHdlDQpoYXZlIHBsYXliYWNrIG9uIGVpdGhlciBTQUk0IG9yIFNBSTUgKG9yIGJvdGgpIC0gd2Ug
+Y2FuIGNhcHR1cmUgdGhlDQpBTUlYIG91dHB1dCBvbiBTQUk0Lg0KDQpJIGd1ZXNzIGl0IHdvdWxk
+IGJlIG5pY2UgdG8gc2VuZCB0aGUgbWFjaGluZSBkcml2ZXIgYXMgcGFydCBvZiB0aGlzDQpwYXRj
+aHNldCBhbHNvIC0gaXQgZGVmaW5lcyB0d28gaW5wdXQgU0FJIGludGVyZmFjZXMgYXMgZnJvbnRl
+bmRzIGFuZA0KQU1JWCAtIGFzIGJhY2tlbmQuIFVzZXJzcGFjZSBzZWVzIG9ubHkgdHdvIFNBSSBp
+bnRlcmZhY2VzIGV4cG9zZWQsIGJvdGgNCm9mIHRoZW0gaGF2aW5nIHBsYXliYWNrIGVuYWJsZWQs
+IGFuZCBvbmx5IFNBSTQgaGF2aW5nIGNhcHR1cmUgZW5hYmxlZC4NCg0KPiANCj4gVGhhbmtzDQo+
+IE5pY29saW4NCg0KVGhhbmsgeW91LA0KVmlvcmVsDQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
