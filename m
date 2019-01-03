@@ -1,234 +1,188 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 3/3] ASoC: ti: davinci-mcasp: Add support for GPIO mode of the pins
-Date: Thu, 3 Jan 2019 16:05:52 +0200
-Message-ID: <20190103140552.29809-4-peter.ujfalusi@ti.com>
-References: <20190103140552.29809-1-peter.ujfalusi@ti.com>
+From: Tom Yan <tom.ty89@gmail.com>
+Subject: Re: [PATCH 1/2] ALSA: virtuoso: add de-emphasis control
+Date: Thu, 3 Jan 2019 23:19:47 +0800
+Message-ID: <CAGnHSEk9=5WjE6Dd6OPeQpHg2mk+QoOhunb-YkRM2iKti24eeQ@mail.gmail.com>
+References: <5c2e0218.1c69fb81.b8dff.5bbb@mx.google.com>
+ <s5htvip6fov.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190103140552.29809-1-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, jsarha@ti.com, devicetree@vger.kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
+ [209.85.208.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD50D267BD4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 16:19:59 +0100 (CET)
+Received: by mail-ed1-f66.google.com with SMTP id a20so22497812edc.8
+ for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2019 07:19:59 -0800 (PST)
+In-Reply-To: <s5htvip6fov.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All McASP pin can be configured as GPIO.
-Add gpiochip support for McASP and only enable it when the
-gpio-controller is present in the DT node.
+Oh sorry. They are just resend. Thanks a lot!
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/ti/davinci-mcasp.c | 159 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 156 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index a6a470a76900..a3a67a8f0f54 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -29,6 +29,7 @@
- #include <linux/platform_data/davinci_asp.h>
- #include <linux/math64.h>
- #include <linux/bitmap.h>
-+#include <linux/gpio/driver.h>
- 
- #include <sound/asoundef.h>
- #include <sound/core.h>
-@@ -54,6 +55,7 @@ static u32 context_regs[] = {
- 	DAVINCI_MCASP_AHCLKXCTL_REG,
- 	DAVINCI_MCASP_AHCLKRCTL_REG,
- 	DAVINCI_MCASP_PDIR_REG,
-+	DAVINCI_MCASP_PFUNC_REG,
- 	DAVINCI_MCASP_RXMASK_REG,
- 	DAVINCI_MCASP_TXMASK_REG,
- 	DAVINCI_MCASP_RXTDM_REG,
-@@ -108,6 +110,10 @@ struct davinci_mcasp {
- 	/* Used for comstraint setting on the second stream */
- 	u32	channels;
- 
-+#ifdef CONFIG_GPIOLIB
-+	struct gpio_chip gpio_chip;
-+#endif
-+
- #ifdef CONFIG_PM
- 	struct davinci_mcasp_context context;
- #endif
-@@ -818,9 +824,6 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
- 	if (mcasp->version < MCASP_VERSION_3)
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
- 
--	/* All PINS as McASP */
--	mcasp_set_reg(mcasp, DAVINCI_MCASP_PFUNC_REG, 0x00000000);
--
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
- 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_XEVTCTL_REG, TXDATADMADIS);
-@@ -1845,6 +1848,147 @@ static u32 davinci_mcasp_rxdma_offset(struct davinci_mcasp_pdata *pdata)
- 	return offset;
- }
- 
-+#ifdef CONFIG_GPIOLIB
-+static int davinci_mcasp_gpio_request(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+
-+	if (mcasp->num_serializer && offset < mcasp->num_serializer &&
-+	    mcasp->serial_dir[offset] != INACTIVE_MODE) {
-+		dev_err(mcasp->dev, "AXR%u pin is  used for audio\n", offset);
-+		return -EBUSY;
-+	}
-+
-+	/* Do not change the PIN yet */
-+
-+	return pm_runtime_get_sync(mcasp->dev);
-+}
-+
-+static void davinci_mcasp_gpio_free(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+
-+	/* Set the direction to input */
-+	mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
-+
-+	/* Set the pin as McASP pin */
-+	mcasp_clr_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
-+
-+	pm_runtime_put_sync(mcasp->dev);
-+}
-+
-+static int davinci_mcasp_gpio_direction_out(struct gpio_chip *chip,
-+					    unsigned offset, int value)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+	u32 val;
-+
-+	if (value)
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
-+	else
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
-+
-+	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PFUNC_REG);
-+	if (!(val & BIT(offset))) {
-+		/* Set the pin as GPIO pin */
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
-+
-+		/* Set the direction to output */
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
-+	}
-+
-+	return 0;
-+}
-+
-+static void davinci_mcasp_gpio_set(struct gpio_chip *chip, unsigned offset,
-+				  int value)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+
-+	if (value)
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
-+	else
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
-+}
-+
-+static int davinci_mcasp_gpio_direction_in(struct gpio_chip *chip,
-+					   unsigned offset)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+	u32 val;
-+
-+	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PFUNC_REG);
-+	if (!(val & BIT(offset))) {
-+		/* Set the direction to input */
-+		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
-+
-+		/* Set the pin as GPIO pin */
-+		mcasp_set_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
-+	}
-+
-+	return 0;
-+}
-+
-+static int davinci_mcasp_gpio_get(struct gpio_chip *chip, unsigned offset)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+	u32 val;
-+
-+	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PDSET_REG);
-+	if (val & BIT(offset))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int davinci_mcasp_gpio_get_direction(struct gpio_chip *chip,
-+					    unsigned offset)
-+{
-+	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
-+	u32 val;
-+
-+	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PDIR_REG);
-+	if (val & BIT(offset))
-+		return 0;
-+
-+	return 1;
-+}
-+
-+static const struct gpio_chip davinci_mcasp_template_chip = {
-+	.owner			= THIS_MODULE,
-+	.request		= davinci_mcasp_gpio_request,
-+	.free			= davinci_mcasp_gpio_free,
-+	.direction_output	= davinci_mcasp_gpio_direction_out,
-+	.set			= davinci_mcasp_gpio_set,
-+	.direction_input	= davinci_mcasp_gpio_direction_in,
-+	.get			= davinci_mcasp_gpio_get,
-+	.get_direction		= davinci_mcasp_gpio_get_direction,
-+	.base			= -1,
-+	.ngpio			= 32,
-+};
-+
-+static int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
-+{
-+	if (!of_property_read_bool(mcasp->dev->of_node, "gpio-controller"))
-+		return 0;
-+
-+	mcasp->gpio_chip = davinci_mcasp_template_chip;
-+	mcasp->gpio_chip.label = dev_name(mcasp->dev);
-+	mcasp->gpio_chip.parent = mcasp->dev;
-+#ifdef CONFIG_OF_GPIO
-+	mcasp->gpio_chip.of_node = mcasp->dev->of_node;
-+#endif
-+
-+	return devm_gpiochip_add_data(mcasp->dev, &mcasp->gpio_chip, mcasp);
-+}
-+
-+#else /* CONFIG_GPIOLIB */
-+static inline int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_GPIOLIB */
-+
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-@@ -2069,6 +2213,15 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 
- 	mcasp_reparent_fck(pdev);
- 
-+	/* All PINS as McASP */
-+	pm_runtime_get_sync(mcasp->dev);
-+	mcasp_set_reg(mcasp, DAVINCI_MCASP_PFUNC_REG, 0x00000000);
-+	pm_runtime_put(mcasp->dev);
-+
-+	ret = davinci_mcasp_init_gpiochip(mcasp);
-+	if (ret)
-+		goto err;
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					&davinci_mcasp_component,
- 					&davinci_mcasp_dai[pdata->op_mode], 1);
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+On Thu, 3 Jan 2019 at 21:20, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Thu, 03 Jan 2019 13:37:26 +0100,
+> tom.ty89@gmail.com wrote:
+> >
+> > From: Tom Yan <tom.ty89@gmail.com>
+> >
+> > Add control for the de-emphasis filter in the PCM179x DACs
+> >
+> > Signed-off-by: Tom Yan <tom.ty89@gmail.com>
+>
+> Is this just a resend of the previous same patch?
+>
+> The patches are already tracked for post-4.21 material, so they'll be
+> merged after 4.21-rc1 release.  Just be patient for a while.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> >
+> > diff --git a/sound/pci/oxygen/pcm1796.h b/sound/pci/oxygen/pcm1796.h
+> > index 34d07dd2d22e..d5dcb09e44cd 100644
+> > --- a/sound/pci/oxygen/pcm1796.h
+> > +++ b/sound/pci/oxygen/pcm1796.h
+> > @@ -10,7 +10,6 @@
+> >  #define PCM1796_MUTE         0x01
+> >  #define PCM1796_DME          0x02
+> >  #define PCM1796_DMF_MASK     0x0c
+> > -#define PCM1796_DMF_DISABLED 0x00
+> >  #define PCM1796_DMF_48               0x04
+> >  #define PCM1796_DMF_441              0x08
+> >  #define PCM1796_DMF_32               0x0c
+> > diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
+> > index 24109d37ca09..a1c6b98b191e 100644
+> > --- a/sound/pci/oxygen/xonar_pcm179x.c
+> > +++ b/sound/pci/oxygen/xonar_pcm179x.c
+> > @@ -331,7 +331,7 @@ static void pcm1796_init(struct oxygen *chip)
+> >       struct xonar_pcm179x *data = chip->model_data;
+> >
+> >       data->pcm1796_regs[0][18 - PCM1796_REG_BASE] =
+> > -             PCM1796_DMF_DISABLED | PCM1796_FMT_24_I2S | PCM1796_ATLD;
+> > +             PCM1796_FMT_24_I2S | PCM1796_ATLD;
+> >       if (!data->broken_i2c)
+> >               data->pcm1796_regs[0][18 - PCM1796_REG_BASE] |= PCM1796_MUTE;
+> >       data->pcm1796_regs[0][19 - PCM1796_REG_BASE] =
+> > @@ -621,6 +621,23 @@ static void update_pcm1796_oversampling(struct oxygen *chip)
+> >               pcm1796_write_cached(chip, i, 20, reg);
+> >  }
+> >
+> > +static void update_pcm1796_deemph(struct oxygen *chip)
+> > +{
+> > +     struct xonar_pcm179x *data = chip->model_data;
+> > +     unsigned int i;
+> > +     u8 reg;
+> > +
+> > +     reg = data->pcm1796_regs[0][18 - PCM1796_REG_BASE] & ~PCM1796_DMF_MASK;
+> > +     if (data->current_rate == 48000)
+> > +             reg |= PCM1796_DMF_48;
+> > +     else if (data->current_rate == 44100)
+> > +             reg |= PCM1796_DMF_441;
+> > +     else if (data->current_rate == 32000)
+> > +             reg |= PCM1796_DMF_32;
+> > +     for (i = 0; i < data->dacs; ++i)
+> > +             pcm1796_write_cached(chip, i, 18, reg);
+> > +}
+> > +
+> >  static void set_pcm1796_params(struct oxygen *chip,
+> >                              struct snd_pcm_hw_params *params)
+> >  {
+> > @@ -629,6 +646,7 @@ static void set_pcm1796_params(struct oxygen *chip,
+> >       msleep(1);
+> >       data->current_rate = params_rate(params);
+> >       update_pcm1796_oversampling(chip);
+> > +     update_pcm1796_deemph(chip);
+> >  }
+> >
+> >  static void update_pcm1796_volume(struct oxygen *chip)
+> > @@ -653,9 +671,11 @@ static void update_pcm1796_mute(struct oxygen *chip)
+> >       unsigned int i;
+> >       u8 value;
+> >
+> > -     value = PCM1796_DMF_DISABLED | PCM1796_FMT_24_I2S | PCM1796_ATLD;
+> > +     value = data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
+> >       if (chip->dac_mute)
+> >               value |= PCM1796_MUTE;
+> > +     else
+> > +             value &= ~PCM1796_MUTE;
+> >       for (i = 0; i < data->dacs; ++i)
+> >               pcm1796_write_cached(chip, i, 18, value);
+> >  }
+> > @@ -777,6 +797,49 @@ static const struct snd_kcontrol_new rolloff_control = {
+> >       .put = rolloff_put,
+> >  };
+> >
+> > +static int deemph_get(struct snd_kcontrol *ctl,
+> > +                    struct snd_ctl_elem_value *value)
+> > +{
+> > +     struct oxygen *chip = ctl->private_data;
+> > +     struct xonar_pcm179x *data = chip->model_data;
+> > +
+> > +     value->value.integer.value[0] =
+> > +             !!(data->pcm1796_regs[0][18 - PCM1796_REG_BASE] & PCM1796_DME);
+> > +     return 0;
+> > +}
+> > +
+> > +static int deemph_put(struct snd_kcontrol *ctl,
+> > +                    struct snd_ctl_elem_value *value)
+> > +{
+> > +     struct oxygen *chip = ctl->private_data;
+> > +     struct xonar_pcm179x *data = chip->model_data;
+> > +     unsigned int i;
+> > +     int changed;
+> > +     u8 reg;
+> > +
+> > +     mutex_lock(&chip->mutex);
+> > +     reg = data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
+> > +     if (!value->value.integer.value[0])
+> > +             reg &= ~PCM1796_DME;
+> > +     else
+> > +             reg |= PCM1796_DME;
+> > +     changed = reg != data->pcm1796_regs[0][18 - PCM1796_REG_BASE];
+> > +     if (changed) {
+> > +             for (i = 0; i < data->dacs; ++i)
+> > +                     pcm1796_write(chip, i, 18, reg);
+> > +     }
+> > +     mutex_unlock(&chip->mutex);
+> > +     return changed;
+> > +}
+> > +
+> > +static const struct snd_kcontrol_new deemph_control = {
+> > +     .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> > +     .name = "De-emphasis Playback Switch",
+> > +     .info = snd_ctl_boolean_mono_info,
+> > +     .get = deemph_get,
+> > +     .put = deemph_put,
+> > +};
+> > +
+> >  static const struct snd_kcontrol_new hdav_hdmi_control = {
+> >       .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> >       .name = "HDMI Playback Switch",
+> > @@ -1011,6 +1074,10 @@ static int add_pcm1796_controls(struct oxygen *chip)
+> >                                 snd_ctl_new1(&rolloff_control, chip));
+> >               if (err < 0)
+> >                       return err;
+> > +             err = snd_ctl_add(chip->card,
+> > +                               snd_ctl_new1(&deemph_control, chip));
+> > +             if (err < 0)
+> > +                     return err;
+> >       }
+> >       return 0;
+> >  }
+> > --
+> > 2.20.1
+> >
