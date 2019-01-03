@@ -1,87 +1,65 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH v1 3/3] ASoC: soc-core: fix platform name vs.
- of_node assignement
-Date: Thu, 3 Jan 2019 16:42:34 +0000
-Message-ID: <952471da-b355-6471-6c19-5120d6704f81@nvidia.com>
-References: <20181018111829.27056-1-marcel@ziswiler.com>
- <20181018111829.27056-4-marcel@ziswiler.com>
- <e25a7463-9ce0-d7f9-e77b-2bbaab2e0b25@nvidia.com>
- <20181021112301.GC8554@sirena.org.uk>
- <20181218174040.k7u26vnnoplllnwb@camel2.lan>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 10/10] ASoC: Intel: Add ACPI match table
+ entry for ES8316 codec on BYTCR platform
+Date: Thu, 3 Jan 2019 10:43:07 -0600
+Message-ID: <ba03ffe0-abe6-84c2-dcc9-a788aceb0006@linux.intel.com>
+References: <20190103134535.13861-1-hdegoede@redhat.com>
+ <20190103134535.13861-11-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181218174040.k7u26vnnoplllnwb@camel2.lan>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id B32B6267BC7
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 17:43:10 +0100 (CET)
+In-Reply-To: <20190103134535.13861-11-hdegoede@redhat.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org
-Cc: Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Marcel Ziswiler <marcel@ziswiler.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Kuninori
 
-On 18/12/2018 17:40, Matthias Reichl wrote:
-> Hi Mark,
-> 
-> On Sun, Oct 21, 2018 at 12:23:01PM +0100, Mark Brown wrote:
->> On Fri, Oct 19, 2018 at 11:22:46AM +0100, Jon Hunter wrote:
->>
->>> Looking at snd_soc_init_platform(), it seems that the platform pointer
->>> can be allocated by the machine driver and so if it is not allocated by
->>> the core, then I don't think we should clear it here. Seems we need a
->>> way to determine if this was allocated by the core.
->>
->> Indeed, this is a bit of a mess.  We probably shouldn't be modifying the
->> data that the drivers passed in, otherwise we get into trouble like
->> this.   That suggests that we should copy the data, probably all of it.
->> I will try to have a proper look at this next week.
-> 
-> did you find the time to look into this?
-> 
-> The downstream Raspberry Pi kernel contains a bunch of machine drivers
-> that are implemented in a similar way as the tegra_sgtl5000 driver
-> (static card and dai link structs, dai_link->platform_of_node filled
-> in from device tree) which are breaking in 4.20 on deferred probing.
-> 
-> Switching these drivers to dynamically allocated dai link structs,
-> like 76836fd35492 "ASoC: omap-abe-twl6040: Fix missing audio card
-> caused by deferred probing" would be a possibility, but if there's
-> some solution on the horizon that doesn't require changes to the
-> driver code it'd be easier to wait for that.
-> 
-> so long,
-> 
-> Hias
-> 
->>> Furthermore, it seems that it is possible that there is more than one
->>> link that might be to be cleared.
->>
->> Yes, that's an issue as well.
+On 1/3/19 7:45 AM, Hans de Goede wrote:
+> Some BYTCR devices use an ES8316 codec, add an ACPI match table entry
+> for this.
+>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>   sound/soc/intel/common/soc-acpi-intel-byt-match.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+>
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> index 027dc27262b7..96f9c553fe6c 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+> @@ -185,6 +185,15 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
+>   		.sof_tplg_filename = "intel/sof-byt-da7213.tplg",
+>   		.asoc_plat_name = "sst-mfld-platform",
+>   	},
+> +	{
+> +		.id = "ESSX8316",
+> +		.drv_name = "bytcht_es8316",
+> +		.fw_filename = "intel/fw_sst_0f28.bin",
+> +		.board = "bytcht_es8316",
 
-I have been looking at this again recently. I see this issue occurring
-all the time when the sound drivers are built as kernel modules and
-probing the sound card is deferred until the codec driver has been loaded.
+Coming from the holiday break I saw this .board field and couldn't 
+recall why we needed it. None of the more recent boards set this field. 
+Is this legacy stuff that isn't used by anyone?
 
-Commit daecf46ee0e5 ("ASoC: soc-core: use snd_soc_dai_link_component for
-platform") appears to introduce the problem because now we allocate the
-'snd_soc_dai_link_component' structure for the platform we attempt to
-register the soundcard but we never clear the freed pointer on failure.
-Therefore, we only actually allocate it the first time. There is no easy
-way to clear this pointer for the memory allocated because this is done
-before the dai-links have been added to the list of dai-links for the
-soundcard.
 
-I don't see an easy solution that will be 100% robust unless you do opt
-for copying all the dai-link info from the platform (but this is
-probably not a trivial fix).
-
-Do you envision a fix any time soon, or should we be updating all the
-machine drivers to populate the platform snd_soc_dai_link_component so
-that it is handled by the machine drivers are not the core?
-
-Cheers
-Jon
-
--- 
-nvpublic
+> +		.sof_fw_filename = "intel/sof-byt.ri",
+> +		.sof_tplg_filename = "intel/sof-byt-es8316.tplg",
+> +		.asoc_plat_name = "sst-mfld-platform",
+> +	},
+>   	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
+>   	{
+>   		.id = "10EC5645",
