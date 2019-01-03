@@ -1,18 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 Subject: Re: [PATCH 10/10] ASoC: Intel: Add ACPI match table
  entry for ES8316 codec on BYTCR platform
-Date: Thu, 3 Jan 2019 10:43:07 -0600
-Message-ID: <ba03ffe0-abe6-84c2-dcc9-a788aceb0006@linux.intel.com>
+Date: Thu, 3 Jan 2019 17:45:33 +0100
+Message-ID: <2b2c82ed-dd0b-e3c5-a790-f5bc991acf81@redhat.com>
 References: <20190103134535.13861-1-hdegoede@redhat.com>
  <20190103134535.13861-11-hdegoede@redhat.com>
+ <ba03ffe0-abe6-84c2-dcc9-a788aceb0006@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id B32B6267BC7
- for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 17:43:10 +0100 (CET)
-In-Reply-To: <20190103134535.13861-11-hdegoede@redhat.com>
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com
+ [209.85.221.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88629267C07
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2019 17:45:35 +0100 (CET)
+Received: by mail-wr1-f68.google.com with SMTP id c14so34219002wrr.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2019 08:45:35 -0800 (PST)
+In-Reply-To: <ba03ffe0-abe6-84c2-dcc9-a788aceb0006@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,43 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux@endlessm.com, Daniel Drake <drake@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 1/3/19 7:45 AM, Hans de Goede wrote:
-> Some BYTCR devices use an ES8316 codec, add an ACPI match table entry
-> for this.
->
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->   sound/soc/intel/common/soc-acpi-intel-byt-match.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
->
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> index 027dc27262b7..96f9c553fe6c 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-> @@ -185,6 +185,15 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
->   		.sof_tplg_filename = "intel/sof-byt-da7213.tplg",
->   		.asoc_plat_name = "sst-mfld-platform",
->   	},
-> +	{
-> +		.id = "ESSX8316",
-> +		.drv_name = "bytcht_es8316",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcht_es8316",
-
-Coming from the holiday break I saw this .board field and couldn't 
-recall why we needed it. None of the more recent boards set this field. 
-Is this legacy stuff that isn't used by anyone?
-
-
-> +		.sof_fw_filename = "intel/sof-byt.ri",
-> +		.sof_tplg_filename = "intel/sof-byt-es8316.tplg",
-> +		.asoc_plat_name = "sst-mfld-platform",
-> +	},
->   	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
->   	{
->   		.id = "10EC5645",
+SGksCgpPbiAwMy0wMS0xOSAxNzo0MywgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
+T24gMS8zLzE5IDc6NDUgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+IFNvbWUgQllUQ1IgZGV2
+aWNlcyB1c2UgYW4gRVM4MzE2IGNvZGVjLCBhZGQgYW4gQUNQSSBtYXRjaCB0YWJsZSBlbnRyeQo+
+PiBmb3IgdGhpcy4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVA
+cmVkaGF0LmNvbT4KPj4gLS0tCj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9jb21tb24vc29jLWFjcGkt
+aW50ZWwtYnl0LW1hdGNoLmMgfCA5ICsrKysrKysrKwo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgOSBp
+bnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3Nv
+Yy1hY3BpLWludGVsLWJ5dC1tYXRjaC5jIGIvc291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNw
+aS1pbnRlbC1ieXQtbWF0Y2guYwo+PiBpbmRleCAwMjdkYzI3MjYyYjcuLjk2ZjljNTUzZmU2YyAx
+MDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2NvbW1vbi9zb2MtYWNwaS1pbnRlbC1ieXQt
+bWF0Y2guYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NvYy1hY3BpLWludGVsLWJ5
+dC1tYXRjaC5jCj4+IEBAIC0xODUsNiArMTg1LDE1IEBAIHN0cnVjdCBzbmRfc29jX2FjcGlfbWFj
+aMKgIHNuZF9zb2NfYWNwaV9pbnRlbF9iYXl0cmFpbF9tYWNoaW5lc1tdID0gewo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgLnNvZl90cGxnX2ZpbGVuYW1lID0gImludGVsL3NvZi1ieXQtZGE3MjEzLnRw
+bGciLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLmFzb2NfcGxhdF9uYW1lID0gInNzdC1tZmxkLXBs
+YXRmb3JtIiwKPj4gwqDCoMKgwqDCoCB9LAo+PiArwqDCoMKgIHsKPj4gK8KgwqDCoMKgwqDCoMKg
+IC5pZCA9ICJFU1NYODMxNiIsCj4+ICvCoMKgwqDCoMKgwqDCoCAuZHJ2X25hbWUgPSAiYnl0Y2h0
+X2VzODMxNiIsCj4+ICvCoMKgwqDCoMKgwqDCoCAuZndfZmlsZW5hbWUgPSAiaW50ZWwvZndfc3N0
+XzBmMjguYmluIiwKPj4gK8KgwqDCoMKgwqDCoMKgIC5ib2FyZCA9ICJieXRjaHRfZXM4MzE2IiwK
+PiAKPiBDb21pbmcgZnJvbSB0aGUgaG9saWRheSBicmVhayBJIHNhdyB0aGlzIC5ib2FyZCBmaWVs
+ZCBhbmQgY291bGRuJ3QgcmVjYWxsIHdoeSB3ZSBuZWVkZWQgaXQuIE5vbmUgb2YgdGhlIG1vcmUg
+cmVjZW50IGJvYXJkcyBzZXQgdGhpcyBmaWVsZC4gSXMgdGhpcyBsZWdhY3kgc3R1ZmYgdGhhdCBp
+c24ndCB1c2VkIGJ5IGFueW9uZT8KCkkgd291bGQgZXhwZWN0IHlvdSB0byBrbm93IHRoYXQgYmV0
+dGVyIHRoZW4gSSBkbyA6KSAgSSBqdXN0IGNvcGllZCB0aGlzIGZyb20gdGhlCm90aGVyIGVudHJp
+ZXMuCgpJZiB5b3Ugd2FudCB0byBzdWJtaXQgYSBwYXRjaCByZW1vdmluZyB0aGUgLmJvYXJkIGVu
+dHJpZXMgSSdtIGFsbCBmb3IgaXQuCgpSZWdhcmRzLAoKSGFucwoKCgo+IAo+IAo+PiArwqDCoMKg
+wqDCoMKgwqAgLnNvZl9md19maWxlbmFtZSA9ICJpbnRlbC9zb2YtYnl0LnJpIiwKPj4gK8KgwqDC
+oMKgwqDCoMKgIC5zb2ZfdHBsZ19maWxlbmFtZSA9ICJpbnRlbC9zb2YtYnl0LWVzODMxNi50cGxn
+IiwKPj4gK8KgwqDCoMKgwqDCoMKgIC5hc29jX3BsYXRfbmFtZSA9ICJzc3QtbWZsZC1wbGF0Zm9y
+bSIsCj4+ICvCoMKgwqAgfSwKPj4gwqDCoMKgwqDCoCAvKiBzb21lIEJheXRyYWlsIHBsYXRmb3Jt
+cyByZWx5IG9uIFJUNTY0NSwgdXNlIENIVCBtYWNoaW5lIGRyaXZlciAqLwo+PiDCoMKgwqDCoMKg
+IHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIC5pZCA9ICIxMEVDNTY0NSIsCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
