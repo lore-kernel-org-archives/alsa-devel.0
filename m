@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] Variable "val" in function
- rt274_i2c_probe() could be uninitialized
-Date: Fri, 4 Jan 2019 13:49:37 +0000
-Message-ID: <20190104134937.GB4140@sirena.org.uk>
-References: <20190103215912.6071-1-yzhai003@ucr.edu>
+Subject: Applied "ASoC: Variable "val" in function
+	rt274_i2c_probe() could be uninitialized" to the asoc tree
+Date: Fri,  4 Jan 2019 14:01:00 +0000 (GMT)
+Message-ID: <20190104140100.790D911270A3@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3133482702937171072=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CB530267944
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 14:49:50 +0100 (CET)
-In-Reply-To: <20190103215912.6071-1-yzhai003@ucr.edu>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B0F9267B42
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:04 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Yizhuo <yzhai003@ucr.edu>
-Cc: csong@cs.ucr.edu, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, zhiyunq@cs.ucr.edu, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3133482702937171072==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0ntfKIWw70PvrIHh"
-Content-Disposition: inline
+   ASoC: Variable "val" in function rt274_i2c_probe() could be uninitialized
 
+has been applied to the asoc tree at
 
---0ntfKIWw70PvrIHh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jan 03, 2019 at 01:59:12PM -0800, Yizhuo wrote:
-> Inside function rt274_i2c_probe(), if regmap_read() function
-> returns -EINVAL, then local variable "val" leaves uninitialized
-> but used in if statement. This is potentially unsafe.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---0ntfKIWw70PvrIHh
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwvZHAACgkQJNaLcl1U
-h9C6jwf+Keh0tNKg0i8mQ5uxEDQ1Lg7bBW+fmCUAddmRcYyHe3lllL3fuauZDonb
-84ms+X7TxqSJ3KR3sB1EnHb0xktJsPqkG1asj6WDdiLNteREWJyXqjH4f4cfXU+n
-hLJ3LBzfBm/rJWKBV4NqLz24MvS96nasql+VW2H1b9hjr9r5fmtJeqXEMwHHCF68
-dub9Yqwp1V/BWetT45o7PWQ//X5KqIa9nIxlTAzzCUGOzSwDNp4mCiN7nwDEQySW
-HAt611Inky8+BMHWxKdo8rwwqxNMwx011hu9mk/ZAEkHuRaySiD8Bb8zSULj9N2N
-NFS35byS6C4U22O1HUNHpoWuc2C+sw==
-=FRPy
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---0ntfKIWw70PvrIHh--
+>From 8c3590de0a378c2449fc1aec127cc693632458e4 Mon Sep 17 00:00:00 2001
+From: Yizhuo <yzhai003@ucr.edu>
+Date: Thu, 3 Jan 2019 13:59:12 -0800
+Subject: [PATCH] ASoC: Variable "val" in function rt274_i2c_probe() could be
+ uninitialized
 
---===============3133482702937171072==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Inside function rt274_i2c_probe(), if regmap_read() function
+returns -EINVAL, then local variable "val" leaves uninitialized
+but used in if statement. This is potentially unsafe.
 
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt274.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---===============3133482702937171072==--
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index 0ef966d56bac..e2855ab9a2c6 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -1128,8 +1128,11 @@ static int rt274_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
+-	regmap_read(rt274->regmap,
++	ret = regmap_read(rt274->regmap,
+ 		RT274_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
++	if (ret)
++		return ret;
++
+ 	if (val != RT274_VENDOR_ID) {
+ 		dev_err(&i2c->dev,
+ 			"Device with ID register %#x is not rt274\n", val);
+-- 
+2.20.1
