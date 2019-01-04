@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add workaround for silence of rk3288 ACODEC" to the asoc tree
-Date: Fri,  4 Jan 2019 14:01:06 +0000 (GMT)
-Message-ID: <20190104140106.0C1F611270A3@debutante.sirena.org.uk>
-References: <20181220153636.5213-2-katsuhiro@katsuster.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181220153636.5213-2-katsuhiro@katsuster.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: xlnx: fix error handling in
+	xlnx_formatter_pcm_probe" to the asoc tree
+Date: Fri,  4 Jan 2019 14:01:04 +0000 (GMT)
+Message-ID: <20190104140104.2000411270A3@debutante.sirena.org.uk>
+References: <20181226211106.GA16692@embeddedor>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BE94267B42
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:06 +0100 (CET)
+In-Reply-To: <20181226211106.GA16692@embeddedor>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Takashi Iwai <tiwai@suse.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add workaround for silence of rk3288 ACODEC
+   ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe
 
 has been applied to the asoc tree at
 
@@ -37,40 +52,42 @@ to this mail.
 Thanks,
 Mark
 
->From f5758544d98c8bec7793aeea28928f5e8bd45d47 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Fri, 21 Dec 2018 00:36:36 +0900
-Subject: [PATCH] ASoC: rockchip: add workaround for silence of rk3288 ACODEC
+>From 1d38b4e903d577f05393eb0ac6727f40d90dd6c6 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Wed, 26 Dec 2018 15:11:06 -0600
+Subject: [PATCH] ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe
 
-This patch adds reset and precharge in shutdown of PCM device.
+Currently, if platform_get_irq_byname() fails, the returned error
+turns into a huge value, once it is being store into a variable
+of type unsigned int, hence never actually reporting any error
+and causing unexpected behavior when using the values stored
+in aud_drv_data->s2mm_irq and aud_drv_data->mm2s_irq.
 
-ACODEC goes to silence if we change Fs to 44.1kHz from 48kHz. This
-workaround seems to work but I don't know this workaround is correct
-sequence or not for ACODEC.
+Fix this by changing the type of variables s2mm_irq and mm2s_irq in
+structure xlnx_pcm_drv_data from unsigned int to int.
 
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Addresses-Coverity-ID: 1476096 ("Unsigned compared against 0")
+Fixes: 796175a94a7f ("ASoC: xlnx: add pcm formatter platform driver")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rk3328_codec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/xilinx/xlnx_formatter_pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-index 71f3fc2d970c..f3442a2283ea 100644
---- a/sound/soc/codecs/rk3328_codec.c
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -261,9 +261,12 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
- 		mdelay(1);
- 	}
- 
-+	/* Workaround for silence when changed Fs 48 -> 44.1kHz */
-+	rk3328_codec_reset(rk3328);
-+
- 	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
- 			   DAC_CHARGE_CURRENT_ALL_MASK,
--			   DAC_CHARGE_CURRENT_I);
-+			   DAC_CHARGE_CURRENT_ALL_ON);
- 
- 	return 0;
- }
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index f7235f7664d7..d2194da928e7 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -76,8 +76,8 @@ struct xlnx_pcm_drv_data {
+ 	void __iomem *mmio;
+ 	bool s2mm_presence;
+ 	bool mm2s_presence;
+-	unsigned int s2mm_irq;
+-	unsigned int mm2s_irq;
++	int s2mm_irq;
++	int mm2s_irq;
+ 	struct snd_pcm_substream *play_stream;
+ 	struct snd_pcm_substream *capture_stream;
+ 	struct clk *axi_clk;
 -- 
 2.20.1
