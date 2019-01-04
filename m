@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Haswell: remove unneeded
-	semicolon" to the asoc tree
-Date: Fri,  4 Jan 2019 17:09:57 +0000 (GMT)
-Message-ID: <20190104170957.7367211270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: simplify boolean tests"
+	to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:59 +0000 (GMT)
+Message-ID: <20190104170959.4EA7911270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9313A267D82
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:58 +0100 (CET)
-In-Reply-To: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B36FF267D91
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:10:00 +0100 (CET)
+In-Reply-To: <20181216224910.16198-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Haswell: remove unneeded semicolon
+   ASoC: Intel: Skylake: simplify boolean tests
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 6c5414589721d696fe300dc0b8720e0368e3907a Mon Sep 17 00:00:00 2001
+>From d8747d30aa7f9e7dc6123709d7ca1d8429d648b0 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:04 -0600
-Subject: [PATCH] ASoC: Intel: Haswell: remove unneeded semicolon
+Date: Sun, 16 Dec 2018 16:49:03 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: simplify boolean tests
 
 Detected with Coccinelle
+
+skl-messages.c:419:5-32: WARNING: Comparison to bool
+skl-pcm.c:1426:6-33: WARNING: Comparison to bool
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index fe2c826e710c..fb9b8608eb3b 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -544,7 +544,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		dev_err(rtd->dev, "error: invalid DAI ID %d\n",
- 			rtd->cpu_dai->id);
- 		return -EINVAL;
--	};
-+	}
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index b0e6fb93eaf8..28c4806b196a 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -416,7 +416,7 @@ int skl_resume_dsp(struct skl *skl)
+ 	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
  
- 	ret = sst_hsw_stream_format(hsw, pcm_data->stream,
- 		path_id, stream_type, SST_HSW_STREAM_FORMAT_PCM_FORMAT);
+ 	/* check if DSP 1st boot is done */
+-	if (skl->skl_sst->is_first_boot == true)
++	if (skl->skl_sst->is_first_boot)
+ 		return 0;
+ 
+ 	/*
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 557f80c0bfe5..8e589d698c58 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1423,7 +1423,7 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
+ 		if (!ops)
+ 			return -EIO;
+ 
+-		if (skl->skl_sst->is_first_boot == false) {
++		if (!skl->skl_sst->is_first_boot) {
+ 			dev_err(component->dev, "DSP reports first boot done!!!\n");
+ 			return -EIO;
+ 		}
 -- 
 2.20.1
