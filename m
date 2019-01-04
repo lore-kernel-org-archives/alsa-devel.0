@@ -1,82 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: use more of the volume range
-	from DACs
-Date: Fri, 4 Jan 2019 21:41:42 +0000
-Message-ID: <20190104214142.GA2410@sirena.org.uk>
-References: <20181220232555.90030-1-zwisler@google.com>
- <20190104205132.GA106594@google.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6674014785963168370=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 20385267B42
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 22:41:45 +0100 (CET)
-In-Reply-To: <20190104205132.GA106594@google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ross Zwisler <zwisler@google.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Hsinyu Chao <hychao@chromium.org>, Bard Liao <bardliao@realtek.com>, Dylan Reid <dgreid@chromium.org>
+From: Yizhuo <yzhai003@ucr.edu>
+Subject: [PATCH] ASoC: rt298: Variable "val" and "buf" in rt298_jack_detect() could be uninitialized
+Date: Fri,  4 Jan 2019 13:52:53 -0800
+Message-ID: <20190104215253.16278-1-yzhai003@ucr.edu>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: csong@cs.ucr.edu, zhiyunq@cs.ucr.edu, Yizhuo <yzhai003@ucr.edu>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+In function rt298_jack_detect(), local variable "val" and "buf"
+are supposed to get initialized by regmap_read(). However, they
+ could be leave uninitialized if regmap_read() returns -EINVAL.
+Those two variables are used in control flow or update the argument,
+which could lead to undefined behavior and thus unsafe.
 
---===============6674014785963168370==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+---
+ sound/soc/codecs/rt298.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 04, 2019 at 01:51:32PM -0700, Ross Zwisler wrote:
-
-> Ping on this patch.
-
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwv0xMACgkQJNaLcl1U
-h9Ciigf/agQi1BddVaEe/9avDU1HhJQEyE77MZ4jJF8YbD8qrWrX/f5ehl2n/XrM
-HSrs2jxL1nqtS9h33HkfOZBoUJM6IN+MT+rhEWvircmI+iRtBcKVSWA1DhDbgpG2
-Rru4FReoN1B7cilVvI6YJoeT+Ey28wu9z6/eG43tLUwh3zlYEGQWMYaaC1anfB6o
-VTOeXSwNLoFQMbpNNXlDfJK5eKqPZV6M1lr4Gj/uSyWwdozfWZnk5EYLiETinCKr
-wzTcyFrZKTP+BkZ99037bIc6mtqBL+ljVDZPV7ROICuU6lc0YnsYgns1dWHmElGS
-e++y8JRkhaQ2oCd/MT0FYO0ephhLVg==
-=aebp
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
-
---===============6674014785963168370==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6674014785963168370==--
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index ce963768449f..7f74349c17f3 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -223,6 +223,7 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ {
+ 	struct snd_soc_dapm_context *dapm;
+ 	unsigned int val, buf;
++	int ret = 0;
+ 
+ 	*hp = false;
+ 	*mic = false;
+@@ -233,7 +234,10 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 	dapm = snd_soc_codec_get_dapm(rt298->codec);
+ 
+ 	if (rt298->pdata.cbj_en) {
+-		regmap_read(rt298->regmap, RT298_GET_HP_SENSE, &buf);
++		ret = regmap_read(rt298->regmap, RT298_GET_HP_SENSE, &buf);
++		if (ret)
++			return ret;
++
+ 		*hp = buf & 0x80000000;
+ 		if (*hp == rt298->is_hp_in)
+ 			return -1;
+@@ -260,16 +264,19 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 			regmap_update_bits(rt298->regmap,
+ 				RT298_CBJ_CTRL1, 0xfcc0, 0xd400);
+ 			msleep(300);
+-			regmap_read(rt298->regmap, RT298_CBJ_CTRL2, &val);
+-
++			ret = regmap_read(rt298->regmap, RT298_CBJ_CTRL2, &val);
++			if (ret)
++				return ret;
+ 			if (0x0070 == (val & 0x0070)) {
+ 				*mic = true;
+ 			} else {
+ 				regmap_update_bits(rt298->regmap,
+ 					RT298_CBJ_CTRL1, 0xfcc0, 0xe400);
+ 				msleep(300);
+-				regmap_read(rt298->regmap,
++				ret = regmap_read(rt298->regmap,
+ 					RT298_CBJ_CTRL2, &val);
++				if (ret)
++					return ret;
+ 				if (0x0070 == (val & 0x0070))
+ 					*mic = true;
+ 				else
+@@ -285,9 +292,14 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 				RT298_CBJ_CTRL1, 0x0400, 0x0000);
+ 		}
+ 	} else {
+-		regmap_read(rt298->regmap, RT298_GET_HP_SENSE, &buf);
++		ret = regmap_read(rt298->regmap, RT298_GET_HP_SENSE, &buf);
++		if (ret)
++			return ret;
++
+ 		*hp = buf & 0x80000000;
+-		regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
++		ret = regmap_read(rt298->regmap, RT298_GET_MIC1_SENSE, &buf);
++		if (ret)
++			return ret;
+ 		*mic = buf & 0x80000000;
+ 	}
+ 
+-- 
+2.17.1
