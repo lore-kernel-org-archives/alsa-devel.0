@@ -1,17 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/1] conf/ucm: chtrt5650: Add UCM config
- for chtrt5650
-Date: Fri, 4 Jan 2019 11:39:15 -0600
-Message-ID: <d1cb1156-3ba8-813d-d119-8aa0b557cb36@linux.intel.com>
-References: <20181230053526.14989-1-russell.parker7@gmail.com>
- <1f9d849d-db6f-ae8b-5551-efdb1b13bdea@linux.intel.com>
- <20190104173056.GA9638@celes>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ASoC: eliminate left-over from Raumfeld
+	machine driver removal
+Date: Fri,  4 Jan 2019 19:55:30 +0100
+Message-ID: <20190104185530.30920-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190104173056.GA9638@celes>
-Content-Language: en-US
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93ED1267B50
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 19:55:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Russell Parker <russell.parker7@gmail.com>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, evananderson@thelinuxman.us
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+Commit f84a6273dd9107c ("ASoC: pxa: remove raumfeld machine driver")
+removed the Raumfeld ASoC machine driver but forgot to kill one line
+in the Makefile.
 
-On 1/4/19 11:30 AM, Russell Parker wrote:
-> On Wed, Jan 02, 2019 at 10:14:06AM -0600, Pierre-Louis Bossart wrote:
->> On 12/29/18 11:35 PM, Russell Parker wrote:
->>> Add a UCM configuration for the rt5650 codec. Tested on
->>> a Samsung Chromebook 3. Adapted with minor modifications
->>> from GitHub user evan-a-a's gist:
->>> https://gist.github.com/evan-a-a/86b2a698708074530e2d0ee7c6498767
->>>
->>> Signed-off-by: Russell Parker <russell.parker7@gmail.com>
->> Interesting, thanks!
->>
->> IIRC rt5650 is a low-cost version of rt5645, the machine driver only has a
->> minor difference in the routing map and the controls are largely identical.
->> Could we maybe factor the common codec parts with the include mechanism,
->> similar to what was done for the SOC/platform driver settings?
-> I'll take a stab at parsing out the common configuration this weekend.
-> Seems like chtrt5645-mono-speaker-analog-mic can also be refactored to
-> use the shared code.
-Thanks!
->
-> Any input on naming the shared directory? The existing shared
-> configurations all seem to be from the same codec. Maybe a
-> src/conf/ucm/codecs/rt5645-rt5650/ directory is in order.
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ sound/soc/pxa/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-IIRC there is also an alc3278 that's a low cost version of rt5645, so 
-maybe rt5645-common is a more relevant name.
+diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
+index 0ab2a9dcb720..ea4929d73318 100644
+--- a/sound/soc/pxa/Makefile
++++ b/sound/soc/pxa/Makefile
+@@ -30,7 +30,6 @@ snd-soc-magician-objs := magician.o
+ snd-soc-mioa701-objs := mioa701_wm9713.o
+ snd-soc-z2-objs := z2.o
+ snd-soc-imote2-objs := imote2.o
+-snd-soc-raumfeld-objs := raumfeld.o
+ snd-soc-brownstone-objs := brownstone.o
+ snd-soc-ttc-dkb-objs := ttc-dkb.o
+ 
+-- 
+2.19.2
