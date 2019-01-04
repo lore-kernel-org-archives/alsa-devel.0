@@ -1,23 +1,16 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [RFC PATCH] ASoC: fsl: Add Audio Mixer CPU DAI
-	driver
-Date: Fri, 4 Jan 2019 08:52:10 +0000
-Message-ID: <1546591930.30300.13.camel@nxp.com>
-References: <1545150569-14897-1-git-send-email-viorel.suman@nxp.com>
- <CAGoOwPQvc5w05NOVsp6Qw-Ee3CJJCcaU2Dtzwbf+7bUe_kFEbA@mail.gmail.com>
- <1546531006.14398.83.camel@nxp.com>
- <20190103200319.GA2586@Asurada-Nvidia.nvidia.com>
+From: Cosmin Samoila <cosmin.samoila@nxp.com>
+Subject: [PATCH v2 0/2] Add MICFIL DAI support
+Date: Fri, 4 Jan 2019 09:17:36 +0000
+Message-ID: <1546593445-10509-1-git-send-email-cosmin.samoila@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr40068.outbound.protection.outlook.com [40.107.4.68])
- by alsa0.perex.cz (Postfix) with ESMTP id B6BE7267944
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 09:52:13 +0100 (CET)
-In-Reply-To: <20190103200319.GA2586@Asurada-Nvidia.nvidia.com>
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50059.outbound.protection.outlook.com [40.107.5.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 793C62679A1
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 10:17:37 +0100 (CET)
 Content-Language: en-US
-Content-ID: <0422201DECF07843838F431D469F3788@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,83 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>, "gabrielcsmo@gmail.com" <gabrielcsmo@gmail.com>
+Cc: Cosmin Samoila <cosmin.samoila@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTmljb2xpbiwNCg0KT24gSm8sIDIwMTktMDEtMDMgYXQgMTI6MDMgLTA4MDAsIE5pY29saW4g
-Q2hlbiB3cm90ZToNCj4gSGksDQo+IA0KPiBPbiBUaHUsIEphbiAwMywgMjAxOSBhdCAwMzo1Njo0
-NlBNICswMDAwLCBWaW9yZWwgU3VtYW4gd3JvdGU6DQo+ID4gDQo+ID4gPiANCj4gPiA+ID4gDQo+
-ID4gPiA+IMKgc291bmQvc29jL2ZzbC9mc2xfYW1peC5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfCA1NTQNCj4gPiA+ID4gKysrKysrKysrKysr
-KysrKysrKysrDQo+ID4gPiA+IMKgc291bmQvc29jL2ZzbC9mc2xfYW1peC5owqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfCAxMDEgKysrKw0KPiA+
-ID4gSSBhaW1uJ3QgYWdhaW5zdCB0aGUgbmFtaW5nIGhlcmUsIGJ1dCBpdCBzZWVtcyB0byBiZSBB
-VURNSVggaW4NCj4gPiA+IFJNPw0KPiA+ID4gDQo+ID4gPiBXb3VsZCBpdCBiZSBiZXR0ZXIgdG8g
-YWxpZ24gd2l0aCB0aGF0PyBJdCdzIHlvdXIgZGVjaXNpb24gdGhvdWdoLg0KPiA+IFRvIG1lICJB
-VURNSVgiIHNvdW5kcyBtb3JlIGxpa2Ugc29tZSBSVEwgaGlnaCBsZXZlbCBpbnRlZ3JhdGlvbg0K
-PiA+IG1vZHVsZSwNCj4gPiBJIHdvdWxkIHByZWZlciB0byBrZWVwIGl0IGFzIGl0IGlzIGlmIHRo
-ZXJlIGlzIG5vIHN0cm9uZyByZWFzb24gdG/CoA0KPiA+IHJlbmFtZSBpdC4NCj4gV2UgaGFkIEFV
-RE1VWCwgc28gIkFVRE1JWCIgZG9lc24ndCBzb3VuZCBiYWQgdG8gbWUgYXQgYWxsLiBUaGUgb25s
-eQ0KPiByZWFzb24gdGhhdCB3ZSBhcmUgZGlzY3Vzc2luZyB0aGlzIGlzIGJlY2F1c2UgUk0gdXNl
-cyBtb3JlICJBVURNSVgicw0KPiBvdmVyICJhbWl4InMuIEknZCBoYXZlIGNob3NlbiBBVURNSVgg
-aWYgSSB3ZXJlIHlvdSwgeWV0IG5vdCBzdHJvbmdseQ0KPiBhcyBJIHNhaWQuIEFuZCBpdCBsb29r
-cyBsaWtlIFJvYiBpcyBhc2tpbmcgeW91IHRvIHVzZSBBVURNSVggaW4gRFQNCj4gYmluZGluZyBk
-b2MuDQoNCk9rLCBJJ2xsIGNoYW5nZSBpbiB0aGUgbmV4dCB2ZXJzaW9uIHRoZSBjb21wYXRpYmxl
-IHN0cmluZyB0byAiYXVkbWl4Ig0KYXMgUm9iIHJlcXVlc3RlZC4NCg0KPiANCj4gPiANCj4gPiA+
-IA0KPiA+ID4gPiANCj4gPiA+ID4gK0RldmljZSBkcml2ZXIgY29uZmlndXJhdGlvbiBleGFtcGxl
-Og0KPiA+ID4gPiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4gPiA+
-ID4gK8KgwqBhbWl4OiBhbWl4QDU5ODQwMDAwIHsNCj4gPiA+ID4gK8KgwqDCoMKgY29tcGF0aWJs
-ZSA9ICJmc2wsaW14OHFtLWFtaXgiOw0KPiA+ID4gPiArwqDCoMKgwqByZWcgPSA8MHgwIDB4NTk4
-NDAwMDAgMHgwIDB4MTAwMDA+Ow0KPiA+ID4gPiArwqDCoMKgwqBjbG9ja3MgPSA8JmNsayBJTVg4
-UVhQX0FVRF9BTUlYX0lQRz47DQo+ID4gPiA+ICvCoMKgwqDCoGNsb2NrLW5hbWVzID0gImlwZyI7
-DQo+ID4gPiA+ICvCoMKgwqDCoHBvd2VyLWRvbWFpbnMgPSA8JnBkX2FtaXg+Ow0KPiA+ID4gPiAr
-wqDCoH07DQo+ID4gPiBGcm9tIHRoZSBkZXNjcmlwdGlvbiBvZiBEVCBhbmQgUk0sIEkgZG9uJ3Qg
-c2VlIGhvdyBpdCBjb25uZWN0cyB0bw0KPiA+ID4gU0FJcy4NCj4gPiA+IA0KPiA+ID4gQXJlIHRo
-ZXkgZml4ZWQgdG8gU0FJMCBhbmQgU0FJMSBpbiBpbXg4cW0/IFdvbmRlcmluZyBpZiBpdCdkIGJl
-DQo+ID4gPiBiZXR0ZXIgdG8gaGF2ZSBzdWNoIGluZm9ybWF0aW9uIGluIHRoZSBkb2MuDQo+ID4g
-UGxlYXNlIGNoZWNrIGNoYXB0ZXIgIjE2LjEuMi4yIEF1ZGlvIE1peGVyIiBpbiBSTTogaXQgaGFz
-IHR3bw0KPiA+IGRlZGljYXRlZA0KPiA+IFNBSSBpbnRlcmZhY2VzLCBTQUk0IGFuZCBTQUk1LiBB
-dWRpbyBNaXhlciBvcGVyYXRlcyBvbiBiaXQgY2xvY2sgb2YNCj4gPiBvbmUNCj4gPiBvZiB0aGVz
-ZSBpbnRlcmZhY2VzLg0KPiBPSy4gSSBhbSBhY3R1YWxseSBtb3JlIHdvbmRlcmluZyBob3cgeW91
-IGNvbm5lY3QgaXQgd2l0aCBTQUkgb24NCj4gdGhlIHNvZnR3YXJlIGxldmVsOiBmb3IgaW14OHFt
-LCBTQUk0LzUgYXJlIHVzZWQsIGJ1dCBsYXRlciBTb0NzDQo+IG1pZ2h0IHVzZSBvdGhlciBTQUkg
-YmxvY2tzLiBTbyBpdCBtaWdodCBiZSBuZWNlc3NhcnkgdG8gaW5kaWNhdGUNCj4gdGhlIGNvbm5l
-Y3Rpb25zIGluIERULg0KDQpTZWUgYmVsb3cuDQoNCj4gDQo+ID4gDQo+ID4gPiANCj4gPiA+ID4g
-DQo+ID4gPiA+ICtzdGF0aWMgaW50IGZzbF9hbWl4X2RhaV9zZXRfZm10KHN0cnVjdCBzbmRfc29j
-X2RhaSAqZGFpLA0KPiA+ID4gPiB1bnNpZ25lZA0KPiA+ID4gPiBpbnQgZm10KQ0KPiA+ID4gPiAr
-ew0KPiA+ID4gPiArwqDCoMKgwqDCoMKgwqAvKiBGb3IgcGxheWJhY2sgdGhlIEFNSVggaXMgc2xh
-dmUsIGFuZCBmb3IgcmVjb3JkIGlzDQo+ID4gPiA+IG1hc3Rlcg0KPiA+ID4gPiAqLw0KPiA+ID4g
-PiArwqDCoMKgwqDCoMKgwqBzd2l0Y2ggKGZtdCAmIFNORF9TT0NfREFJRk1UX01BU1RFUl9NQVNL
-KSB7DQo+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoGNhc2UgU05EX1NPQ19EQUlGTVRfQ0JNX0NGTToN
-Cj4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgY2FzZSBTTkRfU09DX0RBSUZNVF9DQlNfQ0ZTOg0KPiA+
-ID4gU28gaXQncyB1c2VkIGVpdGhlciBmb3IgcGxheWJhY2sgb3IgY2FwdHVyZSBvbmx5LCBub3Qg
-Ym90aCBhdA0KPiA+ID4gc2FtZQ0KPiA+ID4gdGltZT8NCj4gPiBGcm9tIElQIGZ1bmN0aW9uYWwg
-cGVyc3BlY3RpdmUgQU1JWCBjYXB0dXJlIGlzIHRoZSByZXN1bHQgb2YgQU1JWA0KPiA+IHBsYXli
-YWNrIC0gQU1JWCBvdXRwdXQgcmVwcmVzZW50cyB0aGUgcmVzdWx0aW5nIG1peGVkIGF1ZGlvIHN0
-cmVhbQ0KPiA+IHJvdXRlZCB0byBTQUk0IFJYIHNpZ25hbHMgKGJpdCAmIGZyYW1lIGNsb2NrcyBh
-bmQgZGF0YSkuIFNvIG9uY2Ugd2UNCj4gPiBoYXZlIHBsYXliYWNrIG9uIGVpdGhlciBTQUk0IG9y
-IFNBSTUgKG9yIGJvdGgpIC0gd2UgY2FuIGNhcHR1cmUgdGhlDQo+ID4gQU1JWCBvdXRwdXQgb24g
-U0FJNC4NCj4gQWgsIGl0IHNvdW5kcyBsaWtlIGEgbG9vcGluZyBibG9jayB0aGVuLCByZWNlaXZp
-bmcgYmNsayBmcm9tIFNBSTQNCj4gLS0gc2xhdmUsIGFuZCByb3V0aW5nIHRoZSBiY2xrIGJhY2sg
-dG8gU0FJNCAtLSBtYXN0ZXI7IFNBSTQgd29ya3MNCj4gYXQgQVNZTkMgbW9kZT8NCg0KUmlnaHQu
-IEFuZCB5ZXMsIFNBSTQgd29ya3MgaW4gQVNZTkMgbW9kZS4NCg0KPiANCj4gPiANCj4gPiBJIGd1
-ZXNzIGl0IHdvdWxkIGJlIG5pY2UgdG8gc2VuZCB0aGUgbWFjaGluZSBkcml2ZXIgYXMgcGFydCBv
-ZiB0aGlzDQo+ID4gcGF0Y2hzZXQgYWxzbyAtIGl0IGRlZmluZXMgdHdvIGlucHV0IFNBSSBpbnRl
-cmZhY2VzIGFzIGZyb250ZW5kcw0KPiA+IGFuZA0KPiA+IEFNSVggLSBhcyBiYWNrZW5kLiBVc2Vy
-c3BhY2Ugc2VlcyBvbmx5IHR3byBTQUkgaW50ZXJmYWNlcyBleHBvc2VkLA0KPiA+IGJvdGgNCj4g
-PiBvZiB0aGVtIGhhdmluZyBwbGF5YmFjayBlbmFibGVkLCBhbmQgb25seSBTQUk0IGhhdmluZyBj
-YXB0dXJlDQo+ID4gZW5hYmxlZC4NCj4gRFBDTT8gU28geW91IGFyZSBoYXZpbmcgdGhlIGxpbmtz
-IGluIHRoZSBzb3VuZCBEVCBub2RlcywgaS5lLiB0aGUNCj4gbWFjaGluZSBkcml2ZXI/DQoNClRo
-ZSBtYWNoaW5lIGRyaXZlciBEVCBjb25maWd1cmF0aW9uIGxvb2tzIGxpa2U6DQo9PT09PT09PT09
-PT09PT09DQpzb3VuZC1hbWl4LXNhacKgew0KwqAgY29tcGF0aWJsZSA9ICJmc2wsaW14LWF1ZGlv
-LWFtaXgiOw0KwqAgbW9kZWwgPSAiYW1peC1hdWRpby1zYWkiOw0KwqAgZGFpcyA9IDwmc2FpND4s
-IDwmc2FpNT47DQrCoCBhbWl4LWNvbnRyb2xsZXIgPSA8JmFtaXg+Ow0KfTsNCg0KVGhlIG51bWJl
-ciBvZiBlbGVtZW50cyBpbiAiZGFpcyIgYXJyYXkgaXMgYXQgbGVhc3QgdHdvIGVsZW1lbnRzLCBE
-QVBNDQpyb3V0ZXMgYXJlIGdlbmVyYXRlZCBkeW5hbWljYWxseSBpbiBtYWNoaW5lIGRyaXZlciBh
-dCBwcm9iZSBhcyBmdW5jdGlvbg0Kb2YgbnVtYmVyIG9mIFNBSSBpbnN0YW5jZXMsIHRoZSBjYXB0
-dXJlIGlzIGVuYWJsZWQgb25seSBmb3IgdGhlIGZpcnN0DQpTQUkgaW5zdGFuY2UgaW4gdGhlIGxp
-c3QuDQoNCj4gDQo+IFRoYW5rcw0KPiBOaWNvbGluDQoNClJlZ2FyZHMsDQpWaW9yZWwKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+PDM is a popular way to deliver audio from microphones to the processor
+in several applications, such as mobile telephones. However, current
+digital-audio systems use multibit audio signal (also known as multibit
+PCM) to represent the signal. For this purpose a set of FIR, CIC or/and
+Half Band filters are usually implemented on DSPs or software. This block
+implements the required digital interface to provide a 16-bit audio signal
+from a PDM microphone bitstream in a configurable output sampling rate.
+The implementation of this digital interface is based on the application
+of digital signal processing techniques in hardware. The PDM Microphone
+Interface architecture was designed to gate saving and minimal power
+consumption. It implements a bunch of filters to transform a 1-bit PDM
+bitstream to a 16-bit PCM signal in the audio band. To avoid aliasing
+frequencies in passband, the overall filter has 80 dB stopband attenuation
+and passband ripple less than 0.2dB.
+The whole module is implemented to work in a multichannel mode. All
+channels have the same configuration but each input channel could be turned
+on/off independently.
+
+
+Changes since v1:
+- removed the hwvad support from patches since it is a separate functionality
+and it needs some design rework. Will address HWVAD in later series of patches
+after analyzing comunity feedback and design guildlines.
+- removed clock source choice for clock driver and use the AudioPLL1 as clock
+source. Having only one clock source it is sufficient for basic functionality.
+- removed dma-names and status from dt-bindings
+- changed volume control names and type to S_VALUE
+
+Cosmin-Gabriel Samoila (2):
+  ASoC: micfil: Add bindings for MICFIL DAI
+  ASoC: Add MICFIL SoC Digital Audio Interface driver.
+
+ .../devicetree/bindings/sound/fsl,micfil.txt       |  32 +
+ sound/soc/fsl/Kconfig                              |   9 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/fsl_micfil.c                         | 895 +++++++++++++++++++++
+ sound/soc/fsl/fsl_micfil.h                         | 283 +++++++
+ 5 files changed, 1221 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,micfil.txt
+ create mode 100644 sound/soc/fsl/fsl_micfil.c
+ create mode 100644 sound/soc/fsl/fsl_micfil.h
+
+-- 
+2.7.4
