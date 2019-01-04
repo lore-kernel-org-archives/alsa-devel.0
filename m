@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: simplify boolean tests" to
-	the asoc tree
-Date: Fri,  4 Jan 2019 17:09:50 +0000 (GMT)
-Message-ID: <20190104170950.32C2811270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-8-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: use snd_mask_set_format
+	in all machine drivers" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:48 +0000 (GMT)
+Message-ID: <20190104170948.56F7D11270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E3A8267D70
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DCBD267D6E
  for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:52 +0100 (CET)
-In-Reply-To: <20181216224910.16198-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: simplify boolean tests
+   ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
 
 has been applied to the asoc tree at
 
@@ -53,87 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From 10583cdac237b32c0d3f6027b06c5eec8bf91211 Mon Sep 17 00:00:00 2001
+>From 4e88068ed0888549acd1cbb2f6e271b007051203 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:08 -0600
-Subject: [PATCH] ASoC: Intel: Atom: simplify boolean tests
+Date: Sun, 16 Dec 2018 16:49:10 -0600
+Subject: [PATCH] ASoC: Intel: boards: use snd_mask_set_format in all machine
+ drivers
 
-Detected with Coccinelle
+Fix Sparse warnings with two machine drivers which weren't updated
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c     | 2 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
- sound/soc/intel/atom/sst/sst_acpi.c          | 2 +-
- sound/soc/intel/atom/sst/sst_drv_interface.c | 2 +-
- sound/soc/intel/atom/sst/sst_loader.c        | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 3672d36b4b66..d1207ea53523 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -647,7 +647,7 @@ static int sst_swm_mixer_event(struct snd_soc_dapm_widget *w,
- 		set_mixer = false;
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index c74c4f17316f..0739e3a75083 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -164,7 +164,7 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	/* set SSP to 24 bit */
+ 	snd_mask_none(fmt);
+-	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 723a4935ed76..6dd5c69671b3 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -221,7 +221,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		rate->min = rate->max = 48000;
+ 		channels->min = channels->max = 2;
+ 		snd_mask_none(fmt);
+-		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
  	}
  
--	if (set_mixer == false)
-+	if (!set_mixer)
- 		return 0;
+ 	/*
+@@ -229,7 +229,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 * thus changing the mask here
+ 	 */
+ 	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
+-		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
  
- 	if (SND_SOC_DAPM_EVENT_ON(event) ||
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index afc559866095..aefa5ce4cb59 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -190,7 +190,7 @@ int sst_fill_stream_params(void *substream,
- 	map = ctx->pdata->pdev_strm_map;
- 	map_size = ctx->pdata->strm_map_size;
- 
--	if (is_compress == true)
-+	if (is_compress)
- 		cstream = (struct snd_compr_stream *)substream;
- 	else
- 		pstream = (struct snd_pcm_substream *)substream;
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index ac542535b9d5..3a95ebbfc45d 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -334,7 +334,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = is_byt_cr(dev, &bytcr);
--	if (!((ret < 0) || (bytcr == false))) {
-+	if (!(ret < 0 || !bytcr)) {
- 		dev_info(dev, "Detected Baytrail-CR platform\n");
- 
- 		/* override resource info */
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index 5455d6e0ab53..a592df06aa58 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -146,7 +146,7 @@ static int sst_power_control(struct device *dev, bool state)
- 	int ret = 0;
- 	int usage_count = 0;
- 
--	if (state == true) {
-+	if (state) {
- 		ret = pm_runtime_get_sync(dev);
- 		usage_count = GET_USAGE_COUNT(dev);
- 		dev_dbg(ctx->dev, "Enable: pm usage count: %d\n", usage_count);
-diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
-index b8c456753f01..321c783cf833 100644
---- a/sound/soc/intel/atom/sst/sst_loader.c
-+++ b/sound/soc/intel/atom/sst/sst_loader.c
-@@ -269,7 +269,7 @@ static void sst_do_memcpy(struct list_head *memcpy_list)
- 	struct sst_memcpy_list *listnode;
- 
- 	list_for_each_entry(listnode, memcpy_list, memcpylist) {
--		if (listnode->is_io == true)
-+		if (listnode->is_io)
- 			memcpy32_toio((void __iomem *)listnode->dstn,
- 					listnode->src, listnode->size);
- 		else
+ 	return 0;
+ }
 -- 
 2.20.1
