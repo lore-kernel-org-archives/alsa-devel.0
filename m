@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove useless cast" to
-	the asoc tree
-Date: Fri,  4 Jan 2019 14:01:58 +0000 (GMT)
-Message-ID: <20190104140158.CDAE311270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: cs4341: Add DT bindings documentation
+	for CS4341 DAC" to the asoc tree
+Date: Fri,  4 Jan 2019 14:02:06 +0000 (GMT)
+Message-ID: <20190104140206.3CA5611270A3@debutante.sirena.org.uk>
+References: <20181220073708.12014-1-shc_work@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BE53C267B59
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:59 +0100 (CET)
-In-Reply-To: <20181216224910.16198-2-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 989BF267CB6
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:02:09 +0100 (CET)
+In-Reply-To: <20181220073708.12014-1-shc_work@mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: remove useless cast
+   ASoC: cs4341: Add DT bindings documentation for CS4341 DAC
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 431b67c27c57bc6a752482727c87f6dda988aae5 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:02 -0600
-Subject: [PATCH] ASoC: Intel: Skylake: remove useless cast
+>From 0ddb46080a465fad99cff838682744f1f4848a4b Mon Sep 17 00:00:00 2001
+From: Alexander Shiyan <shc_work@mail.ru>
+Date: Thu, 20 Dec 2018 10:37:08 +0300
+Subject: [PATCH] ASoC: cs4341: Add DT bindings documentation for CS4341 DAC
 
-Detected with Coccinelle
+This patch adds DT bindings documentation for Cirrus Logic
+CS4341 DAC.
 
-sound/soc/intel/skylake/skl-topology.c:3106:16-20: WARNING: casting
-value returned by memory allocation function to (char *) is useless.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/cs4341.txt      | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4341.txt
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index cf8848b779dc..389f1862bc43 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3103,7 +3103,7 @@ static int skl_init_algo_data(struct device *dev, struct soc_bytes_ext *be,
- 	ac->size = dfw_ac->max;
- 
- 	if (ac->max) {
--		ac->params = (char *) devm_kzalloc(dev, ac->max, GFP_KERNEL);
-+		ac->params = devm_kzalloc(dev, ac->max, GFP_KERNEL);
- 		if (!ac->params)
- 			return -ENOMEM;
- 
+diff --git a/Documentation/devicetree/bindings/sound/cs4341.txt b/Documentation/devicetree/bindings/sound/cs4341.txt
+new file mode 100644
+index 000000000000..12b4aa8ef0db
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs4341.txt
+@@ -0,0 +1,22 @@
++Cirrus Logic CS4341 audio DAC
++
++This device supports both I2C and SPI (configured with pin strapping
++on the board).
++
++Required properties:
++  - compatible: "cirrus,cs4341a"
++  - reg : the I2C address of the device for I2C, the chip select
++          number for SPI.
++
++For required properties on I2C-bus, please consult
++Documentation/devicetree/bindings/i2c/i2c.txt
++For required properties on SPI-bus, please consult
++Documentation/devicetree/bindings/spi/spi-bus.txt
++
++Example:
++	codec: cs4341@0 {
++		#sound-dai-cells = <0>;
++		compatible = "cirrus,cs4341a";
++		reg = <0>;
++		spi-max-frequency = <6000000>;
++	};
 -- 
 2.20.1
