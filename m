@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Haswell: assign booleans to
-	true/false" to the asoc tree
-Date: Fri,  4 Jan 2019 17:09:55 +0000 (GMT)
-Message-ID: <20190104170955.9FDFB11270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Haswell: remove unneeded
+	semicolon" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:57 +0000 (GMT)
+Message-ID: <20190104170957.7367211270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 35CDF267D29
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:57 +0100 (CET)
-In-Reply-To: <20181216224910.16198-5-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9313A267D82
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:58 +0100 (CET)
+In-Reply-To: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Haswell: assign booleans to true/false
+   ASoC: Intel: Haswell: remove unneeded semicolon
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From bf88b3c3c277c8138d688a0fc3199b57fecfaf56 Mon Sep 17 00:00:00 2001
+>From 6c5414589721d696fe300dc0b8720e0368e3907a Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:05 -0600
-Subject: [PATCH] ASoC: Intel: Haswell: assign booleans to true/false
+Date: Sun, 16 Dec 2018 16:49:04 -0600
+Subject: [PATCH] ASoC: Intel: Haswell: remove unneeded semicolon
 
 Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 2 +-
  sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index d33bdaf92c57..31fcdf12c67d 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -1216,7 +1216,7 @@ int sst_hsw_stream_commit(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
- 		return ret;
- 	}
- 
--	stream->commited = 1;
-+	stream->commited = true;
- 	trace_hsw_stream_alloc_reply(stream);
- 
- 	return 0;
 diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index fb9b8608eb3b..2debcc2ed99a 100644
+index fe2c826e710c..fb9b8608eb3b 100644
 --- a/sound/soc/intel/haswell/sst-haswell-pcm.c
 +++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -861,7 +861,7 @@ static int hsw_pcm_close(struct snd_pcm_substream *substream)
- 		dev_dbg(rtd->dev, "error: free stream failed %d\n", ret);
- 		goto out;
- 	}
--	pcm_data->allocated = 0;
-+	pcm_data->allocated = false;
- 	pcm_data->stream = NULL;
+@@ -544,7 +544,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		dev_err(rtd->dev, "error: invalid DAI ID %d\n",
+ 			rtd->cpu_dai->id);
+ 		return -EINVAL;
+-	};
++	}
  
- out:
+ 	ret = sst_hsw_stream_format(hsw, pcm_data->stream,
+ 		path_id, stream_type, SST_HSW_STREAM_FORMAT_PCM_FORMAT);
 -- 
 2.20.1
