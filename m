@@ -1,45 +1,172 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] ALSA:usb audio Higher sample rates on usb audio no
- longer working.
-Date: Fri, 4 Jan 2019 11:13:29 -0600
-Message-ID: <51872184-3de0-6e69-60e3-c3b4898dcdfa@linux.intel.com>
-References: <CABqErrECNH+gRiZXM+z=igjAw895e7KLeV6H0EKvMkW0UsVvJw@mail.gmail.com>
- <s5hsgy96fiu.wl-tiwai@suse.de>
- <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
- <s5hd0pdey4e.wl-tiwai@suse.de>
- <5c7b2c6b-5dcc-7170-f6e1-bf6021bbb72a@linux.intel.com>
- <C672AA6DAAC36042A98BAD0B0B25BDA94CB021CE@BGSMSX104.gar.corp.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: simple-scu-card: remove simple-scu-card
+	on Doc" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:39 +0000 (GMT)
+Message-ID: <20190104170939.6043F11270A3@debutante.sirena.org.uk>
+References: <875zvr36c6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <C672AA6DAAC36042A98BAD0B0B25BDA94CB021CE@BGSMSX104.gar.corp.intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Gopal, Saranya" <saranya.gopal@intel.com>, Takashi Iwai <tiwai@suse.de>, Con Kolivas <kernel@kolivas.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, "felipe.balbi@linux.intel.com" <felipe.balbi@linux.intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E81B4267D49
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:39 +0100 (CET)
+In-Reply-To: <875zvr36c6.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
-On 1/4/19 10:52 AM, Gopal, Saranya wrote:
->>> [ Adding linux-usb ML to Cc, as it's a core USB issue ]
->>>
->>> So the device seems incorrectly advertising as if it were supporting
->>> UAC3 -- assuming the device is still not UAC3-capable.
->>>
->>> IOW, it's a buggy firmware.  We need some blacklisting, or revert the
->>> commit for now, unless any real UAC3 device comes up to the market.
->> IIRC an UAC3-capable device is required to expose a backwards-compatible
->> configuration (either UAC1 or UAC2). Maybe an additional test can be
->> done to harden the detection so that UAC3 is only chosen if indeed a
->> second audio configuration is present as well.
->>
->> I also vaguely recall there was talk about adding information in the BOS
->> descriptor, but I don't know if this was ever published.
->>
->> -Pierre
-> The current detection logic is that UAC3 configuration is chosen only when a device has a configuration with audio interface supporting UAC3 protocol.
-> Additionally, it already makes sure that UAC3 is selected only when there is more than one configuration.
-What I meant if that the other configurations are not checked for UAC1 
-or UAC2 capabilities, you only check that there is more than one 
-configuration
+   ASoC: simple-scu-card: remove simple-scu-card on Doc
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From bb93487b85012b2232149888d260f935e4da680d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 18 Dec 2018 11:50:37 +0900
+Subject: [PATCH] ASoC: simple-scu-card: remove simple-scu-card on Doc
+
+It is already merged into simple-card.
+simple-scu-card is no longer needed.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/simple-scu-card.txt        | 94 -------------------
+ 1 file changed, 94 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/simple-scu-card.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+deleted file mode 100644
+index 3a2f71616cda..000000000000
+--- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
++++ /dev/null
+@@ -1,94 +0,0 @@
+-ASoC Simple SCU Sound Card
+-
+-Simple SCU Sound Card is "Simple Sound Card" + "ALSA DPCM".
+-For example, you can use this driver if you want to exchange sampling rate convert,
+-Mixing, etc...
+-
+-Required properties:
+-
+-- compatible				: "simple-scu-audio-card"
+-					  "renesas,rsrc-card"
+-Optional properties:
+-
+-- simple-audio-card,name		: see simple-audio-card.txt
+-- simple-audio-card,cpu			: see simple-audio-card.txt
+-- simple-audio-card,codec		: see simple-audio-card.txt
+-
+-Optional subnode properties:
+-
+-- simple-audio-card,format		: see simple-audio-card.txt
+-- simple-audio-card,frame-master	: see simple-audio-card.txt
+-- simple-audio-card,bitclock-master	: see simple-audio-card.txt
+-- simple-audio-card,bitclock-inversion	: see simple-audio-card.txt
+-- simple-audio-card,frame-inversion	: see simple-audio-card.txt
+-- simple-audio-card,convert-rate	: platform specified sampling rate convert
+-- simple-audio-card,convert-channels	: platform specified converted channel size (2 - 8 ch)
+-- simple-audio-card,prefix		: see routing
+-- simple-audio-card,widgets		: Please refer to widgets.txt.
+-- simple-audio-card,routing		: A list of the connections between audio components.
+-					  Each entry is a pair of strings, the first being the connection's sink,
+-					  the second being the connection's source. Valid names for sources.
+-					  use audio-prefix if some components is using same sink/sources naming.
+-					  it can be used if compatible was "renesas,rsrc-card";
+-
+-Required CPU/CODEC subnodes properties:
+-
+-- sound-dai				: see simple-audio-card.txt
+-
+-Optional CPU/CODEC subnodes properties:
+-
+-- clocks / system-clock-frequency	: see simple-audio-card.txt
+-
+-Example 1. Sampling Rate Conversion
+-
+-sound {
+-	compatible = "simple-scu-audio-card";
+-
+-	simple-audio-card,name = "rsnd-ak4643";
+-	simple-audio-card,format = "left_j";
+-	simple-audio-card,bitclock-master = <&sndcodec>;
+-	simple-audio-card,frame-master = <&sndcodec>;
+-
+-	simple-audio-card,convert-rate = <48000>;
+-
+-	simple-audio-card,prefix = "ak4642";
+-	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+-			"DAI0 Capture", "ak4642 Capture";
+-
+-	sndcpu: simple-audio-card,cpu {
+-		sound-dai = <&rcar_sound>;
+-	};
+-
+-	sndcodec: simple-audio-card,codec {
+-		sound-dai = <&ak4643>;
+-		system-clock-frequency = <11289600>;
+-	};
+-};
+-
+-Example 2. 2 CPU 1 Codec (Mixing)
+-
+-sound {
+-	compatible = "simple-scu-audio-card";
+-
+-	simple-audio-card,name = "rsnd-ak4643";
+-	simple-audio-card,format = "left_j";
+-	simple-audio-card,bitclock-master = <&dpcmcpu>;
+-	simple-audio-card,frame-master = <&dpcmcpu>;
+-
+-	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+-			"ak4642 Playback", "DAI1 Playback";
+-
+-	dpcmcpu: cpu@0 {
+-		sound-dai = <&rcar_sound 0>;
+-	};
+-
+-	cpu@1 {
+-		sound-dai = <&rcar_sound 1>;
+-	};
+-
+-	codec {
+-		prefix = "ak4642";
+-		sound-dai = <&ak4643>;
+-		clocks = <&audio_clock>;
+-	};
+-};
+-- 
+2.20.1
