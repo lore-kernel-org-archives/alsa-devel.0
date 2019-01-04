@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: check "reg" property
-	on asoc_simple_card_get_dai_id()" to the asoc tree
-Date: Fri,  4 Jan 2019 14:01:44 +0000 (GMT)
-Message-ID: <20190104140144.4595011270A3@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: boards: use snd_mask_set_format
+	in all machine drivers" to the asoc tree
+Date: Fri,  4 Jan 2019 14:01:46 +0000 (GMT)
+Message-ID: <20190104140146.192AC11270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CEAD9267C99
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:44 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 018C9267C86
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:51 +0100 (CET)
+In-Reply-To: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: check "reg" property on asoc_simple_card_get_dai_id()
+   ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
 
 has been applied to the asoc tree at
 
@@ -52,67 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From a0c426fe143328760c9fd565cd203a37a7b4fde8 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Dec 2018 10:45:42 +0900
-Subject: [PATCH] ASoC: simple-card-utils: check "reg" property on
- asoc_simple_card_get_dai_id()
+>From 4e88068ed0888549acd1cbb2f6e271b007051203 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Sun, 16 Dec 2018 16:49:10 -0600
+Subject: [PATCH] ASoC: Intel: boards: use snd_mask_set_format in all machine
+ drivers
 
-We will get DAI ID from "reg" property if it has on DT, otherwise get
-it by counting port/endpoint.
+Fix Sparse warnings with two machine drivers which weren't updated
 
-But in below case, we need to get DAI ID = 0 via port reg = <0>, but
-current implementation returns ID = 1, because it can't judge ID = 0 was
-from "non reg" or "reg = <0>".
-Thus, it will count port/endpoint number as "non reg" case.
-
-of_graph_parse_endpoint() implementation itself is not a problem,
-but because asoc_simple_card_get_dai_id() need to count port/endpoint
-number when "non reg" case, it need to know ID = 0 was from
-"non reg" or "reg = <0>".
-This patch fix this issue.
-
-	port {
-		reg = <0>;
-		xxxx: endpoint@0 {
-		};
-=>		xxxx: endpoint@1 {
-		};
-	};
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index b807a47515eb..336895f7fd1e 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -283,12 +283,20 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
- 	/* use endpoint/port reg if exist */
- 	ret = of_graph_parse_endpoint(ep, &info);
- 	if (ret == 0) {
--		if (info.id)
-+		/*
-+		 * Because it will count port/endpoint if it doesn't have "reg".
-+		 * But, we can't judge whether it has "no reg", or "reg = <0>"
-+		 * only of_graph_parse_endpoint().
-+		 * We need to check "reg" property
-+		 */
-+		if (of_get_property(ep,   "reg", NULL))
- 			return info.id;
--		if (info.port)
-+
-+		node = of_get_parent(ep);
-+		of_node_put(node);
-+		if (of_get_property(node, "reg", NULL))
- 			return info.port;
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index c74c4f17316f..0739e3a75083 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -164,7 +164,7 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	/* set SSP to 24 bit */
+ 	snd_mask_none(fmt);
+-	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 723a4935ed76..6dd5c69671b3 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -221,7 +221,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		rate->min = rate->max = 48000;
+ 		channels->min = channels->max = 2;
+ 		snd_mask_none(fmt);
+-		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
  	}
--
- 	node = of_graph_get_port_parent(ep);
  
  	/*
+@@ -229,7 +229,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 * thus changing the mask here
+ 	 */
+ 	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
+-		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
++		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
