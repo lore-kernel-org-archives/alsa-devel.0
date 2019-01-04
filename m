@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: use snd_mask_set_format
-	in all machine drivers" to the asoc tree
-Date: Fri,  4 Jan 2019 17:09:48 +0000 (GMT)
-Message-ID: <20190104170948.56F7D11270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Baytrail: simplify boolean test"
+	to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:52 +0000 (GMT)
+Message-ID: <20190104170952.0742611270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DCBD267D6E
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:52 +0100 (CET)
-In-Reply-To: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E1F2C267D78
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:53 +0100 (CET)
+In-Reply-To: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
+   ASoC: Intel: Baytrail: simplify boolean test
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 4e88068ed0888549acd1cbb2f6e271b007051203 Mon Sep 17 00:00:00 2001
+>From e295450dd86d974861e1e9e302d67b0a23457ea8 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:10 -0600
-Subject: [PATCH] ASoC: Intel: boards: use snd_mask_set_format in all machine
- drivers
+Date: Sun, 16 Dec 2018 16:49:07 -0600
+Subject: [PATCH] ASoC: Intel: Baytrail: simplify boolean test
 
-Fix Sparse warnings with two machine drivers which weren't updated
+Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c74c4f17316f..0739e3a75083 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -164,7 +164,7 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 
- 	/* set SSP to 24 bit */
- 	snd_mask_none(fmt);
--	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 723a4935ed76..6dd5c69671b3 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -221,7 +221,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 		rate->min = rate->max = 48000;
- 		channels->min = channels->max = 2;
- 		snd_mask_none(fmt);
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 	}
- 
- 	/*
-@@ -229,7 +229,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 * thus changing the mask here
- 	 */
- 	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
- }
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index aabb35bf6b96..498fb5346f1a 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -188,7 +188,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		sst_byt_stream_start(byt, pcm_data->stream, 0);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		if (pdata->restore_stream == true)
++		if (pdata->restore_stream)
+ 			schedule_work(&pcm_data->work);
+ 		else
+ 			sst_byt_stream_resume(byt, pcm_data->stream);
 -- 
 2.20.1
