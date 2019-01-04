@@ -1,51 +1,262 @@
-From: "Gopal, Saranya" <saranya.gopal@intel.com>
-Subject: RE: [alsa-devel] ALSA:usb audio Higher sample rates on usb audio no
- longer working.
-Date: Fri, 4 Jan 2019 16:52:03 +0000
-Message-ID: <C672AA6DAAC36042A98BAD0B0B25BDA94CB021CE@BGSMSX104.gar.corp.intel.com>
-References: <CABqErrECNH+gRiZXM+z=igjAw895e7KLeV6H0EKvMkW0UsVvJw@mail.gmail.com>
- <s5hsgy96fiu.wl-tiwai@suse.de>
- <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
- <s5hd0pdey4e.wl-tiwai@suse.de>
- <5c7b2c6b-5dcc-7170-f6e1-bf6021bbb72a@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ti: davinci-mcasp: Add support for GPIO mode of the pins" to the asoc tree
+Date: Fri,  4 Jan 2019 17:08:33 +0000 (GMT)
+Message-ID: <20190104170833.7CCF011270A3@debutante.sirena.org.uk>
+References: <20190103140552.29809-4-peter.ujfalusi@ti.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5c7b2c6b-5dcc-7170-f6e1-bf6021bbb72a@linux.intel.com>
-Content-Language: en-US
+In-Reply-To: <20190103140552.29809-4-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Con Kolivas <kernel@kolivas.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, "felipe.balbi@linux.intel.com" <felipe.balbi@linux.intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jsarha@ti.com, robh+dt@kernel.org, misael.lopez@ti.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+IFsgQWRkaW5nIGxpbnV4LXVzYiBNTCB0byBDYywgYXMgaXQncyBhIGNvcmUgVVNCIGlzc3Vl
-IF0NCj4gPg0KPiA+IFNvIHRoZSBkZXZpY2Ugc2VlbXMgaW5jb3JyZWN0bHkgYWR2ZXJ0aXNpbmcg
-YXMgaWYgaXQgd2VyZSBzdXBwb3J0aW5nDQo+ID4gVUFDMyAtLSBhc3N1bWluZyB0aGUgZGV2aWNl
-IGlzIHN0aWxsIG5vdCBVQUMzLWNhcGFibGUuDQo+ID4NCj4gPiBJT1csIGl0J3MgYSBidWdneSBm
-aXJtd2FyZS4gIFdlIG5lZWQgc29tZSBibGFja2xpc3RpbmcsIG9yIHJldmVydCB0aGUNCj4gPiBj
-b21taXQgZm9yIG5vdywgdW5sZXNzIGFueSByZWFsIFVBQzMgZGV2aWNlIGNvbWVzIHVwIHRvIHRo
-ZSBtYXJrZXQuDQo+IA0KPiBJSVJDIGFuIFVBQzMtY2FwYWJsZSBkZXZpY2UgaXMgcmVxdWlyZWQg
-dG8gZXhwb3NlIGEgYmFja3dhcmRzLWNvbXBhdGlibGUNCj4gY29uZmlndXJhdGlvbiAoZWl0aGVy
-IFVBQzEgb3IgVUFDMikuIE1heWJlIGFuIGFkZGl0aW9uYWwgdGVzdCBjYW4gYmUNCj4gZG9uZSB0
-byBoYXJkZW4gdGhlIGRldGVjdGlvbiBzbyB0aGF0IFVBQzMgaXMgb25seSBjaG9zZW4gaWYgaW5k
-ZWVkIGENCj4gc2Vjb25kIGF1ZGlvIGNvbmZpZ3VyYXRpb24gaXMgcHJlc2VudCBhcyB3ZWxsLg0K
-PiANCj4gSSBhbHNvIHZhZ3VlbHkgcmVjYWxsIHRoZXJlIHdhcyB0YWxrIGFib3V0IGFkZGluZyBp
-bmZvcm1hdGlvbiBpbiB0aGUgQk9TDQo+IGRlc2NyaXB0b3IsIGJ1dCBJIGRvbid0IGtub3cgaWYg
-dGhpcyB3YXMgZXZlciBwdWJsaXNoZWQuDQo+IA0KPiAtUGllcnJlDQoNClRoZSBjdXJyZW50IGRl
-dGVjdGlvbiBsb2dpYyBpcyB0aGF0IFVBQzMgY29uZmlndXJhdGlvbiBpcyBjaG9zZW4gb25seSB3
-aGVuIGEgZGV2aWNlIGhhcyBhIGNvbmZpZ3VyYXRpb24gd2l0aCBhdWRpbyBpbnRlcmZhY2Ugc3Vw
-cG9ydGluZyBVQUMzIHByb3RvY29sLg0KQWRkaXRpb25hbGx5LCBpdCBhbHJlYWR5IG1ha2VzIHN1
-cmUgdGhhdCBVQUMzIGlzIHNlbGVjdGVkIG9ubHkgd2hlbiB0aGVyZSBpcyBtb3JlIHRoYW4gb25l
-IGNvbmZpZ3VyYXRpb24uDQpPdGhlcndpc2UsIHRoZSBmaXJzdCBjb25maWd1cmF0aW9uIGlzIGNo
-b3NlbiBieSBkZWZhdWx0LiBTbywgdGhlIHBhdGNoIGRvZXMgbm90IGFmZmVjdCBleGlzdGluZyBV
-QUMxIGFuZCBVQUMyIGRldmljZXMuDQpBcyBJd2FpIHNhaWQsIHRoaXMgaXNzdWUgc2VlbXMgdG8g
-YmUgYmVjYXVzZSBvZiBhIGJ1Z2d5IGZpcm13YXJlIHdoaWNoIHdyb25nbHkgYWR2ZXJ0aXNlcyBV
-QUMzLWNhcGFiaWxpdHkuDQpDb3VsZCB3ZSBhZGQgc29tZSBxdWlyayB0byBzZWxlY3QgYW5vdGhl
-ciBjb25maWd1cmF0aW9uIGZvciB0aGlzIHBhcnRpY3VsYXIgZGV2aWNlPw0KSSBzZWUgdGhhdCB0
-aGVyZSBpcyBhIHNpbWlsYXIgaW4gcXVpcmsgaW4gc291bmQvdXNiL3F1aXJrcy5jIChzbmRfdXNi
-X2Zhc3R0cmFja3Byb19ib290X3F1aXJrKSAuDQpDb3VsZCBzb21ldGhpbmcgbGlrZSB0aGF0IGJl
-IGRvbmUgZm9yIHRoaXMgcGFydGljdWxhciBkZXZpY2U/DQoNCkFuZCBzaW5jZSBJIHdhcyBub3Qg
-cGFydCBvZiB0aGUgaW5pdGlhbCBtYWlsIHRocmVhZCwgSSBtaWdodCBoYXZlIG1pc3NlZCBzb21l
-IGluZm9ybWF0aW9uLg0KQ291bGQgc29tZW9uZSBnaXZlIG1lIGxzdXNiIC12IG91dHB1dCBmb3Ig
-dGhpcyBVU0IgYXVkaW8gZGV2aWNlLg0KDQpUaGFua3MsDQpTYXJhbnlhDQoNCg0K
+The patch
+
+   ASoC: ti: davinci-mcasp: Add support for GPIO mode of the pins
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 540f1ba7b3a5596827a3bfeaae9c5e754347c933 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 3 Jan 2019 16:05:52 +0200
+Subject: [PATCH] ASoC: ti: davinci-mcasp: Add support for GPIO mode of the
+ pins
+
+All McASP pin can be configured as GPIO.
+Add gpiochip support for McASP and only enable it when the
+gpio-controller is present in the DT node.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/ti/davinci-mcasp.c | 159 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 156 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index a6a470a76900..a3a67a8f0f54 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -29,6 +29,7 @@
+ #include <linux/platform_data/davinci_asp.h>
+ #include <linux/math64.h>
+ #include <linux/bitmap.h>
++#include <linux/gpio/driver.h>
+ 
+ #include <sound/asoundef.h>
+ #include <sound/core.h>
+@@ -54,6 +55,7 @@ static u32 context_regs[] = {
+ 	DAVINCI_MCASP_AHCLKXCTL_REG,
+ 	DAVINCI_MCASP_AHCLKRCTL_REG,
+ 	DAVINCI_MCASP_PDIR_REG,
++	DAVINCI_MCASP_PFUNC_REG,
+ 	DAVINCI_MCASP_RXMASK_REG,
+ 	DAVINCI_MCASP_TXMASK_REG,
+ 	DAVINCI_MCASP_RXTDM_REG,
+@@ -108,6 +110,10 @@ struct davinci_mcasp {
+ 	/* Used for comstraint setting on the second stream */
+ 	u32	channels;
+ 
++#ifdef CONFIG_GPIOLIB
++	struct gpio_chip gpio_chip;
++#endif
++
+ #ifdef CONFIG_PM
+ 	struct davinci_mcasp_context context;
+ #endif
+@@ -818,9 +824,6 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 	if (mcasp->version < MCASP_VERSION_3)
+ 		mcasp_set_bits(mcasp, DAVINCI_MCASP_PWREMUMGT_REG, MCASP_SOFT);
+ 
+-	/* All PINS as McASP */
+-	mcasp_set_reg(mcasp, DAVINCI_MCASP_PFUNC_REG, 0x00000000);
+-
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
+ 		mcasp_clr_bits(mcasp, DAVINCI_MCASP_XEVTCTL_REG, TXDATADMADIS);
+@@ -1845,6 +1848,147 @@ static u32 davinci_mcasp_rxdma_offset(struct davinci_mcasp_pdata *pdata)
+ 	return offset;
+ }
+ 
++#ifdef CONFIG_GPIOLIB
++static int davinci_mcasp_gpio_request(struct gpio_chip *chip, unsigned offset)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++
++	if (mcasp->num_serializer && offset < mcasp->num_serializer &&
++	    mcasp->serial_dir[offset] != INACTIVE_MODE) {
++		dev_err(mcasp->dev, "AXR%u pin is  used for audio\n", offset);
++		return -EBUSY;
++	}
++
++	/* Do not change the PIN yet */
++
++	return pm_runtime_get_sync(mcasp->dev);
++}
++
++static void davinci_mcasp_gpio_free(struct gpio_chip *chip, unsigned offset)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++
++	/* Set the direction to input */
++	mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
++
++	/* Set the pin as McASP pin */
++	mcasp_clr_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
++
++	pm_runtime_put_sync(mcasp->dev);
++}
++
++static int davinci_mcasp_gpio_direction_out(struct gpio_chip *chip,
++					    unsigned offset, int value)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++	u32 val;
++
++	if (value)
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
++	else
++		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
++
++	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PFUNC_REG);
++	if (!(val & BIT(offset))) {
++		/* Set the pin as GPIO pin */
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
++
++		/* Set the direction to output */
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
++	}
++
++	return 0;
++}
++
++static void davinci_mcasp_gpio_set(struct gpio_chip *chip, unsigned offset,
++				  int value)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++
++	if (value)
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
++	else
++		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDOUT_REG, BIT(offset));
++}
++
++static int davinci_mcasp_gpio_direction_in(struct gpio_chip *chip,
++					   unsigned offset)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++	u32 val;
++
++	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PFUNC_REG);
++	if (!(val & BIT(offset))) {
++		/* Set the direction to input */
++		mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, BIT(offset));
++
++		/* Set the pin as GPIO pin */
++		mcasp_set_bits(mcasp, DAVINCI_MCASP_PFUNC_REG, BIT(offset));
++	}
++
++	return 0;
++}
++
++static int davinci_mcasp_gpio_get(struct gpio_chip *chip, unsigned offset)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++	u32 val;
++
++	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PDSET_REG);
++	if (val & BIT(offset))
++		return 1;
++
++	return 0;
++}
++
++static int davinci_mcasp_gpio_get_direction(struct gpio_chip *chip,
++					    unsigned offset)
++{
++	struct davinci_mcasp *mcasp = gpiochip_get_data(chip);
++	u32 val;
++
++	val = mcasp_get_reg(mcasp, DAVINCI_MCASP_PDIR_REG);
++	if (val & BIT(offset))
++		return 0;
++
++	return 1;
++}
++
++static const struct gpio_chip davinci_mcasp_template_chip = {
++	.owner			= THIS_MODULE,
++	.request		= davinci_mcasp_gpio_request,
++	.free			= davinci_mcasp_gpio_free,
++	.direction_output	= davinci_mcasp_gpio_direction_out,
++	.set			= davinci_mcasp_gpio_set,
++	.direction_input	= davinci_mcasp_gpio_direction_in,
++	.get			= davinci_mcasp_gpio_get,
++	.get_direction		= davinci_mcasp_gpio_get_direction,
++	.base			= -1,
++	.ngpio			= 32,
++};
++
++static int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
++{
++	if (!of_property_read_bool(mcasp->dev->of_node, "gpio-controller"))
++		return 0;
++
++	mcasp->gpio_chip = davinci_mcasp_template_chip;
++	mcasp->gpio_chip.label = dev_name(mcasp->dev);
++	mcasp->gpio_chip.parent = mcasp->dev;
++#ifdef CONFIG_OF_GPIO
++	mcasp->gpio_chip.of_node = mcasp->dev->of_node;
++#endif
++
++	return devm_gpiochip_add_data(mcasp->dev, &mcasp->gpio_chip, mcasp);
++}
++
++#else /* CONFIG_GPIOLIB */
++static inline int davinci_mcasp_init_gpiochip(struct davinci_mcasp *mcasp)
++{
++	return 0;
++}
++#endif /* CONFIG_GPIOLIB */
++
+ static int davinci_mcasp_probe(struct platform_device *pdev)
+ {
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+@@ -2069,6 +2213,15 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 
+ 	mcasp_reparent_fck(pdev);
+ 
++	/* All PINS as McASP */
++	pm_runtime_get_sync(mcasp->dev);
++	mcasp_set_reg(mcasp, DAVINCI_MCASP_PFUNC_REG, 0x00000000);
++	pm_runtime_put(mcasp->dev);
++
++	ret = davinci_mcasp_init_gpiochip(mcasp);
++	if (ret)
++		goto err;
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					&davinci_mcasp_component,
+ 					&davinci_mcasp_dai[pdata->op_mode], 1);
+-- 
+2.20.1
