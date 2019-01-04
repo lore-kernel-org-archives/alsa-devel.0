@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Variable "val" in function
-	rt274_i2c_probe() could be uninitialized" to the asoc tree
-Date: Fri,  4 Jan 2019 14:01:00 +0000 (GMT)
-Message-ID: <20190104140100.790D911270A3@debutante.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B0F9267B42
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:04 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yizhuo <yzhai003@ucr.edu>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: add workaround for silence of rk3288 ACODEC" to the asoc tree
+Date: Fri,  4 Jan 2019 14:01:06 +0000 (GMT)
+Message-ID: <20190104140106.0C1F611270A3@debutante.sirena.org.uk>
+References: <20181220153636.5213-2-katsuhiro@katsuster.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181220153636.5213-2-katsuhiro@katsuster.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Variable "val" in function rt274_i2c_probe() could be uninitialized
+   ASoC: rockchip: add workaround for silence of rk3288 ACODEC
 
 has been applied to the asoc tree at
 
@@ -52,38 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 8c3590de0a378c2449fc1aec127cc693632458e4 Mon Sep 17 00:00:00 2001
-From: Yizhuo <yzhai003@ucr.edu>
-Date: Thu, 3 Jan 2019 13:59:12 -0800
-Subject: [PATCH] ASoC: Variable "val" in function rt274_i2c_probe() could be
- uninitialized
+>From f5758544d98c8bec7793aeea28928f5e8bd45d47 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Date: Fri, 21 Dec 2018 00:36:36 +0900
+Subject: [PATCH] ASoC: rockchip: add workaround for silence of rk3288 ACODEC
 
-Inside function rt274_i2c_probe(), if regmap_read() function
-returns -EINVAL, then local variable "val" leaves uninitialized
-but used in if statement. This is potentially unsafe.
+This patch adds reset and precharge in shutdown of PCM device.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+ACODEC goes to silence if we change Fs to 44.1kHz from 48kHz. This
+workaround seems to work but I don't know this workaround is correct
+sequence or not for ACODEC.
+
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt274.c | 5 ++++-
+ sound/soc/codecs/rk3328_codec.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index 0ef966d56bac..e2855ab9a2c6 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1128,8 +1128,11 @@ static int rt274_i2c_probe(struct i2c_client *i2c,
- 		return ret;
+diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
+index 71f3fc2d970c..f3442a2283ea 100644
+--- a/sound/soc/codecs/rk3328_codec.c
++++ b/sound/soc/codecs/rk3328_codec.c
+@@ -261,9 +261,12 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
+ 		mdelay(1);
  	}
  
--	regmap_read(rt274->regmap,
-+	ret = regmap_read(rt274->regmap,
- 		RT274_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
-+	if (ret)
-+		return ret;
++	/* Workaround for silence when changed Fs 48 -> 44.1kHz */
++	rk3328_codec_reset(rk3328);
 +
- 	if (val != RT274_VENDOR_ID) {
- 		dev_err(&i2c->dev,
- 			"Device with ID register %#x is not rt274\n", val);
+ 	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
+ 			   DAC_CHARGE_CURRENT_ALL_MASK,
+-			   DAC_CHARGE_CURRENT_I);
++			   DAC_CHARGE_CURRENT_ALL_ON);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
