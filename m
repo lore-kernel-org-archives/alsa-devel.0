@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Baytrail: simplify boolean test"
-	to the asoc tree
-Date: Fri,  4 Jan 2019 14:01:49 +0000 (GMT)
-Message-ID: <20190104140149.B88A211270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Haswell: assign booleans to
+	true/false" to the asoc tree
+Date: Fri,  4 Jan 2019 14:01:53 +0000 (GMT)
+Message-ID: <20190104140153.55DF411270A3@debutante.sirena.org.uk>
+References: <20181216224910.16198-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9654C267CB2
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:52 +0100 (CET)
-In-Reply-To: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 70C61267C99
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 15:01:54 +0100 (CET)
+In-Reply-To: <20181216224910.16198-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Baytrail: simplify boolean test
+   ASoC: Intel: Haswell: assign booleans to true/false
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From e295450dd86d974861e1e9e302d67b0a23457ea8 Mon Sep 17 00:00:00 2001
+>From bf88b3c3c277c8138d688a0fc3199b57fecfaf56 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:07 -0600
-Subject: [PATCH] ASoC: Intel: Baytrail: simplify boolean test
+Date: Sun, 16 Dec 2018 16:49:05 -0600
+Subject: [PATCH] ASoC: Intel: Haswell: assign booleans to true/false
 
 Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 2 +-
+ sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index aabb35bf6b96..498fb5346f1a 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -188,7 +188,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		sst_byt_stream_start(byt, pcm_data->stream, 0);
- 		break;
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		if (pdata->restore_stream == true)
-+		if (pdata->restore_stream)
- 			schedule_work(&pcm_data->work);
- 		else
- 			sst_byt_stream_resume(byt, pcm_data->stream);
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index d33bdaf92c57..31fcdf12c67d 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -1216,7 +1216,7 @@ int sst_hsw_stream_commit(struct sst_hsw *hsw, struct sst_hsw_stream *stream)
+ 		return ret;
+ 	}
+ 
+-	stream->commited = 1;
++	stream->commited = true;
+ 	trace_hsw_stream_alloc_reply(stream);
+ 
+ 	return 0;
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index fb9b8608eb3b..2debcc2ed99a 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -861,7 +861,7 @@ static int hsw_pcm_close(struct snd_pcm_substream *substream)
+ 		dev_dbg(rtd->dev, "error: free stream failed %d\n", ret);
+ 		goto out;
+ 	}
+-	pcm_data->allocated = 0;
++	pcm_data->allocated = false;
+ 	pcm_data->stream = NULL;
+ 
+ out:
 -- 
 2.20.1
