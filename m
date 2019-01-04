@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: remove
-	audio-graph-scu-card on Doc" to the asoc tree
-Date: Fri,  4 Jan 2019 17:09:42 +0000 (GMT)
-Message-ID: <20190104170942.ED4AB11270A3@debutante.sirena.org.uk>
+Subject: Applied "ASoC: audio-graph-card: add
+	asoc_graph_card_get_conversion()" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:44 +0000 (GMT)
+Message-ID: <20190104170944.B935E11270A3@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 82617267CC1
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:43 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 563B4267C94
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:45 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: remove audio-graph-scu-card on Doc
+   ASoC: audio-graph-card: add asoc_graph_card_get_conversion()
 
 has been applied to the asoc tree at
 
@@ -52,150 +52,67 @@ to this mail.
 Thanks,
 Mark
 
->From e4f4fdfc57d9c846862ea6109e356b3a4542df5b Mon Sep 17 00:00:00 2001
+>From 40dfae169ad047535d566a4791daae3b08f71c0c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 18 Dec 2018 11:50:27 +0900
-Subject: [PATCH] ASoC: audio-graph-scu-card: remove audio-graph-scu-card on
- Doc
+Date: Thu, 20 Dec 2018 10:45:48 +0900
+Subject: [PATCH] ASoC: audio-graph-card: add asoc_graph_card_get_conversion()
 
-It is already merged into audio-graph-card.
-audio-graph-scu-card is no longer needed.
+audio-graph-card is now supporting normal sound and DPCM sound.
+For DPCM sound, original sound card (= audio-graph-scu) had been
+supported 1 CPU : 1 Codec connection which uses hw_params_fixup()
+for convert-rate/channel.
+But, merged audio-graph-card is completely forgeting about it.
+
+To re-support 1 CPU : 1 Codec DPCM for hw_params_fixup(),
+it need to judge whether it is DPCM by checking convert-rate/channel.
+For this purpose, this patch adds asoc_graph_card_get_conversion()
+as preparation
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/audio-graph-scu-card.txt   | 123 ------------------
- 1 file changed, 123 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+ sound/soc/generic/audio-graph-card.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-deleted file mode 100644
-index 62d42768a00b..000000000000
---- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-+++ /dev/null
-@@ -1,123 +0,0 @@
--Audio-Graph-SCU-Card:
--
--Audio-Graph-SCU-Card is "Audio-Graph-Card" + "ALSA DPCM".
--
--It is based on common bindings for device graphs.
--see ${LINUX}/Documentation/devicetree/bindings/graph.txt
--
--Basically, Audio-Graph-SCU-Card property is same as
--Simple-Card / Simple-SCU-Card / Audio-Graph-Card.
--see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
--    ${LINUX}/Documentation/devicetree/bindings/sound/simple-scu-card.txt
--    ${LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
--
--Below are same as Simple-Card / Audio-Graph-Card.
--
--- label
--- dai-format
--- frame-master
--- bitclock-master
--- bitclock-inversion
--- frame-inversion
--- dai-tdm-slot-num
--- dai-tdm-slot-width
--- clocks / system-clock-frequency
--
--Below are same as Simple-SCU-Card.
--
--- convert-rate
--- convert-channels
--- prefix
--- routing
--
--Required properties:
--
--- compatible				: "audio-graph-scu-card";
--- dais					: list of CPU DAI port{s}
--
--Example 1. Sampling Rate Conversion
--
--	sound_card {
--		compatible = "audio-graph-scu-card";
--
--		label = "sound-card";
--		prefix = "codec";
--		routing = "codec Playback", "DAI0 Playback",
--			  "DAI0 Capture",   "codec Capture";
--		convert-rate = <48000>;
--
--		dais = <&cpu_port>;
--	};
--
--	audio-codec {
--		...
--
--		port {
--			codec_endpoint: endpoint {
--				remote-endpoint = <&cpu_endpoint>;
--			};
--		};
--	};
--
--	dai-controller {
--		...
--		cpu_port: port {
--			cpu_endpoint: endpoint {
--				remote-endpoint = <&codec_endpoint>;
--
--				dai-format = "left_j";
--				...
--			};
--		};
--	};
--
--Example 2. 2 CPU 1 Codec (Mixing)
--
--	sound_card {
--		compatible = "audio-graph-scu-card";
--
--		label = "sound-card";
--		routing = "codec Playback", "DAI0 Playback",
--			  "codec Playback", "DAI1 Playback",
--			  "DAI0 Capture",   "codec Capture";
--
--		dais = <&cpu_port0
--			&cpu_port1>;
--	};
--
--	audio-codec {
--		...
--
--		audio-graph-card,prefix = "codec";
--		audio-graph-card,convert-rate = <48000>;
--		port {
--			codec_endpoint0: endpoint {
--				remote-endpoint = <&cpu_endpoint0>;
--			};
--			codec_endpoint1: endpoint {
--				remote-endpoint = <&cpu_endpoint1>;
--			};
--		};
--	};
--
--	dai-controller {
--		...
--		ports {
--			cpu_port0: port {
--				cpu_endpoint0: endpoint {
--					remote-endpoint = <&codec_endpoint0>;
--
--					dai-format = "left_j";
--					...
--				};
--			};
--			cpu_port1: port {
--				cpu_endpoint1: endpoint {
--					remote-endpoint = <&codec_endpoint1>;
--
--					dai-format = "left_j";
--					...
--				};
--			};
--		};
--	};
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 0d6144560a1e..c3e80bc27e80 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -169,6 +169,22 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
++static void asoc_graph_card_get_conversion(struct device *dev,
++					   struct device_node *ep,
++					   struct asoc_simple_card_data *adata)
++{
++	struct device_node *top = dev->of_node;
++	struct device_node *port = of_get_parent(ep);
++	struct device_node *ports = of_get_parent(port);
++	struct device_node *node = of_graph_get_port_parent(ep);
++
++	asoc_simple_card_parse_convert(dev, top,   NULL,   adata);
++	asoc_simple_card_parse_convert(dev, node,  PREFIX, adata);
++	asoc_simple_card_parse_convert(dev, ports, NULL,   adata);
++	asoc_simple_card_parse_convert(dev, port,  NULL,   adata);
++	asoc_simple_card_parse_convert(dev, ep,    NULL,   adata);
++}
++
+ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 					    struct device_node *cpu_ep,
+ 					    struct device_node *codec_ep,
+@@ -194,11 +210,7 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
+ 	of_property_read_u32(port,  "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(ep,    "mclk-fs", &dai_props->mclk_fs);
+ 
+-	asoc_simple_card_parse_convert(dev, top,   NULL,   &dai_props->adata);
+-	asoc_simple_card_parse_convert(dev, node,  PREFIX, &dai_props->adata);
+-	asoc_simple_card_parse_convert(dev, ports, NULL,   &dai_props->adata);
+-	asoc_simple_card_parse_convert(dev, port,  NULL,   &dai_props->adata);
+-	asoc_simple_card_parse_convert(dev, ep,    NULL,   &dai_props->adata);
++	asoc_graph_card_get_conversion(dev, ep, &dai_props->adata);
+ 
+ 	of_node_put(ports);
+ 	of_node_put(port);
 -- 
 2.20.1
