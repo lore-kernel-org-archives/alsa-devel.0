@@ -1,38 +1,75 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] ALSA:usb audio Higher sample rates on usb audio no
- longer working.
-Date: Fri, 4 Jan 2019 09:23:38 -0600
-Message-ID: <5c7b2c6b-5dcc-7170-f6e1-bf6021bbb72a@linux.intel.com>
-References: <CABqErrECNH+gRiZXM+z=igjAw895e7KLeV6H0EKvMkW0UsVvJw@mail.gmail.com>
- <s5hsgy96fiu.wl-tiwai@suse.de>
- <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
- <s5hd0pdey4e.wl-tiwai@suse.de>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [RFC PATCH 01/10] dma-engine: sun4i: Add a quirk to support
+ different chips
+Date: Fri, 4 Jan 2019 21:08:15 +0530
+Message-ID: <20190104153815.GN13372@vkoul-mobl.Dlink>
+References: <cover.1543782328.git.mesihkilinc@gmail.com>
+ <864e28404a31ba24094f74fd060d11c16562e965.1543782328.git.mesihkilinc@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hd0pdey4e.wl-tiwai@suse.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <864e28404a31ba24094f74fd060d11c16562e965.1543782328.git.mesihkilinc@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Con Kolivas <kernel@kolivas.org>
-Cc: saranya.gopal@intel.com, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>, felipe.balbi@linux.intel.com
+To: Mesih Kilinc <mesihkilinc@gmail.com>
+Cc: dmaengine@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 03-12-18, 00:23, Mesih Kilinc wrote:
+> Allwinner suniv F1C100s has similar DMA engine to sun4i. Several
+> registers has different addresses. Total dma channels, endpoint counts
+> and max burst counts are also different.
 
-> [ Adding linux-usb ML to Cc, as it's a core USB issue ]
->
-> So the device seems incorrectly advertising as if it were supporting
-> UAC3 -- assuming the device is still not UAC3-capable.
->
-> IOW, it's a buggy firmware.  We need some blacklisting, or revert the
-> commit for now, unless any real UAC3 device comes up to the market.
+So if register layout is the only diff, have you thought about using
+regmap_field so that you dont care about the layout
 
-IIRC an UAC3-capable device is required to expose a backwards-compatible 
-configuration (either UAC1 or UAC2). Maybe an additional test can be 
-done to harden the detection so that UAC3 is only chosen if indeed a 
-second audio configuration is present as well.
+> +struct sun4i_dma_config {
+> +	u32 ndma_nr_max_channels;
+> +	u32 ndma_nr_max_vchans;
+> +
+> +	u32 ddma_nr_max_channels;
+> +	u32 ddma_nr_max_vchans;
+> +
+> +	u32 dma_nr_max_channels;
+> +
+> +        void (*set_dst_data_width)(u32 *p_cfg, s8 data_width);
+> +        void (*set_src_data_width)(u32 *p_cfg, s8 data_width);
 
-I also vaguely recall there was talk about adding information in the BOS 
-descriptor, but I don't know if this was ever published.
+aligned please, checkpatch should warn about this stuff
 
--Pierre
+>  struct sun4i_dma_dev {
+> -	DECLARE_BITMAP(pchans_used, SUN4I_DMA_NR_MAX_CHANNELS);
+> +	unsigned long *pchans_used;
+
+why not bitmap?
+
+> +static struct sun4i_dma_config sun4i_a10_dma_cfg = {
+> +	.ndma_nr_max_channels	= SUN4I_NDMA_NR_MAX_CHANNELS,
+> +	.ndma_nr_max_vchans	= SUN4I_NDMA_NR_MAX_VCHANS,
+> +
+> +	.ddma_nr_max_channels	= SUN4I_DDMA_NR_MAX_CHANNELS,
+> +	.ddma_nr_max_vchans	= SUN4I_DDMA_NR_MAX_VCHANS,
+> +
+> +	.dma_nr_max_channels	= SUN4I_NDMA_NR_MAX_CHANNELS + 
+> +		SUN4I_DDMA_NR_MAX_CHANNELS,
+> +
+> +	.set_dst_data_width	= set_dst_data_width_a10,
+> +	.set_src_data_width	= set_src_data_width_a10,
+> +	.convert_burst		= convert_burst_a10,
+> +
+> +	.ndma_drq_sdram		= SUN4I_NDMA_DRQ_TYPE_SDRAM,
+> +	.ddma_drq_sdram		= SUN4I_DDMA_DRQ_TYPE_SDRAM,
+> +
+> +	.max_burst		= SUN4I_MAX_BURST,
+> +};
+> +
+>  static const struct of_device_id sun4i_dma_match[] = {
+> -	{ .compatible = "allwinner,sun4i-a10-dma" },
+> +	{ .compatible = "allwinner,sun4i-a10-dma", .data = &sun4i_a10_dma_cfg },
+
+I would prefer this to be split into two patches, first one does the
+refactoring of driver (better if we split things logically) and then
+addition of new one..
+
+-- 
+~Vinod
