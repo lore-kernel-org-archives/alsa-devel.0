@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: add link_info" to the
-	asoc tree
-Date: Fri,  4 Jan 2019 17:09:28 +0000 (GMT)
-Message-ID: <20190104170928.813A511270A3@debutante.sirena.org.uk>
-References: <87sgyt7zeo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "dt-bindings: ASoC: xlnx,
+	audio-formatter: Document audio formatter bindings" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:35 +0000 (GMT)
+Message-ID: <20190104170935.B5B9E11270A3@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 40C04267C6A
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:29 +0100 (CET)
-In-Reply-To: <87sgyt7zeo.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 57DD5267D29
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:36 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: add link_info
+   dt-bindings: ASoC: xlnx, audio-formatter: Document audio formatter bindings
 
 has been applied to the asoc tree at
 
@@ -53,282 +52,55 @@ to this mail.
 Thanks,
 Mark
 
->From 1e4771a62fd7a6bab058529c450d3d87a8bd5b1a Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Dec 2018 10:45:59 +0900
-Subject: [PATCH] ASoC: audio-graph-card: add link_info
+>From e3e12ec09a18ad779b637f4a006a908cb6045aa7 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Fri, 21 Dec 2018 14:27:27 +0530
+Subject: [PATCH] dt-bindings: ASoC: xlnx, audio-formatter: Document audio
+ formatter bindings
 
-Current audio-graph-card is parsing DAI link for both "normal sound" and
-"DPCM sound". On this driver, it needs to count and parse
-DAIs/Links/Codec Conf from each links.
-Then, counting/parsing link loop are very similar, but using different
-implementation. Because of this background, the link loop code is very
-mysterious. Mystery code will be trouble in the future.
+Added documentation for audio formatter IP core DT bindings.
 
-To preparing cleanup code, this patch adds link_info which handles
-number of DAIs/Links/Codec Conf, and CPU/Codec turn.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 99 ++++++++++++++--------------
- 1 file changed, 51 insertions(+), 48 deletions(-)
+ .../bindings/sound/xlnx,audio-formatter.txt   | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 638333cdac66..cd9beb801fc1 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -39,6 +39,13 @@ struct graph_card_data {
- 	struct gpio_desc *pa_gpio;
- };
- 
-+struct link_info {
-+	int dais; /* number of dai  */
-+	int link; /* number of link */
-+	int conf; /* number of codec_conf */
-+	int cpu;  /* turn for CPU / Codec */
-+};
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+new file mode 100644
+index 000000000000..cbc93c8f4963
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+@@ -0,0 +1,29 @@
++Device-Tree bindings for Xilinx PL audio formatter
 +
- #define graph_priv_to_card(priv) (&(priv)->snd_card)
- #define graph_priv_to_props(priv, i) ((priv)->dai_props + (i))
- #define graph_priv_to_dev(priv) (graph_priv_to_card(priv)->dev)
-@@ -189,13 +196,12 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 					    struct device_node *cpu_ep,
- 					    struct device_node *codec_ep,
- 					    struct graph_card_data *priv,
--					    int *dai_idx, int link_idx,
--					    int *conf_idx, int is_cpu)
-+					    struct link_info *li)
- {
- 	struct device *dev = graph_priv_to_dev(priv);
--	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, link_idx);
--	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
--	struct device_node *ep = is_cpu ? cpu_ep : codec_ep;
-+	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, li->link);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, li->link);
-+	struct device_node *ep = li->cpu ? cpu_ep : codec_ep;
- 	struct device_node *port = of_get_parent(ep);
- 	struct device_node *ports = of_get_parent(port);
- 	struct device_node *node = of_graph_get_port_parent(ep);
-@@ -203,7 +209,9 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
- 	int ret;
- 
--	dev_dbg(dev, "link_of DPCM (for %s)\n", is_cpu ? "CPU" : "Codec");
-+	li->link++;
++The IP core supports DMA, data formatting(AES<->PCM conversion)
++of audio samples.
 +
-+	dev_dbg(dev, "link_of DPCM (%pOF)\n", ep);
- 
- 	of_property_read_u32(top,   "mclk-fs", &dai_props->mclk_fs);
- 	of_property_read_u32(ports, "mclk-fs", &dai_props->mclk_fs);
-@@ -215,7 +223,7 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 	of_node_put(ports);
- 	of_node_put(port);
- 
--	if (is_cpu) {
-+	if (li->cpu) {
- 
- 		/* BE is dummy */
- 		codecs->of_node		= NULL;
-@@ -227,7 +235,7 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 		dai_link->dpcm_merged_format	= 1;
- 
- 		dai =
--		dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
-+		dai_props->cpu_dai	= &priv->dais[li->dais++];
- 
- 		ret = asoc_simple_card_parse_graph_cpu(ep, dai_link);
- 		if (ret)
-@@ -259,10 +267,10 @@ static int asoc_graph_card_dai_link_of_dpcm(struct device_node *top,
- 		dai_link->be_hw_params_fixup	= asoc_graph_card_be_hw_params_fixup;
- 
- 		dai =
--		dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
-+		dai_props->codec_dai	= &priv->dais[li->dais++];
- 
- 		cconf =
--		dai_props->codec_conf	= &priv->codec_conf[(*conf_idx)++];
-+		dai_props->codec_conf	= &priv->codec_conf[li->conf++];
- 
- 		ret = asoc_simple_card_parse_graph_codec(ep, dai_link);
- 		if (ret < 0)
-@@ -314,11 +322,11 @@ static int asoc_graph_card_dai_link_of(struct device_node *top,
- 					struct device_node *cpu_ep,
- 					struct device_node *codec_ep,
- 					struct graph_card_data *priv,
--					int *dai_idx, int link_idx)
-+					struct link_info *li)
- {
- 	struct device *dev = graph_priv_to_dev(priv);
--	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, link_idx);
--	struct graph_dai_props *dai_props = graph_priv_to_props(priv, link_idx);
-+	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, li->link);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, li->link);
- 	struct device_node *cpu_port = of_get_parent(cpu_ep);
- 	struct device_node *codec_port = of_get_parent(codec_ep);
- 	struct device_node *cpu_ports = of_get_parent(cpu_port);
-@@ -327,12 +335,14 @@ static int asoc_graph_card_dai_link_of(struct device_node *top,
- 	struct asoc_simple_dai *codec_dai;
- 	int ret;
- 
--	dev_dbg(dev, "link_of\n");
-+	dev_dbg(dev, "link_of (%pOF)\n", cpu_ep);
++Required properties:
++ - compatible: "xlnx,audio-formatter-1.0"
++ - interrupt-names: Names specified to list of interrupts in same
++		    order mentioned under "interrupts".
++		    List of supported interrupt names are:
++		    "irq_mm2s" : interrupt from MM2S block
++		    "irq_s2mm" : interrupt from S2MM block
++ - interrupts-parent: Phandle for interrupt controller.
++ - interrupts: List of Interrupt numbers.
++ - reg: Base address and size of the IP core instance.
++ - clock-names: List of input clocks.
++   Required elements: "s_axi_lite_aclk", "aud_mclk"
++ - clocks: Input clock specifier. Refer to common clock bindings.
 +
-+	li->link++;
- 
- 	cpu_dai			=
--	dai_props->cpu_dai	= &priv->dais[(*dai_idx)++];
-+	dai_props->cpu_dai	= &priv->dais[li->dais++];
- 	codec_dai		=
--	dai_props->codec_dai	= &priv->dais[(*dai_idx)++];
-+	dai_props->codec_dai	= &priv->dais[li->dais++];
- 
- 	/* Factor to mclk, used in hw_params() */
- 	of_property_read_u32(top,         "mclk-fs", &dai_props->mclk_fs);
-@@ -409,9 +419,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	struct device_node *codec_port		= NULL;
- 	struct device_node *codec_port_old	= NULL;
- 	struct asoc_simple_card_data adata;
-+	struct link_info li;
- 	int rc, ret;
--	int link_idx, dai_idx, conf_idx;
--	int cpu;
- 
- 	ret = asoc_simple_card_of_parse_widgets(card, NULL);
- 	if (ret < 0)
-@@ -421,11 +430,9 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	link_idx	= 0;
--	dai_idx		= 0;
--	conf_idx	= 0;
-+	memset(&li, 0, sizeof(li));
- 	codec_port_old	= NULL;
--	for (cpu = 1; cpu >= 0; cpu--) {
-+	for (li.cpu = 1; li.cpu >= 0; li.cpu--) {
- 		/*
- 		 * Detect all CPU first, and Detect all Codec 2nd.
- 		 *
-@@ -464,22 +471,19 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 					/*
- 					 * for DPCM sound
- 					 */
--					if (!cpu) {
-+					if (!li.cpu) {
- 						if (codec_port_old == codec_port)
- 							continue;
- 						codec_port_old = codec_port;
- 					}
- 					ret = asoc_graph_card_dai_link_of_dpcm(
--						top, cpu_ep, codec_ep, priv,
--						&dai_idx, link_idx++,
--						&conf_idx, cpu);
--				} else if (cpu) {
-+						top, cpu_ep, codec_ep, priv, &li);
-+				} else if (li.cpu) {
- 					/*
- 					 * for Normal sound
- 					 */
- 					ret = asoc_graph_card_dai_link_of(
--						top, cpu_ep, codec_ep, priv,
--						&dai_idx, link_idx++);
-+						top, cpu_ep, codec_ep, priv, &li);
- 				}
- 				if (ret < 0)
- 					return ret;
-@@ -491,9 +495,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- }
- 
- static void asoc_graph_get_dais_count(struct device *dev,
--				      int *link_num,
--				      int *dais_num,
--				      int *ccnf_num)
-+				      struct link_info *li)
- {
- 	struct of_phandle_iterator it;
- 	struct device_node *node = dev->of_node;
-@@ -566,8 +568,8 @@ static void asoc_graph_get_dais_count(struct device *dev,
- 			of_node_put(codec_ep);
- 			of_node_put(codec_port);
- 
--			(*link_num)++;
--			(*dais_num)++;
-+			li->link++;
-+			li->dais++;
- 
- 			memset(&adata, 0, sizeof(adata));
- 			asoc_graph_card_get_conversion(dev, codec_ep, &adata);
-@@ -579,11 +581,11 @@ static void asoc_graph_get_dais_count(struct device *dev,
- 				if (codec_port_old == codec_port)
- 					continue;
- 
--				(*link_num)++;
--				(*ccnf_num)++;
--				(*dais_num)++;
-+				li->link++;
-+				li->conf++;
-+				li->dais++;
- 			} else {
--				(*dais_num)++;
-+				li->dais++;
- 			}
- 			codec_port_old = codec_port;
- 		}
-@@ -615,7 +617,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_card *card;
- 	struct snd_soc_codec_conf *cconf;
--	int lnum = 0, dnum = 0, cnum = 0;
-+	struct link_info li;
- 	int ret, i;
- 
- 	/* Allocate the private data and the DAI link array */
-@@ -623,14 +625,15 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
--	asoc_graph_get_dais_count(dev, &lnum, &dnum, &cnum);
--	if (!lnum || !dnum)
-+	memset(&li, 0, sizeof(li));
-+	asoc_graph_get_dais_count(dev, &li);
-+	if (!li.link || !li.dais)
- 		return -EINVAL;
- 
--	dai_props = devm_kcalloc(dev, lnum, sizeof(*dai_props), GFP_KERNEL);
--	dai_link  = devm_kcalloc(dev, lnum, sizeof(*dai_link),  GFP_KERNEL);
--	dais      = devm_kcalloc(dev, dnum, sizeof(*dais),      GFP_KERNEL);
--	cconf     = devm_kcalloc(dev, cnum, sizeof(*cconf),     GFP_KERNEL);
-+	dai_props = devm_kcalloc(dev, li.link, sizeof(*dai_props), GFP_KERNEL);
-+	dai_link  = devm_kcalloc(dev, li.link, sizeof(*dai_link),  GFP_KERNEL);
-+	dais      = devm_kcalloc(dev, li.dais, sizeof(*dais),      GFP_KERNEL);
-+	cconf     = devm_kcalloc(dev, li.conf, sizeof(*cconf),     GFP_KERNEL);
- 	if (!dai_props || !dai_link || !dais)
- 		return -ENOMEM;
- 
-@@ -640,7 +643,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- 	 * see
- 	 *	soc-core.c :: snd_soc_init_multicodec()
- 	 */
--	for (i = 0; i < lnum; i++) {
-+	for (i = 0; i < li.link; i++) {
- 		dai_link[i].codecs	= &dai_props[i].codecs;
- 		dai_link[i].num_codecs	= 1;
- 		dai_link[i].platform	= &dai_props[i].platform;
-@@ -663,12 +666,12 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- 	card->owner		= THIS_MODULE;
- 	card->dev		= dev;
- 	card->dai_link		= dai_link;
--	card->num_links		= lnum;
-+	card->num_links		= li.link;
- 	card->dapm_widgets	= asoc_graph_card_dapm_widgets;
- 	card->num_dapm_widgets	= ARRAY_SIZE(asoc_graph_card_dapm_widgets);
- 	card->probe		= asoc_graph_soc_card_probe;
- 	card->codec_conf	= cconf;
--	card->num_configs	= cnum;
-+	card->num_configs	= li.conf;
- 
- 	ret = asoc_graph_card_parse_of(priv);
- 	if (ret < 0) {
++Example:
++	audio_ss_0_audio_formatter_0: audio_formatter@80010000 {
++		compatible = "xlnx,audio-formatter-1.0";
++		interrupt-names = "irq_mm2s", "irq_s2mm";
++		interrupt-parent = <&gic>;
++		interrupts = <0 104 4>, <0 105 4>;
++		reg = <0x0 0x80010000 0x0 0x1000>;
++		clock-names = "s_axi_lite_aclk", "aud_mclk";
++		clocks = <&clk 71>, <&clk_wiz_1 0>;
++	};
 -- 
 2.20.1
