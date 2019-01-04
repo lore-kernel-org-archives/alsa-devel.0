@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirks for
-	ASUS MeMO Pad 7 (ME176C)" to the asoc tree
-Date: Fri,  4 Jan 2019 17:08:40 +0000 (GMT)
-Message-ID: <20190104170840.D78C611270A3@debutante.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 08775267C7B
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:08:42 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stephan Gerhold <stephan@gerhold.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rockchip: add workaround for silence of rk3288 ACODEC" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:08 +0000 (GMT)
+Message-ID: <20190104170908.7DD6F11270A3@debutante.sirena.org.uk>
+References: <20181220153636.5213-2-katsuhiro@katsuster.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181220153636.5213-2-katsuhiro@katsuster.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Add quirks for ASUS MeMO Pad 7 (ME176C)
+   ASoC: rockchip: add workaround for silence of rk3288 ACODEC
 
 has been applied to the asoc tree at
 
@@ -52,51 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 51a13e401a83ef37aa98c049c2c30bba885676c2 Mon Sep 17 00:00:00 2001
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Wed, 2 Jan 2019 20:39:08 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for ASUS MeMO Pad 7
- (ME176C)
+>From f5758544d98c8bec7793aeea28928f5e8bd45d47 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Date: Fri, 21 Dec 2018 00:36:36 +0900
+Subject: [PATCH] ASoC: rockchip: add workaround for silence of rk3288 ACODEC
 
-Add quirks to select the correct input map, jack-detect options
-and channel map to make sound work on the ASUS MeMO Pad 7 (ME176C).
+This patch adds reset and precharge in shutdown of PCM device.
 
-Note: Although sound works out of the box, jack detection currently
-requires overriding the ACPI DSDT table. This is necessary because
-the rt5640 ACPI device (10EC5640) has the wrong GPIO listed as
-interrupt (one of the Bluetooth GPIOs).
-The correct GPIO is GPO2 0x0004 (listed as the first GPIO in the
-Intel(R) Audio Machine Driver - AMCR0F28 device).
+ACODEC goes to silence if we change Fs to 44.1kHz from 48kHz. This
+workaround seems to work but I don't know this workaround is correct
+sequence or not for ACODEC.
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rk3328_codec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index a22366ce33c4..ca8b4d5ff70f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -428,6 +428,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ME176C"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
+index 71f3fc2d970c..f3442a2283ea 100644
+--- a/sound/soc/codecs/rk3328_codec.c
++++ b/sound/soc/codecs/rk3328_codec.c
+@@ -261,9 +261,12 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
+ 		mdelay(1);
+ 	}
+ 
++	/* Workaround for silence when changed Fs 48 -> 44.1kHz */
++	rk3328_codec_reset(rk3328);
++
+ 	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
+ 			   DAC_CHARGE_CURRENT_ALL_MASK,
+-			   DAC_CHARGE_CURRENT_I);
++			   DAC_CHARGE_CURRENT_ALL_ON);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
