@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Baytrail: simplify boolean test"
-	to the asoc tree
-Date: Fri,  4 Jan 2019 17:09:52 +0000 (GMT)
-Message-ID: <20190104170952.0742611270A3@debutante.sirena.org.uk>
-References: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Baytrail: remove unneeded
+	variable" to the asoc tree
+Date: Fri,  4 Jan 2019 17:09:53 +0000 (GMT)
+Message-ID: <20190104170953.C632E11270A3@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E1F2C267D78
- for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:53 +0100 (CET)
-In-Reply-To: <20181216224910.16198-7-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C808267D7B
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2019 18:09:54 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Baytrail: simplify boolean test
+   ASoC: Intel: Baytrail: remove unneeded variable
 
 has been applied to the asoc tree at
 
@@ -53,31 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From e295450dd86d974861e1e9e302d67b0a23457ea8 Mon Sep 17 00:00:00 2001
+>From 060d35be2dfa9202d37f967fd20f133c530505d2 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:07 -0600
-Subject: [PATCH] ASoC: Intel: Baytrail: simplify boolean test
+Date: Sun, 16 Dec 2018 16:49:06 -0600
+Subject: [PATCH] ASoC: Intel: Baytrail: remove unneeded variable
 
 Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/baytrail/sst-baytrail-ipc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index aabb35bf6b96..498fb5346f1a 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -188,7 +188,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		sst_byt_stream_start(byt, pcm_data->stream, 0);
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-ipc.c b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+index 260447da32b8..2cd8f9668b50 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-ipc.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-ipc.c
+@@ -278,7 +278,6 @@ static int sst_byt_process_notification(struct sst_byt *byt,
+ 	struct sst_byt_stream *stream;
+ 	u64 header;
+ 	u8 msg_id, stream_id;
+-	int handled = 1;
+ 
+ 	header = sst_dsp_shim_read64_unlocked(sst, SST_IPCD);
+ 	msg_id = sst_byt_header_msg_id(header);
+@@ -298,7 +297,7 @@ static int sst_byt_process_notification(struct sst_byt *byt,
  		break;
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		if (pdata->restore_stream == true)
-+		if (pdata->restore_stream)
- 			schedule_work(&pcm_data->work);
- 		else
- 			sst_byt_stream_resume(byt, pcm_data->stream);
+ 	}
+ 
+-	return handled;
++	return 1;
+ }
+ 
+ static irqreturn_t sst_byt_irq_thread(int irq, void *context)
 -- 
 2.20.1
