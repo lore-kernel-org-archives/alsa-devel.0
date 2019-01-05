@@ -1,82 +1,53 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 18/21] ASoC: da7219: fix endianness issues
-Date: Fri,  4 Jan 2019 20:02:46 -0600
-Message-ID: <20190105020249.8639-19-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/21] ASoC: max98927: fix boolean assignments
+Date: Fri,  4 Jan 2019 20:02:41 -0600
+Message-ID: <20190105020249.8639-14-pierre-louis.bossart@linux.intel.com>
 References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>
+Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Reported by Sparse.
+Reported by Coccinelle:
+sound/soc/codecs/max98927.c:508:2-20: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:889:3-28: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:891:3-28: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:893:2-27: WARNING: Assignment of bool to 0/1
 
-da7219.c:440:44: warning: cast to restricted __le16
-da7219.c:461:13: warning: incorrect type in assignment (different base types)
-da7219.c:461:13:    expected unsigned short [unsigned] [usertype] val
-da7219.c:461:13:    got restricted __le16 [usertype] <noident>
-da7219.c:1451:16: warning: incorrect type in assignment (different base types)
-da7219.c:1451:16:    expected unsigned short [unsigned] [usertype] offset
-da7219.c:1451:16:    got restricted __le16 [usertype] <noident>
-
-da7219-aad.c:150:37: warning: incorrect type in assignment (different base types)
-da7219-aad.c:150:37:    expected unsigned short [unsigned] [usertype] tonegen_freq_hptest
-da7219-aad.c:150:37:    got restricted __le16 [usertype] <noident>
-da7219-aad.c:157:37: warning: incorrect type in assignment (different base types)
-da7219-aad.c:157:37:    expected unsigned short [unsigned] [usertype] tonegen_freq_hptest
-da7219-aad.c:157:37:    got restricted __le16 [usertype] <noident>
-
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/da7219-aad.c | 2 +-
- sound/soc/codecs/da7219.c     | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98927.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 2c7d5088e6f2..e0964b20a389 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -117,7 +117,7 @@ static void da7219_aad_hptest_work(struct work_struct *work)
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index 065303a46535..e53d2007f3be 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -505,7 +505,7 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
  
--	u16 tonegen_freq_hptest;
-+	__le16 tonegen_freq_hptest;
- 	u8 pll_srm_sts, pll_ctrl, gain_ramp_ctrl, accdet_cfg8;
- 	int report = 0, ret = 0;
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		max98927->tdm_mode = 0;
++		max98927->tdm_mode = false;
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		regmap_update_bits(max98927->regmap,
+@@ -886,11 +886,11 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
+ 	if (!of_property_read_u32(i2c->dev.of_node,
+ 		"interleave_mode", &value)) {
+ 		if (value > 0)
+-			max98927->interleave_mode = 1;
++			max98927->interleave_mode = true;
+ 		else
+-			max98927->interleave_mode = 0;
++			max98927->interleave_mode = false;
+ 	} else
+-		max98927->interleave_mode = 0;
++		max98927->interleave_mode = false;
  
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index e46e9f4bc994..ce165047b9f9 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -423,7 +423,7 @@ static int da7219_tonegen_freq_get(struct snd_kcontrol *kcontrol,
- 	struct soc_mixer_control *mixer_ctrl =
- 		(struct soc_mixer_control *) kcontrol->private_value;
- 	unsigned int reg = mixer_ctrl->reg;
--	u16 val;
-+	__le16 val;
- 	int ret;
- 
- 	mutex_lock(&da7219->ctrl_lock);
-@@ -450,7 +450,7 @@ static int da7219_tonegen_freq_put(struct snd_kcontrol *kcontrol,
- 	struct soc_mixer_control *mixer_ctrl =
- 		(struct soc_mixer_control *) kcontrol->private_value;
- 	unsigned int reg = mixer_ctrl->reg;
--	u16 val;
-+	__le16 val;
- 	int ret;
- 
- 	/*
-@@ -1396,7 +1396,7 @@ static int da7219_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	struct snd_soc_component *component = dai->component;
- 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
- 	u8 dai_bclks_per_wclk;
--	u16 offset;
-+	__le16 offset;
- 	u32 frame_size;
- 
- 	/* No channels enabled so disable TDM, revert to 64-bit frames */
+ 	/* regmap initialization */
+ 	max98927->regmap
 -- 
 2.17.1
