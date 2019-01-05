@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/3] axfer: add an explanation about
-	Timer-based scheduling model
-Date: Sat,  5 Jan 2019 17:42:09 +0900
-Message-ID: <20190105084210.29616-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] axfer: add an explanation about
+	advantages/issues of Timer-based scheduling model
+Date: Sat,  5 Jan 2019 17:42:10 +0900
+Message-ID: <20190105084210.29616-4-o-takashi@sakamocchi.jp>
 References: <20190105084210.29616-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
- [209.85.214.194])
- by alsa0.perex.cz (Postfix) with ESMTP id D20CF267C62
- for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 09:42:22 +0100 (CET)
-Received: by mail-pl1-f194.google.com with SMTP id e11so18492317plt.11
- for <alsa-devel@alsa-project.org>; Sat, 05 Jan 2019 00:42:22 -0800 (PST)
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id E767B2678D4
+ for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 09:42:24 +0100 (CET)
+Received: by mail-pf1-f196.google.com with SMTP id w73so19390321pfk.10
+ for <alsa-devel@alsa-project.org>; Sat, 05 Jan 2019 00:42:24 -0800 (PST)
 In-Reply-To: <20190105084210.29616-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,70 +28,46 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit fulfills a subsection titled as 'Timer-based scheduling model'.
+Timer-based scheduling model has some merits against IRQ-based
+scheduling model. However, as of Linux kernel v4.21, ALSA PCM interface
+between kernel/userspace has a lack of some features.
 
-This scheduling model is introduced in a recent decade. In this model,
-applications should take care of its timing to operate sampled data
-according to any timer. This is an optional behaviour of runtime of
-PCM substream.
+This commit adds a subsection to describe it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/axfer-transfer.1 | 45 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ axfer/axfer-transfer.1 | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/axfer/axfer-transfer.1 b/axfer/axfer-transfer.1
-index a84ab3a..fbe0747 100644
+index fbe0747..4ff6082 100644
 --- a/axfer/axfer-transfer.1
 +++ b/axfer/axfer-transfer.1
-@@ -710,6 +710,51 @@ option with
- .I irq
- value.
+@@ -755,6 +755,28 @@ usage of rewinding/forwarding, applications can achieve low latency between
+ transmission position and handling position even if they uses large size of
+ PCM buffers.
  
-+.SS Timer\-based scheduling model
++.SS Advantages and issues
 +
-+The
-+.I no\-period\-wakeup
-+mode is an optional mode of runtime of PCM substream. The mode assumes a
-+specific feature of hardware and assist of in\-kernel driver and PCM
-+applications. In this mode, in\-kernel drivers don't operate hardware to
-+generate periodical notification for transmission of audio data frame.
-+The hardware should automatically continue transmission of audio data frame
-+without periodical operation of the drivers; e.g. according to auto\-triggered
-+DMA transmission, a chain of registered descriptors.
++Ideally, timer\-based scheduling model has some advantages than IRQ\-based
++scheduling model. At first, no interrupt context runs for PCM substream. The
++PCM substream is handled in any process context only. No need to care of race
++conditions between IRQ and process contexts. This reduces some concerns for
++some developers of drivers and applications. Secondary, CPU time is not used
++for handlers on the interrupt context. The CPU time can be dedicated for the
++other tasks. This is good in a point of Time Sharing System. Thirdly, hardware
++is not configured to generate interrupts. This is good in a point of reduction
++of overall power consumption possibly.
 +
-+In this mode, nothing wakes up blocked processes, therefore PCM applications
-+should be programmed without any blocking operation. For this reason, this mode
-+is enabled when the PCM applications explicitly configure hardware parameter to
-+runtime of PCM substream, to prevent disorder of existing applications.
-+Additionally, nothing maintains timing for transmission of audio data frame,
-+therefore the PCM applications should voluntarily handle any timer to queue
-+audio data frame in buffer of the PCM substream for lapse of time. Furthermore,
-+instead of driver, the PCM application should call a helper function of ALSA
-+PCM core to update a position to head of hardware transmission and to check
-+XRUN.
-+
-+In
-+.I axfer
-+, this is called
-+.I timer\-based
-+scheduling model and available as long as hardware/driver assists
-+.I no\-period\-wakeup
-+runtime. Users should explicitly set this mode by usage of
-+.I \-\-sched\-model
-+option with
-+.I timer
-+value.
-+
-+In the scheduling model, PCM applications need to care of available space on
-+PCM buffer by lapse of time, typically by yielding CPU and wait for
-+rescheduling. For the yielding, timeout is calculated for preferable amount of
-+PCM frames to process. This is convenient to a kind of applications, like sound
-+servers. when an I/O thread of the server wait for the timeout, the other
-+threads can process audio data frames for server clients. Furthermore, with
-+usage of rewinding/forwarding, applications can achieve low latency between
-+transmission position and handling position even if they uses large size of
-+PCM buffers.
++In either scheduling model, the hardware should allow drivers to read the
++number of audio data frame transferred between the dedicated memory and the
++device memory for audio serial bus. However, in timer\-based scheduling model,
++fine granularity and accuracy of the value is important. Actually hardware
++performs transmission between dedicated memory and device memory for a small
++batch of audio data frames or bytes. In a view of PCM applications, the
++granularity in current transmission is required to decide correct timeout for
++each I/O operation. As of Linux kernel v4.21, ALSA PCM interface between
++kernel/userspace has no feature to report it.
 +
  .SH COMPATIBILITY TO APLAY
  
