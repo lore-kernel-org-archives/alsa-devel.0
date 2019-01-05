@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 11/21] ASoc: rt286: fix boolean tests
-Date: Fri,  4 Jan 2019 20:02:39 -0600
-Message-ID: <20190105020249.8639-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/21] ASoC: rt5651: fix boolean assignments
+Date: Fri,  4 Jan 2019 20:02:42 -0600
+Message-ID: <20190105020249.8639-15-pierre-louis.bossart@linux.intel.com>
 References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
@@ -11,45 +11,41 @@ Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Pierre-L
 List-Id: alsa-devel@alsa-project.org
 
 Reported by Coccinelle:
-sound/soc/codecs/rt286.c:927:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:930:5-8: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:299:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:302:5-8: WARNING: Comparison to bool
+sound/soc/codecs/rt5651.c:750:2-17: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/rt5651.c:754:2-17: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/rt5651.c:2192:1-16: WARNING: Assignment of bool to 0/1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt286.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 0b0f748bffbe..c9457c247a03 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -296,10 +296,10 @@ static void rt286_jack_detect_work(struct work_struct *work)
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index b7ba64350a07..3882e238ff99 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -747,11 +747,11 @@ static int rt5651_hp_event(struct snd_soc_dapm_widget *w,
+ 			RT5651_HP_CP_PD | RT5651_HP_SG_EN);
+ 		regmap_update_bits(rt5651->regmap, RT5651_PR_BASE +
+ 			RT5651_CHPUMP_INT_REG1, 0x0700, 0x0400);
+-		rt5651->hp_mute = 0;
++		rt5651->hp_mute = false;
+ 		break;
  
- 	rt286_jack_detect(rt286, &hp, &mic);
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		rt5651->hp_mute = 1;
++		rt5651->hp_mute = true;
+ 		usleep_range(70000, 75000);
+ 		break;
  
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
+@@ -2189,7 +2189,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
  
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
+ 	rt5651->irq = i2c->irq;
+-	rt5651->hp_mute = 1;
++	rt5651->hp_mute = true;
  
- 	snd_soc_jack_report(rt286->jack, status,
-@@ -924,10 +924,10 @@ static irqreturn_t rt286_irq(int irq, void *data)
- 	/* Clear IRQ */
- 	regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x1, 0x1);
- 
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
- 
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
- 
- 	snd_soc_jack_report(rt286->jack, status,
+ 	INIT_DELAYED_WORK(&rt5651->bp_work, rt5651_button_press_work);
+ 	INIT_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
 -- 
 2.17.1
