@@ -1,40 +1,86 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 21/21] ASoC: rl6437a: use __be32 for a __be32 buf
-Date: Fri,  4 Jan 2019 20:02:49 -0600
-Message-ID: <20190105020249.8639-22-pierre-louis.bossart@linux.intel.com>
-References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 00/21] ASoC: codecs: remove warnings with
+	Sparse, Coccinelle and W=1
+Date: Fri,  4 Jan 2019 20:02:28 -0600
+Message-ID: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDFAA267AC1
+ for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 03:03:32 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
+This patchset contains mostly trivial fixes to make tools happy. I
+don't get paid more by sending lots of small patches, my only goal is
+to make sure tools don't spit out too many warnings and drown
+potential problems.
 
-The buf in rl6347a_hw_read is __be32.
+Thanks for Bard Liao for his help, and Adam Thompson and Oder Chiou
+for off-line reviews.
 
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rl6347a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Bard liao (4):
+  ASoC: rt5645: remove unused mux define
+  ASoC: rt5670: remove unused mux/mixer define
+  ASoC: rt5645: store eq kcontrol byte in __be
+  ASoC: rl6437a: use __be32 for a __be32 buf
 
-diff --git a/sound/soc/codecs/rl6347a.c b/sound/soc/codecs/rl6347a.c
-index 8f571cf8edd4..c0d729b45277 100644
---- a/sound/soc/codecs/rl6347a.c
-+++ b/sound/soc/codecs/rl6347a.c
-@@ -64,8 +64,8 @@ int rl6347a_hw_read(void *context, unsigned int reg, unsigned int *value)
- 	struct i2c_client *client = context;
- 	struct i2c_msg xfer[2];
- 	int ret;
--	__be32 be_reg;
--	unsigned int index, vid, buf = 0x0;
-+	__be32 be_reg, buf = 0x0;
-+	unsigned int index, vid;
- 
- 	/* handle index registers */
- 	if (reg <= 0xff) {
+Pierre-Louis Bossart (17):
+  ASoC: dmic: declare trigger function as static
+  ASoC: max98090: remove unused constant variables
+  ASoC: es8316: remove unused constant variables
+  ASoC: codecs: fix kernel doc descriptions
+  ASoC: max98383: fix boolean assignments to true/false
+  ASoC: rt298: fix boolean tests
+  ASoC: cs4271: fix boolean assignments
+  ASoC: rt274: fix boolean tests
+  ASoc: rt286: fix boolean tests
+  ASoC: rt5640: fix boolean assignments
+  ASoC: max98927: fix boolean assignments
+  ASoC: rt5651: fix boolean assignments
+  ASoC: nau8824: fix boolean assignment
+  ASoC: tscs42xx.c: fix boolean test
+  ASoC: mt6351: remove unneeded variable
+  ASoC: da7219: fix endianness issues
+  ASoC: da7219: use logical AND
+
+ sound/soc/codecs/cs4271.c     |  4 +--
+ sound/soc/codecs/da7219-aad.c |  2 +-
+ sound/soc/codecs/da7219.c     |  8 ++---
+ sound/soc/codecs/dmic.c       |  4 +--
+ sound/soc/codecs/es8316.c     |  4 ---
+ sound/soc/codecs/max98090.c   | 15 --------
+ sound/soc/codecs/max98373.c   |  6 ++--
+ sound/soc/codecs/max98927.c   |  8 ++---
+ sound/soc/codecs/mt6351.c     |  4 +--
+ sound/soc/codecs/nau8824.c    |  2 +-
+ sound/soc/codecs/nau8825.c    |  1 +
+ sound/soc/codecs/rl6347a.c    |  4 +--
+ sound/soc/codecs/rt274.c      |  8 ++---
+ sound/soc/codecs/rt286.c      |  8 ++---
+ sound/soc/codecs/rt298.c      | 12 +++----
+ sound/soc/codecs/rt5514.c     |  1 +
+ sound/soc/codecs/rt5640.c     |  6 ++--
+ sound/soc/codecs/rt5645.c     | 66 +++++++++--------------------------
+ sound/soc/codecs/rt5651.c     |  6 ++--
+ sound/soc/codecs/rt5670.c     | 54 ----------------------------
+ sound/soc/codecs/rt5677.c     |  8 ++---
+ sound/soc/codecs/tscs42xx.c   |  2 +-
+ 22 files changed, 63 insertions(+), 170 deletions(-)
+
+
+base-commit: 14f9b94a3274b047126c8c0ff39dc495e8d1acab
 -- 
 2.17.1
