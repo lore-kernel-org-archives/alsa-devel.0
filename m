@@ -1,79 +1,102 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 05/21] ASoC: rt5645: remove unused mux define
-Date: Fri,  4 Jan 2019 20:02:33 -0600
-Message-ID: <20190105020249.8639-6-pierre-louis.bossart@linux.intel.com>
-References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/3] axfer: add an explanation about IRQ-based
+	scheduling model
+Date: Sat,  5 Jan 2019 17:42:08 +0900
+Message-ID: <20190105084210.29616-2-o-takashi@sakamocchi.jp>
+References: <20190105084210.29616-1-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id EECA4267C36
+ for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 09:42:20 +0100 (CET)
+Received: by mail-pl1-f194.google.com with SMTP id a14so18469834plm.12
+ for <alsa-devel@alsa-project.org>; Sat, 05 Jan 2019 00:42:20 -0800 (PST)
+In-Reply-To: <20190105084210.29616-1-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
+This commit adds a section titled as 'SCHEDULING MODEL' and fulfill a
+subsection titled as 'IRQ-based scheduling model'.
 
-rt5645_if3_adc_in_mux, rt5645_inr_mux, and rt5645_inl_mux are not used.
-Remove them from the driver.
+This scheduling model is for a typical applications to operate a kind of
+data sampled against actual time. In this model, ALSA PCM core maintains
+timing of the applications with notification of hardware by
+blocking/waking up their processes. This is a default behaviour of
+runtime of PCM substream.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/rt5645.c | 36 ------------------------------------
- 1 file changed, 36 deletions(-)
+ axfer/axfer-transfer.1 | 45 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index be674688dc40..52ce380c8f3a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -1288,30 +1288,6 @@ static SOC_ENUM_SINGLE_DECL(
- static const struct snd_kcontrol_new rt5645_dac_r2_mux =
- 	SOC_DAPM_ENUM("DAC2 R source", rt5645_dac2r_enum);
+diff --git a/axfer/axfer-transfer.1 b/axfer/axfer-transfer.1
+index 272e601..a84ab3a 100644
+--- a/axfer/axfer-transfer.1
++++ b/axfer/axfer-transfer.1
+@@ -665,7 +665,50 @@ named \(aqchannels\-1.au\(aq and \(aqchannels\-2.au\(aq.
  
--
--/* INL/R source */
--static const char * const rt5645_inl_src[] = {
--	"IN2P", "MonoP"
--};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5645_inl_enum, RT5645_INL1_INR1_VOL,
--	RT5645_INL_SEL_SFT, rt5645_inl_src);
--
--static const struct snd_kcontrol_new rt5645_inl_mux =
--	SOC_DAPM_ENUM("INL source", rt5645_inl_enum);
--
--static const char * const rt5645_inr_src[] = {
--	"IN2N", "MonoN"
--};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5645_inr_enum, RT5645_INL1_INR1_VOL,
--	RT5645_INR_SEL_SFT, rt5645_inr_src);
--
--static const struct snd_kcontrol_new rt5645_inr_mux =
--	SOC_DAPM_ENUM("INR source", rt5645_inr_enum);
--
- /* Stereo1 ADC source */
- /* MX-27 [12] */
- static const char * const rt5645_stereo_adc1_src[] = {
-@@ -1611,18 +1587,6 @@ static SOC_ENUM_SINGLE_DECL(
- static const struct snd_kcontrol_new rt5645_if2_adc_in_mux =
- 	SOC_DAPM_ENUM("IF2 ADC IN source", rt5645_if2_adc_in_enum);
+ .SH SCHEDULING MODEL
  
--/* MX-2F [1:0] */
--static const char * const rt5645_if3_adc_in_src[] = {
--	"IF_ADC1", "IF_ADC2", "VAD_ADC"
--};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5645_if3_adc_in_enum, RT5645_DIG_INF1_DATA,
--	RT5645_IF3_ADC_IN_SFT, rt5645_if3_adc_in_src);
--
--static const struct snd_kcontrol_new rt5645_if3_adc_in_mux =
--	SOC_DAPM_ENUM("IF3 ADC IN source", rt5645_if3_adc_in_enum);
--
- /* MX-31 [15] [13] [11] [9] */
- static const char * const rt5645_pdm_src[] = {
- 	"Mono DAC", "Stereo DAC"
+-(placeholder)
++In a design of ALSA PCM core, runtime of PCM substream supports two modes;
++.I period\-wakeup
++and
++.I no\-period\-wakeup.
++These two modes are for different scheduling models.
++
++.SS IRQ\-based scheduling model
++
++As a default,
++.I period\-wakeup
++mode is used. In this mode, in\-kernel drivers should operate hardware to
++generate periodical notification for transmission of audio data frame. The
++interval of notification is equivalent to the same amount of audio data frame
++as one period of buffer, against actual time.
++
++In a handler assigned to the notification, a helper function of ALSA PCM core
++is called to update a position to head of hardware transmission, then compare
++it with a position to head of application operation to judge overrun/underrun
++(XRUN) and to wake up blocked processes.
++
++For this purpose, hardware IRQ of controller for serial audio bus such as
++Inter\-IC sound is typically used. In this case, the controller generates the
++IRQ according to transmission on the serial audio bus. In the handler assigned
++to the IRQ, direct media access (DMA) transmission is requested between
++dedicated host memory and device memory.
++
++If target hardware doesn't support this kind of mechanism, the periodical
++notification should be emulated by any timer; e.g. hrtimer, kernel timer.
++External PCM plugins generated by PCM plugin SDK in alsa\-lib should also
++emulate the above behaviour.
++
++In this mode, PCM applications are programmed according to typical way of I/O
++operations. They execute blocking system calls to read/write audio data frame
++in buffer of PCM substream, or blocking system calls to wait until any audio
++data frame is available. In
++.I axfer
++, this is called
++.I IRQ\-based
++scheduling model and a default behaviour. Users can explicitly configure this
++mode by usage of
++.I \-\-sched\-model
++option with
++.I irq
++value.
+ 
+ .SH COMPATIBILITY TO APLAY
+ 
 -- 
-2.17.1
+2.19.1
