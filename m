@@ -1,112 +1,40 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Need help fixing pop/click artifacts in an ASOC
- driver
-Date: Sat, 5 Jan 2019 13:01:29 -0600
-Message-ID: <668e42a5-8c99-4807-11af-456bb9d611e5@linux.intel.com>
-References: <20181115003313.GH2089@sirena.org.uk>
- <56e02571-fd5b-0add-c6c7-98e4f746448c@gmail.com>
- <20181115190403.GI2089@sirena.org.uk>
- <00b68fe8-403d-b129-1166-f414e5bd21ab@gmail.com>
- <724efe46-d604-0de1-caa2-efcfd7c91510@gmail.com>
- <20181213174229.GU10669@sirena.org.uk>
- <fff018b4-c2e5-d3f3-0589-b837e62e9c5e@gmail.com>
- <4b358258-d7ae-d82e-cd58-d4b9e3b6f148@linux.intel.com>
- <20181217173930.GF27909@sirena.org.uk>
- <273cb3d8-7cd6-867a-ebb4-22217f88e0a8@linux.intel.com>
- <20181217190248.GI27909@sirena.org.uk>
- <4282752b-80fd-fe13-69a2-6814f5b85ee4@linux.intel.com>
+From: Con Kolivas <kernel@kolivas.org>
+Subject: Re: [PATCH V2] usbcore: Select only first configuration for non-UAC3
+ compliant devices
+Date: Sun, 6 Jan 2019 09:02:05 +1100
+Message-ID: <CABqErrEyF0Fr57gk12_XNNhLdQX0A9b9OPyGeVfGVh1dvHhRrw@mail.gmail.com>
+References: <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
+ <1546709942-28634-1-git-send-email-saranya.gopal@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F9A62678F6
- for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 20:01:31 +0100 (CET)
-In-Reply-To: <4282752b-80fd-fe13-69a2-6814f5b85ee4@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Dimitris Papavasiliou <dpapavas@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1546709942-28634-1-git-send-email-saranya.gopal@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Gopal, Saranya" <saranya.gopal@intel.com>
+Cc: gregkh@linuxfoundation.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, felipe.balbi@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEyLzE3LzE4IDE6MTQgUE0sIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Cj4gT24g
-MTIvMTcvMTggMTowMiBQTSwgTWFyayBCcm93biB3cm90ZToKPj4gT24gTW9uLCBEZWMgMTcsIDIw
-MTggYXQgMTI6MDg6MzZQTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+PiBP
-biAxMi8xNy8xOCAxMTozOSBBTSwgTWFyayBCcm93biB3cm90ZToKPj4+PiBUaGF0IGxvb2tzIGEg
-bG90IGxpa2UgdGhlIENPREVDIHNob3VsZCBiZSBleHBvcnRpbmcgYSBHUElPIGRyaXZlciAKPj4+
-PiBzbyB0aGUKPj4+PiBtYWNoaW5lIGRyaXZlciBkb2Vzbid0IGFjdHVhbGx5IG5lZWQgdGhlIHJl
-Z21hcD/CoCBUaGUgb25seSByZWdpc3Rlcgo+Pj4+IHRvdWNoZWQgaXMgX0dQSU9fQ09OVFJPTF8x
-Lgo+Pj4gSSBhbSBub3Qgc3VyZSB3aGF0IHlvdSBtZWFudCBieSAnZXhwb3J0aW5nIGEgR1BJTyBk
-cml2ZXInIChtb3N0bHkgCj4+PiBiZWNhdXNlIEkKPj4+IGFtIG5vdCBmYW1pbGlhciB3aXRoIGFu
-eSBHUElPIGZyYW1ld29yaykgYnV0IGluZGVlZCB0aGUgbG9jYWwgCj4+PiBvc2NpbGxhdG9yCj4+
-PiBjaG9pY2UgaXMgY29udHJvbGxlZCBieSBhIHNpbmdsZSByZWdpc3RlciBhY2Nlc3NpYmxlIHRo
-cm91Z2ggcmVnbWFwIAo+Pj4gLSBhbmQKPj4+IGNoYW5nZXMgdG8gdGhhdCByZWdpc3RlciBzaG91
-bGQgb25seSBoYXBwZW4gd2hlbiB0aGUgZGV2aWNlIGlzIGEgCj4+PiBzcGVjaWZpYwo+Pj4gc3Rh
-dGUgdG8gcHJldmVudCBjbGljay9wb3BzLgo+PiBUaGUgR1BJTyBmcmFtZXdvcmsgcHJvdmlkZXMg
-YSBmYWlybHkgc2ltcGxlIHZpZXcgb2YgR1BJT3MgLSBmcm9tIGEgdXNlcgo+PiBwb2ludCBvZiB2
-aWV3IGl0J3MganVzdCBnZXR0aW5nIG9yIHNldHRpbmcgdGhlIHZhbHVlIG9mIGEgbGluZS4gSXQK
-Pj4gbG9va3MgbGlrZSB0aGUgcmVnaXN0ZXIgeW91J3JlIGNvbnRyb2xsaW5nIGlzbid0IGFjdHVh
-bGx5IGNvbnRyb2xsaW5nIGEKPj4gY2hpcCBmZWF0dXJlIGRpcmVjdGx5IGJ1dCByYXRoZXIgaXMg
-c2V0dGluZyBhIEdQSU8gb24gdGhlIGNoaXAgd2hpY2gKPj4gY29udHJvbHMgYW4gZXh0ZXJuYWwg
-Y2xvY2sgZ2VuZXJhdG9yLsKgIEkgY291bGQgYmUgbWlzcGFyc2luZyB0aGluZ3MsCj4+IHRob3Vn
-aC7CoCBJIGRpZCBnbGFuY2UgYXQgdGhlIHBjbTUxMnggZGF0YXNoZWV0IGFuZCBkaWRuJ3Qgc2Vl
-IHBpbnMgb3IKPj4gYW55dGhpbmcgdGhhdCBsb29rZWQgbGlrZSBhbiBvc2NpbGxhdG9yIGJ1dCBJ
-IGNvdWxkJ3ZlIG1pc3NlZCBzb21ldGhpbmcuCj4gWW91IGFyZSBjb3JyZWN0LCB0aGVyZSBhcmUg
-dHdvIHZhcmlhbnRzIG9mIHRoZSBIaWZpYmVycnkgREFDKywgdGhlIAo+ICdQUk8nIHZlcnNpb24g
-d2l0aCB0d28gb3NjaWxsYXRvcnMgb24gYm9hcmQgKFNvQyBjb25maWd1cmVkIGFzIAo+IGJpdGNs
-b2NrIGFuZCBmc3luYyBzbGF2ZSkgYW5kIHRoZSByZWd1bGFyIHdpdGhvdXQgKGFsbCBjbG9ja3Mg
-cHJvdmlkZWQgCj4gYnkgdGhlIFNvQyBpbiB0aGF0IGNhc2UpLiBJdCdzIGluZGVlZCBhIEdQSU8g
-Y29udHJvbCBvZiBhbiBleHRlcm5hbCAKPiBjb21wb25lbnQsIG5vdCBhbiBvbi1jaGlwIGNhcGFi
-aWxpdHkuCj4+Cj4+PiBUaGUgbWFjaGluZSBkcml2ZXIgc2hvdWxkIHVzZSBjbGtfc2V0X3JhdGUo
-KSBhbmQgbm90IGRpcmVjdGx5IGhhbmRsZSAKPj4+IHJlZ21hcAo+Pj4gb3IgY29kZWMgc3R1ZmYu
-IElmIGl0IGRvZXMsIG9yIGlmIHRoZSBjbG9jayBmcmFtZXdvcmsgaXNuJ3QgcmVsZXZhbnQgCj4+
-PiBoZXJlCj4+PiB0aGVuIHdlIGNhbiBzaW1wbGlmeSBhbGwgdGhpcyBhcyBzdWdnZXN0ZWQgaW4K
-Pj4+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTA0NDQzODcvLiBXaGF0IEkg
-d2FzIHRyeWluZyB0byAKPj4+IGRvIHdpdGgKPj4+IHRoZSBnaXRodWIgdXBkYXRlIGlzIHRvIGtl
-ZXAgdGhlIGNsb2NrIGZyYW1ld29yaywgdGllIGl0IGNsb3NlciB3aXRoIAo+Pj4gdGhlCj4+PiBj
-b2RlYyBwYXJ0cyB3aXRoIGEgc3RhdGUgdmFyaWFibGUgdGhhdCBwcmV2ZW50cyB3aWxkIGNoYW5n
-ZXMgd2l0aG91dCAKPj4+IGdvaW5nCj4+PiBiYWNrIHRvIGEgJ3NhZmUnIGlkbGUgc3RhdGUgKHNp
-bWlsYXIgaWRlYSBhcyBQdWxzZUF1ZGlvIGNsb2NrIAo+Pj4gY2hhbmdlcywgd2hpY2gKPj4+IGNh
-biBvbmx5IGhhcHBlbiB3aGVuIHRoZSBQQ00gaXMgbm90IG9wZW5lZCBhbmQgdXNlZCkuCj4+IFJp
-Z2h0LCBJIHRoaW5rIGJyaW5naW5nIGluIHRoZSBjbG9jayBmcmFtZXdvcmsgbW9yZSBpcyBnb29k
-IC0KPj4gZWZmZWN0aXZlbHkgYWxsIEknbSBzdWdnZXN0aW5nIGlzIGNoYW5naW5nIHRoZSBjb250
-cm9sIGludGVyZmFjZSB1c2VkIHRvCj4+IHNldCB0aGUgY2xvY2sgdG8gYWRkIGFuIGluZGlyZWN0
-aW9uIHRocm91Z2ggZ3Bpb2xpYiBzbyB5b3UgZG9uJ3QgbmVlZCB0bwo+PiBwYXNzIHRoZSByYXcg
-cmVnaXN0ZXIgbWFwIGFyb3VuZC4KPiB0aGlzIGxvb2tzIGVsZWdhbnQgaW5kZWVkLCB3aWxsIGxv
-b2sgaW50byBpdC4gSSdsbCBoYXZlIHRvIGxlYXJuIG1vcmUgCj4gb24gZ3Bpb3MgOi0pCgpJIHdh
-cyBhYmxlIHRvIGV4cG9zZSB0aGUgNiBQQ001MTJ4IEdQSU9zLCB0b2dnbGUgdGhlbSBmcm9tIHVz
-ZXJzcGFjZSBhcyAKd2VsbCBhcyBmcm9tIHRoZSBjbG9jayBkcml2ZXIsIGl0J3MgaW5kZWVkIHNp
-bXBsZSBlbm91Z2ggYW5kIGNvdWxkIGJlIAp1c2VmdWwgZm9yIG90aGVyIHVzYWdlcywgYnV0IHRo
-ZXJlIGFyZSBzdGlsbCB0d28gaXNzdWVzIHdpdGggdGhlIGNvbmNlcHQ6CgoxLiBBZnRlciB0b2dn
-bGluZyBhIEdQSU8gdG8gZW5hYmxlIHRoZSA0NC4xIG9yIDQ4a0h6IG9zY2lsbGF0b3JzLCB0aGUg
-CmNsb2NrIGRyaXZlciBjYW5ub3QgdmVyaWZ5IHRoYXQgdGhlIGNvZGVjIGlzIGxvY2tlZCwgZm9y
-IHRoaXMgaXQnZCBuZWVkIAphY2Nlc3MgdG8gdGhlIHJlZ21hcCB0byBjaGVjayB0aGUgUENNNTEy
-eF9SQVRFX0RFVF80IHJlZ2lzdGVyLiBUaGlzIGlzIApyZWFsbHkgbmVlZGVkIHRvIGRldGVjdCBp
-ZiB0aGUgbG9jYWwgb3NjaWxsYXRvcnMgYXJlIHBvcHVsYXRlZCBvciBub3QgCmFuZCBoZW5jZSBk
-ZXRlY3QgdGhlIERBQysgUFJPIHZzLiB0aGUgcGxhaW4gdmFuaWxsYSBEQUMrLiBBbiBhbHRlcm5h
-dGl2ZSAKd291bGQgYmUgdG8gbGV0IHRoZSBjbG9jayBkcml2ZXIgcHJvZ3JhbSBHUElPcywgYW5k
-IGNoZWNrIGluIHRoZSBjb2RlYyAKZHJpdmVyIGlzIHRoZSBjbG9jayBpcyB2YWxpZCBvciBub3Qg
-YWZ0ZXIgdGhlIGNhbGwgdG8gCmNsa19wcmVwYXJlX2VuYWJsZSgpIGFuZCBmYWxsIGJhY2sgdG8g
-c2xhdmUgbW9kZSBpbiB0aGUgbGF0dGVyIGNhc2UuIEkgCmJlbGlldmUgaXQnZCBiZSBtb3JlIGVs
-ZWdhbnQgdG8gZG8gYWxsIHRoZXNlIGNoZWNrcyBpbiB0aGUgY2xvY2sgZHJpdmVyIAppdHNlbGYs
-IGFuZCBvbmx5IHJlZ2lzdGVyIGEgY2xvY2sgaWYgdGhvc2UgbG9jYWwgb3NjaWxsYXRvcnMgYWN0
-dWFsbHkgCmV4aXN0LiBJIGFsc28gY2FuJ3QgZmlndXJlIG91dCBob3cgdG8gcGFzcyBhIHJlZ21h
-cCBhcyBwbGF0Zm9ybSBkYXRhLCAKdGhlIHNpemUgYXJndW1lbnQgY2FuJ3QgYmUganVzdCBhIHBv
-aW50ZXIgYW5kIHNpemVvZigqcmVnbWFwKSB3b24ndCB3b3JrIAplaXRoZXIuCgoyLiB0aGVyZSBp
-cyBhIG11dHVhbCBkZXBlbmRlbmN5IGJldHdlZW4gY29kZWMgYW5kIGNsb2NrIGRyaXZlci4gVGhl
-IApjb2RlYyBleHBvc2VzIHRoZSBncGlvcyBuZWVkZWQgYnkgdGhlIGNsb2NrIGRyaXZlciB3aGlj
-aCBpbiB0dXJuIApyZWdpc3RlcnMgYSBjbG9jayBuZWVkZWQgYnkgdGhlIGNvZGVjIGRyaXZlci4g
-aXMgaXQgYWNjZXB0YWJsZSB0byBjcmVhdGUgCnRoZSBjbG9jayBwbGF0Zm9ybSBkZXZpY2UgZnJv
-bSB0aGUgY29kZWMgZHJpdmVyIHRvIHJlbW92ZSBhbnkgc29ydCBvZiAKcmFjZSBjb25kaXRpb25z
-IG9yIG5lZWQgZm9yIGRlZmVycmVkIHByb2Jlcz8KClRoYW5rcwoKLVBpZXJyZQoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi Saranya
+
+On Sun, 6 Jan 2019 at 04:41, <saranya.gopal@intel.com> wrote:
+>
+> From: Saranya Gopal <saranya.gopal@intel.com>
+>
+> In most of the UAC1 and UAC2 audio devices, the first
+> configuration is most often the best configuration.
+> However, with recent patch to support UAC3 configuration,
+> second configuration was unintentionally chosen for
+> some of the UAC1/2 devices that had more than one
+> configuration. This was because of the existing check
+> after the audio config check which selected any config
+> which had a non-vendor class. This patch fixes this issue.
+>
+> Fixes: f13912d3f014 ("usbcore: Select UAC3 configuration for audio if present")
+> Reported-by: Con Kolivas <kernel@kolivas.org>
+> Signed-off-by: Saranya Gopal <saranya.gopal@intel.com>>
+
+I can confirm the above patch fixes my problem.
+Tested-by: Con Kolivas <kernel@kolivas.org>
+
+Thanks!
+Con
