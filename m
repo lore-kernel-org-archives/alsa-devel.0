@@ -1,86 +1,101 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 00/21] ASoC: codecs: remove warnings with
-	Sparse, Coccinelle and W=1
-Date: Fri,  4 Jan 2019 20:02:28 -0600
-Message-ID: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id EDFAA267AC1
- for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2019 03:03:32 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 20/21] ASoC: rt5645: store eq kcontrol byte in __be
+Date: Fri,  4 Jan 2019 20:02:48 -0600
+Message-ID: <20190105020249.8639-21-pierre-louis.bossart@linux.intel.com>
+References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Bard liao <yung-chuan.liao@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset contains mostly trivial fixes to make tools happy. I
-don't get paid more by sending lots of small patches, my only goal is
-to make sure tools don't spit out too many warnings and drown
-potential problems.
+From: Bard liao <yung-chuan.liao@linux.intel.com>
 
-Thanks for Bard Liao for his help, and Adam Thompson and Oder Chiou
-for off-line reviews.
+The eq parameters binary is stored in __be. However, it is unsigned short
+in rt5645_eq_param_s{} which will cause incorrect type assignment. So add
+struct rt5645_eq_param_s_be16{} to store the eq binary and convert it to
+unsigned short in rt5645->eq_param.
 
-Bard liao (4):
-  ASoC: rt5645: remove unused mux define
-  ASoC: rt5670: remove unused mux/mixer define
-  ASoC: rt5645: store eq kcontrol byte in __be
-  ASoC: rl6437a: use __be32 for a __be32 buf
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/rt5645.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-Pierre-Louis Bossart (17):
-  ASoC: dmic: declare trigger function as static
-  ASoC: max98090: remove unused constant variables
-  ASoC: es8316: remove unused constant variables
-  ASoC: codecs: fix kernel doc descriptions
-  ASoC: max98383: fix boolean assignments to true/false
-  ASoC: rt298: fix boolean tests
-  ASoC: cs4271: fix boolean assignments
-  ASoC: rt274: fix boolean tests
-  ASoc: rt286: fix boolean tests
-  ASoC: rt5640: fix boolean assignments
-  ASoC: max98927: fix boolean assignments
-  ASoC: rt5651: fix boolean assignments
-  ASoC: nau8824: fix boolean assignment
-  ASoC: tscs42xx.c: fix boolean test
-  ASoC: mt6351: remove unneeded variable
-  ASoC: da7219: fix endianness issues
-  ASoC: da7219: use logical AND
-
- sound/soc/codecs/cs4271.c     |  4 +--
- sound/soc/codecs/da7219-aad.c |  2 +-
- sound/soc/codecs/da7219.c     |  8 ++---
- sound/soc/codecs/dmic.c       |  4 +--
- sound/soc/codecs/es8316.c     |  4 ---
- sound/soc/codecs/max98090.c   | 15 --------
- sound/soc/codecs/max98373.c   |  6 ++--
- sound/soc/codecs/max98927.c   |  8 ++---
- sound/soc/codecs/mt6351.c     |  4 +--
- sound/soc/codecs/nau8824.c    |  2 +-
- sound/soc/codecs/nau8825.c    |  1 +
- sound/soc/codecs/rl6347a.c    |  4 +--
- sound/soc/codecs/rt274.c      |  8 ++---
- sound/soc/codecs/rt286.c      |  8 ++---
- sound/soc/codecs/rt298.c      | 12 +++----
- sound/soc/codecs/rt5514.c     |  1 +
- sound/soc/codecs/rt5640.c     |  6 ++--
- sound/soc/codecs/rt5645.c     | 66 +++++++++--------------------------
- sound/soc/codecs/rt5651.c     |  6 ++--
- sound/soc/codecs/rt5670.c     | 54 ----------------------------
- sound/soc/codecs/rt5677.c     |  8 ++---
- sound/soc/codecs/tscs42xx.c   |  2 +-
- 22 files changed, 63 insertions(+), 170 deletions(-)
-
-
-base-commit: 14f9b94a3274b047126c8c0ff39dc495e8d1acab
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 52ce380c8f3a..9a0751978090 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -401,6 +401,11 @@ struct rt5645_eq_param_s {
+ 	unsigned short val;
+ };
+ 
++struct rt5645_eq_param_s_be16 {
++	__be16 reg;
++	__be16 val;
++};
++
+ static const char *const rt5645_supply_names[] = {
+ 	"avdd",
+ 	"cpvdd",
+@@ -672,8 +677,8 @@ static int rt5645_hweq_get(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
+-	struct rt5645_eq_param_s *eq_param =
+-		(struct rt5645_eq_param_s *)ucontrol->value.bytes.data;
++	struct rt5645_eq_param_s_be16 *eq_param =
++		(struct rt5645_eq_param_s_be16 *)ucontrol->value.bytes.data;
+ 	int i;
+ 
+ 	for (i = 0; i < RT5645_HWEQ_NUM; i++) {
+@@ -698,36 +703,33 @@ static int rt5645_hweq_put(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
+-	struct rt5645_eq_param_s *eq_param =
+-		(struct rt5645_eq_param_s *)ucontrol->value.bytes.data;
++	struct rt5645_eq_param_s_be16 *eq_param =
++		(struct rt5645_eq_param_s_be16 *)ucontrol->value.bytes.data;
+ 	int i;
+ 
+ 	for (i = 0; i < RT5645_HWEQ_NUM; i++) {
+-		eq_param[i].reg = be16_to_cpu(eq_param[i].reg);
+-		eq_param[i].val = be16_to_cpu(eq_param[i].val);
++		rt5645->eq_param[i].reg = be16_to_cpu(eq_param[i].reg);
++		rt5645->eq_param[i].val = be16_to_cpu(eq_param[i].val);
+ 	}
+ 
+ 	/* The final setting of the table should be RT5645_EQ_CTRL2 */
+ 	for (i = RT5645_HWEQ_NUM - 1; i >= 0; i--) {
+-		if (eq_param[i].reg == 0)
++		if (rt5645->eq_param[i].reg == 0)
+ 			continue;
+-		else if (eq_param[i].reg != RT5645_EQ_CTRL2)
++		else if (rt5645->eq_param[i].reg != RT5645_EQ_CTRL2)
+ 			return 0;
+ 		else
+ 			break;
+ 	}
+ 
+ 	for (i = 0; i < RT5645_HWEQ_NUM; i++) {
+-		if (!rt5645_validate_hweq(eq_param[i].reg) &&
+-			eq_param[i].reg != 0)
++		if (!rt5645_validate_hweq(rt5645->eq_param[i].reg) &&
++		    rt5645->eq_param[i].reg != 0)
+ 			return 0;
+-		else if (eq_param[i].reg == 0)
++		else if (rt5645->eq_param[i].reg == 0)
+ 			break;
+ 	}
+ 
+-	memcpy(rt5645->eq_param, eq_param,
+-		RT5645_HWEQ_NUM * sizeof(struct rt5645_eq_param_s));
+-
+ 	return 0;
+ }
+ 
 -- 
 2.17.1
