@@ -1,48 +1,52 @@
-From: Aditya Pakki <pakki001@umn.edu>
-Subject: [PATCH] ASoC: rt5663: Fix error handling of device_property_read_u32_array
-Date: Sat,  5 Jan 2019 07:44:27 -0600
-Message-ID: <20190105134427.1022-1-pakki001@umn.edu>
+From: saranya.gopal@intel.com
+Subject: [PATCH] usbcore: Select only first configuration for non-UAC3 compliant devices
+Date: Sat,  5 Jan 2019 19:32:37 +0530
+Message-ID: <1546696957-28294-1-git-send-email-saranya.gopal@intel.com>
+References: <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: pakki001@umn.edu
-Cc: kjlu@umn.edu, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: kernel@kolivas.org
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de, felipe.balbi@linux.intel.com, Saranya Gopal <saranya.gopal@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In rt5663_parse_dp, the function device_property_read_u32_array() can
-return an error. This fix adds a check to the latter as well as to the
-callsite of rt5663_parse_dp in rt5663_i2c_probe.
+From: Saranya Gopal <saranya.gopal@intel.com>
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+In most of the UAC1 and UAC2 audio devices, the first
+configuration is most often the best configuration.
+However, with recent patch to support UAC3 configuration,
+second configuration was unintentionally chosen for
+some of the UAC1/2 devices that had more than one
+configuration. This was because of the existing check
+after the audio config check which selected any config
+which had a non-vendor class. This patch fixes this issue.
+
+Fixes: f13912d (Select UAC3 configuration for audio if present)
+Reported-by: Con Kolivas <kernel@kolivas.org>
+Signed-off-by: Saranya Gopal <saranya.gopal@intel.com>
 ---
- sound/soc/codecs/rt5663.c | 9 ++++++---
+ drivers/usb/core/generic.c | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index da6647015708..2678842d8cd4 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3480,7 +3480,7 @@ static int rt5663_parse_dp(struct rt5663_priv *rt5663, struct device *dev)
- 		table_size = sizeof(struct impedance_mapping_table) *
- 			rt5663->pdata.impedance_sensing_num;
- 		rt5663->imp_table = devm_kzalloc(dev, table_size, GFP_KERNEL);
--		device_property_read_u32_array(dev,
-+		return device_property_read_u32_array(dev,
- 			"realtek,impedance_sensing_table",
- 			(u32 *)rt5663->imp_table, table_size);
- 	}
-@@ -3507,8 +3507,11 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
+index 356b05c..f713cec 100644
+--- a/drivers/usb/core/generic.c
++++ b/drivers/usb/core/generic.c
+@@ -143,9 +143,12 @@ int usb_choose_configuration(struct usb_device *udev)
+ 			continue;
+ 		}
  
- 	if (pdata)
- 		rt5663->pdata = *pdata;
--	else
--		rt5663_parse_dp(rt5663, &i2c->dev);
-+	else {
-+		ret = rt5663_parse_dp(rt5663, &i2c->dev);
-+		if (ret)
-+			return ret;
-+	}
+-		if (i > 0 && desc && is_audio(desc) && is_uac3_config(desc)) {
+-			best = c;
+-			break;
++		if (i > 0 && desc && is_audio(desc)) {
++			if (is_uac3_config(desc)) {
++				best = c;
++				break;
++			}
++			continue;
+ 		}
  
- 	for (i = 0; i < ARRAY_SIZE(rt5663->supplies); i++)
- 		rt5663->supplies[i].supply = rt5663_supply_names[i];
+ 		/* From the remaining configs, choose the first one whose
 -- 
-2.17.1
+1.9.1
