@@ -1,57 +1,87 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 02/21] ASoC: max98090: remove unused constant variables
-Date: Fri,  4 Jan 2019 20:02:30 -0600
-Message-ID: <20190105020249.8639-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 04/21] ASoC: codecs: fix kernel doc descriptions
+Date: Fri,  4 Jan 2019 20:02:32 -0600
+Message-ID: <20190105020249.8639-5-pierre-louis.bossart@linux.intel.com>
 References: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190105020249.8639-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>
+Cc: tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Yangtao Li <tiny.windzz@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix warnings with W=1
-
-If these variables are useful then this driver should be modified to
-expose them.
+Missing or spurious parameter descriptions. Fix warnings with W=1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/max98090.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/soc/codecs/nau8825.c | 1 +
+ sound/soc/codecs/rt5514.c  | 1 +
+ sound/soc/codecs/rt5677.c  | 8 ++++----
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index c97f21836c66..30c242c38d99 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -314,9 +314,6 @@ static const DECLARE_TLV_DB_SCALE(max98090_av_tlv, -1200, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_dvg_tlv, 0, 600, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_dv_tlv, -1500, 100, 0);
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 7bbcbf5f05c8..47e65cf99879 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -351,6 +351,7 @@ static void nau8825_hpvol_ramp(struct nau8825 *nau8825,
+  * Computes log10 of a value; the result is round off to 3 decimal. This func-
+  * tion takes reference to dvb-math. The source code locates as the following.
+  * Linux/drivers/media/dvb-core/dvb_math.c
++ * @value:  input for log10
+  *
+  * return log10(value) * 1000
+  */
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index a67de68b6da6..f9ad6e36ab16 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -489,6 +489,7 @@ static const struct snd_kcontrol_new rt5514_sto2_dmic_mux =
+ /**
+  * rt5514_calc_dmic_clk - Calculate the frequency divider parameter of dmic.
+  *
++ * @component: only used for dev_warn
+  * @rate: base clock rate.
+  *
+  * Choose divider parameter that gives the highest possible DMIC frequency in
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 9b7a1833d331..6fc70e441458 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -547,7 +547,7 @@ static bool rt5677_readable_register(struct device *dev, unsigned int reg)
+  * @rt5677: Private Data.
+  * @addr: Address index.
+  * @value: Address data.
+- *
++ * @opcode: opcode value
+  *
+  * Returns 0 for success or negative error code.
+  */
+@@ -602,7 +602,7 @@ static int rt5677_dsp_mode_i2c_write_addr(struct rt5677_priv *rt5677,
  
--static const DECLARE_TLV_DB_SCALE(max98090_sidetone_tlv, -6050, 200, 0);
--
--static const DECLARE_TLV_DB_SCALE(max98090_alc_tlv, -1500, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_alcmakeup_tlv, 0, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_alccomp_tlv, -3100, 100, 0);
- static const DECLARE_TLV_DB_SCALE(max98090_drcexp_tlv, -6600, 100, 0);
-@@ -817,18 +814,6 @@ static SOC_ENUM_SINGLE_VIRT_DECL(dmic_mux_enum, dmic_mux_text);
- static const struct snd_kcontrol_new max98090_dmic_mux =
- 	SOC_DAPM_ENUM("DMIC Mux", dmic_mux_enum);
+ /**
+  * rt5677_dsp_mode_i2c_read_addr - Read value from address on DSP mode.
+- * rt5677: Private Data.
++ * @rt5677: Private Data.
+  * @addr: Address index.
+  * @value: Address data.
+  *
+@@ -651,7 +651,7 @@ static int rt5677_dsp_mode_i2c_read_addr(
  
--static const char *max98090_micpre_text[] = { "Off", "On" };
--
--static SOC_ENUM_SINGLE_DECL(max98090_pa1en_enum,
--			    M98090_REG_MIC1_INPUT_LEVEL,
--			    M98090_MIC_PA1EN_SHIFT,
--			    max98090_micpre_text);
--
--static SOC_ENUM_SINGLE_DECL(max98090_pa2en_enum,
--			    M98090_REG_MIC2_INPUT_LEVEL,
--			    M98090_MIC_PA2EN_SHIFT,
--			    max98090_micpre_text);
--
- /* LINEA mixer switch */
- static const struct snd_kcontrol_new max98090_linea_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("IN1 Switch", M98090_REG_LINE_INPUT_CONFIG,
+ /**
+  * rt5677_dsp_mode_i2c_write - Write register on DSP mode.
+- * rt5677: Private Data.
++ * @rt5677: Private Data.
+  * @reg: Register index.
+  * @value: Register data.
+  *
+@@ -667,7 +667,7 @@ static int rt5677_dsp_mode_i2c_write(struct rt5677_priv *rt5677,
+ 
+ /**
+  * rt5677_dsp_mode_i2c_read - Read register on DSP mode.
+- * @codec: SoC audio codec device.
++ * @rt5677: Private Data
+  * @reg: Register index.
+  * @value: Register data.
+  *
 -- 
 2.17.1
