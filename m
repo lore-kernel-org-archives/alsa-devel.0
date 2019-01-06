@@ -1,56 +1,41 @@
-From: saranya.gopal@intel.com
-Subject: [PATCH V3] usbcore: Select only first configuration for non-UAC3 compliant devices
-Date: Sun,  6 Jan 2019 08:14:02 +0530
-Message-ID: <1546742642-29269-1-git-send-email-saranya.gopal@intel.com>
-References: <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CABqErrHKFshAMBPHJp2vmGFE6k1GL1oDMSMbDRcBJNfUSxt9KQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kernel@kolivas.org
-Cc: gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de, felipe.balbi@linux.intel.com, Saranya Gopal <saranya.gopal@intel.com>
+From: russell.parker7@gmail.com
+Subject: [PATCH ucm/conf: 0/5] Factor out rt5645 + rt5650
+	shared UCM sequences
+Date: Sat,  5 Jan 2019 19:47:10 -0800
+Message-ID: <20190106034715.21045-1-russell.parker7@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Saranya Gopal <saranya.gopal@intel.com>
+Hi,
 
-In most of the UAC1 and UAC2 audio devices, the first
-configuration is most often the best configuration.
-However, with recent patch to support UAC3 configuration,
-second configuration was unintentionally chosen for
-some of the UAC1/2 devices that had more than one
-configuration. This was because of the existing check
-after the audio config check which selected any config
-which had a non-vendor class. This patch fixes this issue.
+When I submitted a patch to create a UCM config for chtrt5650 it was
+suggested that I also factor out command sequences that it shares with
+chtrt5645. The following patchset introduces a new component directory
+codecs/rt5645-common/ and refactors UCM profiles in:
 
-Fixes: f13912d3f014 ("usbcore: Select UAC3 configuration for audio if present")
-Reported-by: Con Kolivas <kernel@kolivas.org>
-Signed-off-by: Saranya Gopal <saranya.gopal@intel.com>
-Tested-by: Con Kolivas <kernel@kolivas.org>
----
-Changes from V2: Added Tested-by tag
-Changes from V1: Added full commit name and more SHA1 numbers in Fixes tag
+- chtrt5645
+- chtrt5645-mono-speaker-analog-mic
+- chtrt5650
+- ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN
+- LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216
 
- drivers/usb/core/generic.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+I compiled and tested playback with the rt5650 configs but I don't
+have the devices to test the other configurations. Suggestions and feedback
+are welcome, I'm not very familiar with UCM configuration so there may
+definitely be better approaches for some of these changes.
 
-diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
-index 356b05c..f713cec 100644
---- a/drivers/usb/core/generic.c
-+++ b/drivers/usb/core/generic.c
-@@ -143,9 +143,12 @@ int usb_choose_configuration(struct usb_device *udev)
- 			continue;
- 		}
- 
--		if (i > 0 && desc && is_audio(desc) && is_uac3_config(desc)) {
--			best = c;
--			break;
-+		if (i > 0 && desc && is_audio(desc)) {
-+			if (is_uac3_config(desc)) {
-+				best = c;
-+				break;
-+			}
-+			continue;
- 		}
- 
- 		/* From the remaining configs, choose the first one whose
--- 
-1.9.1
+- Russell
