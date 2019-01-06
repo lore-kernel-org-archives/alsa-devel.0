@@ -1,8 +1,8 @@
 From: russell.parker7@gmail.com
-Subject: [PATCH ucm/conf: 1/5] Update chtrt5645 ucm variants to
-	use bytcr/PlatformEnableSeq.conf component
-Date: Sat,  5 Jan 2019 19:47:11 -0800
-Message-ID: <20190106034715.21045-2-russell.parker7@gmail.com>
+Subject: [PATCH ucm/conf: 3/5] Factor out rt5645 variants
+	Speaker+Headphones shared UCM enable sequences
+Date: Sat,  5 Jan 2019 19:47:13 -0800
+Message-ID: <20190106034715.21045-4-russell.parker7@gmail.com>
 References: <20190106034715.21045-1-russell.parker7@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,415 +24,212 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Russell Parker <russell.parker7@gmail.com>
 
-The Lenovo Ideapad Miix 320, Asus T100HA, and chtrt5645 mono variant
-UCM configurations have not been updated to make use of the shared
-bytcr/PlatfromEnableSeq.conf sequence. This commit deletes those
-command sequences and loads the shared component directly.
+Move common enable sequences for rt5645 variants and rt5650
+UCM configuratons into a shared component. The corresponding
+disable sequences are only two lines each and do not seem worth
+creating components for.
 
 Signed-off-by: Russell Parker <russell.parker7@gmail.com>
 
 diff --git a/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
-index 78bf9823..61848358 100644
+index 46508766..9616be27 100644
 --- a/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
 +++ b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
-@@ -11,121 +11,7 @@ SectionVerb {
+@@ -43,12 +43,7 @@ SectionDevice."Speaker" {
  	EnableSequence [
  		cdev "hw:chtrt5645"
  
--		# media mixer settings
--		#   compress
--		cset "name='media0_in Gain 0 Switch' on"
--		cset "name='media0_in Gain 0 Volume' 0"
+-		cset "name='Headphone Switch' off"
+-		cset "name='Headphone Channel Switch' off"
 -
--		#   normal
--		cset "name='media1_in Gain 0 Switch' on"
--		cset "name='media1_in Gain 0 Volume' 0"
--		#   swm loopback
--		cset "name='media2_in Gain 0 Switch' off"
--		cset "name='media2_in Gain 0 Volume' 0%"
--		#   deep buffer
--		cset "name='media3_in Gain 0 Switch' on"
--		cset "name='media3_in Gain 0 Volume' 0"
--
--		cset "name='media0_out mix 0 media0_in Switch' on"
--		cset "name='media0_out mix 0 media1_in Switch' on"
--		cset "name='media0_out mix 0 media2_in Switch' off"
--		cset "name='media0_out mix 0 media3_in Switch' on"
--
--		cset "name='media1_out mix 0 media0_in Switch' off"
--		cset "name='media1_out mix 0 media1_in Switch' off"
--		cset "name='media1_out mix 0 media2_in Switch' off"
--		cset "name='media1_out mix 0 media3_in Switch' off"
--
--		cset "name='pcm0_in Gain 0 Switch' on"
--		cset "name='pcm0_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_in Gain 0 Switch' off"
--		cset "name='pcm1_in Gain 0 Volume' 0%"
--
--		# codec0_out settings (used if ssp2 is connected to aif1)
--		cset "name='codec_out0 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out0 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out0 mix 0 pcm0_in Switch' on"
--		cset "name='codec_out0 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out0 Gain 0 Switch' on"
--		cset "name='codec_out0 Gain 0 Volume' 0"
--
--		# modem_out settings (used if ssp0 is connected to aif2)
--		cset "name='modem_out mix 0 codec_in0 Switch' off"
--		cset "name='modem_out mix 0 codec_in1 Switch' off"
--		cset "name='modem_out mix 0 media_loop1_in Switch' off"
--		cset "name='modem_out mix 0 media_loop2_in Switch' off"
--		cset "name='modem_out mix 0 pcm0_in Switch' on"
--		cset "name='modem_out mix 0 pcm1_in Switch' off"
--		cset "name='modem_out mix 0 sprot_loop_in Switch' off"
--		cset "name='modem_out Gain 0 Switch' on"
--		cset "name='modem_out Gain 0 Volume' 0"
--
--		# input settings
--		# pcm1_out settings
--
--		# input used when SSP2 is connected
--		cset "name='codec_in0 Gain 0 Switch' on"
--		cset "name='codec_in0 Gain 0 Volume' 0"
--
--		# input used when SSP0 is connected
--		cset "name='modem_in Gain 0 Switch' on"
--		cset "name='modem_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_out mix 0 codec_in0 Switch' on"
--		cset "name='pcm1_out mix 0 modem_in Switch' on"
--		cset "name='pcm1_out mix 0 codec_in1 Switch' off"
--		cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
--		cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm0_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm1_in Switch' off"
--		cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='pcm1_out Gain 0 Switch' on"
--		cset "name='pcm1_out Gain 0 Volume' 0"
--
--		# disable codec_out1
--		cset "name='codec_out1 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out1 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm0_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out1 Gain 0 Switch' off"
--		cset "name='codec_out1 Gain 0 Volume' 0%"
--
--		# disable codec_in1
--		cset "name='codec_in1 Gain 0 Switch' off"
--		cset "name='codec_in1 Gain 0 Volume' 0%"
--
--		# disable all loops
--		cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
--		cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
+-		cset "name='Ext Spk Switch' on"
+-		cset "name='Speaker Channel Switch' on"
+-		cset "name='Speaker Playback Volume' 31"
++		<codecs/rt5645-common/SpeakerEnableSeq.conf>
+ 	]
  
- 		# Output Configuration
- 		cset "name='DAC1 L Mux' IF1 DAC"
+ 	DisableSequence [
+@@ -75,13 +70,7 @@ SectionDevice."Headphones" {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5645"
+ 
+-		cset "name='Ext Spk Switch' off"
+-		cset "name='Speaker Channel Switch' off"
+-
+-		cset "name='Headphone Switch' on"
+-		cset "name='Headphone Channel Switch' on"
+-		# 25/39 higher values cause crackling on some boards
+-		cset "name='Headphone Playback Volume' 25"
++		<codecs/rt5645-common/HeadphonesEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
 diff --git a/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
-index 8cc9c7f2..d043f685 100644
+index c16cceac..eda1272a 100644
 --- a/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
 +++ b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
-@@ -11,121 +11,7 @@ SectionVerb {
+@@ -43,12 +43,7 @@ SectionDevice."Speaker" {
  	EnableSequence [
  		cdev "hw:chtrt5645"
  
--		# media mixer settings
--		#   compress
--		cset "name='media0_in Gain 0 Switch' on"
--		cset "name='media0_in Gain 0 Volume' 0"
+-		cset "name='Headphone Switch' off"
+-		cset "name='Headphone Channel Switch' off"
 -
--		#   normal
--		cset "name='media1_in Gain 0 Switch' on"
--		cset "name='media1_in Gain 0 Volume' 0"
--		#   swm loopback
--		cset "name='media2_in Gain 0 Switch' off"
--		cset "name='media2_in Gain 0 Volume' 0%"
--		#   deep buffer
--		cset "name='media3_in Gain 0 Switch' on"
--		cset "name='media3_in Gain 0 Volume' 0"
--
--		cset "name='media0_out mix 0 media0_in Switch' on"
--		cset "name='media0_out mix 0 media1_in Switch' on"
--		cset "name='media0_out mix 0 media2_in Switch' off"
--		cset "name='media0_out mix 0 media3_in Switch' on"
--
--		cset "name='media1_out mix 0 media0_in Switch' off"
--		cset "name='media1_out mix 0 media1_in Switch' off"
--		cset "name='media1_out mix 0 media2_in Switch' off"
--		cset "name='media1_out mix 0 media3_in Switch' off"
--
--		cset "name='pcm0_in Gain 0 Switch' on"
--		cset "name='pcm0_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_in Gain 0 Switch' off"
--		cset "name='pcm1_in Gain 0 Volume' 0%"
--
--		# codec0_out settings (used if ssp2 is connected to aif1)
--		cset "name='codec_out0 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out0 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out0 mix 0 pcm0_in Switch' on"
--		cset "name='codec_out0 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out0 Gain 0 Switch' on"
--		cset "name='codec_out0 Gain 0 Volume' 0"
--
--		# modem_out settings (used if ssp0 is connected to aif2)
--		cset "name='modem_out mix 0 codec_in0 Switch' off"
--		cset "name='modem_out mix 0 codec_in1 Switch' off"
--		cset "name='modem_out mix 0 media_loop1_in Switch' off"
--		cset "name='modem_out mix 0 media_loop2_in Switch' off"
--		cset "name='modem_out mix 0 pcm0_in Switch' on"
--		cset "name='modem_out mix 0 pcm1_in Switch' off"
--		cset "name='modem_out mix 0 sprot_loop_in Switch' off"
--		cset "name='modem_out Gain 0 Switch' on"
--		cset "name='modem_out Gain 0 Volume' 0"
--
--		# input settings
--		# pcm1_out settings
--
--		# input used when SSP2 is connected
--		cset "name='codec_in0 Gain 0 Switch' on"
--		cset "name='codec_in0 Gain 0 Volume' 0"
--
--		# input used when SSP0 is connected
--		cset "name='modem_in Gain 0 Switch' on"
--		cset "name='modem_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_out mix 0 codec_in0 Switch' on"
--		cset "name='pcm1_out mix 0 modem_in Switch' on"
--		cset "name='pcm1_out mix 0 codec_in1 Switch' off"
--		cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
--		cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm0_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm1_in Switch' off"
--		cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='pcm1_out Gain 0 Switch' on"
--		cset "name='pcm1_out Gain 0 Volume' 0"
--
--		# disable codec_out1
--		cset "name='codec_out1 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out1 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm0_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out1 Gain 0 Switch' off"
--		cset "name='codec_out1 Gain 0 Volume' 0%"
--
--		# disable codec_in1
--		cset "name='codec_in1 Gain 0 Switch' off"
--		cset "name='codec_in1 Gain 0 Volume' 0%"
--
--		# disable all loops
--		cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
--		cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
+-		cset "name='Ext Spk Switch' on"
+-		cset "name='Speaker Channel Switch' on"
+-		cset "name='Speaker Playback Volume' 31"
++		<codecs/rt5645-common/SpeakerEnableSeq.conf>
+ 	]
  
- 		# Output Configuration
- 		cset "name='DAC1 L Mux' IF1 DAC"
+ 	DisableSequence [
+@@ -75,13 +70,7 @@ SectionDevice."Headphones" {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5645"
+ 
+-		cset "name='Ext Spk Switch' off"
+-		cset "name='Speaker Channel Switch' off"
+-
+-		cset "name='Headphone Switch' on"
+-		cset "name='Headphone Channel Switch' on"
+-		# 25/39 higher values cause crackling on some boards
+-		cset "name='Headphone Playback Volume' 25"
++		<codecs/rt5645-common/HeadphonesEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
 diff --git a/src/conf/ucm/chtrt5645-mono-speaker-analog-mic/HiFi.conf b/src/conf/ucm/chtrt5645-mono-speaker-analog-mic/HiFi.conf
-index 7a0cd51c..c4452a4e 100644
+index 45cc5186..0e868e26 100644
 --- a/src/conf/ucm/chtrt5645-mono-speaker-analog-mic/HiFi.conf
 +++ b/src/conf/ucm/chtrt5645-mono-speaker-analog-mic/HiFi.conf
-@@ -11,121 +11,7 @@ SectionVerb {
+@@ -47,12 +47,7 @@ SectionDevice."Speaker" {
+ 		cset "name='Stereo DAC MIXL DAC R1 Switch' 1"
+ 		cset "name='Stereo DAC MIXR DAC R1 Switch' 0"
+ 
+-		cset "name='Headphone Switch' off"
+-		cset "name='Headphone Channel Switch' off"
+-
+-		cset "name='Ext Spk Switch' on"
+-		cset "name='Speaker Channel Switch' on"
+-		cset "name='Speaker Playback Volume' 31"
++		<codecs/rt5645-common/SpeakerEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
+@@ -83,13 +78,7 @@ SectionDevice."Headphones" {
+ 		cset "name='Stereo DAC MIXL DAC R1 Switch' 0"
+ 		cset "name='Stereo DAC MIXR DAC R1 Switch' 1"
+ 
+-		cset "name='Ext Spk Switch' off"
+-		cset "name='Speaker Channel Switch' off"
+-
+-		cset "name='Headphone Switch' on"
+-		cset "name='Headphone Channel Switch' on"
+-		# 25/39 higher values cause crackling on some boards
+-		cset "name='Headphone Playback Volume' 25"
++		<codecs/rt5645-common/HeadphonesEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
+diff --git a/src/conf/ucm/chtrt5645/HiFi.conf b/src/conf/ucm/chtrt5645/HiFi.conf
+index bc4801d8..1bb9830d 100644
+--- a/src/conf/ucm/chtrt5645/HiFi.conf
++++ b/src/conf/ucm/chtrt5645/HiFi.conf
+@@ -43,12 +43,7 @@ SectionDevice."Speaker" {
  	EnableSequence [
  		cdev "hw:chtrt5645"
  
--		# media mixer settings
--		#   compress
--		cset "name='media0_in Gain 0 Switch' on"
--		cset "name='media0_in Gain 0 Volume' 0"
+-		cset "name='Headphone Switch' off"
+-		cset "name='Headphone Channel Switch' off"
 -
--		#   normal
--		cset "name='media1_in Gain 0 Switch' on"
--		cset "name='media1_in Gain 0 Volume' 0"
--		#   swm loopback
--		cset "name='media2_in Gain 0 Switch' off"
--		cset "name='media2_in Gain 0 Volume' 0%"
--		#   deep buffer
--		cset "name='media3_in Gain 0 Switch' on"
--		cset "name='media3_in Gain 0 Volume' 0"
--
--		cset "name='media0_out mix 0 media0_in Switch' on"
--		cset "name='media0_out mix 0 media1_in Switch' on"
--		cset "name='media0_out mix 0 media2_in Switch' off"
--		cset "name='media0_out mix 0 media3_in Switch' on"
--
--		cset "name='media1_out mix 0 media0_in Switch' off"
--		cset "name='media1_out mix 0 media1_in Switch' off"
--		cset "name='media1_out mix 0 media2_in Switch' off"
--		cset "name='media1_out mix 0 media3_in Switch' off"
--
--		cset "name='pcm0_in Gain 0 Switch' on"
--		cset "name='pcm0_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_in Gain 0 Switch' off"
--		cset "name='pcm1_in Gain 0 Volume' 0%"
--
--		# codec0_out settings (used if ssp2 is connected to aif1)
--		cset "name='codec_out0 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out0 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out0 mix 0 pcm0_in Switch' on"
--		cset "name='codec_out0 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out0 Gain 0 Switch' on"
--		cset "name='codec_out0 Gain 0 Volume' 0"
--
--		# modem_out settings (used if ssp0 is connected to aif2)
--		cset "name='modem_out mix 0 codec_in0 Switch' off"
--		cset "name='modem_out mix 0 codec_in1 Switch' off"
--		cset "name='modem_out mix 0 media_loop1_in Switch' off"
--		cset "name='modem_out mix 0 media_loop2_in Switch' off"
--		cset "name='modem_out mix 0 pcm0_in Switch' on"
--		cset "name='modem_out mix 0 pcm1_in Switch' off"
--		cset "name='modem_out mix 0 sprot_loop_in Switch' off"
--		cset "name='modem_out Gain 0 Switch' on"
--		cset "name='modem_out Gain 0 Volume' 0"
--
--		# input settings
--		# pcm1_out settings
--
--		# input used when SSP2 is connected
--		cset "name='codec_in0 Gain 0 Switch' on"
--		cset "name='codec_in0 Gain 0 Volume' 0"
--
--		# input used when SSP0 is connected
--		cset "name='modem_in Gain 0 Switch' on"
--		cset "name='modem_in Gain 0 Volume' 0"
--
--		cset "name='pcm1_out mix 0 codec_in0 Switch' on"
--		cset "name='pcm1_out mix 0 modem_in Switch' on"
--		cset "name='pcm1_out mix 0 codec_in1 Switch' off"
--		cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
--		cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm0_in Switch' off"
--		cset "name='pcm1_out mix 0 pcm1_in Switch' off"
--		cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='pcm1_out Gain 0 Switch' on"
--		cset "name='pcm1_out Gain 0 Volume' 0"
--
--		# disable codec_out1
--		cset "name='codec_out1 mix 0 codec_in0 Switch' off"
--		cset "name='codec_out1 mix 0 codec_in1 Switch' off"
--		cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
--		cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm0_in Switch' off"
--		cset "name='codec_out1 mix 0 pcm1_in Switch' off"
--		cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
--		cset "name='codec_out1 Gain 0 Switch' off"
--		cset "name='codec_out1 Gain 0 Volume' 0%"
--
--		# disable codec_in1
--		cset "name='codec_in1 Gain 0 Switch' off"
--		cset "name='codec_in1 Gain 0 Volume' 0%"
--
--		# disable all loops
--		cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
--		cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
--		cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
--		cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
--		cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
--
--		cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
--		cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
--		cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
--		cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
-+		<platforms/bytcr/PlatformEnableSeq.conf>
+-		cset "name='Ext Spk Switch' on"
+-		cset "name='Speaker Channel Switch' on"
+-		cset "name='Speaker Playback Volume' 31"
++		<codecs/rt5645-common/SpeakerEnableSeq.conf>
+ 	]
  
- 		# Output Configuration
- 		cset "name='DAC1 L Mux' IF1 DAC"
-diff --git a/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf b/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
-index b5ee2b41..6f5e899c 100644
---- a/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
-+++ b/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
-@@ -29,7 +29,7 @@ cset "name='pcm0_in Gain 0 Volume' 0"
- cset "name='pcm1_in Gain 0 Switch' off"
- cset "name='pcm1_in Gain 0 Volume' 0%"
+ 	DisableSequence [
+@@ -75,13 +70,7 @@ SectionDevice."Headphones" {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5645"
  
--# codec0_out settings (used if SSP2 is connected)
-+# codec0_out settings (used if SSP2 is connected to aif1)
- cset "name='codec_out0 mix 0 codec_in0 Switch' off"
- cset "name='codec_out0 mix 0 codec_in1 Switch' off"
- cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
-@@ -40,7 +40,7 @@ cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
- cset "name='codec_out0 Gain 0 Switch' on"
- cset "name='codec_out0 Gain 0 Volume' 0"
+-		cset "name='Ext Spk Switch' off"
+-		cset "name='Speaker Channel Switch' off"
+-
+-		cset "name='Headphone Switch' on"
+-		cset "name='Headphone Channel Switch' on"
+-		# 25/39 higher values cause crackling on some boards
+-		cset "name='Headphone Playback Volume' 25"
++		<codecs/rt5645-common/HeadphonesEnableSeq.conf>
+ 	]
  
--# modem_out settings (used if SSP0 is connected)
-+# modem_out settings (used if SSP0 is connected to aif2)
- cset "name='modem_out mix 0 codec_in0 Switch' off"
- cset "name='modem_out mix 0 codec_in1 Switch' off"
- cset "name='modem_out mix 0 media_loop1_in Switch' off"
+ 	DisableSequence [
+diff --git a/src/conf/ucm/chtrt5650/HiFi.conf b/src/conf/ucm/chtrt5650/HiFi.conf
+index 7142dece..c8bd397a 100644
+--- a/src/conf/ucm/chtrt5650/HiFi.conf
++++ b/src/conf/ucm/chtrt5650/HiFi.conf
+@@ -43,12 +43,7 @@ SectionDevice."Speaker" {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5650"
+ 
+-		cset "name='Headphone Switch' off"
+-		cset "name='Headphone Channel Switch' off"
+-
+-		cset "name='Ext Spk Switch' on"
+-		cset "name='Speaker Channel Switch' on"
+-		cset "name='Speaker Playback Volume' 31"
++		<codecs/rt5645-common/SpeakerEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
+@@ -75,12 +70,7 @@ SectionDevice."Headphones" {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5650"
+ 
+-		cset "name='Ext Spk Switch' off"
+-		cset "name='Speaker Channel Switch' off"
+-
+-		cset "name='Headphone Switch' on"
+-		cset "name='Headphone Channel Switch' on"
+-		cset "name='Headphone Playback Volume' 31"
++		<codecs/rt5645-common/HeadphonesEnableSeq.conf>
+ 	]
+ 
+ 	DisableSequence [
+diff --git a/src/conf/ucm/codecs/rt5645-common/HeadphonesEnableSeq.conf b/src/conf/ucm/codecs/rt5645-common/HeadphonesEnableSeq.conf
+new file mode 100644
+index 00000000..6c231da7
+--- /dev/null
++++ b/src/conf/ucm/codecs/rt5645-common/HeadphonesEnableSeq.conf
+@@ -0,0 +1,7 @@
++cset "name='Ext Spk Switch' off"
++cset "name='Speaker Channel Switch' off"
++
++cset "name='Headphone Switch' on"
++cset "name='Headphone Channel Switch' on"
++# 25/39 higher values cause crackling on some boards
++cset "name='Headphone Playback Volume' 25"
+diff --git a/src/conf/ucm/codecs/rt5645-common/Makefile.am b/src/conf/ucm/codecs/rt5645-common/Makefile.am
+index f351fa37..7eff2e72 100644
+--- a/src/conf/ucm/codecs/rt5645-common/Makefile.am
++++ b/src/conf/ucm/codecs/rt5645-common/Makefile.am
+@@ -1,4 +1,5 @@
+ alsaconfigdir = @ALSA_CONFIG_DIR@
+ ucmdir = $(alsaconfigdir)/ucm/codecs/rt5645-common
+-ucm_DATA = DisableSeq.conf EnableSeq.conf
++ucm_DATA = DisableSeq.conf EnableSeq.conf HeadphonesEnableSeq.conf \
++		   SpeakerEnableSeq.conf
+ EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/codecs/rt5645-common/SpeakerEnableSeq.conf b/src/conf/ucm/codecs/rt5645-common/SpeakerEnableSeq.conf
+new file mode 100644
+index 00000000..2cc62fc5
+--- /dev/null
++++ b/src/conf/ucm/codecs/rt5645-common/SpeakerEnableSeq.conf
+@@ -0,0 +1,6 @@
++cset "name='Headphone Switch' off"
++cset "name='Headphone Channel Switch' off"
++
++cset "name='Ext Spk Switch' on"
++cset "name='Speaker Channel Switch' on"
++cset "name='Speaker Playback Volume' 31"
 -- 
 2.20.1
