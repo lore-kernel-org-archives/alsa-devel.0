@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: davinci-mcasp: No need for
-	IS_MODULE/BUILTIN check for pcm driver" to the asoc tree
-Date: Mon,  7 Jan 2019 12:25:54 +0000 (GMT)
-Message-ID: <20190107122554.F37B11127490@debutante.sirena.org.uk>
-References: <20190103125345.16139-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirks for
+	ASUS MeMO Pad 7 (ME176C)" to the asoc tree
+Date: Mon,  7 Jan 2019 12:25:56 +0000 (GMT)
+Message-ID: <20190107122556.C66861127490@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9BE267B81
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:25:55 +0100 (CET)
-In-Reply-To: <20190103125345.16139-1-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A59EE267B8B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:25:57 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jsarha@ti.com, misael.lopez@ti.com
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: davinci-mcasp: No need for IS_MODULE/BUILTIN check for pcm driver
+   ASoC: Intel: bytcr_rt5640: Add quirks for ASUS MeMO Pad 7 (ME176C)
 
 has been applied to the asoc tree at
 
@@ -53,52 +52,51 @@ to this mail.
 Thanks,
 Mark
 
->From 2130f15d6cd9898a68dc7244084985353030514f Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 3 Jan 2019 14:53:45 +0200
-Subject: [PATCH] ASoC: ti: davinci-mcasp: No need for IS_MODULE/BUILTIN check
- for pcm driver
+>From 51a13e401a83ef37aa98c049c2c30bba885676c2 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Wed, 2 Jan 2019 20:39:08 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for ASUS MeMO Pad 7
+ (ME176C)
 
-Since the platform drivers are selected by the DAI drivers (including
-McASP) there is no longer a need to check whether the modules are built-in
-or module.
+Add quirks to select the correct input map, jack-detect options
+and channel map to make sound work on the ASUS MeMO Pad 7 (ME176C).
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Note: Although sound works out of the box, jack detection currently
+requires overriding the ACPI DSDT table. This is necessary because
+the rt5640 ACPI device (10EC5640) has the wrong GPIO listed as
+interrupt (one of the Bluetooth GPIOs).
+The correct GPIO is GPO2 0x0004 (listed as the first GPIO in the
+Intel(R) Audio Machine Driver - AMCR0F28 device).
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-mcasp.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index eeda6d5565bc..ee9ab58d4d0c 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -2149,26 +2149,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	ret = davinci_mcasp_get_dma_type(mcasp);
- 	switch (ret) {
- 	case PCM_EDMA:
--#if IS_BUILTIN(CONFIG_SND_SOC_TI_EDMA_PCM) || \
--	(IS_MODULE(CONFIG_SND_SOC_DAVINCI_MCASP) && \
--	 IS_MODULE(CONFIG_SND_SOC_TI_EDMA_PCM))
- 		ret = edma_pcm_platform_register(&pdev->dev);
--#else
--		dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
--		ret = -EINVAL;
--		goto err;
--#endif
- 		break;
- 	case PCM_SDMA:
--#if IS_BUILTIN(CONFIG_SND_SOC_TI_SDMA_PCM) || \
--	(IS_MODULE(CONFIG_SND_SOC_DAVINCI_MCASP) && \
--	 IS_MODULE(CONFIG_SND_SOC_TI_SDMA_PCM))
- 		ret = sdma_pcm_platform_register(&pdev->dev, NULL, NULL);
--#else
--		dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
--		ret = -EINVAL;
--		goto err;
--#endif
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a22366ce33c4..ca8b4d5ff70f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -428,6 +428,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ME176C"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
 2.20.1
