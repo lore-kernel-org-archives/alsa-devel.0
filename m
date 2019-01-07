@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8316: Add jack-detect support" to the
-	asoc tree
-Date: Mon,  7 Jan 2019 12:30:57 +0000 (GMT)
-Message-ID: <20190107123057.6C0AE1127490@debutante.sirena.org.uk>
-References: <20190103134535.13861-2-hdegoede@redhat.com>
+Subject: Applied "ASoC: simple-card: reduce naming prefix" to
+	the asoc tree
+Date: Mon,  7 Jan 2019 12:31:06 +0000 (GMT)
+Message-ID: <20190107123106.7EB2A1127490@debutante.sirena.org.uk>
+References: <87ftut7zc2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 25BE4267BE8
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:58 +0100 (CET)
-In-Reply-To: <20190103134535.13861-2-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E0CA267BCC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:07 +0100 (CET)
+In-Reply-To: <87ftut7zc2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, linux@endlessm.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8316: Add jack-detect support
+   ASoC: simple-card: reduce naming prefix
 
 has been applied to the asoc tree at
 
@@ -53,308 +53,429 @@ to this mail.
 Thanks,
 Mark
 
->From 822257661031faa437336058d8a32bf1844ad9c6 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 3 Jan 2019 14:45:26 +0100
-Subject: [PATCH] ASoC: es8316: Add jack-detect support
+>From 2d01a84605a55cf07ea9c6886049cc85c5e98454 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 20 Dec 2018 10:47:34 +0900
+Subject: [PATCH] ASoC: simple-card: reduce naming prefix
 
-Adding jack-detect support may seem weird for a codec with only
-a single output, but it is necessary. The ES8316 appnote showing
-the intended usage uses a jack-receptacle which physically disconnects
-the speakers from the output when a jack is plugged in.
+Current simple-card is using asoc_simple_card_xxx() for
+function / data naming. Because of this long prefix, it is easy to be
+80 character over.
+Let's reduce prefix from asoc_simple_card_xxx() to simple_xxx().
 
-But all 3 devices using the es8316 which I have (2 Cherry Trail
-devices and one Bay Trail CR device), use an analog mux to disconnect
-the speakers, driven by a GPIO. In order to enable/disable the speakers
-at the right time, we need jack-detect.
-
-The same goes for the microphone where we must correctly set the mux
-for the single ADC to either the internal or the headset microphone.
-
-All devices I have support the es8316's builtin jack-detect functionality.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 195 +++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/es8316.h |   7 ++
- 2 files changed, 198 insertions(+), 4 deletions(-)
+ sound/soc/generic/simple-card.c | 157 ++++++++++++++++----------------
+ 1 file changed, 79 insertions(+), 78 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index e97d12d578b0..26413851e434 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -15,12 +15,14 @@
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
- #include <linux/regmap.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index e796b1516b40..479de236e694 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -15,7 +15,7 @@
+ #include <sound/soc-dai.h>
  #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- #include <sound/tlv.h>
-+#include <sound/jack.h>
- #include "es8316.h"
  
- /* In slave mode at single speed, the codec is documented as accepting 5
-@@ -33,6 +35,11 @@ static const unsigned int supported_mclk_lrck_ratios[] = {
- };
+-struct simple_card_data {
++struct simple_priv {
+ 	struct snd_soc_card snd_card;
+ 	struct simple_dai_props {
+ 		struct asoc_simple_dai *cpu_dai;
+@@ -49,10 +49,10 @@ struct link_info {
+ #define CELL	"#sound-dai-cells"
+ #define PREFIX	"simple-audio-card,"
  
- struct es8316_priv {
-+	struct mutex lock;
-+	struct regmap *regmap;
-+	struct snd_soc_component *component;
-+	struct snd_soc_jack *jack;
-+	int irq;
- 	unsigned int sysclk;
- 	unsigned int allowed_rates[NR_SUPPORTED_MCLK_LRCK_RATIOS];
- 	struct snd_pcm_hw_constraint_list sysclk_constraints;
-@@ -529,8 +536,162 @@ static struct snd_soc_dai_driver es8316_dai = {
- 	.symmetric_rates = 1,
- };
- 
-+static void es8316_enable_micbias_for_mic_gnd_short_detect(
-+	struct snd_soc_component *component)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Bias");
-+	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Analog power");
-+	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Mic Bias");
-+	snd_soc_dapm_sync_unlocked(dapm);
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	msleep(20);
-+}
-+
-+static void es8316_disable_micbias_for_mic_gnd_short_detect(
-+	struct snd_soc_component *component)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+	snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Bias");
-+	snd_soc_dapm_disable_pin_unlocked(dapm, "Analog power");
-+	snd_soc_dapm_disable_pin_unlocked(dapm, "Bias");
-+	snd_soc_dapm_sync_unlocked(dapm);
-+	snd_soc_dapm_mutex_unlock(dapm);
-+}
-+
-+static irqreturn_t es8316_irq(int irq, void *data)
-+{
-+	struct es8316_priv *es8316 = data;
-+	struct snd_soc_component *comp = es8316->component;
-+	unsigned int flags;
-+
-+	mutex_lock(&es8316->lock);
-+
-+	regmap_read(es8316->regmap, ES8316_GPIO_FLAG, &flags);
-+	if (flags == 0x00)
-+		goto out; /* Powered-down / reset */
-+
-+	/* Catch spurious IRQ before set_jack is called */
-+	if (!es8316->jack)
-+		goto out;
-+
-+	dev_dbg(comp->dev, "gpio flags %#04x\n", flags);
-+	if (flags & ES8316_GPIO_FLAG_HP_NOT_INSERTED) {
-+		/* Jack removed, or spurious IRQ? */
-+		if (es8316->jack->status & SND_JACK_MICROPHONE)
-+			es8316_disable_micbias_for_mic_gnd_short_detect(comp);
-+
-+		if (es8316->jack->status & SND_JACK_HEADPHONE) {
-+			snd_soc_jack_report(es8316->jack, 0,
-+					    SND_JACK_HEADSET | SND_JACK_BTN_0);
-+			dev_dbg(comp->dev, "jack unplugged\n");
-+		}
-+	} else if (!(es8316->jack->status & SND_JACK_HEADPHONE)) {
-+		/* Jack inserted, determine type */
-+		es8316_enable_micbias_for_mic_gnd_short_detect(comp);
-+		regmap_read(es8316->regmap, ES8316_GPIO_FLAG, &flags);
-+		dev_dbg(comp->dev, "gpio flags %#04x\n", flags);
-+		if (flags & ES8316_GPIO_FLAG_HP_NOT_INSERTED) {
-+			/* Jack unplugged underneath us */
-+			es8316_disable_micbias_for_mic_gnd_short_detect(comp);
-+		} else if (flags & ES8316_GPIO_FLAG_GM_NOT_SHORTED) {
-+			/* Open, headset */
-+			snd_soc_jack_report(es8316->jack,
-+					    SND_JACK_HEADSET,
-+					    SND_JACK_HEADSET);
-+			/* Keep mic-gnd-short detection on for button press */
-+		} else {
-+			/* Shorted, headphones */
-+			snd_soc_jack_report(es8316->jack,
-+					    SND_JACK_HEADPHONE,
-+					    SND_JACK_HEADSET);
-+			/* No longer need mic-gnd-short detection */
-+			es8316_disable_micbias_for_mic_gnd_short_detect(comp);
-+		}
-+	} else if (es8316->jack->status & SND_JACK_MICROPHONE) {
-+		/* Interrupt while jack inserted, report button state */
-+		if (flags & ES8316_GPIO_FLAG_GM_NOT_SHORTED) {
-+			/* Open, button release */
-+			snd_soc_jack_report(es8316->jack, 0, SND_JACK_BTN_0);
-+		} else {
-+			/* Short, button press */
-+			snd_soc_jack_report(es8316->jack,
-+					    SND_JACK_BTN_0,
-+					    SND_JACK_BTN_0);
-+		}
-+	}
-+
-+out:
-+	mutex_unlock(&es8316->lock);
-+	return IRQ_HANDLED;
-+}
-+
-+static void es8316_enable_jack_detect(struct snd_soc_component *component,
-+				      struct snd_soc_jack *jack)
-+{
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
-+
-+	mutex_lock(&es8316->lock);
-+
-+	es8316->jack = jack;
-+
-+	if (es8316->jack->status & SND_JACK_MICROPHONE)
-+		es8316_enable_micbias_for_mic_gnd_short_detect(component);
-+
-+	snd_soc_component_update_bits(component, ES8316_GPIO_DEBOUNCE,
-+				      ES8316_GPIO_ENABLE_INTERRUPT,
-+				      ES8316_GPIO_ENABLE_INTERRUPT);
-+
-+	mutex_unlock(&es8316->lock);
-+
-+	/* Enable irq and sync initial jack state */
-+	enable_irq(es8316->irq);
-+	es8316_irq(es8316->irq, es8316);
-+}
-+
-+static void es8316_disable_jack_detect(struct snd_soc_component *component)
-+{
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
-+
-+	disable_irq(es8316->irq);
-+
-+	mutex_lock(&es8316->lock);
-+
-+	snd_soc_component_update_bits(component, ES8316_GPIO_DEBOUNCE,
-+				      ES8316_GPIO_ENABLE_INTERRUPT, 0);
-+
-+	if (es8316->jack->status & SND_JACK_MICROPHONE) {
-+		es8316_disable_micbias_for_mic_gnd_short_detect(component);
-+		snd_soc_jack_report(es8316->jack, 0, SND_JACK_BTN_0);
-+	}
-+
-+	es8316->jack = NULL;
-+
-+	mutex_unlock(&es8316->lock);
-+}
-+
-+static int es8316_set_jack(struct snd_soc_component *component,
-+			   struct snd_soc_jack *jack, void *data)
-+{
-+	if (jack)
-+		es8316_enable_jack_detect(component, jack);
-+	else
-+		es8316_disable_jack_detect(component);
-+
-+	return 0;
-+}
-+
- static int es8316_probe(struct snd_soc_component *component)
+-static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
++static int simple_startup(struct snd_pcm_substream *substream)
  {
-+	struct es8316_priv *es8316 = snd_soc_component_get_drvdata(component);
-+
-+	es8316->component = component;
-+
- 	/* Reset codec and enable current state machine */
- 	snd_soc_component_write(component, ES8316_RESET, 0x3f);
- 	usleep_range(5000, 5500);
-@@ -555,6 +716,7 @@ static int es8316_probe(struct snd_soc_component *component)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 	int ret;
+@@ -68,10 +68,10 @@ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
+ 	return ret;
+ }
  
- static const struct snd_soc_component_driver soc_component_dev_es8316 = {
- 	.probe			= es8316_probe,
-+	.set_jack		= es8316_set_jack,
- 	.controls		= es8316_snd_controls,
- 	.num_controls		= ARRAY_SIZE(es8316_snd_controls),
- 	.dapm_widgets		= es8316_dapm_widgets,
-@@ -566,18 +728,29 @@ static const struct snd_soc_component_driver soc_component_dev_es8316 = {
- 	.non_legacy_dai_naming	= 1,
- };
- 
-+static const struct regmap_range es8316_volatile_ranges[] = {
-+	regmap_reg_range(ES8316_GPIO_FLAG, ES8316_GPIO_FLAG),
-+};
-+
-+static const struct regmap_access_table es8316_volatile_table = {
-+	.yes_ranges	= es8316_volatile_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(es8316_volatile_ranges),
-+};
-+
- static const struct regmap_config es8316_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 	.max_register = 0x53,
-+	.volatile_table	= &es8316_volatile_table,
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
- static int es8316_i2c_probe(struct i2c_client *i2c_client,
- 			    const struct i2c_device_id *id)
+-static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
++static void simple_shutdown(struct snd_pcm_substream *substream)
  {
-+	struct device *dev = &i2c_client->dev;
- 	struct es8316_priv *es8316;
--	struct regmap *regmap;
-+	int ret;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
  
- 	es8316 = devm_kzalloc(&i2c_client->dev, sizeof(struct es8316_priv),
- 			      GFP_KERNEL);
-@@ -586,9 +759,23 @@ static int es8316_i2c_probe(struct i2c_client *i2c_client,
+@@ -80,8 +80,8 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
+ 	asoc_simple_card_clk_disable(dai_props->codec_dai);
+ }
  
- 	i2c_set_clientdata(i2c_client, es8316);
+-static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
+-				    unsigned long rate)
++static int simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
++			       unsigned long rate)
+ {
+ 	if (!simple_dai)
+ 		return 0;
+@@ -95,13 +95,13 @@ static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
+ 	return clk_set_rate(simple_dai->clk, rate);
+ }
  
--	regmap = devm_regmap_init_i2c(i2c_client, &es8316_regmap);
--	if (IS_ERR(regmap))
--		return PTR_ERR(regmap);
-+	es8316->regmap = devm_regmap_init_i2c(i2c_client, &es8316_regmap);
-+	if (IS_ERR(es8316->regmap))
-+		return PTR_ERR(es8316->regmap);
+-static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_hw_params *params)
++static int simple_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 	unsigned int mclk, mclk_fs = 0;
+@@ -113,11 +113,11 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 	if (mclk_fs) {
+ 		mclk = params_rate(params) * mclk_fs;
+ 
+-		ret = asoc_simple_set_clk_rate(dai_props->codec_dai, mclk);
++		ret = simple_set_clk_rate(dai_props->codec_dai, mclk);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = asoc_simple_set_clk_rate(dai_props->cpu_dai, mclk);
++		ret = simple_set_clk_rate(dai_props->cpu_dai, mclk);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -136,15 +136,15 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static const struct snd_soc_ops asoc_simple_card_ops = {
+-	.startup = asoc_simple_card_startup,
+-	.shutdown = asoc_simple_card_shutdown,
+-	.hw_params = asoc_simple_card_hw_params,
++static const struct snd_soc_ops simple_ops = {
++	.startup	= simple_startup,
++	.shutdown	= simple_shutdown,
++	.hw_params	= simple_hw_params,
+ };
+ 
+-static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
++static int simple_dai_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct simple_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
+ 	int ret;
+ 
+@@ -161,10 +161,10 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+-					       struct snd_pcm_hw_params *params)
++static int simple_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				     struct snd_pcm_hw_params *params)
+ {
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, rtd->num);
+ 
+ 	asoc_simple_card_convert_fixup(&dai_props->adata, params);
+@@ -172,9 +172,9 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static void asoc_simple_card_get_conversion(struct device *dev,
+-					    struct device_node *np,
+-					    struct asoc_simple_card_data *adata)
++static void simple_get_conversion(struct device *dev,
++				  struct device_node *np,
++				  struct asoc_simple_card_data *adata)
+ {
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node = of_get_parent(np);
+@@ -187,11 +187,11 @@ static void asoc_simple_card_get_conversion(struct device *dev,
+ 	of_node_put(node);
+ }
+ 
+-static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+-					     struct device_node *np,
+-					     struct device_node *codec,
+-					     struct link_info *li,
+-					     bool is_top)
++static int simple_dai_link_of_dpcm(struct simple_priv *priv,
++				   struct device_node *np,
++				   struct device_node *codec,
++				   struct link_info *li,
++				   bool is_top)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+@@ -264,7 +264,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 
+ 		/* BE settings */
+ 		dai_link->no_pcm		= 1;
+-		dai_link->be_hw_params_fixup	= asoc_simple_card_be_hw_params_fixup;
++		dai_link->be_hw_params_fixup	= simple_be_hw_params_fixup;
+ 
+ 		dai =
+ 		dai_props->codec_dai	= &priv->dais[li->dais++];
+@@ -295,7 +295,7 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 					     "prefix");
+ 	}
+ 
+-	asoc_simple_card_get_conversion(dev, np, &dai_props->adata);
++	simple_get_conversion(dev, np, &dai_props->adata);
+ 
+ 	ret = asoc_simple_card_of_parse_tdm(np, dai);
+ 	if (ret)
+@@ -317,17 +317,17 @@ static int asoc_simple_card_dai_link_of_dpcm(struct simple_card_data *priv,
+ 
+ 	dai_link->dpcm_playback		= 1;
+ 	dai_link->dpcm_capture		= 1;
+-	dai_link->ops			= &asoc_simple_card_ops;
+-	dai_link->init			= asoc_simple_card_dai_init;
++	dai_link->ops			= &simple_ops;
++	dai_link->init			= simple_dai_init;
+ 
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+-					struct device_node *np,
+-					struct device_node *codec,
+-					struct link_info *li,
+-					bool is_top)
++static int simple_dai_link_of(struct simple_priv *priv,
++			      struct device_node *np,
++			      struct device_node *codec,
++			      struct link_info *li,
++			      bool is_top)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+@@ -420,8 +420,8 @@ static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	dai_link->ops = &asoc_simple_card_ops;
+-	dai_link->init = asoc_simple_card_dai_init;
++	dai_link->ops = &simple_ops;
++	dai_link->init = simple_dai_init;
+ 
+ 	asoc_simple_card_canonicalize_cpu(dai_link, single_cpu);
+ 
+@@ -431,13 +431,13 @@ static int asoc_simple_card_dai_link_of(struct simple_card_data *priv,
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
++static int simple_for_each_link(struct simple_priv *priv,
+ 			struct link_info *li,
+-			int (*func_noml)(struct simple_card_data *priv,
++			int (*func_noml)(struct simple_priv *priv,
+ 					 struct device_node *np,
+ 					 struct device_node *codec,
+ 					 struct link_info *li, bool is_top),
+-			int (*func_dpcm)(struct simple_card_data *priv,
++			int (*func_dpcm)(struct simple_priv *priv,
+ 					 struct device_node *np,
+ 					 struct device_node *codec,
+ 					 struct link_info *li, bool is_top))
+@@ -473,7 +473,7 @@ static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
+ 		/* get convert-xxx property */
+ 		memset(&adata, 0, sizeof(adata));
+ 		for_each_child_of_node(node, np)
+-			asoc_simple_card_get_conversion(dev, np, &adata);
++			simple_get_conversion(dev, np, &adata);
+ 
+ 		/* loop for all CPU/Codec node */
+ 		for_each_child_of_node(node, np) {
+@@ -499,8 +499,8 @@ static int asoc_simple_card_for_each_link(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_parse_aux_devs(struct device_node *node,
+-					   struct simple_card_data *priv)
++static int simple_parse_aux_devs(struct device_node *node,
++				 struct simple_priv *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *aux_node;
+@@ -530,7 +530,7 @@ static int asoc_simple_card_parse_aux_devs(struct device_node *node,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_parse_of(struct simple_card_data *priv)
++static int simple_parse_of(struct simple_priv *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *top = dev->of_node;
+@@ -564,9 +564,9 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 		 * To avoid random sub-device numbering,
+ 		 * detect "dummy-Codec" in last;
+ 		 */
+-		ret = asoc_simple_card_for_each_link(priv, &li,
+-						     asoc_simple_card_dai_link_of,
+-						     asoc_simple_card_dai_link_of_dpcm);
++		ret = simple_for_each_link(priv, &li,
++					   simple_dai_link_of,
++					   simple_dai_link_of_dpcm);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -575,15 +575,15 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = asoc_simple_card_parse_aux_devs(top, priv);
++	ret = simple_parse_aux_devs(top, priv);
+ 
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_count_noml(struct simple_card_data *priv,
+-				       struct device_node *np,
+-				       struct device_node *codec,
+-				       struct link_info *li, bool is_top)
++static int simple_count_noml(struct simple_priv *priv,
++			     struct device_node *np,
++			     struct device_node *codec,
++			     struct link_info *li, bool is_top)
+ {
+ 	li->dais++; /* CPU or Codec */
+ 	if (np != codec)
+@@ -592,10 +592,10 @@ static int asoc_simple_card_count_noml(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_count_dpcm(struct simple_card_data *priv,
+-				       struct device_node *np,
+-				       struct device_node *codec,
+-				       struct link_info *li, bool is_top)
++static int simple_count_dpcm(struct simple_priv *priv,
++			     struct device_node *np,
++			     struct device_node *codec,
++			     struct link_info *li, bool is_top)
+ {
+ 	li->dais++; /* CPU or Codec */
+ 	li->link++; /* CPU-dummy or dummy-Codec */
+@@ -605,8 +605,8 @@ static int asoc_simple_card_count_dpcm(struct simple_card_data *priv,
+ 	return 0;
+ }
+ 
+-static void asoc_simple_card_get_dais_count(struct simple_card_data *priv,
+-					    struct link_info *li)
++static void simple_get_dais_count(struct simple_priv *priv,
++				  struct link_info *li)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *top = dev->of_node;
+@@ -664,16 +664,17 @@ static void asoc_simple_card_get_dais_count(struct simple_card_data *priv,
+ 		return;
+ 	}
+ 
+-	asoc_simple_card_for_each_link(priv, li,
+-				       asoc_simple_card_count_noml,
+-				       asoc_simple_card_count_dpcm);
++	simple_for_each_link(priv, li,
++			     simple_count_noml,
++			     simple_count_dpcm);
 +
-+	es8316->irq = i2c_client->irq;
-+	mutex_init(&es8316->lock);
-+
-+	ret = devm_request_threaded_irq(dev, es8316->irq, NULL, es8316_irq,
-+					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-+					"es8316", es8316);
-+	if (ret == 0) {
-+		/* Gets re-enabled by es8316_set_jack() */
-+		disable_irq(es8316->irq);
-+	} else {
-+		dev_warn(dev, "Failed to get IRQ %d: %d\n", es8316->irq, ret);
-+		es8316->irq = -ENXIO;
-+	}
+ 	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
+ 		li->link, li->dais, li->conf);
+ }
  
- 	return devm_snd_soc_register_component(&i2c_client->dev,
- 				      &soc_component_dev_es8316,
-diff --git a/sound/soc/codecs/es8316.h b/sound/soc/codecs/es8316.h
-index 6bcdd63ea459..439a0130cbb7 100644
---- a/sound/soc/codecs/es8316.h
-+++ b/sound/soc/codecs/es8316.h
-@@ -126,4 +126,11 @@
- #define ES8316_SERDATA2_LEN_16		0x0c
- #define ES8316_SERDATA2_LEN_32		0x10
+-static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
++static int simple_soc_probe(struct snd_soc_card *card)
+ {
+-	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
++	struct simple_priv *priv = snd_soc_card_get_drvdata(card);
+ 	int ret;
  
-+/* ES8316_GPIO_DEBOUNCE	*/
-+#define ES8316_GPIO_ENABLE_INTERRUPT		0x02
-+
-+/* ES8316_GPIO_FLAG */
-+#define ES8316_GPIO_FLAG_GM_NOT_SHORTED		0x02
-+#define ES8316_GPIO_FLAG_HP_NOT_INSERTED	0x04
-+
- #endif
+ 	ret = asoc_simple_card_init_hp(card, &priv->hp_jack, PREFIX);
+@@ -687,9 +688,9 @@ static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static int asoc_simple_card_probe(struct platform_device *pdev)
++static int simple_probe(struct platform_device *pdev)
+ {
+-	struct simple_card_data *priv;
++	struct simple_priv *priv;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct simple_dai_props *dai_props;
+ 	struct asoc_simple_dai *dais;
+@@ -708,10 +709,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card = simple_priv_to_card(priv);
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+-	card->probe		= asoc_simple_soc_card_probe;
++	card->probe		= simple_soc_probe;
+ 
+ 	memset(&li, 0, sizeof(li));
+-	asoc_simple_card_get_dais_count(priv, &li);
++	simple_get_dais_count(priv, &li);
+ 	if (!li.link || !li.dais)
+ 		return -EINVAL;
+ 
+@@ -746,7 +747,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 
+ 	if (np && of_device_is_available(np)) {
+ 
+-		ret = asoc_simple_card_parse_of(priv);
++		ret = simple_parse_of(priv);
+ 		if (ret < 0) {
+ 			if (ret != -EPROBE_DEFER)
+ 				dev_err(dev, "parse error %d\n", ret);
+@@ -789,7 +790,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 		dai_link->stream_name	= cinfo->name;
+ 		dai_link->cpu_dai_name	= cinfo->cpu_dai.name;
+ 		dai_link->dai_fmt	= cinfo->daifmt;
+-		dai_link->init		= asoc_simple_card_dai_init;
++		dai_link->init		= simple_dai_init;
+ 		memcpy(priv->dai_props->cpu_dai, &cinfo->cpu_dai,
+ 					sizeof(*priv->dai_props->cpu_dai));
+ 		memcpy(priv->dai_props->codec_dai, &cinfo->codec_dai,
+@@ -809,28 +810,28 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int asoc_simple_card_remove(struct platform_device *pdev)
++static int simple_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+ 	return asoc_simple_card_clean_reference(card);
+ }
+ 
+-static const struct of_device_id asoc_simple_of_match[] = {
++static const struct of_device_id simple_of_match[] = {
+ 	{ .compatible = "simple-audio-card", },
+ 	{ .compatible = "simple-scu-audio-card", },
+ 	{},
+ };
+-MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
++MODULE_DEVICE_TABLE(of, simple_of_match);
+ 
+ static struct platform_driver asoc_simple_card = {
+ 	.driver = {
+ 		.name = "asoc-simple-card",
+ 		.pm = &snd_soc_pm_ops,
+-		.of_match_table = asoc_simple_of_match,
++		.of_match_table = simple_of_match,
+ 	},
+-	.probe = asoc_simple_card_probe,
+-	.remove = asoc_simple_card_remove,
++	.probe = simple_probe,
++	.remove = simple_remove,
+ };
+ 
+ module_platform_driver(asoc_simple_card);
 -- 
 2.20.1
