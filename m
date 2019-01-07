@@ -1,20 +1,14 @@
-From: Alexander Kappner <agk@godking.net>
-Subject: Re: [snd_hda_intel] snd_hda_intel causes high CPU
- lockup and system instability if mic disabled in BIOS on Lenovo P50
-Date: Sun, 6 Jan 2019 18:18:27 -0800 (PST)
-Message-ID: <alpine.DEB.2.11.1901061816210.19003@REDDOT>
-References: <alpine.DEB.2.11.1811251505140.20766@REDDOT>
- <s5hpnus6yb5.wl-tiwai@suse.de> <alpine.DEB.2.11.1811262126040.2578@REDDOT>
- <s5h8t1ey7tn.wl-tiwai@suse.de> <alpine.DEB.2.11.1812011117340.26587@REDDOT>
- <s5htvjst6b3.wl-tiwai@suse.de>
+From: libin.yang@intel.com
+Subject: [PATCH 1/2] ASoC: refine ASoC hdmi audio suspend/resume
+Date: Mon,  7 Jan 2019 10:11:55 +0800
+Message-ID: <1546827116-25269-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from godking.net (s18231873.onlinehome-server.info [217.160.179.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 23B8B267A86
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 03:18:36 +0100 (CET)
-In-Reply-To: <s5htvjst6b3.wl-tiwai@suse.de>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3BD2267A86
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 03:23:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,120 +18,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alexander Kappner <agk@godking.net>, alsa-devel@alsa-project.org, hdegoede@redhat.com, guneshwor.o.singh@intel.com, linux-kernel@vger.kernel.org, Jim.Qu@amd.com, lukas@wunner.de, bhelgaas@google.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
+Cc: liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com, libin.yang@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Libin Yang <libin.yang@intel.com>
 
+hdmi_codec_prepare() will trigger hdmi runtime resume, which will set
+the bitmask of hdev->addr. And skl_suspend() will clear the bitmask of
+HDA_CODEC_IDX_CONTROLLER. HDMI codec idx is not the same as
+HDA_CODEC_IDX_CONTROLLER, which means i915 power will not be released
+when suspend.
 
-On Wed, 5 Dec 2018, Takashi Iwai wrote:
+On the other hand, hdmi_codec_prepare() don't need to call
+pm_runtime_get_sync() to wake up the audio subsystem (HDMI auido)
+for setting the codec registers. Turning display power on with
+snd_hdac_display_power() is enough.
 
-> On Sat, 01 Dec 2018 20:33:16 +0100,
-> Alexander Kappner wrote:
->>
->> On Tue, 27 Nov 2018, Takashi Iwai wrote:
->>
->>> On Tue, 27 Nov 2018 06:34:02 +0100,
->>> Alexander Kappner wrote:
->>>>
->>>>
->>>>
->>>>
->>>> On Mon, 26 Nov 2018, Takashi Iwai wrote:
->>>>
->>>>> On Mon, 26 Nov 2018 00:17:15 +0100,
->>>>> Alexander Kappner wrote:
->>>>>>
->>>>>> My Lenovo P50 laptop has a BIOS option to disable the microphone. When
->>>>>> this option gets chosen, the snd_hda_intel driver causes high CPU load
->>>>>> on a single kworker thread, spinning on "process_unsol_events", and
->>>>>> system
->>>>>> instability. This behavior occurs from the time that the snd_hda_intel
->>>>>> module is loaded, irrespective of whether anything is attempting to access
->>>>>> the mic. The sound output still works.
->>>>>>
->>>>>> When in this state, the module cannot be removed cleanly; attempting to
->>>>>> remove it (even without rmmod -f) triggers an oops.
->>>>>>
->>>>>> I have attached two exemplary dmesg outputs. Strangely enough, the exact
->>>>>> location of the oops varies, but further up the call chain, I always see
->>>>>> process_unsol_events.
->>>>>>
->>>>>> When the mic is not disabled in the BIOS, the module works stable,
->>>>>> regardless whether or not the mic is muted in ALSA.
->>>>>>
->>>>>> I wasn't able to pinpoint the root cause. Any pointers on where to
->>>>>> start? Much appreciated.
->>>>>
->>>>> Could you load snd-hda-intel driver with probe_only=1 option, and give
->>>>> alsa-info.sh output (run it with --no-upload option)?  This should
->>>>> leave only the codec probing without configuring, so we can see the
->>>>> codec widget contents and check the emulator.
->>>>>
->>>>>
->>>>> thanks,
->>>>>
->>>>> Takashi
->>>>>
->>>>
->>>> Hi Takashi,
->>>>
->>>> thank you for looking into this. Please see quoted below the output of
->>>> alsa-info.sh (after "modprobe snd_hda_intel probe_only=1").
->>>
->>> This is the state where BIOS disabled the mic, right?
->>> It seems that BIOS doesn't change the pin configuration.  The pin NID
->>> 0x18 and 0x19 still show up as the mic jack and dock mic jack, as well
->>> as the built-in mic on NID 0x12.  And I couldn't see anything wrong in
->>> the emulator with this input.
->>>
->>> When BIOS disables the mic, how is supposed?  Does it disable all
->>> mics, including built-in one?
->>>
->>> Could you check alsa-info.sh outputs on both BIOS mic disable and
->>> enabled (but keep probe_only=1 option in both cases)?
->>>
->>> Also alsa-info.sh outputs on both cases without probe_only=1 would be
->>> helpful, too.
->>>
->>>
->>> thanks,
->>>
->>> Takashi
->>>
->> Hi Takashi,
->>
->> as requestd, please see attached four files, reflecting each
->> combination of probe_only and mic enabled/disabled. To answer your
->> question -- yes, the initial file I had sent reflected the mic
->> disabled state.
->>
->> The BIOS option definitely disables the internal microphone. I could
->> not test whether it would also disable other microphones
->> (e.g. externally connected) since I do not have an external mic, but I
->> will find out.
->
-> Hrm, that's strange.  The mic_enabled_default.txt shows "Mic Jack"
-> false while the mic_disabled_default.txt shows "Mic Jack" true.
-> It sounds like other way round.  Could you confirm this behavior?
->
-> In anyway, there seems no difference in the pin configs or such
-> between BIOS mic enable/disable.  So this shouldn't be the cause.
->
-> And I noticed that you're testing 4.19-rc4.  Could you test with 4.19
-> final or 4.19.y stable, at least?
->
->
-> thanks,
->
-> Takashi
->
-Hi Takashi,
+Let's use S3 without playback as an example:
+hdmi_codec_prepare() invokes the runtime resume of codec =>
+  snd_hdac_display_power(bus, hdev->addr, true)
+skl runtime resume
+skl_suspend() =>
+  snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
 
-I have been trying to reproduce 
-this issue with the more recent 4.20-rc6 kernel, and it has not 
-reoccurred. As such, I tentatively consider this issue resolved. Thank you 
-for your help.
+THis means hdev->addr will never release the display power when
+suspend.
 
-Best regards
-Alexander
+The new sequence will be:
+hdmi_codec_prepare() =>
+  snd_hdac_display_power(bus, hdev->addr, true)
+  snd_hdac_display_power(bus, hdev->addr, false)
+skl runtime resume
+skl suspned
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c  | 6 ++++--
+ sound/soc/intel/skylake/skl.c | 7 -------
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 3ab2949..782b323 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1895,7 +1895,7 @@ static int hdmi_codec_prepare(struct device *dev)
+ {
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+ 
+-	pm_runtime_get_sync(&hdev->dev);
++	snd_hdac_display_power(hdev->bus, hdev->addr, true);
+ 
+ 	/*
+ 	 * Power down afg.
+@@ -1906,6 +1906,7 @@ static int hdmi_codec_prepare(struct device *dev)
+ 	 */
+ 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ 							AC_PWRST_D3);
++	snd_hdac_display_power(hdev->bus, hdev->addr, false);
+ 
+ 	return 0;
+ }
+@@ -1915,6 +1916,7 @@ static void hdmi_codec_complete(struct device *dev)
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+ 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+ 
++	snd_hdac_display_power(hdev->bus, hdev->addr, true);
+ 	/* Power up afg */
+ 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ 							AC_PWRST_D0);
+@@ -1930,7 +1932,7 @@ static void hdmi_codec_complete(struct device *dev)
+ 	 */
+ 	hdac_hdmi_present_sense_all_pins(hdev, hdmi, false);
+ 
+-	pm_runtime_put_sync(&hdev->dev);
++	snd_hdac_display_power(hdev->bus, hdev->addr, false);
+ }
+ #else
+ #define hdmi_codec_prepare NULL
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 60c9483..89f4d66 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -336,9 +336,6 @@ static int skl_suspend(struct device *dev)
+ 		skl->skl_sst->fw_loaded = false;
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+-
+ 	return 0;
+ }
+ 
+@@ -350,10 +347,6 @@ static int skl_resume(struct device *dev)
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int ret;
+ 
+-	/* Turned OFF in HDMI codec driver after codec reconfiguration */
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-
+ 	/*
+ 	 * resume only when we are not in suspend active, otherwise need to
+ 	 * restore the device
+-- 
+2.7.4
