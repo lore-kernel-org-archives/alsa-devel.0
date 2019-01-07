@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: fix kernel doc descriptions" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:28 +0000 (GMT)
-Message-ID: <20190107185828.1AF941127491@debutante.sirena.org.uk>
-References: <20190105020249.8639-5-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-5-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: max98383: fix boolean assignments to
+	true/false" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:22 +0000 (GMT)
+Message-ID: <20190107185822.85B8D1127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-8-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF9E0266BE8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:58:23 +0100 (CET)
+In-Reply-To: <20190105020249.8639-8-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, liam.r.girdwood@linux.intel.com, Yangtao Li <tiny.windzz@gmail.com>broonie@kernel.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Ryan Lee <RyanS.Lee@maximintegrated.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, liam.r.girdwood@linux.intel.com, Grant Grundler <grundler@chromium.org>, broonie@kernel.org, Benson Leung <bleung@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: fix kernel doc descriptions
+   ASoC: max98383: fix boolean assignments to true/false
 
 has been applied to the asoc tree at
 
@@ -37,84 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From dc22a4093f5d2973bef5f72b00da74ce61458bc0 Mon Sep 17 00:00:00 2001
+>From 7c3727ba7de2b94a066e38776660e648fa4ed28a Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:32 -0600
-Subject: [PATCH] ASoC: codecs: fix kernel doc descriptions
+Date: Fri, 4 Jan 2019 20:02:35 -0600
+Subject: [PATCH] ASoC: max98383: fix boolean assignments to true/false
 
-Missing or spurious parameter descriptions. Fix warnings with W=1
+Reported by Coccinelle:
+
+sound/soc/codecs/max98373.c:411:2-20: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98373.c:922:2-27: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98373.c:924:2-27: WARNING: Assignment of bool to 0/1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 1 +
- sound/soc/codecs/rt5514.c  | 1 +
- sound/soc/codecs/rt5677.c  | 8 ++++----
- 3 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98373.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 7bbcbf5f05c8..47e65cf99879 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -351,6 +351,7 @@ static void nau8825_hpvol_ramp(struct nau8825 *nau8825,
-  * Computes log10 of a value; the result is round off to 3 decimal. This func-
-  * tion takes reference to dvb-math. The source code locates as the following.
-  * Linux/drivers/media/dvb-core/dvb_math.c
-+ * @value:  input for log10
-  *
-  * return log10(value) * 1000
-  */
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index a67de68b6da6..f9ad6e36ab16 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -489,6 +489,7 @@ static const struct snd_kcontrol_new rt5514_sto2_dmic_mux =
- /**
-  * rt5514_calc_dmic_clk - Calculate the frequency divider parameter of dmic.
-  *
-+ * @component: only used for dev_warn
-  * @rate: base clock rate.
-  *
-  * Choose divider parameter that gives the highest possible DMIC frequency in
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 9b7a1833d331..6fc70e441458 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -547,7 +547,7 @@ static bool rt5677_readable_register(struct device *dev, unsigned int reg)
-  * @rt5677: Private Data.
-  * @addr: Address index.
-  * @value: Address data.
-- *
-+ * @opcode: opcode value
-  *
-  * Returns 0 for success or negative error code.
-  */
-@@ -602,7 +602,7 @@ static int rt5677_dsp_mode_i2c_write_addr(struct rt5677_priv *rt5677,
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 9c8616a7b61c..528695cd6a1c 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -408,7 +408,7 @@ static int max98373_dac_event(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits(max98373->regmap,
+ 			MAX98373_R20FF_GLOBAL_SHDN,
+ 			MAX98373_GLOBAL_EN_MASK, 0);
+-		max98373->tdm_mode = 0;
++		max98373->tdm_mode = false;
+ 		break;
+ 	default:
+ 		return 0;
+@@ -919,9 +919,9 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
  
- /**
-  * rt5677_dsp_mode_i2c_read_addr - Read value from address on DSP mode.
-- * rt5677: Private Data.
-+ * @rt5677: Private Data.
-  * @addr: Address index.
-  * @value: Address data.
-  *
-@@ -651,7 +651,7 @@ static int rt5677_dsp_mode_i2c_read_addr(
+ 	/* update interleave mode info */
+ 	if (device_property_read_bool(&i2c->dev, "maxim,interleave_mode"))
+-		max98373->interleave_mode = 1;
++		max98373->interleave_mode = true;
+ 	else
+-		max98373->interleave_mode = 0;
++		max98373->interleave_mode = false;
  
- /**
-  * rt5677_dsp_mode_i2c_write - Write register on DSP mode.
-- * rt5677: Private Data.
-+ * @rt5677: Private Data.
-  * @reg: Register index.
-  * @value: Register data.
-  *
-@@ -667,7 +667,7 @@ static int rt5677_dsp_mode_i2c_write(struct rt5677_priv *rt5677,
  
- /**
-  * rt5677_dsp_mode_i2c_read - Read register on DSP mode.
-- * @codec: SoC audio codec device.
-+ * @rt5677: Private Data
-  * @reg: Register index.
-  * @value: Register data.
-  *
+ 	/* regmap initialization */
 -- 
 2.20.1
