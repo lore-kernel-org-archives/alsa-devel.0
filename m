@@ -1,15 +1,17 @@
 From: libin.yang@intel.com
-Subject: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
-	suspend/resume
-Date: Mon,  7 Jan 2019 10:22:00 +0800
-Message-ID: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
+Subject: [RFC PATCH v2 2/2] ASoC: add asoc hdmi audio trigger
+	handler
+Date: Mon,  7 Jan 2019 10:22:01 +0800
+Message-ID: <1546827721-25586-2-git-send-email-libin.yang@intel.com>
+References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id C0A2A267A86
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 03:33:29 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id B622D267B67
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 03:33:39 +0100 (CET)
+In-Reply-To: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,102 +27,92 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@intel.com>
 
-hdmi_codec_prepare() will trigger hdmi runtime resume, which will set
-the bitmask of hdev->addr. And skl_suspend() will clear the bitmask of
-HDA_CODEC_IDX_CONTROLLER. HDMI codec idx is not the same as
-HDA_CODEC_IDX_CONTROLLER, which means i915 power will not be released
-when suspend.
-
-On the other hand, hdmi_codec_prepare() don't need to call
-pm_runtime_get_sync() to wake up the audio subsystem (HDMI auido)
-for setting the codec registers. Turning display power on with
-snd_hdac_display_power() is enough.
-
-Let's use S3 without playback as an example:
-hdmi_codec_prepare() invokes the runtime resume of codec =>
-  snd_hdac_display_power(bus, hdev->addr, true)
-skl runtime resume
-skl_suspend() =>
-  snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
-
-THis means hdev->addr will never release the display power when
-suspend.
-
-The new sequence will be:
+The flow of ASoC hdmi audio suspend when playback is:
 hdmi_codec_prepare() =>
   snd_hdac_display_power(bus, hdev->addr, true)
   snd_hdac_display_power(bus, hdev->addr, false)
-skl runtime resume
-skl suspned
+suspend =>
+  trigger(suspend) =>
+    snd_hdac_display_power(bus, hdev->addr + HDA_CODEC_RT, false)
+now, all bitmasks are cleared and display power is turned off.
 
 Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c  | 6 ++++--
- sound/soc/intel/skylake/skl.c | 7 -------
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ include/sound/hda_component.h |  1 +
+ sound/soc/codecs/hdac_hdmi.c  | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
+diff --git a/include/sound/hda_component.h b/include/sound/hda_component.h
+index 2ec31b3..c7136b1 100644
+--- a/include/sound/hda_component.h
++++ b/include/sound/hda_component.h
+@@ -9,6 +9,7 @@
+ 
+ /* virtual idx for controller */
+ #define HDA_CODEC_IDX_CONTROLLER	HDA_MAX_CODECS
++#define HDA_CODEC_RT		    (HDA_CODEC_IDX_CONTROLLER + 1)
+ 
+ #ifdef CONFIG_SND_HDA_COMPONENT
+ int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 3ab2949..782b323 100644
+index 782b323..908f83d 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1895,7 +1895,7 @@ static int hdmi_codec_prepare(struct device *dev)
+@@ -1383,11 +1383,43 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdev)
+ 
+ }
+ 
++static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
++				 struct snd_soc_dai *dai)
++{
++	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
++	struct hdac_device *hdev = hdmi->hdev;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/*
++		 * Maybe there is a better way to avoid using
++		 * 'hdev->addr + HDA_CODEC_RT' bitmask?
++		 */
++		snd_hdac_display_power(hdev->bus, hdev->addr + HDA_CODEC_RT,
++				       true);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		snd_hdac_display_power(hdev->bus, hdev->addr + HDA_CODEC_RT,
++				       false);
++		break;
++	default:
++		/* Nothing to do */
++		break;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup = hdac_hdmi_pcm_open,
+ 	.shutdown = hdac_hdmi_pcm_close,
+ 	.hw_params = hdac_hdmi_set_hw_params,
+ 	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
++	.trigger = hdac_hdmi_pcm_trigger,
+ };
+ 
+ /*
+@@ -1895,6 +1927,11 @@ static int hdmi_codec_prepare(struct device *dev)
  {
  	struct hdac_device *hdev = dev_to_hdac_dev(dev);
  
--	pm_runtime_get_sync(&hdev->dev);
-+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
++	/*
++	 * FIXME: maybe using suspend/resume instead of
++	 * using prepare/complete can make things simpler
++	 * and no need to use 'hdev->addr + HDA_CODEC_RT'?
++	 */
+ 	snd_hdac_display_power(hdev->bus, hdev->addr, true);
  
  	/*
- 	 * Power down afg.
-@@ -1906,6 +1906,7 @@ static int hdmi_codec_prepare(struct device *dev)
- 	 */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
- 							AC_PWRST_D3);
-+	snd_hdac_display_power(hdev->bus, hdev->addr, false);
- 
- 	return 0;
- }
-@@ -1915,6 +1916,7 @@ static void hdmi_codec_complete(struct device *dev)
- 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
- 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
- 
-+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
- 	/* Power up afg */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
- 							AC_PWRST_D0);
-@@ -1930,7 +1932,7 @@ static void hdmi_codec_complete(struct device *dev)
- 	 */
- 	hdac_hdmi_present_sense_all_pins(hdev, hdmi, false);
- 
--	pm_runtime_put_sync(&hdev->dev);
-+	snd_hdac_display_power(hdev->bus, hdev->addr, false);
- }
- #else
- #define hdmi_codec_prepare NULL
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 60c9483..89f4d66 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -336,9 +336,6 @@ static int skl_suspend(struct device *dev)
- 		skl->skl_sst->fw_loaded = false;
- 	}
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
--
- 	return 0;
- }
- 
-@@ -350,10 +347,6 @@ static int skl_resume(struct device *dev)
- 	struct hdac_ext_link *hlink = NULL;
- 	int ret;
- 
--	/* Turned OFF in HDMI codec driver after codec reconfiguration */
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
--
- 	/*
- 	 * resume only when we are not in suspend active, otherwise need to
- 	 * restore the device
 -- 
 2.7.4
