@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add workaround for silence of rk3288 ACODEC" to the asoc tree
-Date: Mon,  7 Jan 2019 12:31:02 +0000 (GMT)
-Message-ID: <20190107123102.D557A1127491@debutante.sirena.org.uk>
-References: <20181220153636.5213-2-katsuhiro@katsuster.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181220153636.5213-2-katsuhiro@katsuster.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: sst: Simplify is_byt_cr()" to
+	the asoc tree
+Date: Mon,  7 Jan 2019 12:30:39 +0000 (GMT)
+Message-ID: <20190107123039.346FE1127490@debutante.sirena.org.uk>
+References: <20190102193904.50123-1-stephan@gerhold.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00C0C267BB1
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:39 +0100 (CET)
+In-Reply-To: <20190102193904.50123-1-stephan@gerhold.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add workaround for silence of rk3288 ACODEC
+   ASoC: Intel: sst: Simplify is_byt_cr()
 
 has been applied to the asoc tree at
 
@@ -37,40 +53,101 @@ to this mail.
 Thanks,
 Mark
 
->From f5758544d98c8bec7793aeea28928f5e8bd45d47 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Fri, 21 Dec 2018 00:36:36 +0900
-Subject: [PATCH] ASoC: rockchip: add workaround for silence of rk3288 ACODEC
+>From b97205ef95efddee018061dfee14c995be08dde3 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Wed, 2 Jan 2019 20:39:03 +0100
+Subject: [PATCH] ASoC: Intel: sst: Simplify is_byt_cr()
 
-This patch adds reset and precharge in shutdown of PCM device.
+is_byt_cr() and its usage can be simplified by returning the bool
+directly, instead of through a pointer. This works because the
+return value is just treated as bytcr = false and is not used
+otherwise.
 
-ACODEC goes to silence if we change Fs to 44.1kHz from 48kHz. This
-workaround seems to work but I don't know this workaround is correct
-sequence or not for ACODEC.
+This patch also removes the extra check of
+IS_ENABLED(CONFIG_IOSF_MBI) in favor of checking
+iosf_mbi_available() directly. The header already takes care
+of returning false if the config option is not enabled.
 
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+No functional change.
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rk3328_codec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 33 ++++++++++++-----------------
+ 1 file changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-index 71f3fc2d970c..f3442a2283ea 100644
---- a/sound/soc/codecs/rk3328_codec.c
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -261,9 +261,12 @@ static int rk3328_codec_close_playback(struct rk3328_codec_priv *rk3328)
- 		mdelay(1);
- 	}
- 
-+	/* Workaround for silence when changed Fs 48 -> 44.1kHz */
-+	rk3328_codec_reset(rk3328);
-+
- 	regmap_update_bits(rk3328->regmap, DAC_PRECHARGE_CTRL,
- 			   DAC_CHARGE_CURRENT_ALL_MASK,
--			   DAC_CHARGE_CURRENT_I);
-+			   DAC_CHARGE_CURRENT_ALL_ON);
- 
- 	return 0;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 3a95ebbfc45d..9eaac450f864 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -255,18 +255,15 @@ static int is_byt(void)
+ 	return status;
  }
+ 
+-static int is_byt_cr(struct device *dev, bool *bytcr)
++static bool is_byt_cr(struct device *dev)
+ {
+ 	int status = 0;
+ 
+-	if (IS_ENABLED(CONFIG_IOSF_MBI)) {
+-		u32 bios_status;
+-
+-		if (!is_byt() || !iosf_mbi_available()) {
+-			/* bail silently */
+-			return status;
+-		}
++	if (!is_byt())
++		return false;
+ 
++	if (iosf_mbi_available()) {
++		u32 bios_status;
+ 		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
+ 				       MBI_REG_READ, /* 0x10 */
+ 				       0x006, /* BIOS_CONFIG */
+@@ -278,15 +275,17 @@ static int is_byt_cr(struct device *dev, bool *bytcr)
+ 			/* bits 26:27 mirror PMIC options */
+ 			bios_status = (bios_status >> 26) & 3;
+ 
+-			if ((bios_status == 1) || (bios_status == 3))
+-				*bytcr = true;
+-			else
+-				dev_info(dev, "BYT-CR not detected\n");
++			if (bios_status == 1 || bios_status == 3) {
++				dev_info(dev, "Detected Baytrail-CR platform\n");
++				return true;
++			}
++
++			dev_info(dev, "BYT-CR not detected\n");
+ 		}
+ 	} else {
+-		dev_info(dev, "IOSF_MBI not enabled, no BYT-CR detection\n");
++		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
+ 	}
+-	return status;
++	return false;
+ }
+ 
+ 
+@@ -301,7 +300,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	struct platform_device *plat_dev;
+ 	struct sst_platform_info *pdata;
+ 	unsigned int dev_id;
+-	bool bytcr = false;
+ 
+ 	id = acpi_match_device(dev->driver->acpi_match_table, dev);
+ 	if (!id)
+@@ -333,10 +331,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = is_byt_cr(dev, &bytcr);
+-	if (!(ret < 0 || !bytcr)) {
+-		dev_info(dev, "Detected Baytrail-CR platform\n");
+-
++	if (is_byt_cr(dev)) {
+ 		/* override resource info */
+ 		byt_rvp_platform_data.res_info = &bytcr_res_info;
+ 	}
 -- 
 2.20.1
