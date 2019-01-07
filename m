@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: boards: use snd_mask_set_format
-	in all machine drivers" to the asoc tree
-Date: Mon,  7 Jan 2019 12:31:42 +0000 (GMT)
-Message-ID: <20190107123142.D7F2C1127490@debutante.sirena.org.uk>
-References: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Haswell: remove unneeded
+	semicolon" to the asoc tree
+Date: Mon,  7 Jan 2019 12:31:51 +0000 (GMT)
+Message-ID: <20190107123151.F25521127490@debutante.sirena.org.uk>
+References: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 36487267D02
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:52 +0100 (CET)
-In-Reply-To: <20181216224910.16198-10-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 45B4F267C96
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:53 +0100 (CET)
+In-Reply-To: <20181216224910.16198-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: boards: use snd_mask_set_format in all machine drivers
+   ASoC: Intel: Haswell: remove unneeded semicolon
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 4e88068ed0888549acd1cbb2f6e271b007051203 Mon Sep 17 00:00:00 2001
+>From 6c5414589721d696fe300dc0b8720e0368e3907a Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Sun, 16 Dec 2018 16:49:10 -0600
-Subject: [PATCH] ASoC: Intel: boards: use snd_mask_set_format in all machine
- drivers
+Date: Sun, 16 Dec 2018 16:49:04 -0600
+Subject: [PATCH] ASoC: Intel: Haswell: remove unneeded semicolon
 
-Fix Sparse warnings with two machine drivers which weren't updated
+Detected with Coccinelle
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c74c4f17316f..0739e3a75083 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -164,7 +164,7 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index fe2c826e710c..fb9b8608eb3b 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -544,7 +544,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		dev_err(rtd->dev, "error: invalid DAI ID %d\n",
+ 			rtd->cpu_dai->id);
+ 		return -EINVAL;
+-	};
++	}
  
- 	/* set SSP to 24 bit */
- 	snd_mask_none(fmt);
--	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 723a4935ed76..6dd5c69671b3 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -221,7 +221,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 		rate->min = rate->max = 48000;
- 		channels->min = channels->max = 2;
- 		snd_mask_none(fmt);
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 	}
- 
- 	/*
-@@ -229,7 +229,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 * thus changing the mask here
- 	 */
- 	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
--		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
- }
+ 	ret = sst_hsw_stream_format(hsw, pcm_data->stream,
+ 		path_id, stream_type, SST_HSW_STREAM_FORMAT_PCM_FORMAT);
 -- 
 2.20.1
