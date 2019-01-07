@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: enable SPDIF driver build" to the asoc tree
-Date: Mon,  7 Jan 2019 18:57:43 +0000 (GMT)
-Message-ID: <20190107185743.B90241127491@debutante.sirena.org.uk>
-References: <1546538993-55473-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1546538993-55473-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "dt-bindings: ASoC: xlnx,
+ spdif: Document spdif bindings" to the asoc tree
+Date: Mon,  7 Jan 2019 18:57:47 +0000 (GMT)
+Message-ID: <20190107185747.6B9541127491@debutante.sirena.org.uk>
+References: <1546538993-55473-2-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1546538993-55473-2-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Michal Simek <michal.simek@xilinx.com>, Vishal Sagar <vsagar@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: enable SPDIF driver build
+   dt-bindings: ASoC: xlnx, spdif: Document spdif bindings
 
 has been applied to the asoc tree at
 
@@ -37,44 +49,53 @@ to this mail.
 Thanks,
 Mark
 
->From 47caf048a017ecc95cdd0802bc3b015a1559e601 Mon Sep 17 00:00:00 2001
+>From 2f00f7715e624d04e25d9cb8bb0f53884d3bcb59 Mon Sep 17 00:00:00 2001
 From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Thu, 3 Jan 2019 23:39:53 +0530
-Subject: [PATCH] ASoC: xlnx: enable SPDIF driver build
+Date: Thu, 3 Jan 2019 23:39:51 +0530
+Subject: [PATCH] dt-bindings: ASoC: xlnx, spdif: Document spdif bindings
 
-Added SPDIF driver build related changes.
+Added documentation for SPDIF IP DT bindings.
 
 Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/Kconfig  | 7 +++++++
- sound/soc/xilinx/Makefile | 2 ++
- 2 files changed, 9 insertions(+)
+ .../devicetree/bindings/sound/xlnx,spdif.txt  | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,spdif.txt
 
-diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
-index ac48d6a00c36..47f606b924e4 100644
---- a/sound/soc/xilinx/Kconfig
-+++ b/sound/soc/xilinx/Kconfig
-@@ -13,3 +13,10 @@ config SND_SOC_XILINX_AUDIO_FORMATTER
-           Select this option to enable Xilinx audio formatter
-           support. This provides DMA platform device support for
-           audio functionality.
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,spdif.txt b/Documentation/devicetree/bindings/sound/xlnx,spdif.txt
+new file mode 100644
+index 000000000000..15c2d64d247c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,spdif.txt
+@@ -0,0 +1,28 @@
++Device-Tree bindings for Xilinx SPDIF IP
 +
-+config SND_SOC_XILINX_SPDIF
-+        tristate "Audio support for the the Xilinx SPDIF"
-+        help
-+          Select this option to enable Xilinx SPDIF Audio.
-+          This provides playback and capture of SPDIF audio in
-+          AES format.
-diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
-index 432693b1cc79..d79fd38b094b 100644
---- a/sound/soc/xilinx/Makefile
-+++ b/sound/soc/xilinx/Makefile
-@@ -2,3 +2,5 @@ snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
- obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
- snd-soc-xlnx-formatter-pcm-objs := xlnx_formatter_pcm.o
- obj-$(CONFIG_SND_SOC_XILINX_AUDIO_FORMATTER) += snd-soc-xlnx-formatter-pcm.o
-+snd-soc-xlnx-spdif-objs := xlnx_spdif.o
-+obj-$(CONFIG_SND_SOC_XILINX_SPDIF) += snd-soc-xlnx-spdif.o
++The IP supports playback and capture of SPDIF audio
++
++Required properties:
++ - compatible: "xlnx,spdif-2.0"
++ - clock-names: List of input clocks.
++   Required elements: "s_axi_aclk", "aud_clk_i"
++ - clocks: Input clock specifier. Refer to common clock bindings.
++ - reg: Base address and address length of the IP core instance.
++ - interrupts-parent: Phandle for interrupt controller.
++ - interrupts: List of Interrupt numbers.
++ - xlnx,spdif-mode: 0 :- receiver mode
++		    1 :- transmitter mode
++ - xlnx,aud_clk_i: input audio clock value.
++
++Example:
++	spdif_0: spdif@80010000 {
++		clock-names = "aud_clk_i", "s_axi_aclk";
++		clocks = <&misc_clk_0>, <&clk 71>;
++		compatible = "xlnx,spdif-2.0";
++		interrupt-names = "spdif_interrupt";
++		interrupt-parent = <&gic>;
++		interrupts = <0 91 4>;
++		reg = <0x0 0x80010000 0x0 0x10000>;
++		xlnx,spdif-mode = <1>;
++		xlnx,aud_clk_i = <49152913>;
++	};
 -- 
 2.20.1
