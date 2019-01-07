@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt298: fix boolean tests" to the asoc tree
-Date: Mon,  7 Jan 2019 18:57:56 +0000 (GMT)
-Message-ID: <20190107185756.762791127491@debutante.sirena.org.uk>
-References: <20190105020249.8639-9-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: da7219: fix endianness issues" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:03 +0000 (GMT)
+Message-ID: <20190107185803.D87CB1127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-19-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190105020249.8639-19-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, liam.r.girdwood@linux.intel.combroonie@kernel.orgAdam Thomson <Adam.Thomson.Opensource@diasemi.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt298: fix boolean tests
+   ASoC: da7219: fix endianness issues
 
 has been applied to the asoc tree at
 
@@ -37,68 +37,80 @@ to this mail.
 Thanks,
 Mark
 
->From f0627d006047299e427f026942fed22b111f04f5 Mon Sep 17 00:00:00 2001
+>From 123c3def3bc5ea9958b8191d8139f610ed972d18 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:36 -0600
-Subject: [PATCH] ASoC: rt298: fix boolean tests
+Date: Fri, 4 Jan 2019 20:02:46 -0600
+Subject: [PATCH] ASoC: da7219: fix endianness issues
 
-Reported by Coccinelle:
+Reported by Sparse.
 
-sound/soc/codecs/rt298.c:992:6-8: WARNING: Comparison to bool
-sound/soc/codecs/rt298.c:995:6-9: WARNING: Comparison to bool
-sound/soc/codecs/rt298.c:317:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt298.c:320:5-8: WARNING: Comparison to bool
-sound/soc/codecs/rt298.c:348:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt298.c:351:5-8: WARNING: Comparison to bool
+da7219.c:440:44: warning: cast to restricted __le16
+da7219.c:461:13: warning: incorrect type in assignment (different base types)
+da7219.c:461:13:    expected unsigned short [unsigned] [usertype] val
+da7219.c:461:13:    got restricted __le16 [usertype] <noident>
+da7219.c:1451:16: warning: incorrect type in assignment (different base types)
+da7219.c:1451:16:    expected unsigned short [unsigned] [usertype] offset
+da7219.c:1451:16:    got restricted __le16 [usertype] <noident>
 
+da7219-aad.c:150:37: warning: incorrect type in assignment (different base types)
+da7219-aad.c:150:37:    expected unsigned short [unsigned] [usertype] tonegen_freq_hptest
+da7219-aad.c:150:37:    got restricted __le16 [usertype] <noident>
+da7219-aad.c:157:37: warning: incorrect type in assignment (different base types)
+da7219-aad.c:157:37:    expected unsigned short [unsigned] [usertype] tonegen_freq_hptest
+da7219-aad.c:157:37:    got restricted __le16 [usertype] <noident>
+
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt298.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/da7219-aad.c | 2 +-
+ sound/soc/codecs/da7219.c     | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 06cdba4edfe2..bcf5bab31969 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -314,10 +314,10 @@ static void rt298_jack_detect_work(struct work_struct *work)
- 	if (rt298_jack_detect(rt298, &hp, &mic) < 0)
- 		return;
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 2c7d5088e6f2..e0964b20a389 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -117,7 +117,7 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
  
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
+-	u16 tonegen_freq_hptest;
++	__le16 tonegen_freq_hptest;
+ 	u8 pll_srm_sts, pll_ctrl, gain_ramp_ctrl, accdet_cfg8;
+ 	int report = 0, ret = 0;
  
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index e46e9f4bc994..ce165047b9f9 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -423,7 +423,7 @@ static int da7219_tonegen_freq_get(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mixer_ctrl =
+ 		(struct soc_mixer_control *) kcontrol->private_value;
+ 	unsigned int reg = mixer_ctrl->reg;
+-	u16 val;
++	__le16 val;
+ 	int ret;
  
- 	snd_soc_jack_report(rt298->jack, status,
-@@ -345,10 +345,10 @@ int rt298_mic_detect(struct snd_soc_component *component, struct snd_soc_jack *j
- 	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x2, 0x2);
+ 	mutex_lock(&da7219->ctrl_lock);
+@@ -450,7 +450,7 @@ static int da7219_tonegen_freq_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mixer_ctrl =
+ 		(struct soc_mixer_control *) kcontrol->private_value;
+ 	unsigned int reg = mixer_ctrl->reg;
+-	u16 val;
++	__le16 val;
+ 	int ret;
  
- 	rt298_jack_detect(rt298, &hp, &mic);
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
+ 	/*
+@@ -1396,7 +1396,7 @@ static int da7219_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+ 	u8 dai_bclks_per_wclk;
+-	u16 offset;
++	__le16 offset;
+ 	u32 frame_size;
  
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
- 
- 	snd_soc_jack_report(rt298->jack, status,
-@@ -989,10 +989,10 @@ static irqreturn_t rt298_irq(int irq, void *data)
- 	regmap_update_bits(rt298->regmap, RT298_IRQ_CTRL, 0x1, 0x1);
- 
- 	if (ret == 0) {
--		if (hp == true)
-+		if (hp)
- 			status |= SND_JACK_HEADPHONE;
- 
--		if (mic == true)
-+		if (mic)
- 			status |= SND_JACK_MICROPHONE;
- 
- 		snd_soc_jack_report(rt298->jack, status,
+ 	/* No channels enabled so disable TDM, revert to 64-bit frames */
 -- 
 2.20.1
