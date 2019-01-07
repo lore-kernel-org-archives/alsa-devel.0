@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98927: fix boolean assignments" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:13 +0000 (GMT)
-Message-ID: <20190107185813.1B96C1127492@debutante.sirena.org.uk>
-References: <20190105020249.8639-14-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt274: fix boolean tests" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:18 +0000 (GMT)
+Message-ID: <20190107185818.983281127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-11-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-14-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190105020249.8639-11-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, liam.r.girdwood@linux.intel.combroonie@kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98927: fix boolean assignments
+   ASoC: rt274: fix boolean tests
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 091cd877d8d6b2b934d565134172db771907d50a Mon Sep 17 00:00:00 2001
+>From b793a1e4ebad5c9066f404dee13fec875fb9b4e5 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:41 -0600
-Subject: [PATCH] ASoC: max98927: fix boolean assignments
+Date: Fri, 4 Jan 2019 20:02:38 -0600
+Subject: [PATCH] ASoC: rt274: fix boolean tests
 
 Reported by Coccinelle:
-sound/soc/codecs/max98927.c:508:2-20: WARNING: Assignment of bool to 0/1
-sound/soc/codecs/max98927.c:889:3-28: WARNING: Assignment of bool to 0/1
-sound/soc/codecs/max98927.c:891:3-28: WARNING: Assignment of bool to 0/1
-sound/soc/codecs/max98927.c:893:2-27: WARNING: Assignment of bool to 0/1
+
+sound/soc/codecs/rt274.c:958:6-8: WARNING: Comparison to bool
+sound/soc/codecs/rt274.c:961:6-9: WARNING: Comparison to bool
+sound/soc/codecs/rt274.c:384:5-7: WARNING: Comparison to bool
+sound/soc/codecs/rt274.c:387:5-8: WARNING: Comparison to bool
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98927.c | 8 ++++----
+ sound/soc/codecs/rt274.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 065303a46535..e53d2007f3be 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -505,7 +505,7 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index e2855ab9a2c6..9e88f7b25d38 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -381,10 +381,10 @@ static void rt274_jack_detect_work(struct work_struct *work)
+ 	if (rt274_jack_detect(rt274, &hp, &mic) < 0)
+ 		return;
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		max98927->tdm_mode = 0;
-+		max98927->tdm_mode = false;
- 		break;
- 	case SND_SOC_DAPM_POST_PMU:
- 		regmap_update_bits(max98927->regmap,
-@@ -886,11 +886,11 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
- 	if (!of_property_read_u32(i2c->dev.of_node,
- 		"interleave_mode", &value)) {
- 		if (value > 0)
--			max98927->interleave_mode = 1;
-+			max98927->interleave_mode = true;
- 		else
--			max98927->interleave_mode = 0;
-+			max98927->interleave_mode = false;
- 	} else
--		max98927->interleave_mode = 0;
-+		max98927->interleave_mode = false;
+-	if (hp == true)
++	if (hp)
+ 		status |= SND_JACK_HEADPHONE;
  
- 	/* regmap initialization */
- 	max98927->regmap
+-	if (mic == true)
++	if (mic)
+ 		status |= SND_JACK_MICROPHONE;
+ 
+ 	snd_soc_jack_report(rt274->jack, status,
+@@ -955,10 +955,10 @@ static irqreturn_t rt274_irq(int irq, void *data)
+ 	ret = rt274_jack_detect(rt274, &hp, &mic);
+ 
+ 	if (ret == 0) {
+-		if (hp == true)
++		if (hp)
+ 			status |= SND_JACK_HEADPHONE;
+ 
+-		if (mic == true)
++		if (mic)
+ 			status |= SND_JACK_MICROPHONE;
+ 
+ 		snd_soc_jack_report(rt274->jack, status,
 -- 
 2.20.1
