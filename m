@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Allow SCLK pad drive strength
-	to be changed" to the asoc tree
-Date: Mon,  7 Jan 2019 18:57:40 +0000 (GMT)
-Message-ID: <20190107185740.6A32A1127491@debutante.sirena.org.uk>
+Subject: Applied "ASoC: rsnd: update BSDSR/BSDISR handling" to
+	the asoc tree
+Date: Mon,  7 Jan 2019 18:57:38 +0000 (GMT)
+Message-ID: <20190107185738.ED5BA1127491@debutante.sirena.org.uk>
+References: <871s66tdc8.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 79136266AD7
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:57:41 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 981392669BD
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:57:40 +0100 (CET)
+In-Reply-To: <871s66tdc8.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alison Wang <alison.wang@nxp.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Yusuke Goda <yusuke.goda.sx@renesas.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, chaoliang qin <chaoliang.qin.jg@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Allow SCLK pad drive strength to be changed
+   ASoC: rsnd: update BSDSR/BSDISR handling
 
 has been applied to the asoc tree at
 
@@ -52,95 +53,224 @@ to this mail.
 Thanks,
 Mark
 
->From 5dc4ca2996840db569e43d00420c10499140274a Mon Sep 17 00:00:00 2001
-From: Alison Wang <alison.wang@nxp.com>
-Date: Wed, 26 Dec 2018 08:59:53 +0800
-Subject: [PATCH] ASoC: sgtl5000: Allow SCLK pad drive strength to be changed
+>From 7674bec4fc09e85803a8f2bd26a013d0076a80a9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 25 Dec 2018 14:05:28 +0900
+Subject: [PATCH] ASoC: rsnd: update BSDSR/BSDISR handling
 
-This patch introduces "sclk-strength" property to allow SCLK pad drive
-strength to be changed via device tree.
+Current BSDSR/BSDISR are using temporary/generic settings, but it can't
+handle all SRCx/SoC. It needs to handle correctry.
+Otherwise, sampling rate converted sound channel will be broken if it
+was TDM. One note is that it needs to overwrite settings on E3 case.
 
-When running playback test on LS1028ARDB, Tx Frame sync error interrupt
-will occur sometimes. Some noises also exist. After changing SCLK pad
-drive strength to the maximum value, the issues are gone.
-
-Signed-off-by: Alison Wang <alison.wang@nxp.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: chaoliang qin <chaoliang.qin.jg@renesas.com>
+Tested-by: Yusuke Goda <yusuke.goda.sx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/sgtl5000.txt    |  9 +++++++++
- sound/soc/codecs/sgtl5000.c                   | 19 ++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/src.c | 125 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 115 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 9c58f724396a..9d9ff5184939 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -37,6 +37,15 @@ VDDIO		1.8V		2.5V		3.3V
- 2 =		3.33 mA		5.74 mA		8.03  mA
- 3 =		4.99 mA		8.61 mA		12.05 mA
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 50348a2c9203..db81e066b92e 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -14,6 +14,7 @@
+  */
  
-+- sclk-strength: the SCLK pad strength. Possible values are:
-+0, 1, 2 and 3 as per the table below:
-+
-+VDDIO		1.8V		2.5V		3.3V
-+0 = 		Disable
-+1 =		1.66 mA		2.87 mA		4.02  mA
-+2 =		3.33 mA		5.74 mA		8.03  mA
-+3 =		4.99 mA		8.61 mA		12.05 mA
-+
- Example:
+ #include "rsnd.h"
++#include <linux/sys_soc.h>
  
- sgtl5000: codec@a {
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index add18d6d77da..a6a4748c97f9 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -116,6 +116,13 @@ enum  {
- 	I2S_LRCLK_STRENGTH_HIGH,
- };
+ #define SRC_NAME "src"
  
-+enum  {
-+	I2S_SCLK_STRENGTH_DISABLE,
-+	I2S_SCLK_STRENGTH_LOW,
-+	I2S_SCLK_STRENGTH_MEDIUM,
-+	I2S_SCLK_STRENGTH_HIGH,
+@@ -134,20 +135,83 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
+ 	return rate;
+ }
+ 
++const static u32 bsdsr_table_pattern1[] = {
++	0x01800000, /* 6 - 1/6 */
++	0x01000000, /* 6 - 1/4 */
++	0x00c00000, /* 6 - 1/3 */
++	0x00800000, /* 6 - 1/2 */
++	0x00600000, /* 6 - 2/3 */
++	0x00400000, /* 6 - 1   */
 +};
 +
- /* sgtl5000 private structure in codec */
- struct sgtl5000_priv {
- 	int sysclk;	/* sysclk rate */
-@@ -129,6 +136,7 @@ struct sgtl5000_priv {
- 	u8 micbias_resistor;
- 	u8 micbias_voltage;
- 	u8 lrclk_strength;
-+	u8 sclk_strength;
- };
++const static u32 bsdsr_table_pattern2[] = {
++	0x02400000, /* 6 - 1/6 */
++	0x01800000, /* 6 - 1/4 */
++	0x01200000, /* 6 - 1/3 */
++	0x00c00000, /* 6 - 1/2 */
++	0x00900000, /* 6 - 2/3 */
++	0x00600000, /* 6 - 1   */
++};
++
++const static u32 bsisr_table[] = {
++	0x00100060, /* 6 - 1/6 */
++	0x00100040, /* 6 - 1/4 */
++	0x00100030, /* 6 - 1/3 */
++	0x00100020, /* 6 - 1/2 */
++	0x00100020, /* 6 - 2/3 */
++	0x00100020, /* 6 - 1   */
++};
++
++const static u32 chan288888[] = {
++	0x00000006, /* 1 to 2 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++};
++
++const static u32 chan244888[] = {
++	0x00000006, /* 1 to 2 */
++	0x0000001e, /* 1 to 4 */
++	0x0000001e, /* 1 to 4 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++	0x000001fe, /* 1 to 8 */
++};
++
++const static u32 chan222222[] = {
++	0x00000006, /* 1 to 2 */
++	0x00000006, /* 1 to 2 */
++	0x00000006, /* 1 to 2 */
++	0x00000006, /* 1 to 2 */
++	0x00000006, /* 1 to 2 */
++	0x00000006, /* 1 to 2 */
++};
++
++static const struct soc_device_attribute ov_soc[] = {
++	{ .soc_id = "r8a77990" }, /* E3 */
++	{ /* sentinel */ }
++};
++
+ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 				      struct rsnd_mod *mod)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	const struct soc_device_attribute *soc = soc_device_match(ov_soc);
+ 	int is_play = rsnd_io_is_play(io);
+ 	int use_src = 0;
+ 	u32 fin, fout;
+ 	u32 ifscr, fsrate, adinr;
+ 	u32 cr, route;
+-	u32 bsdsr, bsisr;
+ 	u32 i_busif, o_busif, tmp;
++	const u32 *bsdsr_table;
++	const u32 *chptn;
+ 	uint ratio;
++	int chan;
++	int idx;
  
- /*
-@@ -1302,7 +1310,9 @@ static int sgtl5000_probe(struct snd_soc_component *component)
- 			SGTL5000_DAC_MUTE_RIGHT |
- 			SGTL5000_DAC_MUTE_LEFT);
+ 	if (!runtime)
+ 		return;
+@@ -155,6 +219,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	fin  = rsnd_src_get_in_rate(priv, io);
+ 	fout = rsnd_src_get_out_rate(priv, io);
  
--	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
-+	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT |
-+	       (sgtl5000->sclk_strength) << SGTL5000_PAD_I2S_SCLK_SHIFT |
-+	       0x1f);
- 	snd_soc_component_write(component, SGTL5000_CHIP_PAD_STRENGTH, reg);
++	chan = rsnd_runtime_channel_original(io);
++
+ 	/* 6 - 1/6 are very enough ratio for SRC_BSDSR */
+ 	if (fin == fout)
+ 		ratio = 0;
+@@ -173,8 +239,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	/*
+ 	 * SRC_ADINR
+ 	 */
+-	adinr = rsnd_get_adinr_bit(mod, io) |
+-		rsnd_runtime_channel_original(io);
++	adinr = rsnd_get_adinr_bit(mod, io) | chan;
  
- 	snd_soc_component_write(component, SGTL5000_CHIP_ANA_CTRL,
-@@ -1542,6 +1552,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		sgtl5000->lrclk_strength = value;
+ 	/*
+ 	 * SRC_IFSCR / SRC_IFSVR
+@@ -207,21 +272,56 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 
+ 	/*
+ 	 * SRC_BSDSR / SRC_BSISR
++	 *
++	 * see
++	 *	Combination of Register Setting Related to
++	 *	FSO/FSI Ratio and Channel, Latency
+ 	 */
+ 	switch (rsnd_mod_id(mod)) {
++	case 0:
++		chptn		= chan288888;
++		bsdsr_table	= bsdsr_table_pattern1;
++		break;
++	case 1:
++	case 3:
++	case 4:
++		chptn		= chan244888;
++		bsdsr_table	= bsdsr_table_pattern1;
++		break;
++	case 2:
++	case 9:
++		chptn		= chan222222;
++		bsdsr_table	= bsdsr_table_pattern1;
++		break;
+ 	case 5:
+ 	case 6:
+ 	case 7:
+ 	case 8:
+-		bsdsr = 0x02400000; /* 6 - 1/6 */
+-		bsisr = 0x00100060; /* 6 - 1/6 */
++		chptn		= chan222222;
++		bsdsr_table	= bsdsr_table_pattern2;
+ 		break;
+ 	default:
+-		bsdsr = 0x01800000; /* 6 - 1/6 */
+-		bsisr = 0x00100060 ;/* 6 - 1/6 */
+-		break;
++		goto convert_rate_err;
  	}
  
-+	sgtl5000->sclk_strength = I2S_SCLK_STRENGTH_LOW;
-+	if (!of_property_read_u32(np, "sclk-strength", &value)) {
-+		if (value > I2S_SCLK_STRENGTH_HIGH)
-+			value = I2S_SCLK_STRENGTH_LOW;
-+		sgtl5000->sclk_strength = value;
-+	}
++	/*
++	 * E3 need to overwrite
++	 */
++	if (soc)
++		switch (rsnd_mod_id(mod)) {
++		case 0:
++		case 4:
++			chptn	= chan222222;
++		}
 +
- 	/* Ensure sgtl5000 will start with sane register values */
- 	sgtl5000_fill_defaults(client);
++	for (idx = 0; idx < ARRAY_SIZE(chan222222); idx++)
++		if (chptn[idx] & (1 << chan))
++			break;
++
++	if (chan > 8 ||
++	    idx >= ARRAY_SIZE(chan222222))
++		goto convert_rate_err;
++
+ 	/* BUSIF_MODE */
+ 	tmp = rsnd_get_busif_shift(io, mod);
+ 	i_busif = ( is_play ? tmp : 0) | 1;
+@@ -234,8 +334,8 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, SRC_IFSCR, ifscr);
+ 	rsnd_mod_write(mod, SRC_IFSVR, fsrate);
+ 	rsnd_mod_write(mod, SRC_SRCCR, cr);
+-	rsnd_mod_write(mod, SRC_BSDSR, bsdsr);
+-	rsnd_mod_write(mod, SRC_BSISR, bsisr);
++	rsnd_mod_write(mod, SRC_BSDSR, bsdsr_table[idx]);
++	rsnd_mod_write(mod, SRC_BSISR, bsisr_table[idx]);
+ 	rsnd_mod_write(mod, SRC_SRCIR, 0);	/* cancel initialize */
  
+ 	rsnd_mod_write(mod, SRC_I_BUSIF_MODE, i_busif);
+@@ -244,6 +344,11 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, SRC_BUSIF_DALIGN, rsnd_get_dalign(mod, io));
+ 
+ 	rsnd_adg_set_src_timesel_gen2(mod, io, fin, fout);
++
++	return;
++
++convert_rate_err:
++	dev_err(dev, "unknown BSDSR/BSDIR settings\n");
+ }
+ 
+ static int rsnd_src_irq(struct rsnd_mod *mod,
 -- 
 2.20.1
