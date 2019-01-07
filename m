@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt274: fix boolean tests" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:18 +0000 (GMT)
-Message-ID: <20190107185818.983281127491@debutante.sirena.org.uk>
-References: <20190105020249.8639-11-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt5651: fix boolean assignments" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:11 +0000 (GMT)
+Message-ID: <20190107185811.42BF31127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-15-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-11-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190105020249.8639-15-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt274: fix boolean tests
+   ASoC: rt5651: fix boolean assignments
 
 has been applied to the asoc tree at
 
@@ -37,53 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From b793a1e4ebad5c9066f404dee13fec875fb9b4e5 Mon Sep 17 00:00:00 2001
+>From 577dc32f9a6fc20cd404e0eb965659e9271c78be Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:38 -0600
-Subject: [PATCH] ASoC: rt274: fix boolean tests
+Date: Fri, 4 Jan 2019 20:02:42 -0600
+Subject: [PATCH] ASoC: rt5651: fix boolean assignments
 
 Reported by Coccinelle:
-
-sound/soc/codecs/rt274.c:958:6-8: WARNING: Comparison to bool
-sound/soc/codecs/rt274.c:961:6-9: WARNING: Comparison to bool
-sound/soc/codecs/rt274.c:384:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt274.c:387:5-8: WARNING: Comparison to bool
+sound/soc/codecs/rt5651.c:750:2-17: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/rt5651.c:754:2-17: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/rt5651.c:2192:1-16: WARNING: Assignment of bool to 0/1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt274.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index e2855ab9a2c6..9e88f7b25d38 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -381,10 +381,10 @@ static void rt274_jack_detect_work(struct work_struct *work)
- 	if (rt274_jack_detect(rt274, &hp, &mic) < 0)
- 		return;
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index b7ba64350a07..3882e238ff99 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -747,11 +747,11 @@ static int rt5651_hp_event(struct snd_soc_dapm_widget *w,
+ 			RT5651_HP_CP_PD | RT5651_HP_SG_EN);
+ 		regmap_update_bits(rt5651->regmap, RT5651_PR_BASE +
+ 			RT5651_CHPUMP_INT_REG1, 0x0700, 0x0400);
+-		rt5651->hp_mute = 0;
++		rt5651->hp_mute = false;
+ 		break;
  
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		rt5651->hp_mute = 1;
++		rt5651->hp_mute = true;
+ 		usleep_range(70000, 75000);
+ 		break;
  
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
+@@ -2189,7 +2189,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
  
- 	snd_soc_jack_report(rt274->jack, status,
-@@ -955,10 +955,10 @@ static irqreturn_t rt274_irq(int irq, void *data)
- 	ret = rt274_jack_detect(rt274, &hp, &mic);
+ 	rt5651->irq = i2c->irq;
+-	rt5651->hp_mute = 1;
++	rt5651->hp_mute = true;
  
- 	if (ret == 0) {
--		if (hp == true)
-+		if (hp)
- 			status |= SND_JACK_HEADPHONE;
- 
--		if (mic == true)
-+		if (mic)
- 			status |= SND_JACK_MICROPHONE;
- 
- 		snd_soc_jack_report(rt274->jack, status,
+ 	INIT_DELAYED_WORK(&rt5651->bp_work, rt5651_button_press_work);
+ 	INIT_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
 -- 
 2.20.1
