@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: rt286: fix boolean tests" to the asoc
-	tree
-Date: Mon,  7 Jan 2019 18:58:16 +0000 (GMT)
-Message-ID: <20190107185816.BF8051127491@debutante.sirena.org.uk>
-References: <20190105020249.8639-12-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: cs4271: fix boolean assignments" to the
+	asoc tree
+Date: Mon,  7 Jan 2019 18:58:20 +0000 (GMT)
+Message-ID: <20190107185820.78EFA1127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-10-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 722D226742D
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:58:17 +0100 (CET)
-In-Reply-To: <20190105020249.8639-12-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D518A267444
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:58:21 +0100 (CET)
+In-Reply-To: <20190105020249.8639-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, open list <linux-kernel@vger.kernel.org>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: rt286: fix boolean tests
+   ASoC: cs4271: fix boolean assignments
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From af3b2b54cb294b997ad9a2a88ed3c6c9af7d03c0 Mon Sep 17 00:00:00 2001
+>From 3c17bcfd35bca1bee34709e7509646b5bc88643f Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:39 -0600
-Subject: [PATCH] ASoc: rt286: fix boolean tests
+Date: Fri, 4 Jan 2019 20:02:37 -0600
+Subject: [PATCH] ASoC: cs4271: fix boolean assignments
 
 Reported by Coccinelle:
-sound/soc/codecs/rt286.c:927:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:930:5-8: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:299:5-7: WARNING: Comparison to bool
-sound/soc/codecs/rt286.c:302:5-8: WARNING: Comparison to bool
+sound/soc/codecs/cs4271.c:226:2-16: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/cs4271.c:229:2-16: WARNING: Assignment of bool to 0/1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs4271.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 0b0f748bffbe..c9457c247a03 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -296,10 +296,10 @@ static void rt286_jack_detect_work(struct work_struct *work)
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 849fdb2cb260..1104830edaf8 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -223,10 +223,10 @@ static int cs4271_set_dai_fmt(struct snd_soc_dai *codec_dai,
  
- 	rt286_jack_detect(rt286, &hp, &mic);
- 
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
- 
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
- 
- 	snd_soc_jack_report(rt286->jack, status,
-@@ -924,10 +924,10 @@ static irqreturn_t rt286_irq(int irq, void *data)
- 	/* Clear IRQ */
- 	regmap_update_bits(rt286->regmap, RT286_IRQ_CTRL, 0x1, 0x1);
- 
--	if (hp == true)
-+	if (hp)
- 		status |= SND_JACK_HEADPHONE;
- 
--	if (mic == true)
-+	if (mic)
- 		status |= SND_JACK_MICROPHONE;
- 
- 	snd_soc_jack_report(rt286->jack, status,
+ 	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+-		cs4271->master = 0;
++		cs4271->master = false;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		cs4271->master = 1;
++		cs4271->master = true;
+ 		val |= CS4271_MODE1_MASTER;
+ 		break;
+ 	default:
 -- 
 2.20.1
