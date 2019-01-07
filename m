@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mt6351: remove unneeded variable" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:05 +0000 (GMT)
-Message-ID: <20190107185805.B04001127491@debutante.sirena.org.uk>
-References: <20190105020249.8639-18-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: dt-bindings: Document support for ak4497" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:35 +0000 (GMT)
+Message-ID: <20190107185835.8CDFC1127491@debutante.sirena.org.uk>
+References: <20190104162649.13103-3-daniel.baluta@nxp.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-18-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190104162649.13103-3-daniel.baluta@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Wei Yongjun <weiyongjun1@huawei.com>, Matthias Brugger <matthias.bgg@gmail.com>, "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>, "moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>alsa-devel@alsa-project.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>"broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "daniel.baluta@gmail.com" <daniel.baluta@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mt6351: remove unneeded variable
+   ASoC: dt-bindings: Document support for ak4497
 
 has been applied to the asoc tree at
 
@@ -37,41 +37,31 @@ to this mail.
 Thanks,
 Mark
 
->From d61780c155e8bef8dceb3ac98d29f79c24e264eb Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:45 -0600
-Subject: [PATCH] ASoC: mt6351: remove unneeded variable
+>From 5d8d66077af12681441897a350f346c0da7f5576 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Fri, 4 Jan 2019 16:27:04 +0000
+Subject: [PATCH] ASoC: dt-bindings: Document support for ak4497
 
-Reported by Coccinelle:
-mt6351.c:1418:5-8: Unneeded variable: "ret". Return "0" on line 1437
+ak4458 driver supports also ak4497 codec.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6351.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/ak4458.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index f73dcd753584..4b3ce01c5a93 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -1415,8 +1415,6 @@ static const struct snd_soc_dapm_route mt6351_dapm_routes[] = {
+diff --git a/Documentation/devicetree/bindings/sound/ak4458.txt b/Documentation/devicetree/bindings/sound/ak4458.txt
+index 7839be78448d..e5820235e0d5 100644
+--- a/Documentation/devicetree/bindings/sound/ak4458.txt
++++ b/Documentation/devicetree/bindings/sound/ak4458.txt
+@@ -4,7 +4,7 @@ This device supports I2C mode.
  
- static int mt6351_codec_init_reg(struct snd_soc_component *cmpnt)
- {
--	int ret = 0;
--
- 	/* Disable CLKSQ 26MHz */
- 	regmap_update_bits(cmpnt->regmap, MT6351_TOP_CLKSQ, 0x0001, 0x0);
- 	/* disable AUDGLB */
-@@ -1434,7 +1432,7 @@ static int mt6351_codec_init_reg(struct snd_soc_component *cmpnt)
- 	/* Reverse the PMIC clock*/
- 	regmap_update_bits(cmpnt->regmap, MT6351_AFE_PMIC_NEWIF_CFG2,
- 			   0x8000, 0x8000);
--	return ret;
-+	return 0;
- }
+ Required properties:
  
- static int mt6351_codec_probe(struct snd_soc_component *cmpnt)
+-- compatible : "asahi-kasei,ak4458"
++- compatible : "asahi-kasei,ak4458" or "asahi-kasei,ak4497"
+ - reg : The I2C address of the device for I2C
+ 
+ Optional properties:
 -- 
 2.20.1
