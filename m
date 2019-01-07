@@ -1,29 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe"
- to the asoc tree
-Date: Mon,  7 Jan 2019 12:31:01 +0000 (GMT)
-Message-ID: <20190107123101.0E9821127490@debutante.sirena.org.uk>
-References: <20181226211106.GA16692@embeddedor>
+Subject: Applied "ASoC: Intel: bytcht_es8316: Set card
+	long_name based on quirks" to the asoc tree
+Date: Mon,  7 Jan 2019 12:30:42 +0000 (GMT)
+Message-ID: <20190107123042.D74531127490@debutante.sirena.org.uk>
+References: <20190103134535.13861-10-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20181226211106.GA16692@embeddedor>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Takashi Iwai <tiwai@suse.com>, Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9039E267BBE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:43 +0100 (CET)
+In-Reply-To: <20190103134535.13861-10-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, linux@endlessm.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe
+   ASoC: Intel: bytcht_es8316: Set card long_name based on quirks
 
 has been applied to the asoc tree at
 
@@ -48,42 +53,99 @@ to this mail.
 Thanks,
 Mark
 
->From 1d38b4e903d577f05393eb0ac6727f40d90dd6c6 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Wed, 26 Dec 2018 15:11:06 -0600
-Subject: [PATCH] ASoC: xlnx: fix error handling in xlnx_formatter_pcm_probe
+>From 249d2fc9e55c324dda968252ea3ad0ac21c72b8f Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 3 Jan 2019 14:45:34 +0100
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Set card long_name based on
+ quirks
 
-Currently, if platform_get_irq_byname() fails, the returned error
-turns into a huge value, once it is being store into a variable
-of type unsigned int, hence never actually reporting any error
-and causing unexpected behavior when using the values stored
-in aud_drv_data->s2mm_irq and aud_drv_data->mm2s_irq.
+Depending on the input-map and on if 1 or 2 speakers are connected,
+userspace needs to use a different UCM profile.
 
-Fix this by changing the type of variables s2mm_irq and mm2s_irq in
-structure xlnx_pcm_drv_data from unsigned int to int.
+Since we already deal with quirks in the kernel driver and set the
+input-map from the kernel, add a quirk for devices with a single / mono
+speaker and set the card's long_name based on the input and speaker
+quirks, so that userspace can use the long_name to pick the right UCM
+profile.
 
-Addresses-Coverity-ID: 1476096 ("Unsigned compared against 0")
-Fixes: 796175a94a7f ("ASoC: xlnx: add pcm formatter platform driver")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+This change, including how the long_name is build-up mirrors how we do
+this in the bytcr_rt5640 and bytcr_rt5651 machine drivers.
+
+Note since all devices I have access to use a mono speaker setup I've
+chosen to default the speaker setting to mono.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/xlnx_formatter_pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index f7235f7664d7..d2194da928e7 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -76,8 +76,8 @@ struct xlnx_pcm_drv_data {
- 	void __iomem *mmio;
- 	bool s2mm_presence;
- 	bool mm2s_presence;
--	unsigned int s2mm_irq;
--	unsigned int mm2s_irq;
-+	int s2mm_irq;
-+	int mm2s_irq;
- 	struct snd_pcm_substream *play_stream;
- 	struct snd_pcm_substream *capture_stream;
- 	struct clk *axi_clk;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 941a66f94660..cdf2061e7613 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -54,6 +54,7 @@ enum {
+ 
+ #define BYT_CHT_ES8316_MAP(quirk)		((quirk) & GENMASK(3, 0))
+ #define BYT_CHT_ES8316_SSP0			BIT(16)
++#define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
+ 
+ static int quirk;
+ 
+@@ -69,6 +70,8 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk IN2_MAP enabled");
+ 	if (quirk & BYT_CHT_ES8316_SSP0)
+ 		dev_info(dev, "quirk SSP0 enabled");
++	if (quirk & BYT_CHT_ES8316_MONO_SPEAKER)
++		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
+ }
+ 
+ static int byt_cht_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+@@ -352,6 +355,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+ 
+ /* SoC card */
+ static char codec_name[SND_ACPI_I2C_ID_LEN];
++static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
+ 
+ static int byt_cht_es8316_suspend(struct snd_soc_card *card)
+ {
+@@ -433,6 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
++	const char * const mic_name[] = { "in1", "in2" };
+ 	struct byt_cht_es8316_private *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+@@ -467,11 +472,13 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	/* Check for BYTCR or other platform and setup quirks */
+ 	if (x86_match_cpu(baytrail_cpu_ids) &&
+ 	    mach->mach_params.acpi_ipc_irq_index == 0) {
+-		/* On BYTCR default to SSP0, internal-mic-in2-map */
+-		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP;
++		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
++		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
++			BYT_CHT_ES8316_MONO_SPEAKER;
+ 	} else {
+-		/* Others default to internal-mic-in1-map */
+-		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP;
++		/* Others default to internal-mic-in1-map, mono-speaker */
++		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP |
++			BYT_CHT_ES8316_MONO_SPEAKER;
+ 	}
+ 	if (quirk_override != -1) {
+ 		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
+@@ -518,6 +525,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* register the soc card */
++	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
++		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
++		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
++	byt_cht_es8316_card.long_name = long_name;
+ 	byt_cht_es8316_card.dev = dev;
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+ 
 -- 
 2.20.1
