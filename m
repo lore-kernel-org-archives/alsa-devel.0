@@ -1,50 +1,49 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [RFC 0/2] conf/ucm: bytcht-es8316 support
-Date: Mon, 7 Jan 2019 12:08:27 +0100
-Message-ID: <7a570574-9ce3-441d-f82a-81d2705340fc@redhat.com>
-References: <20190103135015.14669-1-hdegoede@redhat.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v6 08/11] ASoC: Intel: atom: Make PCI dependency explicit
+Date: Mon, 7 Jan 2019 12:15:35 +0100
+Message-ID: <CAJZ5v0g2bjzjuiDPTbBN8QgvOG0KMC0Ew2QOQH4u2+y6KRo0wQ@mail.gmail.com>
+References: <20190105100606.6673-1-okaya@kernel.org> <20190105100606.6673-9-okaya@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id B3B54267946
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 12:08:29 +0100 (CET)
-Received: by mail-wr1-f66.google.com with SMTP id q18so42705415wrx.9
- for <alsa-devel@alsa-project.org>; Mon, 07 Jan 2019 03:08:29 -0800 (PST)
-In-Reply-To: <20190103135015.14669-1-hdegoede@redhat.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, linux@endlessm.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Daniel Drake <drake@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190105100606.6673-9-okaya@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sinan Kaya <okaya@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Jan 5, 2019 at 11:06 AM Sinan Kaya <okaya@kernel.org> wrote:
+>
+> After 'commit 5d32a66541c4 ("PCI/ACPI: Allow ACPI to be built without
+> CONFIG_PCI set")' dependencies on CONFIG_PCI that previously were
+> satisfied implicitly through dependencies on CONFIG_ACPI have to be
+> specified directly. This code relies on IOSF_MBI and IOSF_MBI depends
+> on PCI. For this reason, add a direct dependency on CONFIG_PCI to the
+> IOSF_MBI driver.
+>
+> Fixes: 5d32a66541c46 ("PCI/ACPI: Allow ACPI to be built without CONFIG_PCI set")
+> Signed-off-by: Sinan Kaya <okaya@kernel.org>
 
-On 03-01-19 14:50, Hans de Goede wrote:
-> Hi All,
-> 
-> Here is the UCM profile to match the kernel patches which I just submitted
-> upstream. Note this series is RFC for now, since it depends on the name
-> of a few controls added by the kernel series, as well as on the long_name
-> set by the kernel series.
-> 
-> Once the kernel series has been merged into -next, this UCM profile series
-> can be merged as well. I will send another mail when the kernel series has
-> been accepted.
+Sinan, I thought you received an ACK from Pierre-Louis on this one, didn't you?
 
-The kernel patches for this are in -next now, so the alsa-lib patches from
-this series are now no longer RFC and can be merged now.
+> ---
+>  sound/soc/intel/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index 99a62ba409df..bd9fd2035c55 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -91,7 +91,7 @@ config SND_SST_ATOM_HIFI2_PLATFORM_PCI
+>  config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
+>         tristate "ACPI HiFi2 (Baytrail, Cherrytrail) Platforms"
+>         default ACPI
+> -       depends on X86 && ACPI
+> +       depends on X86 && ACPI && PCI
+>         select SND_SST_IPC_ACPI
+>         select SND_SST_ATOM_HIFI2_PLATFORM
+>         select SND_SOC_ACPI_INTEL_MATCH
+> --
 
-Regards,
-
-Hans
+Mark, assuming that the ACK above was given here, do you want me to
+take this patch or do you want to take care of it yourself?
