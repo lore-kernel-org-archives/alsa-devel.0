@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: eliminate left-over from Raumfeld
-	machine driver removal" to the asoc tree
-Date: Mon,  7 Jan 2019 18:57:54 +0000 (GMT)
-Message-ID: <20190107185754.97C541127491@debutante.sirena.org.uk>
-References: <20190104185530.30920-1-daniel@zonque.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 578A2266B63
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:57:55 +0100 (CET)
-In-Reply-To: <20190104185530.30920-1-daniel@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: nau8824: fix boolean assignment" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:09 +0000 (GMT)
+Message-ID: <20190107185809.69B7D1127492@debutante.sirena.org.uk>
+References: <20190105020249.8639-16-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190105020249.8639-16-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, John Hsu <KCHSU0@nuvoton.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Colin Ian King <colin.king@canonical.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: eliminate left-over from Raumfeld machine driver removal
+   ASoC: nau8824: fix boolean assignment
 
 has been applied to the asoc tree at
 
@@ -53,33 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From e147c189c10911def4c3d98aa1111a474a64111c Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Fri, 4 Jan 2019 19:55:30 +0100
-Subject: [PATCH] ASoC: eliminate left-over from Raumfeld machine driver
- removal
+>From 290da7a7e349566f0e1541b14f25b722f58f236b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 4 Jan 2019 20:02:43 -0600
+Subject: [PATCH] ASoC: nau8824: fix boolean assignment
 
-Commit f84a6273dd9107c ("ASoC: pxa: remove raumfeld machine driver")
-removed the Raumfeld ASoC machine driver but forgot to kill one line
-in the Makefile.
+Reported by Coccinelle:
+nau8824.c:810:6-12: ERROR: Assignment of bool to non-0/1 constant
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/nau8824.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 0ab2a9dcb720..ea4929d73318 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -30,7 +30,6 @@ snd-soc-magician-objs := magician.o
- snd-soc-mioa701-objs := mioa701_wm9713.o
- snd-soc-z2-objs := z2.o
- snd-soc-imote2-objs := imote2.o
--snd-soc-raumfeld-objs := raumfeld.o
- snd-soc-brownstone-objs := brownstone.o
- snd-soc-ttc-dkb-objs := ttc-dkb.o
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 468d5143e2c4..87ed3dc496dc 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -807,7 +807,7 @@ static const struct snd_soc_dapm_route nau8824_dapm_routes[] = {
+ static bool nau8824_is_jack_inserted(struct nau8824 *nau8824)
+ {
+ 	struct snd_soc_jack *jack = nau8824->jack;
+-	bool insert = FALSE;
++	bool insert = false;
  
+ 	if (nau8824->irq && jack)
+ 		insert = jack->status & SND_JACK_HEADPHONE;
 -- 
 2.20.1
