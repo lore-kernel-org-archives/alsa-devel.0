@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8824: fix boolean assignment" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:09 +0000 (GMT)
-Message-ID: <20190107185809.69B7D1127492@debutante.sirena.org.uk>
-References: <20190105020249.8639-16-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: dmic: declare trigger function as static" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:33 +0000 (GMT)
+Message-ID: <20190107185833.B1A7D1127491@debutante.sirena.org.uk>
+References: <20190105020249.8639-2-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-16-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190105020249.8639-2-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, John Hsu <KCHSU0@nuvoton.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Colin Ian King <colin.king@canonical.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, liam.r.girdwood@linux.intel.combroonie@kernel.org, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>, Jerome Brunet <jbrunet@baylibre.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8824: fix boolean assignment
+   ASoC: dmic: declare trigger function as static
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 290da7a7e349566f0e1541b14f25b722f58f236b Mon Sep 17 00:00:00 2001
+>From 902d82222270c957d12fa2e9856484d600a88d20 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:43 -0600
-Subject: [PATCH] ASoC: nau8824: fix boolean assignment
+Date: Fri, 4 Jan 2019 20:02:29 -0600
+Subject: [PATCH] ASoC: dmic: declare trigger function as static
 
-Reported by Coccinelle:
-nau8824.c:810:6-12: ERROR: Assignment of bool to non-0/1 constant
+No reason why this is global, fix warnings with W=1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8824.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/dmic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 468d5143e2c4..87ed3dc496dc 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -807,7 +807,7 @@ static const struct snd_soc_dapm_route nau8824_dapm_routes[] = {
- static bool nau8824_is_jack_inserted(struct nau8824 *nau8824)
- {
- 	struct snd_soc_jack *jack = nau8824->jack;
--	bool insert = FALSE;
-+	bool insert = false;
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index da921da50ef0..de041369e5a7 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -44,8 +44,8 @@ struct dmic {
+ 	int modeswitch_delay;
+ };
  
- 	if (nau8824->irq && jack)
- 		insert = jack->status & SND_JACK_HEADPHONE;
+-int dmic_daiops_trigger(struct snd_pcm_substream *substream,
+-		int cmd, struct snd_soc_dai *dai)
++static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
++			       int cmd, struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct dmic *dmic = snd_soc_component_get_drvdata(component);
 -- 
 2.20.1
