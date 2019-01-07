@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Kernel OOPS while entering DAPM standby mode" to the asoc tree
-Date: Mon,  7 Jan 2019 18:57:48 +0000 (GMT)
-Message-ID: <20190107185748.DE18B1127491@debutante.sirena.org.uk>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: 
-Sender: stable-owner@vger.kernel.org
-To: b-ak <anur.bhargav@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Applied "ASoC: xlnx: enable SPDIF driver build" to the asoc tree
+Date: Mon,  7 Jan 2019 18:57:43 +0000 (GMT)
+Message-ID: <20190107185743.B90241127491@debutante.sirena.org.uk>
+References: <1546538993-55473-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1546538993-55473-4-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Vishal Sagar <vsagar@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Kernel OOPS while entering DAPM standby mode
+   ASoC: xlnx: enable SPDIF driver build
 
 has been applied to the asoc tree at
 
@@ -36,44 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From 667e9334fa64da2273e36ce131b05ac9e47c5769 Mon Sep 17 00:00:00 2001
-From: b-ak <anur.bhargav@gmail.com>
-Date: Mon, 7 Jan 2019 22:30:22 +0530
-Subject: [PATCH] ASoC: tlv320aic32x4: Kernel OOPS while entering DAPM standby
- mode
+>From 47caf048a017ecc95cdd0802bc3b015a1559e601 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Thu, 3 Jan 2019 23:39:53 +0530
+Subject: [PATCH] ASoC: xlnx: enable SPDIF driver build
 
-During the bootup of the kernel, the DAPM bias level is in the OFF
-state. As soon as the DAPM framework kicks in it pushes the codec
-into STANDBY state.
+Added SPDIF driver build related changes.
 
-The probe function doesn't prepare the clock, and STANDBY state
-does a clk_disable_unprepare() without checking the previous state.
-This leads to an OOPS.
-
-Not transitioning from an OFF state to the STANDBY state fixes the
-problem.
-
-Signed-off-by: b-ak <anur.bhargav@gmail.com>
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/tlv320aic32x4.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/xilinx/Kconfig  | 7 +++++++
+ sound/soc/xilinx/Makefile | 2 ++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index e2b5a11b16d1..f03195d2ab2e 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -822,6 +822,10 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-+		/* Initial cold start */
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
-+			break;
+diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
+index ac48d6a00c36..47f606b924e4 100644
+--- a/sound/soc/xilinx/Kconfig
++++ b/sound/soc/xilinx/Kconfig
+@@ -13,3 +13,10 @@ config SND_SOC_XILINX_AUDIO_FORMATTER
+           Select this option to enable Xilinx audio formatter
+           support. This provides DMA platform device support for
+           audio functionality.
 +
- 		/* Switch off BCLK_N Divider */
- 		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
- 				    AIC32X4_BCLKEN, 0);
++config SND_SOC_XILINX_SPDIF
++        tristate "Audio support for the the Xilinx SPDIF"
++        help
++          Select this option to enable Xilinx SPDIF Audio.
++          This provides playback and capture of SPDIF audio in
++          AES format.
+diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
+index 432693b1cc79..d79fd38b094b 100644
+--- a/sound/soc/xilinx/Makefile
++++ b/sound/soc/xilinx/Makefile
+@@ -2,3 +2,5 @@ snd-soc-xlnx-i2s-objs      := xlnx_i2s.o
+ obj-$(CONFIG_SND_SOC_XILINX_I2S) += snd-soc-xlnx-i2s.o
+ snd-soc-xlnx-formatter-pcm-objs := xlnx_formatter_pcm.o
+ obj-$(CONFIG_SND_SOC_XILINX_AUDIO_FORMATTER) += snd-soc-xlnx-formatter-pcm.o
++snd-soc-xlnx-spdif-objs := xlnx_spdif.o
++obj-$(CONFIG_SND_SOC_XILINX_SPDIF) += snd-soc-xlnx-spdif.o
 -- 
 2.20.1
