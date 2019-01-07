@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: Sort includes
-	alphabetically" to the asoc tree
-Date: Mon,  7 Jan 2019 12:30:53 +0000 (GMT)
-Message-ID: <20190107123053.C14B61127490@debutante.sirena.org.uk>
-References: <20190103134535.13861-4-hdegoede@redhat.com>
+Subject: Applied "ASoC: es8316: Add DAC mono mix switch mixer
+	control" to the asoc tree
+Date: Mon,  7 Jan 2019 12:30:55 +0000 (GMT)
+Message-ID: <20190107123055.963191127490@debutante.sirena.org.uk>
+References: <20190103134535.13861-3-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 94E10267C3E
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:54 +0100 (CET)
-In-Reply-To: <20190103134535.13861-4-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 54676267C47
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:56 +0100 (CET)
+In-Reply-To: <20190103134535.13861-3-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: Sort includes alphabetically
+   ASoC: es8316: Add DAC mono mix switch mixer control
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 6ca382c4363d6c636200ccdd9ac95f44b1a498ea Mon Sep 17 00:00:00 2001
+>From 24b53f17a3f24967b8b523243f9f7fc361427119 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 3 Jan 2019 14:45:28 +0100
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Sort includes alphabetically
+Date: Thu, 3 Jan 2019 14:45:27 +0100
+Subject: [PATCH] ASoC: es8316: Add DAC mono mix switch mixer control
 
-For lack of a better (non-random) way of sorting includes more and more
-files in the kernel are moving over to sorting the includes alphabetically.
+Export the DAC functionality to mix left + right together and then output
+the same (mixed) signal on both outputs.
 
-Move the bytcht_es8316 driver over to this sorting before we add a
-bunch of more includes.
+Various (x86) tablets with an ES8316 codec use a single speaker
+connected between the headhpone LOUT and ROUT pins, expecting the output
+to be in a mono differential mode. Presumably this is done to use the
+power of both the left and right outputs to allow the speaker to be
+louder.
+
+The ES8316 codec does not have a differential output mode, but we can
+emulate this by making both channels output the same through the mono mix
+switch, combined with setting the Playback Polarity control to "R Invert",
+which applias a 180 degrees phase inversion to the right channel.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8316.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index adc26dfc7d65..5d8ecc100766 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -19,13 +19,13 @@
-  *
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
-+#include <linux/clk.h>
-+#include <linux/device.h>
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/device.h>
- #include <linux/slab.h>
- #include <asm/platform_sst_audio.h>
--#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
+diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
+index 26413851e434..98464ba1046c 100644
+--- a/sound/soc/codecs/es8316.c
++++ b/sound/soc/codecs/es8316.c
+@@ -101,6 +101,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
+ 	SOC_SINGLE("DAC Notch Filter Switch", ES8316_DAC_SET2, 6, 1, 0),
+ 	SOC_SINGLE("DAC Double Fs Switch", ES8316_DAC_SET2, 7, 1, 0),
+ 	SOC_SINGLE("DAC Stereo Enhancement", ES8316_DAC_SET3, 0, 7, 0),
++	SOC_SINGLE("DAC Mono Mix Switch", ES8316_DAC_SET3, 3, 1, 0),
+ 
+ 	SOC_ENUM("Capture Polarity", adcpol),
+ 	SOC_SINGLE("Mic Boost Switch", ES8316_ADC_D2SEPGA, 0, 1, 0),
 -- 
 2.20.1
