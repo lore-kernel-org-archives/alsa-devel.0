@@ -1,48 +1,30 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH v1 3/3] ASoC: soc-core: fix platform name vs.
- of_node assignement
-Date: Wed, 9 Jan 2019 14:11:58 +0000
-Message-ID: <52f5f2cf-9260-f9c5-f73d-3c3d5debc86b@nvidia.com>
-References: <e25a7463-9ce0-d7f9-e77b-2bbaab2e0b25@nvidia.com>
- <20181021112301.GC8554@sirena.org.uk>
- <20181218174040.k7u26vnnoplllnwb@camel2.lan>
- <952471da-b355-6471-6c19-5120d6704f81@nvidia.com>
- <87lg3vuc7p.wl-kuninori.morimoto.gx@renesas.com>
- <b5164c93-8be8-1c3d-9415-c895da6ad622@nvidia.com>
- <d1e41ed2-da7c-b46c-bc6d-64cf3e536771@nvidia.com>
- <865d2a3e-bf6b-1f30-1179-7e922c0d0641@nvidia.com>
- <87k1je38w7.wl-kuninori.morimoto.gx@renesas.com>
- <0660a471-3698-2059-4494-ad146518a4ed@nvidia.com>
- <20190109125340.GD10405@sirena.org.uk>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 0/2] ASoC: da7219: Improvements to DAI clocks handling in driver
+Date: Mon, 7 Jan 2019 16:11:45 +0000
+Message-ID: <cover.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190109125340.GD10405@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Marcel Ziswiler <marcel@ziswiler.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, Daniel Kurtz <djkurtz@google.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
+This small patchset provides improvements to CCF based clock handling relating
+to the DAI clocks. In the first patch MCLK is made parent of DAI clocks, if MCLK
+has been provided to the driver, which means that MCLK will automatically be
+enabled as a prerequisite to DAI clocks. The second patch adds the ability to
+read the WCLK rate provided by the codec when DAI clocks are featured. This is
+more useful than the returned rate simply being the rate of the parent clock,
+which in this case would be MCLK.
 
-On 09/01/2019 12:53, Mark Brown wrote:
+Adam Thomson (2):
+  ASoC: da7219: MCLK should be enabled before DAI clocks
+  ASoC: da7219: Add recalc_rate function to return DAI clock rate
 
-...
-
->> Yes that is an alternative and I can convert all the Tegra machine
->> drivers to use this now. However, that will not solve the problem for
->> non-Tegra devices and everyone will have to do this.
-> 
-> We're going to have to go through another round of conversions that
-> touch everything at some point no matter what :/
-
-Do you have a preference here? Do you think that we can fix-up the
-soc-core or should I go ahead and migrate the Tegra machine driver to
-workaround this issue now?
-
-Cheers
-Jon
+ sound/soc/codecs/da7219.c | 77 ++++++++++++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/da7219.h |  1 +
+ 2 files changed, 67 insertions(+), 11 deletions(-)
 
 -- 
-nvpublic
+1.9.1
