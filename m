@@ -1,77 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: qcom: defer probe if platform
- dai is not registered
-Date: Mon, 7 Jan 2019 18:27:57 +0000
-Message-ID: <20190107182757.GS9570@sirena.org.uk>
-References: <1545642133-16120-1-git-send-email-rohitkr@codeaurora.org>
- <1545642133-16120-3-git-send-email-rohitkr@codeaurora.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1287588071125759475=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C1F872669BD
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 19:28:00 +0100 (CET)
-In-Reply-To: <1545642133-16120-3-git-send-email-rohitkr@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>
+Subject: Applied "ASoC: atom: fix a missing check of snd_pcm_lib_malloc_pages" to the asoc tree
+Date: Mon,  7 Jan 2019 18:57:41 +0000 (GMT)
+Message-ID: <20190107185741.DCB5E1127491@debutante.sirena.org.uk>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: 
+Sender: stable-owner@vger.kernel.org
+To: Kangjie Lu <kjlu@umn.edu>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1287588071125759475==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jesV4P1FjH8FXPjZ"
-Content-Disposition: inline
+   ASoC: atom: fix a missing check of snd_pcm_lib_malloc_pages
 
+has been applied to the asoc tree at
 
---jesV4P1FjH8FXPjZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Dec 24, 2018 at 02:32:13PM +0530, Rohit kumar wrote:
-> From: Ajit Pandey <ajitp@codeaurora.org>
->=20
-> Platform DAI component probe is not called if it is not
-> present in component list during sound card registration.
-> Check if component is registered for platform dai before
-> soundcard registration.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Why do we need to do this in the driver, I'd expect this to be something
-that we need to do for everything not just this driver so I'd expect it
-to be handled in the core?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---jesV4P1FjH8FXPjZ
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwzmiwACgkQJNaLcl1U
-h9DQjgf/T0oyN1/MUYlbj/WHJfg5qzDHvFO7pSuwm6jRnkfHq10cSqBiiymFlZeT
-ffXyclWvM/TyYKu83AwbKY12XR6E/FYmX7A/xtx4f9hHl4RGkNjZqeEOkwWHFWPU
-Da967A58RYhtT+Da+ygBiC4ElQnlXxLMlbOBXWXkO1h8UXHcesl8herw1AwS1RmA
-Mtb6OINAR9+azH4wWfRGuwFLNqEbDiMDL8q+ad2q5WHe6KE6t7bLLGelj23BXo1C
-UeEmino9DKG0XbNJgkPTWfEBGg/sahv9fqqNGxzgMUl6GhhVuHHBsnqMyxb12XPG
-DHVN3hfmzcXom5VwIPGix8MDev14zQ==
-=DveR
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---jesV4P1FjH8FXPjZ--
+>From 44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661 Mon Sep 17 00:00:00 2001
+From: Kangjie Lu <kjlu@umn.edu>
+Date: Tue, 25 Dec 2018 20:29:48 -0600
+Subject: [PATCH] ASoC: atom: fix a missing check of snd_pcm_lib_malloc_pages
 
---===============1287588071125759475==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+snd_pcm_lib_malloc_pages() may fail, so let's check its status and
+return its error code upstream.
 
+Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---===============1287588071125759475==--
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index afc559866095..91a2436ce952 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -399,7 +399,13 @@ static int sst_media_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+-	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++	int ret;
++
++	ret =
++		snd_pcm_lib_malloc_pages(substream,
++				params_buffer_bytes(params));
++	if (ret)
++		return ret;
+ 	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
+ 	return 0;
+ }
+-- 
+2.20.1
