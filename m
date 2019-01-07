@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 08/11] ASoC: Intel: atom: Make PCI
-	dependency explicit
-Date: Mon, 7 Jan 2019 12:19:19 +0000
-Message-ID: <20190107121919.GA9570@sirena.org.uk>
-References: <20190105100606.6673-1-okaya@kernel.org>
- <20190105100606.6673-9-okaya@kernel.org>
- <CAJZ5v0g2bjzjuiDPTbBN8QgvOG0KMC0Ew2QOQH4u2+y6KRo0wQ@mail.gmail.com>
+Subject: Applied "ASoC: davinci-mcasp: Document GPIO support"
+	to the asoc tree
+Date: Mon,  7 Jan 2019 12:24:58 +0000 (GMT)
+Message-ID: <20190107122458.B0BA21127490@debutante.sirena.org.uk>
+References: <20190103140552.29809-3-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8688111516383424272=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 33B20267B50
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:19:26 +0100 (CET)
-In-Reply-To: <CAJZ5v0g2bjzjuiDPTbBN8QgvOG0KMC0Ew2QOQH4u2+y6KRo0wQ@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FC71267B7D
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:24:59 +0100 (CET)
+In-Reply-To: <20190103140552.29809-3-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "moderated list:INTEL ASoC DRIVERS" <alsa-devel@alsa-project.org>, Sinan Kaya <okaya@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux-Next Mailing List <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, jsarha@ti.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8688111516383424272==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
-Content-Disposition: inline
+   ASoC: davinci-mcasp: Document GPIO support
 
+has been applied to the asoc tree at
 
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Jan 07, 2019 at 12:15:35PM +0100, Rafael J. Wysocki wrote:
-> On Sat, Jan 5, 2019 at 11:06 AM Sinan Kaya <okaya@kernel.org> wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Fixes: 5d32a66541c46 ("PCI/ACPI: Allow ACPI to be built without CONFIG_PCI set")
-> > Signed-off-by: Sinan Kaya <okaya@kernel.org>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Sinan, I thought you received an ACK from Pierre-Louis on this one, didn't you?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Yes.  I've also applied it already and it's *still* being sent without
-either a cover letter or the rest of the series :(
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Sinan:
+Thanks,
+Mark
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+>From 4664b94c98b4f9fdd3845da41d5c65288e59c66c Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 3 Jan 2019 16:05:51 +0200
+Subject: [PATCH] ASoC: davinci-mcasp: Document GPIO support
 
---y0ulUmNC+osPPQO6
-Content-Type: application/pgp-signature; name="signature.asc"
+McASP pins can be used as GPIO, add optional section to enable GPIO support
+for McASP.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/davinci-mcasp-audio.txt      | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwzQ8YACgkQJNaLcl1U
-h9Dk3gf/VSotM7FP5LrgR8nnd8s0QCNxDaJNzQKDeK5QNqcuJTjFXHnueHbqQTN1
-XTK8OXYLK8DYqVDYpv+3HAdYdb1p0U/oEZo1kDof0et7g3+HnWy5h09jWxjREbw9
-GdAVB5B4muqL0O9iAXXGnk+nubHbVccT3Ksf3qRwxQk10ttkjUWiYEGu12B3d08U
-0UmuzpXOmm3TUPvydt+myreT99t22YBTAXgYYR5uESOoFrB88yn+AFu35LNZD3mh
-OgnMFAF5pXoFGAlP0FuLlmDbvW0Y5VUsUKe4iP9iWVK3wTt52bONrao5f98vl9hR
-ydbZSx4dHQ5kMURR4qvl0PQzQc8e5A==
-=HdFs
------END PGP SIGNATURE-----
-
---y0ulUmNC+osPPQO6--
-
---===============8688111516383424272==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8688111516383424272==--
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+index b279b6072bd5..a58f79f5345c 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+@@ -45,6 +45,23 @@ Optional properties:
+ - fck_parent : Should contain a valid clock name which will be used as parent
+ 	       for the McASP fck
+ 
++Optional GPIO support:
++If any McASP pin need to be used as GPIO then the McASP node must have:
++...
++  gpio-controller
++  #gpio-cells = <2>;
++...
++
++When requesting a GPIO, the first parameter is the PIN index in McASP_P*
++registers.
++For example to request the AXR2 pin of mcasp8:
++function-gpios = <&mcasp8 2 0>;
++
++Or to request the ACLKR pin of mcasp8:
++function-gpios = <&mcasp8 29 0>;
++
++For generic gpio information, please refer to bindings/gpio/gpio.txt
++
+ Example:
+ 
+ mcasp0: mcasp0@1d00000 {
+-- 
+2.20.1
