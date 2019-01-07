@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: Add jack-detect
-	support" to the asoc tree
-Date: Mon,  7 Jan 2019 12:30:48 +0000 (GMT)
-Message-ID: <20190107123048.554C31127490@debutante.sirena.org.uk>
-References: <20190103134535.13861-7-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcht_es8316: Minor
+	refactoring" to the asoc tree
+Date: Mon,  7 Jan 2019 12:30:51 +0000 (GMT)
+Message-ID: <20190107123051.F08781127490@debutante.sirena.org.uk>
+References: <20190103134535.13861-5-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DF23267BD8
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:49 +0100 (CET)
-In-Reply-To: <20190103134535.13861-7-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D2C7267BC6
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:52 +0100 (CET)
+In-Reply-To: <20190103134535.13861-5-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: Add jack-detect support
+   ASoC: Intel: bytcht_es8316: Minor refactoring
 
 has been applied to the asoc tree at
 
@@ -53,165 +53,88 @@ to this mail.
 Thanks,
 Mark
 
->From 4bf538b42933253296daf86aab7ede56b5fb97bf Mon Sep 17 00:00:00 2001
+>From 86909c8f77c5eda17a9b5dc954849e25df1ffe0f Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 3 Jan 2019 14:45:31 +0100
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add jack-detect support
+Date: Thu, 3 Jan 2019 14:45:29 +0100
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Minor refactoring
 
-Hookup the jack-detect support added to the codec driver.
+Some minor refactoring:
+1) Group the code setting the card dev and prive pointers together with
+   registering the card
+2) Properly put the comment about registering the card at the place where
+   we actually register the card and add a new comment for getting the clk
+3) Add a struct device *dev helper variable (this will be used more in
+   follow up commits)
+4) Reword error message to have the same "foo failed: %d" wording as others
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 67 +++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 3358d82499a3..905dd6904710 100644
+index 5d8ecc100766..e29f00560b00 100644
 --- a/sound/soc/intel/boards/bytcht_es8316.c
 +++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -22,12 +22,14 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/init.h>
-+#include <linux/input.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/platform_sst_audio.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -37,6 +39,7 @@
- 
- struct byt_cht_es8316_private {
- 	struct clk *mclk;
-+	struct snd_soc_jack jack;
- };
- 
- #define BYT_CHT_ES8316_SSP0			BIT(16)
-@@ -55,6 +58,7 @@ static void log_quirks(struct device *dev)
- 
- static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 
- 	/*
- 	 * The codec supports two analog microphone inputs. I have only
-@@ -68,6 +72,7 @@ static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
- static const struct snd_soc_dapm_route byt_cht_es8316_audio_map[] = {
- 	{"MIC1", NULL, "Microphone 1"},
- 	{"MIC2", NULL, "Microphone 2"},
-+	{"MIC1", NULL, "Headset Mic"},
- 
- 	{"Headphone", NULL, "HPOL"},
- 	{"Headphone", NULL, "HPOR"},
-@@ -91,12 +96,25 @@ static const struct snd_soc_dapm_route byt_cht_es8316_ssp2_map[] = {
- 
- static const struct snd_kcontrol_new byt_cht_es8316_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
- 	SOC_DAPM_PIN_SWITCH("Microphone 1"),
- 	SOC_DAPM_PIN_SWITCH("Microphone 2"),
- };
- 
-+static struct snd_soc_jack_pin byt_cht_es8316_jack_pins[] = {
-+	{
-+		.pin	= "Headphone",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Headset Mic",
-+		.mask	= SND_JACK_MICROPHONE,
-+	},
-+};
-+
- static int byt_cht_es8316_init(struct snd_soc_pcm_runtime *runtime)
- {
-+	struct snd_soc_component *codec = runtime->codec_dai->component;
- 	struct snd_soc_card *card = runtime->card;
- 	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
- 	const struct snd_soc_dapm_route *custom_map;
-@@ -143,6 +161,18 @@ static int byt_cht_es8316_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	ret = snd_soc_card_jack_new(card, "Headset",
-+				    SND_JACK_HEADSET | SND_JACK_BTN_0,
-+				    &priv->jack, byt_cht_es8316_jack_pins,
-+				    ARRAY_SIZE(byt_cht_es8316_jack_pins));
-+	if (ret) {
-+		dev_err(card->dev, "jack creation failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_soc_component_set_jack(codec, &priv->jack, NULL);
-+
- 	return 0;
- }
- 
-@@ -263,6 +293,39 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- 
- 
- /* SoC card */
-+static char codec_name[SND_ACPI_I2C_ID_LEN];
-+
-+static int byt_cht_es8316_suspend(struct snd_soc_card *card)
-+{
-+	struct snd_soc_component *component;
-+
-+	for_each_card_components(card, component) {
-+		if (!strcmp(component->name, codec_name)) {
-+			dev_dbg(component->dev, "disabling jack detect before suspend\n");
-+			snd_soc_component_set_jack(component, NULL, NULL);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int byt_cht_es8316_resume(struct snd_soc_card *card)
-+{
-+	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component;
-+
-+	for_each_card_components(card, component) {
-+		if (!strcmp(component->name, codec_name)) {
-+			dev_dbg(component->dev, "re-enabling jack detect after resume\n");
-+			snd_soc_component_set_jack(component, &priv->jack, NULL);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static struct snd_soc_card byt_cht_es8316_card = {
- 	.name = "bytcht-es8316",
- 	.owner = THIS_MODULE,
-@@ -275,6 +338,8 @@ static struct snd_soc_card byt_cht_es8316_card = {
- 	.controls = byt_cht_es8316_controls,
- 	.num_controls = ARRAY_SIZE(byt_cht_es8316_controls),
- 	.fully_routed = true,
-+	.suspend_pre = byt_cht_es8316_suspend,
-+	.resume_post = byt_cht_es8316_resume,
- };
- 
- static const struct x86_cpu_id baytrail_cpu_ids[] = {
-@@ -282,8 +347,6 @@ static const struct x86_cpu_id baytrail_cpu_ids[] = {
- 	{}
- };
- 
--static char codec_name[SND_ACPI_I2C_ID_LEN];
--
+@@ -237,17 +237,18 @@ static char codec_name[SND_ACPI_I2C_ID_LEN];
  static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  {
  	struct byt_cht_es8316_private *priv;
++	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *i2c_name = NULL;
+ 	int dai_index = 0;
+ 	int i;
+ 	int ret = 0;
+ 
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	mach = (&pdev->dev)->platform_data;
++	mach = dev->platform_data;
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+ 		if (!strcmp(byt_cht_es8316_dais[i].codec_name,
+@@ -265,26 +266,25 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
+ 	}
+ 
+-	/* register the soc card */
+-	byt_cht_es8316_card.dev = &pdev->dev;
+-	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+-
+-	priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
++	/* get the clock */
++	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
+ 	if (IS_ERR(priv->mclk)) {
+ 		ret = PTR_ERR(priv->mclk);
+-		dev_err(&pdev->dev,
+-			"Failed to get MCLK from pmc_plt_clk_3: %d\n",
+-			ret);
++		dev_err(dev, "clk_get pmc_plt_clk_3 failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_card(&pdev->dev, &byt_cht_es8316_card);
++	/* register the soc card */
++	byt_cht_es8316_card.dev = dev;
++	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
++
++	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
++		dev_err(dev, "snd_soc_register_card failed: %d\n", ret);
+ 		return ret;
+ 	}
+ 	platform_set_drvdata(pdev, &byt_cht_es8316_card);
+-	return ret;
++	return 0;
+ }
+ 
+ static struct platform_driver snd_byt_cht_es8316_mc_driver = {
 -- 
 2.20.1
