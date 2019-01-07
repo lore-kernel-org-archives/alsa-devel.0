@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Add quirks module
-	parameter" to the asoc tree
-Date: Mon,  7 Jan 2019 19:24:37 +0000 (GMT)
-Message-ID: <20190107192437.565971127491@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Revert "Fix DMIC
+	map headsetmic mapping"" to the asoc tree
+Date: Mon,  7 Jan 2019 19:24:39 +0000 (GMT)
+Message-ID: <20190107192439.2B9991127491@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EFA0266C04
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C9F62266C04
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:39 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Add quirks module parameter
+   ASoC: Intel: bytcr_rt5651: Revert "Fix DMIC map headsetmic mapping"
 
 has been applied to the asoc tree at
 
@@ -52,48 +52,44 @@ to this mail.
 Thanks,
 Mark
 
->From 7eb187313eef4c8faa49f70c9c7d8918e1052207 Mon Sep 17 00:00:00 2001
+>From aee48a9ffa5a128bf4e433c57c39e015ea5b0208 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 30 Dec 2018 00:00:23 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add quirks module parameter
+Date: Sun, 30 Dec 2018 00:00:22 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Revert "Fix DMIC map headsetmic
+ mapping"
 
-Add quirks module parameter to allow manually specifying quirks
-from the kernel commandline (or modprobe.conf).
+Commit 37c7401e8c1f ("ASoC: Intel: bytcr_rt5651: Fix DMIC map
+headsetmic mapping"), changed the headsetmic mapping from IN3P to IN2P,
+this was based on the observation that all bytcr_rt5651 devices I have
+access to (7 devices) where all using IN3P for the headsetmic. This was
+an attempt to unifify / simplify the mapping, but it was wrong.
 
+None of those devices was actually using a digital internal mic. Now I've
+access to a Point of View TAB-P1006W-232 (v1.0) tabler, which does use a
+DMIC and it does have its headsetmic connected to IN2P, showing that the
+original mapping was correct, so this commit reverts the change changing
+the mapping back to IN2P.
+
+Fixes: 37c7401e8c1f ("ASoC: Intel: bytcr_rt5651: Fix DMIC map ... mapping")
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 0ed844f2ad01..6d8ef9dd106e 100644
+index e528995668b7..0ed844f2ad01 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -98,6 +98,10 @@ struct byt_rt5651_private {
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
- 					BYT_RT5651_IN2_MAP;
+@@ -266,7 +266,7 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
+ static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
+ 	{"DMIC L1", NULL, "Internal Mic"},
+ 	{"DMIC R1", NULL, "Internal Mic"},
+-	{"IN3P", NULL, "Headset Mic"},
++	{"IN2P", NULL, "Headset Mic"},
+ };
  
-+static unsigned int quirk_override;
-+module_param_named(quirk, quirk_override, uint, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
-+
- static void log_quirks(struct device *dev)
- {
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_DMIC_MAP)
-@@ -973,6 +977,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5651_quirk_table);
- 
-+	if (quirk_override) {
-+		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
-+			 (unsigned int)byt_rt5651_quirk, quirk_override);
-+		byt_rt5651_quirk = quirk_override;
-+	}
-+
- 	/* Must be called before register_card, also see declaration comment. */
- 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
- 	if (ret_val) {
+ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
 -- 
 2.20.1
