@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/3] mfd: cros_ec: Add commands to
-	control codec
-Date: Mon, 7 Jan 2019 19:24:02 +0000
-Message-ID: <20190107192402.GW9570@sirena.org.uk>
-References: <20181226070317.72022-1-cychiang@chromium.org>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Add support for
+	jack-detect using an external GPIO" to the asoc tree
+Date: Mon,  7 Jan 2019 19:24:35 +0000 (GMT)
+Message-ID: <20190107192435.837871127491@debutante.sirena.org.uk>
+References: <20181229230025.21949-7-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6957924837853190463=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8299D26699F
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:04 +0100 (CET)
-In-Reply-To: <20181226070317.72022-1-cychiang@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 361C1267005
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:37 +0100 (CET)
+In-Reply-To: <20181229230025.21949-7-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, Benson Leung <bleung@chromium.org>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Guenter Roeck <groeck@chromium.org>, dgreid@chromium.org, Lee Jones <lee.jones@linaro.org>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6957924837853190463==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ItroYk2LVxvwOvi/"
-Content-Disposition: inline
+   ASoC: Intel: bytcr_rt5651: Add support for jack-detect using an external GPIO
 
+has been applied to the asoc tree at
 
---ItroYk2LVxvwOvi/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 26, 2018 at 03:03:15PM +0800, Cheng-Yi Chiang wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Note: This patch is merged to mfd tree for-mfd-next branch already.
-> But this is still needed on sound tree for-next branch in order to
-> compile cros_ec_codec driver.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Is there a tag I can merge?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---ItroYk2LVxvwOvi/
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwzp1EACgkQJNaLcl1U
-h9CO1Qf9ES+ybSf19Za28W75SnfW++LEqVwGgisWplt8MBo2fOOjywLrbG0nwXWe
-hyuunCw9zeppMCfE6GR6r3t4CpP9iacBqpl4mjolLt4yUCvYZE5p56z04OhrGbJX
-0HWU4qTkLaugX6QKFy4M0CWZqtbfRWisjTd8xUylewUhsKr8Z/rglWLE3KtD+NnL
-nQp2sL/9ovIDxBi4bSDSF7q8SHvQVcVrzR+gWj1wufmuSa3xWPXshN8+GG7HkvBU
-7KZ3i3656iQJUfQbC2Z3BR3ybXRuJdcJ/stHc4mPN7uQ+nAoydbURIITiddY0MjY
-gvwBCufgp0YLhuLBhpqmqYl23gKtyA==
-=lqSK
------END PGP SIGNATURE-----
+>From 90768eaf064041937ef4d6ca95c7e86774cd34a4 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 30 Dec 2018 00:00:24 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add support for jack-detect using
+ an external GPIO
 
---ItroYk2LVxvwOvi/--
+Some board designs hook the jack-detect up to an external GPIO, rather
+then to one of the codec pins, add support for this.
 
---===============6957924837853190463==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5651.c | 43 ++++++++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 7 deletions(-)
 
-
---===============6957924837853190463==--
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 6d8ef9dd106e..9a2ee9080897 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -91,6 +91,7 @@ enum {
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
+ 	struct gpio_desc *ext_amp_gpio;
++	struct gpio_desc *hp_detect;
+ 	struct snd_soc_jack jack;
+ };
+ 
+@@ -499,6 +500,7 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
++	int report;
+ 	int ret;
+ 
+ 	card->dapm.idle_bias_off = true;
+@@ -582,20 +584,27 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	}
+ 
+-	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
++	report = 0;
++	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
++		report = SND_JACK_HEADSET | SND_JACK_BTN_0;
++	else if (priv->hp_detect)
++		report = SND_JACK_HEADSET;
++
++	if (report) {
+ 		ret = snd_soc_card_jack_new(runtime->card, "Headset",
+-				    SND_JACK_HEADSET | SND_JACK_BTN_0,
+-				    &priv->jack, bytcr_jack_pins,
++				    report, &priv->jack, bytcr_jack_pins,
+ 				    ARRAY_SIZE(bytcr_jack_pins));
+ 		if (ret) {
+ 			dev_err(runtime->dev, "jack creation failed %d\n", ret);
+ 			return ret;
+ 		}
+ 
+-		snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
+-				 KEY_PLAYPAUSE);
++		if (report & SND_JACK_BTN_0)
++			snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
++					 KEY_PLAYPAUSE);
+ 
+-		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
++		ret = snd_soc_component_set_jack(codec, &priv->jack,
++						 priv->hp_detect);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -767,7 +776,8 @@ static int byt_rt5651_resume(struct snd_soc_card *card)
+ 	for_each_card_components(card, component) {
+ 		if (!strcmp(component->name, byt_rt5651_codec_name)) {
+ 			dev_dbg(component->dev, "re-enabling jack detect after resume\n");
+-			snd_soc_component_set_jack(component, &priv->jack, NULL);
++			snd_soc_component_set_jack(component, &priv->jack,
++						   priv->hp_detect);
+ 			break;
+ 		}
+ 	}
+@@ -1012,6 +1022,25 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 				return ret_val;
+ 			}
+ 		}
++		priv->hp_detect = devm_fwnode_get_index_gpiod_from_child(
++						&pdev->dev, "hp-detect", 0,
++						codec_dev->fwnode,
++						GPIOD_IN, "hp-detect");
++		if (IS_ERR(priv->hp_detect)) {
++			ret_val = PTR_ERR(priv->hp_detect);
++			switch (ret_val) {
++			case -ENOENT:
++				priv->hp_detect = NULL;
++				break;
++			default:
++				dev_err(&pdev->dev, "Failed to get hp-detect GPIO: %d\n",
++					ret_val);
++				/* fall through */
++			case -EPROBE_DEFER:
++				put_device(codec_dev);
++				return ret_val;
++			}
++		}
+ 	}
+ 
+ 	put_device(codec_dev);
+-- 
+2.20.1
