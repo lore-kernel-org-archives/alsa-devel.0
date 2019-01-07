@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tscs42xx.c: fix boolean test" to the asoc tree
-Date: Mon,  7 Jan 2019 18:58:07 +0000 (GMT)
-Message-ID: <20190107185807.8BC8A1127492@debutante.sirena.org.uk>
-References: <20190105020249.8639-17-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: max98927: fix boolean assignments" to the asoc tree
+Date: Mon,  7 Jan 2019 18:58:13 +0000 (GMT)
+Message-ID: <20190107185813.1B96C1127492@debutante.sirena.org.uk>
+References: <20190105020249.8639-14-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190105020249.8639-17-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190105020249.8639-14-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Steven Eckhoff <steven.eckhoff.opensource@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, liam.r.girdwood@linux.intel.combroonie@kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, liam.r.girdwood@linux.intel.combroonie@kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tscs42xx.c: fix boolean test
+   ASoC: max98927: fix boolean assignments
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From f361ca36802031ae3abf9860a02e1d5931c04b63 Mon Sep 17 00:00:00 2001
+>From 091cd877d8d6b2b934d565134172db771907d50a Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 4 Jan 2019 20:02:44 -0600
-Subject: [PATCH] ASoC: tscs42xx.c: fix boolean test
+Date: Fri, 4 Jan 2019 20:02:41 -0600
+Subject: [PATCH] ASoC: max98927: fix boolean assignments
 
 Reported by Coccinelle:
-sound/soc/codecs/tscs42xx.c:392:5-31: WARNING: Comparison to bool
+sound/soc/codecs/max98927.c:508:2-20: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:889:3-28: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:891:3-28: WARNING: Assignment of bool to 0/1
+sound/soc/codecs/max98927.c:893:2-27: WARNING: Assignment of bool to 0/1
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs42xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/max98927.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index 7396a6e5277e..27b8c6ba72fa 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -389,7 +389,7 @@ static int dac_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index 065303a46535..e53d2007f3be 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -505,7 +505,7 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
  
- 	mutex_lock(&tscs42xx->coeff_ram_lock);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		max98927->tdm_mode = 0;
++		max98927->tdm_mode = false;
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		regmap_update_bits(max98927->regmap,
+@@ -886,11 +886,11 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
+ 	if (!of_property_read_u32(i2c->dev.of_node,
+ 		"interleave_mode", &value)) {
+ 		if (value > 0)
+-			max98927->interleave_mode = 1;
++			max98927->interleave_mode = true;
+ 		else
+-			max98927->interleave_mode = 0;
++			max98927->interleave_mode = false;
+ 	} else
+-		max98927->interleave_mode = 0;
++		max98927->interleave_mode = false;
  
--	if (tscs42xx->coeff_ram_synced == false) {
-+	if (!tscs42xx->coeff_ram_synced) {
- 		ret = write_coeff_ram(component, tscs42xx->coeff_ram, 0x00,
- 			COEFF_RAM_COEFF_COUNT);
- 		if (ret < 0)
+ 	/* regmap initialization */
+ 	max98927->regmap
 -- 
 2.20.1
