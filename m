@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: ASoC: xlnx,
-	audio-formatter: Document audio formatter bindings" to the asoc tree
-Date: Mon,  7 Jan 2019 12:31:30 +0000 (GMT)
-Message-ID: <20190107123130.14F311127490@debutante.sirena.org.uk>
+Subject: Applied "ASoC: simple-scu-card: remove simple-scu-card
+	on Doc" to the asoc tree
+Date: Mon,  7 Jan 2019 12:31:33 +0000 (GMT)
+Message-ID: <20190107123133.B64591127490@debutante.sirena.org.uk>
+References: <875zvr36c6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D566B267D28
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:30 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 4175D267CAE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:34 +0100 (CET)
+In-Reply-To: <875zvr36c6.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: ASoC: xlnx, audio-formatter: Document audio formatter bindings
+   ASoC: simple-scu-card: remove simple-scu-card on Doc
 
 has been applied to the asoc tree at
 
@@ -52,55 +53,120 @@ to this mail.
 Thanks,
 Mark
 
->From e3e12ec09a18ad779b637f4a006a908cb6045aa7 Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Fri, 21 Dec 2018 14:27:27 +0530
-Subject: [PATCH] dt-bindings: ASoC: xlnx, audio-formatter: Document audio
- formatter bindings
+>From bb93487b85012b2232149888d260f935e4da680d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 18 Dec 2018 11:50:37 +0900
+Subject: [PATCH] ASoC: simple-scu-card: remove simple-scu-card on Doc
 
-Added documentation for audio formatter IP core DT bindings.
+It is already merged into simple-card.
+simple-scu-card is no longer needed.
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/xlnx,audio-formatter.txt   | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+ .../bindings/sound/simple-scu-card.txt        | 94 -------------------
+ 1 file changed, 94 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/simple-scu-card.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
-new file mode 100644
-index 000000000000..cbc93c8f4963
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
-@@ -0,0 +1,29 @@
-+Device-Tree bindings for Xilinx PL audio formatter
-+
-+The IP core supports DMA, data formatting(AES<->PCM conversion)
-+of audio samples.
-+
-+Required properties:
-+ - compatible: "xlnx,audio-formatter-1.0"
-+ - interrupt-names: Names specified to list of interrupts in same
-+		    order mentioned under "interrupts".
-+		    List of supported interrupt names are:
-+		    "irq_mm2s" : interrupt from MM2S block
-+		    "irq_s2mm" : interrupt from S2MM block
-+ - interrupts-parent: Phandle for interrupt controller.
-+ - interrupts: List of Interrupt numbers.
-+ - reg: Base address and size of the IP core instance.
-+ - clock-names: List of input clocks.
-+   Required elements: "s_axi_lite_aclk", "aud_mclk"
-+ - clocks: Input clock specifier. Refer to common clock bindings.
-+
-+Example:
-+	audio_ss_0_audio_formatter_0: audio_formatter@80010000 {
-+		compatible = "xlnx,audio-formatter-1.0";
-+		interrupt-names = "irq_mm2s", "irq_s2mm";
-+		interrupt-parent = <&gic>;
-+		interrupts = <0 104 4>, <0 105 4>;
-+		reg = <0x0 0x80010000 0x0 0x1000>;
-+		clock-names = "s_axi_lite_aclk", "aud_mclk";
-+		clocks = <&clk 71>, <&clk_wiz_1 0>;
-+	};
+diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+deleted file mode 100644
+index 3a2f71616cda..000000000000
+--- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
++++ /dev/null
+@@ -1,94 +0,0 @@
+-ASoC Simple SCU Sound Card
+-
+-Simple SCU Sound Card is "Simple Sound Card" + "ALSA DPCM".
+-For example, you can use this driver if you want to exchange sampling rate convert,
+-Mixing, etc...
+-
+-Required properties:
+-
+-- compatible				: "simple-scu-audio-card"
+-					  "renesas,rsrc-card"
+-Optional properties:
+-
+-- simple-audio-card,name		: see simple-audio-card.txt
+-- simple-audio-card,cpu			: see simple-audio-card.txt
+-- simple-audio-card,codec		: see simple-audio-card.txt
+-
+-Optional subnode properties:
+-
+-- simple-audio-card,format		: see simple-audio-card.txt
+-- simple-audio-card,frame-master	: see simple-audio-card.txt
+-- simple-audio-card,bitclock-master	: see simple-audio-card.txt
+-- simple-audio-card,bitclock-inversion	: see simple-audio-card.txt
+-- simple-audio-card,frame-inversion	: see simple-audio-card.txt
+-- simple-audio-card,convert-rate	: platform specified sampling rate convert
+-- simple-audio-card,convert-channels	: platform specified converted channel size (2 - 8 ch)
+-- simple-audio-card,prefix		: see routing
+-- simple-audio-card,widgets		: Please refer to widgets.txt.
+-- simple-audio-card,routing		: A list of the connections between audio components.
+-					  Each entry is a pair of strings, the first being the connection's sink,
+-					  the second being the connection's source. Valid names for sources.
+-					  use audio-prefix if some components is using same sink/sources naming.
+-					  it can be used if compatible was "renesas,rsrc-card";
+-
+-Required CPU/CODEC subnodes properties:
+-
+-- sound-dai				: see simple-audio-card.txt
+-
+-Optional CPU/CODEC subnodes properties:
+-
+-- clocks / system-clock-frequency	: see simple-audio-card.txt
+-
+-Example 1. Sampling Rate Conversion
+-
+-sound {
+-	compatible = "simple-scu-audio-card";
+-
+-	simple-audio-card,name = "rsnd-ak4643";
+-	simple-audio-card,format = "left_j";
+-	simple-audio-card,bitclock-master = <&sndcodec>;
+-	simple-audio-card,frame-master = <&sndcodec>;
+-
+-	simple-audio-card,convert-rate = <48000>;
+-
+-	simple-audio-card,prefix = "ak4642";
+-	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+-			"DAI0 Capture", "ak4642 Capture";
+-
+-	sndcpu: simple-audio-card,cpu {
+-		sound-dai = <&rcar_sound>;
+-	};
+-
+-	sndcodec: simple-audio-card,codec {
+-		sound-dai = <&ak4643>;
+-		system-clock-frequency = <11289600>;
+-	};
+-};
+-
+-Example 2. 2 CPU 1 Codec (Mixing)
+-
+-sound {
+-	compatible = "simple-scu-audio-card";
+-
+-	simple-audio-card,name = "rsnd-ak4643";
+-	simple-audio-card,format = "left_j";
+-	simple-audio-card,bitclock-master = <&dpcmcpu>;
+-	simple-audio-card,frame-master = <&dpcmcpu>;
+-
+-	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+-			"ak4642 Playback", "DAI1 Playback";
+-
+-	dpcmcpu: cpu@0 {
+-		sound-dai = <&rcar_sound 0>;
+-	};
+-
+-	cpu@1 {
+-		sound-dai = <&rcar_sound 1>;
+-	};
+-
+-	codec {
+-		prefix = "ak4642";
+-		sound-dai = <&ak4643>;
+-		clocks = <&audio_clock>;
+-	};
+-};
 -- 
 2.20.1
