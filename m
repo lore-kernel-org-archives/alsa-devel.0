@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: Set card
-	long_name based on quirks" to the asoc tree
-Date: Mon,  7 Jan 2019 12:30:42 +0000 (GMT)
-Message-ID: <20190107123042.D74531127490@debutante.sirena.org.uk>
-References: <20190103134535.13861-10-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcht_es8316: Add input-map
+	support" to the asoc tree
+Date: Mon,  7 Jan 2019 12:30:44 +0000 (GMT)
+Message-ID: <20190107123044.AA0BB1127490@debutante.sirena.org.uk>
+References: <20190103134535.13861-9-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9039E267BBE
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:43 +0100 (CET)
-In-Reply-To: <20190103134535.13861-10-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 650B5267BC5
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:30:45 +0100 (CET)
+In-Reply-To: <20190103134535.13861-9-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: Set card long_name based on quirks
+   ASoC: Intel: bytcht_es8316: Add input-map support
 
 has been applied to the asoc tree at
 
@@ -53,99 +53,150 @@ to this mail.
 Thanks,
 Mark
 
->From 249d2fc9e55c324dda968252ea3ad0ac21c72b8f Mon Sep 17 00:00:00 2001
+>From 730501a91d94b652275e049e101ed44cdbfdf31b Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 3 Jan 2019 14:45:34 +0100
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Set card long_name based on
- quirks
+Date: Thu, 3 Jan 2019 14:45:33 +0100
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add input-map support
 
-Depending on the input-map and on if 1 or 2 speakers are connected,
-userspace needs to use a different UCM profile.
+After adding jack-detect support we have 3 microphone input switches:
+"Microphone 1", "Microphone 2" and "Headset Mic". But the ES8316 has only
+2 microphone inputs.
 
-Since we already deal with quirks in the kernel driver and set the
-input-map from the kernel, add a quirk for devices with a single / mono
-speaker and set the card's long_name based on the input and speaker
-quirks, so that userspace can use the long_name to pick the right UCM
-profile.
+In the app-note explaining how to use the codec and on the 3 boards I
+have one input is used for an internal microphone and one for the headset
+microphone. On the 2 CHT boards I have the internal mic is on on MIC1 and
+the headset mic is on MIC2, on the BYTCR board I have it is the other way
+around.
 
-This change, including how the long_name is build-up mirrors how we do
-this in the bytcr_rt5640 and bytcr_rt5651 machine drivers.
-
-Note since all devices I have access to use a mono speaker setup I've
-chosen to default the speaker setting to mono.
+This commit replaces the 2 "Microphone 1" and "Microphone 2" input switches
+with a single "Internal Mic" switch and adds support for selecting either
+possible input mapping.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 58 ++++++++++++++++++--------
+ 1 file changed, 41 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 941a66f94660..cdf2061e7613 100644
+index 8e504fca4624..941a66f94660 100644
 --- a/sound/soc/intel/boards/bytcht_es8316.c
 +++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -54,6 +54,7 @@ enum {
+@@ -47,6 +47,12 @@ struct byt_cht_es8316_private {
+ 	bool speaker_en;
+ };
  
- #define BYT_CHT_ES8316_MAP(quirk)		((quirk) & GENMASK(3, 0))
++enum {
++	BYT_CHT_ES8316_INTMIC_IN1_MAP,
++	BYT_CHT_ES8316_INTMIC_IN2_MAP,
++};
++
++#define BYT_CHT_ES8316_MAP(quirk)		((quirk) & GENMASK(3, 0))
  #define BYT_CHT_ES8316_SSP0			BIT(16)
-+#define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
  
  static int quirk;
+@@ -57,6 +63,10 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
  
-@@ -69,6 +70,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk IN2_MAP enabled");
+ static void log_quirks(struct device *dev)
+ {
++	if (BYT_CHT_ES8316_MAP(quirk) == BYT_CHT_ES8316_INTMIC_IN1_MAP)
++		dev_info(dev, "quirk IN1_MAP enabled");
++	if (BYT_CHT_ES8316_MAP(quirk) == BYT_CHT_ES8316_INTMIC_IN2_MAP)
++		dev_info(dev, "quirk IN2_MAP enabled");
  	if (quirk & BYT_CHT_ES8316_SSP0)
  		dev_info(dev, "quirk SSP0 enabled");
-+	if (quirk & BYT_CHT_ES8316_MONO_SPEAKER)
-+		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
  }
+@@ -81,14 +91,7 @@ static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Speaker", NULL),
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-
+-	/*
+-	 * The codec supports two analog microphone inputs. I have only
+-	 * tested MIC1. A DMIC route could also potentially be added
+-	 * if such functionality is found on another platform.
+-	 */
+-	SND_SOC_DAPM_MIC("Microphone 1", NULL),
+-	SND_SOC_DAPM_MIC("Microphone 2", NULL),
++	SND_SOC_DAPM_MIC("Internal Mic", NULL),
  
- static int byt_cht_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
-@@ -352,6 +355,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+ 	SND_SOC_DAPM_SUPPLY("Speaker Power", SND_SOC_NOPM, 0, 0,
+ 			    byt_cht_es8316_speaker_power_event,
+@@ -96,10 +99,6 @@ static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
+ };
  
- /* SoC card */
- static char codec_name[SND_ACPI_I2C_ID_LEN];
-+static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
+ static const struct snd_soc_dapm_route byt_cht_es8316_audio_map[] = {
+-	{"MIC1", NULL, "Microphone 1"},
+-	{"MIC2", NULL, "Microphone 2"},
+-	{"MIC1", NULL, "Headset Mic"},
+-
+ 	{"Headphone", NULL, "HPOL"},
+ 	{"Headphone", NULL, "HPOR"},
  
- static int byt_cht_es8316_suspend(struct snd_soc_card *card)
- {
-@@ -433,6 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+@@ -112,6 +111,16 @@ static const struct snd_soc_dapm_route byt_cht_es8316_audio_map[] = {
+ 	{"Speaker", NULL, "Speaker Power"},
+ };
  
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
-+	const char * const mic_name[] = { "in1", "in2" };
- 	struct byt_cht_es8316_private *priv;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
-@@ -467,11 +472,13 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
++static const struct snd_soc_dapm_route byt_cht_es8316_intmic_in1_map[] = {
++	{"MIC1", NULL, "Internal Mic"},
++	{"MIC2", NULL, "Headset Mic"},
++};
++
++static const struct snd_soc_dapm_route byt_cht_es8316_intmic_in2_map[] = {
++	{"MIC2", NULL, "Internal Mic"},
++	{"MIC1", NULL, "Headset Mic"},
++};
++
+ static const struct snd_soc_dapm_route byt_cht_es8316_ssp0_map[] = {
+ 	{"Playback", NULL, "ssp0 Tx"},
+ 	{"ssp0 Tx", NULL, "modem_out"},
+@@ -132,8 +141,7 @@ static const struct snd_kcontrol_new byt_cht_es8316_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Microphone 1"),
+-	SOC_DAPM_PIN_SWITCH("Microphone 2"),
++	SOC_DAPM_PIN_SWITCH("Internal Mic"),
+ };
+ 
+ static struct snd_soc_jack_pin byt_cht_es8316_jack_pins[] = {
+@@ -158,6 +166,21 @@ static int byt_cht_es8316_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ 	card->dapm.idle_bias_off = true;
+ 
++	switch (BYT_CHT_ES8316_MAP(quirk)) {
++	case BYT_CHT_ES8316_INTMIC_IN1_MAP:
++	default:
++		custom_map = byt_cht_es8316_intmic_in1_map;
++		num_routes = ARRAY_SIZE(byt_cht_es8316_intmic_in1_map);
++		break;
++	case BYT_CHT_ES8316_INTMIC_IN2_MAP:
++		custom_map = byt_cht_es8316_intmic_in2_map;
++		num_routes = ARRAY_SIZE(byt_cht_es8316_intmic_in2_map);
++		break;
++	}
++	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
++	if (ret)
++		return ret;
++
+ 	if (quirk & BYT_CHT_ES8316_SSP0) {
+ 		custom_map = byt_cht_es8316_ssp0_map;
+ 		num_routes = ARRAY_SIZE(byt_cht_es8316_ssp0_map);
+@@ -444,10 +467,11 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
  	/* Check for BYTCR or other platform and setup quirks */
  	if (x86_match_cpu(baytrail_cpu_ids) &&
  	    mach->mach_params.acpi_ipc_irq_index == 0) {
--		/* On BYTCR default to SSP0, internal-mic-in2-map */
--		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP;
-+		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
-+		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
-+			BYT_CHT_ES8316_MONO_SPEAKER;
+-		/* On BYTCR default to SSP0 */
+-		quirk = BYT_CHT_ES8316_SSP0;
++		/* On BYTCR default to SSP0, internal-mic-in2-map */
++		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP;
  	} else {
--		/* Others default to internal-mic-in1-map */
--		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP;
-+		/* Others default to internal-mic-in1-map, mono-speaker */
-+		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP |
-+			BYT_CHT_ES8316_MONO_SPEAKER;
+-		quirk = 0;
++		/* Others default to internal-mic-in1-map */
++		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP;
  	}
  	if (quirk_override != -1) {
  		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
-@@ -518,6 +525,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	}
- 
- 	/* register the soc card */
-+	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
-+		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
-+		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
-+	byt_cht_es8316_card.long_name = long_name;
- 	byt_cht_es8316_card.dev = dev;
- 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
- 
 -- 
 2.20.1
