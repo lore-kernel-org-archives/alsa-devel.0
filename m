@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Add ACPI ID 10EC5640" to the
-	asoc tree
-Date: Mon,  7 Jan 2019 19:24:42 +0000 (GMT)
-Message-ID: <20190107192442.C22FA1127491@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: common: Add quirk for PoV P1006W
+	tablet" to the asoc tree
+Date: Mon,  7 Jan 2019 19:24:44 +0000 (GMT)
+Message-ID: <20190107192444.94F951127491@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A45712673B4
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:43 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FE3B26742C
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 20:24:45 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Add ACPI ID 10EC5640
+   ASoC: Intel: common: Add quirk for PoV P1006W tablet
 
 has been applied to the asoc tree at
 
@@ -52,39 +52,95 @@ to this mail.
 Thanks,
 Mark
 
->From d306873589c5a4c13df7176cd73d66ebfa690064 Mon Sep 17 00:00:00 2001
+>From d3dcc5882ca95c9207b5232395c291d34a511627 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 30 Dec 2018 00:00:20 +0100
-Subject: [PATCH] ASoC: rt5651: Add ACPI ID 10EC5640
+Date: Sun, 30 Dec 2018 00:00:19 +0100
+Subject: [PATCH] ASoC: Intel: common: Add quirk for PoV P1006W tablet
 
-Some BYT platforms have a RT5651 codec while using an ACPI node with
-a HID of 10EC5640 to describe the coded. Add the 10EC5640 HID to the
-acpi_device_id list, so that the rt5651 will bind to the codec on these
-devices.
-
-Like the rt5645 and rt5670 drivers which also have the 10EC5640 ACPI HID
-in their acpi_device_id list for similar reasons, the rt5651 driver checks
-the codecs device-id register so that it will only bind if the codec
-actually is a rt5651 and it will ignore actual rt5640 codecs.
+The Point of View TAB-P1006W-232 (v1.0) tablet uses 10EC5640 as
+ACPI HID, but it has a rt5651 codec add a quirk for this.
 
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../intel/common/soc-acpi-intel-byt-match.c   | 35 +++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 3882e238ff99..9a007c162631 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -2138,6 +2138,7 @@ MODULE_DEVICE_TABLE(of, rt5651_of_match);
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5651_acpi_match[] = {
- 	{ "10EC5651", 0 },
-+	{ "10EC5640", 0 },
- 	{ },
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index 47a90909b956..96f9c553fe6c 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -21,6 +21,7 @@
+ static unsigned long byt_machine_id;
+ 
+ #define BYT_THINKPAD_10  1
++#define BYT_POV_P1006W   2
+ 
+ static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
+ {
+@@ -28,6 +29,11 @@ static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
+ 	return 1;
+ }
+ 
++static int byt_pov_p1006w_quirk_cb(const struct dmi_system_id *id)
++{
++	byt_machine_id = BYT_POV_P1006W;
++	return 1;
++}
+ 
+ static const struct dmi_system_id byt_table[] = {
+ 	{
+@@ -58,6 +64,17 @@ static const struct dmi_system_id byt_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Miix 2 10"),
+ 		},
+ 	},
++	{
++		/* Point of View mobii wintab p1006w (v1.0) */
++		.callback = byt_pov_p1006w_quirk_cb,
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BayTrail"),
++			/* Note 105b is Foxcon's USB/PCI vendor id */
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "105B"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "0E57"),
++		},
++	},
+ 	{ }
  };
- MODULE_DEVICE_TABLE(acpi, rt5651_acpi_match);
+ 
+@@ -71,16 +88,30 @@ static struct snd_soc_acpi_mach byt_thinkpad_10 = {
+ 	.asoc_plat_name = "sst-mfld-platform",
+ };
+ 
++static struct snd_soc_acpi_mach byt_pov_p1006w = {
++	.id = "10EC5640",
++	.drv_name = "bytcr_rt5651",
++	.fw_filename = "intel/fw_sst_0f28.bin",
++	.board = "bytcr_rt5651",
++	.sof_fw_filename = "intel/sof-byt.ri",
++	.sof_tplg_filename = "intel/sof-byt-rt5651.tplg",
++	.asoc_plat_name = "sst-mfld-platform",
++};
++
+ static struct snd_soc_acpi_mach *byt_quirk(void *arg)
+ {
+ 	struct snd_soc_acpi_mach *mach = arg;
+ 
+ 	dmi_check_system(byt_table);
+ 
+-	if (byt_machine_id == BYT_THINKPAD_10)
++	switch (byt_machine_id) {
++	case BYT_THINKPAD_10:
+ 		return &byt_thinkpad_10;
+-	else
++	case BYT_POV_P1006W:
++		return &byt_pov_p1006w;
++	default:
+ 		return mach;
++	}
+ }
+ 
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[] = {
 -- 
 2.20.1
