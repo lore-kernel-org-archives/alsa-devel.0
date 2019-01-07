@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: add 1 CPU : 1 Codec
-	support again" to the asoc tree
-Date: Mon,  7 Jan 2019 12:31:24 +0000 (GMT)
-Message-ID: <20190107123124.9AEBA1127490@debutante.sirena.org.uk>
+Subject: Applied "dt-bindings: ASoC: xlnx,
+	audio-formatter: Document audio formatter bindings" to the asoc tree
+Date: Mon,  7 Jan 2019 12:31:30 +0000 (GMT)
+Message-ID: <20190107123130.14F311127490@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 49AB1267D11
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:25 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D566B267D28
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:31:30 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: add 1 CPU : 1 Codec support again
+   dt-bindings: ASoC: xlnx, audio-formatter: Document audio formatter bindings
 
 has been applied to the asoc tree at
 
@@ -52,111 +52,55 @@ to this mail.
 Thanks,
 Mark
 
->From de2949fe262197298036989924d05f5de6b9815a Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Dec 2018 10:45:54 +0900
-Subject: [PATCH] ASoC: audio-graph-card: add 1 CPU : 1 Codec support again
+>From e3e12ec09a18ad779b637f4a006a908cb6045aa7 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Fri, 21 Dec 2018 14:27:27 +0530
+Subject: [PATCH] dt-bindings: ASoC: xlnx, audio-formatter: Document audio
+ formatter bindings
 
-audio-graph-card is now supporting normal sound and DPCM sound.
-For DPCM sound, original sound card (= audio-graph-scu) had been
-supported 1 CPU : 1 Codec connection which uses hw_params_fixup()
-for convert-rate/channel.
-But, merged audio-graph-card is completely forgeting about it.
+Added documentation for audio formatter IP core DT bindings.
 
-This patch re-support it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 44 ++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 12 deletions(-)
+ .../bindings/sound/xlnx,audio-formatter.txt   | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index c3e80bc27e80..638333cdac66 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -408,6 +408,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	struct device_node *codec_ep		= NULL;
- 	struct device_node *codec_port		= NULL;
- 	struct device_node *codec_port_old	= NULL;
-+	struct asoc_simple_card_data adata;
- 	int rc, ret;
- 	int link_idx, dai_idx, conf_idx;
- 	int cpu;
-@@ -453,7 +454,13 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 
- 				dev_dbg(dev, "%pOFf <-> %pOFf\n", cpu_ep, codec_ep);
- 
--				if (of_get_child_count(codec_port) > 1) {
-+				memset(&adata, 0, sizeof(adata));
-+				asoc_graph_card_get_conversion(dev, codec_ep, &adata);
-+				asoc_graph_card_get_conversion(dev, cpu_ep,   &adata);
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+new file mode 100644
+index 000000000000..cbc93c8f4963
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+@@ -0,0 +1,29 @@
++Device-Tree bindings for Xilinx PL audio formatter
 +
-+				if ((of_get_child_count(codec_port) > 1) ||
-+				    adata.convert_rate ||
-+				    adata.convert_channels) {
- 					/*
- 					 * for DPCM sound
- 					 */
-@@ -495,7 +502,7 @@ static void asoc_graph_get_dais_count(struct device *dev,
- 	struct device_node *codec_ep;
- 	struct device_node *codec_port;
- 	struct device_node *codec_port_old;
--	struct device_node *codec_port_old2;
-+	struct asoc_simple_card_data adata;
- 	int rc;
- 
- 	/*
-@@ -534,9 +541,17 @@ static void asoc_graph_get_dais_count(struct device *dev,
- 	 *	=> 6 links = 0xCPU-Codec + 4xCPU-dummy + 2xdummy-Codec
- 	 *	=> 6 DAIs  = 4xCPU + 2xCodec
- 	 *	=> 2 ccnf  = 2xdummy-Codec
-+	 *
-+	 * ex4)
-+	 * CPU0 --- Codec0 (convert-rate)	link : 3
-+	 * CPU1 --- Codec1			dais : 4
-+	 *					ccnf : 1
-+	 *
-+	 *	=> 3 links = 1xCPU-Codec + 1xCPU-dummy + 1xdummy-Codec
-+	 *	=> 4 DAIs  = 2xCPU + 2xCodec
-+	 *	=> 1 ccnf  = 1xdummy-Codec
- 	 */
- 	codec_port_old = NULL;
--	codec_port_old2 = NULL;
- 	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
- 		cpu_port = it.node;
- 		cpu_ep	 = NULL;
-@@ -554,17 +569,22 @@ static void asoc_graph_get_dais_count(struct device *dev,
- 			(*link_num)++;
- 			(*dais_num)++;
- 
--			if (codec_port_old == codec_port) {
--				if (codec_port_old2 != codec_port_old) {
--					(*link_num)++;
--					(*ccnf_num)++;
--				}
-+			memset(&adata, 0, sizeof(adata));
-+			asoc_graph_card_get_conversion(dev, codec_ep, &adata);
-+			asoc_graph_card_get_conversion(dev, cpu_ep,   &adata);
- 
--				codec_port_old2 = codec_port_old;
--				continue;
--			}
-+			if ((of_get_child_count(codec_port) > 1) ||
-+			    adata.convert_rate || adata.convert_channels) {
- 
--			(*dais_num)++;
-+				if (codec_port_old == codec_port)
-+					continue;
++The IP core supports DMA, data formatting(AES<->PCM conversion)
++of audio samples.
 +
-+				(*link_num)++;
-+				(*ccnf_num)++;
-+				(*dais_num)++;
-+			} else {
-+				(*dais_num)++;
-+			}
- 			codec_port_old = codec_port;
- 		}
- 	}
++Required properties:
++ - compatible: "xlnx,audio-formatter-1.0"
++ - interrupt-names: Names specified to list of interrupts in same
++		    order mentioned under "interrupts".
++		    List of supported interrupt names are:
++		    "irq_mm2s" : interrupt from MM2S block
++		    "irq_s2mm" : interrupt from S2MM block
++ - interrupts-parent: Phandle for interrupt controller.
++ - interrupts: List of Interrupt numbers.
++ - reg: Base address and size of the IP core instance.
++ - clock-names: List of input clocks.
++   Required elements: "s_axi_lite_aclk", "aud_mclk"
++ - clocks: Input clock specifier. Refer to common clock bindings.
++
++Example:
++	audio_ss_0_audio_formatter_0: audio_formatter@80010000 {
++		compatible = "xlnx,audio-formatter-1.0";
++		interrupt-names = "irq_mm2s", "irq_s2mm";
++		interrupt-parent = <&gic>;
++		interrupts = <0 104 4>, <0 105 4>;
++		reg = <0x0 0x80010000 0x0 0x1000>;
++		clock-names = "s_axi_lite_aclk", "aud_mclk";
++		clocks = <&clk 71>, <&clk_wiz_1 0>;
++	};
 -- 
 2.20.1
