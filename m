@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Document GPIO support"
-	to the asoc tree
-Date: Mon,  7 Jan 2019 12:25:53 +0000 (GMT)
-Message-ID: <20190107122553.1F2621127490@debutante.sirena.org.uk>
-References: <20190103140552.29809-3-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: ti: davinci-mcasp: No need for
+	IS_MODULE/BUILTIN check for pcm driver" to the asoc tree
+Date: Mon,  7 Jan 2019 12:25:54 +0000 (GMT)
+Message-ID: <20190107122554.F37B11127490@debutante.sirena.org.uk>
+References: <20190103125345.16139-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DB0C267B50
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:25:53 +0100 (CET)
-In-Reply-To: <20190103140552.29809-3-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CD9BE267B81
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:25:55 +0100 (CET)
+In-Reply-To: <20190103125345.16139-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, jsarha@ti.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org, misael.lopez@ti.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, jsarha@ti.com, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Document GPIO support
+   ASoC: ti: davinci-mcasp: No need for IS_MODULE/BUILTIN check for pcm driver
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 4664b94c98b4f9fdd3845da41d5c65288e59c66c Mon Sep 17 00:00:00 2001
+>From 2130f15d6cd9898a68dc7244084985353030514f Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Thu, 3 Jan 2019 16:05:51 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: Document GPIO support
+Date: Thu, 3 Jan 2019 14:53:45 +0200
+Subject: [PATCH] ASoC: ti: davinci-mcasp: No need for IS_MODULE/BUILTIN check
+ for pcm driver
 
-McASP pins can be used as GPIO, add optional section to enable GPIO support
-for McASP.
+Since the platform drivers are selected by the DAI drivers (including
+McASP) there is no longer a need to check whether the modules are built-in
+or module.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/davinci-mcasp-audio.txt      | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/ti/davinci-mcasp.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-index b279b6072bd5..a58f79f5345c 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
-@@ -45,6 +45,23 @@ Optional properties:
- - fck_parent : Should contain a valid clock name which will be used as parent
- 	       for the McASP fck
- 
-+Optional GPIO support:
-+If any McASP pin need to be used as GPIO then the McASP node must have:
-+...
-+  gpio-controller
-+  #gpio-cells = <2>;
-+...
-+
-+When requesting a GPIO, the first parameter is the PIN index in McASP_P*
-+registers.
-+For example to request the AXR2 pin of mcasp8:
-+function-gpios = <&mcasp8 2 0>;
-+
-+Or to request the ACLKR pin of mcasp8:
-+function-gpios = <&mcasp8 29 0>;
-+
-+For generic gpio information, please refer to bindings/gpio/gpio.txt
-+
- Example:
- 
- mcasp0: mcasp0@1d00000 {
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index eeda6d5565bc..ee9ab58d4d0c 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2149,26 +2149,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	ret = davinci_mcasp_get_dma_type(mcasp);
+ 	switch (ret) {
+ 	case PCM_EDMA:
+-#if IS_BUILTIN(CONFIG_SND_SOC_TI_EDMA_PCM) || \
+-	(IS_MODULE(CONFIG_SND_SOC_DAVINCI_MCASP) && \
+-	 IS_MODULE(CONFIG_SND_SOC_TI_EDMA_PCM))
+ 		ret = edma_pcm_platform_register(&pdev->dev);
+-#else
+-		dev_err(&pdev->dev, "Missing SND_EDMA_SOC\n");
+-		ret = -EINVAL;
+-		goto err;
+-#endif
+ 		break;
+ 	case PCM_SDMA:
+-#if IS_BUILTIN(CONFIG_SND_SOC_TI_SDMA_PCM) || \
+-	(IS_MODULE(CONFIG_SND_SOC_DAVINCI_MCASP) && \
+-	 IS_MODULE(CONFIG_SND_SOC_TI_SDMA_PCM))
+ 		ret = sdma_pcm_platform_register(&pdev->dev, NULL, NULL);
+-#else
+-		dev_err(&pdev->dev, "Missing SND_SDMA_SOC\n");
+-		ret = -EINVAL;
+-		goto err;
+-#endif
+ 		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
 -- 
 2.20.1
