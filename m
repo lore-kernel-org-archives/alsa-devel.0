@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5663: Fix error handling of
- device_property_read_u32_array
-Date: Mon, 7 Jan 2019 16:04:59 +0000
-Message-ID: <20190107160459.GI9570@sirena.org.uk>
-References: <20190105134427.1022-1-pakki001@umn.edu>
+Subject: Re: [PATCH] ASoC: rt298: Variable "val" and "buf" in
+ rt298_jack_detect() could be uninitialized
+Date: Mon, 7 Jan 2019 16:28:44 +0000
+Message-ID: <20190107162844.GK9570@sirena.org.uk>
+References: <20190104215253.16278-1-yzhai003@ucr.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6320232183216622970=="
+Content-Type: multipart/mixed; boundary="===============8528655444901359375=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 72ABC2665E5
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 17:05:10 +0100 (CET)
-In-Reply-To: <20190105134427.1022-1-pakki001@umn.edu>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C5C62665E5
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 17:28:59 +0100 (CET)
+In-Reply-To: <20190104215253.16278-1-yzhai003@ucr.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Aditya Pakki <pakki001@umn.edu>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
+To: Yizhuo <yzhai003@ucr.edu>
+Cc: csong@cs.ucr.edu, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, zhiyunq@cs.ucr.edu, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6320232183216622970==
+--===============8528655444901359375==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+ZmrHH5cGjskQnY1"
+	protocol="application/pgp-signature"; boundary="IJAclU0AInkryoed"
 Content-Disposition: inline
 
 
---+ZmrHH5cGjskQnY1
+--IJAclU0AInkryoed
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jan 05, 2019 at 07:44:27AM -0600, Aditya Pakki wrote:
+On Fri, Jan 04, 2019 at 01:52:53PM -0800, Yizhuo wrote:
 
->  		rt5663->imp_table = devm_kzalloc(dev, table_size, GFP_KERNEL);
-> -		device_property_read_u32_array(dev,
-> +		return device_property_read_u32_array(dev,
->  			"realtek,impedance_sensing_table",
->  			(u32 *)rt5663->imp_table, table_size);
+>  {
+>  	struct snd_soc_dapm_context *dapm;
+>  	unsigned int val, buf;
+> +	int ret = 0;
 
-This is going to silently fail without giving any indication of what's
-wrong which isn't great - it's not clear that completely failing to load
-the driver is the best option here, and even if it is we should probably
-tell the user what went wrong.
+It's bad practice to just initailize like this without a reason - it
+tends to just mask actual cases where we miss error handling by ensuring
+that it's always initialized.
 
-We're also not checking the result of the memory allocation...
+>  			if (0x0070 == (val & 0x0070)) {
+>  				*mic = true;
+>  			} else {
+>  				regmap_update_bits(rt298->regmap,
+>  					RT298_CBJ_CTRL1, 0xfcc0, 0xe400);
+>  				msleep(300);
+> -				regmap_read(rt298->regmap,
+> +				ret = regmap_read(rt298->regmap,
+>  					RT298_CBJ_CTRL2, &val);
+> +				if (ret)
+> +					return ret;
 
---+ZmrHH5cGjskQnY1
+We've started doing some writes to the device (which you've not added
+checks for) here but then if the read fails we just bomb out with an
+error code - are you sure that none of the writes need to be reverted?
+
+--IJAclU0AInkryoed
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwzeKoACgkQJNaLcl1U
-h9BOCwf9FphVz+v+WezrJsnnKtKAX73L3q+F+LoFQ0sxXwzvHm15Q7+tUGL/75dL
-NCYxGPw4LoGf/kZWUhhIX9dII37aIjsez8ss8KiLu6LP/+28oJDwqX7yT/SoIay0
-ocmTlngVqm5ceU1j4lJl/8Irr7zCOJfZ63ZrfEUQ+FfX6Uoy1tdiIkHt+Cx2jsbm
-erayQMF4JnKC3htgSP7eN80YuLKi6n2FXPQlETfNcQVgbpLXaOI7gFE+cGkvk6xv
-+5fn5EuQJ/hmUP2NIkHEtJULV315KSc7Pg06UVNJ0DsEu0Zn6v9J4AwlXSIsT9Os
-LZOkQe3w6jfF5yeejCKGFPzBIMLzlA==
-=Do7P
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlwzfjsACgkQJNaLcl1U
+h9B8ZAf/crhqUm6mmOd0Zu21moCGdovWEr4Dks4ovW6tH+i8R8DPPlFwFrrwqoUC
+AmfutDFZo0Ee87LDb6olzsVWECeXWeQpuv4DyKz+nmpnjUSqbZ0Vqgc0abSTHY8b
+9PY/xrggQsOYc4vsW+/1NpmkZ/ATsaQ8zzNJyX0H4Ywt/BPTSoT7R8PGGxo//gC1
+1LN7TgNgWxa/tHknt8d6tvDCfW1miFApieGEmPyZSpDoUY1qfceMvdkD+2gX80wF
+P+ZwDvKykq6kGNH2/nVYPc8pErH/ADtMmHR3fpOlKEcG3Rv7I3iiboPmevqyJVZl
+Ml8x0GeaTZMAsvhfdKEFRKFTo+5JRg==
+=tyXZ
 -----END PGP SIGNATURE-----
 
---+ZmrHH5cGjskQnY1--
+--IJAclU0AInkryoed--
 
---===============6320232183216622970==
+--===============8528655444901359375==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6320232183216622970==--
+--===============8528655444901359375==--
