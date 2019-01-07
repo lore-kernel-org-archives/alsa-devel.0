@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: ti: davinci-mcasp: Add support for GPIO
 	mode of the pins" to the asoc tree
-Date: Mon,  7 Jan 2019 12:24:56 +0000 (GMT)
-Message-ID: <20190107122456.D529B1127490@debutante.sirena.org.uk>
+Date: Mon,  7 Jan 2019 12:25:51 +0000 (GMT)
+Message-ID: <20190107122551.424D31127490@debutante.sirena.org.uk>
 References: <20190103140552.29809-4-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 84120267B50
- for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:24:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 42DFE267B50
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2019 13:25:52 +0100 (CET)
 In-Reply-To: <20190103140552.29809-4-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
