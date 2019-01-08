@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt274: Variable "buf" in function
-	rt274_jack_detect() could be uninitialized" to the asoc tree
-Date: Tue,  8 Jan 2019 16:17:07 +0000 (GMT)
-Message-ID: <20190108161707.580AD112778C@debutante.sirena.org.uk>
+Subject: Applied "ASoC: ADAU7002: Add optional delay before
+	start of capture" to the asoc tree
+Date: Tue,  8 Jan 2019 16:17:10 +0000 (GMT)
+Message-ID: <20190108161710.49B0C112778C@debutante.sirena.org.uk>
+References: <1546942924-9428-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 05632266B98
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2019 17:17:15 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id B5919266B98
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2019 17:17:12 +0100 (CET)
+In-Reply-To: <1546942924-9428-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yizhuo <yzhai003@ucr.edu>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Agrawal@sirena.org.uk
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Deucher, ,
+ Alexander" <Alexander.Deucher@amd.com>, "Agrawal, ,
+ Akshu" <Akshu.Agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt274: Variable "buf" in function rt274_jack_detect() could be uninitialized
+   ASoC: ADAU7002: Add optional delay before start of capture
 
 has been applied to the asoc tree at
 
@@ -52,53 +55,97 @@ to this mail.
 Thanks,
 Mark
 
->From 4a8191aa9e057ea38279ef9e809265ba3966be40 Mon Sep 17 00:00:00 2001
-From: Yizhuo <yzhai003@ucr.edu>
-Date: Mon, 7 Jan 2019 12:12:32 -0800
-Subject: [PATCH] ASoC: rt274: Variable "buf" in function rt274_jack_detect()
- could be uninitialized
+>From 7b57085a33ce55e28616f04fd9877ba2ca7e79de Mon Sep 17 00:00:00 2001
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Date: Tue, 8 Jan 2019 10:24:40 +0000
+Subject: [PATCH] ASoC: ADAU7002: Add optional delay before start of capture
 
-In function rt274_jack_detect(), local variable "buf" could
-be uninitialized if function regmap_read() returns -EINVAL.
-However, it will be used to calculate "hp" and "mic" and
-make their value unpredictable while those value are used
-in the caller. This is potentially unsafe.
+On capture through some of dmic we observe a glitch at the
+start of record. This is because we start capturing even before
+dmic is ready to send out data.
+The optional delay will be applied after enabling the mic.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt274.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/codecs/adau7002.c | 45 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index 9e88f7b25d38..adf59039a3b6 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -353,6 +353,7 @@ static void rt274_index_sync(struct snd_soc_component *component)
- static int rt274_jack_detect(struct rt274_priv *rt274, bool *hp, bool *mic)
- {
- 	unsigned int buf;
-+	int ret;
+diff --git a/sound/soc/codecs/adau7002.c b/sound/soc/codecs/adau7002.c
+index fdff86878287..a8deb37fc78a 100644
+--- a/sound/soc/codecs/adau7002.c
++++ b/sound/soc/codecs/adau7002.c
+@@ -8,6 +8,7 @@
+  */
  
- 	*hp = false;
- 	*mic = false;
-@@ -360,9 +361,15 @@ static int rt274_jack_detect(struct rt274_priv *rt274, bool *hp, bool *mic)
- 	if (!rt274->component)
- 		return -EINVAL;
+ #include <linux/acpi.h>
++#include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -15,12 +16,55 @@
  
--	regmap_read(rt274->regmap, RT274_GET_HP_SENSE, &buf);
-+	ret = regmap_read(rt274->regmap, RT274_GET_HP_SENSE, &buf);
-+	if (ret)
-+		return ret;
+ #include <sound/soc.h>
+ 
++struct adau7002_priv {
++	int wakeup_delay;
++};
 +
- 	*hp = buf & 0x80000000;
--	regmap_read(rt274->regmap, RT274_GET_MIC_SENSE, &buf);
-+	ret = regmap_read(rt274->regmap, RT274_GET_MIC_SENSE, &buf);
-+	if (ret)
-+		return ret;
++static int adau7002_aif_event(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component =
++			snd_soc_dapm_to_component(w->dapm);
++	struct adau7002_priv *adau7002 =
++			snd_soc_component_get_drvdata(component);
 +
- 	*mic = buf & 0x80000000;
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (adau7002->wakeup_delay)
++			msleep(adau7002->wakeup_delay);
++		break;
++	}
++
++	return 0;
++}
++
++static int adau7002_component_probe(struct snd_soc_component *component)
++{
++	struct adau7002_priv *adau7002;
++
++	adau7002 = devm_kzalloc(component->dev, sizeof(*adau7002),
++				GFP_KERNEL);
++	if (!adau7002)
++		return -ENOMEM;
++
++	device_property_read_u32(component->dev, "wakeup-delay-ms",
++				 &adau7002->wakeup_delay);
++
++	snd_soc_component_set_drvdata(component, adau7002);
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget adau7002_widgets[] = {
++	SND_SOC_DAPM_AIF_OUT_E("ADAU AIF", "Capture", 0,
++			       SND_SOC_NOPM, 0, 0, adau7002_aif_event,
++			       SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_INPUT("PDM_DAT"),
+ 	SND_SOC_DAPM_REGULATOR_SUPPLY("IOVDD", 0, 0),
+ };
  
- 	pr_debug("*hp = %d *mic = %d\n", *hp, *mic);
+ static const struct snd_soc_dapm_route adau7002_routes[] = {
++	{ "ADAU AIF", NULL, "PDM_DAT"},
+ 	{ "Capture", NULL, "PDM_DAT" },
+ 	{ "Capture", NULL, "IOVDD" },
+ };
+@@ -40,6 +84,7 @@ static struct snd_soc_dai_driver adau7002_dai = {
+ };
+ 
+ static const struct snd_soc_component_driver adau7002_component_driver = {
++	.probe			= adau7002_component_probe,
+ 	.dapm_widgets		= adau7002_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(adau7002_widgets),
+ 	.dapm_routes		= adau7002_routes,
 -- 
 2.20.1
