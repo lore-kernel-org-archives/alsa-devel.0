@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/3] mfd: cros_ec: Add commands to
-	control codec
-Date: Tue, 8 Jan 2019 16:12:38 +0000
-Message-ID: <20190108161238.GG6590@sirena.org.uk>
-References: <20181226070317.72022-1-cychiang@chromium.org>
- <20190107192402.GW9570@sirena.org.uk> <20190108095450.GA27286@dell>
+Subject: Applied "ASoC: rt274: Variable "buf" in function
+	rt274_jack_detect() could be uninitialized" to the asoc tree
+Date: Tue,  8 Jan 2019 16:17:07 +0000 (GMT)
+Message-ID: <20190108161707.580AD112778C@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7021567463814686742=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6229A266B98
- for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2019 17:12:39 +0100 (CET)
-In-Reply-To: <20190108095450.GA27286@dell>
+ by alsa0.perex.cz (Postfix) with ESMTP id 05632266B98
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2019 17:17:15 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Guenter Roeck <groeck@chromium.org>, dgreid@chromium.org, Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+To: Yizhuo <yzhai003@ucr.edu>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7021567463814686742==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RMedoP2+Pr6Rq0N2"
-Content-Disposition: inline
+   ASoC: rt274: Variable "buf" in function rt274_jack_detect() could be uninitialized
 
+has been applied to the asoc tree at
 
---RMedoP2+Pr6Rq0N2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 08, 2019 at 09:54:50AM +0000, Lee Jones wrote:
-> On Mon, 07 Jan 2019, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Is there a tag I can merge?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Afraid not, but I reserve the right to rebase my tree, so if you want
-> one, you can have one.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Yes, please - that'd be most helpful!
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---RMedoP2+Pr6Rq0N2
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 4a8191aa9e057ea38279ef9e809265ba3966be40 Mon Sep 17 00:00:00 2001
+From: Yizhuo <yzhai003@ucr.edu>
+Date: Mon, 7 Jan 2019 12:12:32 -0800
+Subject: [PATCH] ASoC: rt274: Variable "buf" in function rt274_jack_detect()
+ could be uninitialized
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw0y/UACgkQJNaLcl1U
-h9ApxAf9GHL/qL6na/x5Oo3KZRXkrGOsUE2WxlEhjJrCTWjPHSukTp8Wn1gerCYY
-bzcoovRjtNSXq7QjFh9EXY4rF9cCn9Tz14oAB7RP72pwpxY/o9uflzSLVn18xE+D
-/I4BTZzaxnrZ8vP6s7vi9g6KhRMrkDlTE8E7zjaUf1Ln0qGKIe9OHwPWBDGh6x3w
-ypDu7ybKcvw1KnpkZGAFKam3wikyNbrjdjqlYCvMOWEBTzvmar7b34IxROpwXVCh
-tQYP5FtWzpKqqfNxKYilUZW754lSmeN3gTben9S3mhAvRHlAkPqwWIxzxY/ZpocN
-/7+l7gYcIFlPGRv4bAu3vh82lxf2bg==
-=ZW6R
------END PGP SIGNATURE-----
+In function rt274_jack_detect(), local variable "buf" could
+be uninitialized if function regmap_read() returns -EINVAL.
+However, it will be used to calculate "hp" and "mic" and
+make their value unpredictable while those value are used
+in the caller. This is potentially unsafe.
 
---RMedoP2+Pr6Rq0N2--
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt274.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---===============7021567463814686742==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7021567463814686742==--
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index 9e88f7b25d38..adf59039a3b6 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -353,6 +353,7 @@ static void rt274_index_sync(struct snd_soc_component *component)
+ static int rt274_jack_detect(struct rt274_priv *rt274, bool *hp, bool *mic)
+ {
+ 	unsigned int buf;
++	int ret;
+ 
+ 	*hp = false;
+ 	*mic = false;
+@@ -360,9 +361,15 @@ static int rt274_jack_detect(struct rt274_priv *rt274, bool *hp, bool *mic)
+ 	if (!rt274->component)
+ 		return -EINVAL;
+ 
+-	regmap_read(rt274->regmap, RT274_GET_HP_SENSE, &buf);
++	ret = regmap_read(rt274->regmap, RT274_GET_HP_SENSE, &buf);
++	if (ret)
++		return ret;
++
+ 	*hp = buf & 0x80000000;
+-	regmap_read(rt274->regmap, RT274_GET_MIC_SENSE, &buf);
++	ret = regmap_read(rt274->regmap, RT274_GET_MIC_SENSE, &buf);
++	if (ret)
++		return ret;
++
+ 	*mic = buf & 0x80000000;
+ 
+ 	pr_debug("*hp = %d *mic = %d\n", *hp, *mic);
+-- 
+2.20.1
