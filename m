@@ -1,14 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 04/14] ASoC: SOF: Add support for IPC IO
- between DSP and Host
-Date: Wed, 9 Jan 2019 20:37:20 +0000
-Message-ID: <20190109203720.GQ10405@sirena.org.uk>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
+From: Jay Foster <jay@systech.com>
+Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
+Date: Wed, 9 Jan 2019 12:39:30 -0800
+Message-ID: <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
+References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
+ <s5htviixf0t.wl-tiwai@suse.de>
+ <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
+ <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
+Reply-To: jay@systech.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1844598430007484172=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20181211212318.28644-5-pierre-louis.bossart@linux.intel.com>
+Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
+ [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 81368267475
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 21:39:39 +0100 (CET)
+In-Reply-To: <s5hef9lh8ne.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,119 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1844598430007484172==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Vsi50HYs5tPfr+1I"
-Content-Disposition: inline
-
-
---Vsi50HYs5tPfr+1I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Dec 11, 2018 at 03:23:08PM -0600, Pierre-Louis Bossart wrote:
-
-> +/* wait for IPC message reply */
-> +static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
-> +			void *reply_data)
-> +{
-
-This has exactly one caller, why not inline it (or make both tx and rx
-separate functions)?
-
-> +	spin_lock_irqsave(&sdev->ipc_lock, flags);
-> +
-> +	/* get an empty message */
-> +	msg = msg_get_empty(ipc);
-> +	if (!msg) {
-> +		spin_unlock_irqrestore(&sdev->ipc_lock, flags);
-> +		return -EBUSY;
-> +	}
-> +
-> +	msg->header = header;
-> +	msg->msg_size = msg_bytes;
-> +	msg->reply_size = reply_bytes;
-> +	msg->ipc_complete = false;
-> +
-> +	/* attach any data */
-> +	if (msg_bytes)
-> +		memcpy(msg->msg_data, msg_data, msg_bytes);
-
-How big do these messages get?  Do we need to hold the lock while we
-memcpy()?
-
-> +	/* schedule the message if not busy */
-> +	if (snd_sof_dsp_is_ready(sdev))
-> +		schedule_work(&ipc->tx_kwork);
-
-If the DSP is idle is there a reason this has to happen in another
-thread?
-
-> +
-> +	spin_unlock_irqrestore(&sdev->ipc_lock, flags);
-
-The thread is also going to take an irq spinlock after all.
-
-> +	/* send first message in TX list */
-> +	msg = list_first_entry(&ipc->tx_list, struct snd_sof_ipc_msg, list);
-> +	list_move(&msg->list, &ipc->reply_list);
-> +	snd_sof_dsp_send_msg(sdev, msg);
-
-Should the move happen if the send fails (I see it can return an error
-code, though we ignore it)?
-
-> +	int err = -EINVAL;
-
-> +	case SOF_IPC_FW_READY:
-> +		/* check for FW boot completion */
-> +		if (!sdev->boot_complete) {
-> +			if (sdev->ops->fw_ready)
-> +				err = sdev->ops->fw_ready(sdev, cmd);
-> +			if (err < 0) {
-> +				dev_err(sdev->dev, "error: DSP firmware boot timeout %d\n",
-> +					err);
-
-err defaults to -EINVAL here which doesn't seem like the right thing if
-fw_ready() is really optional.  Perhaps just validate the ops on
-registration and call this unconditionally?
-
-> +void snd_sof_ipc_free(struct snd_sof_dev *sdev)
-> +{
-> +	cancel_work_sync(&sdev->ipc->tx_kwork);
-> +	cancel_work_sync(&sdev->ipc->rx_kwork);
-> +}
-> +EXPORT_SYMBOL(snd_sof_ipc_free);
-
-It might be better to have something that stops any new messages being
-processed as well, to prevent races on removal.
-
---Vsi50HYs5tPfr+1I
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2W38ACgkQJNaLcl1U
-h9BtIgf/WKEBwl3s0hJYwvDZg9//gxWZmtPoYYiMSYqD3DP5KIf893SvlmQpAJs7
-tAH2Fe82sdDtTuuf2bt2p4RvMzgQkDF/YD2d62a73Obp3VhwvH/9E+/mFKVbb1TB
-kQ2IO/2J9CJRGQn6FQDVOZ/VkPob2zTELzqZbpSkNQX7SrmfonhMIbgfiZkXbxaH
-3btwEJP0hiLty/khtUpvJ0GP3eb3bVP49YSIh2h9K7zsdqHZp+M9VDph8iqupWtj
-qggZPeMHd1Ia5X/+3uxg2hUMq9/f96DjMbcWSx/eybrJXMC4z+resl20WNUOsW0i
-nwInZgadQxBHkNM2nMdHvZhNMf60+Q==
-=wTOX
------END PGP SIGNATURE-----
-
---Vsi50HYs5tPfr+1I--
-
---===============1844598430007484172==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1844598430007484172==--
+CgpPbiAxLzkvMjAxOSAxMjozNSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdlZCwgMDkg
+SmFuIDIwMTkgMjE6MzM6MTEgKzAxMDAsCj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiBPbiBXZWQs
+IDA5IEphbiAyMDE5IDE3OjIyOjM2ICswMTAwLAo+PiBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4KPj4+
+Cj4+PiBPbiAxLzkvMjAxOSAzOjEwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4gT24gVHVl
+LCAwOCBKYW4gMjAxOSAxODowMDoxOCArMDEwMCwKPj4+PiBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4+
+PiBJIGFtIGF0dGVtcHRpbmcgdG8gYnVpbGQgdGhlIDEuMS44IHJlbGVhc2Ugb2YgYWxzYS11dGls
+cyBhbmQgZ2V0dGluZwo+Pj4+PiBhbiBlcnJvciBhYm91dCBQT0xMUkROT1JNIChhbmQgb3RoZXJz
+KSB1bmRlZmluZWQuwqAgVGhpcyBlcnJvciBjb21lcwo+Pj4+PiBmcm9tIGF4ZmVyL3dhaXRlci1z
+ZWxlY3QuYy7CoCBheGZlci93YWl0ZXItc2VsZWN0LmMgaW5jbHVkZXMKPj4+Pj4gIndhaXRlci5o
+Iiwgd2hpY2ggaW5jbHVkZXMgInBvbGwuaCIuwqAgVGhpcyBidWlsZCBpcyBmb3IgYSBsaW51eAo+
+Pj4+PiB0YXJnZXQuCj4+Pj4+Cj4+Pj4+IHBvbGwuaCBpbmNsdWRlcyBzeXMvcG9sbC5oIHdoaWNo
+IGluY2x1ZGVzIGJpdHMvcG9sbC5oLCB3aGljaCBvbmx5Cj4+Pj4+IGRlZmluZXMgUE9MTFJETk9S
+TSAoYW5kIG90aGVycykgd2hlbiBfX1VTRV9YT1BFTiBpcyBkZWZpbmVkICh3aGljaCBpdAo+Pj4+
+PiBpcyBub3QpLgo+Pj4+Pgo+Pj4+PiBIb3dldmVyLCBsaW51eC9wb2xsLmggaW5jbHVkZXMgYXNt
+L3BvbGwuaCB3aGljaCBpbmNsdWRlcwo+Pj4+PiBhc20tZ2VuZXJpYy9wb2xsLmggd2hpY2ggZG9l
+cyBkZWZpbmUgUE9MTFJETk9STSAoYW5kIG90aGVycykuCj4+Pj4+Cj4+Pj4+IFNob3VsZCBJIGNo
+YW5nZSBteSBidWlsZCB0byBkZWZpbmVfX1VTRV9YT1BFTiBvciBzaG91bGQgSSBwYXRjaAo+Pj4+
+PiB3YWl0ZXIuaCB0byBpbmNsdWRlIGxpbnV4L3BvbGwuaCBpbnN0ZWFkIG9mIGp1c3QgcG9sbC5o
+Pwo+Pj4+IFdoaWNoIGxpYmMgYXJlIHlvdSB1c2luZz8gIFRoZSBQT1NJWCBtYW4gcGFnZSAobWFu
+IHBvbGwuaCkgbWVudGlvbnMKPj4+PiBQT0xMUkROT1JNIGRlZmluZWQgdGhlcmUsIGF0IGxlYXN0
+LCBvbiBteSBzeXN0ZW0gd2l0aCBnbGliYyAyLjI3Lgo+Pj4+Cj4+Pj4KPj4+PiB0aGFua3MsCj4+
+Pj4KPj4+PiBUYWthc2hpCj4+Pj4KPj4+Pgo+Pj4gVGhpcyBpcyBhIGxlZ2FjeSBBUk0gcHJvZHVj
+dCB1c2luZyBnbGliYyAyLjkuwqAgTmVpdGhlciBvZiB0aGUKPj4+IGFwcHJvYWNoZXMgSSBtZW50
+aW9uZWQgYWJvdmUgYWN0dWFsbHkgd29ya2VkLsKgIDxsaW51eC9wb2xsLmg+IGlzIHRoZQo+Pj4g
+a2VybmVsIGhlYWRlcnMsIHdoaWNoIHJlc3VsdHMgaW4gYSBkdXBsaWNhdGUgZGVmaW5pdGlvbiBv
+ZiBzdHJ1Y3QKPj4+IHBvbGxmZHMuwqAgVGhlIG90aGVyIGFwcHJvYWNoIChJIGFkZGVkICdDRkxB
+R1M9LURfWE9QRU5fU09VUkNFPTUwMCcgdG8KPj4+IHRoZSBtYWtlIGNvbW1hbmQgbGluZSwgYW5k
+IG90aGVyIHZhcmlhdGlvbnMpIGZhaWxlZCBlbHNld2hlcmUgZHVlIHRvCj4+PiBtaXNzaW5nIG9y
+IG1pc21hdGNoZWQgZnVuY3Rpb24gcHJvdG90eXBlcyAocmVmIDxmZWF0dXJlcy5oPikuCj4+Pgo+
+Pj4gSSBnb3QgdGhpcyB0byB3b3JrIGJ5IHBhdGNoaW5nIGF4ZmVyL3dhaXRlci5oIHRvIGFkZCB0
+aGUgbWlzc2luZwo+Pj4gZGVmaW50aW9ucywgYmFzZWQgb24gdGhvc2UgZm91bmQgaW4gPGFzbS1n
+ZW5lcmljL3BvbGwuaD4uCj4+IEkgd29uZGVyIHdoYXQgaXMgc3VwcG9zZWQgb24gc3VjaCBhIHN5
+c3RlbS4gIHBvbGwoKSBuZWVkcyB0aGVzZSBQT0xMKgo+PiBjb25zdGFudCBkZWZpbml0aW9ucywg
+YW5kIHRoZXkgYXJlbid0IGF2YWlsYWJsZSBieSBzaW1wbGUgcG9sbC5oPwo+PiBUaGF0J3Mgd2Vp
+cmQuICBXaGF0IGRvZXMgIm1hbiBwb2xsLmgiIHNheSBpbiB5b3VyIHZlcnNpb24/Cj4gLi4uIG9y
+IG1heWJlIGl0J3Mgb25seSBhYm91dCBhIGZldyBvZiB0aGVtIHRoYXQgYXJlIG1pc3Npbmc/Cj4K
+Pgo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwKSSB0aGluayBvdXIgZW1haWxzIGNyb3NzZWQuwqAgWWVzLCBvbmx5IGEgZmV3IGFy
+ZSBtaXNzaW5nLsKgIGluIAo8Yml0cy9wb2xsLmg+IEkgc2VlOgojaWZkZWYgX19VU0VfWE9QRU4K
+LyogVGhlc2UgdmFsdWVzIGFyZSBkZWZpbmVkIGluIFhQRzQuMi7CoCAqLwojIGRlZmluZSBQT0xM
+UkROT1JNwqDCoMKgIDB4MDQwwqDCoMKgIMKgwqDCoCAvKiBOb3JtYWwgZGF0YSBtYXkgYmUgcmVh
+ZC7CoCAqLwojIGRlZmluZSBQT0xMUkRCQU5EwqDCoMKgIDB4MDgwwqDCoMKgIMKgwqDCoCAvKiBQ
+cmlvcml0eSBkYXRhIG1heSBiZSByZWFkLiAqLwojIGRlZmluZSBQT0xMV1JOT1JNwqDCoMKgIDB4
+MTAwwqDCoMKgIMKgwqDCoCAvKiBXcml0aW5nIG5vdyB3aWxsIG5vdCBibG9jay4gKi8KIyBkZWZp
+bmUgUE9MTFdSQkFORMKgwqDCoCAweDIwMMKgwqDCoCDCoMKgwqAgLyogUHJpb3JpdHkgZGF0YSBt
+YXkgYmUgd3JpdHRlbi7CoCAqLwojZW5kaWYKSXQgaXMgb25seSB0aG9zZSB0aGF0IGFyZSBub3Qg
+ZGVmaW5lZC7CoCBBZGRpbmcgLURfR05VX1NPVVJDRSBnZXRzIHRoZW0gCmRlZmluZWQsIHRob3Vn
+aC7CoCBJbnRlcmVzdGluZyBob3cgdGhlIG1hbiBwYWdlIGZvciBwb2xsLmggZG9lcyBub3QgCm1l
+bnRpb24gdGhpcyBmb3IgZ2xpYmMuCkpheQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
