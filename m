@@ -1,21 +1,14 @@
-From: Jay Foster <jay@systech.com>
-Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
-Date: Wed, 9 Jan 2019 12:39:30 -0800
-Message-ID: <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
-References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
- <s5htviixf0t.wl-tiwai@suse.de>
- <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
- <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
-Reply-To: jay@systech.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware
+	logger support
+Date: Wed, 9 Jan 2019 20:44:27 +0000
+Message-ID: <20190109204427.GR10405@sirena.org.uk>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3045359342229090478=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 81368267475
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 21:39:39 +0100 (CET)
-In-Reply-To: <s5hef9lh8ne.wl-tiwai@suse.de>
-Content-Language: en-US
+In-Reply-To: <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxLzkvMjAxOSAxMjozNSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdlZCwgMDkg
-SmFuIDIwMTkgMjE6MzM6MTEgKzAxMDAsCj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiBPbiBXZWQs
-IDA5IEphbiAyMDE5IDE3OjIyOjM2ICswMTAwLAo+PiBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4KPj4+
-Cj4+PiBPbiAxLzkvMjAxOSAzOjEwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4gT24gVHVl
-LCAwOCBKYW4gMjAxOSAxODowMDoxOCArMDEwMCwKPj4+PiBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4+
-PiBJIGFtIGF0dGVtcHRpbmcgdG8gYnVpbGQgdGhlIDEuMS44IHJlbGVhc2Ugb2YgYWxzYS11dGls
-cyBhbmQgZ2V0dGluZwo+Pj4+PiBhbiBlcnJvciBhYm91dCBQT0xMUkROT1JNIChhbmQgb3RoZXJz
-KSB1bmRlZmluZWQuwqAgVGhpcyBlcnJvciBjb21lcwo+Pj4+PiBmcm9tIGF4ZmVyL3dhaXRlci1z
-ZWxlY3QuYy7CoCBheGZlci93YWl0ZXItc2VsZWN0LmMgaW5jbHVkZXMKPj4+Pj4gIndhaXRlci5o
-Iiwgd2hpY2ggaW5jbHVkZXMgInBvbGwuaCIuwqAgVGhpcyBidWlsZCBpcyBmb3IgYSBsaW51eAo+
-Pj4+PiB0YXJnZXQuCj4+Pj4+Cj4+Pj4+IHBvbGwuaCBpbmNsdWRlcyBzeXMvcG9sbC5oIHdoaWNo
-IGluY2x1ZGVzIGJpdHMvcG9sbC5oLCB3aGljaCBvbmx5Cj4+Pj4+IGRlZmluZXMgUE9MTFJETk9S
-TSAoYW5kIG90aGVycykgd2hlbiBfX1VTRV9YT1BFTiBpcyBkZWZpbmVkICh3aGljaCBpdAo+Pj4+
-PiBpcyBub3QpLgo+Pj4+Pgo+Pj4+PiBIb3dldmVyLCBsaW51eC9wb2xsLmggaW5jbHVkZXMgYXNt
-L3BvbGwuaCB3aGljaCBpbmNsdWRlcwo+Pj4+PiBhc20tZ2VuZXJpYy9wb2xsLmggd2hpY2ggZG9l
-cyBkZWZpbmUgUE9MTFJETk9STSAoYW5kIG90aGVycykuCj4+Pj4+Cj4+Pj4+IFNob3VsZCBJIGNo
-YW5nZSBteSBidWlsZCB0byBkZWZpbmVfX1VTRV9YT1BFTiBvciBzaG91bGQgSSBwYXRjaAo+Pj4+
-PiB3YWl0ZXIuaCB0byBpbmNsdWRlIGxpbnV4L3BvbGwuaCBpbnN0ZWFkIG9mIGp1c3QgcG9sbC5o
-Pwo+Pj4+IFdoaWNoIGxpYmMgYXJlIHlvdSB1c2luZz8gIFRoZSBQT1NJWCBtYW4gcGFnZSAobWFu
-IHBvbGwuaCkgbWVudGlvbnMKPj4+PiBQT0xMUkROT1JNIGRlZmluZWQgdGhlcmUsIGF0IGxlYXN0
-LCBvbiBteSBzeXN0ZW0gd2l0aCBnbGliYyAyLjI3Lgo+Pj4+Cj4+Pj4KPj4+PiB0aGFua3MsCj4+
-Pj4KPj4+PiBUYWthc2hpCj4+Pj4KPj4+Pgo+Pj4gVGhpcyBpcyBhIGxlZ2FjeSBBUk0gcHJvZHVj
-dCB1c2luZyBnbGliYyAyLjkuwqAgTmVpdGhlciBvZiB0aGUKPj4+IGFwcHJvYWNoZXMgSSBtZW50
-aW9uZWQgYWJvdmUgYWN0dWFsbHkgd29ya2VkLsKgIDxsaW51eC9wb2xsLmg+IGlzIHRoZQo+Pj4g
-a2VybmVsIGhlYWRlcnMsIHdoaWNoIHJlc3VsdHMgaW4gYSBkdXBsaWNhdGUgZGVmaW5pdGlvbiBv
-ZiBzdHJ1Y3QKPj4+IHBvbGxmZHMuwqAgVGhlIG90aGVyIGFwcHJvYWNoIChJIGFkZGVkICdDRkxB
-R1M9LURfWE9QRU5fU09VUkNFPTUwMCcgdG8KPj4+IHRoZSBtYWtlIGNvbW1hbmQgbGluZSwgYW5k
-IG90aGVyIHZhcmlhdGlvbnMpIGZhaWxlZCBlbHNld2hlcmUgZHVlIHRvCj4+PiBtaXNzaW5nIG9y
-IG1pc21hdGNoZWQgZnVuY3Rpb24gcHJvdG90eXBlcyAocmVmIDxmZWF0dXJlcy5oPikuCj4+Pgo+
-Pj4gSSBnb3QgdGhpcyB0byB3b3JrIGJ5IHBhdGNoaW5nIGF4ZmVyL3dhaXRlci5oIHRvIGFkZCB0
-aGUgbWlzc2luZwo+Pj4gZGVmaW50aW9ucywgYmFzZWQgb24gdGhvc2UgZm91bmQgaW4gPGFzbS1n
-ZW5lcmljL3BvbGwuaD4uCj4+IEkgd29uZGVyIHdoYXQgaXMgc3VwcG9zZWQgb24gc3VjaCBhIHN5
-c3RlbS4gIHBvbGwoKSBuZWVkcyB0aGVzZSBQT0xMKgo+PiBjb25zdGFudCBkZWZpbml0aW9ucywg
-YW5kIHRoZXkgYXJlbid0IGF2YWlsYWJsZSBieSBzaW1wbGUgcG9sbC5oPwo+PiBUaGF0J3Mgd2Vp
-cmQuICBXaGF0IGRvZXMgIm1hbiBwb2xsLmgiIHNheSBpbiB5b3VyIHZlcnNpb24/Cj4gLi4uIG9y
-IG1heWJlIGl0J3Mgb25seSBhYm91dCBhIGZldyBvZiB0aGVtIHRoYXQgYXJlIG1pc3Npbmc/Cj4K
-Pgo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwKSSB0aGluayBvdXIgZW1haWxzIGNyb3NzZWQuwqAgWWVzLCBvbmx5IGEgZmV3IGFy
-ZSBtaXNzaW5nLsKgIGluIAo8Yml0cy9wb2xsLmg+IEkgc2VlOgojaWZkZWYgX19VU0VfWE9QRU4K
-LyogVGhlc2UgdmFsdWVzIGFyZSBkZWZpbmVkIGluIFhQRzQuMi7CoCAqLwojIGRlZmluZSBQT0xM
-UkROT1JNwqDCoMKgIDB4MDQwwqDCoMKgIMKgwqDCoCAvKiBOb3JtYWwgZGF0YSBtYXkgYmUgcmVh
-ZC7CoCAqLwojIGRlZmluZSBQT0xMUkRCQU5EwqDCoMKgIDB4MDgwwqDCoMKgIMKgwqDCoCAvKiBQ
-cmlvcml0eSBkYXRhIG1heSBiZSByZWFkLiAqLwojIGRlZmluZSBQT0xMV1JOT1JNwqDCoMKgIDB4
-MTAwwqDCoMKgIMKgwqDCoCAvKiBXcml0aW5nIG5vdyB3aWxsIG5vdCBibG9jay4gKi8KIyBkZWZp
-bmUgUE9MTFdSQkFORMKgwqDCoCAweDIwMMKgwqDCoCDCoMKgwqAgLyogUHJpb3JpdHkgZGF0YSBt
-YXkgYmUgd3JpdHRlbi7CoCAqLwojZW5kaWYKSXQgaXMgb25seSB0aG9zZSB0aGF0IGFyZSBub3Qg
-ZGVmaW5lZC7CoCBBZGRpbmcgLURfR05VX1NPVVJDRSBnZXRzIHRoZW0gCmRlZmluZWQsIHRob3Vn
-aC7CoCBJbnRlcmVzdGluZyBob3cgdGhlIG1hbiBwYWdlIGZvciBwb2xsLmggZG9lcyBub3QgCm1l
-bnRpb24gdGhpcyBmb3IgZ2xpYmMuCkpheQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+--===============3045359342229090478==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0ZpWocbG2H/Vq+uQ"
+Content-Disposition: inline
+
+
+--0ZpWocbG2H/Vq+uQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 11, 2018 at 03:23:11PM -0600, Pierre-Louis Bossart wrote:
+
+> +	/* make sure count is <= avail */
+> +	count = avail > count ? count : avail;
+
+min()?
+
+--0ZpWocbG2H/Vq+uQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2XSoACgkQJNaLcl1U
+h9D3TAf/RkiXWjo8GAYvkFBj6Tz4xwa4aF654iZ929zEaz9ODfTP6JNGrsKQuVdu
+RWDZpBZ58lBoU0EzyxawJwlxLEp5DAIBVAmRZiU6RXEw0ObanvjnqWHmQVENl8N2
+QYqKAROU0P9v0GvEL23et88RZne32cxNnIsSPRXmRjFMfGGzRi8gWfB6zwXDcePv
+DDDek+vOQvWwvfU9ZMGinJgFc2Y9Eqb7o1duZTTqejG8B/nTDKQXP1CyS0Mm5tRo
+GtHIu7C0QKxMnt+xDzC+T/qs3ODso5O6016523VRku7x/HqG22xp0eAZcPMZP7yN
+kkR5BDgyVCnKcjAQyGxDtVMiQwtGnw==
+=Kz8i
+-----END PGP SIGNATURE-----
+
+--0ZpWocbG2H/Vq+uQ--
+
+--===============3045359342229090478==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3045359342229090478==--
