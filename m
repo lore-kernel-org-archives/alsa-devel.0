@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/9] ASoC: sun4i-i2s: Adjust regmap
- settings
-Date: Wed, 9 Jan 2019 18:49:31 +0000
-Message-ID: <20190109184931.GK10405@sirena.org.uk>
+Subject: Re: [PATCH v3 4/9] ASoC: sun4i-i2s: Fix offset mask
+Date: Wed, 9 Jan 2019 18:50:58 +0000
+Message-ID: <20190109185058.GL10405@sirena.org.uk>
 References: <20181221152110.17982-1-codekipper@gmail.com>
- <20181221152110.17982-2-codekipper@gmail.com>
- <CAGb2v66-JmONW9AYqoSmifrEj+nstREdsbkcy9ECwnJ47zxARA@mail.gmail.com>
- <DB7PR03MB46813005FFDFC8609F67F111ACB90@DB7PR03MB4681.eurprd03.prod.outlook.com>
- <CAGb2v66q9NfgRGW=o-m2vYKyP=AJT9rx2A32iiwdGKuiGxWjYw@mail.gmail.com>
+ <20181221152110.17982-5-codekipper@gmail.com>
+ <CAGb2v649OVnaYNbZKPtBYkPHkFP13y201RZPTRauNsjiGQKwjw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8372601090061564251=="
+Content-Type: multipart/mixed; boundary="===============1310635964929640369=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5104226742C
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 19:49:32 +0100 (CET)
-In-Reply-To: <CAGb2v66q9NfgRGW=o-m2vYKyP=AJT9rx2A32iiwdGKuiGxWjYw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A99126742C
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 19:50:59 +0100 (CET)
+In-Reply-To: <CAGb2v649OVnaYNbZKPtBYkPHkFP13y201RZPTRauNsjiGQKwjw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,64 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Chen-Yu Tsai <wens@csie.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>, Jonas Karlman <jonas@kwiboo.se>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Code Kipper <codekipper@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Code Kipper <codekipper@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8372601090061564251==
+--===============1310635964929640369==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="AYsPlKobQGgtCvjI"
+	protocol="application/pgp-signature"; boundary="t5C3/nrmPumNj5sH"
 Content-Disposition: inline
 
 
---AYsPlKobQGgtCvjI
+--t5C3/nrmPumNj5sH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Dec 23, 2018 at 11:16:31AM +0800, Chen-Yu Tsai wrote:
+On Sat, Dec 22, 2018 at 12:54:48AM +0800, Chen-Yu Tsai wrote:
+> On Fri, Dec 21, 2018 at 11:21 PM <codekipper@gmail.com> wrote:
 
-> This sounds like the flush is happening after DMA transfers and/or I2S
-> operations have started, disrupting the order of the audio samples. I
-> think that might be the case since the regcache is synced sequentially,
-> and the FIFO control register is after the enable bits. That would imply
-> that the device is taken out of runtime suspend after the .start_capture
-> or .start_playback callbacks. Not sure if that's the case, but that would
-> mean the bus clocks are still off at this point, and bypassing the cache
-> and updating the bits is basically moot.
+> > Also add offset to RX channel select
 
-I would expect that the device needs to be resumed from suspend before
-we start actually trying to transfer audio - there is stuff in the ASoC
-core which is supposed to have appropriate gets but it's possible
-something is going wrong there.
+> Commit log seems a bit lacking. You could probably explain how you
+> found this, either when comparing datasheet macros, or some actual
+> error manifested and you "heard" it. You could also state what the
+> fixed outcome should be.
 
-> I think there's something else happening here, but we need to figure it
-> out instead of papering over it with something that "just works" but
-> we don't know why it works.
+> Also please add a fixes tag.
 
-I agree.
+Plus send this at the start of the series so it can be applied as a fix
+and sent to Linus during the development cycle.
 
---AYsPlKobQGgtCvjI
+--t5C3/nrmPumNj5sH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2QjoACgkQJNaLcl1U
-h9CYkQf+LxpY1u9lPMC6ld9Jxf0JNyammIoqScIdns2JZ8ZH4M6rpKWUsUyETdVg
-14bCT1yi7D5ZH9Ekcw/6yXB0FBQX0rqP2W9X7PODZTgWEVBwF6wrp9jIe5YlYsM5
-47wuQFzRquRKmhaBwvuwdOM0+l2T8cRd7ZnOVmVNDJxb3oD8/0fR3LKCd8e8sQ9v
-vqJTljjBtGlvwwWbWLeMLkXbvlesGpc7heRgrdHFXgxf46BMpN0rZuUWZU/5XwF6
-zqSDZaXBPAgm1CFJ06FQdo8VeAmXT+mD0X0tJgZKG2FxJBAKEp5Ss9+sgSCMsbVr
-Qo/rQCkOQYPKtuPsNLeHCFJEaBNy0g==
-=m/5F
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2QpEACgkQJNaLcl1U
+h9A/2Qf+MpKvC1sDIcOBBmk7hZNPdkcZE5wlhCQAmahqcAdv8UeXEo+DGX8UwwtV
+4DI7HFayI95aRYebTz5VK/W1noETZaQMciZ8eeqELS95MInDMhauwlioR0QlN90L
+re/xxB9i+h/rGYomJenLE4UblW9FQ9D92bIudL7aSW+ysnEJFvptf3e6IVYwWGBH
+Oh3H2N35iCCVsO45ex6Ra2k4h5/zDqz8jqM3MrlDN0AAb5OmT76HHWfiCNPTNZyU
+hty4A7sssYji0nqfs3gB6UqJwK4eAxjGak6tmh5yHu02WXh+4HQjMMpnQfvYVdX3
+RUFMDvm2f2KaEaljyksXH4Wml+pKAw==
+=REGU
 -----END PGP SIGNATURE-----
 
---AYsPlKobQGgtCvjI--
+--t5C3/nrmPumNj5sH--
 
---===============8372601090061564251==
+--===============1310635964929640369==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8372601090061564251==--
+--===============1310635964929640369==--
