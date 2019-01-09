@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v3 09/14] ASoC: SOF: Add firmware loader
- support
-Date: Wed, 9 Jan 2019 20:55:32 +0000
-Message-ID: <20190109205532.GT10405@sirena.org.uk>
+	support
+Date: Wed, 9 Jan 2019 21:02:33 +0000
+Message-ID: <20190109210233.GU10405@sirena.org.uk>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
  <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
- <20181211223829.GJ10650@smile.fi.intel.com>
- <c3389d5c-f960-d067-b560-47af97353017@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4307674918551223976=="
+Content-Type: multipart/mixed; boundary="===============3934598204623361485=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <c3389d5c-f960-d067-b560-47af97353017@linux.intel.com>
+In-Reply-To: <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +19,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Andy Shevchenko <andriy.shevchenko@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4307674918551223976==
+--===============3934598204623361485==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UsbkURXZxe2ekgES"
+	protocol="application/pgp-signature"; boundary="E75mJrUy8lRi9cGN"
 Content-Disposition: inline
 
 
---UsbkURXZxe2ekgES
+--E75mJrUy8lRi9cGN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 11, 2018 at 05:54:02PM -0600, Pierre-Louis Bossart wrote:
-> On 12/11/18 4:38 PM, Andy Shevchenko wrote:
-> > On Tue, Dec 11, 2018 at 03:23:13PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Dec 11, 2018 at 03:23:13PM -0600, Pierre-Louis Bossart wrote:
 
-> > > +	struct sof_ipc_window *w = (struct sof_ipc_window *)ext_hdr;
-> > > +
-> > > +	int ret = 0;
+> +int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
+> +{
+> +	struct snd_sof_pdata *plat_data = dev_get_platdata(sdev->dev);
+> +	const char *fw_filename;
+> +	int ret;
 
-> > I don't see how it's used. Perhaps you need to check code with `make W=1`.
+This never actually calls the load_firmware() operation for the DSP
+AFAICT?
 
-> Darn, we missed this one. I thought we were using W=1 on github but we
-> aren't, this will be fixed.
+> +	ret = request_firmware(&plat_data->fw, fw_filename, sdev->dev);
+> +
+> +	if (ret < 0) {
+> +		dev_err(sdev->dev, "error: request firmware failed err: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
 
-> Though W=1 doesn't report this one, so need to re-inspect this. Thanks for
-> the sighting.
+I'd suggest logging the name of the firmware we tried to load, users
+will thank you.
 
-This is one reason not to unconditionally init stuff on declaration -
-it masks some warnings.
+> +	/* create fw_version debugfs to store boot version info */
+> +	if (sdev->first_boot) {
+> +		ret = snd_sof_debugfs_buf_create_item(sdev, &sdev->fw_version,
+> +						      sizeof(sdev->fw_version),
+> +						      "fw_version");
+> +
+> +		if (ret < 0) {
+> +			dev_err(sdev->dev, "error: cannot create debugfs for fw_version\n");
+> +			return ret;
+> +		}
+> +	}
 
-> > > +int snd_sof_load_firmware(struct snd_sof_dev *sdev)
-> > > +{
-> > > +	dev_dbg(sdev->dev, "loading firmware\n");
-> > Noise.
-> > Better to introduce a trace points and drop all these kind of messages.
+As Andy said elsewhere debugfs stuff like that probably shouldn't be
+fatal.
 
-> it's not that bad, most people understand what dmesg is, it happens once and
-> only if you have dynamic debug.
-
-Then everyone adds their print on boot and the log gets huge (and slow
-if you push debug through serial during development).  As a rule of
-thumb I tend to suggest that if you're not reporting something you
-discovered at runtime there's probably already other ways of getting
-equivalent trace.
-
---UsbkURXZxe2ekgES
+--E75mJrUy8lRi9cGN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2X8QACgkQJNaLcl1U
-h9AFPQf/e1kc/8ebH0USO00Y5uvq5iA3r/EEfLcxu59UO7GOcnyUMgYpD005UfiR
-u4ZDSBgBDSaJKv/O2C9vre8mVsikHdLt97ugwSqZFaPE06u7I42tltpfJqnpiYbK
-HkfbL7Arp9nCATGT6uL1EXVsdOdcAk2I2aEHH7ppQ9zaYkRUC02wsOxdOk8vP7zR
-mjYlfUsV8t6KcVirOaun7ULE9TUS+hGyYcn7xxOjEjbX1qeXqRcQYC8ZvvUTaE8d
-6BxnOjNUrjU4Zt77YT6tZ+R0KXJ/9YzPgO720+wWow9b+Ght5DsDQfeqcowyFTz1
-AEz2fPfIzew5x60XhWSuIAHBRLAd8w==
-=8H1t
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2YWkACgkQJNaLcl1U
+h9Bh2gf+JXawxJpNAuZT7Suop3EBvkfU614oQvTsV4Ty41GEuAecCSQRrvLzLtyT
+WHC4v2Ct3W4RRLZT51c2k5jqRpP7ZsCo328pL5aSdi5YfGeYMW5EnPeCMBKIUxaU
+UjagLeRRORxtDdgMyG6utXnNov24aBsIH9n16lLLRsEQDeS3XtIFtyBWeRvQeLGj
+eNk+VocA+HhrSNkhxvZDPNNmKZ1mBE9FyMGG0o/pXDGcRVwknlE/Pyxoy7otzQmc
+98vgQ9PDj5dLbEeoHT2OewzkgoiyBLmf1mmxV4K9yyX7gO2Ls509tW9vnYAYLaXC
+sf/FPhjLy4lZweYb3BFeiq1+RIvAHw==
+=FxZN
 -----END PGP SIGNATURE-----
 
---UsbkURXZxe2ekgES--
+--E75mJrUy8lRi9cGN--
 
---===============4307674918551223976==
+--===============3934598204623361485==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4307674918551223976==--
+--===============3934598204623361485==--
