@@ -1,15 +1,17 @@
 From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: [PATCH 1/2] ALSA: hda: Fix mismatches for register
-	mask and value in hdac controller
-Date: Wed,  9 Jan 2019 16:20:50 +0800
-Message-ID: <20190109082051.32643-1-yang.jie@linux.intel.com>
+Subject: [PATCH 2/2] ALSA: hda: Fix a mask wrong issue in
+	snd_hdac_stream_start()
+Date: Wed,  9 Jan 2019 16:20:51 +0800
+Message-ID: <20190109082051.32643-2-yang.jie@linux.intel.com>
+References: <20190109082051.32643-1-yang.jie@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 83C50266829
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 09:19:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EE1D267002
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 09:19:14 +0100 (CET)
+In-Reply-To: <20190109082051.32643-1-yang.jie@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,50 +25,29 @@ To: alsa-devel@alsa-project.org
 Cc: Keyon Jie <yang.jie@linux.intel.com>, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-E.g. for azx_int_enable(), we should set both mask and value to be
-"AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN"(the mask was 0) to enable
-controller CIE and GIE.
-
-We have similar issues on setting AZX_GCTL_RESET and AZX_GCTL_UNSOL,
-here try to correct all of them.
+To enable SIE(Stream Interrupt Enable) in snd_hdac_stream_start(), we
+should set both mask and value to be "1 << azx_dev->index" for register
+update, the mask was 0, here fix it.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 ---
- sound/hda/hdac_controller.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/hda/hdac_stream.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 74244d8e2909..b2e9454f5816 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -376,7 +376,7 @@ void snd_hdac_bus_exit_link_reset(struct hdac_bus *bus)
- {
- 	unsigned long timeout;
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index eee422390d8e..ba73a33480b6 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -56,7 +56,9 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
+ 		azx_dev->start_wallclk -= azx_dev->period_wallclk;
  
--	snd_hdac_chip_updateb(bus, GCTL, 0, AZX_GCTL_RESET);
-+	snd_hdac_chip_updateb(bus, GCTL, AZX_GCTL_RESET, AZX_GCTL_RESET);
- 
- 	timeout = jiffies + msecs_to_jiffies(100);
- 	while (!snd_hdac_chip_readb(bus, GCTL) && time_before(jiffies, timeout))
-@@ -415,7 +415,7 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
- 	}
- 
- 	/* Accept unsolicited responses */
--	snd_hdac_chip_updatel(bus, GCTL, 0, AZX_GCTL_UNSOL);
-+	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
- 
- 	/* detect codecs */
- 	if (!bus->codec_mask) {
-@@ -431,7 +431,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_bus_reset_link);
- static void azx_int_enable(struct hdac_bus *bus)
- {
- 	/* enable controller CIE and GIE */
--	snd_hdac_chip_updatel(bus, INTCTL, 0, AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN);
+ 	/* enable SIE */
+-	snd_hdac_chip_updatel(bus, INTCTL, 0, 1 << azx_dev->index);
 +	snd_hdac_chip_updatel(bus, INTCTL,
-+			      AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN,
-+			      AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN);
- }
- 
- /* disable interrupts */
++			      1 << azx_dev->index,
++			      1 << azx_dev->index);
+ 	/* set DMA start and interrupt mask */
+ 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
+ 				0, SD_CTL_DMA_START | SD_INT_MASK);
 -- 
 2.17.1
