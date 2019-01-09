@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: MCLK should be enabled before
-	DAI clocks" to the asoc tree
-Date: Wed,  9 Jan 2019 18:15:19 +0000 (GMT)
-Message-ID: <20190109181519.0E7791127528@debutante.sirena.org.uk>
-References: <ac23ca274965f4c811c0bbbbfe953589a20610c2.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: da7219: Add recalc_rate function to
+	return DAI clock rate" to the asoc tree
+Date: Wed,  9 Jan 2019 18:15:17 +0000 (GMT)
+Message-ID: <20190109181517.343F61127528@debutante.sirena.org.uk>
+References: <ef671ed1c4a5b86036da5b2adf5be7d79ec56c7d.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BEA1267442
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 19:15:21 +0100 (CET)
-In-Reply-To: <ac23ca274965f4c811c0bbbbfe953589a20610c2.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AD7F26743A
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 19:15:20 +0100 (CET)
+In-Reply-To: <ef671ed1c4a5b86036da5b2adf5be7d79ec56c7d.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: MCLK should be enabled before DAI clocks
+   ASoC: da7219: Add recalc_rate function to return DAI clock rate
 
 has been applied to the asoc tree at
 
@@ -53,110 +53,132 @@ to this mail.
 Thanks,
 Mark
 
->From a6028cc60aad18d5d7c25d99b5cb8c24399387c3 Mon Sep 17 00:00:00 2001
+>From a58943abcb08cfbe6c36648602d796c5834ee8a9 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Mon, 7 Jan 2019 16:11:46 +0000
-Subject: [PATCH] ASoC: da7219: MCLK should be enabled before DAI clocks
+Date: Tue, 8 Jan 2019 09:13:28 +0000
+Subject: [PATCH] ASoC: da7219: Add recalc_rate function to return DAI clock
+ rate
 
-For platforms using the Common Clock Framework to control the
-codec's DAI clocks, MCLK should be enabled prior to DAI clocks
-being turned on. For some platforms the codec is already
-provided with an MCLK reference and can therefore control MCLK
-itself as it needs to.
-
-To improve functionality MCLK is now added as a parent to the
-DAI clocks, if MCLK was provided, so that if they are enabled MCLK
-will automatically be enabled as a prerequisite by the CCF.
+By making MCLK parent of DAI clocks, when querying the rate of the
+clock the rate returned is now given from the parent clock so
+gives the MCLK rate rather than 0 as previously returned. This is
+a bit misleading, and actually there's no major reason why we can't
+at least return the DAI WCLK rate, as set in HW, so that's what we
+now do.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ sound/soc/codecs/da7219.c | 45 ++++++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/da7219.h |  1 +
+ 2 files changed, 43 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 513ec0368653..a20a610c7ee5 100644
+index a20a610c7ee5..b1df4bb36105 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -1804,7 +1804,7 @@ static const struct clk_ops da7219_dai_clks_ops = {
+@@ -1767,7 +1767,7 @@ static int da7219_dai_clks_prepare(struct clk_hw *hw)
+ {
+ 	struct da7219_priv *da7219 =
+ 		container_of(hw, struct da7219_priv, dai_clks_hw);
+-	struct snd_soc_component *component = da7219->aad->component;
++	struct snd_soc_component *component = da7219->component;
+ 
+ 	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+ 				      DA7219_DAI_CLK_EN_MASK,
+@@ -1780,7 +1780,7 @@ static void da7219_dai_clks_unprepare(struct clk_hw *hw)
+ {
+ 	struct da7219_priv *da7219 =
+ 		container_of(hw, struct da7219_priv, dai_clks_hw);
+-	struct snd_soc_component *component = da7219->aad->component;
++	struct snd_soc_component *component = da7219->component;
+ 
+ 	snd_soc_component_update_bits(component, DA7219_DAI_CLK_MODE,
+ 				      DA7219_DAI_CLK_EN_MASK, 0);
+@@ -1790,7 +1790,7 @@ static int da7219_dai_clks_is_prepared(struct clk_hw *hw)
+ {
+ 	struct da7219_priv *da7219 =
+ 		container_of(hw, struct da7219_priv, dai_clks_hw);
+-	struct snd_soc_component *component = da7219->aad->component;
++	struct snd_soc_component *component = da7219->component;
+ 	u8 clk_reg;
+ 
+ 	clk_reg = snd_soc_component_read32(component, DA7219_DAI_CLK_MODE);
+@@ -1798,10 +1798,47 @@ static int da7219_dai_clks_is_prepared(struct clk_hw *hw)
+ 	return !!(clk_reg & DA7219_DAI_CLK_EN_MASK);
+ }
+ 
++static unsigned long da7219_dai_clks_recalc_rate(struct clk_hw *hw,
++						 unsigned long parent_rate)
++{
++	struct da7219_priv *da7219 =
++		container_of(hw, struct da7219_priv, dai_clks_hw);
++	struct snd_soc_component *component = da7219->component;
++	u8 fs = snd_soc_component_read32(component, DA7219_SR);
++
++	switch (fs & DA7219_SR_MASK) {
++	case DA7219_SR_8000:
++		return 8000;
++	case DA7219_SR_11025:
++		return 11025;
++	case DA7219_SR_12000:
++		return 12000;
++	case DA7219_SR_16000:
++		return 16000;
++	case DA7219_SR_22050:
++		return 22050;
++	case DA7219_SR_24000:
++		return 24000;
++	case DA7219_SR_32000:
++		return 32000;
++	case DA7219_SR_44100:
++		return 44100;
++	case DA7219_SR_48000:
++		return 48000;
++	case DA7219_SR_88200:
++		return 88200;
++	case DA7219_SR_96000:
++		return 96000;
++	default:
++		return 0;
++	}
++}
++
+ static const struct clk_ops da7219_dai_clks_ops = {
+ 	.prepare = da7219_dai_clks_prepare,
+ 	.unprepare = da7219_dai_clks_unprepare,
  	.is_prepared = da7219_dai_clks_is_prepared,
++	.recalc_rate = da7219_dai_clks_recalc_rate,
  };
  
--static void da7219_register_dai_clks(struct snd_soc_component *component)
-+static int da7219_register_dai_clks(struct snd_soc_component *component)
- {
- 	struct device *dev = component->dev;
- 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
-@@ -1812,9 +1812,17 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
- 	struct clk_init_data init = {};
- 	struct clk *dai_clks;
- 	struct clk_lookup *dai_clks_lookup;
-+	const char *parent_name;
-+
-+	if (da7219->mclk) {
-+		parent_name = __clk_get_name(da7219->mclk);
-+		init.parent_names = &parent_name;
-+		init.num_parents = 1;
-+	} else {
-+		init.parent_names = NULL;
-+		init.num_parents = 0;
-+	}
+ static int da7219_register_dai_clks(struct snd_soc_component *component)
+@@ -1825,6 +1862,7 @@ static int da7219_register_dai_clks(struct snd_soc_component *component)
  
--	init.parent_names = NULL;
--	init.num_parents = 0;
  	init.name = pdata->dai_clks_name;
  	init.ops = &da7219_dai_clks_ops;
++	init.flags = CLK_GET_RATE_NOCACHE;
  	da7219->dai_clks_hw.init = &init;
-@@ -1823,7 +1831,7 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
- 	if (IS_ERR(dai_clks)) {
- 		dev_warn(dev, "Failed to register DAI clocks: %ld\n",
- 			 PTR_ERR(dai_clks));
--		return;
-+		return PTR_ERR(dai_clks);
- 	}
- 	da7219->dai_clks = dai_clks;
  
-@@ -1835,13 +1843,18 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
- 		dai_clks_lookup = clkdev_create(dai_clks, pdata->dai_clks_name,
- 						"%s", dev_name(dev));
- 		if (!dai_clks_lookup)
--			dev_warn(dev, "Failed to create DAI clkdev");
-+			return -ENOMEM;
- 		else
- 			da7219->dai_clks_lookup = dai_clks_lookup;
- 	}
-+
-+	return 0;
- }
- #else
--static inline void da7219_register_dai_clks(struct snd_soc_component *component) {}
-+static inline int da7219_register_dai_clks(struct snd_soc_component *component)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_COMMON_CLK */
+ 	dai_clks = devm_clk_register(dev, &da7219->dai_clks_hw);
+@@ -1912,6 +1950,7 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	unsigned int rev;
+ 	int ret;
  
- static void da7219_handle_pdata(struct snd_soc_component *component)
-@@ -1854,8 +1867,6 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
++	da7219->component = component;
+ 	mutex_init(&da7219->ctrl_lock);
+ 	mutex_init(&da7219->pll_lock);
  
- 		da7219->wakeup_source = pdata->wakeup_source;
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 3a006862f0e7..366cf46118a0 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -809,6 +809,7 @@ struct da7219_aad_priv;
  
--		da7219_register_dai_clks(component);
--
- 		/* Mic Bias voltages */
- 		switch (pdata->micbias_lvl) {
- 		case DA7219_MICBIAS_1_6V:
-@@ -1947,6 +1958,11 @@ static int da7219_probe(struct snd_soc_component *component)
- 		}
- 	}
+ /* Private data */
+ struct da7219_priv {
++	struct snd_soc_component *component;
+ 	struct da7219_aad_priv *aad;
+ 	struct da7219_pdata *pdata;
  
-+	/* Register CCF DAI clock control */
-+	ret = da7219_register_dai_clks(component);
-+	if (ret)
-+		return ret;
-+
- 	/* Default PC counter to free-running */
- 	snd_soc_component_update_bits(component, DA7219_PC_COUNT, DA7219_PC_FREERUN_MASK,
- 			    DA7219_PC_FREERUN_MASK);
 -- 
 2.20.1
