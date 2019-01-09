@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: SND_SOC_DAPM_MICBIAS is
-	deprecated" to the asoc tree
-Date: Wed,  9 Jan 2019 19:34:52 +0000 (GMT)
-Message-ID: <20190109193452.373B31127528@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: Boards: move the codec PLL
+	configuration to _init" to the asoc tree
+Date: Wed,  9 Jan 2019 19:34:50 +0000 (GMT)
+Message-ID: <20190109193450.B6F671127528@debutante.sirena.org.uk>
+References: <1544004679-8122-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 65020267445
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 20:34:53 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 864AE267445
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 20:34:54 +0100 (CET)
+In-Reply-To: <1544004679-8122-1-git-send-email-mac.chiang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: b-ak <anur.bhargav@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, mac.chiang@intel.com, broonie@kernel.org, Shuming Fan <shumingf@realtek.com>, naveen.m@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: SND_SOC_DAPM_MICBIAS is deprecated
+   ASoC: Intel: Boards: move the codec PLL configuration to _init
 
 has been applied to the asoc tree at
 
@@ -52,84 +52,103 @@ to this mail.
 Thanks,
 Mark
 
->From 04d979d7a7bac2f645cd827ea37e5ffa5b4e1f97 Mon Sep 17 00:00:00 2001
-From: b-ak <anur.bhargav@gmail.com>
-Date: Wed, 9 Jan 2019 22:41:21 +0530
-Subject: [PATCH] ASoC: tlv320aic32x4: SND_SOC_DAPM_MICBIAS is deprecated
+>From 239b8b34a856777e562373ae0de605536a7ccade Mon Sep 17 00:00:00 2001
+From: Mac Chiang <mac.chiang@intel.com>
+Date: Wed, 5 Dec 2018 18:11:19 +0800
+Subject: [PATCH] ASoC: Intel: Boards: move the codec PLL configuration to
+ _init
 
-SND_SOC_DAPM_MICBIAS is deprecated, replace it with SND_SOC_DAPM_SUPPLY.
+move the codec PLL to rt5682_codec_init, because codec only need to config the clock source/PLL once.
+As the result, remove the platform_clock_controls since no need to control clock anymore.
 
-MICBIAS voltage wasn't supplied to the microphone with the older
-SND_SOC_DAPM_MICBIAS widget, hence the microphone wouldn't work.
-
-This patch fixes the problem.
-
-Signed-off-by: b-ak <anur.bhargav@gmail.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 30 +++++++++++++++++++++++++++++-
- sound/soc/codecs/tlv320aic32x4.h |  1 +
- 2 files changed, 30 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 45 +++----------------
+ 1 file changed, 7 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index e2b5a11b16d1..521663d8b585 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -79,6 +79,32 @@ struct aic32x4_priv {
- 	struct device *dev;
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index c74c4f17316f..8f83b182c4f9 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -55,39 +55,6 @@ enum {
+ 	GLK_DPCM_AUDIO_HDMI3_PB,
  };
  
-+static int mic_bias_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Change Mic Bias Registor */
-+		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
-+				AIC32x4_MICBIAS_MASK,
-+				AIC32X4_MICBIAS_LDOIN |
-+				AIC32X4_MICBIAS_2075V);
-+		printk(KERN_DEBUG "%s: Mic Bias will be turned ON\n", __func__);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
-+				AIC32x4_MICBIAS_MASK, 0);
-+		printk(KERN_DEBUG "%s: Mic Bias will be turned OFF\n",
-+				__func__);
-+		break;
+-static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-					struct snd_kcontrol *k, int  event)
+-{
+-	struct snd_soc_dapm_context *dapm = w->dapm;
+-	struct snd_soc_card *card = dapm->card;
+-	struct snd_soc_dai *codec_dai;
+-	int ret = 0;
+-
+-	codec_dai = snd_soc_card_get_codec_dai(card, GLK_REALTEK_CODEC_DAI);
+-	if (!codec_dai) {
+-		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
+-		return -EIO;
+-	}
+-
+-	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+-		ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
+-		if (ret)
+-			dev_err(card->dev, "failed to stop sysclk: %d\n", ret);
+-	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
+-					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
+-		if (ret < 0) {
+-			dev_err(card->dev, "can't set codec pll: %d\n", ret);
+-			return ret;
+-		}
+-	}
+-
+-	if (ret)
+-		dev_err(card->dev, "failed to start internal clk: %d\n", ret);
+-
+-	return ret;
+-}
+-
+ static const struct snd_kcontrol_new geminilake_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -102,14 +69,10 @@ static const struct snd_soc_dapm_widget geminilake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
+-	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+-			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
+-			SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route geminilake_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
+-	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headphone Jack", NULL, "HPOL" },
+ 	{ "Headphone Jack", NULL, "HPOR" },
+ 
+@@ -117,7 +80,6 @@ static const struct snd_soc_dapm_route geminilake_map[] = {
+ 	{ "Spk", NULL, "Speaker" },
+ 
+ 	/* other jacks */
+-	{ "Headset Mic", NULL, "Platform Clock" },
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 
+ 	/* digital mics */
+@@ -177,6 +139,13 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_jack *jack;
+ 	int ret;
+ 
++	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
++					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
++		return ret;
 +	}
 +
-+	return 0;
-+}
-+
-+
- static int aic32x4_get_mfp1_gpio(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
-@@ -450,7 +476,9 @@ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("IN3_R to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
- 			in3r_to_lmixer_controls),
- 
--	SND_SOC_DAPM_MICBIAS("Mic Bias", AIC32X4_MICBIAS, 6, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Bias", AIC32X4_MICBIAS, 6, 0, mic_bias_event,
-+			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+
- 
- 	SND_SOC_DAPM_OUTPUT("HPL"),
- 	SND_SOC_DAPM_OUTPUT("HPR"),
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index e9df49edbf19..c2d74025bf4b 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -195,6 +195,7 @@ int aic32x4_remove(struct device *dev);
- /* AIC32X4_MICBIAS */
- #define AIC32X4_MICBIAS_LDOIN		BIT(3)
- #define AIC32X4_MICBIAS_2075V		0x60
-+#define AIC32x4_MICBIAS_MASK            GENMASK(6, 3)
- 
- /* AIC32X4_LMICPGANIN */
- #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
+ 	/* Configure sysclk for codec */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
+ 					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
 -- 
 2.20.1
