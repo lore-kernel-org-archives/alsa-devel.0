@@ -1,18 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Boards: move the codec PLL
-	configuration to _init" to the asoc tree
-Date: Wed,  9 Jan 2019 19:34:50 +0000 (GMT)
-Message-ID: <20190109193450.B6F671127528@debutante.sirena.org.uk>
-References: <1544004679-8122-1-git-send-email-mac.chiang@intel.com>
+Subject: Re: [PATCH v3 03/14] ASoC: SOF: Add driver debug
+	support.
+Date: Wed, 9 Jan 2019 19:40:20 +0000
+Message-ID: <20190109194020.GP10405@sirena.org.uk>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3536622530829625958=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 864AE267445
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 20:34:54 +0100 (CET)
-In-Reply-To: <1544004679-8122-1-git-send-email-mac.chiang@intel.com>
+In-Reply-To: <20181211212318.28644-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,133 +18,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, mac.chiang@intel.com, broonie@kernel.org, Shuming Fan <shumingf@realtek.com>, naveen.m@intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Boards: move the codec PLL configuration to _init
+--===============3536622530829625958==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aC33ObtQAkNdOZ6b"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--aC33ObtQAkNdOZ6b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Dec 11, 2018 at 03:23:07PM -0600, Pierre-Louis Bossart wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +	/* copy from DSP MMIO */
+> +	pm_runtime_get_noresume(sdev->dev);
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Why are we doing a _get_noresume() here?  It won't actually do anything
+to the device...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +
+> +	memcpy_fromio(buf,  dfse->buf + pos, size);
 
-Thanks,
-Mark
+Extra space?
 
->From 239b8b34a856777e562373ae0de605536a7ccade Mon Sep 17 00:00:00 2001
-From: Mac Chiang <mac.chiang@intel.com>
-Date: Wed, 5 Dec 2018 18:11:19 +0800
-Subject: [PATCH] ASoC: Intel: Boards: move the codec PLL configuration to
- _init
+> +	/*
+> +	 * TODO: revisit to check if we need mark_last_busy, or if we
+> +	 * should change to use xxx_put_sync[_suspend]().
+> +	 */
+> +	ret = pm_runtime_put_sync_autosuspend(sdev->dev);
+> +	if (ret < 0)
+> +		dev_warn(sdev->dev, "warn: debugFS failed to autosuspend %zd\n",
+> +			 ret);
 
-move the codec PLL to rt5682_codec_init, because codec only need to config the clock source/PLL once.
-As the result, remove the platform_clock_controls since no need to control clock anymore.
+It rather depends what you're doing...  I'm definitely confused as to
+why you need a _sync operation - if you're doing autosuspend stuff
+presumably you don't care so much if the device gets powered down
+immediately, and I can't in general see why that'd be important.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 45 +++----------------
- 1 file changed, 7 insertions(+), 38 deletions(-)
+> +	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
+> +					     dfse, &sof_dfs_fops);
+> +	if (!dfse->dfsentry) {
+> +		dev_err(sdev->dev, "error: cannot create debugfs entry.\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(snd_sof_debugfs_io_create_item);
 
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index c74c4f17316f..8f83b182c4f9 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -55,39 +55,6 @@ enum {
- 	GLK_DPCM_AUDIO_HDMI3_PB,
- };
- 
--static int platform_clock_control(struct snd_soc_dapm_widget *w,
--					struct snd_kcontrol *k, int  event)
--{
--	struct snd_soc_dapm_context *dapm = w->dapm;
--	struct snd_soc_card *card = dapm->card;
--	struct snd_soc_dai *codec_dai;
--	int ret = 0;
--
--	codec_dai = snd_soc_card_get_codec_dai(card, GLK_REALTEK_CODEC_DAI);
--	if (!codec_dai) {
--		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
--		return -EIO;
--	}
--
--	if (SND_SOC_DAPM_EVENT_OFF(event)) {
--		ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
--		if (ret)
--			dev_err(card->dev, "failed to stop sysclk: %d\n", ret);
--	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
--		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
--					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
--		if (ret < 0) {
--			dev_err(card->dev, "can't set codec pll: %d\n", ret);
--			return ret;
--		}
--	}
--
--	if (ret)
--		dev_err(card->dev, "failed to start internal clk: %d\n", ret);
--
--	return ret;
--}
--
- static const struct snd_kcontrol_new geminilake_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -102,14 +69,10 @@ static const struct snd_soc_dapm_widget geminilake_widgets[] = {
- 	SND_SOC_DAPM_SPK("HDMI1", NULL),
- 	SND_SOC_DAPM_SPK("HDMI2", NULL),
- 	SND_SOC_DAPM_SPK("HDMI3", NULL),
--	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
--			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
--			SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route geminilake_map[] = {
- 	/* HP jack connectors - unknown if we have jack detection */
--	{ "Headphone Jack", NULL, "Platform Clock" },
- 	{ "Headphone Jack", NULL, "HPOL" },
- 	{ "Headphone Jack", NULL, "HPOR" },
- 
-@@ -117,7 +80,6 @@ static const struct snd_soc_dapm_route geminilake_map[] = {
- 	{ "Spk", NULL, "Speaker" },
- 
- 	/* other jacks */
--	{ "Headset Mic", NULL, "Platform Clock" },
- 	{ "IN1P", NULL, "Headset Mic" },
- 
- 	/* digital mics */
-@@ -177,6 +139,13 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_jack *jack;
- 	int ret;
- 
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
-+					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+		return ret;
-+	}
-+
- 	/* Configure sysclk for codec */
- 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
- 					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
--- 
-2.20.1
+debugfs uses EXPORT_SYMBOL_GPL().
+
+--aC33ObtQAkNdOZ6b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2TiMACgkQJNaLcl1U
+h9BlIAf+NqYxPCIzIi5JTK340ggjTl7ku+WGgiqpxSBgIvZ4h11MYsZjj2xv6fvr
+WPNQM94Kj5mdgIIfbiJ73y3DRP4bES1t+p5FJYpgqubsG0u0mw6igQQcppT1q4Af
+iE0C8Tfu1q4M4Ba/ZKKpTqhqfnJQRwUAB3AEPRfyaPUkMK+6fcL2zZ/bE4Ns8UDb
+7xl8cdekiMCpvyrT9a25S53VMALak+aR3LMwIUV2n7Xln5ybaeEwXCtjQW/aNvNK
+5vN59bllzHXHZzlTPINvtxoaQIX6cUqqayNIOC36g5I/UpJlxK92y4+HVLhK07E1
+jigUDDdOdfZT1IpkT6L8wDgxUpKBmw==
+=Hxyg
+-----END PGP SIGNATURE-----
+
+--aC33ObtQAkNdOZ6b--
+
+--===============3536622530829625958==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3536622530829625958==--
