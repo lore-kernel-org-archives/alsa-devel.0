@@ -1,192 +1,108 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [RFT][PATCH v2] gpiolib: acpi: Introduce
-	ACPI_GPIO_QUIRK_ONLY_GPIOIO
-Date: Wed,  9 Jan 2019 12:52:45 +0200
-Message-ID: <20190109105245.25954-1-andriy.shevchenko@linux.intel.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [alsa-devel] [PATCH v1 3/3] ASoC: soc-core: fix platform name vs.
+ of_node assignement
+Date: Wed, 9 Jan 2019 11:03:44 +0000
+Message-ID: <0660a471-3698-2059-4494-ad146518a4ed@nvidia.com>
+References: <20181018111829.27056-1-marcel@ziswiler.com>
+ <20181018111829.27056-4-marcel@ziswiler.com>
+ <e25a7463-9ce0-d7f9-e77b-2bbaab2e0b25@nvidia.com>
+ <20181021112301.GC8554@sirena.org.uk>
+ <20181218174040.k7u26vnnoplllnwb@camel2.lan>
+ <952471da-b355-6471-6c19-5120d6704f81@nvidia.com>
+ <87lg3vuc7p.wl-kuninori.morimoto.gx@renesas.com>
+ <b5164c93-8be8-1c3d-9415-c895da6ad622@nvidia.com>
+ <d1e41ed2-da7c-b46c-bc6d-64cf3e536771@nvidia.com>
+ <865d2a3e-bf6b-1f30-1179-7e922c0d0641@nvidia.com>
+ <87k1je38w7.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 317B52665E5
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 11:52:52 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87k1je38w7.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: alsa-devel@alsa-project.org
 
-New quirk enforces search for GPIO based on its type,
-i.e. iterate over GpioIo resources only.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+On 09/01/2019 01:51, Kuninori Morimoto wrote:
+> 
+> Hi Jon
+> 
+> Thank you for your help
+> 
+>>> Yes so this does workaround the problem. However, per my previous
+>>> comments, I would like to explore whether it is necessary to allocate
+>>> the platform link component or if it can be static.
+> 
+> OK, thanks.
+> It *will* be static, but not yet.
+> Thank you for your patch.
+> I guess you worry about allocated memory leak when failed case ?
+> It is using devm_kzalloc(), so all allocated memory will be automatically
+> freed when card was detached.
+> But indeed if driver gots -EPROBE_DEFER many times,
+> it will allocate many unused platform.
 
-- it was sent few weeks ago to Hans for testing, but better to re-test
-- it's supposed to go via ASoC subsystem due to recent changes made for
-  sound driver
+No. Offline you had suggested using kmalloc and not devm_kzalloc and so
+I was worried in that case about a memory leak. Right now I am only
+concerned about an invalid pointer that is not being handled correctly.
 
-v2:
-- Expand explanation why this quirk might be needed (Mika)
+> Here is the background of snd_soc_init_platform.
+> 
+> Legacy dai_link was xxx_name/xxx_of_node style,
+> but multi codec support starts to use snd_soc_dai_link_component style.
+> OTOH Lars-Petter is thinking that current ALSA SoC is not good match
+> for modern sound device.
+> I guess, we need "multi xxx" support as 1st step for modern sound device.
+> "multi codec" is already supported,
+> "multi cpu"   patch was posted, but not yet accepted (or rejected ??).
+> "multi platform" is no plan (?).
 
- drivers/gpio/gpiolib-acpi.c           | 15 ++++--
- include/linux/acpi.h                  |  7 +++
- sound/soc/intel/boards/bytcr_rt5651.c | 74 ++++-----------------------
- 3 files changed, 27 insertions(+), 69 deletions(-)
+I would like someone to explain what multi-platform means? Even if a
+soundcard supports multiple platforms, there is only one platform you
+are using at any time so ...
 
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 259cf6ab969b..4d291b75cb9f 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -530,17 +530,24 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
- 	if (ares->type != ACPI_RESOURCE_TYPE_GPIO)
- 		return 1;
- 
--	if (lookup->n++ == lookup->index && !lookup->desc) {
-+	if (!lookup->desc) {
- 		const struct acpi_resource_gpio *agpio = &ares->data.gpio;
--		int pin_index = lookup->pin_index;
-+		bool gpioint = agpio->connection_type == ACPI_RESOURCE_GPIO_TYPE_INT;
-+		int pin_index;
- 
-+		if (lookup->info.quirks & ACPI_GPIO_QUIRK_ONLY_GPIOIO && gpioint)
-+			lookup->index++;
-+
-+		if (lookup->n++ != lookup->index)
-+			return 1;
-+
-+		pin_index = lookup->pin_index;
- 		if (pin_index >= agpio->pin_table_length)
- 			return 1;
- 
- 		lookup->desc = acpi_get_gpiod(agpio->resource_source.string_ptr,
- 					      agpio->pin_table[pin_index]);
--		lookup->info.gpioint =
--			agpio->connection_type == ACPI_RESOURCE_GPIO_TYPE_INT;
-+		lookup->info.gpioint = gpioint;
- 
- 		/*
- 		 * Polarity and triggering are only specified for GpioInt
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 1e89c688139f..430fd0b6df7b 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1020,6 +1020,13 @@ struct acpi_gpio_mapping {
- 
- /* Ignore IoRestriction field */
- #define ACPI_GPIO_QUIRK_NO_IO_RESTRICTION	BIT(0)
-+/*
-+ * When ACPI GPIO mapping table is in use the index parameter inside it
-+ * refers to the GPIO resource in _CRS method. That index has no
-+ * distinction of actual type of the resource. When consumer wants to
-+ * get GpioIo type explicitly, this quirk may be used.
-+ */
-+#define ACPI_GPIO_QUIRK_ONLY_GPIOIO		BIT(1)
- 
- 	unsigned int quirks;
- };
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index b618d984e2d5..99d0c01a1bec 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -844,74 +844,18 @@ static const struct x86_cpu_id cherrytrail_cpu_ids[] = {
- 	{}
- };
- 
--static const struct acpi_gpio_params first_gpio = { 0, 0, false };
--static const struct acpi_gpio_params second_gpio = { 1, 0, false };
-+static const struct acpi_gpio_params ext_amp_enable_gpios = { 0, 0, false };
- 
--static const struct acpi_gpio_mapping byt_rt5651_amp_en_first[] = {
--	{ "ext-amp-enable-gpios", &first_gpio, 1 },
--	{ },
--};
--
--static const struct acpi_gpio_mapping byt_rt5651_amp_en_second[] = {
--	{ "ext-amp-enable-gpios", &second_gpio, 1 },
-+static const struct acpi_gpio_mapping cht_rt5651_gpios[] = {
-+	/*
-+	 * Some boards have I2cSerialBusV2, GpioIo, GpioInt as ACPI resources,
-+	 * other boards may  have I2cSerialBusV2, GpioInt, GpioIo instead.
-+	 * We want the GpioIo one for the ext-amp-enable-gpio.
-+	 */
-+	{ "ext-amp-enable-gpios", &ext_amp_enable_gpios, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ },
- };
- 
--/*
-- * Some boards have I2cSerialBusV2, GpioIo, GpioInt as ACPI resources, other
-- * boards may  have I2cSerialBusV2, GpioInt, GpioIo instead. We want the
-- * GpioIo one for the ext-amp-enable-gpio and both count for the index in
-- * acpi_gpio_params index.  So we have 2 different mappings and the code
-- * below figures out which one to use.
-- */
--struct byt_rt5651_acpi_resource_data {
--	int gpio_count;
--	int gpio_int_idx;
--};
--
--static int snd_byt_rt5651_acpi_resource(struct acpi_resource *ares, void *arg)
--{
--	struct byt_rt5651_acpi_resource_data *data = arg;
--
--	if (ares->type != ACPI_RESOURCE_TYPE_GPIO)
--		return 0;
--
--	if (ares->data.gpio.connection_type == ACPI_RESOURCE_GPIO_TYPE_INT)
--		data->gpio_int_idx = data->gpio_count;
--
--	data->gpio_count++;
--	return 0;
--}
--
--static void snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(struct device *codec)
--{
--	struct byt_rt5651_acpi_resource_data data = { 0, -1 };
--	LIST_HEAD(resources);
--	int ret;
--
--	ret = acpi_dev_get_resources(ACPI_COMPANION(codec), &resources,
--				     snd_byt_rt5651_acpi_resource, &data);
--	if (ret < 0) {
--		dev_warn(codec, "Failed to get ACPI resources, not adding external amplifier GPIO mapping\n");
--		return;
--	}
--
--	/* All info we need is gathered during the walk */
--	acpi_dev_free_resource_list(&resources);
--
--	switch (data.gpio_int_idx) {
--	case 0:
--		byt_rt5651_gpios = byt_rt5651_amp_en_second;
--		break;
--	case 1:
--		byt_rt5651_gpios = byt_rt5651_amp_en_first;
--		break;
--	default:
--		dev_warn(codec, "Unknown GpioInt index %d, not adding external amplifier GPIO mapping\n",
--			 data.gpio_int_idx);
--	}
--}
--
- struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
- 	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
-@@ -1037,7 +981,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 
- 	/* Cherry Trail devices use an external amplifier enable gpio */
- 	if (x86_match_cpu(cherrytrail_cpu_ids) && !byt_rt5651_gpios)
--		snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(codec_dev);
-+		byt_rt5651_gpios = cht_rt5651_gpios;
- 
- 	if (byt_rt5651_gpios) {
- 		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
+> These want to use snd_soc_dai_link_component style,
+> because it is nice for multi xxx support style, I think.
+> I think no one is planing for "multi platform" so far, thus,
+> I posted snd_soc_dai_link_component style for it.
+> # Maybe it should have num_platform, too.
+> # all driver will have .num_platform = 1, thus I didn't added.
+> # maybe it was my fault...
+
+... I don't understand why you would ever need a 'num_platform' as the
+machine driver just needs to understand which platform is using it at
+any given time. Right?
+
+> The reason why platform/codec is allocating/copying by snd_soc_init_xxx
+> so far is that it is glue for
+> xxx_name/xxx_of_node (legacy style) <-> snd_soc_init_platform (modern style).
+> 
+> I want to which to modern style immediately and remove legacy style.
+> But as you know, we have too many ALSA SoC drivers now.
+> So, if I posted "switch legacy style to modern style" patch
+> for each (= for codec, for platform, for cpu), it will be patch-bomb,
+> and Lars-Petter/Mark don't like it.
+> Thus, I'm waiting "multi CPU" support patch.
+
+Sorry, I still don't understand the dependency on the multi CPU and why
+we need to wait.
+
+> If CPU/Codec/Platform can be snd_soc_init_platform style,
+> then, we can switch to modern style for all drivers.
+> Then, all driver will have *static* platform.
+> 
+> # So, I guess if your driver can switch to use
+> # snd_soc_init_platform style directly, your problem can gone ?
+
+Yes that is an alternative and I can convert all the Tegra machine
+drivers to use this now. However, that will not solve the problem for
+non-Tegra devices and everyone will have to do this.
+
+Cheers
+Jon
+
 -- 
-2.20.1
+nvpublic
