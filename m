@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: Intel: sst: Missing IRQ at index 5 on BYT-T
-	device
-Date: Wed, 9 Jan 2019 21:14:56 +0000
-Message-ID: <20190109211456.GV10405@sirena.org.uk>
-References: <20181216185429.GA20408@gerhold.net>
- <e82d5720-3c73-3dff-1b31-dae9a0b09408@redhat.com>
- <20181217180330.GA845@gerhold.net>
- <20190109192241.GN10405@sirena.org.uk>
- <235ba68c-1a43-6c9e-3bbb-6872dd39a036@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] ALSA: HDAudio: enable dynamic
+ selection between legacy and Skylake drivers
+Date: Wed, 9 Jan 2019 15:15:34 -0600
+Message-ID: <f3526c92-6f32-2676-859a-7de7e39225fc@linux.intel.com>
+References: <20181215200723.4216-1-pierre-louis.bossart@linux.intel.com>
+ <20190109192319.GO10405@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0047492108025618320=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7191C26743A
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 22:14:58 +0100 (CET)
-In-Reply-To: <235ba68c-1a43-6c9e-3bbb-6872dd39a036@linux.intel.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 787BA26743A
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 22:15:37 +0100 (CET)
+In-Reply-To: <20190109192319.GO10405@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,58 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Filip Kaczmarski <filip.kaczmarski@intel.com>, tiwai@suse.de, Chris Chiu <chiu@endlessm.com>, Cezary Rojewski <cezary.rojewski@intel.com>, Daniel Drake <drake@endlessm.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Michal Wasko <michal.wasko@intel.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0047492108025618320==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wfgmFf0LjPE7xkRl"
-Content-Disposition: inline
-
-
---wfgmFf0LjPE7xkRl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jan 09, 2019 at 03:10:53PM -0600, Pierre-Louis Bossart wrote:
-> On 1/9/19 1:22 PM, Mark Brown wrote:
-
-> > This thread appears to have died without a conclusion I can see?  I
-> > don't have strong feelings here, it seems like it's a choice between
-> > different evils so people working on the platform should make the call.
-
-> this was fixed by the v2 patch applied on January 4?
-
-> [alsa-devel] Applied "ASoC: Intel: sst: Fallback to BYT-CR if IRQ 5 is
-> missing" to the asoc tree
-
-That's entirely possible, the subject line did change so I didn't
-immediately notice it was the same quirk.
-
---wfgmFf0LjPE7xkRl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2ZE8ACgkQJNaLcl1U
-h9CPqgf/Q16R8fDJyEdZdhXcX+2eQe7JXBTLQJXq8BgLb+KEtjQLwLfKx1yTflSZ
-xWZJpODK1/uV8C1SA6XyGKOGd3imUlpM1VNpucvrqCL65o5KHTksE4Wj127wvDUk
-Br2LxQzShqX6wrc16K0zGB0kWwSrKbQu6yAFGlMhJMFeW2Hx6oRFbqbf1fSYxKzV
-TU8gB8tDcBHWhjXhm7Ri8mXz5zchFWeV6ECUqW/Bj7OOyZEDuLF0C+Vt61S1TPlJ
-IRHRaw4vnG93Qv70MhkDmPxFJdFgI13i6ZcyIMfwUe67tqi1SwZFTONyPhDdW4H5
-+KqB48oU9f08E66GAQDP5L95kse5CA==
-=Albr
------END PGP SIGNATURE-----
-
---wfgmFf0LjPE7xkRl--
-
---===============0047492108025618320==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0047492108025618320==--
+On 1/9/19 1:23 PM, Mark Brown wrote:
+> On Sat, Dec 15, 2018 at 02:07:21PM -0600, Pierre-Louis Bossart wrote:
+>> Use detection logic based on the PCI class/subclass/prog-if in the
+>> HDaudio legacy probe, and add a module parameter to bypass or force
+>> the automatic detection should it ever fail (or in case of missing
+>> firmware or topology files)
+> Given the issues Linus found is this series still valid?
+No. please drop this patchset. We need to first fix the HDMI issues due 
+to broken programming sequences that existed before the dynamic 
+selection was added. we can also simplify it if we change the probe 
+order to avoid making any changes to the legacy and add more 
+intelligence so e.g. only use the Skylake driver in "auto" mode if 
+digital mics controlled by the DSP are detected in the NHLT tables.
