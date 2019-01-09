@@ -1,59 +1,87 @@
-From: Jay Foster <jay@systech.com>
-Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
-Date: Wed, 9 Jan 2019 08:22:36 -0800
-Message-ID: <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
-References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
- <s5htviixf0t.wl-tiwai@suse.de>
-Reply-To: jay@systech.com
+From: b-ak <anur.bhargav@gmail.com>
+Subject: [PATCH] ASoC: tlv320aic32x4: SND_SOC_DAPM_MICBIAS is deprecated
+Date: Wed, 9 Jan 2019 22:41:21 +0530
+Message-ID: <20190109171121.GA12810@Ideapad-330S>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 37D6B266875
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 17:22:44 +0100 (CET)
-In-Reply-To: <s5htviixf0t.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxLzkvMjAxOSAzOjEwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAwOCBK
-YW4gMjAxOSAxODowMDoxOCArMDEwMCwKPiBKYXkgRm9zdGVyIHdyb3RlOgo+PiBJIGFtIGF0dGVt
-cHRpbmcgdG8gYnVpbGQgdGhlIDEuMS44IHJlbGVhc2Ugb2YgYWxzYS11dGlscyBhbmQgZ2V0dGlu
-Zwo+PiBhbiBlcnJvciBhYm91dCBQT0xMUkROT1JNIChhbmQgb3RoZXJzKSB1bmRlZmluZWQuwqAg
-VGhpcyBlcnJvciBjb21lcwo+PiBmcm9tIGF4ZmVyL3dhaXRlci1zZWxlY3QuYy7CoCBheGZlci93
-YWl0ZXItc2VsZWN0LmMgaW5jbHVkZXMKPj4gIndhaXRlci5oIiwgd2hpY2ggaW5jbHVkZXMgInBv
-bGwuaCIuwqAgVGhpcyBidWlsZCBpcyBmb3IgYSBsaW51eAo+PiB0YXJnZXQuCj4+Cj4+IHBvbGwu
-aCBpbmNsdWRlcyBzeXMvcG9sbC5oIHdoaWNoIGluY2x1ZGVzIGJpdHMvcG9sbC5oLCB3aGljaCBv
-bmx5Cj4+IGRlZmluZXMgUE9MTFJETk9STSAoYW5kIG90aGVycykgd2hlbiBfX1VTRV9YT1BFTiBp
-cyBkZWZpbmVkICh3aGljaCBpdAo+PiBpcyBub3QpLgo+Pgo+PiBIb3dldmVyLCBsaW51eC9wb2xs
-LmggaW5jbHVkZXMgYXNtL3BvbGwuaCB3aGljaCBpbmNsdWRlcwo+PiBhc20tZ2VuZXJpYy9wb2xs
-Lmggd2hpY2ggZG9lcyBkZWZpbmUgUE9MTFJETk9STSAoYW5kIG90aGVycykuCj4+Cj4+IFNob3Vs
-ZCBJIGNoYW5nZSBteSBidWlsZCB0byBkZWZpbmVfX1VTRV9YT1BFTiBvciBzaG91bGQgSSBwYXRj
-aAo+PiB3YWl0ZXIuaCB0byBpbmNsdWRlIGxpbnV4L3BvbGwuaCBpbnN0ZWFkIG9mIGp1c3QgcG9s
-bC5oPwo+IFdoaWNoIGxpYmMgYXJlIHlvdSB1c2luZz8gIFRoZSBQT1NJWCBtYW4gcGFnZSAobWFu
-IHBvbGwuaCkgbWVudGlvbnMKPiBQT0xMUkROT1JNIGRlZmluZWQgdGhlcmUsIGF0IGxlYXN0LCBv
-biBteSBzeXN0ZW0gd2l0aCBnbGliYyAyLjI3Lgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4K
-PgpUaGlzIGlzIGEgbGVnYWN5IEFSTSBwcm9kdWN0IHVzaW5nIGdsaWJjIDIuOS7CoCBOZWl0aGVy
-IG9mIHRoZSBhcHByb2FjaGVzIApJIG1lbnRpb25lZCBhYm92ZSBhY3R1YWxseSB3b3JrZWQuwqAg
-PGxpbnV4L3BvbGwuaD4gaXMgdGhlIGtlcm5lbCAKaGVhZGVycywgd2hpY2ggcmVzdWx0cyBpbiBh
-IGR1cGxpY2F0ZSBkZWZpbml0aW9uIG9mIHN0cnVjdCBwb2xsZmRzLsKgIFRoZSAKb3RoZXIgYXBw
-cm9hY2ggKEkgYWRkZWQgJ0NGTEFHUz0tRF9YT1BFTl9TT1VSQ0U9NTAwJyB0byB0aGUgbWFrZSBj
-b21tYW5kIApsaW5lLCBhbmQgb3RoZXIgdmFyaWF0aW9ucykgZmFpbGVkIGVsc2V3aGVyZSBkdWUg
-dG8gbWlzc2luZyBvciAKbWlzbWF0Y2hlZCBmdW5jdGlvbiBwcm90b3R5cGVzIChyZWYgPGZlYXR1
-cmVzLmg+KS4KCkkgZ290IHRoaXMgdG8gd29yayBieSBwYXRjaGluZyBheGZlci93YWl0ZXIuaCB0
-byBhZGQgdGhlIG1pc3NpbmcgCmRlZmludGlvbnMsIGJhc2VkIG9uIHRob3NlIGZvdW5kIGluIDxh
-c20tZ2VuZXJpYy9wb2xsLmg+LgoKSmF5CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+SND_SOC_DAPM_MICBIAS is deprecated, replace it with SND_SOC_DAPM_SUPPLY.
+
+MICBIAS voltage wasn't supplied to the microphone with the older
+SND_SOC_DAPM_MICBIAS widget, hence the microphone wouldn't work.
+
+This patch fixes the problem.
+
+Signed-off-by: b-ak <anur.bhargav@gmail.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 30 +++++++++++++++++++++++++++++-
+ sound/soc/codecs/tlv320aic32x4.h |  1 +
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index e2b5a11b16d1..521663d8b585 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -79,6 +79,32 @@ struct aic32x4_priv {
+ 	struct device *dev;
+ };
+ 
++static int mic_bias_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		/* Change Mic Bias Registor */
++		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
++				AIC32x4_MICBIAS_MASK,
++				AIC32X4_MICBIAS_LDOIN |
++				AIC32X4_MICBIAS_2075V);
++		printk(KERN_DEBUG "%s: Mic Bias will be turned ON\n", __func__);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
++				AIC32x4_MICBIAS_MASK, 0);
++		printk(KERN_DEBUG "%s: Mic Bias will be turned OFF\n",
++				__func__);
++		break;
++	}
++
++	return 0;
++}
++
++
+ static int aic32x4_get_mfp1_gpio(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -450,7 +476,9 @@ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("IN3_R to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
+ 			in3r_to_lmixer_controls),
+ 
+-	SND_SOC_DAPM_MICBIAS("Mic Bias", AIC32X4_MICBIAS, 6, 0),
++	SND_SOC_DAPM_SUPPLY("Mic Bias", AIC32X4_MICBIAS, 6, 0, mic_bias_event,
++			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++
+ 
+ 	SND_SOC_DAPM_OUTPUT("HPL"),
+ 	SND_SOC_DAPM_OUTPUT("HPR"),
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index e9df49edbf19..c2d74025bf4b 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -195,6 +195,7 @@ int aic32x4_remove(struct device *dev);
+ /* AIC32X4_MICBIAS */
+ #define AIC32X4_MICBIAS_LDOIN		BIT(3)
+ #define AIC32X4_MICBIAS_2075V		0x60
++#define AIC32x4_MICBIAS_MASK            GENMASK(6, 3)
+ 
+ /* AIC32X4_LMICPGANIN */
+ #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
+-- 
+2.19.1
