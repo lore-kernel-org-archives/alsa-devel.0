@@ -1,87 +1,162 @@
-From: b-ak <anur.bhargav@gmail.com>
-Subject: [PATCH] ASoC: tlv320aic32x4: SND_SOC_DAPM_MICBIAS is deprecated
-Date: Wed, 9 Jan 2019 22:41:21 +0530
-Message-ID: <20190109171121.GA12810@Ideapad-330S>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: da7219: MCLK should be enabled before
+	DAI clocks" to the asoc tree
+Date: Wed,  9 Jan 2019 18:15:19 +0000 (GMT)
+Message-ID: <20190109181519.0E7791127528@debutante.sirena.org.uk>
+References: <ac23ca274965f4c811c0bbbbfe953589a20610c2.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BEA1267442
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 19:15:21 +0100 (CET)
+In-Reply-To: <ac23ca274965f4c811c0bbbbfe953589a20610c2.1546876084.git.Adam.Thomson.Opensource@diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Kurtz <djkurtz@google.com>, Akshu Agrawal <Akshu.Agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_DAPM_MICBIAS is deprecated, replace it with SND_SOC_DAPM_SUPPLY.
+The patch
 
-MICBIAS voltage wasn't supplied to the microphone with the older
-SND_SOC_DAPM_MICBIAS widget, hence the microphone wouldn't work.
+   ASoC: da7219: MCLK should be enabled before DAI clocks
 
-This patch fixes the problem.
+has been applied to the asoc tree at
 
-Signed-off-by: b-ak <anur.bhargav@gmail.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a6028cc60aad18d5d7c25d99b5cb8c24399387c3 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Mon, 7 Jan 2019 16:11:46 +0000
+Subject: [PATCH] ASoC: da7219: MCLK should be enabled before DAI clocks
+
+For platforms using the Common Clock Framework to control the
+codec's DAI clocks, MCLK should be enabled prior to DAI clocks
+being turned on. For some platforms the codec is already
+provided with an MCLK reference and can therefore control MCLK
+itself as it needs to.
+
+To improve functionality MCLK is now added as a parent to the
+DAI clocks, if MCLK was provided, so that if they are enabled MCLK
+will automatically be enabled as a prerequisite by the CCF.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 30 +++++++++++++++++++++++++++++-
- sound/soc/codecs/tlv320aic32x4.h |  1 +
- 2 files changed, 30 insertions(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index e2b5a11b16d1..521663d8b585 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -79,6 +79,32 @@ struct aic32x4_priv {
- 	struct device *dev;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 513ec0368653..a20a610c7ee5 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1804,7 +1804,7 @@ static const struct clk_ops da7219_dai_clks_ops = {
+ 	.is_prepared = da7219_dai_clks_is_prepared,
  };
  
-+static int mic_bias_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-static void da7219_register_dai_clks(struct snd_soc_component *component)
++static int da7219_register_dai_clks(struct snd_soc_component *component)
+ {
+ 	struct device *dev = component->dev;
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+@@ -1812,9 +1812,17 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
+ 	struct clk_init_data init = {};
+ 	struct clk *dai_clks;
+ 	struct clk_lookup *dai_clks_lookup;
++	const char *parent_name;
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Change Mic Bias Registor */
-+		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
-+				AIC32x4_MICBIAS_MASK,
-+				AIC32X4_MICBIAS_LDOIN |
-+				AIC32X4_MICBIAS_2075V);
-+		printk(KERN_DEBUG "%s: Mic Bias will be turned ON\n", __func__);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_component_update_bits(component, AIC32X4_MICBIAS,
-+				AIC32x4_MICBIAS_MASK, 0);
-+		printk(KERN_DEBUG "%s: Mic Bias will be turned OFF\n",
-+				__func__);
-+		break;
++	if (da7219->mclk) {
++		parent_name = __clk_get_name(da7219->mclk);
++		init.parent_names = &parent_name;
++		init.num_parents = 1;
++	} else {
++		init.parent_names = NULL;
++		init.num_parents = 0;
 +	}
+ 
+-	init.parent_names = NULL;
+-	init.num_parents = 0;
+ 	init.name = pdata->dai_clks_name;
+ 	init.ops = &da7219_dai_clks_ops;
+ 	da7219->dai_clks_hw.init = &init;
+@@ -1823,7 +1831,7 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
+ 	if (IS_ERR(dai_clks)) {
+ 		dev_warn(dev, "Failed to register DAI clocks: %ld\n",
+ 			 PTR_ERR(dai_clks));
+-		return;
++		return PTR_ERR(dai_clks);
+ 	}
+ 	da7219->dai_clks = dai_clks;
+ 
+@@ -1835,13 +1843,18 @@ static void da7219_register_dai_clks(struct snd_soc_component *component)
+ 		dai_clks_lookup = clkdev_create(dai_clks, pdata->dai_clks_name,
+ 						"%s", dev_name(dev));
+ 		if (!dai_clks_lookup)
+-			dev_warn(dev, "Failed to create DAI clkdev");
++			return -ENOMEM;
+ 		else
+ 			da7219->dai_clks_lookup = dai_clks_lookup;
+ 	}
 +
 +	return 0;
+ }
+ #else
+-static inline void da7219_register_dai_clks(struct snd_soc_component *component) {}
++static inline int da7219_register_dai_clks(struct snd_soc_component *component)
++{
++	return 0;
 +}
-+
-+
- static int aic32x4_get_mfp1_gpio(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
-@@ -450,7 +476,9 @@ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("IN3_R to Left Mixer Negative Resistor", SND_SOC_NOPM, 0, 0,
- 			in3r_to_lmixer_controls),
+ #endif /* CONFIG_COMMON_CLK */
  
--	SND_SOC_DAPM_MICBIAS("Mic Bias", AIC32X4_MICBIAS, 6, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Bias", AIC32X4_MICBIAS, 6, 0, mic_bias_event,
-+			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ static void da7219_handle_pdata(struct snd_soc_component *component)
+@@ -1854,8 +1867,6 @@ static void da7219_handle_pdata(struct snd_soc_component *component)
+ 
+ 		da7219->wakeup_source = pdata->wakeup_source;
+ 
+-		da7219_register_dai_clks(component);
+-
+ 		/* Mic Bias voltages */
+ 		switch (pdata->micbias_lvl) {
+ 		case DA7219_MICBIAS_1_6V:
+@@ -1947,6 +1958,11 @@ static int da7219_probe(struct snd_soc_component *component)
+ 		}
+ 	}
+ 
++	/* Register CCF DAI clock control */
++	ret = da7219_register_dai_clks(component);
++	if (ret)
++		return ret;
 +
- 
- 	SND_SOC_DAPM_OUTPUT("HPL"),
- 	SND_SOC_DAPM_OUTPUT("HPR"),
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index e9df49edbf19..c2d74025bf4b 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -195,6 +195,7 @@ int aic32x4_remove(struct device *dev);
- /* AIC32X4_MICBIAS */
- #define AIC32X4_MICBIAS_LDOIN		BIT(3)
- #define AIC32X4_MICBIAS_2075V		0x60
-+#define AIC32x4_MICBIAS_MASK            GENMASK(6, 3)
- 
- /* AIC32X4_LMICPGANIN */
- #define AIC32X4_LMICPGANIN_IN2R_10K	0x10
+ 	/* Default PC counter to free-running */
+ 	snd_soc_component_update_bits(component, DA7219_PC_COUNT, DA7219_PC_FREERUN_MASK,
+ 			    DA7219_PC_FREERUN_MASK);
 -- 
-2.19.1
+2.20.1
