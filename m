@@ -1,119 +1,56 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: This will solve jack plug and unplug noise
-Date: Wed, 9 Jan 2019 09:32:55 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18420E9A@RTITMBSV02.realtek.com.tw>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH -next] ASoC: Intel: bytcht_es8316: Set correct platform
+ drvdata in snd_byt_cht_es8316_mc_probe()
+Date: Wed, 9 Jan 2019 10:33:38 +0100
+Message-ID: <21a053d4-ed3c-5dce-9630-e72c783914ae@redhat.com>
+References: <1547023011-8321-1-git-send-email-weiyongjun1@huawei.com>
+ <20190109092924.GB1743@kadam>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id B35792673B8
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 10:33:02 +0100 (CET)
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190109092924.GB1743@kadam>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Takashi,
+On 09-01-19 10:29, Dan Carpenter wrote:
+> I think the correct fix is actually this (untested):
 
-Update ALC225 depop for jack plug and unplug noise.
-Add this two patch.
-It will solve jack plug and unplug noise for ALC225 of Dell headset mode.
+Right, I'm pretty sure the soc framework depends on dev_get_drvdata
+returning the snd_soc_card and I forgot about this when adding
+the remove function.
 
-BR,
-Kailang
+Wei Yongjun, thank you for catching this.
 
+Dan, thank you for the correct version of the patch :)
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0000-add-unplug-function-alc225.patch"
-Content-Description: 0000-add-unplug-function-alc225.patch
-Content-Disposition: attachment;
-	filename="0000-add-unplug-function-alc225.patch"; size=819;
-	creation-date="Wed, 09 Jan 2019 08:28:50 GMT";
-	modification-date="Wed, 09 Jan 2019 08:28:35 GMT"
-Content-Transfer-Encoding: base64
+Dan, can you do an official submission of the correct version of the
+patch, with a Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+or shall I submit your version upstream ?
 
-RnJvbSAyNDIxNTUxYTliMzViOGY1NmQzY2ZiNzk1YWFmZTc5N2U5ODdiNmU5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgOSBKYW4gMjAxOSAxNjoyMzozNyArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrIC0gQWRkIHVucGx1ZyBmdW5jdGlvbiBpbnRvIHVucGx1ZyBzdGF0ZSBvZgog
-SGVhZHNldCBNb2RlIGZvciBBTEMyMjUKCkZvcmdvdCB0byBhZGQgdW5wbHVnIGZ1bmN0aW9uIHRv
-IHVucGx1ZyBzdGF0ZSBvZiBoZWFkc2V0IG1vZGUKZm9yIEFMQzIyNS4KClNpZ25lZC1vZmYtYnk6
-IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9w
-Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmlu
-ZGV4IDM5NmVjNDMuLjJjNWM4YWQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
-bHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC00MTAyLDYgKzQx
-MDIsNyBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX3VucGx1Z2dlZChzdHJ1Y3QgaGRh
-X2NvZGVjICpjb2RlYykKIAljYXNlIDB4MTBlYzAyOTU6CiAJY2FzZSAweDEwZWMwMjg5OgogCWNh
-c2UgMHgxMGVjMDI5OToKKwkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgYWxjMjI1X3ByZV9o
-c21vZGUpOwogCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIyNSk7CiAJCWJyZWFr
-OwogCWNhc2UgMHgxMGVjMDg2NzoK
+Regards,
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0000-alc225-headset-mode-disable-mic-vref.patch"
-Content-Description: 0000-alc225-headset-mode-disable-mic-vref.patch
-Content-Disposition: attachment;
-	filename="0000-alc225-headset-mode-disable-mic-vref.patch"; size=1994;
-	creation-date="Wed, 09 Jan 2019 09:12:09 GMT";
-	modification-date="Wed, 09 Jan 2019 09:13:27 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBkMTcxYzIzZDZkZTgwNWY4MTZiODZkYmEyZjNiZTY0MDYzNDBkYzQ3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgOSBKYW4gMjAxOSAxNzowNToyNCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrIC0gRGlzYWJsZSBoZWFkc2V0IE1pYyBWUkVGIGZvciBoZWFkc2V0IG1vZGUg
-b2YgQUxDMjI1CgpEaXNhYmxlIEhlYWRzZXQgTWljIFZSRUYgZm9yIGhlYWRzZXQgbW9kZSBvZiBB
-TEMyMjUuClRoaXMgd2lsbCBiZSBjb250cm9sbGVkIGJ5IGNvZWYgYml0cyBvZiBoZWFkc2V0IG1v
-ZGUgZnVuY3Rpb25zLgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0
-ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggMzk2ZWM0My4uMzU1MmViOCAxMDA2NDQK
-LS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9w
-YXRjaF9yZWFsdGVrLmMKQEAgLTU0NDAsNiArNTQ0MCwxNyBAQCBzdGF0aWMgdm9pZCBhbGNfZml4
-dXBfaGVhZHNldF9qYWNrKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCX0KIH0KIAorc3RhdGlj
-IHZvaWQgYWxjX2ZpeHVwX2Rpc2FibGVfbWljX3ZyZWYoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMs
-CisJCQkJICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGludCBhY3Rpb24pCit7CisJc3Ry
-dWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisKKwlpZiAoYWN0aW9uICE9IEhEQV9G
-SVhVUF9BQ1RfUFJFX1BST0JFKQorCQlyZXR1cm47CisKKwlzbmRfaGRhX2NvZGVjX3NldF9waW5f
-dGFyZ2V0KGNvZGVjLCAweDE5LCBQSU5fVlJFRkhJWik7Cit9CisKIC8qIGZvciBoZGFfZml4dXBf
-dGhpbmtwYWRfYWNwaSgpICovCiAjaW5jbHVkZSAidGhpbmtwYWRfaGVscGVyLmMiCiAKQEAgLTU1
-NDksNiArNTU2MCw3IEBAIGVudW0gewogCUFMQzI5M19GSVhVUF9MRU5PVk9fU1BLX05PSVNFLAog
-CUFMQzIzM19GSVhVUF9MRU5PVk9fTElORTJfTUlDX0hPVEtFWSwKIAlBTEMyNTVfRklYVVBfREVM
-TF9TUEtfTk9JU0UsCisJQUxDMjI1X0ZJWFVQX0RJU0FCTEVfTUlDX1ZSRUYsCiAJQUxDMjI1X0ZJ
-WFVQX0RFTEwxX01JQ19OT19QUkVTRU5DRSwKIAlBTEMyOTVfRklYVVBfRElTQUJMRV9EQUMzLAog
-CUFMQzI4MF9GSVhVUF9IUF9IRUFEU0VUX01JQywKQEAgLTYyNjgsNiArNjI4MCwxMiBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CiAJCS5jaGFpbmVk
-ID0gdHJ1ZSwKIAkJLmNoYWluX2lkID0gQUxDMjU1X0ZJWFVQX0RFTEwxX01JQ19OT19QUkVTRU5D
-RQogCX0sCisJW0FMQzIyNV9GSVhVUF9ESVNBQkxFX01JQ19WUkVGXSA9IHsKKwkJLnR5cGUgPSBI
-REFfRklYVVBfRlVOQywKKwkJLnYuZnVuYyA9IGFsY19maXh1cF9kaXNhYmxlX21pY192cmVmLAor
-CQkuY2hhaW5lZCA9IHRydWUsCisJCS5jaGFpbl9pZCA9IEFMQzI2OV9GSVhVUF9ERUxMMV9NSUNf
-Tk9fUFJFU0VOQ0UKKwl9LAogCVtBTEMyMjVfRklYVVBfREVMTDFfTUlDX05PX1BSRVNFTkNFXSA9
-IHsKIAkJLnR5cGUgPSBIREFfRklYVVBfVkVSQlMsCiAJCS52LnZlcmJzID0gKGNvbnN0IHN0cnVj
-dCBoZGFfdmVyYltdKSB7CkBAIC02Mjc3LDcgKzYyOTUsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
-IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CiAJCQl7fQogCQl9LAogCQkuY2hhaW5lZCA9
-IHRydWUsCi0JCS5jaGFpbl9pZCA9IEFMQzI2OV9GSVhVUF9ERUxMMV9NSUNfTk9fUFJFU0VOQ0UK
-KwkJLmNoYWluX2lkID0gQUxDMjI1X0ZJWFVQX0RJU0FCTEVfTUlDX1ZSRUYKIAl9LAogCVtBTEMy
-ODBfRklYVVBfSFBfSEVBRFNFVF9NSUNdID0gewogCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAo=
-
---_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hans
 
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18420E9ARTITMBSV02realt_--
+> 
+> diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+> index cdf2061e7613..fa9c4cf97686 100644
+> --- a/sound/soc/intel/boards/bytcht_es8316.c
+> +++ b/sound/soc/intel/boards/bytcht_es8316.c
+> @@ -544,7 +544,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+>   
+>   static int snd_byt_cht_es8316_mc_remove(struct platform_device *pdev)
+>   {
+> -	struct byt_cht_es8316_private *priv = platform_get_drvdata(pdev);
+> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
+> +	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
+>   
+>   	gpiod_put(priv->speaker_en_gpio);
+>   	return 0;
+> 
