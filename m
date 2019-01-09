@@ -1,19 +1,20 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hda: Fix mismatches for register
- mask and value in hdac controller
-Date: Wed, 9 Jan 2019 17:43:11 +0800
-Message-ID: <93f7bc20-604c-da44-6bda-64785277e819@linux.intel.com>
-References: <20190109082051.32643-1-yang.jie@linux.intel.com>
- <s5h1s5mi3dp.wl-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH -next] ASoC: Intel: bytcht_es8316: Set
+ correct platform drvdata in snd_byt_cht_es8316_mc_probe()
+Date: Wed, 9 Jan 2019 12:40:39 +0300
+Message-ID: <20190109094039.GD1718@kadam>
+References: <1547023011-8321-1-git-send-email-weiyongjun1@huawei.com>
+ <20190109092924.GB1743@kadam>
+ <21a053d4-ed3c-5dce-9630-e72c783914ae@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E62372665E5
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 10:41:30 +0100 (CET)
-In-Reply-To: <s5h1s5mi3dp.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 008A52665E5
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 10:41:32 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <21a053d4-ed3c-5dce-9630-e72c783914ae@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LzEvOSDkuIvljYg1OjMxLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gV2VkLCAw
-OSBKYW4gMjAxOSAwOToyMDo1MCArMDEwMCwKPiBLZXlvbiBKaWUgd3JvdGU6Cj4+Cj4+IEUuZy4g
-Zm9yIGF6eF9pbnRfZW5hYmxlKCksIHdlIHNob3VsZCBzZXQgYm90aCBtYXNrIGFuZCB2YWx1ZSB0
-byBiZQo+PiAiQVpYX0lOVF9DVFJMX0VOIHwgQVpYX0lOVF9HTE9CQUxfRU4iKHRoZSBtYXNrIHdh
-cyAwKSB0byBlbmFibGUKPj4gY29udHJvbGxlciBDSUUgYW5kIEdJRS4KPj4KPj4gV2UgaGF2ZSBz
-aW1pbGFyIGlzc3VlcyBvbiBzZXR0aW5nIEFaWF9HQ1RMX1JFU0VUIGFuZCBBWlhfR0NUTF9VTlNP
-TCwKPj4gaGVyZSB0cnkgdG8gY29ycmVjdCBhbGwgb2YgdGhlbS4KPj4KPj4gU2lnbmVkLW9mZi1i
-eTogS2V5b24gSmllIDx5YW5nLmppZUBsaW51eC5pbnRlbC5jb20+Cj4gCj4gV2VsbCwgdGhlIGN1
-cnJlbnQgY29kZSBpc24ndCBpbmNvcnJlY3QsIGl0IHNlcnZlcyBmb3IgaXRzIHB1cnBvc2UgLS0K
-PiBzZXQgdGhlIGdpdmVuIGJpdHMuICBCdXQgeWVhaCBpdCdzIGNsZWFyZXIgdG8gcGFzcyB0aGUg
-bWFzayBiaXRzCgpZZXMsIEkgcmVhbGl6ZWQgdGhhdCBhZnRlciBwYXRjaGVzIHNlbnQgb3V0LCBh
-bmQgdGhhdCBleHBsYWlucyB3aHkgdGhlcmUgCmlzIG5vIGZhaWx1cmUgZXZlciByZXBvcnRlZCBh
-Ym91dCBpdC4KClRoYW5rcywKfktleW9uCgo+IGV4cGxpY2l0bHkuCj4gCj4gU28gSSBxdWV1ZWQg
-dGhlc2UgdHdvIHBhdGNoZXMgdG8gZm9yLW5leHQgYnJhbmNoLCBmb3IgNS4xIGtlcm5lbC4KPiAK
-PiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQo+IAo+IAo+PiAtLS0KPj4gICBzb3VuZC9oZGEvaGRh
-Y19jb250cm9sbGVyLmMgfCA4ICsrKysrLS0tCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0
-aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL2hkYS9oZGFj
-X2NvbnRyb2xsZXIuYyBiL3NvdW5kL2hkYS9oZGFjX2NvbnRyb2xsZXIuYwo+PiBpbmRleCA3NDI0
-NGQ4ZTI5MDkuLmIyZTk0NTRmNTgxNiAxMDA2NDQKPj4gLS0tIGEvc291bmQvaGRhL2hkYWNfY29u
-dHJvbGxlci5jCj4+ICsrKyBiL3NvdW5kL2hkYS9oZGFjX2NvbnRyb2xsZXIuYwo+PiBAQCAtMzc2
-LDcgKzM3Niw3IEBAIHZvaWQgc25kX2hkYWNfYnVzX2V4aXRfbGlua19yZXNldChzdHJ1Y3QgaGRh
-Y19idXMgKmJ1cykKPj4gICB7Cj4+ICAgCXVuc2lnbmVkIGxvbmcgdGltZW91dDsKPj4gICAKPj4g
-LQlzbmRfaGRhY19jaGlwX3VwZGF0ZWIoYnVzLCBHQ1RMLCAwLCBBWlhfR0NUTF9SRVNFVCk7Cj4+
-ICsJc25kX2hkYWNfY2hpcF91cGRhdGViKGJ1cywgR0NUTCwgQVpYX0dDVExfUkVTRVQsIEFaWF9H
-Q1RMX1JFU0VUKTsKPj4gICAKPj4gICAJdGltZW91dCA9IGppZmZpZXMgKyBtc2Vjc190b19qaWZm
-aWVzKDEwMCk7Cj4+ICAgCXdoaWxlICghc25kX2hkYWNfY2hpcF9yZWFkYihidXMsIEdDVEwpICYm
-IHRpbWVfYmVmb3JlKGppZmZpZXMsIHRpbWVvdXQpKQo+PiBAQCAtNDE1LDcgKzQxNSw3IEBAIGlu
-dCBzbmRfaGRhY19idXNfcmVzZXRfbGluayhzdHJ1Y3QgaGRhY19idXMgKmJ1cywgYm9vbCBmdWxs
-X3Jlc2V0KQo+PiAgIAl9Cj4+ICAgCj4+ICAgCS8qIEFjY2VwdCB1bnNvbGljaXRlZCByZXNwb25z
-ZXMgKi8KPj4gLQlzbmRfaGRhY19jaGlwX3VwZGF0ZWwoYnVzLCBHQ1RMLCAwLCBBWlhfR0NUTF9V
-TlNPTCk7Cj4+ICsJc25kX2hkYWNfY2hpcF91cGRhdGVsKGJ1cywgR0NUTCwgQVpYX0dDVExfVU5T
-T0wsIEFaWF9HQ1RMX1VOU09MKTsKPj4gICAKPj4gICAJLyogZGV0ZWN0IGNvZGVjcyAqLwo+PiAg
-IAlpZiAoIWJ1cy0+Y29kZWNfbWFzaykgewo+PiBAQCAtNDMxLDcgKzQzMSw5IEBAIEVYUE9SVF9T
-WU1CT0xfR1BMKHNuZF9oZGFjX2J1c19yZXNldF9saW5rKTsKPj4gICBzdGF0aWMgdm9pZCBhenhf
-aW50X2VuYWJsZShzdHJ1Y3QgaGRhY19idXMgKmJ1cykKPj4gICB7Cj4+ICAgCS8qIGVuYWJsZSBj
-b250cm9sbGVyIENJRSBhbmQgR0lFICovCj4+IC0Jc25kX2hkYWNfY2hpcF91cGRhdGVsKGJ1cywg
-SU5UQ1RMLCAwLCBBWlhfSU5UX0NUUkxfRU4gfCBBWlhfSU5UX0dMT0JBTF9FTik7Cj4+ICsJc25k
-X2hkYWNfY2hpcF91cGRhdGVsKGJ1cywgSU5UQ1RMLAo+PiArCQkJICAgICAgQVpYX0lOVF9DVFJM
-X0VOIHwgQVpYX0lOVF9HTE9CQUxfRU4sCj4+ICsJCQkgICAgICBBWlhfSU5UX0NUUkxfRU4gfCBB
-WlhfSU5UX0dMT0JBTF9FTik7Cj4+ICAgfQo+PiAgIAo+PiAgIC8qIGRpc2FibGUgaW50ZXJydXB0
-cyAqLwo+PiAtLSAKPj4gMi4xNy4xCj4+Cj4+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Jan 09, 2019 at 10:33:38AM +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 09-01-19 10:29, Dan Carpenter wrote:
+> > I think the correct fix is actually this (untested):
+> 
+> Right, I'm pretty sure the soc framework depends on dev_get_drvdata
+> returning the snd_soc_card and I forgot about this when adding
+> the remove function.
+> 
+> Wei Yongjun, thank you for catching this.
+> 
+> Dan, thank you for the correct version of the patch :)
+> 
+> Dan, can you do an official submission of the correct version of the
+> patch, with a Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+> or shall I submit your version upstream ?
+
+Wei can resend and get authorship credit.  I only wrote the patch by
+accident because it was easier than explaining.  (Or if you really don't
+want to, Wei, then message me and I will do it).
+
+regards,
+dan carpenter
