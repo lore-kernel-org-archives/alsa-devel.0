@@ -1,14 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 08/14] ASoC: SOF: Add DSP HW abstraction
-	operations
-Date: Wed, 9 Jan 2019 20:51:29 +0000
-Message-ID: <20190109205129.GS10405@sirena.org.uk>
+Subject: Re: [PATCH v3 09/14] ASoC: SOF: Add firmware loader
+ support
+Date: Wed, 9 Jan 2019 20:55:32 +0000
+Message-ID: <20190109205532.GT10405@sirena.org.uk>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-9-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-10-pierre-louis.bossart@linux.intel.com>
+ <20181211223829.GJ10650@smile.fi.intel.com>
+ <c3389d5c-f960-d067-b560-47af97353017@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2325332061602177502=="
+Content-Type: multipart/mixed; boundary="===============4307674918551223976=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20181211212318.28644-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <c3389d5c-f960-d067-b560-47af97353017@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Andy Shevchenko <andriy.shevchenko@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2325332061602177502==
+--===============4307674918551223976==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ctZH5Gqgrl5HoVnD"
+	protocol="application/pgp-signature"; boundary="UsbkURXZxe2ekgES"
 Content-Disposition: inline
 
 
---ctZH5Gqgrl5HoVnD
+--UsbkURXZxe2ekgES
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 11, 2018 at 03:23:12PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Dec 11, 2018 at 05:54:02PM -0600, Pierre-Louis Bossart wrote:
+> On 12/11/18 4:38 PM, Andy Shevchenko wrote:
+> > On Tue, Dec 11, 2018 at 03:23:13PM -0600, Pierre-Louis Bossart wrote:
 
-> +int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
-> +				     u32 mask, u32 value)
-> +{
-> +	bool change;
-> +	unsigned int old, new;
-> +	u32 ret = ~0; /* explicit init to remove uninitialized use warnings */
+> > > +	struct sof_ipc_window *w = (struct sof_ipc_window *)ext_hdr;
+> > > +
+> > > +	int ret = 0;
 
-This looks a lot like you want to write regmap_pci_config...
+> > I don't see how it's used. Perhaps you need to check code with `make W=1`.
 
-> +/* control */
-> +static inline int snd_sof_dsp_run(struct snd_sof_dev *sdev)
-> +{
-> +	if (sdev->ops->run)
-> +		return sdev->ops->run(sdev);
-> +
-> +	return 0;
-> +}
+> Darn, we missed this one. I thought we were using W=1 on github but we
+> aren't, this will be fixed.
 
-Do we really want to return 0 for all these ops if they're not
-implemented?  For some that seems sensible but there's others where it
-seems like the caller might want to know they got ignored and an error
-code like -ENOTSUPP might be better.
+> Though W=1 doesn't report this one, so need to re-inspect this. Thanks for
+> the sighting.
 
---ctZH5Gqgrl5HoVnD
+This is one reason not to unconditionally init stuff on declaration -
+it masks some warnings.
+
+> > > +int snd_sof_load_firmware(struct snd_sof_dev *sdev)
+> > > +{
+> > > +	dev_dbg(sdev->dev, "loading firmware\n");
+> > Noise.
+> > Better to introduce a trace points and drop all these kind of messages.
+
+> it's not that bad, most people understand what dmesg is, it happens once and
+> only if you have dynamic debug.
+
+Then everyone adds their print on boot and the log gets huge (and slow
+if you push debug through serial during development).  As a rule of
+thumb I tend to suggest that if you're not reporting something you
+discovered at runtime there's probably already other ways of getting
+equivalent trace.
+
+--UsbkURXZxe2ekgES
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2XtAACgkQJNaLcl1U
-h9DCgQf6AzfJ6mzPt0WCy3j4B3yhH9KSiBG57R5JBZyhixPhPjRZk0/VBRgbueDH
-Ho3Iorv/xwLDtp/L5FG6c6etlms9F7qmv+jyJA3U+A2d5blkqv4FwJoEzCfVF1MV
-laD3qjokEHmB9iR7A/yEf0rlY4xfm2nGciU93jPFCHQM+3dDnJXtLvGw4AAM2Dps
-7O0jKuo/1/ehqpkto145Pq5i73M/Y2k9YhFCtVsqRQAXmx3CeK5CSiT4X0o0Ypc0
-3+ZZosMoxoFPNOSWFpnsYuVAX+SG5k075aBoNHfD4gqixW4gbStH1SnfUpvySQ2D
-b3DMMyJ6tXnee6JZb8DtHfrcmL3+9A==
-=7HQw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw2X8QACgkQJNaLcl1U
+h9AFPQf/e1kc/8ebH0USO00Y5uvq5iA3r/EEfLcxu59UO7GOcnyUMgYpD005UfiR
+u4ZDSBgBDSaJKv/O2C9vre8mVsikHdLt97ugwSqZFaPE06u7I42tltpfJqnpiYbK
+HkfbL7Arp9nCATGT6uL1EXVsdOdcAk2I2aEHH7ppQ9zaYkRUC02wsOxdOk8vP7zR
+mjYlfUsV8t6KcVirOaun7ULE9TUS+hGyYcn7xxOjEjbX1qeXqRcQYC8ZvvUTaE8d
+6BxnOjNUrjU4Zt77YT6tZ+R0KXJ/9YzPgO720+wWow9b+Ght5DsDQfeqcowyFTz1
+AEz2fPfIzew5x60XhWSuIAHBRLAd8w==
+=8H1t
 -----END PGP SIGNATURE-----
 
---ctZH5Gqgrl5HoVnD--
+--UsbkURXZxe2ekgES--
 
---===============2325332061602177502==
+--===============4307674918551223976==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2325332061602177502==--
+--===============4307674918551223976==--
