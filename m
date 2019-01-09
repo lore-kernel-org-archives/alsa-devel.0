@@ -1,21 +1,19 @@
-From: ard <ard@kwaak.net>
-Subject: Pioneer DDJ-SX3 usb audio quirks
-Date: Wed, 9 Jan 2019 16:58:48 +0100
-Message-ID: <20190109155848.GQ12622@kwaak.net>
+From: Jay Foster <jay@systech.com>
+Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
+Date: Wed, 9 Jan 2019 08:22:36 -0800
+Message-ID: <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
+References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
+ <s5htviixf0t.wl-tiwai@suse.de>
+Reply-To: jay@systech.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kwaak.net (gw-fsck-sorbs.kwaak.net [82.197.218.155])
- by alsa0.perex.cz (Postfix) with ESMTP id 18AF3266875
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 16:59:00 +0100 (CET)
-Received: from [192.168.0.44] (port=46777 helo=shell3.kwaak.net)
- by mail.kwaak.net with esmtp (Exim 4.50) id 1ghGFq-0003se-DT
- for alsa-devel@alsa-project.org; Wed, 09 Jan 2019 16:58:56 +0100
-Received: from ard by shell3.kwaak.net with local (Exim 4.80)
- (envelope-from <ard@kwaak.net>) id 1ghGFk-0003sZ-LN
- for alsa-devel@alsa-project.org; Wed, 09 Jan 2019 16:58:48 +0100
-Content-Disposition: inline
+Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
+ [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 37D6B266875
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 17:22:44 +0100 (CET)
+In-Reply-To: <s5htviixf0t.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,293 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Guys,
-
-I am trying to get my pioneer to work. Everything works except
-for the PCM, which seems to be nothing more than an
-isosynchronous stream of 12 channels S32_LE output and 10
-channels of S32_LE input. (Determined by usbpcap data patterns and mixxx
-channel selection).
-I tried to make a quirk out of it, but I got puzzled by the
-ifnum.
-The PCM channels are both endpoints of a single interface, so I
-wonder how I should write that down.
-
-This is the lsusb -v:
-
-Bus 001 Device 005: ID 2b73:0023  
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0        64
-  idVendor           0x2b73 
-  idProduct          0x0023 
-  bcdDevice            1.02
-  iManufacturer           1 Pioneer DJ Corporation
-  iProduct                2 PIONEER DJ DDJ-SX3
-  iSerial                 3 201706
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          137
-    bNumInterfaces          3
-    bConfigurationValue     1
-    iConfiguration          0 
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0 
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0400  1x 1024 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0400  1x 1024 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength            9
-        bInCollection           1
-        baInterfaceNr( 0)       2
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      3 MIDI Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      MIDIStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           65
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-        bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               1 Embedded
-        bJackID                 3
-        iJack                   0 
-      MIDIStreaming Interface Descriptor:
-        bLength                 6
-        bDescriptorType        36
-        bDescriptorSubtype      2 (MIDI_IN_JACK)
-        bJackType               2 External
-        bJackID                 1
-        iJack                   0 
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               2 External
-        bJackID                 4
-        bNrInputPins            1
-        baSourceID( 0)          3
-        BaSourcePin( 0)         1
-        iJack                   0 
-      MIDIStreaming Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (MIDI_OUT_JACK)
-        bJackType               1 Embedded
-        bJackID                 2
-        bNrInputPins            1
-        baSourceID( 0)          1
-        BaSourcePin( 0)         1
-        iJack                   0 
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-        bRefresh                0
-        bSynchAddress           0
-        MIDIStreaming Endpoint Descriptor:
-          bLength                 5
-          bDescriptorType        37
-          bDescriptorSubtype      1 (GENERAL)
-          bNumEmbMIDIJack         1
-          baAssocJackID( 0)       2
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-        bRefresh                0
-        bSynchAddress           0
-        MIDIStreaming Endpoint Descriptor:
-          bLength                 5
-          bDescriptorType        37
-          bDescriptorSubtype      1 (GENERAL)
-          bNumEmbMIDIJack         1
-          baAssocJackID( 0)       3
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x5f70
-  (Bus Powered)
-  Debug Mode
-
-And here is my preliminary quirk (yes, I need to remove the octo capture ;-) )
-commit 55a009f7e77acf6d75a297e0a01839fdeb580e65
-Author: Ard van Breemen <ard@kwaak.net>
-Date:   Wed Jan 9 15:36:46 2019 +0100
-
-    try 1 SX3
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 15cbe2565703..8493dbe536bd 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3324,5 +3324,60 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 		}
- 	}
- },
-+{
-+	/*
-+	 * PIONEER DJ DDJ-SX3
-+	 * PCM is 12 channels out, 10 channels in @ 44.1 fixed
-+	 * interface 0, vendor class alt setting 1 for endpoints 5 and 0x86
-+	 */
-+	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0023),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "", */
-+		/* .product_name = "OCTO-CAPTURE", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 12,
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x05,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 10,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x86,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- 
- #undef USB_DEVICE_VENDOR_SPEC
-
-----
-Since this is a copy paste of the roland octo capture with fixes for the numbers I know, I am still wondering about this:
-Should I use .ifnum=1 for every snd_usb_audio_quirk?
-And in eacht audioformat should I use .iface = 0? 
-
-I also wonder what the .altset_idx means.
-
-Regards,
-
-Ard van Breemen
-
--- 
-.signature not found
+CgpPbiAxLzkvMjAxOSAzOjEwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAwOCBK
+YW4gMjAxOSAxODowMDoxOCArMDEwMCwKPiBKYXkgRm9zdGVyIHdyb3RlOgo+PiBJIGFtIGF0dGVt
+cHRpbmcgdG8gYnVpbGQgdGhlIDEuMS44IHJlbGVhc2Ugb2YgYWxzYS11dGlscyBhbmQgZ2V0dGlu
+Zwo+PiBhbiBlcnJvciBhYm91dCBQT0xMUkROT1JNIChhbmQgb3RoZXJzKSB1bmRlZmluZWQuwqAg
+VGhpcyBlcnJvciBjb21lcwo+PiBmcm9tIGF4ZmVyL3dhaXRlci1zZWxlY3QuYy7CoCBheGZlci93
+YWl0ZXItc2VsZWN0LmMgaW5jbHVkZXMKPj4gIndhaXRlci5oIiwgd2hpY2ggaW5jbHVkZXMgInBv
+bGwuaCIuwqAgVGhpcyBidWlsZCBpcyBmb3IgYSBsaW51eAo+PiB0YXJnZXQuCj4+Cj4+IHBvbGwu
+aCBpbmNsdWRlcyBzeXMvcG9sbC5oIHdoaWNoIGluY2x1ZGVzIGJpdHMvcG9sbC5oLCB3aGljaCBv
+bmx5Cj4+IGRlZmluZXMgUE9MTFJETk9STSAoYW5kIG90aGVycykgd2hlbiBfX1VTRV9YT1BFTiBp
+cyBkZWZpbmVkICh3aGljaCBpdAo+PiBpcyBub3QpLgo+Pgo+PiBIb3dldmVyLCBsaW51eC9wb2xs
+LmggaW5jbHVkZXMgYXNtL3BvbGwuaCB3aGljaCBpbmNsdWRlcwo+PiBhc20tZ2VuZXJpYy9wb2xs
+Lmggd2hpY2ggZG9lcyBkZWZpbmUgUE9MTFJETk9STSAoYW5kIG90aGVycykuCj4+Cj4+IFNob3Vs
+ZCBJIGNoYW5nZSBteSBidWlsZCB0byBkZWZpbmVfX1VTRV9YT1BFTiBvciBzaG91bGQgSSBwYXRj
+aAo+PiB3YWl0ZXIuaCB0byBpbmNsdWRlIGxpbnV4L3BvbGwuaCBpbnN0ZWFkIG9mIGp1c3QgcG9s
+bC5oPwo+IFdoaWNoIGxpYmMgYXJlIHlvdSB1c2luZz8gIFRoZSBQT1NJWCBtYW4gcGFnZSAobWFu
+IHBvbGwuaCkgbWVudGlvbnMKPiBQT0xMUkROT1JNIGRlZmluZWQgdGhlcmUsIGF0IGxlYXN0LCBv
+biBteSBzeXN0ZW0gd2l0aCBnbGliYyAyLjI3Lgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4K
+PgpUaGlzIGlzIGEgbGVnYWN5IEFSTSBwcm9kdWN0IHVzaW5nIGdsaWJjIDIuOS7CoCBOZWl0aGVy
+IG9mIHRoZSBhcHByb2FjaGVzIApJIG1lbnRpb25lZCBhYm92ZSBhY3R1YWxseSB3b3JrZWQuwqAg
+PGxpbnV4L3BvbGwuaD4gaXMgdGhlIGtlcm5lbCAKaGVhZGVycywgd2hpY2ggcmVzdWx0cyBpbiBh
+IGR1cGxpY2F0ZSBkZWZpbml0aW9uIG9mIHN0cnVjdCBwb2xsZmRzLsKgIFRoZSAKb3RoZXIgYXBw
+cm9hY2ggKEkgYWRkZWQgJ0NGTEFHUz0tRF9YT1BFTl9TT1VSQ0U9NTAwJyB0byB0aGUgbWFrZSBj
+b21tYW5kIApsaW5lLCBhbmQgb3RoZXIgdmFyaWF0aW9ucykgZmFpbGVkIGVsc2V3aGVyZSBkdWUg
+dG8gbWlzc2luZyBvciAKbWlzbWF0Y2hlZCBmdW5jdGlvbiBwcm90b3R5cGVzIChyZWYgPGZlYXR1
+cmVzLmg+KS4KCkkgZ290IHRoaXMgdG8gd29yayBieSBwYXRjaGluZyBheGZlci93YWl0ZXIuaCB0
+byBhZGQgdGhlIG1pc3NpbmcgCmRlZmludGlvbnMsIGJhc2VkIG9uIHRob3NlIGZvdW5kIGluIDxh
+c20tZ2VuZXJpYy9wb2xsLmg+LgoKSmF5CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
