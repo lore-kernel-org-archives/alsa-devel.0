@@ -1,17 +1,19 @@
 From: =?UTF-8?B?S2FkaXIgw4dvbGFrb8SfbHU=?= <kadir@colakoglu.nl>
-Subject: Audio popping/clicking at boot but NOT after
+Subject: Fwd: Audio popping/clicking at boot but NOT after
 	resume/suspend
-Date: Wed, 9 Jan 2019 07:26:47 +0100
-Message-ID: <CADE0NLN93qwL5KZdQ52hFs7oKaMJNYadkLGSLLP9jSURkwpjnw@mail.gmail.com>
+Date: Wed, 9 Jan 2019 07:31:48 +0100
+Message-ID: <CADE0NLOFVphoV0BDcGEFFksO1Y+HR2+9HJrk_scu5C61-oQkcw@mail.gmail.com>
+References: <CADE0NLN93qwL5KZdQ52hFs7oKaMJNYadkLGSLLP9jSURkwpjnw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0000000000008591e1057f008cdc"
+Content-Type: multipart/mixed; boundary="00000000000085ed30057f009e69"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com
- [209.85.128.48])
- by alsa0.perex.cz (Postfix) with ESMTP id F1FF42665E5
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 07:26:58 +0100 (CET)
-Received: by mail-wm1-f48.google.com with SMTP id p6so6826353wmc.1
- for <alsa-devel@alsa-project.org>; Tue, 08 Jan 2019 22:26:58 -0800 (PST)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com
+ [209.85.221.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB4892666B3
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 07:32:00 +0100 (CET)
+Received: by mail-wr1-f52.google.com with SMTP id x10so6407238wrs.8
+ for <alsa-devel@alsa-project.org>; Tue, 08 Jan 2019 22:32:00 -0800 (PST)
+In-Reply-To: <CADE0NLN93qwL5KZdQ52hFs7oKaMJNYadkLGSLLP9jSURkwpjnw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,8 +26,21 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0000000000008591e1057f008cdc
+--00000000000085ed30057f009e69
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I have made a new bugreport here
+https://bugzilla.kernel.org/show_bug.cgi?id=3D202185
+
+
+
+---------- Forwarded message ---------
+From: Kadir =C3=87olako=C4=9Flu <kadir@colakoglu.nl>
+Date: wo 9 jan. 2019 om 07:26
+Subject: Audio popping/clicking at boot but NOT after resume/suspend
+To: <alsa-devel@alsa-project.org>
+
 
 Hi,
 
@@ -45,12 +60,12 @@ But all problems disappear when I suspend and then resume the laptop. After
 resuming, everything works great. So at boot there are sound issues, but
 after a suspend/resume cycle everything is fine!
 
-See https://bugzilla.redhat.com/show_bug.cgi?id=1525104#c108 for more
+See https://bugzilla.redhat.com/show_bug.cgi?id=3D1525104#c108 for more
 details and testing. I have also attached alsa-info.sh.
 
 Kadir
 
---0000000000008591e1057f008cdc
+--00000000000085ed30057f009e69
 Content-Type: text/plain; charset="US-ASCII"; name="alsa-info-latitude-7480.txt"
 Content-Disposition: attachment; filename="alsa-info-latitude-7480.txt"
 Content-Transfer-Encoding: base64
@@ -822,11 +837,11 @@ ClsgICAxMy4yNDkwODRdIGlucHV0OiBIREEgSW50ZWwgUENIIEhETUkvRFAscGNtPTEwIGFzIC9k
 ZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxZi4zL3NvdW5kL2NhcmQwL2lucHV0MTcKWyAgIDEz
 LjQ5NDg1MV0gRVhUNC1mcyAoc2RhMik6IG1vdW50ZWQgZmlsZXN5c3RlbSB3aXRoIG9yZGVyZWQg
 ZGF0YSBtb2RlLiBPcHRzOiAobnVsbCkKCgo=
---0000000000008591e1057f008cdc
+--00000000000085ed30057f009e69
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---0000000000008591e1057f008cdc--
+--00000000000085ed30057f009e69--
