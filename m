@@ -1,17 +1,23 @@
-From: rm.riches@jacob21819.net (Robert M. Riches Jr.)
-Subject: only 1.00 dB of playback volume change
-Date: Wed, 09 Jan 2019 20:44:31 -0800
-Message-ID: <20190110044431.7ED6C1E2E25@one.localnet>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
+ suspend/resume
+Date: Thu, 10 Jan 2019 05:30:14 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19527AF06F@SHSMSX103.ccr.corp.intel.com>
+References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
+ <e2c257fb-e292-b23d-1f20-e5467e0d93dd@linux.intel.com>
+ <96A12704CE18D347B625EE2D4A099D19527AE0B4@SHSMSX103.ccr.corp.intel.com>
+ <s5hd0p71jvh.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527AE92B@SHSMSX103.ccr.corp.intel.com>
+ <s5h8szui68f.wl-tiwai@suse.de> <s5h4laii46l.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-2.mxes.net (smtp-out-2.mxes.net [205.237.194.127])
- by alsa0.perex.cz (Postfix) with ESMTP id 056C8267445
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 05:44:33 +0100 (CET)
-Received: from Customer-MUA (mua.mxes.net [10.0.0.1])
- by smtp.mxes.net (Postfix) with ESMTPA id 2655627555
- for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 23:44:32 -0500 (EST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 312C1267445
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 06:30:17 +0100 (CET)
+In-Reply-To: <s5h4laii46l.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +27,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-(I sent this first to alsa-user and was instructed to send it to
-alsa-devel, as well.)
 
-With a new OS installation on a pre-existing machine, some of the
-USB audio devices now have only 1.00 dB of playback volume
-adjustment, which of course is not enough to be terribly useful.
+>-----Original Message-----
+>From: Takashi Iwai [mailto:tiwai@suse.de]
+>Sent: Wednesday, January 9, 2019 5:14 PM
+>To: Yang, Libin <libin.yang@intel.com>
+>Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; alsa-
+>devel@alsa-project.org; broonie@kernel.org;
+>liam.r.girdwood@linux.intel.com; Lin, Mengdong <mengdong.lin@intel.com>
+>Subject: Re: [alsa-devel] [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
+>suspend/resume
+>
+>On Wed, 09 Jan 2019 09:29:36 +0100,
+>Takashi Iwai wrote:
+>>
+>> On Wed, 09 Jan 2019 09:16:34 +0100,
+>> Yang, Libin wrote:
+>> >
+>> > >-
+>> > >-static void hdmi_codec_complete(struct device *dev)
+>> > >+#ifdef CONFIG_PM_SLEEP
+>> > >+static int hdmi_codec_resume(struct device *dev)
+>> > > {
+>> > > 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+>> > > 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> > >+	int ret;
+>> > >
+>> > >-	/* Power up afg */
+>> > >-	snd_hdac_codec_read(hdev, hdev->afg, 0,
+>> > >	AC_VERB_SET_POWER_STATE,
+>> > >-							AC_PWRST_D0);
+>> > >-
+>> > >-	hdac_hdmi_skl_enable_all_pins(hdev);
+>> > >-	hdac_hdmi_skl_enable_dp12(hdev);
+>> > >-
+>> > >+	ret = pm_runtime_force_resume(dev);
+>> >
+>> > The code hopes to call hdmi pm_runtime() whenever this resume() is
+>> > called? If so, I'm afraid it will not work.
+>> > pm_runtime_force_resume() calls pm_runtime with conditions.
+>> > Sometimes pm_runtime will not be called. In my suspend/resume test,
+>> > it shows that pm_runtime() is not called. This may cause the
+>> > following function
+>> > hdac_hdmi_present_sense_all_pins() not work well as there is no
+>> > power on.
+>>
+>> Hm, right, maybe we should move hdac_hdmi_present_sense_all_pins()
+>> into runtime resume.  It may be called unconditionally, but safer to
+>> call it conditionally only after S3 or so...
+>
+>Now reading back the code again, no, it's correct to call
+>hdac_hdmi_present_sense_all_pins() there.  The function doesn't access any
+>HD-audio codec verbs but only with the i915 audio component.
+>Hence it's safe to call there no matter whether the device is opened (thus
+>resumed) or not.  And, it is even mandatory to call there; if a HDMI connection
+>changed during suspend, we need to notify it right after the system resume.
 
-The affected USB devices show up as "Audio Advantage MicroII" in the
-output of "aplay -L".  From LSB, they show up as these:
+Yes. It seems this is safe. Thanks for clarification. SOF audio driver test passes. 
+No reply from our internal SST driver team. From SOF test, this patch can fix
+the display power issue.
 
-Bus 001 Device 004: ID 0d8c:0103 C-Media Electronics, Inc. CM102-A+/102S+ Audio Controller
-Bus 001 Device 003: ID 0d8c:0103 C-Media Electronics, Inc. CM102-A+/102S+ Audio Controller
+BTW: I have another question. Maybe it is not related to this topic, but
+related the general audio power sequence. I'm not sure my understand
+is correct or not.
+Currently, codec device's parent is the card device, right? If so, the suspend
+sequence is:
+codec power off (child)
+card power off (parent)
 
-I just installed Devuan Ascii on the machine.  It's running kernel
-4.9.0-8-amd64 and alsa-utils version 1.1.3-1.  Doing "amixer -c 1
-contents" or "amixer -c 2 contents" shows this for playback volume:
+However, I see some cards will call trigger for suspend in card suspend
+function. This may cause issue logically (Maybe the real cards are always
+OK). The codec has already powered off. So if trigger() operates with
+codec may cause issue? Even, if the codec is the master, maybe the clk
+is off before trigger() is called. I'm not sure this is always OK.
+(This is why I submitted the second patch.)
 
-numid=3,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=255,step=0
-    : values=0,0
-      | dBminmax-min=-1.00dB,max=0.00dB
-
-and
-
-numid=3,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=255,step=0
-    : values=77,77
-      | dBminmax-min=-1.00dB,max=0.00dB
-
-It looks like I'm running kernel 4.9.0-8-amd64 and alsa-utils
-version 1.1.3-1.
-
-Using alsamixer to run the controls from end to end, I cannot
-perceive any difference in volume level.
-
-In contrast, the other device I use (either HDA Intel or HDA NVidia)
-has around a 60dB range according to amixer, and running the control
-in alsamixer from end to end has a huge range of gain.
-
-Previously, the exact same hardware was running Debian 7/Wheezy and
-then Slackware 14.2.  With both those operating systems, the USB
-sound devices had a very adequate volume control range, certainly a
-whole lot more than 1dB.
-
-Being as the USB sound devices are the ones my wife uses, I'd be
-extremely grateful if somebody could point me a to way (if one
-exists) to a usefully greater range of volume control.  Any
-suggestions?
-
-Assuming this qualifies as a bug, what channel should I use to
-report it so it can be queued to be fixed?
-
-Thanks,
-
-Robert
+Regards,
+Libin
