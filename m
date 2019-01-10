@@ -1,24 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
-Date: Thu, 10 Jan 2019 13:24:02 +0900
-Message-ID: <20190110042402.GA7696@workstation>
-References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
- <s5htviixf0t.wl-tiwai@suse.de>
- <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
- <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
- <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
+From: rm.riches@jacob21819.net (Robert M. Riches Jr.)
+Subject: only 1.00 dB of playback volume change
+Date: Wed, 09 Jan 2019 20:44:31 -0800
+Message-ID: <20190110044431.7ED6C1E2E25@one.localnet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 50EC2267445
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 05:24:11 +0100 (CET)
-Received: by mail-pf1-f193.google.com with SMTP id 64so4701449pfr.9
- for <alsa-devel@alsa-project.org>; Wed, 09 Jan 2019 20:24:10 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
+Received: from smtp-out-2.mxes.net (smtp-out-2.mxes.net [205.237.194.127])
+ by alsa0.perex.cz (Postfix) with ESMTP id 056C8267445
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 05:44:33 +0100 (CET)
+Received: from Customer-MUA (mua.mxes.net [10.0.0.1])
+ by smtp.mxes.net (Postfix) with ESMTPA id 2655627555
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2019 23:44:32 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,55 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jay Foster <jay@systech.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+(I sent this first to alsa-user and was instructed to send it to
+alsa-devel, as well.)
 
-I'm an author of axfer.
+With a new OS installation on a pre-existing machine, some of the
+USB audio devices now have only 1.00 dB of playback volume
+adjustment, which of course is not enough to be terribly useful.
 
-On Tue, 08 Jan 2019 18:00:18 +0100, Jay Foster wrote:
-> I am attempting to build the 1.1.8 release of alsa-utils and getting
-> an error about POLLRDNORM (and others) undefined.=A0 This error comes
-> from axfer/waiter-select.c.=A0 axfer/waiter-select.c includes
-> "waiter.h", which includes "poll.h".=A0 This build is for a linux
-> target.
+The affected USB devices show up as "Audio Advantage MicroII" in the
+output of "aplay -L".  From LSB, they show up as these:
 
-> On Wed, 09 Jan 2019 17:22:36 +0100, Jay Foster wrote:
-> > On 1/9/2019 3:10 AM, Takashi Iwai wrote:
-> > > Which libc are you using?  The POSIX man page (man poll.h) mentions
-> > > POLLRDNORM defined there, at least, on my system with glibc 2.27.
-> >
-> > This is a legacy ARM product using glibc 2.9.
+Bus 001 Device 004: ID 0d8c:0103 C-Media Electronics, Inc. CM102-A+/102S+ Audio Controller
+Bus 001 Device 003: ID 0d8c:0103 C-Media Electronics, Inc. CM102-A+/102S+ Audio Controller
 
-I'm sorry for the FTBFS but it's out of my notice to build with too-old gli=
-bc.
+I just installed Devuan Ascii on the machine.  It's running kernel
+4.9.0-8-amd64 and alsa-utils version 1.1.3-1.  Doing "amixer -c 1
+contents" or "amixer -c 2 contents" shows this for playback volume:
 
-Here, a history of glibc for related events:
-* glibc-2.9: 2008/11/13
-  * your version
-* glibc-2.10: 2009/5/9
-  * support XPG7/POSIX-2008
-  * add '__USE_XOPEN2k8' for the avove
-* glibc-2.19: 2014/2/7
-  * add '_DEFAULT_SOURCE' macro
-  * XPG7/POSIX-2008 is a default behaviour
-* glibc-2.20: 2014/9/7
-  * obsolete '_BSD_SOURCE' and '_SYSV_SOURCE' macros
-* glibc-2.28: 2018/8/1
-  * used my environment (Ubuntu 18.10)
+numid=3,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=255,step=0
+    : values=0,0
+      | dBminmax-min=-1.00dB,max=0.00dB
 
-The macros, POLLRDNORM and the others, seems to be defined officially in
-POSIX-2008 and nowadays glibc supports POSIX-2008 as a default. This is
-the reason that I've never faced your issue in my development period.
-I guess it's the reason that nothing noted in man of poll(2) and
-select(2).
+and
 
-I need a bit time to judge whether it's woth to support such old-glibc.
-Just removal of the newly-introduced macros is a simple solution.
+numid=3,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=255,step=0
+    : values=77,77
+      | dBminmax-min=-1.00dB,max=0.00dB
 
+It looks like I'm running kernel 4.9.0-8-amd64 and alsa-utils
+version 1.1.3-1.
 
-Thanks for your report
+Using alsamixer to run the controls from end to end, I cannot
+perceive any difference in volume level.
 
-Takashi Sakamoto
+In contrast, the other device I use (either HDA Intel or HDA NVidia)
+has around a 60dB range according to amixer, and running the control
+in alsamixer from end to end has a huge range of gain.
+
+Previously, the exact same hardware was running Debian 7/Wheezy and
+then Slackware 14.2.  With both those operating systems, the USB
+sound devices had a very adequate volume control range, certainly a
+whole lot more than 1dB.
+
+Being as the USB sound devices are the ones my wife uses, I'd be
+extremely grateful if somebody could point me a to way (if one
+exists) to a usefully greater range of volume control.  Any
+suggestions?
+
+Assuming this qualifies as a bug, what channel should I use to
+report it so it can be queued to be fixed?
+
+Thanks,
+
+Robert
