@@ -1,16 +1,16 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 3/5] ALSA: hda: add register offset for stripe
-	control
-Date: Thu, 10 Jan 2019 22:33:23 +0530
-Message-ID: <1547139805-1904-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 4/5] ALSA: hda: program stripe bits for
+	controller
+Date: Thu, 10 Jan 2019 22:33:24 +0530
+Message-ID: <1547139805-1904-4-git-send-email-spujar@nvidia.com>
 References: <1547139805-1904-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF1B267548
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 18:03:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 516252674E1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 18:03:56 +0100 (CET)
 In-Reply-To: <1547139805-1904-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,32 +25,52 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-bits 16:17 in SD_CTL register refer to stripe control. Added an
-offset register(AZX_REG_SD_CTL_3B) to have exclusive read/write
-of corresponding register byte. This helps to avoid unnecessary
-32-bit read/write of SD_CTL whenever only stripe or other bits of
-corresponding byte need to be updated. Also HD audio spec defines
-SD_CTL as 3 byte register.
+Platforms having multiple hdmi/dp sinks require higher bandwidth
+to support simultaneous playbacks of higher resolution. If hda
+controller supports multiple SDO lines, STRIPE can be used to
+indicate how many of the SDO lines the stream should be striped
+across.
+
+During stream start stripe control bits are programmed to use given
+number of sdo lines and the same is cleared during stream stop.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
 Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
 ---
- include/sound/hda_register.h | 1 +
- 1 file changed, 1 insertion(+)
+ sound/hda/hdac_stream.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index 2ab39fb..5b1f5d8 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -79,6 +79,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index b403b05..7dbaecc 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -82,6 +82,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_init);
+ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
+ {
+ 	struct hdac_bus *bus = azx_dev->bus;
++	int stripe_ctl;
  
- /* stream register offsets from stream base */
- #define AZX_REG_SD_CTL			0x00
-+#define AZX_REG_SD_CTL_3B		0x02 /* 3rd byte of SD_CTL register */
- #define AZX_REG_SD_STS			0x03
- #define AZX_REG_SD_LPIB			0x04
- #define AZX_REG_SD_CBL			0x08
+ 	trace_snd_hdac_stream_start(bus, azx_dev);
+ 
+@@ -91,6 +92,9 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
+ 
+ 	/* enable SIE */
+ 	snd_hdac_chip_updatel(bus, INTCTL, 0, 1 << azx_dev->index);
++	/* set stripe control */
++	stripe_ctl = snd_hdac_get_stream_stripe_ctl(bus, azx_dev->substream);
++	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, 0, stripe_ctl & 0x3);
+ 	/* set DMA start and interrupt mask */
+ 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
+ 				0, SD_CTL_DMA_START | SD_INT_MASK);
+@@ -107,6 +111,7 @@ void snd_hdac_stream_clear(struct hdac_stream *azx_dev)
+ 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
+ 				SD_CTL_DMA_START | SD_INT_MASK, 0);
+ 	snd_hdac_stream_writeb(azx_dev, SD_STS, SD_INT_MASK); /* to be sure */
++	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, 0x3, 0);
+ 	azx_dev->running = false;
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_stream_clear);
 -- 
 2.7.4
 
