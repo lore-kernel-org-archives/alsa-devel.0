@@ -1,111 +1,92 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
- suspend/resume
-Date: Thu, 10 Jan 2019 05:30:14 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19527AF06F@SHSMSX103.ccr.corp.intel.com>
-References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
- <e2c257fb-e292-b23d-1f20-e5467e0d93dd@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D19527AE0B4@SHSMSX103.ccr.corp.intel.com>
- <s5hd0p71jvh.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AE92B@SHSMSX103.ccr.corp.intel.com>
- <s5h8szui68f.wl-tiwai@suse.de> <s5h4laii46l.wl-tiwai@suse.de>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] Applied "ASoC: soc-core: defer card probe until all
+ component is added to list" to the asoc tree
+Date: Thu, 10 Jan 2019 12:39:13 +0530
+Message-ID: <961ef85b-86a5-1db8-260b-6c5cb27399fe@codeaurora.org>
+References: <1547023627-30312-1-git-send-email-rohitkr@codeaurora.org>
+ <20190109124902.672EB1127528@debutante.sirena.org.uk>
+ <874lahb6bi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 312C1267445
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 06:30:17 +0100 (CET)
-In-Reply-To: <s5h4laii46l.wl-tiwai@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <874lahb6bi.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Ajit Pandey <ajitp@codeaurora.org>, rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, asishb@codeaurora.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks Kuninori for reporting the issue.
 
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Wednesday, January 9, 2019 5:14 PM
->To: Yang, Libin <libin.yang@intel.com>
->Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; alsa-
->devel@alsa-project.org; broonie@kernel.org;
->liam.r.girdwood@linux.intel.com; Lin, Mengdong <mengdong.lin@intel.com>
->Subject: Re: [alsa-devel] [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
->suspend/resume
+On 1/10/2019 8:02 AM, Kuninori Morimoto wrote:
+> Hi Mark, Ajit
 >
->On Wed, 09 Jan 2019 09:29:36 +0100,
->Takashi Iwai wrote:
+>> From: Ajit Pandey <ajitp@codeaurora.org>
+>> Date: Wed, 9 Jan 2019 14:17:07 +0530
+>> Subject: [PATCH] ASoC: soc-core: defer card probe until all component is added
+>>   to list
 >>
->> On Wed, 09 Jan 2019 09:16:34 +0100,
->> Yang, Libin wrote:
->> >
->> > >-
->> > >-static void hdmi_codec_complete(struct device *dev)
->> > >+#ifdef CONFIG_PM_SLEEP
->> > >+static int hdmi_codec_resume(struct device *dev)
->> > > {
->> > > 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
->> > > 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
->> > >+	int ret;
->> > >
->> > >-	/* Power up afg */
->> > >-	snd_hdac_codec_read(hdev, hdev->afg, 0,
->> > >	AC_VERB_SET_POWER_STATE,
->> > >-							AC_PWRST_D0);
->> > >-
->> > >-	hdac_hdmi_skl_enable_all_pins(hdev);
->> > >-	hdac_hdmi_skl_enable_dp12(hdev);
->> > >-
->> > >+	ret = pm_runtime_force_resume(dev);
->> >
->> > The code hopes to call hdmi pm_runtime() whenever this resume() is
->> > called? If so, I'm afraid it will not work.
->> > pm_runtime_force_resume() calls pm_runtime with conditions.
->> > Sometimes pm_runtime will not be called. In my suspend/resume test,
->> > it shows that pm_runtime() is not called. This may cause the
->> > following function
->> > hdac_hdmi_present_sense_all_pins() not work well as there is no
->> > power on.
+>> DAI component probe is not called if it is not present
+>> in component list during sound card registration.
+>> Check if component is available in component list for
+>> platform and cpu dai before soundcard registration.
 >>
->> Hm, right, maybe we should move hdac_hdmi_present_sense_all_pins()
->> into runtime resume.  It may be called unconditionally, but safer to
->> call it conditionally only after S3 or so...
+>> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+>> Signed-off-by: Mark Brown <broonie@kernel.org>
+>> ---
+> I got below WARNING by this patch.
+> I guess we need mutex_lock() on snd_soc_register_card() ?
+
+Right, we should have client_mutex lock before calling 
+soc_find_component().
+
+We will post fix.
+
 >
->Now reading back the code again, no, it's correct to call
->hdac_hdmi_present_sense_all_pins() there.  The function doesn't access any
->HD-audio codec verbs but only with the i915 audio component.
->Hence it's safe to call there no matter whether the device is opened (thus
->resumed) or not.  And, it is even mandatory to call there; if a HDMI connection
->changed during suspend, we need to notify it right after the system resume.
-
-Yes. It seems this is safe. Thanks for clarification. SOF audio driver test passes. 
-No reply from our internal SST driver team. From SOF test, this patch can fix
-the display power issue.
-
-BTW: I have another question. Maybe it is not related to this topic, but
-related the general audio power sequence. I'm not sure my understand
-is correct or not.
-Currently, codec device's parent is the card device, right? If so, the suspend
-sequence is:
-codec power off (child)
-card power off (parent)
-
-However, I see some cards will call trigger for suspend in card suspend
-function. This may cause issue logically (Maybe the real cards are always
-OK). The codec has already powered off. So if trigger() operates with
-codec may cause issue? Even, if the codec is the master, maybe the clk
-is off before trigger() is called. I'm not sure this is always OK.
-(This is why I submitted the second patch.)
+> 	...
+> 	[drm] Device feb00000.display probed
+> 	[drm] Cannot find any crtc or sizes
+> 	[drm] Cannot find any crtc or sizes
+> 	WARNING: CPU: 0 PID: 76 at sound/soc/soc-core.c:739 soc_find_component+0xb8/0xc0
+> 	CPU: 0 PID: 76 Comm: kworker/0:1 Not tainted 5.0.0-rc1+ #1360
+> 	Hardware name: Renesas H3ULCB Kingfisher board based on r8a7795 ES2.0+ (DT)
+> 	Workqueue: events deferred_probe_work_func
+> 	pstate: 60000005 (nZCv daif -PAN -UAO)
+> 	pc : soc_find_component+0xb8/0xc0
+> 	lr : soc_find_component+0xb4/0xc0
+> 	sp : ffff00001217ba10
+> 	x29: ffff00001217ba10 x28: 0000000000000000
+> 	x27: ffff000010a82920 x26: 0000000000000000
+> 	x25: ffff8006f9c59900 x24: ffff0000105f33a0
+> 	x23: ffff000010948d70 x22: 0000000000000000
+> 	x21: ffff000010af1720 x20: ffff8006ff80b6d8
+> 	x19: ffff8006f8523080 x18: 0000000000000010
+> 	x17: 0000000000000000 x16: 0000000000000000
+> 	x15: ffffffffffffffff x14: 0720072007200720
+> 	x13: 0720072007200720 x12: 0720072007200720
+> 	x11: 0720072007200720 x10: 0720072007200720
+> 	x9 : 0000000000000000 x8 : ffff000010a85000
+> 	x7 : ffff000010114bd4 x6 : 0000000000000001
+> 	x5 : 0000000000000018 x4 : 0000000000000001
+> 	x3 : 0000000000000000 x2 : 0000000000000003
+> 	x1 : ffff000010af17b0 x0 : 0000000000000000
+> 	Call trace:
+> 	 soc_find_component+0xb8/0xc0
+> 	 soc_init_dai_link+0x18c/0x210
+> 	 snd_soc_register_card.part.16+0x138/0x198
+> 	 snd_soc_register_card+0x30/0x48
+> 	 devm_snd_soc_register_card+0x4c/0xa0
+> 	 graph_probe+0x2d8/0x388
+> 	 platform_drv_probe+0x58/0xa8
+> 	 really_probe+0x1c0/0x2a0
+> 	 driver_probe_device+0x5c/0xf0
+> 	 __device_attach_driver+0x9c/0xe0
+> 	...
 
 Regards,
-Libin
+Rohit
+-- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
