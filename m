@@ -1,17 +1,24 @@
-From: ard <ard@kwaak.net>
-Subject: Re: Pioneer DDJ-SX3 usb audio quirks
-Date: Thu, 10 Jan 2019 16:07:47 +0100
-Message-ID: <20190110150747.GS12622@kwaak.net>
-References: <20190109155848.GQ12622@kwaak.net> <s5h5zuwyb9w.wl-tiwai@suse.de>
+From: Jay Foster <jay@systech.com>
+Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
+Date: Thu, 10 Jan 2019 08:44:34 -0800
+Message-ID: <9d5e2de4-46d4-e0fc-9a2e-50925244811d@systech.com>
+References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
+ <s5htviixf0t.wl-tiwai@suse.de>
+ <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
+ <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
+ <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
+ <20190110042402.GA7696@workstation>
+ <905a26fc-073f-e223-2107-729652ac0c5f@perex.cz>
+Reply-To: jay@systech.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kwaak.net (gw-fsck-sorbs.kwaak.net [82.197.218.155])
- by alsa0.perex.cz (Postfix) with ESMTP id DE69F2674BA
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 16:08:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h5zuwyb9w.wl-tiwai@suse.de>
+Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
+ [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 0593226712B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 17:44:44 +0100 (CET)
+In-Reply-To: <905a26fc-073f-e223-2107-729652ac0c5f@perex.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +28,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Thu, Jan 10, 2019 at 12:58:35PM +0100, Takashi Iwai wrote:
-> On Wed, 09 Jan 2019 16:58:48 +0100,
-> ard wrote:
-> > 
-> > Since this is a copy paste of the roland octo capture with fixes for the numbers I know, I am still wondering about this:
-> > Should I use .ifnum=1 for every snd_usb_audio_quirk?
-> > And in eacht audioformat should I use .iface = 0? 
-> 
-> Just put the value you take for .ifnum to .iface field.  They must be
-> same.
-
-Thanks! I figured as much. You know it's now on to the next
-problem :-).
-
-[   14.576174] usb 3-1.1.3: 0:1 : invalid sync pipe. is_playback 1, ep 86, bSynchAddress 00
-
-The timing is done by implicit feedback. As in: there is no other
-traffic than 5MB/s of 10 channels iso in and 12 channels iso out
-for playing a single channel.
-
-I assume I have to add a case to: set_sync_ep_implicit_fb_quirk
-in sound/usb/pcm.c, as I fail to see a construction that automagically
-connects a 12 channel output to a 10 channel input with the
-USB_ENDPOINT_USAGE_IMPLICIT_FB flag added to the ep_attr field.
-
-I will try just the flag added to the iso in endpoint for now.
-
-Regards,
-Ard van Breemen
-
--- 
-.signature not found
+CgpPbiAxLzEwLzIwMTkgMTI6MzEgQU0sIEphcm9zbGF2IEt5c2VsYSB3cm90ZToKPiBEbmUgMTAu
+MS4yMDE5IHYgMDU6MjQgVGFrYXNoaSBTYWthbW90byBuYXBzYWwoYSk6Cj4+IEhpLAo+Pgo+PiBJ
+J20gYW4gYXV0aG9yIG9mIGF4ZmVyLgo+Pgo+PiBPbiBUdWUsIDA4IEphbiAyMDE5IDE4OjAwOjE4
+ICswMTAwLCBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4gSSBhbSBhdHRlbXB0aW5nIHRvIGJ1aWxkIHRo
+ZSAxLjEuOCByZWxlYXNlIG9mIGFsc2EtdXRpbHMgYW5kIGdldHRpbmcKPj4+IGFuIGVycm9yIGFi
+b3V0IFBPTExSRE5PUk0gKGFuZCBvdGhlcnMpIHVuZGVmaW5lZC7CoCBUaGlzIGVycm9yIGNvbWVz
+Cj4+PiBmcm9tIGF4ZmVyL3dhaXRlci1zZWxlY3QuYy7CoCBheGZlci93YWl0ZXItc2VsZWN0LmMg
+aW5jbHVkZXMKPj4+ICJ3YWl0ZXIuaCIsIHdoaWNoIGluY2x1ZGVzICJwb2xsLmgiLsKgIFRoaXMg
+YnVpbGQgaXMgZm9yIGEgbGludXgKPj4+IHRhcmdldC4KPj4+IE9uIFdlZCwgMDkgSmFuIDIwMTkg
+MTc6MjI6MzYgKzAxMDAsIEpheSBGb3N0ZXIgd3JvdGU6Cj4+Pj4gT24gMS85LzIwMTkgMzoxMCBB
+TSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBXaGljaCBsaWJjIGFyZSB5b3UgdXNpbmc/ICBU
+aGUgUE9TSVggbWFuIHBhZ2UgKG1hbiBwb2xsLmgpIG1lbnRpb25zCj4+Pj4+IFBPTExSRE5PUk0g
+ZGVmaW5lZCB0aGVyZSwgYXQgbGVhc3QsIG9uIG15IHN5c3RlbSB3aXRoIGdsaWJjIDIuMjcuCj4+
+Pj4gVGhpcyBpcyBhIGxlZ2FjeSBBUk0gcHJvZHVjdCB1c2luZyBnbGliYyAyLjkuCj4+IEknbSBz
+b3JyeSBmb3IgdGhlIEZUQkZTIGJ1dCBpdCdzIG91dCBvZiBteSBub3RpY2UgdG8gYnVpbGQgd2l0
+aCB0b28tb2xkIGdsaWJjLgo+Pgo+PiBIZXJlLCBhIGhpc3Rvcnkgb2YgZ2xpYmMgZm9yIHJlbGF0
+ZWQgZXZlbnRzOgo+PiAqIGdsaWJjLTIuOTogMjAwOC8xMS8xMwo+PiAgICAqIHlvdXIgdmVyc2lv
+bgo+PiAqIGdsaWJjLTIuMTA6IDIwMDkvNS85Cj4+ICAgICogc3VwcG9ydCBYUEc3L1BPU0lYLTIw
+MDgKPj4gICAgKiBhZGQgJ19fVVNFX1hPUEVOMms4JyBmb3IgdGhlIGF2b3ZlCj4+ICogZ2xpYmMt
+Mi4xOTogMjAxNC8yLzcKPj4gICAgKiBhZGQgJ19ERUZBVUxUX1NPVVJDRScgbWFjcm8KPj4gICAg
+KiBYUEc3L1BPU0lYLTIwMDggaXMgYSBkZWZhdWx0IGJlaGF2aW91cgo+PiAqIGdsaWJjLTIuMjA6
+IDIwMTQvOS83Cj4+ICAgICogb2Jzb2xldGUgJ19CU0RfU09VUkNFJyBhbmQgJ19TWVNWX1NPVVJD
+RScgbWFjcm9zCj4+ICogZ2xpYmMtMi4yODogMjAxOC84LzEKPj4gICAgKiB1c2VkIG15IGVudmly
+b25tZW50IChVYnVudHUgMTguMTApCj4+Cj4+IFRoZSBtYWNyb3MsIFBPTExSRE5PUk0gYW5kIHRo
+ZSBvdGhlcnMsIHNlZW1zIHRvIGJlIGRlZmluZWQgb2ZmaWNpYWxseSBpbgo+PiBQT1NJWC0yMDA4
+IGFuZCBub3dhZGF5cyBnbGliYyBzdXBwb3J0cyBQT1NJWC0yMDA4IGFzIGEgZGVmYXVsdC4gVGhp
+cyBpcwo+PiB0aGUgcmVhc29uIHRoYXQgSSd2ZSBuZXZlciBmYWNlZCB5b3VyIGlzc3VlIGluIG15
+IGRldmVsb3BtZW50IHBlcmlvZC4KPj4gSSBndWVzcyBpdCdzIHRoZSByZWFzb24gdGhhdCBub3Ro
+aW5nIG5vdGVkIGluIG1hbiBvZiBwb2xsKDIpIGFuZAo+PiBzZWxlY3QoMikuCj4+Cj4+IEkgbmVl
+ZCBhIGJpdCB0aW1lIHRvIGp1ZGdlIHdoZXRoZXIgaXQncyB3b3RoIHRvIHN1cHBvcnQgc3VjaCBv
+bGQtZ2xpYmMuCj4+IEp1c3QgcmVtb3ZhbCBvZiB0aGUgbmV3bHktaW50cm9kdWNlZCBtYWNyb3Mg
+aXMgYSBzaW1wbGUgc29sdXRpb24uCj4gV2UgbWF5IGFkZCB0aG9zZSBkZWZpbml0aW9ucyB0byBD
+RkxBR1MgKC1EKSB0aHJvdWdoIGNvbmZpZ3VyZSBmb3IgdGhlCj4gb2xkIGxpYnMuIE9yIGp1c3Qg
+dXNlZCAjaWZkZWYgaW4gdGhlIHdhaXRlci1zZWxlY3QuYyAtIGl0J3Mgb25seSBvbmUKPiBwbGFj
+ZSB3aGljaCB1c2VzIHRoaXMgYXQgdGhpcyBtb21lbnQsIGJ1dCBpdCdzIG9ubHkgcXVpY2sgd29y
+a2Fyb3VuZC4KPgo+IAkJCQkJSmFyb3NsYXYKPgpJIGNhbiByZXNvbHZlIHRoZSBpc3N1ZSBieSBh
+ZGRpbmcgLURfR05VX1NPVVJDRSB0byBteSBDRkxBR1Mgd2hlbiAKYnVpbGRpbmcgYWxzYS11dGls
+cy7CoCBJdCB3b3VsZCBhbHNvIGJlIGFjY2VwdGFibGUgKHRvIG1lKSBpZiB5b3UgZGlkIApub3Ro
+aW5nIGFib3V0IHRoaXMuCgpJZiB5b3Ugd2lzaCB0byBjaGVjayB0aGUgdmVyc2lvbiBvZiBnbGli
+YyBmb3Igc3VwcG9ydCBvZiBQT0xMUkROT1JNIAp0aHJvdWdoIGNvbmZpZ3VyZSBhbmQgYWRkIC1E
+X0dOVV9TT1VSQ0UgZm9yIG9sZGVyIHZlcnNpb25zLCB0aGF0IG1heSAKd29yayB0b28uwqAgSSBj
+YW4gcmVwb3J0IHRoYXQtRF9HTlVfU09VUkNFIGlzIG5vdCBuZWVkZWQgd2l0aCBnbGliYyAKMi4y
+Mi7CoCBJIGFtIG5vdCBzdXJlIHByZWNpc2VseSB3aGljaCB2ZXJzaW9uIHRoZSBQT0xMUkROT1JN
+IChhbmQgCmZyaWVuZHMpIHdlcmUgZW5hYmxlZCBieSBkZWZhdWx0LsKgIEkgY2FuIGltYWdpbmUg
+YSBjb25maWd1cmUgdGVzdCB0aGF0IApjb21waWxlZCBhIHRlc3QgYXBwIHdoaWNoIHRyaWVzIHRv
+IHVzZSBQT0xMUkROT1JNLCBhbmQgaWYgaXQgY29tcGlsZXMgCnN1Y2Nlc3NmdWxseSwgdGhlbiBu
+b3RoaW5nIGVsc2UgaXMgbmVlZGVkLsKgIElmIG5vdCwgdHJ5IGFnYWluIHdpdGggCi1EX0dOVV9T
+T1VSQ0UsIGFuZCBpZiB0aGF0IHdvcmtzLCBhZGQgLURfR05VX1NPVVJDRSB0byB0aGUgQ0ZMQUdT
+LsKgIFN1Y2ggCmEgdGVzdCBtaWdodCBhbHNvIGJlIGNvbmRpdGlvbmFsIG9uIHNlbGVjdGluZyB3
+YWl0ZXItc2VsZWN0ICh0aGUgb25seSAKcGxhY2UgdGhpcyBpcyB1c2VkKS4KSmF5CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
