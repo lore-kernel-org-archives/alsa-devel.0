@@ -1,71 +1,57 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
-Date: Thu, 10 Jan 2019 09:31:25 +0100
-Message-ID: <905a26fc-073f-e223-2107-729652ac0c5f@perex.cz>
-References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
- <s5htviixf0t.wl-tiwai@suse.de>
- <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
- <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
- <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
- <20190110042402.GA7696@workstation>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E433426712B
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 09:31:29 +0100 (CET)
-In-Reply-To: <20190110042402.GA7696@workstation>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jay Foster <jay@systech.com>
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: soc-core: Hold client_mutex around soc_init_dai_link()
+Date: Thu, 10 Jan 2019 14:32:41 +0530
+Message-ID: <1547110961-23670-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, asishb@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, vinod.koul@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>, Ajit Pandey <ajitp@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDEwLjEuMjAxOSB2IDA1OjI0IFRha2FzaGkgU2FrYW1vdG8gbmFwc2FsKGEpOgo+IEhpLAo+
-IAo+IEknbSBhbiBhdXRob3Igb2YgYXhmZXIuCj4gCj4gT24gVHVlLCAwOCBKYW4gMjAxOSAxODow
-MDoxOCArMDEwMCwgSmF5IEZvc3RlciB3cm90ZToKPj4gSSBhbSBhdHRlbXB0aW5nIHRvIGJ1aWxk
-IHRoZSAxLjEuOCByZWxlYXNlIG9mIGFsc2EtdXRpbHMgYW5kIGdldHRpbmcKPj4gYW4gZXJyb3Ig
-YWJvdXQgUE9MTFJETk9STSAoYW5kIG90aGVycykgdW5kZWZpbmVkLsKgIFRoaXMgZXJyb3IgY29t
-ZXMKPj4gZnJvbSBheGZlci93YWl0ZXItc2VsZWN0LmMuwqAgYXhmZXIvd2FpdGVyLXNlbGVjdC5j
-IGluY2x1ZGVzCj4+ICJ3YWl0ZXIuaCIsIHdoaWNoIGluY2x1ZGVzICJwb2xsLmgiLsKgIFRoaXMg
-YnVpbGQgaXMgZm9yIGEgbGludXgKPj4gdGFyZ2V0Lgo+IAo+PiBPbiBXZWQsIDA5IEphbiAyMDE5
-IDE3OjIyOjM2ICswMTAwLCBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4gT24gMS85LzIwMTkgMzoxMCBB
-TSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+IFdoaWNoIGxpYmMgYXJlIHlvdSB1c2luZz8gIFRo
-ZSBQT1NJWCBtYW4gcGFnZSAobWFuIHBvbGwuaCkgbWVudGlvbnMKPj4+PiBQT0xMUkROT1JNIGRl
-ZmluZWQgdGhlcmUsIGF0IGxlYXN0LCBvbiBteSBzeXN0ZW0gd2l0aCBnbGliYyAyLjI3Lgo+Pj4K
-Pj4+IFRoaXMgaXMgYSBsZWdhY3kgQVJNIHByb2R1Y3QgdXNpbmcgZ2xpYmMgMi45Lgo+IAo+IEkn
-bSBzb3JyeSBmb3IgdGhlIEZUQkZTIGJ1dCBpdCdzIG91dCBvZiBteSBub3RpY2UgdG8gYnVpbGQg
-d2l0aCB0b28tb2xkIGdsaWJjLgo+IAo+IEhlcmUsIGEgaGlzdG9yeSBvZiBnbGliYyBmb3IgcmVs
-YXRlZCBldmVudHM6Cj4gKiBnbGliYy0yLjk6IDIwMDgvMTEvMTMKPiAgICogeW91ciB2ZXJzaW9u
-Cj4gKiBnbGliYy0yLjEwOiAyMDA5LzUvOQo+ICAgKiBzdXBwb3J0IFhQRzcvUE9TSVgtMjAwOAo+
-ICAgKiBhZGQgJ19fVVNFX1hPUEVOMms4JyBmb3IgdGhlIGF2b3ZlCj4gKiBnbGliYy0yLjE5OiAy
-MDE0LzIvNwo+ICAgKiBhZGQgJ19ERUZBVUxUX1NPVVJDRScgbWFjcm8KPiAgICogWFBHNy9QT1NJ
-WC0yMDA4IGlzIGEgZGVmYXVsdCBiZWhhdmlvdXIKPiAqIGdsaWJjLTIuMjA6IDIwMTQvOS83Cj4g
-ICAqIG9ic29sZXRlICdfQlNEX1NPVVJDRScgYW5kICdfU1lTVl9TT1VSQ0UnIG1hY3Jvcwo+ICog
-Z2xpYmMtMi4yODogMjAxOC84LzEKPiAgICogdXNlZCBteSBlbnZpcm9ubWVudCAoVWJ1bnR1IDE4
-LjEwKQo+IAo+IFRoZSBtYWNyb3MsIFBPTExSRE5PUk0gYW5kIHRoZSBvdGhlcnMsIHNlZW1zIHRv
-IGJlIGRlZmluZWQgb2ZmaWNpYWxseSBpbgo+IFBPU0lYLTIwMDggYW5kIG5vd2FkYXlzIGdsaWJj
-IHN1cHBvcnRzIFBPU0lYLTIwMDggYXMgYSBkZWZhdWx0LiBUaGlzIGlzCj4gdGhlIHJlYXNvbiB0
-aGF0IEkndmUgbmV2ZXIgZmFjZWQgeW91ciBpc3N1ZSBpbiBteSBkZXZlbG9wbWVudCBwZXJpb2Qu
-Cj4gSSBndWVzcyBpdCdzIHRoZSByZWFzb24gdGhhdCBub3RoaW5nIG5vdGVkIGluIG1hbiBvZiBw
-b2xsKDIpIGFuZAo+IHNlbGVjdCgyKS4KPiAKPiBJIG5lZWQgYSBiaXQgdGltZSB0byBqdWRnZSB3
-aGV0aGVyIGl0J3Mgd290aCB0byBzdXBwb3J0IHN1Y2ggb2xkLWdsaWJjLgo+IEp1c3QgcmVtb3Zh
-bCBvZiB0aGUgbmV3bHktaW50cm9kdWNlZCBtYWNyb3MgaXMgYSBzaW1wbGUgc29sdXRpb24uCgpX
-ZSBtYXkgYWRkIHRob3NlIGRlZmluaXRpb25zIHRvIENGTEFHUyAoLUQpIHRocm91Z2ggY29uZmln
-dXJlIGZvciB0aGUKb2xkIGxpYnMuIE9yIGp1c3QgdXNlZCAjaWZkZWYgaW4gdGhlIHdhaXRlci1z
-ZWxlY3QuYyAtIGl0J3Mgb25seSBvbmUKcGxhY2Ugd2hpY2ggdXNlcyB0aGlzIGF0IHRoaXMgbW9t
-ZW50LCBidXQgaXQncyBvbmx5IHF1aWNrIHdvcmthcm91bmQuCgoJCQkJCUphcm9zbGF2CgotLSAK
-SmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4KTGludXggU291bmQgTWFpbnRhaW5lcjsg
-QUxTQSBQcm9qZWN0OyBSZWQgSGF0LCBJbmMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+soc_init_dai_link() calls soc_find_component() which needs
+to be within client_mutex lock. Add client_mutex lock around
+soc_init_dai_link() in snd_soc_register_card() to avoid
+lockdep warning.
+
+Fixes: 8780cf1142a5 ("ASoC: soc-core: defer card probe until all component is added to list")
+Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+---
+ sound/soc/soc-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index eec92f1..0934b36 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1027,6 +1027,7 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+ 				 struct snd_soc_dai_link *dai_link)
+ {
+ 	struct snd_soc_dai_link_component *platform = dai_link->platform;
++
+ 	/*
+ 	 * FIXME
+ 	 *
+@@ -2754,15 +2755,18 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	if (!card->name || !card->dev)
+ 		return -EINVAL;
+ 
++	mutex_lock(&client_mutex);
+ 	for_each_card_prelinks(card, i, link) {
+ 
+ 		ret = soc_init_dai_link(card, link);
+ 		if (ret) {
+ 			dev_err(card->dev, "ASoC: failed to init link %s\n",
+ 				link->name);
++			mutex_unlock(&client_mutex);
+ 			return ret;
+ 		}
+ 	}
++	mutex_unlock(&client_mutex);
+ 
+ 	dev_set_drvdata(card->dev, card);
+ 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
