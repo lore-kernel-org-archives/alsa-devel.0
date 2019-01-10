@@ -1,24 +1,18 @@
-From: Jay Foster <jay@systech.com>
-Subject: Re: ALSA 1.1.8 Release - POLLRDNORM undefined
-Date: Thu, 10 Jan 2019 08:44:34 -0800
-Message-ID: <9d5e2de4-46d4-e0fc-9a2e-50925244811d@systech.com>
-References: <34543a6f-8123-10e5-ea79-338b82a22818@systech.com>
- <s5htviixf0t.wl-tiwai@suse.de>
- <1e297542-0023-0a92-7407-076ee547b5d9@systech.com>
- <s5hftu1h8qg.wl-tiwai@suse.de> <s5hef9lh8ne.wl-tiwai@suse.de>
- <24afbadf-7c52-1f1c-6fcd-45a1bf8a6657@systech.com>
- <20190110042402.GA7696@workstation>
- <905a26fc-073f-e223-2107-729652ac0c5f@perex.cz>
-Reply-To: jay@systech.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: core: Fix deferral of machine drivers
+Date: Thu, 10 Jan 2019 16:48:35 +0000
+Message-ID: <20190110164835.GF9541@sirena.org.uk>
+References: <1546968494-22993-1-git-send-email-jonathanh@nvidia.com>
+ <20190109183605.GH10405@sirena.org.uk>
+ <44a64e6e-c9ec-8eba-60fe-eda092250d82@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0855239437687701733=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 0593226712B
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 17:44:44 +0100 (CET)
-In-Reply-To: <905a26fc-073f-e223-2107-729652ac0c5f@perex.cz>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F5D326712B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 17:48:37 +0100 (CET)
+In-Reply-To: <44a64e6e-c9ec-8eba-60fe-eda092250d82@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,60 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Matthias Reichl <hias@horus.com>, Marcel Ziswiler <marcel@ziswiler.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxLzEwLzIwMTkgMTI6MzEgQU0sIEphcm9zbGF2IEt5c2VsYSB3cm90ZToKPiBEbmUgMTAu
-MS4yMDE5IHYgMDU6MjQgVGFrYXNoaSBTYWthbW90byBuYXBzYWwoYSk6Cj4+IEhpLAo+Pgo+PiBJ
-J20gYW4gYXV0aG9yIG9mIGF4ZmVyLgo+Pgo+PiBPbiBUdWUsIDA4IEphbiAyMDE5IDE4OjAwOjE4
-ICswMTAwLCBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4gSSBhbSBhdHRlbXB0aW5nIHRvIGJ1aWxkIHRo
-ZSAxLjEuOCByZWxlYXNlIG9mIGFsc2EtdXRpbHMgYW5kIGdldHRpbmcKPj4+IGFuIGVycm9yIGFi
-b3V0IFBPTExSRE5PUk0gKGFuZCBvdGhlcnMpIHVuZGVmaW5lZC7CoCBUaGlzIGVycm9yIGNvbWVz
-Cj4+PiBmcm9tIGF4ZmVyL3dhaXRlci1zZWxlY3QuYy7CoCBheGZlci93YWl0ZXItc2VsZWN0LmMg
-aW5jbHVkZXMKPj4+ICJ3YWl0ZXIuaCIsIHdoaWNoIGluY2x1ZGVzICJwb2xsLmgiLsKgIFRoaXMg
-YnVpbGQgaXMgZm9yIGEgbGludXgKPj4+IHRhcmdldC4KPj4+IE9uIFdlZCwgMDkgSmFuIDIwMTkg
-MTc6MjI6MzYgKzAxMDAsIEpheSBGb3N0ZXIgd3JvdGU6Cj4+Pj4gT24gMS85LzIwMTkgMzoxMCBB
-TSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBXaGljaCBsaWJjIGFyZSB5b3UgdXNpbmc/ICBU
-aGUgUE9TSVggbWFuIHBhZ2UgKG1hbiBwb2xsLmgpIG1lbnRpb25zCj4+Pj4+IFBPTExSRE5PUk0g
-ZGVmaW5lZCB0aGVyZSwgYXQgbGVhc3QsIG9uIG15IHN5c3RlbSB3aXRoIGdsaWJjIDIuMjcuCj4+
-Pj4gVGhpcyBpcyBhIGxlZ2FjeSBBUk0gcHJvZHVjdCB1c2luZyBnbGliYyAyLjkuCj4+IEknbSBz
-b3JyeSBmb3IgdGhlIEZUQkZTIGJ1dCBpdCdzIG91dCBvZiBteSBub3RpY2UgdG8gYnVpbGQgd2l0
-aCB0b28tb2xkIGdsaWJjLgo+Pgo+PiBIZXJlLCBhIGhpc3Rvcnkgb2YgZ2xpYmMgZm9yIHJlbGF0
-ZWQgZXZlbnRzOgo+PiAqIGdsaWJjLTIuOTogMjAwOC8xMS8xMwo+PiAgICAqIHlvdXIgdmVyc2lv
-bgo+PiAqIGdsaWJjLTIuMTA6IDIwMDkvNS85Cj4+ICAgICogc3VwcG9ydCBYUEc3L1BPU0lYLTIw
-MDgKPj4gICAgKiBhZGQgJ19fVVNFX1hPUEVOMms4JyBmb3IgdGhlIGF2b3ZlCj4+ICogZ2xpYmMt
-Mi4xOTogMjAxNC8yLzcKPj4gICAgKiBhZGQgJ19ERUZBVUxUX1NPVVJDRScgbWFjcm8KPj4gICAg
-KiBYUEc3L1BPU0lYLTIwMDggaXMgYSBkZWZhdWx0IGJlaGF2aW91cgo+PiAqIGdsaWJjLTIuMjA6
-IDIwMTQvOS83Cj4+ICAgICogb2Jzb2xldGUgJ19CU0RfU09VUkNFJyBhbmQgJ19TWVNWX1NPVVJD
-RScgbWFjcm9zCj4+ICogZ2xpYmMtMi4yODogMjAxOC84LzEKPj4gICAgKiB1c2VkIG15IGVudmly
-b25tZW50IChVYnVudHUgMTguMTApCj4+Cj4+IFRoZSBtYWNyb3MsIFBPTExSRE5PUk0gYW5kIHRo
-ZSBvdGhlcnMsIHNlZW1zIHRvIGJlIGRlZmluZWQgb2ZmaWNpYWxseSBpbgo+PiBQT1NJWC0yMDA4
-IGFuZCBub3dhZGF5cyBnbGliYyBzdXBwb3J0cyBQT1NJWC0yMDA4IGFzIGEgZGVmYXVsdC4gVGhp
-cyBpcwo+PiB0aGUgcmVhc29uIHRoYXQgSSd2ZSBuZXZlciBmYWNlZCB5b3VyIGlzc3VlIGluIG15
-IGRldmVsb3BtZW50IHBlcmlvZC4KPj4gSSBndWVzcyBpdCdzIHRoZSByZWFzb24gdGhhdCBub3Ro
-aW5nIG5vdGVkIGluIG1hbiBvZiBwb2xsKDIpIGFuZAo+PiBzZWxlY3QoMikuCj4+Cj4+IEkgbmVl
-ZCBhIGJpdCB0aW1lIHRvIGp1ZGdlIHdoZXRoZXIgaXQncyB3b3RoIHRvIHN1cHBvcnQgc3VjaCBv
-bGQtZ2xpYmMuCj4+IEp1c3QgcmVtb3ZhbCBvZiB0aGUgbmV3bHktaW50cm9kdWNlZCBtYWNyb3Mg
-aXMgYSBzaW1wbGUgc29sdXRpb24uCj4gV2UgbWF5IGFkZCB0aG9zZSBkZWZpbml0aW9ucyB0byBD
-RkxBR1MgKC1EKSB0aHJvdWdoIGNvbmZpZ3VyZSBmb3IgdGhlCj4gb2xkIGxpYnMuIE9yIGp1c3Qg
-dXNlZCAjaWZkZWYgaW4gdGhlIHdhaXRlci1zZWxlY3QuYyAtIGl0J3Mgb25seSBvbmUKPiBwbGFj
-ZSB3aGljaCB1c2VzIHRoaXMgYXQgdGhpcyBtb21lbnQsIGJ1dCBpdCdzIG9ubHkgcXVpY2sgd29y
-a2Fyb3VuZC4KPgo+IAkJCQkJSmFyb3NsYXYKPgpJIGNhbiByZXNvbHZlIHRoZSBpc3N1ZSBieSBh
-ZGRpbmcgLURfR05VX1NPVVJDRSB0byBteSBDRkxBR1Mgd2hlbiAKYnVpbGRpbmcgYWxzYS11dGls
-cy7CoCBJdCB3b3VsZCBhbHNvIGJlIGFjY2VwdGFibGUgKHRvIG1lKSBpZiB5b3UgZGlkIApub3Ro
-aW5nIGFib3V0IHRoaXMuCgpJZiB5b3Ugd2lzaCB0byBjaGVjayB0aGUgdmVyc2lvbiBvZiBnbGli
-YyBmb3Igc3VwcG9ydCBvZiBQT0xMUkROT1JNIAp0aHJvdWdoIGNvbmZpZ3VyZSBhbmQgYWRkIC1E
-X0dOVV9TT1VSQ0UgZm9yIG9sZGVyIHZlcnNpb25zLCB0aGF0IG1heSAKd29yayB0b28uwqAgSSBj
-YW4gcmVwb3J0IHRoYXQtRF9HTlVfU09VUkNFIGlzIG5vdCBuZWVkZWQgd2l0aCBnbGliYyAKMi4y
-Mi7CoCBJIGFtIG5vdCBzdXJlIHByZWNpc2VseSB3aGljaCB2ZXJzaW9uIHRoZSBQT0xMUkROT1JN
-IChhbmQgCmZyaWVuZHMpIHdlcmUgZW5hYmxlZCBieSBkZWZhdWx0LsKgIEkgY2FuIGltYWdpbmUg
-YSBjb25maWd1cmUgdGVzdCB0aGF0IApjb21waWxlZCBhIHRlc3QgYXBwIHdoaWNoIHRyaWVzIHRv
-IHVzZSBQT0xMUkROT1JNLCBhbmQgaWYgaXQgY29tcGlsZXMgCnN1Y2Nlc3NmdWxseSwgdGhlbiBu
-b3RoaW5nIGVsc2UgaXMgbmVlZGVkLsKgIElmIG5vdCwgdHJ5IGFnYWluIHdpdGggCi1EX0dOVV9T
-T1VSQ0UsIGFuZCBpZiB0aGF0IHdvcmtzLCBhZGQgLURfR05VX1NPVVJDRSB0byB0aGUgQ0ZMQUdT
-LsKgIFN1Y2ggCmEgdGVzdCBtaWdodCBhbHNvIGJlIGNvbmRpdGlvbmFsIG9uIHNlbGVjdGluZyB3
-YWl0ZXItc2VsZWN0ICh0aGUgb25seSAKcGxhY2UgdGhpcyBpcyB1c2VkKS4KSmF5CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============0855239437687701733==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="10jrOL3x2xqLmOsH"
+Content-Disposition: inline
+
+
+--10jrOL3x2xqLmOsH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 10, 2019 at 12:13:36PM +0000, Jon Hunter wrote:
+> On 09/01/2019 18:36, Mark Brown wrote:
+> > On Tue, Jan 08, 2019 at 05:28:14PM +0000, Jon Hunter wrote:
+
+> >> -	struct snd_soc_dai_link_component *platform;
+> >> +	struct snd_soc_dai_link_component platform;
+
+> > This breaks the build for the SCU cards (and we needs a little rebase
+> > against another fix I just merged, though I did do that when applying).
+
+> Sorry I still don't see the build break, can you point me to it?
+
+I'd need to find your patch again and fix the rebase issue.  It was
+assigning a pointer to a platform IIRC.
+
+> > I do think that this is going to be the safest thing to do for v5.0, it
+> > can always be reverted later on when it's not needed but it seems clear
+> > that a better fix is going to be way too invasive for the -rcs.  Can you
+> > respin and retest please?
+
+> Yes will do. I do wonder if we should be concerned about
+> snd_soc_init_multicodec() as well? Looks like it could have a different
+> problem if a machine driver already allocated the memory for the codec
+> link component.
+
+Since you appear to be volunteering to check...  :)
+
+--10jrOL3x2xqLmOsH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw3d2IACgkQJNaLcl1U
+h9DRIQf+JTa0QWwNeGiaDov8b+Xc2LfAdLSzSdsprCtEif+8ZOdmk6Dym2bn702m
+d57+QjxRH0ikzJAaEe6UEG+P0yt6SfL8Iu6mDeRskf8KXAbYWIhDUSWPumWoveq0
+aYsYTFlh7Uz7+7KHLT/5lm9JQgEohzdRi1+29QG2vnDSzG3rhRRQZqOYABUyS9lE
+mhTPyS+fmMU2JPonl+zSdBd6U+kE5BjaymUIiWaOiSYM5Pwa/mAQdSQOqpQoj9K6
+sX7agMcf9Z7KyzffLIlCaaPtlInBLu6zCToqcOv+ZJozVgqpxkMhgHdyAlE/cP4N
+FPZvOxU2RBOCDT6pWvIvcjN4klOQQQ==
+=8T4V
+-----END PGP SIGNATURE-----
+
+--10jrOL3x2xqLmOsH--
+
+--===============0855239437687701733==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0855239437687701733==--
