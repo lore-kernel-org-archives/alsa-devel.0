@@ -1,18 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/5] ALSA: hda: Add api to program
- stripe control bits
-Date: Fri, 11 Jan 2019 11:55:41 -0600
-Message-ID: <13164ff6-1ea0-9e28-b3b2-a590949a7200@linux.intel.com>
+Subject: Re: [PATCH v2 0/5] Stripe control functionality
+Date: Fri, 11 Jan 2019 12:02:36 -0600
+Message-ID: <3c6dd485-515b-98c1-7179-a8dea256e56c@linux.intel.com>
 References: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
- <1547227328-32558-3-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 98F6C267979
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 18:55:44 +0100 (CET)
-In-Reply-To: <1547227328-32558-3-git-send-email-spujar@nvidia.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49239267225
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 19:02:38 +0100 (CET)
+In-Reply-To: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,13 +25,37 @@ To: Sameer Pujar <spujar@nvidia.com>, perex@perex.cz, tiwai@suse.com, broonie@ke
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> +
-> +	/* following is from HD audio spec */
-> +	for (sdo_line = max_sdo_lines; sdo_line > 0; sdo_line >>= 1) {
-> +		if (rate > 48000)
-> +			value = (channels * bits_per_sample *
-> +					(rate / 48000)) / sdo_line;
-> +		else
-> +			value = channels * bits_per_sample / sdo_line;
-(channels * bit_per_sample) / sdo_line as in the spec?
+Ck9uIDEvMTEvMTkgMTE6MjIgQU0sIFNhbWVlciBQdWphciB3cm90ZToKPiBCYWNrZ3JvdW5kCj4g
+PT09PT09PT09PQo+Cj4gQXphbGlhIENvbnRyb2xsZXIgZmV0Y2hlcyBjb21tYW5kIGFuZCBhdWRp
+byBkYXRhIHZpYSBETUEgYW5kIHNlbmQgdGhlbQo+IHRvIGNvZGVjIHRocm91Z2ggU0RPKFNlcmlh
+bCBEYXRhIE91dCkgbGluZXMuIFNETyBpcyBmb3Igb3V0Ym91bmcgYW5kIGl0Cj4gYnJvYWRjYXN0
+cyB0byBhbGwgY29kZWNzLiBUaGVyZSBpcyBhdGxlYXN0IG9uZSBTRE8gbGluZSBwcmVzZW50LCBi
+dXQKPiB0aGVyZSBjYW4gYmUgbXVsdGlwbGUgU0RPIGxpbmVzIHN1cHBvcnRlZCBmb3IgZXh0ZW5k
+ZWQgYmFuZHdpZHRoLiBUaGlzCj4gaXMgZXNzZW50aWFsIHdoZW4gYSBwbGF0Zm9ybSBzdXBwb3J0
+cyBtdWx0aXBsZSBoZG1pL2RwIHNpbmtzIGFuZCB0aGVyZQo+IGlzIGEgcmVxdWlyZW1lbnQgZm9y
+IGhpZ2hlciByZXNvbHV0aW9uIGF1ZGlvIHBsYXliYWNrLiBJbiBzdWNoIGNhc2VzCj4gc2ltdWx0
+YW5lb3VzIGF1ZGlvIHBsYXliYWNrIGRhdGEgY2FuIGJlIHN0cmlwZWQgYWNyb3NzIG11bHRpcGxl
+IFNET3MuCj4KPiBHbG9iYWwgQ2FwYWJpbGl0aWVzKEdDQVApIFJlZ2lzdGVyIGluZGljYXRlcyB0
+aGUgY2FwYWJpbGl0aWVzIG9mIHRoZQo+IGNvbnRyb2xsZXIuIEJpdHMgMjoxIG9mIEdDQVAgY2Fu
+IGJlIHJlYWQgdG8ga25vdyB0aGUgbnVtYmVyIG9mIHN1cHBvcnRlZAo+IFNETyBsaW5lcyAoYmVs
+b3cgaXMgZnJvbSBIRCBhdWRpbyBzcGVjKQo+ICAgIDAwOiAxIFNETwo+ICAgIDAxOiAyIFNETwo+
+ICAgIDEwOiA0IFNETwo+ICAgIDExOiBSZXNlcnZlZAo+Cj4gU3RyaXBlIGNvbnRyb2wgdmVyYiBy
+ZXBvcnRzIGFuZCBjb250cm9scyB0aGUgc3RyaXBlIGNhcGFiaWxpdHkgb2YgYW4KPiBBdWRpbyBP
+dXRwdXQgQ29udmVydGVyLiBUaGlzIHZlcmIgbmVlZHMgdG8gYmUgaW1wbGVtZW50ZWQgb25seSBm
+b3IgYW4KPiBhdWRpbyBvdXRwdXQgY29udmVydGVyIGFuZCBvbmx5IGlmIHRoZSBzdHJpcGUgYml0
+IG9mIHRoZSBBdWRpbyBXaWRnZXQKPiBDYXBhYmlsaXRpZXMgcGFyYW1ldGVyIGlzIDEuCj4gU3Ry
+aXBlIGNvbnRyb2w6IGdldCBjb2RlKDB4ZjI0KSBhbmQgc2V0IGNvZGUoMHg3MjQpCgp0aGUgc2Vy
+aWVzIGxvb2sgb2sgKG9uZSBtaW5vciBjb21tZW50IG9uIG9wZXJhdG9yIHByZWNlZGVuY2UpIGFu
+ZCAKYWxpZ25lZCB3aXRoIG15IHVuZGVyc3RhbmRpbmcgb2YgdGhlIEhEYXVkaW8gMS4wYSBzcGVj
+LgoKVGhhdCBzYWlkIHlvdSBtYWRlIG5vIG1lbnRpb24gb2YgdGhlIFN0cmlwZSBiaXTCoCAoZmln
+dXJlIDg2KSBhbmQgZmllbGRzIAoyMjoyMCAoU3RyaXBlIGNhcGFiaWxpdHkpIGluIEZpZ3VyZSA3
+NSwgc28gaXQncyBub3QgY2xlYXIgdG8gbWUgaWYgdGhlIApzdXBwb3J0IGFkZGVkIGluIHRoaXMg
+cGF0Y2hzZXQgaXMgc3VmZmljaWVudCBvciBpZiB0aGVyZSBpcyBhZGRpdGlvbmFsIApsb2dpYyB0
+byBiZSBzZXQuCgpUaGVyZSBpcyBhbHNvIGEgZGlmZmVyZW5jZSBiZXR3ZWVuIHdoYXQgdGhlIGNv
+bnRyb2xsZXIgc3VwcG9ydHMgYW5kIHRoZSAKYWN0dWFsIGJvYXJkIGxheW91dCwgc28gaXQncyBu
+b3QgY2xlYXIgaWYgdGhlIEdDQVAgYXJlIHJlYWxseSB0aGUgcmF3IApjYXBhYmlsaXRpZXMgb3Ig
+dGhlIG9uZXMgZmlsdGVyZWQgYnkgQklPUyBmb2xrcyB0byByZWZsZWN0IHRoZSBhY3R1YWwgCnBs
+YXRmb3JtIGhhcmR3YXJlIGltcGxlbWVudGF0aW9uLgoKLVBpZXJyZQoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
