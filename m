@@ -1,19 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC] ASOC: Intel: Skylake: Broken HDaudio
- controller/link initialization sequences
-Date: Fri, 11 Jan 2019 10:12:09 -0600
-Message-ID: <fd49cc45-0026-8c0c-202e-2fa35a80406f@linux.intel.com>
-References: <192f22e1-43c9-eeb9-fb9c-41cf061dee8b@linux.intel.com>
- <s5hwonbmnd4.wl-tiwai@suse.de>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v2 0/5] Stripe control functionality
+Date: Fri, 11 Jan 2019 22:52:03 +0530
+Message-ID: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B9035266914
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 17:12:13 +0100 (CET)
-In-Reply-To: <s5hwonbmnd4.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57D20266914
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 18:22:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,147 +18,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Yu Zhao <yuzhao@google.com>, "Kaczmarski, Filip" <filip.kaczmarski@intel.com>, Harsha Priya <harshapriya.n@intel.com>, Jie Yang <yang.jie@linux.intel.com>, "Rojewski, Cezary" <cezary.rojewski@intel.com>, Azat Khuzhin <dohardgopro@gmail.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>, "Patel,
- Chintan M" <chintan.m.patel@intel.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, "libin.yang@linux.intel.com" <libin.yang@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmtzIGZvciB0aGUgY29tbWVudHMgVGFrYXNoaSwgbXVjaCBhcHByZWNpYXRlZC4KCk9uIDEv
-MTEvMTkgNTo0MiBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IFsgQ29ycmVjdGVkIHRoZSBNTCBh
-ZGRyZXNzIF0Kb29wcywgdGhhbmtzIQo+Cj4gT24gV2VkLCAwOSBKYW4gMjAxOSAwMDoyODozMCAr
-MDEwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4gSGksCj4+Cj4+IHRoaXMgaXMg
-bm90IGEgcGF0Y2ggYnV0IGEgcmVxdWVzdCBmb3IgY29tbWVudHMvZmVlZGJhY2sgb24gdGhlIEhE
-QXVkaW8KPj4gY29udHJvbGxlci9saW5rIGluaXRpYWxpemF0aW9uIHNlcXVlbmNlcy4gQWZ0ZXIg
-dGhlIHY0LjIwIG1lcmdlIHdpbmRvdwo+PiBzbmFmdSB3LyB0aGUgSERhdWRpbyBkZXRlY3Rpb24s
-IEkgc3BlbnQgcXVpdGUgYSBiaXQgb2YgdGltZSB0byBmaWd1cmUKPj4gb3V0IHdoeSBhbGwgb3Vy
-IEhEYXVkaW8gZGV2ZWxvcG1lbnQgZGV2aWNlcyB3b3JrZWQgd2VsbCB3aXRoIHRoZQo+PiBTa3ls
-YWtlIGRyaXZlciwgYW5kIHdoeSBMaW51cycgbGFwdG9wIGFuZCBvdGhlcnMgZGlkbid0IGR1ZSB0
-byBhbiBIRE1JCj4+IGluaXRpYWxpemF0aW9uIGlzc3VlLiBIYW5zIGRlIEdvZWRlIHdhcyBraW5k
-IGVub3VnaCB0byBnaXZlIG1lIFNTSAo+PiByZW1vdGUgYWNjZXNzIHRvIGhpcyBkZXZpY2UgYW5k
-IHdoaWxlIEkgZG9uJ3QgaGF2ZSBhIGZvcm1hbCBmaXggZm9yCj4+IG5vdyBJIGZvdW5kIGEgY291
-cGxlIG9mIGlzc3VlcyB0aGF0IHJlYWxseSBuZWVkIHRvIGJlIGZpeGVkIHNvIHRoYXQKPj4gdGhl
-IFNreWxha2UgZHJpdmVyIHdvcmtzIGJ5IGRlc2lnbiBhbmQgbm90IGJ5IGFjY2lkZW50Lgo+Pgo+
-PiBTZWUgYmVsb3cgdGhlIHByb2dyYW1taW5nIHNlcXVlbmNlcyBmb3IgdGhlIGxlZ2FjeSBhbmQg
-SW50ZWwvU2t5bGFrZQo+PiBkcml2ZXJzLiBUaGVyZSBhcmUgb2J2aW91cyBkaXNjcmVwYW5jaWVz
-IG9yIGJyb2tlbiBzZXF1ZW5jZXMgc3VjaCBhcwo+PiA6LQo+Pgo+PiAxLiB0aGUgaTkxNSBjb21w
-b25lbnQgYW5kIGRpc3BsYXkgcG93ZXIgYmVpbmcgc2V0IGluIGEgd29yawo+PiBxdWV1ZS4gRm9y
-Y2luZyB0aGUgaW5pdCB0byBiZSBkb25lIHVwZnJvbnQgZml4ZXMgdGhlIEhETUkgZGV0ZWN0aW9u
-Cj4+IGlzc3VlIG9uIEhhbnMnIGxhcHRvcCB3aXRoIHRoZSBjb3JyZWN0IGNvZGVjX21hc2sgZGV0
-ZWN0ZWQuCj4gVGhpcyBpcyBoYWlyeSwgYW5kIGxpa2VseSBzb21lIHRpbWluZyBpc3N1ZS4uLgpJ
-IGNhbiBhbHNvIHJlcHJvZHVjZSBhIHRpbWluZyBpc3N1ZSBsZWFkaW5nIHRvIHRoZSBzYW1lIGVy
-cm9yIG9uIHRoZSAKRGVsbCBYUFMxMyA5MzUwIHdpdGggdGhlIERSTSBhbmQgU09VTkQgY29uZmln
-cyBzZXQgdG8gbSBpbnN0ZWFkIG9mIHksIHNvIAppbmRlZWQgd2UgbmVlZCB0byBoYXJkZW4gdGhp
-cy4KPgo+PiAyLiBhIGNhbGwgdG8gc25kX2hkYWNfYnVzX3Jlc2V0X2xpbmsoKSB0aGF0IGRvZXNu
-J3Qgc2VlbSB0byBiZSB1c2VmdWwKPj4gKGRvbmUgdHdpY2UpCj4gQmV0dGVyIHRvIGF2b2lkIHRo
-ZSB1bm5lZWRlZCBjYWxsIG9mIHRoaXMsIHllYWguCkknbGwgcmVtb3ZlIGl0IGFuZCBhc2sgZm9y
-IG9uZSByb3VuZCBvZiB2YWxpZGF0aW9uLgo+Cj4+IDMuIGFuIGluaXRpYWxpemF0aW9uIG9mIE1M
-IChtdWx0aS1saW5rKSByZWdpc3RlcnMgKmJlZm9yZSogcmVhZGluZyBNTAo+PiBjYXBhYmlsaXRp
-ZXMgb24gU2t5bGFrZSAob25seSBtZWFuaW5nZnVsIGluIHRoZSBzZWNvbmQgaW5pdCkgYW5kIG5v
-dAo+PiBkb25lIGluIHRoZSBsZWdhY3kuCj4+Cj4+IDQuIE1pc3Npbmcgc2V0dXBzIGZvciBtdWx0
-aS1saW5rIChkb25lIGluIGxlZ2FjeSwgbm90IGRvbmUgYnkgU2t5bGFrZQo+PiBkcml2ZXJzKQo+
-IEkgaGF2ZSBsaXR0bGUgaWRlYSBhYm91dCB0aGUgTUwgc3R1ZmYsIHNvcnJ5LgpUaGUgZ29vZCBu
-ZXdzIGlzIGhlcmUgdGhhdCBMaWJpbiBZYW5nIHdhcyB0aGUgb3JpZ2luYWwgYXV0aG9yIG9mIHRo
-aXMgCmNvZGUgYW5kIGhlJ3Mgc3RpbGwgaW4gb3VyIHRlYW0uCj4KPj4gNS4gc2V0X2NvZGVjX3dh
-a2V1cCgpIG9ubHkgaW5pdGlhbGl6ZWQgaW4gbGVnYWN5Cj4gVGhpcyBtaWdodCBiZSB0aGUgY2F1
-c2Ugb2YgdGhlIG1pc3NpbmcgSERNSSBjb2RlYy4KPgo+IFRoZSB3YWtldXAgaGFuZGxpbmcgd2Fz
-IGFkZGVkIHllYXJzIGFnbyBmb3IgYXNzdXJpbmcgdGhhdCB0aGUgaTkxNQo+IHBvd2VyLXdlbGwg
-dHVybmVkIG9uIGR1cmluZyBwcm9iZSBhbmQgcmVzdW1lLiAgTG9va2luZyBhdCB0aGUgZ2l0IGxv
-ZywKPiB0aGUgaW5pdGlhbCBjb21taXQgd2FzIDBhNjczNTIxNTM1MAo+ICAgICAgQUxTQTogaGRh
-IC0gcmVzZXQgZGlzcGxheSBjb2RlYyB3aGVuIHBvd2VyIG9uCkFoLCB2ZXJ5IHVzZWZ1bCB0aGFu
-a3MhIFRoaXMgY29kZWNfd2FrZXVwIHRoaW5neSBzZWVtcyB0byBiZSByZXF1aXJlZCAKZm9yIGFs
-bCBvZiBHRU45IHByb2R1Y3RzLCB3aGljaCBhcyBJIHVuZGVyc3RhbmQgaXQgbWVhbnMgU2t5bGFr
-ZSwgCkFwb2xsb0xha2UsIEthYnlMYWtlLCBHZW1pbmlMYWtlIGFuZCBDb2ZmZWVMYWtlLiBXZSBh
-bHNvIHByb2JhYmx5IHdhbnQgCnRvIGNoZWNrIGlmIHRoZXJlIGlzIGEgc2ltaWxhciBpc3N1ZSB3
-aXRoIEdFTjEwKy4KPgo+PiA2LiBpbml0L3N0b3AvaW5pdCBwYXR0ZXJuIGluIFNreWxha2UgZHJp
-dmVyLiBJIGNhbid0IHRoaW5rIG9mIGFueQo+PiByZWFzb24gd2h5IHRoaXMgaXMgcmVxdWlyZWQg
-Ym90aCBpbiB0aGUgcHJvYmUgYW5kIHRoZSBwcm9iZSB3b3JrcXVldWUuCj4gTWF5YmUgc29tZSB3
-b3JrYXJvdW5kIGZvciBtZXNzeSB0aW1pbmcgaXNzdWU/ICBObyBtdWNoIGlkZWEsIGVpdGhlci4K
-dGhpcyBvbmUgaXMgZ29pbmcgdG8gYmUgcGFpbmZ1bCB0byBjaGVjaywgdGhlIG9yaWdpbmFsIGNv
-bnRyaWJ1dG9ycyBoYXZlIAptb3ZlZCBvbi4gSWYgdGhlIGZpeGVzIGZvciB0aGUgcG93ZXIgYW5k
-IHdha2V1cHMgYXJlIGVub3VnaCBtYXliZSB3ZSdsbCAKbGVhdmUgdGhpcyBzZXF1ZW5jZSBhcyBp
-cyBpbiBhICJEbyBubyBoYXJtIiB3YXkuCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+Cj4+
-IEkgZG9uJ3QgaGF2ZSBhbnkgYmFja2dyb3VuZCBmb3IgbW9zdCBvZiB0aGlzLCBJIG9ubHkgdG9v
-ayBvdmVyIHN1cHBvcnQKPj4gZm9yIEhEYXVkaW8gY29kZWNzIGFmdGVyIHRoZSBpbml0aWFsIGNv
-bnRyaWJ1dG9yIG1vdmVkIG9uLCBzbyBzaGFyaW5nCj4+IGFsbCBteSBmaW5kaW5ncyBpbiB0aGUg
-aG9wZSB0aGF0IG90aGVycyBoYXZlIG1lbW9yaWVzIG9mIHRoZXNlCj4+IGRpZmZlcmVudCBwb2lu
-dHMuIEknbGwgZ2V0IHRoZSBzYW1lIGxhcHRvcCBhcyBMaW51cyBsYXRlciB0aGlzIHdlZWsKPj4g
-YW5kIHdpbGwgYmUgYWJsZSB0byB3b3JrIG1vcmUgb24gdGhpcywgYnV0IGluIHRoZSBtZWFudGlt
-ZSBjb21tZW50cwo+PiBhcmUgd2VsY29tZS4KPj4KPj4gVGhhbmtzCj4+Cj4+IC1QaWVycmUKPj4K
-Pj4gYXp4X2NyZWF0ZQo+PiAtLSBhenhfYnVzX2luaXQKPj4gLS0tLSBzbmRfaGRhY19idXNfaW5p
-dAo+PiAtLSBhenhfcHJvYmVfd29yawo+PiAtLS0tIGF6eF9wcm9iZV9jb250aW51ZQo+PiAtLS0t
-LS0gc25kX2hkYWNfaTkxNV9pbml0KGJ1cykKPj4gLS0tLS0tIHNuZF9oZGFjX2Rpc3BsYXlfcG93
-ZXIoYnVzLCB0cnVlKTsKPj4gLS0tLS0tIGF6eF9maXJzdF9pbml0KGNoaXApOwo+PiAtLS0tLS0t
-LSBzbmRfaGRhY19idXNfcGFyc2VfY2FwYWJpbGl0aWVzKGJ1cykKPj4gLS0tLS0tLS0gYXp4X2lu
-aXRfc3RyZWFtcwo+PiAtLS0tLS0tLS0tIHNuZF9oZGFjX3N0cmVhbV9pbml0Cj4+IC0tLS0tLS0t
-IGF6eF9hbGxvY19zdHJlYW1fcGFnZXMKPj4gLS0tLS0tLS0gYXp4X2luaXRfcGNpKGNoaXApCj4+
-IC0tLS0tLS0tLS0gdXBkYXRlX3BjaV9ieXRlKGNoaXAtPnBjaSwgQVpYX1BDSVJFR19UQ1NFTCwg
-MHgwNywgMCk7Cj4+IC0tLS0tLS0tIGhkYV9pbnRlbF9pbml0X2NoaXAKPj4gLS0tLS0tLS0tLSBz
-bmRfaGRhY19zZXRfY29kZWNfd2FrZXVwKGJ1cywgdHJ1ZSk7ICEhISA8PDwgaXMgdGhpcyBuZWVk
-ZWQ/Cj4+IC0tLS0tLS0tLS0gcGNpX3dyaXRlX2NvbmZpZ19kd29yZChwY2ksIElOVEVMX0hEQV9D
-R0NUTCwgdmFsKTsKPj4gLS0tLS0tLS0tLSBhenhfaW5pdF9jaGlwKGNoaXAsIGZ1bGxfcmVzZXQp
-Cj4+IC0tLS0tLS0tLS0tLSBzbmRfaGRhY19idXNfaW5pdF9jaGlwKGNoaXAsIGZ1bGxfcmVzZXQp
-Cj4+IC0tLS0tLS0tLS0tLS0tIHNuZF9oZGFjX2J1c19yZXNldF9saW5rKGJ1cywgZnVsbF9yZXNl
-dCk7Cj4+IC0tLS0tLS0tLS0tLS0tIGF6eF9pbnRfY2xlYXIKPj4gLS0tLS0tLS0tLS0tLS0gc25k
-X2hkYWNfYnVzX2luaXRfY21kX2lvCj4+IC0tLS0tLS0tLS0tLS0tIGF6eF9pbnRfZW5hYmxlCj4+
-IDw8PDwgY29kZWNfbWFzayAweDUgaXMgY29ycmVjdAo+PiAtLS0tLS0tLS0tIHBjaV93cml0ZV9j
-b25maWdfZHdvcmQocGNpLCBJTlRFTF9IREFfQ0dDVEwsIHZhbCkKPj4gLS0tLS0tLS0tLSBzbmRf
-aGRhY19zZXRfY29kZWNfd2FrZXVwKGJ1cywgZmFsc2UpOyAhISEgPDw8IGlzIHRoaXMgbmVlZGVk
-Pwo+PiAtLS0tLS0tLS0tIGJ4dF9yZWR1Y2VfZG1hX2xhdGVuY3kgISEhIDw8PCBpcyB0aGlzIG5l
-ZWRlZD8KPj4gLS0tLS0tLS0tLSBpbnRlbF9pbml0X2xjdGwgISEhIDw8PCBpcyB0aGlzIG5lZWRl
-ZD8KPj4gLS0tLS0tLS0tLS0tIGludGVsX21sX2xjdGxfc2V0X3Bvd2VyKGNoaXAsIDApCj4+IC0t
-LS0tLS0tLS0tLSBpbnRlbF9nZXRfbGN0bF9zY2YKPj4gLS0tLS0tLS0tLS0tIGludGVsX2dldF9s
-Y3RsX3NjZihjaGlwLCAxKQo+PiAtLS0tLS0gYXp4X3Byb2JlX2NvZGVjcwo+PiAtLS0tLS0gYXp4
-X2NvZGVjX2NvbmZpZ3VyZQo+PiAtLS0tLS0gc25kX2hkYWNfZGlzcGxheV9wb3dlcihidXMsIGZh
-bHNlKTsKPj4KPj4KPj4gc2tsX3Byb2JlCj4+IC0tIHNrbF9jcmVhdGUKPj4gLS0tLSBzbmRfaGRh
-Y19leHRfYnVzX2luaXQKPj4gLS0tLS0tIHNuZF9oZGFjX2J1c19pbml0Cj4+IC0tIHNrbF9maXJz
-dF9pbml0Cj4+Cj4+IDw8PCB0aGlzIHNlcXVlbmNlIG1ha2VzIG5vIHNlbnNlLiB0aGUgaTkxNS9k
-aXNwbGF5IGlzIG5vdCBpbml0aWFsaXplZAo+PiBiZWZvcmUgcmVhZGluZyB0aGUgY29kZWNfbWFz
-a3MuwqAgZW5hYmxpbmcgdGhlIHVzdWFsIHNlcXVlbmNlIG9mCj4+IHNuZF9oZGFjX2k5MTVfaW5p
-dAo+PiBhbmQgc25kX2hkYWNfZGlzcGxheV9wb3dlciBnaXZlcyB0aGUgcmlnaHQgY29kZWNfbWFz
-awo+Pgo+PiAtLS0tIHNuZF9oZGFjX2J1c19yZXNldF9saW5rICEhISA8PDwgaXMgdGhpcyBuZWVk
-ZWQsIGl0J3MgZG9uZSBsYXRlcgo+PiBhcyBwYXJ0IG9mIHNrbF9pbml0X2NoaXA/Cj4+IC0tLS0t
-LSBzbmRfaGRhY19jaGlwX3dyaXRldyhidXMsIFNUQVRFU1RTLCBTVEFURVNUU19JTlRfTUFTSyk7
-Cj4+IC0tLS0tLSBzbmRfaGRhY19idXNfZW50ZXJfbGlua19yZXNldAo+PiAtLS0tLS0gdXNsZWVw
-X3JhbmdlKDUwMCwgMTAwMCk7Cj4+IC0tLS0tLSBzbmRfaGRhY19idXNfZXhpdF9saW5rX3Jlc2V0
-Cj4+IC0tLS0tLSB1c2xlZXBfcmFuZ2UoMTAwMCwgMTIwMCk7Cj4+IC0tLS0tLSBzbmRfaGRhY19j
-aGlwX3VwZGF0ZWwoYnVzLCBHQ1RMLCAwLCBBWlhfR0NUTF9VTlNPTCk7Cj4+IC0tLS0tLSBzbmRf
-aGRhY19jaGlwX3JlYWR3KGJ1cywgU1RBVEVTVFMpOwo+PiA8PDw8IGNvZGVjX21hc2sgMHgxIGlz
-IHdyb25nLCBIRE1JIG5vdCBkZXRlY3RlZAo+PiAtLS0tIHNuZF9oZGFjX2J1c19wYXJzZV9jYXBh
-YmlsaXRpZXMKPj4gLS0tLSBzbmRfaGRhY19leHRfc3RyZWFtX2luaXRfYWxsCj4+IC0tLS0gc2ts
-X2luaXRfcGNpCj4+IC0tLS0tLSBza2xfdXBkYXRlX3BjaV9ieXRlKHNrbC0+cGNpLCBBWlhfUENJ
-UkVHX1RDU0VMLCAweDA3LCAwKTsKPj4gLS0tLSBza2xfaW5pdF9jaGlwCj4+IC0tLS0tLSBza2xf
-ZW5hYmxlX21pc2NiZGNnZShidXMtPmRldiwgZmFsc2UpOwo+PiAtLS0tLS0gc25kX2hkYWNfYnVz
-X2luaXRfY2hpcChidXMsIGZ1bGxfcmVzZXQpOwo+PiAtLS0tLS0tLSBzbmRfaGRhY19idXNfcmVz
-ZXRfbGluayhidXMsIGZ1bGxfcmVzZXQpOwo+PiAtLS0tLS0tLSBhenhfaW50X2NsZWFyCj4+IC0t
-LS0tLS0tIHNuZF9oZGFjX2J1c19pbml0X2NtZF9pbwo+PiAtLS0tLS0tLSBhenhfaW50X2VuYWJs
-ZQo+PiA8PDwgbmV4dCBsaW5lIG1ha2VzIG5vIHNlbnNlLCBpdCdzIGRvbmUgYmVmb3JlIHRoZSBN
-TCBjYXBhYmlsaXRpZXMgYXJlIHJlYWQKPj4gLS0tLS0tIGJ1cy0+aW9fb3BzLT5yZWdfd3JpdGVs
-KDAsIGhsaW5rLT5tbF9hZGRyICsgQVpYX1JFR19NTF9MT1NJRFYpOwo+PiAhISEgPDw8IGlzIHRo
-aXMgbmVlZGVkPwo+PiAtLS0tLS0gc2tsX2VuYWJsZV9taXNjYmRjZ2UoYnVzLT5kZXYsIHRydWUp
-Owo+PiA8PDwgY29kZWNfbWFzayAweDEgaXMgd3JvbmcKPj4gLS0gc2tsX25obHRfaW5pdAo+PiAt
-LSBza2xfaW5pdF9kc3AKPj4gLS0tLSBzbmRfaGRhY19leHRfYnVzX3BwY2FwX2VuYWJsZShidXMs
-IHRydWUpOwo+PiAtLS0tIHNuZF9oZGFjX2V4dF9idXNfcHBjYXBfaW50X2VuYWJsZShidXMsIHRy
-dWUpOwo+PiAtLSBzbmRfaGRhY19leHRfYnVzX2dldF9tbF9jYXBhYmlsaXRpZXMKPj4gLS0gc25k
-X2hkYWNfYnVzX3N0b3BfY2hpcAo+PiAtLS0tIGF6eF9pbnRfZGlzYWJsZShidXMpOwo+PiAtLS0t
-IGF6eF9pbnRfY2xlYXIoYnVzKTsKPj4gLS0tLSBzbmRfaGRhY19idXNfc3RvcF9jbWRfaW8oYnVz
-KTsKPj4gLS0gc2tsX3Byb2JlX3dvcmsKPj4gLS0tLSBza2xfaTkxNV9pbml0IDw8PCB0aGlzIG5l
-ZWRzIHRvIGJlIGRvbmUgZWFybGllcgo+PiAtLS0tLS0gc25kX2hkYWNfaTkxNV9pbml0Cj4+IC0t
-LS0tLSBzbmRfaGRhY19kaXNwbGF5X3Bvd2VyCj4+IC0tLS0gc2tsX2luaXRfY2hpcCA8PDwgd2h5
-IGRvIHdlIG5lZWQgdG8gcmUtaW5pdGlhbGl6ZSBhZ2Fpbj8KPj4gLS0tLS0tIHNrbF9lbmFibGVf
-bWlzY2JkY2dlKGJ1cy0+ZGV2LCBmYWxzZSk7Cj4+IC0tLS0tLSBzbmRfaGRhY19idXNfaW5pdF9j
-aGlwKGJ1cywgZnVsbF9yZXNldCk7Cj4+IC0tLS0tLS0tIHNuZF9oZGFjX2J1c19yZXNldF9saW5r
-KGJ1cywgZnVsbF9yZXNldCk7Cj4+IC0tLS0tLS0tIGF6eF9pbnRfY2xlYXIKPj4gLS0tLS0tLS0g
-c25kX2hkYWNfYnVzX2luaXRfY21kX2lvCj4+IC0tLS0tLS0tIGF6eF9pbnRfZW5hYmxlCj4+IC0t
-LS0tLSBidXMtPmlvX29wcy0+cmVnX3dyaXRlbCgwLCBobGluay0+bWxfYWRkciArIEFaWF9SRUdf
-TUxfTE9TSURWKTsKPj4gLS0tLS0tIHNrbF9lbmFibGVfbWlzY2JkY2dlKGJ1cy0+ZGV2LCB0cnVl
-KTsKPj4gLS0tLSBza2xfY29kZWNfY3JlYXRlCj4+IC0tLS0tLS0gc25kX2hkYWNfYnVzX3N0b3Bf
-Y2hpcAo+PiAtLS0tLS0tIHNrbF9pbml0X2NoaXAgKG9uIGVycm9yKQo+PiAtLS0tIHNrbF9wbGF0
-Zm9ybV9yZWdpc3Rlcgo+PiAtLS0tIHNrbF9tYWNoaW5lX2RldmljZV9yZWdpc3Rlcgo+PiAtLS0t
-IHNuZF9oZGFjX2V4dF9idXNfbGlua19wdXQKPj4gLS0tLSBzbmRfaGRhY19kaXNwbGF5X3Bvd2Vy
-KGJ1cywgZmFsc2UpOwo+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+Background
+==========
+
+Azalia Controller fetches command and audio data via DMA and send them
+to codec through SDO(Serial Data Out) lines. SDO is for outboung and it
+broadcasts to all codecs. There is atleast one SDO line present, but
+there can be multiple SDO lines supported for extended bandwidth. This
+is essential when a platform supports multiple hdmi/dp sinks and there
+is a requirement for higher resolution audio playback. In such cases
+simultaneous audio playback data can be striped across multiple SDOs.
+
+Global Capabilities(GCAP) Register indicates the capabilities of the
+controller. Bits 2:1 of GCAP can be read to know the number of supported
+SDO lines (below is from HD audio spec)
+  00: 1 SDO
+  01: 2 SDO
+  10: 4 SDO
+  11: Reserved
+
+Stripe control verb reports and controls the stripe capability of an
+Audio Output Converter. This verb needs to be implemented only for an
+audio output converter and only if the stripe bit of the Audio Widget
+Capabilities parameter is 1. 
+Stripe control: get code(0xf24) and set code(0x724)
+
+Change log
+==========
+
+v1-->v2:
+-------- 
+  Patch 1: "ALSA: hda: add verbs for stripe control"
+    * no change
+
+  Patch 2: "ALSA: hda: Add api to program stripe control bits"
+    * no change
+
+  Patch 3: "ALSA: hda: add register offset for stripe control"
+    * added mask for stripe control programming
+
+  Patch 4: "ALSA: hda: program stripe bits for controller"
+    * used stripe control mask instead of hard coded value
+
+  Patch 5: "ALSA: hda: program stripe control for codec"
+    * added conditional check to know if striping is supported.
+      If supported, then only stripe verb is implemented.
+
+===========
+
+Sameer Pujar (5):
+  ALSA: hda: add verbs for stripe control
+  ALSA: hda: Add api to program stripe control bits
+  ALSA: hda: add register offset for stripe control
+  ALSA: hda: program stripe bits for controller
+  ALSA: hda: program stripe control for codec
+
+ include/sound/hda_register.h |  2 ++
+ include/sound/hda_verbs.h    |  2 ++
+ include/sound/hdaudio.h      |  3 +++
+ sound/hda/hdac_stream.c      | 40 ++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_hdmi.c   | 10 +++++++++-
+ 5 files changed, 56 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
+
+
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
