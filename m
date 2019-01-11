@@ -1,56 +1,50 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v2 0/4] Add NXP AUDMIX device and machine drivers
-Date: Fri, 11 Jan 2019 11:13:07 -0800
-Message-ID: <20190111191306.GA8463@Asurada-Nvidia.nvidia.com>
-References: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFT][PATCH v1] gpiolib: acpi: Introduce
+ ACPI_GPIO_QUIRK_ONLY_GPIOIO
+Date: Fri, 11 Jan 2019 21:49:29 +0200
+Message-ID: <20190111194929.GW9170@smile.fi.intel.com>
+References: <20190108180205.55109-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdYgBsvNR1PFuzmMegpjraWRi58ACb-=mBrUDvLoi_5J_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AA9E266914
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 20:49:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
+In-Reply-To: <CACRpkdYgBsvNR1PFuzmMegpjraWRi58ACb-=mBrUDvLoi_5J_g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Jie Yang <yang.jie@linux.intel.com>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Mark Brown <broonie@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 08, 2019 at 01:05:43PM +0000, Viorel Suman wrote:
-> The patchset adds NXP Audio Mixer (AUDMIX) device and machine
-> drivers and related DT bindings documentation.
+On Fri, Jan 11, 2019 at 03:21:39PM +0100, Linus Walleij wrote:
+> On Tue, Jan 8, 2019 at 7:02 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> Changes since V1:
-> 1. Original patch split into distinct patches for the device driver and
->   DT binding documentation.
-> 2. Replaced AMIX with AUDMIX in both code and file names as it looks more
->   RM-compliant.
-> 3. Removed polarity control from CPU DAI driver as suggested by Nicolin.
-> 4. Added machine driver and related DT binding documentation.
+> > New quirk enforces search for GPIO based on its type.
+> > Note, supplied index in the mapping table must be 0.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Viorel Suman (4):
->   ASoC: fsl: Add Audio Mixer CPU DAI driver
->   ASoC: add fsl_audmix DT binding documentation
->   ASoC: fsl: Add Audio Mixer machine driver
->   ASoC: add imx-audmix DT binding Documentation
+> (...)
+> 
+> >  sound/soc/intel/boards/bytcr_rt5651.c | 74 ++++-----------------------
+> 
+> Do we have an ACK from the maintainer of this file?
+> It's Hans I think. Ideally also from Mark Brown.
 
-For this series,
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I hope to get Hans' Tested-by on this.
 
-Thanks
-
-> 
->  .../devicetree/bindings/sound/fsl,audmix.txt       |  44 ++
->  .../devicetree/bindings/sound/imx-audmix.txt       |  24 +
->  sound/soc/fsl/Kconfig                              |  16 +
->  sound/soc/fsl/Makefile                             |   5 +
->  sound/soc/fsl/fsl_audmix.c                         | 551 +++++++++++++++++++++
->  sound/soc/fsl/fsl_audmix.h                         | 101 ++++
->  sound/soc/fsl/imx-audmix.c                         | 328 ++++++++++++
->  7 files changed, 1069 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,audmix.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
->  create mode 100644 sound/soc/fsl/fsl_audmix.c
->  create mode 100644 sound/soc/fsl/fsl_audmix.h
->  create mode 100644 sound/soc/fsl/imx-audmix.c
-> 
-> -- 
-> 2.7.4
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
