@@ -1,23 +1,41 @@
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [RFT][PATCH v2] gpiolib: acpi: Introduce
- ACPI_GPIO_QUIRK_ONLY_GPIOIO
-Date: Fri, 11 Jan 2019 07:39:58 +0200
-Message-ID: <20190111053958.GR14577@lahna.fi.intel.com>
-References: <20190109105245.25954-1-andriy.shevchenko@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - ALSA JACK plugin 1/2] jack: Replacing
+ jack->channels with jack->num_ports
+Date: Fri, 11 Jan 2019 08:53:17 +0100
+Message-ID: <df4d8f44-ff0f-31eb-b7f2-a466f2d5a3f6@perex.cz>
+References: <1547183755-3551-1-git-send-email-laxmi.devi@in.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190109105245.25954-1-andriy.shevchenko@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1547183755-3551-1-git-send-email-laxmi.devi@in.bosch.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: laxmi.devi@in.bosch.com, patch@alsa-project.org
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 09, 2019 at 12:52:45PM +0200, Andy Shevchenko wrote:
-> New quirk enforces search for GPIO based on its type,
-> i.e. iterate over GpioIo resources only.
+Dne 11.1.2019 v 06:15 laxmi.devi@in.bosch.com napsal(a):
+> From: Laxmi Devi <Laxmi.Devi@in.bosch.com>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> As jack->num_ports and jack->channels hold the same values,
+> jack->channels is redundant and hence removed.
+> 
+> Sanity check is added in prepare, to check if io->Channels is
+> same as jack->num_ports.
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+I applied both patches to the plugins repo. Thanks.
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
