@@ -1,68 +1,71 @@
-From: shuah <shuah@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v9 4/4] sound/usb: Use Media Controller API
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v9 4/4] sound/usb: Use Media Controller API
  to share media resources
-Date: Fri, 11 Jan 2019 07:57:49 -0700
-Message-ID: <5f9588b5-657a-78ee-9614-ed0ef1fc5839@kernel.org>
+Date: Fri, 11 Jan 2019 15:59:54 +0100
+Message-ID: <f13637a7-5c15-ba43-9929-78fef09e54fb@xs4all.nl>
 References: <cover.1545154777.git.shuah@kernel.org>
  <2fb40852e4035b2a58010ce7416448918f12804f.1545154778.git.shuah@kernel.org>
  <s5hefadbp5m.wl-tiwai@suse.de>
+ <5f9588b5-657a-78ee-9614-ed0ef1fc5839@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hefadbp5m.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net
+ [194.109.24.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21A31266914
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 15:59:56 +0100 (CET)
+In-Reply-To: <5f9588b5-657a-78ee-9614-ed0ef1fc5839@kernel.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, shuah <shuah@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: shuah <shuah@kernel.org>, mchehab@kernel.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, tiwai@suse.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/18 6:51 AM, Takashi Iwai wrote:
-> On Tue, 18 Dec 2018 18:59:39 +0100,
-> shuah@kernel.org wrote:
->>
->> From: Shuah Khan <shuah@kernel.org>
->>
->> Media Device Allocator API to allows multiple drivers share a media device.
->> This API solves a very common use-case for media devices where one physical
->> device (an USB stick) provides both audio and video. When such media device
->> exposes a standard USB Audio class, a proprietary Video class, two or more
->> independent drivers will share a single physical USB bridge. In such cases,
->> it is necessary to coordinate access to the shared resource.
->>
->> Using this API, drivers can allocate a media device with the shared struct
->> device as the key. Once the media device is allocated by a driver, other
->> drivers can get a reference to it. The media device is released when all
->> the references are released.
->>
->> Change the ALSA driver to use the Media Controller API to share media
->> resources with DVB, and V4L2 drivers on a AU0828 media device.
->>
->> The Media Controller specific initialization is done after sound card is
->> registered. ALSA creates Media interface and entity function graph nodes
->> for Control, Mixer, PCM Playback, and PCM Capture devices.
->>
->> snd_usb_hw_params() will call Media Controller enable source handler
->> interface to request the media resource. If resource request is granted,
->> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
->> returned.
->>
->> Media specific cleanup is done in usb_audio_disconnect().
->>
->> Signed-off-by: Shuah Khan <shuah@kernel.org>
-> 
-> Feel free to take my ack regarding the sound stuff:
->    Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> 
-> 
-> Thanks!
-> 
-> Takashi
-> 
-
-Hi Mauro,
-
-Any update on this patch series?
-
-thanks,
--- Shuah
+T24gMS8xMS8xOSAzOjU3IFBNLCBzaHVhaCB3cm90ZToKPiBPbiAxMi8xOS8xOCA2OjUxIEFNLCBU
+YWthc2hpIEl3YWkgd3JvdGU6Cj4+IE9uIFR1ZSwgMTggRGVjIDIwMTggMTg6NTk6MzkgKzAxMDAs
+Cj4+IHNodWFoQGtlcm5lbC5vcmcgd3JvdGU6Cj4+Pgo+Pj4gRnJvbTogU2h1YWggS2hhbiA8c2h1
+YWhAa2VybmVsLm9yZz4KPj4+Cj4+PiBNZWRpYSBEZXZpY2UgQWxsb2NhdG9yIEFQSSB0byBhbGxv
+d3MgbXVsdGlwbGUgZHJpdmVycyBzaGFyZSBhIG1lZGlhIGRldmljZS4KPj4+IFRoaXMgQVBJIHNv
+bHZlcyBhIHZlcnkgY29tbW9uIHVzZS1jYXNlIGZvciBtZWRpYSBkZXZpY2VzIHdoZXJlIG9uZSBw
+aHlzaWNhbAo+Pj4gZGV2aWNlIChhbiBVU0Igc3RpY2spIHByb3ZpZGVzIGJvdGggYXVkaW8gYW5k
+IHZpZGVvLiBXaGVuIHN1Y2ggbWVkaWEgZGV2aWNlCj4+PiBleHBvc2VzIGEgc3RhbmRhcmQgVVNC
+IEF1ZGlvIGNsYXNzLCBhIHByb3ByaWV0YXJ5IFZpZGVvIGNsYXNzLCB0d28gb3IgbW9yZQo+Pj4g
+aW5kZXBlbmRlbnQgZHJpdmVycyB3aWxsIHNoYXJlIGEgc2luZ2xlIHBoeXNpY2FsIFVTQiBicmlk
+Z2UuIEluIHN1Y2ggY2FzZXMsCj4+PiBpdCBpcyBuZWNlc3NhcnkgdG8gY29vcmRpbmF0ZSBhY2Nl
+c3MgdG8gdGhlIHNoYXJlZCByZXNvdXJjZS4KPj4+Cj4+PiBVc2luZyB0aGlzIEFQSSwgZHJpdmVy
+cyBjYW4gYWxsb2NhdGUgYSBtZWRpYSBkZXZpY2Ugd2l0aCB0aGUgc2hhcmVkIHN0cnVjdAo+Pj4g
+ZGV2aWNlIGFzIHRoZSBrZXkuIE9uY2UgdGhlIG1lZGlhIGRldmljZSBpcyBhbGxvY2F0ZWQgYnkg
+YSBkcml2ZXIsIG90aGVyCj4+PiBkcml2ZXJzIGNhbiBnZXQgYSByZWZlcmVuY2UgdG8gaXQuIFRo
+ZSBtZWRpYSBkZXZpY2UgaXMgcmVsZWFzZWQgd2hlbiBhbGwKPj4+IHRoZSByZWZlcmVuY2VzIGFy
+ZSByZWxlYXNlZC4KPj4+Cj4+PiBDaGFuZ2UgdGhlIEFMU0EgZHJpdmVyIHRvIHVzZSB0aGUgTWVk
+aWEgQ29udHJvbGxlciBBUEkgdG8gc2hhcmUgbWVkaWEKPj4+IHJlc291cmNlcyB3aXRoIERWQiwg
+YW5kIFY0TDIgZHJpdmVycyBvbiBhIEFVMDgyOCBtZWRpYSBkZXZpY2UuCj4+Pgo+Pj4gVGhlIE1l
+ZGlhIENvbnRyb2xsZXIgc3BlY2lmaWMgaW5pdGlhbGl6YXRpb24gaXMgZG9uZSBhZnRlciBzb3Vu
+ZCBjYXJkIGlzCj4+PiByZWdpc3RlcmVkLiBBTFNBIGNyZWF0ZXMgTWVkaWEgaW50ZXJmYWNlIGFu
+ZCBlbnRpdHkgZnVuY3Rpb24gZ3JhcGggbm9kZXMKPj4+IGZvciBDb250cm9sLCBNaXhlciwgUENN
+IFBsYXliYWNrLCBhbmQgUENNIENhcHR1cmUgZGV2aWNlcy4KPj4+Cj4+PiBzbmRfdXNiX2h3X3Bh
+cmFtcygpIHdpbGwgY2FsbCBNZWRpYSBDb250cm9sbGVyIGVuYWJsZSBzb3VyY2UgaGFuZGxlcgo+
+Pj4gaW50ZXJmYWNlIHRvIHJlcXVlc3QgdGhlIG1lZGlhIHJlc291cmNlLiBJZiByZXNvdXJjZSBy
+ZXF1ZXN0IGlzIGdyYW50ZWQsCj4+PiBpdCB3aWxsIHJlbGVhc2UgaXQgZnJvbSBzbmRfdXNiX2h3
+X2ZyZWUoKS4gSWYgcmVzb3VyY2UgaXMgYnVzeSwgLUVCVVNZIGlzCj4+PiByZXR1cm5lZC4KPj4+
+Cj4+PiBNZWRpYSBzcGVjaWZpYyBjbGVhbnVwIGlzIGRvbmUgaW4gdXNiX2F1ZGlvX2Rpc2Nvbm5l
+Y3QoKS4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBTaHVhaCBLaGFuIDxzaHVhaEBrZXJuZWwub3Jn
+Pgo+Pgo+PiBGZWVsIGZyZWUgdG8gdGFrZSBteSBhY2sgcmVnYXJkaW5nIHRoZSBzb3VuZCBzdHVm
+ZjoKPj4gwqDCoCBSZXZpZXdlZC1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+Pgo+
+Pgo+PiBUaGFua3MhCj4+Cj4+IFRha2FzaGkKPj4KPiAKPiBIaSBNYXVybywKPiAKPiBBbnkgdXBk
+YXRlIG9uIHRoaXMgcGF0Y2ggc2VyaWVzPwoKSSdtIHBsYW5uaW5nIHRvIHByb2Nlc3MgdGhpcyBz
+ZXJpZXMgZm9yIDUuMS4gSGF2ZW4ndCBnb3R0ZW4gYXJvdW5kIHRvIGl0IHlldCwKYnV0IEkgZXhw
+ZWN0IHRvIGRvIHRoaXMgbmV4dCB3ZWVrLgoKU3RpbGwgZ29pbmcgdGhyb3VnaCBhbGwgdGhlIHBl
+bmRpbmcgcGF0Y2hlcyBhZnRlciB0aGUgQ2hyaXN0bWFzIHBlcmlvZCA6LSkKClJlZ2FyZHMsCgoJ
+SGFucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
