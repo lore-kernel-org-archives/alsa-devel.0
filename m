@@ -1,69 +1,68 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi
-	audio	suspend/resume
-Date: Fri, 11 Jan 2019 14:35:34 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19527B044F@SHSMSX103.ccr.corp.intel.com>
-References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
- <e2c257fb-e292-b23d-1f20-e5467e0d93dd@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D19527AE0B4@SHSMSX103.ccr.corp.intel.com>
- <s5hd0p71jvh.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AE92B@SHSMSX103.ccr.corp.intel.com>
- <s5h8szui68f.wl-tiwai@suse.de>	<s5h4laii46l.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AF06F@SHSMSX103.ccr.corp.intel.com>
- <s5h4lagyagb.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AFEB3@SHSMSX103.ccr.corp.intel.com>
- <s5hd0p3mi6t.wl-tiwai@suse.de>
+From: shuah <shuah@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v9 4/4] sound/usb: Use Media Controller API
+ to share media resources
+Date: Fri, 11 Jan 2019 07:57:49 -0700
+Message-ID: <5f9588b5-657a-78ee-9614-ed0ef1fc5839@kernel.org>
+References: <cover.1545154777.git.shuah@kernel.org>
+ <2fb40852e4035b2a58010ce7416448918f12804f.1545154778.git.shuah@kernel.org>
+ <s5hefadbp5m.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 801C8266914
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 15:35:38 +0100 (CET)
-In-Reply-To: <s5hd0p3mi6t.wl-tiwai@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hefadbp5m.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
->-----Original Message-----
->From: Takashi Iwai [mailto:tiwai@suse.de]
->Sent: Friday, January 11, 2019 9:35 PM
->To: Yang, Libin <libin.yang@intel.com>
->Cc: liam.r.girdwood@linux.intel.com; Lin, Mengdong
-><mengdong.lin@intel.com>; alsa-devel@alsa-project.org; broonie@kernel.org;
->Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->Subject: Re: [alsa-devel] [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
->suspend/resume
->
->On Fri, 11 Jan 2019 06:20:23 +0100,
->Yang, Libin wrote:
+On 12/19/18 6:51 AM, Takashi Iwai wrote:
+> On Tue, 18 Dec 2018 18:59:39 +0100,
+> shuah@kernel.org wrote:
 >>
->> The below patch may have a small confliction that the trigger will be
->> called twice as our SOF has already call snd_pcm_suspend() in card
->> suspend.
->
->It should be no problem, snd_pcm_suspend() can be called multiple times.  If
->it's already suspended, just nothing happens.
+>> From: Shuah Khan <shuah@kernel.org>
+>>
+>> Media Device Allocator API to allows multiple drivers share a media device.
+>> This API solves a very common use-case for media devices where one physical
+>> device (an USB stick) provides both audio and video. When such media device
+>> exposes a standard USB Audio class, a proprietary Video class, two or more
+>> independent drivers will share a single physical USB bridge. In such cases,
+>> it is necessary to coordinate access to the shared resource.
+>>
+>> Using this API, drivers can allocate a media device with the shared struct
+>> device as the key. Once the media device is allocated by a driver, other
+>> drivers can get a reference to it. The media device is released when all
+>> the references are released.
+>>
+>> Change the ALSA driver to use the Media Controller API to share media
+>> resources with DVB, and V4L2 drivers on a AU0828 media device.
+>>
+>> The Media Controller specific initialization is done after sound card is
+>> registered. ALSA creates Media interface and entity function graph nodes
+>> for Control, Mixer, PCM Playback, and PCM Capture devices.
+>>
+>> snd_usb_hw_params() will call Media Controller enable source handler
+>> interface to request the media resource. If resource request is granted,
+>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
+>> returned.
+>>
+>> Media specific cleanup is done in usb_audio_disconnect().
+>>
+>> Signed-off-by: Shuah Khan <shuah@kernel.org>
+> 
+> Feel free to take my ack regarding the sound stuff:
+>    Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> 
+> 
+> Thanks!
+> 
+> Takashi
+> 
 
-Got it. Thanks.
+Hi Mauro,
 
-Regards,
-Libin
+Any update on this patch series?
 
->
->
->thanks,
->
->Takashi
+thanks,
+-- Shuah
