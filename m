@@ -1,20 +1,18 @@
-From: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH v2] ASoC: soc-core: fix init platform memory
-	handling
-Date: Thu, 10 Jan 2019 16:21:04 -0800
-Message-ID: <20190111002104.121379-1-cujomalainey@chromium.org>
-References: <20190110223302.85927-1-cujomalainey@chromium.org>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: axfer: FTBFS of axfer with glibc-2.11 or before due to
+ missing definition of POLLRDNORM
+Date: Fri, 11 Jan 2019 01:23:57 +0100 (CET)
+Message-ID: <20190111002357.51E9A2675A6@alsa0.perex.cz>
+References: <1547166235189557076-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C2362674DE
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 01:22:06 +0100 (CET)
-Received: by mail-pf1-f199.google.com with SMTP id 68so8997701pfr.6
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 16:22:06 -0800 (PST)
-In-Reply-To: <20190110223302.85927-1-cujomalainey@chromium.org>
+Received: from webhooks-bot.alsa-project.org (master.perex-int.cz
+ [192.168.100.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id A05062674DE
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 01:23:55 +0100 (CET)
+In-Reply-To: <1547166235189557076-webhooks-bot@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Curtis Malainey <cujomalainey@chromium.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_init_platform initializes pointers to snd_soc_dai_link which is
-statically allocated and it does this by devm_kzalloc. In the event of
-an EPROBE_DEFER the memory will be freed and the pointers are left
-dangling. snd_soc_init_platform sees the dangling pointers and assumes
-they are pointing to initialized memory and does not reallocate them on
-the second probe attempt which results in a use after free bug since
-devm has freed the memory from the first probe attempt.
+alsa-project/alsa-utils issue #9 was opened from takaswie:
 
-Since the intention for snd_soc_dai_link->platform is that it can be set
-statically by the machine driver we need to respect the pointer in the
-event we did not set it but still catch dangling pointers. The solution
-is to add a flag to track whether the pointer was dynamically allocated
-or not.
+Reported by Jay Foster in alsa-devel list.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144024.html
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
----
- include/sound/soc.h  |  6 ++++++
- sound/soc/soc-core.c | 11 ++++++-----
- 2 files changed, 12 insertions(+), 5 deletions(-)
+The v1.1.8 release brings FTBFS of axfer in his legacy toolchain (glibc v2.9)
+for arm platform, due to missing definition `POLLRDNORM`, used in
+`axfer/waiter-select.c`. An option of  `-D_GNU_SOURCE` for CFLAGS can suppress
+the issue. With glibc v2.22, no issues.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8ec1de856ee7e..e665f111b0d27 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -985,6 +985,12 @@ struct snd_soc_dai_link {
- 	/* Do not create a PCM for this DAI link (Backend link) */
- 	unsigned int ignore:1;
- 
-+	/*
-+	 * This driver uses legacy platform naming. Set by the core, machine
-+	 * drivers should not modify this value.
-+	 */
-+	unsigned int legacy_platform:1;
-+
- 	struct list_head list; /* DAI link list of the soc card */
- 	struct snd_soc_dobj dobj; /* For topology */
- };
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0934b36645b3e..cdcc417c94ca1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1034,17 +1034,18 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
- 	 * this function should be removed in the future
- 	 */
- 	/* convert Legacy platform link */
--	if (!platform) {
-+	if (!platform || dai_link->legacy_platform) {
- 		platform = devm_kzalloc(card->dev,
- 				sizeof(struct snd_soc_dai_link_component),
- 				GFP_KERNEL);
- 		if (!platform)
- 			return -ENOMEM;
- 
--		dai_link->platform	= platform;
--		platform->name		= dai_link->platform_name;
--		platform->of_node	= dai_link->platform_of_node;
--		platform->dai_name	= NULL;
-+		dai_link->platform	  = platform;
-+		dai_link->legacy_platform = 1;
-+		platform->name		  = dai_link->platform_name;
-+		platform->of_node	  = dai_link->platform_of_node;
-+		platform->dai_name	  = NULL;
- 	}
- 
- 	/* if there's no platform we match on the empty platform */
--- 
-2.20.1.97.g81188d93c3-goog
+During development period of axfer, this issue has never been got. More recent
+version of glibc (v2.28) was used and the macro is available without any explicit
+options.
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/9
+Repository URL: https://github.com/alsa-project/alsa-utils
