@@ -1,18 +1,12 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: soc-core: defer card probe until
- all component is added to list
-Date: Thu, 10 Jan 2019 23:07:03 -0600
-Message-ID: <598efaa4-1543-5441-0d1d-01935dc62056@linux.intel.com>
-References: <1547023627-30312-1-git-send-email-rohitkr@codeaurora.org>
+From: <laxmi.devi@in.bosch.com>
+Subject: [PATCH - ALSA JACK plugin 1/2] jack: Replacing
+	jack->channels with jack->num_ports
+Date: Fri, 11 Jan 2019 10:45:54 +0530
+Message-ID: <1547183755-3551-1-git-send-email-laxmi.devi@in.bosch.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B5892677D0
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 06:07:09 +0100 (CET)
-In-Reply-To: <1547023627-30312-1-git-send-email-rohitkr@codeaurora.org>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,121 +16,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit kumar <rohitkr@codeaurora.org>, plai@codeaurora.org, bgoswami@codeaurora.org, asishb@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, vinod.koul@linaro.org
-Cc: Ajit Pandey <ajitp@codeaurora.org>
+To: patch@alsa-project.org
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org, Laxmi Devi <Laxmi.Devi@in.bosch.com>
 List-Id: alsa-devel@alsa-project.org
 
-V2hpbGUgZGVidWdnaW5nIFNreWxha2UgYXVkaW8gc3R1ZmYsIEkgY2FtZSBhY3Jvc3MgYSBrZXJu
-ZWwgb29wcyAKaW50cm9kdWNlZCBieSB0aGlzIGNvbW1pdC4KCkl0J3MgcXVpdGUgbGF0ZSBoZXJl
-IGFuZCBteSBicmFpbiBpcyBmcmllZCwgc3VibWl0dGluZyBhcyBpcyBidXQgbXkgCm1vbmV5IGlz
-IG9uIHRoZSB1c2Ugb2YgbGluay0+cGxhdGZvcm0tPm9mX25vZGUgd2hpY2ggaXMgcXVpdGUgdW5s
-aWtlbHkgCnRvIHdvcmsgb24gQUNQSSBwbGF0Zm9ybXMuCgphbmQgYnR3IHlvdSBtYXkgd2FudCB0
-byBmaXggdGhlIHR5cG9zLCBpdCdzIHJlZ2lzdHJhdGlvbiwgbm90IHJlZ2lzdGFydGlvbi4KCi1Q
-aWVycmUKCjg3ODBjZjExNDJhNTk1NjhhM2FhNzc5NTljYmQ3NmIyZWRiNmZkODEgaXMgdGhlIGZp
-cnN0IGJhZCBjb21taXQKY29tbWl0IDg3ODBjZjExNDJhNTk1NjhhM2FhNzc5NTljYmQ3NmIyZWRi
-NmZkODEKQXV0aG9yOiBBaml0IFBhbmRleSA8YWppdHBAY29kZWF1cm9yYS5vcmc+CkRhdGU6wqDC
-oCBXZWQgSmFuIDkgMTQ6MTc6MDcgMjAxOSArMDUzMAoKIMKgwqDCoCBBU29DOiBzb2MtY29yZTog
-ZGVmZXIgY2FyZCBwcm9iZSB1bnRpbCBhbGwgY29tcG9uZW50IGlzIGFkZGVkIHRvIGxpc3QKCiDC
-oMKgwqAgREFJIGNvbXBvbmVudCBwcm9iZSBpcyBub3QgY2FsbGVkIGlmIGl0IGlzIG5vdCBwcmVz
-ZW50CiDCoMKgwqAgaW4gY29tcG9uZW50IGxpc3QgZHVyaW5nIHNvdW5kIGNhcmQgcmVnaXN0cmF0
-aW9uLgogwqDCoMKgIENoZWNrIGlmIGNvbXBvbmVudCBpcyBhdmFpbGFibGUgaW4gY29tcG9uZW50
-IGxpc3QgZm9yCiDCoMKgwqAgcGxhdGZvcm0gYW5kIGNwdSBkYWkgYmVmb3JlIHNvdW5kY2FyZCBy
-ZWdpc3RyYXRpb24uCgogwqDCoMKgIFNpZ25lZC1vZmYtYnk6IEFqaXQgUGFuZGV5IDxhaml0cEBj
-b2RlYXVyb3JhLm9yZz4KIMKgwqDCoCBTaWduZWQtb2ZmLWJ5OiBSb2hpdCBrdW1hciA8cm9oaXRr
-ckBjb2RlYXVyb3JhLm9yZz4KIMKgwqDCoCBTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9v
-bmllQGtlcm5lbC5vcmc+Cgo6MDQwMDAwIDA0MDAwMCA5OGRhNTliMGE3MzU1MTAzMGEwYzkwMzBi
-OGNkNTgxMTQwMDNjODJiIAo0OGYwNjE4ZjM3YTE2ZGNmZWE1OTk5ZWNkOTc0M2VkYmIwNzYzNTk0
-IE3CoMKgwqAgc291bmQKClvCoMKgwqAgMi42ODYwMjldIEhETUkgSERBIENvZGVjIGVoZGF1ZGlv
-MEQyOiBNYXggZGFpcyBzdXBwb3J0ZWQ6IDMKW8KgwqDCoCAyLjY4Nzg1NF0gQlVHOiB1bmFibGUg
-dG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgCjAwMDAwMDAwMDAw
-MDAwMDAKW8KgwqDCoCAyLjY4Nzg1OF0gUEdEIDAgUDREIDAKW8KgwqDCoCAyLjY4Nzg2Ml0gT29w
-czogMDAwMCBbIzFdIFNNUCBQVEkKW8KgwqDCoCAyLjY4Nzg2Nl0gQ1BVOiAxIFBJRDogMTY0NyBD
-b21tOiBzeXN0ZW1kLXVkZXZkIE5vdCB0YWludGVkIAo0LjIwLjAtcmM3LXRlc3QrICM4OApbwqDC
-oMKgIDIuNjg3ODY3XSBIYXJkd2FyZSBuYW1lOiBEZWxsIEluYy4gWFBTIDEzIDkzNTAvMDdUWUMy
-LCBCSU9TIDEuMC4wIAowOS8xMC8yMDE1ClvCoMKgwqAgMi42ODc4NzJdIFJJUDogMDAxMDpzdHJj
-bXArMHhjLzB4MjAKW8KgwqDCoCAyLjY4Nzg3NV0gQ29kZTogNzUgZjcgNDggODMgYzYgMDEgMGYg
-YjYgNGUgZmYgNDggODMgYzIgMDEgODQgYzkgODggCjRhIGZmIDc1IGVkIGYzIGMzIDBmIDFmIDgw
-IDAwIDAwIDAwIDAwIDQ4IDgzIGM3IDAxIDBmIGI2IDQ3IGZmIDQ4IDgzIGM2IAowMSA8M2E+IDQ2
-IGZmIDc1IDA3IDg0IGMwIDc1IGViIDMxIGMwIGMzIDE5IGMwIDgzIGM4IDAxIGMzIDY2IDkwIDQ4
-IDg1ClvCoMKgwqAgMi42ODc4NzddIFJTUDogMDAxODpmZmZmOWZhZGMxMDRiYjE4IEVGTEFHUzog
-MDAwMTAyMDIKW8KgwqDCoCAyLjY4Nzg4MF0gUkFYOiAwMDAwMDAwMDAwMDAwMDY1IFJCWDogZmZm
-ZjlkNjgzNGJhNTQyOCBSQ1g6IAowMDAwMDAwMDAwMDAwMDAxClvCoMKgwqAgMi42ODc4ODJdIFJE
-WDogZmZmZmZmZmZjMDI4OGQwMCBSU0k6IDAwMDAwMDAwMDAwMDAwMDEgUkRJOiAKZmZmZjlkNjgz
-NTFiNWE2MQpbwqDCoMKgIDIuNjg3ODgzXSBSQlA6IDAwMDAwMDAwMDAwMDAwMDAgUjA4OiAwMDAw
-MDAwMDAwMDAwMDAxIFIwOTogCmZmZmY5ZDY4MzZkYmZkODAKW8KgwqDCoCAyLjY4Nzg4NV0gUjEw
-OiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogZmZmZjlkNjgzNWU2NTY0OCBSMTI6IAowMDAwMDAwMDAw
-MDAwMDAwClvCoMKgwqAgMi42ODc4ODddIFIxMzogMDAwMDAwMDAwMDAwMDAwMCBSMTQ6IDAwMDAw
-MDAwMDAwMDAwMDAgUjE1OiAKZmZmZjlmYWRjMTA0YmU5OApbwqDCoMKgIDIuNjg3ODg5XSBGUzrC
-oCAwMDAwN2Y5NzY4MDZhOGMwKDAwMDApIEdTOmZmZmY5ZDY4MzhhODAwMDAoMDAwMCkgCmtubEdT
-OjAwMDAwMDAwMDAwMDAwMDAKW8KgwqDCoCAyLjY4Nzg5MV0gQ1M6wqAgMDAxMCBEUzogMDAwMCBF
-UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKW8KgwqDCoCAyLjY4Nzg5M10gQ1IyOiAwMDAw
-MDAwMDAwMDAwMDAwIENSMzogMDAwMDAwMDJiNDI4NjAwMiBDUjQ6IAowMDAwMDAwMDAwMzYwNmUw
-ClvCoMKgwqAgMi42ODc4OTVdIENhbGwgVHJhY2U6ClvCoMKgwqAgMi42ODc5MDJdwqAgc29jX2Zp
-bmRfY29tcG9uZW50KzB4NGMvMHg3MCBbc25kX3NvY19jb3JlXQpbwqDCoMKgIDIuNjg3OTA4XcKg
-IHNvY19pbml0X2RhaV9saW5rKzB4MTI0LzB4MjgwIFtzbmRfc29jX2NvcmVdClvCoMKgwqAgMi42
-ODc5MTNdwqAgc25kX3NvY19yZWdpc3Rlcl9jYXJkKzB4NmIvMHgxZjAgW3NuZF9zb2NfY29yZV0K
-W8KgwqDCoCAyLjY4NzkxOF3CoCA/IF9fZGV2cmVzX2FsbG9jX25vZGUrMHgyYy8weDYwClvCoMKg
-wqAgMi42ODc5MjJdwqAgZGV2bV9zbmRfc29jX3JlZ2lzdGVyX2NhcmQrMHgzZS8weDgwIFtzbmRf
-c29jX2NvcmVdClvCoMKgwqAgMi42ODc5MjZdwqAgcGxhdGZvcm1fZHJ2X3Byb2JlKzB4MzUvMHg5
-MApbwqDCoMKgIDIuNjg3OTMwXcKgID8gZHJpdmVyX3N5c2ZzX2FkZCsweDcwLzB4ZDAKW8KgwqDC
-oCAyLjY4NzkzMl3CoCByZWFsbHlfcHJvYmUrMHhlZS8weDJlMApbwqDCoMKgIDIuNjg3OTM1XcKg
-IGRyaXZlcl9wcm9iZV9kZXZpY2UrMHg0YS8weGUwClvCoMKgwqAgMi42ODc5MzhdwqAgX19kcml2
-ZXJfYXR0YWNoKzB4YWMvMHhiMApbwqDCoMKgIDIuNjg3OTQxXcKgID8gZHJpdmVyX3Byb2JlX2Rl
-dmljZSsweGUwLzB4ZTAKW8KgwqDCoCAyLjY4Nzk0M13CoCBidXNfZm9yX2VhY2hfZGV2KzB4NzEv
-MHhiMApbwqDCoMKgIDIuNjg3OTQ2XcKgIGJ1c19hZGRfZHJpdmVyKzB4MTkxLzB4MjEwClvCoMKg
-wqAgMi42ODc5NDhdwqAgPyAweGZmZmZmZmZmYzAxYmYwMDAKW8KgwqDCoCAyLjY4Nzk1MV3CoCBk
-cml2ZXJfcmVnaXN0ZXIrMHg1Ni8weGUwClvCoMKgwqAgMi42ODc5NTNdwqAgPyAweGZmZmZmZmZm
-YzAxYmYwMDAKW8KgwqDCoCAyLjY4Nzk1Nl3CoCBkb19vbmVfaW5pdGNhbGwrMHg0MS8weDFiOApb
-wqDCoMKgIDIuNjg3OTYwXcKgID8ga29iamVjdF91ZXZlbnRfZW52KzB4MTAxLzB4NjgwClvCoMKg
-wqAgMi42ODc5NjJdwqAgPyBfY29uZF9yZXNjaGVkKzB4MTAvMHg0MApbwqDCoMKgIDIuNjg3OTY2
-XcKgID8ga21lbV9jYWNoZV9hbGxvY190cmFjZSsweDM1LzB4MTYwClvCoMKgwqAgMi42ODc5Njld
-wqAgZG9faW5pdF9tb2R1bGUrMHg1Ni8weDFkYgpbwqDCoMKgIDIuNjg3OTczXcKgIGxvYWRfbW9k
-dWxlKzB4MWU3Yy8weDI1NjAKW8KgwqDCoCAyLjY4Nzk3Nl3CoCA/IHZmc19yZWFkKzB4MTBhLzB4
-MTMwClvCoMKgwqAgMi42ODc5NzldwqAgPyBfX2RvX3N5c19maW5pdF9tb2R1bGUrMHhiYS8weGUw
-ClvCoMKgwqAgMi42ODc5ODNdwqAgX19kb19zeXNfZmluaXRfbW9kdWxlKzB4YmEvMHhlMApbwqDC
-oMKgIDIuNjg3OTg4XcKgIGRvX3N5c2NhbGxfNjQrMHg0My8weGYwClvCoMKgwqAgMi42ODc5OTJd
-wqAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhOQpbwqDCoMKgIDIuNjg3
-OTk1XSBSSVA6IDAwMzM6MHg3Zjk3NjhhZWYyMTkKW8KgwqDCoCAyLjY4Nzk5OF0gQ29kZTogMDAg
-YzMgNjYgMmUgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgMGYgMWYgNDQgMDAgMDAgCjQ4IDg5IGY4
-IDQ4IDg5IGY3IDQ4IDg5IGQ2IDQ4IDg5IGNhIDRkIDg5IGMyIDRkIDg5IGM4IDRjIDhiIDRjIDI0
-IDA4IDBmIAowNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDczIDAxIGMzIDQ4IDhiIDBkIDQ3IGZjIDBj
-IDAwIGY3IGQ4IDY0IDg5IDAxIDQ4ClvCoMKgwqAgMi42ODgwMDBdIFJTUDogMDAyYjowMDAwN2Zm
-Y2NmM2E0Yzk4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IAowMDAwMDAwMDAwMDAwMTM5ClvC
-oMKgwqAgMi42ODgwMDNdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA1NTk5MWNmNTc5
-NzAgUkNYOiAKMDAwMDdmOTc2OGFlZjIxOQpbwqDCoMKgIDIuNjg4MDA2XSBSRFg6IDAwMDAwMDAw
-MDAwMDAwMDAgUlNJOiAwMDAwN2Y5NzY4OWQzY2FkIFJESTogCjAwMDAwMDAwMDAwMDAwMGYKW8Kg
-wqDCoCAyLjY4ODAwOF0gUkJQOiAwMDAwN2Y5NzY4OWQzY2FkIFIwODogMDAwMDAwMDAwMDAwMDAw
-MCBSMDk6IAowMDAwMDAwMDAwMDAwMDAwClvCoMKgwqAgMi42ODgwMTBdIFIxMDogMDAwMDAwMDAw
-MDAwMDAwZiBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAKMDAwMDAwMDAwMDAwMDAwMApbwqDC
-oMKgIDIuNjg4MDEyXSBSMTM6IDAwMDA1NTk5MWNmNDk5MzAgUjE0OiAwMDAwMDAwMDAwMDIwMDAw
-IFIxNTogCjAwMDA1NTk5MWNmNTc5NzAKW8KgwqDCoCAyLjY4ODAxNV0gTW9kdWxlcyBsaW5rZWQg
-aW46IHNuZF9zb2Nfc2tsX2hkYV9kc3AoKykgCnNuZF9zb2NfaGRhY19oZG1pIHNuZF9zb2NfZG1p
-YyBheDg4MTc5XzE3OGEoKykgdXNibmV0IApzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgc25kX2hkYV9j
-b2RlY19nZW5lcmljIHNuZF9zb2Nfc2tsIHNuZF9zb2NfaGRhY19oZGEgCnNuZF9oZGFfZXh0X2Nv
-cmUgc25kX3NvY19za2xfaXBjIHg4Nl9wa2dfdGVtcF90aGVybWFsIHNuZF9zb2Nfc3N0X2lwYyAK
-c25kX3NvY19zc3RfZHNwIHNuZF9zb2NfYWNwaV9pbnRlbF9tYXRjaCBzbmRfc29jX2FjcGkgc25k
-X3NvY19jb3JlIApzbmRfY29tcHJlc3Mgc25kX2hkYV9jb2RlYyBzbmRfaHdkZXAgc25kX2hkYV9j
-b3JlIHNuZF9wY20gZWZpdmFyZnMgCmludGVsX2xwc3NfcGNpIHhoY2lfcGNpIGludGVsX2xwc3Mg
-bWZkX2NvcmUgeGhjaV9oY2QKW8KgwqDCoCAyLjY4ODAzMV0gQ1IyOiAwMDAwMDAwMDAwMDAwMDAw
-ClvCoMKgwqAgMi42ODgwMzRdIC0tLVsgZW5kIHRyYWNlIDhiOTZkMDE5MzVkOWVmZmQgXS0tLQpb
-wqDCoMKgIDIuNjg4MDM3XSBSSVA6IDAwMTA6c3RyY21wKzB4Yy8weDIwClvCoMKgwqAgMi42ODgw
-MzldIENvZGU6IDc1IGY3IDQ4IDgzIGM2IDAxIDBmIGI2IDRlIGZmIDQ4IDgzIGMyIDAxIDg0IGM5
-IDg4IAo0YSBmZiA3NSBlZCBmMyBjMyAwZiAxZiA4MCAwMCAwMCAwMCAwMCA0OCA4MyBjNyAwMSAw
-ZiBiNiA0NyBmZiA0OCA4MyBjNiAKMDEgPDNhPiA0NiBmZiA3NSAwNyA4NCBjMCA3NSBlYiAzMSBj
-MCBjMyAxOSBjMCA4MyBjOCAwMSBjMyA2NiA5MCA0OCA4NQpbwqDCoMKgIDIuNjg4MDQyXSBSU1A6
-IDAwMTg6ZmZmZjlmYWRjMTA0YmIxOCBFRkxBR1M6IDAwMDEwMjAyClvCoMKgwqAgMi42ODgwNDRd
-IFJBWDogMDAwMDAwMDAwMDAwMDA2NSBSQlg6IGZmZmY5ZDY4MzRiYTU0MjggUkNYOiAKMDAwMDAw
-MDAwMDAwMDAwMQpbwqDCoMKgIDIuNjg4MDQ2XSBSRFg6IGZmZmZmZmZmYzAyODhkMDAgUlNJOiAw
-MDAwMDAwMDAwMDAwMDAxIFJESTogCmZmZmY5ZDY4MzUxYjVhNjEKW8KgwqDCoCAyLjY4ODA0OF0g
-UkJQOiAwMDAwMDAwMDAwMDAwMDAwIFIwODogMDAwMDAwMDAwMDAwMDAwMSBSMDk6IApmZmZmOWQ2
-ODM2ZGJmZDgwClvCoMKgwqAgMi42ODgwNTBdIFIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IGZm
-ZmY5ZDY4MzVlNjU2NDggUjEyOiAKMDAwMDAwMDAwMDAwMDAwMApbwqDCoMKgIDIuNjg4MDUyXSBS
-MTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogCmZmZmY5ZmFk
-YzEwNGJlOTgKW8KgwqDCoCAyLjY4ODA1NV0gRlM6wqAgMDAwMDdmOTc2ODA2YThjMCgwMDAwKSBH
-UzpmZmZmOWQ2ODM4YTgwMDAwKDAwMDApIAprbmxHUzowMDAwMDAwMDAwMDAwMDAwClvCoMKgwqAg
-Mi42ODgwNTddIENTOsKgIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUw
-MDMzClvCoMKgwqAgMi42ODgwNTldIENSMjogMDAwMDAwMDAwMDAwMDAwMCBDUjM6IDAwMDAwMDAy
-YjQyODYwMDIgQ1I0OiAKMDAwMDAwMDAwMDM2MDZlMAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Laxmi Devi <Laxmi.Devi@in.bosch.com>
+
+As jack->num_ports and jack->channels hold the same values,
+jack->channels is redundant and hence removed.
+
+Sanity check is added in prepare, to check if io->Channels is
+same as jack->num_ports.
+
+Signed-off-by: Laxmi Devi <Laxmi.Devi@in.bosch.com>
+
+diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
+index af2136e..d723b17 100644
+--- a/jack/pcm_jack.c
++++ b/jack/pcm_jack.c
+@@ -48,7 +48,6 @@ typedef struct {
+ 	unsigned int sample_bits;
+ 	snd_pcm_uframes_t min_avail;
+ 
+-	unsigned int channels;
+ 	snd_pcm_channel_area_t *areas;
+ 
+ 	jack_port_t **ports;
+@@ -263,6 +262,12 @@ static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
+ 	snd_pcm_sw_params_t *swparams;
+ 	int err;
+ 
++	if (io->channels != jack->num_ports) {
++		SNDERR("Channel count %d not equal to no. of ports %d in JACK",
++		       io->channels, jack->num_ports);
++		return -EINVAL;
++	}
++
+ 	jack->hw_ptr = 0;
+ 	jack->xrun_detected = false;
+ 
+@@ -381,7 +386,7 @@ static int jack_set_hw_constraint(snd_pcm_jack_t *jack)
+ 	unsigned int psize_list[MAX_PERIODS_MULTIPLE];
+ 	unsigned int nframes = jack_get_buffer_size(jack->client);
+ 	unsigned int jack_buffer_bytes = (snd_pcm_format_size(format, nframes) *
+-					  jack->channels);
++					  jack->num_ports);
+ 	unsigned int i;
+ 	int err;
+ 
+@@ -398,7 +403,7 @@ static int jack_set_hw_constraint(snd_pcm_jack_t *jack)
+ 	    (err = snd_pcm_ioplug_set_param_list(&jack->io, SND_PCM_IOPLUG_HW_FORMAT,
+ 						 1, &format)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&jack->io, SND_PCM_IOPLUG_HW_CHANNELS,
+-						   jack->channels, jack->channels)) < 0 ||
++						   jack->num_ports, jack->num_ports)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&jack->io, SND_PCM_IOPLUG_HW_RATE,
+ 						   rate, rate)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_list(&jack->io, SND_PCM_IOPLUG_HW_PERIOD_BYTES,
+@@ -485,8 +490,7 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
+ 		return err;
+ 	}
+ 
+-	jack->channels = jack->num_ports;
+-	if (jack->channels == 0) {
++	if (jack->num_ports == 0) {
+ 		SNDERR("define the %s_ports section",
+ 		       stream == SND_PCM_STREAM_PLAYBACK ? "playback" : "capture");
+ 		snd_pcm_jack_free(jack);
+@@ -514,7 +518,7 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
+ 		return -ENOENT;
+ 	}
+ 
+-	jack->areas = calloc(jack->channels, sizeof(snd_pcm_channel_area_t));
++	jack->areas = calloc(jack->num_ports, sizeof(snd_pcm_channel_area_t));
+ 	if (! jack->areas) {
+ 		snd_pcm_jack_free(jack);
+ 		return -ENOMEM;
+-- 
+2.7.4
