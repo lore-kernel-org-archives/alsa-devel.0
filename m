@@ -1,64 +1,59 @@
-From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH] ASoC: soc-core: Fix null pointer dereference in soc_find_component
-Date: Fri, 11 Jan 2019 13:44:02 +0530
-Message-ID: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [alsa-devel] [PATCH v1 3/3] ASoC: soc-core: fix platform name vs.
+ of_node assignement
+Date: Fri, 11 Jan 2019 08:41:09 +0000
+Message-ID: <dfdc497f-9e52-99d7-208c-d8eef31fe61d@nvidia.com>
+References: <20181218174040.k7u26vnnoplllnwb@camel2.lan>
+ <952471da-b355-6471-6c19-5120d6704f81@nvidia.com>
+ <87lg3vuc7p.wl-kuninori.morimoto.gx@renesas.com>
+ <b5164c93-8be8-1c3d-9415-c895da6ad622@nvidia.com>
+ <d1e41ed2-da7c-b46c-bc6d-64cf3e536771@nvidia.com>
+ <865d2a3e-bf6b-1f30-1179-7e922c0d0641@nvidia.com>
+ <87k1je38w7.wl-kuninori.morimoto.gx@renesas.com>
+ <0660a471-3698-2059-4494-ad146518a4ed@nvidia.com>
+ <20190109125340.GD10405@sirena.org.uk>
+ <52f5f2cf-9260-f9c5-f73d-3c3d5debc86b@nvidia.com>
+ <20190109141439.GE10405@sirena.org.uk>
+ <875zuxb9uy.wl-kuninori.morimoto.gx@renesas.com>
+ <a2068291-e554-cc4f-9af9-0022f3c4de34@nvidia.com>
+ <871s5kqb43.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <871s5kqb43.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: plai@codeaurora.org, bgoswami@codeaurora.org, asishb@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, vinod.koul@linaro.org
-Cc: Ajit Pandey <ajitp@codeaurora.org>, Rohit kumar <rohitkr@codeaurora.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
 
-soc_find_component() may lead to null pointer exception if both
-arguments i.e of_node and name is NULL. Add NULL check before
-calling soc_find_component(). Also fix some typos.
+On 11/01/2019 00:52, Kuninori Morimoto wrote:
 
-Fixes: 8780cf1142a5 ("ASoC: soc-core: defer card probe until all component is added to list")
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
----
- sound/soc/soc-core.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+...
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0934b36..df05fb8 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1131,11 +1131,13 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 	}
- 
- 	/*
--	 * Defer card registartion if platform dai component is not added to
-+	 * Defer card registration if platform dai component is not added to
- 	 * component list.
- 	 */
--	if (!soc_find_component(link->platform->of_node, link->platform->name))
--		return -EPROBE_DEFER;
-+	if (link->platform->of_node || link->platform->name)
-+		if (!soc_find_component(link->platform->of_node,
-+					link->platform->name))
-+			return -EPROBE_DEFER;
- 
- 	/*
- 	 * CPU device may be specified by either name or OF node, but
-@@ -1150,11 +1152,12 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 	}
- 
- 	/*
--	 * Defer card registartion if cpu dai component is not added to
-+	 * Defer card registration if cpu dai component is not added to
- 	 * component list.
- 	 */
--	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
--		return -EPROBE_DEFER;
-+	if (link->cpu_of_node || link->cpu_name)
-+		if (!soc_find_component(link->cpu_of_node, link->cpu_name))
-+			return -EPROBE_DEFER;
- 
- 	/*
- 	 * At least one of CPU DAI name or CPU device name/node must be
+>> It is still fragile. Again the machine driver could have incorrectly set
+>> these 'allocated_platform/codecs' members as they are exposed to the
+>> machine driver. You have no way to determine if the machine driver is
+>> doing the correct thing or not. The problem becomes more complex with
+>> probe deferral.
+> 
+> Indeed there is such case so far, but my understanding is that current
+> driver should select "legacy style" or "modern style".
+> If driver setup it as "legacy", but access to "modern" member,
+> it is driver side bug, right ?
+
+Yes absolutely it is a driver bug, but looking at the snd_soc_dai_link
+structure today it is not clear what the driver should be setting and
+what is 'modern' and what is 'legacy'. You need to dig through the git
+history and code to figure this out. So you could say it is not very
+well documented/commented from a soc-core perspective and could be easy
+for a driver writer to get themselves in a pickle/mess. Anyway, that is
+easy to fix and we could add some comments to clear it up.
+
+Cheers
+Jon
+
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+nvpublic
