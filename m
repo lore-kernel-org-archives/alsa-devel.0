@@ -1,19 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: cs4341: fix waring
-	unused-function
-Date: Mon, 14 Jan 2019 14:08:14 +0000
-Message-ID: <20190114140814.GC11073@sirena.org.uk>
-References: <20190114095540.22956-1-anders.roxell@linaro.org>
- <20190114112443.GA11073@sirena.org.uk>
- <CADYN=9LU2fngmUZrM_E7qS7rGB7y4b45H12yZOW=X7JfaS1qqQ@mail.gmail.com>
+From: <laxmi.devi@in.bosch.com>
+Subject: [PATCH - ALSA JACK plugin 2/2] jack: Removing
+	snd_pcm_jack_format_t as it is not used
+Date: Fri, 11 Jan 2019 10:19:48 +0530
+Message-ID: <1547182188-14480-2-git-send-email-laxmi.devi@in.bosch.com>
+References: <1547182188-14480-1-git-send-email-laxmi.devi@in.bosch.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8973375576187025843=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 97D08266ABC
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 15:08:21 +0100 (CET)
-In-Reply-To: <CADYN=9LU2fngmUZrM_E7qS7rGB7y4b45H12yZOW=X7JfaS1qqQ@mail.gmail.com>
+In-Reply-To: <1547182188-14480-1-git-send-email-laxmi.devi@in.bosch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul.Handrigan@cirrus.com, tiwai@suse.com
+To: patch@alsa-project.org
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org, Laxmi Devi <Laxmi.Devi@in.bosch.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Laxmi Devi <Laxmi.Devi@in.bosch.com>
 
---===============8973375576187025843==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
-Content-Disposition: inline
+Signed-off-by: Laxmi Devi <Laxmi.Devi@in.bosch.com>
 
-
---KN5l+BnMqAQyZLvT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 14, 2019 at 01:49:17PM +0100, Anders Roxell wrote:
-
-> Do you want me to resend it without " 1/3]... " in the subject?
-
-No, that's fine.
-
---KN5l+BnMqAQyZLvT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw8l80ACgkQJNaLcl1U
-h9B31gf/T9PzP/h1uPds/fefFp+3eV9W+igONVCH1EbOpe9a/zNQ7jETxpD/3ZB9
-mlN3SRsfkzLOx1LQqpF6MGVPE9kaKLne2RR1qmu4CZQ7vWKP5rl/g03UYHlaOYIG
-JNSzyJQNAjxA7GrIfo1lPKgB39qp92z3kWTIcRIOk/nTGIKGuvA4jJ5dn8HldEqu
-BhJdJ84sqp5rD7JdqDt5eaWk+aJvT5rzOmdlqxjpuJ6vyZ+InFDHdIozQXcEvdFH
-wy8uCSyqrXIx6rRJTfJ7eZak5Q1dY7G6zT3W1FbUvp0m+U6kY7iY6+baL+pWssps
-Cx/XYQ7qf8RDgqOlWCQIonKlCsXZTA==
-=Pica
------END PGP SIGNATURE-----
-
---KN5l+BnMqAQyZLvT--
-
---===============8973375576187025843==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8973375576187025843==--
+diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
+index d723b17..b2bc213 100644
+--- a/jack/pcm_jack.c
++++ b/jack/pcm_jack.c
+@@ -31,10 +31,6 @@
+ 
+ #define MAX_PERIODS_MULTIPLE 64
+ 
+-typedef enum _jack_format {
+-	SND_PCM_JACK_FORMAT_RAW
+-} snd_pcm_jack_format_t;
+-
+ typedef struct {
+ 	snd_pcm_ioplug_t io;
+ 
+-- 
+2.7.4
