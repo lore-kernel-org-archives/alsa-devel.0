@@ -1,18 +1,20 @@
 From: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH] ASoC: soc-core: fix init platform memory
+Subject: [PATCH v2] ASoC: soc-core: fix init platform memory
 	handling
-Date: Thu, 10 Jan 2019 14:33:02 -0800
-Message-ID: <20190110223302.85927-1-cujomalainey@chromium.org>
+Date: Thu, 10 Jan 2019 16:21:04 -0800
+Message-ID: <20190111002104.121379-1-cujomalainey@chromium.org>
+References: <20190110223302.85927-1-cujomalainey@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 43A7E267551
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 23:33:14 +0100 (CET)
-Received: by mail-io1-f70.google.com with SMTP id h7so11373635iof.19
- for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 14:33:14 -0800 (PST)
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C2362674DE
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 01:22:06 +0100 (CET)
+Received: by mail-pf1-f199.google.com with SMTP id 68so8997701pfr.6
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2019 16:22:06 -0800 (PST)
+In-Reply-To: <20190110223302.85927-1-cujomalainey@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,7 +25,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Curtis Malainey <cujomalainey@chromium.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 snd_soc_init_platform initializes pointers to snd_soc_dai_link which is
