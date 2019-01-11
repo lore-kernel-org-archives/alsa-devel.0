@@ -1,61 +1,56 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/5] Stripe control functionality
-Date: Fri, 11 Jan 2019 12:02:36 -0600
-Message-ID: <3c6dd485-515b-98c1-7179-a8dea256e56c@linux.intel.com>
-References: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v2 0/4] Add NXP AUDMIX device and machine drivers
+Date: Fri, 11 Jan 2019 11:13:07 -0800
+Message-ID: <20190111191306.GA8463@Asurada-Nvidia.nvidia.com>
+References: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 49239267225
- for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2019 19:02:38 +0100 (CET)
-In-Reply-To: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sameer Pujar <spujar@nvidia.com>, perex@perex.cz, tiwai@suse.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEvMTEvMTkgMTE6MjIgQU0sIFNhbWVlciBQdWphciB3cm90ZToKPiBCYWNrZ3JvdW5kCj4g
-PT09PT09PT09PQo+Cj4gQXphbGlhIENvbnRyb2xsZXIgZmV0Y2hlcyBjb21tYW5kIGFuZCBhdWRp
-byBkYXRhIHZpYSBETUEgYW5kIHNlbmQgdGhlbQo+IHRvIGNvZGVjIHRocm91Z2ggU0RPKFNlcmlh
-bCBEYXRhIE91dCkgbGluZXMuIFNETyBpcyBmb3Igb3V0Ym91bmcgYW5kIGl0Cj4gYnJvYWRjYXN0
-cyB0byBhbGwgY29kZWNzLiBUaGVyZSBpcyBhdGxlYXN0IG9uZSBTRE8gbGluZSBwcmVzZW50LCBi
-dXQKPiB0aGVyZSBjYW4gYmUgbXVsdGlwbGUgU0RPIGxpbmVzIHN1cHBvcnRlZCBmb3IgZXh0ZW5k
-ZWQgYmFuZHdpZHRoLiBUaGlzCj4gaXMgZXNzZW50aWFsIHdoZW4gYSBwbGF0Zm9ybSBzdXBwb3J0
-cyBtdWx0aXBsZSBoZG1pL2RwIHNpbmtzIGFuZCB0aGVyZQo+IGlzIGEgcmVxdWlyZW1lbnQgZm9y
-IGhpZ2hlciByZXNvbHV0aW9uIGF1ZGlvIHBsYXliYWNrLiBJbiBzdWNoIGNhc2VzCj4gc2ltdWx0
-YW5lb3VzIGF1ZGlvIHBsYXliYWNrIGRhdGEgY2FuIGJlIHN0cmlwZWQgYWNyb3NzIG11bHRpcGxl
-IFNET3MuCj4KPiBHbG9iYWwgQ2FwYWJpbGl0aWVzKEdDQVApIFJlZ2lzdGVyIGluZGljYXRlcyB0
-aGUgY2FwYWJpbGl0aWVzIG9mIHRoZQo+IGNvbnRyb2xsZXIuIEJpdHMgMjoxIG9mIEdDQVAgY2Fu
-IGJlIHJlYWQgdG8ga25vdyB0aGUgbnVtYmVyIG9mIHN1cHBvcnRlZAo+IFNETyBsaW5lcyAoYmVs
-b3cgaXMgZnJvbSBIRCBhdWRpbyBzcGVjKQo+ICAgIDAwOiAxIFNETwo+ICAgIDAxOiAyIFNETwo+
-ICAgIDEwOiA0IFNETwo+ICAgIDExOiBSZXNlcnZlZAo+Cj4gU3RyaXBlIGNvbnRyb2wgdmVyYiBy
-ZXBvcnRzIGFuZCBjb250cm9scyB0aGUgc3RyaXBlIGNhcGFiaWxpdHkgb2YgYW4KPiBBdWRpbyBP
-dXRwdXQgQ29udmVydGVyLiBUaGlzIHZlcmIgbmVlZHMgdG8gYmUgaW1wbGVtZW50ZWQgb25seSBm
-b3IgYW4KPiBhdWRpbyBvdXRwdXQgY29udmVydGVyIGFuZCBvbmx5IGlmIHRoZSBzdHJpcGUgYml0
-IG9mIHRoZSBBdWRpbyBXaWRnZXQKPiBDYXBhYmlsaXRpZXMgcGFyYW1ldGVyIGlzIDEuCj4gU3Ry
-aXBlIGNvbnRyb2w6IGdldCBjb2RlKDB4ZjI0KSBhbmQgc2V0IGNvZGUoMHg3MjQpCgp0aGUgc2Vy
-aWVzIGxvb2sgb2sgKG9uZSBtaW5vciBjb21tZW50IG9uIG9wZXJhdG9yIHByZWNlZGVuY2UpIGFu
-ZCAKYWxpZ25lZCB3aXRoIG15IHVuZGVyc3RhbmRpbmcgb2YgdGhlIEhEYXVkaW8gMS4wYSBzcGVj
-LgoKVGhhdCBzYWlkIHlvdSBtYWRlIG5vIG1lbnRpb24gb2YgdGhlIFN0cmlwZSBiaXTCoCAoZmln
-dXJlIDg2KSBhbmQgZmllbGRzIAoyMjoyMCAoU3RyaXBlIGNhcGFiaWxpdHkpIGluIEZpZ3VyZSA3
-NSwgc28gaXQncyBub3QgY2xlYXIgdG8gbWUgaWYgdGhlIApzdXBwb3J0IGFkZGVkIGluIHRoaXMg
-cGF0Y2hzZXQgaXMgc3VmZmljaWVudCBvciBpZiB0aGVyZSBpcyBhZGRpdGlvbmFsIApsb2dpYyB0
-byBiZSBzZXQuCgpUaGVyZSBpcyBhbHNvIGEgZGlmZmVyZW5jZSBiZXR3ZWVuIHdoYXQgdGhlIGNv
-bnRyb2xsZXIgc3VwcG9ydHMgYW5kIHRoZSAKYWN0dWFsIGJvYXJkIGxheW91dCwgc28gaXQncyBu
-b3QgY2xlYXIgaWYgdGhlIEdDQVAgYXJlIHJlYWxseSB0aGUgcmF3IApjYXBhYmlsaXRpZXMgb3Ig
-dGhlIG9uZXMgZmlsdGVyZWQgYnkgQklPUyBmb2xrcyB0byByZWZsZWN0IHRoZSBhY3R1YWwgCnBs
-YXRmb3JtIGhhcmR3YXJlIGltcGxlbWVudGF0aW9uLgoKLVBpZXJyZQoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jan 08, 2019 at 01:05:43PM +0000, Viorel Suman wrote:
+> The patchset adds NXP Audio Mixer (AUDMIX) device and machine
+> drivers and related DT bindings documentation.
+> 
+> Changes since V1:
+> 1. Original patch split into distinct patches for the device driver and
+>   DT binding documentation.
+> 2. Replaced AMIX with AUDMIX in both code and file names as it looks more
+>   RM-compliant.
+> 3. Removed polarity control from CPU DAI driver as suggested by Nicolin.
+> 4. Added machine driver and related DT binding documentation.
+> 
+> Viorel Suman (4):
+>   ASoC: fsl: Add Audio Mixer CPU DAI driver
+>   ASoC: add fsl_audmix DT binding documentation
+>   ASoC: fsl: Add Audio Mixer machine driver
+>   ASoC: add imx-audmix DT binding Documentation
+
+For this series,
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thanks
+
+> 
+>  .../devicetree/bindings/sound/fsl,audmix.txt       |  44 ++
+>  .../devicetree/bindings/sound/imx-audmix.txt       |  24 +
+>  sound/soc/fsl/Kconfig                              |  16 +
+>  sound/soc/fsl/Makefile                             |   5 +
+>  sound/soc/fsl/fsl_audmix.c                         | 551 +++++++++++++++++++++
+>  sound/soc/fsl/fsl_audmix.h                         | 101 ++++
+>  sound/soc/fsl/imx-audmix.c                         | 328 ++++++++++++
+>  7 files changed, 1069 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,audmix.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
+>  create mode 100644 sound/soc/fsl/fsl_audmix.c
+>  create mode 100644 sound/soc/fsl/fsl_audmix.h
+>  create mode 100644 sound/soc/fsl/imx-audmix.c
+> 
+> -- 
+> 2.7.4
+> 
