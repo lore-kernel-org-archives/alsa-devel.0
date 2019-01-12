@@ -1,28 +1,19 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi
-	audio	suspend/resume
-Date: Sat, 12 Jan 2019 01:46:33 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19527B078E@SHSMSX103.ccr.corp.intel.com>
-References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
- <e2c257fb-e292-b23d-1f20-e5467e0d93dd@linux.intel.com>
- <96A12704CE18D347B625EE2D4A099D19527AE0B4@SHSMSX103.ccr.corp.intel.com>
- <s5hd0p71jvh.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AE92B@SHSMSX103.ccr.corp.intel.com>
- <s5h8szui68f.wl-tiwai@suse.de>	<s5h4laii46l.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AF06F@SHSMSX103.ccr.corp.intel.com>
- <s5h4lagyagb.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527AFEB3@SHSMSX103.ccr.corp.intel.com>
- <s5hd0p3mi6t.wl-tiwai@suse.de>	<s5hsgxz5l29.wl-tiwai@suse.de>
- <s5hk1jb5hed.wl-tiwai@suse.de>
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
+ dereference in soc_find_component
+Date: Sat, 12 Jan 2019 11:37:06 +0530
+Message-ID: <5C39840A.7040005@codeaurora.org>
+References: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
+ <d8726e9a-3477-a573-8c1a-dd8245068802@linux.intel.com>
+ <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id CCB9C266914
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 02:46:38 +0100 (CET)
-In-Reply-To: <s5hk1jb5hed.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 248CD266914
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 07:07:21 +0100 (CET)
+In-Reply-To: <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,113 +23,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, broonie@kernel.org, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On 1/12/2019 3:19 AM, Pierre-Louis Bossart wrote:
+>
+>> Thanks for the overnight fix. This update fixes the issue on my 
+>> Skylake XPS13 test device (blind testing since I don't understand 
+>> what the code does).
+>>
+>> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>
+> I need to take this back, this set of changes (initial+fix) causes an 
+> error with our HDMI support
+>
+> [   17.437684] sof-audio sof-audio: created machine bxt-pcm512x
+> [   17.585279] bxt-pcm512x bxt-pcm512x: ASoC: failed to init link iDisp1
+> [   17.585639] bxt-pcm512x bxt-pcm512x: snd_soc_register_card failed -517
+>
+> Removing your changes restores the functionality
+>
+Looks like we should revert generic implementation for defering probe 
+and move to call from machine driver as done in v1.
+https://lore.kernel.org/patchwork/patch/1027560/
+https://lore.kernel.org/patchwork/patch/1027561/
 
->> >
->> > On Fri, 11 Jan 2019 06:20:23 +0100,
->> > Yang, Libin wrote:
->> > >
->> > > The below patch may have a small confliction that the trigger will
->> > > be called twice as our SOF has already call snd_pcm_suspend() in
->> > > card suspend.
->> >
->> > It should be no problem, snd_pcm_suspend() can be called multiple
->> > times.  If it's already suspended, just nothing happens.
->>
->> Thinking of this problem again, does a patch like below work instead?
->> This looks like a better and more generic solution.
->>
->> What I'm not quite sure is whether the device suspend order between
->> PCM device and HD-audio codec device is guaranteed.  I guess yes,
->> because the PCM device is registered always after the codec.  But ASoC
->> might have another weirdness :)
+@Mark, Do you have suggestion to refine current patch?
+> Adding some traces I can see that the the platform name we use doesn't 
+> seem compatible with your logic. All the Intel boards used a constant 
+> platform name matching the PCI ID, see e.g. [1], which IIRC is used to 
+> bind components. Liam, do you recall in more details if this is really 
+> required?
+>
+> [1] 
+> https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/boards/bxt_da7219_max98357a.c#L475
+I think if it does not set platform name as 0000:00:0e.0, it should take 
+snd-soc-dummy as platform name
+and that might fix the issue.
+snd-soc-dummy does have component associated with it.
+https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-utils.c#L281
+>
+> [   18.205812] plb: platform name sof-audio
+> [   18.206059] plb: cpu_name (null)
+> [   18.206234] plb: platform name 0000:00:0e.0
+> [   18.206459] plb: returning -EPROBE_DEFER 1
+> [   18.206686] bxt-pcm512x bxt-pcm512x: ASoC: failed to init link iDisp1
+> [   18.207054] bxt-pcm512x bxt-pcm512x: snd_soc_register_card failed -517
+>
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index cbafbdd02483..ae731212f82b 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1133,11 +1133,15 @@ static int soc_init_dai_link(struct 
+> snd_soc_card *card,
+>          * Defer card registration if platform dai component is not 
+> added to
+>          * component list.
+>          */
+> +       pr_err("plb: platform name %s\n", link->platform->name);
+>         if (link->platform->of_node || link->platform->name)
+>                 if (!soc_find_component(link->platform->of_node,
+> link->platform->name))
+> -                       return -EPROBE_DEFER;
+> +                 {
+> +                         pr_err("plb: returning -EPROBE_DEFER 1\n");
+> +                         return -EPROBE_DEFER;
+>
+> +                 }
+>         /*
+>          * CPU device may be specified by either name or OF node, but
+>          * can be left unspecified, and will be matched based on DAI
+> @@ -1154,9 +1158,14 @@ static int soc_init_dai_link(struct 
+> snd_soc_card *card,
+>          * Defer card registration if cpu dai component is not added to
+>          * component list.
+>          */
+> +       pr_err("plb: cpu_name %s\n", link->cpu_name);
+>         if (link->cpu_of_node || link->cpu_name)
+>                 if (!soc_find_component(link->cpu_of_node, 
+> link->cpu_name))
+> -                       return -EPROBE_DEFER;
+> +                 {
+> +                         pr_err("plb: returning -EPROBE_DEFER 2\n");
+> +                         return -EPROBE_DEFER;
+> +
+> +                 }
+>
+>         /*
+>          * At least one of CPU DAI name or CPU device name/node must be
+>
 
-The suspend order is always a quite hard issue for me. I have to spend
-a lot time checking the parent-child relationship. And if they don't have
-such relationship, I don't know how to find the order.
+Thanks,
+Rohit
+-- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
-My initial idea to get rid of such dependency is: do the pcm suspend before
-suspend(), for example put it in prepare(). And set device clk off and power
-off in suspend(). This can make sure pcm is always properly suspended.
-But, I'm not sure prepare() is a right place because it seems prepare() is not
-designed to do such things and prepare() may impact the suspend/resume
-sequence based on its return value. If your below patch works, I think it will
-be a best solution which can handle such things in ALSA level. I think we
-may need to do a lot of test because the different cards drivers are
-extremely different.
-
-Regards,
-Libin
-
->
->... and further reading revealed that my afraid is right -- ASoC is another beast.
->Basically PM in ASoC requires *not* to be done by the usual device PM
->callbacks.  snd_soc_suspend() does the whole suspend jobs sequentially.  So,
->what you need for Intel ASoC driver is to do suspend/resume with the
->component callbacks instead of device PM ops.
->Currently the plumbing of hdac-hdmi driver is in a half-baked state.
->
->> If this patch works, basically we can get rid of all external callers
->> of snd_pcm_suspend() & co.  That'll be a nice cleanup.
->
->OTOH, the statement above is still true for non-ASoC drivers.  So we'd end up
->needing an extra flag or such to prevent the PCM device PM ops for ASoC,
->while using this for the rest.
->
->
->thanks,
->
->Takashi
->
->>
->>
->> thanks,
->>
->> Takashi
->>
->> ---
->> diff --git a/sound/core/pcm.c b/sound/core/pcm.c index
->> 01b9d62eef14..d8d57336b8b8 100644
->> --- a/sound/core/pcm.c
->> +++ b/sound/core/pcm.c
->> @@ -683,6 +683,25 @@ static inline int
->> snd_pcm_substream_proc_done(struct snd_pcm_substream *substrea
->>
->>  static const struct attribute_group *pcm_dev_attr_groups[];
->>
->> +#ifdef CONFIG_PM_SLEEP
->> +static int do_pcm_suspend(struct device *dev) {
->> +	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str,
->> +dev);
->> +
->> +	snd_pcm_suspend_all(pstr->pcm);
->> +	return 0;
->> +}
->> +#endif
->> +
->> +static const struct dev_pm_ops pcm_dev_pm_ops = {
->> +	SET_SYSTEM_SLEEP_PM_OPS(do_pcm_suspend, NULL) };
->> +
->> +static const struct device_type pcm_dev_type = {
->> +	.name = "pcm",
->> +	.pm = &pcm_dev_pm_ops,
->> +};
->> +
->>  /**
->>   * snd_pcm_new_stream - create a new PCM stream
->>   * @pcm: the pcm instance
->> @@ -713,6 +732,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int
->> stream, int substream_count)
->>
->>  	snd_device_initialize(&pstr->dev, pcm->card);
->>  	pstr->dev.groups = pcm_dev_attr_groups;
->> +	pstr->dev.type = &pcm_dev_type;
->>  	dev_set_name(&pstr->dev, "pcmC%iD%i%c", pcm->card->number,
->pcm->device,
->>  		     stream == SNDRV_PCM_STREAM_PLAYBACK ? 'p' : 'c');
->>
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
