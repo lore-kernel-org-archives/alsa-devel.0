@@ -1,19 +1,18 @@
-From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
- dereference in soc_find_component
-Date: Sat, 12 Jan 2019 11:37:06 +0530
-Message-ID: <5C39840A.7040005@codeaurora.org>
-References: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
- <d8726e9a-3477-a573-8c1a-dd8245068802@linux.intel.com>
- <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v2 0/5] Stripe control functionality
+Date: Sat, 12 Jan 2019 12:01:44 +0530
+Message-ID: <09f9e81c-0e5c-69eb-3671-1d26c86e9d44@nvidia.com>
+References: <1547227328-32558-1-git-send-email-spujar@nvidia.com>
+ <3c6dd485-515b-98c1-7179-a8dea256e56c@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 248CD266914
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 07:07:21 +0100 (CET)
-In-Reply-To: <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9816E266914
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 07:31:51 +0100 (CET)
+In-Reply-To: <3c6dd485-515b-98c1-7179-a8dea256e56c@linux.intel.com>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,103 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, broonie@kernel.org, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, perex@perex.cz, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/12/2019 3:19 AM, Pierre-Louis Bossart wrote:
->
->> Thanks for the overnight fix. This update fixes the issue on my 
->> Skylake XPS13 test device (blind testing since I don't understand 
->> what the code does).
->>
->> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->
-> I need to take this back, this set of changes (initial+fix) causes an 
-> error with our HDMI support
->
-> [   17.437684] sof-audio sof-audio: created machine bxt-pcm512x
-> [   17.585279] bxt-pcm512x bxt-pcm512x: ASoC: failed to init link iDisp1
-> [   17.585639] bxt-pcm512x bxt-pcm512x: snd_soc_register_card failed -517
->
-> Removing your changes restores the functionality
->
-Looks like we should revert generic implementation for defering probe 
-and move to call from machine driver as done in v1.
-https://lore.kernel.org/patchwork/patch/1027560/
-https://lore.kernel.org/patchwork/patch/1027561/
-
-@Mark, Do you have suggestion to refine current patch?
-> Adding some traces I can see that the the platform name we use doesn't 
-> seem compatible with your logic. All the Intel boards used a constant 
-> platform name matching the PCI ID, see e.g. [1], which IIRC is used to 
-> bind components. Liam, do you recall in more details if this is really 
-> required?
->
-> [1] 
-> https://elixir.bootlin.com/linux/latest/source/sound/soc/intel/boards/bxt_da7219_max98357a.c#L475
-I think if it does not set platform name as 0000:00:0e.0, it should take 
-snd-soc-dummy as platform name
-and that might fix the issue.
-snd-soc-dummy does have component associated with it.
-https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-utils.c#L281
->
-> [   18.205812] plb: platform name sof-audio
-> [   18.206059] plb: cpu_name (null)
-> [   18.206234] plb: platform name 0000:00:0e.0
-> [   18.206459] plb: returning -EPROBE_DEFER 1
-> [   18.206686] bxt-pcm512x bxt-pcm512x: ASoC: failed to init link iDisp1
-> [   18.207054] bxt-pcm512x bxt-pcm512x: snd_soc_register_card failed -517
->
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index cbafbdd02483..ae731212f82b 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1133,11 +1133,15 @@ static int soc_init_dai_link(struct 
-> snd_soc_card *card,
->          * Defer card registration if platform dai component is not 
-> added to
->          * component list.
->          */
-> +       pr_err("plb: platform name %s\n", link->platform->name);
->         if (link->platform->of_node || link->platform->name)
->                 if (!soc_find_component(link->platform->of_node,
-> link->platform->name))
-> -                       return -EPROBE_DEFER;
-> +                 {
-> +                         pr_err("plb: returning -EPROBE_DEFER 1\n");
-> +                         return -EPROBE_DEFER;
->
-> +                 }
->         /*
->          * CPU device may be specified by either name or OF node, but
->          * can be left unspecified, and will be matched based on DAI
-> @@ -1154,9 +1158,14 @@ static int soc_init_dai_link(struct 
-> snd_soc_card *card,
->          * Defer card registration if cpu dai component is not added to
->          * component list.
->          */
-> +       pr_err("plb: cpu_name %s\n", link->cpu_name);
->         if (link->cpu_of_node || link->cpu_name)
->                 if (!soc_find_component(link->cpu_of_node, 
-> link->cpu_name))
-> -                       return -EPROBE_DEFER;
-> +                 {
-> +                         pr_err("plb: returning -EPROBE_DEFER 2\n");
-> +                         return -EPROBE_DEFER;
-> +
-> +                 }
->
->         /*
->          * At least one of CPU DAI name or CPU device name/node must be
->
-
-Thanks,
-Rohit
--- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
-
----
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+Ck9uIDEvMTEvMjAxOSAxMTozMiBQTSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4KPiBP
+biAxLzExLzE5IDExOjIyIEFNLCBTYW1lZXIgUHVqYXIgd3JvdGU6Cj4+IEJhY2tncm91bmQKPj4g
+PT09PT09PT09PQo+Pgo+PiBBemFsaWEgQ29udHJvbGxlciBmZXRjaGVzIGNvbW1hbmQgYW5kIGF1
+ZGlvIGRhdGEgdmlhIERNQSBhbmQgc2VuZCB0aGVtCj4+IHRvIGNvZGVjIHRocm91Z2ggU0RPKFNl
+cmlhbCBEYXRhIE91dCkgbGluZXMuIFNETyBpcyBmb3Igb3V0Ym91bmcgYW5kIGl0Cj4+IGJyb2Fk
+Y2FzdHMgdG8gYWxsIGNvZGVjcy4gVGhlcmUgaXMgYXRsZWFzdCBvbmUgU0RPIGxpbmUgcHJlc2Vu
+dCwgYnV0Cj4+IHRoZXJlIGNhbiBiZSBtdWx0aXBsZSBTRE8gbGluZXMgc3VwcG9ydGVkIGZvciBl
+eHRlbmRlZCBiYW5kd2lkdGguIFRoaXMKPj4gaXMgZXNzZW50aWFsIHdoZW4gYSBwbGF0Zm9ybSBz
+dXBwb3J0cyBtdWx0aXBsZSBoZG1pL2RwIHNpbmtzIGFuZCB0aGVyZQo+PiBpcyBhIHJlcXVpcmVt
+ZW50IGZvciBoaWdoZXIgcmVzb2x1dGlvbiBhdWRpbyBwbGF5YmFjay4gSW4gc3VjaCBjYXNlcwo+
+PiBzaW11bHRhbmVvdXMgYXVkaW8gcGxheWJhY2sgZGF0YSBjYW4gYmUgc3RyaXBlZCBhY3Jvc3Mg
+bXVsdGlwbGUgU0RPcy4KPj4KPj4gR2xvYmFsIENhcGFiaWxpdGllcyhHQ0FQKSBSZWdpc3RlciBp
+bmRpY2F0ZXMgdGhlIGNhcGFiaWxpdGllcyBvZiB0aGUKPj4gY29udHJvbGxlci4gQml0cyAyOjEg
+b2YgR0NBUCBjYW4gYmUgcmVhZCB0byBrbm93IHRoZSBudW1iZXIgb2Ygc3VwcG9ydGVkCj4+IFNE
+TyBsaW5lcyAoYmVsb3cgaXMgZnJvbSBIRCBhdWRpbyBzcGVjKQo+PiDCoMKgIDAwOiAxIFNETwo+
+PiDCoMKgIDAxOiAyIFNETwo+PiDCoMKgIDEwOiA0IFNETwo+PiDCoMKgIDExOiBSZXNlcnZlZAo+
+Pgo+PiBTdHJpcGUgY29udHJvbCB2ZXJiIHJlcG9ydHMgYW5kIGNvbnRyb2xzIHRoZSBzdHJpcGUg
+Y2FwYWJpbGl0eSBvZiBhbgo+PiBBdWRpbyBPdXRwdXQgQ29udmVydGVyLiBUaGlzIHZlcmIgbmVl
+ZHMgdG8gYmUgaW1wbGVtZW50ZWQgb25seSBmb3IgYW4KPj4gYXVkaW8gb3V0cHV0IGNvbnZlcnRl
+ciBhbmQgb25seSBpZiB0aGUgc3RyaXBlIGJpdCBvZiB0aGUgQXVkaW8gV2lkZ2V0Cj4+IENhcGFi
+aWxpdGllcyBwYXJhbWV0ZXIgaXMgMS4KPj4gU3RyaXBlIGNvbnRyb2w6IGdldCBjb2RlKDB4ZjI0
+KSBhbmQgc2V0IGNvZGUoMHg3MjQpCj4KPiB0aGUgc2VyaWVzIGxvb2sgb2sgKG9uZSBtaW5vciBj
+b21tZW50IG9uIG9wZXJhdG9yIHByZWNlZGVuY2UpIGFuZCAKPiBhbGlnbmVkIHdpdGggbXkgdW5k
+ZXJzdGFuZGluZyBvZiB0aGUgSERhdWRpbyAxLjBhIHNwZWMuCj4KPiBUaGF0IHNhaWQgeW91IG1h
+ZGUgbm8gbWVudGlvbiBvZiB0aGUgU3RyaXBlIGJpdMKgIChmaWd1cmUgODYpIGFuZCAKPiBmaWVs
+ZHMgMjI6MjAgKFN0cmlwZSBjYXBhYmlsaXR5KSBpbiBGaWd1cmUgNzUsIHNvIGl0J3Mgbm90IGNs
+ZWFyIHRvIG1lIAo+IGlmIHRoZSBzdXBwb3J0IGFkZGVkIGluIHRoaXMgcGF0Y2hzZXQgaXMgc3Vm
+ZmljaWVudCBvciBpZiB0aGVyZSBpcyAKPiBhZGRpdGlvbmFsIGxvZ2ljIHRvIGJlIHNldC4KPgpT
+dHJpcGUgYml0IGlzIHBhcnQgb2YgQXVkaW8gV2lkZ2V0IENhcGFiaWxpdHkgcGFyYW1ldGVyIGFu
+ZCBpcyBtZW50aW9uZWQgCmFib3ZlIGluIHRoZSBsYXN0IHNlY3Rpb24gb2YgYmFja2dyb3VuZC4g
+UGF0Y2gtNSh2MikgY2hlY2tzIGZvciB0aGUgCnN0cmlwZSBiaXQsIGJlZm9yZSBzZW5kaW5nIHN0
+cmlwZSBjb250cm9sIHZlcmIuCkFzIGZhciBhcyBzdHJpcGUgY29udHJvbCByZWdpc3RlciBpcyBj
+b25jZXJuZWQgKDIyOjIwKSwgSSBkb24ndCB0aGluayAKYW55IFNXIHByb2dyYW1taW5nIGlzIHJl
+cXVpcmVkIGZvciB0aGlzLgo+IFRoZXJlIGlzIGFsc28gYSBkaWZmZXJlbmNlIGJldHdlZW4gd2hh
+dCB0aGUgY29udHJvbGxlciBzdXBwb3J0cyBhbmQgCj4gdGhlIGFjdHVhbCBib2FyZCBsYXlvdXQs
+IHNvIGl0J3Mgbm90IGNsZWFyIGlmIHRoZSBHQ0FQIGFyZSByZWFsbHkgdGhlIAo+IHJhdyBjYXBh
+YmlsaXRpZXMgb3IgdGhlIG9uZXMgZmlsdGVyZWQgYnkgQklPUyBmb2xrcyB0byByZWZsZWN0IHRo
+ZSAKPiBhY3R1YWwgcGxhdGZvcm0gaGFyZHdhcmUgaW1wbGVtZW50YXRpb24uCj4KPiAtUGllcnJl
+Cj4KPgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIGVtYWlsIG1lc3NhZ2UgaXMgZm9y
+IHRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpIGFuZCBtYXkgY29udGFp
+bgpjb25maWRlbnRpYWwgaW5mb3JtYXRpb24uICBBbnkgdW5hdXRob3JpemVkIHJldmlldywgdXNl
+LCBkaXNjbG9zdXJlIG9yIGRpc3RyaWJ1dGlvbgppcyBwcm9oaWJpdGVkLiAgSWYgeW91IGFyZSBu
+b3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBieQpy
+ZXBseSBlbWFpbCBhbmQgZGVzdHJveSBhbGwgY29waWVzIG9mIHRoZSBvcmlnaW5hbCBtZXNzYWdl
+LgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
