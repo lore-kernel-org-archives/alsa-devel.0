@@ -1,20 +1,23 @@
-From: Tomas Nordin <tomasn@posteo.net>
-Subject: Record stereo from one input on the soundcard
-Date: Sat, 12 Jan 2019 14:25:35 +0100
-Message-ID: <87muo6uhww.fsf@fliptop.i-did-not-set--mail-host-address--so-tickle-me>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [RFT][PATCH v1] gpiolib: acpi: Introduce
+ ACPI_GPIO_QUIRK_ONLY_GPIOIO
+Date: Sun, 13 Jan 2019 08:50:27 +0100
+Message-ID: <fbb55ce7-0ca3-a1ad-249e-764840c46804@redhat.com>
+References: <20190108180205.55109-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdYgBsvNR1PFuzmMegpjraWRi58ACb-=mBrUDvLoi_5J_g@mail.gmail.com>
+ <20190111194929.GW9170@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AF11266BCF
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 14:25:42 +0100 (CET)
-Received: from submission (posteo.de [89.146.220.130])
- by mout01.posteo.de (Postfix) with ESMTPS id 16A1916006A
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 14:25:39 +0100 (CET)
-Received: from customer (localhost [127.0.0.1])
- by submission (posteo.de) with ESMTPSA id 43cL8J2c00z6tmV
- for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 14:25:36 +0100 (CET)
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
+ [209.85.208.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 473EC26687D
+ for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2019 08:50:30 +0100 (CET)
+Received: by mail-ed1-f67.google.com with SMTP id x30so16316188edx.2
+ for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2019 23:50:30 -0800 (PST)
+In-Reply-To: <20190111194929.GW9170@smile.fi.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,84 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Jie Yang <yang.jie@linux.intel.com>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Mark Brown <broonie@kernel.org>, Mika Westerberg <mika.westerberg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello List
+Hi,
 
-I sent this question first to the alsa-user list but somebody
-recommended somebody to send to this list instead when the user-list
-don't get much attention.
+On 11-01-19 20:49, Andy Shevchenko wrote:
+> On Fri, Jan 11, 2019 at 03:21:39PM +0100, Linus Walleij wrote:
+>> On Tue, Jan 8, 2019 at 7:02 PM Andy Shevchenko
+>> <andriy.shevchenko@linux.intel.com> wrote:
+>>
+>>> New quirk enforces search for GPIO based on its type.
+>>> Note, supplied index in the mapping table must be 0.
+>>>
+>>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> (...)
+>>
+>>>   sound/soc/intel/boards/bytcr_rt5651.c | 74 ++++-----------------------
+>>
+>> Do we have an ACK from the maintainer of this file?
+>> It's Hans I think. Ideally also from Mark Brown.
+> 
+> I hope to get Hans' Tested-by on this.
 
-I have an external USB soundcard called Audiobox from Presonus,
-https://www.presonus.com/products/AudioBox-USB. Somewhere I read that
-this is a class compliant USB sound card.
+Yes I've testing this on my TODO.
 
-I use this card to record audio from a drum module (e-drums). I take the
-audio signal from the head phones out socket on the module, and plug it
-into input 1 on the card. The card has 2 inputs, for the moment I don't
-use the second input but I consider it busy. For a minimum of hassle I
-want to make my recording using arecord (want to use a command line
-program).
+Regards,
 
-So the card is a kind of bedroom musician type of card that might have 2
-inputs, 4 inputs or 12 or whatever, to record a number of instruments at
-the same time. But as I said, this card has two inputs.
-
-The audio signal from the headphones out socket (on the drum module) is
-stereo. The card support routing that stereo sound from one input, in so
-far that it can be heard in stereo from the cards head phones out.
-
-The following command lets me record audio from the card,
-
-$ arecord -c 2 -d 60 -f S24_3LE -r 48000 -D hw:1,0 s3.wav
-
-The resulting wav file has all hearable audio in the left speaker when
-listening.
-
-Do you think it is possible to get that stereo signal from one input on
-the card into a stereo sound file. Or somehow else get left and right
-audio separately from that input 1 on the card. My guess on what's
-happening now is that the stereo signal gets merged as mono into one
-channel.
-
-Here are some listings:
-
-$ uname -a
-Linux raspberrypi 4.14.79+ #1159 Sun Nov 4 17:28:08 GMT 2018 armv6l GNU/Linux
-
-$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 1: USB [AudioBox USB], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-$ arecord --dump-hw-params -D hw:1,0 
-Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-HW Params of device "hw:1,0":
---------------------
-ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-FORMAT:  S24_3LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 24
-FRAME_BITS: 48
-CHANNELS: 2
-RATE: [44100 48000]
-PERIOD_TIME: [1000 1981429)
-PERIOD_SIZE: [45 87381]
-PERIOD_BYTES: [270 524286]
-PERIODS: [2 1024]
-BUFFER_TIME: [1875 3962858)
-BUFFER_SIZE: [90 174762]
-BUFFER_BYTES: [540 1048572]
-TICK_TIME: ALL
---------------------
-arecord: set_params:1299: Sample format non available
-Available formats:
-- S24_3LE
-
-Any ideas anyone?
-
-Best regards
---
-Tomas
+Hans
