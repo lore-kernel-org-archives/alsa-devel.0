@@ -1,8 +1,8 @@
 From: "kernelci.org bot" <bot@kernelci.org>
 Subject: next/master boot bisection: next-20190114 on
- sun8i-h2-plus-libretech-all-h3-cc
-Date: Mon, 14 Jan 2019 05:11:05 -0800 (PST)
-Message-ID: <5c3c8a69.1c69fb81.668ce.4227@mx.google.com>
+ sun8i-h3-libretech-all-h3-cc
+Date: Mon, 14 Jan 2019 05:14:15 -0800 (PST)
+Message-ID: <5c3c8b27.1c69fb81.76f1f.6e38@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
@@ -20,16 +20,15 @@ List-Id: alsa-devel@alsa-project.org
 * Hope this helps!                                              *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-next/master boot bisection: next-20190114 on sun8i-h2-plus-libretech-all-h3=
--cc
+next/master boot bisection: next-20190114 on sun8i-h3-libretech-all-h3-cc
 
 Summary:
   Start:      8ce4d582f564 Add linux-next specific files for 20190114
-  Details:    https://kernelci.org/boot/id/5c3c411659b51457a76edd34
+  Details:    https://kernelci.org/boot/id/5c3c41ac59b5145b496edd2a
   Plain log:  https://storage.kernelci.org//next/master/next-20190114/arm/s=
-unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.txt
+unxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.txt
   HTML log:   https://storage.kernelci.org//next/master/next-20190114/arm/s=
-unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.html
+unxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.html
   Result:     8780cf1142a5 ASoC: soc-core: defer card probe until all compo=
 nent is added to list
 
@@ -42,7 +41,7 @@ Parameters:
   URL:        http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
 t.git
   Branch:     master
-  Target:     sun8i-h2-plus-libretech-all-h3-cc
+  Target:     sun8i-h3-libretech-all-h3-cc
   CPU arch:   arm
   Lab:        lab-baylibre
   Config:     sunxi_defconfig
