@@ -1,14 +1,16 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v3 0/5] Stripe control functionality
-Date: Mon, 14 Jan 2019 23:51:07 +0530
-Message-ID: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 1/5] ALSA: hda: add verbs for stripe control
+Date: Mon, 14 Jan 2019 23:51:08 +0530
+Message-ID: <1547490072-30940-2-git-send-email-spujar@nvidia.com>
+References: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id B4E56266860
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:31 +0100 (CET)
+Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0568266AD7
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:41 +0100 (CET)
+In-Reply-To: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,81 +24,41 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Background
-==========
+Controllers can support multiple Serial Data Out(SDO) lines, for
+extended outbound bandwidth, to pump data to all codecs on the link.
+Codecs can sample data present on SDO.
 
-Azalia Controller fetches command and audio data via DMA and send them
-to codec through SDO(Serial Data Out) lines. SDO is for outboung and it
-broadcasts to all codecs. There is atleast one SDO line present, but
-there can be multiple SDO lines supported for extended bandwidth. This
-is essential when a platform supports multiple hdmi/dp sinks and there
-is a requirement for higher resolution audio playback. In such cases
-simultaneous audio playback data can be striped across multiple SDOs.
+Add verbs AC_VERB_GET_STRIPE_CONTROL and AC_VERB_SET_STRIPE_CONTROL
+These can be used to program usage of SDO lines for codec.
 
-Global Capabilities(GCAP) Register indicates the capabilities of the
-controller. Bits 2:1 of GCAP can be read to know the number of supported
-SDO lines (below is from HD audio spec)
-  00: 1 SDO
-  01: 2 SDO
-  10: 4 SDO
-  11: Reserved
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
+Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/hda_verbs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Stripe control verb reports and controls the stripe capability of an
-Audio Output Converter. This verb needs to be implemented only for an
-audio output converter and only if the stripe bit of the Audio Widget
-Capabilities parameter is 1. 
-Stripe control: get code(0xf24) and set code(0x724)
-
-Change log
-==========
-
-v1-->v2:
--------- 
-  Patch 1: "ALSA: hda: add verbs for stripe control"
-    * no change
-
-  Patch 2: "ALSA: hda: Add api to program stripe control bits"
-    * no change
-
-  Patch 3: "ALSA: hda: add register offset for stripe control"
-    * added mask for stripe control programming
-
-  Patch 4: "ALSA: hda: program stripe bits for controller"
-    * used stripe control mask instead of hard coded value
-
-  Patch 5: "ALSA: hda: program stripe control for codec"
-    * added conditional check to know if striping is supported.
-      If supported, then only stripe verb is implemented.
-
-v2-->v3:
--------- 
-  Patch 1: "ALSA: hda: add verbs for stripe control"
-    * no change
-  Patch 2: "ALSA: hda: Add api to program stripe control bits"
-    * added braces around stripe value calucation as per spec
-  Patch 3: "ALSA: hda: add register offset for stripe control"
-    * no change
-  Patch 4: "ALSA: hda: program stripe bits for controller"
-    * no change
-  Patch 5: "ALSA: hda: program stripe control for codec"
-    * no change
-
-===========
-
-Sameer Pujar (5):
-  ALSA: hda: add verbs for stripe control
-  ALSA: hda: Add api to program stripe control bits
-  ALSA: hda: add register offset for stripe control
-  ALSA: hda: program stripe bits for controller
-  ALSA: hda: program stripe control for codec
-
- include/sound/hda_register.h |  2 ++
- include/sound/hda_verbs.h    |  2 ++
- include/sound/hdaudio.h      |  3 +++
- sound/hda/hdac_stream.c      | 40 ++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/patch_hdmi.c   | 10 +++++++++-
- 5 files changed, 56 insertions(+), 1 deletion(-)
-
+diff --git a/include/sound/hda_verbs.h b/include/sound/hda_verbs.h
+index 2a8573a..e36b775 100644
+--- a/include/sound/hda_verbs.h
++++ b/include/sound/hda_verbs.h
+@@ -66,6 +66,7 @@ enum {
+ #define AC_VERB_GET_CONFIG_DEFAULT		0x0f1c
+ /* f20: AFG/MFG */
+ #define AC_VERB_GET_SUBSYSTEM_ID		0x0f20
++#define AC_VERB_GET_STRIPE_CONTROL		0x0f24
+ #define AC_VERB_GET_CVT_CHAN_COUNT		0x0f2d
+ #define AC_VERB_GET_HDMI_DIP_SIZE		0x0f2e
+ #define AC_VERB_GET_HDMI_ELDD			0x0f2f
+@@ -110,6 +111,7 @@ enum {
+ #define AC_VERB_SET_CONFIG_DEFAULT_BYTES_3	0x71f
+ #define AC_VERB_SET_EAPD				0x788
+ #define AC_VERB_SET_CODEC_RESET			0x7ff
++#define AC_VERB_SET_STRIPE_CONTROL		0x724
+ #define AC_VERB_SET_CVT_CHAN_COUNT		0x72d
+ #define AC_VERB_SET_HDMI_DIP_INDEX		0x730
+ #define AC_VERB_SET_HDMI_DIP_DATA		0x731
 -- 
 2.7.4
 
