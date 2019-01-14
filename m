@@ -1,69 +1,109 @@
-From: John Harrison <John.C.Harrison@Intel.com>
-Subject: Re: [PATCH 1/3] drm/i915/audio: Track temporary rpm
- wakerefs
-Date: Mon, 14 Jan 2019 10:07:59 -0800
-Message-ID: <81cc9f38-605c-8dc8-bee7-e4efac4bf848@Intel.com>
-References: <20190114173753.472-1-chris@chris-wilson.co.uk>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v3 0/5] Stripe control functionality
+Date: Mon, 14 Jan 2019 23:51:07 +0530
+Message-ID: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20190114173753.472-1-chris@chris-wilson.co.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Chris Wilson <chris@chris-wilson.co.uk>, intel-gfx@lists.freedesktop.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4E56266860
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEvMTQvMjAxOSAwOTozNywgQ2hyaXMgV2lsc29uIHdyb3RlOgo+IFRyYWNrIHRoZSB0ZW1w
-b3JhcnkgcnBtIHdha2VyZWZzIHVzZWQgd2l0aGluIGF1ZGlvIHNvIHRoYXQgdGhleSBtYXkgYmUK
-PiBtYXJrZWQgYXMgY29tcGxldGUgYW5kIHRoZSB0cmFja2luZyBjYW5jZWxsZWQgdXBvbiByZWxl
-YXNlLgo+Cj4gU2lnbmVkLW9mZi1ieTogQ2hyaXMgV2lsc29uIDxjaHJpc0BjaHJpcy13aWxzb24u
-Y28udWs+Cj4gLS0tCj4gICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIHwgMTAg
-KysrKysrLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
-bnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5j
-IGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+IGluZGV4IGRlMjZjZDBhNTQ5
-Ny4uOTJlMjczNTljMmUzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
-X2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gQEAg
-LTc1NiwxMiArNzU2LDEzIEBAIHN0YXRpYyB2b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50X2NvZGVj
-X3dha2Vfb3ZlcnJpZGUoc3RydWN0IGRldmljZSAqa2RldiwKPiAgIAkJCQkJCSAgICAgYm9vbCBl
-bmFibGUpCj4gICB7Cj4gICAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0ga2Rl
-dl90b19pOTE1KGtkZXYpOwo+ICsJaW50ZWxfd2FrZXJlZl90IHdha2VyZWY7Cj4gICAJdTMyIHRt
-cDsKPiAgIAo+ICAgCWlmICghSVNfR0VOKGRldl9wcml2LCA5KSkKPiAgIAkJcmV0dXJuOwo+ICAg
-Cj4gLQlpOTE1X2F1ZGlvX2NvbXBvbmVudF9nZXRfcG93ZXIoa2Rldik7Cj4gKwl3YWtlcmVmID0g
-aW50ZWxfZGlzcGxheV9wb3dlcl9nZXQoZGV2X3ByaXYsIFBPV0VSX0RPTUFJTl9BVURJTyk7Cldo
-eSByZW1vdmUgdGhlIGF1ZGlvIHBvd2VyIGFic3RyYWN0aW9uIGZyb20gdGhlc2UgZnVuY3Rpb25z
-IHdoZW4gdGhlIApuZXh0IHBhdGNoIGlzIHRvIHVwZGF0ZSB0aGUgYWJzdHJhY3Rpb24gdG8gdXNl
-IHRoZSB3YWtlcmVmIGludGVyZmFjZT8KCkpvaG4uCgo+ICAgCj4gICAJLyoKPiAgIAkgKiBFbmFi
-bGUvZGlzYWJsZSBnZW5lcmF0aW5nIHRoZSBjb2RlYyB3YWtlIHNpZ25hbCwgb3ZlcnJpZGluZyB0
-aGUKPiBAQCAtNzc5LDcgKzc4MCw3IEBAIHN0YXRpYyB2b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50
-X2NvZGVjX3dha2Vfb3ZlcnJpZGUoc3RydWN0IGRldmljZSAqa2RldiwKPiAgIAkJdXNsZWVwX3Jh
-bmdlKDEwMDAsIDE1MDApOwo+ICAgCX0KPiAgIAo+IC0JaTkxNV9hdWRpb19jb21wb25lbnRfcHV0
-X3Bvd2VyKGtkZXYpOwo+ICsJaW50ZWxfZGlzcGxheV9wb3dlcl9wdXQoZGV2X3ByaXYsIFBPV0VS
-X0RPTUFJTl9BVURJTywgd2FrZXJlZik7Cj4gICB9Cj4gICAKPiAgIC8qIEdldCBDRENMSyBpbiBr
-SHogICovCj4gQEAgLTg1MCwxMiArODUxLDEzIEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRpb19jb21w
-b25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVjdCBkZXZpY2UgKmtkZXYsIGludCBwb3J0LAo+ICAg
-CXN0cnVjdCBpOTE1X2F1ZGlvX2NvbXBvbmVudCAqYWNvbXAgPSBkZXZfcHJpdi0+YXVkaW9fY29t
-cG9uZW50Owo+ICAgCXN0cnVjdCBpbnRlbF9lbmNvZGVyICplbmNvZGVyOwo+ICAgCXN0cnVjdCBp
-bnRlbF9jcnRjICpjcnRjOwo+ICsJaW50ZWxfd2FrZXJlZl90IHdha2VyZWY7Cj4gICAJaW50IGVy
-ciA9IDA7Cj4gICAKPiAgIAlpZiAoIUhBU19EREkoZGV2X3ByaXYpKQo+ICAgCQlyZXR1cm4gMDsK
-PiAgIAo+IC0JaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X3Bvd2VyKGtkZXYpOwo+ICsJd2FrZXJl
-ZiA9IGludGVsX2Rpc3BsYXlfcG93ZXJfZ2V0KGRldl9wcml2LCBQT1dFUl9ET01BSU5fQVVESU8p
-Owo+ICAgCW11dGV4X2xvY2soJmRldl9wcml2LT5hdl9tdXRleCk7Cj4gICAKPiAgIAkvKiAxLiBn
-ZXQgdGhlIHBpcGUgKi8KPiBAQCAtODc1LDcgKzg3Nyw3IEBAIHN0YXRpYyBpbnQgaTkxNV9hdWRp
-b19jb21wb25lbnRfc3luY19hdWRpb19yYXRlKHN0cnVjdCBkZXZpY2UgKmtkZXYsIGludCBwb3J0
-LAo+ICAgCj4gICAgdW5sb2NrOgo+ICAgCW11dGV4X3VubG9jaygmZGV2X3ByaXYtPmF2X211dGV4
-KTsKPiAtCWk5MTVfYXVkaW9fY29tcG9uZW50X3B1dF9wb3dlcihrZGV2KTsKPiArCWludGVsX2Rp
-c3BsYXlfcG93ZXJfcHV0KGRldl9wcml2LCBQT1dFUl9ET01BSU5fQVVESU8sIHdha2VyZWYpOwo+
-ICAgCXJldHVybiBlcnI7Cj4gICB9Cj4gICAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3Rz
-LmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2ludGVsLWdmeAo=
+Background
+==========
+
+Azalia Controller fetches command and audio data via DMA and send them
+to codec through SDO(Serial Data Out) lines. SDO is for outboung and it
+broadcasts to all codecs. There is atleast one SDO line present, but
+there can be multiple SDO lines supported for extended bandwidth. This
+is essential when a platform supports multiple hdmi/dp sinks and there
+is a requirement for higher resolution audio playback. In such cases
+simultaneous audio playback data can be striped across multiple SDOs.
+
+Global Capabilities(GCAP) Register indicates the capabilities of the
+controller. Bits 2:1 of GCAP can be read to know the number of supported
+SDO lines (below is from HD audio spec)
+  00: 1 SDO
+  01: 2 SDO
+  10: 4 SDO
+  11: Reserved
+
+Stripe control verb reports and controls the stripe capability of an
+Audio Output Converter. This verb needs to be implemented only for an
+audio output converter and only if the stripe bit of the Audio Widget
+Capabilities parameter is 1. 
+Stripe control: get code(0xf24) and set code(0x724)
+
+Change log
+==========
+
+v1-->v2:
+-------- 
+  Patch 1: "ALSA: hda: add verbs for stripe control"
+    * no change
+
+  Patch 2: "ALSA: hda: Add api to program stripe control bits"
+    * no change
+
+  Patch 3: "ALSA: hda: add register offset for stripe control"
+    * added mask for stripe control programming
+
+  Patch 4: "ALSA: hda: program stripe bits for controller"
+    * used stripe control mask instead of hard coded value
+
+  Patch 5: "ALSA: hda: program stripe control for codec"
+    * added conditional check to know if striping is supported.
+      If supported, then only stripe verb is implemented.
+
+v2-->v3:
+-------- 
+  Patch 1: "ALSA: hda: add verbs for stripe control"
+    * no change
+  Patch 2: "ALSA: hda: Add api to program stripe control bits"
+    * added braces around stripe value calucation as per spec
+  Patch 3: "ALSA: hda: add register offset for stripe control"
+    * no change
+  Patch 4: "ALSA: hda: program stripe bits for controller"
+    * no change
+  Patch 5: "ALSA: hda: program stripe control for codec"
+    * no change
+
+===========
+
+Sameer Pujar (5):
+  ALSA: hda: add verbs for stripe control
+  ALSA: hda: Add api to program stripe control bits
+  ALSA: hda: add register offset for stripe control
+  ALSA: hda: program stripe bits for controller
+  ALSA: hda: program stripe control for codec
+
+ include/sound/hda_register.h |  2 ++
+ include/sound/hda_verbs.h    |  2 ++
+ include/sound/hdaudio.h      |  3 +++
+ sound/hda/hdac_stream.c      | 40 ++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_hdmi.c   | 10 +++++++++-
+ 5 files changed, 56 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
+
+
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
