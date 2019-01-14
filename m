@@ -1,87 +1,108 @@
 From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: [PATCH 1/3] drm/i915/audio: Track temporary rpm
-	wakerefs
-Date: Mon, 14 Jan 2019 17:37:51 +0000
-Message-ID: <20190114173753.472-1-chris@chris-wilson.co.uk>
+Subject: [PATCH 2/3] snd/hda: Track the display_power_status
+ using a cookie
+Date: Mon, 14 Jan 2019 17:37:52 +0000
+Message-ID: <20190114173753.472-2-chris@chris-wilson.co.uk>
+References: <20190114173753.472-1-chris@chris-wilson.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fireflyinternet.com (mail.fireflyinternet.com [109.228.58.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 630A12667F5
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 18:38:00 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20190114173753.472-1-chris@chris-wilson.co.uk>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
 To: intel-gfx@lists.freedesktop.org
-Cc: alsa-devel@alsa-project.org, Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, Jani Nikula <jani.nikula@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Track the temporary rpm wakerefs used within audio so that they may be
-marked as complete and the tracking cancelled upon release.
-
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
----
- drivers/gpu/drm/i915/intel_audio.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
-index de26cd0a5497..92e27359c2e3 100644
---- a/drivers/gpu/drm/i915/intel_audio.c
-+++ b/drivers/gpu/drm/i915/intel_audio.c
-@@ -756,12 +756,13 @@ static void i915_audio_component_codec_wake_override(struct device *kdev,
- 						     bool enable)
- {
- 	struct drm_i915_private *dev_priv = kdev_to_i915(kdev);
-+	intel_wakeref_t wakeref;
- 	u32 tmp;
- 
- 	if (!IS_GEN(dev_priv, 9))
- 		return;
- 
--	i915_audio_component_get_power(kdev);
-+	wakeref = intel_display_power_get(dev_priv, POWER_DOMAIN_AUDIO);
- 
- 	/*
- 	 * Enable/disable generating the codec wake signal, overriding the
-@@ -779,7 +780,7 @@ static void i915_audio_component_codec_wake_override(struct device *kdev,
- 		usleep_range(1000, 1500);
- 	}
- 
--	i915_audio_component_put_power(kdev);
-+	intel_display_power_put(dev_priv, POWER_DOMAIN_AUDIO, wakeref);
- }
- 
- /* Get CDCLK in kHz  */
-@@ -850,12 +851,13 @@ static int i915_audio_component_sync_audio_rate(struct device *kdev, int port,
- 	struct i915_audio_component *acomp = dev_priv->audio_component;
- 	struct intel_encoder *encoder;
- 	struct intel_crtc *crtc;
-+	intel_wakeref_t wakeref;
- 	int err = 0;
- 
- 	if (!HAS_DDI(dev_priv))
- 		return 0;
- 
--	i915_audio_component_get_power(kdev);
-+	wakeref = intel_display_power_get(dev_priv, POWER_DOMAIN_AUDIO);
- 	mutex_lock(&dev_priv->av_mutex);
- 
- 	/* 1. get the pipe */
-@@ -875,7 +877,7 @@ static int i915_audio_component_sync_audio_rate(struct device *kdev, int port,
- 
-  unlock:
- 	mutex_unlock(&dev_priv->av_mutex);
--	i915_audio_component_put_power(kdev);
-+	intel_display_power_put(dev_priv, POWER_DOMAIN_AUDIO, wakeref);
- 	return err;
- }
- 
--- 
-2.20.1
+ZHJtL2k5MTUgaXMgdHJhY2tpbmcgYWxsIHdha2VyZWYgb3duZXJzIHdpdGggYSBjb29raWUgaW4g
+b3JkZXIgdG8KaWRlbnRpZnkgbGVha3MuIFRvIHRoYXQgZW5kLCBlYWNoIHJwbSBhY3F1aXNpdGlv
+biBvcHMtPmdldF9wb3dlciBpcwphc3NpZ25lZCBhIGNvb2tpZSB3aGljaCBzaG91bGQgYmUgcGFz
+c2VkIHRvIG9wcy0+cHV0X3Bvd2VyIHRvIHNpZ25pZnkKaXRzIHJlbGVhc2UgKGFuZCByZW1vdmFs
+IGZyb20gdGhlIGxpc3Qgb2Ygd2FrZXJlZiBvd25lcnMpLiBBcyBzbmQvaGRhIGlzCmFscmVhZHkg
+dXNpbmcgYSBib29sIHRvIHRyYWNrIGN1cnJlbnQgc3RhdHVzIG9mIGRpc3BsYXlfcG93ZXIgZXh0
+ZW5kaW5nCnRoYXQgdG8gYW4gdW5zaWduZWQgbG9uZyB0byBob2xkIHRoZSBib29sZWFuIGNvb2tp
+ZSBpcyBhIHRyaXZpYWwKZXh0ZW5zaW9uLCBhbmQgd2lsbCBxdWVsbCBhbGwgZG91YnQgdGhhdCBz
+bmQvaGRhIGlzIHRoZSBjYXVzZSBvZiB0aGUKZGV2aWNlIHJ1bnRpbWUgcG0gbGVha3MuCgpTaWdu
+ZWQtb2ZmLWJ5OiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdpbHNvbi5jby51az4KQ2M6IFRh
+a2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KQ2M6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBp
+bnRlbC5jb20+Ci0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyB8IDEwICsr
+KysrLS0tLS0KIGluY2x1ZGUvZHJtL2RybV9hdWRpb19jb21wb25lbnQuaCAgfCAgNyArKysrKy0t
+CiBpbmNsdWRlL3NvdW5kL2hkYXVkaW8uaCAgICAgICAgICAgIHwgIDQgKystLQogc291bmQvaGRh
+L2hkYWNfY29tcG9uZW50LmMgICAgICAgICB8IDE4ICsrKysrKysrKysrKy0tLS0tLQogNCBmaWxl
+cyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
+YS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaW50ZWxfYXVkaW8uYwppbmRleCA5MmUyNzM1OWMyZTMuLmVmYzVmYjNjMjE2MSAxMDA2NDQK
+LS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYworKysgYi9kcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCkBAIC03NDEsMTUgKzc0MSwxNSBAQCB2b2lkIGludGVs
+X2luaXRfYXVkaW9faG9va3Moc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KQogCX0K
+IH0KIAotc3RhdGljIHZvaWQgaTkxNV9hdWRpb19jb21wb25lbnRfZ2V0X3Bvd2VyKHN0cnVjdCBk
+ZXZpY2UgKmtkZXYpCitzdGF0aWMgdW5zaWduZWQgbG9uZyBpOTE1X2F1ZGlvX2NvbXBvbmVudF9n
+ZXRfcG93ZXIoc3RydWN0IGRldmljZSAqa2RldikKIHsKLQlpbnRlbF9kaXNwbGF5X3Bvd2VyX2dl
+dChrZGV2X3RvX2k5MTUoa2RldiksIFBPV0VSX0RPTUFJTl9BVURJTyk7CisJcmV0dXJuIGludGVs
+X2Rpc3BsYXlfcG93ZXJfZ2V0KGtkZXZfdG9faTkxNShrZGV2KSwgUE9XRVJfRE9NQUlOX0FVRElP
+KTsKIH0KIAotc3RhdGljIHZvaWQgaTkxNV9hdWRpb19jb21wb25lbnRfcHV0X3Bvd2VyKHN0cnVj
+dCBkZXZpY2UgKmtkZXYpCitzdGF0aWMgdm9pZCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9wdXRfcG93
+ZXIoc3RydWN0IGRldmljZSAqa2RldiwKKwkJCQkJICAgdW5zaWduZWQgbG9uZyBjb29raWUpCiB7
+Ci0JaW50ZWxfZGlzcGxheV9wb3dlcl9wdXRfdW5jaGVja2VkKGtkZXZfdG9faTkxNShrZGV2KSwK
+LQkJCQkJICBQT1dFUl9ET01BSU5fQVVESU8pOworCWludGVsX2Rpc3BsYXlfcG93ZXJfcHV0KGtk
+ZXZfdG9faTkxNShrZGV2KSwgUE9XRVJfRE9NQUlOX0FVRElPLCBjb29raWUpOwogfQogCiBzdGF0
+aWMgdm9pZCBpOTE1X2F1ZGlvX2NvbXBvbmVudF9jb2RlY193YWtlX292ZXJyaWRlKHN0cnVjdCBk
+ZXZpY2UgKmtkZXYsCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fYXVkaW9fY29tcG9uZW50
+LmggYi9pbmNsdWRlL2RybS9kcm1fYXVkaW9fY29tcG9uZW50LmgKaW5kZXggNDkyM2IwMDMyOGMx
+Li5kMGM3NDQ0MzE5ZjUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZHJtL2RybV9hdWRpb19jb21wb25l
+bnQuaAorKysgYi9pbmNsdWRlL2RybS9kcm1fYXVkaW9fY29tcG9uZW50LmgKQEAgLTE4LDE0ICsx
+OCwxNyBAQCBzdHJ1Y3QgZHJtX2F1ZGlvX2NvbXBvbmVudF9vcHMgewogCSAqIEBnZXRfcG93ZXI6
+IGdldCB0aGUgUE9XRVJfRE9NQUlOX0FVRElPIHBvd2VyIHdlbGwKIAkgKgogCSAqIFJlcXVlc3Qg
+dGhlIHBvd2VyIHdlbGwgdG8gYmUgdHVybmVkIG9uLgorCSAqCisJICogUmV0dXJucyBhIHdha2Vy
+ZWYgY29va2llIHRvIGJlIHBhc3NlZCBiYWNrIHRvIHRoZSBjb3JyZXNwb25kaW5nCisJICogY2Fs
+bCB0byBAcHV0X3Bvd2VyLgogCSAqLwotCXZvaWQgKCpnZXRfcG93ZXIpKHN0cnVjdCBkZXZpY2Ug
+Kik7CisJdW5zaWduZWQgbG9uZyAoKmdldF9wb3dlcikoc3RydWN0IGRldmljZSAqKTsKIAkvKioK
+IAkgKiBAcHV0X3Bvd2VyOiBwdXQgdGhlIFBPV0VSX0RPTUFJTl9BVURJTyBwb3dlciB3ZWxsCiAJ
+ICoKIAkgKiBBbGxvdyB0aGUgcG93ZXIgd2VsbCB0byBiZSB0dXJuZWQgb2ZmLgogCSAqLwotCXZv
+aWQgKCpwdXRfcG93ZXIpKHN0cnVjdCBkZXZpY2UgKik7CisJdm9pZCAoKnB1dF9wb3dlcikoc3Ry
+dWN0IGRldmljZSAqLCB1bnNpZ25lZCBsb25nKTsKIAkvKioKIAkgKiBAY29kZWNfd2FrZV9vdmVy
+cmlkZTogRW5hYmxlL2Rpc2FibGUgY29kZWMgd2FrZSBzaWduYWwKIAkgKi8KZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvc291bmQvaGRhdWRpby5oIGIvaW5jbHVkZS9zb3VuZC9oZGF1ZGlvLmgKaW5kZXgg
+YjRmYTFjNzc1MjUxLi4zOTc2MTEyMGVlNzYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291bmQvaGRh
+dWRpby5oCisrKyBiL2luY2x1ZGUvc291bmQvaGRhdWRpby5oCkBAIC0zNjYsOCArMzY2LDggQEAg
+c3RydWN0IGhkYWNfYnVzIHsKIAogCS8qIERSTSBjb21wb25lbnQgaW50ZXJmYWNlICovCiAJc3Ry
+dWN0IGRybV9hdWRpb19jb21wb25lbnQgKmF1ZGlvX2NvbXBvbmVudDsKLQlsb25nIGRpc3BsYXlf
+cG93ZXJfc3RhdHVzOwotCWJvb2wgZGlzcGxheV9wb3dlcl9hY3RpdmU7CisJdW5zaWduZWQgbG9u
+ZyBkaXNwbGF5X3Bvd2VyX3N0YXR1czsKKwl1bnNpZ25lZCBsb25nIGRpc3BsYXlfcG93ZXJfYWN0
+aXZlOwogCiAJLyogcGFyYW1ldGVycyByZXF1aXJlZCBmb3IgZW5oYW5jZWQgY2FwYWJpbGl0aWVz
+ICovCiAJaW50IG51bV9zdHJlYW1zOwpkaWZmIC0tZ2l0IGEvc291bmQvaGRhL2hkYWNfY29tcG9u
+ZW50LmMgYi9zb3VuZC9oZGEvaGRhY19jb21wb25lbnQuYwppbmRleCBhNmQzN2I5ZDY0MTMuLjI3
+MDI1NDhiNzg4YSAxMDA2NDQKLS0tIGEvc291bmQvaGRhL2hkYWNfY29tcG9uZW50LmMKKysrIGIv
+c291bmQvaGRhL2hkYWNfY29tcG9uZW50LmMKQEAgLTc5LDE3ICs3OSwyMyBAQCB2b2lkIHNuZF9o
+ZGFjX2Rpc3BsYXlfcG93ZXIoc3RydWN0IGhkYWNfYnVzICpidXMsIHVuc2lnbmVkIGludCBpZHgs
+IGJvb2wgZW5hYmxlKQogCiAJaWYgKGJ1cy0+ZGlzcGxheV9wb3dlcl9zdGF0dXMpIHsKIAkJaWYg
+KCFidXMtPmRpc3BsYXlfcG93ZXJfYWN0aXZlKSB7CisJCQl1bnNpZ25lZCBsb25nIGNvb2tpZSA9
+IC0xOworCiAJCQlpZiAoYWNvbXAtPm9wcy0+Z2V0X3Bvd2VyKQotCQkJCWFjb21wLT5vcHMtPmdl
+dF9wb3dlcihhY29tcC0+ZGV2KTsKKwkJCQljb29raWUgPSBhY29tcC0+b3BzLT5nZXRfcG93ZXIo
+YWNvbXAtPmRldik7CisKIAkJCXNuZF9oZGFjX3NldF9jb2RlY193YWtldXAoYnVzLCB0cnVlKTsK
+IAkJCXNuZF9oZGFjX3NldF9jb2RlY193YWtldXAoYnVzLCBmYWxzZSk7Ci0JCQlidXMtPmRpc3Bs
+YXlfcG93ZXJfYWN0aXZlID0gdHJ1ZTsKKwkJCWJ1cy0+ZGlzcGxheV9wb3dlcl9hY3RpdmUgPSBj
+b29raWU7CiAJCX0KIAl9IGVsc2UgewogCQlpZiAoYnVzLT5kaXNwbGF5X3Bvd2VyX2FjdGl2ZSkg
+eworCQkJdW5zaWduZWQgbG9uZyBjb29raWUgPSBidXMtPmRpc3BsYXlfcG93ZXJfYWN0aXZlOwor
+CiAJCQlpZiAoYWNvbXAtPm9wcy0+cHV0X3Bvd2VyKQotCQkJCWFjb21wLT5vcHMtPnB1dF9wb3dl
+cihhY29tcC0+ZGV2KTsKLQkJCWJ1cy0+ZGlzcGxheV9wb3dlcl9hY3RpdmUgPSBmYWxzZTsKKwkJ
+CQlhY29tcC0+b3BzLT5wdXRfcG93ZXIoYWNvbXAtPmRldiwgY29va2llKTsKKworCQkJYnVzLT5k
+aXNwbGF5X3Bvd2VyX2FjdGl2ZSA9IDA7CiAJCX0KIAl9CiB9CkBAIC0zMjUsOSArMzMxLDkgQEAg
+aW50IHNuZF9oZGFjX2Fjb21wX2V4aXQoc3RydWN0IGhkYWNfYnVzICpidXMpCiAJCXJldHVybiAw
+OwogCiAJaWYgKFdBUk5fT04oYnVzLT5kaXNwbGF5X3Bvd2VyX2FjdGl2ZSkgJiYgYWNvbXAtPm9w
+cykKLQkJYWNvbXAtPm9wcy0+cHV0X3Bvd2VyKGFjb21wLT5kZXYpOworCQlhY29tcC0+b3BzLT5w
+dXRfcG93ZXIoYWNvbXAtPmRldiwgYnVzLT5kaXNwbGF5X3Bvd2VyX2FjdGl2ZSk7CiAKLQlidXMt
+PmRpc3BsYXlfcG93ZXJfYWN0aXZlID0gZmFsc2U7CisJYnVzLT5kaXNwbGF5X3Bvd2VyX2FjdGl2
+ZSA9IDA7CiAJYnVzLT5kaXNwbGF5X3Bvd2VyX3N0YXR1cyA9IDA7CiAKIAljb21wb25lbnRfbWFz
+dGVyX2RlbChkZXYsICZoZGFjX2NvbXBvbmVudF9tYXN0ZXJfb3BzKTsKLS0gCjIuMjAuMQoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1h
+aWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
