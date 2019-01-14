@@ -1,16 +1,16 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v3 2/5] ALSA: hda: Add api to program stripe
-	control bits
-Date: Mon, 14 Jan 2019 23:51:09 +0530
-Message-ID: <1547490072-30940-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 3/5] ALSA: hda: add register offset for
+	stripe control
+Date: Mon, 14 Jan 2019 23:51:10 +0530
+Message-ID: <1547490072-30940-4-git-send-email-spujar@nvidia.com>
 References: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 865CB2670F0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:44 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 703C0266AD7
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:48 +0100 (CET)
 In-Reply-To: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,83 +25,44 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Controllers and codecs can support striping of audio out across
-multiple SDO lines. The number of supported SDO lines can be
-specific to chip. GCAP register can be read to know the maximum
-supported SDO lines.
+bits 16:17 in SD_CTL register refer to stripe control. Added an
+offset register(AZX_REG_SD_CTL_3B) to have exclusive read/write
+of corresponding register byte. This helps to avoid unnecessary
+32-bit read/write of SD_CTL whenever only stripe or other bits of
+corresponding byte need to be updated. Also HD audio spec defines
+SD_CTL as 3 byte register.
 
-snd_hdac_get_stream_stripe_ctl() is exposed to program stripe bits
-on controller and codec side.
-stripe value: 0 for 1SDO, 1 for 2SDO, 2 for 4SDO lines, etc.,
+SD_CTL_STRIPE_MASK(0x3) can be used for stripe control programming
+and when updating AZX_REG_SD_CTL_3B.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
 Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/hdaudio.h |  3 +++
- sound/hda/hdac_stream.c | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ include/sound/hda_register.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index b4fa1c7..45f944d 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -539,6 +539,9 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
- 			  unsigned int streams);
- void snd_hdac_stream_timecounter_init(struct hdac_stream *azx_dev,
- 				      unsigned int streams);
-+int snd_hdac_get_stream_stripe_ctl(struct hdac_bus *bus,
-+				struct snd_pcm_substream *substream);
-+
- /*
-  * macros for easy use
-  */
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index ba73a33..820694a 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -13,6 +13,40 @@
- #include "trace.h"
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 2ab39fb..0fd3929 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -79,6 +79,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
  
- /**
-+ * snd_hdac_get_stream_stripe_ctl - get stripe control value
-+ * @bus: HD-audio core bus
-+ * @substream: PCM substream
-+ */
-+int snd_hdac_get_stream_stripe_ctl(struct hdac_bus *bus,
-+				   struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	unsigned int channels = runtime->channels,
-+		     rate = runtime->rate,
-+		     bits_per_sample = runtime->sample_bits,
-+		     max_sdo_lines, value, sdo_line;
-+
-+	/* T_AZA_GCAP_NSDO is 1:2 bitfields in GCAP */
-+	max_sdo_lines = snd_hdac_chip_readl(bus, GCAP) & AZX_GCAP_NSDO;
-+
-+	/* following is from HD audio spec */
-+	for (sdo_line = max_sdo_lines; sdo_line > 0; sdo_line >>= 1) {
-+		if (rate > 48000)
-+			value = (channels * bits_per_sample *
-+					(rate / 48000)) / sdo_line;
-+		else
-+			value = (channels * bits_per_sample) / sdo_line;
-+
-+		if (value >= 8)
-+			break;
-+	}
-+
-+	/* stripe value: 0 for 1SDO, 1 for 2SDO, 2 for 4SDO lines */
-+	return sdo_line >> 1;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_get_stream_stripe_ctl);
-+
-+/**
-  * snd_hdac_stream_init - initialize each stream (aka device)
-  * @bus: HD-audio core bus
-  * @azx_dev: HD-audio core stream object to initialize
+ /* stream register offsets from stream base */
+ #define AZX_REG_SD_CTL			0x00
++#define AZX_REG_SD_CTL_3B		0x02 /* 3rd byte of SD_CTL register */
+ #define AZX_REG_SD_STS			0x03
+ #define AZX_REG_SD_LPIB			0x04
+ #define AZX_REG_SD_CBL			0x08
+@@ -165,6 +166,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define SD_INT_COMPLETE		0x04	/* completion interrupt */
+ #define SD_INT_MASK		(SD_INT_DESC_ERR|SD_INT_FIFO_ERR|\
+ 				 SD_INT_COMPLETE)
++#define SD_CTL_STRIPE_MASK	0x3	/* stripe control mask */
+ 
+ /* SD_STS */
+ #define SD_STS_FIFO_READY	0x20	/* FIFO ready */
 -- 
 2.7.4
 
