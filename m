@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 3/3] ASoC: soc-core: fix platform name
- vs. of_node assignement
-Date: Mon, 14 Jan 2019 23:02:55 +0000
-Message-ID: <20190114230255.GK11073@sirena.org.uk>
-References: <0660a471-3698-2059-4494-ad146518a4ed@nvidia.com>
- <20190109125340.GD10405@sirena.org.uk>
- <52f5f2cf-9260-f9c5-f73d-3c3d5debc86b@nvidia.com>
- <20190109141439.GE10405@sirena.org.uk>
- <875zuxb9uy.wl-kuninori.morimoto.gx@renesas.com>
- <a2068291-e554-cc4f-9af9-0022f3c4de34@nvidia.com>
- <871s5kqb43.wl-kuninori.morimoto.gx@renesas.com>
- <dfdc497f-9e52-99d7-208c-d8eef31fe61d@nvidia.com>
- <87h8efpoxh.wl-kuninori.morimoto.gx@renesas.com>
- <ea6b6a3a-b4eb-1d29-51fd-330b2b170005@nvidia.com>
+Subject: Applied "ASoC: xlnx: parse AES audio parameters" to
+	the asoc tree
+Date: Mon, 14 Jan 2019 23:03:54 +0000 (GMT)
+Message-ID: <20190114230354.C91F61127AD2@debutante.sirena.org.uk>
+References: <1547126083-44466-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7224673882882375101=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CFB3E2670AC
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:03:04 +0100 (CET)
-In-Reply-To: <ea6b6a3a-b4eb-1d29-51fd-330b2b170005@nvidia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 844EA2670AC
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:03:57 +0100 (CET)
+In-Reply-To: <1547126083-44466-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,59 +22,235 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>, Marcel Ziswiler <marcel@ziswiler.com>, linux-tegra@vger.kernel.org
+To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A . R . Silva" <gustavo@embeddedor.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Michal Simek <michal.simek@xilinx.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7224673882882375101==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SCOJXUq1iwCn05li"
-Content-Disposition: inline
+   ASoC: xlnx: parse AES audio parameters
 
+has been applied to the asoc tree at
 
---SCOJXUq1iwCn05li
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jan 11, 2019 at 09:15:42AM +0000, Jon Hunter wrote:
-> On 11/01/2019 08:51, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > So, can you agree about these ?
-> > 1) Add enough information/documentation about legacy/modern style and its plan.
-> > 2) Add dirty pointer fixup patch as workaround
-> > 3) switch to modern style as much as possible
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I think that Mark needs to decided on whether use your 'dirty pointer'
-> fix or not.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I've gone ahead with Curtis' version of Morimoto-san's patch just now -
-hopefully that's fine for v5.0.  Like we've been saying neither approach
-is ideal, thanks Jon and Morimoto-san for your efforts analyzing this
-and your proposals.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---SCOJXUq1iwCn05li
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From c284d4e31a0b66e6fe3734b36080afd237ff9fb0 Mon Sep 17 00:00:00 2001
+From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Date: Thu, 10 Jan 2019 18:44:43 +0530
+Subject: [PATCH] ASoC: xlnx: parse AES audio parameters
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw9FR4ACgkQJNaLcl1U
-h9Dbawf/agRz5TjSTBnTWu+KSjrCB+C+lMhRKOffsiss0cyfbgpS+mKvdujG+ZPb
-4ebTzIDaG+LZWS83jkfh9wcIWy7miQrcZ7DY5XwoFaiLp4fbkVA5lW5jId2juf4u
-RTy1Q2RR3WR3LxQ0RTP86a+4L9Gf3jaQm3n2NIw0k9TqKgMB89q1inAMkTNn8F0U
-AozHjzvy1o1P57iHFj+BTeAmfAlpqzfJ2wsadm8dyxauitp5Pa9JWepq+BZJX0g9
-rw3OrFs2VKrpj6FfcVTaeyHgMSITOqcd19B+CoJoYBKP20+ogs58j71e0ndqALxw
-DH40p4DyPx1zi98Q5cyo6gMiJI2xAg==
-=JWgH
------END PGP SIGNATURE-----
+AES channel status carries various audio parameters. If channel status is
+detected, current patch extracts sample rate and bit depth parameters of
+the incoming stream during capture.
 
---SCOJXUq1iwCn05li--
+Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/xilinx/xlnx_formatter_pcm.c | 143 ++++++++++++++++++++++++++
+ 1 file changed, 143 insertions(+)
 
---===============7224673882882375101==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7224673882882375101==--
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index d2194da928e7..97177d35652e 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -13,6 +13,7 @@
+ #include <linux/of_irq.h>
+ #include <linux/sizes.h>
+ 
++#include <sound/asoundef.h>
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
+ 
+@@ -63,6 +64,7 @@
+ #define PERIODS_MAX		6
+ #define PERIOD_BYTES_MIN	192
+ #define PERIOD_BYTES_MAX	(50 * 1024)
++#define XLNX_PARAM_UNKNOWN	0
+ 
+ enum bit_depth {
+ 	BIT_DEPTH_8,
+@@ -117,6 +119,129 @@ static const struct snd_pcm_hardware xlnx_pcm_hardware = {
+ 	.periods_max = PERIODS_MAX,
+ };
+ 
++enum {
++	AES_TO_AES,
++	AES_TO_PCM,
++	PCM_TO_PCM,
++	PCM_TO_AES
++};
++
++static void xlnx_parse_aes_params(u32 chsts_reg1_val, u32 chsts_reg2_val,
++				  struct device *dev)
++{
++	u32 padded, srate, bit_depth, status[2];
++
++	if (chsts_reg1_val & IEC958_AES0_PROFESSIONAL) {
++		status[0] = chsts_reg1_val & 0xff;
++		status[1] = (chsts_reg1_val >> 16) & 0xff;
++
++		switch (status[0] & IEC958_AES0_PRO_FS) {
++		case IEC958_AES0_PRO_FS_44100:
++			srate = 44100;
++			break;
++		case IEC958_AES0_PRO_FS_48000:
++			srate = 48000;
++			break;
++		case IEC958_AES0_PRO_FS_32000:
++			srate = 32000;
++			break;
++		case IEC958_AES0_PRO_FS_NOTID:
++		default:
++			srate = XLNX_PARAM_UNKNOWN;
++			break;
++		}
++
++		switch (status[1] & IEC958_AES2_PRO_SBITS) {
++		case IEC958_AES2_PRO_WORDLEN_NOTID:
++		case IEC958_AES2_PRO_SBITS_20:
++			padded = 0;
++			break;
++		case IEC958_AES2_PRO_SBITS_24:
++			padded = 4;
++			break;
++		default:
++			bit_depth = XLNX_PARAM_UNKNOWN;
++			goto log_params;
++		}
++
++		switch (status[1] & IEC958_AES2_PRO_WORDLEN) {
++		case IEC958_AES2_PRO_WORDLEN_20_16:
++			bit_depth = 16 + padded;
++			break;
++		case IEC958_AES2_PRO_WORDLEN_22_18:
++			bit_depth = 18 + padded;
++			break;
++		case IEC958_AES2_PRO_WORDLEN_23_19:
++			bit_depth = 19 + padded;
++			break;
++		case IEC958_AES2_PRO_WORDLEN_24_20:
++			bit_depth = 20 + padded;
++			break;
++		case IEC958_AES2_PRO_WORDLEN_NOTID:
++		default:
++			bit_depth = XLNX_PARAM_UNKNOWN;
++			break;
++		}
++
++	} else {
++		status[0] = (chsts_reg1_val >> 24) & 0xff;
++		status[1] = chsts_reg2_val & 0xff;
++
++		switch (status[0] & IEC958_AES3_CON_FS) {
++		case IEC958_AES3_CON_FS_44100:
++			srate = 44100;
++			break;
++		case IEC958_AES3_CON_FS_48000:
++			srate = 48000;
++			break;
++		case IEC958_AES3_CON_FS_32000:
++			srate = 32000;
++			break;
++		default:
++			srate = XLNX_PARAM_UNKNOWN;
++			break;
++		}
++
++		if (status[1] & IEC958_AES4_CON_MAX_WORDLEN_24)
++			padded = 4;
++		else
++			padded = 0;
++
++		switch (status[1] & IEC958_AES4_CON_WORDLEN) {
++		case IEC958_AES4_CON_WORDLEN_20_16:
++			bit_depth = 16 + padded;
++			break;
++		case IEC958_AES4_CON_WORDLEN_22_18:
++			bit_depth = 18 + padded;
++			break;
++		case IEC958_AES4_CON_WORDLEN_23_19:
++			bit_depth = 19 + padded;
++			break;
++		case IEC958_AES4_CON_WORDLEN_24_20:
++			bit_depth = 20 + padded;
++			break;
++		case IEC958_AES4_CON_WORDLEN_21_17:
++			bit_depth = 17 + padded;
++			break;
++		case IEC958_AES4_CON_WORDLEN_NOTID:
++		default:
++			bit_depth = XLNX_PARAM_UNKNOWN;
++			break;
++		}
++	}
++
++log_params:
++	if (srate != XLNX_PARAM_UNKNOWN)
++		dev_info(dev, "sample rate = %d\n", srate);
++	else
++		dev_info(dev, "sample rate = unknown\n");
++
++	if (bit_depth != XLNX_PARAM_UNKNOWN)
++		dev_info(dev, "bit_depth = %d\n", bit_depth);
++	else
++		dev_info(dev, "bit_depth = unknown\n");
++}
++
+ static int xlnx_formatter_pcm_reset(void __iomem *mmio_base)
+ {
+ 	u32 val, retries = 0;
+@@ -302,8 +427,12 @@ static int xlnx_formatter_pcm_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
+ {
+ 	u32 low, high, active_ch, val, bytes_per_ch, bits_per_sample;
++	u32 aes_reg1_val, aes_reg2_val;
+ 	int status;
+ 	u64 size;
++	struct snd_soc_pcm_runtime *prtd = substream->private_data;
++	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
++								    DRV_NAME);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
+ 
+@@ -311,6 +440,20 @@ static int xlnx_formatter_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (active_ch > stream_data->ch_limit)
+ 		return -EINVAL;
+ 
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
++	    stream_data->xfer_mode == AES_TO_PCM) {
++		val = readl(stream_data->mmio + XLNX_AUD_STS);
++		if (val & AUD_STS_CH_STS_MASK) {
++			aes_reg1_val = readl(stream_data->mmio +
++					     XLNX_AUD_CH_STS_START);
++			aes_reg2_val = readl(stream_data->mmio +
++					     XLNX_AUD_CH_STS_START + 0x4);
++
++			xlnx_parse_aes_params(aes_reg1_val, aes_reg2_val,
++					      component->dev);
++		}
++	}
++
+ 	size = params_buffer_bytes(params);
+ 	status = snd_pcm_lib_malloc_pages(substream, size);
+ 	if (status < 0)
+-- 
+2.20.1
