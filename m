@@ -1,16 +1,16 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v3 4/5] ALSA: hda: program stripe bits for
-	controller
-Date: Mon, 14 Jan 2019 23:51:11 +0530
-Message-ID: <1547490072-30940-5-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 5/5] ALSA: hda: program stripe control for
+	codec
+Date: Mon, 14 Jan 2019 23:51:12 +0530
+Message-ID: <1547490072-30940-6-git-send-email-spujar@nvidia.com>
 References: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 26CE52670AC
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:52 +0100 (CET)
+Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 527222673E2
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 19:21:57 +0100 (CET)
 In-Reply-To: <1547490072-30940-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,54 +25,49 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Platforms having multiple SORs and hdmi/dp sinks require higher
-bandwidth to support simultaneous playbacks of higher resolution.
-If hda controller supports multiple SDO lines, STRIPE can be used
-to indicate how many of the SDO lines the stream should be striped
-across.
-
-During stream start stripe control bits are programmed to use given
-number of sdo lines and the same is cleared during stream stop.
+Program codec stripe through AC_VERB_SET_STRIPE_CONTROL to use multiple
+sdo lines if supported. Audio needs to be striped across number of sdo
+lines for simultaneous playbacks of higher resolutions to work.
+This needs to be implemented only for an Audio Output Converter and only
+if the stripe bit(AC_WCAP_STRIPE) of Audio Widget Capabilities parameter
+is 1.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
 Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/hda/hdac_stream.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 820694a..f5dd288 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -82,6 +82,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_stream_init);
- void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
- {
- 	struct hdac_bus *bus = azx_dev->bus;
-+	int stripe_ctl;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 46f88dc..73d7042f 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1865,7 +1865,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	hda_nid_t pin_nid;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	bool non_pcm;
+-	int pinctl;
++	int pinctl, stripe;
+ 	int err = 0;
  
- 	trace_snd_hdac_stream_start(bus, azx_dev);
+ 	mutex_lock(&spec->pcm_lock);
+@@ -1909,6 +1909,14 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	per_pin->channels = substream->runtime->channels;
+ 	per_pin->setup = true;
  
-@@ -93,6 +94,10 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
- 	snd_hdac_chip_updatel(bus, INTCTL,
- 			      1 << azx_dev->index,
- 			      1 << azx_dev->index);
-+	/* set stripe control */
-+	stripe_ctl = snd_hdac_get_stream_stripe_ctl(bus, azx_dev->substream);
-+	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK,
-+				stripe_ctl);
- 	/* set DMA start and interrupt mask */
- 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
- 				0, SD_CTL_DMA_START | SD_INT_MASK);
-@@ -109,6 +114,7 @@ void snd_hdac_stream_clear(struct hdac_stream *azx_dev)
- 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
- 				SD_CTL_DMA_START | SD_INT_MASK, 0);
- 	snd_hdac_stream_writeb(azx_dev, SD_STS, SD_INT_MASK); /* to be sure */
-+	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK, 0);
- 	azx_dev->running = false;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_clear);
++	if (get_wcaps(codec, cvt_nid) & AC_WCAP_STRIPE) {
++		stripe = snd_hdac_get_stream_stripe_ctl(&codec->bus->core,
++							substream);
++		snd_hda_codec_write(codec, cvt_nid, 0,
++				    AC_VERB_SET_STRIPE_CONTROL,
++				    stripe);
++	}
++
+ 	hdmi_setup_audio_infoframe(codec, per_pin, non_pcm);
+ 	mutex_unlock(&per_pin->lock);
+ 	if (spec->dyn_pin_out) {
 -- 
 2.7.4
 
