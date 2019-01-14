@@ -1,74 +1,78 @@
-From: Kailang <kailang@realtek.com>
-Subject: Fix model typo
-Date: Mon, 14 Jan 2019 08:49:30 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18421049@RTITMBSV02.realtek.com.tw>
+From: Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH 1/3] ASoC: cs4341: fix waring unused-function
+Date: Mon, 14 Jan 2019 10:55:40 +0100
+Message-ID: <20190114095540.22956-1-anders.roxell@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18421049RTITMBSV02realt_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 44AB026687D
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 09:49:39 +0100 (CET)
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18421049RTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The driver cs4341 can be built with SPI and/or I2C, but it has to be one
+of them at least. When I2C is set as a module we see the warning below:
 
-Hi Takashi,
+sound/soc/codecs/cs4341.c:213:12: warning: ‘cs4341_probe’
+defined but not used [-Wunused-function]
+ static int cs4341_probe(struct device *dev)
+            ^~~~~~~~~~~~
 
-Attach patch was fix typo for alc225 model name.
+Rework so that we use IS_ENABLED instead of defined. Also change so
+SND_SOC_CS4341 depends on SND_SOC_I2C_AND_SPI to we dont' get a link
+error when SND_SOC_CS4341=y, I2C=m and REGMAP_I2C=m is set.
 
-BR,
-Kailang
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ sound/soc/codecs/Kconfig  | 2 +-
+ sound/soc/codecs/cs4341.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18421049RTITMBSV02realt_
-Content-Type: application/octet-stream; name="0000-fix-model-typo.patch"
-Content-Description: 0000-fix-model-typo.patch
-Content-Disposition: attachment; filename="0000-fix-model-typo.patch";
-	size=1176; creation-date="Fri, 11 Jan 2019 09:20:45 GMT";
-	modification-date="Fri, 11 Jan 2019 09:20:21 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAzNjkxZmM0YjgyMWE5MzdlMGI3OTQzYjdiNWM3YzA0Y2IyYTE4YzgwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMTEgSmFuIDIwMTkgMTc6MTU6NTMgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIEZpeCB0eXBvIGZvciBBTEMyMjUgbW9kZWwKCkZpeCB0eXBvIGZvciBt
-b2RlbCBhbGMyNTUtZGVsbDEgdG8gYWxjMjI1LWRlbGwxLgoKRW5hYmxlIGhlYWRzZXQgbW9kZSBz
-dXBwb3J0IGZvciBuZXcgV1lTRSBOQiBwbGF0Zm9ybS4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcg
-WWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IGQ1MzVk
-NTUuLjY3MTYwY2UgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisr
-KyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC02OTI2LDcgKzY5MjYsNyBAQCBz
-dGF0aWMgY29uc3Qgc3RydWN0IGhkYV9tb2RlbF9maXh1cCBhbGMyNjlfZml4dXBfbW9kZWxzW10g
-PSB7CiAJey5pZCA9IEFMQzI5M19GSVhVUF9MRU5PVk9fU1BLX05PSVNFLCAubmFtZSA9ICJsZW5v
-dm8tc3BrLW5vaXNlIn0sCiAJey5pZCA9IEFMQzIzM19GSVhVUF9MRU5PVk9fTElORTJfTUlDX0hP
-VEtFWSwgLm5hbWUgPSAibGVub3ZvLWhvdGtleSJ9LAogCXsuaWQgPSBBTEMyNTVfRklYVVBfREVM
-TF9TUEtfTk9JU0UsIC5uYW1lID0gImRlbGwtc3BrLW5vaXNlIn0sCi0Jey5pZCA9IEFMQzIyNV9G
-SVhVUF9ERUxMMV9NSUNfTk9fUFJFU0VOQ0UsIC5uYW1lID0gImFsYzI1NS1kZWxsMSJ9LAorCXsu
-aWQgPSBBTEMyMjVfRklYVVBfREVMTDFfTUlDX05PX1BSRVNFTkNFLCAubmFtZSA9ICJhbGMyMjUt
-ZGVsbDEifSwKIAl7LmlkID0gQUxDMjk1X0ZJWFVQX0RJU0FCTEVfREFDMywgLm5hbWUgPSAiYWxj
-Mjk1LWRpc2FibGUtZGFjMyJ9LAogCXsuaWQgPSBBTEMyODBfRklYVVBfSFBfSEVBRFNFVF9NSUMs
-IC5uYW1lID0gImFsYzI4MC1ocC1oZWFkc2V0In0sCiAJey5pZCA9IEFMQzIyMV9GSVhVUF9IUF9G
-Uk9OVF9NSUMsIC5uYW1lID0gImFsYzIyMS1ocC1taWMifSwK
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A18421049RTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A18421049RTITMBSV02realt_--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 87cb9c51e6f5..87ecb38e57f4 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -546,7 +546,7 @@ config SND_SOC_CS43130
+ 
+ config SND_SOC_CS4341
+ 	tristate "Cirrus Logic CS4341 CODEC"
+-	depends on I2C || SPI_MASTER
++	depends on SND_SOC_I2C_AND_SPI
+ 	select REGMAP_I2C if I2C
+ 	select REGMAP_SPI if SPI_MASTER
+ 
+diff --git a/sound/soc/codecs/cs4341.c b/sound/soc/codecs/cs4341.c
+index d2e616a89fd4..ade7477d04f1 100644
+--- a/sound/soc/codecs/cs4341.c
++++ b/sound/soc/codecs/cs4341.c
+@@ -223,7 +223,7 @@ static int cs4341_probe(struct device *dev)
+ 					       &cs4341_dai, 1);
+ }
+ 
+-#if defined(CONFIG_I2C)
++#if IS_ENABLED(CONFIG_I2C)
+ static int cs4341_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+@@ -317,7 +317,7 @@ static int __init cs4341_init(void)
+ {
+ 	int ret = 0;
+ 
+-#if defined(CONFIG_I2C)
++#if IS_ENABLED(CONFIG_I2C)
+ 	ret = i2c_add_driver(&cs4341_i2c_driver);
+ 	if (ret)
+ 		return ret;
+@@ -332,7 +332,7 @@ module_init(cs4341_init);
+ 
+ static void __exit cs4341_exit(void)
+ {
+-#if defined(CONFIG_I2C)
++#if IS_ENABLED(CONFIG_I2C)
+ 	i2c_del_driver(&cs4341_i2c_driver);
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+-- 
+2.19.2
