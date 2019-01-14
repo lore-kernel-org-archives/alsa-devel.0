@@ -1,18 +1,29 @@
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Subject: [RFC PATCH] ASoC: pcm512x: Implement the
-	set_bclk_ratio interface
-Date: Sun, 13 Jan 2019 22:16:21 +0200
-Message-ID: <900a4f74-9312-58d8-a5b3-035305fe184e@gmail.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [RFC PATCH v2 1/2] ASoC: refine ASoC hdmi audio
+ suspend/resume
+Date: Mon, 14 Jan 2019 09:16:02 +0800
+Message-ID: <1a7ffff2-4249-f2a0-ba7e-549910ad49b9@linux.intel.com>
+References: <1546827721-25586-1-git-send-email-libin.yang@intel.com>
+ <e2c257fb-e292-b23d-1f20-e5467e0d93dd@linux.intel.com>
+ <96A12704CE18D347B625EE2D4A099D19527AE0B4@SHSMSX103.ccr.corp.intel.com>
+ <s5hd0p71jvh.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527AE92B@SHSMSX103.ccr.corp.intel.com>
+ <s5h8szui68f.wl-tiwai@suse.de> <s5h4laii46l.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527AF06F@SHSMSX103.ccr.corp.intel.com>
+ <s5h4lagyagb.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527AFEB3@SHSMSX103.ccr.corp.intel.com>
+ <s5hd0p3mi6t.wl-tiwai@suse.de> <s5hsgxz5l29.wl-tiwai@suse.de>
+ <s5hk1jb5hed.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527B078E@SHSMSX103.ccr.corp.intel.com>
+ <s5hk1jajp89.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
- [209.85.208.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B25D2669BD
- for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2019 21:16:24 +0100 (CET)
-Received: by mail-ed1-f68.google.com with SMTP id b14so17069584edt.6
- for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2019 12:16:24 -0800 (PST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69B792667F5
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 02:14:19 +0100 (CET)
+In-Reply-To: <s5hk1jajp89.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,107 +34,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
+To: Takashi Iwai <tiwai@suse.de>, "Yang, Libin" <libin.yang@intel.com>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
->From 5e6ad135fd063d4b22cd962de43499a161bbc7db Mon Sep 17 00:00:00 2001
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Date: Fri, 11 Jan 2019 22:13:27 +0200
-Subject: [RFC PATCH] ASoC: pcm512x: Implement the set_bclk_ratio interface
-
-Some boards, such as the HiFiBerry DAC+ Pro, use a pair of external
-oscillators, to generate 44.1 or 48kHz multiples and are forced to
-resort to hacks[1] in order to support 24-bit data without ending up
-with fractional dividers.  This patch allows the machine driver to use
-32-bit frames for 24-bit data to avoid such issues.
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143442.html
-
-Signed-off-by: Dimitris Papavasiliou <dpapavas@gmail.com>
----
-
-Notes:
-    The patch also includes a related change in the calculation of the
-    bclk divider.  The current calculation is not very clear to me, as I
-    can't find much concrete information on what this sample rate fraction
-    is, how it's calculated and how, therefore, its denominator would fit
-    into the calculation.  It also yields slightly wrong dividers in
-    certain cases, which the machine driver for my HiFiBerry DAC+ Pro
-    board seemingly tries to circumvent, by updating the rate fraction so
-    as to suit this calculation.
-    
-    The updated calculation seems to work fine in my tests and, as far as
-    I can see, should correctly yield the smallest bit clock rate that
-    would fit the frame.  Please comment if anything looks off.
-
- sound/soc/codecs/pcm512x.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 4cc24a5d5c31..8cd728f9a1eb 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -55,6 +55,7 @@ struct pcm512x_priv {
- 	unsigned long overclock_dsp;
- 	int mute;
- 	struct mutex mutex;
-+	unsigned int bclk_ratio;
- };
- 
- /*
-@@ -915,16 +916,21 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
- 	int fssp;
- 	int gpio;
- 
--	lrclk_div = snd_soc_params_to_frame_size(params);
--	if (lrclk_div == 0) {
--		dev_err(dev, "No LRCLK?\n");
--		return -EINVAL;
-+	if (pcm512x->bclk_ratio > 0) {
-+		lrclk_div = pcm512x->bclk_ratio;
-+	} else {
-+		lrclk_div = snd_soc_params_to_frame_size(params);
-+
-+		if (lrclk_div == 0) {
-+			dev_err(dev, "No LRCLK?\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	if (!pcm512x->pll_out) {
- 		sck_rate = clk_get_rate(pcm512x->sclk);
--		bclk_div = params->rate_den * 64 / lrclk_div;
--		bclk_rate = DIV_ROUND_CLOSEST(sck_rate, bclk_div);
-+		bclk_rate = params_rate(params) * lrclk_div;
-+		bclk_div = DIV_ROUND_CLOSEST(sck_rate, bclk_rate);
- 
- 		mck_rate = sck_rate;
- 	} else {
-@@ -1383,6 +1389,16 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static int pcm512x_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
-+
-+	pcm512x->bclk_ratio = ratio;
-+
-+	return 0;
-+}
-+
- static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
-@@ -1435,6 +1451,7 @@ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
- 	.hw_params = pcm512x_hw_params,
- 	.set_fmt = pcm512x_set_fmt,
- 	.digital_mute = pcm512x_digital_mute,
-+	.set_bclk_ratio = pcm512x_set_bclk_ratio,
- };
- 
- static struct snd_soc_dai_driver pcm512x_dai = {
--- 
-2.11.0
+CgpPbiAyMDE5LzEvMTIg5LiL5Y2IMzo0MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFNhdCwg
+MTIgSmFuIDIwMTkgMDI6NDY6MzMgKzAxMDAsCj4gWWFuZywgTGliaW4gd3JvdGU6Cj4+Cj4+IEhp
+IFRha2FzaGksCj4+Cj4+Pj4+Cj4+Pj4+IE9uIEZyaSwgMTEgSmFuIDIwMTkgMDY6MjA6MjMgKzAx
+MDAsCj4+Pj4+IFlhbmcsIExpYmluIHdyb3RlOgo+Pj4+Pj4KPj4+Pj4+IFRoZSBiZWxvdyBwYXRj
+aCBtYXkgaGF2ZSBhIHNtYWxsIGNvbmZsaWN0aW9uIHRoYXQgdGhlIHRyaWdnZXIgd2lsbAo+Pj4+
+Pj4gYmUgY2FsbGVkIHR3aWNlIGFzIG91ciBTT0YgaGFzIGFscmVhZHkgY2FsbCBzbmRfcGNtX3N1
+c3BlbmQoKSBpbgo+Pj4+Pj4gY2FyZCBzdXNwZW5kLgo+Pj4+Pgo+Pj4+PiBJdCBzaG91bGQgYmUg
+bm8gcHJvYmxlbSwgc25kX3BjbV9zdXNwZW5kKCkgY2FuIGJlIGNhbGxlZCBtdWx0aXBsZQo+Pj4+
+PiB0aW1lcy4gIElmIGl0J3MgYWxyZWFkeSBzdXNwZW5kZWQsIGp1c3Qgbm90aGluZyBoYXBwZW5z
+Lgo+Pj4+Cj4+Pj4gVGhpbmtpbmcgb2YgdGhpcyBwcm9ibGVtIGFnYWluLCBkb2VzIGEgcGF0Y2gg
+bGlrZSBiZWxvdyB3b3JrIGluc3RlYWQ/Cj4+Pj4gVGhpcyBsb29rcyBsaWtlIGEgYmV0dGVyIGFu
+ZCBtb3JlIGdlbmVyaWMgc29sdXRpb24uCj4+Pj4KPj4+PiBXaGF0IEknbSBub3QgcXVpdGUgc3Vy
+ZSBpcyB3aGV0aGVyIHRoZSBkZXZpY2Ugc3VzcGVuZCBvcmRlciBiZXR3ZWVuCj4+Pj4gUENNIGRl
+dmljZSBhbmQgSEQtYXVkaW8gY29kZWMgZGV2aWNlIGlzIGd1YXJhbnRlZWQuICBJIGd1ZXNzIHll
+cywKPj4+PiBiZWNhdXNlIHRoZSBQQ00gZGV2aWNlIGlzIHJlZ2lzdGVyZWQgYWx3YXlzIGFmdGVy
+IHRoZSBjb2RlYy4gIEJ1dCBBU29DCj4+Pj4gbWlnaHQgaGF2ZSBhbm90aGVyIHdlaXJkbmVzcyA6
+KQo+Pgo+PiBUaGUgc3VzcGVuZCBvcmRlciBpcyBhbHdheXMgYSBxdWl0ZSBoYXJkIGlzc3VlIGZv
+ciBtZS4gSSBoYXZlIHRvIHNwZW5kCj4+IGEgbG90IHRpbWUgY2hlY2tpbmcgdGhlIHBhcmVudC1j
+aGlsZCByZWxhdGlvbnNoaXAuIEFuZCBpZiB0aGV5IGRvbid0IGhhdmUKPj4gc3VjaCByZWxhdGlv
+bnNoaXAsIEkgZG9uJ3Qga25vdyBob3cgdG8gZmluZCB0aGUgb3JkZXIuCj4+Cj4+IE15IGluaXRp
+YWwgaWRlYSB0byBnZXQgcmlkIG9mIHN1Y2ggZGVwZW5kZW5jeSBpczogZG8gdGhlIHBjbSBzdXNw
+ZW5kIGJlZm9yZQo+PiBzdXNwZW5kKCksIGZvciBleGFtcGxlIHB1dCBpdCBpbiBwcmVwYXJlKCku
+IEFuZCBzZXQgZGV2aWNlIGNsayBvZmYgYW5kIHBvd2VyCj4+IG9mZiBpbiBzdXNwZW5kKCkuIFRo
+aXMgY2FuIG1ha2Ugc3VyZSBwY20gaXMgYWx3YXlzIHByb3Blcmx5IHN1c3BlbmRlZC4KPj4gQnV0
+LCBJJ20gbm90IHN1cmUgcHJlcGFyZSgpIGlzIGEgcmlnaHQgcGxhY2UgYmVjYXVzZSBpdCBzZWVt
+cyBwcmVwYXJlKCkgaXMgbm90Cj4+IGRlc2lnbmVkIHRvIGRvIHN1Y2ggdGhpbmdzIGFuZCBwcmVw
+YXJlKCkgbWF5IGltcGFjdCB0aGUgc3VzcGVuZC9yZXN1bWUKPj4gc2VxdWVuY2UgYmFzZWQgb24g
+aXRzIHJldHVybiB2YWx1ZS4gSWYgeW91ciBiZWxvdyBwYXRjaCB3b3JrcywgSSB0aGluayBpdCB3
+aWxsCj4+IGJlIGEgYmVzdCBzb2x1dGlvbiB3aGljaCBjYW4gaGFuZGxlIHN1Y2ggdGhpbmdzIGlu
+IEFMU0EgbGV2ZWwuIEkgdGhpbmsgd2UKPj4gbWF5IG5lZWQgdG8gZG8gYSBsb3Qgb2YgdGVzdCBi
+ZWNhdXNlIHRoZSBkaWZmZXJlbnQgY2FyZHMgZHJpdmVycyBhcmUKPj4gZXh0cmVtZWx5IGRpZmZl
+cmVudC4KPiAKPiBBcyBtZW50aW9uZWQgYmVsb3csIEFTb0MgaXMgYW5vdGhlciB0aGluZy4gIEl0
+cyBQTSBzZXF1ZW5jZSBpcyBmb3VuZAo+IGluIHNuZF9zb2Nfc3VzcGVuZCgpLgo+IAo+IAo+IFRh
+a2FzaGkKClRoaXMgaXMgYW4gaW50ZXJlc3RpbmcgdG9waWMsIGl0IHdvcnRoIHRvIGRvIGEgc3Vy
+Z2VyeSB0byByZW1vdmUgdGhvc2UgCkFTb0Mgc25kX3BjbV9zdXNwZW5kX2FsbCgpIGludm9raW5n
+IGFuZCBkbyB1bmlmaWVkIFBDTSBzdXNwZW5kIGluIEFMU0EgClBDTSBsZXZlbD8KClRoYW5rcywK
+fktleW9uCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
