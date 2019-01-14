@@ -1,29 +1,171 @@
-From: Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH 1/3] ASoC: cs4341: fix waring unused-function
-Date: Mon, 14 Jan 2019 13:49:17 +0100
-Message-ID: <CADYN=9LU2fngmUZrM_E7qS7rGB7y4b45H12yZOW=X7JfaS1qqQ@mail.gmail.com>
-References: <20190114095540.22956-1-anders.roxell@linaro.org> <20190114112443.GA11073@sirena.org.uk>
+From: "kernelci.org bot" <bot@kernelci.org>
+Subject: next/master boot bisection: next-20190114 on
+ sun8i-h2-plus-libretech-all-h3-cc
+Date: Mon, 14 Jan 2019 05:11:05 -0800 (PST)
+Message-ID: <5c3c8a69.1c69fb81.668ce.4227@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190114112443.GA11073@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: perex@perex.cz, tiwai@suse.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Ajit Pandey <ajitp@codeaurora.org>, tomeu.vizoso@collabora.com, Rohit kumar <rohitkr@codeaurora.org>, guillaume.tucker@collabora.com, Mark Brown <broonie@kernel.org>broonie@kernel.org, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Jan 2019 at 12:24, Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Jan 14, 2019 at 10:55:40AM +0100, Anders Roxell wrote:
-> > The driver cs4341 can be built with SPI and/or I2C, but it has to be one
-> > of them at least. When I2C is set as a module we see the warning below:
->
-> I'm missing patches 2 and 3 of this series and there's no cover letter.
-> What's the story with dependencies?
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* This automated bisection report was sent to you on the basis  *
+* that you may be involved with the breaking commit it has      *
+* found.  No manual investigation has been done to verify it,   *
+* and the root cause of the problem may be somewhere else.      *
+* Hope this helps!                                              *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-oh, I made a mistake. It Should not be any dependencies, just this patch.
+next/master boot bisection: next-20190114 on sun8i-h2-plus-libretech-all-h3=
+-cc
 
-Do you want me to resend it without " 1/3]... " in the subject?
+Summary:
+  Start:      8ce4d582f564 Add linux-next specific files for 20190114
+  Details:    https://kernelci.org/boot/id/5c3c411659b51457a76edd34
+  Plain log:  https://storage.kernelci.org//next/master/next-20190114/arm/s=
+unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.txt
+  HTML log:   https://storage.kernelci.org//next/master/next-20190114/arm/s=
+unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.html
+  Result:     8780cf1142a5 ASoC: soc-core: defer card probe until all compo=
+nent is added to list
 
-Cheers,
-Anders
+Checks:
+  revert:     PASS
+  verify:     PASS
+
+Parameters:
+  Tree:       next
+  URL:        http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
+t.git
+  Branch:     master
+  Target:     sun8i-h2-plus-libretech-all-h3-cc
+  CPU arch:   arm
+  Lab:        lab-baylibre
+  Config:     sunxi_defconfig
+  Test suite: boot
+
+Breaking commit found:
+
+---------------------------------------------------------------------------=
+----
+commit 8780cf1142a59568a3aa77959cbd76b2edb6fd81
+Author: Ajit Pandey <ajitp@codeaurora.org>
+Date:   Wed Jan 9 14:17:07 2019 +0530
+
+    ASoC: soc-core: defer card probe until all component is added to list
+    =
+
+    DAI component probe is not called if it is not present
+    in component list during sound card registration.
+    Check if component is available in component list for
+    platform and cpu dai before soundcard registration.
+    =
+
+    Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+    Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+    Signed-off-by: Mark Brown <broonie@kernel.org>
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0462b3ec977a..eec92f17dd15 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1027,7 +1027,6 @@ static int snd_soc_init_platform(struct snd_soc_card =
+*card,
+ 				 struct snd_soc_dai_link *dai_link)
+ {
+ 	struct snd_soc_dai_link_component *platform =3D dai_link->platform;
+-
+ 	/*
+ 	 * FIXME
+ 	 *
+@@ -1129,6 +1128,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
+rd,
+ 			link->name);
+ 		return -EINVAL;
+ 	}
++
++	/*
++	 * Defer card registartion if platform dai component is not added to
++	 * component list.
++	 */
++	if (!soc_find_component(link->platform->of_node, link->platform->name))
++		return -EPROBE_DEFER;
++
+ 	/*
+ 	 * CPU device may be specified by either name or OF node, but
+ 	 * can be left unspecified, and will be matched based on DAI
+@@ -1140,6 +1147,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
+rd,
+ 			link->name);
+ 		return -EINVAL;
+ 	}
++
++	/*
++	 * Defer card registartion if cpu dai component is not added to
++	 * component list.
++	 */
++	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
++		return -EPROBE_DEFER;
++
+ 	/*
+ 	 * At least one of CPU DAI name or CPU device name/node must be
+ 	 * specified
+---------------------------------------------------------------------------=
+----
+
+
+Git bisection log:
+
+---------------------------------------------------------------------------=
+----
+git bisect start
+# good: [6b529fb0a3eabf9c4cc3e94c11477250379ce6d8] Merge tag 'for-5.0-rc1-t=
+ag' of git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux
+git bisect good 6b529fb0a3eabf9c4cc3e94c11477250379ce6d8
+# bad: [8ce4d582f5647052b86f364a070aa26268810d7e] Add linux-next specific f=
+iles for 20190114
+git bisect bad 8ce4d582f5647052b86f364a070aa26268810d7e
+# bad: [bb937d2e6697b49f6e3fa55ec09951ebbc8717ac] Merge remote-tracking bra=
+nch 'crypto/master'
+git bisect bad bb937d2e6697b49f6e3fa55ec09951ebbc8717ac
+# bad: [04bab95e799a00ffe1b2980e1c786ac9a94f8026] Merge remote-tracking bra=
+nch 'renesas/next'
+git bisect bad 04bab95e799a00ffe1b2980e1c786ac9a94f8026
+# bad: [5726796d7b631fe9af2202c1ce66232a79984a19] Merge remote-tracking bra=
+nch 'devicetree-fixes/dt/linus'
+git bisect bad 5726796d7b631fe9af2202c1ce66232a79984a19
+# good: [34aea5d2c46b2581ddf0b78a6119f85c1b3a8d1d] Merge remote-tracking br=
+anch 'net/master'
+git bisect good 34aea5d2c46b2581ddf0b78a6119f85c1b3a8d1d
+# bad: [e1faf5c97ee3194c3f3e0b5dc86b3e1490c323d9] Merge remote-tracking bra=
+nch 'usb-serial-fixes/usb-linus'
+git bisect bad e1faf5c97ee3194c3f3e0b5dc86b3e1490c323d9
+# good: [49ff71f99a8826eda5cee76b69f15600d1cbf4b2] Merge remote-tracking br=
+anch 'rdma-fixes/for-rc'
+git bisect good 49ff71f99a8826eda5cee76b69f15600d1cbf4b2
+# bad: [04eb1efcd614d6f067b76a355b3a3599667959dc] ASoC: soc-core: Hold clie=
+nt_mutex around soc_init_dai_link()
+git bisect bad 04eb1efcd614d6f067b76a355b3a3599667959dc
+# good: [a41d9dbf5dac5b6a1283ee8001f22807d18352ea] ASoC: qdsp6: q6asm-dai: =
+Fix a small memory leak
+git bisect good a41d9dbf5dac5b6a1283ee8001f22807d18352ea
+# good: [6175471755075d256c1c654151fc1cad183c1e33] ASoC: ti: davinci-mcasp:=
+ Move context save/restore to runtime_pm callbacks
+git bisect good 6175471755075d256c1c654151fc1cad183c1e33
+# good: [44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661] ASoC: atom: fix a missin=
+g check of snd_pcm_lib_malloc_pages
+git bisect good 44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661
+# bad: [239b8b34a856777e562373ae0de605536a7ccade] ASoC: Intel: Boards: move=
+ the codec PLL configuration to _init
+git bisect bad 239b8b34a856777e562373ae0de605536a7ccade
+# bad: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-core: defer car=
+d probe until all component is added to list
+git bisect bad 8780cf1142a59568a3aa77959cbd76b2edb6fd81
+# first bad commit: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-co=
+re: defer card probe until all component is added to list
+---------------------------------------------------------------------------=
+----
