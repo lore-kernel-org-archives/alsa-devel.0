@@ -1,54 +1,87 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/4] slimbus: core: match full device id
-Date: Mon, 14 Jan 2019 13:44:46 +0000
-Message-ID: <20190114134449.15367-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/4] slimbus: core: use slim_device_update_status() to update status
+Date: Mon, 14 Jan 2019 13:44:48 +0000
+Message-ID: <20190114134449.15367-4-srinivas.kandagatla@linaro.org>
 References: <20190114134449.15367-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com
- [209.85.128.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 03A4C266ABC
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 14:45:55 +0100 (CET)
-Received: by mail-wm1-f68.google.com with SMTP id n190so8977872wmd.0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 05:45:55 -0800 (PST)
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190114134449.15367-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: gregkh@linuxfoundation.org
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-match full slim device id instead of just product and manufacture code,
-this will allow drivers to be much more specific to that device.
+use slim_device_update_status() instead of directly calling
+the device_status() callback. Move slim_device_update_status() before
+probe to avoid forward declaration too.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/slimbus/core.c | 37 ++++++++++++++++++-------------------
+ 1 file changed, 18 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index 55eda5863a6b..9e4f3b21ba8c 100644
+index 1ba08b5f2e78..8ffdc9876223 100644
 --- a/drivers/slimbus/core.c
 +++ b/drivers/slimbus/core.c
-@@ -21,7 +21,9 @@ static const struct slim_device_id *slim_match(const struct slim_device_id *id,
+@@ -42,6 +42,23 @@ static int slim_device_match(struct device *dev, struct device_driver *drv)
+ 	return !!slim_match(sbdrv->id_table, sbdev);
+ }
+ 
++static void slim_device_update_status(struct slim_device *sbdev,
++				      enum slim_device_status status)
++{
++	struct slim_driver *sbdrv;
++
++	if (sbdev->status == status)
++		return;
++
++	sbdev->status = status;
++	if (!sbdev->dev.driver)
++		return;
++
++	sbdrv = to_slim_driver(sbdev->dev.driver);
++	if (sbdrv->device_status)
++		sbdrv->device_status(sbdev, sbdev->status);
++}
++
+ static int slim_device_probe(struct device *dev)
  {
- 	while (id->manf_id != 0 || id->prod_code != 0) {
- 		if (id->manf_id == sbdev->e_addr.manf_id &&
--		    id->prod_code == sbdev->e_addr.prod_code)
-+		    id->prod_code == sbdev->e_addr.prod_code &&
-+		    id->dev_index == sbdev->e_addr.dev_index &&
-+		    id->instance == sbdev->e_addr.instance)
- 			return id;
- 		id++;
- 	}
+ 	struct slim_device	*sbdev = to_slim_device(dev);
+@@ -55,8 +72,7 @@ static int slim_device_probe(struct device *dev)
+ 	/* try getting the logical address after probe */
+ 	ret = slim_get_logical_addr(sbdev);
+ 	if (!ret) {
+-		if (sbdrv->device_status)
+-			sbdrv->device_status(sbdev, sbdev->status);
++		slim_device_update_status(sbdev, SLIM_DEVICE_STATUS_UP);
+ 	} else {
+ 		dev_err(&sbdev->dev, "Failed to get logical address\n");
+ 		ret = -EPROBE_DEFER;
+@@ -297,23 +313,6 @@ int slim_unregister_controller(struct slim_controller *ctrl)
+ }
+ EXPORT_SYMBOL_GPL(slim_unregister_controller);
+ 
+-static void slim_device_update_status(struct slim_device *sbdev,
+-				      enum slim_device_status status)
+-{
+-	struct slim_driver *sbdrv;
+-
+-	if (sbdev->status == status)
+-		return;
+-
+-	sbdev->status = status;
+-	if (!sbdev->dev.driver)
+-		return;
+-
+-	sbdrv = to_slim_driver(sbdev->dev.driver);
+-	if (sbdrv->device_status)
+-		sbdrv->device_status(sbdev, sbdev->status);
+-}
+-
+ /**
+  * slim_report_absent() - Controller calls this function when a device
+  *	reports absent, OR when the device cannot be communicated with
 -- 
 2.20.1
