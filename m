@@ -1,165 +1,71 @@
-From: "kernelci.org bot" <bot@kernelci.org>
-Subject: next/pending-fixes boot bisection: v5.0-rc1-535-g727b373740d1 on
- sun8i-h3-libretech-all-h3-cc
-Date: Mon, 14 Jan 2019 06:07:08 -0800 (PST)
-Message-ID: <5c3c978c.1c69fb81.6e329.1da7@mx.google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: cs4341: fix waring
+	unused-function
+Date: Mon, 14 Jan 2019 14:08:14 +0000
+Message-ID: <20190114140814.GC11073@sirena.org.uk>
+References: <20190114095540.22956-1-anders.roxell@linaro.org>
+ <20190114112443.GA11073@sirena.org.uk>
+ <CADYN=9LU2fngmUZrM_E7qS7rGB7y4b45H12yZOW=X7JfaS1qqQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ajit Pandey <ajitp@codeaurora.org>, tomeu.vizoso@collabora.com, Rohit kumar <rohitkr@codeaurora.org>, guillaume.tucker@collabora.com, Mark Brown <broonie@kernel.org>broonie@kernel.org, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============8973375576187025843=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97D08266ABC
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2019 15:08:21 +0100 (CET)
+In-Reply-To: <CADYN=9LU2fngmUZrM_E7qS7rGB7y4b45H12yZOW=X7JfaS1qqQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anders Roxell <anders.roxell@linaro.org>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul.Handrigan@cirrus.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* This automated bisection report was sent to you on the basis  *
-* that you may be involved with the breaking commit it has      *
-* found.  No manual investigation has been done to verify it,   *
-* and the root cause of the problem may be somewhere else.      *
-* Hope this helps!                                              *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-next/pending-fixes boot bisection: v5.0-rc1-535-g727b373740d1 on sun8i-h3-l=
-ibretech-all-h3-cc
-
-Summary:
-  Start:      727b373740d1 Merge remote-tracking branch 'drm-misc-fixes/for=
--linux-next-fixes'
-  Details:    https://kernelci.org/boot/id/5c3c423359b5145dde6edd37
-  Plain log:  https://storage.kernelci.org//next/pending-fixes/v5.0-rc1-535=
--g727b373740d1/arm/sunxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all=
--h3-cc.txt
-  HTML log:   https://storage.kernelci.org//next/pending-fixes/v5.0-rc1-535=
--g727b373740d1/arm/sunxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all=
--h3-cc.html
-  Result:     8780cf1142a5 ASoC: soc-core: defer card probe until all compo=
-nent is added to list
-
-Checks:
-  revert:     PASS
-  verify:     PASS
-
-Parameters:
-  Tree:       next
-  URL:        http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
-t.git
-  Branch:     pending-fixes
-  Target:     sun8i-h3-libretech-all-h3-cc
-  CPU arch:   arm
-  Lab:        lab-baylibre
-  Config:     sunxi_defconfig
-  Test suite: boot
-
-Breaking commit found:
-
----------------------------------------------------------------------------=
-----
-commit 8780cf1142a59568a3aa77959cbd76b2edb6fd81
-Author: Ajit Pandey <ajitp@codeaurora.org>
-Date:   Wed Jan 9 14:17:07 2019 +0530
-
-    ASoC: soc-core: defer card probe until all component is added to list
-    =
-
-    DAI component probe is not called if it is not present
-    in component list during sound card registration.
-    Check if component is available in component list for
-    platform and cpu dai before soundcard registration.
-    =
-
-    Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-    Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-    Signed-off-by: Mark Brown <broonie@kernel.org>
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0462b3ec977a..eec92f17dd15 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1027,7 +1027,6 @@ static int snd_soc_init_platform(struct snd_soc_card =
-*card,
- 				 struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_dai_link_component *platform =3D dai_link->platform;
--
- 	/*
- 	 * FIXME
- 	 *
-@@ -1129,6 +1128,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
-rd,
- 			link->name);
- 		return -EINVAL;
- 	}
-+
-+	/*
-+	 * Defer card registartion if platform dai component is not added to
-+	 * component list.
-+	 */
-+	if (!soc_find_component(link->platform->of_node, link->platform->name))
-+		return -EPROBE_DEFER;
-+
- 	/*
- 	 * CPU device may be specified by either name or OF node, but
- 	 * can be left unspecified, and will be matched based on DAI
-@@ -1140,6 +1147,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
-rd,
- 			link->name);
- 		return -EINVAL;
- 	}
-+
-+	/*
-+	 * Defer card registartion if cpu dai component is not added to
-+	 * component list.
-+	 */
-+	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
-+		return -EPROBE_DEFER;
-+
- 	/*
- 	 * At least one of CPU DAI name or CPU device name/node must be
- 	 * specified
----------------------------------------------------------------------------=
-----
+--===============8973375576187025843==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
+Content-Disposition: inline
 
 
-Git bisection log:
+--KN5l+BnMqAQyZLvT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
----------------------------------------------------------------------------=
-----
-git bisect start
-# good: [6b529fb0a3eabf9c4cc3e94c11477250379ce6d8] Merge tag 'for-5.0-rc1-t=
-ag' of git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux
-git bisect good 6b529fb0a3eabf9c4cc3e94c11477250379ce6d8
-# bad: [727b373740d1d3c6d3273cfc6e81d5e9a229b12d] Merge remote-tracking bra=
-nch 'drm-misc-fixes/for-linux-next-fixes'
-git bisect bad 727b373740d1d3c6d3273cfc6e81d5e9a229b12d
-# good: [34aea5d2c46b2581ddf0b78a6119f85c1b3a8d1d] Merge remote-tracking br=
-anch 'net/master'
-git bisect good 34aea5d2c46b2581ddf0b78a6119f85c1b3a8d1d
-# bad: [52bb35a9520ac1746fb34687c5582695813aa00a] Merge remote-tracking bra=
-nch 'char-misc.current/char-misc-linus'
-git bisect bad 52bb35a9520ac1746fb34687c5582695813aa00a
-# bad: [4baf5101d553aae944fa7dc7bd13772eb559d78b] Merge remote-tracking bra=
-nch 'sound-asoc-fixes/for-linus'
-git bisect bad 4baf5101d553aae944fa7dc7bd13772eb559d78b
-# good: [49ff71f99a8826eda5cee76b69f15600d1cbf4b2] Merge remote-tracking br=
-anch 'rdma-fixes/for-rc'
-git bisect good 49ff71f99a8826eda5cee76b69f15600d1cbf4b2
-# good: [678e2b44c8e3fec3afc7202f1996a4500a50be93] ALSA: compress: prevent =
-potential divide by zero bugs
-git bisect good 678e2b44c8e3fec3afc7202f1996a4500a50be93
-# good: [667e9334fa64da2273e36ce131b05ac9e47c5769] ASoC: tlv320aic32x4: Ker=
-nel OOPS while entering DAPM standby mode
-git bisect good 667e9334fa64da2273e36ce131b05ac9e47c5769
-# bad: [239b8b34a856777e562373ae0de605536a7ccade] ASoC: Intel: Boards: move=
- the codec PLL configuration to _init
-git bisect bad 239b8b34a856777e562373ae0de605536a7ccade
-# bad: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-core: defer car=
-d probe until all component is added to list
-git bisect bad 8780cf1142a59568a3aa77959cbd76b2edb6fd81
-# good: [44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661] ASoC: atom: fix a missin=
-g check of snd_pcm_lib_malloc_pages
-git bisect good 44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661
-# first bad commit: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-co=
-re: defer card probe until all component is added to list
----------------------------------------------------------------------------=
-----
+On Mon, Jan 14, 2019 at 01:49:17PM +0100, Anders Roxell wrote:
+
+> Do you want me to resend it without " 1/3]... " in the subject?
+
+No, that's fine.
+
+--KN5l+BnMqAQyZLvT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw8l80ACgkQJNaLcl1U
+h9B31gf/T9PzP/h1uPds/fefFp+3eV9W+igONVCH1EbOpe9a/zNQ7jETxpD/3ZB9
+mlN3SRsfkzLOx1LQqpF6MGVPE9kaKLne2RR1qmu4CZQ7vWKP5rl/g03UYHlaOYIG
+JNSzyJQNAjxA7GrIfo1lPKgB39qp92z3kWTIcRIOk/nTGIKGuvA4jJ5dn8HldEqu
+BhJdJ84sqp5rD7JdqDt5eaWk+aJvT5rzOmdlqxjpuJ6vyZ+InFDHdIozQXcEvdFH
+wy8uCSyqrXIx6rRJTfJ7eZak5Q1dY7G6zT3W1FbUvp0m+U6kY7iY6+baL+pWssps
+Cx/XYQ7qf8RDgqOlWCQIonKlCsXZTA==
+=Pica
+-----END PGP SIGNATURE-----
+
+--KN5l+BnMqAQyZLvT--
+
+--===============8973375576187025843==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8973375576187025843==--
