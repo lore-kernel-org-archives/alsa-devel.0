@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: msm8916-wcd-digital: remove few unused
-	variables" to the asoc tree
-Date: Mon, 14 Jan 2019 23:03:58 +0000 (GMT)
-Message-ID: <20190114230358.86DE41127AD1@debutante.sirena.org.uk>
-References: <20190114143640.28333-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
+ dereference in soc_find_component
+Date: Mon, 14 Jan 2019 23:26:08 +0000
+Message-ID: <20190114232608.GL11073@sirena.org.uk>
+References: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8153143238265222882=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B3026267333
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:03:59 +0100 (CET)
-In-Reply-To: <20190114143640.28333-1-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BD772670AC
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:26:10 +0100 (CET)
+In-Reply-To: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,99 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: msm8916-wcd-digital: remove few unused variables
+--===============8153143238265222882==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/jkxxxtAhYIHVDuh"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--/jkxxxtAhYIHVDuh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Jan 11, 2019 at 01:44:02PM +0530, Rohit kumar wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> -	if (!soc_find_component(link->platform->of_node, link->platform->name))
+> -		return -EPROBE_DEFER;
+> +	if (link->platform->of_node || link->platform->name)
+> +		if (!soc_find_component(link->platform->of_node,
+> +					link->platform->name))
+> +			return -EPROBE_DEFER;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If we need to do this for every user (which we do pretty much it seems)
+we should just be doing it inside find_component().
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--/jkxxxtAhYIHVDuh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From fecd5c09ddf8711c0b17087cc7a40ac57680f8ed Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 14 Jan 2019 14:36:40 +0000
-Subject: [PATCH] ASoC: msm8916-wcd-digital: remove few unused variables
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw9Go8ACgkQJNaLcl1U
+h9A11Qf/Yrxphh6cv8p+IFzDXG9ACozaoDAZvSVV28Vk8dLUNepecWcgeJs1Y5bQ
+bbRy093mTSg7itKQBgYok76GwpdQOQbtGVHgVQqvoY/1Ns2M/UZF2bYIfRV6JRUS
+RD/lUVc5K+2xz9bOvte60oMNwjBurRYv1kMdv2t7gQ3GPx8p5Jkp8MBREULYCRxG
+BnYgpCO7nneoRa5617M9QctJvcEbTAi7IGCoSyHufrAcMh7KbWcGsK2vu4M8Muen
+f1ThSHZ0esdV8elN3niT2mRMN49ZbyNE5FOIc8brEg9gkG7SSuRDFsFLu172a3iQ
+oiJBUJ/cUCcqjIuGgvKOQ0q37CyHlQ==
+=IF84
+-----END PGP SIGNATURE-----
 
-This patch removes unused variables which also fixes below warnings:
+--/jkxxxtAhYIHVDuh--
 
-msm8916-wcd-digital.c:245:30: warning: 'rx2_mix2_inp1_chain_enum'
-defined but not used [-Wunused-const-variable=]
-static const struct soc_enum rx2_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
-                              ^~~~~~~~~~~~~~~~~~~~~~~~
-msm8916-wcd-digital.c:234:30: warning: 'rx_mix2_inp1_chain_enum'
-defined but not used [-Wunused-const-variable=]
- static const struct soc_enum rx_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
-                              ^~~~~~~~~~~~~~~~~~~~~~~
-msm8916-wcd-digital.c:224:26: warning: 'adc2_mux_text'
-defined but not used [-Wunused-const-variable=]
- static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
-                          ^~~~~~~~~~~~~
-msm8916-wcd-digital.c:223:26: warning: 'rx_mix2_text'
-defined but not used [-Wunused-const-variable=]
+--===============8153143238265222882==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/msm8916-wcd-digital.c | 10 ----------
- 1 file changed, 10 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index 3063dedd21cf..423bfebabed4 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -220,8 +220,6 @@ static const char *const dec_mux_text[] = {
- };
- 
- static const char *const cic_mux_text[] = { "AMIC", "DMIC" };
--static const char *const rx_mix2_text[] = { "ZERO", "IIR1", "IIR2" };
--static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
- 
- /* RX1 MIX1 */
- static const struct soc_enum rx_mix1_inp_enum[] = {
-@@ -230,10 +228,6 @@ static const struct soc_enum rx_mix1_inp_enum[] = {
- 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX1_B2_CTL, 0, 6, rx_mix1_text),
- };
- 
--/* RX1 MIX2 */
--static const struct soc_enum rx_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
--				LPASS_CDC_CONN_RX1_B3_CTL, 0, 3, rx_mix2_text);
--
- /* RX2 MIX1 */
- static const struct soc_enum rx2_mix1_inp_enum[] = {
- 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B1_CTL, 0, 6, rx_mix1_text),
-@@ -241,10 +235,6 @@ static const struct soc_enum rx2_mix1_inp_enum[] = {
- 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B2_CTL, 0, 6, rx_mix1_text),
- };
- 
--/* RX2 MIX2 */
--static const struct soc_enum rx2_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
--				LPASS_CDC_CONN_RX2_B3_CTL, 0, 3, rx_mix2_text);
--
- /* RX3 MIX1 */
- static const struct soc_enum rx3_mix1_inp_enum[] = {
- 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX3_B1_CTL, 0, 6, rx_mix1_text),
--- 
-2.20.1
+--===============8153143238265222882==--
