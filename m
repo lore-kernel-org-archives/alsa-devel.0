@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: xlnx: parse AES audio parameters" to
-	the asoc tree
-Date: Mon, 14 Jan 2019 23:03:54 +0000 (GMT)
-Message-ID: <20190114230354.C91F61127AD2@debutante.sirena.org.uk>
-References: <1547126083-44466-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+Subject: Applied "ASoC: soc-core: fix init platform memory
+	handling" to the asoc tree
+Date: Mon, 14 Jan 2019 23:03:52 +0000 (GMT)
+Message-ID: <20190114230352.EB2D01127AD1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 844EA2670AC
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:03:57 +0100 (CET)
-In-Reply-To: <1547126083-44466-1-git-send-email-maruthi.srinivas.bayyavarapu@xilinx.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BAFE7267128
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 00:03:58 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Cc: alsa-devel@alsa-project.org, "Gustavo A . R . Silva" <gustavo@embeddedor.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Michal Simek <michal.simek@xilinx.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Curtis Malainey <cujomalainey@chromium.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: xlnx: parse AES audio parameters
+   ASoC: soc-core: fix init platform memory handling
 
 has been applied to the asoc tree at
 
@@ -53,204 +52,76 @@ to this mail.
 Thanks,
 Mark
 
->From c284d4e31a0b66e6fe3734b36080afd237ff9fb0 Mon Sep 17 00:00:00 2001
-From: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
-Date: Thu, 10 Jan 2019 18:44:43 +0530
-Subject: [PATCH] ASoC: xlnx: parse AES audio parameters
+>From 09ac6a817bd687e7f5dac00470262efdd72f9319 Mon Sep 17 00:00:00 2001
+From: Curtis Malainey <cujomalainey@chromium.org>
+Date: Thu, 10 Jan 2019 16:21:04 -0800
+Subject: [PATCH] ASoC: soc-core: fix init platform memory handling
 
-AES channel status carries various audio parameters. If channel status is
-detected, current patch extracts sample rate and bit depth parameters of
-the incoming stream during capture.
+snd_soc_init_platform initializes pointers to snd_soc_dai_link which is
+statically allocated and it does this by devm_kzalloc. In the event of
+an EPROBE_DEFER the memory will be freed and the pointers are left
+dangling. snd_soc_init_platform sees the dangling pointers and assumes
+they are pointing to initialized memory and does not reallocate them on
+the second probe attempt which results in a use after free bug since
+devm has freed the memory from the first probe attempt.
 
-Signed-off-by: Maruthi Srinivas Bayyavarapu <maruthi.srinivas.bayyavarapu@xilinx.com>
+Since the intention for snd_soc_dai_link->platform is that it can be set
+statically by the machine driver we need to respect the pointer in the
+event we did not set it but still catch dangling pointers. The solution
+is to add a flag to track whether the pointer was dynamically allocated
+or not.
+
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xilinx/xlnx_formatter_pcm.c | 143 ++++++++++++++++++++++++++
- 1 file changed, 143 insertions(+)
+ include/sound/soc.h  |  6 ++++++
+ sound/soc/soc-core.c | 11 ++++++-----
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index d2194da928e7..97177d35652e 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -13,6 +13,7 @@
- #include <linux/of_irq.h>
- #include <linux/sizes.h>
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8ec1de856ee7..e665f111b0d2 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -985,6 +985,12 @@ struct snd_soc_dai_link {
+ 	/* Do not create a PCM for this DAI link (Backend link) */
+ 	unsigned int ignore:1;
  
-+#include <sound/asoundef.h>
- #include <sound/soc.h>
- #include <sound/pcm_params.h>
- 
-@@ -63,6 +64,7 @@
- #define PERIODS_MAX		6
- #define PERIOD_BYTES_MIN	192
- #define PERIOD_BYTES_MAX	(50 * 1024)
-+#define XLNX_PARAM_UNKNOWN	0
- 
- enum bit_depth {
- 	BIT_DEPTH_8,
-@@ -117,6 +119,129 @@ static const struct snd_pcm_hardware xlnx_pcm_hardware = {
- 	.periods_max = PERIODS_MAX,
++	/*
++	 * This driver uses legacy platform naming. Set by the core, machine
++	 * drivers should not modify this value.
++	 */
++	unsigned int legacy_platform:1;
++
+ 	struct list_head list; /* DAI link list of the soc card */
+ 	struct snd_soc_dobj dobj; /* For topology */
  };
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0934b36645b3..cdcc417c94ca 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1034,17 +1034,18 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+ 	 * this function should be removed in the future
+ 	 */
+ 	/* convert Legacy platform link */
+-	if (!platform) {
++	if (!platform || dai_link->legacy_platform) {
+ 		platform = devm_kzalloc(card->dev,
+ 				sizeof(struct snd_soc_dai_link_component),
+ 				GFP_KERNEL);
+ 		if (!platform)
+ 			return -ENOMEM;
  
-+enum {
-+	AES_TO_AES,
-+	AES_TO_PCM,
-+	PCM_TO_PCM,
-+	PCM_TO_AES
-+};
-+
-+static void xlnx_parse_aes_params(u32 chsts_reg1_val, u32 chsts_reg2_val,
-+				  struct device *dev)
-+{
-+	u32 padded, srate, bit_depth, status[2];
-+
-+	if (chsts_reg1_val & IEC958_AES0_PROFESSIONAL) {
-+		status[0] = chsts_reg1_val & 0xff;
-+		status[1] = (chsts_reg1_val >> 16) & 0xff;
-+
-+		switch (status[0] & IEC958_AES0_PRO_FS) {
-+		case IEC958_AES0_PRO_FS_44100:
-+			srate = 44100;
-+			break;
-+		case IEC958_AES0_PRO_FS_48000:
-+			srate = 48000;
-+			break;
-+		case IEC958_AES0_PRO_FS_32000:
-+			srate = 32000;
-+			break;
-+		case IEC958_AES0_PRO_FS_NOTID:
-+		default:
-+			srate = XLNX_PARAM_UNKNOWN;
-+			break;
-+		}
-+
-+		switch (status[1] & IEC958_AES2_PRO_SBITS) {
-+		case IEC958_AES2_PRO_WORDLEN_NOTID:
-+		case IEC958_AES2_PRO_SBITS_20:
-+			padded = 0;
-+			break;
-+		case IEC958_AES2_PRO_SBITS_24:
-+			padded = 4;
-+			break;
-+		default:
-+			bit_depth = XLNX_PARAM_UNKNOWN;
-+			goto log_params;
-+		}
-+
-+		switch (status[1] & IEC958_AES2_PRO_WORDLEN) {
-+		case IEC958_AES2_PRO_WORDLEN_20_16:
-+			bit_depth = 16 + padded;
-+			break;
-+		case IEC958_AES2_PRO_WORDLEN_22_18:
-+			bit_depth = 18 + padded;
-+			break;
-+		case IEC958_AES2_PRO_WORDLEN_23_19:
-+			bit_depth = 19 + padded;
-+			break;
-+		case IEC958_AES2_PRO_WORDLEN_24_20:
-+			bit_depth = 20 + padded;
-+			break;
-+		case IEC958_AES2_PRO_WORDLEN_NOTID:
-+		default:
-+			bit_depth = XLNX_PARAM_UNKNOWN;
-+			break;
-+		}
-+
-+	} else {
-+		status[0] = (chsts_reg1_val >> 24) & 0xff;
-+		status[1] = chsts_reg2_val & 0xff;
-+
-+		switch (status[0] & IEC958_AES3_CON_FS) {
-+		case IEC958_AES3_CON_FS_44100:
-+			srate = 44100;
-+			break;
-+		case IEC958_AES3_CON_FS_48000:
-+			srate = 48000;
-+			break;
-+		case IEC958_AES3_CON_FS_32000:
-+			srate = 32000;
-+			break;
-+		default:
-+			srate = XLNX_PARAM_UNKNOWN;
-+			break;
-+		}
-+
-+		if (status[1] & IEC958_AES4_CON_MAX_WORDLEN_24)
-+			padded = 4;
-+		else
-+			padded = 0;
-+
-+		switch (status[1] & IEC958_AES4_CON_WORDLEN) {
-+		case IEC958_AES4_CON_WORDLEN_20_16:
-+			bit_depth = 16 + padded;
-+			break;
-+		case IEC958_AES4_CON_WORDLEN_22_18:
-+			bit_depth = 18 + padded;
-+			break;
-+		case IEC958_AES4_CON_WORDLEN_23_19:
-+			bit_depth = 19 + padded;
-+			break;
-+		case IEC958_AES4_CON_WORDLEN_24_20:
-+			bit_depth = 20 + padded;
-+			break;
-+		case IEC958_AES4_CON_WORDLEN_21_17:
-+			bit_depth = 17 + padded;
-+			break;
-+		case IEC958_AES4_CON_WORDLEN_NOTID:
-+		default:
-+			bit_depth = XLNX_PARAM_UNKNOWN;
-+			break;
-+		}
-+	}
-+
-+log_params:
-+	if (srate != XLNX_PARAM_UNKNOWN)
-+		dev_info(dev, "sample rate = %d\n", srate);
-+	else
-+		dev_info(dev, "sample rate = unknown\n");
-+
-+	if (bit_depth != XLNX_PARAM_UNKNOWN)
-+		dev_info(dev, "bit_depth = %d\n", bit_depth);
-+	else
-+		dev_info(dev, "bit_depth = unknown\n");
-+}
-+
- static int xlnx_formatter_pcm_reset(void __iomem *mmio_base)
- {
- 	u32 val, retries = 0;
-@@ -302,8 +427,12 @@ static int xlnx_formatter_pcm_hw_params(struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
- {
- 	u32 low, high, active_ch, val, bytes_per_ch, bits_per_sample;
-+	u32 aes_reg1_val, aes_reg2_val;
- 	int status;
- 	u64 size;
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
-+								    DRV_NAME);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
+-		dai_link->platform	= platform;
+-		platform->name		= dai_link->platform_name;
+-		platform->of_node	= dai_link->platform_of_node;
+-		platform->dai_name	= NULL;
++		dai_link->platform	  = platform;
++		dai_link->legacy_platform = 1;
++		platform->name		  = dai_link->platform_name;
++		platform->of_node	  = dai_link->platform_of_node;
++		platform->dai_name	  = NULL;
+ 	}
  
-@@ -311,6 +440,20 @@ static int xlnx_formatter_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (active_ch > stream_data->ch_limit)
- 		return -EINVAL;
- 
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+	    stream_data->xfer_mode == AES_TO_PCM) {
-+		val = readl(stream_data->mmio + XLNX_AUD_STS);
-+		if (val & AUD_STS_CH_STS_MASK) {
-+			aes_reg1_val = readl(stream_data->mmio +
-+					     XLNX_AUD_CH_STS_START);
-+			aes_reg2_val = readl(stream_data->mmio +
-+					     XLNX_AUD_CH_STS_START + 0x4);
-+
-+			xlnx_parse_aes_params(aes_reg1_val, aes_reg2_val,
-+					      component->dev);
-+		}
-+	}
-+
- 	size = params_buffer_bytes(params);
- 	status = snd_pcm_lib_malloc_pages(substream, size);
- 	if (status < 0)
+ 	/* if there's no platform we match on the empty platform */
 -- 
 2.20.1
