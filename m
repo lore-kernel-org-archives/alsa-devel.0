@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/14] ALSA: usb: Remove superfluous
+Subject: [PATCH 08/14] ALSA: ppc: Remove superfluous
 	snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 17:21:47 +0100
-Message-ID: <20190115162155.6308-7-tiwai@suse.de>
+Date: Tue, 15 Jan 2019 17:21:49 +0100
+Message-ID: <20190115162155.6308-9-tiwai@suse.de>
 References: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BA2426744A
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E82726745A
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:58 +0100 (CET)
 In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,37 +30,20 @@ call it in the PCM PM ops.  Let's remove them.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c         | 1 -
- sound/usb/line6/driver.c | 4 +---
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ sound/ppc/pmac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index a105947eaf55..dfa38b78c494 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -811,7 +811,6 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
- 	if (!chip->num_suspended_intf++) {
- 		list_for_each_entry(as, &chip->pcm_list, list) {
--			snd_pcm_suspend_all(as->pcm);
- 			snd_usb_pcm_suspend(as);
- 			as->substream[0].need_setup_ep =
- 				as->substream[1].need_setup_ep = true;
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index c1376bfdc90b..7afe8fae4939 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -849,10 +849,8 @@ int line6_suspend(struct usb_interface *interface, pm_message_t message)
- 	if (line6->properties->capabilities & LINE6_CAP_CONTROL)
- 		line6_stop_listen(line6);
- 
--	if (line6pcm != NULL) {
--		snd_pcm_suspend_all(line6pcm->pcm);
-+	if (line6pcm != NULL)
- 		line6pcm->flags = 0;
--	}
- 
- 	return 0;
- }
+diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
+index d692e4070167..6d420bd3ae17 100644
+--- a/sound/ppc/pmac.c
++++ b/sound/ppc/pmac.c
+@@ -1365,7 +1365,6 @@ void snd_pmac_suspend(struct snd_pmac *chip)
+ 	snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+ 	if (chip->suspend)
+ 		chip->suspend(chip);
+-	snd_pcm_suspend_all(chip->pcm);
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	snd_pmac_beep_stop(chip);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
 -- 
 2.20.1
