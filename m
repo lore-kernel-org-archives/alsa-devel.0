@@ -1,22 +1,24 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [RFC PATCH] ASoC: pcm512x: Implement the
- set_bclk_ratio interface
-Date: Tue, 15 Jan 2019 08:08:43 +0000
-Message-ID: <0a5918e1-aaf1-2b22-0f2a-4aaa62d1cd3e@axentia.se>
-References: <900a4f74-9312-58d8-a5b3-035305fe184e@gmail.com>
- <4b8ce92c-9239-3a8a-f061-eb114050bd3a@axentia.se>
- <7486f4cb-10c9-26ce-83d8-cb346e33e379@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: hp_pin was NULL value
+Date: Tue, 15 Jan 2019 08:17:24 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184210FC@RTITMBSV02.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
+ <s5htviigoa5.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
+ <s5hlg3ux9x9.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A184210B1@RTITMBSV02.realtek.com.tw>
+ <s5hh8eah1fj.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A184210E5@RTITMBSV02.realtek.com.tw>
+ <s5h5zuqgxv2.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-eopbgr70099.outbound.protection.outlook.com [40.107.7.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DD862667F5
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 09:08:46 +0100 (CET)
-In-Reply-To: <7486f4cb-10c9-26ce-83d8-cb346e33e379@linux.intel.com>
-Content-Language: en-US
-Content-ID: <241DAC96037759408A5A8A37C050FB5D@eurprd02.prod.outlook.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 362172667F5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 09:17:31 +0100 (CET)
+In-Reply-To: <s5h5zuqgxv2.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,39 +28,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Dimitris Papavasiliou <dpapavas@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-01-14 18:36, Pierre-Louis Bossart wrote:
+
+Hi Takashi,
+
+Sorry!! Maybe I don't understand what you mean.	
+Please see below.
+
+--- patch_realtek.c.orig	2019-01-11 16:28:43.745957854 +0800
++++ patch_realtek.c	2019-01-15 16:09:56.017873567 +0800
+@@ -3221,12 +3221,29 @@ static void alc256_shutup(struct hda_cod
+ 	snd_hda_shutup_pins(codec);
+ }
+ 
++static void alc225_hp_init(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
++	int i, val;
++	int coef38, coef0d, coef36;
++	printk("%s-start hp=0x%x\n",__func__,hp_pin);
++	if (!hp_pin)
++		return;
++
++	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15);
++	msleep(50);
++	alc_update_coef_idx(codec, 0x4a, 1<<15, 0);
++	printk("%s-end hp=0x%x\n",__func__,hp_pin);
++}
++
+ static void alc225_init(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
+ 	bool hp1_pin_sense, hp2_pin_sense;
+ 
++	alc225_hp_init(codec);
+ 	if (!hp_pin)
+ 		return;
+ 
+@@ -3262,6 +3279,7 @@ static void alc225_init(struct hda_codec
+ 
+ 	alc_update_coef_idx(codec, 0x4a, 3 << 10, 0);
+ 	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight power */
++	printk("%s hp=0x%x\n",__func__,hp_pin);
+ }
+
+-----Original Message-----
+From: Takashi Iwai <tiwai@suse.de> 
+Sent: Tuesday, January 15, 2019 3:54 PM
+To: Kailang <kailang@realtek.com>
+Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+Subject: Re: hp_pin was NULL value
+
+On Tue, 15 Jan 2019 08:43:40 +0100,
+Kailang wrote:
 > 
->>>   
->>>   		mck_rate = sck_rate;
->>>   	} else {
->>> @@ -1383,6 +1389,16 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->>>   	return 0;
->>>   }
->>>   
->>> +static int pcm512x_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
->>> +{
->>> +	struct snd_soc_component *component = dai->component;
->>> +	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
->>> +
->>> +	pcm512x->bclk_ratio = ratio;
->> You should perhaps check if (ratio >= 1 && ratio <= 256) prior to
->> accepting a divider that can't be programmed? But maybe that's enforced
->> somewhere else? And perhaps the sanity check should be even stricter?
-> Yes it should be stricter with a power of two only. I tried really hard 
-> to make this codec work with ratios of 50 (and a 19.2 MHz mclk) on an Up 
-> board and it's just not possible, probably not supported by hardware.
+> 
+> No, it not expected.
+> It will enter two times after boot ready.
+> I think it could add a flag in alc225_hp_init(). 
+> To make sure it only excute one time. How do you think about?
 
-Disallowing anything but powers of two just because 50 doesn't work seems
-pretty wild. According to docs I think 48 should work just fine.
+Where was it called, actually?  The call of patch_ops.init is found in several places: once in snd_hda_codec_build_controls() just before creating controls (which is the boot time init), and at resume, alc269_resume().
 
-Section 8.3.2 Audio Data Interface page 16.
-http://www.ti.com/lit/ds/symlink/pcm5142.pdf
+And, as already explained, we have to call this at resume, because it's not guaranteed that it's been already called in the case of hibernation.
 
-Or?
 
-Cheers,
-Peter
+thanks,
+
+Takashi
+
+> 
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, January 15, 2019 2:37 PM
+> To: Kailang <kailang@realtek.com>
+> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: Re: hp_pin was NULL value
+> 
+> On Tue, 15 Jan 2019 03:31:33 +0100,
+> Kailang wrote:
+> > 
+> > Hi Takashi,
+> > 
+> > Could you receive this email?
+> > 
+> > BR,
+> > Kailang
+> > 
+> > -----Original Message-----
+> > From: Kailang
+> > Sent: Thursday, January 10, 2019 11:14 AM
+> > To: 'Takashi Iwai' <tiwai@suse.de>
+> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > Subject: RE: hp_pin was NULL value
+> > 
+> > Hi Takashi,
+> > 
+> > I simulate test your prefer function.
+> > I put alc225_hp_init() in alc225_init().
+> > If system boot ready, I write 1 to power_save of /sys/module/....
+> > The print message as below. It called two times until boot ready.
+> > If System enter to power save, play stream will wake up codec. It also call alc225_hp_init().
+> > 
+> > [   21.497524] alc225_init hp_pin=0x21
+> > [   21.497526] alc225_hp_init-s hp=0x21
+> > [   22.140076] alc225_hp_init-e hp=0x21
+> > [   22.183496] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
+> > [   22.184681] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
+> > [   22.186846] alc225_shutup hp_pin=0x21
+> > [   22.187831] input: HDA Intel Line Out as /devices/pci0000:00/0000:00:1b.0/sound/card0/input5
+> > [   22.188055] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
+> > [   22.205104] alc225_init hp_pin=0x21
+> > [   22.205108] alc225_hp_init-s hp=0x21
+> > [   22.852123] alc225_hp_init-e hp=0x21
+> > [   22.894772] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
+> > ############  Boot ready ############## [  116.832084] alc225_shutup
+> > hp_pin=0x21  ==> echo 1 to power_save
+> > [  120.002582] alc225_init hp_pin=0x21     ==> play system sound
+> > [  120.002586] alc225_hp_init-s hp=0x21 [  120.644128] 
+> > alc225_hp_init-e hp=0x21
+> 
+> It wasn't clear to me whether you meant this as a success or a failure...  Did the patch work as expected, no?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ------Please consider the environment before printing this e-mail.
+> 
