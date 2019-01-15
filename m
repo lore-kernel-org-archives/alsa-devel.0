@@ -1,24 +1,23 @@
-From: Peter Rosin <peda@axentia.se>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
 Subject: Re: [RFC PATCH] ASoC: pcm512x: Implement the
-	set_bclk_ratio interface
-Date: Tue, 15 Jan 2019 12:11:23 +0000
-Message-ID: <2d11c9f2-5938-c6d8-1933-2f5cf86e3838@axentia.se>
+ set_bclk_ratio interface
+Date: Tue, 15 Jan 2019 14:19:12 +0200
+Message-ID: <CAHEwa0BuAmVUGoJxQs_DyohrKZ+CTDkZWT1MqUD8miuxsPo2TA@mail.gmail.com>
 References: <900a4f74-9312-58d8-a5b3-035305fe184e@gmail.com>
  <4b8ce92c-9239-3a8a-f061-eb114050bd3a@axentia.se>
- <CAHEwa0BmUedqYR0Q0RtHtsHCqHCggtK75uY3hDcDzqAM8Qu4ZQ@mail.gmail.com>
- <9b479bdb-2c29-86ad-1ea4-9f76b9b47f7b@axentia.se>
- <CAHEwa0BhKp2hqgBR+ZrCmZ92LCxhsWd-8Pjc1pQ7HJ4==jz6WA@mail.gmail.com>
+ <7486f4cb-10c9-26ce-83d8-cb346e33e379@linux.intel.com>
+ <0a5918e1-aaf1-2b22-0f2a-4aaa62d1cd3e@axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr140129.outbound.protection.outlook.com [40.107.14.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E5E526743C
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 13:11:25 +0100 (CET)
-In-Reply-To: <CAHEwa0BhKp2hqgBR+ZrCmZ92LCxhsWd-8Pjc1pQ7HJ4==jz6WA@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <1CF05C05B0AF00479066637E9C0A619E@eurprd02.prod.outlook.com>
+Received: from mail-it1-f195.google.com (mail-it1-f195.google.com
+ [209.85.166.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id C756426742B
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 13:19:25 +0100 (CET)
+Received: by mail-it1-f195.google.com with SMTP id p197so4089372itp.0
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 04:19:25 -0800 (PST)
+In-Reply-To: <0a5918e1-aaf1-2b22-0f2a-4aaa62d1cd3e@axentia.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,41 +27,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papavasiliou <dpapavas@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Peter Rosin <peda@axentia.se>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2019-01-15 12:11, Dimitris Papavasiliou wrote:
-> On Tue, Jan 15, 2019 at 10:06 AM Peter Rosin <peda@axentia.se> wrote:
->> ...and when double-checking that, this dai op is only ever called from
->> snd_soc_dai_set_bclk_ratio, and that function is in turn not called from
->> anywhere AFAICT. What's the point of this dai op anyway? Or, what am I
->> missing?
-> 
-> Well, my use for this, would be to allow the machine driver to call
-> snd_soc_dai_set_bclk_ratio, in order to explicitly set the frame
-> width.  This would allow it to use 32-bit frames for 24-bit data and
-> avoid the fractional dividers that would otherwise result.  Right now,
-> the machine driver (which lives in the Raspberry Pi kernel tree) uses
-> a workaround for this, that relies on a patch made to the CODEC driver
-> to half-support TDM slots, which hasn't be pushed upstream, and
-> wouldn't be accepted if it had, since it's essentially a hack.  You
-> can find more details here:
-> 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143507.html
-> 
-> What the intended use for the snd_soc_dai_set_bclk_ratio is, I'm not
-> so clear about, hence this RFC.
+On Tue, Jan 15, 2019 at 10:08 AM Peter Rosin <peda@axentia.se> wrote:
+>
+> On 2019-01-14 18:36, Pierre-Louis Bossart wrote:
+> >
+> >> You should perhaps check if (ratio >= 1 && ratio <= 256) prior to
+> >> accepting a divider that can't be programmed? But maybe that's enforced
+> >> somewhere else? And perhaps the sanity check should be even stricter?
+> > Yes it should be stricter with a power of two only. I tried really hard
+> > to make this codec work with ratios of 50 (and a 19.2 MHz mclk) on an Up
+> > board and it's just not possible, probably not supported by hardware.
+>
+> Disallowing anything but powers of two just because 50 doesn't work seems
+> pretty wild. According to docs I think 48 should work just fine.
+>
+> Section 8.3.2 Audio Data Interface page 16.
+> http://www.ti.com/lit/ds/symlink/pcm5142.pdf
+>
+> Or?
 
-I did some digging. The dai op was added in 3.13 (without users), then one
-user appeared in 3.19 (sound/soc/intel/boards/bytcr_rt5640.c) and another
-(presumably copy-pasted) in 4.5 (sound/soc/intel/boards/bytcr_rt5651.c).
-Both these users are suspect since neither the rt5640 nor the rt5651 codec
-have ever sported a set_bclk_ratio dai op, and presumably the boards have
-the named codecs on them. But what do I know...
+According to the datasheet[1], you can program any divider between 1
+and 256, via register 33 (page 80), but, as Peter points out, in the
+description of the audio data interface (page 15), only the values 32,
+48, 64, 128, 256 are mentioned as permissible.  So one approach would
+be to restrict the values accepted by the callback to this set.  Since
+the datasheet is not terribly clear on whether only these are allowed,
+and since the ratio is set explicitly in the machine driver, it could
+be argued that it would be preferable to allow all values that can be
+set in the register, to minimize the risk of needlessly rejecting
+valid configurations.
 
-The user added in 3.19 was removed for 4.9 and the other for 4.17, so
-that's why there are no upstream users at the moment.
-
-Cheers,
-Peter
+[1] http://www.ti.com/lit/ds/symlink/pcm5121.pdf
