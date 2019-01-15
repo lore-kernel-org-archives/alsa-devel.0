@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/14] ALSA: ppc: Remove superfluous
+Subject: [PATCH 09/14] ALSA: aoa: Remove superfluous
 	snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 17:21:49 +0100
-Message-ID: <20190115162155.6308-9-tiwai@suse.de>
+Date: Tue, 15 Jan 2019 17:21:50 +0100
+Message-ID: <20190115162155.6308-10-tiwai@suse.de>
 References: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E82726745A
+ by alsa0.perex.cz (Postfix) with ESMTP id 429E126745B
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:58 +0100 (CET)
 In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,20 +30,23 @@ call it in the PCM PM ops.  Let's remove them.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/ppc/pmac.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/aoa/soundbus/i2sbus/core.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index d692e4070167..6d420bd3ae17 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -1365,7 +1365,6 @@ void snd_pmac_suspend(struct snd_pmac *chip)
- 	snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
- 	if (chip->suspend)
- 		chip->suspend(chip);
--	snd_pcm_suspend_all(chip->pcm);
- 	spin_lock_irqsave(&chip->reg_lock, flags);
- 	snd_pmac_beep_stop(chip);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
+index c3f57a3fb1a5..33e82341c048 100644
+--- a/sound/aoa/soundbus/i2sbus/core.c
++++ b/sound/aoa/soundbus/i2sbus/core.c
+@@ -380,10 +380,6 @@ static int i2sbus_suspend(struct macio_dev* dev, pm_message_t state)
+ 	int err, ret = 0;
+ 
+ 	list_for_each_entry(i2sdev, &control->list, item) {
+-		/* Notify Alsa */
+-		/* Suspend PCM streams */
+-		snd_pcm_suspend_all(i2sdev->sound.pcm);
+-
+ 		/* Notify codecs */
+ 		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
+ 			err = 0;
 -- 
 2.20.1
