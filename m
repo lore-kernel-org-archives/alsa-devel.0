@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Make snd_soc_find_component()
-	more robust" to the asoc tree
-Date: Tue, 15 Jan 2019 00:07:12 +0000 (GMT)
-Message-ID: <20190115000712.AC545112349B@debutante.sirena.org.uk>
-References: <20190114233641.13375-1-broonie@kernel.org>
+From: Kailang <kailang@realtek.com>
+Subject: Re: hp_pin was NULL value
+Date: Tue, 15 Jan 2019 02:31:33 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184210B1@RTITMBSV02.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
+ <s5htviigoa5.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
+ <s5hlg3ux9x9.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8323D2670AC
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 01:07:14 +0100 (CET)
-In-Reply-To: <20190114233641.13375-1-broonie@kernel.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C50F22670AC
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 03:31:43 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +23,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, plai@codeaurora.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, srinivas.kandagatla@linaro.org, Rohit kumar <rohitkr@codeaurora.org>, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: core: Make snd_soc_find_component() more robust
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5a7b2aabc1aa0393f067d9325ada96fdf67f8cb7 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 14 Jan 2019 23:29:36 +0000
-Subject: [PATCH] ASoC: core: Make snd_soc_find_component() more robust
-
-There are some use cases where you're checking for a lot of things on a
-card and it makes sense that you might end up trying to call
-snd_soc_find_component() without either a name or an of_node.  Currently
-in that case we try to dereference the name and crash but it's more
-useful to allow the caller to just treat that as a case where we don't
-find anything, that error handling will already exist.
-
-Inspired by a patch from Ajit Pandey fixing some callers.
-
-Fixes: 8780cf1142a5 ("ASoC: soc-core: defer card probe until all component is added to list")
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index cdcc417c94ca..b680c673c553 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -742,7 +742,7 @@ static struct snd_soc_component *soc_find_component(
- 		if (of_node) {
- 			if (component->dev->of_node == of_node)
- 				return component;
--		} else if (strcmp(component->name, name) == 0) {
-+		} else if (name && strcmp(component->name, name) == 0) {
- 			return component;
- 		}
- 	}
--- 
-2.20.1
+SGkgVGFrYXNoaSwNCg0KQ291bGQgeW91IHJlY2VpdmUgdGhpcyBlbWFpbD8NCg0KQlIsDQpLYWls
+YW5nDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBLYWlsYW5nIA0KU2VudDog
+VGh1cnNkYXksIEphbnVhcnkgMTAsIDIwMTkgMTE6MTQgQU0NClRvOiAnVGFrYXNoaSBJd2FpJyA8
+dGl3YWlAc3VzZS5kZT4NCkNjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSA8YWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KU3ViamVjdDogUkU6IGhwX3BpbiB3YXMgTlVMTCB2YWx1
+ZQ0KDQpIaSBUYWthc2hpLA0KDQpJIHNpbXVsYXRlIHRlc3QgeW91ciBwcmVmZXIgZnVuY3Rpb24u
+DQpJIHB1dCBhbGMyMjVfaHBfaW5pdCgpIGluIGFsYzIyNV9pbml0KCkuDQpJZiBzeXN0ZW0gYm9v
+dCByZWFkeSwgSSB3cml0ZSAxIHRvIHBvd2VyX3NhdmUgb2YgL3N5cy9tb2R1bGUvLi4uLg0KVGhl
+IHByaW50IG1lc3NhZ2UgYXMgYmVsb3cuIEl0IGNhbGxlZCB0d28gdGltZXMgdW50aWwgYm9vdCBy
+ZWFkeS4NCklmIFN5c3RlbSBlbnRlciB0byBwb3dlciBzYXZlLCBwbGF5IHN0cmVhbSB3aWxsIHdh
+a2UgdXAgY29kZWMuIEl0IGFsc28gY2FsbCBhbGMyMjVfaHBfaW5pdCgpLg0KDQpbICAgMjEuNDk3
+NTI0XSBhbGMyMjVfaW5pdCBocF9waW49MHgyMQ0KWyAgIDIxLjQ5NzUyNl0gYWxjMjI1X2hwX2lu
+aXQtcyBocD0weDIxDQpbICAgMjIuMTQwMDc2XSBhbGMyMjVfaHBfaW5pdC1lIGhwPTB4MjENClsg
+ICAyMi4xODM0OTZdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogSGVhZHNldCBq
+YWNrIHNldCB0byB1bnBsdWdnZWQgbW9kZS4NClsgICAyMi4xODQ2ODFdIHNuZF9oZGFfY29kZWNf
+cmVhbHRlayBoZGF1ZGlvQzBEMjogSGVhZHNldCBqYWNrIHNldCB0byB1bnBsdWdnZWQgbW9kZS4N
+ClsgICAyMi4xODY4NDZdIGFsYzIyNV9zaHV0dXAgaHBfcGluPTB4MjENClsgICAyMi4xODc4MzFd
+IGlucHV0OiBIREEgSW50ZWwgTGluZSBPdXQgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAw
+OjFiLjAvc291bmQvY2FyZDAvaW5wdXQ1DQpbICAgMjIuMTg4MDU1XSBpbnB1dDogSERBIEludGVs
+IEhlYWRwaG9uZSBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJk
+MC9pbnB1dDYNClsgICAyMi4yMDUxMDRdIGFsYzIyNV9pbml0IGhwX3Bpbj0weDIxDQpbICAgMjIu
+MjA1MTA4XSBhbGMyMjVfaHBfaW5pdC1zIGhwPTB4MjENClsgICAyMi44NTIxMjNdIGFsYzIyNV9o
+cF9pbml0LWUgaHA9MHgyMQ0KWyAgIDIyLjg5NDc3Ml0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhk
+YXVkaW9DMEQyOiBIZWFkc2V0IGphY2sgc2V0IHRvIHVucGx1Z2dlZCBtb2RlLg0KIyMjIyMjIyMj
+IyMjICBCb290IHJlYWR5ICMjIyMjIyMjIyMjIyMjDQpbICAxMTYuODMyMDg0XSBhbGMyMjVfc2h1
+dHVwIGhwX3Bpbj0weDIxICA9PT4gZWNobyAxIHRvIHBvd2VyX3NhdmUNClsgIDEyMC4wMDI1ODJd
+IGFsYzIyNV9pbml0IGhwX3Bpbj0weDIxICAgICA9PT4gcGxheSBzeXN0ZW0gc291bmQNClsgIDEy
+MC4wMDI1ODZdIGFsYzIyNV9ocF9pbml0LXMgaHA9MHgyMQ0KWyAgMTIwLjY0NDEyOF0gYWxjMjI1
+X2hwX2luaXQtZSBocD0weDIxDQoNCk1hbnkgdGhhbmtzLg0KQlIsDQpLYWlsYW5nDQoNCi0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+DQpTZW50OiBXZWRuZXNkYXksIEphbnVhcnkgOSwgMjAxOSA5OjAxIFBNDQpUbzogS2FpbGFuZyA8
+a2FpbGFuZ0ByZWFsdGVrLmNvbT4NCkNjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSA8
+YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KU3ViamVjdDogUmU6IGhwX3BpbiB3YXMgTlVM
+TCB2YWx1ZQ0KDQpPbiBXZWQsIDA5IEphbiAyMDE5IDEzOjMyOjUxICswMTAwLA0KS2FpbGFuZyB3
+cm90ZToNCj4gDQo+IA0KPiBIaSBUYWthc2hpLA0KPiANCj4gDQo+IE9LISBJIHdpbGwgdGVzdCBp
+dC4gDQo+IFNvLCBpZiBBTEMyMjUgbmVlZCB0byBkbyB0aGlzLiBJIHdpbGwgYXNzaWduZWQgaXQg
+dG8gYWxjMjI1X2luaXQoKS4gUmlnaHQ/DQo+IA0KPiA+PkJ1dCBBTEMyOTQgKGFuZCBBTEM3MDAp
+IGhhdmUgbm8gaW5pdF9ob29rLCBzbyBmYXI/DQo+IA0KPiBzcGVjLT5pbml0X2hvb2sgPSBhbGNf
+ZGVmYXVsdF9pbml0Ow0KPiBJdCBoYXMgZGVmYXVsdCBpbml0X2hvb2suIEkgdXNlIHRoaXMgdG8g
+ZG8gc3RhbmRhcmQgaGVhZHBob25lIGRlcG9wIGZ1bmN0aW9uLg0KDQpBaCwgT0suICBUaGVuIHdl
+IG5lZWQgYSBjYWxsIGNoYWluIGZyb20gYWxjMjk0X2luaXQoKSwNCg0Kc3RhdGljIHZvaWQgYWxj
+Mjk0X2luaXQoKQ0Kew0KCWNvZWYoKTsNCglhbGMyOTRfaHBfaW5pdCgpOw0KCWFsY19kZWZhdWx0
+X2luaXQoKTsNCn0NCg0KDQp0aGFua3MsDQoNClRha2FzaGkNCg0KPiANCj4gQlIsDQo+IEthaWxh
+bmcNCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiDlvp46IFRh
+a2FzaGkgSXdhaSBbdGl3YWlAc3VzZS5kZV0NCj4g5a+E5Lu25pel5pyfOiAyMDE55bm0MeaciDnm
+l6Ug5LiL5Y2IIDA3OjI5DQo+IOiHszogS2FpbGFuZw0KPiDlia/mnKw6ICAoYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnKQ0KPiDkuLvml6g6IFJlOiBocF9waW4gd2FzIE5VTEwgdmFsdWUNCj4g
+DQo+IE9uIFdlZCwgMDkgSmFuIDIwMTkgMTI6MTk6MTQgKzAxMDAsDQo+IEthaWxhbmcgd3JvdGU6
+DQo+ID4NCj4gPiBIaSBUYWthc2hpLA0KPiA+DQo+ID4gQnV0IHNwZWMtPmluaXRfaG9vayB3aWxs
+IGNhbGwgYXQgcmVzdW1lIGJhY2suDQo+ID4gYWxjMjk0X2hwX2luaXQoKSBmdW5jdGlvbiBqdXN0
+IG5lZWQgdG8gY2FsbCBhdCBvbmUgdGltZS4NCj4gDQo+IEFzIGFscmVhZHkgbWVudGlvbmVkLCBl
+dmVuIGlmIGl0IGhhcyB0byBiZSBjYWxsZWQgb25seSBvbmNlIGFuZCBkb2VzIA0KPiBzb21ldGhp
+bmcgZm9yIHRoZSBoYXJkd2FyZSwgaXQnbGwgYmUgbWlzc2luZyBpZiB0aGUgbWFjaGluZSBnb2Vz
+IA0KPiBoaWJlcm5hdGUgKFM0KSBhbmQgcmVzdW1lLiAgSW4gUzQsIHRoZSBtYWNoaW5lIGJvb3Rz
+IGZyb20gc2NyYXRjaCBhbmQgDQo+IHN3aXRjaGVzIGltbWVkaWF0ZWx5IHRvIHRoZSBzYXZlZCBp
+bWFnZSB0aGF0IGNhbGxzIHJlc3VtZSBjYWxsYmFjay4NCj4gV2hhdCdzIHdvcnNlIGZvciB1cyBp
+cyB0aGF0IHRoaXMgc3dpdGNoIGhhcHBlbnMgdXN1YWxseSBpbiBpbml0cmQsIA0KPiBpLmUuIGJl
+Zm9yZSB0aGUgc291bmQgZHJpdmVyIGdldHMgbG9hZGVkLiAgU28sIHRoZSBtYWNoaW5lIGdvZXMg
+dG8gDQo+IHJlc3VtZSB3aXRob3V0IHByb2Nlc3NpbmcgYWxjMjk0X2hwX2luaXQoKS4NCj4gDQo+
+IElPVywgZXZlbiBpZiBpdCdzIG5lZWRlZCBvbmx5IG9uY2UsIHlvdSdsbCBoYXZlIHRvIGNhbGwg
+aXQgYXQgcmVzdW1lIA0KPiB1bmxlc3MgaXQgaGFzIGEgc2lnbmlmaWNhbnQgZHJhd2JhY2suDQo+
+IA0KPiAoU3RyaWN0bHkgc3BlYWtpbmcsIHdlIG1heSB1c2UgdGhhdyBQTSBjYWxsYmFjaywgYnV0
+IHRoZSBIRC1hdWRpbyANCj4gY29kZWMgZHJpdmVyIGRvZXNuJ3QgdXNlIGl0LCBzbyB0aGVyZSBp
+cyBvbmx5IHJlc3VtZSBjYWxsYmFjayBmb3INCj4gIG5vdy4pDQo+IA0KPiA+IEFuZCBpdCBuZWVk
+IHRvIGNhbGwgaXQgYmVmb3JlIGNhbGwgc3BlYy0+aW5pdF9ob29rLg0KPiANCj4gQnV0IEFMQzI5
+NCAoYW5kIEFMQzcwMCkgaGF2ZSBubyBpbml0X2hvb2ssIHNvIGZhcj8NCj4gDQo+ID4gQUxDMjI1
+IGFsc28gbmVlZCB0byBjYWxsIHNpbWlsYXIgcHJvY2VkdXJlLiBJIHdpbGwgcG9zdCBpdCBsYXRl
+ci4NCj4gDQo+IE9LLCB0aGFua3MuDQo+IA0KPiANCj4gVGFrYXNoaQ0KPiANCj4gPg0KPiA+IEJS
+LA0KPiA+IEthaWxhbmcNCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fDQo+ID4g5b6eOiBUYWthc2hpIEl3YWkgW3Rpd2FpQHN1c2UuZGVdDQo+ID4g5a+E5Lu25pel
+5pyfOiAyMDE55bm0MeaciDnml6Ug5LiL5Y2IIDA1OjU2DQo+ID4g6IezOiBLYWlsYW5nDQo+ID4g
+5Ymv5pysOiAgKGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZykNCj4gPiDkuLvml6g6IFJlOiBo
+cF9waW4gd2FzIE5VTEwgdmFsdWUNCj4gPg0KPiA+IE9uIFdlZCwgMDkgSmFuIDIwMTkgMTA6NDU6
+MjUgKzAxMDAsDQo+ID4gS2FpbGFuZyB3cm90ZToNCj4gPiA+DQo+ID4gPiA+PkJ1dCB0aGlzIG1h
+ZGUgbWUgd29uZGVyIHdoZXRoZXIgd2UgZG9uJ3QgbmVlZCB0byBjYWxsIHRoaXMgZnVuY3Rpb24g
+YXQgcmVzdW1lIGFzIHdlbGw/ICBDdXJyZW50bHkgaXQncyBjYWxsZWQgb25seSBhdCBwcm9iaW5n
+Lg0KPiA+ID4gWWVzLCBpdCBvbmx5IGNhbGwgYXQgcHJvYmluZy4gSnVzdCBuZWVkIHRvIGNhbGwg
+aXQgYXQgYm9vdCB0aW1lLg0KPiA+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+ID4gPiBGcm9tOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQo+ID4gPiBTZW50OiBX
+ZWRuZXNkYXksIEphbnVhcnkgOSwgMjAxOSA1OjQzIFBNDQo+ID4gPiBUbzogS2FpbGFuZyA8a2Fp
+bGFuZ0ByZWFsdGVrLmNvbT4NCj4gPiA+IENjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+KSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KPiA+ID4gU3ViamVjdDogUmU6IGhwX3Bp
+biB3YXMgTlVMTCB2YWx1ZQ0KPiA+ID4NCj4gPiA+IE9uIFdlZCwgMDkgSmFuIDIwMTkgMTA6MzE6
+MzMgKzAxMDAsIEthaWxhbmcgd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IEhpIFRha2FzaGksDQo+
+ID4gPiA+DQo+ID4gPiA+IENvdWxkIEkgbW92ZSB0aGUgYWxjMjk0X2hwX2luaXQoY29kZWMpIHRv
+IGJlbG93IGxpbmUuDQo+ID4gPiA+IEJlY2F1c2UgaHBfcGluID0gc3BlYy0+Z2VuLmF1dG9jZmcu
+aHBfcGluc1swXSB3YXMgbnVsbCB2YWx1ZSB3aGVuIGFsYzI5NF9ocF9pbml0KGNvZGVjKSBhdCBv
+cmlnaW5hbCBsaW5lLg0KPiA+ID4gPiBPciBtb3ZlIGFsYzI2OV9wYXJzZV9hdXRvX2NvbmZpZygp
+IHVwd2FyZC4NCj4gPiA+DQo+ID4gPiBJdCBsb29rcyBPSyB0byBtZS4gIEJ1dCB0aGlzIG1hZGUg
+bWUgd29uZGVyIHdoZXRoZXIgd2UgZG9uJ3QgbmVlZCB0byBjYWxsIHRoaXMgZnVuY3Rpb24gYXQg
+cmVzdW1lIGFzIHdlbGw/ICBDdXJyZW50bHkgaXQncyBjYWxsZWQgb25seSBhdCBwcm9iaW5nLg0K
+PiA+DQo+ID4gSHJtLCBidXQgaXQgbW9kaWZpZXMgbWFueSBDT0VGcywgYW5kIGFyZSB0aGVzZSBh
+bGwgcHJlc2VydmVkIHdpdGggDQo+ID4gc3VzcGVuZD8gIEZvciBleGFtcGxlLCB0aGVyZSBpcyBh
+bHNvIGhpYmVybmF0aW9uIChTNCksIHdoaWNoIGlzIGEgDQo+ID4gc3dpdGNoIGZyb20gdGhlIGJv
+b3Qgd2l0aG91dCB0aGUgYXVkaW8gZHJpdmVyIGluaXRpYWxpemF0aW9uLiAgVGhlbiANCj4gPiB3
+ZSdsbCByZXN1bWUgZnJvbSB0aGUgdW5pbml0aWFsaXplZCBzdGF0ZS4gIEkgZ3Vlc3Mgb3RoZXIg
+Q09FRiANCj4gPiBjaGFuZ2VzIGluIHRoYXQgYXJlYSBzaG91bGQgYmUgbW92ZWQgYXMgdGhlIGFk
+ZGl0aW9uYWwgaW5pdCBob29rIGFzIHdlbGwuDQo+ID4NCj4gPiBBY3R1YWxseSwgaWYgd2UgZG8g
+Y2FsbCB0aGlzIGF0IHJlc3VtZSwgdGhlIGNoYW5nZSB3b3VsZCBiZSBlYXNpZXIsIA0KPiA+IGEg
+cGF0Y2ggbGlrZSBiZWxvdy4NCj4gPg0KPiA+DQo+ID4gdGhhbmtzLA0KPiA+DQo+ID4gVGFrYXNo
+aQ0KPiA+DQo+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMNCj4gPiArKysg
+Yi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYw0KPiA+IEBAIC03NDA0LDYgKzc0MDQsMjAg
+QEAgc3RhdGljIHZvaWQgYWxjMjk0X2hwX2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+
+ID4gICAgICAgICBtc2xlZXAoNTApOw0KPiA+ICB9DQo+ID4NCj4gPiArc3RhdGljIHZvaWQgYWxj
+Mjk0X2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpIHsNCj4gPiArICAgICAgIC8qIFVBSiBN
+SUMgVnJlZiBjb250cm9sIGJ5IHZlcmIgKi8NCj4gPiArICAgICAgIGFsY191cGRhdGVfY29lZl9p
+ZHgoY29kZWMsIDB4NmIsIDB4MDAxOCwgKDE8PDQpIHwgKDE8PDMpKTsNCj4gPiArICAgICAgIGFs
+YzI5NF9ocF9pbml0KGNvZGVjKTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgYWxj
+NzAwX2luaXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpIHsNCj4gPiArICAgICAgIC8qIENvbWJv
+IGphY2sgYXV0byB0cmlnZ2VyIGNvbnRyb2wgKi8NCj4gPiArICAgICAgIGFsY191cGRhdGVfY29l
+Zl9pZHgoY29kZWMsIDB4NGEsIDEgPDwgMTUsIDApOw0KPiA+ICsgICAgICAgYWxjMjk0X2hwX2lu
+aXQoY29kZWMpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICAvKg0KPiA+ICAgKi8NCj4gPiAgc3RhdGlj
+IGludCBwYXRjaF9hbGMyNjkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpIEBAIC03NTI4LDggKzc1
+NDIsNyANCj4gPiBAQCBzdGF0aWMgaW50IHBhdGNoX2FsYzI2OShzdHJ1Y3QgaGRhX2NvZGVjICpj
+b2RlYykNCj4gPiAgICAgICAgIGNhc2UgMHgxMGVjMDI5NDoNCj4gPiAgICAgICAgICAgICAgICAg
+c3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2OV9UWVBFX0FMQzI5NDsNCj4gPiAgICAgICAgICAg
+ICAgICAgc3BlYy0+Z2VuLm1peGVyX25pZCA9IDA7IC8qIEFMQzJ4NCBkb2VzIG5vdCBoYXZlIGFu
+eSBsb29wYmFjayBtaXhlciBwYXRoICovDQo+ID4gLSAgICAgICAgICAgICAgIGFsY191cGRhdGVf
+Y29lZl9pZHgoY29kZWMsIDB4NmIsIDB4MDAxOCwgKDE8PDQpIHwgKDE8PDMpKTsgLyogVUFKIE1J
+QyBWcmVmIGNvbnRyb2wgYnkgdmVyYiAqLw0KPiA+IC0gICAgICAgICAgICAgICBhbGMyOTRfaHBf
+aW5pdChjb2RlYyk7DQo+ID4gKyAgICAgICAgICAgICAgIHNwZWMtPmluaXRfaG9vayA9IGFsYzI5
+NF9pbml0Ow0KPiA+ICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiAgICAgICAgIGNhc2UgMHgx
+MGVjMDMwMDoNCj4gPiAgICAgICAgICAgICAgICAgc3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2
+OV9UWVBFX0FMQzMwMDsgQEAgLTc1NDAsOA0KPiA+ICs3NTUzLDcgQEAgc3RhdGljIGludCBwYXRj
+aF9hbGMyNjkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ID4gICAgICAgICBjYXNlIDB4MTBl
+YzA3MDM6DQo+ID4gICAgICAgICAgICAgICAgIHNwZWMtPmNvZGVjX3ZhcmlhbnQgPSBBTEMyNjlf
+VFlQRV9BTEM3MDA7DQo+ID4gICAgICAgICAgICAgICAgIHNwZWMtPmdlbi5taXhlcl9uaWQgPSAw
+OyAvKiBBTEM3MDAgZG9lcyBub3QgaGF2ZSBhbnkgbG9vcGJhY2sgbWl4ZXIgcGF0aCAqLw0KPiA+
+IC0gICAgICAgICAgICAgICBhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDRhLCAxIDw8IDE1
+LCAwKTsgLyogQ29tYm8gamFjayBhdXRvIHRyaWdnZXIgY29udHJvbCAqLw0KPiA+IC0gICAgICAg
+ICAgICAgICBhbGMyOTRfaHBfaW5pdChjb2RlYyk7DQo+ID4gKyAgICAgICAgICAgICAgIHNwZWMt
+PmluaXRfaG9vayA9IGFsYzcwMF9pbml0Ow0KPiA+ICAgICAgICAgICAgICAgICBicmVhazsNCj4g
+Pg0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4NCj4gPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhl
+IGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
