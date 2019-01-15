@@ -1,8 +1,8 @@
 From: "kernelci.org bot" <bot@kernelci.org>
-Subject: next/master boot bisection: next-20190115 on
- sun8i-h2-plus-libretech-all-h3-cc
-Date: Tue, 15 Jan 2019 02:17:41 -0800 (PST)
-Message-ID: <5c3db345.1c69fb81.49892.a0b3@mx.google.com>
+Subject: next/pending-fixes boot bisection: v5.0-rc2-361-g08b435ee366b on
+ sun8i-h3-libretech-all-h3-cc
+Date: Tue, 15 Jan 2019 02:22:11 -0800 (PST)
+Message-ID: <5c3db453.1c69fb81.da3dd.d180@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
@@ -20,16 +20,19 @@ List-Id: alsa-devel@alsa-project.org
 * Hope this helps!                                              *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-next/master boot bisection: next-20190115 on sun8i-h2-plus-libretech-all-h3=
--cc
+next/pending-fixes boot bisection: v5.0-rc2-361-g08b435ee366b on sun8i-h3-l=
+ibretech-all-h3-cc
 
 Summary:
-  Start:      5aa6589e17bd Add linux-next specific files for 20190115
-  Details:    https://kernelci.org/boot/id/5c3d783659b51451106edd6c
-  Plain log:  https://storage.kernelci.org//next/master/next-20190115/arm/s=
-unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.txt
-  HTML log:   https://storage.kernelci.org//next/master/next-20190115/arm/s=
-unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.html
+  Start:      08b435ee366b Merge remote-tracking branch 'drm-misc-fixes/for=
+-linux-next-fixes'
+  Details:    https://kernelci.org/boot/id/5c3d795559b51455d36edd69
+  Plain log:  https://storage.kernelci.org//next/pending-fixes/v5.0-rc2-361=
+-g08b435ee366b/arm/sunxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all=
+-h3-cc.txt
+  HTML log:   https://storage.kernelci.org//next/pending-fixes/v5.0-rc2-361=
+-g08b435ee366b/arm/sunxi_defconfig/lab-baylibre/boot-sun8i-h3-libretech-all=
+-h3-cc.html
   Result:     8780cf1142a5 ASoC: soc-core: defer card probe until all compo=
 nent is added to list
 
@@ -41,8 +44,8 @@ Parameters:
   Tree:       next
   URL:        http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
 t.git
-  Branch:     master
-  Target:     sun8i-h2-plus-libretech-all-h3-cc
+  Branch:     pending-fixes
+  Target:     sun8i-h3-libretech-all-h3-cc
   CPU arch:   arm
   Lab:        lab-baylibre
   Config:     sunxi_defconfig
@@ -126,42 +129,36 @@ git bisect start
 # good: [3719876809e745b9db5293d418600c194bbf5c23] sbitmap: Protect swap_lo=
 ck from softirqs
 git bisect good 3719876809e745b9db5293d418600c194bbf5c23
-# bad: [5aa6589e17bd4dbc1856e37281f00a290d733ab0] Add linux-next specific f=
-iles for 20190115
-git bisect bad 5aa6589e17bd4dbc1856e37281f00a290d733ab0
-# bad: [f2dd4e3054741e22c4c97c8a0fa05faa7239d60a] Merge remote-tracking bra=
-nch 'crypto/master'
-git bisect bad f2dd4e3054741e22c4c97c8a0fa05faa7239d60a
-# bad: [3ba858cbc004b32f8767d295b9b566eb0381da0c] Merge remote-tracking bra=
-nch 'qcom/for-next'
-git bisect bad 3ba858cbc004b32f8767d295b9b566eb0381da0c
-# bad: [4cc2339ea8900debf88333934fa9b1dbc96ee2aa] Merge remote-tracking bra=
-nch 'btrfs-fixes/next-fixes'
-git bisect bad 4cc2339ea8900debf88333934fa9b1dbc96ee2aa
-# good: [259764fd4e5b47aedd6317d2edf5d813333909c5] Merge remote-tracking br=
-anch 'net/master'
-git bisect good 259764fd4e5b47aedd6317d2edf5d813333909c5
-# bad: [29568b4049ff4ef23ce0a2dd46cbaed94b589c78] Merge remote-tracking bra=
-nch 'usb-serial-fixes/usb-linus'
-git bisect bad 29568b4049ff4ef23ce0a2dd46cbaed94b589c78
-# good: [798729dc036d5bb384e24bb48af5c9ea6554d945] Merge remote-tracking br=
-anch 'sound-current/for-linus'
-git bisect good 798729dc036d5bb384e24bb48af5c9ea6554d945
-# bad: [d9c51542207a29b7b06c11f1085a1e3b8eb24f07] Merge branch 'asoc-5.0' i=
-nto asoc-linus
-git bisect bad d9c51542207a29b7b06c11f1085a1e3b8eb24f07
-# good: [678e2b44c8e3fec3afc7202f1996a4500a50be93] ALSA: compress: prevent =
-potential divide by zero bugs
-git bisect good 678e2b44c8e3fec3afc7202f1996a4500a50be93
-# good: [667e9334fa64da2273e36ce131b05ac9e47c5769] ASoC: tlv320aic32x4: Ker=
-nel OOPS while entering DAPM standby mode
-git bisect good 667e9334fa64da2273e36ce131b05ac9e47c5769
-# bad: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-core: defer car=
-d probe until all component is added to list
-git bisect bad 8780cf1142a59568a3aa77959cbd76b2edb6fd81
+# bad: [08b435ee366bab63250c375ffea3c94cb02fcd93] Merge remote-tracking bra=
+nch 'drm-misc-fixes/for-linux-next-fixes'
+git bisect bad 08b435ee366bab63250c375ffea3c94cb02fcd93
+# good: [f80eb2d45c4e34750337d1210a78bfe2ebf43b73] Merge remote-tracking br=
+anch 'ipsec/master'
+git bisect good f80eb2d45c4e34750337d1210a78bfe2ebf43b73
+# bad: [e242412b491b4e34643f82c6f422e964beb81704] Merge remote-tracking bra=
+nch 'input-current/for-linus'
+git bisect bad e242412b491b4e34643f82c6f422e964beb81704
+# bad: [eb1c2383c8b929fcc5a56f5698ff3fe3d0ec54e6] Merge remote-tracking bra=
+nch 'sound-asoc-fixes/for-linus'
+git bisect bad eb1c2383c8b929fcc5a56f5698ff3fe3d0ec54e6
+# bad: [04eb1efcd614d6f067b76a355b3a3599667959dc] ASoC: soc-core: Hold clie=
+nt_mutex around soc_init_dai_link()
+git bisect bad 04eb1efcd614d6f067b76a355b3a3599667959dc
+# good: [a41d9dbf5dac5b6a1283ee8001f22807d18352ea] ASoC: qdsp6: q6asm-dai: =
+Fix a small memory leak
+git bisect good a41d9dbf5dac5b6a1283ee8001f22807d18352ea
+# good: [6175471755075d256c1c654151fc1cad183c1e33] ASoC: ti: davinci-mcasp:=
+ Move context save/restore to runtime_pm callbacks
+git bisect good 6175471755075d256c1c654151fc1cad183c1e33
 # good: [44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661] ASoC: atom: fix a missin=
 g check of snd_pcm_lib_malloc_pages
 git bisect good 44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661
+# bad: [239b8b34a856777e562373ae0de605536a7ccade] ASoC: Intel: Boards: move=
+ the codec PLL configuration to _init
+git bisect bad 239b8b34a856777e562373ae0de605536a7ccade
+# bad: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-core: defer car=
+d probe until all component is added to list
+git bisect bad 8780cf1142a59568a3aa77959cbd76b2edb6fd81
 # first bad commit: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-co=
 re: defer card probe until all component is added to list
 ---------------------------------------------------------------------------=
