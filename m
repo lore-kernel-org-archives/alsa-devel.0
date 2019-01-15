@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: change snprintf to scnprintf for
-	possible overflow" to the asoc tree
-Date: Tue, 15 Jan 2019 19:08:22 +0000 (GMT)
-Message-ID: <20190115190822.938E91127848@debutante.sirena.org.uk>
+Subject: Applied "ASoC: core: Don't defer probe on optional,
+	NULL components" to the asoc tree
+Date: Tue, 15 Jan 2019 19:08:26 +0000 (GMT)
+Message-ID: <20190115190826.48D6C1127848@debutante.sirena.org.uk>
+References: <20190115165107.5551-1-hias@horus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CAF6D266ABE
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 20:08:23 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 295E926746C
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 20:08:27 +0100 (CET)
+In-Reply-To: <20190115165107.5551-1-hias@horus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Silvio Cesare <silvio.cesare@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Greg KH <greg@kroah.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>, Dan Carpenter <dan.carpenter@oracle.com>
+To: Matthias Reichl <hias@horus.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Ajit Pandey <ajitp@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: change snprintf to scnprintf for possible overflow
+   ASoC: core: Don't defer probe on optional, NULL components
 
 has been applied to the asoc tree at
 
@@ -52,83 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From e581e151e965bf1f2815dd94620b638fec4d0a7e Mon Sep 17 00:00:00 2001
-From: Silvio Cesare <silvio.cesare@gmail.com>
-Date: Sat, 12 Jan 2019 16:28:43 +0100
-Subject: [PATCH] ASoC: dapm: change snprintf to scnprintf for possible
- overflow
+>From 2833548ecbb385a289124077ab4d812258a867d5 Mon Sep 17 00:00:00 2001
+From: Matthias Reichl <hias@horus.com>
+Date: Tue, 15 Jan 2019 17:51:07 +0100
+Subject: [PATCH] ASoC: core: Don't defer probe on optional, NULL components
 
-Change snprintf to scnprintf. There are generally two cases where using
-snprintf causes problems.
+cpu and platform are optional components in DAI links. For example
+codec-codec links usually have no platform set.
 
-1) Uses of size += snprintf(buf, SIZE - size, fmt, ...)
-In this case, if snprintf would have written more characters than what the
-buffer size (SIZE) is, then size will end up larger than SIZE. In later
-uses of snprintf, SIZE - size will result in a negative number, leading
-to problems. Note that size might already be too large by using
-size = snprintf before the code reaches a case of size += snprintf.
+Call snd_soc_find_component only if the name or of_node of
+a cpu or platform is set. Otherwise it will return NULL and
+soc_init_dai_link bails out immediately with -EPROBE_DEFER,
+meaning registering a card with NULL cpu or platform in DAI links
+can never succeed.
 
-2) If size is ultimately used as a length parameter for a copy back to user
-space, then it will potentially allow for a buffer overflow and information
-disclosure when size is greater than SIZE. When the size is used to index
-the buffer directly, we can have memory corruption. This also means when
-size = snprintf... is used, it may also cause problems since size may become
-large.  Copying to userspace is mitigated by the HARDENED_USERCOPY kernel
-configuration.
+Fixes: 8780cf1142a5 ("ASoC: soc-core: defer card probe until all component is added to list")
 
-The solution to these issues is to use scnprintf which returns the number of
-characters actually written to the buffer, so the size variable will never
-exceed SIZE.
-
-Signed-off-by: Silvio Cesare <silvio.cesare@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Greg KH <greg@kroah.com>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Matthias Reichl <hias@horus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/soc-core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a5178845065b..2c4c13419539 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2019,19 +2019,19 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 		out = is_connected_output_ep(w, NULL, NULL);
- 	}
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b680c673c553..aae450ba4f08 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1135,7 +1135,8 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ 	 * Defer card registartion if platform dai component is not added to
+ 	 * component list.
+ 	 */
+-	if (!soc_find_component(link->platform->of_node, link->platform->name))
++	if ((link->platform->of_node || link->platform->name) &&
++	    !soc_find_component(link->platform->of_node, link->platform->name))
+ 		return -EPROBE_DEFER;
  
--	ret = snprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
-+	ret = scnprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
- 		       w->name, w->power ? "On" : "Off",
- 		       w->force ? " (forced)" : "", in, out);
+ 	/*
+@@ -1154,7 +1155,8 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ 	 * Defer card registartion if cpu dai component is not added to
+ 	 * component list.
+ 	 */
+-	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
++	if ((link->cpu_of_node || link->cpu_name) &&
++	    !soc_find_component(link->cpu_of_node, link->cpu_name))
+ 		return -EPROBE_DEFER;
  
- 	if (w->reg >= 0)
--		ret += snprintf(buf + ret, PAGE_SIZE - ret,
-+		ret += scnprintf(buf + ret, PAGE_SIZE - ret,
- 				" - R%d(0x%x) mask 0x%x",
- 				w->reg, w->reg, w->mask << w->shift);
- 
--	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
- 
- 	if (w->sname)
--		ret += snprintf(buf + ret, PAGE_SIZE - ret, " stream %s %s\n",
-+		ret += scnprintf(buf + ret, PAGE_SIZE - ret, " stream %s %s\n",
- 				w->sname,
- 				w->active ? "active" : "inactive");
- 
-@@ -2044,7 +2044,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 			if (!p->connect)
- 				continue;
- 
--			ret += snprintf(buf + ret, PAGE_SIZE - ret,
-+			ret += scnprintf(buf + ret, PAGE_SIZE - ret,
- 					" %s  \"%s\" \"%s\"\n",
- 					(rdir == SND_SOC_DAPM_DIR_IN) ? "in" : "out",
- 					p->name ? p->name : "static",
+ 	/*
 -- 
 2.20.1
