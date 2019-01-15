@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 05/14] ALSA: pci: Remove superfluous
- snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 10:49:56 -0600
-Message-ID: <f675ffaa-9966-a05b-7915-a4a16eefbfcb@linux.intel.com>
-References: <20190115162155.6308-1-tiwai@suse.de>
- <20190115162155.6308-6-tiwai@suse.de>
+From: Matthias Reichl <hias@horus.com>
+Subject: [PATCH] ASoC: core: Don't defer probe on optional,
+	NULL components
+Date: Tue, 15 Jan 2019 17:51:07 +0100
+Message-ID: <20190115165107.5551-1-hias@horus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 25D3E2667E7
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:49:59 +0100 (CET)
-In-Reply-To: <20190115162155.6308-6-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id B106826743C
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:51:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Libin Yang <libin.yang@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>, liam.r.girdwood@linux.intel.com
+To: Mark Brown <broonie@kernel.org>, Ajit Pandey <ajitp@codeaurora.org>, Rohit kumar <rohitkr@codeaurora.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMgYi9zb3VuZC9wY2kvaGRh
-L2hkYV9jb2RlYy5jCj4gaW5kZXggOWY4ZDU5ZTdlODlmLi5mZjZkYmVkNGQzY2QgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRh
-X2NvZGVjLmMKPiBAQCAtMjkyNyw4ICsyOTI3LDYgQEAgc3RhdGljIGludCBoZGFfY29kZWNfcnVu
-dGltZV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiAgIAl1bnNpZ25lZCBpbnQgc3RhdGU7
-Cj4gICAKPiAgIAljYW5jZWxfZGVsYXllZF93b3JrX3N5bmMoJmNvZGVjLT5qYWNrcG9sbF93b3Jr
-KTsKPiAtCWxpc3RfZm9yX2VhY2hfZW50cnkocGNtLCAmY29kZWMtPnBjbV9saXN0X2hlYWQsIGxp
-c3QpCj4gLQkJc25kX3BjbV9zdXNwZW5kX2FsbChwY20tPnBjbSk7Cj4gICAJc3RhdGUgPSBoZGFf
-Y2FsbF9jb2RlY19zdXNwZW5kKGNvZGVjKTsKPiAgIAlpZiAoY29kZWMtPmxpbmtfZG93bl9hdF9z
-dXNwZW5kIHx8Cj4gICAJICAgIChjb2RlY19oYXNfY2xrc3RvcChjb2RlYykgJiYgY29kZWNfaGFz
-X2Vwc3MoY29kZWMpICYmCgpxdWVzdGlvbjogc2luY2Ugd2Ugbm93IHVzZSBIREF1ZGlvIGNvZGVj
-cyBpbiBhbiBBU29DLWJhc2VkIAppbXBsZW1lbnRhdGlvbiAoYm90aCB3aXRoIHRoZSBTa3lsYWtl
-IGFuZCBTT0YgZHJpdmVycyksIGlzIHRoaXMgY3JlYXRpbmcgCmEgY2FzZSB3aGVyZSBzdXNwZW5k
-IG5vIGxvbmdlciB3b3Jrcz8gSSBzZWUgbm8gc3VzcGVuZCBzdXBwb3J0IGluIApzb3VuZC9zb2Mv
-Y29kZWMvaGRhY19oZGEuYwoKSSBqdXN0IGFkZGVkIGEgcXVpY2sgdHJhY2UgaW4gdGhlIGxpbmVz
-IGJlaW5nIGRlbGV0ZWQgYW5kIHRob3NlIGxpbmVzIAp3ZXJlIGRlZmluaXRpdmVseSBleGVjdXRl
-ZC4KCiDCoMKgwqAgbGlzdF9mb3JfZWFjaF9lbnRyeShwY20sICZjb2RlYy0+cGNtX2xpc3RfaGVh
-ZCwgbGlzdCkgewogwqDCoMKgIMKgwqDCoCBwcl9lcnIoInBsYjogc3VzcGVuZGluZyBwY21cbiIp
-OwogwqDCoMKgIMKgwqDCoCBzbmRfcGNtX3N1c3BlbmRfYWxsKHBjbS0+cGNtKTsKIMKgwqDCoCB9
-CgpbwqDCoMKgIDIuNTE2MzQ5XSBwbGI6IHN1c3BlbmRpbmcgcGNtClvCoMKgwqAgMi41MTYzNTBd
-IHBsYjogc3VzcGVuZGluZyBwY20KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+cpu and platform are optional components in DAI links. For example
+codec-codec links usually have no platform set.
+
+Call snd_soc_find_component only if the name or of_node of
+a cpu or platform is set. Otherwise it will return NULL and
+soc_init_dai_link bails out immediately with -EPROBE_DEFER,
+meaning registering a card with NULL cpu or platform in DAI links
+can never succeed.
+
+Fixes: 8780cf1142a5 ("ASoC: soc-core: defer card probe until all component is added to list")
+
+Signed-off-by: Matthias Reichl <hias@horus.com>
+---
+ sound/soc/soc-core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b680c673c553..aae450ba4f08 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1135,7 +1135,8 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ 	 * Defer card registartion if platform dai component is not added to
+ 	 * component list.
+ 	 */
+-	if (!soc_find_component(link->platform->of_node, link->platform->name))
++	if ((link->platform->of_node || link->platform->name) &&
++	    !soc_find_component(link->platform->of_node, link->platform->name))
+ 		return -EPROBE_DEFER;
+ 
+ 	/*
+@@ -1154,7 +1155,8 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ 	 * Defer card registartion if cpu dai component is not added to
+ 	 * component list.
+ 	 */
+-	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
++	if ((link->cpu_of_node || link->cpu_name) &&
++	    !soc_find_component(link->cpu_of_node, link->cpu_name))
+ 		return -EPROBE_DEFER;
+ 
+ 	/*
+-- 
+2.19.2
