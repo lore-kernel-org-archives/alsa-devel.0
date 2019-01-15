@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: Fix potential NULL pointer
-	dereference" to the asoc tree
-Date: Tue, 15 Jan 2019 19:08:21 +0000 (GMT)
-Message-ID: <20190115190821.1FF1B1127848@debutante.sirena.org.uk>
-References: <20190115175723.GA32176@embeddedor>
+Subject: Applied "ASoC: dapm: change snprintf to scnprintf for
+	possible overflow" to the asoc tree
+Date: Tue, 15 Jan 2019 19:08:22 +0000 (GMT)
+Message-ID: <20190115190822.938E91127848@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A017D2667E7
+ by alsa0.perex.cz (Postfix) with ESMTP id CAF6D266ABE
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 20:08:23 +0100 (CET)
-In-Reply-To: <20190115175723.GA32176@embeddedor>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: Silvio Cesare <silvio.cesare@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Greg KH <greg@kroah.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514-spi: Fix potential NULL pointer dereference
+   ASoC: dapm: change snprintf to scnprintf for possible overflow
 
 has been applied to the asoc tree at
 
@@ -52,38 +52,83 @@ to this mail.
 Thanks,
 Mark
 
->From 060d0bf491874daece47053c4e1fb0489eb867d2 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Tue, 15 Jan 2019 11:57:23 -0600
-Subject: [PATCH] ASoC: rt5514-spi: Fix potential NULL pointer dereference
+>From e581e151e965bf1f2815dd94620b638fec4d0a7e Mon Sep 17 00:00:00 2001
+From: Silvio Cesare <silvio.cesare@gmail.com>
+Date: Sat, 12 Jan 2019 16:28:43 +0100
+Subject: [PATCH] ASoC: dapm: change snprintf to scnprintf for possible
+ overflow
 
-There is a potential NULL pointer dereference in case devm_kzalloc()
-fails and returns NULL.
+Change snprintf to scnprintf. There are generally two cases where using
+snprintf causes problems.
 
-Fix this by adding a NULL check on rt5514_dsp.
+1) Uses of size += snprintf(buf, SIZE - size, fmt, ...)
+In this case, if snprintf would have written more characters than what the
+buffer size (SIZE) is, then size will end up larger than SIZE. In later
+uses of snprintf, SIZE - size will result in a negative number, leading
+to problems. Note that size might already be too large by using
+size = snprintf before the code reaches a case of size += snprintf.
 
-This issue was detected with the help of Coccinelle.
+2) If size is ultimately used as a length parameter for a copy back to user
+space, then it will potentially allow for a buffer overflow and information
+disclosure when size is greater than SIZE. When the size is used to index
+the buffer directly, we can have memory corruption. This also means when
+size = snprintf... is used, it may also cause problems since size may become
+large.  Copying to userspace is mitigated by the HARDENED_USERCOPY kernel
+configuration.
 
-Fixes: 6eebf35b0e4a ("ASoC: rt5514: add rt5514 SPI driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+The solution to these issues is to use scnprintf which returns the number of
+characters actually written to the buffer, so the size variable will never
+exceed SIZE.
+
+Signed-off-by: Silvio Cesare <silvio.cesare@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Greg KH <greg@kroah.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-dapm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 4d46f4567c3a..bec2eefa8b0f 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -280,6 +280,8 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a5178845065b..2c4c13419539 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2019,19 +2019,19 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 		out = is_connected_output_ep(w, NULL, NULL);
+ 	}
  
- 	rt5514_dsp = devm_kzalloc(component->dev, sizeof(*rt5514_dsp),
- 			GFP_KERNEL);
-+	if (!rt5514_dsp)
-+		return -ENOMEM;
+-	ret = snprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
++	ret = scnprintf(buf, PAGE_SIZE, "%s: %s%s  in %d out %d",
+ 		       w->name, w->power ? "On" : "Off",
+ 		       w->force ? " (forced)" : "", in, out);
  
- 	rt5514_dsp->dev = &rt5514_spi->dev;
- 	mutex_init(&rt5514_dsp->dma_lock);
+ 	if (w->reg >= 0)
+-		ret += snprintf(buf + ret, PAGE_SIZE - ret,
++		ret += scnprintf(buf + ret, PAGE_SIZE - ret,
+ 				" - R%d(0x%x) mask 0x%x",
+ 				w->reg, w->reg, w->mask << w->shift);
+ 
+-	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
++	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
+ 
+ 	if (w->sname)
+-		ret += snprintf(buf + ret, PAGE_SIZE - ret, " stream %s %s\n",
++		ret += scnprintf(buf + ret, PAGE_SIZE - ret, " stream %s %s\n",
+ 				w->sname,
+ 				w->active ? "active" : "inactive");
+ 
+@@ -2044,7 +2044,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
+ 			if (!p->connect)
+ 				continue;
+ 
+-			ret += snprintf(buf + ret, PAGE_SIZE - ret,
++			ret += scnprintf(buf + ret, PAGE_SIZE - ret,
+ 					" %s  \"%s\" \"%s\"\n",
+ 					(rdir == SND_SOC_DAPM_DIR_IN) ? "in" : "out",
+ 					p->name ? p->name : "static",
 -- 
 2.20.1
