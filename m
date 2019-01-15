@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 09/14] ALSA: aoa: Remove superfluous
+Subject: [PATCH 10/14] ALSA: arm: Remove superfluous
 	snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 17:21:50 +0100
-Message-ID: <20190115162155.6308-10-tiwai@suse.de>
+Date: Tue, 15 Jan 2019 17:21:51 +0100
+Message-ID: <20190115162155.6308-11-tiwai@suse.de>
 References: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 429E126745B
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B92F26745C
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:58 +0100 (CET)
 In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,23 +30,33 @@ call it in the PCM PM ops.  Let's remove them.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/aoa/soundbus/i2sbus/core.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/arm/aaci.c        | 1 -
+ sound/arm/pxa2xx-ac97.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index c3f57a3fb1a5..33e82341c048 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -380,10 +380,6 @@ static int i2sbus_suspend(struct macio_dev* dev, pm_message_t state)
- 	int err, ret = 0;
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index 0114ffed56dd..0c3f073e2600 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -757,7 +757,6 @@ static int aaci_do_suspend(struct snd_card *card)
+ {
+ 	struct aaci *aaci = card->private_data;
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
+-	snd_pcm_suspend_all(aaci->pcm);
+ 	return 0;
+ }
  
- 	list_for_each_entry(i2sdev, &control->list, item) {
--		/* Notify Alsa */
--		/* Suspend PCM streams */
--		snd_pcm_suspend_all(i2sdev->sound.pcm);
--
- 		/* Notify codecs */
- 		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
- 			err = 0;
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 1f72672262d0..68fe5bb11eea 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -124,7 +124,6 @@ static int pxa2xx_ac97_do_suspend(struct snd_card *card)
+ 	pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
+-	snd_pcm_suspend_all(pxa2xx_ac97_pcm);
+ 	snd_ac97_suspend(pxa2xx_ac97_ac97);
+ 	if (platform_ops && platform_ops->suspend)
+ 		platform_ops->suspend(platform_ops->priv);
 -- 
 2.20.1
