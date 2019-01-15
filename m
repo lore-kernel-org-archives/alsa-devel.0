@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/14] drm: bridge: dw-hdmi: Remove superfluous
+Subject: [PATCH 11/14] ALSA: pcmcia: Remove superfluous
 	snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 17:21:53 +0100
-Message-ID: <20190115162155.6308-13-tiwai@suse.de>
+Date: Tue, 15 Jan 2019 17:21:52 +0100
+Message-ID: <20190115162155.6308-12-tiwai@suse.de>
 References: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C372267463
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BE42267462
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:58 +0100 (CET)
 In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,20 +30,20 @@ call it in the PCM PM ops.  Let's remove them.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 1 -
+ sound/pcmcia/pdaudiocf/pdaudiocf_core.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-index cf3f0caf9c63..ed7af7518b52 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-@@ -614,7 +614,6 @@ static int snd_dw_hdmi_suspend(struct device *dev)
- 	struct snd_dw_hdmi *dw = dev_get_drvdata(dev);
- 
- 	snd_power_change_state(dw->card, SNDRV_CTL_POWER_D3cold);
--	snd_pcm_suspend_all(dw->pcm);
- 
- 	return 0;
- }
+diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf_core.c b/sound/pcmcia/pdaudiocf/pdaudiocf_core.c
+index d724ab0653cf..eabf29252895 100644
+--- a/sound/pcmcia/pdaudiocf/pdaudiocf_core.c
++++ b/sound/pcmcia/pdaudiocf/pdaudiocf_core.c
+@@ -265,7 +265,6 @@ int snd_pdacf_suspend(struct snd_pdacf *chip)
+ 	u16 val;
+ 	
+ 	snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+-	snd_pcm_suspend_all(chip->pcm);
+ 	/* disable interrupts, but use direct write to preserve old register value in chip->regmap */
+ 	val = inw(chip->port + PDAUDIOCF_REG_IER);
+ 	val &= ~(PDAUDIOCF_IRQOVREN|PDAUDIOCF_IRQAKMEN|PDAUDIOCF_IRQLVLEN0|PDAUDIOCF_IRQLVLEN1);
 -- 
 2.20.1
