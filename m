@@ -1,17 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/14] ALSA: atiixp: Move PCM suspend/resume
-	code into trigger callback
-Date: Tue, 15 Jan 2019 17:21:43 +0100
-Message-ID: <20190115162155.6308-3-tiwai@suse.de>
-References: <20190115162155.6308-1-tiwai@suse.de>
+Subject: [PATCH 00/14] ALSA: PCM suspend cleanup
+Date: Tue, 15 Jan 2019 17:21:41 +0100
+Message-ID: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 29672266ABE
+ by alsa0.perex.cz (Postfix) with ESMTP id 24F992667E7
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:56 +0100 (CET)
-In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +22,101 @@ To: alsa-devel@alsa-project.org
 Cc: Libin Yang <libin.yang@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ATIIXP driver supports the full PCM resume and saves/restores the
-running PCM pointer.  This used to be done in the suspend and resume
-callbacks together with snd_pcm_suspend() call.  But since we moved
-the snd_pcm_supsend*() call in PCM device PM ops, this should be moved
-to a more appropriate place, i.e. the trigger callback.
+Hi,
 
-Along with the movement of the PCM suspend/resume code, remove the
-superfluous snd_pcm_suspend_all() call, too.
+this is a patch set to clean up the PCM suspend calls by introducing
+the PCM device PM ops.  This won't change much for ASoC but reduce
+lots of snd_pcm_suspend*() calls in other sound drivers.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/atiixp.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+Note that this patch series itself won't fix anything about the recent
+PM issue reported for Intel ASoC, but it was inspired through the
+discussion there.
 
-diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
-index 1a41f8c80243..7715d26916ac 100644
---- a/sound/pci/atiixp.c
-+++ b/sound/pci/atiixp.c
-@@ -733,6 +733,10 @@ static int snd_atiixp_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (dma->running && dma->suspended &&
-+		    cmd == SNDRV_PCM_TRIGGER_RESUME)
-+			writel(dma->saved_curptr, chip->remap_addr +
-+			       dma->ops->dt_cur);
- 		dma->ops->enable_transfer(chip, 1);
- 		dma->running = 1;
- 		dma->suspended = 0;
-@@ -740,9 +744,12 @@ static int snd_atiixp_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		dma->suspended = cmd == SNDRV_PCM_TRIGGER_SUSPEND;
-+		if (dma->running && dma->suspended)
-+			dma->saved_curptr = readl(chip->remap_addr +
-+						  dma->ops->dt_cur);
- 		dma->ops->enable_transfer(chip, 0);
- 		dma->running = 0;
--		dma->suspended = cmd == SNDRV_PCM_TRIGGER_SUSPEND;
- 		break;
- 	default:
- 		err = -EINVAL;
-@@ -1479,14 +1486,6 @@ static int snd_atiixp_suspend(struct device *dev)
- 	int i;
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	for (i = 0; i < NUM_ATI_PCMDEVS; i++)
--		if (chip->pcmdevs[i]) {
--			struct atiixp_dma *dma = &chip->dmas[i];
--			if (dma->substream && dma->running)
--				dma->saved_curptr = readl(chip->remap_addr +
--							  dma->ops->dt_cur);
--			snd_pcm_suspend_all(chip->pcmdevs[i]);
--		}
- 	for (i = 0; i < NUM_ATI_CODECS; i++)
- 		snd_ac97_suspend(chip->ac97[i]);
- 	snd_atiixp_aclink_down(chip);
-@@ -1514,8 +1513,6 @@ static int snd_atiixp_resume(struct device *dev)
- 				dma->substream->ops->prepare(dma->substream);
- 				writel((u32)dma->desc_buf.addr | ATI_REG_LINKPTR_EN,
- 				       chip->remap_addr + dma->ops->llp_offset);
--				writel(dma->saved_curptr, chip->remap_addr +
--				       dma->ops->dt_cur);
- 			}
- 		}
- 
+
+thanks,
+
+Takashi
+
+===
+
+Takashi Iwai (14):
+  ALSA: pcm: Suspend streams globally via device type PM ops
+  ALSA: atiixp: Move PCM suspend/resume code into trigger callback
+  ALSA: isa: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: drivers: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: pci: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: usb: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: x86: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: ppc: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: aoa: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: arm: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: pcmcia: Remove superfluous snd_pcm_suspend*() calls
+  drm: bridge: dw-hdmi: Remove superfluous snd_pcm_suspend*() calls
+  ALSA: doc: Update the description about PCM suspend procedure
+  ALSA: pcm: Make snd_pcm_suspend() local static
+
+ .../kernel-api/writing-an-alsa-driver.rst     | 25 ++++++------------
+ .../drm/bridge/synopsys/dw-hdmi-ahb-audio.c   |  1 -
+ include/sound/pcm.h                           |  6 +----
+ sound/aoa/soundbus/i2sbus/core.c              |  4 ---
+ sound/arm/aaci.c                              |  1 -
+ sound/arm/pxa2xx-ac97.c                       |  1 -
+ sound/core/pcm.c                              | 26 +++++++++++++++++++
+ sound/core/pcm_native.c                       | 11 +++-----
+ sound/drivers/aloop.c                         |  4 ---
+ sound/drivers/dummy.c                         |  2 --
+ sound/drivers/pcsp/pcsp.c                     |  1 -
+ sound/drivers/vx/vx_core.c                    |  4 ---
+ sound/isa/ad1816a/ad1816a_lib.c               |  1 -
+ sound/isa/als100.c                            |  1 -
+ sound/isa/cmi8328.c                           |  1 -
+ sound/isa/cmi8330.c                           |  1 -
+ sound/isa/es1688/es1688.c                     |  2 --
+ sound/isa/es18xx.c                            |  2 --
+ sound/isa/sb/jazz16.c                         |  1 -
+ sound/isa/sb/sb16.c                           |  1 -
+ sound/isa/sb/sb8.c                            |  1 -
+ sound/isa/wss/wss_lib.c                       |  1 -
+ sound/pci/ali5451/ali5451.c                   |  4 +--
+ sound/pci/als300.c                            |  1 -
+ sound/pci/als4000.c                           |  1 -
+ sound/pci/atiixp.c                            | 19 ++++++--------
+ sound/pci/atiixp_modem.c                      |  2 --
+ sound/pci/azt3328.c                           |  4 ---
+ sound/pci/ca0106/ca0106_main.c                |  3 ---
+ sound/pci/cmipci.c                            |  4 ---
+ sound/pci/cs4281.c                            |  2 --
+ sound/pci/cs46xx/cs46xx_lib.c                 |  6 -----
+ sound/pci/cs5535audio/cs5535audio_pm.c        |  1 -
+ sound/pci/ctxfi/ctatc.c                       |  8 ------
+ sound/pci/echoaudio/echoaudio.c               |  3 ---
+ sound/pci/emu10k1/emu10k1.c                   |  6 -----
+ sound/pci/ens1370.c                           |  3 ---
+ sound/pci/es1938.c                            |  1 -
+ sound/pci/es1968.c                            |  1 -
+ sound/pci/fm801.c                             |  1 -
+ sound/pci/hda/hda_codec.c                     |  2 --
+ sound/pci/ice1712/ice1712.c                   |  3 ---
+ sound/pci/ice1712/ice1724.c                   |  3 ---
+ sound/pci/intel8x0.c                          |  2 --
+ sound/pci/intel8x0m.c                         |  3 ---
+ sound/pci/maestro3.c                          |  1 -
+ sound/pci/nm256/nm256.c                       |  1 -
+ sound/pci/oxygen/oxygen_lib.c                 |  5 +---
+ sound/pci/riptide/riptide.c                   |  1 -
+ sound/pci/rme96.c                             |  2 --
+ sound/pci/sis7019.c                           |  1 -
+ sound/pci/trident/trident_main.c              |  4 ---
+ sound/pci/via82xx.c                           |  2 --
+ sound/pci/via82xx_modem.c                     |  2 --
+ sound/pci/ymfpci/ymfpci_main.c                |  4 ---
+ sound/pcmcia/pdaudiocf/pdaudiocf_core.c       |  1 -
+ sound/ppc/pmac.c                              |  1 -
+ sound/soc/soc-pcm.c                           |  1 +
+ sound/usb/card.c                              |  1 -
+ sound/usb/line6/driver.c                      |  4 +--
+ sound/x86/intel_hdmi_audio.c                  | 12 ---------
+ 61 files changed, 50 insertions(+), 174 deletions(-)
+
 -- 
 2.20.1
