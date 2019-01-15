@@ -1,42 +1,51 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: rt5514-spi: Fix potential NULL pointer dereference
-Date: Tue, 15 Jan 2019 11:57:23 -0600
-Message-ID: <20190115175723.GA32176@embeddedor>
+From: Matthias Reichl <hias@horus.com>
+Subject: Re: [alsa-devel] [PATCH v1 3/3] ASoC: soc-core: fix platform name
+ vs. of_node assignement
+Date: Tue, 15 Jan 2019 19:07:17 +0100
+Message-ID: <20190115180716.55a6uvdrfhb7b7ux@camel2.lan>
+References: <52f5f2cf-9260-f9c5-f73d-3c3d5debc86b@nvidia.com>
+ <20190109141439.GE10405@sirena.org.uk>
+ <875zuxb9uy.wl-kuninori.morimoto.gx@renesas.com>
+ <a2068291-e554-cc4f-9af9-0022f3c4de34@nvidia.com>
+ <871s5kqb43.wl-kuninori.morimoto.gx@renesas.com>
+ <dfdc497f-9e52-99d7-208c-d8eef31fe61d@nvidia.com>
+ <87h8efpoxh.wl-kuninori.morimoto.gx@renesas.com>
+ <ea6b6a3a-b4eb-1d29-51fd-330b2b170005@nvidia.com>
+ <20190114230255.GK11073@sirena.org.uk>
+ <312f8e32-36ed-cadb-77cb-54267680fefb@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <312f8e32-36ed-cadb-77cb-54267680fefb@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is a potential NULL pointer dereference in case devm_kzalloc()
-fails and returns NULL.
+On Tue, Jan 15, 2019 at 03:26:42PM +0000, Jon Hunter wrote:
+> 
+> On 14/01/2019 23:02, Mark Brown wrote:
+> > On Fri, Jan 11, 2019 at 09:15:42AM +0000, Jon Hunter wrote:
+> >> On 11/01/2019 08:51, Kuninori Morimoto wrote:
+> > 
+> >>> So, can you agree about these ?
+> >>> 1) Add enough information/documentation about legacy/modern style and its plan.
+> >>> 2) Add dirty pointer fixup patch as workaround
+> >>> 3) switch to modern style as much as possible
+> > 
+> >> I think that Mark needs to decided on whether use your 'dirty pointer'
+> >> fix or not.
+> > 
+> > I've gone ahead with Curtis' version of Morimoto-san's patch just now -
+> > hopefully that's fine for v5.0.  Like we've been saying neither approach
+> > is ideal, thanks Jon and Morimoto-san for your efforts analyzing this
+> > and your proposals.
+> 
+> Thanks! Works for me.
 
-Fix this by adding a NULL check on rt5514_dsp.
+Thanks alot, works here, too on 4.20 and 5.0-rc2!
 
-This issue was detected with the help of Coccinelle.
+so long,
 
-Fixes: 6eebf35b0e4a ("ASoC: rt5514: add rt5514 SPI driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/soc/codecs/rt5514-spi.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 4d46f4567c3a..bec2eefa8b0f 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -280,6 +280,8 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
- 
- 	rt5514_dsp = devm_kzalloc(component->dev, sizeof(*rt5514_dsp),
- 			GFP_KERNEL);
-+	if (!rt5514_dsp)
-+		return -ENOMEM;
- 
- 	rt5514_dsp->dev = &rt5514_spi->dev;
- 	mutex_init(&rt5514_dsp->dma_lock);
--- 
-2.20.1
+Hias
