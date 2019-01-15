@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 10/14] ALSA: arm: Remove superfluous
-	snd_pcm_suspend*() calls
-Date: Tue, 15 Jan 2019 17:21:51 +0100
-Message-ID: <20190115162155.6308-11-tiwai@suse.de>
+Subject: [PATCH 14/14] ALSA: pcm: Make snd_pcm_suspend() local
+	static
+Date: Tue, 15 Jan 2019 17:21:55 +0100
+Message-ID: <20190115162155.6308-15-tiwai@suse.de>
 References: <20190115162155.6308-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B92F26745C
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CE6B267465
  for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 17:21:58 +0100 (CET)
 In-Reply-To: <20190115162155.6308-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,38 +25,69 @@ To: alsa-devel@alsa-project.org
 Cc: Libin Yang <libin.yang@intel.com>, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The call of snd_pcm_suspend_all() & co became superfluous since we
-call it in the PCM PM ops.  Let's remove them.
+snd_pcm_suspend() is no longer called from outside, so let's make it
+local static.  Also drop a superfluous NULL check there.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/arm/aaci.c        | 1 -
- sound/arm/pxa2xx-ac97.c | 1 -
- 2 files changed, 2 deletions(-)
+ include/sound/pcm.h     |  5 -----
+ sound/core/pcm_native.c | 11 +++--------
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index 0114ffed56dd..0c3f073e2600 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -757,7 +757,6 @@ static int aaci_do_suspend(struct snd_card *card)
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 04e97564949c..2c30c1ad1b0d 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -582,13 +582,8 @@ int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t status);
+ int snd_pcm_drain_done(struct snd_pcm_substream *substream);
+ int snd_pcm_stop_xrun(struct snd_pcm_substream *substream);
+ #ifdef CONFIG_PM
+-int snd_pcm_suspend(struct snd_pcm_substream *substream);
+ int snd_pcm_suspend_all(struct snd_pcm *pcm);
+ #else
+-static inline int snd_pcm_suspend(struct snd_pcm_substream *substream)
+-{
+-	return 0;
+-}
+ static inline int snd_pcm_suspend_all(struct snd_pcm *pcm)
  {
- 	struct aaci *aaci = card->private_data;
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
--	snd_pcm_suspend_all(aaci->pcm);
  	return 0;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 818dff1de545..26afb6b0889a 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1460,29 +1460,24 @@ static const struct action_ops snd_pcm_action_suspend = {
+ 	.post_action = snd_pcm_post_suspend
+ };
+ 
+-/**
++/*
+  * snd_pcm_suspend - trigger SUSPEND to all linked streams
+  * @substream: the PCM substream
+  *
+  * After this call, all streams are changed to SUSPENDED state.
+  *
+- * Return: Zero if successful (or @substream is %NULL), or a negative error
+- * code.
++ * Return: Zero if successful, or a negative error code.
+  */
+-int snd_pcm_suspend(struct snd_pcm_substream *substream)
++static int snd_pcm_suspend(struct snd_pcm_substream *substream)
+ {
+ 	int err;
+ 	unsigned long flags;
+ 
+-	if (! substream)
+-		return 0;
+-
+ 	snd_pcm_stream_lock_irqsave(substream, flags);
+ 	err = snd_pcm_action(&snd_pcm_action_suspend, substream, 0);
+ 	snd_pcm_stream_unlock_irqrestore(substream, flags);
+ 	return err;
  }
+-EXPORT_SYMBOL(snd_pcm_suspend);
  
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 1f72672262d0..68fe5bb11eea 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -124,7 +124,6 @@ static int pxa2xx_ac97_do_suspend(struct snd_card *card)
- 	pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
- 
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3cold);
--	snd_pcm_suspend_all(pxa2xx_ac97_pcm);
- 	snd_ac97_suspend(pxa2xx_ac97_ac97);
- 	if (platform_ops && platform_ops->suspend)
- 		platform_ops->suspend(platform_ops->priv);
+ /**
+  * snd_pcm_suspend_all - trigger SUSPEND to all substreams in the given pcm
 -- 
 2.20.1
