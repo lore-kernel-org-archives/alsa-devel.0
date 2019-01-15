@@ -1,223 +1,168 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: hp_pin was NULL value
-Date: Tue, 15 Jan 2019 09:25:40 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18421148@RTITMBSV02.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
- <s5htviigoa5.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
- <s5hlg3ux9x9.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210B1@RTITMBSV02.realtek.com.tw>
- <s5hh8eah1fj.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210E5@RTITMBSV02.realtek.com.tw>
- <s5h5zuqgxv2.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210FC@RTITMBSV02.realtek.com.tw>
- <s5h1s5eguwz.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1842112F@RTITMBSV02.realtek.com.tw>
- <s5hwon6ffg9.wl-tiwai@suse.de>
+From: "kernelci.org bot" <bot@kernelci.org>
+Subject: next/master boot bisection: next-20190115 on
+ sun8i-h2-plus-libretech-all-h3-cc
+Date: Tue, 15 Jan 2019 02:17:41 -0800 (PST)
+Message-ID: <5c3db345.1c69fb81.49892.a0b3@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 07243267440
- for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2019 10:25:48 +0100 (CET)
-In-Reply-To: <s5hwon6ffg9.wl-tiwai@suse.de>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ajit Pandey <ajitp@codeaurora.org>, tomeu.vizoso@collabora.com, Rohit kumar <rohitkr@codeaurora.org>, guillaume.tucker@collabora.com, Mark Brown <broonie@kernel.org>broonie@kernel.org, matthew.hart@linaro.org, khilman@baylibre.com, enric.balletbo@collabora.com
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* This automated bisection report was sent to you on the basis  *
+* that you may be involved with the breaking commit it has      *
+* found.  No manual investigation has been done to verify it,   *
+* and the root cause of the problem may be somewhere else.      *
+* Hope this helps!                                              *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-Our Windows code just called it at boot time only. SD's programing guide point just need to call one time.
-So, I don't know it's harmful or not. I will check with our AE and SD.
-I could also test it with S3 resume state.
+next/master boot bisection: next-20190115 on sun8i-h2-plus-libretech-all-h3=
+-cc
 
-Many Thanks. Please wait.
+Summary:
+  Start:      5aa6589e17bd Add linux-next specific files for 20190115
+  Details:    https://kernelci.org/boot/id/5c3d783659b51451106edd6c
+  Plain log:  https://storage.kernelci.org//next/master/next-20190115/arm/s=
+unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.txt
+  HTML log:   https://storage.kernelci.org//next/master/next-20190115/arm/s=
+unxi_defconfig/lab-baylibre/boot-sun8i-h2-plus-libretech-all-h3-cc.html
+  Result:     8780cf1142a5 ASoC: soc-core: defer card probe until all compo=
+nent is added to list
 
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
-Sent: Tuesday, January 15, 2019 5:17 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: hp_pin was NULL value
+Checks:
+  revert:     PASS
+  verify:     PASS
 
-On Tue, 15 Jan 2019 10:06:58 +0100,
-Kailang wrote:
-> 
-> >>>Is it about that alc225_hp_init() gets called at resume in addition to the boot time?
-> 
-> alc225_hp_init() ==> it only need to call one time at boot time.
-> This HP initial code doesn't need to call at resume.
-> If system boot, HP initial code just need to call it at boot time.
-> S3 state was not need to call this function.
+Parameters:
+  Tree:       next
+  URL:        http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
+t.git
+  Branch:     master
+  Target:     sun8i-h2-plus-libretech-all-h3-cc
+  CPU arch:   arm
+  Lab:        lab-baylibre
+  Config:     sunxi_defconfig
+  Test suite: boot
 
-But S4 resume must call this function: that's my point.
+Breaking commit found:
 
-So the question is whether calling alc225_hp_init() at S3 resume is significantly harmful or not.  If not, we can move it there.  If it's harmful, we need to distinguish S3 and S4, and introduce either some flag or a new callback, which will be a much more work than simply patching the codec code.
+---------------------------------------------------------------------------=
+----
+commit 8780cf1142a59568a3aa77959cbd76b2edb6fd81
+Author: Ajit Pandey <ajitp@codeaurora.org>
+Date:   Wed Jan 9 14:17:07 2019 +0530
+
+    ASoC: soc-core: defer card probe until all component is added to list
+    =
+
+    DAI component probe is not called if it is not present
+    in component list during sound card registration.
+    Check if component is available in component list for
+    platform and cpu dai before soundcard registration.
+    =
+
+    Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+    Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+    Signed-off-by: Mark Brown <broonie@kernel.org>
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0462b3ec977a..eec92f17dd15 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1027,7 +1027,6 @@ static int snd_soc_init_platform(struct snd_soc_card =
+*card,
+ 				 struct snd_soc_dai_link *dai_link)
+ {
+ 	struct snd_soc_dai_link_component *platform =3D dai_link->platform;
+-
+ 	/*
+ 	 * FIXME
+ 	 *
+@@ -1129,6 +1128,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
+rd,
+ 			link->name);
+ 		return -EINVAL;
+ 	}
++
++	/*
++	 * Defer card registartion if platform dai component is not added to
++	 * component list.
++	 */
++	if (!soc_find_component(link->platform->of_node, link->platform->name))
++		return -EPROBE_DEFER;
++
+ 	/*
+ 	 * CPU device may be specified by either name or OF node, but
+ 	 * can be left unspecified, and will be matched based on DAI
+@@ -1140,6 +1147,14 @@ static int soc_init_dai_link(struct snd_soc_card *ca=
+rd,
+ 			link->name);
+ 		return -EINVAL;
+ 	}
++
++	/*
++	 * Defer card registartion if cpu dai component is not added to
++	 * component list.
++	 */
++	if (!soc_find_component(link->cpu_of_node, link->cpu_name))
++		return -EPROBE_DEFER;
++
+ 	/*
+ 	 * At least one of CPU DAI name or CPU device name/node must be
+ 	 * specified
+---------------------------------------------------------------------------=
+----
 
 
-thanks,
+Git bisection log:
 
-Takashi
-
-> Sorry!! Maybe I describe it confuse you.
-> 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Tuesday, January 15, 2019 4:58 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: hp_pin was NULL value
-> 
-> On Tue, 15 Jan 2019 09:17:24 +0100,
-> Kailang wrote:
-> > 
-> > 
-> > Hi Takashi,
-> > 
-> > Sorry!! Maybe I don't understand what you mean.	
-> > Please see below.
-> > 
-> > --- patch_realtek.c.orig	2019-01-11 16:28:43.745957854 +0800
-> > +++ patch_realtek.c	2019-01-15 16:09:56.017873567 +0800
-> > @@ -3221,12 +3221,29 @@ static void alc256_shutup(struct hda_cod
-> >  	snd_hda_shutup_pins(codec);
-> >  }
-> >  
-> > +static void alc225_hp_init(struct hda_codec *codec) {
-> > +	struct alc_spec *spec = codec->spec;
-> > +	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
-> > +	int i, val;
-> > +	int coef38, coef0d, coef36;
-> > +	printk("%s-start hp=0x%x\n",__func__,hp_pin);
-> > +	if (!hp_pin)
-> > +		return;
-> > +
-> > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15);
-> > +	msleep(50);
-> > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 0);
-> > +	printk("%s-end hp=0x%x\n",__func__,hp_pin); }
-> > +
-> >  static void alc225_init(struct hda_codec *codec)  {
-> >  	struct alc_spec *spec = codec->spec;
-> >  	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
-> >  	bool hp1_pin_sense, hp2_pin_sense;
-> >  
-> > +	alc225_hp_init(codec);
-> >  	if (!hp_pin)
-> >  		return;
-> >  
-> > @@ -3262,6 +3279,7 @@ static void alc225_init(struct hda_codec
-> >  
-> >  	alc_update_coef_idx(codec, 0x4a, 3 << 10, 0);
-> >  	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight 
-> > power */
-> > +	printk("%s hp=0x%x\n",__func__,hp_pin);
-> >  }
-> 
-> ... and I don't understand what's your problem.
-> 
-> Is it about that alc255_hp_init() gets called at resume in addition to the boot time?  If so, this is the intended behavior.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > -----Original Message-----
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Sent: Tuesday, January 15, 2019 3:54 PM
-> > To: Kailang <kailang@realtek.com>
-> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > Subject: Re: hp_pin was NULL value
-> > 
-> > On Tue, 15 Jan 2019 08:43:40 +0100,
-> > Kailang wrote:
-> > > 
-> > > 
-> > > No, it not expected.
-> > > It will enter two times after boot ready.
-> > > I think it could add a flag in alc225_hp_init(). 
-> > > To make sure it only excute one time. How do you think about?
-> > 
-> > Where was it called, actually?  The call of patch_ops.init is found in several places: once in snd_hda_codec_build_controls() just before creating controls (which is the boot time init), and at resume, alc269_resume().
-> > 
-> > And, as already explained, we have to call this at resume, because it's not guaranteed that it's been already called in the case of hibernation.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > > 
-> > > -----Original Message-----
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Sent: Tuesday, January 15, 2019 2:37 PM
-> > > To: Kailang <kailang@realtek.com>
-> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > Subject: Re: hp_pin was NULL value
-> > > 
-> > > On Tue, 15 Jan 2019 03:31:33 +0100, Kailang wrote:
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > Could you receive this email?
-> > > > 
-> > > > BR,
-> > > > Kailang
-> > > > 
-> > > > -----Original Message-----
-> > > > From: Kailang
-> > > > Sent: Thursday, January 10, 2019 11:14 AM
-> > > > To: 'Takashi Iwai' <tiwai@suse.de>
-> > > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > > Subject: RE: hp_pin was NULL value
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > I simulate test your prefer function.
-> > > > I put alc225_hp_init() in alc225_init().
-> > > > If system boot ready, I write 1 to power_save of /sys/module/....
-> > > > The print message as below. It called two times until boot ready.
-> > > > If System enter to power save, play stream will wake up codec. It also call alc225_hp_init().
-> > > > 
-> > > > [   21.497524] alc225_init hp_pin=0x21
-> > > > [   21.497526] alc225_hp_init-s hp=0x21
-> > > > [   22.140076] alc225_hp_init-e hp=0x21
-> > > > [   22.183496] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > [   22.184681] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > [   22.186846] alc225_shutup hp_pin=0x21
-> > > > [   22.187831] input: HDA Intel Line Out as /devices/pci0000:00/0000:00:1b.0/sound/card0/input5
-> > > > [   22.188055] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
-> > > > [   22.205104] alc225_init hp_pin=0x21
-> > > > [   22.205108] alc225_hp_init-s hp=0x21
-> > > > [   22.852123] alc225_hp_init-e hp=0x21
-> > > > [   22.894772] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > ############  Boot ready ############## [  116.832084] 
-> > > > alc225_shutup
-> > > > hp_pin=0x21  ==> echo 1 to power_save
-> > > > [  120.002582] alc225_init hp_pin=0x21     ==> play system sound
-> > > > [  120.002586] alc225_hp_init-s hp=0x21 [  120.644128] 
-> > > > alc225_hp_init-e hp=0x21
-> > > 
-> > > It wasn't clear to me whether you meant this as a success or a failure...  Did the patch work as expected, no?
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > ------Please consider the environment before printing this e-mail.
-> > > 
-> > 
-> 
+---------------------------------------------------------------------------=
+----
+git bisect start
+# good: [3719876809e745b9db5293d418600c194bbf5c23] sbitmap: Protect swap_lo=
+ck from softirqs
+git bisect good 3719876809e745b9db5293d418600c194bbf5c23
+# bad: [5aa6589e17bd4dbc1856e37281f00a290d733ab0] Add linux-next specific f=
+iles for 20190115
+git bisect bad 5aa6589e17bd4dbc1856e37281f00a290d733ab0
+# bad: [f2dd4e3054741e22c4c97c8a0fa05faa7239d60a] Merge remote-tracking bra=
+nch 'crypto/master'
+git bisect bad f2dd4e3054741e22c4c97c8a0fa05faa7239d60a
+# bad: [3ba858cbc004b32f8767d295b9b566eb0381da0c] Merge remote-tracking bra=
+nch 'qcom/for-next'
+git bisect bad 3ba858cbc004b32f8767d295b9b566eb0381da0c
+# bad: [4cc2339ea8900debf88333934fa9b1dbc96ee2aa] Merge remote-tracking bra=
+nch 'btrfs-fixes/next-fixes'
+git bisect bad 4cc2339ea8900debf88333934fa9b1dbc96ee2aa
+# good: [259764fd4e5b47aedd6317d2edf5d813333909c5] Merge remote-tracking br=
+anch 'net/master'
+git bisect good 259764fd4e5b47aedd6317d2edf5d813333909c5
+# bad: [29568b4049ff4ef23ce0a2dd46cbaed94b589c78] Merge remote-tracking bra=
+nch 'usb-serial-fixes/usb-linus'
+git bisect bad 29568b4049ff4ef23ce0a2dd46cbaed94b589c78
+# good: [798729dc036d5bb384e24bb48af5c9ea6554d945] Merge remote-tracking br=
+anch 'sound-current/for-linus'
+git bisect good 798729dc036d5bb384e24bb48af5c9ea6554d945
+# bad: [d9c51542207a29b7b06c11f1085a1e3b8eb24f07] Merge branch 'asoc-5.0' i=
+nto asoc-linus
+git bisect bad d9c51542207a29b7b06c11f1085a1e3b8eb24f07
+# good: [678e2b44c8e3fec3afc7202f1996a4500a50be93] ALSA: compress: prevent =
+potential divide by zero bugs
+git bisect good 678e2b44c8e3fec3afc7202f1996a4500a50be93
+# good: [667e9334fa64da2273e36ce131b05ac9e47c5769] ASoC: tlv320aic32x4: Ker=
+nel OOPS while entering DAPM standby mode
+git bisect good 667e9334fa64da2273e36ce131b05ac9e47c5769
+# bad: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-core: defer car=
+d probe until all component is added to list
+git bisect bad 8780cf1142a59568a3aa77959cbd76b2edb6fd81
+# good: [44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661] ASoC: atom: fix a missin=
+g check of snd_pcm_lib_malloc_pages
+git bisect good 44fabd8cdaaa3acb80ad2bb3b5c61ae2136af661
+# first bad commit: [8780cf1142a59568a3aa77959cbd76b2edb6fd81] ASoC: soc-co=
+re: defer card probe until all component is added to list
+---------------------------------------------------------------------------=
+----
