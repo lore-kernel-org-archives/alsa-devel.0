@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sdm845: Set DAI format for dmic codec"
-	to the asoc tree
-Date: Wed, 16 Jan 2019 18:06:53 +0000 (GMT)
-Message-ID: <20190116180653.563621126FFD@debutante.sirena.org.uk>
-References: <20190115084159.135113-1-cychiang@chromium.org>
+Subject: Applied "ASoC: qcom: Kconfig: select max98927 for
+	sdm845" to the asoc tree
+Date: Wed, 16 Jan 2019 18:06:55 +0000 (GMT)
+Message-ID: <20190116180655.34F5D1126FFD@debutante.sirena.org.uk>
+References: <20190115110253.261596-1-cychiang@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 374242666B3
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 19:06:54 +0100 (CET)
-In-Reply-To: <20190115084159.135113-1-cychiang@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6126E266B63
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 19:07:01 +0100 (CET)
+In-Reply-To: <20190115110253.261596-1-cychiang@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org
+Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sdm845: Set DAI format for dmic codec
+   ASoC: qcom: Kconfig: select max98927 for sdm845
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 9019ab102fe8d741f873e6f630fb7aa74c38818a Mon Sep 17 00:00:00 2001
+>From 0ddb0fb00a769ef85c788cb40627d09df6919833 Mon Sep 17 00:00:00 2001
 From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Tue, 15 Jan 2019 16:41:59 +0800
-Subject: [PATCH] ASoC: sdm845: Set DAI format for dmic codec
+Date: Tue, 15 Jan 2019 19:02:53 +0800
+Subject: [PATCH] ASoC: qcom: Kconfig: select max98927 for sdm845
 
-Set codec DAI format for dmic codec in startup.
+Select SND_SOC_MAX98927 for SND_SOC_SDM845.
 
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/qcom/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 6f66a58e23ca..882f52ed8231 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -248,12 +248,14 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
- 		break;
- 
- 	case SECONDARY_MI2S_TX:
-+		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
- 		if (++(data->sec_mi2s_clk_count) == 1) {
- 			snd_soc_dai_set_sysclk(cpu_dai,
- 				Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
- 				MI2S_BCLK_RATE,	SNDRV_PCM_STREAM_CAPTURE);
- 		}
- 		snd_soc_dai_set_fmt(cpu_dai, fmt);
-+		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
- 		break;
- 
- 	case QUATERNARY_TDM_RX_0:
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 804ae0d93058..7948e993adba 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -102,6 +102,7 @@ config SND_SOC_SDM845
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_RT5663
++	select SND_SOC_MAX98927
+ 	help
+ 	  To add support for audio on Qualcomm Technologies Inc.
+ 	  SDM845 SoC-based systems.
 -- 
 2.20.1
