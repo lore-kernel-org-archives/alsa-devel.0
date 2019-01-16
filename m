@@ -1,83 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/14] ALSA: pci: Remove superfluous
- snd_pcm_suspend*() calls
-Date: Wed, 16 Jan 2019 16:32:07 +0000
-Message-ID: <20190116163207.GC7186@sirena.org.uk>
-References: <20190115162155.6308-1-tiwai@suse.de>
- <20190115162155.6308-6-tiwai@suse.de>
- <f675ffaa-9966-a05b-7915-a4a16eefbfcb@linux.intel.com>
- <s5hpnsx26tc.wl-tiwai@suse.de> <s5hh8e9fyam.wl-tiwai@suse.de>
- <20190116155027.GB7186@sirena.org.uk>
- <s5h8szkzjje.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Timing issues between ALSA and i915 drivers
+Date: Wed, 16 Jan 2019 11:48:25 -0600
+Message-ID: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8819500542811523885=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 697332666B3
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 17:32:19 +0100 (CET)
-In-Reply-To: <s5h8szkzjje.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Imre Deak <imre.deak@intel.com>, "Rojewski, Cezary" <cezary.rojewski@intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8819500542811523885==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
-Content-Disposition: inline
-
-
---ctP54qlpMx3WjD+/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jan 16, 2019 at 04:52:53PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > AFAICT it's just making sure that they're available ASAP so they look
-> > always on to the rest of the system.
-
-> Well, but PM prepare is called before PM suspend call.  And the whole
-> ASoC suspend procedure (including PCM suspend, etc) is performed in
-> the PM suspend callback; i.e. we stop sysclk before doing anything
-> else...
-
-Ah, got it the wrong way round...  in that case I frankly have no idea
-and would expect it to break if we suspend with active audio - it's
-possibly a bug.
-
---ctP54qlpMx3WjD+/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw/XIcACgkQJNaLcl1U
-h9AXUgf+O7vMw53WFp6e3lNPG6GxdQVh+frIqZRoHcVsDezN5GiDXVfhrh9tvdhQ
-YRhcMSod8DlehftDt+BHF9aVUzJkaKC769muMufyDQlgMeA2YY+odjkd9GnF9Ig9
-9b5ZrRS3P/6XajeCmCis4za6FIYdVgen01x0MQ/Drzi22ESWP/Mli7cIWNCIgkLa
-GPIm6iuob+2YcvjwaTZGR54ZyYypGc1FuNFUuPnHpblbyWnDKnzYS0bDKTuUE8gt
-NRzIt/sDOC0u2hTb4S0H18q3BzZc3bdVpgTeQ++GHTmcXCdQrSAgysNzACQfGMcS
-wUgR772CThTu52tp7ctMnH8pZm/dkw==
-=2kUE
------END PGP SIGNATURE-----
-
---ctP54qlpMx3WjD+/--
-
---===============8819500542811523885==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8819500542811523885==--
+SGksCgpJIGNvdWxkIHVzZSBzb21lIGZlZWRiYWNrIG9uIEhETUkgYXVkaW8gaXNzdWVzIGV4cG9z
+ZWQgZHVyaW5nIHRoZSA0LjIxIAptZXJnZSB3aW5kb3cuIEJ5IGFjY2lkZW50IChtaXNsZWFkaW5n
+IGRvY3VtZW50YXRpb24pIHdlIGVuZGVkIHVwIAplbmFibGluZyB0aGUgU2t5bGFrZSBkcml2ZXIg
+aW5zdGVhZCBvZiB0aGUgSERhdWRpbyBsZWdhY3ksIGFuZCBicm9rZSAKYXVkaW8gb24gYSBudW1i
+ZXIgb2YgU2t5bGFrZSBhbmQgQXBvbGxvTGFrZSBkZXZpY2VzIHdoZXJlIHRoZSBIRE1JL2lESVNQ
+IApjb2RlYyB3YXMgbm90IGRldGVjdGVkIChiaXQgMiBub3Qgc2V0IGluIHRoZSBjb2RlY19tYXNr
+KS4gTGludXMnIERlbGwgClhQUzEzIDkzNTAgd2FzIHRoZSBmaXJzdCB0byBiZSBpbXBhY3RlZCBv
+ZiBjb3Vyc2UuLi4KCkFmdGVyIGRlYnVnZ2luZyBhIGJpdCwgdGhpcyBpc3N1ZSBjYW4gYmUgcmVz
+b2x2ZWQgYnkgZWl0aGVyCgphKSBjb21waWxpbmcgYm90aCBTT1VORCBhbmQgRFJNIGFzIGJ1aWx0
+LWlucyAoeSBpbnN0ZWFkIG9mIG0pCgpiKSBtb3ZpbmcgdGhlIGNhbGxzIHNuZF9oZGFjX2k5MTVf
+aW5pdCgpIHRvIHRoZSBwcm9iZSBmdW5jdGlvbiBpbnN0ZWFkIApvZiB0aGUgd29ya2VyIHF1ZXVl
+IChjb2RlIGF0IApodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L3NvdW5kL2NvbW1pdHMvZml4
+L3NrbC1oZG1pKQoKQm90aCBzb2x1dGlvbnMgcG9pbnQgdG8gdGltaW5nIGlzc3Vlcy4KCkR1cmlu
+ZyBpbnRlcm5hbCByZXZpZXdzIEkgd2FzIGFsZXJ0ZWQgdG8gdGhlIGZhY3QgdGhhdCB0aGUgc3Vn
+Z2VzdGVkIGZpeCAKZXNzZW50aWFsbHkgcmV2ZXJ0cyBwYXRjaCBhYjFiNzMyZDUzYzE4ICgnQVNv
+QzogSW50ZWw6IFNreWxha2U6IE1vdmUgCmk5MTUgcmVnaXN0cmF0aW9uIHRvIHdvcmtlciB0aHJl
+YWQnKSB3aGljaCB3YXMgaW50cm9kdWNlZCB0byBzb2x2ZSBEUk0gCmxvY2t1cCBpc3N1ZXMuCgpJ
+biBvdGhlciB3b3Jkcywgd2UgYXJlIGF0IGEgcG9pbnQgd2hlcmUgd2UgZWl0aGVyIGhhdmUgRFJN
+IGxvY2t1cHMgb3IgCmNhbid0IGRldGVjdCB0aGUgSERNSSBhdWRpbyBjb2RlYywgbm9uZSBvZiB3
+aGljaCBhcmUgdG9vIGdvb2QuCgpJIGRvbid0IGhhdmUgdGhlIGJhY2tncm91bmQgZm9yIHRoZSBE
+Uk0gbG9ja3VwIHN0dWZmLCBub3IgZG8gSSAKdW5kZXJzdGFuZCB3aHkgc25kX2hkYWNfaTkxNV9p
+bml0IGhhcyB0byBiZSBjYWxsZWQgZnJvbSBhIHRocmVhZCAKY29udGV4dC4gSXMgdGhpcyByZWFs
+bHkgYSByZXF1aXJlbWVudD8KCkkgYWxzbyBkb24ndCBnZXQgd2hhdCBzb3J0IG9mIHRpbWluZyBp
+c3N1ZXMgd291bGQgY29tZSBmcm9tIGFuIAppbml0aWFsaXphdGlvbi4gV2hhdCBoYXBwZW5zIG9u
+IHRoZSBpOTE1IHNpZGUgYW5kIGlzIHRoZXJlIHNvbWUgc29ydCBvZiAKbWFuZGF0b3J5IGRlbGF5
+IGJldHdlZW4gdGhlIGNvbXBsZXRpb24gb2YgdGhlIGk5MTVfaW5pdCBhbmQgaXNzdWluZyBhIApz
+bmRfaGRhY19jaGlwX3JlYWR3KGJ1cywgU1RBVEVTVFMpIHRvIGdldCB0aGUgY29kZWMgbWFza3Mg
+b24gdGhlIEhEYXVkaW8gCmxpbmtzPwoKVGhhbmtzIGZvciBhbnkgcG9pbnRlcnMgb3IgY29tbWVu
+dHMuCgotUGllcnJlCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
+Z2Z4Cg==
