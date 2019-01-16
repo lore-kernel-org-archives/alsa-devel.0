@@ -1,72 +1,79 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 4/4] ASoC: add imx-audmix DT binding documentation
-Date: Wed, 16 Jan 2019 08:57:53 -0600
-Message-ID: <CAL_JsqKzmqubd8BVPdju2hLwZNMsen-1+uuHT+S-yirXaSNyHw@mail.gmail.com>
-References: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
- <1546952716-2743-5-git-send-email-viorel.suman@nxp.com> <20190115205755.GA4022@bogus>
- <CAEnQRZBn7nM-KrGSvnzPWuU=a+jyRxfEKhZSsDD4wTqr6spkwg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: soc-core: use
+ snd_soc_dai_link_component for cpu
+Date: Wed, 16 Jan 2019 09:08:19 -0600
+Message-ID: <3b1f5c02-65e1-b43e-3556-129d48c2375d@linux.intel.com>
+References: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAEnQRZBn7nM-KrGSvnzPWuU=a+jyRxfEKhZSsDD4wTqr6spkwg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: Viorel Suman <viorel.suman@nxp.com>, Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0003E266AA9
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 16:08:31 +0100 (CET)
+In-Reply-To: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 16, 2019 at 2:22 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
->
-> On Tue, Jan 15, 2019 at 10:58 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Tue, Jan 08, 2019 at 01:05:51PM +0000, Viorel Suman wrote:
-> > > Add the DT binding documentation for Audio Mixer
-> > > machine driver.
-> > >
-> > > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/sound/imx-audmix.txt       | 24 ++++++++++++++++++++++
-> > >  1 file changed, 24 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/sound/imx-audmix.txt b/Documentation/devicetree/bindings/sound/imx-audmix.txt
-> > > new file mode 100644
-> > > index 0000000..6ac1230
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/sound/imx-audmix.txt
-> > > @@ -0,0 +1,24 @@
-> > > +NXP Audio Mixer (AUDMIX) machine driver.
-> > > +
-> > > +Required properties:
-> > > +===================================
-> > > +  - compatible               : Compatible list, contains "fsl,imx-audmix"
-> > > +
-> > > +  - model            : Short audio card description.
-> > > +
-> > > +  - dais             : Must contain a list of phandles to AUDMIX connected
-> > > +                       DAIs. The current implementation requires two phandles
-> > > +                       to SAI interfaces to be provided, the first SAI in the
-> > > +                       list being used to route the AUDMIX output.
-> > > +
-> > > +  - audmix-controller        : Must contain the phandle to the AUDMIX device node.
-> >
-> > I don't think you need 2 nodes for this as this one is just a virtual
-> > device. Just add the dais property to the audmix node.
->
-> Hi Rob,
->
-> Thanks for the suggestion. We want to understand better the reasoning
-> behind this.
->
-> Is it because dais are physically connected to AUDMIX node?
->
-> In ALSA we usually add all the components inside the
-> associated machine driver virtual node.
 
-Yes, but in those cases, there's a bunch of components (DAIs, DMA,
-DSP, amp, codecs, etc.) with no main device. That doesn't really
-appear to be the case here (or your example was incomplete).
+On 1/16/19 2:26 AM, Kuninori Morimoto wrote:
+> Hi Mark
+>
+> These add snd_soc_dai_link_component support for CPU.
+> I know multi-CPU support patch was posted to ML,
+> but I think it is not yet accepted (or rejected ?).
+If you are referring to the Intel patches, they were really too 
+intrusive and complicated. Quite frankly I don't think anyone at Intel 
+(me included) understands what is "legacy" and what is "modern", so 
+adding multiple cpu support in there was really guesswork and 
+copy/replace of the multi-codec parts, likely to break and impossible to 
+test.
+>
+> If these patches were accepted, we can finally switch to
+> modern style dai_link, and remove legacy style dai_link.
 
-It's simply that we try to avoid such virtual devices unless
-absolutely necessary.
+it might be a better idea to remove the legacy first so that we have a 
+clean slate to add multiple CPUs?
 
-Rob
+If you have a blurb or description of the end-goal and what evolutions 
+are required for dai links, it'd be really nice. Following incremental 
+patches over multiple kernel versions isn't straightforward and the 
+impacts of your changes isn't clear to me, e.g. I'd really like to know 
+if the current way Intel uses dailinks needs to be changed or if we are 
+good.
+
+Thanks
+
+-Pierre
+
+>
+> Kuninori Morimoto (2):
+>    ASoC: soc-core: add .num_platform for dai_link
+>    ASoC: soc-core: use snd_soc_dai_link_component for cpu
+>
+> For switching to modern, I added "use modern style dai_link"
+> and "remove legacy style dai_link" patches as sample.
+> If these have no objection, I will post full patch to ML.
+>
+> Kuninori Morimoto (3):
+>        ASoC: audio-graph/simple-card: use modern style dai_link for CPU
+>        ASoC: atmel: atmel-classd: use modern style dai_link
+>        ASoC: soc-core: remove regacy dai_link binding method
+>
+> ---
+> Kuninori Morimoto
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
