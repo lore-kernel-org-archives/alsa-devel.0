@@ -1,191 +1,88 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [alsa-devel] [PATCH v3 3/3] ASoC: cros_ec_codec: Add codec
- driver for Cros EC
-Date: Wed, 16 Jan 2019 14:59:31 -0800
-Message-ID: <20190116225931.GA13512@roeck-us.net>
-References: <20181226070317.72022-1-cychiang@chromium.org>
- <20181226070317.72022-3-cychiang@chromium.org>
- <20190116061802.GA31405@roeck-us.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Timing issues between ALSA and i915 drivers
+Date: Wed, 16 Jan 2019 17:10:55 -0600
+Message-ID: <59d3e789-ac8d-e314-5a96-9b0569129fc9@linux.intel.com>
+References: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
+ <s5hef9ce7iz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190116061802.GA31405@roeck-us.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@chromium.org, Benson Leung <bleung@chromium.org>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, Guenter Roeck <groeck@chromium.org>, dgreid@chromium.org, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hef9ce7iz.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>, intel-gfx@lists.freedesktop.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 15, 2019 at 10:18:02PM -0800, Guenter Roeck wrote:
-> On Wed, Dec 26, 2018 at 03:03:19PM +0800, Cheng-Yi Chiang wrote:
-> > Add a codec driver to control ChromeOS EC codec.
-> > 
-> > Use EC Host command to enable/disable I2S recording and control other
-> > configurations.
-> > 
-> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > ---
-> > Changes in v3:
-> > 1.remove cros_ec_codec.h.
-> > 2.Fix error code overriding in
-> >     set_i2s_config
-> >     set_i2s_sample_depth
-> >     set_bclk
-> >     get_ec_mic_gain
-> >     set_ec_mic_gain
-> >     enable_i2s
-> > 3.Fix missing return code in cros_ec_i2s_set_dai_fmt.
-> > 4.Simplify return code in cros_ec_i2s_hw_params and mic_gain_put.
-> > 5.Remove useless debug message in cros_ec_codec_platform_probe.
-> > 
-> >  MAINTAINERS                      |   2 +
-> >  sound/soc/codecs/Kconfig         |   8 +
-> >  sound/soc/codecs/Makefile        |   2 +
-> >  sound/soc/codecs/cros_ec_codec.c | 454 +++++++++++++++++++++++++++++++
-> >  4 files changed, 466 insertions(+)
-> >  create mode 100644 sound/soc/codecs/cros_ec_codec.c
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 05e1922624e58..d66f80f3252d7 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3638,8 +3638,10 @@ F:	drivers/platform/chrome/
-> >  
-> >  CHROMEOS EC CODEC DRIVER
-> >  M:	Cheng-Yi Chiang <cychiang@chromium.org>
-> > +R:	Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> >  S:	Maintained
-> >  F:	Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
-> > +F:	sound/soc/codecs/cros_ec_codec.*
-> >  
-> >  CIRRUS LOGIC AUDIO CODEC DRIVERS
-> >  M:	Brian Austin <brian.austin@cirrus.com>
-> > diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> > index 87cb9c51e6f5a..0b36428159b71 100644
-> > --- a/sound/soc/codecs/Kconfig
-> > +++ b/sound/soc/codecs/Kconfig
-> > @@ -50,6 +50,7 @@ config SND_SOC_ALL_CODECS
-> >  	select SND_SOC_BT_SCO
-> >  	select SND_SOC_BD28623
-> >  	select SND_SOC_CQ0093VC
-> > +	select SND_SOC_CROS_EC_CODEC
-> 
-> This unconditionally selects SND_SOC_CROS_EC_CODEC, but SND_SOC_CROS_EC_CODEC
-> depends on MFD_CROS_EC. This is missing an "if MFD_CROS_EC" qualifier.
-> 
-> >  	select SND_SOC_CS35L32 if I2C
-> >  	select SND_SOC_CS35L33 if I2C
-> >  	select SND_SOC_CS35L34 if I2C
-> > @@ -457,6 +458,13 @@ config SND_SOC_CPCAP
-> >  config SND_SOC_CQ0093VC
-> >  	tristate
-> >  
-> > +config SND_SOC_CROS_EC_CODEC
-> > +	tristate "codec driver for ChromeOS EC"
-> > +	depends on MFD_CROS_EC
-> > +	help
-> > +	  If you say yes here you will get support for the
-> > +	  ChromeOS Embedded Controller's Audio Codec.
-> > +
-> >  config SND_SOC_CS35L32
-> >  	tristate "Cirrus Logic CS35L32 CODEC"
-> >  	depends on I2C
-> > diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> > index 9bb3346fab2fe..3cfd8f5f61705 100644
-> > --- a/sound/soc/codecs/Makefile
-> > +++ b/sound/soc/codecs/Makefile
-> > @@ -42,6 +42,7 @@ snd-soc-bd28623-objs := bd28623.o
-> >  snd-soc-bt-sco-objs := bt-sco.o
-> >  snd-soc-cpcap-objs := cpcap.o
-> >  snd-soc-cq93vc-objs := cq93vc.o
-> > +snd-soc-cros-ec-codec-objs := cros_ec_codec.o
-> >  snd-soc-cs35l32-objs := cs35l32.o
-> >  snd-soc-cs35l33-objs := cs35l33.o
-> >  snd-soc-cs35l34-objs := cs35l34.o
-> > @@ -310,6 +311,7 @@ obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
-> >  obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
-> >  obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
-> >  obj-$(CONFIG_SND_SOC_CPCAP)	+= snd-soc-cpcap.o
-> > +obj-$(CONFIG_SND_SOC_CROS_EC_CODEC)	+= snd-soc-cros-ec-codec.o
-> >  obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
-> >  obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
-> >  obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
-> > diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> > new file mode 100644
-> > index 0000000000000..85ea23f4b681c
-> > --- /dev/null
-> > +++ b/sound/soc/codecs/cros_ec_codec.c
-> > @@ -0,0 +1,454 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Driver for ChromeOS Embedded Controller codec.
-> > + *
-> > + * This driver uses the cros-ec interface to communicate with the ChromeOS
-> > + * EC for audio function.
-> > + */
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/device.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/mfd/cros_ec.h>
-> > +#include <linux/mfd/cros_ec_commands.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <sound/pcm.h>
-> > +#include <sound/pcm_params.h>
-> > +#include <sound/soc.h>
-> > +#include <sound/tlv.h>
-> > +
-> > +#define MAX_GAIN 43
-> 
-> Is there some reason for this magic number ? What does it reflect ? 
-> 
-> > +
-> > +#define DRV_NAME "cros-ec-codec"
-> > +
-> > +/**
-> > + * struct cros_ec_codec_data - ChromeOS EC codec driver data.
-> > + * @dev:         Device structure used in sysfs.
-> > + * @ec_device:   cros_ec_device structure to talk to the physical device.
-> > + * @component:   Pointer to the component.
-> > + */
-> > +struct cros_ec_codec_data {
-> > +	struct device *dev;
-> > +	struct cros_ec_device *ec_device;
-> > +	struct snd_soc_component *component;
-> > +};
-> > +
-> > +static const DECLARE_TLV_DB_SCALE(ec_mic_gain_tlv, 0, 100, 0);
-> > +/*
-> > + * Wrapper for EC command.
-> > + */
-> > +static int ec_command(struct snd_soc_component *component, int version,
-> > +		      int command, u8 *outdata, int outsize,
-> > +		      u8 *indata, int insize)
-> > +{
-> > +	struct cros_ec_codec_data *codec_data =
-> > +		snd_soc_component_get_drvdata(component);
-> > +	struct cros_ec_device *ec_device = codec_data->ec_device;
-> > +	struct cros_ec_command *msg;
-> > +	int ret;
-> > +
-> > +	msg = kzalloc(sizeof(*msg) + max(insize, outsize), GFP_KERNEL);
-> > +	if (!msg)
-> > +		return -ENOMEM;
-> 
-> As far as I can see, the calling parameter is always "struct ec_param_codec_i2s".
-> With that in mind, this code seems unnecessarily complex. Is this code expected
-> to be called multiple times in parallel and requires multiple instances of
-> struct ec_param_codec_i2s to be allocated ? Even if so, why not just use
-> a local variable / array ?
-> 
-> [ This makes me wonder how EC transfers are synchronized in
->   cros_ec_cmd_xfer_status() and below. Does anyone know ? I don't immedately
->   see it.
-> ]
-> 
-Answering this part myself: locking is implemented in cros_ec_cmd_xfer(),
-which is called from cros_ec_cmd_xfer_status(). No idea why I didn't see
-that earlier.
-
-Guenter
+Cj4+IEkgY291bGQgdXNlIHNvbWUgZmVlZGJhY2sgb24gSERNSSBhdWRpbyBpc3N1ZXMgZXhwb3Nl
+ZCBkdXJpbmcgdGhlIDQuMjEKPj4gbWVyZ2Ugd2luZG93LiBCeSBhY2NpZGVudCAobWlzbGVhZGlu
+ZyBkb2N1bWVudGF0aW9uKSB3ZSBlbmRlZCB1cAo+PiBlbmFibGluZyB0aGUgU2t5bGFrZSBkcml2
+ZXIgaW5zdGVhZCBvZiB0aGUgSERhdWRpbyBsZWdhY3ksIGFuZCBicm9rZQo+PiBhdWRpbyBvbiBh
+IG51bWJlciBvZiBTa3lsYWtlIGFuZCBBcG9sbG9MYWtlIGRldmljZXMgd2hlcmUgdGhlCj4+IEhE
+TUkvaURJU1AgY29kZWMgd2FzIG5vdCBkZXRlY3RlZCAoYml0IDIgbm90IHNldCBpbiB0aGUKPj4g
+Y29kZWNfbWFzaykuIExpbnVzJyBEZWxsIFhQUzEzIDkzNTAgd2FzIHRoZSBmaXJzdCB0byBiZSBp
+bXBhY3RlZCBvZgo+PiBjb3Vyc2UuLi4KPj4KPj4gQWZ0ZXIgZGVidWdnaW5nIGEgYml0LCB0aGlz
+IGlzc3VlIGNhbiBiZSByZXNvbHZlZCBieSBlaXRoZXIKPj4KPj4gYSkgY29tcGlsaW5nIGJvdGgg
+U09VTkQgYW5kIERSTSBhcyBidWlsdC1pbnMgKHkgaW5zdGVhZCBvZiBtKQo+Pgo+PiBiKSBtb3Zp
+bmcgdGhlIGNhbGxzIHNuZF9oZGFjX2k5MTVfaW5pdCgpIHRvIHRoZSBwcm9iZSBmdW5jdGlvbiBp
+bnN0ZWFkCj4+IG9mIHRoZSB3b3JrZXIgcXVldWUgKGNvZGUgYXQKPj4gaHR0cHM6Ly9naXRodWIu
+Y29tL3BsYm9zc2FydC9zb3VuZC9jb21taXRzL2ZpeC9za2wtaGRtaSkKPiBUaGlzIGlzbid0IGd1
+YXJhbnRlZWQgdG8gd29yaywgYXMgcmVxdWVzdF9tb2R1bGUoKSBtaWdodCBiZSBpbnZvbHZlZCwK
+PiBJJ20gYWZyYWlkLgoKU29ycnksIHdoYXQgd291bGQgYmUgdGhlIGltcGFjdCBvZiB0aGUgcmVx
+dWVzdF9tb2R1bGU/IGl0J2QganVzdCBkZWxheSAKdGhlIHByb2JlIG9uIHRoZSBhdWRpbyBzaWRl
+LCBubz8KCkFuZCBpZiB0aGUgcmVxdWVzdF9tb2R1bGUgZmFpbGVkIHRoZW4gSERNSSB3b3VsZG4n
+dCBiZSBtb3JlIGJyb2tlbiAKYW55d2F5cy4uLgoKPgo+PiBCb3RoIHNvbHV0aW9ucyBwb2ludCB0
+byB0aW1pbmcgaXNzdWVzLgo+Pgo+PiBEdXJpbmcgaW50ZXJuYWwgcmV2aWV3cyBJIHdhcyBhbGVy
+dGVkIHRvIHRoZSBmYWN0IHRoYXQgdGhlIHN1Z2dlc3RlZAo+PiBmaXggZXNzZW50aWFsbHkgcmV2
+ZXJ0cyBwYXRjaCBhYjFiNzMyZDUzYzE4ICgnQVNvQzogSW50ZWw6IFNreWxha2U6Cj4+IE1vdmUg
+aTkxNSByZWdpc3RyYXRpb24gdG8gd29ya2VyIHRocmVhZCcpIHdoaWNoIHdhcyBpbnRyb2R1Y2Vk
+IHRvCj4+IHNvbHZlIERSTSBsb2NrdXAgaXNzdWVzLgo+Pgo+PiBJbiBvdGhlciB3b3Jkcywgd2Ug
+YXJlIGF0IGEgcG9pbnQgd2hlcmUgd2UgZWl0aGVyIGhhdmUgRFJNIGxvY2t1cHMgb3IKPj4gY2Fu
+J3QgZGV0ZWN0IHRoZSBIRE1JIGF1ZGlvIGNvZGVjLCBub25lIG9mIHdoaWNoIGFyZSB0b28gZ29v
+ZC4KPj4KPj4gSSBkb24ndCBoYXZlIHRoZSBiYWNrZ3JvdW5kIGZvciB0aGUgRFJNIGxvY2t1cCBz
+dHVmZiwgbm9yIGRvIEkKPj4gdW5kZXJzdGFuZCB3aHkgc25kX2hkYWNfaTkxNV9pbml0IGhhcyB0
+byBiZSBjYWxsZWQgZnJvbSBhIHRocmVhZAo+PiBjb250ZXh0LiBJcyB0aGlzIHJlYWxseSBhIHJl
+cXVpcmVtZW50Pwo+Pgo+PiBJIGFsc28gZG9uJ3QgZ2V0IHdoYXQgc29ydCBvZiB0aW1pbmcgaXNz
+dWVzIHdvdWxkIGNvbWUgZnJvbSBhbgo+PiBpbml0aWFsaXphdGlvbi4gV2hhdCBoYXBwZW5zIG9u
+IHRoZSBpOTE1IHNpZGUgYW5kIGlzIHRoZXJlIHNvbWUgc29ydAo+PiBvZiBtYW5kYXRvcnkgZGVs
+YXkgYmV0d2VlbiB0aGUgY29tcGxldGlvbiBvZiB0aGUgaTkxNV9pbml0IGFuZCBpc3N1aW5nCj4+
+IGEgc25kX2hkYWNfY2hpcF9yZWFkdyhidXMsIFNUQVRFU1RTKSB0byBnZXQgdGhlIGNvZGVjIG1h
+c2tzIG9uIHRoZQo+PiBIRGF1ZGlvIGxpbmtzPwo+IHNuZF9oZGFjX2k5MTVfaW5pdCgpIHdhaXRz
+IGZvciB0aGUgYmluZGluZyB3aXRoIHRoZSBpOTE1IGF1ZGlvCj4gY29tcG9uZW50LCBzbyBhIHBv
+c3NpYmxlIHNvbHV0aW9uIHdvdWxkIGJlIGp1c3QgdG8gZGVsYXkgdGhlIGF1ZGlvCj4gY29tcG9u
+ZW50IHJlZ2lzdHJhdGlvbiBhdCB0aGUgcmVhbGx5IGxhc3Qgc3RhZ2UsIGxpa2UgdGhlIGNoYW5n
+ZQo+IGJlbG93Lgo+Cj4gSWYgdGhpcyBzdGlsbCBkb2Vzbid0IHdvcmssIGl0J2xsIGJlIG1vcmUg
+ZGVlcGx5IGluc2lkZSwgYW5kIEkgaGF2ZQo+IGxpdHRsZSBjbHVlIGZvciBub3cuLi4KCkkgdHJp
+ZWQgdGhpcyBzdWdnZXN0aW9uIGFuZCBubyBsdWNrLCBzYW1lIGVycm9yIHdpdGggdGhlIGlESVNQ
+IGNvZGVjIG5vdCAKZXhwb3NlZC4KCkkgYWRkZWQgYSBkZWxheSBhZnRlciBzbmRfaGRhY19pOTE1
+X2luaXQoKSwgZG9lc24ndCBzZWVtIHRvIGRvIGFueXRoaW5nLgoKT25lIHBvc3NpYmlsaXR5IGlz
+IHRoYXQgdGhpcyBpcyBhIHNpZGUgZWZmZWN0IG9mIHRoZSBTa3lsYWtlIGRyaXZlciAKaW5pdGlh
+bGl6aW5nIHRoZSBsaW5rIHR3aWNlIGZvciBzb21lIG9kZCByZWFzb24uCgpBbmQgSSBzdGlsbCBk
+b24ndCBnZXQgd2hhdCB0aGUgbW90aXZhdGlvbiBmb3IgbW92aW5nIHRoaXMgaW5pdCB0byBhIHdv
+cmsgCnF1ZXVlIHdhcyBpbiB0aGUgZmlyc3QgcGxhY2UuCgpEb2Vzbid0IHNlZW0gbGlrZSBhbiBl
+YXN5IG9uZSB0byBmaXguLi4KCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+IC0tLQo+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jIGIvZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaTkxNV9kcnYuYwo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2
+LmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jCj4gQEAgLTE1NzcsOCAr
+MTU3Nyw2IEBAIHN0YXRpYyB2b2lkIGk5MTVfZHJpdmVyX3JlZ2lzdGVyKHN0cnVjdCBkcm1faTkx
+NV9wcml2YXRlICpkZXZfcHJpdikKPiAgIAlpZiAoSVNfR0VONShkZXZfcHJpdikpCj4gICAJCWlu
+dGVsX2dwdV9pcHNfaW5pdChkZXZfcHJpdik7Cj4gICAKPiAtCWludGVsX2F1ZGlvX2luaXQoZGV2
+X3ByaXYpOwo+IC0KPiAgIAkvKgo+ICAgCSAqIFNvbWUgcG9ydHMgcmVxdWlyZSBjb3JyZWN0bHkg
+c2V0LXVwIGhwZCByZWdpc3RlcnMgZm9yIGRldGVjdGlvbiB0bwo+ICAgCSAqIHdvcmsgcHJvcGVy
+bHkgKGxlYWRpbmcgdG8gZ2hvc3QgY29ubmVjdGVkIGNvbm5lY3RvciBzdGF0dXMpLCBlLmcuIFZH
+QQo+IEBAIC0xNTk3LDYgKzE1OTUsOCBAQCBzdGF0aWMgdm9pZCBpOTE1X2RyaXZlcl9yZWdpc3Rl
+cihzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gICAKPiAgIAlpbnRlbF9wb3dl
+cl9kb21haW5zX2VuYWJsZShkZXZfcHJpdik7Cj4gICAJaW50ZWxfcnVudGltZV9wbV9lbmFibGUo
+ZGV2X3ByaXYpOwo+ICsKPiArCWludGVsX2F1ZGlvX2luaXQoZGV2X3ByaXYpOwo+ICAgfQo+ICAg
+Cj4gICAvKioKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+SW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
+dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
