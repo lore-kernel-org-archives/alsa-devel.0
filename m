@@ -1,53 +1,89 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Timing issues between ALSA and i915 drivers
-Date: Wed, 16 Jan 2019 11:48:25 -0600
-Message-ID: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sdm845: Set DAI format for dmic codec"
+	to the asoc tree
+Date: Wed, 16 Jan 2019 18:06:53 +0000 (GMT)
+Message-ID: <20190116180653.563621126FFD@debutante.sirena.org.uk>
+References: <20190115084159.135113-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Imre Deak <imre.deak@intel.com>, "Rojewski, Cezary" <cezary.rojewski@intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 374242666B3
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 19:06:54 +0100 (CET)
+In-Reply-To: <20190115084159.135113-1-cychiang@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: alsa-devel@alsa-project.org, tzungbi@chromium.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJIGNvdWxkIHVzZSBzb21lIGZlZWRiYWNrIG9uIEhETUkgYXVkaW8gaXNzdWVzIGV4cG9z
-ZWQgZHVyaW5nIHRoZSA0LjIxIAptZXJnZSB3aW5kb3cuIEJ5IGFjY2lkZW50IChtaXNsZWFkaW5n
-IGRvY3VtZW50YXRpb24pIHdlIGVuZGVkIHVwIAplbmFibGluZyB0aGUgU2t5bGFrZSBkcml2ZXIg
-aW5zdGVhZCBvZiB0aGUgSERhdWRpbyBsZWdhY3ksIGFuZCBicm9rZSAKYXVkaW8gb24gYSBudW1i
-ZXIgb2YgU2t5bGFrZSBhbmQgQXBvbGxvTGFrZSBkZXZpY2VzIHdoZXJlIHRoZSBIRE1JL2lESVNQ
-IApjb2RlYyB3YXMgbm90IGRldGVjdGVkIChiaXQgMiBub3Qgc2V0IGluIHRoZSBjb2RlY19tYXNr
-KS4gTGludXMnIERlbGwgClhQUzEzIDkzNTAgd2FzIHRoZSBmaXJzdCB0byBiZSBpbXBhY3RlZCBv
-ZiBjb3Vyc2UuLi4KCkFmdGVyIGRlYnVnZ2luZyBhIGJpdCwgdGhpcyBpc3N1ZSBjYW4gYmUgcmVz
-b2x2ZWQgYnkgZWl0aGVyCgphKSBjb21waWxpbmcgYm90aCBTT1VORCBhbmQgRFJNIGFzIGJ1aWx0
-LWlucyAoeSBpbnN0ZWFkIG9mIG0pCgpiKSBtb3ZpbmcgdGhlIGNhbGxzIHNuZF9oZGFjX2k5MTVf
-aW5pdCgpIHRvIHRoZSBwcm9iZSBmdW5jdGlvbiBpbnN0ZWFkIApvZiB0aGUgd29ya2VyIHF1ZXVl
-IChjb2RlIGF0IApodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L3NvdW5kL2NvbW1pdHMvZml4
-L3NrbC1oZG1pKQoKQm90aCBzb2x1dGlvbnMgcG9pbnQgdG8gdGltaW5nIGlzc3Vlcy4KCkR1cmlu
-ZyBpbnRlcm5hbCByZXZpZXdzIEkgd2FzIGFsZXJ0ZWQgdG8gdGhlIGZhY3QgdGhhdCB0aGUgc3Vn
-Z2VzdGVkIGZpeCAKZXNzZW50aWFsbHkgcmV2ZXJ0cyBwYXRjaCBhYjFiNzMyZDUzYzE4ICgnQVNv
-QzogSW50ZWw6IFNreWxha2U6IE1vdmUgCmk5MTUgcmVnaXN0cmF0aW9uIHRvIHdvcmtlciB0aHJl
-YWQnKSB3aGljaCB3YXMgaW50cm9kdWNlZCB0byBzb2x2ZSBEUk0gCmxvY2t1cCBpc3N1ZXMuCgpJ
-biBvdGhlciB3b3Jkcywgd2UgYXJlIGF0IGEgcG9pbnQgd2hlcmUgd2UgZWl0aGVyIGhhdmUgRFJN
-IGxvY2t1cHMgb3IgCmNhbid0IGRldGVjdCB0aGUgSERNSSBhdWRpbyBjb2RlYywgbm9uZSBvZiB3
-aGljaCBhcmUgdG9vIGdvb2QuCgpJIGRvbid0IGhhdmUgdGhlIGJhY2tncm91bmQgZm9yIHRoZSBE
-Uk0gbG9ja3VwIHN0dWZmLCBub3IgZG8gSSAKdW5kZXJzdGFuZCB3aHkgc25kX2hkYWNfaTkxNV9p
-bml0IGhhcyB0byBiZSBjYWxsZWQgZnJvbSBhIHRocmVhZCAKY29udGV4dC4gSXMgdGhpcyByZWFs
-bHkgYSByZXF1aXJlbWVudD8KCkkgYWxzbyBkb24ndCBnZXQgd2hhdCBzb3J0IG9mIHRpbWluZyBp
-c3N1ZXMgd291bGQgY29tZSBmcm9tIGFuIAppbml0aWFsaXphdGlvbi4gV2hhdCBoYXBwZW5zIG9u
-IHRoZSBpOTE1IHNpZGUgYW5kIGlzIHRoZXJlIHNvbWUgc29ydCBvZiAKbWFuZGF0b3J5IGRlbGF5
-IGJldHdlZW4gdGhlIGNvbXBsZXRpb24gb2YgdGhlIGk5MTVfaW5pdCBhbmQgaXNzdWluZyBhIApz
-bmRfaGRhY19jaGlwX3JlYWR3KGJ1cywgU1RBVEVTVFMpIHRvIGdldCB0aGUgY29kZWMgbWFza3Mg
-b24gdGhlIEhEYXVkaW8gCmxpbmtzPwoKVGhhbmtzIGZvciBhbnkgcG9pbnRlcnMgb3IgY29tbWVu
-dHMuCgotUGllcnJlCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
-Z2Z4Cg==
+The patch
+
+   ASoC: sdm845: Set DAI format for dmic codec
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 9019ab102fe8d741f873e6f630fb7aa74c38818a Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Tue, 15 Jan 2019 16:41:59 +0800
+Subject: [PATCH] ASoC: sdm845: Set DAI format for dmic codec
+
+Set codec DAI format for dmic codec in startup.
+
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/sdm845.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 6f66a58e23ca..882f52ed8231 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -248,12 +248,14 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 		break;
+ 
+ 	case SECONDARY_MI2S_TX:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
+ 		if (++(data->sec_mi2s_clk_count) == 1) {
+ 			snd_soc_dai_set_sysclk(cpu_dai,
+ 				Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
+ 				MI2S_BCLK_RATE,	SNDRV_PCM_STREAM_CAPTURE);
+ 		}
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
++		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
+ 		break;
+ 
+ 	case QUATERNARY_TDM_RX_0:
+-- 
+2.20.1
