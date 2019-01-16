@@ -1,94 +1,72 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] alsamixer: define _GNU_SOURCE to get exp10
-Date: Wed, 16 Jan 2019 13:22:53 +0100
-Message-ID: <c884ec4f-6878-16bb-dfd7-cecb3efc2f8a@perex.cz>
-References: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 4/4] ASoC: add imx-audmix DT binding documentation
+Date: Wed, 16 Jan 2019 08:57:53 -0600
+Message-ID: <CAL_JsqKzmqubd8BVPdju2hLwZNMsen-1+uuHT+S-yirXaSNyHw@mail.gmail.com>
+References: <1546952716-2743-1-git-send-email-viorel.suman@nxp.com>
+ <1546952716-2743-5-git-send-email-viorel.suman@nxp.com> <20190115205755.GA4022@bogus>
+ <CAEnQRZBn7nM-KrGSvnzPWuU=a+jyRxfEKhZSsDD4wTqr6spkwg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 56B4E266A7C
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 13:22:56 +0100 (CET)
-In-Reply-To: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: makepost@firemail.cc
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAEnQRZBn7nM-KrGSvnzPWuU=a+jyRxfEKhZSsDD4wTqr6spkwg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@gmail.com>
+Cc: Viorel Suman <viorel.suman@nxp.com>, Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 16.1.2019 v 02:35 makepost@firemail.cc napsal(a):
-> Fixes Master, Headphones and Speaker stuck at -8 percentage after
-> building with Clang 7.0.1 and getting warned about implicit declaration
-> of exp10, which is behind _GNU_SOURCE as a non-standard feature. Thanks
-> Takashi Iwai for the CFLAGS suggestion on the mailing list. GCC build is
-> not affected, so not adding a compiler check to the configure script.
-> 
-> uClibc-ng has got exp10 since 1.0.12, so the fallback macro is no longer
-> needed. However, alsa-utils relies on gettext so might need further
-> patches to actually work on uClibc systems.
-> 
-> Signed-off-by: makepost <makepost@firemail.cc>
-> 
-> diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
-> index 94bd0fe..48cfbe2 100644
-> --- a/alsamixer/volume_mapping.c
-> +++ b/alsamixer/volume_mapping.c
-> @@ -36,11 +36,6 @@
->   #include <stdbool.h>
->   #include "volume_mapping.h"
-> 
-> -#ifdef __UCLIBC__
-> -/* 10^x = 10^(log e^x) = (e^x)^log10 = e^(x * log 10) */
-> -#define exp10(x) (exp((x) * log(10)))
-> -#endif /* __UCLIBC__ */
-> -
->   #define MAX_LINEAR_DB_SCALE    24
-> 
->   static inline bool use_linear_dB_scale(long dBmin, long dBmax)
-> diff --git a/configure.ac b/configure.ac
-> index 7938996..0d54942 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -350,6 +350,8 @@ if test x$alsamixer = xtrue; then
-> 
-> 
->     AC_MSG_RESULT([$CURSESLIB])
-> +
-> +  CFLAGS="$CFLAGS -D_GNU_SOURCE"
+On Wed, Jan 16, 2019 at 2:22 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
+>
+> On Tue, Jan 15, 2019 at 10:58 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Jan 08, 2019 at 01:05:51PM +0000, Viorel Suman wrote:
+> > > Add the DT binding documentation for Audio Mixer
+> > > machine driver.
+> > >
+> > > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/sound/imx-audmix.txt       | 24 ++++++++++++++++++++++
+> > >  1 file changed, 24 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/sound/imx-audmix.txt b/Documentation/devicetree/bindings/sound/imx-audmix.txt
+> > > new file mode 100644
+> > > index 0000000..6ac1230
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/sound/imx-audmix.txt
+> > > @@ -0,0 +1,24 @@
+> > > +NXP Audio Mixer (AUDMIX) machine driver.
+> > > +
+> > > +Required properties:
+> > > +===================================
+> > > +  - compatible               : Compatible list, contains "fsl,imx-audmix"
+> > > +
+> > > +  - model            : Short audio card description.
+> > > +
+> > > +  - dais             : Must contain a list of phandles to AUDMIX connected
+> > > +                       DAIs. The current implementation requires two phandles
+> > > +                       to SAI interfaces to be provided, the first SAI in the
+> > > +                       list being used to route the AUDMIX output.
+> > > +
+> > > +  - audmix-controller        : Must contain the phandle to the AUDMIX device node.
+> >
+> > I don't think you need 2 nodes for this as this one is just a virtual
+> > device. Just add the dais property to the audmix node.
+>
+> Hi Rob,
+>
+> Thanks for the suggestion. We want to understand better the reasoning
+> behind this.
+>
+> Is it because dais are physically connected to AUDMIX node?
+>
+> In ALSA we usually add all the components inside the
+> associated machine driver virtual node.
 
-It would be propably better to put this to the local makefile for alsamixer:
+Yes, but in those cases, there's a bunch of components (DAIs, DMA,
+DSP, amp, codecs, etc.) with no main device. That doesn't really
+appear to be the case here (or your example was incomplete).
 
-diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
-index 259b29e..249e8f8 100644
---- a/alsamixer/Makefile.am
-+++ b/alsamixer/Makefile.am
-@@ -1,4 +1,4 @@
--AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
-+AM_CFLAGS = -D_GNU_SOURCE @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
- LDADD = @CURSESLIB@
+It's simply that we try to avoid such virtual devices unless
+absolutely necessary.
 
- bin_PROGRAMS = alsamixer
-
-The reason, why the problem is not visible with the standard
-gcc/glibc/ncurses is that this definition is activated by ncurses:
-
-$ find alsamixer -type f -exec grep -H GNU_SOURCE {} \;
-alsamixer/Makefile:CURSES_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
-alsamixer/Makefile:NCURSESW_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
-alsamixer/Makefile:AM_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
--DCURSESINC="<ncurses.h>"
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Rob
