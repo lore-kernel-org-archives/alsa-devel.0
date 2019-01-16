@@ -1,19 +1,17 @@
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Subject: Re: Noise in begnning of alsa application
-Date: Wed, 16 Jan 2019 17:26:27 +0530
-Message-ID: <CALW20Z3P_qT1ES_a7A9Mtnx_fPGhcqrfZkvZft3PdxdXuQ=trQ@mail.gmail.com>
-References: <CALW20Z3_KeN7c7k-zL5T0YbW6Zd2t_OUCUbfa1+8_nY6PTEAYg@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsamixer: define _GNU_SOURCE to get exp10
+Date: Wed, 16 Jan 2019 13:22:53 +0100
+Message-ID: <c884ec4f-6878-16bb-dfd7-cecb3efc2f8a@perex.cz>
+References: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com
- [209.85.210.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 19A02266A7C
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 12:55:27 +0100 (CET)
-Received: by mail-pf1-f180.google.com with SMTP id c123so2986310pfb.0
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 03:55:27 -0800 (PST)
-In-Reply-To: <CALW20Z3_KeN7c7k-zL5T0YbW6Zd2t_OUCUbfa1+8_nY6PTEAYg@mail.gmail.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56B4E266A7C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 13:22:56 +0100 (CET)
+In-Reply-To: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: makepost@firemail.cc
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update from my side, for audio rendering i'm using below application.
-I'm sharing reference render application which my own application is
-built.
+Dne 16.1.2019 v 02:35 makepost@firemail.cc napsal(a):
+> Fixes Master, Headphones and Speaker stuck at -8 percentage after
+> building with Clang 7.0.1 and getting warned about implicit declaration
+> of exp10, which is behind _GNU_SOURCE as a non-standard feature. Thanks
+> Takashi Iwai for the CFLAGS suggestion on the mailing list. GCC build is
+> not affected, so not adding a compiler check to the configure script.
+> 
+> uClibc-ng has got exp10 since 1.0.12, so the fallback macro is no longer
+> needed. However, alsa-utils relies on gettext so might need further
+> patches to actually work on uClibc systems.
+> 
+> Signed-off-by: makepost <makepost@firemail.cc>
+> 
+> diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
+> index 94bd0fe..48cfbe2 100644
+> --- a/alsamixer/volume_mapping.c
+> +++ b/alsamixer/volume_mapping.c
+> @@ -36,11 +36,6 @@
+>   #include <stdbool.h>
+>   #include "volume_mapping.h"
+> 
+> -#ifdef __UCLIBC__
+> -/* 10^x = 10^(log e^x) = (e^x)^log10 = e^(x * log 10) */
+> -#define exp10(x) (exp((x) * log(10)))
+> -#endif /* __UCLIBC__ */
+> -
+>   #define MAX_LINEAR_DB_SCALE    24
+> 
+>   static inline bool use_linear_dB_scale(long dBmin, long dBmax)
+> diff --git a/configure.ac b/configure.ac
+> index 7938996..0d54942 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -350,6 +350,8 @@ if test x$alsamixer = xtrue; then
+> 
+> 
+>     AC_MSG_RESULT([$CURSESLIB])
+> +
+> +  CFLAGS="$CFLAGS -D_GNU_SOURCE"
 
-https://github.com/bear24rw/alsa-utils/blob/master/aplay/aplay.c
+It would be propably better to put this to the local makefile for alsamixer:
 
-regards,
-Chakravarthi Pradeep K
+diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
+index 259b29e..249e8f8 100644
+--- a/alsamixer/Makefile.am
++++ b/alsamixer/Makefile.am
+@@ -1,4 +1,4 @@
+-AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
++AM_CFLAGS = -D_GNU_SOURCE @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
+ LDADD = @CURSESLIB@
 
-On Wed, Jan 16, 2019 at 5:07 PM Chakravarthi Pradeep <doubleq7@gmail.com> wrote:
->
-> I have ALSA driver for capture device which works fine with VLC. when
-> I try to capture and render using own application having some issues.
-> When I start play, it has some noise in beginning and audio is
-> discontinuous in between. Discontinuous means, some audio frame are
-> getting dropped in between. cut cut sound for sine wave. I have tried
-> snd_pcm_drop and snd_pcm_drain but no use. Kindly suggest how to
-> remove the starting noise in ALSA.
->
-> --
-> Thanks and Regards
-> Chakravarthi Pradeep.K
+ bin_PROGRAMS = alsamixer
 
+The reason, why the problem is not visible with the standard
+gcc/glibc/ncurses is that this definition is activated by ncurses:
 
+$ find alsamixer -type f -exec grep -H GNU_SOURCE {} \;
+alsamixer/Makefile:CURSES_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+alsamixer/Makefile:NCURSESW_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+alsamixer/Makefile:AM_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+-DCURSESINC="<ncurses.h>"
+
+					Jaroslav
 
 -- 
-Thanks and Regards
-Chakravarthi Pradeep.K
-Ph: 91 9980434900
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
