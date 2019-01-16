@@ -1,18 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: soc-core: use
- snd_soc_dai_link_component for cpu
-Date: Wed, 16 Jan 2019 09:08:19 -0600
-Message-ID: <3b1f5c02-65e1-b43e-3556-129d48c2375d@linux.intel.com>
-References: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 05/14] ALSA: pci: Remove superfluous
+ snd_pcm_suspend*() calls
+Date: Wed, 16 Jan 2019 15:50:27 +0000
+Message-ID: <20190116155027.GB7186@sirena.org.uk>
+References: <20190115162155.6308-1-tiwai@suse.de>
+ <20190115162155.6308-6-tiwai@suse.de>
+ <f675ffaa-9966-a05b-7915-a4a16eefbfcb@linux.intel.com>
+ <s5hpnsx26tc.wl-tiwai@suse.de> <s5hh8e9fyam.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0985600399929118598=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 0003E266AA9
- for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 16:08:31 +0100 (CET)
-In-Reply-To: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A74D2666B3
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2019 16:50:34 +0100 (CET)
+In-Reply-To: <s5hh8e9fyam.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
-On 1/16/19 2:26 AM, Kuninori Morimoto wrote:
-> Hi Mark
->
-> These add snd_soc_dai_link_component support for CPU.
-> I know multi-CPU support patch was posted to ML,
-> but I think it is not yet accepted (or rejected ?).
-If you are referring to the Intel patches, they were really too 
-intrusive and complicated. Quite frankly I don't think anyone at Intel 
-(me included) understands what is "legacy" and what is "modern", so 
-adding multiple cpu support in there was really guesswork and 
-copy/replace of the multi-codec parts, likely to break and impossible to 
-test.
->
-> If these patches were accepted, we can finally switch to
-> modern style dai_link, and remove legacy style dai_link.
+--===============0985600399929118598==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kORqDWCi7qDJ0mEj"
+Content-Disposition: inline
 
-it might be a better idea to remove the legacy first so that we have a 
-clean slate to add multiple CPUs?
 
-If you have a blurb or description of the end-goal and what evolutions 
-are required for dai links, it'd be really nice. Following incremental 
-patches over multiple kernel versions isn't straightforward and the 
-impacts of your changes isn't clear to me, e.g. I'd really like to know 
-if the current way Intel uses dailinks needs to be changed or if we are 
-good.
+--kORqDWCi7qDJ0mEj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
+On Tue, Jan 15, 2019 at 09:42:09PM +0100, Takashi Iwai wrote:
 
--Pierre
+> The last one has prepare and complete callbacks in addition to the
+> other standard PM calls.  And tm2_pm_preapre() stops sysclk and
+> complete() starts sysclk.  I don't understand why these are needed in
+> prepare and resume.  Can anyone explain?
 
->
-> Kuninori Morimoto (2):
->    ASoC: soc-core: add .num_platform for dai_link
->    ASoC: soc-core: use snd_soc_dai_link_component for cpu
->
-> For switching to modern, I added "use modern style dai_link"
-> and "remove legacy style dai_link" patches as sample.
-> If these have no objection, I will post full patch to ML.
->
-> Kuninori Morimoto (3):
->        ASoC: audio-graph/simple-card: use modern style dai_link for CPU
->        ASoC: atmel: atmel-classd: use modern style dai_link
->        ASoC: soc-core: remove regacy dai_link binding method
->
-> ---
-> Kuninori Morimoto
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+AFAICT it's just making sure that they're available ASAP so they look
+always on to the rest of the system.
+
+--kORqDWCi7qDJ0mEj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlw/UsIACgkQJNaLcl1U
+h9Dqcgf/dKAF4FnY6v5U/NlCad3zSlh8IP8QGuqfOsp9Lw495DYOvIiWih4rGfM2
+VENYtF1vSgYBc6yTF0ySCq3hnGuP725fQqXEMCMpAwLlTHBoFE43klAd4t5+ZHDu
+NKXuvcHbFL/GqLzPTQoJ+kk1HOTX4SnnrOI1jULlU58/28LWiJAP0Fger9nkLY45
+JxutG2/dPxLhK2+k6FK/JbF0/hJIgQHJ67Kzo5snXoIyERkNh6BuLncqzzGxHxPH
+5scSjc0+zq75d3M6oQJt2s7vc9R8KOoCxFSvuSKGku4terpnGwtKMR9B+IKaA8LU
+eH5UCyfD8lfJ9lAf5B+9DY1pb5H97g==
+=2JWA
+-----END PGP SIGNATURE-----
+
+--kORqDWCi7qDJ0mEj--
+
+--===============0985600399929118598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0985600399929118598==--
