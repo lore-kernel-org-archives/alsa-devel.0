@@ -1,97 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: add default pdata for i2s mode"
-	to the asoc tree
-Date: Thu, 17 Jan 2019 12:40:06 +0000 (GMT)
-Message-ID: <20190117124006.899D71126FE2@debutante.sirena.org.uk>
-References: <20190116220853.20009-1-yung-chuan.liao@linux.intel.com>
+From: Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH v3 0/4] Add NXP AUDMIX device and machine drivers
+Date: Thu, 17 Jan 2019 12:46:25 +0000
+Message-ID: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C87C426680F
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 13:40:14 +0100 (CET)
-In-Reply-To: <20190116220853.20009-1-yung-chuan.liao@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, shumingf@realtek.com, bard.liao@intel.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Viorel Suman <viorel.suman@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The patchset adds NXP Audio Mixer (AUDMIX) device and machine
+drivers and related DT bindings documentation.
 
-   ASoC: rt5682: add default pdata for i2s mode
+Changes since V2:
+1. Moved "dais" node from machine driver DTS node to device driver DTS node
+  as suggested by Rob.
 
-has been applied to the asoc tree at
+Changes since V1:
+1. Original patch split into distinct patches for the device driver and
+  DT binding documentation.
+2. Replaced AMIX with AUDMIX in both code and file names as it looks more
+  RM-compliant.
+3. Removed polarity control from CPU DAI driver as suggested by Nicolin.
+4. Added machine driver and related DT binding documentation.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Viorel Suman (4):
+  ASoC: fsl: Add Audio Mixer CPU DAI driver
+  ASoC: add fsl_audmix DT binding documentation
+  ASoC: fsl: Add Audio Mixer machine driver
+  ASoC: add imx-audmix DT binding documentation
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+ .../devicetree/bindings/sound/fsl,audmix.txt       |  50 ++
+ .../devicetree/bindings/sound/imx-audmix.txt       |  18 +
+ sound/soc/fsl/Kconfig                              |  16 +
+ sound/soc/fsl/Makefile                             |   5 +
+ sound/soc/fsl/fsl_audmix.c                         | 551 +++++++++++++++++=
+++++
+ sound/soc/fsl/fsl_audmix.h                         | 102 ++++
+ sound/soc/fsl/imx-audmix.c                         | 334 +++++++++++++
+ 7 files changed, 1076 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,audmix.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
+ create mode 100644 sound/soc/fsl/fsl_audmix.c
+ create mode 100644 sound/soc/fsl/fsl_audmix.h
+ create mode 100644 sound/soc/fsl/imx-audmix.c
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3ac1b2e4158c73175278a27c5551fa331c260b48 Mon Sep 17 00:00:00 2001
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Date: Thu, 17 Jan 2019 06:08:53 +0800
-Subject: [PATCH] ASoC: rt5682: add default pdata for i2s mode
-
-Add a default pdata which can fit most HW design. So we don't need to
-add a lot of DMI checking in this driver.
-
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5682.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 89c43b26c379..bd45d0343913 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -43,6 +43,12 @@ static const char *rt5682_supply_names[RT5682_NUM_SUPPLIES] = {
- 	"VBAT",
- };
- 
-+static const struct rt5682_platform_data i2s_default_platform_data = {
-+	.dmic1_data_pin = RT5682_DMIC1_DATA_GPIO2,
-+	.dmic1_clk_pin = RT5682_DMIC1_CLK_GPIO3,
-+	.jd_src = RT5682_JD1,
-+};
-+
- struct rt5682_priv {
- 	struct snd_soc_component *component;
- 	struct rt5682_platform_data pdata;
-@@ -2534,6 +2540,8 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, rt5682);
- 
-+	rt5682->pdata = i2s_default_platform_data;
-+
- 	if (pdata)
- 		rt5682->pdata = *pdata;
- 	else
--- 
-2.20.1
+--=20
+2.7.4
