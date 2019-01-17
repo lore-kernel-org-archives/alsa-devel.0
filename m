@@ -1,47 +1,43 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 4/5] ASoC: imx-sgtl5000: put of nodes if finding codec
- fails
-Date: Thu, 17 Jan 2019 14:04:48 -0800
-Message-ID: <20190117220448.GE16918@Asurada-Nvidia.nvidia.com>
-References: <20190117090640.12972-1-stefan@agner.ch>
- <20190117090640.12972-4-stefan@agner.ch>
+Subject: Re: [PATCH v3 0/4] Add NXP AUDMIX device and machine drivers
+Date: Thu, 17 Jan 2019 14:22:18 -0800
+Message-ID: <20190117222218.GF16918@Asurada-Nvidia.nvidia.com>
+References: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20190117090640.12972-4-stefan@agner.ch>
+In-Reply-To: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: timur@kernel.org, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 17, 2019 at 10:06:39AM +0100, Stefan Agner wrote:
-> Make sure to properly put the of node in case finding the codec
-> fails.
+On Thu, Jan 17, 2019 at 12:46:25PM +0000, Viorel Suman wrote:
+> The patchset adds NXP Audio Mixer (AUDMIX) device and machine
+> drivers and related DT bindings documentation.
 > 
-> Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> Changes since V2:
+> 1. Moved "dais" node from machine driver DTS node to device driver DTS node
+>   as suggested by Rob.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Yea, it makes a lot of sense. Otherwise, since the connection
+between IP blocks is fixed inside the SoC, the virtual sound
+node would need to be put in the soc-level dtsi, which sounds
+odd to me.
 
-> ---
->  sound/soc/fsl/imx-sgtl5000.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Changes since V1:
+> 1. Original patch split into distinct patches for the device driver and
+>   DT binding documentation.
+> 2. Replaced AMIX with AUDMIX in both code and file names as it looks more
+>   RM-compliant.
+> 3. Removed polarity control from CPU DAI driver as suggested by Nicolin.
+> 4. Added machine driver and related DT binding documentation.
 > 
-> diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-> index e1e20499b2f1..45969e6dfad7 100644
-> --- a/sound/soc/fsl/imx-sgtl5000.c
-> +++ b/sound/soc/fsl/imx-sgtl5000.c
-> @@ -111,7 +111,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
->  	codec_dev = of_find_i2c_device_by_node(codec_np);
->  	if (!codec_dev) {
->  		dev_err(&pdev->dev, "failed to find codec platform device\n");
-> -		return -EPROBE_DEFER;
-> +		ret = -EPROBE_DEFER;
-> +		goto fail;
->  	}
->  
->  	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> -- 
-> 2.20.1
-> 
+> Viorel Suman (4):
+>   ASoC: fsl: Add Audio Mixer CPU DAI driver
+>   ASoC: add fsl_audmix DT binding documentation
+>   ASoC: fsl: Add Audio Mixer machine driver
+>   ASoC: add imx-audmix DT binding documentation
+
+Reviewed-by: Nicolin Chen <nicoleotsuka@gmail.com>
