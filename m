@@ -1,90 +1,174 @@
-From: Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH] ASoC: hdmi-codec: fix oops on re-probe
-Date: Thu, 17 Jan 2019 17:32:05 +0000
-Message-ID: <E1gkBWP-0007Xd-DQ@rmk-PC.armlinux.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] Timing issues between ALSA and i915
+ drivers
+Date: Thu, 17 Jan 2019 13:53:06 -0600
+Message-ID: <d0fb9eb6-a32a-0757-22ba-012eb2aad44c@linux.intel.com>
+References: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
- by alsa0.perex.cz (Postfix) with ESMTP id 32D42266A89
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 18:32:14 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/mixed; boundary="------------B87A0C2700579B1F6A4FED1E"
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, intel-gfx@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Imre Deak <imre.deak@intel.com>, "Rojewski, Cezary" <cezary.rojewski@intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-hdmi-codec oopses the kernel when it is unbound from a successfully
-bound audio subsystem, and is then rebound:
+This is a multi-part message in MIME format.
+--------------B87A0C2700579B1F6A4FED1E
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000001c
-pgd = ee3f0000
-[0000001c] *pgd=3cc59831
-Internal error: Oops: 817 [#1] PREEMPT ARM
-Modules linked in: ext2 snd_soc_spdif_tx vmeta dove_thermal snd_soc_kirkwood ofpart marvell_cesa m25p80 orion_wdt mtd spi_nor des_generic gpio_ir_recv snd_soc_kirkwood_spdif bmm_dmabuf auth_rpcgss nfsd autofs4 etnaviv thermal_sys hwmon gpu_sched tda9950
-CPU: 0 PID: 1005 Comm: bash Not tainted 4.20.0+ #1762
-Hardware name: Marvell Dove (Cubox)
-PC is at hdmi_dai_probe+0x68/0x80
-LR is at find_held_lock+0x20/0x94
-pc : [<c04c7de0>]    lr : [<c0063bf4>]    psr: 600f0013
-sp : ee15bd28  ip : eebd8b1c  fp : c093b488
-r10: ee048000  r9 : eebdab18  r8 : ee048600
-r7 : 00000001  r6 : 00000000  r5 : 00000000  r4 : ee82c100
-r3 : 00000006  r2 : 00000001  r1 : c067e38c  r0 : ee82c100
-Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none[  297.318599] Control: 10c5387d  Table: 2e3f0019  DAC: 00000051
-Process bash (pid: 1005, stack limit = 0xee15a248)
-...
-[<c04c7de0>] (hdmi_dai_probe) from [<c04b7060>] (soc_probe_dai.part.9+0x34/0x70)
-[<c04b7060>] (soc_probe_dai.part.9) from [<c04b81a8>] (snd_soc_instantiate_card+0x734/0xc9c)
-[<c04b81a8>] (snd_soc_instantiate_card) from [<c04b8b6c>] (snd_soc_add_component+0x29c/0x378)
-[<c04b8b6c>] (snd_soc_add_component) from [<c04b8c8c>] (snd_soc_register_component+0x44/0x54)
-[<c04b8c8c>] (snd_soc_register_component) from [<c04c64b4>] (devm_snd_soc_register_component+0x48/0x84)
-[<c04c64b4>] (devm_snd_soc_register_component) from [<c04c7be8>] (hdmi_codec_probe+0x150/0x260)
-[<c04c7be8>] (hdmi_codec_probe) from [<c0373124>] (platform_drv_probe+0x48/0x98)
 
-This happens because hdmi_dai_probe() attempts to access the HDMI
-codec private data, but this has not been assigned by hdmi_dai_probe()
-before it calls devm_snd_soc_register_component().  Move the call to
-dev_set_drvdata() before devm_snd_soc_register_component() to avoid
-this oops.
+> I could use some feedback on HDMI audio issues exposed during the 4.21 
+> merge window. By accident (misleading documentation) we ended up 
+> enabling the Skylake driver instead of the HDaudio legacy, and broke 
+> audio on a number of Skylake and ApolloLake devices where the 
+> HDMI/iDISP codec was not detected (bit 2 not set in the codec_mask). 
+> Linus' Dell XPS13 9350 was the first to be impacted of course...
+>
+> After debugging a bit, this issue can be resolved by either
+>
+> a) compiling both SOUND and DRM as built-ins (y instead of m)
+>
+> b) moving the calls snd_hdac_i915_init() to the probe function instead 
+> of the worker queue (code at 
+> https://github.com/plbossart/sound/commits/fix/skl-hdmi)
+>
+> Both solutions point to timing issues.
+>
+> During internal reviews I was alerted to the fact that the suggested 
+> fix essentially reverts patch ab1b732d53c18 ('ASoC: Intel: Skylake: 
+> Move i915 registration to worker thread') which was introduced to 
+> solve DRM lockup issues.
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
----
-Discovered and patched on 4.20.
+I tried to narrow down the issue further and my current understanding is 
+that the Skylake driver performs link reset operations without the 
+display power turned on - which does not look like a very smart thing to 
+do in hindsight.
 
- sound/soc/codecs/hdmi-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+In other words, it's not really when snd_hdac_i915_init() is called that 
+matters as I assumed initially, but more when snd_hdac_display_power() 
+is invoked. There are two cases where this happens, and for each of them 
+turning the display power on results in HDMI detection. The attached 
+diffs split the initialization from the power on, which provides a 
+better understanding of the issue.
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 1c628af373eb..6bec7f36eb4c 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -799,6 +799,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	if (hcd->spdif)
- 		hcp->daidrv[i] = hdmi_spdif_dai;
+What would be really useful at this point is a confirmation that 
+snd_hdac_i915_init() cannot be called in the initial probe but does need 
+to be executed in a work queue. That would really impact the way the 
+initialization sequence is reworked on the Skylake side as well as 
+modify the way the SOF driver deals with i915 initialization.
+
+Thanks
+
+-Pierre
+
+
+--------------B87A0C2700579B1F6A4FED1E
+Content-Type: text/x-patch;
+ name="hdmi-links.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="hdmi-links.diff"
+
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 60c94836bf5b..56556d06a17f 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -767,23 +767,6 @@ static const struct hdac_bus_ops bus_core_ops = {
+ 	.get_response = snd_hdac_bus_get_response,
+ };
  
-+	dev_set_drvdata(dev, hcp);
-+
- 	ret = devm_snd_soc_register_component(dev, &hdmi_driver, hcp->daidrv,
- 				     dai_count);
- 	if (ret) {
-@@ -806,8 +808,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 			__func__, ret);
- 		return ret;
- 	}
+-static int skl_i915_init(struct hdac_bus *bus)
+-{
+-	int err;
 -
--	dev_set_drvdata(dev, hcp);
- 	return 0;
+-	/*
+-	 * The HDMI codec is in GPU so we need to ensure that it is powered
+-	 * up and ready for probe
+-	 */
+-	err = snd_hdac_i915_init(bus);
+-	if (err < 0)
+-		return err;
+-
+-	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-
+-	return 0;
+-}
+-
+ static void skl_probe_work(struct work_struct *work)
+ {
+ 	struct skl *skl = container_of(work, struct skl, probe_work);
+@@ -791,12 +774,6 @@ static void skl_probe_work(struct work_struct *work)
+ 	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = skl_i915_init(bus);
+-		if (err < 0)
+-			return;
+-	}
+-
+ 	err = skl_init_chip(bus, true);
+ 	if (err < 0) {
+ 		dev_err(bus->dev, "Init chip failed with err: %d\n", err);
+@@ -899,6 +876,11 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	unsigned short gcap;
+ 	int cp_streams, pb_streams, start_idx;
+ 
++	err = snd_hdac_i915_init(bus);
++	if (err < 0)
++		return err;
++
++
+ 	err = pci_request_regions(pci, "Skylake HD audio");
+ 	if (err < 0)
+ 		return err;
+@@ -910,7 +892,10 @@ static int skl_first_init(struct hdac_bus *bus)
+ 		return -ENXIO;
+ 	}
+ 
+-	snd_hdac_bus_reset_link(bus, true);
++	/* this bus_reset_link is unnecessary, and without the display
++	 *  power turned on prevents HDMI from being detected
++	 */
++	//snd_hdac_bus_reset_link(bus, true);
+ 
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
+@@ -962,7 +947,14 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
+ 
+-	return skl_init_chip(bus, true);
++	/* turning the display power here works */
++	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
++
++	err =  skl_init_chip(bus, true);
++
++	/* turning the display power here does not work, HDMI not detected */
++
++	return err;
  }
  
--- 
-2.7.4
+ static int skl_probe(struct pci_dev *pci,
+
+--------------B87A0C2700579B1F6A4FED1E
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4
+IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+
+--------------B87A0C2700579B1F6A4FED1E--
