@@ -1,37 +1,112 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Timing issues between ALSA and i915
- drivers
-Date: Wed, 16 Jan 2019 18:13:02 -0600
-Message-ID: <d4c2e3c9-30b0-6da2-4a9d-9b568a1748ae@linux.intel.com>
-References: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
- <s5hef9ce7iz.wl-tiwai@suse.de>
- <59d3e789-ac8d-e314-5a96-9b0569129fc9@linux.intel.com>
+From: makepost@firemail.cc
+Subject: Re: [PATCH] alsamixer: define _GNU_SOURCE to get exp10
+Date: Thu, 17 Jan 2019 02:16:44 +0200
+Message-ID: <1c7a2099a382ae15570aa6cdc0b6a666@firemail.cc>
+References: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
+ <c884ec4f-6878-16bb-dfd7-cecb3efc2f8a@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <59d3e789-ac8d-e314-5a96-9b0569129fc9@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>, intel-gfx@lists.freedesktop.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cock.li (cock.li [185.100.85.212])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC48F2667E7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 01:16:46 +0100 (CET)
+In-Reply-To: <c884ec4f-6878-16bb-dfd7-cecb3efc2f8a@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4+Pgo+Pj4gYSkgY29tcGlsaW5nIGJvdGggU09VTkQgYW5kIERSTSBhcyBidWlsdC1pbnMgKHkg
-aW5zdGVhZCBvZiBtKQo+Pj4KPj4+IGIpIG1vdmluZyB0aGUgY2FsbHMgc25kX2hkYWNfaTkxNV9p
-bml0KCkgdG8gdGhlIHByb2JlIGZ1bmN0aW9uIGluc3RlYWQKPj4+IG9mIHRoZSB3b3JrZXIgcXVl
-dWUgKGNvZGUgYXQKPj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9wbGJvc3NhcnQvc291bmQvY29tbWl0
-cy9maXgvc2tsLWhkbWkpCgpJIGFkZGVkIERSTSthdWRpbyBkbWVzZyBsb2dzIGF0IHRoZSBmb2xs
-b3dpbmcgbGluayBmb3IgcmVmZXJlbmNlOgoKaHR0cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2pl
-Y3QvbGludXgvaXNzdWVzLzU0OQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2ludGVsLWdmeAo=
+These flags vary between systems, on the Gentoo where I have access the 
+Makefile generated from e1aa6d4 contains:
+
+$ ack '^(AM|CURSES|NCURSESW)_CFLAGS' alsamixer/Makefile
+CURSES_CFLAGS = -I/usr/include/ncursesw
+NCURSESW_CFLAGS = -I/usr/include/ncursesw
+AM_CFLAGS = -I/usr/include/ncursesw  -DCURSESINC="<ncurses.h>"
+
+Files in /usr/include/ncursesw don't mention _GNU_SOURCE so I'm baffled 
+where GCC gets it from.
+
+Indeed the local alsamixer/Makefile.am is a more suitable place to put 
+the flag. A newbie question follows, should I somehow update the patch 
+with your edit and reply to this message, or did you generate the diff 
+from an already edited version?
+
+On 2019-01-16 14:22, Jaroslav Kysela wrote:
+> Dne 16.1.2019 v 02:35 makepost@firemail.cc napsal(a):
+>> Fixes Master, Headphones and Speaker stuck at -8 percentage after
+>> building with Clang 7.0.1 and getting warned about implicit 
+>> declaration
+>> of exp10, which is behind _GNU_SOURCE as a non-standard feature. 
+>> Thanks
+>> Takashi Iwai for the CFLAGS suggestion on the mailing list. GCC build 
+>> is
+>> not affected, so not adding a compiler check to the configure script.
+>> 
+>> uClibc-ng has got exp10 since 1.0.12, so the fallback macro is no 
+>> longer
+>> needed. However, alsa-utils relies on gettext so might need further
+>> patches to actually work on uClibc systems.
+>> 
+>> Signed-off-by: makepost <makepost@firemail.cc>
+>> 
+>> diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
+>> index 94bd0fe..48cfbe2 100644
+>> --- a/alsamixer/volume_mapping.c
+>> +++ b/alsamixer/volume_mapping.c
+>> @@ -36,11 +36,6 @@
+>>   #include <stdbool.h>
+>>   #include "volume_mapping.h"
+>> 
+>> -#ifdef __UCLIBC__
+>> -/* 10^x = 10^(log e^x) = (e^x)^log10 = e^(x * log 10) */
+>> -#define exp10(x) (exp((x) * log(10)))
+>> -#endif /* __UCLIBC__ */
+>> -
+>>   #define MAX_LINEAR_DB_SCALE    24
+>> 
+>>   static inline bool use_linear_dB_scale(long dBmin, long dBmax)
+>> diff --git a/configure.ac b/configure.ac
+>> index 7938996..0d54942 100644
+>> --- a/configure.ac
+>> +++ b/configure.ac
+>> @@ -350,6 +350,8 @@ if test x$alsamixer = xtrue; then
+>> 
+>> 
+>>     AC_MSG_RESULT([$CURSESLIB])
+>> +
+>> +  CFLAGS="$CFLAGS -D_GNU_SOURCE"
+> 
+> It would be propably better to put this to the local makefile for 
+> alsamixer:
+> 
+> diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
+> index 259b29e..249e8f8 100644
+> --- a/alsamixer/Makefile.am
+> +++ b/alsamixer/Makefile.am
+> @@ -1,4 +1,4 @@
+> -AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
+> +AM_CFLAGS = -D_GNU_SOURCE @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
+>  LDADD = @CURSESLIB@
+> 
+>  bin_PROGRAMS = alsamixer
+> 
+> The reason, why the problem is not visible with the standard
+> gcc/glibc/ncurses is that this definition is activated by ncurses:
+> 
+> $ find alsamixer -type f -exec grep -H GNU_SOURCE {} \;
+> alsamixer/Makefile:CURSES_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+> alsamixer/Makefile:NCURSESW_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+> alsamixer/Makefile:AM_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+> -DCURSESINC="<ncurses.h>"
+> 
+> 					Jaroslav
