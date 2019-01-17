@@ -1,39 +1,182 @@
-From: Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 3/5] ASoC: imx-sgtl5000: don't print EPROBE_DEFER as error
-Date: Thu, 17 Jan 2019 10:06:38 +0100
-Message-ID: <20190117090640.12972-3-stefan@agner.ch>
-References: <20190117090640.12972-1-stefan@agner.ch>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH] ASoC: soc.h: add explanation of
+ legacy/modern style of dai_link
+Date: Thu, 17 Jan 2019 11:56:51 +0200
+Message-ID: <CAEnQRZCaYR+eBGwCnm3ZhXX0hGBkuiBWK3gT9HDoYsovsy0uPA@mail.gmail.com>
+References: <87d0ow6n9z.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190117090640.12972-1-stefan@agner.ch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com
-Cc: fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
+ [209.85.208.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id B7F96266B63
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 10:57:03 +0100 (CET)
+Received: by mail-ed1-f67.google.com with SMTP id d39so7798227edb.12
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 01:57:03 -0800 (PST)
+In-Reply-To: <87d0ow6n9z.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Probe deferral is to be expected during normal operation, so avoid
-printing an error when it is encountered.
+Few typos here:
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- sound/soc/fsl/imx-sgtl5000.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Thu, Jan 17, 2019 at 4:28 AM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> Current ALSA SoC is assuming 1 CPU 1 Platform (= DMA) style system.
+> Because of this background, it is directly using
+> xxx_name / xxx_of_node / xxx_dai_name on dai_link.
+> Let's call it as legacy style here.
+>
+> More complex style system like multi CPU multi Platform (= DMA) will
+> coming. To supporting it, we can use snd_soc_dai_link_component on
+> dai_link. Let's call it as modern style here.
+> But current ALSA SoC can't support it so far. Thus, we need to have
+> multi CPU / multi Codec / multi Platform style in the future on ALSA SoC.
+>
+> Currently we already have multi Codec support. Platform is starting to
+> use modern style on dai_link, but still style only. Multi Platform is
+> not yet implemented. And we still don't have multi CPU support on ALSA
+> SoC, and not have modern style either.
+>
+> Currently, if driver is using legacy style Codec/Platform, it will be
+> converted to modern style on soc-core. This means, we are using glue code
+> for legacy vs modern style so far on ALSA SoC.
+> We can fully switch to modern style on all drivers if ALSA SoC supported
+> modern style for CPU, and then, legacy style code will be removed from
+> ALSA SoC.
+> Untile then, we need to keep both legacy/modern style and its glue code.
+> This patch adds such future plan and background on soc.h
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/soc.h  | 36 ++++++++++++++++++++++++++++++++++++
+>  sound/soc/soc-core.c | 20 ++++++++++++++++++--
+>  2 files changed, 54 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index e665f11..d17e368 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -891,6 +891,18 @@ struct snd_soc_dai_link {
+>         /* config - must be set by machine driver */
+>         const char *name;                       /* Codec name */
+>         const char *stream_name;                /* Stream name */
+> +
+> +       /*
+> +        *      cpu_name
+> +        *      cpu_of_node
+> +        *      cpu_dai_name
+> +        *
+> +        * These are legacy style, and will be replaced to
+> +        * modern style (= snd_soc_dai_link_component) in the future,
+> +        * but, not yet supported so far.
+> +        * If modern style was supported for CPU, all driver will switch
+> +        * to use it, and, legacy style code will be removed from ALSA SoC.
+> +        */
+>         /*
+>          * You MAY specify the link's CPU-side device, either by device name,
+>          * or by DT/OF node, but not both. If this information is omitted,
+> @@ -906,6 +918,19 @@ struct snd_soc_dai_link {
+>          * only, which only works well when that device exposes a single DAI.
+>          */
+>         const char *cpu_dai_name;
+> +
+> +       /*
+> +        *      codec_name
+> +        *      codec_of_node
+> +        *      codec_dai_name
+> +        *
+> +        * These are legacy style, it will be converted to modern style
+> +        * (= snd_soc_dai_link_component) automatically in soc-core
+> +        * if driver is using legacy style.
+> +        * Dirver shouldn't use both legacy and modern style in the same time.
+typo Driver.
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index c29200cf755a..e1e20499b2f1 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -156,7 +156,9 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+				ret);
- 		goto fail;
- 	}
- 
--- 
-2.20.1
+> +        * If modern style was supported for CPU, all driver will switch
+> +        * to use it, and, legacy style code will be removed from ALSA SoC.
+> +        */
+>         /*
+>          * You MUST specify the link's codec, either by device name, or by
+>          * DT/OF node, but not both.
+> @@ -919,6 +944,17 @@ struct snd_soc_dai_link {
+>         unsigned int num_codecs;
+>
+>         /*
+> +        *      platform_name
+> +        *      platform_of_node
+> +        *
+> +        * These are legacy style, it will be converted to modern style
+> +        * (= snd_soc_dai_link_component) automatically in soc-core
+> +        * if driver is using legacy style.
+> +        * Dirver shouldn't use both legacy and modern style in the same time.
+typo Driver
+
+> +        * If modern style was supported for CPU, all driver will switch
+> +        * to use it, and, legacy style code will be removed from ALSA SoC.
+> +        */
+> +       /*
+>          * You MAY specify the link's platform/PCM/DMA driver, either by
+>          * device name, or by DT/OF node, but not both. Some forms of link
+>          * do not need a platform.
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 4c0aaff..f01a223 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1038,9 +1038,14 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+>         struct snd_soc_dai_link_component *platform = dai_link->platform;
+>
+>         /*
+> -        * FIXME
+> +        * REMOVE ME
+>          *
+> -        * this function should be removed in the future
+> +        * This is glue code for Legacy vs Modern dai_link.
+> +        * This function will be removed if all derivers are switched to
+> +        * modern style dai_link.
+> +        * Dirver shouldn't use both legacy and modern style in the same time.
+typo Driver
+> +        * see
+> +        *      soc.h :: struct snd_soc_dai_link
+>          */
+>         /* convert Legacy platform link */
+>         if (!platform || dai_link->legacy_platform) {
+> @@ -1068,6 +1073,17 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+>  static int snd_soc_init_multicodec(struct snd_soc_card *card,
+>                                    struct snd_soc_dai_link *dai_link)
+>  {
+> +       /*
+> +        * REMOVE ME
+> +        *
+> +        * This is glue code for Legacy vs Modern dai_link.
+> +        * This function will be removed if all derivers are switched to
+> +        * modern style dai_link.
+> +        * Dirver shouldn't use both legacy and modern style in the same time.
+typo driver.
+
+> +        * see
+> +        *      soc.h :: struct snd_soc_dai_link
+> +        */
+> +
+>         /* Legacy codec/codec_dai link is a single entry in multicodec */
+>         if (dai_link->codec_name || dai_link->codec_of_node ||
+>             dai_link->codec_dai_name) {
+> --
+> 2.7.4
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
