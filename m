@@ -1,7 +1,7 @@
 From: Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 2/5] ASoC: imx-spdif: don't print EPROBE_DEFER as error
-Date: Thu, 17 Jan 2019 10:06:37 +0100
-Message-ID: <20190117090640.12972-2-stefan@agner.ch>
+Subject: [PATCH 5/5] ASoC: imx-sgtl5000: lower log level for potential probe deferral cases
+Date: Thu, 17 Jan 2019 10:06:40 +0100
+Message-ID: <20190117090640.12972-5-stefan@agner.ch>
 References: <20190117090640.12972-1-stefan@agner.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,33 +12,33 @@ To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com
 Cc: fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Probe deferral is to be expected during normal operation, so avoid
-printing an error when it is encountered.
-
-Removing the goto would not be strictly necessary. However, if
-code gets added later, the cleanup in the EPROBE_DEFER case likely
-would get missed.
+Not finding the codec/SSI instance can be due to probe deferral.
+Do not print error messages in those cases.
 
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 ---
- sound/soc/fsl/imx-spdif.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/fsl/imx-sgtl5000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index fb896b2c9ba3..797d66e43d49 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -67,10 +67,8 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- 		goto end;
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 45969e6dfad7..b6cb80480b60 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -104,13 +104,13 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
--	if (ret) {
-+	if (ret && ret != -EPROBE_DEFER)
- 		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
--		goto end;
--	}
- 
- end:
- 	of_node_put(spdif_np);
+ 	ssi_pdev = of_find_device_by_node(ssi_np);
+ 	if (!ssi_pdev) {
+-		dev_err(&pdev->dev, "failed to find SSI platform device\n");
++		dev_dbg(&pdev->dev, "failed to find SSI platform device\n");
+ 		ret = -EPROBE_DEFER;
+ 		goto fail;
+ 	}
+ 	codec_dev = of_find_i2c_device_by_node(codec_np);
+ 	if (!codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec platform device\n");
++		dev_dbg(&pdev->dev, "failed to find codec platform device\n");
+ 		ret = -EPROBE_DEFER;
+ 		goto fail;
+ 	}
 -- 
 2.20.1
