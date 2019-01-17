@@ -1,90 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/14] ALSA: pci: Remove superfluous
- snd_pcm_suspend*() calls
-Date: Thu, 17 Jan 2019 15:55:36 +0000
-Message-ID: <20190117155536.GB7003@sirena.org.uk>
-References: <20190115162155.6308-1-tiwai@suse.de>
- <20190115162155.6308-6-tiwai@suse.de>
- <f675ffaa-9966-a05b-7915-a4a16eefbfcb@linux.intel.com>
- <s5hpnsx26tc.wl-tiwai@suse.de> <s5hh8e9fyam.wl-tiwai@suse.de>
- <20190116155027.GB7186@sirena.org.uk>
- <s5h8szkzjje.wl-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 0/4] Add NXP AUDMIX device and machine drivers
+Date: Thu, 17 Jan 2019 10:18:04 -0600
+Message-ID: <20190117161804.GA5760@bogus>
+References: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4018965438871218893=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 213EB26680F
- for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2019 16:55:42 +0100 (CET)
-In-Reply-To: <s5h8szkzjje.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, dl-linux-imx <linux-imx@nxp.com>, Viorel Suman <viorel.suman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 17, 2019 at 12:46:25PM +0000, Viorel Suman wrote:
+> The patchset adds NXP Audio Mixer (AUDMIX) device and machine
+> drivers and related DT bindings documentation.
+> 
+> Changes since V2:
+> 1. Moved "dais" node from machine driver DTS node to device driver DTS node
+>   as suggested by Rob.
 
---===============4018965438871218893==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/WwmFnJnmDyWGHa4"
-Content-Disposition: inline
+That was not what I suggested. You still have a virtual node which looks 
+to me to be unnecessary.
 
-
---/WwmFnJnmDyWGHa4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jan 16, 2019 at 04:52:53PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > On Tue, Jan 15, 2019 at 09:42:09PM +0100, Takashi Iwai wrote:
-
-> > > The last one has prepare and complete callbacks in addition to the
-> > > other standard PM calls.  And tm2_pm_preapre() stops sysclk and
-> > > complete() starts sysclk.  I don't understand why these are needed in
-> > > prepare and resume.  Can anyone explain?
-
-> > AFAICT it's just making sure that they're available ASAP so they look
-> > always on to the rest of the system.
-
-> Well, but PM prepare is called before PM suspend call.  And the whole
-> ASoC suspend procedure (including PCM suspend, etc) is performed in
-> the PM suspend callback; i.e. we stop sysclk before doing anything
-> else...
-
-Thinking about this some more I'm moderately sure that the calls were
-intended to do as I described but someone misunderstood what they did
-and swapped them around.  I'm guessing nobody's been testing this.
-
---/WwmFnJnmDyWGHa4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxApXcACgkQJNaLcl1U
-h9D/AAf9EtW+s13hvioUYWBeyRgDZEa2fCrvOQRxrP0FyfQW+IfX4B0/PGOZ6feP
-x374WYhyk08uO/4sh7xMOs6cfwB3gmd+x+6dRqhQlPegmGxqb5s9lHWjP8eIbx5p
-baeMWrR7ykZB8Kki0LJrcCPCSenmUjGxAuY3FI/kfLHLx92IIN280BjPP5mRXtnK
-H0sEwHCxdindeT+eEJFa/SycyBtI93sjjRnGNGgI/Zan1UZK4KHIqqGjS464Oa6l
-dKZ9zAoWNS7hC4YmIXgKZREmyTabH6P3jT89DaBGxmZZ+PM77QI5DexkVX93+tjC
-OTIYguG9m27v6bowpJ4AywLXmp9p7A==
-=MG5N
------END PGP SIGNATURE-----
-
---/WwmFnJnmDyWGHa4--
-
---===============4018965438871218893==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4018965438871218893==--
+> 
+> Changes since V1:
+> 1. Original patch split into distinct patches for the device driver and
+>   DT binding documentation.
+> 2. Replaced AMIX with AUDMIX in both code and file names as it looks more
+>   RM-compliant.
+> 3. Removed polarity control from CPU DAI driver as suggested by Nicolin.
+> 4. Added machine driver and related DT binding documentation.
+> 
+> Viorel Suman (4):
+>   ASoC: fsl: Add Audio Mixer CPU DAI driver
+>   ASoC: add fsl_audmix DT binding documentation
+>   ASoC: fsl: Add Audio Mixer machine driver
+>   ASoC: add imx-audmix DT binding documentation
+> 
+>  .../devicetree/bindings/sound/fsl,audmix.txt       |  50 ++
+>  .../devicetree/bindings/sound/imx-audmix.txt       |  18 +
+>  sound/soc/fsl/Kconfig                              |  16 +
+>  sound/soc/fsl/Makefile                             |   5 +
+>  sound/soc/fsl/fsl_audmix.c                         | 551 +++++++++++++++++++++
+>  sound/soc/fsl/fsl_audmix.h                         | 102 ++++
+>  sound/soc/fsl/imx-audmix.c                         | 334 +++++++++++++
+>  7 files changed, 1076 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,audmix.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/imx-audmix.txt
+>  create mode 100644 sound/soc/fsl/fsl_audmix.c
+>  create mode 100644 sound/soc/fsl/fsl_audmix.h
+>  create mode 100644 sound/soc/fsl/imx-audmix.c
+> 
+> -- 
+> 2.7.4
+> 
