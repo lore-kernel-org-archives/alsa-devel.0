@@ -1,70 +1,43 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] Timing issues between ALSA and i915
- drivers
-Date: Thu, 17 Jan 2019 14:47:05 -0600
-Message-ID: <389d9520-1380-dafa-2245-dc2e2b2b74f2@linux.intel.com>
-References: <045cfacd-7a8a-af3c-0f82-325b12cf65da@linux.intel.com>
- <d0fb9eb6-a32a-0757-22ba-012eb2aad44c@linux.intel.com>
- <s5h36prc9gj.wl-tiwai@suse.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: fsl_spdif: don't print EPROBE_DEFER as error
+Date: Thu, 17 Jan 2019 13:52:41 -0800
+Message-ID: <20190117215240.GA16918@Asurada-Nvidia.nvidia.com>
+References: <20190117090640.12972-1-stefan@agner.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h36prc9gj.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>, intel-gfx@lists.freedesktop.org, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190117090640.12972-1-stefan@agner.ch>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stefan Agner <stefan@agner.ch>
+Cc: timur@kernel.org, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4+IEkgdHJpZWQgdG8gbmFycm93IGRvd24gdGhlIGlzc3VlIGZ1cnRoZXIgYW5kIG15IGN1cnJl
-bnQgdW5kZXJzdGFuZGluZwo+PiBpcyB0aGF0IHRoZSBTa3lsYWtlIGRyaXZlciBwZXJmb3JtcyBs
-aW5rIHJlc2V0IG9wZXJhdGlvbnMgd2l0aG91dCB0aGUKPj4gZGlzcGxheSBwb3dlciB0dXJuZWQg
-b24gLSB3aGljaCBkb2VzIG5vdCBsb29rIGxpa2UgYSB2ZXJ5IHNtYXJ0IHRoaW5nCj4+IHRvIGRv
-IGluIGhpbmRzaWdodC4KPj4KPj4gSW4gb3RoZXIgd29yZHMsIGl0J3Mgbm90IHJlYWxseSB3aGVu
-IHNuZF9oZGFjX2k5MTVfaW5pdCgpIGlzIGNhbGxlZAo+PiB0aGF0IG1hdHRlcnMgYXMgSSBhc3N1
-bWVkIGluaXRpYWxseSwgYnV0IG1vcmUgd2hlbgo+PiBzbmRfaGRhY19kaXNwbGF5X3Bvd2VyKCkg
-aXMgaW52b2tlZC4gVGhlcmUgYXJlIHR3byBjYXNlcyB3aGVyZSB0aGlzCj4+IGhhcHBlbnMsIGFu
-ZCBmb3IgZWFjaCBvZiB0aGVtIHR1cm5pbmcgdGhlIGRpc3BsYXkgcG93ZXIgb24gcmVzdWx0cyBp
-bgo+PiBIRE1JIGRldGVjdGlvbi4gVGhlIGF0dGFjaGVkIGRpZmZzIHNwbGl0IHRoZSBpbml0aWFs
-aXphdGlvbiBmcm9tIHRoZQo+PiBwb3dlciBvbiwgd2hpY2ggcHJvdmlkZXMgYSBiZXR0ZXIgdW5k
-ZXJzdGFuZGluZyBvZiB0aGUgaXNzdWUuCj4gT0ssIHRoaXMgbWFrZXMgc29tZSBzZW5zZSwgYW5k
-IHRoYXQncyB0aGUgdmVyeSByZWFzb24gd2UgaGF2ZQo+IEhEQV9DT0RFQ19JRFhfQ09OVFJPTExF
-UiBmb3Igc25kX2hkYWNfZGlzcGxheV9wb3dlcigpLiAgSUlSQywgd2UKPiBuZWVkZWQgdG8gcG93
-ZXIgb24gdGhlIGRpc3BsYXkgZm9yIHByb2Jpbmcgb2YgdGhlIGxlZ2FjeSBIREEsIHRvby4KPiBP
-bmNlIGFmdGVyIHRoYXQsIGZvciB0aGUgbm9ybWFsIG9wZXJhdGlvbiwgdGhlIGRpc3BsYXkgcG93
-ZXIgaXMgbmVlZGVkCj4gb25seSB3aGVuIHlvdSBvdXRwdXQgdGhlIEhETUkgc3RyZWFtLgo+Cj4K
-Pj4gV2hhdCB3b3VsZCBiZSByZWFsbHkgdXNlZnVsIGF0IHRoaXMgcG9pbnQgaXMgYSBjb25maXJt
-YXRpb24gdGhhdAo+PiBzbmRfaGRhY19pOTE1X2luaXQoKSBjYW5ub3QgYmUgY2FsbGVkIGluIHRo
-ZSBpbml0aWFsIHByb2JlIGJ1dCBkb2VzCj4+IG5lZWQgdG8gYmUgZXhlY3V0ZWQgaW4gYSB3b3Jr
-IHF1ZXVlLiBUaGF0IHdvdWxkIHJlYWxseSBpbXBhY3QgdGhlIHdheQo+PiB0aGUgaW5pdGlhbGl6
-YXRpb24gc2VxdWVuY2UgaXMgcmV3b3JrZWQgb24gdGhlIFNreWxha2Ugc2lkZSBhcyB3ZWxsIGFz
-Cj4+IG1vZGlmeSB0aGUgd2F5IHRoZSBTT0YgZHJpdmVyIGRlYWxzIHdpdGggaTkxNSBpbml0aWFs
-aXphdGlvbi4KPiBJdCdzIG5lZWRlZCB0byBiZSBjYWxsZWQgaW4gYSB3b3JrIHF1ZXVlLCB5ZXMu
-Cj4KPiBCYXNpY2FsbHkgeW91IHNob3VsZG4ndCBjYWxsIHJlcXVlc3RfbW9kdWxlKCkgaW4gdGhl
-IGRyaXZlcidzIHByb2JlCj4gY2FsbGJhY2suICBXaGVuIHRoZSBwcm9iZSBjYWxsYmFjayBpcyBj
-YWxsZWQgZnJvbSB0aGUgbW9kdWxlIGxvYWRpbmcsCj4gaXQgYmxvY2tzIHRoZSBtb2R1bGUgbG9h
-ZGluZyBpdHNlbGYsIGhlbmNlIGxvYWRpbmcgeWV0IGFub3RoZXIgbW9kdWxlCj4gY2FuJ3Qgd29y
-ay4gIEEgc2l0dWF0aW9uIG1pZ2h0IGJlIGVhc2llciB0aGFuIHRoZSBwYXN0ICh3aGljaAo+IGRl
-YWRsb2NrZWQpLCBidXQgc3RpbGwgaXQncyBhZHZpc2VkIHRvIHVzZSBlaXRoZXIgdGhlCj4gcmVx
-dWVzdF9tb2R1bGVfbm93YWl0KCkgd2l0aCB0aGUgY2FsbGJhY2sgb3IgY2FsbCByZXF1ZXN0X21v
-ZHVsZSgpCj4gYXN5bmNocm9ub3VzbHkgZnJvbSBwcm9iZS4KClRoYW5rcyBUYWthc2hpLCB0aGlz
-IGlzIHZlcnkgdXNlZnVsLiBJIGd1ZXNzIHRoYXQgd2lsbCByZXF1aXJlIGEgCmNvbXBsZXRlIHJl
-d29yayBvZiB0aGUgU2t5bGFrZSBpbml0aWFsaXphdGlvbiBzZXF1ZW5jZSB0aGVuLCBteSBzaW1w
-bGUgCmNvZGUgdHJhbnNsYXRpb24gaXNuJ3QgZW5vdWdoIGluZGVlZCBhbmQgdGhlIGN1cnJlbnQg
-cGFydGl0aW9uIGJldHdlZW4gCnByb2JlL3dvcmsgcXVldWUgY2FuJ3QgY29tcGx5IHdpdGggYm90
-aCByZXF1aXJlbWVudHMgKHJlcXVlc3QgbW9kdWxlIAphc3luY2hyb25vdXNseSBmcm9tIHByb2Jl
-LCBkaXNwbGF5IHR1cm5lZCBvbiBiZWZvcmUgbXVja2luZyB3aXRoIGxpbmtzKS4KCldlIGFsc28g
-bmVlZCB0aGlzIGNoYW5nZWQgZm9yIFNPRiwgdGhlIGk5MTVfaW5pdCBpcyBkb25lIGluIHRoZSBw
-cm9iZS4KCi1QaWVycmUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVs
-LWdmeAo=
+On Thu, Jan 17, 2019 at 10:06:36AM +0100, Stefan Agner wrote:
+> Probe deferral is to be expected during normal operation, so avoid
+> printing an error when it is encountered.
+> 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+> ---
+>  sound/soc/fsl/fsl_spdif.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 740b90df44bb..a26686e7281c 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -1320,7 +1320,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
+> -	if (ret)
+> +	if (ret && ret != -EPROBE_DEFER)
+>  		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
+>  
+>  	return ret;
+> -- 
+> 2.20.1
+> 
