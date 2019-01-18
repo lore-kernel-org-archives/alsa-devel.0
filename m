@@ -1,60 +1,49 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: fsl_sai: Remove expensive print in irq handler
-Date: Fri, 18 Jan 2019 14:26:46 +0000
-Message-ID: <20190118142623.17720-1-daniel.baluta@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: soc-core: use
+ snd_soc_dai_link_component for cpu
+Date: Fri, 18 Jan 2019 08:34:27 -0600
+Message-ID: <7522f133-0676-ea8c-a9d2-5d1ea4798ffa@linux.intel.com>
+References: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
+ <3b1f5c02-65e1-b43e-3556-129d48c2375d@linux.intel.com>
+ <87ef9c6qob.wl-kuninori.morimoto.gx@renesas.com>
+ <20190117124806.GA7003@sirena.org.uk>
+ <66169467-169a-e3c1-e690-6dd0d7aefbc1@linux.intel.com>
+ <87lg3itn12.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D22F52667E7
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 15:34:29 +0100 (CET)
+In-Reply-To: <87lg3itn12.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-When stopping audio, ASoC will first stop DMA then CPU DAI.
-Sometimes there is a delay between DMA stop and CPU DAI stop, which
-triggers an underrun error. Now, because of the delay introduced
-by dev_err another underrun error will occur causing a vicious circle
-making impossible to stop CPU DAI.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 4163f2cfc06f..db9e0872f73d 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -62,10 +62,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 		dev_dbg(dev, "isr: Start of Tx word detected\n");
-=20
- 	if (flags & FSL_SAI_CSR_SEF)
--		dev_warn(dev, "isr: Tx Frame sync error detected\n");
-+		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
-=20
- 	if (flags & FSL_SAI_CSR_FEF) {
--		dev_warn(dev, "isr: Transmit underrun detected\n");
-+		dev_dbg(dev, "isr: Transmit underrun detected\n");
- 		/* FIFO reset for safety */
- 		xcsr |=3D FSL_SAI_CSR_FR;
- 	}
-@@ -96,10 +96,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 		dev_dbg(dev, "isr: Start of Rx word detected\n");
-=20
- 	if (flags & FSL_SAI_CSR_SEF)
--		dev_warn(dev, "isr: Rx Frame sync error detected\n");
-+		dev_dbg(dev, "isr: Rx Frame sync error detected\n");
-=20
- 	if (flags & FSL_SAI_CSR_FEF) {
--		dev_warn(dev, "isr: Receive overflow detected\n");
-+		dev_dbg(dev, "isr: Receive overflow detected\n");
- 		/* FIFO reset for safety */
- 		xcsr |=3D FSL_SAI_CSR_FR;
- 	}
---=20
-2.17.1
+>> What I don't quite get is that what is needed to get the "modern"
+>> representation supported for CPU dais as well? There is currently a
+>> wrapper for the codec_dais, couldn't we do the same for the cpu_dais
+>> and remove it when all drivers have moved?
+> Sorry 50% English issue, but does this "wrapper for the codec_dais" means
+> we are converting single codec to muliti codec style via snd_soc_init_multicodec() ?
+> If so, yes, we can have same logic for CPU.
+Yes exactly what I meant indeed.
+>
+>> My point is that if internally only the modern representation is used
+>> then the extensions to multi-cpus will be easier.
+> Yeah agree.
+> How to do it seems need some agreement, I think...
+Thank you for the clarification. I started working on updating all the 
+Intel stuff to the modern representation, will look at cpu next.
