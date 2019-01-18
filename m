@@ -1,22 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: soc-core: use
- snd_soc_dai_link_component for cpu
-Date: Fri, 18 Jan 2019 08:34:27 -0600
-Message-ID: <7522f133-0676-ea8c-a9d2-5d1ea4798ffa@linux.intel.com>
-References: <87bm4hm30t.wl-kuninori.morimoto.gx@renesas.com>
- <3b1f5c02-65e1-b43e-3556-129d48c2375d@linux.intel.com>
- <87ef9c6qob.wl-kuninori.morimoto.gx@renesas.com>
- <20190117124806.GA7003@sirena.org.uk>
- <66169467-169a-e3c1-e690-6dd0d7aefbc1@linux.intel.com>
- <87lg3itn12.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [Sound-open-firmware] [PATCH 01/21] ASoC: SOF:
+ Intel: Add BYT, CHT and BSW DSP HW support.
+Date: Fri, 18 Jan 2019 09:02:58 -0600
+Message-ID: <9672de72-6fe4-5ac4-a8bf-bc0e31f6ec9d@linux.intel.com>
+References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
+ <20181211213029.28801-2-pierre-louis.bossart@linux.intel.com>
+ <CAEnQRZCgwXTMQPEE47DTY_wgvB5QiUu0sXFjfenhc_w3HnaRfA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D22F52667E7
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 15:34:29 +0100 (CET)
-In-Reply-To: <87lg3itn12.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <CAEnQRZCgwXTMQPEE47DTY_wgvB5QiUu0sXFjfenhc_w3HnaRfA@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,23 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vkoul@kernel.org, Mark Brown <broonie@kernel.org>, sound-open-firmware@alsa-project.org, Rander Wang <rander.wang@linux.intel.com>, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
->> What I don't quite get is that what is needed to get the "modern"
->> representation supported for CPU dais as well? There is currently a
->> wrapper for the codec_dais, couldn't we do the same for the cpu_dais
->> and remove it when all drivers have moved?
-> Sorry 50% English issue, but does this "wrapper for the codec_dais" means
-> we are converting single codec to muliti codec style via snd_soc_init_multicodec() ?
-> If so, yes, we can have same logic for CPU.
-Yes exactly what I meant indeed.
->
->> My point is that if internally only the modern representation is used
->> then the extensions to multi-cpus will be easier.
-> Yeah agree.
-> How to do it seems need some agreement, I think...
-Thank you for the clarification. I started working on updating all the 
-Intel stuff to the modern representation, will look at cpu next.
+Cj4+ICtzdHJ1Y3Qgc25kX3NvZl9kc3Bfb3BzIHNvZl9jaHRfb3BzID0gewo+PiArICAgICAgIC8q
+IGRldmljZSBpbml0ICovCj4+ICsgICAgICAgLnByb2JlICAgICAgICAgID0gYnl0X3Byb2JlLAo+
+PiArCj4+ICsgICAgICAgLyogRFNQIGNvcmUgYm9vdCAvIHJlc2V0ICovCj4+ICsgICAgICAgLnJ1
+biAgICAgICAgICAgID0gYnl0X3J1biwKPj4gKyAgICAgICAucmVzZXQgICAgICAgICAgPSBieXRf
+cmVzZXQsCj4+ICsKPj4gKyAgICAgICAvKiBSZWdpc3RlciBJTyAqLwo+PiArICAgICAgIC53cml0
+ZSAgICAgICAgICA9IHNvZl9pb193cml0ZSwKPj4gKyAgICAgICAucmVhZCAgICAgICAgICAgPSBz
+b2ZfaW9fcmVhZCwKPj4gKyAgICAgICAud3JpdGU2NCAgICAgICAgPSBzb2ZfaW9fd3JpdGU2NCwK
+Pj4gKyAgICAgICAucmVhZDY0ICAgICAgICAgPSBzb2ZfaW9fcmVhZDY0LAo+PiArCj4+ICsgICAg
+ICAgLyogQmxvY2sgSU8gKi8KPj4gKyAgICAgICAuYmxvY2tfcmVhZCAgICAgPSBzb2ZfYmxvY2tf
+cmVhZCwKPj4gKyAgICAgICAuYmxvY2tfd3JpdGUgICAgPSBzb2ZfYmxvY2tfd3JpdGUsCj4+ICsK
+Pj4gKyAgICAgICAvKiBkb29yYmVsbCAqLwo+PiArICAgICAgIC5pcnFfaGFuZGxlciAgICA9IGJ5
+dF9pcnFfaGFuZGxlciwKPj4gKyAgICAgICAuaXJxX3RocmVhZCAgICAgPSBieXRfaXJxX3RocmVh
+ZCwKPj4gKwo+IFdoYXQgaXMgdGhlIHJlYXNvbiBmb3IgaGF2aW5nIGlycV9oYW5kbGVyL2lycV90
+aHJlYWQgZnVuY3Rpb25zIGluc2lkZSB0aGUKPiBzbmRfc29mX2RzcF9vcHMgc3RydWN0dXJlPwo+
+Cj4gVGhlc2UgZnVuY3Rpb25zIGFyZSBuZXZlciB1c2VkIG91dHNpZGUgdmlhIHNkZXYtPm9wcyBw
+b2ludGVyLgoKR29vZCBwb2ludCBpbmRlZWQsIHRoYW5rcyBmb3IgcmFpc2luZyBpdC4gV2Ugd2Vy
+ZSBpbiB0aGUgbWlkZGxlIG9mIAp0YWdnaW5nIHdoaWNoIG9wcyBhcmUgcmVxdWlyZWQvb3B0aW9u
+YWwgKGZlZWRiYWNrIGZyb20gTWFyaykgYnV0IHdlIApzdGFydGVkIGZyb20gdGhlIGNvcmUgYW5k
+IHNob3VsZCBoYXZlIGxvb2tlZCBhdCB0aGUgc3RydWN0dXJlIGRlZmluaXRpb24uCgpNb3N0IGRy
+aXZlcnMgYXJlICJzZWxmLWNvbnRhaW5lZCIgYW5kIGNhbiByZWZlcmVuY2UgdGhlIGlycV90aHJl
+YWQgYW5kIAppcnFfaGFuZGxlciBkaXJlY3RseS4KClRoZSBleGNlcHRpb24gd2hlcmUgdGhlIGFi
+c3RyYWN0aW9uIGlzIHVzZWQgaXMgaW50ZXJuYWwgdG8gdGhlIEhEYXVkaW8gCnN0dWZmOgoKaW50
+ZWwvaGRhLmM6wqDCoMKgIHJldCA9IHJlcXVlc3RfdGhyZWFkZWRfaXJxKHNkZXYtPmlwY19pcnEs
+IApoZGFfZHNwX2lwY19pcnFfaGFuZGxlciwKaW50ZWwvaGRhLmM6IHNvZl9vcHMoc2RldiktPmly
+cV90aHJlYWQsIElSUUZfU0hBUkVELAoKVGhhdCdzIHVzZWZ1bCBzaW5jZSB0aGVyZSBhIG1pbm9y
+IHZhcmlhdGlvbnMgYmV0d2VlbiBoYXJkd2FyZSAKZ2VuZXJhdGlvbnMgYW5kIHlvdSB3YW50IHRv
+IGhpZGUgdGhlIGhhcmR3YXJlLXNwZWNpZmljIHBhcnRzLgoKQnV0IGFzIHlvdSBwb2ludCBvdXQs
+IGl0J3MgYSAicHJpdmF0ZSIgdXNlIG9mIG9wcyBjYWxsYmFja3MsIHRoZSBjb3JlIApkb2Vzbid0
+IHRvdWNoIHRoaXMuCgpJIGhhdmUgbm8gZXhwbGFuYXRpb24gb3RoZXIgdGhhbiBsZWdhY3kvaGlz
+dG9yaWNhbCByZWFzb25zIG9yIGEgc2hvcnRjdXQgCnRvIG1ha2Ugb25lJ3MgbGlmZSBlYXNpZXIg
+ZHVyaW5nIGRldmVsb3BtZW50LsKgIExpYW0gYW5kIEtleW9uIG1pZ2h0IGtub3c/CgpXZSBjb3Vs
+ZCB0cnkgYW5kIG1vdmUgdGhpcyB0byBhIG1vcmUgInByaXZhdGUiIHN0cnVjdHVyZSwgdGhlIAoi
+Y2hpcF9pbmZvIiBwYXJ0IG1pZ2h0IGJlIG1vcmUgc3VpdGFibGUgZm9yIHRoaXM/CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
