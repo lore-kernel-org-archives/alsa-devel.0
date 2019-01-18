@@ -1,82 +1,105 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Remove expensive print in
-	irq handler
-Date: Fri, 18 Jan 2019 12:08:32 -0800
-Message-ID: <20190118200831.GB11798@Asurada-Nvidia.nvidia.com>
-References: <20190118142623.17720-1-daniel.baluta@nxp.com>
+From: shuah <shuah@kernel.org>
+Subject: Re: [PATCH v9 4/4] sound/usb: Use Media Controller API to share media
+ resources
+Date: Fri, 18 Jan 2019 14:54:18 -0700
+Message-ID: <ee9b4161-eeb8-340f-7b39-93d0bc5fe1bd@kernel.org>
+References: <cover.1545154777.git.shuah@kernel.org>
+ <2fb40852e4035b2a58010ce7416448918f12804f.1545154778.git.shuah@kernel.org>
+ <b2fddc47-94c6-b7b3-8304-55905a3e278d@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5983B266BE8
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 21:08:36 +0100 (CET)
-Received: by mail-pg1-f193.google.com with SMTP id v28so6542606pgk.10
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 12:08:36 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20190118142623.17720-1-daniel.baluta@nxp.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b2fddc47-94c6-b7b3-8304-55905a3e278d@xs4all.nl>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 18, 2019 at 02:26:46PM +0000, Daniel Baluta wrote:
-> From: Shengjiu Wang <shengjiu.wang@nxp.com>
+On 1/18/19 1:36 AM, Hans Verkuil wrote:
+> On 12/18/18 6:59 PM, shuah@kernel.org wrote:
+>> From: Shuah Khan <shuah@kernel.org>
+>>
+>> Media Device Allocator API to allows multiple drivers share a media device.
+>> This API solves a very common use-case for media devices where one physical
+>> device (an USB stick) provides both audio and video. When such media device
+>> exposes a standard USB Audio class, a proprietary Video class, two or more
+>> independent drivers will share a single physical USB bridge. In such cases,
+>> it is necessary to coordinate access to the shared resource.
+>>
+>> Using this API, drivers can allocate a media device with the shared struct
+>> device as the key. Once the media device is allocated by a driver, other
+>> drivers can get a reference to it. The media device is released when all
+>> the references are released.
+>>
+>> Change the ALSA driver to use the Media Controller API to share media
+>> resources with DVB, and V4L2 drivers on a AU0828 media device.
+>>
+>> The Media Controller specific initialization is done after sound card is
+>> registered. ALSA creates Media interface and entity function graph nodes
+>> for Control, Mixer, PCM Playback, and PCM Capture devices.
+>>
+>> snd_usb_hw_params() will call Media Controller enable source handler
+>> interface to request the media resource. If resource request is granted,
+>> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
+>> returned.
+>>
+>> Media specific cleanup is done in usb_audio_disconnect().
+>>
+>> Signed-off-by: Shuah Khan <shuah@kernel.org>
+>> ---
+>>   sound/usb/Kconfig        |   4 +
+>>   sound/usb/Makefile       |   2 +
+>>   sound/usb/card.c         |  14 ++
+>>   sound/usb/card.h         |   3 +
+>>   sound/usb/media.c        | 321 +++++++++++++++++++++++++++++++++++++++
+>>   sound/usb/media.h        |  74 +++++++++
+>>   sound/usb/mixer.h        |   3 +
+>>   sound/usb/pcm.c          |  29 +++-
+>>   sound/usb/quirks-table.h |   1 +
+>>   sound/usb/stream.c       |   2 +
+>>   sound/usb/usbaudio.h     |   6 +
+>>   11 files changed, 455 insertions(+), 4 deletions(-)
+>>   create mode 100644 sound/usb/media.c
+>>   create mode 100644 sound/usb/media.h
+>>
 > 
-> When stopping audio, ASoC will first stop DMA then CPU DAI.
-> Sometimes there is a delay between DMA stop and CPU DAI stop, which
-> triggers an underrun error. Now, because of the delay introduced
-> by dev_err another underrun error will occur causing a vicious circle
-> making impossible to stop CPU DAI.
+> <snip>
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+>> +int snd_media_device_create(struct snd_usb_audio *chip,
+>> +			struct usb_interface *iface)
+>> +{
+>> +	struct media_device *mdev;
+>> +	struct usb_device *usbdev = interface_to_usbdev(iface);
+>> +	int ret;
+>> +
+>> +	/* usb-audio driver is probed for each usb interface, and
+>> +	 * there are multiple interfaces per device. Avoid calling
+>> +	 * media_device_usb_allocate() each time usb_audio_probe()
+>> +	 * is called. Do it only once.
+>> +	 */
+>> +	if (chip->media_dev)
+>> +		goto snd_mixer_init;
+>> +
+>> +	mdev = media_device_usb_allocate(usbdev, KBUILD_MODNAME);
+>> +	if (!mdev)
+>> +		return -ENOMEM;
+>> +
+>> +	if (!media_devnode_is_registered(mdev->devnode)) {
+> 
+> It looks like you missed my comment for v8:
+> 
+> "You should first configure the media device before registering it."
+> 
+> In other words, first create the media entities, and only then do you
+> register the media device. Otherwise it will come up without any alsa
+> entities, which are then added. So an application that immediately
+> opens the media device upon creation will see a topology that is still
+> in flux.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Yes. You are right. I saw your comment and thought I got it addressed.
+I will fix it. I have the logic correct in au0828, but not here.
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 4163f2cfc06f..db9e0872f73d 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -62,10 +62,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
->  		dev_dbg(dev, "isr: Start of Tx word detected\n");
->  
->  	if (flags & FSL_SAI_CSR_SEF)
-> -		dev_warn(dev, "isr: Tx Frame sync error detected\n");
-> +		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
->  
->  	if (flags & FSL_SAI_CSR_FEF) {
-> -		dev_warn(dev, "isr: Transmit underrun detected\n");
-> +		dev_dbg(dev, "isr: Transmit underrun detected\n");
->  		/* FIFO reset for safety */
->  		xcsr |= FSL_SAI_CSR_FR;
->  	}
-> @@ -96,10 +96,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
->  		dev_dbg(dev, "isr: Start of Rx word detected\n");
->  
->  	if (flags & FSL_SAI_CSR_SEF)
-> -		dev_warn(dev, "isr: Rx Frame sync error detected\n");
-> +		dev_dbg(dev, "isr: Rx Frame sync error detected\n");
->  
->  	if (flags & FSL_SAI_CSR_FEF) {
-> -		dev_warn(dev, "isr: Receive overflow detected\n");
-> +		dev_dbg(dev, "isr: Receive overflow detected\n");
->  		/* FIFO reset for safety */
->  		xcsr |= FSL_SAI_CSR_FR;
->  	}
-> -- 
-> 2.17.1
-> 
+Thanks,
+-- Shuah
