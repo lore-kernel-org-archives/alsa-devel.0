@@ -1,133 +1,127 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v9 4/4] sound/usb: Use Media Controller API to share media
- resources
-Date: Fri, 18 Jan 2019 09:36:11 +0100
-Message-ID: <b2fddc47-94c6-b7b3-8304-55905a3e278d@xs4all.nl>
-References: <cover.1545154777.git.shuah@kernel.org>
- <2fb40852e4035b2a58010ce7416448918f12804f.1545154778.git.shuah@kernel.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsamixer: define _GNU_SOURCE to get exp10
+Date: Fri, 18 Jan 2019 09:42:17 +0100
+Message-ID: <6b160f04-3f6a-ad3c-23b6-ad79f5b1466d@perex.cz>
+References: <a4d4f393cbf2c09fee38e9144429690c@firemail.cc>
+ <c884ec4f-6878-16bb-dfd7-cecb3efc2f8a@perex.cz>
+ <1c7a2099a382ae15570aa6cdc0b6a666@firemail.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2fb40852e4035b2a58010ce7416448918f12804f.1545154778.git.shuah@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18280266A89
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 09:42:20 +0100 (CET)
+In-Reply-To: <1c7a2099a382ae15570aa6cdc0b6a666@firemail.cc>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: shuah@kernel.org, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: makepost@firemail.cc
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/18/18 6:59 PM, shuah@kernel.org wrote:
-> From: Shuah Khan <shuah@kernel.org>
+Dne 17.1.2019 v 01:16 makepost@firemail.cc napsal(a):
+> These flags vary between systems, on the Gentoo where I have access the 
+> Makefile generated from e1aa6d4 contains:
 > 
-> Media Device Allocator API to allows multiple drivers share a media device.
-> This API solves a very common use-case for media devices where one physical
-> device (an USB stick) provides both audio and video. When such media device
-> exposes a standard USB Audio class, a proprietary Video class, two or more
-> independent drivers will share a single physical USB bridge. In such cases,
-> it is necessary to coordinate access to the shared resource.
+> $ ack '^(AM|CURSES|NCURSESW)_CFLAGS' alsamixer/Makefile
+> CURSES_CFLAGS = -I/usr/include/ncursesw
+> NCURSESW_CFLAGS = -I/usr/include/ncursesw
+> AM_CFLAGS = -I/usr/include/ncursesw  -DCURSESINC="<ncurses.h>"
 > 
-> Using this API, drivers can allocate a media device with the shared struct
-> device as the key. Once the media device is allocated by a driver, other
-> drivers can get a reference to it. The media device is released when all
-> the references are released.
+> Files in /usr/include/ncursesw don't mention _GNU_SOURCE so I'm baffled 
+> where GCC gets it from.
 > 
-> Change the ALSA driver to use the Media Controller API to share media
-> resources with DVB, and V4L2 drivers on a AU0828 media device.
+> Indeed the local alsamixer/Makefile.am is a more suitable place to put 
+> the flag. A newbie question follows, should I somehow update the patch 
+> with your edit and reply to this message, or did you generate the diff 
+> from an already edited version?
+
+Applied to the repository:
+
+http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=116488e5f2f1b897084bd151381ee254e1cc177d
+
+				Thanks,
+					Jaroslav
+
 > 
-> The Media Controller specific initialization is done after sound card is
-> registered. ALSA creates Media interface and entity function graph nodes
-> for Control, Mixer, PCM Playback, and PCM Capture devices.
-> 
-> snd_usb_hw_params() will call Media Controller enable source handler
-> interface to request the media resource. If resource request is granted,
-> it will release it from snd_usb_hw_free(). If resource is busy, -EBUSY is
-> returned.
-> 
-> Media specific cleanup is done in usb_audio_disconnect().
-> 
-> Signed-off-by: Shuah Khan <shuah@kernel.org>
-> ---
->  sound/usb/Kconfig        |   4 +
->  sound/usb/Makefile       |   2 +
->  sound/usb/card.c         |  14 ++
->  sound/usb/card.h         |   3 +
->  sound/usb/media.c        | 321 +++++++++++++++++++++++++++++++++++++++
->  sound/usb/media.h        |  74 +++++++++
->  sound/usb/mixer.h        |   3 +
->  sound/usb/pcm.c          |  29 +++-
->  sound/usb/quirks-table.h |   1 +
->  sound/usb/stream.c       |   2 +
->  sound/usb/usbaudio.h     |   6 +
->  11 files changed, 455 insertions(+), 4 deletions(-)
->  create mode 100644 sound/usb/media.c
->  create mode 100644 sound/usb/media.h
-> 
+> On 2019-01-16 14:22, Jaroslav Kysela wrote:
+>> Dne 16.1.2019 v 02:35 makepost@firemail.cc napsal(a):
+>>> Fixes Master, Headphones and Speaker stuck at -8 percentage after
+>>> building with Clang 7.0.1 and getting warned about implicit 
+>>> declaration
+>>> of exp10, which is behind _GNU_SOURCE as a non-standard feature. 
+>>> Thanks
+>>> Takashi Iwai for the CFLAGS suggestion on the mailing list. GCC build 
+>>> is
+>>> not affected, so not adding a compiler check to the configure script.
+>>>
+>>> uClibc-ng has got exp10 since 1.0.12, so the fallback macro is no 
+>>> longer
+>>> needed. However, alsa-utils relies on gettext so might need further
+>>> patches to actually work on uClibc systems.
+>>>
+>>> Signed-off-by: makepost <makepost@firemail.cc>
+>>>
+>>> diff --git a/alsamixer/volume_mapping.c b/alsamixer/volume_mapping.c
+>>> index 94bd0fe..48cfbe2 100644
+>>> --- a/alsamixer/volume_mapping.c
+>>> +++ b/alsamixer/volume_mapping.c
+>>> @@ -36,11 +36,6 @@
+>>>   #include <stdbool.h>
+>>>   #include "volume_mapping.h"
+>>>
+>>> -#ifdef __UCLIBC__
+>>> -/* 10^x = 10^(log e^x) = (e^x)^log10 = e^(x * log 10) */
+>>> -#define exp10(x) (exp((x) * log(10)))
+>>> -#endif /* __UCLIBC__ */
+>>> -
+>>>   #define MAX_LINEAR_DB_SCALE    24
+>>>
+>>>   static inline bool use_linear_dB_scale(long dBmin, long dBmax)
+>>> diff --git a/configure.ac b/configure.ac
+>>> index 7938996..0d54942 100644
+>>> --- a/configure.ac
+>>> +++ b/configure.ac
+>>> @@ -350,6 +350,8 @@ if test x$alsamixer = xtrue; then
+>>>
+>>>
+>>>     AC_MSG_RESULT([$CURSESLIB])
+>>> +
+>>> +  CFLAGS="$CFLAGS -D_GNU_SOURCE"
+>>
+>> It would be propably better to put this to the local makefile for 
+>> alsamixer:
+>>
+>> diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
+>> index 259b29e..249e8f8 100644
+>> --- a/alsamixer/Makefile.am
+>> +++ b/alsamixer/Makefile.am
+>> @@ -1,4 +1,4 @@
+>> -AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
+>> +AM_CFLAGS = -D_GNU_SOURCE @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
+>>  LDADD = @CURSESLIB@
+>>
+>>  bin_PROGRAMS = alsamixer
+>>
+>> The reason, why the problem is not visible with the standard
+>> gcc/glibc/ncurses is that this definition is activated by ncurses:
+>>
+>> $ find alsamixer -type f -exec grep -H GNU_SOURCE {} \;
+>> alsamixer/Makefile:CURSES_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+>> alsamixer/Makefile:NCURSESW_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+>> alsamixer/Makefile:AM_CFLAGS = -D_GNU_SOURCE -D_DEFAULT_SOURCE
+>> -DCURSESINC="<ncurses.h>"
+>>
+>> 					Jaroslav
 
-<snip>
 
-> +int snd_media_device_create(struct snd_usb_audio *chip,
-> +			struct usb_interface *iface)
-> +{
-> +	struct media_device *mdev;
-> +	struct usb_device *usbdev = interface_to_usbdev(iface);
-> +	int ret;
-> +
-> +	/* usb-audio driver is probed for each usb interface, and
-> +	 * there are multiple interfaces per device. Avoid calling
-> +	 * media_device_usb_allocate() each time usb_audio_probe()
-> +	 * is called. Do it only once.
-> +	 */
-> +	if (chip->media_dev)
-> +		goto snd_mixer_init;
-> +
-> +	mdev = media_device_usb_allocate(usbdev, KBUILD_MODNAME);
-> +	if (!mdev)
-> +		return -ENOMEM;
-> +
-> +	if (!media_devnode_is_registered(mdev->devnode)) {
-
-It looks like you missed my comment for v8:
-
-"You should first configure the media device before registering it."
-
-In other words, first create the media entities, and only then do you
-register the media device. Otherwise it will come up without any alsa
-entities, which are then added. So an application that immediately
-opens the media device upon creation will see a topology that is still
-in flux.
-
-> +		/* register media_device */
-> +		ret = media_device_register(mdev);
-> +		if (ret) {
-> +			media_device_delete(mdev, KBUILD_MODNAME);
-> +			dev_err(&usbdev->dev,
-> +				"Couldn't register media device. Error: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	/* save media device - avoid lookups */
-> +	chip->media_dev = mdev;
-> +
-> +snd_mixer_init:
-> +	/* Create media entities for mixer and control dev */
-> +	ret = snd_media_mixer_init(chip);
-> +	if (ret) {
-> +		dev_err(&usbdev->dev,
-> +			"Couldn't create media mixer entities. Error: %d\n",
-> +			ret);
-> +
-> +		/* clear saved media_dev */
-> +		chip->media_dev = NULL;
-> +
-> +		return ret;
-> +	}
-> +	return 0;
-> +}
-
-I'll do some testing of this series on Monday.
-
-Regards,
-
-	Hans
+-- 
+Jaroslav Kysela <perex@perex.cz>
