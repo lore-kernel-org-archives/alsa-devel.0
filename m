@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: soc-core: add .num_platforms for
-	dai_link
-Date: Fri, 18 Jan 2019 19:15:21 +0000
-Message-ID: <20190118191521.GH6260@sirena.org.uk>
-References: <87munyu343.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc.h: add explanation of legacy/modern
+	style of dai_link" to the asoc tree
+Date: Fri, 18 Jan 2019 19:18:38 +0000 (GMT)
+Message-ID: <20190118191838.364C111276E7@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1962724396742954589=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A3046266AA9
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 20:15:22 +0100 (CET)
-In-Reply-To: <87munyu343.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A307B266AA9
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 20:18:39 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +22,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1962724396742954589==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="54u2kuW9sGWg/X+X"
-Content-Disposition: inline
+   ASoC: soc.h: add explanation of legacy/modern style of dai_link
 
+has been applied to the asoc tree at
 
---54u2kuW9sGWg/X+X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jan 18, 2019 at 11:22:00AM +0900, Kuninori Morimoto wrote:
->=20
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current snd_soc_dai_link is starting to use snd_soc_dai_link_component
-> style for Platform, but it is assuming single Platform so far.
-> But We will need to have multi Platform support in the not far future.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't seem to apply against current code, perhaps it depends on
-some of your other in flight patches (sorry, I'm a bit behind on review
-there)?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---54u2kuW9sGWg/X+X
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxCJcgACgkQJNaLcl1U
-h9AUCwf+Pc8UkuxBgWkD//6t8Oa4DcXzfgJkwESK0StbfSMBcRUpgZO6hU3Iu+SJ
-QZl67UNfE5RlaZi65hmcxp/1/Ypw59ekI1E9TvaCkB2WDyJGTtAfiNnWXNn4Xx8b
-bILZWJfOFIaTlVQe/DDxKVkkNz6//e3f6UGeM4CIvjlDYR3biklEUmkWE5E1ccGf
-sVaLtJKqQXEOLwInQkRAsVCfYPboNAnMyry72dJOCFeKq+a4+yGEpHFFQGXW7KRb
-Gm9dpqzlX3GXBFnIpa+nlM5EYaPMqoM4bzt1WaxTbxagU3Ij90zu3D2jGgNtfaAB
-TnQfHn6C6GqnL3nyN0brdm2uT3ymig==
-=Ek6x
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---54u2kuW9sGWg/X+X--
+>From 62bc79d35ebb55451112979babea864975cfd16d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 18 Jan 2019 11:20:41 +0900
+Subject: [PATCH] ASoC: soc.h: add explanation of legacy/modern style of
+ dai_link
 
---===============1962724396742954589==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Current ALSA SoC is assuming 1 CPU 1 Platform (= DMA) style system.
+Because of this background, it is directly using
+xxx_name / xxx_of_node / xxx_dai_name on dai_link.
+Let's call it as legacy style here.
 
+More complex style system like multi CPU multi Platform (= DMA) will
+coming. To supporting it, we can use snd_soc_dai_link_component on
+dai_link. Let's call it as modern style here.
+But current ALSA SoC can't support it so far. Thus, we need to have
+multi CPU / multi Codec / multi Platform style in the future on ALSA SoC.
 
---===============1962724396742954589==--
+Currently we already have multi Codec support. Platform is starting to
+use modern style on dai_link, but still style only. Multi Platform is
+not yet implemented. And we still don't have multi CPU support on ALSA
+SoC, and not have modern style either.
+
+Currently, if driver is using legacy style Codec/Platform, it will be
+converted to modern style on soc-core. This means, we are using glue code
+for legacy vs modern style so far on ALSA SoC.
+We can fully switch to modern style on all drivers if ALSA SoC supported
+modern style for CPU, and then, legacy style code will be removed from
+ALSA SoC.
+Untile then, we need to keep both legacy/modern style and its glue code.
+This patch adds such future plan and background on soc.h
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc.h  | 36 ++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-core.c | 20 ++++++++++++++++++--
+ 2 files changed, 54 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e665f111b0d2..c31b6d122ff6 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -891,6 +891,18 @@ struct snd_soc_dai_link {
+ 	/* config - must be set by machine driver */
+ 	const char *name;			/* Codec name */
+ 	const char *stream_name;		/* Stream name */
++
++	/*
++	 *	cpu_name
++	 *	cpu_of_node
++	 *	cpu_dai_name
++	 *
++	 * These are legacy style, and will be replaced to
++	 * modern style (= snd_soc_dai_link_component) in the future,
++	 * but, not yet supported so far.
++	 * If modern style was supported for CPU, all driver will switch
++	 * to use it, and, legacy style code will be removed from ALSA SoC.
++	 */
+ 	/*
+ 	 * You MAY specify the link's CPU-side device, either by device name,
+ 	 * or by DT/OF node, but not both. If this information is omitted,
+@@ -906,6 +918,19 @@ struct snd_soc_dai_link {
+ 	 * only, which only works well when that device exposes a single DAI.
+ 	 */
+ 	const char *cpu_dai_name;
++
++	/*
++	 *	codec_name
++	 *	codec_of_node
++	 *	codec_dai_name
++	 *
++	 * These are legacy style, it will be converted to modern style
++	 * (= snd_soc_dai_link_component) automatically in soc-core
++	 * if driver is using legacy style.
++	 * Driver shouldn't use both legacy and modern style in the same time.
++	 * If modern style was supported for CPU, all driver will switch
++	 * to use it, and, legacy style code will be removed from ALSA SoC.
++	 */
+ 	/*
+ 	 * You MUST specify the link's codec, either by device name, or by
+ 	 * DT/OF node, but not both.
+@@ -918,6 +943,17 @@ struct snd_soc_dai_link {
+ 	struct snd_soc_dai_link_component *codecs;
+ 	unsigned int num_codecs;
+ 
++	/*
++	 *	platform_name
++	 *	platform_of_node
++	 *
++	 * These are legacy style, it will be converted to modern style
++	 * (= snd_soc_dai_link_component) automatically in soc-core
++	 * if driver is using legacy style.
++	 * Driver shouldn't use both legacy and modern style in the same time.
++	 * If modern style was supported for CPU, all driver will switch
++	 * to use it, and, legacy style code will be removed from ALSA SoC.
++	 */
+ 	/*
+ 	 * You MAY specify the link's platform/PCM/DMA driver, either by
+ 	 * device name, or by DT/OF node, but not both. Some forms of link
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 890d6c9c2752..de2851f1b3df 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1029,9 +1029,14 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link_component *platform = dai_link->platform;
+ 
+ 	/*
+-	 * FIXME
++	 * REMOVE ME
+ 	 *
+-	 * this function should be removed in the future
++	 * This is glue code for Legacy vs Modern dai_link.
++	 * This function will be removed if all derivers are switched to
++	 * modern style dai_link.
++	 * Driver shouldn't use both legacy and modern style in the same time.
++	 * see
++	 *	soc.h :: struct snd_soc_dai_link
+ 	 */
+ 	/* convert Legacy platform link */
+ 	if (!platform || dai_link->legacy_platform) {
+@@ -1059,6 +1064,17 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
+ static int snd_soc_init_multicodec(struct snd_soc_card *card,
+ 				   struct snd_soc_dai_link *dai_link)
+ {
++	/*
++	 * REMOVE ME
++	 *
++	 * This is glue code for Legacy vs Modern dai_link.
++	 * This function will be removed if all derivers are switched to
++	 * modern style dai_link.
++	 * Driver shouldn't use both legacy and modern style in the same time.
++	 * see
++	 *	soc.h :: struct snd_soc_dai_link
++	 */
++
+ 	/* Legacy codec/codec_dai link is a single entry in multicodec */
+ 	if (dai_link->codec_name || dai_link->codec_of_node ||
+ 	    dai_link->codec_dai_name) {
+-- 
+2.20.1
