@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove error due to probe
-	deferral" to the asoc tree
-Date: Fri, 18 Jan 2019 18:38:29 +0000 (GMT)
-Message-ID: <20190118183829.1E65F11276E7@debutante.sirena.org.uk>
-References: <20190118095504.22397-1-stefan@agner.ch>
+Subject: Applied "ASoC: imx-spdif: don't print EPROBE_DEFER as
+	error" to the asoc tree
+Date: Fri, 18 Jan 2019 18:38:30 +0000 (GMT)
+Message-ID: <20190118183830.E386B11276E7@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9593F266AA9
+ by alsa0.perex.cz (Postfix) with ESMTP id CCF49266BE8
  for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:31 +0100 (CET)
-In-Reply-To: <20190118095504.22397-1-stefan@agner.ch>
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Stefan Agner <stefan@agner.ch>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove error due to probe deferral
+   ASoC: imx-spdif: don't print EPROBE_DEFER as error
 
 has been applied to the asoc tree at
 
@@ -53,34 +52,42 @@ to this mail.
 Thanks,
 Mark
 
->From 7c7e2d6a9ca3c74ba7ed4da2a75916b2f9ae38f0 Mon Sep 17 00:00:00 2001
+>From 2363d85f4e04f7218efc66b6167a405cccbc8ff7 Mon Sep 17 00:00:00 2001
 From: Stefan Agner <stefan@agner.ch>
-Date: Fri, 18 Jan 2019 10:55:04 +0100
-Subject: [PATCH] ASoC: soc-core: remove error due to probe deferral
+Date: Fri, 18 Jan 2019 10:06:56 +0100
+Subject: [PATCH] ASoC: imx-spdif: don't print EPROBE_DEFER as error
 
-Deferred probes shouldn't cause error messages in the boot log, so
-change the dev_err() to the more harmless dev_info().
+Probe deferral is to be expected during normal operation, so avoid
+printing an error when it is encountered.
+
+Removing the goto would not be strictly necessary. However, if
+code gets added later, the cleanup in the EPROBE_DEFER case likely
+would get missed.
 
 Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/imx-spdif.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 0462b3ec977a..98bb05f6ed56 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -903,8 +903,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
- 		if (!codec_dais[i]) {
--			dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
--				codecs[i].dai_name);
-+			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
-+				 codecs[i].dai_name);
- 			goto _err_defer;
- 		}
- 		snd_soc_rtdcom_add(rtd, codec_dais[i]->component);
+diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
+index fb896b2c9ba3..797d66e43d49 100644
+--- a/sound/soc/fsl/imx-spdif.c
++++ b/sound/soc/fsl/imx-spdif.c
+@@ -67,10 +67,8 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
+ 		goto end;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+-	if (ret) {
++	if (ret && ret != -EPROBE_DEFER)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
+-		goto end;
+-	}
+ 
+ end:
+ 	of_node_put(spdif_np);
 -- 
 2.20.1
