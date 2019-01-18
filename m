@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-sgtl5000: put of nodes if finding
-	codec fails" to the asoc tree
-Date: Fri, 18 Jan 2019 18:38:38 +0000 (GMT)
-Message-ID: <20190118183838.248F211276E7@debutante.sirena.org.uk>
+Subject: Re: [RFC PATCH] ALSA: core: Add DMA share buffer
+	support
+Date: Fri, 18 Jan 2019 19:08:05 +0000
+Message-ID: <20190118190805.GF6260@sirena.org.uk>
+References: <290f6d3a5fe288b87480cc5fa12c5139728daeca.1547787189.git.baolin.wang@linaro.org>
+ <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6418817251262715067=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C51B5267129
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:38 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 25CFF266AA9
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 20:08:14 +0100 (CET)
+In-Reply-To: <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,68 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, gustavo@embeddedor.com, linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org, mchehab+samsung@kernel.org, sr@denx.de, daniel.thompson@linaro.org, corbet@lwn.net, philburk@google.com, willy@infradead.org, jmiller@neverware.com, keescook@chromium.org, arnd@arndb.de, colyli@suse.de, ckeepax@opensource.wolfsonmicro.com, anna-maria@linutronix.de, mathieu.poirier@linaro.org, Baolin Wang <baolin.wang@linaro.org>, sboyd@kernel.org, tiwai@suse.com, vkoul@kernel.org, leo.yan@linaro.org, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: imx-sgtl5000: put of nodes if finding codec fails
+--===============6418817251262715067==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3yNHWXBV/QO9xKNm"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--3yNHWXBV/QO9xKNm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Jan 18, 2019 at 10:35:44AM +0100, Jaroslav Kysela wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>   the tinyalsa implementation does not show much - it's equal to the
+> standard mmap access for the PCM devices. Even considering the Mark's
+> text, there must be an arbiter (sound server) which communicates with
+> the producer or consumer to control the data flow. I really would like
+> to see a real usage for this.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Right, the driving force behind implementing this is Android which had
+been using an out of tree version of this approach based on ION but
+that's run into trouble due to other outside changes.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>   It seems to me that the only point to implement this is the
+> permissions. We already have O_APPEND mode for the PCM file descriptor
+> which can reuse the PCM device multiple times (mmap the buffer to
+> multiple tasks). I would probably go in this way and add more extended
+> permission control for the PCM device, so permissions can be restricted
+> for the passed descriptor to the producer or the consumer task. In this
+> way, the restricted task might reuse other control mechanism offered buy
+> the PCM file descriptor without requesting the arbiter to do so (like
+> read the actual position in the DMA buffer, get the audio delay or so -
+> reduce context switches).
 
-Thanks,
-Mark
+One concern I have with doing some ALSA-specific custom permissions
+thing is integration with frameworks like SELinux (they'd presumably
+need to learn about the ALSA specific stuff to manage it).  It also
+seems like it's adding a lot more security sensitive interfaces and=20
+code which which will require audit and review, one of the things I=20
+really like about this approach is that it's incredibly simple from
+the security point of view.
 
->From d9866572486802bc598a3e8576a5231378d190de Mon Sep 17 00:00:00 2001
-From: Stefan Agner <stefan@agner.ch>
-Date: Fri, 18 Jan 2019 10:06:52 +0100
-Subject: [PATCH] ASoC: imx-sgtl5000: put of nodes if finding codec fails
+--3yNHWXBV/QO9xKNm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Make sure to properly put the of node in case finding the codec
-fails.
+-----BEGIN PGP SIGNATURE-----
 
-Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/imx-sgtl5000.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxCJBQACgkQJNaLcl1U
+h9C1nwf6Ajg+8dtn4R9gXvvYxYKD3C8tBRZVKey3ANemRTEaLMVqPnepM0fFdfkq
+aF3R/XWSTimr4VSDwiAjWILSgLFWyrDtrApIWCLic7hIAi3coe8ZwCQTgi+ADtxZ
+1l/bwAX1j54kCEA3veyUf79yV7OHZ4pYzhJ5nDA/HDeyVbLsZ9IanqtsRo8nHpbS
+GFBES7IFSPS9CbvzDIhfKS7F4OVrDecZR0F0SO62DSiExKjj+xfbt8Vnf1QyM41v
+69E7CZKoU93F/HfDuqTg+zsFrCsNtE8j7rhrbir0Ub1goKXXdh/7g6voRGgu0mse
+hdbw6qz6rJIU475liQwQG6zo041XPA==
+=p664
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index c29200cf755a..594bde3b0ded 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -111,7 +111,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	codec_dev = of_find_i2c_device_by_node(codec_np);
- 	if (!codec_dev) {
- 		dev_err(&pdev->dev, "failed to find codec platform device\n");
--		return -EPROBE_DEFER;
-+		ret = -EPROBE_DEFER;
-+		goto fail;
- 	}
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--- 
-2.20.1
+--3yNHWXBV/QO9xKNm--
+
+--===============6418817251262715067==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6418817251262715067==--
