@@ -1,13 +1,13 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: imx-sgtl5000: don't print
+Subject: Re: [alsa-devel] [PATCH v2 4/5] ASoC: fsl_spdif: don't print
  EPROBE_DEFER as error
-Date: Fri, 18 Jan 2019 08:42:13 -0200
-Message-ID: <CAOMZO5ALY4gk33evmgafK9mgPYWL59ZfTjQjUtKujchHiHkDLA@mail.gmail.com>
-References: <20190118090656.14201-1-stefan@agner.ch> <20190118090656.14201-3-stefan@agner.ch>
+Date: Fri, 18 Jan 2019 08:42:36 -0200
+Message-ID: <CAOMZO5CDhEUnndEcfMEWCWBD9JF61FxNC0_6=r+58dn9oWbyrA@mail.gmail.com>
+References: <20190118090656.14201-1-stefan@agner.ch> <20190118090656.14201-4-stefan@agner.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190118090656.14201-3-stefan@agner.ch>
+In-Reply-To: <20190118090656.14201-4-stefan@agner.ch>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Stefan Agner <stefan@agner.ch>
 Cc: timur@kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
