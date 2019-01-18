@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-sgtl5000: lower log level for
-	potential probe deferral cases" to the asoc tree
-Date: Fri, 18 Jan 2019 18:38:36 +0000 (GMT)
-Message-ID: <20190118183836.55BD911276E7@debutante.sirena.org.uk>
+Subject: Applied "ASoC: imx-sgtl5000: put of nodes if finding
+	codec fails" to the asoc tree
+Date: Fri, 18 Jan 2019 18:38:38 +0000 (GMT)
+Message-ID: <20190118183838.248F211276E7@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B5A6266FA5
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:37 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C51B5267129
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:38 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-sgtl5000: lower log level for potential probe deferral cases
+   ASoC: imx-sgtl5000: put of nodes if finding codec fails
 
 has been applied to the asoc tree at
 
@@ -52,43 +52,37 @@ to this mail.
 Thanks,
 Mark
 
->From 691beb02d9ff364000a8de4e74898600b9caee89 Mon Sep 17 00:00:00 2001
+>From d9866572486802bc598a3e8576a5231378d190de Mon Sep 17 00:00:00 2001
 From: Stefan Agner <stefan@agner.ch>
-Date: Fri, 18 Jan 2019 10:06:53 +0100
-Subject: [PATCH] ASoC: imx-sgtl5000: lower log level for potential probe
- deferral cases
+Date: Fri, 18 Jan 2019 10:06:52 +0100
+Subject: [PATCH] ASoC: imx-sgtl5000: put of nodes if finding codec fails
 
-Not finding the codec/SSI instance can be due to probe deferral.
-Do not print error messages in those cases.
+Make sure to properly put the of node in case finding the codec
+fails.
 
+Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-sgtl5000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/imx-sgtl5000.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 594bde3b0ded..9790a2a8ec2d 100644
+index c29200cf755a..594bde3b0ded 100644
 --- a/sound/soc/fsl/imx-sgtl5000.c
 +++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -104,13 +104,13 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 
- 	ssi_pdev = of_find_device_by_node(ssi_np);
- 	if (!ssi_pdev) {
--		dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+		dev_dbg(&pdev->dev, "failed to find SSI platform device\n");
- 		ret = -EPROBE_DEFER;
- 		goto fail;
- 	}
+@@ -111,7 +111,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
  	codec_dev = of_find_i2c_device_by_node(codec_np);
  	if (!codec_dev) {
--		dev_err(&pdev->dev, "failed to find codec platform device\n");
-+		dev_dbg(&pdev->dev, "failed to find codec platform device\n");
- 		ret = -EPROBE_DEFER;
- 		goto fail;
+ 		dev_err(&pdev->dev, "failed to find codec platform device\n");
+-		return -EPROBE_DEFER;
++		ret = -EPROBE_DEFER;
++		goto fail;
  	}
+ 
+ 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
 -- 
 2.20.1
