@@ -1,22 +1,21 @@
-From: "Schulman, James" <James.Schulman@cirrus.com>
-Subject: Re: [PATCH v5 2/2] ASoC: cs35l36: Add device tree
- documentation for CS35L36
-Date: Fri, 18 Jan 2019 20:07:42 +0000
-Message-ID: <alpine.DEB.2.10.1901181407490.6984@james-tower>
-References: <1545422004-4272-1-git-send-email-james.schulman@cirrus.com>
- <1545422004-4272-2-git-send-email-james.schulman@cirrus.com>
- <20181228092759.GJ16508@imbe.wolfsonmicro.main>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Remove expensive print in
+	irq handler
+Date: Fri, 18 Jan 2019 12:08:32 -0800
+Message-ID: <20190118200831.GB11798@Asurada-Nvidia.nvidia.com>
+References: <20190118142623.17720-1-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 99082266C04
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 21:07:46 +0100 (CET)
-In-Reply-To: <20181228092759.GJ16508@imbe.wolfsonmicro.main>
-Content-Language: en-US
-Content-ID: <F77A7AA7C72DAA48BF9DD0EC676A059D@namprd19.prod.outlook.com>
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5983B266BE8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 21:08:36 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id v28so6542606pgk.10
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 12:08:36 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20190118142623.17720-1-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,31 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>, "Schulman,
- James" <James.Schulman@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 18, 2019 at 02:26:46PM +0000, Daniel Baluta wrote:
+> From: Shengjiu Wang <shengjiu.wang@nxp.com>
+> 
+> When stopping audio, ASoC will first stop DMA then CPU DAI.
+> Sometimes there is a delay between DMA stop and CPU DAI stop, which
+> triggers an underrun error. Now, because of the delay introduced
+> by dev_err another underrun error will occur causing a vicious circle
+> making impossible to stop CPU DAI.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-On Fri, 28 Dec 2018, Charles Keepax wrote:
-
-> On Fri, Dec 21, 2018 at 01:53:24PM -0600, James Schulman wrote:
->> Add device tree documentation for Cirrus Logic CS35L36
->> speaker amplifier
->>
->> Signed-off-by: James Schulman <james.schulman@cirrus.com>
->> ---
->
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
->
-> Thanks,
-> Charles
->
-
-Anymore feedback for this patch?
-
-Thanks,
-James
+> ---
+>  sound/soc/fsl/fsl_sai.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 4163f2cfc06f..db9e0872f73d 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -62,10 +62,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
+>  		dev_dbg(dev, "isr: Start of Tx word detected\n");
+>  
+>  	if (flags & FSL_SAI_CSR_SEF)
+> -		dev_warn(dev, "isr: Tx Frame sync error detected\n");
+> +		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
+>  
+>  	if (flags & FSL_SAI_CSR_FEF) {
+> -		dev_warn(dev, "isr: Transmit underrun detected\n");
+> +		dev_dbg(dev, "isr: Transmit underrun detected\n");
+>  		/* FIFO reset for safety */
+>  		xcsr |= FSL_SAI_CSR_FR;
+>  	}
+> @@ -96,10 +96,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
+>  		dev_dbg(dev, "isr: Start of Rx word detected\n");
+>  
+>  	if (flags & FSL_SAI_CSR_SEF)
+> -		dev_warn(dev, "isr: Rx Frame sync error detected\n");
+> +		dev_dbg(dev, "isr: Rx Frame sync error detected\n");
+>  
+>  	if (flags & FSL_SAI_CSR_FEF) {
+> -		dev_warn(dev, "isr: Receive overflow detected\n");
+> +		dev_dbg(dev, "isr: Receive overflow detected\n");
+>  		/* FIFO reset for safety */
+>  		xcsr |= FSL_SAI_CSR_FR;
+>  	}
+> -- 
+> 2.17.1
+> 
