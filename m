@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_sai: Remove expensive print in irq
-	handler" to the asoc tree
-Date: Fri, 18 Jan 2019 18:38:27 +0000 (GMT)
-Message-ID: <20190118183827.3D8ED11276E7@debutante.sirena.org.uk>
-References: <20190118142623.17720-1-daniel.baluta@nxp.com>
+Subject: Applied "ASoC: soc-core: remove error due to probe
+	deferral" to the asoc tree
+Date: Fri, 18 Jan 2019 18:38:29 +0000 (GMT)
+Message-ID: <20190118183829.1E65F11276E7@debutante.sirena.org.uk>
+References: <20190118095504.22397-1-stefan@agner.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B3EAB266AA9
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:28 +0100 (CET)
-In-Reply-To: <20190118142623.17720-1-daniel.baluta@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9593F266AA9
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:31 +0100 (CET)
+In-Reply-To: <20190118095504.22397-1-stefan@agner.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_sai: Remove expensive print in irq handler
+   ASoC: soc-core: remove error due to probe deferral
 
 has been applied to the asoc tree at
 
@@ -52,53 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From e412fcb0db5c44a3450ca678b281ea9332e6bf82 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 18 Jan 2019 14:26:46 +0000
-Subject: [PATCH] ASoC: fsl_sai: Remove expensive print in irq handler
+>From 7c7e2d6a9ca3c74ba7ed4da2a75916b2f9ae38f0 Mon Sep 17 00:00:00 2001
+From: Stefan Agner <stefan@agner.ch>
+Date: Fri, 18 Jan 2019 10:55:04 +0100
+Subject: [PATCH] ASoC: soc-core: remove error due to probe deferral
 
-When stopping audio, ASoC will first stop DMA then CPU DAI.
-Sometimes there is a delay between DMA stop and CPU DAI stop, which
-triggers an underrun error. Now, because of the delay introduced
-by dev_err another underrun error will occur causing a vicious circle
-making impossible to stop CPU DAI.
+Deferred probes shouldn't cause error messages in the boot log, so
+change the dev_err() to the more harmless dev_info().
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_sai.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 4163f2cfc06f..db9e0872f73d 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -62,10 +62,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 		dev_dbg(dev, "isr: Start of Tx word detected\n");
- 
- 	if (flags & FSL_SAI_CSR_SEF)
--		dev_warn(dev, "isr: Tx Frame sync error detected\n");
-+		dev_dbg(dev, "isr: Tx Frame sync error detected\n");
- 
- 	if (flags & FSL_SAI_CSR_FEF) {
--		dev_warn(dev, "isr: Transmit underrun detected\n");
-+		dev_dbg(dev, "isr: Transmit underrun detected\n");
- 		/* FIFO reset for safety */
- 		xcsr |= FSL_SAI_CSR_FR;
- 	}
-@@ -96,10 +96,10 @@ static irqreturn_t fsl_sai_isr(int irq, void *devid)
- 		dev_dbg(dev, "isr: Start of Rx word detected\n");
- 
- 	if (flags & FSL_SAI_CSR_SEF)
--		dev_warn(dev, "isr: Rx Frame sync error detected\n");
-+		dev_dbg(dev, "isr: Rx Frame sync error detected\n");
- 
- 	if (flags & FSL_SAI_CSR_FEF) {
--		dev_warn(dev, "isr: Receive overflow detected\n");
-+		dev_dbg(dev, "isr: Receive overflow detected\n");
- 		/* FIFO reset for safety */
- 		xcsr |= FSL_SAI_CSR_FR;
- 	}
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0462b3ec977a..98bb05f6ed56 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -903,8 +903,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
+ 		if (!codec_dais[i]) {
+-			dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
+-				codecs[i].dai_name);
++			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
++				 codecs[i].dai_name);
+ 			goto _err_defer;
+ 		}
+ 		snd_soc_rtdcom_add(rtd, codec_dais[i]->component);
 -- 
 2.20.1
