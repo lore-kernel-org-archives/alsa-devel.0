@@ -1,181 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v5.0
-Date: Fri, 18 Jan 2019 12:54:53 +0000
-Message-ID: <20190118125453.GB6260@sirena.org.uk>
+From: Viorel Suman <viorel.suman@nxp.com>
+Subject: Re: [PATCH v3 0/4] Add NXP AUDMIX device and machine drivers
+Date: Fri, 18 Jan 2019 13:16:24 +0000
+Message-ID: <1547817384.11482.33.camel@nxp.com>
+References: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
+         <20190117161804.GA5760@bogus>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2049960650604749242=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 31FB72667E7
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 13:54:55 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190117161804.GA5760@bogus>
+Content-Language: en-US
+Content-ID: <92DBA4F10D09D34EB93E4BAF7B64843A@eurprd04.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "robh@kernel.org" <robh@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
+Cc: dl-linux-imx <linux-imx@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@kernel.org" <timur@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-proj>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2049960650604749242==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
-Content-Disposition: inline
-
-
---tsOsTdHNUZQcU9Ye
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-The following changes since commit a7a850dba82498a1e050d8d153cae67ce0edb3b2:
-
-  Merge branch 'asoc-4.21' into asoc-next (2018-12-18 12:23:59 +0000)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.0-rc2
-
-for you to fetch changes up to 4cb79ef9c6c4413427cd70afbb1f3bc01e9b7abf:
-
-  ASoC: amd: Fix potential NULL pointer dereference (2019-01-15 19:06:23 +0000)
-
-----------------------------------------------------------------
-ASoC: Fixes for v5.0
-
-Quite a big batch of fixes here.  There's a couple of things going on,
-the main one is that we found some issues with not deferring probe when
-we should, causing us to skip some driver initialization.  The fixes for
-this then in turn exposed some issues with how we were searching for
-components which had previously gone unnoticed due to the original
-issue.
-
-There's also been the normal driver specific stuff and there's been what
-looks like several batches of automated scanning for issues which have
-generated quite a large set of smaller fixes for potential crashes and
-missed error handling.
-
-----------------------------------------------------------------
-
-Should probably have pointed out that the DaVinci runtime PM fix here is
-a big diff but mostly code motion, it fixes problems where the device
-would stop working after runtime PM.
-
-Ajit Pandey (1):
-      ASoC: soc-core: defer card probe until all component is added to list
-
-Curtis Malainey (1):
-      ASoC: soc-core: fix init platform memory handling
-
-Dan Carpenter (6):
-      ASoC: dma-sh7760: cleanup a debug printk
-      ASoC: pcm512x: Fix a double unlock in pcm512x_digital_mute()
-      ASoC: qdsp6: q6asm-dai: Off by one in of_q6asm_parse_dai_data()
-      ASoC: qdsp6: q6asm-dai: Fix a NULL vs IS_ERR() bug
-      ASoC: qdsp6: q6asm-dai: Fix a small memory leak
-      ALSA: compress: prevent potential divide by zero bugs
-
-Geert Uytterhoeven (1):
-      ASoC: xlnx: Grammar s/the the/the/
-
-Gustavo A. R. Silva (2):
-      ASoC: rt5514-spi: Fix potential NULL pointer dereference
-      ASoC: amd: Fix potential NULL pointer dereference
-
-Kangjie Lu (1):
-      ASoC: atom: fix a missing check of snd_pcm_lib_malloc_pages
-
-Mac Chiang (1):
-      ASoC: Intel: Boards: move the codec PLL configuration to _init
-
-Mark Brown (1):
-      ASoC: core: Make snd_soc_find_component() more robust
-
-Maruthi Srinivas Bayyavarapu (1):
-      ASoC: xlnx: change license header format style
-
-Matthias Reichl (1):
-      ASoC: core: Don't defer probe on optional, NULL components
-
-Peter Ujfalusi (1):
-      ASoC: ti: davinci-mcasp: Move context save/restore to runtime_pm callbacks
-
-Rander Wang (1):
-      ASoC: Intel: Haswell/Broadwell: fix setting for .dynamic field
-
-Rohit kumar (2):
-      ASoC: sdm845: set jack only for a specific backend
-      ASoC: soc-core: Hold client_mutex around soc_init_dai_link()
-
-Shuming Fan (2):
-      ASoC: rt5682: Fix recording no sound issue
-      ASoC: rt5682: Fix PLL source register definitions
-
-Silvio Cesare (2):
-      ASoC: dapm: change snprintf to scnprintf for possible overflow
-      ASoC: imx-audmux: change snprintf to scnprintf for possible overflow
-
-Sinan Kaya (1):
-      ASoC: Intel: atom: Make PCI dependency explicit
-
-Yizhuo (1):
-      ASoC: Variable "val" in function rt274_i2c_probe() could be uninitialized
-
-b-ak (1):
-      ASoC: tlv320aic32x4: Kernel OOPS while entering DAPM standby mode
-
- include/sound/soc.h                           |   6 ++
- sound/core/compress_offload.c                 |   3 +-
- sound/soc/amd/raven/acp3x-pcm-dma.c           |   6 +-
- sound/soc/codecs/pcm512x.c                    |  11 +--
- sound/soc/codecs/rt274.c                      |   5 +-
- sound/soc/codecs/rt5514-spi.c                 |   2 +
- sound/soc/codecs/rt5682.c                     |   1 +
- sound/soc/codecs/rt5682.h                     |  24 ++---
- sound/soc/codecs/tlv320aic32x4.c              |   4 +
- sound/soc/fsl/imx-audmux.c                    |  24 ++---
- sound/soc/intel/Kconfig                       |   2 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c  |   8 +-
- sound/soc/intel/boards/broadwell.c            |   2 +-
- sound/soc/intel/boards/glk_rt5682_max98357a.c |  45 ++-------
- sound/soc/intel/boards/haswell.c              |   2 +-
- sound/soc/qcom/qdsp6/q6asm-dai.c              |  17 +++-
- sound/soc/qcom/sdm845.c                       |  31 ++++--
- sound/soc/sh/dma-sh7760.c                     |   2 +-
- sound/soc/soc-core.c                          |  34 +++++--
- sound/soc/soc-dapm.c                          |  10 +-
- sound/soc/ti/davinci-mcasp.c                  | 136 ++++++++++++--------------
- sound/soc/xilinx/Kconfig                      |   2 +-
- sound/soc/xilinx/xlnx_i2s.c                   |  15 ++-
- 23 files changed, 208 insertions(+), 184 deletions(-)
-
---tsOsTdHNUZQcU9Ye
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxBzJ0ACgkQJNaLcl1U
-h9BIWAf+JjyRP5A/88jzVj7jUPJ816z0GDXIqT21UB/di4oxZuLDrfDWFpl5lLB8
-u87GVE91jwHrizwaNqzLJSfx95JcL5xAQXz7tGOWmao/mSbntY0+cO6cv+QxPv5E
-PD0psrwUeP4ZSM2SXpuL2r5/gHyk6alH3nilCvyu4W833EvoP08NTG3DQOEjS7sJ
-uJ9TT0J4lF3D81GrzX87Yp43mEloTsI0WfSwt2SxAOGjuSIxFpBeGwth05Ui5j6q
-l1a1Fd5PDCqfV8N/M+fP8ohk2l3QFIMxCR09M4x8xvUG/FC+jRuoo9fpsRDednph
-02URkeuoTF9ZHC8WQMOmPPvOX0x4SQ==
-=dO5J
------END PGP SIGNATURE-----
-
---tsOsTdHNUZQcU9Ye--
-
---===============2049960650604749242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2049960650604749242==--
+SGkgUm9iLCBOaWNvbGluLCBBbGwsDQoNCk9uIEpvLCAyMDE5LTAxLTE3IGF0IDEwOjE4IC0wNjAw
+LCBSb2IgSGVycmluZyB3cm90ZToNCj4gT24gVGh1LCBKYW4gMTcsIDIwMTkgYXQgMTI6NDY6MjVQ
+TSArMDAwMCwgVmlvcmVsIFN1bWFuIHdyb3RlOg0KPiA+IA0KPiA+IFRoZSBwYXRjaHNldCBhZGRz
+IE5YUCBBdWRpbyBNaXhlciAoQVVETUlYKSBkZXZpY2UgYW5kIG1hY2hpbmUNCj4gPiBkcml2ZXJz
+IGFuZCByZWxhdGVkIERUIGJpbmRpbmdzIGRvY3VtZW50YXRpb24uDQo+ID4gDQo+ID4gQ2hhbmdl
+cyBzaW5jZSBWMjoNCj4gPiAxLiBNb3ZlZCAiZGFpcyIgbm9kZSBmcm9tIG1hY2hpbmUgZHJpdmVy
+IERUUyBub2RlIHRvIGRldmljZSBkcml2ZXINCj4gPiBEVFMgbm9kZQ0KPiA+IMKgIGFzIHN1Z2dl
+c3RlZCBieSBSb2IuDQo+IFRoYXQgd2FzIG5vdCB3aGF0IEkgc3VnZ2VzdGVkLiBZb3Ugc3RpbGwg
+aGF2ZSBhIHZpcnR1YWwgbm9kZSB3aGljaA0KPiBsb29rcyB0byBtZSB0byBiZSB1bm5lY2Vzc2Fy
+eS4NCg0KVG8gbWUgcmVtb3ZpbmcgdmlydHVhbCBub2RlIGltcGxpZXMgdGhhdCBBVURNSVggbWFj
+aGluZSBkcml2ZXIgKGlteC0NCmF1ZG1peC5jICsgdmlydHVhbCBub2RlKSBzaGFsbCBiZSByZW1v
+dmVkIGFuZCBtYWNoaW5lIGRyaXZlciBjb2RlDQptZXJnZWQgaW50byBkZXZpY2UgZHJpdmVyIChm
+c2xfYXVkbWl4LmMgKyBkZXZpY2Ugbm9kZSkgLSBwbGVhc2UgbGV0IG1lDQprbm93IGlmIG15IHVu
+ZGVyc3RhbmRpbmcgaXMgd3JvbmcuDQoNClRoZSBpbXBsaWNhdGlvbiBpcyB0aGF0IHRoaXMgbWFr
+ZXMgQVVETUlYIGRldmljZSBkcml2ZXIgYm91bmRlZCB0byBhDQpwYXJ0aWN1bGFyIERBSSB0eXBl
+IG9mIGludGVyZmFjZSAtIFNBSS4gVGhlIG9yaWdpbmFsIGludGVudGlvbiBpcyB0bw0Ka2VlcCBB
+VURNSVggZGV2aWNlIGRyaXZlciBEQUktYWdub3N0aWMuDQoNCkluZGVlZCwgY3VycmVudGx5IHRo
+ZSBjb25uZWN0aW9uIGJldHdlZW4gQVVETUlYIGFuZCBTQUkgSVAgYmxvY2tzIGluDQppLk1YOFFN
+IGFuZCBpLk1YOFFYUCBpcyBmaXhlZCBpbnNpZGUgdGhlIFNvQywgYnV0IG9uIG90aGVyIHBsYXRm
+b3JtcyB3ZQ0KbWF5IGV4cGVjdCBBVURNSVggdG8gYmUgY29ubmVjdGVkIGluc2lkZSB0aGUgU29D
+IHRvIG90aGVyIElQIGJsb2NrcyAtDQp0byBFU0FJIGludGVyZmFjZSBmb3IgaW5zdGFuY2UuDQoN
+CkF0IHRoaXMgbW9tZW50IGl0J3MgYSBiaXQgZGlmZmljdWx0IGZvciBtZSB0byBldmFsdWF0ZSBo
+b3cgY3JpdGljYWwgaXMNCnRvIGtlZXAgdGhlIGRldmljZSBkcml2ZXIgREFJLWFnbm9zdGljLCBz
+byBpZiB5b3UgdGhpbmsgaXQncyBiZXR0ZXIgdG8NCmdvIG5vdyB3aXRoIGEgU0FJIGJvdW5kZWQg
+QVVETUlYIGRldmljZSBkcml2ZXIgLSBwbGVhc2UgY29uZmlybSwgSSdsbA0KbWVyZ2UgbWFjaGlu
+ZSBkcml2ZXIgY29kZSBpbnRvIGRldmljZSBkcml2ZXIuDQoNClRoYW5rIHlvdSwNClZpb3JlbA0K
+DQo+IA0KPiA+IA0KPiA+IA0KPiA+IENoYW5nZXMgc2luY2UgVjE6DQo+ID4gMS4gT3JpZ2luYWwg
+cGF0Y2ggc3BsaXQgaW50byBkaXN0aW5jdCBwYXRjaGVzIGZvciB0aGUgZGV2aWNlIGRyaXZlcg0K
+PiA+IGFuZA0KPiA+IMKgIERUIGJpbmRpbmcgZG9jdW1lbnRhdGlvbi4NCj4gPiAyLiBSZXBsYWNl
+ZCBBTUlYIHdpdGggQVVETUlYIGluIGJvdGggY29kZSBhbmQgZmlsZSBuYW1lcyBhcyBpdA0KPiA+
+IGxvb2tzIG1vcmUNCj4gPiDCoCBSTS1jb21wbGlhbnQuDQo+ID4gMy4gUmVtb3ZlZCBwb2xhcml0
+eSBjb250cm9sIGZyb20gQ1BVIERBSSBkcml2ZXIgYXMgc3VnZ2VzdGVkIGJ5DQo+ID4gTmljb2xp
+bi4NCj4gPiA0LiBBZGRlZCBtYWNoaW5lIGRyaXZlciBhbmQgcmVsYXRlZCBEVCBiaW5kaW5nIGRv
+Y3VtZW50YXRpb24uDQo+ID4gDQo+ID4gVmlvcmVsIFN1bWFuICg0KToNCj4gPiDCoCBBU29DOiBm
+c2w6IEFkZCBBdWRpbyBNaXhlciBDUFUgREFJIGRyaXZlcg0KPiA+IMKgIEFTb0M6IGFkZCBmc2xf
+YXVkbWl4IERUIGJpbmRpbmcgZG9jdW1lbnRhdGlvbg0KPiA+IMKgIEFTb0M6IGZzbDogQWRkIEF1
+ZGlvIE1peGVyIG1hY2hpbmUgZHJpdmVyDQo+ID4gwqAgQVNvQzogYWRkIGlteC1hdWRtaXggRFQg
+YmluZGluZyBkb2N1bWVudGF0aW9uDQo+ID4gDQo+ID4gwqAuLi4vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zb3VuZC9mc2wsYXVkbWl4LnR4dMKgwqDCoMKgwqDCoMKgfMKgwqA1MCArKw0KPiA+IMKgLi4u
+L2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvaW14LWF1ZG1peC50eHTCoMKgwqDCoMKgwqDCoHzC
+oMKgMTggKw0KPiA+IMKgc291bmQvc29jL2ZzbC9LY29uZmlnwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfMKgwqAxNiArDQo+ID4gwqBz
+b3VuZC9zb2MvZnNsL01ha2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHzCoMKgwqA1ICsNCj4gPiDCoHNvdW5kL3NvYy9mc2wvZnNs
+X2F1ZG1peC5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqB8IDU1MQ0KPiA+ICsrKysrKysrKysrKysrKysrKysrKw0KPiA+IMKgc291bmQvc29jL2ZzbC9m
+c2xfYXVkbWl4LmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHwgMTAyICsrKysNCj4gPiDCoHNvdW5kL3NvYy9mc2wvaW14LWF1ZG1peC5jwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB8IDMzNA0KPiA+ICsrKysr
+KysrKysrKysNCj4gPiDCoDcgZmlsZXMgY2hhbmdlZCwgMTA3NiBpbnNlcnRpb25zKCspDQo+ID4g
+wqBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc291bmQvZnNsLGF1ZG1peC50eHQNCj4gPiDCoGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvaW14LQ0KPiA+IGF1ZG1peC50eHQNCj4g
+PiDCoGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvZnNsL2ZzbF9hdWRtaXguYw0KPiA+IMKg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9mc2wvZnNsX2F1ZG1peC5oDQo+ID4gwqBjcmVh
+dGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2ZzbC9pbXgtYXVkbWl4LmMNCj4gPiA=
