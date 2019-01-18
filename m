@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-sgtl5000: don't print EPROBE_DEFER
-	as error" to the asoc tree
-Date: Fri, 18 Jan 2019 18:38:34 +0000 (GMT)
-Message-ID: <20190118183834.89FB411276E7@debutante.sirena.org.uk>
+Subject: Applied "ASoC: imx-sgtl5000: lower log level for
+	potential probe deferral cases" to the asoc tree
+Date: Fri, 18 Jan 2019 18:38:36 +0000 (GMT)
+Message-ID: <20190118183836.55BD911276E7@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DBE0266FA5
- for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:35 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B5A6266FA5
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2019 19:38:37 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-sgtl5000: don't print EPROBE_DEFER as error
+   ASoC: imx-sgtl5000: lower log level for potential probe deferral cases
 
 has been applied to the asoc tree at
 
@@ -52,13 +52,14 @@ to this mail.
 Thanks,
 Mark
 
->From e379ee969ecbc807c5b233460c2a88b6ee06bde3 Mon Sep 17 00:00:00 2001
+>From 691beb02d9ff364000a8de4e74898600b9caee89 Mon Sep 17 00:00:00 2001
 From: Stefan Agner <stefan@agner.ch>
-Date: Fri, 18 Jan 2019 10:06:54 +0100
-Subject: [PATCH] ASoC: imx-sgtl5000: don't print EPROBE_DEFER as error
+Date: Fri, 18 Jan 2019 10:06:53 +0100
+Subject: [PATCH] ASoC: imx-sgtl5000: lower log level for potential probe
+ deferral cases
 
-Probe deferral is to be expected during normal operation, so avoid
-printing an error when it is encountered.
+Not finding the codec/SSI instance can be due to probe deferral.
+Do not print error messages in those cases.
 
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
@@ -66,23 +67,28 @@ Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-sgtl5000.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/fsl/imx-sgtl5000.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 9790a2a8ec2d..b6cb80480b60 100644
+index 594bde3b0ded..9790a2a8ec2d 100644
 --- a/sound/soc/fsl/imx-sgtl5000.c
 +++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -157,7 +157,9 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+@@ -104,13 +104,13 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+				ret);
+ 	ssi_pdev = of_find_device_by_node(ssi_np);
+ 	if (!ssi_pdev) {
+-		dev_err(&pdev->dev, "failed to find SSI platform device\n");
++		dev_dbg(&pdev->dev, "failed to find SSI platform device\n");
+ 		ret = -EPROBE_DEFER;
  		goto fail;
  	}
- 
+ 	codec_dev = of_find_i2c_device_by_node(codec_np);
+ 	if (!codec_dev) {
+-		dev_err(&pdev->dev, "failed to find codec platform device\n");
++		dev_dbg(&pdev->dev, "failed to find codec platform device\n");
+ 		ret = -EPROBE_DEFER;
+ 		goto fail;
+ 	}
 -- 
 2.20.1
