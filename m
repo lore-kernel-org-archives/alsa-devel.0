@@ -1,52 +1,79 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 0/4] Add NXP AUDMIX device and machine drivers
-Date: Mon, 21 Jan 2019 09:23:35 -0600
-Message-ID: <20190121152335.GA12284@bogus>
-References: <1547729177-14317-1-git-send-email-viorel.suman@nxp.com>
- <20190117161804.GA5760@bogus>
- <1547817384.11482.33.camel@nxp.com>
- <20190118194642.GA11798@Asurada-Nvidia.nvidia.com>
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: simple-audio-card and headphone jack detect
+Date: Fri, 18 Jan 2019 22:04:12 -0300
+Message-ID: <1547859852.1824.0@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190118194642.GA11798@Asurada-Nvidia.nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Viorel Suman <viorel.suman@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@kernel.org" <timur@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, "perex@perex.cz" <perex@perex.cz>, alsa-
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from crapouillou.net (outils.crapouillou.net [89.234.176.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50357266C04
+ for <alsa-devel@alsa-project.org>; Sat, 19 Jan 2019 02:04:20 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 18, 2019 at 11:46:42AM -0800, Nicolin Chen wrote:
-> On Fri, Jan 18, 2019 at 01:16:24PM +0000, Viorel Suman wrote:
-> > > > 1. Moved "dais" node from machine driver DTS node to device driver
-> > > > DTS node
-> > > >   as suggested by Rob.
-> > > That was not what I suggested. You still have a virtual node which
-> > > looks to me to be unnecessary.
-> > 
-> > To me removing virtual node implies that AUDMIX machine driver (imx-
-> > audmix.c + virtual node) shall be removed and machine driver code
-> > merged into device driver (fsl_audmix.c + device node) - please let me
-> > know if my understanding is wrong.
-> 
-> We could use a non-DT configuration right? From the driver logic,
-> DT just registers a device corresponding to the machine driver so
-> that it can probe(). We could register one in fsl_audmix instead.
-> Please refer to how fsl_ssi registers the sound card device. The
-> machine driver can get audmix_np from the parent device pointer,
-> and I think that's all you need.
+Hello,
 
-Yes.
+I am using the simple-card and simple-amplifier drivers with the
+following devicetree:
 
-> Or maybe someone else would provide a better way. But it'd work.
+amp: audio-amp {
+    compatible = "simple-audio-amplifier";
+    enable-gpios = <&gpc 15 GPIO_ACTIVE_HIGH>;
+};
 
-Or the machine driver could create the audmix device. That probably 
-makes less sense, but either way there doesn't have to be a 1-1 
-correspondence of DT nodes and (platform) devices.
+sound-card {
+    compatible = "simple-audio-card";
 
-I'm not an ASoC expert, but why can't the machine driver just control 
-the audmix directly (with DAIs as separate drivers)? Is the audmix ever 
-going to a be a component for a different machine driver?
+    simple-audio-card,name = "rs90-audio";
+    simple-audio-card,format = "i2s";
 
-Rob
+    simple-audio-card,widgets =
+        "Speaker", "Speaker",
+        "Headphone", "Headphones";
+    simple-audio-card,routing =
+        "INL", "LHPOUT",
+        "INR", "RHPOUT",
+        "Headphones", "LHPOUT",
+        "Headphones", "RHPOUT",
+        "Speaker", "OUTL",
+        "Speaker", "OUTR";
+
+    simple-audio-card,hp-det-gpio = <&gpd 16 GPIO_ACTIVE_LOW>;
+    simple-audio-card,aux-devs = <&amp>;
+
+    simple-audio-card,cpu {
+        sound-dai = <&aic>;
+    };
+
+    simple-audio-card,codec {
+        sound-dai = <&codec>;
+
+        bitclock-master;
+        frame-master;
+    };
+};
+
+My codec outputs on the LHPOUT/RHPOUT lines. INL/INR and OUTL/OUTR
+are the inputs/outputs of the simple-amplifier.
+
+So far so good, when no audio is playing the audio amp is disabled
+(GPIO is low), and it gets enabled as soon as I start to play audio.
+
+What is not working, and what I am trying to achieve, is to have the
+external audio amplifier disabled as soon as headphones are plugged.
+
+Is that something the core handles for me?
+Any suggestions to make it work?
+
+Thanks,
+-Paul
