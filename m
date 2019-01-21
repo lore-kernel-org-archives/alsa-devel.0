@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: use for_each_link_codecs()
-	for dai_link codecs" to the asoc tree
-Date: Mon, 21 Jan 2019 19:20:20 +0000 (GMT)
-Message-ID: <20190121192020.A7A101127D00@debutante.sirena.org.uk>
-References: <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: add soc_cleanup_component()"
+	to the asoc tree
+Date: Mon, 21 Jan 2019 19:20:22 +0000 (GMT)
+Message-ID: <20190121192022.846481127D00@debutante.sirena.org.uk>
+References: <87bm4aamhm.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F25E26742D
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:21 +0100 (CET)
-In-Reply-To: <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 411C126680F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:23 +0100 (CET)
+In-Reply-To: <87bm4aamhm.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: use for_each_link_codecs() for dai_link codecs
+   ASoC: soc-core: add soc_cleanup_component()
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,86 @@ to this mail.
 Thanks,
 Mark
 
->From 10dff9b0ddf70bebe9523fc311ec77a872ce0a9c Mon Sep 17 00:00:00 2001
+>From 22d1423187e5b4d9d5a9851f24466fc0f585a36f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 21 Jan 2019 09:32:59 +0900
-Subject: [PATCH] ASoC: soc-core: use for_each_link_codecs() for dai_link
- codecs
+Date: Mon, 21 Jan 2019 09:32:55 +0900
+Subject: [PATCH] ASoC: soc-core: add soc_cleanup_component()
 
-We can use for_each_link_codecs() without waiting
-for_each_rtd_codec_dai() on soc_bind_dai_link().
-Let's use for_each macro
+We need to cleanup component when soc_probe_component() was
+failed, or when soc_remove_component() was called.
+But they are cleanuping component on each way.
+(And soc_probe_component() doesn't call snd_soc_dapm_free(),
+but it should).
+Same code in many places makes code un-understandable.
+
+This patch adds new soc_cleanup_component() and call it from
+snd_probe_component() and snd_remove_component().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8a58fa86675a..1c92b4aff57b 100644
+index 7fc10a41e0e9..8a58fa86675a 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
-+	struct snd_soc_dai_link_component *codecs;
- 	struct snd_soc_dai_link_component cpu_dai_component;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai **codec_dais;
-@@ -905,9 +905,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	rtd->num_codecs = dai_link->num_codecs;
+@@ -937,21 +937,24 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	return -EPROBE_DEFER;
+ }
  
- 	/* Find CODEC from registered CODECs */
--	/* we can use for_each_rtd_codec_dai() after this */
- 	codec_dais = rtd->codec_dais;
--	for (i = 0; i < rtd->num_codecs; i++) {
-+	for_each_link_codecs(dai_link, i, codecs) {
- 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
- 		if (!codec_dais[i]) {
- 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
++static void soc_cleanup_component(struct snd_soc_component *component)
++{
++	list_del(&component->card_list);
++	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
++	soc_cleanup_component_debugfs(component);
++	component->card = NULL;
++	module_put(component->dev->driver->owner);
++}
++
+ static void soc_remove_component(struct snd_soc_component *component)
+ {
+ 	if (!component->card)
+ 		return;
+ 
+-	list_del(&component->card_list);
+-
+ 	if (component->driver->remove)
+ 		component->driver->remove(component);
+ 
+-	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+-
+-	soc_cleanup_component_debugfs(component);
+-	component->card = NULL;
+-	module_put(component->dev->driver->owner);
++	soc_cleanup_component(component);
+ }
+ 
+ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
+@@ -1360,6 +1363,8 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 
+ 	component->card = card;
+ 	dapm->card = card;
++	INIT_LIST_HEAD(&component->card_list);
++	INIT_LIST_HEAD(&dapm->list);
+ 	soc_set_name_prefix(card, component);
+ 
+ 	soc_init_component_debugfs(component);
+@@ -1422,12 +1427,9 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	/* see for_each_card_components */
+ 	list_add(&component->card_list, &card->component_dev_list);
+ 
+-	return 0;
+-
+ err_probe:
+-	soc_cleanup_component_debugfs(component);
+-	component->card = NULL;
+-	module_put(component->dev->driver->owner);
++	if (ret < 0)
++		soc_cleanup_component(component);
+ 
+ 	return ret;
+ }
 -- 
 2.20.1
