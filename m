@@ -1,15 +1,18 @@
-From: "tom@hitechsys.com" <tom@hitechsys.com>
-Subject: testing hardware with alsaloop.
-Date: Mon, 21 Jan 2019 15:22:02 +0000
-Message-ID: <1687101129b.12a742a5794658.7811800839305453196@hitechsys.com>
-Reply-To: tom@hitechsys.com
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: MAINTAINERS: fsl: Change Fabio's email
+	address
+Date: Mon, 21 Jan 2019 14:27:11 -0200
+Message-ID: <20190121162711.30522-1-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender-of-o52.zoho.com (sender-of-o52.zoho.com [135.84.80.217])
- by alsa0.perex.cz (Postfix) with ESMTP id 359972673F8
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 16:22:08 +0100 (CET)
+Received: from mail-qt1-f195.google.com (mail-qt1-f195.google.com
+ [209.85.160.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1055D2667E7
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 17:27:17 +0100 (CET)
+Received: by mail-qt1-f195.google.com with SMTP id p17so24182866qtl.5
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 08:27:17 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,31 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8KCgoKSW0gcnVubmluZyBhbHNhbG9vcCB0ZXN0IHRvIHRlc3QgdGhlIGF1ZGlvIG9uIG91
-ciBoYXJkd2FyZS4gSW0gc3BlY2lmaWNhbGx5IHJ1bm5pbmcgdGhpcyBjb21tYW5kIC0gCgphbHNh
-bG9vcCAtQyBodzowLDAgLVAgaHc6MSwwIC1TIDEgLWwgNDgwIC1jIDYgLXYgCgpXaGVuIEkgbWVh
-c3VyZSB0aGUgZGVsYXkgdGhyb3VnaCBteSBoYXJkd2FyZSBJIGdldCAxMW1TZWMgLSB3aGljaCBp
-cyBmaW5lLCBhbmQgdGhlIGF1ZGlvIHF1YWxpdHkgaXMgZ29vZCBhcyB3ZWxsLiBIb3dldmVyIGFm
-dGVyIHNldmVyYWwgaG91cnMgCgpvZiBydW5uaW5nIHRoaXMgbG9vcCB0ZXN0IHRoZSBkZWxheSBo
-YXMgaW5jcmVhc2VkIHRvIDkwbVNlYy4gQ2FuIHNvbWVvbmUgYWR2aWNlIHdoYXQgaXMgZ29pbmcg
-d3JvbmcgaGVyZSBwbGVhc2UuCgoKCkJlc3QgcmVnYXJkcwoKVG9tIEZhdmVsbCB8IEhpIFRlY2gg
-U3lzdGVtcyBMdGQKCgoKaHR0cDovL3d3dy5oaXRlY2hzeXMuY29tCgoKCkZvciBzdXBwb3J0IGdv
-IHRvCgpodHRwczovL3N1cHBvcnQuaGl0ZWNoc3lzLmNvbS8KCgoKVDogKzQ0ICgwKSAxMjU2IDc4
-MDg4MAoKTTogKzQ0ICgwKSA3OTc5NyA1NTM1OQoKwqBodHRwOi8vd3d3LmhpdGVjaHN5cy5jb20K
-CgoKwqkgMjAxOSBIaSBUZWNoIFN5c3RlbXMgTHRkLiBIb2xicm9vayBIb3VzZSwgT2FrbGV5IExh
-bmUsIEJhc2luZ3N0b2tlLCBSRzIzIDdKWSwgVUsKClJlZ2lzdGVyZWQgaW4gRW5nbGFuZCBOby4g
-MjEzMDM0NiB8IFZBVCBOby4gR0IgNDUwMzkwMzcwCgoKClRoZSBpbmZvcm1hdGlvbiBjb250YWlu
-ZWQgaW4gdGhpcyBlLW1haWwgaXMgY29uZmlkZW50aWFsIGFuZCBpcyBpbnRlbmRlZCBzb2xlbHkg
-Zm9yIHRoZSB1c2Ugb2YgdGhlIG5hbWVkIGFkZHJlc3NlZS4gQWNjZXNzLCBjb3B5aW5nIG9yIHJl
-LXVzZSBvZiB0aGUgaW5mb3JtYXRpb24gaW4gaXQgYnkgYW55IG90aGVyIHBlcnNvbiBpcyBub3Qg
-YXV0aG9yaXplZC4gVGhlIEludGVybmV0IGlzIG5vdCBhIHNlY3VyZSB0cmFuc21pc3Npb24gbWVk
-aXVtIGFuZCB0aGVyZWZvcmUgdGhlIGNvbnRlbnQgb2YgdGhpcyBlLW1haWwgbWF5IGhhdmUgYmVl
-biBjaGFuZ2VkIHdpdGhvdXQgdGhlIGNvbnNlbnQgb2YgdGhlIG9yaWdpbmF0b3IuIElmIHlvdSBh
-cmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBkZXN0cm95IHRoaXMgZW1haWwg
-YW5kIGNvbnRhY3QgdGhlIHNlbmRlci5odHRwOi8vd3d3LmhpdGVjaHN5cy5jb20KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I prefer to use my personal email address for kernel related work.
+
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a3d1222b81ad..f3de979b8e58 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6178,7 +6178,7 @@ FREESCALE SOC SOUND DRIVERS
+ M:	Timur Tabi <timur@kernel.org>
+ M:	Nicolin Chen <nicoleotsuka@gmail.com>
+ M:	Xiubo Li <Xiubo.Lee@gmail.com>
+-R:	Fabio Estevam <fabio.estevam@nxp.com>
++R:	Fabio Estevam <festevam@gmail.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	linuxppc-dev@lists.ozlabs.org
+ S:	Maintained
+@@ -10954,7 +10954,7 @@ F:	include/linux/nvmem-consumer.h
+ F:	include/linux/nvmem-provider.h
+ 
+ NXP SGTL5000 DRIVER
+-M:	Fabio Estevam <fabio.estevam@nxp.com>
++M:	Fabio Estevam <festevam@gmail.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/sgtl5000.txt
+-- 
+2.17.1
