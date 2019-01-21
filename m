@@ -1,71 +1,54 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Skip suspending widgets with
-	ignore flag
-Date: Mon, 21 Jan 2019 17:51:21 +0000
-Message-ID: <20190121175121.GD12679@sirena.org.uk>
-References: <20190121144818.23042-1-qq282012236@gmail.com>
+Subject: Re: [PATCH v4 2/2] ASoC: cros_ec_codec: Add codec driver for Cros EC
+Date: Mon, 21 Jan 2019 17:54:01 +0000
+Message-ID: <20190121175401.GE12679@sirena.org.uk>
+References: <20190119113332.249720-1-cychiang@chromium.org>
+ <20190119113332.249720-2-cychiang@chromium.org>
+ <CAFv8NwKctsH5cKUQxgfQNg3V2Y=-o5LFZC0b+jwLC=_nNumbig@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5670515825362484585=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 95A4E2667E7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 18:51:24 +0100 (CET)
-In-Reply-To: <20190121144818.23042-1-qq282012236@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Zhiwei Jiang <qq282012236@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAFv8NwKctsH5cKUQxgfQNg3V2Y=-o5LFZC0b+jwLC=_nNumbig@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5670515825362484585==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
-Content-Disposition: inline
-
-
---DiL7RhKs8rK9YGuF
+--SNIs70sCzqvszXB4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 21, 2019 at 10:48:18PM +0800, Zhiwei Jiang wrote:
-> For endpoint wigdets which have set the suspend ignore flag, asoc
-> shouldn't mark them as dirty when ASoC suspend function is called.
+On Sat, Jan 19, 2019 at 07:39:19PM +0800, Cheng-yi Chiang wrote:
+> Hi Mark,
+>=20
+> Sorry, I forgot to mention that the patch for EC command definition
+> has been already merged in upstream, but not in Mark's for-next tree
+> yet.
+>=20
+> c1f3375be60c mfd: cros_ec: Add commands to control codec
+>=20
+> This is needed.
 
-Why not?  It will cost us a bit of time confirming that they should be
-kept enabled if they're part of a valid path but it also ensures that
-we've reexamined everything which is a bit safer.
+Right, I can't really apply these without that in my tree.  Lee did say
+he might send a signed tag for it but I don't think he did that yet.  :(
 
---DiL7RhKs8rK9YGuF
+--SNIs70sCzqvszXB4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxGBpgACgkQJNaLcl1U
-h9DkLQf+OKqsK1Zua2jcDdEyreppTKhTWLVu+w9YS/unkWuW/zLRj+Z82nDuK0G+
-F5Xr+9jU5VKKjNq3582PUQuG0yj1q7gkSfFCz8Ylv9PWZgXDSUAdhAUpExtIVBcB
-EWONC1kQrRiCcf+gMz22SNtdiJsT6SNHEXx11Y7W96OxU6d1IFbvreMcs7RehyHE
-3jvLZIVIABBHxpIfVAi3GtGnI9rEZMJZ/Jw53XnuZEOF0hgNSlbqVsxnh6mFdyuL
-m7PbcbnyZKlAKX2w4XOsST2b2b7gU8jZA6sW5zaYT/4BsA/fdsYCokfJ7Ahg24x5
-z0Eoqw1c+S4AS5jnErevpNM5WXc3Hg==
-=MD7S
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxGBzkACgkQJNaLcl1U
+h9BkBQf8CJRuj7HS3nyjj55S+Kz9PWSkYvzubXXVTxF0oWuL1mqOR08qLOjFnfYz
+A0SltdTdhiQqhR1UJ/1K3ToRkUn6brv2mPVpR57tibkzuj6D4x84AxUMb5CnDt8E
+j7la7Xir1epVNF+gh5OVMJJAeBUsnDgiyewmUUWYQBxiQbsHxVr5fn8dX8M0uzP8
+nvXiGwaIUn/bOVwDJ0tp2iGZzOVHRbi2Z9eOsUDpnqrCJsdOOOWaTQOnCWTt3XJM
+1yQp56Z2pPnn3vSpWPDjGLT7RKFBxEm9YnHUyiDZihGrUhRx1QKFVwmcunuNXBjD
+KntIAJgPDDirprGX2YVvYdCkj1Hu/Q==
+=aWoR
 -----END PGP SIGNATURE-----
 
---DiL7RhKs8rK9YGuF--
-
---===============5670515825362484585==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5670515825362484585==--
+--SNIs70sCzqvszXB4--
