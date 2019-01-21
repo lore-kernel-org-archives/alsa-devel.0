@@ -1,19 +1,17 @@
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Subject: Re: Noise in begnning of alsa application
-Date: Mon, 21 Jan 2019 23:16:44 +0530
-Message-ID: <CALW20Z27AZcDWANkgvu5XQMtpWo6EJWOoMCAUV43QrV72qHSBg@mail.gmail.com>
-References: <CALW20Z3_KeN7c7k-zL5T0YbW6Zd2t_OUCUbfa1+8_nY6PTEAYg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dapm: Skip suspending widgets with
+	ignore flag
+Date: Mon, 21 Jan 2019 17:51:21 +0000
+Message-ID: <20190121175121.GD12679@sirena.org.uk>
+References: <20190121144818.23042-1-qq282012236@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5670515825362484585=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com
- [209.85.210.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FD572667E7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 18:45:45 +0100 (CET)
-Received: by mail-pf1-f173.google.com with SMTP id q1so10442067pfi.5
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 09:45:45 -0800 (PST)
-In-Reply-To: <CALW20Z3_KeN7c7k-zL5T0YbW6Zd2t_OUCUbfa1+8_nY6PTEAYg@mail.gmail.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95A4E2667E7
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 18:51:24 +0100 (CET)
+In-Reply-To: <20190121144818.23042-1-qq282012236@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
+To: Zhiwei Jiang <qq282012236@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 16, 2019 at 5:07 PM Chakravarthi Pradeep <doubleq7@gmail.com> wrote:
->
-> I have ALSA driver for capture device which works fine with VLC. when
-> I try to capture and render using own application having some issues.
-> When I start play, it has some noise in beginning and audio is
-> discontinuous in between. Discontinuous means, some audio frame are
-> getting dropped in between. cut cut sound for sine wave. I have tried
-> snd_pcm_drop and snd_pcm_drain but no use. Kindly suggest how to
-> remove the starting noise in ALSA.
->
-> For audio rendering i'm using below application.
-> I'm sharing reference render application which my own application is
-> built.
 
-> https://github.com/bear24rw/alsa-utils/blob/master/aplay/aplay.c
+--===============5670515825362484585==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
+Content-Disposition: inline
 
--- 
-Thanks and Regards
-Chakravarthi Pradeep.K
+
+--DiL7RhKs8rK9YGuF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jan 21, 2019 at 10:48:18PM +0800, Zhiwei Jiang wrote:
+> For endpoint wigdets which have set the suspend ignore flag, asoc
+> shouldn't mark them as dirty when ASoC suspend function is called.
+
+Why not?  It will cost us a bit of time confirming that they should be
+kept enabled if they're part of a valid path but it also ensures that
+we've reexamined everything which is a bit safer.
+
+--DiL7RhKs8rK9YGuF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxGBpgACgkQJNaLcl1U
+h9DkLQf+OKqsK1Zua2jcDdEyreppTKhTWLVu+w9YS/unkWuW/zLRj+Z82nDuK0G+
+F5Xr+9jU5VKKjNq3582PUQuG0yj1q7gkSfFCz8Ylv9PWZgXDSUAdhAUpExtIVBcB
+EWONC1kQrRiCcf+gMz22SNtdiJsT6SNHEXx11Y7W96OxU6d1IFbvreMcs7RehyHE
+3jvLZIVIABBHxpIfVAi3GtGnI9rEZMJZ/Jw53XnuZEOF0hgNSlbqVsxnh6mFdyuL
+m7PbcbnyZKlAKX2w4XOsST2b2b7gU8jZA6sW5zaYT/4BsA/fdsYCokfJ7Ahg24x5
+z0Eoqw1c+S4AS5jnErevpNM5WXc3Hg==
+=MD7S
+-----END PGP SIGNATURE-----
+
+--DiL7RhKs8rK9YGuF--
+
+--===============5670515825362484585==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5670515825362484585==--
