@@ -1,14 +1,17 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 0/7] Runtime PM support (hda/tegra)
-Date: Mon, 21 Jan 2019 23:11:30 +0530
-Message-ID: <1548092497-5459-1-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 1/7] ALSA: hda/tegra: runtime power management
+	support
+Date: Mon, 21 Jan 2019 23:11:31 +0530
+Message-ID: <1548092497-5459-2-git-send-email-spujar@nvidia.com>
+References: <1548092497-5459-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A3CE32667E7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 18:41:45 +0100 (CET)
+Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FAB326680F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 18:41:48 +0100 (CET)
+In-Reply-To: <1548092497-5459-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +25,72 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Background
-==========
-The device power management operations can be controlled with the help of
-runtime power management (runtime PM) framework. In this case hda driver
-can register runtime PM callbacks with the power management core (PM core).
-Idea is to put the device in low power mode, when it is not getting used.
-The clocks and power domains can be turned off when no use case is running
-on the device. Current patch series adds necessary support to manage hda
-device at runtime.
+This patch enables runtime power management(runtime PM) support for
+hda. pm_runtime_enable() and pm_runtime_disable() are added during
+device probe and remove respectively. The runtime PM callbacks will
+be forbidden if hda controller does not have support for runtime PM.
+pm_runtime_get_sync() and pm_runtime_put() are added for hda register
+access. The callbacks for above will be added in subsequent patches.
 
-Change log
-==========
-v1:
-----
-  Patch-1: "ALSA: hda/tegra: runtime power management support"
-    * runtime PM enable/disable added in device probe/remove
-    * runtime PM calls are forbidden if AZX_DCAPS_PM_RUNTIME is not enabled
-      in driver flags
-    * worker thread uses pm_runtime_get_sync to invoke ->runtime_resume and
-      pm_runtime_put to invoke ->runtime_suspend. The callbacks are added
-      in subsequent patches
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
+---
+ sound/pci/hda/hda_tegra.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 97a176d..2f9dd23 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -32,6 +32,7 @@
+ #include <linux/slab.h>
+ #include <linux/time.h>
+ #include <linux/string.h>
++#include <linux/pm_runtime.h>
  
-  Patch-2: "ALSA: hda/tegra: get clock handles early in probe"
-    * Clock handles required for hda are acquired early in the probe. This
-      is done to make use of runtime PM framework to enable/disable clocks
-      in the callbacks.
-
-  Patch-3: "ALSA: hda/tegra: add runtime PM callbacks"
-    * adds runtime PM callbacks for ->runtime_suspend(), ->runtime_resume()
-    * only skeleton for the callbacks is added, implementation is done in
-      the subsequent patches
-
-  Patch-4: "ALSA: hda/tegra: remove redundant clock enable API"
-    * As worked thread is calling pm_runtime_get_sync() now, no need to
-      enable the clock explicitly. This can be managed from callback.
-    * Idea is to have clock enable and disable functionalities in runtime
-      PM callbacks and the driver can make use of the above. Any device
-      access should be preceded by ->runtime_resume() call.
-
-  Patch-5: "ALSA: hda/tegra: implement runtime suspend/resume"
-    * clock enable and controller initialization is moved to
-      ->runtime_reesume() and the reverse is done during
-      ->runtime_suspend()
-    * Also during system wide power transitions, pm_runtime_force_resume()
-      is invoked in system resume() and similarly for suspend case.
-
-  Patch-6: "ALSA: hda/tegra: fix kernel panic"
-    * kernel panic is happening befoe controller init is done
-    * added a flag "probed" to indicate the completion of device init
-    * this flag is checked before doing any device access.
-
-  Patch-7: "ALSA: hda/tegra: add driver flag for runtime PM"
-    * driver flag AZX_DCAPS_PM_RUNTIME is added if CONFIG_PM is enabled.
-    * otherwise runtime PM calls will be forbidden and act as dummy calls
-
-=========
-
-Sameer Pujar (7):
-  ALSA: hda/tegra: runtime power management support
-  ALSA: hda/tegra: get clock handles early in probe
-  ALSA: hda/tegra: add runtime PM callbacks
-  ALSA: hda/tegra: remove redundant clock enable API
-  ALSA: hda/tegra: implement runtime suspend/resume
-  ALSA: hda/tegra: fix kernel panic
-  ALSA: hda/tegra: add driver flag for runtime PM
-
- sound/pci/hda/hda_tegra.c | 120 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 88 insertions(+), 32 deletions(-)
-
+ #include <sound/core.h>
+ #include <sound/initval.h>
+@@ -512,6 +513,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 	card->private_data = chip;
+ 
+ 	dev_set_drvdata(&pdev->dev, card);
++
++	pm_runtime_enable(hda->dev);
++	if (!azx_has_pm_runtime(chip))
++		pm_runtime_forbid(hda->dev);
++
+ 	schedule_work(&hda->probe_work);
+ 
+ 	return 0;
+@@ -528,6 +534,7 @@ static void hda_tegra_probe_work(struct work_struct *work)
+ 	struct platform_device *pdev = to_platform_device(hda->dev);
+ 	int err;
+ 
++	pm_runtime_get_sync(hda->dev);
+ 	err = hda_tegra_first_init(chip, pdev);
+ 	if (err < 0)
+ 		goto out_free;
+@@ -549,12 +556,18 @@ static void hda_tegra_probe_work(struct work_struct *work)
+ 	snd_hda_set_power_save(&chip->bus, power_save * 1000);
+ 
+  out_free:
++	pm_runtime_put(hda->dev);
+ 	return; /* no error return from async probe */
+ }
+ 
+ static int hda_tegra_remove(struct platform_device *pdev)
+ {
+-	return snd_card_free(dev_get_drvdata(&pdev->dev));
++	int ret;
++
++	ret = snd_card_free(dev_get_drvdata(&pdev->dev));
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
+ }
+ 
+ static void hda_tegra_shutdown(struct platform_device *pdev)
 -- 
 2.7.4
 
