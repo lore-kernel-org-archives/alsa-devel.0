@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: reduce if/else nest on
-	soc_probe_link_dais" to the asoc tree
-Date: Mon, 21 Jan 2019 19:20:24 +0000 (GMT)
-Message-ID: <20190121192024.5A27F1127D00@debutante.sirena.org.uk>
+Subject: Applied "ASoC: soc-core: merge card resources cleanup
+	method" to the asoc tree
+Date: Mon, 21 Jan 2019 19:20:26 +0000 (GMT)
+Message-ID: <20190121192026.2C8901127D00@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 039F3267466
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:25 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 04FD826747A
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,7 +26,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: reduce if/else nest on soc_probe_link_dais
+   ASoC: soc-core: merge card resources cleanup method
 
 has been applied to the asoc tree at
 
@@ -51,68 +51,246 @@ to this mail.
 Thanks,
 Mark
 
->From 52293596f5afff10d14e033aa3edfc801a31b3a1 Mon Sep 17 00:00:00 2001
+>From 53e947a0e1f770b9707febb7054b856878945d50 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 21 Jan 2019 09:32:50 +0900
-Subject: [PATCH] ASoC: soc-core: reduce if/else nest on soc_probe_link_dais
+Date: Mon, 21 Jan 2019 09:32:42 +0900
+Subject: [PATCH] ASoC: soc-core: merge card resources cleanup method
 
-Deep nested codec is not readable.
-Let's reduce if/else nest.
+We need to cleanup card resources when snd_soc_instantiate_card() was
+failed, or when snd_soc_unbind_card() was called.
+But they are cleanuping card resources on each way.
+Same code in many places makes code un-understandable.
+
+This patch reuses soc_cleanup_card_resources() for cleanuping code
+resource. Then, it makes avoiding cleanup order.
+It will be called from snd_soc_instantiate_card() and
+snd_soc_unbind_card().
+
+Then, original soc_cleanup_card_resources() included
+snd_soc_flush_all_delayed_work(), but it is now separated.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 37 +++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
+ sound/soc/soc-core.c | 103 ++++++++++++++++++-------------------------
+ 1 file changed, 43 insertions(+), 60 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d59b5ea9fa25..7fc10a41e0e9 100644
+index eeb794d8a262..d59b5ea9fa25 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1612,27 +1612,24 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 					 dai_link->stream_name);
- 			return ret;
- 		}
--	} else {
--
--		if (!dai_link->params) {
--			/* create the pcm */
--			ret = soc_new_pcm(rtd, num);
--			if (ret < 0) {
--				dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
--					dai_link->stream_name, ret);
--				return ret;
--			}
--			ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
--			if (ret < 0)
--				return ret;
--			ret = soc_link_dai_pcm_new(rtd->codec_dais,
--						   rtd->num_codecs, rtd);
--			if (ret < 0)
--				return ret;
--		} else {
--			INIT_DELAYED_WORK(&rtd->delayed_work,
--						codec2codec_close_delayed_work);
-+	} else if (!dai_link->params) {
-+		/* create the pcm */
-+		ret = soc_new_pcm(rtd, num);
-+		if (ret < 0) {
-+			dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
-+				dai_link->stream_name, ret);
-+			return ret;
- 		}
-+		ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
-+		if (ret < 0)
-+			return ret;
-+		ret = soc_link_dai_pcm_new(rtd->codec_dais,
-+					   rtd->num_codecs, rtd);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		INIT_DELAYED_WORK(&rtd->delayed_work,
-+				  codec2codec_close_delayed_work);
+@@ -2008,6 +2008,29 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 	}
+ }
+ 
++static int soc_cleanup_card_resources(struct snd_soc_card *card)
++{
++	/* free the ALSA card at first; this syncs with pending operations */
++	if (card->snd_card)
++		snd_card_free(card->snd_card);
++
++	/* remove and free each DAI */
++	soc_remove_dai_links(card);
++	soc_remove_pcm_runtimes(card);
++
++	/* remove auxiliary devices */
++	soc_remove_aux_devices(card);
++
++	snd_soc_dapm_free(&card->dapm);
++	soc_cleanup_card_debugfs(card);
++
++	/* remove the card */
++	if (card->remove)
++		card->remove(card);
++
++	return 0;
++}
++
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+@@ -2017,6 +2040,11 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	mutex_lock(&client_mutex);
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
+ 
++	card->dapm.bias_level = SND_SOC_BIAS_OFF;
++	card->dapm.dev = card->dev;
++	card->dapm.card = card;
++	list_add(&card->dapm.list, &card->dapm_list);
++
+ 	/* check whether any platform is ignore machine FE and using topology */
+ 	soc_check_tplg_fes(card);
+ 
+@@ -2024,14 +2052,14 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		ret = soc_bind_dai_link(card, dai_link);
+ 		if (ret != 0)
+-			goto base_error;
++			goto probe_end;
  	}
  
- 	return 0;
+ 	/* bind aux_devs too */
+ 	for (i = 0; i < card->num_aux_devs; i++) {
+ 		ret = soc_bind_aux_dev(card, i);
+ 		if (ret != 0)
+-			goto base_error;
++			goto probe_end;
+ 	}
+ 
+ 	/* add predefined DAI links to the list */
+@@ -2045,16 +2073,11 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		dev_err(card->dev,
+ 			"ASoC: can't create sound card for card %s: %d\n",
+ 			card->name, ret);
+-		goto base_error;
++		goto probe_end;
+ 	}
+ 
+ 	soc_init_card_debugfs(card);
+ 
+-	card->dapm.bias_level = SND_SOC_BIAS_OFF;
+-	card->dapm.dev = card->dev;
+-	card->dapm.card = card;
+-	list_add(&card->dapm.list, &card->dapm_list);
+-
+ #ifdef CONFIG_DEBUG_FS
+ 	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+ #endif
+@@ -2076,7 +2099,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	if (card->probe) {
+ 		ret = card->probe(card);
+ 		if (ret < 0)
+-			goto card_probe_error;
++			goto probe_end;
+ 	}
+ 
+ 	/* probe all components used by DAI links on this card */
+@@ -2087,7 +2110,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 				dev_err(card->dev,
+ 					"ASoC: failed to instantiate card %d\n",
+ 					ret);
+-				goto probe_dai_err;
++				goto probe_end;
+ 			}
+ 		}
+ 	}
+@@ -2095,7 +2118,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	/* probe auxiliary components */
+ 	ret = soc_probe_aux_devices(card);
+ 	if (ret < 0)
+-		goto probe_dai_err;
++		goto probe_end;
+ 
+ 	/*
+ 	 * Find new DAI links added during probing components and bind them.
+@@ -2107,10 +2130,10 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 		ret = soc_init_dai_link(card, dai_link);
+ 		if (ret)
+-			goto probe_dai_err;
++			goto probe_end;
+ 		ret = soc_bind_dai_link(card, dai_link);
+ 		if (ret)
+-			goto probe_dai_err;
++			goto probe_end;
+ 	}
+ 
+ 	/* probe all DAI links on this card */
+@@ -2121,7 +2144,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 				dev_err(card->dev,
+ 					"ASoC: failed to instantiate card %d\n",
+ 					ret);
+-				goto probe_dai_err;
++				goto probe_end;
+ 			}
+ 		}
+ 	}
+@@ -2168,7 +2191,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		if (ret < 0) {
+ 			dev_err(card->dev, "ASoC: %s late_probe() failed: %d\n",
+ 				card->name, ret);
+-			goto probe_aux_dev_err;
++			goto probe_end;
+ 		}
+ 	}
+ 
+@@ -2178,33 +2201,17 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	if (ret < 0) {
+ 		dev_err(card->dev, "ASoC: failed to register soundcard %d\n",
+ 				ret);
+-		goto probe_aux_dev_err;
++		goto probe_end;
+ 	}
+ 
+ 	card->instantiated = 1;
+ 	dapm_mark_endpoints_dirty(card);
+ 	snd_soc_dapm_sync(&card->dapm);
+-	mutex_unlock(&card->mutex);
+-	mutex_unlock(&client_mutex);
+-
+-	return 0;
+ 
+-probe_aux_dev_err:
+-	soc_remove_aux_devices(card);
+-
+-probe_dai_err:
+-	soc_remove_dai_links(card);
+-
+-card_probe_error:
+-	if (card->remove)
+-		card->remove(card);
+-
+-	snd_soc_dapm_free(&card->dapm);
+-	soc_cleanup_card_debugfs(card);
+-	snd_card_free(card->snd_card);
++probe_end:
++	if (ret < 0)
++		soc_cleanup_card_resources(card);
+ 
+-base_error:
+-	soc_remove_pcm_runtimes(card);
+ 	mutex_unlock(&card->mutex);
+ 	mutex_unlock(&client_mutex);
+ 
+@@ -2233,31 +2240,6 @@ static int soc_probe(struct platform_device *pdev)
+ 	return snd_soc_register_card(card);
+ }
+ 
+-static int soc_cleanup_card_resources(struct snd_soc_card *card)
+-{
+-	/* make sure any delayed work runs */
+-	snd_soc_flush_all_delayed_work(card);
+-
+-	/* free the ALSA card at first; this syncs with pending operations */
+-	snd_card_free(card->snd_card);
+-
+-	/* remove and free each DAI */
+-	soc_remove_dai_links(card);
+-	soc_remove_pcm_runtimes(card);
+-
+-	/* remove auxiliary devices */
+-	soc_remove_aux_devices(card);
+-
+-	snd_soc_dapm_free(&card->dapm);
+-	soc_cleanup_card_debugfs(card);
+-
+-	/* remove the card */
+-	if (card->remove)
+-		card->remove(card);
+-
+-	return 0;
+-}
+-
+ /* removes a socdev */
+ static int soc_remove(struct platform_device *pdev)
+ {
+@@ -2823,6 +2805,7 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
+ 	if (card->instantiated) {
+ 		card->instantiated = false;
+ 		snd_soc_dapm_shutdown(card);
++		snd_soc_flush_all_delayed_work(card);
+ 		soc_cleanup_card_resources(card);
+ 		if (!unregister)
+ 			list_add(&card->list, &unbind_card_list);
 -- 
 2.20.1
