@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: rename to
-	asoc_simple_card_canonicalize_platform()" to the asoc tree
-Date: Mon, 21 Jan 2019 19:20:18 +0000 (GMT)
-Message-ID: <20190121192018.CEC4E1127D00@debutante.sirena.org.uk>
-References: <874la2a2o6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: use for_each_link_codecs()
+	for dai_link codecs" to the asoc tree
+Date: Mon, 21 Jan 2019 19:20:20 +0000 (GMT)
+Message-ID: <20190121192020.A7A101127D00@debutante.sirena.org.uk>
+References: <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 11A7626680F
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:19 +0100 (CET)
-In-Reply-To: <874la2a2o6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F25E26742D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:21 +0100 (CET)
+In-Reply-To: <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: rename to asoc_simple_card_canonicalize_platform()
+   ASoC: soc-core: use for_each_link_codecs() for dai_link codecs
 
 has been applied to the asoc tree at
 
@@ -53,142 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From fe7ed4dec2e6289eab81dd18c0d613c0851d85a1 Mon Sep 17 00:00:00 2001
+>From 10dff9b0ddf70bebe9523fc311ec77a872ce0a9c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 21 Jan 2019 16:40:59 +0900
-Subject: [PATCH] ASoC: simple-card: rename to
- asoc_simple_card_canonicalize_platform()
+Date: Mon, 21 Jan 2019 09:32:59 +0900
+Subject: [PATCH] ASoC: soc-core: use for_each_link_codecs() for dai_link
+ codecs
 
-Current simple-card is using asoc_simple_card_canonicalize_dailink().
-Its naming is "dailink", but is for "platform".
-We already have asoc_simple_card_canonicalize_cpu() for "cpu",
-let's follow same naming rule.
-It never return error, so, void function is better idea.
+We can use for_each_link_codecs() without waiting
+for_each_rtd_codec_dai() on soc_bind_dai_link().
+Let's use for_each macro
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  2 +-
- sound/soc/generic/audio-graph-card.c  | 11 +++--------
- sound/soc/generic/simple-card-utils.c |  7 ++-----
- sound/soc/generic/simple-card.c       | 11 +++--------
- 4 files changed, 9 insertions(+), 22 deletions(-)
+ sound/soc/soc-core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index ab5a2ba09c07..7afe45389972 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -108,7 +108,7 @@ int asoc_simple_card_parse_graph_dai(struct device_node *ep,
- int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
- 			      struct asoc_simple_dai *simple_dai);
- 
--int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link);
-+void asoc_simple_card_canonicalize_platform(struct snd_soc_dai_link *dai_link);
- void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
- 				      int is_single_links);
- 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 42b077c6be4c..bb12351330e8 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -307,14 +307,12 @@ static int graph_dai_link_of_dpcm(struct graph_priv *priv,
- 					     "prefix");
- 	}
- 
-+	asoc_simple_card_canonicalize_platform(dai_link);
-+
- 	ret = asoc_simple_card_of_parse_tdm(ep, dai);
- 	if (ret)
- 		return ret;
- 
--	ret = asoc_simple_card_canonicalize_dailink(dai_link);
--	if (ret < 0)
--		return ret;
--
- 	ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
- 					    NULL, &dai_link->dai_fmt);
- 	if (ret < 0)
-@@ -405,10 +403,6 @@ static int graph_dai_link_of(struct graph_priv *priv,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = asoc_simple_card_canonicalize_dailink(dai_link);
--	if (ret < 0)
--		return ret;
--
- 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
- 						"%s-%s",
- 						dai_link->cpu_dai_name,
-@@ -419,6 +413,7 @@ static int graph_dai_link_of(struct graph_priv *priv,
- 	dai_link->ops = &graph_ops;
- 	dai_link->init = graph_dai_init;
- 
-+	asoc_simple_card_canonicalize_platform(dai_link);
- 	asoc_simple_card_canonicalize_cpu(dai_link,
- 		of_graph_get_endpoint_count(dai_link->cpu_of_node) == 1);
- 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 3c0901df5796..5c1424f03620 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -394,16 +394,13 @@ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
- 
--int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
-+void asoc_simple_card_canonicalize_platform(struct snd_soc_dai_link *dai_link)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8a58fa86675a..1c92b4aff57b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link *dai_link)
  {
- 	/* Assumes platform == cpu */
- 	if (!dai_link->platforms->of_node)
- 		dai_link->platforms->of_node = dai_link->cpu_of_node;
--
--	return 0;
--
- }
--EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_dailink);
-+EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_platform);
+ 	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
++	struct snd_soc_dai_link_component *codecs;
+ 	struct snd_soc_dai_link_component cpu_dai_component;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai **codec_dais;
+@@ -905,9 +905,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	rtd->num_codecs = dai_link->num_codecs;
  
- void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
- 				       int is_single_links)
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index d8a0d1ec256e..08df261024cf 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -297,14 +297,12 @@ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
- 
- 	simple_get_conversion(dev, np, &dai_props->adata);
- 
-+	asoc_simple_card_canonicalize_platform(dai_link);
-+
- 	ret = asoc_simple_card_of_parse_tdm(np, dai);
- 	if (ret)
- 		return ret;
- 
--	ret = asoc_simple_card_canonicalize_dailink(dai_link);
--	if (ret < 0)
--		return ret;
--
- 	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
- 	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
- 	of_property_read_u32(node, prop, &dai_props->mclk_fs);
-@@ -409,10 +407,6 @@ static int simple_dai_link_of(struct simple_priv *priv,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	ret = asoc_simple_card_canonicalize_dailink(dai_link);
--	if (ret < 0)
--		goto dai_link_of_err;
--
- 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
- 						"%s-%s",
- 						dai_link->cpu_dai_name,
-@@ -424,6 +418,7 @@ static int simple_dai_link_of(struct simple_priv *priv,
- 	dai_link->init = simple_dai_init;
- 
- 	asoc_simple_card_canonicalize_cpu(dai_link, single_cpu);
-+	asoc_simple_card_canonicalize_platform(dai_link);
- 
- dai_link_of_err:
- 	of_node_put(node);
+ 	/* Find CODEC from registered CODECs */
+-	/* we can use for_each_rtd_codec_dai() after this */
+ 	codec_dais = rtd->codec_dais;
+-	for (i = 0; i < rtd->num_codecs; i++) {
++	for_each_link_codecs(dai_link, i, codecs) {
+ 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
+ 		if (!codec_dais[i]) {
+ 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
 -- 
 2.20.1
