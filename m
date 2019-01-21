@@ -1,18 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: MAINTAINERS: fsl: Change Fabio's email
-	address
-Date: Mon, 21 Jan 2019 14:27:11 -0200
-Message-ID: <20190121162711.30522-1-festevam@gmail.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH] ALSA: usb-audio: Add SMSL D1 to quirks for
+ native DSD support
+Date: Mon, 21 Jan 2019 18:33:22 +0200
+Message-ID: <abc18173-4b27-e9ca-095a-4f4bfbedfd66@sonarnerd.net>
+References: <CAKb=P8ugru=qaO6S29xBjdi0kXkrFmbDxVYk07cUnL=t35GG4g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f195.google.com (mail-qt1-f195.google.com
- [209.85.160.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 1055D2667E7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 17:27:17 +0100 (CET)
-Received: by mail-qt1-f195.google.com with SMTP id p17so24182866qtl.5
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 08:27:17 -0800 (PST)
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 999ED2667E7
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 17:33:23 +0100 (CET)
+In-Reply-To: <CAKb=P8ugru=qaO6S29xBjdi0kXkrFmbDxVYk07cUnL=t35GG4g@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+To: alsa-devel@alsa-project.org, Tony Das <tdas444@gmail.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I prefer to use my personal email address for kernel related work.
+On 28.11.2018 22.16, Tony Das wrote:
+> This patch adds quirk VID/PID IDs for the SMSL D1 in order to enable
+> Native DSD support.
+> 
+> Signed-off-by: Tony Das <tdas444@gmail.com>
+> ---
+> Author: Tony Das <tdas444@gmail.com>
+> Date: Tue Nov 27 22:13:30 2018 +0000
+> 
+> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+> index 3d0f09108c98..aeac6bb7e111 100644
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -1515,6 +1515,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct
+> snd_usb_audio *chip,
+>     case USB_ID(0x27f7, 0x3002): /* W4S DAC-2v2SE */
+>     case USB_ID(0x29a2, 0x0086): /* Mutec MC3+ USB */
+>     case USB_ID(0x6b42, 0x0042): /* MSB Technology */
+> +   case USB_ID(0x152a, 0x85de): /* SMSL D1 DAC */
+>         if (fp->altsetting == 3)
+>             return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+>         break;
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+These kind of device specific white-listing patches are unnecessary 
+these days for VID 0x152a (Thesycon), 0x20b1 (XMOS) and 0x25ce (Mytek) 
+because they are covered by the auto-detection code (below this 
+whitelisting table). In fact, for some products they cause problems due 
+to firmware changes that cause the DSD altsetting to change. Also there 
+are vendors who use same VID:PID pair for multiple products with 
+different firmware variants and different altsettings which in turn 
+causes problems with these static altsetting listings.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a3d1222b81ad..f3de979b8e58 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6178,7 +6178,7 @@ FREESCALE SOC SOUND DRIVERS
- M:	Timur Tabi <timur@kernel.org>
- M:	Nicolin Chen <nicoleotsuka@gmail.com>
- M:	Xiubo Li <Xiubo.Lee@gmail.com>
--R:	Fabio Estevam <fabio.estevam@nxp.com>
-+R:	Fabio Estevam <festevam@gmail.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- L:	linuxppc-dev@lists.ozlabs.org
- S:	Maintained
-@@ -10954,7 +10954,7 @@ F:	include/linux/nvmem-consumer.h
- F:	include/linux/nvmem-provider.h
- 
- NXP SGTL5000 DRIVER
--M:	Fabio Estevam <fabio.estevam@nxp.com>
-+M:	Fabio Estevam <festevam@gmail.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/sound/sgtl5000.txt
--- 
-2.17.1
+So I would strongly advise to use the autodetection whenever possible. 
+In my own kernel builds I've removed all those mentioned VIDs from the 
+PID specific table, but for the already included patches I took more 
+conservative approach and removed only the ones I could 100% test myself.
+
+Sorry for the delay, I didn't notice this posting until now...
+
+
+Best regards,
+
+	 - Jussi
