@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
- dereference in soc_find_component
-Date: Mon, 21 Jan 2019 19:17:14 +0000
-Message-ID: <20190121191714.GG12679@sirena.org.uk>
-References: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
- <d8726e9a-3477-a573-8c1a-dd8245068802@linux.intel.com>
- <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
- <20190115000610.GM11073@sirena.org.uk>
- <796a856c-a9a6-022d-da63-947279090198@linux.intel.com>
- <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
- <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
- <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
+Subject: Applied "ASoC: simple-card: rename to
+	asoc_simple_card_canonicalize_platform()" to the asoc tree
+Date: Mon, 21 Jan 2019 19:20:18 +0000 (GMT)
+Message-ID: <20190121192018.CEC4E1127D00@debutante.sirena.org.uk>
+References: <874la2a2o6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5171187491011329269=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C8B026680F
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:17:17 +0100 (CET)
-In-Reply-To: <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11A7626680F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 20:20:19 +0100 (CET)
+In-Reply-To: <874la2a2o6.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,73 +22,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, Ajit Pandey <ajitp@codeaurora.org>, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Rohit kumar <rohitkr@codeaurora.org>, Curtis Malainey <cujomalainey@chromium.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5171187491011329269==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Wtrm9ATX0sn6fFKv"
-Content-Disposition: inline
+   ASoC: simple-card: rename to asoc_simple_card_canonicalize_platform()
 
+has been applied to the asoc tree at
 
---Wtrm9ATX0sn6fFKv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jan 18, 2019 at 05:02:08PM -0600, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> This PROBE_DEFER support actually breaks the topology override that we've
-> been relying on for SOF (and which has been in Mark's branch for some time
-> now). This override helps us reuse machine drivers between legacy and
-> SOF-based solutions.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> With the current code, the tests in soc_register_card() complain that the
-> platform_name can't be tied to a component and stop the card registration,
-> but that's mainly because the tests are done before the topology overrides
-> are done in soc_check_tplg_fes(). Moving soc_check_tplg_fes() from
-> soc_instantiate_card() to an earlier time in soc_register_card()
-> works-around the problem but looks quite invasive (mutex lock, etc).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Right, I see.  I don't think there's going to be any non-invasive
-solution here, either we need to stop overriding bits of the machine
-driver relevant to binding in the topology files like this or we need to
-look at the topology files in the probe deferral stuff so it's either
-going to be very invasive for the machine driver or the core.  I'm
-tempted to say that the machine driver is a better option here.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> This last assignment guarantees that memory will be allocated every time
-> this function is called, and whatever overrides are done later will
-> themselves be overridden by the new allocation. I am not sure what the
-> intent was here, Curtis can you please double-check?
+Thanks,
+Mark
 
-The intent is to avoid modifying statically allocated data so we can
-tell the difference between pointers set up statically as init data and
-those that are filled in at runtime.
+>From fe7ed4dec2e6289eab81dd18c0d613c0851d85a1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 21 Jan 2019 16:40:59 +0900
+Subject: [PATCH] ASoC: simple-card: rename to
+ asoc_simple_card_canonicalize_platform()
 
---Wtrm9ATX0sn6fFKv
-Content-Type: application/pgp-signature; name="signature.asc"
+Current simple-card is using asoc_simple_card_canonicalize_dailink().
+Its naming is "dailink", but is for "platform".
+We already have asoc_simple_card_canonicalize_cpu() for "cpu",
+let's follow same naming rule.
+It never return error, so, void function is better idea.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/simple_card_utils.h     |  2 +-
+ sound/soc/generic/audio-graph-card.c  | 11 +++--------
+ sound/soc/generic/simple-card-utils.c |  7 ++-----
+ sound/soc/generic/simple-card.c       | 11 +++--------
+ 4 files changed, 9 insertions(+), 22 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxGGrkACgkQJNaLcl1U
-h9BbKQf+J6unfU3lGiLZVjb2hKojpp7QoEMpMTY0qRP0NuUfiBlBrRpkIq3i9hR7
-wBcqNI2lRBh3sb03R5kdkD2wDzw208wVDscH7ijeKp+k0UbZwkhNthr0U3+EJFt0
-5j/yLk2fcNhMRnMvyucc0ChXQjsUsYLaCZIswO3FfSuFp3jOSHGx15Dc6E8yY8xQ
-ziU8h02vga+M9RHBtGFcDDXlxmaPw50gWlDeMmkI9HsCYeB6N8xdmYNtj3t5XKS4
-PiJTkvlFVKptngEK+5fzRJuluQijWGrkz3nDEOqMh/7m61GrIHm3lDpAsiFOq1Um
-9/7KmsmyOJOgziIOwa7iIIFQJf1fEg==
-=J68C
------END PGP SIGNATURE-----
-
---Wtrm9ATX0sn6fFKv--
-
---===============5171187491011329269==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5171187491011329269==--
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index ab5a2ba09c07..7afe45389972 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -108,7 +108,7 @@ int asoc_simple_card_parse_graph_dai(struct device_node *ep,
+ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+ 			      struct asoc_simple_dai *simple_dai);
+ 
+-int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link);
++void asoc_simple_card_canonicalize_platform(struct snd_soc_dai_link *dai_link);
+ void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
+ 				      int is_single_links);
+ 
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 42b077c6be4c..bb12351330e8 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -307,14 +307,12 @@ static int graph_dai_link_of_dpcm(struct graph_priv *priv,
+ 					     "prefix");
+ 	}
+ 
++	asoc_simple_card_canonicalize_platform(dai_link);
++
+ 	ret = asoc_simple_card_of_parse_tdm(ep, dai);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = asoc_simple_card_canonicalize_dailink(dai_link);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
+ 					    NULL, &dai_link->dai_fmt);
+ 	if (ret < 0)
+@@ -405,10 +403,6 @@ static int graph_dai_link_of(struct graph_priv *priv,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = asoc_simple_card_canonicalize_dailink(dai_link);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 						"%s-%s",
+ 						dai_link->cpu_dai_name,
+@@ -419,6 +413,7 @@ static int graph_dai_link_of(struct graph_priv *priv,
+ 	dai_link->ops = &graph_ops;
+ 	dai_link->init = graph_dai_init;
+ 
++	asoc_simple_card_canonicalize_platform(dai_link);
+ 	asoc_simple_card_canonicalize_cpu(dai_link,
+ 		of_graph_get_endpoint_count(dai_link->cpu_of_node) == 1);
+ 
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 3c0901df5796..5c1424f03620 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -394,16 +394,13 @@ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
+ 
+-int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
++void asoc_simple_card_canonicalize_platform(struct snd_soc_dai_link *dai_link)
+ {
+ 	/* Assumes platform == cpu */
+ 	if (!dai_link->platforms->of_node)
+ 		dai_link->platforms->of_node = dai_link->cpu_of_node;
+-
+-	return 0;
+-
+ }
+-EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_dailink);
++EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_platform);
+ 
+ void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
+ 				       int is_single_links)
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index d8a0d1ec256e..08df261024cf 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -297,14 +297,12 @@ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
+ 
+ 	simple_get_conversion(dev, np, &dai_props->adata);
+ 
++	asoc_simple_card_canonicalize_platform(dai_link);
++
+ 	ret = asoc_simple_card_of_parse_tdm(np, dai);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = asoc_simple_card_canonicalize_dailink(dai_link);
+-	if (ret < 0)
+-		return ret;
+-
+ 	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+ 	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
+ 	of_property_read_u32(node, prop, &dai_props->mclk_fs);
+@@ -409,10 +407,6 @@ static int simple_dai_link_of(struct simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_card_canonicalize_dailink(dai_link);
+-	if (ret < 0)
+-		goto dai_link_of_err;
+-
+ 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 						"%s-%s",
+ 						dai_link->cpu_dai_name,
+@@ -424,6 +418,7 @@ static int simple_dai_link_of(struct simple_priv *priv,
+ 	dai_link->init = simple_dai_init;
+ 
+ 	asoc_simple_card_canonicalize_cpu(dai_link, single_cpu);
++	asoc_simple_card_canonicalize_platform(dai_link);
+ 
+ dai_link_of_err:
+ 	of_node_put(node);
+-- 
+2.20.1
