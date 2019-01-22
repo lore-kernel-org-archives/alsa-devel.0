@@ -1,18 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/6] ALSA: fireface: support MIDI functionality
-	of Fireface UCX
-Date: Tue, 22 Jan 2019 22:16:59 +0900
-Message-ID: <20190122131705.23213-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/6] ALSA: fireface: change prototype of
+	handler for async transaction with MIDI messages
+Date: Tue, 22 Jan 2019 22:17:00 +0900
+Message-ID: <20190122131705.23213-2-o-takashi@sakamocchi.jp>
+References: <20190122131705.23213-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
- [209.85.214.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0406E26749F
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 14:17:14 +0100 (CET)
-Received: by mail-pl1-f193.google.com with SMTP id y1so11468094plp.9
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 05:17:14 -0800 (PST)
+Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com
+ [209.85.215.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id A89DA2674A8
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 14:17:16 +0100 (CET)
+Received: by mail-pg1-f196.google.com with SMTP id j10so11081865pga.1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 05:17:15 -0800 (PST)
+In-Reply-To: <20190122131705.23213-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +28,77 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a series of Fireface, devices transfer asynchronous transaction with
+MIDI messages. In the transaction, content is different depending on
+models. ALSA fireface driver has protocol-dependent handler to pick up
+MIDI messages from the content.
 
-This patchset is a supplement of my previous one and to complete support
-for Fireface UCX:
-[alsa-devel] [PATCH 0/9] ALSA: fireface: add support for Fireface UCX
-http://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144465.html
+In latter models of the series, the transaction is transferred to range
+of address sequentially. This seems to check continuity of transferred
+messages.
 
-The mechanism to use MIDi functionality of Fireface UCX is different
-from the other supported devices; Fireface 800 and Fireface 400. This
-patchset extends abstraction layer of hardware specification and
-communication protocol.
+This commit changes prototype of the handler to receive offset of
+address for received transactions.
 
-Unfortunately, a bitflag to decide lower part of address to transfer
-asynchronous transaction for MIDI message is in option register which
-has the other options. This driver expects userspace applications to
-configure the option as expected. In detail please refer to third patch.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireface/ff-protocol-former.c | 6 ++++--
+ sound/firewire/fireface/ff-transaction.c     | 4 +++-
+ sound/firewire/fireface/ff.h                 | 3 ++-
+ 3 files changed, 9 insertions(+), 4 deletions(-)
 
-For testers, a remote branch is available to backport a series of
-patches to Linux kernel v4.17 or later:
-https://github.com/takaswie/snd-firewire-improve/tree/topic/ff-ucx-midi
-
-A userspace tool to configure addressed register is available in another
-remote branch for hinawa-utils:
-https://github.com/takaswie/hinawa-utils/tree/topic/ff-ucx
-
-As I noted in previous patchset, this work is based on my packet analysis
-from rent device for a short term (2 weeks). I'm happy to get your
-response till next weekend.
-
-Regards
-
-Takashi Sakamoto (6):
-  ALSA: fireface: change prototype of handler for async transaction with
-    MIDI messages
-  ALSA: fireface: add model-dependent parameter for address range to
-    receive async transaction
-  ALSA: fireface: support tx MIDI functionality of Fireface UCX
-  ALSA: fireface: add model-dependent parameter for address to receive
-    async transaction for MIDI messages
-  ALSA: fireface: add protocol-specific operation to fill transaction
-    buffer with MIDI messages
-  ALSA: fireface: support rx MIDI functionality for Fireface UCX
-
- sound/firewire/fireface/ff-midi.c            |   2 +-
- sound/firewire/fireface/ff-protocol-former.c |  29 +++-
- sound/firewire/fireface/ff-protocol-latter.c | 139 +++++++++++++++++++
- sound/firewire/fireface/ff-transaction.c     |  44 +++---
- sound/firewire/fireface/ff.c                 |  31 +++--
- sound/firewire/fireface/ff.h                 |  10 +-
- 6 files changed, 210 insertions(+), 45 deletions(-)
-
+diff --git a/sound/firewire/fireface/ff-protocol-former.c b/sound/firewire/fireface/ff-protocol-former.c
+index 9c0ae50e88d1..266e4892a818 100644
+--- a/sound/firewire/fireface/ff-protocol-former.c
++++ b/sound/firewire/fireface/ff-protocol-former.c
+@@ -375,7 +375,8 @@ static void ff800_finish_session(struct snd_ff *ff)
+ 			   FF800_ISOC_COMM_STOP, &reg, sizeof(reg), 0);
+ }
+ 
+-static void ff800_handle_midi_msg(struct snd_ff *ff, __le32 *buf, size_t length)
++static void ff800_handle_midi_msg(struct snd_ff *ff, unsigned int offset,
++				  __le32 *buf, size_t length)
+ {
+ 	int i;
+ 
+@@ -502,7 +503,8 @@ static void ff400_finish_session(struct snd_ff *ff)
+ 			   FF400_ISOC_COMM_STOP, &reg, sizeof(reg), 0);
+ }
+ 
+-static void ff400_handle_midi_msg(struct snd_ff *ff, __le32 *buf, size_t length)
++static void ff400_handle_midi_msg(struct snd_ff *ff, unsigned int offset,
++				  __le32 *buf, size_t length)
+ {
+ 	int i;
+ 
+diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
+index 065e045d3fb5..d3fde813ce17 100644
+--- a/sound/firewire/fireface/ff-transaction.c
++++ b/sound/firewire/fireface/ff-transaction.c
+@@ -146,7 +146,9 @@ static void handle_midi_msg(struct fw_card *card, struct fw_request *request,
+ 
+ 	fw_send_response(card, request, RCODE_COMPLETE);
+ 
+-	ff->spec->protocol->handle_midi_msg(ff, buf, length);
++	offset -= ff->async_handler.offset;
++	ff->spec->protocol->handle_midi_msg(ff, (unsigned int)offset, buf,
++					    length);
+ }
+ 
+ static int allocate_own_address(struct snd_ff *ff, int i)
+diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
+index 8aea7920b57f..ddcffb8d85c6 100644
+--- a/sound/firewire/fireface/ff.h
++++ b/sound/firewire/fireface/ff.h
+@@ -103,7 +103,8 @@ enum snd_ff_clock_src {
+ };
+ 
+ struct snd_ff_protocol {
+-	void (*handle_midi_msg)(struct snd_ff *ff, __le32 *buf, size_t length);
++	void (*handle_midi_msg)(struct snd_ff *ff, unsigned int offset,
++				__le32 *buf, size_t length);
+ 	int (*get_clock)(struct snd_ff *ff, unsigned int *rate,
+ 			 enum snd_ff_clock_src *src);
+ 	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
 -- 
 2.19.1
