@@ -1,33 +1,20 @@
-From: Timothy Pearson <tpearson@raptorengineering.com>
-Subject: Re: Possible ALSA loopback bug?
-Date: Mon, 21 Jan 2019 15:38:19 -0600
-Message-ID: <5C463BCB.2030907@raptorengineering.com>
-References: <5C4519A3.2050200@raptorengineering.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 7/7] ALSA: hda/tegra: add driver flag for
+	runtime PM
+Date: Tue, 22 Jan 2019 07:34:21 +0530
+Message-ID: <a963a5be-9efe-226e-5fba-1247c7ba2cce@nvidia.com>
+References: <1548092497-5459-1-git-send-email-spujar@nvidia.com>
+ <1548092497-5459-8-git-send-email-spujar@nvidia.com>
+ <s5ho989y9xu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.rptsys.com (mail.rptsys.com [23.155.224.45])
- by alsa0.perex.cz (Postfix) with ESMTP id BF6DB2667E7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 22:38:21 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by mail.rptsys.com (Postfix) with ESMTP id A7FDED20DF2
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 15:38:20 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
- by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id BgwNGgZmqgGO for <alsa-devel@alsa-project.org>;
- Mon, 21 Jan 2019 15:38:19 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
- by mail.rptsys.com (Postfix) with ESMTP id 7B02AD210B7
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 15:38:19 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
- by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id A6GJcLtBY2PF for <alsa-devel@alsa-project.org>;
- Mon, 21 Jan 2019 15:38:19 -0600 (CST)
-Received: from [192.168.3.54] (apollo.starlink.edu [192.168.3.54])
- by mail.rptsys.com (Postfix) with ESMTP id 4CF04D20DF2
- for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2019 15:38:19 -0600 (CST)
-In-Reply-To: <5C4519A3.2050200@raptorengineering.com>
+Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAFBB2667E7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 03:04:28 +0100 (CET)
+In-Reply-To: <s5ho989y9xu.wl-tiwai@suse.de>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,38 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/20/2019 07:00 PM, Timothy Pearson wrote:
-> I've been running a dedicated machine with ALSA loopback, feeding
-> darkice on the capture side and (currently) using mplayer to provide
-> audio on the playback side.  I've seen sporadic hangs for a couple of
-> years on this setup, but recently with the switch to mplayer I have
-> additional information that points more to ALSA than the other applications.
-> 
-> When the audio hangs, mplayer prints a continuous stream of:
-> "Audio device got stuck!"
-> 
-> The only way to "unstick" the audio stream is to terminate and restart
-> mplayer.  Restarting darkice does not fix the stuck stream.  There is no
-> pulseaudio on this sytem.
-> 
-> What would be the next steps to debug this setup?  It's shown up on two
-> entirely different installs at this point (Ubuntu 14.04 and Debian 9).
-> 
-> Thanks!
-
-A bit of additional information:  before audio output ceases entirely,
-the messages start printing and the audio becomes very choppy.  The
-system has no processes stuck at 100% CPU or any other visible signs of
-duress during this time.
-
-Suggestions on debug are welcome!
-
--- 
-Timothy Pearson
-Raptor Engineering
-+1 (415) 727-8645 (direct line)
-+1 (512) 690-0200 (switchboard)
-https://www.raptorengineering.com
+Ck9uIDEvMjIvMjAxOSAzOjAxIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gTW9uLCAyMSBK
+YW4gMjAxOSAxODo0MTozNyArMDEwMCwKPiBTYW1lZXIgUHVqYXIgd3JvdGU6Cj4+IEFaWF9EQ0FQ
+U19QTV9SVU5USU1FIGZsYWcgaXMgYWRkZWQgdG8gaW5kaWNhdGUgc3VwcG9ydCBmb3IgcnVudGlt
+ZSBQTS4KPj4gYXp4X2hhc19wbV9ydW50aW1lKCkgY2FuIGJlIGNhbGxlZCB0byBjaGVjayBpZiBh
+Ym92ZSBpcyBlbmFibGVkLiBUaGUKPj4gZmxhZyBpcyBwdXQgdW5kZXIgQ09ORklHX1BNIGNoZWNr
+Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTYW1lZXIgUHVqYXIgPHNwdWphckBudmlkaWEuY29tPgo+
+PiBSZXZpZXdlZC1ieTogUmF2aW5kcmEgTG9raGFuZGUgPHJsb2toYW5kZUBudmlkaWEuY29tPgo+
+PiBSZXZpZXdlZC1ieTogTW9oYW4gS3VtYXIgRCA8bWt1bWFyZEBudmlkaWEuY29tPgo+IFRoaXMg
+Y2FuIGJlIG1vcmUgc2ltcGx5IGRvbmUgaW4gaGRhX2NvbnRyb2xsZXIuaC4gIE5hbWVseSwgYSBj
+aGFuZ2UKPiBsaWtlOgo+Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5oCj4g
+KysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5oCj4gQEAgLTQ5LDcgKzQ5LDExIEBA
+Cj4gICAjZGVmaW5lIEFaWF9EQ0FQU180S19CRExFX0JPVU5EQVJZICgxIDw8IDIzKQkvKiBCRExF
+IGluIDRrIGJvdW5kYXJ5ICovCj4gICAvKiAyNCB1bnVzZWQgKi8KPiAgICNkZWZpbmUgQVpYX0RD
+QVBTX0NPVU5UX0xQSUJfREVMQVkgICgxIDw8IDI1KQkvKiBUYWtlIExQSUIgYXMgZGVsYXkgKi8K
+PiArI2lmZGVmIENPTkZJR19QTQo+ICAgI2RlZmluZSBBWlhfRENBUFNfUE1fUlVOVElNRQkoMSA8
+PCAyNikJLyogcnVudGltZSBQTSBzdXBwb3J0ICovCj4gKyNlbHNlCj4gKyNkZWZpbmUgQVpYX0RD
+QVBTX1BNX1JVTlRJTUUJMAkJLyogTi9BICovCj4gKyNlbmRpZgo+ICAgLyogMjcgdW51c2VkICov
+Cj4gICAjZGVmaW5lIEFaWF9EQ0FQU19DT1JCUlBfU0VMRl9DTEVBUiAoMSA8PCAyOCkJLyogQ09S
+QlJQIGNsZWFycyBpdHNlbGYgYWZ0ZXIgcmVzZXQgKi8KPiAgICNkZWZpbmUgQVpYX0RDQVBTX05P
+X01TSTY0ICAgICAgKDEgPDwgMjkpCS8qIFN0aWNrIHRvIDMyLWJpdCBNU0lzICovCgpJbiBvbmUg
+b2YgdGhlIHBhdGNoZXMgaW4gdGhlIHNlcmllcywgSSBhbSB1c2luZyBhenhfaGFzX3BtX3J1bnRp
+bWUoKSB0byAKZm9yYmlkIHJ1bnRpbWUgUE0gY2FsbHMuCkkgY2FuIHVzZSBhYm92ZSBhcyB5b3Ug
+c3VnZ2VzdGVkLiBBbG9uZyB3aXRoIHRoaXMsIEkgd291bGQgbmVlZCB0byAKcG9wdWxhdGUgY2hp
+cC0+ZHJpdmVyX2NhcHMgd2l0aAphYm92ZSBmbGFnLiBTb21ldGhpbmcgbGlrZSBiZWxvdywKCi0t
+LSBhL3NvdW5kL3BjaS9oZGEvaGRhX3RlZ3JhLmMKKysrIGIvc291bmQvcGNpL2hkYS9oZGFfdGVn
+cmEuYwpAQCAtNTIxLDcgKzUyMSw4IEBAIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIGhkYV90ZWdy
+YV9tYXRjaCk7CgogwqBzdGF0aWMgaW50IGhkYV90ZWdyYV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
+ZGV2aWNlICpwZGV2KQogwqB7Ci3CoMKgwqDCoMKgwqAgdW5zaWduZWQgaW50IGRyaXZlcl9mbGFn
+cyA9IEFaWF9EQ0FQU19DT1JCUlBfU0VMRl9DTEVBUjsKK8KgwqDCoMKgwqDCoCB1bnNpZ25lZCBp
+bnQgZHJpdmVyX2ZsYWdzID0gQVpYX0RDQVBTX0NPUkJSUF9TRUxGX0NMRUFSIHwKK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIEFaWF9EQ0FQU19QTV9SVU5USU1FOwogwqDCoMKgwqDCoMKgwqAgc3RydWN0IHNuZF9jYXJk
+ICpjYXJkOwogwqDCoMKgwqDCoMKgwqAgc3RydWN0IGF6eCAqY2hpcDsKIMKgwqDCoMKgwqDCoMKg
+IHN0cnVjdCBoZGFfdGVncmEgKmhkYTsKClRoYW5rcywKU2FtZWVyLgoKPgo+IHRoYW5rcywKPgo+
+IFRha2FzaGkKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBlbWFpbCBtZXNzYWdlIGlz
+IGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKSBhbmQgbWF5IGNv
+bnRhaW4KY29uZmlkZW50aWFsIGluZm9ybWF0aW9uLiAgQW55IHVuYXV0aG9yaXplZCByZXZpZXcs
+IHVzZSwgZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24KaXMgcHJvaGliaXRlZC4gIElmIHlvdSBh
+cmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIg
+YnkKcmVwbHkgZW1haWwgYW5kIGRlc3Ryb3kgYWxsIGNvcGllcyBvZiB0aGUgb3JpZ2luYWwgbWVz
+c2FnZS4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
