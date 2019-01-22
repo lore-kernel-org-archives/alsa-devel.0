@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: Correct the setting while
-	select ASRC clk for AD/DA filter" to the asoc tree
-Date: Tue, 22 Jan 2019 20:26:44 +0000 (GMT)
-Message-ID: <20190122202644.34EC71127955@debutante.sirena.org.uk>
-References: <1548143409-15395-1-git-send-email-shumingf@realtek.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware
+ logger support
+Date: Tue, 22 Jan 2019 14:33:55 -0600
+Message-ID: <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
+ <20190109204427.GR10405@sirena.org.uk>
+ <85d2a9dc-4800-9db7-3e6a-3671f8eef226@linux.intel.com>
+ <20190122185711.GI7579@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E133C267557
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:26:49 +0100 (CET)
-In-Reply-To: <1548143409-15395-1-git-send-email-shumingf@realtek.com>
+In-Reply-To: <20190122185711.GI7579@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shuming Fan <shumingf@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, flove@realtek.com, bard.liao@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5682: Correct the setting while select ASRC clk for AD/DA filter
+>>>> +	/* make sure count is <= avail */
+>>>> +	count = avail > count ? count : avail;
+>>> min()?
+>> I tried to use min() but then Sparse started complaining so went back to an
+>> explicit test+assign.
+>> I don't have a strong opinion on this, but we've found so many improvements
+>> with the tools that I tend to favor warning-free code.
+> Why was sparse complaining - was it spotting something that is an actual
+> issue here and you've just masked the warning?
 
-has been applied to the asoc tree at
+It was about the use of typeof/sizeof() in min(), not an actual issue in 
+the code
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8077ec011b1ea26abb7ca786f28ecccfb352717f Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Tue, 22 Jan 2019 15:50:09 +0800
-Subject: [PATCH] ASoC: rt5682: Correct the setting while select ASRC clk for
- AD/DA filter
-
-AD/DA ASRC function control two ASRC clock sources separately.
-Whether AD/DA filter select which clock source, we enable AD/DA ASRC
-function for all cases.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5682.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 89c43b26c379..a9b91bcfcc09 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -1778,7 +1778,9 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
- 	{"ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc},
- 	{"DAC Stereo1 Filter", NULL, "DAC STO1 ASRC", is_using_asrc},
- 	{"ADC STO1 ASRC", NULL, "AD ASRC"},
-+	{"ADC STO1 ASRC", NULL, "DA ASRC"},
- 	{"ADC STO1 ASRC", NULL, "CLKDET"},
-+	{"DAC STO1 ASRC", NULL, "AD ASRC"},
- 	{"DAC STO1 ASRC", NULL, "DA ASRC"},
- 	{"DAC STO1 ASRC", NULL, "CLKDET"},
- 
--- 
-2.20.1
+sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
+sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
