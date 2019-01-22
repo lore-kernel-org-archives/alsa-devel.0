@@ -1,27 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
- dereference in soc_find_component
-Date: Tue, 22 Jan 2019 14:11:45 -0600
-Message-ID: <c6721670-cf89-5d21-953d-c1fa10d87367@linux.intel.com>
-References: <1547194442-1487-1-git-send-email-rohitkr@codeaurora.org>
- <d8726e9a-3477-a573-8c1a-dd8245068802@linux.intel.com>
- <4886ed21-65d2-159d-afcd-bb26dcde636e@linux.intel.com>
- <20190115000610.GM11073@sirena.org.uk>
- <796a856c-a9a6-022d-da63-947279090198@linux.intel.com>
- <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
- <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
- <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
- <CAOReqxjhZAzOpr-bGcV6uxPsOEid--Ym2Y0YZMHkybgZSePvtQ@mail.gmail.com>
- <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH] ALSA: core: Add DMA share buffer
+	support
+Date: Tue, 22 Jan 2019 20:25:35 +0000
+Message-ID: <20190122202535.GK7579@sirena.org.uk>
+References: <290f6d3a5fe288b87480cc5fa12c5139728daeca.1547787189.git.baolin.wang@linaro.org>
+ <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz>
+ <20190118190805.GF6260@sirena.org.uk>
+ <s5hzhrxzrez.wl-tiwai@suse.de>
+ <20190121124053.GA12679@sirena.org.uk>
+ <f278bb69-7df0-4d14-5e4f-9bcb57d7f2b6@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6125071218161369696=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E5D82674A9
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:11:48 +0100 (CET)
-In-Reply-To: <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A0352674A9
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:25:44 +0100 (CET)
+In-Reply-To: <f278bb69-7df0-4d14-5e4f-9bcb57d7f2b6@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,70 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Curtis Malainey <cujomalainey@google.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, Rohit kumar <rohitkr@codeaurora.org>, Mark Brown <broonie@kernel.org>, srinivas.kandagatla@linaro.org, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>, Curtis Malainey <cujomalainey@chromium.org>, Dylan Reid <dgreid@google.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, gustavo@embeddedor.com, Takashi Iwai <tiwai@suse.de>, srinivas.kandagatla@linaro.org, mchehab+samsung@kernel.org, sr@denx.de, daniel.thompson@linaro.org, corbet@lwn.net, philburk@google.com, willy@infradead.org, jmiller@neverware.com, keescook@chromium.org, arnd@arndb.de, colyli@suse.de, ckeepax@opensource.wolfsonmicro.com, anna-maria@linutronix.de, mathieu.poirier@linaro.org, Baolin Wang <baolin.wang@linaro.org>, sboyd@kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, leo.yan@linaro.org, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
 
-> The issue was that we were seeing a memory corruption bug on an AMD
-> chromebooks with that function already (not observed on Intel). I was
-> testing some SOF integrations and was seeing this in the kernel logs.
-> I had Dylan verify my logic before I sent the patch because it took so
-> long to identify the bug and it was traced to the patch that introduce
-> soc_init_platform.
->
-> [   10.922112] cz-da7219-max98357a AMD7219:00: ASoC: CPU DAI
-> designware-i2s.1.auto not registered
-> [   10.922122] cz-da7219-max98357a AMD7219:00:
-> devm_snd_soc_register_card(acpd7219m98357) failed: -517
-> [   11.001411] cz-da7219-max98357a AMD7219:00: ASoC: Both platform
-> name/of_node are set for amd-max98357-play
-> [   11.001423] cz-da7219-max98357a AMD7219:00: ASoC: failed to init
-> link amd-max98357-play
-> [   11.001431] cz-da7219-max98357a AMD7219:00:
-> devm_snd_soc_register_card(acpd7219m98357) failed: -22
-> [   11.001577] cz-da7219-max98357a: probe of AMD7219:00 failed with error -22
->
-> of_node was never getting set but the pointer was becoming populated
-> (outside of the probe call) which traced to soc_init_platform function
-> which was not reallocating memory on a EPROBE_DEFER even though it was
-> getting freed by devm. I am not very familiar with devm but my local
-> maintainers say that it should be freeing the memory even on a
-> PROBE_DEFER.
-> The patch should mirror the memory behaviour in
-> snd_soc_init_multicodec which also reallocates its memory on every
-> probe. I'm not sure how the patch is causing you to defer, is your
-> component list corrupt?
->
-> Sorry for the duplicate spam, forgot to send via plain text mode,
-> re-sending for the mailing list so it gets accepted.
+--===============6125071218161369696==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="huG+SbfbdD6eblZQ"
+Content-Disposition: inline
 
-There is no defer issue with the intel stuff, but we call this routine 
-multiple times
 
-snd_soc_register_card
+--huG+SbfbdD6eblZQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---soc_init_dai_link
+On Mon, Jan 21, 2019 at 03:15:43PM +0100, Jaroslav Kysela wrote:
+> Dne 21.1.2019 v 13:40 Mark Brown napsal(a):
 
-----snd_soc_init_platform
+> > It was the bit about adding more extended permission control that I was
+> > worried about there, not the initial O_APPEND bit.  Indeed the O_APPEND
+> > bit sounds like it might also work from the base buffer sharing point of
+> > view, I have to confess I'd not heard of that feature before (it didn't
+> > come up in the discussion when Eric raised this in Prague).
 
--- soc_soc_bind_card
+> With permissions, I meant to make possible to restrict the file
+> descriptor operations (ioctls) for the depending task (like access to
+> the DMA buffer, synchronize it for the non-coherent platforms and maybe
+> read/write the actual position, delay etc.). It should be relatively
+> easy to implement using the snd_pcm_file structure.
 
-----snd_soc_instantiate_card
+Right, that's what I understood you to mean.  If you want to have a
+policy saying "it's OK to export a PCM file descriptor if it's only got
+permissions X and Y" the security module is going to need to know about
+the mechanism for setting those permissions.  With dma_buf that's all a
+bit easier as there's less new stuff, though I've no real idea how much
+of a big deal that actually is.
 
------- soc_check_tplg_fes
+> Even with the full operation mode, it's difficult imagine what the
+> depending task can break with the sound interface except probably annoy
+> users with some cracks for the playback or start/stop the streaming rapidly.
 
--------- snd_soc_init_platform << ALLOC1
+In some embedded systems the ability to play back notifications clearly
+can be very important to system functionality.  Obviously at times the
+main purpose of the system is to play or record audio.
 
---------soc_init_dai_link
+I don't have a *super* strong opinion here but I'm not really a security
+person.
 
-----------snd_soc_init_platform << ALLOC2
+--huG+SbfbdD6eblZQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Initially dai_link->legacy_platform is 0, so gets set after the first 
-first devm_kzalloc (ALLOC1) and after that we always allocate new memory 
-(ALLOC2). The end result is that whatever we set in soc_check_tplg_fes 
-is lost with the new/unnecessary alloc.
+-----BEGIN PGP SIGNATURE-----
 
-I would guess your solution is also a work-around, if devm_ effectively 
-freed the memory then the pointer would become NULL. Or may that's the 
-issue is that no one actually resets it.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxHfD4ACgkQJNaLcl1U
+h9Bi/gf/RX3fSAWWGh9peNObRd7J19zaw9F/D2+LAK882ygexXi+46clqp5voXp0
+9ayUdE4ZGQEkJ7OMO9HFdBZLvWWwVdcovK9EPrWDKhEUzjZbmU71ZSrIqYm4eEyV
+NHmJGrsWUMulWJsxsYmtAf+AF9uEke0/nWHSZlu7v26FIlihpZKx99IrBq3D5egh
+6934PlTzIc7gzt2HFMRbeX7Wi8dQ+YyffoZ73kxjYENud7WbyC6tqWaWsihlApl7
+T3mOL3UQx8DRCDwsR1zGbv2ECnjniTvuBPIFmuNB89jWWivjnQ7qdyasFR5i7Vw7
+k7LxSzKlzpjvgPcFZSMwoFnXdPRN5Q==
+=D6GE
+-----END PGP SIGNATURE-----
+
+--huG+SbfbdD6eblZQ--
+
+--===============6125071218161369696==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6125071218161369696==--
