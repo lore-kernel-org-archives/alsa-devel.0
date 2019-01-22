@@ -1,20 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 6/6] ALSA: fireface: support rx MIDI
-	functionality for Fireface UCX
-Date: Tue, 22 Jan 2019 22:17:05 +0900
-Message-ID: <20190122131705.23213-7-o-takashi@sakamocchi.jp>
-References: <20190122131705.23213-1-o-takashi@sakamocchi.jp>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 6/6] ASoC: soc-core: use
+ for_each_link_codecs() for dai_link codecs
+Date: Tue, 22 Jan 2019 16:43:08 +0100
+Message-ID: <6e72e1ea-8879-7cab-f2d8-18da7a0a883c@samsung.com>
+References: <87imyiamj4.wl-kuninori.morimoto.gx@renesas.com>
+ <CGME20190121003405epcas1p3f72eb59673abe94235326cbb24251b3d@epcas1p3.samsung.com>
+ <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id C55B72674AC
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 14:17:25 +0100 (CET)
-Received: by mail-pf1-f196.google.com with SMTP id y126so11771995pfb.4
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 05:17:25 -0800 (PST)
-In-Reply-To: <20190122131705.23213-1-o-takashi@sakamocchi.jp>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id F02C92674A8
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 16:43:15 +0100 (CET)
+In-reply-to: <87a7juamhi.wl-kuninori.morimoto.gx@renesas.com>
+Content-language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,218 +24,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-In latter model of Fireface series, asynchronous transaction includes
-a prefix byte to indicate the way to decode included MIDI bytes.
+Hi Morimoto-san,
 
-Upper 4 bits of the prefix byte indicates port number, and the rest 4
-bits indicate the way to decode rest of bytes for MIDI messages.
-
-Basically the rest bits indicates the number of bytes for MIDI message.
-However, if the last byte of each MIDi message is included, the rest
-bits are 0xf. For example:
-
-message: f0 00 00 66 14 20 00 00 f7
-offset: content (big endian, port 0)
- '0030: 0x02f00000
- '0030: 0x03006614
- '0030: 0x03200000
- '0030: 0x0ff70000
-
-This commit supports encoding scheme for the above and allows
-applications to transfer MIDI messages via ALSA rawmidi interface.
-An unused member (running_status) is reused to keep state of
-transmission of system exclusive messages.
-
-For your information, this is a dump of config rom.
-
-$ sudo ./hinawa-config-rom-printer /dev/fw1
-{ 'bus-info': { 'bmc': False,
-                'chip_ID': 13225063715,
-                'cmc': False,
-                'cyc_clk_acc': 0,
-                'imc': False,
-                'isc': True,
-                'max_rec': 512,
-                'name': '1394',
-                'node_vendor_ID': 2613},
-  'root-directory': [ [ 'NODE_CAPABILITIES',
-                        { 'addressing': {'64': True, 'fix': True, 'prv': False},
-                          'misc': {'int': False, 'ms': False, 'spt': True},
-                          'state': { 'atn': False,
-                                     'ded': False,
-                                     'drq': True,
-                                     'elo': False,
-                                     'init': False,
-                                     'lst': True,
-                                     'off': False},
-                          'testing': {'bas': False, 'ext': False}}],
-                      ['VENDOR', 2613],
-                      ['DESCRIPTOR', 'RME!'],
-                      ['EUI_64', 2873037108442403],
-                      [ 'UNIT',
-                        [ ['SPECIFIER_ID', 2613],
-                          ['VERSION', 4],
-                          ['MODEL', 1054720],
-                          ['DESCRIPTOR', 'Fireface UCX']]]]}
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireface/ff-midi.c            |  2 +-
- sound/firewire/fireface/ff-protocol-latter.c | 96 ++++++++++++++++++++
- sound/firewire/fireface/ff.c                 |  1 +
- sound/firewire/fireface/ff.h                 |  2 +-
- 4 files changed, 99 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/fireface/ff-midi.c b/sound/firewire/fireface/ff-midi.c
-index 6a49611ee462..5b44e1c4569a 100644
---- a/sound/firewire/fireface/ff-midi.c
-+++ b/sound/firewire/fireface/ff-midi.c
-@@ -19,7 +19,7 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 	struct snd_ff *ff = substream->rmidi->private_data;
+On 1/21/19 01:32, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> We can use for_each_link_codecs() without waiting
+> for_each_rtd_codec_dai() on soc_bind_dai_link().
+> Let's use for_each macro
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/soc-core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 8a58fa8..1c92b4a 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+>  	struct snd_soc_dai_link *dai_link)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd;
+> -	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+> +	struct snd_soc_dai_link_component *codecs;
+>  	struct snd_soc_dai_link_component cpu_dai_component;
+>  	struct snd_soc_component *component;
+>  	struct snd_soc_dai **codec_dais;
+> @@ -905,9 +905,8 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+>  	rtd->num_codecs = dai_link->num_codecs;
+>  
+>  	/* Find CODEC from registered CODECs */
+> -	/* we can use for_each_rtd_codec_dai() after this */
+>  	codec_dais = rtd->codec_dais;
+> -	for (i = 0; i < rtd->num_codecs; i++) {
+> +	for_each_link_codecs(dai_link, i, codecs) {
+>  		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
+>  		if (!codec_dais[i]) {
+>  			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
  
- 	/* Initialize internal status. */
--	ff->running_status[substream->number] = 0;
-+	ff->on_sysex[substream->number] = 0;
- 	ff->rx_midi_error[substream->number] = false;
- 
- 	WRITE_ONCE(ff->rx_midi_substreams[substream->number], substream);
-diff --git a/sound/firewire/fireface/ff-protocol-latter.c b/sound/firewire/fireface/ff-protocol-latter.c
-index a812ab6feb58..817af4447349 100644
---- a/sound/firewire/fireface/ff-protocol-latter.c
-+++ b/sound/firewire/fireface/ff-protocol-latter.c
-@@ -306,8 +306,104 @@ static void latter_handle_midi_msg(struct snd_ff *ff, unsigned int offset,
- 		snd_rawmidi_receive(substream, byte, len);
- }
- 
-+/*
-+ * When return minus value, given argument is not MIDI status.
-+ * When return 0, given argument is a beginning of system exclusive.
-+ * When return the others, given argument is MIDI data.
-+ */
-+static inline int calculate_message_bytes(u8 status)
-+{
-+	switch (status) {
-+	case 0xf6:	/* Tune request. */
-+	case 0xf8:	/* Timing clock. */
-+	case 0xfa:	/* Start. */
-+	case 0xfb:	/* Continue. */
-+	case 0xfc:	/* Stop. */
-+	case 0xfe:	/* Active sensing. */
-+	case 0xff:	/* System reset. */
-+		return 1;
-+	case 0xf1:	/* MIDI time code quarter frame. */
-+	case 0xf3:	/* Song select. */
-+		return 2;
-+	case 0xf2:	/* Song position pointer. */
-+		return 3;
-+	case 0xf0:	/* Exclusive. */
-+		return 0;
-+	case 0xf7:	/* End of exclusive. */
-+		break;
-+	case 0xf4:	/* Undefined. */
-+	case 0xf5:	/* Undefined. */
-+	case 0xf9:	/* Undefined. */
-+	case 0xfd:	/* Undefined. */
-+		break;
-+	default:
-+		switch (status & 0xf0) {
-+		case 0x80:	/* Note on. */
-+		case 0x90:	/* Note off. */
-+		case 0xa0:	/* Polyphonic key pressure. */
-+		case 0xb0:	/* Control change and Mode change. */
-+		case 0xe0:	/* Pitch bend change. */
-+			return 3;
-+		case 0xc0:	/* Program change. */
-+		case 0xd0:	/* Channel pressure. */
-+			return 2;
-+		default:
-+		break;
-+		}
-+	break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int latter_fill_midi_msg(struct snd_ff *ff,
-+				struct snd_rawmidi_substream *substream,
-+				unsigned int port)
-+{
-+	u32 data = {0};
-+	u8 *buf = (u8 *)&data;
-+	int consumed;
-+
-+	buf[0] = port << 4;
-+	consumed = snd_rawmidi_transmit_peek(substream, buf + 1, 3);
-+	if (consumed <= 0)
-+		return consumed;
-+
-+	if (!ff->on_sysex[port]) {
-+		if (buf[1] != 0xf0) {
-+			if (consumed < calculate_message_bytes(buf[1]))
-+				return 0;
-+		} else {
-+			// The beginning of exclusives.
-+			ff->on_sysex[port] = true;
-+		}
-+
-+		buf[0] |= consumed;
-+	} else {
-+		if (buf[1] != 0xf7) {
-+			if (buf[2] == 0xf7 || buf[3] == 0xf7) {
-+				// Transfer end code at next time.
-+				consumed -= 1;
-+			}
-+
-+			buf[0] |= consumed;
-+		} else {
-+			// The end of exclusives.
-+			ff->on_sysex[port] = false;
-+			consumed = 1;
-+			buf[0] |= 0x0f;
-+		}
-+	}
-+
-+	ff->msg_buf[port][0] = cpu_to_le32(data);
-+	ff->rx_bytes[port] = consumed;
-+
-+	return 1;
-+}
-+
- const struct snd_ff_protocol snd_ff_protocol_latter = {
- 	.handle_midi_msg	= latter_handle_midi_msg,
-+	.fill_midi_msg		= latter_fill_midi_msg,
- 	.get_clock		= latter_get_clock,
- 	.switch_fetching_mode	= latter_switch_fetching_mode,
- 	.begin_session		= latter_begin_session,
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 675c6ab556eb..a9611157f4c8 100644
---- a/sound/firewire/fireface/ff.c
-+++ b/sound/firewire/fireface/ff.c
-@@ -174,6 +174,7 @@ static const struct snd_ff_spec spec_ucx = {
- 	.pcm_capture_channels = {18, 14, 12},
- 	.pcm_playback_channels = {18, 14, 12},
- 	.midi_in_ports = 2,
-+	.midi_out_ports = 2,
- 	.protocol = &snd_ff_protocol_latter,
- 	.midi_high_addr = 0xffff00000034ull,
- 	.midi_addr_range = 0x80,
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index e52ad11803e0..ed8fea0ff5e1 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -75,7 +75,7 @@ struct snd_ff {
- 
- 	/* TO handle MIDI rx. */
- 	struct snd_rawmidi_substream *rx_midi_substreams[SND_FF_OUT_MIDI_PORTS];
--	u8 running_status[SND_FF_OUT_MIDI_PORTS];
-+	bool on_sysex[SND_FF_OUT_MIDI_PORTS];
- 	__le32 msg_buf[SND_FF_OUT_MIDI_PORTS][SND_FF_MAXIMIM_MIDI_QUADS];
- 	struct work_struct rx_midi_work[SND_FF_OUT_MIDI_PORTS];
- 	struct fw_transaction transactions[SND_FF_OUT_MIDI_PORTS];
+It seems this patch causes card registration failure in multicodec 
+configuration. When I revert the patch there is no error as below 
+on Odroid boards:
+
+-------------------8<----------------------------
+[    3.059519] odroid-audio sound: multicodec <-> samsung-i2s mapping ok
+[    3.060819] ------------[ cut here ]------------
+[    3.065113] WARNING: CPU: 2 PID: 92 at sound/core/pcm_lib.c:2446 snd_pcm_add_chmap_ctls+0x158/0x180
+[    3.074019] Modules linked in:
+[    3.083838] CPU: 2 PID: 92 Comm: kworker/2:1 Not tainted 5.0.0-rc3-next-20190122-00002-gfce9abe78abf #162
+[    3.093334] Hardware name: SAMSUNG EXYNOS (Flattened Device Tree)
+[    3.099424] Workqueue: events deferred_probe_work_func
+[    3.104557] [<c0111ad4>] (unwind_backtrace) from [<c010d974>] (show_stack+0x10/0x14)
+[    3.112275] [<c010d974>] (show_stack) from [<c09f51c4>] (dump_stack+0x90/0xc8)
+[    3.119472] [<c09f51c4>] (dump_stack) from [<c0125a1c>] (__warn+0xf8/0x124)
+[    3.126412] [<c0125a1c>] (__warn) from [<c0125a88>] (warn_slowpath_null+0x40/0x48)
+[    3.133960] [<c0125a88>] (warn_slowpath_null) from [<c0741e1c>] (snd_pcm_add_chmap_ctls+0x158/0x180)
+[    3.143083] [<c0741e1c>] (snd_pcm_add_chmap_ctls) from [<c0760ed8>] (hdmi_codec_pcm_new+0xb4/0x150)
+[    3.152113] [<c0760ed8>] (hdmi_codec_pcm_new) from [<c07480d8>] (soc_link_dai_pcm_new+0x4c/0x84)
+[    3.160873] [<c07480d8>] (soc_link_dai_pcm_new) from [<c074c0d0>] (snd_soc_instantiate_card+0xbbc/0xc78)
+[    3.170329] [<c074c0d0>] (snd_soc_instantiate_card) from [<c074c2f0>] (snd_soc_register_card+0x164/0x19c)
+[    3.179886] [<c074c2f0>] (snd_soc_register_card) from [<c075b1a8>] (devm_snd_soc_register_card+0x34/0x70)
+[    3.189430] [<c075b1a8>] (devm_snd_soc_register_card) from [<c076e128>] (odroid_audio_probe+0x170/0x200)
+[    3.198888] [<c076e128>] (odroid_audio_probe) from [<c05517c4>] (platform_drv_probe+0x48/0x98)
+[    3.207481] [<c05517c4>] (platform_drv_probe) from [<c054f348>] (really_probe+0x224/0x3f4)
+[    3.215724] [<c054f348>] (really_probe) from [<c054f76c>] (driver_probe_device+0x70/0x1c4)
+[    3.223984] [<c054f76c>] (driver_probe_device) from [<c054d51c>] (bus_for_each_drv+0x44/0x8c)
+[    3.232477] [<c054d51c>] (bus_for_each_drv) from [<c054f604>] (__device_attach+0xa0/0x138)
+[    3.240722] [<c054f604>] (__device_attach) from [<c054e47c>] (bus_probe_device+0x88/0x90)
+[    3.248882] [<c054e47c>] (bus_probe_device) from [<c054e9f4>] (deferred_probe_work_func+0x6c/0xbc)
+[    3.257830] [<c054e9f4>] (deferred_probe_work_func) from [<c0144254>] (process_one_work+0x200/0x738)
+[    3.266938] [<c0144254>] (process_one_work) from [<c01447f0>] (worker_thread+0x2c/0x4c8)
+[    3.275014] [<c01447f0>] (worker_thread) from [<c014af94>] (kthread+0x128/0x164)
+[    3.275025] [<c014af94>] (kthread) from [<c01010b4>] (ret_from_fork+0x14/0x20)
+[    3.290546] Exception stack(0xee2a9fb0 to 0xee2a9ff8)
+[    3.304866] 9fa0:                                     00000000 00000000 00000000 00000000
+[    3.304873] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    3.304879] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    3.304973] irq event stamp: 10295
+[    3.313685] hardirqs last  enabled at (10313): [<c0101a8c>] __irq_svc+0x8c/0xb0
+[    3.351230] hardirqs last disabled at (10360): [<c018bb30>] console_unlock+0xc0/0x700
+[    3.359077] softirqs last  enabled at (10376): [<c0102564>] __do_softirq+0x3a4/0x66c
+[    3.366806] softirqs last disabled at (10387): [<c012d7c4>] irq_exit+0x140/0x168
+[    3.374169] ---[ end trace 61e0cb0fbe08773c ]---
+[    3.378743] hdmi-audio-codec hdmi-audio-codec.0.auto: ASoC: Failed to bind i2s-hifi with pcm device
+[    3.387801] odroid-audio sound: ASoC: failed to instantiate card -16
+[    3.396693] odroid-audio sound: snd_soc_register_card() failed: -16
+[    3.400432] odroid-audio: probe of sound failed with error -16
+
+[    3.537534] ALSA device list:
+[    3.538439]   No soundcards found.
+-------------------8<----------------------------
+
 -- 
-2.19.1
+Regards,
+Sylwester
