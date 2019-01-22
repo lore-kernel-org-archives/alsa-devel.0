@@ -1,7 +1,7 @@
 From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH 6/6] ASoC: mediatek: add document for mt8183-mt6358
-Date: Tue, 22 Jan 2019 14:39:13 +0800
-Message-ID: <1548139153-18783-7-git-send-email-shunli.wang@mediatek.com>
+Subject: [PATCH 4/6] ASoC: mediatek: mt6358: add codec document
+Date: Tue, 22 Jan 2019 14:39:11 +0800
+Message-ID: <1548139153-18783-5-git-send-email-shunli.wang@mediatek.com>
 References: <1548139153-18783-1-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,27 +23,33 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/mt8183-mt6358.txt | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
+ Documentation/devicetree/bindings/sound/mt6358.txt | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6358.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
+diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
 new file mode 100644
-index 0000000..75b19f3
+index 0000000..5465730
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
-@@ -0,0 +1,12 @@
-+MT8183 with MT6358 CODEC
++++ b/Documentation/devicetree/bindings/sound/mt6358.txt
+@@ -0,0 +1,18 @@
++Mediatek MT6358 Audio Codec
++
++The communication between MT6358 and SoC is through Mediatek PMIC wrapper.
++For more detail, please visit Mediatek PMIC wrapper documentation.
++
++Must be a child node of PMIC wrapper.
 +
 +Required properties:
-+- compatible: "mediatek,mt8183-mt6358-sound"
-+- mediatek,platform: the phandle of MT8183 ASoC platform
++
++- compatible : "mediatek,mt6358-sound".
++- Avdd-supply : power source of AVDD
 +
 +Example:
 +
-+	sound {
-+		compatible = "mediatek,mt8183-mt6358-sound";
-+		mediatek,platform = <&afe>;
-+	};
++mt6358_snd {
++	compatible = "mediatek,mt6358-sound";
++	Avdd-supply = <&mt6358_vaud28_reg>;
++};
 -- 
 1.9.1
