@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/7] ALSA: pcm: Call snd_card_unref() inside
-	in_pcm_file()
-Date: Tue, 22 Jan 2019 17:19:09 +0100
-Message-ID: <20190122161915.8445-2-tiwai@suse.de>
+Subject: [PATCH 6/7] ALSA: pcm: Remove down_write() hack for
+	snd_pcm_link_rwsem
+Date: Tue, 22 Jan 2019 17:19:14 +0100
+Message-ID: <20190122161915.8445-7-tiwai@suse.de>
 References: <20190122161915.8445-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 300C32674A9
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 17:19:18 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B7DD2674C6
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 17:19:20 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 501BBB07C
+ by mx1.suse.de (Postfix) with ESMTP id 99297B082
  for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 16:19:18 +0000 (UTC)
 In-Reply-To: <20190122161915.8445-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,55 +27,59 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_card_unref() call in snd_pcm_link() looks suspicious through a
-quick glance, but it's a correct usage; this is needed just because
-the file descriptor check in is_pcm_file() calls the helper
-snd_lookup_minor_data() that keeps the card refcount.
+Remove the hackish down_write_nonfifo() that was introduced as a
+workaround of rwsem deadlock.
 
-Despite of the correctness, the code still looks confusing.
-Basically, keeping the card ref for the whole code isn't needed
-as fdget() blocks the release of the opened file.  Hence it's more
-understandable if snd_card_unref() is moved into is_pcm_file(), then
-the caller doesn't have to take care after the call.
+It used to be a problem for non-atomic PCM streams that take the rwsem
+for the locking and hit the high lock contention.  Since the current
+PCM locking refactoring, we'll no longer hit it as the hot code-paths
+don't take global locks.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/core/pcm_native.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 818dff1de545..c72dfd1fc1ed 100644
+index cbde23fc67a9..f450083eb073 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -1935,13 +1935,19 @@ static int snd_pcm_drop(struct snd_pcm_substream *substream)
- static bool is_pcm_file(struct file *file)
+@@ -87,18 +87,6 @@ static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream);
+ 
+ static DECLARE_RWSEM(snd_pcm_link_rwsem);
+ 
+-/* Writer in rwsem may block readers even during its waiting in queue,
+- * and this may lead to a deadlock when the code path takes read sem
+- * twice (e.g. one in snd_pcm_action_nonatomic() and another in
+- * snd_pcm_stream_lock()).  As a (suboptimal) workaround, let writer to
+- * sleep until all the readers are completed without blocking by writer.
+- */
+-static inline void down_write_nonfifo(struct rw_semaphore *lock)
+-{
+-	while (!down_write_trylock(lock))
+-		msleep(1);
+-}
+-
+ void snd_pcm_group_init(struct snd_pcm_group *group)
  {
- 	struct inode *inode = file_inode(file);
-+	struct snd_pcm *pcm;
- 	unsigned int minor;
+ 	spin_lock_init(&group->lock);
+@@ -2052,7 +2040,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 	}
+ 	snd_pcm_group_init(group);
  
- 	if (!S_ISCHR(inode->i_mode) || imajor(inode) != snd_major)
- 		return false;
- 	minor = iminor(inode);
--	return snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_PLAYBACK) ||
--		snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_CAPTURE);
-+	pcm = snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_PLAYBACK);
-+	if (!pcm)
-+		pcm = snd_lookup_minor_data(minor, SNDRV_DEVICE_TYPE_PCM_CAPTURE);
-+	if (!pcm)
-+		return false;
-+	snd_card_unref(pcm->card);
-+	return true;
- }
+-	down_write_nonfifo(&snd_pcm_link_rwsem);
++	down_write(&snd_pcm_link_rwsem);
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN ||
+ 	    substream->runtime->status->state != substream1->runtime->status->state ||
+ 	    substream->pcm->nonatomic != substream1->pcm->nonatomic) {
+@@ -2100,7 +2088,7 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
+ 	bool do_free = false;
+ 	int res = 0;
  
- /*
-@@ -1996,7 +2002,6 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
- 	write_unlock_irq(&snd_pcm_link_rwlock);
- 	up_write(&snd_pcm_link_rwsem);
-  _nolock:
--	snd_card_unref(substream1->pcm->card);
- 	kfree(group);
-  _badf:
- 	fdput(f);
+-	down_write_nonfifo(&snd_pcm_link_rwsem);
++	down_write(&snd_pcm_link_rwsem);
+ 
+ 	if (!snd_pcm_stream_linked(substream)) {
+ 		res = -EALREADY;
 -- 
 2.16.4
