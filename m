@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: soc-core: add .num_platform for
- dai_link" to the asoc tree
-Date: Tue, 22 Jan 2019 20:36:37 +0000
-Message-ID: <20190122203637.GM7579@sirena.org.uk>
-References: <87h8e2ami9.wl-kuninori.morimoto.gx@renesas.com>
- <20190121192029.CB44E1127D00@debutante.sirena.org.uk>
- <87ef951mhd.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware
+ logger support
+Date: Tue, 22 Jan 2019 20:41:22 +0000
+Message-ID: <20190122204122.GN7579@sirena.org.uk>
+References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
+ <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
+ <20190109204427.GR10405@sirena.org.uk>
+ <85d2a9dc-4800-9db7-3e6a-3671f8eef226@linux.intel.com>
+ <20190122185711.GI7579@sirena.org.uk>
+ <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7143740881449918994=="
+Content-Type: multipart/mixed; boundary="===============8184662997271191290=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A425626687D
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:36:38 +0100 (CET)
-In-Reply-To: <87ef951mhd.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,66 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7143740881449918994==
+--===============8184662997271191290==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dpynvXbW/eW9Tpc3"
+	protocol="application/pgp-signature"; boundary="M2Pxvdb9QxnGd/3e"
 Content-Disposition: inline
 
 
---dpynvXbW/eW9Tpc3
+--M2Pxvdb9QxnGd/3e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 22, 2019 at 11:10:09AM +0900, Kuninori Morimoto wrote:
+On Tue, Jan 22, 2019 at 02:33:55PM -0600, Pierre-Louis Bossart wrote:
+>=20
+> > > > > +	/* make sure count is <=3D avail */
+> > > > > +	count =3D avail > count ? count : avail;
+> > > > min()?
 
->    I think "platform" settings is not mandatory in this case.
->    So we can allow "no platform" in modern style.
->    But what do you think ?
+> > Why was sparse complaining - was it spotting something that is an actual
+> > issue here and you've just masked the warning?
 
-Yes, I think that's fine especially when you start looking at things
-like CODEC<->CODEC links.
+> It was about the use of typeof/sizeof() in min(), not an actual issue in =
+the
+> code
 
-> 2) On legacy style, if sound card dirver doesn't indicate specific "platform",
->    then, "snd-soc-dummy" platform will be selected automatically.
->    It is implemented on snd_soc_init_platform() today.
->    In modern style, we can force to indicate necessary platform,
->    or, not allow implicit snd-soc-dummy platform selection.
->    But what do you think ?
+> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
+> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
 
-IIRC the goal with dummy was twofold.  One was to avoid having to list
-dummy in things like DT bindings where we don't want platform specifics
-(but I'm sure we could arrange something there).  The other was to
-ensure that we always have something there so we don't need to test for
-platform operations being there outside of init which again we could
-deal with I think.
+I don't understand that warning - avail and count are both size_t so
+where's it deciding that there's a void involved?
 
---dpynvXbW/eW9Tpc3
+--M2Pxvdb9QxnGd/3e
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxHftQACgkQJNaLcl1U
-h9B5aQf9EL0GPnb97V3XQPLhbOpMApjG4LdH80xeU40NWe/rvK5txqFF4rSbEF6n
-M4aUTypC4OBKJjXy6I32g7gxn8QQn/r2rRAQUNevBiI8LTblsk8Yrs66QfpoITzJ
-JGKc4UK0GvWB2/YLcS7gHrtS5LOfQhm5HqNkLWw6Tf73PUEbk++R4+8nhB6yujOJ
-0MXQ5xPuc55HBCURpCa0Ew0TPFkrFHFmFEQ2NRE7HYTd6CWInXuvkBUhSPkdp5+3
-r/vV6f4/nYAUsb4BF64cMROnACEuVoOEcdpBqVPZZvQtoagrbJOqY8kyBYAvJreB
-MicLdMjmcRH5CKVXZUveJt35xw2f7w==
-=hmTi
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxHf/EACgkQJNaLcl1U
+h9BDhgf9GbLCbSVVW4os1+HQgngwgvayQGEMrZRtk+UyHsrbCFJcrsp4owDNZzEl
+ECo7KWIBdgcIkikZF+ueqTSdXVKrv4XixYqR1FQaIpUBxbRvhppaVnmo4trTA4b3
+IohG0y5kzXf0S+m4MecHNj03HR6WAkClSnd0L541uVIUIJ8YHZ6GfgjkrUxxOwL0
+VG6R2CHMZQ5OchAVlXnxgSYycE6oAAFQDmJbYpAjlx4oqLlAB54ZUEa/nodfmm4d
+necuV1q27laTE9fKynpiUz+8fm+xwolDZHVpmTFYxH0ZR0SlnY+p4G0L8SFkwunE
+I/wj2jfbQjD2XBjR9qqH3A+YOyVSmA==
+=FEbf
 -----END PGP SIGNATURE-----
 
---dpynvXbW/eW9Tpc3--
+--M2Pxvdb9QxnGd/3e--
 
---===============7143740881449918994==
+--===============8184662997271191290==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7143740881449918994==--
+--===============8184662997271191290==--
