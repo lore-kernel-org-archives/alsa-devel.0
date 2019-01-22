@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware
  logger support
-Date: Tue, 22 Jan 2019 20:41:22 +0000
-Message-ID: <20190122204122.GN7579@sirena.org.uk>
+Date: Tue, 22 Jan 2019 14:52:25 -0600
+Message-ID: <af89cb49-6550-d6b0-a274-0b803cfadffd@linux.intel.com>
 References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
  <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
  <20190109204427.GR10405@sirena.org.uk>
  <85d2a9dc-4800-9db7-3e6a-3671f8eef226@linux.intel.com>
  <20190122185711.GI7579@sirena.org.uk>
  <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
+ <20190122204122.GN7579@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8184662997271191290=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
+In-Reply-To: <20190122204122.GN7579@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8184662997271191290==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="M2Pxvdb9QxnGd/3e"
-Content-Disposition: inline
+>>> Why was sparse complaining - was it spotting something that is an actual
+>>> issue here and you've just masked the warning?
+>> It was about the use of typeof/sizeof() in min(), not an actual issue in the
+>> code
+>> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
+>> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
+> I don't understand that warning - avail and count are both size_t so
+> where's it deciding that there's a void involved?
 
+no idea really, I am only a user of sparse, I don't know how it 
+generated that warning.
 
---M2Pxvdb9QxnGd/3e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+there are equally confusing ones such as
 
-On Tue, Jan 22, 2019 at 02:33:55PM -0600, Pierre-Louis Bossart wrote:
->=20
-> > > > > +	/* make sure count is <=3D avail */
-> > > > > +	count =3D avail > count ? count : avail;
-> > > > min()?
+include/linux/slab.h:332:43: warning: dubious: x & !y
 
-> > Why was sparse complaining - was it spotting something that is an actual
-> > issue here and you've just masked the warning?
+include/linux/slab.h:665:13: warning: call with no type!
 
-> It was about the use of typeof/sizeof() in min(), not an actual issue in =
-the
-> code
+include/linux/slab.h:665:13: error: undefined identifier 
+'__builtin_mul_overflow
 
-> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
-> sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
-
-I don't understand that warning - avail and count are both size_t so
-where's it deciding that there's a void involved?
-
---M2Pxvdb9QxnGd/3e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxHf/EACgkQJNaLcl1U
-h9BDhgf9GbLCbSVVW4os1+HQgngwgvayQGEMrZRtk+UyHsrbCFJcrsp4owDNZzEl
-ECo7KWIBdgcIkikZF+ueqTSdXVKrv4XixYqR1FQaIpUBxbRvhppaVnmo4trTA4b3
-IohG0y5kzXf0S+m4MecHNj03HR6WAkClSnd0L541uVIUIJ8YHZ6GfgjkrUxxOwL0
-VG6R2CHMZQ5OchAVlXnxgSYycE6oAAFQDmJbYpAjlx4oqLlAB54ZUEa/nodfmm4d
-necuV1q27laTE9fKynpiUz+8fm+xwolDZHVpmTFYxH0ZR0SlnY+p4G0L8SFkwunE
-I/wj2jfbQjD2XBjR9qqH3A+YOyVSmA==
-=FEbf
------END PGP SIGNATURE-----
-
---M2Pxvdb9QxnGd/3e--
-
---===============8184662997271191290==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8184662997271191290==--
+The main benefit of sparse is that it is the only tool that found 
+endianess and iomem space issues, but it's often buried in heaps of 
+false alarms in include files.
