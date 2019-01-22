@@ -1,19 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 07/14] ASoC: SOF: Add DSP firmware
- logger support
-Date: Tue, 22 Jan 2019 14:33:55 -0600
-Message-ID: <17fc8892-90aa-a7b3-d9aa-23825b83fca0@linux.intel.com>
-References: <20181211212318.28644-1-pierre-louis.bossart@linux.intel.com>
- <20181211212318.28644-8-pierre-louis.bossart@linux.intel.com>
- <20190109204427.GR10405@sirena.org.uk>
- <85d2a9dc-4800-9db7-3e6a-3671f8eef226@linux.intel.com>
- <20190122185711.GI7579@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: soc-core: add .num_platform for
+ dai_link" to the asoc tree
+Date: Tue, 22 Jan 2019 20:36:37 +0000
+Message-ID: <20190122203637.GM7579@sirena.org.uk>
+References: <87h8e2ami9.wl-kuninori.morimoto.gx@renesas.com>
+ <20190121192029.CB44E1127D00@debutante.sirena.org.uk>
+ <87ef951mhd.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7143740881449918994=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190122185711.GI7579@sirena.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A425626687D
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:36:38 +0100 (CET)
+In-Reply-To: <87ef951mhd.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
->>>> +	/* make sure count is <= avail */
->>>> +	count = avail > count ? count : avail;
->>> min()?
->> I tried to use min() but then Sparse started complaining so went back to an
->> explicit test+assign.
->> I don't have a strong opinion on this, but we've found so many improvements
->> with the tools that I tend to favor warning-free code.
-> Why was sparse complaining - was it spotting something that is an actual
-> issue here and you've just masked the warning?
+--===============7143740881449918994==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dpynvXbW/eW9Tpc3"
+Content-Disposition: inline
 
-It was about the use of typeof/sizeof() in min(), not an actual issue in 
-the code
 
-sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
-sound/soc/sof/trace.c:90:17: warning: expression using sizeof(void)
+--dpynvXbW/eW9Tpc3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 22, 2019 at 11:10:09AM +0900, Kuninori Morimoto wrote:
+
+>    I think "platform" settings is not mandatory in this case.
+>    So we can allow "no platform" in modern style.
+>    But what do you think ?
+
+Yes, I think that's fine especially when you start looking at things
+like CODEC<->CODEC links.
+
+> 2) On legacy style, if sound card dirver doesn't indicate specific "platform",
+>    then, "snd-soc-dummy" platform will be selected automatically.
+>    It is implemented on snd_soc_init_platform() today.
+>    In modern style, we can force to indicate necessary platform,
+>    or, not allow implicit snd-soc-dummy platform selection.
+>    But what do you think ?
+
+IIRC the goal with dummy was twofold.  One was to avoid having to list
+dummy in things like DT bindings where we don't want platform specifics
+(but I'm sure we could arrange something there).  The other was to
+ensure that we always have something there so we don't need to test for
+platform operations being there outside of init which again we could
+deal with I think.
+
+--dpynvXbW/eW9Tpc3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxHftQACgkQJNaLcl1U
+h9B5aQf9EL0GPnb97V3XQPLhbOpMApjG4LdH80xeU40NWe/rvK5txqFF4rSbEF6n
+M4aUTypC4OBKJjXy6I32g7gxn8QQn/r2rRAQUNevBiI8LTblsk8Yrs66QfpoITzJ
+JGKc4UK0GvWB2/YLcS7gHrtS5LOfQhm5HqNkLWw6Tf73PUEbk++R4+8nhB6yujOJ
+0MXQ5xPuc55HBCURpCa0Ew0TPFkrFHFmFEQ2NRE7HYTd6CWInXuvkBUhSPkdp5+3
+r/vV6f4/nYAUsb4BF64cMROnACEuVoOEcdpBqVPZZvQtoagrbJOqY8kyBYAvJreB
+MicLdMjmcRH5CKVXZUveJt35xw2f7w==
+=hmTi
+-----END PGP SIGNATURE-----
+
+--dpynvXbW/eW9Tpc3--
+
+--===============7143740881449918994==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7143740881449918994==--
