@@ -1,16 +1,16 @@
 From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v2 1/6] ALSA: hda/tegra: runtime power
-	management support
-Date: Tue, 22 Jan 2019 13:03:16 +0530
-Message-ID: <1548142401-22841-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v2 2/6] ALSA: hda/tegra: get clock handles
+	early in probe
+Date: Tue, 22 Jan 2019 13:03:17 +0530
+Message-ID: <1548142401-22841-3-git-send-email-spujar@nvidia.com>
 References: <1548142401-22841-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id A19862667E7
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 08:33:39 +0100 (CET)
+Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF46E2674A5
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 08:33:44 +0100 (CET)
 In-Reply-To: <1548142401-22841-1-git-send-email-spujar@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,72 +25,88 @@ To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch enables runtime power management(runtime PM) support for
-hda. pm_runtime_enable() and pm_runtime_disable() are added during
-device probe and remove respectively. The runtime PM callbacks will
-be forbidden if hda controller does not have support for runtime PM.
-pm_runtime_get_sync() and pm_runtime_put() are added for hda register
-access. The callbacks for above will be added in subsequent patches.
+Moved devm_clk_get() API calls to a separate function and the same
+can be called early in the probe. This is done before runtime PM
+for the device is enabled. The runtime resume/suspend callbacks can
+later enable/disable clocks respectively(the support would be added
+in subsequent patches). Clock handles should be available by the
+time runtime suspend/resume calls can happen.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
 ---
- sound/pci/hda/hda_tegra.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_tegra.c | 43 +++++++++++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
 diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 97a176d..2f9dd23 100644
+index 2f9dd23..28e1656 100644
 --- a/sound/pci/hda/hda_tegra.c
 +++ b/sound/pci/hda/hda_tegra.c
-@@ -32,6 +32,7 @@
- #include <linux/slab.h>
- #include <linux/time.h>
- #include <linux/string.h>
-+#include <linux/pm_runtime.h>
- 
- #include <sound/core.h>
- #include <sound/initval.h>
-@@ -512,6 +513,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
- 	card->private_data = chip;
- 
- 	dev_set_drvdata(&pdev->dev, card);
-+
-+	pm_runtime_enable(hda->dev);
-+	if (!azx_has_pm_runtime(chip))
-+		pm_runtime_forbid(hda->dev);
-+
- 	schedule_work(&hda->probe_work);
- 
- 	return 0;
-@@ -528,6 +534,7 @@ static void hda_tegra_probe_work(struct work_struct *work)
- 	struct platform_device *pdev = to_platform_device(hda->dev);
+@@ -306,22 +306,6 @@ static int hda_tegra_init_chip(struct azx *chip, struct platform_device *pdev)
+ 	struct resource *res;
  	int err;
  
-+	pm_runtime_get_sync(hda->dev);
- 	err = hda_tegra_first_init(chip, pdev);
+-	hda->hda_clk = devm_clk_get(dev, "hda");
+-	if (IS_ERR(hda->hda_clk)) {
+-		dev_err(dev, "failed to get hda clock\n");
+-		return PTR_ERR(hda->hda_clk);
+-	}
+-	hda->hda2codec_2x_clk = devm_clk_get(dev, "hda2codec_2x");
+-	if (IS_ERR(hda->hda2codec_2x_clk)) {
+-		dev_err(dev, "failed to get hda2codec_2x clock\n");
+-		return PTR_ERR(hda->hda2codec_2x_clk);
+-	}
+-	hda->hda2hdmi_clk = devm_clk_get(dev, "hda2hdmi");
+-	if (IS_ERR(hda->hda2hdmi_clk)) {
+-		dev_err(dev, "failed to get hda2hdmi clock\n");
+-		return PTR_ERR(hda->hda2hdmi_clk);
+-	}
+-
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	hda->regs = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(hda->regs))
+@@ -341,6 +325,29 @@ static int hda_tegra_init_chip(struct azx *chip, struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int hda_tegra_init_clk(struct hda_tegra *hda)
++{
++	struct device *dev = hda->dev;
++
++	hda->hda_clk = devm_clk_get(dev, "hda");
++	if (IS_ERR(hda->hda_clk)) {
++		dev_err(dev, "failed to get hda clock\n");
++		return PTR_ERR(hda->hda_clk);
++	}
++	hda->hda2codec_2x_clk = devm_clk_get(dev, "hda2codec_2x");
++	if (IS_ERR(hda->hda2codec_2x_clk)) {
++		dev_err(dev, "failed to get hda2codec_2x clock\n");
++		return PTR_ERR(hda->hda2codec_2x_clk);
++	}
++	hda->hda2hdmi_clk = devm_clk_get(dev, "hda2hdmi");
++	if (IS_ERR(hda->hda2hdmi_clk)) {
++		dev_err(dev, "failed to get hda2hdmi clock\n");
++		return PTR_ERR(hda->hda2hdmi_clk);
++	}
++
++	return 0;
++}
++
+ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+ {
+ 	struct hdac_bus *bus = azx_bus(chip);
+@@ -507,6 +514,10 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
++	err = hda_tegra_init_clk(hda);
++	if (err < 0)
++		goto out_free;
++
+ 	err = hda_tegra_create(card, driver_flags, hda);
  	if (err < 0)
  		goto out_free;
-@@ -549,12 +556,18 @@ static void hda_tegra_probe_work(struct work_struct *work)
- 	snd_hda_set_power_save(&chip->bus, power_save * 1000);
- 
-  out_free:
-+	pm_runtime_put(hda->dev);
- 	return; /* no error return from async probe */
- }
- 
- static int hda_tegra_remove(struct platform_device *pdev)
- {
--	return snd_card_free(dev_get_drvdata(&pdev->dev));
-+	int ret;
-+
-+	ret = snd_card_free(dev_get_drvdata(&pdev->dev));
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
- }
- 
- static void hda_tegra_shutdown(struct platform_device *pdev)
 -- 
 2.7.4
 
