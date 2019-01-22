@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Fix multi-CODEC setups" to the
-	asoc tree
-Date: Tue, 22 Jan 2019 20:26:41 +0000 (GMT)
-Message-ID: <20190122202641.E6AFD1127955@debutante.sirena.org.uk>
+Subject: Applied "ASoC: rt5682: Correct the setting while
+	select ASRC clk for AD/DA filter" to the asoc tree
+Date: Tue, 22 Jan 2019 20:26:44 +0000 (GMT)
+Message-ID: <20190122202644.34EC71127955@debutante.sirena.org.uk>
+References: <1548143409-15395-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A6392674A9
- for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:26:43 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E133C267557
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 21:26:49 +0100 (CET)
+In-Reply-To: <1548143409-15395-1-git-send-email-shumingf@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+To: Shuming Fan <shumingf@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, flove@realtek.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: Fix multi-CODEC setups
+   ASoC: rt5682: Correct the setting while select ASRC clk for AD/DA filter
 
 has been applied to the asoc tree at
 
@@ -51,44 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 3f6a125230d8bfcbfe0c06ff0b8eaccbc727acd7 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 22 Jan 2019 17:36:11 +0000
-Subject: [PATCH] ASoC: core: Fix multi-CODEC setups
+>From 8077ec011b1ea26abb7ca786f28ecccfb352717f Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Tue, 22 Jan 2019 15:50:09 +0800
+Subject: [PATCH] ASoC: rt5682: Correct the setting while select ASRC clk for
+ AD/DA filter
 
-Revert 10dff9b0d (ASoC: soc-core: use for_each_link_codecs() for
-dai_link codecs) for now as Sylwester Nawrocki reports that it causes
-oopses on at least Odroid boards.
+AD/DA ASRC function control two ASRC clock sources separately.
+Whether AD/DA filter select which clock source, we enable AD/DA ASRC
+function for all cases.
 
-Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5682.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1c92b4aff57b..8a58fa86675a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai_link_component *codecs;
-+	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
- 	struct snd_soc_dai_link_component cpu_dai_component;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai **codec_dais;
-@@ -905,8 +905,9 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	rtd->num_codecs = dai_link->num_codecs;
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 89c43b26c379..a9b91bcfcc09 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1778,7 +1778,9 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
+ 	{"ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc},
+ 	{"DAC Stereo1 Filter", NULL, "DAC STO1 ASRC", is_using_asrc},
+ 	{"ADC STO1 ASRC", NULL, "AD ASRC"},
++	{"ADC STO1 ASRC", NULL, "DA ASRC"},
+ 	{"ADC STO1 ASRC", NULL, "CLKDET"},
++	{"DAC STO1 ASRC", NULL, "AD ASRC"},
+ 	{"DAC STO1 ASRC", NULL, "DA ASRC"},
+ 	{"DAC STO1 ASRC", NULL, "CLKDET"},
  
- 	/* Find CODEC from registered CODECs */
-+	/* we can use for_each_rtd_codec_dai() after this */
- 	codec_dais = rtd->codec_dais;
--	for_each_link_codecs(dai_link, i, codecs) {
-+	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
- 		if (!codec_dais[i]) {
- 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
 -- 
 2.20.1
