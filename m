@@ -1,15 +1,15 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH 01/21] ASoC: SOF: Intel: Add BYT,
-	CHT and BSW DSP HW support.
-Date: Tue, 22 Jan 2019 09:35:31 +0200
-Message-ID: <CAEnQRZAVUFbTKC3_P-uDu3wSmBMeu7W=2p32vVnimXjeABxyQA@mail.gmail.com>
-References: <20181211213029.28801-1-pierre-louis.bossart@linux.intel.com>
- <20181211213029.28801-2-pierre-louis.bossart@linux.intel.com>
+From: <shumingf@realtek.com>
+Subject: [PATCH] ASoC: rt5682: Correct the setting while select
+	ASRC clk for AD/DA filter
+Date: Tue, 22 Jan 2019 15:50:09 +0800
+Message-ID: <1548143409-15395-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20181211213029.28801-2-pierre-louis.bossart@linux.intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 087AC267263
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2019 08:50:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,22 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Alan Cox <alan@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, albertchen@realtek.com, bard.liao@intel.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-> +static int byt_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
-> +{
-> +       u64 cmd = msg->header;
-> +
-> +       /* send the message */
-> +       sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
-> +                         msg->msg_size);
+From: Shuming Fan <shumingf@realtek.com>
 
-I was wondering if the mailbox shared memory wouldn't be better
-implemented as a queue.
-Do you support playing multiple streams in parallel?
+AD/DA ASRC function control two ASRC clock sources separately.
+Whether AD/DA filter select which clock source, we enable AD/DA ASRC
+function for all cases.
 
-We have this use case where we need to to memory to memory
-decoding/encoding with lots
-of streams in parallel.
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt5682.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index bd45d03..9d5acd2 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1784,7 +1784,9 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
+ 	{"ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc},
+ 	{"DAC Stereo1 Filter", NULL, "DAC STO1 ASRC", is_using_asrc},
+ 	{"ADC STO1 ASRC", NULL, "AD ASRC"},
++	{"ADC STO1 ASRC", NULL, "DA ASRC"},
+ 	{"ADC STO1 ASRC", NULL, "CLKDET"},
++	{"DAC STO1 ASRC", NULL, "AD ASRC"},
+ 	{"DAC STO1 ASRC", NULL, "DA ASRC"},
+ 	{"DAC STO1 ASRC", NULL, "CLKDET"},
+ 
+-- 
+2.7.4
