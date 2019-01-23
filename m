@@ -1,60 +1,45 @@
-From: "Zhu, Yingjiang" <yingjiang.zhu@linux.intel.com>
-Subject: Re: How ALSA handle PCM playing when the ALSA modules
-	are removing
-Date: Wed, 23 Jan 2019 13:55:09 +0800
-Message-ID: <6eb35e3d-6248-74e6-ddcf-ef4f4409b8c1@linux.intel.com>
-References: <130c0184-88f9-df56-ac32-98627a1acb0e@linux.intel.com>
- <64eca10a-f73b-46ea-0cc2-c8cdde99f216@sakamocchi.jp>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v5 4/8] ASoC: wcd9335: add basic controls
+Date: Wed, 23 Jan 2019 10:11:31 +0000
+Message-ID: <6a3664d2-9b10-d6e6-9df5-ed50364812f4@linaro.org>
+References: <20190110150616.2332-1-srinivas.kandagatla@linaro.org>
+ <20190110150616.2332-5-srinivas.kandagatla@linaro.org>
+ <20190122185253.GG7579@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id F1F5E2674A8
- for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 06:55:12 +0100 (CET)
-In-Reply-To: <64eca10a-f73b-46ea-0cc2-c8cdde99f216@sakamocchi.jp>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190122185253.GG7579@sirena.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: robh+dt@kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEvMjMvMjAxOSAxOjIyIFBNLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IEhpLAo+Cj4g
-KEknbSBhbm90aGVyIFRha2FzaGkuKQo+Cj4gT24gMjAxOS8wMS8yMyAxNDowMSwgWmh1LCBZaW5n
-amlhbmcgd3JvdGU6Cj4+IMKgwqDCoMKgIMKgwqDCoCBJIGFtIGRvaW5nIGFuIEFMU0EgbW9kdWxl
-IHRlc3Qgd2l0aCBpbnNlcnQgbW9kdWxlL3JlbW92ZSAKPj4gbW9kdWxlIGxvb3AsIHdoZW4gcGxh
-eWluZyBhIHdhdmUgZHVyaW5nIHRoaXMgbG9vcCwgdGhlcmUgd2lsbCBiZSAKPj4ga2VybmVsIG9v
-cHMuIAo+Cj4gSXQncyBqdXN0IGEgYnVnIG9mIHlvdXIgbW9kdWxlcy4KPgo+IExpbnV4IGtlcm5l
-bCBtb2R1bGUgaXMgbWFpbnRhaW5lZCBieSByZWZlcmVuY2UgY291bnRlci4gSW4gTGludXggc291
-bmQKPiBzdWJzeXN0ZW0sIHdoZW4gYXBwbGljYXRpb25zIG9wZW5zIGFueSBjaGFyYWN0ZXIgZGV2
-aWNlcyBhZGRlZCBieSBkcml2ZXIKPiBtb2R1bGUsIHRoZSByZWZlcmVuY2UgY291bnRlciBpcyBp
-bmNyZW1lbnRlZCwgdGhlbiBpdCBjYW5ub3QgYmUgdW5sb2FkCj4gdW50aWwgYWxsIG9mIGNoYXJh
-Y3RlciBkZXZpY2VzIGFkZGVkIGJ5IHRoZSBtb2R1bGUgYXJlIHJlbGVhc2VkIGJ5Cj4gYXBwbGlj
-YXRpb25zLgo+Cj4gSWYgeW91IGNhbiB1bmxvYWQgeW91ciBtb2R1bGUgZHVyaW5nIHRyYW5zbWlz
-c2lvbiBvZiBhdWRpbyBkYXRhIGZyYW1lLAo+IGl0J3MgYXBwYXJlbnRseSBhIGJ1ZyBvZiB5b3Vy
-IG1vZHVsZS4KPgo+PiBEb2VzIEFMU0EgbmVlZCBoYW5kbGUgdGhpcyBjYXNlPyBPciBqdXN0IGZv
-cmJpZCB3YXZlIHBsYXlpbmcgZHVyaW5nIAo+PiB0aGUgbW9kdWxlIGxvYWQvdW5sb2FkPwo+PiDC
-oMKgwqDCoCDCoMKgwqAgSWYgdGhpcyBuZWVkIHRvIGJlIGhhbmRsZWQsIG1vZHVsZSB1bmxvYWQg
-d2lsbCB3YWl0IHRoZSB3YXZlIAo+PiBwbGF5IGVuZGluZywgb3IganVzdCBzdG9wIHRoZSB3YXZl
-IHBsYXkgYXQgdGhlIGZpcnN0IG9mIHRoZSBsb2FkL3VubG9hZD8KPgo+IEFsbCBvZiBjaGFyYWN0
-ZXIgZGV2aWNlcyBmb3IgYSBzb3VuZCBjYXJkIGFyZSBhc3NvY2lhdGVkIHRvIHNvdW5kIGNhcmQK
-PiBzdHJ1Y3R1cmUgKHN0cnVjdCBzbmRfY2FyZCkuIEtlcm5lbCBtb2R1bGVzIHNob3VsZCBzZXQg
-J2Rpc2Nvbm5lY3RlZCcKPiBzdGF0ZSB0byB0aGUgc3RydWN0dXJlIGluIGl0cyBjYWxsYmFjayBm
-b3IgLnJlbW92ZSBpbnZva2VkIGluCj4gdW5sb2FkaW5nL3VuYmluZGluZyBvcGVyYXRpb24uIFRo
-ZW4gYXBwbGlhdGlvbnMgcmVjZWl2ZXMgZXJyb3JzIGluIEkvTwo+IG9wZXJhdGlvbnMgdG8gdGhl
-IGNoYXJhY3RlciBkZXZpY2UuIFRoZSBhcHBsaWNhdGlvbnMgYXJlIGV4cGVjdGVkIHRvCj4gY2xv
-c2UgdGhlIGNoYXJhY3RlciBkZXZpY2UuIFdoZW4gYWxsIG9mIGNoYXJhY3RlciBkZXZpY2VzIGFy
-ZSBjbG9zZWQsCj4gdGhlbiBzb3VuZCBjYXJkIHN0cnVjdHVyZSBpcyBnb2luZyB0byBiZSByZWxl
-YXNlZC4KPgpPSywgdGhhbmsgeW91IHZlcnkgbXVjaCEgSSB3aWxsIGNoZWNrIHRoZSByZWZlcmVu
-Y2UgY291bnQgaW4gbXkgbW9kdWxlLgoKQlIKCllpbmdqaWFuZwoKPgo+IFJlZ2FyZHMKPgo+IFRh
-a2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Thanks for the review,
+
+On 22/01/2019 18:52, Mark Brown wrote:
+> On Thu, Jan 10, 2019 at 03:06:12PM +0000, Srinivas Kandagatla wrote:
+> 
+>> +static const char * const wcd9335_ear_pa_gain_text[] = {
+>> +	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB",
+>> +	"G_0_DB", "G_M2P5_DB", "UNDEFINED", "G_M12_DB"
+>> +};
+> 
+> Gains should be controlled with Volume controls, not enums.  Provide
+> information on the levels via TLV.
+I agree, I will fix this as well in next version!
+> 
+>> +static const char * const rx_hph_mode_mux_text[] = {
+>> +	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI"
+>> +};
+> 
+> Is there a strong reason not to use more human readable strings here?
+> 
+No, I can rename them to below if it helps reader.
+
+"Class-H Hi-Fi", "Class-H Low Power",   "Class-AB", "Class-H Hi-Fi Low 
+Power".
+
+Thanks,
+srini
