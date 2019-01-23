@@ -1,99 +1,78 @@
-From: Leo Yan <leo.yan@linaro.org>
-Subject: Re: [RFC PATCH] ALSA: core: Add DMA share buffer support
-Date: Wed, 23 Jan 2019 20:46:58 +0800
-Message-ID: <20190123124658.GE15906@leoy-ThinkPad-X240s>
-References: <290f6d3a5fe288b87480cc5fa12c5139728daeca.1547787189.git.baolin.wang@linaro.org>
- <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz>
- <20190118190805.GF6260@sirena.org.uk>
- <s5hzhrxzrez.wl-tiwai@suse.de>
- <20190121124053.GA12679@sirena.org.uk>
- <f278bb69-7df0-4d14-5e4f-9bcb57d7f2b6@perex.cz>
- <20190122202535.GK7579@sirena.org.uk>
- <s5h4l9z4mbo.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Drop unused snd_pcm_substream.file
+	field
+Date: Wed, 23 Jan 2019 15:38:02 +0100
+Message-ID: <20190123143802.32123-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h4l9z4mbo.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, arnd@arndb.de, keescook@chromium.org, bgoswami@codeaurora.org, sr@denx.de, gustavo@embeddedor.com, philburk@google.com, willy@infradead.org, mchehab+samsung@kernel.org, sboyd@kernel.org, vkoul@kernel.org, Baolin Wang <baolin.wang@linaro.org>, daniel.thompson@linaro.org, mathieu.poirier@linaro.org, srinivas.kandagatla@linaro.org, anna-maria@linutronix.de, corbet@lwn.net, jmiller@neverware.com, ckeepax@opensource.wolfsonmicro.com, joe@perches.com, o-takashi@sakamocchi.jp, colyli@suse.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAE7A2674AC
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 15:38:04 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id BF5BBAF6A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 14:38:03 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+It's assigned but nowhere used.  Let's remove it.
 
-On Wed, Jan 23, 2019 at 12:58:51PM +0100, Takashi Iwai wrote:
-> On Tue, 22 Jan 2019 21:25:35 +0100,
-> Mark Brown wrote:
-> > 
-> > On Mon, Jan 21, 2019 at 03:15:43PM +0100, Jaroslav Kysela wrote:
-> > > Dne 21.1.2019 v 13:40 Mark Brown napsal(a):
-> > 
-> > > > It was the bit about adding more extended permission control that I was
-> > > > worried about there, not the initial O_APPEND bit.  Indeed the O_APPEND
-> > > > bit sounds like it might also work from the base buffer sharing point of
-> > > > view, I have to confess I'd not heard of that feature before (it didn't
-> > > > come up in the discussion when Eric raised this in Prague).
-> > 
-> > > With permissions, I meant to make possible to restrict the file
-> > > descriptor operations (ioctls) for the depending task (like access to
-> > > the DMA buffer, synchronize it for the non-coherent platforms and maybe
-> > > read/write the actual position, delay etc.). It should be relatively
-> > > easy to implement using the snd_pcm_file structure.
-> > 
-> > Right, that's what I understood you to mean.  If you want to have a
-> > policy saying "it's OK to export a PCM file descriptor if it's only got
-> > permissions X and Y" the security module is going to need to know about
-> > the mechanism for setting those permissions.  With dma_buf that's all a
-> > bit easier as there's less new stuff, though I've no real idea how much
-> > of a big deal that actually is.
-> 
-> There are many ways to implement such a thing, yeah.  If we'd need an
-> implementation that is done solely in the sound driver layer, I can
-> imagine to introduce either a new ioctl or an open flag (like O_EXCL)
-> to specify the restricted sharing.  That is, a kind of master / slave
-> model where only the master is allowed to manipulate the stream while
-> the slave can mmap, read/write and get status.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/pcm.h      | 1 -
+ sound/core/oss/pcm_oss.c | 1 -
+ sound/core/pcm_native.c  | 4 +---
+ 3 files changed, 1 insertion(+), 5 deletions(-)
 
-I am lacking security related knowledge, especially for SELinux.
-So only can give background information but not sure if it's really
-helpful for discussion.
-
-Android web page [1] give some information for this:
-
-"The shared memory is referenced using a file descriptor that is
-generated by the ALSA driver. If the file descriptor is directly
-associated with a /dev/snd/ driver file, then it can be used by the
-AAudio service in SHARED mode. But the descriptor cannot be passed to
-the client code for EXCLUSIVE mode. The /dev/snd/ file descriptor
-would provide too broad of access to the client, so it is blocked by
-SELinux.
-
-In order to support EXCLUSIVE mode, it is necessary to convert the
-/dev/snd/ descriptor to an anon_inode:dmabuffer file descriptor.
-SELinux allows that file descriptor to be passed to the client. It can
-also be used by the AAudioService.
-
-An anon_inode:dmabuffer file descriptor can be generated using the
-Android Ion memory library."
-
-So we work out dmabuf driver for audio buffer, the audio buffer will
-be exported and attached by using dma-buf framework; then we can
-return one file descriptor which is generated by dma-buf and this
-file descriptor is bound with anon inode based on dma-buf core code.
-
-If we directly use the device node /dev/snd/ as file descriptor, even
-though we specify flag O_EXCL when open it, but it still is not an
-anon inode file descriptor.  Thus this is not safe enough and will be
-blocked by SELinux.  On the other hand, this patch wants to use
-dma-buf framework to provide file descriptor for the audio buffer, and
-this audio buffer can be one of mutiple audio buffers in the system
-and it can be shared to any audio client program.
-
-Again, I have no less knowledge for SELinux so sorry if I introduce any
-noise at here.  And very appreciate any comments for this.
-
-Thanks,
-Leo Yan
-
-[1] https://source.android.com/devices/audio/aaudio
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2c30c1ad1b0d..a20d3a48df00 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -470,7 +470,6 @@ struct snd_pcm_substream {
+ 	struct snd_pcm_group self_group;	/* fake group for non linked substream (with substream lock inside) */
+ 	struct snd_pcm_group *group;		/* pointer to current group */
+ 	/* -- assigned files -- */
+-	void *file;
+ 	int ref_count;
+ 	atomic_t mmap_count;
+ 	unsigned int f_flags;
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 467039b342b5..d5b0d7ba83c4 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2427,7 +2427,6 @@ static int snd_pcm_oss_open_file(struct file *file,
+ 		}
+ 
+ 		pcm_oss_file->streams[idx] = substream;
+-		substream->file = pcm_oss_file;
+ 		snd_pcm_oss_init_substream(substream, &setup[idx], minor);
+ 	}
+ 	
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 26afb6b0889a..63640d3af9db 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2452,10 +2452,8 @@ static int snd_pcm_open_file(struct file *file,
+ 		return -ENOMEM;
+ 	}
+ 	pcm_file->substream = substream;
+-	if (substream->ref_count == 1) {
+-		substream->file = pcm_file;
++	if (substream->ref_count == 1)
+ 		substream->pcm_release = pcm_release_private;
+-	}
+ 	file->private_data = pcm_file;
+ 
+ 	return 0;
+-- 
+2.16.4
