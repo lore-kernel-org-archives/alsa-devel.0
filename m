@@ -1,15 +1,17 @@
 From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v3 0/3] ASoC: Intel: Update broxton machine
-	driver
-Date: Wed, 23 Jan 2019 10:38:34 -0800
-Message-ID: <1548268717-32596-1-git-send-email-yong.zhi@intel.com>
+Subject: [PATCH v3 2/3] ASoC: Intel: Add Geminilake Dialog
+	Maxim machine driver
+Date: Wed, 23 Jan 2019 10:38:36 -0800
+Message-ID: <1548268717-32596-3-git-send-email-yong.zhi@intel.com>
+References: <1548268717-32596-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id D1BEF267561
- for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 19:44:39 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BC7C26756F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 19:44:40 +0100 (CET)
+In-Reply-To: <1548268717-32596-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +25,176 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: harshapriya.n@intel.com, naveen.m@intel.com, vkoul@kernel.org, pierre-louis.bossart@linux.intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+This patch enables support for GeminiLake with the DA7219 codec and
+MAX98357A amplifier. To avoid duplicating code, the existing machine
+driver for ApolloLake is reused with only changes in hardware
+connectivity (SSP2 for DA7219 and SSP1 for MAX98357A).
 
-This patchset is an update to the following v2 posted by Naveen last year:
+The dailinks are directly modified in this patch. Using a helper would
+be nicer, but it'll be done in a follow-up step with validation done
+across multiple machine drivers.
 
-https://patchwork.kernel.org/patch/10335295/
-https://patchwork.kernel.org/patch/10335293/
-https://patchwork.kernel.org/patch/10335297/
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 79 +++++++++++++++++++++++----
+ 1 file changed, 67 insertions(+), 12 deletions(-)
 
-1/5 and 5/5 of original series were merged. The changes have been tested for
-both bxt_da7219_max98357a and glk_da7219_max98357a.
-
-Yong Zhi (3):
-  ASoC: Intel: Headset button support in broxton machine driver
-  ASoC: Intel: Add Geminilake Dialog Maxim machine driver
-  ASoC: Intel: glk: Add DAI links for Multi-Playback
-
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 101 +++++++++++++++++++++++---
- 1 file changed, 89 insertions(+), 12 deletions(-)
-
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 0aaaefa..3f92665 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -16,6 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
++#include <asm/cpu_device_id.h>
+ #include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -103,7 +104,7 @@ static const struct snd_soc_dapm_widget broxton_widgets[] = {
+ 			platform_clock_control,	SND_SOC_DAPM_POST_PMD|SND_SOC_DAPM_PRE_PMU),
+ };
+ 
+-static const struct snd_soc_dapm_route broxton_map[] = {
++static const struct snd_soc_dapm_route audio_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
+ 	{"Headphone Jack", NULL, "HPL"},
+ 	{"Headphone Jack", NULL, "HPR"},
+@@ -118,15 +119,6 @@ static const struct snd_soc_dapm_route broxton_map[] = {
+ 	{"DMic", NULL, "SoC DMIC"},
+ 
+ 	/* CODEC BE connections */
+-	{"HiFi Playback", NULL, "ssp5 Tx"},
+-	{"ssp5 Tx", NULL, "codec0_out"},
+-
+-	{"Playback", NULL, "ssp1 Tx"},
+-	{"ssp1 Tx", NULL, "codec1_out"},
+-
+-	{"codec0_in", NULL, "ssp1 Rx"},
+-	{"ssp1 Rx", NULL, "Capture"},
+-
+ 	{"HDMI1", NULL, "hif5-0 Output"},
+ 	{"HDMI2", NULL, "hif6-0 Output"},
+ 	{"HDMI2", NULL, "hif7-0 Output"},
+@@ -146,6 +138,28 @@ static const struct snd_soc_dapm_route broxton_map[] = {
+ 	{ "Headset Mic", NULL, "Platform Clock" },
+ };
+ 
++static const struct snd_soc_dapm_route broxton_map[] = {
++	{"HiFi Playback", NULL, "ssp5 Tx"},
++	{"ssp5 Tx", NULL, "codec0_out"},
++
++	{"Playback", NULL, "ssp1 Tx"},
++	{"ssp1 Tx", NULL, "codec1_out"},
++
++	{"codec0_in", NULL, "ssp1 Rx"},
++	{"ssp1 Rx", NULL, "Capture"},
++};
++
++static const struct snd_soc_dapm_route gemini_map[] = {
++	{"HiFi Playback", NULL, "ssp1 Tx"},
++	{"ssp1 Tx", NULL, "codec0_out"},
++
++	{"Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec1_out"},
++
++	{"codec0_in", NULL, "ssp2 Rx"},
++	{"ssp2 Rx", NULL, "Capture"},
++};
++
+ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+@@ -538,6 +552,11 @@ static struct snd_soc_dai_link broxton_dais[] = {
+ 	},
+ };
+ 
++static const struct x86_cpu_id glk_ids[] = {
++	{ X86_VENDOR_INTEL, 6, 0x7A }, /* Geminilake CPU_ID */
++	{}
++};
++
+ #define NAME_SIZE	32
+ static int bxt_card_late_probe(struct snd_soc_card *card)
+ {
+@@ -547,6 +566,13 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
+ 
++	if (x86_match_cpu(glk_ids))
++		snd_soc_dapm_add_routes(&card->dapm, gemini_map,
++					ARRAY_SIZE(gemini_map));
++	else
++		snd_soc_dapm_add_routes(&card->dapm, broxton_map,
++					ARRAY_SIZE(broxton_map));
++
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+@@ -582,8 +608,8 @@ static struct snd_soc_card broxton_audio_card = {
+ 	.num_controls = ARRAY_SIZE(broxton_controls),
+ 	.dapm_widgets = broxton_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(broxton_widgets),
+-	.dapm_routes = broxton_map,
+-	.num_dapm_routes = ARRAY_SIZE(broxton_map),
++	.dapm_routes = audio_map,
++	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ 	.fully_routed = true,
+ 	.late_probe = bxt_card_late_probe,
+ };
+@@ -600,16 +626,43 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 
+ 	broxton_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&broxton_audio_card, ctx);
++	if (x86_match_cpu(glk_ids)) {
++		unsigned int i;
++
++		broxton_audio_card.name = "glkda7219max";
++		/* Fixup the SSP entries for geminilake */
++		for (i = 0; i < ARRAY_SIZE(broxton_dais); i++) {
++			/* MAXIM_CODEC is connected to SSP1. */
++			if (!strcmp(broxton_dais[i].codec_dai_name,
++				    BXT_MAXIM_CODEC_DAI)) {
++				broxton_dais[i].name = "SSP1-Codec";
++				broxton_dais[i].cpu_dai_name = "SSP1 Pin";
++			}
++			/* DIALOG_CODE is connected to SSP2 */
++			else if (!strcmp(broxton_dais[i].codec_dai_name,
++					 BXT_DIALOG_CODEC_DAI)) {
++				broxton_dais[i].name = "SSP2-Codec";
++				broxton_dais[i].cpu_dai_name = "SSP2 Pin";
++			}
++		}
++	}
+ 
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
+ }
+ 
++static const struct platform_device_id bxt_board_ids[] = {
++	{ .name = "bxt_da7219_max98357a" },
++	{ .name = "glk_da7219_max98357a" },
++	{ }
++};
++
+ static struct platform_driver broxton_audio = {
+ 	.probe = broxton_audio_probe,
+ 	.driver = {
+ 		.name = "bxt_da7219_max98357a",
+ 		.pm = &snd_soc_pm_ops,
+ 	},
++	.id_table = bxt_board_ids,
+ };
+ module_platform_driver(broxton_audio)
+ 
+@@ -619,5 +672,7 @@ MODULE_AUTHOR("Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>");
+ MODULE_AUTHOR("Rohit Ainapure <rohit.m.ainapure@intel.com>");
+ MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
+ MODULE_AUTHOR("Conrad Cooke <conrad.cooke@intel.com>");
++MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:bxt_da7219_max98357a");
++MODULE_ALIAS("platform:glk_da7219_max98357a");
 -- 
 2.7.4
