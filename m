@@ -1,123 +1,129 @@
-From: Timothy Pearson <tpearson@raptorengineering.com>
-Subject: Re: Possible ALSA loopback bug?
-Date: Wed, 23 Jan 2019 16:02:18 -0600
-Message-ID: <5C48E46A.5040009@raptorengineering.com>
-References: <5C4519A3.2050200@raptorengineering.com>	<5C463BCB.2030907@raptorengineering.com>	<s5hzhrsr4xd.wl-tiwai@suse.de>	<5C475004.4010106@raptorengineering.com>
- <s5hmunslib0.wl-tiwai@suse.de>
+From: shuah <shuah@kernel.org>
+Subject: Re: [PATCH v9 0/4] Media Device Allocator API
+Date: Wed, 23 Jan 2019 18:35:20 -0700
+Message-ID: <2ebe7776-d24d-79d5-bd38-efba4221b7c2@kernel.org>
+References: <cover.1545154777.git.shuah@kernel.org>
+ <606f731d-11f9-e2d7-aee4-b20abadc4d41@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.rptsys.com (mail.rptsys.com [23.155.224.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 94AF02674B9
- for <alsa-devel@alsa-project.org>; Wed, 23 Jan 2019 23:02:21 +0100 (CET)
-In-Reply-To: <s5hmunslib0.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <606f731d-11f9-e2d7-aee4-b20abadc4d41@xs4all.nl>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/22/2019 11:21 AM, Takashi Iwai wrote:
-> On Tue, 22 Jan 2019 18:16:52 +0100,
-> Timothy Pearson wrote:
->>
->> On 01/22/2019 11:13 AM, Takashi Iwai wrote:
->>> On Mon, 21 Jan 2019 22:38:19 +0100,
->>> Timothy Pearson wrote:
->>>>
->>>> On 01/20/2019 07:00 PM, Timothy Pearson wrote:
->>>>> I've been running a dedicated machine with ALSA loopback, feeding
->>>>> darkice on the capture side and (currently) using mplayer to provide
->>>>> audio on the playback side.  I've seen sporadic hangs for a couple of
->>>>> years on this setup, but recently with the switch to mplayer I have
->>>>> additional information that points more to ALSA than the other applications.
->>>>>
->>>>> When the audio hangs, mplayer prints a continuous stream of:
->>>>> "Audio device got stuck!"
->>>>>
->>>>> The only way to "unstick" the audio stream is to terminate and restart
->>>>> mplayer.  Restarting darkice does not fix the stuck stream.  There is no
->>>>> pulseaudio on this sytem.
->>>>>
->>>>> What would be the next steps to debug this setup?  It's shown up on two
->>>>> entirely different installs at this point (Ubuntu 14.04 and Debian 9).
->>>>>
->>>>> Thanks!
->>>>
->>>> A bit of additional information:  before audio output ceases entirely,
->>>> the messages start printing and the audio becomes very choppy.  The
->>>> system has no processes stuck at 100% CPU or any other visible signs of
->>>> duress during this time.
->>>>
->>>> Suggestions on debug are welcome!
->>>
->>> The whole story above indicates merely a message like infamous TeX
->>> error, "something is wrong" :)  We need more detailed information.
->>
->> That's what I had guessed, but I am not familiar enough with the ALSA
->> stack to know what would be useful for debugging or how to get it.  The
->> loopback module is in kernel, which makes debug even more fun.
->>
->> I recently determined that the capture end of the loopback device
->> (darkice) reports "Buffer overrun".  Given that, my next question
->> becomes what happens if capture stops / stalls on an ALSA loopback
->> device?  Is this expected to be recoverable without restarting both ends
->> of the loopback (playback and capture) or am I asking ALSA to do
->> something it isn't designed to do?
+On 1/21/19 7:46 AM, Hans Verkuil wrote:
+> Hi Shuah,
 > 
-> If it's about buffer overrun (or underrun for playback), more often
-> it's an application-side problem that doesn't recover the stream
-> properly.
-> 
->>> For example, how is the PCM status of each running PCM stream when
->>> this happens?  Also, track where the application gets stuck, what was
->>> expected but what didn't happen.  You can see it via gdb or whatever.
+> On 12/18/2018 06:59 PM, shuah@kernel.org wrote:
+>> From: Shuah Khan <shuah@kernel.org>
 >>
->> How would I get the PCM status?
+>> Media Device Allocator API to allows multiple drivers share a media device.
+>> This API solves a very common use-case for media devices where one physical
+>> device (an USB stick) provides both audio and video. When such media device
+>> exposes a standard USB Audio class, a proprietary Video class, two or more
+>> independent drivers will share a single physical USB bridge. In such cases,
+>> it is necessary to coordinate access to the shared resource.
+>>
+>> Using this API, drivers can allocate a media device with the shared struct
+>> device as the key. Once the media device is allocated by a driver, other
+>> drivers can get a reference to it. The media device is released when all
+>> the references are released.
+>>
+>> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+>>    arecord. When analog is streaming, digital and audio user-space
+>>    applications detect that the tuner is busy and exit. When digital
+>>    is streaming, analog and audio applications detect that the tuner is
+>>    busy and exit. When arecord is owns the tuner, digital and analog
+>>    detect that the tuner is busy and exit.
+>> - Tested media device allocator API with bind/unbind testing on
+>>    snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+>>    only when the last driver is unbound.
+>> - This patch series is tested on 4.20-rc6
+>> - Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+>> - Updated change log to describe the use-case more clearly.
+>> - No changes to 0001,0002 code since the v7 referenced below.
+>> - 0003 is a new patch to enable ALSA defines that have been
+>>    disabled for kernel between 4.9 and 4.19.
+>> - Minor merge conflict resolution in 0004.
+>> - Added SPDX to new files.
+>>
+>> References:
+>> https://lkml.org/lkml/2018/11/2/169
+>> https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
 > 
-> You can check it in /proc/asound/card*/pcm*/....
-> If the stream gets stuck as XRUN state, it implies that the
-> application didn't treat it right.
+> When I connect my au0828 to my laptop with your v9 patch series applied I get
+> these warnings:
+> 
+> [   45.416047] xhci_hcd 0000:39:00.0: xHCI Host Controller
+> [   45.417882] xhci_hcd 0000:39:00.0: new USB bus registered, assigned bus number 3
+> [   45.419292] xhci_hcd 0000:39:00.0: hcc params 0x200077c1 hci version 0x110 quirks 0x0000000200009810
+> [   45.420835] usb usb3: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.00
+> [   45.420893] usb usb3: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+> [   45.420899] usb usb3: Product: xHCI Host Controller
+> [   45.420905] usb usb3: Manufacturer: Linux 5.0.0-rc1-zen xhci-hcd
+> [   45.420911] usb usb3: SerialNumber: 0000:39:00.0
+> [   45.424290] hub 3-0:1.0: USB hub found
+> [   45.425274] hub 3-0:1.0: 2 ports detected
+> [   45.431061] xhci_hcd 0000:39:00.0: xHCI Host Controller
+> [   45.432436] xhci_hcd 0000:39:00.0: new USB bus registered, assigned bus number 4
+> [   45.432448] xhci_hcd 0000:39:00.0: Host supports USB 3.1 Enhanced SuperSpeed
+> [   45.433299] usb usb4: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.00
+> [   45.433354] usb usb4: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+> [   45.433360] usb usb4: Product: xHCI Host Controller
+> [   45.433365] usb usb4: Manufacturer: Linux 5.0.0-rc1-zen xhci-hcd
+> [   45.433370] usb usb4: SerialNumber: 0000:39:00.0
+> [   45.436134] hub 4-0:1.0: USB hub found
+> [   45.436576] hub 4-0:1.0: 2 ports detected
+> [   45.750940] usb 3-1: new high-speed USB device number 2 using xhci_hcd
+> [   45.899927] usb 3-1: New USB device found, idVendor=2040, idProduct=721e, bcdDevice= 0.05
+> [   45.899949] usb 3-1: New USB device strings: Mfr=1, Product=2, SerialNumber=10
+> [   45.899960] usb 3-1: Product: WinTV Aero-A
+> [   45.899970] usb 3-1: Manufacturer: Hauppauge
+> [   45.899979] usb 3-1: SerialNumber: 4033622430
+> [   46.053476] au0828: au0828 driver loaded
+> [   46.053726] WARNING: CPU: 1 PID: 1824 at kernel/module.c:262 module_assert_mutex+0x20/0x30
+> [   46.053818] Modules linked in: au0828(+) tveeprom dvb_core v4l2_common rfcomm bnep snd_hda_codec_hdmi snd_hda_codec_realtek
+> snd_hda_codec_generic uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev media btusb btintel bluetooth
+> snd_soc_skl snd_soc_skl_ipc snd_soc_sst_ipc snd_soc_sst_dsp snd_soc_acpi_intel_match snd_soc_acpi snd_hda_ext_core x86_pkg_temp_thermal
+> snd_soc_core snd_compress ac97_bus snd_pcm_dmaengine snd_hda_intel iwlmvm snd_hda_codec snd_hda_core snd_hwdep snd_pcm snd_timer snd iwlwifi
+> i915 intel_gtt battery ac pcc_cpufreq thermal
+> [   46.053853] CPU: 1 PID: 1824 Comm: systemd-udevd Not tainted 5.0.0-rc1-zen #85
+> [   46.053856] Hardware name: ASUSTeK COMPUTER INC. UX490UA/UX490UA, BIOS UX490UA.312 04/09/2018
+> [   46.053862] RIP: 0010:module_assert_mutex+0x20/0x30
+> [   46.053867] Code: 5d c3 e8 f3 68 f5 ff 0f 1f 00 8b 05 d2 5a 7c 01 85 c0 75 01 c3 be ff ff ff ff 48 c7 c7 80 bc 86 82 e8 e4 27 fb ff 85 c0
+> 75 ea <0f> 0b c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 53 48 89 fb e8 c7
+> [   46.053871] RSP: 0018:ffffc90002aa3ac8 EFLAGS: 00010246
+> [   46.053876] RAX: 0000000000000000 RBX: ffffffffa0573abf RCX: 0000000000000000
+> [   46.053880] RDX: 0000000000000000 RSI: ffffffff8286bc80 RDI: ffff8882a517d570
+> [   46.053883] RBP: ffff8882880e6000 R08: 0000000000000000 R09: ffff8882b1f5d000
+> [   46.053886] R10: 0000000000000001 R11: 0000000000000003 R12: ffffffffa0573abf
+> [   46.053890] R13: ffff8882880e60a0 R14: ffff8882880e6000 R15: ffffffffa0577200
+> [   46.053894] FS:  00007f0ac7d318c0(0000) GS:ffff8882b6a80000(0000) knlGS:0000000000000000
+> [   46.053898] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   46.053902] CR2: 0000560d354ed800 CR3: 00000002880f9003 CR4: 00000000003606e0
+> [   46.053905] Call Trace:
+> [   46.053910]  find_module+0x9/0x20
+> 
+> My .config is available upon request.
+> 
 
-After the latest lockup, using "cat card*/pcm*/*/status", both streams
-are showing RUNNING.  One curiosity is that the playback side owner PID
-doesn't match the mplayer PID, while the capture side owner PID matches
-the running darkice process.
+Thanks for the config.
 
-mplayer is jammed waiting in fill_audio_out_buffers():
+Thanks for finding this. find_module() should be called with
+module_mutex since 4.15. The media allocator patch was written
+before that.
 
-Thread 1 (Thread 0x7fffb3d466f0 (LWP 28629)):
-#0  0x00007fffbd096dd8 in __nanosleep_nocancel () at
-../sysdeps/unix/syscall-template.S:84
-#1  0x0000000120e1a81c in usec_sleep (usec_delay=<optimized out>) at
-osdep/timer-linux.c:42
-#2  0x0000000120cb94c8 in fill_audio_out_buffers () at mplayer.c:2171
-#3  main (argc=<optimized out>, argv=<optimized out>) at mplayer.c:3794
-(gdb)
+I didn't realize I don't have CONFIG_DEBUG_MUTEXES=y when I switched
+to a new system.
 
-Unfortunately the sleep time was optimized out, but I suspect it grows
-very large as mplayer eventually just waits forever in usleep().  The
-formula used to determine sleep time is roughly:
+I reproduced the problem and re-worked patch 1 and patch 4 in this
+series. I will resend the v10 for just those two patches tomorrow.
 
-bytes_to_write = mpctx->audio_out->get_space();
-sleep_time = (ao_data.outburst - bytes_to_write) * 1000 / ao_data.bps;
+Please let me know if you want me to send the entire series.
 
-This further supports the idea that ALSA simply stops accepting new data
-for an unknown reason.
-
-I'd be happy to dig further if there's anything that would help!
-
--- 
-Timothy Pearson
-Raptor Engineering
-+1 (415) 727-8645 (direct line)
-+1 (512) 690-0200 (switchboard)
-https://www.raptorengineering.com
+thanks,
+-- Shuah
