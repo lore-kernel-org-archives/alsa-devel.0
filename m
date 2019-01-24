@@ -1,124 +1,90 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: make const arrays static,
-	reduces object code size" to the asoc tree
-Date: Thu, 24 Jan 2019 19:29:09 +0000 (GMT)
-Message-ID: <20190124192909.A68721121B6F@debutante.sirena.org.uk>
-References: <20190124173735.13669-1-colin.king@canonical.com>
+From: Shuah Khan <shuah@kernel.org>
+Subject: [PATCH v10 0/4] Media Device Allocator API
+Date: Thu, 24 Jan 2019 13:32:37 -0700
+Message-ID: <cover.1548360791.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 31691267581
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:29:12 +0100 (CET)
-In-Reply-To: <20190124173735.13669-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
+Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Media Device Allocator API to allows multiple drivers share a media device.
+This API solves a very common use-case for media devices where one physical
+device (an USB stick) provides both audio and video. When such media device
+exposes a standard USB Audio class, a proprietary Video class, two or more
+independent drivers will share a single physical USB bridge. In such cases,
+it is necessary to coordinate access to the shared resource.
 
-   ASoC: Intel: make const arrays static, reduces object code size
+Using this API, drivers can allocate a media device with the shared struct
+device as the key. Once the media device is allocated by a driver, other
+drivers can get a reference to it. The media device is released when all
+the references are released.
 
-has been applied to the asoc tree at
+- This patch series is tested on 5.0-rc3 and addresses comments on
+  v9 series from Hans Verkuil.
+- v9 was tested on 4.20-rc6.
+- Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+  arecord. When analog is streaming, digital and audio user-space
+  applications detect that the tuner is busy and exit. When digital
+  is streaming, analog and audio applications detect that the tuner is
+  busy and exit. When arecord is owns the tuner, digital and analog
+  detect that the tuner is busy and exit.
+- Tested media device allocator API with bind/unbind testing on
+  snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+  only when the last driver is unbound.
+- Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+- Updated change log to describe the use-case more clearly.
+- No changes to 0001,0002 code since the v7 referenced below.
+- 0003 is a new patch to enable ALSA defines that have been
+  disabled for kernel between 4.9 and 4.19.
+- Minor merge conflict resolution in 0004.
+- Added SPDX to new files.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Changes since v9:
+- Patch 1: Fix mutex assert warning from find_module() calls. This
+  code was written before the change to find_module() that requires
+  callers to hold module_mutex. I missed this during my testing on
+  4.20-rc6. Hans Verkuil reported the problem.
+- Patch 4: sound/usb: Initializes all the entities it can before
+  registering the device based on comments from Hans Verkuil
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- No changes to Patches 2 and 3.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+References:
+https://lkml.org/lkml/2018/11/2/169
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Shuah Khan (4):
+  media: Media Device Allocator API
+  media: change au0828 to use Media Device Allocator API
+  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+  sound/usb: Use Media Controller API to share media resources
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+ Documentation/media/kapi/mc-core.rst   |  41 ++++
+ drivers/media/Makefile                 |   4 +
+ drivers/media/media-dev-allocator.c    | 144 +++++++++++
+ drivers/media/usb/au0828/au0828-core.c |  12 +-
+ drivers/media/usb/au0828/au0828.h      |   1 +
+ include/media/media-dev-allocator.h    |  53 ++++
+ include/uapi/linux/media.h             |  25 +-
+ sound/usb/Kconfig                      |   4 +
+ sound/usb/Makefile                     |   2 +
+ sound/usb/card.c                       |  14 ++
+ sound/usb/card.h                       |   3 +
+ sound/usb/media.c                      | 327 +++++++++++++++++++++++++
+ sound/usb/media.h                      |  74 ++++++
+ sound/usb/mixer.h                      |   3 +
+ sound/usb/pcm.c                        |  29 ++-
+ sound/usb/quirks-table.h               |   1 +
+ sound/usb/stream.c                     |   2 +
+ sound/usb/usbaudio.h                   |   6 +
+ 18 files changed, 723 insertions(+), 22 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4ffdca62e2deee7a27613571c9bd18c95b8eac84 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 24 Jan 2019 17:37:35 +0000
-Subject: [PATCH] ASoC: Intel: make const arrays static, reduces object code
- size
-
-Don't populate the const arrays on the stack but instead make
-it static. Makes the object code smaller, for example:
-
-Before:
-   text    data     bss     dec     hex filename
-  14107    8832     224   23163    5a7b bytcht_es8316.o
-
-After:
-   text    data     bss     dec     hex filename
-  14015    8896     224   23135    5a5f bytcht_es8316.o
-
-(gcc version 8.2.0 x86_64)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcht_es8316.c | 2 +-
- sound/soc/intel/boards/bytcr_rt5640.c  | 2 +-
- sound/soc/intel/boards/bytcr_rt5651.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index fa9c4cf97686..1364e4e601d8 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -437,7 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
- 
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
--	const char * const mic_name[] = { "in1", "in2" };
-+	static const char * const mic_name[] = { "in1", "in2" };
- 	struct byt_cht_es8316_private *priv;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index ca8b4d5ff70f..a79466c8fb29 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1149,7 +1149,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
--	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
-+	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index b618d984e2d5..e6945d11c8ab 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -919,7 +919,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- {
--	const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
-+	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
- 	struct byt_rt5651_private *priv;
- 	struct snd_soc_acpi_mach *mach;
- 	struct device *codec_dev;
 -- 
-2.20.1
+2.17.1
