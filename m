@@ -1,17 +1,26 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] ASoC: mediatek: add btcvsd driver
-Date: Thu, 24 Jan 2019 19:25:02 +0000
-Message-ID: <20190124192502.GJ5641@sirena.org.uk>
-References: <20190124085842.24073-1-kaichieh.chuang@mediatek.com>
- <20190124085842.24073-2-kaichieh.chuang@mediatek.com>
+Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
+ dereference in soc_find_component
+Date: Thu, 24 Jan 2019 19:26:52 +0000
+Message-ID: <20190124192652.GK5641@sirena.org.uk>
+References: <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
+ <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
+ <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
+ <CAOReqxjhZAzOpr-bGcV6uxPsOEid--Ym2Y0YZMHkybgZSePvtQ@mail.gmail.com>
+ <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
+ <c6721670-cf89-5d21-953d-c1fa10d87367@linux.intel.com>
+ <CAOReqxgG4TJDXKCEVcDVXvpi_mnLUzqLwF7Rp0H5iAPdbMuZ_Q@mail.gmail.com>
+ <44029078-2749-5a3b-7b03-f38461bf268f@linux.intel.com>
+ <20190124184412.GH5641@sirena.org.uk>
+ <976ec85a-7b21-6c58-90cc-a3d104f9505a@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7325617852971574957=="
+Content-Type: multipart/mixed; boundary="===============2361844958264114983=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E9A02674A9
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:25:05 +0100 (CET)
-In-Reply-To: <20190124085842.24073-2-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 20B412674A9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:26:55 +0100 (CET)
+In-Reply-To: <976ec85a-7b21-6c58-90cc-a3d104f9505a@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,99 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, Curtis Malainey <cujomalainey@google.com>, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, srinivas.kandagatla@linaro.org, Rohit kumar <rohitkr@codeaurora.org>, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>, Curtis Malainey <cujomalainey@chromium.org>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7325617852971574957==
+--===============2361844958264114983==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bpVaumkpfGNUagdU"
+	protocol="application/pgp-signature"; boundary="GBuTPvBEOL0MYPgd"
 Content-Disposition: inline
 
 
---bpVaumkpfGNUagdU
+--GBuTPvBEOL0MYPgd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 24, 2019 at 04:58:41PM +0800, KaiChieh Chuang wrote:
+On Thu, Jan 24, 2019 at 01:07:17PM -0600, Pierre-Louis Bossart wrote:
 
-> The driver function for transferring/receiving
-> BT encoded data to/from BT hardware.
+> Thanks for the feedback, will send a formal patch with the helper and
+> machine driver changes after I test more with the legacy drivers. Do you
+> have a preference for one patch that deals with multiple machines drivers in
+> one shot, or individual patches? The latter are nicer for backports (e.g.
+> for Chrome), the former nicer for maintainers...
 
-It's really nice to see someone submitting a driver for actual radio
-hardware, this is great to see! =20
+More patches is good, it doesn't make a huge difference if I get one big
+patch or a series of repetitive patches - big serieses are more of an
+issue if they're all different patches needing individual review.
 
-The driver looks pretty good, I've got a few quite minor comments below
-but the main one is that given that this doesn't have any DAIs or DAPM
-it looks like it doesn't integrate with the rest of the sound card much
-so perhaps it could just be a free standing ALSA driver?  If there's
-inputs that let you link it to the rest of the sound card which will be
-added later then that's obviously a good reason to keep it in ASoC (I'd
-not be surprised if there were) but otherwise I'm not sure what
-advantage ASoC brings you.
-
-> +static void mtk_btcvsd_snd_set_state(struct mtk_btcvsd_snd *bt,
-> +				     struct mtk_btcvsd_snd_stream *bt_stream,
-> +				     int state)
-> +{
-> +	dev_info(bt->dev, "%s(), stream %d, state %d, tx->state %d, rx->state %=
-d, irq_disabled %d\n",
-> +		 __func__,
-> +		 bt_stream->stream, state,
-> +		 bt->tx->state, bt->rx->state, bt->irq_disabled);
-
-There's quite a few of these dev_info() calls which look like they might
-be a bit noisy and could perhaps be dev_dbg() instead.
-
-> +/* kcontrol */
-> +static const char *const btsco_band_str[] =3D {"NB", "WB"};
-> +static const char *const btsco_mute_str[] =3D {"Off", "On"};
-> +static const char *const irq_received_str[] =3D {"No", "Yes"};
-> +static const char *const rx_timeout_str[] =3D {"No", "Yes"};
-> +
-> +static const struct soc_enum btcvsd_enum[] =3D {
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(btsco_band_str), btsco_band_str),
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(btsco_mute_str), btsco_mute_str),
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(irq_received_str), irq_received_str),
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_timeout_str), rx_timeout_str),
-> +};
-
-Some of these enums (all of them except the narrow/wide band one) should
-be simple number controls ending with Switch as covered in
-control-names.rst, this helps UIs display them better.
-
-> +	SND_SOC_BYTES_TLV("btcvsd_tx_timestamp",
-> +			  sizeof(struct mtk_btcvsd_snd_time_buffer_info),
-> +			  btcvsd_tx_timestamp_get, NULL),
-
-There's an ALSA timestamping API - see commit 4eeaaeaea1ce (ALSA: core:
-add hooks for audio timestamps) and related commits.  I don't know if
-that applies here and might be a better fit or not?
-
---bpVaumkpfGNUagdU
+--GBuTPvBEOL0MYPgd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxKEQ0ACgkQJNaLcl1U
-h9D4bwf+PBlVu5Tsuq97XJVpADkvOOzmn6FrQUXEX+hUrYunBwHN2e+JdqkVb0WI
-lxm7SVjgWdxVC+nC4RlT9pkeLm8wWEXv7GOwePJSNvkQUxZEeKqiwWNHb+obNNU7
-ZCs+iW8wqE+F/N7bElqpJM2t1ym48879bdUXmU7VVOhnY99wGRpyT7p7HUmdnunx
-pN5ocumMtgISL85rRrOf2B9S59qJQi40YivBkeFFso3aCO9AJEglsUXtfVX9Otm6
-MIKv4c5Mfo07Qb1uUAjpr9E1brNfRbxo+jmlrwJqpyubFrf5ciA7zh7/LjxrOKdi
-IRzQuTnqcb/OFLz9tB9b67P8Vo+DTQ==
-=uH9J
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxKEXsACgkQJNaLcl1U
+h9CrfQf/TSuAQrVpDDveUkj5OeoR6tRyUeCAIhi4RM9+BZ8fprgWPxiunRRqnpAe
+vloJEfPPN0XMdFa1j25HnHn90yYETGwdbE/y/iGozfk6XF1g1lMxCaAfR2cVqssV
+nx+/im9LCh3w5nvq2GBnjaMLG87aBLv8ODnQGNDD5rGElTXKxkueajgJi4xo2VFf
+25JBaw1KU8m/eLJdfDb4WGZ4o0ZEdO7p15AqSQ6Y9kvB3rlo+8UAFjHxqyIfIBMy
+J9URK3nojNdRlRY6T1vpqHqzvgl4+H460mCxAOviYDsnLlUSM80mmvHrFfBsXolt
+zWVfUkU18RAHavnsxQe1elLZSTjebw==
+=C+CS
 -----END PGP SIGNATURE-----
 
---bpVaumkpfGNUagdU--
+--GBuTPvBEOL0MYPgd--
 
---===============7325617852971574957==
+--===============2361844958264114983==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7325617852971574957==--
+--===============2361844958264114983==--
