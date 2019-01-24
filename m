@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
- dereference in soc_find_component
-Date: Thu, 24 Jan 2019 19:26:52 +0000
-Message-ID: <20190124192652.GK5641@sirena.org.uk>
-References: <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
- <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
- <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
- <CAOReqxjhZAzOpr-bGcV6uxPsOEid--Ym2Y0YZMHkybgZSePvtQ@mail.gmail.com>
- <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
- <c6721670-cf89-5d21-953d-c1fa10d87367@linux.intel.com>
- <CAOReqxgG4TJDXKCEVcDVXvpi_mnLUzqLwF7Rp0H5iAPdbMuZ_Q@mail.gmail.com>
- <44029078-2749-5a3b-7b03-f38461bf268f@linux.intel.com>
- <20190124184412.GH5641@sirena.org.uk>
- <976ec85a-7b21-6c58-90cc-a3d104f9505a@linux.intel.com>
+Subject: Applied "ASoC: Intel: make const arrays static,
+	reduces object code size" to the asoc tree
+Date: Thu, 24 Jan 2019 19:29:09 +0000 (GMT)
+Message-ID: <20190124192909.A68721121B6F@debutante.sirena.org.uk>
+References: <20190124173735.13669-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2361844958264114983=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 20B412674A9
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:26:55 +0100 (CET)
-In-Reply-To: <976ec85a-7b21-6c58-90cc-a3d104f9505a@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 31691267581
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:29:12 +0100 (CET)
+In-Reply-To: <20190124173735.13669-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,55 +22,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, Curtis Malainey <cujomalainey@google.com>, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, srinivas.kandagatla@linaro.org, Rohit kumar <rohitkr@codeaurora.org>, asishb@codeaurora.org, Ajit Pandey <ajitp@codeaurora.org>, Curtis Malainey <cujomalainey@chromium.org>, Dylan Reid <dgreid@google.com>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2361844958264114983==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GBuTPvBEOL0MYPgd"
-Content-Disposition: inline
+   ASoC: Intel: make const arrays static, reduces object code size
 
+has been applied to the asoc tree at
 
---GBuTPvBEOL0MYPgd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jan 24, 2019 at 01:07:17PM -0600, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Thanks for the feedback, will send a formal patch with the helper and
-> machine driver changes after I test more with the legacy drivers. Do you
-> have a preference for one patch that deals with multiple machines drivers in
-> one shot, or individual patches? The latter are nicer for backports (e.g.
-> for Chrome), the former nicer for maintainers...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-More patches is good, it doesn't make a huge difference if I get one big
-patch or a series of repetitive patches - big serieses are more of an
-issue if they're all different patches needing individual review.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---GBuTPvBEOL0MYPgd
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxKEXsACgkQJNaLcl1U
-h9CrfQf/TSuAQrVpDDveUkj5OeoR6tRyUeCAIhi4RM9+BZ8fprgWPxiunRRqnpAe
-vloJEfPPN0XMdFa1j25HnHn90yYETGwdbE/y/iGozfk6XF1g1lMxCaAfR2cVqssV
-nx+/im9LCh3w5nvq2GBnjaMLG87aBLv8ODnQGNDD5rGElTXKxkueajgJi4xo2VFf
-25JBaw1KU8m/eLJdfDb4WGZ4o0ZEdO7p15AqSQ6Y9kvB3rlo+8UAFjHxqyIfIBMy
-J9URK3nojNdRlRY6T1vpqHqzvgl4+H460mCxAOviYDsnLlUSM80mmvHrFfBsXolt
-zWVfUkU18RAHavnsxQe1elLZSTjebw==
-=C+CS
------END PGP SIGNATURE-----
+>From 4ffdca62e2deee7a27613571c9bd18c95b8eac84 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 24 Jan 2019 17:37:35 +0000
+Subject: [PATCH] ASoC: Intel: make const arrays static, reduces object code
+ size
 
---GBuTPvBEOL0MYPgd--
+Don't populate the const arrays on the stack but instead make
+it static. Makes the object code smaller, for example:
 
---===============2361844958264114983==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Before:
+   text    data     bss     dec     hex filename
+  14107    8832     224   23163    5a7b bytcht_es8316.o
 
+After:
+   text    data     bss     dec     hex filename
+  14015    8896     224   23135    5a5f bytcht_es8316.o
 
---===============2361844958264114983==--
+(gcc version 8.2.0 x86_64)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c  | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index fa9c4cf97686..1364e4e601d8 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -437,7 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+-	const char * const mic_name[] = { "in1", "in2" };
++	static const char * const mic_name[] = { "in1", "in2" };
+ 	struct byt_cht_es8316_private *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index ca8b4d5ff70f..a79466c8fb29 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1149,7 +1149,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
+-	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
++	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
+ 	const struct dmi_system_id *dmi_id;
+ 	struct byt_rt5640_private *priv;
+ 	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index b618d984e2d5..e6945d11c8ab 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -919,7 +919,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 
+ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ {
+-	const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
++	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
+ 	struct byt_rt5651_private *priv;
+ 	struct snd_soc_acpi_mach *mach;
+ 	struct device *codec_dev;
+-- 
+2.20.1
