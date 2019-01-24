@@ -1,26 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-core: Fix null pointer
- dereference in soc_find_component
-Date: Thu, 24 Jan 2019 18:44:12 +0000
-Message-ID: <20190124184412.GH5641@sirena.org.uk>
-References: <20190115000610.GM11073@sirena.org.uk>
- <796a856c-a9a6-022d-da63-947279090198@linux.intel.com>
- <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
- <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
- <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
- <CAOReqxjhZAzOpr-bGcV6uxPsOEid--Ym2Y0YZMHkybgZSePvtQ@mail.gmail.com>
- <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
- <c6721670-cf89-5d21-953d-c1fa10d87367@linux.intel.com>
- <CAOReqxgG4TJDXKCEVcDVXvpi_mnLUzqLwF7Rp0H5iAPdbMuZ_Q@mail.gmail.com>
- <44029078-2749-5a3b-7b03-f38461bf268f@linux.intel.com>
+Subject: Re: [RFC PATCH] ASoC: pcm512x: Implement the
+	set_bclk_ratio interface
+Date: Thu, 24 Jan 2019 18:59:19 +0000
+Message-ID: <20190124185919.GI5641@sirena.org.uk>
+References: <900a4f74-9312-58d8-a5b3-035305fe184e@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7525625489379300076=="
+Content-Type: multipart/mixed; boundary="===============6049985686902967805=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 97F792674A9
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 19:44:17 +0100 (CET)
-In-Reply-To: <44029078-2749-5a3b-7b03-f38461bf268f@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 469DE2674A9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 19:59:22 +0100 (CET)
+In-Reply-To: <900a4f74-9312-58d8-a5b3-035305fe184e@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,55 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, lgirdwood@gmail.com, Curtis Malainey <cujomalainey@google.com>, plai@codeaurora.org, linux-kernel@vger.kernel.org, Ajit Pandey <ajitp@codeaurora.org>, tiwai@suse.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, Rohit kumar <rohitkr@codeaurora.org>, asishb@codeaurora.org, srinivas.kandagatla@linaro.org, Curtis Malainey <cujomalainey@chromium.org>, Dylan Reid <dgreid@google.com>
+To: Dimitris Papavasiliou <dpapavas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7525625489379300076==
+--===============6049985686902967805==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Zi0sgQQBxRFxMTsj"
+	protocol="application/pgp-signature"; boundary="Zrag5V6pnZGjLKiw"
 Content-Disposition: inline
 
 
---Zi0sgQQBxRFxMTsj
+--Zrag5V6pnZGjLKiw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 22, 2019 at 08:01:15PM -0600, Pierre-Louis Bossart wrote:
+On Sun, Jan 13, 2019 at 10:16:21PM +0200, Dimitris Papavasiliou wrote:
 
-> changes are legitimate. To move forward, maybe it's not worth spending too
-> much time on a grand unification of string theory, there are simpler
-> solutions: the Intel machine drivers already do get the platform driver name
-> as an platform_data argument, so we could modify the dailinks platform names
-> before even registering the card. I tested with the attached
+> Some boards, such as the HiFiBerry DAC+ Pro, use a pair of external
+> oscillators, to generate 44.1 or 48kHz multiples and are forced to
+> resort to hacks[1] in order to support 24-bit data without ending up
+> with fractional dividers.  This patch allows the machine driver to use
+> 32-bit frames for 24-bit data to avoid such issues.
 
-Yes, that would be much better - it's vastly more idiomatic.  The
-general idea is that a machine driver should know what it's expecting to
-find before it starts probing.
+This seems fine to me.  I think when I accepted the patch for setting
+bclk ratio that there was hardware which specified the ratio directly as
+part of the configuration but it seems that this was not the case; on
+the other hand this seems like a reasonable use for it. =20
 
---Zi0sgQQBxRFxMTsj
+--Zrag5V6pnZGjLKiw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxKB3wACgkQJNaLcl1U
-h9DWzAf+NtlimN/EneqIJgAU2m4qsSGsS9Mz520HmFrDdz20VvslFLxGcyQylwnY
-dytQj5u6mMW5FjRr1ZtxO/ILOPpuYU23IfhLmNkBdnCcPKNVZwO5YfoBA4tCnLS9
-fh4A7gAXXxxPvwv22dQUzoj2O78yRGtNwmPl4r2Fz8cgUqqklLxpG1D/crEg3e0Y
-P6ghAMtQh0w72+9Op3rf9Cjhwuj7bXnvS+l4g9B9SkhAvUQX+9KCB3M/+bkSDuf6
-m/ke2DVbmvi/w3VB2nscnAYt7XdnlzhG2siJl8Mj1CEIclBUte7s3qneDIPeSHvQ
-ojflN99K6KhrRzn6L0mH3ntAPU5h4w==
-=MyTR
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxKCwYACgkQJNaLcl1U
+h9DFVAf/UAxsurG7q0L3mS6w/aee9hLq2RSNXePNxRXbA4PnnHcCecTnzOcuu2kX
+AwSXRIE94o32KPYorCjEkFFlfYAXUg8/IHK6A1f4fKoOQ8vhTVd0N47eSwSuXn/p
+Monww0YAIwncDeX/Lqbfb51jNwsRguqPYL09axjKpSB/+1bOLTYLJw7Y5jXwsdat
+sTf8E6NDMTcpbLKy2da0EuMcmAKoUGegD/Lm/cSb33Rz/2+w2vi0u6T62b7xGW2n
+GZ3e81V8I0Nc+NSmAMeTcoARANDy6iT2jppPnR+VkmlG4523v+cUY1afzdFr0pEW
+P2UKtmSppq3ZjUfDZndFAq4QD3k9Bw==
+=b/Yu
 -----END PGP SIGNATURE-----
 
---Zi0sgQQBxRFxMTsj--
+--Zrag5V6pnZGjLKiw--
 
---===============7525625489379300076==
+--===============6049985686902967805==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7525625489379300076==--
+--===============6049985686902967805==--
