@@ -1,81 +1,92 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][V2] ASoC: Intel: make const arrays static, reduces object code size
-Date: Thu, 24 Jan 2019 17:37:35 +0000
-Message-ID: <20190124173735.13669-1-colin.king@canonical.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda: runtime PM is always active
+Date: Thu, 24 Jan 2019 23:45:12 +0530
+Message-ID: <770a8e0e-3e20-6997-3342-98a3656e14c1@nvidia.com>
+References: <1548345432-11449-1-git-send-email-spujar@nvidia.com>
+ <s5hef9211pm.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hef9211pm.wl-tiwai@suse.de>
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: abhijeet.kumar@intel.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Don't populate the const arrays on the stack but instead make
-it static. Makes the object code smaller, for example:
+On 1/24/2019 9:34 PM, Takashi Iwai wrote:
+> On Thu, 24 Jan 2019 16:57:11 +0100,
+> Sameer Pujar wrote:
+>> The runtime PM count is incremented and set to active during hda codec
+>> device init, but it is decremented and set to suspend during exit only.
+>> Hence the runtime PM status is always active and hda device cannot be
+>> put to runtime suspend. Keeping device usage active for entire period,
+>> though nothing really happening on the device, seems unnecessary.
+>>
+>> This patch avoides incrementing runtime PM usage count of the device.
+>>
+>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+>> Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
+> This breaks the existing things, I'm afraid.
+> Did you really test and verify the behavior...?
+>
+> The runtime PM refcount is decremented at snd_hda_codec_register(),
+> and that's the place to let runtime suspend of the codec really
+> effective.  (It's not about the controller, though.)
+>
+It worked fine at my end. I could put the device to runtime suspend and 
+resume it back multiple times.
+Since you are suggesting it could break things, let me rework on the 
+patch and dig up a little more to
+see if there is better way to fix this.
 
-Before:
-   text    data     bss     dec     hex filename
-  14107    8832     224   23163    5a7b bytcht_es8316.o
+Thanks,
+Sameer.
 
-After:
-   text    data     bss     dec     hex filename
-  14015    8896     224   23135    5a5f bytcht_es8316.o
-
-(gcc version 8.2.0 x86_64)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-
-V2: also fix up bytcr_rt5640.c and bytcr_rt5651.c, thanks to
-Pierre-Louis Bossart for noticing these two.
-
----
- sound/soc/intel/boards/bytcht_es8316.c | 2 +-
- sound/soc/intel/boards/bytcr_rt5640.c  | 2 +-
- sound/soc/intel/boards/bytcr_rt5651.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index fa9c4cf97686..1364e4e601d8 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -437,7 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
- 
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
--	const char * const mic_name[] = { "in1", "in2" };
-+	static const char * const mic_name[] = { "in1", "in2" };
- 	struct byt_cht_es8316_private *priv;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index ca8b4d5ff70f..a79466c8fb29 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1149,7 +1149,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
--	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
-+	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index b618d984e2d5..e6945d11c8ab 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -919,7 +919,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- {
--	const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
-+	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
- 	struct byt_rt5651_private *priv;
- 	struct snd_soc_acpi_mach *mach;
- 	struct device *codec_dev;
--- 
-2.19.1
+> thanks,
+>
+> Takashi
+>
+>
+>> ---
+>>   sound/hda/hdac_device.c | 6 ------
+>>   1 file changed, 6 deletions(-)
+>>
+>> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+>> index 95b073e..72aa342 100644
+>> --- a/sound/hda/hdac_device.c
+>> +++ b/sound/hda/hdac_device.c
+>> @@ -31,9 +31,6 @@ static void default_release(struct device *dev)
+>>    *
+>>    * Returns zero for success or a negative error code.
+>>    *
+>> - * This function increments the runtime PM counter and marks it active.
+>> - * The caller needs to turn it off appropriately later.
+>> - *
+>>    * The caller needs to set the device's release op properly by itself.
+>>    */
+>>   int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
+>> @@ -55,8 +52,6 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
+>>   	codec->bus = bus;
+>>   	codec->addr = addr;
+>>   	codec->type = HDA_DEV_CORE;
+>> -	pm_runtime_set_active(&codec->dev);
+>> -	pm_runtime_get_noresume(&codec->dev);
+>>   	atomic_set(&codec->in_pm, 0);
+>>   
+>>   	err = snd_hdac_bus_add_device(bus, codec);
+>> @@ -123,7 +118,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
+>>    */
+>>   void snd_hdac_device_exit(struct hdac_device *codec)
+>>   {
+>> -	pm_runtime_put_noidle(&codec->dev);
+>>   	snd_hdac_bus_remove_device(codec->bus, codec);
+>>   	kfree(codec->vendor_name);
+>>   	kfree(codec->chip_name);
+>> -- 
+>> 2.7.4
+>>
+>>
