@@ -1,20 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Enable
- codec clock once and keep it enabled
-Date: Thu, 24 Jan 2019 10:37:41 -0600
-Message-ID: <2aa5a67f-69a9-f0f1-e72f-656468cd86ec@linux.intel.com>
-References: <20190124103425.22214-1-hdegoede@redhat.com>
- <b99b6f2f-5563-8ea5-57d2-04b2c967502f@linux.intel.com>
- <371c787e-7220-7918-0725-66eeb518bf51@redhat.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: Intel: bytcht_es8316: make
+	mic_name static, reduces object code size
+Date: Thu, 24 Jan 2019 17:06:21 +0000
+Message-ID: <20190124170621.7583-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C9522674A9
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 17:37:44 +0100 (CET)
-In-Reply-To: <371c787e-7220-7918-0725-66eeb518bf51@redhat.com>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B30E72674A9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 18:06:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,14 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Dean Wallace <duffydack73@gmail.com>, Mogens Jensen <mogens-jensen@protonmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
-On 1/24/19 9:14 AM, Hans de Goede wrote:
-> Alternatively we could only do the enable-once thing for the platforms
-> with the QUIRK_PMC_PLT_CLK_0 quirk, as those are the ones for which
-> we've been receiving bug reports. 
-yes that sounds like a good idea, and that would take care of my two 
-objections, thanks!
+Don't populate the const array mic_name on the stack but instead make
+it static. Makes the object code smaller by 28 bytes:
+
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  14107	   8832	    224	  23163	   5a7b	bytcht_es8316.o
+
+After:
+   text	   data	    bss	    dec	    hex	filename
+  14015	   8896	    224	  23135	   5a5f	bytcht_es8316.o
+
+(gcc version 8.2.0 x86_64)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index fa9c4cf97686..1364e4e601d8 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -437,7 +437,7 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ 
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+-	const char * const mic_name[] = { "in1", "in2" };
++	static const char * const mic_name[] = { "in1", "in2" };
+ 	struct byt_cht_es8316_private *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+-- 
+2.19.1
