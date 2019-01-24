@@ -1,105 +1,51 @@
-From: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda: runtime PM is always active
-Date: Fri, 25 Jan 2019 00:31:13 +0530
-Message-ID: <3475c359-34ce-c04b-24dc-79458b2b3e2a@nvidia.com>
-References: <1548345432-11449-1-git-send-email-spujar@nvidia.com>
- <s5hef9211pm.wl-tiwai@suse.de>
- <770a8e0e-3e20-6997-3342-98a3656e14c1@nvidia.com>
- <s5h7eetc2x1.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: soc-core: Fix null pointer dereference
+ in soc_find_component
+Date: Thu, 24 Jan 2019 13:07:17 -0600
+Message-ID: <976ec85a-7b21-6c58-90cc-a3d104f9505a@linux.intel.com>
+References: <20190115000610.GM11073@sirena.org.uk>
+ <796a856c-a9a6-022d-da63-947279090198@linux.intel.com>
+ <20190115211137.rhdyjadu7fppp3p4@lenny.lan>
+ <af2e9555-444f-7c40-865b-347f3db8fa76@linux.intel.com>
+ <044d59ba-094e-727d-14a9-6ebfc54cbbf4@linux.intel.com>
+ <CAOReqxjhZAzOpr-bGcV6uxPsOEid--Ym2Y0YZMHkybgZSePvtQ@mail.gmail.com>
+ <CAOReqxjLcdN6rT9w3_6MJaqE-hpiCsZ+3Luic+e793GwPde+Qg@mail.gmail.com>
+ <c6721670-cf89-5d21-953d-c1fa10d87367@linux.intel.com>
+ <CAOReqxgG4TJDXKCEVcDVXvpi_mnLUzqLwF7Rp0H5iAPdbMuZ_Q@mail.gmail.com>
+ <44029078-2749-5a3b-7b03-f38461bf268f@linux.intel.com>
+ <20190124184412.GH5641@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h7eetc2x1.wl-tiwai@suse.de>
-Content-Language: en-GB
+In-Reply-To: <20190124184412.GH5641@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: abhijeet.kumar@intel.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, vinod.koul@linaro.org, lgirdwood@gmail.com, Curtis Malainey <cujomalainey@google.com>, plai@codeaurora.org, linux-kernel@vger.kernel.org, Ajit Pandey <ajitp@codeaurora.org>, tiwai@suse.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Matthias Reichl <hias@horus.com>, Rohit kumar <rohitkr@codeaurora.org>, asishb@codeaurora.org, srinivas.kandagatla@linaro.org, Curtis Malainey <cujomalainey@chromium.org>, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 1/25/2019 12:13 AM, Takashi Iwai wrote:
-> On Thu, 24 Jan 2019 19:15:12 +0100,
-> Sameer Pujar wrote:
->>
->> On 1/24/2019 9:34 PM, Takashi Iwai wrote:
->>> On Thu, 24 Jan 2019 16:57:11 +0100,
->>> Sameer Pujar wrote:
->>>> The runtime PM count is incremented and set to active during hda codec
->>>> device init, but it is decremented and set to suspend during exit only.
->>>> Hence the runtime PM status is always active and hda device cannot be
->>>> put to runtime suspend. Keeping device usage active for entire period,
->>>> though nothing really happening on the device, seems unnecessary.
->>>>
->>>> This patch avoides incrementing runtime PM usage count of the device.
->>>>
->>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->>>> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
->>>> Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
->>> This breaks the existing things, I'm afraid.
->>> Did you really test and verify the behavior...?
->>>
->>> The runtime PM refcount is decremented at snd_hda_codec_register(),
->>> and that's the place to let runtime suspend of the codec really
->>> effective.  (It's not about the controller, though.)
->>>
->> It worked fine at my end. I could put the device to runtime suspend
->> and resume it back multiple times.
->> Since you are suggesting it could break things, let me rework on the
->> patch and dig up a little more to
->> see if there is better way to fix this.
-> Well, I don't see what you want to "fix".  Do you see any bug?
-I was expecting the device to be runtime suspended, once probe is 
-finished, until I playback something on it.
-But it appears that rutntime PM is always active and runtime PM suspend 
-callback never happens.
-> thanks,
->
-> Takashi
->
->> Thanks,
->> Sameer.
->>
->>> thanks,
->>>
->>> Takashi
->>>
->>>
->>>> ---
->>>>    sound/hda/hdac_device.c | 6 ------
->>>>    1 file changed, 6 deletions(-)
->>>>
->>>> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
->>>> index 95b073e..72aa342 100644
->>>> --- a/sound/hda/hdac_device.c
->>>> +++ b/sound/hda/hdac_device.c
->>>> @@ -31,9 +31,6 @@ static void default_release(struct device *dev)
->>>>     *
->>>>     * Returns zero for success or a negative error code.
->>>>     *
->>>> - * This function increments the runtime PM counter and marks it active.
->>>> - * The caller needs to turn it off appropriately later.
->>>> - *
->>>>     * The caller needs to set the device's release op properly by itself.
->>>>     */
->>>>    int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
->>>> @@ -55,8 +52,6 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
->>>>    	codec->bus = bus;
->>>>    	codec->addr = addr;
->>>>    	codec->type = HDA_DEV_CORE;
->>>> -	pm_runtime_set_active(&codec->dev);
->>>> -	pm_runtime_get_noresume(&codec->dev);
->>>>    	atomic_set(&codec->in_pm, 0);
->>>>      	err = snd_hdac_bus_add_device(bus, codec);
->>>> @@ -123,7 +118,6 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
->>>>     */
->>>>    void snd_hdac_device_exit(struct hdac_device *codec)
->>>>    {
->>>> -	pm_runtime_put_noidle(&codec->dev);
->>>>    	snd_hdac_bus_remove_device(codec->bus, codec);
->>>>    	kfree(codec->vendor_name);
->>>>    	kfree(codec->chip_name);
->>>> -- 
->>>> 2.7.4
->>>>
->>>>
+>> changes are legitimate. To move forward, maybe it's not worth spending too
+>> much time on a grand unification of string theory, there are simpler
+>> solutions: the Intel machine drivers already do get the platform driver name
+>> as an platform_data argument, so we could modify the dailinks platform names
+>> before even registering the card. I tested with the attached
+> Yes, that would be much better - it's vastly more idiomatic.  The
+> general idea is that a machine driver should know what it's expecting to
+> find before it starts probing.
+
+Thanks for the feedback, will send a formal patch with the helper and 
+machine driver changes after I test more with the legacy drivers. Do you 
+have a preference for one patch that deals with multiple machines 
+drivers in one shot, or individual patches? The latter are nicer for 
+backports (e.g. for Chrome), the former nicer for maintainers...
+
+The goal of reusing machine drivers as is isn't really achievable 
+anyways, it looks like we are going to have additional changes, e.g. if 
+we want to avoid the calls to snd_pcm_suspend as suggested by Takashi, 
+we'll have to add a reference to snd_soc_pm_ops that's only used for 
+SOF, the Atom/SST driver does things in different ways mostly due to 
+historical reasons.
+
+-Pierre
