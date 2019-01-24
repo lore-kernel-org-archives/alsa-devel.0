@@ -1,14 +1,18 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK plugin 2/2] jack: Support to connect
-	multiple JACK ports with same ALSA channel
-Date: Thu, 24 Jan 2019 15:42:55 +0100
-Message-ID: <1548340975-32610-3-git-send-email-twischer@de.adit-jv.com>
-References: <1548340975-32610-1-git-send-email-twischer@de.adit-jv.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: cht_bsw_max98090_ti: Enable
+ codec clock once and keep it enabled
+Date: Thu, 24 Jan 2019 09:02:36 -0600
+Message-ID: <b99b6f2f-5563-8ea5-57d2-04b2c967502f@linux.intel.com>
+References: <20190124103425.22214-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1548340975-32610-1-git-send-email-twischer@de.adit-jv.com>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id E75B42674A9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 16:02:39 +0100 (CET)
+In-Reply-To: <20190124103425.22214-1-hdegoede@redhat.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,199 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Dean Wallace <duffydack73@gmail.com>, Mogens Jensen <mogens-jensen@protonmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
 
-The following example will connect ALSA channel 0 to JACK port
-"system:playback_1" and "system:playback_3" and ALSA channel 1 to JACK
-port "system:playback_2" and "system:playback_4":
+On 1/24/19 4:34 AM, Hans de Goede wrote:
+> Users have been seeing sound stability issues with max98090 codecs since:
+> commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+>
+> At first that commit broke sound for Chromebook Swanky and Clapper models,
+> the problem was that the machine-driver has been controlling the wrong
+> clock on those models since support for them was added. This was hidden by
+> clk-pmc-atom.c keeping the actual clk on unconditionally.
+>
+> With the machine-driver controlling the proper clock, sound works again
+> but we are seeing bug reports describing it as: low volume,
+> "sounds like played at 10x speed" and instable.
+>
+> When these issues are hit the following message is seen in dmesg:
+> "max98090 i2c-193C9890:00: PLL unlocked".
+>
+> Attempts have been made to fix this by inserting a delay between enabling
+> the clk and enabling and checking the pll, but this has not helped.
+>
+> It seems that if we ever disable the clk, the pll looses its lock and
+> then we get various issues.
+>
+> This commit fixes this by enabling the clock once at probe time,
+> in essence restoring the old behavior of clk-pmc-atom.c always keeping
+> the clk on, but then only on machines with a max98090 codec.
+>
+> Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+> Reported-and-tested-by: Mogens Jensen <mogens-jensen@protonmail.com>
+> Reported-and-tested-by: Dean Wallace <duffydack73@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-pcm.jack {
-	type jack
-	playback_ports {
-		0 [ system:playback_1 system:playback_3 ]
-		1 [ system:playback_2 system:playback_4 ]
-	}
-}
+Sorry, I am not really convinced this patch can be applied as is.
 
-The old syntax with only one port for one channel is still supported:
-playback_ports {
-	0 system:playback_1
-	1 system:playback_2
-}
+1. All these clock changes were introduced to solve S0i1 issues, so now 
+if we keep the clocks on isn't this going to impact suspend/resume 
+usages? Has anyone looked into this? I am also wondering what the 
+assumptions were on what the firmware does, and if the issues occur with 
+the legacy firmware or Coreboot?
 
-Without this patch an additional JACK client has to be used to
-automatically connect the second JACK port but this could take some
-time. Therefore it misses for example the first audio period on the
-second port.
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 724cbc2..16826cb 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -31,13 +31,21 @@
- 
- #define MAX_PERIODS_MULTIPLE 64
- 
-+typedef struct snd_pcm_jack_port_list {
-+	struct snd_pcm_jack_port_list *next;
-+	/* will always be allocated with size of the string.
-+	 * See snd_pcm_jack_port_list_add().
-+	 */
-+	char name[0];
-+} snd_pcm_jack_port_list_t;
-+
- typedef struct {
- 	snd_pcm_ioplug_t io;
- 
- 	int fd;
- 	int activated;		/* jack is activated? */
- 
--	char **port_names;
-+	snd_pcm_jack_port_list_t **port_names;
- 	unsigned int num_ports;
- 	snd_pcm_uframes_t boundary;
- 	snd_pcm_uframes_t hw_ptr;
-@@ -53,6 +61,32 @@ typedef struct {
- 	bool xrun_detected;
- } snd_pcm_jack_t;
- 
-+
-+/* adds one element to the head of the list */
-+static int snd_pcm_jack_port_list_add(snd_pcm_jack_t *jack,
-+				      const unsigned int channel,
-+				      const char * const name)
-+{
-+	const size_t name_size = strlen(name) + 1;
-+	const size_t elem_size = sizeof(snd_pcm_jack_port_list_t) + name_size;
-+	snd_pcm_jack_port_list_t *elem = NULL;
-+
-+	if (name == NULL)
-+		return -EINVAL;
-+
-+	elem = calloc(1, elem_size);
-+	if (elem == NULL)
-+		return -ENOMEM;
-+
-+	strncpy(elem->name, name, name_size);
-+	elem->name[name_size-1] = 0x00;
-+	elem->next = jack->port_names[channel];
-+
-+	jack->port_names[channel] = elem;
-+
-+	return 0;
-+}
-+
- /* snd_pcm_ioplug_avail() was introduced after alsa-lib 1.1.6 */
- #if SND_LIB_VERSION < 0x10107
- static snd_pcm_uframes_t snd_pcm_ioplug_avail(const snd_pcm_ioplug_t *io,
-@@ -113,9 +147,19 @@ static void snd_pcm_jack_free(snd_pcm_jack_t *jack)
- 	if (jack->port_names) {
- 		unsigned int i;
- 
--		for (i = 0; i < jack->num_ports; i++)
--			free(jack->port_names[i]);
-+		for (i = 0; i < jack->num_ports; i++) {
-+			snd_pcm_jack_port_list_t *port_elem =
-+					jack->port_names[i];
-+
-+			while (port_elem != NULL) {
-+				snd_pcm_jack_port_list_t *next_port_elem =
-+						port_elem->next;
-+				free(port_elem);
-+				port_elem = next_port_elem;
-+			}
-+		}
- 		free(jack->port_names);
-+		jack->port_names = NULL;
- 	}
- 	if (jack->fd >= 0)
- 		close(jack->fd);
-@@ -298,17 +342,22 @@ static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
- 	jack->activated = 1;
- 
- 	for (i = 0; i < io->channels && i < jack->num_ports; i++) {
--		if (jack->port_names[i]) {
-+		const char * const own_port = jack_port_name(jack->ports[i]);
-+		snd_pcm_jack_port_list_t *port_elem;
-+
-+		for (port_elem = jack->port_names[i]; port_elem != NULL;
-+		     port_elem = port_elem->next) {
- 			const char *src, *dst;
- 			if (io->stream == SND_PCM_STREAM_PLAYBACK) {
--				src = jack_port_name(jack->ports[i]);
--				dst = jack->port_names[i];
-+				src = own_port;
-+				dst = port_elem->name;
- 			} else {
--				src = jack->port_names[i];
--				dst = jack_port_name(jack->ports[i]);
-+				src = port_elem->name;
-+				dst = own_port;
- 			}
- 			if (jack_connect(jack->client, src, dst)) {
--				fprintf(stderr, "cannot connect %s to %s\n", src, dst);
-+				fprintf(stderr, "cannot connect %s to %s\n",
-+					src, dst);
- 				return -EIO;
- 			}
- 		}
-@@ -416,7 +465,7 @@ static int jack_set_hw_constraint(snd_pcm_jack_t *jack)
- static int parse_ports(snd_pcm_jack_t *jack, snd_config_t *conf)
- {
- 	snd_config_iterator_t i, next;
--	char **ports = NULL;
-+	snd_pcm_jack_port_list_t **ports = NULL;
- 	unsigned int cnt = 0;
- 	unsigned int channel;
- 
-@@ -431,7 +480,7 @@ static int parse_ports(snd_pcm_jack_t *jack, snd_config_t *conf)
- 			continue;
- 		cnt++;
- 	}
--	jack->port_names = ports = calloc(cnt, sizeof(char*));
-+	jack->port_names = ports = calloc(cnt, sizeof(jack->port_names[0]));
- 	if (ports == NULL)
- 		return -ENOMEM;
- 	jack->num_ports = cnt;
-@@ -439,13 +488,31 @@ static int parse_ports(snd_pcm_jack_t *jack, snd_config_t *conf)
- 		snd_config_t *n = snd_config_iterator_entry(i);
- 		const char *id;
- 		const char *port;
-+		int err;
- 
- 		if (snd_config_get_id(n, &id) < 0)
- 			continue;
- 		channel = atoi(id);
--		if (snd_config_get_string(n, &port) < 0)
-+		if (snd_config_get_string(n, &port) >= 0) {
-+			err = snd_pcm_jack_port_list_add(jack, channel, port);
-+			if (err < 0)
-+				return err;
-+		} else if (snd_config_get_type(n) == SND_CONFIG_TYPE_COMPOUND) {
-+			snd_config_iterator_t k, next_k;
-+
-+			snd_config_for_each(k, next_k, n) {
-+				snd_config_t *m = snd_config_iterator_entry(k);
-+
-+				if (snd_config_get_string(m, &port) < 0)
-+					continue;
-+				err = snd_pcm_jack_port_list_add(jack, channel,
-+								 port);
-+				if (err < 0)
-+					return err;
-+			}
-+		} else {
- 			continue;
--		ports[channel] = port ? strdup(port) : NULL;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.7.4
+2. Also the fix is incorrect in that the clock needs to be set to 19.2 
+MHz for Baytrail devices (Rambi and friends) which reuse this machine 
+driver. Even if there was agreement on leaving the clocks on, the 
+clk_set_rate() call needs to be added back (default is 25 MHz on Baytrail).
