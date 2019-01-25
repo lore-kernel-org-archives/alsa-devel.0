@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 08/15] ASoC: Intel: bytcht_es8316: platform
-	name fixup support
-Date: Fri, 25 Jan 2019 14:35:02 -0600
-Message-ID: <20190125203509.22994-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/15] ASoC: Intel: cht_bsw_max98090_ti:
+	platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:03 -0600
+Message-ID: <20190125203509.22994-10-pierre-louis.bossart@linux.intel.com>
 References: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 44056267974
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C38E26680F
  for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:35:20 +0100 (CET)
 In-Reply-To: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,35 +29,45 @@ Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index fa9c4cf97686..26d8c6ad4d95 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -441,6 +441,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	struct byt_cht_es8316_private *priv;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 08a5152e635a..3263b0495853 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -28,6 +28,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include <sound/jack.h>
+ #include "../../codecs/max98090.h"
+ #include "../atom/sst-atom-controls.h"
+@@ -420,6 +421,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	int ret_val = 0;
+ 	struct cht_mc_private *drv;
+ 	const char *mclk_name;
++	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	const char *i2c_name = NULL;
- 	struct device *codec_dev;
- 	int dai_index = 0;
-@@ -469,6 +470,14 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
+ 	int quirks = 0;
+ 
+ 	dmi_id = dmi_first_match(cht_max98090_quirk_table);
+@@ -442,6 +445,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 			dev_dbg(dev, "Unable to add GPIO mapping table\n");
  	}
  
 +	/* override plaform name, if required */
++	mach = (&pdev->dev)->platform_data;
 +	platform_name = mach->mach_params.platform;
 +
-+	ret = snd_soc_fixup_dai_links_platform_name(&byt_cht_es8316_card,
-+						    platform_name);
-+	if (ret)
-+		return ret;
++	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
++							platform_name);
++	if (ret_val)
++		return ret_val;
 +
- 	/* Check for BYTCR or other platform and setup quirks */
- 	if (x86_match_cpu(baytrail_cpu_ids) &&
- 	    mach->mach_params.acpi_ipc_irq_index == 0) {
+ 	/* register the soc card */
+ 	snd_soc_card_cht.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
 -- 
 2.17.1
