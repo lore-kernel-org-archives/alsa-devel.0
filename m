@@ -1,50 +1,66 @@
-From: Olek Poplavsky <woodenbits@gmail.com>
-Subject: [PATCH] sound/usb: Add Opus #3 to quirks for native
-	DSD support
-Date: Thu, 24 Jan 2019 23:30:03 -0500
-Message-ID: <CAKgOocdOAZuGH+-w6bh9AVKM642wWvhNP2HjPyWdSntz1QuDqg@mail.gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFT][PATCH v2] gpiolib: acpi: Introduce
+ ACPI_GPIO_QUIRK_ONLY_GPIOIO
+Date: Fri, 25 Jan 2019 19:44:42 +0200
+Message-ID: <20190125174442.GR9224@smile.fi.intel.com>
+References: <20190109105245.25954-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZAOaqPQkKzyNate3A67Ce0T+V7ig+Y3BV4ycx==U5jkQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f193.google.com (mail-lj1-f193.google.com
- [209.85.208.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CE5962674A9
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 05:30:15 +0100 (CET)
-Received: by mail-lj1-f193.google.com with SMTP id v15-v6so7213429ljh.13
- for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2019 20:30:15 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZAOaqPQkKzyNate3A67Ce0T+V7ig+Y3BV4ycx==U5jkQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Olek Poplavsky <woodenbits@gmail.com>
-This patch adds quirk VID/PID IDs for the Opus #3 DAP (made by 'The Bit')
-in order to enable Native DSD support.
+On Mon, Jan 21, 2019 at 02:03:09PM +0100, Linus Walleij wrote:
+> On Wed, Jan 9, 2019 at 11:52 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > New quirk enforces search for GPIO based on its type,
+> > i.e. iterate over GpioIo resources only.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >
+> > - it was sent few weeks ago to Hans for testing, but better to re-test
+> > - it's supposed to go via ASoC subsystem due to recent changes made for
+> >   sound driver
+> >
+> > v2:
+> > - Expand explanation why this quirk might be needed (Mika)
+> 
+> I tried to apply this but it doesn't apply on the GPIO devel
+> branch.
+> 
+> I suppose because of Hans de Goede's
+> commit 72893f0c6bd399ce84e3c1c9fc69d234fe37d098
+> Author: Hans de Goede <hdegoede@redhat.com>
+> Date:   Mon Dec 31 21:55:21 2018 +0100
+> 
+>     gpiolib-acpi: Preserve non direction flags when updating gpiod_flags
+> 
+> Could you rebase and resend?
 
-Signed-off-by: Olek Poplavsky <woodenbits@gmail.com>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+Linus, as I mentioned in comments above this should go via ASoC tree, there is
+no conflicts with gpio/devel for GPIO matters.
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index ebbadb3a7094..9ac6309f7a73 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1495,6 +1495,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct
-snd_usb_audio *chip,
-        case USB_ID(0x152a, 0x85de): /* SMSL D1 DAC */
-        case USB_ID(0x16d0, 0x09dd): /* Encore mDSD */
-        case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
-+       case USB_ID(0x10cb, 0x0103): /* The Bit Opus #3*/
-        case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
-        case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
-        case USB_ID(0x16d0, 0x09db): /* NuPrime Audio DAC-9 */
+So, please, give your Ack and hopefully Mark will apply this soon.
+
+> 
+> (Also pick up Mika's ACK.)
+> 
+> PS I'm a bit split about pure ACPI patches, part of me see it as an
+> "intel thing" so that you could very well collect it in the Intel
+> GPIO tree and send me pull requests, on the other hand it is
+> ACPI and sometimes applied in Rafael's tree. Maybe just as good
+> that I keep picking them separately like this?
+> 
+> Yours,
+> Linus Walleij
+
+-- 
+With Best Regards,
+Andy Shevchenko
