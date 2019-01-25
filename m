@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: mediatek: mt6358: add codec
-	driver
-Date: Fri, 25 Jan 2019 18:10:22 +0000
-Message-ID: <20190125181022.GB6939@sirena.org.uk>
+Subject: Re: [PATCH 5/6] ASoC: mediatek: mt8183: add
+ mt8183-mt6358 machine driver
+Date: Fri, 25 Jan 2019 18:10:46 +0000
+Message-ID: <20190125181046.GC6939@sirena.org.uk>
 References: <1548139153-18783-1-git-send-email-shunli.wang@mediatek.com>
- <1548139153-18783-4-git-send-email-shunli.wang@mediatek.com>
+ <1548139153-18783-6-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2829330112210760200=="
+Content-Type: multipart/mixed; boundary="===============7842742457287653816=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 60EF42666B3
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:10:26 +0100 (CET)
-In-Reply-To: <1548139153-18783-4-git-send-email-shunli.wang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8114226680F
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:10:47 +0100 (CET)
+In-Reply-To: <1548139153-18783-6-git-send-email-shunli.wang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,65 +27,57 @@ Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2829330112210760200==
+--===============7842742457287653816==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+	protocol="application/pgp-signature"; boundary="adJ1OR3c6QgCpb/j"
 Content-Disposition: inline
 
 
---CdrF4e02JqNVZeln
+--adJ1OR3c6QgCpb/j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 22, 2019 at 02:39:10PM +0800, Shunli Wang wrote:
-> add the mt6358 codec driver.
->=20
-> Signed-off-by: Shunli Wang <shunli.wang@mediatek.com>
-> ---
->  sound/soc/codecs/Kconfig  |    7 +
->  sound/soc/codecs/Makefile |    2 +
->  sound/soc/codecs/mt6358.c | 2336 +++++++++++++++++++++++++++++++++++++++=
-++++++
->  sound/soc/codecs/mt6358.h | 2314 +++++++++++++++++++++++++++++++++++++++=
-+++++
+On Tue, Jan 22, 2019 at 02:39:12PM +0800, Shunli Wang wrote:
+> The board uses mt8183 as SoC and codec as mt6358.
+> Between SoC and codec, a mtk-properity audio inferface
+> is used.
 
-This looks fine but it breaks the build for me:
+This one also breaks the build:
 
-Applying patch #10781741 using 'git am -3 -s'
-Description: [3/6] ASoC: mediatek: mt6358: add codec driver
-Applying: ASoC: mediatek: mt6358: add codec driver
+Applying patch #10781729 using 'git am -3 -s'
+Description: [5/6] ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
+Applying: ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
 scripts/kconfig/conf  --oldconfig Kconfig
-sound/soc/codecs/Kconfig:1348: syntax error
-sound/soc/codecs/Kconfig:1347:warning: ignoring unsupported character '.'
-sound/soc/codecs/Kconfig:1347: unknown statement "external"
+sound/soc/mediatek/Kconfig:119:error: recursive dependency detected!
+sound/soc/mediatek/Kconfig:119:	symbol SND_SOC_MT8183_MT6358 depends on SND_SOC_MT8183
+sound/soc/mediatek/Kconfig:109:	symbol SND_SOC_MT8183 is selected by SND_SOC_MT8183_MT6358
+For a resolution refer to Documentation/kbuild/kconfig-language.txt
+subsection "Kconfig recursive dependency limitations"
+
 make[1]: *** [scripts/kconfig/Makefile:69: oldconfig] Error 1
 
-It's the indentation of the help text.  I've fixed it up but please take
-care!
-
---CdrF4e02JqNVZeln
+--adJ1OR3c6QgCpb/j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxLUQ0ACgkQJNaLcl1U
-h9C8sAf8DNAEyEGWgfO4Ek/wE5oPraZ4UbbRr9tYhZaJ39ZJ38J/S/7ExNCrZbS2
-KRswBDNvsR0ZP7PDbh8BiXT6Z8iJrW17tLXHlZyR7BHX5nPmxbAH5I/BWgpPsNMv
-qWPgimQFYw7KkXY8RdYycxQgJPowudsc0AZs5pFomtKKpVq9z6Mj8X6bhD/ufrp4
-L/gJ/Ce3R3f2xahJR69Yd/f4mB7xcVjqZRZvvgKLWAk4Km5siDkoHJ0T89K0rfur
-xlOKGpc3Q0+8tdN/5Gv2IVJvIxb9Dkxh+5wmHgKBpEPFv4q6RZkF1x6iJHJbm13w
-jG/HTKSja5F6fycZJI3ltp6MvkbZ5g==
-=s5Uu
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxLUSUACgkQJNaLcl1U
+h9BJ4Af/YrLhLJcJcSiPwU0QrlKm6wH4XqoZHRsEbtjsD6EJ6lXNVOEJXSfnrR5u
+c/ykZhI8CmoedZkE8TrOMqyuYwSccR3nbZmIM87N4ywLTDwALppymEA/sKCK9Owy
+g6mYQtG8BLCOJlhpsMH8JZGvRT5gCZEci34fbNSbtaLLqpUJgJLCvPoKoWtQ6X3O
+6FzPF3kHMokmJZolQ4kuI4zsvGqh8iQDQxrLvwSz2sMG6wwjup8v80zHfAlz6GF9
+gEeNHKIoDzqmlCjyIjleI/bvvx/+kffMQ6AHXYWx/RJu9znr6ISRbqs5oX9EwhQQ
+UtDA9lV39NDy+jvvSINTjMLucwvWBw==
+=CKCi
 -----END PGP SIGNATURE-----
 
---CdrF4e02JqNVZeln--
+--adJ1OR3c6QgCpb/j--
 
---===============2829330112210760200==
+--===============7842742457287653816==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2829330112210760200==--
+--===============7842742457287653816==--
