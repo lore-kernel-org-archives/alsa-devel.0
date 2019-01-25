@@ -1,15 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: soc-acpi: add static inline fallbacks
-	when CONFIG_ACPI=n
-Date: Fri, 25 Jan 2019 14:16:17 -0600
-Message-ID: <20190125201617.21319-1-pierre-louis.bossart@linux.intel.com>
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 2/2] sound: soc: jz4740: Add support for
+	multichannel audio on JZ4780
+Date: Fri, 25 Jan 2019 17:30:09 -0300
+Message-ID: <20190125203009.24301-2-paul@crapouillou.net>
+References: <20190125203009.24301-1-paul@crapouillou.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F4B72666B3
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:16:23 +0100 (CET)
+Received: from crapouillou.net (outils.crapouillou.net [89.234.176.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583EA2666B3
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:30:22 +0100 (CET)
+In-Reply-To: <20190125203009.24301-1-paul@crapouillou.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,70 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Paul Cercueil <paul@crapouillou.net>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix compilation issues reported by 0day-Kbuild with sparc64 w/ SOF.
+The jz4780 SoC offers the possibility to configure the number of
+channels used for playback. Right now, the corresponding bits in the
+configuration register are always zero, which means that the hardware is
+only configured for monaural sound.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+With this commit, the hardware is now correctly configured for the
+number of channels requested by ALSA.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- include/sound/soc-acpi.h | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index 266e64e3c24c..6cbbeed9cdd0 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -22,20 +22,37 @@ struct snd_soc_acpi_package_context {
- #define SND_ACPI_I2C_ID_LEN (4 + ACPI_ID_LEN + 3 + 1)
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index e099c0505b76..05a9d7c20fb0 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -65,6 +65,7 @@
+ #define JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_MASK \
+ 			(0x1f <<  JZ4780_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET)
  
- #if IS_ENABLED(CONFIG_ACPI)
-+/* acpi match */
-+struct snd_soc_acpi_mach *
-+snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
-+
- bool snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- 				    struct snd_soc_acpi_package_context *ctx);
-+
-+/* check all codecs */
-+struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg);
-+
- #else
-+/* acpi match */
-+static inline struct snd_soc_acpi_mach *
-+snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
-+{
-+	return NULL;
-+}
-+
- static inline bool
- snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- 				   struct snd_soc_acpi_package_context *ctx)
- {
- 	return false;
- }
--#endif
++#define JZ_AIC_CTRL_CHANNELS_MASK (0x7 << 24)
+ #define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK (0x7 << 19)
+ #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK (0x7 << 16)
+ #define JZ_AIC_CTRL_ENABLE_RX_DMA BIT(15)
+@@ -81,6 +82,7 @@
+ #define JZ_AIC_CTRL_ENABLE_PLAYBACK BIT(1)
+ #define JZ_AIC_CTRL_ENABLE_CAPTURE BIT(0)
  
--/* acpi match */
--struct snd_soc_acpi_mach *
--snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
-+/* check all codecs */
-+static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
-+{
-+	return NULL;
-+}
-+#endif
++#define JZ_AIC_CTRL_CHANNELS_OFFSET 24
+ #define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_OFFSET 19
+ #define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET  16
  
- /**
-  * snd_soc_acpi_mach_params: interface for machine driver configuration
-@@ -105,7 +122,4 @@ struct snd_soc_acpi_codecs {
- 	u8 codecs[SND_SOC_ACPI_MAX_CODECS][ACPI_ID_LEN];
- };
+@@ -287,6 +289,12 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		else
+ 			ctrl &= ~JZ_AIC_CTRL_MONO_TO_STEREO;
  
--/* check all codecs */
--struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg);
--
- #endif
++		if (i2s->version >= JZ_I2S_JZ4780) {
++			ctrl &= ~JZ_AIC_CTRL_CHANNELS_MASK;
++			ctrl |= (params_channels(params) - 1) <<
++				JZ_AIC_CTRL_CHANNELS_OFFSET;
++		}
++
+ 		div_reg &= ~I2SDIV_DV_MASK;
+ 		div_reg |= (div - 1) << I2SDIV_DV_SHIFT;
+ 	} else {
 -- 
-2.17.1
+2.11.0
