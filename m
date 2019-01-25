@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 4/7] ASoC: topology: fix memory leak in
-	soc_tplg_dapm_widget_create
-Date: Fri, 25 Jan 2019 14:06:45 -0600
-Message-ID: <20190125200648.12470-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/7] ASoC: topology: Remove widgets from dobj
+	list
+Date: Fri, 25 Jan 2019 14:06:43 -0600
+Message-ID: <20190125200648.12470-3-pierre-louis.bossart@linux.intel.com>
 References: <20190125200648.12470-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id DE2D1267495
+ by alsa0.perex.cz (Postfix) with ESMTP id 34DD62666B3
  for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:06:59 +0100 (CET)
 In-Reply-To: <20190125200648.12470-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,33 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-
-template.sname and template.name are only freed when an error occur.
-They should be freed in the success return case, too.
-
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/soc-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 71bc5b8a9bd3..2cb0a05e2368 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1583,6 +1583,9 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	if (ret < 0)
- 		goto ready_err;
- 
-+	kfree(template.sname);
-+	kfree(template.name);
-+
- 	return 0;
- 
- ready_err:
--- 
-2.17.1
+RnJvbTogQW1hZGV1c3ogU8WCYXdpxYRza2kgPGFtYWRldXN6eC5zbGF3aW5za2lAaW50ZWwuY29t
+PgoKQ3VycmVudGx5IHdoZW4gd2UgdW5sb2FkIGFuZCByZWxvYWQgbWFjaGluZSBkcml2ZXIgZmV3
+IHRpbWVzIHdlIGVuZCB3aXRoCmNvcnJ1cHRlZCBsaXN0IGFuZCB0cnkgdG8gY2xlYW51cCBubyBs
+b25nZXIgZXhpc3Rpbmcgb2JqZWN0cy4gRml4IHRoaXMKYnkgcmVtb3ZpbmcgZG9iaiBmcm9tIHRo
+ZSBsaXN0LgoKU2lnbmVkLW9mZi1ieTogQW1hZGV1c3ogU8WCYXdpxYRza2kgPGFtYWRldXN6eC5z
+bGF3aW5za2lAaW50ZWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8
+cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgotLS0KIHNvdW5kL3NvYy9zb2Mt
+dG9wb2xvZ3kuYyB8IDIgKysKIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYg
+LS1naXQgYS9zb3VuZC9zb2Mvc29jLXRvcG9sb2d5LmMgYi9zb3VuZC9zb2Mvc29jLXRvcG9sb2d5
+LmMKaW5kZXggYjAyYzQxNjE0Zjk2Li5hYmMyZDgwNGQ1YmYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Nv
+Yy9zb2MtdG9wb2xvZ3kuYworKysgYi9zb3VuZC9zb2Mvc29jLXRvcG9sb2d5LmMKQEAgLTQ5Myw2
+ICs0OTMsOCBAQCBzdGF0aWMgdm9pZCByZW1vdmVfd2lkZ2V0KHN0cnVjdCBzbmRfc29jX2NvbXBv
+bmVudCAqY29tcCwKIGZyZWVfbmV3czoKIAlrZnJlZSh3LT5rY29udHJvbF9uZXdzKTsKIAorCWxp
+c3RfZGVsKCZkb2JqLT5saXN0KTsKKwogCS8qIHdpZGdldCB3IGlzIGZyZWVkIGJ5IHNvYy1kYXBt
+LmMgKi8KIH0KIAotLSAKMi4xNy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
