@@ -1,93 +1,175 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda/tegra: enable clock during probe
-Date: Fri, 25 Jan 2019 11:36:00 +0000
-Message-ID: <06c00ce1-32ed-8aa9-0340-d00202a8fa62@nvidia.com>
-References: <1548351403-1875-1-git-send-email-spujar@nvidia.com>
- <s5h5zudc1qw.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v2] ASoC: intel: cht_bsw_max98090_ti: Enable
+	codec clock once and keep it enabled
+Date: Fri, 25 Jan 2019 12:37:41 +0100
+Message-ID: <20190125113741.17522-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h5zudc1qw.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Sameer Pujar <spujar@nvidia.com>
-Cc: pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, thierry.reding@gmail.com, rlokhande@nvidia.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 084992673DD
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 12:37:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Dean Wallace <duffydack73@gmail.com>, Mogens Jensen <mogens-jensen@protonmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Users have been seeing sound stability issues with max98090 codecs since:
+commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
 
-On 24/01/2019 19:08, Takashi Iwai wrote:
-> On Thu, 24 Jan 2019 18:36:43 +0100,
-> Sameer Pujar wrote:
->>
->> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
->> will not be ON. This could cause issue during probe, where hda init
->> setup is done. This patch checks whether runtime PM is enabled or not.
->> If disabled, clocks are enabled in probe() and disabled in remove()
->>
->> This patch does following minor changes as cleanup,
->>   * return code check for pm_runtime_get_sync() to take care of failure
->>     and exit gracefully.
->>   * In remove path runtime PM is disabled before calling snd_card_free().
->>   * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
->>   * runtime PM callbacks moved out of CONFIG_PM check
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
->> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> (snip)
->> @@ -555,6 +553,13 @@ static int hda_tegra_probe(struct platform_device *pdev)
->>  	if (!azx_has_pm_runtime(chip))
->>  		pm_runtime_forbid(hda->dev);
->>  
->> +	/* explicit resume if runtime PM is disabled */
->> +	if (!pm_runtime_enabled(hda->dev)) {
->> +		err = hda_tegra_runtime_resume(hda->dev);
->> +		if (err)
->> +			goto out_free;
->> +	}
->> +
->>  	schedule_work(&hda->probe_work);
-> 
-> Calling runtime_resume here is really confusing...
+At first that commit broke sound for Chromebook Swanky and Clapper models,
+the problem was that the machine-driver has been controlling the wrong
+clock on those models since support for them was added. This was hidden by
+clk-pmc-atom.c keeping the actual clk on unconditionally.
 
-Why? IMO it is better to have a single handler for resuming the device
-and so if RPM is not enabled we call the handler directly. This is what
-we have been advised to do in the past and do in other drivers. See ...
+With the machine-driver controlling the proper clock, sound works again
+but we are seeing bug reports describing it as: low volume,
+"sounds like played at 10x speed" and instable.
 
-sound/soc/tegra/tegra30_i2s.c
+When these issues are hit the following message is seen in dmesg:
+"max98090 i2c-193C9890:00: PLL unlocked".
 
-> 
->> @@ -571,7 +576,14 @@ static void hda_tegra_probe_work(struct work_struct *work)
->>  	struct platform_device *pdev = to_platform_device(hda->dev);
->>  	int err;
->>  
->> -	pm_runtime_get_sync(hda->dev);
->> +	err = pm_runtime_get_sync(hda->dev);
->> +	if (err < 0) {
->> +		dev_err(hda->dev,
->> +			"failed in pm_runtime_get_syc with err = %d\n",
->> +			err);
->> +		return;
->> +	}
-> 
-> This pm_runtime_get_sync() is needed just because you enabled runtime
-> PM before probe_work.  Why not deferring the runtime PM enablement
-> after probing done?
+Attempts have been made to fix this by inserting a delay between enabling
+the clk and enabling and checking the pll, but this has not helped.
 
-That would be fine with me.
+It seems that at least on boards which use pmc_plt_clk_0 as clock,
+if we ever disable the clk, the pll looses its lock and after that we get
+various issues.
 
-> That is what we need is the hda_tegra_enable_clocks() call at probe
-> unconditionally before enabling runtime PM.
+This commit fixes this by enabling the clock once at probe time on
+these boards. In essence this restores the old behavior of clk-pmc-atom.c
+always keeping the clk on on these boards.
 
-I think that calling hda_tegra_runtime_resume as above is sufficient.
-The nice thing about calling the runtime_resume function is that if for
-a future device there is something else in addition to clocks, say a
-reset, that also needs to be handled, we just added to the
-runtime_resume/suspend handlers and we are done.
+Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+Reported-by: Mogens Jensen <mogens-jensen@protonmail.com>
+Reported-by: Dean Wallace <duffydack73@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v2:
+-Only enable the codec clock once and keep it enabled on boards which use
+ pmc_plt_clk_0 as clock and leave the behavior unchanged on other boards
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 47 +++++++++++++++++---
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-Cheers
-Jon
-
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 08a5152e635a..e7620017e725 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -42,6 +42,7 @@ struct cht_mc_private {
+ 	struct clk *mclk;
+ 	struct snd_soc_jack jack;
+ 	bool ts3a227e_present;
++	int quirks;
+ };
+ 
+ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+@@ -53,6 +54,10 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	int ret;
+ 
++	/* See the comment in snd_cht_mc_probe() */
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		return 0;
++
+ 	codec_dai = snd_soc_card_get_codec_dai(card, CHT_CODEC_DAI);
+ 	if (!codec_dai) {
+ 		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
+@@ -222,6 +227,10 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 			"jack detection gpios not added, error %d\n", ret);
+ 	}
+ 
++	/* See the comment in snd_cht_mc_probe() */
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		return 0;
++
+ 	/*
+ 	 * The firmware might enable the clock at
+ 	 * boot (this information may or may not
+@@ -420,16 +429,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	int ret_val = 0;
+ 	struct cht_mc_private *drv;
+ 	const char *mclk_name;
+-	int quirks = 0;
+-
+-	dmi_id = dmi_first_match(cht_max98090_quirk_table);
+-	if (dmi_id)
+-		quirks = (unsigned long)dmi_id->driver_data;
+ 
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
+ 	if (!drv)
+ 		return -ENOMEM;
+ 
++	dmi_id = dmi_first_match(cht_max98090_quirk_table);
++	if (dmi_id)
++		drv->quirks = (unsigned long)dmi_id->driver_data;
++
+ 	drv->ts3a227e_present = acpi_dev_found("104C227E");
+ 	if (!drv->ts3a227e_present) {
+ 		/* no need probe TI jack detection chip */
+@@ -446,7 +454,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	snd_soc_card_cht.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+ 
+-	if (quirks & QUIRK_PMC_PLT_CLK_0)
++	if (drv->quirks & QUIRK_PMC_PLT_CLK_0)
+ 		mclk_name = "pmc_plt_clk_0";
+ 	else
+ 		mclk_name = "pmc_plt_clk_3";
+@@ -459,6 +467,21 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(drv->mclk);
+ 	}
+ 
++	/*
++	 * Boards which have the MAX98090's clk connected to clk_0 do not seem
++	 * to like it if we muck with the clock. If we disable the clock when
++	 * it is unused we get "max98090 i2c-193C9890:00: PLL unlocked" errors
++	 * and the PLL never seems to lock again.
++	 * So for these boards we enable it here once and leave it at that.
++	 */
++	if (drv->quirks & QUIRK_PMC_PLT_CLK_0) {
++		ret_val = clk_prepare_enable(drv->mclk);
++		if (ret_val < 0) {
++			dev_err(&pdev->dev, "MCLK enable error: %d\n", ret_val);
++			return ret_val;
++		}
++	}
++
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
+ 	if (ret_val) {
+ 		dev_err(&pdev->dev,
+@@ -469,11 +492,23 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
+ }
+ 
++static int snd_cht_mc_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
++
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		clk_disable_unprepare(ctx->mclk);
++
++	return 0;
++}
++
+ static struct platform_driver snd_cht_mc_driver = {
+ 	.driver = {
+ 		.name = "cht-bsw-max98090",
+ 	},
+ 	.probe = snd_cht_mc_probe,
++	.remove = snd_cht_mc_remove,
+ };
+ 
+ module_platform_driver(snd_cht_mc_driver)
 -- 
-nvpublic
+2.20.1
