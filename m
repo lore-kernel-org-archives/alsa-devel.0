@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt6358: add codec document"
-	to the asoc tree
-Date: Fri, 25 Jan 2019 18:11:09 +0000 (GMT)
-Message-ID: <20190125181109.790E61126FC0@debutante.sirena.org.uk>
-References: <1548139153-18783-5-git-send-email-shunli.wang@mediatek.com>
+Subject: Applied "ASoC: mediatek: mt8183: add audio afe
+	document" to the asoc tree
+Date: Fri, 25 Jan 2019 18:11:13 +0000 (GMT)
+Message-ID: <20190125181113.AC1ED1126FC0@debutante.sirena.org.uk>
+References: <1548139153-18783-3-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 56F0D26680F
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:11:10 +0100 (CET)
-In-Reply-To: <1548139153-18783-5-git-send-email-shunli.wang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D68FC267942
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:11:14 +0100 (CET)
+In-Reply-To: <1548139153-18783-3-git-send-email-shunli.wang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt6358: add codec document
+   ASoC: mediatek: mt8183: add audio afe document
 
 has been applied to the asoc tree at
 
@@ -52,41 +52,59 @@ to this mail.
 Thanks,
 Mark
 
->From 7ca80f232e810b758ba72daef8f189c34a20bd32 Mon Sep 17 00:00:00 2001
+>From bfd74e65c47ff325924fe5bd90789b1db422c9cc Mon Sep 17 00:00:00 2001
 From: Shunli Wang <shunli.wang@mediatek.com>
-Date: Tue, 22 Jan 2019 14:39:11 +0800
-Subject: [PATCH] ASoC: mediatek: mt6358: add codec document
+Date: Tue, 22 Jan 2019 14:39:09 +0800
+Subject: [PATCH] ASoC: mediatek: mt8183: add audio afe document
 
 Signed-off-by: Shunli Wang <shunli.wang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/mt6358.txt       | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt6358.txt
+ .../bindings/sound/mt8183-afe-pcm.txt         | 36 +++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
+diff --git a/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
 new file mode 100644
-index 000000000000..5465730013a1
+index 000000000000..396ba38619f6
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt6358.txt
-@@ -0,0 +1,18 @@
-+Mediatek MT6358 Audio Codec
-+
-+The communication between MT6358 and SoC is through Mediatek PMIC wrapper.
-+For more detail, please visit Mediatek PMIC wrapper documentation.
-+
-+Must be a child node of PMIC wrapper.
++++ b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
+@@ -0,0 +1,36 @@
++Mediatek AFE PCM controller for mt8183
 +
 +Required properties:
-+
-+- compatible : "mediatek,mt6358-sound".
-+- Avdd-supply : power source of AVDD
++- compatible = "mediatek,mt68183-audio";
++- reg: register location and size
++- interrupts: should contain AFE interrupt
++- power-domains: should define the power domain
++- clocks: Must contain an entry for each entry in clock-names
++- clock-names: should have these clock names:
++		"infra_sys_audio_clk",
++		"mtkaif_26m_clk",
++		"top_mux_audio",
++		"top_mux_aud_intbus",
++		"top_sys_pll3_d4",
++		"top_clk26m_clk";
 +
 +Example:
 +
-+mt6358_snd {
-+	compatible = "mediatek,mt6358-sound";
-+	Avdd-supply = <&mt6358_vaud28_reg>;
-+};
++	afe: mt8183-afe-pcm@11220000  {
++		compatible = "mediatek,mt8183-audio";
++		reg = <0 0x11220000 0 0x1000>;
++		interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
++		power-domains = <&scpsys MT8183_POWER_DOMAIN_AUDIO>;
++		clocks = <&infrasys CLK_INFRA_AUDIO>,
++			 <&infrasys CLK_INFRA_AUDIO_26M_BCLK>,
++			 <&topckgen CLK_TOP_MUX_AUDIO>,
++			 <&topckgen CLK_TOP_MUX_AUD_INTBUS>,
++			 <&topckgen CLK_TOP_SYSPLL_D2_D4>,
++			 <&clk26m>;
++		clock-names = "infra_sys_audio_clk",
++			      "mtkaif_26m_clk",
++			      "top_mux_audio",
++			      "top_mux_aud_intbus",
++			      "top_sys_pll_d2_d4",
++			      "top_clk26m_clk";
++	};
 -- 
 2.20.1
