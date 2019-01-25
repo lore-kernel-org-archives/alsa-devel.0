@@ -1,90 +1,67 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda/tegra: enable clock during probe
-Date: Fri, 25 Jan 2019 13:26:27 +0000
-Message-ID: <b64f5d05-f352-7b46-d70d-3809aab8ddda@nvidia.com>
-References: <1548351403-1875-1-git-send-email-spujar@nvidia.com>
- <s5h5zudc1qw.wl-tiwai@suse.de>
- <06c00ce1-32ed-8aa9-0340-d00202a8fa62@nvidia.com>
- <s5hr2d0zz96.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: fireface: Off by one in
+	latter_handle_midi_msg()
+Date: Fri, 25 Jan 2019 22:41:39 +0900
+Message-ID: <20190125134139.GA20650@workstation>
+References: <20190125124418.GA21947@kadam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr2d0zz96.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sameer Pujar <spujar@nvidia.com>, pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, thierry.reding@gmail.com, rlokhande@nvidia.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73C542673DD
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 14:41:47 +0100 (CET)
+Received: by mail-pl1-f196.google.com with SMTP id p8so4602854plo.2
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 05:41:47 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20190125124418.GA21947@kadam>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 25/01/2019 12:40, Takashi Iwai wrote:
-> On Fri, 25 Jan 2019 12:36:00 +0100,
-> Jon Hunter wrote:
->>
->>
->> On 24/01/2019 19:08, Takashi Iwai wrote:
->>> On Thu, 24 Jan 2019 18:36:43 +0100,
->>> Sameer Pujar wrote:
->>>>
->>>> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
->>>> will not be ON. This could cause issue during probe, where hda init
->>>> setup is done. This patch checks whether runtime PM is enabled or not.
->>>> If disabled, clocks are enabled in probe() and disabled in remove()
->>>>
->>>> This patch does following minor changes as cleanup,
->>>>   * return code check for pm_runtime_get_sync() to take care of failure
->>>>     and exit gracefully.
->>>>   * In remove path runtime PM is disabled before calling snd_card_free().
->>>>   * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
->>>>   * runtime PM callbacks moved out of CONFIG_PM check
->>>>
->>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->>>> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
->>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
->>> (snip)
->>>> @@ -555,6 +553,13 @@ static int hda_tegra_probe(struct platform_device *pdev)
->>>>  	if (!azx_has_pm_runtime(chip))
->>>>  		pm_runtime_forbid(hda->dev);
->>>>  
->>>> +	/* explicit resume if runtime PM is disabled */
->>>> +	if (!pm_runtime_enabled(hda->dev)) {
->>>> +		err = hda_tegra_runtime_resume(hda->dev);
->>>> +		if (err)
->>>> +			goto out_free;
->>>> +	}
->>>> +
->>>>  	schedule_work(&hda->probe_work);
->>>
->>> Calling runtime_resume here is really confusing...
->>
->> Why? IMO it is better to have a single handler for resuming the device
->> and so if RPM is not enabled we call the handler directly. This is what
->> we have been advised to do in the past and do in other drivers. See ...
+On Fri, Jan 25, 2019 at 03:44:18PM +0300, Dan Carpenter wrote:
+> The > should be >= or otherwise we potentially read one element beyond
+> the end of the ff->tx_midi_substreams[] array.
 > 
-> The point is that we're not "resuming" anything there.  It's in the
-> early probe stage, and the device state is uninitialized, not really
-> suspended.  It'd end up with just calling the same helper
-> (hda_tegra_enable_clocks()), though.
+> Fixes: 73f5537fb209 ("ALSA: fireface: support tx MIDI functionality of Fireface UCX")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  sound/firewire/fireface/ff-protocol-latter.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/firewire/fireface/ff-protocol-latter.c b/sound/firewire/fireface/ff-protocol-latter.c
+> index 817af4447349..438aeed9a1ab 100644
+> --- a/sound/firewire/fireface/ff-protocol-latter.c
+> +++ b/sound/firewire/fireface/ff-protocol-latter.c
+> @@ -275,7 +275,7 @@ static void latter_handle_midi_msg(struct snd_ff *ff, unsigned int offset,
+>  	struct snd_rawmidi_substream *substream;
+>  	unsigned int len;
+>  
+> -	if (index > ff->spec->midi_in_ports)
+> +	if (index >= ff->spec->midi_in_ports)
+>  		return;
+>  
+>  	switch (data & 0x0000000f) {
+> -- 
+> 2.17.1
+ 
+Indeed. The value of index is picked up from quadlet data transferred by
+device. The range of value is expected to be 0x00 or 0x01, thus this patch is
+correct.
 
-Yes and you can make the same argument for every driver that calls
-pm_runtime_get_sync() during probe to turn on clocks, handle resets,
-etc, because at the end of the day the very first call to
-pm_runtime_get_sync() invokes the runtime_resume callback, when we have
-never been suspended.
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Yes at the end of the day it is the same and given that we have done
-this elsewhere I think it is good to be consistent if/where we can.
 
-Furthermore, there are other various drivers in the kernel that do the
-same ...
+Thanks
 
-drivers/i2c/busses/i2c-img-scb.c
-drivers/dma/xilinx/zynqmp_dma.c
-drivers/gpu/drm/arm/malidp_drv.c
-
-Cheers
-Jon
-
--- 
-nvpublic
+Takashi Sakamoto
