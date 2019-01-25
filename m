@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: mediatek: mt8183: add
- mt8183-mt6358 machine driver
-Date: Fri, 25 Jan 2019 18:10:46 +0000
-Message-ID: <20190125181046.GC6939@sirena.org.uk>
-References: <1548139153-18783-1-git-send-email-shunli.wang@mediatek.com>
- <1548139153-18783-6-git-send-email-shunli.wang@mediatek.com>
+Subject: Applied "ASoC: mediatek: mt6358: add codec document"
+	to the asoc tree
+Date: Fri, 25 Jan 2019 18:11:09 +0000 (GMT)
+Message-ID: <20190125181109.790E61126FC0@debutante.sirena.org.uk>
+References: <1548139153-18783-5-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7842742457287653816=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8114226680F
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:10:47 +0100 (CET)
-In-Reply-To: <1548139153-18783-6-git-send-email-shunli.wang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 56F0D26680F
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 19:11:10 +0100 (CET)
+In-Reply-To: <1548139153-18783-5-git-send-email-shunli.wang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shunli Wang <shunli.wang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, shunli.wang@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7842742457287653816==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="adJ1OR3c6QgCpb/j"
-Content-Disposition: inline
+   ASoC: mediatek: mt6358: add codec document
 
+has been applied to the asoc tree at
 
---adJ1OR3c6QgCpb/j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 22, 2019 at 02:39:12PM +0800, Shunli Wang wrote:
-> The board uses mt8183 as SoC and codec as mt6358.
-> Between SoC and codec, a mtk-properity audio inferface
-> is used.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This one also breaks the build:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Applying patch #10781729 using 'git am -3 -s'
-Description: [5/6] ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
-Applying: ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
-scripts/kconfig/conf  --oldconfig Kconfig
-sound/soc/mediatek/Kconfig:119:error: recursive dependency detected!
-sound/soc/mediatek/Kconfig:119:	symbol SND_SOC_MT8183_MT6358 depends on SND_SOC_MT8183
-sound/soc/mediatek/Kconfig:109:	symbol SND_SOC_MT8183 is selected by SND_SOC_MT8183_MT6358
-For a resolution refer to Documentation/kbuild/kconfig-language.txt
-subsection "Kconfig recursive dependency limitations"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-make[1]: *** [scripts/kconfig/Makefile:69: oldconfig] Error 1
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---adJ1OR3c6QgCpb/j
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 7ca80f232e810b758ba72daef8f189c34a20bd32 Mon Sep 17 00:00:00 2001
+From: Shunli Wang <shunli.wang@mediatek.com>
+Date: Tue, 22 Jan 2019 14:39:11 +0800
+Subject: [PATCH] ASoC: mediatek: mt6358: add codec document
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxLUSUACgkQJNaLcl1U
-h9BJ4Af/YrLhLJcJcSiPwU0QrlKm6wH4XqoZHRsEbtjsD6EJ6lXNVOEJXSfnrR5u
-c/ykZhI8CmoedZkE8TrOMqyuYwSccR3nbZmIM87N4ywLTDwALppymEA/sKCK9Owy
-g6mYQtG8BLCOJlhpsMH8JZGvRT5gCZEci34fbNSbtaLLqpUJgJLCvPoKoWtQ6X3O
-6FzPF3kHMokmJZolQ4kuI4zsvGqh8iQDQxrLvwSz2sMG6wwjup8v80zHfAlz6GF9
-gEeNHKIoDzqmlCjyIjleI/bvvx/+kffMQ6AHXYWx/RJu9znr6ISRbqs5oX9EwhQQ
-UtDA9lV39NDy+jvvSINTjMLucwvWBw==
-=CKCi
------END PGP SIGNATURE-----
+Signed-off-by: Shunli Wang <shunli.wang@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/mt6358.txt       | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6358.txt
 
---adJ1OR3c6QgCpb/j--
-
---===============7842742457287653816==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7842742457287653816==--
+diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
+new file mode 100644
+index 000000000000..5465730013a1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt6358.txt
+@@ -0,0 +1,18 @@
++Mediatek MT6358 Audio Codec
++
++The communication between MT6358 and SoC is through Mediatek PMIC wrapper.
++For more detail, please visit Mediatek PMIC wrapper documentation.
++
++Must be a child node of PMIC wrapper.
++
++Required properties:
++
++- compatible : "mediatek,mt6358-sound".
++- Avdd-supply : power source of AVDD
++
++Example:
++
++mt6358_snd {
++	compatible = "mediatek,mt6358-sound";
++	Avdd-supply = <&mt6358_vaud28_reg>;
++};
+-- 
+2.20.1
