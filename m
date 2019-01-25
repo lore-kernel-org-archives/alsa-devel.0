@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 7/7] ASoC: topology: unload physical dai link
-	in remove
-Date: Fri, 25 Jan 2019 14:06:48 -0600
-Message-ID: <20190125200648.12470-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/7] ASoC: topology: modify dapm route loading
+	routine and add dapm route unloading
+Date: Fri, 25 Jan 2019 14:06:47 -0600
+Message-ID: <20190125200648.12470-7-pierre-louis.bossart@linux.intel.com>
 References: <20190125200648.12470-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id E170B267350
+ by alsa0.perex.cz (Postfix) with ESMTP id 914E32666B3
  for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:07:01 +0100 (CET)
 In-Reply-To: <20190125200648.12470-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,96 +22,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-soc_tplg_link_config() will find the physical dai link and call
-soc_tplg_dai_link_load() to load the BE dai link. Currently remove_link()
-is only used to remove the FE dai link which is created by the topology.
-The BE dai link cannot however be unloaded in snd_soc_tplg_component
-_remove(), which is problematic if anything needs to be released or
-reinitialized.
+struct snd_soc_dapm_route has been modified to be a dynamic
+object so that it can be used to save driver specific
+data while parsing topology and clean up
+driver-specific data during driver unloading.
 
-This patch aligns the definitions of dynamic types with the existing
-UAPI and adds a new remove_backend_link() routine to unload the the BE
-dai link when snd_soc_tplg_component_remove() is invoked.
+This patch makes the following changes to accomplish the above:
+1. Set the dobj member of snd_soc_dapm_route during the
+SOC_TPLG_PASS_GRAPH pass of topology parsing.
+2. Add the remove_route() routine that will be called while
+removing all dynamic objects from the component driver.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-topology.h |  1 +
- sound/soc/soc-topology.c     | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+ sound/soc/soc-topology.c | 102 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 86 insertions(+), 16 deletions(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 8c43cfc240fa..5223896de26f 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -45,6 +45,7 @@ enum snd_soc_dobj_type {
- 	SND_SOC_DOBJ_DAI_LINK,
- 	SND_SOC_DOBJ_PCM,
- 	SND_SOC_DOBJ_CODEC_LINK,
-+	SND_SOC_DOBJ_BACKEND_LINK,
- };
- 
- /* dynamic control object */
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 23d421370e6c..49e6fd76d9bc 100644
+index 2cb0a05e2368..23d421370e6c 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -557,6 +557,24 @@ static void remove_link(struct snd_soc_component *comp,
- 	kfree(link);
+@@ -433,6 +433,23 @@ static void remove_bytes(struct snd_soc_component *comp,
+ 	kfree(sb);
  }
  
-+/* unload dai link */
-+static void remove_backend_link(struct snd_soc_component *comp,
-+	struct snd_soc_dobj *dobj, int pass)
++/* remove a route */
++static void remove_route(struct snd_soc_component *comp,
++			 struct snd_soc_dobj *dobj, int pass)
 +{
-+	if (pass != SOC_TPLG_PASS_LINK)
++	struct snd_soc_dapm_route *route =
++		container_of(dobj, struct snd_soc_dapm_route, dobj);
++
++	if (pass != SOC_TPLG_PASS_GRAPH)
 +		return;
 +
-+	if (dobj->ops && dobj->ops->link_unload)
-+		dobj->ops->link_unload(comp, dobj);
-+
-+	/*
-+	 * We don't free the link here as what remove_link() do since BE
-+	 * links are not allocated by topology.
-+	 */
++	if (dobj->ops && dobj->ops->dapm_route_unload)
++		dobj->ops->dapm_route_unload(comp, dobj);
 +
 +	list_del(&dobj->list);
++	kfree(route);
 +}
 +
- /* bind a kcontrol to it's IO handlers */
- static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 	struct snd_kcontrol_new *k,
-@@ -2163,6 +2181,12 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
- 		return ret;
+ /* remove a widget and it's kcontrols - routes must be removed first */
+ static void remove_widget(struct snd_soc_component *comp,
+ 	struct snd_soc_dobj *dobj, int pass)
+@@ -1119,9 +1136,10 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+ 	struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
+-	struct snd_soc_dapm_route route;
+ 	struct snd_soc_tplg_dapm_graph_elem *elem;
+-	int count = hdr->count, i;
++	struct snd_soc_dapm_route **routes;
++	int count = hdr->count, i, j;
++	int ret = 0;
+ 
+ 	if (tplg->pass != SOC_TPLG_PASS_GRAPH) {
+ 		tplg->pos += hdr->size + hdr->payload_size;
+@@ -1140,36 +1158,85 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes for index %d\n", count,
+ 		hdr->index);
+ 
++	/* allocate memory for pointer to array of dapm routes */
++	routes = kcalloc(count, sizeof(struct snd_soc_dapm_route *),
++			 GFP_KERNEL);
++	if (!routes)
++		return -ENOMEM;
++
++	/*
++	 * allocate memory for each dapm route in the array.
++	 * This needs to be done individually so that
++	 * each route can be freed when it is removed in remove_route().
++	 */
++	for (i = 0; i < count; i++) {
++		routes[i] = kzalloc(sizeof(*routes[i]), GFP_KERNEL);
++		if (!routes[i]) {
++			/* free previously allocated memory */
++			for (j = 0; j < i; j++)
++				kfree(routes[j]);
++
++			kfree(routes);
++			return -ENOMEM;
++		}
++	}
++
+ 	for (i = 0; i < count; i++) {
+ 		elem = (struct snd_soc_tplg_dapm_graph_elem *)tplg->pos;
+ 		tplg->pos += sizeof(struct snd_soc_tplg_dapm_graph_elem);
+ 
+ 		/* validate routes */
+ 		if (strnlen(elem->source, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
++		}
+ 		if (strnlen(elem->sink, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
++		}
+ 		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
++		}
++
++		routes[i]->source = elem->source;
++		routes[i]->sink = elem->sink;
+ 
+-		route.source = elem->source;
+-		route.sink = elem->sink;
+-		route.connected = NULL; /* set to NULL atm for tplg users */
++		/* set to NULL atm for tplg users */
++		routes[i]->connected = NULL;
+ 		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0)
+-			route.control = NULL;
++			routes[i]->control = NULL;
+ 		else
+-			route.control = elem->control;
++			routes[i]->control = elem->control;
++
++		/* add route dobj to dobj_list */
++		routes[i]->dobj.type = SND_SOC_DOBJ_GRAPH;
++		routes[i]->dobj.ops = tplg->ops;
++		routes[i]->dobj.index = tplg->index;
++		list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
+ 
+-		soc_tplg_add_route(tplg, &route);
++		soc_tplg_add_route(tplg, routes[i]);
+ 
+ 		/* add route, but keep going if some fail */
+-		snd_soc_dapm_add_routes(dapm, &route, 1);
++		snd_soc_dapm_add_routes(dapm, routes[i], 1);
  	}
  
-+	/* for unloading it in snd_soc_tplg_component_remove */
-+	link->dobj.index = tplg->index;
-+	link->dobj.ops = tplg->ops;
-+	link->dobj.type = SND_SOC_DOBJ_BACKEND_LINK;
-+	list_add(&link->dobj.list, &tplg->comp->dobj_list);
+-	return 0;
++	/* free memory allocated for all dapm routes in case of error */
++	if (ret < 0)
++		for (i = 0; i < count ; i++)
++			kfree(routes[i]);
 +
- 	return 0;
++	/*
++	 * free pointer to array of dapm routes as this is no longer needed.
++	 * The memory allocated for each dapm route will be freed
++	 * when it is removed in remove_route().
++	 */
++	kfree(routes);
++
++	return ret;
  }
  
-@@ -2649,6 +2673,13 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
- 			case SND_SOC_DOBJ_DAI_LINK:
- 				remove_link(comp, dobj, pass);
+ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+@@ -2570,6 +2637,9 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 			case SND_SOC_DOBJ_BYTES:
+ 				remove_bytes(comp, dobj, pass);
  				break;
-+			case SND_SOC_DOBJ_BACKEND_LINK:
-+				/*
-+				 * call link_unload ops if extra
-+				 * deinitialization is needed.
-+				 */
-+				remove_backend_link(comp, dobj, pass);
++			case SND_SOC_DOBJ_GRAPH:
++				remove_route(comp, dobj, pass);
 +				break;
- 			default:
- 				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
- 					dobj->type);
+ 			case SND_SOC_DOBJ_WIDGET:
+ 				remove_widget(comp, dobj, pass);
+ 				break;
 -- 
 2.17.1
