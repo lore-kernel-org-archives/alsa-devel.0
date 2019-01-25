@@ -1,104 +1,126 @@
-From: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda/tegra: enable clock during probe
-Date: Fri, 25 Jan 2019 12:38:36 +0530
-Message-ID: <4e4ef149-66b1-ce44-76a1-0221a8a7f5a7@nvidia.com>
-References: <1548351403-1875-1-git-send-email-spujar@nvidia.com>
- <s5h5zudc1qw.wl-tiwai@suse.de>
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: Re: [RFC PATCH] ALSA: core: Add DMA share buffer
+	support
+Date: Fri, 25 Jan 2019 17:25:37 +0800
+Message-ID: <CAMz4kuK5JgfZF7uXa83xC3eVCrZ8+wkZRdKq2s71o_QjT=OhGg@mail.gmail.com>
+References: <290f6d3a5fe288b87480cc5fa12c5139728daeca.1547787189.git.baolin.wang@linaro.org>
+ <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz>
+ <20190118190805.GF6260@sirena.org.uk>
+ <s5hzhrxzrez.wl-tiwai@suse.de> <20190121124053.GA12679@sirena.org.uk>
+ <f278bb69-7df0-4d14-5e4f-9bcb57d7f2b6@perex.cz>
+ <20190122202535.GK7579@sirena.org.uk>
+ <s5h4l9z4mbo.wl-tiwai@suse.de> <20190123124658.GE15906@leoy-ThinkPad-X240s>
+ <3962daba-f6ed-d706-c618-b791a1ba6b59@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h5zudc1qw.wl-tiwai@suse.de>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, thierry.reding@gmail.com, jonathanh@nvidia.com, rlokhande@nvidia.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lj1-f195.google.com (mail-lj1-f195.google.com
+ [209.85.208.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54F5E2673DD
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 10:25:49 +0100 (CET)
+Received: by mail-lj1-f195.google.com with SMTP id q2-v6so7769659lji.10
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 01:25:49 -0800 (PST)
+In-Reply-To: <3962daba-f6ed-d706-c618-b791a1ba6b59@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, gustavo@embeddedor.com, Takashi Iwai <tiwai@suse.de>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, mchehab+samsung@kernel.org, sr@denx.de, Daniel Thompson <daniel.thompson@linaro.org>, Jon Corbet <corbet@lwn.net>, Phil Burk <philburk@google.com>, Matthew Wilcox <willy@infradead.org>, Jeffery Miller <jmiller@neverware.com>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, colyli@suse.de, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, anna-maria@linutronix.de, Mathieu Poirier <mathieu.poirier@linaro.org>, sboyd@kernel.org, LKML <linux-kernel@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Leo Yan <leo.yan@linaro.org>, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav,
+On Thu, 24 Jan 2019 at 21:43, Jaroslav Kysela <perex@perex.cz> wrote:
+>
+> Dne 23.1.2019 v 13:46 Leo Yan napsal(a):
+> > Hi all,
+> >
+> > On Wed, Jan 23, 2019 at 12:58:51PM +0100, Takashi Iwai wrote:
+> >> On Tue, 22 Jan 2019 21:25:35 +0100,
+> >> Mark Brown wrote:
+> >>>
+> >>> On Mon, Jan 21, 2019 at 03:15:43PM +0100, Jaroslav Kysela wrote:
+> >>>> Dne 21.1.2019 v 13:40 Mark Brown napsal(a):
+> >>>
+> >>>>> It was the bit about adding more extended permission control that I was
+> >>>>> worried about there, not the initial O_APPEND bit.  Indeed the O_APPEND
+> >>>>> bit sounds like it might also work from the base buffer sharing point of
+> >>>>> view, I have to confess I'd not heard of that feature before (it didn't
+> >>>>> come up in the discussion when Eric raised this in Prague).
+> >>>
+> >>>> With permissions, I meant to make possible to restrict the file
+> >>>> descriptor operations (ioctls) for the depending task (like access to
+> >>>> the DMA buffer, synchronize it for the non-coherent platforms and maybe
+> >>>> read/write the actual position, delay etc.). It should be relatively
+> >>>> easy to implement using the snd_pcm_file structure.
+> >>>
+> >>> Right, that's what I understood you to mean.  If you want to have a
+> >>> policy saying "it's OK to export a PCM file descriptor if it's only got
+> >>> permissions X and Y" the security module is going to need to know about
+> >>> the mechanism for setting those permissions.  With dma_buf that's all a
+> >>> bit easier as there's less new stuff, though I've no real idea how much
+> >>> of a big deal that actually is.
+> >>
+> >> There are many ways to implement such a thing, yeah.  If we'd need an
+> >> implementation that is done solely in the sound driver layer, I can
+> >> imagine to introduce either a new ioctl or an open flag (like O_EXCL)
+> >> to specify the restricted sharing.  That is, a kind of master / slave
+> >> model where only the master is allowed to manipulate the stream while
+> >> the slave can mmap, read/write and get status.
+> >
+> > In order to support EXCLUSIVE mode, it is necessary to convert the
+> > /dev/snd/ descriptor to an anon_inode:dmabuffer file descriptor.
+> > SELinux allows that file descriptor to be passed to the client. It can
+> > also be used by the AAudioService.
+>
+> Okay, so this is probably the only point which we should resolve for the
+> already available DMA buffer sharing in ALSA (the O_APPEND flag).
+>
+> I had another glance to your dma-buf implementation and I see many
+> things which might cause problems:
+>
+> - allow to call dma-buf ioctls only when the audio device is in specific
+> state (stream is not running)
 
-On 1/25/2019 12:38 AM, Takashi Iwai wrote:
-> On Thu, 24 Jan 2019 18:36:43 +0100,
-> Sameer Pujar wrote:
->> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
->> will not be ON. This could cause issue during probe, where hda init
->> setup is done. This patch checks whether runtime PM is enabled or not.
->> If disabled, clocks are enabled in probe() and disabled in remove()
->>
->> This patch does following minor changes as cleanup,
->>    * return code check for pm_runtime_get_sync() to take care of failure
->>      and exit gracefully.
->>    * In remove path runtime PM is disabled before calling snd_card_free().
->>    * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
->>    * runtime PM callbacks moved out of CONFIG_PM check
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
->> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> (snip)
->> @@ -555,6 +553,13 @@ static int hda_tegra_probe(struct platform_device *pdev)
->>   	if (!azx_has_pm_runtime(chip))
->>   		pm_runtime_forbid(hda->dev);
->>   
->> +	/* explicit resume if runtime PM is disabled */
->> +	if (!pm_runtime_enabled(hda->dev)) {
->> +		err = hda_tegra_runtime_resume(hda->dev);
->> +		if (err)
->> +			goto out_free;
->> +	}
->> +
->>   	schedule_work(&hda->probe_work);
-> Calling runtime_resume here is really confusing...
->
->
->> @@ -571,7 +576,14 @@ static void hda_tegra_probe_work(struct work_struct *work)
->>   	struct platform_device *pdev = to_platform_device(hda->dev);
->>   	int err;
->>   
->> -	pm_runtime_get_sync(hda->dev);
->> +	err = pm_runtime_get_sync(hda->dev);
->> +	if (err < 0) {
->> +		dev_err(hda->dev,
->> +			"failed in pm_runtime_get_syc with err = %d\n",
->> +			err);
->> +		return;
->> +	}
-> This pm_runtime_get_sync() is needed just because you enabled runtime
-> PM before probe_work.  Why not deferring the runtime PM enablement
-> after probing done?
-I think what you are suggesting can be done and simplify things further.
-I can get rid of pm_runtime_get_sync/pm_runtime_put in probe work.
-> That is what we need is the hda_tegra_enable_clocks() call at probe
-> unconditionally before enabling runtime PM.
->
->>   	err = hda_tegra_first_init(chip, pdev);
->>   	if (err < 0)
->>   		goto out_free;
->> @@ -599,12 +611,13 @@ static void hda_tegra_probe_work(struct work_struct *work)
->>   
->>   static int hda_tegra_remove(struct platform_device *pdev)
->>   {
->> -	int ret;
->> -
->> -	ret = snd_card_free(dev_get_drvdata(&pdev->dev));
->>   	pm_runtime_disable(&pdev->dev);
->> +	if (!pm_runtime_status_suspended(&pdev->dev)) {
->> +		hda_tegra_runtime_suspend(&pdev->dev);
->> +		pm_runtime_set_suspended(&pdev->dev);
->> +	}
->> -	return ret;
->> +	return snd_card_free(dev_get_drvdata(&pdev->dev));
->
-> Forcing the suspend *before* snd_card_free() doesn't sound right.
-> It's the point before the disconnect and release procedure of all the
-> rest.  That is, the other hardware components are still active at this
-> point.
-
-Ok, I will keep the sequence same and publish updated version.
-
-Thanks,
-Sameer.
+Right. Will fix.
 
 >
-> thanks,
+> - as Takashi mentioned, if we return another file-descriptor (dma-buf
+> export) to the user space and the server closes the main pcm
+> file-descriptor (the client does not) - the result will be a crash (dma
+> buffer will be freed, but referenced through the dma-buf interface)
+
+Yes, will fix.
+
 >
-> Takashi
+> - the attach function calls dma_buf_get(fd), but what if fd points to
+> another dma-buf allocation from a different driver? the unexpected
+> private data will cause crash - there should be a type checking in the
+> dma-buf interface
+
+There is a validation (is_dma_buf_file() ) in dma_buf_get() function
+before getting the dma buffer.
+
+> If I look to the dma_buf_fd() implementation:
+>
+>   fd = get_unused_fd_flags(flags);
+>   fd_install(fd, dmabuf->file);
+>
+> .. what if we just add one new ioctl to the ALSA's PCM API which will
+> return a new anonymous inode descriptor with the restricted access to
+> the main PCM device to satisfy the SELinux requirements / security
+> policies? It might be more nice and simple solution than to implement
+> the full dma-buf interface for the ALSA's PCM devices.
+
+I will do some investigation for your suggestion and talk with the
+security people if it can work. Thanks for your suggestion.
+
+-- 
+Baolin Wang
+Best Regards
