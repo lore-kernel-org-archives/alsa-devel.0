@@ -1,15 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 00/15] ASoC: Intel: pass platform name to
-	machine drivers
-Date: Fri, 25 Jan 2019 14:34:54 -0600
-Message-ID: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/15] ASoC: add helper to change platform name
+	for all dailinks
+Date: Fri, 25 Jan 2019 14:34:55 -0600
+Message-ID: <20190125203509.22994-2-pierre-louis.bossart@linux.intel.com>
+References: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DCF9B26680F
- for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:35:14 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A1EA267350
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2019 21:35:15 +0100 (CET)
+In-Reply-To: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -45,51 +47,52 @@ reused, not the end of the world.
 This helper can be simplified when all drivers have transitioned to
 the "modern" representation of dailinks.
 
-While these changes are simple and largely mechanical, there is always
-a risk. These patches were tested with Asus T100 (rt5640), rt5651,
-rt5682, pcm512x, both in SST and SOF cases. Additional tests are
-on-going for Chromebook platforms and Broadwell. I figured it was
-better to share this patchset earlier to get more feedback.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/soc.h | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-Note that byt-max98080, byt-rt5640 were not modified since they are
-deprecated. bytcht-nocodec and the Skylake/Kabylake machine drivers
-changes were not changed since SOF does not support them. There may be
-additional changes if and when Skylake/Kabylake are supported by SOF
-(largely a firmware authentication issue, not technical difficulty).
-
-Pierre-Louis Bossart (15):
-  ASoC: add helper to change platform name for all dailinks
-  ASoC: Intel: haswell: platform name fixup support
-  ASoC: Intel: broadwell: platform name fixup support
-  ASoC: Intel: bdw-rt5677: platform name fixup support
-  ASoC: Intel: bytcr_rt5640: platform name fixup support
-  ASoC: Intel: bytcr_rt5651: platform name fixup support
-  ASoC: Intel: bytcht_da7213: platform name fixup support
-  ASoC: Intel: bytcht_es8316: platform name fixup support
-  ASoC: Intel: cht_bsw_max98090_ti: platform name fixup support
-  ASoC: Intel: cht_bsw_nau8824: platform name fixup support
-  ASoC: Intel: cht_bsw_rt5645: platform name fixup support
-  ASoC: Intel: cht_bsw_rt5672: platform name fixup support
-  ASoC: Intel: bxt_da7219_max98357a: platform name fixup support
-  ASoC: Intel: bxt_rt298: platform name fixup support
-  ASoC: Intel: glk_rt5682_max98357a: platform name fixup support
-
- include/sound/soc.h                           | 31 +++++++++++++++++++
- sound/soc/intel/boards/bdw-rt5677.c           | 14 +++++++++
- sound/soc/intel/boards/broadwell.c            | 16 ++++++++++
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 13 ++++++++
- sound/soc/intel/boards/bxt_rt298.c            | 13 ++++++++
- sound/soc/intel/boards/bytcht_da7213.c        |  8 +++++
- sound/soc/intel/boards/bytcht_es8316.c        |  9 ++++++
- sound/soc/intel/boards/bytcr_rt5640.c         |  9 ++++++
- sound/soc/intel/boards/bytcr_rt5651.c         |  9 ++++++
- sound/soc/intel/boards/cht_bsw_max98090_ti.c  | 12 +++++++
- sound/soc/intel/boards/cht_bsw_nau8824.c      | 12 +++++++
- sound/soc/intel/boards/cht_bsw_rt5645.c       |  9 ++++++
- sound/soc/intel/boards/cht_bsw_rt5672.c       |  9 ++++++
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 21 ++++++++++---
- sound/soc/intel/boards/haswell.c              | 15 +++++++++
- 15 files changed, 196 insertions(+), 4 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3089257ead95..95689680336b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1580,6 +1580,37 @@ struct snd_soc_dai *snd_soc_card_get_codec_dai(struct snd_soc_card *card,
+ 	return NULL;
+ }
+ 
++static inline
++int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
++					  const char *platform_name)
++{
++	struct snd_soc_dai_link *dai_link;
++	const char *name;
++	int i;
++
++	if (!platform_name) /* nothing to do */
++		return 0;
++
++	/* set platform name for each dailink */
++	for_each_card_prelinks(card, i, dai_link) {
++		name = devm_kstrdup(card->dev, platform_name, GFP_KERNEL);
++		if (!name)
++			return -ENOMEM;
++
++		if (dai_link->platforms)
++			/* only single platform is supported for now */
++			dai_link->platforms->name = name;
++		else
++			/*
++			 * legacy mode, this case will be removed when all
++			 * derivers are switched to modern style dai_link.
++			 */
++			dai_link->platform_name = name;
++	}
++
++	return 0;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ extern struct dentry *snd_soc_debugfs_root;
+ #endif
 -- 
 2.17.1
