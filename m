@@ -1,20 +1,19 @@
-From: Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [RESEND PATCH 0/6] ASoC: Mediatek: Add support for
- MT8183 SoC and MT6358 Codec
-Date: Sat, 26 Jan 2019 20:55:39 +0800
-Message-ID: <CANMq1KDAy0=yF+90MvamdfWu4uuTf8xAwczZ33sVpxDjo9OVSQ@mail.gmail.com>
-References: <1548488700-47792-1-git-send-email-shunli.wang@mediatek.com>
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Subject: [PATCH 1/2] ASoC: pcm512x: Implement the
+	set_bclk_ratio interface
+Date: Sat, 26 Jan 2019 15:17:01 +0200
+Message-ID: <9b758d09-9b9b-77a1-6651-43755c67e6fd@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f193.google.com (mail-qt1-f193.google.com
- [209.85.160.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 00629267418
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 13:55:51 +0100 (CET)
-Received: by mail-qt1-f193.google.com with SMTP id r14so13746867qtp.1
- for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 04:55:51 -0800 (PST)
-In-Reply-To: <1548488700-47792-1-git-send-email-shunli.wang@mediatek.com>
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
+ [209.85.208.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52981267418
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 14:17:05 +0100 (CET)
+Received: by mail-ed1-f65.google.com with SMTP id y20so9469179edw.9
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 05:17:05 -0800 (PST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shunli Wang <shunli.wang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, Mark Brown <broonie@kernel.org>, "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>, kaichieh.chuang@mediatek.com
+To: alsa-devel@alsa-project.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 26, 2019 at 3:45 PM Shunli Wang <shunli.wang@mediatek.com> wrote:
->
-> This patch adds support for Mediatek AFE for MT8183 SoC and codec for MT6358.
-> The patch is based on broonie tree "for-next" branch.
-> (Because it seems ALSA-DEVEL have not received previous mail,
-> this is a resend mail for this patchset.)
->
-> Shunli Wang (6):
->   ASoC: mediatek: mt8183: add platform driver
->   ASoC: mediatek: mt8183: add audio afe document
->   ASoC: mediatek: mt6358: add codec driver
->   ASoC: mediatek: mt6358: add codec document
->   ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
->   ASoC: mediatek: add document for mt8183-mt6358
+Some boards, such as the HiFiBerry DAC+ Pro, use a pair of external
+oscillators, to generate 44.1 or 48kHz multiples and are forced to
+resort to hacks [1] in order to support 24-bit data without ending up
+with fractional dividers.  This patch allows the machine driver to use
+32-bit frames for 24-bit data to avoid such issues.
 
-Shunli, the first 4 of these patches were already applied here:
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-next
+Although the datasheet (p. 15) seems to suggest that only a handful
+of ratios are supported, it's not very explicit about it, so we allow
+the full range of values supported by the underlying register in the
+callback, to avoid needlessly rejecting potentially usable
+configurations.
 
-Can you rebase on that tree and resend only the missing ones (after
-fixing the build errors that Mark mentionned)?
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143442.html
 
+Signed-off-by: Dimitris Papavasiliou <dpapavas@gmail.com>
+---
 
->  Documentation/devicetree/bindings/sound/mt6358.txt |   18 +
->  .../devicetree/bindings/sound/mt8183-afe-pcm.txt   |   36 +
->  .../devicetree/bindings/sound/mt8183-mt6358.txt    |   12 +
->  sound/soc/codecs/Kconfig                           |    7 +
->  sound/soc/codecs/Makefile                          |    2 +
->  sound/soc/codecs/mt6358.c                          | 2336 ++++++++++++++++++++
->  sound/soc/codecs/mt6358.h                          | 2314 +++++++++++++++++++
->  sound/soc/mediatek/Kconfig                         |   20 +
->  sound/soc/mediatek/Makefile                        |    1 +
->  sound/soc/mediatek/mt8183/Makefile                 |   13 +
->  sound/soc/mediatek/mt8183/mt8183-afe-clk.c         |  611 +++++
->  sound/soc/mediatek/mt8183/mt8183-afe-clk.h         |   38 +
->  sound/soc/mediatek/mt8183/mt8183-afe-common.h      |  108 +
->  sound/soc/mediatek/mt8183/mt8183-afe-pcm.c         | 1237 +++++++++++
->  sound/soc/mediatek/mt8183/mt8183-dai-adda.c        |  501 +++++
->  sound/soc/mediatek/mt8183/mt8183-dai-hostless.c    |  118 +
->  sound/soc/mediatek/mt8183/mt8183-dai-i2s.c         | 1040 +++++++++
->  sound/soc/mediatek/mt8183/mt8183-dai-pcm.c         |  318 +++
->  sound/soc/mediatek/mt8183/mt8183-dai-tdm.c         |  639 ++++++
->  sound/soc/mediatek/mt8183/mt8183-interconnection.h |   33 +
->  sound/soc/mediatek/mt8183/mt8183-mt6358.c          |  208 ++
->  sound/soc/mediatek/mt8183/mt8183-reg.h             | 1666 ++++++++++++++
->  22 files changed, 11276 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt6358.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
->  create mode 100644 sound/soc/codecs/mt6358.c
->  create mode 100644 sound/soc/codecs/mt6358.h
->  create mode 100644 sound/soc/mediatek/mt8183/Makefile
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-clk.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-clk.h
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-common.h
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-adda.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-hostless.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-pcm.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-interconnection.h
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-mt6358.c
->  create mode 100644 sound/soc/mediatek/mt8183/mt8183-reg.h
->
-> --
-> 1.9.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Notes:
+    This is essentially the same patch submitted previously as an RFC[1].
+    It has been split in two, in order to separate the set_bclk_ratio
+    implementation from the clocking calculation fix and some conservative
+    checking has been added to the argument of the callback.
+    
+    [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144213.html
+
+ sound/soc/codecs/pcm512x.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 6cb1653be804..b63d9392bae3 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -55,6 +55,7 @@ struct pcm512x_priv {
+ 	unsigned long overclock_dsp;
+ 	int mute;
+ 	struct mutex mutex;
++	unsigned int bclk_ratio;
+ };
+ 
+ /*
+@@ -915,10 +916,15 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 	int fssp;
+ 	int gpio;
+ 
+-	lrclk_div = snd_soc_params_to_frame_size(params);
+-	if (lrclk_div == 0) {
+-		dev_err(dev, "No LRCLK?\n");
+-		return -EINVAL;
++	if (pcm512x->bclk_ratio > 0) {
++		lrclk_div = pcm512x->bclk_ratio;
++	} else {
++		lrclk_div = snd_soc_params_to_frame_size(params);
++
++		if (lrclk_div == 0) {
++			dev_err(dev, "No LRCLK?\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	if (!pcm512x->pll_out) {
+@@ -1383,6 +1389,19 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
++static int pcm512x_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
++{
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
++
++	if (ratio > 256)
++		return -EINVAL;
++
++	pcm512x->bclk_ratio = ratio;
++
++	return 0;
++}
++
+ static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_component *component = dai->component;
+@@ -1438,6 +1457,7 @@ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
+ 	.hw_params = pcm512x_hw_params,
+ 	.set_fmt = pcm512x_set_fmt,
+ 	.digital_mute = pcm512x_digital_mute,
++	.set_bclk_ratio = pcm512x_set_bclk_ratio,
+ };
+ 
+ static struct snd_soc_dai_driver pcm512x_dai = {
+-- 
+2.11.0
