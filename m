@@ -1,56 +1,101 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [RFT][PATCH v2] gpiolib: acpi: Introduce ACPI_GPIO_QUIRK_ONLY_GPIOIO
-Date: Sat, 26 Jan 2019 13:14:03 +0100
-Message-ID: <CACRpkdZecFta8JaW85C0HyuH-LLD3bFsPf8DNna9o83OdkfU5w@mail.gmail.com>
-References: <20190109105245.25954-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdZAOaqPQkKzyNate3A67Ce0T+V7ig+Y3BV4ycx==U5jkQ@mail.gmail.com> <20190125174442.GR9224@smile.fi.intel.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RESEND PATCH 0/6] ASoC: Mediatek: Add support for
+ MT8183 SoC and MT6358 Codec
+Date: Sat, 26 Jan 2019 20:55:39 +0800
+Message-ID: <CANMq1KDAy0=yF+90MvamdfWu4uuTf8xAwczZ33sVpxDjo9OVSQ@mail.gmail.com>
+References: <1548488700-47792-1-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190125174442.GR9224@smile.fi.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt1-f193.google.com (mail-qt1-f193.google.com
+ [209.85.160.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00629267418
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 13:55:51 +0100 (CET)
+Received: by mail-qt1-f193.google.com with SMTP id r14so13746867qtp.1
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2019 04:55:51 -0800 (PST)
+In-Reply-To: <1548488700-47792-1-git-send-email-shunli.wang@mediatek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shunli Wang <shunli.wang@mediatek.com>
+Cc: alsa-devel@alsa-project.org, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, Mark Brown <broonie@kernel.org>, "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 25, 2019 at 6:44 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Mon, Jan 21, 2019 at 02:03:09PM +0100, Linus Walleij wrote:
-> > On Wed, Jan 9, 2019 at 11:52 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > > New quirk enforces search for GPIO based on its type,
-> > > i.e. iterate over GpioIo resources only.
-> > >
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > ---
-> > >
-> > > - it was sent few weeks ago to Hans for testing, but better to re-test
-> > > - it's supposed to go via ASoC subsystem due to recent changes made for
-> > >   sound driver
-> > >
-> > > v2:
-> > > - Expand explanation why this quirk might be needed (Mika)
-> >
-> > I tried to apply this but it doesn't apply on the GPIO devel
-> > branch.
-> >
-> > I suppose because of Hans de Goede's
-> > commit 72893f0c6bd399ce84e3c1c9fc69d234fe37d098
-> > Author: Hans de Goede <hdegoede@redhat.com>
-> > Date:   Mon Dec 31 21:55:21 2018 +0100
-> >
-> >     gpiolib-acpi: Preserve non direction flags when updating gpiod_flags
-> >
-> > Could you rebase and resend?
+On Sat, Jan 26, 2019 at 3:45 PM Shunli Wang <shunli.wang@mediatek.com> wrote:
 >
-> Linus, as I mentioned in comments above this should go via ASoC tree, there is
-> no conflicts with gpio/devel for GPIO matters.
+> This patch adds support for Mediatek AFE for MT8183 SoC and codec for MT6358.
+> The patch is based on broonie tree "for-next" branch.
+> (Because it seems ALSA-DEVEL have not received previous mail,
+> this is a resend mail for this patchset.)
 >
-> So, please, give your Ack and hopefully Mark will apply this soon.
+> Shunli Wang (6):
+>   ASoC: mediatek: mt8183: add platform driver
+>   ASoC: mediatek: mt8183: add audio afe document
+>   ASoC: mediatek: mt6358: add codec driver
+>   ASoC: mediatek: mt6358: add codec document
+>   ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
+>   ASoC: mediatek: add document for mt8183-mt6358
 
-OK with me:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Shunli, the first 4 of these patches were already applied here:
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-next
 
-Yours,
-Linus Walleij
+Can you rebase on that tree and resend only the missing ones (after
+fixing the build errors that Mark mentionned)?
+
+
+>  Documentation/devicetree/bindings/sound/mt6358.txt |   18 +
+>  .../devicetree/bindings/sound/mt8183-afe-pcm.txt   |   36 +
+>  .../devicetree/bindings/sound/mt8183-mt6358.txt    |   12 +
+>  sound/soc/codecs/Kconfig                           |    7 +
+>  sound/soc/codecs/Makefile                          |    2 +
+>  sound/soc/codecs/mt6358.c                          | 2336 ++++++++++++++++++++
+>  sound/soc/codecs/mt6358.h                          | 2314 +++++++++++++++++++
+>  sound/soc/mediatek/Kconfig                         |   20 +
+>  sound/soc/mediatek/Makefile                        |    1 +
+>  sound/soc/mediatek/mt8183/Makefile                 |   13 +
+>  sound/soc/mediatek/mt8183/mt8183-afe-clk.c         |  611 +++++
+>  sound/soc/mediatek/mt8183/mt8183-afe-clk.h         |   38 +
+>  sound/soc/mediatek/mt8183/mt8183-afe-common.h      |  108 +
+>  sound/soc/mediatek/mt8183/mt8183-afe-pcm.c         | 1237 +++++++++++
+>  sound/soc/mediatek/mt8183/mt8183-dai-adda.c        |  501 +++++
+>  sound/soc/mediatek/mt8183/mt8183-dai-hostless.c    |  118 +
+>  sound/soc/mediatek/mt8183/mt8183-dai-i2s.c         | 1040 +++++++++
+>  sound/soc/mediatek/mt8183/mt8183-dai-pcm.c         |  318 +++
+>  sound/soc/mediatek/mt8183/mt8183-dai-tdm.c         |  639 ++++++
+>  sound/soc/mediatek/mt8183/mt8183-interconnection.h |   33 +
+>  sound/soc/mediatek/mt8183/mt8183-mt6358.c          |  208 ++
+>  sound/soc/mediatek/mt8183/mt8183-reg.h             | 1666 ++++++++++++++
+>  22 files changed, 11276 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt6358.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
+>  create mode 100644 sound/soc/codecs/mt6358.c
+>  create mode 100644 sound/soc/codecs/mt6358.h
+>  create mode 100644 sound/soc/mediatek/mt8183/Makefile
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-clk.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-clk.h
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-common.h
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-adda.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-hostless.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-pcm.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-dai-tdm.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-interconnection.h
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-mt6358.c
+>  create mode 100644 sound/soc/mediatek/mt8183/mt8183-reg.h
+>
+> --
+> 1.9.1
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
