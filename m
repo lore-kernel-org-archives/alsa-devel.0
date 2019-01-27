@@ -1,21 +1,21 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: alsa-utils 1.1.8: axfer tests take ages tu run.
-Date: Sun, 27 Jan 2019 14:18:23 +0100
-Message-ID: <20190127131823.ubaqvu2gplywhanf@toy.home.lxtec.de>
-References: <20190126144922.nim532ciqslpaahb@toy.home.lxtec.de>
- <20190126160432.eatvt2fyh4cdf5at@toy.home.lxtec.de>
- <20190127034438.GB7590@workstation>
- <20190127100304.4etta27wz6d7k65b@toy.home.lxtec.de>
- <20190127121402.GA7056@workstation>
- <20190127124954.GA10993@workstation>
+From: Tomas Nordin <tomasn@posteo.net>
+Subject: Re: Record stereo from one input on the soundcard
+Date: Sun, 27 Jan 2019 19:35:55 +0100
+Message-ID: <87h8dux81g.fsf@fliptop.i-did-not-set--mail-host-address--so-tickle-me>
+References: <87muo6uhww.fsf@fliptop.i-did-not-set--mail-host-address--so-tickle-me>
+ <87sgxgxy9l.fsf@fliptop.i-did-not-set--mail-host-address--so-tickle-me>
+ <e285bd85-2f7b-b7f8-5b1d-83bf50eb42ec@ivitera.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8997505721479184310=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.hostsharing.net (mailout2.hostsharing.net
- [83.223.90.233])
- by alsa0.perex.cz (Postfix) with ESMTP id D9274266A89
- for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2019 14:18:25 +0100 (CET)
-In-Reply-To: <20190127124954.GA10993@workstation>
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C845266A89
+ for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2019 19:35:57 +0100 (CET)
+Received: from submission (posteo.de [89.146.220.130])
+ by mout01.posteo.de (Postfix) with ESMTPS id BB418160061
+ for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2019 19:35:56 +0100 (CET)
+In-Reply-To: <e285bd85-2f7b-b7f8-5b1d-83bf50eb42ec@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,108 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Jordi Mallach <jordi@debian.org>
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Pavel Hofman <pavel.hofman@ivitera.com> writes:
 
---===============8997505721479184310==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wigwfzapzcec4pnq"
-Content-Disposition: inline
+> Hi Tomas,
+>
+> Dne 25. 01. 19 v 21:44 Tomas Nordin napsal(a):
+>>>
+>>> The following command lets me record audio from the card,
+>>>
+>>> $ arecord -c 2 -d 60 -f S24_3LE -r 48000 -D hw:1,0 s3.wav
+>>>
+>>> The resulting wav file has all hearable audio in the left speaker when
+>>> listening.
+>
+> If you really feed stereo signal into your soundcard stereo input jack 
+> and the card is not somehow configured to merge the input channels, the 
+> above command does record stereo signal.
 
+Ok, thanks. I have been a bit confused about the relation between the -c
+option argument and the number of inputs on a card. If I understand
+correctly, the -c option does not say anything about what inputs to
+record from, it is saying what kind of audiofile to produce?
 
---wigwfzapzcec4pnq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Available controls of the card are listed by command
+>
+> amixer -c 1 contents
 
-* Takashi Sakamoto <o-takashi@sakamocchi.jp> [2019-01-27 21:49 +0900]:
+Here is the output of that:
 
-> On Sun, Jan 27, 2019 at 09:14:02PM +0900, Takashi Sakamoto wrote:
-> > Execution of unit test independent from actual sound device is one of
-> > my intention for the tests, and actually the they performs. Executables
-> > of the test include duplicated code of axfer for this intention. Please
-> > refer to 'axfer/test/Makefile.am'.
-> >=20
-> > > > Of course, we can shorten the duration time by eliminating the range
-> > > > of parameters. Actually I've investigated to reduce iteration and r=
-educe
-> > > > for the number of audio data frames in buffer by 6 options. But any
-> > > > reasonable explanation except for the duration time is required to =
-be
-> > > > worth for it, IMO.
-> > >=20
-> > > Well, what do you think to outbound your tests to i.e.
-> > > $PREFIX/doc/examples to let the user decide whether to run them or
-> > > not. A configure option to cancel the tests in the build process
-> > > would be an option to be decided by the distribution maintainer.
-> >=20
-> > The alsa-utils uses GNU Automake to implement test. As long as I know,
-> > any Makefile generated by GNU Automake doesn't run test unless
-> > 'check' target is given explicitly.
-> > https://www.gnu.org/software/automake/manual/html_node/Tests.html
-> >=20
-> > Thereore, it depends on yout configuration of debhelper to execute the
-> > tests in building time of deb package. Please recheck your 'debian/rule=
-s'
-> > and adds appropriate directives to suppress execution of test for axfer
-> > (perhaps, 'override_dh_auto_test'). For example:
-> >=20
-> > ```
-> > override_dh_auto_test:
-> >         true
-> > ```
-> >=20
-> > For your information, alsa-utils includes no other test programs.
->=20
-> Or indicate test target explicitly in a directive of
-> override_dh_auto_test:
->=20
-> ```
-> override_dh_auto_test:
->         # 'container-test' and 'mapper-test' for axfer take a long time.
->         # They are designed to check robustness of internal
-> 	# implementation of axfer and do not necessarily need to run in
-> 	# a process of deb packaging. Let's suppress them.
->         dh_auto_test -- TESTS=3D''
+$ amixer -c 1 contents
+numid=2,iface=PCM,name='Capture Channel Map'
+  ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
 
-Wow, I never noticed the availability of dh_auto_test. Thanks alot!
+numid=1,iface=PCM,name='Playback Channel Map'
+  ; type=INTEGER,access=r----R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
 
-Thanks for cooperation
-Elimar
---=20
-  355/113: Not the famous irrational number pi,
-           but an incredible simulation!
-	                -unknown
+And I didn't mention that in my original post but, alsamixer has been
+informing me that "This soundcard does not have any controls." when I
+select the AudioBox via F6.
 
---wigwfzapzcec4pnq
-Content-Type: application/pgp-signature; name="signature.asc"
+Is this giving any more hints on what I can do?
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEA5qPfgi7vn3+5mXKPas3Tbfc8bsFAlxNr5oACgkQPas3Tbfc
-8bvbjA/+Kngl5bswYg/f4LESuMG7N4ssoGoVY3xbrIGR8oeSZY1QrkfG9WT6dN08
-sCGzGPziaFdgDwwX4aRpeI2mOTgfPlUIwvHJ2ATCPI7YMPHySdD4DvXYouZ4zoRi
-/sIkmmNSVUznmq/P9oQ5HMq8VD9VooHeUoedrAbHC6fd92Zqb3iesuKw9G7Fx+Ha
-bGjG/PUXnTcrFio2vKKF6SMNg8tSJxjPVfTMIxrkSygiYPNWwUCkQ2ZhNQ2THkWa
-+DOc+iEh46EJsNgYS56gX0rAMcQrW3sMnZOjlwZs1Zy/wb4jn2cWhqJJmth4biqh
-yyNsRGBWf3ilp65pikGyRCijhY/o1k3xV/9r6FOH7AYT6Z1R3QvGb8u3uyMyBnsO
-vQ0FN0DLCGLtDEaWe5mz/Wsxa/Hc1gScowreC+m6VGY3DBd+KjZU5alVUp/rsk1j
-d+Wxj7YjJTjFLuzO8fU68JKSZPinaHqJock5zOuQ1LtIADkjt39zT3NLzdejgb5m
-yi+iTE43e2KRv/CfkHTdrFNni8FWxgrheN3zmgx7Boksbf1WWwQnDSFgbbcOMNc1
-3JtR6hVCFwxmyGBXBVrzBRX4Cl82w8DprLqpKACtWf3SSEmdApM00zXSaK450K6P
-6F1w0DPgXAlA5LfmHE31rGwnBezkFrd4gvftX/U9vtjLmGKGBtU=
-=8cGT
------END PGP SIGNATURE-----
-
---wigwfzapzcec4pnq--
-
---===============8997505721479184310==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8997505721479184310==--
+Best regards
+--
+Tomas
