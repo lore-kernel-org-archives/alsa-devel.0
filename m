@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_rt5645: platform name
-	fixup support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:18 +0000 (GMT)
-Message-ID: <20190128182518.90EA61127D2D@debutante.sirena.org.uk>
-References: <20190125203509.22994-12-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bxt_da7219_max98357a: platform
+	name fixup support" to the asoc tree
+Date: Mon, 28 Jan 2019 18:25:14 +0000 (GMT)
+Message-ID: <20190128182514.5087D1127D29@debutante.sirena.org.uk>
+References: <20190125203509.22994-14-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 80848267502
+ by alsa0.perex.cz (Postfix) with ESMTP id EC92026798B
  for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:19 +0100 (CET)
-In-Reply-To: <20190125203509.22994-12-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190125203509.22994-14-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_rt5645: platform name fixup support
+   ASoC: Intel: bxt_da7219_max98357a: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From 3a934e7c75b446a104bdea3dd676d7199db9a7bd Mon Sep 17 00:00:00 2001
+>From 7ebf2528eacae2a9c1edff575c3c58b75095ce08 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:05 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:07 -0600
+Subject: [PATCH] ASoC: Intel: bxt_da7219_max98357a: platform name fixup
+ support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 250a356a0cbf..cbc2d458483f 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -530,6 +530,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 6f052fc8d1e2..c00925f9da73 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -23,6 +23,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../../codecs/da7219.h"
+ #include "../../codecs/da7219-aad.h"
+@@ -584,6 +585,9 @@ static struct snd_soc_card broxton_audio_card = {
+ static int broxton_audio_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
- 	struct snd_soc_acpi_mach *mach;
+ 	struct bxt_card_private *ctx;
++	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	struct cht_mc_private *drv;
- 	const char *i2c_name = NULL;
- 	bool found = false;
-@@ -663,6 +664,14 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 			cht_rt5645_cpu_dai_name;
- 	}
++	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+@@ -594,6 +598,15 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 	broxton_audio_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&broxton_audio_card, ctx);
  
 +	/* override plaform name, if required */
++	mach = (&pdev->dev)->platform_data;
 +	platform_name = mach->mach_params.platform;
 +
-+	ret_val = snd_soc_fixup_dai_links_platform_name(card,
-+							platform_name);
-+	if (ret_val)
-+		return ret_val;
++	ret = snd_soc_fixup_dai_links_platform_name(&broxton_audio_card,
++						    platform_name);
++	if (ret)
++		return ret;
 +
- 	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
- 	if (IS_ERR(drv->mclk)) {
- 		dev_err(&pdev->dev,
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
+ }
+ 
 -- 
 2.20.1
