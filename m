@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: platform name
+Subject: Applied "ASoC: Intel: bytcr_rt5640: platform name
 	fixup support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:28 +0000 (GMT)
-Message-ID: <20190128182528.BD2EC1127D29@debutante.sirena.org.uk>
+Date: Mon, 28 Jan 2019 18:25:30 +0000 (GMT)
+Message-ID: <20190128182530.E587C1127D29@debutante.sirena.org.uk>
+References: <20190125203509.22994-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1929A2679CD
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:30 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id BD4E226798B
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:31 +0100 (CET)
+In-Reply-To: <20190125203509.22994-6-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: platform name fixup support
+   ASoC: Intel: bytcr_rt5640: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -51,44 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 0b2c2093fc3a1f89f2ef15d945c0439ce7b9dd9d Mon Sep 17 00:00:00 2001
+>From bd7661b761bc7f585aad4fc6e5b62d684bdad75b Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:00 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: platform name fixup support
+Date: Fri, 25 Jan 2019 14:34:59 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: platform name fixup support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 9 +++++++++
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index e6945d11c8ab..c3b7732929cc 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -922,6 +922,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
- 	struct byt_rt5651_private *priv;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index a79466c8fb29..940eb27158da 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1153,6 +1153,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	const struct dmi_system_id *dmi_id;
+ 	struct byt_rt5640_private *priv;
  	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	struct device *codec_dev;
  	const char *i2c_name = NULL;
- 	const char *hp_swapped;
-@@ -1137,6 +1138,14 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
- 	byt_rt5651_card.long_name = byt_rt5651_long_name;
+ 	int ret_val = 0;
+ 	int dai_index = 0;
+@@ -1317,6 +1318,14 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
+ 	byt_rt5640_card.long_name = byt_rt5640_long_name;
  
 +	/* override plaform name, if required */
 +	platform_name = mach->mach_params.platform;
 +
-+	ret_val = snd_soc_fixup_dai_links_platform_name(&byt_rt5651_card,
++	ret_val = snd_soc_fixup_dai_links_platform_name(&byt_rt5640_card,
 +							platform_name);
 +	if (ret_val)
 +		return ret_val;
 +
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
  
  	if (ret_val) {
 -- 
