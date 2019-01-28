@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: use for_each_link_codecs()
-	for dai_link codecs V2" to the asoc tree
-Date: Mon, 28 Jan 2019 12:35:24 +0000 (GMT)
-Message-ID: <20190128123524.B6B061127D29@debutante.sirena.org.uk>
-References: <87munlh8np.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Fixup build error for mt6358" to the
+	asoc tree
+Date: Mon, 28 Jan 2019 12:35:26 +0000 (GMT)
+Message-ID: <20190128123526.D19971127D29@debutante.sirena.org.uk>
+References: <87imy9h6m4.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A5A4F267454
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:26 +0100 (CET)
-In-Reply-To: <87munlh8np.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 15246267454
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:28 +0100 (CET)
+In-Reply-To: <87imy9h6m4.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Shunli Wang <shunli.wang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: use for_each_link_codecs() for dai_link codecs V2
+   ASoC: Fixup build error for mt6358
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 720734a0b66f9ca42ec6663a48702b16e49552ee Mon Sep 17 00:00:00 2001
+>From 141474c6ac7f279824780453d3f9c75d6193dc85 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 28 Jan 2019 10:40:24 +0900
-Subject: [PATCH] ASoC: soc-core: use for_each_link_codecs() for dai_link
- codecs V2
+Date: Mon, 28 Jan 2019 11:24:34 +0900
+Subject: [PATCH] ASoC: Fixup build error for mt6358
 
-We can use for_each_link_codecs() without waiting
-for_each_rtd_codec_dai() on soc_bind_dai_link().
-Let's use for_each macro.
+This patch fixup build error for
+commit 6a8d4198ca8 ("ASoC: mediatek: mt6358: add codec driver")
 
-Fixes: 50acc7e49 ("ASoC: core: Fix multi-CODEC setups")
-Fixes: 10dff9b0d ("ASoC: soc-core: use for_each_link_codecs() for dai_link codecs")
+Fixes: commit 6a8d4198ca8 ("ASoC: mediatek: mt6358: add codec driver")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8a58fa86675a..93efab486736 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
-+	struct snd_soc_dai_link_component *codecs;
- 	struct snd_soc_dai_link_component cpu_dai_component;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai **codec_dais;
-@@ -905,13 +905,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	rtd->num_codecs = dai_link->num_codecs;
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 55fd58015c2d..83ef965cbff1 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1344,7 +1344,7 @@ config SND_SOC_MT6358
+ 	tristate "MediaTek MT6358 Codec"
+ 	help
+ 	  Enable support for the platform which uses MT6358 as
+-	external codec device.
++	  external codec device.
  
- 	/* Find CODEC from registered CODECs */
--	/* we can use for_each_rtd_codec_dai() after this */
- 	codec_dais = rtd->codec_dais;
--	for (i = 0; i < rtd->num_codecs; i++) {
--		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
-+	for_each_link_codecs(dai_link, i, codecs) {
-+		codec_dais[i] = snd_soc_find_dai(codecs);
- 		if (!codec_dais[i]) {
- 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
--				 codecs[i].dai_name);
-+				 codecs->dai_name);
- 			goto _err_defer;
- 		}
- 		snd_soc_rtdcom_add(rtd, codec_dais[i]->component);
+ config SND_SOC_NAU8540
+        tristate "Nuvoton Technology Corporation NAU85L40 CODEC"
 -- 
 2.20.1
