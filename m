@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/15] ASoC: add helper to change platform
- name for all dailinks
-Date: Mon, 28 Jan 2019 12:19:33 +0000
-Message-ID: <20190128121933.GC11699@sirena.org.uk>
-References: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
- <20190125203509.22994-2-pierre-louis.bossart@linux.intel.com>
- <s5htvhv8g4y.wl-tiwai@suse.de>
+Subject: Applied "ASoC: soc-acpi: add static inline fallbacks
+	when CONFIG_ACPI=n" to the asoc tree
+Date: Mon, 28 Jan 2019 12:35:18 +0000 (GMT)
+Message-ID: <20190128123518.4DB9B1127D29@debutante.sirena.org.uk>
+References: <20190125201617.21319-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8889485647766232612=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 591C8267477
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:19:35 +0100 (CET)
-In-Reply-To: <s5htvhv8g4y.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 77935267454
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:20 +0100 (CET)
+In-Reply-To: <20190125201617.21319-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +22,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, vkoul@kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8889485647766232612==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
-Content-Disposition: inline
+   ASoC: soc-acpi: add static inline fallbacks when CONFIG_ACPI=n
 
+has been applied to the asoc tree at
 
---ctP54qlpMx3WjD+/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Sat, Jan 26, 2019 at 06:47:57PM +0100, Takashi Iwai wrote:
-> Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > +static inline
-> > +int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
-> > +					  const char *platform_name)
-> > +{
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Does it have to be inline?  The function has a significant size, and
-> it's supposed to be called by every Intel driver.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Yeah, if it gets too big the compiler will just ignore you but given
-that this isn't exactly in a hot path or anything I can't see any reason
-why it should be inline.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---ctP54qlpMx3WjD+/
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 5e484ec1758b95e6420787fc17f0e8c5e152c264 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 25 Jan 2019 14:16:17 -0600
+Subject: [PATCH] ASoC: soc-acpi: add static inline fallbacks when
+ CONFIG_ACPI=n
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxO81UACgkQJNaLcl1U
-h9Dc/gf/aWYo343Z68bAVuG/ES4dxfKOGSVXKqOCSaNUojjt86arariuZ4HVlmnN
-dsHyljUqj1CHM+lvfogkffnSPujlnrJDrnMzkZ0ej8RdAgK3jXhHXb5BsbLhyDl/
-+kvU25dCKh6aFcixM6MvWpojuI9r23R6cm95FqbynnlDjG2d+s3Vff20f1f165Wt
-eaPcoUN+CmMyQxgXXf3zm9KtuJvLqhJG0WvaZ+tsE4p4pIpLBkootMTwWEC4MAKN
-OwiUUyZcO90PRuYmIqeeMzESq1mbAPOTchVlAG2zAVCSL9E62E8Dcu3Qr9ahinfK
-3tB2F9ZxL8IeiXWlDO9C6fYI/fvvpA==
-=9e6I
------END PGP SIGNATURE-----
+Fix compilation issues reported by 0day-Kbuild with sparc64 w/ SOF.
 
---ctP54qlpMx3WjD+/--
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc-acpi.h | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
---===============8889485647766232612==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8889485647766232612==--
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 266e64e3c24c..6cbbeed9cdd0 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -22,20 +22,37 @@ struct snd_soc_acpi_package_context {
+ #define SND_ACPI_I2C_ID_LEN (4 + ACPI_ID_LEN + 3 + 1)
+ 
+ #if IS_ENABLED(CONFIG_ACPI)
++/* acpi match */
++struct snd_soc_acpi_mach *
++snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
++
+ bool snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
+ 				    struct snd_soc_acpi_package_context *ctx);
++
++/* check all codecs */
++struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg);
++
+ #else
++/* acpi match */
++static inline struct snd_soc_acpi_mach *
++snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
++{
++	return NULL;
++}
++
+ static inline bool
+ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
+ 				   struct snd_soc_acpi_package_context *ctx)
+ {
+ 	return false;
+ }
+-#endif
+ 
+-/* acpi match */
+-struct snd_soc_acpi_mach *
+-snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
++/* check all codecs */
++static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
++{
++	return NULL;
++}
++#endif
+ 
+ /**
+  * snd_soc_acpi_mach_params: interface for machine driver configuration
+@@ -105,7 +122,4 @@ struct snd_soc_acpi_codecs {
+ 	u8 codecs[SND_SOC_ACPI_MAX_CODECS][ACPI_ID_LEN];
+ };
+ 
+-/* check all codecs */
+-struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg);
+-
+ #endif
+-- 
+2.20.1
