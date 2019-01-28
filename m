@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_rt5672: platform name
+Subject: Applied "ASoC: Intel: cht_bsw_rt5645: platform name
 	fixup support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:16 +0000 (GMT)
-Message-ID: <20190128182516.73FCF1127D2D@debutante.sirena.org.uk>
-References: <20190125203509.22994-13-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 28 Jan 2019 18:25:18 +0000 (GMT)
+Message-ID: <20190128182518.90EA61127D2D@debutante.sirena.org.uk>
+References: <20190125203509.22994-12-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C80D2674A1
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:17 +0100 (CET)
-In-Reply-To: <20190125203509.22994-13-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 80848267502
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:19 +0100 (CET)
+In-Reply-To: <20190125203509.22994-12-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_rt5672: platform name fixup support
+   ASoC: Intel: cht_bsw_rt5645: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From f403906da05cdea38c222ef472fdc4df29ece47f Mon Sep 17 00:00:00 2001
+>From 3a934e7c75b446a104bdea3dd676d7199db9a7bd Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:06 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5672: platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:05 -0600
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: platform name fixup support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 9 +++++++++
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 9de64f447e7b..f1c1f9dd5353 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -400,6 +400,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	int ret_val = 0;
- 	struct cht_mc_private *drv;
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 250a356a0cbf..cbc2d458483f 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -530,6 +530,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
+ 	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	const char *i2c_name;
- 	int i;
- 
-@@ -426,6 +427,14 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		}
+ 	struct cht_mc_private *drv;
+ 	const char *i2c_name = NULL;
+ 	bool found = false;
+@@ -663,6 +664,14 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 			cht_rt5645_cpu_dai_name;
  	}
  
 +	/* override plaform name, if required */
 +	platform_name = mach->mach_params.platform;
 +
-+	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
++	ret_val = snd_soc_fixup_dai_links_platform_name(card,
 +							platform_name);
 +	if (ret_val)
 +		return ret_val;
