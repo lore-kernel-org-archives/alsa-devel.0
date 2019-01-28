@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_nau8824: platform name
+Subject: Applied "ASoC: Intel: bytcht_es8316: platform name
 	fixup support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:20 +0000 (GMT)
-Message-ID: <20190128182520.AA3811127D29@debutante.sirena.org.uk>
-References: <20190125203509.22994-11-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 28 Jan 2019 18:25:24 +0000 (GMT)
+Message-ID: <20190128182524.E5D151127D2D@debutante.sirena.org.uk>
+References: <20190125203509.22994-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5307E26799D
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:21 +0100 (CET)
-In-Reply-To: <20190125203509.22994-11-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 94936267963
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:25 +0100 (CET)
+In-Reply-To: <20190125203509.22994-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_nau8824: platform name fixup support
+   ASoC: Intel: bytcht_es8316: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 4506db8043341f2351e03d45c0e96c8e1a141dfa Mon Sep 17 00:00:00 2001
+>From e4bc6b1195f64d345646709c4a65edf1fc4d3228 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:04 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:02 -0600
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: platform name fixup support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_nau8824.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/intel/boards/bytcht_es8316.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 30c46977d53c..02c2fa239331 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -25,6 +25,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include <sound/jack.h>
- #include <linux/input.h>
- #include "../atom/sst-atom-controls.h"
-@@ -246,6 +247,8 @@ static struct snd_soc_card snd_soc_card_cht = {
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
- 	struct cht_mc_private *drv;
-+	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 1364e4e601d8..d2a7e6ba11ae 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -441,6 +441,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	struct byt_cht_es8316_private *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	int ret_val;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
-@@ -253,6 +256,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+ 	const char *i2c_name = NULL;
+ 	struct device *codec_dev;
+ 	int dai_index = 0;
+@@ -469,6 +470,14 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
+ 	}
  
 +	/* override plaform name, if required */
-+	mach = (&pdev->dev)->platform_data;
 +	platform_name = mach->mach_params.platform;
 +
-+	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
-+							platform_name);
-+	if (ret_val)
-+		return ret_val;
++	ret = snd_soc_fixup_dai_links_platform_name(&byt_cht_es8316_card,
++						    platform_name);
++	if (ret)
++		return ret;
 +
- 	/* register the soc card */
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
+ 	/* Check for BYTCR or other platform and setup quirks */
+ 	if (x86_match_cpu(baytrail_cpu_ids) &&
+ 	    mach->mach_params.acpi_ipc_irq_index == 0) {
 -- 
 2.20.1
