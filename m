@@ -1,17 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: max98090: support 20-bit and 24-bit
- audio format
-Date: Mon, 28 Jan 2019 09:55:13 -0600
-Message-ID: <7166d9ce-983a-8ec2-834a-a2fea6185f74@linux.intel.com>
-References: <20190128091507.211202-1-tzungbi@google.com>
+Subject: Re: [PATCH 01/15] ASoC: add helper to change platform
+ name for all dailinks
+Date: Mon, 28 Jan 2019 09:57:20 -0600
+Message-ID: <a1d2d0b9-69fc-21f6-dcee-bd004e3263a8@linux.intel.com>
+References: <20190125203509.22994-1-pierre-louis.bossart@linux.intel.com>
+ <20190125203509.22994-2-pierre-louis.bossart@linux.intel.com>
+ <s5htvhv8g4y.wl-tiwai@suse.de> <20190128121933.GC11699@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 91C6A267454
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 16:55:16 +0100 (CET)
-In-Reply-To: <20190128091507.211202-1-tzungbi@google.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A93F7267467
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 16:57:22 +0100 (CET)
+In-Reply-To: <20190128121933.GC11699@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,55 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tzung-Bi Shih <tzungbi@google.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, vkoul@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEvMjgvMTkgMzoxNSBBTSwgVHp1bmctQmkgU2hpaCB3cm90ZToKPiAgRnJvbSBkYXRhc2hl
-ZXQgb2YgbWF4OTgwOTA6Cj4gSWYgUkogPSAxLAo+ICAgIFdTID0gMDAsIDE2IGJpdHMKPiAgICBX
-UyA9IDAxLCAyMCBiaXRzCj4gICAgV1MgPSAxMCwgMjQgYml0cwoKWWVzLCBidXQgdGhlcmUgaXMg
-YSBpZiAoUmlnaHQgSnVzdGlmaWVkKQoKREFJIElucHV0IERhdGEgV29yZCBTaXplIChURE0gPSAw
-KQoKSWYgUkogPSAxOiAwMDogMTYgYml0cyAwMTogMjAgYml0cyAxMDogMjQgYml0cyAxMTogUmVz
-ZXJ2ZWQKCklmIFJKID0gMDogMDA6IDE2IGJpdHMgMDEsIDEwLCAxMTogMjAgYml0cwoKWW91IGNh
-bid0IGFyYml0cmFyaWx5IHNldCB0aGUgUkogYml0IHdpdGhvdXQgaGF2aW5nIHRoZSBTT0Mga25v
-dyBhYm91dCAKaXQgLSB0aGlzIHNob3VsZCBiZSBjb25kaXRpb25hbCBvbiB0aGUgREFJIGZvcm1h
-dCBhbHJlYWR5IHVzZWQgZWxzZXdoZXJlOgoKY2FzZSBTTkRfU09DX0RBSUZNVF9SSUdIVF9KOgog
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgcmVndmFsIHw9IE05ODA5MF9SSl9NQVNLOwogwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgYnJlYWs7CgpJIGFsc28gdmFndWVseSByZWNhbGwgdGhlcmUgd2VyZSBsaW1p
-dGF0aW9ucyBvbiBjYXB0dXJlIHdpdGggYW4gb2RkIApmb3JtYXQgYmVpbmcgdXNlZD8KCj4KPiBT
-aWduZWQtb2ZmLWJ5OiBUenVuZy1CaSBTaGloIDx0enVuZ2JpQGdvb2dsZS5jb20+Cj4gLS0tCj4g
-ICBzb3VuZC9zb2MvY29kZWNzL21heDk4MDkwLmMgfCAxNiArKysrKysrKysrKysrKystCj4gICBz
-b3VuZC9zb2MvY29kZWNzL21heDk4MDkwLmggfCAgMyArKysKPiAgIDIgZmlsZXMgY2hhbmdlZCwg
-MTggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9jb2RlY3MvbWF4OTgwOTAuYyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuYwo+IGluZGV4
-IGM5N2YyMTgzNmM2Ni4uMGVjYzJmMWFjY2I1IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2Rl
-Y3MvbWF4OTgwOTAuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuYwo+IEBAIC0x
-OTQyLDcgKzE5NDIsMjEgQEAgc3RhdGljIGludCBtYXg5ODA5MF9kYWlfaHdfcGFyYW1zKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ICAgCXN3aXRjaCAocGFyYW1zX3dpZHRo
-KHBhcmFtcykpIHsKPiAgIAljYXNlIDE2Ogo+ICAgCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVf
-Yml0cyhjb21wb25lbnQsIE05ODA5MF9SRUdfSU5URVJGQUNFX0ZPUk1BVCwKPiAtCQkJTTk4MDkw
-X1dTX01BU0ssIDApOwo+ICsJCQlNOTgwOTBfUkpfTUFTSywgTTk4MDkwX1JKX01BU0spOwo+ICsJ
-CXNuZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgTTk4MDkwX1JFR19JTlRF
-UkZBQ0VfRk9STUFULAo+ICsJCQlNOTgwOTBfV1NfTUFTSywgTTk4MDkwX0ZPUk1BVF9TMTZfTEUp
-Owo+ICsJCWJyZWFrOwo+ICsJY2FzZSAyMDoKPiArCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVf
-Yml0cyhjb21wb25lbnQsIE05ODA5MF9SRUdfSU5URVJGQUNFX0ZPUk1BVCwKPiArCQkJTTk4MDkw
-X1JKX01BU0ssIE05ODA5MF9SSl9NQVNLKTsKPiArCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVf
-Yml0cyhjb21wb25lbnQsIE05ODA5MF9SRUdfSU5URVJGQUNFX0ZPUk1BVCwKPiArCQkJTTk4MDkw
-X1dTX01BU0ssIE05ODA5MF9GT1JNQVRfUzIwX0xFOwo+ICsJCWJyZWFrOwo+ICsJY2FzZSAyNDoK
-PiArCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0cyhjb21wb25lbnQsIE05ODA5MF9SRUdf
-SU5URVJGQUNFX0ZPUk1BVCwKPiArCQkJTTk4MDkwX1JKX01BU0ssIE05ODA5MF9SSl9NQVNLKTsK
-PiArCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0cyhjb21wb25lbnQsIE05ODA5MF9SRUdf
-SU5URVJGQUNFX0ZPUk1BVCwKPiArCQkJTTk4MDkwX1dTX01BU0ssIE05ODA5MF9GT1JNQVRfUzI0
-X0xFKTsKPiAgIAkJYnJlYWs7Cj4gICAJZGVmYXVsdDoKPiAgIAkJcmV0dXJuIC1FSU5WQUw7Cj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuaCBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvbWF4OTgwOTAuaAo+IGluZGV4IGIxNTcyYTJkMTlkYS4uOTA4OGY5ZDY0ZmYyIDEwMDY0NAo+
-IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwOTAuaAo+ICsrKyBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvbWF4OTgwOTAuaAo+IEBAIC03MDYsNiArNzA2LDkgQEAKPiAgICNkZWZpbmUgTTk4MDkwX1dT
-X1NISUZUCQkJMAo+ICAgI2RlZmluZSBNOTgwOTBfV1NfV0lEVEgJCQkyCj4gICAjZGVmaW5lIE05
-ODA5MF9XU19OVU0JCQkoMTw8TTk4MDkwX1dTX1dJRFRIKQo+ICsjZGVmaW5lIE05ODA5MF9GT1JN
-QVRfUzE2X0xFCQkoMDw8MCkKPiArI2RlZmluZSBNOTgwOTBfRk9STUFUX1MyMF9MRQkJKDE8PDAp
-Cj4gKyNkZWZpbmUgTTk4MDkwX0ZPUk1BVF9TMjRfTEUJCSgyPDwwKQo+ICAgCj4gICAvKgo+ICAg
-ICogTTk4MDkwX1JFR19URE1fQ09OVFJPTApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+>>> +static inline
+>>> +int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
+>>> +					  const char *platform_name)
+>>> +{
+>> Does it have to be inline?  The function has a significant size, and
+>> it's supposed to be called by every Intel driver.
+> Yeah, if it gets too big the compiler will just ignore you but given
+> that this isn't exactly in a hot path or anything I can't see any reason
+> why it should be inline.
+Sure, I can fix this, no worries.
