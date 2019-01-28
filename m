@@ -1,127 +1,112 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: add support for Solid State Logic
-	Duende Classic/Mini
-Date: Mon, 28 Jan 2019 20:40:58 +0900
-Message-ID: <20190128114058.31805-1-o-takashi@sakamocchi.jp>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v10 0/4] Media Device Allocator API
+Date: Mon, 28 Jan 2019 13:03:06 +0100
+Message-ID: <e8717d11-1eff-2e07-53d5-6cd55356c66a@xs4all.nl>
+References: <cover.1548360791.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
- [209.85.215.194])
- by alsa0.perex.cz (Postfix) with ESMTP id D0FBD267454
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 12:41:10 +0100 (CET)
-Received: by mail-pg1-f194.google.com with SMTP id g189so7107022pgc.5
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 03:41:10 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1548360791.git.shuah@kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuah Khan <shuah@kernel.org>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Duende Classic was produced by Solid State Logic in 2006, as a
-first model of Duende DSP series. The following model, Duende Mini
-was produced in 2008. They are designed to receive isochronous
-packets for PCM frames via IEEE 1394 bus, perform signal processing by
-downloaded program, then transfer isochronous packets for converted
-PCM frames.
+Hi Shuah,
 
-These two models includes the same embedded board, consists of several
-ICs below:
- - Texus Instruments Inc, TSB41AB3 for physical layer of IEEE 1394 bus
- - WaveFront semiconductor, DICE II STD ASIC for link/protocol layer
- - Altera MAX 3000A CPLD for programs
- - Analog devices, SHARC ADSP-21363 for signal processing (4 chips)
+On 1/24/19 9:32 PM, Shuah Khan wrote:
+> Media Device Allocator API to allows multiple drivers share a media device.
+> This API solves a very common use-case for media devices where one physical
+> device (an USB stick) provides both audio and video. When such media device
+> exposes a standard USB Audio class, a proprietary Video class, two or more
+> independent drivers will share a single physical USB bridge. In such cases,
+> it is necessary to coordinate access to the shared resource.
+> 
+> Using this API, drivers can allocate a media device with the shared struct
+> device as the key. Once the media device is allocated by a driver, other
+> drivers can get a reference to it. The media device is released when all
+> the references are released.
+> 
+> - This patch series is tested on 5.0-rc3 and addresses comments on
+>   v9 series from Hans Verkuil.
+> - v9 was tested on 4.20-rc6.
+> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+>   arecord. When analog is streaming, digital and audio user-space
+>   applications detect that the tuner is busy and exit. When digital
+>   is streaming, analog and audio applications detect that the tuner is
+>   busy and exit. When arecord is owns the tuner, digital and analog
+>   detect that the tuner is busy and exit.
 
-This commit adds support for the two models to ALSA dice driver. Like
-support for the other devices, packet streaming is just available.
-Userspace applications should be developed if full features became
-available; e.g. program uploader and parameter controller.
+I've been doing some testing with my au0828, and I am confused about one
+thing, probably because it has been too long ago since I last looked into
+this in detail:
 
-$ ./hinawa-config-rom-printer /dev/fw1
-{ 'bus-info': { 'adj': False,
-                'bmc': False,
-                'chip_ID': 349771402425,
-                'cmc': True,
-                'cyc_clk_acc': 255,
-                'generation': 1,
-                'imc': True,
-                'isc': True,
-                'link_spd': 2,
-                'max_ROM': 1,
-                'max_rec': 512,
-                'name': '1394',
-                'node_vendor_ID': 20674,
-                'pmc': False},
-  'root-directory': [ ['VENDOR', 20674],
-                      ['DESCRIPTOR', 'Solid State Logic'],
-                      ['MODEL', 112],
-                      ['DESCRIPTOR', 'Duende board'],
-                      [ 'NODE_CAPABILITIES',
-                        { 'addressing': {'64': True, 'fix': True, 'prv': True},
-                          'misc': {'int': False, 'ms': False, 'spt': True},
-                          'state': { 'atn': False,
-                                     'ded': False,
-                                     'drq': True,
-                                     'elo': False,
-                                     'init': False,
-                                     'lst': True,
-                                     'off': False},
-                          'testing': {'bas': False, 'ext': False}}],
-                      [ 'UNIT',
-                        [ ['SPECIFIER_ID', 20674],
-                          ['VERSION', 1],
-                          ['MODEL', 112],
-                          ['DESCRIPTOR', 'Duende board']]]]}
+Why can't I change the tuner frequency if arecord (and only arecord) is
+streaming audio? If arecord is streaming, then it is recording the audio
+from the analog TV tuner, right? So changing the analog TV frequency
+should be fine.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+I understand why you can't switch to DVB mode, but analog TV should be OK.
+Or am I missing something?
 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index ed50b222d36e..eee184b05d93 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -18,6 +18,7 @@ MODULE_LICENSE("GPL v2");
- #define OUI_ALESIS		0x000595
- #define OUI_MAUDIO		0x000d6c
- #define OUI_MYTEK		0x001ee8
-+#define OUI_SSL			0x0050c2	// Actually ID reserved by IEEE.
- 
- #define DICE_CATEGORY_ID	0x04
- #define WEISS_CATEGORY_ID	0x00
-@@ -196,7 +197,7 @@ static int dice_probe(struct fw_unit *unit,
- 	struct snd_dice *dice;
- 	int err;
- 
--	if (!entry->driver_data) {
-+	if (!entry->driver_data && entry->vendor_id != OUI_SSL) {
- 		err = check_dice_category(unit);
- 		if (err < 0)
- 			return -ENODEV;
-@@ -361,6 +362,15 @@ static const struct ieee1394_device_id dice_id_table[] = {
- 		.model_id	= 0x000002,
- 		.driver_data = (kernel_ulong_t)snd_dice_detect_mytek_formats,
- 	},
-+	// Solid State Logic, Duende Classic and Mini.
-+	// NOTE: each field of GUID in config ROM is not compliant to standard
-+	// DICE scheme.
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_SSL,
-+		.model_id	= 0x000070,
-+	},
- 	{
- 		.match_flags = IEEE1394_MATCH_VERSION,
- 		.version     = DICE_INTERFACE,
--- 
-2.19.1
+Regards,
+
+	Hans
+
+> - Tested media device allocator API with bind/unbind testing on
+>   snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+>   only when the last driver is unbound.
+> - Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+> - Updated change log to describe the use-case more clearly.
+> - No changes to 0001,0002 code since the v7 referenced below.
+> - 0003 is a new patch to enable ALSA defines that have been
+>   disabled for kernel between 4.9 and 4.19.
+> - Minor merge conflict resolution in 0004.
+> - Added SPDX to new files.
+> 
+> Changes since v9:
+> - Patch 1: Fix mutex assert warning from find_module() calls. This
+>   code was written before the change to find_module() that requires
+>   callers to hold module_mutex. I missed this during my testing on
+>   4.20-rc6. Hans Verkuil reported the problem.
+> - Patch 4: sound/usb: Initializes all the entities it can before
+>   registering the device based on comments from Hans Verkuil
+> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+> - No changes to Patches 2 and 3.
+> 
+> References:
+> https://lkml.org/lkml/2018/11/2/169
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
+> 
+> Shuah Khan (4):
+>   media: Media Device Allocator API
+>   media: change au0828 to use Media Device Allocator API
+>   media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+>   sound/usb: Use Media Controller API to share media resources
+> 
+>  Documentation/media/kapi/mc-core.rst   |  41 ++++
+>  drivers/media/Makefile                 |   4 +
+>  drivers/media/media-dev-allocator.c    | 144 +++++++++++
+>  drivers/media/usb/au0828/au0828-core.c |  12 +-
+>  drivers/media/usb/au0828/au0828.h      |   1 +
+>  include/media/media-dev-allocator.h    |  53 ++++
+>  include/uapi/linux/media.h             |  25 +-
+>  sound/usb/Kconfig                      |   4 +
+>  sound/usb/Makefile                     |   2 +
+>  sound/usb/card.c                       |  14 ++
+>  sound/usb/card.h                       |   3 +
+>  sound/usb/media.c                      | 327 +++++++++++++++++++++++++
+>  sound/usb/media.h                      |  74 ++++++
+>  sound/usb/mixer.h                      |   3 +
+>  sound/usb/pcm.c                        |  29 ++-
+>  sound/usb/quirks-table.h               |   1 +
+>  sound/usb/stream.c                     |   2 +
+>  sound/usb/usbaudio.h                   |   6 +
+>  18 files changed, 723 insertions(+), 22 deletions(-)
+>  create mode 100644 drivers/media/media-dev-allocator.c
+>  create mode 100644 include/media/media-dev-allocator.h
+>  create mode 100644 sound/usb/media.c
+>  create mode 100644 sound/usb/media.h
+> 
