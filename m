@@ -1,39 +1,98 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH] ALSA: core: Add DMA share buffer support
-Date: Mon, 28 Jan 2019 13:48:22 +0800
-Message-ID: <CAMz4ku+eiqPAETMhGJ3=fQKfzJEORvjmr+51-oJZ5B5AyQcvkw@mail.gmail.com>
-References: <290f6d3a5fe288b87480cc5fa12c5139728daeca.1547787189.git.baolin.wang@linaro.org>
- <81e894ba-acad-2fd4-996d-8d35edd8825a@perex.cz> <20190118190805.GF6260@sirena.org.uk>
- <s5hzhrxzrez.wl-tiwai@suse.de> <20190121124053.GA12679@sirena.org.uk>
- <f278bb69-7df0-4d14-5e4f-9bcb57d7f2b6@perex.cz> <20190122202535.GK7579@sirena.org.uk>
- <s5h4l9z4mbo.wl-tiwai@suse.de> <20190123124658.GE15906@leoy-ThinkPad-X240s>
- <3962daba-f6ed-d706-c618-b791a1ba6b59@perex.cz> <CAMz4kuK5JgfZF7uXa83xC3eVCrZ8+wkZRdKq2s71o_QjT=OhGg@mail.gmail.com>
- <s5h1s51120e.wl-tiwai@suse.de> <s5hwomtyr6o.wl-tiwai@suse.de>
- <CAMz4kuKZOpAXG=Lwii5Cb6q2EKoMUJOEmDz8X=dmVv+JivWf=w@mail.gmail.com> <s5hk1iszy4o.wl-tiwai@suse.de>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda/tegra: enable clock during probe
+Date: Mon, 28 Jan 2019 11:36:58 +0530
+Message-ID: <da021878-5d89-c6d3-e5b2-4ab20f9b573b@nvidia.com>
+References: <1548351403-1875-1-git-send-email-spujar@nvidia.com>
+ <s5h5zudc1qw.wl-tiwai@suse.de>
+ <06c00ce1-32ed-8aa9-0340-d00202a8fa62@nvidia.com>
+ <s5hr2d0zz96.wl-tiwai@suse.de>
+ <b64f5d05-f352-7b46-d70d-3809aab8ddda@nvidia.com>
+ <s5hef90zvo0.wl-tiwai@suse.de>
+ <1f4c5185-e518-5674-4a8c-4e7db64aa0d3@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk1iszy4o.wl-tiwai@suse.de>
+In-Reply-To: <1f4c5185-e518-5674-4a8c-4e7db64aa0d3@nvidia.com>
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Leo Yan <leo.yan@linaro.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>, bgoswami@codeaurora.org, sr@denx.de, gustavo@embeddedor.com, Phil Burk <philburk@google.com>, Matthew Wilcox <willy@infradead.org>, mchehab+samsung@kernel.org, sboyd@kernel.org, Vinod Koul <vkoul@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, anna-maria@linutronix.de, Jon Corbet <corbet@lwn.net>, Jeffery Miller <jmiller@neverware.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, joe@perches.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, colyli@suse
+To: Jon Hunter <jonathanh@nvidia.com>, Takashi Iwai <tiwai@suse.de>
+Cc: pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, thierry.reding@gmail.com, rlokhande@nvidia.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Jan 2019 at 21:04, Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > Erm, obviously it's not enough.  Each attach / detach needs to manage
-> > > the refcount, too, for covering the cases above.  It can re-use the
-> > > PCM mmap_refount, though.
-> >
-> > But we've used the DMA buffer file's refcounting to manage the DMA
-> > buffer. So is this not enough?
->
-> Unless you manage the PCM substream refcount (or block the state
-> change), the PCM stream itself can be released (or re-setup) freely.
->
 
-OK. Thanks for your comments.
+On 1/25/2019 7:34 PM, Jon Hunter wrote:
+> On 25/01/2019 13:58, Takashi Iwai wrote:
+>> On Fri, 25 Jan 2019 14:26:27 +0100,
+>> Jon Hunter wrote:
+>>>
+>>> On 25/01/2019 12:40, Takashi Iwai wrote:
+>>>> On Fri, 25 Jan 2019 12:36:00 +0100,
+>>>> Jon Hunter wrote:
+>>>>>
+>>>>> On 24/01/2019 19:08, Takashi Iwai wrote:
+>>>>>> On Thu, 24 Jan 2019 18:36:43 +0100,
+>>>>>> Sameer Pujar wrote:
+>>>>>>> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
+>>>>>>> will not be ON. This could cause issue during probe, where hda init
+>>>>>>> setup is done. This patch checks whether runtime PM is enabled or not.
+>>>>>>> If disabled, clocks are enabled in probe() and disabled in remove()
+>>>>>>>
+>>>>>>> This patch does following minor changes as cleanup,
+>>>>>>>    * return code check for pm_runtime_get_sync() to take care of failure
+>>>>>>>      and exit gracefully.
+>>>>>>>    * In remove path runtime PM is disabled before calling snd_card_free().
+>>>>>>>    * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
+>>>>>>>    * runtime PM callbacks moved out of CONFIG_PM check
+>>>>>>>
+>>>>>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>>>>>>> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+>>>>>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>>>>>> (snip)
+>>>>>>> @@ -555,6 +553,13 @@ static int hda_tegra_probe(struct platform_device *pdev)
+>>>>>>>   	if (!azx_has_pm_runtime(chip))
+>>>>>>>   		pm_runtime_forbid(hda->dev);
+>>>>>>>   
+>>>>>>> +	/* explicit resume if runtime PM is disabled */
+>>>>>>> +	if (!pm_runtime_enabled(hda->dev)) {
+>>>>>>> +		err = hda_tegra_runtime_resume(hda->dev);
+>>>>>>> +		if (err)
+>>>>>>> +			goto out_free;
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>>   	schedule_work(&hda->probe_work);
+>>>>>> Calling runtime_resume here is really confusing...
+>>>>> Why? IMO it is better to have a single handler for resuming the device
+>>>>> and so if RPM is not enabled we call the handler directly. This is what
+>>>>> we have been advised to do in the past and do in other drivers. See ...
+>>>> The point is that we're not "resuming" anything there.  It's in the
+>>>> early probe stage, and the device state is uninitialized, not really
+>>>> suspended.  It'd end up with just calling the same helper
+>>>> (hda_tegra_enable_clocks()), though.
+>>> Yes and you can make the same argument for every driver that calls
+>>> pm_runtime_get_sync() during probe to turn on clocks, handle resets,
+>>> etc, because at the end of the day the very first call to
+>>> pm_runtime_get_sync() invokes the runtime_resume callback, when we have
+>>> never been suspended.
+>> Although there are some magical pm_runtime_*() in some places, most of
+>> such pm_runtime_get_sync() is for the actual runtime PM management (to
+>> prevent the runtime suspend), while the code above is for explicitly
+>> setting up something for non-PM cases.
+>>
+>> And if pm_runtime_get_sync() is obviously superfluous, we should
+>> remove such calls.  Really.
+> Yes agree.
+>
+>>> Yes at the end of the day it is the same and given that we have done
+>>> this elsewhere I think it is good to be consistent if/where we can.
+>> The code becomes less readable, and that's a good reason against it :)
+> I don't its less readable. However, I do think it is less error prone :-)
 
--- 
-Baolin Wang
-Best Regards
+Do we have a consensus here? Request others to provide opinions to help 
+close on this.
+
+Thanks,
+Sameer.
+
+> Jon
+>
