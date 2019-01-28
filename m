@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxt_rt298: platform name fixup
-	support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:12 +0000 (GMT)
-Message-ID: <20190128182512.2FA491127D29@debutante.sirena.org.uk>
-References: <20190125203509.22994-15-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: cht_bsw_rt5672: platform name
+	fixup support" to the asoc tree
+Date: Mon, 28 Jan 2019 18:25:16 +0000 (GMT)
+Message-ID: <20190128182516.73FCF1127D2D@debutante.sirena.org.uk>
+References: <20190125203509.22994-13-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 315AD267963
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:13 +0100 (CET)
-In-Reply-To: <20190125203509.22994-15-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C80D2674A1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:17 +0100 (CET)
+In-Reply-To: <20190125203509.22994-13-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxt_rt298: platform name fixup support
+   ASoC: Intel: cht_bsw_rt5672: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From fbe2c2736e295bf866110c9278504c42498318c5 Mon Sep 17 00:00:00 2001
+>From f403906da05cdea38c222ef472fdc4df29ece47f Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:08 -0600
-Subject: [PATCH] ASoC: Intel: bxt_rt298: platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:06 -0600
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5672: platform name fixup support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 27308337ab12..e91057f83d20 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -21,6 +21,7 @@
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include "../../codecs/hdac_hdmi.h"
-@@ -576,6 +577,9 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	struct bxt_rt286_private *ctx;
- 	struct snd_soc_card *card =
- 			(struct snd_soc_card *)pdev->id_entry->driver_data;
-+	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 9de64f447e7b..f1c1f9dd5353 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -400,6 +400,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	int ret_val = 0;
+ 	struct cht_mc_private *drv;
+ 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
 +	const char *platform_name;
-+	int ret;
+ 	const char *i2c_name;
  	int i;
  
- 	for (i = 0; i < ARRAY_SIZE(broxton_rt298_dais); i++) {
-@@ -602,6 +606,15 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 	card->dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(card, ctx);
+@@ -426,6 +427,14 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
 +	/* override plaform name, if required */
-+	mach = (&pdev->dev)->platform_data;
 +	platform_name = mach->mach_params.platform;
 +
-+	ret = snd_soc_fixup_dai_links_platform_name(card,
-+						    platform_name);
-+	if (ret)
-+		return ret;
++	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
++							platform_name);
++	if (ret_val)
++		return ret_val;
 +
- 	return devm_snd_soc_register_card(&pdev->dev, card);
- }
- 
+ 	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+ 	if (IS_ERR(drv->mclk)) {
+ 		dev_err(&pdev->dev,
 -- 
 2.20.1
