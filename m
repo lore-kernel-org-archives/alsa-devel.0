@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm512x: Implement the set_bclk_ratio
-	interface" to the asoc tree
-Date: Mon, 28 Jan 2019 12:35:22 +0000 (GMT)
-Message-ID: <20190128123522.9A20B1127D29@debutante.sirena.org.uk>
-References: <9b758d09-9b9b-77a1-6651-43755c67e6fd@gmail.com>
+Subject: Applied "ASoC: soc-core: use for_each_link_codecs()
+	for dai_link codecs V2" to the asoc tree
+Date: Mon, 28 Jan 2019 12:35:24 +0000 (GMT)
+Message-ID: <20190128123524.B6B061127D29@debutante.sirena.org.uk>
+References: <87munlh8np.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14D862674B8
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:23 +0100 (CET)
-In-Reply-To: <9b758d09-9b9b-77a1-6651-43755c67e6fd@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A5A4F267454
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:26 +0100 (CET)
+In-Reply-To: <87munlh8np.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papavasiliou <dpapavas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm512x: Implement the set_bclk_ratio interface
+   ASoC: soc-core: use for_each_link_codecs() for dai_link codecs V2
 
 has been applied to the asoc tree at
 
@@ -53,90 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From ccc8d6c7b6d2f521a4b10c7f6d027f46c7a686bf Mon Sep 17 00:00:00 2001
-From: Dimitris Papavasiliou <dpapavas@gmail.com>
-Date: Sat, 26 Jan 2019 15:17:01 +0200
-Subject: [PATCH] ASoC: pcm512x: Implement the set_bclk_ratio interface
+>From 720734a0b66f9ca42ec6663a48702b16e49552ee Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 28 Jan 2019 10:40:24 +0900
+Subject: [PATCH] ASoC: soc-core: use for_each_link_codecs() for dai_link
+ codecs V2
 
-Some boards, such as the HiFiBerry DAC+ Pro, use a pair of external
-oscillators, to generate 44.1 or 48kHz multiples and are forced to
-resort to hacks [1] in order to support 24-bit data without ending up
-with fractional dividers.  This patch allows the machine driver to use
-32-bit frames for 24-bit data to avoid such issues.
+We can use for_each_link_codecs() without waiting
+for_each_rtd_codec_dai() on soc_bind_dai_link().
+Let's use for_each macro.
 
-Although the datasheet (p. 15) seems to suggest that only a handful
-of ratios are supported, it's not very explicit about it, so we allow
-the full range of values supported by the underlying register in the
-callback, to avoid needlessly rejecting potentially usable
-configurations.
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143442.html
-
-Signed-off-by: Dimitris Papavasiliou <dpapavas@gmail.com>
+Fixes: 50acc7e49 ("ASoC: core: Fix multi-CODEC setups")
+Fixes: 10dff9b0d ("ASoC: soc-core: use for_each_link_codecs() for dai_link codecs")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm512x.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 4cc24a5d5c31..ce8c5dbd2164 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -55,6 +55,7 @@ struct pcm512x_priv {
- 	unsigned long overclock_dsp;
- 	int mute;
- 	struct mutex mutex;
-+	unsigned int bclk_ratio;
- };
- 
- /*
-@@ -915,10 +916,15 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
- 	int fssp;
- 	int gpio;
- 
--	lrclk_div = snd_soc_params_to_frame_size(params);
--	if (lrclk_div == 0) {
--		dev_err(dev, "No LRCLK?\n");
--		return -EINVAL;
-+	if (pcm512x->bclk_ratio > 0) {
-+		lrclk_div = pcm512x->bclk_ratio;
-+	} else {
-+		lrclk_div = snd_soc_params_to_frame_size(params);
-+
-+		if (lrclk_div == 0) {
-+			dev_err(dev, "No LRCLK?\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	if (!pcm512x->pll_out) {
-@@ -1383,6 +1389,19 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static int pcm512x_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
-+
-+	if (ratio > 256)
-+		return -EINVAL;
-+
-+	pcm512x->bclk_ratio = ratio;
-+
-+	return 0;
-+}
-+
- static int pcm512x_digital_mute(struct snd_soc_dai *dai, int mute)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8a58fa86675a..93efab486736 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -870,7 +870,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link *dai_link)
  {
- 	struct snd_soc_component *component = dai->component;
-@@ -1435,6 +1454,7 @@ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
- 	.hw_params = pcm512x_hw_params,
- 	.set_fmt = pcm512x_set_fmt,
- 	.digital_mute = pcm512x_digital_mute,
-+	.set_bclk_ratio = pcm512x_set_bclk_ratio,
- };
+ 	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
++	struct snd_soc_dai_link_component *codecs;
+ 	struct snd_soc_dai_link_component cpu_dai_component;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai **codec_dais;
+@@ -905,13 +905,12 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	rtd->num_codecs = dai_link->num_codecs;
  
- static struct snd_soc_dai_driver pcm512x_dai = {
+ 	/* Find CODEC from registered CODECs */
+-	/* we can use for_each_rtd_codec_dai() after this */
+ 	codec_dais = rtd->codec_dais;
+-	for (i = 0; i < rtd->num_codecs; i++) {
+-		codec_dais[i] = snd_soc_find_dai(&codecs[i]);
++	for_each_link_codecs(dai_link, i, codecs) {
++		codec_dais[i] = snd_soc_find_dai(codecs);
+ 		if (!codec_dais[i]) {
+ 			dev_info(card->dev, "ASoC: CODEC DAI %s not registered\n",
+-				 codecs[i].dai_name);
++				 codecs->dai_name);
+ 			goto _err_defer;
+ 		}
+ 		snd_soc_rtdcom_add(rtd, codec_dais[i]->component);
 -- 
 2.20.1
