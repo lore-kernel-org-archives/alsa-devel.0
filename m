@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_max98090_ti: platform
-	name fixup support" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:22 +0000 (GMT)
-Message-ID: <20190128182522.C5D621127D29@debutante.sirena.org.uk>
-References: <20190125203509.22994-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: platform name
+	fixup support" to the asoc tree
+Date: Mon, 28 Jan 2019 18:25:28 +0000 (GMT)
+Message-ID: <20190128182528.BD2EC1127D29@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8991F2679C1
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:28 +0100 (CET)
-In-Reply-To: <20190125203509.22994-10-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1929A2679CD
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_max98090_ti: platform name fixup support
+   ASoC: Intel: bytcr_rt5651: platform name fixup support
 
 has been applied to the asoc tree at
 
@@ -53,55 +51,45 @@ to this mail.
 Thanks,
 Mark
 
->From 7e7e24d7c7ff0e85956288915aaa7e682e2ccd55 Mon Sep 17 00:00:00 2001
+>From 0b2c2093fc3a1f89f2ef15d945c0439ce7b9dd9d Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:35:03 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_max98090_ti: platform name fixup support
+Date: Fri, 25 Jan 2019 14:35:00 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: platform name fixup support
 
 Add helper to override dailink platform name, if passed as parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 08a5152e635a..3263b0495853 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -28,6 +28,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include <sound/jack.h>
- #include "../../codecs/max98090.h"
- #include "../atom/sst-atom-controls.h"
-@@ -420,6 +421,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	int ret_val = 0;
- 	struct cht_mc_private *drv;
- 	const char *mclk_name;
-+	struct snd_soc_acpi_mach *mach;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index e6945d11c8ab..c3b7732929cc 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -922,6 +922,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	static const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
+ 	struct byt_rt5651_private *priv;
+ 	struct snd_soc_acpi_mach *mach;
 +	const char *platform_name;
- 	int quirks = 0;
- 
- 	dmi_id = dmi_first_match(cht_max98090_quirk_table);
-@@ -442,6 +445,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 			dev_dbg(dev, "Unable to add GPIO mapping table\n");
- 	}
+ 	struct device *codec_dev;
+ 	const char *i2c_name = NULL;
+ 	const char *hp_swapped;
+@@ -1137,6 +1138,14 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
  
 +	/* override plaform name, if required */
-+	mach = (&pdev->dev)->platform_data;
 +	platform_name = mach->mach_params.platform;
 +
-+	ret_val = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cht,
++	ret_val = snd_soc_fixup_dai_links_platform_name(&byt_rt5651_card,
 +							platform_name);
 +	if (ret_val)
 +		return ret_val;
 +
- 	/* register the soc card */
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
+ 
+ 	if (ret_val) {
 -- 
 2.20.1
