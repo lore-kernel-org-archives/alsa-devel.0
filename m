@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add helper to change platform name for
-	all dailinks" to the asoc tree
-Date: Mon, 28 Jan 2019 18:25:39 +0000 (GMT)
-Message-ID: <20190128182539.6AF681127D29@debutante.sirena.org.uk>
-References: <20190125203509.22994-2-pierre-louis.bossart@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 05/14] ALSA: pci: Remove superfluous
+ snd_pcm_suspend*() calls
+Date: Mon, 28 Jan 2019 13:28:49 -0600
+Message-ID: <21711c90-595d-88b5-ec8e-f092e662c938@linux.intel.com>
+References: <20190115162155.6308-1-tiwai@suse.de>
+ <20190115162155.6308-6-tiwai@suse.de>
+ <f675ffaa-9966-a05b-7915-a4a16eefbfcb@linux.intel.com>
+ <s5hpnsx26tc.wl-tiwai@suse.de> <s5hh8e9fyam.wl-tiwai@suse.de>
+ <a329b6ed-39aa-0730-cb90-b950eda7edf8@linux.intel.com>
+ <s5ho98fd6fd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1267B2674A1
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 19:25:45 +0100 (CET)
-In-Reply-To: <20190125203509.22994-2-pierre-louis.bossart@linux.intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 763CA26749A
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 20:28:52 +0100 (CET)
+In-Reply-To: <s5ho98fd6fd.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,111 +27,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@intel.com>, Keyon Jie <yang.jie@linux.intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: add helper to change platform name for all dailinks
+>>> BTW, while checking these things, I noticed that there are three
+>>> exceptional drivers: sound/soc/intel/atom/sst-mfld-platform-pcm.c,
+>>> sound/soc/intel/haswell/sst-haswell-pcm.c, and
+>>> sound/soc/samsung/tm2_wm5110.c.  (You can simply grep the external
+>>> snd_soc_suspend call, and only these match.)
+>>>
+>>> The former two drivers look really weird: they do handle the PM only
+>>> with PM prepare and complete callbacks, while snd_soc_suspend() and co
+>>> are called internally from there.  The prepare and complete callbacks
+>>> aren't designed for the complete suspend/resume tasks, so I'd say it's
+>>> a quite abuse.
+>> For the Atom/SST driver, I remember there was a need to set/restore
+>> the DSP state with a specific command that wasn't handled with regular
+>> controls - largely a work-around due to the firmware design.
+>>
+>> For the Haswell driver, there was also a need to preserve/restore
+>> state and pause/stop pipelines (a recurring issue with the "Made for
+>> Windows" firmware).
+>>
+>> These drivers are quite old now and it's not clear to me if they are
+>> broken or if we are talking of an improvement. Could you clarify what
+>> you view as "abuse"?
+>>
+>> a) is this the fact that there are prepare/complete callback for those
+>> drivers, instead of others such as freeze, thaw, etc.
+>>
+>> b) the fact they they call snd_soc_suspend/resume directly?
+>>
+>> c) the fact that they suspend the PCM streams?
+>>
+>> d) all of the above (which is entirely possible).
+> The purpose of PM prepare and complete devops aren't for actually do
+> suspend and resume devices there, while these drivers call
+> snd_soc_suspend() and snd_soc_resume() to perform the complete suspend
+> / resume procedure.  That's not the way these callbacks are supposed
+> to be used.
+>
+> The prepare callback is called before the suspend callback of *all*
+> devices on the system.  Ditto for complete, it's called after the
+> resume of all devices.
+>
+> I guess they use prepare/callback to assure some tasks to be performed
+> always suspend and resume.  But it's still puzzling,
+> e.g. sst_soc_prepare() has
+>
+> static int sst_soc_prepare(struct device *dev)
+> {
+> 	struct sst_data *drv = dev_get_drvdata(dev);
+> 	struct snd_soc_pcm_runtime *rtd;
+>
+> 	if (!drv->soc_card)
+> 		return 0;
+>
+> 	/* suspend all pcms first */
+> 	snd_soc_suspend(drv->soc_card->dev);
+> 	snd_soc_poweroff(drv->soc_card->dev);
+>
+> 	/* set the SSPs to idle */
+> 	for_each_card_rtds(drv->soc_card, rtd) {
+> 		struct snd_soc_dai *dai = rtd->cpu_dai;
+>
+> 		if (dai->active) {
+> 			send_ssp_cmd(dai, dai->name, 0);
+> 			sst_handle_vb_timer(dai, false);
+> 		}
+> 	}
+>
+> 	return 0;
+> }
+>
+> ... and it calls snd_soc_poweroff() for suspend.  That's odd and
+> likely superfluous.
+>
+> And, the last part ("set the SSPs to idle") can be moved to
+> card->suspend_post hook, and then we can simply call
+> snd_soc_suspend().  Or it can be moved to PM devops suspend_late.
+>
+> Similarly for sst_soc_complete(), the task "restart SSPs" can be moved
+> to card->resume_pre hook or PM devops resume_pre.
+>
+>
+> The rest is to make sure the device PM ops order, and that's the
+> hardest part.
+>
+> Further looking at the code, we can see that several Intel ASoC
+> drivers have device PM ops.
+>
+> sound/soc/intel/atom/sst/sst.c
+> sound/soc/intel/haswell/sst-haswell-pcm.c
+> sound/soc/intel/skylake/skl.c
+> sound/soc/intel/atom/sst-mfld-platform-pcm.c
+>
+> ... and there are codecs.  We need to list up and define the suspend /
+> resume call order.
 
-has been applied to the asoc tree at
+I had an offline discussion with Vinod and here are the key points for 
+the Atom/SST driver
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+- the DSP isn't completely modeled with DPCM, there are some pipeline 
+management and commands that need to be send manually. This isn't 
+necessarily a perfect design but the one that was defined in 2013
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+- the choice of the .prepare is intentional. The tasks are split between 
+the SST device (ACPI or PCI) and the platform device it creates. The 
+ACPI/PCI layer handles DSP boot, config, shutdown, fw load, and the 
+platform driver handles PCM/pipelines. The PM starts with the .prepare 
+done in the child before the .suspend done at a higher level.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+For Haswell I have no idea, and I wonder if there are actually any 
+devices using this driver. Even from Broadwell we only know of the Pixel 
+2015 Chromebook and the Dell XPS 13 where the I2S mode is activated (and 
+the latter is deactivated with an ACPI quirk), most devices use HDaudio. 
+Even if we found someone at Intel with bandwidth, changing this part is 
+going to be very difficult between lack of devices and initial 
+teams/individual contributors who have moved on.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+SOF will support all these platforms, it might be a better idea to spend 
+time making sure we do the right thing with the newer drivers than try 
+to fix things but actually introduce regressions in legacy code.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From cb50358b83846e4dcb37137c431327c4dd68561b Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:34:55 -0600
-Subject: [PATCH] ASoC: add helper to change platform name for all dailinks
-
-To reuse the same machine drivers with Atom/SST, Skylake and SOF, we
-need to change the default platform_name (or platforms->name in the
-"modern" representation).
-
-So far, this override was done with an automatic override, which was
-broken by a set of changes for DT platforms related to deferred probe
-handling.
-
-This automatic override is actually not really needed, the machine
-driver can already receive the platform name as a platform_data
-parameter. This is used e.g. for HDaudio support where we have
-different PCI aliases used for different platforms. We can reuse the
-same mechanism and modify the machine drivers to override the dailinks
-prior to registrating the card.
-
-This will require additional work for SOF, but with this helper it'll
-be just two lines of additional code per machine driver which is
-reused, not the end of the world.
-
-This helper can be simplified when all drivers have transitioned to
-the "modern" representation of dailinks.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3089257ead95..95689680336b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1580,6 +1580,37 @@ struct snd_soc_dai *snd_soc_card_get_codec_dai(struct snd_soc_card *card,
- 	return NULL;
- }
- 
-+static inline
-+int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
-+					  const char *platform_name)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	const char *name;
-+	int i;
-+
-+	if (!platform_name) /* nothing to do */
-+		return 0;
-+
-+	/* set platform name for each dailink */
-+	for_each_card_prelinks(card, i, dai_link) {
-+		name = devm_kstrdup(card->dev, platform_name, GFP_KERNEL);
-+		if (!name)
-+			return -ENOMEM;
-+
-+		if (dai_link->platforms)
-+			/* only single platform is supported for now */
-+			dai_link->platforms->name = name;
-+		else
-+			/*
-+			 * legacy mode, this case will be removed when all
-+			 * derivers are switched to modern style dai_link.
-+			 */
-+			dai_link->platform_name = name;
-+	}
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- extern struct dentry *snd_soc_debugfs_root;
- #endif
--- 
-2.20.1
+-Pierre
