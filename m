@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Variable "ret" in function
-	rt5651_i2c_probe() could be uninitialized" to the asoc tree
-Date: Mon, 28 Jan 2019 12:35:16 +0000 (GMT)
-Message-ID: <20190128123516.2E34D1127D29@debutante.sirena.org.uk>
+Subject: Applied "ASoC: pcm512x: Fix clocking calculations when
+	not using the PLL" to the asoc tree
+Date: Mon, 28 Jan 2019 12:35:20 +0000 (GMT)
+Message-ID: <20190128123520.80F501127D29@debutante.sirena.org.uk>
+References: <f1d57eba-909d-7bc5-40ce-6e128a36a356@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D9ED7267477
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A9C0267454
  for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 13:35:23 +0100 (CET)
+In-Reply-To: <f1d57eba-909d-7bc5-40ce-6e128a36a356@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yizhuo <yzhai003@ucr.edu>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Dimitris Papavasiliou <dpapavas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Variable "ret" in function rt5651_i2c_probe() could be uninitialized
+   ASoC: pcm512x: Fix clocking calculations when not using the PLL
 
 has been applied to the asoc tree at
 
@@ -51,46 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From e20bfeb0b7d808bc05e7c4cb1f492cd31d837da0 Mon Sep 17 00:00:00 2001
-From: Yizhuo <yzhai003@ucr.edu>
-Date: Fri, 25 Jan 2019 10:45:37 -0800
-Subject: [PATCH] ASoC: rt5651: Variable "ret" in function rt5651_i2c_probe()
- could be uninitialized
+>From 51b033c2608147efe3a5368bfa64837e772d8c55 Mon Sep 17 00:00:00 2001
+From: Dimitris Papavasiliou <dpapavas@gmail.com>
+Date: Sat, 26 Jan 2019 15:23:45 +0200
+Subject: [PATCH] ASoC: pcm512x: Fix clocking calculations when not using the
+ PLL
 
-In function rt5651_i2c_probe(), local variable "ret" could
-be uninitialized if function regmap_read() returns -EINVAL.
-However, this value is used in if statement. This is
-potentially unsafe.
+The rationale behind the current calculation is somewhat obscure [1]
+and can yield slightly wrong dividers in certain cases, which the
+machine drivers for some boards (like the HiFiBerry DAC+ Pro)
+seemingly try to circumvent, by updating the rate fraction so as to
+suit this calculation.
 
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+The updated calculation should correctly yield the smallest bit clock
+rate that would fit the frame.
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144219.html
+
+Signed-off-by: Dimitris Papavasiliou <dpapavas@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/pcm512x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 75994297c896..29b2d60076b0 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -2181,6 +2181,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- {
- 	struct rt5651_priv *rt5651;
- 	int ret;
-+	int err;
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index ce8c5dbd2164..ae3bd533eadb 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -929,8 +929,8 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
  
- 	rt5651 = devm_kzalloc(&i2c->dev, sizeof(*rt5651),
- 				GFP_KERNEL);
-@@ -2197,7 +2198,10 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
+ 	if (!pcm512x->pll_out) {
+ 		sck_rate = clk_get_rate(pcm512x->sclk);
+-		bclk_div = params->rate_den * 64 / lrclk_div;
+-		bclk_rate = DIV_ROUND_CLOSEST(sck_rate, bclk_div);
++		bclk_rate = params_rate(params) * lrclk_div;
++		bclk_div = DIV_ROUND_CLOSEST(sck_rate, bclk_rate);
  
--	regmap_read(rt5651->regmap, RT5651_DEVICE_ID, &ret);
-+	err = regmap_read(rt5651->regmap, RT5651_DEVICE_ID, &ret);
-+	if (err)
-+		return err;
-+
- 	if (ret != RT5651_DEVICE_ID_VALUE) {
- 		dev_err(&i2c->dev,
- 			"Device with ID register %#x is not rt5651\n", ret);
+ 		mck_rate = sck_rate;
+ 	} else {
 -- 
 2.20.1
