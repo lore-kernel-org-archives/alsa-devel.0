@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sprd: Add Spreadtrum audio DMA platfrom
-	driver" to the asoc tree
-Date: Tue, 29 Jan 2019 18:12:16 +0000 (GMT)
-Message-ID: <20190129181216.C53961127D50@debutante.sirena.org.uk>
-References: <d02bf3a04f6bfcd28f9689cbb6b4dff0132b71da.1548747137.git.baolin.wang@linaro.org>
+Subject: Applied "ASoC: topology: modify dapm route loading
+	routine and add dapm route unloading" to the asoc tree
+Date: Tue, 29 Jan 2019 18:12:21 +0000 (GMT)
+Message-ID: <20190129181221.0C5A91127D50@debutante.sirena.org.uk>
+References: <20190125200648.12470-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1972A2674A3
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 19:12:20 +0100 (CET)
-In-Reply-To: <d02bf3a04f6bfcd28f9689cbb6b4dff0132b71da.1548747137.git.baolin.wang@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFA95267588
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 19:12:22 +0100 (CET)
+In-Reply-To: <20190125200648.12470-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, baolin.wang@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sprd: Add Spreadtrum audio DMA platfrom driver
+   ASoC: topology: modify dapm route loading routine and add dapm route unloading
 
 has been applied to the asoc tree at
 
@@ -52,664 +53,180 @@ to this mail.
 Thanks,
 Mark
 
->From 42fea318e1d19c0214ed4336d19f512c5d78cc3b Mon Sep 17 00:00:00 2001
-From: Baolin Wang <baolin.wang@linaro.org>
-Date: Tue, 29 Jan 2019 16:04:45 +0800
-Subject: [PATCH] ASoC: sprd: Add Spreadtrum audio DMA platfrom driver
+>From 7df04ea7a31eaa75bdad2905f07cc097b15558ee Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Fri, 25 Jan 2019 14:06:47 -0600
+Subject: [PATCH] ASoC: topology: modify dapm route loading routine and add
+ dapm route unloading
 
-The Spreadtrum DMA engine uses the link-list mode to support audio playback
-or capture, thus this patch adds audio DMA platform support for CPU DAI to
-trigger DMA link-list transfer.
+struct snd_soc_dapm_route has been modified to be a dynamic
+object so that it can be used to save driver specific
+data while parsing topology and clean up
+driver-specific data during driver unloading.
 
-Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+This patch makes the following changes to accomplish the above:
+1. Set the dobj member of snd_soc_dapm_route during the
+SOC_TPLG_PASS_GRAPH pass of topology parsing.
+2. Add the remove_route() routine that will be called while
+removing all dynamic objects from the component driver.
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/Kconfig             |   1 +
- sound/soc/Makefile            |   1 +
- sound/soc/sprd/Kconfig        |   6 +
- sound/soc/sprd/Makefile       |   4 +
- sound/soc/sprd/sprd-pcm-dma.c | 562 ++++++++++++++++++++++++++++++++++
- sound/soc/sprd/sprd-pcm-dma.h |  15 +
- 6 files changed, 589 insertions(+)
- create mode 100644 sound/soc/sprd/Kconfig
- create mode 100644 sound/soc/sprd/Makefile
- create mode 100644 sound/soc/sprd/sprd-pcm-dma.c
- create mode 100644 sound/soc/sprd/sprd-pcm-dma.h
+ sound/soc/soc-topology.c | 102 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 86 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 6592a422a047..aa35940f5c50 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -64,6 +64,7 @@ source "sound/soc/samsung/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/sirf/Kconfig"
- source "sound/soc/spear/Kconfig"
-+source "sound/soc/sprd/Kconfig"
- source "sound/soc/sti/Kconfig"
- source "sound/soc/stm/Kconfig"
- source "sound/soc/sunxi/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 48c48c1c893c..974fb9821e17 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -48,6 +48,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sirf/
- obj-$(CONFIG_SND_SOC)	+= spear/
-+obj-$(CONFIG_SND_SOC)	+= sprd/
- obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= stm/
- obj-$(CONFIG_SND_SOC)	+= sunxi/
-diff --git a/sound/soc/sprd/Kconfig b/sound/soc/sprd/Kconfig
-new file mode 100644
-index 000000000000..43ece7daf0e9
---- /dev/null
-+++ b/sound/soc/sprd/Kconfig
-@@ -0,0 +1,6 @@
-+config SND_SOC_SPRD
-+	tristate "SoC Audio for the Spreadtrum SoC chips"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the Spreadtrum SoCs' Audio interfaces.
-diff --git a/sound/soc/sprd/Makefile b/sound/soc/sprd/Makefile
-new file mode 100644
-index 000000000000..47620e57a9f2
---- /dev/null
-+++ b/sound/soc/sprd/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Spreadtrum Audio Support
-+
-+obj-$(CONFIG_SND_SOC_SPRD)	+= sprd-pcm-dma.o
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-new file mode 100644
-index 000000000000..cbb27c4abeba
---- /dev/null
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -0,0 +1,562 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2019 Spreadtrum Communications Inc.
-+
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma/sprd-dma.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "sprd-pcm-dma.h"
-+
-+#define DRV_NAME			"sprd_pcm_dma"
-+#define SPRD_PCM_DMA_LINKLIST_SIZE	64
-+#define SPRD_PCM_DMA_BRUST_LEN		640
-+
-+struct sprd_pcm_dma_data {
-+	struct dma_chan *chan;
-+	struct dma_async_tx_descriptor *desc;
-+	dma_cookie_t cookie;
-+	dma_addr_t phys;
-+	void *virt;
-+	int pre_pointer;
-+};
-+
-+struct sprd_pcm_dma_private {
-+	struct snd_pcm_substream *substream;
-+	struct sprd_pcm_dma_params *params;
-+	struct sprd_pcm_dma_data data[SPRD_PCM_CHANNEL_MAX];
-+	int hw_chan;
-+	int dma_addr_offset;
-+};
-+
-+static const struct snd_pcm_hardware sprd_pcm_hardware = {
-+	.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-+		SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_PAUSE |
-+		SNDRV_PCM_INFO_RESUME | SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	.period_bytes_min = 1,
-+	.period_bytes_max = 64 * 1024,
-+	.periods_min = 1,
-+	.periods_max = PAGE_SIZE / SPRD_PCM_DMA_LINKLIST_SIZE,
-+	.buffer_bytes_max = 64 * 1024,
-+};
-+
-+static int sprd_pcm_open(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 2cb0a05e2368..23d421370e6c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -433,6 +433,23 @@ static void remove_bytes(struct snd_soc_component *comp,
+ 	kfree(sb);
+ }
+ 
++/* remove a route */
++static void remove_route(struct snd_soc_component *comp,
++			 struct snd_soc_dobj *dobj, int pass)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct device *dev = component->dev;
-+	struct sprd_pcm_dma_private *dma_private;
-+	int hw_chan = SPRD_PCM_CHANNEL_MAX;
-+	int size, ret, i;
++	struct snd_soc_dapm_route *route =
++		container_of(dobj, struct snd_soc_dapm_route, dobj);
 +
-+	snd_soc_set_runtime_hwparams(substream, &sprd_pcm_hardware);
++	if (pass != SOC_TPLG_PASS_GRAPH)
++		return;
 +
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
-+					 SPRD_PCM_DMA_BRUST_LEN);
-+	if (ret < 0)
-+		return ret;
++	if (dobj->ops && dobj->ops->dapm_route_unload)
++		dobj->ops->dapm_route_unload(comp, dobj);
 +
-+	ret = snd_pcm_hw_constraint_step(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
-+					 SPRD_PCM_DMA_BRUST_LEN);
-+	if (ret < 0)
-+		return ret;
++	list_del(&dobj->list);
++	kfree(route);
++}
 +
-+	ret = snd_pcm_hw_constraint_integer(runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		return ret;
-+
-+	dma_private = devm_kzalloc(dev, sizeof(*dma_private), GFP_KERNEL);
-+	if (!dma_private)
+ /* remove a widget and it's kcontrols - routes must be removed first */
+ static void remove_widget(struct snd_soc_component *comp,
+ 	struct snd_soc_dobj *dobj, int pass)
+@@ -1119,9 +1136,10 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+ 	struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
+-	struct snd_soc_dapm_route route;
+ 	struct snd_soc_tplg_dapm_graph_elem *elem;
+-	int count = hdr->count, i;
++	struct snd_soc_dapm_route **routes;
++	int count = hdr->count, i, j;
++	int ret = 0;
+ 
+ 	if (tplg->pass != SOC_TPLG_PASS_GRAPH) {
+ 		tplg->pos += hdr->size + hdr->payload_size;
+@@ -1140,36 +1158,85 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes for index %d\n", count,
+ 		hdr->index);
+ 
++	/* allocate memory for pointer to array of dapm routes */
++	routes = kcalloc(count, sizeof(struct snd_soc_dapm_route *),
++			 GFP_KERNEL);
++	if (!routes)
 +		return -ENOMEM;
 +
-+	size = runtime->hw.periods_max * SPRD_PCM_DMA_LINKLIST_SIZE;
++	/*
++	 * allocate memory for each dapm route in the array.
++	 * This needs to be done individually so that
++	 * each route can be freed when it is removed in remove_route().
++	 */
++	for (i = 0; i < count; i++) {
++		routes[i] = kzalloc(sizeof(*routes[i]), GFP_KERNEL);
++		if (!routes[i]) {
++			/* free previously allocated memory */
++			for (j = 0; j < i; j++)
++				kfree(routes[j]);
 +
-+	for (i = 0; i < hw_chan; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		data->virt = dmam_alloc_coherent(dev, size, &data->phys,
-+						 GFP_KERNEL);
-+		if (!data->virt) {
-+			ret = -ENOMEM;
-+			goto error;
++			kfree(routes);
++			return -ENOMEM;
 +		}
 +	}
 +
-+	dma_private->hw_chan = hw_chan;
-+	runtime->private_data = dma_private;
-+	dma_private->substream = substream;
-+
-+	return 0;
-+
-+error:
-+	for (i = 0; i < hw_chan; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		if (data->virt)
-+			dmam_free_coherent(dev, size, data->virt, data->phys);
-+	}
-+
-+	devm_kfree(dev, dma_private);
-+	return ret;
-+}
-+
-+static int sprd_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct device *dev = component->dev;
-+	int size = runtime->hw.periods_max * SPRD_PCM_DMA_LINKLIST_SIZE;
-+	int i;
-+
-+	for (i = 0; i < dma_private->hw_chan; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		dmam_free_coherent(dev, size, data->virt, data->phys);
-+	}
-+
-+	devm_kfree(dev, dma_private);
-+
-+	return 0;
-+}
-+
-+static void sprd_pcm_dma_complete(void *data)
-+{
-+	struct sprd_pcm_dma_private *dma_private = data;
-+	struct snd_pcm_substream *substream = dma_private->substream;
-+
-+	snd_pcm_period_elapsed(substream);
-+}
-+
-+static void sprd_pcm_release_dma_channel(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
-+	int i;
-+
-+	for (i = 0; i < SPRD_PCM_CHANNEL_MAX; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		if (data->chan) {
-+			dma_release_channel(data->chan);
-+			data->chan = NULL;
+ 	for (i = 0; i < count; i++) {
+ 		elem = (struct snd_soc_tplg_dapm_graph_elem *)tplg->pos;
+ 		tplg->pos += sizeof(struct snd_soc_tplg_dapm_graph_elem);
+ 
+ 		/* validate routes */
+ 		if (strnlen(elem->source, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
 +		}
-+	}
-+}
-+
-+static int sprd_pcm_request_dma_channel(struct snd_pcm_substream *substream,
-+					int channels)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct device *dev = component->dev;
-+	struct sprd_pcm_dma_params *dma_params = dma_private->params;
-+	int i;
-+
-+	if (channels > SPRD_PCM_CHANNEL_MAX) {
-+		dev_err(dev, "invalid dma channel number:%d\n", channels);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < channels; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		data->chan = dma_request_slave_channel(dev,
-+						       dma_params->chan_name[i]);
-+		if (!data->chan) {
-+			dev_err(dev, "failed to request dma channel:%s\n",
-+				dma_params->chan_name[i]);
-+			sprd_pcm_release_dma_channel(substream);
-+			return -ENODEV;
+ 		if (strnlen(elem->sink, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
 +		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int sprd_pcm_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sprd_pcm_dma_params *dma_params;
-+	size_t totsize = params_buffer_bytes(params);
-+	size_t period = params_period_bytes(params);
-+	int channels = params_channels(params);
-+	int is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	struct scatterlist *sg;
-+	unsigned long flags;
-+	int ret, i, j, sg_num;
-+
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	if (!dma_params) {
-+		dev_warn(component->dev, "no dma parameters setting\n");
-+		dma_private->params = NULL;
-+		snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+		runtime->dma_bytes = totsize;
-+		return 0;
-+	}
-+
-+	if (!dma_private->params) {
-+		dma_private->params = dma_params;
-+		ret = sprd_pcm_request_dma_channel(substream, channels);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+
-+	runtime->dma_bytes = totsize;
-+	sg_num = totsize / period;
-+	dma_private->dma_addr_offset = totsize / channels;
-+
-+	sg = devm_kcalloc(component->dev, sg_num, sizeof(*sg), GFP_KERNEL);
-+	if (!sg) {
-+		ret = -ENOMEM;
-+		goto sg_err;
-+	}
-+
-+	for (i = 0; i < channels; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+		struct dma_chan *chan = data->chan;
-+		struct dma_slave_config config = { };
-+		struct sprd_dma_linklist link = { };
-+		enum dma_transfer_direction dir;
-+		struct scatterlist *sgt = sg;
-+
-+		config.src_maxburst = dma_params->fragment_len[i];
-+		config.src_addr_width = dma_params->datawidth[i];
-+		config.dst_addr_width = dma_params->datawidth[i];
-+		if (is_playback) {
-+			config.src_addr = runtime->dma_addr +
-+				i * dma_private->dma_addr_offset;
-+			config.dst_addr = dma_params->dev_phys[i];
-+			dir = DMA_MEM_TO_DEV;
-+		} else {
-+			config.src_addr = dma_params->dev_phys[i];
-+			config.dst_addr = runtime->dma_addr +
-+				i * dma_private->dma_addr_offset;
-+			dir = DMA_DEV_TO_MEM;
+ 		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			SNDRV_CTL_ELEM_ID_NAME_MAXLEN)
+-			return -EINVAL;
++			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++			ret = -EINVAL;
++			break;
 +		}
 +
-+		sg_init_table(sgt, sg_num);
-+		for (j = 0; j < sg_num; j++, sgt++) {
-+			u32 sg_len = period / channels;
++		routes[i]->source = elem->source;
++		routes[i]->sink = elem->sink;
+ 
+-		route.source = elem->source;
+-		route.sink = elem->sink;
+-		route.connected = NULL; /* set to NULL atm for tplg users */
++		/* set to NULL atm for tplg users */
++		routes[i]->connected = NULL;
+ 		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0)
+-			route.control = NULL;
++			routes[i]->control = NULL;
+ 		else
+-			route.control = elem->control;
++			routes[i]->control = elem->control;
 +
-+			sg_dma_len(sgt) = sg_len;
-+			sg_dma_address(sgt) = runtime->dma_addr +
-+				i * dma_private->dma_addr_offset + sg_len * j;
-+		}
++		/* add route dobj to dobj_list */
++		routes[i]->dobj.type = SND_SOC_DOBJ_GRAPH;
++		routes[i]->dobj.ops = tplg->ops;
++		routes[i]->dobj.index = tplg->index;
++		list_add(&routes[i]->dobj.list, &tplg->comp->dobj_list);
+ 
+-		soc_tplg_add_route(tplg, &route);
++		soc_tplg_add_route(tplg, routes[i]);
+ 
+ 		/* add route, but keep going if some fail */
+-		snd_soc_dapm_add_routes(dapm, &route, 1);
++		snd_soc_dapm_add_routes(dapm, routes[i], 1);
+ 	}
+ 
+-	return 0;
++	/* free memory allocated for all dapm routes in case of error */
++	if (ret < 0)
++		for (i = 0; i < count ; i++)
++			kfree(routes[i]);
 +
-+		/*
-+		 * Configure the link-list address for the DMA engine link-list
-+		 * mode.
-+		 */
-+		link.virt_addr = (unsigned long)data->virt;
-+		link.phy_addr = data->phys;
-+
-+		ret = dmaengine_slave_config(chan, &config);
-+		if (ret) {
-+			dev_err(component->dev,
-+				"failed to set slave configuration: %d\n", ret);
-+			goto config_err;
-+		}
-+
-+		/*
-+		 * We configure the DMA request mode, interrupt mode, channel
-+		 * mode and channel trigger mode by the flags.
-+		 */
-+		flags = SPRD_DMA_FLAGS(SPRD_DMA_CHN_MODE_NONE, SPRD_DMA_NO_TRG,
-+				       SPRD_DMA_FRAG_REQ, SPRD_DMA_TRANS_INT);
-+		data->desc = chan->device->device_prep_slave_sg(chan, sg,
-+								sg_num, dir,
-+								flags, &link);
-+		if (!data->desc) {
-+			dev_err(component->dev, "failed to prepare slave sg\n");
-+			ret = -ENOMEM;
-+			goto config_err;
-+		}
-+
-+		if (!runtime->no_period_wakeup) {
-+			data->desc->callback = sprd_pcm_dma_complete;
-+			data->desc->callback_param = dma_private;
-+		}
-+	}
-+
-+	devm_kfree(component->dev, sg);
-+
-+	return 0;
-+
-+config_err:
-+	devm_kfree(component->dev, sg);
-+sg_err:
-+	sprd_pcm_release_dma_channel(substream);
-+	return ret;
-+}
-+
-+static int sprd_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+	sprd_pcm_release_dma_channel(substream);
-+
-+	return 0;
-+}
-+
-+static int sprd_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct sprd_pcm_dma_private *dma_private =
-+		substream->runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	int ret = 0, i;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		for (i = 0; i < dma_private->hw_chan; i++) {
-+			struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+			if (!data->desc)
-+				continue;
-+
-+			data->cookie = dmaengine_submit(data->desc);
-+			ret = dma_submit_error(data->cookie);
-+			if (ret) {
-+				dev_err(component->dev,
-+					"failed to submit dma request: %d\n",
-+					ret);
-+				return ret;
-+			}
-+
-+			dma_async_issue_pending(data->chan);
-+		}
-+
-+		break;
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		for (i = 0; i < dma_private->hw_chan; i++) {
-+			struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+			if (data->chan)
-+				dmaengine_resume(data->chan);
-+		}
-+
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		for (i = 0; i < dma_private->hw_chan; i++) {
-+			struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+			if (data->chan)
-+				dmaengine_terminate_async(data->chan);
-+		}
-+
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		for (i = 0; i < dma_private->hw_chan; i++) {
-+			struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+			if (data->chan)
-+				dmaengine_pause(data->chan);
-+		}
-+
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
++	/*
++	 * free pointer to array of dapm routes as this is no longer needed.
++	 * The memory allocated for each dapm route will be freed
++	 * when it is removed in remove_route().
++	 */
++	kfree(routes);
 +
 +	return ret;
-+}
-+
-+static snd_pcm_uframes_t sprd_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	int pointer[SPRD_PCM_CHANNEL_MAX];
-+	int bytes_of_pointer = 0, sel_max = 0, i;
-+	snd_pcm_uframes_t x;
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+
-+	for (i = 0; i < dma_private->hw_chan; i++) {
-+		struct sprd_pcm_dma_data *data = &dma_private->data[i];
-+
-+		if (!data->chan)
-+			continue;
-+
-+		status = dmaengine_tx_status(data->chan, data->cookie, &state);
-+		if (status == DMA_ERROR) {
-+			dev_err(component->dev,
-+				"failed to get dma channel %d status\n", i);
-+			return 0;
-+		}
-+
-+		/*
-+		 * We just get current transfer address from the DMA engine, so
-+		 * we need convert to current pointer.
-+		 */
-+		pointer[i] = state.residue - runtime->dma_addr -
-+			i * dma_private->dma_addr_offset;
-+
-+		if (i == 0) {
-+			bytes_of_pointer = pointer[i];
-+			sel_max = pointer[i] < data->pre_pointer ? 1 : 0;
-+		} else {
-+			sel_max ^= pointer[i] < data->pre_pointer ? 1 : 0;
-+
-+			if (sel_max)
-+				bytes_of_pointer =
-+					max(pointer[i], pointer[i - 1]) << 1;
-+			else
-+				bytes_of_pointer =
-+					min(pointer[i], pointer[i - 1]) << 1;
-+		}
-+
-+		data->pre_pointer = pointer[i];
-+	}
-+
-+	x = bytes_to_frames(runtime, bytes_of_pointer);
-+	if (x == runtime->buffer_size)
-+		x = 0;
-+
-+	return x;
-+}
-+
-+static int sprd_pcm_mmap(struct snd_pcm_substream *substream,
-+			 struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-+	return remap_pfn_range(vma, vma->vm_start,
-+			       runtime->dma_addr >> PAGE_SHIFT,
-+			       vma->vm_end - vma->vm_start,
-+			       vma->vm_page_prot);
-+}
-+
-+static struct snd_pcm_ops sprd_pcm_ops = {
-+	.open = sprd_pcm_open,
-+	.close = sprd_pcm_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = sprd_pcm_hw_params,
-+	.hw_free = sprd_pcm_hw_free,
-+	.trigger = sprd_pcm_trigger,
-+	.pointer = sprd_pcm_pointer,
-+	.mmap = sprd_pcm_mmap,
-+};
-+
-+static int sprd_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+	struct snd_pcm *pcm = rtd->pcm;
-+	struct snd_pcm_substream *substream;
-+	int ret;
-+
-+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		return ret;
-+
-+	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
-+	if (substream) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-+					  sprd_pcm_hardware.buffer_bytes_max,
-+					  &substream->dma_buffer);
-+		if (ret) {
-+			dev_err(card->dev,
-+				"can't alloc playback dma buffer: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
-+	if (substream) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-+					  sprd_pcm_hardware.buffer_bytes_max,
-+					  &substream->dma_buffer);
-+		if (ret) {
-+			dev_err(card->dev,
-+				"can't alloc capture dma buffer: %d\n", ret);
-+			snd_dma_free_pages(&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void sprd_pcm_free(struct snd_pcm *pcm)
-+{
-+	struct snd_pcm_substream *substream;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
-+		substream = pcm->streams[i].substream;
-+		if (substream) {
-+			snd_dma_free_pages(&substream->dma_buffer);
-+			substream->dma_buffer.area = NULL;
-+			substream->dma_buffer.addr = 0;
-+		}
-+	}
-+}
-+
-+static const struct snd_soc_component_driver sprd_soc_component = {
-+	.name		= DRV_NAME,
-+	.ops		= &sprd_pcm_ops,
-+	.pcm_new	= sprd_pcm_new,
-+	.pcm_free	= sprd_pcm_free,
-+};
-+
-+static int sprd_soc_platform_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
-+					      NULL, 0);
-+	if (ret)
-+		dev_err(&pdev->dev, "could not register platform:%d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id sprd_pcm_of_match[] = {
-+	{ .compatible = "sprd,pcm-platform", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sprd_pcm_of_match);
-+
-+static struct platform_driver sprd_pcm_driver = {
-+	.driver = {
-+		.name = "sprd-pcm-audio",
-+		.of_match_table = sprd_pcm_of_match,
-+	},
-+
-+	.probe = sprd_soc_platform_probe,
-+};
-+
-+module_platform_driver(sprd_pcm_driver);
-+
-+MODULE_DESCRIPTION("Spreadtrum ASoC PCM DMA");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:sprd-audio");
-diff --git a/sound/soc/sprd/sprd-pcm-dma.h b/sound/soc/sprd/sprd-pcm-dma.h
-new file mode 100644
-index 000000000000..d85a34f1461d
---- /dev/null
-+++ b/sound/soc/sprd/sprd-pcm-dma.h
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#ifndef __SPRD_PCM_DMA_H
-+#define __SPRD_PCM_DMA_H
-+
-+#define SPRD_PCM_CHANNEL_MAX	2
-+
-+struct sprd_pcm_dma_params {
-+	dma_addr_t dev_phys[SPRD_PCM_CHANNEL_MAX];
-+	u32 datawidth[SPRD_PCM_CHANNEL_MAX];
-+	u32 fragment_len[SPRD_PCM_CHANNEL_MAX];
-+	const char *chan_name[SPRD_PCM_CHANNEL_MAX];
-+};
-+
-+#endif /* __SPRD_PCM_DMA_H */
+ }
+ 
+ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+@@ -2570,6 +2637,9 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 			case SND_SOC_DOBJ_BYTES:
+ 				remove_bytes(comp, dobj, pass);
+ 				break;
++			case SND_SOC_DOBJ_GRAPH:
++				remove_route(comp, dobj, pass);
++				break;
+ 			case SND_SOC_DOBJ_WIDGET:
+ 				remove_widget(comp, dobj, pass);
+ 				break;
 -- 
 2.20.1
