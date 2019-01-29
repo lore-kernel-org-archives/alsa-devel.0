@@ -1,56 +1,106 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: Tree for Jan 29 (SLIMbus & SND_SOC_WCD9335)
-Date: Tue, 29 Jan 2019 09:00:21 -0800
-Message-ID: <7f4aa68d-d9ee-ec08-8593-a975a999e5e2@infradead.org>
-References: <20190129171143.3945af24@canb.auug.org.au>
- <2eaba760-96d5-5e0b-c1e6-c45fb24d89f2@infradead.org>
- <a849e598-da5b-bfc2-cd41-dab94fa79c87@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: cht_bsw_rt5672: remove useless
+	test" to the asoc tree
+Date: Tue, 29 Jan 2019 17:16:08 +0000 (GMT)
+Message-ID: <20190129171608.2640B1127D50@debutante.sirena.org.uk>
+References: <20190129154220.3142-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a849e598-da5b-bfc2-cd41-dab94fa79c87@linaro.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90C092674A3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 18:16:10 +0100 (CET)
+In-Reply-To: <20190129154220.3142-1-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Colin Ian King <colin.king@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/29/19 8:57 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-5.1&id=a8233b6c1972e1959cf84a021aeb61ddcd23cc26
-> 
-> This should fix the issue! It should be in next today!
+The patch
 
-Looks good.  Thanks.
+   ASoC: Intel: cht_bsw_rt5672: remove useless test
 
-> Thanks,
-> srini
-> 
-> 
-> On 29/01/2019 16:50, Randy Dunlap wrote:
->> On 1/28/19 10:11 PM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20190125:
->>>
->>
->> on x86_64:
->>
->> CONFIG_SND_SOC_WCD9335=m
->> which selects REGMAP_SLIMBUS, but SLIMBUS is not set/enabled.
->>
->>
->> ERROR: "slim_driver_unregister" [sound/soc/codecs/snd-soc-wcd9335.ko] undefined!
->> ERROR: "__slim_driver_register" [sound/soc/codecs/snd-soc-wcd9335.ko] undefined!
->> ERROR: "slim_read" [drivers/base/regmap/regmap-slimbus.ko] undefined!
->> ERROR: "slim_write" [drivers/base/regmap/regmap-slimbus.ko] undefined!
->>
->>
->> Full randconfig file is attached.
->>
+has been applied to the asoc tree at
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 53b6d0adffb0505db5332589e78da1c66f7e626a Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Tue, 29 Jan 2019 09:42:20 -0600
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5672: remove useless test
+
+For some reason we test if the machine is passed as a parameter before
+fixing up the codec name. This is unnecessary, generates false
+positives in static analysis tools and done only in this machine
+driver, remove and adjust indentation.
+
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index f1c1f9dd5353..3d5a2b3a06f0 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -411,18 +411,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	strcpy(drv->codec_name, RT5672_I2C_DEFAULT);
+ 
+ 	/* fixup codec name based on HID */
+-	if (mach) {
+-		i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
+-		if (i2c_name) {
+-			snprintf(drv->codec_name, sizeof(drv->codec_name),
+-				 "i2c-%s", i2c_name);
+-			for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
+-				if (!strcmp(cht_dailink[i].codec_name,
+-					    RT5672_I2C_DEFAULT)) {
+-					cht_dailink[i].codec_name =
+-						drv->codec_name;
+-					break;
+-				}
++	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
++	if (i2c_name) {
++		snprintf(drv->codec_name, sizeof(drv->codec_name),
++			 "i2c-%s", i2c_name);
++		for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
++			if (!strcmp(cht_dailink[i].codec_name,
++				RT5672_I2C_DEFAULT)) {
++				cht_dailink[i].codec_name = drv->codec_name;
++				break;
+ 			}
+ 		}
+ 	}
 -- 
-~Randy
+2.20.1
