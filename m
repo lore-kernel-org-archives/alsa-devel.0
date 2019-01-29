@@ -1,16 +1,16 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 2/3] ALSA: pcm: remove the file member from
-	struct pcm
-Date: Tue, 29 Jan 2019 18:59:08 +0100
-Message-ID: <20190129175909.17423-3-perex@perex.cz>
+Subject: [PATCH 3/3] ALSA: pcm: implement the ioctl/mmap filter
+	for the anonymous dup
+Date: Tue, 29 Jan 2019 18:59:09 +0100
+Message-ID: <20190129175909.17423-4-perex@perex.cz>
 References: <20190129175909.17423-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F1EA2675B6
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 18:59:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 923622675B2
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 18:59:58 +0100 (CET)
 In-Reply-To: <20190129175909.17423-1-perex@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,54 +25,200 @@ To: ALSA development <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang@linaro.org>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This member is no longer used.
+Create seven control bits to allow the various restrictions for the
+anonymous file descriptor.
 
 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- include/sound/pcm.h      | 1 -
- sound/core/oss/pcm_oss.c | 1 -
- sound/core/pcm_native.c  | 4 +---
- 3 files changed, 1 insertion(+), 5 deletions(-)
+ include/sound/pcm.h         |  1 +
+ include/uapi/sound/asound.h |  9 +++++
+ sound/core/pcm_native.c     | 85 ++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 94 insertions(+), 1 deletion(-)
 
 diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index e7deb03b6702..61e4c69e73c7 100644
+index 61e4c69e73c7..29d22a3a458c 100644
 --- a/include/sound/pcm.h
 +++ b/include/sound/pcm.h
-@@ -470,7 +470,6 @@ struct snd_pcm_substream {
- 	struct snd_pcm_group self_group;	/* fake group for non linked substream (with substream lock inside) */
- 	struct snd_pcm_group *group;		/* pointer to current group */
- 	/* -- assigned files -- */
--	void *file;
- 	int ref_count;
- 	atomic_t mmap_count;
- 	unsigned int f_flags;
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index b3738c228f39..222ddf9e4859 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -2427,7 +2427,6 @@ static int snd_pcm_oss_open_file(struct file *file,
- 		}
+@@ -226,6 +226,7 @@ struct snd_pcm_ops {
+ struct snd_pcm_file {
+ 	struct snd_pcm_substream *substream;
+ 	int no_compat_mmap;
++	unsigned int perm;		/* file descriptor permissions */
+ 	unsigned int user_pversion;	/* supported protocol version */
+ };
  
- 		pcm_oss_file->streams[idx] = substream;
--		substream->file = pcm_oss_file;
- 		snd_pcm_oss_init_substream(substream, &setup[idx], minor);
- 	}
- 	
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index ebc17d5a3490..29d3a16caa9a 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -571,6 +571,15 @@ enum {
+ #define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
+ #define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
+ 
++#define SNDRV_PCM_PERM_MMAP		(1<<0)
++#define SNDRV_PCM_PERM_MMAP_STATUS	(1<<1)
++#define SNDRV_PCM_PERM_MMAP_CONTROL	(1<<2)
++#define SNDRV_PCM_PERM_RW		(1<<3)
++#define SNDRV_PCM_PERM_CONTROL		(1<<4)
++#define SNDRV_PCM_PERM_STATUS		(1<<5)
++#define SNDRV_PCM_PERM_SYNC		(1<<6)
++#define SNDRV_PCM_PERM_MAX		((SNDRV_PCM_PERM_SYNC<<1)-1)
++
+ #define SNDRV_PCM_IOCTL_PVERSION	_IOR('A', 0x00, int)
+ #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
+ #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index a6d2a5024ab5..3ab6fbd7acae 100644
+index 3ab6fbd7acae..6d011b0899b5 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -2455,10 +2455,8 @@ static int snd_pcm_open_file(struct file *file,
+@@ -2455,6 +2455,7 @@ static int snd_pcm_open_file(struct file *file,
  		return -ENOMEM;
  	}
  	pcm_file->substream = substream;
--	if (substream->ref_count == 1) {
--		substream->file = pcm_file;
-+	if (substream->ref_count == 1)
++	pcm_file->perm = ~0;
+ 	if (substream->ref_count == 1)
  		substream->pcm_release = pcm_release_private;
--	}
  	file->private_data = pcm_file;
+@@ -2850,10 +2851,11 @@ static int snd_pcm_anonymous_dup(struct file *file,
+ 	int flags;
+ 	struct file *nfile;
+ 	struct snd_pcm *pcm = substream->pcm;
++	struct snd_pcm_file *pcm_file;
  
- 	return 0;
+ 	if (get_user(perm, (int __user *)arg))
+ 		return -EFAULT;
+-	if (perm < 0)
++	if (perm < 0 || perm > SNDRV_PCM_PERM_MAX)
+ 		return -ENOSYS;
+ 	flags = file->f_flags & (O_ACCMODE | O_NONBLOCK);
+ 	flags |= O_APPEND | O_CLOEXEC;
+@@ -2878,6 +2880,8 @@ static int snd_pcm_anonymous_dup(struct file *file,
+ 	err = snd_pcm_open_file(nfile, substream->pcm,
+ 				substream, substream->stream);
+ 	if (err >= 0) {
++		pcm_file = nfile->private_data;
++		pcm_file->perm = perm;
+ 		put_user(fd, (int __user *)arg);
+ 		return 0;
+ 	}
+@@ -2889,6 +2893,73 @@ static int snd_pcm_anonymous_dup(struct file *file,
+ 	return err;
+ }
+ 
++static int snd_pcm_ioctl_check_perm(struct snd_pcm_file *pcm_file,
++				    unsigned int cmd)
++{
++	if (pcm_file->perm == ~0)
++		return 1;
++	/*
++	 * the setup, linking and anonymous dup is not allowed
++	 * for the restricted file descriptors
++	 */
++	switch (cmd) {
++	case SNDRV_PCM_IOCTL_PVERSION:
++	case SNDRV_PCM_IOCTL_INFO:
++	case SNDRV_PCM_IOCTL_USER_PVERSION:
++	case SNDRV_PCM_IOCTL_CHANNEL_INFO:
++		return 1;
++	}
++	if (pcm_file->perm & SNDRV_PCM_PERM_CONTROL) {
++		switch (cmd) {
++		case SNDRV_PCM_IOCTL_PREPARE:
++		case SNDRV_PCM_IOCTL_RESET:
++		case SNDRV_PCM_IOCTL_START:
++		case SNDRV_PCM_IOCTL_XRUN:
++		case SNDRV_PCM_IOCTL_RESUME:
++		case SNDRV_PCM_IOCTL_DRAIN:
++		case SNDRV_PCM_IOCTL_DROP:
++		case SNDRV_PCM_IOCTL_PAUSE:
++			return 1;
++		default:
++			break;
++		}
++	}
++	if (pcm_file->perm & SNDRV_PCM_PERM_STATUS) {
++		switch (cmd) {
++		case SNDRV_PCM_IOCTL_STATUS:
++		case SNDRV_PCM_IOCTL_STATUS_EXT:
++		case SNDRV_PCM_IOCTL_DELAY:
++			return 1;
++		default:
++			break;
++		}
++	}
++	if (pcm_file->perm & SNDRV_PCM_PERM_SYNC) {
++		switch (cmd) {
++		case SNDRV_PCM_IOCTL_HWSYNC:
++		case SNDRV_PCM_IOCTL_SYNC_PTR:
++		case SNDRV_PCM_IOCTL_REWIND:
++		case SNDRV_PCM_IOCTL_FORWARD:
++			return 1;
++		default:
++			break;
++		}
++	}
++	if (pcm_file->perm & SNDRV_PCM_PERM_RW) {
++		switch (cmd) {
++		case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
++		case SNDRV_PCM_IOCTL_READI_FRAMES:
++		case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
++		case SNDRV_PCM_IOCTL_READN_FRAMES:
++			return 1;
++		default:
++			break;
++		}
++	}
++
++	return 0;
++}
++
+ static int snd_pcm_common_ioctl(struct file *file,
+ 				 struct snd_pcm_substream *substream,
+ 				 unsigned int cmd, void __user *arg)
+@@ -2903,6 +2974,9 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 	if (res < 0)
+ 		return res;
+ 
++	if (!snd_pcm_ioctl_check_perm(pcm_file, cmd))
++		return -EPERM;
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_IOCTL_PVERSION:
+ 		return put_user(SNDRV_PCM_VERSION, (int __user *)arg) ? -EFAULT : 0;
+@@ -3251,6 +3325,9 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
+ 			       struct vm_area_struct *area)
+ {
+ 	long size;
++	struct snd_pcm_file *pcm_file = file->private_data;
++	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_STATUS))
++		return -EPERM;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+ 	size = area->vm_end - area->vm_start;
+@@ -3287,6 +3364,9 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
+ 				struct vm_area_struct *area)
+ {
+ 	long size;
++	struct snd_pcm_file *pcm_file = file->private_data;
++	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_CONTROL))
++		return -EPERM;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+ 	size = area->vm_end - area->vm_start;
+@@ -3461,11 +3541,14 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
+ 		      struct vm_area_struct *area)
+ {
+ 	struct snd_pcm_runtime *runtime;
++	struct snd_pcm_file *pcm_file = file->private_data;
+ 	long size;
+ 	unsigned long offset;
+ 	size_t dma_bytes;
+ 	int err;
+ 
++	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP))
++		return -EPERM;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (!(area->vm_flags & (VM_WRITE|VM_READ)))
+ 			return -EINVAL;
 -- 
 2.13.6
