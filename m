@@ -1,63 +1,50 @@
-From: Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH 1/1] seq: arecordmidi: Add num-events option
-Date: Mon, 28 Jan 2019 21:34:59 -0800
-Message-ID: <CACeCKacREMJDGWNJrdydu3+P1EZ81AyaY0sPfBhuiT11nnvV5A@mail.gmail.com>
-References: <5c4fb010.1c69fb81.94ca0.01ae@mx.google.com>
- <f0c4b673-52a2-fc1d-c9d8-4e4b42f999f1@sakamocchi.jp>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v3 1/3] mfd: cros_ec: Add commands to control codec
+Date: Tue, 29 Jan 2019 14:54:26 +0800
+Message-ID: <CAFv8NwJfovuFmRiOctGxoGLBR=pZCPSBUkPztMhVubYTugHppg@mail.gmail.com>
+References: <20181226070317.72022-1-cychiang@chromium.org> <20190107192402.GW9570@sirena.org.uk>
+ <20190108095450.GA27286@dell> <20190108161238.GG6590@sirena.org.uk>
+ <CAFv8NwK4=m1ffsyTruMPw534FVK6QBeaMKxxW461aS_yNYugNg@mail.gmail.com> <20190128065030.GA4678@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f194.google.com (mail-qt1-f194.google.com
- [209.85.160.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 523572674AD
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 06:35:11 +0100 (CET)
-Received: by mail-qt1-f194.google.com with SMTP id u47so21012285qtj.6
- for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 21:35:11 -0800 (PST)
-In-Reply-To: <f0c4b673-52a2-fc1d-c9d8-4e4b42f999f1@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org, Daniel Erat <derat@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190128065030.GA4678@dell>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Mon, Jan 28, 2019 at 2:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Mon, 28 Jan 2019, Cheng-yi Chiang wrote:
+>
+> > Hi Lee,
+> >   Could you please give Mark a tag so he can merge ?
+> > The later patch for cros_ec_codec driver is pending on it.
+>
+> Apologies for not getting back to you.
+>
+> I was waiting to see if my late PR would be merged.
+>
+> It was, which means the tag you were asking for is actually upstream.
+>
+> Any issues, let me know.
 
-On Mon, Jan 28, 2019 at 7:36 PM Takashi Sakamoto <o-takashi@sakamocchi.jp>
-wrote:
+Hi Lee,
+  Thanks for the reply. I see. Yes it was merged in upstream:
+c1f3375be60c mfd: cros_ec: Add commands to control codec
 
-> Hi,
->
-> On 2019/01/29 10:44, pmalani@chromium.org wrote:
-> > @@ -775,6 +780,11 @@ int main(int argc, char *argv[])
-> > +             case 'n':
-> > +                     num_events = atoi(optarg);
-> > +                     if (num_events <= 0)
-> > +                             fatal("num_events must be greater than 0");
-> > +                     break;
->
-> We cannot distinguish two cases; 0 is given and including non-numeraical
-> characters. Please use strtol() or so and check return value and errno
-> for safe.
->
-> For your information:
->
-> http://git.alsa-project.org/?p=alsa-utils.git;a=blob;f=axfer/main.c;hb=HEAD#l44
+Hi Mark,
+  I am not sure what would be the best practice for you.
+Would it work if you cherrypick this patch from upstream into your branch ?
 
-Can I duplicate this in arecordmidi.c ? I'm loath to introduce a header,
-and then refactor axfer/main.c.
+Thanks!
+
 
 >
->
->
-> Regards
->
-> Takashi Sakamoto
->
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Linaro Services Technical Lead
+> Linaro.org =E2=94=82 Open source software for ARM SoCs
+> Follow Linaro: Facebook | Twitter | Blog
