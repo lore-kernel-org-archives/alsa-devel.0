@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: add SND_SOC_DOBJ_GRAPH type
-	for dapm routes" to the asoc tree
-Date: Tue, 29 Jan 2019 18:12:23 +0000 (GMT)
-Message-ID: <20190129181223.30CFB1127D50@debutante.sirena.org.uk>
-References: <20190125200648.12470-6-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: topology: fix memory leak in
+	soc_tplg_dapm_widget_create" to the asoc tree
+Date: Tue, 29 Jan 2019 18:12:25 +0000 (GMT)
+Message-ID: <20190129181225.642131127D50@debutante.sirena.org.uk>
+References: <20190125200648.12470-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 800B12674A3
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 19:12:24 +0100 (CET)
-In-Reply-To: <20190125200648.12470-6-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 478F0267593
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 19:12:26 +0100 (CET)
+In-Reply-To: <20190125200648.12470-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Bard liao <yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: add SND_SOC_DOBJ_GRAPH type for dapm routes
+   ASoC: topology: fix memory leak in soc_tplg_dapm_widget_create
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 5c30f43f0625a792c30e465f21dbeb1bb4dfc40b Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Fri, 25 Jan 2019 14:06:46 -0600
-Subject: [PATCH] ASoC: topology: add SND_SOC_DOBJ_GRAPH type for dapm routes
+>From 7620fe9161cec2722db880affe03f5e9e2bb93d5 Mon Sep 17 00:00:00 2001
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Date: Fri, 25 Jan 2019 14:06:45 -0600
+Subject: [PATCH] ASoC: topology: fix memory leak in
+ soc_tplg_dapm_widget_create
 
-Add a new dobj type SND_SOC_DOBJ_GRAPH for dapm routes
-and add snd_soc_dobj member to struct snd_soc_dapm_route.
-This enables device drivers to save driver specific
-data pertaining to dapm routes and also be able
-to clean up the data when the driver module is unloaded.
+template.sname and template.name are only freed when an error occur.
+They should be freed in the success return case, too.
 
-Also, reorder the snd_soc_dobj_type types to align with
-matching topology header types.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h     | 2 ++
- include/sound/soc-topology.h | 7 ++++---
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index bd8163f151cb..46f2ba3ffcb7 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -540,6 +540,8 @@ struct snd_soc_dapm_route {
- 	/* Note: currently only supported for links where source is a supply */
- 	int (*connected)(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink);
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 71bc5b8a9bd3..2cb0a05e2368 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1583,6 +1583,9 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	if (ret < 0)
+ 		goto ready_err;
+ 
++	kfree(template.sname);
++	kfree(template.name);
 +
-+	struct snd_soc_dobj dobj;
- };
+ 	return 0;
  
- /* dapm audio path between two widgets */
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index fa4b8413d2e2..8c43cfc240fa 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -38,12 +38,13 @@ struct snd_soc_dapm_route;
- enum snd_soc_dobj_type {
- 	SND_SOC_DOBJ_NONE		= 0,	/* object is not dynamic */
- 	SND_SOC_DOBJ_MIXER,
--	SND_SOC_DOBJ_ENUM,
- 	SND_SOC_DOBJ_BYTES,
--	SND_SOC_DOBJ_PCM,
-+	SND_SOC_DOBJ_ENUM,
-+	SND_SOC_DOBJ_GRAPH,
-+	SND_SOC_DOBJ_WIDGET,
- 	SND_SOC_DOBJ_DAI_LINK,
-+	SND_SOC_DOBJ_PCM,
- 	SND_SOC_DOBJ_CODEC_LINK,
--	SND_SOC_DOBJ_WIDGET,
- };
- 
- /* dynamic control object */
+ ready_err:
 -- 
 2.20.1
