@@ -1,7 +1,7 @@
 From: Kailang <kailang@realtek.com>
 Subject: Re: hp_pin was NULL value
-Date: Tue, 29 Jan 2019 08:32:47 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7457@RTITMBSVM07.realtek.com.tw>
+Date: Tue, 29 Jan 2019 08:39:56 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7463@RTITMBSVM07.realtek.com.tw>
 References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
  <s5htviigoa5.wl-tiwai@suse.de>
  <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
@@ -21,8 +21,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id F0E252674C9
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 09:32:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C566426749A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 09:39:59 +0100 (CET)
 In-Reply-To: <s5hlg33g95b.wl-tiwai@suse.de>
 Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -38,10 +38,18 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I use Ubuntu to do the test.
-I can't find S4 function in Ubuntu OS.
-Does Yours OS support the S4 function?
+Hi Takashi,
 
+So I think put it under alc269 parser. Maybe it is the quickly method.
+
+	err = alc269_parse_auto_config(codec);
+	if (err < 0)
+		goto error;
++   .....
++   .....
+
+BR,
+kailang
 -----Original Message-----
 From: Takashi Iwai <tiwai@suse.de> 
 Sent: Tuesday, January 29, 2019 4:29 PM
