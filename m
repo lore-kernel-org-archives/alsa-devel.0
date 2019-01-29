@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 3/3] ALSA: pcm: implement the ioctl/mmap filter
-	for the anonymous dup
-Date: Tue, 29 Jan 2019 18:59:09 +0100
-Message-ID: <20190129175909.17423-4-perex@perex.cz>
-References: <20190129175909.17423-1-perex@perex.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "dt-bindings: ASoC: Add Spreadtrum DMA
+	platform documentation" to the asoc tree
+Date: Tue, 29 Jan 2019 18:12:18 +0000 (GMT)
+Message-ID: <20190129181218.DD4F31127D50@debutante.sirena.org.uk>
+References: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 923622675B2
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 18:59:58 +0100 (CET)
-In-Reply-To: <20190129175909.17423-1-perex@perex.cz>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2069E2674B9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 19:12:21 +0100 (CET)
+In-Reply-To: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,204 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang@linaro.org>, Leo Yan <leo.yan@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, baolin.wang@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Create seven control bits to allow the various restrictions for the
-anonymous file descriptor.
+The patch
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+   dt-bindings: ASoC: Add Spreadtrum DMA platform documentation
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 27e27e6555d3a1dd3c906796af6d8e7eb538857f Mon Sep 17 00:00:00 2001
+From: Baolin Wang <baolin.wang@linaro.org>
+Date: Tue, 29 Jan 2019 16:04:44 +0800
+Subject: [PATCH] dt-bindings: ASoC: Add Spreadtrum DMA platform documentation
+
+Add documentation for Spreadtrum DMA platform driver.
+
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/pcm.h         |  1 +
- include/uapi/sound/asound.h |  9 +++++
- sound/core/pcm_native.c     | 85 ++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 94 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/sprd-pcm.txt    | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sprd-pcm.txt
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 61e4c69e73c7..29d22a3a458c 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -226,6 +226,7 @@ struct snd_pcm_ops {
- struct snd_pcm_file {
- 	struct snd_pcm_substream *substream;
- 	int no_compat_mmap;
-+	unsigned int perm;		/* file descriptor permissions */
- 	unsigned int user_pversion;	/* supported protocol version */
- };
- 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index ebc17d5a3490..29d3a16caa9a 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -571,6 +571,15 @@ enum {
- #define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
- #define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
- 
-+#define SNDRV_PCM_PERM_MMAP		(1<<0)
-+#define SNDRV_PCM_PERM_MMAP_STATUS	(1<<1)
-+#define SNDRV_PCM_PERM_MMAP_CONTROL	(1<<2)
-+#define SNDRV_PCM_PERM_RW		(1<<3)
-+#define SNDRV_PCM_PERM_CONTROL		(1<<4)
-+#define SNDRV_PCM_PERM_STATUS		(1<<5)
-+#define SNDRV_PCM_PERM_SYNC		(1<<6)
-+#define SNDRV_PCM_PERM_MAX		((SNDRV_PCM_PERM_SYNC<<1)-1)
+diff --git a/Documentation/devicetree/bindings/sound/sprd-pcm.txt b/Documentation/devicetree/bindings/sound/sprd-pcm.txt
+new file mode 100644
+index 000000000000..4b23e84b2e57
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sprd-pcm.txt
+@@ -0,0 +1,23 @@
++* Spreadtrum DMA platfrom bindings
 +
- #define SNDRV_PCM_IOCTL_PVERSION	_IOR('A', 0x00, int)
- #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
- #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 3ab6fbd7acae..6d011b0899b5 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2455,6 +2455,7 @@ static int snd_pcm_open_file(struct file *file,
- 		return -ENOMEM;
- 	}
- 	pcm_file->substream = substream;
-+	pcm_file->perm = ~0;
- 	if (substream->ref_count == 1)
- 		substream->pcm_release = pcm_release_private;
- 	file->private_data = pcm_file;
-@@ -2850,10 +2851,11 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	int flags;
- 	struct file *nfile;
- 	struct snd_pcm *pcm = substream->pcm;
-+	struct snd_pcm_file *pcm_file;
- 
- 	if (get_user(perm, (int __user *)arg))
- 		return -EFAULT;
--	if (perm < 0)
-+	if (perm < 0 || perm > SNDRV_PCM_PERM_MAX)
- 		return -ENOSYS;
- 	flags = file->f_flags & (O_ACCMODE | O_NONBLOCK);
- 	flags |= O_APPEND | O_CLOEXEC;
-@@ -2878,6 +2880,8 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	err = snd_pcm_open_file(nfile, substream->pcm,
- 				substream, substream->stream);
- 	if (err >= 0) {
-+		pcm_file = nfile->private_data;
-+		pcm_file->perm = perm;
- 		put_user(fd, (int __user *)arg);
- 		return 0;
- 	}
-@@ -2889,6 +2893,73 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	return err;
- }
- 
-+static int snd_pcm_ioctl_check_perm(struct snd_pcm_file *pcm_file,
-+				    unsigned int cmd)
-+{
-+	if (pcm_file->perm == ~0)
-+		return 1;
-+	/*
-+	 * the setup, linking and anonymous dup is not allowed
-+	 * for the restricted file descriptors
-+	 */
-+	switch (cmd) {
-+	case SNDRV_PCM_IOCTL_PVERSION:
-+	case SNDRV_PCM_IOCTL_INFO:
-+	case SNDRV_PCM_IOCTL_USER_PVERSION:
-+	case SNDRV_PCM_IOCTL_CHANNEL_INFO:
-+		return 1;
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_CONTROL) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_PREPARE:
-+		case SNDRV_PCM_IOCTL_RESET:
-+		case SNDRV_PCM_IOCTL_START:
-+		case SNDRV_PCM_IOCTL_XRUN:
-+		case SNDRV_PCM_IOCTL_RESUME:
-+		case SNDRV_PCM_IOCTL_DRAIN:
-+		case SNDRV_PCM_IOCTL_DROP:
-+		case SNDRV_PCM_IOCTL_PAUSE:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_STATUS) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_STATUS:
-+		case SNDRV_PCM_IOCTL_STATUS_EXT:
-+		case SNDRV_PCM_IOCTL_DELAY:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_SYNC) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_HWSYNC:
-+		case SNDRV_PCM_IOCTL_SYNC_PTR:
-+		case SNDRV_PCM_IOCTL_REWIND:
-+		case SNDRV_PCM_IOCTL_FORWARD:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_RW) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
-+		case SNDRV_PCM_IOCTL_READI_FRAMES:
-+		case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
-+		case SNDRV_PCM_IOCTL_READN_FRAMES:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
++Required properties:
++- compatible: Should be "sprd,pcm-platform".
++- dmas: Specify the list of DMA controller phandle and DMA request line ordered pairs.
++- dma-names: Identifier string for each DMA request line in the dmas property.
++  These strings correspond 1:1 with the ordered pairs in dmas.
 +
-+	return 0;
-+}
++Example:
 +
- static int snd_pcm_common_ioctl(struct file *file,
- 				 struct snd_pcm_substream *substream,
- 				 unsigned int cmd, void __user *arg)
-@@ -2903,6 +2974,9 @@ static int snd_pcm_common_ioctl(struct file *file,
- 	if (res < 0)
- 		return res;
- 
-+	if (!snd_pcm_ioctl_check_perm(pcm_file, cmd))
-+		return -EPERM;
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_IOCTL_PVERSION:
- 		return put_user(SNDRV_PCM_VERSION, (int __user *)arg) ? -EFAULT : 0;
-@@ -3251,6 +3325,9 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
- 			       struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_STATUS))
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3287,6 +3364,9 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
- 				struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_CONTROL))
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3461,11 +3541,14 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
- 		      struct vm_area_struct *area)
- {
- 	struct snd_pcm_runtime *runtime;
-+	struct snd_pcm_file *pcm_file = file->private_data;
- 	long size;
- 	unsigned long offset;
- 	size_t dma_bytes;
- 	int err;
- 
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP))
-+		return -EPERM;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (!(area->vm_flags & (VM_WRITE|VM_READ)))
- 			return -EINVAL;
++	audio_platform:platform@0 {
++		compatible = "sprd,pcm-platform";
++		dmas = <&agcp_dma 1 1>, <&agcp_dma 2 2>,
++		     <&agcp_dma 3 3>, <&agcp_dma 4 4>,
++		     <&agcp_dma 5 5>, <&agcp_dma 6 6>,
++		     <&agcp_dma 7 7>, <&agcp_dma 8 8>,
++		     <&agcp_dma 9 9>, <&agcp_dma 10 10>;
++		dma-names = "normal_p_l", "normal_p_r",
++			"normal_c_l", "normal_c_r",
++			"voice_c", "fast_p",
++			"loop_c", "loop_p",
++			"voip_c", "voip_p";
++	};
 -- 
-2.13.6
+2.20.1
