@@ -1,17 +1,14 @@
-From: Jeremy Soller <jeremy@system76.com>
-Subject: [PATCH] Headset microphone support for System76 darp5
-Date: Tue, 29 Jan 2019 12:52:01 -0700
-Message-ID: <1548791521.3450804.1646371736.7EA213CA@webmail.messagingengine.com>
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH] ALSA: hda - Fix suspend/resume calls
+Date: Tue, 29 Jan 2019 13:25:10 -0800
+Message-ID: <20190129212510.31897-1-rodrigo.vivi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 629702674A3
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 20:52:03 +0100 (CET)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 71FAE23324
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 14:52:02 -0500 (EST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8F5F2674B9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 22:25:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,46 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Rodrigo Vivi <rodrigo.vivi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Headset microphone support for System76 darp5
+Besides the compilation issue the resume function was calling
+the force_suspend.
 
-Signed-off-by: Jeremy Soller <jeremy@system76.com>
-
+Fixes: d81f8c6b6ced ("ALSA: hda - Record the current power state before suspend/resume calls")
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 ---
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b4f472157ebd..15fedb0eeae1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5591,6 +5591,7 @@ enum {
-        ALC294_FIXUP_ASUS_HEADSET_MIC,
-        ALC294_FIXUP_ASUS_SPK,
-        ALC225_FIXUP_HEADSET_JACK,
-+       ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
- };
+ sound/pci/hda/hda_codec.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 43bcc6f1ea8c..0b86aa2b649c 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2894,6 +2894,8 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
+  */
+ static void hda_call_codec_resume(struct hda_codec *codec)
+ {
++	struct device *dev = hda_codec_dev(codec);
++
+ 	snd_hdac_enter_pm(&codec->core);
+ 	if (codec->core.regmap)
+ 		regcache_mark_dirty(codec->core.regmap);
+@@ -2955,10 +2957,16 @@ static int hda_codec_pm_suspend(struct device *dev)
+ 	return pm_runtime_force_suspend(dev);
+ }
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -6537,6 +6538,15 @@ static const struct hda_fixup alc269_fixups[] = {
-                .type = HDA_FIXUP_FUNC,
-                .v.func = alc_fixup_headset_jack,
-        },
-+       [ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE] = {
-+               .type = HDA_FIXUP_PINS,
-+               .v.pins = (const struct hda_pintbl[]) {
-+                       { 0x1a, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+                       { }
-+               },
-+               .chained = true,
-+               .chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-+       },
- };
++static int hda_codec_pm_freeze(struct device *dev)
++{
++	dev->power.power_state = PMSG_FREEZE;
++	return pm_runtime_force_suspend(dev);
++}
++
+ static int hda_codec_pm_resume(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESUME;
+-	return pm_runtime_force_suspend(dev);
++	return pm_runtime_force_resume(dev);
+ }
  
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -6606,6 +6616,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-        SND_PCI_QUIRK(0x103c, 0x18e6, "HP", ALC269_FIXUP_HP_GPIO_LED),
-        SND_PCI_QUIRK(0x103c, 0x218b, "HP", ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED),
-        SND_PCI_QUIRK(0x103c, 0x225f, "HP", ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY),
-+       SND_PCI_QUIRK(0x1558, 0x1325, "System76", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-        /* ALC282 */
-        SND_PCI_QUIRK(0x103c, 0x21f9, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
-        SND_PCI_QUIRK(0x103c, 0x2210, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ static int hda_codec_pm_thaw(struct device *dev)
+-- 
+2.20.1
