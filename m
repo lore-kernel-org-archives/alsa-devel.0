@@ -1,338 +1,669 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: hp_pin was NULL value
-Date: Tue, 29 Jan 2019 08:05:48 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7442@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
- <s5htviigoa5.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
- <s5hlg3ux9x9.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210B1@RTITMBSV02.realtek.com.tw>
- <s5hh8eah1fj.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210E5@RTITMBSV02.realtek.com.tw>
- <s5h5zuqgxv2.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210FC@RTITMBSV02.realtek.com.tw>
- <s5h1s5eguwz.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1842112F@RTITMBSV02.realtek.com.tw>
- <s5hwon6ffg9.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18DB7442RTITMBSVM07real_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 25F7626749A
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 09:05:53 +0100 (CET)
-In-Reply-To: <s5hwon6ffg9.wl-tiwai@suse.de>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH 2/2] ASoC: sprd: Add Spreadtrum audio DMA platfrom driver
+Date: Tue, 29 Jan 2019 16:04:45 +0800
+Message-ID: <d02bf3a04f6bfcd28f9689cbb6b4dff0132b71da.1548747137.git.baolin.wang@linaro.org>
+References: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
+In-Reply-To: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
+References: <15c562bcfd488fbf1979a69f96ddbd8df57f7e69.1548747137.git.baolin.wang@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, baolin.wang@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A18DB7442RTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The Spreadtrum DMA engine uses the link-list mode to support audio playback
+or capture, thus this patch adds audio DMA platform support for CPU DAI to
+trigger DMA link-list transfer.
 
-Hi Takashi,
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+---
+ sound/soc/Kconfig             |    1 +
+ sound/soc/Makefile            |    1 +
+ sound/soc/sprd/Kconfig        |    6 +
+ sound/soc/sprd/Makefile       |    4 +
+ sound/soc/sprd/sprd-pcm-dma.c |  562 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/sprd/sprd-pcm-dma.h |   15 ++
+ 6 files changed, 589 insertions(+)
+ create mode 100644 sound/soc/sprd/Kconfig
+ create mode 100644 sound/soc/sprd/Makefile
+ create mode 100644 sound/soc/sprd/sprd-pcm-dma.c
+ create mode 100644 sound/soc/sprd/sprd-pcm-dma.h
 
-I ask our AE for this function.
-We also prefer to run it only one time on boot time. S3 resume back not nee=
-d to run this function.
-Because it will take about 650ms times to initial.
-
-Attach was the new patch.
-Reject commit or use attach patch to commit. Which is better?
-
-BR,
-Kailang
-
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de>=20
-Sent: Tuesday, January 15, 2019 5:17 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: hp_pin was NULL value
-
-On Tue, 15 Jan 2019 10:06:58 +0100,
-Kailang wrote:
->=20
-> >>>Is it about that alc225_hp_init() gets called at resume in addition to=
- the boot time?
->=20
-> alc225_hp_init() =3D=3D> it only need to call one time at boot time.
-> This HP initial code doesn't need to call at resume.
-> If system boot, HP initial code just need to call it at boot time.
-> S3 state was not need to call this function.
-
-But S4 resume must call this function: that's my point.
-
-So the question is whether calling alc225_hp_init() at S3 resume is signifi=
-cantly harmful or not.  If not, we can move it there.  If it's harmful, we =
-need to distinguish S3 and S4, and introduce either some flag or a new call=
-back, which will be a much more work than simply patching the codec code.
-
-
-thanks,
-
-Takashi
-
-> Sorry!! Maybe I describe it confuse you.
->=20
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Tuesday, January 15, 2019 4:58 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: hp_pin was NULL value
->=20
-> On Tue, 15 Jan 2019 09:17:24 +0100,
-> Kailang wrote:
-> >=20
-> >=20
-> > Hi Takashi,
-> >=20
-> > Sorry!! Maybe I don't understand what you mean.=09
-> > Please see below.
-> >=20
-> > --- patch_realtek.c.orig	2019-01-11 16:28:43.745957854 +0800
-> > +++ patch_realtek.c	2019-01-15 16:09:56.017873567 +0800
-> > @@ -3221,12 +3221,29 @@ static void alc256_shutup(struct hda_cod
-> >  	snd_hda_shutup_pins(codec);
-> >  }
-> > =20
-> > +static void alc225_hp_init(struct hda_codec *codec) {
-> > +	struct alc_spec *spec =3D codec->spec;
-> > +	hda_nid_t hp_pin =3D spec->gen.autocfg.hp_pins[0];
-> > +	int i, val;
-> > +	int coef38, coef0d, coef36;
-> > +	printk("%s-start hp=3D0x%x\n",__func__,hp_pin);
-> > +	if (!hp_pin)
-> > +		return;
-> > +
-> > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15);
-> > +	msleep(50);
-> > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 0);
-> > +	printk("%s-end hp=3D0x%x\n",__func__,hp_pin); }
-> > +
-> >  static void alc225_init(struct hda_codec *codec)  {
-> >  	struct alc_spec *spec =3D codec->spec;
-> >  	hda_nid_t hp_pin =3D spec->gen.autocfg.hp_pins[0];
-> >  	bool hp1_pin_sense, hp2_pin_sense;
-> > =20
-> > +	alc225_hp_init(codec);
-> >  	if (!hp_pin)
-> >  		return;
-> > =20
-> > @@ -3262,6 +3279,7 @@ static void alc225_init(struct hda_codec
-> > =20
-> >  	alc_update_coef_idx(codec, 0x4a, 3 << 10, 0);
-> >  	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight=20
-> > power */
-> > +	printk("%s hp=3D0x%x\n",__func__,hp_pin);
-> >  }
->=20
-> ... and I don't understand what's your problem.
->=20
-> Is it about that alc255_hp_init() gets called at resume in addition to th=
-e boot time?  If so, this is the intended behavior.
->=20
->=20
-> thanks,
->=20
-> Takashi
->=20
-> >=20
-> > -----Original Message-----
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Sent: Tuesday, January 15, 2019 3:54 PM
-> > To: Kailang <kailang@realtek.com>
-> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > Subject: Re: hp_pin was NULL value
-> >=20
-> > On Tue, 15 Jan 2019 08:43:40 +0100,
-> > Kailang wrote:
-> > >=20
-> > >=20
-> > > No, it not expected.
-> > > It will enter two times after boot ready.
-> > > I think it could add a flag in alc225_hp_init().=20
-> > > To make sure it only excute one time. How do you think about?
-> >=20
-> > Where was it called, actually?  The call of patch_ops.init is found in =
-several places: once in snd_hda_codec_build_controls() just before creating=
- controls (which is the boot time init), and at resume, alc269_resume().
-> >=20
-> > And, as already explained, we have to call this at resume, because it's=
- not guaranteed that it's been already called in the case of hibernation.
-> >=20
-> >=20
-> > thanks,
-> >=20
-> > Takashi
-> >=20
-> > >=20
-> > > -----Original Message-----
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Sent: Tuesday, January 15, 2019 2:37 PM
-> > > To: Kailang <kailang@realtek.com>
-> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > Subject: Re: hp_pin was NULL value
-> > >=20
-> > > On Tue, 15 Jan 2019 03:31:33 +0100, Kailang wrote:
-> > > >=20
-> > > > Hi Takashi,
-> > > >=20
-> > > > Could you receive this email?
-> > > >=20
-> > > > BR,
-> > > > Kailang
-> > > >=20
-> > > > -----Original Message-----
-> > > > From: Kailang
-> > > > Sent: Thursday, January 10, 2019 11:14 AM
-> > > > To: 'Takashi Iwai' <tiwai@suse.de>
-> > > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > > Subject: RE: hp_pin was NULL value
-> > > >=20
-> > > > Hi Takashi,
-> > > >=20
-> > > > I simulate test your prefer function.
-> > > > I put alc225_hp_init() in alc225_init().
-> > > > If system boot ready, I write 1 to power_save of /sys/module/....
-> > > > The print message as below. It called two times until boot ready.
-> > > > If System enter to power save, play stream will wake up codec. It a=
-lso call alc225_hp_init().
-> > > >=20
-> > > > [   21.497524] alc225_init hp_pin=3D0x21
-> > > > [   21.497526] alc225_hp_init-s hp=3D0x21
-> > > > [   22.140076] alc225_hp_init-e hp=3D0x21
-> > > > [   22.183496] snd_hda_codec_realtek hdaudioC0D2: Headset jack set =
-to unplugged mode.
-> > > > [   22.184681] snd_hda_codec_realtek hdaudioC0D2: Headset jack set =
-to unplugged mode.
-> > > > [   22.186846] alc225_shutup hp_pin=3D0x21
-> > > > [   22.187831] input: HDA Intel Line Out as /devices/pci0000:00/000=
-0:00:1b.0/sound/card0/input5
-> > > > [   22.188055] input: HDA Intel Headphone as /devices/pci0000:00/00=
-00:00:1b.0/sound/card0/input6
-> > > > [   22.205104] alc225_init hp_pin=3D0x21
-> > > > [   22.205108] alc225_hp_init-s hp=3D0x21
-> > > > [   22.852123] alc225_hp_init-e hp=3D0x21
-> > > > [   22.894772] snd_hda_codec_realtek hdaudioC0D2: Headset jack set =
-to unplugged mode.
-> > > > ############  Boot ready ############## [  116.832084]=20
-> > > > alc225_shutup
-> > > > hp_pin=3D0x21  =3D=3D> echo 1 to power_save
-> > > > [  120.002582] alc225_init hp_pin=3D0x21     =3D=3D> play system so=
-und
-> > > > [  120.002586] alc225_hp_init-s hp=3D0x21 [  120.644128]=20
-> > > > alc225_hp_init-e hp=3D0x21
-> > >=20
-> > > It wasn't clear to me whether you meant this as a success or a failur=
-e...  Did the patch work as expected, no?
-> > >=20
-> > >=20
-> > > thanks,
-> > >=20
-> > > Takashi
-> > >=20
-> > > ------Please consider the environment before printing this e-mail.
-> > >=20
-> >=20
->=20
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A18DB7442RTITMBSVM07real_
-Content-Type: application/octet-stream;
-	name="0000-alc294-hp-init-again.patch"
-Content-Description: 0000-alc294-hp-init-again.patch
-Content-Disposition: attachment; filename="0000-alc294-hp-init-again.patch";
-	size=3944; creation-date="Tue, 29 Jan 2019 07:41:08 GMT";
-	modification-date="Tue, 29 Jan 2019 07:55:49 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBmYmI5NGEzNDUwMDQ4NDRhZDg4NThhMWNhZWNlMDAwNzEzYTRmOWNmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFR1ZSwgMjkgSmFuIDIwMTkgMTU6Mzg6MjEgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIEZpeGVkIGhwX3BpbiBubyB2YWx1ZQoKRml4IGhwX3BpbiBhbHdheXMg
-bm8gdmFsdWUuCgpGaXhlczogYmRlMWE3NDU5NjIzYTY2YzJhYmVjNGQwYTg0MWU0YjA2Y2M4OGQ5
-YSAoJ0FMU0E6IGhkYS9yZWFsdGVrIC0gRml4ZWQgaGVhZHBob25lIGlzc3VlIGZvciBBTEM3MDAn
-KQpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZm
-IC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX3JlYWx0ZWsuYwppbmRleCBiNGY0NzIxLi40MTM5YWNlIDEwMDY0NAotLS0gYS9zb3VuZC9w
-Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
-YwpAQCAtMTE3LDYgKzExNyw3IEBAIHN0cnVjdCBhbGNfc3BlYyB7CiAJaW50IGNvZGVjX3Zhcmlh
-bnQ7CS8qIGZsYWcgZm9yIG90aGVyIHZhcmlhbnRzICovCiAJdW5zaWduZWQgaW50IGhhc19hbGM1
-NTA1X2RzcDoxOwogCXVuc2lnbmVkIGludCBub19kZXBvcF9kZWxheToxOworCXVuc2lnbmVkIGlu
-dCBkb25lX2hwX2luaXQ6MTsKIAogCS8qIGZvciBQTEwgZml4ICovCiAJaGRhX25pZF90IHBsbF9u
-aWQ7CkBAIC0zMzcyLDYgKzMzNzMsNDggQEAgc3RhdGljIHZvaWQgYWxjX2RlZmF1bHRfc2h1dHVw
-KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCXNuZF9oZGFfc2h1dHVwX3BpbnMoY29kZWMpOwog
-fQogCitzdGF0aWMgdm9pZCBhbGMyOTRfaHBfaW5pdChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykK
-K3sKKwlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsKKwloZGFfbmlkX3QgaHBf
-cGluID0gc3BlYy0+Z2VuLmF1dG9jZmcuaHBfcGluc1swXTsKKwlpbnQgaSwgdmFsOworCisJaWYg
-KCFocF9waW4pCisJCXJldHVybjsKKworCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIGhwX3Bp
-biwgMCwKKwkJCSAgICBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX01VVEUpOwor
-CisJbXNsZWVwKDEwMCk7CisKKwlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCBocF9waW4sIDAs
-CisJCQkgICAgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAweDApOworCisJYWxjX3Vw
-ZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg2ZiwgMHgwMDBmLCAwKTsvKiBTZXQgSFAgZGVwb3AgdG8g
-bWFudWFsIG1vZGUgKi8KKwlhbGNfdXBkYXRlX2NvZWZleF9pZHgoY29kZWMsIDB4NTgsIDB4MDAs
-IDB4ODAwMCwgMHg4MDAwKTsgLyogSFAgZGVwb3AgcHJvY2VkdXJlIHN0YXJ0ICovCisKKwkvKiBX
-YWl0IGZvciBkZXBvcCBwcm9jZWR1cmUgZmluaXNoICAqLworCXZhbCA9IGFsY19yZWFkX2NvZWZl
-eF9pZHgoY29kZWMsIDB4NTgsIDB4MDEpOworCWZvciAoaSA9IDA7IGkgPCAyMCAmJiB2YWwgJiAw
-eDAwODA7IGkrKykgeworCQltc2xlZXAoNTApOworCQl2YWwgPSBhbGNfcmVhZF9jb2VmZXhfaWR4
-KGNvZGVjLCAweDU4LCAweDAxKTsKKwl9CisJLyogU2V0IEhQIGRlcG9wIHRvIGF1dG8gbW9kZSAq
-LworCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NmYsIDB4MDAwZiwgMHgwMDBiKTsKKwlt
-c2xlZXAoNTApOworfQorCitzdGF0aWMgdm9pZCBhbGMyOTRfaW5pdChzdHJ1Y3QgaGRhX2NvZGVj
-ICpjb2RlYykKK3sKKwlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBjb2RlYy0+c3BlYzsKKworCWlm
-ICghc3BlYy0+ZG9uZV9ocF9pbml0KSB7CisJCWFsYzI5NF9ocF9pbml0KGNvZGVjKTsKKwkJc3Bl
-Yy0+ZG9uZV9ocF9pbml0ID0gdHJ1ZTsKKwl9CisJYWxjX2RlZmF1bHRfaW5pdChjb2RlYyk7Cit9
-CisKIHN0YXRpYyB2b2lkIGFsYzU1MDVfY29lZl9zZXQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMs
-IHVuc2lnbmVkIGludCBpbmRleF9yZWcsCiAJCQkgICAgIHVuc2lnbmVkIGludCB2YWwpCiB7CkBA
-IC03MzczLDM3ICs3NDE2LDYgQEAgc3RhdGljIHZvaWQgYWxjMjY5X2ZpbGxfY29lZihzdHJ1Y3Qg
-aGRhX2NvZGVjICpjb2RlYykKIAlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDQsIDAsIDE8
-PDExKTsKIH0KIAotc3RhdGljIHZvaWQgYWxjMjk0X2hwX2luaXQoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMpCi17Ci0Jc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7Ci0JaGRhX25p
-ZF90IGhwX3BpbiA9IHNwZWMtPmdlbi5hdXRvY2ZnLmhwX3BpbnNbMF07Ci0JaW50IGksIHZhbDsK
-LQotCWlmICghaHBfcGluKQotCQlyZXR1cm47Ci0KLQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVj
-LCBocF9waW4sIDAsCi0JCQkgICAgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9N
-VVRFKTsKLQotCW1zbGVlcCgxMDApOwotCi0Jc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgaHBf
-cGluLCAwLAotCQkJICAgIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgMHgwKTsKLQot
-CWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NmYsIDB4MDAwZiwgMCk7LyogU2V0IEhQIGRl
-cG9wIHRvIG1hbnVhbCBtb2RlICovCi0JYWxjX3VwZGF0ZV9jb2VmZXhfaWR4KGNvZGVjLCAweDU4
-LCAweDAwLCAweDgwMDAsIDB4ODAwMCk7IC8qIEhQIGRlcG9wIHByb2NlZHVyZSBzdGFydCAqLwot
-Ci0JLyogV2FpdCBmb3IgZGVwb3AgcHJvY2VkdXJlIGZpbmlzaCAgKi8KLQl2YWwgPSBhbGNfcmVh
-ZF9jb2VmZXhfaWR4KGNvZGVjLCAweDU4LCAweDAxKTsKLQlmb3IgKGkgPSAwOyBpIDwgMjAgJiYg
-dmFsICYgMHgwMDgwOyBpKyspIHsKLQkJbXNsZWVwKDUwKTsKLQkJdmFsID0gYWxjX3JlYWRfY29l
-ZmV4X2lkeChjb2RlYywgMHg1OCwgMHgwMSk7Ci0JfQotCS8qIFNldCBIUCBkZXBvcCB0byBhdXRv
-IG1vZGUgKi8KLQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDZmLCAweDAwMGYsIDB4MDAw
-Yik7Ci0JbXNsZWVwKDUwKTsKLX0KLQogLyoKICAqLwogc3RhdGljIGludCBwYXRjaF9hbGMyNjko
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCkBAIC03NTI5LDcgKzc1NDEsNyBAQCBzdGF0aWMgaW50
-IHBhdGNoX2FsYzI2OShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJc3BlYy0+Y29kZWNfdmFy
-aWFudCA9IEFMQzI2OV9UWVBFX0FMQzI5NDsKIAkJc3BlYy0+Z2VuLm1peGVyX25pZCA9IDA7IC8q
-IEFMQzJ4NCBkb2VzIG5vdCBoYXZlIGFueSBsb29wYmFjayBtaXhlciBwYXRoICovCiAJCWFsY191
-cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NmIsIDB4MDAxOCwgKDE8PDQpIHwgKDE8PDMpKTsgLyog
-VUFKIE1JQyBWcmVmIGNvbnRyb2wgYnkgdmVyYiAqLwotCQlhbGMyOTRfaHBfaW5pdChjb2RlYyk7
-CisJCXNwZWMtPmluaXRfaG9vayA9IGFsYzI5NF9pbml0OwogCQlicmVhazsKIAljYXNlIDB4MTBl
-YzAzMDA6CiAJCXNwZWMtPmNvZGVjX3ZhcmlhbnQgPSBBTEMyNjlfVFlQRV9BTEMzMDA7CkBAIC03
-NTQxLDcgKzc1NTMsNyBAQCBzdGF0aWMgaW50IHBhdGNoX2FsYzI2OShzdHJ1Y3QgaGRhX2NvZGVj
-ICpjb2RlYykKIAkJc3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2OV9UWVBFX0FMQzcwMDsKIAkJ
-c3BlYy0+Z2VuLm1peGVyX25pZCA9IDA7IC8qIEFMQzcwMCBkb2VzIG5vdCBoYXZlIGFueSBsb29w
-YmFjayBtaXhlciBwYXRoICovCiAJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NGEsIDEg
-PDwgMTUsIDApOyAvKiBDb21ibyBqYWNrIGF1dG8gdHJpZ2dlciBjb250cm9sICovCi0JCWFsYzI5
-NF9ocF9pbml0KGNvZGVjKTsKKwkJc3BlYy0+aW5pdF9ob29rID0gYWxjMjk0X2luaXQ7CiAJCWJy
-ZWFrOwogCiAJfQo=
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A18DB7442RTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A18DB7442RTITMBSVM07real_--
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 6592a42..aa35940 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -64,6 +64,7 @@ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/sirf/Kconfig"
+ source "sound/soc/spear/Kconfig"
++source "sound/soc/sprd/Kconfig"
+ source "sound/soc/sti/Kconfig"
+ source "sound/soc/stm/Kconfig"
+ source "sound/soc/sunxi/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 48c48c1..974fb98 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -48,6 +48,7 @@ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= sirf/
+ obj-$(CONFIG_SND_SOC)	+= spear/
++obj-$(CONFIG_SND_SOC)	+= sprd/
+ obj-$(CONFIG_SND_SOC)	+= sti/
+ obj-$(CONFIG_SND_SOC)	+= stm/
+ obj-$(CONFIG_SND_SOC)	+= sunxi/
+diff --git a/sound/soc/sprd/Kconfig b/sound/soc/sprd/Kconfig
+new file mode 100644
+index 0000000..43ece7d
+--- /dev/null
++++ b/sound/soc/sprd/Kconfig
+@@ -0,0 +1,6 @@
++config SND_SOC_SPRD
++	tristate "SoC Audio for the Spreadtrum SoC chips"
++	depends on ARCH_SPRD || COMPILE_TEST
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the Spreadtrum SoCs' Audio interfaces.
+diff --git a/sound/soc/sprd/Makefile b/sound/soc/sprd/Makefile
+new file mode 100644
+index 0000000..47620e5
+--- /dev/null
++++ b/sound/soc/sprd/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++# Spreadtrum Audio Support
++
++obj-$(CONFIG_SND_SOC_SPRD)	+= sprd-pcm-dma.o
+diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
+new file mode 100644
+index 0000000..cbb27c4
+--- /dev/null
++++ b/sound/soc/sprd/sprd-pcm-dma.c
+@@ -0,0 +1,562 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (C) 2019 Spreadtrum Communications Inc.
++
++#include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
++#include <linux/dma/sprd-dma.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include "sprd-pcm-dma.h"
++
++#define DRV_NAME			"sprd_pcm_dma"
++#define SPRD_PCM_DMA_LINKLIST_SIZE	64
++#define SPRD_PCM_DMA_BRUST_LEN		640
++
++struct sprd_pcm_dma_data {
++	struct dma_chan *chan;
++	struct dma_async_tx_descriptor *desc;
++	dma_cookie_t cookie;
++	dma_addr_t phys;
++	void *virt;
++	int pre_pointer;
++};
++
++struct sprd_pcm_dma_private {
++	struct snd_pcm_substream *substream;
++	struct sprd_pcm_dma_params *params;
++	struct sprd_pcm_dma_data data[SPRD_PCM_CHANNEL_MAX];
++	int hw_chan;
++	int dma_addr_offset;
++};
++
++static const struct snd_pcm_hardware sprd_pcm_hardware = {
++	.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_PAUSE |
++		SNDRV_PCM_INFO_RESUME | SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	.period_bytes_min = 1,
++	.period_bytes_max = 64 * 1024,
++	.periods_min = 1,
++	.periods_max = PAGE_SIZE / SPRD_PCM_DMA_LINKLIST_SIZE,
++	.buffer_bytes_max = 64 * 1024,
++};
++
++static int sprd_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct device *dev = component->dev;
++	struct sprd_pcm_dma_private *dma_private;
++	int hw_chan = SPRD_PCM_CHANNEL_MAX;
++	int size, ret, i;
++
++	snd_soc_set_runtime_hwparams(substream, &sprd_pcm_hardware);
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++					 SPRD_PCM_DMA_BRUST_LEN);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++					 SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++					 SPRD_PCM_DMA_BRUST_LEN);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		return ret;
++
++	dma_private = devm_kzalloc(dev, sizeof(*dma_private), GFP_KERNEL);
++	if (!dma_private)
++		return -ENOMEM;
++
++	size = runtime->hw.periods_max * SPRD_PCM_DMA_LINKLIST_SIZE;
++
++	for (i = 0; i < hw_chan; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		data->virt = dmam_alloc_coherent(dev, size, &data->phys,
++						 GFP_KERNEL);
++		if (!data->virt) {
++			ret = -ENOMEM;
++			goto error;
++		}
++	}
++
++	dma_private->hw_chan = hw_chan;
++	runtime->private_data = dma_private;
++	dma_private->substream = substream;
++
++	return 0;
++
++error:
++	for (i = 0; i < hw_chan; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		if (data->virt)
++			dmam_free_coherent(dev, size, data->virt, data->phys);
++	}
++
++	devm_kfree(dev, dma_private);
++	return ret;
++}
++
++static int sprd_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct device *dev = component->dev;
++	int size = runtime->hw.periods_max * SPRD_PCM_DMA_LINKLIST_SIZE;
++	int i;
++
++	for (i = 0; i < dma_private->hw_chan; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		dmam_free_coherent(dev, size, data->virt, data->phys);
++	}
++
++	devm_kfree(dev, dma_private);
++
++	return 0;
++}
++
++static void sprd_pcm_dma_complete(void *data)
++{
++	struct sprd_pcm_dma_private *dma_private = data;
++	struct snd_pcm_substream *substream = dma_private->substream;
++
++	snd_pcm_period_elapsed(substream);
++}
++
++static void sprd_pcm_release_dma_channel(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
++	int i;
++
++	for (i = 0; i < SPRD_PCM_CHANNEL_MAX; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		if (data->chan) {
++			dma_release_channel(data->chan);
++			data->chan = NULL;
++		}
++	}
++}
++
++static int sprd_pcm_request_dma_channel(struct snd_pcm_substream *substream,
++					int channels)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct device *dev = component->dev;
++	struct sprd_pcm_dma_params *dma_params = dma_private->params;
++	int i;
++
++	if (channels > SPRD_PCM_CHANNEL_MAX) {
++		dev_err(dev, "invalid dma channel number:%d\n", channels);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < channels; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		data->chan = dma_request_slave_channel(dev,
++						       dma_params->chan_name[i]);
++		if (!data->chan) {
++			dev_err(dev, "failed to request dma channel:%s\n",
++				dma_params->chan_name[i]);
++			sprd_pcm_release_dma_channel(substream);
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++}
++
++static int sprd_pcm_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct sprd_pcm_dma_params *dma_params;
++	size_t totsize = params_buffer_bytes(params);
++	size_t period = params_period_bytes(params);
++	int channels = params_channels(params);
++	int is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	struct scatterlist *sg;
++	unsigned long flags;
++	int ret, i, j, sg_num;
++
++	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	if (!dma_params) {
++		dev_warn(component->dev, "no dma parameters setting\n");
++		dma_private->params = NULL;
++		snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++		runtime->dma_bytes = totsize;
++		return 0;
++	}
++
++	if (!dma_private->params) {
++		dma_private->params = dma_params;
++		ret = sprd_pcm_request_dma_channel(substream, channels);
++		if (ret)
++			return ret;
++	}
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++
++	runtime->dma_bytes = totsize;
++	sg_num = totsize / period;
++	dma_private->dma_addr_offset = totsize / channels;
++
++	sg = devm_kcalloc(component->dev, sg_num, sizeof(*sg), GFP_KERNEL);
++	if (!sg) {
++		ret = -ENOMEM;
++		goto sg_err;
++	}
++
++	for (i = 0; i < channels; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++		struct dma_chan *chan = data->chan;
++		struct dma_slave_config config = { };
++		struct sprd_dma_linklist link = { };
++		enum dma_transfer_direction dir;
++		struct scatterlist *sgt = sg;
++
++		config.src_maxburst = dma_params->fragment_len[i];
++		config.src_addr_width = dma_params->datawidth[i];
++		config.dst_addr_width = dma_params->datawidth[i];
++		if (is_playback) {
++			config.src_addr = runtime->dma_addr +
++				i * dma_private->dma_addr_offset;
++			config.dst_addr = dma_params->dev_phys[i];
++			dir = DMA_MEM_TO_DEV;
++		} else {
++			config.src_addr = dma_params->dev_phys[i];
++			config.dst_addr = runtime->dma_addr +
++				i * dma_private->dma_addr_offset;
++			dir = DMA_DEV_TO_MEM;
++		}
++
++		sg_init_table(sgt, sg_num);
++		for (j = 0; j < sg_num; j++, sgt++) {
++			u32 sg_len = period / channels;
++
++			sg_dma_len(sgt) = sg_len;
++			sg_dma_address(sgt) = runtime->dma_addr +
++				i * dma_private->dma_addr_offset + sg_len * j;
++		}
++
++		/*
++		 * Configure the link-list address for the DMA engine link-list
++		 * mode.
++		 */
++		link.virt_addr = (unsigned long)data->virt;
++		link.phy_addr = data->phys;
++
++		ret = dmaengine_slave_config(chan, &config);
++		if (ret) {
++			dev_err(component->dev,
++				"failed to set slave configuration: %d\n", ret);
++			goto config_err;
++		}
++
++		/*
++		 * We configure the DMA request mode, interrupt mode, channel
++		 * mode and channel trigger mode by the flags.
++		 */
++		flags = SPRD_DMA_FLAGS(SPRD_DMA_CHN_MODE_NONE, SPRD_DMA_NO_TRG,
++				       SPRD_DMA_FRAG_REQ, SPRD_DMA_TRANS_INT);
++		data->desc = chan->device->device_prep_slave_sg(chan, sg,
++								sg_num, dir,
++								flags, &link);
++		if (!data->desc) {
++			dev_err(component->dev, "failed to prepare slave sg\n");
++			ret = -ENOMEM;
++			goto config_err;
++		}
++
++		if (!runtime->no_period_wakeup) {
++			data->desc->callback = sprd_pcm_dma_complete;
++			data->desc->callback_param = dma_private;
++		}
++	}
++
++	devm_kfree(component->dev, sg);
++
++	return 0;
++
++config_err:
++	devm_kfree(component->dev, sg);
++sg_err:
++	sprd_pcm_release_dma_channel(substream);
++	return ret;
++}
++
++static int sprd_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	snd_pcm_set_runtime_buffer(substream, NULL);
++	sprd_pcm_release_dma_channel(substream);
++
++	return 0;
++}
++
++static int sprd_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct sprd_pcm_dma_private *dma_private =
++		substream->runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	int ret = 0, i;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		for (i = 0; i < dma_private->hw_chan; i++) {
++			struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++			if (!data->desc)
++				continue;
++
++			data->cookie = dmaengine_submit(data->desc);
++			ret = dma_submit_error(data->cookie);
++			if (ret) {
++				dev_err(component->dev,
++					"failed to submit dma request: %d\n",
++					ret);
++				return ret;
++			}
++
++			dma_async_issue_pending(data->chan);
++		}
++
++		break;
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		for (i = 0; i < dma_private->hw_chan; i++) {
++			struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++			if (data->chan)
++				dmaengine_resume(data->chan);
++		}
++
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		for (i = 0; i < dma_private->hw_chan; i++) {
++			struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++			if (data->chan)
++				dmaengine_terminate_async(data->chan);
++		}
++
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		for (i = 0; i < dma_private->hw_chan; i++) {
++			struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++			if (data->chan)
++				dmaengine_pause(data->chan);
++		}
++
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t sprd_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	int pointer[SPRD_PCM_CHANNEL_MAX];
++	int bytes_of_pointer = 0, sel_max = 0, i;
++	snd_pcm_uframes_t x;
++	struct dma_tx_state state;
++	enum dma_status status;
++
++	for (i = 0; i < dma_private->hw_chan; i++) {
++		struct sprd_pcm_dma_data *data = &dma_private->data[i];
++
++		if (!data->chan)
++			continue;
++
++		status = dmaengine_tx_status(data->chan, data->cookie, &state);
++		if (status == DMA_ERROR) {
++			dev_err(component->dev,
++				"failed to get dma channel %d status\n", i);
++			return 0;
++		}
++
++		/*
++		 * We just get current transfer address from the DMA engine, so
++		 * we need convert to current pointer.
++		 */
++		pointer[i] = state.residue - runtime->dma_addr -
++			i * dma_private->dma_addr_offset;
++
++		if (i == 0) {
++			bytes_of_pointer = pointer[i];
++			sel_max = pointer[i] < data->pre_pointer ? 1 : 0;
++		} else {
++			sel_max ^= pointer[i] < data->pre_pointer ? 1 : 0;
++
++			if (sel_max)
++				bytes_of_pointer =
++					max(pointer[i], pointer[i - 1]) << 1;
++			else
++				bytes_of_pointer =
++					min(pointer[i], pointer[i - 1]) << 1;
++		}
++
++		data->pre_pointer = pointer[i];
++	}
++
++	x = bytes_to_frames(runtime, bytes_of_pointer);
++	if (x == runtime->buffer_size)
++		x = 0;
++
++	return x;
++}
++
++static int sprd_pcm_mmap(struct snd_pcm_substream *substream,
++			 struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
++	return remap_pfn_range(vma, vma->vm_start,
++			       runtime->dma_addr >> PAGE_SHIFT,
++			       vma->vm_end - vma->vm_start,
++			       vma->vm_page_prot);
++}
++
++static struct snd_pcm_ops sprd_pcm_ops = {
++	.open = sprd_pcm_open,
++	.close = sprd_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = sprd_pcm_hw_params,
++	.hw_free = sprd_pcm_hw_free,
++	.trigger = sprd_pcm_trigger,
++	.pointer = sprd_pcm_pointer,
++	.mmap = sprd_pcm_mmap,
++};
++
++static int sprd_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_pcm *pcm = rtd->pcm;
++	struct snd_pcm_substream *substream;
++	int ret;
++
++	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
++	if (ret)
++		return ret;
++
++	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	if (substream) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
++					  sprd_pcm_hardware.buffer_bytes_max,
++					  &substream->dma_buffer);
++		if (ret) {
++			dev_err(card->dev,
++				"can't alloc playback dma buffer: %d\n", ret);
++			return ret;
++		}
++	}
++
++	substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
++	if (substream) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
++					  sprd_pcm_hardware.buffer_bytes_max,
++					  &substream->dma_buffer);
++		if (ret) {
++			dev_err(card->dev,
++				"can't alloc capture dma buffer: %d\n", ret);
++			snd_dma_free_pages(&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream->dma_buffer);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static void sprd_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
++		substream = pcm->streams[i].substream;
++		if (substream) {
++			snd_dma_free_pages(&substream->dma_buffer);
++			substream->dma_buffer.area = NULL;
++			substream->dma_buffer.addr = 0;
++		}
++	}
++}
++
++static const struct snd_soc_component_driver sprd_soc_component = {
++	.name		= DRV_NAME,
++	.ops		= &sprd_pcm_ops,
++	.pcm_new	= sprd_pcm_new,
++	.pcm_free	= sprd_pcm_free,
++};
++
++static int sprd_soc_platform_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
++					      NULL, 0);
++	if (ret)
++		dev_err(&pdev->dev, "could not register platform:%d\n", ret);
++
++	return ret;
++}
++
++static const struct of_device_id sprd_pcm_of_match[] = {
++	{ .compatible = "sprd,pcm-platform", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, sprd_pcm_of_match);
++
++static struct platform_driver sprd_pcm_driver = {
++	.driver = {
++		.name = "sprd-pcm-audio",
++		.of_match_table = sprd_pcm_of_match,
++	},
++
++	.probe = sprd_soc_platform_probe,
++};
++
++module_platform_driver(sprd_pcm_driver);
++
++MODULE_DESCRIPTION("Spreadtrum ASoC PCM DMA");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:sprd-audio");
+diff --git a/sound/soc/sprd/sprd-pcm-dma.h b/sound/soc/sprd/sprd-pcm-dma.h
+new file mode 100644
+index 0000000..d85a34f
+--- /dev/null
++++ b/sound/soc/sprd/sprd-pcm-dma.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef __SPRD_PCM_DMA_H
++#define __SPRD_PCM_DMA_H
++
++#define SPRD_PCM_CHANNEL_MAX	2
++
++struct sprd_pcm_dma_params {
++	dma_addr_t dev_phys[SPRD_PCM_CHANNEL_MAX];
++	u32 datawidth[SPRD_PCM_CHANNEL_MAX];
++	u32 fragment_len[SPRD_PCM_CHANNEL_MAX];
++	const char *chan_name[SPRD_PCM_CHANNEL_MAX];
++};
++
++#endif /* __SPRD_PCM_DMA_H */
+-- 
+1.7.9.5
