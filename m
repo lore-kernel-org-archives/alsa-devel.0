@@ -1,30 +1,22 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: hp_pin was NULL value
-Date: Tue, 29 Jan 2019 08:39:56 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7463@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18420E8B@RTITMBSV02.realtek.com.tw>
- <s5htviigoa5.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A18420EBD@RTITMBSV02.realtek.com.tw>
- <s5hlg3ux9x9.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210B1@RTITMBSV02.realtek.com.tw>
- <s5hh8eah1fj.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210E5@RTITMBSV02.realtek.com.tw>
- <s5h5zuqgxv2.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A184210FC@RTITMBSV02.realtek.com.tw>
- <s5h1s5eguwz.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A1842112F@RTITMBSV02.realtek.com.tw>
- <s5hwon6ffg9.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A18DB7442@RTITMBSVM07.realtek.com.tw>
- <s5hlg33g95b.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/1] seq: arecordmidi: Add num-events option
+Date: Tue, 29 Jan 2019 17:45:02 +0900
+Message-ID: <20190129084502.GA9419@workstation>
+References: <5c4fb010.1c69fb81.94ca0.01ae@mx.google.com>
+ <f0c4b673-52a2-fc1d-c9d8-4e4b42f999f1@sakamocchi.jp>
+ <CACeCKacREMJDGWNJrdydu3+P1EZ81AyaY0sPfBhuiT11nnvV5A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C566426749A
- for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 09:39:59 +0100 (CET)
-In-Reply-To: <s5hlg33g95b.wl-tiwai@suse.de>
-Content-Language: zh-TW
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
+ [209.85.210.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A92E26749A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 09:45:10 +0100 (CET)
+Received: by mail-pf1-f194.google.com with SMTP id 64so9340743pfr.9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 00:45:10 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <CACeCKacREMJDGWNJrdydu3+P1EZ81AyaY0sPfBhuiT11nnvV5A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,235 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: Prashant Malani <pmalani@chromium.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi,
 
-So I think put it under alc269 parser. Maybe it is the quickly method.
+On Mon, Jan 28, 2019 at 09:34:59PM -0800, Prashant Malani wrote:
+> Can I duplicate this in arecordmidi.c ? I'm loath to introduce a
+> header, and then refactor axfer/main.c.
 
-	err = alc269_parse_auto_config(codec);
-	if (err < 0)
-		goto error;
-+   .....
-+   .....
+I don't mind it.
 
-BR,
-kailang
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
-Sent: Tuesday, January 29, 2019 4:29 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: hp_pin was NULL value
+When parsing string with non-numeric characters, the behaviour of
+atoi() is undefined still in C11.
 
-On Tue, 29 Jan 2019 09:05:48 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> I ask our AE for this function.
-> We also prefer to run it only one time on boot time. S3 resume back not need to run this function.
-> Because it will take about 650ms times to initial.
-> 
-> Attach was the new patch.
-> Reject commit or use attach patch to commit. Which is better?
+$ cd alsa-utils.git
+$ git grep atoi | grep optarg | wc
+     39     158    1919
 
-This won't work with S4, unfortunately.
-
-The point of S4 problem is that the switch happens from the uninitialized state to the already running system via a single resume callback.  That is, the driver was already initialized in the restored image although the chip is still uninitialized on the booted image before the switch.  Then switch happens, and since it keeps
-done_hp_init=1 at S4 resume call, the whole trick won't be applied at all.
-
-I'll check whether we have some indicator showing that the call is in thaw/restore, or we'd have to implement a separate thaw/restore callback.
+Mmm... Many parts are written without enough care of the undefined
+behaviour...
 
 
-thanks,
+Thanks
 
-Takashi
-
-> 
-> BR,
-> Kailang
-> 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Tuesday, January 15, 2019 5:17 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: hp_pin was NULL value
-> 
-> On Tue, 15 Jan 2019 10:06:58 +0100,
-> Kailang wrote:
-> > 
-> > >>>Is it about that alc225_hp_init() gets called at resume in addition to the boot time?
-> > 
-> > alc225_hp_init() ==> it only need to call one time at boot time.
-> > This HP initial code doesn't need to call at resume.
-> > If system boot, HP initial code just need to call it at boot time.
-> > S3 state was not need to call this function.
-> 
-> But S4 resume must call this function: that's my point.
-> 
-> So the question is whether calling alc225_hp_init() at S3 resume is significantly harmful or not.  If not, we can move it there.  If it's harmful, we need to distinguish S3 and S4, and introduce either some flag or a new callback, which will be a much more work than simply patching the codec code.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > Sorry!! Maybe I describe it confuse you.
-> > 
-> > -----Original Message-----
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Sent: Tuesday, January 15, 2019 4:58 PM
-> > To: Kailang <kailang@realtek.com>
-> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > Subject: Re: hp_pin was NULL value
-> > 
-> > On Tue, 15 Jan 2019 09:17:24 +0100,
-> > Kailang wrote:
-> > > 
-> > > 
-> > > Hi Takashi,
-> > > 
-> > > Sorry!! Maybe I don't understand what you mean.	
-> > > Please see below.
-> > > 
-> > > --- patch_realtek.c.orig	2019-01-11 16:28:43.745957854 +0800
-> > > +++ patch_realtek.c	2019-01-15 16:09:56.017873567 +0800
-> > > @@ -3221,12 +3221,29 @@ static void alc256_shutup(struct hda_cod
-> > >  	snd_hda_shutup_pins(codec);
-> > >  }
-> > >  
-> > > +static void alc225_hp_init(struct hda_codec *codec) {
-> > > +	struct alc_spec *spec = codec->spec;
-> > > +	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
-> > > +	int i, val;
-> > > +	int coef38, coef0d, coef36;
-> > > +	printk("%s-start hp=0x%x\n",__func__,hp_pin);
-> > > +	if (!hp_pin)
-> > > +		return;
-> > > +
-> > > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15);
-> > > +	msleep(50);
-> > > +	alc_update_coef_idx(codec, 0x4a, 1<<15, 0);
-> > > +	printk("%s-end hp=0x%x\n",__func__,hp_pin); }
-> > > +
-> > >  static void alc225_init(struct hda_codec *codec)  {
-> > >  	struct alc_spec *spec = codec->spec;
-> > >  	hda_nid_t hp_pin = spec->gen.autocfg.hp_pins[0];
-> > >  	bool hp1_pin_sense, hp2_pin_sense;
-> > >  
-> > > +	alc225_hp_init(codec);
-> > >  	if (!hp_pin)
-> > >  		return;
-> > >  
-> > > @@ -3262,6 +3279,7 @@ static void alc225_init(struct hda_codec
-> > >  
-> > >  	alc_update_coef_idx(codec, 0x4a, 3 << 10, 0);
-> > >  	alc_update_coefex_idx(codec, 0x57, 0x04, 0x0007, 0x4); /* Hight 
-> > > power */
-> > > +	printk("%s hp=0x%x\n",__func__,hp_pin);
-> > >  }
-> > 
-> > ... and I don't understand what's your problem.
-> > 
-> > Is it about that alc255_hp_init() gets called at resume in addition to the boot time?  If so, this is the intended behavior.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > > 
-> > > -----Original Message-----
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Sent: Tuesday, January 15, 2019 3:54 PM
-> > > To: Kailang <kailang@realtek.com>
-> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > Subject: Re: hp_pin was NULL value
-> > > 
-> > > On Tue, 15 Jan 2019 08:43:40 +0100, Kailang wrote:
-> > > > 
-> > > > 
-> > > > No, it not expected.
-> > > > It will enter two times after boot ready.
-> > > > I think it could add a flag in alc225_hp_init(). 
-> > > > To make sure it only excute one time. How do you think about?
-> > > 
-> > > Where was it called, actually?  The call of patch_ops.init is found in several places: once in snd_hda_codec_build_controls() just before creating controls (which is the boot time init), and at resume, alc269_resume().
-> > > 
-> > > And, as already explained, we have to call this at resume, because it's not guaranteed that it's been already called in the case of hibernation.
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > > 
-> > > > -----Original Message-----
-> > > > From: Takashi Iwai <tiwai@suse.de>
-> > > > Sent: Tuesday, January 15, 2019 2:37 PM
-> > > > To: Kailang <kailang@realtek.com>
-> > > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> > > > Subject: Re: hp_pin was NULL value
-> > > > 
-> > > > On Tue, 15 Jan 2019 03:31:33 +0100, Kailang wrote:
-> > > > > 
-> > > > > Hi Takashi,
-> > > > > 
-> > > > > Could you receive this email?
-> > > > > 
-> > > > > BR,
-> > > > > Kailang
-> > > > > 
-> > > > > -----Original Message-----
-> > > > > From: Kailang
-> > > > > Sent: Thursday, January 10, 2019 11:14 AM
-> > > > > To: 'Takashi Iwai' <tiwai@suse.de>
-> > > > > Cc: (alsa-devel@alsa-project.org) 
-> > > > > <alsa-devel@alsa-project.org>
-> > > > > Subject: RE: hp_pin was NULL value
-> > > > > 
-> > > > > Hi Takashi,
-> > > > > 
-> > > > > I simulate test your prefer function.
-> > > > > I put alc225_hp_init() in alc225_init().
-> > > > > If system boot ready, I write 1 to power_save of /sys/module/....
-> > > > > The print message as below. It called two times until boot ready.
-> > > > > If System enter to power save, play stream will wake up codec. It also call alc225_hp_init().
-> > > > > 
-> > > > > [   21.497524] alc225_init hp_pin=0x21
-> > > > > [   21.497526] alc225_hp_init-s hp=0x21
-> > > > > [   22.140076] alc225_hp_init-e hp=0x21
-> > > > > [   22.183496] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > > [   22.184681] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > > [   22.186846] alc225_shutup hp_pin=0x21
-> > > > > [   22.187831] input: HDA Intel Line Out as /devices/pci0000:00/0000:00:1b.0/sound/card0/input5
-> > > > > [   22.188055] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
-> > > > > [   22.205104] alc225_init hp_pin=0x21
-> > > > > [   22.205108] alc225_hp_init-s hp=0x21
-> > > > > [   22.852123] alc225_hp_init-e hp=0x21
-> > > > > [   22.894772] snd_hda_codec_realtek hdaudioC0D2: Headset jack set to unplugged mode.
-> > > > > ############  Boot ready ############## [  116.832084] 
-> > > > > alc225_shutup
-> > > > > hp_pin=0x21  ==> echo 1 to power_save
-> > > > > [  120.002582] alc225_init hp_pin=0x21     ==> play system sound
-> > > > > [  120.002586] alc225_hp_init-s hp=0x21 [  120.644128] 
-> > > > > alc225_hp_init-e hp=0x21
-> > > > 
-> > > > It wasn't clear to me whether you meant this as a success or a failure...  Did the patch work as expected, no?
-> > > > 
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > Takashi
-> > > > 
-> > > > ------Please consider the environment before printing this e-mail.
-> > > > 
-> > > 
-> > 
-> [2 0000-alc294-hp-init-again.patch <application/octet-stream 
-> (base64)>]
-> 
+Takashi Sakamoto
