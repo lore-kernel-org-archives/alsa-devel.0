@@ -1,80 +1,126 @@
-From: shuah <shuah@kernel.org>
-Subject: Re: [PATCH v10 0/4] Media Device Allocator API
-Date: Mon, 28 Jan 2019 16:48:49 -0700
-Message-ID: <481787e7-112a-80dd-228c-2497a12547b9@kernel.org>
-References: <cover.1548360791.git.shuah@kernel.org>
- <e8717d11-1eff-2e07-53d5-6cd55356c66a@xs4all.nl>
+From: pmalani@chromium.org
+Subject: [PATCH 1/1] seq: arecordmidi: Add num-events option
+Date: Mon, 28 Jan 2019 17:44:45 -0800
+Message-ID: <5c4fb010.1c69fb81.94ca0.01ae@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e8717d11-1eff-2e07-53d5-6cd55356c66a@xs4all.nl>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id C701F267467
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2019 02:44:50 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id s198so8044307pgs.2
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2019 17:44:50 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Prashant Malani <pmalani@chromium.org>, alsa-devel@alsa-project.org, derat@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Hans,
+From: Prashant Malani <pmalani@chromium.org>
 
-On 1/28/19 5:03 AM, Hans Verkuil wrote:
-> Hi Shuah,
-> 
-> On 1/24/19 9:32 PM, Shuah Khan wrote:
->> Media Device Allocator API to allows multiple drivers share a media device.
->> This API solves a very common use-case for media devices where one physical
->> device (an USB stick) provides both audio and video. When such media device
->> exposes a standard USB Audio class, a proprietary Video class, two or more
->> independent drivers will share a single physical USB bridge. In such cases,
->> it is necessary to coordinate access to the shared resource.
->>
->> Using this API, drivers can allocate a media device with the shared struct
->> device as the key. Once the media device is allocated by a driver, other
->> drivers can get a reference to it. The media device is released when all
->> the references are released.
->>
->> - This patch series is tested on 5.0-rc3 and addresses comments on
->>    v9 series from Hans Verkuil.
->> - v9 was tested on 4.20-rc6.
->> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
->>    arecord. When analog is streaming, digital and audio user-space
->>    applications detect that the tuner is busy and exit. When digital
->>    is streaming, analog and audio applications detect that the tuner is
->>    busy and exit. When arecord is owns the tuner, digital and analog
->>    detect that the tuner is busy and exit.
-> 
-> I've been doing some testing with my au0828, and I am confused about one
-> thing, probably because it has been too long ago since I last looked into
-> this in detail:
-> 
+Add a command line option to automatically exit after recording a fixed
+number of MIDI events. This allows a program using arecordmidi to expect
+a MIDI file to be written automatically when the specified number of
+events have been received, instead of having to send a SIGINT or SIGTERM
+programmatically.
 
-Great.
+It also avoids the need to have the arecordmidi process running in the
+background, and then constantly stat the output file to check if any
+bytes have been written to it (this makes for less predictable and
+longer-running tests).
 
-> Why can't I change the tuner frequency if arecord (and only arecord) is
-> streaming audio? If arecord is streaming, then it is recording the audio
-> from the analog TV tuner, right? So changing the analog TV frequency
-> should be fine.
-> 
+This functionality finds use in Chrome OS functional testing, since
+having to send SIGTERM/SIGINT programmatically and then wait for the
+output file adds unpredictability and delay to the tests.
 
-Changing analog TV frequency would be s_frequency. The way it works is
-any s_* calls would require holding the pipeline. In Analog TV case, it
-would mean holding both audio and video pipelines for any changes
-including TV.
+The addition of this command-line option should (hopefully) not break
+any existing usage.
 
-As I recall, we discussed this design and the decision was to make all
-s_* calls interfaces to hold the tuner. A special exception is g_tuner
-in case of au0828. au0828 initializes the tuner from s_* interfaces and
-its g_tuner interfaces. Allowing s_frequency to proceed will disrupt the
-arecord audio stream.
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
 
-Query (q_*) works just fine without holding the pipeline. I limited the
-analog holds to just the ones that are required. The current set is
-required to avoid audio stream disruptions.
-
-I made sure v4l-ctl --all works when the pipeline is locked by any one
-of the 3 (audio, video, DVB).
-
-Hope this helps.
-
-thanks,
--- Shuah
+diff --git a/seq/aplaymidi/arecordmidi.c b/seq/aplaymidi/arecordmidi.c
+index 19dbb7d..ca25bfa 100644
+--- a/seq/aplaymidi/arecordmidi.c
++++ b/seq/aplaymidi/arecordmidi.c
+@@ -690,7 +690,8 @@ static void help(const char *argv0)
+ 		"  -t,--ticks=ticks           resolution in ticks per beat or frame\n"
+ 		"  -s,--split-channels        create a track for each channel\n"
+ 		"  -m,--metronome=client:port play a metronome signal\n"
+-		"  -i,--timesig=nn:dd         time signature\n",
++		"  -i,--timesig=nn:dd         time signature\n"
++		"  -n,--num-events=events     fixed number of events to record, then exit\n",
+ 		argv0);
+ }
+ 
+@@ -706,7 +707,7 @@ static void sighandler(int sig)
+ 
+ int main(int argc, char *argv[])
+ {
+-	static const char short_options[] = "hVlp:b:f:t:sdm:i:";
++	static const char short_options[] = "hVlp:b:f:t:sdm:i:n:";
+ 	static const struct option long_options[] = {
+ 		{"help", 0, NULL, 'h'},
+ 		{"version", 0, NULL, 'V'},
+@@ -719,6 +720,7 @@ int main(int argc, char *argv[])
+ 		{"dump", 0, NULL, 'd'},
+ 		{"metronome", 1, NULL, 'm'},
+ 		{"timesig", 1, NULL, 'i'},
++		{"num-events", 1, NULL, 'n'},
+ 		{ }
+ 	};
+ 
+@@ -727,6 +729,9 @@ int main(int argc, char *argv[])
+ 	struct pollfd *pfds;
+ 	int npfds;
+ 	int c, err;
++	/* If |num_events| isn't specified, leave it at 0. */
++	int num_events = 0;
++	int events_received = 0;
+ 
+ 	init_seq();
+ 
+@@ -775,6 +780,11 @@ int main(int argc, char *argv[])
+ 		case 'i':
+ 			time_signature(optarg);
+ 			break;
++		case 'n':
++			num_events = atoi(optarg);
++			if (num_events <= 0)
++				fatal("num_events must be greater than 0");
++			break;
+ 		default:
+ 			help(argv[0]);
+ 			return 1;
+@@ -864,13 +874,20 @@ int main(int argc, char *argv[])
+ 			err = snd_seq_event_input(seq, &event);
+ 			if (err < 0)
+ 				break;
+-			if (event)
++			if (event) {
+ 				record_event(event);
++				events_received++;
++			}
+ 		} while (err > 0);
+ 		if (stop)
+ 			break;
++		if (num_events && (events_received == num_events))
++			break;
+ 	}
+ 
++	if (num_events && events_received < num_events)
++		fputs("Warning: Received signal before num_events\n", stdout);
++
+ 	finish_tracks();
+ 	write_file();
+ 
+-- 
+2.20.1.495.gaa96b0ce6b-goog
