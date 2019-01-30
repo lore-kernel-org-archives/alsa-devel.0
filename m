@@ -1,18 +1,18 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 2/2] ALSA: pcm: implement the ioctl/mmap
- filter for the anonymous dup
-Date: Wed, 30 Jan 2019 13:05:40 +0100
-Message-ID: <9c2fbe4e-9fca-aadf-e295-0efd73b32968@perex.cz>
+Subject: Re: [PATCH 1/2] ALSA: pcm: implement the anonymous dup
+ (inode file descriptor)
+Date: Wed, 30 Jan 2019 13:19:47 +0100
+Message-ID: <e5718796-736a-2414-a907-eae51dedf061@perex.cz>
 References: <20190130084733.979-1-perex@perex.cz>
- <20190130084733.979-3-perex@perex.cz> <s5h5zu6e67b.wl-tiwai@suse.de>
+ <20190130084733.979-2-perex@perex.cz> <s5h4l9qe5qu.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 311D9267455
- for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 13:05:47 +0100 (CET)
-In-Reply-To: <s5h5zu6e67b.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3065267419
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 13:19:53 +0100 (CET)
+In-Reply-To: <s5h4l9qe5qu.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,20 +27,26 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Phil Burk <philburk@google.com>, Leo Yan <leo.yan@linaro.org>, Baolin Wang <baolin.wang@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 30.1.2019 v 12:27 Takashi Iwai napsal(a):
-> On Wed, 30 Jan 2019 09:47:33 +0100,
+Dne 30.1.2019 v 12:37 Takashi Iwai napsal(a):
+> On Wed, 30 Jan 2019 09:47:32 +0100,
 > Jaroslav Kysela wrote:
 >>
->> Create seven control bits to allow the various restrictions for the
->> anonymous file descriptor.
->>
->> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>> This patch implements new SNDRV_PCM_IOCTL_ANONYMOUS_DUP ioctl which
+>> returns the new duplicated anonymous inode file descriptor
+>> (anon_inode:snd-pcm) which can be passed to the restricted clients.
+
+> +	if (!try_module_get(pcm->card->module)) {
+>> +		err = -EFAULT;
 > 
-> I think we need to check SNDRV_PCM_PERM_RW for read/write ops, too.
+> EFAULT doesn't appear to be the best fitting for this error path.
 
-Yes, it will be in v3. Thanks for the review.
+It's in the sync with snd_pcm_open(). This error path should not be
+activated in the regular environment anyway (so it's real FAULT somewhere).
+If it have to be changed, let change all locations in a separate patch.
 
-				Jaroslav
+Thanks for the review.
+
+					Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
