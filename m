@@ -1,103 +1,134 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
-Date: Wed, 30 Jan 2019 12:45:49 +0000
-Message-ID: <b631310f-93fa-ef4b-7014-d97fcfb2dcdf@nvidia.com>
-References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Subject: [PATCH v15 0/8] ASoC: sun4i-codec: Add Line-In, FM-In,
+	Mic 2
+Date: Wed, 30 Jan 2019 11:39:36 +0100
+Message-ID: <20190130103945.26692-1-dannym@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sameer Pujar <spujar@nvidia.com>, perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Cc: thierry.reding@gmail.com, rlokhande@nvidia.com, sharadg@nvidia.com, mkumard@nvidia.com, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dd26836.kasserver.com (dd26836.kasserver.com [85.13.145.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D37CB267903
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 15:26:00 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Danny Milosavljevic <dannym@scratchpost.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This patchset adds some mixer controls to sun4i-codec for the Allwinner A10
+and the Allwinner A20.
 
-On 25/01/2019 11:06, Sameer Pujar wrote:
-> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
-> will not be ON. This could cause issue during probe, where hda init
-> setup is done. This patch enables clocks unconditionally during probe.
-> 
-> Along with above, follwoing changes are done.
->   * enable runtime PM before exiting from probe work. This helps to avoid
->     usage of pm_runtime_get_sync/pm_runtime_put() in probe work.
->   * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
->   * runtime PM callbacks moved out of CONFIG_PM check
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  sound/pci/hda/hda_tegra.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-> index c8d18dc..ba6175f 100644
-> --- a/sound/pci/hda/hda_tegra.c
-> +++ b/sound/pci/hda/hda_tegra.c
-> @@ -219,7 +219,6 @@ static int hda_tegra_enable_clocks(struct hda_tegra *data)
->  	return rc;
->  }
->  
-> -#ifdef CONFIG_PM_SLEEP
->  static void hda_tegra_disable_clocks(struct hda_tegra *data)
->  {
->  	clk_disable_unprepare(data->hda2hdmi_clk);
-> @@ -227,6 +226,7 @@ static void hda_tegra_disable_clocks(struct hda_tegra *data)
->  	clk_disable_unprepare(data->hda_clk);
->  }
->  
-> +#ifdef CONFIG_PM_SLEEP
->  /*
->   * power management
->   */
-> @@ -257,7 +257,6 @@ static int hda_tegra_resume(struct device *dev)
->  }
->  #endif /* CONFIG_PM_SLEEP */
->  
-> -#ifdef CONFIG_PM
->  static int hda_tegra_runtime_suspend(struct device *dev)
->  {
->  	struct snd_card *card = dev_get_drvdata(dev);
-> @@ -283,7 +282,7 @@ static int hda_tegra_runtime_resume(struct device *dev)
->  	int rc;
->  
->  	rc = hda_tegra_enable_clocks(hda);
-> -	if (rc != 0)
-> +	if (rc)
->  		return rc;
->  	if (chip && chip->running) {
->  		hda_tegra_init(hda);
-> @@ -292,7 +291,6 @@ static int hda_tegra_runtime_resume(struct device *dev)
->  
->  	return 0;
->  }
-> -#endif /* CONFIG_PM */
->  
->  static const struct dev_pm_ops hda_tegra_pm = {
->  	SET_SYSTEM_SLEEP_PM_OPS(hda_tegra_suspend, hda_tegra_resume)
-> @@ -551,9 +549,9 @@ static int hda_tegra_probe(struct platform_device *pdev)
->  
->  	dev_set_drvdata(&pdev->dev, card);
->  
-> -	pm_runtime_enable(hda->dev);
-> -	if (!azx_has_pm_runtime(chip))
-> -		pm_runtime_forbid(hda->dev);
-> +	err = hda_tegra_enable_clocks(hda);
-> +	if (err)
-> +		goto out_free;
+It also adds the PGA for the MIC2 preamp.
 
-We also need to think about power-domains here. Enabling the clocks
-might not be enough as the appropriate power-domain needs to be enabled.
-For 64-bit Tegra runtime-pm will handle the power-domains (assuming they
-are populated in device-tree). So I still think it is better we call
-pm_runtime_get_sync() at some point rather than just replying on
-enabling the clocks.
+Where possible, it uses SOC_DAPM_DOUBLE in order to cut down on the number
+of distinct controls in alsamixer.
 
-Cheers
-Jon
+v15 changes compared to v14 are:
+ - Instead of adding controls dynamically, add an extra sun7i_codec_controls
+   structure and duplicate the sun4i_codec_controls there, with small changes.
+ - Split Mic Playback Volume into extra patch.
+ - LEFT OFF adding Capture Selects since it's unclear how we want to structure
+   it.
+ - LEFT OFF adding Differential Line Source since it might also change if the
+   Capture Select implementation is different.
 
--- 
-nvpublic
+v14 changes compared to v13 are:
+ - Merged some of the patches together if it made sense to test them together.
+ - Use snd_soc_component_driver.
+ - Moved SUN4I_CODEC_DAC_ACTL_LFMS, SUN4I_CODEC_DAC_ACTL_RFMS to the correct
+   patch in the series.
+ - Kept "Left Mixer Left DAC Playback Switch", "Right Mixer Left DAC
+   Playback Switch" and "Right Mixer Right DAC Playback Switch" unchanged
+   compared to the released version - for backward compatibility.
+
+v13 changes compared to v12 are:
+ - Added my "Signed-off-by".
+ - Clarified some commit message text.
+
+v12 changes compared to v11 are:
+ - Split up patchset in another way.
+ - Renamed "Mic1 Capture Volume" to "Mic1 Boost Volume".
+ - Renamed "Mic2 Capture Volume" to "Mic2 Boost Volume".
+ - Renamed "Line Capture Volume" to "Line Boost Volume".
+ - Renamed "Differential Line Capture Switch" to "Differential Line Source".
+
+v11 changes compared to v10 are:
+ - Split up patchset.
+ - Fixed typo in Differential Line Capture Switch.
+ - Renamed "Non-Differential" value to "Stereo".
+ - Removed duplicate PA Volume mixer control.
+
+v10 changes compared to v9 are:
+ - Use SOC_DAPM_DOUBLE where possible and it makes sense in order to cut
+   down on the number of controls.
+
+v9 changes compared to v8 are:
+ - added Line Differential Capture Switch.
+ - split Capture Source into Left Capture Select, Right Capture Select.
+ - added Line Capture Volume.
+ - rename "sun4i_codec_widgets" to "sun4i_codec_controls" for
+   consistency with the struct field it's used in.
+ - rename "Line-In" to "Line".
+ - rename "Power Amplifier Playback Volume" to "Headphone Playback Volume".
+
+v8 changes compared to v7 are:
+ - fixed the routes for line and mic capturing.
+
+v7 changes compared to v6 are:
+ - preparation for different A20, A10 controls is now in an extra patch.
+ - all register definitions are now at the top.
+ - sun7i-specific things (A20-specific things) are now less
+   grouped-together.
+ - rename "Power Amplifier Volume" to "Power Amplifier Playback Volume".
+
+v6 changes compared to v5 are:
+ - Mic preamplifier special cases for A20 and A10 now are now not
+   icky: There are two different _widget arrays and the probe() function
+   now selects the right one to pass to snd_soc_register_codec() unmodified.
+ - sun7i-specific things (A20-specific things) are now grouped together.
+
+v5 changes compared to v4 are:
+ - Mic preamplifier controls have more common names now.
+ - Mic preamplifier scale has a 0 dB entry as well now, as documented in the
+   A20 user manual.
+ - Mic preamplifier has special cases for A20 and A10 now.
+ - Gain controls have "Gain" in the name now.
+
+v4 changes compared to v3 are:
+ - names of the input are not uppercase anymore.
+ - bit index constants are now named as in the A20 user manual v1.4.
+ - added Mic1-In, Mac2-In.
+ - added Mic1 and Mic2 Pre-Amplifiers.
+
+v3 changes compared to v2 are:
+ - added DAPM routes.
+
+v2 changes compared to v1 are:
+ - moved Line-In and FM-In playback switches to their respective
+   sun4i_codec_*_mixer_controls.
+
+v1 changes:
+ - added linein, fmin output volumes and switches.
+
+Danny Milosavljevic (8):
+  ASoC: sun4i-codec: Add MIC2 Pre-Amplifier, Mic2
+  ASoC: sun4i-codec: Add Mic Playback Volume
+  ASoC: sun4i-codec: Add sun7i_codec_controls, sun7i_codec_codec.
+  ASoC: sun4i-codec: Add Mic1 Boost Volume, Mic2 Boost Volume
+  ASoC: sun4i-codec: Merge sun4i_codec_left_mixer_controls and
+    sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls
+  ASoC: sun4i-codec: Add Mic1 Playback Switch, Mic2 Playback Switch
+  ASoC: sun4i-codec: Add FM Playback Volume, FM Left, FM Right, FM
+    Playback Switch
+  ASoC: sun4i-codec: Add Line Playback Volume, Line Boost Volume, Line
+    Right, Line Left, Line Playback Switch
+
+ sound/soc/sunxi/sun4i-codec.c | 149 ++++++++++++++++++++++++++++++----
+ 1 file changed, 134 insertions(+), 15 deletions(-)
