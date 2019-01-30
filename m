@@ -1,261 +1,103 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 2/2] ALSA: pcm: implement the ioctl/mmap filter
-	for the anonymous dup
-Date: Wed, 30 Jan 2019 13:41:39 +0100
-Message-ID: <20190130124139.10439-3-perex@perex.cz>
-References: <20190130124139.10439-1-perex@perex.cz>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
+Date: Wed, 30 Jan 2019 12:45:49 +0000
+Message-ID: <b631310f-93fa-ef4b-7014-d97fcfb2dcdf@nvidia.com>
+References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id BF3C726745C
- for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 13:42:07 +0100 (CET)
-In-Reply-To: <20190130124139.10439-1-perex@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sameer Pujar <spujar@nvidia.com>, perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Cc: thierry.reding@gmail.com, rlokhande@nvidia.com, sharadg@nvidia.com, mkumard@nvidia.com, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Create seven control bits to allow the various restrictions for the
-anonymous file descriptor.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/pcm.h         |  1 +
- include/uapi/sound/asound.h |  9 +++++
- sound/core/pcm_native.c     | 93 ++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 102 insertions(+), 1 deletion(-)
+On 25/01/2019 11:06, Sameer Pujar wrote:
+> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
+> will not be ON. This could cause issue during probe, where hda init
+> setup is done. This patch enables clocks unconditionally during probe.
+> 
+> Along with above, follwoing changes are done.
+>   * enable runtime PM before exiting from probe work. This helps to avoid
+>     usage of pm_runtime_get_sync/pm_runtime_put() in probe work.
+>   * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
+>   * runtime PM callbacks moved out of CONFIG_PM check
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  sound/pci/hda/hda_tegra.c | 26 +++++++++++++++++---------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+> index c8d18dc..ba6175f 100644
+> --- a/sound/pci/hda/hda_tegra.c
+> +++ b/sound/pci/hda/hda_tegra.c
+> @@ -219,7 +219,6 @@ static int hda_tegra_enable_clocks(struct hda_tegra *data)
+>  	return rc;
+>  }
+>  
+> -#ifdef CONFIG_PM_SLEEP
+>  static void hda_tegra_disable_clocks(struct hda_tegra *data)
+>  {
+>  	clk_disable_unprepare(data->hda2hdmi_clk);
+> @@ -227,6 +226,7 @@ static void hda_tegra_disable_clocks(struct hda_tegra *data)
+>  	clk_disable_unprepare(data->hda_clk);
+>  }
+>  
+> +#ifdef CONFIG_PM_SLEEP
+>  /*
+>   * power management
+>   */
+> @@ -257,7 +257,6 @@ static int hda_tegra_resume(struct device *dev)
+>  }
+>  #endif /* CONFIG_PM_SLEEP */
+>  
+> -#ifdef CONFIG_PM
+>  static int hda_tegra_runtime_suspend(struct device *dev)
+>  {
+>  	struct snd_card *card = dev_get_drvdata(dev);
+> @@ -283,7 +282,7 @@ static int hda_tegra_runtime_resume(struct device *dev)
+>  	int rc;
+>  
+>  	rc = hda_tegra_enable_clocks(hda);
+> -	if (rc != 0)
+> +	if (rc)
+>  		return rc;
+>  	if (chip && chip->running) {
+>  		hda_tegra_init(hda);
+> @@ -292,7 +291,6 @@ static int hda_tegra_runtime_resume(struct device *dev)
+>  
+>  	return 0;
+>  }
+> -#endif /* CONFIG_PM */
+>  
+>  static const struct dev_pm_ops hda_tegra_pm = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(hda_tegra_suspend, hda_tegra_resume)
+> @@ -551,9 +549,9 @@ static int hda_tegra_probe(struct platform_device *pdev)
+>  
+>  	dev_set_drvdata(&pdev->dev, card);
+>  
+> -	pm_runtime_enable(hda->dev);
+> -	if (!azx_has_pm_runtime(chip))
+> -		pm_runtime_forbid(hda->dev);
+> +	err = hda_tegra_enable_clocks(hda);
+> +	if (err)
+> +		goto out_free;
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b79ffaa0241d..e0469b2c1115 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -227,6 +227,7 @@ struct snd_pcm_ops {
- struct snd_pcm_file {
- 	struct snd_pcm_substream *substream;
- 	int no_compat_mmap;
-+	unsigned int perm;		/* file descriptor permissions */
- 	unsigned int user_pversion;	/* supported protocol version */
- };
- 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index ebc17d5a3490..8d99aa8916f0 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -571,6 +571,15 @@ enum {
- #define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
- #define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
- 
-+#define SNDRV_PCM_PERM_MMAP		(1<<0)
-+#define SNDRV_PCM_PERM_MMAP_STATUS	(1<<1)
-+#define SNDRV_PCM_PERM_MMAP_CONTROL	(1<<2)
-+#define SNDRV_PCM_PERM_RW		(1<<3)
-+#define SNDRV_PCM_PERM_CONTROL		(1<<4)
-+#define SNDRV_PCM_PERM_STATUS		(1<<5)
-+#define SNDRV_PCM_PERM_SYNC		(1<<6)
-+#define SNDRV_PCM_PERM_MASK		((SNDRV_PCM_PERM_SYNC<<1)-1)
-+
- #define SNDRV_PCM_IOCTL_PVERSION	_IOR('A', 0x00, int)
- #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
- #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index bb14658e4482..57512f7131f2 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2502,6 +2502,7 @@ static int snd_pcm_open_file(struct file *file,
- 		return -ENOMEM;
- 	}
- 	pcm_file->substream = substream;
-+	pcm_file->perm = ~0;
- 	if (substream->ref_count == 1)
- 		substream->pcm_release = pcm_release_private;
- 	file->private_data = pcm_file;
-@@ -2894,10 +2895,11 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	int fd, err, perm, flags;
- 	struct file *nfile;
- 	struct snd_pcm *pcm = substream->pcm;
-+	struct snd_pcm_file *pcm_file;
- 
- 	if (get_user(perm, arg))
- 		return -EFAULT;
--	if (perm < 0)
-+	if (perm & ~SNDRV_PCM_PERM_MASK)
- 		return -EPERM;
- 	flags = file->f_flags & (O_ACCMODE | O_NONBLOCK);
- 	flags |= O_APPEND | O_CLOEXEC;
-@@ -2922,6 +2924,8 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	err = snd_pcm_open_file(nfile, substream->pcm,
- 				substream->stream, substream->number);
- 	if (err >= 0) {
-+		pcm_file = nfile->private_data;
-+		pcm_file->perm = perm;
- 		put_user(fd, arg);
- 		return 0;
- 	}
-@@ -2933,6 +2937,73 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	return err;
- }
- 
-+static int snd_pcm_ioctl_check_perm(struct snd_pcm_file *pcm_file,
-+				    unsigned int cmd)
-+{
-+	if (pcm_file->perm == ~0)
-+		return 1;
-+	/*
-+	 * the setup, linking and anonymous dup is not allowed
-+	 * for the restricted file descriptors
-+	 */
-+	switch (cmd) {
-+	case SNDRV_PCM_IOCTL_PVERSION:
-+	case SNDRV_PCM_IOCTL_INFO:
-+	case SNDRV_PCM_IOCTL_USER_PVERSION:
-+	case SNDRV_PCM_IOCTL_CHANNEL_INFO:
-+		return 1;
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_CONTROL) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_PREPARE:
-+		case SNDRV_PCM_IOCTL_RESET:
-+		case SNDRV_PCM_IOCTL_START:
-+		case SNDRV_PCM_IOCTL_XRUN:
-+		case SNDRV_PCM_IOCTL_RESUME:
-+		case SNDRV_PCM_IOCTL_DRAIN:
-+		case SNDRV_PCM_IOCTL_DROP:
-+		case SNDRV_PCM_IOCTL_PAUSE:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_STATUS) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_STATUS:
-+		case SNDRV_PCM_IOCTL_STATUS_EXT:
-+		case SNDRV_PCM_IOCTL_DELAY:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_SYNC) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_HWSYNC:
-+		case SNDRV_PCM_IOCTL_SYNC_PTR:
-+		case SNDRV_PCM_IOCTL_REWIND:
-+		case SNDRV_PCM_IOCTL_FORWARD:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+	if (pcm_file->perm & SNDRV_PCM_PERM_RW) {
-+		switch (cmd) {
-+		case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
-+		case SNDRV_PCM_IOCTL_READI_FRAMES:
-+		case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
-+		case SNDRV_PCM_IOCTL_READN_FRAMES:
-+			return 1;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int snd_pcm_common_ioctl(struct file *file,
- 				 struct snd_pcm_substream *substream,
- 				 unsigned int cmd, void __user *arg)
-@@ -2947,6 +3018,9 @@ static int snd_pcm_common_ioctl(struct file *file,
- 	if (res < 0)
- 		return res;
- 
-+	if (!snd_pcm_ioctl_check_perm(pcm_file, cmd))
-+		return -EPERM;
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_IOCTL_PVERSION:
- 		return put_user(SNDRV_PCM_VERSION, (int __user *)arg) ? -EFAULT : 0;
-@@ -3108,6 +3182,8 @@ static ssize_t snd_pcm_read(struct file *file, char __user *buf, size_t count,
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_RW))
-+		return -EPERM;
- 	runtime = substream->runtime;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -3132,6 +3208,8 @@ static ssize_t snd_pcm_write(struct file *file, const char __user *buf,
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_RW))
-+		return -EPERM;
- 	runtime = substream->runtime;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -3158,6 +3236,8 @@ static ssize_t snd_pcm_readv(struct kiocb *iocb, struct iov_iter *to)
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_RW))
-+		return -EPERM;
- 	runtime = substream->runtime;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -3194,6 +3274,8 @@ static ssize_t snd_pcm_writev(struct kiocb *iocb, struct iov_iter *from)
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_RW))
-+		return -EPERM;
- 	runtime = substream->runtime;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -3295,6 +3377,9 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
- 			       struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_STATUS))
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3331,6 +3416,9 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
- 				struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP_CONTROL))
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3505,11 +3593,14 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
- 		      struct vm_area_struct *area)
- {
- 	struct snd_pcm_runtime *runtime;
-+	struct snd_pcm_file *pcm_file = file->private_data;
- 	long size;
- 	unsigned long offset;
- 	size_t dma_bytes;
- 	int err;
- 
-+	if (!(pcm_file->perm & SNDRV_PCM_PERM_MMAP))
-+		return -EPERM;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (!(area->vm_flags & (VM_WRITE|VM_READ)))
- 			return -EINVAL;
+We also need to think about power-domains here. Enabling the clocks
+might not be enough as the appropriate power-domain needs to be enabled.
+For 64-bit Tegra runtime-pm will handle the power-domains (assuming they
+are populated in device-tree). So I still think it is better we call
+pm_runtime_get_sync() at some point rather than just replying on
+enabling the clocks.
+
+Cheers
+Jon
+
 -- 
-2.13.6
+nvpublic
