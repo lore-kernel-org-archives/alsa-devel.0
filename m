@@ -1,18 +1,14 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: pcm: Drop unused
- snd_pcm_substream.file field
-Date: Wed, 30 Jan 2019 09:18:48 +0100
-Message-ID: <f8b6fc13-dd3f-d7bb-9e4f-e55cbbe1d736@perex.cz>
-References: <20190123143802.32123-1-tiwai@suse.de>
+Subject: [PATCH 0/2] ALSA: pcm: implement the anonymous dup v2
+Date: Wed, 30 Jan 2019 09:47:31 +0100
+Message-ID: <20190130084733.979-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 78D8826785F
- for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 09:18:50 +0100 (CET)
-In-Reply-To: <20190123143802.32123-1-tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 2401B26749A
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2019 09:48:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +18,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 23.1.2019 v 15:38 Takashi Iwai napsal(a):
-> It's assigned but nowhere used.  Let's remove it.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This patchset contains the anonymous dup implementation with permissions
+checking for the ALSA's PCM interface in kernel to enable the restricted
+DMA sound buffer sharing for the restricted tasks.
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+The code was tested through qemu and it seems to be pretty stable.
 
-> ---
->  include/sound/pcm.h      | 1 -
->  sound/core/oss/pcm_oss.c | 1 -
->  sound/core/pcm_native.c  | 4 +---
->  3 files changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> index 2c30c1ad1b0d..a20d3a48df00 100644
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -470,7 +470,6 @@ struct snd_pcm_substream {
->  	struct snd_pcm_group self_group;	/* fake group for non linked substream (with substream lock inside) */
->  	struct snd_pcm_group *group;		/* pointer to current group */
->  	/* -- assigned files -- */
-> -	void *file;
->  	int ref_count;
->  	atomic_t mmap_count;
->  	unsigned int f_flags;
-> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-> index 467039b342b5..d5b0d7ba83c4 100644
-> --- a/sound/core/oss/pcm_oss.c
-> +++ b/sound/core/oss/pcm_oss.c
-> @@ -2427,7 +2427,6 @@ static int snd_pcm_oss_open_file(struct file *file,
->  		}
->  
->  		pcm_oss_file->streams[idx] = substream;
-> -		substream->file = pcm_oss_file;
->  		snd_pcm_oss_init_substream(substream, &setup[idx], minor);
->  	}
->  	
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 26afb6b0889a..63640d3af9db 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -2452,10 +2452,8 @@ static int snd_pcm_open_file(struct file *file,
->  		return -ENOMEM;
->  	}
->  	pcm_file->substream = substream;
-> -	if (substream->ref_count == 1) {
-> -		substream->file = pcm_file;
-> +	if (substream->ref_count == 1)
->  		substream->pcm_release = pcm_release_private;
-> -	}
->  	file->private_data = pcm_file;
->  
->  	return 0;
-> 
+The initial tinyalsa implementation can be found here:
 
+  https://github.com/perexg/tinyalsa/commits/anondup
+
+The filtering might be refined. It depends on the real requirements.
+Perhaps, we may create more ioctl groups. Any comments are more than
+welcome.
+
+v2 of the patches:
+
+- change clone parameter to subdevice number for the pcm attach
+- change SNDRV_PCM_PERM_MAX to SNDRV_PCM_PERM_MASK
+- the tinyalsa implementation was a little updated (restructured)
+
+Cc: Phil Burk <philburk@google.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>
+
+Jaroslav Kysela (2):
+  ALSA: pcm: implement the anonymous dup (inode file descriptor)
+  ALSA: pcm: implement the ioctl/mmap filter for the anonymous dup
+
+ include/sound/pcm.h         |   9 +--
+ include/uapi/sound/asound.h |  12 +++-
+ sound/core/oss/pcm_oss.c    |   2 +-
+ sound/core/pcm.c            |  13 ++--
+ sound/core/pcm_compat.c     |   1 +
+ sound/core/pcm_native.c     | 153 ++++++++++++++++++++++++++++++++++++++++++--
+ 6 files changed, 171 insertions(+), 19 deletions(-)
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.13.6
