@@ -1,136 +1,37 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: auto_mute for early patch issue
-Date: Thu, 31 Jan 2019 10:50:26 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB85D8@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DB7608@RTITMBSVM07.realtek.com.tw>
- <s5hpnsdck29.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] wcd9335: Remove unnecessary null checks in
+ wcd9335_set_channel_map
+Date: Thu, 31 Jan 2019 10:53:45 +0000
+Message-ID: <eac1b134-8d9e-21d4-d749-b40b98348eff@linaro.org>
+References: <20190129214847.6341-1-natechancellor@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 295DE26687D
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 11:50:31 +0100 (CET)
-In-Reply-To: <s5hpnsdck29.wl-tiwai@suse.de>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190129214847.6341-1-natechancellor@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nathan Chancellor <natechancellor@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Thanks for the patch!
 
-spec->suppress_auto_mute = 1;
-This will cause spec->gen.autocfg.hp_pins [0] = 0.
-This will cause alc2??_init() and alc2??_shutup() and dell headset mode not run errors.
+On 29/01/2019 21:48, Nathan Chancellor wrote:
+> Clang warns:
+> 
+> sound/soc/codecs/wcd9335.c:2004:11: warning: address of array
+> 'wcd->rx_chs' will always evaluate to 'true' [-Wpointer-bool-conversion]
+>          if (wcd->rx_chs) {
+>          ~~  ~~~~~^~~~~~
+> sound/soc/codecs/wcd9335.c:2012:11: warning: address of array
+> 'wcd->tx_chs' will always evaluate to 'true' [-Wpointer-bool-conversion]
+>          if (wcd->tx_chs) {
+>          ~~  ~~~~~^~~~~~
+> 2 warnings generated.
+> 
+> Fixes: 20aedafdf492 ("ASoC: wcd9335: add support to wcd9335 codec")
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
 
-Does it has other place to store pin NID? 
-Or just only this place hp_pin = spec->gen.autocfg.hp_pins[0]; to get headphone NID.
-
-BR,
-Kailang
-
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
-Sent: Thursday, January 31, 2019 4:23 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: auto_mute for early patch issue
-
-On Thu, 31 Jan 2019 09:00:36 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> I move check line to below. It will show value for hp_pins[0].
-> As I know, search from verb table in function snd_hda_parse_pin_defcfg().
-> It will fill pins at auto_pin_cfg.
-> Why it need to run below function to get cfg->hp_pins?
-
-It's just because hp_pins[] and speaker_pins[] are used for the case with the auto-mute, so far, not for other evaluations :)
-
-The change below looks safe, so if this works for you, feel fee to apply like that.
-
-
-thanks,
-
-Takashi
-
-
-> static int check_auto_mute_availability(struct hda_codec *codec) {
-> 	struct hda_gen_spec *spec = codec->spec;
-> 	struct auto_pin_cfg *cfg = &spec->autocfg;
-> 	int present = 0;
-> 	int i, err;
-> 
-> -	if (spec->suppress_auto_mute)
-> -		return 0;
-> 
-> 	if (cfg->hp_pins[0])
-> 		present++;
-> 	if (cfg->line_out_pins[0])
-> 		present++;
-> 	if (cfg->speaker_pins[0])
-> 		present++;
-> 	if (present < 2) /* need two different output types */
-> 		return 0;
-> 
-> 	if (!cfg->speaker_pins[0] &&
-> 	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
-> 		memcpy(cfg->speaker_pins, cfg->line_out_pins,
-> 		       sizeof(cfg->speaker_pins));
-> 		cfg->speaker_outs = cfg->line_outs;
-> 	}
-> 
-> 	if (!cfg->hp_pins[0] &&
-> 	    cfg->line_out_type == AUTO_PIN_HP_OUT) {
-> 		memcpy(cfg->hp_pins, cfg->line_out_pins,
-> 		       sizeof(cfg->hp_pins));
-> 		cfg->hp_outs = cfg->line_outs;
-> 	}
-> 
-> +	if (spec->suppress_auto_mute)
-> +		return 0;
-> 
-> ......
-> .....
-> ......
-> }
-> 
-> BR,
-> Kailang
-> 
-> -----Original Message-----
-> From: Kailang
-> Sent: Thursday, January 31, 2019 12:08 PM
-> To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: auto_mute for early patch issue
-> 
-> Hi Takashi,
-> 
-> Chrome OS use early patch firmware file to load model and use auto_mute =no hint options.
-> I find an issue for early patch issue about hint option auto_mute = no.
-> 
-> This will cause all spec->init_hook can't get hp_pin values.
-> 
-> For example: alc225_init() alc225_shutup() alc256_init() alc256_shutup() Early patch file hint auto_mute = no equal spec->suppress_auto_mute = 1 It will return function check_auto_mute_availability() in had_generic.c.
-> 
-> hp_pin = spec->gen.autocfg.hp_pins[0];  ==> It will get value 0.
-> 
-> I think this issue was for a long time.
-> Please see the attach dmesg. One is kill hint auto_mute option. 
-> 
-> BR,
-> Kailang
-> 
-
-------Please consider the environment before printing this e-mail.
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
