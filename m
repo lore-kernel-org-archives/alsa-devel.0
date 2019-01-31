@@ -1,14 +1,14 @@
 From: Kailang <kailang@realtek.com>
-Subject: auto_mute for early patch issue
-Date: Thu, 31 Jan 2019 04:08:05 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7598@RTITMBSVM07.realtek.com.tw>
+Subject: Re: auto_mute for early patch issue
+Date: Thu, 31 Jan 2019 08:00:36 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB7608@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 24CAA2673B4
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 05:08:12 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C1EB926687D
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 09:00:41 +0100 (CET)
 Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,162 +23,77 @@ To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
 Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
 Hi Takashi,
 
-Chrome OS use early patch firmware file to load model and use auto_mute =3D=
-no hint options.
-I find an issue for early patch issue about hint option auto_mute =3D no.
+I move check line to below. It will show value for hp_pins[0].
+As I know, search from verb table in function snd_hda_parse_pin_defcfg().
+It will fill pins at auto_pin_cfg.
+Why it need to run below function to get cfg->hp_pins?
 
-This will cause all spec->init_hook can't get hp_pin values.
+static int check_auto_mute_availability(struct hda_codec *codec)
+{
+	struct hda_gen_spec *spec = codec->spec;
+	struct auto_pin_cfg *cfg = &spec->autocfg;
+	int present = 0;
+	int i, err;
 
-For example: alc225_init() alc225_shutup() alc256_init() alc256_shutup()
-Early patch file hint auto_mute =3D no equal spec->suppress_auto_mute =3D 1
-It will return function check_auto_mute_availability() in had_generic.c.
+-	if (spec->suppress_auto_mute)
+-		return 0;
 
-hp_pin =3D spec->gen.autocfg.hp_pins[0];  =3D=3D> It will get value 0.
+	if (cfg->hp_pins[0])
+		present++;
+	if (cfg->line_out_pins[0])
+		present++;
+	if (cfg->speaker_pins[0])
+		present++;
+	if (present < 2) /* need two different output types */
+		return 0;
 
-I think this issue was for a long time.
-Please see the attach dmesg. One is kill hint auto_mute option.=20
+	if (!cfg->speaker_pins[0] &&
+	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
+		memcpy(cfg->speaker_pins, cfg->line_out_pins,
+		       sizeof(cfg->speaker_pins));
+		cfg->speaker_outs = cfg->line_outs;
+	}
+
+	if (!cfg->hp_pins[0] &&
+	    cfg->line_out_type == AUTO_PIN_HP_OUT) {
+		memcpy(cfg->hp_pins, cfg->line_out_pins,
+		       sizeof(cfg->hp_pins));
+		cfg->hp_outs = cfg->line_outs;
+	}
+
++	if (spec->suppress_auto_mute)
++		return 0;
+
+......
+.....
+......
+}
 
 BR,
 Kailang
 
+-----Original Message-----
+From: Kailang 
+Sent: Thursday, January 31, 2019 12:08 PM
+To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
+Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+Subject: auto_mute for early patch issue
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_
-Content-Type: application/octet-stream; name="hp_pin.dmesg_kill_auto_mute"
-Content-Description: hp_pin.dmesg_kill_auto_mute
-Content-Disposition: attachment; filename="hp_pin.dmesg_kill_auto_mute";
-	size=3061; creation-date="Wed, 30 Jan 2019 19:48:54 GMT";
-	modification-date="Wed, 30 Jan 2019 19:48:54 GMT"
-Content-Transfer-Encoding: base64
+Hi Takashi,
 
-WyAzNTQ4Ljk4NzA3OF0gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFiLjA6IFByb2JpbmcgY2FyZCB1
-c2luZyBIREEgREtNUywgdmVyc2lvbiAwLjIwMTgwODA1MDMwMX51YnVudHUxOC4wNC4xClsgMzU0
-OC45ODc0MjldIHNuZF9oZGFfaW50ZWwgMDAwMDowMDoxYi4wOiBBcHBseWluZyBwYXRjaCBmaXJt
-d2FyZSAnaGRhLWluaXQuZncnClsgMzU0OS4wMTg0MDJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBo
-ZGF1ZGlvQzBEMjogU0tVOiBOaWQ9MHgxZCBza3VfY2ZnPTB4NDBjMDAwMDEKWyAzNTQ5LjAxODQw
-OF0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQyOiBTS1U6IHBvcnRfY29ubmVjdGl2
-aXR5PTB4MQpbIDM1NDkuMDE4NDEyXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6
-IFNLVTogZW5hYmxlX3BjYmVlcD0weDAKWyAzNTQ5LjAxODQxNV0gc25kX2hkYV9jb2RlY19yZWFs
-dGVrIGhkYXVkaW9DMEQyOiBTS1U6IGNoZWNrX3N1bT0weDAwMDAwMDAwClsgMzU0OS4wMTg0MTld
-IHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogU0tVOiBjdXN0b21pemF0aW9uPTB4
-MDAwMDAwMDAKWyAzNTQ5LjAxODQyMl0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQy
-OiBTS1U6IGV4dGVybmFsX2FtcD0weDAKWyAzNTQ5LjAxODQyNV0gc25kX2hkYV9jb2RlY19yZWFs
-dGVrIGhkYXVkaW9DMEQyOiBTS1U6IHBsYXRmb3JtX3R5cGU9MHgwClsgMzU0OS4wMTg0MjhdIHNu
-ZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogU0tVOiBzd2FwPTB4MApbIDM1NDkuMDE4
-NDMxXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6IFNLVTogb3ZlcnJpZGU9MHgx
-ClsgMzU0OS4wMTg2OTJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogYXV0b2Nv
-bmZpZyBmb3IgQUxDMjk1OiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApIHR5cGU6
-c3BlYWtlcgpbIDM1NDkuMDE4Njk3XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6
-ICAgIHNwZWFrZXJfb3V0cz0wICgweDAvMHgwLzB4MC8weDAvMHgwKQpbIDM1NDkuMDE4NzAwXSBz
-bmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6ICAgIGhwX291dHM9MSAoMHgyMS8weDAv
-MHgwLzB4MC8weDApClsgMzU0OS4wMTg3MDNdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlv
-QzBEMjogICAgbW9ubzogbW9ub19vdXQ9MHgwClsgMzU0OS4wMTg3MDZdIHNuZF9oZGFfY29kZWNf
-cmVhbHRlayBoZGF1ZGlvQzBEMjogICAgaW5wdXRzOgpbIDM1NDkuMDE4NzEwXSBzbmRfaGRhX2Nv
-ZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6ICAgICAgTWljPTB4MTkKWyAzNTQ5LjAxODcxM10gc25k
-X2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQyOiAgICAgIEludGVybmFsIE1pYz0weDEyClsg
-MzU0OS4wMTg3MTldIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogcmVhbHRlazog
-Tm8gdmFsaWQgU1NJRCwgY2hlY2tpbmcgcGluY2ZnIDB4NDBjMDAwMDEgZm9yIE5JRCAweDFkClsg
-MzU0OS4wMTg3MjNdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogcmVhbHRlazog
-RW5hYmxpbmcgaW5pdCBBU01fSUQ9MHgwMDAxIENPREVDX0lEPTEwZWMwMjk1ClsgMzU0OS4wMjI3
-ODddIHNuZF9oZGFfZ2VuX3BhcnNlX2F1dG9fY29uZmlnIGNmZy0+aHBfcGluc1swXT0weDIxClsg
-MzU0OS4wMjI3OTRdIGFsY19wYXJzZV9hdXRvX2NvbmZpZyBjZmctPmhwX3BpbnNbMF09MHgyMSBj
-ZmctPmhwX291dHM9MHgxClsgMzU0OS4wMjI3OTddIHBhdGNoX2FsYzI2OSBjZmctPmhwX3BpbnNb
-MF09MHgyMSBjZmctPmhwX291dHM9MHgxClsgMzU0OS4wMjMyNzBdIGFsYzIyNV9pbml0IGhwX3Bp
-bj0weDIxClsgMzU0OS4wNjAzOThdIGphY2tfZGV0ZWN0X3VwZGF0ZSBqYWNrLT5uaWQ9MHgyMQpb
-IDM1NDkuMDYwNzczXSBhbGMyMjVfaW5pdCBocD0weDIxClsgMzU0OS4wNjMxODNdIGphY2tfZGV0
-ZWN0X3VwZGF0ZSBqYWNrLT5uaWQ9MHgxOQpbIDM1NDkuMDYzNDE2XSBqYWNrX2RldGVjdF91cGRh
-dGUgamFjay0+bmlkPTB4MTIKWyAzNTQ5LjA2MzQxOF0gamFja19kZXRlY3RfdXBkYXRlIGphY2st
-Pm5pZD0weDE0ClsgMzU0OS4wNjM0MTldIHNuZF9oZGFfamFja19yZXBvcnRfc3luYyBqYWNrLT5u
-aWQ9MHgyMQpbIDM1NDkuMDYzNDIxXSBzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMgamFjay0+bmlk
-PTB4MTkKWyAzNTQ5LjA2MzQyMl0gc25kX2hkYV9qYWNrX3JlcG9ydF9zeW5jIGphY2stPm5pZD0w
-eDEyClsgMzU0OS4wNjM0MjNdIHNuZF9oZGFfamFja19yZXBvcnRfc3luYyBqYWNrLT5uaWQ9MHgx
-NApbIDM1NDkuMDY2MjEzXSBhbGMyMjVfc2h1dHVwIGhwX3Bpbj0weDIxClsgMzU0OS4wNjc5ODBd
-IGlucHV0OiBIREEgSW50ZWwgTWljIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDoxYi4w
-L3NvdW5kL2NhcmQwL2lucHV0MTEKWyAzNTQ5LjA2ODg2M10gaW5wdXQ6IEhEQSBJbnRlbCBIZWFk
-cGhvbmUgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5w
-dXQxMgpbIDM1NDkuMDg1Mzc1XSBhbGMyMjVfaW5pdCBocF9waW49MHgyMQpbIDM1NDkuMTI0NDA1
-XSBqYWNrX2RldGVjdF91cGRhdGUgamFjay0+bmlkPTB4MjEKWyAzNTQ5LjEyNDczN10gYWxjMjI1
-X2luaXQgaHA9MHgyMQpbIDM1NDkuMTI1NDU5XSBqYWNrX2RldGVjdF91cGRhdGUgamFjay0+bmlk
-PTB4MTkKWyAzNTQ5LjEyNTU1Nl0gamFja19kZXRlY3RfdXBkYXRlIGphY2stPm5pZD0weDEyClsg
-MzU0OS4xMjU1NTddIGphY2tfZGV0ZWN0X3VwZGF0ZSBqYWNrLT5uaWQ9MHgxNApbIDM1NDkuMTI1
-NTYyXSBzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMgamFjay0+bmlkPTB4MjEKWyAzNTQ5LjEyNTU2
-NV0gc25kX2hkYV9qYWNrX3JlcG9ydF9zeW5jIGphY2stPm5pZD0weDE5ClsgMzU0OS4xMjU1Njdd
-IHNuZF9oZGFfamFja19yZXBvcnRfc3luYyBqYWNrLT5uaWQ9MHgxMgpbIDM1NDkuMTI1NTY5XSBz
-bmRfaGRhX2phY2tfcmVwb3J0X3N5bmMgamFjay0+bmlkPTB4MTQKCg==
+Chrome OS use early patch firmware file to load model and use auto_mute =no hint options.
+I find an issue for early patch issue about hint option auto_mute = no.
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_
-Content-Type: application/octet-stream;
-	name="hp_pin.dmesg_with_auto_mute_no"
-Content-Description: hp_pin.dmesg_with_auto_mute_no
-Content-Disposition: attachment; filename="hp_pin.dmesg_with_auto_mute_no";
-	size=3015; creation-date="Wed, 30 Jan 2019 19:49:02 GMT";
-	modification-date="Wed, 30 Jan 2019 19:49:02 GMT"
-Content-Transfer-Encoding: base64
+This will cause all spec->init_hook can't get hp_pin values.
 
-WyA0MDEzLjIxOTM2M10gc25kX2hkYV9pbnRlbCAwMDAwOjAwOjFiLjA6IFByb2JpbmcgY2FyZCB1
-c2luZyBIREEgREtNUywgdmVyc2lvbiAwLjIwMTgwODA1MDMwMX51YnVudHUxOC4wNC4xClsgNDAx
-My4yMTk5MzldIHNuZF9oZGFfaW50ZWwgMDAwMDowMDoxYi4wOiBBcHBseWluZyBwYXRjaCBmaXJt
-d2FyZSAnaGRhLWluaXQuZncnClsgNDAxMy4yNDgxNTJdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBo
-ZGF1ZGlvQzBEMjogU0tVOiBOaWQ9MHgxZCBza3VfY2ZnPTB4NDBjMDAwMDEKWyA0MDEzLjI0ODE1
-OF0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQyOiBTS1U6IHBvcnRfY29ubmVjdGl2
-aXR5PTB4MQpbIDQwMTMuMjQ4MTYxXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6
-IFNLVTogZW5hYmxlX3BjYmVlcD0weDAKWyA0MDEzLjI0ODE2NF0gc25kX2hkYV9jb2RlY19yZWFs
-dGVrIGhkYXVkaW9DMEQyOiBTS1U6IGNoZWNrX3N1bT0weDAwMDAwMDAwClsgNDAxMy4yNDgxNjdd
-IHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogU0tVOiBjdXN0b21pemF0aW9uPTB4
-MDAwMDAwMDAKWyA0MDEzLjI0ODE3MV0gc25kX2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQy
-OiBTS1U6IGV4dGVybmFsX2FtcD0weDAKWyA0MDEzLjI0ODE3NF0gc25kX2hkYV9jb2RlY19yZWFs
-dGVrIGhkYXVkaW9DMEQyOiBTS1U6IHBsYXRmb3JtX3R5cGU9MHgwClsgNDAxMy4yNDgxNzddIHNu
-ZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogU0tVOiBzd2FwPTB4MApbIDQwMTMuMjQ4
-MTgwXSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6IFNLVTogb3ZlcnJpZGU9MHgx
-ClsgNDAxMy4yNTEyODldIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogYXV0b2Nv
-bmZpZyBmb3IgQUxDMjk1OiBsaW5lX291dHM9MSAoMHgxNC8weDAvMHgwLzB4MC8weDApIHR5cGU6
-c3BlYWtlcgpbIDQwMTMuMjUxMjk2XSBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6
-ICAgIHNwZWFrZXJfb3V0cz0wICgweDAvMHgwLzB4MC8weDAvMHgwKQpbIDQwMTMuMjUxMzAwXSBz
-bmRfaGRhX2NvZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6ICAgIGhwX291dHM9MSAoMHgyMS8weDAv
-MHgwLzB4MC8weDApClsgNDAxMy4yNTEzMDRdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlv
-QzBEMjogICAgbW9ubzogbW9ub19vdXQ9MHgwClsgNDAxMy4yNTEzMDZdIHNuZF9oZGFfY29kZWNf
-cmVhbHRlayBoZGF1ZGlvQzBEMjogICAgaW5wdXRzOgpbIDQwMTMuMjUxMzEyXSBzbmRfaGRhX2Nv
-ZGVjX3JlYWx0ZWsgaGRhdWRpb0MwRDI6ICAgICAgTWljPTB4MTkKWyA0MDEzLjI1MTMxOF0gc25k
-X2hkYV9jb2RlY19yZWFsdGVrIGhkYXVkaW9DMEQyOiAgICAgIEludGVybmFsIE1pYz0weDEyClsg
-NDAxMy4yNTEzMjRdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogcmVhbHRlazog
-Tm8gdmFsaWQgU1NJRCwgY2hlY2tpbmcgcGluY2ZnIDB4NDBjMDAwMDEgZm9yIE5JRCAweDFkClsg
-NDAxMy4yNTEzMjhdIHNuZF9oZGFfY29kZWNfcmVhbHRlayBoZGF1ZGlvQzBEMjogcmVhbHRlazog
-RW5hYmxpbmcgaW5pdCBBU01fSUQ9MHgwMDAxIENPREVDX0lEPTEwZWMwMjk1ClsgNDAxMy4yNTM2
-NTldIHNuZF9oZGFfZ2VuX3BhcnNlX2F1dG9fY29uZmlnIGNmZy0+aHBfcGluc1swXT0weDAKWyA0
-MDEzLjI1MzY3MF0gYWxjX3BhcnNlX2F1dG9fY29uZmlnIGNmZy0+aHBfcGluc1swXT0weDAgY2Zn
-LT5ocF9vdXRzPTB4MApbIDQwMTMuMjUzNjczXSBwYXRjaF9hbGMyNjkgY2ZnLT5ocF9waW5zWzBd
-PTB4MCBjZmctPmhwX291dHM9MHgwClsgNDAxMy4yNTQyNzddIGFsYzIyNV9pbml0IGhwX3Bpbj0w
-eDAgaHBfb3V0cz0wClsgNDAxMy4yNTc5ODldIGphY2tfZGV0ZWN0X3VwZGF0ZSBqYWNrLT5uaWQ9
-MHgyMQpbIDQwMTMuMjU4MDQ1XSBqYWNrX2RldGVjdF91cGRhdGUgamFjay0+bmlkPTB4MTkKWyA0
-MDEzLjI1ODMzOF0gamFja19kZXRlY3RfdXBkYXRlIGphY2stPm5pZD0weDEyClsgNDAxMy4yNTgz
-NDBdIGphY2tfZGV0ZWN0X3VwZGF0ZSBqYWNrLT5uaWQ9MHgxNApbIDQwMTMuMjU4MzQyXSBzbmRf
-aGRhX2phY2tfcmVwb3J0X3N5bmMgamFjay0+bmlkPTB4MjEKWyA0MDEzLjI1ODM0NF0gc25kX2hk
-YV9qYWNrX3JlcG9ydF9zeW5jIGphY2stPm5pZD0weDE5ClsgNDAxMy4yNTgzNDZdIHNuZF9oZGFf
-amFja19yZXBvcnRfc3luYyBqYWNrLT5uaWQ9MHgxMgpbIDQwMTMuMjU4MzQ3XSBzbmRfaGRhX2ph
-Y2tfcmVwb3J0X3N5bmMgamFjay0+bmlkPTB4MTQKWyA0MDEzLjI2Mzc4Ml0gYWxjMjI1X3NodXR1
-cCBocF9waW49MHgwIGhwX291dHM9MApbIDQwMTMuMjY5MzI2XSBpbnB1dDogSERBIEludGVsIE1p
-YyBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9pbnB1dDEz
-ClsgNDAxMy4yNjk2NjddIGlucHV0OiBIREEgSW50ZWwgSGVhZHBob25lIGFzIC9kZXZpY2VzL3Bj
-aTAwMDA6MDAvMDAwMDowMDoxYi4wL3NvdW5kL2NhcmQwL2lucHV0MTQKWyA0MDEzLjI5MDA3OF0g
-YWxjMjI1X2luaXQgaHBfcGluPTB4MCBocF9vdXRzPTAKWyA0MDEzLjI5MTg0Ml0gamFja19kZXRl
-Y3RfdXBkYXRlIGphY2stPm5pZD0weDIxClsgNDAxMy4yOTE5MDNdIGphY2tfZGV0ZWN0X3VwZGF0
-ZSBqYWNrLT5uaWQ9MHgxOQpbIDQwMTMuMjkzNjM2XSBqYWNrX2RldGVjdF91cGRhdGUgamFjay0+
-bmlkPTB4MTIKWyA0MDEzLjI5MzY0MF0gamFja19kZXRlY3RfdXBkYXRlIGphY2stPm5pZD0weDE0
-ClsgNDAxMy4yOTM2NDVdIHNuZF9oZGFfamFja19yZXBvcnRfc3luYyBqYWNrLT5uaWQ9MHgyMQpb
-IDQwMTMuMjkzNjQ4XSBzbmRfaGRhX2phY2tfcmVwb3J0X3N5bmMgamFjay0+bmlkPTB4MTkKWyA0
-MDEzLjI5MzY1MF0gc25kX2hkYV9qYWNrX3JlcG9ydF9zeW5jIGphY2stPm5pZD0weDEyClsgNDAx
-My4yOTM2NTJdIHNuZF9oZGFfamFja19yZXBvcnRfc3luYyBqYWNrLT5uaWQ9MHgxNAoK
+For example: alc225_init() alc225_shutup() alc256_init() alc256_shutup() Early patch file hint auto_mute = no equal spec->suppress_auto_mute = 1 It will return function check_auto_mute_availability() in had_generic.c.
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+hp_pin = spec->gen.autocfg.hp_pins[0];  ==> It will get value 0.
 
+I think this issue was for a long time.
+Please see the attach dmesg. One is kill hint auto_mute option. 
 
---_003_6FAB7C47BCF00940BB0999A99BE3547A18DB7598RTITMBSVM07real_--
+BR,
+Kailang
