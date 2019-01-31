@@ -1,136 +1,114 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: auto_mute for early patch issue
-Date: Thu, 31 Jan 2019 09:28:50 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB763F@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DB7608@RTITMBSVM07.realtek.com.tw>
- <s5hpnsdck29.wl-tiwai@suse.de>
+From: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
+Date: Thu, 31 Jan 2019 15:06:43 +0530
+Message-ID: <1a248adf-2239-b6bd-1f17-270e6e579b72@nvidia.com>
+References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
+ <b631310f-93fa-ef4b-7014-d97fcfb2dcdf@nvidia.com>
+ <s5ha7jicd4l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id A92D726687D
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 10:28:56 +0100 (CET)
-In-Reply-To: <s5hpnsdck29.wl-tiwai@suse.de>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5ha7jicd4l.wl-tiwai@suse.de>
+Content-Language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Jon Hunter <jonathanh@nvidia.com>
+Cc: pierre-louis.bossart@linux.intel.com, perex@perex.cz, alsa-devel@alsa-project.org, thierry.reding@gmail.com, mkumard@nvidia.com, rlokhande@nvidia.com, sharadg@nvidia.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-spec->suppress_auto_mute = 1;
-This will cause spec->gen.autocfg.hp_pins [0] = 0.
-This will cause alc2??_init() and alc2??_shutup() and dell headset mode not run errors.
+On 1/30/2019 10:10 PM, Takashi Iwai wrote:
+> On Wed, 30 Jan 2019 13:45:49 +0100,
+> Jon Hunter wrote:
+>>
+>> On 25/01/2019 11:06, Sameer Pujar wrote:
+>>> If CONFIG_PM is disabled or runtime PM calls are forbidden, the clocks
+>>> will not be ON. This could cause issue during probe, where hda init
+>>> setup is done. This patch enables clocks unconditionally during probe.
+>>>
+>>> Along with above, follwoing changes are done.
+>>>    * enable runtime PM before exiting from probe work. This helps to avoid
+>>>      usage of pm_runtime_get_sync/pm_runtime_put() in probe work.
+>>>    * hda_tegra_disable_clocks() is moved out of CONFIG_PM_SLEEP check.
+>>>    * runtime PM callbacks moved out of CONFIG_PM check
+>>>
+>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>>> Reviewed-by: Ravindra Lokhande <rlokhande@nvidia.com>
+>>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>>> ---
+>>>   sound/pci/hda/hda_tegra.c | 26 +++++++++++++++++---------
+>>>   1 file changed, 17 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>>> index c8d18dc..ba6175f 100644
+>>> --- a/sound/pci/hda/hda_tegra.c
+>>> +++ b/sound/pci/hda/hda_tegra.c
+>>> @@ -219,7 +219,6 @@ static int hda_tegra_enable_clocks(struct hda_tegra *data)
+>>>   	return rc;
+>>>   }
+>>>   
+>>> -#ifdef CONFIG_PM_SLEEP
+>>>   static void hda_tegra_disable_clocks(struct hda_tegra *data)
+>>>   {
+>>>   	clk_disable_unprepare(data->hda2hdmi_clk);
+>>> @@ -227,6 +226,7 @@ static void hda_tegra_disable_clocks(struct hda_tegra *data)
+>>>   	clk_disable_unprepare(data->hda_clk);
+>>>   }
+>>>   
+>>> +#ifdef CONFIG_PM_SLEEP
+>>>   /*
+>>>    * power management
+>>>    */
+>>> @@ -257,7 +257,6 @@ static int hda_tegra_resume(struct device *dev)
+>>>   }
+>>>   #endif /* CONFIG_PM_SLEEP */
+>>>   
+>>> -#ifdef CONFIG_PM
+>>>   static int hda_tegra_runtime_suspend(struct device *dev)
+>>>   {
+>>>   	struct snd_card *card = dev_get_drvdata(dev);
+>>> @@ -283,7 +282,7 @@ static int hda_tegra_runtime_resume(struct device *dev)
+>>>   	int rc;
+>>>   
+>>>   	rc = hda_tegra_enable_clocks(hda);
+>>> -	if (rc != 0)
+>>> +	if (rc)
+>>>   		return rc;
+>>>   	if (chip && chip->running) {
+>>>   		hda_tegra_init(hda);
+>>> @@ -292,7 +291,6 @@ static int hda_tegra_runtime_resume(struct device *dev)
+>>>   
+>>>   	return 0;
+>>>   }
+>>> -#endif /* CONFIG_PM */
+>>>   
+>>>   static const struct dev_pm_ops hda_tegra_pm = {
+>>>   	SET_SYSTEM_SLEEP_PM_OPS(hda_tegra_suspend, hda_tegra_resume)
+>>> @@ -551,9 +549,9 @@ static int hda_tegra_probe(struct platform_device *pdev)
+>>>   
+>>>   	dev_set_drvdata(&pdev->dev, card);
+>>>   
+>>> -	pm_runtime_enable(hda->dev);
+>>> -	if (!azx_has_pm_runtime(chip))
+>>> -		pm_runtime_forbid(hda->dev);
+>>> +	err = hda_tegra_enable_clocks(hda);
+>>> +	if (err)
+>>> +		goto out_free;
+>> We also need to think about power-domains here. Enabling the clocks
+>> might not be enough as the appropriate power-domain needs to be enabled.
+>> For 64-bit Tegra runtime-pm will handle the power-domains (assuming they
+>> are populated in device-tree). So I still think it is better we call
+>> pm_runtime_get_sync() at some point rather than just replying on
+>> enabling the clocks.
+> If I understand correctly the code, the pm domain is already activated
+> at calling driver's probe callback.
 
-Do it has other place to store pin NID? 
-Or just only this place hp_pin = spec->gen.autocfg.hp_pins[0]; to get headphone NID.
+If there are no further concerns, can we consider this for approval?
 
-BR,
-Kailang
+Thanks,
+Sameer.
 
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
-Sent: Thursday, January 31, 2019 4:23 PM
-To: Kailang <kailang@realtek.com>
-Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-Subject: Re: auto_mute for early patch issue
-
-On Thu, 31 Jan 2019 09:00:36 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> I move check line to below. It will show value for hp_pins[0].
-> As I know, search from verb table in function snd_hda_parse_pin_defcfg().
-> It will fill pins at auto_pin_cfg.
-> Why it need to run below function to get cfg->hp_pins?
-
-It's just because hp_pins[] and speaker_pins[] are used for the case with the auto-mute, so far, not for other evaluations :)
-
-The change below looks safe, so if this works for you, feel fee to apply like that.
-
-
-thanks,
-
-Takashi
-
-
-> static int check_auto_mute_availability(struct hda_codec *codec) {
-> 	struct hda_gen_spec *spec = codec->spec;
-> 	struct auto_pin_cfg *cfg = &spec->autocfg;
-> 	int present = 0;
-> 	int i, err;
-> 
-> -	if (spec->suppress_auto_mute)
-> -		return 0;
-> 
-> 	if (cfg->hp_pins[0])
-> 		present++;
-> 	if (cfg->line_out_pins[0])
-> 		present++;
-> 	if (cfg->speaker_pins[0])
-> 		present++;
-> 	if (present < 2) /* need two different output types */
-> 		return 0;
-> 
-> 	if (!cfg->speaker_pins[0] &&
-> 	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
-> 		memcpy(cfg->speaker_pins, cfg->line_out_pins,
-> 		       sizeof(cfg->speaker_pins));
-> 		cfg->speaker_outs = cfg->line_outs;
-> 	}
-> 
-> 	if (!cfg->hp_pins[0] &&
-> 	    cfg->line_out_type == AUTO_PIN_HP_OUT) {
-> 		memcpy(cfg->hp_pins, cfg->line_out_pins,
-> 		       sizeof(cfg->hp_pins));
-> 		cfg->hp_outs = cfg->line_outs;
-> 	}
-> 
-> +	if (spec->suppress_auto_mute)
-> +		return 0;
-> 
-> ......
-> .....
-> ......
-> }
-> 
-> BR,
-> Kailang
-> 
-> -----Original Message-----
-> From: Kailang
-> Sent: Thursday, January 31, 2019 12:08 PM
-> To: Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: auto_mute for early patch issue
-> 
-> Hi Takashi,
-> 
-> Chrome OS use early patch firmware file to load model and use auto_mute =no hint options.
-> I find an issue for early patch issue about hint option auto_mute = no.
-> 
-> This will cause all spec->init_hook can't get hp_pin values.
-> 
-> For example: alc225_init() alc225_shutup() alc256_init() alc256_shutup() Early patch file hint auto_mute = no equal spec->suppress_auto_mute = 1 It will return function check_auto_mute_availability() in had_generic.c.
-> 
-> hp_pin = spec->gen.autocfg.hp_pins[0];  ==> It will get value 0.
-> 
-> I think this issue was for a long time.
-> Please see the attach dmesg. One is kill hint auto_mute option. 
-> 
-> BR,
-> Kailang
-> 
-
-------Please consider the environment before printing this e-mail.
+>
+> thanks,
+>
+> Takashi
