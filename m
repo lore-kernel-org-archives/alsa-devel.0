@@ -1,25 +1,19 @@
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during
-	probe
-Date: Thu, 31 Jan 2019 13:10:01 +0100
-Message-ID: <CAJZ5v0hezV7et3VgD7yHa8MLiP0z3YtJ9stwSQL54-tyz_VXkQ@mail.gmail.com>
-References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
- <b631310f-93fa-ef4b-7014-d97fcfb2dcdf@nvidia.com>
- <s5ha7jicd4l.wl-tiwai@suse.de>
- <20190131110530.GA23438@ulmo> <s5htvhpax8s.wl-tiwai@suse.de>
- <CAJZ5v0i_G36Cw3ZvDxyU2F+pBpiw9i=3_wfQ3tDh3_JgOAb3zw@mail.gmail.com>
- <s5hh8dpavhw.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] ALSA: pcm: implement the anonymous dup
+	v3
+Date: Thu, 31 Jan 2019 12:26:24 +0000
+Message-ID: <20190131122624.GA20797@sirena.org.uk>
+References: <20190130124139.10439-1-perex@perex.cz>
+ <20190130223237.GK2804@sirena.org.uk>
+ <s5hsgx9ckrf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1289178662270171438=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-f196.google.com (mail-oi1-f196.google.com
- [209.85.167.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A4E726687D
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 13:10:13 +0100 (CET)
-Received: by mail-oi1-f196.google.com with SMTP id c206so2547418oib.0
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 04:10:13 -0800 (PST)
-In-Reply-To: <s5hh8dpavhw.wl-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A65D26687D
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 13:26:27 +0100 (CET)
+In-Reply-To: <s5hsgx9ckrf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,135 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>, Linux PM <linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>, sharadg@nvidia.com, rlokhande@nvidia.com, mkumard@nvidia.com
+Cc: ALSA development <alsa-devel@alsa-project.org>, Leo Yan <leo.yan@linaro.org>, Phil Burk <philburk@google.com>, Baolin Wang <baolin.wang@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 31, 2019 at 12:59 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 31 Jan 2019 12:46:54 +0100,
-> Rafael J. Wysocki wrote:
-> >
-> > On Thu, Jan 31, 2019 at 12:21 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Thu, 31 Jan 2019 12:05:30 +0100,
-> > > Thierry Reding wrote:
-> > > >
-> > > > On Wed, Jan 30, 2019 at 05:40:42PM +0100, Takashi Iwai wrote:
-> >
-> > [cut]
-> >
-> > > > > If I understand correctly the code, the pm domain is already activated
-> > > > > at calling driver's probe callback.
-> > > >
-> > > > As far as I can tell, the domain will also be powered off again after
-> > > > probe finished, unless the device grabs a runtime PM reference. This is
-> > > > what happens via the dev->pm_domain->sync() call after successful probe
-> > > > of a driver.
-> > >
-> > > Ah, a good point.  This can be a problem with a probe work like this
-> > > case.
-> > >
-> > > > It seems to me like it's not a very well defined case what to do when a
-> > > > device needs to be powered up but runtime PM is not enabled.
-> > > >
-> > > > Adding Rafael and linux-pm, maybe they can provide some guidance on what
-> > > > to do in these situations.
-> > > >
-> > > > To summarize, what we're debating here is how to handle powering up a
-> > > > device if the pm_runtime infrastructure doesn't take care of it. Jon's
-> > > > proposal here was, and we use this elsewhere, to do something like this:
-> > > >
-> > > >       pm_runtime_enable(dev);
-> > > >       if (!pm_runtime_enabled(dev)) {
-> > > >               err = foo_runtime_resume(dev);
-> > > >               if (err < 0)
-> > > >                       goto fail;
-> > > >       }
-> > > >
-> > > > So basically when runtime PM is not available, we explicitly "resume"
-> > > > the device to power it up.
-> > > >
-> > > > It seems to me like that's a fairly common problem, so I'm wondering if
-> > > > there's something that the runtime PM core could do to help with this.
-> > > > Or perhaps there's already a way to achieve this that we're all
-> > > > overlooking?
-> > > >
-> > > > Rafael, any suggestions?
-> > >
-> > > If any, a common helper would be appreciated, indeed.
-> >
-> > I'm not sure that I understand the problem correctly, so let me
-> > restate it the way I understand it.
-> >
-> > What we're talking about is a driver ->probe() callback.  Runtime PM
-> > is disabled initially and the device is off.  It needs to be powered
-> > up, but the way to do that depends on some configuration of the board
-> > etc., so ideally
-> >
-> > pm_runtime_enable(dev);
-> > ret = pm_runtime_resume(dev);
-> >
-> > should just work, but the question is what to do if runtime PM doesn't
-> > work as expected.  That is, CONFIG_PM_RUNTIME is unset?  Or something
-> > else?
->
-> Yes, the question is how to write the code for both with and without
-> CONFIG_PM (or CONFIG_PM_RUNTIME).
 
-This basically is about setup, because after that point all should
-just work in both cases.
+--===============1289178662270171438==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
 
-Personally, I would do
 
-if (IS_ENABLED(CONFIG_PM)) {
-  do setup based on pm-runtime
-} else {
-  do manual setup
-}
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Right now, we have a code like below, pushing the initialization in an
-> async work and let the probe returning quickly.
->
->         hda_tegra_probe() {
->                 ....
+On Thu, Jan 31, 2019 at 09:08:04AM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-So why don't you do
+> > anything O_APPEND based.  My understanding is that this is fundamentally
+> > a risk mitigation thing - by not having any of the sound kernel
+> > interfaces available to the applications affected there's no possibility
+> > that any problems in the sound code can cause security issues.
 
-if (!IS_ENABLED(CONFIG_PM)) {
-  do manual clock setup
-}
+> The patch 2 implements exactly that kind of access restriction, so
+> that the passed fd won't do anything else than wished.
 
-here?
+Yeah.
 
->                 pm_runtime_enable();
->                 schedule_work();
->                 return;
->         }
->
->         hda_tegra_probe_work() {
->                 pm_runtime_get_sync();
->                 ....
->                 pm_runtime_put_sync();
->         }
->
-> Then it truned outhis code lacks of the clock initialization when
-> runtime PM isn't enabled.  Normally it's done via runtime resume
->
->         hda_tegra_runtime_resume() {
->                 hda_tegra_enable_clocks();
->                 ....
->         }
->
-> And now the question is what is the standard idiom in such a case.
->
-> IMO, calling pm_runtime_resume() inside the probe function looks
-> weird, and my preference was to initialize the clocks explicitly, then
-> enable runtime PM.  But if using pm_runtime_resume() in the proc
-> should be seen as a standard procedure, I'm fine with that.
+> If we want to be super-conservative, the implementation could be even
+> simpler -- instead of filtering, we may pass a minimum fd ops that
+> contains only mmap and release for the anon-dup fd...
 
-Well, people do pm_runtime_resume() in ->probe() too, but
-pm_runtime_resume() returns 1 for CONFIG_PM unset, so that won't give
-you what you want anyway. :-)
+I think that'd definitely help address the concerns.
 
-Cheers,
-Rafael
+--oyUTqETQ0mS9luUI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxS6W0ACgkQJNaLcl1U
+h9ABXwgAhHKVPw0G16tbMolrztcXh86AqrlCtbfWfDLG3Jd3EzBMbBN+V5+hhF9+
+tgHFzkKW/fu3ccSYPZhsvQYECfEd+hNriSMpe8JSEeKVIPcPtl7kRBpNni0Ehe5Y
+AgN9y8xyW/yFgCSO8zCrBI136zqGtIkb3AAWP2wYeW+2nP0dp00HKbwu8AYkDAO1
+keGJFaP8Ji2P7hfbRAPq6FjlJF4iQMnYyquZEWYS7ibi/LdyJ8mr4eYDaudgYwx2
+vfQDM/B766MfA+HV6YMrvt3P+ZdjOYINQ0EJmx24oPpX70fNzPrPWBWQccvjfuik
+JA8KJkz55xQ96d3IgQRY9GpNFwC+Yw==
+=lOFg
+-----END PGP SIGNATURE-----
+
+--oyUTqETQ0mS9luUI--
+
+--===============1289178662270171438==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1289178662270171438==--
