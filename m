@@ -1,7 +1,7 @@
 From: Kailang <kailang@realtek.com>
 Subject: Re: auto_mute for early patch issue
-Date: Thu, 31 Jan 2019 08:33:51 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB761E@RTITMBSVM07.realtek.com.tw>
+Date: Thu, 31 Jan 2019 09:28:50 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DB763F@RTITMBSVM07.realtek.com.tw>
 References: <6FAB7C47BCF00940BB0999A99BE3547A18DB7608@RTITMBSVM07.realtek.com.tw>
  <s5hpnsdck29.wl-tiwai@suse.de>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 83AF026687D
- for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 09:33:55 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A92D726687D
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2019 10:28:56 +0100 (CET)
 In-Reply-To: <s5hpnsdck29.wl-tiwai@suse.de>
 Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,10 +26,17 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-OK!
-I go to generate patch now.
+Hi Takashi,
 
-Thanks.
+spec->suppress_auto_mute = 1;
+This will cause spec->gen.autocfg.hp_pins [0] = 0.
+This will cause alc2??_init() and alc2??_shutup() and dell headset mode not run errors.
+
+Do it has other place to store pin NID? 
+Or just only this place hp_pin = spec->gen.autocfg.hp_pins[0]; to get headphone NID.
+
+BR,
+Kailang
 
 -----Original Message-----
 From: Takashi Iwai <tiwai@suse.de> 
