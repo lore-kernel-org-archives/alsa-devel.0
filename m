@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 0/2] ALSA: pcm: implement the anonymous dup
 	v3
-Date: Fri, 1 Feb 2019 12:59:43 +0000
-Message-ID: <20190201125943.GE20797@sirena.org.uk>
+Date: Fri, 1 Feb 2019 13:01:17 +0000
+Message-ID: <20190201130117.GF20797@sirena.org.uk>
 References: <20190130124139.10439-1-perex@perex.cz>
  <20190130223237.GK2804@sirena.org.uk>
  <s5hsgx9ckrf.wl-tiwai@suse.de>
@@ -12,14 +12,15 @@ References: <20190130124139.10439-1-perex@perex.cz>
  <CACL=Q7y==PFTdknurbg-yZPoBjYh6n5Lduyy32Us1HepeVU-bg@mail.gmail.com>
  <CAEiLdJb-QLmtp0vWxvCj6Kb3rmkEx8dKndmBovHvx7hk93pt_Q@mail.gmail.com>
  <s5h36p8d0v8.wl-tiwai@suse.de>
+ <7d46e614-9291-a95a-6216-8abe9e6f1a5d@perex.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4347163987503734931=="
+Content-Type: multipart/mixed; boundary="===============1129491698911863145=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E1087266FA5
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 13:59:46 +0100 (CET)
-In-Reply-To: <s5h36p8d0v8.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id B1C4F266FA5
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 14:01:23 +0100 (CET)
+In-Reply-To: <7d46e614-9291-a95a-6216-8abe9e6f1a5d@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,65 +30,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Baolin Wang <baolin.wang@linaro.org>, Phil Burk <philburk@google.com>, Zach Riggle =?utf-8?B?8J+Wlg==?= <riggle@google.com>, Leo Yan <leo.yan@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle =?utf-8?B?8J+Wlg==?= <riggle@google.com>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4347163987503734931==
+--===============1129491698911863145==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="EgVrEAR5UttbsTXg"
+	protocol="application/pgp-signature"; boundary="H4SyuGOnfnj3aJqJ"
 Content-Disposition: inline
 
 
---EgVrEAR5UttbsTXg
-Content-Type: text/plain; charset=utf-8
+--H4SyuGOnfnj3aJqJ
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 31, 2019 at 09:32:27PM +0100, Takashi Iwai wrote:
-> On Thu, 31 Jan 2019 20:54:33 +0100,
-> Zach Riggle =F0=9F=96=96 wrote:
+On Fri, Feb 01, 2019 at 10:55:24AM +0100, Jaroslav Kysela wrote:
 
-> > (1) Can the buffer be mremap()ed with a different offset=C2=A0into the =
-buffer?=C2=A0
-> > This was a concern in the past and the reason for the anon_inode stuff =
-at
-> > all.=C2=A0 I believe that as long as the *size* of the mapping doesn't =
-change,
-> > Linux mm will gladly permit mremap() without informing the driver.
+> I agree. We can have just two modes for the beginning:
 
-> Could you elaborate which perspective of mremap() can be a big
-> problem?  The driver interface does nothing but a standard mmap for
-> now.
+> a) full one (useful for testing)
+> b) buffer only (allow just sound data mmap)
 
-I believe the issue was that if someone could remap the buffer to gain
-access to memory outside the memory allocated for the PCM buffer that
-would be a problem.  To be honest I'm surprised that this might be a
-general issue with mmap().
+> The question, if we should use different names (line anon_inode:snd-pcm
+> and anon_inode:snd-pcm-buffer) for the anonymous inodes remains. I
+> believe it might be good to distinguish this to allow the proper SELinux
+> audit.
 
---EgVrEAR5UttbsTXg
+I agree that the separte names seems better, it gives more flexibility
+and control to people writing policies.
+
+--H4SyuGOnfnj3aJqJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxUQrwACgkQJNaLcl1U
-h9Axiwf/cLd0Yow3w+1fKvLx8+W4SAnaLVlyRI+lP8gHX/QGaJ908xrdqhEG4aQW
-Qu/upgsA3/Z9caZLESMmUC0igRQPov0oVf+dXPQeZ2e3ZR16M2/l4MKlb/HWHRUq
-AaZGtBGI/u3bZMhzarYn9/nk8NCo+LzlsHGygwI/ykxqRvuEmjcdYmHXqYtobEvO
-A6ZNz7KOoOCOzlvLE0U4jo3Eis1wXFbs9IhYCurJM+JPayPNgIOsCcp3UVunTmB1
-uQfT935c6pm5lXVYftaMSWVgjYii5GodzNAjnHRsMJfBf7hUvGYxYXOIQqx5Hoc9
-LI/H28Q3E7Ea22mOeep2JKpaPHlbIw==
-=6QJb
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxUQxwACgkQJNaLcl1U
+h9BVqwf/Q3sN1REQQbe1Ne3kXaCdnps8nLv+rKNBjFPLcmv3NC4TTl63z52gpVdM
+PZaiETVtCPRr8dyldhS0Ty5B+RR0j9Pl84MT1gSn+QfbdScFBe2Y9XlGuFb1kOeq
+E9GW/I4BogZlZIJuuq66G9aJ+EADfr96VyXkWBC5eo4tLXa2wf+DAzSF5iBH3+nf
+EzF5KQhxEub51jWevNfAvhEKHNPB9Jymthse8V1HcUZOa9ruXmm2YLZZmlHPfYoq
+yrlLfBsG2DFvAWSu8IS3c1eaHv6gkWxrHCjaKcJjEjty/7bgbRA7sO24/XNjbUVo
+AriQlugTfurOWAB5WfVY3BFl7BjQig==
+=efe/
 -----END PGP SIGNATURE-----
 
---EgVrEAR5UttbsTXg--
+--H4SyuGOnfnj3aJqJ--
 
---===============4347163987503734931==
+--===============1129491698911863145==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4347163987503734931==--
+--===============1129491698911863145==--
