@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/3] ASoC: dapm: fix out-of-bounds accesses to
-	DAPM lookup tables
-Date: Fri,  1 Feb 2019 11:05:11 -0600
-Message-ID: <20190201170513.13905-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: dapm: fix use-after-free issue with
+	dailink sname
+Date: Fri,  1 Feb 2019 11:05:12 -0600
+Message-ID: <20190201170513.13905-3-pierre-louis.bossart@linux.intel.com>
 References: <20190201170513.13905-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 71D8C267470
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 18:05:22 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B44F267463
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 18:05:23 +0100 (CET)
 In-Reply-To: <20190201170513.13905-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,74 +25,66 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-KASAN reports and additional traces point to out-of-bounds accesses to
-the dapm_up_seq and dapm_down_seq lookup tables. The indices used are
-larger than the array definition.
+Commit 7620fe9161ce ("ASoC: topology: fix memory leak in
+soc_tplg_dapm_widget_create") fixed a memory leak issue, but
+additional tests and KASAN reports show a use-after-free in soc-dapm.
 
-Fix by adding missing entries for the new widget types in these two
-lookup tables. The value of 10 was chosen since these widgets are not
-too critical for pop/click removals.
+The widgets are created with a kmemdup operating on a template. The
+"name" string is also duplicated, but the "sname" string is not. As a
+result, when the template is freed after widget creation, its sname
+string is still used.
 
-Also the sequences for the following widgets were not defined
- snd_soc_dapm_input
- snd_soc_dapm_output
- snd_soc_dapm_mic
- snd_soc_dapm_vmid
- snd_soc_dapm_siggen
- snd_soc_dapm_sink
+Fix by explicitly duplicating the "sname" string, and freeing it when
+required.
 
-Since their values defaulted to zero, use a more reasonable mid-level
-value of 10.
-
-Fixes: 8a70b4544ef4 ('ASoC: dapm: Add new widget type for constructing DAPM graphs on DSPs.').
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-dapm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/soc-dapm.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2c4c13419539..f0d3d2d1a6bc 100644
+index f0d3d2d1a6bc..993b73fcd7b9 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -84,6 +84,19 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_mixer_named_ctl] = 8,
- 	[snd_soc_dapm_pga] = 9,
- 	[snd_soc_dapm_adc] = 10,
-+	[snd_soc_dapm_input] = 10,
-+	[snd_soc_dapm_output] = 10,
-+	[snd_soc_dapm_mic] = 10,
-+	[snd_soc_dapm_vmid] = 10,
-+	[snd_soc_dapm_siggen] = 10,
-+	[snd_soc_dapm_sink] = 10,
-+	[snd_soc_dapm_buffer] = 10,
-+	[snd_soc_dapm_scheduler] = 10,
-+	[snd_soc_dapm_effect] = 10,
-+	[snd_soc_dapm_src] = 10,
-+	[snd_soc_dapm_asrc] = 10,
-+	[snd_soc_dapm_encoder] = 10,
-+	[snd_soc_dapm_decoder] = 10,
- 	[snd_soc_dapm_out_drv] = 11,
- 	[snd_soc_dapm_hp] = 11,
- 	[snd_soc_dapm_spk] = 11,
-@@ -113,6 +126,19 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_aif_out] = 10,
- 	[snd_soc_dapm_dai_in] = 10,
- 	[snd_soc_dapm_dai_out] = 10,
-+	[snd_soc_dapm_input] = 10,
-+	[snd_soc_dapm_output] = 10,
-+	[snd_soc_dapm_mic] = 10,
-+	[snd_soc_dapm_vmid] = 10,
-+	[snd_soc_dapm_siggen] = 10,
-+	[snd_soc_dapm_sink] = 10,
-+	[snd_soc_dapm_buffer] = 10,
-+	[snd_soc_dapm_scheduler] = 10,
-+	[snd_soc_dapm_effect] = 10,
-+	[snd_soc_dapm_src] = 10,
-+	[snd_soc_dapm_asrc] = 10,
-+	[snd_soc_dapm_encoder] = 10,
-+	[snd_soc_dapm_decoder] = 10,
- 	[snd_soc_dapm_dai_link] = 11,
- 	[snd_soc_dapm_supply] = 12,
- 	[snd_soc_dapm_clock_supply] = 13,
+@@ -321,7 +321,22 @@ EXPORT_SYMBOL_GPL(dapm_mark_endpoints_dirty);
+ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
+ 	const struct snd_soc_dapm_widget *_widget)
+ {
+-	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
++	struct snd_soc_dapm_widget *w;
++
++	w = kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
++	if (!w)
++		return NULL;
++
++	/*
++	 * w->name is duplicated in caller, but w->sname isn't.
++	 * Duplicate it here if defined
++	 */
++	if (_widget->sname) {
++		w->sname = kstrdup_const(_widget->sname, GFP_KERNEL);
++		if (!w->sname)
++			return NULL;
++	}
++	return w;
+ }
+ 
+ struct dapm_kcontrol_data {
+@@ -2438,6 +2453,7 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
+ 
+ 	kfree(w->kcontrols);
+ 	kfree_const(w->name);
++	kfree_const(w->sname);
+ 	kfree(w);
+ }
+ 
+@@ -3495,6 +3511,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 	else
+ 		w->name = kstrdup_const(widget->name, GFP_KERNEL);
+ 	if (w->name == NULL) {
++		kfree_const(w->sname);
+ 		kfree(w);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
 -- 
 2.17.1
