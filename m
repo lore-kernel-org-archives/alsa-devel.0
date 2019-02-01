@@ -1,17 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/3] ASoC: topology: fix oops/use-after-free
-	case with dai driver
-Date: Fri,  1 Feb 2019 11:05:13 -0600
-Message-ID: <20190201170513.13905-4-pierre-louis.bossart@linux.intel.com>
-References: <20190201170513.13905-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2] ASoC: topology: unload physical dai link in
+	remove
+Date: Fri,  1 Feb 2019 11:07:40 -0600
+Message-ID: <20190201170740.13979-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 0643D267470
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 18:05:23 +0100 (CET)
-In-Reply-To: <20190201170513.13905-1-pierre-louis.bossart@linux.intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EED45267463
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 18:07:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+From: Bard liao <yung-chuan.liao@linux.intel.com>
 
-rmmod/modprobe tests expose a kernel oops when accessing the dai
-driver pointer. This comes from the topology design which operates in
-multiple passes. Each object removal happens at a specific iteration,
-and the code checks for the iteration (order) number after the memory
-containing the order was freed.
+soc_tplg_link_config() will find the physical dai link and call
+soc_tplg_dai_link_load() to load the BE dai link. Currently remove_link()
+is only used to remove the FE dai link which is created by the topology.
+The BE dai link cannot however be unloaded in snd_soc_tplg_component
+_remove(), which is problematic if anything needs to be released or
+reinitialized.
 
-Fix this be clearing a reference to the dai driver and check its
-validity to avoid dereferences.
+This patch aligns the definitions of dynamic types with the existing
+UAPI and adds a new remove_backend_link() routine to unload the the BE
+dai link when snd_soc_tplg_component_remove() is invoked.
 
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-core.c     | 2 +-
- sound/soc/soc-topology.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+v2: reset the dobj.type to fix module load/unload issues
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d6b5edba8d2d..9dad2b1498c1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -965,7 +965,7 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
- {
- 	int err;
+ include/sound/soc-topology.h |  1 +
+ sound/soc/soc-topology.c     | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
+
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index 8c43cfc240fa..5223896de26f 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -45,6 +45,7 @@ enum snd_soc_dobj_type {
+ 	SND_SOC_DOBJ_DAI_LINK,
+ 	SND_SOC_DOBJ_PCM,
+ 	SND_SOC_DOBJ_CODEC_LINK,
++	SND_SOC_DOBJ_BACKEND_LINK,
+ };
  
--	if (!dai || !dai->probed ||
-+	if (!dai || !dai->probed || !dai->driver ||
- 	    dai->driver->remove_order != order)
- 		return;
- 
+ /* dynamic control object */
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 23d421370e6c..bb7e5422a419 100644
+index bb7e5422a419..c5638e15a2dd 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -523,6 +523,7 @@ static void remove_dai(struct snd_soc_component *comp,
- {
- 	struct snd_soc_dai_driver *dai_drv =
- 		container_of(dobj, struct snd_soc_dai_driver, dobj);
-+	struct snd_soc_dai *dai;
+@@ -562,6 +562,25 @@ static void remove_link(struct snd_soc_component *comp,
+ 	kfree(link);
+ }
  
- 	if (pass != SOC_TPLG_PASS_PCM_DAI)
- 		return;
-@@ -530,6 +531,10 @@ static void remove_dai(struct snd_soc_component *comp,
- 	if (dobj->ops && dobj->ops->dai_unload)
- 		dobj->ops->dai_unload(comp, dobj);
- 
-+	list_for_each_entry(dai, &comp->dai_list, list)
-+		if (dai->driver == dai_drv)
-+			dai->driver = NULL;
++/* unload dai link */
++static void remove_backend_link(struct snd_soc_component *comp,
++	struct snd_soc_dobj *dobj, int pass)
++{
++	if (pass != SOC_TPLG_PASS_LINK)
++		return;
 +
- 	kfree(dai_drv->name);
- 	list_del(&dobj->list);
- 	kfree(dai_drv);
++	if (dobj->ops && dobj->ops->link_unload)
++		dobj->ops->link_unload(comp, dobj);
++
++	/*
++	 * We don't free the link here as what remove_link() do since BE
++	 * links are not allocated by topology.
++	 * We however need to reset the dobj type to its initial values
++	 */
++	dobj->type = SND_SOC_DOBJ_NONE;
++	list_del(&dobj->list);
++}
++
+ /* bind a kcontrol to it's IO handlers */
+ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+ 	struct snd_kcontrol_new *k,
+@@ -2168,6 +2187,12 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
+ 		return ret;
+ 	}
+ 
++	/* for unloading it in snd_soc_tplg_component_remove */
++	link->dobj.index = tplg->index;
++	link->dobj.ops = tplg->ops;
++	link->dobj.type = SND_SOC_DOBJ_BACKEND_LINK;
++	list_add(&link->dobj.list, &tplg->comp->dobj_list);
++
+ 	return 0;
+ }
+ 
+@@ -2654,6 +2679,13 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+ 			case SND_SOC_DOBJ_DAI_LINK:
+ 				remove_link(comp, dobj, pass);
+ 				break;
++			case SND_SOC_DOBJ_BACKEND_LINK:
++				/*
++				 * call link_unload ops if extra
++				 * deinitialization is needed.
++				 */
++				remove_backend_link(comp, dobj, pass);
++				break;
+ 			default:
+ 				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
+ 					dobj->type);
 -- 
 2.17.1
