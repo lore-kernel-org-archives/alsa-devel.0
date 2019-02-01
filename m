@@ -1,16 +1,19 @@
-From: James Schulman <james.schulman@cirrus.com>
-Subject: [PATCH 2/2] ASoC: cs35l36: Add device tree
-	documentation for CS35L36
-Date: Fri, 1 Feb 2019 13:33:21 -0600
-Message-ID: <1549049601-26177-1-git-send-email-james.schulman@cirrus.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [RFC PATCH 1/2] ASoC: core: don't increase
+ component module refcount unconditionally
+Date: Fri, 01 Feb 2019 12:07:17 -0800
+Message-ID: <4f43e2f691044d70048f0929c873f991fe13c69b.camel@linux.intel.com>
+References: <20190201172224.14549-1-pierre-louis.bossart@linux.intel.com>
+ <20190201172224.14549-2-pierre-louis.bossart@linux.intel.com>
+ <20190201181204.GA4296@vkoul-mobl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BF46267463
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 20:33:06 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E6E5267463
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 21:07:21 +0100 (CET)
+In-Reply-To: <20190201181204.GA4296@vkoul-mobl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,193 +23,149 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, paul.handrigan@cirrus.com, ckeepax@opensource.cirrus.com, brian.austin@cirrus.com
+To: Vinod Koul <vkoul@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree documentation for Cirrus Logic CS35L36
-speaker amplifier
+On Fri, 2019-02-01 at 23:42 +0530, Vinod Koul wrote:
+> On 01-02-19, 11:22, Pierre-Louis Bossart wrote:
+> > The ASoC core has for the longest time increased the module
+> > reference
+> > counts, even before the transition to the component model. This is
+> > probably fine on most platforms, but it introduces a deadlock case
+> > on
+> > Intel devices with the Skylake and SOF drivers which cannot be
+> > removed
+> > due to their reference counts being modified by the core.
+> > 
+> > In these 2 cases, the PCI or ACPI driver .probe creates a platform
+> > device to let the machine driver .probe register the audio
+> > card. Conversely the PCI or ACPI driver .remove will unregister the
+> > platform device which results in the card being removed by the
+> > machine
+> > driver .remove.
+> > 
+> > With ascii art, this can be represented as
+> > 
+> > modprobe
+> > snd_soc_skl/
+> > soc-pci-dev/sof-acpci-dev  ----------> pci/acpi probe
+> >        ^                                    |
+> >        |                     ---------------|
+> >        |                    |               |
+> >        |                    V               V
+> >     increase            register        register machine
+> >     refcount            component       platform_device
+> >        ^                                    |
+> >        |                                    |
+> >        |                                    V
+> >     component <----   register card  <---- probe
+> >     probe
+> > 
+> > The issue is that by playing with the component's module reference
+> > counts during the card registration, it's no longer possible to
+> > remove
+> > the module which controls the component. This can be shown, e.g.
+> > with
+> > the following error:
+> > 
+> > root@plb-XPS-13-9350:~# lsmod | grep snd_soc_skl
+> > snd_soc_skl           110592  1
+> > 
+> > root@plb-XPS-13-9350:~# rmmod snd_soc_skl
+> > rmmod: ERROR: Module snd_soc_skl is in use
+> 
+> Yup, that would be correct, the inuse is due to the fact the sound
+> card
+> is up and someone needs to unload the sound card to remove the
+> reference.
+> 
+> That can be done by doing the rmmod of machine driver first and IIRC
+> that would remove the sound card and drop the reference and then
+> snd_soc_skl can be unloaded.
 
-Signed-off-by: James Schulman <james.schulman@cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
----
- .../devicetree/bindings/sound/cs35l36.txt          | 168 +++++++++++++++++++++
- 1 file changed, 168 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l36.txt
+This doesnt seem to be the case though. The machine driver module
+cannot be removed either because its refcnt is also > 0.
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l36.txt b/Documentation/devicetree/bindings/sound/cs35l36.txt
-new file mode 100644
-index 0000000..ccfeaf6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs35l36.txt
-@@ -0,0 +1,168 @@
-+CS35L36 Speaker Amplifier
-+
-+Required properties:
-+
-+  - compatible : "cirrus,cs35l36"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+  - VA-supply, VP-supply : power supplies for the device,
-+    as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+Optional properties:
-+  - cirrus,multi-amp-mode : Boolean to determine if there are more than
-+  one amplifier in the system. If more than one it is best to Hi-Z the ASP
-+  port to prevent bus contention on the output signal
-+
-+  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
-+  converter's output voltage in mV. The range is from 2550mV to 12000mV with
-+  increments of 50mV.
-+  (Default) VP
-+
-+  - cirrus,boost-ctl-select : Boost conerter control source selection.
-+  Selects the source of the BST_CTL target VBST voltage for the boost
-+  converter to generate.
-+  0x00 - Control Port Value
-+  0x01 - Class H Tracking (Default)
-+  0x10 - MultiDevice Sync Value
-+
-+  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
-+  Configures the peak current by monitoring the current through the boost FET.
-+  Range starts at 1600mA and goes to a maximum of 4500mA with increments of
-+  50mA.
-+  (Default) 4.50 Amps
-+
-+  - cirrus,boost-ind-nanohenry : Inductor estimation LBST reference value.
-+  Seeds the digital boost converter's inductor estimation block with the initial
-+  inductance value to reference.
-+
-+  1000 = 1uH (Default)
-+  1200 = 1.2uH
-+
-+  - cirrus,amp-pcm-inv : Boolean to determine Amplifier will invert incoming
-+  PCM data
-+
-+  - cirrus,imon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound IMON feedback data
-+
-+  - cirrus,vmon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound VMON feedback data
-+
-+  - cirrus,dcm-mode-enable : Boost converter automatic DCM Mode enable.
-+  This enables the digital boost converter to operate in a low power
-+  (Discontinuous Conduction) mode during low loading conditions.
-+
-+  - cirrus,weak-fet-disable : Boolean : The strength of the output drivers is
-+  reduced when operating in a Weak-FET Drive Mode and must not be used to drive
-+  a large load.
-+
-+  - cirrus,classh-wk-fet-delay :  Weak-FET entry delay. Controls the delay
-+  (in ms) before the Class H algorithm switches to the weak-FET voltage
-+  (after the audio falls and remains below the value specified in WKFET_AMP_THLD).
-+
-+  0 = 0ms
-+  1 = 5ms
-+  2 = 10ms
-+  3 = 50ms
-+  4 = 100ms (Default)
-+  5 = 200ms
-+  6 = 500ms
-+  7 = 1000ms
-+
-+  - cirrus,classh-weak-fet-thld-millivolt : Weak-FET amplifier drive threshold.
-+  Configures the signal threshold at which the PWM output stage enters
-+  weak-FET operation. The range is 50mV to 700mV in 50mV increments.
-+
-+  - cirrus,temp-warn-threshold :  Amplifier overtemperature warning threshold.
-+  Configures the threshold at which the overtemperature warning condition occurs.
-+  When the threshold is met, the overtemperature warning attenuation is applied
-+  and the TEMP_WARN_EINT interrupt status bit is set.
-+  If TEMP_WARN_MASK = 0, INTb is asserted.
-+
-+  0 = 105C
-+  1 = 115C
-+  2 = 125C (Default)
-+  3 = 135C
-+
-+  - cirrus,irq-drive-select : Selects the driver type of the selected interrupt
-+  output.
-+
-+  0 = Open-drain
-+  1 = Push-pull (Default)
-+
-+  - cirrus,irq-gpio-select : Selects the pin to serve as the programmable
-+  interrupt output.
-+
-+  0 = PDM_DATA / SWIRE_SD / INT (Default)
-+  1 = GPIO
-+
-+Optional properties for the "cirrus,vpbr-config" Sub-node
-+
-+  - cirrus,vpbr-en : VBST brownout prevention enable. Configures whether the
-+  VBST brownout prevention algorithm is enabled or disabled.
-+
-+  0 = VBST brownout prevention disabled (default)
-+  1 = VBST brownout prevention enabled
-+
-+  See Section 7.31.1 VPBR Config for configuration options & further details
-+
-+  - cirrus,vpbr-thld : Initial VPBR threshold. Configures the VP brownout
-+  threshold voltage
-+
-+  - cirrus,cirrus,vpbr-atk-rate : Attenuation attack step rate. Configures the
-+  amount delay between consecutive volume attenuation steps when a brownout
-+  condition is present and the VP brownout condition is in an attacking state.
-+
-+  - cirrus,vpbr-atk-vol : VP brownout prevention step size. Configures the VP
-+  brownout prevention attacking attenuation step size when operating in either
-+  digital volume or analog gain modes.
-+
-+  - cirrus,vpbr-max-attn : Maximum attenuation that the VP brownout prevention
-+  can apply to the audio signal.
-+
-+  - cirrus,vpbr-wait : Configures the delay time between a brownout condition
-+  no longer being present and the VP brownout prevention entering an attenuation
-+  release state.
-+
-+  - cirrus,vpbr-rel-rate : Attenuation release step rate. Configures the delay
-+  between consecutive volume attenuation release steps when a brownout condition
-+  is not longer present and the VP brownout is in an attenuation release state.
-+
-+  - cirrus,vpbr-mute-en : During the attack state, if the vpbr-max-attn value
-+  is reached, the error condition still remains, and this bit is set, the audio
-+  is muted.
-+
-+Example:
-+
-+cs35l36: cs35l36@40 {
-+	compatible = "cirrus,cs35l36";
-+	reg = <0x40>;
-+	VA-supply = <&dummy_vreg>;
-+	VP-supply = <&dummy_vreg>;
-+	reset-gpios = <&gpio0 54 0>;
-+	interrupt-parent = <&gpio8>;
-+	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+
-+	cirrus,boost-ind-nanohenry = <1000>;
-+	cirrus,boost-ctl-millivolt = <10000>;
-+	cirrus,boost-ctl-select = <0x00>;
-+	cirrus,boost-peak-milliamp = <4500>;
-+	cirrus,weak-fet-delay = <0x04>;
-+	cirrus,weak-fet-thld = <0x01>;
-+	cirrus,temp-warn-threshold = <0x01>;
-+	cirrus,multi-amp-mode;
-+	cirrus,irq-drive-select = <0x01>;
-+	cirrus,irq-gpio-select = <0x01>;
-+
-+	cirrus,vpbr-config {
-+		cirrus,vpbr-en = <0x00>;
-+		cirrus,vpbr-thld = <0x05>;
-+		cirrus,vpbr-atk-rate = <0x02>;
-+		cirrus,vpbr-atk-vol = <0x01>;
-+		cirrus,vpbr-max-attn = <0x09>;
-+		cirrus,vpbr-wait = <0x01>;
-+		cirrus,vpbr-rel-rate = <0x05>;
-+		cirrus,vpbr-mute-en = <0x00>;
-+	};
-+};
--- 
-1.9.1
+Thanks,
+Ranjani
+
+> 
+> Now one can argue that is not required, but I feel that is correct
+> for
+> core to hold references of modules the card is tied up to :)
+> 
+> > Increasing the reference count during the component probe is not
+> > useful. If the PCI/ACPI module is removed, the card will be removed
+> > anyway.
+> > 
+> > To avoid breaking existing platforms and allowing Intel platforms
+> > to
+> > safely deal with module load/unload cases, this patch introduces a
+> > flag which needs to be set during the component initialization.
+> > This
+> > is a strictly opt-in capability that should only be used when the
+> > handling of the component module does not require a reference count
+> > increase to prevent removal during use.
+> > 
+> > Note that this solution is not directly applicable to the legacy
+> > Atom/SST driver, which uses a different device hierarchy. There are
+> > however additional refcount issues which prevent the ACPI driver
+> > from
+> > being removed. This is a different issue which would need a
+> > different
+> > patch.
+> > 
+> > Signed-off-by: Pierre-Louis Bossart <
+> > pierre-louis.bossart@linux.intel.com>
+> > ---
+> >  include/sound/soc.h  | 3 +++
+> >  sound/soc/soc-core.c | 6 ++++--
+> >  2 files changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/sound/soc.h b/include/sound/soc.h
+> > index 95689680336b..eb7db605955b 100644
+> > --- a/include/sound/soc.h
+> > +++ b/include/sound/soc.h
+> > @@ -802,6 +802,9 @@ struct snd_soc_component_driver {
+> >  	int probe_order;
+> >  	int remove_order;
+> >  
+> > +	/* signal if the module handling the component cannot be
+> > removed */
+> > +	unsigned int ignore_module_refcount:1;
+> > +
+> >  	/* bits */
+> >  	unsigned int idle_bias_on:1;
+> >  	unsigned int suspend_bias_off:1;
+> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> > index 9dad2b1498c1..80ab81f1df3d 100644
+> > --- a/sound/soc/soc-core.c
+> > +++ b/sound/soc/soc-core.c
+> > @@ -947,7 +947,8 @@ static void soc_cleanup_component(struct
+> > snd_soc_component *component)
+> >  	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+> >  	soc_cleanup_component_debugfs(component);
+> >  	component->card = NULL;
+> > -	module_put(component->dev->driver->owner);
+> > +	if (!component->driver->ignore_module_refcount)
+> > +		module_put(component->dev->driver->owner);
+> >  }
+> >  
+> >  static void soc_remove_component(struct snd_soc_component
+> > *component)
+> > @@ -1362,7 +1363,8 @@ static int soc_probe_component(struct
+> > snd_soc_card *card,
+> >  		return 0;
+> >  	}
+> >  
+> > -	if (!try_module_get(component->dev->driver->owner))
+> > +	if (!component->driver->ignore_module_refcount &&
+> > +	    !try_module_get(component->dev->driver->owner))
+> >  		return -ENODEV;
+> >  
+> >  	component->card = card;
+> > -- 
+> > 2.17.1
+> 
+> 
