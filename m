@@ -1,26 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ALSA: pcm: implement the anonymous dup
-	v3
-Date: Fri, 1 Feb 2019 13:01:17 +0000
-Message-ID: <20190201130117.GF20797@sirena.org.uk>
-References: <20190130124139.10439-1-perex@perex.cz>
- <20190130223237.GK2804@sirena.org.uk>
- <s5hsgx9ckrf.wl-tiwai@suse.de>
- <20190131122624.GA20797@sirena.org.uk>
- <ae257dec-72b9-654c-6366-486e3d7ff836@perex.cz>
- <CACL=Q7ykqDEsaJzcxVexaaNCukw4yiNNQSGZLON=fXbJ7AH-9g@mail.gmail.com>
- <CACL=Q7y==PFTdknurbg-yZPoBjYh6n5Lduyy32Us1HepeVU-bg@mail.gmail.com>
- <CAEiLdJb-QLmtp0vWxvCj6Kb3rmkEx8dKndmBovHvx7hk93pt_Q@mail.gmail.com>
- <s5h36p8d0v8.wl-tiwai@suse.de>
- <7d46e614-9291-a95a-6216-8abe9e6f1a5d@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 7/7] ASoC: topology: unload physical dai
+ link in remove
+Date: Fri, 1 Feb 2019 07:08:59 -0600
+Message-ID: <7b3ec583-ed71-2d88-3a7d-de4cf0cc2bc1@linux.intel.com>
+References: <20190125200648.12470-1-pierre-louis.bossart@linux.intel.com>
+ <20190125200648.12470-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1129491698911863145=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B1C4F266FA5
- for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 14:01:23 +0100 (CET)
-In-Reply-To: <7d46e614-9291-a95a-6216-8abe9e6f1a5d@perex.cz>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9F65266FA5
+ for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2019 14:09:01 +0100 (CET)
+In-Reply-To: <20190125200648.12470-8-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,58 +23,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle =?utf-8?B?8J+Wlg==?= <riggle@google.com>, Leo Yan <leo.yan@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---===============1129491698911863145==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="H4SyuGOnfnj3aJqJ"
-Content-Disposition: inline
+please discard this version. The changes are good but additional tests 
+with module unload/reload expose a missing reset of the dobj.type. Will 
+send a v2 shortly (along with a couple of DAPM/topology fixes in the 
+ASoC core)
 
+Thanks
 
---H4SyuGOnfnj3aJqJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-Pierre
 
-On Fri, Feb 01, 2019 at 10:55:24AM +0100, Jaroslav Kysela wrote:
-
-> I agree. We can have just two modes for the beginning:
-
-> a) full one (useful for testing)
-> b) buffer only (allow just sound data mmap)
-
-> The question, if we should use different names (line anon_inode:snd-pcm
-> and anon_inode:snd-pcm-buffer) for the anonymous inodes remains. I
-> believe it might be good to distinguish this to allow the proper SELinux
-> audit.
-
-I agree that the separte names seems better, it gives more flexibility
-and control to people writing policies.
-
---H4SyuGOnfnj3aJqJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxUQxwACgkQJNaLcl1U
-h9BVqwf/Q3sN1REQQbe1Ne3kXaCdnps8nLv+rKNBjFPLcmv3NC4TTl63z52gpVdM
-PZaiETVtCPRr8dyldhS0Ty5B+RR0j9Pl84MT1gSn+QfbdScFBe2Y9XlGuFb1kOeq
-E9GW/I4BogZlZIJuuq66G9aJ+EADfr96VyXkWBC5eo4tLXa2wf+DAzSF5iBH3+nf
-EzF5KQhxEub51jWevNfAvhEKHNPB9Jymthse8V1HcUZOa9ruXmm2YLZZmlHPfYoq
-yrlLfBsG2DFvAWSu8IS3c1eaHv6gkWxrHCjaKcJjEjty/7bgbRA7sO24/XNjbUVo
-AriQlugTfurOWAB5WfVY3BFl7BjQig==
-=efe/
------END PGP SIGNATURE-----
-
---H4SyuGOnfnj3aJqJ--
-
---===============1129491698911863145==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1129491698911863145==--
+On 1/25/19 2:06 PM, Pierre-Louis Bossart wrote:
+> From: Bard liao <yung-chuan.liao@linux.intel.com>
+>
+> soc_tplg_link_config() will find the physical dai link and call
+> soc_tplg_dai_link_load() to load the BE dai link. Currently remove_link()
+> is only used to remove the FE dai link which is created by the topology.
+> The BE dai link cannot however be unloaded in snd_soc_tplg_component
+> _remove(), which is problematic if anything needs to be released or
+> reinitialized.
+>
+> This patch aligns the definitions of dynamic types with the existing
+> UAPI and adds a new remove_backend_link() routine to unload the the BE
+> dai link when snd_soc_tplg_component_remove() is invoked.
+>
+> Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>   include/sound/soc-topology.h |  1 +
+>   sound/soc/soc-topology.c     | 31 +++++++++++++++++++++++++++++++
+>   2 files changed, 32 insertions(+)
+>
+> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+> index 8c43cfc240fa..5223896de26f 100644
+> --- a/include/sound/soc-topology.h
+> +++ b/include/sound/soc-topology.h
+> @@ -45,6 +45,7 @@ enum snd_soc_dobj_type {
+>   	SND_SOC_DOBJ_DAI_LINK,
+>   	SND_SOC_DOBJ_PCM,
+>   	SND_SOC_DOBJ_CODEC_LINK,
+> +	SND_SOC_DOBJ_BACKEND_LINK,
+>   };
+>   
+>   /* dynamic control object */
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 23d421370e6c..49e6fd76d9bc 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -557,6 +557,24 @@ static void remove_link(struct snd_soc_component *comp,
+>   	kfree(link);
+>   }
+>   
+> +/* unload dai link */
+> +static void remove_backend_link(struct snd_soc_component *comp,
+> +	struct snd_soc_dobj *dobj, int pass)
+> +{
+> +	if (pass != SOC_TPLG_PASS_LINK)
+> +		return;
+> +
+> +	if (dobj->ops && dobj->ops->link_unload)
+> +		dobj->ops->link_unload(comp, dobj);
+> +
+> +	/*
+> +	 * We don't free the link here as what remove_link() do since BE
+> +	 * links are not allocated by topology.
+> +	 */
+> +
+> +	list_del(&dobj->list);
+> +}
+> +
+>   /* bind a kcontrol to it's IO handlers */
+>   static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
+>   	struct snd_kcontrol_new *k,
+> @@ -2163,6 +2181,12 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
+>   		return ret;
+>   	}
+>   
+> +	/* for unloading it in snd_soc_tplg_component_remove */
+> +	link->dobj.index = tplg->index;
+> +	link->dobj.ops = tplg->ops;
+> +	link->dobj.type = SND_SOC_DOBJ_BACKEND_LINK;
+> +	list_add(&link->dobj.list, &tplg->comp->dobj_list);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -2649,6 +2673,13 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+>   			case SND_SOC_DOBJ_DAI_LINK:
+>   				remove_link(comp, dobj, pass);
+>   				break;
+> +			case SND_SOC_DOBJ_BACKEND_LINK:
+> +				/*
+> +				 * call link_unload ops if extra
+> +				 * deinitialization is needed.
+> +				 */
+> +				remove_backend_link(comp, dobj, pass);
+> +				break;
+>   			default:
+>   				dev_err(comp->dev, "ASoC: invalid component type %d for removal\n",
+>   					dobj->type);
