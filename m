@@ -1,199 +1,180 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
-Date: Fri, 01 Feb 2019 00:24:31 +0100
-Message-ID: <2034694.JE9CgBysmF@aspire.rjw.lan>
-References: <1548414418-5785-1-git-send-email-spujar@nvidia.com> <CAJZ5v0hezV7et3VgD7yHa8MLiP0z3YtJ9stwSQL54-tyz_VXkQ@mail.gmail.com> <20190131143024.GO23438@ulmo>
+From: shuah <shuah@kernel.org>
+Subject: Re: [PATCH v10 0/4] Media Device Allocator API
+Date: Thu, 31 Jan 2019 17:46:22 -0700
+Message-ID: <7a809bc8-f75e-04e6-f612-f6111c6b5a71@kernel.org>
+References: <cover.1548360791.git.shuah@kernel.org>
+ <e8717d11-1eff-2e07-53d5-6cd55356c66a@xs4all.nl>
+ <481787e7-112a-80dd-228c-2497a12547b9@kernel.org>
+ <d9ae1073-f6a9-1085-c8f8-8edd05daece5@xs4all.nl>
+ <b9a62121-8ab0-5c1c-79ff-8bb39fc8b762@kernel.org>
+ <fe6d6f63-72e3-8e2f-462d-b029997d8ee9@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190131143024.GO23438@ulmo>
+In-Reply-To: <fe6d6f63-72e3-8e2f-462d-b029997d8ee9@xs4all.nl>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>, Jon Hunter <jonathanh@nvidia.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sameer Pujar <spujar@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, mkumard@nvidia.com, rlokhande@nvidia.com, sharadg@nvidia.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, January 31, 2019 3:30:24 PM CET Thierry Reding wrote:
+Hi Hans,
+
+On 1/30/19 12:42 AM, Hans Verkuil wrote:
+> On 1/30/19 2:50 AM, shuah wrote:
+>> On 1/29/19 2:43 AM, Hans Verkuil wrote:
+>>> On 1/29/19 12:48 AM, shuah wrote:
+>>>> Hi Hans,
+>>>>
+>>>> On 1/28/19 5:03 AM, Hans Verkuil wrote:
+>>>>> Hi Shuah,
+>>>>>
+>>>>> On 1/24/19 9:32 PM, Shuah Khan wrote:
+>>>>>> Media Device Allocator API to allows multiple drivers share a media device.
+>>>>>> This API solves a very common use-case for media devices where one physical
+>>>>>> device (an USB stick) provides both audio and video. When such media device
+>>>>>> exposes a standard USB Audio class, a proprietary Video class, two or more
+>>>>>> independent drivers will share a single physical USB bridge. In such cases,
+>>>>>> it is necessary to coordinate access to the shared resource.
+>>>>>>
+>>>>>> Using this API, drivers can allocate a media device with the shared struct
+>>>>>> device as the key. Once the media device is allocated by a driver, other
+>>>>>> drivers can get a reference to it. The media device is released when all
+>>>>>> the references are released.
+>>>>>>
+>>>>>> - This patch series is tested on 5.0-rc3 and addresses comments on
+>>>>>>      v9 series from Hans Verkuil.
+>>>>>> - v9 was tested on 4.20-rc6.
+>>>>>> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+>>>>>>      arecord. When analog is streaming, digital and audio user-space
+>>>>>>      applications detect that the tuner is busy and exit. When digital
+>>>>>>      is streaming, analog and audio applications detect that the tuner is
+>>>>>>      busy and exit. When arecord is owns the tuner, digital and analog
+>>>>>>      detect that the tuner is busy and exit.
+>>>>>
+>>>>> I've been doing some testing with my au0828, and I am confused about one
+>>>>> thing, probably because it has been too long ago since I last looked into
+>>>>> this in detail:
+>>>>>
+>>>>
+>>>> Great.
+>>>>
+>>>>> Why can't I change the tuner frequency if arecord (and only arecord) is
+>>>>> streaming audio? If arecord is streaming, then it is recording the audio
+>>>>> from the analog TV tuner, right? So changing the analog TV frequency
+>>>>> should be fine.
+>>>>>
+>>>>
+>>>> Changing analog TV frequency would be s_frequency. The way it works is
+>>>> any s_* calls would require holding the pipeline. In Analog TV case, it
+>>>> would mean holding both audio and video pipelines for any changes
+>>>> including TV.
+>>>>
+>>>> As I recall, we discussed this design and the decision was to make all
+>>>> s_* calls interfaces to hold the tuner. A special exception is g_tuner
+>>>> in case of au0828. au0828 initializes the tuner from s_* interfaces and
+>>>> its g_tuner interfaces. Allowing s_frequency to proceed will disrupt the
+>>>> arecord audio stream.
+>>>>
+>>>> Query (q_*) works just fine without holding the pipeline. I limited the
+>>>> analog holds to just the ones that are required. The current set is
+>>>> required to avoid audio stream disruptions.
+>>>
+>>> So I am not sure about that ('avoid audio stream disruptions'): if I
+>>> stream video AND use arecord, then I can just set the frequency while
+>>> streaming. Doesn't that interrupt audio as well? And are you sure changing
+>>> the tuner frequency actually disrupts audio? And if audio is disrupted,
+>>> are we talking about a glitch or is audio permanently disrupted?
+>>
+>> I think it is a glitch. I will run some tests and let you know.
+>>>
+>>> That's basically the inconsistent behavior I noticed: just running arecord
+>>> will prevent me from changing the frequency, but if I run arecord and stream
+>>> video, then it is suddenly OK to change the frequency.
+>>
+>> How are you changing frequency? I want to duplicate what you are doing.
 > 
-> --Pk/CTwBz1VvfPIDp
-> Content-Type: text/plain; charset=us-ascii
-> Content-Disposition: inline
-> Content-Transfer-Encoding: quoted-printable
+> v4l2-ctl -f <freq>
+
+I am not seeing the inconsistent behavior. Here are my results.
+
+1. Started acecord and while it is running:
+
+arecord -M -D plughw:2,0 -c2  -f S16_LE -t wav foo.wav
+Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+
+2. Ran v4l2-ctl -f as follows:
+
+v4l2-ctl -f 700
+VIDIOC_G_TUNER: failed: Device or resource busy
+VIDIOC_S_FREQUENCY: failed: Device or resource busy
+
+Based on the current implementation, it failed with resource
+busy as expected.
+
+3. Started v4l2-ctl as follows:
+
+  v4l2-ctl --stream-mmap --stream-count=100 -d /dev/video0
+VIDIOC_STREAMON: failed: Device or resource busy
+shuah@deneb:/mnt/data/lkml/v4l-utils/utils/v4l2-ctl$ v4l2-ctl -f 700
+VIDIOC_G_TUNER: failed: Device or resource busy
+VIDIOC_S_FREQUENCY: failed: Device or resource busy
+
+Based on the current implementation, it failed with resource
+busy as expected.
+
+4. After stopping arecord:
+
+v4l2-ctl --stream-mmap --stream-count=100 -d /dev/video0
+<<<<<<<<<<<<< 11.88 fps
+<<<<<<<<<<<<<<< 13.36 fps
+<<<<<<<<<<<<<<< 14.00 fps
+<<<<<<<<<<<<<<<< 14.35 fps
+<<<<<<<<<<<<<<< 14.57 fps
+<<<<<<<<<<<<<<<< 14.71 fps
+<<<<<<<<<
+
+
+Worked as expected.
+
+
+5. After stopping above video streaming:
+
+arecord -M -D plughw:2,0 -c2  -f S16_LE -t wav foo.wav
+Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
+
+
+Worked as expected.
+
 > 
-> On Thu, Jan 31, 2019 at 01:10:01PM +0100, Rafael J. Wysocki wrote:
-> > On Thu, Jan 31, 2019 at 12:59 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Thu, 31 Jan 2019 12:46:54 +0100,
-> > > Rafael J. Wysocki wrote:
-> > > >
-> > > > On Thu, Jan 31, 2019 at 12:21 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > > >
-> > > > > On Thu, 31 Jan 2019 12:05:30 +0100,
-> > > > > Thierry Reding wrote:
-> > > > > >
-> > > > > > On Wed, Jan 30, 2019 at 05:40:42PM +0100, Takashi Iwai wrote:
-> > > >
-> > > > [cut]
-> > > >
-> > > > > > > If I understand correctly the code, the pm domain is already ac=
-> tivated
-> > > > > > > at calling driver's probe callback.
-> > > > > >
-> > > > > > As far as I can tell, the domain will also be powered off again a=
-> fter
-> > > > > > probe finished, unless the device grabs a runtime PM reference. T=
-> his is
-> > > > > > what happens via the dev->pm_domain->sync() call after successful=
->  probe
-> > > > > > of a driver.
-> > > > >
-> > > > > Ah, a good point.  This can be a problem with a probe work like this
-> > > > > case.
-> > > > >
-> > > > > > It seems to me like it's not a very well defined case what to do =
-> when a
-> > > > > > device needs to be powered up but runtime PM is not enabled.
-> > > > > >
-> > > > > > Adding Rafael and linux-pm, maybe they can provide some guidance =
-> on what
-> > > > > > to do in these situations.
-> > > > > >
-> > > > > > To summarize, what we're debating here is how to handle powering =
-> up a
-> > > > > > device if the pm_runtime infrastructure doesn't take care of it. =
-> Jon's
-> > > > > > proposal here was, and we use this elsewhere, to do something lik=
-> e this:
-> > > > > >
-> > > > > >       pm_runtime_enable(dev);
-> > > > > >       if (!pm_runtime_enabled(dev)) {
-> > > > > >               err =3D foo_runtime_resume(dev);
-> > > > > >               if (err < 0)
-> > > > > >                       goto fail;
-> > > > > >       }
-> > > > > >
-> > > > > > So basically when runtime PM is not available, we explicitly "res=
-> ume"
-> > > > > > the device to power it up.
-> > > > > >
-> > > > > > It seems to me like that's a fairly common problem, so I'm wonder=
-> ing if
-> > > > > > there's something that the runtime PM core could do to help with =
-> this.
-> > > > > > Or perhaps there's already a way to achieve this that we're all
-> > > > > > overlooking?
-> > > > > >
-> > > > > > Rafael, any suggestions?
-> > > > >
-> > > > > If any, a common helper would be appreciated, indeed.
-> > > >
-> > > > I'm not sure that I understand the problem correctly, so let me
-> > > > restate it the way I understand it.
-> > > >
-> > > > What we're talking about is a driver ->probe() callback.  Runtime PM
-> > > > is disabled initially and the device is off.  It needs to be powered
-> > > > up, but the way to do that depends on some configuration of the board
-> > > > etc., so ideally
-> > > >
-> > > > pm_runtime_enable(dev);
-> > > > ret =3D pm_runtime_resume(dev);
-> > > >
-> > > > should just work, but the question is what to do if runtime PM doesn't
-> > > > work as expected.  That is, CONFIG_PM_RUNTIME is unset?  Or something
-> > > > else?
-> > >
-> > > Yes, the question is how to write the code for both with and without
-> > > CONFIG_PM (or CONFIG_PM_RUNTIME).
-> >=20
-> > This basically is about setup, because after that point all should
-> > just work in both cases.
-> >=20
-> > Personally, I would do
-> >=20
-> > if (IS_ENABLED(CONFIG_PM)) {
-> >   do setup based on pm-runtime
-> > } else {
-> >   do manual setup
-> > }
-> >=20
-> > > Right now, we have a code like below, pushing the initialization in an
-> > > async work and let the probe returning quickly.
-> > >
-> > >         hda_tegra_probe() {
-> > >                 ....
-> >=20
-> > So why don't you do
-> >=20
-> > if (!IS_ENABLED(CONFIG_PM)) {
-> >   do manual clock setup
-> > }
-> >=20
-> > here?
-> 
-> I think that's exactly what Jon and Sameer were proposing, although the
-> discussion started primarily because of the way it was done.
-> 
-> So basically the idea was to do:
-> 
-> 	pm_runtime_enable()
-> 	if (!pm_runtime_enabled())  /* basically !IS_ENABLED(CONFIG_PM) */
+>>
+>>>
+>>> BTW, I think there was also inconsistent behavior in the order of streaming
+>>> audio and video: if I stream video first, then I can stream audio afterwards.
+>>> But if I stream audio first, then (if I remember correctly) I can't start
+>>> video streaming.
+>>>
 
-But why is it any better than checking !IS_ENABLED(CONFIG_PM) directly?
+Okay this is what I saw:
 
-> 		hda_runtime_resume()
-> 
-> So we're not calling pm_runtime_resume() but rather the driver's
-> implementation of it. This is to avoid duplicating the code, which under
-> some circumstances can be fairly long. Duplicating is also error prone
-> because both instances may not always be in sync.
-> 
-> My understanding is that Takashi had reservations about using this kind
-> of construct because, well, frankly, it looks a little weird.
+While v4l2-ctl --stream-mmap --stream-count=100 -d /dev/video0
 
-Yes, the way it was originally written above was weird, but is checking
-IS_ENABLED(CONFIG_PM) directly really so weird?
+I could start arecord -M -D plughw:2,0 -c2  -f S16_LE -t wav foo.wav
 
-> We'd also likely want to have a similar construct again in the ->remove()
-> callback to make sure we properly power off the device when it is no longer
-> needed.
+I ran strace on v4l2-ctl --stream-mmap --stream-count=100 -d /dev/video0
+and I didn't see AUDIO holds. The only think of here is that
 
-Sure.  Again, why don't you make it conditional on IS_ENABLED(CONFIG_PM)?
+v4l2-ctl --stream-mmap --stream-count=100 -d /dev/video0
 
-> I'm just wondering if perhaps there should be a mechanism in the
-> core to take care of this,
+doesn't open audio device. I didn't see this when tested with other
+video apps, (tvtine, xawtv, vlc). When video is streaming, I see
+arecord failing with device busy.
 
-How exactly?  How's the core going to know what to do when CONFIG_PM is
-disabled?
+As far I can see, exclusion logic is working correctly. s_freq does
+fail now based on the current logic.
 
-> because this is basically something that we'd need to do for every single
-> driver.
+btw I tested all of this on 5.0-rc4
 
-That is not true.  If the device is alwyas "on" to start with, you don't
-need to do anything.  That's the case on many systems.
-
-> For example, if !CONFIG_PM couldn't the pm_runtime_enable() function be
-> modified to do the above?
-
-But you'd need to pass a pointer to your hda_runtime_resume() to it at least
-and how's that simpler than using a simple conditional directly?
-
-> This would be somewhat tricky because drivers
-> usually use SET_RUNTIME_PM_OPS to populate the struct dev_pm_ops and
-> that would result in an empty structure if !CONFIG_PM, but we could
-> probably work around that by adding a __SET_RUNTIME_PM_OPS that would
-> never be compiled out for this kind of case. Or such drivers could even
-> manually set .runtime_suspend and .runtime_resume to make sure they're
-> always populated.
-> 
-> Another way out of this would be to make sure we never run into the case
-> where runtime PM is disabled. If we always "select PM" on Tegra, then PM
-> should always be available. But is it guaranteed that runtime PM for the
-> devices is functional in that case? From a cursory look at the code it
-> would seem that way.
-
-If you select PM, then all of the requisite code should be there.
-
-Alternatively, you can make the driver depend on PM.
-
-Cheers,
-Rafael
+thanks,
+-- Shuah
