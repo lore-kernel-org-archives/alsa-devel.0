@@ -1,39 +1,58 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 02/18] dmaengine: imx-sdma: pass struct device to DMA
- API functions
-Date: Sat, 2 Feb 2019 18:21:21 +0100
-Message-ID: <20190202172121.GA3739@lst.de>
-References: <20190201084801.10983-1-hch@lst.de> <20190201084801.10983-3-hch@lst.de> <20190202101121.GE4296@vkoul-mobl>
+From: wen yang <yellowriver2010@hotmail.com>
+Subject: [PATCH] ASoC: fsl-asoc-card: fix object reference leaks in
+ fsl_asoc_card_probe
+Date: Sat, 2 Feb 2019 14:53:16 +0000
+Message-ID: <HK0PR02MB36342EB29AC03A7BE4EB44B8B2930@HK0PR02MB3634.apcprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190202101121.GE4296@vkoul-mobl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, John Crispin <john@phrozen.org>, Dmitry Tarnyagin <dmitry.tarnyagin@lockless.no>, Nicolas Ferre <nicolas.ferre@microchip.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Felipe Balbi <balbi@kernel.org>, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, iommu@lists.linux-foundation.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, wen yang <yellowriver2010@hotmail.com>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Wen Yang <yellowriver2010@hotmil.com>, "festevam@gmail.com" <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 02, 2019 at 03:41:21PM +0530, Vinod Koul wrote:
-> On 01-02-19, 09:47, Christoph Hellwig wrote:
-> > The DMA API generally relies on a struct device to work properly, and
-> > only barely works without one for legacy reasons.  Pass the easily
-> > available struct device from the platform_device to remedy this.
-> 
-> This looks good to me but fails to apply. Can you please base it on
-> dmaengine-next or linux-next please and resend
+The of_find_device_by_node() takes a reference to the underlying device
+structure, we should release that reference.
 
-commit ceaf52265148d3a5ca24237fd1c709caa5f46184
-Author: Andy Duan <fugang.duan@nxp.com>
-Date:   Fri Jan 11 14:29:49 2019 +0000
+Signed-off-by: Wen Yang <yellowriver2010@hotmil.com>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org
+---
+ sound/soc/fsl/fsl-asoc-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    dmaengine: imx-sdma: pass ->dev to dma_alloc_coherent() API
-
-in linux-next actually is equivalent to this patch, so we can drop
-this one.
-
-> 
-> Thanks
-> -- 
-> ~Vinod
----end quoted text---
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 81f2fe2..60f87a0 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -689,6 +689,7 @@ static int fsl_asoc_card_probe(struct platform_device *=
+pdev)
+ asrc_fail:
+ 	of_node_put(asrc_np);
+ 	of_node_put(codec_np);
++	put_device(&cpu_pdev->dev);
+ fail:
+ 	of_node_put(cpu_np);
+=20
+--=20
+2.7.4
