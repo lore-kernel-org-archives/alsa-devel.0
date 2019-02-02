@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Add warnings for widget overwrite
-	when adding route" to the asoc tree
-Date: Sat,  2 Feb 2019 16:17:58 +0000 (GMT)
-Message-ID: <20190202161758.A10C5440082@finisterre.ee.mobilebroadband>
-References: <20190131113005.13380-1-qq282012236@gmail.com>
+Subject: Applied "ASoC: topology: fix oops/use-after-free case
+	with dai driver" to the asoc tree
+Date: Sat,  2 Feb 2019 16:18:03 +0000 (GMT)
+Message-ID: <20190202161803.CAF09440083@finisterre.ee.mobilebroadband>
+References: <20190201170513.13905-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 720252674A2
- for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2019 17:18:06 +0100 (CET)
-In-Reply-To: <20190131113005.13380-1-qq282012236@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E18942674A2
+ for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2019 17:18:07 +0100 (CET)
+In-Reply-To: <20190201170513.13905-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, qq282012236@gmail.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Add warnings for widget overwrite when adding route
+   ASoC: topology: fix oops/use-after-free case with dai driver
 
 has been applied to the asoc tree at
 
@@ -52,62 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From 411db2ab7df35804422e4b26c5849b3868e6a038 Mon Sep 17 00:00:00 2001
-From: Zhiwei Jiang <qq282012236@gmail.com>
-Date: Thu, 31 Jan 2019 19:30:05 +0800
-Subject: [PATCH] ASoC: dapm: Add warnings for widget overwrite when adding
- route
+>From 52abe6cc1866ac3d54612f5d80563e6608c0ddfc Mon Sep 17 00:00:00 2001
+From: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Date: Fri, 1 Feb 2019 11:05:13 -0600
+Subject: [PATCH] ASoC: topology: fix oops/use-after-free case with dai driver
 
-Currently, in some complex cases, more than one widgets have same
-name and registed from differnt dapm context, and route add from
-another context too. When snd_soc_dapm_add_route, the previous
-registered widget will overwritten by the latest same name widget,
-will cause unexpect error. For Asoc framework we cant avoid this
-situation and we cant decide which widget that wanted with route.
-At least we can give users a notice.
+rmmod/modprobe tests expose a kernel oops when accessing the dai
+driver pointer. This comes from the topology design which operates in
+multiple passes. Each object removal happens at a specific iteration,
+and the code checks for the iteration (order) number after the memory
+containing the order was freed.
 
-Signed-off-by: Zhiwei Jiang <qq282012236@gmail.com>
+Fix this be clearing a reference to the dai driver and check its
+validity to avoid dereferences.
+
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/soc-core.c     | 2 +-
+ sound/soc/soc-topology.c | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 36d964a52874..5b74dffc9c11 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2829,6 +2829,8 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	char prefixed_sink[80];
- 	char prefixed_source[80];
- 	const char *prefix;
-+	unsigned int sink_ref = 0;
-+	unsigned int source_ref = 0;
- 	int ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ea16c2b199ce..50617db05c46 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -956,7 +956,7 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
+ {
+ 	int err;
  
- 	prefix = soc_dapm_prefix(dapm);
-@@ -2862,6 +2864,11 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 				if (wsource)
- 					break;
- 			}
-+			sink_ref++;
-+			if (sink_ref > 1)
-+				dev_warn(dapm->dev,
-+					"ASoC: sink widget %s overwritten\n",
-+					w->name);
- 			continue;
- 		}
- 		if (!wsource && !(strcmp(w->name, source))) {
-@@ -2871,6 +2878,11 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 				if (wsink)
- 					break;
- 			}
-+			source_ref++;
-+			if (source_ref > 1)
-+				dev_warn(dapm->dev,
-+					"ASoC: source widget %s overwritten\n",
-+					w->name);
- 		}
- 	}
- 	/* use widget from another DAPM context if not found from this */
+-	if (!dai || !dai->probed ||
++	if (!dai || !dai->probed || !dai->driver ||
+ 	    dai->driver->remove_order != order)
+ 		return;
+ 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 045ef136903d..fc79ec6927e3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -502,6 +502,7 @@ static void remove_dai(struct snd_soc_component *comp,
+ {
+ 	struct snd_soc_dai_driver *dai_drv =
+ 		container_of(dobj, struct snd_soc_dai_driver, dobj);
++	struct snd_soc_dai *dai;
+ 
+ 	if (pass != SOC_TPLG_PASS_PCM_DAI)
+ 		return;
+@@ -509,6 +510,10 @@ static void remove_dai(struct snd_soc_component *comp,
+ 	if (dobj->ops && dobj->ops->dai_unload)
+ 		dobj->ops->dai_unload(comp, dobj);
+ 
++	list_for_each_entry(dai, &comp->dai_list, list)
++		if (dai->driver == dai_drv)
++			dai->driver = NULL;
++
+ 	kfree(dai_drv->name);
+ 	list_del(&dobj->list);
+ 	kfree(dai_drv);
 -- 
 2.20.1
