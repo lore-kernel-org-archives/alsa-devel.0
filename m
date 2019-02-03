@@ -1,58 +1,76 @@
-From: wen yang <yellowriver2010@hotmail.com>
-Subject: [PATCH] ASoC: fsl-asoc-card: fix object reference leaks in
- fsl_asoc_card_probe
-Date: Sat, 2 Feb 2019 14:53:16 +0000
-Message-ID: <HK0PR02MB36342EB29AC03A7BE4EB44B8B2930@HK0PR02MB3634.apcprd02.prod.outlook.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] UCM: bytcr/PlatformEnableSeq.conf update some
+	comments
+Date: Sun,  3 Feb 2019 12:37:41 +0100
+Message-ID: <20190203113741.15203-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, wen yang <yellowriver2010@hotmail.com>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Wen Yang <yellowriver2010@hotmil.com>, "festevam@gmail.com" <festevam@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E542267463
+ for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2019 12:37:47 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Hans de Goede <hdegoede@redhat.com>, Russell Parker <russell.parker7@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The of_find_device_by_node() takes a reference to the underlying device
-structure, we should release that reference.
+Commit f91cc3c7d6b7 ("Update chtrt5645 ucm variants to use
+bytcr/PlatformEnableSeq.conf component") updated the
+following 2 comments:
 
-Signed-off-by: Wen Yang <yellowriver2010@hotmil.com>
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
+ # codec0_out settings (used if SSP2 is connected to aif1)
+ # modem_out settings (used if SSP0 is connected to aif2)
+
+Specifically it added the " to aif1" resp. " to aif2" part of the comments.
+
+This is not correct, AIF1 / AIF2 are something which is present on
+Realtek codecs only, and either one can be used indepedent of
+SSP0 or SSP2 being used (the comments in the chtrt5645 UCM profile
+before this change were wrong / outdated).
+
+Besides there not being any relationship between SSP0 or SSP2 being
+used, bytcr/PlatformEnableSeq.conf is also used with other codecs,
+e.g. the ESS8316 codec where this is not applicable at all.
+
+Therefor this commit removes the " to aif?" part of the comments again
+to avoid confusing people reading this in the future.
+
+Cc: Russell Parker <russell.parker7@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 81f2fe2..60f87a0 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -689,6 +689,7 @@ static int fsl_asoc_card_probe(struct platform_device *=
-pdev)
- asrc_fail:
- 	of_node_put(asrc_np);
- 	of_node_put(codec_np);
-+	put_device(&cpu_pdev->dev);
- fail:
- 	of_node_put(cpu_np);
-=20
---=20
-2.7.4
+diff --git a/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf b/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
+index 6f5e899c..b5ee2b41 100644
+--- a/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
++++ b/src/conf/ucm/platforms/bytcr/PlatformEnableSeq.conf
+@@ -29,7 +29,7 @@ cset "name='pcm0_in Gain 0 Volume' 0"
+ cset "name='pcm1_in Gain 0 Switch' off"
+ cset "name='pcm1_in Gain 0 Volume' 0%"
+ 
+-# codec0_out settings (used if SSP2 is connected to aif1)
++# codec0_out settings (used if SSP2 is connected)
+ cset "name='codec_out0 mix 0 codec_in0 Switch' off"
+ cset "name='codec_out0 mix 0 codec_in1 Switch' off"
+ cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
+@@ -40,7 +40,7 @@ cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
+ cset "name='codec_out0 Gain 0 Switch' on"
+ cset "name='codec_out0 Gain 0 Volume' 0"
+ 
+-# modem_out settings (used if SSP0 is connected to aif2)
++# modem_out settings (used if SSP0 is connected)
+ cset "name='modem_out mix 0 codec_in0 Switch' off"
+ cset "name='modem_out mix 0 codec_in1 Switch' off"
+ cset "name='modem_out mix 0 media_loop1_in Switch' off"
+-- 
+2.20.1
