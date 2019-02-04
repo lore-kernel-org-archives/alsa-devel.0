@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dapm: fix out-of-bounds accesses
- to DAPM lookup tables
-Date: Mon, 4 Feb 2019 17:11:40 +0100
-Message-ID: <20190204161140.GG23441@sirena.org.uk>
-References: <20190204135914.7413-1-pierre-louis.bossart@linux.intel.com>
- <s5hr2cnppnj.wl-tiwai@suse.de>
- <a199f5cb-7e56-db27-37bc-78e3e7e5daee@linux.intel.com>
+Subject: Applied "ASoC: ak4118: fix missing header" to the asoc
+	tree
+Date: Mon,  4 Feb 2019 16:17:02 +0000 (GMT)
+Message-ID: <20190204161702.9CA57440082@finisterre.ee.mobilebroadband>
+References: <20190204153538.26166-1-peron.clem@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2900215066907740918=="
+Content-Type: multipart/mixed; boundary="===============6852645342403553214=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 57B2626746F
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 17:11:48 +0100 (CET)
-In-Reply-To: <a199f5cb-7e56-db27-37bc-78e3e7e5daee@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF47226746F
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 17:17:09 +0100 (CET)
+In-Reply-To: <20190204153538.26166-1-peron.clem@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
+To: =?UTF-8?Q?Cl=C3=83=C2=A9ment=20P=C3=83=C2=A9ron=20=3Cpero?=
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, =?utf-8?b?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>, Adrien Charruel <adrien.charruel@devialet.com>
 List-Id: alsa-devel@alsa-project.org
 
+--===============6852645342403553214==
+Content-Type: text/plain
 
---===============2900215066907740918==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="L+ofChggJdETEG3Y"
-Content-Disposition: inline
+The patch
+
+   ASoC: ak4118: fix missing header
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0f747bb273790f49be4660521d86d7cebd1bbe1e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Mon, 4 Feb 2019 16:35:38 +0100
+Subject: [PATCH] ASoC: ak4118: fix missing header
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This driver use the gpio consumer interface.
+Add the header as it's needed.
+
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/ak4118.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
+index 238ab29f2bf4..ce419e8cf890 100644
+--- a/sound/soc/codecs/ak4118.c
++++ b/sound/soc/codecs/ak4118.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/i2c.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+-- 
+2.20.1
 
 
---L+ofChggJdETEG3Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 04, 2019 at 09:08:41AM -0600, Pierre-Louis Bossart wrote:
-
-> Yes I thought about this but didn't know why the array was declared with an
-> implicit length.
-
-It's been that way since the first commit (which predates me) so I don't
-think it was a super thought through decision.
-
-> Unfortunately the zero is a legit value today, so we'd have to move all
-> existing values by one. Not sure if it's worth it.
-
-It's not hard.
-
-> Maybe an alternate way to fix this is to define snd_soc_dapm_max and check
-> if the ARRAY_SIZE of dapm_up_seq and dapm_down_seq match. That would trap
-> any changes in the enum that isn't reflected in the _seq look-up tables.
-
-We could do that and another thing together for maximum robustness!
-
---L+ofChggJdETEG3Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxYZDkACgkQJNaLcl1U
-h9A27gf/aW1UsK3uepnO460IXwzS41uJ8Ql7kaUDsGJ0tWvN+ayumenZbEbJ/RvS
-8mvzgnGxrRKgnx+AyJoVJ1nyI8urfrNTs7ZW8HOFsvVRj8LjZboLYLSsv2ve3WOv
-oM2GrHbU7PE7VPMcQk7mJohQ1gsmrjYdCYrnAd0ZXD/WD3aMuSvLQ5BYlCrSMEsR
-j/Nfazo84AEub6pf7SjTPx5/GBlYKNQdBbVNGYI38TXPsJMk5Fi/ROMMENZ+f5bK
-ilUciwE9FLQmcoOuELO9nREXwd8BGuIqCEkRL9lyqxtHq29SJNIv1phN/dIijFw2
-mdJlm6dzoGSSfz4+nwaD1m6x2Pl9jg==
-=o9Sz
------END PGP SIGNATURE-----
-
---L+ofChggJdETEG3Y--
-
---===============2900215066907740918==
+--===============6852645342403553214==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2900215066907740918==--
+--===============6852645342403553214==--
