@@ -1,43 +1,52 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH] ASoC: rsnd: ssiu: correct shift bit for ssiu9
-Date: Mon, 4 Feb 2019 22:41:05 +0900
-Message-ID: <20190204134105.15243-1-jiada_wang@mentor.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: x86: Avoid passing NULL to memory
+	allocators
+Date: Mon,  4 Feb 2019 14:42:18 +0100
+Message-ID: <20190204134222.9560-2-tiwai@suse.de>
+References: <20190204134222.9560-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc: jiada_wang@mentor.com, twischer@de.adit-jv.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BE7B2674C0
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 14:42:26 +0100 (CET)
+In-Reply-To: <20190204134222.9560-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Christoph Hellwig <hch@lst.de>
 List-Id: alsa-devel@alsa-project.org
 
-Currently "0xf << 36" is used to
-clear SSIU-9 internal buffer state, which overflows 32-bit value
-according to user reference manual, it is always bit4 ~ bit7
-of SSI_SYS_STATUS[1,3,5,7] registers indicate
-SSIU-9's buffer state, so "0xf << 4" should be used.
+We should pass a proper	non-NULL device	object to memory allocators
+although it was accepted in the past.  The card->dev points to the
+most appropriate device object in such a case, so let's put it.
 
-This patch fix incorrect shifting issue in SSIU-9 case
-
-Fixes: commit b7169ddea2f2 ("ASoC: rsnd: remove RSND_REG_ from rsnd_reg")
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/x86/intel_hdmi_audio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 2f3085a54eba..b11677489a5e 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -79,7 +79,7 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 		break;
- 	case 9:
- 		for (i = 0; i < 4; i++)
--			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << (id * 4));
-+			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << 4);
- 		break;
- 	}
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 16ca91f57e7f..80f79ecffc71 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1812,7 +1812,8 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		 * try to allocate 600k buffer as default which is large enough
+ 		 */
+ 		snd_pcm_lib_preallocate_pages_for_all(pcm,
+-						      SNDRV_DMA_TYPE_DEV_UC, NULL,
++						      SNDRV_DMA_TYPE_DEV_UC,
++						      card->dev,
+ 						      HAD_DEFAULT_BUFFER, HAD_MAX_BUFFER);
  
+ 		/* create controls */
 -- 
-2.19.2
+2.16.4
