@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/11] ALSA: isa: Clean up with new procfs
+Subject: [PATCH 11/11] ALSA: usb: Clean up with new procfs
 	helpers
-Date: Mon,  4 Feb 2019 16:20:31 +0100
-Message-ID: <20190204152036.14102-7-tiwai@suse.de>
+Date: Mon,  4 Feb 2019 16:20:36 +0100
+Message-ID: <20190204152036.14102-12-tiwai@suse.de>
 References: <20190204152036.14102-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DFAC326755F
+ by alsa0.perex.cz (Postfix) with ESMTP id 12C1F267568
  for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 16:20:40 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6AF0AAF27
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:39 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id A95F8AF51
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:40 +0000 (UTC)
 In-Reply-To: <20190204152036.14102-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,83 +33,92 @@ Just a code refactoring and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/gus/gus_irq.c  | 5 +----
- sound/isa/gus/gus_mem.c  | 6 +-----
- sound/isa/opti9xx/miro.c | 5 +----
- sound/isa/sb/sb16_csp.c  | 5 ++---
- 4 files changed, 5 insertions(+), 16 deletions(-)
+ sound/usb/mixer.c        |  7 +++----
+ sound/usb/mixer_quirks.c |  6 ++----
+ sound/usb/proc.c         | 13 +++++--------
+ 3 files changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/sound/isa/gus/gus_irq.c b/sound/isa/gus/gus_irq.c
-index 2055aff71b50..0ca6c38e2ed9 100644
---- a/sound/isa/gus/gus_irq.c
-+++ b/sound/isa/gus/gus_irq.c
-@@ -140,10 +140,7 @@ static void snd_gus_irq_info_read(struct snd_info_entry *entry,
- 
- void snd_gus_irq_profile_init(struct snd_gus_card *gus)
- {
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 8ad1a24c8f28..73d7dff425c1 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3441,7 +3441,6 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
+ 		.dev_free = snd_usb_mixer_dev_free
+ 	};
+ 	struct usb_mixer_interface *mixer;
 -	struct snd_info_entry *entry;
--
--	if (! snd_card_proc_new(gus->card, "gusirq", &entry))
--		snd_info_set_text_ops(entry, gus, snd_gus_irq_info_read);
-+	snd_card_ro_proc_new(gus->card, "gusirq", gus, snd_gus_irq_info_read);
- }
+ 	int err;
  
- #endif
-diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
-index af888a022fc0..4ac76f46dd76 100644
---- a/sound/isa/gus/gus_mem.c
-+++ b/sound/isa/gus/gus_mem.c
-@@ -238,9 +238,6 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
- {
- 	struct snd_gf1_mem *alloc;
- 	struct snd_gf1_mem_block block;
--#ifdef CONFIG_SND_DEBUG
--	struct snd_info_entry *entry;
--#endif
+ 	strcpy(chip->card->mixername, "USB Mixer");
+@@ -3497,9 +3496,9 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
+ 	if (err < 0)
+ 		goto _error;
  
- 	alloc = &gus->gf1.mem_alloc;
- 	mutex_init(&alloc->memory_mutex);
-@@ -263,8 +260,7 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
- 	if (snd_gf1_mem_xalloc(alloc, &block) == NULL)
- 		return -ENOMEM;
- #ifdef CONFIG_SND_DEBUG
--	if (! snd_card_proc_new(gus->card, "gusmem", &entry))
--		snd_info_set_text_ops(entry, gus, snd_gf1_mem_info_read);
-+	snd_card_ro_proc_new(gus->card, "gusmem", gus, snd_gf1_mem_info_read);
- #endif
+-	if (list_empty(&chip->mixer_list) &&
+-	    !snd_card_proc_new(chip->card, "usbmixer", &entry))
+-		snd_info_set_text_ops(entry, chip, snd_usb_mixer_proc_read);
++	if (list_empty(&chip->mixer_list))
++		snd_card_ro_proc_new(chip->card, "usbmixer", chip,
++				     snd_usb_mixer_proc_read);
+ 
+ 	list_add(&mixer->list, &chip->mixer_list);
  	return 0;
- }
-diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
-index c6136c6b0214..997cdfd7b1ea 100644
---- a/sound/isa/opti9xx/miro.c
-+++ b/sound/isa/opti9xx/miro.c
-@@ -997,10 +997,7 @@ static void snd_miro_proc_read(struct snd_info_entry * entry,
- static void snd_miro_proc_init(struct snd_card *card,
- 			       struct snd_miro *miro)
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 85ae0ff2382a..a751a18ca4c2 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -2195,7 +2195,6 @@ static int snd_rme_controls_create(struct usb_mixer_interface *mixer)
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err = 0;
+-	struct snd_info_entry *entry;
+ 
+ 	err = snd_usb_soundblaster_remote_init(mixer);
+ 	if (err < 0)
+@@ -2214,9 +2213,8 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 		err = snd_audigy2nx_controls_create(mixer);
+ 		if (err < 0)
+ 			break;
+-		if (!snd_card_proc_new(mixer->chip->card, "audigy2nx", &entry))
+-			snd_info_set_text_ops(entry, mixer,
+-					      snd_audigy2nx_proc_read);
++		snd_card_ro_proc_new(mixer->chip->card, "audigy2nx",
++				     mixer, snd_audigy2nx_proc_read);
+ 		break;
+ 
+ 	/* EMU0204 */
+diff --git a/sound/usb/proc.c b/sound/usb/proc.c
+index 0ac89e294d31..e80c9d0749c9 100644
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -61,11 +61,10 @@ static void proc_audio_usbid_read(struct snd_info_entry *entry, struct snd_info_
+ 
+ void snd_usb_audio_create_proc(struct snd_usb_audio *chip)
  {
 -	struct snd_info_entry *entry;
--
--	if (!snd_card_proc_new(card, "miro", &entry))
--		snd_info_set_text_ops(entry, miro, snd_miro_proc_read);
-+	snd_card_ro_proc_new(card, "miro", miro, snd_miro_proc_read);
+-	if (!snd_card_proc_new(chip->card, "usbbus", &entry))
+-		snd_info_set_text_ops(entry, chip, proc_audio_usbbus_read);
+-	if (!snd_card_proc_new(chip->card, "usbid", &entry))
+-		snd_info_set_text_ops(entry, chip, proc_audio_usbid_read);
++	snd_card_ro_proc_new(chip->card, "usbbus", chip,
++			     proc_audio_usbbus_read);
++	snd_card_ro_proc_new(chip->card, "usbid", chip,
++			     proc_audio_usbid_read);
  }
  
  /*
-diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
-index bf3db0d2ea12..a09ad57b8313 100644
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -1126,10 +1126,9 @@ static int snd_sb_csp_qsound_transfer(struct snd_sb_csp * p)
- static int init_proc_entry(struct snd_sb_csp * p, int device)
+@@ -167,12 +166,10 @@ static void proc_pcm_format_read(struct snd_info_entry *entry, struct snd_info_b
+ 
+ void snd_usb_proc_pcm_format_add(struct snd_usb_stream *stream)
  {
- 	char name[16];
 -	struct snd_info_entry *entry;
-+
- 	sprintf(name, "cspD%d", device);
--	if (! snd_card_proc_new(p->chip->card, name, &entry))
--		snd_info_set_text_ops(entry, p, info_read);
-+	snd_card_ro_proc_new(p->chip->card, name, p, info_read);
- 	return 0;
+ 	char name[32];
+ 	struct snd_card *card = stream->chip->card;
+ 
+ 	sprintf(name, "stream%d", stream->pcm_index);
+-	if (!snd_card_proc_new(card, name, &entry))
+-		snd_info_set_text_ops(entry, stream, proc_pcm_format_read);
++	snd_card_ro_proc_new(card, name, stream, proc_pcm_format_read);
  }
  
 -- 
