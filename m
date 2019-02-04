@@ -1,24 +1,15 @@
-From: Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH 1/1] seq: arecordmidi: Add num-events option
-Date: Mon, 4 Feb 2019 12:20:50 -0800
-Message-ID: <CACeCKacepsxaQOofD86Mo0MrCAduw4aAf1cANRebeeK_z=i07A@mail.gmail.com>
-References: <5c4fb010.1c69fb81.94ca0.01ae@mx.google.com>
- <f0c4b673-52a2-fc1d-c9d8-4e4b42f999f1@sakamocchi.jp>
- <CACeCKacREMJDGWNJrdydu3+P1EZ81AyaY0sPfBhuiT11nnvV5A@mail.gmail.com>
- <20190129084502.GA9419@workstation>
- <ef5b180f-e1da-7ec9-9e2b-0b5b4b86ac14@ladisch.de>
- <CACeCKadEU4i5d82pMwnU1y_f9_Rw+cgG7PROjP5a2B_dzj0qHw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/2] ASoC: dapm: fix out-of-bounds accesses
+	to DAPM lookup tables
+Date: Mon,  4 Feb 2019 14:27:09 -0600
+Message-ID: <20190204202710.14547-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-f194.google.com (mail-qt1-f194.google.com
- [209.85.160.194])
- by alsa0.perex.cz (Postfix) with ESMTP id E55A0267459
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 21:21:02 +0100 (CET)
-Received: by mail-qt1-f194.google.com with SMTP id i7so1393224qtj.10
- for <alsa-devel@alsa-project.org>; Mon, 04 Feb 2019 12:21:02 -0800 (PST)
-In-Reply-To: <CACeCKadEU4i5d82pMwnU1y_f9_Rw+cgG7PROjP5a2B_dzj0qHw@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 338C7267459
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 21:27:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,45 +19,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Friendly ping. Sounds like Clemens mentioned atoi() should be OK (given his
-explanation regarding non-numeric strings, along with consistency with the
-rest of the utility).
-Are there any other concerns with this patchset?
+KASAN reports and additional traces point to out-of-bounds accesses to
+the dapm_up_seq and dapm_down_seq lookup tables. The indices used are
+larger than the array definition.
 
-Thanks once again for taking the time to review.
+Fix by adding missing entries for the new widget types in these two
+lookup tables, and align them with PGA values.
 
-Best regards,
+Also the sequences for the following widgets were not defined. Since
+their values defaulted to zero, assign them explicitly
 
-On Tue, Jan 29, 2019 at 3:42 PM Prashant Malani <pmalani@chromium.org>
-wrote:
+ snd_soc_dapm_input
+ snd_soc_dapm_output
+ snd_soc_dapm_vmid
+ snd_soc_dapm_siggen
+ snd_soc_dapm_sink
 
-> Interesting. Thanks for pointing that out, Clemens.
->
-> In any case, I've sent both versions (atoi v/s strtol), so whichever one
-> is preferred can be used (would be slightly inclined towards atoi, since
-> it's used elsewhere in the file, and because of Clemens' comment;
-> additionally, there is less code duplication with the atoi version).
->
-> Best regards,
->
-> On Tue, Jan 29, 2019 at 8:19 AM Clemens Ladisch <clemens@ladisch.de>
-> wrote:
->
->> Takashi Sakamoto wrote:
->> > When parsing string with non-numeric characters, the behaviour of
->> > atoi() is undefined still in C11.
->>
->> A completely non-numeric string is specified to return zero.
->>
->> The behaviour is undefined only if the value cannot be represented, i.e.,
->> if it overflows.
->>
->>
->> Regards,
->> Clemens
->>
->
+Fixes: 8a70b4544ef4 ('ASoC: dapm: Add new widget type for constructing DAPM graphs on DSPs.').
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/soc-dapm.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 5b74dffc9c11..2bf5bab579de 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -70,12 +70,16 @@ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_clock_supply] = 1,
+ 	[snd_soc_dapm_supply] = 2,
+ 	[snd_soc_dapm_micbias] = 3,
++	[snd_soc_dapm_vmid] = 3,
+ 	[snd_soc_dapm_dai_link] = 2,
+ 	[snd_soc_dapm_dai_in] = 4,
+ 	[snd_soc_dapm_dai_out] = 4,
+ 	[snd_soc_dapm_aif_in] = 4,
+ 	[snd_soc_dapm_aif_out] = 4,
+ 	[snd_soc_dapm_mic] = 5,
++	[snd_soc_dapm_siggen] = 5,
++	[snd_soc_dapm_input] = 5,
++	[snd_soc_dapm_output] = 5,
+ 	[snd_soc_dapm_mux] = 6,
+ 	[snd_soc_dapm_demux] = 6,
+ 	[snd_soc_dapm_dac] = 7,
+@@ -83,11 +87,19 @@ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_mixer] = 8,
+ 	[snd_soc_dapm_mixer_named_ctl] = 8,
+ 	[snd_soc_dapm_pga] = 9,
++	[snd_soc_dapm_buffer] = 9,
++	[snd_soc_dapm_scheduler] = 9,
++	[snd_soc_dapm_effect] = 9,
++	[snd_soc_dapm_src] = 9,
++	[snd_soc_dapm_asrc] = 9,
++	[snd_soc_dapm_encoder] = 9,
++	[snd_soc_dapm_decoder] = 9,
+ 	[snd_soc_dapm_adc] = 10,
+ 	[snd_soc_dapm_out_drv] = 11,
+ 	[snd_soc_dapm_hp] = 11,
+ 	[snd_soc_dapm_spk] = 11,
+ 	[snd_soc_dapm_line] = 11,
++	[snd_soc_dapm_sink] = 11,
+ 	[snd_soc_dapm_kcontrol] = 12,
+ 	[snd_soc_dapm_post] = 13,
+ };
+@@ -100,13 +112,25 @@ static int dapm_down_seq[] = {
+ 	[snd_soc_dapm_spk] = 3,
+ 	[snd_soc_dapm_line] = 3,
+ 	[snd_soc_dapm_out_drv] = 3,
++	[snd_soc_dapm_sink] = 3,
+ 	[snd_soc_dapm_pga] = 4,
++	[snd_soc_dapm_buffer] = 4,
++	[snd_soc_dapm_scheduler] = 4,
++	[snd_soc_dapm_effect] = 4,
++	[snd_soc_dapm_src] = 4,
++	[snd_soc_dapm_asrc] = 4,
++	[snd_soc_dapm_encoder] = 4,
++	[snd_soc_dapm_decoder] = 4,
+ 	[snd_soc_dapm_switch] = 5,
+ 	[snd_soc_dapm_mixer_named_ctl] = 5,
+ 	[snd_soc_dapm_mixer] = 5,
+ 	[snd_soc_dapm_dac] = 6,
+ 	[snd_soc_dapm_mic] = 7,
++	[snd_soc_dapm_siggen] = 7,
++	[snd_soc_dapm_input] = 7,
++	[snd_soc_dapm_output] = 7,
+ 	[snd_soc_dapm_micbias] = 8,
++	[snd_soc_dapm_vmid] = 8,
+ 	[snd_soc_dapm_mux] = 9,
+ 	[snd_soc_dapm_demux] = 9,
+ 	[snd_soc_dapm_aif_in] = 10,
+-- 
+2.17.1
