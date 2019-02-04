@@ -1,17 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 00/11] ALSA: procfs cleanups
-Date: Mon,  4 Feb 2019 16:20:25 +0100
-Message-ID: <20190204152036.14102-1-tiwai@suse.de>
+Subject: [PATCH 01/11] ALSA: pcm: Remove superfluous
+	snd_info_register() calls
+Date: Mon,  4 Feb 2019 16:20:26 +0100
+Message-ID: <20190204152036.14102-2-tiwai@suse.de>
+References: <20190204152036.14102-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B6AD9267558
+ by alsa0.perex.cz (Postfix) with ESMTP id B1624267546
  for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 16:20:39 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 30060ACBC
+ by mx1.suse.de (Postfix) with ESMTP id 35146AD25
  for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:39 +0000 (UTC)
+In-Reply-To: <20190204152036.14102-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,96 +27,136 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The calls of snd_info_register() are superfluous and should be avoided
+at the procfs creation time.  They are called at the end of the whole
+initialization via snd_card_register().  This patch drops such
+superfluous calls, as well as cleaning up the calls of substream proc
+entries with a common helper.
 
-this is a patchset for cleaning up the procfs handling.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm.c | 79 +++++++++++++++++++-------------------------------------
+ 1 file changed, 26 insertions(+), 53 deletions(-)
 
-The first three patches are to remove the superfluous
-snd_info_register() calls (which are done eventually at the card
-creation time), and the rest patches are for introducing new helpers
-and cleaning up with them.  The latter has no functional changes but
-only reducing lots of codes.
-
-
-thanks,
-
-Takashi
-
-===
-
-Takashi Iwai (11):
-  ALSA: pcm: Remove superfluous snd_info_register() calls
-  ALSA: compress: Remove superfluous snd_info_register() calls
-  ALSA: pci: Remove superfluous snd_info_register() calls
-  ALSA: info: Add standard helpers for card proc file entries
-  ALSA: drivers: Clean up with new procfs helpers
-  ALSA: isa: Clean up with new procfs helpers
-  ALSA: i2c: Clean up with new procfs helpers
-  ALSA: pci: Clean up with new procfs helpers
-  ALSA: pcmcia: Clean up with new procfs helpers
-  ALSA: sparc: Clean up with new procfs helpers
-  ALSA: usb: Clean up with new procfs helpers
-
- include/sound/info.h                    | 35 ++++++++++++++
- sound/core/compress_offload.c           | 11 +----
- sound/core/info.c                       | 31 +++++++++++++
- sound/core/pcm.c                        | 79 +++++++++++---------------------
- sound/drivers/aloop.c                   | 10 +---
- sound/drivers/dummy.c                   | 10 +---
- sound/drivers/vx/vx_core.c              |  5 +-
- sound/i2c/other/ak4113.c                |  5 +-
- sound/i2c/other/ak4114.c                |  5 +-
- sound/i2c/other/ak4xxx-adda.c           |  8 +---
- sound/isa/gus/gus_irq.c                 |  5 +-
- sound/isa/gus/gus_mem.c                 |  6 +--
- sound/isa/opti9xx/miro.c                |  5 +-
- sound/isa/sb/sb16_csp.c                 |  5 +-
- sound/pci/ac97/ac97_proc.c              | 26 ++++-------
- sound/pci/ad1889.c                      |  6 +--
- sound/pci/ak4531_codec.c                |  5 +-
- sound/pci/ali5451/ali5451.c             |  4 +-
- sound/pci/asihpi/asihpi.c               |  6 +--
- sound/pci/atiixp.c                      |  5 +-
- sound/pci/atiixp_modem.c                |  6 +--
- sound/pci/ca0106/ca0106_proc.c          | 40 ++++++----------
- sound/pci/cmipci.c                      |  5 +-
- sound/pci/cs4281.c                      |  3 +-
- sound/pci/cs46xx/dsp_spos.c             | 16 ++-----
- sound/pci/emu10k1/emu10k1x.c            | 12 ++---
- sound/pci/emu10k1/emuproc.c             | 81 +++++++++++++--------------------
- sound/pci/ens1370.c                     |  6 +--
- sound/pci/hda/hda_proc.c                |  9 +---
- sound/pci/ice1712/ice1712.c             |  5 +-
- sound/pci/ice1712/ice1724.c             |  5 +-
- sound/pci/ice1712/pontis.c              | 12 ++---
- sound/pci/ice1712/prodigy192.c          |  5 +-
- sound/pci/ice1712/prodigy_hifi.c        |  8 +---
- sound/pci/ice1712/quartet.c             |  4 +-
- sound/pci/intel8x0.c                    |  6 +--
- sound/pci/intel8x0m.c                   |  6 +--
- sound/pci/korg1212/korg1212.c           |  6 +--
- sound/pci/lola/lola_proc.c              | 16 ++-----
- sound/pci/lx6464es/lx6464es.c           |  8 +---
- sound/pci/mixart/mixart.c               |  6 +--
- sound/pci/oxygen/oxygen_lib.c           |  5 +-
- sound/pci/pcxhr/pcxhr.c                 | 21 +++------
- sound/pci/riptide/riptide.c             |  6 +--
- sound/pci/rme32.c                       |  5 +-
- sound/pci/rme96.c                       |  5 +-
- sound/pci/rme9652/hdsp.c                |  5 +-
- sound/pci/rme9652/hdspm.c               | 55 ++++++++++------------
- sound/pci/rme9652/rme9652.c             |  6 +--
- sound/pci/sonicvibes.c                  |  6 +--
- sound/pci/trident/trident_main.c        |  4 +-
- sound/pci/via82xx.c                     |  6 +--
- sound/pci/via82xx_modem.c               |  6 +--
- sound/pci/ymfpci/ymfpci_main.c          |  6 +--
- sound/pcmcia/pdaudiocf/pdaudiocf_core.c |  5 +-
- sound/sparc/dbri.c                      | 10 +---
- sound/usb/mixer.c                       |  7 ++-
- sound/usb/mixer_quirks.c                |  6 +--
- sound/usb/proc.c                        | 13 ++----
- 59 files changed, 268 insertions(+), 446 deletions(-)
-
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 4f45b3000347..a49c866541cb 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -528,18 +528,10 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
+ 	if (!entry)
+ 		return -ENOMEM;
+ 	entry->mode = S_IFDIR | 0555;
+-	if (snd_info_register(entry) < 0) {
+-		snd_info_free_entry(entry);
+-		return -ENOMEM;
+-	}
+ 	pstr->proc_root = entry;
+ 	entry = snd_info_create_card_entry(pcm->card, "info", pstr->proc_root);
+-	if (entry) {
++	if (entry)
+ 		snd_info_set_text_ops(entry, pstr, snd_pcm_stream_proc_info_read);
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+-	}
+-
+ #ifdef CONFIG_SND_PCM_XRUN_DEBUG
+ 	entry = snd_info_create_card_entry(pcm->card, "xrun_debug",
+ 					   pstr->proc_root);
+@@ -547,9 +539,6 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
+ 		entry->c.text.read = snd_pcm_xrun_debug_read;
+ 		entry->c.text.write = snd_pcm_xrun_debug_write;
+ 		entry->mode |= 0200;
+-		entry->private_data = pstr;
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+ 	}
+ #endif
+ 	return 0;
+@@ -562,6 +551,21 @@ static int snd_pcm_stream_proc_done(struct snd_pcm_str *pstr)
+ 	return 0;
+ }
+ 
++static struct snd_info_entry *
++create_substream_info_entry(struct snd_pcm_substream *substream,
++			    const char *name,
++			    void (*read)(struct snd_info_entry *,
++					 struct snd_info_buffer *))
++{
++	struct snd_info_entry *entry;
++
++	entry = snd_info_create_card_entry(substream->pcm->card, name,
++					   substream->proc_root);
++	if (entry)
++		snd_info_set_text_ops(entry, substream, read);
++	return entry;
++}
++
+ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_info_entry *entry;
+@@ -576,53 +580,22 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 	if (!entry)
+ 		return -ENOMEM;
+ 	entry->mode = S_IFDIR | 0555;
+-	if (snd_info_register(entry) < 0) {
+-		snd_info_free_entry(entry);
+-		return -ENOMEM;
+-	}
+ 	substream->proc_root = entry;
+-	entry = snd_info_create_card_entry(card, "info", substream->proc_root);
+-	if (entry) {
+-		snd_info_set_text_ops(entry, substream,
+-				      snd_pcm_substream_proc_info_read);
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+-	}
+-	entry = snd_info_create_card_entry(card, "hw_params",
+-					   substream->proc_root);
+-	if (entry) {
+-		snd_info_set_text_ops(entry, substream,
+-				      snd_pcm_substream_proc_hw_params_read);
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+-	}
+-	entry = snd_info_create_card_entry(card, "sw_params",
+-					   substream->proc_root);
+-	if (entry) {
+-		snd_info_set_text_ops(entry, substream,
+-				      snd_pcm_substream_proc_sw_params_read);
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+-	}
+-	entry = snd_info_create_card_entry(card, "status",
+-					   substream->proc_root);
+-	if (entry) {
+-		snd_info_set_text_ops(entry, substream,
+-				      snd_pcm_substream_proc_status_read);
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+-	}
++
++	create_substream_info_entry(substream, "info",
++				    snd_pcm_substream_proc_info_read);
++	create_substream_info_entry(substream, "hw_params",
++				    snd_pcm_substream_proc_hw_params_read);
++	create_substream_info_entry(substream, "sw_params",
++				    snd_pcm_substream_proc_sw_params_read);
++	create_substream_info_entry(substream, "status",
++				    snd_pcm_substream_proc_status_read);
+ 
+ #ifdef CONFIG_SND_PCM_XRUN_DEBUG
+-	entry = snd_info_create_card_entry(card, "xrun_injection",
+-					   substream->proc_root);
++	entry = create_substream_info_entry(substream, "xrun_injection", NULL);
+ 	if (entry) {
+-		entry->private_data = substream;
+-		entry->c.text.read = NULL;
+ 		entry->c.text.write = snd_pcm_xrun_injection_write;
+ 		entry->mode = S_IFREG | 0200;
+-		if (snd_info_register(entry) < 0)
+-			snd_info_free_entry(entry);
+ 	}
+ #endif /* CONFIG_SND_PCM_XRUN_DEBUG */
+ 
 -- 
 2.16.4
