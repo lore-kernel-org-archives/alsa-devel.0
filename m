@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4118: fix missing header" to the asoc
-	tree
-Date: Mon,  4 Feb 2019 16:17:02 +0000 (GMT)
-Message-ID: <20190204161702.9CA57440082@finisterre.ee.mobilebroadband>
-References: <20190204153538.26166-1-peron.clem@gmail.com>
+Subject: Applied "ASoC: mediatek: btcvsd: fix spelling mistake
+	"offest" -> "offset"" to the asoc tree
+Date: Mon,  4 Feb 2019 16:17:05 +0000 (GMT)
+Message-ID: <20190204161705.9E221440083@finisterre.ee.mobilebroadband>
+References: <20190204153105.20214-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6852645342403553214=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AF47226746F
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 17:17:09 +0100 (CET)
-In-Reply-To: <20190204153538.26166-1-peron.clem@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BB592674D5
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 17:17:10 +0100 (CET)
+In-Reply-To: <20190204153105.20214-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Cl=C3=83=C2=A9ment=20P=C3=83=C2=A9ron=20=3Cpero?=
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, =?utf-8?b?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>, Adrien Charruel <adrien.charruel@devialet.com>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org, KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============6852645342403553214==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: ak4118: fix missing header
+   ASoC: mediatek: btcvsd: fix spelling mistake "offest" -> "offset"
 
 has been applied to the asoc tree at
 
@@ -55,44 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 0f747bb273790f49be4660521d86d7cebd1bbe1e Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Date: Mon, 4 Feb 2019 16:35:38 +0100
-Subject: [PATCH] ASoC: ak4118: fix missing header
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 766cc4965a3a2a8a62e70e9d98e1d946a71368d5 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Mon, 4 Feb 2019 15:31:05 +0000
+Subject: [PATCH] ASoC: mediatek: btcvsd: fix spelling mistake "offest" ->
+ "offset"
 
-This driver use the gpio consumer interface.
-Add the header as it's needed.
+There is a spelling mistake in a dev_warn message. Fix this.
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4118.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/mediatek/common/mtk-btcvsd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
-index 238ab29f2bf4..ce419e8cf890 100644
---- a/sound/soc/codecs/ak4118.c
-+++ b/sound/soc/codecs/ak4118.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/i2c.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index 349a9120a0dd..e408c1b270ab 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -1309,7 +1309,7 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
+ 					 offset,
+ 					 ARRAY_SIZE(offset));
+ 	if (ret) {
+-		dev_warn(dev, "%s(), get offest fail, ret %d\n", __func__, ret);
++		dev_warn(dev, "%s(), get offset fail, ret %d\n", __func__, ret);
+ 		return ret;
+ 	}
+ 	btcvsd->infra_misc_offset = offset[0];
 -- 
 2.20.1
-
-
---===============6852645342403553214==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6852645342403553214==--
