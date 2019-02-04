@@ -1,19 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 2/2] ASoC: dapm: harden use of lookup
- tables
-Date: Mon, 4 Feb 2019 14:58:53 -0600
-Message-ID: <96e3f1d6-0cbf-089a-5f8f-33686ec137d8@linux.intel.com>
-References: <20190204202710.14547-1-pierre-louis.bossart@linux.intel.com>
- <20190204202710.14547-2-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/5] ASoC: amd: Avoid passing NULL to
+	memory allocators
+Date: Mon, 4 Feb 2019 22:00:17 +0100
+Message-ID: <20190204210017.GL23441@sirena.org.uk>
+References: <20190204134222.9560-1-tiwai@suse.de>
+ <20190204134222.9560-4-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0535184146857109305=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id B466F267459
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 21:58:56 +0100 (CET)
-In-Reply-To: <20190204202710.14547-2-pierre-louis.bossart@linux.intel.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CD2826746F
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 22:00:18 +0100 (CET)
+In-Reply-To: <20190204134222.9560-4-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Christoph Hellwig <hch@lst.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 2/4/19 2:27 PM, Pierre-Louis Bossart wrote:
-> Add warnings when
-> a) the table size isn't aligned with the enum list
-> b) the values are not initialized. This requires an increase by one of all
-> values to avoid the default 0.
->
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   include/sound/soc-dapm.h |   3 +
->   sound/soc/soc-dapm.c     | 163 +++++++++++++++++++++------------------
->   2 files changed, 90 insertions(+), 76 deletions(-)
->
-> diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-> index 79b4ddfb8e9e..82de75b4de87 100644
-> --- a/include/sound/soc-dapm.h
-> +++ b/include/sound/soc-dapm.h
-> @@ -523,6 +523,9 @@ enum snd_soc_dapm_type {
->   	snd_soc_dapm_asrc,		/* DSP/CODEC ASRC component */
->   	snd_soc_dapm_encoder,		/* FW/SW audio encoder component */
->   	snd_soc_dapm_decoder,		/* FW/SW audio decoder component */
-> +
-> +	/* Don't forget to change the following: */
-> +	SND_SOC_DAPM_TYPE_LAST = snd_soc_dapm_decoder
->   };
+--===============0535184146857109305==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="umrsQkkrw7viUWFs"
+Content-Disposition: inline
 
-And of course I sent the wrong version by forgetting to re-run git 
-format-patch. This is just wrong with an off-by-one error. will send a 
-correction, sorry for the noise.
+
+--umrsQkkrw7viUWFs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 04, 2019 at 02:42:20PM +0100, Takashi Iwai wrote:
+> We should pass a proper non-NULL device object to memory allocators
+> although it was accepted in the past.  The card->dev points to the
+> most appropriate device object in such a case, so let's put it.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--umrsQkkrw7viUWFs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxYp+AACgkQJNaLcl1U
+h9AcYgf/d0946XhbjpiUUjEf2Hz5K9L5iBaOJORavVtby3reJb3Vor0LYanyPRoX
+kPy48mPXZ0bpGOW7qAr0Vaoanvw/V6PRsdyrb692GMjbvi1ccQsjgCVI+ZlbTbo8
+8jgGi/XCuQCmiYjqov+o32UQTwkVqPqFLKxd/8AFuK9EUsC5A7W/1B0PXR8rL+MW
+5dcHyHCcarlhFQeH+DA5YZVEBg2vg1bt1gWzLG9zDRkkHPNB5JZUNXpwq9Z0hF9l
+gwl+XQzJWKOB7FHUlqFbPV6xY0Hjn75uAmJBJJy0r0fvo4c0dkyT44hSDicLGLsz
+rGkxMjB7yS/rJBZy0xmHzkjUgcgJdA==
+=lmsi
+-----END PGP SIGNATURE-----
+
+--umrsQkkrw7viUWFs--
+
+--===============0535184146857109305==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0535184146857109305==--
