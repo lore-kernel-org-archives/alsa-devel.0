@@ -1,167 +1,115 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 2/2] ALSA: pcm: implement the mmap buffer mode
-	for the anonymous dup
-Date: Mon,  4 Feb 2019 10:39:10 +0100
-Message-ID: <20190204093910.23878-3-perex@perex.cz>
-References: <20190204093910.23878-1-perex@perex.cz>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
+Date: Mon, 4 Feb 2019 09:53:32 +0000
+Message-ID: <07d58962-4c49-0575-2f95-4c885998bb52@nvidia.com>
+References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
+ <CAJZ5v0hezV7et3VgD7yHa8MLiP0z3YtJ9stwSQL54-tyz_VXkQ@mail.gmail.com>
+ <20190131143024.GO23438@ulmo> <2034694.JE9CgBysmF@aspire.rjw.lan>
+ <20190204084555.GF19087@ulmo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 59FCD267549
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 10:40:02 +0100 (CET)
-In-Reply-To: <20190204093910.23878-1-perex@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle <riggle@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190204084555.GF19087@ulmo>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thierry Reding <thierry.reding@gmail.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sameer Pujar <spujar@nvidia.com>, Jaroslav Kysela <perex@perex.cz>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, mkumard@nvidia.com, rlokhande@nvidia.com, sharadg@nvidia.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Android requires to allow the passing an anonymous inode file descriptor
-with the restricted functionality - only the mmap operation for the DMA
-sound buffer (anon_inode:snd-pcm-buffer). Android uses this access mode
-for the direct EXCLUSIVE sound device access by applications.
 
-This requirement is for the proper SELinux audit.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- include/sound/pcm.h         |  2 ++
- include/uapi/sound/asound.h |  3 +++
- sound/core/pcm_native.c     | 36 +++++++++++++++++++++++++++++++++---
- 3 files changed, 38 insertions(+), 3 deletions(-)
+On 04/02/2019 08:45, Thierry Reding wrote:
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b79ffaa0241d..55b95476d15e 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -227,6 +227,7 @@ struct snd_pcm_ops {
- struct snd_pcm_file {
- 	struct snd_pcm_substream *substream;
- 	int no_compat_mmap;
-+	unsigned int perm;		/* file descriptor permissions */
- 	unsigned int user_pversion;	/* supported protocol version */
- };
- 
-@@ -537,6 +538,7 @@ struct snd_pcm {
-  *  Registering
-  */
- 
-+extern const struct file_operations snd_pcm_f_op_buffer;
- extern const struct file_operations snd_pcm_f_ops[2];
- 
- int snd_pcm_new(struct snd_card *card, const char *id, int device,
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index ebc17d5a3490..b0270d07cf4e 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -571,6 +571,9 @@ enum {
- #define SNDRV_CHMAP_PHASE_INVERSE	(0x01 << 16)
- #define SNDRV_CHMAP_DRIVER_SPEC		(0x02 << 16)
- 
-+#define SNDRV_PCM_PERM_MODE_FULL 	0	/* full access - no restrictions */
-+#define SNDRV_PCM_PERM_MODE_BUFFER	1	/* allow to export only sound buffer through mmap */
-+
- #define SNDRV_PCM_IOCTL_PVERSION	_IOR('A', 0x00, int)
- #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
- #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index bb14658e4482..7a21a2335a8d 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2502,6 +2502,7 @@ static int snd_pcm_open_file(struct file *file,
- 		return -ENOMEM;
- 	}
- 	pcm_file->substream = substream;
-+	pcm_file->perm = 0;
- 	if (substream->ref_count == 1)
- 		substream->pcm_release = pcm_release_private;
- 	file->private_data = pcm_file;
-@@ -2894,17 +2895,30 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	int fd, err, perm, flags;
- 	struct file *nfile;
- 	struct snd_pcm *pcm = substream->pcm;
-+	struct snd_pcm_file *pcm_file;
-+	const char *aname;
-+	const struct file_operations *f_op;
- 
- 	if (get_user(perm, arg))
- 		return -EFAULT;
--	if (perm < 0)
--		return -EPERM;
-+	switch (perm) {
-+	case SNDRV_PCM_PERM_MODE_FULL:
-+		aname = "snd-pcm";
-+		f_op = file->f_op;
-+		break;
-+	case SNDRV_PCM_PERM_MODE_BUFFER:
-+		aname = "snd-pcm-buf";
-+		f_op = &snd_pcm_f_op_buffer;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 	flags = file->f_flags & (O_ACCMODE | O_NONBLOCK);
- 	flags |= O_APPEND | O_CLOEXEC;
- 	fd = get_unused_fd_flags(flags);
- 	if (fd < 0)
- 		return fd;
--	nfile = anon_inode_getfile("snd-pcm", file->f_op, NULL, flags);
-+	nfile = anon_inode_getfile(aname, f_op, NULL, flags);
- 	if (IS_ERR(nfile)) {
- 		put_unused_fd(fd);
- 		return PTR_ERR(nfile);
-@@ -2922,6 +2936,8 @@ static int snd_pcm_anonymous_dup(struct file *file,
- 	err = snd_pcm_open_file(nfile, substream->pcm,
- 				substream->stream, substream->number);
- 	if (err >= 0) {
-+		pcm_file = nfile->private_data;
-+		pcm_file->perm = perm;
- 		put_user(fd, arg);
- 		return 0;
- 	}
-@@ -3295,6 +3311,9 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
- 			       struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (pcm_file->perm != SNDRV_PCM_PERM_MODE_FULL)
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3331,6 +3350,9 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
- 				struct vm_area_struct *area)
- {
- 	long size;
-+	struct snd_pcm_file *pcm_file = file->private_data;
-+	if (pcm_file->perm != SNDRV_PCM_PERM_MODE_FULL)
-+		return -EPERM;
- 	if (!(area->vm_flags & VM_READ))
- 		return -EINVAL;
- 	size = area->vm_end - area->vm_start;
-@@ -3738,6 +3760,14 @@ static unsigned long snd_pcm_get_unmapped_area(struct file *file,
-  *  Register section
-  */
- 
-+const struct file_operations snd_pcm_f_op_buffer = {
-+	.owner =		THIS_MODULE,
-+	.release =		snd_pcm_release,
-+	.llseek =		no_llseek,
-+	.mmap =			snd_pcm_mmap,
-+	.get_unmapped_area =	snd_pcm_get_unmapped_area
-+};
-+
- const struct file_operations snd_pcm_f_ops[2] = {
- 	{
- 		.owner =		THIS_MODULE,
+...
+
+> The idea was, as I was saying below, to reuse dev_pm_ops even if
+> !CONFIG_PM. So pm_runtime_enable() could be something like this:
+> 
+> 	pm_runtime_enable(dev)
+> 	{
+> 		if (!CONFIG_PM)
+> 			if (dev->pm_ops->resume)
+> 				dev->pm_ops->resume(dev);
+> 
+> 		...
+> 	}
+> 
+> But that's admittedly somewhat of a stretch. This could of course be
+> made somewhat nicer by adding an explicit variant, say:
+> 
+> 	pm_runtime_enable_foo(dev)
+> 	{
+> 		if (!CONFIG_PM && dev->pm_ops->resume)
+> 			return dev->pm_ops->resume(dev);
+> 
+> 		return 0;
+> 	}
+> 
+> Maybe the fact that I couldn't come up with a good name is a good
+> indication that this is a bad idea...
+
+How about some new APIs called ...
+
+pm_runtime_enable_get()
+pm_runtime_enable_get_sync()
+pm_runtime_put_disable() (implies a put_sync)
+
+... and in these APIs we add ...
+
+pm_runtime_enable_get(dev)
+{
+	if (!CONFIG_PM && dev->pm_ops->resume)
+		return dev->pm_ops->resume(dev);
+
+	pm_runtime_enable(dev);
+	return pm_runtime_get(dev);
+}
+
+>>> This would be somewhat tricky because drivers
+>>> usually use SET_RUNTIME_PM_OPS to populate the struct dev_pm_ops and
+>>> that would result in an empty structure if !CONFIG_PM, but we could
+>>> probably work around that by adding a __SET_RUNTIME_PM_OPS that would
+>>> never be compiled out for this kind of case. Or such drivers could even
+>>> manually set .runtime_suspend and .runtime_resume to make sure they're
+>>> always populated.
+>>>
+>>> Another way out of this would be to make sure we never run into the case
+>>> where runtime PM is disabled. If we always "select PM" on Tegra, then PM
+>>> should always be available. But is it guaranteed that runtime PM for the
+>>> devices is functional in that case? From a cursory look at the code it
+>>> would seem that way.
+>>
+>> If you select PM, then all of the requisite code should be there.
+> 
+> We do this on 64-bit ARM, but there had been some pushback when we had
+> proposed to do the same thing on 32-bit ARM. I think there were two
+> concerns:
+> 
+> 	1) select PM would force the setting for all platforms on multi-
+> 	   platforms builds
+> 
+> 	2) prevents anyone from disabling PM for debugging purposes
+> 
+> 1) no longer seems to be valid because Rockchip already selects PM
+> unconditionally. I'm not sure if 2) is valid anymore either. I haven't
+> run a build with !PM in a very long time and I wouldn't be surprised if
+> that was completely broken.
+> 
+> Maybe we need to try this again since a couple of years have elapsed and
+> runtime PM support on Tegra is much more mature at this point.
+> 
+>> Alternatively, you can make the driver depend on PM.
+> 
+> That's probably the easiest way out, but to be honest I think I'd prefer
+> to just enforce PM and keep things simple.
+> 
+> Jon, any objections?
+
+None, but seems overkill just for this case.
+
+Cheers
+Jon
+
 -- 
-2.13.6
+nvpublic
