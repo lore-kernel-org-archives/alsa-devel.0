@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: clear platform pointers on
-	error" to the asoc tree
-Date: Mon,  4 Feb 2019 09:26:55 +0000 (GMT)
-Message-ID: <20190204092655.B62BD440082@finisterre.ee.mobilebroadband>
-References: <20190129214710.135124-1-cujomalainey@chromium.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH 0/2 v4] ALSA: pcm: anonymous dup implementation
+Date: Mon,  4 Feb 2019 10:39:08 +0100
+Message-ID: <20190204093910.23878-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 94E492674B6
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 10:26:59 +0100 (CET)
-In-Reply-To: <20190129214710.135124-1-cujomalainey@chromium.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CBD32674D6
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 10:39:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,103 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Curtis Malainey <cujomalainey@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle <riggle@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patchset contains the anonymous dup implementation with permissions
+checking for the ALSA's PCM interface in kernel to enable the restricted
+DMA sound buffer sharing for the restricted tasks.
 
-   ASoC: soc-core: clear platform pointers on error
+The code was tested through qemu and it seems to be pretty stable.
 
-has been applied to the asoc tree at
+The initial tinyalsa implementation can be found here:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+  https://github.com/perexg/tinyalsa/commits/anondup
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+v2 of the patches:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+- change clone parameter to subdevice number for the pcm attach
+- change SNDRV_PCM_PERM_MAX to SNDRV_PCM_PERM_MASK
+- the tinyalsa implementation was a little updated (restructured)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+v3 of the patches:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+- group integer declarations in snd_pcm_anonymous_dup()
+- replaced substream->pcm with pcm in snd_pcm_anonymous_dup()
+- added SNDRV_PCM_PERM_RW check for read/write/readv/writev syscalls
 
-Thanks,
-Mark
+v4 of the patches:
 
->From 78a24e10cd94420f1b4e2dc5923ae7109e2aaba1 Mon Sep 17 00:00:00 2001
-From: Curtis Malainey <cujomalainey@chromium.org>
-Date: Tue, 29 Jan 2019 13:47:09 -0800
-Subject: [PATCH] ASoC: soc-core: clear platform pointers on error
+- more simple restriction control (only two modes - full/buffer)
+- the tinyalsa implementation follows this change
 
-Originally snd_soc_init_platform was not cleaning up its pointers, this
-was fixed to always reallocate dynamic memory but created a memory leak
-when snd_soc_init_platform was called multiple times during the same
-probe attempt and also threw away any changes made to the struct between
-calls. In order to avoid reallocating memory that is still valid, the
-behaviour will be changed to clear the dynamically set pointers on a
-probe error and a unregister event and snd_soc_init_platform will go
-back to its original behaviour of only allocating null pointers so it will
-stop throwing away valid changes.
+Cc: Phil Burk <philburk@google.com>
+Cc: Zach Riggle <riggle@google.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Jaroslav Kysela (2):
+  ALSA: pcm: implement the anonymous dup (inode file descriptor)
+  ALSA: pcm: implement the mmap buffer mode for the anonymous dup
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 93efab486736..8c63d32ab2fe 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1048,7 +1048,7 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
- 	 *	soc.h :: struct snd_soc_dai_link
- 	 */
- 	/* convert Legacy platform link */
--	if (!platform || dai_link->legacy_platform) {
-+	if (!platform) {
- 		platform = devm_kzalloc(card->dev,
- 				sizeof(struct snd_soc_dai_link_component),
- 				GFP_KERNEL);
-@@ -1071,6 +1071,24 @@ static int snd_soc_init_platform(struct snd_soc_card *card,
- 	return 0;
- }
- 
-+static void soc_cleanup_platform(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *link;
-+	int i;
-+	/*
-+	 * FIXME
-+	 *
-+	 * this function should be removed with snd_soc_init_platform
-+	 */
-+
-+	for_each_card_prelinks(card, i, link) {
-+		if (link->legacy_platform) {
-+			link->legacy_platform = 0;
-+			link->platforms       = NULL;
-+		}
-+	}
-+}
-+
- static int snd_soc_init_multicodec(struct snd_soc_card *card,
- 				   struct snd_soc_dai_link *dai_link)
- {
-@@ -2015,6 +2033,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
- 	/* remove and free each DAI */
- 	soc_remove_dai_links(card);
- 	soc_remove_pcm_runtimes(card);
-+	soc_cleanup_platform(card);
- 
- 	/* remove auxiliary devices */
- 	soc_remove_aux_devices(card);
+ include/sound/pcm.h         | 10 +++--
+ include/uapi/sound/asound.h |  6 ++-
+ sound/core/oss/pcm_oss.c    |  2 +-
+ sound/core/pcm.c            | 13 +++---
+ sound/core/pcm_compat.c     |  1 +
+ sound/core/pcm_native.c     | 97 ++++++++++++++++++++++++++++++++++++++++++---
+ 6 files changed, 110 insertions(+), 19 deletions(-)
+
 -- 
-2.20.1
+2.13.6
