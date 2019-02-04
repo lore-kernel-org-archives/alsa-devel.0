@@ -1,111 +1,43 @@
-From: Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during
-	probe
-Date: Mon, 4 Feb 2019 15:03:49 +0300
-Message-ID: <f0bdcc21-efca-4d04-c7ec-953ec3d87031@gmail.com>
-References: <1548414418-5785-1-git-send-email-spujar@nvidia.com>
- <CAJZ5v0hezV7et3VgD7yHa8MLiP0z3YtJ9stwSQL54-tyz_VXkQ@mail.gmail.com>
- <20190131143024.GO23438@ulmo> <2034694.JE9CgBysmF@aspire.rjw.lan>
- <20190204084555.GF19087@ulmo>
- <07d58962-4c49-0575-2f95-4c885998bb52@nvidia.com>
- <20190204110510.GA10412@ulmo>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH] ASoC: rsnd: ssiu: correct shift bit for ssiu9
+Date: Mon, 4 Feb 2019 22:41:05 +0900
+Message-ID: <20190204134105.15243-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f196.google.com (mail-lj1-f196.google.com
- [209.85.208.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC292674C0
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 13:04:31 +0100 (CET)
-Received: by mail-lj1-f196.google.com with SMTP id u89-v6so11372372lje.1
- for <alsa-devel@alsa-project.org>; Mon, 04 Feb 2019 04:04:31 -0800 (PST)
-In-Reply-To: <20190204110510.GA10412@ulmo>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Thierry Reding <thierry.reding@gmail.com>, Jon Hunter <jonathanh@nvidia.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>, Linux PM <linux-pm@vger.kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-tegra@vger.kernel.org, sharadg@nvidia.com, rlokhande@nvidia.com, mkumard@nvidia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: jiada_wang@mentor.com, twischer@de.adit-jv.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-MDQuMDIuMjAxOSAxNDowNSwgVGhpZXJyeSBSZWRpbmcg0L/QuNGI0LXRgjoKPiBPbiBNb24sIEZl
-YiAwNCwgMjAxOSBhdCAwOTo1MzozMkFNICswMDAwLCBKb24gSHVudGVyIHdyb3RlOgo+Pgo+Pgo+
-PiBPbiAwNC8wMi8yMDE5IDA4OjQ1LCBUaGllcnJ5IFJlZGluZyB3cm90ZToKPj4KPj4gLi4uCj4+
-Cj4+PiBUaGUgaWRlYSB3YXMsIGFzIEkgd2FzIHNheWluZyBiZWxvdywgdG8gcmV1c2UgZGV2X3Bt
-X29wcyBldmVuIGlmCj4+PiAhQ09ORklHX1BNLiBTbyBwbV9ydW50aW1lX2VuYWJsZSgpIGNvdWxk
-IGJlIHNvbWV0aGluZyBsaWtlIHRoaXM6Cj4+Pgo+Pj4gCXBtX3J1bnRpbWVfZW5hYmxlKGRldikK
-Pj4+IAl7Cj4+PiAJCWlmICghQ09ORklHX1BNKQo+Pj4gCQkJaWYgKGRldi0+cG1fb3BzLT5yZXN1
-bWUpCj4+PiAJCQkJZGV2LT5wbV9vcHMtPnJlc3VtZShkZXYpOwo+Pj4KPj4+IAkJLi4uCj4+PiAJ
-fQo+Pj4KPj4+IEJ1dCB0aGF0J3MgYWRtaXR0ZWRseSBzb21ld2hhdCBvZiBhIHN0cmV0Y2guIFRo
-aXMgY291bGQgb2YgY291cnNlIGJlCj4+PiBtYWRlIHNvbWV3aGF0IG5pY2VyIGJ5IGFkZGluZyBh
-biBleHBsaWNpdCB2YXJpYW50LCBzYXk6Cj4+Pgo+Pj4gCXBtX3J1bnRpbWVfZW5hYmxlX2Zvbyhk
-ZXYpCj4+PiAJewo+Pj4gCQlpZiAoIUNPTkZJR19QTSAmJiBkZXYtPnBtX29wcy0+cmVzdW1lKQo+
-Pj4gCQkJcmV0dXJuIGRldi0+cG1fb3BzLT5yZXN1bWUoZGV2KTsKPj4+Cj4+PiAJCXJldHVybiAw
-Owo+Pj4gCX0KPj4+Cj4+PiBNYXliZSB0aGUgZmFjdCB0aGF0IEkgY291bGRuJ3QgY29tZSB1cCB3
-aXRoIGEgZ29vZCBuYW1lIGlzIGEgZ29vZAo+Pj4gaW5kaWNhdGlvbiB0aGF0IHRoaXMgaXMgYSBi
-YWQgaWRlYS4uLgo+Pgo+PiBIb3cgYWJvdXQgc29tZSBuZXcgQVBJcyBjYWxsZWQgLi4uCj4+Cj4+
-IHBtX3J1bnRpbWVfZW5hYmxlX2dldCgpCj4+IHBtX3J1bnRpbWVfZW5hYmxlX2dldF9zeW5jKCkK
-Pj4gcG1fcnVudGltZV9wdXRfZGlzYWJsZSgpIChpbXBsaWVzIGEgcHV0X3N5bmMpCj4+Cj4+IC4u
-LiBhbmQgaW4gdGhlc2UgQVBJcyB3ZSBhZGQgLi4uCj4+Cj4+IHBtX3J1bnRpbWVfZW5hYmxlX2dl
-dChkZXYpCj4+IHsKPj4gCWlmICghQ09ORklHX1BNICYmIGRldi0+cG1fb3BzLT5yZXN1bWUpCj4+
-IAkJcmV0dXJuIGRldi0+cG1fb3BzLT5yZXN1bWUoZGV2KTsKPj4KPj4gCXBtX3J1bnRpbWVfZW5h
-YmxlKGRldik7Cj4+IAlyZXR1cm4gcG1fcnVudGltZV9nZXQoZGV2KTsKPj4gfQo+IAo+IFllYWgs
-IHRob3NlIHNvdW5kIHNlbnNpYmxlLiBJJ20gc3RpbGwgYSBiaXQgdG9ybiBiZXR3ZWVuIHRoaXMg
-YW5kIGp1c3QKPiBlbmZvcmNpbmcgUE0uIEF0IGxlYXN0IG9uIHRoZSBkaXNwbGF5IHNpZGUgSSB0
-aGluayB3ZSBhbHJlYWR5IHJlcXVpcmUgUE0KPiBhbmQgd2l0aCBhbGwgdGhlIHBvd2VyIGRvbWFp
-biB3b3JrIHRoYXQgeW91IGRpZCB3ZSdkIGJlIG11Y2ggYmV0dGVyIG9mZgo+IGlmIHdlIGNvdWxk
-IGp1c3QgZ2V0IHJpZCBvZiB0aGUgIVBNIHdvcmthcm91bmRzLgo+IAo+Pj4+PiBUaGlzIHdvdWxk
-IGJlIHNvbWV3aGF0IHRyaWNreSBiZWNhdXNlIGRyaXZlcnMKPj4+Pj4gdXN1YWxseSB1c2UgU0VU
-X1JVTlRJTUVfUE1fT1BTIHRvIHBvcHVsYXRlIHRoZSBzdHJ1Y3QgZGV2X3BtX29wcyBhbmQKPj4+
-Pj4gdGhhdCB3b3VsZCByZXN1bHQgaW4gYW4gZW1wdHkgc3RydWN0dXJlIGlmICFDT05GSUdfUE0s
-IGJ1dCB3ZSBjb3VsZAo+Pj4+PiBwcm9iYWJseSB3b3JrIGFyb3VuZCB0aGF0IGJ5IGFkZGluZyBh
-IF9fU0VUX1JVTlRJTUVfUE1fT1BTIHRoYXQgd291bGQKPj4+Pj4gbmV2ZXIgYmUgY29tcGlsZWQg
-b3V0IGZvciB0aGlzIGtpbmQgb2YgY2FzZS4gT3Igc3VjaCBkcml2ZXJzIGNvdWxkIGV2ZW4KPj4+
-Pj4gbWFudWFsbHkgc2V0IC5ydW50aW1lX3N1c3BlbmQgYW5kIC5ydW50aW1lX3Jlc3VtZSB0byBt
-YWtlIHN1cmUgdGhleSdyZQo+Pj4+PiBhbHdheXMgcG9wdWxhdGVkLgo+Pj4+Pgo+Pj4+PiBBbm90
-aGVyIHdheSBvdXQgb2YgdGhpcyB3b3VsZCBiZSB0byBtYWtlIHN1cmUgd2UgbmV2ZXIgcnVuIGlu
-dG8gdGhlIGNhc2UKPj4+Pj4gd2hlcmUgcnVudGltZSBQTSBpcyBkaXNhYmxlZC4gSWYgd2UgYWx3
-YXlzICJzZWxlY3QgUE0iIG9uIFRlZ3JhLCB0aGVuIFBNCj4+Pj4+IHNob3VsZCBhbHdheXMgYmUg
-YXZhaWxhYmxlLiBCdXQgaXMgaXQgZ3VhcmFudGVlZCB0aGF0IHJ1bnRpbWUgUE0gZm9yIHRoZQo+
-Pj4+PiBkZXZpY2VzIGlzIGZ1bmN0aW9uYWwgaW4gdGhhdCBjYXNlPyBGcm9tIGEgY3Vyc29yeSBs
-b29rIGF0IHRoZSBjb2RlIGl0Cj4+Pj4+IHdvdWxkIHNlZW0gdGhhdCB3YXkuCj4+Pj4KPj4+PiBJ
-ZiB5b3Ugc2VsZWN0IFBNLCB0aGVuIGFsbCBvZiB0aGUgcmVxdWlzaXRlIGNvZGUgc2hvdWxkIGJl
-IHRoZXJlLgo+Pj4KPj4+IFdlIGRvIHRoaXMgb24gNjQtYml0IEFSTSwgYnV0IHRoZXJlIGhhZCBi
-ZWVuIHNvbWUgcHVzaGJhY2sgd2hlbiB3ZSBoYWQKPj4+IHByb3Bvc2VkIHRvIGRvIHRoZSBzYW1l
-IHRoaW5nIG9uIDMyLWJpdCBBUk0uIEkgdGhpbmsgdGhlcmUgd2VyZSB0d28KPj4+IGNvbmNlcm5z
-Ogo+Pj4KPj4+IAkxKSBzZWxlY3QgUE0gd291bGQgZm9yY2UgdGhlIHNldHRpbmcgZm9yIGFsbCBw
-bGF0Zm9ybXMgb24gbXVsdGktCj4+PiAJICAgcGxhdGZvcm1zIGJ1aWxkcwo+Pj4KPj4+IAkyKSBw
-cmV2ZW50cyBhbnlvbmUgZnJvbSBkaXNhYmxpbmcgUE0gZm9yIGRlYnVnZ2luZyBwdXJwb3Nlcwo+
-Pj4KPj4+IDEpIG5vIGxvbmdlciBzZWVtcyB0byBiZSB2YWxpZCBiZWNhdXNlIFJvY2tjaGlwIGFs
-cmVhZHkgc2VsZWN0cyBQTQo+Pj4gdW5jb25kaXRpb25hbGx5LiBJJ20gbm90IHN1cmUgaWYgMikg
-aXMgdmFsaWQgYW55bW9yZSBlaXRoZXIuIEkgaGF2ZW4ndAo+Pj4gcnVuIGEgYnVpbGQgd2l0aCAh
-UE0gaW4gYSB2ZXJ5IGxvbmcgdGltZSBhbmQgSSB3b3VsZG4ndCBiZSBzdXJwcmlzZWQgaWYKPj4+
-IHRoYXQgd2FzIGNvbXBsZXRlbHkgYnJva2VuLgo+Pj4KPj4+IE1heWJlIHdlIG5lZWQgdG8gdHJ5
-IHRoaXMgYWdhaW4gc2luY2UgYSBjb3VwbGUgb2YgeWVhcnMgaGF2ZSBlbGFwc2VkIGFuZAo+Pj4g
-cnVudGltZSBQTSBzdXBwb3J0IG9uIFRlZ3JhIGlzIG11Y2ggbW9yZSBtYXR1cmUgYXQgdGhpcyBw
-b2ludC4KPj4+Cj4+Pj4gQWx0ZXJuYXRpdmVseSwgeW91IGNhbiBtYWtlIHRoZSBkcml2ZXIgZGVw
-ZW5kIG9uIFBNLgo+Pj4KPj4+IFRoYXQncyBwcm9iYWJseSB0aGUgZWFzaWVzdCB3YXkgb3V0LCBi
-dXQgdG8gYmUgaG9uZXN0IEkgdGhpbmsgSSdkIHByZWZlcgo+Pj4gdG8ganVzdCBlbmZvcmNlIFBN
-IGFuZCBrZWVwIHRoaW5ncyBzaW1wbGUuCj4+Pgo+Pj4gSm9uLCBhbnkgb2JqZWN0aW9ucz8KPj4K
-Pj4gTm9uZSwgYnV0IHNlZW1zIG92ZXJraWxsIGp1c3QgZm9yIHRoaXMgY2FzZS4KPiAKPiBCdXQg
-dGhhdCdzIHByZWNpc2VseSB0aGUgcG9pbnQuIEl0J3Mgbm90IGp1c3QgYWJvdXQgdGhpcyBjYXNl
-LiBXZSd2ZQo+IGFscmVhZHkgZ290IHNvbWUgZHJpdmVycyB3aGVyZSB3ZSBkbyBhIHNpbWlsYXIg
-ZGFuY2UganVzdCB0byBiZSBhYmxlIHRvCj4gc3VwcG9ydCB0aGUsIGxldCdzIGFkbWl0IGl0LCBl
-eG90aWMgY2FzZSB3aGVyZSBzb21lYm9keSB0dXJucyBvZmYgUE0uIEkKPiB0aGluayBzdXBwb3J0
-aW5nICFQTSBtaWdodCBoYXZlIG1hZGUgc2Vuc2UgYXQgYSBwb2ludCB3aGVyZSB3ZSBoYWQgbm8K
-PiBzdXBwb3J0IGZvciBwb3dlciBtYW5hZ2VtZW50IGF0IGFsbC4gQnV0IEkgdGhpbmsgd2UndmUg
-Y29tZSBhIGxvbmcgd2F5Cj4gc2luY2UgdGhlbiwgYW5kIHdoaWxlIHdlIG1heSBzdGlsbCBoYXZl
-IHNvbWUgd2F5cyB0byBnbyBpbiBzb21lIGFyZWFzLAo+IHdlIGRvIGZhaXJseSBkZWNlbnQgcnVu
-dGltZSBQTSBtb3N0IG9mIHRoZSB0aW1lLCB0byB0aGUgcG9pbnQgd2hlcmUgSSBubwo+IGxvbmdl
-ciBzZWUgYW55IGJlbmVmaXRzIGluICFQTS4KCkknbSByZXF1ZXN0aW5nIFBNX0RFQlVHX0FMV0FZ
-U19PTiBvcHRpb24gdGhlbiEgRGlzYWJsaW5nIFBNIGlzIGEgdXNlZnVsIGRlYnVnIGZlYXR1cmUs
-IGl0IGNhbid0IGp1c3QgZ28gYXdheS4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Currently "0xf << 36" is used to
+clear SSIU-9 internal buffer state, which overflows 32-bit value
+according to user reference manual, it is always bit4 ~ bit7
+of SSI_SYS_STATUS[1,3,5,7] registers indicate
+SSIU-9's buffer state, so "0xf << 4" should be used.
+
+This patch fix incorrect shifting issue in SSIU-9 case
+
+Fixes: commit b7169ddea2f2 ("ASoC: rsnd: remove RSND_REG_ from rsnd_reg")
+
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/soc/sh/rcar/ssiu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 2f3085a54eba..b11677489a5e 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -79,7 +79,7 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
+ 		break;
+ 	case 9:
+ 		for (i = 0; i < 4; i++)
+-			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << (id * 4));
++			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << 4);
+ 		break;
+ 	}
+ 
+-- 
+2.19.2
