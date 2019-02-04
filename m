@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/11] ALSA: i2c: Clean up with new procfs
+Subject: [PATCH 05/11] ALSA: drivers: Clean up with new procfs
 	helpers
-Date: Mon,  4 Feb 2019 16:20:32 +0100
-Message-ID: <20190204152036.14102-8-tiwai@suse.de>
+Date: Mon,  4 Feb 2019 16:20:30 +0100
+Message-ID: <20190204152036.14102-6-tiwai@suse.de>
 References: <20190204152036.14102-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DF48726755E
+ by alsa0.perex.cz (Postfix) with ESMTP id DD49526755C
  for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 16:20:40 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 768F3ADBE
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:40 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 6062DAEDC
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:39 +0000 (UTC)
 In-Reply-To: <20190204152036.14102-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,61 +33,70 @@ Just a code refactoring and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/i2c/other/ak4113.c      | 5 ++---
- sound/i2c/other/ak4114.c      | 5 ++---
- sound/i2c/other/ak4xxx-adda.c | 8 +-------
- 3 files changed, 5 insertions(+), 13 deletions(-)
+ sound/drivers/aloop.c      | 10 ++--------
+ sound/drivers/dummy.c      | 10 ++--------
+ sound/drivers/vx/vx_core.c |  5 +----
+ 3 files changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/sound/i2c/other/ak4113.c b/sound/i2c/other/ak4113.c
-index 4099e6062d3c..573599d0378d 100644
---- a/sound/i2c/other/ak4113.c
-+++ b/sound/i2c/other/ak4113.c
-@@ -492,9 +492,8 @@ static void snd_ak4113_proc_regs_read(struct snd_info_entry *entry,
- 
- static void snd_ak4113_proc_init(struct ak4113 *ak4113)
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 65c903b639c2..8c3fbe1276be 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -1133,16 +1133,10 @@ static void print_cable_info(struct snd_info_entry *entry,
+ static int loopback_proc_new(struct loopback *loopback, int cidx)
  {
--	struct snd_info_entry *entry;
--	if (!snd_card_proc_new(ak4113->card, "ak4113", &entry))
--		snd_info_set_text_ops(entry, ak4113, snd_ak4113_proc_regs_read);
-+	snd_card_ro_proc_new(ak4113->card, "ak4113", ak4113,
-+			     snd_ak4113_proc_regs_read);
- }
- 
- int snd_ak4113_build(struct ak4113 *ak4113,
-diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
-index 7fb1aeb46915..76afb975782d 100644
---- a/sound/i2c/other/ak4114.c
-+++ b/sound/i2c/other/ak4114.c
-@@ -465,9 +465,8 @@ static void snd_ak4114_proc_regs_read(struct snd_info_entry *entry,
- 
- static void snd_ak4114_proc_init(struct ak4114 *ak4114)
- {
--	struct snd_info_entry *entry;
--	if (!snd_card_proc_new(ak4114->card, "ak4114", &entry))
--		snd_info_set_text_ops(entry, ak4114, snd_ak4114_proc_regs_read);
-+	snd_card_ro_proc_new(ak4114->card, "ak4114", ak4114,
-+			     snd_ak4114_proc_regs_read);
- }
- 
- int snd_ak4114_build(struct ak4114 *ak4114,
-diff --git a/sound/i2c/other/ak4xxx-adda.c b/sound/i2c/other/ak4xxx-adda.c
-index 7f2761a2e7c8..62a6c5fa96b5 100644
---- a/sound/i2c/other/ak4xxx-adda.c
-+++ b/sound/i2c/other/ak4xxx-adda.c
-@@ -875,13 +875,7 @@ static void proc_regs_read(struct snd_info_entry *entry,
- 
- static int proc_init(struct snd_akm4xxx *ak)
- {
+ 	char name[32];
 -	struct snd_info_entry *entry;
 -	int err;
--	err = snd_card_proc_new(ak->card, ak->name, &entry);
+ 
+ 	snprintf(name, sizeof(name), "cable#%d", cidx);
+-	err = snd_card_proc_new(loopback->card, name, &entry);
 -	if (err < 0)
 -		return err;
--	snd_info_set_text_ops(entry, ak, proc_regs_read);
+-
+-	snd_info_set_text_ops(entry, loopback, print_cable_info);
 -	return 0;
-+	return snd_card_ro_proc_new(ak->card, ak->name, ak, proc_regs_read);
++	return snd_card_ro_proc_new(loopback->card, name, loopback,
++				    print_cable_info);
  }
  
- int snd_akm4xxx_build_controls(struct snd_akm4xxx *ak)
+ static int loopback_probe(struct platform_device *devptr)
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index c8d31550e9a1..2672c2e13334 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -1037,14 +1037,8 @@ static void dummy_proc_write(struct snd_info_entry *entry,
+ 
+ static void dummy_proc_init(struct snd_dummy *chip)
+ {
+-	struct snd_info_entry *entry;
+-
+-	if (!snd_card_proc_new(chip->card, "dummy_pcm", &entry)) {
+-		snd_info_set_text_ops(entry, chip, dummy_proc_read);
+-		entry->c.text.write = dummy_proc_write;
+-		entry->mode |= 0200;
+-		entry->private_data = chip;
+-	}
++	snd_card_rw_proc_new(chip->card, "dummy_pcm", chip,
++			     dummy_proc_read, dummy_proc_write);
+ }
+ #else
+ #define dummy_proc_init(x)
+diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
+index 19496fa486aa..543945643a76 100644
+--- a/sound/drivers/vx/vx_core.c
++++ b/sound/drivers/vx/vx_core.c
+@@ -643,10 +643,7 @@ static void vx_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *b
+ 
+ static void vx_proc_init(struct vx_core *chip)
+ {
+-	struct snd_info_entry *entry;
+-
+-	if (! snd_card_proc_new(chip->card, "vx-status", &entry))
+-		snd_info_set_text_ops(entry, chip, vx_proc_read);
++	snd_card_ro_proc_new(chip->card, "vx-status", chip, vx_proc_read);
+ }
+ 
+ 
 -- 
 2.16.4
