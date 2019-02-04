@@ -1,20 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/11] ALSA: drivers: Clean up with new procfs
-	helpers
-Date: Mon,  4 Feb 2019 16:20:30 +0100
-Message-ID: <20190204152036.14102-6-tiwai@suse.de>
-References: <20190204152036.14102-1-tiwai@suse.de>
+Subject: [PATCH 00/11] ALSA: procfs cleanups
+Date: Mon,  4 Feb 2019 16:20:25 +0100
+Message-ID: <20190204152036.14102-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DD49526755C
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 16:20:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B6AD9267558
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 16:20:39 +0100 (CET)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6062DAEDC
+ by mx1.suse.de (Postfix) with ESMTP id 30060ACBC
  for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 15:20:39 +0000 (UTC)
-In-Reply-To: <20190204152036.14102-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,76 +24,96 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify the proc fs creation code with new helper functions,
-snd_card_ro_proc_new() and snd_card_rw_proc_new().
-Just a code refactoring and no functional changes.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/aloop.c      | 10 ++--------
- sound/drivers/dummy.c      | 10 ++--------
- sound/drivers/vx/vx_core.c |  5 +----
- 3 files changed, 5 insertions(+), 20 deletions(-)
+this is a patchset for cleaning up the procfs handling.
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 65c903b639c2..8c3fbe1276be 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -1133,16 +1133,10 @@ static void print_cable_info(struct snd_info_entry *entry,
- static int loopback_proc_new(struct loopback *loopback, int cidx)
- {
- 	char name[32];
--	struct snd_info_entry *entry;
--	int err;
- 
- 	snprintf(name, sizeof(name), "cable#%d", cidx);
--	err = snd_card_proc_new(loopback->card, name, &entry);
--	if (err < 0)
--		return err;
--
--	snd_info_set_text_ops(entry, loopback, print_cable_info);
--	return 0;
-+	return snd_card_ro_proc_new(loopback->card, name, loopback,
-+				    print_cable_info);
- }
- 
- static int loopback_probe(struct platform_device *devptr)
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index c8d31550e9a1..2672c2e13334 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -1037,14 +1037,8 @@ static void dummy_proc_write(struct snd_info_entry *entry,
- 
- static void dummy_proc_init(struct snd_dummy *chip)
- {
--	struct snd_info_entry *entry;
--
--	if (!snd_card_proc_new(chip->card, "dummy_pcm", &entry)) {
--		snd_info_set_text_ops(entry, chip, dummy_proc_read);
--		entry->c.text.write = dummy_proc_write;
--		entry->mode |= 0200;
--		entry->private_data = chip;
--	}
-+	snd_card_rw_proc_new(chip->card, "dummy_pcm", chip,
-+			     dummy_proc_read, dummy_proc_write);
- }
- #else
- #define dummy_proc_init(x)
-diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
-index 19496fa486aa..543945643a76 100644
---- a/sound/drivers/vx/vx_core.c
-+++ b/sound/drivers/vx/vx_core.c
-@@ -643,10 +643,7 @@ static void vx_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *b
- 
- static void vx_proc_init(struct vx_core *chip)
- {
--	struct snd_info_entry *entry;
--
--	if (! snd_card_proc_new(chip->card, "vx-status", &entry))
--		snd_info_set_text_ops(entry, chip, vx_proc_read);
-+	snd_card_ro_proc_new(chip->card, "vx-status", chip, vx_proc_read);
- }
- 
- 
+The first three patches are to remove the superfluous
+snd_info_register() calls (which are done eventually at the card
+creation time), and the rest patches are for introducing new helpers
+and cleaning up with them.  The latter has no functional changes but
+only reducing lots of codes.
+
+
+thanks,
+
+Takashi
+
+===
+
+Takashi Iwai (11):
+  ALSA: pcm: Remove superfluous snd_info_register() calls
+  ALSA: compress: Remove superfluous snd_info_register() calls
+  ALSA: pci: Remove superfluous snd_info_register() calls
+  ALSA: info: Add standard helpers for card proc file entries
+  ALSA: drivers: Clean up with new procfs helpers
+  ALSA: isa: Clean up with new procfs helpers
+  ALSA: i2c: Clean up with new procfs helpers
+  ALSA: pci: Clean up with new procfs helpers
+  ALSA: pcmcia: Clean up with new procfs helpers
+  ALSA: sparc: Clean up with new procfs helpers
+  ALSA: usb: Clean up with new procfs helpers
+
+ include/sound/info.h                    | 35 ++++++++++++++
+ sound/core/compress_offload.c           | 11 +----
+ sound/core/info.c                       | 31 +++++++++++++
+ sound/core/pcm.c                        | 79 +++++++++++---------------------
+ sound/drivers/aloop.c                   | 10 +---
+ sound/drivers/dummy.c                   | 10 +---
+ sound/drivers/vx/vx_core.c              |  5 +-
+ sound/i2c/other/ak4113.c                |  5 +-
+ sound/i2c/other/ak4114.c                |  5 +-
+ sound/i2c/other/ak4xxx-adda.c           |  8 +---
+ sound/isa/gus/gus_irq.c                 |  5 +-
+ sound/isa/gus/gus_mem.c                 |  6 +--
+ sound/isa/opti9xx/miro.c                |  5 +-
+ sound/isa/sb/sb16_csp.c                 |  5 +-
+ sound/pci/ac97/ac97_proc.c              | 26 ++++-------
+ sound/pci/ad1889.c                      |  6 +--
+ sound/pci/ak4531_codec.c                |  5 +-
+ sound/pci/ali5451/ali5451.c             |  4 +-
+ sound/pci/asihpi/asihpi.c               |  6 +--
+ sound/pci/atiixp.c                      |  5 +-
+ sound/pci/atiixp_modem.c                |  6 +--
+ sound/pci/ca0106/ca0106_proc.c          | 40 ++++++----------
+ sound/pci/cmipci.c                      |  5 +-
+ sound/pci/cs4281.c                      |  3 +-
+ sound/pci/cs46xx/dsp_spos.c             | 16 ++-----
+ sound/pci/emu10k1/emu10k1x.c            | 12 ++---
+ sound/pci/emu10k1/emuproc.c             | 81 +++++++++++++--------------------
+ sound/pci/ens1370.c                     |  6 +--
+ sound/pci/hda/hda_proc.c                |  9 +---
+ sound/pci/ice1712/ice1712.c             |  5 +-
+ sound/pci/ice1712/ice1724.c             |  5 +-
+ sound/pci/ice1712/pontis.c              | 12 ++---
+ sound/pci/ice1712/prodigy192.c          |  5 +-
+ sound/pci/ice1712/prodigy_hifi.c        |  8 +---
+ sound/pci/ice1712/quartet.c             |  4 +-
+ sound/pci/intel8x0.c                    |  6 +--
+ sound/pci/intel8x0m.c                   |  6 +--
+ sound/pci/korg1212/korg1212.c           |  6 +--
+ sound/pci/lola/lola_proc.c              | 16 ++-----
+ sound/pci/lx6464es/lx6464es.c           |  8 +---
+ sound/pci/mixart/mixart.c               |  6 +--
+ sound/pci/oxygen/oxygen_lib.c           |  5 +-
+ sound/pci/pcxhr/pcxhr.c                 | 21 +++------
+ sound/pci/riptide/riptide.c             |  6 +--
+ sound/pci/rme32.c                       |  5 +-
+ sound/pci/rme96.c                       |  5 +-
+ sound/pci/rme9652/hdsp.c                |  5 +-
+ sound/pci/rme9652/hdspm.c               | 55 ++++++++++------------
+ sound/pci/rme9652/rme9652.c             |  6 +--
+ sound/pci/sonicvibes.c                  |  6 +--
+ sound/pci/trident/trident_main.c        |  4 +-
+ sound/pci/via82xx.c                     |  6 +--
+ sound/pci/via82xx_modem.c               |  6 +--
+ sound/pci/ymfpci/ymfpci_main.c          |  6 +--
+ sound/pcmcia/pdaudiocf/pdaudiocf_core.c |  5 +-
+ sound/sparc/dbri.c                      | 10 +---
+ sound/usb/mixer.c                       |  7 ++-
+ sound/usb/mixer_quirks.c                |  6 +--
+ sound/usb/proc.c                        | 13 ++----
+ 59 files changed, 268 insertions(+), 446 deletions(-)
+
 -- 
 2.16.4
