@@ -1,21 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dapm: fix out-of-bounds accesses
- to DAPM lookup tables
-Date: Mon, 4 Feb 2019 19:24:04 +0100
-Message-ID: <20190204182404.GI23441@sirena.org.uk>
-References: <20190204135914.7413-1-pierre-louis.bossart@linux.intel.com>
- <s5hr2cnppnj.wl-tiwai@suse.de>
- <a199f5cb-7e56-db27-37bc-78e3e7e5daee@linux.intel.com>
- <20190204161140.GG23441@sirena.org.uk>
- <9b852c6a-4fef-3b97-6bea-7a81500ed14e@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH v6 0/3] ALSA: pcm: anonymous dup implementation
+Date: Mon,  4 Feb 2019 19:38:14 +0100
+Message-ID: <20190204183817.975-1-perex@perex.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6494132607331876658=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C6DE267459
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 19:24:07 +0100 (CET)
-In-Reply-To: <9b852c6a-4fef-3b97-6bea-7a81500ed14e@linux.intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 371F6267459
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 19:39:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +18,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle <riggle@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patchset contains the anonymous dup implementation with permissions
+checking for the ALSA's PCM interface in kernel to enable the restricted
+DMA sound buffer sharing for the restricted tasks.
 
---===============6494132607331876658==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3U8TY7m7wOx7RL1F"
-Content-Disposition: inline
+The code was tested through qemu and it seems to be pretty stable.
 
+The initial tinyalsa implementation can be found here:
 
---3U8TY7m7wOx7RL1F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  https://github.com/perexg/tinyalsa/commits/anondup
 
-On Mon, Feb 04, 2019 at 10:20:10AM -0600, Pierre-Louis Bossart wrote:
+The filtering might be refined. It depends on the real requirements.
+Perhaps, we may create more ioctl groups. Any comments are more than
+welcome.
 
-> It's not hard indeed, I am just not hot on changing the values at the same
-> time as adding new definitions. I managed to screw-up the mic values the
-> first time, this would make the changes hard to check.
+v2 of the patches:
 
-> Maybe do this in a second patch, along with the array size checks?
+- change clone parameter to subdevice number for the pcm attach
+- change SNDRV_PCM_PERM_MAX to SNDRV_PCM_PERM_MASK
+- the tinyalsa implementation was a little updated (restructured)
 
-Sure.
+v3 of the patches:
 
---3U8TY7m7wOx7RL1F
-Content-Type: application/pgp-signature; name="signature.asc"
+- group integer declarations in snd_pcm_anonymous_dup()
+- replaced substream->pcm with pcm in snd_pcm_anonymous_dup()
+- added SNDRV_PCM_PERM_RW check for read/write/readv/writev syscalls
 
------BEGIN PGP SIGNATURE-----
+v4 of the patches:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxYg0QACgkQJNaLcl1U
-h9DaZQf/fjjpyByq0/5eJ32K6ZDdT+mWjObBmuZHqOsMNRgh/SyYIHQpZr6bHng4
-+hLws+Tpgn0wV6elPf7mBUlLjlFT5fRKUJ9hdzksZEVPdhy61lumtCQAQ00Rbl1+
-R0TiY2C1w2phQJNGIuOSZk+4y0314ITcoeQMAmilQMxodWXUcIcFfrsi/KdfLXKd
-vAubhP0F5upKJoFNnGQOCFA+lhWBnI4eSOTioBKsqa+CH5pJ5aLBGdlV1l7LwP7d
-BuhIDV3MYiU/Gj9q1Djqqno2GtHPTm596pksmf9ht4ywF8sl4ONYjbcYYoCe8eA8
-a7Qu8sv2F1n0Nvk8337kqjuS2bdrfw==
-=ingA
------END PGP SIGNATURE-----
+- more simple restriction control (only two modes - full/buffer)
+- the tinyalsa implementation follows this change
 
---3U8TY7m7wOx7RL1F--
+v5 of the patches:
 
---===============6494132607331876658==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+- merge pcm_..._mmap_allowed fcns to the snd_pcm_mmap_... fcns
 
+v6:
 
---===============6494132607331876658==--
+- add proper open_mutex protection for snd_pcm_open_file()
+
+Cc: Phil Burk <philburk@google.com>
+Cc: Zach Riggle <riggle@google.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Baolin Wang <baolin.wang@linaro.org>
+
+Jaroslav Kysela (3):
+  ALSA: pcm: implement the anonymous dup (inode file descriptor)
+  ALSA: pcm: merge pcm_..._mmap_allowed fcns to the snd_pcm_mmap_...
+    fcns
+  ALSA: pcm: implement the mmap buffer mode for the anonymous dup
+
+ include/sound/pcm.h         |  10 +--
+ include/uapi/sound/asound.h |   6 +-
+ sound/core/oss/pcm_oss.c    |   2 +-
+ sound/core/pcm.c            |  13 ++--
+ sound/core/pcm_compat.c     |   1 +
+ sound/core/pcm_native.c     | 154 +++++++++++++++++++++++++++++++++-----------
+ 6 files changed, 133 insertions(+), 53 deletions(-)
+
+-- 
+2.13.6
