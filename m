@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: core: Don't allow NULL device for
-	memory allocation
-Date: Mon,  4 Feb 2019 14:42:22 +0100
-Message-ID: <20190204134222.9560-6-tiwai@suse.de>
+Subject: [PATCH 2/5] ALSA: arm: Avoid passing NULL to memory
+	allocators
+Date: Mon,  4 Feb 2019 14:42:19 +0100
+Message-ID: <20190204134222.9560-3-tiwai@suse.de>
 References: <20190204134222.9560-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9720C26752C
- for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 14:42:28 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BFA72674D5
+ for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2019 14:42:27 +0100 (CET)
 In-Reply-To: <20190204134222.9560-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,26 +25,28 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>, Christoph Hellwig <hch@lst.de>
 List-Id: alsa-devel@alsa-project.org
 
-Since we covered all callers with NULL device pointer, let's catch the
-remaining calls with NULL and warn explicitly.
+We should pass a proper	non-NULL device	object to memory allocators
+although it was accepted in the past.  The card->dev points to the
+most appropriate device object in such a case, so let's put it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/memalloc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/arm/aaci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 59a4adc286ed..eb974235c92b 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -182,6 +182,8 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 		return -ENXIO;
- 	if (WARN_ON(!dmab))
- 		return -ENXIO;
-+	if (WARN_ON(!device))
-+		return -EINVAL;
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index 0c3f073e2600..a2d4b41096e0 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -941,7 +941,8 @@ static int aaci_init_pcm(struct aaci *aaci)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &aaci_playback_ops);
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &aaci_capture_ops);
+ 		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-						      NULL, 0, 64 * 1024);
++						      aaci->card->dev,
++						      0, 64 * 1024);
+ 	}
  
- 	dmab->dev.type = type;
- 	dmab->dev.dev = device;
+ 	return ret;
 -- 
 2.16.4
