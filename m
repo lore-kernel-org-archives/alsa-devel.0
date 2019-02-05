@@ -1,17 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: emux: Remove superfluous
+Subject: [PATCH 0/3] ALSA: Remove superfluous
 	snd_info_register() calls
-Date: Tue,  5 Feb 2019 17:05:27 +0100
-Message-ID: <20190205160527.8815-4-tiwai@suse.de>
-References: <20190205160527.8815-1-tiwai@suse.de>
+Date: Tue,  5 Feb 2019 17:05:24 +0100
+Message-ID: <20190205160527.8815-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C4CF32674C5
+ by alsa0.perex.cz (Postfix) with ESMTP id BC8A3267471
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 17:05:32 +0100 (CET)
-In-Reply-To: <20190205160527.8815-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,38 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The calls of snd_info_register() are superfluous and should be avoided
-at the procfs creation time.  They are called at the end of the whole
-initialization via snd_card_register().  This patch drops such
-superfluous calls.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/synth/emux/emux_proc.c | 4 ----
- 1 file changed, 4 deletions(-)
+this is a fallout of the previous patchset, covering more places that
+call snd_info_register() unnecessarily.  These should be applied on
+top of my previous patchset.
 
-diff --git a/sound/synth/emux/emux_proc.c b/sound/synth/emux/emux_proc.c
-index a82b4053bee8..c14781ac7941 100644
---- a/sound/synth/emux/emux_proc.c
-+++ b/sound/synth/emux/emux_proc.c
-@@ -115,10 +115,6 @@ void snd_emux_proc_init(struct snd_emux *emu, struct snd_card *card, int device)
- 	entry->content = SNDRV_INFO_CONTENT_TEXT;
- 	entry->private_data = emu;
- 	entry->c.text.read = snd_emux_proc_info_read;
--	if (snd_info_register(entry) < 0)
--		snd_info_free_entry(entry);
--	else
--		emu->proc = entry;
- }
- 
- void snd_emux_proc_free(struct snd_emux *emu)
+The complete patches are found in topic/proc-fixes branch of sound git
+tree.
+
+
+thanks,
+
+Takashi
+
+===
+
+Takashi Iwai (3):
+  ALSA: firewire: Remove superfluous snd_info_register() calls
+  ALSA: opl4: Remove superfluous snd_info_register() calls
+  ALSA: emux: Remove superfluous snd_info_register() calls
+
+ sound/drivers/opl4/opl4_proc.c            |  4 ----
+ sound/firewire/bebob/bebob_proc.c         | 12 ++----------
+ sound/firewire/dice/dice-proc.c           | 12 ++----------
+ sound/firewire/digi00x/digi00x-proc.c     | 16 ++--------------
+ sound/firewire/fireface/ff-proc.c         | 12 ++----------
+ sound/firewire/fireworks/fireworks_proc.c | 12 ++----------
+ sound/firewire/motu/motu-proc.c           | 12 ++----------
+ sound/firewire/oxfw/oxfw-proc.c           | 12 ++----------
+ sound/firewire/tascam/tascam-proc.c       | 12 ++----------
+ sound/synth/emux/emux_proc.c              |  4 ----
+ 10 files changed, 16 insertions(+), 92 deletions(-)
+
 -- 
 2.16.4
