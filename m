@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/20] ALSA: sh: Drop superfluous PCM
+Subject: [PATCH 10/20] ASoC: dwc: Drop superfluous PCM
 	preallocation error checks
-Date: Tue,  5 Feb 2019 20:42:06 +0100
-Message-ID: <20190205194221.25924-6-tiwai@suse.de>
+Date: Tue,  5 Feb 2019 20:42:11 +0100
+Message-ID: <20190205194221.25924-11-tiwai@suse.de>
 References: <20190205194221.25924-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 47B4726790B
+ by alsa0.perex.cz (Postfix) with ESMTP id 709B0267914
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 20:42:28 +0100 (CET)
 In-Reply-To: <20190205194221.25924-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,33 +30,24 @@ check is simply redundant.  Drop it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sh/aica.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/dwc/dwc-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-index 2b26311405a4..e7fef3fce44a 100644
---- a/sound/sh/aica.c
-+++ b/sound/sh/aica.c
-@@ -464,14 +464,12 @@ static int __init snd_aicapcmchip(struct snd_card_aica
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 			&snd_aicapcm_playback_ops);
- 	/* Allocate the DMA buffers */
--	err =
--	    snd_pcm_lib_preallocate_pages_for_all(pcm,
--						  SNDRV_DMA_TYPE_CONTINUOUS,
--						  snd_dma_continuous_data
--						  (GFP_KERNEL),
--						  AICA_BUFFER_SIZE,
--						  AICA_BUFFER_SIZE);
--	return err;
-+	snd_pcm_lib_preallocate_pages_for_all(pcm,
-+					      SNDRV_DMA_TYPE_CONTINUOUS,
-+					      snd_dma_continuous_data(GFP_KERNEL),
-+					      AICA_BUFFER_SIZE,
-+					      AICA_BUFFER_SIZE);
+diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
+index 2cc9632024fc..a9ae91c4597f 100644
+--- a/sound/soc/dwc/dwc-pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -249,9 +249,10 @@ static int dw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	size_t size = dw_pcm_hardware.buffer_bytes_max;
+ 
+-	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
++	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
+ 			SNDRV_DMA_TYPE_CONTINUOUS,
+ 			snd_dma_continuous_data(GFP_KERNEL), size, size);
 +	return 0;
  }
  
- /* Mixer controls */
+ static void dw_pcm_free(struct snd_pcm *pcm)
 -- 
 2.16.4
