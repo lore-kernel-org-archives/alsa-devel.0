@@ -1,15 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/4] ALSA: info: Drop unused
-	snd_info_entry.card field
-Date: Tue,  5 Feb 2019 17:07:55 +0100
-Message-ID: <20190205160758.9172-2-tiwai@suse.de>
+Subject: [PATCH 4/4] ALSA: cs46xx: Clean up proc file creations
+Date: Tue,  5 Feb 2019 17:07:58 +0100
+Message-ID: <20190205160758.9172-5-tiwai@suse.de>
 References: <20190205160758.9172-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CB5A2674C5
+ by alsa0.perex.cz (Postfix) with ESMTP id 492752666B3
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 17:08:01 +0100 (CET)
 In-Reply-To: <20190205160758.9172-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,67 +23,185 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It's referred only in snd_card_id_read() which can receive the card
-object via private_data.
+Again no functional changes, but only code clean up.
+Use a standard macro for initializing the procfs entries, also drop
+the info entries stored in dsp_spos_instance, as they are removed
+recursively by a single snd_info_free_entry() calls.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/info.h | 1 -
- sound/core/info.c    | 4 +---
- sound/core/init.c    | 6 ++++--
- 3 files changed, 5 insertions(+), 6 deletions(-)
+ sound/pci/cs46xx/cs46xx_dsp_spos.h  |  6 ---
+ sound/pci/cs46xx/dsp_spos.c         | 87 ++++++++++++-------------------------
+ sound/pci/cs46xx/dsp_spos_scb_lib.c | 13 +++---
+ 3 files changed, 33 insertions(+), 73 deletions(-)
 
-diff --git a/include/sound/info.h b/include/sound/info.h
-index 96530f7599e1..97fdda41e076 100644
---- a/include/sound/info.h
-+++ b/include/sound/info.h
-@@ -82,7 +82,6 @@ struct snd_info_entry {
- 		struct snd_info_entry_ops *ops;
- 	} c;
- 	struct snd_info_entry *parent;
--	struct snd_card *card;
- 	struct module *module;
- 	void *private_data;
- 	void (*private_free)(struct snd_info_entry *entry);
-diff --git a/sound/core/info.c b/sound/core/info.c
-index 92edc9488b5b..76800326ac56 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -750,10 +750,8 @@ struct snd_info_entry *snd_info_create_card_entry(struct snd_card *card,
- 	if (!parent)
- 		parent = card->proc_root;
- 	entry = snd_info_create_entry(name, parent);
+diff --git a/sound/pci/cs46xx/cs46xx_dsp_spos.h b/sound/pci/cs46xx/cs46xx_dsp_spos.h
+index 8008c59288a6..a02e1e19c021 100644
+--- a/sound/pci/cs46xx/cs46xx_dsp_spos.h
++++ b/sound/pci/cs46xx/cs46xx_dsp_spos.h
+@@ -177,22 +177,16 @@ struct dsp_spos_instance {
+ 	/* proc fs */  
+ 	struct snd_card *snd_card;
+ 	struct snd_info_entry * proc_dsp_dir;
+-	struct snd_info_entry * proc_sym_info_entry;
+-	struct snd_info_entry * proc_modules_info_entry;
+-	struct snd_info_entry * proc_parameter_dump_info_entry;
+-	struct snd_info_entry * proc_sample_dump_info_entry;
+ 
+ 	/* SCB's descriptors */
+ 	int nscb;
+ 	int scb_highest_frag_index;
+ 	struct dsp_scb_descriptor scbs[DSP_MAX_SCB_DESC];
+-	struct snd_info_entry * proc_scb_info_entry;
+ 	struct dsp_scb_descriptor * the_null_scb;
+ 
+ 	/* Task's descriptors */
+ 	int ntask;
+ 	struct dsp_task_descriptor tasks[DSP_MAX_TASK_DESC];
+-	struct snd_info_entry * proc_task_info_entry;
+ 
+ 	/* SPDIF status */
+ 	int spdif_status_out;
+diff --git a/sound/pci/cs46xx/dsp_spos.c b/sound/pci/cs46xx/dsp_spos.c
+index 3555f839371e..c28e58602679 100644
+--- a/sound/pci/cs46xx/dsp_spos.c
++++ b/sound/pci/cs46xx/dsp_spos.c
+@@ -809,52 +809,39 @@ int cs46xx_dsp_proc_init (struct snd_card *card, struct snd_cs46xx *chip)
+ 
+ 	entry = snd_info_create_card_entry(card, "spos_symbols",
+ 					   ins->proc_dsp_dir);
 -	if (entry) {
-+	if (entry)
- 		entry->module = card->module;
--		entry->card = card;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_symbol_table_read;
 -	}
- 	return entry;
- }
- EXPORT_SYMBOL(snd_info_create_card_entry);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 4849c611c0fe..5252a9ce13dc 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -104,7 +104,9 @@ EXPORT_SYMBOL(snd_mixer_oss_notify_callback);
- static void snd_card_id_read(struct snd_info_entry *entry,
- 			     struct snd_info_buffer *buffer)
- {
--	snd_iprintf(buffer, "%s\n", entry->card->id);
-+	struct snd_card *card = entry->private_data;
-+
-+	snd_iprintf(buffer, "%s\n", card->id);
- }
+-	ins->proc_sym_info_entry = entry;
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_symbol_table_read);
+     
+-	if ((entry = snd_info_create_card_entry(card, "spos_modules", ins->proc_dsp_dir)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_modules_read;
+-	}
+-	ins->proc_modules_info_entry = entry;
++	entry = snd_info_create_card_entry(card, "spos_modules",
++					   ins->proc_dsp_dir);
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_modules_read);
  
- static int init_info_for_card(struct snd_card *card)
-@@ -116,7 +118,7 @@ static int init_info_for_card(struct snd_card *card)
- 		dev_dbg(card->dev, "unable to create card entry\n");
- 		return -ENOMEM;
- 	}
--	entry->c.text.read = snd_card_id_read;
-+	snd_info_set_text_ops(entry, card, snd_card_id_read);
- 	card->proc_id = entry;
+-	if ((entry = snd_info_create_card_entry(card, "parameter", ins->proc_dsp_dir)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_parameter_dump_read;
+-	}
+-	ins->proc_parameter_dump_info_entry = entry;
++	entry = snd_info_create_card_entry(card, "parameter",
++					   ins->proc_dsp_dir);
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_parameter_dump_read);
  
- 	return snd_info_card_register(card);
+-	if ((entry = snd_info_create_card_entry(card, "sample", ins->proc_dsp_dir)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_sample_dump_read;
+-	}
+-	ins->proc_sample_dump_info_entry = entry;
++	entry = snd_info_create_card_entry(card, "sample",
++					   ins->proc_dsp_dir);
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_sample_dump_read);
+ 
+-	if ((entry = snd_info_create_card_entry(card, "task_tree", ins->proc_dsp_dir)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_task_tree_read;
+-	}
+-	ins->proc_task_info_entry = entry;
++	entry = snd_info_create_card_entry(card, "task_tree",
++					   ins->proc_dsp_dir);
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_task_tree_read);
+ 
+-	if ((entry = snd_info_create_card_entry(card, "scb_info", ins->proc_dsp_dir)) != NULL) {
+-		entry->content = SNDRV_INFO_CONTENT_TEXT;
+-		entry->private_data = chip;
+-		entry->mode = S_IFREG | 0644;
+-		entry->c.text.read = cs46xx_dsp_proc_scb_read;
+-	}
+-	ins->proc_scb_info_entry = entry;
++	entry = snd_info_create_card_entry(card, "scb_info",
++					   ins->proc_dsp_dir);
++	if (entry)
++		snd_info_set_text_ops(entry, chip,
++				      cs46xx_dsp_proc_scb_read);
+ 
+ 	mutex_lock(&chip->spos_mutex);
+ 	/* register/update SCB's entries on proc */
+@@ -876,24 +863,6 @@ int cs46xx_dsp_proc_done (struct snd_cs46xx *chip)
+ 	if (!ins)
+ 		return 0;
+ 
+-	snd_info_free_entry(ins->proc_sym_info_entry);
+-	ins->proc_sym_info_entry = NULL;
+-
+-	snd_info_free_entry(ins->proc_modules_info_entry);
+-	ins->proc_modules_info_entry = NULL;
+-
+-	snd_info_free_entry(ins->proc_parameter_dump_info_entry);
+-	ins->proc_parameter_dump_info_entry = NULL;
+-
+-	snd_info_free_entry(ins->proc_sample_dump_info_entry);
+-	ins->proc_sample_dump_info_entry = NULL;
+-
+-	snd_info_free_entry(ins->proc_scb_info_entry);
+-	ins->proc_scb_info_entry = NULL;
+-
+-	snd_info_free_entry(ins->proc_task_info_entry);
+-	ins->proc_task_info_entry = NULL;
+-
+ 	mutex_lock(&chip->spos_mutex);
+ 	for (i = 0; i < ins->nscb; ++i) {
+ 		if (ins->scbs[i].deleted) continue;
+diff --git a/sound/pci/cs46xx/dsp_spos_scb_lib.c b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+index e056f9dc228b..1d9d610262de 100644
+--- a/sound/pci/cs46xx/dsp_spos_scb_lib.c
++++ b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+@@ -254,8 +254,9 @@ void cs46xx_dsp_proc_register_scb_desc (struct snd_cs46xx *chip,
+ 	if (ins->snd_card != NULL && ins->proc_dsp_dir != NULL &&
+ 	    scb->proc_info == NULL) {
+   
+-		if ((entry = snd_info_create_card_entry(ins->snd_card, scb->scb_name, 
+-							ins->proc_dsp_dir)) != NULL) {
++		entry = snd_info_create_card_entry(ins->snd_card, scb->scb_name,
++						   ins->proc_dsp_dir);
++		if (entry) {
+ 			scb_info = kmalloc(sizeof(struct proc_scb_info), GFP_KERNEL);
+ 			if (!scb_info) {
+ 				snd_info_free_entry(entry);
+@@ -265,12 +266,8 @@ void cs46xx_dsp_proc_register_scb_desc (struct snd_cs46xx *chip,
+ 
+ 			scb_info->chip = chip;
+ 			scb_info->scb_desc = scb;
+-      
+-			entry->content = SNDRV_INFO_CONTENT_TEXT;
+-			entry->private_data = scb_info;
+-			entry->mode = S_IFREG | 0644;
+-      
+-			entry->c.text.read = cs46xx_dsp_proc_scb_info_read;
++			snd_info_set_text_ops(entry, scb_info,
++					      cs46xx_dsp_proc_scb_info_read);
+ 		}
+ out:
+ 		scb->proc_info = entry;
 -- 
 2.16.4
