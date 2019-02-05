@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/20] ASoC: sh: Drop superfluous PCM
-	preallocation error checks
-Date: Tue,  5 Feb 2019 20:42:15 +0100
-Message-ID: <20190205194221.25924-15-tiwai@suse.de>
+Subject: [PATCH 20/20] ALSA: pcm: Define
+	snd_pcm_lib_preallocate_*() as returning void
+Date: Tue,  5 Feb 2019 20:42:21 +0100
+Message-ID: <20190205194221.25924-21-tiwai@suse.de>
 References: <20190205194221.25924-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A12A2678FD
+ by alsa0.perex.cz (Postfix) with ESMTP id 89A0726795C
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 20:42:29 +0100 (CET)
 In-Reply-To: <20190205194221.25924-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,92 +25,136 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_lib_preallocate_pages() and co always succeed, so the error
-check is simply redundant.  Drop it.
+Now all callers no longer check the return value from
+snd_pcm_lib_preallocate_pages() and co, let's make them to return
+void, so that any new code won't fall into the same pitfall.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/fsi.c       |  3 ++-
- sound/soc/sh/rcar/core.c |  5 +----
- sound/soc/sh/siu_pcm.c   | 13 +------------
- 3 files changed, 4 insertions(+), 17 deletions(-)
+ include/sound/pcm.h     |  8 ++++----
+ sound/core/pcm_memory.c | 29 ++++++++---------------------
+ 2 files changed, 12 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index aa7e902f0c02..285afbafa662 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1768,11 +1768,12 @@ static const struct snd_pcm_ops fsi_pcm_ops = {
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index ca20f80f8976..465d7d033c4c 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1185,12 +1185,12 @@ static inline void snd_pcm_gettime(struct snd_pcm_runtime *runtime,
+  *  Memory
+  */
  
- static int fsi_pcm_new(struct snd_soc_pcm_runtime *rtd)
+-int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream);
+-int snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm);
+-int snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
++void snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream);
++void snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm);
++void snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
+ 				  int type, struct device *data,
+ 				  size_t size, size_t max);
+-int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
++void snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
+ 					  int type, void *data,
+ 					  size_t size, size_t max);
+ int snd_pcm_lib_malloc_pages(struct snd_pcm_substream *substream, size_t size);
+diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
+index 9a98bc61461f..049d65cad54a 100644
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -87,13 +87,10 @@ static void snd_pcm_lib_preallocate_dma_free(struct snd_pcm_substream *substream
+  * @substream: the pcm substream instance
+  *
+  * Releases the pre-allocated buffer of the given substream.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+  */
+-int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream)
++void snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream)
  {
--	return snd_pcm_lib_preallocate_pages_for_all(
-+	snd_pcm_lib_preallocate_pages_for_all(
- 		rtd->pcm,
- 		SNDRV_DMA_TYPE_DEV,
- 		rtd->card->snd_card->dev,
- 		PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
-+	return 0;
+ 	snd_pcm_lib_preallocate_dma_free(substream);
+-	return 0;
  }
  
- /*
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 59e250cc2e9d..29213b90755f 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1575,7 +1575,6 @@ static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
- 	struct rsnd_priv *priv = rsnd_io_to_priv(io);
- 	struct device *dev = rsnd_priv_to_dev(priv);
+ /**
+@@ -101,10 +98,8 @@ int snd_pcm_lib_preallocate_free(struct snd_pcm_substream *substream)
+  * @pcm: the pcm instance
+  *
+  * Releases all the pre-allocated buffers on the given pcm.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+  */
+-int snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm)
++void snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm)
+ {
  	struct snd_pcm_substream *substream;
--	int err;
+ 	int stream;
+@@ -112,7 +107,6 @@ int snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm)
+ 	for (stream = 0; stream < 2; stream++)
+ 		for (substream = pcm->streams[stream].substream; substream; substream = substream->next)
+ 			snd_pcm_lib_preallocate_free(substream);
+-	return 0;
+ }
+ EXPORT_SYMBOL(snd_pcm_lib_preallocate_free_for_all);
  
- 	/*
- 	 * use Audio-DMAC dev if we can use IPMMU
-@@ -1588,12 +1587,10 @@ static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
- 	for (substream = rtd->pcm->streams[stream].substream;
- 	     substream;
- 	     substream = substream->next) {
--		err = snd_pcm_lib_preallocate_pages(substream,
-+		snd_pcm_lib_preallocate_pages(substream,
- 					SNDRV_DMA_TYPE_DEV,
- 					dev,
- 					PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
--		if (err < 0)
--			return err;
- 	}
+@@ -215,7 +209,7 @@ static inline void preallocate_info_init(struct snd_pcm_substream *substream)
+ /*
+  * pre-allocate the buffer and create a proc file for the substream
+  */
+-static int snd_pcm_lib_preallocate_pages1(struct snd_pcm_substream *substream,
++static void snd_pcm_lib_preallocate_pages1(struct snd_pcm_substream *substream,
+ 					  size_t size, size_t max)
+ {
  
- 	return 0;
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 23384c477740..78c3145b4109 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -541,15 +541,9 @@ static int siu_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		if (ret < 0)
- 			return ret;
- 
--		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
-+		snd_pcm_lib_preallocate_pages_for_all(pcm,
- 				SNDRV_DMA_TYPE_DEV, card->dev,
- 				SIU_BUFFER_BYTES_MAX, SIU_BUFFER_BYTES_MAX);
--		if (ret < 0) {
--			dev_err(card->dev,
--			       "snd_pcm_lib_preallocate_pages_for_all() err=%d",
--				ret);
--			goto fail;
--		}
- 
- 		(*port_info)->pcm = pcm;
- 
-@@ -562,11 +556,6 @@ static int siu_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 
- 	dev_info(card->dev, "SuperH SIU driver initialized.\n");
- 	return 0;
--
--fail:
--	siu_free_port(siu_ports[pdev->id]);
--	dev_err(card->dev, "SIU: failed to initialize.\n");
--	return ret;
+@@ -226,7 +220,6 @@ static int snd_pcm_lib_preallocate_pages1(struct snd_pcm_substream *substream,
+ 		substream->buffer_bytes_max = substream->dma_buffer.bytes;
+ 	substream->dma_max = max;
+ 	preallocate_info_init(substream);
+-	return 0;
  }
  
- static void siu_pcm_free(struct snd_pcm *pcm)
+ 
+@@ -239,16 +232,14 @@ static int snd_pcm_lib_preallocate_pages1(struct snd_pcm_substream *substream,
+  * @max: the max. allowed pre-allocation size
+  *
+  * Do pre-allocation for the given DMA buffer type.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+  */
+-int snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
++void snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
+ 				  int type, struct device *data,
+ 				  size_t size, size_t max)
+ {
+ 	substream->dma_buffer.dev.type = type;
+ 	substream->dma_buffer.dev.dev = data;
+-	return snd_pcm_lib_preallocate_pages1(substream, size, max);
++	snd_pcm_lib_preallocate_pages1(substream, size, max);
+ }
+ EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages);
+ 
+@@ -262,21 +253,17 @@ EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages);
+  *
+  * Do pre-allocation to all substreams of the given pcm for the
+  * specified DMA type.
+- *
+- * Return: Zero if successful, or a negative error code on failure.
+  */
+-int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
++void snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
+ 					  int type, void *data,
+ 					  size_t size, size_t max)
+ {
+ 	struct snd_pcm_substream *substream;
+-	int stream, err;
++	int stream;
+ 
+ 	for (stream = 0; stream < 2; stream++)
+ 		for (substream = pcm->streams[stream].substream; substream; substream = substream->next)
+-			if ((err = snd_pcm_lib_preallocate_pages(substream, type, data, size, max)) < 0)
+-				return err;
+-	return 0;
++			snd_pcm_lib_preallocate_pages(substream, type, data, size, max);
+ }
+ EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages_for_all);
+ 
 -- 
 2.16.4
