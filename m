@@ -1,15 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/3] ALSA: Remove superfluous
+Subject: [PATCH 2/3] ALSA: opl4: Remove superfluous
 	snd_info_register() calls
-Date: Tue,  5 Feb 2019 17:05:24 +0100
-Message-ID: <20190205160527.8815-1-tiwai@suse.de>
+Date: Tue,  5 Feb 2019 17:05:26 +0100
+Message-ID: <20190205160527.8815-3-tiwai@suse.de>
+References: <20190205160527.8815-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BC8A3267471
+ by alsa0.perex.cz (Postfix) with ESMTP id BF0A1267488
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 17:05:32 +0100 (CET)
+In-Reply-To: <20190205160527.8815-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +24,30 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The calls of snd_info_register() are superfluous and should be avoided
+at the procfs creation time.  They are called at the end of the whole
+initialization via snd_card_register().  This patch drops such
+superfluous calls.
 
-this is a fallout of the previous patchset, covering more places that
-call snd_info_register() unnecessarily.  These should be applied on
-top of my previous patchset.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/drivers/opl4/opl4_proc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-The complete patches are found in topic/proc-fixes branch of sound git
-tree.
-
-
-thanks,
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: firewire: Remove superfluous snd_info_register() calls
-  ALSA: opl4: Remove superfluous snd_info_register() calls
-  ALSA: emux: Remove superfluous snd_info_register() calls
-
- sound/drivers/opl4/opl4_proc.c            |  4 ----
- sound/firewire/bebob/bebob_proc.c         | 12 ++----------
- sound/firewire/dice/dice-proc.c           | 12 ++----------
- sound/firewire/digi00x/digi00x-proc.c     | 16 ++--------------
- sound/firewire/fireface/ff-proc.c         | 12 ++----------
- sound/firewire/fireworks/fireworks_proc.c | 12 ++----------
- sound/firewire/motu/motu-proc.c           | 12 ++----------
- sound/firewire/oxfw/oxfw-proc.c           | 12 ++----------
- sound/firewire/tascam/tascam-proc.c       | 12 ++----------
- sound/synth/emux/emux_proc.c              |  4 ----
- 10 files changed, 16 insertions(+), 92 deletions(-)
-
+diff --git a/sound/drivers/opl4/opl4_proc.c b/sound/drivers/opl4/opl4_proc.c
+index 16b24091d799..f1b839a0e7b7 100644
+--- a/sound/drivers/opl4/opl4_proc.c
++++ b/sound/drivers/opl4/opl4_proc.c
+@@ -114,10 +114,6 @@ int snd_opl4_create_proc(struct snd_opl4 *opl4)
+ 		entry->c.ops = &snd_opl4_mem_proc_ops;
+ 		entry->module = THIS_MODULE;
+ 		entry->private_data = opl4;
+-		if (snd_info_register(entry) < 0) {
+-			snd_info_free_entry(entry);
+-			entry = NULL;
+-		}
+ 	}
+ 	opl4->proc_entry = entry;
+ 	return 0;
 -- 
 2.16.4
