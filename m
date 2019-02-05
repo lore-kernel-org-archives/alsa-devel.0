@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 18/20] ASoC: xtensa: Drop superfluous PCM
+Subject: [PATCH 19/20] ASoC: dmaengine: Drop superfluous PCM
 	preallocation error checks
-Date: Tue,  5 Feb 2019 20:42:19 +0100
-Message-ID: <20190205194221.25924-19-tiwai@suse.de>
+Date: Tue,  5 Feb 2019 20:42:20 +0100
+Message-ID: <20190205194221.25924-20-tiwai@suse.de>
 References: <20190205194221.25924-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 88EA2267942
+ by alsa0.perex.cz (Postfix) with ESMTP id 893E8267950
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 20:42:29 +0100 (CET)
 In-Reply-To: <20190205194221.25924-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,25 +30,35 @@ check is simply redundant.  Drop it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index 503560916620..2f20a02c8d46 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -469,9 +469,9 @@ static int xtfpga_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_card *card = rtd->card->snd_card;
- 	size_t size = xtfpga_pcm_hardware.buffer_bytes_max;
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 30e791a53352..46252b13d3b3 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -270,7 +270,6 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	size_t prealloc_buffer_size;
+ 	size_t max_buffer_size;
+ 	unsigned int i;
+-	int ret;
  
--	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--						     SNDRV_DMA_TYPE_DEV,
--						     card->dev, size, size);
-+	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
-+					      card->dev, size, size);
-+	return 0;
- }
+ 	if (config && config->prealloc_buffer_size) {
+ 		prealloc_buffer_size = config->prealloc_buffer_size;
+@@ -303,13 +302,11 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 			return -EINVAL;
+ 		}
  
- static const struct snd_pcm_ops xtfpga_pcm_ops = {
+-		ret = snd_pcm_lib_preallocate_pages(substream,
++		snd_pcm_lib_preallocate_pages(substream,
+ 				SNDRV_DMA_TYPE_DEV_IRAM,
+ 				dmaengine_dma_dev(pcm, substream),
+ 				prealloc_buffer_size,
+ 				max_buffer_size);
+-		if (ret)
+-			return ret;
+ 
+ 		if (!dmaengine_pcm_can_report_residue(dev, pcm->chan[i]))
+ 			pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE;
 -- 
 2.16.4
