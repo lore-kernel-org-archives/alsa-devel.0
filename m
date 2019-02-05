@@ -1,16 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ALSA: compress: Fix stop handling on
-	compressed capture streams
-Date: Tue, 5 Feb 2019 16:29:40 +0000
-Message-ID: <20190205162940.1028-1-ckeepax@opensource.cirrus.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/ca0132 - Fix build error without
+	CONFIG_PCI
+Date: Tue,  5 Feb 2019 18:01:59 +0100
+Message-ID: <20190205170159.17999-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E3D52666B3
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 17:29:44 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D04E2666B3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 18:02:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com, vkoul@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is normal user behaviour to start, stop, then start a stream
-again without closing it. Currently this works for compressed
-playback streams but not capture ones.
+A call of pci_iounmap() call without CONFIG_PCI leads to a build error
+on some architectures.  We tried to address this and add a check of
+IS_ENABLED(CONFIG_PCI), but this still doesn't seem enough for sh.
+Ideally we should fix it globally, it's really a corner case, so let's
+paper over it with a simpler ifdef.
 
-The states on a compressed capture stream go directly from OPEN to
-PREPARED, unlike a playback stream which moves to SETUP and waits
-for a write of data before moving to PREPARED. Currently however,
-when a stop is sent the state is set to SETUP for both types of
-streams. This leaves a capture stream in the situation where a new
-start can't be sent as that requires the state to be PREPARED and
-a new set_params can't be sent as that requires the state to be
-OPEN. The only option being to close the stream, and then reopen.
-
-Correct this issues by allowing snd_compr_drain_notify to set the
-state depending on the stream direction, as we already do in
-set_params.
-
-Fixes: 49bb6402f1aa ("ALSA: compress_core: Add support for capture streams")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Fixes: 1e73359a24fa ("ALSA: hda/ca0132 - make pci_iounmap() call conditional")
+Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/compress_driver.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_ca0132.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 0cdc3999ecfa8..c5188ff724d12 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -173,7 +173,11 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	if (snd_BUG_ON(!stream))
- 		return;
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index e5bdbc245682..29882bda7632 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -8451,8 +8451,10 @@ static void ca0132_free(struct hda_codec *codec)
+ 	ca0132_exit_chip(codec);
  
--	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	if (stream->direction == SND_COMPRESS_PLAYBACK)
-+		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	else
-+		stream->runtime->state = SNDRV_PCM_STATE_PREPARED;
-+
- 	wake_up(&stream->runtime->sleep);
+ 	snd_hda_power_down(codec);
+-	if (IS_ENABLED(CONFIG_PCI) && spec->mem_base)
++#ifdef CONFIG_PCI
++	if (spec->mem_base)
+ 		pci_iounmap(codec->bus->pci, spec->mem_base);
++#endif
+ 	kfree(spec->spec_init_verbs);
+ 	kfree(codec->spec);
  }
- 
 -- 
-2.11.0
+2.16.4
