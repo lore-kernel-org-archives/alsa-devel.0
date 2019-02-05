@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 09/20] ASoC: amd: Drop superfluous PCM
+Subject: [PATCH 05/20] ALSA: sh: Drop superfluous PCM
 	preallocation error checks
-Date: Tue,  5 Feb 2019 20:42:10 +0100
-Message-ID: <20190205194221.25924-10-tiwai@suse.de>
+Date: Tue,  5 Feb 2019 20:42:06 +0100
+Message-ID: <20190205194221.25924-6-tiwai@suse.de>
 References: <20190205194221.25924-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4804C26790F
+ by alsa0.perex.cz (Postfix) with ESMTP id 47B4726790B
  for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 20:42:28 +0100 (CET)
 In-Reply-To: <20190205194221.25924-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,77 +30,33 @@ check is simply redundant.  Drop it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/amd/acp-pcm-dma.c         | 26 +++++++++++---------------
- sound/soc/amd/raven/acp3x-pcm-dma.c |  9 ++++-----
- 2 files changed, 15 insertions(+), 20 deletions(-)
+ sound/sh/aica.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index f4011bebc7ec..2391c7f1dd2d 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1142,7 +1142,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 
- static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- {
--	int ret;
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
- 								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
-@@ -1150,24 +1149,21 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 
- 	switch (adata->asic_type) {
- 	case CHIP_STONEY:
--		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--							    SNDRV_DMA_TYPE_DEV,
--							    parent,
--							    ST_MIN_BUFFER,
--							    ST_MAX_BUFFER);
-+		snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+						      SNDRV_DMA_TYPE_DEV,
-+						      parent,
-+						      ST_MIN_BUFFER,
-+						      ST_MAX_BUFFER);
- 		break;
- 	default:
--		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--							    SNDRV_DMA_TYPE_DEV,
--							    parent,
--							    MIN_BUFFER,
--							    MAX_BUFFER);
-+		snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+						      SNDRV_DMA_TYPE_DEV,
-+						      parent,
-+						      MIN_BUFFER,
-+						      MAX_BUFFER);
- 		break;
- 	}
--	if (ret < 0)
--		dev_err(component->dev,
--			"buffer preallocation failure error:%d\n", ret);
--	return ret;
+diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+index 2b26311405a4..e7fef3fce44a 100644
+--- a/sound/sh/aica.c
++++ b/sound/sh/aica.c
+@@ -464,14 +464,12 @@ static int __init snd_aicapcmchip(struct snd_card_aica
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 			&snd_aicapcm_playback_ops);
+ 	/* Allocate the DMA buffers */
+-	err =
+-	    snd_pcm_lib_preallocate_pages_for_all(pcm,
+-						  SNDRV_DMA_TYPE_CONTINUOUS,
+-						  snd_dma_continuous_data
+-						  (GFP_KERNEL),
+-						  AICA_BUFFER_SIZE,
+-						  AICA_BUFFER_SIZE);
+-	return err;
++	snd_pcm_lib_preallocate_pages_for_all(pcm,
++					      SNDRV_DMA_TYPE_CONTINUOUS,
++					      snd_dma_continuous_data(GFP_KERNEL),
++					      AICA_BUFFER_SIZE,
++					      AICA_BUFFER_SIZE);
 +	return 0;
  }
  
- static int acp_dma_close(struct snd_pcm_substream *substream)
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 3e7d4099364c..1a2e15ff1456 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -367,11 +367,10 @@ static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_pcm_substream *substream)
- 
- static int acp3x_dma_new(struct snd_soc_pcm_runtime *rtd)
- {
--	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--						     SNDRV_DMA_TYPE_DEV,
--						     rtd->pcm->card->dev,
--						     MIN_BUFFER,
--						     MAX_BUFFER);
-+	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
-+					      rtd->pcm->card->dev,
-+					      MIN_BUFFER, MAX_BUFFER);
-+	return 0;
- }
- 
- static int acp3x_dma_hw_free(struct snd_pcm_substream *substream)
+ /* Mixer controls */
 -- 
 2.16.4
