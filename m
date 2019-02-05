@@ -1,230 +1,77 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: compress: Add helper functions for
-	component trigger/set_params
-Date: Tue, 5 Feb 2019 11:18:13 +0000
-Message-ID: <20190205111813.28929-2-ckeepax@opensource.cirrus.com>
-References: <20190205111813.28929-1-ckeepax@opensource.cirrus.com>
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v2] ALSA: hda/tegra: enable clock during probe
+Date: Tue, 05 Feb 2019 12:34:46 +0100
+Message-ID: <4564414.Hi6AUZdI4M@aspire.rjw.lan>
+References: <1548414418-5785-1-git-send-email-spujar@nvidia.com> <e7597220-2be7-ca29-50b7-c515c06cbed7@nvidia.com> <80a45aa3-8a22-959c-0c73-03ad2d6b1f8c@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FECB267737
- for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2019 12:18:26 +0100 (CET)
-In-Reply-To: <20190205111813.28929-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, vkoul@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <80a45aa3-8a22-959c-0c73-03ad2d6b1f8c@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Sameer Pujar <spujar@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, mkumard@nvidia.com, rlokhande@nvidia.com, sharadg@nvidia.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The trigger and set_params callbacks are called from 3 and 2 separate
-loops respectively, tidy up the code a little by factoring these out
-into helper functions.
+On Monday, February 4, 2019 11:04:50 AM CET Jon Hunter wrote:
+> 
+> On 04/02/2019 08:16, Sameer Pujar wrote:
+> 
+> ...
+> 
+> > Objective is to have things working with or without CONFIG_PM enabled.
+> > From previous comments and discussions it appears that there is mixed
+> > response
+> > for calling hda_tegra_runtime_resume() or runtime PM APIs in probe()
+> > call. Need
+> > to have consensus regarding the best practice to be followed, which
+> > would eventually
+> > can be used in other drivers too.
+> > 
+> > Rafael is suggesting to use CONFIG_PM check to do manual setup or
+> > runtime PM setup in probe,
+> > which would bring back the earlier above mentioned concern.
+> > 
+> > if (IS_ENABLED(CONFIG_PM)) {
+> > do setup based on pm-runtime
+> > } else {
+> >     do manual setup
+> > }
+> > Both if/else might end up doing the same here.
+> > Do we really need CONFIG_PM check here?
+> > 
+> > Instead does below proposal appear fine?
+> > 
+> > probe() {
+> >     hda_tegra_enable_clock();
+> > }
+> > 
+> > probe_work() {
+> >     /* hda setup */
+> >     . . .
+> >     pm_runtime_set_active(); /* initial state as active */
+> >     pm_runtime_enable();
+> >     return;
+> > }
+> 
+> I believe that this still does not work, because if there is a
+> power-domain that needs to be turned on, this does not guarantee this.
+> So I think that you need to call pm_runtime_get ...
+> 
+>  probe() {
+>  	if (!IS_ENABLED(CONFIG_PM))
+>  		hda_tegra_enable_clock();
+>  }
+> 
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/soc-compress.c | 117 ++++++++++++++++++++++-------------------------
- 1 file changed, 54 insertions(+), 63 deletions(-)
+But alas, there are no PM domains with CONFIG_PM unset.
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index fc8742383b230..03d5b9ccd3fc9 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -345,17 +345,13 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
- 	return 0;
- }
- 
--static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
-+static int soc_compr_components_trigger(struct snd_compr_stream *cstream,
-+					int cmd)
- {
--
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int ret = 0;
--
--	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+	int ret;
- 
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
-@@ -366,9 +362,25 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- 
- 		ret = component->driver->compr_ops->trigger(cstream, cmd);
- 		if (ret < 0)
--			goto out;
-+			return ret;
- 	}
- 
-+	return 0;
-+}
-+
-+static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+
-+	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+
-+	ret = soc_compr_components_trigger(cstream, cmd);
-+	if (ret < 0)
-+		goto out;
-+
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->trigger)
- 		cpu_dai->driver->cops->trigger(cstream, cmd, cpu_dai);
- 
-@@ -389,28 +401,12 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
- 	int ret, stream;
- 
- 	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
--		cmd == SND_COMPR_TRIGGER_DRAIN) {
--
--		for_each_rtdcom(fe, rtdcom) {
--			component = rtdcom->component;
--
--			if (!component->driver->compr_ops ||
--			    !component->driver->compr_ops->trigger)
--				continue;
--
--			ret = component->driver->compr_ops->trigger(cstream,
--								    cmd);
--			if (ret < 0)
--				return ret;
--		}
--		return ret;
--	}
-+	    cmd == SND_COMPR_TRIGGER_DRAIN)
-+		return soc_compr_components_trigger(cstream, cmd);
- 
- 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
- 		stream = SNDRV_PCM_STREAM_PLAYBACK;
-@@ -425,17 +421,9 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- 			goto out;
- 	}
- 
--	for_each_rtdcom(fe, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->trigger)
--			continue;
--
--		ret = component->driver->compr_ops->trigger(cstream, cmd);
--		if (ret < 0)
--			goto out;
--	}
-+	ret = soc_compr_components_trigger(cstream, cmd);
-+	if (ret < 0)
-+		goto out;
- 
- 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
- 
-@@ -462,12 +450,33 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- 	return ret;
- }
- 
--static int soc_compr_set_params(struct snd_compr_stream *cstream,
--					struct snd_compr_params *params)
-+static int soc_compr_components_set_params(struct snd_compr_stream *cstream,
-+					   struct snd_compr_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
-+	int ret;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (!component->driver->compr_ops ||
-+		    !component->driver->compr_ops->set_params)
-+			continue;
-+
-+		ret = component->driver->compr_ops->set_params(cstream, params);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int soc_compr_set_params(struct snd_compr_stream *cstream,
-+				struct snd_compr_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
-@@ -486,17 +495,9 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 			goto err;
- 	}
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->set_params)
--			continue;
--
--		ret = component->driver->compr_ops->set_params(cstream, params);
--		if (ret < 0)
--			goto err;
--	}
-+	ret = soc_compr_components_set_params(cstream, params);
-+	if (ret < 0)
-+		goto err;
- 
- 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->set_params) {
- 		ret = rtd->dai_link->compr_ops->set_params(cstream);
-@@ -530,8 +531,6 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
- 	struct snd_pcm_substream *fe_substream =
- 		 fe->pcm->streams[cstream->direction].substream;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
- 	int ret, stream;
- 
-@@ -566,17 +565,9 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 			goto out;
- 	}
- 
--	for_each_rtdcom(fe, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->set_params)
--			continue;
--
--		ret = component->driver->compr_ops->set_params(cstream, params);
--		if (ret < 0)
--			goto out;
--	}
-+	ret = soc_compr_components_set_params(cstream, params);
-+	if (ret < 0)
-+		goto out;
- 
- 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
- 		ret = fe->dai_link->compr_ops->set_params(cstream);
--- 
-2.11.0
+CONFIG_PM unset means that the *driver* has to know how to turn on the
+device and that has to be sufficient.
+
+Which basically is my point when I'm saying that this information is
+not available to the core and it cannot do anything to handle this
+case without the extra knowledge.
+
+Thanks,
+Rafael
