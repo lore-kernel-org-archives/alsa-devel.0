@@ -1,16 +1,15 @@
-From: James Schulman <james.schulman@cirrus.com>
-Subject: [PATCH v2 2/2] ASoC: cs35l36: Add device tree
-	documentation for CS35L36
-Date: Wed, 6 Feb 2019 13:06:44 -0600
-Message-ID: <1549480004-4853-1-git-send-email-james.schulman@cirrus.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3] gpiolib: acpi: Introduce
+	ACPI_GPIO_QUIRK_ONLY_GPIOIO
+Date: Wed,  6 Feb 2019 22:49:46 +0200
+Message-ID: <20190206204946.61730-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C9E14267917
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 20:06:18 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D4F5267437
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 21:49:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,193 +19,169 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, paul.handrigan@cirrus.com, ckeepax@opensource.cirrus.com, brian.austin@cirrus.com
+To: Hans de Goede <hdegoede@redhat.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree documentation for Cirrus Logic CS35L36
-speaker amplifier
+New quirk enforces search for GPIO based on its type,
+i.e. iterate over GpioIo resources only.
 
-Signed-off-by: James Schulman <james.schulman@cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 ---
- .../devicetree/bindings/sound/cs35l36.txt          | 168 +++++++++++++++++++++
- 1 file changed, 168 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l36.txt
+ drivers/gpio/gpiolib-acpi.c           | 15 ++++--
+ include/linux/acpi.h                  |  7 +++
+ sound/soc/intel/boards/bytcr_rt5651.c | 74 ++++-----------------------
+ 3 files changed, 27 insertions(+), 69 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l36.txt b/Documentation/devicetree/bindings/sound/cs35l36.txt
-new file mode 100644
-index 0000000..912bd16
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs35l36.txt
-@@ -0,0 +1,168 @@
-+CS35L36 Speaker Amplifier
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 15077c0797b9..2513593f9800 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -533,17 +533,24 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
+ 	if (ares->type != ACPI_RESOURCE_TYPE_GPIO)
+ 		return 1;
+ 
+-	if (lookup->n++ == lookup->index && !lookup->desc) {
++	if (!lookup->desc) {
+ 		const struct acpi_resource_gpio *agpio = &ares->data.gpio;
+-		int pin_index = lookup->pin_index;
++		bool gpioint = agpio->connection_type == ACPI_RESOURCE_GPIO_TYPE_INT;
++		int pin_index;
+ 
++		if (lookup->info.quirks & ACPI_GPIO_QUIRK_ONLY_GPIOIO && gpioint)
++			lookup->index++;
 +
-+Required properties:
++		if (lookup->n++ != lookup->index)
++			return 1;
 +
-+  - compatible : "cirrus,cs35l36"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+  - VA-supply, VP-supply : power supplies for the device,
-+  as covered in
-+  Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
-+  converter's output voltage in mV. The range is from 2550mV to 12000mV with
-+  increments of 50mV.
-+  (Default) VP
-+
-+  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
-+  Configures the peak current by monitoring the current through the boost FET.
-+  Range starts at 1600mA and goes to a maximum of 4500mA with increments of
-+  50mA.
-+  (Default) 4.50 Amps
-+
-+  - cirrus,boost-ind-nanohenry : Inductor estimation LBST reference value.
-+  Seeds the digital boost converter's inductor estimation block with the initial
-+  inductance value to reference.
-+
-+  1000 = 1uH (Default)
-+  1200 = 1.2uH
-+
-+Optional properties:
-+  - cirrus,multi-amp-mode : Boolean to determine if there are more than
-+  one amplifier in the system. If more than one it is best to Hi-Z the ASP
-+  port to prevent bus contention on the output signal
-+
-+  - cirrus,boost-ctl-select : Boost conerter control source selection.
-+  Selects the source of the BST_CTL target VBST voltage for the boost
-+  converter to generate.
-+  0x00 - Control Port Value
-+  0x01 - Class H Tracking (Default)
-+  0x10 - MultiDevice Sync Value
-+
-+  - cirrus,amp-pcm-inv : Boolean to determine Amplifier will invert incoming
-+  PCM data
-+
-+  - cirrus,imon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound IMON feedback data
-+
-+  - cirrus,vmon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound VMON feedback data
-+
-+  - cirrus,dcm-mode-enable : Boost converter automatic DCM Mode enable.
-+  This enables the digital boost converter to operate in a low power
-+  (Discontinuous Conduction) mode during low loading conditions.
-+
-+  - cirrus,weak-fet-disable : Boolean : The strength of the output drivers is
-+  reduced when operating in a Weak-FET Drive Mode and must not be used to drive
-+  a large load.
-+
-+  - cirrus,classh-wk-fet-delay :  Weak-FET entry delay. Controls the delay
-+  (in ms) before the Class H algorithm switches to the weak-FET voltage
-+  (after the audio falls and remains below the value specified in WKFET_AMP_THLD).
-+
-+  0 = 0ms
-+  1 = 5ms
-+  2 = 10ms
-+  3 = 50ms
-+  4 = 100ms (Default)
-+  5 = 200ms
-+  6 = 500ms
-+  7 = 1000ms
-+
-+  - cirrus,classh-weak-fet-thld-millivolt : Weak-FET amplifier drive threshold.
-+  Configures the signal threshold at which the PWM output stage enters
-+  weak-FET operation. The range is 50mV to 700mV in 50mV increments.
-+
-+  - cirrus,temp-warn-threshold :  Amplifier overtemperature warning threshold.
-+  Configures the threshold at which the overtemperature warning condition occurs.
-+  When the threshold is met, the overtemperature warning attenuation is applied
-+  and the TEMP_WARN_EINT interrupt status bit is set.
-+  If TEMP_WARN_MASK = 0, INTb is asserted.
-+
-+  0 = 105C
-+  1 = 115C
-+  2 = 125C (Default)
-+  3 = 135C
-+
-+  - cirrus,irq-drive-select : Selects the driver type of the selected interrupt
-+  output.
-+
-+  0 = Open-drain
-+  1 = Push-pull (Default)
-+
-+  - cirrus,irq-gpio-select : Selects the pin to serve as the programmable
-+  interrupt output.
-+
-+  0 = PDM_DATA / SWIRE_SD / INT (Default)
-+  1 = GPIO
-+
-+Optional properties for the "cirrus,vpbr-config" Sub-node
-+
-+  - cirrus,vpbr-en : VBST brownout prevention enable. Configures whether the
-+  VBST brownout prevention algorithm is enabled or disabled.
-+
-+  0 = VBST brownout prevention disabled (default)
-+  1 = VBST brownout prevention enabled
-+
-+  See Section 7.31.1 VPBR Config for configuration options & further details
-+
-+  - cirrus,vpbr-thld : Initial VPBR threshold. Configures the VP brownout
-+  threshold voltage
-+
-+  - cirrus,cirrus,vpbr-atk-rate : Attenuation attack step rate. Configures the
-+  amount delay between consecutive volume attenuation steps when a brownout
-+  condition is present and the VP brownout condition is in an attacking state.
-+
-+  - cirrus,vpbr-atk-vol : VP brownout prevention step size. Configures the VP
-+  brownout prevention attacking attenuation step size when operating in either
-+  digital volume or analog gain modes.
-+
-+  - cirrus,vpbr-max-attn : Maximum attenuation that the VP brownout prevention
-+  can apply to the audio signal.
-+
-+  - cirrus,vpbr-wait : Configures the delay time between a brownout condition
-+  no longer being present and the VP brownout prevention entering an attenuation
-+  release state.
-+
-+  - cirrus,vpbr-rel-rate : Attenuation release step rate. Configures the delay
-+  between consecutive volume attenuation release steps when a brownout condition
-+  is not longer present and the VP brownout is in an attenuation release state.
-+
-+  - cirrus,vpbr-mute-en : During the attack state, if the vpbr-max-attn value
-+  is reached, the error condition still remains, and this bit is set, the audio
-+  is muted.
-+
-+Example:
-+
-+cs35l36: cs35l36@40 {
-+	compatible = "cirrus,cs35l36";
-+	reg = <0x40>;
-+	VA-supply = <&dummy_vreg>;
-+	VP-supply = <&dummy_vreg>;
-+	reset-gpios = <&gpio0 54 0>;
-+	interrupt-parent = <&gpio8>;
-+	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+
-+	cirrus,boost-ind-nanohenry = <1000>;
-+	cirrus,boost-ctl-millivolt = <10000>;
-+	cirrus,boost-peak-milliamp = <4500>;
-+	cirrus,boost-ctl-select = <0x00>;
-+	cirrus,weak-fet-delay = <0x04>;
-+	cirrus,weak-fet-thld = <0x01>;
-+	cirrus,temp-warn-threshold = <0x01>;
-+	cirrus,multi-amp-mode;
-+	cirrus,irq-drive-select = <0x01>;
-+	cirrus,irq-gpio-select = <0x01>;
-+
-+	cirrus,vpbr-config {
-+		cirrus,vpbr-en = <0x00>;
-+		cirrus,vpbr-thld = <0x05>;
-+		cirrus,vpbr-atk-rate = <0x02>;
-+		cirrus,vpbr-atk-vol = <0x01>;
-+		cirrus,vpbr-max-attn = <0x09>;
-+		cirrus,vpbr-wait = <0x01>;
-+		cirrus,vpbr-rel-rate = <0x05>;
-+		cirrus,vpbr-mute-en = <0x00>;
-+	};
-+};
++		pin_index = lookup->pin_index;
+ 		if (pin_index >= agpio->pin_table_length)
+ 			return 1;
+ 
+ 		lookup->desc = acpi_get_gpiod(agpio->resource_source.string_ptr,
+ 					      agpio->pin_table[pin_index]);
+-		lookup->info.gpioint =
+-			agpio->connection_type == ACPI_RESOURCE_GPIO_TYPE_INT;
++		lookup->info.gpioint = gpioint;
+ 
+ 		/*
+ 		 * Polarity and triggering are only specified for GpioInt
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 13f5cb2c4763..7a3dffe8f971 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1014,6 +1014,13 @@ struct acpi_gpio_mapping {
+ 
+ /* Ignore IoRestriction field */
+ #define ACPI_GPIO_QUIRK_NO_IO_RESTRICTION	BIT(0)
++/*
++ * When ACPI GPIO mapping table is in use the index parameter inside it
++ * refers to the GPIO resource in _CRS method. That index has no
++ * distinction of actual type of the resource. When consumer wants to
++ * get GpioIo type explicitly, this quirk may be used.
++ */
++#define ACPI_GPIO_QUIRK_ONLY_GPIOIO		BIT(1)
+ 
+ 	unsigned int quirks;
+ };
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index c3b7732929cc..b0a4d297176e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -844,74 +844,18 @@ static const struct x86_cpu_id cherrytrail_cpu_ids[] = {
+ 	{}
+ };
+ 
+-static const struct acpi_gpio_params first_gpio = { 0, 0, false };
+-static const struct acpi_gpio_params second_gpio = { 1, 0, false };
++static const struct acpi_gpio_params ext_amp_enable_gpios = { 0, 0, false };
+ 
+-static const struct acpi_gpio_mapping byt_rt5651_amp_en_first[] = {
+-	{ "ext-amp-enable-gpios", &first_gpio, 1 },
+-	{ },
+-};
+-
+-static const struct acpi_gpio_mapping byt_rt5651_amp_en_second[] = {
+-	{ "ext-amp-enable-gpios", &second_gpio, 1 },
++static const struct acpi_gpio_mapping cht_rt5651_gpios[] = {
++	/*
++	 * Some boards have I2cSerialBusV2, GpioIo, GpioInt as ACPI resources,
++	 * other boards may  have I2cSerialBusV2, GpioInt, GpioIo instead.
++	 * We want the GpioIo one for the ext-amp-enable-gpio.
++	 */
++	{ "ext-amp-enable-gpios", &ext_amp_enable_gpios, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
+ 	{ },
+ };
+ 
+-/*
+- * Some boards have I2cSerialBusV2, GpioIo, GpioInt as ACPI resources, other
+- * boards may  have I2cSerialBusV2, GpioInt, GpioIo instead. We want the
+- * GpioIo one for the ext-amp-enable-gpio and both count for the index in
+- * acpi_gpio_params index.  So we have 2 different mappings and the code
+- * below figures out which one to use.
+- */
+-struct byt_rt5651_acpi_resource_data {
+-	int gpio_count;
+-	int gpio_int_idx;
+-};
+-
+-static int snd_byt_rt5651_acpi_resource(struct acpi_resource *ares, void *arg)
+-{
+-	struct byt_rt5651_acpi_resource_data *data = arg;
+-
+-	if (ares->type != ACPI_RESOURCE_TYPE_GPIO)
+-		return 0;
+-
+-	if (ares->data.gpio.connection_type == ACPI_RESOURCE_GPIO_TYPE_INT)
+-		data->gpio_int_idx = data->gpio_count;
+-
+-	data->gpio_count++;
+-	return 0;
+-}
+-
+-static void snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(struct device *codec)
+-{
+-	struct byt_rt5651_acpi_resource_data data = { 0, -1 };
+-	LIST_HEAD(resources);
+-	int ret;
+-
+-	ret = acpi_dev_get_resources(ACPI_COMPANION(codec), &resources,
+-				     snd_byt_rt5651_acpi_resource, &data);
+-	if (ret < 0) {
+-		dev_warn(codec, "Failed to get ACPI resources, not adding external amplifier GPIO mapping\n");
+-		return;
+-	}
+-
+-	/* All info we need is gathered during the walk */
+-	acpi_dev_free_resource_list(&resources);
+-
+-	switch (data.gpio_int_idx) {
+-	case 0:
+-		byt_rt5651_gpios = byt_rt5651_amp_en_second;
+-		break;
+-	case 1:
+-		byt_rt5651_gpios = byt_rt5651_amp_en_first;
+-		break;
+-	default:
+-		dev_warn(codec, "Unknown GpioInt index %d, not adding external amplifier GPIO mapping\n",
+-			 data.gpio_int_idx);
+-	}
+-}
+-
+ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
+ 	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
+@@ -1038,7 +982,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 
+ 	/* Cherry Trail devices use an external amplifier enable gpio */
+ 	if (x86_match_cpu(cherrytrail_cpu_ids) && !byt_rt5651_gpios)
+-		snd_byt_rt5651_mc_pick_amp_en_gpio_mapping(codec_dev);
++		byt_rt5651_gpios = cht_rt5651_gpios;
+ 
+ 	if (byt_rt5651_gpios) {
+ 		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
 -- 
-1.9.1
+2.20.1
