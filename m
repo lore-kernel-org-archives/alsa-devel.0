@@ -1,15 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] media: Drop superfluous PCM preallocation
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH] media: Drop superfluous PCM preallocation
 	error checks
-Date: Wed,  6 Feb 2019 18:32:39 +0100
-Message-ID: <20190206173239.18046-1-tiwai@suse.de>
+Date: Wed, 6 Feb 2019 14:36:05 -0300
+Message-ID: <CAAEAJfA2fr6XwL-k9xNqToFypUZ-CvfotJpq6EHDBNiEgmCO8g@mail.gmail.com>
+References: <20190206173239.18046-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 36D0C267917
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 18:32:42 +0100 (CET)
+Received: from mail-vs1-f65.google.com (mail-vs1-f65.google.com
+ [209.85.217.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0435726792A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 18:36:17 +0100 (CET)
+Received: by mail-vs1-f65.google.com with SMTP id e16so2619308vsq.6
+ for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2019 09:36:17 -0800 (PST)
+In-Reply-To: <20190206173239.18046-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, linux-media@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_lib_preallocate_pages() and co always succeed, so the error
-check is simply redundant.  Drop it.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-
-This is a piece I overlooked in the previous patchset:
-   https://www.spinics.net/lists/alsa-devel/msg87223.html
-
-Media people, please give ACK if this is OK.  Then I'll merge it together
-with other relevant patches.  Thanks!
-
- drivers/media/pci/solo6x10/solo6x10-g723.c | 4 +---
- drivers/media/pci/tw686x/tw686x-audio.c    | 3 ++-
- 2 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
-index 2cc05a9d57ac..a16242a9206f 100644
---- a/drivers/media/pci/solo6x10/solo6x10-g723.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
-@@ -360,13 +360,11 @@ static int solo_snd_pcm_init(struct solo_dev *solo_dev)
- 	     ss; ss = ss->next, i++)
- 		sprintf(ss->name, "Camera #%d Audio", i);
- 
--	ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
-+	snd_pcm_lib_preallocate_pages_for_all(pcm,
- 					SNDRV_DMA_TYPE_CONTINUOUS,
- 					snd_dma_continuous_data(GFP_KERNEL),
- 					G723_PERIOD_BYTES * PERIODS,
- 					G723_PERIOD_BYTES * PERIODS);
--	if (ret < 0)
--		return ret;
- 
- 	solo_dev->snd_pcm = pcm;
- 
-diff --git a/drivers/media/pci/tw686x/tw686x-audio.c b/drivers/media/pci/tw686x/tw686x-audio.c
-index a28329698e20..fb0e7573b5ae 100644
---- a/drivers/media/pci/tw686x/tw686x-audio.c
-+++ b/drivers/media/pci/tw686x/tw686x-audio.c
-@@ -301,11 +301,12 @@ static int tw686x_snd_pcm_init(struct tw686x_dev *dev)
- 	     ss; ss = ss->next, i++)
- 		snprintf(ss->name, sizeof(ss->name), "vch%u audio", i);
- 
--	return snd_pcm_lib_preallocate_pages_for_all(pcm,
-+	snd_pcm_lib_preallocate_pages_for_all(pcm,
- 				SNDRV_DMA_TYPE_DEV,
- 				snd_dma_pci_data(dev->pci_dev),
- 				TW686X_AUDIO_PAGE_MAX * AUDIO_DMA_SIZE_MAX,
- 				TW686X_AUDIO_PAGE_MAX * AUDIO_DMA_SIZE_MAX);
-+	return 0;
- }
- 
- static void tw686x_audio_dma_free(struct tw686x_dev *dev,
--- 
-2.16.4
+T24gV2VkLCA2IEZlYiAyMDE5IGF0IDE0OjMyLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+IHdyb3RlOgo+Cj4gc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXMoKSBhbmQgY28gYWx3YXlz
+IHN1Y2NlZWQsIHNvIHRoZSBlcnJvcgo+IGNoZWNrIGlzIHNpbXBseSByZWR1bmRhbnQuICBEcm9w
+IGl0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0t
+LQo+Cj4gVGhpcyBpcyBhIHBpZWNlIEkgb3Zlcmxvb2tlZCBpbiB0aGUgcHJldmlvdXMgcGF0Y2hz
+ZXQ6Cj4gICAgaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvYWxzYS1kZXZlbC9tc2c4NzIy
+My5odG1sCj4KPiBNZWRpYSBwZW9wbGUsIHBsZWFzZSBnaXZlIEFDSyBpZiB0aGlzIGlzIE9LLiAg
+VGhlbiBJJ2xsIG1lcmdlIGl0IHRvZ2V0aGVyCj4gd2l0aCBvdGhlciByZWxldmFudCBwYXRjaGVz
+LiAgVGhhbmtzIQo+Cj4gIGRyaXZlcnMvbWVkaWEvcGNpL3NvbG82eDEwL3NvbG82eDEwLWc3MjMu
+YyB8IDQgKy0tLQo+ICBkcml2ZXJzL21lZGlhL3BjaS90dzY4NngvdHc2ODZ4LWF1ZGlvLmMgICAg
+fCAzICsrLQoKdHc2ODZ4IGNoYW5nZXMgbG9vayBnb29kLgoKQWNrZWQtYnk6IEV6ZXF1aWVsIEdh
+cmNpYSA8ZXplcXVpZWxAY29sbGFib3JhLmNvbT4KClRoYW5rcywKRXplCgo+ICAyIGZpbGVzIGNo
+YW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIzLmMgYi9kcml2ZXJzL21lZGlh
+L3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIzLmMKPiBpbmRleCAyY2MwNWE5ZDU3YWMuLmExNjI0
+MmE5MjA2ZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngx
+MC1nNzIzLmMKPiArKysgYi9kcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIz
+LmMKPiBAQCAtMzYwLDEzICszNjAsMTEgQEAgc3RhdGljIGludCBzb2xvX3NuZF9wY21faW5pdChz
+dHJ1Y3Qgc29sb19kZXYgKnNvbG9fZGV2KQo+ICAgICAgICAgICAgICBzczsgc3MgPSBzcy0+bmV4
+dCwgaSsrKQo+ICAgICAgICAgICAgICAgICBzcHJpbnRmKHNzLT5uYW1lLCAiQ2FtZXJhICMlZCBB
+dWRpbyIsIGkpOwo+Cj4gLSAgICAgICByZXQgPSBzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdl
+c19mb3JfYWxsKHBjbSwKPiArICAgICAgIHNuZF9wY21fbGliX3ByZWFsbG9jYXRlX3BhZ2VzX2Zv
+cl9hbGwocGNtLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRS
+Vl9ETUFfVFlQRV9DT05USU5VT1VTLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBzbmRfZG1hX2NvbnRpbnVvdXNfZGF0YShHRlBfS0VSTkVMKSwKPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRzcyM19QRVJJT0RfQllURVMgKiBQRVJJT0RT
+LAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBHNzIzX1BFUklPRF9C
+WVRFUyAqIFBFUklPRFMpOwo+IC0gICAgICAgaWYgKHJldCA8IDApCj4gLSAgICAgICAgICAgICAg
+IHJldHVybiByZXQ7Cj4KPiAgICAgICAgIHNvbG9fZGV2LT5zbmRfcGNtID0gcGNtOwo+Cj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8uYyBiL2RyaXZl
+cnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8uYwo+IGluZGV4IGEyODMyOTY5OGUyMC4u
+ZmIwZTc1NzNiNWFlIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4
+NngtYXVkaW8uYwo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8u
+Ywo+IEBAIC0zMDEsMTEgKzMwMSwxMiBAQCBzdGF0aWMgaW50IHR3Njg2eF9zbmRfcGNtX2luaXQo
+c3RydWN0IHR3Njg2eF9kZXYgKmRldikKPiAgICAgICAgICAgICAgc3M7IHNzID0gc3MtPm5leHQs
+IGkrKykKPiAgICAgICAgICAgICAgICAgc25wcmludGYoc3MtPm5hbWUsIHNpemVvZihzcy0+bmFt
+ZSksICJ2Y2gldSBhdWRpbyIsIGkpOwo+Cj4gLSAgICAgICByZXR1cm4gc25kX3BjbV9saWJfcHJl
+YWxsb2NhdGVfcGFnZXNfZm9yX2FsbChwY20sCj4gKyAgICAgICBzbmRfcGNtX2xpYl9wcmVhbGxv
+Y2F0ZV9wYWdlc19mb3JfYWxsKHBjbSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFNORFJWX0RNQV9UWVBFX0RFViwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNu
+ZF9kbWFfcGNpX2RhdGEoZGV2LT5wY2lfZGV2KSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIFRXNjg2WF9BVURJT19QQUdFX01BWCAqIEFVRElPX0RNQV9TSVpFX01BWCwKPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRXNjg2WF9BVURJT19QQUdFX01BWCAqIEFVRElP
+X0RNQV9TSVpFX01BWCk7Cj4gKyAgICAgICByZXR1cm4gMDsKPiAgfQo+Cj4gIHN0YXRpYyB2b2lk
+IHR3Njg2eF9hdWRpb19kbWFfZnJlZShzdHJ1Y3QgdHc2ODZ4X2RldiAqZGV2LAo+IC0tCj4gMi4x
+Ni40Cj4KCgotLSAKRXplcXVpZWwgR2FyY8OtYSwgVmFuZ3VhcmRpYVN1cgp3d3cudmFuZ3VhcmRp
+YXN1ci5jb20uYXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
