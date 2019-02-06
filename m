@@ -1,54 +1,59 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: dapm: Check for NULL widget in
-	dapm_update_dai_unlocked
-Date: Wed, 6 Feb 2019 11:13:59 +0000
-Message-ID: <20190206111359.30786-1-ckeepax@opensource.cirrus.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH] ASoC: dapm: Check for NULL widget in dapm_update_dai_unlocked
+Date: Wed, 6 Feb 2019 12:14:56 +0100
+Message-ID: <CAJKOXPcQfsNnuns1BprEPy4=ggW7fU+_-O_VksrWuT4GPPgAwg@mail.gmail.com>
+References: <CGME20190205211638epcas3p409823d4acac8073473153d745151ea5f@epcas3p4.samsung.com>
+ <20190205211622.GA5891@kozik-lap> <844c3f34-f7db-6b26-169a-994922367c78@samsung.com>
+ <20190206100549.GO3837@imbe.wolfsonmicro.main> <CAJKOXPejBO_9iBHg1R8M2=tcuTck72DjxTYEUyQOp8cPV-0xTg@mail.gmail.com>
+ <20190206105955.GP3837@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 92DCC267002
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 12:14:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, krzk@kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190206105955.GP3837@imbe.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-DAIs linked to the dummy will not have an associated playback/capture
-widget, so we need to skip the update in that case.
+On Wed, 6 Feb 2019 at 12:00, Charles Keepax
+<ckeepax@opensource.cirrus.com> wrote:
+>
+> On Wed, Feb 06, 2019 at 11:22:33AM +0100, Krzysztof Kozlowski wrote:
+> > On Wed, 6 Feb 2019 at 11:05, Charles Keepax
+> > <ckeepax@opensource.cirrus.com> wrote:
+> > >
+> > > DAIs linked to the dummy will not have an associated playback/capture
+> > > widget, so we need to skip the update in that case.
+> > >
+> > > Fixes: 078a85f2806f ("ASoC: dapm: Only power up active channels from a DAI")
+> > > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > > ---
+> > >
+> > > Ok so that all makes sense, this patch is probably the best fix?
+> > >
+> > > Thanks,
+> > > Charles
+> >
+> > For this particular issue (NULL-pointer):
+> > Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >
+> > However now I see bug sleeping in atomic context:
+> >
+> > [   64.000828] BUG: sleeping function called from invalid context at
+> > ../kernel/locking/mutex.c:908
+>
+> Does this probably definitely get fixed by reverting my patch?
+> It's just a bit odd as this seems to be complaining about a clock
+> operation in i2s_trigger and I don't think my patch should have
+> any affect on the trigger callback. It should get run from either
+> the dai_link DAPM event or hw_params, neither of which should
+> happen in an atomic context.
 
-Fixes: 078a85f2806f ("ASoC: dapm: Only power up active channels from a DAI")
-Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- sound/soc/soc-dapm.c | 3 +++
- 1 file changed, 3 insertions(+)
+Before this fixup, probably NULL pointer happened before any of this.
+I tried it now few times and the possible deadlock and sleeping in
+invalid context did not appear. It might be random/racy or totally
+unrelated to your change.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5b74dffc9c11d..111a23a9708a2 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2580,6 +2580,9 @@ static int dapm_update_dai_unlocked(struct snd_pcm_substream *substream,
- 	else
- 		w = dai->capture_widget;
- 
-+	if (!w)
-+		return 0;
-+
- 	dev_dbg(dai->dev, "Update DAI routes for %s %s\n", dai->name,
- 		dir == SNDRV_PCM_STREAM_PLAYBACK ? "playback" : "capture");
- 
--- 
-2.11.0
+Best regards,
+Krzysztof
