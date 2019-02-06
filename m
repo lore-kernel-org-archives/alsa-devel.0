@@ -1,25 +1,22 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: dapm: Check for NULL widget in
- dapm_update_dai_unlocked
-Date: Wed, 6 Feb 2019 11:45:45 +0000
-Message-ID: <20190206114545.GR3837@imbe.wolfsonmicro.main>
-References: <CGME20190205211638epcas3p409823d4acac8073473153d745151ea5f@epcas3p4.samsung.com>
- <20190205211622.GA5891@kozik-lap>
- <844c3f34-f7db-6b26-169a-994922367c78@samsung.com>
- <20190206100549.GO3837@imbe.wolfsonmicro.main>
- <CAJKOXPejBO_9iBHg1R8M2=tcuTck72DjxTYEUyQOp8cPV-0xTg@mail.gmail.com>
- <20190206105955.GP3837@imbe.wolfsonmicro.main>
- <CAJKOXPcQfsNnuns1BprEPy4=ggW7fU+_-O_VksrWuT4GPPgAwg@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/3] ALSA: firewire: Remove superfluous
+ snd_info_register() calls
+Date: Wed, 6 Feb 2019 23:33:22 +0900
+Message-ID: <20190206143322.GA4337@workstation>
+References: <20190205160527.8815-1-tiwai@suse.de>
+ <20190205160527.8815-2-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 67EA8267002
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 12:45:49 +0100 (CET)
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EBA5267002
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 15:33:31 +0100 (CET)
+Received: by mail-pl1-f193.google.com with SMTP id gn14so3145031plb.10
+ for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2019 06:33:31 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <CAJKOXPcQfsNnuns1BprEPy4=ggW7fU+_-O_VksrWuT4GPPgAwg@mail.gmail.com>
+In-Reply-To: <20190205160527.8815-2-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,67 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: alsa-devel@alsa-project.org, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 06, 2019 at 12:14:56PM +0100, Krzysztof Kozlowski wrote:
-> On Wed, 6 Feb 2019 at 12:00, Charles Keepax
-> <ckeepax@opensource.cirrus.com> wrote:
-> >
-> > On Wed, Feb 06, 2019 at 11:22:33AM +0100, Krzysztof Kozlowski wrote:
-> > > On Wed, 6 Feb 2019 at 11:05, Charles Keepax
-> > > <ckeepax@opensource.cirrus.com> wrote:
-> > > >
-> > > > DAIs linked to the dummy will not have an associated playback/capture
-> > > > widget, so we need to skip the update in that case.
-> > > >
-> > > > Fixes: 078a85f2806f ("ASoC: dapm: Only power up active channels from a DAI")
-> > > > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> > > > ---
-> > > >
-> > > > Ok so that all makes sense, this patch is probably the best fix?
-> > > >
-> > > > Thanks,
-> > > > Charles
-> > >
-> > > For this particular issue (NULL-pointer):
-> > > Reported-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > However now I see bug sleeping in atomic context:
-> > >
-> > > [   64.000828] BUG: sleeping function called from invalid context at
-> > > ../kernel/locking/mutex.c:908
-> >
-> > Does this probably definitely get fixed by reverting my patch?
-> > It's just a bit odd as this seems to be complaining about a clock
-> > operation in i2s_trigger and I don't think my patch should have
-> > any affect on the trigger callback. It should get run from either
-> > the dai_link DAPM event or hw_params, neither of which should
-> > happen in an atomic context.
+Hi,
+
+On Tue, Feb 05, 2019 at 05:05:25PM +0100, Takashi Iwai wrote:
+> The calls of snd_info_register() are superfluous and should be avoided
+> at the procfs creation time.  They are called at the end of the whole
+> initialization via snd_card_register().  This patch drops such
+> superfluous calls.
 > 
-> Before this fixup, probably NULL pointer happened before any of this.
-> I tried it now few times and the possible deadlock and sleeping in
-> invalid context did not appear. It might be random/racy or totally
-> unrelated to your change.
-> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/firewire/bebob/bebob_proc.c         | 12 ++----------
+>  sound/firewire/dice/dice-proc.c           | 12 ++----------
+>  sound/firewire/digi00x/digi00x-proc.c     | 16 ++--------------
+>  sound/firewire/fireface/ff-proc.c         | 12 ++----------
+>  sound/firewire/fireworks/fireworks_proc.c | 12 ++----------
+>  sound/firewire/motu/motu-proc.c           | 12 ++----------
+>  sound/firewire/oxfw/oxfw-proc.c           | 12 ++----------
+>  sound/firewire/tascam/tascam-proc.c       | 12 ++----------
+>  8 files changed, 16 insertions(+), 84 deletions(-)
 
-Looking through I think this is an unrelated issue. Assuming the
-driver in question is (sound/soc/samsung/i2s.c). Inside
-i2s_trigger, there is a call to config_setup(i2s), which in turn
-will call clk_get_rate if i2s->quirks contains the flag
-QUIRK_NO_MUXPSR.
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+ 
 
-The trigger callback can be made from an atomic context and
-clk_get_rate will take the prepare lock of the clock. The clock
-prepare lock is always a mutex which shouldn't be locked from an
-atomic context. So it seems like this will fail whenever that
-QUIRK_NO_MUXPSR flag is set, no idea what causes that to be set.
+By the way, would I request you to sync alsa-utils repo in
+git.alsa-project.org to the one in github.com? 9 patches
+were applied to the latter, but never to the former.
 
-It looks like this bug was introduced by this change:
 
-647d04f8e07a ("ASoC: samsung: i2s: Ensure the RCLK rate is properly determined")
+Thanks
 
-Thanks,
-Charles
+Takashi Sakamoto
