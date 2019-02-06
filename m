@@ -1,20 +1,18 @@
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH] media: Drop superfluous PCM preallocation
-	error checks
-Date: Wed, 6 Feb 2019 14:36:05 -0300
-Message-ID: <CAAEAJfA2fr6XwL-k9xNqToFypUZ-CvfotJpq6EHDBNiEgmCO8g@mail.gmail.com>
-References: <20190206173239.18046-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/6] ASoC: codecs: jz4740: Use SPDX license
+	notifier
+Date: Wed, 6 Feb 2019 18:10:54 +0000
+Message-ID: <20190206181054.GF17630@sirena.org.uk>
+References: <20190205031108.26171-1-paul@crapouillou.net>
+ <20190205031108.26171-3-paul@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5790208995100347258=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vs1-f65.google.com (mail-vs1-f65.google.com
- [209.85.217.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0435726792A
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 18:36:17 +0100 (CET)
-Received: by mail-vs1-f65.google.com with SMTP id e16so2619308vsq.6
- for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2019 09:36:17 -0800 (PST)
-In-Reply-To: <20190206173239.18046-1-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 698F226792A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 19:11:03 +0100 (CET)
+In-Reply-To: <20190205031108.26171-3-paul@crapouillou.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media <linux-media@vger.kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCA2IEZlYiAyMDE5IGF0IDE0OjMyLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
-IHdyb3RlOgo+Cj4gc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXMoKSBhbmQgY28gYWx3YXlz
-IHN1Y2NlZWQsIHNvIHRoZSBlcnJvcgo+IGNoZWNrIGlzIHNpbXBseSByZWR1bmRhbnQuICBEcm9w
-IGl0Lgo+Cj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0t
-LQo+Cj4gVGhpcyBpcyBhIHBpZWNlIEkgb3Zlcmxvb2tlZCBpbiB0aGUgcHJldmlvdXMgcGF0Y2hz
-ZXQ6Cj4gICAgaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvYWxzYS1kZXZlbC9tc2c4NzIy
-My5odG1sCj4KPiBNZWRpYSBwZW9wbGUsIHBsZWFzZSBnaXZlIEFDSyBpZiB0aGlzIGlzIE9LLiAg
-VGhlbiBJJ2xsIG1lcmdlIGl0IHRvZ2V0aGVyCj4gd2l0aCBvdGhlciByZWxldmFudCBwYXRjaGVz
-LiAgVGhhbmtzIQo+Cj4gIGRyaXZlcnMvbWVkaWEvcGNpL3NvbG82eDEwL3NvbG82eDEwLWc3MjMu
-YyB8IDQgKy0tLQo+ICBkcml2ZXJzL21lZGlhL3BjaS90dzY4NngvdHc2ODZ4LWF1ZGlvLmMgICAg
-fCAzICsrLQoKdHc2ODZ4IGNoYW5nZXMgbG9vayBnb29kLgoKQWNrZWQtYnk6IEV6ZXF1aWVsIEdh
-cmNpYSA8ZXplcXVpZWxAY29sbGFib3JhLmNvbT4KClRoYW5rcywKRXplCgo+ICAyIGZpbGVzIGNo
-YW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIzLmMgYi9kcml2ZXJzL21lZGlh
-L3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIzLmMKPiBpbmRleCAyY2MwNWE5ZDU3YWMuLmExNjI0
-MmE5MjA2ZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngx
-MC1nNzIzLmMKPiArKysgYi9kcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1nNzIz
-LmMKPiBAQCAtMzYwLDEzICszNjAsMTEgQEAgc3RhdGljIGludCBzb2xvX3NuZF9wY21faW5pdChz
-dHJ1Y3Qgc29sb19kZXYgKnNvbG9fZGV2KQo+ICAgICAgICAgICAgICBzczsgc3MgPSBzcy0+bmV4
-dCwgaSsrKQo+ICAgICAgICAgICAgICAgICBzcHJpbnRmKHNzLT5uYW1lLCAiQ2FtZXJhICMlZCBB
-dWRpbyIsIGkpOwo+Cj4gLSAgICAgICByZXQgPSBzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdl
-c19mb3JfYWxsKHBjbSwKPiArICAgICAgIHNuZF9wY21fbGliX3ByZWFsbG9jYXRlX3BhZ2VzX2Zv
-cl9hbGwocGNtLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRS
-Vl9ETUFfVFlQRV9DT05USU5VT1VTLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBzbmRfZG1hX2NvbnRpbnVvdXNfZGF0YShHRlBfS0VSTkVMKSwKPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRzcyM19QRVJJT0RfQllURVMgKiBQRVJJT0RT
-LAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBHNzIzX1BFUklPRF9C
-WVRFUyAqIFBFUklPRFMpOwo+IC0gICAgICAgaWYgKHJldCA8IDApCj4gLSAgICAgICAgICAgICAg
-IHJldHVybiByZXQ7Cj4KPiAgICAgICAgIHNvbG9fZGV2LT5zbmRfcGNtID0gcGNtOwo+Cj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8uYyBiL2RyaXZl
-cnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8uYwo+IGluZGV4IGEyODMyOTY5OGUyMC4u
-ZmIwZTc1NzNiNWFlIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4
-NngtYXVkaW8uYwo+ICsrKyBiL2RyaXZlcnMvbWVkaWEvcGNpL3R3Njg2eC90dzY4NngtYXVkaW8u
-Ywo+IEBAIC0zMDEsMTEgKzMwMSwxMiBAQCBzdGF0aWMgaW50IHR3Njg2eF9zbmRfcGNtX2luaXQo
-c3RydWN0IHR3Njg2eF9kZXYgKmRldikKPiAgICAgICAgICAgICAgc3M7IHNzID0gc3MtPm5leHQs
-IGkrKykKPiAgICAgICAgICAgICAgICAgc25wcmludGYoc3MtPm5hbWUsIHNpemVvZihzcy0+bmFt
-ZSksICJ2Y2gldSBhdWRpbyIsIGkpOwo+Cj4gLSAgICAgICByZXR1cm4gc25kX3BjbV9saWJfcHJl
-YWxsb2NhdGVfcGFnZXNfZm9yX2FsbChwY20sCj4gKyAgICAgICBzbmRfcGNtX2xpYl9wcmVhbGxv
-Y2F0ZV9wYWdlc19mb3JfYWxsKHBjbSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFNORFJWX0RNQV9UWVBFX0RFViwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNu
-ZF9kbWFfcGNpX2RhdGEoZGV2LT5wY2lfZGV2KSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIFRXNjg2WF9BVURJT19QQUdFX01BWCAqIEFVRElPX0RNQV9TSVpFX01BWCwKPiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRXNjg2WF9BVURJT19QQUdFX01BWCAqIEFVRElP
-X0RNQV9TSVpFX01BWCk7Cj4gKyAgICAgICByZXR1cm4gMDsKPiAgfQo+Cj4gIHN0YXRpYyB2b2lk
-IHR3Njg2eF9hdWRpb19kbWFfZnJlZShzdHJ1Y3QgdHc2ODZ4X2RldiAqZGV2LAo+IC0tCj4gMi4x
-Ni40Cj4KCgotLSAKRXplcXVpZWwgR2FyY8OtYSwgVmFuZ3VhcmRpYVN1cgp3d3cudmFuZ3VhcmRp
-YXN1ci5jb20uYXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+--===============5790208995100347258==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aPdhxNJGSeOG9wFI"
+Content-Disposition: inline
+
+
+--aPdhxNJGSeOG9wFI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Feb 05, 2019 at 12:11:05AM -0300, Paul Cercueil wrote:
+
+> +++ b/sound/soc/codecs/jz4740.c
+> @@ -1,14 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+> - *
+
+Please convert the whole comment to C++ style so it looks more
+consistent with the rest of ASoC (and itself).
+
+--aPdhxNJGSeOG9wFI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxbIy0ACgkQJNaLcl1U
+h9C9ygf+JHkT2svpsqkGAQ0zFVpciiYkmRlqFlvGQOo0Uyb57bINoJCazjYc4WLv
+xoTLbn56dDNWyi8Sn0N69v5qTiAlE9lCHAi/OrkcCQBncggpXiYAdVxWYn/AYBU4
+UmK7Vb6RdEiwD140Q51SX2fh7DVVo/YSRPEgCB4QLPRfZiGKkzscIqsmxV/mOqio
+pNtIY5XReEQ1nBmFk0Kyf14C/q7nK89SYzhu+Frdruy7GnJ4gB3PooUWLUvmEEzh
+S3zGvLqEDynPaIyCjKOCS9QegWOz1TPOPDQSYVjjMpBgB4liera/dU+ehaC17TDW
+sgysn4Y6m1a9F5ffhyx3Tt5JFNvsyg==
+=/XhK
+-----END PGP SIGNATURE-----
+
+--aPdhxNJGSeOG9wFI--
+
+--===============5790208995100347258==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5790208995100347258==--
