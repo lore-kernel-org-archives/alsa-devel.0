@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm2602: Fix ADC powerup sequencing" to
-	the asoc tree
-Date: Wed,  6 Feb 2019 16:58:18 +0000 (GMT)
-Message-ID: <20190206165818.83C7D1127EA4@debutante.sirena.org.uk>
+Subject: Applied "ASoC: compress: Clarify the intent of current
+	compressed ops handling" to the asoc tree
+Date: Wed,  6 Feb 2019 16:58:14 +0000 (GMT)
+Message-ID: <20190206165814.B30301127EA3@debutante.sirena.org.uk>
+References: <20190205111813.28929-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B83F6267979
- for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 17:58:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 88FD126797B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2019 17:58:20 +0100 (CET)
+In-Reply-To: <20190205111813.28929-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Marco Felsch <m.felsch@pengutronix.de>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, vkoul@kernel.org, broonie@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssm2602: Fix ADC powerup sequencing
+   ASoC: compress: Clarify the intent of current compressed ops handling
 
 has been applied to the asoc tree at
 
@@ -51,110 +53,319 @@ to this mail.
 Thanks,
 Mark
 
->From 37768e3917405e82611af8e693ccac1a20df38b5 Mon Sep 17 00:00:00 2001
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Date: Wed, 6 Feb 2019 16:29:47 +0100
-Subject: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
+>From 52cadf1fdbe87a3a3eee11d9cc4873796903c934 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 5 Feb 2019 11:18:12 +0000
+Subject: [PATCH] ASoC: compress: Clarify the intent of current compressed ops
+ handling
 
-According to the ssm2603 data sheet (control register sequencing), the
-digital core should be activated only after all necessary bits in the
-power register are enabled, and a delay determined by the decoupling
-capacitor on the VMID pin has passed. If the digital core is activated
-too early, or even before the ADC is powered up, audible artifacts
-appear at the beginning of the recorded signal.
+For callbacks configuring the state of the components (trigger,
+set_params, ack and set_metadata) simplify the code a little and make
+intention clearer by aborting as soon as an error is encountered. The
+operation has already failed and there is nothing to be gained from
+processing the callbacks on additional components. The operations
+currently abort after the callbacks, so this simply shortens the
+error path.
 
-The digital core is also needed for playback, so when recording starts
-it may already be enabled. This means we cannot get the power sequence
-correct when we want to be able to start recording after playback.
+For callbacks returning information from the driver (copy,
+get_metadata, pointer, get_codec_caps, get_caps and get_params)
+only look for the first callback provided, currently the code will
+call every callback only returning the information provided by the
+last. Since we can only return one set of data, it makes no sense to
+request the data from every component. Again this just makes the
+currently supported feature set a little more clear.
 
-As a workaround put the MIC mute switch into the DAPM routes. This
-way we can keep the recording disabled until the MIC Bias has settled
-and thus get rid of audible artifacts.
-
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-m.felsch@pengutronix.de: adapt commit message
-m.felsch@pengutronix.de: drop of configuration as mentioned by Mark:
-			 https://patchwork.kernel.org/patch/10407449/
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm2602.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ sound/soc/soc-compress.c | 106 ++++++++++++++++++---------------------
+ 1 file changed, 48 insertions(+), 58 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 501a4e73b185..6f79cb0fbc63 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -26,6 +26,7 @@
-  * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 699397a09167..fc8742383b23 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -353,7 +353,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
  
-+#include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-@@ -111,7 +112,6 @@ SOC_SINGLE_TLV("Sidetone Playback Volume", SSM2602_APANA, 6, 3, 1,
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
- SOC_SINGLE("Mic Boost (+20dB)", SSM2602_APANA, 0, 1, 0),
- SOC_SINGLE("Mic Boost2 (+20dB)", SSM2602_APANA, 8, 1, 0),
--SOC_SINGLE("Mic Switch", SSM2602_APANA, 1, 1, 1),
- };
+@@ -364,12 +364,10 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
  
- /* Output Mixer */
-@@ -121,10 +121,31 @@ SOC_DAPM_SINGLE("HiFi Playback Switch", SSM2602_APANA, 4, 1, 0),
- SOC_DAPM_SINGLE("Mic Sidetone Switch", SSM2602_APANA, 5, 1, 0),
- };
+-		__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->trigger(cstream, cmd);
++		if (ret < 0)
++			goto out;
+ 	}
+-	if (ret < 0)
+-		goto out;
  
-+static const struct snd_kcontrol_new mic_ctl =
-+	SOC_DAPM_SINGLE("Switch", SSM2602_APANA, 1, 1, 1);
-+
- /* Input mux */
- static const struct snd_kcontrol_new ssm2602_input_mux_controls =
- SOC_DAPM_ENUM("Input Select", ssm2602_enum[0]);
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->trigger)
+ 		cpu_dai->driver->cops->trigger(cstream, cmd, cpu_dai);
+@@ -394,7 +392,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+-	int ret = 0, __ret, stream;
++	int ret, stream;
  
-+static int ssm2602_mic_switch_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	/*
-+	 * According to the ssm2603 data sheet (control register sequencing),
-+	 * the digital core should be activated only after all necessary bits
-+	 * in the power register are enabled, and a delay determined by the
-+	 * decoupling capacitor on the VMID pin has passed. If the digital core
-+	 * is activated too early, or even before the ADC is powered up, audible
-+	 * artifacts appear at the beginning and end of the recorded signal.
-+	 *
-+	 * In practice, audible artifacts disappear well over 500 ms.
-+	 */
-+	msleep(500);
-+
+ 	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
+ 		cmd == SND_COMPR_TRIGGER_DRAIN) {
+@@ -406,9 +404,10 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 			    !component->driver->compr_ops->trigger)
+ 				continue;
+ 
+-			__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-			if (__ret < 0)
+-				ret = __ret;
++			ret = component->driver->compr_ops->trigger(cstream,
++								    cmd);
++			if (ret < 0)
++				return ret;
+ 		}
+ 		return ret;
+ 	}
+@@ -433,12 +432,10 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->trigger(cstream, cmd);
++		if (ret < 0)
++			goto out;
+ 	}
+-	if (ret < 0)
+-		goto out;
+ 
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
+ 
+@@ -472,7 +469,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -496,12 +493,10 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->set_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->set_params(cstream, params);
++		if (ret < 0)
++			goto err;
+ 	}
+-	if (ret < 0)
+-		goto err;
+ 
+ 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->set_params) {
+ 		ret = rtd->dai_link->compr_ops->set_params(cstream);
+@@ -522,7 +517,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 
+ 	cancel_delayed_work_sync(&rtd->delayed_work);
+ 
+-	return ret;
 +	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget ssm260x_dapm_widgets[] = {
- SND_SOC_DAPM_DAC("DAC", "HiFi Playback", SSM2602_PWR, 3, 1),
- SND_SOC_DAPM_ADC("ADC", "HiFi Capture", SSM2602_PWR, 2, 1),
-@@ -146,6 +167,9 @@ SND_SOC_DAPM_MIXER("Output Mixer", SSM2602_PWR, 4, 1,
- SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0, &ssm2602_input_mux_controls),
- SND_SOC_DAPM_MICBIAS("Mic Bias", SSM2602_PWR, 1, 1),
  
-+SND_SOC_DAPM_SWITCH_E("Mic Switch", SSM2602_APANA, 1, 1, &mic_ctl,
-+		ssm2602_mic_switch_event, SND_SOC_DAPM_PRE_PMU),
-+
- SND_SOC_DAPM_OUTPUT("LHPOUT"),
- SND_SOC_DAPM_OUTPUT("RHPOUT"),
- SND_SOC_DAPM_INPUT("MICIN"),
-@@ -178,9 +202,11 @@ static const struct snd_soc_dapm_route ssm2602_routes[] = {
- 	{"LHPOUT", NULL, "Output Mixer"},
+ err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -538,7 +533,7 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+-	int ret = 0, __ret, stream;
++	int ret, stream;
  
- 	{"Input Mux", "Line", "Line Input"},
--	{"Input Mux", "Mic", "Mic Bias"},
-+	{"Input Mux", "Mic", "Mic Switch"},
- 	{"ADC", NULL, "Input Mux"},
+ 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
+ 		stream = SNDRV_PCM_STREAM_PLAYBACK;
+@@ -578,12 +573,10 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
  
-+	{"Mic Switch", NULL, "Mic Bias"},
-+
- 	{"Mic Bias", NULL, "MICIN"},
- };
+-		__ret = component->driver->compr_ops->set_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->set_params(cstream, params);
++		if (ret < 0)
++			goto out;
+ 	}
+-	if (ret < 0)
+-		goto out;
  
+ 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
+ 		ret = fe->dai_link->compr_ops->set_params(cstream);
+@@ -607,7 +600,7 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -624,9 +617,8 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_params)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_params(cstream, params);
++		break;
+ 	}
+ 
+ err:
+@@ -640,7 +632,7 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -651,9 +643,8 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_caps)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_caps(cstream, caps);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_caps(cstream, caps);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -666,7 +657,7 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -677,9 +668,9 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_codec_caps)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_codec_caps(cstream, codec);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_codec_caps(cstream,
++								   codec);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -692,7 +683,7 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -709,9 +700,9 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ 		    !component->driver->compr_ops->ack)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->ack(cstream, bytes);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->ack(cstream, bytes);
++		if (ret < 0)
++			goto err;
+ 	}
+ 
+ err:
+@@ -725,7 +716,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+@@ -740,9 +731,8 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->pointer)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->pointer(cstream, tstamp);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->pointer(cstream, tstamp);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -781,7 +771,7 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret;
+ 
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->set_metadata) {
+ 		ret = cpu_dai->driver->cops->set_metadata(cstream, metadata, cpu_dai);
+@@ -796,12 +786,13 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_metadata)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->set_metadata(cstream, metadata);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->set_metadata(cstream,
++								 metadata);
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+@@ -811,7 +802,7 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret;
+ 
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->get_metadata) {
+ 		ret = cpu_dai->driver->cops->get_metadata(cstream, metadata, cpu_dai);
+@@ -826,12 +817,11 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_metadata)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_metadata(cstream, metadata);
+-		if (__ret < 0)
+-			ret = __ret;
++		return component->driver->compr_ops->get_metadata(cstream,
++								  metadata);
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* ASoC Compress operations */
 -- 
 2.20.1
