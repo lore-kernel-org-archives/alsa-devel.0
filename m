@@ -1,68 +1,108 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: doc: Fix typos in dpcm.rst
-Date: Thu, 07 Feb 2019 18:22:56 +0100
-Message-ID: <20190207172256.1972-1-s.nawrocki@samsung.com>
-References: <CGME20190207172309epcas1p411f0d5d58ee8aee8d47bd836641d07fe@epcas1p4.samsung.com>
+From: "Schulman, James" <James.Schulman@cirrus.com>
+Subject: Re: [PATCH v2 1/2] ASoC: cs35l36: Add support for
+ Cirrus CS35L36 Amplifier
+Date: Thu, 7 Feb 2019 17:26:30 +0000
+Message-ID: <alpine.DEB.2.10.1902071126060.27802@james-tower>
+References: <1549479996-4792-1-git-send-email-james.schulman@cirrus.com>
+ <20190207115449.GC6336@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.com, b.zolnierkie@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A5262666B3
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 18:26:36 +0100 (CET)
+In-Reply-To: <20190207115449.GC6336@imbe.wolfsonmicro.main>
+Content-Language: en-US
+Content-ID: <EFB5B861E972BC43BD0EB383D382430D@namprd19.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "Austin,
+ Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "Schulman,
+ James" <James.Schulman@cirrus.com>, "broonie@kernel.org" <broonie@kernel.org>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a few typos in the DPCM documentation.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- Documentation/sound/soc/dpcm.rst | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/sound/soc/dpcm.rst b/Documentation/sound/soc/dpcm.rst
-index f6845b2278ea..77f67ded53de 100644
---- a/Documentation/sound/soc/dpcm.rst
-+++ b/Documentation/sound/soc/dpcm.rst
-@@ -13,7 +13,7 @@ drivers that expose several ALSA PCMs and can route to multiple DAIs.
- The DPCM runtime routing is determined by the ALSA mixer settings in the same
- way as the analog signal is routed in an ASoC codec driver. DPCM uses a DAPM
- graph representing the DSP internal audio paths and uses the mixer settings to
--determine the patch used by each ALSA PCM.
-+determine the path used by each ALSA PCM.
- 
- DPCM re-uses all the existing component codec, platform and DAI drivers without
- any modifications.
-@@ -101,7 +101,7 @@ The audio driver processes this as follows :-
- 
- 4. Machine driver or audio HAL enables the speaker path.
- 
--5. DPCM runs the PCM ops for startup(), hw_params(), prepapre() and
-+5. DPCM runs the PCM ops for startup(), hw_params(), prepare() and
-    trigger(start) for DAI1 Speakers since the path is enabled.
- 
- In this example, the machine driver or userspace audio HAL can alter the routing
-@@ -221,7 +221,7 @@ like a BT phone call :-
- This allows the host CPU to sleep while the DSP, MODEM DAI and the BT DAI are
- still in operation.
- 
--A BE DAI link can also set the codec to a dummy device if the code is a device
-+A BE DAI link can also set the codec to a dummy device if the codec is a device
- that is managed externally.
- 
- Likewise a BE DAI can also set a dummy cpu DAI if the CPU DAI is managed by the
-@@ -249,7 +249,7 @@ configuration.
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
- 
--	/* The DSP will covert the FE rate to 48k, stereo */
-+	/* The DSP will convert the FE rate to 48k, stereo */
- 	rate->min = rate->max = 48000;
- 	channels->min = channels->max = 2;
- 
-@@ -386,5 +386,3 @@ This means creating a new FE that is connected with a virtual path to both
- DAI links. The DAI links will be started when the FE PCM is started and stopped
- when the FE PCM is stopped. Note that the FE PCM cannot read or write data in
- this configuration.
--
--
--- 
-2.20.1
+On Thu, 7 Feb 2019, Charles Keepax wrote:
+
+> On Wed, Feb 06, 2019 at 01:06:36PM -0600, James Schulman wrote:
+>> Add driver support for Cirrus Logic CS35L36 boosted
+>> speaker amplifier
+>>
+>> Signed-off-by: James Schulman <james.schulman@cirrus.com>
+>> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+>> Acked-by: Brian Austin <brian.austin@cirrus.com>
+>> ---
+>>  include/sound/cs35l36.h    |   43 +
+>>  sound/soc/codecs/Kconfig   |    5 +
+>>  sound/soc/codecs/Makefile  |    2 +
+>>  sound/soc/codecs/cs35l36.c | 1960 ++++++++++++++++++++++++++++++++++++++++++++
+>>  sound/soc/codecs/cs35l36.h |  446 ++++++++++
+>>  5 files changed, 2456 insertions(+)
+>>  create mode 100644 include/sound/cs35l36.h
+>>  create mode 100644 sound/soc/codecs/cs35l36.c
+>>  create mode 100644 sound/soc/codecs/cs35l36.h
+>>
+>> diff --git a/include/sound/cs35l36.h b/include/sound/cs35l36.h
+>> new file mode 100644
+>> index 0000000..f1cf121
+>> --- /dev/null
+>> +++ b/include/sound/cs35l36.h
+>> @@ -0,0 +1,43 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * linux/sound/cs35l36.h -- Platform data for CS35L36
+>> + *
+>> + * Copyright 2018 Cirrus Logic, Inc.
+>> + *
+>> + * Author: James Schulman <james.schulman@cirrus.com>
+>> + *
+>> + */
+>
+> This isn't quite right you should still be using /* */ for the
+> SPDX in header files.
+>
+
+Ok I see. Apologies for the confusion. I misread Mark's feedback.
+
+>> diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+>> new file mode 100644
+>> index 0000000..261bc0b
+>> --- /dev/null
+>> +++ b/sound/soc/codecs/cs35l36.c
+>> @@ -0,0 +1,1960 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * cs35l36.c -- CS35L36 ALSA SoC audio driver
+>> + *
+>> + * Copyright 2018 Cirrus Logic, Inc.
+>> + *
+>> + * Author: James Schulman <james.schulman@cirrus.com>
+>> + *
+>> + */
+>
+> And Mark will have wanted all of this as a C++ comment.
+>
+> See this patch for a good example of the advised style:
+>
+> commit ba34f253711a8427d2ef29475afe406b2d6e5118
+> ASoC: nau8822: convert to SPDX identifiers
+>
+> Thanks,
+> Charles
+>
+
+Thanks Charles I'll get this cleared up.
+
+Regards,
+James
