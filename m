@@ -1,16 +1,21 @@
-From: James Schulman <james.schulman@cirrus.com>
-Subject: [PATCH v3 2/2] ASoC: cs35l36: Add device tree
-	documentation for CS35L36
-Date: Thu, 7 Feb 2019 12:12:19 -0600
-Message-ID: <1549563139-16246-1-git-send-email-james.schulman@cirrus.com>
+From: Manuel Reinhardt <manuel.rhdt@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix implicit fb
+	endpoint	setup by quirk
+Date: Thu, 07 Feb 2019 19:44:02 +0100
+Message-ID: <81a005bb649e1ecbf28d6d2ca1a9004160c7af34.camel@gmail.com>
+References: <d7a90b82916812e11851582a102de42913265522.camel@gmail.com>
+ <s5h5ztwawnd.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B5E4267492
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 19:11:53 +0100 (CET)
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA33A2666B3
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 19:44:04 +0100 (CET)
+Received: by mail-wr1-f65.google.com with SMTP id q18so946752wrx.9
+ for <alsa-devel@alsa-project.org>; Thu, 07 Feb 2019 10:44:04 -0800 (PST)
+In-Reply-To: <s5h5ztwawnd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,193 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, paul.handrigan@cirrus.com, ckeepax@opensource.cirrus.com, brian.austin@cirrus.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add device tree documentation for Cirrus Logic CS35L36
-speaker amplifier
 
-Signed-off-by: James Schulman <james.schulman@cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
----
- .../devicetree/bindings/sound/cs35l36.txt          | 168 +++++++++++++++++++++
- 1 file changed, 168 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l36.txt
+Am Donnerstag, den 07.02.2019, 08:24 +0100 schrieb Takashi Iwai:
+> On Thu, 31 Jan 2019 15:32:35 +0100,
+> manuel.rhdt@gmail.com wrote:
+> > The commit a60945fd08e4 ("ALSA: usb-audio: move implicit fb quirks
+> > to
+> > separate function") introduced an error in the handling of quirks
+> > for
+> > implicit feedback endpoints. This commit fixes this.
+> > 
+> > If a quirk successfully sets up an implicit feedback endpoint, usb-
+> > audio
+> > no longer tries to find the implicit fb endpoint itself.
+> > 
+> > Signed-off-by: Manuel Reinhardt <manuel.rhdt@gmail.com>
+> 
+> I seem to have overlooked this one, and will queue it.
+> 
+> BTW, did you hit actually a regression by the mentioned commit?
+> Or is just a theoretical fix?
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l36.txt b/Documentation/devicetree/bindings/sound/cs35l36.txt
-new file mode 100644
-index 0000000..912bd16
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs35l36.txt
-@@ -0,0 +1,168 @@
-+CS35L36 Speaker Amplifier
-+
-+Required properties:
-+
-+  - compatible : "cirrus,cs35l36"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+  - VA-supply, VP-supply : power supplies for the device,
-+  as covered in
-+  Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
-+  converter's output voltage in mV. The range is from 2550mV to 12000mV with
-+  increments of 50mV.
-+  (Default) VP
-+
-+  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
-+  Configures the peak current by monitoring the current through the boost FET.
-+  Range starts at 1600mA and goes to a maximum of 4500mA with increments of
-+  50mA.
-+  (Default) 4.50 Amps
-+
-+  - cirrus,boost-ind-nanohenry : Inductor estimation LBST reference value.
-+  Seeds the digital boost converter's inductor estimation block with the initial
-+  inductance value to reference.
-+
-+  1000 = 1uH (Default)
-+  1200 = 1.2uH
-+
-+Optional properties:
-+  - cirrus,multi-amp-mode : Boolean to determine if there are more than
-+  one amplifier in the system. If more than one it is best to Hi-Z the ASP
-+  port to prevent bus contention on the output signal
-+
-+  - cirrus,boost-ctl-select : Boost conerter control source selection.
-+  Selects the source of the BST_CTL target VBST voltage for the boost
-+  converter to generate.
-+  0x00 - Control Port Value
-+  0x01 - Class H Tracking (Default)
-+  0x10 - MultiDevice Sync Value
-+
-+  - cirrus,amp-pcm-inv : Boolean to determine Amplifier will invert incoming
-+  PCM data
-+
-+  - cirrus,imon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound IMON feedback data
-+
-+  - cirrus,vmon-pol-inv : Boolean to determine Amplifier will invert the
-+  polarity of outbound VMON feedback data
-+
-+  - cirrus,dcm-mode-enable : Boost converter automatic DCM Mode enable.
-+  This enables the digital boost converter to operate in a low power
-+  (Discontinuous Conduction) mode during low loading conditions.
-+
-+  - cirrus,weak-fet-disable : Boolean : The strength of the output drivers is
-+  reduced when operating in a Weak-FET Drive Mode and must not be used to drive
-+  a large load.
-+
-+  - cirrus,classh-wk-fet-delay :  Weak-FET entry delay. Controls the delay
-+  (in ms) before the Class H algorithm switches to the weak-FET voltage
-+  (after the audio falls and remains below the value specified in WKFET_AMP_THLD).
-+
-+  0 = 0ms
-+  1 = 5ms
-+  2 = 10ms
-+  3 = 50ms
-+  4 = 100ms (Default)
-+  5 = 200ms
-+  6 = 500ms
-+  7 = 1000ms
-+
-+  - cirrus,classh-weak-fet-thld-millivolt : Weak-FET amplifier drive threshold.
-+  Configures the signal threshold at which the PWM output stage enters
-+  weak-FET operation. The range is 50mV to 700mV in 50mV increments.
-+
-+  - cirrus,temp-warn-threshold :  Amplifier overtemperature warning threshold.
-+  Configures the threshold at which the overtemperature warning condition occurs.
-+  When the threshold is met, the overtemperature warning attenuation is applied
-+  and the TEMP_WARN_EINT interrupt status bit is set.
-+  If TEMP_WARN_MASK = 0, INTb is asserted.
-+
-+  0 = 105C
-+  1 = 115C
-+  2 = 125C (Default)
-+  3 = 135C
-+
-+  - cirrus,irq-drive-select : Selects the driver type of the selected interrupt
-+  output.
-+
-+  0 = Open-drain
-+  1 = Push-pull (Default)
-+
-+  - cirrus,irq-gpio-select : Selects the pin to serve as the programmable
-+  interrupt output.
-+
-+  0 = PDM_DATA / SWIRE_SD / INT (Default)
-+  1 = GPIO
-+
-+Optional properties for the "cirrus,vpbr-config" Sub-node
-+
-+  - cirrus,vpbr-en : VBST brownout prevention enable. Configures whether the
-+  VBST brownout prevention algorithm is enabled or disabled.
-+
-+  0 = VBST brownout prevention disabled (default)
-+  1 = VBST brownout prevention enabled
-+
-+  See Section 7.31.1 VPBR Config for configuration options & further details
-+
-+  - cirrus,vpbr-thld : Initial VPBR threshold. Configures the VP brownout
-+  threshold voltage
-+
-+  - cirrus,cirrus,vpbr-atk-rate : Attenuation attack step rate. Configures the
-+  amount delay between consecutive volume attenuation steps when a brownout
-+  condition is present and the VP brownout condition is in an attacking state.
-+
-+  - cirrus,vpbr-atk-vol : VP brownout prevention step size. Configures the VP
-+  brownout prevention attacking attenuation step size when operating in either
-+  digital volume or analog gain modes.
-+
-+  - cirrus,vpbr-max-attn : Maximum attenuation that the VP brownout prevention
-+  can apply to the audio signal.
-+
-+  - cirrus,vpbr-wait : Configures the delay time between a brownout condition
-+  no longer being present and the VP brownout prevention entering an attenuation
-+  release state.
-+
-+  - cirrus,vpbr-rel-rate : Attenuation release step rate. Configures the delay
-+  between consecutive volume attenuation release steps when a brownout condition
-+  is not longer present and the VP brownout is in an attenuation release state.
-+
-+  - cirrus,vpbr-mute-en : During the attack state, if the vpbr-max-attn value
-+  is reached, the error condition still remains, and this bit is set, the audio
-+  is muted.
-+
-+Example:
-+
-+cs35l36: cs35l36@40 {
-+	compatible = "cirrus,cs35l36";
-+	reg = <0x40>;
-+	VA-supply = <&dummy_vreg>;
-+	VP-supply = <&dummy_vreg>;
-+	reset-gpios = <&gpio0 54 0>;
-+	interrupt-parent = <&gpio8>;
-+	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+
-+	cirrus,boost-ind-nanohenry = <1000>;
-+	cirrus,boost-ctl-millivolt = <10000>;
-+	cirrus,boost-peak-milliamp = <4500>;
-+	cirrus,boost-ctl-select = <0x00>;
-+	cirrus,weak-fet-delay = <0x04>;
-+	cirrus,weak-fet-thld = <0x01>;
-+	cirrus,temp-warn-threshold = <0x01>;
-+	cirrus,multi-amp-mode;
-+	cirrus,irq-drive-select = <0x01>;
-+	cirrus,irq-gpio-select = <0x01>;
-+
-+	cirrus,vpbr-config {
-+		cirrus,vpbr-en = <0x00>;
-+		cirrus,vpbr-thld = <0x05>;
-+		cirrus,vpbr-atk-rate = <0x02>;
-+		cirrus,vpbr-atk-vol = <0x01>;
-+		cirrus,vpbr-max-attn = <0x09>;
-+		cirrus,vpbr-wait = <0x01>;
-+		cirrus,vpbr-rel-rate = <0x05>;
-+		cirrus,vpbr-mute-en = <0x00>;
-+	};
-+};
--- 
-1.9.1
+I am in the process of writing a quirk to support the MOTU Microbook II
+device. The fix I submitted is necessary for the device to work. I
+would be surprised if the fix doesn't also fix regressions with other
+devices that require the implicit fb quirk.
+
+I will submit the rest of the code needed for Microbook II support
+soon. I mailed this patch first to become acquainted with the linux
+patch submission model.
+
+Best,
+
+Manuel
