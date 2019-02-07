@@ -1,21 +1,20 @@
-From: "Schulman, James" <James.Schulman@cirrus.com>
-Subject: Re: [PATCH v2 1/2] ASoC: cs35l36: Add support for
- Cirrus CS35L36 Amplifier
-Date: Thu, 7 Feb 2019 17:26:30 +0000
-Message-ID: <alpine.DEB.2.10.1902071126060.27802@james-tower>
-References: <1549479996-4792-1-git-send-email-james.schulman@cirrus.com>
- <20190207115449.GC6336@imbe.wolfsonmicro.main>
+From: Phil Burk <philburk@google.com>
+Subject: Re: [PATCH 0/2 v4] ALSA: pcm: anonymous dup
+	implementation
+Date: Thu, 7 Feb 2019 09:41:03 -0800
+Message-ID: <CACL=Q7wpCJiiHoWE7FrArpm0DFYKUkLdPkUg+uh9=oOMPWWWMA@mail.gmail.com>
+References: <20190204093910.23878-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A5262666B3
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 18:26:36 +0100 (CET)
-In-Reply-To: <20190207115449.GC6336@imbe.wolfsonmicro.main>
-Content-Language: en-US
-Content-ID: <EFB5B861E972BC43BD0EB383D382430D@namprd19.prod.outlook.com>
+Received: from mail-it1-f193.google.com (mail-it1-f193.google.com
+ [209.85.166.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50F3F2666B3
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 18:41:16 +0100 (CET)
+Received: by mail-it1-f193.google.com with SMTP id z20so1779611itc.3
+ for <alsa-devel@alsa-project.org>; Thu, 07 Feb 2019 09:41:16 -0800 (PST)
+In-Reply-To: <20190204093910.23878-1-perex@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,84 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "Schulman,
- James" <James.Schulman@cirrus.com>, "broonie@kernel.org" <broonie@kernel.org>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Zach Riggle <riggle@google.com>, Mark Brown <broonie@kernel.org>, Leo Yan <leo.yan@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for these patches for tinyalsa.  Looks great!
 
+I made a few minor comments on the code layout.
+https://github.com/perexg/tinyalsa/commit/f62b953f37693e8426ee4c20e53baae757ba1026
+Can you see them?
 
-On Thu, 7 Feb 2019, Charles Keepax wrote:
+Phil Burk
 
-> On Wed, Feb 06, 2019 at 01:06:36PM -0600, James Schulman wrote:
->> Add driver support for Cirrus Logic CS35L36 boosted
->> speaker amplifier
->>
->> Signed-off-by: James Schulman <james.schulman@cirrus.com>
->> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
->> Acked-by: Brian Austin <brian.austin@cirrus.com>
->> ---
->>  include/sound/cs35l36.h    |   43 +
->>  sound/soc/codecs/Kconfig   |    5 +
->>  sound/soc/codecs/Makefile  |    2 +
->>  sound/soc/codecs/cs35l36.c | 1960 ++++++++++++++++++++++++++++++++++++++++++++
->>  sound/soc/codecs/cs35l36.h |  446 ++++++++++
->>  5 files changed, 2456 insertions(+)
->>  create mode 100644 include/sound/cs35l36.h
->>  create mode 100644 sound/soc/codecs/cs35l36.c
->>  create mode 100644 sound/soc/codecs/cs35l36.h
->>
->> diff --git a/include/sound/cs35l36.h b/include/sound/cs35l36.h
->> new file mode 100644
->> index 0000000..f1cf121
->> --- /dev/null
->> +++ b/include/sound/cs35l36.h
->> @@ -0,0 +1,43 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * linux/sound/cs35l36.h -- Platform data for CS35L36
->> + *
->> + * Copyright 2018 Cirrus Logic, Inc.
->> + *
->> + * Author: James Schulman <james.schulman@cirrus.com>
->> + *
->> + */
->
-> This isn't quite right you should still be using /* */ for the
-> SPDX in header files.
->
+On Mon, Feb 4, 2019 at 1:39 AM Jaroslav Kysela <perex@perex.cz> wrote:
 
-Ok I see. Apologies for the confusion. I misread Mark's feedback.
-
->> diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
->> new file mode 100644
->> index 0000000..261bc0b
->> --- /dev/null
->> +++ b/sound/soc/codecs/cs35l36.c
->> @@ -0,0 +1,1960 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * cs35l36.c -- CS35L36 ALSA SoC audio driver
->> + *
->> + * Copyright 2018 Cirrus Logic, Inc.
->> + *
->> + * Author: James Schulman <james.schulman@cirrus.com>
->> + *
->> + */
+> This patchset contains the anonymous dup implementation with permissions
+> checking for the ALSA's PCM interface in kernel to enable the restricted
+> DMA sound buffer sharing for the restricted tasks.
 >
-> And Mark will have wanted all of this as a C++ comment.
+> The code was tested through qemu and it seems to be pretty stable.
 >
-> See this patch for a good example of the advised style:
+> The initial tinyalsa implementation can be found here:
 >
-> commit ba34f253711a8427d2ef29475afe406b2d6e5118
-> ASoC: nau8822: convert to SPDX identifiers
+>   https://github.com/perexg/tinyalsa/commits/anondup
 >
-> Thanks,
-> Charles
+> v2 of the patches:
 >
-
-Thanks Charles I'll get this cleared up.
-
-Regards,
-James
+> - change clone parameter to subdevice number for the pcm attach
+> - change SNDRV_PCM_PERM_MAX to SNDRV_PCM_PERM_MASK
+> - the tinyalsa implementation was a little updated (restructured)
+>
+> v3 of the patches:
+>
+> - group integer declarations in snd_pcm_anonymous_dup()
+> - replaced substream->pcm with pcm in snd_pcm_anonymous_dup()
+> - added SNDRV_PCM_PERM_RW check for read/write/readv/writev syscalls
+>
+> v4 of the patches:
+>
+> - more simple restriction control (only two modes - full/buffer)
+> - the tinyalsa implementation follows this change
+>
+> Cc: Phil Burk <philburk@google.com>
+> Cc: Zach Riggle <riggle@google.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Baolin Wang <baolin.wang@linaro.org>
+>
+> Jaroslav Kysela (2):
+>   ALSA: pcm: implement the anonymous dup (inode file descriptor)
+>   ALSA: pcm: implement the mmap buffer mode for the anonymous dup
+>
+>  include/sound/pcm.h         | 10 +++--
+>  include/uapi/sound/asound.h |  6 ++-
+>  sound/core/oss/pcm_oss.c    |  2 +-
+>  sound/core/pcm.c            | 13 +++---
+>  sound/core/pcm_compat.c     |  1 +
+>  sound/core/pcm_native.c     | 97
+> ++++++++++++++++++++++++++++++++++++++++++---
+>  6 files changed, 110 insertions(+), 19 deletions(-)
+>
+> --
+> 2.13.6
+>
