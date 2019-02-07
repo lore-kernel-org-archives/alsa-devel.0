@@ -1,70 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 0/3] ALSA: pcm: anonymous dup
-	implementation
-Date: Thu, 7 Feb 2019 16:29:27 +0000
-Message-ID: <20190207162927.GF6190@sirena.org.uk>
-References: <20190204183817.975-1-perex@perex.cz>
+From: Johan Hovold <johan@kernel.org>
+Subject: [PATCH 1/3] ASoC: msm8916-wcd-analog: add missing license information
+Date: Thu,  7 Feb 2019 17:57:53 +0100
+Message-ID: <20190207165755.1548-2-johan@kernel.org>
+References: <20190207165755.1548-1-johan@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3368020833721397785=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D935026747F
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 17:29:30 +0100 (CET)
-In-Reply-To: <20190204183817.975-1-perex@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.de>, Phil Burk <philburk@google.com>, Zach Riggle <riggle@google.com>, Leo Yan <leo.yan@linaro.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190207165755.1548-1-johan@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Add the missing license and copyright information which never made it
+into the analog driver when the original driver was split in two as part
+of the review process.
 
---===============3368020833721397785==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4f28nU6agdXSinmL"
-Content-Disposition: inline
+Link: https://lkml.kernel.org/r/1465582725-30183-3-git-send-email-srinivas.kandagatla@linaro.org
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-
---4f28nU6agdXSinmL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 04, 2019 at 07:38:14PM +0100, Jaroslav Kysela wrote:
-> This patchset contains the anonymous dup implementation with permissions
-> checking for the ALSA's PCM interface in kernel to enable the restricted
-> DMA sound buffer sharing for the restricted tasks.
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---4f28nU6agdXSinmL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxcXOcACgkQJNaLcl1U
-h9C7hgf/drqBsn4Eno4pC7dEab8K33ksoVgDED+Bzpi2HsQDzZf94+MPBIXKv9bu
-5kdweBYhu8UF37KESbWkikFo+HPZUezjb/Dy74MO8d7jjIl79b8Hsk9aZbRzrghA
-6MoSVUsbEv1zTCxZRLr4S/RqUHx8oWBp5Zx+Zv4sl/QJDR8+qQLhRWcgv6KASwnY
-UmkMEuw7KAySqd8z1wJ7liZo08W4Tn9STJ6H0ZKkeJ+DOXJ9ieg49Msvi6RfdpRk
-Y/c9oQwa5gD6XO6q5c0poWA0+PMLnqNhcO/y8HuJqoqv8Rsel+cDJ+nStbLN3vUi
-pkwFpcYyE1Xqn2CP/UIYEJeY2jSgEw==
-=jBOJ
------END PGP SIGNATURE-----
-
---4f28nU6agdXSinmL--
-
---===============3368020833721397785==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3368020833721397785==--
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index b7cf7cce95fe..1261ddff75eb 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1,3 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2016, The Linux Foundation. All rights reserved.
++ */
++
+ #include <linux/module.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+-- 
+2.20.1
