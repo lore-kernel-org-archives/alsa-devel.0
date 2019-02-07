@@ -1,18 +1,32 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: jz4740: Use SPDX license notifier" to the asoc tree
-Date: Thu,  7 Feb 2019 15:22:35 +0000 (GMT)
-Message-ID: <20190207152235.9A3251127EF9@debutante.sirena.org.uk>
-References: <20190207133143.5232-3-paul@crapouillou.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190207133143.5232-3-paul@crapouillou.net>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: codecs: jz4740: Add support for
+	devicetree" to the asoc tree
+Date: Thu,  7 Feb 2019 15:22:33 +0000 (GMT)
+Message-ID: <20190207152233.805C41127EF9@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31367267A00
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Paul Cercueil <paul@crapouillou.net>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: jz4740: Use SPDX license notifier
+   ASoC: codecs: jz4740: Add support for devicetree
 
 has been applied to the asoc tree at
 
@@ -37,44 +51,42 @@ to this mail.
 Thanks,
 Mark
 
->From 06a334ae98d15c3e32ae4ef8ce18a241a12f3dff Mon Sep 17 00:00:00 2001
+>From 030a79e97730976f54299634fa3bbb7a99e32b71 Mon Sep 17 00:00:00 2001
 From: Paul Cercueil <paul@crapouillou.net>
-Date: Thu, 7 Feb 2019 10:31:40 -0300
-Subject: [PATCH] ASoC: codecs: jz4740: Use SPDX license notifier
+Date: Thu, 7 Feb 2019 10:31:41 -0300
+Subject: [PATCH] ASoC: codecs: jz4740: Add support for devicetree
 
-Add license information as a standard SPDX license notifier instead of
-custom text.
+Add support for probing the driver from devicetree.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/jz4740.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ sound/soc/codecs/jz4740.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index 9395b583432c..9b3e1227a971 100644
+index 9b3e1227a971..974e17fa1911 100644
 --- a/sound/soc/codecs/jz4740.c
 +++ b/sound/soc/codecs/jz4740.c
-@@ -1,15 +1,8 @@
--/*
-- * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- *  You should have received a copy of the  GNU General Public License along
-- *  with this program; if not, write  to the Free Software Foundation, Inc.,
-- *  675 Mass Ave, Cambridge, MA 02139, USA.
-- *
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// JZ4740 CODEC driver
-+//
-+// Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+@@ -346,10 +346,19 @@ static int jz4740_codec_probe(struct platform_device *pdev)
+ 	return ret;
+ }
  
- #include <linux/kernel.h>
- #include <linux/module.h>
++#ifdef CONFIG_OF
++static const struct of_device_id jz4740_codec_of_matches[] = {
++	{ .compatible = "ingenic,jz4740-codec", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, jz4740_codec_of_matches);
++#endif
++
+ static struct platform_driver jz4740_codec_driver = {
+ 	.probe = jz4740_codec_probe,
+ 	.driver = {
+ 		.name = "jz4740-codec",
++		.of_match_table = of_match_ptr(jz4740_codec_of_matches),
+ 	},
+ };
+ 
 -- 
 2.20.1
