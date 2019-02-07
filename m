@@ -1,37 +1,91 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: codecs: jz4725b: fix spelling mistake "Deemphatize" -> "Deemphasize"
-Date: Thu,  7 Feb 2019 09:26:42 +0000
-Message-ID: <20190207092642.6655-1-colin.king@canonical.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/2] ASoC: cs35l36: Add support for
+ Cirrus CS35L36 Amplifier
+Date: Thu, 7 Feb 2019 11:54:49 +0000
+Message-ID: <20190207115449.GC6336@imbe.wolfsonmicro.main>
+References: <1549479996-4792-1-git-send-email-james.schulman@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id A90082673DD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 12:54:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1549479996-4792-1-git-send-email-james.schulman@cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: James Schulman <james.schulman@cirrus.com>
+Cc: mark.rutland@arm.com, brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Feb 06, 2019 at 01:06:36PM -0600, James Schulman wrote:
+> Add driver support for Cirrus Logic CS35L36 boosted
+> speaker amplifier
+> 
+> Signed-off-by: James Schulman <james.schulman@cirrus.com>
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Acked-by: Brian Austin <brian.austin@cirrus.com>
+> ---
+>  include/sound/cs35l36.h    |   43 +
+>  sound/soc/codecs/Kconfig   |    5 +
+>  sound/soc/codecs/Makefile  |    2 +
+>  sound/soc/codecs/cs35l36.c | 1960 ++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/cs35l36.h |  446 ++++++++++
+>  5 files changed, 2456 insertions(+)
+>  create mode 100644 include/sound/cs35l36.h
+>  create mode 100644 sound/soc/codecs/cs35l36.c
+>  create mode 100644 sound/soc/codecs/cs35l36.h
+> 
+> diff --git a/include/sound/cs35l36.h b/include/sound/cs35l36.h
+> new file mode 100644
+> index 0000000..f1cf121
+> --- /dev/null
+> +++ b/include/sound/cs35l36.h
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * linux/sound/cs35l36.h -- Platform data for CS35L36
+> + *
+> + * Copyright 2018 Cirrus Logic, Inc.
+> + *
+> + * Author: James Schulman <james.schulman@cirrus.com>
+> + *
+> + */
 
-There is a spelling mistake in the SOC_SINGLE control name. Fix this.
+This isn't quite right you should still be using /* */ for the
+SPDX in header files.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/jz4725b.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+> new file mode 100644
+> index 0000000..261bc0b
+> --- /dev/null
+> +++ b/sound/soc/codecs/cs35l36.c
+> @@ -0,0 +1,1960 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * cs35l36.c -- CS35L36 ALSA SoC audio driver
+> + *
+> + * Copyright 2018 Cirrus Logic, Inc.
+> + *
+> + * Author: James Schulman <james.schulman@cirrus.com>
+> + *
+> + */
 
-diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index e3dba92f30bd..24b1b23b99c9 100644
---- a/sound/soc/codecs/jz4725b.c
-+++ b/sound/soc/codecs/jz4725b.c
-@@ -161,7 +161,7 @@ static const struct snd_kcontrol_new jz4725b_codec_controls[] = {
- 	SOC_SINGLE("Master Playback Switch", JZ4725B_CODEC_REG_CR1,
- 		   REG_CR1_DAC_MUTE_OFFSET, 1, 1),
- 
--	SOC_SINGLE("Deemphatize Filter Playback Switch",
-+	SOC_SINGLE("Deemphasize Filter Playback Switch",
- 		   JZ4725B_CODEC_REG_CR2,
- 		   REG_CR2_DAC_DEEMP_OFFSET, 1, 0),
- 
--- 
-2.20.1
+And Mark will have wanted all of this as a C++ comment.
+
+See this patch for a good example of the advised style:
+
+commit ba34f253711a8427d2ef29475afe406b2d6e5118
+ASoC: nau8822: convert to SPDX identifiers
+
+Thanks,
+Charles
