@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: jz4740: Add support for
-	devicetree" to the asoc tree
-Date: Thu,  7 Feb 2019 15:22:33 +0000 (GMT)
-Message-ID: <20190207152233.805C41127EF9@debutante.sirena.org.uk>
+Subject: Applied "dt-bindings: sound: Document jz4740-codec
+	bindings" to the asoc tree
+Date: Thu,  7 Feb 2019 15:22:39 +0000 (GMT)
+Message-ID: <20190207152239.D68FC1127EFA@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 31367267A00
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:39 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E4E942679F0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,7 +26,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: jz4740: Add support for devicetree
+   dt-bindings: sound: Document jz4740-codec bindings
 
 has been applied to the asoc tree at
 
@@ -51,42 +51,46 @@ to this mail.
 Thanks,
 Mark
 
->From 030a79e97730976f54299634fa3bbb7a99e32b71 Mon Sep 17 00:00:00 2001
+>From 7c536bade37f11833ea358fbb84aca045b157fa4 Mon Sep 17 00:00:00 2001
 From: Paul Cercueil <paul@crapouillou.net>
-Date: Thu, 7 Feb 2019 10:31:41 -0300
-Subject: [PATCH] ASoC: codecs: jz4740: Add support for devicetree
+Date: Thu, 7 Feb 2019 10:31:38 -0300
+Subject: [PATCH] dt-bindings: sound: Document jz4740-codec bindings
 
-Add support for probing the driver from devicetree.
+Add documentation about how to probe the jz4740-codec driver from
+devicetree.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/jz4740.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ .../bindings/sound/ingenic,jz4740-codec.txt   | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index 9b3e1227a971..974e17fa1911 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -346,10 +346,19 @@ static int jz4740_codec_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id jz4740_codec_of_matches[] = {
-+	{ .compatible = "ingenic,jz4740-codec", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, jz4740_codec_of_matches);
-+#endif
+diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
+new file mode 100644
+index 000000000000..1ffcade87e7b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
+@@ -0,0 +1,20 @@
++Ingenic JZ4740 codec controller
 +
- static struct platform_driver jz4740_codec_driver = {
- 	.probe = jz4740_codec_probe,
- 	.driver = {
- 		.name = "jz4740-codec",
-+		.of_match_table = of_match_ptr(jz4740_codec_of_matches),
- 	},
- };
- 
++Required properties:
++- compatible : "ingenic,jz4740-codec"
++- reg : codec registers location and length
++- clocks : phandle to the AIC clock.
++- clock-names: must be set to "aic".
++- #sound-dai-cells: Must be set to 0.
++
++Example:
++
++codec: audio-codec@10020080 {
++	compatible = "ingenic,jz4740-codec";
++	reg = <0x10020080 0x8>;
++
++	#sound-dai-cells = <0>;
++
++	clocks = <&cgu JZ4740_CLK_AIC>;
++	clock-names = "aic";
++};
 -- 
 2.20.1
