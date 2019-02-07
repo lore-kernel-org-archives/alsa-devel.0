@@ -1,96 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: Document jz4740-codec
-	bindings" to the asoc tree
-Date: Thu,  7 Feb 2019 15:22:39 +0000 (GMT)
-Message-ID: <20190207152239.D68FC1127EFA@debutante.sirena.org.uk>
+From: Jurica Vukadin <jurica.vukadin@rt-rk.com>
+Subject: [PATCH] ALSA: hda - Add quirk for HP EliteBook 840 G5
+Date: Thu,  7 Feb 2019 16:29:37 +0100
+Message-ID: <20190207152938.3596-1-jurica.vukadin@rt-rk.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E4E942679F0
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:40 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Jurica Vukadin <jurica.vukadin@rt-rk.com>, Jaroslav Kysela <perex@perex.cz>, Dennis Wassenberg <dennis.wassenberg@secunet.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Park Ju Hyung <qkrwngud825@gmail.com>, Po-Hsu Lin <po-hsu.lin@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This enables mute LED support and fixes switching jacks when the laptop
+is docked.
 
-   dt-bindings: sound: Document jz4740-codec bindings
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7c536bade37f11833ea358fbb84aca045b157fa4 Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Thu, 7 Feb 2019 10:31:38 -0300
-Subject: [PATCH] dt-bindings: sound: Document jz4740-codec bindings
-
-Add documentation about how to probe the jz4740-codec driver from
-devicetree.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jurica Vukadin <jurica.vukadin@rt-rk.com>
 ---
- .../bindings/sound/ingenic,jz4740-codec.txt   | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
+ sound/pci/hda/patch_conexant.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
-new file mode 100644
-index 000000000000..1ffcade87e7b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
-@@ -0,0 +1,20 @@
-+Ingenic JZ4740 codec controller
-+
-+Required properties:
-+- compatible : "ingenic,jz4740-codec"
-+- reg : codec registers location and length
-+- clocks : phandle to the AIC clock.
-+- clock-names: must be set to "aic".
-+- #sound-dai-cells: Must be set to 0.
-+
-+Example:
-+
-+codec: audio-codec@10020080 {
-+	compatible = "ingenic,jz4740-codec";
-+	reg = <0x10020080 0x8>;
-+
-+	#sound-dai-cells = <0>;
-+
-+	clocks = <&cgu JZ4740_CLK_AIC>;
-+	clock-names = "aic";
-+};
--- 
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexan=
+t.c
+index 152f54137082..a4ee7656d9ee 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -924,6 +924,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] =3D=
+ {
+ 	SND_PCI_QUIRK(0x103c, 0x807C, "HP EliteBook 820 G3", CXT_FIXUP_HP_DOCK)=
+,
+ 	SND_PCI_QUIRK(0x103c, 0x80FD, "HP ProBook 640 G2", CXT_FIXUP_HP_DOCK),
+ 	SND_PCI_QUIRK(0x103c, 0x828c, "HP EliteBook 840 G4", CXT_FIXUP_HP_DOCK)=
+,
++	SND_PCI_QUIRK(0x103c, 0x83b2, "HP EliteBook 840 G5", CXT_FIXUP_HP_DOCK)=
+,
+ 	SND_PCI_QUIRK(0x103c, 0x83b3, "HP EliteBook 830 G5", CXT_FIXUP_HP_DOCK)=
+,
+ 	SND_PCI_QUIRK(0x103c, 0x83d3, "HP ProBook 640 G4", CXT_FIXUP_HP_DOCK),
+ 	SND_PCI_QUIRK(0x103c, 0x8174, "HP Spectre x360", CXT_FIXUP_HP_SPECTRE),
+--=20
 2.20.1
