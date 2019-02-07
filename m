@@ -1,32 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: Document jz4725b-codec
-	bindings" to the asoc tree
-Date: Thu,  7 Feb 2019 15:22:37 +0000 (GMT)
-Message-ID: <20190207152237.B14CE1127EFA@debutante.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 825AF2679D2
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:38 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: codecs: jz4740: Use SPDX license notifier" to the asoc tree
+Date: Thu,  7 Feb 2019 15:22:35 +0000 (GMT)
+Message-ID: <20190207152235.9A3251127EF9@debutante.sirena.org.uk>
+References: <20190207133143.5232-3-paul@crapouillou.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190207133143.5232-3-paul@crapouillou.net>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Paul Cercueil <paul@crapouillou.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: Document jz4725b-codec bindings
+   ASoC: codecs: jz4740: Use SPDX license notifier
 
 has been applied to the asoc tree at
 
@@ -51,46 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From f58f2b0a9f6ecfd76cb08fe1c4894ab009a30c66 Mon Sep 17 00:00:00 2001
+>From 06a334ae98d15c3e32ae4ef8ce18a241a12f3dff Mon Sep 17 00:00:00 2001
 From: Paul Cercueil <paul@crapouillou.net>
-Date: Thu, 7 Feb 2019 10:31:39 -0300
-Subject: [PATCH] dt-bindings: sound: Document jz4725b-codec bindings
+Date: Thu, 7 Feb 2019 10:31:40 -0300
+Subject: [PATCH] ASoC: codecs: jz4740: Use SPDX license notifier
 
-Add documentation about how to probe the jz4725b-codec driver from
-devicetree.
+Add license information as a standard SPDX license notifier instead of
+custom text.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/ingenic,jz4725b-codec.txt  | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
+ sound/soc/codecs/jz4740.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-new file mode 100644
-index 000000000000..05adc0d47b13
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-@@ -0,0 +1,20 @@
-+Ingenic JZ4725B codec controller
-+
-+Required properties:
-+- compatible : "ingenic,jz4725b-codec"
-+- reg : codec registers location and length
-+- clocks : phandle to the AIC clock.
-+- clock-names: must be set to "aic".
-+- #sound-dai-cells: Must be set to 0.
-+
-+Example:
-+
-+codec: audio-codec@100200a4 {
-+	compatible = "ingenic,jz4725b-codec";
-+	reg = <0x100200a4 0x8>;
-+
-+	#sound-dai-cells = <0>;
-+
-+	clocks = <&cgu JZ4725B_CLK_AIC>;
-+	clock-names = "aic";
-+};
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 9395b583432c..9b3e1227a971 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -1,15 +1,8 @@
+-/*
+- * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- *
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// JZ4740 CODEC driver
++//
++// Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
 -- 
 2.20.1
