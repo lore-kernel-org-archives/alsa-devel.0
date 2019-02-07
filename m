@@ -1,7 +1,7 @@
 From: Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 4/6] ASoC: codecs: jz4740: Add support for devicetree
-Date: Thu,  7 Feb 2019 10:31:41 -0300
-Message-ID: <20190207133143.5232-4-paul@crapouillou.net>
+Subject: [PATCH v2 5/6] ASoC: codecs: Kconfig: Show knob, and depend on MIPS || COMPILE_TEST
+Date: Thu,  7 Feb 2019 10:31:42 -0300
+Message-ID: <20190207133143.5232-5-paul@crapouillou.net>
 References: <20190207133143.5232-1-paul@crapouillou.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190207133143.5232-1-paul@crapouillou.net>
@@ -10,7 +10,9 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for probing the driver from devicetree.
+Show the knob to enable or disable the jz4740-codec driver, add a
+proper description, and add a dependency on MIPS || COMPILE_TEST, as
+this driver is only useful on MIPS.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
@@ -19,32 +21,29 @@ Changes:
 
 v2: No change
 
- sound/soc/codecs/jz4740.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/Kconfig | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index 9b3e1227a971..974e17fa1911 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -346,10 +346,19 @@ static int jz4740_codec_probe(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index fec894c725d3..e6ce18c21b98 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -579,8 +579,15 @@ config SND_SOC_CX20442
+ 	depends on TTY
  
-+#ifdef CONFIG_OF
-+static const struct of_device_id jz4740_codec_of_matches[] = {
-+	{ .compatible = "ingenic,jz4740-codec", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, jz4740_codec_of_matches);
-+#endif
+ config SND_SOC_JZ4740_CODEC
++	depends on MIPS || COMPILE_TEST
+ 	select REGMAP_MMIO
+-	tristate
++	tristate "Ingenic JZ4740 internal CODEC"
++	help
++	  Enable support for the internal CODEC found in the JZ4740 SoC
++	  from Ingenic.
 +
- static struct platform_driver jz4740_codec_driver = {
- 	.probe = jz4740_codec_probe,
- 	.driver = {
- 		.name = "jz4740-codec",
-+		.of_match_table = of_match_ptr(jz4740_codec_of_matches),
- 	},
- };
++	  This driver can also be built as a module. If so, the module
++	  will be called snd-soc-jz4740-codec.
  
+ config SND_SOC_JZ4725B_CODEC
+ 	depends on MIPS || COMPILE_TEST
 -- 
 2.11.0
