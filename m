@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssiu: correct shift bit for ssiu9" to the asoc tree
-Date: Thu,  7 Feb 2019 12:16:09 +0000 (GMT)
-Message-ID: <20190207121609.993E51127EF9@debutante.sirena.org.uk>
-References: <20190204134105.15243-1-jiada_wang@mentor.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190204134105.15243-1-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.comkuninori.morimoto.gx@renesas.com, jiada_wang@mentor.com, twischer@de.adit-jv.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sun4i-codec: Add sun7i_codec_controls,
+	sun7i_codec_codec" to the asoc tree
+Date: Thu,  7 Feb 2019 12:15:58 +0000 (GMT)
+Message-ID: <20190207121558.9E0071127EF9@debutante.sirena.org.uk>
+References: <20190130103945.26692-4-dannym@scratchpost.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2CE126797D
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 13:16:00 +0100 (CET)
+In-Reply-To: <20190130103945.26692-4-dannym@scratchpost.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ssiu: correct shift bit for ssiu9
+   ASoC: sun4i-codec: Add sun7i_codec_controls, sun7i_codec_codec
 
 has been applied to the asoc tree at
 
@@ -36,40 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From 76379dfbfd7c8fd7dd29eea3f828cf85c884829e Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 4 Feb 2019 22:41:05 +0900
-Subject: [PATCH] ASoC: rsnd: ssiu: correct shift bit for ssiu9
+>From b71a7eb56c958ffb8c90cef74f3dff6f87e6b554 Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Wed, 30 Jan 2019 11:39:39 +0100
+Subject: [PATCH] ASoC: sun4i-codec: Add sun7i_codec_controls,
+ sun7i_codec_codec
 
-Currently "0xf << 36" is used to
-clear SSIU-9 internal buffer state, which overflows 32-bit value
-according to user reference manual, it is always bit4 ~ bit7
-of SSI_SYS_STATUS[1,3,5,7] registers indicate
-SSIU-9's buffer state, so "0xf << 4" should be used.
+Introduce sun7i_codec_controls because some of the controls are different
+on Allwinner A20 compared to Allwinner A10.
 
-This patch fix incorrect shifting issue in SSIU-9 case
+Also introduce sun7i_codec_codec in order to use sun7i_codec_controls and
+make sun7i_codec_quirks use sun7i_codec_codec.
 
-Fixes: commit b7169ddea2f2 ("ASoC: rsnd: remove RSND_REG_ from rsnd_reg")
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-codec.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index c5934adcfd01..c74991dd18ab 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -79,7 +79,7 @@ static int rsnd_ssiu_init(struct rsnd_mod *mod,
- 		break;
- 	case 9:
- 		for (i = 0; i < 4; i++)
--			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << (id * 4));
-+			rsnd_mod_write(mod, SSI_SYS_STATUS((i * 2) + 1), 0xf << 4);
- 		break;
- 	}
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 060a40b45ab0..52453c46b409 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -686,6 +686,15 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 		       sun4i_codec_micin_loopback_gain_scale),
+ };
  
++static const struct snd_kcontrol_new sun7i_codec_controls[] = {
++	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
++		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
++		       sun4i_codec_pa_volume_scale),
++	SOC_SINGLE_TLV("Mic Playback Volume", SUN4I_CODEC_DAC_ACTL,
++		       SUN4I_CODEC_DAC_ACTL_MICG, 7, 0,
++		       sun4i_codec_micin_loopback_gain_scale),
++};
++
+ static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+ 			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
+@@ -820,6 +829,19 @@ static const struct snd_soc_component_driver sun4i_codec_codec = {
+ 	.non_legacy_dai_naming	= 1,
+ };
+ 
++static const struct snd_soc_component_driver sun7i_codec_codec = {
++	.controls		= sun7i_codec_controls,
++	.num_controls		= ARRAY_SIZE(sun7i_codec_controls),
++	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(sun4i_codec_codec_dapm_widgets),
++	.dapm_routes		= sun4i_codec_codec_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(sun4i_codec_codec_dapm_routes),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++	.non_legacy_dai_naming	= 1,
++};
++
+ /*** sun6i Codec ***/
+ 
+ /* mixer controls */
+@@ -1500,7 +1522,7 @@ static const struct sun4i_codec_quirks sun6i_a31_codec_quirks = {
+ 
+ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
+ 	.regmap_config	= &sun7i_codec_regmap_config,
+-	.codec		= &sun4i_codec_codec,
++	.codec		= &sun7i_codec_codec,
+ 	.create_card	= sun4i_codec_create_card,
+ 	.reg_adc_fifoc	= REG_FIELD(SUN4I_CODEC_ADC_FIFOC, 0, 31),
+ 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
 -- 
 2.20.1
