@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: jz4725b: fix spelling mistake "Deemphatize" -> "Deemphasize"" to the asoc tree
-Date: Thu,  7 Feb 2019 12:16:05 +0000 (GMT)
-Message-ID: <20190207121605.476781127EF9@debutante.sirena.org.uk>
-References: <20190207092642.6655-1-colin.king@canonical.com>
+Subject: Applied "ASoC: sun4i-codec: Add Mic Playback Volume" to the asoc tree
+Date: Thu,  7 Feb 2019 12:16:00 +0000 (GMT)
+Message-ID: <20190207121600.EA21A1127EF9@debutante.sirena.org.uk>
+References: <20190130103945.26692-3-dannym@scratchpost.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190207092642.6655-1-colin.king@canonical.com>
+In-Reply-To: <20190130103945.26692-3-dannym@scratchpost.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: jz4725b: fix spelling mistake "Deemphatize" -> "Deemphasize"
+   ASoC: sun4i-codec: Add Mic Playback Volume
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6c3e6302364aa5d152e0f5f81d550fdbc7bb8d38 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 7 Feb 2019 09:26:42 +0000
-Subject: [PATCH] ASoC: codecs: jz4725b: fix spelling mistake "Deemphatize" ->
- "Deemphasize"
+>From b5a656030c7435f37deb5d38b1593fba624b8d6d Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Wed, 30 Jan 2019 11:39:38 +0100
+Subject: [PATCH] ASoC: sun4i-codec: Add Mic Playback Volume
 
-There is a spelling mistake in the SOC_SINGLE control name. Fix this.
+Add a control "Mic Playback Volume" that allows the user to control the
+MIC gain stage (common for Mic1 and Mic2) leading to the output mixer.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/jz4725b.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-codec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index e3dba92f30bd..24b1b23b99c9 100644
---- a/sound/soc/codecs/jz4725b.c
-+++ b/sound/soc/codecs/jz4725b.c
-@@ -161,7 +161,7 @@ static const struct snd_kcontrol_new jz4725b_codec_controls[] = {
- 	SOC_SINGLE("Master Playback Switch", JZ4725B_CODEC_REG_CR1,
- 		   REG_CR1_DAC_MUTE_OFFSET, 1, 1),
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 7b965bc50042..060a40b45ab0 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -681,6 +681,9 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+ 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
+ 		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
+ 		       sun4i_codec_pa_volume_scale),
++	SOC_SINGLE_TLV("Mic Playback Volume", SUN4I_CODEC_DAC_ACTL,
++		       SUN4I_CODEC_DAC_ACTL_MICG, 7, 0,
++		       sun4i_codec_micin_loopback_gain_scale),
+ };
  
--	SOC_SINGLE("Deemphatize Filter Playback Switch",
-+	SOC_SINGLE("Deemphasize Filter Playback Switch",
- 		   JZ4725B_CODEC_REG_CR2,
- 		   REG_CR2_DAC_DEEMP_OFFSET, 1, 0),
- 
+ static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
 -- 
 2.20.1
