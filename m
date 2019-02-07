@@ -1,7 +1,7 @@
 From: Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 3/6] ASoC: codecs: jz4740: Use SPDX license notifier
-Date: Thu,  7 Feb 2019 10:31:40 -0300
-Message-ID: <20190207133143.5232-3-paul@crapouillou.net>
+Subject: [PATCH v2 4/6] ASoC: codecs: jz4740: Add support for devicetree
+Date: Thu,  7 Feb 2019 10:31:41 -0300
+Message-ID: <20190207133143.5232-4-paul@crapouillou.net>
 References: <20190207133143.5232-1-paul@crapouillou.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190207133143.5232-1-paul@crapouillou.net>
@@ -10,43 +10,41 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
 List-Id: alsa-devel@alsa-project.org
 
-Add license information as a standard SPDX license notifier instead of
-custom text.
+Add support for probing the driver from devicetree.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
 
 Changes:
 
-v2: Use C++ style comment
+v2: No change
 
- sound/soc/codecs/jz4740.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ sound/soc/codecs/jz4740.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index 9395b583432c..9b3e1227a971 100644
+index 9b3e1227a971..974e17fa1911 100644
 --- a/sound/soc/codecs/jz4740.c
 +++ b/sound/soc/codecs/jz4740.c
-@@ -1,15 +1,8 @@
--/*
-- * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- *  You should have received a copy of the  GNU General Public License along
-- *  with this program; if not, write  to the Free Software Foundation, Inc.,
-- *  675 Mass Ave, Cambridge, MA 02139, USA.
-- *
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// JZ4740 CODEC driver
-+//
-+// Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+@@ -346,10 +346,19 @@ static int jz4740_codec_probe(struct platform_device *pdev)
+ 	return ret;
+ }
  
- #include <linux/kernel.h>
- #include <linux/module.h>
++#ifdef CONFIG_OF
++static const struct of_device_id jz4740_codec_of_matches[] = {
++	{ .compatible = "ingenic,jz4740-codec", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, jz4740_codec_of_matches);
++#endif
++
+ static struct platform_driver jz4740_codec_driver = {
+ 	.probe = jz4740_codec_probe,
+ 	.driver = {
+ 		.name = "jz4740-codec",
++		.of_match_table = of_match_ptr(jz4740_codec_of_matches),
+ 	},
+ };
+ 
 -- 
 2.11.0
