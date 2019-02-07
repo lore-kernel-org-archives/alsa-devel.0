@@ -1,7 +1,7 @@
 From: Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 2/6] dt-bindings: sound: Document jz4725b-codec bindings
-Date: Thu,  7 Feb 2019 10:31:39 -0300
-Message-ID: <20190207133143.5232-2-paul@crapouillou.net>
+Subject: [PATCH v2 3/6] ASoC: codecs: jz4740: Use SPDX license notifier
+Date: Thu,  7 Feb 2019 10:31:40 -0300
+Message-ID: <20190207133143.5232-3-paul@crapouillou.net>
 References: <20190207133143.5232-1-paul@crapouillou.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190207133143.5232-1-paul@crapouillou.net>
@@ -10,45 +10,43 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
 List-Id: alsa-devel@alsa-project.org
 
-Add documentation about how to probe the jz4725b-codec driver from
-devicetree.
+Add license information as a standard SPDX license notifier instead of
+custom text.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
 
 Changes:
 
-v2: No change
+v2: Use C++ style comment
 
- .../bindings/sound/ingenic,jz4725b-codec.txt         | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
+ sound/soc/codecs/jz4740.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-new file mode 100644
-index 000000000000..05adc0d47b13
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-@@ -0,0 +1,20 @@
-+Ingenic JZ4725B codec controller
-+
-+Required properties:
-+- compatible : "ingenic,jz4725b-codec"
-+- reg : codec registers location and length
-+- clocks : phandle to the AIC clock.
-+- clock-names: must be set to "aic".
-+- #sound-dai-cells: Must be set to 0.
-+
-+Example:
-+
-+codec: audio-codec@100200a4 {
-+	compatible = "ingenic,jz4725b-codec";
-+	reg = <0x100200a4 0x8>;
-+
-+	#sound-dai-cells = <0>;
-+
-+	clocks = <&cgu JZ4725B_CLK_AIC>;
-+	clock-names = "aic";
-+};
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 9395b583432c..9b3e1227a971 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -1,15 +1,8 @@
+-/*
+- * Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- *
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// JZ4740 CODEC driver
++//
++// Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
 -- 
 2.11.0
