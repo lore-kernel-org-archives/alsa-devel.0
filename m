@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Prevent clk_get_rate()
- calls in atomic context
-Date: Thu, 7 Feb 2019 14:54:06 +0000
-Message-ID: <20190207145406.GD6190@sirena.org.uk>
-References: <CGME20190207142052epcas1p22f1dc03c371674434ff40150cf376b6a@epcas1p2.samsung.com>
- <20190207142041.19394-1-s.nawrocki@samsung.com>
- <20190207143214.GC6190@sirena.org.uk>
- <21b8ccd7-e379-b4aa-3257-c9644ce3664c@samsung.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: sound: Document
+	jz4740-codec bindings
+Date: Thu, 7 Feb 2019 15:22:12 +0000
+Message-ID: <20190207152212.GE6190@sirena.org.uk>
+References: <20190207133143.5232-1-paul@crapouillou.net>
+ <20190207140031.GB6190@sirena.org.uk>
+ <1549549058.24598.0@crapouillou.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8249281812048385322=="
+Content-Type: multipart/mixed; boundary="===============5508213443108725171=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B6642679B3
- for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 15:54:08 +0100 (CET)
-In-Reply-To: <21b8ccd7-e379-b4aa-3257-c9644ce3664c@samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F25602679A1
+ for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2019 16:22:19 +0100 (CET)
+In-Reply-To: <1549549058.24598.0@crapouillou.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org, m.szyprowski@samsung.com
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8249281812048385322==
+--===============5508213443108725171==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="F8dlzb82+Fcn6AgP"
+	protocol="application/pgp-signature"; boundary="UnaWdueM1EBWVRzC"
 Content-Disposition: inline
 
 
---F8dlzb82+Fcn6AgP
+--UnaWdueM1EBWVRzC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Feb 07, 2019 at 03:47:14PM +0100, Sylwester Nawrocki wrote:
-> On 2/7/19 15:32, Mark Brown wrote:
+On Thu, Feb 07, 2019 at 11:17:37AM -0300, Paul Cercueil wrote:
 
-> > Please think hard before including complete backtraces in upstream
-> > reports, they are very large and contain almost no useful information
-> > relative to their size so often obscure the relevant content in your
-> > message. If part of the backtrace is usefully illustrative then it's
-> > usually better to pull out the relevant sections.
+> Well you only applied patch 6/6, didn't you? I only see this one in your
+> tree.
 
-> OK, let me trim the backtrace some more and resend.
+Hrm, yeah.  Wonder what happened there...
 
-It's fine, I already applied.
-
---F8dlzb82+Fcn6AgP
+--UnaWdueM1EBWVRzC
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxcRo0ACgkQJNaLcl1U
-h9BwYgf8C1wS4SbsPYJfIJffKguSMIG2PsJNdhD6sjPzrZy8INW/8DEB/oJWpFbo
-U4YTznjK0tz/aLPGm7XS4qliocS6x1QcK4dq+E1DhtUGg5WUoehyS0pxJJnc6Mn/
-lX62rgFrCbHz3g9CGh/IxsNdLtkRTeh2jS64tmK/Mp/gLJ/I1Xv6AtsPtjWnZXIe
-6b6Wo047tPUHcOto0Ud4yZcf9rUeVYNDSU8dU1/EJVMQdRc7Qs54OCa0mo4KpTW7
-07dmJNqCaj3RBt1T8WBpy2uMfoYkghpow9N6XnnpDMwlovAbS52oxDzlmNALZ9wJ
-5+fLAdrwdirSHTp2Sg9+4dnutCl53Q==
-=9x5Y
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxcTSMACgkQJNaLcl1U
+h9AVBwf/XcNRXVJiLvl2kUf/fvAw58lzjnm/DVNQ8TfmAVVPX1W+Z6K7OI5mRN53
+gZGVCjoYrXtQFmPl/EqxHUWbJQhOzSYx6zmTcfseRtnAYydILR2o4lvwsCeQtVtu
+yEooUYy347HhdY+kO1MpoZcBKQqNxxkDAu8m3a7oBBTsrRbB0yNwNZmtXzCeCDRM
+kOA0Mak40tROFxnWaw+ityHbmb5avQql04aI3WY9SW3KJ6VdLIiRqapiK61dLo1r
+ZKv0MguweBCXTe73yHT+LZy8mPQBpIQzbpdVd+Qbfeb/VHtX0K2WJa0jxkYA6RJ7
+jsiuR/EMLoyftspAFl9uwYlJN4K7qQ==
+=ZC7V
 -----END PGP SIGNATURE-----
 
---F8dlzb82+Fcn6AgP--
+--UnaWdueM1EBWVRzC--
 
---===============8249281812048385322==
+--===============5508213443108725171==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8249281812048385322==--
+--===============5508213443108725171==--
