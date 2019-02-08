@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: add power management" to the asoc tree
-Date: Fri,  8 Feb 2019 13:11:09 +0000 (GMT)
-Message-ID: <20190208131109.9EBC41127F30@debutante.sirena.org.uk>
-References: <1549622994-13810-2-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: doc: Fix typos in dpcm.rst" to the asoc tree
+Date: Fri,  8 Feb 2019 13:11:18 +0000 (GMT)
+Message-ID: <20190208131118.691071127F30@debutante.sirena.org.uk>
+References: <20190207172256.1972-1-s.nawrocki@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1549622994-13810-2-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <20190207172256.1972-1-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: add power management
+   ASoC: doc: Fix typos in dpcm.rst
 
 has been applied to the asoc tree at
 
@@ -36,89 +37,64 @@ to this mail.
 Thanks,
 Mark
 
->From 307cce4a0017f94c6266050487c117660d66104e Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Fri, 8 Feb 2019 11:49:53 +0100
-Subject: [PATCH] ASoC: stm32: i2s: add power management
+>From 511d53ac86746f397791e7c4bd47993244fc7420 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Thu, 7 Feb 2019 18:22:56 +0100
+Subject: [PATCH] ASoC: doc: Fix typos in dpcm.rst
 
-Add suspend and resume sleep callbacks,
-to support system low power modes.
+This patch fixes a few typos in the DPCM documentation.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ Documentation/sound/soc/dpcm.rst | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 6d0bf78d114d..dbe23a709d24 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -186,8 +186,9 @@ enum i2s_datlen {
- #define STM32_I2S_IS_SLAVE(x)		((x)->ms_flg == I2S_MS_SLAVE)
+diff --git a/Documentation/sound/soc/dpcm.rst b/Documentation/sound/soc/dpcm.rst
+index f6845b2278ea..77f67ded53de 100644
+--- a/Documentation/sound/soc/dpcm.rst
++++ b/Documentation/sound/soc/dpcm.rst
+@@ -13,7 +13,7 @@ drivers that expose several ALSA PCMs and can route to multiple DAIs.
+ The DPCM runtime routing is determined by the ALSA mixer settings in the same
+ way as the analog signal is routed in an ASoC codec driver. DPCM uses a DAPM
+ graph representing the DSP internal audio paths and uses the mixer settings to
+-determine the patch used by each ALSA PCM.
++determine the path used by each ALSA PCM.
  
- /**
-+ * struct stm32_i2s_data - private data of I2S
-  * @regmap_conf: I2S register map configuration pointer
-- * @egmap: I2S register map pointer
-+ * @regmap: I2S register map pointer
-  * @pdev: device data pointer
-  * @dai_drv: DAI driver pointer
-  * @dma_data_tx: dma configuration data for tx channel
-@@ -596,8 +597,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
- 		}
+ DPCM re-uses all the existing component codec, platform and DAI drivers without
+ any modifications.
+@@ -101,7 +101,7 @@ The audio driver processes this as follows :-
  
--		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
--					 I2S_CR1_CSTART, I2S_CR1_CSTART);
-+		ret = regmap_write_bits(i2s->regmap, STM32_I2S_CR1_REG,
-+					I2S_CR1_CSTART, I2S_CR1_CSTART);
- 		if (ret < 0) {
- 			dev_err(cpu_dai->dev, "Error %d starting I2S\n", ret);
- 			return ret;
-@@ -703,6 +704,7 @@ static const struct regmap_config stm32_h7_i2s_regmap_conf = {
- 	.volatile_reg = stm32_i2s_volatile_reg,
- 	.writeable_reg = stm32_i2s_writeable_reg,
- 	.fast_io = true,
-+	.cache_type = REGCACHE_FLAT,
- };
+ 4. Machine driver or audio HAL enables the speaker path.
  
- static const struct snd_soc_dai_ops stm32_i2s_pcm_dai_ops = {
-@@ -929,10 +931,35 @@ static int stm32_i2s_remove(struct platform_device *pdev)
+-5. DPCM runs the PCM ops for startup(), hw_params(), prepapre() and
++5. DPCM runs the PCM ops for startup(), hw_params(), prepare() and
+    trigger(start) for DAI1 Speakers since the path is enabled.
  
- MODULE_DEVICE_TABLE(of, stm32_i2s_ids);
+ In this example, the machine driver or userspace audio HAL can alter the routing
+@@ -221,7 +221,7 @@ like a BT phone call :-
+ This allows the host CPU to sleep while the DSP, MODEM DAI and the BT DAI are
+ still in operation.
  
-+#ifdef CONFIG_PM_SLEEP
-+static int stm32_i2s_suspend(struct device *dev)
-+{
-+	struct stm32_i2s_data *i2s = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(i2s->regmap, true);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	return 0;
-+}
-+
-+static int stm32_i2s_resume(struct device *dev)
-+{
-+	struct stm32_i2s_data *i2s = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(i2s->regmap, false);
-+	return regcache_sync(i2s->regmap);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops stm32_i2s_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(stm32_i2s_suspend, stm32_i2s_resume)
-+};
-+
- static struct platform_driver stm32_i2s_driver = {
- 	.driver = {
- 		.name = "st,stm32-i2s",
- 		.of_match_table = stm32_i2s_ids,
-+		.pm = &stm32_i2s_pm_ops,
- 	},
- 	.probe = stm32_i2s_probe,
- 	.remove = stm32_i2s_remove,
+-A BE DAI link can also set the codec to a dummy device if the code is a device
++A BE DAI link can also set the codec to a dummy device if the codec is a device
+ that is managed externally.
+ 
+ Likewise a BE DAI can also set a dummy cpu DAI if the CPU DAI is managed by the
+@@ -249,7 +249,7 @@ configuration.
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 
+-	/* The DSP will covert the FE rate to 48k, stereo */
++	/* The DSP will convert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+ 
+@@ -386,5 +386,3 @@ This means creating a new FE that is connected with a virtual path to both
+ DAI links. The DAI links will be started when the FE PCM is started and stopped
+ when the FE PCM is stopped. Note that the FE PCM cannot read or write data in
+ this configuration.
+-
+-
 -- 
 2.20.1
