@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: msm8916-wcd-analog: fix
-	example regulator names" to the asoc tree
-Date: Fri,  8 Feb 2019 13:11:05 +0000 (GMT)
-Message-ID: <20190208131105.5FAE01127F30@debutante.sirena.org.uk>
-References: <20190207165755.1548-4-johan@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DA002674C9
- for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2019 14:11:07 +0100 (CET)
-In-Reply-To: <20190207165755.1548-4-johan@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: codecs: jz4725b: Remove unnecessary const qualifier" to the asoc tree
+Date: Fri,  8 Feb 2019 13:11:11 +0000 (GMT)
+Message-ID: <20190208131111.C0F0D1127F30@debutante.sirena.org.uk>
+References: <20190208045918.16799-1-natechancellor@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190208045918.16799-1-natechancellor@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Paul Cercueil <paul@crapouillou.net>, alsa-devel@alsa-project.org, Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: msm8916-wcd-analog: fix example regulator names
+   ASoC: codecs: jz4725b: Remove unnecessary const qualifier
 
 has been applied to the asoc tree at
 
@@ -53,48 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From 510135535382db7f5ee8727818172e42c9c9cbd5 Mon Sep 17 00:00:00 2001
-From: Johan Hovold <johan@kernel.org>
-Date: Thu, 7 Feb 2019 17:57:55 +0100
-Subject: [PATCH] dt-bindings: sound: msm8916-wcd-analog: fix example regulator
- names
+>From d9186330c881468722c005ee772ca745c81a29ef Mon Sep 17 00:00:00 2001
+From: Nathan Chancellor <natechancellor@gmail.com>
+Date: Thu, 7 Feb 2019 21:59:18 -0700
+Subject: [PATCH] ASoC: codecs: jz4725b: Remove unnecessary const qualifier
 
-Fix upper-case regulator names in the binding example which do not match
-the corresponding required properties.
+Clang warns:
 
-While at it, add a blank line after the required-properties section to
-improve readability.
+sound/soc/codecs/jz4725b.c:177:14: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
+static const SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
+             ^
+include/sound/soc.h:356:2: note: expanded from macro 'SOC_VALUE_ENUM_SINGLE_DECL'
+        SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
+        ^
+include/sound/soc.h:353:2: note: expanded from macro 'SOC_VALUE_ENUM_DOUBLE_DECL'
+        const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
+        ^
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
+As it points out, SOC_VALUE_ENUM_DOUBLE_DECL has the const attribute in
+its definition so remove it here.
+
+Fixes: e9d97b05a80f ("ASoC: codecs: Add jz4725b-codec driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/354
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt  | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/jz4725b.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-index fdcea3d12ee5..e7d17dda55db 100644
---- a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-@@ -30,6 +30,7 @@ Required properties
-  - vdd-cdc-io-supply: phandle to VDD_CDC_IO regulator DT node.
-  - vdd-cdc-tx-rx-cx-supply: phandle to VDD_CDC_TX/RX/CX regulator DT node.
-  - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator DT node.
-+
- Optional Properties:
-  - qcom,mbhc-vthreshold-low: Array of 5 threshold voltages in mV for 5 buttons
- 			     detection on headset when the mbhc is powered up
-@@ -92,9 +93,9 @@ spmi_bus {
- 				  "cdc_ear_cnp_int",
- 				  "cdc_hphr_cnp_int",
- 				  "cdc_hphl_cnp_int";
--	               VDD-CDC-IO-supply = <&pm8916_l5>;
--	               VDD-CDC-TX-RX-CX-supply = <&pm8916_l5>;
--	               VDD-MICBIAS-supply = <&pm8916_l13>;
-+	               vdd-cdc-io-supply = <&pm8916_l5>;
-+	               vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
-+	               vdd-micbias-supply = <&pm8916_l13>;
- 	               #sound-dai-cells = <1>;
- 	};
+diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
+index 103ccbc5d55c..766354c73076 100644
+--- a/sound/soc/codecs/jz4725b.c
++++ b/sound/soc/codecs/jz4725b.c
+@@ -173,12 +173,12 @@ static const char * const jz4725b_codec_adc_src_texts[] = {
+ 	"Mic 1", "Mic 2", "Line In", "Mixer",
  };
+ static const unsigned int jz4725b_codec_adc_src_values[] = { 0, 1, 2, 3, };
+-static const SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
+-					JZ4725B_CODEC_REG_CR3,
+-					REG_CR3_INSEL_OFFSET,
+-					REG_CR3_INSEL_MASK,
+-					jz4725b_codec_adc_src_texts,
+-					jz4725b_codec_adc_src_values);
++static SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
++				  JZ4725B_CODEC_REG_CR3,
++				  REG_CR3_INSEL_OFFSET,
++				  REG_CR3_INSEL_MASK,
++				  jz4725b_codec_adc_src_texts,
++				  jz4725b_codec_adc_src_values);
+ static const struct snd_kcontrol_new jz4725b_codec_adc_src_ctrl =
+ 			SOC_DAPM_ENUM("Route", jz4725b_codec_adc_src_enum);
+ 
 -- 
 2.20.1
