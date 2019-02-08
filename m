@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 06/17] ASoC: Intel: hda-match: remove prefix
-	for SOF files
-Date: Fri,  8 Feb 2019 17:45:46 -0600
-Message-ID: <20190208234557.7816-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/17] ASoC: Intel: hsw-bdw-match: remove
+	prefix for SOF files
+Date: Fri,  8 Feb 2019 17:45:47 -0600
+Message-ID: <20190208234557.7816-8-pierre-louis.bossart@linux.intel.com>
 References: <20190208234557.7816-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id B0D12267A4E
+ by alsa0.perex.cz (Postfix) with ESMTP id DBE91267A4B
  for <alsa-devel@alsa-project.org>; Sat,  9 Feb 2019 00:46:09 +0100 (CET)
 In-Reply-To: <20190208234557.7816-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,21 +30,54 @@ alternate paths, and more flexibility for OEMs and distros
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-hda-match.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../intel/common/soc-acpi-intel-hsw-bdw-match.c  | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-index 533c1064f84b..68ae43f7b4b2 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-@@ -23,7 +23,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
- 
- 		/* .sof_fw_filename is dynamically set in sof/intel driver */
- 
--		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
-+		.sof_tplg_filename = "sof-hda-generic.tplg",
- 
- 		/*
- 		 * .machine_quirk and .quirk_data are not used here but
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+index 494a0ea9b029..ddfe4250c2bc 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+@@ -23,8 +23,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[] = {
+ 		.id = "INT33CA",
+ 		.drv_name = "haswell-audio",
+ 		.fw_filename = "intel/IntcSST1.bin",
+-		.sof_fw_filename = "intel/sof-hsw.ri",
+-		.sof_tplg_filename = "intel/sof-hsw.tplg",
++		.sof_fw_filename = "sof-hsw.ri",
++		.sof_tplg_filename = "sof-hsw.tplg",
+ 		.asoc_plat_name = "haswell-pcm-audio",
+ 	},
+ 	{}
+@@ -36,24 +36,24 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
+ 		.id = "INT343A",
+ 		.drv_name = "broadwell-audio",
+ 		.fw_filename =  "intel/IntcSST2.bin",
+-		.sof_fw_filename = "intel/sof-bdw.ri",
+-		.sof_tplg_filename = "intel/sof-bdw-rt286.tplg",
++		.sof_fw_filename = "sof-bdw.ri",
++		.sof_tplg_filename = "sof-bdw-rt286.tplg",
+ 		.asoc_plat_name = "haswell-pcm-audio",
+ 	},
+ 	{
+ 		.id = "RT5677CE",
+ 		.drv_name = "bdw-rt5677",
+ 		.fw_filename =  "intel/IntcSST2.bin",
+-		.sof_fw_filename = "intel/sof-bdw.ri",
+-		.sof_tplg_filename = "intel/sof-bdw-rt5677.tplg",
++		.sof_fw_filename = "sof-bdw.ri",
++		.sof_tplg_filename = "sof-bdw-rt5677.tplg",
+ 		.asoc_plat_name = "haswell-pcm-audio",
+ 	},
+ 	{
+ 		.id = "INT33CA",
+ 		.drv_name = "haswell-audio",
+ 		.fw_filename = "intel/IntcSST2.bin",
+-		.sof_fw_filename = "intel/sof-bdw.ri",
+-		.sof_tplg_filename = "intel/sof-bdw-rt5640.tplg",
++		.sof_fw_filename = "sof-bdw.ri",
++		.sof_tplg_filename = "sof-bdw-rt5640.tplg",
+ 		.asoc_plat_name = "haswell-pcm-audio",
+ 	},
+ 	{}
 -- 
 2.17.1
