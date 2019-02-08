@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 05/17] ASoC: Intel: glk-match: remove prefix
+Subject: [PATCH 06/17] ASoC: Intel: hda-match: remove prefix
 	for SOF files
-Date: Fri,  8 Feb 2019 17:45:45 -0600
-Message-ID: <20190208234557.7816-6-pierre-louis.bossart@linux.intel.com>
+Date: Fri,  8 Feb 2019 17:45:46 -0600
+Message-ID: <20190208234557.7816-7-pierre-louis.bossart@linux.intel.com>
 References: <20190208234557.7816-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CD15267A3F
- for <alsa-devel@alsa-project.org>; Sat,  9 Feb 2019 00:46:08 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id B0D12267A4E
+ for <alsa-devel@alsa-project.org>; Sat,  9 Feb 2019 00:46:09 +0100 (CET)
 In-Reply-To: <20190208234557.7816-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,34 +30,21 @@ alternate paths, and more flexibility for OEMs and distros
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-glk-match.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-hda-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 305875af71ca..75bc0109166a 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -19,8 +19,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.id = "INT343A",
- 		.drv_name = "glk_alc298s_i2s",
- 		.fw_filename = "intel/dsp_fw_glk.bin",
--		.sof_fw_filename = "intel/sof-glk.ri",
--		.sof_tplg_filename = "intel/sof-glk-alc298.tplg",
-+		.sof_fw_filename = "sof-glk.ri",
-+		.sof_tplg_filename = "sof-glk-alc298.tplg",
- 		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
-@@ -29,8 +29,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.fw_filename = "intel/dsp_fw_glk.bin",
- 		.machine_quirk = snd_soc_acpi_codec_list,
- 		.quirk_data = &glk_codecs,
--		.sof_fw_filename = "intel/sof-glk.ri",
--		.sof_tplg_filename = "intel/sof-glk-da7219.tplg",
-+		.sof_fw_filename = "sof-glk.ri",
-+		.sof_tplg_filename = "sof-glk-da7219.tplg",
- 		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{},
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+index 533c1064f84b..68ae43f7b4b2 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+@@ -23,7 +23,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
+ 
+ 		/* .sof_fw_filename is dynamically set in sof/intel driver */
+ 
+-		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
++		.sof_tplg_filename = "sof-hda-generic.tplg",
+ 
+ 		/*
+ 		 * .machine_quirk and .quirk_data are not used here but
 -- 
 2.17.1
