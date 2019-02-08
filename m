@@ -1,20 +1,14 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH RFC/untested] hda-intel: suspend HDA codecs
- and the PCI device in error cases
-Date: Fri, 8 Feb 2019 13:14:06 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1902081245470.25485@axis700.grange>
-References: <alpine.DEB.2.20.1902081000370.25485@axis700.grange>
- <s5h36oy5yk9.wl-tiwai@suse.de>
- <alpine.DEB.2.20.1902081229110.25485@axis700.grange>
- <s5hr2ci4ij3.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v5.0
+Date: Fri, 8 Feb 2019 12:34:32 +0000
+Message-ID: <20190208123432.GC6695@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2484496450989351809=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
- by alsa0.perex.cz (Postfix) with ESMTP id C8A68267483
- for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2019 13:14:17 +0100 (CET)
-In-Reply-To: <s5hr2ci4ij3.wl-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABCA5267483
+ for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2019 13:34:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,153 +19,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Feb 2019, Takashi Iwai wrote:
 
-> On Fri, 08 Feb 2019 12:33:14 +0100,
-> Guennadi Liakhovetski wrote:
-> > 
-> > Hi Takashi,
-> > 
-> > On Fri, 8 Feb 2019, Takashi Iwai wrote:
-> > 
-> > > On Fri, 08 Feb 2019 11:50:25 +0100,
-> > > Guennadi Liakhovetski wrote:
-> > > > 
-> > > > From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > > > 
-> > > > If HDA probing on Intel platforms fails, all the devices, that have
-> > > > previously been powered up, have to be suspended again.
-> > > > 
-> > > > Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > > > ---
-> > > > 
-> > > > I came across HDA not suspending when no codec driver has successfully 
-> > > > probed while working on SOF. Then I decided to look how this is handled in 
-> > > > the mainline Intel HDA code and I think something like this patch is 
-> > > > needed, however, I don't have a set up to test it. I haven't looked at the 
-> > > > tegra HDA implementation, possibly they need something similar. Please, 
-> > > > comment.
-> > > 
-> > > This will likely lead to the runtime PM refcount unbalance at
-> > > azx_free(), I'm afraid.  chip->running is used as a flag to judge
-> > > whether the runtime PM is applied or not, and if you jump to the error
-> > > path, the flag won't be set.
-> > 
-> > Ok, understand, indeed, that would be a problem now. But isn't that also a 
-> > problem, if azx_probe_continue() doesn't run at all before the azx_free()? 
-> 
-> In that case, it won't go suspend, so it won't need resume at that
-> point.
+--===============2484496450989351809==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="1ccMZA6j1vT5UqiK"
+Content-Disposition: inline
 
-Mmh, ok, then we have two different things there - see below.
 
-> > Wouldn't this fix it?
-> 
-> Not really.  The chip->running is also checked in azx_runtime_idle().
-> 
-> Also, what you're trying to change is the behavior of HD-audio
-> controller, not about codecs.
+--1ccMZA6j1vT5UqiK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When talking about codecs I meant the path
+The following changes since commit 4cb79ef9c6c4413427cd70afbb1f3bc01e9b7abf:
 
-azx_probe_continue() -> set_default_power_save() -> 
-snd_hda_set_power_save() -> codec_set_power_save() -> 
-pm_runtime_suspended()
+  ASoC: amd: Fix potential NULL pointer dereference (2019-01-15 19:06:23 +0000)
 
-and those codecs are first runtime-enabled via
+are available in the Git repository at:
 
-azx_probe_continue() -> azx_probe_codecs() ->
-snd_hda_codec_new() -> snd_hda_codec_device_init() ->
-snd_hdac_device_init() -> pm_runtime_get_noresume()
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.0-rc5
 
-So for symmetry they should also be runtime-disabled if probing doesn't 
-complete successfully, right? And currently this isn't the case, so, there 
-is a problem?
+for you to fetch changes up to 860b454c2c0cbda6892954f5cdbbb48931b3c8db:
 
-As for the controller, alright, I guess, we shouldn't touch its runtime PM 
-if probe_continue() didn't succeed. So we only have to change the codec 
-runtime PM status in case of a failure or have I misunderstood something 
-about them and also their status is balanced in such cases?
+  ASoC: samsung: Prevent clk_get_rate() calls in atomic context (2019-02-07 14:34:53 +0000)
 
-Thanks
-Guennadi
+----------------------------------------------------------------
+ASoC: Fixes for v5.0
 
-> thanks,
-> 
-> Takashi
-> 
-> > @@ -1300,7 +1300,7 @@ static int azx_free(struct azx *chip)
-> >  	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
-> >  	struct hdac_bus *bus = azx_bus(chip);
-> >  
-> > -	if (azx_has_pm_runtime(chip) && chip->running)
-> > +	if (azx_has_pm_runtime(chip))
-> >  		pm_runtime_get_noresume(&pci->dev);
-> >  	chip->running = 0;
-> >  
-> > 
-> > Thanks
-> > Guennadi
-> > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > > 
-> > > >  sound/pci/hda/hda_intel.c | 9 +++++----
-> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > > > index e784130..d3caa37 100644
-> > > > --- a/sound/pci/hda/hda_intel.c
-> > > > +++ b/sound/pci/hda/hda_intel.c
-> > > > @@ -2229,14 +2229,14 @@ static int azx_probe_continue(struct azx *chip)
-> > > >  	/* create codec instances */
-> > > >  	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
-> > > >  	if (err < 0)
-> > > > -		goto out_free;
-> > > > +		goto out_power_down;
-> > > >  
-> > > >  #ifdef CONFIG_SND_HDA_PATCH_LOADER
-> > > >  	if (chip->fw) {
-> > > >  		err = snd_hda_load_patch(&chip->bus, chip->fw->size,
-> > > >  					 chip->fw->data);
-> > > >  		if (err < 0)
-> > > > -			goto out_free;
-> > > > +			goto out_power_down;
-> > > >  #ifndef CONFIG_PM
-> > > >  		release_firmware(chip->fw); /* no longer needed */
-> > > >  		chip->fw = NULL;
-> > > > @@ -2246,12 +2246,12 @@ static int azx_probe_continue(struct azx *chip)
-> > > >  	if ((probe_only[dev] & 1) == 0) {
-> > > >  		err = azx_codec_configure(chip);
-> > > >  		if (err < 0)
-> > > > -			goto out_free;
-> > > > +			goto out_power_down;
-> > > >  	}
-> > > >  
-> > > >  	err = snd_card_register(chip->card);
-> > > >  	if (err < 0)
-> > > > -		goto out_free;
-> > > > +		goto out_power_down;
-> > > >  
-> > > >  	setup_vga_switcheroo_runtime_pm(chip);
-> > > >  
-> > > > @@ -2260,6 +2260,7 @@ static int azx_probe_continue(struct azx *chip)
-> > > >  
-> > > >  	set_default_power_save(chip);
-> > > >  
-> > > > +out_power_down:
-> > > >  	if (azx_has_pm_runtime(chip))
-> > > >  		pm_runtime_put_autosuspend(&pci->dev);
-> > > >  
-> > > > -- 
-> > > > 1.9.3
-> > > > 
-> > > > 
-> > > 
-> > 
-> 
+A selection of driver specific fixes here, along with a few core fixes:
+
+ - A fixup for some MFD devices that were broken by the previous fixes
+   for deferred probe.
+ - A fix for potential out of bounds array accesses when ordering DAPM
+   power/up down sequences.
+ - Avoid use after free issue when unloading and reloading drivers using
+   topologies.
+
+----------------------------------------------------------------
+Charles Keepax (1):
+      ASoC: core: Allow soc_find_component lookups to match parent of_node
+
+Fabio Estevam (1):
+      ASoC: MAINTAINERS: fsl: Change Fabio's email address
+
+Guennadi Liakhovetski (1):
+      ASoC: topology: fix oops/use-after-free case with dai driver
+
+Jiada Wang (1):
+      ASoC: rsnd: ssiu: correct shift bit for ssiu9
+
+Kuninori Morimoto (2):
+      ASoC: rsnd: fixup MIX kctrl registration
+      ASoC: rsnd: fixup rsnd_ssi_master_clk_start() user count check
+
+Pierre-Louis Bossart (1):
+      ASoC: dapm: fix out-of-bounds accesses to DAPM lookup tables
+
+Russell King (1):
+      ASoC: hdmi-codec: fix oops on re-probe
+
+Shuming Fan (1):
+      ASoC: rt5682: Correct the setting while select ASRC clk for AD/DA filter
+
+Sylwester Nawrocki (1):
+      ASoC: samsung: Prevent clk_get_rate() calls in atomic context
+
+ MAINTAINERS                   |  4 ++--
+ sound/soc/codecs/hdmi-codec.c |  4 ++--
+ sound/soc/codecs/rt5682.c     |  2 ++
+ sound/soc/samsung/i2s.c       | 10 +++++-----
+ sound/soc/sh/rcar/core.c      |  8 ++++----
+ sound/soc/sh/rcar/ssi.c       |  2 +-
+ sound/soc/sh/rcar/ssiu.c      |  2 +-
+ sound/soc/soc-core.c          |  9 +++++++--
+ sound/soc/soc-dapm.c          | 24 ++++++++++++++++++++++++
+ sound/soc/soc-topology.c      |  5 +++++
+ 10 files changed, 53 insertions(+), 17 deletions(-)
+
+--1ccMZA6j1vT5UqiK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxdd1gACgkQJNaLcl1U
+h9DFYgf/eiS58WkUJhALwAKOjgds64dY35Tk4Tb5e4n3FmEnh3JGayZ2ZfRZCIes
+uyA3fzXoliZ0TXaWJvVvylFCt0ON87CcIdCw1gpNCPJznW8+aOnE8hOZkd9AdH2C
+p/HK6skk6/H7Gl508pnxjFC1KOi3zP7Kkl0a4N2FXbqQ0AdkgAdJcGXni/48lCxj
+SePd8Fv+sa9OWX9nMpVhBE/P1hPCz/hNyajuU1J6TRkSIRT4L+t2SLzwVLGvehpe
+jgLwwwmiGmTKGEIW5bG0q6n8Es06sUd7k7Qr8YaMb8YeveULRzD0IMBFc4A3WTpR
+89QfXMJANkbaUbvC8pvzwssqum6vUg==
+=8fq+
+-----END PGP SIGNATURE-----
+
+--1ccMZA6j1vT5UqiK--
+
+--===============2484496450989351809==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2484496450989351809==--
