@@ -1,46 +1,59 @@
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH 01/18] MIPS: lantiq: pass struct device to DMA API
- functions
-Date: Thu, 7 Feb 2019 23:29:14 +0000
-Message-ID: <20190207232912.wfgejc5c6d6lk5so@pburton-laptop>
-References: <20190201084801.10983-1-hch@lst.de>
- <20190201084801.10983-2-hch@lst.de>
+From: Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] ASoC: codecs: jz4725b: Remove unnecessary const qualifier
+Date: Thu,  7 Feb 2019 21:59:18 -0700
+Message-ID: <20190208045918.16799-1-natechancellor@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190201084801.10983-2-hch@lst.de>
-Content-Language: en-US
-Content-ID: <F505CEADCDCA13409DACF1CBCB28A5C3@namprd22.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: John Crispin <john@phrozen.org>, Vinod Koul <vkoul@kernel.org>, Dmitry Tarnyagin <dmitry.tarnyagin@lockless.no>, Nicolas Ferre <nicolas.ferre@microchip.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Felipe Balbi <balbi@kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>, Nick Desaulniers <ndesaulniers@google.com>, Nathan Chancellor <natechancellor@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Christoph,
+Clang warns:
 
-On Fri, Feb 01, 2019 at 09:47:44AM +0100, Christoph Hellwig wrote:
-> The DMA API generally relies on a struct device to work properly, and
-> only barely works without one for legacy reasons.  Pass the easily
-> available struct device from the platform_device to remedy this.
->=20
-> Also use GFP_KERNEL instead of GFP_ATOMIC as the gfp_t for the memory
-> allocation, as we aren't in interrupt context or under a lock.
->=20
-> Note that this whole function looks somewhat bogus given that we never
-> even look at the returned dma address, and the CPHYSADDR magic on
-> a returned noncached mapping looks "interesting".  But I'll leave
-> that to people more familiar with the code to sort out.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/mips/lantiq/xway/vmmc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+sound/soc/codecs/jz4725b.c:177:14: warning: duplicate 'const' declaration specifier [-Wduplicate-decl-specifier]
+static const SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
+             ^
+include/sound/soc.h:356:2: note: expanded from macro 'SOC_VALUE_ENUM_SINGLE_DECL'
+        SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
+        ^
+include/sound/soc.h:353:2: note: expanded from macro 'SOC_VALUE_ENUM_DOUBLE_DECL'
+        const struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
+        ^
 
-Would you like this to go through the MIPS tree or elsewhere? If the
-latter:
+As it points out, SOC_VALUE_ENUM_DOUBLE_DECL has the const attribute in
+its definition so remove it here.
 
-    Acked-by: Paul Burton <paul.burton@mips.com>
+Fixes: e9d97b05a80f ("ASoC: codecs: Add jz4725b-codec driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/354
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ sound/soc/codecs/jz4725b.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks,
-    Paul
+diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
+index e3dba92f30bd..5cc8c7ca24c6 100644
+--- a/sound/soc/codecs/jz4725b.c
++++ b/sound/soc/codecs/jz4725b.c
+@@ -174,12 +174,12 @@ static const char * const jz4725b_codec_adc_src_texts[] = {
+ 	"Mic 1", "Mic 2", "Line In", "Mixer",
+ };
+ static const unsigned int jz4725b_codec_adc_src_values[] = { 0, 1, 2, 3, };
+-static const SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
+-					JZ4725B_CODEC_REG_CR3,
+-					REG_CR3_INSEL_OFFSET,
+-					REG_CR3_INSEL_MASK,
+-					jz4725b_codec_adc_src_texts,
+-					jz4725b_codec_adc_src_values);
++static SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
++				  JZ4725B_CODEC_REG_CR3,
++				  REG_CR3_INSEL_OFFSET,
++				  REG_CR3_INSEL_MASK,
++				  jz4725b_codec_adc_src_texts,
++				  jz4725b_codec_adc_src_values);
+ static const struct snd_kcontrol_new jz4725b_codec_adc_src_ctrl =
+ 			SOC_DAPM_ENUM("Route", jz4725b_codec_adc_src_enum);
+ 
+-- 
+2.20.1
