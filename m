@@ -1,18 +1,18 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH RFC/untested] hda-intel: suspend HDA codecs
- and the PCI device in error cases
-Date: Fri, 8 Feb 2019 12:33:14 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1902081229110.25485@axis700.grange>
-References: <alpine.DEB.2.20.1902081000370.25485@axis700.grange>
- <s5h36oy5yk9.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: msm8916-wcd-analog: add missing
+ license information
+Date: Fri, 8 Feb 2019 11:53:41 +0000
+Message-ID: <20190208115341.GB6695@sirena.org.uk>
+References: <20190207165755.1548-1-johan@kernel.org>
+ <20190207165755.1548-2-johan@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8627580662443696500=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 08FB52679FB
- for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2019 12:38:33 +0100 (CET)
-In-Reply-To: <s5h36oy5yk9.wl-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13FC9267483
+ for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2019 12:53:42 +0100 (CET)
+In-Reply-To: <20190207165755.1548-2-johan@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,108 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Johan Hovold <johan@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-On Fri, 8 Feb 2019, Takashi Iwai wrote:
+--===============8627580662443696500==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dc+cDN39EJAMEtIO"
+Content-Disposition: inline
 
-> On Fri, 08 Feb 2019 11:50:25 +0100,
-> Guennadi Liakhovetski wrote:
-> > 
-> > From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > 
-> > If HDA probing on Intel platforms fails, all the devices, that have
-> > previously been powered up, have to be suspended again.
-> > 
-> > Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > ---
-> > 
-> > I came across HDA not suspending when no codec driver has successfully 
-> > probed while working on SOF. Then I decided to look how this is handled in 
-> > the mainline Intel HDA code and I think something like this patch is 
-> > needed, however, I don't have a set up to test it. I haven't looked at the 
-> > tegra HDA implementation, possibly they need something similar. Please, 
-> > comment.
-> 
-> This will likely lead to the runtime PM refcount unbalance at
-> azx_free(), I'm afraid.  chip->running is used as a flag to judge
-> whether the runtime PM is applied or not, and if you jump to the error
-> path, the flag won't be set.
 
-Ok, understand, indeed, that would be a problem now. But isn't that also a 
-problem, if azx_probe_continue() doesn't run at all before the azx_free()? 
-Wouldn't this fix it?
+--dc+cDN39EJAMEtIO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-@@ -1300,7 +1300,7 @@ static int azx_free(struct azx *chip)
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
- 	struct hdac_bus *bus = azx_bus(chip);
- 
--	if (azx_has_pm_runtime(chip) && chip->running)
-+	if (azx_has_pm_runtime(chip))
- 		pm_runtime_get_noresume(&pci->dev);
- 	chip->running = 0;
- 
+On Thu, Feb 07, 2019 at 05:57:53PM +0100, Johan Hovold wrote:
 
-Thanks
-Guennadi
+> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
+> @@ -1,3 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+> + */
 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> >  sound/pci/hda/hda_intel.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > index e784130..d3caa37 100644
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -2229,14 +2229,14 @@ static int azx_probe_continue(struct azx *chip)
-> >  	/* create codec instances */
-> >  	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
-> >  	if (err < 0)
-> > -		goto out_free;
-> > +		goto out_power_down;
-> >  
-> >  #ifdef CONFIG_SND_HDA_PATCH_LOADER
-> >  	if (chip->fw) {
-> >  		err = snd_hda_load_patch(&chip->bus, chip->fw->size,
-> >  					 chip->fw->data);
-> >  		if (err < 0)
-> > -			goto out_free;
-> > +			goto out_power_down;
-> >  #ifndef CONFIG_PM
-> >  		release_firmware(chip->fw); /* no longer needed */
-> >  		chip->fw = NULL;
-> > @@ -2246,12 +2246,12 @@ static int azx_probe_continue(struct azx *chip)
-> >  	if ((probe_only[dev] & 1) == 0) {
-> >  		err = azx_codec_configure(chip);
-> >  		if (err < 0)
-> > -			goto out_free;
-> > +			goto out_power_down;
-> >  	}
-> >  
-> >  	err = snd_card_register(chip->card);
-> >  	if (err < 0)
-> > -		goto out_free;
-> > +		goto out_power_down;
-> >  
-> >  	setup_vga_switcheroo_runtime_pm(chip);
-> >  
-> > @@ -2260,6 +2260,7 @@ static int azx_probe_continue(struct azx *chip)
-> >  
-> >  	set_default_power_save(chip);
-> >  
-> > +out_power_down:
-> >  	if (azx_has_pm_runtime(chip))
-> >  		pm_runtime_put_autosuspend(&pci->dev);
-> >  
-> > -- 
-> > 1.9.3
-> > 
-> > 
-> 
+Please use a C++ comment for the whole thing so it looks more consistent
+with the rest of ASoC (and a bit neater in general).
+
+--dc+cDN39EJAMEtIO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxdbcQACgkQJNaLcl1U
+h9Be0gf/QKPELmLG6FLa7UU3wNmtZtk2U+HBGyrAbim9AINmmojTCIvjVnwng7w5
+8CVUVLC3gWlQ7U1OR3E9nvhrl9Ximk1rqsWFLwI754LJgmkTLjrh925lFf4LVd+q
+PpAjJP/IN5YQa5ZX5A3XcNcsvwJI6ASCE8I0WBS6g/OHQ/3IKrpH7ghaiTgD4kiB
+JqiOVTrGHDJWl1VneZRHTT35Bgwnods9tyUUQewKnL9bm/F0zXNZFNK+cA7AyZNi
+k/Ldkd98RjS2aottEQoxBSwO02f8GT83zWmH3XKZcQ/4pBYYF7JLjHjed/QDxFFh
+hTJQ3nHmR5IUtANcGssJtVpmn/JZXg==
+=4nTm
+-----END PGP SIGNATURE-----
+
+--dc+cDN39EJAMEtIO--
+
+--===============8627580662443696500==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8627580662443696500==--
