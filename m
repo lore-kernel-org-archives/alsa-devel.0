@@ -1,77 +1,51 @@
-From: Sergej Sawazki <sergej@taudac.com>
-Subject: [PATCH v2] ASoC: wm8741: Set OSR mode in hw_params()
-Date: Sun, 10 Feb 2019 16:29:29 +0100
-Message-ID: <1549812569-17533-1-git-send-email-sergej@taudac.com>
+From: Peter Seiderer <ps.report@gmx.net>
+Subject: [RFC v1] tlv320aic32x4: delay i2c access by 1 ms after hardware reset
+Date: Sun, 10 Feb 2019 16:45:19 +0100
+Message-ID: <20190210154519.2506-1-ps.report@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s62.goserver.host (s62.goserver.host [37.17.224.62])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B61B26748F
- for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2019 16:29:41 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.cirrus.com
-Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Sergej Sawazki <sergej@taudac.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, b-ak <anur.bhargav@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For correct operation of the digital filtering and other processing on the
-WM8741, the user must ensure the correct value of OSR[1:0] is set at all
-times.[1] Hence, depending the selected sampling rate, set the OSR (over-
-sampling rate) mode in hw_params().
+As stated in 'TLV320AIC3254 Application Reference Guide' ([1]):
 
-References:
-	[1] "WM8741 Data Sheet"
+  3.2 Device Startup Lockout Times
+    After the TLV320AIC3254 initializes through hardware reset at power-up
+    or software reset, the internal registers initialize to default values.
+    This initialization takes place within 1ms after pulling the RESET
+    signal high. During this initialization phase, no register-read or
+    register-write operation should be performed on ADC or DAC coefficient
+    buffers. Also, no block within the codec should be powered up during
+    the initialization phase.
 
-Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+[1] http://www.ti.com/lit/an/slaa408a/slaa408a.pdf
+
+Signed-off-by: Peter Seiderer <ps.report@gmx.net>
 ---
-Changes in v2:
- * Using update_bits() rather than write().
+Note: This came up after the electronic departement took a deeper look at
+the i2c-bus/vcc/reset pins with a logic analyzer and the documentation
+because of a vcc/reset timing problem (now fixed on custom board).
+Not 100% sure if the 1 ms is needed (as restricted to ADC/DAC coefficent
+and codec block power up).
+---
+ sound/soc/codecs/tlv320aic32x4.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- sound/soc/codecs/wm8741.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index fdda83b..a4b8c45 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -196,7 +196,7 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct wm8741_priv *wm8741 = snd_soc_component_get_drvdata(component);
--	unsigned int iface;
-+	unsigned int iface, mode;
- 	int i;
- 
- 	/* The set of sample rates that can be supported depends on the
-@@ -240,11 +240,21 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index e1bfba62fc08..b3beb0ca87c3 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -972,6 +972,8 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+ 		gpio_set_value(aic32x4->rstn_gpio, 1);
  	}
  
-+	/* oversampling rate */
-+	if (params_rate(params) > 96000)
-+		mode = 0x40;
-+	else if (params_rate(params) > 48000)
-+		mode = 0x20;
-+	else
-+		mode = 0x00;
++	mdelay(1);
 +
- 	dev_dbg(component->dev, "wm8741_hw_params:    bit size param = %d, rate param = %d",
- 		params_width(params), params_rate(params));
+ 	snd_soc_component_write(component, AIC32X4_RESET, 0x01);
  
- 	snd_soc_component_update_bits(component, WM8741_FORMAT_CONTROL, WM8741_IWL_MASK,
- 			    iface);
-+	snd_soc_component_update_bits(component, WM8741_MODE_CONTROL_1, WM8741_OSR_MASK,
-+			    mode);
- 
- 	return 0;
- }
+ 	if (aic32x4->setup)
 -- 
-2.7.4
+2.20.1
