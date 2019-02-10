@@ -1,19 +1,18 @@
-From: Julian Wiesener <jw@vtoc.de>
-Subject: [PATCH] quirks for Roland MX-1
-Date: Sun, 10 Feb 2019 00:16:43 +0200
-Message-ID: <20190210001643.3e4f3f15@ardbeg.dac.vtoc.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Driver for MOTU devices
+Date: Sun, 10 Feb 2019 12:07:32 +0900 (JST)
+Message-ID: <alpine.DEB.2.21.1902101202270.16829@laptop>
+References: <CAKA+30RDiFjzxJBOA0qZ-Kf_RcYyRJosrEeB89AzrNSPtjTgcA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/8JAeH7TfmTKN9+Ul0Q1DAqX"
+Content-Type: multipart/mixed; boundary="8323329-2008205354-1549768068=:16829"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.vtoc.de (mail.vtoc.de [85.10.201.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 81AC22674AC
- for <alsa-devel@alsa-project.org>; Sat,  9 Feb 2019 23:16:45 +0100 (CET)
-Received: from ardbeg.dac.vtoc.de (unknown
- [IPv6:2a02:2f0e:407:ba00:8e70:5aff:fe7f:c62c])
- (using TLSv1 with cipher AES256-SHA (256/256 bits))
- (Client did not present a certificate)
- by mail.vtoc.de (Postfix) with ESMTPSA id 98DC83B30E
- for <alsa-devel@alsa-project.org>; Sat,  9 Feb 2019 23:16:44 +0100 (CET)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C876267503
+ for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2019 04:07:50 +0100 (CET)
+Received: by mail-pg1-f193.google.com with SMTP id m1so3347824pgq.8
+ for <alsa-devel@alsa-project.org>; Sat, 09 Feb 2019 19:07:50 -0800 (PST)
+In-Reply-To: <CAKA+30RDiFjzxJBOA0qZ-Kf_RcYyRJosrEeB89AzrNSPtjTgcA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,330 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-15?Q?Peter_Sj=F6berg?= <autopeter@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Hello,
+--8323329-2008205354-1549768068=:16829
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-the attached Patch workarrounds the fact that the device appears to be working ASYNC, however it will be hanging, not playing or capturing a single byte.
+Hi,
 
-The 2 channel Altset kind of works, but sounds garbage. The 18 channel Altset works as intended. It needs to be cutted down to be usefull, channels 16 and 17 are the default "PC" outputs, i attached a asoundrc for the device, providing 9 stereo interfaces. In the default configuration with no other devices attached, mxout4 to mxout9 will be working stereoi outputs bound to faders on the mixer. I have not yet tested the MIDI interface.
+On Fri, 8 Feb 2019, Peter Sjöberg wrote:
+> Hello!
+> 
+> I'm contacting you as the developer of the kernel driver for MOTU firewire devices.
+> 
+> First I want to thank you for your time and effort to develop the driver - I have the Audio Express which was unusable in Linux for a long time so this was a
+> really nice surprise!
+> 
+> I want to ask you a question about the code, if it's the wrong place to ask please redirect me. 
+> In the file amdtp-motu.c line 139 the code thas converts 24 to 32 bits reads:
+>    *dst = (byte[0] << 24) | (byte[1] << 16) | byte[2];
+> ..however I am puzzled by the conversion of the third byte here. In my mind it should be:
+>    *dst = (byte[0] << 24) | (byte[1] << 16) | (byte[2] << 8);
+> 
+> The conversion in the other direction is written like this (line 167-169):
+>   byte[0] = (*src >> 24) & 0xff;
+>   byte[1] = (*src >> 16) & 0xff;
+>   byte[2] = (*src >> 8) & 0xff;
+>  
+> I just want to help out so please inform me if I'm wrong and why :)
+
+Oops. It's a bug since v4.12 or later, indeed.
+
+Unfortunately, I'm on vacation. I'll post the patch to fix it in next week
+after testing it with MOTU models I own. Thanks for your report ;)
 
 
+By the way, I guess that you see many kernel messages with 'unsolicited 
+response' from firewire-core driver, like.
 
-Kind regards,
-Julian
+fireire_core 0000:03:00.0: unsolicited response (source ffc0, tlabel 1f)
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX
-Content-Type: application/octet-stream; name=asoundrc
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=asoundrc
+As long as I know, AudioExpress often transfers invalid response code for
+any asynchronous transaction[1]. This brings failures of read/write 
+transaction and ALSA MOTU driver sometimes fails to handle the device.
 
-cGNtLiFkZWZhdWx0IHsKCXR5cGUgcGx1ZwoJc2xhdmUucGNtICJteG91dDkiCn0KCnBjbS5teGh3
-IHsKCXR5cGUgaHcKICAgICAgICBjYXJkICJNWDEiCiAgICAgICAgcmF0ZSA5NjAwMAoJZm9ybWF0
-IFMzMl9MRQogICAgICAgIGNoYW5uZWxzIDE4Cn0KCnBjbS5kc2hhcmUgewogICAgdHlwZSBkbWl4
-CiAgICBpcGNfa2V5IDIwNDgKICAgIHNsYXZlIHsKICAgICAgICBwY20gIm14aHciCiAgICAgICAg
-cGVyaW9kX3RpbWUgMAogICAgICAgIHBlcmlvZF9zaXplIDEwMjQKICAgICAgICBidWZmZXJfc2l6
-ZSA4MTkyCiAgICAgICAgY2hhbm5lbHMgMTgKICAgIH0KICAgIGJpbmRpbmdzIHsKICAgICAgICAw
-IDAKICAgICAgICAxIDEKICAgICAgICAyIDIKICAgICAgICAzIDMKICAgICAgICA0IDQKICAgICAg
-ICA1IDUKICAgICAgICA2IDYKICAgICAgICA3IDcKICAgICAgICA4IDgKICAgICAgICA5IDkKICAg
-ICAgICAxMCAxMAogICAgICAgIDExIDExCiAgICAgICAgMTIgMTIKICAgICAgICAxMyAxMwogICAg
-ICAgIDE0IDE0CiAgICAgICAgMTUgMTUKICAgICAgICAxNiAxNgogICAgICAgIDE3IDE3CiAgICB9
-Cn0KcGNtLm14b3V0MSB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlIHsKICAgICAgICBwY20gImRz
-aGFyZSIKICAgICAgICBjaGFubmVscyAxOAogICAgfQogICAgdHRhYmxlLjAuMCAxCSMgaW4tY2hh
-bm5lbCAwLCBvdXQtY2hhbm5lbCAwLCAxMDAlIHZvbHVtZQogICAgdHRhYmxlLjEuMSAxCn0KcGNt
-Lm14b3V0MiB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlIHsKICAgICAgICBwY20gImRzaGFyZSIK
-ICAgICAgICBjaGFubmVscyAxOAogICAgfQogICAgdHRhYmxlLjAuMiAxCiAgICB0dGFibGUuMS4z
-IDEKfQpwY20ubXhvdXQzIHsKICAgIHR5cGUgcGx1ZwogICAgc2xhdmUgewogICAgICAgIHBjbSAi
-ZHNoYXJlIgogICAgICAgIGNoYW5uZWxzIDE4CiAgICB9CiAgICB0dGFibGUuMC40IDEKICAgIHR0
-YWJsZS4xLjUgMQp9CnBjbS5teG91dDQgewogICAgdHlwZSBwbHVnCiAgICBzbGF2ZSB7CiAgICAg
-ICAgcGNtICJkc2hhcmUiCiAgICAgICAgY2hhbm5lbHMgMTgKICAgIH0KICAgIHR0YWJsZS4wLjYg
-MQogICAgdHRhYmxlLjEuNyAxCn0KcGNtLm14b3V0NSB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZl
-IHsKICAgICAgICBwY20gImRzaGFyZSIKICAgICAgICBjaGFubmVscyAxOAogICAgfQogICAgdHRh
-YmxlLjAuOCAxCiAgICB0dGFibGUuMS45IDEKfQpwY20ubXhvdXQ2IHsKICAgIHR5cGUgcGx1Zwog
-ICAgc2xhdmUgewogICAgICAgIHBjbSAiZHNoYXJlIgogICAgICAgIGNoYW5uZWxzIDE4CiAgICB9
-CiAgICB0dGFibGUuMC4xMCAxCiAgICB0dGFibGUuMS4xMSAxCn0KcGNtLm14b3V0NyB7CiAgICB0
-eXBlIHBsdWcKICAgIHNsYXZlIHsKICAgICAgICBwY20gImRzaGFyZSIKICAgICAgICBjaGFubmVs
-cyAxOAogICAgfQogICAgdHRhYmxlLjAuMTIgMQogICAgdHRhYmxlLjEuMTMgMQp9CnBjbS5teG91
-dDggewogICAgdHlwZSBwbHVnCiAgICBzbGF2ZSB7CiAgICAgICAgcGNtICJkc2hhcmUiCiAgICAg
-ICAgY2hhbm5lbHMgMTgKICAgIH0KICAgIHR0YWJsZS4wLjE0IDEKICAgIHR0YWJsZS4xLjE1IDEK
-fQpwY20ubXhvdXQ5IHsKICAgIHR5cGUgcGx1ZwogICAgc2xhdmUgewogICAgICAgIHBjbSAiZHNo
-YXJlIgogICAgICAgIGNoYW5uZWxzIDE4CiAgICB9CiAgICB0dGFibGUuMC4xNiAxCiAgICB0dGFi
-bGUuMS4xNyAxCn0K
+For your information.
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX
-Content-Type: application/octet-stream; name=lsusb
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=lsusb
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/sound/firewire/motu?id=3a93d082bacf887b47737c4b75c083dea7570832
 
-CkJ1cyAwMDEgRGV2aWNlIDAxMjogSUQgMDU4MjowMWEzIFJvbGFuZCBDb3JwLiAKRGV2aWNlIERl
-c2NyaXB0b3I6CiAgYkxlbmd0aCAgICAgICAgICAgICAgICAxOAogIGJEZXNjcmlwdG9yVHlwZSAg
-ICAgICAgIDEKICBiY2RVU0IgICAgICAgICAgICAgICAyLjAwCiAgYkRldmljZUNsYXNzICAgICAg
-ICAgIDI1NSBWZW5kb3IgU3BlY2lmaWMgQ2xhc3MKICBiRGV2aWNlU3ViQ2xhc3MgICAgICAgICAw
-IAogIGJEZXZpY2VQcm90b2NvbCAgICAgICAyNTUgCiAgYk1heFBhY2tldFNpemUwICAgICAgICA2
-NAogIGlkVmVuZG9yICAgICAgICAgICAweDA1ODIgUm9sYW5kIENvcnAuCiAgaWRQcm9kdWN0ICAg
-ICAgICAgIDB4MDFhMyAKICBiY2REZXZpY2UgICAgICAgICAgICAxLjAwCiAgaU1hbnVmYWN0dXJl
-ciAgICAgICAgICAgMSBSb2xhbmQKICBpUHJvZHVjdCAgICAgICAgICAgICAgICAyIE1YLTEKICBp
-U2VyaWFsICAgICAgICAgICAgICAgICAwIAogIGJOdW1Db25maWd1cmF0aW9ucyAgICAgIDEKICBD
-b25maWd1cmF0aW9uIERlc2NyaXB0b3I6CiAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA5CiAg
-ICBiRGVzY3JpcHRvclR5cGUgICAgICAgICAyCiAgICB3VG90YWxMZW5ndGggICAgICAgMHgwMTAy
-CiAgICBiTnVtSW50ZXJmYWNlcyAgICAgICAgICA0CiAgICBiQ29uZmlndXJhdGlvblZhbHVlICAg
-ICAxCiAgICBpQ29uZmlndXJhdGlvbiAgICAgICAgICAwIAogICAgYm1BdHRyaWJ1dGVzICAgICAg
-ICAgMHhjMAogICAgICBTZWxmIFBvd2VyZWQKICAgIE1heFBvd2VyICAgICAgICAgICAgICAgIDBt
-QQogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAg
-IDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVtYmVy
-ICAgICAgICAwCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDAKICAgICAgYk51bUVuZHBv
-aW50cyAgICAgICAgICAgMAogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZlbmRvciBT
-cGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgMjU1IFZlbmRvciBTcGVj
-aWZpYyBTdWJjbGFzcwogICAgICBiSW50ZXJmYWNlUHJvdG9jb2wgICAgICAwIAogICAgICBpSW50
-ZXJmYWNlICAgICAgICAgICAgICAwIAogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJM
-ZW5ndGggICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAog
-ICAgICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICAxCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAg
-ICAgIDAKICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMAogICAgICBiSW50ZXJmYWNlQ2xh
-c3MgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xh
-c3MgICAgICAyIAogICAgICBiSW50ZXJmYWNlUHJvdG9jb2wgICAgICAyIAogICAgICBpSW50ZXJm
-YWNlICAgICAgICAgICAgICAwIAogICAgICAqKiBVTlJFQ09HTklaRUQ6ICAwNiAyNCBmMSAwMSAw
-MCAwMAogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAgICAgICAgICAg
-ICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVt
-YmVyICAgICAgICAxCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEKICAgICAgYk51bUVu
-ZHBvaW50cyAgICAgICAgICAgMQogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZlbmRv
-ciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAyIAogICAgICBi
-SW50ZXJmYWNlUHJvdG9jb2wgICAgICAyIAogICAgICBpSW50ZXJmYWNlICAgICAgICAgICAgICAw
-IAogICAgICAqKiBVTlJFQ09HTklaRUQ6ICAwNyAyNCAwMSAwMSAwMCAwMSAwMAogICAgICAqKiBV
-TlJFQ09HTklaRUQ6ICAwYiAyNCAwMiAwMSAxMiAwNCAxOCAwMSAwMCA3NyAwMQogICAgICBFbmRw
-b2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDcKICAgICAg
-ICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBvaW50QWRkcmVzcyAgICAg
-MHgwZCAgRVAgMTMgT1VUCiAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgNQogICAgICAg
-ICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIElzb2Nocm9ub3VzCiAgICAgICAgICBTeW5jaCBU
-eXBlICAgICAgICAgICAgICAgQXN5bmNocm9ub3VzCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAg
-ICAgICAgICAgRGF0YQogICAgICAgIHdNYXhQYWNrZXRTaXplICAgICAweDAzZjAgIDF4IDEwMDgg
-Ynl0ZXMKICAgICAgICBiSW50ZXJ2YWwgICAgICAgICAgICAgICAxCiAgICBJbnRlcmZhY2UgRGVz
-Y3JpcHRvcjoKICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgOQogICAgICBiRGVzY3JpcHRv
-clR5cGUgICAgICAgICA0CiAgICAgIGJJbnRlcmZhY2VOdW1iZXIgICAgICAgIDEKICAgICAgYkFs
-dGVybmF0ZVNldHRpbmcgICAgICAgMgogICAgICBiTnVtRW5kcG9pbnRzICAgICAgICAgICAxCiAg
-ICAgIGJJbnRlcmZhY2VDbGFzcyAgICAgICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAg
-IGJJbnRlcmZhY2VTdWJDbGFzcyAgICAgIDIgCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAg
-IDIgCiAgICAgIGlJbnRlcmZhY2UgICAgICAgICAgICAgIDAgCiAgICAgICoqIFVOUkVDT0dOSVpF
-RDogIDA3IDI0IDAxIDAxIDAwIDAxIDAwCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDBiIDI0IDAy
-IDAxIDAyIDA0IDE4IDAxIDAwIDc3IDAxCiAgICAgIEVuZHBvaW50IERlc2NyaXB0b3I6CiAgICAg
-ICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNwogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAg
-ICAgIDUKICAgICAgICBiRW5kcG9pbnRBZGRyZXNzICAgICAweDBkICBFUCAxMyBPVVQKICAgICAg
-ICBibUF0dHJpYnV0ZXMgICAgICAgICAgICA1CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAg
-ICAgICAgSXNvY2hyb25vdXMKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAgICAgICAgICBBc3lu
-Y2hyb25vdXMKICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAg
-d01heFBhY2tldFNpemUgICAgIDB4MDA3MCAgMXggMTEyIGJ5dGVzCiAgICAgICAgYkludGVydmFs
-ICAgICAgICAgICAgICAgMQogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGgg
-ICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBi
-SW50ZXJmYWNlTnVtYmVyICAgICAgICAyCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDAK
-ICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMAogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAg
-ICAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAg
-ICAyIAogICAgICBiSW50ZXJmYWNlUHJvdG9jb2wgICAgICAxIAogICAgICBpSW50ZXJmYWNlICAg
-ICAgICAgICAgICAwIAogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAg
-ICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50
-ZXJmYWNlTnVtYmVyICAgICAgICAyCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEKICAg
-ICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMQogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAg
-MjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAy
-IAogICAgICBiSW50ZXJmYWNlUHJvdG9jb2wgICAgICAxIAogICAgICBpSW50ZXJmYWNlICAgICAg
-ICAgICAgICAwIAogICAgICAqKiBVTlJFQ09HTklaRUQ6ICAwNyAyNCAwMSAwNyAwMCAwMSAwMAog
-ICAgICAqKiBVTlJFQ09HTklaRUQ6ICAwYiAyNCAwMiAwMSAxMiAwNCAxOCAwMSAwMCA3NyAwMQog
-ICAgICBFbmRwb2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAg
-IDcKICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBvaW50QWRk
-cmVzcyAgICAgMHg4ZSAgRVAgMTQgSU4KICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgIDM3
-CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSXNvY2hyb25vdXMKICAgICAgICAg
-IFN5bmNoIFR5cGUgICAgICAgICAgICAgICBBc3luY2hyb25vdXMKICAgICAgICAgIFVzYWdlIFR5
-cGUgICAgICAgICAgICAgICBJbXBsaWNpdCBmZWVkYmFjayBEYXRhCiAgICAgICAgd01heFBhY2tl
-dFNpemUgICAgIDB4MDNmMCAgMXggMTAwOCBieXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAg
-ICAgICAgIDEKICAgIEludGVyZmFjZSBEZXNjcmlwdG9yOgogICAgICBiTGVuZ3RoICAgICAgICAg
-ICAgICAgICA5CiAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDQKICAgICAgYkludGVyZmFj
-ZU51bWJlciAgICAgICAgMgogICAgICBiQWx0ZXJuYXRlU2V0dGluZyAgICAgICAyCiAgICAgIGJO
-dW1FbmRwb2ludHMgICAgICAgICAgIDEKICAgICAgYkludGVyZmFjZUNsYXNzICAgICAgIDI1NSBW
-ZW5kb3IgU3BlY2lmaWMgQ2xhc3MKICAgICAgYkludGVyZmFjZVN1YkNsYXNzICAgICAgMiAKICAg
-ICAgYkludGVyZmFjZVByb3RvY29sICAgICAgMSAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAg
-ICAgMCAKICAgICAgKiogVU5SRUNPR05JWkVEOiAgMDcgMjQgMDEgMDcgMDAgMDEgMDAKICAgICAg
-KiogVU5SRUNPR05JWkVEOiAgMGIgMjQgMDIgMDEgMDIgMDQgMTggMDEgMDAgNzcgMDEKICAgICAg
-RW5kcG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAg
-ICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3Mg
-ICAgIDB4OGUgIEVQIDE0IElOCiAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAzNwogICAg
-ICAgICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIElzb2Nocm9ub3VzCiAgICAgICAgICBTeW5j
-aCBUeXBlICAgICAgICAgICAgICAgQXN5bmNocm9ub3VzCiAgICAgICAgICBVc2FnZSBUeXBlICAg
-ICAgICAgICAgICAgSW1wbGljaXQgZmVlZGJhY2sgRGF0YQogICAgICAgIHdNYXhQYWNrZXRTaXpl
-ICAgICAweDAwNzAgIDF4IDExMiBieXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAgICAgICAg
-IDEKICAgIEludGVyZmFjZSBEZXNjcmlwdG9yOgogICAgICBiTGVuZ3RoICAgICAgICAgICAgICAg
-ICA5CiAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDQKICAgICAgYkludGVyZmFjZU51bWJl
-ciAgICAgICAgMwogICAgICBiQWx0ZXJuYXRlU2V0dGluZyAgICAgICAwCiAgICAgIGJOdW1FbmRw
-b2ludHMgICAgICAgICAgIDIKICAgICAgYkludGVyZmFjZUNsYXNzICAgICAgIDI1NSBWZW5kb3Ig
-U3BlY2lmaWMgQ2xhc3MKICAgICAgYkludGVyZmFjZVN1YkNsYXNzICAgICAgMyAKICAgICAgYklu
-dGVyZmFjZVByb3RvY29sICAgICAgMCAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAgMCAK
-ICAgICAgKiogVU5SRUNPR05JWkVEOiAgMDYgMjQgZjEgMDIgMDIgMDIKICAgICAgRW5kcG9pbnQg
-RGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAgICAgICAgYkRl
-c2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4MDMg
-IEVQIDMgT1VUCiAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgMgogICAgICAgICAgVHJh
-bnNmZXIgVHlwZSAgICAgICAgICAgIEJ1bGsKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAgICAg
-ICAgICBOb25lCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAgICAgICAgICAgRGF0YQogICAgICAg
-IHdNYXhQYWNrZXRTaXplICAgICAweDAyMDAgIDF4IDUxMiBieXRlcwogICAgICAgIGJJbnRlcnZh
-bCAgICAgICAgICAgICAgIDAKICAgICAgRW5kcG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVu
-Z3RoICAgICAgICAgICAgICAgICA3CiAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQog
-ICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4ODQgIEVQIDQgSU4KICAgICAgICBibUF0dHJp
-YnV0ZXMgICAgICAgICAgICAyCiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgQnVs
-awogICAgICAgICAgU3luY2ggVHlwZSAgICAgICAgICAgICAgIE5vbmUKICAgICAgICAgIFVzYWdl
-IFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDIw
-MCAgMXggNTEyIGJ5dGVzCiAgICAgICAgYkludGVydmFsICAgICAgICAgICAgICAgMAogICAgSW50
-ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDkKICAgICAg
-YkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICAz
-CiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEKICAgICAgYk51bUVuZHBvaW50cyAgICAg
-ICAgICAgMgogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBD
-bGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAzIAogICAgICBiSW50ZXJmYWNlUHJv
-dG9jb2wgICAgICAwIAogICAgICBpSW50ZXJmYWNlICAgICAgICAgICAgICAwIAogICAgICBFbmRw
-b2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDcKICAgICAg
-ICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBvaW50QWRkcmVzcyAgICAg
-MHgwMyAgRVAgMyBPVVQKICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAzCiAgICAgICAg
-ICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSW50ZXJydXB0CiAgICAgICAgICBTeW5jaCBUeXBl
-ICAgICAgICAgICAgICAgTm9uZQogICAgICAgICAgVXNhZ2UgVHlwZSAgICAgICAgICAgICAgIERh
-dGEKICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAgMHgwMjAwICAxeCA1MTIgYnl0ZXMKICAgICAg
-ICBiSW50ZXJ2YWwgICAgICAgICAgICAgICA0CiAgICAgIEVuZHBvaW50IERlc2NyaXB0b3I6CiAg
-ICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNwogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAg
-ICAgICAgIDUKICAgICAgICBiRW5kcG9pbnRBZGRyZXNzICAgICAweDg1ICBFUCA1IElOCiAgICAg
-ICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgMwogICAgICAgICAgVHJhbnNmZXIgVHlwZSAgICAg
-ICAgICAgIEludGVycnVwdAogICAgICAgICAgU3luY2ggVHlwZSAgICAgICAgICAgICAgIE5vbmUK
-ICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tl
-dFNpemUgICAgIDB4MDIwMCAgMXggNTEyIGJ5dGVzCiAgICAgICAgYkludGVydmFsICAgICAgICAg
-ICAgICAgNApEZXZpY2UgUXVhbGlmaWVyIChmb3Igb3RoZXIgZGV2aWNlIHNwZWVkKToKICBiTGVu
-Z3RoICAgICAgICAgICAgICAgIDEwCiAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNgogIGJjZFVT
-QiAgICAgICAgICAgICAgIDIuMDAKICBiRGV2aWNlQ2xhc3MgICAgICAgICAgMjU1IFZlbmRvciBT
-cGVjaWZpYyBDbGFzcwogIGJEZXZpY2VTdWJDbGFzcyAgICAgICAgIDAgCiAgYkRldmljZVByb3Rv
-Y29sICAgICAgIDI1NSAKICBiTWF4UGFja2V0U2l6ZTAgICAgICAgIDY0CiAgYk51bUNvbmZpZ3Vy
-YXRpb25zICAgICAgMQpEZXZpY2UgU3RhdHVzOiAgICAgMHgwMDAxCiAgU2VsZiBQb3dlcmVkCg==
+Regards
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=quirks-table.h.patch
 
-diff --git a/quirks-table.h.orig b/quirks-table.h
-index b345beb..7272b46 100644
---- a/quirks-table.h.orig
-+++ b/quirks-table.h
-@@ -1777,6 +1777,109 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+{
-+	/* has ID 0x006e when not in "Advanced Driver" mode */
-+	USB_DEVICE(0x0582, 0x01a3),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Roland",
-+		.product_name = "MX-1",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 0x12,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x0d,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_NONE,
-+					.rates = SNDRV_PCM_RATE_96000,
-+					.rate_min = 96000,
-+					.rate_max = 96000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 2,
-+					.iface = 1,
-+					.altsetting = 2,
-+					.altset_idx = 2,
-+					.endpoint = 0x0d,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_NONE,
-+					.rates = SNDRV_PCM_RATE_96000,
-+					.rate_min = 96000,
-+					.rate_max = 96000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 0x12,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x8e,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_NONE,
-+					.rates = SNDRV_PCM_RATE_96000,
-+					.rate_min = 96000,
-+					.rate_max = 96000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 2,
-+					.iface = 2,
-+					.altsetting = 2,
-+					.altset_idx = 2,
-+					.endpoint = 0x8e,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_NONE,
-+					.rates = SNDRV_PCM_RATE_96000,
-+					.rate_min = 96000,
-+					.rate_max = 96000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 96000 }
-+				}
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- /* this catches most recent vendor-specific Roland devices */
- {
- 	.match_flags = USB_DEVICE_ID_MATCH_VENDOR |
+Takashi Sakamoto
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX
+
+--8323329-2008205354-1549768068=:16829
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---MP_/8JAeH7TfmTKN9+Ul0Q1DAqX--
+--8323329-2008205354-1549768068=:16829--
