@@ -1,21 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: PCM: check if ops are defined before
- suspending PCM
-Date: Mon, 11 Feb 2019 10:59:49 -0600
-Message-ID: <b19ec392-4385-a2b6-9809-1ed7267db2ec@linux.intel.com>
-References: <20190208232953.7266-1-pierre-louis.bossart@linux.intel.com>
- <s5hwom971m9.wl-tiwai@suse.de>
- <339832c2-0072-34c7-3a11-29999969662b@linux.intel.com>
- <s5hlg2m5n0d.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+From: Brendan Shanks <brendan.shanks@teradek.com>
+Subject: Re: pcm_dshare calculates size incorrectly on buffer
+ rollover
+Date: Mon, 11 Feb 2019 11:49:33 -0800
+Message-ID: <3E2DACEA-B015-47BF-A659-D94154B8A05D@teradek.com>
+References: <CAJ9in=_z117BqahX4ZPB=CpiYgJ5FijCH9u_xQXBVjB4MZ6D3Q@mail.gmail.com>
+ <s5hsh13tn2o.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A45C6267418
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 17:59:51 +0100 (CET)
-In-Reply-To: <s5hlg2m5n0d.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5AA3267418
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 20:49:37 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id q206so51685pgq.4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 11:49:37 -0800 (PST)
+In-Reply-To: <s5hsh13tn2o.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
->>>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
->>>> index 818dff1de545..b6e158ce6650 100644
->>>> --- a/sound/core/pcm_native.c
->>>> +++ b/sound/core/pcm_native.c
->>>> @@ -1506,6 +1506,14 @@ int snd_pcm_suspend_all(struct snd_pcm *pcm)
->>>>    			/* FIXME: the open/close code should lock this as well */
->>>>    			if (substream->runtime == NULL)
->>>>    				continue;
->>>> +
->>>> +			/*
->>>> +			 * Skip BE dai link PCM's that are internal and may
->>>> +			 * not have their substream ops set.
->>>> +			 */
->>>> +			if (!substream->ops)
->>>> +				continue;
->>>> +
->>>>    			err = snd_pcm_suspend(substream);
->>>>    			if (err < 0 && err != -EBUSY)
->>>>    				return err;
->>> Basically it's OK and safe to apply this check.  We may need to add
->>> such sanity checks in more places if this really hits.
->>>
->>> But I still wonder how this can go through.  Is substream->runtime set
->>> even if substream->ops is NULL?  The substream->runtime is assigned
->>> dynamically at opening a substream via snd_pcm_attach_substream(), so
->>> without opening it, it must be NULL.
->> This error case was exposed when we tried to get rid of
->> snd_pcm_suspend() per your recommendation, and use snd_soc_suspend()
->> instead to do the work for us.
->>
->> In the case of back-ends, all initializations are bypassed in
->> soc_new_pcm() - see below a code snippet - and the ops aren't set
->> before suspend is called.
->> The complete thread where we discussed this is at
->> https://github.com/thesofproject/linux/pull/582
-> Thanks, now I took a look at the code.  And, this surfaced that the
-> another part of the problem is that DPCM does the substream open
-> handling by itself in soc-pcm.c.  Oh well.  I'm afraid that we have
-> some hidden bugs there that may lead to a crash easily.  (Fortunately
-> (or unfortunately) fuzzer isn't performed on ASoC because we have no
-> virtual device driver :)
->
-> IMO, some of DPCM code should be raised to the upper level, to ALSA
-> PCM core.  The current code is still in a rough form of early
-> plumbing.
-
-Can't disagree, we were surprised to hit this issue knowing that the SOF 
-code isn't the first to use DPCM at all (same with some topology 
-issues). It's very likely that there are specific initialization flows 
-that aren't quite right, hopefully we'll fix them one after the other :-)
-
->
-> In anyway, I merged the patch now with a bit more comments.
->
->
-> Thanks!
->
-> Takashi
-
-Thanks for the review+additional comments, much appreciated.
+Cj4gT24gT2N0IDE4LCAyMDE4LCBhdCA2OjEzIEFNLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
+ZGU+IHdyb3RlOgo+IAo+IE9uIEZyaSwgMTIgT2N0IDIwMTggMjA6MjE6MDcgKzAyMDAsCj4gQnJl
+bmRhbiBTaGFua3Mgd3JvdGU6Cj4+IAo+PiBJJ20gd29ya2luZyBvbiBhbiBlbWJlZGRlZCBzeXN0
+ZW0gYmFzZWQgb24gYW4gQW1iYXJlbGxhIEgxIFNvQyAoMzItYml0IEFSTQo+PiBDb3J0ZXggQTkp
+LiBBdWRpbyBwbGF5YmFjayB0aHJvdWdoIEFMU0EgKGFuZCBHU3RyZWFtZXIpIHdvcmtzIGZpbmUg
+d2hlbgo+PiBwbGF5aW5nIHRvIHRoZSByYXcgaHcgZGV2aWNlLiBXaGVuIHBsYXlpbmcgdGhyb3Vn
+aCBkc2hhcmUgKG15IG5vcm1hbAo+PiBjb25maWd1cmF0aW9uKSwgcGxheWJhY2sgc3RvcHMgYWZ0
+ZXIgZXhhY3RseSA3IGhvdXJzIDE2IG1pbnV0ZXMsIGZvciBhYm91dAo+PiAzIG1pbnV0ZXMuIER1
+cmluZyB0aGUgMyBtaW51dGVzLCB0aGUgcGxheWJhY2sgdGhyZWFkIGNvbnN1bWVzIGFuIGVudGly
+ZSBDUFUKPj4gY29yZS4gQWZ0ZXIgdGhlIDMgbWludXRlcywgR1N0cmVhbWVyIHJlcG9ydHMgYW4g
+eHJ1biwgcmVjb3ZlcnMgZnJvbSBpdCwgYW5kCj4+IHBsYXliYWNrIGdvZXMgYmFjayB0byBub3Jt
+YWwuCj4+IAo+PiBBZnRlciBzb21lIGRlYnVnZ2luZywgdGhlIHByb2JsZW0gc2VlbXMgdG8gYmUg
+aW4KPj4gc25kX3BjbV9kc2hhcmVfc3luY19hcmVhKCkuIFdoZW4gZHNoYXJlLT5hcHBsX3B0ciBy
+b2xscyBvdmVyIHRvIDAsICdzaXplJwo+PiBiZWNvbWVzIGh1Z2UsIDMwMzY2NzY1NzYuICdzbGF2
+ZV9zaXplJyBpcyBhbHNvIG11Y2ggYmlnZ2VyIHRoYW4gaXQgc2hvdWxkCj4+IGJlLCAxMjU4Mjkx
+NjgwLiBUaGlzIGlzIHdoYXQgJ3NpemUnIGlzIHNldCB0byB3aGVuIHRoZSBmb3IgbG9vcCBzdGFy
+dHMsIGFuZAo+PiBJIGJlbGlldmUgdGhlIGZvciBsb29wIHRoZW4gc3BlbmRzIH4zIG1pbnV0ZXMg
+Y29weWluZyBhIGh1Z2UgYW1vdW50IG9mCj4+IHNhbXBsZXMuCj4+IFRoaXMgYWxzbyBleHBsYWlu
+cyB0aGUgN2gxNm0gdGltZSwgaXQncyBsaW5rZWQgdG8gdGhlIFBDTSBib3VuZGFyeSB3aGljaCBp
+cwo+PiAxMjU4MjkxMjAwLiBBdCA0OCBrSHosIDEyNTgyOTEyMDAgc2FtcGxlcyB0YWtlcyA3aDE2
+bTU0cy4KPj4gCj4+IEknbSBub3Qgc3VyZSB3aGF0IHRoZSBmaXggc2hvdWxkIGJlIHRob3VnaC4g
+SXMgdGhpcyByZWFsbHkgYSBidWcgaW4gZHNoYXJlLAo+PiBvciBhcmUgYmFkIHZhbHVlcyBiZWlu
+ZyBzZXQgc29tZXdoZXJlIGVsc2U/IEdTdHJlYW1lcj8gT3IgbWF5YmUgdGhlCj4+IHBlcmlvZC9i
+dWZmZXIgc2l6ZSAoNDgwLzk2MDApIGlzIGNhdXNpbmcgcHJvYmxlbXM/Cj4gCj4gTWF5YmUgc29t
+ZSAzMmJpdCBib3VuZGFyeSBvdmVyZmxvdz8gIEkgdmFndWVseSByZW1lbWJlciBvZiBpdC4KCkkg
+dGhpbmsgSSBmaWd1cmVkIG91dCB0aGUgaXNzdWUsIGl0IGlzIGluIHNuZF9wY21fZHNoYXJlX3N5
+bmNfYXJlYSgpIGFzIEkgc3VzcGVjdGVkLiBXaGVuIOKAmHNsYXZlX2h3X3B0cuKAmSByb2xsZWQg
+b3ZlciB0aGUg4oCYc2xhdmVfYm91bmRhcnnigJksIHRoZSB3cm9uZyDigJhzbGF2ZV9od19wdHLi
+gJkgdmFyaWFibGUgd2FzIGJlaW5nIGNvbXBhcmVkLCByZXN1bHRpbmcgaW4g4oCYc2xhdmVfc2l6
+ZeKAmSBhbmQg4oCYc2l6ZeKAmSBiZWluZyBtdWNoIHRvbyBsYXJnZS4gSXQgd2FzIGxpa2VseSBv
+bmx5IHRyaWdnZXJlZCBvbiAzMi1iaXQgc3lzdGVtcywgc2luY2UgdGhlIFBDTSBib3VuZGFyeSBp
+cyBjb21wdXRlZCBiYXNlZCBvbiBMT05HX01BWCBhbmQgaXMgbXVjaCBsYXJnZXIgb24gNjQtYml0
+IHN5c3RlbXMuCgpJdCBsb29rcyBsaWtlIHRoaXMgc2FtZSBmaXggd2FzIG1hZGUgdG8gcGNtX2Rt
+aXggaW4gY29tbWl0IDZjN2Y2MGY3YTk4MmZkYmE4MjhlNDUzMGE5ZDdhYTBhYTJiNzA0YWUgKCJG
+aXggYm91bmRhcnkgb3ZlcmxhcOKAnSkgZnJvbSBKdW5lIDIwMDUuIEnigJlsbCBzZW5kIGEgcGF0
+Y2ggdG8gdGhlIGxpc3Qgc2hvcnRseS4KCkJyZW5kYW4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
