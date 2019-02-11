@@ -1,20 +1,20 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 04/22] ASoC: samsung: i2s: Fix prescaler
- setting for the secondary DAI
-Date: Mon, 11 Feb 2019 15:32:12 +0100
-Message-ID: <62ea88ed-6916-f7a5-6806-6b9c5ba08f13@samsung.com>
-References: <CGME20190207170058epcas1p4e2fadf4aae2ece3c47c0750a094a4fbb@epcas1p4.samsung.com>
+Subject: Re: [PATCH 06/22] ASoC: samsung: i2s: Restore support
+ for the secondary PCM
+Date: Mon, 11 Feb 2019 15:50:33 +0100
+Message-ID: <0d5c9877-ab82-9d80-5336-6324e111c32c@samsung.com>
+References: <CGME20190207170105epcas1p3d4a1da9ae268f8e95b32fb499e5a1dad@epcas1p3.samsung.com>
  <20190207170028.720-1-s.nawrocki@samsung.com>
- <20190207170028.720-5-s.nawrocki@samsung.com>
- <CAJKOXPdar1q8oz4KHEVoQ6_NbD+hUYfFE3u97VLGUV7azEnZwA@mail.gmail.com>
+ <20190207170028.720-7-s.nawrocki@samsung.com>
+ <CAJKOXPfTZ1EGUpL_Zg20iWYJFkoCvEhoQSM=f92N-NJwo1LsNg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C58A4267483
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 15:32:21 +0100 (CET)
-In-reply-to: <CAJKOXPdar1q8oz4KHEVoQ6_NbD+hUYfFE3u97VLGUV7azEnZwA@mail.gmail.com>
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15433267465
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 15:50:43 +0100 (CET)
+In-reply-to: <CAJKOXPfTZ1EGUpL_Zg20iWYJFkoCvEhoQSM=f92N-NJwo1LsNg@mail.gmail.com>
 Content-language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,18 +29,26 @@ To: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: alsa-devel@alsa-project.org, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, =?UTF-8?Q?Bart=c5=82omiej_=c5=bbo=c5=82nierkiewicz?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/11/19 14:37, Krzysztof Kozlowski wrote:
->> @@ -784,6 +787,9 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
->>         i2s->frmclk = params_rate(params);
+On 2/11/19 14:41, Krzysztof Kozlowski wrote:
+>> @@ -1469,12 +1506,16 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+>>         struct samsung_i2s_priv *priv = dev_get_drvdata(&pdev->dev);
+>>         struct i2s_dai *pri_dai = samsung_i2s_get_pri_dai(&pdev->dev);
 >>
->>         rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
->> +       if (!rclksrc || IS_ERR(rclksrc))
+>> +       if (!priv)
 
-> IS_ERR_OR_NULL
+> This is not obvious. Maybe comment that it is secondary device remove()?
 
-Thanks for your review! That line will be removed by subsequent patch
-(7/22) so I'd say such a change wouldn't make a difference anyway.
-Besides not using IS_ERR_OR_NULL() was intentional.
+Sure, I will a comment here, I was considering it earlier but somehow it got missed.
+
+>> @@ -1573,6 +1614,9 @@ static const struct platform_device_id samsung_i2s_driver_ids[] = {
+>>                 .name           = "samsung-i2s",
+>>                 .driver_data    = (kernel_ulong_t)&i2sv3_dai_type,
+>>         },
+>> +       {
+
+> Nit - squash with previous line.
+
+Will change it.
 
 
 -- 
