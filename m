@@ -1,18 +1,29 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
-Date: Mon, 11 Feb 2019 15:09:45 +0000
-Message-ID: <18decbe3-5a7c-1b75-4c64-0b16fdd0efec@st.com>
-References: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 04/22] ASoC: samsung: i2s: Fix prescaler
+ setting for the secondary DAI
+Date: Mon, 11 Feb 2019 16:03:21 +0100
+Message-ID: <CAJKOXPfYxbAKCBOXTmsGnprksSGrZGyHGrtn75rO46QMLZDzrw@mail.gmail.com>
+References: <CGME20190207170058epcas1p4e2fadf4aae2ece3c47c0750a094a4fbb@epcas1p4.samsung.com>
+ <20190207170028.720-1-s.nawrocki@samsung.com>
+ <20190207170028.720-5-s.nawrocki@samsung.com>
+ <CAJKOXPdar1q8oz4KHEVoQ6_NbD+hUYfFE3u97VLGUV7azEnZwA@mail.gmail.com>
+ <62ea88ed-6916-f7a5-6806-6b9c5ba08f13@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 23EC5267488
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 16:09:48 +0100 (CET)
-In-Reply-To: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>
-Content-Language: en-US
-Content-ID: <ABCA28EC5FF04745816A6E3ADDD618BB@st.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3598267488
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 16:18:51 +0100 (CET)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com
+ [209.85.208.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D635A222B6
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 15:03:34 +0000 (UTC)
+Received: by mail-lj1-f178.google.com with SMTP id o1-v6so3188043ljc.10
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 07:03:34 -0800 (PST)
+In-Reply-To: <62ea88ed-6916-f7a5-6806-6b9c5ba08f13@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +33,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wen Yang <yellowriver2010@hotmail.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- TORGUE <alexandre.torgue@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Wen,
+On Mon, 11 Feb 2019 at 15:32, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
+>
+> On 2/11/19 14:37, Krzysztof Kozlowski wrote:
+> >> @@ -784,6 +787,9 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+> >>         i2s->frmclk = params_rate(params);
+> >>
+> >>         rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
+> >> +       if (!rclksrc || IS_ERR(rclksrc))
+>
+> > IS_ERR_OR_NULL
+>
+> Thanks for your review! That line will be removed by subsequent patch
+> (7/22) so I'd say such a change wouldn't make a difference anyway.
 
-On 2/9/19 11:41 AM, Wen Yang wrote:
-> The of_find_device_by_node() takes a reference to the underlying device
-> structure, we should release that reference.
-> 
-> Fixes: 7dd0d835582f ("ASoC: stm32: sai: simplify sync modes management")
-> Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
-> ---
->   sound/soc/stm/stm32_sai.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-> index bcb35ca..14c9591 100644
-> --- a/sound/soc/stm/stm32_sai.c
-> +++ b/sound/soc/stm/stm32_sai.c
-> @@ -112,16 +112,21 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+Then let's skip it:
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-goto error also in previous test
-	if (!pdev) {
-		...
-		ret = -ENODEV;
-		goto error;
-	}
-
->   	if (!sai_provider) {
->   		dev_err(&sai_client->pdev->dev,
->   			"SAI sync provider data not found\n");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto out_put_dev;
->   	}
->   
->   	/* Configure sync client */
->   	ret = stm32_sai_sync_conf_client(sai_client, synci);
->   	if (ret < 0)
-> -		return ret;
-> +		goto out_put_dev;
->   
->   	/* Configure sync provider */
-> -	return stm32_sai_sync_conf_provider(sai_provider, synco);
-> +	ret = stm32_sai_sync_conf_provider(sai_provider, synco);
-> +
-> +out_put_dev:
-> +	put_device(&pdev->dev);
-> +	return ret;
-
-Here I propose:
-error:
-	of_node_put(np_provider);
-	return ret;
-
->   }
->   
->   static int stm32_sai_probe(struct platform_device *pdev)
-> 
-
-Thanks for your patch. Please, see my comments above.
-
-Regards
-Olivier
+Best regards,
+Krzysztof
