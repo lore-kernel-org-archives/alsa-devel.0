@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC v1] tlv320aic32x4: delay i2c access by 1 ms
- after hardware reset
-Date: Mon, 11 Feb 2019 15:04:25 +0000
-Message-ID: <20190211150425.GE22391@sirena.org.uk>
-References: <20190210154519.2506-1-ps.report@gmx.net>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
+Date: Mon, 11 Feb 2019 15:09:45 +0000
+Message-ID: <18decbe3-5a7c-1b75-4c64-0b16fdd0efec@st.com>
+References: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1077717703361859377=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8202B267465
- for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 16:04:29 +0100 (CET)
-In-Reply-To: <20190210154519.2506-1-ps.report@gmx.net>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 23EC5267488
+ for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2019 16:09:48 +0100 (CET)
+In-Reply-To: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>
+Content-Language: en-US
+Content-ID: <ABCA28EC5FF04745816A6E3ADDD618BB@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Seiderer <ps.report@gmx.net>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, b-ak <anur.bhargav@gmail.com>
+To: Wen Yang <yellowriver2010@hotmail.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ TORGUE <alexandre.torgue@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Wen,
 
---===============1077717703361859377==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+JUInw4efm7IfTNU"
-Content-Disposition: inline
+On 2/9/19 11:41 AM, Wen Yang wrote:
+> The of_find_device_by_node() takes a reference to the underlying device
+> structure, we should release that reference.
+> 
+> Fixes: 7dd0d835582f ("ASoC: stm32: sai: simplify sync modes management")
+> Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+> ---
+>   sound/soc/stm/stm32_sai.c | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+> index bcb35ca..14c9591 100644
+> --- a/sound/soc/stm/stm32_sai.c
+> +++ b/sound/soc/stm/stm32_sai.c
+> @@ -112,16 +112,21 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
 
+goto error also in previous test
+	if (!pdev) {
+		...
+		ret = -ENODEV;
+		goto error;
+	}
 
---+JUInw4efm7IfTNU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Feb 10, 2019 at 04:45:19PM +0100, Peter Seiderer wrote:
-
-> @@ -972,6 +972,8 @@ static int aic32x4_component_probe(struct snd_soc_com=
-ponent *component)
->  		gpio_set_value(aic32x4->rstn_gpio, 1);
->  	}
-> =20
-> +	mdelay(1);
+>   	if (!sai_provider) {
+>   		dev_err(&sai_client->pdev->dev,
+>   			"SAI sync provider data not found\n");
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto out_put_dev;
+>   	}
+>   
+>   	/* Configure sync client */
+>   	ret = stm32_sai_sync_conf_client(sai_client, synci);
+>   	if (ret < 0)
+> -		return ret;
+> +		goto out_put_dev;
+>   
+>   	/* Configure sync provider */
+> -	return stm32_sai_sync_conf_provider(sai_provider, synco);
+> +	ret = stm32_sai_sync_conf_provider(sai_provider, synco);
 > +
+> +out_put_dev:
+> +	put_device(&pdev->dev);
+> +	return ret;
 
-Perhaps only do this if we toggled the GPIO?  If the device wasn't in
-reset then there's no need to wait.
+Here I propose:
+error:
+	of_node_put(np_provider);
+	return ret;
 
---+JUInw4efm7IfTNU
-Content-Type: application/pgp-signature; name="signature.asc"
+>   }
+>   
+>   static int stm32_sai_probe(struct platform_device *pdev)
+> 
 
------BEGIN PGP SIGNATURE-----
+Thanks for your patch. Please, see my comments above.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxhjvgACgkQJNaLcl1U
-h9BpKAf9G+y8nQsDTzqkvK6vjYpwPnr3Staxy0uTlswZLshRAlNWzqorA+k9ySK0
-9rnjMVjD0bG+qQcUUWXKIciQVdx2yaqHYCNROB+EloqA/8ADyivO3DuaTh3OPI8S
-95q5gnMJyKnWiJq9kxSqhAtfbDt6/F3ITZYy2XD7N4IXKktVbrPtKU3NZhentogy
-w2NS5PwuVERZ2NvvmVZY5gZNShpvfFmX/U1BY8/RCGxscmsK6jYRzlKnkQBUymQr
-vbs+MuYM0xnu++cz1mEqXhLLbW4wdTujq93BhQm6/zSgndiJySIyKaWBw1KmF1U0
-ICvazgSYUkopGbQVe9Dbwkp9j+g/Zw==
-=fgqh
------END PGP SIGNATURE-----
-
---+JUInw4efm7IfTNU--
-
---===============1077717703361859377==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1077717703361859377==--
+Regards
+Olivier
