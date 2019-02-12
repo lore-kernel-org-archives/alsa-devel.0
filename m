@@ -1,40 +1,51 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 00/22] ASoC: dmaengine updates, secondary CPU DAI for
- Odroid boards
-Date: Tue, 12 Feb 2019 19:17:10 +0100
-Message-ID: <7289d7f5-3ca3-c932-e1e8-bef0eb727226@samsung.com>
-References: <CGME20190207170044epcas2p3d00762663b971845bc86db84af7d3b23@epcas2p3.samsung.com>
-        <20190207170028.720-1-s.nawrocki@samsung.com>
-        <20190212164032.GH20635@sirena.org.uk>
+From: sylvain.bertrand@gmail.com
+Subject: Re: right way to enumerate pcm devices
+Date: Tue, 12 Feb 2019 20:33:24 +0000
+Message-ID: <20190212203324.GA1399@freedom>
+References: <20190212123333.GB6441@freedom>
+ <s5hr2cd3z9b.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20190212164032.GH20635@sirena.org.uk>
-Content-language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.com, b.zolnierkie@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com
+ [209.85.128.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A34E2673E2
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 21:34:15 +0100 (CET)
+Received: by mail-wm1-f42.google.com with SMTP id v26so46646wmh.3
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 12:34:15 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <s5hr2cd3z9b.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2/12/19 17:40, Mark Brown wrote:
-> On Thu, Feb 07, 2019 at 06:00:08PM +0100, Sylwester Nawrocki wrote:
+On Tue, Feb 12, 2019 at 02:36:00PM +0100, Takashi Iwai wrote:
+> The entries without hints are filtered out as default.
+> i.e. a user-defined entry appears, too, if it contains the hints.
 > 
->> I am not entirely sure we should be removing the
->> SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag like this, it might all
->> be a bit more explicit with the flag.
-> 
-> I'm fairly happy with what you're doing here and the Samsung driver is
-> the only user so the view of people working on that is pretty important
-> here.  I've gone ahead and applied the first few patches so they don't
-> need rereviewing, the rest looked fine modulo the comments from
-> Krzysztof.
- 
-Thank you, I've just resent the whole series with Krzysztof's comments 
-addressed and with few more clean up patches added.
+> You can change the behavior by setting defaults.namehint.showall,
+> too.
 
-I've found one minor problem with the Odroid machine driver patch - 
-limiting sampling rate to same value on both PCMs doesn't work properly.
-I've got a patch fixing that almost ready and will post it tomorrow as
-a folow up or v3 of "ASoC: samsung: odroid: Add support for secondary 
-CPU DAI".
+Hi again,
+
+I am listing the pcm devices, and for the USB mic of my webcam, I get input
+(IOID=Input) pcm devices for surroundX/frontspeakers/IEC958, which are
+actually output pcm devices.
+Why those output pcm devices are hinted as input devices?? Is this expected?
+Bug? If not, how am I supposed to select the proper input pcm devices the
+right(tm) way ?
+
+regards,
+
+-- 
+Sylvain
