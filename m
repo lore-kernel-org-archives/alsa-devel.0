@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "tlv320aic32x4: delay i2c access by 1 ms after hardware reset" to the asoc tree
-Date: Tue, 12 Feb 2019 14:21:49 +0000 (GMT)
-Message-ID: <20190212142149.99C8C1128114@debutante.sirena.org.uk>
-References: <20190211210630.16592-1-ps.report@gmx.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190211210630.16592-1-ps.report@gmx.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Seiderer <ps.report@gmx.net>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, b-ak <anur.bhargav@gmail.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm8741: Set OSR mode in hw_params()" to
+	the asoc tree
+Date: Tue, 12 Feb 2019 14:21:53 +0000 (GMT)
+Message-ID: <20190212142153.D81551128113@debutante.sirena.org.uk>
+References: <1549812569-17533-1-git-send-email-sergej@taudac.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74A422673F8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:21:56 +0100 (CET)
+In-Reply-To: <1549812569-17533-1-git-send-email-sergej@taudac.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   tlv320aic32x4: delay i2c access by 1 ms after hardware reset
+   ASoC: wm8741: Set OSR mode in hw_params()
 
 has been applied to the asoc tree at
 
@@ -37,41 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 674f9abd094552dc297a2afd0cb72d30aec539a3 Mon Sep 17 00:00:00 2001
-From: Peter Seiderer <ps.report@gmx.net>
-Date: Mon, 11 Feb 2019 22:06:30 +0100
-Subject: [PATCH] tlv320aic32x4: delay i2c access by 1 ms after hardware reset
+>From e9418629e2fcf7374c19750f3afa7f3a7ff0afa2 Mon Sep 17 00:00:00 2001
+From: Sergej Sawazki <sergej@taudac.com>
+Date: Sun, 10 Feb 2019 16:29:29 +0100
+Subject: [PATCH] ASoC: wm8741: Set OSR mode in hw_params()
 
-As stated in 'TLV320AIC3254 Application Reference Guide' ([1]):
+For correct operation of the digital filtering and other processing on the
+WM8741, the user must ensure the correct value of OSR[1:0] is set at all
+times.[1] Hence, depending the selected sampling rate, set the OSR (over-
+sampling rate) mode in hw_params().
 
-  3.2 Device Startup Lockout Times
-    After the TLV320AIC3254 initializes through hardware reset at power-up
-    or software reset, the internal registers initialize to default values.
-    This initialization takes place within 1ms after pulling the RESET
-    signal high. During this initialization phase, no register-read or
-    register-write operation should be performed on ADC or DAC coefficient
-    buffers. Also, no block within the codec should be powered up during
-    the initialization phase.
+References:
+	[1] "WM8741 Data Sheet"
 
-[1] http://www.ti.com/lit/an/slaa408a/slaa408a.pdf
-
-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm8741.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index e1bfba62fc08..96f1526cb258 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -970,6 +970,7 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
- 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
- 		ndelay(10);
- 		gpio_set_value(aic32x4->rstn_gpio, 1);
-+		mdelay(1);
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index fdda83b7ca82..a4b8c459ea57 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -196,7 +196,7 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct wm8741_priv *wm8741 = snd_soc_component_get_drvdata(component);
+-	unsigned int iface;
++	unsigned int iface, mode;
+ 	int i;
+ 
+ 	/* The set of sample rates that can be supported depends on the
+@@ -240,11 +240,21 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
  	}
  
- 	snd_soc_component_write(component, AIC32X4_RESET, 0x01);
++	/* oversampling rate */
++	if (params_rate(params) > 96000)
++		mode = 0x40;
++	else if (params_rate(params) > 48000)
++		mode = 0x20;
++	else
++		mode = 0x00;
++
+ 	dev_dbg(component->dev, "wm8741_hw_params:    bit size param = %d, rate param = %d",
+ 		params_width(params), params_rate(params));
+ 
+ 	snd_soc_component_update_bits(component, WM8741_FORMAT_CONTROL, WM8741_IWL_MASK,
+ 			    iface);
++	snd_soc_component_update_bits(component, WM8741_MODE_CONTROL_1, WM8741_OSR_MASK,
++			    mode);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
