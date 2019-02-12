@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Fix prescaler setting for the secondary DAI" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:57 +0000 (GMT)
-Message-ID: <20190212165857.B56751128113@debutante.sirena.org.uk>
-References: <20190207170028.720-5-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190207170028.720-5-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: soc-acpi: bxt-match: remove
+	asoc_plat_name field" to the asoc tree
+Date: Tue, 12 Feb 2019 16:58:29 +0000 (GMT)
+Message-ID: <20190212165829.E674A1128114@debutante.sirena.org.uk>
+References: <20190208234557.7816-10-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E992326793F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:30 +0100 (CET)
+In-Reply-To: <20190208234557.7816-10-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Fix prescaler setting for the secondary DAI
+   ASoC: Intel: soc-acpi: bxt-match: remove asoc_plat_name field
 
 has been applied to the asoc tree at
 
@@ -37,61 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 323fb7b947b265753de34703dbbf8acc8ea3a4de Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 7 Feb 2019 18:00:12 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Fix prescaler setting for the secondary
- DAI
+>From dcc9de2ebe86791a041a92cdf9806bde004706c6 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 8 Feb 2019 17:45:49 -0600
+Subject: [PATCH] ASoC: Intel: soc-acpi: bxt-match: remove asoc_plat_name field
 
-Make sure i2s->rclk_srcrate is properly initialized also during
-playback through the secondary DAI.
+This field was never used, let's remove it
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index ce00fe2f6aae..d4bde4834ce5 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -604,6 +604,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 	unsigned int fmt)
- {
- 	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = get_other_dai(i2s);
- 	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
- 	u32 mod, tmp = 0;
- 	unsigned long flags;
-@@ -661,7 +662,8 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
- 		 * clock configuration assigned in DT is not overwritten.
- 		 */
--		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL)
-+		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL &&
-+		    other->clk_data.clks == NULL)
- 			i2s_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
- 							0, SND_SOC_CLOCK_IN);
- 		break;
-@@ -699,6 +701,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
- 	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = get_other_dai(i2s);
- 	u32 mod, mask = 0, val = 0;
- 	struct clk *rclksrc;
- 	unsigned long flags;
-@@ -784,6 +787,9 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	i2s->frmclk = params_rate(params);
- 
- 	rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
-+	if (!rclksrc || IS_ERR(rclksrc))
-+		rclksrc = other->clk_table[CLK_I2S_RCLK_SRC];
-+
- 	if (rclksrc && !IS_ERR(rclksrc))
- 		i2s->rclk_srcrate = clk_get_rate(rclksrc);
- 
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index c0e5780e2ad1..229e39586868 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -53,7 +53,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_bxtn.bin",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-rt298.tplg",
+-		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+ 		.id = "DLGS7219",
+@@ -63,21 +62,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.quirk_data = &bxt_codecs,
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-da7219.tplg",
+-		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+ 		.id = "104C5122",
+ 		.drv_name = "bxt-pcm512x",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-pcm512x.tplg",
+-		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+ 		.id = "1AEC8804",
+ 		.drv_name = "bxt-wm8804",
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-wm8804.tplg",
+-		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+ 		.id = "INT34C3",
+@@ -85,7 +81,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.machine_quirk = apl_quirk,
+ 		.sof_fw_filename = "sof-apl.ri",
+ 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
+-		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{},
+ };
 -- 
 2.20.1
