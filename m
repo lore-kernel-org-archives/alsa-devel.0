@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2][RFC] ASoC: soc-core: allow no Platform
- on dai_link
-Date: Tue, 12 Feb 2019 14:12:31 +0000
-Message-ID: <20190212141231.GC20635@sirena.org.uk>
-References: <8736paoqr5.wl-kuninori.morimoto.gx@renesas.com>
- <87zhrinc2y.wl-kuninori.morimoto.gx@renesas.com>
- <e984c300-5732-17ca-212b-3954cbdf3765@linux.intel.com>
- <87o97xlicc.wl-kuninori.morimoto.gx@renesas.com>
- <477d13e1-7dfa-b384-259e-2e0e5b98684a@linux.intel.com>
- <87imy4nxq7.wl-kuninori.morimoto.gx@renesas.com>
- <20190208182524.GI6695@sirena.org.uk>
- <87zhr1q15g.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Use __printf markup to silence
+	compiler" to the asoc tree
+Date: Tue, 12 Feb 2019 14:21:47 +0000 (GMT)
+Message-ID: <20190212142147.7E3621128113@debutante.sirena.org.uk>
+References: <20190123194131.19406-1-malat@debian.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7027067878901067814=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 77E922673F8
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:12:34 +0100 (CET)
-In-Reply-To: <87zhr1q15g.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 27B4E2673F8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:21:53 +0100 (CET)
+In-Reply-To: <20190123194131.19406-1-malat@debian.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,58 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7027067878901067814==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mvpLiMfbWzRoNl4x"
-Content-Disposition: inline
+   ASoC: Use __printf markup to silence compiler
 
+has been applied to the asoc tree at
 
---mvpLiMfbWzRoNl4x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 12, 2019 at 10:03:32AM +0900, Kuninori Morimoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Yes, agree.
-> I think we can do like this
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> 	v5.x     : multi CPU support
-> 	v5.x + 1 : transit to modern for CPU/Codec/Platform on all drivers
-> 	v5.x + 2 : add "no Platform / no implicit dummy" support
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> If there is no objection about "no Platform / no implicit dummy"...
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-That sounds like a reasonable plan; I don't think we actually need to
-wait for a new kernel version between each of these if things happen to
-go faster but equally if we do that's also fine.
+Thanks,
+Mark
 
---mvpLiMfbWzRoNl4x
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 595d2f74cd3caedb704a118bd09c1b4dfbfc0ec0 Mon Sep 17 00:00:00 2001
+From: Mathieu Malaterre <malat@debian.org>
+Date: Wed, 23 Jan 2019 20:41:30 +0100
+Subject: [PATCH] ASoC: Use __printf markup to silence compiler
 
------BEGIN PGP SIGNATURE-----
+Silence warnings (triggered at W=1) by adding relevant __printf
+attributes.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxi1E8ACgkQJNaLcl1U
-h9ClZAf+OQyIIGpuv8WWZfYrqjqhKJrv2DzqmqkedVk1Ob3A7tU4h+EJHiZFnr25
-XKnRyeVtcRplRRsAnJGJFLsv4FzuQN+JxXaZUix3kcbG+LKZxWGyJVfF0X24ojDs
-mMASO8ICu9w7zv3f239XyUrQnJ4+36xvZyR0jkqndV9mUR/UtsDv/YL4MkiOQfb7
-QXVmOAVCRM/mQUcvZmGNDvLryrq7HyMnmD5EKjrC6Cn7GSFq3RMSAkDn2eDXXCQp
-J8NYhaREKEjFL8i+d0NB6xEKenTbcAJYvJmMmYwb3GZDJOJ4JnW/ZrlK1bNlf0cx
-LmsYdIgnTwrWQ2E3/tuj4R0CJKfCfA==
-=vDY7
------END PGP SIGNATURE-----
+  sound/soc/soc-dapm.c:149:2: warning: function 'pop_dbg' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
 
---mvpLiMfbWzRoNl4x--
+Signed-off-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---===============7027067878901067814==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7027067878901067814==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index d31d295b540f..dea6fc2353e4 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -157,6 +157,7 @@ static void pop_wait(u32 pop_time)
+ 		schedule_timeout_uninterruptible(msecs_to_jiffies(pop_time));
+ }
+ 
++__printf(3, 4)
+ static void pop_dbg(struct device *dev, u32 pop_time, const char *fmt, ...)
+ {
+ 	va_list args;
+-- 
+2.20.1
