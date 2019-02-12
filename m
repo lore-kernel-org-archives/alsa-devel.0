@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: soc-acpi: bxt-match: remove
-	asoc_plat_name field" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:29 +0000 (GMT)
-Message-ID: <20190212165829.E674A1128114@debutante.sirena.org.uk>
-References: <20190208234557.7816-10-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: icl-match: remove prefix for SOF
+	files" to the asoc tree
+Date: Tue, 12 Feb 2019 16:58:32 +0000 (GMT)
+Message-ID: <20190212165832.12D361128114@debutante.sirena.org.uk>
+References: <20190208234557.7816-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E992326793F
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:30 +0100 (CET)
-In-Reply-To: <20190208234557.7816-10-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CD6C726795C
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:32 +0100 (CET)
+In-Reply-To: <20190208234557.7816-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: soc-acpi: bxt-match: remove asoc_plat_name field
+   ASoC: Intel: icl-match: remove prefix for SOF files
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From dcc9de2ebe86791a041a92cdf9806bde004706c6 Mon Sep 17 00:00:00 2001
+>From a5b1e2284567c487b1023b580656de4a19cc1a83 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Feb 2019 17:45:49 -0600
-Subject: [PATCH] ASoC: Intel: soc-acpi: bxt-match: remove asoc_plat_name field
+Date: Fri, 8 Feb 2019 17:45:48 -0600
+Subject: [PATCH] ASoC: Intel: icl-match: remove prefix for SOF files
 
-This field was never used, let's remove it
+Prefix is now handled in the code. This allows for default and
+alternate paths, and more flexibility for OEMs and distros
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-bxt-match.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-index c0e5780e2ad1..229e39586868 100644
---- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
-@@ -53,7 +53,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.fw_filename = "intel/dsp_fw_bxtn.bin",
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-rt298.tplg",
--		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
- 		.id = "DLGS7219",
-@@ -63,21 +62,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.quirk_data = &bxt_codecs,
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-da7219.tplg",
--		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
- 		.id = "104C5122",
- 		.drv_name = "bxt-pcm512x",
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-pcm512x.tplg",
--		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
- 		.id = "1AEC8804",
- 		.drv_name = "bxt-wm8804",
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-wm8804.tplg",
--		.asoc_plat_name = "0000:00:0e.0",
- 	},
- 	{
- 		.id = "INT34C3",
-@@ -85,7 +81,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
- 		.machine_quirk = apl_quirk,
- 		.sof_fw_filename = "sof-apl.ri",
- 		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
--		.asoc_plat_name = "0000:00:0e.0",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 33b441dca4d3..bf6e25257a39 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -20,8 +20,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 		.drv_name = "icl_rt274",
+ 		.fw_filename = "intel/dsp_fw_icl.bin",
+ 		.pdata = &icl_pdata,
+-		.sof_fw_filename = "intel/sof-icl.ri",
+-		.sof_tplg_filename = "intel/sof-icl-rt274.tplg",
++		.sof_fw_filename = "sof-icl.ri",
++		.sof_tplg_filename = "sof-icl-rt274.tplg",
+ 		.asoc_plat_name = "0000:00:1f.3",
  	},
  	{},
- };
 -- 
 2.20.1
