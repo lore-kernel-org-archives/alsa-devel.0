@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cnl-match: remove prefix for SOF
+Subject: Applied "ASoC: Intel: glk-match: remove prefix for SOF
 	files" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:40 +0000 (GMT)
-Message-ID: <20190212165840.957FD1128114@debutante.sirena.org.uk>
-References: <20190208234557.7816-5-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 12 Feb 2019 16:58:38 +0000 (GMT)
+Message-ID: <20190212165838.6DF051128113@debutante.sirena.org.uk>
+References: <20190208234557.7816-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AC48267968
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:41 +0100 (CET)
-In-Reply-To: <20190208234557.7816-5-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BA7C26796F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:44 +0100 (CET)
+In-Reply-To: <20190208234557.7816-6-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cnl-match: remove prefix for SOF files
+   ASoC: Intel: glk-match: remove prefix for SOF files
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 7466e749a3b4e838882cc8728bc66a39df0e9dfa Mon Sep 17 00:00:00 2001
+>From 6d356d52297ded6b1bae86c54b364d7784c0a528 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Feb 2019 17:45:44 -0600
-Subject: [PATCH] ASoC: Intel: cnl-match: remove prefix for SOF files
+Date: Fri, 8 Feb 2019 17:45:45 -0600
+Subject: [PATCH] ASoC: Intel: glk-match: remove prefix for SOF files
 
 Prefix is now handled in the code. This allows for default and
 alternate paths, and more flexibility for OEMs and distros
@@ -64,22 +64,33 @@ alternate paths, and more flexibility for OEMs and distros
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index ec8e28e7b937..b80b50ddb22b 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -20,8 +20,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- 		.drv_name = "cnl_rt274",
- 		.fw_filename = "intel/dsp_fw_cnl.bin",
- 		.pdata = &cnl_pdata,
--		.sof_fw_filename = "intel/sof-cnl.ri",
--		.sof_tplg_filename = "intel/sof-cnl-rt274.tplg",
-+		.sof_fw_filename = "sof-cnl.ri",
-+		.sof_tplg_filename = "sof-cnl-rt274.tplg",
- 		.asoc_plat_name = "0000:00:1f.3",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index 305875af71ca..75bc0109166a 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -19,8 +19,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.id = "INT343A",
+ 		.drv_name = "glk_alc298s_i2s",
+ 		.fw_filename = "intel/dsp_fw_glk.bin",
+-		.sof_fw_filename = "intel/sof-glk.ri",
+-		.sof_tplg_filename = "intel/sof-glk-alc298.tplg",
++		.sof_fw_filename = "sof-glk.ri",
++		.sof_tplg_filename = "sof-glk-alc298.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
+ 	},
+ 	{
+@@ -29,8 +29,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_glk.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &glk_codecs,
+-		.sof_fw_filename = "intel/sof-glk.ri",
+-		.sof_tplg_filename = "intel/sof-glk-da7219.tplg",
++		.sof_fw_filename = "sof-glk.ri",
++		.sof_tplg_filename = "sof-glk-da7219.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
  	{},
 -- 
