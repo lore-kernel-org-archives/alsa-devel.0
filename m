@@ -1,34 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Set OSR mode in hw_params()" to
-	the asoc tree
-Date: Tue, 12 Feb 2019 14:21:53 +0000 (GMT)
-Message-ID: <20190212142153.D81551128113@debutante.sirena.org.uk>
-References: <1549812569-17533-1-git-send-email-sergej@taudac.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: use %pOFn instead of device_node.name" to
+ the asoc tree
+Date: Tue, 12 Feb 2019 14:22:00 +0000 (GMT)
+Message-ID: <20190212142200.4638F1128113@debutante.sirena.org.uk>
+References: <1549854281-25667-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A422673F8
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:21:56 +0100 (CET)
-In-Reply-To: <1549812569-17533-1-git-send-email-sergej@taudac.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <sergej@taudac.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1549854281-25667-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8741: Set OSR mode in hw_params()
+   ASoC: mediatek: use %pOFn instead of device_node.name
 
 has been applied to the asoc tree at
 
@@ -53,60 +48,46 @@ to this mail.
 Thanks,
 Mark
 
->From e9418629e2fcf7374c19750f3afa7f3a7ff0afa2 Mon Sep 17 00:00:00 2001
-From: Sergej Sawazki <sergej@taudac.com>
-Date: Sun, 10 Feb 2019 16:29:29 +0100
-Subject: [PATCH] ASoC: wm8741: Set OSR mode in hw_params()
+>From 49ff8cfb1755a6bb7d4f1645f9346962fb4e473e Mon Sep 17 00:00:00 2001
+From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Mon, 11 Feb 2019 11:04:41 +0800
+Subject: [PATCH] ASoC: mediatek: use %pOFn instead of device_node.name
 
-For correct operation of the digital filtering and other processing on the
-WM8741, the user must ensure the correct value of OSR[1:0] is set at all
-times.[1] Hence, depending the selected sampling rate, set the OSR (over-
-sampling rate) mode in hw_params().
+In preparation to remove the node name pointer from struct device_node,
+convert printf users to use the %pOFn format specifier.
 
-References:
-	[1] "WM8741 Data Sheet"
-
-Signed-off-by: Sergej Sawazki <sergej@taudac.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/wm8741.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/common/mtk-btcvsd.c     | 2 +-
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index fdda83b7ca82..a4b8c459ea57 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -196,7 +196,7 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct wm8741_priv *wm8741 = snd_soc_component_get_drvdata(component);
--	unsigned int iface;
-+	unsigned int iface, mode;
- 	int i;
- 
- 	/* The set of sample rates that can be supported depends on the
-@@ -240,11 +240,21 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index e408c1b270ab..4b613d57e2d4 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -1269,7 +1269,7 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
+ 	/* irq */
+ 	irq_id = platform_get_irq(pdev, 0);
+ 	if (irq_id <= 0) {
+-		dev_err(dev, "%s no irq found\n", dev->of_node->name);
++		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
+ 		return irq_id < 0 ? irq_id : -ENXIO;
  	}
  
-+	/* oversampling rate */
-+	if (params_rate(params) > 96000)
-+		mode = 0x40;
-+	else if (params_rate(params) > 48000)
-+		mode = 0x20;
-+	else
-+		mode = 0x00;
-+
- 	dev_dbg(component->dev, "wm8741_hw_params:    bit size param = %d, rate param = %d",
- 		params_width(params), params_rate(params));
- 
- 	snd_soc_component_update_bits(component, WM8741_FORMAT_CONTROL, WM8741_IWL_MASK,
- 			    iface);
-+	snd_soc_component_update_bits(component, WM8741_MODE_CONTROL_1, WM8741_OSR_MASK,
-+			    mode);
- 
- 	return 0;
- }
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index ff3111ec876c..4e045dd305a7 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -1139,7 +1139,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	/* request irq */
+ 	irq_id = platform_get_irq(pdev, 0);
+ 	if (!irq_id) {
+-		dev_err(dev, "%s no irq found\n", dev->of_node->name);
++		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
+ 		return -ENXIO;
+ 	}
+ 	ret = devm_request_irq(dev, irq_id, mt8183_afe_irq_handler,
 -- 
 2.20.1
