@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Add digital mute callback" to
-	the asoc tree
-Date: Tue, 12 Feb 2019 14:21:55 +0000 (GMT)
-Message-ID: <20190212142156.023B71128113@debutante.sirena.org.uk>
-References: <1549812484-17449-1-git-send-email-sergej@taudac.com>
+Subject: Applied "ASoC: Intel: Skylake: set
+	.ignore_module_refcount field in component" to the asoc tree
+Date: Tue, 12 Feb 2019 14:22:06 +0000 (GMT)
+Message-ID: <20190212142206.AB9B31128113@debutante.sirena.org.uk>
+References: <20190201172224.14549-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 04F0A2677EB
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:22:02 +0100 (CET)
-In-Reply-To: <1549812484-17449-1-git-send-email-sergej@taudac.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8770D2678D2
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:22:07 +0100 (CET)
+In-Reply-To: <20190201172224.14549-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <sergej@taudac.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8741: Add digital mute callback
+   ASoC: Intel: Skylake: set .ignore_module_refcount field in component
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 36b1599340b5bbaf4d4f015cbfe89b7bc8cd7873 Mon Sep 17 00:00:00 2001
-From: Sergej Sawazki <sergej@taudac.com>
-Date: Sun, 10 Feb 2019 16:28:04 +0100
-Subject: [PATCH] ASoC: wm8741: Add digital mute callback
+>From e0771fc98909096b65c9781c438ac9d9c98ac41a Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 1 Feb 2019 11:22:24 -0600
+Subject: [PATCH] ASoC: Intel: Skylake: set .ignore_module_refcount field in
+ component
 
-Signed-off-by: Sergej Sawazki <sergej@taudac.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+There is no risk of the module being removed while the platform
+components are in use. This solves the problem of the snd_soc_skl
+module not being removable with rmmod
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8741.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 1fedf74da705..fdda83b7ca82 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -358,6 +358,15 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
-+int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
-+{
-+	struct snd_soc_component *component = codec_dai->component;
-+
-+	snd_soc_component_update_bits(component, WM8741_VOLUME_CONTROL,
-+			WM8741_SOFT_MASK, !!mute << WM8741_SOFT_SHIFT);
-+	return 0;
-+}
-+
- #define WM8741_RATES (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
- 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | \
- 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 | \
-@@ -371,6 +380,7 @@ static const struct snd_soc_dai_ops wm8741_dai_ops = {
- 	.hw_params	= wm8741_hw_params,
- 	.set_sysclk	= wm8741_set_dai_sysclk,
- 	.set_fmt	= wm8741_set_dai_fmt,
-+	.digital_mute   = wm8741_mute,
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 8e589d698c58..a4284778f117 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1464,6 +1464,7 @@ static const struct snd_soc_component_driver skl_component  = {
+ 	.ops		= &skl_platform_ops,
+ 	.pcm_new	= skl_pcm_new,
+ 	.pcm_free	= skl_pcm_free,
++	.ignore_module_refcount = 1, /* do not increase the refcount in core */
  };
  
- static struct snd_soc_dai_driver wm8741_dai = {
+ int skl_platform_register(struct device *dev)
 -- 
 2.20.1
