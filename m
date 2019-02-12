@@ -1,29 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: use %pOFn instead of device_node.name" to
- the asoc tree
-Date: Tue, 12 Feb 2019 14:22:00 +0000 (GMT)
-Message-ID: <20190212142200.4638F1128113@debutante.sirena.org.uk>
-References: <1549854281-25667-1-git-send-email-kaichieh.chuang@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1549854281-25667-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: pcm3060: Add soft reset on probe" to the asoc tree
+Date: Tue, 12 Feb 2019 14:22:04 +0000 (GMT)
+Message-ID: <20190212142204.7A93A1128113@debutante.sirena.org.uk>
+References: <20190211060839.21417-1-kmarinushkin@birdec.tech>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190211060839.21417-1-kmarinushkin@birdec.tech>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: use %pOFn instead of device_node.name
+   ASoC: pcm3060: Add soft reset on probe
 
 has been applied to the asoc tree at
 
@@ -48,46 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 49ff8cfb1755a6bb7d4f1645f9346962fb4e473e Mon Sep 17 00:00:00 2001
-From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Mon, 11 Feb 2019 11:04:41 +0800
-Subject: [PATCH] ASoC: mediatek: use %pOFn instead of device_node.name
+>From a3daee085905e97ba20e6b9e72e6639fa518209c Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Date: Mon, 11 Feb 2019 07:08:38 +0100
+Subject: [PATCH] ASoC: pcm3060: Add soft reset on probe
 
-In preparation to remove the node name pointer from struct device_node,
-convert printf users to use the %pOFn format specifier.
+Softly reset registers values on module probe
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/common/mtk-btcvsd.c     | 2 +-
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm3060.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index e408c1b270ab..4b613d57e2d4 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -1269,7 +1269,7 @@ static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
- 	/* irq */
- 	irq_id = platform_get_irq(pdev, 0);
- 	if (irq_id <= 0) {
--		dev_err(dev, "%s no irq found\n", dev->of_node->name);
-+		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
- 		return irq_id < 0 ? irq_id : -ENXIO;
- 	}
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 6714aa8d9026..543cb86fd764 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -287,6 +287,14 @@ int pcm3060_probe(struct device *dev)
+ 	int rc;
+ 	struct pcm3060_priv *priv = dev_get_drvdata(dev);
  
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index ff3111ec876c..4e045dd305a7 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -1139,7 +1139,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	/* request irq */
- 	irq_id = platform_get_irq(pdev, 0);
- 	if (!irq_id) {
--		dev_err(dev, "%s no irq found\n", dev->of_node->name);
-+		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
- 		return -ENXIO;
- 	}
- 	ret = devm_request_irq(dev, irq_id, mt8183_afe_irq_handler,
++	/* soft reset */
++	rc = regmap_update_bits(priv->regmap, PCM3060_REG64,
++				PCM3060_REG_MRST, 0);
++	if (rc) {
++		dev_err(dev, "failed to reset component, rc=%d\n", rc);
++		return rc;
++	}
++
+ 	if (dev->of_node)
+ 		pcm3060_parse_dt(dev->of_node, priv);
+ 
 -- 
 2.20.1
