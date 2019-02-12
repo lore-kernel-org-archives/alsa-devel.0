@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: soc-acpi: cnl-match.c: remove
+Subject: Applied "ASoC: Intel: soc-acpi: icl-match: remove
 	asoc_plat_name field" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:17 +0000 (GMT)
-Message-ID: <20190212165817.270411128113@debutante.sirena.org.uk>
-References: <20190208234557.7816-16-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 12 Feb 2019 16:58:19 +0000 (GMT)
+Message-ID: <20190212165819.46FAA1128113@debutante.sirena.org.uk>
+References: <20190208234557.7816-15-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 01EDB2673E2
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:18 +0100 (CET)
-In-Reply-To: <20190208234557.7816-16-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0431E2673E2
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:19 +0100 (CET)
+In-Reply-To: <20190208234557.7816-15-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: soc-acpi: cnl-match.c: remove asoc_plat_name field
+   ASoC: Intel: soc-acpi: icl-match: remove asoc_plat_name field
 
 has been applied to the asoc tree at
 
@@ -53,28 +53,27 @@ to this mail.
 Thanks,
 Mark
 
->From c5898050fe801443dc66cd0302c21ceefa313916 Mon Sep 17 00:00:00 2001
+>From fc906fda39c1705c2d89937fce13a6c11a5955bb Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Feb 2019 17:45:55 -0600
-Subject: [PATCH] ASoC: Intel: soc-acpi: cnl-match.c: remove asoc_plat_name
- field
+Date: Fri, 8 Feb 2019 17:45:54 -0600
+Subject: [PATCH] ASoC: Intel: soc-acpi: icl-match: remove asoc_plat_name field
 
 This field was never used, let's remove it
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-cnl-match.c | 1 -
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index b80b50ddb22b..a914dd238d0a 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -22,7 +22,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- 		.pdata = &cnl_pdata,
- 		.sof_fw_filename = "sof-cnl.ri",
- 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index bf6e25257a39..e5a6be5bc0ee 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -22,7 +22,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 		.pdata = &icl_pdata,
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt274.tplg",
 -		.asoc_plat_name = "0000:00:1f.3",
  	},
  	{},
