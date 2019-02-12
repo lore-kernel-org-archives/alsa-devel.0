@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: byt-match.c: remove prefix for
-	SOF files" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:44 +0000 (GMT)
-Message-ID: <20190212165844.D44DD1128113@debutante.sirena.org.uk>
-References: <20190208234557.7816-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bxt-match: remove prefix for SOF
+	files" to the asoc tree
+Date: Tue, 12 Feb 2019 16:58:47 +0000 (GMT)
+Message-ID: <20190212165847.096251128113@debutante.sirena.org.uk>
+References: <20190208234557.7816-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 88C80267956
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:45 +0100 (CET)
-In-Reply-To: <20190208234557.7816-3-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D23EC267903
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:47 +0100 (CET)
+In-Reply-To: <20190208234557.7816-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: byt-match.c: remove prefix for SOF files
+   ASoC: Intel: bxt-match: remove prefix for SOF files
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 528f07152a7840b5affe1c8844ddd1ee9d3aabd7 Mon Sep 17 00:00:00 2001
+>From e529a9d44a9778b851a1683e6689c2f52d6750ac Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Feb 2019 17:45:42 -0600
-Subject: [PATCH] ASoC: Intel: byt-match.c: remove prefix for SOF files
+Date: Fri, 8 Feb 2019 17:45:41 -0600
+Subject: [PATCH] ASoC: Intel: bxt-match: remove prefix for SOF files
 
 Prefix is now handled in the code. This allows for default and
 alternate paths, and more flexibility for OEMs and distros
@@ -64,144 +64,62 @@ alternate paths, and more flexibility for OEMs and distros
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../intel/common/soc-acpi-intel-byt-match.c   | 48 +++++++++----------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ .../intel/common/soc-acpi-intel-bxt-match.c   | 20 +++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index 96f9c553fe6c..a46a3514a0f0 100644
---- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -83,8 +83,8 @@ static struct snd_soc_acpi_mach byt_thinkpad_10 = {
- 	.drv_name = "cht-bsw-rt5672",
- 	.fw_filename = "intel/fw_sst_0f28.bin",
- 	.board = "cht-bsw",
--	.sof_fw_filename = "intel/sof-byt.ri",
--	.sof_tplg_filename = "intel/sof-byt-rt5670.tplg",
-+	.sof_fw_filename = "sof-byt.ri",
-+	.sof_tplg_filename = "sof-byt-rt5670.tplg",
- 	.asoc_plat_name = "sst-mfld-platform",
- };
- 
-@@ -93,8 +93,8 @@ static struct snd_soc_acpi_mach byt_pov_p1006w = {
- 	.drv_name = "bytcr_rt5651",
- 	.fw_filename = "intel/fw_sst_0f28.bin",
- 	.board = "bytcr_rt5651",
--	.sof_fw_filename = "intel/sof-byt.ri",
--	.sof_tplg_filename = "intel/sof-byt-rt5651.tplg",
-+	.sof_fw_filename = "sof-byt.ri",
-+	.sof_tplg_filename = "sof-byt-rt5651.tplg",
- 	.asoc_plat_name = "sst-mfld-platform",
- };
- 
-@@ -136,8 +136,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcr_rt5640",
- 		.machine_quirk = byt_quirk,
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5640.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5640.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 61dedc103b19..c0e5780e2ad1 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -51,8 +51,8 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.id = "INT343A",
+ 		.drv_name = "bxt_alc298s_i2s",
+ 		.fw_filename = "intel/dsp_fw_bxtn.bin",
+-		.sof_fw_filename = "intel/sof-apl.ri",
+-		.sof_tplg_filename = "intel/sof-apl-rt298.tplg",
++		.sof_fw_filename = "sof-apl.ri",
++		.sof_tplg_filename = "sof-apl-rt298.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
  	{
-@@ -145,8 +145,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcr_rt5640",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcr_rt5640",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5640.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5640.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
+@@ -61,30 +61,30 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_bxtn.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &bxt_codecs,
+-		.sof_fw_filename = "intel/sof-apl.ri",
+-		.sof_tplg_filename = "intel/sof-apl-da7219.tplg",
++		.sof_fw_filename = "sof-apl.ri",
++		.sof_tplg_filename = "sof-apl-da7219.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
  	{
-@@ -154,8 +154,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcr_rt5640",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcr_rt5640",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5640.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5640.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
+ 		.id = "104C5122",
+ 		.drv_name = "bxt-pcm512x",
+-		.sof_fw_filename = "intel/sof-apl.ri",
+-		.sof_tplg_filename = "intel/sof-apl-pcm512x.tplg",
++		.sof_fw_filename = "sof-apl.ri",
++		.sof_tplg_filename = "sof-apl-pcm512x.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
  	{
-@@ -163,8 +163,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcr_rt5651",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcr_rt5651",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5651.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5651.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
+ 		.id = "1AEC8804",
+ 		.drv_name = "bxt-wm8804",
+-		.sof_fw_filename = "intel/sof-apl.ri",
+-		.sof_tplg_filename = "intel/sof-apl-wm8804.tplg",
++		.sof_fw_filename = "sof-apl.ri",
++		.sof_tplg_filename = "sof-apl-wm8804.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
  	{
-@@ -172,8 +172,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcht_da7213",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcht_da7213",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-da7213.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-da7213.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
+ 		.id = "INT34C3",
+ 		.drv_name = "bxt_tdf8532",
+ 		.machine_quirk = apl_quirk,
+-		.sof_fw_filename = "intel/sof-apl.ri",
+-		.sof_tplg_filename = "intel/sof-apl-tdf8532.tplg",
++		.sof_fw_filename = "sof-apl.ri",
++		.sof_tplg_filename = "sof-apl-tdf8532.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
- 	{
-@@ -181,8 +181,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcht_da7213",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcht_da7213",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-da7213.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-da7213.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
-@@ -190,8 +190,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "bytcht_es8316",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "bytcht_es8316",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-es8316.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-es8316.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
-@@ -200,8 +200,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "cht-bsw-rt5645",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "cht-bsw",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5645.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5645.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
-@@ -209,8 +209,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "cht-bsw-rt5645",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "cht-bsw",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-rt5645.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-rt5645.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	/* use CHT driver to Baytrail Chromebooks */
-@@ -219,8 +219,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_baytrail_machines[] = {
- 		.drv_name = "cht-bsw-max98090",
- 		.fw_filename = "intel/fw_sst_0f28.bin",
- 		.board = "cht-bsw",
--		.sof_fw_filename = "intel/sof-byt.ri",
--		.sof_tplg_filename = "intel/sof-byt-max98090.tplg",
-+		.sof_fw_filename = "sof-byt.ri",
-+		.sof_tplg_filename = "sof-byt-max98090.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
+ 	{},
 -- 
 2.20.1
