@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Add clock select" to the asoc tree
-Date: Tue, 12 Feb 2019 14:22:02 +0000 (GMT)
-Message-ID: <20190212142202.5F4AF1128113@debutante.sirena.org.uk>
-References: <20190211060839.21417-2-kmarinushkin@birdec.tech>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190211060839.21417-2-kmarinushkin@birdec.tech>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm8741: Add digital mute callback" to
+	the asoc tree
+Date: Tue, 12 Feb 2019 14:21:55 +0000 (GMT)
+Message-ID: <20190212142156.023B71128113@debutante.sirena.org.uk>
+References: <1549812484-17449-1-git-send-email-sergej@taudac.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04F0A2677EB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:22:02 +0100 (CET)
+In-Reply-To: <1549812484-17449-1-git-send-email-sergej@taudac.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Add clock select
+   ASoC: wm8741: Add digital mute callback
 
 has been applied to the asoc tree at
 
@@ -37,84 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 1e61405e201515d5767106babb4d750661ba5dcd Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Mon, 11 Feb 2019 07:08:39 +0100
-Subject: [PATCH] ASoC: pcm3060: Add clock select
+>From 36b1599340b5bbaf4d4f015cbfe89b7bc8cd7873 Mon Sep 17 00:00:00 2001
+From: Sergej Sawazki <sergej@taudac.com>
+Date: Sun, 10 Feb 2019 16:28:04 +0100
+Subject: [PATCH] ASoC: wm8741: Add digital mute callback
 
-ADC and DAC can be clocked from separate or same sources CLK1 and CLK2.
-By default, ADC is clocked from CLK1, and DAC - from CLK2.
-
-This commits allows sound cards to selest a proper clock source during
-`hw_params()` via `snd_soc_dai_set_sysclk()`. It makes possible to have a
-single clock source for both ADC and DAC.
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060.c | 27 +++++++++++++++++++++++++++
- sound/soc/codecs/pcm3060.h |  5 +++++
- 2 files changed, 32 insertions(+)
+ sound/soc/codecs/wm8741.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 543cb86fd764..32b26f1c2282 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -18,12 +18,39 @@ static int pcm3060_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- {
- 	struct snd_soc_component *comp = dai->component;
- 	struct pcm3060_priv *priv = snd_soc_component_get_drvdata(comp);
-+	unsigned int reg;
-+	unsigned int val;
- 
- 	if (dir != SND_SOC_CLOCK_IN) {
- 		dev_err(comp->dev, "unsupported sysclock dir: %d\n", dir);
- 		return -EINVAL;
- 	}
- 
-+	switch (clk_id) {
-+	case PCM3060_CLK_DEF:
-+		val = 0;
-+		break;
-+
-+	case PCM3060_CLK1:
-+		val = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG_CSEL : 0);
-+		break;
-+
-+	case PCM3060_CLK2:
-+		val = (dai->id == PCM3060_DAI_ID_DAC ? 0 : PCM3060_REG_CSEL);
-+		break;
-+
-+	default:
-+		dev_err(comp->dev, "unsupported sysclock id: %d\n", clk_id);
-+		return -EINVAL;
-+	}
-+
-+	if (dai->id == PCM3060_DAI_ID_DAC)
-+		reg = PCM3060_REG67;
-+	else
-+		reg = PCM3060_REG72;
-+
-+	regmap_update_bits(priv->regmap, reg, PCM3060_REG_CSEL, val);
-+
- 	priv->dai[dai->id].sclk_freq = freq;
- 
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 1fedf74da705..fdda83b7ca82 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -358,6 +358,15 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
  	return 0;
-diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
-index 6a027b4a845d..75931c9a9d85 100644
---- a/sound/soc/codecs/pcm3060.h
-+++ b/sound/soc/codecs/pcm3060.h
-@@ -17,6 +17,11 @@ extern const struct regmap_config pcm3060_regmap;
- #define PCM3060_DAI_ID_ADC	1
- #define PCM3060_DAI_IDS_NUM	2
+ }
  
-+/* ADC and DAC can be clocked from separate or same sources CLK1 and CLK2 */
-+#define PCM3060_CLK_DEF	0 /* default: CLK1->ADC, CLK2->DAC */
-+#define PCM3060_CLK1		1
-+#define PCM3060_CLK2		2
++int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++	struct snd_soc_component *component = codec_dai->component;
 +
- struct pcm3060_priv_dai {
- 	bool is_master;
- 	unsigned int sclk_freq;
++	snd_soc_component_update_bits(component, WM8741_VOLUME_CONTROL,
++			WM8741_SOFT_MASK, !!mute << WM8741_SOFT_SHIFT);
++	return 0;
++}
++
+ #define WM8741_RATES (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+ 			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | \
+ 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 | \
+@@ -371,6 +380,7 @@ static const struct snd_soc_dai_ops wm8741_dai_ops = {
+ 	.hw_params	= wm8741_hw_params,
+ 	.set_sysclk	= wm8741_set_dai_sysclk,
+ 	.set_fmt	= wm8741_set_dai_fmt,
++	.digital_mute   = wm8741_mute,
+ };
+ 
+ static struct snd_soc_dai_driver wm8741_dai = {
 -- 
 2.20.1
