@@ -1,46 +1,23 @@
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: btcvsd fix rx stream assign
-Date: Tue, 12 Feb 2019 15:18:47 +0800
-Message-ID: <1549955927-18364-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 01/18] MIPS: lantiq: pass struct device to DMA API
+ functions
+Date: Tue, 12 Feb 2019 08:45:49 +0100
+Message-ID: <20190212074549.GA15997@lst.de>
+References: <20190201084801.10983-1-hch@lst.de> <20190201084801.10983-2-hch@lst.de> <20190207232912.wfgejc5c6d6lk5so@pburton-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BE38267418
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 08:18:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190207232912.wfgejc5c6d6lk5so@pburton-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Burton <paul.burton@mips.com>
+Cc: Christoph Hellwig <hch@lst.de>, John Crispin <john@phrozen.org>, Vinod Koul <vkoul@kernel.org>, Dmitry Tarnyagin <dmitry.tarnyagin@lockless.no>, Nicolas Ferre <nicolas.ferre@microchip.com>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Felipe Balbi <balbi@kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-fix tx/rx stream assign wrong direction
+On Thu, Feb 07, 2019 at 11:29:14PM +0000, Paul Burton wrote:
+> Would you like this to go through the MIPS tree or elsewhere? If the
+> latter:
+> 
+>     Acked-by: Paul Burton <paul.burton@mips.com>
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
----
- sound/soc/mediatek/common/mtk-btcvsd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index 4b613d5..1b8bcdaf 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -250,7 +250,7 @@ static int mtk_btcvsd_snd_rx_init(struct mtk_btcvsd_snd *bt)
- 	bt->rx->buf_size = BTCVSD_RX_BUF_SIZE;
- 	bt->rx->timeout = 0;
- 	bt->rx->rw_cnt = 0;
--	bt->tx->stream = SNDRV_PCM_STREAM_CAPTURE;
-+	bt->rx->stream = SNDRV_PCM_STREAM_CAPTURE;
- 	return 0;
- }
- 
--- 
-1.9.1
+Please pick it up through the mips tree!
