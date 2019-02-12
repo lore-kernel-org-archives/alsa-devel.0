@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: soc-acpi: cht-match: remove
-	asoc_plat_name field" to the asoc tree
-Date: Tue, 12 Feb 2019 16:58:25 +0000 (GMT)
-Message-ID: <20190212165825.A87311128113@debutante.sirena.org.uk>
-References: <20190208234557.7816-12-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A05B267903
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 17:58:26 +0100 (CET)
-In-Reply-To: <20190208234557.7816-12-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+Subject: Applied "ASoC: dmaengine: Extend use of chan_names provided in custom DMA config" to the asoc tree
+Date: Tue, 12 Feb 2019 16:58:53 +0000 (GMT)
+Message-ID: <20190212165853.799BD1128113@debutante.sirena.org.uk>
+References: <20190207170028.720-3-s.nawrocki@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190207170028.720-3-s.nawrocki@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.comkrzk@kernel.org, linux-kernel@vger.kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: soc-acpi: cht-match: remove asoc_plat_name field
+   ASoC: dmaengine: Extend use of chan_names provided in custom DMA config
 
 has been applied to the asoc tree at
 
@@ -53,134 +37,52 @@ to this mail.
 Thanks,
 Mark
 
->From 9eebe4372f4a608e51b7a2c0b064069e78a6ce5b Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Feb 2019 17:45:51 -0600
-Subject: [PATCH] ASoC: Intel: soc-acpi: cht-match: remove asoc_plat_name field
+>From 10cbf3507bcb9baa82bf3445502e8ccafaa09fc8 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Thu, 7 Feb 2019 18:00:10 +0100
+Subject: [PATCH] ASoC: dmaengine: Extend use of chan_names provided in custom
+ DMA config
 
-This field was never used, let's remove it
+There are currently two ways to specify custom DMA channel names:
+ - through the SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag and
+   snd_dmaengine_dai_dma_data data structure,
+ - through chan_names field of struct snd_dmaengine_pcm_config.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In order to replace the DAI DMA data method with the custom DMA config
+one on non-DT platforms the dmaengine_pcm_new() function is extended
+to also consider channel names specified in the custom DMA config.
+If both config->chan_names and dma_data->chan_name are provided
+the former will be used.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-cht-match.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index 21ce4bcbf25b..deafd87cc764 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -46,7 +46,6 @@ static struct snd_soc_acpi_mach cht_surface_mach = {
- 	.board = "cht-bsw",
- 	.sof_fw_filename = "sof-cht.ri",
- 	.sof_tplg_filename = "sof-cht-rt5645.tplg",
--	.asoc_plat_name = "sst-mfld-platform",
- };
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 6d7638c1233d..1b44e363c50c 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -288,9 +288,16 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
  
- static struct snd_soc_acpi_mach *cht_quirk(void *arg)
-@@ -70,7 +69,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5670.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10EC5672",
-@@ -79,7 +77,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5670.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10EC5645",
-@@ -88,7 +85,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5645.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10EC5650",
-@@ -97,7 +93,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5645.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10EC3270",
-@@ -106,7 +101,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5645.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "193C9890",
-@@ -115,7 +109,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-max98090.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10508824",
-@@ -124,7 +117,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "cht-bsw",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-nau8824.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "DLGS7212",
-@@ -133,7 +125,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "bytcht_da7213",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-da7213.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "DLGS7213",
-@@ -142,7 +133,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "bytcht_da7213",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-da7213.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "ESSX8316",
-@@ -151,7 +141,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "bytcht_es8316",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-es8316.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{
-@@ -162,7 +151,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.machine_quirk = cht_quirk,
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5640.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
- 		.id = "10EC3276",
-@@ -171,7 +159,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "bytcr_rt5640",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5640.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	/* some CHT-T platforms rely on RT5651, use Baytrail machine driver */
- 	{
-@@ -181,7 +168,6 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.board = "bytcr_rt5651",
- 		.sof_fw_filename = "sof-cht.ri",
- 		.sof_tplg_filename = "sof-cht-rt5651.tplg",
--		.asoc_plat_name = "sst-mfld-platform",
- 	},
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
- 	/*
+ 		if (!pcm->chan[i] &&
+-		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
++		    ((pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME) ||
++		     (config && config->chan_names[i]))) {
++			const char *chan_name = dma_data->chan_name;
++
++			if (config && config->chan_names[i])
++				chan_name = config->chan_names[i];
++
+ 			pcm->chan[i] = dma_request_slave_channel(dev,
+-				dma_data->chan_name);
++				chan_name);
++		}
+ 
+ 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
+ 			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
 -- 
 2.20.1
