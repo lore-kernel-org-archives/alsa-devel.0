@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: btcvsd fix rx stream assign"
-	to the asoc tree
-Date: Tue, 12 Feb 2019 14:21:51 +0000 (GMT)
-Message-ID: <20190212142151.BDAAA1128114@debutante.sirena.org.uk>
-References: <1549955927-18364-1-git-send-email-kaichieh.chuang@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BFA18267568
- for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 15:21:54 +0100 (CET)
-In-Reply-To: <1549955927-18364-1-git-send-email-kaichieh.chuang@mediatek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
+Subject: Applied "tlv320aic32x4: delay i2c access by 1 ms after hardware reset" to the asoc tree
+Date: Tue, 12 Feb 2019 14:21:49 +0000 (GMT)
+Message-ID: <20190212142149.99C8C1128114@debutante.sirena.org.uk>
+References: <20190211210630.16592-1-ps.report@gmx.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190211210630.16592-1-ps.report@gmx.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Seiderer <ps.report@gmx.net>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, b-ak <anur.bhargav@gmail.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: btcvsd fix rx stream assign
+   tlv320aic32x4: delay i2c access by 1 ms after hardware reset
 
 has been applied to the asoc tree at
 
@@ -52,31 +37,41 @@ to this mail.
 Thanks,
 Mark
 
->From fc23af99e47612042964ace44121872158ae834d Mon Sep 17 00:00:00 2001
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Date: Tue, 12 Feb 2019 15:18:47 +0800
-Subject: [PATCH] ASoC: mediatek: btcvsd fix rx stream assign
+>From 674f9abd094552dc297a2afd0cb72d30aec539a3 Mon Sep 17 00:00:00 2001
+From: Peter Seiderer <ps.report@gmx.net>
+Date: Mon, 11 Feb 2019 22:06:30 +0100
+Subject: [PATCH] tlv320aic32x4: delay i2c access by 1 ms after hardware reset
 
-fix tx/rx stream assign wrong direction
+As stated in 'TLV320AIC3254 Application Reference Guide' ([1]):
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+  3.2 Device Startup Lockout Times
+    After the TLV320AIC3254 initializes through hardware reset at power-up
+    or software reset, the internal registers initialize to default values.
+    This initialization takes place within 1ms after pulling the RESET
+    signal high. During this initialization phase, no register-read or
+    register-write operation should be performed on ADC or DAC coefficient
+    buffers. Also, no block within the codec should be powered up during
+    the initialization phase.
+
+[1] http://www.ti.com/lit/an/slaa408a/slaa408a.pdf
+
+Signed-off-by: Peter Seiderer <ps.report@gmx.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/common/mtk-btcvsd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic32x4.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index 4b613d57e2d4..1b8bcdaf02d1 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -250,7 +250,7 @@ static int mtk_btcvsd_snd_rx_init(struct mtk_btcvsd_snd *bt)
- 	bt->rx->buf_size = BTCVSD_RX_BUF_SIZE;
- 	bt->rx->timeout = 0;
- 	bt->rx->rw_cnt = 0;
--	bt->tx->stream = SNDRV_PCM_STREAM_CAPTURE;
-+	bt->rx->stream = SNDRV_PCM_STREAM_CAPTURE;
- 	return 0;
- }
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index e1bfba62fc08..96f1526cb258 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -970,6 +970,7 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+ 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+ 		ndelay(10);
+ 		gpio_set_value(aic32x4->rstn_gpio, 1);
++		mdelay(1);
+ 	}
  
+ 	snd_soc_component_write(component, AIC32X4_RESET, 0x01);
 -- 
 2.20.1
