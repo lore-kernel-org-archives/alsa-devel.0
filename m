@@ -1,32 +1,58 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: cs35l36: Remove unused including <linux/version.h>
-Date: Wed, 13 Feb 2019 01:43:32 +0000
-Message-ID: <20190213014332.148775-1-yuehaibing@huawei.com>
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: [PATCH] ALSA: pcm: Comment why read blocks when PCM is
+	not running
+Date: Wed, 13 Feb 2019 00:57:51 -0200
+Message-ID: <20190213025751.GA6024@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt1-f195.google.com (mail-qt1-f195.google.com
+ [209.85.160.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49E00267482
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 03:57:58 +0100 (CET)
+Received: by mail-qt1-f195.google.com with SMTP id p25so722946qtb.3
+ for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2019 18:57:57 -0800 (PST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove including <linux/version.h> that don't need it.
+This avoids bringing back the problem introduced by
+62ba568f7aef ("ALSA: pcm: Return 0 when size <
+start_threshold in capture") and fixed in 00a399cad1a0
+("ALSA: pcm: Revert capture stream behavior change in
+blocking mode"), which prevented the user from starting
+capture from another thread.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
 ---
- sound/soc/codecs/cs35l36.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/core/pcm_lib.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index 4f880a678812..e374fffb7e17 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -8,7 +8,6 @@
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index bcb06bd3d..345ab1ab2 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2176,6 +2176,10 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+ 		snd_pcm_update_hw_ptr(substream);
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
++	/*
++	 * If size < start_threshold, wait indefinitely. Another
++	 * thread may start capture
++	 */
+ 	if (!is_playback &&
+ 	    runtime->status->state == SNDRV_PCM_STATE_PREPARED &&
+ 	    size >= runtime->start_threshold) {
+-- 
+2.19.1
