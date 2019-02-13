@@ -1,22 +1,15 @@
-From: sylvain.bertrand@gmail.com
-Subject: Re: right way to enumerate pcm devices
-Date: Wed, 13 Feb 2019 22:43:13 +0000
-Message-ID: <20190213224313.GA1152@freedom>
-References: <20190212123333.GB6441@freedom> <s5hr2cd3z9b.wl-tiwai@suse.de>
- <20190212203324.GA1399@freedom> <s5hpnrwciie.wl-tiwai@suse.de>
- <20190213141328.GA358@freedom> <20190213222518.GA974@freedom>
+From: Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH v4 1/3] ASoC: Intel: Headset button support in
+	broxton machine driver
+Date: Wed, 13 Feb 2019 17:08:51 -0600
+Message-ID: <1550099333-12229-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com
- [209.85.128.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 48CA1267978
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 23:44:07 +0100 (CET)
-Received: by mail-wm1-f49.google.com with SMTP id t200so4191191wmt.0
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 14:44:07 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20190213222518.GA974@freedom>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10196267978
+ for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 00:09:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,16 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: harshapriya.n@intel.com, naveen.m@intel.com, vkoul@kernel.org, pierre-louis.bossart@linux.intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 13, 2019 at 10:25:18PM +0000, sylvain.bertrand@gmail.com wrote:
-> ...
+Map the 4 headset buttons to KEY_PAUSE, KEY_VOLUMEUP, KEY_VOLUMEDOWN and
+KEY_VOICECOMMAND.
 
-Actually, I would just give a way to police the access to buffers. For
-instance the user application would be in charge of handling the actual
-mixing (I guess mmap-ed dma buffers).
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+---
+Changes for v4:
+- Rebased on the latest for-next branch.
 
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index c00925f9da73..30311b81a543 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -16,6 +16,7 @@
+  * GNU General Public License for more details.
+  */
+ 
++#include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <sound/core.h>
+@@ -193,6 +194,12 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
++	snd_jack_set_key(broxton_headset.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(broxton_headset.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(broxton_headset.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(broxton_headset.jack, SND_JACK_BTN_3,
++			 KEY_VOICECOMMAND);
++
+ 	da7219_aad_jack_det(component, &broxton_headset);
+ 
+ 	snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
 -- 
-Sylvain
+2.7.4
