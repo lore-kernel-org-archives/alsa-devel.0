@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 05/20] ASoC: SOF: Intel: Add HDA controller
-	for Intel DSP
-Date: Wed, 13 Feb 2019 16:08:32 -0600
-Message-ID: <20190213220847.10567-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 03/20] ASoC: SOF: Intel: Add BDW HW DSP
+	support
+Date: Wed, 13 Feb 2019 16:08:30 -0600
+Message-ID: <20190213220847.10567-4-pierre-louis.bossart@linux.intel.com>
 References: <20190213220847.10567-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,28 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, Rander Wang <rander.wang@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Support HDA controller operations for DSP and provide space for future
-DSP HDA FW integration.
+Add SOF support for Intel Broadwell based devices.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 165 +++++++++++++++++++++++++++++++++
- 1 file changed, 165 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-ctrl.c
+ sound/soc/sof/intel/bdw.c | 716 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 716 insertions(+)
+ create mode 100644 sound/soc/sof/intel/bdw.c
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
 new file mode 100644
-index 000000000000..cda8c6c6e859
+index 000000000000..7d5fa9387b39
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -0,0 +1,165 @@
++++ b/sound/soc/sof/intel/bdw.c
+@@ -0,0 +1,716 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -48,163 +48,714 @@ index 000000000000..cda8c6c6e859
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-+//	    Rander Wang <rander.wang@intel.com>
-+//          Keyon Jie <yang.jie@linux.intel.com>
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
 +/*
-+ * Hardware interface for generic Intel audio DSP HDA IP
++ * Hardware interface for audio DSP on Broadwell
 + */
 +
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
++#include <linux/module.h>
++#include <sound/sof.h>
++#include <sound/sof/xtensa.h>
 +#include "../ops.h"
-+#include "hda.h"
++#include "shim.h"
++
++/* BARs */
++#define BDW_DSP_BAR 0
++#define BDW_PCI_BAR 1
 +
 +/*
-+ * HDA Operations.
++ * Debug
 + */
 +
-+int hda_dsp_ctrl_link_reset(struct snd_sof_dev *sdev, bool reset)
++/* DSP memories for BDW */
++#define IRAM_OFFSET     0xA0000
++#define BDW_IRAM_SIZE       (10 * 32 * 1024)
++#define DRAM_OFFSET     0x00000
++#define BDW_DRAM_SIZE       (20 * 32 * 1024)
++#define SHIM_OFFSET     0xFB000
++#define SHIM_SIZE       0x100
++#define MBOX_OFFSET     0x9E000
++#define MBOX_SIZE       0x1000
++#define MBOX_DUMP_SIZE 0x30
++#define EXCEPT_OFFSET	0x800
++
++/* DSP peripherals */
++#define DMAC0_OFFSET    0xFE000
++#define DMAC1_OFFSET    0xFF000
++#define DMAC_SIZE       0x420
++#define SSP0_OFFSET     0xFC000
++#define SSP1_OFFSET     0xFD000
++#define SSP_SIZE	0x100
++
++#define BDW_STACK_DUMP_SIZE	32
++
++#define BDW_PANIC_OFFSET(x)	((x) & 0xFFFF)
++
++static const struct snd_sof_debugfs_map bdw_debugfs[] = {
++	{"dmac0", BDW_DSP_BAR, DMAC0_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"dmac1", BDW_DSP_BAR, DMAC1_OFFSET, DMAC_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp0", BDW_DSP_BAR, SSP0_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"ssp1", BDW_DSP_BAR, SSP1_OFFSET, SSP_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"iram", BDW_DSP_BAR, IRAM_OFFSET, BDW_IRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"dram", BDW_DSP_BAR, DRAM_OFFSET, BDW_DRAM_SIZE,
++	 SOF_DEBUGFS_ACCESS_D0_ONLY},
++	{"shim", BDW_DSP_BAR, SHIM_OFFSET, SHIM_SIZE,
++	 SOF_DEBUGFS_ACCESS_ALWAYS},
++};
++
++static int bdw_cmd_done(struct snd_sof_dev *sdev, int dir);
++
++/*
++ * DSP Control.
++ */
++
++static int bdw_run(struct snd_sof_dev *sdev)
 +{
-+	unsigned long timeout;
-+	u32 gctl = 0;
-+	u32 val;
++	/* set opportunistic mode on engine 0,1 for all channels */
++	snd_sof_dsp_update_bits(sdev, BDW_DSP_BAR, SHIM_HMDC,
++				SHIM_HMDC_HDDA_E0_ALLCH |
++				SHIM_HMDC_HDDA_E1_ALLCH, 0);
 +
-+	/* 0 to enter reset and 1 to exit reset */
-+	val = reset ? 0 : SOF_HDA_GCTL_RESET;
++	/* set DSP to RUN */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_CSR,
++					 SHIM_CSR_STALL, 0x0);
 +
-+	/* enter/exit HDA controller reset */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCTL,
-+				SOF_HDA_GCTL_RESET, val);
++	return 0;
++}
 +
-+	/* wait to enter/exit reset */
-+	timeout = jiffies + msecs_to_jiffies(HDA_DSP_CTRL_RESET_TIMEOUT);
-+	while (time_before(jiffies, timeout)) {
-+		gctl = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCTL);
-+		if ((gctl & SOF_HDA_GCTL_RESET) == val)
-+			return 0;
-+		usleep_range(500, 1000);
++static int bdw_reset(struct snd_sof_dev *sdev)
++{
++	/* put DSP into reset and stall */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_CSR,
++					 SHIM_CSR_RST | SHIM_CSR_STALL,
++					 SHIM_CSR_RST | SHIM_CSR_STALL);
++
++	/* keep in reset for 10ms */
++	mdelay(10);
++
++	/* take DSP out of reset and keep stalled for FW loading */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_CSR,
++					 SHIM_CSR_RST | SHIM_CSR_STALL,
++					 SHIM_CSR_STALL);
++
++	return 0;
++}
++
++static int bdw_set_dsp_D0(struct snd_sof_dev *sdev)
++{
++	int tries = 10;
++	u32 reg;
++
++	/* Disable core clock gating (VDRTCTL2.DCLCGE = 0) */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_VDRTCTL2,
++					 PCI_VDRTCL2_DCLCGE |
++					 PCI_VDRTCL2_DTCGE, 0);
++
++	/* Disable D3PG (VDRTCTL0.D3PGD = 1) */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_VDRTCTL0,
++					 PCI_VDRTCL0_D3PGD, PCI_VDRTCL0_D3PGD);
++
++	/* Set D0 state */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_PMCS,
++					 PCI_PMCS_PS_MASK, 0);
++
++	/* check that ADSP shim is enabled */
++	while (tries--) {
++		reg = readl(sdev->bar[BDW_PCI_BAR] + PCI_PMCS)
++			& PCI_PMCS_PS_MASK;
++		if (reg == 0)
++			goto finish;
++
++		msleep(20);
 +	}
 +
-+	/* enter/exit reset failed */
-+	dev_err(sdev->dev, "error: failed to %s HDA controller gctl 0x%x\n",
-+		reset ? "reset" : "ready", gctl);
-+	return -EIO;
-+}
++	return -ENODEV;
 +
-+int hda_dsp_ctrl_get_caps(struct snd_sof_dev *sdev)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	u32 cap, offset, feature;
-+	int count = 0;
++finish:
++	/*
++	 * select SSP1 19.2MHz base clock, SSP clock 0,
++	 * turn off Low Power Clock
++	 */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_CSR,
++					 SHIM_CSR_S1IOCS | SHIM_CSR_SBCS1 |
++					 SHIM_CSR_LPCS, 0x0);
 +
-+	offset = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_LLCH);
++	/* stall DSP core, set clk to 192/96Mhz */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,
++					 SHIM_CSR, SHIM_CSR_STALL |
++					 SHIM_CSR_DCS_MASK,
++					 SHIM_CSR_STALL |
++					 SHIM_CSR_DCS(4));
 +
-+	do {
-+		cap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, offset);
++	/* Set 24MHz MCLK, prevent local clock gating, enable SSP0 clock */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_CLKCTL,
++					 SHIM_CLKCTL_MASK |
++					 SHIM_CLKCTL_DCPLCG |
++					 SHIM_CLKCTL_SCOE0,
++					 SHIM_CLKCTL_MASK |
++					 SHIM_CLKCTL_DCPLCG |
++					 SHIM_CLKCTL_SCOE0);
 +
-+		dev_dbg(sdev->dev, "checking for capabilities at offset 0x%x\n",
-+			offset & SOF_HDA_CAP_NEXT_MASK);
++	/* Stall and reset core, set CSR */
++	bdw_reset(sdev);
 +
-+		feature = (cap & SOF_HDA_CAP_ID_MASK) >> SOF_HDA_CAP_ID_OFF;
++	/* Enable core clock gating (VDRTCTL2.DCLCGE = 1), delay 50 us */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_VDRTCTL2,
++					 PCI_VDRTCL2_DCLCGE |
++					 PCI_VDRTCL2_DTCGE,
++					 PCI_VDRTCL2_DCLCGE |
++					 PCI_VDRTCL2_DTCGE);
 +
-+		switch (feature) {
-+		case SOF_HDA_PP_CAP_ID:
-+			dev_dbg(sdev->dev, "found DSP capability at 0x%x\n",
-+				offset);
-+			bus->ppcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_PP_BAR] = bus->ppcap;
-+			break;
-+		case SOF_HDA_SPIB_CAP_ID:
-+			dev_dbg(sdev->dev, "found SPIB capability at 0x%x\n",
-+				offset);
-+			bus->spbcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_SPIB_BAR] = bus->spbcap;
-+			break;
-+		case SOF_HDA_DRSM_CAP_ID:
-+			dev_dbg(sdev->dev, "found DRSM capability at 0x%x\n",
-+				offset);
-+			bus->drsmcap = bus->remap_addr + offset;
-+			sdev->bar[HDA_DSP_DRSM_BAR] = bus->drsmcap;
-+			break;
-+		case SOF_HDA_GTS_CAP_ID:
-+			dev_dbg(sdev->dev, "found GTS capability at 0x%x\n",
-+				offset);
-+			bus->gtscap = bus->remap_addr + offset;
-+			break;
-+		case SOF_HDA_ML_CAP_ID:
-+			dev_dbg(sdev->dev, "found ML capability at 0x%x\n",
-+				offset);
-+			bus->mlcap = bus->remap_addr + offset;
-+			break;
-+		default:
-+			dev_vdbg(sdev->dev, "found capability %d at 0x%x\n",
-+				 feature, offset);
-+			break;
-+		}
++	usleep_range(50, 55);
 +
-+		offset = cap & SOF_HDA_CAP_NEXT_MASK;
-+	} while (count++ <= SOF_HDA_MAX_CAPS && offset);
++	/* switch on audio PLL */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_VDRTCTL2,
++					 PCI_VDRTCL2_APLLSE_MASK, 0);
 +
-+	return 0;
-+}
++	/*
++	 * set default power gating control, enable power gating control for
++	 * all blocks. that is, can't be accessed, please enable each block
++	 * before accessing.
++	 */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_PCI_BAR, PCI_VDRTCTL0,
++					 0xfffffffC, 0x0);
 +
-+void hda_dsp_ctrl_misc_clock_gating(struct snd_sof_dev *sdev, bool enable)
-+{
-+	u32 val = enable ? PCI_CGCTL_MISCBDCGE_MASK : 0;
++	/* disable DMA finish function for SSP0 & SSP1 */
++	snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,  SHIM_CSR2,
++					 SHIM_CSR2_SDFD_SSP1,
++					 SHIM_CSR2_SDFD_SSP1);
 +
-+	snd_sof_pci_update_bits(sdev, PCI_CGCTL, PCI_CGCTL_MISCBDCGE_MASK, val);
-+}
++	/* set on-demond mode on engine 0,1 for all channels */
++	snd_sof_dsp_update_bits(sdev, BDW_DSP_BAR, SHIM_HMDC,
++				SHIM_HMDC_HDDA_E0_ALLCH |
++				SHIM_HMDC_HDDA_E1_ALLCH,
++				SHIM_HMDC_HDDA_E0_ALLCH |
++				SHIM_HMDC_HDDA_E1_ALLCH);
 +
-+/*
-+ * enable/disable audio dsp clock gating and power gating bits.
-+ * This allows the HW to opportunistically power and clock gate
-+ * the audio dsp when it is idle
-+ */
-+int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
-+{
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+#endif
-+	u32 val;
++	/* Enable Interrupt from both sides */
++	snd_sof_dsp_update_bits(sdev, BDW_DSP_BAR, SHIM_IMRX,
++				(SHIM_IMRX_BUSY | SHIM_IMRX_DONE), 0x0);
++	snd_sof_dsp_update_bits(sdev, BDW_DSP_BAR, SHIM_IMRD,
++				(SHIM_IMRD_DONE | SHIM_IMRD_BUSY |
++				SHIM_IMRD_SSP0 | SHIM_IMRD_DMAC), 0x0);
 +
-+	/* enable/disable audio dsp clock gating */
-+	val = enable ? PCI_CGCTL_ADSPDCGE : 0;
-+	snd_sof_pci_update_bits(sdev, PCI_CGCTL, PCI_CGCTL_ADSPDCGE, val);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* enable/disable L1 support */
-+	val = enable ? SOF_HDA_VS_EM2_L1SEN : 0;
-+	snd_hdac_chip_updatel(bus, VS_EM2, SOF_HDA_VS_EM2_L1SEN, val);
-+#endif
-+
-+	/* enable/disable audio dsp power gating */
-+	val = enable ? 0 : PCI_PGCTL_ADSPPGD;
-+	snd_sof_pci_update_bits(sdev, PCI_PGCTL, PCI_PGCTL_ADSPPGD, val);
++	/* clear IPC registers */
++	snd_sof_dsp_write(sdev, BDW_DSP_BAR, SHIM_IPCX, 0x0);
++	snd_sof_dsp_write(sdev, BDW_DSP_BAR, SHIM_IPCD, 0x0);
++	snd_sof_dsp_write(sdev, BDW_DSP_BAR, 0x80, 0x6);
++	snd_sof_dsp_write(sdev, BDW_DSP_BAR, 0xe0, 0x300a);
 +
 +	return 0;
 +}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+/*
-+ * While performing reset, controller may not come back properly and causing
-+ * issues, so recommendation is to set CGCTL.MISCBDCGE to 0 then do reset
-+ * (init chip) and then again set CGCTL.MISCBDCGE to 1
-+ */
-+int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
++static void bdw_get_registers(struct snd_sof_dev *sdev,
++			      struct sof_ipc_dsp_oops_xtensa *xoops,
++			      struct sof_ipc_panic_info *panic_info,
++			      u32 *stack, size_t stack_words)
 +{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int ret;
++	/* first read regsisters */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset, xoops, sizeof(*xoops));
 +
-+	hda_dsp_ctrl_misc_clock_gating(sdev, false);
-+	ret = snd_hdac_bus_init_chip(bus, full_reset);
-+	hda_dsp_ctrl_misc_clock_gating(sdev, true);
++	/* then get panic info */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops),
++			 panic_info, sizeof(*panic_info));
++
++	/* then get the stack */
++	sof_mailbox_read(sdev, sdev->dsp_oops_offset + sizeof(*xoops) +
++			   sizeof(*panic_info), stack,
++			   stack_words * sizeof(u32));
++}
++
++static void bdw_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	struct sof_ipc_dsp_oops_xtensa xoops;
++	struct sof_ipc_panic_info panic_info;
++	u32 stack[BDW_STACK_DUMP_SIZE];
++	u32 status, panic;
++
++	/* now try generic SOF status messages */
++	status = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IPCD);
++	panic = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IPCX);
++	bdw_get_registers(sdev, &xoops, &panic_info, stack,
++			  BDW_STACK_DUMP_SIZE);
++	snd_sof_get_status(sdev, status, panic, &xoops, &panic_info, stack,
++			   BDW_STACK_DUMP_SIZE);
++}
++
++/*
++ * IPC Doorbell IRQ handler and thread.
++ */
++
++static irqreturn_t bdw_irq_handler(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = (struct snd_sof_dev *)context;
++	u32 isr;
++	int ret = IRQ_NONE;
++
++	/* Interrupt arrived, check src */
++	isr = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_ISRX);
++	if (isr & (SHIM_ISRX_DONE | SHIM_ISRX_BUSY))
++		ret = IRQ_WAKE_THREAD;
 +
 +	return ret;
 +}
-+#endif
++
++static irqreturn_t bdw_irq_thread(int irq, void *context)
++{
++	struct snd_sof_dev *sdev = (struct snd_sof_dev *)context;
++	u32 ipcx, ipcd, imrx;
++
++	imrx = snd_sof_dsp_read64(sdev, BDW_DSP_BAR, SHIM_IMRX);
++	ipcx = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IPCX);
++
++	/* reply message from DSP */
++	if (ipcx & SHIM_IPCX_DONE &&
++	    !(imrx & SHIM_IMRX_DONE)) {
++		/* Mask Done interrupt before return */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,
++						 SHIM_IMRX, SHIM_IMRX_DONE,
++						 SHIM_IMRX_DONE);
++
++		/*
++		 * handle immediate reply from DSP core. If the msg is
++		 * found, set done bit in cmd_done which is called at the
++		 * end of message processing function, else set it here
++		 * because the done bit can't be set in cmd_done function
++		 * which is triggered by msg
++		 */
++		if (snd_sof_ipc_reply(sdev, ipcx))
++			bdw_cmd_done(sdev, SOF_IPC_DSP_REPLY);
++	}
++
++	ipcd = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IPCD);
++
++	/* new message from DSP */
++	if (ipcd & SHIM_IPCD_BUSY &&
++	    !(imrx & SHIM_IMRX_BUSY)) {
++		/* Mask Busy interrupt before return */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR,
++						 SHIM_IMRX, SHIM_IMRX_BUSY,
++						 SHIM_IMRX_BUSY);
++
++		/* Handle messages from DSP Core */
++		if ((ipcd & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
++			snd_sof_dsp_panic(sdev, BDW_PANIC_OFFSET(ipcx) +
++					  MBOX_OFFSET);
++		} else {
++			snd_sof_ipc_msgs_rx(sdev);
++		}
++	}
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * IPC Firmware ready.
++ */
++static void bdw_get_windows(struct snd_sof_dev *sdev)
++{
++	struct sof_ipc_window_elem *elem;
++	u32 outbox_offset = 0;
++	u32 stream_offset = 0;
++	u32 inbox_offset = 0;
++	u32 outbox_size = 0;
++	u32 stream_size = 0;
++	u32 inbox_size = 0;
++	int i;
++
++	if (!sdev->info_window) {
++		dev_err(sdev->dev, "error: have no window info\n");
++		return;
++	}
++
++	for (i = 0; i < sdev->info_window->num_windows; i++) {
++		elem = &sdev->info_window->window[i];
++
++		switch (elem->type) {
++		case SOF_IPC_REGION_UPBOX:
++			inbox_offset = elem->offset + MBOX_OFFSET;
++			inbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						inbox_offset,
++						elem->size, "inbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_DOWNBOX:
++			outbox_offset = elem->offset + MBOX_OFFSET;
++			outbox_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						outbox_offset,
++						elem->size, "outbox",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_TRACE:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "etrace",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_DEBUG:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "debug",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_STREAM:
++			stream_offset = elem->offset + MBOX_OFFSET;
++			stream_size = elem->size;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						stream_offset,
++						elem->size, "stream",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_REGS:
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "regs",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		case SOF_IPC_REGION_EXCEPTION:
++			sdev->dsp_oops_offset = elem->offset + MBOX_OFFSET;
++			snd_sof_debugfs_io_item(sdev,
++						sdev->bar[BDW_DSP_BAR] +
++						elem->offset +
++						MBOX_OFFSET,
++						elem->size, "exception",
++						SOF_DEBUGFS_ACCESS_D0_ONLY);
++			break;
++		default:
++			dev_err(sdev->dev, "error: get illegal window info\n");
++			return;
++		}
++	}
++
++	if (outbox_size == 0 || inbox_size == 0) {
++		dev_err(sdev->dev, "error: get illegal mailbox window\n");
++		return;
++	}
++
++	snd_sof_dsp_mailbox_init(sdev, inbox_offset, inbox_size,
++				 outbox_offset, outbox_size);
++	sdev->stream_box.offset = stream_offset;
++	sdev->stream_box.size = stream_size;
++
++	dev_dbg(sdev->dev, " mailbox upstream 0x%x - size 0x%x\n",
++		inbox_offset, inbox_size);
++	dev_dbg(sdev->dev, " mailbox downstream 0x%x - size 0x%x\n",
++		outbox_offset, outbox_size);
++	dev_dbg(sdev->dev, " stream region 0x%x - size 0x%x\n",
++		stream_offset, stream_size);
++}
++
++/* check for ABI compatibility and create memory windows on first boot */
++static int bdw_fw_ready(struct snd_sof_dev *sdev, u32 msg_id)
++{
++	struct sof_ipc_fw_ready *fw_ready = &sdev->fw_ready;
++	u32 offset;
++	int ret;
++
++	/* mailbox must be on 4k boundary */
++	offset = MBOX_OFFSET;
++
++	dev_dbg(sdev->dev, "ipc: DSP is ready 0x%8.8x offset %d\n",
++		msg_id, offset);
++
++	/* no need to re-check version/ABI for subsequent boots */
++	if (!sdev->first_boot)
++		return 0;
++
++	/* copy data from the DSP FW ready offset */
++	sof_block_read(sdev, sdev->mmio_bar, offset, fw_ready,
++		       sizeof(*fw_ready));
++
++	snd_sof_dsp_mailbox_init(sdev, fw_ready->dspbox_offset,
++				 fw_ready->dspbox_size,
++				 fw_ready->hostbox_offset,
++				 fw_ready->hostbox_size);
++
++	/* make sure ABI version is compatible */
++	ret = snd_sof_ipc_valid(sdev);
++	if (ret < 0)
++		return ret;
++
++	/* now check for extended data */
++	snd_sof_fw_parse_ext_data(sdev, sdev->mmio_bar, MBOX_OFFSET +
++				  sizeof(struct sof_ipc_fw_ready));
++
++	bdw_get_windows(sdev);
++
++	return 0;
++}
++
++/*
++ * IPC Mailbox IO
++ */
++
++static int bdw_is_ipc_ready(struct snd_sof_dev *sdev)
++{
++	u32 val;
++
++	val = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IPCX);
++	if ((val & SHIM_IPCX_BUSY) || (val & SHIM_IPCX_DONE))
++		return 0;
++
++	return 1;
++}
++
++static int bdw_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
++{
++	/* send the message */
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++	snd_sof_dsp_write(sdev, BDW_DSP_BAR, SHIM_IPCX, SHIM_IPCX_BUSY);
++
++	return 0;
++}
++
++static int bdw_get_reply(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
++{
++	struct sof_ipc_reply reply;
++	int ret = 0;
++	u32 size;
++
++	/* get reply */
++	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
++	if (reply.error < 0) {
++		size = sizeof(reply);
++		ret = reply.error;
++	} else {
++		/* reply correct size ? */
++		if (reply.hdr.size != msg->reply_size) {
++			dev_err(sdev->dev, "error: reply expected 0x%zx got 0x%x bytes\n",
++				msg->reply_size, reply.hdr.size);
++			size = msg->reply_size;
++			ret = -EINVAL;
++		} else {
++			size = reply.hdr.size;
++		}
++	}
++
++	/* read the message */
++	if (msg->msg_data && size > 0)
++		sof_mailbox_read(sdev, sdev->host_box.offset, msg->reply_data,
++				 size);
++
++	return ret;
++}
++
++static int bdw_cmd_done(struct snd_sof_dev *sdev, int dir)
++{
++	if (dir == SOF_IPC_HOST_REPLY) {
++		/* clear BUSY bit and set DONE bit - accept new messages */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_IPCD,
++						 SHIM_IPCD_BUSY | SHIM_IPCD_DONE,
++						 SHIM_IPCD_DONE);
++
++		/* unmask busy interrupt */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_IMRX,
++						 SHIM_IMRX_BUSY, 0);
++	} else {
++		/* clear DONE bit - tell DSP we have completed */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_IPCX,
++						 SHIM_IPCX_DONE, 0);
++
++		/* unmask Done interrupt */
++		snd_sof_dsp_update_bits_unlocked(sdev, BDW_DSP_BAR, SHIM_IMRX,
++						 SHIM_IMRX_DONE, 0);
++	}
++
++	return 0;
++}
++
++/*
++ * Probe and remove.
++ */
++static int bdw_probe(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_pdata *pdata = sdev->pdata;
++	const struct sof_dev_desc *desc = pdata->desc;
++	struct platform_device *pdev =
++		container_of(sdev->dev, struct platform_device, dev);
++	struct resource *mmio;
++	u32 base, size;
++	int ret = 0;
++
++	/* LPE base */
++	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
++				     desc->resindex_lpe_base);
++	if (mmio) {
++		base = mmio->start;
++		size = resource_size(mmio);
++	} else {
++		dev_err(sdev->dev, "error: failed to get LPE base at idx %d\n",
++			desc->resindex_lpe_base);
++		return -EINVAL;
++	}
++
++	dev_dbg(sdev->dev, "LPE PHY base at 0x%x size 0x%x", base, size);
++	sdev->bar[BDW_DSP_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BDW_DSP_BAR]) {
++		dev_err(sdev->dev,
++			"error: failed to ioremap LPE base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "LPE VADDR %p\n", sdev->bar[BDW_DSP_BAR]);
++
++	/* TODO: add offsets */
++	sdev->mmio_bar = BDW_DSP_BAR;
++	sdev->mailbox_bar = BDW_DSP_BAR;
++
++	/* PCI base */
++	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
++				     desc->resindex_pcicfg_base);
++	if (mmio) {
++		base = mmio->start;
++		size = resource_size(mmio);
++	} else {
++		dev_err(sdev->dev, "error: failed to get PCI base at idx %d\n",
++			desc->resindex_pcicfg_base);
++		return -ENODEV;
++	}
++
++	dev_dbg(sdev->dev, "PCI base at 0x%x size 0x%x", base, size);
++	sdev->bar[BDW_PCI_BAR] = devm_ioremap(sdev->dev, base, size);
++	if (!sdev->bar[BDW_PCI_BAR]) {
++		dev_err(sdev->dev,
++			"error: failed to ioremap PCI base 0x%x size 0x%x\n",
++			base, size);
++		return -ENODEV;
++	}
++	dev_dbg(sdev->dev, "PCI VADDR %p\n", sdev->bar[BDW_PCI_BAR]);
++
++	/* register our IRQ */
++	sdev->ipc_irq = platform_get_irq(pdev, desc->irqindex_host_ipc);
++	if (sdev->ipc_irq < 0) {
++		dev_err(sdev->dev, "error: failed to get IRQ at index %d\n",
++			desc->irqindex_host_ipc);
++		return sdev->ipc_irq;
++	}
++
++	dev_dbg(sdev->dev, "using IRQ %d\n", sdev->ipc_irq);
++	ret = devm_request_threaded_irq(sdev->dev, sdev->ipc_irq,
++					bdw_irq_handler, bdw_irq_thread,
++					IRQF_SHARED, "AudioDSP", sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to register IRQ %d\n",
++			sdev->ipc_irq);
++		return ret;
++	}
++
++	/* enable the DSP SHIM */
++	ret = bdw_set_dsp_D0(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DSP D0\n");
++		return ret;
++	}
++
++	/* DSP DMA can only access low 31 bits of host memory */
++	ret = dma_coerce_mask_and_coherent(sdev->dev, DMA_BIT_MASK(31));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to set DMA mask %d\n", ret);
++		return ret;
++	}
++
++	/* set default mailbox */
++	snd_sof_dsp_mailbox_init(sdev, MBOX_OFFSET, MBOX_SIZE, 0, 0);
++
++	return ret;
++}
++
++#define BDW_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
++	SNDRV_PCM_FMTBIT_S32_LE)
++
++/* Broadwell DAIs */
++static struct snd_soc_dai_driver bdw_dai[] = {
++{
++	.name = "ssp0-port",
++	.playback = SOF_DAI_STREAM("ssp0 Tx", 1, 8,
++				   SNDRV_PCM_RATE_8000_192000, BDW_FORMATS),
++	.capture = SOF_DAI_STREAM("ssp0 Rx", 1, 8,
++				  SNDRV_PCM_RATE_8000_192000, BDW_FORMATS),
++},
++{
++	.name = "ssp1-port",
++	.playback = SOF_DAI_STREAM("ssp1 Tx", 1, 8,
++				   SNDRV_PCM_RATE_8000_192000, BDW_FORMATS),
++	.capture = SOF_DAI_STREAM("ssp1 Rx", 1, 8,
++				  SNDRV_PCM_RATE_8000_192000, BDW_FORMATS),
++},
++};
++
++/* broadwell ops */
++const struct snd_sof_dsp_ops sof_bdw_ops = {
++	/*Device init */
++	.probe          = bdw_probe,
++
++	/* DSP Core Control */
++	.run            = bdw_run,
++	.reset          = bdw_reset,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* mailbox */
++	.mailbox_read   = sof_mailbox_read,
++	.mailbox_write  = sof_mailbox_write,
++
++	/* ipc */
++	.send_msg	= bdw_send_msg,
++	.get_reply	= bdw_get_reply,
++	.fw_ready	= bdw_fw_ready,
++	.is_ipc_ready	= bdw_is_ipc_ready,
++	.cmd_done	= bdw_cmd_done,
++
++	/* debug */
++	.debug_map  = bdw_debugfs,
++	.debug_map_count    = ARRAY_SIZE(bdw_debugfs),
++	.dbg_dump   = bdw_dump,
++
++	/* Module loading */
++	.load_module    = snd_sof_parse_module_memcpy,
++
++	/*Firmware loading */
++	.load_firmware	= snd_sof_load_firmware_memcpy,
++
++	/* DAI drivers */
++	.drv = bdw_dai,
++	.num_drv = ARRAY_SIZE(bdw_dai)
++};
++EXPORT_SYMBOL(sof_bdw_ops);
++
++const struct sof_intel_dsp_desc bdw_chip_info = {
++	.cores_num = 1,
++	.cores_mask = 1,
++};
++EXPORT_SYMBOL(bdw_chip_info);
++
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.17.1
