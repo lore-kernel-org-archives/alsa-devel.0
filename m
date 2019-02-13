@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: right way to enumerate pcm devices
-Date: Wed, 13 Feb 2019 15:38:04 +0100
-Message-ID: <dd9a3463-b21b-6351-b8d6-a56930fba3d8@perex.cz>
-References: <20190212123333.GB6441@freedom> <s5hr2cd3z9b.wl-tiwai@suse.de>
- <20190212203324.GA1399@freedom> <s5hpnrwciie.wl-tiwai@suse.de>
- <20190213141328.GA358@freedom>
+From: Wen Yang <yellowriver2010@hotmail.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
+Date: Wed, 13 Feb 2019 14:41:53 +0000
+Message-ID: <HK0PR02MB3634F3A1A0C8BF4EEC5C3874B2660@HK0PR02MB3634.apcprd02.prod.outlook.com>
+References: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>,
+ <18decbe3-5a7c-1b75-4c64-0b16fdd0efec@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id BA6E9267483
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 15:38:07 +0100 (CET)
-In-Reply-To: <20190213141328.GA358@freedom>
-Content-Language: en-US
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-oln040092253086.outbound.protection.outlook.com [40.92.253.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D7FD26791C
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 15:41:58 +0100 (CET)
+In-Reply-To: <18decbe3-5a7c-1b75-4c64-0b16fdd0efec@st.com>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +23,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: sylvain.bertrand@gmail.com, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Olivier MOYSAN <olivier.moysan@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ TORGUE <alexandre.torgue@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 13. 02. 19 v 15:13 sylvain.bertrand@gmail.com napsal(a):
-> On Wed, Feb 13, 2019 at 07:25:13AM +0100, Takashi Iwai wrote:
->> It's only the matter of alsa-lib card config.  Just due to heuristic
->> reason, the secondary device is assigned as iec958 as default.  There
->> are explicit whitelist setup in alsa-lib/src/conf/cards/USB-Audio.conf
->> for the card that behave differently.  You'd need to adjust
->> accordingly.
-> 
-> Tell me if I did understand you right:
-> 
-> I cannot trust the hint system to select proper pcm devices for, let's say the
-> mic of my USB cam.
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Sent: 11 February 2019 15:09
+To: Wen Yang; Arnaud POULIQUEN; Liam Girdwood; Mark Brown; Jaroslav Kysela; Takashi Iwai; Maxime Coquelin; Alexandre TORGUE
+Cc: alsa-devel@alsa-project.org; linux-stm32@st-md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
 
-As Takashi noted, we can fix this for your device in the alsa-lib's
-configuration file to not show the extra invalid surround devices, but
-it does not mean that the other USB devices are not affected. We are
-always a little bit behind the hardware. The library does not do any
-probing for the available channels when the devices are enumerated.
+>On 2/9/19 11:41 AM, Wen Yang wrote:
+>> The of_find_device_by_node() takes a reference to the underlying device
+>> structure, we should release that reference.
+>>
+>> Fixes: 7dd0d835582f ("ASoC: stm32: sai: simplify sync modes management")
+>> Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+>> ---
+>>   sound/soc/stm/stm32_sai.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+>> index bcb35ca..14c9591 100644
+>> --- a/sound/soc/stm/stm32_sai.c
+>> +++ b/sound/soc/stm/stm32_sai.c
+>> @@ -112,16 +112,21 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+>
+>goto error also in previous test
+>       if (!pdev) {
+>               ...
+>               ret = -ENODEV;
+>                goto error;
+>        }
+>
+>>       if (!sai_provider) {
+>>               dev_err(&sai_client->pdev->dev,
+>>                       "SAI sync provider data not found\n");
+>> -             return -EINVAL;
+>> +             ret = -EINVAL;
+>> +             goto out_put_dev;
+>>       }
+>>
+>>       /* Configure sync client */
+>>       ret = stm32_sai_sync_conf_client(sai_client, synci);
+>>       if (ret < 0)
+>> -             return ret;
+>> +             goto out_put_dev;
+>>
+>>       /* Configure sync provider */
+>> -     return stm32_sai_sync_conf_provider(sai_provider, synco);
+>> +     ret = stm32_sai_sync_conf_provider(sai_provider, synco);
+>> +
+>> +out_put_dev:
+>> +     put_device(&pdev->dev);
+>> +     return ret;
+>
+>Here I propose:
+>error:
+>        of_node_put(np_provider);
+>        return ret;
+>
+>>   }
+>>
+>>   static int stm32_sai_probe(struct platform_device *pdev)
+>>
 
-> I would have to ignore "mostly" the configuration system (the major exception
-> would be the default pcm device) and build myself the pcm devices from the info
-> I can get from the hardware device (hardware mixing, input and/or output,
-> number of channels/etc).
-> 
-> I would have to cherry pick configuration defined pcm devices for specific
-> modes, like surroundX, only if the "basic user" explicitely requests such modes.
-> 
-> The advanced user should override the default pcm device if he/she wants to
-> do/fix tricky sound thingies.
-> 
-> ----
-> 
-> To summarize:
-> 	- show always the pcm default
-> 	- build custom pcm devices based on hardware info, and show them
-> 	- for "special" modes, likes surroundX, show the related configuration
-> 	  defined pcm devices only if the "basic" user want to fool around with
-> 	  them.
+>Thanks for your patch. Please, see my comments above.
 
-This is not optimal. It would be better to settle something in the one
-place. I would start to fix the blacklists in
-/usr/share/alsa/cards/USB-Audio.conf for your device (and post the
-alsa-lib's patch here).
+Thanks for your comments, in this patch we only fix the problem of missing put_device().
+The problem of missing of_node_put() is a bit more complicated:
+For the variable np_provider(np_sync_provider):
+1, it is obtained by of_get_parent(), but it is not released;
+2, error code not obtained when calling sai->pdata->set_sync()
 
-Perhaps the USB driver might forward also more hints/parameters about
-the device characteristics to improve this hint system.
+We will submit another patch to fix the failure of np_sync_provider
+Thank you.
 
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Regards
+Wen
