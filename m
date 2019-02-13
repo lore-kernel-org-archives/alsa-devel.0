@@ -1,7 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 09/14] ASoC: SOF: Add firmware loader support
-Date: Wed, 13 Feb 2019 16:07:29 -0600
-Message-ID: <20190213220734.10471-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 08/14] ASoC: SOF: Add DSP HW abstraction
+	operations
+Date: Wed, 13 Feb 2019 16:07:28 -0600
+Message-ID: <20190213220734.10471-9-pierre-louis.bossart@linux.intel.com>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,22 +24,25 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-The firmware loader exports APIs that can be called by core to load and
-process multiple different file formats.
+Add operation pointers that can be called by core to control a wide
+variety of DSP targets. The DSP HW drivers will fill in these
+operations.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 363 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 363 insertions(+)
- create mode 100644 sound/soc/sof/loader.c
+ sound/soc/sof/ops.c | 204 ++++++++++++++++++++++
+ sound/soc/sof/ops.h | 414 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 618 insertions(+)
+ create mode 100644 sound/soc/sof/ops.c
+ create mode 100644 sound/soc/sof/ops.h
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
 new file mode 100644
-index 000000000000..f996082fa656
+index 000000000000..3dcdeb75fdd1
 --- /dev/null
-+++ b/sound/soc/sof/loader.c
-@@ -0,0 +1,363 @@
++++ b/sound/soc/sof/ops.c
+@@ -0,0 +1,204 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -48,359 +52,620 @@ index 000000000000..f996082fa656
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+// Generic firmware loader.
-+//
 +
-+#include <linux/firmware.h>
-+#include <sound/sof.h>
++#include <linux/pci.h>
 +#include "ops.h"
 +
-+static int get_ext_windows(struct snd_sof_dev *sdev,
-+			   struct sof_ipc_ext_data_hdr *ext_hdr)
++int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
++				     u32 mask, u32 value)
 +{
-+	struct sof_ipc_window *w = (struct sof_ipc_window *)ext_hdr;
-+	size_t size;
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	unsigned int old, new;
++	u32 ret = ~0; /* explicit init to remove uninitialized use warnings */
 +
-+	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
-+		return -EINVAL;
++	pci_read_config_dword(pci, offset, &ret);
++	old = ret;
++	dev_dbg(sdev->dev, "Debug PCIR: %8.8x at  %8.8x\n", old & mask, offset);
 +
-+	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
++	new = (old & (~mask)) | (value & mask);
 +
-+	/* keep a local copy of the data */
-+	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
-+	if (!sdev->info_window)
-+		return -ENOMEM;
++	if (old == new)
++		return false;
 +
-+	return 0;
++	pci_write_config_dword(pci, offset, new);
++	dev_dbg(sdev->dev, "Debug PCIW: %8.8x at  %8.8x\n", value,
++		offset);
++
++	return true;
 +}
++EXPORT_SYMBOL(snd_sof_pci_update_bits_unlocked);
 +
-+/* parse the extended FW boot data structures from FW boot message */
-+int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
++int snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			    u32 mask, u32 value)
 +{
-+	struct sof_ipc_ext_data_hdr *ext_hdr;
-+	void *ext_data;
-+	int ret = 0;
++	unsigned long flags;
++	bool change;
 +
-+	ext_data = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!ext_data)
-+		return -ENOMEM;
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_pci_update_bits_unlocked(sdev, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_pci_update_bits);
 +
-+	/* get first header */
-+	snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+			       sizeof(*ext_hdr));
-+	ext_hdr = (struct sof_ipc_ext_data_hdr *)ext_data;
++int snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
 +
-+	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
-+		/* read in ext structure */
-+		offset += sizeof(*ext_hdr);
-+		snd_sof_dsp_block_read(sdev, bar, offset,
-+				       ext_data + sizeof(*ext_hdr),
-+				       ext_hdr->hdr.size - sizeof(*ext_hdr));
++	ret = snd_sof_dsp_read(sdev, bar, offset);
 +
-+		dev_dbg(sdev->dev, "found ext header type %d size 0x%x\n",
-+			ext_hdr->type, ext_hdr->hdr.size);
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
 +
-+		/* process structure data */
-+		switch (ext_hdr->type) {
-+		case SOF_IPC_EXT_DMA_BUFFER:
++	if (old == new)
++		return false;
++
++	snd_sof_dsp_write(sdev, bar, offset, new);
++
++	return true;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_unlocked);
++
++int snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 mask, u64 value)
++{
++	u64 old, new;
++
++	old = snd_sof_dsp_read64(sdev, bar, offset);
++
++	new = (old & (~mask)) | (value & mask);
++
++	if (old == new)
++		return false;
++
++	snd_sof_dsp_write64(sdev, bar, offset, new);
++
++	return true;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64_unlocked);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					     u32 offset, u32 mask, u32 value)
++{
++	unsigned int old, new;
++	u32 ret;
++
++	ret = snd_sof_dsp_read(sdev, bar, offset);
++
++	old = ret;
++	new = (old & (~mask)) | (value & mask);
++
++	snd_sof_dsp_write(sdev, bar, offset, new);
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced_unlocked);
++
++int snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			    u32 mask, u32 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits_unlocked(sdev, bar, offset, mask,
++						  value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits);
++
++int snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u64 mask, u64 value)
++{
++	unsigned long flags;
++	bool change;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	change = snd_sof_dsp_update_bits64_unlocked(sdev, bar, offset, mask,
++						    value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++	return change;
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits64);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&sdev->hw_lock, flags);
++	snd_sof_dsp_update_bits_forced_unlocked(sdev, bar, offset, mask, value);
++	spin_unlock_irqrestore(&sdev->hw_lock, flags);
++}
++EXPORT_SYMBOL(snd_sof_dsp_update_bits_forced);
++
++int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u32 mask, u32 target, u32 timeout_ms,
++			      u32 interval_us)
++{
++	u32 reg;
++	unsigned long tout_jiff;
++	int k = 0, s = interval_us;
++
++	/*
++	 * Split the loop into 2 sleep stages with varying resolution.
++	 * To do it more accurately, the range of wakeups are:
++	 * In case of interval_us = 500,
++	 * Phase 1(first 5ms): min sleep 0.5ms; max sleep 1ms.
++	 * Phase 2(beyond 5ms): min sleep 5ms; max sleep 10ms.
++	 */
++
++	tout_jiff = jiffies + msecs_to_jiffies(timeout_ms);
++	do {
++		reg = snd_sof_dsp_read(sdev, bar, offset);
++		if ((reg & mask) == target)
 +			break;
-+		case SOF_IPC_EXT_WINDOW:
-+			ret = get_ext_windows(sdev, ext_hdr);
-+			break;
-+		default:
-+			break;
-+		}
 +
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: failed to parse ext data type %d\n",
-+				ext_hdr->type);
-+			break;
-+		}
++		/* Phase 2 after 5ms(500us * 10) */
++		if (++k > 10)
++			s = interval_us * 10;
 +
-+		/* move to next header */
-+		offset += ext_hdr->hdr.size;
-+		snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+				       sizeof(*ext_hdr));
-+		ext_hdr = (struct sof_ipc_ext_data_hdr *)ext_data;
++		usleep_range(s, 2 * s);
++	} while (time_before(jiffies, tout_jiff));
++
++	if ((reg & mask) == target) {
++		dev_dbg(sdev->dev, "FW Poll Status: reg=%#x successful\n", reg);
++
++		return 0;
 +	}
 +
-+	kfree(ext_data);
-+	return ret;
++	dev_dbg(sdev->dev, "FW Poll Status: reg=%#x timedout\n", reg);
++	return -ETIME;
 +}
-+EXPORT_SYMBOL(snd_sof_fw_parse_ext_data);
++EXPORT_SYMBOL(snd_sof_dsp_register_poll);
 +
-+/* generic module parser for mmaped DSPs */
-+int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
-+				struct snd_sof_mod_hdr *module)
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
 +{
-+	struct snd_sof_blk_hdr *block;
-+	int count;
-+	u32 offset;
-+	size_t remaining;
++	dev_err(sdev->dev, "error : DSP panic!\n");
 +
-+	dev_dbg(sdev->dev, "new module size 0x%x blocks 0x%x type 0x%x\n",
-+		module->size, module->num_blocks, module->type);
++	/*
++	 * check if DSP is not ready and did not set the dsp_oops_offset.
++	 * if the dsp_oops_offset is not set, set it from the panic message.
++	 * Also add a check to memory window setting with panic message.
++	 */
++	if (!sdev->dsp_oops_offset)
++		sdev->dsp_oops_offset = offset;
++	else
++		dev_dbg(sdev->dev, "panic: dsp_oops_offset %zu offset %d\n",
++			sdev->dsp_oops_offset, offset);
 +
-+	block = (void *)module + sizeof(*module);
-+
-+	/* module->size doesn't include header size */
-+	remaining = module->size;
-+	for (count = 0; count < module->num_blocks; count++) {
-+		/* minus header size of block */
-+		remaining -= sizeof(*block);
-+		if (remaining < block->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+
-+		if (block->size == 0) {
-+			dev_warn(sdev->dev,
-+				 "warning: block %d size zero\n", count);
-+			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
-+				 block->type, block->offset);
-+			continue;
-+		}
-+
-+		switch (block->type) {
-+		case SOF_FW_BLK_TYPE_RSRVD0:
-+		case SOF_FW_BLK_TYPE_SRAM...SOF_FW_BLK_TYPE_RSRVD14:
-+			continue;	/* not handled atm */
-+		case SOF_FW_BLK_TYPE_IRAM:
-+		case SOF_FW_BLK_TYPE_DRAM:
-+			offset = block->offset;
-+			break;
-+		default:
-+			dev_err(sdev->dev, "error: bad type 0x%x for block 0x%x\n",
-+				block->type, count);
-+			return -EINVAL;
-+		}
-+
-+		dev_dbg(sdev->dev,
-+			"block %d type 0x%x size 0x%x ==>  offset 0x%x\n",
-+			count, block->type, block->size, offset);
-+
-+		/* checking block->size to avoid unaligned access */
-+		if (block->size % sizeof(u32)) {
-+			dev_err(sdev->dev, "error: invalid block size 0x%x\n",
-+				block->size);
-+			return -EINVAL;
-+		}
-+		snd_sof_dsp_block_write(sdev, sdev->mmio_bar, offset,
-+					(void *)block + sizeof(*block),
-+					block->size);
-+
-+		/* minus body size of block */
-+		remaining -= block->size;
-+		/* next block */
-+		block = (void *)block + sizeof(*block) + block->size;
-+	}
-+
-+	return 0;
++	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
++	snd_sof_trace_notify_for_error(sdev);
++	snd_sof_dsp_cmd_done(sdev, SOF_IPC_HOST_REPLY);
 +}
-+EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
++EXPORT_SYMBOL(snd_sof_dsp_panic);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+new file mode 100644
+index 000000000000..c6374f0210e9
+--- /dev/null
++++ b/sound/soc/sof/ops.h
+@@ -0,0 +1,414 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2018 Intel Corporation. All rights reserved.
++ *
++ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++ */
 +
-+static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
++#ifndef __SOUND_SOC_SOF_IO_H
++#define __SOUND_SOC_SOF_IO_H
++
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <sound/pcm.h>
++#include "sof-priv.h"
++
++#define sof_ops(sdev) \
++	((sdev)->pdata->desc->ops)
++
++/* init */
++static inline int snd_sof_probe(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_fw_header *header;
++	if (sof_ops(sdev)->probe)
++		return sof_ops(sdev)->probe(sdev);
 +
-+	/* Read the header information from the data pointer */
-+	header = (struct snd_sof_fw_header *)fw->data;
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
 +
-+	/* verify FW sig */
-+	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
-+		dev_err(sdev->dev, "error: invalid firmware signature\n");
-+		return -EINVAL;
-+	}
-+
-+	/* check size is valid */
-+	if (fw->size != header->file_size + sizeof(*header)) {
-+		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
-+			fw->size, header->file_size + sizeof(*header));
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(sdev->dev, "header size=0x%x modules=0x%x abi=0x%x size=%zu\n",
-+		header->file_size, header->num_modules,
-+		header->abi, sizeof(*header));
++static inline int snd_sof_remove(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->remove)
++		return sof_ops(sdev)->remove(sdev);
 +
 +	return 0;
 +}
 +
-+static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
++/* control */
++static inline int snd_sof_dsp_run(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_fw_header *header;
-+	struct snd_sof_mod_hdr *module;
-+	int (*load_module)(struct snd_sof_dev *sof_dev,
-+			   struct snd_sof_mod_hdr *hdr);
-+	int ret, count;
-+	size_t remaining;
++	if (sof_ops(sdev)->run)
++		return sof_ops(sdev)->run(sdev);
 +
-+	header = (struct snd_sof_fw_header *)fw->data;
-+	load_module = sof_ops(sdev)->load_module;
-+	if (!load_module)
-+		return -EINVAL;
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
 +
-+	/* parse each module */
-+	module = (void *)fw->data + sizeof(*header);
-+	remaining = fw->size - sizeof(*header);
-+	for (count = 0; count < header->num_modules; count++) {
-+		/* minus header size of module */
-+		remaining -= sizeof(*module);
-+		if (remaining < module->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+		/* module */
-+		ret = load_module(sdev, module);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: invalid module %d\n", count);
-+			return ret;
-+		}
-+		/* minus body size of module */
-+		remaining -=  module->size;
-+		module = (void *)module + sizeof(*module) + module->size;
-+	}
++static inline int snd_sof_dsp_stall(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->stall)
++		return sof_ops(sdev)->stall(sdev);
 +
 +	return 0;
 +}
 +
-+int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
++static inline int snd_sof_dsp_reset(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const char *fw_filename;
-+	int ret;
-+
-+	/* set code loading condition to true */
-+	sdev->code_loading = 1;
-+
-+	fw_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+				     "%s/%s",
-+				     plat_data->fw_filename_prefix,
-+				     plat_data->fw_filename);
-+	if (!fw_filename)
-+		return -ENOMEM;
-+
-+	ret = request_firmware(&plat_data->fw, fw_filename, sdev->dev);
-+
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: request firmware %s failed err: %d\n",
-+			fw_filename, ret);
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(snd_sof_load_firmware_raw);
-+
-+int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	int ret;
-+
-+	ret = snd_sof_load_firmware_raw(sdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* make sure the FW header and file is valid */
-+	ret = check_header(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW header\n");
-+		goto error;
-+	}
-+
-+	/* prepare the DSP for FW loading */
-+	ret = snd_sof_dsp_reset(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		goto error;
-+	}
-+
-+	/* parse and load firmware modules to DSP */
-+	ret = load_modules(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW modules\n");
-+		goto error;
-+	}
-+
-+	return 0;
-+
-+error:
-+	release_firmware(plat_data->fw);
-+	return ret;
-+
-+}
-+EXPORT_SYMBOL(snd_sof_load_firmware_memcpy);
-+
-+int snd_sof_load_firmware(struct snd_sof_dev *sdev)
-+{
-+	dev_dbg(sdev->dev, "loading firmware\n");
-+
-+	if (sof_ops(sdev)->load_firmware)
-+		return sof_ops(sdev)->load_firmware(sdev);
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_load_firmware);
-+
-+int snd_sof_run_firmware(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+
-+	init_waitqueue_head(&sdev->boot_wait);
-+	sdev->boot_complete = false;
-+
-+	/* create fw_version debugfs to store boot version info */
-+	if (sdev->first_boot) {
-+		ret = snd_sof_debugfs_buf_item(sdev, &sdev->fw_version,
-+					       sizeof(sdev->fw_version),
-+					       "fw_version");
-+		/* errors are only due to memory allocation, not debugfs */
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
-+			return ret;
-+		}
-+	}
-+
-+	/* perform pre fw run operations */
-+	ret = snd_sof_dsp_pre_fw_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed pre fw run op\n");
-+		return ret;
-+	}
-+
-+	dev_dbg(sdev->dev, "booting DSP firmware\n");
-+
-+	/* boot the firmware on the DSP */
-+	ret = snd_sof_dsp_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		return ret;
-+	}
-+
-+	/* now wait for the DSP to boot */
-+	ret = wait_event_timeout(sdev->boot_wait, sdev->boot_complete,
-+				 msecs_to_jiffies(sdev->boot_timeout));
-+	if (ret == 0) {
-+		dev_err(sdev->dev, "error: firmware boot failure\n");
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
-+			SOF_DBG_TEXT | SOF_DBG_PCI);
-+		return -EIO;
-+	}
-+
-+	dev_info(sdev->dev, "firmware boot complete\n");
-+
-+	/* perform post fw run operations */
-+	ret = snd_sof_dsp_post_fw_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed post fw run op\n");
-+		return ret;
-+	}
++	if (sof_ops(sdev)->reset)
++		return sof_ops(sdev)->reset(sdev);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(snd_sof_run_firmware);
 +
-+void snd_sof_fw_unload(struct snd_sof_dev *sdev)
++/* dsp core power up/power down */
++static inline int snd_sof_dsp_core_power_up(struct snd_sof_dev *sdev,
++					    unsigned int core_mask)
 +{
-+	/* TODO: support module unloading at runtime */
++	if (sof_ops(sdev)->core_power_up)
++		return sof_ops(sdev)->core_power_up(sdev, core_mask);
++
++	return 0;
 +}
-+EXPORT_SYMBOL(snd_sof_fw_unload);
++
++static inline int snd_sof_dsp_core_power_down(struct snd_sof_dev *sdev,
++					      unsigned int core_mask)
++{
++	if (sof_ops(sdev)->core_power_down)
++		return sof_ops(sdev)->core_power_down(sdev, core_mask);
++
++	return 0;
++}
++
++/* pre/post fw load */
++static inline int snd_sof_dsp_pre_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->pre_fw_run)
++		return sof_ops(sdev)->pre_fw_run(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_post_fw_run(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->post_fw_run)
++		return sof_ops(sdev)->post_fw_run(sdev);
++
++	return 0;
++}
++
++/* power management */
++static inline int snd_sof_dsp_resume(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->resume)
++		return sof_ops(sdev)->resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_suspend(struct snd_sof_dev *sdev, int state)
++{
++	if (sof_ops(sdev)->suspend)
++		return sof_ops(sdev)->suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_resume(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->runtime_resume)
++		return sof_ops(sdev)->runtime_resume(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_runtime_suspend(struct snd_sof_dev *sdev,
++					      int state)
++{
++	if (sof_ops(sdev)->runtime_suspend)
++		return sof_ops(sdev)->runtime_suspend(sdev, state);
++
++	return 0;
++}
++
++static inline int snd_sof_dsp_set_clk(struct snd_sof_dev *sdev, u32 freq)
++{
++	if (sof_ops(sdev)->set_clk)
++		return sof_ops(sdev)->set_clk(sdev, freq);
++
++	return 0;
++}
++
++/* debug */
++static inline void snd_sof_dsp_dbg_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	if (sof_ops(sdev)->dbg_dump)
++		return sof_ops(sdev)->dbg_dump(sdev, flags);
++}
++
++/* register IO */
++static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 value)
++{
++	if (sof_ops(sdev)->write) {
++		sof_ops(sdev)->write(sdev, sdev->bar[bar] + offset, value);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 value)
++{
++	if (sof_ops(sdev)->write64) {
++		sof_ops(sdev)->write64(sdev, sdev->bar[bar] + offset, value);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
++				   u32 offset)
++{
++	if (sof_ops(sdev)->read)
++		return sof_ops(sdev)->read(sdev, sdev->bar[bar] + offset);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset)
++{
++	if (sof_ops(sdev)->read64)
++		return sof_ops(sdev)->read64(sdev, sdev->bar[bar] + offset);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++/* block IO */
++static inline void snd_sof_dsp_block_read(struct snd_sof_dev *sdev, u32 bar,
++					  u32 offset, void *dest, size_t bytes)
++{
++	if (sof_ops(sdev)->block_read) {
++		sof_ops(sdev)->block_read(sdev, bar, offset, dest, bytes);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline void snd_sof_dsp_block_write(struct snd_sof_dev *sdev, u32 bar,
++					   u32 offset, void *src, size_t bytes)
++{
++	if (sof_ops(sdev)->block_write) {
++		sof_ops(sdev)->block_write(sdev, bar, offset, src, bytes);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++/* mailbox */
++static inline void snd_sof_dsp_mailbox_read(struct snd_sof_dev *sdev,
++					    u32 offset, void *message,
++					    size_t bytes)
++{
++	if (sof_ops(sdev)->mailbox_read) {
++		sof_ops(sdev)->mailbox_read(sdev, offset, message, bytes);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++static inline void snd_sof_dsp_mailbox_write(struct snd_sof_dev *sdev,
++					     u32 offset, void *message,
++					     size_t bytes)
++{
++	if (sof_ops(sdev)->mailbox_write) {
++		sof_ops(sdev)->mailbox_write(sdev, offset, message, bytes);
++		return;
++	}
++
++	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++}
++
++/* ipc */
++static inline int snd_sof_dsp_send_msg(struct snd_sof_dev *sdev,
++				       struct snd_sof_ipc_msg *msg)
++{
++	if (sof_ops(sdev)->send_msg)
++		return sof_ops(sdev)->send_msg(sdev, msg);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++static inline int snd_sof_dsp_get_reply(struct snd_sof_dev *sdev,
++					struct snd_sof_ipc_msg *msg)
++{
++	if (sof_ops(sdev)->get_reply)
++		return sof_ops(sdev)->get_reply(sdev, msg);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++static inline int snd_sof_dsp_is_ipc_ready(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->is_ipc_ready)
++		return sof_ops(sdev)->is_ipc_ready(sdev);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++static inline int snd_sof_dsp_cmd_done(struct snd_sof_dev *sdev,
++				       int dir)
++{
++	if (sof_ops(sdev)->cmd_done)
++		return sof_ops(sdev)->cmd_done(sdev, dir);
++
++	dev_err(sdev->dev, "error: %s not defined\n", __func__);
++	return -ENOTSUPP;
++}
++
++/* host DMA trace */
++static inline int snd_sof_dma_trace_init(struct snd_sof_dev *sdev,
++					 u32 *stream_tag)
++{
++	if (sof_ops(sdev)->trace_init)
++		return sof_ops(sdev)->trace_init(sdev, stream_tag);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_release(struct snd_sof_dev *sdev)
++{
++	if (sof_ops(sdev)->trace_release)
++		return sof_ops(sdev)->trace_release(sdev);
++
++	return 0;
++}
++
++static inline int snd_sof_dma_trace_trigger(struct snd_sof_dev *sdev, int cmd)
++{
++	if (sof_ops(sdev)->trace_trigger)
++		return sof_ops(sdev)->trace_trigger(sdev, cmd);
++
++	return 0;
++}
++
++/* host PCM ops */
++static inline int
++snd_sof_pcm_platform_open(struct snd_sof_dev *sdev,
++			  struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_open)
++		return sof_ops(sdev)->pcm_open(sdev, substream);
++
++	return 0;
++}
++
++/* disconnect pcm substream to a host stream */
++static inline int
++snd_sof_pcm_platform_close(struct snd_sof_dev *sdev,
++			   struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_close)
++		return sof_ops(sdev)->pcm_close(sdev, substream);
++
++	return 0;
++}
++
++/* host stream hw params */
++static inline int
++snd_sof_pcm_platform_hw_params(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params,
++			       struct sof_ipc_stream_params *ipc_params)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_hw_params)
++		return sof_ops(sdev)->pcm_hw_params(sdev, substream,
++						    params, ipc_params);
++
++	return 0;
++}
++
++/* host stream trigger */
++static inline int
++snd_sof_pcm_platform_trigger(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream, int cmd)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_trigger)
++		return sof_ops(sdev)->pcm_trigger(sdev, substream, cmd);
++
++	return 0;
++}
++
++/* host stream pointer */
++static inline snd_pcm_uframes_t
++snd_sof_pcm_platform_pointer(struct snd_sof_dev *sdev,
++			     struct snd_pcm_substream *substream)
++{
++	if (sof_ops(sdev) && sof_ops(sdev)->pcm_pointer)
++		return sof_ops(sdev)->pcm_pointer(sdev, substream);
++
++	return 0;
++}
++
++static inline const struct snd_sof_dsp_ops
++*sof_get_ops(const struct sof_dev_desc *d,
++	     const struct sof_ops_table mach_ops[], int asize)
++{
++	int i;
++
++	for (i = 0; i < asize; i++) {
++		if (d == mach_ops[i].desc)
++			return mach_ops[i].ops;
++	}
++
++	/* not found */
++	return NULL;
++}
++
++int snd_sof_dsp_update_bits_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				     u32 offset, u32 mask, u32 value);
++
++int snd_sof_dsp_update_bits64_unlocked(struct snd_sof_dev *sdev, u32 bar,
++				       u32 offset, u64 mask, u64 value);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced_unlocked(struct snd_sof_dev *sdev, u32 bar,
++					     u32 offset, u32 mask, u32 value);
++
++int snd_sof_dsp_update_bits(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			    u32 mask, u32 value);
++
++int snd_sof_dsp_update_bits64(struct snd_sof_dev *sdev, u32 bar,
++			      u32 offset, u64 mask, u64 value);
++
++/* This is for registers bits with attribute RWC */
++void snd_sof_dsp_update_bits_forced(struct snd_sof_dev *sdev, u32 bar,
++				    u32 offset, u32 mask, u32 value);
++
++int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
++				     u32 mask, u32 value);
++
++int snd_sof_pci_update_bits(struct snd_sof_dev *sdev, u32 offset,
++			    u32 mask, u32 value);
++
++int snd_sof_dsp_register_poll(struct snd_sof_dev *sdev, u32 bar, u32 offset,
++			      u32 mask, u32 target, u32 timeout_ms,
++			      u32 interval_us);
++
++void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset);
++#endif
 -- 
 2.17.1
