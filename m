@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/21] ASoC: samsung: i2s: Drop spinlock
- pointer from i2s_dai data structure
-Date: Wed, 13 Feb 2019 11:50:46 +0000
-Message-ID: <20190213115046.GB7540@sirena.org.uk>
-References: <20190212180342.32040-1-s.nawrocki@samsung.com>
- <CGME20190212180506epcas2p43d7efeaec4a4ff63d13e5f79b281707a@epcas2p4.samsung.com>
- <20190212180342.32040-9-s.nawrocki@samsung.com>
+Subject: Applied "ASoC: mediatek: mt8183: make some functions
+	static" to the asoc tree
+Date: Wed, 13 Feb 2019 11:53:31 +0000 (GMT)
+Message-ID: <20190213115331.C15821128158@debutante.sirena.org.uk>
+References: <20190213062944.146366-1-weiyongjun1@huawei.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1717848281428898805=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 65B0E267497
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 12:50:49 +0100 (CET)
-In-Reply-To: <20190212180342.32040-9-s.nawrocki@samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 688F1267497
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 12:53:35 +0100 (CET)
+In-Reply-To: <20190213062944.146366-1-weiyongjun1@huawei.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org, m.szyprowski@samsung.com
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Shunli Wang <shunli.wang@mediatek.com>, Brugger <matthias.bgg@gmail.com>, Matthias@sirena.org.uk, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1717848281428898805==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
-Content-Disposition: inline
+   ASoC: mediatek: mt8183: make some functions static
 
+has been applied to the asoc tree at
 
---ZfOjI3PrQbgiZnxM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 12, 2019 at 07:03:29PM +0100, Sylwester Nawrocki wrote:
-> As we now have the 'priv' pointer in most of the places we can use
-> priv->lock directly, dropping extra indirection in the SFR region
-> spinlock access.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't build for me:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-  CC      sound/soc/samsung/i2s.o
-In file included from ./include/linux/spinlock.h:309,
-                 from ./include/linux/mmzone.h:8,
-                 from ./include/linux/gfp.h:6,
-                 from ./include/linux/slab.h:15,
-                 from sound/soc/samsung/i2s.c:15:
-sound/soc/samsung/i2s.c: In function =E2=80=98samsung_i2s_dai_remove=E2=80=
-=99:
-sound/soc/samsung/i2s.c:1109:23: error: =E2=80=98priv=E2=80=99 undeclared (=
-first use in this function); did you mean =E2=80=98pid=E2=80=99?
-    spin_lock_irqsave(&priv->lock, flags);
-                       ^~~~
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---ZfOjI3PrQbgiZnxM
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxkBJYACgkQJNaLcl1U
-h9BCRgf8C6g91IeZ5Zcqep/EFsANLZTg7cBQGfvyo5yr+WE3Nua7JshkBLE2yT/n
-YKyJRAOBg25eFepo6gqzkA0E7z1WwSsT6x4KcinMlOoflE5oyX7EnAv39mxjQwiP
-nwrUqxGUyOsh+aNK8b6r2XOpgb1NUhFIoVaLiK3ZRnpQdG16UEpRn6IvT3O+y/p4
-7fPABzRIsG27hs7jaHe3/MyfOONsxeIi/COH1QeV9FGJI9hgG9PuwURR2jXJgC9q
-ycR9vBOkoMWDYc6jY+slVqKgoUvtiiB823pLpEx787T/Lt6DtIJ71RUeWMz24iZS
-9K4/DtsC0Wt+7ADoYMisKkkNNX6d2A==
-=YtDk
------END PGP SIGNATURE-----
+>From 03bf3aeb03a8562a7ad6ed629e49953f132217c1 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Wed, 13 Feb 2019 06:29:44 +0000
+Subject: [PATCH] ASoC: mediatek: mt8183: make some functions static
 
---ZfOjI3PrQbgiZnxM--
+Fixes the following sparse warnings:
 
---===============1717848281428898805==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+sound/soc/mediatek/mt8183/mt8183-dai-i2s.c:966:5: warning:
+ symbol 'mt8183_dai_i2s_get_share' was not declared. Should it be static?
+sound/soc/mediatek/mt8183/mt8183-dai-i2s.c:986:5: warning:
+ symbol 'mt8183_dai_i2s_set_priv' was not declared. Should it be static?
 
+Fixes: a94aec035a12 ("ASoC: mediatek: mt8183: add platform driver")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mt8183/mt8183-dai-i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---===============1717848281428898805==--
+diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c b/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
+index c25024f72e72..777e93d70bea 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
++++ b/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
+@@ -963,7 +963,7 @@ static const struct mtk_afe_i2s_priv mt8183_i2s_priv[DAI_I2S_NUM] = {
+ 	},
+ };
+ 
+-int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
++static int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
+ {
+ 	struct mt8183_afe_private *afe_priv = afe->platform_priv;
+ 	const struct device_node *of_node = afe->dev->of_node;
+@@ -983,7 +983,7 @@ int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
+ 	return 0;
+ }
+ 
+-int mt8183_dai_i2s_set_priv(struct mtk_base_afe *afe)
++static int mt8183_dai_i2s_set_priv(struct mtk_base_afe *afe)
+ {
+ 	struct mt8183_afe_private *afe_priv = afe->platform_priv;
+ 	struct mtk_afe_i2s_priv *i2s_priv;
+-- 
+2.20.1
