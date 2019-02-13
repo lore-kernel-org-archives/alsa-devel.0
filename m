@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Move clk supplier data to
-	common driver data structure" to the asoc tree
-Date: Wed, 13 Feb 2019 11:53:44 +0000 (GMT)
-Message-ID: <20190213115344.6FD7B1128158@debutante.sirena.org.uk>
+From: sylvain.bertrand@gmail.com
+Subject: Re: right way to enumerate pcm devices
+Date: Wed, 13 Feb 2019 14:13:28 +0000
+Message-ID: <20190213141328.GA358@freedom>
+References: <20190212123333.GB6441@freedom> <s5hr2cd3z9b.wl-tiwai@suse.de>
+ <20190212203324.GA1399@freedom> <s5hpnrwciie.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 48737267950
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 12:53:45 +0100 (CET)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com
+ [209.85.221.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28003267497
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 15:14:21 +0100 (CET)
+Received: by mail-wr1-f50.google.com with SMTP id f14so2696716wrg.1
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 06:14:21 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <s5hpnrwciie.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,252 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Feb 13, 2019 at 07:25:13AM +0100, Takashi Iwai wrote:
+> It's only the matter of alsa-lib card config.  Just due to heuristic
+> reason, the secondary device is assigned as iec958 as default.  There
+> are explicit whitelist setup in alsa-lib/src/conf/cards/USB-Audio.conf
+> for the card that behave differently.  You'd need to adjust
+> accordingly.
 
-   ASoC: samsung: i2s: Move clk supplier data to common driver data structure
+Tell me if I did understand you right:
 
-has been applied to the asoc tree at
+I cannot trust the hint system to select proper pcm devices for, let's say the
+mic of my USB cam.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I would have to ignore "mostly" the configuration system (the major exception
+would be the default pcm device) and build myself the pcm devices from the info
+I can get from the hardware device (hardware mixing, input and/or output,
+number of channels/etc).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I would have to cherry pick configuration defined pcm devices for specific
+modes, like surroundX, only if the "basic user" explicitely requests such modes.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The advanced user should override the default pcm device if he/she wants to
+do/fix tricky sound thingies.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+To summarize:
+	- show always the pcm default
+	- build custom pcm devices based on hardware info, and show them
+	- for "special" modes, likes surroundX, show the related configuration
+	  defined pcm devices only if the "basic" user want to fool around with
+	  them.
 
-Thanks,
-Mark
-
->From 89d2e831487682b567525275f89d679793dd53da Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Tue, 12 Feb 2019 19:03:23 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Move clk supplier data to common driver
- data structure
-
-Having the clocks provider data in struct samsung_i2s_priv, i.e. per the I2S
-controller instance, rather than per CPU DAI better models the hardware and
-simplifies the code a little. The clock provider is common for both DAIs.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/i2s.c | 68 ++++++++++++++++++++---------------------
- 1 file changed, 33 insertions(+), 35 deletions(-)
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 273620914471..fffc76ab60da 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -99,9 +99,7 @@ struct i2s_dai {
- 
- 	spinlock_t *lock;
- 
--	/* Below fields are only valid if this is the primary FIFO */
--	struct clk *clk_table[3];
--	struct clk_onecell_data clk_data;
-+	struct samsung_i2s_priv *priv;
- };
- 
- /* Lock for cross i/f checks */
-@@ -118,6 +116,10 @@ struct samsung_i2s_priv {
- 	struct i2s_dai *dai;
- 	struct snd_soc_dai_driver *dai_drv;
- 	int num_dais;
-+
-+	/* The clock provider's data */
-+	struct clk *clk_table[3];
-+	struct clk_onecell_data clk_data;
- };
- 
- struct i2s_dai *samsung_i2s_get_pri_dai(struct device *dev)
-@@ -625,11 +627,10 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
- 	return ret;
- }
- 
--static int i2s_set_fmt(struct snd_soc_dai *dai,
--	unsigned int fmt)
-+static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
-+	struct samsung_i2s_priv *priv = snd_soc_dai_get_drvdata(dai);
- 	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = get_other_dai(i2s);
- 	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
- 	u32 mod, tmp = 0;
- 	unsigned long flags;
-@@ -687,8 +688,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
- 		 * clock configuration assigned in DT is not overwritten.
- 		 */
--		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL &&
--		    other->clk_data.clks == NULL)
-+		if (i2s->rclk_srcrate == 0 && priv->clk_data.clks == NULL)
- 			i2s_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
- 							0, SND_SOC_CLOCK_IN);
- 		break;
-@@ -725,8 +725,8 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
-+	struct samsung_i2s_priv *priv = snd_soc_dai_get_drvdata(dai);
- 	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = get_other_dai(i2s);
- 	u32 mod, mask = 0, val = 0;
- 	struct clk *rclksrc;
- 	unsigned long flags;
-@@ -811,10 +811,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 
- 	i2s->frmclk = params_rate(params);
- 
--	rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
--	if (!rclksrc || IS_ERR(rclksrc))
--		rclksrc = other->clk_table[CLK_I2S_RCLK_SRC];
--
-+	rclksrc = priv->clk_table[CLK_I2S_RCLK_SRC];
- 	if (rclksrc && !IS_ERR(rclksrc))
- 		i2s->rclk_srcrate = clk_get_rate(rclksrc);
- 
-@@ -1221,31 +1218,30 @@ static int i2s_runtime_resume(struct device *dev)
- }
- #endif /* CONFIG_PM */
- 
--static void i2s_unregister_clocks(struct i2s_dai *i2s)
-+static void i2s_unregister_clocks(struct samsung_i2s_priv *priv)
- {
- 	int i;
- 
--	for (i = 0; i < i2s->clk_data.clk_num; i++) {
--		if (!IS_ERR(i2s->clk_table[i]))
--			clk_unregister(i2s->clk_table[i]);
-+	for (i = 0; i < priv->clk_data.clk_num; i++) {
-+		if (!IS_ERR(priv->clk_table[i]))
-+			clk_unregister(priv->clk_table[i]);
- 	}
- }
- 
--static void i2s_unregister_clock_provider(struct platform_device *pdev)
-+static void i2s_unregister_clock_provider(struct samsung_i2s_priv *priv)
- {
--	struct i2s_dai *i2s = samsung_i2s_get_pri_dai(&pdev->dev);
--
--	of_clk_del_provider(pdev->dev.of_node);
--	i2s_unregister_clocks(i2s);
-+	of_clk_del_provider(priv->pdev->dev.of_node);
-+	i2s_unregister_clocks(priv);
- }
- 
--static int i2s_register_clock_provider(struct platform_device *pdev)
-+
-+static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
- {
- 
- 	const char * const i2s_clk_desc[] = { "cdclk", "rclk_src", "prescaler" };
- 	const char *clk_name[2] = { "i2s_opclk0", "i2s_opclk1" };
- 	const char *p_names[2] = { NULL };
--	struct device *dev = &pdev->dev;
-+	struct device *dev = &priv->pdev->dev;
- 	struct i2s_dai *i2s = samsung_i2s_get_pri_dai(dev);
- 	const struct samsung_i2s_variant_regs *reg_info = i2s->variant_regs;
- 	const char *i2s_clk_name[ARRAY_SIZE(i2s_clk_desc)];
-@@ -1277,37 +1273,37 @@ static int i2s_register_clock_provider(struct platform_device *pdev)
- 		u32 val = readl(i2s->addr + I2SPSR);
- 		writel(val | PSR_PSREN, i2s->addr + I2SPSR);
- 
--		i2s->clk_table[CLK_I2S_RCLK_SRC] = clk_register_mux(dev,
-+		priv->clk_table[CLK_I2S_RCLK_SRC] = clk_register_mux(dev,
- 				i2s_clk_name[CLK_I2S_RCLK_SRC], p_names,
- 				ARRAY_SIZE(p_names),
- 				CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
- 				i2s->addr + I2SMOD, reg_info->rclksrc_off,
- 				1, 0, i2s->lock);
- 
--		i2s->clk_table[CLK_I2S_RCLK_PSR] = clk_register_divider(dev,
-+		priv->clk_table[CLK_I2S_RCLK_PSR] = clk_register_divider(dev,
- 				i2s_clk_name[CLK_I2S_RCLK_PSR],
- 				i2s_clk_name[CLK_I2S_RCLK_SRC],
- 				CLK_SET_RATE_PARENT,
- 				i2s->addr + I2SPSR, 8, 6, 0, i2s->lock);
- 
- 		p_names[0] = i2s_clk_name[CLK_I2S_RCLK_PSR];
--		i2s->clk_data.clk_num = 2;
-+		priv->clk_data.clk_num = 2;
- 	}
- 
--	i2s->clk_table[CLK_I2S_CDCLK] = clk_register_gate(dev,
-+	priv->clk_table[CLK_I2S_CDCLK] = clk_register_gate(dev,
- 				i2s_clk_name[CLK_I2S_CDCLK], p_names[0],
- 				CLK_SET_RATE_PARENT,
- 				i2s->addr + I2SMOD, reg_info->cdclkcon_off,
- 				CLK_GATE_SET_TO_DISABLE, i2s->lock);
- 
--	i2s->clk_data.clk_num += 1;
--	i2s->clk_data.clks = i2s->clk_table;
-+	priv->clk_data.clk_num += 1;
-+	priv->clk_data.clks = priv->clk_table;
- 
- 	ret = of_clk_add_provider(dev->of_node, of_clk_src_onecell_get,
--				  &i2s->clk_data);
-+				  &priv->clk_data);
- 	if (ret < 0) {
- 		dev_err(dev, "failed to add clock provider: %d\n", ret);
--		i2s_unregister_clocks(i2s);
-+		i2s_unregister_clocks(priv);
- 	}
- 
- 	return ret;
-@@ -1426,6 +1422,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	pri_dai->dma_capture.addr_width = 4;
- 	pri_dai->quirks = quirks;
- 	pri_dai->variant_regs = i2s_dai_data->i2s_variant_regs;
-+	pri_dai->priv = priv;
- 
- 	if (quirks & QUIRK_PRI_6CHAN)
- 		pri_dai->drv->playback.channels_max = 6;
-@@ -1454,6 +1451,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		sec_dai->quirks = quirks;
- 		sec_dai->idma_playback.addr = idma_addr;
- 		sec_dai->pri_dai = pri_dai;
-+		sec_dai->priv = priv;
- 		pri_dai->sec_dai = sec_dai;
- 
- 		ret = i2s_create_secondary_device(priv);
-@@ -1485,11 +1483,11 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = i2s_register_clock_provider(pdev);
-+	ret = i2s_register_clock_provider(priv);
- 	if (ret < 0)
- 		goto err_disable_pm;
- 
--	pri_dai->op_clk = clk_get_parent(pri_dai->clk_table[CLK_I2S_RCLK_SRC]);
-+	pri_dai->op_clk = clk_get_parent(priv->clk_table[CLK_I2S_RCLK_SRC]);
- 
- 	return 0;
- 
-@@ -1513,7 +1511,7 @@ static int samsung_i2s_remove(struct platform_device *pdev)
- 	pm_runtime_get_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
--	i2s_unregister_clock_provider(pdev);
-+	i2s_unregister_clock_provider(priv);
- 	clk_disable_unprepare(pri_dai->clk);
- 	pm_runtime_put_noidle(&pdev->dev);
- 	i2s_delete_secondary_device(priv);
 -- 
-2.20.1
+Sylvain
