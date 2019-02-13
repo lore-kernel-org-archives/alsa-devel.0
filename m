@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: mt8183: make some functions
-	static" to the asoc tree
-Date: Wed, 13 Feb 2019 11:53:31 +0000 (GMT)
-Message-ID: <20190213115331.C15821128158@debutante.sirena.org.uk>
-References: <20190213062944.146366-1-weiyongjun1@huawei.com>
+Subject: Applied "ASoC: cros_ec_codec: Make symbol
+	'cros_ec_dai' static" to the asoc tree
+Date: Wed, 13 Feb 2019 11:53:29 +0000 (GMT)
+Message-ID: <20190213115329.9F9DE1128158@debutante.sirena.org.uk>
+References: <20190213062956.146536-1-weiyongjun1@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 688F1267497
- for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 12:53:35 +0100 (CET)
-In-Reply-To: <20190213062944.146366-1-weiyongjun1@huawei.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A3C4B2678A2
+ for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2019 12:53:36 +0100 (CET)
+In-Reply-To: <20190213062956.146536-1-weiyongjun1@huawei.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Shunli Wang <shunli.wang@mediatek.com>, Brugger <matthias.bgg@gmail.com>, Matthias@sirena.org.uk, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Girdwood <lgirdwood@gmail.com>, Liam@sirena.org.uk, Guenter Roeck <groeck@chromium.org>, Jaroslav@sirena.org.uk, Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: mt8183: make some functions static
+   ASoC: cros_ec_codec: Make symbol 'cros_ec_dai' static
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 03bf3aeb03a8562a7ad6ed629e49953f132217c1 Mon Sep 17 00:00:00 2001
+>From a4cbb465bcc98f1c5740c887d4be3a68f1a47279 Mon Sep 17 00:00:00 2001
 From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Wed, 13 Feb 2019 06:29:44 +0000
-Subject: [PATCH] ASoC: mediatek: mt8183: make some functions static
+Date: Wed, 13 Feb 2019 06:29:56 +0000
+Subject: [PATCH] ASoC: cros_ec_codec: Make symbol 'cros_ec_dai' static
 
-Fixes the following sparse warnings:
+Fixes the following sparse warning:
 
-sound/soc/mediatek/mt8183/mt8183-dai-i2s.c:966:5: warning:
- symbol 'mt8183_dai_i2s_get_share' was not declared. Should it be static?
-sound/soc/mediatek/mt8183/mt8183-dai-i2s.c:986:5: warning:
- symbol 'mt8183_dai_i2s_set_priv' was not declared. Should it be static?
+sound/soc/codecs/cros_ec_codec.c:209:27: warning:
+ symbol 'cros_ec_dai' was not declared. Should it be static?
 
-Fixes: a94aec035a12 ("ASoC: mediatek: mt8183: add platform driver")
+Fixes: b291f42a3718 ("ASoC: cros_ec_codec: Add codec driver for Cros EC")
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-dai-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cros_ec_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c b/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
-index c25024f72e72..777e93d70bea 100644
---- a/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-dai-i2s.c
-@@ -963,7 +963,7 @@ static const struct mtk_afe_i2s_priv mt8183_i2s_priv[DAI_I2S_NUM] = {
- 	},
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index b14100b6a939..99a3af8a15ff 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -206,7 +206,7 @@ static const struct snd_soc_dai_ops cros_ec_i2s_dai_ops = {
+ 	.set_fmt = cros_ec_i2s_set_dai_fmt,
  };
  
--int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
-+static int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
- {
- 	struct mt8183_afe_private *afe_priv = afe->platform_priv;
- 	const struct device_node *of_node = afe->dev->of_node;
-@@ -983,7 +983,7 @@ int mt8183_dai_i2s_get_share(struct mtk_base_afe *afe)
- 	return 0;
- }
- 
--int mt8183_dai_i2s_set_priv(struct mtk_base_afe *afe)
-+static int mt8183_dai_i2s_set_priv(struct mtk_base_afe *afe)
- {
- 	struct mt8183_afe_private *afe_priv = afe->platform_priv;
- 	struct mtk_afe_i2s_priv *i2s_priv;
+-struct snd_soc_dai_driver cros_ec_dai[] = {
++static struct snd_soc_dai_driver cros_ec_dai[] = {
+ 	{
+ 		.name = "cros_ec_codec I2S",
+ 		.id = 0,
 -- 
 2.20.1
