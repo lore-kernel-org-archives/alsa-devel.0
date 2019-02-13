@@ -1,7 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 11/14] ASoC: SOF: Add PM support
-Date: Wed, 13 Feb 2019 16:07:31 -0600
-Message-ID: <20190213220734.10471-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 12/14] ASoC: SOF: Add Nocodec machine driver
+	support
+Date: Wed, 13 Feb 2019 16:07:32 -0600
+Message-ID: <20190213220734.10471-13-pierre-louis.bossart@linux.intel.com>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,39 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add support for saving and restoring DSP context in D3 to host DDR.
+Add a simple "fallback" machine driver that can be used to enable SOF
+on boards with no codec device. This machine driver can also be forced
+for debug/development.
 
-The suspend callback includes: suspend all pcm's stream that are running,
-send CTX_SAVE ipc, drop all ipc's, release trace dma and then
-power off the DSP.
-
-And the resume callback performs the following steps: load FW, run FW,
-re-initialize trace, restore pipeline, restore the kcontrol values
-and finally send the ctx restore ipc to the dsp.
-
-The streams that are suspended are resumed by the ALSA resume trigger.
-If the streams are paused during system suspend, they are marked
-explicitly so they can be restored during PAUSE_RELEASE.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pm.c | 381 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 381 insertions(+)
- create mode 100644 sound/soc/sof/pm.c
+ include/sound/sof.h     |   6 +++
+ sound/soc/sof/nocodec.c | 109 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 115 insertions(+)
+ create mode 100644 sound/soc/sof/nocodec.c
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 54f65ec33a6c..4640566b54fe 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -12,6 +12,7 @@
+ #define __INCLUDE_SOUND_SOF_H
+ 
+ #include <linux/pci.h>
++#include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+ 
+ struct snd_sof_dsp_ops;
+@@ -91,4 +92,9 @@ struct sof_dev_desc {
+ 	const struct sof_arch_ops *arch_ops;
+ };
+ 
++int sof_nocodec_setup(struct device *dev,
++		      struct snd_sof_pdata *sof_pdata,
++		      struct snd_soc_acpi_mach *mach,
++		      const struct sof_dev_desc *desc,
++		      const struct snd_sof_dsp_ops *ops);
+ #endif
+diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
 new file mode 100644
-index 000000000000..f306095bfb5d
+index 000000000000..4a66abe065c9
 --- /dev/null
-+++ b/sound/soc/sof/pm.c
-@@ -0,0 +1,381 @@
++++ b/sound/soc/sof/nocodec.c
+@@ -0,0 +1,109 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -61,376 +75,104 @@ index 000000000000..f306095bfb5d
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
-+#include "ops.h"
++#include <linux/module.h>
++#include <sound/sof.h>
 +#include "sof-priv.h"
 +
-+static int sof_restore_kcontrols(struct snd_sof_dev *sdev)
++static struct snd_soc_card sof_nocodec_card = {
++	.name = "nocodec", /* the sof- prefix is added by the core */
++};
++
++static int sof_nocodec_bes_setup(struct device *dev,
++				 const struct snd_sof_dsp_ops *ops,
++				 struct snd_soc_dai_link *links,
++				 int link_num, struct snd_soc_card *card)
 +{
-+	struct snd_sof_control *scontrol = NULL;
-+	int ipc_cmd, ctrl_type;
-+	int ret = 0;
++	int i;
 +
-+	/* restore kcontrol values */
-+	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
-+		/* reset readback offset for scontrol after resuming */
-+		scontrol->readback_offset = 0;
++	if (!ops || !links || !card)
++		return -EINVAL;
 +
-+		/* notify DSP of kcontrol values */
-+		switch (scontrol->cmd) {
-+		case SOF_CTRL_CMD_VOLUME:
-+			ipc_cmd = SOF_IPC_COMP_SET_VALUE;
-+			ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
-+			ret = snd_sof_ipc_set_comp_data(sdev->ipc, scontrol,
-+							ipc_cmd, ctrl_type,
-+							scontrol->cmd);
-+			break;
-+		case SOF_CTRL_CMD_BINARY:
-+			ipc_cmd = SOF_IPC_COMP_SET_DATA;
-+			ctrl_type = SOF_CTRL_TYPE_DATA_SET;
-+			ret = snd_sof_ipc_set_comp_data(sdev->ipc, scontrol,
-+							ipc_cmd, ctrl_type,
-+							scontrol->cmd);
-+			break;
++	/* set up BE dai_links */
++	for (i = 0; i < link_num; i++) {
++		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
++					       "NoCodec-%d", i);
++		if (!links[i].name)
++			return -ENOMEM;
 +
-+		default:
-+			break;
-+		}
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed kcontrol value set for widget: %d\n",
-+				scontrol->comp_id);
-+
-+			return ret;
-+		}
++		links[i].id = i;
++		links[i].no_pcm = 1;
++		links[i].cpu_dai_name = ops->drv[i].name;
++		links[i].platform_name = dev_name(dev);
++		links[i].codec_dai_name = "snd-soc-dummy-dai";
++		links[i].codec_name = "snd-soc-dummy";
++		links[i].dpcm_playback = 1;
++		links[i].dpcm_capture = 1;
 +	}
++
++	card->dai_link = links;
++	card->num_links = link_num;
 +
 +	return 0;
 +}
 +
-+static int sof_restore_pipelines(struct snd_sof_dev *sdev)
++int sof_nocodec_setup(struct device *dev,
++		      struct snd_sof_pdata *sof_pdata,
++		      struct snd_soc_acpi_mach *mach,
++		      const struct sof_dev_desc *desc,
++		      const struct snd_sof_dsp_ops *ops)
 +{
-+	struct snd_sof_widget *swidget = NULL;
-+	struct snd_sof_route *sroute = NULL;
-+	struct sof_ipc_pipe_new *pipeline;
-+	struct snd_sof_dai *dai;
-+	struct sof_ipc_comp_dai *comp_dai;
-+	struct sof_ipc_cmd_hdr *hdr;
++	struct snd_soc_dai_link *links;
 +	int ret = 0;
 +
-+	/* restore pipeline components */
-+	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
-+		struct sof_ipc_comp_reply r;
++	if (!mach)
++		return -EINVAL;
 +
-+		/* skip if there is no private data */
-+		if (!swidget->private)
-+			continue;
++	sof_pdata->drv_name = "sof-nocodec";
 +
-+		switch (swidget->id) {
-+		case snd_soc_dapm_dai_in:
-+			/* fallthrough */
-+		case snd_soc_dapm_dai_out:
-+			dai = (struct snd_sof_dai *)swidget->private;
-+			comp_dai = &dai->comp_dai;
-+			ret = sof_ipc_tx_message(sdev->ipc,
-+						 comp_dai->comp.hdr.cmd,
-+						 comp_dai, sizeof(*comp_dai),
-+						 &r, sizeof(r));
-+			break;
-+		case snd_soc_dapm_scheduler:
++	mach->drv_name = "sof-nocodec";
++	sof_pdata->fw_filename = desc->nocodec_fw_filename;
++	sof_pdata->tplg_filename = desc->nocodec_tplg_filename;
 +
-+			/*
-+			 * During suspend, all DSP cores are powered off.
-+			 * Therefore upon resume, create the pipeline comp
-+			 * and power up the core that the pipeline is
-+			 * scheduled on.
-+			 */
-+			pipeline = (struct sof_ipc_pipe_new *)swidget->private;
-+			ret = sof_load_pipeline_ipc(sdev, pipeline, &r);
-+			break;
-+		default:
-+			hdr = (struct sof_ipc_cmd_hdr *)swidget->private;
-+			ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd,
-+						 swidget->private, hdr->size,
-+						 &r, sizeof(r));
-+			break;
-+		}
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to load widget type %d with ID: %d\n",
-+				swidget->widget->id, swidget->comp_id);
++	/* create dummy BE dai_links */
++	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
++			     ops->num_drv, GFP_KERNEL);
++	if (!links)
++		return -ENOMEM;
 +
-+			return ret;
-+		}
-+	}
-+
-+	/* restore pipeline connections */
-+	list_for_each_entry_reverse(sroute, &sdev->route_list, list) {
-+		struct sof_ipc_pipe_comp_connect *connect;
-+		struct sof_ipc_reply reply;
-+
-+		/* skip if there's no private data */
-+		if (!sroute->private)
-+			continue;
-+
-+		connect = sroute->private;
-+
-+		/* send ipc */
-+		ret = sof_ipc_tx_message(sdev->ipc,
-+					 connect->hdr.cmd,
-+					 connect, sizeof(*connect),
-+					 &reply, sizeof(reply));
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to load route sink %s control %s source %s\n",
-+				sroute->route->sink,
-+				sroute->route->control ? sroute->route->control
-+					: "none",
-+				sroute->route->source);
-+
-+			return ret;
-+		}
-+	}
-+
-+	/* restore dai links */
-+	list_for_each_entry_reverse(dai, &sdev->dai_list, list) {
-+		struct sof_ipc_reply reply;
-+		struct sof_ipc_dai_config *config = dai->dai_config;
-+
-+		if (!config) {
-+			dev_err(sdev->dev, "error: no config for DAI %s\n",
-+				dai->name);
-+			continue;
-+		}
-+
-+		ret = sof_ipc_tx_message(sdev->ipc,
-+					 config->hdr.cmd, config,
-+					 config->hdr.size,
-+					 &reply, sizeof(reply));
-+
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: failed to set dai config for %s\n",
-+				dai->name);
-+
-+			return ret;
-+		}
-+	}
-+
-+	/* complete pipeline */
-+	list_for_each_entry(swidget, &sdev->widget_list, list) {
-+		switch (swidget->id) {
-+		case snd_soc_dapm_scheduler:
-+			swidget->complete =
-+				snd_sof_complete_pipeline(sdev, swidget);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	/* restore pipeline kcontrols */
-+	ret = sof_restore_kcontrols(sdev);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: restoring kcontrols after resume\n");
-+
++	ret = sof_nocodec_bes_setup(dev, ops, links, ops->num_drv,
++				    &sof_nocodec_card);
 +	return ret;
 +}
++EXPORT_SYMBOL(sof_nocodec_setup);
 +
-+static int sof_send_pm_ipc(struct snd_sof_dev *sdev, int cmd)
++static int sof_nocodec_probe(struct platform_device *pdev)
 +{
-+	struct sof_ipc_pm_ctx pm_ctx;
-+	struct sof_ipc_reply reply;
++	struct snd_soc_card *card = &sof_nocodec_card;
 +
-+	memset(&pm_ctx, 0, sizeof(pm_ctx));
++	card->dev = &pdev->dev;
 +
-+	/* configure ctx save ipc message */
-+	pm_ctx.hdr.size = sizeof(pm_ctx);
-+	pm_ctx.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd;
-+
-+	/* send ctx save ipc to dsp */
-+	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
-+				 sizeof(pm_ctx), &reply, sizeof(reply));
++	return devm_snd_soc_register_card(&pdev->dev, card);
 +}
 +
-+static void sof_set_restore_stream(struct snd_sof_dev *sdev)
++static int sof_nocodec_remove(struct platform_device *pdev)
 +{
-+	struct snd_sof_pcm *spcm;
-+
-+	/* suspend all running streams */
-+	list_for_each_entry(spcm, &sdev->pcm_list, list) {
-+		mutex_lock(&spcm->mutex);
-+
-+		spcm->restore_stream[0] = 1;
-+		spcm->restore_stream[1] = 1;
-+
-+		mutex_unlock(&spcm->mutex);
-+	}
++	return 0;
 +}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
-+static void sof_cache_debugfs(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_dfsentry *dfse;
++static struct platform_driver sof_nocodec_audio = {
++	.probe = sof_nocodec_probe,
++	.remove = sof_nocodec_remove,
++	.driver = {
++		.name = "sof-nocodec",
++		.pm = &snd_soc_pm_ops,
++	},
++};
++module_platform_driver(sof_nocodec_audio)
 +
-+	list_for_each_entry(dfse, &sdev->dfsentry_list, list) {
-+
-+		/* nothing to do if debugfs buffer is not IO mem */
-+		if (dfse->type == SOF_DFSENTRY_TYPE_BUF)
-+			continue;
-+
-+		/* cache memory that is only accessible in D0 */
-+		if (dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY)
-+			memcpy_fromio(dfse->cache_buf, dfse->io_mem,
-+				      dfse->size);
-+	}
-+}
-+#endif
-+
-+static int sof_resume(struct device *dev, bool runtime_resume)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	int ret = 0;
-+
-+	/* do nothing if dsp resume callbacks are not set */
-+	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
-+		return 0;
-+
-+	/*
-+	 * if the runtime_resume flag is set, call the runtime_resume routine
-+	 * or else call the system resume routine
-+	 */
-+	if (runtime_resume)
-+		ret = snd_sof_dsp_runtime_resume(sdev);
-+	else
-+		ret = snd_sof_dsp_resume(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to power up DSP after resume\n");
-+		return ret;
-+	}
-+
-+	/* load the firmware */
-+	ret = snd_sof_load_firmware(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to load DSP firmware after resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* boot the firmware */
-+	ret = snd_sof_run_firmware(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to boot DSP firmware after resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* resume DMA trace, only need send ipc */
-+	ret = snd_sof_init_trace_ipc(sdev);
-+	if (ret < 0) {
-+		/* non fatal */
-+		dev_warn(sdev->dev,
-+			 "warning: failed to init trace after resume %d\n",
-+			 ret);
-+	}
-+
-+	/* restore pipelines */
-+	ret = sof_restore_pipelines(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to restore pipeline after resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* notify DSP of system resume */
-+	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: ctx_restore ipc error during resume %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+static int sof_suspend(struct device *dev, bool runtime_suspend)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	int ret = 0;
-+
-+	/* do nothing if dsp suspend callback is not set */
-+	if (!sof_ops(sdev)->suspend)
-+		return 0;
-+
-+	/* release trace */
-+	snd_sof_release_trace(sdev);
-+
-+	/* set restore_stream for all streams during system suspend */
-+	if (!runtime_suspend)
-+		sof_set_restore_stream(sdev);
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
-+	/* cache debugfs contents during runtime suspend */
-+	if (runtime_suspend)
-+		sof_cache_debugfs(sdev);
-+#endif
-+	/* notify DSP of upcoming power down */
-+	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
-+	if (ret < 0) {
-+
-+		/*
-+		 * FIXME: CTX_SAVE ipc should not time-out.
-+		 * But if it happens, just report the error
-+		 * and continue powering off the DSP for now.
-+		 * This will allow the DSP to power up
-+		 * normally upon system resume.
-+		 */
-+		dev_err(sdev->dev,
-+			"error: ctx_save ipc error during suspend %d\n",
-+			ret);
-+	}
-+
-+	/* drop all ipc */
-+	sof_ipc_drop_all(sdev->ipc);
-+
-+	/* power down all DSP cores */
-+	if (runtime_suspend)
-+		ret = snd_sof_dsp_runtime_suspend(sdev, 0);
-+	else
-+		ret = snd_sof_dsp_suspend(sdev, 0);
-+	if (ret < 0)
-+		dev_err(sdev->dev,
-+			"error: failed to power down DSP during suspend %d\n",
-+			ret);
-+
-+	return ret;
-+}
-+
-+int snd_sof_runtime_suspend(struct device *dev)
-+{
-+	return sof_suspend(dev, true);
-+}
-+EXPORT_SYMBOL(snd_sof_runtime_suspend);
-+
-+int snd_sof_runtime_resume(struct device *dev)
-+{
-+	return sof_resume(dev, true);
-+}
-+EXPORT_SYMBOL(snd_sof_runtime_resume);
-+
-+int snd_sof_resume(struct device *dev)
-+{
-+	return sof_resume(dev, false);
-+}
-+EXPORT_SYMBOL(snd_sof_resume);
-+
-+int snd_sof_suspend(struct device *dev)
-+{
-+	return sof_suspend(dev, false);
-+}
-+EXPORT_SYMBOL(snd_sof_suspend);
++MODULE_DESCRIPTION("ASoC sof nocodec");
++MODULE_AUTHOR("Liam Girdwood");
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_ALIAS("platform:sof-nocodec");
 -- 
 2.17.1
