@@ -1,8 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 16/20] ASoC: SOF: Intel: Add SKL-specific
-	code loader
-Date: Wed, 13 Feb 2019 16:08:43 -0600
-Message-ID: <20190213220847.10567-17-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 17/20] ASoC: SOF: Add ACPI device support
+Date: Wed, 13 Feb 2019 16:08:44 -0600
+Message-ID: <20190213220847.10567-18-pierre-louis.bossart@linux.intel.com>
 References: <20190213220847.10567-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,28 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, Zhu Yingjiang <yingjiang.zhu@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The code loader is different on SKL/KBL and we need a dedicated
-loader. From APL onwards the same code loader will be used.
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Signed-off-by: Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Add support ACPI based SOF DSP devices.
+
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader-skl.c | 526 +++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h            |   1 +
- 2 files changed, 527 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-loader-skl.c
+ sound/soc/sof/sof-acpi-dev.c | 310 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 310 insertions(+)
+ create mode 100644 sound/soc/sof/sof-acpi-dev.c
 
-diff --git a/sound/soc/sof/intel/hda-loader-skl.c b/sound/soc/sof/intel/hda-loader-skl.c
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
 new file mode 100644
-index 000000000000..690c90efff13
+index 000000000000..53d2ade525b5
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-loader-skl.c
-@@ -0,0 +1,526 @@
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -0,0 +1,310 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -48,536 +45,308 @@ index 000000000000..690c90efff13
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+//      Zhu Yingjiang <yingjiang.zhu@linux.intel.com>
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
++#include <linux/acpi.h>
 +#include <linux/firmware.h>
-+#include <sound/hdaudio_ext.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
 +#include <sound/sof.h>
-+#include "../ops.h"
-+#include "hda.h"
++#ifdef CONFIG_X86
++#include <asm/iosf_mbi.h>
++#endif
 +
-+#define HDA_SKL_WAIT_TIMEOUT		500	/* 500 msec */
-+#define HDA_SKL_CLDMA_MAX_BUFFER_SIZE	(32 * PAGE_SIZE)
++#include "ops.h"
 +
-+/* Stream Reset */
-+#define HDA_CL_SD_CTL_SRST_SHIFT	0
-+#define HDA_CL_SD_CTL_SRST(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_SRST_SHIFT)
++/* platform specific devices */
++#include "intel/shim.h"
 +
-+/* Stream Run */
-+#define HDA_CL_SD_CTL_RUN_SHIFT		1
-+#define HDA_CL_SD_CTL_RUN(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_RUN_SHIFT)
++static char *fw_path;
++module_param(fw_path, charp, 0444);
++MODULE_PARM_DESC(fw_path, "alternate path for SOF firmware.");
 +
-+/* Interrupt On Completion Enable */
-+#define HDA_CL_SD_CTL_IOCE_SHIFT	2
-+#define HDA_CL_SD_CTL_IOCE(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_IOCE_SHIFT)
++static char *tplg_path;
++module_param(tplg_path, charp, 0444);
++MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
 +
-+/* FIFO Error Interrupt Enable */
-+#define HDA_CL_SD_CTL_FEIE_SHIFT	3
-+#define HDA_CL_SD_CTL_FEIE(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_FEIE_SHIFT)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
++static const struct sof_dev_desc sof_acpi_haswell_desc = {
++	.machines = snd_soc_acpi_intel_haswell_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = -1,
++	.irqindex_host_ipc = 0,
++	.chip_info = &hsw_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-hsw.ri",
++	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
++	.ops = &sof_hsw_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++#endif
 +
-+/* Descriptor Error Interrupt Enable */
-+#define HDA_CL_SD_CTL_DEIE_SHIFT	4
-+#define HDA_CL_SD_CTL_DEIE(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_DEIE_SHIFT)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++static const struct sof_dev_desc sof_acpi_broadwell_desc = {
++	.machines = snd_soc_acpi_intel_broadwell_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = -1,
++	.irqindex_host_ipc = 0,
++	.chip_info = &bdw_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-bdw.ri",
++	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
++	.ops = &sof_bdw_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++#endif
 +
-+/* FIFO Limit Change */
-+#define HDA_CL_SD_CTL_FIFOLC_SHIFT	5
-+#define HDA_CL_SD_CTL_FIFOLC(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_FIFOLC_SHIFT)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
 +
-+/* Stripe Control */
-+#define HDA_CL_SD_CTL_STRIPE_SHIFT	16
-+#define HDA_CL_SD_CTL_STRIPE(x)		(((x) & 0x3) << \
-+					HDA_CL_SD_CTL_STRIPE_SHIFT)
++/* BYTCR uses different IRQ index */
++static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
++	.machines = snd_soc_acpi_intel_baytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 0,
++	.chip_info = &byt_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-byt.ri",
++	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
++	.ops = &sof_byt_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
 +
-+/* Traffic Priority */
-+#define HDA_CL_SD_CTL_TP_SHIFT		18
-+#define HDA_CL_SD_CTL_TP(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_TP_SHIFT)
++static const struct sof_dev_desc sof_acpi_baytrail_desc = {
++	.machines = snd_soc_acpi_intel_baytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 5,
++	.chip_info = &byt_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-byt.ri",
++	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
++	.ops = &sof_byt_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
 +
-+/* Bidirectional Direction Control */
-+#define HDA_CL_SD_CTL_DIR_SHIFT		19
-+#define HDA_CL_SD_CTL_DIR(x)		(((x) & 0x1) << \
-+					HDA_CL_SD_CTL_DIR_SHIFT)
++#ifdef CONFIG_X86 /* TODO: move this to common helper */
 +
-+/* Stream Number */
-+#define HDA_CL_SD_CTL_STRM_SHIFT	20
-+#define HDA_CL_SD_CTL_STRM(x)		(((x) & 0xf) << \
-+					HDA_CL_SD_CTL_STRM_SHIFT)
-+
-+#define HDA_CL_SD_CTL_INT(x)	\
-+		(HDA_CL_SD_CTL_IOCE(x) | \
-+		HDA_CL_SD_CTL_FEIE(x) | \
-+		HDA_CL_SD_CTL_DEIE(x))
-+
-+#define HDA_CL_SD_CTL_INT_MASK	\
-+		(HDA_CL_SD_CTL_IOCE(1) | \
-+		HDA_CL_SD_CTL_FEIE(1) | \
-+		HDA_CL_SD_CTL_DEIE(1))
-+
-+#define DMA_ADDRESS_128_BITS_ALIGNMENT	7
-+#define BDL_ALIGN(x)			((x) >> DMA_ADDRESS_128_BITS_ALIGNMENT)
-+
-+/* Buffer Descriptor List Lower Base Address */
-+#define HDA_CL_SD_BDLPLBA_SHIFT		7
-+#define HDA_CL_SD_BDLPLBA_MASK		GENMASK(HDA_CL_SD_BDLPLBA_SHIFT + 24,\
-+						HDA_CL_SD_BDLPLBA_SHIFT)
-+#define HDA_CL_SD_BDLPLBA(x)		\
-+	((BDL_ALIGN(lower_32_bits(x)) << HDA_CL_SD_BDLPLBA_SHIFT) & \
-+	 HDA_CL_SD_BDLPLBA_MASK)
-+
-+/* Buffer Descriptor List Upper Base Address */
-+#define HDA_CL_SD_BDLPUBA_SHIFT		0
-+#define HDA_CL_SD_BDLPUBA_MASK		GENMASK(HDA_CL_SD_BDLPUBA_SHIFT + 31,\
-+						HDA_CL_SD_BDLPUBA_SHIFT)
-+#define HDA_CL_SD_BDLPUBA(x)		\
-+		((upper_32_bits(x) << HDA_CL_SD_BDLPUBA_SHIFT) & \
-+		 HDA_CL_SD_BDLPUBA_MASK)
-+
-+/* Software Position in Buffer Enable */
-+#define HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT	0
-+#define HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_MASK	\
-+			BIT(HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT)
-+
-+#define HDA_CL_SPBFIFO_SPBFCCTL_SPIBE(x)	\
-+			(((x) << HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_SHIFT) & \
-+			 HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_MASK)
-+
-+static int cl_skl_cldma_setup_bdle(struct snd_sof_dev *sdev,
-+				   struct snd_dma_buffer *dmab_data,
-+				   __le32 **bdlp, int size, int with_ioc)
++static bool is_byt_cr(struct platform_device *pdev)
 +{
-+	__le32 *bdl = *bdlp;
-+	int frags = 0;
++	struct device *dev = &pdev->dev;
++	int status = 0;
 +
-+	while (size > 0) {
-+		phys_addr_t addr = virt_to_phys(dmab_data->area +
-+						(frags * size));
++	if (iosf_mbi_available()) {
++		u32 bios_status;
++		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
++				       MBI_REG_READ, /* 0x10 */
++				       0x006, /* BIOS_CONFIG */
++				       &bios_status);
 +
-+		bdl[0] = cpu_to_le32(lower_32_bits(addr));
-+		bdl[1] = cpu_to_le32(upper_32_bits(addr));
++		if (status) {
++			dev_err(dev, "could not read PUNIT BIOS_CONFIG\n");
++		} else {
++			/* bits 26:27 mirror PMIC options */
++			bios_status = (bios_status >> 26) & 3;
 +
-+		bdl[2] = cpu_to_le32(size);
-+
-+		size -= size;
-+		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
-+
-+		bdl += 4;
-+		frags++;
-+	}
-+
-+	return frags;
-+}
-+
-+static void cl_skl_cldma_stream_run(struct snd_sof_dev *sdev, bool enable)
-+{
-+	unsigned char val;
-+	int timeout;
-+	int sd_offset = SOF_HDA_ADSP_LOADER_BASE;
-+	u32 run = enable ? 0x1 : 0;
-+
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL,
-+				HDA_CL_SD_CTL_RUN(1), HDA_CL_SD_CTL_RUN(run));
-+
-+	udelay(3);
-+	timeout = 300;
-+	do {
-+		/* waiting for hardware to report the stream Run bit set */
-+		val = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+				       sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL)
-+				       & HDA_CL_SD_CTL_RUN(1);
-+		if (enable && val)
-+			break;
-+		else if (!enable && !val)
-+			break;
-+		udelay(3);
-+	} while (--timeout);
-+
-+	if (timeout == 0)
-+		dev_err(sdev->dev, "error: failed to set Run bit=%d enable=%d\n",
-+			val, enable);
-+}
-+
-+static void cl_skl_cldma_stream_clear(struct snd_sof_dev *sdev)
-+{
-+	int sd_offset = SOF_HDA_ADSP_LOADER_BASE;
-+
-+	/* make sure Run bit is cleared before setting stream register */
-+	cl_skl_cldma_stream_run(sdev, 0);
-+
-+	/*
-+	 * Disable the Interrupt On Completion, FIFO Error Interrupt,
-+	 * Descriptor Error Interrupt and set the cldma stream number to 0.
-+	 */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL,
-+				HDA_CL_SD_CTL_INT_MASK, HDA_CL_SD_CTL_INT(0));
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL,
-+				HDA_CL_SD_CTL_STRM(0xf), HDA_CL_SD_CTL_STRM(0));
-+
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL,
-+			  HDA_CL_SD_BDLPLBA(0));
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU, 0);
-+
-+	/* Set the Cyclic Buffer Length to 0. */
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_CBL, 0);
-+	/* Set the Last Valid Index. */
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_LVI, 0);
-+}
-+
-+static void cl_skl_cldma_setup_spb(struct snd_sof_dev *sdev,
-+				   unsigned int size, bool enable)
-+{
-+	int sd_offset = SOF_DSP_REG_CL_SPBFIFO;
-+
-+	if (enable)
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+					sd_offset +
-+					SOF_HDA_ADSP_REG_CL_SPBFIFO_SPBFCCTL,
-+					HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_MASK,
-+					HDA_CL_SPBFIFO_SPBFCCTL_SPIBE(1));
-+
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SPBFIFO_SPIB, size);
-+}
-+
-+static void cl_skl_cldma_set_intr(struct snd_sof_dev *sdev, bool enable)
-+{
-+	u32 val = enable ? HDA_DSP_ADSPIC_CL_DMA : 0;
-+
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
-+				HDA_DSP_ADSPIC_CL_DMA, val);
-+}
-+
-+static void cl_skl_cldma_cleanup_spb(struct snd_sof_dev *sdev)
-+{
-+	int sd_offset = SOF_DSP_REG_CL_SPBFIFO;
-+
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset +
-+					SOF_HDA_ADSP_REG_CL_SPBFIFO_SPBFCCTL,
-+				HDA_CL_SPBFIFO_SPBFCCTL_SPIBE_MASK,
-+				HDA_CL_SPBFIFO_SPBFCCTL_SPIBE(0));
-+
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SPBFIFO_SPIB, 0);
-+}
-+
-+static void cl_skl_cldma_setup_controller(struct snd_sof_dev *sdev,
-+					  struct snd_dma_buffer *dmab_bdl,
-+					  unsigned int max_size, u32 count)
-+{
-+	int sd_offset = SOF_HDA_ADSP_LOADER_BASE;
-+	/* Clear the stream first and then set it. */
-+	cl_skl_cldma_stream_clear(sdev);
-+
-+	/* setting the stream register */
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL,
-+			  HDA_CL_SD_BDLPLBA(dmab_bdl->addr));
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU,
-+			  HDA_CL_SD_BDLPUBA(dmab_bdl->addr));
-+
-+	/* Set the Cyclic Buffer Length. */
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_CBL, max_size);
-+	/* Set the Last Valid Index. */
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR,
-+			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_LVI, count - 1);
-+
-+	/*
-+	 * Set the Interrupt On Completion, FIFO Error Interrupt,
-+	 * Descriptor Error Interrupt and the cldma stream number.
-+	 */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL,
-+				HDA_CL_SD_CTL_INT_MASK, HDA_CL_SD_CTL_INT(1));
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+				sd_offset + SOF_HDA_ADSP_REG_CL_SD_CTL,
-+				HDA_CL_SD_CTL_STRM(0xf),
-+				HDA_CL_SD_CTL_STRM(1));
-+}
-+
-+static int cl_stream_prepare_skl(struct snd_sof_dev *sdev)
-+{
-+	struct pci_dev *pci = to_pci_dev(sdev->dev);
-+	int frags = 0;
-+	int ret = 0;
-+	__le32 *bdl;
-+	unsigned int bufsize = HDA_SKL_CLDMA_MAX_BUFFER_SIZE;
-+
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev, bufsize,
-+				  &sdev->dmab);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to alloc fw buffer: %x\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev, bufsize,
-+				  &sdev->dmab_bdl);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to alloc blde: %x\n", ret);
-+		snd_dma_free_pages(&sdev->dmab);
-+		return ret;
-+	}
-+
-+	bdl = (__le32 *)sdev->dmab_bdl.area;
-+	frags = cl_skl_cldma_setup_bdle(sdev, &sdev->dmab, &bdl, bufsize, 1);
-+	cl_skl_cldma_setup_controller(sdev, &sdev->dmab_bdl, bufsize, frags);
-+
-+	return ret;
-+}
-+
-+static void cl_cleanup_skl(struct snd_sof_dev *sdev)
-+{
-+	cl_skl_cldma_cleanup_spb(sdev);
-+	cl_skl_cldma_stream_clear(sdev);
-+	snd_dma_free_pages(&sdev->dmab);
-+	snd_dma_free_pages(&sdev->dmab_bdl);
-+	sdev->dmab.area = NULL;
-+}
-+
-+static int cl_dsp_init_skl(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+
-+	/*
-+	 * check if the core is already enabled, if yes, reset and
-+	 * make it run. If not, powerdown and enable it again.
-+	 */
-+	if (hda_dsp_core_is_enabled(sdev, HDA_DSP_CORE_MASK(0))) {
-+
-+		/* if enabled, reset it, and run the core. */
-+		ret = hda_dsp_core_stall_reset(sdev, HDA_DSP_CORE_MASK(0));
-+		if (ret < 0)
-+			goto err;
-+
-+		ret = hda_dsp_core_run(sdev, HDA_DSP_CORE_MASK(0));
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: dsp core start failed %d\n",
-+				ret);
-+			goto err;
-+		}
-+	} else {
-+		/*
-+		 * if not enabled, power down it first and
-+		 * then powerup and runthe core.
-+		 */
-+		ret = hda_dsp_core_reset_power_down(sdev, HDA_DSP_CORE_MASK(0));
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: dsp core0 disable fail: %d\n", ret);
-+			goto err;
-+		}
-+		ret = hda_dsp_enable_core(sdev, HDA_DSP_CORE_MASK(0));
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: dsp core0 enable fail: %d\n", ret);
-+			goto err;
-+		}
-+	}
-+
-+	/* prepare DMA for code loader stream */
-+	ret = cl_stream_prepare_skl(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: dma prepare fw loading err: %x\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* enable IPC interrupts */
-+	hda_dsp_ipc_int_enable(sdev);
-+
-+	/* polling the ROM init status information. */
-+	ret = snd_sof_dsp_register_poll(sdev, HDA_DSP_BAR,
-+					HDA_ADSP_FW_STATUS_SKL,
-+					HDA_DSP_ROM_STS_MASK, HDA_DSP_ROM_INIT,
-+					HDA_DSP_INIT_TIMEOUT,
-+					HDA_DSP_REG_POLL_INTERVAL_US);
-+	if (ret < 0)
-+		goto err;
-+
-+	return ret;
-+
-+err:
-+	hda_dsp_dump_skl(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
-+	cl_cleanup_skl(sdev);
-+	hda_dsp_core_reset_power_down(sdev, HDA_DSP_CORE_MASK(0));
-+	return ret;
-+}
-+
-+static void cl_skl_cldma_fill_buffer(struct snd_sof_dev *sdev,
-+				     unsigned int bufsize,
-+				     unsigned int copysize,
-+				     const void *curr_pos,
-+				     bool intr_enable, bool trigger)
-+{
-+	/* 1. copy the image into the buffer with the maximum buffer size. */
-+	unsigned int size = (bufsize == copysize) ? bufsize : copysize;
-+
-+	memcpy(sdev->dmab.area, curr_pos, size);
-+
-+	/* 2. Set the interrupt. */
-+	if (intr_enable)
-+		cl_skl_cldma_set_intr(sdev, true);
-+
-+	/* 3. Set the SPB. */
-+	cl_skl_cldma_setup_spb(sdev, size, trigger);
-+
-+	/* 4. Trigger the code loading stream. */
-+	if (trigger)
-+		cl_skl_cldma_stream_run(sdev, true);
-+}
-+
-+static int
-+cl_skl_cldma_copy_to_buf(struct snd_sof_dev *sdev, const void *bin,
-+			 u32 total_size, u32 bufsize)
-+{
-+	int ret = 0;
-+	unsigned int bytes_left = total_size;
-+	const void *curr_pos = bin;
-+
-+	if (total_size <= 0)
-+		return -EINVAL;
-+
-+	while (bytes_left > 0) {
-+
-+		if (bytes_left > bufsize) {
-+
-+			dev_dbg(sdev->dev, "cldma copy 0x%x bytes\n",
-+				bufsize);
-+
-+			cl_skl_cldma_fill_buffer(sdev, bufsize, bufsize,
-+						 curr_pos, true, true);
-+
-+			if (ret < 0) {
-+				dev_err(sdev->dev, "error: fw failed to load. 0x%x bytes remaining\n",
-+					bytes_left);
-+				cl_skl_cldma_stream_run(sdev, false);
-+				return ret;
++			if (bios_status == 1 || bios_status == 3) {
++				dev_info(dev, "Detected Baytrail-CR platform\n");
++				return true;
 +			}
 +
-+			bytes_left -= bufsize;
-+			curr_pos += bufsize;
-+		} else {
-+
-+			dev_dbg(sdev->dev, "cldma copy 0x%x bytes\n",
-+				bytes_left);
-+
-+			cl_skl_cldma_set_intr(sdev, false);
-+			cl_skl_cldma_fill_buffer(sdev, bufsize, bytes_left,
-+						 curr_pos, false, false);
-+			return 0;
++			dev_info(dev, "BYT-CR not detected\n");
 +		}
++	} else {
++		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
 +	}
 +
-+	return bytes_left;
++	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
++		/*
++		 * Some devices detected as BYT-T have only a single IRQ listed,
++		 * causing platform_get_irq with index 5 to return -ENXIO.
++		 * The correct IRQ in this case is at index 0, as on BYT-CR.
++		 */
++		dev_info(dev, "Falling back to Baytrail-CR platform\n");
++		return true;
++	}
++
++	return false;
++}
++#else
++static int is_byt_cr(struct platform_device *pdev)
++{
++	return 0;
++}
++#endif
++
++static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
++	.machines = snd_soc_acpi_intel_cherrytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 5,
++	.chip_info = &cht_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-cht.ri",
++	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
++	.ops = &sof_cht_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++
++#endif
++
++static const struct dev_pm_ops sof_acpi_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
++	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
++			   NULL)
++};
++
++static void sof_acpi_probe_complete(struct device *dev)
++{
++	/* allow runtime_pm */
++	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_enable(dev);
 +}
 +
-+static int cl_copy_fw_skl(struct snd_sof_dev *sdev)
++static int sof_acpi_probe(struct platform_device *pdev)
 +{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const struct firmware *fw =  plat_data->fw;
-+	unsigned int bufsize = HDA_SKL_CLDMA_MAX_BUFFER_SIZE;
++	struct device *dev = &pdev->dev;
++	const struct sof_dev_desc *desc;
++	struct snd_soc_acpi_mach *mach;
++	struct snd_sof_pdata *sof_pdata;
++	const struct snd_sof_dsp_ops *ops;
 +	int ret = 0;
 +
-+	dev_dbg(sdev->dev, "firmware size: 0x%zx buffer size 0x%x\n", fw->size,
-+		bufsize);
++	dev_dbg(&pdev->dev, "ACPI DSP detected");
 +
-+	ret = cl_skl_cldma_copy_to_buf(sdev, fw->data, fw->size, bufsize);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: fw copy failed %d\n", ret);
++	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
++	if (!sof_pdata)
++		return -ENOMEM;
++
++	desc = (const struct sof_dev_desc *)device_get_match_data(dev);
++	if (!desc)
++		return -ENODEV;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++	if (desc == &sof_acpi_baytrail_desc && is_byt_cr(pdev))
++		desc = &sof_acpi_baytrailcr_desc;
++#endif
++
++	/* get ops for platform */
++	ops = desc->ops;
++	if (!ops) {
++		dev_err(dev, "error: no matching ACPI descriptor ops\n");
++		return -ENODEV;
++	}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)
++	/* force nocodec mode */
++	dev_warn(dev, "Force to use nocodec mode\n");
++	mach = devm_kzalloc(dev, sizeof(*mach), GFP_KERNEL);
++	if (!mach)
++		return -ENOMEM;
++	ret = sof_nocodec_setup(dev, sof_pdata, mach, desc, ops);
++	if (ret < 0)
++		return ret;
++#else
++	/* find machine */
++	mach = snd_soc_acpi_find_machine(desc->machines);
++	if (!mach) {
++		dev_warn(dev, "warning: No matching ASoC machine driver found\n");
++	} else {
++		sof_pdata->fw_filename = mach->sof_fw_filename;
++		sof_pdata->tplg_filename = mach->sof_tplg_filename;
++	}
++#endif
++
++	mach->mach_params.platform = dev_name(dev);
++	mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
++
++	sof_pdata->machine = mach;
++	sof_pdata->desc = desc;
++	sof_pdata->dev = &pdev->dev;
++	sof_pdata->platform = dev_name(dev);
++
++	/* alternate fw and tplg filenames ? */
++	if (fw_path)
++		sof_pdata->fw_filename_prefix = fw_path;
++	else
++		sof_pdata->fw_filename_prefix =
++			sof_pdata->desc->default_fw_path;
++
++	if (tplg_path)
++		sof_pdata->tplg_filename_prefix = tplg_path;
++	else
++		sof_pdata->tplg_filename_prefix =
++			sof_pdata->desc->default_tplg_path;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	/* set callback to enable runtime_pm */
++	sof_pdata->sof_probe_complete = sof_acpi_probe_complete;
++#endif
++	/* call sof helper for DSP hardware probe */
++	ret = snd_sof_device_probe(dev, sof_pdata);
++	if (ret) {
++		dev_err(dev, "error: failed to probe DSP hardware!\n");
 +		return ret;
 +	}
 +
-+	ret = snd_sof_dsp_register_poll(sdev, HDA_DSP_BAR,
-+					HDA_ADSP_FW_STATUS_SKL,
-+					HDA_DSP_ROM_STS_MASK,
-+					HDA_DSP_ROM_FW_FW_LOADED,
-+					HDA_DSP_BASEFW_TIMEOUT,
-+					HDA_DSP_REG_POLL_INTERVAL_US);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: firmware transfer timeout!");
-+
-+	cl_skl_cldma_stream_run(sdev, false);
-+	cl_cleanup_skl(sdev);
++#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	sof_acpi_probe_complete(dev);
++#endif
 +
 +	return ret;
 +}
 +
-+int hda_dsp_cl_boot_firmware_skl(struct snd_sof_dev *sdev)
++static int sof_acpi_remove(struct platform_device *pdev)
 +{
-+	int ret;
++	pm_runtime_disable(&pdev->dev);
 +
-+	ret = cl_dsp_init_skl(sdev);
++	/* call sof helper for DSP hardware remove */
++	snd_sof_device_remove(&pdev->dev);
 +
-+	/* retry enabling core and ROM load. seemed to help */
-+	if (ret < 0) {
-+		ret = cl_dsp_init_skl(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: Error code=0x%x: FW status=0x%x\n",
-+				snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+						 HDA_ADSP_ERROR_CODE_SKL),
-+				snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+						 HDA_ADSP_FW_STATUS_SKL));
-+			dev_err(sdev->dev, "error: Core En/ROM load fail:%d\n", ret);
-+			goto irq_err;
-+		}
-+	}
-+
-+	dev_dbg(sdev->dev, "ROM init successful\n");
-+
-+	/* init for booting wait */
-+	init_waitqueue_head(&sdev->boot_wait);
-+	sdev->boot_complete = false;
-+
-+	/*
-+	 * at this point DSP ROM has been initialized and should
-+	 * be ready for code loading and firmware boot
-+	 */
-+	ret = cl_copy_fw_skl(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: load firmware failed : %d\n", ret);
-+		goto irq_err;
-+	}
-+
-+	dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
-+
-+	return ret;
-+
-+irq_err:
-+	hda_dsp_dump_skl(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
-+
-+	/* power down DSP */
-+	hda_dsp_core_reset_power_down(sdev, HDA_DSP_CORE_MASK(0));
-+	cl_cleanup_skl(sdev);
-+
-+	dev_err(sdev->dev, "error: load fw failed err: %d\n", ret);
-+	return ret;
++	return 0;
 +}
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index cbdfec55b553..ca6e8fc947f4 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -60,6 +60,7 @@
- #define SOF_HDA_PP_CAP_ID		0x3
- #define SOF_HDA_REG_PP_PPCH		0x10
- #define SOF_HDA_REG_PP_PPCTL		0x04
-+#define SOF_HDA_REG_PP_PPSTS		0x08
- #define SOF_HDA_PPCTL_PIE		BIT(31)
- #define SOF_HDA_PPCTL_GPROCEN		BIT(30)
- 
++
++static const struct acpi_device_id sof_acpi_match[] = {
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
++	{ "INT33C8", (unsigned long)&sof_acpi_haswell_desc },
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++	{ "INT3438", (unsigned long)&sof_acpi_broadwell_desc },
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++	{ "80860F28", (unsigned long)&sof_acpi_baytrail_desc },
++	{ "808622A8", (unsigned long)&sof_acpi_cherrytrail_desc },
++#endif
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, sof_acpi_match);
++
++/* acpi_driver definition */
++static struct platform_driver snd_sof_acpi_driver = {
++	.probe = sof_acpi_probe,
++	.remove = sof_acpi_remove,
++	.driver = {
++		.name = "sof-audio-acpi",
++		.pm = &sof_acpi_pm,
++		.acpi_match_table = ACPI_PTR(sof_acpi_match),
++	},
++};
++module_platform_driver(snd_sof_acpi_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.17.1
