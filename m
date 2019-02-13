@@ -1,13 +1,12 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 14/14] ASoC: SOF: Add utils
-Date: Wed, 13 Feb 2019 16:07:34 -0600
-Message-ID: <20190213220734.10471-15-pierre-louis.bossart@linux.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 00/20] ASoC: Sound Open Firmware (SOF) -
+	Intel support
+Date: Wed, 13 Feb 2019 16:08:27 -0600
+Message-ID: <20190213220847.10567-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,134 +17,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Helpers to set-up back-ends, create platform devices and common
-IO/block read/write operations
+This patch series introduces the support for Intel devices (Baytrail,
+CherryTrail, Broadwell/Haswell, ApolloLake, GeminiLake, CannonLake,
+IceLake). Support for Skylake and KabyLake is incomplete at the moment
+but the basic building blocks required are already present.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/utils.c | 109 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 sound/soc/sof/utils.c
+The series starts with the 'legacy' devices, then all the more recent
+ones and concludes with ACPI/PCI hooks. SKL+ platforms can be compiled
+without HDaudio link/codec support, in which case the hdac library is
+not used. When support for HDMI or HDaudio codecs is selected, parts
+of this library are used.
 
-diff --git a/sound/soc/sof/utils.c b/sound/soc/sof/utils.c
-new file mode 100644
-index 000000000000..9ade9aa30ab5
---- /dev/null
-+++ b/sound/soc/sof/utils.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2018 Intel Corporation. All rights reserved.
-+//
-+// Author: Keyon Jie <yang.jie@linux.intel.com>
-+//
-+
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/platform_device.h>
-+#include <sound/soc.h>
-+#include <sound/sof.h>
-+#include "sof-priv.h"
-+
-+/*
-+ * Register IO
-+ */
-+
-+void sof_io_write(struct snd_sof_dev *sdev, void __iomem *addr, u32 value)
-+{
-+	writel(value, addr);
-+}
-+EXPORT_SYMBOL(sof_io_write);
-+
-+u32 sof_io_read(struct snd_sof_dev *sdev, void __iomem *addr)
-+{
-+	return readl(addr);
-+}
-+EXPORT_SYMBOL(sof_io_read);
-+
-+void sof_io_write64(struct snd_sof_dev *sdev, void __iomem *addr, u64 value)
-+{
-+	writeq(value, addr);
-+}
-+EXPORT_SYMBOL(sof_io_write64);
-+
-+u64 sof_io_read64(struct snd_sof_dev *sdev, void __iomem *addr)
-+{
-+	return readq(addr);
-+}
-+EXPORT_SYMBOL(sof_io_read64);
-+
-+/*
-+ * IPC Mailbox IO
-+ */
-+
-+void sof_mailbox_write(struct snd_sof_dev *sdev, u32 offset,
-+		       void *message, size_t bytes)
-+{
-+	void __iomem *dest = sdev->bar[sdev->mailbox_bar] + offset;
-+
-+	memcpy_toio(dest, message, bytes);
-+}
-+EXPORT_SYMBOL(sof_mailbox_write);
-+
-+void sof_mailbox_read(struct snd_sof_dev *sdev, u32 offset,
-+		      void *message, size_t bytes)
-+{
-+	void __iomem *src = sdev->bar[sdev->mailbox_bar] + offset;
-+
-+	memcpy_fromio(message, src, bytes);
-+}
-+EXPORT_SYMBOL(sof_mailbox_read);
-+
-+/*
-+ * Memory copy.
-+ */
-+
-+void sof_block_write(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *src,
-+		     size_t size)
-+{
-+	void __iomem *dest = sdev->bar[bar] + offset;
-+	const u8 *src_byte = src;
-+	u32 affected_mask;
-+	u32 tmp;
-+	int m, n;
-+
-+	m = size / 4;
-+	n = size % 4;
-+
-+	/* __iowrite32_copy use 32bit size values so divide by 4 */
-+	__iowrite32_copy(dest, src, m);
-+
-+	if (n) {
-+		affected_mask = (1 << (8 * n)) - 1;
-+
-+		/* first read the 32bit data of dest, then change affected
-+		 * bytes, and write back to dest. For unaffected bytes, it
-+		 * should not be changed
-+		 */
-+		tmp = ioread32(dest + m * 4);
-+		tmp &= ~affected_mask;
-+
-+		tmp |= *(u32 *)(src_byte + m * 4) & affected_mask;
-+		iowrite32(tmp, dest + m * 4);
-+	}
-+}
-+EXPORT_SYMBOL(sof_block_write);
-+
-+void sof_block_read(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *dest,
-+		    size_t size)
-+{
-+	void __iomem *src = sdev->bar[bar] + offset;
-+
-+	memcpy_fromio(dest, src, size);
-+}
-+EXPORT_SYMBOL(sof_block_read);
+The machine drivers supported by SOF are not provided as part of this
+series. The build will only work in 'nocodec' mode for now.
+
+Support for SPI-based devices, compressed streams is also not provided
+for now since it's not ready for upstream just yet.
+
+Thank you for reviews and comments, we appreciate the time spent
+commenting on this large patchset. Thanks in particular to Alan Cox
+and Andy Shevchenko for their comments on an earlier version.
+
+Changes since v2:
+
+Addressed dozens of comments from Takashi Iwai, Mark Brown, Andy
+Shevchenko, Daniel Baluta (Thanks!)
+Transition to new display power management
+Fixed suspend issues
+Optimized register polling, better handling of timeouts and firmware
+download retries
+Detect number of HDaudio codec and select machine driver accordingly
+Added workqueue based probe for HDaudio (dependency on modules)
+Fixed platform name override and conflicts with DT deferred probe
+changes
+Added prefix for firmware and topology files and module arguments
+Split Baytrail and Edison
+Fixed warnings (smatch, cppcheck)
+
+Keyon Jie (2):
+  ASoC: SOF: Intel: Add hda-bus support and initialization
+  ASoC: SOF: Intel: SKL, CNL, APL platform DAIs
+
+Liam Girdwood (15):
+  ASoC: SOF: Intel: Add BYT, CHT and BSW DSP HW support.
+  ASoC: SOF: Intel: Add HSW HW DSP support
+  ASoC: SOF: Intel: Add BDW HW DSP support
+  ASoC: SOF: Intel: Add APL/CNL HW DSP support
+  ASoC: SOF: Intel: Add HDA controller for Intel DSP
+  ASoC: SOF: Intel: Add Intel specific HDA DSP HW operations
+  ASoC: SOF: Intel: Add Intel specific HDA IPC mechanisms.
+  ASoC: SOF: Intel: Add Intel specific HDA firmware loader
+  ASoC: SOF: Intel: Add Intel specific HDA PCM operations
+  ASoC: SOF: Intel: Add Intel specific HDA stream operations
+  ASoC: SOF: Intel: Add Intel specific HDA trace operations
+  ASoC: SOF: Intel: Add platform differentiation for SKL, APL and CNL
+  ASoC: SOF: Add ACPI device support
+  ASoC: SOF: Add PCI device support
+  ASoC: SOF: Add Build support for SOF core and Intel drivers
+
+Pierre-Louis Bossart (3):
+  ASoC: SOF: Intel: Add support for HDAudio codecs
+  ASoC: SOF: Intel: Add SKL-specific code loader
+  ASoC: Intel: Kconfig: expose common option between SST and SOF drivers
+
+ sound/soc/Kconfig                    |   1 +
+ sound/soc/Makefile                   |   1 +
+ sound/soc/intel/Kconfig              |   7 +-
+ sound/soc/sof/Kconfig                | 141 +++++
+ sound/soc/sof/Makefile               |  18 +
+ sound/soc/sof/intel/Kconfig          | 253 ++++++++
+ sound/soc/sof/intel/Makefile         |  17 +
+ sound/soc/sof/intel/apl.c            | 111 ++++
+ sound/soc/sof/intel/bdw.c            | 716 +++++++++++++++++++++
+ sound/soc/sof/intel/byt.c            | 893 +++++++++++++++++++++++++++
+ sound/soc/sof/intel/cnl.c            | 269 ++++++++
+ sound/soc/sof/intel/hda-bus.c        | 108 ++++
+ sound/soc/sof/intel/hda-codec.c      | 171 +++++
+ sound/soc/sof/intel/hda-ctrl.c       | 165 +++++
+ sound/soc/sof/intel/hda-dai.c        | 362 +++++++++++
+ sound/soc/sof/intel/hda-dsp.c        | 440 +++++++++++++
+ sound/soc/sof/intel/hda-ipc.c        | 403 ++++++++++++
+ sound/soc/sof/intel/hda-loader-skl.c | 526 ++++++++++++++++
+ sound/soc/sof/intel/hda-loader.c     | 359 +++++++++++
+ sound/soc/sof/intel/hda-pcm.c        | 235 +++++++
+ sound/soc/sof/intel/hda-stream.c     | 663 ++++++++++++++++++++
+ sound/soc/sof/intel/hda-trace.c      |  98 +++
+ sound/soc/sof/intel/hda.c            | 680 ++++++++++++++++++++
+ sound/soc/sof/intel/hda.h            | 549 ++++++++++++++++
+ sound/soc/sof/intel/hsw.c            | 717 +++++++++++++++++++++
+ sound/soc/sof/intel/shim.h           | 177 ++++++
+ sound/soc/sof/intel/skl.c            | 104 ++++
+ sound/soc/sof/sof-acpi-dev.c         | 310 ++++++++++
+ sound/soc/sof/sof-pci-dev.c          | 351 +++++++++++
+ 29 files changed, 8844 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/sof/Kconfig
+ create mode 100644 sound/soc/sof/Makefile
+ create mode 100644 sound/soc/sof/intel/Kconfig
+ create mode 100644 sound/soc/sof/intel/Makefile
+ create mode 100644 sound/soc/sof/intel/apl.c
+ create mode 100644 sound/soc/sof/intel/bdw.c
+ create mode 100644 sound/soc/sof/intel/byt.c
+ create mode 100644 sound/soc/sof/intel/cnl.c
+ create mode 100644 sound/soc/sof/intel/hda-bus.c
+ create mode 100644 sound/soc/sof/intel/hda-codec.c
+ create mode 100644 sound/soc/sof/intel/hda-ctrl.c
+ create mode 100644 sound/soc/sof/intel/hda-dai.c
+ create mode 100644 sound/soc/sof/intel/hda-dsp.c
+ create mode 100644 sound/soc/sof/intel/hda-ipc.c
+ create mode 100644 sound/soc/sof/intel/hda-loader-skl.c
+ create mode 100644 sound/soc/sof/intel/hda-loader.c
+ create mode 100644 sound/soc/sof/intel/hda-pcm.c
+ create mode 100644 sound/soc/sof/intel/hda-stream.c
+ create mode 100644 sound/soc/sof/intel/hda-trace.c
+ create mode 100644 sound/soc/sof/intel/hda.c
+ create mode 100644 sound/soc/sof/intel/hda.h
+ create mode 100644 sound/soc/sof/intel/hsw.c
+ create mode 100644 sound/soc/sof/intel/shim.h
+ create mode 100644 sound/soc/sof/intel/skl.c
+ create mode 100644 sound/soc/sof/sof-acpi-dev.c
+ create mode 100644 sound/soc/sof/sof-pci-dev.c
+
 -- 
 2.17.1
