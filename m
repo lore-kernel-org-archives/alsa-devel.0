@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 04/14] ASoC: SOF:
- Add support for IPC IO between DSP and Host
-Date: Thu, 14 Feb 2019 08:56:42 -0600
-Message-ID: <f44964a2-9339-6cd8-c30e-c139316dc7ad@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v4 05/14] ASoC: SOF:
+ Add PCM operations support
+Date: Thu, 14 Feb 2019 09:07:54 -0600
+Message-ID: <0092ac90-10fe-fbf8-9a77-dff05e0c4525@linux.intel.com>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-5-pierre-louis.bossart@linux.intel.com>
- <s5hef8aziwh.wl-tiwai@suse.de>
+ <20190213220734.10471-6-pierre-louis.bossart@linux.intel.com>
+ <s5hftsqzked.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hef8aziwh.wl-tiwai@suse.de>
+In-Reply-To: <s5hftsqzked.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,65 +25,221 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/14/19 5:52 AM, Takashi Iwai wrote:
-> On Wed, 13 Feb 2019 23:07:24 +0100,
+On 2/14/19 5:20 AM, Takashi Iwai wrote:
+> On Wed, 13 Feb 2019 23:07:25 +0100,
 > Pierre-Louis Bossart wrote:
->> +/* wait for IPC message reply */
->> +static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
->> +			void *reply_data)
+>> +static int sof_pcm_open(struct snd_pcm_substream *substream)
 >> +{
->> +	struct snd_sof_dev *sdev = ipc->sdev;
->> +	struct sof_ipc_cmd_hdr *hdr = (struct sof_ipc_cmd_hdr *)msg->msg_data;
->> +	int ret;
->> +
->> +	/* wait for DSP IPC completion */
->> +	ret = wait_event_timeout(msg->waitq, msg->ipc_complete,
->> +				 msecs_to_jiffies(IPC_TIMEOUT_MS));
->> +
->> +	/*
->> +	 * ipc_lock is used to protect ipc message list shared by user
->> +	 * contexts and a workqueue. There is no need to save interrupt
->> +	 * status with spin_lock_irqsave.
->> +	 */
->> +	spin_lock_irq(&sdev->ipc_lock);
->> +
->> +	if (ret == 0) {
->> +		dev_err(sdev->dev, "error: ipc timed out for 0x%x size 0x%x\n",
->> +			hdr->cmd, hdr->size);
->> +		snd_sof_dsp_dbg_dump(ipc->sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
->> +		snd_sof_trace_notify_for_error(ipc->sdev);
->> +		ret = -ETIMEDOUT;
->> +	} else {
->> +		/* copy the data returned from DSP */
->> +		ret = snd_sof_dsp_get_reply(sdev, msg);
->> +		if (msg->reply_size)
->> +			memcpy(reply_data, msg->reply_data, msg->reply_size);
+> ....
+>> +	snd_sof_pcm_platform_open(sdev, substream);
 > 
-> I'd add a sanity check here for avoiding a buffer overflow.
-> The reply buffer seems to be allocated in PAGE_SIZE.  Will it be more
-> than that?
+> No error check?
 
-Good point, we'll check all the info returned by the DSP and see if they 
-need to be range-checked or size-checked.
+Wow, nice catch!
+The only explanation I have is that this is implemented with an optional 
+callback that's not set for baytrail, so in the initial development this 
+was not needed. It is definitively used for ApolloLake+, will fix this.
 
 > 
 > 
->> +/* find original TX message from DSP reply */
->> +static struct snd_sof_ipc_msg *sof_ipc_reply_find_msg(struct snd_sof_ipc *ipc,
->> +						      u32 header)
+>> +
+>> +	mutex_unlock(&spcm->mutex);
+>> +	return 0;
+>> +}
+>> +
+>> +static int sof_pcm_close(struct snd_pcm_substream *substream)
 >> +{
->> +	struct snd_sof_dev *sdev = ipc->sdev;
->> +	struct snd_sof_ipc_msg *msg;
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct snd_soc_component *component =
+>> +		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+>> +	struct snd_sof_dev *sdev =
+>> +		snd_soc_component_get_drvdata(component);
+>> +	struct snd_sof_pcm *spcm = rtd->private;
+>> +	int err;
 >> +
->> +	header = SOF_IPC_MESSAGE_ID(header);
+>> +	/* nothing todo for BE */
+>> +	if (rtd->dai_link->no_pcm)
+>> +		return 0;
 >> +
->> +	list_for_each_entry(msg, &ipc->reply_list, list) {
->> +		if (SOF_IPC_MESSAGE_ID(msg->header) == header)
->> +			return msg;
+>> +	dev_dbg(sdev->dev, "pcm: close stream %d dir %d\n", spcm->pcm.pcm_id,
+>> +		substream->stream);
+>> +
+>> +	snd_sof_pcm_platform_close(sdev, substream);
+> 
+> Doesn't it need spcm->mutex lock while open is called inside mutex?
+> Or, better to reconsider: what does spcm->mutex protect?
+> 
+>> +
+>> +	mutex_lock(&spcm->mutex);
+
+Indeed the position of the mutex makes no sense. it should be taken 
+before the close or it's not needed. Will look into this.
+
+>> +	pm_runtime_mark_last_busy(sdev->dev);
+>> +
+>> +	err = pm_runtime_put_autosuspend(sdev->dev);
+>> +	if (err < 0)
+>> +		dev_err(sdev->dev, "error: pcm close failed to idle %d\n",
+>> +			err);
+>> +
+>> +	mutex_unlock(&spcm->mutex);
+>> +	return 0;
+>> +}
+>> +
+>> +static struct snd_pcm_ops sof_pcm_ops = {
+>> +	.open		= sof_pcm_open,
+>> +	.close		= sof_pcm_close,
+>> +	.ioctl		= snd_pcm_lib_ioctl,
+>> +	.hw_params	= sof_pcm_hw_params,
+>> +	.hw_free	= sof_pcm_hw_free,
+>> +	.trigger	= sof_pcm_trigger,
+>> +	.pointer	= sof_pcm_pointer,
+>> +	.page		= snd_pcm_sgbuf_ops_page,
+>> +};
+>> +
+>> +/*
+>> + * Pre-allocate playback/capture audio buffer pages.
+>> + * no need to explicitly release memory preallocated by sof_pcm_new in pcm_free
+>> + * snd_pcm_lib_preallocate_free_for_all() is called by the core.
+>> + */
+>> +static int sof_pcm_new(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +	struct snd_soc_component *component =
+>> +		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+>> +	struct snd_sof_dev *sdev =
+>> +		snd_soc_component_get_drvdata(component);
+>> +	struct snd_sof_pcm *spcm;
+>> +	struct snd_pcm *pcm = rtd->pcm;
+>> +	struct snd_soc_tplg_stream_caps *caps;
+>> +	int ret = 0, stream = SNDRV_PCM_STREAM_PLAYBACK;
+>> +
+>> +	/* find SOF PCM for this RTD */
+>> +	spcm = snd_sof_find_spcm_dai(sdev, rtd);
+>> +	if (!spcm) {
+>> +		dev_warn(sdev->dev, "warn: can't find PCM with DAI ID %d\n",
+>> +			 rtd->dai_link->id);
+>> +		return 0;
+>> +	}
+>> +	rtd->private = spcm;
+>> +
+>> +	dev_dbg(sdev->dev, "creating new PCM %s\n", spcm->pcm.pcm_name);
+>> +
+>> +	/* do we need to pre-allocate playback audio buffer pages */
+>> +	if (!spcm->pcm.playback)
+>> +		goto capture;
+>> +
+>> +	caps = &spcm->pcm.caps[stream];
+>> +
+>> +	/* pre-allocate playback audio buffer pages */
+>> +	dev_dbg(sdev->dev, "spcm: allocate %s playback DMA buffer size 0x%x max 0x%x\n",
+>> +		caps->name, caps->buffer_size_min, caps->buffer_size_max);
+>> +
+>> +	ret = snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
+>> +					    SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
+>> +					    le32_to_cpu(caps->buffer_size_min),
+>> +					    le32_to_cpu(caps->buffer_size_max));
+>> +	if (ret) {
+>> +		dev_err(sdev->dev, "error: can't alloc DMA buffer size 0x%x/0x%x for %s %d\n",
+>> +			caps->buffer_size_min, caps->buffer_size_max,
+>> +			caps->name, ret);
+>> +		return ret;
 >> +	}
 > 
-> Is it safe to traverse the list without lock here?
-> There seems no lock in this and relevant code.
-
-will double-check and add a note. We tried to state when a lock is 
-needed and when it's not but this one was missed.
+> The error check here is redundant, please drop.
+> snd_pcm_lib_preallocate_pages() was changed to be void function
+> recently, so it'll be a build error.
+> 
+> 
+>> +
+>> +capture:
+>> +	stream = SNDRV_PCM_STREAM_CAPTURE;
+>> +
+>> +	/* do we need to pre-allocate capture audio buffer pages */
+>> +	if (!spcm->pcm.capture)
+>> +		return ret;
+>> +
+>> +	caps = &spcm->pcm.caps[stream];
+>> +
+>> +	/* pre-allocate capture audio buffer pages */
+>> +	dev_dbg(sdev->dev, "spcm: allocate %s capture DMA buffer size 0x%x max 0x%x\n",
+>> +		caps->name, caps->buffer_size_min, caps->buffer_size_max);
+>> +
+>> +	ret = snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
+>> +					    SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
+>> +					    le32_to_cpu(caps->buffer_size_min),
+>> +					    le32_to_cpu(caps->buffer_size_max));
+>> +	if (ret)
+>> +		dev_err(sdev->dev, "error: can't alloc DMA buffer size 0x%x/0x%x for %s %d\n",
+>> +			caps->buffer_size_min, caps->buffer_size_max,
+>> +			caps->name, ret);
+> 
+> Ditto.
+> 
+> 
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +/* fixup the BE DAI link to match any values from topology */
+>> +static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+>> +				  struct snd_pcm_hw_params *params)
+>> +{
+>> +	struct snd_interval *rate = hw_param_interval(params,
+>> +			SNDRV_PCM_HW_PARAM_RATE);
+>> +	struct snd_interval *channels = hw_param_interval(params,
+>> +						SNDRV_PCM_HW_PARAM_CHANNELS);
+>> +	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+>> +	struct snd_soc_component *component =
+>> +		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+>> +	struct snd_sof_dev *sdev =
+>> +		snd_soc_component_get_drvdata(component);
+>> +	struct snd_sof_dai *dai =
+>> +		snd_sof_find_dai(sdev, (char *)rtd->dai_link->name);
+>> +
+>> +	/* no topology exists for this BE, try a common configuration */
+>> +	if (!dai) {
+>> +		dev_warn(sdev->dev, "warning: no topology found for BE DAI %s config\n",
+>> +			 rtd->dai_link->name);
+>> +
+>> +		/*  set 48k, stereo, 16bits by default */
+>> +		rate->min = 48000;
+>> +		rate->max = 48000;
+>> +
+>> +		channels->min = 2;
+>> +		channels->max = 2;
+>> +
+>> +		snd_mask_none(fmt);
+>> +		snd_mask_set(fmt, (__force int)SNDRV_PCM_FORMAT_S16_LE);
+> 
+> Use snd_mask_set_format() macro.  That avoids the ugly cast.
+> 
+> 
+>> +
+>> +		return 0;
+>> +	}
+>> +
+>> +	/* read format from topology */
+>> +	snd_mask_none(fmt);
+>> +
+>> +	switch (dai->comp_dai.config.frame_fmt) {
+>> +	case SOF_IPC_FRAME_S16_LE:
+>> +		snd_mask_set(fmt, (__force int)SNDRV_PCM_FORMAT_S16_LE);
+>> +		break;
+>> +	case SOF_IPC_FRAME_S24_4LE:
+>> +		snd_mask_set(fmt, (__force int)SNDRV_PCM_FORMAT_S24_LE);
+>> +		break;
+>> +	case SOF_IPC_FRAME_S32_LE:
+>> +		snd_mask_set(fmt, (__force int)SNDRV_PCM_FORMAT_S32_LE);
+>> +		break;
+> 
+> Ditto for these three, too.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Sound-open-firmware mailing list
+> Sound-open-firmware@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/sound-open-firmware
+> 
