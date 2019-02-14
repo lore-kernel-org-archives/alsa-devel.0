@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 01/14] ASoC: SOF:
- Add Sound Open Firmware driver core
-Date: Thu, 14 Feb 2019 08:53:11 -0600
-Message-ID: <ecb982bf-5f45-4551-592c-8375d06415e0@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v4 04/14] ASoC: SOF:
+ Add support for IPC IO between DSP and Host
+Date: Thu, 14 Feb 2019 08:56:42 -0600
+Message-ID: <f44964a2-9339-6cd8-c30e-c139316dc7ad@linux.intel.com>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-2-pierre-louis.bossart@linux.intel.com>
- <s5h1s4abu2n.wl-tiwai@suse.de>
+ <20190213220734.10471-5-pierre-louis.bossart@linux.intel.com>
+ <s5hef8aziwh.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5h1s4abu2n.wl-tiwai@suse.de>
+In-Reply-To: <s5hef8aziwh.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,86 +25,65 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the quick reviews Takashi!
-
-On 2/14/19 3:25 AM, Takashi Iwai wrote:
-> On Wed, 13 Feb 2019 23:07:21 +0100,
+On 2/14/19 5:52 AM, Takashi Iwai wrote:
+> On Wed, 13 Feb 2019 23:07:24 +0100,
 > Pierre-Louis Bossart wrote:
->>
->> diff --git a/include/sound/soc.h b/include/sound/soc.h
->> index eb7db605955b..da3c13185263 100644
->> --- a/include/sound/soc.h
->> +++ b/include/sound/soc.h
->> @@ -1232,6 +1232,9 @@ struct snd_soc_pcm_runtime {
->>   	/* bit field */
->>   	unsigned int dev_registered:1;
->>   	unsigned int pop_wait:1;
->> +
->> +	/* private data - core does not touch */
->> +	void *private; /* FIXME: still SOF-specific, needs to less ambiguous */
-> 
-> Then better to name it sof_private?
-
-Ah, this is a mistake in the FIXME comment.
-initially we had a field called "sof" and Mark made the following comment:
-
-"
- > +++ b/include/sound/soc.h
- > @@ -1133,6 +1133,7 @@ struct snd_soc_pcm_runtime {
- >  	/* runtime devices */
- >  	struct snd_pcm *pcm;
- >  	struct snd_compr *compr;
- > +	struct snd_sof_pcm *sof;
- >  	struct snd_soc_dai *codec_dai;
- >  	struct snd_soc_dai *cpu_dai;
-
-Can we rename this somehow to be less specific to SoF or move it to be
-somewhere other than the runtime structure?  I can see why you've done
-this but I can also see every DSP vendor turning up and trying to add
-their own field in here.
-"
-
-so we added a FIXME to track this, then later we moved the field and 
-renamed it 'private' so that it can be used by others if needed but 
-didn't remove the FIXME. Will fix this.
-
-> 
-> 
->> +int snd_sof_create_page_table(struct snd_sof_dev *sdev,
->> +			      struct snd_dma_buffer *dmab,
->> +			      unsigned char *page_table, size_t size)
+>> +/* wait for IPC message reply */
+>> +static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
+>> +			void *reply_data)
 >> +{
->> +	int i, pages;
+>> +	struct snd_sof_dev *sdev = ipc->sdev;
+>> +	struct sof_ipc_cmd_hdr *hdr = (struct sof_ipc_cmd_hdr *)msg->msg_data;
+>> +	int ret;
 >> +
->> +	pages = snd_sgbuf_aligned_pages(size);
+>> +	/* wait for DSP IPC completion */
+>> +	ret = wait_event_timeout(msg->waitq, msg->ipc_complete,
+>> +				 msecs_to_jiffies(IPC_TIMEOUT_MS));
 >> +
->> +	dev_dbg(sdev->dev, "generating page table for %p size 0x%zx pages %d\n",
->> +		dmab->area, size, pages);
+>> +	/*
+>> +	 * ipc_lock is used to protect ipc message list shared by user
+>> +	 * contexts and a workqueue. There is no need to save interrupt
+>> +	 * status with spin_lock_irqsave.
+>> +	 */
+>> +	spin_lock_irq(&sdev->ipc_lock);
 >> +
->> +	for (i = 0; i < pages; i++) {
->> +		/*
->> +		 * The number of valid address bits for each page is 20.
->> +		 * idx determines the byte position within page_table
->> +		 * where the current page's address is stored
->> +		 * in the compressed page_table.
->> +		 * This can be calculated by multiplying the page number by 2.5.
->> +		 */
->> +		u32 idx = (5 * i) >> 1;
->> +		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
->> +		u32 *pg_table;
->> +
->> +		dev_vdbg(sdev->dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
->> +
->> +		pg_table = (u32 *)(page_table + idx);
->> +
->> +		if (i & 1)
->> +			*pg_table |= (pfn << 4);
->> +		else
->> +			*pg_table |= pfn;
+>> +	if (ret == 0) {
+>> +		dev_err(sdev->dev, "error: ipc timed out for 0x%x size 0x%x\n",
+>> +			hdr->cmd, hdr->size);
+>> +		snd_sof_dsp_dbg_dump(ipc->sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
+>> +		snd_sof_trace_notify_for_error(ipc->sdev);
+>> +		ret = -ETIMEDOUT;
+>> +	} else {
+>> +		/* copy the data returned from DSP */
+>> +		ret = snd_sof_dsp_get_reply(sdev, msg);
+>> +		if (msg->reply_size)
+>> +			memcpy(reply_data, msg->reply_data, msg->reply_size);
 > 
-> I guess this is OK for now, but better to give some notes that it's
-> x86-specific.  To be more generic, we'd have to consider endianess and
-> the unaligned access in the code above.
+> I'd add a sanity check here for avoiding a buffer overflow.
+> The reply buffer seems to be allocated in PAGE_SIZE.  Will it be more
+> than that?
 
-yes indeed, will check if we can make this more generic, and add notes 
-in any case.
+Good point, we'll check all the info returned by the DSP and see if they 
+need to be range-checked or size-checked.
+
+> 
+> 
+>> +/* find original TX message from DSP reply */
+>> +static struct snd_sof_ipc_msg *sof_ipc_reply_find_msg(struct snd_sof_ipc *ipc,
+>> +						      u32 header)
+>> +{
+>> +	struct snd_sof_dev *sdev = ipc->sdev;
+>> +	struct snd_sof_ipc_msg *msg;
+>> +
+>> +	header = SOF_IPC_MESSAGE_ID(header);
+>> +
+>> +	list_for_each_entry(msg, &ipc->reply_list, list) {
+>> +		if (SOF_IPC_MESSAGE_ID(msg->header) == header)
+>> +			return msg;
+>> +	}
+> 
+> Is it safe to traverse the list without lock here?
+> There seems no lock in this and relevant code.
+
+will double-check and add a note. We tried to state when a lock is 
+needed and when it's not but this one was missed.
