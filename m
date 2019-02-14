@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Specify DMA channel names
-	through custom DMA config" to the asoc tree
-Date: Thu, 14 Feb 2019 13:09:23 +0000 (GMT)
-Message-ID: <20190214130923.2AFE01126F78@debutante.sirena.org.uk>
+Subject: Applied "ASoC: samsung: odroid: Add support for
+	secondary CPU DAI" to the asoc tree
+Date: Thu, 14 Feb 2019 13:09:25 +0000 (GMT)
+Message-ID: <20190214130925.3E8DE1126F78@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 325062675CD
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 14:09:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 65E182675CD
+ for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 14:09:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,7 +26,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Specify DMA channel names through custom DMA config
+   ASoC: samsung: odroid: Add support for secondary CPU DAI
 
 has been applied to the asoc tree at
 
@@ -51,100 +51,238 @@ to this mail.
 Thanks,
 Mark
 
->From 0f928c19b646f6af39ccf7481a546e5da616bb78 Mon Sep 17 00:00:00 2001
+>From bc3cf17b575a7a97b4af7ddcf86133175da7a582 Mon Sep 17 00:00:00 2001
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 14 Feb 2019 10:37:41 +0100
-Subject: [PATCH] ASoC: samsung: Specify DMA channel names through custom DMA
- config
+Date: Thu, 14 Feb 2019 10:37:40 +0100
+Subject: [PATCH] ASoC: samsung: odroid: Add support for secondary CPU DAI
 
-This is a part of conversion of Samsung platforms to use the custom DMA
-config for specifying DMA channel names, in addition to passing custom
-DMA device for the secondary CPU DAI's "PCM" component for some variants
-of the I2S controller.
-
-We also don't set the SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME any more
-as setting it wouldn't allow to specify DMA channels through the custom
-DMA config.
+This patch adds DPCM links in order to support the secondary I2S interface.
+For the secondary PCM interface to be actually available one more entry
+should be added to the sound-dai property in sound/cpu node in DT.
+The changes in driver are done in a way so we are backwards compatible
+with existing DTS/DTB, i.e. if the cpu sound-dai property contains only
+one entry only one PCM will be registered.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/dmaengine.c   | 12 ++++--------
- sound/soc/samsung/i2s.c         |  2 +-
- sound/soc/samsung/s3c2412-i2s.c |  2 +-
- sound/soc/samsung/s3c24xx-i2s.c |  2 +-
- 4 files changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/samsung/odroid.c | 131 +++++++++++++++++++++++++++----------
+ 1 file changed, 95 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
-index 84601fa9aa46..302871974cb3 100644
---- a/sound/soc/samsung/dmaengine.c
-+++ b/sound/soc/samsung/dmaengine.c
-@@ -28,7 +28,6 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
- 				       const char *tx, const char *rx,
- 				       struct device *dma_dev)
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index e7b371b07230..18bb3bfe0300 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/module.h>
+@@ -17,21 +18,24 @@
+ 
+ struct odroid_priv {
+ 	struct snd_soc_card card;
+-	struct snd_soc_dai_link dai_link;
+-
+ 	struct clk *clk_i2s_bus;
+ 	struct clk *sclk_i2s;
+ };
+ 
+-static int odroid_card_startup(struct snd_pcm_substream *substream)
++static int odroid_card_fe_startup(struct snd_pcm_substream *substream)
  {
--	unsigned int flags = SND_DMAENGINE_PCM_FLAG_COMPAT;
- 	struct snd_dmaengine_pcm_config *pcm_conf;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  
- 	pcm_conf = devm_kzalloc(dev, sizeof(*pcm_conf), GFP_KERNEL);
-@@ -39,14 +38,11 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
- 	pcm_conf->compat_filter_fn = filter;
- 	pcm_conf->dma_dev = dma_dev;
- 
--	if (dev->of_node) {
--		pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
--		pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
--	} else {
--		flags |= SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME;
--	}
-+	pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
-+	pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
- 
--	return devm_snd_dmaengine_pcm_register(dev, pcm_conf, flags);
-+	return devm_snd_dmaengine_pcm_register(dev, pcm_conf,
-+				SND_DMAENGINE_PCM_FLAG_COMPAT);
+ 	snd_pcm_hw_constraint_single(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
  
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 692a752b194c..6ab99e38e6dd 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1460,7 +1460,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		pri_dai->drv->playback.channels_max = 6;
+-static int odroid_card_hw_params(struct snd_pcm_substream *substream,
++static const struct snd_soc_ops odroid_card_fe_ops = {
++	.startup = odroid_card_fe_startup,
++};
++
++static int odroid_card_be_hw_params(struct snd_pcm_substream *substream,
+ 				      struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -86,19 +90,55 @@ static int odroid_card_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev, pri_dai->filter,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
+-static const struct snd_soc_ops odroid_card_ops = {
+-	.startup = odroid_card_startup,
+-	.hw_params = odroid_card_hw_params,
++static const struct snd_soc_ops odroid_card_be_ops = {
++	.hw_params = odroid_card_be_hw_params,
++};
++
++static struct snd_soc_dai_link odroid_card_dais[] = {
++	{
++		/* Primary FE <-> BE link */
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.ops = &odroid_card_fe_ops,
++		.name = "Primary",
++		.stream_name = "Primary",
++		.platform_name = "3830000.i2s",
++		.dynamic = 1,
++		.dpcm_playback = 1,
++	}, {
++		/* BE <-> CODECs link */
++		.name = "I2S Mixer",
++		.cpu_name = "snd-soc-dummy",
++		.cpu_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "snd-soc-dummy",
++		.ops = &odroid_card_be_ops,
++		.no_pcm = 1,
++		.dpcm_playback = 1,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++				SND_SOC_DAIFMT_CBS_CFS,
++	}, {
++		/* Secondary FE <-> BE link */
++		.playback_only = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.ops = &odroid_card_fe_ops,
++		.name = "Secondary",
++		.stream_name = "Secondary",
++		.platform_name = "samsung-i2s-sec",
++		.dynamic = 1,
++		.dpcm_playback = 1,
++	}
+ };
+ 
+ static int odroid_audio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *cpu, *codec;
++	struct device_node *cpu, *cpu_dai, *codec;
+ 	struct odroid_priv *priv;
+-	struct snd_soc_dai_link *link;
+ 	struct snd_soc_card *card;
+-	int ret;
++	struct snd_soc_dai_link *link, *codec_link;
++	int num_pcms, ret, i;
++	struct of_phandle_args args = {};
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -130,45 +170,67 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
+ 
+-	link = &priv->dai_link;
+-
+-	link->ops = &odroid_card_ops;
+-	link->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-			SND_SOC_DAIFMT_CBS_CFS;
+-
+-	card->dai_link = &priv->dai_link;
+-	card->num_links = 1;
++	card->dai_link = odroid_card_dais;
++	card->num_links = ARRAY_SIZE(odroid_card_dais);
+ 
+ 	cpu = of_get_child_by_name(dev->of_node, "cpu");
+ 	codec = of_get_child_by_name(dev->of_node, "codec");
++	link = card->dai_link;
++	codec_link = &card->dai_link[1];
+ 
+-	link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
+-	if (!link->cpu_of_node) {
+-		dev_err(dev, "Failed parsing cpu/sound-dai property\n");
+-		return -EINVAL;
++	/*
++	 * For backwards compatibility create the secondary CPU DAI link only
++	 * if there are 2 CPU DAI entries in the cpu sound-dai property in DT.
++	 */
++	num_pcms = of_count_phandle_with_args(cpu, "sound-dai",
++					      "#sound-dai-cells");
++	if (num_pcms == 1)
++		card->num_links--;
++
++	for (i = 0; i < num_pcms; i++, link += 2) {
++		ret = of_parse_phandle_with_args(cpu, "sound-dai",
++						 "#sound-dai-cells", i, &args);
++		if (ret < 0)
++			return ret;
++
++		if (!args.np) {
++			dev_err(dev, "sound-dai property parse error: %d\n", ret);
++			return -EINVAL;
++		}
++
++		ret = snd_soc_get_dai_name(&args, &link->cpu_dai_name);
++		of_node_put(args.np);
++
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+-	ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++	cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
++	of_node_put(cpu);
++	of_node_put(codec);
++
++	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
  	if (ret < 0)
- 		goto err_disable_clk;
+ 		goto err_put_codec_n;
  
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 67dfa27ae321..c08638b0e458 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -177,7 +177,7 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+-	link->platform_of_node = link->cpu_of_node;
+-
+-	link->name = "Primary";
+-	link->stream_name = link->name;
+-
++	/* Set capture capability only for boards with the MAX98090 CODEC */
++	if (codec_link->num_codecs > 1) {
++		card->dai_link[0].dpcm_capture = 1;
++		card->dai_link[1].dpcm_capture = 1;
++	}
  
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev,
- 						 pdata->dma_filter,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
- 	if (ret) {
- 		pr_err("failed to register the DMA: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index ba0f2b94f8d4..a8026b640c95 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -446,7 +446,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
+-	priv->sclk_i2s = of_clk_get_by_name(link->cpu_of_node, "i2s_opclk1");
++	priv->sclk_i2s = of_clk_get_by_name(cpu_dai, "i2s_opclk1");
+ 	if (IS_ERR(priv->sclk_i2s)) {
+ 		ret = PTR_ERR(priv->sclk_i2s);
+-		goto err_put_i2s_n;
++		goto err_put_codec_n;
+ 	}
  
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
- 		return ret;
+-	priv->clk_i2s_bus = of_clk_get_by_name(link->cpu_of_node, "iis");
++	priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
+ 	if (IS_ERR(priv->clk_i2s_bus)) {
+ 		ret = PTR_ERR(priv->clk_i2s_bus);
+ 		goto err_put_sclk;
+ 	}
++	of_node_put(cpu_dai);
+ 
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret < 0) {
+@@ -182,10 +244,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	clk_put(priv->clk_i2s_bus);
+ err_put_sclk:
+ 	clk_put(priv->sclk_i2s);
+-err_put_i2s_n:
+-	of_node_put(link->cpu_of_node);
+ err_put_codec_n:
+-	snd_soc_of_put_dai_link_codecs(link);
++	snd_soc_of_put_dai_link_codecs(codec_link);
+ 	return ret;
+ }
+ 
+@@ -193,8 +253,7 @@ static int odroid_audio_remove(struct platform_device *pdev)
+ {
+ 	struct odroid_priv *priv = platform_get_drvdata(pdev);
+ 
+-	of_node_put(priv->dai_link.cpu_of_node);
+-	snd_soc_of_put_dai_link_codecs(&priv->dai_link);
++	snd_soc_of_put_dai_link_codecs(&priv->card.dai_link[1]);
+ 	clk_put(priv->sclk_i2s);
+ 	clk_put(priv->clk_i2s_bus);
+ 
 -- 
 2.20.1
