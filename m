@@ -1,82 +1,198 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v3 Resend 00/13] ASoC: dmaengine updates,
- secondary CPU DAI for Odroid
-Date: Thu, 14 Feb 2019 10:37:34 +0100
-Message-ID: <20190214093747.2414-1-s.nawrocki@samsung.com>
-References: <CGME20190214093822epcas2p11380606cb3272aa4fd56eb55dea8f8c8@epcas2p1.samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 6007B267482
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 10:38:27 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v3 Resend 03/13] ASoC: samsung: i2s: Move IP variant data to
+ common driver data structure
+Date: Thu, 14 Feb 2019 10:37:37 +0100
+Message-ID: <20190214093747.2414-4-s.nawrocki@samsung.com>
+References: <20190214093747.2414-1-s.nawrocki@samsung.com>
+        <CGME20190214093831epcas1p2a42c5b95424a251e7ae38dd21c1a4696@epcas1p2.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20190214093747.2414-1-s.nawrocki@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a rebased version with the build break fixed and added Krzysztof's 
-Acks. My apologies, I double checked there is no build errors between patches 
-this time.
+The IP variant data is another thing common for both DAIs, move it
+to the driver's common data structure.
 
-Below is cover letter text from v2.
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ sound/soc/samsung/i2s.c | 42 ++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-This series restores support for the secondary CPU DAI in samsung/i2s.c
-driver and adds support for secondary CPU DAI on Odroid boards.
-
-I have added 4 more clean up patches comparing to first version of the
-patch set (16/22...19/22).
-
-The first patch adds new platform device for the secondary PCM, I tried to
-avoid registering new platform device in probe() as it doesn't play well
-with deferred probing but couldn't find a way to avoid that new device,
-unique devices are needed to register "PCM" components for each CPU DAI.
-
-Patches 2/21...11/21 are mostly a clean up, following conversion to single
-component with multiple DAIs, allowing to reference both primary/secondary
-DAI in DT.
-
-The patch set has been tested on Odroid U3, XU3, XU4 and Mini2440
-(s3c2440 non-DT) boards.
-
-Changes since v1 ((addressing Krzysztof's review comments):
- - added a comment, whitespace change in patch 1/21
- - dropped unnecessary new line addition from patch 1/21
-
-Sylwester Nawrocki (13):
-  ASoC: samsung: i2s: Move SFR pointer to common driver data structure
-  ASoC: samsung: i2s: Drop spinlock pointer from i2s_dai data structure
-  ASoC: samsung: i2s: Move IP variant data to common driver data
-    structure
-  ASoC: samsung: i2s: Move quirks data to common driver data structure
-  ASoC: samsung: i2s: Get rid of a static spinlock
-  ASoC: samsung: odroid: Add support for secondary CPU DAI
-  ASoC: samsung: Specify DMA channel names through custom DMA config
-  ASoC: samsung: Drop DAI DMA data chan_name assignments
-  ASoC: dmaengine: Remove unused
-    SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
-  ASoC: samsung: i2s: Simplify pri_dai, sec_dai pointers usage
-  ASoC: samsung: i2s: Change indentation in SAMSUNG_I2S_FMTS definition
-  ASoC: samsung: i2s: Comments clean up
-  ASoC: samsung: i2s: Convert to SPDX License Indentifier
-
- include/sound/dmaengine_pcm.h         |   6 -
- sound/soc/samsung/dmaengine.c         |  12 +-
- sound/soc/samsung/i2s.c               | 297 +++++++++++++-------------
- sound/soc/samsung/odroid.c            | 131 ++++++++----
- sound/soc/samsung/s3c2412-i2s.c       |   4 +-
- sound/soc/samsung/s3c24xx-i2s.c       |   4 +-
- sound/soc/soc-generic-dmaengine-pcm.c |  21 +-
- 7 files changed, 250 insertions(+), 225 deletions(-)
-
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index cf8615e23879..0c4c4de8c7e9 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -85,7 +85,6 @@ struct i2s_dai {
+ 	struct snd_dmaengine_dai_dma_data idma_playback;
+ 	dma_filter_fn filter;
+ 	u32	quirks;
+-	const struct samsung_i2s_variant_regs *variant_regs;
+ 
+ 	struct samsung_i2s_priv *priv;
+ };
+@@ -122,6 +121,8 @@ struct samsung_i2s_priv {
+ 	u32 suspend_i2scon;
+ 	u32 suspend_i2spsr;
+ 
++	const struct samsung_i2s_variant_regs *variant_regs;
++
+ 	/* The clock provider's data */
+ 	struct clk *clk_table[3];
+ 	struct clk_onecell_data clk_data;
+@@ -146,7 +147,7 @@ static inline bool is_slave(struct i2s_dai *i2s)
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 
+ 	u32 mod = readl(priv->addr + I2SMOD);
+-	return (mod & (1 << i2s->variant_regs->mss_off)) ? true : false;
++	return (mod & (1 << priv->variant_regs->mss_off)) ? true : false;
+ }
+ 
+ /* If this interface of the controller is transmitting data */
+@@ -261,8 +262,8 @@ static inline unsigned get_rfs(struct i2s_dai *i2s)
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	u32 rfs;
+ 
+-	rfs = readl(priv->addr + I2SMOD) >> i2s->variant_regs->rfs_off;
+-	rfs &= i2s->variant_regs->rfs_mask;
++	rfs = readl(priv->addr + I2SMOD) >> priv->variant_regs->rfs_off;
++	rfs &= priv->variant_regs->rfs_mask;
+ 
+ 	switch (rfs) {
+ 	case 7: return 192;
+@@ -281,9 +282,9 @@ static inline void set_rfs(struct i2s_dai *i2s, unsigned rfs)
+ {
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	u32 mod = readl(priv->addr + I2SMOD);
+-	int rfs_shift = i2s->variant_regs->rfs_off;
++	int rfs_shift = priv->variant_regs->rfs_off;
+ 
+-	mod &= ~(i2s->variant_regs->rfs_mask << rfs_shift);
++	mod &= ~(priv->variant_regs->rfs_mask << rfs_shift);
+ 
+ 	switch (rfs) {
+ 	case 192:
+@@ -321,8 +322,8 @@ static inline unsigned get_bfs(struct i2s_dai *i2s)
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	u32 bfs;
+ 
+-	bfs = readl(priv->addr + I2SMOD) >> i2s->variant_regs->bfs_off;
+-	bfs &= i2s->variant_regs->bfs_mask;
++	bfs = readl(priv->addr + I2SMOD) >> priv->variant_regs->bfs_off;
++	bfs &= priv->variant_regs->bfs_mask;
+ 
+ 	switch (bfs) {
+ 	case 8: return 256;
+@@ -343,7 +344,7 @@ static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs)
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	u32 mod = readl(priv->addr + I2SMOD);
+ 	int tdm = i2s->quirks & QUIRK_SUPPORTS_TDM;
+-	int bfs_shift = i2s->variant_regs->bfs_off;
++	int bfs_shift = priv->variant_regs->bfs_off;
+ 
+ 	/* Non-TDM I2S controllers do not support BCLK > 48 * FS */
+ 	if (!tdm && bfs > 48) {
+@@ -351,7 +352,7 @@ static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs)
+ 		return;
+ 	}
+ 
+-	mod &= ~(i2s->variant_regs->bfs_mask << bfs_shift);
++	mod &= ~(priv->variant_regs->bfs_mask << bfs_shift);
+ 
+ 	switch (bfs) {
+ 	case 48:
+@@ -408,7 +409,7 @@ static void i2s_txctrl(struct i2s_dai *i2s, int on)
+ {
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	void __iomem *addr = priv->addr;
+-	int txr_off = i2s->variant_regs->txr_off;
++	int txr_off = priv->variant_regs->txr_off;
+ 	u32 con = readl(addr + I2SCON);
+ 	u32 mod = readl(addr + I2SMOD) & ~(3 << txr_off);
+ 
+@@ -459,7 +460,7 @@ static void i2s_rxctrl(struct i2s_dai *i2s, int on)
+ {
+ 	struct samsung_i2s_priv *priv = i2s->priv;
+ 	void __iomem *addr = priv->addr;
+-	int txr_off = i2s->variant_regs->txr_off;
++	int txr_off = priv->variant_regs->txr_off;
+ 	u32 con = readl(addr + I2SCON);
+ 	u32 mod = readl(addr + I2SMOD) & ~(3 << txr_off);
+ 
+@@ -516,7 +517,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int rfs,
+ 	struct samsung_i2s_priv *priv = snd_soc_dai_get_drvdata(dai);
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	struct i2s_dai *other = get_other_dai(i2s);
+-	const struct samsung_i2s_variant_regs *i2s_regs = i2s->variant_regs;
++	const struct samsung_i2s_variant_regs *i2s_regs = priv->variant_regs;
+ 	unsigned int cdcon_mask = 1 << i2s_regs->cdclkcon_off;
+ 	unsigned int rsrc_mask = 1 << i2s_regs->rclksrc_off;
+ 	u32 mod, mask, val = 0;
+@@ -644,9 +645,9 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	u32 mod, tmp = 0;
+ 	unsigned long flags;
+ 
+-	lrp_shift = i2s->variant_regs->lrp_off;
+-	sdf_shift = i2s->variant_regs->sdf_off;
+-	mod_slave = 1 << i2s->variant_regs->mss_off;
++	lrp_shift = priv->variant_regs->lrp_off;
++	sdf_shift = priv->variant_regs->sdf_off;
++	mod_slave = 1 << priv->variant_regs->mss_off;
+ 
+ 	sdf_mask = MOD_SDF_MASK << sdf_shift;
+ 	lrp_rlow = MOD_LR_RLOW << lrp_shift;
+@@ -1023,7 +1024,6 @@ i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	u32 reg = readl(priv->addr + I2SFIC);
+ 	snd_pcm_sframes_t delay;
+-	const struct samsung_i2s_variant_regs *i2s_regs = i2s->variant_regs;
+ 
+ 	WARN_ON(!pm_runtime_active(dai->dev));
+ 
+@@ -1032,7 +1032,7 @@ i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ 	else if (is_secondary(i2s))
+ 		delay = FICS_TXCOUNT(readl(priv->addr + I2SFICS));
+ 	else
+-		delay = (reg >> i2s_regs->ftx0cnt_off) & 0x7f;
++		delay = (reg >> priv->variant_regs->ftx0cnt_off) & 0x7f;
+ 
+ 	return delay;
+ }
+@@ -1281,7 +1281,7 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
+ 	const char *p_names[2] = { NULL };
+ 	struct device *dev = &priv->pdev->dev;
+ 	struct i2s_dai *i2s = samsung_i2s_get_pri_dai(dev);
+-	const struct samsung_i2s_variant_regs *reg_info = i2s->variant_regs;
++	const struct samsung_i2s_variant_regs *reg_info = priv->variant_regs;
+ 	const char *i2s_clk_name[ARRAY_SIZE(i2s_clk_desc)];
+ 	struct clk *rclksrc;
+ 	int ret, i;
+@@ -1400,6 +1400,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
++	priv->variant_regs = i2s_dai_data->i2s_variant_regs;
++
+ 	quirks = np ? i2s_dai_data->quirks : i2s_pdata->type.quirks;
+ 	num_dais = (quirks & QUIRK_SEC_DAI) ? 2 : 1;
+ 	priv->pdev = pdev;
+@@ -1458,7 +1460,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	pri_dai->dma_playback.addr_width = 4;
+ 	pri_dai->dma_capture.addr_width = 4;
+ 	pri_dai->quirks = quirks;
+-	pri_dai->variant_regs = i2s_dai_data->i2s_variant_regs;
+ 	pri_dai->priv = priv;
+ 
+ 	if (quirks & QUIRK_PRI_6CHAN)
+@@ -1472,7 +1473,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	if (quirks & QUIRK_SEC_DAI) {
+ 		sec_dai = &priv->dai[SAMSUNG_I2S_ID_SECONDARY - 1];
+ 
+-		sec_dai->variant_regs = pri_dai->variant_regs;
+ 		sec_dai->dma_playback.addr = regs_base + I2STXDS;
+ 		sec_dai->dma_playback.chan_name = "tx-sec";
+ 
 -- 
 2.17.1
