@@ -1,10 +1,10 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v3 Resend 07/13] ASoC: samsung: Specify DMA channel names
- through custom DMA config
-Date: Thu, 14 Feb 2019 10:37:41 +0100
-Message-ID: <20190214093747.2414-8-s.nawrocki@samsung.com>
+Subject: [PATCH v3 Resend 11/13] ASoC: samsung: i2s: Change indentation in
+ SAMSUNG_I2S_FMTS definition
+Date: Thu, 14 Feb 2019 10:37:45 +0100
+Message-ID: <20190214093747.2414-12-s.nawrocki@samsung.com>
 References: <20190214093747.2414-1-s.nawrocki@samsung.com>
-        <CGME20190214093842epcas1p154bd9c945a6897d5211c152aefabb32c@epcas1p1.samsung.com>
+        <CGME20190214093853epcas2p2f48340585495bf0ba662ae42399d1cab@epcas2p2.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-reply-to: <20190214093747.2414-1-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -12,93 +12,30 @@ To: broonie@kernel.org
 Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a part of conversion of Samsung platforms to use the custom DMA
-config for specifying DMA channel names, in addition to passing custom
-DMA device for the secondary CPU DAI's "PCM" component for some variants
-of the I2S controller.
-
-We also don't set the SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME any more
-as setting it wouldn't allow to specify DMA channels through the custom
-DMA config.
+Change indentation so this macro definition spans 2 rows and looks
+more consistent with surrounding code.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/samsung/dmaengine.c   | 12 ++++--------
- sound/soc/samsung/i2s.c         |  2 +-
- sound/soc/samsung/s3c2412-i2s.c |  2 +-
- sound/soc/samsung/s3c24xx-i2s.c |  2 +-
- 4 files changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/samsung/i2s.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
-index 84601fa9aa46..302871974cb3 100644
---- a/sound/soc/samsung/dmaengine.c
-+++ b/sound/soc/samsung/dmaengine.c
-@@ -28,7 +28,6 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
- 				       const char *tx, const char *rx,
- 				       struct device *dma_dev)
- {
--	unsigned int flags = SND_DMAENGINE_PCM_FLAG_COMPAT;
- 	struct snd_dmaengine_pcm_config *pcm_conf;
- 
- 	pcm_conf = devm_kzalloc(dev, sizeof(*pcm_conf), GFP_KERNEL);
-@@ -39,14 +38,11 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
- 	pcm_conf->compat_filter_fn = filter;
- 	pcm_conf->dma_dev = dma_dev;
- 
--	if (dev->of_node) {
--		pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
--		pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
--	} else {
--		flags |= SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME;
--	}
-+	pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
-+	pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
- 
--	return devm_snd_dmaengine_pcm_register(dev, pcm_conf, flags);
-+	return devm_snd_dmaengine_pcm_register(dev, pcm_conf,
-+				SND_DMAENGINE_PCM_FLAG_COMPAT);
- }
- EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
- 
 diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 692a752b194c..6ab99e38e6dd 100644
+index 4f15b6af8268..e0c151843f9e 100644
 --- a/sound/soc/samsung/i2s.c
 +++ b/sound/soc/samsung/i2s.c
-@@ -1460,7 +1460,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		pri_dai->drv->playback.channels_max = 6;
+@@ -1150,9 +1150,8 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+ 	.num_dapm_routes = ARRAY_SIZE(samsung_i2s_dapm_routes),
+ };
  
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev, pri_dai->filter,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
- 	if (ret < 0)
- 		goto err_disable_clk;
+-#define SAMSUNG_I2S_FMTS	(SNDRV_PCM_FMTBIT_S8 | \
+-					SNDRV_PCM_FMTBIT_S16_LE | \
+-					SNDRV_PCM_FMTBIT_S24_LE)
++#define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
++			  SNDRV_PCM_FMTBIT_S24_LE)
  
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 67dfa27ae321..c08638b0e458 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -177,7 +177,7 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
- 
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev,
- 						 pdata->dma_filter,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
- 	if (ret) {
- 		pr_err("failed to register the DMA: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index ba0f2b94f8d4..a8026b640c95 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -446,7 +446,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
- 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
- 
- 	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
--						 NULL, NULL, NULL);
-+						 "tx", "rx", NULL);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
- 		return ret;
+ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 			  const struct samsung_i2s_dai_data *i2s_dai_data,
 -- 
 2.17.1
