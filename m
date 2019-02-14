@@ -1,10 +1,10 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v3 Resend 04/13] ASoC: samsung: i2s: Move quirks data to
- common driver data structure
-Date: Thu, 14 Feb 2019 10:37:38 +0100
-Message-ID: <20190214093747.2414-5-s.nawrocki@samsung.com>
+Subject: [PATCH v3 Resend 07/13] ASoC: samsung: Specify DMA channel names
+ through custom DMA config
+Date: Thu, 14 Feb 2019 10:37:41 +0100
+Message-ID: <20190214093747.2414-8-s.nawrocki@samsung.com>
 References: <20190214093747.2414-1-s.nawrocki@samsung.com>
-        <CGME20190214093833epcas2p1cd99c749360aadf06a551810862d9bf4@epcas2p1.samsung.com>
+        <CGME20190214093842epcas1p154bd9c945a6897d5211c152aefabb32c@epcas1p1.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-reply-to: <20190214093747.2414-1-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -12,161 +12,93 @@ To: broonie@kernel.org
 Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The quirk flags are common for the primary and the secondary DAI
-so move respective field from struct i2s_dai to common driver data
-structure.
+This is a part of conversion of Samsung platforms to use the custom DMA
+config for specifying DMA channel names, in addition to passing custom
+DMA device for the secondary CPU DAI's "PCM" component for some variants
+of the I2S controller.
+
+We also don't set the SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME any more
+as setting it wouldn't allow to specify DMA channels through the custom
+DMA config.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+ sound/soc/samsung/dmaengine.c   | 12 ++++--------
+ sound/soc/samsung/i2s.c         |  2 +-
+ sound/soc/samsung/s3c2412-i2s.c |  2 +-
+ sound/soc/samsung/s3c24xx-i2s.c |  2 +-
+ 4 files changed, 7 insertions(+), 11 deletions(-)
 
+diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
+index 84601fa9aa46..302871974cb3 100644
+--- a/sound/soc/samsung/dmaengine.c
++++ b/sound/soc/samsung/dmaengine.c
+@@ -28,7 +28,6 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
+ 				       const char *tx, const char *rx,
+ 				       struct device *dma_dev)
+ {
+-	unsigned int flags = SND_DMAENGINE_PCM_FLAG_COMPAT;
+ 	struct snd_dmaengine_pcm_config *pcm_conf;
+ 
+ 	pcm_conf = devm_kzalloc(dev, sizeof(*pcm_conf), GFP_KERNEL);
+@@ -39,14 +38,11 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
+ 	pcm_conf->compat_filter_fn = filter;
+ 	pcm_conf->dma_dev = dma_dev;
+ 
+-	if (dev->of_node) {
+-		pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
+-		pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
+-	} else {
+-		flags |= SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME;
+-	}
++	pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
++	pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
+ 
+-	return devm_snd_dmaengine_pcm_register(dev, pcm_conf, flags);
++	return devm_snd_dmaengine_pcm_register(dev, pcm_conf,
++				SND_DMAENGINE_PCM_FLAG_COMPAT);
+ }
+ EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
+ 
 diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 0c4c4de8c7e9..8f0af4b0f25a 100644
+index 692a752b194c..6ab99e38e6dd 100644
 --- a/sound/soc/samsung/i2s.c
 +++ b/sound/soc/samsung/i2s.c
-@@ -84,7 +84,6 @@ struct i2s_dai {
- 	struct snd_dmaengine_dai_dma_data dma_capture;
- 	struct snd_dmaengine_dai_dma_data idma_playback;
- 	dma_filter_fn filter;
--	u32	quirks;
+@@ -1460,7 +1460,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		pri_dai->drv->playback.channels_max = 6;
  
- 	struct samsung_i2s_priv *priv;
- };
-@@ -122,19 +121,13 @@ struct samsung_i2s_priv {
- 	u32 suspend_i2spsr;
- 
- 	const struct samsung_i2s_variant_regs *variant_regs;
-+	u32 quirks;
- 
- 	/* The clock provider's data */
- 	struct clk *clk_table[3];
- 	struct clk_onecell_data clk_data;
- };
- 
--struct i2s_dai *samsung_i2s_get_pri_dai(struct device *dev)
--{
--	struct samsung_i2s_priv *priv = dev_get_drvdata(dev);
--
--	return &priv->dai[SAMSUNG_I2S_ID_PRIMARY - 1];
--}
--
- /* Returns true if this is the 'overlay' stereo DAI */
- static inline bool is_secondary(struct i2s_dai *i2s)
- {
-@@ -343,7 +336,7 @@ static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs)
- {
- 	struct samsung_i2s_priv *priv = i2s->priv;
- 	u32 mod = readl(priv->addr + I2SMOD);
--	int tdm = i2s->quirks & QUIRK_SUPPORTS_TDM;
-+	int tdm = priv->quirks & QUIRK_SUPPORTS_TDM;
- 	int bfs_shift = priv->variant_regs->bfs_off;
- 
- 	/* Non-TDM I2S controllers do not support BCLK > 48 * FS */
-@@ -563,7 +556,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int rfs,
- 	case SAMSUNG_I2S_RCLKSRC_1: /* clock corrsponding to IISMOD[10] := 1 */
- 		mask = 1 << i2s_regs->rclksrc_off;
- 
--		if ((i2s->quirks & QUIRK_NO_MUXPSR)
-+		if ((priv->quirks & QUIRK_NO_MUXPSR)
- 				|| (clk_id == SAMSUNG_I2S_RCLKSRC_0))
- 			clk_id = 0;
- 		else
-@@ -832,6 +825,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- static int i2s_startup(struct snd_pcm_substream *substream,
- 	  struct snd_soc_dai *dai)
- {
-+	struct samsung_i2s_priv *priv = snd_soc_dai_get_drvdata(dai);
- 	struct i2s_dai *i2s = to_info(dai);
- 	struct i2s_dai *other = get_other_dai(i2s);
- 	unsigned long flags;
-@@ -847,7 +841,7 @@ static int i2s_startup(struct snd_pcm_substream *substream,
- 	else
- 		i2s->mode |= DAI_MANAGER;
- 
--	if (!any_active(i2s) && (i2s->quirks & QUIRK_NEED_RSTCLR))
-+	if (!any_active(i2s) && (priv->quirks & QUIRK_NEED_RSTCLR))
- 		writel(CON_RSTCLR, i2s->priv->addr + I2SCON);
- 
- 	spin_unlock_irqrestore(&lock, flags);
-@@ -929,7 +923,7 @@ static int config_setup(struct i2s_dai *i2s)
- 	if (is_slave(i2s))
- 		return 0;
- 
--	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
-+	if (!(priv->quirks & QUIRK_NO_MUXPSR)) {
- 		psr = priv->rclk_srcrate / i2s->frmclk / rfs;
- 		writel(((psr - 1) << 8) | PSR_PSREN, priv->addr + I2SPSR);
- 		dev_dbg(&i2s->pdev->dev,
-@@ -1068,10 +1062,10 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 		snd_soc_dai_init_dma_data(dai, &i2s->dma_playback,
- 					   &i2s->dma_capture);
- 
--		if (i2s->quirks & QUIRK_NEED_RSTCLR)
-+		if (priv->quirks & QUIRK_NEED_RSTCLR)
- 			writel(CON_RSTCLR, priv->addr + I2SCON);
- 
--		if (i2s->quirks & QUIRK_SUPPORTS_IDMA)
-+		if (priv->quirks & QUIRK_SUPPORTS_IDMA)
- 			idma_reg_addr_init(priv->addr,
- 					i2s->sec_dai->idma_playback.addr);
- 	}
-@@ -1106,7 +1100,7 @@ static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
- 	pm_runtime_get_sync(dai->dev);
- 
- 	if (!is_secondary(i2s)) {
--		if (i2s->quirks & QUIRK_NEED_RSTCLR) {
-+		if (priv->quirks & QUIRK_NEED_RSTCLR) {
- 			spin_lock_irqsave(&priv->lock, flags);
- 			writel(0, priv->addr + I2SCON);
- 			spin_unlock_irqrestore(&priv->lock, flags);
-@@ -1280,7 +1274,6 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
- 	const char *clk_name[2] = { "i2s_opclk0", "i2s_opclk1" };
- 	const char *p_names[2] = { NULL };
- 	struct device *dev = &priv->pdev->dev;
--	struct i2s_dai *i2s = samsung_i2s_get_pri_dai(dev);
- 	const struct samsung_i2s_variant_regs *reg_info = priv->variant_regs;
- 	const char *i2s_clk_name[ARRAY_SIZE(i2s_clk_desc)];
- 	struct clk *rclksrc;
-@@ -1306,7 +1299,7 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
- 			return -ENOMEM;
- 	}
- 
--	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
-+	if (!(priv->quirks & QUIRK_NO_MUXPSR)) {
- 		/* Activate the prescaler */
- 		u32 val = readl(priv->addr + I2SPSR);
- 		writel(val | PSR_PSREN, priv->addr + I2SPSR);
-@@ -1400,11 +1393,11 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
--	priv->variant_regs = i2s_dai_data->i2s_variant_regs;
--
- 	quirks = np ? i2s_dai_data->quirks : i2s_pdata->type.quirks;
- 	num_dais = (quirks & QUIRK_SEC_DAI) ? 2 : 1;
- 	priv->pdev = pdev;
-+	priv->variant_regs = i2s_dai_data->i2s_variant_regs;
-+	priv->quirks = quirks;
- 
- 	ret = i2s_alloc_dais(priv, i2s_dai_data, num_dais);
+ 	ret = samsung_asoc_dma_platform_register(&pdev->dev, pri_dai->filter,
+-						 NULL, NULL, NULL);
++						 "tx", "rx", NULL);
  	if (ret < 0)
-@@ -1459,7 +1452,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	pri_dai->dma_capture.chan_name = "rx";
- 	pri_dai->dma_playback.addr_width = 4;
- 	pri_dai->dma_capture.addr_width = 4;
--	pri_dai->quirks = quirks;
- 	pri_dai->priv = priv;
+ 		goto err_disable_clk;
  
- 	if (quirks & QUIRK_PRI_6CHAN)
-@@ -1482,7 +1474,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		}
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 67dfa27ae321..c08638b0e458 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -177,7 +177,7 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
  
- 		sec_dai->dma_playback.addr_width = 4;
--		sec_dai->quirks = quirks;
- 		sec_dai->idma_playback.addr = idma_addr;
- 		sec_dai->pri_dai = pri_dai;
- 		sec_dai->priv = priv;
+ 	ret = samsung_asoc_dma_platform_register(&pdev->dev,
+ 						 pdata->dma_filter,
+-						 NULL, NULL, NULL);
++						 "tx", "rx", NULL);
+ 	if (ret) {
+ 		pr_err("failed to register the DMA: %d\n", ret);
+ 		return ret;
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index ba0f2b94f8d4..a8026b640c95 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -446,7 +446,7 @@ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ 	s3c24xx_i2s_pcm_stereo_in.addr = res->start + S3C2410_IISFIFO;
+ 
+ 	ret = samsung_asoc_dma_platform_register(&pdev->dev, NULL,
+-						 NULL, NULL, NULL);
++						 "tx", "rx", NULL);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register the DMA: %d\n", ret);
+ 		return ret;
 -- 
 2.17.1
