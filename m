@@ -1,85 +1,46 @@
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH v4 08/14] ASoC: SOF: Add DSP HW abstraction
-	operations
-Date: Thu, 14 Feb 2019 15:45:10 +0200
-Message-ID: <20190214134510.GZ9224@smile.fi.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-9-pierre-louis.bossart@linux.intel.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH v3 Resend 09/13] ASoC: dmaengine: Remove unused
+ SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
+Date: Thu, 14 Feb 2019 15:32:38 +0100
+Message-ID: <94582faf-3054-9b40-8c15-15b70f984286@samsung.com>
+References: <20190214093747.2414-1-s.nawrocki@samsung.com>
+        <CGME20190214093847epcas2p1056c7371ba485f375a9d408ea45078e4@epcas2p1.samsung.com>
+        <20190214093747.2414-10-s.nawrocki@samsung.com>
+        <20190214130747.GA11988@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <20190213220734.10471-9-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20190214130747.GA11988@sirena.org.uk>
+Content-language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 13, 2019 at 04:07:28PM -0600, Pierre-Louis Bossart wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+On 2/14/19 14:07, Mark Brown wrote:
+> On Thu, Feb 14, 2019 at 10:37:43AM +0100, Sylwester Nawrocki wrote:
 > 
-> Add operation pointers that can be called by core to control a wide
-> variety of DSP targets. The DSP HW drivers will fill in these
-> operations.
+>>  	u32 maxburst;
+>>  	unsigned int slave_id;
+>>  	void *filter_data;
+>> -	const char *chan_name;
+>>  	unsigned int fifo_size;
+>>  	unsigned int flags;
+> 
+> This fails to build:
+> 
+>   CC      sound/core/pcm_dmaengine.o
+> sound/arm/pxa2xx-pcm-lib.c: In function ‘pxa2xx_pcm_open’:
+> sound/arm/pxa2xx-pcm-lib.c:128:22: error: ‘struct snd_dmaengine_dai_dma_data’ has no member named ‘chan_name’
+>             dma_params->chan_name));
+>                       ^~
+> sound/arm/pxa2xx-pcm-lib.c:129:1: warning: control reaches end of non-void function [-Wreturn-type]
+>  }
+>  ^
 
-> +int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
-> +				     u32 mask, u32 value)
-> +{
-> +	struct pci_dev *pci = to_pci_dev(sdev->dev);
-> +	unsigned int old, new;
-
-> +	u32 ret = ~0; /* explicit init to remove uninitialized use warnings */
-
-In case you handle pci_read_config_dword() errors, would you get same warning?
-
-Something like
-
-unsigned int old, new;
-int ret;
-
-ret = pci_read_config_dword(..., &old);
-if (ret)
-	return -ENXIO;
-
-...
-
-
-I really don't like such assignments that potentially can shadow a real corner
-cases.
-
-> +
-> +	pci_read_config_dword(pci, offset, &ret);
-> +	old = ret;
-> +	dev_dbg(sdev->dev, "Debug PCIR: %8.8x at  %8.8x\n", old & mask, offset);
-> +
-
-> +	new = (old & (~mask)) | (value & mask);
-
-(~mask) -> ~mask.
-
-> +
-> +	if (old == new)
-> +		return false;
-
-
-
-> +
-> +	pci_write_config_dword(pci, offset, new);
-> +	dev_dbg(sdev->dev, "Debug PCIW: %8.8x at  %8.8x\n", value,
-> +		offset);
-> +
-> +	return true;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
+Hm, looks like we need still to keep that data structure field, but 
+remaining part of the patch could be applied. Do you want me to 
+resend it with chan_name removal part dropped?
+The $subject patch is optional so we could also skip it and apply remaining
+patches so there is no another resend.
