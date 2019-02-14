@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Simplify pri_dai,
-	sec_dai pointers usage" to the asoc tree
-Date: Thu, 14 Feb 2019 14:51:18 +0000 (GMT)
-Message-ID: <20190214145118.2FACF1126F78@debutante.sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v4 01/14] ASoC: SOF:
+ Add Sound Open Firmware driver core
+Date: Thu, 14 Feb 2019 08:53:11 -0600
+Message-ID: <ecb982bf-5f45-4551-592c-8375d06415e0@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <20190213220734.10471-2-pierre-louis.bossart@linux.intel.com>
+ <s5h1s4abu2n.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EBF0B2673E2
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 15:51:19 +0100 (CET)
+In-Reply-To: <s5h1s4abu2n.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,80 +21,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Thanks for the quick reviews Takashi!
 
-   ASoC: samsung: i2s: Simplify pri_dai, sec_dai pointers usage
+On 2/14/19 3:25 AM, Takashi Iwai wrote:
+> On Wed, 13 Feb 2019 23:07:21 +0100,
+> Pierre-Louis Bossart wrote:
+>>
+>> diff --git a/include/sound/soc.h b/include/sound/soc.h
+>> index eb7db605955b..da3c13185263 100644
+>> --- a/include/sound/soc.h
+>> +++ b/include/sound/soc.h
+>> @@ -1232,6 +1232,9 @@ struct snd_soc_pcm_runtime {
+>>   	/* bit field */
+>>   	unsigned int dev_registered:1;
+>>   	unsigned int pop_wait:1;
+>> +
+>> +	/* private data - core does not touch */
+>> +	void *private; /* FIXME: still SOF-specific, needs to less ambiguous */
+> 
+> Then better to name it sof_private?
 
-has been applied to the asoc tree at
+Ah, this is a mistake in the FIXME comment.
+initially we had a field called "sof" and Mark made the following comment:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+"
+ > +++ b/include/sound/soc.h
+ > @@ -1133,6 +1133,7 @@ struct snd_soc_pcm_runtime {
+ >  	/* runtime devices */
+ >  	struct snd_pcm *pcm;
+ >  	struct snd_compr *compr;
+ > +	struct snd_sof_pcm *sof;
+ >  	struct snd_soc_dai *codec_dai;
+ >  	struct snd_soc_dai *cpu_dai;
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Can we rename this somehow to be less specific to SoF or move it to be
+somewhere other than the runtime structure?  I can see why you've done
+this but I can also see every DSP vendor turning up and trying to add
+their own field in here.
+"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+so we added a FIXME to track this, then later we moved the field and 
+renamed it 'private' so that it can be used by others if needed but 
+didn't remove the FIXME. Will fix this.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> 
+> 
+>> +int snd_sof_create_page_table(struct snd_sof_dev *sdev,
+>> +			      struct snd_dma_buffer *dmab,
+>> +			      unsigned char *page_table, size_t size)
+>> +{
+>> +	int i, pages;
+>> +
+>> +	pages = snd_sgbuf_aligned_pages(size);
+>> +
+>> +	dev_dbg(sdev->dev, "generating page table for %p size 0x%zx pages %d\n",
+>> +		dmab->area, size, pages);
+>> +
+>> +	for (i = 0; i < pages; i++) {
+>> +		/*
+>> +		 * The number of valid address bits for each page is 20.
+>> +		 * idx determines the byte position within page_table
+>> +		 * where the current page's address is stored
+>> +		 * in the compressed page_table.
+>> +		 * This can be calculated by multiplying the page number by 2.5.
+>> +		 */
+>> +		u32 idx = (5 * i) >> 1;
+>> +		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
+>> +		u32 *pg_table;
+>> +
+>> +		dev_vdbg(sdev->dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
+>> +
+>> +		pg_table = (u32 *)(page_table + idx);
+>> +
+>> +		if (i & 1)
+>> +			*pg_table |= (pfn << 4);
+>> +		else
+>> +			*pg_table |= pfn;
+> 
+> I guess this is OK for now, but better to give some notes that it's
+> x86-specific.  To be more generic, we'd have to consider endianess and
+> the unaligned access in the code above.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From eb540d3988d93d2b0231a5b36012aa0b3abaec81 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 14 Feb 2019 10:37:44 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Simplify pri_dai, sec_dai pointers usage
-
-If the probe call is on the primary DAI we can use 'other' in place of
-i2s->sec_dai, if the probe call is on the secondary DAI we can use 'i2s'
-in place of other->sec_dai.
-
-While at it fix one whitespace issue.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/i2s.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 6ab99e38e6dd..967c1b22ac35 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1057,18 +1057,17 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 	pm_runtime_get_sync(dai->dev);
- 
- 	if (is_secondary(i2s)) { /* If this is probe on the secondary DAI */
--		snd_soc_dai_init_dma_data(dai, &other->sec_dai->dma_playback,
--					   NULL);
-+		snd_soc_dai_init_dma_data(dai, &i2s->dma_playback, NULL);
- 	} else {
- 		snd_soc_dai_init_dma_data(dai, &i2s->dma_playback,
--					   &i2s->dma_capture);
-+					  &i2s->dma_capture);
- 
- 		if (priv->quirks & QUIRK_NEED_RSTCLR)
- 			writel(CON_RSTCLR, priv->addr + I2SCON);
- 
- 		if (priv->quirks & QUIRK_SUPPORTS_IDMA)
- 			idma_reg_addr_init(priv->addr,
--					i2s->sec_dai->idma_playback.addr);
-+					   other->idma_playback.addr);
- 	}
- 
- 	/* Reset any constraint on RFS and BFS */
--- 
-2.20.1
+yes indeed, will check if we can make this more generic, and add notes 
+in any case.
