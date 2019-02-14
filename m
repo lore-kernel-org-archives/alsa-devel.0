@@ -1,65 +1,51 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 02/14] ASoC: SOF:
- Add Sound Open Firmware KControl support
-Date: Thu, 14 Feb 2019 08:35:48 -0600
-Message-ID: <6a16955e-7095-4dfb-b4ac-9dcd8d4fc995@linux.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-3-pierre-louis.bossart@linux.intel.com>
- <s5hzhqyaf9c.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 Resend 09/13] ASoC: dmaengine: Remove unused
+ SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag
+Date: Thu, 14 Feb 2019 14:47:23 +0000
+Message-ID: <20190214144723.GB11988@sirena.org.uk>
+References: <20190214093747.2414-1-s.nawrocki@samsung.com>
+ <CGME20190214093847epcas2p1056c7371ba485f375a9d408ea45078e4@epcas2p1.samsung.com>
+ <20190214093747.2414-10-s.nawrocki@samsung.com>
+ <20190214130747.GA11988@sirena.org.uk>
+ <94582faf-3054-9b40-8c15-15b70f984286@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hzhqyaf9c.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <94582faf-3054-9b40-8c15-15b70f984286@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, krzk@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2/14/19 3:30 AM, Takashi Iwai wrote:
-> On Wed, 13 Feb 2019 23:07:22 +0100,
-> Pierre-Louis Bossart wrote:
->>
->> +int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
->> +			  const unsigned int __user *binary_data,
->> +			  unsigned int size)
->> +{
->> +	struct soc_bytes_ext *be =
->> +		(struct soc_bytes_ext *)kcontrol->private_value;
->> +	struct snd_sof_control *scontrol = be->dobj.private;
->> +	struct snd_sof_dev *sdev = scontrol->sdev;
->> +	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
->> +	struct snd_ctl_tlv header;
->> +	const struct snd_ctl_tlv __user *tlvd =
->> +		(const struct snd_ctl_tlv __user *)binary_data;
-> ....
-> 
-> Do we keep supporting TLV-typed ext access in SOF?
-> This seems to be disliked nowadays (since it's a sort of abuse of TLV
-> API), and we agreed for dropping / reducing it.
 
-I started working on a replacement of the TLV w/ the hw-dep and showed 
-it could be introduced fairly easily in the topology with minor changes 
-to the kernel interfaces.
+--8GpibOaaTibBMecb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://github.com/plbossart/sound/commits/proto/hwdep
-https://github.com/plbossart/alsa-lib/tree/proto/hwdep
+On Thu, Feb 14, 2019 at 03:32:38PM +0100, Sylwester Nawrocki wrote:
 
-However the big open is linking this hw-dep element in DAPM, so that 
-it's handled in the same way as existing controls - specifically that 
-the state is restored on resume. That part looked really invasive and 
-complicated. I was even tempted to consider flipping the approach and 
-define a new control that would expose a hw-dep interface to reuse a lot 
-of the DAPM integration.
+> Hm, looks like we need still to keep that data structure field, but=20
+> remaining part of the patch could be applied. Do you want me to=20
+> resend it with chan_name removal part dropped?
 
-In short, we know the TLV is not the path forward, and as soon as we 
-have a replacement we'll switch. For now we have no alternative.
+Please resend.
+
+--8GpibOaaTibBMecb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxlf3sACgkQJNaLcl1U
+h9Dd+wf7B7ZIMmY5ipI415Ue3HfBHNnUClUqoTZ3CiLtqZhLt7fWKljOtbB37nnl
+JjpDKk5wDvQvPWltRQ7mDFB9NUX3HfxL2Z/XQ9vTcXzNjamou0bYyoUrO3AvDsyW
+xeus7Ga6YBMnOee8ZT+jLX74mrFVXn23pcvQY0irJvc7jWM6+oHtInuxjUL3IX4m
+dehRi5OlEmoh+vvZLAabm9uz0haw9rsnTsF4wp3OArX+D0nns1TBfwsAJFYsivSA
+qg2qgZ0YO3y4BfEVFQzX1nsbW1feuk18Y8AG7nrp/pAsnASRCT39S1IzGkll3mLD
+7NjGUiisJtgDrXGYsHmnDC33f7MQeA==
+=6Epj
+-----END PGP SIGNATURE-----
+
+--8GpibOaaTibBMecb--
