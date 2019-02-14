@@ -1,16 +1,20 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ASoC: samsung: i2s: Convert to single
- component with multiple DAIs
-Date: Thu, 14 Feb 2019 13:29:22 +0300
-Message-ID: <20190214102922.GA8816@kadam>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
+Date: Thu, 14 Feb 2019 10:39:29 +0000
+Message-ID: <c62d0064-93b4-7839-7042-47a15c78b909@st.com>
+References: <HK0PR02MB36348FCAF73000463738C017B26A0@HK0PR02MB3634.apcprd02.prod.outlook.com>
+ <18decbe3-5a7c-1b75-4c64-0b16fdd0efec@st.com>
+ <HK0PR02MB3634F3A1A0C8BF4EEC5C3874B2660@HK0PR02MB3634.apcprd02.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E0AF267482
- for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 11:29:38 +0100 (CET)
-Content-Disposition: inline
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 53117267482
+ for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2019 11:39:33 +0100 (CET)
+In-Reply-To: <HK0PR02MB3634F3A1A0C8BF4EEC5C3874B2660@HK0PR02MB3634.apcprd02.prod.outlook.com>
+Content-Language: en-US
+Content-ID: <8C67A01B8471844D9B1833C9434BB5A4@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,71 +24,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: s.nawrocki@samsung.com
-Cc: alsa-devel@alsa-project.org
+To: Wen Yang <yellowriver2010@hotmail.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ TORGUE <alexandre.torgue@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Sylwester Nawrocki,
+Acked-by: Olivier Moysan <olivier.moysan@st.com>
 
-This is a semi-automatic email about new static checker warnings.
+On 2/13/19 3:41 PM, Wen Yang wrote:
+> From: Olivier MOYSAN <olivier.moysan@st.com>
+> Sent: 11 February 2019 15:09
+> To: Wen Yang; Arnaud POULIQUEN; Liam Girdwood; Mark Brown; Jaroslav Kysela; Takashi Iwai; Maxime Coquelin; Alexandre TORGUE
+> Cc: alsa-devel@alsa-project.org; linux-stm32@st-md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] ASoC: stm32: sai: add missing put_device()
+> 
+>> On 2/9/19 11:41 AM, Wen Yang wrote:
+>>> The of_find_device_by_node() takes a reference to the underlying device
+>>> structure, we should release that reference.
+>>>
+>>> Fixes: 7dd0d835582f ("ASoC: stm32: sai: simplify sync modes management")
+>>> Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
+>>> ---
+>>>    sound/soc/stm/stm32_sai.c | 11 ++++++++---
+>>>    1 file changed, 8 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+>>> index bcb35ca..14c9591 100644
+>>> --- a/sound/soc/stm/stm32_sai.c
+>>> +++ b/sound/soc/stm/stm32_sai.c
+>>> @@ -112,16 +112,21 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+>>
+>> goto error also in previous test
+>>        if (!pdev) {
+>>                ...
+>>                ret = -ENODEV;
+>>                 goto error;
+>>         }
+>>
+>>>        if (!sai_provider) {
+>>>                dev_err(&sai_client->pdev->dev,
+>>>                        "SAI sync provider data not found\n");
+>>> -             return -EINVAL;
+>>> +             ret = -EINVAL;
+>>> +             goto out_put_dev;
+>>>        }
+>>>
+>>>        /* Configure sync client */
+>>>        ret = stm32_sai_sync_conf_client(sai_client, synci);
+>>>        if (ret < 0)
+>>> -             return ret;
+>>> +             goto out_put_dev;
+>>>
+>>>        /* Configure sync provider */
+>>> -     return stm32_sai_sync_conf_provider(sai_provider, synco);
+>>> +     ret = stm32_sai_sync_conf_provider(sai_provider, synco);
+>>> +
+>>> +out_put_dev:
+>>> +     put_device(&pdev->dev);
+>>> +     return ret;
+>>
+>> Here I propose:
+>> error:
+>>         of_node_put(np_provider);
+>>         return ret;
+>>
+>>>    }
+>>>
+>>>    static int stm32_sai_probe(struct platform_device *pdev)
+>>>
+> 
+>> Thanks for your patch. Please, see my comments above.
+> 
+> Thanks for your comments, in this patch we only fix the problem of missing put_device().
+> The problem of missing of_node_put() is a bit more complicated:
+> For the variable np_provider(np_sync_provider):
+> 1, it is obtained by of_get_parent(), but it is not released;
+> 2, error code not obtained when calling sai->pdata->set_sync()
+> 
 
-The patch a404b72d2bdd: "ASoC: samsung: i2s: Convert to single 
-component with multiple DAIs" from Feb 7, 2019, leads to the 
-following Smatch complaint:
+I agree, release of np_sync_provider node is missing, as well as
+returned error on set_sync.
+So yes, this requires a dedicated patch.
+Thanks
 
-    sound/soc/samsung/i2s.c:1352 samsung_i2s_probe()
-    warn: variable dereferenced before check 'i2s_pdata' (see line 1336)
+Regards
+Olivier
 
-sound/soc/samsung/i2s.c
-  1315  static int samsung_i2s_probe(struct platform_device *pdev)
-  1316  {
-  1317          struct i2s_dai *pri_dai, *sec_dai = NULL;
-  1318          struct s3c_audio_pdata *i2s_pdata = pdev->dev.platform_data;
-  1319          struct resource *res;
-  1320          u32 regs_base, quirks = 0, idma_addr = 0;
-  1321          struct device_node *np = pdev->dev.of_node;
-                                    ^^^^^^^^^^^^^^^^^^^^^^
-
-  1322          const struct samsung_i2s_dai_data *i2s_dai_data;
-  1323          int num_dais, ret;
-  1324          struct samsung_i2s_priv *priv;
-  1325  
-  1326          if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node)
-  1327                  i2s_dai_data = of_device_get_match_data(&pdev->dev);
-  1328          else
-  1329                  i2s_dai_data = (struct samsung_i2s_dai_data *)
-  1330                                  platform_get_device_id(pdev)->driver_data;
-  1331  
-  1332          priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-  1333          if (!priv)
-  1334                  return -ENOMEM;
-  1335  
-  1336		quirks = np ? i2s_dai_data->quirks : i2s_pdata->type.quirks;
-                                                     ^^^^^^^^^^^^^^^^^^^^^^
-
-If "np" is NULL then we dereference "i2s_pdata".
-
-  1337		quirks &= ~(QUIRK_SEC_DAI | QUIRK_SUPPORTS_IDMA);
-  1338	
-  1339		num_dais = (quirks & QUIRK_SEC_DAI) ? 2 : 1;
-  1340		priv->pdev = pdev;
-  1341	
-  1342		ret = i2s_alloc_dais(priv, i2s_dai_data, num_dais);
-  1343		if (ret < 0)
-  1344			return ret;
-  1345	
-  1346		pri_dai = &priv->dai[SAMSUNG_I2S_ID_PRIMARY - 1];
-  1347	
-  1348		spin_lock_init(&priv->spinlock);
-  1349		pri_dai->lock = &priv->spinlock;
-  1350	
-  1351		if (!np) {
-  1352			if (i2s_pdata == NULL) {
-                            ^^^^^^^^^^^^^^^^^
-But here "np" is NULL and we're checking if i2s_pdata is also NULL.
-
-  1353				dev_err(&pdev->dev, "Can't work without s3c_audio_pdata\n");
-  1354				return -EINVAL;
-
-regards,
-dan carpenter
+> We will submit another patch to fix the failure of np_sync_provider
+> Thank you.
+> > Regards
+> Wen
+> 
+> 
