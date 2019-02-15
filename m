@@ -1,47 +1,137 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 1/2] ASoC: samsung: i2s: Fix the secondary platform device
- registration
-Date: Fri, 15 Feb 2019 15:48:08 +0100
-Message-ID: <20190215144809.28007-1-s.nawrocki@samsung.com>
-References: <CGME20190215144822epcas2p4a6187a4e4d45c7ac3ea067ac428b3678@epcas2p4.samsung.com>
+Subject: [PATCH 2/2] ASoC: samsung: i2s: Fix multiple "IIS multi" devices
+ initialization
+Date: Fri, 15 Feb 2019 15:48:09 +0100
+Message-ID: <20190215144809.28007-2-s.nawrocki@samsung.com>
+References: <20190215144809.28007-1-s.nawrocki@samsung.com>
+        <CGME20190215144828epcas2p267aae592d0ebaaaa297ba1543463c204@epcas2p2.samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20190215144809.28007-1-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
 Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This fixes unregistration of the secondary platform device so all
-resources are properly released. The test for NULL priv->pdev_sec
-is not necessary and it is removed.
+On some SoCs (e.g. Exynos5433) there are multiple "IIS multi audio
+interfaces" and the driver will try to register there multiple times
+same platform device for the secondary FIFO, which of course fails
+miserably.  To fix this we derive the secondary platform device name
+from the primary device name. The secondary device name will now
+be <primary_dev_name>-sec instead of fixed "samsung-i2s-sec".
 
+The fixed platform_device_id table entry is removed as the secondary
+device name is now dynamic and device/driver matching is done through
+driver_override.
+
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Suggested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
-This patch is based off of ASoC for-next and patches:
- ASoC: samsung: odroid: Ensure proper sample rate on pri/sec PCM 
- ASoC: samsung: i2s: Prevent potential NULL platform data dereference 
- ASoC: samsung: odroid: Add missing DAPM routes
- 
- sound/soc/samsung/i2s.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/samsung/i2s.c    | 49 +++++++++++++++++++++++++-------------
+ sound/soc/samsung/odroid.c |  2 +-
+ 2 files changed, 33 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 6bf0f55d1e51..e36c44e2f1bb 100644
+index e36c44e2f1bb..4a6dd86459bc 100644
 --- a/sound/soc/samsung/i2s.c
 +++ b/sound/soc/samsung/i2s.c
-@@ -1359,11 +1359,10 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
- 
- static void i2s_delete_secondary_device(struct samsung_i2s_priv *priv)
+@@ -1339,20 +1339,34 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
+ /* Create platform device for the secondary PCM */
+ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
  {
--	if (priv->pdev_sec) {
--		platform_device_del(priv->pdev_sec);
--		priv->pdev_sec = NULL;
--	}
-+	platform_device_unregister(priv->pdev_sec);
-+	priv->pdev_sec = NULL;
- }
+-	struct platform_device *pdev;
++	struct platform_device *pdev_sec;
++	const char *devname;
+ 	int ret;
+ 
+-	pdev = platform_device_register_simple("samsung-i2s-sec", -1, NULL, 0);
+-	if (!pdev)
++	devname = devm_kasprintf(&priv->pdev->dev, GFP_KERNEL, "%s-sec",
++				 dev_name(&priv->pdev->dev));
++	if (!devname)
+ 		return -ENOMEM;
+ 
+-	ret = device_attach(&pdev->dev);
++	pdev_sec = platform_device_alloc(devname, -1);
++	if (!pdev_sec)
++		return -ENOMEM;
 +
- static int samsung_i2s_probe(struct platform_device *pdev)
++	pdev_sec->driver_override = "samsung-i2s";
++
++	ret = platform_device_add(pdev_sec);
+ 	if (ret < 0) {
+-		dev_info(&pdev->dev, "device_attach() failed\n");
++		platform_device_put(pdev_sec);
+ 		return ret;
+ 	}
+ 
+-	priv->pdev_sec = pdev;
++	priv->pdev_sec = pdev_sec;
++
++	ret = device_attach(&pdev_sec->dev);
++	if (ret < 0) {
++		dev_info(&pdev_sec->dev, "device_attach() failed\n");
++		return ret;
++	}
+ 
+ 	return 0;
+ }
+@@ -1367,22 +1381,25 @@ static int samsung_i2s_probe(struct platform_device *pdev)
  {
  	struct i2s_dai *pri_dai, *sec_dai = NULL;
+ 	struct s3c_audio_pdata *i2s_pdata = pdev->dev.platform_data;
+-	struct resource *res;
+ 	u32 regs_base, idma_addr = 0;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct samsung_i2s_dai_data *i2s_dai_data;
+-	int num_dais, ret;
++	const struct platform_device_id *id;
+ 	struct samsung_i2s_priv *priv;
++	struct resource *res;
++	int num_dais, ret;
+ 
+-	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node)
++	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
+ 		i2s_dai_data = of_device_get_match_data(&pdev->dev);
+-	else
+-		i2s_dai_data = (struct samsung_i2s_dai_data *)
+-				platform_get_device_id(pdev)->driver_data;
++	} else {
++		id = platform_get_device_id(pdev);
+ 
+-	/* Nothing to do if it is the secondary device probe */
+-	if (!i2s_dai_data)
+-		return 0;
++		/* Nothing to do if it is the secondary device probe */
++		if (!id)
++			return 0;
++
++		i2s_dai_data = (struct samsung_i2s_dai_data *)id->driver_data;
++	}
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -1635,8 +1652,6 @@ static const struct platform_device_id samsung_i2s_driver_ids[] = {
+ 	{
+ 		.name           = "samsung-i2s",
+ 		.driver_data	= (kernel_ulong_t)&i2sv3_dai_type,
+-	}, {
+-		.name           = "samsung-i2s-sec",
+ 	},
+ 	{},
+ };
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index 5b2bcd1d3450..bd2c5163dc7f 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -185,7 +185,7 @@ static struct snd_soc_dai_link odroid_card_dais[] = {
+ 		.ops = &odroid_card_fe_ops,
+ 		.name = "Secondary",
+ 		.stream_name = "Secondary",
+-		.platform_name = "samsung-i2s-sec",
++		.platform_name = "3830000.i2s-sec",
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
+ 	}
 -- 
 2.17.1
