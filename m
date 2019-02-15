@@ -1,46 +1,106 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: odroid: Ensure proper sample rate on
- pri/sec PCM
-Date: Fri, 15 Feb 2019 08:24:17 +0100
-Message-ID: <CAJKOXPd20QPjvEV_TzKi8fcJM-Ws4Te6W0ZRvzNVt2c-60VKAQ@mail.gmail.com>
-References: <CGME20190214160039epcas2p34b9e3b3ca5f9b0aa1fb5ed59403a6fe1@epcas2p3.samsung.com>
- <20190214160011.3940-1-s.nawrocki@samsung.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH] ASoC: AMD: Configure master codec on all playback/capture
+ cases
+Date: Fri, 15 Feb 2019 09:58:32 +0000
+Message-ID: <AM5PR1001MB0994E7CBCAF8345EEEAC787E80600@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+References: <20190215070539.22150-1-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190214160011.3940-1-s.nawrocki@samsung.com>
+In-Reply-To: <20190215070539.22150-1-akshu.agrawal@amd.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Wei Yongjun <weiyongjun1@huawei.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 14 Feb 2019 at 17:00, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
->
-> Currently when playing sound with different sample rates actual
-> sample rate will be determined by audio stream which starts first
-> on either primary or secondary PCM. The audio root clock will be
-> configured appropriately only for the first stream. As the hardware
-> is limited to same sample rate on both interfaces we need to disallow
-> streams with different sample rates. It is done by this patch by
-> returning error in FE hw_params if there is already active stream
-> running with different sample rate.
->
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+On 15 February 2019 07:06, Akshu Agrawal wrote:
+
+> In the system design da7219 is the master codec and clocks are generated =
+by it.
+> Bclk is to be generated at the required rate for other codecs used when
+> da7219 is acting only as clock master. For this call hw_params of da7219 =
+during
+> playback/capture on non da7219 codecs.
+>=20
+> Being able to set bclk at lower rate also fixes noise issue observed on s=
+ome
+> dmics.
+>=20
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+
 > ---
->  sound/soc/samsung/odroid.c | 56 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-
-Is this the fix for
-"aplay: set_params:1403: Unable to install hw params:"
-which appeared in today's next (so after your last round of patches get merged)?
-https://krzk.eu/#/builders/1/builds/3093/steps/24/logs/stdio
-
-Also, since yesterday (so with previous rounds of patches) the audss
-rebind freezes entire kernel:
-https://krzk.eu/#/builders/1/builds/3093/steps/25/logs/stdio
-https://krzk.eu/#/builders/1/builds/3093/steps/25/logs/serial0
-
-It is not important test but it was always passing in my suite.
-
-Best regards,
-Krzysztof
+>  sound/soc/amd/acp-da7219-max98357a.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-
+> da7219-max98357a.c
+> index a5daad973ce5..ad327415290a 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -45,6 +45,7 @@
+>  #define CZ_PLAT_CLK 48000000
+>  #define DUAL_CHANNEL		2
+>=20
+> +static struct snd_soc_dai *codec_dai;
+>  static struct snd_soc_jack cz_jack;
+>  static struct clk *da7219_dai_clk;
+>  extern int bt_uart_enable;
+> @@ -53,8 +54,10 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *=
+rtd)
+> {
+>  	int ret;
+>  	struct snd_soc_card *card =3D rtd->card;
+> -	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+> -	struct snd_soc_component *component =3D codec_dai->component;
+> +	struct snd_soc_component *component;
+> +
+> +	codec_dai =3D rtd->codec_dai;
+> +	component =3D codec_dai->component;
+>=20
+>  	dev_info(rtd->dev, "codec dai name =3D %s\n", codec_dai->name);
+>=20
+> @@ -255,6 +258,16 @@ static void cz_dmic_shutdown(struct
+> snd_pcm_substream *substream)
+>  	da7219_clk_disable();
+>  }
+>=20
+> +static static int cz_da7219_hw_params(struct snd_pcm_substream *substrea=
+m,
+> +				    struct snd_pcm_hw_params *params) {
+> +	/* da7219 Codec is clock master so setup as per the needs */
+> +	if (codec_dai->driver->ops->hw_params)
+> +		return codec_dai->driver->ops->hw_params(substream, params,
+> +							 codec_dai);
+> +	return 0;
+> +}
+> +
+>  static const struct snd_soc_ops cz_da7219_play_ops =3D {
+>  	.startup =3D cz_da7219_play_startup,
+>  	.shutdown =3D cz_da7219_shutdown,
+> @@ -268,16 +281,19 @@ static const struct snd_soc_ops cz_da7219_cap_ops =
+=3D {
+> static const struct snd_soc_ops cz_max_play_ops =3D {
+>  	.startup =3D cz_max_startup,
+>  	.shutdown =3D cz_max_shutdown,
+> +	.hw_params =3D cz_da7219_hw_params,
+>  };
+>=20
+>  static const struct snd_soc_ops cz_dmic0_cap_ops =3D {
+>  	.startup =3D cz_dmic0_startup,
+>  	.shutdown =3D cz_dmic_shutdown,
+> +	.hw_params =3D cz_da7219_hw_params,
+>  };
+>=20
+>  static const struct snd_soc_ops cz_dmic1_cap_ops =3D {
+>  	.startup =3D cz_dmic1_startup,
+>  	.shutdown =3D cz_dmic_shutdown,
+> +	.hw_params =3D cz_da7219_hw_params,
+>  };
+>=20
+>  static struct snd_soc_dai_link cz_dai_7219_98357[] =3D {
+> --
+> 2.17.1
