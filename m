@@ -1,49 +1,93 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 1/2] ASoC: samsung: i2s: Fix the secondary platform
- device registration
-Date: Mon, 18 Feb 2019 12:41:10 +0100
-Message-ID: <36e84820-f75a-4dbb-e148-1aebad0d26ba@samsung.com>
-References: <CGME20190215144822epcas2p4a6187a4e4d45c7ac3ea067ac428b3678@epcas2p4.samsung.com>
-        <20190215144809.28007-1-s.nawrocki@samsung.com>
-        <CAJKOXPdViVjS9ZzbBy94+UPK6-DEbCdPx-vsAa-SvrntyNunAA@mail.gmail.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH] ASoC: simple-card: fixup refcount_t
+	underflow
+Date: Fri, 15 Feb 2019 15:57:27 +0200
+Message-ID: <CAEnQRZD3CRzHDd-eGbVWqBUmNuqGaXJwTboQ3v1TnZAN3B_4bw@mail.gmail.com>
+References: <878syh8svy.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <CAJKOXPdViVjS9ZzbBy94+UPK6-DEbCdPx-vsAa-SvrntyNunAA@mail.gmail.com>
-Content-language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, Marek Szyprowski <m.szyprowski@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
+ [209.85.208.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0EAF265523
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 12:42:41 +0100 (CET)
+Received: by mail-ed1-f68.google.com with SMTP id b20so13518041edw.11
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 03:42:41 -0800 (PST)
+In-Reply-To: <878syh8svy.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Vicente Bergas <vicencb@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/18/19 09:31, Krzysztof Kozlowski wrote:
-> On Fri, 15 Feb 2019 at 15:48, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
+Hi,
 
->> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
->> index 6bf0f55d1e51..e36c44e2f1bb 100644
->> --- a/sound/soc/samsung/i2s.c
->> +++ b/sound/soc/samsung/i2s.c
->> @@ -1359,11 +1359,10 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
->>
->>  static void i2s_delete_secondary_device(struct samsung_i2s_priv *priv)
->>  {
->> -       if (priv->pdev_sec) {
->> -               platform_device_del(priv->pdev_sec);
->> -               priv->pdev_sec = NULL;
->> -       }
->> +       platform_device_unregister(priv->pdev_sec);
->> +       priv->pdev_sec = NULL;
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> Although I think that you might need to re-order calls in
-> samsung_i2s_remove(). In general they should be in exact reverse order
-> of probe(). In this case, clk_disable_unprepare(priv->clk) should be
-> after unregistering secondary device. If order has to be different
-> because of some reasons - could you document them in comment?
+This patch doesn't seem to apply on Mark's sound/for-next branch.
 
-Makes sense, I will change the order and resend both patches.
+What is the tree you based this on?
 
-Thanks,
-Sylwester
+thanks,
+Daniel.
+On Fri, Feb 15, 2019 at 8:43 AM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+>
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> commit da215354eb55c ("ASoC: simple-card: merge simple-scu-card")
+> merged simple-card and simple-scu-card. Then it had refcount
+> underflow bug. This patch fixup it.
+> We will get below error without this patch.
+>
+>         OF: ERROR: Bad of_node_put() on /sound
+>         CPU: 3 PID: 237 Comm: kworker/3:1 Not tainted 5.0.0-rc6+ #1514
+>         Hardware name: Renesas H3ULCB Kingfisher board based on r8a7795 ES2.0+ (DT)
+>         Workqueue: events deferred_probe_work_func
+>         Call trace:
+>          dump_backtrace+0x0/0x150
+>          show_stack+0x24/0x30
+>          dump_stack+0xb0/0xec
+>          of_node_release+0xd0/0xd8
+>          kobject_put+0x74/0xe8
+>          of_node_put+0x24/0x30
+>          __of_get_next_child+0x50/0x70
+>          of_get_next_child+0x40/0x68
+>          asoc_simple_card_probe+0x604/0x730
+>          platform_drv_probe+0x58/0xa8
+>          ...
+> Reported-by: Vicente Bergas <vicencb@gmail.com>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> Vicente, can you please test this patch ?
+>
+>  sound/soc/generic/simple-card.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+> index 37e001c..3fe3441 100644
+> --- a/sound/soc/generic/simple-card.c
+> +++ b/sound/soc/generic/simple-card.c
+> @@ -462,7 +462,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+>         conf_idx        = 0;
+>         node = of_get_child_by_name(top, PREFIX "dai-link");
+>         if (!node) {
+> -               node = dev->of_node;
+> +               node = of_node_get(top);
+>                 loop = 0;
+>         }
+>
+> --
+> 2.7.4
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
