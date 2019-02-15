@@ -1,64 +1,60 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH] ASoC: fsl_esai: fix register setting issue in RIGHT_J mode
-Date: Fri, 15 Feb 2019 11:04:38 +0000
-Message-ID: <1550228637-5675-1-git-send-email-shengjiu.wang@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: odroid: Add missing DAPM routes
+Date: Fri, 15 Feb 2019 13:04:22 +0100
+Message-ID: <20190215120422.22907-1-s.nawrocki@samsung.com>
+References: <CGME20190215120457epcas2p3cd14657fc2159c058ab6448c10a47648@epcas2p3.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ESAI_xCR_xWA is xCR's bit, not the xCCR's bit, driver set it to
-wrong register, correct it.
+With old DTS there will be missing DAPM routes linking BE with CODECs.
+Add those routes in the card driver so sound works properly on Odroid
+XU3/4 also without DTS updates enabling the secondary PCM.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/fsl/fsl_esai.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+This patch might require my previous patch
+"ASoC: samsung: odroid: Ensure proper sample rate on pri/sec PCM"
+to apply cleanly.
+---
+ sound/soc/samsung/odroid.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 57b484768a58..afe67c865330 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -398,7 +398,8 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai=
-, unsigned int fmt)
- 		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		/* Data on rising edge of bclk, frame high, right aligned */
--		xccr |=3D ESAI_xCCR_xCKP | ESAI_xCCR_xHCKP | ESAI_xCR_xWA;
-+		xccr |=3D ESAI_xCCR_xCKP | ESAI_xCCR_xHCKP;
-+		xcr  |=3D ESAI_xCR_xWA;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 		/* Data on rising edge of bclk, frame high, 1clk before data */
-@@ -455,12 +456,12 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *d=
-ai, unsigned int fmt)
- 		return -EINVAL;
- 	}
-=20
--	mask =3D ESAI_xCR_xFSL | ESAI_xCR_xFSR;
-+	mask =3D ESAI_xCR_xFSL | ESAI_xCR_xFSR | ESAI_xCR_xWA;
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR, mask, xcr);
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR, mask, xcr);
-=20
- 	mask =3D ESAI_xCCR_xCKP | ESAI_xCCR_xHCKP | ESAI_xCCR_xFSP |
--		ESAI_xCCR_xFSD | ESAI_xCCR_xCKD | ESAI_xCR_xWA;
-+		ESAI_xCCR_xFSD | ESAI_xCCR_xCKD;
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR, mask, xccr);
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR, mask, xccr);
-=20
---=20
-1.9.1
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index 941e8c3f67a4..5b2bcd1d3450 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -149,6 +149,12 @@ static const struct snd_soc_ops odroid_card_be_ops = {
+ 	.trigger = odroid_card_be_trigger,
+ };
+ 
++/* DAPM routes for backward compatibility with old DTS */
++static const struct snd_soc_dapm_route odroid_dapm_routes[] = {
++	{ "I2S Playback", NULL, "Mixer DAI TX" },
++	{ "HiFi Playback", NULL, "Mixer DAI TX" },
++};
++
+ static struct snd_soc_dai_link odroid_card_dais[] = {
+ 	{
+ 		/* Primary FE <-> BE link */
+@@ -237,11 +243,15 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	/*
+ 	 * For backwards compatibility create the secondary CPU DAI link only
+ 	 * if there are 2 CPU DAI entries in the cpu sound-dai property in DT.
++	 * Also add required DAPM routes not available in old DTS.
+ 	 */
+ 	num_pcms = of_count_phandle_with_args(cpu, "sound-dai",
+ 					      "#sound-dai-cells");
+-	if (num_pcms == 1)
++	if (num_pcms == 1) {
++		card->dapm_routes = odroid_dapm_routes;
++		card->num_dapm_routes = ARRAY_SIZE(odroid_dapm_routes);
+ 		card->num_links--;
++	}
+ 
+ 	for (i = 0; i < num_pcms; i++, link += 2) {
+ 		ret = of_parse_phandle_with_args(cpu, "sound-dai",
+-- 
+2.17.1
