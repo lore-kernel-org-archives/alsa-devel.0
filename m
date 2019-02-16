@@ -1,74 +1,38 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Saffire Pro 26 IO Restarting Issue
-Date: Sat, 16 Feb 2019 04:39:37 +0900
-Message-ID: <20190215193937.GA28117@workstation>
-References: <SYCPR01MB4159B33695C4010969BF7389D5600@SYCPR01MB4159.ausprd01.prod.outlook.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH -next] ASoC: samsung: i2s: Fix return value check in i2s_create_secondary_device()
+Date: Sat, 16 Feb 2019 01:20:55 +0000
+Message-ID: <20190216012055.79622-1-weiyongjun1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <SYCPR01MB4159B33695C4010969BF7389D5600@SYCPR01MB4159.ausprd01.prod.outlook.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: ackolonges fds <ackolonges@hotmail.com>
-Cc: alsa-devel@alsa-project.org, ffado-user@lists.sourceforge.net, pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBGcmksIEZlYiAxNSwgMjAxOSBhdCAxMjo0OToxOVBNICswMDAwLCBhY2tvbG9uZ2Vz
-IGZkcyB3cm90ZToKPiBIaSBBbGwsCj4gCj4gSSB3YXMgd29uZGVyaW5nIGlmIHRoZXJlIG1pZ2h0
-IGJlIGFueW9uZSBvbiBoZXJlIHRoYXQgY291bGQgZ2l2ZSBtZSBhbnkKPiBwb2ludGVycyBpbiBn
-ZXR0aW5nIG15IEZvY3Vzcml0ZSBTYWZmaXJlIFBybyAyNiBpL28gaW50ZXJmYWNlIHdvcmtpbmcg
-d2l0aAo+IExpbnV4IHZpYSBGRkFETz8KPiAKPiBJdCdzIGEgbmV3IGRlc2t0b3AgUEMgKFJ5emVu
-IDUgMjYwMCwgOEdCIFJBTSksIGR1YWwgYm9vdGluZyBXaW5kb3dzIDEwIGFuZAo+IFVidW50dSAx
-OC4xMCwgd2l0aCBhIFBDSSBFeHByZXNzLCBUZXhhcyBJbnN0cnVtZW50cyBYSU8yMjEzIEZpcmV3
-aXJlIGNhcmQuCj4gCj4gSSBoYXZlIHRlc3RlZCB0aGlzIFNhZmZpcmUgaW50ZXJmYWNlIHN1Y2Nl
-c3NmdWxseSBvbiBhIE1hY0Jvb2sgUHJvIChpdCB3YXMKPiBwbHVnIGFuZCBwbGF5KSwgYW5kIGFs
-c28gb24gdGhpcyB2ZXJ5IGRlc2t0b3AgY29tcHV0ZXIgaW4gV2luZG93cyAxMC4KPiBIb3dldmVy
-LCB3aGVuIHRoZSBpbnRlcmZhY2UgaXMgY29ubmVjdGVkIGluIFVidW50dSAxOC4xMCwgaXQgcmVw
-ZWF0ZWRseQo+IGFuZCBwZXJpb2RpY2FsbHkgcmVzZXRzIGl0c2VsZiBhYm91dCAxMC0xNSBzZWNv
-bmRzIGFmdGVyIGJvb3RpbmcgdXAsIGluIGEKPiBsb29wLiBJZiBJIHJ1biBmZmFkby1kYnVzLXNl
-cnZlciB3aGlsZSBpdCdzIGJvb3RpbmcsIGl0IGNvbm5lY3RzCj4gc3VjY2Vzc2Z1bGx5IHRvIHRo
-ZSBpbnRlcmZhY2UsIGFuZCBxdWlja2x5IHJ1bm5pbmcgRkZBRE8gbWl4ZXIgYWZ0ZXJ3YXJkcwo+
-IGxldHMgbWUgc2VlIHRoZSBjb250cm9scyBhdmFpbGFibGUsIGZvciBhIHNob3J0IHRpbWUgdW50
-aWwgdGhlIGludGVyZmFjZQo+IHJlc2V0cyBpdHNlbGYsIGN1dHRpbmcgYWxsIHRoZSBjb25uZWN0
-aW9ucy4KPiAKPiBIYXMgYW55Ym9keSBoZXJlIGV2ZXIgaGVhcmQgb2YgdGhpcyBraW5kIG9mIGlz
-c3VlIGJlZm9yZT8gT3IgcGVyaGFwcwo+IHNvbWVvbmUgbWF5IGhhdmUgc29tZSBpZGVhcyB0aGF0
-IG1pZ2h0IGFpZCBpbiB0cm91Ymxlc2hvb3RpbmcgdGhlIGlzc3VlPwo+IAo+IFRoYW5rcyBzbyBt
-dWNoIGZvciBhbnkgYWR2aWNlIHlvdSBtYXkgaGF2ZSwKCkluIGNhc2Ugb2YgRm9jdXNyaXRlIFNh
-ZmZpcmUgUHJvIEkvTyAxMCBhbmQgMjYsIGEgY29tYmluYXRpb24gb2YgQUxTQSBiZWJvYgpkcml2
-ZXIgYW5kIHB1bHNlYXVkaW8gYnJpbmdzIHRoaXMgcHJvYmxlbSBkdWUgdG8gcXVpcmsgb2YgdGhl
-c2UgdHdvCm1vZGVscyByZXBvcnRlZCBpbiBidWd6aWxsYS5rZXJuZWwub3JnWzFdLgoKSSd2ZSBh
-bHJlYWR5IGNvbW1pdHRlZCBhIHNvbHV0aW9uIGFuZCBpdCB3YXMgbWVyZ2VkIHRvIHB1bHNlYXVk
-aW9bMl0sCmhvd2V2ZXIgaXQgaGFzIG5ldmVyIGluY2x1ZGVkIGludG8gYW55IHJlbGVhc2VzIG9m
-IHB1bHNlYXVkaW8gYXQgcHJlc2VudC4KVGhlcmVmb3JlIHlvdSBjYW4gc2VlIHRoaXMgaXNzdWUg
-b24gYW55IGRlc2t0b3AgZW52aXJvbm1lbnQgaW4gcmVsZWFzZWQKZGlzdHJpYnV0aW9uIHN1Y2gg
-YXMgdGhlIGxhdGVzdCBVYnVudHUuCgpZb3UgY2FuIGF2b2lkIHRoaXMgaXNzdWUgYnkgdHdvIGhh
-bmR5IHNvbHV0aW9ucyBhdCBhIHF1aWNrIGdsYW5jZToKMS4gc3VwcHJlc3MgcHVsc2VhdWRpbyB0
-byBoYW5kbGUgeW91ciBkZXZpY2UKMi4gc3VwcHJlc3MgeW91ciBzeXN0ZW0gdG8gbG9hZCBBTFNB
-IGJlYm9iIGRyaXZlcgoKRm9yIHNvbHV0aW9uIDEsIGl0J3MgdGhlIGJlc3Qgd2F5IHRvIGVkaXQg
-OTAtcHVsc2VhdWRpby5ydWxlcyBpbiB5b3VyCnN5c3RlbS4KJCBzeXN0ZW1jdGwgLS11c2VyIHN0
-b3AgcHVsc2VhdWRpby5zZXJ2aWNlIHB1bHNlYXVkaW8uc29ja2V0CiQgc3VkbyBuYW5vIC9saWIv
-dWRldi9ydWxlcy5kLzkwLXB1bHNlYXVkaW8ucnVsZXMKKG1vZGlmeSB0aGUgYWJvdmUgZmlsZSBh
-Y2NvcmRpbmcgdG8gbXkgcGF0Y2hbMl0uKQokIHN5c3RlbWN0bCAtLXVzZXIgc3RhcnQgcHVsc2Vh
-dWRpby5zZXJ2aWNlIHB1bHNlYXVkaW8uc29ja2V0CgpGb3Igc29sdXRpb24gMiwgaXQncyB0aGUg
-ZWFzaWVzdCB3YXkgdG8gYWRkIEFMU0EgYmVib2IgZHJpdmVyIHRvCmJsYWNrbGlzdC4KJCBzdWRv
-IG5hbm8gL2V0Yy9tb2Rwcm9iZS5kL2JsYWNrbGlzdC1iZWJvYi5jb25mCihhZGQgZW50cnkgb2Yg
-J2JsYWNrbGlzdCBzbmQtYmVib2InKQoodGhlbiB1bnBsdWcgYW5kIHBsdWdpbiB5b3VyIGRldmlj
-ZSkKClNvcnJ5IGZvciB0aGUgaW5jb252ZW5pZW5jZS4KClsxXSBodHRwczovL2J1Z3ppbGxhLmtl
-cm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTE5OTM2NQpbMl0gaHR0cHM6Ly9naXRsYWIuZnJlZWRl
-c2t0b3Aub3JnL3B1bHNlYXVkaW8vcHVsc2VhdWRpby9jb21taXQvMzczNThlNDJjNDlhYmUzZDgz
-YjM0NDQ1Mjc0OTQ2MWI3MGZkYzgwZgoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRpby1kaXNj
-dXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-Cmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRp
-by1kaXNjdXNz
+In case of error, the function platform_device_register_simple() returns
+ERR_PTR() and never returns NULL. The NULL test in the return value
+check should be replaced with IS_ERR().
+
+Fixes: 7196c64c7d0c ("ASoC: samsung: i2s: Restore support for the secondary PCM")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/samsung/i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 72f0cb7abb30..15844c00c3cd 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1342,8 +1342,8 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
+ 	int ret;
+ 
+ 	pdev = platform_device_register_simple("samsung-i2s-sec", -1, NULL, 0);
+-	if (!pdev)
+-		return -ENOMEM;
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
+ 
+ 	ret = device_attach(&pdev->dev);
+ 	if (ret < 0) {
