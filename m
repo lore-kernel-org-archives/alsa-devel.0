@@ -1,15 +1,15 @@
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH] ASoC: topology: free created components in
-	tplg load error
-Date: Sun, 17 Feb 2019 21:23:47 +0800
-Message-ID: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: [PATCH] ALSA: usb-audio: Expose sample resolution
+	through proc interface
+Date: Mon, 18 Feb 2019 00:17:21 +0200
+Message-ID: <20190217221721.6396-1-jussi@sonarnerd.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 96AF4266B48
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 09:45:10 +0100 (CET)
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B036266A9D
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 09:55:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: Jussi Laako <jussi@sonarnerd.net>
 List-Id: alsa-devel@alsa-project.org
 
-Topology resources are no longer needed if any element failed to load.
+At least some USB devices use (MSB-aligned) audio format larger
+than the actual resolution of the device. In order to expose the
+actual device resolution (bBitResolution), add extra field to the
+procfs stream info interface.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
 ---
- sound/soc/soc-topology.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/usb/card.h   | 1 +
+ sound/usb/format.c | 2 ++
+ sound/usb/proc.c   | 1 +
+ 3 files changed, 4 insertions(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index c5638e15a2dd..25fca7055464 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2587,6 +2587,7 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	struct snd_soc_tplg_ops *ops, const struct firmware *fw, u32 id)
- {
- 	struct soc_tplg tplg;
-+	int ret;
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index ac785d15ced4..d9bb2c4a3bd9 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -14,6 +14,7 @@ struct audioformat {
+ 	u64 formats;			/* ALSA format bits */
+ 	unsigned int channels;		/* # channels */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
++        unsigned int fmt_bits;          /* number of significant bits */
+ 	unsigned int frame_size;	/* samples per frame for non-audio */
+ 	int iface;			/* interface number */
+ 	unsigned char altsetting;	/* corresponding alternate setting */
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index fd13ac11b136..d5b7cbcc2956 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -87,6 +87,8 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 	}
+ 	}
  
- 	/* setup parsing context */
- 	memset(&tplg, 0, sizeof(tplg));
-@@ -2600,7 +2601,12 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	tplg.bytes_ext_ops = ops->bytes_ext_ops;
- 	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
- 
--	return soc_tplg_load(&tplg);
-+	ret = soc_tplg_load(&tplg);
-+	/* free the created components if fail to load topology */
-+	if (ret)
-+		snd_soc_tplg_component_remove(comp, SND_SOC_TPLG_INDEX_ALL);
++	fp->fmt_bits = (unsigned int) sample_width;
 +
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
- 
+ 	if ((pcm_formats == 0) &&
+ 	    (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED))) {
+ 		/* some devices don't define this correctly... */
+diff --git a/sound/usb/proc.c b/sound/usb/proc.c
+index e80c9d0749c9..ef9190530fd2 100644
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -109,6 +109,7 @@ static void proc_dump_substream_formats(struct snd_usb_substream *subs, struct s
+ 		if (subs->speed != USB_SPEED_FULL)
+ 			snd_iprintf(buffer, "    Data packet interval: %d us\n",
+ 				    125 * (1 << fp->datainterval));
++		snd_iprintf(buffer, "    Bits: %d\n", fp->fmt_bits);
+ 		// snd_iprintf(buffer, "    Max Packet Size = %d\n", fp->maxpacksize);
+ 		// snd_iprintf(buffer, "    EP Attribute = %#x\n", fp->attributes);
+ 	}
 -- 
 2.17.1
