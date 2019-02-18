@@ -1,32 +1,57 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH -next] ASoC: samsung: i2s: Fix return value check in
- i2s_create_secondary_device()
-Date: Mon, 18 Feb 2019 12:04:37 +0100
-Message-ID: <282ae8b4-f86f-2254-0956-3cc3b4915bbf@samsung.com>
-References: <20190216012055.79622-1-weiyongjun1@huawei.com>
-        <CGME20190218110447epcas1p3bb248ada6447551c1ca19f2d6af40bc4@epcas1p3.samsung.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [RFC 0/4] clk/driver: platform: Fix kfree() of const memory on
+ setting driver_override
+Date: Mon, 18 Feb 2019 12:14:29 +0100
+Message-ID: <CAJKOXPe1CW4k4ivbh4QhKEbuVc3RRNmzUwQcL0BsrAn=hCdjZg@mail.gmail.com>
+References: <1550484960-2392-1-git-send-email-krzk@kernel.org> <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20190216012055.79622-1-weiyongjun1@huawei.com>
-Content-language: en-GB
+In-Reply-To: <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>, Andy Gross <andy.gross@linaro.org>, David Brown <david.brown@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>, Linux ARM <linux-arm-kernel@list>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/16/19 02:20, Wei Yongjun wrote:
-> In case of error, the function platform_device_register_simple() returns
-> ERR_PTR() and never returns NULL. The NULL test in the return value
-> check should be replaced with IS_ERR().
+On Mon, 18 Feb 2019 at 11:40, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Krzysztof,
+>
+> On Mon, Feb 18, 2019 at 11:27 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > The problem
+> > ===========
+> > Several device types (platform, amba, spi etc.) provide a driver_override
+> > field.  On sysfs store or during device removal, they kfree() the
+> > existing value.
+> >
+> > However the users are unaware of this and set the driver_override like:
+> >
+> >         pdev->driver_override = "exynos5-subcmu";
+> >
+> > which obviously leads to error.
+>
+> IMHO driver_override is not meant to be set by a driver, only from userspace,
+> for binding the device to vfio (is there another use case?).
+>
+> >   clk: samsung: exynos5: Fix kfree() of const memory on setting
+> >     driver_override
+> >   slimbus: ngd: Fix kfree() of const memory on setting driver_override
+>
+> I see all users set override immediately after allocating a platform device.
+> Can't they just allocate a platform device using the override name instead?
+> What am I missing?
 
-Thanks for the patch, it looks good but I have already prepared other
-fix that removes the platform_device_register_simple() call entirely: 
+For the clk-exynos5-subcmu.c case, driver registers several
+sub-devices. Each sub-devices is a clock controller associated with
+power domain. I guess the author wanted to have meaningful names of
+these sub-devices (DISP, CAM etc. like names of power domains),
+instead of just exynos5-subcmu.1, exynos5-subcmu.2 ...
 
-"ASoC: samsung: i2s: Fix multiple "IIS multi" devices initialization"
-https://www.spinics.net/lists/kernel/msg3045092.html
+If driver_override should not be used for such case, then I could
+replace it with what you said.
 
--- 
-Thanks,
-Sylwester
+For the other uses of driver_override (drivers/rpmsg/rpmsg_internal.h
+and drivers/slimbus/qcom-ngd-ctrl.c) I don't know.
+
+Best regards,
+Krzysztof
