@@ -1,57 +1,72 @@
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [RFC 0/4] clk/driver: platform: Fix kfree() of const memory on
- setting driver_override
-Date: Mon, 18 Feb 2019 12:14:29 +0100
-Message-ID: <CAJKOXPe1CW4k4ivbh4QhKEbuVc3RRNmzUwQcL0BsrAn=hCdjZg@mail.gmail.com>
-References: <1550484960-2392-1-git-send-email-krzk@kernel.org> <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: samsung: i2s: Fix multiple "IIS multi" devices initialization
+Date: Mon, 18 Feb 2019 12:17:08 +0100
+Message-ID: <CAJKOXPdTWanSMJC0cmrkNuR3mjCVg+K8e2EvV=F6X0bj_7v3cA@mail.gmail.com>
+References: <CGME20190215144828epcas2p267aae592d0ebaaaa297ba1543463c204@epcas2p2.samsung.com>
+ <20190215144809.28007-1-s.nawrocki@samsung.com> <20190215144809.28007-2-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com>
+In-Reply-To: <20190215144809.28007-2-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>, Andy Gross <andy.gross@linaro.org>, David Brown <david.brown@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>, Linux ARM <linux-arm-kernel@list>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, Marek Szyprowski <m.szyprowski@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 Feb 2019 at 11:40, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, 15 Feb 2019 at 15:48, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
 >
-> Hi Krzysztof,
+> On some SoCs (e.g. Exynos5433) there are multiple "IIS multi audio
+> interfaces" and the driver will try to register there multiple times
+> same platform device for the secondary FIFO, which of course fails
+> miserably.  To fix this we derive the secondary platform device name
+> from the primary device name. The secondary device name will now
+> be <primary_dev_name>-sec instead of fixed "samsung-i2s-sec".
 >
-> On Mon, Feb 18, 2019 at 11:27 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > The problem
-> > ===========
-> > Several device types (platform, amba, spi etc.) provide a driver_override
-> > field.  On sysfs store or during device removal, they kfree() the
-> > existing value.
-> >
-> > However the users are unaware of this and set the driver_override like:
-> >
-> >         pdev->driver_override = "exynos5-subcmu";
-> >
-> > which obviously leads to error.
+> The fixed platform_device_id table entry is removed as the secondary
+> device name is now dynamic and device/driver matching is done through
+> driver_override.
 >
-> IMHO driver_override is not meant to be set by a driver, only from userspace,
-> for binding the device to vfio (is there another use case?).
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Suggested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  sound/soc/samsung/i2s.c    | 49 +++++++++++++++++++++++++-------------
+>  sound/soc/samsung/odroid.c |  2 +-
+>  2 files changed, 33 insertions(+), 18 deletions(-)
 >
-> >   clk: samsung: exynos5: Fix kfree() of const memory on setting
-> >     driver_override
-> >   slimbus: ngd: Fix kfree() of const memory on setting driver_override
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index e36c44e2f1bb..4a6dd86459bc 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -1339,20 +1339,34 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
+>  /* Create platform device for the secondary PCM */
+>  static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
+>  {
+> -       struct platform_device *pdev;
+> +       struct platform_device *pdev_sec;
+> +       const char *devname;
+>         int ret;
 >
-> I see all users set override immediately after allocating a platform device.
-> Can't they just allocate a platform device using the override name instead?
-> What am I missing?
+> -       pdev = platform_device_register_simple("samsung-i2s-sec", -1, NULL, 0);
+> -       if (!pdev)
+> +       devname = devm_kasprintf(&priv->pdev->dev, GFP_KERNEL, "%s-sec",
+> +                                dev_name(&priv->pdev->dev));
+> +       if (!devname)
+>                 return -ENOMEM;
+>
+> -       ret = device_attach(&pdev->dev);
+> +       pdev_sec = platform_device_alloc(devname, -1);
+> +       if (!pdev_sec)
+> +               return -ENOMEM;
+> +
+> +       pdev_sec->driver_override = "samsung-i2s";
 
-For the clk-exynos5-subcmu.c case, driver registers several
-sub-devices. Each sub-devices is a clock controller associated with
-power domain. I guess the author wanted to have meaningful names of
-these sub-devices (DISP, CAM etc. like names of power domains),
-instead of just exynos5-subcmu.1, exynos5-subcmu.2 ...
+This is wrong, see:
+https://patchwork.kernel.org/project/linux-samsung-soc/list/?series=81639&state=*
 
-If driver_override should not be used for such case, then I could
-replace it with what you said.
-
-For the other uses of driver_override (drivers/rpmsg/rpmsg_internal.h
-and drivers/slimbus/qcom-ngd-ctrl.c) I don't know.
+Although there is ongoing discussion whether the drivers should use
+driver_override at all:
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1934411.html
 
 Best regards,
 Krzysztof
