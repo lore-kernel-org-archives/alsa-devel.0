@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: fix sysclk_df type" to the asoc tree
-Date: Mon, 18 Feb 2019 18:52:34 +0000 (GMT)
-Message-ID: <20190218185234.163961128008@debutante.sirena.org.uk>
-References: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Viorel Suman <viorel.suman@gmail.com>Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: cs35l36: Make some symbols static" to
+	the asoc tree
+Date: Mon, 18 Feb 2019 18:52:29 +0000 (GMT)
+Message-ID: <20190218185229.B34E61128008@debutante.sirena.org.uk>
+References: <20190218074653.181365-1-weiyongjun1@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5EEA26555C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:52:31 +0100 (CET)
+In-Reply-To: <20190218074653.181365-1-weiyongjun1@huawei.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, James Schulman <james.schulman@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: fix sysclk_df type
+   ASoC: cs35l36: Make some symbols static
 
 has been applied to the asoc tree at
 
@@ -37,54 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 2231609a2c0a4807c017822ecb5834bbb7f59fb9 Mon Sep 17 00:00:00 2001
-From: Viorel Suman <viorel.suman@nxp.com>
-Date: Mon, 18 Feb 2019 15:25:00 +0000
-Subject: [PATCH] ASoC: fsl_spdif: fix sysclk_df type
+>From b2c02c63ac254530cffe3a7dc7d4e433da1b3a67 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 18 Feb 2019 07:46:53 +0000
+Subject: [PATCH] ASoC: cs35l36: Make some symbols static
 
-According to RM SPDIF STC SYSCLK_DF field is 9-bit wide, values
-being in 0..511 range. Use a proper type to handle sysclk_df.
+Fixes the following sparse warnings:
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+sound/soc/codecs/cs35l36.c:135:20: warning:
+ symbol 'cs35l36_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:248:6: warning:
+ symbol 'cs35l36_readable_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:398:6: warning:
+ symbol 'cs35l36_precious_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:410:6: warning:
+ symbol 'cs35l36_volatile_reg' was not declared. Should it be static?
+
+Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: James Schulman <james.schulman@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs35l36.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index a26686e7281c..4842e6df9a2d 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -96,7 +96,7 @@ struct fsl_spdif_priv {
- 	bool dpll_locked;
- 	u32 txrate[SPDIF_TXRATE_MAX];
- 	u8 txclk_df[SPDIF_TXRATE_MAX];
--	u8 sysclk_df[SPDIF_TXRATE_MAX];
-+	u16 sysclk_df[SPDIF_TXRATE_MAX];
- 	u8 txclk_src[SPDIF_TXRATE_MAX];
- 	u8 rxclk_src;
- 	struct clk *txclk[SPDIF_TXRATE_MAX];
-@@ -376,7 +376,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	unsigned long csfs = 0;
- 	u32 stc, mask, rate;
--	u8 clk, txclk_df, sysclk_df;
-+	u16 sysclk_df;
-+	u8 clk, txclk_df;
- 	int ret;
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index e374fffb7e17..dc8cf61b9db8 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -131,7 +131,7 @@ static const struct cs35l36_pll_config cs35l36_pll_sysclk[] = {
+ 	{27000000,	0x3F, 0x0A},
+ };
  
- 	switch (sample_rate) {
-@@ -1109,8 +1110,9 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
- 	u64 rate_ideal, rate_actual, sub;
--	u32 sysclk_dfmin, sysclk_dfmax;
--	u32 txclk_df, sysclk_df, arate;
-+	u32 arate;
-+	u16 sysclk_dfmin, sysclk_dfmax, sysclk_df;
-+	u8 txclk_df;
+-struct reg_default cs35l36_reg[] = {
++static struct reg_default cs35l36_reg[] = {
+ 	{CS35L36_TESTKEY_CTRL,			0x00000000},
+ 	{CS35L36_USERKEY_CTL,			0x00000000},
+ 	{CS35L36_OTP_CTRL1,			0x00002460},
+@@ -244,7 +244,7 @@ struct reg_default cs35l36_reg[] = {
+ 	{CS35L36_PAC_INT7_CTRL,			0x00000001},
+ };
  
- 	/* The sysclk has an extra divisor [2, 512] */
- 	sysclk_dfmin = is_sysclk ? 2 : 1;
+-bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_SW_RESET:
+@@ -394,7 +394,7 @@ bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_TESTKEY_CTRL:
+@@ -406,7 +406,7 @@ bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_SW_RESET:
 -- 
 2.20.1
