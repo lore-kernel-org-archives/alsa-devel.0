@@ -1,20 +1,13 @@
-From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-Subject: Re: [PATCH] ALSA: xen-front: remove unneeded switch
-	fall-through
-Date: Tue, 19 Feb 2019 06:56:04 +0000
-Message-ID: <09d316ae-1545-af2d-29eb-ec77c89beb9e@epam.com>
-References: <1550552248-17492-1-git-send-email-lirongqing@baidu.com>
+From: Xiang Xiao <xiaoxiang781216@gmail.com>
+Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Tue, 19 Feb 2019 04:03:08 +0800
+Message-ID: <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr50088.outbound.protection.outlook.com [40.107.5.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F59F265530
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 07:56:05 +0100 (CET)
-In-Reply-To: <1550552248-17492-1-git-send-email-lirongqing@baidu.com>
-Content-Language: en-US
-Content-ID: <56BD7F0708843049912CB39EDAD9D880@eurprd03.prod.outlook.com>
+In-Reply-To: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +17,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Li RongQing <lirongqing@baidu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+To: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, wendy.liang@xilinx.com, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Kumar Gala <kumar.gala@linaro.org>, linux-remoteproc@vger.kernel.org
+Cc: Xiang Xiao <xiaoxiang@xiaomi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/19/19 6:57 AM, Li RongQing wrote:
-> This case block will be terminated by a break, so not need
-> a switch fall-through
->
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> ---
->   sound/xen/xen_snd_front.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-> index a9e5c2cd7698..f12fb8eeaa27 100644
-> --- a/sound/xen/xen_snd_front.c
-> +++ b/sound/xen/xen_snd_front.c
-> @@ -250,7 +250,6 @@ static void sndback_changed(struct xenbus_device *xb_dev,
->   	case XenbusStateReconfigured:
->   		/* fall through */
->   	case XenbusStateInitialised:
-> -		/* fall through */
->   		break;
->   
->   	case XenbusStateInitialising:
-Thank you,
-Oleksandr
+Should we utilize official IPC frameowrk instead reinverting the wheel?
+1.Load firmware by drivers/remoteproc
+  https://www.kernel.org/doc/Documentation/remoteproc.txt
+2.Do the comunication through drivers/rpmsg
+  https://www.kernel.org/doc/Documentation/rpmsg.txt
+Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
+Actually, remoteproc/rpmsg is much better than SOF IPC because:
+1.Completely isolate the firmware load and message transfer:
+  The same rpmsg driver could run on any remote processor
+2.Separate the application protocol from transfer layer:
+  One remote processor could host many rpmsg services
+3.Completely follow kernel driver model(rpsmg_bus, rpmsg_device and rpmsg_driver).
+4.Support by many RTOS(Bare Metal, FreeRTOS, Zephyr, NuttX, Nucleus, uC/OS...) for remote side:
+  https://github.com/OpenAMP/open-amp
+  https://github.com/NXPmicro/rpmsg-lite
+5.Maintained by the standard committee:
+  https://www.multicore-association.org/workgroup/oamp.php
+  https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio
+Since the keypoint of SOF is the platform agnostic and modular, please use the standard technique here.
+
+Thanks
+Xiang
