@@ -1,93 +1,36 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH v4 05/14] ASoC: SOF: Add PCM operations
-	support
-Date: Mon, 18 Feb 2019 17:51:33 +0200
-Message-ID: <CAEnQRZCKZiD=yE0X_TqpiTM6_7e03cp_aA2+od9eF50cJsW4Qg@mail.gmail.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-6-pierre-louis.bossart@linux.intel.com>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: [PATCH 0/5] ASoC: codecs: ad193x:  Several fixes and imprevements
+Date: Mon, 18 Feb 2019 16:10:26 +0000
+Message-ID: <20190218160954.13929-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190213220734.10471-6-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Codrin.Ciubotariu@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-One comment inline:
+This patch set contains some changes I needed to make I2S and TDM=20
+(DSP_A) formats work. I tested only with ad1936, but the patches
+should work fine for all the codecs that use this driver. Although I
+checked the DS for all of them (I hope) to assure that the patches
+apply, I would really appreciate if someone else can test them on
+another codec.
 
-On Thu, Feb 14, 2019 at 12:07 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
->
-> Add support for exposing PCMs to userspace. PCMs are defined by topology
-> and the operations in this patch map to SOF IPC calls.
->
-> The .ignore_module_refcount field is set to allow for module
-> load/unload tests. There is no risk of the sof-pci/acpi-dev module
-> being removed while the platform components are in use. This may need
-> to be revisited when DT platforms are supported.
->
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/soc/sof/pcm.c | 710 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 710 insertions(+)
->  create mode 100644 sound/soc/sof/pcm.c
->
-> diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-> new file mode 100644
-> index 000000000000..3376633b0d46
-> --- /dev/null
-> +++ b/sound/soc/sof/pcm.c
-> @@ -0,0 +1,710 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +//
-> +// This file is provided under a dual BSD/GPLv2 license.  When using or
-> +// redistributing this file, you may do so under either license.
-> +//
-> +// Copyright(c) 2018 Intel Corporation. All rights reserved.
-> +//
-> +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> +//
-> +// PCM Layer, interface between ALSA and IPC.
-> +//
-> +
-> +#include <linux/pm_runtime.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/sof.h>
-> +#include "sof-priv.h"
-> +#include "ops.h"
-> +
-> +#define DRV_NAME       "sof-audio-component"
-> +
-> +/* Create DMA buffer page table for DSP */
-> +static int create_page_table(struct snd_pcm_substream *substream,
-> +                            unsigned char *dma_area, size_t size)
+Codrin Ciubotariu (5):
+  ASoC: codecs: ad193x: Remove capture support for codecs without ADC
+  ASoC: codecs: ad193x: Set constraint to always have 32 sample bits
+  ASoC: codecs: ad193x: Fix frame polarity for DSP_A format
+  ASoC: codecs: ad193x: Add runtime support for DSP_A and I2S modes
+  ASoC: codecs: ad193x: Add support to disable on-chip PLL
 
-dma_area is the virtual address of the DMA-able buffer. Currently, it is not
-used and it is confusing. Does it makes sense to remove it?
+ sound/soc/codecs/ad193x.c | 76 ++++++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/ad193x.h |  8 +++++
+ 2 files changed, 80 insertions(+), 4 deletions(-)
 
-Also, can you explain better the whole concept of page tables? As far as
-I understand the only "Shared Memory" between host and DSP is the
-mailbox area, right? And it is small 4k.
-
-Now, as for transferring audio buffers: It seems that because DSP has no
-direct access to host memory a DMA controller is involved? This can be
-programmed to copy buffers from host "address space" to DSP "address
-space"
-
-Information for the host audio buffers is sent via compressed physical
-addresses, right?
+--=20
+2.17.1
