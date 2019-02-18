@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: free created components in
-	tplg load error" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:20 +0000 (GMT)
-Message-ID: <20190218184920.0E83E1128008@debutante.sirena.org.uk>
-References: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AE7D265543
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:25 +0100 (CET)
-In-Reply-To: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bard.liao@intel.com
+Subject: Applied "ASoC: codecs: ad193x: Remove capture support for codecs without ADC" to the asoc tree
+Date: Mon, 18 Feb 2019 18:49:39 +0000 (GMT)
+Message-ID: <20190218184939.C1A051128008@debutante.sirena.org.uk>
+References: <20190218160954.13929-2-codrin.ciubotariu@microchip.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190218160954.13929-2-codrin.ciubotariu@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: Mark Brown <broonie@kernel.org>, lars@metafoo.de, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, Codrin.Ciubotariu@microchip.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: free created components in tplg load error
+   ASoC: codecs: ad193x: Remove capture support for codecs without ADC
 
 has been applied to the asoc tree at
 
@@ -53,44 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 304017d31df36fb61eb2ed3ebf65fb6870b3c731 Mon Sep 17 00:00:00 2001
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Date: Sun, 17 Feb 2019 21:23:47 +0800
-Subject: [PATCH] ASoC: topology: free created components in tplg load error
+>From 7aac8d13fc60db3ec2422f26c4dc2425a7fef20c Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Mon, 18 Feb 2019 16:10:28 +0000
+Subject: [PATCH] ASoC: codecs: ad193x: Remove capture support for codecs
+ without ADC
 
-Topology resources are no longer needed if any element failed to load.
+Some ad193x codecs don't have ADCs, so they have no capture capabilities.
+This way, we can use this driver in multicodec cards.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ad193x.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index fc79ec6927e3..731b963b6995 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2487,6 +2487,7 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	struct snd_soc_tplg_ops *ops, const struct firmware *fw, u32 id)
- {
- 	struct soc_tplg tplg;
-+	int ret;
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 4b60ebee491d..21a38cc9e3da 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -351,6 +351,20 @@ static struct snd_soc_dai_driver ad193x_dai = {
+ 	.ops = &ad193x_dai_ops,
+ };
  
- 	/* setup parsing context */
- 	memset(&tplg, 0, sizeof(tplg));
-@@ -2500,7 +2501,12 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	tplg.bytes_ext_ops = ops->bytes_ext_ops;
- 	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
- 
--	return soc_tplg_load(&tplg);
-+	ret = soc_tplg_load(&tplg);
-+	/* free the created components if fail to load topology */
-+	if (ret)
-+		snd_soc_tplg_component_remove(comp, SND_SOC_TPLG_INDEX_ALL);
++/* codec DAI instance for DAC only */
++static struct snd_soc_dai_driver ad193x_no_adc_dai = {
++	.name = "ad193x-hifi",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
++	},
++	.ops = &ad193x_dai_ops,
++};
 +
-+	return ret;
+ static int ad193x_component_probe(struct snd_soc_component *component)
+ {
+ 	struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(component);
+@@ -444,8 +458,11 @@ int ad193x_probe(struct device *dev, struct regmap *regmap,
+ 
+ 	dev_set_drvdata(dev, ad193x);
+ 
++	if (ad193x_has_adc(ad193x))
++		return devm_snd_soc_register_component(dev, &soc_component_dev_ad193x,
++						       &ad193x_dai, 1);
+ 	return devm_snd_soc_register_component(dev, &soc_component_dev_ad193x,
+-		&ad193x_dai, 1);
++		&ad193x_no_adc_dai, 1);
  }
- EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
+ EXPORT_SYMBOL_GPL(ad193x_probe);
  
 -- 
 2.20.1
