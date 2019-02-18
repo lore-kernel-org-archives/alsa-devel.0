@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l36: Make some symbols static" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:22 +0000 (GMT)
-Message-ID: <20190218184922.395091128008@debutante.sirena.org.uk>
-References: <20190218074653.181365-1-weiyongjun1@huawei.com>
+Subject: Applied "ASoC: codecs: ad193x: Fix frame polarity for DSP_A format" to the asoc tree
+Date: Mon, 18 Feb 2019 18:49:35 +0000 (GMT)
+Message-ID: <20190218184935.72BB11128008@debutante.sirena.org.uk>
+References: <20190218160954.13929-4-codrin.ciubotariu@microchip.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190218074653.181365-1-weiyongjun1@huawei.com>
+In-Reply-To: <20190218160954.13929-4-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: James Schulman <james.schulman@cirrus.com>, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>James Schulman <james.schulman@cirrus.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: Mark Brown <broonie@kernel.org>, lars@metafoo.de, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, Codrin.Ciubotariu@microchip.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l36: Make some symbols static
+   ASoC: codecs: ad193x: Fix frame polarity for DSP_A format
 
 has been applied to the asoc tree at
 
@@ -37,69 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From b2c02c63ac254530cffe3a7dc7d4e433da1b3a67 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 18 Feb 2019 07:46:53 +0000
-Subject: [PATCH] ASoC: cs35l36: Make some symbols static
+>From 90f6e68031397fb6212bef5619193cd15707fa0f Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Mon, 18 Feb 2019 16:10:32 +0000
+Subject: [PATCH] ASoC: codecs: ad193x: Fix frame polarity for DSP_A format
 
-Fixes the following sparse warnings:
+By default, the codec starts to interpret the left (first) channel on
+the falling edge (low polarity) of LRCLK. However, for DSP_A, the left
+channel needs to start on the rising edge of LRCLK. This patch fixes
+this channel swap by toggling the bit which selects the LRCLK polarity.
 
-sound/soc/codecs/cs35l36.c:135:20: warning:
- symbol 'cs35l36_reg' was not declared. Should it be static?
-sound/soc/codecs/cs35l36.c:248:6: warning:
- symbol 'cs35l36_readable_reg' was not declared. Should it be static?
-sound/soc/codecs/cs35l36.c:398:6: warning:
- symbol 'cs35l36_precious_reg' was not declared. Should it be static?
-sound/soc/codecs/cs35l36.c:410:6: warning:
- symbol 'cs35l36_volatile_reg' was not declared. Should it be static?
-
-Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Acked-by: James Schulman <james.schulman@cirrus.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l36.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/ad193x.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index e374fffb7e17..dc8cf61b9db8 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -131,7 +131,7 @@ static const struct cs35l36_pll_config cs35l36_pll_sysclk[] = {
- 	{27000000,	0x3F, 0x0A},
- };
- 
--struct reg_default cs35l36_reg[] = {
-+static struct reg_default cs35l36_reg[] = {
- 	{CS35L36_TESTKEY_CTRL,			0x00000000},
- 	{CS35L36_USERKEY_CTL,			0x00000000},
- 	{CS35L36_OTP_CTRL1,			0x00002460},
-@@ -244,7 +244,7 @@ struct reg_default cs35l36_reg[] = {
- 	{CS35L36_PAC_INT7_CTRL,			0x00000001},
- };
- 
--bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
-+static bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L36_SW_RESET:
-@@ -394,7 +394,7 @@ bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index c16c9969d1a0..315ec9775118 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -228,6 +228,12 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
  	}
- }
  
--bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
-+static bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L36_TESTKEY_CTRL:
-@@ -406,7 +406,7 @@ bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
-+static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS35L36_SW_RESET:
++	/* For DSP_*, LRCLK's polarity must be inverted */
++	if (fmt & SND_SOC_DAIFMT_DSP_A) {
++		change_bit(ffs(AD193X_DAC_LEFT_HIGH) - 1,
++			   (unsigned long *)&dac_fmt);
++	}
++
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM: /* codec clk & frm master */
+ 		adc_fmt |= AD193X_ADC_LCR_MASTER;
 -- 
 2.20.1
