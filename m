@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: ad193x: Add runtime support for
-	DSP_A and I2S modes" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:33 +0000 (GMT)
-Message-ID: <20190218184933.433021128008@debutante.sirena.org.uk>
-References: <20190218160954.13929-5-codrin.ciubotariu@microchip.com>
+Subject: Applied "ASoC: simple-card: fixup refcount_t
+	underflow" to the asoc tree
+Date: Mon, 18 Feb 2019 18:52:18 +0000 (GMT)
+Message-ID: <20190218185218.CBA0F1128008@debutante.sirena.org.uk>
+References: <878syh8svy.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B6D56265543
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:34 +0100 (CET)
-In-Reply-To: <20190218160954.13929-5-codrin.ciubotariu@microchip.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9505226552B
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:52:20 +0100 (CET)
+In-Reply-To: <878syh8svy.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, Codrin.Ciubotariu@microchip.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Vicente Bergas <vicencb@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: ad193x: Add runtime support for DSP_A and I2S modes
+   ASoC: simple-card: fixup refcount_t underflow
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From bccf9c7e14830af0004399d42d861b33c92eacff Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Mon, 18 Feb 2019 16:10:34 +0000
-Subject: [PATCH] ASoC: codecs: ad193x: Add runtime support for DSP_A and I2S
- modes
+>From 19dd0777773ab17b4d97f7105e836867c0cdecb4 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 15 Feb 2019 15:31:29 +0900
+Subject: [PATCH] ASoC: simple-card: fixup refcount_t underflow
 
-The driver only supports DPS_A for DAC, which is configured at probe.
-This patch adds support for DSP_A and I2S modes by using the set_fmt()
-callback.
+commit da215354eb55c ("ASoC: simple-card: merge simple-scu-card")
+merged simple-card and simple-scu-card. Then it had refcount
+underflow bug. This patch fixup it.
+We will get below error without this patch.
 
-A trivial break is also removed from a case's default branch.
+	OF: ERROR: Bad of_node_put() on /sound
+	CPU: 3 PID: 237 Comm: kworker/3:1 Not tainted 5.0.0-rc6+ #1514
+	Hardware name: Renesas H3ULCB Kingfisher board based on r8a7795 ES2.0+ (DT)
+	Workqueue: events deferred_probe_work_func
+	Call trace:
+	 dump_backtrace+0x0/0x150
+	 show_stack+0x24/0x30
+	 dump_stack+0xb0/0xec
+	 of_node_release+0xd0/0xd8
+	 kobject_put+0x74/0xe8
+	 of_node_put+0x24/0x30
+	 __of_get_next_child+0x50/0x70
+	 of_get_next_child+0x40/0x68
+	 asoc_simple_card_probe+0x604/0x730
+	 platform_drv_probe+0x58/0xa8
+	 ...
+Reported-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 315ec9775118..f8cf182518a3 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -188,23 +188,26 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- {
- 	struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(codec_dai->component);
- 	unsigned int adc_serfmt = 0;
-+	unsigned int dac_serfmt = 0;
- 	unsigned int adc_fmt = 0;
- 	unsigned int dac_fmt = 0;
- 
- 	/* At present, the driver only support AUX ADC mode(SND_SOC_DAIFMT_I2S
--	 * with TDM) and ADC&DAC TDM mode(SND_SOC_DAIFMT_DSP_A)
-+	 * with TDM), ADC&DAC TDM mode(SND_SOC_DAIFMT_DSP_A) and DAC I2S mode
-+	 * (SND_SOC_DAIFMT_I2S)
- 	 */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		adc_serfmt |= AD193X_ADC_SERFMT_TDM;
-+		dac_serfmt |= AD193X_DAC_SERFMT_STEREO;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
- 		adc_serfmt |= AD193X_ADC_SERFMT_AUX;
-+		dac_serfmt |= AD193X_DAC_SERFMT_TDM;
- 		break;
- 	default:
- 		if (ad193x_has_adc(ad193x))
- 			return -EINVAL;
--		break;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 37e001cf9cd1..3fe34417ec89 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -462,7 +462,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	conf_idx	= 0;
+ 	node = of_get_child_by_name(top, PREFIX "dai-link");
+ 	if (!node) {
+-		node = dev->of_node;
++		node = of_node_get(top);
+ 		loop = 0;
  	}
- 
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -261,6 +264,8 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		regmap_update_bits(ad193x->regmap, AD193X_ADC_CTRL2,
- 				   AD193X_ADC_FMT_MASK, adc_fmt);
- 	}
-+	regmap_update_bits(ad193x->regmap, AD193X_DAC_CTRL0,
-+			   AD193X_DAC_SERFMT_MASK, dac_serfmt);
- 	regmap_update_bits(ad193x->regmap, AD193X_DAC_CTRL1,
- 		AD193X_DAC_FMT_MASK, dac_fmt);
  
 -- 
 2.20.1
