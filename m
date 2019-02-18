@@ -1,99 +1,66 @@
-From: "Schulman, James" <James.Schulman@cirrus.com>
-Subject: Re: [PATCH -next] ASoC: cs35l36: Make some symbols
-	static
-Date: Mon, 18 Feb 2019 17:26:47 +0000
-Message-ID: <alpine.DEB.2.10.1902181126050.1596@james-tower>
-References: <20190218074653.181365-1-weiyongjun1@huawei.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: Fix refcount underflow
+Date: Mon, 18 Feb 2019 17:50:10 +0000
+Message-ID: <20190218175010.GB10794@sirena.org.uk>
+References: <20190216100927.10017-1-daniel.baluta@nxp.com>
+ <87pnrp52jl.wl-kuninori.morimoto.gx@renesas.com>
+ <87lg2d51lv.wl-kuninori.morimoto.gx@renesas.com>
+ <b4bee8ff1307004ec9d1122f70ab2cb0d636ea4a.camel@nxp.com>
+ <s5hpnrp8ret.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 16D6226552B
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 18:26:51 +0100 (CET)
-In-Reply-To: <20190218074653.181365-1-weiyongjun1@huawei.com>
-Content-Language: en-US
-Content-ID: <94AED2AAD7DAF647A3D83FF6941D0803@namprd19.prod.outlook.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Schulman, James" <James.Schulman@cirrus.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aM3YZ0Iwxop3KEKx"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hpnrp8ret.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "vicencb@gmail.com" <vicencb@gmail.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, dl-linux-imx <linux-imx@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
+--aM3YZ0Iwxop3KEKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 18 Feb 2019, Wei Yongjun wrote:
+On Mon, Feb 18, 2019 at 08:52:26AM +0100, Takashi Iwai wrote:
+> Daniel Baluta wrote:
 
-> Fixes the following sparse warnings:
->
-> sound/soc/codecs/cs35l36.c:135:20: warning:
-> symbol 'cs35l36_reg' was not declared. Should it be static?
-> sound/soc/codecs/cs35l36.c:248:6: warning:
-> symbol 'cs35l36_readable_reg' was not declared. Should it be static?
-> sound/soc/codecs/cs35l36.c:398:6: warning:
-> symbol 'cs35l36_precious_reg' was not declared. Should it be static?
-> sound/soc/codecs/cs35l36.c:410:6: warning:
-> symbol 'cs35l36_volatile_reg' was not declared. Should it be static?
->
-> Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
-> sound/soc/codecs/cs35l36.c | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-> index 4f880a678812..005f1adc80b8 100644
-> --- a/sound/soc/codecs/cs35l36.c
-> +++ b/sound/soc/codecs/cs35l36.c
-> @@ -132,7 +132,7 @@ static const struct cs35l36_pll_config cs35l36_pll_sysclk[] = {
-> 	{27000000,	0x3F, 0x0A},
-> };
->
-> -struct reg_default cs35l36_reg[] = {
-> +static struct reg_default cs35l36_reg[] = {
-> 	{CS35L36_TESTKEY_CTRL,			0x00000000},
-> 	{CS35L36_USERKEY_CTL,			0x00000000},
-> 	{CS35L36_OTP_CTRL1,			0x00002460},
-> @@ -245,7 +245,7 @@ struct reg_default cs35l36_reg[] = {
-> 	{CS35L36_PAC_INT7_CTRL,			0x00000001},
-> };
->
-> -bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
-> +static bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
-> {
-> 	switch (reg) {
-> 	case CS35L36_SW_RESET:
-> @@ -395,7 +395,7 @@ bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
-> 	}
-> }
->
-> -bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
-> +static bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
-> {
-> 	switch (reg) {
-> 	case CS35L36_TESTKEY_CTRL:
-> @@ -407,7 +407,7 @@ bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
-> 	}
-> }
->
-> -bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
-> +static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
-> {
-> 	switch (reg) {
-> 	case CS35L36_SW_RESET:
->
->
->
->
+> > > Fixes: commit da215354eb55c ("ASoC: simple-card: merge simple-scu-
+> > > card")
 
-Thanks Wei. I agree with the changes.
+> > Thanks! I thought about adding this but the current patch will not
+> > cleanly apply because of:
 
-Acked-by: James Schulman <james.schulman@cirrus.com>
+> > 2d01a84605a55c ("ASoC: simple-card: reduce naming prefix")
+
+That doesn't matter for fixes tags.  However...
+
+> Yeah, it's a bit tricky because of the code change at this time.
+
+> At best, send two patches, once for 5.0 and once for 5.1, and let Mark
+> apply both of them and do the empty merge from 5.0 to 5.1, or let him
+> resolve the merge conflict by applying manually the 5.1 patch.
+
+...since this is something that needs to be fixed for v5.0 we need a
+patch that can be applied on v5.0 (and has been tested by someone who
+sees the issue there).  Takashi's plan seems like a good way to do that,
+if you could send a patch against my for-5.0 branch (or just Linus'
+tree) that'd be great.
+
+--aM3YZ0Iwxop3KEKx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxq8FIACgkQJNaLcl1U
+h9B58Qf+I/VpXqp+ASMjZ2UG85bKjLNGgZTHGDBbBYTTHLdWKjUrcyZqeiZ5A/lJ
+DxUx8EIo+4PbmytunRjAvZHyp3K9s/6ozEyj4qbyCe81YyE2cqNQopHkucIA0b+X
+nwyse/s7n7QqFjkFgTd4WNkveRowP/CvV4FzfucxBRKoL/5AkpGFkfDAGNTY6RDb
+M5xpiDeUErV52RCFuZ7rwGNh57G4RVFnKcQV507ZuwxVlZ4kl++QdyeAHMGDlnXS
+sUc3GXS4QzMCuTYUUW4aR+FkBjvFitc/3q1MTqQ8UytaiyGNIgqIYOjSHkhDFZIa
+pBqnUzari84A+/+ehuQbJNUUeo9y9Q==
+=dxr7
+-----END PGP SIGNATURE-----
+
+--aM3YZ0Iwxop3KEKx--
