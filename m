@@ -1,7 +1,8 @@
 From: <Codrin.Ciubotariu@microchip.com>
-Subject: [PATCH 5/5] ASoC: codecs: ad193x: Add support to disable on-chip PLL
-Date: Mon, 18 Feb 2019 16:10:36 +0000
-Message-ID: <20190218160954.13929-6-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 2/5] ASoC: codecs: ad193x: Set constraint to always have 32
+ sample bits
+Date: Mon, 18 Feb 2019 16:10:30 +0000
+Message-ID: <20190218160954.13929-3-codrin.ciubotariu@microchip.com>
 References: <20190218160954.13929-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -16,100 +17,50 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-The on-chip PLL can be disabled if on the MCLKI pin we have an external
-clock at 512 x fs. This clock can be used as direct internal clock for
-ADCs or DACs.
-To support this, we add an extra clock id that can be configured
-using the set_sysclk() callback.
+DACs and ADCs on ad193x codecs require a 32 bit slot size. We should
+assure that no other size is used.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/codecs/ad193x.c | 26 +++++++++++++++++++++++++-
- sound/soc/codecs/ad193x.h |  8 ++++++++
- 2 files changed, 33 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ad193x.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index f8cf182518a3..96d7cb2e4a56 100644
+index 21a38cc9e3da..c16c9969d1a0 100644
 --- a/sound/soc/codecs/ad193x.c
 +++ b/sound/soc/codecs/ad193x.c
-@@ -100,6 +100,15 @@ static const struct snd_soc_dapm_widget ad193x_adc_wid=
-gets[] =3D {
- 	SND_SOC_DAPM_INPUT("ADC2IN"),
- };
+@@ -37,6 +37,13 @@ static SOC_ENUM_SINGLE_DECL(ad193x_deemp_enum, AD193X_DA=
+C_CTRL2, 1,
 =20
-+static int ad193x_check_pll(struct snd_soc_dapm_widget *source,
-+			    struct snd_soc_dapm_widget *sink)
-+{
-+	struct snd_soc_component *component =3D snd_soc_dapm_to_component(source-=
->dapm);
-+	struct ad193x_priv *ad193x =3D snd_soc_component_get_drvdata(component);
+ static const DECLARE_TLV_DB_MINMAX(adau193x_tlv, -9563, 0);
+=20
++static const unsigned int ad193x_sb[] =3D {32};
 +
-+	return !!ad193x->sysclk;
++static struct snd_pcm_hw_constraint_list constr =3D {
++	.list =3D ad193x_sb,
++	.count =3D ARRAY_SIZE(ad193x_sb),
++};
++
+ static const struct snd_kcontrol_new ad193x_snd_controls[] =3D {
+ 	/* DAC volume control */
+ 	SOC_DOUBLE_R_TLV("DAC1 Volume", AD193X_DAC_L1_VOL,
+@@ -321,7 +328,16 @@ static int ad193x_hw_params(struct snd_pcm_substream *=
+substream,
+ 	return 0;
+ }
+=20
++static int ad193x_startup(struct snd_pcm_substream *substream,
++			  struct snd_soc_dai *dai)
++{
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
++				   &constr);
 +}
 +
- static const struct snd_soc_dapm_route audio_paths[] =3D {
- 	{ "DAC", NULL, "SYSCLK" },
- 	{ "DAC Output", NULL, "DAC" },
-@@ -108,7 +117,7 @@ static const struct snd_soc_dapm_route audio_paths[] =
-=3D {
- 	{ "DAC2OUT", NULL, "DAC Output" },
- 	{ "DAC3OUT", NULL, "DAC Output" },
- 	{ "DAC4OUT", NULL, "DAC Output" },
--	{ "SYSCLK", NULL, "PLL_PWR" },
-+	{ "SYSCLK", NULL, "PLL_PWR", &ad193x_check_pll },
- };
-=20
- static const struct snd_soc_dapm_route ad193x_adc_audio_paths[] =3D {
-@@ -276,7 +285,22 @@ static int ad193x_set_dai_sysclk(struct snd_soc_dai *c=
-odec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
- 	struct snd_soc_component *component =3D codec_dai->component;
-+	struct snd_soc_dapm_context *dapm =3D snd_soc_component_get_dapm(componen=
-t);
- 	struct ad193x_priv *ad193x =3D snd_soc_component_get_drvdata(component);
-+
-+	if (clk_id =3D=3D AD193X_SYSCLK_MCLK) {
-+		/* MCLK must be 512 x fs */
-+		if (dir =3D=3D SND_SOC_CLOCK_OUT || freq !=3D 24576000)
-+			return -EINVAL;
-+
-+		regmap_update_bits(ad193x->regmap, AD193X_PLL_CLK_CTRL1,
-+				   AD193X_PLL_SRC_MASK,
-+				   AD193X_PLL_DAC_SRC_MCLK |
-+				   AD193X_PLL_CLK_SRC_MCLK);
-+
-+		snd_soc_dapm_sync(dapm);
-+		return 0;
-+	}
- 	switch (freq) {
- 	case 12288000:
- 	case 18432000:
-diff --git a/sound/soc/codecs/ad193x.h b/sound/soc/codecs/ad193x.h
-index 8b1e65f928d2..27d6afbd7dfb 100644
---- a/sound/soc/codecs/ad193x.h
-+++ b/sound/soc/codecs/ad193x.h
-@@ -31,6 +31,11 @@ int ad193x_probe(struct device *dev, struct regmap *regm=
-ap,
- #define AD193X_PLL_INPUT_512    (2 << 1)
- #define AD193X_PLL_INPUT_768    (3 << 1)
- #define AD193X_PLL_CLK_CTRL1    0x01
-+#define AD193X_PLL_SRC_MASK	0x03
-+#define AD193X_PLL_DAC_SRC_PLL  0
-+#define AD193X_PLL_DAC_SRC_MCLK 1
-+#define AD193X_PLL_CLK_SRC_PLL  (0 << 1)
-+#define AD193X_PLL_CLK_SRC_MCLK	(1 << 1)
- #define AD193X_DAC_CTRL0        0x02
- #define AD193X_DAC_POWERDOWN           0x01
- #define AD193X_DAC_SERFMT_MASK		0xC0
-@@ -96,4 +101,7 @@ int ad193x_probe(struct device *dev, struct regmap *regm=
-ap,
-=20
- #define AD193X_NUM_REGS          17
-=20
-+#define AD193X_SYSCLK_PLL	0
-+#define AD193X_SYSCLK_MCLK	1
-+
- #endif
+ static const struct snd_soc_dai_ops ad193x_dai_ops =3D {
++	.startup =3D ad193x_startup,
+ 	.hw_params =3D ad193x_hw_params,
+ 	.digital_mute =3D ad193x_mute,
+ 	.set_tdm_slot =3D ad193x_set_tdm_slot,
 --=20
 2.17.1
