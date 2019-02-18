@@ -1,30 +1,36 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 21/21] ARM: dts: exynos5422-odroidxu4: Add support for
- secondary DAI
-Date: Mon, 18 Feb 2019 21:22:37 +0100
-Message-ID: <20190218202237.GB24814@kozik-lap>
-References: <20190212180342.32040-1-s.nawrocki@samsung.com>
- <CGME20190212180553epcas2p10fb4f2f465392de8609c127ed3f33ab4@epcas2p1.samsung.com>
- <20190212180342.32040-22-s.nawrocki@samsung.com>
+From: =?utf-8?B?56mN5Li55bC8?= Dan Jacobson <jidanni@jidanni.org>
+Subject: Can't load alsa-project.org
+Date: Tue, 19 Feb 2019 07:16:54 +0800
+Message-ID: <87bm387km1.fsf@jidanni.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190212180342.32040-22-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, m.szyprowski@samsung.com, b.zolnierkie@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from palegreen.birch.relay.mailchannels.net
+ (palegreen.birch.relay.mailchannels.net [23.83.209.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75010265527
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 00:48:58 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: 921523-done@bugs.debian.org, svenjoac@gmx.de, Tatsuya Kinoshita <tats@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 12, 2019 at 07:03:42PM +0100, Sylwester Nawrocki wrote:
-> This patch extends DAPM routing and adds secondary CPU DAI entry
-> to support the secondary audio PCM interface on Odroid XU4.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  arch/arm/boot/dts/exynos5422-odroidxu4.dts | 4 +++-
+Dear ALSA team, you need to update the TLS on alsa-project.org
+> That's because the site apparently only offers TLS 1.0 which libssl
+> does not support anymore by default.
+See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=921523
 
-Thanks, applied.
-
-Best regards,
-Krzysztof
+P.S., The side panel of
+https://alsa-project.org/
+has a link to "Bug tracking" which is broken
+and needs to link to
+https://alsa-project.org/main/index.php/Bug_Tracking
+instead.
