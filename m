@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: ad193x: Set constraint to always have 32 sample bits" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:37 +0000 (GMT)
-Message-ID: <20190218184937.98EA21128008@debutante.sirena.org.uk>
-References: <20190218160954.13929-3-codrin.ciubotariu@microchip.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190218160954.13929-3-codrin.ciubotariu@microchip.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: Mark Brown <broonie@kernel.org>, lars@metafoo.de, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, Codrin.Ciubotariu@microchip.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: fsl_spdif: fix sysclk_df type" to the
+	asoc tree
+Date: Mon, 18 Feb 2019 18:49:26 +0000 (GMT)
+Message-ID: <20190218184926.887FC1128009@debutante.sirena.org.uk>
+References: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33261265565
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:29 +0100 (CET)
+In-Reply-To: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Viorel Suman <viorel.suman@gmail.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: ad193x: Set constraint to always have 32 sample bits
+   ASoC: fsl_spdif: fix sysclk_df type
 
 has been applied to the asoc tree at
 
@@ -37,55 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From 75c2ecb4bda296f89d4ea6a42750f48bfcd8a1d9 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Mon, 18 Feb 2019 16:10:30 +0000
-Subject: [PATCH] ASoC: codecs: ad193x: Set constraint to always have 32 sample
- bits
+>From 2231609a2c0a4807c017822ecb5834bbb7f59fb9 Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Mon, 18 Feb 2019 15:25:00 +0000
+Subject: [PATCH] ASoC: fsl_spdif: fix sysclk_df type
 
-DACs and ADCs on ad193x codecs require a 32 bit slot size. We should
-assure that no other size is used.
+According to RM SPDIF STC SYSCLK_DF field is 9-bit wide, values
+being in 0..511 range. Use a proper type to handle sysclk_df.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad193x.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/fsl/fsl_spdif.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 21a38cc9e3da..c16c9969d1a0 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -37,6 +37,13 @@ static SOC_ENUM_SINGLE_DECL(ad193x_deemp_enum, AD193X_DAC_CTRL2, 1,
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index a26686e7281c..4842e6df9a2d 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -96,7 +96,7 @@ struct fsl_spdif_priv {
+ 	bool dpll_locked;
+ 	u32 txrate[SPDIF_TXRATE_MAX];
+ 	u8 txclk_df[SPDIF_TXRATE_MAX];
+-	u8 sysclk_df[SPDIF_TXRATE_MAX];
++	u16 sysclk_df[SPDIF_TXRATE_MAX];
+ 	u8 txclk_src[SPDIF_TXRATE_MAX];
+ 	u8 rxclk_src;
+ 	struct clk *txclk[SPDIF_TXRATE_MAX];
+@@ -376,7 +376,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
+ 	struct platform_device *pdev = spdif_priv->pdev;
+ 	unsigned long csfs = 0;
+ 	u32 stc, mask, rate;
+-	u8 clk, txclk_df, sysclk_df;
++	u16 sysclk_df;
++	u8 clk, txclk_df;
+ 	int ret;
  
- static const DECLARE_TLV_DB_MINMAX(adau193x_tlv, -9563, 0);
+ 	switch (sample_rate) {
+@@ -1109,8 +1110,9 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
+ 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
+ 	u64 rate_ideal, rate_actual, sub;
+-	u32 sysclk_dfmin, sysclk_dfmax;
+-	u32 txclk_df, sysclk_df, arate;
++	u32 arate;
++	u16 sysclk_dfmin, sysclk_dfmax, sysclk_df;
++	u8 txclk_df;
  
-+static const unsigned int ad193x_sb[] = {32};
-+
-+static struct snd_pcm_hw_constraint_list constr = {
-+	.list = ad193x_sb,
-+	.count = ARRAY_SIZE(ad193x_sb),
-+};
-+
- static const struct snd_kcontrol_new ad193x_snd_controls[] = {
- 	/* DAC volume control */
- 	SOC_DOUBLE_R_TLV("DAC1 Volume", AD193X_DAC_L1_VOL,
-@@ -321,7 +328,16 @@ static int ad193x_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int ad193x_startup(struct snd_pcm_substream *substream,
-+			  struct snd_soc_dai *dai)
-+{
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+				   &constr);
-+}
-+
- static const struct snd_soc_dai_ops ad193x_dai_ops = {
-+	.startup = ad193x_startup,
- 	.hw_params = ad193x_hw_params,
- 	.digital_mute = ad193x_mute,
- 	.set_tdm_slot = ad193x_set_tdm_slot,
+ 	/* The sysclk has an extra divisor [2, 512] */
+ 	sysclk_dfmin = is_sysclk ? 2 : 1;
 -- 
 2.20.1
