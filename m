@@ -1,66 +1,37 @@
 From: <Codrin.Ciubotariu@microchip.com>
-Subject: [PATCH 2/5] ASoC: codecs: ad193x: Set constraint to always have 32
- sample bits
-Date: Mon, 18 Feb 2019 16:10:30 +0000
-Message-ID: <20190218160954.13929-3-codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH 0/5] ASoC: codecs: ad193x: Several fixes and imprevements
+Date: Mon, 18 Feb 2019 16:57:44 +0000
+Message-ID: <165c7445-4023-5069-313e-8c8f8c0475f4@microchip.com>
 References: <20190218160954.13929-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190218160954.13929-1-codrin.ciubotariu@microchip.com>
 Content-Language: en-US
+Content-ID: <9AC5BFC5BC1AAD46B4553033B17F9AC9@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Codrin.Ciubotariu@microchip.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-
-DACs and ADCs on ad193x codecs require a 32 bit slot size. We should
-assure that no other size is used.
-
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/codecs/ad193x.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 21a38cc9e3da..c16c9969d1a0 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -37,6 +37,13 @@ static SOC_ENUM_SINGLE_DECL(ad193x_deemp_enum, AD193X_DA=
-C_CTRL2, 1,
-=20
- static const DECLARE_TLV_DB_MINMAX(adau193x_tlv, -9563, 0);
-=20
-+static const unsigned int ad193x_sb[] =3D {32};
-+
-+static struct snd_pcm_hw_constraint_list constr =3D {
-+	.list =3D ad193x_sb,
-+	.count =3D ARRAY_SIZE(ad193x_sb),
-+};
-+
- static const struct snd_kcontrol_new ad193x_snd_controls[] =3D {
- 	/* DAC volume control */
- 	SOC_DOUBLE_R_TLV("DAC1 Volume", AD193X_DAC_L1_VOL,
-@@ -321,7 +328,16 @@ static int ad193x_hw_params(struct snd_pcm_substream *=
-substream,
- 	return 0;
- }
-=20
-+static int ad193x_startup(struct snd_pcm_substream *substream,
-+			  struct snd_soc_dai *dai)
-+{
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+				   &constr);
-+}
-+
- static const struct snd_soc_dai_ops ad193x_dai_ops =3D {
-+	.startup =3D ad193x_startup,
- 	.hw_params =3D ad193x_hw_params,
- 	.digital_mute =3D ad193x_mute,
- 	.set_tdm_slot =3D ad193x_set_tdm_slot,
---=20
-2.17.1
+T24gMTguMDIuMjAxOSAxODoxMCwgQ29kcmluIENpdWJvdGFyaXUgLSBNMTk5NDAgd3JvdGU6DQo+
+IEZyb206IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29t
+Pg0KPiANCj4gVGhpcyBwYXRjaCBzZXQgY29udGFpbnMgc29tZSBjaGFuZ2VzIEkgbmVlZGVkIHRv
+IG1ha2UgSTJTIGFuZCBURE0NCj4gKERTUF9BKSBmb3JtYXRzIHdvcmsuIEkgdGVzdGVkIG9ubHkg
+d2l0aCBhZDE5MzYsIGJ1dCB0aGUgcGF0Y2hlcw0KDQphY3R1YWxseSwgaXQncyBhZDE5MzQuIFNv
+cnJ5IGFib3V0IHRoYXQuDQoNCkJlc3QgcmVnYXJkcywNCkNvZHJpbg0KDQo+IHNob3VsZCB3b3Jr
+IGZpbmUgZm9yIGFsbCB0aGUgY29kZWNzIHRoYXQgdXNlIHRoaXMgZHJpdmVyLiBBbHRob3VnaCBJ
+DQo+IGNoZWNrZWQgdGhlIERTIGZvciBhbGwgb2YgdGhlbSAoSSBob3BlKSB0byBhc3N1cmUgdGhh
+dCB0aGUgcGF0Y2hlcw0KPiBhcHBseSwgSSB3b3VsZCByZWFsbHkgYXBwcmVjaWF0ZSBpZiBzb21l
+b25lIGVsc2UgY2FuIHRlc3QgdGhlbSBvbg0KPiBhbm90aGVyIGNvZGVjLg0KPiANCj4gQ29kcmlu
+IENpdWJvdGFyaXUgKDUpOg0KPiAgICBBU29DOiBjb2RlY3M6IGFkMTkzeDogUmVtb3ZlIGNhcHR1
+cmUgc3VwcG9ydCBmb3IgY29kZWNzIHdpdGhvdXQgQURDDQo+ICAgIEFTb0M6IGNvZGVjczogYWQx
+OTN4OiBTZXQgY29uc3RyYWludCB0byBhbHdheXMgaGF2ZSAzMiBzYW1wbGUgYml0cw0KPiAgICBB
+U29DOiBjb2RlY3M6IGFkMTkzeDogRml4IGZyYW1lIHBvbGFyaXR5IGZvciBEU1BfQSBmb3JtYXQN
+Cj4gICAgQVNvQzogY29kZWNzOiBhZDE5M3g6IEFkZCBydW50aW1lIHN1cHBvcnQgZm9yIERTUF9B
+IGFuZCBJMlMgbW9kZXMNCj4gICAgQVNvQzogY29kZWNzOiBhZDE5M3g6IEFkZCBzdXBwb3J0IHRv
+IGRpc2FibGUgb24tY2hpcCBQTEwNCj4gDQo+ICAgc291bmQvc29jL2NvZGVjcy9hZDE5M3guYyB8
+IDc2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLQ0KPiAgIHNvdW5kL3Nv
+Yy9jb2RlY3MvYWQxOTN4LmggfCAgOCArKysrKw0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgODAgaW5z
+ZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQoNCg==
