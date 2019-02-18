@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: fix sysclk_df type" to the
+Subject: Applied "ASoC: fsl_spdif: fix TXCLK_DF mask" to the
 	asoc tree
-Date: Mon, 18 Feb 2019 18:49:26 +0000 (GMT)
-Message-ID: <20190218184926.887FC1128009@debutante.sirena.org.uk>
-References: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
+Date: Mon, 18 Feb 2019 18:49:28 +0000 (GMT)
+Message-ID: <20190218184928.B77BB1128009@debutante.sirena.org.uk>
+References: <1550499117-11801-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 33261265565
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:29 +0100 (CET)
-In-Reply-To: <1550503474-18865-1-git-send-email-viorel.suman@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 34374265567
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:30 +0100 (CET)
+In-Reply-To: <1550499117-11801-1-git-send-email-viorel.suman@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Viorel Suman <viorel.suman@gmail.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>
+Cc: Viorel Suman <viorel.suman@gmail.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: fix sysclk_df type
+   ASoC: fsl_spdif: fix TXCLK_DF mask
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 2231609a2c0a4807c017822ecb5834bbb7f59fb9 Mon Sep 17 00:00:00 2001
+>From 30c498a10ac6586778062062c064ae54e3897762 Mon Sep 17 00:00:00 2001
 From: Viorel Suman <viorel.suman@nxp.com>
-Date: Mon, 18 Feb 2019 15:25:00 +0000
-Subject: [PATCH] ASoC: fsl_spdif: fix sysclk_df type
+Date: Mon, 18 Feb 2019 14:12:17 +0000
+Subject: [PATCH] ASoC: fsl_spdif: fix TXCLK_DF mask
 
-According to RM SPDIF STC SYSCLK_DF field is 9-bit wide, values
-being in 0..511 range. Use a proper type to handle sysclk_df.
+According to RM SPDIF TXCLK_DF mask is 7-bit wide.
 
 Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_spdif.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index a26686e7281c..4842e6df9a2d 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -96,7 +96,7 @@ struct fsl_spdif_priv {
- 	bool dpll_locked;
- 	u32 txrate[SPDIF_TXRATE_MAX];
- 	u8 txclk_df[SPDIF_TXRATE_MAX];
--	u8 sysclk_df[SPDIF_TXRATE_MAX];
-+	u16 sysclk_df[SPDIF_TXRATE_MAX];
- 	u8 txclk_src[SPDIF_TXRATE_MAX];
- 	u8 rxclk_src;
- 	struct clk *txclk[SPDIF_TXRATE_MAX];
-@@ -376,7 +376,8 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	unsigned long csfs = 0;
- 	u32 stc, mask, rate;
--	u8 clk, txclk_df, sysclk_df;
-+	u16 sysclk_df;
-+	u8 clk, txclk_df;
- 	int ret;
+diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
+index 7666dabaccfd..e6c61e07bc1a 100644
+--- a/sound/soc/fsl/fsl_spdif.h
++++ b/sound/soc/fsl/fsl_spdif.h
+@@ -152,7 +152,7 @@ enum spdif_gainsel {
+ #define STC_TXCLK_ALL_EN_MASK		(1 << STC_TXCLK_ALL_EN_OFFSET)
+ #define STC_TXCLK_ALL_EN		(1 << STC_TXCLK_ALL_EN_OFFSET)
+ #define STC_TXCLK_DF_OFFSET		0
+-#define STC_TXCLK_DF_MASK		(0x7ff << STC_TXCLK_DF_OFFSET)
++#define STC_TXCLK_DF_MASK		(0x7f << STC_TXCLK_DF_OFFSET)
+ #define STC_TXCLK_DF(x)		((((x) - 1) << STC_TXCLK_DF_OFFSET) & STC_TXCLK_DF_MASK)
+ #define STC_TXCLK_SRC_MAX		8
  
- 	switch (sample_rate) {
-@@ -1109,8 +1110,9 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
- 	u64 rate_ideal, rate_actual, sub;
--	u32 sysclk_dfmin, sysclk_dfmax;
--	u32 txclk_df, sysclk_df, arate;
-+	u32 arate;
-+	u16 sysclk_dfmin, sysclk_dfmax, sysclk_df;
-+	u8 txclk_df;
- 
- 	/* The sysclk has an extra divisor [2, 512] */
- 	sysclk_dfmin = is_sysclk ? 2 : 1;
 -- 
 2.20.1
