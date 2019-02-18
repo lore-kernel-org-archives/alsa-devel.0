@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: remove set but not used
-	variables 'mask, cr1'" to the asoc tree
-Date: Mon, 18 Feb 2019 18:52:25 +0000 (GMT)
-Message-ID: <20190218185225.691B01128008@debutante.sirena.org.uk>
-References: <20190218145026.142805-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: topology: free created components in
+	tplg load error" to the asoc tree
+Date: Mon, 18 Feb 2019 18:52:27 +0000 (GMT)
+Message-ID: <20190218185227.90BF71128008@debutante.sirena.org.uk>
+References: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B0490265577
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:52:28 +0100 (CET)
-In-Reply-To: <20190218145026.142805-1-yuehaibing@huawei.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13F0C265555
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:52:31 +0100 (CET)
+In-Reply-To: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
+To: Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: remove set but not used variables 'mask, cr1'
+   ASoC: topology: free created components in tplg load error
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 70605450fd42060783b0072a61a30f42a74f2917 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 18 Feb 2019 14:50:26 +0000
-Subject: [PATCH] ASoC: stm32: sai: remove set but not used variables 'mask,
- cr1'
+>From 304017d31df36fb61eb2ed3ebf65fb6870b3c731 Mon Sep 17 00:00:00 2001
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Date: Sun, 17 Feb 2019 21:23:47 +0800
+Subject: [PATCH] ASoC: topology: free created components in tplg load error
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Topology resources are no longer needed if any element failed to load.
 
-sound/soc/stm/stm32_sai_sub.c: In function 'stm32_sai_configure_clock':
-sound/soc/stm/stm32_sai_sub.c:902:11: warning:
- variable 'mask' set but not used [-Wunused-but-set-variable]
-sound/soc/stm/stm32_sai_sub.c:902:6: warning:
- variable 'cr1' set but not used [-Wunused-but-set-variable]
-
-It's not used any more after 8307b2afd386 ("ASoC: stm32: sai: set sai as
-mclk clock provider")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/soc-topology.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index d4825700b63f..f9297228c41c 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -898,7 +898,7 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 				     struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index fc79ec6927e3..731b963b6995 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2487,6 +2487,7 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	struct snd_soc_tplg_ops *ops, const struct firmware *fw, u32 id)
  {
- 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	int cr1, mask, div = 0;
-+	int div = 0;
- 	int sai_clk_rate, mclk_ratio, den;
- 	unsigned int rate = params_rate(params);
+ 	struct soc_tplg tplg;
++	int ret;
  
-@@ -943,10 +943,8 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 		} else {
- 			if (sai->mclk_rate) {
- 				mclk_ratio = sai->mclk_rate / rate;
--				if (mclk_ratio == 512) {
--					mask = SAI_XCR1_OSR;
--					cr1 = SAI_XCR1_OSR;
--				} else if (mclk_ratio != 256) {
-+				if ((mclk_ratio != 512) &&
-+				    (mclk_ratio != 256)) {
- 					dev_err(cpu_dai->dev,
- 						"Wrong mclk ratio %d\n",
- 						mclk_ratio);
+ 	/* setup parsing context */
+ 	memset(&tplg, 0, sizeof(tplg));
+@@ -2500,7 +2501,12 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+ 	tplg.bytes_ext_ops = ops->bytes_ext_ops;
+ 	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
+ 
+-	return soc_tplg_load(&tplg);
++	ret = soc_tplg_load(&tplg);
++	/* free the created components if fail to load topology */
++	if (ret)
++		snd_soc_tplg_component_remove(comp, SND_SOC_TPLG_INDEX_ALL);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
+ 
 -- 
 2.20.1
