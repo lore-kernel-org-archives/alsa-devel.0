@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Fix refcount underflow
-Date: Mon, 18 Feb 2019 18:22:40 +0000
-Message-ID: <20190218182240.GG10794@sirena.org.uk>
+Subject: Applied "ASoC: simple-card: Fix refcount underflow" to
+	the asoc tree
+Date: Mon, 18 Feb 2019 18:49:13 +0000 (GMT)
+Message-ID: <20190218184913.737051128008@debutante.sirena.org.uk>
 References: <20190216100927.10017-1-daniel.baluta@nxp.com>
- <87pnrp52jl.wl-kuninori.morimoto.gx@renesas.com>
- <87lg2d51lv.wl-kuninori.morimoto.gx@renesas.com>
- <b4bee8ff1307004ec9d1122f70ab2cb0d636ea4a.camel@nxp.com>
- <s5hpnrp8ret.wl-tiwai@suse.de>
- <20190218175010.GB10794@sirena.org.uk>
- <CAEnQRZCLE7DHumOCDSXxaKEgpukDgP5EtH=j7xMwTBJcTWQTZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6989027852877012952=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 30D8826552B
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:22:43 +0100 (CET)
-In-Reply-To: <CAEnQRZCLE7DHumOCDSXxaKEgpukDgP5EtH=j7xMwTBJcTWQTZw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E3598265532
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:15 +0100 (CET)
+In-Reply-To: <20190216100927.10017-1-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "vicencb@gmail.com" <vicencb@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "vicencb@gmail.com" <vicencb@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6989027852877012952==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kadn00tgSopKmJ1H"
-Content-Disposition: inline
+   ASoC: simple-card: Fix refcount underflow
 
+has been applied to the asoc tree at
 
---kadn00tgSopKmJ1H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Feb 18, 2019 at 08:00:48PM +0200, Daniel Baluta wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Would you want me to change the patch for 5.0 to have an identical commit
-> message as the one for 5.1?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-No, that's fine - since Morimoto-san's patch has been tested I'll just use
-that.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---kadn00tgSopKmJ1H
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxq9/AACgkQJNaLcl1U
-h9CKWAf/QhJOOS76j3FBAB7PkiShjc2QFHAP9oqiH9Lww2tp3YOOsGCFdJlb6cBI
-w2zA6yFx1Y4tPYVlsVQIX5U2aGmHzIebVvsxQA4n6GMGj8kmf87AI+x32JXBqV7Z
-T2dKCFkAx67vaFy6ReFW7Ck0SZfRLjEYMWTANBmnmq7wlgApQxuvlySMIPnrN7Md
-5t5qn2xFsBonZACjE7PgQEB1KaLKsWCPj2G8HZexyr0wq68ll4snaHxHHbg7Gna7
-Iv+wCry69RvEPOcq+aUH/PttGwL4BBhKniCsmvVYH25+vFt366BNUzkunMIQ3yk1
-M8+REeKOGuXHuf0wr5zWsnLoaseIAQ==
-=wHox
------END PGP SIGNATURE-----
+>From 461d854c0dba3cdf63cce37ffb9423eca0793a47 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Sat, 16 Feb 2019 10:09:42 +0000
+Subject: [PATCH] ASoC: simple-card: Fix refcount underflow
 
---kadn00tgSopKmJ1H--
+of_get_child_by_name() takes a reference we'll need to drop
+later so when we substitute in top we need to take a reference
+as well as just assigning.
 
---===============6989027852877012952==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Without this patch we hit the following error:
 
+[    1.246852] OF: ERROR: Bad of_node_put() on /sound-wm8524
+[    1.262261] Hardware name: NXP i.MX8MQ EVK (DT)
+[    1.266807] Workqueue: events deferred_probe_work_func
+[    1.271950] Call trace:
+[    1.274406]  dump_backtrace+0x0/0x158
+[    1.278074]  show_stack+0x14/0x20
+[    1.281396]  dump_stack+0xa8/0xcc
+[    1.284717]  of_node_release+0xb0/0xc8
+[    1.288474]  kobject_put+0x74/0xf0
+[    1.291879]  of_node_put+0x14/0x28
+[    1.295286]  __of_get_next_child+0x44/0x70
+[    1.299387]  of_get_next_child+0x3c/0x60
+[    1.303315]  simple_for_each_link+0x1dc/0x230
+[    1.307676]  simple_probe+0x80/0x540
+[    1.311256]  platform_drv_probe+0x50/0xa0
 
---===============6989027852877012952==--
+This patch is based on an earlier version posted by Kuninori Morimoto
+and commit message includes explanations from Mark Brown.
+
+https://patchwork.kernel.org/patch/10814255/
+
+Reported-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/simple-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 08df261024cf..dc18c4492955 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -445,7 +445,7 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 	/* Check if it has dai-link */
+ 	node = of_get_child_by_name(top, PREFIX "dai-link");
+ 	if (!node) {
+-		node = top;
++		node = of_node_get(top);
+ 		is_top = 1;
+ 	}
+ 
+-- 
+2.20.1
