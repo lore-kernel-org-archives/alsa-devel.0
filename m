@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: Kconfig: select dmic for sdm845" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:24 +0000 (GMT)
-Message-ID: <20190218184924.5EFF41128008@debutante.sirena.org.uk>
-References: <20190218041819.115729-1-cychiang@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190218041819.115729-1-cychiang@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@chromium.orgMark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: sai: remove set but not used variables 'mask,
+ cr1'" to the asoc tree
+Date: Mon, 18 Feb 2019 18:49:17 +0000 (GMT)
+Message-ID: <20190218184917.CDEC21128008@debutante.sirena.org.uk>
+References: <20190218145026.142805-1-yuehaibing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190218145026.142805-1-yuehaibing@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: Kconfig: select dmic for sdm845
+   ASoC: stm32: sai: remove set but not used variables 'mask, cr1'
 
 has been applied to the asoc tree at
 
@@ -37,30 +49,54 @@ to this mail.
 Thanks,
 Mark
 
->From 74c6ecf4194ebed285b29964a950e0cd7414fe19 Mon Sep 17 00:00:00 2001
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Date: Mon, 18 Feb 2019 12:18:19 +0800
-Subject: [PATCH] ASoC: qcom: Kconfig: select dmic for sdm845
+>From 70605450fd42060783b0072a61a30f42a74f2917 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Mon, 18 Feb 2019 14:50:26 +0000
+Subject: [PATCH] ASoC: stm32: sai: remove set but not used variables 'mask,
+ cr1'
 
-sdm845 uses dmic on EC so it should select CROS_EC_CODEC.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+sound/soc/stm/stm32_sai_sub.c: In function 'stm32_sai_configure_clock':
+sound/soc/stm/stm32_sai_sub.c:902:11: warning:
+ variable 'mask' set but not used [-Wunused-but-set-variable]
+sound/soc/stm/stm32_sai_sub.c:902:6: warning:
+ variable 'cr1' set but not used [-Wunused-but-set-variable]
+
+It's not used any more after 8307b2afd386 ("ASoC: stm32: sai: set sai as
+mclk clock provider")
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/stm/stm32_sai_sub.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 7948e993adba..8f206cb4fcc0 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -103,6 +103,7 @@ config SND_SOC_SDM845
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_RT5663
- 	select SND_SOC_MAX98927
-+	select SND_SOC_CROS_EC_CODEC
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SDM845 SoC-based systems.
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index d4825700b63f..f9297228c41c 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -898,7 +898,7 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
+ 				     struct snd_pcm_hw_params *params)
+ {
+ 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	int cr1, mask, div = 0;
++	int div = 0;
+ 	int sai_clk_rate, mclk_ratio, den;
+ 	unsigned int rate = params_rate(params);
+ 
+@@ -943,10 +943,8 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
+ 		} else {
+ 			if (sai->mclk_rate) {
+ 				mclk_ratio = sai->mclk_rate / rate;
+-				if (mclk_ratio == 512) {
+-					mask = SAI_XCR1_OSR;
+-					cr1 = SAI_XCR1_OSR;
+-				} else if (mclk_ratio != 256) {
++				if ((mclk_ratio != 512) &&
++				    (mclk_ratio != 256)) {
+ 					dev_err(cpu_dai->dev,
+ 						"Wrong mclk ratio %d\n",
+ 						mclk_ratio);
 -- 
 2.20.1
