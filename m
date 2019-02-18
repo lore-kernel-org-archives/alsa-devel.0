@@ -1,23 +1,17 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH] ASoC: simple-card: Fix refcount underflow
-Date: Mon, 18 Feb 2019 20:00:48 +0200
-Message-ID: <CAEnQRZCLE7DHumOCDSXxaKEgpukDgP5EtH=j7xMwTBJcTWQTZw@mail.gmail.com>
-References: <20190216100927.10017-1-daniel.baluta@nxp.com>
- <87pnrp52jl.wl-kuninori.morimoto.gx@renesas.com>
- <87lg2d51lv.wl-kuninori.morimoto.gx@renesas.com>
- <b4bee8ff1307004ec9d1122f70ab2cb0d636ea4a.camel@nxp.com>
- <s5hpnrp8ret.wl-tiwai@suse.de> <20190218175010.GB10794@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: AMD: Configure master codec on all
+ playback/capture cases
+Date: Mon, 18 Feb 2019 18:18:07 +0000
+Message-ID: <20190218181807.GF10794@sirena.org.uk>
+References: <20190215070539.22150-1-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0924895843208103488=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
- [209.85.208.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DF64265530
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:01:00 +0100 (CET)
-Received: by mail-ed1-f66.google.com with SMTP id a2so14599321edi.0
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 10:01:00 -0800 (PST)
-In-Reply-To: <20190218175010.GB10794@sirena.org.uk>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 921B626552B
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:18:14 +0100 (CET)
+In-Reply-To: <20190215070539.22150-1-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,44 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "vicencb@gmail.com" <vicencb@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 18, 2019 at 7:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Feb 18, 2019 at 08:52:26AM +0100, Takashi Iwai wrote:
-> > Daniel Baluta wrote:
->
-> > > > Fixes: commit da215354eb55c ("ASoC: simple-card: merge simple-scu-
-> > > > card")
->
-> > > Thanks! I thought about adding this but the current patch will not
-> > > cleanly apply because of:
->
-> > > 2d01a84605a55c ("ASoC: simple-card: reduce naming prefix")
->
-> That doesn't matter for fixes tags.  However...
->
-> > Yeah, it's a bit tricky because of the code change at this time.
->
-> > At best, send two patches, once for 5.0 and once for 5.1, and let Mark
-> > apply both of them and do the empty merge from 5.0 to 5.1, or let him
-> > resolve the merge conflict by applying manually the 5.1 patch.
->
-> ...since this is something that needs to be fixed for v5.0 we need a
-> patch that can be applied on v5.0 (and has been tested by someone who
-> sees the issue there).  Takashi's plan seems like a good way to do that,
-> if you could send a patch against my for-5.0 branch (or just Linus'
-> tree) that'd be great.
 
-for-5.0 branch Kuninori's patch works fine:
+--===============0924895843208103488==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kR3zbvD4cgoYnS/6"
+Content-Disposition: inline
 
-https://patchwork.kernel.org/patch/10814255/
 
-for-5.1 branch and later my patch works fine:
+--kR3zbvD4cgoYnS/6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://patchwork.kernel.org/patch/10817449/
+On Fri, Feb 15, 2019 at 07:06:15AM +0000, Agrawal, Akshu wrote:
 
-Would you want me to change the patch for 5.0 to have an identical commit
-message as the one for 5.1?
+> +static static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
+> +				    struct snd_pcm_hw_params *params)
+> +{
+> +	/* da7219 Codec is clock master so setup as per the needs */
+> +	if (codec_dai->driver->ops->hw_params)
+> +		return codec_dai->driver->ops->hw_params(substream, params,
+> +							 codec_dai);
+> +	return 0;
+> +}
+
+No, this is a bad idea - you shouldn't be callings ops in drivers
+outside of the framework, something is going to break on you there.
+Either the drivers or the frameworks are going to get surprised by
+things getting called out of sequence, for example I'd not rely on the
+fact that the CODEC would be outputing a clock without active audio.
+This probably means that you're going to have to extend the framework in
+some way, or refactor things so that the BCLK is exported as a clock by
+the CODEC and reflect the relationships via the clock API.  I need to
+think a bit more but I think the clock API is going to be the the best
+solution.
+
+I also suspect that some work is needed to propagate constraints between
+the various DAIs in the system.
+
+--kR3zbvD4cgoYnS/6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxq9t4ACgkQJNaLcl1U
+h9BFpgf/d/DJQCKtnkQnbzLnFB65/rVz3sTtB69+bGTGwzdpqr9iZuEr/gtbYrlW
+qf/h52giMIYtcplragEM1s2N8Ap/t5sfQyPcJKBAQvYTJGcXUVKR5nGYtwkOPK5N
+/eKAHfL5Ix0aBdjgR59M0quTBCDENSrAEewlJeSKuXgfuH6JRYUj3BqEr3fVvhWT
+2uoimEod8420/rwtZQCHE5TnhrLBFJ+vc58Zr80tQZ0JyGcT4CkhJU7T6YR8S27R
+dMQmfV6/Up0XrbmQeTGfm1LAMuzAlY1cyYYSwvZv5Qt9UhYMWFLa7KgQwqCbnd0q
+hlNU57dMwHC9rn3KAziHEhZgTpnLCQ==
+=LO88
+-----END PGP SIGNATURE-----
+
+--kR3zbvD4cgoYnS/6--
+
+--===============0924895843208103488==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0924895843208103488==--
