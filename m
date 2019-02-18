@@ -1,33 +1,59 @@
-From: Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH] ASoC: qcom: Kconfig: select dmic for sdm845
-Date: Mon, 18 Feb 2019 12:18:19 +0800
-Message-ID: <20190218041819.115729-1-cychiang@chromium.org>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH] ASoC: simple-card: Fix refcount underflow
+Date: Mon, 18 Feb 2019 07:06:19 +0000
+Message-ID: <b4bee8ff1307004ec9d1122f70ab2cb0d636ea4a.camel@nxp.com>
+References: <20190216100927.10017-1-daniel.baluta@nxp.com>
+         <87pnrp52jl.wl-kuninori.morimoto.gx@renesas.com>
+         <87lg2d51lv.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87lg2d51lv.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Content-ID: <F1E390C11BF887468F67CFAE6C2A9132@eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+To: "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>
+Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "vicencb@gmail.com" <vicencb@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-sdm845 uses dmic on EC so it should select CROS_EC_CODEC.
-
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- sound/soc/qcom/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 7948e993adba..8f206cb4fcc0 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -103,6 +103,7 @@ config SND_SOC_SDM845
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_RT5663
- 	select SND_SOC_MAX98927
-+	select SND_SOC_CROS_EC_CODEC
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SDM845 SoC-based systems.
--- 
-2.21.0.rc0.258.g878e2cd30e-goog
+T24gTW9uLCAyMDE5LTAyLTE4IGF0IDEwOjM3ICswOTAwLCBLdW5pbm9yaSBNb3JpbW90byB3cm90
+ZToNCj4gSGkgRGFuaWVsLCBNYXJrLCBhZ2Fpbg0KPiANCj4gPiA+IG9mX2dldF9jaGlsZF9ieV9u
+YW1lKCkgdGFrZXMgYSByZWZlcmVuY2Ugd2UnbGwgbmVlZCB0byBkcm9wDQo+ID4gPiBsYXRlciBz
+byB3aGVuIHdlIHN1YnN0aXR1dGUgaW4gdG9wIHdlIG5lZWQgdG8gdGFrZSBhIHJlZmVyZW5jZQ0K
+PiA+ID4gYXMgd2VsbCBhcyBqdXN0IGFzc2lnbmluZy4NCj4gPiA+IA0KPiA+ID4gV2l0aG91dCB0
+aGlzIHBhdGNoIHdlIGhpdCB0aGUgZm9sbG93aW5nIGVycm9yOg0KPiA+ID4gDQo+ID4gPiBbICAg
+IDEuMjQ2ODUyXSBPRjogRVJST1I6IEJhZCBvZl9ub2RlX3B1dCgpIG9uIC9zb3VuZC13bTg1MjQN
+Cj4gPiA+IFsgICAgMS4yNjIyNjFdIEhhcmR3YXJlIG5hbWU6IE5YUCBpLk1YOE1RIEVWSyAoRFQp
+DQo+ID4gPiBbICAgIDEuMjY2ODA3XSBXb3JrcXVldWU6IGV2ZW50cyBkZWZlcnJlZF9wcm9iZV93
+b3JrX2Z1bmMNCj4gPiA+IFsgICAgMS4yNzE5NTBdIENhbGwgdHJhY2U6DQo+ID4gPiBbICAgIDEu
+Mjc0NDA2XSAgZHVtcF9iYWNrdHJhY2UrMHgwLzB4MTU4DQo+ID4gPiBbICAgIDEuMjc4MDc0XSAg
+c2hvd19zdGFjaysweDE0LzB4MjANCj4gPiA+IFsgICAgMS4yODEzOTZdICBkdW1wX3N0YWNrKzB4
+YTgvMHhjYw0KPiA+ID4gWyAgICAxLjI4NDcxN10gIG9mX25vZGVfcmVsZWFzZSsweGIwLzB4YzgN
+Cj4gPiA+IFsgICAgMS4yODg0NzRdICBrb2JqZWN0X3B1dCsweDc0LzB4ZjANCj4gPiA+IFsgICAg
+MS4yOTE4NzldICBvZl9ub2RlX3B1dCsweDE0LzB4MjgNCj4gPiA+IFsgICAgMS4yOTUyODZdICBf
+X29mX2dldF9uZXh0X2NoaWxkKzB4NDQvMHg3MA0KPiA+ID4gWyAgICAxLjI5OTM4N10gIG9mX2dl
+dF9uZXh0X2NoaWxkKzB4M2MvMHg2MA0KPiA+ID4gWyAgICAxLjMwMzMxNV0gIHNpbXBsZV9mb3Jf
+ZWFjaF9saW5rKzB4MWRjLzB4MjMwDQo+ID4gPiBbICAgIDEuMzA3Njc2XSAgc2ltcGxlX3Byb2Jl
+KzB4ODAvMHg1NDANCj4gPiA+IFsgICAgMS4zMTEyNTZdICBwbGF0Zm9ybV9kcnZfcHJvYmUrMHg1
+MC8weGEwDQo+ID4gPiANCj4gPiA+IFRoaXMgcGF0Y2ggaXMgYmFzZWQgb24gYW4gZWFybGllciB2
+ZXJzaW9uIHBvc3RlZCBieSBLdW5pbm9yaQ0KPiA+ID4gTW9yaW1vdG8NCj4gPiA+IGFuZCBjb21t
+aXQgbWVzc2FnZSBpbmNsdWRlcyBleHBsYW5hdGlvbnMgZnJvbSBNYXJrIEJyb3duLg0KPiA+ID4g
+DQo+ID4gPiANCmh0dHBzOi8vZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29t
+Lz91cmw9aHR0cHMlM0ElMkYlMkZwYXRjaHdvcmsua2VybmVsLm9yZyUyRnBhdGNoJTJGMTA4MTQy
+NTUlMkYmYW1wO2RhdGE9MDIlN0MwMSU3Q2RhbmllbC5iYWx1dGElNDBueHAuY29tJTdDZWQxYjdh
+ZGM2NmE1NDZjMWJiNDYwOGQ2OTU0MWFhZjglN0M2ODZlYTFkM2JjMmI0YzZmYTkyY2Q5OWM1YzMw
+MTYzNSU3QzAlN0MwJTdDNjM2ODYwNTA2NjE3OTgzMTc0JmFtcDtzZGF0YT1oVHN1ckRMZHRMQXRU
+dzBhNXYlMkZyU3NsZVNhd0FQMnlpVlBsODclMkJIQ3pUSSUzRCZhbXA7cmVzZXJ2ZWQ9MA0KPiA+
+ID4gDQo+ID4gPiBSZXBvcnRlZC1ieTogVmljZW50ZSBCZXJnYXMgPHZpY2VuY2JAZ21haWwuY29t
+Pg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAu
+Y29tPg0KPiA+ID4gLS0tDQo+ID4gDQo+ID4gSSdtIG5vdCBzdXJlIHdoaWNoIG9uZSBpcyBjb3Jy
+ZWN0IGluIHRoaXMgY2FzZQ0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3JpIE1vcmlt
+b3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4NCj4gPiANCj4gPiBvcg0KPiA+
+IA0KPiA+IEFja2VkLWJ5OiBLdW5pbm9yaSBNb3JpbW90byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hA
+cmVuZXNhcy5jb20+DQo+IA0KPiBBbmQgd2Ugd2FudCB0byBhZGQNCj4gDQo+IEZpeGVzOiBjb21t
+aXQgZGEyMTUzNTRlYjU1YyAoIkFTb0M6IHNpbXBsZS1jYXJkOiBtZXJnZSBzaW1wbGUtc2N1LQ0K
+PiBjYXJkIikNCj4gDQoNClRoYW5rcyEgSSB0aG91Z2h0IGFib3V0IGFkZGluZyB0aGlzIGJ1dCB0
+aGUgY3VycmVudCBwYXRjaCB3aWxsIG5vdA0KY2xlYW5seSBhcHBseSBiZWNhdXNlIG9mOg0KDQoy
+ZDAxYTg0NjA1YTU1YyAoIkFTb0M6IHNpbXBsZS1jYXJkOiByZWR1Y2UgbmFtaW5nIHByZWZpeCIp
+DQoNCg0KDQo=
