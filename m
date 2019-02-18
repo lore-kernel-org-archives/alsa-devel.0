@@ -1,8 +1,7 @@
 From: <Codrin.Ciubotariu@microchip.com>
-Subject: [PATCH 1/5] ASoC: codecs: ad193x: Remove capture support for codecs
- without ADC
-Date: Mon, 18 Feb 2019 16:10:28 +0000
-Message-ID: <20190218160954.13929-2-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 3/5] ASoC: codecs: ad193x: Fix frame polarity for DSP_A format
+Date: Mon, 18 Feb 2019 16:10:32 +0000
+Message-ID: <20190218160954.13929-4-codrin.ciubotariu@microchip.com>
 References: <20190218160954.13929-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -17,52 +16,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Some ad193x codecs don't have ADCs, so they have no capture capabilities.
-This way, we can use this driver in multicodec cards.
+By default, the codec starts to interpret the left (first) channel on
+the falling edge (low polarity) of LRCLK. However, for DSP_A, the left
+channel needs to start on the rising edge of LRCLK. This patch fixes
+this channel swap by toggling the bit which selects the LRCLK polarity.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/codecs/ad193x.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ad193x.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 4b60ebee491d..21a38cc9e3da 100644
+index c16c9969d1a0..315ec9775118 100644
 --- a/sound/soc/codecs/ad193x.c
 +++ b/sound/soc/codecs/ad193x.c
-@@ -351,6 +351,20 @@ static struct snd_soc_dai_driver ad193x_dai =3D {
- 	.ops =3D &ad193x_dai_ops,
- };
+@@ -228,6 +228,12 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *code=
+c_dai,
+ 		return -EINVAL;
+ 	}
 =20
-+/* codec DAI instance for DAC only */
-+static struct snd_soc_dai_driver ad193x_no_adc_dai =3D {
-+	.name =3D "ad193x-hifi",
-+	.playback =3D {
-+		.stream_name =3D "Playback",
-+		.channels_min =3D 2,
-+		.channels_max =3D 8,
-+		.rates =3D SNDRV_PCM_RATE_48000,
-+		.formats =3D SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.ops =3D &ad193x_dai_ops,
-+};
++	/* For DSP_*, LRCLK's polarity must be inverted */
++	if (fmt & SND_SOC_DAIFMT_DSP_A) {
++		change_bit(ffs(AD193X_DAC_LEFT_HIGH) - 1,
++			   (unsigned long *)&dac_fmt);
++	}
 +
- static int ad193x_component_probe(struct snd_soc_component *component)
- {
- 	struct ad193x_priv *ad193x =3D snd_soc_component_get_drvdata(component);
-@@ -444,8 +458,11 @@ int ad193x_probe(struct device *dev, struct regmap *re=
-gmap,
-=20
- 	dev_set_drvdata(dev, ad193x);
-=20
-+	if (ad193x_has_adc(ad193x))
-+		return devm_snd_soc_register_component(dev, &soc_component_dev_ad193x,
-+						       &ad193x_dai, 1);
- 	return devm_snd_soc_register_component(dev, &soc_component_dev_ad193x,
--		&ad193x_dai, 1);
-+		&ad193x_no_adc_dai, 1);
- }
- EXPORT_SYMBOL_GPL(ad193x_probe);
-=20
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM: /* codec clk & frm master */
+ 		adc_fmt |=3D AD193X_ADC_LCR_MASTER;
 --=20
 2.17.1
