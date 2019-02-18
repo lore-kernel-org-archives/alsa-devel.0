@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: remove set but not used variables 'mask,
- cr1'" to the asoc tree
-Date: Mon, 18 Feb 2019 18:49:17 +0000 (GMT)
-Message-ID: <20190218184917.CDEC21128008@debutante.sirena.org.uk>
-References: <20190218145026.142805-1-yuehaibing@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190218145026.142805-1-yuehaibing@huawei.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: cs35l36: Make some symbols static" to the asoc tree
+Date: Mon, 18 Feb 2019 18:49:22 +0000 (GMT)
+Message-ID: <20190218184922.395091128008@debutante.sirena.org.uk>
+References: <20190218074653.181365-1-weiyongjun1@huawei.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190218074653.181365-1-weiyongjun1@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: James Schulman <james.schulman@cirrus.com>, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>James Schulman <james.schulman@cirrus.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: remove set but not used variables 'mask, cr1'
+   ASoC: cs35l36: Make some symbols static
 
 has been applied to the asoc tree at
 
@@ -49,54 +37,69 @@ to this mail.
 Thanks,
 Mark
 
->From 70605450fd42060783b0072a61a30f42a74f2917 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 18 Feb 2019 14:50:26 +0000
-Subject: [PATCH] ASoC: stm32: sai: remove set but not used variables 'mask,
- cr1'
+>From b2c02c63ac254530cffe3a7dc7d4e433da1b3a67 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 18 Feb 2019 07:46:53 +0000
+Subject: [PATCH] ASoC: cs35l36: Make some symbols static
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Fixes the following sparse warnings:
 
-sound/soc/stm/stm32_sai_sub.c: In function 'stm32_sai_configure_clock':
-sound/soc/stm/stm32_sai_sub.c:902:11: warning:
- variable 'mask' set but not used [-Wunused-but-set-variable]
-sound/soc/stm/stm32_sai_sub.c:902:6: warning:
- variable 'cr1' set but not used [-Wunused-but-set-variable]
+sound/soc/codecs/cs35l36.c:135:20: warning:
+ symbol 'cs35l36_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:248:6: warning:
+ symbol 'cs35l36_readable_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:398:6: warning:
+ symbol 'cs35l36_precious_reg' was not declared. Should it be static?
+sound/soc/codecs/cs35l36.c:410:6: warning:
+ symbol 'cs35l36_volatile_reg' was not declared. Should it be static?
 
-It's not used any more after 8307b2afd386 ("ASoC: stm32: sai: set sai as
-mclk clock provider")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: James Schulman <james.schulman@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs35l36.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index d4825700b63f..f9297228c41c 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -898,7 +898,7 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 				     struct snd_pcm_hw_params *params)
- {
- 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	int cr1, mask, div = 0;
-+	int div = 0;
- 	int sai_clk_rate, mclk_ratio, den;
- 	unsigned int rate = params_rate(params);
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index e374fffb7e17..dc8cf61b9db8 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -131,7 +131,7 @@ static const struct cs35l36_pll_config cs35l36_pll_sysclk[] = {
+ 	{27000000,	0x3F, 0x0A},
+ };
  
-@@ -943,10 +943,8 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 		} else {
- 			if (sai->mclk_rate) {
- 				mclk_ratio = sai->mclk_rate / rate;
--				if (mclk_ratio == 512) {
--					mask = SAI_XCR1_OSR;
--					cr1 = SAI_XCR1_OSR;
--				} else if (mclk_ratio != 256) {
-+				if ((mclk_ratio != 512) &&
-+				    (mclk_ratio != 256)) {
- 					dev_err(cpu_dai->dev,
- 						"Wrong mclk ratio %d\n",
- 						mclk_ratio);
+-struct reg_default cs35l36_reg[] = {
++static struct reg_default cs35l36_reg[] = {
+ 	{CS35L36_TESTKEY_CTRL,			0x00000000},
+ 	{CS35L36_USERKEY_CTL,			0x00000000},
+ 	{CS35L36_OTP_CTRL1,			0x00002460},
+@@ -244,7 +244,7 @@ struct reg_default cs35l36_reg[] = {
+ 	{CS35L36_PAC_INT7_CTRL,			0x00000001},
+ };
+ 
+-bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_SW_RESET:
+@@ -394,7 +394,7 @@ bool cs35l36_readable_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_TESTKEY_CTRL:
+@@ -406,7 +406,7 @@ bool cs35l36_precious_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
++static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L36_SW_RESET:
 -- 
 2.20.1
