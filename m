@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: fix TXCLK_DF mask" to the
-	asoc tree
-Date: Mon, 18 Feb 2019 18:49:28 +0000 (GMT)
-Message-ID: <20190218184928.B77BB1128009@debutante.sirena.org.uk>
-References: <1550499117-11801-1-git-send-email-viorel.suman@nxp.com>
+Subject: Applied "ASoC: codecs: ad193x: Add support to disable
+	on-chip PLL" to the asoc tree
+Date: Mon, 18 Feb 2019 18:49:30 +0000 (GMT)
+Message-ID: <20190218184930.F3E631128008@debutante.sirena.org.uk>
+References: <20190218160954.13929-6-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 34374265567
- for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:30 +0100 (CET)
-In-Reply-To: <1550499117-11801-1-git-send-email-viorel.suman@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 112EA26555A
+ for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2019 19:49:32 +0100 (CET)
+In-Reply-To: <20190218160954.13929-6-codrin.ciubotariu@microchip.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Viorel Suman <viorel.suman@gmail.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, Codrin.Ciubotariu@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: fix TXCLK_DF mask
+   ASoC: codecs: ad193x: Add support to disable on-chip PLL
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,99 @@ to this mail.
 Thanks,
 Mark
 
->From 30c498a10ac6586778062062c064ae54e3897762 Mon Sep 17 00:00:00 2001
-From: Viorel Suman <viorel.suman@nxp.com>
-Date: Mon, 18 Feb 2019 14:12:17 +0000
-Subject: [PATCH] ASoC: fsl_spdif: fix TXCLK_DF mask
+>From 59529473751e987e28c926838f70aaef588b83b0 Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Mon, 18 Feb 2019 16:10:36 +0000
+Subject: [PATCH] ASoC: codecs: ad193x: Add support to disable on-chip PLL
 
-According to RM SPDIF TXCLK_DF mask is 7-bit wide.
+The on-chip PLL can be disabled if on the MCLKI pin we have an external
+clock at 512 x fs. This clock can be used as direct internal clock for
+ADCs or DACs.
+To support this, we add an extra clock id that can be configured
+using the set_sysclk() callback.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ad193x.c | 26 +++++++++++++++++++++++++-
+ sound/soc/codecs/ad193x.h |  8 ++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
-index 7666dabaccfd..e6c61e07bc1a 100644
---- a/sound/soc/fsl/fsl_spdif.h
-+++ b/sound/soc/fsl/fsl_spdif.h
-@@ -152,7 +152,7 @@ enum spdif_gainsel {
- #define STC_TXCLK_ALL_EN_MASK		(1 << STC_TXCLK_ALL_EN_OFFSET)
- #define STC_TXCLK_ALL_EN		(1 << STC_TXCLK_ALL_EN_OFFSET)
- #define STC_TXCLK_DF_OFFSET		0
--#define STC_TXCLK_DF_MASK		(0x7ff << STC_TXCLK_DF_OFFSET)
-+#define STC_TXCLK_DF_MASK		(0x7f << STC_TXCLK_DF_OFFSET)
- #define STC_TXCLK_DF(x)		((((x) - 1) << STC_TXCLK_DF_OFFSET) & STC_TXCLK_DF_MASK)
- #define STC_TXCLK_SRC_MAX		8
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index f8cf182518a3..96d7cb2e4a56 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -100,6 +100,15 @@ static const struct snd_soc_dapm_widget ad193x_adc_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("ADC2IN"),
+ };
  
++static int ad193x_check_pll(struct snd_soc_dapm_widget *source,
++			    struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
++	struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(component);
++
++	return !!ad193x->sysclk;
++}
++
+ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "DAC", NULL, "SYSCLK" },
+ 	{ "DAC Output", NULL, "DAC" },
+@@ -108,7 +117,7 @@ static const struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "DAC2OUT", NULL, "DAC Output" },
+ 	{ "DAC3OUT", NULL, "DAC Output" },
+ 	{ "DAC4OUT", NULL, "DAC Output" },
+-	{ "SYSCLK", NULL, "PLL_PWR" },
++	{ "SYSCLK", NULL, "PLL_PWR", &ad193x_check_pll },
+ };
+ 
+ static const struct snd_soc_dapm_route ad193x_adc_audio_paths[] = {
+@@ -276,7 +285,22 @@ static int ad193x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+ 	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct ad193x_priv *ad193x = snd_soc_component_get_drvdata(component);
++
++	if (clk_id == AD193X_SYSCLK_MCLK) {
++		/* MCLK must be 512 x fs */
++		if (dir == SND_SOC_CLOCK_OUT || freq != 24576000)
++			return -EINVAL;
++
++		regmap_update_bits(ad193x->regmap, AD193X_PLL_CLK_CTRL1,
++				   AD193X_PLL_SRC_MASK,
++				   AD193X_PLL_DAC_SRC_MCLK |
++				   AD193X_PLL_CLK_SRC_MCLK);
++
++		snd_soc_dapm_sync(dapm);
++		return 0;
++	}
+ 	switch (freq) {
+ 	case 12288000:
+ 	case 18432000:
+diff --git a/sound/soc/codecs/ad193x.h b/sound/soc/codecs/ad193x.h
+index 8b1e65f928d2..27d6afbd7dfb 100644
+--- a/sound/soc/codecs/ad193x.h
++++ b/sound/soc/codecs/ad193x.h
+@@ -31,6 +31,11 @@ int ad193x_probe(struct device *dev, struct regmap *regmap,
+ #define AD193X_PLL_INPUT_512    (2 << 1)
+ #define AD193X_PLL_INPUT_768    (3 << 1)
+ #define AD193X_PLL_CLK_CTRL1    0x01
++#define AD193X_PLL_SRC_MASK	0x03
++#define AD193X_PLL_DAC_SRC_PLL  0
++#define AD193X_PLL_DAC_SRC_MCLK 1
++#define AD193X_PLL_CLK_SRC_PLL  (0 << 1)
++#define AD193X_PLL_CLK_SRC_MCLK	(1 << 1)
+ #define AD193X_DAC_CTRL0        0x02
+ #define AD193X_DAC_POWERDOWN           0x01
+ #define AD193X_DAC_SERFMT_MASK		0xC0
+@@ -96,4 +101,7 @@ int ad193x_probe(struct device *dev, struct regmap *regmap,
+ 
+ #define AD193X_NUM_REGS          17
+ 
++#define AD193X_SYSCLK_PLL	0
++#define AD193X_SYSCLK_MCLK	1
++
+ #endif
 -- 
 2.20.1
