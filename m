@@ -1,60 +1,41 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: dapm: Potential small memory leak in
- dapm_cnew_widget()
-Date: Tue, 19 Feb 2019 09:59:07 -0600
-Message-ID: <d9db594e-7f29-b663-5920-aaab6e77d553@linux.intel.com>
-References: <20190219120427.GA26719@kadam>
+From: <Codrin.Ciubotariu@microchip.com>
+Subject: Re: [PATCH 1/2] ASoC: codecs: pcm186x: fix wrong usage of
+ DECLARE_TLV_DB_LINEAR()
+Date: Tue, 19 Feb 2019 16:20:41 +0000
+Message-ID: <4de1b52b-70dc-7767-ba16-2d785d36a4c2@microchip.com>
+References: <20190219161518.1331-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 80727265535
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:59:10 +0100 (CET)
-In-Reply-To: <20190219120427.GA26719@kadam>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190219161518.1331-1-codrin.ciubotariu@microchip.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Content-ID: <5FDC35D96D134E43A98C54742F680002@namprd11.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org
+Cc: dannenberg@ti.com, m-stecklein@ti.com, afd@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 2/19/19 6:04 AM, Dan Carpenter wrote:
-> We should free "w" on the error path.
->
-> Fixes: 199ed3e81c49 ("ASoC: dapm: fix use-after-free issue with dailink sname")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-Good catch, thanks.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-
-> ---
->   sound/soc/soc-dapm.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index dea6fc2353e4..1ec06ef6d161 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -332,8 +332,10 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
->   	 */
->   	if (_widget->sname) {
->   		w->sname = kstrdup_const(_widget->sname, GFP_KERNEL);
-> -		if (!w->sname)
-> +		if (!w->sname) {
-> +			kfree(w);
->   			return NULL;
-> +		}
->   	}
->   	return w;
->   }
+T24gMTkuMDIuMjAxOSAxODoxNSwgQ29kcmluIENpdWJvdGFyaXUgLSBNMTk5NDAgd3JvdGU6DQo+
+IEZyb206IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29t
+Pg0KPiANCj4gQWNjb3JkaW5nIHRvIERTLCB0aGUgZ2FpbiBpcyBiZXR3ZWVuIC0xMiBkQiBhbmQg
+NDAgZEIsIHdpdGggYSAwLjUgZEIgc3RlcC4NCj4gVGVzdGVkIG9uIHBjbTE4NjMuDQo+IA0KPiBT
+aWduZWQtb2ZmLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9j
+aGlwLmNvbT4NCj4gLS0tDQo+ICAgc291bmQvc29jL2NvZGVjcy9wY20xODZ4LmMgfCAzICstLQ0K
+PiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3BjbTE4NnguYyBiL3NvdW5kL3NvYy9jb2Rl
+Y3MvcGNtMTg2eC5jDQo+IGluZGV4IDgwOWI3ZTlmMDNjYS4uNzk0NzI3OTI0M2Y5IDEwMDY0NA0K
+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3BjbTE4NnguYw0KPiArKysgYi9zb3VuZC9zb2MvY29k
+ZWNzL3BjbTE4NnguYw0KPiBAQCAtNiw3ICs2LDYgQEANCj4gICAgKglBbmRyZWFzIERhbm5lbmJl
+cmcgPGRhbm5lbmJlcmdAdGkuY29tPg0KPiAgICAqCUFuZHJldyBGLiBEYXZpcyA8YWZkQHRpLmNv
+bT4NCj4gICAgKi8NCj4gLQ0KPiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5j
+bHVkZSA8bGludXgvbW9kdWxlcGFyYW0uaD4NCj4gICAjaW5jbHVkZSA8bGludXgvaW5pdC5oPg0K
+PiBAQCAtNDIsNyArNDEsNyBAQCBzdHJ1Y3QgcGNtMTg2eF9wcml2IHsNCj4gICAJYm9vbCBpc19t
+YXN0ZXJfbW9kZTsNCj4gICB9Ow0KPiAgIA0KPiAtc3RhdGljIGNvbnN0IERFQ0xBUkVfVExWX0RC
+X1NDQUxFKHBjbTE4NnhfcGdhX3RsdiwgLTEyMDAsIDQwMDAsIDUwKTsNCj4gK3N0YXRpYyBjb25z
+dCBERUNMQVJFX1RMVl9EQl9TQ0FMRShwY20xODZ4X3BnYV90bHYsIC0xMjAwLCA1MCwgMCk7DQo+
+ICAgDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHBjbTE4NjNfc25k
+X2NvbnRyb2xzW10gPSB7DQo+ICAgCVNPQ19ET1VCTEVfUl9TX1RMVigiQURDIENhcHR1cmUgVm9s
+dW1lIiwgUENNMTg2WF9QR0FfVkFMX0NIMV9MLA0KPiANCg0KdGhlIHRpdGxlIGlzIHdyb25nLCB0
+aGVyZSBpcyBubyBERUNMQVJFX1RMVl9EQl9MSU5FQVIoKXByZXNlbnQuIFdpbGwgDQpzZW5kIHYy
+Lg0KDQpCZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCg==
