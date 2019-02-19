@@ -1,73 +1,89 @@
-From: Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 3/3] ALSA: hda/tegra: sound card name from device tree
-Date: Wed, 20 Feb 2019 20:43:24 +0530
-Message-ID: <1550675604-14788-3-git-send-email-spujar@nvidia.com>
-References: <1550675604-14788-1-git-send-email-spujar@nvidia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: codecs: pcm186x: fix wrong usage of
+	DECLARE_TLV_DB_SCALE()" to the asoc tree
+Date: Tue, 19 Feb 2019 17:17:48 +0000 (GMT)
+Message-ID: <20190219171748.BB17711284E0@debutante.sirena.org.uk>
+References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1550675604-14788-1-git-send-email-spujar@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: thierry.reding@gmail.com, jonathanh@nvidia.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EA0DF8077F
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:13:37 +0100 (CET)
+In-Reply-To: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, m-stecklein@ti.com, Codrin.Ciubotariu@microchip.com, afd@ti.com, dannenberg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-A platform can have multiple sound cards for different audio paths.
-Following is the print seen duirng device boot for jetson-xavier,
-  ALSA device list:
-    #0: nvidia,p2972-0000 at 0x3518000 irq 17
-By looking at above, it is not very clear if the sound card is for
-HDA. It becomes confusing when platform has registered multiple cards,
-and platform model name is used for card.
+The patch
 
-This patch uses "nvidia,model" property mentioned in hda device tree
-to get the card name. Since property is optional, legacy boards will
-continue to use "tegra-hda". Custom name can be passed wherever needed.
-This naming convention is conistent with the way sound cards are named
-in general.
+   ASoC: codecs: pcm186x: fix wrong usage of DECLARE_TLV_DB_SCALE()
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Reviewed-by: Jonathan Hunter <jonathanh@nvidia.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fcf4daabf08079e6d09958a2992e7446ef8d0438 Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Tue, 19 Feb 2019 16:29:12 +0000
+Subject: [PATCH] ASoC: codecs: pcm186x: fix wrong usage of
+ DECLARE_TLV_DB_SCALE()
+
+According to DS, the gain is between -12 dB and 40 dB, with a 0.5 dB step.
+Tested on pcm1863.
+
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Acked-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/pci/hda/hda_tegra.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ sound/soc/codecs/pcm186x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index c8d18dc..dbd8da5 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -380,8 +380,8 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
- 	int err;
- 	unsigned short gcap;
- 	int irq_id = platform_get_irq(pdev, 0);
--	const char *sname;
--	struct device_node *root;
-+	const char *sname, *drv_name = "tegra-hda";
-+	struct device_node *np = pdev->dev.of_node;
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index 809b7e9f03ca..c36a391fec8a 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -42,7 +42,7 @@ struct pcm186x_priv {
+ 	bool is_master_mode;
+ };
  
- 	err = hda_tegra_init_chip(chip, pdev);
- 	if (err)
-@@ -440,17 +440,11 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
- 	}
+-static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 4000, 50);
++static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 50, 0);
  
- 	/* driver name */
--	strcpy(card->driver, "tegra-hda");
--
--	root = of_find_node_by_path("/");
--	sname = of_get_property(root, "compatible", NULL);
--	of_node_put(root);
--	if (!sname) {
--		dev_err(card->dev,
--			"failed to get compatible property from root node\n");
--		return -ENODEV;
--	}
-+	strncpy(card->driver, drv_name, sizeof(card->driver));
- 	/* shortname for card */
-+	sname = of_get_property(np, "nvidia,model", NULL);
-+	if (!sname)
-+		sname = drv_name;
- 	if (strlen(sname) > sizeof(card->shortname))
- 		dev_info(card->dev, "truncating shortname for card\n");
- 	strncpy(card->shortname, sname, sizeof(card->shortname));
+ static const struct snd_kcontrol_new pcm1863_snd_controls[] = {
+ 	SOC_DOUBLE_R_S_TLV("ADC Capture Volume", PCM186X_PGA_VAL_CH1_L,
 -- 
-2.7.4
+2.20.1
