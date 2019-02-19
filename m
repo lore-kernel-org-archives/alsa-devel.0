@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Make function 'wm8741_mute'
-	static" to the asoc tree
-Date: Tue, 19 Feb 2019 11:47:02 +0000 (GMT)
-Message-ID: <20190219114702.7AF6911284A6@debutante.sirena.org.uk>
+Subject: Applied "ASoC: adau1977: Fix reset-gpios typo" to the
+	asoc tree
+Date: Tue, 19 Feb 2019 11:47:06 +0000 (GMT)
+Message-ID: <20190219114706.5072811284A6@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C8D32265523
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 12:47:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B387265523
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 12:47:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,13 +20,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
+To: Bogdan Togorean <bogdan.togorean@analog.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8741: Make function 'wm8741_mute' static
+   ASoC: adau1977: Fix reset-gpios typo
 
 has been applied to the asoc tree at
 
@@ -51,35 +51,50 @@ to this mail.
 Thanks,
 Mark
 
->From 76a60f312f64dc48450b15a7f167b46e6230e4d1 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Sat, 16 Feb 2019 01:35:56 +0000
-Subject: [PATCH] ASoC: wm8741: Make function 'wm8741_mute' static
+>From d98afe1353b6dbd1527f3833da70d8525e6dbae3 Mon Sep 17 00:00:00 2001
+From: Bogdan Togorean <bogdan.togorean@analog.com>
+Date: Fri, 15 Feb 2019 12:26:33 +0200
+Subject: [PATCH] ASoC: adau1977: Fix reset-gpios typo
 
-Fixes the following sparse warning:
+This change fixes a typo in the dt-binding examples (reset_gpio ->
+reset-gpios).
+Even though 'reset-gpio' is a valid construct for gpiolib the naming
+'reset-gpios' is more suited for dt-bindings documentation.
 
-sound/soc/codecs/wm8741.c:371:5: warning:
- symbol 'wm8741_mute' was not declared. Should it be static?
-
-Fixes: 36b1599340b5 ("ASoC: wm8741: Add digital mute callback")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8741.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/adi,adau1977.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index a4b8c459ea57..546ea735f534 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -368,7 +368,7 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
+index e79aeef73f28..11acd94b1665 100644
+--- a/Documentation/devicetree/bindings/sound/adi,adau1977.txt
++++ b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
+@@ -17,7 +17,7 @@ Required properties:
+                 Documentation/devicetree/bindings/regulator/regulator.txt
  
--int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
-+static int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
- {
- 	struct snd_soc_component *component = codec_dai->component;
+ Optional properties:
+- - reset-gpio:  the reset pin for the chip, for more details consult
++ - reset-gpios: the reset pin for the chip, for more details consult
+                 Documentation/devicetree/bindings/gpio/gpio.txt
  
+  - DVDD-supply: supply voltage for the digital core, please consult
+@@ -40,7 +40,7 @@ Examples:
+ 		AVDD-supply = <&regulator>;
+ 		DVDD-supply = <&regulator_digital>;
+ 
+-		reset_gpio = <&gpio 10 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+ 	};
+ 
+ 	adau1977_i2c: adau1977@11 {
+@@ -50,5 +50,5 @@ Examples:
+ 		AVDD-supply = <&regulator>;
+ 		DVDD-supply = <&regulator_digital>;
+ 
+-		reset_gpio = <&gpio 10 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+ 	};
 -- 
 2.20.1
