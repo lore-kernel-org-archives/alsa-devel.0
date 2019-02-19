@@ -1,65 +1,86 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: pcm186x: Fix energysense SLEEP bit
-Date: Tue, 19 Feb 2019 11:06:48 -0600
-Message-ID: <eba29760-9ef7-9490-9f46-b3dbdf43ee05@ti.com>
-References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
- <20190219162840.7244-2-codrin.ciubotariu@microchip.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Allow compressed buffers in
+	any memory region
+Date: Tue, 19 Feb 2019 17:31:56 +0000
+Message-ID: <20190219173157.14611-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190219162840.7244-2-codrin.ciubotariu@microchip.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin.Ciubotariu@microchip.com, lgirdwood@gmail.com, broonie@kernel.org
-Cc: dannenberg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F6CC265537
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 18:32:00 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, aford@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2/19/19 10:29 AM, Codrin.Ciubotariu@microchip.com wrote:
-> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> 
-> The ADCs are sleeping when the SLEEP bit is set and running when it's
-> cleared, so the bit should be inverted.
-> Tested on pcm1863.
-> 
+From: Andrew Ford <aford@opensource.cirrus.com>
 
-Did this work for you before? Strange it would if reversed, I wonder if
-the SLEEP bit is really doing anything here. Can investigate later, for
-this patch:
+Currently, compressed buffers can only be specified in the XM memory
+region. There is no reason to have such a restriction with the newer
+meta-data based way of specifying the buffers, so remove it.
 
-Acked-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Andrew Ford <aford@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
-> 
-> Changes in v2:
->  - none;
-> 
->  sound/soc/codecs/pcm186x.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
-> index c36a391fec8a..c5fcc632f670 100644
-> --- a/sound/soc/codecs/pcm186x.c
-> +++ b/sound/soc/codecs/pcm186x.c
-> @@ -158,7 +158,7 @@ static const struct snd_soc_dapm_widget pcm1863_dapm_widgets[] = {
->  	 * Put the codec into SLEEP mode when not in use, allowing the
->  	 * Energysense mechanism to operate.
->  	 */
-> -	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", PCM186X_POWER_CTRL, 1,  0),
-> +	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", PCM186X_POWER_CTRL, 1,  1),
->  };
->  
->  static const struct snd_soc_dapm_widget pcm1865_dapm_widgets[] = {
-> @@ -184,8 +184,8 @@ static const struct snd_soc_dapm_widget pcm1865_dapm_widgets[] = {
->  	 * Put the codec into SLEEP mode when not in use, allowing the
->  	 * Energysense mechanism to operate.
->  	 */
-> -	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  0),
-> -	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  0),
-> +	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  1),
-> +	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  1),
->  };
->  
->  static const struct snd_soc_dapm_route pcm1863_dapm_routes[] = {
-> 
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 1dd291cebe67..12ef85e85c29 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -344,6 +344,7 @@ struct wm_adsp_compr_buf {
+ 	u32 irq_count;
+ 	int read_index;
+ 	int avail;
++	int host_buf_mem_type;
+ };
+ 
+ struct wm_adsp_compr {
+@@ -3219,14 +3220,14 @@ static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
+ static inline int wm_adsp_buffer_read(struct wm_adsp_compr_buf *buf,
+ 				      unsigned int field_offset, u32 *data)
+ {
+-	return wm_adsp_read_data_word(buf->dsp, WMFW_ADSP2_XM,
++	return wm_adsp_read_data_word(buf->dsp, buf->host_buf_mem_type,
+ 				      buf->host_buf_ptr + field_offset, data);
+ }
+ 
+ static inline int wm_adsp_buffer_write(struct wm_adsp_compr_buf *buf,
+ 				       unsigned int field_offset, u32 data)
+ {
+-	return wm_adsp_write_data_word(buf->dsp, WMFW_ADSP2_XM,
++	return wm_adsp_write_data_word(buf->dsp, buf->host_buf_mem_type,
+ 				       buf->host_buf_ptr + field_offset, data);
+ }
+ 
+@@ -3264,6 +3265,8 @@ static int wm_adsp_legacy_host_buf_addr(struct wm_adsp_compr_buf *buf)
+ 	if (!buf->host_buf_ptr)
+ 		return -EIO;
+ 
++	buf->host_buf_mem_type = WMFW_ADSP2_XM;
++
+ 	adsp_dbg(dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
+ 
+ 	return 0;
+@@ -3282,6 +3285,7 @@ wm_adsp_find_host_buffer_ctrl(struct wm_adsp_compr_buf *buf)
+ 		if (!ctl->enabled)
+ 			continue;
+ 
++		buf->host_buf_mem_type = ctl->alg_region.type;
+ 		return ctl;
+ 	}
+ 
+-- 
+2.11.0
