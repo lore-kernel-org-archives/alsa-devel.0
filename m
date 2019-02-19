@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: Fix of-node refcount unbalance in
-	fsl_ssi_probe_from_dt()" to the asoc tree
-Date: Wed, 20 Feb 2019 12:13:18 +0000 (GMT)
-Message-ID: <20190220121318.4D24311274ED@debutante.sirena.org.uk>
-References: <20190219154652.13644-2-tiwai@suse.de>
+Subject: Applied "ASoC: samsung: i2s: Fix secondary platform
+	device unregistration" to the asoc tree
+Date: Tue, 19 Feb 2019 15:50:07 +0000 (GMT)
+Message-ID: <20190219155007.9D11A11284AE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79DBDF8079B
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 13:13:19 +0100 (CET)
-In-Reply-To: <20190219154652.13644-2-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56088F80781
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:13:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: Fix of-node refcount unbalance in fsl_ssi_probe_from_dt()
+   ASoC: samsung: i2s: Fix secondary platform device unregistration
 
 has been applied to the asoc tree at
 
@@ -55,43 +53,92 @@ to this mail.
 Thanks,
 Mark
 
->From 2757970f6d0d0a112247600b23d38c0c728ceeb3 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 19 Feb 2019 16:46:47 +0100
-Subject: [PATCH] ASoC: fsl: Fix of-node refcount unbalance in
- fsl_ssi_probe_from_dt()
+>From 022c4156697b9ae30a00f5cd7cee08ed61554e86 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Tue, 19 Feb 2019 16:19:40 +0100
+Subject: [PATCH] ASoC: samsung: i2s: Fix secondary platform device
+ unregistration
 
-The node obtained from of_find_node_by_path() has to be unreferenced
-after the use, but we forgot it for the root node.
+This fixes unregistration of the secondary platform device so all
+resources are properly released.  Additionally the removal sequence
+is corrected so it is in reverse order comparing to probe sequence.
+The test against NULL priv->pdev_sec is removed as it is not necessary.
 
-Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/samsung/i2s.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 0a648229e643..09b2967befd9 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1439,8 +1439,10 @@ static int fsl_ssi_probe_from_dt(struct fsl_ssi *ssi)
- 	 * different name to register the device.
- 	 */
- 	if (!ssi->card_name[0] && of_get_property(np, "codec-handle", NULL)) {
--		sprop = of_get_property(of_find_node_by_path("/"),
--					"compatible", NULL);
-+		struct device_node *root = of_find_node_by_path("/");
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 02472f576e17..cd92bb6e1da1 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1359,11 +1359,10 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
+ 
+ static void i2s_delete_secondary_device(struct samsung_i2s_priv *priv)
+ {
+-	if (priv->pdev_sec) {
+-		platform_device_del(priv->pdev_sec);
+-		priv->pdev_sec = NULL;
+-	}
++	platform_device_unregister(priv->pdev_sec);
++	priv->pdev_sec = NULL;
+ }
 +
-+		sprop = of_get_property(root, "compatible", NULL);
-+		of_node_put(root);
- 		/* Strip "fsl," in the compatible name if applicable */
- 		p = strrchr(sprop, ',');
- 		if (p)
+ static int samsung_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct i2s_dai *pri_dai, *sec_dai = NULL;
+@@ -1487,14 +1486,14 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 						sec_dai->filter, "tx-sec", NULL,
+ 						&pdev->dev);
+ 		if (ret < 0)
+-			goto err_disable_clk;
++			goto err_del_sec;
+ 
+ 	}
+ 
+ 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
+ 		dev_err(&pdev->dev, "Unable to configure gpio\n");
+ 		ret = -EINVAL;
+-		goto err_disable_clk;
++		goto err_del_sec;
+ 	}
+ 
+ 	dev_set_drvdata(&pdev->dev, priv);
+@@ -1503,7 +1502,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 					&samsung_i2s_component,
+ 					priv->dai_drv, num_dais);
+ 	if (ret < 0)
+-		goto err_disable_clk;
++		goto err_del_sec;
+ 
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+@@ -1518,9 +1517,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 
+ err_disable_pm:
+ 	pm_runtime_disable(&pdev->dev);
++err_del_sec:
++	i2s_delete_secondary_device(priv);
+ err_disable_clk:
+ 	clk_disable_unprepare(priv->clk);
+-	i2s_delete_secondary_device(priv);
+ 	return ret;
+ }
+ 
+@@ -1536,9 +1536,10 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ 	i2s_unregister_clock_provider(priv);
++	i2s_delete_secondary_device(priv);
+ 	clk_disable_unprepare(priv->clk);
++
+ 	pm_runtime_put_noidle(&pdev->dev);
+-	i2s_delete_secondary_device(priv);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
