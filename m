@@ -1,41 +1,48 @@
 From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH 1/2] ASoC: codecs: pcm186x: fix wrong usage of
+Subject: [PATCH 1/2] ASoC: codecs: pcm186x: fix wrong usage of
  DECLARE_TLV_DB_LINEAR()
-Date: Tue, 19 Feb 2019 16:20:41 +0000
-Message-ID: <4de1b52b-70dc-7767-ba16-2d785d36a4c2@microchip.com>
-References: <20190219161518.1331-1-codrin.ciubotariu@microchip.com>
+Date: Tue, 19 Feb 2019 16:15:42 +0000
+Message-ID: <20190219161518.1331-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190219161518.1331-1-codrin.ciubotariu@microchip.com>
 Content-Language: en-US
-Content-ID: <5FDC35D96D134E43A98C54742F680002@namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: dannenberg@ti.com, m-stecklein@ti.com, afd@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: dannenberg@ti.com, m-stecklein@ti.com, afd@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Codrin.Ciubotariu@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTkuMDIuMjAxOSAxODoxNSwgQ29kcmluIENpdWJvdGFyaXUgLSBNMTk5NDAgd3JvdGU6DQo+
-IEZyb206IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29t
-Pg0KPiANCj4gQWNjb3JkaW5nIHRvIERTLCB0aGUgZ2FpbiBpcyBiZXR3ZWVuIC0xMiBkQiBhbmQg
-NDAgZEIsIHdpdGggYSAwLjUgZEIgc3RlcC4NCj4gVGVzdGVkIG9uIHBjbTE4NjMuDQo+IA0KPiBT
-aWduZWQtb2ZmLWJ5OiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9j
-aGlwLmNvbT4NCj4gLS0tDQo+ICAgc291bmQvc29jL2NvZGVjcy9wY20xODZ4LmMgfCAzICstLQ0K
-PiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3BjbTE4NnguYyBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvcGNtMTg2eC5jDQo+IGluZGV4IDgwOWI3ZTlmMDNjYS4uNzk0NzI3OTI0M2Y5IDEwMDY0NA0K
-PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3BjbTE4NnguYw0KPiArKysgYi9zb3VuZC9zb2MvY29k
-ZWNzL3BjbTE4NnguYw0KPiBAQCAtNiw3ICs2LDYgQEANCj4gICAgKglBbmRyZWFzIERhbm5lbmJl
-cmcgPGRhbm5lbmJlcmdAdGkuY29tPg0KPiAgICAqCUFuZHJldyBGLiBEYXZpcyA8YWZkQHRpLmNv
-bT4NCj4gICAgKi8NCj4gLQ0KPiAgICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gICAjaW5j
-bHVkZSA8bGludXgvbW9kdWxlcGFyYW0uaD4NCj4gICAjaW5jbHVkZSA8bGludXgvaW5pdC5oPg0K
-PiBAQCAtNDIsNyArNDEsNyBAQCBzdHJ1Y3QgcGNtMTg2eF9wcml2IHsNCj4gICAJYm9vbCBpc19t
-YXN0ZXJfbW9kZTsNCj4gICB9Ow0KPiAgIA0KPiAtc3RhdGljIGNvbnN0IERFQ0xBUkVfVExWX0RC
-X1NDQUxFKHBjbTE4NnhfcGdhX3RsdiwgLTEyMDAsIDQwMDAsIDUwKTsNCj4gK3N0YXRpYyBjb25z
-dCBERUNMQVJFX1RMVl9EQl9TQ0FMRShwY20xODZ4X3BnYV90bHYsIC0xMjAwLCA1MCwgMCk7DQo+
-ICAgDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHBjbTE4NjNfc25k
-X2NvbnRyb2xzW10gPSB7DQo+ICAgCVNPQ19ET1VCTEVfUl9TX1RMVigiQURDIENhcHR1cmUgVm9s
-dW1lIiwgUENNMTg2WF9QR0FfVkFMX0NIMV9MLA0KPiANCg0KdGhlIHRpdGxlIGlzIHdyb25nLCB0
-aGVyZSBpcyBubyBERUNMQVJFX1RMVl9EQl9MSU5FQVIoKXByZXNlbnQuIFdpbGwgDQpzZW5kIHYy
-Lg0KDQpCZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCg==
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+
+According to DS, the gain is between -12 dB and 40 dB, with a 0.5 dB step.
+Tested on pcm1863.
+
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/codecs/pcm186x.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index 809b7e9f03ca..7947279243f9 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -6,7 +6,6 @@
+  *	Andreas Dannenberg <dannenberg@ti.com>
+  *	Andrew F. Davis <afd@ti.com>
+  */
+-
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+@@ -42,7 +41,7 @@ struct pcm186x_priv {
+ 	bool is_master_mode;
+ };
+=20
+-static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 4000, 50);
++static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 50, 0);
+=20
+ static const struct snd_kcontrol_new pcm1863_snd_controls[] =3D {
+ 	SOC_DOUBLE_R_S_TLV("ADC Capture Volume", PCM186X_PGA_VAL_CH1_L,
+--=20
+2.17.1
