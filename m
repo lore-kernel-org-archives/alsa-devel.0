@@ -1,63 +1,81 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: pcm186x: Fix energysense SLEEP bit
-Date: Tue, 19 Feb 2019 16:56:54 +0000
-Message-ID: <20190219165654.GB20883@sirena.org.uk>
-References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
- <20190219162840.7244-2-codrin.ciubotariu@microchip.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+Subject: Applied "ASoC: adau1977: Add support for setting MICBIAS via DT" to the asoc tree
+Date: Tue, 19 Feb 2019 15:50:18 +0000 (GMT)
+Message-ID: <20190219155018.58B6A11284BD@debutante.sirena.org.uk>
+References: <20190219141139.24216-3-bogdan.togorean@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190219162840.7244-2-codrin.ciubotariu@microchip.com>
+In-Reply-To: <20190219141139.24216-3-bogdan.togorean@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin.Ciubotariu@microchip.com
-Cc: lgirdwood@gmail.com, dannenberg@ti.com, m-stecklein@ti.com, afd@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Bogdan Togorean <bogdan.togorean@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, lars@metafoo.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.combroonie@kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---CdrF4e02JqNVZeln
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: adau1977: Add support for setting MICBIAS via DT
 
-On Tue, Feb 19, 2019 at 04:29:28PM +0000, Codrin.Ciubotariu@microchip.com wrote:
+has been applied to the asoc tree at
 
-> The ADCs are sleeping when the SLEEP bit is set and running when it's
-> cleared, so the bit should be inverted.
-> Tested on pcm1863.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This definitely seems to be the case from the datasheet but...
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> @@ -184,8 +184,8 @@ static const struct snd_soc_dapm_widget pcm1865_dapm_widgets[] = {
->  	 * Put the codec into SLEEP mode when not in use, allowing the
->  	 * Energysense mechanism to operate.
->  	 */
-> -	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  0),
-> -	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  0),
-> +	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  1),
-> +	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  1),
->  };
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-...we still have a bug on pcm1865 as we've got the same register bit for
-both channels which isn't something that's supposed to happen.  Looking
-at the register description this feels like it'd be better handled in
-set_bias_level() or as a DAPM supply widget.  However that's already an
-issue without this patch.  I am a bit curious how this ever worked for
-anyone though.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---CdrF4e02JqNVZeln
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxsNVUACgkQJNaLcl1U
-h9AO/Af8CsANMFAV4KT3K/DF+qSVvEq+iLlU4Op5w9ozsNP/Mv4UpBuATJ5xOHe1
-P7IkfODTQp3iep1B3u+ZtMLKkR8FuSVEg/fbAbraBuZ6veVH//8IUOXc57/heL7c
-6z9/dnXPoGrAa1VMynaThm7e9aeX7UWo6LVZDSabN8UqOBSjvePTGVWPLxcpQhLb
-ro8yf/Msaceurtyd4uPzS4TaIH0VD4z5TP41XyljM/04YmJiAU7OBHFtqTkP9Whk
-H3JECDi4+SgLjk4RyUxlmYeMASjo/OEgDCzmLR1HgSRdqk4YNU15fenEl6xbWS4T
-llmwXxGLVkX9TWb0IQOV+aKJa/w2rQ==
-=e8Bn
------END PGP SIGNATURE-----
+>From 65d257ee12860340947bbc336243b4a9a5d721df Mon Sep 17 00:00:00 2001
+From: Bogdan Togorean <bogdan.togorean@gmail.com>
+Date: Tue, 19 Feb 2019 16:11:39 +0200
+Subject: [PATCH] ASoC: adau1977: Add support for setting MICBIAS via DT
 
---CdrF4e02JqNVZeln--
+If platform_data is NULL add reading of optional adi,micbias
+property from DT. If adi,micbias is not set keep the default
+value for micbias.
+
+Signed-off-by: Bogdan Togorean <bogdan.togorean@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/adau1977.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
+index 116af6a9ce3b..11c53bcb71dd 100644
+--- a/sound/soc/codecs/adau1977.c
++++ b/sound/soc/codecs/adau1977.c
+@@ -885,13 +885,15 @@ static int adau1977_setup_micbias(struct adau1977 *adau1977)
+ 	struct adau1977_platform_data *pdata = adau1977->dev->platform_data;
+ 	unsigned int micbias;
+ 
+-	if (pdata) {
++	if (pdata)
+ 		micbias = pdata->micbias;
+-		if (micbias > ADAU1977_MICBIAS_9V0)
+-			return -EINVAL;
+-
+-	} else {
++	else if (device_property_read_u32(adau1977->dev, "adi,micbias",
++					  &micbias))
+ 		micbias = ADAU1977_MICBIAS_8V5;
++
++	if (micbias > ADAU1977_MICBIAS_9V0) {
++		dev_err(adau1977->dev, "Invalid value for 'adi,micbias'\n");
++		return -EINVAL;
+ 	}
+ 
+ 	return regmap_update_bits(adau1977->regmap, ADAU1977_REG_MICBIAS,
+-- 
+2.20.1
