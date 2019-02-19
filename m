@@ -1,81 +1,96 @@
-From: xiang xiao <xiaoxiang781216@gmail.com>
-Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Tue, 19 Feb 2019 23:09:40 +0800
-Message-ID: <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
- <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-remoteproc@vger.kernel.org, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v2 1/2] ASoC: samsung: i2s: Fix secondary platform device
+ unregistration
+Date: Tue, 19 Feb 2019 16:19:40 +0100
+Message-ID: <20190219151941.9795-1-s.nawrocki@samsung.com>
+References: <CGME20190219152012epcas1p4df1d6e4f6439ab05de95c089a4416e06@epcas1p4.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 19, 2019 at 5:49 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 18/02/2019 20:03, Xiang Xiao wrote:
-> > Should we utilize official IPC frameowrk instead reinverting the wheel?
-> > 1.Load firmware by drivers/remoteproc
-> >    https://www.kernel.org/doc/Documentation/remoteproc.txt
-> > 2.Do the comunication through drivers/rpmsg
-> >    https://www.kernel.org/doc/Documentation/rpmsg.txt
-> > Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
->
-> It definitely makes more sense to use rpmsg for Generic IPC driver here.
->
-> Qualcomm DSP audio drivers (non SOF) already use rpmsg. This will
-> definitely help everyone in future while immigrating to SOF.
->
+This fixes unregistration of the secondary platform device so all
+resources are properly released.  Additionally the removal sequence
+is corrected so it is in reverse order comparing to probe sequence.
+The test against NULL priv->pdev_sec is removed as it is not necessary.
 
-Actually, Xiaomi also build DSP audio driver on top of rpmsg, but
-fully integrate with the ASoC topology framework, and the firmware is
-base on FreeRTOS and OpenMAX.
-SOF initiative is very good and exciting, our team members(include me)
-spend a couple weeks to study the current code base on both firmware
-and kernel side, we even port SOF to our DSP/MCU and make it run, but
-I have to point out that:
-SOF IPC is too simple and rigid, tightly couple with Intel platform
-and audio domain, which make:
-   a.It's difficult to integrate with other vendor SoC, especially if
-other vendor already adopt remote/rpmsg(this is already a trend!).
-   b.It's difficult to add other IPC services for example:
-      i.Audio DSP talk to power MCU to adjust clock and voltage
-      ii.Export ultrasonic distance measurement to IIO subsystem
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+Changes since v1:
+ - corrected order of calls on error path in probe() and in remove().
 
-> > Actually, remoteproc/rpmsg is much better than SOF IPC because:
-> > 1.Completely isolate the firmware load and message transfer:
-> >    The same rpmsg driver could run on any remote processor
-> > 2.Separate the application protocol from transfer layer:
-> >    One remote processor could host many rpmsg services
-> > 3.Completely follow kernel driver model(rpsmg_bus, rpmsg_device and rpmsg_driver).
-> > 4.Support by many RTOS(Bare Metal, FreeRTOS, Zephyr, NuttX, Nucleus, uC/OS...) for remote side:
-> >    https://github.com/OpenAMP/open-amp
-> >    https://github.com/NXPmicro/rpmsg-lite
-> > 5.Maintained by the standard committee:
-> >    https://www.multicore-association.org/workgroup/oamp.php
-> >    https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio
-> > Since the keypoint of SOF is the platform agnostic and modular, please use the standard technique here.
-> >
-> > Thanks
-> > Xiang
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> --srini
+ sound/soc/samsung/i2s.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 02472f576e17..cd92bb6e1da1 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1359,11 +1359,10 @@ static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
+
+ static void i2s_delete_secondary_device(struct samsung_i2s_priv *priv)
+ {
+-	if (priv->pdev_sec) {
+-		platform_device_del(priv->pdev_sec);
+-		priv->pdev_sec = NULL;
+-	}
++	platform_device_unregister(priv->pdev_sec);
++	priv->pdev_sec = NULL;
+ }
++
+ static int samsung_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct i2s_dai *pri_dai, *sec_dai = NULL;
+@@ -1487,14 +1486,14 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 						sec_dai->filter, "tx-sec", NULL,
+ 						&pdev->dev);
+ 		if (ret < 0)
+-			goto err_disable_clk;
++			goto err_del_sec;
+
+ 	}
+
+ 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
+ 		dev_err(&pdev->dev, "Unable to configure gpio\n");
+ 		ret = -EINVAL;
+-		goto err_disable_clk;
++		goto err_del_sec;
+ 	}
+
+ 	dev_set_drvdata(&pdev->dev, priv);
+@@ -1503,7 +1502,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 					&samsung_i2s_component,
+ 					priv->dai_drv, num_dais);
+ 	if (ret < 0)
+-		goto err_disable_clk;
++		goto err_del_sec;
+
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+@@ -1518,9 +1517,10 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+
+ err_disable_pm:
+ 	pm_runtime_disable(&pdev->dev);
++err_del_sec:
++	i2s_delete_secondary_device(priv);
+ err_disable_clk:
+ 	clk_disable_unprepare(priv->clk);
+-	i2s_delete_secondary_device(priv);
+ 	return ret;
+ }
+
+@@ -1536,9 +1536,10 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+
+ 	i2s_unregister_clock_provider(priv);
++	i2s_delete_secondary_device(priv);
+ 	clk_disable_unprepare(priv->clk);
++
+ 	pm_runtime_put_noidle(&pdev->dev);
+-	i2s_delete_secondary_device(priv);
+
+ 	return 0;
+ }
+--
+2.17.1
