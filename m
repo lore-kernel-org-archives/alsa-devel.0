@@ -1,143 +1,67 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v2 2/2] ASoC: samsung: i2s: Fix multiple "IIS multi" devices
- initialization
-Date: Tue, 19 Feb 2019 16:19:41 +0100
-Message-ID: <20190219151941.9795-2-s.nawrocki@samsung.com>
-References: <20190219151941.9795-1-s.nawrocki@samsung.com>
-        <CGME20190219152015epcas2p455d8fc3fa012de0f1e857b0b2c88f773@epcas2p4.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20190219151941.9795-1-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: free created components in
+ tplg load error
+Date: Tue, 19 Feb 2019 09:28:21 -0600
+Message-ID: <25e9c53e-afa8-8ce3-874e-c683c9cdd552@linux.intel.com>
+References: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id A93DE265525
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:28:24 +0100 (CET)
+In-Reply-To: <20190217132347.12593-1-yung-chuan.liao@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On some SoCs (e.g. Exynos5433) there are multiple "IIS multi audio
-interfaces" and the driver will try to register there multiple times
-same platform device for the secondary FIFO, which of course fails
-miserably.  To fix this we derive the secondary platform device name
-from the primary device name. The secondary device name will now
-be <primary_dev_name>-sec instead of fixed "samsung-i2s-sec".
 
-The fixed platform_device_id table entry is removed as the secondary
-device name is now dynamic and device/driver matching is done through
-driver_override.
+On 2/17/19 7:23 AM, Bard liao wrote:
+> Topology resources are no longer needed if any element failed to load.
+>
+> Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
 
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Suggested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Changes since v1:
- - fixed pdev->driver_override assignment,
- - ensure there is no need to release any resources claimed
-   in i2s_create_secondary_device() function when that function fails.
----
- sound/soc/samsung/i2s.c    | 50 +++++++++++++++++++++++++-------------
- sound/soc/samsung/odroid.c |  2 +-
- 2 files changed, 34 insertions(+), 18 deletions(-)
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index cd92bb6e1da1..4231001226f4 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1339,20 +1339,35 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
- /* Create platform device for the secondary PCM */
- static int i2s_create_secondary_device(struct samsung_i2s_priv *priv)
- {
--	struct platform_device *pdev;
-+	struct platform_device *pdev_sec;
-+	const char *devname;
- 	int ret;
 
--	pdev = platform_device_register_simple("samsung-i2s-sec", -1, NULL, 0);
--	if (!pdev)
-+	devname = devm_kasprintf(&priv->pdev->dev, GFP_KERNEL, "%s-sec",
-+				 dev_name(&priv->pdev->dev));
-+	if (!devname)
- 		return -ENOMEM;
-
--	ret = device_attach(&pdev->dev);
-+	pdev_sec = platform_device_alloc(devname, -1);
-+	if (!pdev_sec)
-+		return -ENOMEM;
-+
-+	pdev_sec->driver_override = kstrdup("samsung-i2s", GFP_KERNEL);
-+
-+	ret = platform_device_add(pdev_sec);
- 	if (ret < 0) {
--		dev_info(&pdev->dev, "device_attach() failed\n");
-+		platform_device_put(pdev_sec);
- 		return ret;
- 	}
-
--	priv->pdev_sec = pdev;
-+	ret = device_attach(&pdev_sec->dev);
-+	if (ret <= 0) {
-+		platform_device_unregister(priv->pdev_sec);
-+		dev_info(&pdev_sec->dev, "device_attach() failed\n");
-+		return ret;
-+	}
-+
-+	priv->pdev_sec = pdev_sec;
-
- 	return 0;
- }
-@@ -1367,22 +1382,25 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- {
- 	struct i2s_dai *pri_dai, *sec_dai = NULL;
- 	struct s3c_audio_pdata *i2s_pdata = pdev->dev.platform_data;
--	struct resource *res;
- 	u32 regs_base, idma_addr = 0;
- 	struct device_node *np = pdev->dev.of_node;
- 	const struct samsung_i2s_dai_data *i2s_dai_data;
--	int num_dais, ret;
-+	const struct platform_device_id *id;
- 	struct samsung_i2s_priv *priv;
-+	struct resource *res;
-+	int num_dais, ret;
-
--	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node)
-+	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		i2s_dai_data = of_device_get_match_data(&pdev->dev);
--	else
--		i2s_dai_data = (struct samsung_i2s_dai_data *)
--				platform_get_device_id(pdev)->driver_data;
-+	} else {
-+		id = platform_get_device_id(pdev);
-
--	/* Nothing to do if it is the secondary device probe */
--	if (!i2s_dai_data)
--		return 0;
-+		/* Nothing to do if it is the secondary device probe */
-+		if (!id)
-+			return 0;
-+
-+		i2s_dai_data = (struct samsung_i2s_dai_data *)id->driver_data;
-+	}
-
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -1637,8 +1655,6 @@ static const struct platform_device_id samsung_i2s_driver_ids[] = {
- 	{
- 		.name           = "samsung-i2s",
- 		.driver_data	= (kernel_ulong_t)&i2sv3_dai_type,
--	}, {
--		.name           = "samsung-i2s-sec",
- 	},
- 	{},
- };
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index 5b2bcd1d3450..bd2c5163dc7f 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -185,7 +185,7 @@ static struct snd_soc_dai_link odroid_card_dais[] = {
- 		.ops = &odroid_card_fe_ops,
- 		.name = "Secondary",
- 		.stream_name = "Secondary",
--		.platform_name = "samsung-i2s-sec",
-+		.platform_name = "3830000.i2s-sec",
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 	}
---
-2.17.1
+> ---
+>   sound/soc/soc-topology.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index c5638e15a2dd..25fca7055464 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -2587,6 +2587,7 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+>   	struct snd_soc_tplg_ops *ops, const struct firmware *fw, u32 id)
+>   {
+>   	struct soc_tplg tplg;
+> +	int ret;
+>   
+>   	/* setup parsing context */
+>   	memset(&tplg, 0, sizeof(tplg));
+> @@ -2600,7 +2601,12 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
+>   	tplg.bytes_ext_ops = ops->bytes_ext_ops;
+>   	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
+>   
+> -	return soc_tplg_load(&tplg);
+> +	ret = soc_tplg_load(&tplg);
+> +	/* free the created components if fail to load topology */
+> +	if (ret)
+> +		snd_soc_tplg_component_remove(comp, SND_SOC_TPLG_INDEX_ALL);
+> +
+> +	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
+>   
