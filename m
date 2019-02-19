@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/6] ASoC: simple-card: Fix of-node refcount
-	unbalance in DAI-link parser
-Date: Tue, 19 Feb 2019 16:46:49 +0100
-Message-ID: <20190219154652.13644-4-tiwai@suse.de>
+Subject: [PATCH 5/6] ASoC: qcom: Fix of-node refcount unbalance
+	in qcom_snd_parse_of()
+Date: Tue, 19 Feb 2019 16:46:51 +0100
+Message-ID: <20190219154652.13644-6-tiwai@suse.de>
 References: <20190219154652.13644-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ACAE265540
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:46:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 42C6D26554B
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:46:55 +0100 (CET)
 In-Reply-To: <20190219154652.13644-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,79 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-The function simple_for_each_link() has a few missing places that
-forgot unrefereing of-nodes after the use.  The main do-while loop
-may abort when loop=0, and this leaves the node object still
-referenced.  A similar leak is found in the error handling of NULL
-codec that aborts the loop as well.  Last but not least, the inner
-for_each_child_of_node() loop may abort in the middle, and this leaks
-the refcount of the iterator node.
+Although qcom_snd_parse_of() tries to manage the of-node refcount,
+there are still a few places that lead to the unblanced refcount in
+the error code path.  Namely,
 
-This patch addresses these missing refcount issues.
+- for_each_child_of_node() needs to unreference the iterator node if
+  aborting the loop in the middle,
+- cpu, codec and platform node objects have to be unreferenced at each
+  iteration,
+- platform and codec node objects have to be referred before jumping
+  to the error handling code that unreference them unconditionally.
 
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch tries to address these by moving the assignment of platform
+and codec node objects to the beginning of the loop and adding the
+of_node_put() calls adequately.
+
+Fixes: c25e295cd77b ("ASoC: qcom: Add support to parse common audio device nodes")
+Cc: Patrick Lai <plai@codeaurora.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
 
 Only compile-tested.  Please review carefully.  Thanks!
 
- sound/soc/generic/simple-card.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/soc/qcom/common.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 3e677dd1137e..30ae0a5281b3 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -442,6 +442,7 @@ static int simple_for_each_link(struct simple_priv *priv,
- 	struct device_node *top = dev->of_node;
- 	struct device_node *node;
- 	bool is_top = 0;
-+	int ret = 0;
- 
- 	/* Check if it has dai-link */
- 	node = of_get_child_by_name(top, PREFIX "dai-link");
-@@ -456,13 +457,14 @@ static int simple_for_each_link(struct simple_priv *priv,
- 		struct device_node *codec;
- 		struct device_node *np;
- 		int num = of_get_child_count(node);
--		int ret;
- 
- 		/* get codec */
- 		codec = of_get_child_by_name(node, is_top ?
- 					     PREFIX "codec" : "codec");
--		if (!codec)
--			return -ENODEV;
-+		if (!codec) {
-+			ret = -ENODEV;
-+			goto error;
-+		}
- 
- 		of_node_put(codec);
- 
-@@ -485,14 +487,18 @@ static int simple_for_each_link(struct simple_priv *priv,
- 			else
- 				ret = func_noml(priv, np, codec, li, is_top);
- 
--			if (ret < 0)
--				return ret;
-+			if (ret < 0) {
-+				of_node_put(np);
-+				goto error;
-+			}
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 4715527054e5..5661025e8cec 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -42,6 +42,9 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 	link = card->dai_link;
+ 	for_each_child_of_node(dev->of_node, np) {
+ 		cpu = of_get_child_by_name(np, "cpu");
++		platform = of_get_child_by_name(np, "platform");
++		codec = of_get_child_by_name(np, "codec");
++
+ 		if (!cpu) {
+ 			dev_err(dev, "Can't find cpu DT node\n");
+ 			ret = -EINVAL;
+@@ -63,8 +66,6 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			goto err;
  		}
  
- 		node = of_get_next_child(top, node);
- 	} while (!is_top && node);
+-		platform = of_get_child_by_name(np, "platform");
+-		codec = of_get_child_by_name(np, "codec");
+ 		if (codec && platform) {
+ 			link->platform_of_node = of_parse_phandle(platform,
+ 					"sound-dai",
+@@ -100,10 +101,15 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 		link->dpcm_capture = 1;
+ 		link->stream_name = link->name;
+ 		link++;
++
++		of_node_put(cpu);
++		of_node_put(codec);
++		of_node_put(platform);
+ 	}
  
--	return 0;
-+ error:
-+	of_node_put(node);
-+	return ret;
- }
- 
- static int simple_parse_aux_devs(struct device_node *node,
+ 	return 0;
+ err:
++	of_node_put(np);
+ 	of_node_put(cpu);
+ 	of_node_put(codec);
+ 	of_node_put(platform);
 -- 
 2.16.4
