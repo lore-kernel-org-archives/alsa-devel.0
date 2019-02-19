@@ -1,27 +1,17 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: samsung: i2s: Fix multiple
- "IIS multi" devices initialization
-Date: Tue, 19 Feb 2019 16:42:17 +0100
-Message-ID: <CAJKOXPfnOTvNQmx-ayYLXzJ9ViAv=m5rpzvLnOmaXWZLuMJ-Uw@mail.gmail.com>
-References: <CGME20190219152015epcas2p455d8fc3fa012de0f1e857b0b2c88f773@epcas2p4.samsung.com>
- <20190219151941.9795-1-s.nawrocki@samsung.com>
- <20190219151941.9795-2-s.nawrocki@samsung.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/6] ASoC: fsl: Fix of-node refcount unbalance
+	in fsl_ssi_probe_from_dt()
+Date: Tue, 19 Feb 2019 16:46:47 +0100
+Message-ID: <20190219154652.13644-2-tiwai@suse.de>
+References: <20190219154652.13644-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A18526552B
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:42:32 +0100 (CET)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com
- [209.85.208.177])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EF48B2183E
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 15:42:30 +0000 (UTC)
-Received: by mail-lj1-f177.google.com with SMTP id z20so16802452ljj.10
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 07:42:30 -0800 (PST)
-In-Reply-To: <20190219151941.9795-2-s.nawrocki@samsung.com>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2680E265535
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 16:46:53 +0100 (CET)
+In-Reply-To: <20190219154652.13644-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,37 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, sbkim73@samsung.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Feb 2019 at 16:20, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
->
-> On some SoCs (e.g. Exynos5433) there are multiple "IIS multi audio
-> interfaces" and the driver will try to register there multiple times
-> same platform device for the secondary FIFO, which of course fails
-> miserably.  To fix this we derive the secondary platform device name
-> from the primary device name. The secondary device name will now
-> be <primary_dev_name>-sec instead of fixed "samsung-i2s-sec".
->
-> The fixed platform_device_id table entry is removed as the secondary
-> device name is now dynamic and device/driver matching is done through
-> driver_override.
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Suggested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes since v1:
->  - fixed pdev->driver_override assignment,
->  - ensure there is no need to release any resources claimed
->    in i2s_create_secondary_device() function when that function fails.
-> ---
->  sound/soc/samsung/i2s.c    | 50 +++++++++++++++++++++++++-------------
->  sound/soc/samsung/odroid.c |  2 +-
->  2 files changed, 34 insertions(+), 18 deletions(-)
+The node obtained from of_find_node_by_path() has to be unreferenced
+after the use, but we forgot it for the root node.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
-Best regards,
-Krzysztof
+Only compile-tested.  Please review carefully.  Thanks!
+
+ sound/soc/fsl/fsl_ssi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 0a648229e643..09b2967befd9 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1439,8 +1439,10 @@ static int fsl_ssi_probe_from_dt(struct fsl_ssi *ssi)
+ 	 * different name to register the device.
+ 	 */
+ 	if (!ssi->card_name[0] && of_get_property(np, "codec-handle", NULL)) {
+-		sprop = of_get_property(of_find_node_by_path("/"),
+-					"compatible", NULL);
++		struct device_node *root = of_find_node_by_path("/");
++
++		sprop = of_get_property(root, "compatible", NULL);
++		of_node_put(root);
+ 		/* Strip "fsl," in the compatible name if applicable */
+ 		p = strrchr(sprop, ',');
+ 		if (p)
+-- 
+2.16.4
