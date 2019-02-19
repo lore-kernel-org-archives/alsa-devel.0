@@ -1,50 +1,81 @@
-From: Bogdan Togorean <bogdan.togorean@gmail.com>
-Subject: [PATCH 2/2] ASoC: adau1977: Add support for setting MICBIAS via DT
-Date: Tue, 19 Feb 2019 16:11:39 +0200
-Message-ID: <20190219141139.24216-3-bogdan.togorean@gmail.com>
-References: <20190219141139.24216-1-bogdan.togorean@gmail.com>
+From: xiang xiao <xiaoxiang781216@gmail.com>
+Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Tue, 19 Feb 2019 23:09:40 +0800
+Message-ID: <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190219141139.24216-1-bogdan.togorean@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, tiwai@suse.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Bogdan Togorean <bogdan.togorean@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-remoteproc@vger.kernel.org, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-If platform_data is NULL add reading of optional adi,micbias
-property from DT. If adi,micbias is not set keep the default
-value for micbias.
+On Tue, Feb 19, 2019 at 5:49 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 18/02/2019 20:03, Xiang Xiao wrote:
+> > Should we utilize official IPC frameowrk instead reinverting the wheel?
+> > 1.Load firmware by drivers/remoteproc
+> >    https://www.kernel.org/doc/Documentation/remoteproc.txt
+> > 2.Do the comunication through drivers/rpmsg
+> >    https://www.kernel.org/doc/Documentation/rpmsg.txt
+> > Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
+>
+> It definitely makes more sense to use rpmsg for Generic IPC driver here.
+>
+> Qualcomm DSP audio drivers (non SOF) already use rpmsg. This will
+> definitely help everyone in future while immigrating to SOF.
+>
 
-Signed-off-by: Bogdan Togorean <bogdan.togorean@gmail.com>
----
- sound/soc/codecs/adau1977.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Actually, Xiaomi also build DSP audio driver on top of rpmsg, but
+fully integrate with the ASoC topology framework, and the firmware is
+base on FreeRTOS and OpenMAX.
+SOF initiative is very good and exciting, our team members(include me)
+spend a couple weeks to study the current code base on both firmware
+and kernel side, we even port SOF to our DSP/MCU and make it run, but
+I have to point out that:
+SOF IPC is too simple and rigid, tightly couple with Intel platform
+and audio domain, which make:
+   a.It's difficult to integrate with other vendor SoC, especially if
+other vendor already adopt remote/rpmsg(this is already a trend!).
+   b.It's difficult to add other IPC services for example:
+      i.Audio DSP talk to power MCU to adjust clock and voltage
+      ii.Export ultrasonic distance measurement to IIO subsystem
 
-diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
-index 116af6a9ce3b..11c53bcb71dd 100644
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -885,13 +885,15 @@ static int adau1977_setup_micbias(struct adau1977 *adau1977)
- 	struct adau1977_platform_data *pdata = adau1977->dev->platform_data;
- 	unsigned int micbias;
- 
--	if (pdata) {
-+	if (pdata)
- 		micbias = pdata->micbias;
--		if (micbias > ADAU1977_MICBIAS_9V0)
--			return -EINVAL;
--
--	} else {
-+	else if (device_property_read_u32(adau1977->dev, "adi,micbias",
-+					  &micbias))
- 		micbias = ADAU1977_MICBIAS_8V5;
-+
-+	if (micbias > ADAU1977_MICBIAS_9V0) {
-+		dev_err(adau1977->dev, "Invalid value for 'adi,micbias'\n");
-+		return -EINVAL;
- 	}
- 
- 	return regmap_update_bits(adau1977->regmap, ADAU1977_REG_MICBIAS,
--- 
-2.20.1
+> > Actually, remoteproc/rpmsg is much better than SOF IPC because:
+> > 1.Completely isolate the firmware load and message transfer:
+> >    The same rpmsg driver could run on any remote processor
+> > 2.Separate the application protocol from transfer layer:
+> >    One remote processor could host many rpmsg services
+> > 3.Completely follow kernel driver model(rpsmg_bus, rpmsg_device and rpmsg_driver).
+> > 4.Support by many RTOS(Bare Metal, FreeRTOS, Zephyr, NuttX, Nucleus, uC/OS...) for remote side:
+> >    https://github.com/OpenAMP/open-amp
+> >    https://github.com/NXPmicro/rpmsg-lite
+> > 5.Maintained by the standard committee:
+> >    https://www.multicore-association.org/workgroup/oamp.php
+> >    https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio
+> > Since the keypoint of SOF is the platform agnostic and modular, please use the standard technique here.
+> >
+> > Thanks
+> > Xiang
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+> --srini
