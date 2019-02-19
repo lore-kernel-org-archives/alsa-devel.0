@@ -1,15 +1,14 @@
-From: =?utf-8?B?56mN5Li55bC8?= Dan Jacobson <jidanni@jidanni.org>
-Subject: Can't load alsa-project.org
-Date: Tue, 19 Feb 2019 07:16:54 +0800
-Message-ID: <87bm387km1.fsf@jidanni.org>
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH v2] ASoC: Intel: Boards: Add Maxim98373 support
+Date: Tue, 19 Feb 2019 09:54:26 +0530
+Message-ID: <1550550267-32630-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from palegreen.birch.relay.mailchannels.net
- (palegreen.birch.relay.mailchannels.net [23.83.209.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 75010265527
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 00:48:58 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62CDC265527
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 05:24:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,17 +19,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: 921523-done@bugs.debian.org, svenjoac@gmx.de, Tatsuya Kinoshita <tats@debian.org>
+Cc: N Harshapriya <harshapriya.n@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Chiang Mac <mac.chiang@intel.com>, Nujella Sathyanarayana <sathyanarayana.nujella@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, M Naveen <naveen.m@intel.com>, jenny.tc@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA team, you need to update the TLS on alsa-project.org
-> That's because the site apparently only offers TLS 1.0 which libssl
-> does not support anymore by default.
-See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=921523
+Reuse kbl_da7219_max98927 machine driver to support max98373
 
-P.S., The side panel of
-https://alsa-project.org/
-has a link to "Bug tracking" which is broken
-and needs to link to
-https://alsa-project.org/main/index.php/Bug_Tracking
-instead.
+v1: First patchset
+V2: Updated commit message and Acked-by
+
+Jenny TC (1):
+  ASoC: Intel: Boards: Add Maxim98373 support
+
+ sound/soc/intel/boards/Kconfig                    |   1 +
+ sound/soc/intel/boards/kbl_da7219_max98927.c      | 203 +++++++++++++++++++---
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c |  19 ++
+ 3 files changed, 200 insertions(+), 23 deletions(-)
+
+-- 
+1.9.1
