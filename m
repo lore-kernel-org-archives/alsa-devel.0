@@ -1,13 +1,17 @@
-From: Xiang Xiao <xiaoxiang781216@gmail.com>
-Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Tue, 19 Feb 2019 04:03:08 +0800
-Message-ID: <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Can't load alsa-project.org
+Date: Tue, 19 Feb 2019 09:32:02 +0100
+Message-ID: <64270cfa-20c7-51f0-c3f4-5adc8edc427e@perex.cz>
+References: <87bm387km1.fsf@jidanni.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 363E7265530
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 09:32:08 +0100 (CET)
+In-Reply-To: <87bm387km1.fsf@jidanni.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,29 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, wendy.liang@xilinx.com, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Kumar Gala <kumar.gala@linaro.org>, linux-remoteproc@vger.kernel.org
-Cc: Xiang Xiao <xiaoxiang@xiaomi.com>
+To: =?UTF-8?B?56mN5Li55bC8IERhbiBKYWNvYnNvbg==?= <jidanni@jidanni.org>, alsa-devel@alsa-project.org
+Cc: 921523-done@bugs.debian.org, svenjoac@gmx.de, Tatsuya Kinoshita <tats@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-Should we utilize official IPC frameowrk instead reinverting the wheel?
-1.Load firmware by drivers/remoteproc
-  https://www.kernel.org/doc/Documentation/remoteproc.txt
-2.Do the comunication through drivers/rpmsg
-  https://www.kernel.org/doc/Documentation/rpmsg.txt
-Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
-Actually, remoteproc/rpmsg is much better than SOF IPC because:
-1.Completely isolate the firmware load and message transfer:
-  The same rpmsg driver could run on any remote processor
-2.Separate the application protocol from transfer layer:
-  One remote processor could host many rpmsg services
-3.Completely follow kernel driver model(rpsmg_bus, rpmsg_device and rpmsg_driver).
-4.Support by many RTOS(Bare Metal, FreeRTOS, Zephyr, NuttX, Nucleus, uC/OS...) for remote side:
-  https://github.com/OpenAMP/open-amp
-  https://github.com/NXPmicro/rpmsg-lite
-5.Maintained by the standard committee:
-  https://www.multicore-association.org/workgroup/oamp.php
-  https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio
-Since the keypoint of SOF is the platform agnostic and modular, please use the standard technique here.
-
-Thanks
-Xiang
+RG5lIDE5LiAwMi4gMTkgdiAwOjE2IOepjeS4ueWwvCBEYW4gSmFjb2Jzb24gbmFwc2FsKGEpOgo+
+IERlYXIgQUxTQSB0ZWFtLCB5b3UgbmVlZCB0byB1cGRhdGUgdGhlIFRMUyBvbiBhbHNhLXByb2pl
+Y3Qub3JnCj4+IFRoYXQncyBiZWNhdXNlIHRoZSBzaXRlIGFwcGFyZW50bHkgb25seSBvZmZlcnMg
+VExTIDEuMCB3aGljaCBsaWJzc2wKPj4gZG9lcyBub3Qgc3VwcG9ydCBhbnltb3JlIGJ5IGRlZmF1
+bHQuCj4gU2VlIGh0dHBzOi8vYnVncy5kZWJpYW4ub3JnL2NnaS1iaW4vYnVncmVwb3J0LmNnaT9i
+dWc9OTIxNTIzCgpJIGtub3cgdGhvc2UgcHJvYmxlbXMgYW5kIEkgYW0gbW92aW5nIHRoZSBzZXJ2
+ZXIgc2xvd2x5IHRvIGFub3RoZXIKbG9jYXRpb24gd2l0aCB0aGUgdXBkYXRlZCBzb2Z0d2FyZSAt
+IGEgcHJldmlldyBpcyBhdmFpbGFibGUgaGVyZToKCiAgaHR0cHM6Ly9hbHNhMS5hbHNhLXByb2pl
+Y3Qub3JnL3dpa2kKClRoZSBjb250ZW50cyBpcyBhdmFpbGFibGUgdGhyb3VnaCB0aGUgSFRUUCBw
+cm90b2NvbCwgdG9vOgoKICBodHRwOi8vYWxzYS1wcm9qZWN0Lm9yZwoKPiBQLlMuLCBUaGUgc2lk
+ZSBwYW5lbCBvZgo+IGh0dHBzOi8vYWxzYS1wcm9qZWN0Lm9yZy8KPiBoYXMgYSBsaW5rIHRvICJC
+dWcgdHJhY2tpbmciIHdoaWNoIGlzIGJyb2tlbgo+IGFuZCBuZWVkcyB0byBsaW5rIHRvCj4gaHR0
+cHM6Ly9hbHNhLXByb2plY3Qub3JnL21haW4vaW5kZXgucGhwL0J1Z19UcmFja2luZwo+IGluc3Rl
+YWQuCgpUaGFua3MuIENoYW5nZWQuCgoJCQkJCUphcm9zbGF2CgotLSAKSmFyb3NsYXYgS3lzZWxh
+IDxwZXJleEBwZXJleC5jej4KTGludXggU291bmQgTWFpbnRhaW5lcjsgQUxTQSBQcm9qZWN0OyBS
+ZWQgSGF0LCBJbmMuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
