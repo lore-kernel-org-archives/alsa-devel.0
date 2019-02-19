@@ -1,20 +1,18 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 6/6] ASoC: samsung: Fix of-node refcount
- unbalance in odroid_audio_probe()
-Date: Tue, 19 Feb 2019 17:36:56 +0100
-Message-ID: <69d7e286-9ae0-71c8-af82-cc5eb4919d16@samsung.com>
-References: <20190219154652.13644-1-tiwai@suse.de>
- <CGME20190219154757epcas4p2e9cdfcf26df7e5ec39c16ceec964f6d0@epcas4p2.samsung.com>
- <20190219154652.13644-7-tiwai@suse.de>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH v2 1/2] ASoC: codecs: pcm186x: fix wrong
+ usage of DECLARE_TLV_DB_SCALE()
+Date: Tue, 19 Feb 2019 11:05:24 -0600
+Message-ID: <abf49724-6567-43cf-852c-027c7948860d@ti.com>
+References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 344D6265538
- for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 17:37:03 +0100 (CET)
-In-reply-to: <20190219154652.13644-7-tiwai@suse.de>
-Content-language: en-GB
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DFEC265535
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 18:05:27 +0100 (CET)
+In-Reply-To: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
+To: Codrin.Ciubotariu@microchip.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dannenberg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2/19/19 16:46, Takashi Iwai wrote:
-> odroid_audio_probe() leaves of-nodes without unreferenced after use.
-> Fix it by shuffling some code a bit and add the missing of_node_put()
-> calls accordingly.
+On 2/19/19 10:29 AM, Codrin.Ciubotariu@microchip.com wrote:
+> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > 
-> Fixes: aba611fc4c69 ("ASoC: samsung: Add Odroid ASoC machine driver")
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Sangbeom Kim <sbkim73@samsung.com>
-> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> According to DS, the gain is between -12 dB and 40 dB, with a 0.5 dB step.
+> Tested on pcm1863.
+> 
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > ---
+
+Acked-by: Andrew F. Davis <afd@ti.com>
+
 > 
-> Only compile-tested.  Please review carefully.  Thanks!
-Thanks for the patch. Current code for 5.1 is a bit different and we 
-may now need something like:
-
-----8<----
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index bd2c5163dc7f..c3b0f6c612cb 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -257,27 +257,31 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 		ret = of_parse_phandle_with_args(cpu, "sound-dai",
- 						 "#sound-dai-cells", i, &args);
- 		if (ret < 0)
--			return ret;
-+			break;
- 
- 		if (!args.np) {
- 			dev_err(dev, "sound-dai property parse error: %d\n", ret);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			break;
- 		}
- 
- 		ret = snd_soc_get_dai_name(&args, &link->cpu_dai_name);
- 		of_node_put(args.np);
- 
- 		if (ret < 0)
--			return ret;
-+			break;
- 	}
-+	if (ret == 0)
-+		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
- 
--	cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
- 	of_node_put(cpu);
- 	of_node_put(codec);
-+	if (ret < 0)
-+		return ret;
- 
- 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
- 	if (ret < 0)
--		goto err_put_codec_n;
-+		goto err_put_cpu_dai;
- 
- 	/* Set capture capability only for boards with the MAX98090 CODEC */
- 	if (codec_link->num_codecs > 1) {
-@@ -288,7 +292,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 	priv->sclk_i2s = of_clk_get_by_name(cpu_dai, "i2s_opclk1");
- 	if (IS_ERR(priv->sclk_i2s)) {
- 		ret = PTR_ERR(priv->sclk_i2s);
--		goto err_put_codec_n;
-+		goto err_put_cpu_dai;
- 	}
- 
- 	priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
-@@ -310,7 +314,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 	clk_put(priv->clk_i2s_bus);
- err_put_sclk:
- 	clk_put(priv->sclk_i2s);
--err_put_codec_n:
-+err_put_cpu_dai:
-+	of_node_put(cpu_dai);
- 	snd_soc_of_put_dai_link_codecs(codec_link);
- 	return ret;
- }
-----8<----
-
--- 
-Thanks,
-Sylwester
+> Changes in v2:
+>  - fixed title - added correct macro;
+>  - revert the removal of a new line;
+> 
+>  sound/soc/codecs/pcm186x.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+> index 809b7e9f03ca..c36a391fec8a 100644
+> --- a/sound/soc/codecs/pcm186x.c
+> +++ b/sound/soc/codecs/pcm186x.c
+> @@ -42,7 +42,7 @@ struct pcm186x_priv {
+>  	bool is_master_mode;
+>  };
+>  
+> -static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 4000, 50);
+> +static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 50, 0);
+>  
+>  static const struct snd_kcontrol_new pcm1863_snd_controls[] = {
+>  	SOC_DOUBLE_R_S_TLV("ADC Capture Volume", PCM186X_PGA_VAL_CH1_L,
+> 
