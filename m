@@ -1,34 +1,53 @@
-From: Li RongQing <lirongqing@baidu.com>
-Subject: [PATCH] ALSA: xen-front: remove unneeded switch
- fall-through
-Date: Tue, 19 Feb 2019 12:57:28 +0800
-Message-ID: <1550552248-17492-1-git-send-email-lirongqing@baidu.com>
+From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Subject: Re: [PATCH] ALSA: xen-front: remove unneeded switch
+	fall-through
+Date: Tue, 19 Feb 2019 06:56:04 +0000
+Message-ID: <09d316ae-1545-af2d-29eb-ec77c89beb9e@epam.com>
+References: <1550552248-17492-1-git-send-email-lirongqing@baidu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xenproject.org>
-List-Unsubscribe: <https://lists.xenproject.org/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xenproject.org>
-List-Help: <mailto:xen-devel-request@lists.xenproject.org?subject=help>
-List-Subscribe: <https://lists.xenproject.org/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xenproject.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xenproject.org>
-To: alsa-devel@alsa-project.org, xen-devel@lists.xenproject.org, oleksandr_andrushchenko@epam.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50088.outbound.protection.outlook.com [40.107.5.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F59F265530
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 07:56:05 +0100 (CET)
+In-Reply-To: <1550552248-17492-1-git-send-email-lirongqing@baidu.com>
+Content-Language: en-US
+Content-ID: <56BD7F0708843049912CB39EDAD9D880@eurprd03.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Li RongQing <lirongqing@baidu.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBjYXNlIGJsb2NrIHdpbGwgYmUgdGVybWluYXRlZCBieSBhIGJyZWFrLCBzbyBub3QgbmVl
-ZAphIHN3aXRjaCBmYWxsLXRocm91Z2gKClNpZ25lZC1vZmYtYnk6IExpIFJvbmdRaW5nIDxsaXJv
-bmdxaW5nQGJhaWR1LmNvbT4KLS0tCiBzb3VuZC94ZW4veGVuX3NuZF9mcm9udC5jIHwgMSAtCiAx
-IGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3hlbi94ZW5f
-c25kX2Zyb250LmMgYi9zb3VuZC94ZW4veGVuX3NuZF9mcm9udC5jCmluZGV4IGE5ZTVjMmNkNzY5
-OC4uZjEyZmI4ZWVhYTI3IDEwMDY0NAotLS0gYS9zb3VuZC94ZW4veGVuX3NuZF9mcm9udC5jCisr
-KyBiL3NvdW5kL3hlbi94ZW5fc25kX2Zyb250LmMKQEAgLTI1MCw3ICsyNTAsNiBAQCBzdGF0aWMg
-dm9pZCBzbmRiYWNrX2NoYW5nZWQoc3RydWN0IHhlbmJ1c19kZXZpY2UgKnhiX2RldiwKIAljYXNl
-IFhlbmJ1c1N0YXRlUmVjb25maWd1cmVkOgogCQkvKiBmYWxsIHRocm91Z2ggKi8KIAljYXNlIFhl
-bmJ1c1N0YXRlSW5pdGlhbGlzZWQ6Ci0JCS8qIGZhbGwgdGhyb3VnaCAqLwogCQlicmVhazsKIAog
-CWNhc2UgWGVuYnVzU3RhdGVJbml0aWFsaXNpbmc6Ci0tIAoyLjE2LjIKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpYZW4tZGV2ZWwgbWFpbGluZyBsaXN0
-Clhlbi1kZXZlbEBsaXN0cy54ZW5wcm9qZWN0Lm9yZwpodHRwczovL2xpc3RzLnhlbnByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8veGVuLWRldmVs
+On 2/19/19 6:57 AM, Li RongQing wrote:
+> This case block will be terminated by a break, so not need
+> a switch fall-through
+>
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> ---
+>   sound/xen/xen_snd_front.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+> index a9e5c2cd7698..f12fb8eeaa27 100644
+> --- a/sound/xen/xen_snd_front.c
+> +++ b/sound/xen/xen_snd_front.c
+> @@ -250,7 +250,6 @@ static void sndback_changed(struct xenbus_device *xb_dev,
+>   	case XenbusStateReconfigured:
+>   		/* fall through */
+>   	case XenbusStateInitialised:
+> -		/* fall through */
+>   		break;
+>   
+>   	case XenbusStateInitialising:
+Thank you,
+Oleksandr
