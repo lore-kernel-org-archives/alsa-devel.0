@@ -1,29 +1,32 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "SoC: imx-sgtl5000: add missing put_device()" to the asoc tree
-Date: Tue, 19 Feb 2019 11:47:08 +0000 (GMT)
-Message-ID: <20190219114708.7EC7E11284A6@debutante.sirena.org.uk>
-References: <HK0PR02MB3634C18C42652DC3A2893043B2630@HK0PR02MB3634.apcprd02.prod.outlook.com>
+Subject: Applied "ASoC: wm8741: Make function 'wm8741_mute'
+	static" to the asoc tree
+Date: Tue, 19 Feb 2019 11:47:02 +0000 (GMT)
+Message-ID: <20190219114702.7AF6911284A6@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <HK0PR02MB3634C18C42652DC3A2893043B2630@HK0PR02MB3634.apcprd02.prod.outlook.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wen Yang <yellowriver2010@hotmail.com>
-Cc: alsa-devel@alsa-project.org, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Kysela <perex@perex.cz>, Nicolin Chen <nicoleotsuka@gmail.com>, Jaroslav@sirena.org.uk, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8D32265523
+ for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2019 12:47:05 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   SoC: imx-sgtl5000: add missing put_device()
+   ASoC: wm8741: Make function 'wm8741_mute' static
 
 has been applied to the asoc tree at
 
@@ -48,55 +51,35 @@ to this mail.
 Thanks,
 Mark
 
->From 8fa857da9744f513036df1c43ab57f338941ae7d Mon Sep 17 00:00:00 2001
-From: Wen Yang <yellowriver2010@hotmail.com>
-Date: Mon, 18 Feb 2019 15:13:47 +0000
-Subject: [PATCH] SoC: imx-sgtl5000: add missing put_device()
+>From 76a60f312f64dc48450b15a7f167b46e6230e4d1 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Sat, 16 Feb 2019 01:35:56 +0000
+Subject: [PATCH] ASoC: wm8741: Make function 'wm8741_mute' static
 
-The of_find_device_by_node() takes a reference to the underlying device
-structure, we should release that reference.
+Fixes the following sparse warning:
 
-Detected by coccinelle with the following warnings:
-./sound/soc/fsl/imx-sgtl5000.c:169:1-7: ERROR: missing put_device;
-call of_find_device_by_node on line 105, but without a corresponding
-object release within this function.
-./sound/soc/fsl/imx-sgtl5000.c:177:1-7: ERROR: missing put_device;
-call of_find_device_by_node on line 105, but without a corresponding
-object release within this function.
+sound/soc/codecs/wm8741.c:371:5: warning:
+ symbol 'wm8741_mute' was not declared. Should it be static?
 
-Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+Fixes: 36b1599340b5 ("ASoC: wm8741: Add digital mute callback")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-sgtl5000.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm8741.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index b6cb80480b60..bf8597f57dce 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -108,6 +108,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 		ret = -EPROBE_DEFER;
- 		goto fail;
- 	}
-+	put_device(&ssi_pdev->dev);
- 	codec_dev = of_find_i2c_device_by_node(codec_np);
- 	if (!codec_dev) {
- 		dev_dbg(&pdev->dev, "failed to find codec platform device\n");
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index a4b8c459ea57..546ea735f534 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -368,7 +368,7 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
++static int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
+ {
+ 	struct snd_soc_component *component = codec_dai->component;
+ 
 -- 
 2.20.1
