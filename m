@@ -1,20 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: hda/realtek - Fix a typo in model
-	documentation
-Date: Wed, 20 Feb 2019 12:57:31 +0100
-Message-ID: <20190220115732.16216-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: wm_adsp: Update cached error
+	state on trigger
+Date: Wed, 20 Feb 2019 11:54:21 +0000
+Message-ID: <20190220115421.GA9878@sirena.org.uk>
+References: <20190219173157.14611-1-ckeepax@opensource.cirrus.com>
+ <20190219173157.14611-2-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7397694404757092291=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F998F807B8
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:57:37 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3E35DAC90
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 11:57:37 +0000 (UTC)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D44FCF80774
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:54:24 +0100 (CET)
+In-Reply-To: <20190219173157.14611-2-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, aford@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-Some garbage was taken via copy-and-paste error.  Clean up.
 
-Fixes: a26d96c7802e ("ALSA: hda/realtek - Comprehensive model list for ALC259 & co")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- Documentation/sound/hd-audio/models.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============7397694404757092291==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 
-diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
-index 368a07a165f5..ef6101a78136 100644
---- a/Documentation/sound/hd-audio/models.rst
-+++ b/Documentation/sound/hd-audio/models.rst
-@@ -254,7 +254,7 @@ alc274-dell-aio
-     ALC274 fixups on Dell AIO machines
- alc255-dummy-lineout
-     Dell Precision 3930 fixups
--alc255-dell-headset"},
-+alc255-dell-headset
-     Dell Precision 3630 fixups
- alc295-hp-x360
-     HP Spectre X360 fixups
--- 
-2.16.4
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Feb 19, 2019 at 05:31:57PM +0000, Charles Keepax wrote:
+> From: Stuart Henderson <stuarth@opensource.cirrus.com>
+>=20
+> If a compressed stream is restarted after getting an error, the cached
+> error value will still be used on the next pointer request, preventing
+> the stream from starting.  Resolve this by ensuring the error status is
+> updated on trigger start.
+
+It's better to send fixes at the start of the series as this makes it
+easier to apply them on a fixes branch for sending to Linus early.
+
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxtP+sACgkQJNaLcl1U
+h9AivAf/VMVx/helHpkdsid6LnNgelVBjP3uwwf32Kr9bw+VEMpZuIWxPaoAgS6G
+NlFkJv4Ub9XgJHwaO6j7Nd28EUTOFgu17dfNwp9L7WOaAuFpAtNhuvITzB/c9RI+
+90xyNRXpavC3eRGOKV/zuwqod0aRdT/v9+V67wiZ6bvI5NzAJhYHRgs2ZQ9Kr/Ye
+UXHbfcXr1airUmCzEbQqwxpBsQBHoihiRHp6qSJ1fI5STwASt887AzWpFP+cLN/x
+u3nUhJlFl7GpOwMElqVhm6geA7pRroIMCujcJ0EtlXc2mqkcSjwwamCSdRD4rxhC
+5PjkeBdoiaBX/xwsv1sc0IWSOT61GA==
+=bejF
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
+
+--===============7397694404757092291==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7397694404757092291==--
