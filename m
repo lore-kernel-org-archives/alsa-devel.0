@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: odroid: Fix of_node refcount unbalance" to the asoc tree
-Date: Wed, 20 Feb 2019 17:52:46 +0000 (GMT)
-Message-ID: <20190220175246.AB72A112882C@debutante.sirena.org.uk>
-References: <20190220110607.13293-1-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190220110607.13293-1-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.comtiwai@suse.de, linux-kernel@vger.kernel.org, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: simple-card: Fix of-node refcount
+	unbalance in DAI-link parser" to the asoc tree
+Date: Wed, 20 Feb 2019 12:13:13 +0000 (GMT)
+Message-ID: <20190220121313.F275411274ED@debutante.sirena.org.uk>
+References: <20190219154652.13644-4-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F88DF807AE
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 13:13:21 +0100 (CET)
+In-Reply-To: <20190219154652.13644-4-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: odroid: Fix of_node refcount unbalance
+   ASoC: simple-card: Fix of-node refcount unbalance in DAI-link parser
 
 has been applied to the asoc tree at
 
@@ -37,81 +55,80 @@ to this mail.
 Thanks,
 Mark
 
->From d832d2b246c516eacb2d0ba53ec17ed59c3cd62b Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 20 Feb 2019 12:06:07 +0100
-Subject: [PATCH] ASoC: samsung: odroid: Fix of_node refcount unbalance
+>From 0b9c9ed6dd3b61b1d3ef1638786a7216006f67c5 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Tue, 19 Feb 2019 16:46:49 +0100
+Subject: [PATCH] ASoC: simple-card: Fix of-node refcount unbalance in DAI-link
+ parser
 
-In odroid_audio_probe() some OF nodes are left without reference count
-decrease after use. Fix it by ensuring required of_node_calls() are done
-before exiting probe.
+The function simple_for_each_link() has a few missing places that
+forgot unrefereing of-nodes after the use.  The main do-while loop
+may abort when loop=0, and this leaves the node object still
+referenced.  A similar leak is found in the error handling of NULL
+codec that aborts the loop as well.  Last but not least, the inner
+for_each_child_of_node() loop may abort in the middle, and this leaks
+the refcount of the iterator node.
 
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+This patch addresses these missing refcount issues.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/odroid.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ sound/soc/generic/simple-card.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index bd2c5163dc7f..c3b0f6c612cb 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -257,27 +257,31 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 		ret = of_parse_phandle_with_args(cpu, "sound-dai",
- 						 "#sound-dai-cells", i, &args);
- 		if (ret < 0)
--			return ret;
-+			break;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 092963e90e1e..7147bba45a2a 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -442,6 +442,7 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node;
+ 	bool is_top = 0;
++	int ret = 0;
  
- 		if (!args.np) {
- 			dev_err(dev, "sound-dai property parse error: %d\n", ret);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			break;
+ 	/* Check if it has dai-link */
+ 	node = of_get_child_by_name(top, PREFIX "dai-link");
+@@ -456,13 +457,14 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 		struct device_node *codec;
+ 		struct device_node *np;
+ 		int num = of_get_child_count(node);
+-		int ret;
+ 
+ 		/* get codec */
+ 		codec = of_get_child_by_name(node, is_top ?
+ 					     PREFIX "codec" : "codec");
+-		if (!codec)
+-			return -ENODEV;
++		if (!codec) {
++			ret = -ENODEV;
++			goto error;
++		}
+ 
+ 		of_node_put(codec);
+ 
+@@ -485,14 +487,18 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 			else
+ 				ret = func_noml(priv, np, codec, li, is_top);
+ 
+-			if (ret < 0)
+-				return ret;
++			if (ret < 0) {
++				of_node_put(np);
++				goto error;
++			}
  		}
  
- 		ret = snd_soc_get_dai_name(&args, &link->cpu_dai_name);
- 		of_node_put(args.np);
+ 		node = of_get_next_child(top, node);
+ 	} while (!is_top && node);
  
- 		if (ret < 0)
--			return ret;
-+			break;
- 	}
-+	if (ret == 0)
-+		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
- 
--	cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
- 	of_node_put(cpu);
- 	of_node_put(codec);
-+	if (ret < 0)
-+		return ret;
- 
- 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
- 	if (ret < 0)
--		goto err_put_codec_n;
-+		goto err_put_cpu_dai;
- 
- 	/* Set capture capability only for boards with the MAX98090 CODEC */
- 	if (codec_link->num_codecs > 1) {
-@@ -288,7 +292,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 	priv->sclk_i2s = of_clk_get_by_name(cpu_dai, "i2s_opclk1");
- 	if (IS_ERR(priv->sclk_i2s)) {
- 		ret = PTR_ERR(priv->sclk_i2s);
--		goto err_put_codec_n;
-+		goto err_put_cpu_dai;
- 	}
- 
- 	priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
-@@ -310,7 +314,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 	clk_put(priv->clk_i2s_bus);
- err_put_sclk:
- 	clk_put(priv->sclk_i2s);
--err_put_codec_n:
-+err_put_cpu_dai:
-+	of_node_put(cpu_dai);
- 	snd_soc_of_put_dai_link_codecs(codec_link);
- 	return ret;
+-	return 0;
++ error:
++	of_node_put(node);
++	return ret;
  }
+ 
+ static int simple_parse_aux_devs(struct device_node *node,
 -- 
 2.20.1
