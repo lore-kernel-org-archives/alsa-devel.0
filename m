@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Potential small memory leak in
-	dapm_cnew_widget()" to the asoc tree
-Date: Tue, 19 Feb 2019 15:50:22 +0000 (GMT)
-Message-ID: <20190219155022.A1E3211284C2@debutante.sirena.org.uk>
-References: <20190219120427.GA26719@kadam>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda/realtek - Add model description
+	for Chrome headset button quirk
+Date: Wed, 20 Feb 2019 12:57:32 +0100
+Message-ID: <20190220115732.16216-2-tiwai@suse.de>
+References: <20190220115732.16216-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7778EF807A3
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:13:53 +0100 (CET)
-In-Reply-To: <20190219120427.GA26719@kadam>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 750E3F80C31
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:57:38 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 44339AC96
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 11:57:38 +0000 (UTC)
+In-Reply-To: <20190220115732.16216-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Forgot to update the document.
 
-   ASoC: dapm: Potential small memory leak in dapm_cnew_widget()
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a6d9cef30eb11b2de8cbfed9065e3dc5b1f829a8 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Tue, 19 Feb 2019 15:04:27 +0300
-Subject: [PATCH] ASoC: dapm: Potential small memory leak in dapm_cnew_widget()
-
-We should free "w" on the error path.
-
-Fixes: 199ed3e81c49 ("ASoC: dapm: fix use-after-free issue with dailink sname")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: e854747d7593 ("ALSA: hda/realtek - Enable headset button support for new codec")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-dapm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/sound/hd-audio/models.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dea6fc2353e4..1ec06ef6d161 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -332,8 +332,10 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
- 	 */
- 	if (_widget->sname) {
- 		w->sname = kstrdup_const(_widget->sname, GFP_KERNEL);
--		if (!w->sname)
-+		if (!w->sname) {
-+			kfree(w);
- 			return NULL;
-+		}
- 	}
- 	return w;
- }
+diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
+index ef6101a78136..7d7c191102a7 100644
+--- a/Documentation/sound/hd-audio/models.rst
++++ b/Documentation/sound/hd-audio/models.rst
+@@ -258,6 +258,8 @@ alc255-dell-headset
+     Dell Precision 3630 fixups
+ alc295-hp-x360
+     HP Spectre X360 fixups
++alc-sense-combo
++    Headset button support for Chrome platform
+ 
+ ALC66x/67x/892
+ ==============
 -- 
-2.20.1
+2.16.4
