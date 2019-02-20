@@ -1,95 +1,83 @@
-From: <Codrin.Ciubotariu@microchip.com>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: pcm186x: Fix
-	energysense SLEEP bit
-Date: Wed, 20 Feb 2019 10:56:55 +0000
-Message-ID: <a1e133fe-2fdf-db02-4fe2-6b5e259191b7@microchip.com>
-References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
- <20190219162840.7244-2-codrin.ciubotariu@microchip.com>
- <eba29760-9ef7-9490-9f46-b3dbdf43ee05@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
- [68.232.147.91])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ED52F80758
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 11:56:59 +0100 (CET)
-In-Reply-To: <eba29760-9ef7-9490-9f46-b3dbdf43ee05@ti.com>
-Content-Language: en-US
-Content-ID: <755D4C5D3444694889594766D0FAD874@namprd11.prod.outlook.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: afd@ti.com, lgirdwood@gmail.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dannenberg@ti.com
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: odroid: Fix of_node refcount unbalance
+Date: Wed, 20 Feb 2019 12:06:07 +0100
+Message-ID: <20190220110607.13293-1-s.nawrocki@samsung.com>
+References: <CGME20190220110620epcas2p27841bf821d10beab780362bdd59d9020@epcas2p2.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 19.02.2019 19:06, Andrew F. Davis wrote:
-> On 2/19/19 10:29 AM, Codrin.Ciubotariu@microchip.com wrote:
->> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->>
->> The ADCs are sleeping when the SLEEP bit is set and running when it's
->> cleared, so the bit should be inverted.
->> Tested on pcm1863.
->>
-> 
-> Did this work for you before? Strange it would if reversed, I wonder if
-> the SLEEP bit is really doing anything here. Can investigate later, for
-> this patch:
+In odroid_audio_probe() some OF nodes are left without reference count
+decrease after use. Fix it by ensuring required of_node_calls() are done
+before exiting probe.
 
-The SLEEP bit seems to work. At least STATE from register 114 says the 
-IP is sleeping. Without this change, if pcm1863 is used as master, I can 
-see BCK and LRCK generated while no sound is played. Once I start an 
-audio stream, the clocks stop.
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/odroid.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Thank you for your ACK. I would really appreciate if you could also test 
-it on your side.
-
-Best regards,
-Codrin
-
-> 
-> Acked-by: Andrew F. Davis <afd@ti.com>
-> 
->> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> ---
->>
->> Changes in v2:
->>   - none;
->>
->>   sound/soc/codecs/pcm186x.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
->> index c36a391fec8a..c5fcc632f670 100644
->> --- a/sound/soc/codecs/pcm186x.c
->> +++ b/sound/soc/codecs/pcm186x.c
->> @@ -158,7 +158,7 @@ static const struct snd_soc_dapm_widget pcm1863_dapm_widgets[] = {
->>   	 * Put the codec into SLEEP mode when not in use, allowing the
->>   	 * Energysense mechanism to operate.
->>   	 */
->> -	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", PCM186X_POWER_CTRL, 1,  0),
->> +	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", PCM186X_POWER_CTRL, 1,  1),
->>   };
->>   
->>   static const struct snd_soc_dapm_widget pcm1865_dapm_widgets[] = {
->> @@ -184,8 +184,8 @@ static const struct snd_soc_dapm_widget pcm1865_dapm_widgets[] = {
->>   	 * Put the codec into SLEEP mode when not in use, allowing the
->>   	 * Energysense mechanism to operate.
->>   	 */
->> -	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  0),
->> -	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  0),
->> +	SND_SOC_DAPM_ADC("ADC1", "HiFi Capture 1", PCM186X_POWER_CTRL, 1,  1),
->> +	SND_SOC_DAPM_ADC("ADC2", "HiFi Capture 2", PCM186X_POWER_CTRL, 1,  1),
->>   };
->>   
->>   static const struct snd_soc_dapm_route pcm1863_dapm_routes[] = {
->>
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index bd2c5163dc7f..c3b0f6c612cb 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -257,27 +257,31 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 		ret = of_parse_phandle_with_args(cpu, "sound-dai",
+ 						 "#sound-dai-cells", i, &args);
+ 		if (ret < 0)
+-			return ret;
++			break;
+ 
+ 		if (!args.np) {
+ 			dev_err(dev, "sound-dai property parse error: %d\n", ret);
+-			return -EINVAL;
++			ret = -EINVAL;
++			break;
+ 		}
+ 
+ 		ret = snd_soc_get_dai_name(&args, &link->cpu_dai_name);
+ 		of_node_put(args.np);
+ 
+ 		if (ret < 0)
+-			return ret;
++			break;
+ 	}
++	if (ret == 0)
++		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
+ 
+-	cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
+ 	of_node_put(cpu);
+ 	of_node_put(codec);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
+ 	if (ret < 0)
+-		goto err_put_codec_n;
++		goto err_put_cpu_dai;
+ 
+ 	/* Set capture capability only for boards with the MAX98090 CODEC */
+ 	if (codec_link->num_codecs > 1) {
+@@ -288,7 +292,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	priv->sclk_i2s = of_clk_get_by_name(cpu_dai, "i2s_opclk1");
+ 	if (IS_ERR(priv->sclk_i2s)) {
+ 		ret = PTR_ERR(priv->sclk_i2s);
+-		goto err_put_codec_n;
++		goto err_put_cpu_dai;
+ 	}
+ 
+ 	priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
+@@ -310,7 +314,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	clk_put(priv->clk_i2s_bus);
+ err_put_sclk:
+ 	clk_put(priv->sclk_i2s);
+-err_put_codec_n:
++err_put_cpu_dai:
++	of_node_put(cpu_dai);
+ 	snd_soc_of_put_dai_link_codecs(codec_link);
+ 	return ret;
+ }
+-- 
+2.17.1
