@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Sound-open-firmware] [PATCH v4 01/14] ASoC: SOF:
- Add Sound Open Firmware driver core
-Date: Wed, 20 Feb 2019 16:26:45 +0000
-Message-ID: <20190220162645.GB9878@sirena.org.uk>
+Subject: Re: [Sound-open-firmware] [PATCH v4 04/14] ASoC: SOF:
+ Add support for IPC IO between DSP and Host
+Date: Wed, 20 Feb 2019 17:31:47 +0000
+Message-ID: <20190220173147.GE9878@sirena.org.uk>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-2-pierre-louis.bossart@linux.intel.com>
- <s5h1s4abu2n.wl-tiwai@suse.de>
- <ecb982bf-5f45-4551-592c-8375d06415e0@linux.intel.com>
- <20190219153836.GD6319@sirena.org.uk>
- <19843650-4f58-4aa9-7bf3-c1ce4c72d1c9@linux.intel.com>
+ <20190213220734.10471-5-pierre-louis.bossart@linux.intel.com>
+ <s5hef8aziwh.wl-tiwai@suse.de>
+ <f44964a2-9339-6cd8-c30e-c139316dc7ad@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5574793243940213669=="
+Content-Type: multipart/mixed; boundary="===============3715363500696685090=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <19843650-4f58-4aa9-7bf3-c1ce4c72d1c9@linux.intel.com>
+In-Reply-To: <f44964a2-9339-6cd8-c30e-c139316dc7ad@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,55 +25,57 @@ Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, Takash
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5574793243940213669==
+--===============3715363500696685090==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
+	protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
 Content-Disposition: inline
 
 
---E39vaYmALEf/7YXx
+--qFgkTsE6LiHkLPZw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Feb 20, 2019 at 08:35:16AM -0600, Pierre-Louis Bossart wrote:
+On Thu, Feb 14, 2019 at 08:56:42AM -0600, Pierre-Louis Bossart wrote:
+> On 2/14/19 5:52 AM, Takashi Iwai wrote:
+> > Pierre-Louis Bossart wrote:
 
-> I see your point and agree the current direction isn't scalable, but I am
-> not sure about the definition of 'first class device'.
+> > > +		ret = snd_sof_dsp_get_reply(sdev, msg);
+> > > +		if (msg->reply_size)
+> > > +			memcpy(reply_data, msg->reply_data, msg->reply_size);
 
-> Did you mean 'component' at the same level as the 'platforms' and 'codecs',
-> with all the DSP stuff nicely packaged and maintained in a self-contained
-> way?
+> > I'd add a sanity check here for avoiding a buffer overflow.
+> > The reply buffer seems to be allocated in PAGE_SIZE.  Will it be more
+> > than that?
 
-> Or a subcomponent that might be part of those platforms and codecs?
+> Good point, we'll check all the info returned by the DSP and see if they
+> need to be range-checked or size-checked.
 
-As far as I can see for the Intel systems it's looking like a first
-class component - there will be some systems where the DSP is embedded
-in something (like the big CODECs) but even there it's easier as it's
-contained within the device rather than affecting multiple devices which
-is the big issue here.
+I think it's better to just do the range checks even if they're not
+needed right now, it's safer in case someone adds bigger messages or
+there's some bug that corrupts the size.
 
---E39vaYmALEf/7YXx
+--qFgkTsE6LiHkLPZw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxtf8QACgkQJNaLcl1U
-h9Cy6Af/caMV45/fLm1lRwXpiqglZwPrB3t7VBCn6n85p86vA0Dcj6dISpHdjlPj
-YA67dFqlUjCoo/A0WrJemQe2STIwv2zMWqMKaD9P3XFOR0gOZhXz9UmrJpESZcw1
-LynzPKkSJlwc5WN6Ge6d5IJyYMOBnkb9qKqKveoNzcgzJae3yB28/H768K5ggbJy
-GMNXM2aQb30Y57bDePwn8itevMJj0xQXjcfG9XIb+pslEtnAVlNUO5MKXr1wPH3S
-xOJnZdqj2DAYDG8ZDs9oXshSSgs7ynUtrQ9qtFnhMYSHSU9lPtciC9dyR8DiXnFr
-nk6UwiJf56MAfXICgDojJzG+91QQVQ==
-=xIwV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxtjwIACgkQJNaLcl1U
+h9Azrgf8DeWrIA0h29MUDYNs4F1kTtgpMki7/mLlu3rpXmq4udSCZxZy2/3QqKyz
+lHhrMPAzEHLH8nLuJH8uJuxfBFu5ZfkYgNufKqsHr7uXwtyhxgbu09+37hAqZlYE
+QVvzweBnObgPDKVE/p0xQoCDf2Ts77ZGBLVot0nU3/RKLBZuKy0kYqcAs+X1Q5Cn
+565zAmITLsAQdqwsmiNZ/m7/FJqFs2XchNlyE5y2Xzf5Xohkg4VwZYg26rZTwa8o
+5nsFpCHIhkjaU9PzZFgbTwVxJs/FyKxh6wV+xaOGnC++Da6HeqZtqVNU3uysUOZW
+3vLEusBM+CeGiYrY8nsp+OiE7N+lXA==
+=pKeo
 -----END PGP SIGNATURE-----
 
---E39vaYmALEf/7YXx--
+--qFgkTsE6LiHkLPZw--
 
---===============5574793243940213669==
+--===============3715363500696685090==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5574793243940213669==--
+--===============3715363500696685090==--
