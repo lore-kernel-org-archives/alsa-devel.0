@@ -1,19 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 01/14] ASoC: SOF:
- Add Sound Open Firmware driver core
-Date: Wed, 20 Feb 2019 08:35:16 -0600
-Message-ID: <19843650-4f58-4aa9-7bf3-c1ce4c72d1c9@linux.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-2-pierre-louis.bossart@linux.intel.com>
- <s5h1s4abu2n.wl-tiwai@suse.de>
- <ecb982bf-5f45-4551-592c-8375d06415e0@linux.intel.com>
- <20190219153836.GD6319@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Reduce click noise on Dell
+	Precision 5820 headphone
+Date: Wed, 20 Feb 2019 16:41:20 +0100
+Message-ID: <20190220154120.3098-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190219153836.GD6319@sirena.org.uk>
-Content-Language: en-US
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 040B1F8076A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 16:41:22 +0100 (CET)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id C5B2AADBD
+ for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 15:41:21 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +24,207 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Dell Precision 5820 with ALC3234 codec (which is equivalent with
+ALC255) shows click noises at (runtime) PM resume on the headphone.
+The biggest source of the noise comes from the cleared headphone pin
+control at resume, which is done via the standard shutup procedure.
 
->>>> +	/* private data - core does not touch */
->>>> +	void *private; /* FIXME: still SOF-specific, needs to less ambiguous */
->>> Then better to name it sof_private?
->> Ah, this is a mistake in the FIXME comment.
->> initially we had a field called "sof" and Mark made the following comment:
-> ...
->
->> so we added a FIXME to track this, then later we moved the field and renamed
->> it 'private' so that it can be used by others if needed but didn't remove
->> the FIXME. Will fix this.
-> That doesn't really address the issue - there's multiple drivers using
-> any given runtime so none of them can safely use a generically named
-> private data field.  Conversely putting a field specific to a given
-> driver into the core data structures opens the door to everyone wanting
-> their custom stuff in the core which is also a problem for different
-> reasons.  This would be a lot easier with the DSP represented as a first
-> class device in the system...
+Although we have an override of the standard shutup callback to
+replace with NOP, this would skip other needed stuff (e.g. the pull
+down of headset power).  So, instead, this "fixes" the behavior of
+alc_fixup_no_shutup() by introducing spec->no_shutup_pins flag.
+When this flag is set, Realtek codec won't call the standard
+snd_hda_shutup_pins() & co.  Now alc_fixup_no_shutup() just sets this
+flag instead of overriding spec->shutup callback itself.  This allows
+us to apply the similar fix for other entries easily if needed in
+future.
 
-I see your point and agree the current direction isn't scalable, but I 
-am not sure about the definition of 'first class device'.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 57 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 23 deletions(-)
 
-Did you mean 'component' at the same level as the 'platforms' and 
-'codecs', with all the DSP stuff nicely packaged and maintained in a 
-self-contained way?
-
-Or a subcomponent that might be part of those platforms and codecs?
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1212955f7ab5..5855648b500c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -118,6 +118,7 @@ struct alc_spec {
+ 	unsigned int has_alc5505_dsp:1;
+ 	unsigned int no_depop_delay:1;
+ 	unsigned int done_hp_init:1;
++	unsigned int no_shutup_pins:1;
+ 
+ 	/* for PLL fix */
+ 	hda_nid_t pll_nid;
+@@ -476,6 +477,14 @@ static void alc_auto_setup_eapd(struct hda_codec *codec, bool on)
+ 		set_eapd(codec, *p, on);
+ }
+ 
++static void alc_shutup_pins(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (!spec->no_shutup_pins)
++		snd_hda_shutup_pins(codec);
++}
++
+ /* generic shutup callback;
+  * just turning off EAPD and a little pause for avoiding pop-noise
+  */
+@@ -486,7 +495,7 @@ static void alc_eapd_shutup(struct hda_codec *codec)
+ 	alc_auto_setup_eapd(codec, false);
+ 	if (!spec->no_depop_delay)
+ 		msleep(200);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ }
+ 
+ /* generic EAPD initialization */
+@@ -814,7 +823,7 @@ static inline void alc_shutup(struct hda_codec *codec)
+ 	if (spec && spec->shutup)
+ 		spec->shutup(codec);
+ 	else
+-		snd_hda_shutup_pins(codec);
++		alc_shutup_pins(codec);
+ }
+ 
+ static void alc_reboot_notify(struct hda_codec *codec)
+@@ -2922,7 +2931,7 @@ static void alc269_shutup(struct hda_codec *codec)
+ 			(alc_get_coef0(codec) & 0x00ff) == 0x018) {
+ 		msleep(150);
+ 	}
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ }
+ 
+ static struct coef_fw alc282_coefs[] = {
+@@ -3025,14 +3034,15 @@ static void alc282_shutup(struct hda_codec *codec)
+ 	if (hp_pin_sense)
+ 		msleep(85);
+ 
+-	snd_hda_codec_write(codec, hp_pin, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
++	if (!spec->no_shutup_pins)
++		snd_hda_codec_write(codec, hp_pin, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
+ 
+ 	if (hp_pin_sense)
+ 		msleep(100);
+ 
+ 	alc_auto_setup_eapd(codec, false);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ 	alc_write_coef_idx(codec, 0x78, coef78);
+ }
+ 
+@@ -3138,15 +3148,16 @@ static void alc283_shutup(struct hda_codec *codec)
+ 	if (hp_pin_sense)
+ 		msleep(100);
+ 
+-	snd_hda_codec_write(codec, hp_pin, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
++	if (!spec->no_shutup_pins)
++		snd_hda_codec_write(codec, hp_pin, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
+ 
+ 	alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
+ 
+ 	if (hp_pin_sense)
+ 		msleep(100);
+ 	alc_auto_setup_eapd(codec, false);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ 	alc_write_coef_idx(codec, 0x43, 0x9614);
+ }
+ 
+@@ -3212,14 +3223,15 @@ static void alc256_shutup(struct hda_codec *codec)
+ 	/* NOTE: call this before clearing the pin, otherwise codec stalls */
+ 	alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
+ 
+-	snd_hda_codec_write(codec, hp_pin, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
++	if (!spec->no_shutup_pins)
++		snd_hda_codec_write(codec, hp_pin, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
+ 
+ 	if (hp_pin_sense)
+ 		msleep(100);
+ 
+ 	alc_auto_setup_eapd(codec, false);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ }
+ 
+ static void alc225_init(struct hda_codec *codec)
+@@ -3306,7 +3318,7 @@ static void alc225_shutup(struct hda_codec *codec)
+ 		msleep(100);
+ 
+ 	alc_auto_setup_eapd(codec, false);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ }
+ 
+ static void alc_default_init(struct hda_codec *codec)
+@@ -3360,14 +3372,15 @@ static void alc_default_shutup(struct hda_codec *codec)
+ 	if (hp_pin_sense)
+ 		msleep(85);
+ 
+-	snd_hda_codec_write(codec, hp_pin, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
++	if (!spec->no_shutup_pins)
++		snd_hda_codec_write(codec, hp_pin, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
+ 
+ 	if (hp_pin_sense)
+ 		msleep(100);
+ 
+ 	alc_auto_setup_eapd(codec, false);
+-	snd_hda_shutup_pins(codec);
++	alc_shutup_pins(codec);
+ }
+ 
+ static void alc294_hp_init(struct hda_codec *codec)
+@@ -3384,8 +3397,9 @@ static void alc294_hp_init(struct hda_codec *codec)
+ 
+ 	msleep(100);
+ 
+-	snd_hda_codec_write(codec, hp_pin, 0,
+-			    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
++	if (!spec->no_shutup_pins)
++		snd_hda_codec_write(codec, hp_pin, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL, 0x0);
+ 
+ 	alc_update_coef_idx(codec, 0x6f, 0x000f, 0);/* Set HP depop to manual mode */
+ 	alc_update_coefex_idx(codec, 0x58, 0x00, 0x8000, 0x8000); /* HP depop procedure start */
+@@ -4981,16 +4995,12 @@ static void alc_fixup_auto_mute_via_amp(struct hda_codec *codec,
+ 	}
+ }
+ 
+-static void alc_no_shutup(struct hda_codec *codec)
+-{
+-}
+-
+ static void alc_fixup_no_shutup(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		struct alc_spec *spec = codec->spec;
+-		spec->shutup = alc_no_shutup;
++		spec->no_shutup_pins = 1;
+ 	}
+ }
+ 
+@@ -6639,6 +6649,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0704, "Dell XPS 13 9350", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
+ 	SND_PCI_QUIRK(0x1028, 0x0706, "Dell Inspiron 7559", ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER),
+ 	SND_PCI_QUIRK(0x1028, 0x0725, "Dell Inspiron 3162", ALC255_FIXUP_DELL_SPK_NOISE),
++	SND_PCI_QUIRK(0x1028, 0x0738, "Dell Precision 5820", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x1028, 0x075b, "Dell XPS 13 9360", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
+ 	SND_PCI_QUIRK(0x1028, 0x075c, "Dell XPS 27 7760", ALC298_FIXUP_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x1028, 0x075d, "Dell AIO", ALC298_FIXUP_SPK_VOLUME),
+-- 
+2.16.4
