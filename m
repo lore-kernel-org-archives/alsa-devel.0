@@ -1,79 +1,87 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 1/6] ASoC: fsl: Fix of-node refcount
- unbalance in fsl_ssi_probe_from_dt()
-Date: Tue, 19 Feb 2019 21:29:08 -0800
-Message-ID: <20190220052907.GA6629@Asurada-CZ80>
-References: <20190219154652.13644-1-tiwai@suse.de>
- <20190219154652.13644-2-tiwai@suse.de>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [alsa-devel] [PATCH] ASoC: AMD: Configure master codec on all
+ playback/capture cases
+Date: Wed, 20 Feb 2019 09:30:00 +0000
+Message-ID: <AM5PR1001MB09948F06C726837F15DFB01C807D0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+References: <20190215070539.22150-1-akshu.agrawal@amd.com>
+ <20190218181807.GF10794@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
- [IPv6:2607:f8b0:4864:20::641])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A3CCF8075E
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 10:18:21 +0100 (CET)
-Received: by mail-pl1-x641.google.com with SMTP id y10so11930290plp.0
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 01:18:20 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20190219154652.13644-2-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190218181807.GF10794@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 19, 2019 at 04:46:47PM +0100, Takashi Iwai wrote:
-> The node obtained from of_find_node_by_path() has to be unreferenced
-> after the use, but we forgot it for the root node.
-> 
-> Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
-> Cc: Timur Tabi <timur@kernel.org>
-> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+On 8 February 2019 18:18, Mark Brown wrote:
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> On Fri, Feb 15, 2019 at 07:06:15AM +0000, Agrawal, Akshu wrote:
+>=20
+> > +static static int cz_da7219_hw_params(struct snd_pcm_substream
+> *substream,
+> > +				    struct snd_pcm_hw_params *params) {
+> > +	/* da7219 Codec is clock master so setup as per the needs */
+> > +	if (codec_dai->driver->ops->hw_params)
+> > +		return codec_dai->driver->ops->hw_params(substream, params,
+> > +							 codec_dai);
+> > +	return 0;
+> > +}
+>=20
+> No, this is a bad idea - you shouldn't be callings ops in drivers outside=
+ of the
+> framework, something is going to break on you there.
+> Either the drivers or the frameworks are going to get surprised by things=
+ getting
+> called out of sequence, for example I'd not rely on the fact that the COD=
+EC would
+> be outputing a clock without active audio.
+> This probably means that you're going to have to extend the framework in =
+some
+> way, or refactor things so that the BCLK is exported as a clock by the CO=
+DEC and
+> reflect the relationships via the clock API.  I need to think a bit more =
+but I think
+> the clock API is going to be the the best solution.
+>=20
+> I also suspect that some work is needed to propagate constraints between =
+the
+> various DAIs in the system.
 
-> Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> Only compile-tested.  Please review carefully.  Thanks!
+So this was a suggestion from my side to avoid the scenario where the syste=
+m
+starts, the DA7219 codec hasn't yet been used (hw_params() not been called)=
+, and
+one of the other audio devices is needed for playback/capture. The codec wi=
+ll be
+at a default DAI configuration rather than the configuration that's require=
+d. If
+the DA7219 codec had been used first then of course there's no problem and =
+the
+system runs as expected from then on.
 
-Ran a boot test by removing the if-condition. It'd be fine.
+This AMD platform limits all DAIs to 48KHz, 2 channel so the configuration =
+is
+fixed, as I understand it. DA7219 will output DAI clocks without data so th=
+ere's
+no problem there. I initially suggested using 'soc_dai_hw_params()' but the
+function isn't a global symbol, probably intentionally, so for this more un=
+usual
+config I felt the above approach might be an option. Absolutely understand =
+your
+concerns though.
 
-Thank you
-Nicolin
- 
->  sound/soc/fsl/fsl_ssi.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 0a648229e643..09b2967befd9 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -1439,8 +1439,10 @@ static int fsl_ssi_probe_from_dt(struct fsl_ssi *ssi)
->  	 * different name to register the device.
->  	 */
->  	if (!ssi->card_name[0] && of_get_property(np, "codec-handle", NULL)) {
-> -		sprop = of_get_property(of_find_node_by_path("/"),
-> -					"compatible", NULL);
-> +		struct device_node *root = of_find_node_by_path("/");
-> +
-> +		sprop = of_get_property(root, "compatible", NULL);
-> +		of_node_put(root);
->  		/* Strip "fsl," in the compatible name if applicable */
->  		p = strrchr(sprop, ',');
->  		if (p)
-> -- 
-> 2.16.4
-> 
+I considered the CCF approach but I'm not 100% confident that the clocking
+mechanism of the codec will fit ideally into that framework. There's alread=
+y
+a clock gate for the DAI clocks, in the driver, but nothing more. The probl=
+em
+here is that the BCLK rate is intrinsically linked to the WCLK rate, as wel=
+l as
+the word length, so changing the desired BCLK rate would affect the WCLK ra=
+te,
+and vice versa. I will take a look again, but if you have any suggestions t=
+hen
+they'd be greatly received.
