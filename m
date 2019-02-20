@@ -1,36 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: pcm186x: fix wrong usage of
-	DECLARE_TLV_DB_SCALE()" to the asoc tree
-Date: Tue, 19 Feb 2019 17:17:48 +0000 (GMT)
-Message-ID: <20190219171748.BB17711284E0@debutante.sirena.org.uk>
-References: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EA0DF8077F
- for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2019 12:13:37 +0100 (CET)
-In-Reply-To: <20190219162840.7244-1-codrin.ciubotariu@microchip.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org, m-stecklein@ti.com, Codrin.Ciubotariu@microchip.com, afd@ti.com, dannenberg@ti.com
+Subject: Applied "ASoC: samsung: odroid: Fix of_node refcount unbalance" to the asoc tree
+Date: Wed, 20 Feb 2019 17:52:46 +0000 (GMT)
+Message-ID: <20190220175246.AB72A112882C@debutante.sirena.org.uk>
+References: <20190220110607.13293-1-s.nawrocki@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190220110607.13293-1-s.nawrocki@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.comtiwai@suse.de, linux-kernel@vger.kernel.org, krzk@kernel.org, sbkim73@samsung.com, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: pcm186x: fix wrong usage of DECLARE_TLV_DB_SCALE()
+   ASoC: samsung: odroid: Fix of_node refcount unbalance
 
 has been applied to the asoc tree at
 
@@ -55,35 +37,81 @@ to this mail.
 Thanks,
 Mark
 
->From fcf4daabf08079e6d09958a2992e7446ef8d0438 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Tue, 19 Feb 2019 16:29:12 +0000
-Subject: [PATCH] ASoC: codecs: pcm186x: fix wrong usage of
- DECLARE_TLV_DB_SCALE()
+>From d832d2b246c516eacb2d0ba53ec17ed59c3cd62b Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Wed, 20 Feb 2019 12:06:07 +0100
+Subject: [PATCH] ASoC: samsung: odroid: Fix of_node refcount unbalance
 
-According to DS, the gain is between -12 dB and 40 dB, with a 0.5 dB step.
-Tested on pcm1863.
+In odroid_audio_probe() some OF nodes are left without reference count
+decrease after use. Fix it by ensuring required of_node_calls() are done
+before exiting probe.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Acked-by: Andrew F. Davis <afd@ti.com>
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/pcm186x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/odroid.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
-index 809b7e9f03ca..c36a391fec8a 100644
---- a/sound/soc/codecs/pcm186x.c
-+++ b/sound/soc/codecs/pcm186x.c
-@@ -42,7 +42,7 @@ struct pcm186x_priv {
- 	bool is_master_mode;
- };
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index bd2c5163dc7f..c3b0f6c612cb 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -257,27 +257,31 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 		ret = of_parse_phandle_with_args(cpu, "sound-dai",
+ 						 "#sound-dai-cells", i, &args);
+ 		if (ret < 0)
+-			return ret;
++			break;
  
--static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 4000, 50);
-+static const DECLARE_TLV_DB_SCALE(pcm186x_pga_tlv, -1200, 50, 0);
+ 		if (!args.np) {
+ 			dev_err(dev, "sound-dai property parse error: %d\n", ret);
+-			return -EINVAL;
++			ret = -EINVAL;
++			break;
+ 		}
  
- static const struct snd_kcontrol_new pcm1863_snd_controls[] = {
- 	SOC_DOUBLE_R_S_TLV("ADC Capture Volume", PCM186X_PGA_VAL_CH1_L,
+ 		ret = snd_soc_get_dai_name(&args, &link->cpu_dai_name);
+ 		of_node_put(args.np);
+ 
+ 		if (ret < 0)
+-			return ret;
++			break;
+ 	}
++	if (ret == 0)
++		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
+ 
+-	cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
+ 	of_node_put(cpu);
+ 	of_node_put(codec);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = snd_soc_of_get_dai_link_codecs(dev, codec, codec_link);
+ 	if (ret < 0)
+-		goto err_put_codec_n;
++		goto err_put_cpu_dai;
+ 
+ 	/* Set capture capability only for boards with the MAX98090 CODEC */
+ 	if (codec_link->num_codecs > 1) {
+@@ -288,7 +292,7 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	priv->sclk_i2s = of_clk_get_by_name(cpu_dai, "i2s_opclk1");
+ 	if (IS_ERR(priv->sclk_i2s)) {
+ 		ret = PTR_ERR(priv->sclk_i2s);
+-		goto err_put_codec_n;
++		goto err_put_cpu_dai;
+ 	}
+ 
+ 	priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
+@@ -310,7 +314,8 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 	clk_put(priv->clk_i2s_bus);
+ err_put_sclk:
+ 	clk_put(priv->sclk_i2s);
+-err_put_codec_n:
++err_put_cpu_dai:
++	of_node_put(cpu_dai);
+ 	snd_soc_of_put_dai_link_codecs(codec_link);
+ 	return ret;
+ }
 -- 
 2.20.1
