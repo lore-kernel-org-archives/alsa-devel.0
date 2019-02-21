@@ -1,12 +1,20 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH] ASoC: rsnd: dma: fix SSI9 4/5/6/7 busif dma
-	address
-Date: Fri, 22 Feb 2019 09:23:23 +0100
-Message-ID: <1550823803-32446-1-git-send-email-twischer@de.adit-jv.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Regarding alsa-utils commit "alsaucm: add alsa-ucm
+ udev rules for PAZ00 (Toshiba AC100/Dynabook AZ)."
+Date: Thu, 21 Feb 2019 12:32:40 +0100
+Message-ID: <fc8d5145-fa9a-9f4b-8603-48e0f1fd6380@perex.cz>
+References: <c915e9cd989b40647458078a702847260a6998da.camel@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 240B0F8079F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 09:29:23 +0100 (CET)
+In-Reply-To: <c915e9cd989b40647458078a702847260a6998da.camel@iki.fi>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,47 +24,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: patch@alsa-project.org, broonie@kernel.org, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.com
-Cc: Jiada Wang <jiada_wang@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jiada Wang <jiada_wang@mentor.com>
+Dne 21. 02. 19 v 11:51 Tanu Kaskinen napsal(a):
+> Hi Jaroslav,
+> 
+> I'm updating alsa-utils in OpenEmbedded, and I noticed that there's a
+> new udev rules file, 89-alsa-ucm.rules. It seems to just initialize the
+> mixer settings for particular hardware (Toshiba AC100/Dynabook AZ), and
+> doing that in alsa-utils seems weird. Why does this hardware use a udev
+> rules file for initialization, unlike any other hardware?
 
-Currently each SSI unit 's busif dma address is calculated by
-following calculation formulation:
-0xec540000 + 0x1000 * id + busif / 4 * 0xA000 + busif % 4 * 0x400
+I was asked to add those rules to the ALSA initialization, so it seems
+that we have users that does not use any other additional layer to
+control the hardware and they want to use the standard ALSA applications
+on top.
 
-But according to user manual 41.1.4 Register Configuration
-ssi9 4/5/6/7 busif data register address
-(SSI9_4_BUSIF/SSI9_5_BUSIF/SSI9_6_BUSIF/SSI9_7_BUSIF)
-are out of this rule.
+Note that there is not only mixer settings, but also the routing
+settings which most of standard mixer applications don't handle
+correctly, so it makes sense to do this settings at boot.
 
-This patch updates the calculation formulation to correct
-ssi9 4/5/6/7 busif data register address
+Anyway, I am open to any discussion to handle this properly. Nowadays,
+it seems that the use-case configurations are mandatory to bring the
+universal hardware drivers (mainly ASoC) to an useable state. We have
+already alsactl, it may be extended to set the default use case or
+restore the last one. We can also write special alsactl configs, but it
+makes sense to keep things only at the one place.
 
-Fixes: commit 5e45a6fab3b9 ("ASoc: rsnd: dma: Calculate dma address with consider of BUSIF")
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
- sound/soc/sh/rcar/dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+						Jaroslav
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 0324a5c..28f65eb 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -508,10 +508,10 @@ static struct rsnd_mod_ops rsnd_dmapp_ops = {
- #define RDMA_SSI_I_N(addr, i)	(addr ##_reg - 0x00300000 + (0x40 * i) + 0x8)
- #define RDMA_SSI_O_N(addr, i)	(addr ##_reg - 0x00300000 + (0x40 * i) + 0xc)
- 
--#define RDMA_SSIU_I_N(addr, i, j) (addr ##_reg - 0x00441000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400))
-+#define RDMA_SSIU_I_N(addr, i, j) (addr ##_reg - 0x00441000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400) - (0x4000 * ((i) / 9) * ((j) / 4)))
- #define RDMA_SSIU_O_N(addr, i, j) RDMA_SSIU_I_N(addr, i, j)
- 
--#define RDMA_SSIU_I_P(addr, i, j) (addr ##_reg - 0x00141000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400))
-+#define RDMA_SSIU_I_P(addr, i, j) (addr ##_reg - 0x00141000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400) - (0x4000 * ((i) / 9) * ((j) / 4)))
- #define RDMA_SSIU_O_P(addr, i, j) RDMA_SSIU_I_P(addr, i, j)
- 
- #define RDMA_SRC_I_N(addr, i)	(addr ##_reg - 0x00500000 + (0x400 * i))
 -- 
-2.7.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
