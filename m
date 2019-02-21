@@ -1,66 +1,52 @@
-From: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [RFC 0/4] clk/driver: platform: Fix kfree() of const memory on setting driver_override
-Date: Wed, 20 Feb 2019 14:01:42 -0800
-Message-ID: <155070010208.77512.17397936280518534534@swboyd.mtv.corp.google.com>
-References: <1550484960-2392-1-git-send-email-krzk@kernel.org> <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com> <CAJKOXPe1CW4k4ivbh4QhKEbuVc3RRNmzUwQcL0BsrAn=hCdjZg@mail.gmail.com>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable audio jacks of ASUS UX362FA with ALC294
+Date: Thu, 21 Feb 2019 17:00:18 +0800
+Message-ID: <20190221090018.1428-1-jian-hong@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJKOXPe1CW4k4ivbh4QhKEbuVc3RRNmzUwQcL0BsrAn=hCdjZg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Kukjin Kim <kgene@kernel.org>, Andy Gross <andy.gross@linaro.org>, David Brown <david.brown@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>linux-a
+To: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Jian-Hong Pan <jian-hong@endlessm.com>, Ming Shuo Chiu <chiu@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Krzysztof Kozlowski (2019-02-18 03:14:29)
-> On Mon, 18 Feb 2019 at 11:40, Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
-> >
-> > Hi Krzysztof,
-> >
-> > On Mon, Feb 18, 2019 at 11:27 AM Krzysztof Kozlowski <krzk@kernel.org> =
-wrote:
-> > > The problem
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > Several device types (platform, amba, spi etc.) provide a driver_over=
-ride
-> > > field.  On sysfs store or during device removal, they kfree() the
-> > > existing value.
-> > >
-> > > However the users are unaware of this and set the driver_override lik=
-e:
-> > >
-> > >         pdev->driver_override =3D "exynos5-subcmu";
-> > >
-> > > which obviously leads to error.
-> >
-> > IMHO driver_override is not meant to be set by a driver, only from user=
-space,
-> > for binding the device to vfio (is there another use case?).
-> >
-> > >   clk: samsung: exynos5: Fix kfree() of const memory on setting
-> > >     driver_override
-> > >   slimbus: ngd: Fix kfree() of const memory on setting driver_override
-> >
-> > I see all users set override immediately after allocating a platform de=
-vice.
-> > Can't they just allocate a platform device using the override name inst=
-ead?
-> > What am I missing?
->=20
-> For the clk-exynos5-subcmu.c case, driver registers several
-> sub-devices. Each sub-devices is a clock controller associated with
-> power domain. I guess the author wanted to have meaningful names of
-> these sub-devices (DISP, CAM etc. like names of power domains),
-> instead of just exynos5-subcmu.1, exynos5-subcmu.2 ...
->=20
-> If driver_override should not be used for such case, then I could
-> replace it with what you said.
+The ASUS UX362FA with ALC294 cannot detect the headset MIC and outputs
+through the internal speaker and the headphone.  This issue can be fixed
+by the quirk in the commit 4e0511067 ALSA: hda/realtek: Enable audio
+jacks of ASUS UX533FD with ALC294.
 
-Looking at the introduction of the code into the platform bus makes it
-sound like it was all for vfio devices. If the clk driver doesn't need
-it for that purpose and can get by with more generic names then it seems
-best to avoid using it entirely. So can you do that and resend the first
-patch in this series too? Effectively splitting the clk parts from the
-larger issue of kfree()ing of const memory.
+Besides, ASUS UX362FA and UX533FD have the same audio initial pin config
+values.  So, this patch replaces SND_PCI_QUIRK of UX533FD with a new
+SND_HDA_PIN_QUIRK which benefits both UX362FA and UX533FD.
+
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+Signed-off-by: Ming Shuo Chiu <chiu@endlessm.com>
+---
+ sound/pci/hda/patch_realtek.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1ffa36e987b4..6421864a8a0f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6771,7 +6771,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x12e0, "ASUS X541SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
+-	SND_PCI_QUIRK(0x1043, 0x14a1, "ASUS UX533FD", ALC294_FIXUP_ASUS_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+@@ -7388,6 +7387,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x14, 0x90170110},
+ 		{0x1b, 0x90a70130},
+ 		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0294, 0x1043, "ASUS", ALC294_FIXUP_ASUS_SPK,
++		{0x12, 0x90a60130},
++		{0x17, 0x90170110},
++		{0x21, 0x03211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0294, 0x1043, "ASUS", ALC294_FIXUP_ASUS_SPK,
+ 		{0x12, 0x90a60130},
+ 		{0x17, 0x90170110},
+-- 
+2.20.1
