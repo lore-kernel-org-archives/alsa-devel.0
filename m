@@ -1,98 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Thu, 21 Feb 2019 11:28:24 +0000
-Message-ID: <20190221112824.GC5970@sirena.org.uk>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
- <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
- <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
- <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
- <20190221043925.GF2736@vkoul-mobl>
- <1af21f7e-1ea1-98a0-cf6d-74d0f4e5b186@st.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5187247186776168898=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1af21f7e-1ea1-98a0-cf6d-74d0f4e5b186@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, "andriy.shevchenko@intel.com" <andriy.shevchenko@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, xiang xiao <xiaoxiang781216@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, "wendy.liang@xilinx.com" <wendy.liang@xilinx.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, Alan Cox <alan@linux.intel.com>, "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>
+Subject: Applied "ASoC: samsung: odroid: Prevent uninitialized variable use" to the asoc tree
+Date: Thu, 21 Feb 2019 11:42:04 +0000 (GMT)
+Message-ID: <20190221114204.61F641122744@debutante.sirena.org.uk>
+References: <20190221094228.3778-1-s.nawrocki@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190221094228.3778-1-s.nawrocki@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5187247186776168898==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
-Content-Disposition: inline
+   ASoC: samsung: odroid: Prevent uninitialized variable use
 
+has been applied to the asoc tree at
 
---vEao7xgI/oilGqZ+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Feb 21, 2019 at 11:42:25AM +0100, Arnaud Pouliquen wrote:
-> On 2/21/19 5:39 AM, Vinod Koul wrote:
-> > On 19-02-19, 09:55, Pierre-Louis Bossart wrote:
-> >> On 2/19/19 9:09 AM, xiang xiao wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Rather than evolve the IPC, i would say it makes more sense that we
-> > "reuse" existing upstream frameworks.. As given below by xiang
-> > this seems to have support for RTOSes (see point 4 below) and looking at
-> > below it seems to have much better coverage across systems.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> > This should also help in easy adoption of SoF for non Intel people...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> > Also looking at it, lot of IPC code, DSP loading etc would go away
-> > making SoF code lesser in footprint.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> > I think benefits outweigh the effort of porting to a framework which is
-> > already upstream and used on many platforms for different vendors!
+Thanks,
+Mark
 
-> Just for information... ST Microelectronics plans to port SOF to at
-> least one of its platforms (based on ARM cores). Today, for the
-> co-processor  management we use the rpmsg and remoteproc frameworks on
-> the Linux kernel side and OpenAMP on the remote processor side. We are
-> therefore interested in xiang's work.
-> An advantage we see in this generic solution is that compatibility
-> between the Linux kernel frameworks and the OpenAMP library is ensured
-> through discussions in the Linux and OpenAMP communities, involving
-> maintainers and several vendors.
-
-This is a very good point, especially with people actually jumping on it
-if we can avoid having multiple ABIs to worry about that would make life
-a lot easier.  We should at least figure out if it will be disruptive to
-adapt it later on, even if Intel ends up continuing to use a custom
-system integration.
-
---vEao7xgI/oilGqZ+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlxui1cACgkQJNaLcl1U
-h9Af6gf9EDATFZKplMkYwZcj1R2AQS86EbQOhKcGcedXfpPHtM1W1Y0b1jzpvMD6
-r8GHrfbNhkZ5PDF5aetBsbHbg5kfyd8kgt1X/rOBnAaJx9hymExKvLKwJfmvU/Eb
-mT7/vMbHsgVXhEwXsoPpzfuSJUeaZUX3754qPrezZqx4qiTrQyeePoJcrHeppf7k
-eOjie8M3i/lrRCtRa71ZjsPyTT8UR65DzQorAsEcn1LjjRlFEk425Kp+jXj0Ii64
-XIhEp/TQxco3f79GEffO7uTU7de7Nu00/Af+SNXcmSphnnb2/5K7ihWFT4IFT9/W
-nWHAwEWDGmCJTwJH8ZO5bMXdJtLdBQ==
-=9xY7
------END PGP SIGNATURE-----
-
---vEao7xgI/oilGqZ+--
-
---===============5187247186776168898==
-Content-Type: text/plain; charset="us-ascii"
+>From 3af8160028bfac4116d80edcb7eb04095323d112 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Thu, 21 Feb 2019 10:42:28 +0100
+Subject: [PATCH] ASoC: samsung: odroid: Prevent uninitialized variable use
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+This addresses an issue pointed out by compiler warning:
 
---===============5187247186776168898==--
+sound/soc/samsung/odroid.c: In function ‘odroid_audio_probe’:
+sound/soc/samsung/odroid.c:298:22: warning: ‘cpu_dai’ may be used
+uninitialized in this function [-Wmaybe-uninitialized]
+  priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/samsung/odroid.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
+index c3b0f6c612cb..694512f980fd 100644
+--- a/sound/soc/samsung/odroid.c
++++ b/sound/soc/samsung/odroid.c
+@@ -194,7 +194,8 @@ static struct snd_soc_dai_link odroid_card_dais[] = {
+ static int odroid_audio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *cpu, *cpu_dai, *codec;
++	struct device_node *cpu_dai = NULL;
++	struct device_node *cpu, *codec;
+ 	struct odroid_priv *priv;
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_dai_link *link, *codec_link;
+@@ -271,8 +272,11 @@ static int odroid_audio_probe(struct platform_device *pdev)
+ 		if (ret < 0)
+ 			break;
+ 	}
+-	if (ret == 0)
++	if (ret == 0) {
+ 		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
++		if (!cpu_dai)
++			ret = -EINVAL;
++	}
+ 
+ 	of_node_put(cpu);
+ 	of_node_put(codec);
+-- 
+2.20.1
