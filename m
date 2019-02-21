@@ -1,18 +1,20 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Playback samples at a specific time on Intel HDA
-Date: Thu, 21 Feb 2019 15:16:26 -0600
-Message-ID: <2f19262d-f37f-8d43-de76-9bdb82c11d84@linux.intel.com>
-References: <CAEQQSVuKc-vZKaeg9xUmYpnBYfsCZYLpr5AkpA26KysUZLe_Vg@mail.gmail.com>
+Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Thu, 21 Feb 2019 17:49:16 -0600
+Message-ID: <e4bef996-db81-afd3-7f32-97e89a3f4319@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <1af21f7e-1ea1-98a0-cf6d-74d0f4e5b186@st.com>
+ <20190221112824.GC5970@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D0B5F80779
- for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2019 22:16:31 +0100 (CET)
-In-Reply-To: <CAEQQSVuKc-vZKaeg9xUmYpnBYfsCZYLpr5AkpA26KysUZLe_Vg@mail.gmail.com>
+In-Reply-To: <20190221112824.GC5970@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,48 +25,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Rajagopal Aravindan <a.rajagopal.81@gmail.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, "andriy.shevchenko@intel.com" <andriy.shevchenko@intel.com>, xiang xiao <xiaoxiang781216@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, "wendy.liang@xilinx.com" <wendy.liang@xilinx.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, Alan Cox <alan@linux.intel.com>, "sound-open-firmware@alsa-project.org" <sound-open-firmware@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
+>> Just for information... ST Microelectronics plans to port SOF to at
+>> least one of its platforms (based on ARM cores). Today, for the
+>> co-processor  management we use the rpmsg and remoteproc frameworks on
+>> the Linux kernel side and OpenAMP on the remote processor side. We are
+>> therefore interested in xiang's work.
+>> An advantage we see in this generic solution is that compatibility
+>> between the Linux kernel frameworks and the OpenAMP library is ensured
+>> through discussions in the Linux and OpenAMP communities, involving
+>> maintainers and several vendors.
+Thanks Arnaud for sharing this information. You made my day.=A0 We've had =
 
-> I am trying to accomplish synchronized audio playback using ALSA &
-> gPTP, on an Intel SkyLake platform have Intel HDA.
-That's an ambitious goal, I hope you are aware of the technical 
-complexity behind this one-line problem description.
->
-> I do understand that, starting with SkyLake platform, there is support
-> for querying link time.
-That's correct.
-> But, how do I instruct to play the samples at a given (gPTP) time ?
-> Is this possible ?
+to deal with a number of hurdles related to platform and tools =
 
-Unfortunately this is not possible, the hardware doesn't provide such 
-synchronization capabilities. ALSA provide timestamps, so does gPTP and 
-you need a userspace part to tie them together. The only thing you can 
-do is start a silent stream, query the system/audio synchronized 
-timestamp and based on the information insert the samples at the 
-relevant position. That latter part is unfortunately not very precise 
-and will typically be impacted by the position of the DMA pointer. The 
-timestamps are also only at the link level, and the delays introduced by 
-the analog parts is also not modeled anywhere - and codec vendors 
-usually don't provide this information.
+availability, so it's good news indeed if there are more platforms =
 
-You also want to take the audio timestamps in ns with a grain of salt, 
-it turns out that the conversion uses a nominal value which introduces a 
-bias compared to the actual value. This will be compensated for if your 
-userspace component tracks clock drift.
+endorsing SOF.
+> This is a very good point, especially with people actually jumping on it
+> if we can avoid having multiple ABIs to worry about that would make life
+> a lot easier.  We should at least figure out if it will be disruptive to
+> adapt it later on, even if Intel ends up continuing to use a custom
+> system integration.
+Yes indeed. At a high level we only have very generic send/receive IPC =
 
-> Can someone please point me to code or doc, relevant to my goal ?
-> In essence, I would like to play the samples at the stroke of a given
-> (gPTP) time.
->
-> Also, the ALSA page says ...
-> "The link time can be directly measured if supported in hardware by
-> sample counters or wallclocks (e.g. with HDAudio 24MHz or PTP clock
-> for networked solutions)"
->
-> What is the connection between PTP clock and sound card here,
-> are there sound cards that can latch on to a PTP clock on a NIC or what ?
-There is no connection on an HDaudio platform. The audio clock is based 
-on the 24 MHz PLL which is independent from any network clock.
+messages, and it really shouldn't matter how the transport happens.
+However the actual contents/semantics of the messages do matter, and =
+
+I'll have to run a check to make sure it scales.
