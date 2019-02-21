@@ -1,90 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: odroid: Prevent uninitialized variable use" to the asoc tree
-Date: Thu, 21 Feb 2019 11:42:04 +0000 (GMT)
-Message-ID: <20190221114204.61F641122744@debutante.sirena.org.uk>
-References: <20190221094228.3778-1-s.nawrocki@samsung.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [RFC 0/4] clk/driver: platform: Fix kfree() of const memory on
+ setting driver_override
+Date: Thu, 21 Feb 2019 12:43:29 +0100
+Message-ID: <CAJKOXPc=mKrNuw65qf=vPtRD7b7=5FZWdNcncvwhpDN+tqp0Bw@mail.gmail.com>
+References: <1550484960-2392-1-git-send-email-krzk@kernel.org>
+ <CAMuHMdWXy_0zL8FZWapPj4+cXRd0wHy9buLhf0D0txpAHPkK7Q@mail.gmail.com>
+ <CAJKOXPe1CW4k4ivbh4QhKEbuVc3RRNmzUwQcL0BsrAn=hCdjZg@mail.gmail.com> <155070010208.77512.17397936280518534534@swboyd.mtv.corp.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190221094228.3778-1-s.nawrocki@samsung.com>
+In-Reply-To: <155070010208.77512.17397936280518534534@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.orgalsa-devel@alsa-project.org
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Russell King <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Michael Turquette <mturquette@baylibre.com>, Kukjin Kim <kgene@kernel.org>, Andy Gross <andy.gross@linaro.org>, David Brown <david.brown@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>Linux ARM <lin>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 20 Feb 2019 at 23:01, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Krzysztof Kozlowski (2019-02-18 03:14:29)
+> > On Mon, 18 Feb 2019 at 11:40, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > >
+> > > Hi Krzysztof,
+> > >
+> > > On Mon, Feb 18, 2019 at 11:27 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > > The problem
+> > > > ===========
+> > > > Several device types (platform, amba, spi etc.) provide a driver_override
+> > > > field.  On sysfs store or during device removal, they kfree() the
+> > > > existing value.
+> > > >
+> > > > However the users are unaware of this and set the driver_override like:
+> > > >
+> > > >         pdev->driver_override = "exynos5-subcmu";
+> > > >
+> > > > which obviously leads to error.
+> > >
+> > > IMHO driver_override is not meant to be set by a driver, only from userspace,
+> > > for binding the device to vfio (is there another use case?).
+> > >
+> > > >   clk: samsung: exynos5: Fix kfree() of const memory on setting
+> > > >     driver_override
+> > > >   slimbus: ngd: Fix kfree() of const memory on setting driver_override
+> > >
+> > > I see all users set override immediately after allocating a platform device.
+> > > Can't they just allocate a platform device using the override name instead?
+> > > What am I missing?
+> >
+> > For the clk-exynos5-subcmu.c case, driver registers several
+> > sub-devices. Each sub-devices is a clock controller associated with
+> > power domain. I guess the author wanted to have meaningful names of
+> > these sub-devices (DISP, CAM etc. like names of power domains),
+> > instead of just exynos5-subcmu.1, exynos5-subcmu.2 ...
+> >
+> > If driver_override should not be used for such case, then I could
+> > replace it with what you said.
+>
+> Looking at the introduction of the code into the platform bus makes it
+> sound like it was all for vfio devices. If the clk driver doesn't need
+> it for that purpose and can get by with more generic names then it seems
+> best to avoid using it entirely. So can you do that and resend the first
+> patch in this series too? Effectively splitting the clk parts from the
+> larger issue of kfree()ing of const memory.
 
-   ASoC: samsung: odroid: Prevent uninitialized variable use
+Sure, let me send just the clk parts.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3af8160028bfac4116d80edcb7eb04095323d112 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 21 Feb 2019 10:42:28 +0100
-Subject: [PATCH] ASoC: samsung: odroid: Prevent uninitialized variable use
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-This addresses an issue pointed out by compiler warning:
-
-sound/soc/samsung/odroid.c: In function ‘odroid_audio_probe’:
-sound/soc/samsung/odroid.c:298:22: warning: ‘cpu_dai’ may be used
-uninitialized in this function [-Wmaybe-uninitialized]
-  priv->clk_i2s_bus = of_clk_get_by_name(cpu_dai, "iis");
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/odroid.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index c3b0f6c612cb..694512f980fd 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -194,7 +194,8 @@ static struct snd_soc_dai_link odroid_card_dais[] = {
- static int odroid_audio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct device_node *cpu, *cpu_dai, *codec;
-+	struct device_node *cpu_dai = NULL;
-+	struct device_node *cpu, *codec;
- 	struct odroid_priv *priv;
- 	struct snd_soc_card *card;
- 	struct snd_soc_dai_link *link, *codec_link;
-@@ -271,8 +272,11 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 		if (ret < 0)
- 			break;
- 	}
--	if (ret == 0)
-+	if (ret == 0) {
- 		cpu_dai = of_parse_phandle(cpu, "sound-dai", 0);
-+		if (!cpu_dai)
-+			ret = -EINVAL;
-+	}
- 
- 	of_node_put(cpu);
- 	of_node_put(codec);
--- 
-2.20.1
+BR,
+Krzysztof
