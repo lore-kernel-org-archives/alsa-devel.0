@@ -1,7 +1,8 @@
 From: xiang xiao <xiaoxiang781216@gmail.com>
-Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Sat, 23 Feb 2019 02:21:40 +0800
-Message-ID: <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
+Subject: Re: [Sound-open-firmware]  [v4,
+ 00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Sat, 23 Feb 2019 02:41:32 +0800
+Message-ID: <CAH2Cfb9Ubbt1c4TVD8CLFPhxNW8vCCKkPhX96qpYyiV2jCi04w@mail.gmail.com>
 References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
  <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
  <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
@@ -10,12 +11,12 @@ References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
  <20190221043925.GF2736@vkoul-mobl>
  <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
  <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
- <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
+ <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
+In-Reply-To: <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,130 +26,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Keyon Jie <yang.jie@linux.intel.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-remoteproc@vger.kernel.org, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: zhongan@pinecone.net, Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, =?UTF-8?B?5p2O5qGC5LiB?= <liguiding@pinecone.net>, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, =?UTF-8?B?5a6J6LaF?= <anchao@pinecone.net>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMjIsIDIwMTkgYXQgNzoxMyBQTSBLZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4
-LmludGVsLmNvbT4gd3JvdGU6Cj4KPgo+Cj4gT24gMjAxOS8yLzIyIOS4i+WNiDQ6MzIsIHhpYW5n
-IHhpYW8gd3JvdGU6Cj4gPiBPbiBUaHUsIEZlYiAyMSwgMjAxOSBhdCAxMToyNyBQTSBQaWVycmUt
-TG91aXMgQm9zc2FydAo+ID4gPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4g
-d3JvdGU6Cj4gPj4KPiA+Pgo+ID4+IFNob3VsZCB3ZSB1dGlsaXplIG9mZmljaWFsIElQQyBmcmFt
-ZW93cmsgaW5zdGVhZCByZWludmVydGluZyB0aGUgd2hlZWw/Cj4gPj4gMS5Mb2FkIGZpcm13YXJl
-IGJ5IGRyaXZlcnMvcmVtb3RlcHJvYwo+ID4+ICAgICAgaHR0cHM6Ly93d3cua2VybmVsLm9yZy9k
-b2MvRG9jdW1lbnRhdGlvbi9yZW1vdGVwcm9jLnR4dAo+ID4+IDIuRG8gdGhlIGNvbXVuaWNhdGlv
-biB0aHJvdWdoIGRyaXZlcnMvcnBtc2cKPiA+PiAgICAgIGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcv
-ZG9jL0RvY3VtZW50YXRpb24vcnBtc2cudHh0Cj4gPj4gTWFueSB2ZW5kb3IoVEksIFF1YWxjb21t
-LCBTVCwgTlhQLCBYaWxpbnguLi4pIG1pZ3JhdGUgdG8gcmVtb3RlcHJvYy9ycG1zZywgd2h5IElu
-dGVsIHByb3ZpZGUgYW4gb3RoZXIgSVBDIG1lY2hhbmlzbT8KPiA+Pgo+ID4+IEl0IGRlZmluaXRl
-bHkgbWFrZXMgbW9yZSBzZW5zZSB0byB1c2UgcnBtc2cgZm9yIEdlbmVyaWMgSVBDIGRyaXZlciBo
-ZXJlLgo+ID4+Cj4gPj4gUXVhbGNvbW0gRFNQIGF1ZGlvIGRyaXZlcnMgKG5vbiBTT0YpIGFscmVh
-ZHkgdXNlIHJwbXNnLiBUaGlzIHdpbGwKPiA+PiBkZWZpbml0ZWx5IGhlbHAgZXZlcnlvbmUgaW4g
-ZnV0dXJlIHdoaWxlIGltbWlncmF0aW5nIHRvIFNPRi4KPiA+Pgo+ID4+IEFjdHVhbGx5LCBYaWFv
-bWkgYWxzbyBidWlsZCBEU1AgYXVkaW8gZHJpdmVyIG9uIHRvcCBvZiBycG1zZywgYnV0Cj4gPj4g
-ZnVsbHkgaW50ZWdyYXRlIHdpdGggdGhlIEFTb0MgdG9wb2xvZ3kgZnJhbWV3b3JrLCBhbmQgdGhl
-IGZpcm13YXJlIGlzCj4gPj4gYmFzZSBvbiBGcmVlUlRPUyBhbmQgT3Blbk1BWC4KPiA+PiBTT0Yg
-aW5pdGlhdGl2ZSBpcyB2ZXJ5IGdvb2QgYW5kIGV4Y2l0aW5nLCBvdXIgdGVhbSBtZW1iZXJzKGlu
-Y2x1ZGUgbWUpCj4gPj4gc3BlbmQgYSBjb3VwbGUgd2Vla3MgdG8gc3R1ZHkgdGhlIGN1cnJlbnQg
-Y29kZSBiYXNlIG9uIGJvdGggZmlybXdhcmUKPiA+PiBhbmQga2VybmVsIHNpZGUsIHdlIGV2ZW4g
-cG9ydCBTT0YgdG8gb3VyIERTUC9NQ1UgYW5kIG1ha2UgaXQgcnVuLCBidXQKPiA+PiBJIGhhdmUg
-dG8gcG9pbnQgb3V0IHRoYXQ6Cj4gPj4gU09GIElQQyBpcyB0b28gc2ltcGxlIGFuZCByaWdpZCwg
-dGlnaHRseSBjb3VwbGUgd2l0aCBJbnRlbCBwbGF0Zm9ybQo+ID4+IGFuZCBhdWRpbyBkb21haW4s
-IHdoaWNoIG1ha2U6Cj4gPj4gICAgICBhLkl0J3MgZGlmZmljdWx0IHRvIGludGVncmF0ZSB3aXRo
-IG90aGVyIHZlbmRvciBTb0MsIGVzcGVjaWFsbHkgaWYKPiA+PiBvdGhlciB2ZW5kb3IgYWxyZWFk
-eSBhZG9wdCByZW1vdGUvcnBtc2codGhpcyBpcyBhbHJlYWR5IGEgdHJlbmQhKS4KPiA+PiAgICAg
-IGIuSXQncyBkaWZmaWN1bHQgdG8gYWRkIG90aGVyIElQQyBzZXJ2aWNlcyBmb3IgZXhhbXBsZToK
-PiA+PiAgICAgICAgIGkuQXVkaW8gRFNQIHRhbGsgdG8gcG93ZXIgTUNVIHRvIGFkanVzdCBjbG9j
-ayBhbmQgdm9sdGFnZQo+ID4+ICAgICAgICAgaWkuRXhwb3J0IHVsdHJhc29uaWMgZGlzdGFuY2Ug
-bWVhc3VyZW1lbnQgdG8gSUlPIHN1YnN5c3RlbQo+ID4+Cj4gPj4gVGhlIElQQyBzY2hlbWUgc3Vn
-Z2VzdGVkIGluIHRoaXMgcGF0Y2hzZXQgaXMgb25seSBhIGZpcnN0IHBhc3MgdGhhdCB3b3JrcyBv
-bgo+ID4+IDMgZ2VuZXJhdGlvbnMgb24gSW50ZWwgcGxhdGZvcm1zICsgdGhlIFFFTVUgIHBhcnRz
-LiBUaGVyZSBhcmUgbm8gY2xhaW1zIHRoYXQKPiA+PiB0aGUgY3VycmVudCBzb2x1dGlvbiBpcyBz
-ZXQtaW4tc3RvbmUsIGFuZCB0aGlzIGlzIGFscmVhZHkgYW4gYXJlYSB3aGVyZQo+ID4+IHRoaW5n
-cyBhcmUgYWxyZWFkeSBjaGFuZ2luZyB0byBzdXBwb3J0IG5vdGlmaWNhdGlvbnMgYW5kIGxvdy1w
-b3dlcgo+ID4+IHRyYW5zaXRpb25zLgo+ID4+Cj4gPj4gVGhlcmUgd2lsbCBjbGVhcmx5IGJlIGV2
-b2x1dGlvbnMgdG8gbWFrZSB0aGUgSVBDIG1vcmUgZmxleGlibGUvZ2VuZXJpYywgYnV0Cj4gPj4g
-d2UndmUgZ290IHRvIHN0YXJ0IHNvbWV3aGVyZSBhbmQgYmVhciBpbiBtaW5kIHRoYXQgd2UgYWxz
-byBoYXZlIHRvIHN1cHBvcnQKPiA+PiBtZW1vcnktY29uc3RyYWluZWQgbGVnYWN5IGRldmljZXMg
-d2hlcmUgc3VjaCBnZW5lcmljIGZyYW1ld29ya3MgYXJlbid0Cj4gPj4gbmVlZGVkIG9yIGV2ZW4g
-aW1wbGVtZW50YWJsZS4gU29tZSBvZiB5b3VyIHByb3Bvc2FscyBzdWNoIGFzIGNoYW5naW5nCj4g
-Pj4gcG93ZXIvY2xvY2tzIHdpdGggYSBmaXJtd2FyZSByZXF1ZXN0IGFyZW4ndCBuZWNlc3Nhcmls
-eSBwb3NzaWJsZSBvcgo+ID4+IHJlY29tbWVuZGVkIG9uIGFsbCBwbGF0Zm9ybXMgLSBpIGNhbiBh
-bHJlYWR5IGhlYXIgc2VjdXJpdHkgZm9sa3MgaG93bGluZywKPiA+PiB0aGlzIHdhcyBhbHJlYWR5
-IG1lbnRpb25lZCBpbiB0aGUgR2l0SHViIHRocmVhZC4KPiA+Pgo+ID4+IFJhdGhlciB0aGFuIGV2
-b2x2ZSB0aGUgSVBDLCBpIHdvdWxkIHNheSBpdCBtYWtlcyBtb3JlIHNlbnNlIHRoYXQgd2UKPiA+
-PiAicmV1c2UiIGV4aXN0aW5nIHVwc3RyZWFtIGZyYW1ld29ya3MuLiBBcyBnaXZlbiBiZWxvdyBi
-eSB4aWFuZwo+ID4+IHRoaXMgc2VlbXMgdG8gaGF2ZSBzdXBwb3J0IGZvciBSVE9TZXMgKHNlZSBw
-b2ludCA0IGJlbG93KSBhbmQgbG9va2luZyBhdAo+ID4+IGJlbG93IGl0IHNlZW1zIHRvIGhhdmUg
-bXVjaCBiZXR0ZXIgY292ZXJhZ2UgYWNyb3NzIHN5c3RlbXMuCj4gPj4KPiA+PiBUaGlzIHNob3Vs
-ZCBhbHNvIGhlbHAgaW4gZWFzeSBhZG9wdGlvbiBvZiBTb0YgZm9yIG5vbiBJbnRlbCBwZW9wbGUu
-Li4KPiA+Pgo+ID4+IEFsc28gbG9va2luZyBhdCBpdCwgbG90IG9mIElQQyBjb2RlLCBEU1AgbG9h
-ZGluZyBldGMgd291bGQgZ28gYXdheQo+ID4+IG1ha2luZyBTb0YgY29kZSBsZXNzZXIgaW4gZm9v
-dHByaW50Lgo+ID4+Cj4gPj4gSSB0aGluayBiZW5lZml0cyBvdXR3ZWlnaCB0aGUgZWZmb3J0IG9m
-IHBvcnRpbmcgdG8gYSBmcmFtZXdvcmsgd2hpY2ggaXMKPiA+PiBhbHJlYWR5IHVwc3RyZWFtIGFu
-ZCB1c2VkIG9uIG1hbnkgcGxhdGZvcm1zIGZvciBkaWZmZXJlbnQgdmVuZG9ycyEKPiA+Pgo+ID4+
-IFRoZXJlIGlzIG5vIGZyZWUgbHVuY2guIFRoZXJlIGFyZSAnZmVhdHVyZXMnIG9mIFJQTXNnIHdo
-aWNoIGFyZW4ndCBuZWNlc3NhcmlseSBncmVhdCBmb3IgYWxsIHBsYXRmb3JtcywgZS5nLiB0aGUg
-Y29uY2VwdHMgb2YgdmlydGlvLWxpa2UgcmluZ3MgZm9yIElQQyB3aXRoIGF2YWlsYWJsZS91c2Vk
-IGJ1ZmZlcnMgZm9yIGJvdGggZGlyZWN0aW9ucyBhcmUgbm90IGEgZ29vZCBtYXRjaCBvciByZXBs
-YWNlbWVudCBmb3IgdGhlIG1lbW9yeS13aW5kb3ctYmFzZWQgSVBDIG9uIEludGVsIHBsYXRmb3Jt
-cywgd2hlcmUgdGhlcmUgaXMgbm8gRERSIGFjY2VzcywgYSBzbWFsbCB3aW5kb3cgYWxsb2NhdGVk
-IGJ5IGZpcm13YXJlIGFuZCBvbmx5IGEgY291cGxlIG9mIGRvb3JiZWxsIHJlZ2lzdGVycyBmb3Ig
-ZXNzZW50aWFsbHkgc2VyaWFsIGNvbW11bmljYXRpb24uCj4gPgo+ID4gcnBtc2cgc3VwcG9ydCB0
-byBkZWZpbmUgdGhlIGN1c3RvbSBtZWNoYW5pc20oc2VlIHJwbXNnX2VuZHBvaW50X29wcyBpbgo+
-ID4gZHJpdmVyc1xycG1zZ1xycG1zZ19pbnRlcm5hbC5oKSBidXQga2VlcCB0aGUgdXBwZXIgbGF5
-ZXIgQVBJLCBxY29tbQo+ID4gdXRpbGl6ZSB0aGlzIGZvciBnbGluayBhbmQgc21kIGFjdHVhbGx5
-Lgo+Cj4gVGhlbiB0aGlzIGxvb2tzIGRvYWJsZSwgdGhhbmtzIGZvciBzaGFyaW5nIFhpYW5nLgo+
-Cj4gSSBoYXZlIHNldmVyYWwgcXVlc3Rpb25zOgo+IDEuIElzIHZpcnRpbyBkZXZpY2UgYW5kIHZy
-aW5nIGJ1ZmZlciBhY2Nlc3Mgc3VwcG9ydCBpbiByZW1vdGUgcHJvYyhBdWRpbwo+IERTUCBpbiBv
-dXIgY2FzZSkgc2lkZSBtYW5kYXRvcnk/IFdoaWNoIG1lYW5zIHdlIGhhdmUgdG8gcG9ydGluZwo+
-IGxpYnJhcmllcyBsaWtlIGxpYkFNUCBpbnRvIEZXKG5vdCB1c2VzIFplcGh5ciBvciBmcmVlUlRP
-UyB5ZXQpPwoKSWYgeW91IGdvIHRocm91Z2ggdmlyaXRpby9ycG1zZyBwYXRoLCB2aXJ0aW8vdnJp
-bmcgYXJlIHJlcXVpcmVkLApidXQgaWYgeW91IGltcGxlbWVudCB0aGUgbmV3IHJwbXNnX2VuZHBv
-aW50X29wcywgYm90aCBzaG91bGRuJ3QgYmUgbmVlZGVkLgpCdXQgYm90aCBPcGVuQU1QL1JQTXNn
-LUxpdGUgc3VwcG9ydCB0aGUgYmFyZSBtZXRhbCBlbnZpcm9ubWVudCwKYWN0dWFsbHkgc2luY2Ug
-Ym90aCBsaWJyYXJ5IGRlZmluZSB0aGUgY2xlYW4gYW5kIHRoaW4gcG9ydCBsYXllciwgaXQncwp2
-ZXJ5IGVhc3kgdG8gcG9ydChJIGp1c3Qgc3BlbmQgMi0zIGRheXMgZm9yIE51dHRYIHBvcnQpLgoK
-PiAyLiBBYm91dCB0aGUgcmVzb3VyY2UgdGFibGUgaW4gRlcgYmluYXJ5LCBpcyB0aGlzIG1hbmRh
-dG9yeSBvciBpdCBjb3VsZAo+IGJlIGVtcHR5PwoKQWdhaW4gdmlydGlvL3JwbXNnIHBhdGggaXMg
-cmVxdWlyZWQsIGJ1dCBjdXN0b20gaW1wbGVtZW50YXRpb24gbWF5bid0IG5lZWRlZC4KQWN0dWFs
-bHksIHJlbW90ZXByb2MgbGF5ZXIgc3VwcG9ydCB0aGUgY3VzdG9tIGZpcm13YXJlIGZvcm1hdCwg
-c28gU09GCmNhbiBtaWdyYXRlIHRvIHJlbW90ZXByb2Mgd2l0aG91dCBjaGFuZ2luZyBmaXJtd2Fy
-ZSBmb3JtYXQuCgo+Cj4gQXMgeW91IG1heSBrbm93LCB3ZSB1c2VzIFNPRi1zaW1pbGFyIElQQyBm
-cmFtZXdvcmsod2hpY2ggaXMgcXVpdGUKPiBkaWZmZXJlbnQgd2l0aCBycG1zZy9yZW1vdGVwcm9j
-KSBvbiBJbnRlbCBTb0MgcGxhdGZvcm1zIGZvciBsb25nIG9uIHRlbnMKPiBvZiBwbGF0Zm9ybXMg
-b2Ygc2V2ZXJhbCBnZW5lcmF0aW9ucyh3ZSBoYXZlIGVuYWJsZWQgYW5kIHZlcmlmaWVkIFNPRiBv
-bgo+IG1vc3Qgb2YgdGhlbSksIHNvIHRoZSB0cmFuc2l0aW9uIG1heSB0YWtlIHRpbWUuCj4KClll
-cywgSSB1bmRlcnN0YW5kLiBCdXQgSW50ZWwgc3RpbGwgY291bGQgcHJvdmlkZSB0aGUgY3VycmVu
-dCB2ZXJzaW9uCnRvIHRoZSBjdXN0b21lciBiZWZvcmUgdGhlIG5ldyBJUEMgdmVyc2lvbiBpcyBz
-dGFibGUgaWYgbWFueSBwZW9wbGUKdGhpbmsgdGhlIGdlbmVyaWMgSVBDIGlzIHRoZSBnb29kIGRp
-cmVjdGlvbiB0byBnby4KCj4gVGhhbmtzLAo+IH5LZXlvbgo+Cj4gPgo+ID4+IFRoZSByZXNvdXJj
-ZXMgZW1iZWRkZWQgaW4gYSBmaXJtd2FyZSBmaWxlIGlzIGFub3RoZXIgY2FwYWJpbGl0eSB0aGF0
-IGRvZXNuJ3QgYWxpZ24gd2l0aCB0aGUgd2F5IHRoZSBTT0YgZmlybXdhcmUgaXMgZ2VuZXJhdGVk
-LiBJIGFsc28gZG9uJ3Qga25vdyB3aGVyZSB0aGUgdG9wb2xvZ3kgZmlsZSB3b3VsZCBiZSBoYW5k
-bGVkLCBub3IgaG93IHRvIGRlYWwgd2l0aCBzdXNwZW5kLXJlc3VtZSB3aGVyZSB0aGUgRFNQIG5l
-ZWRzIHRvIGJlIHJlc3RhcnRlZC4gRm9yIGZvbGtzIHdobyBuZWVkIGFuIGludHJvZHVjdGlvbiB0
-byBSUE1zZywgdGhlIGxpbmsgWzFdIGlzIHRoZSBiZXN0IEkgZm91bmQgdG8gc2NvcGUgb3V0IHRo
-ZSB3b3JrIHJlcXVpcmVkLgo+ID4+Cj4gPgo+ID4gV2UgY2FuIHNoYXJlIG91ciBycG1zZyBiYXNl
-ZCB0b3BvbG9neSBpbXBsZW1lbnRhdGlvbiBhcyByZWZlcmVuY2Ugd2hpY2g6Cj4gPiAxLkFib3V0
-IDI1MDAgbGluZXMobXVjaCBsZXNzIHRoYW4gU09GKQo+ID4gMi5TdXBwb3J0IHBjbSBhbmQgY29t
-cHJlc3MgcGxheWJhY2svY2FwdHVyZQo+ID4gMy5ObyBhbnkgdmVuZG9yIGRlcGVuZGVuY2UodGhh
-bmtzIGZvciBycG1zZy9yZW1vdGVwcm9jKQo+ID4KPiA+PiBJbiBzaG9ydCwgSSBkb24ndCBtaW5k
-IGxvb2tpbmcgYXQgUlBNc2cgYXMgYW4gb3B0aW9uIGFuZCB3b3VsZCB3ZWxjb21lIGNvbnRyaWJ1
-dGlvbnMsIGJ1dCBtYWtpbmcgaXQgdGhlIGRlZmF1bHQgcmFpc2VzIGEgbnVtYmVyIG9mIHRlY2hu
-aWNhbCBjaGFsbGVuZ2VzIHRoYXQgY2FuJ3QgYmUgZGlzbWlzc2VkIGp1c3QgeWV0LCBhbmQgc3Vj
-aCBhIHRyYW5zaXRpb24gaXNuJ3QgZ29pbmcgdG8gaGFwcGVuIG92ZXJuaWdodC4gVGhlcmUgYXJl
-IG90aGVyIGV2b2x1dGlvbnMgdGhhdCB3ZXJlIG1lbnRpb25lZCBhcyB3ZWxsLCBzdWNoIGFzIHVz
-aW5nIHRoZSBNRkQgZnJhbWV3b3JrIHRvIHNwbGl0IHRoZSBkcml2ZXIgaW4gJ2NvcmUvaGFyZHdh
-cmUnIHN1cHBvcnQgYW5kIGFwcGxpY2F0aW9uLXNwZWNpZmljIHBhcnRzIChhdWRpbywgc2Vuc29y
-cywgZXRjKSwgYW5kIGxpa2V3aXNlIHdlIG5lZWQgdGltZSB0byBtYWtlIGl0IGhhcHBlbiAtIGp1
-c3QgbGlrZSB3ZSBuZWVkIHRpbWUgdG8gbW92ZSB0byB0aGUgbW9kZXJuIGRhaWxpbmtzLCBhZGQg
-bXVsdGktY3B1IGFuZCBTb3VuZFdpcmUgc3VwcG9ydCwgYWRkIGRpZ2l0YWwgZG9tYWlucywgZXRj
-Lgo+ID4+Cj4gPgo+ID4+IFsxXSBodHRwOi8vcHJvY2Vzc29ycy53aWtpLnRpLmNvbS9pbmRleC5w
-aHAvUFJVLUlDU1NfUmVtb3RlcHJvY19hbmRfUlBNc2cKPiA+Pgo+ID4+Cj4gPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gaHR0cHM6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gPgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Fri, Feb 22, 2019 at 10:48 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+> On 2/22/19 2:32 AM, xiang xiao wrote:
+> > On Thu, Feb 21, 2019 at 11:27 PM Pierre-Louis Bossart
+> > <pierre-louis.bossart@linux.intel.com> wrote:
+> >>
+> >> Should we utilize official IPC frameowrk instead reinverting the wheel?
+> >> 1.Load firmware by drivers/remoteproc
+> >>      https://www.kernel.org/doc/Documentation/remoteproc.txt
+> >> 2.Do the comunication through drivers/rpmsg
+> >>      https://www.kernel.org/doc/Documentation/rpmsg.txt
+> >> Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
+> >>
+> >> It definitely makes more sense to use rpmsg for Generic IPC driver here.
+> >>
+> >> Qualcomm DSP audio drivers (non SOF) already use rpmsg. This will
+> >> definitely help everyone in future while immigrating to SOF.
+> >>
+> >> Actually, Xiaomi also build DSP audio driver on top of rpmsg, but
+> >> fully integrate with the ASoC topology framework, and the firmware is
+> >> base on FreeRTOS and OpenMAX.
+> >> SOF initiative is very good and exciting, our team members(include me)
+> >> spend a couple weeks to study the current code base on both firmware
+> >> and kernel side, we even port SOF to our DSP/MCU and make it run, but
+> >> I have to point out that:
+> >> SOF IPC is too simple and rigid, tightly couple with Intel platform
+> >> and audio domain, which make:
+> >>      a.It's difficult to integrate with other vendor SoC, especially if
+> >> other vendor already adopt remote/rpmsg(this is already a trend!).
+> >>      b.It's difficult to add other IPC services for example:
+> >>         i.Audio DSP talk to power MCU to adjust clock and voltage
+> >>         ii.Export ultrasonic distance measurement to IIO subsystem
+> >>
+> >> The IPC scheme suggested in this patchset is only a first pass that works on
+> >> 3 generations on Intel platforms + the QEMU  parts. There are no claims that
+> >> the current solution is set-in-stone, and this is already an area where
+> >> things are already changing to support notifications and low-power
+> >> transitions.
+> >>
+> >> There will clearly be evolutions to make the IPC more flexible/generic, but
+> >> we've got to start somewhere and bear in mind that we also have to support
+> >> memory-constrained legacy devices where such generic frameworks aren't
+> >> needed or even implementable. Some of your proposals such as changing
+> >> power/clocks with a firmware request aren't necessarily possible or
+> >> recommended on all platforms - i can already hear security folks howling,
+> >> this was already mentioned in the GitHub thread.
+> >>
+> >> Rather than evolve the IPC, i would say it makes more sense that we
+> >> "reuse" existing upstream frameworks.. As given below by xiang
+> >> this seems to have support for RTOSes (see point 4 below) and looking at
+> >> below it seems to have much better coverage across systems.
+> >>
+> >> This should also help in easy adoption of SoF for non Intel people...
+> >>
+> >> Also looking at it, lot of IPC code, DSP loading etc would go away
+> >> making SoF code lesser in footprint.
+> >>
+> >> I think benefits outweigh the effort of porting to a framework which is
+> >> already upstream and used on many platforms for different vendors!
+> >>
+> >> There is no free lunch. There are 'features' of RPMsg which aren't necessarily great for all platforms, e.g. the concepts of virtio-like rings for IPC with available/used buffers for both directions are not a good match or replacement for the memory-window-based IPC on Intel platforms, where there is no DDR access, a small window allocated by firmware and only a couple of doorbell registers for essentially serial communication.
+> > rpmsg support to define the custom mechanism(see rpmsg_endpoint_ops in
+> > drivers\rpmsg\rpmsg_internal.h) but keep the upper layer API, qcomm
+> > utilize this for glink and smd actually.
+>
+> That's interesting. Can anyone at Qualcomm/Linaro point to actual
+> examples of the implementation, so that we get a better picture of the
+> split between 'upper layer API' and 'custom mechanism'?
+>
+> >
+> >> The resources embedded in a firmware file is another capability that doesn't align with the way the SOF firmware is generated. I also don't know where the topology file would be handled, nor how to deal with suspend-resume where the DSP needs to be restarted. For folks who need an introduction to RPMsg, the link [1] is the best I found to scope out the work required.
+> >>
+> > We can share our rpmsg based topology implementation as reference which:
+> > 1.About 2500 lines(much less than SOF)
+> > 2.Support pcm and compress playback/capture
+> > 3.No any vendor dependence(thanks for rpmsg/remoteproc)
+>
+> Sure. Where's the code? What's the license?
+>
+
+The code is base on 4.19 kernel, I could upstream the code basing on
+the latest kernel in the next couple days for reference.
+the license is GPL, of course.
+
+> Most of the SOF code is really in hardware-specific .ops callbacks and
+> topology handling, the generic IPC layer is only ~800 lines of code.
+> rpmsg would allow for easier portability but a significant reduction of
+> the code size is unlikely.
+>
+
+The reduce come from:
+1.Move firmware load and dsp start/stop to remoteproc layer.
+2.Move IPC buffer/mailbox to rpmsg layer.
+3.Reuse ASoC topology parser to generate the audio graph.
+4.Reuse ASoC DAMP to control the graph node state change(run/stop/pause/resume).
+5.Use the general machine driver glue all individual components.
+
+>
