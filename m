@@ -1,60 +1,109 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: simple-audio-card,mclk-fs
-Date: Fri, 22 Feb 2019 17:16:46 +0200
-Message-ID: <CAEnQRZDpJu27_pB=-ZYQjsNPC8eA4-Ur-36niT2hCosMWtC7jw@mail.gmail.com>
+From: Shuah Khan <shuah@kernel.org>
+Subject: [PATCH v11 0/5] Media Device Allocator API
+Date: Fri, 22 Feb 2019 10:28:58 -0700
+Message-ID: <cover.1550804023.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95F94F807B6
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 16:16:58 +0100 (CET)
-Received: by mail-ed1-x535.google.com with SMTP id d9so2004635edh.12
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 07:16:58 -0800 (PST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
+Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Morimoto-san,
+Media Device Allocator API to allows multiple drivers share a media device.
+This API solves a very common use-case for media devices where one physical
+device (an USB stick) provides both audio and video. When such media device
+exposes a standard USB Audio class, a proprietary Video class, two or more
+independent drivers will share a single physical USB bridge. In such cases,
+it is necessary to coordinate access to the shared resource.
 
-Do you have any plans on adding support for multiple mclk-fs values
-in simple-card?
+Using this API, drivers can allocate a media device with the shared struct
+device as the key. Once the media device is allocated by a driver, other
+drivers can get a reference to it. The media device is released when all
+the references are released.
 
-Usually one constant mclk-fs value is not enough because usually codecs
-have different value depending on rate.
+- This patch series in rested on 5.0-rc7 and addresses comments on
+  v10 series from Hans Verkuil. Fixed problems found in resource
+  sharing logic in au0828 adding a patch 5 to this series.
+- I am sharing the test plan used for testing resource sharing which
+  could serve as a regression test plan. Test results can be found at:
 
-For example, for wm8524 [1] one can use
-mclk-fs = 256 for rates between 8kHz and 96kHz
-but it needs to change mclk-fs = 128 for 176.4hHz
-and 192kHz.
+https://docs.google.com/document/d/1XMs3HYgLiHby6xVIvIxv75KSXAAN3F4uUpw2uLuD9c4/edit?usp=sharing
 
-I am thinking of something like this:
+- v10 was tested on 5.0-rc3 and addresses comments on v9 series from
+  Hans Verkuil.
+- v9 was tested on 4.20-rc6.
+- Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+  arecord. When analog is streaming, digital and audio user-space
+  applications detect that the tuner is busy and exit. When digital
+  is streaming, analog and audio applications detect that the tuner is
+  busy and exit. When arecord is owns the tuner, digital and analog
+  detect that the tuner is busy and exit.
+- Tested media device allocator API with bind/unbind testing on
+  snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+  only when the last driver is unbound.
+- Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+- Updated change log to describe the use-case more clearly.
+- No changes to 0001,0002 code since the v7 referenced below.
+- 0003 is a new patch to enable ALSA defines that have been
+  disabled for kernel between 4.9 and 4.19.
+- Minor merge conflict resolution in 0004.
+- Added SPDX to new files.
 
---- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-@@ -44,6 +44,8 @@
-                compatible = "simple-audio-card";
-                simple-audio-card,name = "wm8524-audio";
-                simple-audio-card,format = "i2s";
-+               simple-audio-card,lrclk-fs = <8000>, <32000>, <44100>
-<48000>, <96000>, <176400>, <192000>;
-+               simple-audio-card,mclk-fs = <256>, <256>, <256>,
-<256>, <256>, <128>, <128>;
+Changes since v10:
+- Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
+           around media_device_usb_allocate() - Sakari Ailus's review
+           comment.
+- Patch 2 and 3: No changes
+- Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- Patch 5: This is a new patch added to fix resource sharing
+	   inconsistencies and problem found during testing using Han's
+	   tests.
+Changes since v9:
+- Patch 1: Fix mutex assert warning from find_module() calls. This
+  code was written before the change to find_module() that requires
+  callers to hold module_mutex. I missed this during my testing on
+  4.20-rc6. Hans Verkuil reported the problem.
+- Patch 4: sound/usb: Initializes all the entities it can before
+  registering the device based on comments from Hans Verkuil
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- No changes to Patches 2 and 3.
 
-Let me know if this would be a good direction and I will send a patch.
+References:
+https://lkml.org/lkml/2018/11/2/169
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
 
-thanks,
-Daniel.
-[1] https://www.cirrus.com/products/wm8524/
+Shuah Khan (5):
+  media: Media Device Allocator API
+  media: change au0828 to use Media Device Allocator API
+  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+  sound/usb: Use Media Controller API to share media resources
+  au0828: fix enable and disable source audio and video inconsistencies
+
+ Documentation/media/kapi/mc-core.rst   |  41 ++++
+ drivers/media/Makefile                 |   4 +
+ drivers/media/media-dev-allocator.c    | 142 +++++++++++
+ drivers/media/usb/au0828/au0828-core.c | 190 ++++++++++----
+ drivers/media/usb/au0828/au0828.h      |   6 +-
+ include/media/media-dev-allocator.h    |  53 ++++
+ include/uapi/linux/media.h             |  25 +-
+ sound/usb/Kconfig                      |   4 +
+ sound/usb/Makefile                     |   2 +
+ sound/usb/card.c                       |  14 ++
+ sound/usb/card.h                       |   3 +
+ sound/usb/media.c                      | 327 +++++++++++++++++++++++++
+ sound/usb/media.h                      |  74 ++++++
+ sound/usb/mixer.h                      |   3 +
+ sound/usb/pcm.c                        |  29 ++-
+ sound/usb/quirks-table.h               |   1 +
+ sound/usb/stream.c                     |   2 +
+ sound/usb/usbaudio.h                   |   6 +
+ 18 files changed, 865 insertions(+), 61 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
+
+-- 
+2.17.1
