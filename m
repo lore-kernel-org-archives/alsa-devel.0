@@ -1,20 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 4/5] ASoC: wm_adsp: Add support for multiple
-	compressed buffers
-Date: Fri, 22 Feb 2019 10:04:20 +0000
-Message-ID: <20190222100421.894-4-ckeepax@opensource.cirrus.com>
-References: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Fri, 22 Feb 2019 19:15:05 +0800
+Message-ID: <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7565CF807A4
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 11:04:34 +0100 (CET)
-In-Reply-To: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,356 +25,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: xiang xiao <xiaoxiang781216@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
-
-Currently, only a single compressed stream is supported per firmware.
-Add support for multiple compressed streams on a single firmware, this
-allows additional features like completely independent trigger words or
-separate debug capture streams to be implemented.
-
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 166 ++++++++++++++++++++++++++++++++-------------
- sound/soc/codecs/wm_adsp.h |   4 +-
- 2 files changed, 119 insertions(+), 51 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d5b0d969dddf7..5edaed3320407 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -310,6 +310,12 @@ struct wm_adsp_alg_xm_struct {
- 	__be64 smoothed_power;
- };
- 
-+struct wm_adsp_host_buf_coeff_v1 {
-+	__be32 host_buf_ptr;		/* Host buffer pointer */
-+	__be32 versions;		/* Version numbers */
-+	__be32 name[4];			/* The buffer name */
-+};
-+
- struct wm_adsp_buffer {
- 	__be32 buf1_base;		/* Base addr of first buffer area */
- 	__be32 buf1_size;		/* Size of buf1 area in DSP words */
-@@ -334,6 +340,7 @@ struct wm_adsp_buffer {
- struct wm_adsp_compr;
- 
- struct wm_adsp_compr_buf {
-+	struct list_head list;
- 	struct wm_adsp *dsp;
- 	struct wm_adsp_compr *compr;
- 
-@@ -345,9 +352,12 @@ struct wm_adsp_compr_buf {
- 	int read_index;
- 	int avail;
- 	int host_buf_mem_type;
-+
-+	char *name;
- };
- 
- struct wm_adsp_compr {
-+	struct list_head list;
- 	struct wm_adsp *dsp;
- 	struct wm_adsp_compr_buf *buf;
- 
-@@ -358,6 +368,8 @@ struct wm_adsp_compr {
- 	unsigned int copied_total;
- 
- 	unsigned int sample_rate;
-+
-+	const char *name;
- };
- 
- #define WM_ADSP_DATA_WORD_SIZE         3
-@@ -375,6 +387,11 @@ struct wm_adsp_compr {
- #define ALG_XM_FIELD(field) \
- 	(offsetof(struct wm_adsp_alg_xm_struct, field) / sizeof(__be32))
- 
-+#define HOST_BUF_COEFF_SUPPORTED_COMPAT_VER	1
-+
-+#define HOST_BUF_COEFF_COMPAT_VER_MASK		0xFF00
-+#define HOST_BUF_COEFF_COMPAT_VER_SHIFT		8
-+
- static int wm_adsp_buffer_init(struct wm_adsp *dsp);
- static int wm_adsp_buffer_free(struct wm_adsp *dsp);
- 
-@@ -708,7 +725,7 @@ int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 
- 	mutex_lock(&dsp[e->shift_l].pwr_lock);
- 
--	if (dsp[e->shift_l].booted || dsp[e->shift_l].compr)
-+	if (dsp[e->shift_l].booted || !list_empty(&dsp[e->shift_l].compr_list))
- 		ret = -EBUSY;
- 	else
- 		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
-@@ -2430,6 +2447,8 @@ static int wm_adsp_common_init(struct wm_adsp *dsp)
- 
- 	INIT_LIST_HEAD(&dsp->alg_regions);
- 	INIT_LIST_HEAD(&dsp->ctl_list);
-+	INIT_LIST_HEAD(&dsp->compr_list);
-+	INIT_LIST_HEAD(&dsp->buffer_list);
- 
- 	mutex_init(&dsp->pwr_lock);
- 
-@@ -2972,14 +2991,19 @@ static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
- 
- static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- {
--	/*
--	 * Note this will be more complex once each DSP can support multiple
--	 * streams
--	 */
--	if (!compr->dsp->buffer)
-+	struct wm_adsp_compr_buf *buf = NULL, *tmp;
-+
-+	list_for_each_entry(tmp, &compr->dsp->buffer_list, list) {
-+		if (!tmp->name || !strcmp(compr->name, tmp->name)) {
-+			buf = tmp;
-+			break;
-+		}
-+	}
-+
-+	if (!buf)
- 		return -EINVAL;
- 
--	compr->buf = compr->dsp->buffer;
-+	compr->buf = buf;
- 	compr->buf->compr = compr;
- 
- 	return 0;
-@@ -3002,7 +3026,8 @@ static void wm_adsp_compr_detach(struct wm_adsp_compr *compr)
- 
- int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
- {
--	struct wm_adsp_compr *compr;
-+	struct wm_adsp_compr *compr, *tmp;
-+	struct snd_soc_pcm_runtime *rtd = stream->private_data;
- 	int ret = 0;
- 
- 	mutex_lock(&dsp->pwr_lock);
-@@ -3019,11 +3044,12 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
- 		goto out;
- 	}
- 
--	if (dsp->compr) {
--		/* It is expect this limitation will be removed in future */
--		adsp_err(dsp, "Only a single stream supported per DSP\n");
--		ret = -EBUSY;
--		goto out;
-+	list_for_each_entry(tmp, &dsp->compr_list, list) {
-+		if (!strcmp(tmp->name, rtd->codec_dai->name)) {
-+			adsp_err(dsp, "Only a single stream supported per dai\n");
-+			ret = -EBUSY;
-+			goto out;
-+		}
- 	}
- 
- 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
-@@ -3034,8 +3060,9 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
- 
- 	compr->dsp = dsp;
- 	compr->stream = stream;
-+	compr->name = rtd->codec_dai->name;
- 
--	dsp->compr = compr;
-+	list_add_tail(&compr->list, &dsp->compr_list);
- 
- 	stream->runtime->private_data = compr;
- 
-@@ -3054,7 +3081,7 @@ int wm_adsp_compr_free(struct snd_compr_stream *stream)
- 	mutex_lock(&dsp->pwr_lock);
- 
- 	wm_adsp_compr_detach(compr);
--	dsp->compr = NULL;
-+	list_del(&compr->list);
- 
- 	kfree(compr->raw_buf);
- 	kfree(compr);
-@@ -3304,7 +3331,7 @@ static struct wm_adsp_compr_buf *wm_adsp_buffer_alloc(struct wm_adsp *dsp)
- 
- 	wm_adsp_buffer_clear(buf);
- 
--	dsp->buffer = buf;
-+	list_add_tail(&buf->list, &dsp->buffer_list);
- 
- 	return buf;
- }
-@@ -3360,6 +3387,7 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
- 
- static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- {
-+	struct wm_adsp_host_buf_coeff_v1 coeff_v1;
- 	struct wm_adsp_compr_buf *buf;
- 	unsigned int val, reg;
- 	int ret, i;
-@@ -3395,9 +3423,45 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 	if (ret < 0)
- 		return ret;
- 
--	adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
-+	/*
-+	 * v0 host_buffer coefficients didn't have versioning, so if the
-+	 * control is one word, assume version 0.
-+	 */
-+	if (ctl->len == 4) {
-+		adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
-+		return 0;
-+	}
-+
-+	ret = regmap_raw_read(ctl->dsp->regmap, reg, &coeff_v1,
-+			      sizeof(coeff_v1));
-+	if (ret < 0)
-+		return ret;
-+
-+	coeff_v1.versions = be32_to_cpu(coeff_v1.versions);
-+	val = coeff_v1.versions & HOST_BUF_COEFF_COMPAT_VER_MASK;
-+	val >>= HOST_BUF_COEFF_COMPAT_VER_SHIFT;
- 
--	return 0;
-+	if (val > HOST_BUF_COEFF_SUPPORTED_COMPAT_VER) {
-+		adsp_err(ctl->dsp,
-+			 "Host buffer coeff ver %u > supported version %u\n",
-+			 val, HOST_BUF_COEFF_SUPPORTED_COMPAT_VER);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(coeff_v1.name); i++)
-+		coeff_v1.name[i] = be32_to_cpu(coeff_v1.name[i]);
-+
-+	wm_adsp_remove_padding((u32 *)&coeff_v1.name,
-+			       ARRAY_SIZE(coeff_v1.name),
-+			       WM_ADSP_DATA_WORD_SIZE);
-+
-+	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
-+			      (char *)&coeff_v1.name);
-+
-+	adsp_dbg(ctl->dsp, "host_buf_ptr=%x coeff version %u\n",
-+		 buf->host_buf_ptr, val);
-+
-+	return val;
- }
- 
- static int wm_adsp_buffer_init(struct wm_adsp *dsp)
-@@ -3416,12 +3480,13 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
- 		if (ret < 0) {
- 			adsp_err(dsp, "Failed to parse coeff: %d\n", ret);
- 			goto error;
-+		} else if (ret == 0) {
-+			/* Only one buffer supported for version 0 */
-+			return 0;
- 		}
--
--		return 0;
- 	}
- 
--	if (!dsp->buffer) {
-+	if (list_empty(&dsp->buffer_list)) {
- 		/* Fall back to legacy support */
- 		ret = wm_adsp_buffer_parse_legacy(dsp);
- 		if (ret) {
-@@ -3439,13 +3504,16 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
- 
- static int wm_adsp_buffer_free(struct wm_adsp *dsp)
- {
--	if (dsp->buffer) {
--		wm_adsp_compr_detach(dsp->buffer->compr);
-+	struct wm_adsp_compr_buf *buf, *tmp;
- 
--		kfree(dsp->buffer->regions);
--		kfree(dsp->buffer);
-+	list_for_each_entry_safe(buf, tmp, &dsp->buffer_list, list) {
-+		if (buf->compr)
-+			wm_adsp_compr_detach(buf->compr);
- 
--		dsp->buffer = NULL;
-+		kfree(buf->name);
-+		kfree(buf->regions);
-+		list_del(&buf->list);
-+		kfree(buf);
- 	}
- 
- 	return 0;
-@@ -3576,39 +3644,39 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 
- 	mutex_lock(&dsp->pwr_lock);
- 
--	buf = dsp->buffer;
--	compr = dsp->compr;
--
--	if (!buf) {
-+	if (list_empty(&dsp->buffer_list)) {
- 		ret = -ENODEV;
- 		goto out;
- 	}
--
- 	adsp_dbg(dsp, "Handling buffer IRQ\n");
- 
--	ret = wm_adsp_buffer_get_error(buf);
--	if (ret < 0)
--		goto out_notify; /* Wake poll to report error */
-+	list_for_each_entry(buf, &dsp->buffer_list, list) {
-+		compr = buf->compr;
- 
--	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
--				  &buf->irq_count);
--	if (ret < 0) {
--		adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
--		goto out;
--	}
-+		ret = wm_adsp_buffer_get_error(buf);
-+		if (ret < 0)
-+			goto out_notify; /* Wake poll to report error */
- 
--	ret = wm_adsp_buffer_update_avail(buf);
--	if (ret < 0) {
--		adsp_err(dsp, "Error reading avail: %d\n", ret);
--		goto out;
--	}
-+		ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
-+					  &buf->irq_count);
-+		if (ret < 0) {
-+			adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
-+			goto out;
-+		}
- 
--	if (wm_adsp_fw[dsp->fw].voice_trigger && buf->irq_count == 2)
--		ret = WM_ADSP_COMPR_VOICE_TRIGGER;
-+		ret = wm_adsp_buffer_update_avail(buf);
-+		if (ret < 0) {
-+			adsp_err(dsp, "Error reading avail: %d\n", ret);
-+			goto out;
-+		}
-+
-+		if (wm_adsp_fw[dsp->fw].voice_trigger && buf->irq_count == 2)
-+			ret = WM_ADSP_COMPR_VOICE_TRIGGER;
- 
- out_notify:
--	if (compr && compr->stream)
--		snd_compr_fragment_elapsed(compr->stream);
-+		if (compr && compr->stream)
-+			snd_compr_fragment_elapsed(compr->stream);
-+	}
- 
- out:
- 	mutex_unlock(&dsp->pwr_lock);
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 4b8778b0b06cd..59e07ad163296 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -90,8 +90,8 @@ struct wm_adsp {
- 
- 	struct work_struct boot_work;
- 
--	struct wm_adsp_compr *compr;
--	struct wm_adsp_compr_buf *buffer;
-+	struct list_head compr_list;
-+	struct list_head buffer_list;
- 
- 	struct mutex pwr_lock;
- 
--- 
-2.11.0
+CgpPbiAyMDE5LzIvMjIg5LiL5Y2INDozMiwgeGlhbmcgeGlhbyB3cm90ZToKPiBPbiBUaHUsIEZl
+YiAyMSwgMjAxOSBhdCAxMToyNyBQTSBQaWVycmUtTG91aXMgQm9zc2FydAo+IDxwaWVycmUtbG91
+aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+IHdyb3RlOgo+Pgo+Pgo+PiBTaG91bGQgd2UgdXRp
+bGl6ZSBvZmZpY2lhbCBJUEMgZnJhbWVvd3JrIGluc3RlYWQgcmVpbnZlcnRpbmcgdGhlIHdoZWVs
+Pwo+PiAxLkxvYWQgZmlybXdhcmUgYnkgZHJpdmVycy9yZW1vdGVwcm9jCj4+ICAgICAgaHR0cHM6
+Ly93d3cua2VybmVsLm9yZy9kb2MvRG9jdW1lbnRhdGlvbi9yZW1vdGVwcm9jLnR4dAo+PiAyLkRv
+IHRoZSBjb211bmljYXRpb24gdGhyb3VnaCBkcml2ZXJzL3JwbXNnCj4+ICAgICAgaHR0cHM6Ly93
+d3cua2VybmVsLm9yZy9kb2MvRG9jdW1lbnRhdGlvbi9ycG1zZy50eHQKPj4gTWFueSB2ZW5kb3Io
+VEksIFF1YWxjb21tLCBTVCwgTlhQLCBYaWxpbnguLi4pIG1pZ3JhdGUgdG8gcmVtb3RlcHJvYy9y
+cG1zZywgd2h5IEludGVsIHByb3ZpZGUgYW4gb3RoZXIgSVBDIG1lY2hhbmlzbT8KPj4KPj4gSXQg
+ZGVmaW5pdGVseSBtYWtlcyBtb3JlIHNlbnNlIHRvIHVzZSBycG1zZyBmb3IgR2VuZXJpYyBJUEMg
+ZHJpdmVyIGhlcmUuCj4+Cj4+IFF1YWxjb21tIERTUCBhdWRpbyBkcml2ZXJzIChub24gU09GKSBh
+bHJlYWR5IHVzZSBycG1zZy4gVGhpcyB3aWxsCj4+IGRlZmluaXRlbHkgaGVscCBldmVyeW9uZSBp
+biBmdXR1cmUgd2hpbGUgaW1taWdyYXRpbmcgdG8gU09GLgo+Pgo+PiBBY3R1YWxseSwgWGlhb21p
+IGFsc28gYnVpbGQgRFNQIGF1ZGlvIGRyaXZlciBvbiB0b3Agb2YgcnBtc2csIGJ1dAo+PiBmdWxs
+eSBpbnRlZ3JhdGUgd2l0aCB0aGUgQVNvQyB0b3BvbG9neSBmcmFtZXdvcmssIGFuZCB0aGUgZmly
+bXdhcmUgaXMKPj4gYmFzZSBvbiBGcmVlUlRPUyBhbmQgT3Blbk1BWC4KPj4gU09GIGluaXRpYXRp
+dmUgaXMgdmVyeSBnb29kIGFuZCBleGNpdGluZywgb3VyIHRlYW0gbWVtYmVycyhpbmNsdWRlIG1l
+KQo+PiBzcGVuZCBhIGNvdXBsZSB3ZWVrcyB0byBzdHVkeSB0aGUgY3VycmVudCBjb2RlIGJhc2Ug
+b24gYm90aCBmaXJtd2FyZQo+PiBhbmQga2VybmVsIHNpZGUsIHdlIGV2ZW4gcG9ydCBTT0YgdG8g
+b3VyIERTUC9NQ1UgYW5kIG1ha2UgaXQgcnVuLCBidXQKPj4gSSBoYXZlIHRvIHBvaW50IG91dCB0
+aGF0Ogo+PiBTT0YgSVBDIGlzIHRvbyBzaW1wbGUgYW5kIHJpZ2lkLCB0aWdodGx5IGNvdXBsZSB3
+aXRoIEludGVsIHBsYXRmb3JtCj4+IGFuZCBhdWRpbyBkb21haW4sIHdoaWNoIG1ha2U6Cj4+ICAg
+ICAgYS5JdCdzIGRpZmZpY3VsdCB0byBpbnRlZ3JhdGUgd2l0aCBvdGhlciB2ZW5kb3IgU29DLCBl
+c3BlY2lhbGx5IGlmCj4+IG90aGVyIHZlbmRvciBhbHJlYWR5IGFkb3B0IHJlbW90ZS9ycG1zZyh0
+aGlzIGlzIGFscmVhZHkgYSB0cmVuZCEpLgo+PiAgICAgIGIuSXQncyBkaWZmaWN1bHQgdG8gYWRk
+IG90aGVyIElQQyBzZXJ2aWNlcyBmb3IgZXhhbXBsZToKPj4gICAgICAgICBpLkF1ZGlvIERTUCB0
+YWxrIHRvIHBvd2VyIE1DVSB0byBhZGp1c3QgY2xvY2sgYW5kIHZvbHRhZ2UKPj4gICAgICAgICBp
+aS5FeHBvcnQgdWx0cmFzb25pYyBkaXN0YW5jZSBtZWFzdXJlbWVudCB0byBJSU8gc3Vic3lzdGVt
+Cj4+Cj4+IFRoZSBJUEMgc2NoZW1lIHN1Z2dlc3RlZCBpbiB0aGlzIHBhdGNoc2V0IGlzIG9ubHkg
+YSBmaXJzdCBwYXNzIHRoYXQgd29ya3Mgb24KPj4gMyBnZW5lcmF0aW9ucyBvbiBJbnRlbCBwbGF0
+Zm9ybXMgKyB0aGUgUUVNVSAgcGFydHMuIFRoZXJlIGFyZSBubyBjbGFpbXMgdGhhdAo+PiB0aGUg
+Y3VycmVudCBzb2x1dGlvbiBpcyBzZXQtaW4tc3RvbmUsIGFuZCB0aGlzIGlzIGFscmVhZHkgYW4g
+YXJlYSB3aGVyZQo+PiB0aGluZ3MgYXJlIGFscmVhZHkgY2hhbmdpbmcgdG8gc3VwcG9ydCBub3Rp
+ZmljYXRpb25zIGFuZCBsb3ctcG93ZXIKPj4gdHJhbnNpdGlvbnMuCj4+Cj4+IFRoZXJlIHdpbGwg
+Y2xlYXJseSBiZSBldm9sdXRpb25zIHRvIG1ha2UgdGhlIElQQyBtb3JlIGZsZXhpYmxlL2dlbmVy
+aWMsIGJ1dAo+PiB3ZSd2ZSBnb3QgdG8gc3RhcnQgc29tZXdoZXJlIGFuZCBiZWFyIGluIG1pbmQg
+dGhhdCB3ZSBhbHNvIGhhdmUgdG8gc3VwcG9ydAo+PiBtZW1vcnktY29uc3RyYWluZWQgbGVnYWN5
+IGRldmljZXMgd2hlcmUgc3VjaCBnZW5lcmljIGZyYW1ld29ya3MgYXJlbid0Cj4+IG5lZWRlZCBv
+ciBldmVuIGltcGxlbWVudGFibGUuIFNvbWUgb2YgeW91ciBwcm9wb3NhbHMgc3VjaCBhcyBjaGFu
+Z2luZwo+PiBwb3dlci9jbG9ja3Mgd2l0aCBhIGZpcm13YXJlIHJlcXVlc3QgYXJlbid0IG5lY2Vz
+c2FyaWx5IHBvc3NpYmxlIG9yCj4+IHJlY29tbWVuZGVkIG9uIGFsbCBwbGF0Zm9ybXMgLSBpIGNh
+biBhbHJlYWR5IGhlYXIgc2VjdXJpdHkgZm9sa3MgaG93bGluZywKPj4gdGhpcyB3YXMgYWxyZWFk
+eSBtZW50aW9uZWQgaW4gdGhlIEdpdEh1YiB0aHJlYWQuCj4+Cj4+IFJhdGhlciB0aGFuIGV2b2x2
+ZSB0aGUgSVBDLCBpIHdvdWxkIHNheSBpdCBtYWtlcyBtb3JlIHNlbnNlIHRoYXQgd2UKPj4gInJl
+dXNlIiBleGlzdGluZyB1cHN0cmVhbSBmcmFtZXdvcmtzLi4gQXMgZ2l2ZW4gYmVsb3cgYnkgeGlh
+bmcKPj4gdGhpcyBzZWVtcyB0byBoYXZlIHN1cHBvcnQgZm9yIFJUT1NlcyAoc2VlIHBvaW50IDQg
+YmVsb3cpIGFuZCBsb29raW5nIGF0Cj4+IGJlbG93IGl0IHNlZW1zIHRvIGhhdmUgbXVjaCBiZXR0
+ZXIgY292ZXJhZ2UgYWNyb3NzIHN5c3RlbXMuCj4+Cj4+IFRoaXMgc2hvdWxkIGFsc28gaGVscCBp
+biBlYXN5IGFkb3B0aW9uIG9mIFNvRiBmb3Igbm9uIEludGVsIHBlb3BsZS4uLgo+Pgo+PiBBbHNv
+IGxvb2tpbmcgYXQgaXQsIGxvdCBvZiBJUEMgY29kZSwgRFNQIGxvYWRpbmcgZXRjIHdvdWxkIGdv
+IGF3YXkKPj4gbWFraW5nIFNvRiBjb2RlIGxlc3NlciBpbiBmb290cHJpbnQuCj4+Cj4+IEkgdGhp
+bmsgYmVuZWZpdHMgb3V0d2VpZ2ggdGhlIGVmZm9ydCBvZiBwb3J0aW5nIHRvIGEgZnJhbWV3b3Jr
+IHdoaWNoIGlzCj4+IGFscmVhZHkgdXBzdHJlYW0gYW5kIHVzZWQgb24gbWFueSBwbGF0Zm9ybXMg
+Zm9yIGRpZmZlcmVudCB2ZW5kb3JzIQo+Pgo+PiBUaGVyZSBpcyBubyBmcmVlIGx1bmNoLiBUaGVy
+ZSBhcmUgJ2ZlYXR1cmVzJyBvZiBSUE1zZyB3aGljaCBhcmVuJ3QgbmVjZXNzYXJpbHkgZ3JlYXQg
+Zm9yIGFsbCBwbGF0Zm9ybXMsIGUuZy4gdGhlIGNvbmNlcHRzIG9mIHZpcnRpby1saWtlIHJpbmdz
+IGZvciBJUEMgd2l0aCBhdmFpbGFibGUvdXNlZCBidWZmZXJzIGZvciBib3RoIGRpcmVjdGlvbnMg
+YXJlIG5vdCBhIGdvb2QgbWF0Y2ggb3IgcmVwbGFjZW1lbnQgZm9yIHRoZSBtZW1vcnktd2luZG93
+LWJhc2VkIElQQyBvbiBJbnRlbCBwbGF0Zm9ybXMsIHdoZXJlIHRoZXJlIGlzIG5vIEREUiBhY2Nl
+c3MsIGEgc21hbGwgd2luZG93IGFsbG9jYXRlZCBieSBmaXJtd2FyZSBhbmQgb25seSBhIGNvdXBs
+ZSBvZiBkb29yYmVsbCByZWdpc3RlcnMgZm9yIGVzc2VudGlhbGx5IHNlcmlhbCBjb21tdW5pY2F0
+aW9uLgo+IAo+IHJwbXNnIHN1cHBvcnQgdG8gZGVmaW5lIHRoZSBjdXN0b20gbWVjaGFuaXNtKHNl
+ZSBycG1zZ19lbmRwb2ludF9vcHMgaW4KPiBkcml2ZXJzXHJwbXNnXHJwbXNnX2ludGVybmFsLmgp
+IGJ1dCBrZWVwIHRoZSB1cHBlciBsYXllciBBUEksIHFjb21tCj4gdXRpbGl6ZSB0aGlzIGZvciBn
+bGluayBhbmQgc21kIGFjdHVhbGx5LgoKVGhlbiB0aGlzIGxvb2tzIGRvYWJsZSwgdGhhbmtzIGZv
+ciBzaGFyaW5nIFhpYW5nLgoKSSBoYXZlIHNldmVyYWwgcXVlc3Rpb25zOgoxLiBJcyB2aXJ0aW8g
+ZGV2aWNlIGFuZCB2cmluZyBidWZmZXIgYWNjZXNzIHN1cHBvcnQgaW4gcmVtb3RlIHByb2MoQXVk
+aW8gCkRTUCBpbiBvdXIgY2FzZSkgc2lkZSBtYW5kYXRvcnk/IFdoaWNoIG1lYW5zIHdlIGhhdmUg
+dG8gcG9ydGluZyAKbGlicmFyaWVzIGxpa2UgbGliQU1QIGludG8gRlcobm90IHVzZXMgWmVwaHly
+IG9yIGZyZWVSVE9TIHlldCk/CjIuIEFib3V0IHRoZSByZXNvdXJjZSB0YWJsZSBpbiBGVyBiaW5h
+cnksIGlzIHRoaXMgbWFuZGF0b3J5IG9yIGl0IGNvdWxkIApiZSBlbXB0eT8KCkFzIHlvdSBtYXkg
+a25vdywgd2UgdXNlcyBTT0Ytc2ltaWxhciBJUEMgZnJhbWV3b3JrKHdoaWNoIGlzIHF1aXRlIApk
+aWZmZXJlbnQgd2l0aCBycG1zZy9yZW1vdGVwcm9jKSBvbiBJbnRlbCBTb0MgcGxhdGZvcm1zIGZv
+ciBsb25nIG9uIHRlbnMgCm9mIHBsYXRmb3JtcyBvZiBzZXZlcmFsIGdlbmVyYXRpb25zKHdlIGhh
+dmUgZW5hYmxlZCBhbmQgdmVyaWZpZWQgU09GIG9uIAptb3N0IG9mIHRoZW0pLCBzbyB0aGUgdHJh
+bnNpdGlvbiBtYXkgdGFrZSB0aW1lLgoKVGhhbmtzLAp+S2V5b24KCj4gCj4+IFRoZSByZXNvdXJj
+ZXMgZW1iZWRkZWQgaW4gYSBmaXJtd2FyZSBmaWxlIGlzIGFub3RoZXIgY2FwYWJpbGl0eSB0aGF0
+IGRvZXNuJ3QgYWxpZ24gd2l0aCB0aGUgd2F5IHRoZSBTT0YgZmlybXdhcmUgaXMgZ2VuZXJhdGVk
+LiBJIGFsc28gZG9uJ3Qga25vdyB3aGVyZSB0aGUgdG9wb2xvZ3kgZmlsZSB3b3VsZCBiZSBoYW5k
+bGVkLCBub3IgaG93IHRvIGRlYWwgd2l0aCBzdXNwZW5kLXJlc3VtZSB3aGVyZSB0aGUgRFNQIG5l
+ZWRzIHRvIGJlIHJlc3RhcnRlZC4gRm9yIGZvbGtzIHdobyBuZWVkIGFuIGludHJvZHVjdGlvbiB0
+byBSUE1zZywgdGhlIGxpbmsgWzFdIGlzIHRoZSBiZXN0IEkgZm91bmQgdG8gc2NvcGUgb3V0IHRo
+ZSB3b3JrIHJlcXVpcmVkLgo+Pgo+IAo+IFdlIGNhbiBzaGFyZSBvdXIgcnBtc2cgYmFzZWQgdG9w
+b2xvZ3kgaW1wbGVtZW50YXRpb24gYXMgcmVmZXJlbmNlIHdoaWNoOgo+IDEuQWJvdXQgMjUwMCBs
+aW5lcyhtdWNoIGxlc3MgdGhhbiBTT0YpCj4gMi5TdXBwb3J0IHBjbSBhbmQgY29tcHJlc3MgcGxh
+eWJhY2svY2FwdHVyZQo+IDMuTm8gYW55IHZlbmRvciBkZXBlbmRlbmNlKHRoYW5rcyBmb3IgcnBt
+c2cvcmVtb3RlcHJvYykKPiAKPj4gSW4gc2hvcnQsIEkgZG9uJ3QgbWluZCBsb29raW5nIGF0IFJQ
+TXNnIGFzIGFuIG9wdGlvbiBhbmQgd291bGQgd2VsY29tZSBjb250cmlidXRpb25zLCBidXQgbWFr
+aW5nIGl0IHRoZSBkZWZhdWx0IHJhaXNlcyBhIG51bWJlciBvZiB0ZWNobmljYWwgY2hhbGxlbmdl
+cyB0aGF0IGNhbid0IGJlIGRpc21pc3NlZCBqdXN0IHlldCwgYW5kIHN1Y2ggYSB0cmFuc2l0aW9u
+IGlzbid0IGdvaW5nIHRvIGhhcHBlbiBvdmVybmlnaHQuIFRoZXJlIGFyZSBvdGhlciBldm9sdXRp
+b25zIHRoYXQgd2VyZSBtZW50aW9uZWQgYXMgd2VsbCwgc3VjaCBhcyB1c2luZyB0aGUgTUZEIGZy
+YW1ld29yayB0byBzcGxpdCB0aGUgZHJpdmVyIGluICdjb3JlL2hhcmR3YXJlJyBzdXBwb3J0IGFu
+ZCBhcHBsaWNhdGlvbi1zcGVjaWZpYyBwYXJ0cyAoYXVkaW8sIHNlbnNvcnMsIGV0YyksIGFuZCBs
+aWtld2lzZSB3ZSBuZWVkIHRpbWUgdG8gbWFrZSBpdCBoYXBwZW4gLSBqdXN0IGxpa2Ugd2UgbmVl
+ZCB0aW1lIHRvIG1vdmUgdG8gdGhlIG1vZGVybiBkYWlsaW5rcywgYWRkIG11bHRpLWNwdSBhbmQg
+U291bmRXaXJlIHN1cHBvcnQsIGFkZCBkaWdpdGFsIGRvbWFpbnMsIGV0Yy4KPj4KPiAKPj4gWzFd
+IGh0dHA6Ly9wcm9jZXNzb3JzLndpa2kudGkuY29tL2luZGV4LnBocC9QUlUtSUNTU19SZW1vdGVw
+cm9jX2FuZF9SUE1zZwo+Pgo+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
