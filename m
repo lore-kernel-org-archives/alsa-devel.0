@@ -1,44 +1,114 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: adau1977: Add MICBIAS example in DT bindings
-Date: Fri, 22 Feb 2019 08:31:12 -0600
-Message-ID: <CAL_JsqL+iuEeXPewzYmHe43-57+Oskpk=ie0D5oYXoRAkW186Q@mail.gmail.com>
-References: <20190219141139.24216-1-bogdan.togorean@gmail.com> <20190219141139.24216-2-bogdan.togorean@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware]  [v4,
+ 00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Fri, 22 Feb 2019 08:48:38 -0600
+Message-ID: <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190219141139.24216-2-bogdan.togorean@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bogdan Togorean <bogdan.togorean@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: xiang xiao <xiaoxiang781216@gmail.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 19, 2019 at 8:12 AM Bogdan Togorean
-<bogdan.togorean@gmail.com> wrote:
->
-> Add MICBIAS property to the optional devicetree bindings.
->
-> Signed-off-by: Bogdan Togorean <bogdan.togorean@gmail.com>
-> ---
->  Documentation/devicetree/bindings/sound/adi,adau1977.txt | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-> index e79aeef73f28..87c16e6f2e7c 100644
-> --- a/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-> +++ b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-> @@ -23,6 +23,12 @@ Optional properties:
->   - DVDD-supply: supply voltage for the digital core, please consult
->                  Documentation/devicetree/bindings/regulator/regulator.txt
->
-> +- adi,micbias: configures the voltage setting for the MICBIAS pin.
-> +               Select 0/1/2/3/4/5/6/7/8 to specify MICBIAS voltage
-> +               5V/5.5V/6V/6.5V/7V/7.5V/8V/8.5V/9V
-> +               If not specified the default value will be "7" meaning 8.5 Volts.
-> +               This property is only valid for the ADAU1977
 
-There's no shortage of mic bias properties for codecs. We should
-define a common property for this.
+On 2/22/19 2:32 AM, xiang xiao wrote:
+> On Thu, Feb 21, 2019 at 11:27 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>> Should we utilize official IPC frameowrk instead reinverting the wheel?
+>> 1.Load firmware by drivers/remoteproc
+>>      https://www.kernel.org/doc/Documentation/remoteproc.txt
+>> 2.Do the comunication through drivers/rpmsg
+>>      https://www.kernel.org/doc/Documentation/rpmsg.txt
+>> Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
+>>
+>> It definitely makes more sense to use rpmsg for Generic IPC driver here.
+>>
+>> Qualcomm DSP audio drivers (non SOF) already use rpmsg. This will
+>> definitely help everyone in future while immigrating to SOF.
+>>
+>> Actually, Xiaomi also build DSP audio driver on top of rpmsg, but
+>> fully integrate with the ASoC topology framework, and the firmware is
+>> base on FreeRTOS and OpenMAX.
+>> SOF initiative is very good and exciting, our team members(include me)
+>> spend a couple weeks to study the current code base on both firmware
+>> and kernel side, we even port SOF to our DSP/MCU and make it run, but
+>> I have to point out that:
+>> SOF IPC is too simple and rigid, tightly couple with Intel platform
+>> and audio domain, which make:
+>>      a.It's difficult to integrate with other vendor SoC, especially if
+>> other vendor already adopt remote/rpmsg(this is already a trend!).
+>>      b.It's difficult to add other IPC services for example:
+>>         i.Audio DSP talk to power MCU to adjust clock and voltage
+>>         ii.Export ultrasonic distance measurement to IIO subsystem
+>>
+>> The IPC scheme suggested in this patchset is only a first pass that works on
+>> 3 generations on Intel platforms + the QEMU  parts. There are no claims that
+>> the current solution is set-in-stone, and this is already an area where
+>> things are already changing to support notifications and low-power
+>> transitions.
+>>
+>> There will clearly be evolutions to make the IPC more flexible/generic, but
+>> we've got to start somewhere and bear in mind that we also have to support
+>> memory-constrained legacy devices where such generic frameworks aren't
+>> needed or even implementable. Some of your proposals such as changing
+>> power/clocks with a firmware request aren't necessarily possible or
+>> recommended on all platforms - i can already hear security folks howling,
+>> this was already mentioned in the GitHub thread.
+>>
+>> Rather than evolve the IPC, i would say it makes more sense that we
+>> "reuse" existing upstream frameworks.. As given below by xiang
+>> this seems to have support for RTOSes (see point 4 below) and looking at
+>> below it seems to have much better coverage across systems.
+>>
+>> This should also help in easy adoption of SoF for non Intel people...
+>>
+>> Also looking at it, lot of IPC code, DSP loading etc would go away
+>> making SoF code lesser in footprint.
+>>
+>> I think benefits outweigh the effort of porting to a framework which is
+>> already upstream and used on many platforms for different vendors!
+>>
+>> There is no free lunch. There are 'features' of RPMsg which aren't necessarily great for all platforms, e.g. the concepts of virtio-like rings for IPC with available/used buffers for both directions are not a good match or replacement for the memory-window-based IPC on Intel platforms, where there is no DDR access, a small window allocated by firmware and only a couple of doorbell registers for essentially serial communication.
+> rpmsg support to define the custom mechanism(see rpmsg_endpoint_ops in
+> drivers\rpmsg\rpmsg_internal.h) but keep the upper layer API, qcomm
+> utilize this for glink and smd actually.
 
-But looks like this is already applied, so what's one more...
+That's interesting. Can anyone at Qualcomm/Linaro point to actual 
+examples of the implementation, so that we get a better picture of the 
+split between 'upper layer API' and 'custom mechanism'?
 
-Rob
+>
+>> The resources embedded in a firmware file is another capability that doesn't align with the way the SOF firmware is generated. I also don't know where the topology file would be handled, nor how to deal with suspend-resume where the DSP needs to be restarted. For folks who need an introduction to RPMsg, the link [1] is the best I found to scope out the work required.
+>>
+> We can share our rpmsg based topology implementation as reference which:
+> 1.About 2500 lines(much less than SOF)
+> 2.Support pcm and compress playback/capture
+> 3.No any vendor dependence(thanks for rpmsg/remoteproc)
+
+Sure. Where's the code? What's the license?
+
+Most of the SOF code is really in hardware-specific .ops callbacks and 
+topology handling, the generic IPC layer is only ~800 lines of code. 
+rpmsg would allow for easier portability but a significant reduction of 
+the code size is unlikely.
