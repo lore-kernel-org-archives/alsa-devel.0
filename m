@@ -1,325 +1,154 @@
-From: Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v11 5/5] au0828: fix enable and disable source audio and video inconsistencies
-Date: Fri, 22 Feb 2019 10:29:03 -0700
-Message-ID: <929cd2037d08d34439d6914acf0d3edb26f538bb.1550804023.git.shuah@kernel.org>
-References: <cover.1550804023.git.shuah@kernel.org>
+From: xiang xiao <xiaoxiang781216@gmail.com>
+Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Sat, 23 Feb 2019 02:21:40 +0800
+Message-ID: <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+ <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1550804023.git.shuah@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
-Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, linux-remoteproc@vger.kernel.org, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable and disable source interfaces aren't consistent in enforcing
-how video and audio share the tuner resource.
-
-Fix these issues to enforce the following rules and allow
-sharing between audio and video applications.
-
-- When DVB is streaming, audio/video/vbi/s-video/composite
-  should find the resource busy. DVB holds the tuner in
-  exclusive mode.
-- When video is streaming, audio can share the tuner and vice versa.
-- v4l2 allows multiple applications to open video device.
-- Video applications call enable source multiple times during their
-  run-time. Resource should stay locked until the last application
-  releases it.
-- A shared resource should stay in shared state and locked when it is
-  in use by audio and video. More than one video application is allowed
-  to use the tuner as long as video streaming protocol allows such usage.
-  Resource is released when the last video/audio application releases it.
-- S-Video and Composite hold the resource in exclusive mode.
-- VBI allows more than vbi applications sharing and will not share
-  with another type. When resource is locked by VBI and in use by
-  multiple VBI applications, it should stay locked until the last
-  application disables it.
-
-Signed-off-by: Shuah Khan <shuah@kernel.org>
----
- drivers/media/usb/au0828/au0828-core.c | 178 +++++++++++++++++++------
- drivers/media/usb/au0828/au0828.h      |   5 +-
- 2 files changed, 144 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 4b0a395d59aa..3716ef5279ca 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -272,6 +272,23 @@ static void au0828_media_graph_notify(struct media_entity *new,
- 	}
- }
- 
-+static bool au0828_is_link_sharable(struct media_entity *owner,
-+				    struct media_entity *entity)
-+{
-+	/* Tuner link can be shared by audio and video */
-+	switch (owner->function) {
-+	case MEDIA_ENT_F_IO_V4L:
-+	case MEDIA_ENT_F_AUDIO_CAPTURE:
-+		if (entity->function == MEDIA_ENT_F_IO_V4L ||
-+		    entity->function == MEDIA_ENT_F_AUDIO_CAPTURE)
-+			return true;
-+	case MEDIA_ENT_F_DTV_DEMOD:
-+	case MEDIA_ENT_F_IO_VBI:
-+	default:
-+		return false;
-+	}
-+}
-+
- /* Callers should hold graph_mutex */
- static int au0828_enable_source(struct media_entity *entity,
- 				struct media_pipeline *pipe)
-@@ -314,18 +331,20 @@ static int au0828_enable_source(struct media_entity *entity,
- 		/*
- 		 * Default input is tuner and default input_type
- 		 * is AU0828_VMUX_TELEVISION.
--		 * FIXME:
-+		 *
- 		 * There is a problem when s_input is called to
- 		 * change the default input. s_input will try to
- 		 * enable_source before attempting to change the
- 		 * input on the device, and will end up enabling
- 		 * default source which is tuner.
- 		 *
--		 * Additional logic is necessary in au0828
--		 * to detect that the input has changed and
--		 * enable the right source.
-+		 * Additional logic is necessary in au0828 to detect
-+		 * that the input has changed and enable the right
-+		 * source. au0828 handles this case in its s_input.
-+		 * It will disable the old source and enable the new
-+		 * source.
-+		 *
- 		*/
--
- 		if (dev->input_type == AU0828_VMUX_TELEVISION)
- 			find_source = dev->tuner;
- 		else if (dev->input_type == AU0828_VMUX_SVIDEO ||
-@@ -338,27 +357,33 @@ static int au0828_enable_source(struct media_entity *entity,
- 		}
- 	}
- 
--	/* Is an active link between sink and source */
-+	/* Is there an active link between sink and source */
- 	if (dev->active_link) {
--		/*
--		 * If DVB is using the tuner and calling entity is
--		 * audio/video, the following check will be false,
--		 * since sink is different. Result is Busy.
--		 */
--		if (dev->active_link->sink->entity == sink &&
--		    dev->active_link->source->entity == find_source) {
--			/*
--			 * Either ALSA or Video own tuner. sink is
--			 * the same for both. Prevent Video stepping
--			 * on ALSA when ALSA owns the source.
-+		if (dev->active_link_owner == entity) {
-+			/* This check is necessary to handle multiple
-+			 * enable_source calls from v4l_ioctls during
-+			 * the course of video/vbi application run-time.
- 			*/
--			if (dev->active_link_owner != entity &&
--			    dev->active_link_owner->function ==
--						MEDIA_ENT_F_AUDIO_CAPTURE) {
--				pr_debug("ALSA has the tuner\n");
--				ret = -EBUSY;
--				goto end;
--			}
-+			pr_debug("%s already owns the tuner\n", entity->name);
-+			ret = 0;
-+			goto end;
-+		} else if (au0828_is_link_sharable(dev->active_link_owner,
-+			   entity)) {
-+			/* Either ALSA or Video own tuner. Sink is the same
-+			 * for both. Allow sharing the active link between
-+			 * their common source (tuner) and sink (decoder).
-+			 * Starting pipeline between sharing entity and sink
-+			 * will fail with pipe mismatch, while owner has an
-+			 * active pipeline. Switch pipeline ownership from
-+			 * user to owner when owner disables the source.
-+			 */
-+			dev->active_link_shared = true;
-+			/* save the user info to use from disable */
-+			dev->active_link_user = entity;
-+			dev->active_link_user_pipe = pipe;
-+			pr_debug("%s owns the tuner %s can share!\n",
-+				 dev->active_link_owner->name,
-+				 entity->name);
- 			ret = 0;
- 			goto end;
- 		} else {
-@@ -385,7 +410,7 @@ static int au0828_enable_source(struct media_entity *entity,
- 	source = found_link->source->entity;
- 	ret = __media_entity_setup_link(found_link, MEDIA_LNK_FL_ENABLED);
- 	if (ret) {
--		pr_err("Activate tuner link %s->%s. Error %d\n",
-+		pr_err("Activate link from %s->%s. Error %d\n",
- 			source->name, sink->name, ret);
- 		goto end;
- 	}
-@@ -395,25 +420,26 @@ static int au0828_enable_source(struct media_entity *entity,
- 		pr_err("Start Pipeline: %s->%s Error %d\n",
- 			source->name, entity->name, ret);
- 		ret = __media_entity_setup_link(found_link, 0);
--		pr_err("Deactivate link Error %d\n", ret);
-+		if (ret)
-+			pr_err("Deactivate link Error %d\n", ret);
- 		goto end;
- 	}
--	/*
--	 * save active link and active link owner to avoid audio
--	 * deactivating video owned link from disable_source and
--	 * vice versa
-+
-+	/* save link state to allow audio and video share the link
-+	 * and not disable the link while the other is using it.
-+	 * active_link_owner is used to deactivate the link.
- 	*/
- 	dev->active_link = found_link;
- 	dev->active_link_owner = entity;
- 	dev->active_source = source;
- 	dev->active_sink = sink;
- 
--	pr_debug("Enabled Source: %s->%s->%s Ret %d\n",
-+	pr_info("Enabled Source: %s->%s->%s Ret %d\n",
- 		 dev->active_source->name, dev->active_sink->name,
- 		 dev->active_link_owner->name, ret);
- end:
--	pr_debug("au0828_enable_source() end %s %d %d\n",
--		 entity->name, entity->function, ret);
-+	pr_debug("%s end: ent:%s fnc:%d ret %d\n",
-+		 __func__, entity->name, entity->function, ret);
- 	return ret;
- }
- 
-@@ -432,21 +458,95 @@ static void au0828_disable_source(struct media_entity *entity)
- 	if (!dev->active_link)
- 		return;
- 
--	/* link is active - stop pipeline from source (tuner) */
-+	/* link is active - stop pipeline from source
-+	 * (tuner/s-video/Composite) to the entity
-+	 * When DVB/s-video/Composite owns tuner, it won't be in
-+	 * shared state.
-+	 */
- 	if (dev->active_link->sink->entity == dev->active_sink &&
- 	    dev->active_link->source->entity == dev->active_source) {
- 		/*
--		 * prevent video from deactivating link when audio
--		 * has active pipeline
-+		 * Prevent video from deactivating link when audio
-+		 * has active pipeline and vice versa. In addition
-+		 * handle the case when more than one video/vbi
-+		 * application is sharing the link.
- 		*/
-+		bool owner_is_audio = false;
-+
-+		if (dev->active_link_owner->function ==
-+		    MEDIA_ENT_F_AUDIO_CAPTURE)
-+			owner_is_audio = true;
-+
-+		if (dev->active_link_shared) {
-+			pr_debug("Shared link owner %s user %s %d\n",
-+				 dev->active_link_owner->name,
-+				 entity->name, dev->users);
-+
-+			/* Handle video device users > 1
-+			 * When audio owns the shared link with
-+			 * more than one video users, avoid
-+			 * disabling the source and/or switching
-+			 * the owner until the last disable_source
-+			 * call from video _close(). Use dev->users to
-+			 * determine when to switch/disable.
-+			 */
-+			if (dev->active_link_owner != entity) {
-+				/* video device has users > 1 */
-+				if (owner_is_audio && dev->users > 1)
-+					return;
-+
-+				dev->active_link_user = NULL;
-+				dev->active_link_user_pipe = NULL;
-+				dev->active_link_shared = false;
-+				return;
-+			}
-+
-+			/* video owns the link and has users > 1 */
-+			if (!owner_is_audio && dev->users > 1)
-+				return;
-+
-+			/* stop pipeline */
-+			__media_pipeline_stop(dev->active_link_owner);
-+			pr_debug("Pipeline stop for %s\n",
-+				dev->active_link_owner->name);
-+
-+			ret = __media_pipeline_start(
-+					dev->active_link_user,
-+					dev->active_link_user_pipe);
-+			if (ret) {
-+				pr_err("Start Pipeline: %s->%s %d\n",
-+					dev->active_source->name,
-+					dev->active_link_user->name,
-+					ret);
-+				goto deactivate_link;
-+			}
-+			/* link user is now the owner */
-+			dev->active_link_owner = dev->active_link_user;
-+			dev->active_link_user = NULL;
-+			dev->active_link_user_pipe = NULL;
-+			dev->active_link_shared = false;
-+
-+			pr_debug("Pipeline started for %s\n",
-+				dev->active_link_owner->name);
-+			return;
-+		} else if (!owner_is_audio && dev->users > 1)
-+			/* video/vbi owns the link and has users > 1 */
-+			return;
-+
- 		if (dev->active_link_owner != entity)
- 			return;
--		__media_pipeline_stop(entity);
-+
-+		/* stop pipeline */
-+		__media_pipeline_stop(dev->active_link_owner);
-+		pr_debug("Pipeline stop for %s\n",
-+			dev->active_link_owner->name);
-+
-+deactivate_link:
- 		ret = __media_entity_setup_link(dev->active_link, 0);
- 		if (ret)
- 			pr_err("Deactivate link Error %d\n", ret);
- 
--		pr_debug("Disabled Source: %s->%s->%s Ret %d\n",
-+		pr_info("Disabled Source: %s->%s->%s Ret %d\n",
- 			 dev->active_source->name, dev->active_sink->name,
- 			 dev->active_link_owner->name, ret);
- 
-@@ -454,6 +554,8 @@ static void au0828_disable_source(struct media_entity *entity)
- 		dev->active_link_owner = NULL;
- 		dev->active_source = NULL;
- 		dev->active_sink = NULL;
-+		dev->active_link_shared = false;
-+		dev->active_link_user = NULL;
- 	}
- }
- #endif
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 7dbe3db15ebe..bea5fc0696b7 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -284,9 +284,12 @@ struct au0828_dev {
- 	struct media_entity_notify entity_notify;
- 	struct media_entity *tuner;
- 	struct media_link *active_link;
--	struct media_entity *active_link_owner;
- 	struct media_entity *active_source;
- 	struct media_entity *active_sink;
-+	struct media_entity *active_link_owner;
-+	struct media_entity *active_link_user;
-+	struct media_pipeline *active_link_user_pipe;
-+	bool active_link_shared;
- #endif
- };
- 
--- 
-2.17.1
+T24gRnJpLCBGZWIgMjIsIDIwMTkgYXQgNzoxMyBQTSBLZXlvbiBKaWUgPHlhbmcuamllQGxpbnV4
+LmludGVsLmNvbT4gd3JvdGU6Cj4KPgo+Cj4gT24gMjAxOS8yLzIyIOS4i+WNiDQ6MzIsIHhpYW5n
+IHhpYW8gd3JvdGU6Cj4gPiBPbiBUaHUsIEZlYiAyMSwgMjAxOSBhdCAxMToyNyBQTSBQaWVycmUt
+TG91aXMgQm9zc2FydAo+ID4gPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4g
+d3JvdGU6Cj4gPj4KPiA+Pgo+ID4+IFNob3VsZCB3ZSB1dGlsaXplIG9mZmljaWFsIElQQyBmcmFt
+ZW93cmsgaW5zdGVhZCByZWludmVydGluZyB0aGUgd2hlZWw/Cj4gPj4gMS5Mb2FkIGZpcm13YXJl
+IGJ5IGRyaXZlcnMvcmVtb3RlcHJvYwo+ID4+ICAgICAgaHR0cHM6Ly93d3cua2VybmVsLm9yZy9k
+b2MvRG9jdW1lbnRhdGlvbi9yZW1vdGVwcm9jLnR4dAo+ID4+IDIuRG8gdGhlIGNvbXVuaWNhdGlv
+biB0aHJvdWdoIGRyaXZlcnMvcnBtc2cKPiA+PiAgICAgIGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcv
+ZG9jL0RvY3VtZW50YXRpb24vcnBtc2cudHh0Cj4gPj4gTWFueSB2ZW5kb3IoVEksIFF1YWxjb21t
+LCBTVCwgTlhQLCBYaWxpbnguLi4pIG1pZ3JhdGUgdG8gcmVtb3RlcHJvYy9ycG1zZywgd2h5IElu
+dGVsIHByb3ZpZGUgYW4gb3RoZXIgSVBDIG1lY2hhbmlzbT8KPiA+Pgo+ID4+IEl0IGRlZmluaXRl
+bHkgbWFrZXMgbW9yZSBzZW5zZSB0byB1c2UgcnBtc2cgZm9yIEdlbmVyaWMgSVBDIGRyaXZlciBo
+ZXJlLgo+ID4+Cj4gPj4gUXVhbGNvbW0gRFNQIGF1ZGlvIGRyaXZlcnMgKG5vbiBTT0YpIGFscmVh
+ZHkgdXNlIHJwbXNnLiBUaGlzIHdpbGwKPiA+PiBkZWZpbml0ZWx5IGhlbHAgZXZlcnlvbmUgaW4g
+ZnV0dXJlIHdoaWxlIGltbWlncmF0aW5nIHRvIFNPRi4KPiA+Pgo+ID4+IEFjdHVhbGx5LCBYaWFv
+bWkgYWxzbyBidWlsZCBEU1AgYXVkaW8gZHJpdmVyIG9uIHRvcCBvZiBycG1zZywgYnV0Cj4gPj4g
+ZnVsbHkgaW50ZWdyYXRlIHdpdGggdGhlIEFTb0MgdG9wb2xvZ3kgZnJhbWV3b3JrLCBhbmQgdGhl
+IGZpcm13YXJlIGlzCj4gPj4gYmFzZSBvbiBGcmVlUlRPUyBhbmQgT3Blbk1BWC4KPiA+PiBTT0Yg
+aW5pdGlhdGl2ZSBpcyB2ZXJ5IGdvb2QgYW5kIGV4Y2l0aW5nLCBvdXIgdGVhbSBtZW1iZXJzKGlu
+Y2x1ZGUgbWUpCj4gPj4gc3BlbmQgYSBjb3VwbGUgd2Vla3MgdG8gc3R1ZHkgdGhlIGN1cnJlbnQg
+Y29kZSBiYXNlIG9uIGJvdGggZmlybXdhcmUKPiA+PiBhbmQga2VybmVsIHNpZGUsIHdlIGV2ZW4g
+cG9ydCBTT0YgdG8gb3VyIERTUC9NQ1UgYW5kIG1ha2UgaXQgcnVuLCBidXQKPiA+PiBJIGhhdmUg
+dG8gcG9pbnQgb3V0IHRoYXQ6Cj4gPj4gU09GIElQQyBpcyB0b28gc2ltcGxlIGFuZCByaWdpZCwg
+dGlnaHRseSBjb3VwbGUgd2l0aCBJbnRlbCBwbGF0Zm9ybQo+ID4+IGFuZCBhdWRpbyBkb21haW4s
+IHdoaWNoIG1ha2U6Cj4gPj4gICAgICBhLkl0J3MgZGlmZmljdWx0IHRvIGludGVncmF0ZSB3aXRo
+IG90aGVyIHZlbmRvciBTb0MsIGVzcGVjaWFsbHkgaWYKPiA+PiBvdGhlciB2ZW5kb3IgYWxyZWFk
+eSBhZG9wdCByZW1vdGUvcnBtc2codGhpcyBpcyBhbHJlYWR5IGEgdHJlbmQhKS4KPiA+PiAgICAg
+IGIuSXQncyBkaWZmaWN1bHQgdG8gYWRkIG90aGVyIElQQyBzZXJ2aWNlcyBmb3IgZXhhbXBsZToK
+PiA+PiAgICAgICAgIGkuQXVkaW8gRFNQIHRhbGsgdG8gcG93ZXIgTUNVIHRvIGFkanVzdCBjbG9j
+ayBhbmQgdm9sdGFnZQo+ID4+ICAgICAgICAgaWkuRXhwb3J0IHVsdHJhc29uaWMgZGlzdGFuY2Ug
+bWVhc3VyZW1lbnQgdG8gSUlPIHN1YnN5c3RlbQo+ID4+Cj4gPj4gVGhlIElQQyBzY2hlbWUgc3Vn
+Z2VzdGVkIGluIHRoaXMgcGF0Y2hzZXQgaXMgb25seSBhIGZpcnN0IHBhc3MgdGhhdCB3b3JrcyBv
+bgo+ID4+IDMgZ2VuZXJhdGlvbnMgb24gSW50ZWwgcGxhdGZvcm1zICsgdGhlIFFFTVUgIHBhcnRz
+LiBUaGVyZSBhcmUgbm8gY2xhaW1zIHRoYXQKPiA+PiB0aGUgY3VycmVudCBzb2x1dGlvbiBpcyBz
+ZXQtaW4tc3RvbmUsIGFuZCB0aGlzIGlzIGFscmVhZHkgYW4gYXJlYSB3aGVyZQo+ID4+IHRoaW5n
+cyBhcmUgYWxyZWFkeSBjaGFuZ2luZyB0byBzdXBwb3J0IG5vdGlmaWNhdGlvbnMgYW5kIGxvdy1w
+b3dlcgo+ID4+IHRyYW5zaXRpb25zLgo+ID4+Cj4gPj4gVGhlcmUgd2lsbCBjbGVhcmx5IGJlIGV2
+b2x1dGlvbnMgdG8gbWFrZSB0aGUgSVBDIG1vcmUgZmxleGlibGUvZ2VuZXJpYywgYnV0Cj4gPj4g
+d2UndmUgZ290IHRvIHN0YXJ0IHNvbWV3aGVyZSBhbmQgYmVhciBpbiBtaW5kIHRoYXQgd2UgYWxz
+byBoYXZlIHRvIHN1cHBvcnQKPiA+PiBtZW1vcnktY29uc3RyYWluZWQgbGVnYWN5IGRldmljZXMg
+d2hlcmUgc3VjaCBnZW5lcmljIGZyYW1ld29ya3MgYXJlbid0Cj4gPj4gbmVlZGVkIG9yIGV2ZW4g
+aW1wbGVtZW50YWJsZS4gU29tZSBvZiB5b3VyIHByb3Bvc2FscyBzdWNoIGFzIGNoYW5naW5nCj4g
+Pj4gcG93ZXIvY2xvY2tzIHdpdGggYSBmaXJtd2FyZSByZXF1ZXN0IGFyZW4ndCBuZWNlc3Nhcmls
+eSBwb3NzaWJsZSBvcgo+ID4+IHJlY29tbWVuZGVkIG9uIGFsbCBwbGF0Zm9ybXMgLSBpIGNhbiBh
+bHJlYWR5IGhlYXIgc2VjdXJpdHkgZm9sa3MgaG93bGluZywKPiA+PiB0aGlzIHdhcyBhbHJlYWR5
+IG1lbnRpb25lZCBpbiB0aGUgR2l0SHViIHRocmVhZC4KPiA+Pgo+ID4+IFJhdGhlciB0aGFuIGV2
+b2x2ZSB0aGUgSVBDLCBpIHdvdWxkIHNheSBpdCBtYWtlcyBtb3JlIHNlbnNlIHRoYXQgd2UKPiA+
+PiAicmV1c2UiIGV4aXN0aW5nIHVwc3RyZWFtIGZyYW1ld29ya3MuLiBBcyBnaXZlbiBiZWxvdyBi
+eSB4aWFuZwo+ID4+IHRoaXMgc2VlbXMgdG8gaGF2ZSBzdXBwb3J0IGZvciBSVE9TZXMgKHNlZSBw
+b2ludCA0IGJlbG93KSBhbmQgbG9va2luZyBhdAo+ID4+IGJlbG93IGl0IHNlZW1zIHRvIGhhdmUg
+bXVjaCBiZXR0ZXIgY292ZXJhZ2UgYWNyb3NzIHN5c3RlbXMuCj4gPj4KPiA+PiBUaGlzIHNob3Vs
+ZCBhbHNvIGhlbHAgaW4gZWFzeSBhZG9wdGlvbiBvZiBTb0YgZm9yIG5vbiBJbnRlbCBwZW9wbGUu
+Li4KPiA+Pgo+ID4+IEFsc28gbG9va2luZyBhdCBpdCwgbG90IG9mIElQQyBjb2RlLCBEU1AgbG9h
+ZGluZyBldGMgd291bGQgZ28gYXdheQo+ID4+IG1ha2luZyBTb0YgY29kZSBsZXNzZXIgaW4gZm9v
+dHByaW50Lgo+ID4+Cj4gPj4gSSB0aGluayBiZW5lZml0cyBvdXR3ZWlnaCB0aGUgZWZmb3J0IG9m
+IHBvcnRpbmcgdG8gYSBmcmFtZXdvcmsgd2hpY2ggaXMKPiA+PiBhbHJlYWR5IHVwc3RyZWFtIGFu
+ZCB1c2VkIG9uIG1hbnkgcGxhdGZvcm1zIGZvciBkaWZmZXJlbnQgdmVuZG9ycyEKPiA+Pgo+ID4+
+IFRoZXJlIGlzIG5vIGZyZWUgbHVuY2guIFRoZXJlIGFyZSAnZmVhdHVyZXMnIG9mIFJQTXNnIHdo
+aWNoIGFyZW4ndCBuZWNlc3NhcmlseSBncmVhdCBmb3IgYWxsIHBsYXRmb3JtcywgZS5nLiB0aGUg
+Y29uY2VwdHMgb2YgdmlydGlvLWxpa2UgcmluZ3MgZm9yIElQQyB3aXRoIGF2YWlsYWJsZS91c2Vk
+IGJ1ZmZlcnMgZm9yIGJvdGggZGlyZWN0aW9ucyBhcmUgbm90IGEgZ29vZCBtYXRjaCBvciByZXBs
+YWNlbWVudCBmb3IgdGhlIG1lbW9yeS13aW5kb3ctYmFzZWQgSVBDIG9uIEludGVsIHBsYXRmb3Jt
+cywgd2hlcmUgdGhlcmUgaXMgbm8gRERSIGFjY2VzcywgYSBzbWFsbCB3aW5kb3cgYWxsb2NhdGVk
+IGJ5IGZpcm13YXJlIGFuZCBvbmx5IGEgY291cGxlIG9mIGRvb3JiZWxsIHJlZ2lzdGVycyBmb3Ig
+ZXNzZW50aWFsbHkgc2VyaWFsIGNvbW11bmljYXRpb24uCj4gPgo+ID4gcnBtc2cgc3VwcG9ydCB0
+byBkZWZpbmUgdGhlIGN1c3RvbSBtZWNoYW5pc20oc2VlIHJwbXNnX2VuZHBvaW50X29wcyBpbgo+
+ID4gZHJpdmVyc1xycG1zZ1xycG1zZ19pbnRlcm5hbC5oKSBidXQga2VlcCB0aGUgdXBwZXIgbGF5
+ZXIgQVBJLCBxY29tbQo+ID4gdXRpbGl6ZSB0aGlzIGZvciBnbGluayBhbmQgc21kIGFjdHVhbGx5
+Lgo+Cj4gVGhlbiB0aGlzIGxvb2tzIGRvYWJsZSwgdGhhbmtzIGZvciBzaGFyaW5nIFhpYW5nLgo+
+Cj4gSSBoYXZlIHNldmVyYWwgcXVlc3Rpb25zOgo+IDEuIElzIHZpcnRpbyBkZXZpY2UgYW5kIHZy
+aW5nIGJ1ZmZlciBhY2Nlc3Mgc3VwcG9ydCBpbiByZW1vdGUgcHJvYyhBdWRpbwo+IERTUCBpbiBv
+dXIgY2FzZSkgc2lkZSBtYW5kYXRvcnk/IFdoaWNoIG1lYW5zIHdlIGhhdmUgdG8gcG9ydGluZwo+
+IGxpYnJhcmllcyBsaWtlIGxpYkFNUCBpbnRvIEZXKG5vdCB1c2VzIFplcGh5ciBvciBmcmVlUlRP
+UyB5ZXQpPwoKSWYgeW91IGdvIHRocm91Z2ggdmlyaXRpby9ycG1zZyBwYXRoLCB2aXJ0aW8vdnJp
+bmcgYXJlIHJlcXVpcmVkLApidXQgaWYgeW91IGltcGxlbWVudCB0aGUgbmV3IHJwbXNnX2VuZHBv
+aW50X29wcywgYm90aCBzaG91bGRuJ3QgYmUgbmVlZGVkLgpCdXQgYm90aCBPcGVuQU1QL1JQTXNn
+LUxpdGUgc3VwcG9ydCB0aGUgYmFyZSBtZXRhbCBlbnZpcm9ubWVudCwKYWN0dWFsbHkgc2luY2Ug
+Ym90aCBsaWJyYXJ5IGRlZmluZSB0aGUgY2xlYW4gYW5kIHRoaW4gcG9ydCBsYXllciwgaXQncwp2
+ZXJ5IGVhc3kgdG8gcG9ydChJIGp1c3Qgc3BlbmQgMi0zIGRheXMgZm9yIE51dHRYIHBvcnQpLgoK
+PiAyLiBBYm91dCB0aGUgcmVzb3VyY2UgdGFibGUgaW4gRlcgYmluYXJ5LCBpcyB0aGlzIG1hbmRh
+dG9yeSBvciBpdCBjb3VsZAo+IGJlIGVtcHR5PwoKQWdhaW4gdmlydGlvL3JwbXNnIHBhdGggaXMg
+cmVxdWlyZWQsIGJ1dCBjdXN0b20gaW1wbGVtZW50YXRpb24gbWF5bid0IG5lZWRlZC4KQWN0dWFs
+bHksIHJlbW90ZXByb2MgbGF5ZXIgc3VwcG9ydCB0aGUgY3VzdG9tIGZpcm13YXJlIGZvcm1hdCwg
+c28gU09GCmNhbiBtaWdyYXRlIHRvIHJlbW90ZXByb2Mgd2l0aG91dCBjaGFuZ2luZyBmaXJtd2Fy
+ZSBmb3JtYXQuCgo+Cj4gQXMgeW91IG1heSBrbm93LCB3ZSB1c2VzIFNPRi1zaW1pbGFyIElQQyBm
+cmFtZXdvcmsod2hpY2ggaXMgcXVpdGUKPiBkaWZmZXJlbnQgd2l0aCBycG1zZy9yZW1vdGVwcm9j
+KSBvbiBJbnRlbCBTb0MgcGxhdGZvcm1zIGZvciBsb25nIG9uIHRlbnMKPiBvZiBwbGF0Zm9ybXMg
+b2Ygc2V2ZXJhbCBnZW5lcmF0aW9ucyh3ZSBoYXZlIGVuYWJsZWQgYW5kIHZlcmlmaWVkIFNPRiBv
+bgo+IG1vc3Qgb2YgdGhlbSksIHNvIHRoZSB0cmFuc2l0aW9uIG1heSB0YWtlIHRpbWUuCj4KClll
+cywgSSB1bmRlcnN0YW5kLiBCdXQgSW50ZWwgc3RpbGwgY291bGQgcHJvdmlkZSB0aGUgY3VycmVu
+dCB2ZXJzaW9uCnRvIHRoZSBjdXN0b21lciBiZWZvcmUgdGhlIG5ldyBJUEMgdmVyc2lvbiBpcyBz
+dGFibGUgaWYgbWFueSBwZW9wbGUKdGhpbmsgdGhlIGdlbmVyaWMgSVBDIGlzIHRoZSBnb29kIGRp
+cmVjdGlvbiB0byBnby4KCj4gVGhhbmtzLAo+IH5LZXlvbgo+Cj4gPgo+ID4+IFRoZSByZXNvdXJj
+ZXMgZW1iZWRkZWQgaW4gYSBmaXJtd2FyZSBmaWxlIGlzIGFub3RoZXIgY2FwYWJpbGl0eSB0aGF0
+IGRvZXNuJ3QgYWxpZ24gd2l0aCB0aGUgd2F5IHRoZSBTT0YgZmlybXdhcmUgaXMgZ2VuZXJhdGVk
+LiBJIGFsc28gZG9uJ3Qga25vdyB3aGVyZSB0aGUgdG9wb2xvZ3kgZmlsZSB3b3VsZCBiZSBoYW5k
+bGVkLCBub3IgaG93IHRvIGRlYWwgd2l0aCBzdXNwZW5kLXJlc3VtZSB3aGVyZSB0aGUgRFNQIG5l
+ZWRzIHRvIGJlIHJlc3RhcnRlZC4gRm9yIGZvbGtzIHdobyBuZWVkIGFuIGludHJvZHVjdGlvbiB0
+byBSUE1zZywgdGhlIGxpbmsgWzFdIGlzIHRoZSBiZXN0IEkgZm91bmQgdG8gc2NvcGUgb3V0IHRo
+ZSB3b3JrIHJlcXVpcmVkLgo+ID4+Cj4gPgo+ID4gV2UgY2FuIHNoYXJlIG91ciBycG1zZyBiYXNl
+ZCB0b3BvbG9neSBpbXBsZW1lbnRhdGlvbiBhcyByZWZlcmVuY2Ugd2hpY2g6Cj4gPiAxLkFib3V0
+IDI1MDAgbGluZXMobXVjaCBsZXNzIHRoYW4gU09GKQo+ID4gMi5TdXBwb3J0IHBjbSBhbmQgY29t
+cHJlc3MgcGxheWJhY2svY2FwdHVyZQo+ID4gMy5ObyBhbnkgdmVuZG9yIGRlcGVuZGVuY2UodGhh
+bmtzIGZvciBycG1zZy9yZW1vdGVwcm9jKQo+ID4KPiA+PiBJbiBzaG9ydCwgSSBkb24ndCBtaW5k
+IGxvb2tpbmcgYXQgUlBNc2cgYXMgYW4gb3B0aW9uIGFuZCB3b3VsZCB3ZWxjb21lIGNvbnRyaWJ1
+dGlvbnMsIGJ1dCBtYWtpbmcgaXQgdGhlIGRlZmF1bHQgcmFpc2VzIGEgbnVtYmVyIG9mIHRlY2hu
+aWNhbCBjaGFsbGVuZ2VzIHRoYXQgY2FuJ3QgYmUgZGlzbWlzc2VkIGp1c3QgeWV0LCBhbmQgc3Vj
+aCBhIHRyYW5zaXRpb24gaXNuJ3QgZ29pbmcgdG8gaGFwcGVuIG92ZXJuaWdodC4gVGhlcmUgYXJl
+IG90aGVyIGV2b2x1dGlvbnMgdGhhdCB3ZXJlIG1lbnRpb25lZCBhcyB3ZWxsLCBzdWNoIGFzIHVz
+aW5nIHRoZSBNRkQgZnJhbWV3b3JrIHRvIHNwbGl0IHRoZSBkcml2ZXIgaW4gJ2NvcmUvaGFyZHdh
+cmUnIHN1cHBvcnQgYW5kIGFwcGxpY2F0aW9uLXNwZWNpZmljIHBhcnRzIChhdWRpbywgc2Vuc29y
+cywgZXRjKSwgYW5kIGxpa2V3aXNlIHdlIG5lZWQgdGltZSB0byBtYWtlIGl0IGhhcHBlbiAtIGp1
+c3QgbGlrZSB3ZSBuZWVkIHRpbWUgdG8gbW92ZSB0byB0aGUgbW9kZXJuIGRhaWxpbmtzLCBhZGQg
+bXVsdGktY3B1IGFuZCBTb3VuZFdpcmUgc3VwcG9ydCwgYWRkIGRpZ2l0YWwgZG9tYWlucywgZXRj
+Lgo+ID4+Cj4gPgo+ID4+IFsxXSBodHRwOi8vcHJvY2Vzc29ycy53aWtpLnRpLmNvbS9pbmRleC5w
+aHAvUFJVLUlDU1NfUmVtb3RlcHJvY19hbmRfUlBNc2cKPiA+Pgo+ID4+Cj4gPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+ID4gaHR0cHM6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gPgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
