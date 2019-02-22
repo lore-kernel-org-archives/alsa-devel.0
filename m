@@ -1,10 +1,12 @@
 From: Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v11 0/5] Media Device Allocator API
-Date: Fri, 22 Feb 2019 10:28:58 -0700
-Message-ID: <cover.1550804023.git.shuah@kernel.org>
+Subject: [PATCH v11 2/5] media: change au0828 to use Media Device Allocator API
+Date: Fri, 22 Feb 2019 10:29:00 -0700
+Message-ID: <4e2bf508231edab5f790a1fcbc6b543cc3235fae.1550804023.git.shuah@kernel.org>
+References: <cover.1550804023.git.shuah@kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1550804023.git.shuah@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
 Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
@@ -22,88 +24,67 @@ device as the key. Once the media device is allocated by a driver, other
 drivers can get a reference to it. The media device is released when all
 the references are released.
 
-- This patch series in rested on 5.0-rc7 and addresses comments on
-  v10 series from Hans Verkuil. Fixed problems found in resource
-  sharing logic in au0828 adding a patch 5 to this series.
-- I am sharing the test plan used for testing resource sharing which
-  could serve as a regression test plan. Test results can be found at:
+Change au0828 to use Media Device Allocator API to allocate media device
+with the parent usb struct device as the key, so it can be shared with the
+snd_usb_audio driver.
 
-https://docs.google.com/document/d/1XMs3HYgLiHby6xVIvIxv75KSXAAN3F4uUpw2uLuD9c4/edit?usp=sharing
+Signed-off-by: Shuah Khan <shuah@kernel.org>
+---
+ drivers/media/usb/au0828/au0828-core.c | 12 ++++--------
+ drivers/media/usb/au0828/au0828.h      |  1 +
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-- v10 was tested on 5.0-rc3 and addresses comments on v9 series from
-  Hans Verkuil.
-- v9 was tested on 4.20-rc6.
-- Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
-  arecord. When analog is streaming, digital and audio user-space
-  applications detect that the tuner is busy and exit. When digital
-  is streaming, analog and audio applications detect that the tuner is
-  busy and exit. When arecord is owns the tuner, digital and analog
-  detect that the tuner is busy and exit.
-- Tested media device allocator API with bind/unbind testing on
-  snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
-  only when the last driver is unbound.
-- Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
-- Updated change log to describe the use-case more clearly.
-- No changes to 0001,0002 code since the v7 referenced below.
-- 0003 is a new patch to enable ALSA defines that have been
-  disabled for kernel between 4.9 and 4.19.
-- Minor merge conflict resolution in 0004.
-- Added SPDX to new files.
-
-Changes since v10:
-- Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
-           around media_device_usb_allocate() - Sakari Ailus's review
-           comment.
-- Patch 2 and 3: No changes
-- Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
-- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
-- Patch 5: This is a new patch added to fix resource sharing
-	   inconsistencies and problem found during testing using Han's
-	   tests.
-Changes since v9:
-- Patch 1: Fix mutex assert warning from find_module() calls. This
-  code was written before the change to find_module() that requires
-  callers to hold module_mutex. I missed this during my testing on
-  4.20-rc6. Hans Verkuil reported the problem.
-- Patch 4: sound/usb: Initializes all the entities it can before
-  registering the device based on comments from Hans Verkuil
-- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
-- No changes to Patches 2 and 3.
-
-References:
-https://lkml.org/lkml/2018/11/2/169
-https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
-
-Shuah Khan (5):
-  media: Media Device Allocator API
-  media: change au0828 to use Media Device Allocator API
-  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
-  sound/usb: Use Media Controller API to share media resources
-  au0828: fix enable and disable source audio and video inconsistencies
-
- Documentation/media/kapi/mc-core.rst   |  41 ++++
- drivers/media/Makefile                 |   4 +
- drivers/media/media-dev-allocator.c    | 142 +++++++++++
- drivers/media/usb/au0828/au0828-core.c | 190 ++++++++++----
- drivers/media/usb/au0828/au0828.h      |   6 +-
- include/media/media-dev-allocator.h    |  53 ++++
- include/uapi/linux/media.h             |  25 +-
- sound/usb/Kconfig                      |   4 +
- sound/usb/Makefile                     |   2 +
- sound/usb/card.c                       |  14 ++
- sound/usb/card.h                       |   3 +
- sound/usb/media.c                      | 327 +++++++++++++++++++++++++
- sound/usb/media.h                      |  74 ++++++
- sound/usb/mixer.h                      |   3 +
- sound/usb/pcm.c                        |  29 ++-
- sound/usb/quirks-table.h               |   1 +
- sound/usb/stream.c                     |   2 +
- sound/usb/usbaudio.h                   |   6 +
- 18 files changed, 865 insertions(+), 61 deletions(-)
- create mode 100644 drivers/media/media-dev-allocator.c
- create mode 100644 include/media/media-dev-allocator.h
- create mode 100644 sound/usb/media.c
- create mode 100644 sound/usb/media.h
-
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index 1fdb1601dc65..4b0a395d59aa 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -155,9 +155,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
+ 	dev->media_dev->disable_source = NULL;
+ 	mutex_unlock(&mdev->graph_mutex);
+ 
+-	media_device_unregister(dev->media_dev);
+-	media_device_cleanup(dev->media_dev);
+-	kfree(dev->media_dev);
++	media_device_delete(dev->media_dev, KBUILD_MODNAME);
+ 	dev->media_dev = NULL;
+ #endif
+ }
+@@ -210,14 +208,10 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ #ifdef CONFIG_MEDIA_CONTROLLER
+ 	struct media_device *mdev;
+ 
+-	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
++	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME);
+ 	if (!mdev)
+ 		return -ENOMEM;
+ 
+-	/* check if media device is already initialized */
+-	if (!mdev->dev)
+-		media_device_usb_init(mdev, udev, udev->product);
+-
+ 	dev->media_dev = mdev;
+ #endif
+ 	return 0;
+@@ -480,6 +474,8 @@ static int au0828_media_device_register(struct au0828_dev *dev,
+ 		/* register media device */
+ 		ret = media_device_register(dev->media_dev);
+ 		if (ret) {
++			media_device_delete(dev->media_dev, KBUILD_MODNAME);
++			dev->media_dev = NULL;
+ 			dev_err(&udev->dev,
+ 				"Media Device Register Error: %d\n", ret);
+ 			return ret;
+diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
+index 004eadef55c7..7dbe3db15ebe 100644
+--- a/drivers/media/usb/au0828/au0828.h
++++ b/drivers/media/usb/au0828/au0828.h
+@@ -31,6 +31,7 @@
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-fh.h>
+ #include <media/media-device.h>
++#include <media/media-dev-allocator.h>
+ 
+ /* DVB */
+ #include <media/demux.h>
 -- 
 2.17.1
