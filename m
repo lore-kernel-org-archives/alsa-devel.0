@@ -1,250 +1,136 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH] arm64: dts: renesas: r8a77965: add SSIU support for sound
-Date: Fri, 22 Feb 2019 11:00:12 +0100
-Message-ID: <1550829612-6495-1-git-send-email-twischer@de.adit-jv.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 2/5] ASoC: wm_adsp: Reorder some functions for
+	improved clarity
+Date: Fri, 22 Feb 2019 10:04:18 +0000
+Message-ID: <20190222100421.894-2-ckeepax@opensource.cirrus.com>
+References: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: patch@alsa-project.org, broonie@kernel.org, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, horms+renesas@verge.net.au, Jiada Wang <jiada_wang@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7829AF807AB
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 11:04:25 +0100 (CET)
+In-Reply-To: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jiada Wang <jiada_wang@mentor.com>
-
-rsnd driver supports SSIU now, let's use it.
-Then, BUSIF DMA settings on rcar_sound,ssi (= rxu, txu) are
-no longer needed.
-Applies commit 8d14bfa074db ("arm64: dts: renesas: r8a7796: add SSIU
-support for sound") for r8a77965.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- arch/arm64/boot/dts/renesas/r8a77965.dtsi | 211 ++++++++++++++++++++++++++++++
- 1 file changed, 211 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 81 +++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 40 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-index 4b3730f..cc77c2e 100644
---- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-@@ -1585,6 +1585,217 @@
- 				};
- 			};
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index ae7e1f5d8d10a..d556ea7204167 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3246,6 +3246,47 @@ static void wm_adsp_remove_padding(u32 *buf, int nwords, int data_word_size)
+ 	}
+ }
  
-+			rcar_sound,ssiu {
-+				ssiu00: ssiu-0 {
-+					dmas = <&audma0 0x15>, <&audma1 0x16>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu01: ssiu-1 {
-+					dmas = <&audma0 0x35>, <&audma1 0x36>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu02: ssiu-2 {
-+					dmas = <&audma0 0x37>, <&audma1 0x38>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu03: ssiu-3 {
-+					dmas = <&audma0 0x47>, <&audma1 0x48>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu04: ssiu-4 {
-+					dmas = <&audma0 0x3F>, <&audma1 0x40>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu05: ssiu-5 {
-+					dmas = <&audma0 0x43>, <&audma1 0x44>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu06: ssiu-6 {
-+					dmas = <&audma0 0x4F>, <&audma1 0x50>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu07: ssiu-7 {
-+					dmas = <&audma0 0x53>, <&audma1 0x54>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu10: ssiu-8 {
-+					dmas = <&audma0 0x49>, <&audma1 0x4a>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu11: ssiu-9 {
-+					dmas = <&audma0 0x4B>, <&audma1 0x4C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu12: ssiu-10 {
-+					dmas = <&audma0 0x57>, <&audma1 0x58>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu13: ssiu-11 {
-+					dmas = <&audma0 0x59>, <&audma1 0x5A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu14: ssiu-12 {
-+					dmas = <&audma0 0x5F>, <&audma1 0x60>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu15: ssiu-13 {
-+					dmas = <&audma0 0xC3>, <&audma1 0xC4>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu16: ssiu-14 {
-+					dmas = <&audma0 0xC7>, <&audma1 0xC8>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu17: ssiu-15 {
-+					dmas = <&audma0 0xCB>, <&audma1 0xCC>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu20: ssiu-16 {
-+					dmas = <&audma0 0x63>, <&audma1 0x64>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu21: ssiu-17 {
-+					dmas = <&audma0 0x67>, <&audma1 0x68>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu22: ssiu-18 {
-+					dmas = <&audma0 0x6B>, <&audma1 0x6C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu23: ssiu-19 {
-+					dmas = <&audma0 0x6D>, <&audma1 0x6E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu24: ssiu-20 {
-+					dmas = <&audma0 0xCF>, <&audma1 0xCE>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu25: ssiu-21 {
-+					dmas = <&audma0 0xEB>, <&audma1 0xEC>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu26: ssiu-22 {
-+					dmas = <&audma0 0xED>, <&audma1 0xEE>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu27: ssiu-23 {
-+					dmas = <&audma0 0xEF>, <&audma1 0xF0>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu30: ssiu-24 {
-+					dmas = <&audma0 0x6f>, <&audma1 0x70>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu31: ssiu-25 {
-+					dmas = <&audma0 0x21>, <&audma1 0x22>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu32: ssiu-26 {
-+					dmas = <&audma0 0x23>, <&audma1 0x24>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu33: ssiu-27 {
-+					dmas = <&audma0 0x25>, <&audma1 0x26>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu34: ssiu-28 {
-+					dmas = <&audma0 0x27>, <&audma1 0x28>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu35: ssiu-29 {
-+					dmas = <&audma0 0x29>, <&audma1 0x2A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu36: ssiu-30 {
-+					dmas = <&audma0 0x2B>, <&audma1 0x2C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu37: ssiu-31 {
-+					dmas = <&audma0 0x2D>, <&audma1 0x2E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu40: ssiu-32 {
-+					dmas =	<&audma0 0x71>, <&audma1 0x72>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu41: ssiu-33 {
-+					dmas = <&audma0 0x17>, <&audma1 0x18>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu42: ssiu-34 {
-+					dmas = <&audma0 0x19>, <&audma1 0x1A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu43: ssiu-35 {
-+					dmas = <&audma0 0x1B>, <&audma1 0x1C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu44: ssiu-36 {
-+					dmas = <&audma0 0x1D>, <&audma1 0x1E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu45: ssiu-37 {
-+					dmas = <&audma0 0x1F>, <&audma1 0x20>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu46: ssiu-38 {
-+					dmas = <&audma0 0x31>, <&audma1 0x32>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu47: ssiu-39 {
-+					dmas = <&audma0 0x33>, <&audma1 0x34>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu50: ssiu-40 {
-+					dmas = <&audma0 0x73>, <&audma1 0x74>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu60: ssiu-41 {
-+					dmas = <&audma0 0x75>, <&audma1 0x76>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu70: ssiu-42 {
-+					dmas = <&audma0 0x79>, <&audma1 0x7a>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu80: ssiu-43 {
-+					dmas = <&audma0 0x7b>, <&audma1 0x7c>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu90: ssiu-44 {
-+					dmas = <&audma0 0x7d>, <&audma1 0x7e>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu91: ssiu-45 {
-+					dmas = <&audma0 0x7F>, <&audma1 0x80>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu92: ssiu-46 {
-+					dmas = <&audma0 0x81>, <&audma1 0x82>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu93: ssiu-47 {
-+					dmas = <&audma0 0x83>, <&audma1 0x84>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu94: ssiu-48 {
-+					dmas = <&audma0 0xA3>, <&audma1 0xA4>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu95: ssiu-49 {
-+					dmas = <&audma0 0xA5>, <&audma1 0xA6>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu96: ssiu-50 {
-+					dmas = <&audma0 0xA7>, <&audma1 0xA8>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu97: ssiu-51 {
-+					dmas = <&audma0 0xA9>, <&audma1 0xAA>;
-+					dma-names = "rx", "tx";
-+				};
-+			};
++static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
++{
++	const struct wm_adsp_fw_caps *caps = wm_adsp_fw[buf->dsp->fw].caps;
++	struct wm_adsp_buffer_region *region;
++	u32 offset = 0;
++	int i, ret;
 +
- 			rcar_sound,ssi {
- 				ssi0: ssi-0 {
- 					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
++	for (i = 0; i < caps->num_regions; ++i) {
++		region = &buf->regions[i];
++
++		region->offset = offset;
++		region->mem_type = caps->region_defs[i].mem_type;
++
++		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].base_offset,
++					  &region->base_addr);
++		if (ret < 0)
++			return ret;
++
++		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].size_offset,
++					  &offset);
++		if (ret < 0)
++			return ret;
++
++		region->cumulative_size = offset;
++
++		adsp_dbg(buf->dsp,
++			 "region=%d type=%d base=%08x off=%08x size=%08x\n",
++			 i, region->mem_type, region->base_addr,
++			 region->offset, region->cumulative_size);
++	}
++
++	return 0;
++}
++
++static void wm_adsp_buffer_clear(struct wm_adsp_compr_buf *buf)
++{
++	buf->irq_count = 0xFFFFFFFF;
++	buf->read_index = -1;
++	buf->avail = 0;
++}
++
+ static int wm_adsp_legacy_host_buf_addr(struct wm_adsp_compr_buf *buf)
+ {
+ 	struct wm_adsp_alg_region *alg_region;
+@@ -3343,46 +3384,6 @@ static int wm_adsp_buffer_locate(struct wm_adsp_compr_buf *buf)
+ 	return 0;
+ }
+ 
+-static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
+-{
+-	const struct wm_adsp_fw_caps *caps = wm_adsp_fw[buf->dsp->fw].caps;
+-	struct wm_adsp_buffer_region *region;
+-	u32 offset = 0;
+-	int i, ret;
+-
+-	for (i = 0; i < caps->num_regions; ++i) {
+-		region = &buf->regions[i];
+-
+-		region->offset = offset;
+-		region->mem_type = caps->region_defs[i].mem_type;
+-
+-		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].base_offset,
+-					  &region->base_addr);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = wm_adsp_buffer_read(buf, caps->region_defs[i].size_offset,
+-					  &offset);
+-		if (ret < 0)
+-			return ret;
+-
+-		region->cumulative_size = offset;
+-
+-		adsp_dbg(buf->dsp,
+-			 "region=%d type=%d base=%08x off=%08x size=%08x\n",
+-			 i, region->mem_type, region->base_addr,
+-			 region->offset, region->cumulative_size);
+-	}
+-
+-	return 0;
+-}
+-
+-static void wm_adsp_buffer_clear(struct wm_adsp_compr_buf *buf)
+-{
+-	buf->irq_count = 0xFFFFFFFF;
+-	buf->read_index = -1;
+-	buf->avail = 0;
+-}
+ 
+ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
+ {
 -- 
-2.7.4
+2.11.0
