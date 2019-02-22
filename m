@@ -1,347 +1,105 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH v2] arm64: dts: renesas: r8a77965: add SSIU support for sound
-Date: Mon, 25 Feb 2019 13:39:41 +0100
-Message-ID: <1551098381-1733-1-git-send-email-twischer@de.adit-jv.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] printk: Remove no longer used LOG_PREFIX.
+Date: Fri, 22 Feb 2019 18:59:40 +0900
+Message-ID: <1550829580-9189-1-git-send-email-penguin-kernel__34109.6882287943$1551098883$gmane$org@I-love.SAKURA.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: patch@alsa-project.org, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8450F807A4
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 11:00:34 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jiada Wang <jiada_wang@mentor.com>
+When commit 5becfb1df5ac8e49 ("kmsg: merge continuation records while
+printing") introduced LOG_PREFIX, we used KERN_DEFAULT etc. as a flag
+for setting LOG_PREFIX in order to tell whether to call cont_add()
+(i.e. whether to append the message to "struct cont").
 
-rsnd driver supports SSIU now, let's use it.
-Then, BUSIF DMA settings on rcar_sound,ssi (= rxu, txu) are
-no longer needed.
-Applies commit 8d14bfa074db ("arm64: dts: renesas: r8a7796: add SSIU
-support for sound") and commit 10bd03fa896e ("arm64: dts: renesas:
-r8a7796: remove BUSIF0 settings from rcar_sound,ssi") for r8a77965.
+But since commit 4bcc595ccd80decb ("printk: reinstate KERN_CONT for
+printing continuation lines") inverted the behavior (i.e. don't append
+the message to "struct cont" unless KERN_CONT is specified) and commit
+5aa068ea4082b39e ("printk: remove games with previous record flags")
+removed the last LOG_PREFIX check, setting LOG_PREFIX via KERN_DEFAULT
+etc. is no longer meaningful.
 
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Therefore, we can remove LOG_PREFIX and make KERN_DEFAULT empty string.
+
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
-Hi all,
+ include/linux/kern_levels.h | 2 +-
+ include/linux/printk.h      | 1 -
+ kernel/printk/printk.c      | 6 +-----
+ 3 files changed, 2 insertions(+), 7 deletions(-)
 
-On 2/25/19 02:41, Kuninori Morimoto wrote:
-> I think ARM maintainer doesn't want duplicate/copied patches.
-> So, we want/need to merge into this patch, too
->
->	10bd03fa896ee5e25fa3548a3d1112b9beb76943
->	("arm64: dts: renesas: r8a7796: remove BUSIF0 settings from rcar_sound,ssi")
-
-Done.
-
-> And I guess this patch is related, so, we need to merge it too ?
->
-> 	arm64: dts: renesas: r8a7796: use extended audio dmac register
-
-There are some ongoing discussions. I would expect some more delay for this patch.
-This patch is already helpful because BUSIF0-4 can be used without:
-arm64: dts: renesas: r8a7796: use extended audio dmac register
-Therefore I would like to not block this patch by
-arm64: dts: renesas: r8a7796: use extended audio dmac register
-
-Best regards
-
-Timo
-
-
- arch/arm64/boot/dts/renesas/r8a77965.dtsi | 251 +++++++++++++++++++++++++++---
- 1 file changed, 231 insertions(+), 20 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-index 4b3730f..7c081d6 100644
---- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-@@ -1585,56 +1585,267 @@
- 				};
- 			};
+diff --git a/include/linux/kern_levels.h b/include/linux/kern_levels.h
+index d237fe8..bf2389c 100644
+--- a/include/linux/kern_levels.h
++++ b/include/linux/kern_levels.h
+@@ -14,7 +14,7 @@
+ #define KERN_INFO	KERN_SOH "6"	/* informational */
+ #define KERN_DEBUG	KERN_SOH "7"	/* debug-level messages */
  
-+			rcar_sound,ssiu {
-+				ssiu00: ssiu-0 {
-+					dmas = <&audma0 0x15>, <&audma1 0x16>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu01: ssiu-1 {
-+					dmas = <&audma0 0x35>, <&audma1 0x36>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu02: ssiu-2 {
-+					dmas = <&audma0 0x37>, <&audma1 0x38>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu03: ssiu-3 {
-+					dmas = <&audma0 0x47>, <&audma1 0x48>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu04: ssiu-4 {
-+					dmas = <&audma0 0x3F>, <&audma1 0x40>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu05: ssiu-5 {
-+					dmas = <&audma0 0x43>, <&audma1 0x44>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu06: ssiu-6 {
-+					dmas = <&audma0 0x4F>, <&audma1 0x50>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu07: ssiu-7 {
-+					dmas = <&audma0 0x53>, <&audma1 0x54>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu10: ssiu-8 {
-+					dmas = <&audma0 0x49>, <&audma1 0x4a>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu11: ssiu-9 {
-+					dmas = <&audma0 0x4B>, <&audma1 0x4C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu12: ssiu-10 {
-+					dmas = <&audma0 0x57>, <&audma1 0x58>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu13: ssiu-11 {
-+					dmas = <&audma0 0x59>, <&audma1 0x5A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu14: ssiu-12 {
-+					dmas = <&audma0 0x5F>, <&audma1 0x60>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu15: ssiu-13 {
-+					dmas = <&audma0 0xC3>, <&audma1 0xC4>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu16: ssiu-14 {
-+					dmas = <&audma0 0xC7>, <&audma1 0xC8>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu17: ssiu-15 {
-+					dmas = <&audma0 0xCB>, <&audma1 0xCC>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu20: ssiu-16 {
-+					dmas = <&audma0 0x63>, <&audma1 0x64>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu21: ssiu-17 {
-+					dmas = <&audma0 0x67>, <&audma1 0x68>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu22: ssiu-18 {
-+					dmas = <&audma0 0x6B>, <&audma1 0x6C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu23: ssiu-19 {
-+					dmas = <&audma0 0x6D>, <&audma1 0x6E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu24: ssiu-20 {
-+					dmas = <&audma0 0xCF>, <&audma1 0xCE>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu25: ssiu-21 {
-+					dmas = <&audma0 0xEB>, <&audma1 0xEC>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu26: ssiu-22 {
-+					dmas = <&audma0 0xED>, <&audma1 0xEE>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu27: ssiu-23 {
-+					dmas = <&audma0 0xEF>, <&audma1 0xF0>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu30: ssiu-24 {
-+					dmas = <&audma0 0x6f>, <&audma1 0x70>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu31: ssiu-25 {
-+					dmas = <&audma0 0x21>, <&audma1 0x22>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu32: ssiu-26 {
-+					dmas = <&audma0 0x23>, <&audma1 0x24>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu33: ssiu-27 {
-+					dmas = <&audma0 0x25>, <&audma1 0x26>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu34: ssiu-28 {
-+					dmas = <&audma0 0x27>, <&audma1 0x28>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu35: ssiu-29 {
-+					dmas = <&audma0 0x29>, <&audma1 0x2A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu36: ssiu-30 {
-+					dmas = <&audma0 0x2B>, <&audma1 0x2C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu37: ssiu-31 {
-+					dmas = <&audma0 0x2D>, <&audma1 0x2E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu40: ssiu-32 {
-+					dmas =	<&audma0 0x71>, <&audma1 0x72>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu41: ssiu-33 {
-+					dmas = <&audma0 0x17>, <&audma1 0x18>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu42: ssiu-34 {
-+					dmas = <&audma0 0x19>, <&audma1 0x1A>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu43: ssiu-35 {
-+					dmas = <&audma0 0x1B>, <&audma1 0x1C>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu44: ssiu-36 {
-+					dmas = <&audma0 0x1D>, <&audma1 0x1E>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu45: ssiu-37 {
-+					dmas = <&audma0 0x1F>, <&audma1 0x20>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu46: ssiu-38 {
-+					dmas = <&audma0 0x31>, <&audma1 0x32>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu47: ssiu-39 {
-+					dmas = <&audma0 0x33>, <&audma1 0x34>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu50: ssiu-40 {
-+					dmas = <&audma0 0x73>, <&audma1 0x74>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu60: ssiu-41 {
-+					dmas = <&audma0 0x75>, <&audma1 0x76>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu70: ssiu-42 {
-+					dmas = <&audma0 0x79>, <&audma1 0x7a>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu80: ssiu-43 {
-+					dmas = <&audma0 0x7b>, <&audma1 0x7c>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu90: ssiu-44 {
-+					dmas = <&audma0 0x7d>, <&audma1 0x7e>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu91: ssiu-45 {
-+					dmas = <&audma0 0x7F>, <&audma1 0x80>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu92: ssiu-46 {
-+					dmas = <&audma0 0x81>, <&audma1 0x82>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu93: ssiu-47 {
-+					dmas = <&audma0 0x83>, <&audma1 0x84>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu94: ssiu-48 {
-+					dmas = <&audma0 0xA3>, <&audma1 0xA4>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu95: ssiu-49 {
-+					dmas = <&audma0 0xA5>, <&audma1 0xA6>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu96: ssiu-50 {
-+					dmas = <&audma0 0xA7>, <&audma1 0xA8>;
-+					dma-names = "rx", "tx";
-+				};
-+				ssiu97: ssiu-51 {
-+					dmas = <&audma0 0xA9>, <&audma1 0xAA>;
-+					dma-names = "rx", "tx";
-+				};
-+			};
-+
- 			rcar_sound,ssi {
- 				ssi0: ssi-0 {
- 					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x01>, <&audma1 0x02>, <&audma0 0x15>, <&audma1 0x16>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x01>, <&audma1 0x02>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi1: ssi-1 {
- 					interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x03>, <&audma1 0x04>, <&audma0 0x49>, <&audma1 0x4a>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x03>, <&audma1 0x04>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi2: ssi-2 {
- 					interrupts = <GIC_SPI 372 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x05>, <&audma1 0x06>, <&audma0 0x63>, <&audma1 0x64>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x05>, <&audma1 0x06>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi3: ssi-3 {
- 					interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x07>, <&audma1 0x08>, <&audma0 0x6f>, <&audma1 0x70>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x07>, <&audma1 0x08>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi4: ssi-4 {
- 					interrupts = <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x09>, <&audma1 0x0a>, <&audma0 0x71>, <&audma1 0x72>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x09>, <&audma1 0x0a>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi5: ssi-5 {
- 					interrupts = <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x0b>, <&audma1 0x0c>, <&audma0 0x73>, <&audma1 0x74>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x0b>, <&audma1 0x0c>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi6: ssi-6 {
- 					interrupts = <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x0d>, <&audma1 0x0e>, <&audma0 0x75>, <&audma1 0x76>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x0d>, <&audma1 0x0e>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi7: ssi-7 {
- 					interrupts = <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x0f>, <&audma1 0x10>, <&audma0 0x79>, <&audma1 0x7a>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x0f>, <&audma1 0x10>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi8: ssi-8 {
- 					interrupts = <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x11>, <&audma1 0x12>, <&audma0 0x7b>, <&audma1 0x7c>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x11>, <&audma1 0x12>;
-+					dma-names = "rx", "tx";
- 				};
- 				ssi9: ssi-9 {
- 					interrupts = <GIC_SPI 379 IRQ_TYPE_LEVEL_HIGH>;
--					dmas = <&audma0 0x13>, <&audma1 0x14>, <&audma0 0x7d>, <&audma1 0x7e>;
--					dma-names = "rx", "tx", "rxu", "txu";
-+					dmas = <&audma0 0x13>, <&audma1 0x14>;
-+					dma-names = "rx", "tx";
- 				};
- 			};
- 		};
+-#define KERN_DEFAULT	KERN_SOH "d"	/* the default kernel loglevel */
++#define KERN_DEFAULT	""		/* the default kernel loglevel */
+ 
+ /*
+  * Annotation for a "continued" line of log printout (only done after a
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 77740a5..9fe6c9e 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -18,7 +18,6 @@ static inline int printk_get_level(const char *buffer)
+ 	if (buffer[0] == KERN_SOH_ASCII && buffer[1]) {
+ 		switch (buffer[1]) {
+ 		case '0' ... '7':
+-		case 'd':	/* KERN_DEFAULT */
+ 		case 'c':	/* KERN_CONT */
+ 			return buffer[1];
+ 		}
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index d3d1703..3e4a735 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -344,7 +344,6 @@ enum con_msg_format_flags {
+ 
+ enum log_flags {
+ 	LOG_NEWLINE	= 2,	/* text ended with a newline */
+-	LOG_PREFIX	= 4,	/* text started with a prefix */
+ 	LOG_CONT	= 8,	/* text is a fragment of a continuation line */
+ };
+ 
+@@ -1867,9 +1866,6 @@ int vprintk_store(int facility, int level,
+ 			case '0' ... '7':
+ 				if (level == LOGLEVEL_DEFAULT)
+ 					level = kern_level - '0';
+-				/* fallthrough */
+-			case 'd':	/* KERN_DEFAULT */
+-				lflags |= LOG_PREFIX;
+ 				break;
+ 			case 'c':	/* KERN_CONT */
+ 				lflags |= LOG_CONT;
+@@ -1884,7 +1880,7 @@ int vprintk_store(int facility, int level,
+ 		level = default_message_loglevel;
+ 
+ 	if (dict)
+-		lflags |= LOG_PREFIX|LOG_NEWLINE;
++		lflags |= LOG_NEWLINE;
+ 
+ 	return log_output(facility, level, lflags,
+ 			  dict, dictlen, text, text_len);
 -- 
-2.7.4
+1.8.3.1
