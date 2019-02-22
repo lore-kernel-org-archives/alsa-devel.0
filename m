@@ -1,23 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 01/14] ASoC: SOF:
- Add Sound Open Firmware driver core
-Date: Thu, 21 Feb 2019 18:08:13 -0600
-Message-ID: <a1951bde-ec78-0a4c-9c74-0f5eba2facc6@linux.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <20190213220734.10471-2-pierre-louis.bossart@linux.intel.com>
- <s5h1s4abu2n.wl-tiwai@suse.de>
- <ecb982bf-5f45-4551-592c-8375d06415e0@linux.intel.com>
- <20190219153836.GD6319@sirena.org.uk>
- <19843650-4f58-4aa9-7bf3-c1ce4c72d1c9@linux.intel.com>
- <20190220162645.GB9878@sirena.org.uk>
- <d92700ef-4975-fd8b-c93b-b699f65781b1@linux.intel.com>
- <20190221184748.GF5970@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: cs35l36: Fix an IS_ERR() vs NULL
+	checking bug
+Date: Fri, 22 Feb 2019 09:31:51 +0300
+Message-ID: <20190222063151.GC30993@kadam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190221184748.GF5970@sirena.org.uk>
-Content-Language: en-US
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16C0CF80775
+ for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 07:32:06 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,57 +22,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, andriy.shevchenko@intel.com, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>, James Schulman <james.schulman@cirrus.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The irq_get_irq_data() function doesn't return error pointers, it
+returns NULL.
 
-On 2/21/19 12:47 PM, Mark Brown wrote:
-> On Wed, Feb 20, 2019 at 03:32:54PM -0600, Pierre-Louis Bossart wrote:
->
->> The only reason for extending the struct snd_soc_pcm_runtime was to enable
->> the use of a 'context' in PCM operations, see e.g in patch 5/14 the repeated
->> pattern to get an 'SOF PCM' context:
->> struct snd_sof_pcm *spcm = rtd->private;
-> The reason you're having trouble with this is that the DSP isn't really
-> properly visible in the system, it's pushed in on the side with DPCM
-> coexisting with multiple other drivers so as far as I can see it's hard
-> for it to fit in anywhere in Intel systems.
->
->> So ironically in ASoC we don't have a means to use a private_data field for
->> the substreams since it's used for a 'standard' mechanism.
-> This is why there's things like snd_soc_dai_get_dma_data() and
-> snd_soc_component_get_drvdata() - if you're a fully visible component in
-> the system there's ways to get to your ASoC specific driver data.  For
-> something like SoF that'd mean cooperating with the drivers for the
-> devices with the SoF using DSPs in some way.
->
->> The extension suggested in this patch 1/14 was really trying to come back to
->> a practical means to store a context in a substream, and make the PCM
->> operations manageable. I totally agree that extending the PCM runtime might
->> not recommended or safe, but at this point I don't have any slack in the
->> existing data structures to add a context in a substream.
->> Does this help clarify the problem statement?
-> It is fairly clear what driver data is useful for.  The issue is that
-> instead of getting to it through the relevant hardware component you're
-> adding something directly in the core data structure, whatever way we
-> look at it that's going to be awkward.  Consider for example what
-> happens if someone integrates a system with a SoF DSP in the SoC and
-> another SoF DSP in the CODEC - there will be two separate copies of SoF
-> on a single DAI so a SoF specific value directly in the runtime isn't
-> going to work.
->
-> If there were a component for the DSP (or the DSP was fully part of some
-> other existing component) then it should be possible to arrange to get
-> to the DSP data using that but with it just floating there unattached to
-> anything it's harder.
+Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/soc/codecs/cs35l36.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-After spending a bit more time on this, I agree it's possible to 
-retrieve the required information without any change to the rtd 
-structure. There are existing precedents using 
-substream->runtime->private_data, e.g. to store an HDAudio stream tag, 
-and SOF already has a list of contexts that can be searched for with a 
-simple list walk.
-
-Modeling the DSP differently is something I'll add to my 
-growing-by-the-day TODO list.
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index e374fffb7e17..901d57491218 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -1845,9 +1845,9 @@ static int cs35l36_i2c_probe(struct i2c_client *i2c_client,
+ 		cs35l36_apply_vpbr_config(cs35l36);
+ 
+ 	irq_d = irq_get_irq_data(i2c_client->irq);
+-	if (IS_ERR(irq_d)) {
++	if (!irq_d) {
+ 		dev_err(&i2c_client->dev, "Invalid IRQ: %d\n", i2c_client->irq);
+-		ret = PTR_ERR(irq_d);
++		ret = -ENODEV;
+ 		goto err;
+ 	}
+ 
+-- 
+2.17.1
