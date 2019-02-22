@@ -1,107 +1,170 @@
-From: xiang xiao <xiaoxiang781216@gmail.com>
-Subject: Re: [v4,00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Fri, 22 Feb 2019 16:32:32 +0800
-Message-ID: <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
- <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
- <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
- <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
- <20190221043925.GF2736@vkoul-mobl>
- <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH] ASoC: rsnd: gen: fix SSI9 4/5/6/7 busif related register address
+Date: Fri, 22 Feb 2019 10:20:26 +0100
+Message-ID: <1550827226-1750-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, Alan Cox <alan@linux.intel.com>, wendy.liang@xilinx.com, sound-open-firmware@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: patch@alsa-project.org, broonie@kernel.org, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 21, 2019 at 11:27 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
-> Should we utilize official IPC frameowrk instead reinverting the wheel?
-> 1.Load firmware by drivers/remoteproc
->     https://www.kernel.org/doc/Documentation/remoteproc.txt
-> 2.Do the comunication through drivers/rpmsg
->     https://www.kernel.org/doc/Documentation/rpmsg.txt
-> Many vendor(TI, Qualcomm, ST, NXP, Xilinx...) migrate to remoteproc/rpmsg, why Intel provide an other IPC mechanism?
->
-> It definitely makes more sense to use rpmsg for Generic IPC driver here.
->
-> Qualcomm DSP audio drivers (non SOF) already use rpmsg. This will
-> definitely help everyone in future while immigrating to SOF.
->
-> Actually, Xiaomi also build DSP audio driver on top of rpmsg, but
-> fully integrate with the ASoC topology framework, and the firmware is
-> base on FreeRTOS and OpenMAX.
-> SOF initiative is very good and exciting, our team members(include me)
-> spend a couple weeks to study the current code base on both firmware
-> and kernel side, we even port SOF to our DSP/MCU and make it run, but
-> I have to point out that:
-> SOF IPC is too simple and rigid, tightly couple with Intel platform
-> and audio domain, which make:
->     a.It's difficult to integrate with other vendor SoC, especially if
-> other vendor already adopt remote/rpmsg(this is already a trend!).
->     b.It's difficult to add other IPC services for example:
->        i.Audio DSP talk to power MCU to adjust clock and voltage
->        ii.Export ultrasonic distance measurement to IIO subsystem
->
-> The IPC scheme suggested in this patchset is only a first pass that works on
-> 3 generations on Intel platforms + the QEMU  parts. There are no claims that
-> the current solution is set-in-stone, and this is already an area where
-> things are already changing to support notifications and low-power
-> transitions.
->
-> There will clearly be evolutions to make the IPC more flexible/generic, but
-> we've got to start somewhere and bear in mind that we also have to support
-> memory-constrained legacy devices where such generic frameworks aren't
-> needed or even implementable. Some of your proposals such as changing
-> power/clocks with a firmware request aren't necessarily possible or
-> recommended on all platforms - i can already hear security folks howling,
-> this was already mentioned in the GitHub thread.
->
-> Rather than evolve the IPC, i would say it makes more sense that we
-> "reuse" existing upstream frameworks.. As given below by xiang
-> this seems to have support for RTOSes (see point 4 below) and looking at
-> below it seems to have much better coverage across systems.
->
-> This should also help in easy adoption of SoF for non Intel people...
->
-> Also looking at it, lot of IPC code, DSP loading etc would go away
-> making SoF code lesser in footprint.
->
-> I think benefits outweigh the effort of porting to a framework which is
-> already upstream and used on many platforms for different vendors!
->
-> There is no free lunch. There are 'features' of RPMsg which aren't necessarily great for all platforms, e.g. the concepts of virtio-like rings for IPC with available/used buffers for both directions are not a good match or replacement for the memory-window-based IPC on Intel platforms, where there is no DDR access, a small window allocated by firmware and only a couple of doorbell registers for essentially serial communication.
+From: Jiada Wang <jiada_wang@mentor.com>
 
-rpmsg support to define the custom mechanism(see rpmsg_endpoint_ops in
-drivers\rpmsg\rpmsg_internal.h) but keep the upper layer API, qcomm
-utilize this for glink and smd actually.
+Currently each SSI unit 's busif mode/adinr/dalign address is
+registered by: (in busif4 case)
+RSND_GEN_M_REG(SSI_BUSIF4_MODE, 0x500, 0x80)
+RSND_GEN_M_REG(SSI_BUSIF4_ADINR,0x504, 0x80)
+RSND_GEN_M_REG(SSI_BUSIF4_DALIGN, 0x508, 0x80)
 
-> The resources embedded in a firmware file is another capability that doesn't align with the way the SOF firmware is generated. I also don't know where the topology file would be handled, nor how to deal with suspend-resume where the DSP needs to be restarted. For folks who need an introduction to RPMsg, the link [1] is the best I found to scope out the work required.
->
+But according to user manual 41.1.4 Register Configuration
+ssi9 4/5/6/7 busif mode/adinr/dalign register address
+( SSI9-[4/5/6/7]_BUSIF_[MODE/ADINR/DALIGN] )
+are out of this rule.
 
-We can share our rpmsg based topology implementation as reference which:
-1.About 2500 lines(much less than SOF)
-2.Support pcm and compress playback/capture
-3.No any vendor dependence(thanks for rpmsg/remoteproc)
+This patch registers ssi9 4/5/6/7 mode/adinr/dalign register
+as single register, and access these these registers in case
+of SSI9 BUSIF 4/5/6/7.
 
-> In short, I don't mind looking at RPMsg as an option and would welcome contributions, but making it the default raises a number of technical challenges that can't be dismissed just yet, and such a transition isn't going to happen overnight. There are other evolutions that were mentioned as well, such as using the MFD framework to split the driver in 'core/hardware' support and application-specific parts (audio, sensors, etc), and likewise we need time to make it happen - just like we need time to move to the modern dailinks, add multi-cpu and SoundWire support, add digital domains, etc.
->
+Fixes: commit 8c9d75033340 ("ASoC: rsnd: ssiu: Support BUSIF other than BUSIF0")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+---
+ sound/soc/sh/rcar/gen.c  | 24 ++++++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h | 27 +++++++++++++++++++++++++++
+ sound/soc/sh/rcar/ssiu.c | 36 ++++++++++++++++--------------------
+ 3 files changed, 67 insertions(+), 20 deletions(-)
 
-> [1] http://processors.wiki.ti.com/index.php/PRU-ICSS_Remoteproc_and_RPMsg
->
->
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 7cda601..af19010 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -255,6 +255,30 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_M_REG(SSI_MODE,		0xc,	0x80),
+ 		RSND_GEN_M_REG(SSI_CTRL,		0x10,	0x80),
+ 		RSND_GEN_M_REG(SSI_INT_ENABLE,		0x18,	0x80),
++		RSND_GEN_S_REG(SSI9_BUSIF0_MODE,	0x48c),
++		RSND_GEN_S_REG(SSI9_BUSIF0_ADINR,	0x484),
++		RSND_GEN_S_REG(SSI9_BUSIF0_DALIGN,	0x488),
++		RSND_GEN_S_REG(SSI9_BUSIF1_MODE,	0x4a0),
++		RSND_GEN_S_REG(SSI9_BUSIF1_ADINR,	0x4a4),
++		RSND_GEN_S_REG(SSI9_BUSIF1_DALIGN,	0x4a8),
++		RSND_GEN_S_REG(SSI9_BUSIF2_MODE,	0x4c0),
++		RSND_GEN_S_REG(SSI9_BUSIF2_ADINR,	0x4c4),
++		RSND_GEN_S_REG(SSI9_BUSIF2_DALIGN,	0x4c8),
++		RSND_GEN_S_REG(SSI9_BUSIF3_MODE,	0x4e0),
++		RSND_GEN_S_REG(SSI9_BUSIF3_ADINR,	0x4e4),
++		RSND_GEN_S_REG(SSI9_BUSIF3_DALIGN,	0x4e8),
++		RSND_GEN_S_REG(SSI9_BUSIF4_MODE,	0xd80),
++		RSND_GEN_S_REG(SSI9_BUSIF4_ADINR,	0xd84),
++		RSND_GEN_S_REG(SSI9_BUSIF4_DALIGN,	0xd88),
++		RSND_GEN_S_REG(SSI9_BUSIF5_MODE,	0xda0),
++		RSND_GEN_S_REG(SSI9_BUSIF5_ADINR,	0xda4),
++		RSND_GEN_S_REG(SSI9_BUSIF5_DALIGN,	0xda8),
++		RSND_GEN_S_REG(SSI9_BUSIF6_MODE,	0xdc0),
++		RSND_GEN_S_REG(SSI9_BUSIF6_ADINR,	0xdc4),
++		RSND_GEN_S_REG(SSI9_BUSIF6_DALIGN,	0xdc8),
++		RSND_GEN_S_REG(SSI9_BUSIF7_MODE,	0xde0),
++		RSND_GEN_S_REG(SSI9_BUSIF7_ADINR,	0xde4),
++		RSND_GEN_S_REG(SSI9_BUSIF7_DALIGN,	0xde8),
+ 	};
+ 
+ 	static const struct rsnd_regmap_field_conf conf_scu[] = {
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 605e4b9..90625c5 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -191,6 +191,30 @@ enum rsnd_reg {
+ 	SSI_SYS_STATUS7,
+ 	HDMI0_SEL,
+ 	HDMI1_SEL,
++	SSI9_BUSIF0_MODE,
++	SSI9_BUSIF1_MODE,
++	SSI9_BUSIF2_MODE,
++	SSI9_BUSIF3_MODE,
++	SSI9_BUSIF4_MODE,
++	SSI9_BUSIF5_MODE,
++	SSI9_BUSIF6_MODE,
++	SSI9_BUSIF7_MODE,
++	SSI9_BUSIF0_ADINR,
++	SSI9_BUSIF1_ADINR,
++	SSI9_BUSIF2_ADINR,
++	SSI9_BUSIF3_ADINR,
++	SSI9_BUSIF4_ADINR,
++	SSI9_BUSIF5_ADINR,
++	SSI9_BUSIF6_ADINR,
++	SSI9_BUSIF7_ADINR,
++	SSI9_BUSIF0_DALIGN,
++	SSI9_BUSIF1_DALIGN,
++	SSI9_BUSIF2_DALIGN,
++	SSI9_BUSIF3_DALIGN,
++	SSI9_BUSIF4_DALIGN,
++	SSI9_BUSIF5_DALIGN,
++	SSI9_BUSIF6_DALIGN,
++	SSI9_BUSIF7_DALIGN,
+ 
+ 	/* SSI */
+ 	SSICR,
+@@ -209,6 +233,9 @@ enum rsnd_reg {
+ #define SSI_BUSIF_MODE(i)	(SSI_BUSIF0_MODE + (i))
+ #define SSI_BUSIF_ADINR(i)	(SSI_BUSIF0_ADINR + (i))
+ #define SSI_BUSIF_DALIGN(i)	(SSI_BUSIF0_DALIGN + (i))
++#define SSI9_BUSIF_MODE(i)	(SSI9_BUSIF0_MODE + (i))
++#define SSI9_BUSIF_ADINR(i)	(SSI9_BUSIF0_ADINR + (i))
++#define SSI9_BUSIF_DALIGN(i)	(SSI9_BUSIF0_DALIGN + (i))
+ #define SSI_SYS_STATUS(i)	(SSI_SYS_STATUS0 + (i))
+ 
+ 
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index c74991d..c036654 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -181,29 +181,25 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_use_busif(io)) {
+ 		int id = rsnd_mod_id(mod);
+ 		int busif = rsnd_mod_id_sub(mod);
++		int chnl = rsnd_io_is_play(io) ?
++				rsnd_runtime_channel_after_ctu(io) :
++				rsnd_runtime_channel_original(io);
+ 
+-		/*
+-		 * FIXME
+-		 *
+-		 * We can't support SSI9-4/5/6/7, because its address is
+-		 * out of calculation rule
+-		 */
+ 		if ((id == 9) && (busif >= 4)) {
+-			struct device *dev = rsnd_priv_to_dev(priv);
+-
+-			dev_err(dev, "This driver doesn't support SSI%d-%d, so far",
+-				id, busif);
++			rsnd_mod_write(mod, SSI9_BUSIF_ADINR(busif),
++				       rsnd_get_adinr_bit(mod, io) | chnl);
++			rsnd_mod_write(mod, SSI9_BUSIF_MODE(busif),
++				       rsnd_get_busif_shift(io, mod) | 1);
++			rsnd_mod_write(mod, SSI9_BUSIF_DALIGN(busif),
++				       rsnd_get_dalign(mod, io));
++		} else {
++			rsnd_mod_write(mod, SSI_BUSIF_ADINR(busif),
++				       rsnd_get_adinr_bit(mod, io) | chnl);
++			rsnd_mod_write(mod, SSI_BUSIF_MODE(busif),
++				       rsnd_get_busif_shift(io, mod) | 1);
++			rsnd_mod_write(mod, SSI_BUSIF_DALIGN(busif),
++				       rsnd_get_dalign(mod, io));
+ 		}
+-
+-		rsnd_mod_write(mod, SSI_BUSIF_ADINR(busif),
+-			       rsnd_get_adinr_bit(mod, io) |
+-			       (rsnd_io_is_play(io) ?
+-				rsnd_runtime_channel_after_ctu(io) :
+-				rsnd_runtime_channel_original(io)));
+-		rsnd_mod_write(mod, SSI_BUSIF_MODE(busif),
+-			       rsnd_get_busif_shift(io, mod) | 1);
+-		rsnd_mod_write(mod, SSI_BUSIF_DALIGN(busif),
+-			       rsnd_get_dalign(mod, io));
+ 	}
+ 
+ 	if (has_hdmi0 || has_hdmi1) {
+-- 
+2.7.4
