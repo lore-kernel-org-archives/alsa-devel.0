@@ -1,23 +1,24 @@
-From: "Schulman, James" <James.Schulman@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l36: Fix an IS_ERR() vs NULL
- checking bug
-Date: Fri, 22 Feb 2019 21:50:26 +0000
-Message-ID: <alpine.DEB.2.10.1902221549310.5957@james-tower>
-References: <20190222063151.GC30993@kadam>
- <20190222092248.GB130153@ediswmail.ad.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [v4,
+ 00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Fri, 22 Feb 2019 15:52:33 -0600
+Message-ID: <47956eb2-c4a5-bd73-12ce-f5ddfa5d108a@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+ <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
+ <CAH2Cfb9Ubbt1c4TVD8CLFPhxNW8vCCKkPhX96qpYyiV2jCi04w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C6BAF807BC
- for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2019 22:50:59 +0100 (CET)
-In-Reply-To: <20190222092248.GB130153@ediswmail.ad.cirrus.com>
+In-Reply-To: <CAH2Cfb9Ubbt1c4TVD8CLFPhxNW8vCCKkPhX96qpYyiV2jCi04w@mail.gmail.com>
 Content-Language: en-US
-Content-ID: <D627CBA2A54A444D8C5B0D3BFAA24D28@namprd19.prod.outlook.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +28,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, "Schulman, James" <James.Schulman@cirrus.com>, Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
+To: xiang xiao <xiaoxiang781216@gmail.com>
+Cc: zhongan@pinecone.net, Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, =?UTF-8?B?5p2O5qGC5LiB?= <liguiding@pinecone.net>, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, =?UTF-8?B?5a6J6LaF?= <anchao@pinecone.net>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On Fri, 22 Feb 2019, Charles Keepax wrote:
-
-> On Fri, Feb 22, 2019 at 09:31:51AM +0300, Dan Carpenter wrote:
->> The irq_get_irq_data() function doesn't return error pointers, it
->> returns NULL.
+>>> We can share our rpmsg based topology implementation as reference which:
+>>> 1.About 2500 lines(much less than SOF)
+>>> 2.Support pcm and compress playback/capture
+>>> 3.No any vendor dependence(thanks for rpmsg/remoteproc)
+>> Sure. Where's the code? What's the license?
 >>
->> Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
->> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->> ---
+> The code is base on 4.19 kernel, I could upstream the code basing on
+> the latest kernel in the next couple days for reference.
+> the license is GPL, of course.
+I'll be looking forward to the code. My turn to provide comments :-)
 >
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
->
-> Thanks,
-> Charles
->
+>> Most of the SOF code is really in hardware-specific .ops callbacks and
+>> topology handling, the generic IPC layer is only ~800 lines of code.
+>> rpmsg would allow for easier portability but a significant reduction of
+>> the code size is unlikely.
+>>
+> The reduce come from:
+> 1.Move firmware load and dsp start/stop to remoteproc layer.
+> 2.Move IPC buffer/mailbox to rpmsg layer.
 
-Thanks Dan.
+You are not going to see a lot of code reduction here, at the end of the 
+day most of the code comes from hardware-specific register access...
 
-Reviewed-by: James Schulman <james.schulman@cirrus.com>
-
-- James
+> 3.Reuse ASoC topology parser to generate the audio graph.
+> 4.Reuse ASoC DAMP to control the graph node state change(run/stop/pause/resume).
+> 5.Use the general machine driver glue all individual components
+the last 3 points are already how SOF works, wondering if there is a 
+misunderstanding... We are using topology/DAPM directly without any 
+reinvention or duplication, as measured by the multiple fixes we 
+provided to the frameworks in the last few weeks. Also when 
+dedicated/custom topology tokens are needed, you still need code to deal 
+with them and send the relevant configuration to firmware, whatever the 
+transport format might be.
