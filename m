@@ -1,23 +1,23 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH RFC 2/3] ASoC: hdmi-codec: add support for
-	bclk_ratio
-Date: Mon, 25 Feb 2019 22:58:34 +0200
-Message-ID: <f48bdac0-06ea-03e6-8794-bfb547ec1ed5@ti.com>
-References: <20190222212619.ghxly3eb6dx7p2ut@shell.armlinux.org.uk>
- <E1gxILm-0004MX-Kb@rmk-PC.armlinux.org.uk>
- <520b346f-a874-790d-61ec-fb4ac67ad046@ti.com>
- <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V2] ASoC: fsl_esai: fix channel swap issue
+ when stream starts
+Date: Mon, 25 Feb 2019 13:14:41 -0800
+Message-ID: <20190225211440.GA20734@Asurada-Nvidia.nvidia.com>
+References: <e31c31acb3c62d16e6b32682e8226c7dbc05f147.1551062751.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
+ [IPv6:2607:f8b0:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B9D0F89658
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 21:58:44 +0100 (CET)
-In-Reply-To: <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
-Content-Language: en-GB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8446CF8965B
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 22:14:47 +0100 (CET)
+Received: by mail-pf1-x441.google.com with SMTP id u9so5084149pfn.1
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 13:14:47 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <e31c31acb3c62d16e6b32682e8226c7dbc05f147.1551062751.git.shengjiu.wang@nxp.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,148 +27,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 25/02/2019 16:03, Russell King - ARM Linux admin wrote:
-> On Mon, Feb 25, 2019 at 03:45:44PM +0200, Jyri Sarha wrote:
->> On 22/02/2019 23:27, Russell King wrote:
->>> Some HDMI codecs need to know the relationship between the I2S bit clock
->>> and the I2S word clock in order to correctly generate the CTS value for
->>> audio clock recovery on the sink.
->>>
->>> Add support for this, but there are currently no callers of
->>> snd_soc_dai_set_bclk_ratio(), we provide a default implementation that
->>> uses the sample width to derive the ratio from the 8-bit aligned
->>> sample size.  This reflects the derivation that is in TDA998x, which
->>> we are going to convert to use this new support.
->>>
->>> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
->>> ---
->>>  include/sound/hdmi-codec.h    |  1 +
->>>  sound/soc/codecs/hdmi-codec.c | 45 +++++++++++++++++++++++++++++++++++++++++--
->>>  2 files changed, 44 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
->>> index 9483c55f871b..0fca69880dc3 100644
->>> --- a/include/sound/hdmi-codec.h
->>> +++ b/include/sound/hdmi-codec.h
->>> @@ -42,6 +42,7 @@ struct hdmi_codec_daifmt {
->>>  	unsigned int frame_clk_inv:1;
->>>  	unsigned int bit_clk_master:1;
->>>  	unsigned int frame_clk_master:1;
->>> +	unsigned int bclk_ratio;
->>>  };
->>>  
->>>  /*
->>> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
->>> index e5b6769b9797..d71a7e5a2231 100644
->>> --- a/sound/soc/codecs/hdmi-codec.c
->>> +++ b/sound/soc/codecs/hdmi-codec.c
->>> @@ -470,6 +470,7 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
->>>  				struct snd_soc_dai *dai)
->>>  {
->>>  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
->>> +	struct hdmi_codec_daifmt fmt;
->>>  	struct hdmi_codec_params hp = {
->>>  		.iec = {
->>>  			.status = { 0 },
->>> @@ -520,8 +521,43 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
->>>  	hp.sample_rate = params_rate(params);
->>>  	hp.channels = params_channels(params);
->>>  
->>> +	fmt = hcp->daifmt[dai->id];
->>> +
->>> +	/*
->>> +	 * If the .set_bclk_ratio() has not been called, default it
->>> +	 * using the sample width for compatibility for TDA998x.
->>> +	 * Rather than changing this, drivers should arrange to make
->>> +	 * an appropriate call to snd_soc_dai_set_bclk_ratio().
->>> +	 */
->>> +	if (fmt.bclk_ratio == 0) {
->>> +		switch (hp.sample_width) {
->>> +		case 16:
->>> +			fmt.bclk_ratio = 32;
->>> +			break;
->>> +		case 18:
->>> +		case 20:
->>> +		case 24:
->>> +			fmt.bclk_ratio = 48;
->>> +			break;
->>
->> AFAIK, this is not the usual choice for 18- or 20-bit samples. Usually,
->> the bclk_ratio is set to the exact frame length required by the sample
->> width without any padding. That is at least the case with
->> tlv320aic3x-driver and 20-bit sample width.
+On Mon, Feb 25, 2019 at 02:48:18AM +0000, S.j. Wang wrote:
+> There is very low possibility ( < 0.1% ) that channel swap happened
+> in beginning when multi output/input pin is enabled. The issue is
+> that hardware can't send data to correct pin in the beginning with
+> the normal enable flow.
 > 
-> As mentioned in the commit message, this is what TDA998x does today,
-> and I have to assume that the contributor tested this, who seems to
-> be one Jyri Sarha in commit 95db3b255fde ("drm/i2c: tda998x: Improve
-> tda998x_configure_audio() audio related pdata").
+> This is hardware issue, but there is no errata, the workaround flow
+> is that: Each time playback/recording, firstly clear the xSMA/xSMB,
+> then enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
+> before xSMA). Which is to use the xSMA as the trigger start register,
+> previously the xCR_TE or xCR_RE is the bit for starting.
 > 
-
-Yes, my original implementation was a bit optimistic. I only had limited
-information about the chip and a somewhat working undocumented hackish
-driver implementation. By now it's clear that rejecting anything but
-16-, 24-, or 32-bit sample widths (32, 48, or 64 bclk ratios) would have
-been right way to go.
-
-> If we don't do it this way, then converting TDA998x to use this
-> defaulting would change the already established behaviour.  As there
-> are no users of this by hdmi-codec implementations, and as there are
-> no callers of snd_soc_dai_set_bclk_ratio(), the only way to maintain
-> the current behaviour in TDA998x is to either place a default in
-> hdmi-codec.c, or to have hdmi-codec.c pass zero into TDA998x and have
-> that encode the above.
+> Fixes 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+> Cc: <stable@vger.kernel.org>
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+> Changes in v2
+> - update commit comments.
 > 
-
-I think there are other options too. The obvious one would be passing
-the blck_ratio callback trough HDMI-codec to HDMI-bridge-driver, but
-yes, I do not like that either.
-
-The other would be changing the implicit bclk_ratio to 2 x sample-width,
-and accepting blck_ratios of 36 and 40 in tda998x, and set CTS_N_M = 3
-and CTS_N_K = 2 for them too.
-
-This way my bad choices would not spread to all hdmi-codec users.
-
-Then again, I don't think anyone is using 18- or 20-bit samples with
-tda998x. They most likely do not even work. So simply refusing the 36
-and 40 blck_ratios would probably be just fine too.
-
-> I would much rather every user of hdmi-codec gained support for
-> snd_soc_dai_set_bclk_ratio() rather than relying on that default, but
-> that is beyond what I can do - I don't have the knowledge of which
-> sound setups would need it, and I don't have any platforms that are
-> configured to use I2S with TDA998x.
+>  sound/soc/fsl/fsl_esai.c | 32 ++++++++++++++++++++++----------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
 > 
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index afe67c865330..23bd0ad4ac31 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -54,6 +54,8 @@ struct fsl_esai {
+>  	u32 fifo_depth;
+>  	u32 slot_width;
+>  	u32 slots;
+> +	u32 tx_mask;
+> +	u32 rx_mask;
+>  	u32 hck_rate[2];
+>  	u32 sck_rate[2];
+>  	bool hck_dir[2];
+> @@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+>  	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
+>  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+>  
+> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
+> -			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
+> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
+> -			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
+> -
+>  	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
+>  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+>  
+> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
+> -			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
+> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
+> -			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
+> -
+>  	esai_priv->slot_width = slot_width;
+>  	esai_priv->slots = slots;
+> +	esai_priv->tx_mask    = tx_mask;
+> +	esai_priv->rx_mask    = rx_mask;
 
-The little that I know how ASoC is generally used, it is no wonder that
-so few drivers have implemented it. In 99% of the cases that I have
-encountered the bclk_ratio is sample_width*channels. I cases where
-something else is needed the blck_ratio is not the only missing piece.
+The two masks only got values here. If a machine driver doesn't
+have a set_dai_tdm_slot() call, they will be remained as 0 and
+then will seemly clean those four registers.
 
-> The Dove Cubox has spdif and i2s but is setup to use spdif (since
-> that is the most flexible, supporting compressed audio.)  I've a large
-> pile of unsubmittable patches there which makes kirkwood use DPCM, as
-> they would end up breaking all the existing users, and from what I can
-> see there's no way around that.  That makes submitting a patch to add
-> snd_soc_dai_set_bclk_ratio() very difficult.  That said, the above
-> defaults are not correct for kirkwood-i2s - that always uses bclk
-> running at 64fs, as per the TDA998x code prior to your patch I mention
-> above.
+Thanks
+Nicolin
+
+>  
+>  	return 0;
+>  }
+> @@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+>  	u8 i, channels = substream->runtime->channels;
+>  	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
+> +	u32 mask;
+>  
+>  	switch (cmd) {
+>  	case SNDRV_PCM_TRIGGER_START:
+> @@ -611,12 +606,23 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+>  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+>  				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
+>  				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
+> +		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
+> +
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
+> +				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
+> +				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
+> +
+>  		break;
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+>  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+>  				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
+> +				   ESAI_xSMA_xS_MASK, 0);
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
+> +				   ESAI_xSMB_xS_MASK, 0);
+>  
+>  		/* Disable and reset FIFO */
+>  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
+> @@ -906,6 +912,12 @@ static int fsl_esai_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	/* Clear the TSMA, TSMB, RSMA, RSMB */
+> +	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
+> +	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
+> +	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
+> +	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
+> +
+>  	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
+>  					      &fsl_esai_dai, 1);
+>  	if (ret) {
+> -- 
+> 1.9.1
 > 
-> ARM Juno has two TDA998x, but the DT description lacks any audio
-> description, so it's not clear whether these are even wired.
-> 
-> The ARM MPS platform has a TDA998x connected to a HDLCD, but the HDLCD
-> does not have an interrupt - and the DRM driver requires an interrupt.
-> The conclusion that was come to there is basically "don't even bother".
-> Also unknown whether audio is wired up.
-> 
-
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
