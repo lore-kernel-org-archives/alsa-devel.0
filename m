@@ -1,89 +1,104 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH -next] platform/chrome: Fix Kconfig dependencies for
- wilco_ec
-Date: Mon, 25 Feb 2019 11:11:48 +0100
-Message-ID: <e30adf98-143b-a9fb-3675-c356bdf31ad0@collabora.com>
-References: <20190220221128.48476-1-ncrews@chromium.org>
- <420e6e26-6270-e577-6bbc-3ebe884168b5@infradead.org>
- <765ebb17-4523-d915-bdce-9ecde26836f0@collabora.com>
- <9ac9ee8e-cd7a-10e4-e176-428344e980a6@infradead.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [Sound-open-firmware]  [v4,
+ 00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Mon, 25 Feb 2019 10:16:02 +0000
+Message-ID: <89a64af2-522b-7b90-8f46-6c50b4f773d3@linaro.org>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+ <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9ac9ee8e-cd7a-10e4-e176-428344e980a6@infradead.org>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>, Nick Crews <ncrews@chromium.org>, bleung@chromium.org
-Cc: linux-kernel@vger.kernel.org, dlaurie@chromium.org, sfr@canb.auug.org.au, cychiang@chromium.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3346AF89634
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 11:16:05 +0100 (CET)
+Received: by mail-wm1-x344.google.com with SMTP id m1so7476738wml.2
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 02:16:05 -0800 (PST)
+In-Reply-To: <750e7de7-eb2c-81f3-32f0-420c89e7b34b@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, xiang xiao <xiaoxiang781216@gmail.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Bjorn Andersson <bjorn.andersson@linaro.org>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Xiang Xiao <xiaoxiang@xiaomi.com>, sound-open-firmware@alsa-project.org, wendy.liang@xilinx.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Randy,
 
-Thanks for the report
 
-On 22/2/19 17:50, Randy Dunlap wrote:
-> On 2/20/19 11:57 PM, Enric Balletbo i Serra wrote:
->> Hi,
->>
->> On 21/2/19 0:09, Randy Dunlap wrote:
->>> On 2/20/19 2:11 PM, Nick Crews wrote:
->>>> In the initial version of the Wilco EC Driver, the
->>>> dependency order was wrong. It before was possible to
->>>> select CONFIG_WILCO_EC and CONFIG_CROS_EC_LPC without
->>>> having CONFIG_CROS_EC_LPC_MEC. This was wrong, since
->>>> WILCO_EC depends upon CONFIG CROS_EC_LPC_MEC, not the
->>>> other way around.
->>>>
->>>> Fixes: 1733c32834e5d1 ("platform/chrome: Add new driver for Wilco EC")
->>>> Signed-off-by: Nick Crews <ncrews@chromium.org>
->>>
->>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->>>
->>
->> As this is [-next] material I squashed that commit and queued for 5.1
+On 22/02/2019 14:48, Pierre-Louis Bossart wrote:
+>> drivers\rpmsg\rpmsg_internal.h) but keep the upper layer API, qcomm
+>> utilize this for glink and smd actually.
 > 
-> Hi,
+> That's interesting. Can anyone at Qualcomm/Linaro point to actual 
+> examples of the implementation, so that we get a better picture of the 
+> split between 'upper layer API' and 'custom mechanism'?
 > 
-> on linux-next of 20190222, I now see this build error + Kconfig warnings:
-> 
-> (this is on i386; randconfig file is attached)
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_CROS_EC_CODEC
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MFD_CROS_EC [=n]
->   Selected by [y]:
->   - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y]
+Here is an example of Qualcomm Audio Hexagon DSP :
 
+Remoteproc driver to start dsp is at:
 
-This error seems to be introduced by following commit.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/remoteproc/qcom_common.c?h=v5.0-rc8
 
-commit 74c6ecf4194ebed285b29964a950e0cd7414fe19
-Author: Cheng-Yi Chiang <cychiang@chromium.org>
-Date:   Mon Feb 18 12:18:19 2019 +0800
+Which registers rpmsg channels based of glink or SMD transport once dsp 
+is booted at:
 
-    ASoC: qcom: Kconfig: select dmic for sdm845
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/rpmsg/qcom_glink_smem.c?h=v5.0-rc8 
+and few other files in drivers/rpmsg/
 
-    sdm845 uses dmic on EC so it should select CROS_EC_CODEC.
+This rpmsg driver driver will create and destroy 
+endpoints/edges/channels/services based on dsp services and dsp 
+notifications. These notifications are passed to service drivers via 
+rpmsg device driver model.
 
-    Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-    Signed-off-by: Mark Brown <broonie@kernel.org>
+One example of audio service driver is:
 
-The problem is that this commit selects CROS_EC_CODEC but the CROS_EC_CODEC
-depends on MFD_CROS_EC which is not selected.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/soc/qcom/apr.c?h=v5.0-rc8
 
-A question for Cheng-Yi, I suppose that the answer is yes but worth ask because
-I don't know about this device. Is the sdm845 a chromebook with and embedded
-controller right?
+and the audio drivers are at:
 
-Thanks,
-Enric
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/qcom/qdsp6?h=v5.0-rc8
 
-> 
-> ld: sound/soc/codecs/cros_ec_codec.o: in function `ec_command_no_resp':
-> cros_ec_codec.c:(.text+0x50): undefined reference to `cros_ec_cmd_xfer_status'
-> ld: sound/soc/codecs/cros_ec_codec.o: in function `mic_gain_get':
-> cros_ec_codec.c:(.text+0x5a8): undefined reference to `cros_ec_cmd_xfer_status'
-> 
-> 
-> 
+An example Device Tree of audio and DSP compute offload would look like 
+this:
+
+adsp-pil {
+	compatible = "qcom,msm8996-adsp-pil";
+	smd-edge {
+		label = "lpass";
+                 mboxes = <&apcs_glb 8>;
+                 qcom,smd-edge = <1>;
+                 qcom,remote-pid = <2>;
+
+		apr {
+                 	compatible = "qcom,apr-v2";
+                         qcom,smd-channels = "apr_audio_svc";
+			...
+		};
+
+                 fastrpc {
+			qcom,smd-channels = "fastrpcsmd-apps-dsp";
+			compatible = "qcom,fastrpc";
+			...
+		}
+		...
+	};
+};
+
+thanks,
+srini
