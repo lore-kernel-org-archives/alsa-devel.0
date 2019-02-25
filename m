@@ -1,19 +1,23 @@
-From: Michael Niedermayer <michael@niedermayer.cc>
-Subject: Re: ftp.alsa-project.org connection problems
-Date: Mon, 25 Feb 2019 21:43:47 +0100
-Message-ID: <20190225204347.GZ6706@michaelspb>
-References: <20190225180431.GY6706@michaelspb>
- <f358a020-3166-ec1d-dd88-f08d8c5e6996@perex.cz>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH RFC 2/3] ASoC: hdmi-codec: add support for
+	bclk_ratio
+Date: Mon, 25 Feb 2019 22:58:34 +0200
+Message-ID: <f48bdac0-06ea-03e6-8794-bfb547ec1ed5@ti.com>
+References: <20190222212619.ghxly3eb6dx7p2ut@shell.armlinux.org.uk>
+ <E1gxILm-0004MX-Kb@rmk-PC.armlinux.org.uk>
+ <520b346f-a874-790d-61ec-fb4ac67ad046@ti.com>
+ <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1125873441273735170=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BAA7F89658
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 21:43:49 +0100 (CET)
-In-Reply-To: <f358a020-3166-ec1d-dd88-f08d8c5e6996@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B9D0F89658
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 21:58:44 +0100 (CET)
+In-Reply-To: <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
+Content-Language: en-GB
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +27,148 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 25/02/2019 16:03, Russell King - ARM Linux admin wrote:
+> On Mon, Feb 25, 2019 at 03:45:44PM +0200, Jyri Sarha wrote:
+>> On 22/02/2019 23:27, Russell King wrote:
+>>> Some HDMI codecs need to know the relationship between the I2S bit clock
+>>> and the I2S word clock in order to correctly generate the CTS value for
+>>> audio clock recovery on the sink.
+>>>
+>>> Add support for this, but there are currently no callers of
+>>> snd_soc_dai_set_bclk_ratio(), we provide a default implementation that
+>>> uses the sample width to derive the ratio from the 8-bit aligned
+>>> sample size.  This reflects the derivation that is in TDA998x, which
+>>> we are going to convert to use this new support.
+>>>
+>>> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+>>> ---
+>>>  include/sound/hdmi-codec.h    |  1 +
+>>>  sound/soc/codecs/hdmi-codec.c | 45 +++++++++++++++++++++++++++++++++++++++++--
+>>>  2 files changed, 44 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+>>> index 9483c55f871b..0fca69880dc3 100644
+>>> --- a/include/sound/hdmi-codec.h
+>>> +++ b/include/sound/hdmi-codec.h
+>>> @@ -42,6 +42,7 @@ struct hdmi_codec_daifmt {
+>>>  	unsigned int frame_clk_inv:1;
+>>>  	unsigned int bit_clk_master:1;
+>>>  	unsigned int frame_clk_master:1;
+>>> +	unsigned int bclk_ratio;
+>>>  };
+>>>  
+>>>  /*
+>>> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+>>> index e5b6769b9797..d71a7e5a2231 100644
+>>> --- a/sound/soc/codecs/hdmi-codec.c
+>>> +++ b/sound/soc/codecs/hdmi-codec.c
+>>> @@ -470,6 +470,7 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+>>>  				struct snd_soc_dai *dai)
+>>>  {
+>>>  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+>>> +	struct hdmi_codec_daifmt fmt;
+>>>  	struct hdmi_codec_params hp = {
+>>>  		.iec = {
+>>>  			.status = { 0 },
+>>> @@ -520,8 +521,43 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+>>>  	hp.sample_rate = params_rate(params);
+>>>  	hp.channels = params_channels(params);
+>>>  
+>>> +	fmt = hcp->daifmt[dai->id];
+>>> +
+>>> +	/*
+>>> +	 * If the .set_bclk_ratio() has not been called, default it
+>>> +	 * using the sample width for compatibility for TDA998x.
+>>> +	 * Rather than changing this, drivers should arrange to make
+>>> +	 * an appropriate call to snd_soc_dai_set_bclk_ratio().
+>>> +	 */
+>>> +	if (fmt.bclk_ratio == 0) {
+>>> +		switch (hp.sample_width) {
+>>> +		case 16:
+>>> +			fmt.bclk_ratio = 32;
+>>> +			break;
+>>> +		case 18:
+>>> +		case 20:
+>>> +		case 24:
+>>> +			fmt.bclk_ratio = 48;
+>>> +			break;
+>>
+>> AFAIK, this is not the usual choice for 18- or 20-bit samples. Usually,
+>> the bclk_ratio is set to the exact frame length required by the sample
+>> width without any padding. That is at least the case with
+>> tlv320aic3x-driver and 20-bit sample width.
+> 
+> As mentioned in the commit message, this is what TDA998x does today,
+> and I have to assume that the contributor tested this, who seems to
+> be one Jyri Sarha in commit 95db3b255fde ("drm/i2c: tda998x: Improve
+> tda998x_configure_audio() audio related pdata").
+> 
 
---===============1125873441273735170==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="q5wOvoHkaccQRDme"
-Content-Disposition: inline
+Yes, my original implementation was a bit optimistic. I only had limited
+information about the chip and a somewhat working undocumented hackish
+driver implementation. By now it's clear that rejecting anything but
+16-, 24-, or 32-bit sample widths (32, 48, or 64 bclk ratios) would have
+been right way to go.
+
+> If we don't do it this way, then converting TDA998x to use this
+> defaulting would change the already established behaviour.  As there
+> are no users of this by hdmi-codec implementations, and as there are
+> no callers of snd_soc_dai_set_bclk_ratio(), the only way to maintain
+> the current behaviour in TDA998x is to either place a default in
+> hdmi-codec.c, or to have hdmi-codec.c pass zero into TDA998x and have
+> that encode the above.
+> 
+
+I think there are other options too. The obvious one would be passing
+the blck_ratio callback trough HDMI-codec to HDMI-bridge-driver, but
+yes, I do not like that either.
+
+The other would be changing the implicit bclk_ratio to 2 x sample-width,
+and accepting blck_ratios of 36 and 40 in tda998x, and set CTS_N_M = 3
+and CTS_N_K = 2 for them too.
+
+This way my bad choices would not spread to all hdmi-codec users.
+
+Then again, I don't think anyone is using 18- or 20-bit samples with
+tda998x. They most likely do not even work. So simply refusing the 36
+and 40 blck_ratios would probably be just fine too.
+
+> I would much rather every user of hdmi-codec gained support for
+> snd_soc_dai_set_bclk_ratio() rather than relying on that default, but
+> that is beyond what I can do - I don't have the knowledge of which
+> sound setups would need it, and I don't have any platforms that are
+> configured to use I2S with TDA998x.
+> 
+
+The little that I know how ASoC is generally used, it is no wonder that
+so few drivers have implemented it. In 99% of the cases that I have
+encountered the bclk_ratio is sample_width*channels. I cases where
+something else is needed the blck_ratio is not the only missing piece.
+
+> The Dove Cubox has spdif and i2s but is setup to use spdif (since
+> that is the most flexible, supporting compressed audio.)  I've a large
+> pile of unsubmittable patches there which makes kirkwood use DPCM, as
+> they would end up breaking all the existing users, and from what I can
+> see there's no way around that.  That makes submitting a patch to add
+> snd_soc_dai_set_bclk_ratio() very difficult.  That said, the above
+> defaults are not correct for kirkwood-i2s - that always uses bclk
+> running at 64fs, as per the TDA998x code prior to your patch I mention
+> above.
+> 
+> ARM Juno has two TDA998x, but the DT description lacks any audio
+> description, so it's not clear whether these are even wired.
+> 
+> The ARM MPS platform has a TDA998x connected to a HDLCD, but the HDLCD
+> does not have an interrupt - and the DRM driver requires an interrupt.
+> The conclusion that was come to there is basically "don't even bother".
+> Also unknown whether audio is wired up.
+> 
 
 
---q5wOvoHkaccQRDme
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 25, 2019 at 08:52:33PM +0100, Jaroslav Kysela wrote:
-> Dne 25. 02. 19 v 19:04 Michael Niedermayer napsal(a):
-> > Hi
-> >=20
-> > Iam not sure this is the correct place to report this to but i didnt se=
-e it
-> > being reported anywhere yet on the ML archive or google
->=20
-> ...
->=20
-> > =3D=3D> PASV ... couldn't connect to 207.180.221.201 port 35333: No rou=
-te to host
-> Hi,
->=20
->   it seems that the ftp conntrack module was not loaded correctly after
-> reboot, so the firewall blocks the passive connections. Could you give a
-> try again?
-
-works fine locally
-
-Thanks!
-
-[...]
-
---=20
-Michael     GnuPG fingerprint: 9FF2128B147EF6730BADF133611EC787040B0FAB
-
-The smallest minority on earth is the individual. Those who deny=20
-individual rights cannot claim to be defenders of minorities. - Ayn Rand
-
---q5wOvoHkaccQRDme
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlx0U4MACgkQYR7HhwQLD6u4tACfW0PYTU9Dthd0re0gHZLGXV30
-NGQAniGcmi+gkJ8Z8kOa11OdzDOQY3iP
-=l9v4
------END PGP SIGNATURE-----
-
---q5wOvoHkaccQRDme--
-
---===============1125873441273735170==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1125873441273735170==--
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
