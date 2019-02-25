@@ -1,104 +1,200 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH -next] platform/chrome: Fix Kconfig dependencies for wilco_ec
-Date: Mon, 25 Feb 2019 18:22:31 +0800
-Message-ID: <CAFv8NwJ9R3wRMPzSKqUiVc7iwEViaswYbZ0JyvG0En8d_5nZLw@mail.gmail.com>
-References: <20190220221128.48476-1-ncrews@chromium.org> <420e6e26-6270-e577-6bbc-3ebe884168b5@infradead.org>
- <765ebb17-4523-d915-bdce-9ecde26836f0@collabora.com> <9ac9ee8e-cd7a-10e4-e176-428344e980a6@infradead.org>
- <e30adf98-143b-a9fb-3675-c356bdf31ad0@collabora.com>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH v2] ASoC: rsnd: gen: fix SSI9 4/5/6/7 busif related register address
+Date: Mon, 25 Feb 2019 12:14:20 +0100
+Message-ID: <1551093260-28998-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e30adf98-143b-a9fb-3675-c356bdf31ad0@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Nick Crews <ncrews@chromium.org>, Benson Leung <bleung@chromium.org>, linux-kernel <linux-kernel@vger.kernel.org>, dlaurie@chromium.org, sfr@canb.auug.org.au, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+To: patch@alsa-project.org, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 25, 2019 at 6:11 PM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> Hi Randy,
->
-> Thanks for the report
->
-> On 22/2/19 17:50, Randy Dunlap wrote:
-> > On 2/20/19 11:57 PM, Enric Balletbo i Serra wrote:
-> >> Hi,
-> >>
-> >> On 21/2/19 0:09, Randy Dunlap wrote:
-> >>> On 2/20/19 2:11 PM, Nick Crews wrote:
-> >>>> In the initial version of the Wilco EC Driver, the
-> >>>> dependency order was wrong. It before was possible to
-> >>>> select CONFIG_WILCO_EC and CONFIG_CROS_EC_LPC without
-> >>>> having CONFIG_CROS_EC_LPC_MEC. This was wrong, since
-> >>>> WILCO_EC depends upon CONFIG CROS_EC_LPC_MEC, not the
-> >>>> other way around.
-> >>>>
-> >>>> Fixes: 1733c32834e5d1 ("platform/chrome: Add new driver for Wilco EC")
-> >>>> Signed-off-by: Nick Crews <ncrews@chromium.org>
-> >>>
-> >>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> >>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> >>>
-> >>
-> >> As this is [-next] material I squashed that commit and queued for 5.1
-> >
-> > Hi,
-> >
-> > on linux-next of 20190222, I now see this build error + Kconfig warnings:
-> >
-> > (this is on i386; randconfig file is attached)
-> >
-> > WARNING: unmet direct dependencies detected for SND_SOC_CROS_EC_CODEC
-> >   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MFD_CROS_EC [=n]
-> >   Selected by [y]:
-> >   - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y]
->
->
-> This error seems to be introduced by following commit.
->
-> commit 74c6ecf4194ebed285b29964a950e0cd7414fe19
-> Author: Cheng-Yi Chiang <cychiang@chromium.org>
-> Date:   Mon Feb 18 12:18:19 2019 +0800
->
->     ASoC: qcom: Kconfig: select dmic for sdm845
->
->     sdm845 uses dmic on EC so it should select CROS_EC_CODEC.
->
->     Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
->     Signed-off-by: Mark Brown <broonie@kernel.org>
->
-> The problem is that this commit selects CROS_EC_CODEC but the CROS_EC_CODEC
-> depends on MFD_CROS_EC which is not selected.
->
-> A question for Cheng-Yi, I suppose that the answer is yes but worth ask because
-> I don't know about this device. Is the sdm845 a chromebook with and embedded
-> controller right?
->
-> Thanks,
-> Enric
->
+From: Jiada Wang <jiada_wang@mentor.com>
 
-Hi Enric,
-Yes you are right.
-Sorry for causing the trouble.
-I will post a patch to fix it.
+Currently each SSI unit 's busif mode/adinr/dalign address is
+registered by: (in busif4 case)
+RSND_GEN_M_REG(SSI_BUSIF4_MODE, 0x500, 0x80)
+RSND_GEN_M_REG(SSI_BUSIF4_ADINR,0x504, 0x80)
+RSND_GEN_M_REG(SSI_BUSIF4_DALIGN, 0x508, 0x80)
 
-Could you please let me know what is the command for your build ?
-Currently I am using command like
-ARCH=x86_64 make allyesconfig
-ARCH=x86_64 make -j64
+But according to user manual 41.1.4 Register Configuration
+ssi9 4/5/6/7 busif mode/adinr/dalign register address
+( SSI9-[4/5/6/7]_BUSIF_[MODE/ADINR/DALIGN] )
+are out of this rule.
 
-to verify the build, which is not useful to catch bug like this.
-If you have any other good tip for checking this kind of error please
-kindly let me know.
-Thanks!
+This patch registers ssi9 4/5/6/7 mode/adinr/dalign register
+as single register, and access these registers in case of
+SSI9 BUSIF 4/5/6/7.
 
-> >
-> > ld: sound/soc/codecs/cros_ec_codec.o: in function `ec_command_no_resp':
-> > cros_ec_codec.c:(.text+0x50): undefined reference to `cros_ec_cmd_xfer_status'
-> > ld: sound/soc/codecs/cros_ec_codec.o: in function `mic_gain_get':
-> > cros_ec_codec.c:(.text+0x5a8): undefined reference to `cros_ec_cmd_xfer_status'
-> >
-> >
-> >
+Fixes: commit 8c9d75033340 ("ASoC: rsnd: ssiu: Support BUSIF other than BUSIF0")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+---
+Hi all,
+
+On 2/25/19 02:29, Kuninori Morimoto wrote:
+> I think
+>	- and access these these registers
+>	+ and access these registers
+
+Done.
+
+On 2/25/19 02:29, Kuninori Morimoto wrote:
+> Necessary register on rsnd_mod_write() is just number today.
+> So how about this ? Code will be more simple/readable
+>
+>	if ((id == 9) && (busif >= 4)) {
+>		adinr	= SSI9_BUSIF_ADINR();
+>		mode	= SSI9_BUSIF_MODE();
+>		daligh	= SSI9_BUSIF_DALIGN();
+>	} else {
+>		adinr	= SSI_BUSIF_ADINR();
+>		mode	= SSI_BUSIF_MODE();
+>		daligh	= SSI_BUSIF_DALIGN();
+>	}
+>
+>	rsnd_mod_write(mod, adinr,
+>			rsnd_get_adinr_bit(mod, io) | chnl);
+>	rsnd_mod_write(mod, mode,
+>			rsnd_get_busif_shift(io, mod) | 1);
+>	rsnd_mod_write(mod, dalign,
+>			rsnd_get_dalign(mod, io));
+
+Done.
+
+Best regards
+
+Timo
+
+ sound/soc/sh/rcar/gen.c  | 24 ++++++++++++++++++++++++
+ sound/soc/sh/rcar/rsnd.h | 27 +++++++++++++++++++++++++++
+ sound/soc/sh/rcar/ssiu.c | 24 +++++++++++-------------
+ 3 files changed, 62 insertions(+), 13 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 7cda601..af19010 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -255,6 +255,30 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_M_REG(SSI_MODE,		0xc,	0x80),
+ 		RSND_GEN_M_REG(SSI_CTRL,		0x10,	0x80),
+ 		RSND_GEN_M_REG(SSI_INT_ENABLE,		0x18,	0x80),
++		RSND_GEN_S_REG(SSI9_BUSIF0_MODE,	0x48c),
++		RSND_GEN_S_REG(SSI9_BUSIF0_ADINR,	0x484),
++		RSND_GEN_S_REG(SSI9_BUSIF0_DALIGN,	0x488),
++		RSND_GEN_S_REG(SSI9_BUSIF1_MODE,	0x4a0),
++		RSND_GEN_S_REG(SSI9_BUSIF1_ADINR,	0x4a4),
++		RSND_GEN_S_REG(SSI9_BUSIF1_DALIGN,	0x4a8),
++		RSND_GEN_S_REG(SSI9_BUSIF2_MODE,	0x4c0),
++		RSND_GEN_S_REG(SSI9_BUSIF2_ADINR,	0x4c4),
++		RSND_GEN_S_REG(SSI9_BUSIF2_DALIGN,	0x4c8),
++		RSND_GEN_S_REG(SSI9_BUSIF3_MODE,	0x4e0),
++		RSND_GEN_S_REG(SSI9_BUSIF3_ADINR,	0x4e4),
++		RSND_GEN_S_REG(SSI9_BUSIF3_DALIGN,	0x4e8),
++		RSND_GEN_S_REG(SSI9_BUSIF4_MODE,	0xd80),
++		RSND_GEN_S_REG(SSI9_BUSIF4_ADINR,	0xd84),
++		RSND_GEN_S_REG(SSI9_BUSIF4_DALIGN,	0xd88),
++		RSND_GEN_S_REG(SSI9_BUSIF5_MODE,	0xda0),
++		RSND_GEN_S_REG(SSI9_BUSIF5_ADINR,	0xda4),
++		RSND_GEN_S_REG(SSI9_BUSIF5_DALIGN,	0xda8),
++		RSND_GEN_S_REG(SSI9_BUSIF6_MODE,	0xdc0),
++		RSND_GEN_S_REG(SSI9_BUSIF6_ADINR,	0xdc4),
++		RSND_GEN_S_REG(SSI9_BUSIF6_DALIGN,	0xdc8),
++		RSND_GEN_S_REG(SSI9_BUSIF7_MODE,	0xde0),
++		RSND_GEN_S_REG(SSI9_BUSIF7_ADINR,	0xde4),
++		RSND_GEN_S_REG(SSI9_BUSIF7_DALIGN,	0xde8),
+ 	};
+ 
+ 	static const struct rsnd_regmap_field_conf conf_scu[] = {
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 605e4b9..90625c5 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -191,6 +191,30 @@ enum rsnd_reg {
+ 	SSI_SYS_STATUS7,
+ 	HDMI0_SEL,
+ 	HDMI1_SEL,
++	SSI9_BUSIF0_MODE,
++	SSI9_BUSIF1_MODE,
++	SSI9_BUSIF2_MODE,
++	SSI9_BUSIF3_MODE,
++	SSI9_BUSIF4_MODE,
++	SSI9_BUSIF5_MODE,
++	SSI9_BUSIF6_MODE,
++	SSI9_BUSIF7_MODE,
++	SSI9_BUSIF0_ADINR,
++	SSI9_BUSIF1_ADINR,
++	SSI9_BUSIF2_ADINR,
++	SSI9_BUSIF3_ADINR,
++	SSI9_BUSIF4_ADINR,
++	SSI9_BUSIF5_ADINR,
++	SSI9_BUSIF6_ADINR,
++	SSI9_BUSIF7_ADINR,
++	SSI9_BUSIF0_DALIGN,
++	SSI9_BUSIF1_DALIGN,
++	SSI9_BUSIF2_DALIGN,
++	SSI9_BUSIF3_DALIGN,
++	SSI9_BUSIF4_DALIGN,
++	SSI9_BUSIF5_DALIGN,
++	SSI9_BUSIF6_DALIGN,
++	SSI9_BUSIF7_DALIGN,
+ 
+ 	/* SSI */
+ 	SSICR,
+@@ -209,6 +233,9 @@ enum rsnd_reg {
+ #define SSI_BUSIF_MODE(i)	(SSI_BUSIF0_MODE + (i))
+ #define SSI_BUSIF_ADINR(i)	(SSI_BUSIF0_ADINR + (i))
+ #define SSI_BUSIF_DALIGN(i)	(SSI_BUSIF0_DALIGN + (i))
++#define SSI9_BUSIF_MODE(i)	(SSI9_BUSIF0_MODE + (i))
++#define SSI9_BUSIF_ADINR(i)	(SSI9_BUSIF0_ADINR + (i))
++#define SSI9_BUSIF_DALIGN(i)	(SSI9_BUSIF0_DALIGN + (i))
+ #define SSI_SYS_STATUS(i)	(SSI_SYS_STATUS0 + (i))
+ 
+ 
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index c74991d..2347f34 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -181,28 +181,26 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_use_busif(io)) {
+ 		int id = rsnd_mod_id(mod);
+ 		int busif = rsnd_mod_id_sub(mod);
++		enum rsnd_reg adinr_reg, mode_reg, dalign_reg;
+ 
+-		/*
+-		 * FIXME
+-		 *
+-		 * We can't support SSI9-4/5/6/7, because its address is
+-		 * out of calculation rule
+-		 */
+ 		if ((id == 9) && (busif >= 4)) {
+-			struct device *dev = rsnd_priv_to_dev(priv);
+-
+-			dev_err(dev, "This driver doesn't support SSI%d-%d, so far",
+-				id, busif);
++			adinr_reg = SSI9_BUSIF_ADINR(busif);
++			mode_reg = SSI9_BUSIF_MODE(busif);
++			dalign_reg = SSI9_BUSIF_DALIGN(busif);
++		} else {
++			adinr_reg = SSI_BUSIF_ADINR(busif);
++			mode_reg = SSI_BUSIF_MODE(busif);
++			dalign_reg = SSI_BUSIF_DALIGN(busif);
+ 		}
+ 
+-		rsnd_mod_write(mod, SSI_BUSIF_ADINR(busif),
++		rsnd_mod_write(mod, adinr_reg,
+ 			       rsnd_get_adinr_bit(mod, io) |
+ 			       (rsnd_io_is_play(io) ?
+ 				rsnd_runtime_channel_after_ctu(io) :
+ 				rsnd_runtime_channel_original(io)));
+-		rsnd_mod_write(mod, SSI_BUSIF_MODE(busif),
++		rsnd_mod_write(mod, mode_reg,
+ 			       rsnd_get_busif_shift(io, mod) | 1);
+-		rsnd_mod_write(mod, SSI_BUSIF_DALIGN(busif),
++		rsnd_mod_write(mod, dalign_reg,
+ 			       rsnd_get_dalign(mod, io));
+ 	}
+ 
+-- 
+2.7.4
