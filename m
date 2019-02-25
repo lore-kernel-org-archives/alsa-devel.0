@@ -1,24 +1,17 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [Sound-open-firmware]  [v4,
- 00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Mon, 25 Feb 2019 11:05:15 +0800
-Message-ID: <22872b53-338f-df35-8682-129b2db83b7e@linux.intel.com>
-References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
- <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
- <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
- <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
- <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
- <20190221043925.GF2736@vkoul-mobl>
- <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
- <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
- <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
- <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
+From: Rander Wang <rander.wang@linux.intel.com>
+Subject: [PATCH] ASoC:hdac_hda: use correct format to setup hda
+	codec
+Date: Mon, 25 Feb 2019 15:48:45 +0800
+Message-ID: <20190225074845.73950-1-rander.wang@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
-Content-Language: en-US
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55348F8961F
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 08:46:53 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,48 +21,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: xiang xiao <xiaoxiang781216@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, wendy.liang@xilinx.com, sound-open-firmware@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE5LzIvMjMg5LiK5Y2IMjoyMSwgeGlhbmcgeGlhbyB3cm90ZToKPiBPbiBGcmksIEZl
-YiAyMiwgMjAxOSBhdCA3OjEzIFBNIEtleW9uIEppZSA8eWFuZy5qaWVAbGludXguaW50ZWwuY29t
-PiB3cm90ZToKPj4gVGhlbiB0aGlzIGxvb2tzIGRvYWJsZSwgdGhhbmtzIGZvciBzaGFyaW5nIFhp
-YW5nLgo+Pgo+PiBJIGhhdmUgc2V2ZXJhbCBxdWVzdGlvbnM6Cj4+IDEuIElzIHZpcnRpbyBkZXZp
-Y2UgYW5kIHZyaW5nIGJ1ZmZlciBhY2Nlc3Mgc3VwcG9ydCBpbiByZW1vdGUgcHJvYyhBdWRpbwo+
-PiBEU1AgaW4gb3VyIGNhc2UpIHNpZGUgbWFuZGF0b3J5PyBXaGljaCBtZWFucyB3ZSBoYXZlIHRv
-IHBvcnRpbmcKPj4gbGlicmFyaWVzIGxpa2UgbGliQU1QIGludG8gRlcobm90IHVzZXMgWmVwaHly
-IG9yIGZyZWVSVE9TIHlldCk/Cj4gCj4gSWYgeW91IGdvIHRocm91Z2ggdmlyaXRpby9ycG1zZyBw
-YXRoLCB2aXJ0aW8vdnJpbmcgYXJlIHJlcXVpcmVkLAo+IGJ1dCBpZiB5b3UgaW1wbGVtZW50IHRo
-ZSBuZXcgcnBtc2dfZW5kcG9pbnRfb3BzLCBib3RoIHNob3VsZG4ndCBiZSBuZWVkZWQuCj4gQnV0
-IGJvdGggT3BlbkFNUC9SUE1zZy1MaXRlIHN1cHBvcnQgdGhlIGJhcmUgbWV0YWwgZW52aXJvbm1l
-bnQsCj4gYWN0dWFsbHkgc2luY2UgYm90aCBsaWJyYXJ5IGRlZmluZSB0aGUgY2xlYW4gYW5kIHRo
-aW4gcG9ydCBsYXllciwgaXQncwo+IHZlcnkgZWFzeSB0byBwb3J0KEkganVzdCBzcGVuZCAyLTMg
-ZGF5cyBmb3IgTnV0dFggcG9ydCkuCgpUaGFua3MgZm9yIHNoYXJpbmcsIHRoYXQncyBnb29kIGlm
-IGl0IGlzIHBvc3NpYmxlIHRvIGdvIHdpdGhvdXQgdmlydGlvIApzdXBwb3J0IGF0IHRoZSBmaXJz
-dCBzdGVwLCB3ZSB3aWxsIGRvIGludmVzdGlnYXRpb24gYmFzZWQgb24gY29kZSB5b3UgCnNoYXJl
-ZC4KCj4gCj4+IDIuIEFib3V0IHRoZSByZXNvdXJjZSB0YWJsZSBpbiBGVyBiaW5hcnksIGlzIHRo
-aXMgbWFuZGF0b3J5IG9yIGl0IGNvdWxkCj4+IGJlIGVtcHR5Pwo+IAo+IEFnYWluIHZpcnRpby9y
-cG1zZyBwYXRoIGlzIHJlcXVpcmVkLCBidXQgY3VzdG9tIGltcGxlbWVudGF0aW9uIG1heW4ndCBu
-ZWVkZWQuCj4gQWN0dWFsbHksIHJlbW90ZXByb2MgbGF5ZXIgc3VwcG9ydCB0aGUgY3VzdG9tIGZp
-cm13YXJlIGZvcm1hdCwgc28gU09GCj4gY2FuIG1pZ3JhdGUgdG8gcmVtb3RlcHJvYyB3aXRob3V0
-IGNoYW5naW5nIGZpcm13YXJlIGZvcm1hdC4KCkdvb2QgdG8ga25vdyB0aGlzLCB0aGFua3MuCgpU
-aGFua3MsCn5LZXlvbgoKPiAKPj4KPj4gQXMgeW91IG1heSBrbm93LCB3ZSB1c2VzIFNPRi1zaW1p
-bGFyIElQQyBmcmFtZXdvcmsod2hpY2ggaXMgcXVpdGUKPj4gZGlmZmVyZW50IHdpdGggcnBtc2cv
-cmVtb3RlcHJvYykgb24gSW50ZWwgU29DIHBsYXRmb3JtcyBmb3IgbG9uZyBvbiB0ZW5zCj4+IG9m
-IHBsYXRmb3JtcyBvZiBzZXZlcmFsIGdlbmVyYXRpb25zKHdlIGhhdmUgZW5hYmxlZCBhbmQgdmVy
-aWZpZWQgU09GIG9uCj4+IG1vc3Qgb2YgdGhlbSksIHNvIHRoZSB0cmFuc2l0aW9uIG1heSB0YWtl
-IHRpbWUuCj4+Cj4gCj4gWWVzLCBJIHVuZGVyc3RhbmQuIEJ1dCBJbnRlbCBzdGlsbCBjb3VsZCBw
-cm92aWRlIHRoZSBjdXJyZW50IHZlcnNpb24KPiB0byB0aGUgY3VzdG9tZXIgYmVmb3JlIHRoZSBu
-ZXcgSVBDIHZlcnNpb24gaXMgc3RhYmxlIGlmIG1hbnkgcGVvcGxlCj4gdGhpbmsgdGhlIGdlbmVy
-aWMgSVBDIGlzIHRoZSBnb29kIGRpcmVjdGlvbiB0byBnby4KPiAKPj4gVGhhbmtzLAo+PiB+S2V5
-b24KPj4KPj4+Cj4+Pj4gVGhlIHJlc291cmNlcyBlbWJlZGRlZCBpbiBhIGZpcm13YXJlIGZpbGUg
-aXMgYW5vdGhlciBjYXBhYmlsaXR5IHRoYXQgZG9lc24ndCBhbGlnbiB3aXRoIHRoZSB3YXkgdGhl
-IFNPRiBmaXJtd2FyZSBpcyBnZW5lcmF0ZWQuIEkgYWxzbyBkb24ndCBrbm93IHdoZXJlIHRoZSB0
-b3BvbG9neSBmaWxlIHdvdWxkIGJlIGhhbmRsZWQsIG5vciBob3cgdG8gZGVhbCB3aXRoIHN1c3Bl
-bmQtcmVzdW1lIHdoZXJlIHRoZSBEU1AgbmVlZHMgdG8gYmUgcmVzdGFydGVkLiBGb3IgZm9sa3Mg
-d2hvIG5lZWQgYW4gaW50cm9kdWN0aW9uIHRvIFJQTXNnLCB0aGUgbGluayBbMV0gaXMgdGhlIGJl
-c3QgSSBmb3VuZCB0byBzY29wZSBvdXQgdGhlIHdvcmsgcmVxdWlyZWQuCj4+Pj4KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The current implementation of the hdac_hda codec results in zero-valued
+samples on capture and noise with headset playback when SOF is used on
+platforms with an on-board HDaudio codec. This is root-caused to SOF
+using be_hw_params_fixup, and the prepare() call using invalid runtime
+fields to determine the format.
+
+This patch moves the format handling to the hw_params() callback, as
+done already for hdac_hdmi, to make sure the fixed-up information is
+taken into account but keeps the codec initialization in prepare() as
+the stream_tag is only available at that time. Moving everything in the
+prepare() callback is possible but the code is less elegant so this
+two-step solution was chosen.
+
+The solution was tested with the SST driver with no regressions, and all
+the issues with SOF playback and capture are solved.
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+---
+ sound/soc/codecs/hdac_hda.c | 53 +++++++++++++++++++++++++++++++++------------
+ sound/soc/codecs/hdac_hda.h |  1 +
+ 2 files changed, 40 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index ffecdaaa8cf2..f889d94c8e3c 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -38,6 +38,9 @@ static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai);
+ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai);
++static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai);
+ static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai);
+ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
+@@ -50,6 +53,7 @@ static const struct snd_soc_dai_ops hdac_hda_dai_ops = {
+ 	.startup = hdac_hda_dai_open,
+ 	.shutdown = hdac_hda_dai_close,
+ 	.prepare = hdac_hda_dai_prepare,
++	.hw_params = hdac_hda_dai_hw_params,
+ 	.hw_free = hdac_hda_dai_hw_free,
+ 	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
+ };
+@@ -139,6 +143,39 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
++static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct hdac_hda_priv *hda_pvt;
++	unsigned int format_val;
++	unsigned int maxbps;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		maxbps = dai->driver->playback.sig_bits;
++	else
++		maxbps = dai->driver->capture.sig_bits;
++
++	hda_pvt = snd_soc_component_get_drvdata(component);
++	format_val = snd_hdac_calc_stream_format(params_rate(params),
++						 params_channels(params),
++						 params_format(params),
++						 maxbps,
++						 0);
++	if (!format_val) {
++		dev_err(dai->dev,
++			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
++			params_rate(params), params_channels(params),
++			params_format(params), maxbps);
++
++		return -EINVAL;
++	}
++
++	hda_pvt->pcm[dai->id].format_val[substream->stream] = format_val;
++	return 0;
++}
++
+ static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+@@ -162,10 +199,9 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_component *component = dai->component;
++	struct hda_pcm_stream *hda_stream;
+ 	struct hdac_hda_priv *hda_pvt;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct hdac_device *hdev;
+-	struct hda_pcm_stream *hda_stream;
+ 	unsigned int format_val;
+ 	struct hda_pcm *pcm;
+ 	unsigned int stream;
+@@ -179,19 +215,8 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
+ 
+ 	hda_stream = &pcm->stream[substream->stream];
+ 
+-	format_val = snd_hdac_calc_stream_format(runtime->rate,
+-						 runtime->channels,
+-						 runtime->format,
+-						 hda_stream->maxbps,
+-						 0);
+-	if (!format_val) {
+-		dev_err(&hdev->dev,
+-			"invalid format_val, rate=%d, ch=%d, format=%d\n",
+-			runtime->rate, runtime->channels, runtime->format);
+-		return -EINVAL;
+-	}
+-
+ 	stream = hda_pvt->pcm[dai->id].stream_tag[substream->stream];
++	format_val = hda_pvt->pcm[dai->id].format_val[substream->stream];
+ 
+ 	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
+ 				    stream, format_val, substream);
+diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
+index e444ef593360..6b1bd4f428e7 100644
+--- a/sound/soc/codecs/hdac_hda.h
++++ b/sound/soc/codecs/hdac_hda.h
+@@ -8,6 +8,7 @@
+ 
+ struct hdac_hda_pcm {
+ 	int stream_tag[2];
++	unsigned int format_val[2];
+ };
+ 
+ struct hdac_hda_priv {
+-- 
+2.14.1
