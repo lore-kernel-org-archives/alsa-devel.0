@@ -1,42 +1,52 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: A bug in the alsa project
-Date: Mon, 25 Feb 2019 15:25:24 +0100
-Message-ID: <8bef01db-2982-c358-32ab-15b6e38c39e6@ladisch.de>
-References: <09c70d81-aeb3-36aa-3cc0-0b7c354a4862@gmail.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Re: [PATCH] ASoC: qcom: Kconfig: fix dependency for sdm845
+Date: Mon, 25 Feb 2019 15:37:21 +0100
+Message-ID: <82fe83ba-b967-66ee-1299-1cd98072089a@collabora.com>
+References: <20190225135405.108052-1-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [IPv6:2a01:4f8:212:88::2])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78920F89643
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 15:25:25 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id D77D35583C58
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 15:25:24 +0100 (CET)
-In-Reply-To: <09c70d81-aeb3-36aa-3cc0-0b7c354a4862@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190225135405.108052-1-cychiang@chromium.org>
+Content-Language: en-GB
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, rdunlap@infradead.org, ncrews@chromium.org, bleung@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-0KDQsNC00L7RgdC70LDQsiDQndC10L3Rh9C+0LLRgdC60Lggd3JvdGU6Cj4gSXQncyBhYm91dCB0
-aGUgYXJlYSB3aGVyZSBvbmUgY2FuIHNlbGVjdCB0aGUgb3V0cHV0CgpBcmUgeW91IHRhbGtpbmcg
-YWJvdXQgYSB3aW5kb3cgbGFiZWxlZCAiVm9sdW1lIENvbnRyb2wiLCB3aXRoIGEgdGFiIG5hbWVk
-CiJPdXRwdXQgRGV2aWNlcyI/ICBUaGF0IG9uZSBpcyBwYXJ0IG9mIFB1bHNlQXVkaW8sIG5vdCBB
-TFNBLgoKV2hlbiByZXBvcnRpbmcgdGhpcyBwcm9ibGVtIHRvIFB1bHNlQXVkaW8sIHBsZWFzZSBt
-ZW50aW9uIHdoZXRoZXIgeW91cgpzcGVha2VycyBhcmUgY29ubmVjdGVkIHRvIHRoZSBtb3RoZXJi
-b2FyZCdzIGF1ZGlvIGRldmljZSwgb3Igd2l0aCBVU0IuCgoKUmVnYXJkcywKQ2xlbWVucwpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+On 25/2/19 14:54, Cheng-Yi Chiang wrote:
+> SND_SOC_CROS_EC_CODEC depends on MFD_CROS_EC.
+> Add that dependency to SND_SOC_SDM845 to fix unmet direct dependencies
+> warning.
+> 
+> Fixes: 74c6ecf4194e (ASoC: qcom: Kconfig: select dmic for sdm845)
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Thanks,
+Enric
+
+> ---
+>  sound/soc/qcom/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> index 8f206cb4fcc0..75ceb04d8bf0 100644
+> --- a/sound/soc/qcom/Kconfig
+> +++ b/sound/soc/qcom/Kconfig
+> @@ -98,7 +98,7 @@ config SND_SOC_MSM8996
+>  
+>  config SND_SOC_SDM845
+>  	tristate "SoC Machine driver for SDM845 boards"
+> -	depends on QCOM_APR
+> +	depends on QCOM_APR && MFD_CROS_EC
+>  	select SND_SOC_QDSP6
+>  	select SND_SOC_QCOM_COMMON
+>  	select SND_SOC_RT5663
+> 
