@@ -1,158 +1,92 @@
-From: Rander Wang <rander.wang@linux.intel.com>
-Subject: [PATCH] ASoC:hdac_hda: use correct format to setup hda
-	codec
-Date: Mon, 25 Feb 2019 15:48:45 +0800
-Message-ID: <20190225074845.73950-1-rander.wang@linux.intel.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH] arm64: dts: renesas: r8a7796: remove unneeded sound
+ #address/size-cells
+Date: Mon, 25 Feb 2019 09:56:35 +0100
+Message-ID: <20190225085635.ztgakkoc42bsal55@verge.net.au>
+References: <1550828099-3109-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55348F8961F
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 08:46:53 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1550828099-3109-1-git-send-email-twischer@de.adit-jv.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: twischer@de.adit-jv.com
+Cc: patch@alsa-project.org, broonie@kernel.org, kuninori.morimoto.gx@renesas.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The current implementation of the hdac_hda codec results in zero-valued
-samples on capture and noise with headset playback when SOF is used on
-platforms with an on-board HDaudio codec. This is root-caused to SOF
-using be_hw_params_fixup, and the prepare() call using invalid runtime
-fields to determine the format.
+On Fri, Feb 22, 2019 at 10:34:59AM +0100, twischer@de.adit-jv.com wrote:
+> From: Jiada Wang <jiada_wang@mentor.com>
+> 
+> commit 78bc93b3ffb2 ("arm64: dts: renesas: r8a7796: Add address
+> properties to rcar_sound port nodes") added missing #address-cells
+> and #size-cells for sound ports.
+> But, these are based on platform, not on SoC. This patch cleanups it.
+> 
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-This patch moves the format handling to the hw_params() callback, as
-done already for hdac_hdmi, to make sure the fixed-up information is
-taken into account but keeps the codec initialization in prepare() as
-the stream_tag is only available at that time. Moving everything in the
-prepare() callback is possible but the code is less elegant so this
-two-step solution was chosen.
+Thanks,
 
-The solution was tested with the SST driver with no regressions, and all
-the issues with SOF playback and capture are solved.
+please CC patches for Renesas SoCs to linux-renesas-soc@vger.kernel.org (CCed)
+so they appear in my patch queue.
 
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
----
- sound/soc/codecs/hdac_hda.c | 53 +++++++++++++++++++++++++++++++++------------
- sound/soc/codecs/hdac_hda.h |  1 +
- 2 files changed, 40 insertions(+), 14 deletions(-)
+Otherwise, this patch looks fine to me but I will wait to see if there are
+other reviews before applying.
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index ffecdaaa8cf2..f889d94c8e3c 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -38,6 +38,9 @@ static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai);
- static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai);
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
- static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
-@@ -50,6 +53,7 @@ static const struct snd_soc_dai_ops hdac_hda_dai_ops = {
- 	.startup = hdac_hda_dai_open,
- 	.shutdown = hdac_hda_dai_close,
- 	.prepare = hdac_hda_dai_prepare,
-+	.hw_params = hdac_hda_dai_hw_params,
- 	.hw_free = hdac_hda_dai_hw_free,
- 	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
- };
-@@ -139,6 +143,39 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct hdac_hda_priv *hda_pvt;
-+	unsigned int format_val;
-+	unsigned int maxbps;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		maxbps = dai->driver->playback.sig_bits;
-+	else
-+		maxbps = dai->driver->capture.sig_bits;
-+
-+	hda_pvt = snd_soc_component_get_drvdata(component);
-+	format_val = snd_hdac_calc_stream_format(params_rate(params),
-+						 params_channels(params),
-+						 params_format(params),
-+						 maxbps,
-+						 0);
-+	if (!format_val) {
-+		dev_err(dai->dev,
-+			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
-+			params_rate(params), params_channels(params),
-+			params_format(params), maxbps);
-+
-+		return -EINVAL;
-+	}
-+
-+	hda_pvt->pcm[dai->id].format_val[substream->stream] = format_val;
-+	return 0;
-+}
-+
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
-@@ -162,10 +199,9 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct hda_pcm_stream *hda_stream;
- 	struct hdac_hda_priv *hda_pvt;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct hdac_device *hdev;
--	struct hda_pcm_stream *hda_stream;
- 	unsigned int format_val;
- 	struct hda_pcm *pcm;
- 	unsigned int stream;
-@@ -179,19 +215,8 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 
- 	hda_stream = &pcm->stream[substream->stream];
- 
--	format_val = snd_hdac_calc_stream_format(runtime->rate,
--						 runtime->channels,
--						 runtime->format,
--						 hda_stream->maxbps,
--						 0);
--	if (!format_val) {
--		dev_err(&hdev->dev,
--			"invalid format_val, rate=%d, ch=%d, format=%d\n",
--			runtime->rate, runtime->channels, runtime->format);
--		return -EINVAL;
--	}
--
- 	stream = hda_pvt->pcm[dai->id].stream_tag[substream->stream];
-+	format_val = hda_pvt->pcm[dai->id].format_val[substream->stream];
- 
- 	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
- 				    stream, format_val, substream);
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-index e444ef593360..6b1bd4f428e7 100644
---- a/sound/soc/codecs/hdac_hda.h
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -8,6 +8,7 @@
- 
- struct hdac_hda_pcm {
- 	int stream_tag[2];
-+	unsigned int format_val[2];
- };
- 
- struct hdac_hda_priv {
--- 
-2.14.1
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+
+> ---
+>  arch/arm64/boot/dts/renesas/r8a7796-salvator-x.dts  |  1 +
+>  arch/arm64/boot/dts/renesas/r8a7796-salvator-xs.dts |  1 +
+>  arch/arm64/boot/dts/renesas/r8a7796.dtsi            | 11 -----------
+>  3 files changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a7796-salvator-x.dts b/arch/arm64/boot/dts/renesas/r8a7796-salvator-x.dts
+> index b4f9567..2aefa53 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a7796-salvator-x.dts
+> +++ b/arch/arm64/boot/dts/renesas/r8a7796-salvator-x.dts
+> @@ -68,6 +68,7 @@
+>  	ports {
+>  		/* rsnd_port0 is on salvator-common */
+>  		rsnd_port1: port@1 {
+> +			reg = <1>;
+>  			rsnd_endpoint1: endpoint {
+>  				remote-endpoint = <&dw_hdmi0_snd_in>;
+>  
+> diff --git a/arch/arm64/boot/dts/renesas/r8a7796-salvator-xs.dts b/arch/arm64/boot/dts/renesas/r8a7796-salvator-xs.dts
+> index 8860be6..fa4ef7c 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a7796-salvator-xs.dts
+> +++ b/arch/arm64/boot/dts/renesas/r8a7796-salvator-xs.dts
+> @@ -69,6 +69,7 @@
+>  	ports {
+>  		/* rsnd_port0 is on salvator-common */
+>  		rsnd_port1: port@1 {
+> +			reg = <1>;
+>  			rsnd_endpoint1: endpoint {
+>  				remote-endpoint = <&dw_hdmi0_snd_in>;
+>  
+> diff --git a/arch/arm64/boot/dts/renesas/r8a7796.dtsi b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+> index 0648d12..cc601d9 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+> @@ -2162,17 +2162,6 @@
+>  					dma-names = "rx", "tx", "rxu", "txu";
+>  				};
+>  			};
+> -
+> -			ports {
+> -				#address-cells = <1>;
+> -				#size-cells = <0>;
+> -				port@0 {
+> -					reg = <0>;
+> -				};
+> -				port@1 {
+> -					reg = <1>;
+> -				};
+> -			};
+>  		};
+>  
+>  		audma0: dma-controller@ec700000 {
+> -- 
+> 2.7.4
+> 
