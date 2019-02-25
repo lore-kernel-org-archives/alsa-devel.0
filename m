@@ -1,18 +1,23 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V2] ASoC: fsl_esai: fix channel swap issue when
-	stream starts
-Date: Mon, 25 Feb 2019 02:48:18 +0000
-Message-ID: <e31c31acb3c62d16e6b32682e8226c7dbc05f147.1551062751.git.shengjiu.wang@nxp.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [Sound-open-firmware]  [v4,
+ 00/14] ASoC: Sound Open Firmware (SOF) core
+Date: Mon, 25 Feb 2019 11:05:15 +0800
+Message-ID: <22872b53-338f-df35-8682-129b2db83b7e@linux.intel.com>
+References: <20190213220734.10471-1-pierre-louis.bossart@linux.intel.com>
+ <1550520188-9253-1-git-send-email-xiaoxiang@xiaomi.com>
+ <2ad7bf66-a0a9-b97d-e1b1-48e3f9c699c5@linaro.org>
+ <CAH2Cfb8XZTD1a+2vm2W7mB8Bfyb1v-ArCw8rf0+TjXGPK0msKg@mail.gmail.com>
+ <a499dec8-ed61-dd9a-77dc-e60225f79e46@linux.intel.com>
+ <20190221043925.GF2736@vkoul-mobl>
+ <7a67b767-5127-1844-20c5-06ef5946e85d@linux.intel.com>
+ <CAH2Cfb9EM0DqFSpJqFggWdg+VhCtXNXq5EXz1HM+xrTA8G5oJQ@mail.gmail.com>
+ <b8608e5b-b342-5fed-7715-38a906b5a43d@linux.intel.com>
+ <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr150040.outbound.protection.outlook.com [40.107.15.40])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C39EEF808F7
- for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 03:48:20 +0100 (CET)
+In-Reply-To: <CAH2Cfb-efq1U_r5jgvef-PQDg3+oZg2TofLXh=S03pyaqjVcPQ@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,113 +28,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: xiang xiao <xiaoxiang781216@gmail.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Kumar Gala <kumar.gala@linaro.org>, andriy.shevchenko@intel.com, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Xiang Xiao <xiaoxiang@xiaomi.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, wendy.liang@xilinx.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is very low possibility ( < 0.1% ) that channel swap happened
-in beginning when multi output/input pin is enabled. The issue is
-that hardware can't send data to correct pin in the beginning with
-the normal enable flow.
-
-This is hardware issue, but there is no errata, the workaround flow
-is that: Each time playback/recording, firstly clear the xSMA/xSMB,
-then enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
-before xSMA). Which is to use the xSMA as the trigger start register,
-previously the xCR_TE or xCR_RE is the bit for starting.
-
-Fixes 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-Changes in v2
-- update commit comments.
-
- sound/soc/fsl/fsl_esai.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index afe67c865330..23bd0ad4ac31 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -54,6 +54,8 @@ struct fsl_esai {
- 	u32 fifo_depth;
- 	u32 slot_width;
- 	u32 slots;
-+	u32 tx_mask;
-+	u32 rx_mask;
- 	u32 hck_rate[2];
- 	u32 sck_rate[2];
- 	bool hck_dir[2];
-@@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
- 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
- 
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
--			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
--			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
--
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
- 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
- 
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
--			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
--			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
--
- 	esai_priv->slot_width = slot_width;
- 	esai_priv->slots = slots;
-+	esai_priv->tx_mask    = tx_mask;
-+	esai_priv->rx_mask    = rx_mask;
- 
- 	return 0;
- }
-@@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u8 i, channels = substream->runtime->channels;
- 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
-+	u32 mask;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -611,12 +606,23 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
- 				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
-+		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
-+
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
-+				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
-+				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
-+				   ESAI_xSMA_xS_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
-+				   ESAI_xSMB_xS_MASK, 0);
- 
- 		/* Disable and reset FIFO */
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
-@@ -906,6 +912,12 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	/* Clear the TSMA, TSMB, RSMA, RSMB */
-+	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
- 					      &fsl_esai_dai, 1);
- 	if (ret) {
--- 
-1.9.1
+CgpPbiAyMDE5LzIvMjMg5LiK5Y2IMjoyMSwgeGlhbmcgeGlhbyB3cm90ZToKPiBPbiBGcmksIEZl
+YiAyMiwgMjAxOSBhdCA3OjEzIFBNIEtleW9uIEppZSA8eWFuZy5qaWVAbGludXguaW50ZWwuY29t
+PiB3cm90ZToKPj4gVGhlbiB0aGlzIGxvb2tzIGRvYWJsZSwgdGhhbmtzIGZvciBzaGFyaW5nIFhp
+YW5nLgo+Pgo+PiBJIGhhdmUgc2V2ZXJhbCBxdWVzdGlvbnM6Cj4+IDEuIElzIHZpcnRpbyBkZXZp
+Y2UgYW5kIHZyaW5nIGJ1ZmZlciBhY2Nlc3Mgc3VwcG9ydCBpbiByZW1vdGUgcHJvYyhBdWRpbwo+
+PiBEU1AgaW4gb3VyIGNhc2UpIHNpZGUgbWFuZGF0b3J5PyBXaGljaCBtZWFucyB3ZSBoYXZlIHRv
+IHBvcnRpbmcKPj4gbGlicmFyaWVzIGxpa2UgbGliQU1QIGludG8gRlcobm90IHVzZXMgWmVwaHly
+IG9yIGZyZWVSVE9TIHlldCk/Cj4gCj4gSWYgeW91IGdvIHRocm91Z2ggdmlyaXRpby9ycG1zZyBw
+YXRoLCB2aXJ0aW8vdnJpbmcgYXJlIHJlcXVpcmVkLAo+IGJ1dCBpZiB5b3UgaW1wbGVtZW50IHRo
+ZSBuZXcgcnBtc2dfZW5kcG9pbnRfb3BzLCBib3RoIHNob3VsZG4ndCBiZSBuZWVkZWQuCj4gQnV0
+IGJvdGggT3BlbkFNUC9SUE1zZy1MaXRlIHN1cHBvcnQgdGhlIGJhcmUgbWV0YWwgZW52aXJvbm1l
+bnQsCj4gYWN0dWFsbHkgc2luY2UgYm90aCBsaWJyYXJ5IGRlZmluZSB0aGUgY2xlYW4gYW5kIHRo
+aW4gcG9ydCBsYXllciwgaXQncwo+IHZlcnkgZWFzeSB0byBwb3J0KEkganVzdCBzcGVuZCAyLTMg
+ZGF5cyBmb3IgTnV0dFggcG9ydCkuCgpUaGFua3MgZm9yIHNoYXJpbmcsIHRoYXQncyBnb29kIGlm
+IGl0IGlzIHBvc3NpYmxlIHRvIGdvIHdpdGhvdXQgdmlydGlvIApzdXBwb3J0IGF0IHRoZSBmaXJz
+dCBzdGVwLCB3ZSB3aWxsIGRvIGludmVzdGlnYXRpb24gYmFzZWQgb24gY29kZSB5b3UgCnNoYXJl
+ZC4KCj4gCj4+IDIuIEFib3V0IHRoZSByZXNvdXJjZSB0YWJsZSBpbiBGVyBiaW5hcnksIGlzIHRo
+aXMgbWFuZGF0b3J5IG9yIGl0IGNvdWxkCj4+IGJlIGVtcHR5Pwo+IAo+IEFnYWluIHZpcnRpby9y
+cG1zZyBwYXRoIGlzIHJlcXVpcmVkLCBidXQgY3VzdG9tIGltcGxlbWVudGF0aW9uIG1heW4ndCBu
+ZWVkZWQuCj4gQWN0dWFsbHksIHJlbW90ZXByb2MgbGF5ZXIgc3VwcG9ydCB0aGUgY3VzdG9tIGZp
+cm13YXJlIGZvcm1hdCwgc28gU09GCj4gY2FuIG1pZ3JhdGUgdG8gcmVtb3RlcHJvYyB3aXRob3V0
+IGNoYW5naW5nIGZpcm13YXJlIGZvcm1hdC4KCkdvb2QgdG8ga25vdyB0aGlzLCB0aGFua3MuCgpU
+aGFua3MsCn5LZXlvbgoKPiAKPj4KPj4gQXMgeW91IG1heSBrbm93LCB3ZSB1c2VzIFNPRi1zaW1p
+bGFyIElQQyBmcmFtZXdvcmsod2hpY2ggaXMgcXVpdGUKPj4gZGlmZmVyZW50IHdpdGggcnBtc2cv
+cmVtb3RlcHJvYykgb24gSW50ZWwgU29DIHBsYXRmb3JtcyBmb3IgbG9uZyBvbiB0ZW5zCj4+IG9m
+IHBsYXRmb3JtcyBvZiBzZXZlcmFsIGdlbmVyYXRpb25zKHdlIGhhdmUgZW5hYmxlZCBhbmQgdmVy
+aWZpZWQgU09GIG9uCj4+IG1vc3Qgb2YgdGhlbSksIHNvIHRoZSB0cmFuc2l0aW9uIG1heSB0YWtl
+IHRpbWUuCj4+Cj4gCj4gWWVzLCBJIHVuZGVyc3RhbmQuIEJ1dCBJbnRlbCBzdGlsbCBjb3VsZCBw
+cm92aWRlIHRoZSBjdXJyZW50IHZlcnNpb24KPiB0byB0aGUgY3VzdG9tZXIgYmVmb3JlIHRoZSBu
+ZXcgSVBDIHZlcnNpb24gaXMgc3RhYmxlIGlmIG1hbnkgcGVvcGxlCj4gdGhpbmsgdGhlIGdlbmVy
+aWMgSVBDIGlzIHRoZSBnb29kIGRpcmVjdGlvbiB0byBnby4KPiAKPj4gVGhhbmtzLAo+PiB+S2V5
+b24KPj4KPj4+Cj4+Pj4gVGhlIHJlc291cmNlcyBlbWJlZGRlZCBpbiBhIGZpcm13YXJlIGZpbGUg
+aXMgYW5vdGhlciBjYXBhYmlsaXR5IHRoYXQgZG9lc24ndCBhbGlnbiB3aXRoIHRoZSB3YXkgdGhl
+IFNPRiBmaXJtd2FyZSBpcyBnZW5lcmF0ZWQuIEkgYWxzbyBkb24ndCBrbm93IHdoZXJlIHRoZSB0
+b3BvbG9neSBmaWxlIHdvdWxkIGJlIGhhbmRsZWQsIG5vciBob3cgdG8gZGVhbCB3aXRoIHN1c3Bl
+bmQtcmVzdW1lIHdoZXJlIHRoZSBEU1AgbmVlZHMgdG8gYmUgcmVzdGFydGVkLiBGb3IgZm9sa3Mg
+d2hvIG5lZWQgYW4gaW50cm9kdWN0aW9uIHRvIFJQTXNnLCB0aGUgbGluayBbMV0gaXMgdGhlIGJl
+c3QgSSBmb3VuZCB0byBzY29wZSBvdXQgdGhlIHdvcmsgcmVxdWlyZWQuCj4+Pj4KCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
