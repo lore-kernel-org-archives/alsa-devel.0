@@ -1,52 +1,62 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH] ASoC: qcom: Kconfig: fix dependency for sdm845
-Date: Mon, 25 Feb 2019 15:37:21 +0100
-Message-ID: <82fe83ba-b967-66ee-1299-1cd98072089a@collabora.com>
-References: <20190225135405.108052-1-cychiang@chromium.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda: Extend i915 component bind timeout
+Date: Mon, 25 Feb 2019 17:02:57 +0100
+Message-ID: <20190225160257.31560-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190225135405.108052-1-cychiang@chromium.org>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, rdunlap@infradead.org, ncrews@chromium.org, bleung@chromium.org, dgreid@chromium.org, tzungbi@chromium.org, Rohit kumar <rohitkr@codeaurora.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F296DF89643
+ for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2019 17:03:00 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Paul Menzel <pmenzel+alsa-devel@molgen.mpg.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I set 10 seconds for the timeout of the i915 audio component binding
+with a hope that recent machines are fast enough to handle all probe
+tasks in that period, but I was too optimistic.  The binding may take
+longer than that, and this caused a problem on the machine with both
+audio and graphics driver modules loaded in parallel, as Paul Menzel
+experienced.  This problem haven't hit so often just because the KMS
+driver is loaded in initrd on most machines.
 
-On 25/2/19 14:54, Cheng-Yi Chiang wrote:
-> SND_SOC_CROS_EC_CODEC depends on MFD_CROS_EC.
-> Add that dependency to SND_SOC_SDM845 to fix unmet direct dependencies
-> warning.
-> 
-> Fixes: 74c6ecf4194e (ASoC: qcom: Kconfig: select dmic for sdm845)
+As a simple workaround, extend the timeout to 60 seconds.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: f9b54e1961c7 ("ALSA: hda/i915: Allow delayed i915 audio component binding")
+Reported-by: Paul Menzel <pmenzel+alsa-devel@molgen.mpg.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/hda/hdac_i915.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-Thanks,
-Enric
-
-> ---
->  sound/soc/qcom/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-> index 8f206cb4fcc0..75ceb04d8bf0 100644
-> --- a/sound/soc/qcom/Kconfig
-> +++ b/sound/soc/qcom/Kconfig
-> @@ -98,7 +98,7 @@ config SND_SOC_MSM8996
->  
->  config SND_SOC_SDM845
->  	tristate "SoC Machine driver for SDM845 boards"
-> -	depends on QCOM_APR
-> +	depends on QCOM_APR && MFD_CROS_EC
->  	select SND_SOC_QDSP6
->  	select SND_SOC_QCOM_COMMON
->  	select SND_SOC_RT5663
-> 
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 617ff1aa818f..27eb0270a711 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -144,9 +144,9 @@ int snd_hdac_i915_init(struct hdac_bus *bus)
+ 		return -ENODEV;
+ 	if (!acomp->ops) {
+ 		request_module("i915");
+-		/* 10s timeout */
++		/* 60s timeout */
+ 		wait_for_completion_timeout(&bind_complete,
+-					    msecs_to_jiffies(10 * 1000));
++					    msecs_to_jiffies(60 * 1000));
+ 	}
+ 	if (!acomp->ops) {
+ 		dev_info(bus->dev, "couldn't bind with audio component\n");
+-- 
+2.16.4
