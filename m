@@ -1,94 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for bclk_ratio
-Date: Tue, 26 Feb 2019 16:21:16 +0000
-Message-ID: <20190226162116.GD7082@sirena.org.uk>
-References: <20190225164218.19439-1-TheSven73@gmail.com>
- <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
- <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
- <CAGngYiXrGNvwobKy+u8QWWsDowhTE8E7OSpVOOL1Yu9PvH-Z9w@mail.gmail.com>
- <20190226154519.e2wbvbkjynkaob4c@shell.armlinux.org.uk>
+Subject: Applied "ASoC: stm32: i2s: skip useless write in slave mode" to the
+ asoc tree
+Date: Tue, 26 Feb 2019 16:22:23 +0000 (GMT)
+Message-ID: <20190226162223.0EDC21121A0A@debutante.sirena.org.uk>
+References: <1551189070-15469-8-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0207310574=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20190226154519.e2wbvbkjynkaob4c@shell.armlinux.org.uk>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1551189070-15469-8-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0207310574==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VMt1DrMGOVs3KQwf"
-Content-Disposition: inline
+   ASoC: stm32: i2s: skip useless write in slave mode
 
+has been applied to the asoc tree at
 
---VMt1DrMGOVs3KQwf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Feb 26, 2019 at 03:45:19PM +0000, Russell King - ARM Linux admin wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Adding more WS signals makes the bus deviate from the I2S standard,
-> thereby making it impossible to connect a set of standard DACs to
-> such a source, whereas adding more I2S data lines, you just connect
-> each DAC to each I2S data line and common up the bit clock and WS
-> signals across all.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> In other words, the TDA998x approach is really the only sane way
-> forward.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Right.  You do also see some things doing this by stuffing all the left
-samples together in the left clock cycle and all the right samples
-together in the right clock cycle but that's usually more programmable
-hardware that also supports DSP modes and it's just falling out of the
-implementation with little effort rather than someone sitting down and
-thinking this is a good idea AFAICT.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Now, as far as transmitter support, I believe TI Davinci SoCs use
-> this - my Onkyo TX-NR609 AV receiver uses a DA830 SoC as a DSP to
-> do the surround decode, which feeds multi-channel audio out to a
-> set of DACs over a parallel I2S bus.  The "mcasp" audio driver
-> has multiple serialisers to cope with this - see
-> Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt.
+Thanks,
+Mark
 
-Samsung LSI have multi-channel I2S with multiple data lines in their v5
-and later controllers as well.  I can't think of any other examples
-upstream off the top of my head.
+>From 7b6b0049e2b70d103adf1b7d0320802f70ddceca Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Tue, 26 Feb 2019 14:51:10 +0100
+Subject: [PATCH] ASoC: stm32: i2s: skip useless write in slave mode
 
---VMt1DrMGOVs3KQwf
-Content-Type: application/pgp-signature; name="signature.asc"
+Dummy write in capture master mode is used to gate
+bus clocks. This write is useless in slave mode
+as the clocks are not managed by slave.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/stm/stm32_i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlx1Z3wACgkQJNaLcl1U
-h9BZwAf+O5lBTBCcTNtWa5FxNmevC0BIrazw/Sttqj56RdJa4mRnoYRCNyKhCb4v
-xs1UE7Fj4nC4Jny4nEMyW6KNpdB9Cy3YpXJb+3b3Yi0/6VMB9C23i2ysbAcGw29W
-EzuwxDhyowH/eM/H1CjMijVrqjXVTm9mvu/qAp+IvZhVSFDBD/iiDnA+4I0RrzSw
-7JjyzgePsw+zocWewiJkSCyNz4JqJK61zTVIhvIe4lcQ/sXmL4gD2ji32NtnGSDi
-6r7eVNUXHSqjb2qa17HIPr9FcRkUhNg6ViQnZugFIx3qnmLnmQCVM0YvFoxyUsuj
-irM2dsO+oR8g2ywEUh2EVCylhjWAVQ==
-=1Mdv
------END PGP SIGNATURE-----
-
---VMt1DrMGOVs3KQwf--
-
---===============0207310574==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
-
---===============0207310574==--
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 42ce87a35104..47c334de6b09 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -623,8 +623,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		} else {
+ 			ier = I2S_IER_OVRIE;
+ 
+-			if (i2s->refcount == 1)
+-				/* dummy write to trigger capture */
++			if (STM32_I2S_IS_MASTER(i2s) && i2s->refcount == 1)
++				/* dummy write to gate bus clocks */
+ 				regmap_write(i2s->regmap,
+ 					     STM32_I2S_TXDR_REG, 0);
+ 		}
+-- 
+2.20.1
