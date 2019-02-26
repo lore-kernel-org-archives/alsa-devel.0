@@ -1,49 +1,78 @@
-From: Wen Yang <wen.yang99@zte.com.cn>
-Subject: [PATCH 2/3] ASoC: fsl_utils: fix a leaked reference by adding missing of_node_put
-Date: Tue, 26 Feb 2019 16:17:50 +0800
-Message-ID: <1551169071-11639-2-git-send-email-wen.yang99@zte.com.cn>
-References: <1551169071-11639-1-git-send-email-wen.yang99@zte.com.cn>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551169071-11639-1-git-send-email-wen.yang99@zte.com.cn>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, wang.yi59@zte.com.cn, Wen Yang <wen.yang99@zte.com.cn>
+From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for bclk_ratio
+Date: Tue, 26 Feb 2019 09:11:04 +0000
+Message-ID: <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
+References: <20190225164218.19439-1-TheSven73@gmail.com>
+ <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-The call to of_parse_phandle returns a node pointer with refcount
-incremented thus it must be explicitly decremented after the last
-usage.
-
-Detected by coccinelle with the following warnings:
-./sound/soc/fsl/fsl_utils.c:74:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 38, but without a corresponding     object release within this function.
-
-Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
----
- sound/soc/fsl/fsl_utils.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index 9981668..040d06b 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -71,6 +71,7 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- 	iprop = of_get_property(dma_np, "cell-index", NULL);
- 	if (!iprop) {
- 		of_node_put(dma_np);
-+		of_node_put(dma_channel_np);
- 		return -EINVAL;
- 	}
- 	*dma_id = be32_to_cpup(iprop);
--- 
-2.9.5
+T24gVHVlLCBGZWIgMjYsIDIwMTkgYXQgMDk6MzU6NDdBTSArMDkwMCwgS3VuaW5vcmkgTW9yaW1v
+dG8gd3JvdGU6Cj4gPiBAQCAtOTcsNyArOTgsNyBAQCBzdGF0aWMgaW50IGFzb2Nfc2ltcGxlX2Nh
+cmRfaHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ID4gIAlz
+dHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSAqcHJpdiA9IHNuZF9zb2NfY2FyZF9nZXRfZHJ2ZGF0YShy
+dGQtPmNhcmQpOwo+ID4gIAlzdHJ1Y3Qgc2ltcGxlX2RhaV9wcm9wcyAqZGFpX3Byb3BzID0KPiA+
+ICAJCXNpbXBsZV9wcml2X3RvX3Byb3BzKHByaXYsIHJ0ZC0+bnVtKTsKPiA+IC0JdW5zaWduZWQg
+aW50IG1jbGssIG1jbGtfZnMgPSAwOwo+ID4gKwl1bnNpZ25lZCBpbnQgbWNsaywgYmNsa19yYXRp
+bywgbWNsa19mcyA9IDAsIGJjbGtfc2xvdF9yYXRpbyA9IDA7Cj4gPiAgCWludCByZXQgPSAwOwo+
+ID4gIAo+ID4gIAlpZiAoZGFpX3Byb3BzLT5tY2xrX2ZzKQo+IChzbmlwKQo+ID4gKwlpZiAoYmNs
+a19zbG90X3JhdGlvKSB7Cj4gPiArCQkvKiBGSVhNRSBkbyB3ZSBuZWVkIHRvIGNhcmUgYWJvdXQg
+VERNIHNsb3RzIGhlcmUgPyAqLwo+ID4gKwkJYmNsa19yYXRpbyA9IHNuZF9zb2NfY2FsY19mcmFt
+ZV9zaXplKGJjbGtfc2xvdF9yYXRpbywKPiA+ICsJCQkJcGFyYW1zX2NoYW5uZWxzKHBhcmFtcyks
+IDEpOwo+ID4gKwo+ID4gKwkJcmV0ID0gc25kX3NvY19kYWlfc2V0X2JjbGtfcmF0aW8oY29kZWNf
+ZGFpLCBiY2xrX3JhdGlvKTsKPiA+ICsJCWlmIChyZXQgJiYgcmV0ICE9IC1FTk9UU1VQUCkKPiA+
+ICsJCQlnb3RvIGVycjsKPiA+ICsKPiA+ICsJCXJldCA9IHNuZF9zb2NfZGFpX3NldF9iY2xrX3Jh
+dGlvKGNwdV9kYWksIGJjbGtfcmF0aW8pOwo+ID4gKwkJaWYgKHJldCAmJiByZXQgIT0gLUVOT1RT
+VVBQKQo+ID4gKwkJCWdvdG8gZXJyOwo+ID4gKwl9Cj4gCj4gTm90IGEgYmlnIGRlYWwsIGJ1dCAi
+YmNsa19yYXRpbyIgaXMgdXNlZCBvbmx5IGhlcmUuCj4gV2UgY2FuIGRlZmluZSBpdCBoZXJlCgpU
+aGlzIGNvZGUgYWN0dWFsbHkgcmVxdWlyZXMgYSBsb3QgbW9yZSB0aG91Z2h0IC0gd2hpbGUgaXQg
+bWF5IHNvbHZlClN2ZW4ncyBpc3N1ZSwgaXQgaXNuJ3QgZ2VuZXJpYy4gIFNvIGZhciwgSSBoYXZl
+IHRoaXMgdGFibGUgcHV0CnRvZ2V0aGVyIGZyb20gdmFyaW91cyBzb3VyY2VzIG9mIGluZm9ybWF0
+aW9uOgoKCQkJYmNsa19yYXRpbwpzYW1wbGUgd2lkdGgJY3VycmVudAltY2FzcCAgIGZzbHNzaSAg
+a2lya3dvb2QKMTYJCTMyCTMyCTY0CTY0CjI0CQk0OAk0OAk2NAk2NAozMgkJNjQJNjQJNjQJNjQK
+CkxldCdzIGFsc28gY29uc2lkZXIgd2hldGhlciBpdCBzaG91bGQgZGVwZW5kIG9uIHRoZSBudW1i
+ZXIgb2YgY2hhbm5lbHMuCkkyUyB1c2VzIGEgV1MvTFJDTEsgc2lnbmFsIHRvIGRpZmZlcmVudGlh
+dGUgZWFjaCBjaGFubmVsIGFuZCB0byBkZW1hcmsKd2hlcmUgdGhlIE1TQiBiaXQgaXMuCgpJZiB1
+c2Vyc3BhY2UgbmVnb3RpYXRlcyBvbmUgY2hhbm5lbCwgd2hhdCBoYXBwZW5zIC0gaWYgV1MgYmVj
+b21lcwpzdGF0aWMsIHRoZW4gdGhlcmUgaXMgbm8gc2lnbmFsIGluZGljYXRpbmcgd2hlcmUgdGhl
+IE1TQiBiaXQgaXMgaW4KdGhlIHN0cmVhbSwgc28gdGhlcmUgaXMgbm8gd2F5IGZvciBhIHJlY2Vp
+dmVyIHRvIHN5bmNocm9uaXNlLiAgU28sCml0IGlzIGhpZ2hseSB1bmxpa2VseSB0aGF0IGJjbGtf
+cmF0aW8gPSBjaGFubmVscyAqIHNhbXBsZV93aWR0aC4KCklmIHRoZSBzaWduYWwgY29udGludWVz
+IHRvZ2dsaW5nLCB3aGF0IGRvZXMgaXQgZG8gZm9yIHRoZSBpbmFjdGl2ZQpjaGFubmVsIC0gaXMg
+dGhhdCBqdXN0IG9uZSBCQ0xLIHBlcmlvZCBsb25nIG9yIGRvZXMgaXQgYXNzdW1lIHRoZXJlCmlz
+IHN0aWxsIHRoZSBzZWNvbmQgY2hhbm5lbD8gIElmIHRoZSBmb3JtZXIsIGl0IG1lYW5zIHdlIGNv
+dWxkIGVuZAp1cCB3aXRoIGJjbGtfcmF0aW9zIG9mIDE3LCAyNSwgMzMgd2hpY2ggaW1obyBpcyB1
+bmxpa2VseSwgYW5kCndvdWxkIG1lc3MgdXAgVERBOTk4eCdzIENUUyBtZWFzdXJlbWVudC4KCldo
+YXQgYWJvdXQgc2V0dXBzIHdoZXJlIHdlIGhhdmUgbXVsdGlwbGUgSTJTIGRhdGEgc2lnbmFscyAo
+dG8gc3VwcG9ydAptdWx0aS1jaGFubmVsIGF1ZGlvKSAtIGlmIHdlIGhhdmUgZm91ciBjaGFubmVs
+cyB0cmFuc21pdHRlZCBvbiB0d28KZGF0YSBsaW5lcyAoYXMgd291bGQgYmUgcmVxdWlyZWQgYnkg
+dGhlIFREQTk5OHgpLCB0aGF0IGRvZXNuJ3QgbWVhbgpCQ0xLIGJlY29tZXMgc2FtcGxlX3dpZHRo
+ICogNC4KClNvLCBJIGRvbid0IHRoaW5rIHRoZSBudW1iZXIgb2YgY2hhbm5lbHMgY29tZXMgaW50
+byB0aGUgYmNsa19yYXRpbwpjYWxjdWxhdGlvbiBhdCBhbGwuICBHaXZlbiB0aGUgYWJvdmUgY29k
+ZSwgaXQgZWZmZWN0aXZlbHkgbWVhbnMgd2UnZAphbHdheXMgc3BlY2lmeSBjaGFubmVscyA9IDIg
+dG8gc25kX3NvY19jYWxjX2ZyYW1lX3NpemUoKS4KCkdpdmVuIHRoYXQgaXQgaXMgbm9ybWFsIHRv
+IHRhbGsgYWJvdXQgSTJTIGJlaW5nIGNsb2NrZWQgYXQgIjY0ZnMiLAoiMzJmcyIgZXRjLCB3b3Vs
+ZG4ndCBpdCBqdXN0IGJlIG11Y2ggbmVhdGVyIHRvIHNwZWNpZnkgX3RoaXNfIHZhbHVlCmluIERU
+LCByYXRoZXIgdGhhbiBoYWxmIHRoYXQgdmFsdWU/CgotLSAKUk1LJ3MgUGF0Y2ggc3lzdGVtOiBo
+dHRwczovL3d3dy5hcm1saW51eC5vcmcudWsvZGV2ZWxvcGVyL3BhdGNoZXMvCkZUVEMgYnJvYWRi
+YW5kIGZvciAwLjhtaWxlIGxpbmUgaW4gc3VidXJiaWE6IHN5bmMgYXQgMTIuMU1icHMgZG93biA2
+MjJrYnBzIHVwCkFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0OiAxMS45TWJwcyBkb3duIDUwMGti
+cHMgdXAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJp
+LWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBz
+Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
