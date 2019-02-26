@@ -1,83 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for
-	bclk_ratio
-Date: Tue, 26 Feb 2019 15:23:52 +0000
-Message-ID: <20190226152352.GC7082@sirena.org.uk>
+From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for bclk_ratio
+Date: Tue, 26 Feb 2019 15:45:19 +0000
+Message-ID: <20190226154519.e2wbvbkjynkaob4c@shell.armlinux.org.uk>
 References: <20190225164218.19439-1-TheSven73@gmail.com>
  <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
  <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
  <CAGngYiXrGNvwobKy+u8QWWsDowhTE8E7OSpVOOL1Yu9PvH-Z9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8909856785927907936=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4924DF89668
- for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 16:24:02 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
 In-Reply-To: <CAGngYiXrGNvwobKy+u8QWWsDowhTE8E7OSpVOOL1Yu9PvH-Z9w@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Sven Van Asbroeck <thesven73@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Russell King - ARM Linux admin <linux@armlinux.org.uk>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8909856785927907936==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WplhKdTI2c8ulnbP"
-Content-Disposition: inline
-
-
---WplhKdTI2c8ulnbP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 26, 2019 at 09:53:22AM -0500, Sven Van Asbroeck wrote:
-> On Tue, Feb 26, 2019 at 4:11 AM Russell King - ARM Linux admin
-
-> > If the signal continues toggling, what does it do for the inactive
-> > channel - is that just one BCLK period long or does it assume there
-> > is still the second channel?  If the former, it means we could end
-> > up with bclk_ratios of 17, 25, 33 which imho is unlikely, and
-> > would mess up TDA998x's CTS measurement.
-
-> Good point. i2s with a single channel makes no sense.
-
-As with every bad idea you can think of that never stopped anyone making
-such hardware.  Mono is usually implemented by either leaving the right
-channel idle or playing the same signal on both channels.
-
---WplhKdTI2c8ulnbP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlx1WgcACgkQJNaLcl1U
-h9Dv4wf+OnHJklXRaMwe4nHhZOwBSmSaRYejc5AWix3gM6VILtplf0GgfYB6HjAp
-4eYZQra3vSffWGecDeuDuZTJgIcSZLSygfUpeUiJMTYYXhZPKdreWcmntGYfGnh7
-GxGE2aId1/AuHYkRyc5JLpSEsAdeWE7UyUo7OYd3NYJYrWXMZGR3mHVbZOEyTXNT
-a177IV9kACNUBox/ce0mwezgW+TonZAhPnxjZbrnVfPKIeYnvh7xvM+JoyTj3s79
-aK/fSe47Sbt4aLM7OqXRueaDuM2/Hf3WwnQnIpeIxuf5lROSbsxoN+0WdnYTyxeu
-piiagjJ3MLrir8ITtphgQn9IAumHHg==
-=Ws74
------END PGP SIGNATURE-----
-
---WplhKdTI2c8ulnbP--
-
---===============8909856785927907936==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8909856785927907936==--
+T24gVHVlLCBGZWIgMjYsIDIwMTkgYXQgMDk6NTM6MjJBTSAtMDUwMCwgU3ZlbiBWYW4gQXNicm9l
+Y2sgd3JvdGU6Cj4gSSBub3RpY2UgdGhhdCBoZG1pLWNvZGVjLmMgc3VwcG9ydHMgdXAgdG8gOCBj
+aGFubmVscyBpbiBoZG1pIG11bHRpLWNoYW5uZWwKPiBwbGF5YmFjayBtb2RlLiBJZiB3ZSBoYWQg
+YSBfdGhlb3JldGljYWxfIGhkbWkgeG1pdHRlciB3aXRoIDhjaGFuIHN1cHBvcnQsCj4gd291bGQg
+dGhlIGJjbGtfcmF0aW8gbm90IGJlIDggeCBzbG90X3NpemUgLSBvciA4IHggMzIgaWYgdXNpbmcg
+YW4gZnNsX3NzaQo+IGluIG1hc3RlciBtb2RlPwo+IAo+IFRoaXMgd2lsbCBvZiBjb3Vyc2UgbmV2
+ZXIgaGFwcGVuIHdpdGggdGhlIHRkYTk5OHgsIGJlY2F1c2UKPiAgICAgICAgIC5tYXhfaTJzX2No
+YW5uZWxzID0gMiwKPiBidXQgd2UgYXJlIHRoaW5raW5nIGFib3V0IGEgZ2VuZXJpYyBzb2x1dGlv
+biBoZXJlLgoKVGhlIHdheSBUREE5OTh4IHN1cHBvcnRzIG11bHRpY2hhbm5lbCBhdWRpbyB3aXRo
+IEkyUyBpcyBhcyBmb2xsb3dzOgoKIlRoZSBUREE5OTgzQiBzdXBwb3J0cyB0aGUgTlhQIEkyUy1i
+dXMgZm9ybWF0LiBUaGVyZSBhcmUgZm91ciBJMlMtYnVzCnN0ZXJlbyBpbnB1dCBjaGFubmVscyAo
+QVAxIHRvIEFQNCksIHdoaWNoIGVuYWJsZSA4IHVuY29tcHJlc3NlZCBhdWRpbwpjaGFubmVscyB0
+byBiZSBjYXJyaWVkLiIKClRoZXJlIGlzIG9ubHkgb25lIFdTIGlucHV0IGFuZCBvbmUgU0NLIChi
+Y2xrKSBpbnB1dCwgd2hpY2ggYXJlIGNvbW1vbgp0byBlYWNoIG9mIHRoZSBJMlMgYnVzZXMuCgpU
+aGUgVERBMTk5ODggcmVkdWNlcyB0aGlzIGRvd24gdG8gdHdvIEkyUyBidXNlcywgd2hpY2ggbWVh
+bnMgaXQKc3VwcG9ydHMgb25seSB1cCB0byA0IHVuY29tcHJlc3NlZCBjaGFubmVscy4gIGhkbWkt
+Y29kZWMgZG9lc24ndAp0YWtlIGFjY291bnQgb2YgdGhlc2UgcmVzdHJpY3Rpb25zLCBhbmQganVz
+dCBhc3N1bWVzIHRoZSBtYXhpbWFsCm51bWJlciBvZiBjaGFubmVscyBhcmUgYWx3YXlzIGF2YWls
+YWJsZS4KClNvLCBnaXZlbiB0aGlzIHBhcmFsbGVsIGJ1cyBhcmNoaXRlY3R1cmUsIGl0IG1lYW5z
+IHRoYXQgd2hldGhlciB3ZQpoYXZlIDIsIDQsIDYsIG9yIDggY2hhbm5lbHMgaXMgaXJyZWxldmFu
+dCB0byB0aGUgbnVtYmVyIG9mIGJpdGNsb2NrcwpwZXIgc2FtcGxlIC0gdGhlIG51bWJlciBvZiBi
+aXRjbG9ja3Mgd291bGQgYmUgdGhlIHNhbWUuCgpJIGNhbid0IHNlZSBob3cgeW91J2QgZXh0ZW5k
+IGEgc2luZ2xlIEkyUyBzZXR1cCB0byBzdXBwb3J0IG11bHRpLQpjaGFubmVsIGF1ZGlvIHdpdGhv
+dXQgZWl0aGVyIGFkZGluZyBtb3JlIEkyUyBkYXRhIGxpbmVzIG9yIGFkZGluZwphZGRpdGlvbmFs
+IFdTIHNpZ25hbHMgKHNvIG1ha2luZyBpdCBlLmcuLCBhIGJpbmFyeSBudW1iZXIpLgoKQWRkaW5n
+IG1vcmUgV1Mgc2lnbmFscyBtYWtlcyB0aGUgYnVzIGRldmlhdGUgZnJvbSB0aGUgSTJTIHN0YW5k
+YXJkLAp0aGVyZWJ5IG1ha2luZyBpdCBpbXBvc3NpYmxlIHRvIGNvbm5lY3QgYSBzZXQgb2Ygc3Rh
+bmRhcmQgREFDcyB0bwpzdWNoIGEgc291cmNlLCB3aGVyZWFzIGFkZGluZyBtb3JlIEkyUyBkYXRh
+IGxpbmVzLCB5b3UganVzdCBjb25uZWN0CmVhY2ggREFDIHRvIGVhY2ggSTJTIGRhdGEgbGluZSBh
+bmQgY29tbW9uIHVwIHRoZSBiaXQgY2xvY2sgYW5kIFdTCnNpZ25hbHMgYWNyb3NzIGFsbC4KCklu
+IG90aGVyIHdvcmRzLCB0aGUgVERBOTk4eCBhcHByb2FjaCBpcyByZWFsbHkgdGhlIG9ubHkgc2Fu
+ZSB3YXkKZm9yd2FyZC4KCk5vdywgYXMgZmFyIGFzIHRyYW5zbWl0dGVyIHN1cHBvcnQsIEkgYmVs
+aWV2ZSBUSSBEYXZpbmNpIFNvQ3MgdXNlCnRoaXMgLSBteSBPbmt5byBUWC1OUjYwOSBBViByZWNl
+aXZlciB1c2VzIGEgREE4MzAgU29DIGFzIGEgRFNQIHRvCmRvIHRoZSBzdXJyb3VuZCBkZWNvZGUs
+IHdoaWNoIGZlZWRzIG11bHRpLWNoYW5uZWwgYXVkaW8gb3V0IHRvIGEKc2V0IG9mIERBQ3Mgb3Zl
+ciBhIHBhcmFsbGVsIEkyUyBidXMuICBUaGUgIm1jYXNwIiBhdWRpbyBkcml2ZXIKaGFzIG11bHRp
+cGxlIHNlcmlhbGlzZXJzIHRvIGNvcGUgd2l0aCB0aGlzIC0gc2VlCkRvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kYXZpbmNpLW1jYXNwLWF1ZGlvLnR4dC4KCi0tIApSTUsn
+cyBQYXRjaCBzeXN0ZW06IGh0dHBzOi8vd3d3LmFybWxpbnV4Lm9yZy51ay9kZXZlbG9wZXIvcGF0
+Y2hlcy8KRlRUQyBicm9hZGJhbmQgZm9yIDAuOG1pbGUgbGluZSBpbiBzdWJ1cmJpYTogc3luYyBh
+dCAxMi4xTWJwcyBkb3duIDYyMmticHMgdXAKQWNjb3JkaW5nIHRvIHNwZWVkdGVzdC5uZXQ6IDEx
+LjlNYnBzIGRvd24gNTAwa2JwcyB1cApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9kcmktZGV2ZWw=
