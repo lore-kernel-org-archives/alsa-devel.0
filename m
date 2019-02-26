@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: fix 16 bit format support" to the asoc tree
-Date: Tue, 26 Feb 2019 16:22:33 +0000 (GMT)
-Message-ID: <20190226162233.F34F21121A0A@debutante.sirena.org.uk>
-References: <1551189070-15469-3-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: i2s: fix IRQ clearing" to the asoc tree
+Date: Tue, 26 Feb 2019 16:22:36 +0000 (GMT)
+Message-ID: <20190226162236.3FB7D1121A0A@debutante.sirena.org.uk>
+References: <1551189070-15469-2-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551189070-15469-3-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1551189070-15469-2-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: fix 16 bit format support
+   ASoC: stm32: i2s: fix IRQ clearing
 
 has been applied to the asoc tree at
 
@@ -36,33 +36,66 @@ to this mail.
 Thanks,
 Mark
 
->From 0c4c68d6fa1bae74d450e50823c24fcc3cd0b171 Mon Sep 17 00:00:00 2001
+>From 8ba3c5215d69c09f5c39783ff3b78347769822ad Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Tue, 26 Feb 2019 14:51:05 +0100
-Subject: [PATCH] ASoC: stm32: i2s: fix 16 bit format support
+Date: Tue, 26 Feb 2019 14:51:04 +0100
+Subject: [PATCH] ASoC: stm32: i2s: fix IRQ clearing
 
-I2S supports 16 bits data in 32 channel length.
-However the expected driver behavior, is to
-set channel length to 16 bits when data format is 16 bits.
+Because of regmap cache, interrupts may not be cleared
+as expected.
+Declare IFCR register as write only and make writings
+to IFCR register unconditional.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_i2s.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 339cd4715b2e..7d4c67433916 100644
+index a25919d32187..339cd4715b2e 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -501,7 +501,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	switch (format) {
- 	case 16:
- 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
--		cfgr_mask = I2S_CGFR_DATLEN_MASK;
-+		cfgr_mask = I2S_CGFR_DATLEN_MASK | I2S_CGFR_CHLEN;
- 		break;
- 	case 32:
- 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_32) |
+@@ -247,8 +247,8 @@ static irqreturn_t stm32_i2s_isr(int irq, void *devid)
+ 		return IRQ_NONE;
+ 	}
+ 
+-	regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-			   I2S_IFCR_MASK, flags);
++	regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++			  I2S_IFCR_MASK, flags);
+ 
+ 	if (flags & I2S_SR_OVR) {
+ 		dev_dbg(&pdev->dev, "Overrun\n");
+@@ -277,7 +277,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_I2S_CFG2_REG:
+ 	case STM32_I2S_IER_REG:
+ 	case STM32_I2S_SR_REG:
+-	case STM32_I2S_IFCR_REG:
+ 	case STM32_I2S_TXDR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 	case STM32_I2S_CGFR_REG:
+@@ -559,8 +558,8 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 	i2s->refcount++;
+ 	spin_unlock(&i2s->lock_fd);
+ 
+-	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-				  I2S_IFCR_MASK, I2S_IFCR_MASK);
++	return regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				 I2S_IFCR_MASK, I2S_IFCR_MASK);
+ }
+ 
+ static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -611,8 +610,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 		}
+ 
+-		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-				   I2S_IFCR_MASK, I2S_IFCR_MASK);
++		regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				  I2S_IFCR_MASK, I2S_IFCR_MASK);
+ 
+ 		if (playback_flg) {
+ 			ier = I2S_IER_UDRIE;
 -- 
 2.20.1
