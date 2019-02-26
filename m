@@ -1,59 +1,43 @@
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for bclk_ratio
-Date: Tue, 26 Feb 2019 17:03:49 +0000
-Message-ID: <20190226170349.h4iqeegl7my6qzpt@shell.armlinux.org.uk>
+From: Sven Van Asbroeck <thesven73@gmail.com>
+Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for
+	bclk_ratio
+Date: Tue, 26 Feb 2019 13:46:15 -0500
+Message-ID: <CAGngYiXTEVfojHXePhcpjJPH80DWGCJ1o90PFXDq8jg6qEEN+w@mail.gmail.com>
 References: <20190225164218.19439-1-TheSven73@gmail.com>
  <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
  <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
- <CAGngYiXrGNvwobKy+u8QWWsDowhTE8E7OSpVOOL1Yu9PvH-Z9w@mail.gmail.com>
- <20190226154519.e2wbvbkjynkaob4c@shell.armlinux.org.uk>
- <CAGngYiXSNbQbcY1tbnYURWTCu7rJk=L1H+So7kanJmpxkV5bEQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <CAGngYiXSNbQbcY1tbnYURWTCu7rJk=L1H+So7kanJmpxkV5bEQ@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Sven Van Asbroeck <thesven73@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com
+ [IPv6:2607:f8b0:4864:20::244])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9142F8967C
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 19:46:28 +0100 (CET)
+Received: by mail-oi1-x244.google.com with SMTP id t206so11219690oib.3
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 10:46:28 -0800 (PST)
+In-Reply-To: <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBGZWIgMjYsIDIwMTkgYXQgMTE6MzE6MTVBTSAtMDUwMCwgU3ZlbiBWYW4gQXNicm9l
-Y2sgd3JvdGU6Cj4gT24gVHVlLCBGZWIgMjYsIDIwMTkgYXQgMTA6NDUgQU0gUnVzc2VsbCBLaW5n
-IC0gQVJNIExpbnV4IGFkbWluCj4gPGxpbnV4QGFybWxpbnV4Lm9yZy51az4gd3JvdGU6Cj4gPgo+
-ID4KPiA+IEkgY2FuJ3Qgc2VlIGhvdyB5b3UnZCBleHRlbmQgYSBzaW5nbGUgSTJTIHNldHVwIHRv
-IHN1cHBvcnQgbXVsdGktCj4gPiBjaGFubmVsIGF1ZGlvIHdpdGhvdXQgZWl0aGVyIGFkZGluZyBt
-b3JlIEkyUyBkYXRhIGxpbmVzIG9yIGFkZGluZwo+ID4gYWRkaXRpb25hbCBXUyBzaWduYWxzIChz
-byBtYWtpbmcgaXQgZS5nLiwgYSBiaW5hcnkgbnVtYmVyKS4KPiA+Cj4gCj4gVGhhdCdzIGEgdmVy
-eSBnb29kIHBvaW50IHRvby4gSW4gbGlnaHQgb2YgdGhpcywgSSBzdHJ1Z2dsZSB0byB1bmRlcnN0
-YW5kIGhvdwo+IHRoZSBzc2xfc3NpIGNhbiBzcGVjaWZ5IHRoaXM6Cj4gCj4gc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2RhaV9kcml2ZXIgZnNsX3NzaV9kYWlfdGVtcGxhdGUgPSB7Cj4gICAgICAgICAu
-cGxheWJhY2sgPSB7Cj4gICAgICAgICAgICAgICAgIC5zdHJlYW1fbmFtZSA9ICJDUFUtUGxheWJh
-Y2siLAo+ICAgICAgICAgICAgICAgICAuY2hhbm5lbHNfbWluID0gMSwKPiAgICAgICAgICAgICAg
-ICAgLmNoYW5uZWxzX21heCA9IDMyLAo+ICAgICAgICAgfSwKPiAKPiBUaGVyZSBpcyB0YWxrIGlu
-IHRoZSBtYW51YWwgYWJvdXQgIm5ldHdvcmsgbW9kZSIsIHdoaWNoIGNvdWxkIHdvcmsgYnkgY2hh
-bmdpbmcKPiB0aGUgTFJDTEsgb25seSBhdCB0aGUgZmlyc3Qgc2xvdCAtIHRoZXJlYnkgYWxsb3dp
-bmcgY2xpZW50cyB0byByZWNlaXZlIGFsbAo+IHNsb3RzIGp1c3QgYnkgY291bnRpbmcsIGFzIGxv
-bmcgYXMgdGhleSBrbm93IHRoZSBzbG90IHNpemU/Cj4gCj4gTFJDTEsgICBfX19fXy8tLS0tLS0t
-LS0tLS0tLS0tLVxfX19fXy8tLS0tLS0tLS0KPiBEQVRBICAgIFNMT1QxfFNMT1QyfFNMT1QzfFNM
-T1Q0fFNMT1QxCgpGcm9tIHdoYXQgSSBnYXRoZXIsIHRoZXNlIGFyZSBkZXNjcmliZWQgdXNpbmcg
-U05EX1NPQ19EQUlGTVRfRFNQX0EKYW5kIFNORF9TT0NfREFJRk1UX0RTUF9CIGRhaSBmb3JtYXRz
-LCBhbmQgdGhlIHBhcmFtZXRlcnMgYXJlCmNvbnRyb2xsZWQgbm90IHRocm91Z2ggc25kX3NvY19k
-YWlfc2V0X2JjbGtfcmF0aW8oKSBidXQgdmlhCnNuZF9zb2NfZGFpX3NldF90ZG1fc2xvdCgpLgoK
-U28sIElNSE8sIHRoZSBURE0gZm9ybWF0cyBzaG91bGQgYmUgZGlzcmVnYXJkZWQgZnJvbSBjb25z
-aWRlcmF0aW9uCmhlcmUuICBNYXJrLCBhY2s/CgotLSAKUk1LJ3MgUGF0Y2ggc3lzdGVtOiBodHRw
-czovL3d3dy5hcm1saW51eC5vcmcudWsvZGV2ZWxvcGVyL3BhdGNoZXMvCkZUVEMgYnJvYWRiYW5k
-IGZvciAwLjhtaWxlIGxpbmUgaW4gc3VidXJiaWE6IHN5bmMgYXQgMTIuMU1icHMgZG93biA2MjJr
-YnBzIHVwCkFjY29yZGluZyB0byBzcGVlZHRlc3QubmV0OiAxMS45TWJwcyBkb3duIDUwMGticHMg
-dXAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+On Tue, Feb 26, 2019 at 4:11 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> Given that it is normal to talk about I2S being clocked at "64fs",
+> "32fs" etc, wouldn't it just be much neater to specify _this_ value
+> in DT, rather than half that value?
+>
+
+Would we be able to reach consensus on Russell's suggestion ?
