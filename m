@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: gen: fix SSI9 4/5/6/7 busif related register address" to the asoc tree
-Date: Tue, 26 Feb 2019 12:06:20 +0000 (GMT)
-Message-ID: <20190226120620.B465F11284E3@debutante.sirena.org.uk>
-References: <1551093260-28998-1-git-send-email-twischer@de.adit-jv.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551093260-28998-1-git-send-email-twischer@de.adit-jv.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: Timo Wischer <twischer@de.adit-jv.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, patch@alsa-project.orgbroonie@kernel.org, perex@perex.cz, tiwai@suse.comkuninori.morimoto.gx@renesas.com, linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgTimo Wischer <twischer@de.adit-jv.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Improve logging messages" to
+	the asoc tree
+Date: Tue, 26 Feb 2019 12:06:22 +0000 (GMT)
+Message-ID: <20190226120622.74DB111284E3@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A65BAF80734
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 13:06:24 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: gen: fix SSI9 4/5/6/7 busif related register address
+   ASoC: wm_adsp: Improve logging messages
 
 has been applied to the asoc tree at
 
@@ -37,161 +53,313 @@ to this mail.
 Thanks,
 Mark
 
->From 8af6c521cc236534093f9e744cfa004314bfe5ae Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 25 Feb 2019 12:14:20 +0100
-Subject: [PATCH] ASoC: rsnd: gen: fix SSI9 4/5/6/7 busif related register
- address
+>From 0d3fba3e7a566917f4286dd42b83c780c47dcbf7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Fri, 22 Feb 2019 10:04:21 +0000
+Subject: [PATCH] ASoC: wm_adsp: Improve logging messages
 
-Currently each SSI unit 's busif mode/adinr/dalign address is
-registered by: (in busif4 case)
-RSND_GEN_M_REG(SSI_BUSIF4_MODE, 0x500, 0x80)
-RSND_GEN_M_REG(SSI_BUSIF4_ADINR,0x504, 0x80)
-RSND_GEN_M_REG(SSI_BUSIF4_DALIGN, 0x508, 0x80)
+As the compressed stream implementation has acquired support for
+multiple DAI links and compressed streams it has become harder to
+interpret messages in the kernel log. Add additional macros to include
+the compressed DAI name in the log messages, allowing different streams
+to be easily disambiguated.
 
-But according to user manual 41.1.4 Register Configuration
-ssi9 4/5/6/7 busif mode/adinr/dalign register address
-( SSI9-[4/5/6/7]_BUSIF_[MODE/ADINR/DALIGN] )
-are out of this rule.
-
-This patch registers ssi9 4/5/6/7 mode/adinr/dalign register
-as single register, and access these registers in case of
-SSI9 BUSIF 4/5/6/7.
-
-Fixes: commit 8c9d75033340 ("ASoC: rsnd: ssiu: Support BUSIF other than BUSIF0")
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/gen.c  | 24 ++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h | 27 +++++++++++++++++++++++++++
- sound/soc/sh/rcar/ssiu.c | 24 +++++++++++-------------
- 3 files changed, 62 insertions(+), 13 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 97 +++++++++++++++++++++-----------------
+ 1 file changed, 53 insertions(+), 44 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index 7cda60188f41..af19010b9d88 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -255,6 +255,30 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
- 		RSND_GEN_M_REG(SSI_MODE,		0xc,	0x80),
- 		RSND_GEN_M_REG(SSI_CTRL,		0x10,	0x80),
- 		RSND_GEN_M_REG(SSI_INT_ENABLE,		0x18,	0x80),
-+		RSND_GEN_S_REG(SSI9_BUSIF0_MODE,	0x48c),
-+		RSND_GEN_S_REG(SSI9_BUSIF0_ADINR,	0x484),
-+		RSND_GEN_S_REG(SSI9_BUSIF0_DALIGN,	0x488),
-+		RSND_GEN_S_REG(SSI9_BUSIF1_MODE,	0x4a0),
-+		RSND_GEN_S_REG(SSI9_BUSIF1_ADINR,	0x4a4),
-+		RSND_GEN_S_REG(SSI9_BUSIF1_DALIGN,	0x4a8),
-+		RSND_GEN_S_REG(SSI9_BUSIF2_MODE,	0x4c0),
-+		RSND_GEN_S_REG(SSI9_BUSIF2_ADINR,	0x4c4),
-+		RSND_GEN_S_REG(SSI9_BUSIF2_DALIGN,	0x4c8),
-+		RSND_GEN_S_REG(SSI9_BUSIF3_MODE,	0x4e0),
-+		RSND_GEN_S_REG(SSI9_BUSIF3_ADINR,	0x4e4),
-+		RSND_GEN_S_REG(SSI9_BUSIF3_DALIGN,	0x4e8),
-+		RSND_GEN_S_REG(SSI9_BUSIF4_MODE,	0xd80),
-+		RSND_GEN_S_REG(SSI9_BUSIF4_ADINR,	0xd84),
-+		RSND_GEN_S_REG(SSI9_BUSIF4_DALIGN,	0xd88),
-+		RSND_GEN_S_REG(SSI9_BUSIF5_MODE,	0xda0),
-+		RSND_GEN_S_REG(SSI9_BUSIF5_ADINR,	0xda4),
-+		RSND_GEN_S_REG(SSI9_BUSIF5_DALIGN,	0xda8),
-+		RSND_GEN_S_REG(SSI9_BUSIF6_MODE,	0xdc0),
-+		RSND_GEN_S_REG(SSI9_BUSIF6_ADINR,	0xdc4),
-+		RSND_GEN_S_REG(SSI9_BUSIF6_DALIGN,	0xdc8),
-+		RSND_GEN_S_REG(SSI9_BUSIF7_MODE,	0xde0),
-+		RSND_GEN_S_REG(SSI9_BUSIF7_ADINR,	0xde4),
-+		RSND_GEN_S_REG(SSI9_BUSIF7_DALIGN,	0xde8),
- 	};
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index fe802fc331c5..8077c18cbcdf 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -46,6 +46,13 @@
+ #define adsp_dbg(_dsp, fmt, ...) \
+ 	dev_dbg(_dsp->dev, "%s: " fmt, _dsp->name, ##__VA_ARGS__)
  
- 	static const struct rsnd_regmap_field_conf conf_scu[] = {
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 605e4b934982..90625c57847b 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -191,6 +191,30 @@ enum rsnd_reg {
- 	SSI_SYS_STATUS7,
- 	HDMI0_SEL,
- 	HDMI1_SEL,
-+	SSI9_BUSIF0_MODE,
-+	SSI9_BUSIF1_MODE,
-+	SSI9_BUSIF2_MODE,
-+	SSI9_BUSIF3_MODE,
-+	SSI9_BUSIF4_MODE,
-+	SSI9_BUSIF5_MODE,
-+	SSI9_BUSIF6_MODE,
-+	SSI9_BUSIF7_MODE,
-+	SSI9_BUSIF0_ADINR,
-+	SSI9_BUSIF1_ADINR,
-+	SSI9_BUSIF2_ADINR,
-+	SSI9_BUSIF3_ADINR,
-+	SSI9_BUSIF4_ADINR,
-+	SSI9_BUSIF5_ADINR,
-+	SSI9_BUSIF6_ADINR,
-+	SSI9_BUSIF7_ADINR,
-+	SSI9_BUSIF0_DALIGN,
-+	SSI9_BUSIF1_DALIGN,
-+	SSI9_BUSIF2_DALIGN,
-+	SSI9_BUSIF3_DALIGN,
-+	SSI9_BUSIF4_DALIGN,
-+	SSI9_BUSIF5_DALIGN,
-+	SSI9_BUSIF6_DALIGN,
-+	SSI9_BUSIF7_DALIGN,
++#define compr_err(_obj, fmt, ...) \
++	adsp_err(_obj->dsp, "%s: " fmt, _obj->name ? _obj->name : "legacy", \
++		 ##__VA_ARGS__)
++#define compr_dbg(_obj, fmt, ...) \
++	adsp_dbg(_obj->dsp, "%s: " fmt, _obj->name ? _obj->name : "legacy", \
++		 ##__VA_ARGS__)
++
+ #define ADSP1_CONTROL_1                   0x00
+ #define ADSP1_CONTROL_2                   0x02
+ #define ADSP1_CONTROL_3                   0x03
+@@ -3033,20 +3040,23 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ 	mutex_lock(&dsp->pwr_lock);
  
- 	/* SSI */
- 	SSICR,
-@@ -209,6 +233,9 @@ enum rsnd_reg {
- #define SSI_BUSIF_MODE(i)	(SSI_BUSIF0_MODE + (i))
- #define SSI_BUSIF_ADINR(i)	(SSI_BUSIF0_ADINR + (i))
- #define SSI_BUSIF_DALIGN(i)	(SSI_BUSIF0_DALIGN + (i))
-+#define SSI9_BUSIF_MODE(i)	(SSI9_BUSIF0_MODE + (i))
-+#define SSI9_BUSIF_ADINR(i)	(SSI9_BUSIF0_ADINR + (i))
-+#define SSI9_BUSIF_DALIGN(i)	(SSI9_BUSIF0_DALIGN + (i))
- #define SSI_SYS_STATUS(i)	(SSI_SYS_STATUS0 + (i))
+ 	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
+-		adsp_err(dsp, "Firmware does not support compressed API\n");
++		adsp_err(dsp, "%s: Firmware does not support compressed API\n",
++			 rtd->codec_dai->name);
+ 		ret = -ENXIO;
+ 		goto out;
+ 	}
  
+ 	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
+-		adsp_err(dsp, "Firmware does not support stream direction\n");
++		adsp_err(dsp, "%s: Firmware does not support stream direction\n",
++			 rtd->codec_dai->name);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
  
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index c74991dd18ab..2347f3404c06 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -181,28 +181,26 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 	if (rsnd_ssi_use_busif(io)) {
- 		int id = rsnd_mod_id(mod);
- 		int busif = rsnd_mod_id_sub(mod);
-+		enum rsnd_reg adinr_reg, mode_reg, dalign_reg;
+ 	list_for_each_entry(tmp, &dsp->compr_list, list) {
+ 		if (!strcmp(tmp->name, rtd->codec_dai->name)) {
+-			adsp_err(dsp, "Only a single stream supported per dai\n");
++			adsp_err(dsp, "%s: Only a single stream supported per dai\n",
++				 rtd->codec_dai->name);
+ 			ret = -EBUSY;
+ 			goto out;
+ 		}
+@@ -3106,9 +3116,9 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
+ 	    params->buffer.fragments < WM_ADSP_MIN_FRAGMENTS ||
+ 	    params->buffer.fragments > WM_ADSP_MAX_FRAGMENTS ||
+ 	    params->buffer.fragment_size % WM_ADSP_DATA_WORD_SIZE) {
+-		adsp_err(dsp, "Invalid buffer fragsize=%d fragments=%d\n",
+-			 params->buffer.fragment_size,
+-			 params->buffer.fragments);
++		compr_err(compr, "Invalid buffer fragsize=%d fragments=%d\n",
++			  params->buffer.fragment_size,
++			  params->buffer.fragments);
  
--		/*
--		 * FIXME
--		 *
--		 * We can't support SSI9-4/5/6/7, because its address is
--		 * out of calculation rule
--		 */
- 		if ((id == 9) && (busif >= 4)) {
--			struct device *dev = rsnd_priv_to_dev(priv);
--
--			dev_err(dev, "This driver doesn't support SSI%d-%d, so far",
--				id, busif);
-+			adinr_reg = SSI9_BUSIF_ADINR(busif);
-+			mode_reg = SSI9_BUSIF_MODE(busif);
-+			dalign_reg = SSI9_BUSIF_DALIGN(busif);
-+		} else {
-+			adinr_reg = SSI_BUSIF_ADINR(busif);
-+			mode_reg = SSI_BUSIF_MODE(busif);
-+			dalign_reg = SSI_BUSIF_DALIGN(busif);
+ 		return -EINVAL;
+ 	}
+@@ -3136,9 +3146,9 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
+ 				return 0;
+ 	}
+ 
+-	adsp_err(dsp, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
+-		 params->codec.id, params->codec.ch_in, params->codec.ch_out,
+-		 params->codec.sample_rate, params->codec.format);
++	compr_err(compr, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
++		  params->codec.id, params->codec.ch_in, params->codec.ch_out,
++		  params->codec.sample_rate, params->codec.format);
+ 	return -EINVAL;
+ }
+ 
+@@ -3160,8 +3170,8 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
+ 
+ 	compr->size = params->buffer;
+ 
+-	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
+-		 compr->size.fragment_size, compr->size.fragments);
++	compr_dbg(compr, "fragment_size=%d fragments=%d\n",
++		  compr->size.fragment_size, compr->size.fragments);
+ 
+ 	size = wm_adsp_compr_frag_words(compr) * sizeof(*compr->raw_buf);
+ 	compr->raw_buf = kmalloc(size, GFP_DMA | GFP_KERNEL);
+@@ -3303,10 +3313,10 @@ static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
+ 
+ 		region->cumulative_size = offset;
+ 
+-		adsp_dbg(buf->dsp,
+-			 "region=%d type=%d base=%08x off=%08x size=%08x\n",
+-			 i, region->mem_type, region->base_addr,
+-			 region->offset, region->cumulative_size);
++		compr_dbg(buf,
++			  "region=%d type=%d base=%08x off=%08x size=%08x\n",
++			  i, region->mem_type, region->base_addr,
++			  region->offset, region->cumulative_size);
+ 	}
+ 
+ 	return 0;
+@@ -3380,7 +3390,7 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	adsp_dbg(dsp, "legacy host_buf_ptr=%x\n", buf->host_buf_ptr);
++	compr_dbg(buf, "legacy host_buf_ptr=%x\n", buf->host_buf_ptr);
+ 
+ 	return 0;
+ }
+@@ -3428,7 +3438,7 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
+ 	 * control is one word, assume version 0.
+ 	 */
+ 	if (ctl->len == 4) {
+-		adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
++		compr_dbg(buf, "host_buf_ptr=%x\n", buf->host_buf_ptr);
+ 		return 0;
+ 	}
+ 
+@@ -3458,8 +3468,8 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
+ 	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
+ 			      (char *)&coeff_v1.name);
+ 
+-	adsp_dbg(ctl->dsp, "host_buf_ptr=%x coeff version %u\n",
+-		 buf->host_buf_ptr, val);
++	compr_dbg(buf, "host_buf_ptr=%x coeff version %u\n",
++		  buf->host_buf_ptr, val);
+ 
+ 	return val;
+ }
+@@ -3525,7 +3535,7 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 	struct wm_adsp *dsp = compr->dsp;
+ 	int ret = 0;
+ 
+-	adsp_dbg(dsp, "Trigger: %d\n", cmd);
++	compr_dbg(compr, "Trigger: %d\n", cmd);
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+@@ -3534,8 +3544,8 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 		if (!wm_adsp_compr_attached(compr)) {
+ 			ret = wm_adsp_compr_attach(compr);
+ 			if (ret < 0) {
+-				adsp_err(dsp, "Failed to link buffer and stream: %d\n",
+-					 ret);
++				compr_err(compr, "Failed to link buffer and stream: %d\n",
++					  ret);
+ 				break;
+ 			}
+ 		}
+@@ -3547,8 +3557,8 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 					   HOST_BUFFER_FIELD(high_water_mark),
+ 					   wm_adsp_compr_frag_words(compr));
+ 		if (ret < 0) {
+-			adsp_err(dsp, "Failed to set high water mark: %d\n",
+-				 ret);
++			compr_err(compr, "Failed to set high water mark: %d\n",
++				  ret);
+ 			break;
+ 		}
+ 		break;
+@@ -3589,7 +3599,7 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
+ 		read_index = sign_extend32(next_read_index, 23);
+ 
+ 		if (read_index < 0) {
+-			adsp_dbg(buf->dsp, "Avail check on unstarted stream\n");
++			compr_dbg(buf, "Avail check on unstarted stream\n");
+ 			return 0;
  		}
  
--		rsnd_mod_write(mod, SSI_BUSIF_ADINR(busif),
-+		rsnd_mod_write(mod, adinr_reg,
- 			       rsnd_get_adinr_bit(mod, io) |
- 			       (rsnd_io_is_play(io) ?
- 				rsnd_runtime_channel_after_ctu(io) :
- 				rsnd_runtime_channel_original(io)));
--		rsnd_mod_write(mod, SSI_BUSIF_MODE(busif),
-+		rsnd_mod_write(mod, mode_reg,
- 			       rsnd_get_busif_shift(io, mod) | 1);
--		rsnd_mod_write(mod, SSI_BUSIF_DALIGN(busif),
-+		rsnd_mod_write(mod, dalign_reg,
- 			       rsnd_get_dalign(mod, io));
+@@ -3607,8 +3617,8 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
+ 	if (avail < 0)
+ 		avail += wm_adsp_buffer_size(buf);
+ 
+-	adsp_dbg(buf->dsp, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
+-		 buf->read_index, write_index, avail * WM_ADSP_DATA_WORD_SIZE);
++	compr_dbg(buf, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
++		  buf->read_index, write_index, avail * WM_ADSP_DATA_WORD_SIZE);
+ 
+ 	buf->avail = avail;
+ 
+@@ -3621,11 +3631,11 @@ static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
+ 
+ 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
+ 	if (ret < 0) {
+-		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
++		compr_err(buf, "Failed to check buffer error: %d\n", ret);
+ 		return ret;
  	}
+ 	if (buf->error != 0) {
+-		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
++		compr_err(buf, "Buffer error occurred: %d\n", buf->error);
+ 		return -EIO;
+ 	}
+ 
+@@ -3644,6 +3654,7 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 		ret = -ENODEV;
+ 		goto out;
+ 	}
++
+ 	adsp_dbg(dsp, "Handling buffer IRQ\n");
+ 
+ 	list_for_each_entry(buf, &dsp->buffer_list, list) {
+@@ -3656,13 +3667,13 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+ 		ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
+ 					  &buf->irq_count);
+ 		if (ret < 0) {
+-			adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
++			compr_err(buf, "Failed to get irq_count: %d\n", ret);
+ 			goto out;
+ 		}
+ 
+ 		ret = wm_adsp_buffer_update_avail(buf);
+ 		if (ret < 0) {
+-			adsp_err(dsp, "Error reading avail: %d\n", ret);
++			compr_err(buf, "Error reading avail: %d\n", ret);
+ 			goto out;
+ 		}
+ 
+@@ -3686,8 +3697,7 @@ static int wm_adsp_buffer_reenable_irq(struct wm_adsp_compr_buf *buf)
+ 	if (buf->irq_count & 0x01)
+ 		return 0;
+ 
+-	adsp_dbg(buf->dsp, "Enable IRQ(0x%x) for next fragment\n",
+-		 buf->irq_count);
++	compr_dbg(buf, "Enable IRQ(0x%x) for next fragment\n", buf->irq_count);
+ 
+ 	buf->irq_count |= 0x01;
+ 
+@@ -3703,7 +3713,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 	struct wm_adsp_compr_buf *buf;
+ 	int ret = 0;
+ 
+-	adsp_dbg(dsp, "Pointer request\n");
++	compr_dbg(compr, "Pointer request\n");
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+@@ -3718,7 +3728,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 	if (buf->avail < wm_adsp_compr_frag_words(compr)) {
+ 		ret = wm_adsp_buffer_update_avail(buf);
+ 		if (ret < 0) {
+-			adsp_err(dsp, "Error reading avail: %d\n", ret);
++			compr_err(compr, "Error reading avail: %d\n", ret);
+ 			goto out;
+ 		}
+ 
+@@ -3737,9 +3747,8 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 
+ 			ret = wm_adsp_buffer_reenable_irq(buf);
+ 			if (ret < 0) {
+-				adsp_err(dsp,
+-					 "Failed to re-enable buffer IRQ: %d\n",
+-					 ret);
++				compr_err(compr, "Failed to re-enable buffer IRQ: %d\n",
++					  ret);
+ 				goto out;
+ 			}
+ 		}
+@@ -3814,11 +3823,10 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
+ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
+ 			      char __user *buf, size_t count)
+ {
+-	struct wm_adsp *dsp = compr->dsp;
+ 	int ntotal = 0;
+ 	int nwords, nbytes;
+ 
+-	adsp_dbg(dsp, "Requested read of %zu bytes\n", count);
++	compr_dbg(compr, "Requested read of %zu bytes\n", count);
+ 
+ 	if (!compr->buf || compr->buf->error) {
+ 		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
+@@ -3830,17 +3838,18 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
+ 	do {
+ 		nwords = wm_adsp_buffer_capture_block(compr, count);
+ 		if (nwords < 0) {
+-			adsp_err(dsp, "Failed to capture block: %d\n", nwords);
++			compr_err(compr, "Failed to capture block: %d\n",
++				  nwords);
+ 			return nwords;
+ 		}
+ 
+ 		nbytes = nwords * WM_ADSP_DATA_WORD_SIZE;
+ 
+-		adsp_dbg(dsp, "Read %d bytes\n", nbytes);
++		compr_dbg(compr, "Read %d bytes\n", nbytes);
+ 
+ 		if (copy_to_user(buf + ntotal, compr->raw_buf, nbytes)) {
+-			adsp_err(dsp, "Failed to copy data to user: %d, %d\n",
+-				 ntotal, nbytes);
++			compr_err(compr, "Failed to copy data to user: %d, %d\n",
++				  ntotal, nbytes);
+ 			return -EFAULT;
+ 		}
  
 -- 
 2.20.1
