@@ -1,139 +1,184 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V3] ASoC: fsl_esai: fix channel swap issue when
-	stream starts
-Date: Tue, 26 Feb 2019 03:12:25 +0000
-Message-ID: <6a5f6ddf5c1683106b0cadd5691cd2d9cfe2c997.1551150582.git.shengjiu.wang@nxp.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: bebob: use more identical mod_alias for Saffire Pro 10 I/O against Liquid Saffire 56
+Date: Tue, 26 Feb 2019 13:38:16 +0900
+Message-ID: <20190226043816.31710-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur03on0625.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0a::625])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85A16F80734
- for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 04:12:28 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-There is very low possibility ( < 0.1% ) that channel swap happened
-in beginning when multi output/input pin is enabled. The issue is
-that hardware can't send data to correct pin in the beginning with
-the normal enable flow.
+ALSA bebob driver has an entry for Focusrite Saffire Pro 10 I/O. The
+entry matches vendor_id in root directory and model_id in unit
+directory of configuration ROM for IEEE 1394 bus.
 
-This is hardware issue, but there is no errata, the workaround flow
-is that: Each time playback/recording, firstly clear the xSMA/xSMB,
-then enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
-before xSMA). Which is to use the xSMA as the trigger start register,
-previously the xCR_TE or xCR_RE is the bit for starting.
+On the other hand, configuration ROM of Focusrite Liquid Saffire 56
+has the same vendor_id and model_id. This device is an application of
+TCAT Dice (TCD2220 a.k.a Dice Jr.) however ALSA bebob driver can be
+bound to it randomly instead of ALSA dice driver. At present, drivers
+in ALSA firewire stack can not handle this situation appropriately.
 
-Fixes commit 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+This commit uses more identical mod_alias for Focusrite Saffire Pro 10
+I/O in ALSA bebob driver.
+
+$ python2 crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  042a829d  bus_info_length 4, crc_length 42, crc 33437
+404  31333934  bus_name "1394"
+408  f0649222  irmc 1, cmc 1, isc 1, bmc 1, pmc 0, cyc_clk_acc 100,
+               max_rec 9 (1024), max_rom 2, gen 2, spd 2 (S400)
+40c  00130e01  company_id 00130e     |
+410  000606e0  device_id 01000606e0  | EUI-64 00130e01000606e0
+
+               root directory
+               -----------------------------------------------------------------
+414  0009d31c  directory_length 9, crc 54044
+418  04000014  hardware version
+41c  0c0083c0  node capabilities per IEEE 1394
+420  0300130e  vendor
+424  81000012  --> descriptor leaf at 46c
+428  17000006  model
+42c  81000016  --> descriptor leaf at 484
+430  130120c2  version
+434  d1000002  --> unit directory at 43c
+438  d4000006  --> dependent info directory at 450
+
+               unit directory at 43c
+               -----------------------------------------------------------------
+43c  0004707c  directory_length 4, crc 28796
+440  1200a02d  specifier id: 1394 TA
+444  13010001  version: AV/C
+448  17000006  model
+44c  81000013  --> descriptor leaf at 498
+
+               dependent info directory at 450
+               -----------------------------------------------------------------
+450  000637c7  directory_length 6, crc 14279
+454  120007f5  specifier id
+458  13000001  version
+45c  3affffc7  (immediate value)
+460  3b100000  (immediate value)
+464  3cffffc7  (immediate value)
+468  3d600000  (immediate value)
+
+               descriptor leaf at 46c
+               -----------------------------------------------------------------
+46c  00056f3b  leaf_length 5, crc 28475
+470  00000000  textual descriptor
+474  00000000  minimal ASCII
+478  466f6375  "Focu"
+47c  73726974  "srit"
+480  65000000  "e"
+
+               descriptor leaf at 484
+               -----------------------------------------------------------------
+484  0004a165  leaf_length 4, crc 41317
+488  00000000  textual descriptor
+48c  00000000  minimal ASCII
+490  50726f31  "Pro1"
+494  30494f00  "0IO"
+
+               descriptor leaf at 498
+               -----------------------------------------------------------------
+498  0004a165  leaf_length 4, crc 41317
+49c  00000000  textual descriptor
+4a0  00000000  minimal ASCII
+4a4  50726f31  "Pro1"
+4a8  30494f00  "0IO"
+
+$ python2 crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  040442e4  bus_info_length 4, crc_length 4, crc 17124
+404  31333934  bus_name "1394"
+408  e0ff8112  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 255,
+               max_rec 8 (512), max_rom 1, gen 1, spd 2 (S400)
+40c  00130e04  company_id 00130e     |
+410  018001e9  device_id 04018001e9  | EUI-64 00130e04018001e9
+
+               root directory
+               -----------------------------------------------------------------
+414  00065612  directory_length 6, crc 22034
+418  0300130e  vendor
+41c  8100000a  --> descriptor leaf at 444
+420  17000006  model
+424  8100000e  --> descriptor leaf at 45c
+428  0c0087c0  node capabilities per IEEE 1394
+42c  d1000001  --> unit directory at 430
+
+               unit directory at 430
+               -----------------------------------------------------------------
+430  000418a0  directory_length 4, crc 6304
+434  1200130e  specifier id
+438  13000001  version
+43c  17000006  model
+440  8100000f  --> descriptor leaf at 47c
+
+               descriptor leaf at 444
+               -----------------------------------------------------------------
+444  00056f3b  leaf_length 5, crc 28475
+448  00000000  textual descriptor
+44c  00000000  minimal ASCII
+450  466f6375  "Focu"
+454  73726974  "srit"
+458  65000000  "e"
+
+               descriptor leaf at 45c
+               -----------------------------------------------------------------
+45c  000762c6  leaf_length 7, crc 25286
+460  00000000  textual descriptor
+464  00000000  minimal ASCII
+468  4c495155  "LIQU"
+46c  49445f53  "ID_S"
+470  41464649  "AFFI"
+474  52455f35  "RE_5"
+478  36000000  "6"
+
+               descriptor leaf at 47c
+               -----------------------------------------------------------------
+47c  000762c6  leaf_length 7, crc 25286
+480  00000000  textual descriptor
+484  00000000  minimal ASCII
+488  4c495155  "LIQU"
+48c  49445f53  "ID_S"
+490  41464649  "AFFI"
+494  52455f35  "RE_5"
+498  36000000  "6"
+
+Cc: <stable@vger.kernel.org> # v3.16+
+Fixes: 25784ec2d034 ("ALSA: bebob: Add support for Focusrite Saffire/SaffirePro series")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
-changes in v3
-- initialize tx_mask and rx_mask in probe
+ sound/firewire/bebob/bebob.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
- sound/soc/fsl/fsl_esai.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index afe67c865330..7ee91c28b636 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -54,6 +54,8 @@ struct fsl_esai {
- 	u32 fifo_depth;
- 	u32 slot_width;
- 	u32 slots;
-+	u32 tx_mask;
-+	u32 rx_mask;
- 	u32 hck_rate[2];
- 	u32 sck_rate[2];
- 	bool hck_dir[2];
-@@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
- 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
- 
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
--			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
--			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
--
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
- 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
- 
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
--			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
--	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
--			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
--
- 	esai_priv->slot_width = slot_width;
- 	esai_priv->slots = slots;
-+	esai_priv->tx_mask    = tx_mask;
-+	esai_priv->rx_mask    = rx_mask;
- 
- 	return 0;
- }
-@@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u8 i, channels = substream->runtime->channels;
- 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
-+	u32 mask;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -611,12 +606,23 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
- 				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
-+		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
-+
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
-+				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
-+				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
-+
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
-+				   ESAI_xSMA_xS_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
-+				   ESAI_xSMB_xS_MASK, 0);
- 
- 		/* Disable and reset FIFO */
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
-@@ -906,6 +912,15 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	esai_priv->tx_mask = 0xFFFFFFFF;
-+	esai_priv->rx_mask = 0xFFFFFFFF;
-+
-+	/* Clear the TSMA, TSMB, RSMA, RSMB */
-+	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
-+	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
- 					      &fsl_esai_dai, 1);
- 	if (ret) {
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index d91874275d2c..5b46e8dcc2dd 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -448,7 +448,19 @@ static const struct ieee1394_device_id bebob_id_table[] = {
+ 	/* Focusrite, SaffirePro 26 I/O */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000003, &saffirepro_26_spec),
+ 	/* Focusrite, SaffirePro 10 I/O */
+-	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, 0x00000006, &saffirepro_10_spec),
++	{
++		// The combination of vendor_id and model_id is the same as the
++		// same as the one of Liquid Saffire 56.
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID |
++				  IEEE1394_MATCH_SPECIFIER_ID |
++				  IEEE1394_MATCH_VERSION,
++		.vendor_id	= VEN_FOCUSRITE,
++		.model_id	= 0x000006,
++		.specifier_id	= 0x00a02d,
++		.version	= 0x010001,
++		.driver_data	= (kernel_ulong_t)&saffirepro_10_spec,
++	},
+ 	/* Focusrite, Saffire(no label and LE) */
+ 	SND_BEBOB_DEV_ENTRY(VEN_FOCUSRITE, MODEL_FOCUSRITE_SAFFIRE_BOTH,
+ 			    &saffire_spec),
 -- 
-1.9.1
+2.19.1
