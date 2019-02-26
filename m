@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: fix dma configuration" to the asoc tree
-Date: Tue, 26 Feb 2019 16:22:29 +0000 (GMT)
-Message-ID: <20190226162229.980C41121A0A@debutante.sirena.org.uk>
-References: <1551189070-15469-5-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: i2s: fix 16 bit format support" to the asoc tree
+Date: Tue, 26 Feb 2019 16:22:33 +0000 (GMT)
+Message-ID: <20190226162233.F34F21121A0A@debutante.sirena.org.uk>
+References: <1551189070-15469-3-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551189070-15469-5-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1551189070-15469-3-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: fix dma configuration
+   ASoC: stm32: i2s: fix 16 bit format support
 
 has been applied to the asoc tree at
 
@@ -36,61 +36,33 @@ to this mail.
 Thanks,
 Mark
 
->From 1ac2bd16448997d9ec01922423486e1e85535eda Mon Sep 17 00:00:00 2001
+>From 0c4c68d6fa1bae74d450e50823c24fcc3cd0b171 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Tue, 26 Feb 2019 14:51:07 +0100
-Subject: [PATCH] ASoC: stm32: i2s: fix dma configuration
+Date: Tue, 26 Feb 2019 14:51:05 +0100
+Subject: [PATCH] ASoC: stm32: i2s: fix 16 bit format support
 
-DMA configuration is not balanced on start/stop.
-Move DMA configuration to trigger callback.
+I2S supports 16 bits data in 32 channel length.
+However the expected driver behavior, is to
+set channel length to 16 bits when data format is 16 bits.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 7f56d7b51ba3..95fffb61faa5 100644
+index 339cd4715b2e..7d4c67433916 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -488,7 +488,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	int format = params_width(params);
--	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
-+	u32 cfgr, cfgr_mask, cfg1;
- 	unsigned int fthlv;
- 	int ret;
- 
-@@ -529,15 +529,11 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	if (ret < 0)
- 		return ret;
- 
--	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
--	cfg1_mask = cfg1;
--
- 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
--	cfg1 |= I2S_CFG1_FTHVL_SET(fthlv - 1);
--	cfg1_mask |= I2S_CFG1_FTHVL_MASK;
-+	cfg1 = I2S_CFG1_FTHVL_SET(fthlv - 1);
- 
- 	return regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
--				  cfg1_mask, cfg1);
-+				  I2S_CFG1_FTHVL_MASK, cfg1);
- }
- 
- static int stm32_i2s_startup(struct snd_pcm_substream *substream,
-@@ -592,6 +588,10 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 		/* Enable i2s */
- 		dev_dbg(cpu_dai->dev, "start I2S\n");
- 
-+		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
-+		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
-+				   cfg1_mask, cfg1_mask);
-+
- 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
- 					 I2S_CR1_SPE, I2S_CR1_SPE);
- 		if (ret < 0) {
+@@ -501,7 +501,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	switch (format) {
+ 	case 16:
+ 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
+-		cfgr_mask = I2S_CGFR_DATLEN_MASK;
++		cfgr_mask = I2S_CGFR_DATLEN_MASK | I2S_CGFR_CHLEN;
+ 		break;
+ 	case 32:
+ 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_32) |
 -- 
 2.20.1
