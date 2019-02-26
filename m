@@ -1,29 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: skip useless write in slave mode" to the
- asoc tree
-Date: Tue, 26 Feb 2019 16:22:23 +0000 (GMT)
-Message-ID: <20190226162223.0EDC21121A0A@debutante.sirena.org.uk>
-References: <1551189070-15469-8-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1551189070-15469-8-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: stm32: i2s: fix dma configuration" to the asoc tree
+Date: Tue, 26 Feb 2019 16:22:29 +0000 (GMT)
+Message-ID: <20190226162229.980C41121A0A@debutante.sirena.org.uk>
+References: <1551189070-15469-5-git-send-email-olivier.moysan@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1551189070-15469-5-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: skip useless write in slave mode
+   ASoC: stm32: i2s: fix dma configuration
 
 has been applied to the asoc tree at
 
@@ -48,35 +36,61 @@ to this mail.
 Thanks,
 Mark
 
->From 7b6b0049e2b70d103adf1b7d0320802f70ddceca Mon Sep 17 00:00:00 2001
+>From 1ac2bd16448997d9ec01922423486e1e85535eda Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Tue, 26 Feb 2019 14:51:10 +0100
-Subject: [PATCH] ASoC: stm32: i2s: skip useless write in slave mode
+Date: Tue, 26 Feb 2019 14:51:07 +0100
+Subject: [PATCH] ASoC: stm32: i2s: fix dma configuration
 
-Dummy write in capture master mode is used to gate
-bus clocks. This write is useless in slave mode
-as the clocks are not managed by slave.
+DMA configuration is not balanced on start/stop.
+Move DMA configuration to trigger callback.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 42ce87a35104..47c334de6b09 100644
+index 7f56d7b51ba3..95fffb61faa5 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -623,8 +623,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 		} else {
- 			ier = I2S_IER_OVRIE;
+@@ -488,7 +488,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int format = params_width(params);
+-	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
++	u32 cfgr, cfgr_mask, cfg1;
+ 	unsigned int fthlv;
+ 	int ret;
  
--			if (i2s->refcount == 1)
--				/* dummy write to trigger capture */
-+			if (STM32_I2S_IS_MASTER(i2s) && i2s->refcount == 1)
-+				/* dummy write to gate bus clocks */
- 				regmap_write(i2s->regmap,
- 					     STM32_I2S_TXDR_REG, 0);
- 		}
+@@ -529,15 +529,11 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+-	cfg1_mask = cfg1;
+-
+ 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
+-	cfg1 |= I2S_CFG1_FTHVL_SET(fthlv - 1);
+-	cfg1_mask |= I2S_CFG1_FTHVL_MASK;
++	cfg1 = I2S_CFG1_FTHVL_SET(fthlv - 1);
+ 
+ 	return regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+-				  cfg1_mask, cfg1);
++				  I2S_CFG1_FTHVL_MASK, cfg1);
+ }
+ 
+ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+@@ -592,6 +588,10 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		/* Enable i2s */
+ 		dev_dbg(cpu_dai->dev, "start I2S\n");
+ 
++		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
++		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
++				   cfg1_mask, cfg1_mask);
++
+ 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+ 					 I2S_CR1_SPE, I2S_CR1_SPE);
+ 		if (ret < 0) {
 -- 
 2.20.1
