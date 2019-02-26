@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Improve logging messages" to
-	the asoc tree
-Date: Tue, 26 Feb 2019 12:06:22 +0000 (GMT)
-Message-ID: <20190226120622.74DB111284E3@debutante.sirena.org.uk>
+Subject: Applied "ASoC: wm_adsp: Add support for multiple
+	compressed buffers" to the asoc tree
+Date: Tue, 26 Feb 2019 12:06:24 +0000 (GMT)
+Message-ID: <20190226120624.BDF7C11284E3@debutante.sirena.org.uk>
+References: <20190222100421.894-4-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A65BAF80734
- for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 13:06:24 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FB88F8967B
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 13:06:25 +0100 (CET)
+In-Reply-To: <20190222100421.894-4-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, stuarth@opensource.cirrus.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Improve logging messages
+   ASoC: wm_adsp: Add support for multiple compressed buffers
 
 has been applied to the asoc tree at
 
@@ -53,313 +54,356 @@ to this mail.
 Thanks,
 Mark
 
->From 0d3fba3e7a566917f4286dd42b83c780c47dcbf7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Fri, 22 Feb 2019 10:04:21 +0000
-Subject: [PATCH] ASoC: wm_adsp: Improve logging messages
+>From 4f2d4eabf57718875b97363a3bd35de490f354c5 Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+Date: Fri, 22 Feb 2019 10:04:20 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add support for multiple compressed buffers
 
-As the compressed stream implementation has acquired support for
-multiple DAI links and compressed streams it has become harder to
-interpret messages in the kernel log. Add additional macros to include
-the compressed DAI name in the log messages, allowing different streams
-to be easily disambiguated.
+Currently, only a single compressed stream is supported per firmware.
+Add support for multiple compressed streams on a single firmware, this
+allows additional features like completely independent trigger words or
+separate debug capture streams to be implemented.
 
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 97 +++++++++++++++++++++-----------------
- 1 file changed, 53 insertions(+), 44 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 166 ++++++++++++++++++++++++++-----------
+ sound/soc/codecs/wm_adsp.h |   4 +-
+ 2 files changed, 119 insertions(+), 51 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index fe802fc331c5..8077c18cbcdf 100644
+index 4fdcef3f0ecc..fe802fc331c5 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -46,6 +46,13 @@
- #define adsp_dbg(_dsp, fmt, ...) \
- 	dev_dbg(_dsp->dev, "%s: " fmt, _dsp->name, ##__VA_ARGS__)
+@@ -310,6 +310,12 @@ struct wm_adsp_alg_xm_struct {
+ 	__be64 smoothed_power;
+ };
  
-+#define compr_err(_obj, fmt, ...) \
-+	adsp_err(_obj->dsp, "%s: " fmt, _obj->name ? _obj->name : "legacy", \
-+		 ##__VA_ARGS__)
-+#define compr_dbg(_obj, fmt, ...) \
-+	adsp_dbg(_obj->dsp, "%s: " fmt, _obj->name ? _obj->name : "legacy", \
-+		 ##__VA_ARGS__)
++struct wm_adsp_host_buf_coeff_v1 {
++	__be32 host_buf_ptr;		/* Host buffer pointer */
++	__be32 versions;		/* Version numbers */
++	__be32 name[4];			/* The buffer name */
++};
 +
- #define ADSP1_CONTROL_1                   0x00
- #define ADSP1_CONTROL_2                   0x02
- #define ADSP1_CONTROL_3                   0x03
-@@ -3033,20 +3040,23 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
- 	mutex_lock(&dsp->pwr_lock);
+ struct wm_adsp_buffer {
+ 	__be32 buf1_base;		/* Base addr of first buffer area */
+ 	__be32 buf1_size;		/* Size of buf1 area in DSP words */
+@@ -334,6 +340,7 @@ struct wm_adsp_buffer {
+ struct wm_adsp_compr;
  
- 	if (wm_adsp_fw[dsp->fw].num_caps == 0) {
--		adsp_err(dsp, "Firmware does not support compressed API\n");
-+		adsp_err(dsp, "%s: Firmware does not support compressed API\n",
-+			 rtd->codec_dai->name);
- 		ret = -ENXIO;
- 		goto out;
- 	}
+ struct wm_adsp_compr_buf {
++	struct list_head list;
+ 	struct wm_adsp *dsp;
+ 	struct wm_adsp_compr *compr;
  
- 	if (wm_adsp_fw[dsp->fw].compr_direction != stream->direction) {
--		adsp_err(dsp, "Firmware does not support stream direction\n");
-+		adsp_err(dsp, "%s: Firmware does not support stream direction\n",
-+			 rtd->codec_dai->name);
- 		ret = -EINVAL;
- 		goto out;
- 	}
+@@ -345,9 +352,12 @@ struct wm_adsp_compr_buf {
+ 	int read_index;
+ 	int avail;
+ 	int host_buf_mem_type;
++
++	char *name;
+ };
  
- 	list_for_each_entry(tmp, &dsp->compr_list, list) {
- 		if (!strcmp(tmp->name, rtd->codec_dai->name)) {
--			adsp_err(dsp, "Only a single stream supported per dai\n");
-+			adsp_err(dsp, "%s: Only a single stream supported per dai\n",
-+				 rtd->codec_dai->name);
- 			ret = -EBUSY;
- 			goto out;
- 		}
-@@ -3106,9 +3116,9 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
- 	    params->buffer.fragments < WM_ADSP_MIN_FRAGMENTS ||
- 	    params->buffer.fragments > WM_ADSP_MAX_FRAGMENTS ||
- 	    params->buffer.fragment_size % WM_ADSP_DATA_WORD_SIZE) {
--		adsp_err(dsp, "Invalid buffer fragsize=%d fragments=%d\n",
--			 params->buffer.fragment_size,
--			 params->buffer.fragments);
-+		compr_err(compr, "Invalid buffer fragsize=%d fragments=%d\n",
-+			  params->buffer.fragment_size,
-+			  params->buffer.fragments);
+ struct wm_adsp_compr {
++	struct list_head list;
+ 	struct wm_adsp *dsp;
+ 	struct wm_adsp_compr_buf *buf;
  
+@@ -358,6 +368,8 @@ struct wm_adsp_compr {
+ 	unsigned int copied_total;
+ 
+ 	unsigned int sample_rate;
++
++	const char *name;
+ };
+ 
+ #define WM_ADSP_DATA_WORD_SIZE         3
+@@ -375,6 +387,11 @@ struct wm_adsp_compr {
+ #define ALG_XM_FIELD(field) \
+ 	(offsetof(struct wm_adsp_alg_xm_struct, field) / sizeof(__be32))
+ 
++#define HOST_BUF_COEFF_SUPPORTED_COMPAT_VER	1
++
++#define HOST_BUF_COEFF_COMPAT_VER_MASK		0xFF00
++#define HOST_BUF_COEFF_COMPAT_VER_SHIFT		8
++
+ static int wm_adsp_buffer_init(struct wm_adsp *dsp);
+ static int wm_adsp_buffer_free(struct wm_adsp *dsp);
+ 
+@@ -708,7 +725,7 @@ int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mutex_lock(&dsp[e->shift_l].pwr_lock);
+ 
+-	if (dsp[e->shift_l].booted || dsp[e->shift_l].compr)
++	if (dsp[e->shift_l].booted || !list_empty(&dsp[e->shift_l].compr_list))
+ 		ret = -EBUSY;
+ 	else
+ 		dsp[e->shift_l].fw = ucontrol->value.enumerated.item[0];
+@@ -2430,6 +2447,8 @@ static int wm_adsp_common_init(struct wm_adsp *dsp)
+ 
+ 	INIT_LIST_HEAD(&dsp->alg_regions);
+ 	INIT_LIST_HEAD(&dsp->ctl_list);
++	INIT_LIST_HEAD(&dsp->compr_list);
++	INIT_LIST_HEAD(&dsp->buffer_list);
+ 
+ 	mutex_init(&dsp->pwr_lock);
+ 
+@@ -2972,14 +2991,19 @@ static inline int wm_adsp_compr_attached(struct wm_adsp_compr *compr)
+ 
+ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
+ {
+-	/*
+-	 * Note this will be more complex once each DSP can support multiple
+-	 * streams
+-	 */
+-	if (!compr->dsp->buffer)
++	struct wm_adsp_compr_buf *buf = NULL, *tmp;
++
++	list_for_each_entry(tmp, &compr->dsp->buffer_list, list) {
++		if (!tmp->name || !strcmp(compr->name, tmp->name)) {
++			buf = tmp;
++			break;
++		}
++	}
++
++	if (!buf)
  		return -EINVAL;
- 	}
-@@ -3136,9 +3146,9 @@ static int wm_adsp_compr_check_params(struct snd_compr_stream *stream,
- 				return 0;
- 	}
  
--	adsp_err(dsp, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
--		 params->codec.id, params->codec.ch_in, params->codec.ch_out,
--		 params->codec.sample_rate, params->codec.format);
-+	compr_err(compr, "Invalid params id=%u ch=%u,%u rate=%u fmt=%u\n",
-+		  params->codec.id, params->codec.ch_in, params->codec.ch_out,
-+		  params->codec.sample_rate, params->codec.format);
- 	return -EINVAL;
- }
- 
-@@ -3160,8 +3170,8 @@ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
- 
- 	compr->size = params->buffer;
- 
--	adsp_dbg(compr->dsp, "fragment_size=%d fragments=%d\n",
--		 compr->size.fragment_size, compr->size.fragments);
-+	compr_dbg(compr, "fragment_size=%d fragments=%d\n",
-+		  compr->size.fragment_size, compr->size.fragments);
- 
- 	size = wm_adsp_compr_frag_words(compr) * sizeof(*compr->raw_buf);
- 	compr->raw_buf = kmalloc(size, GFP_DMA | GFP_KERNEL);
-@@ -3303,10 +3313,10 @@ static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
- 
- 		region->cumulative_size = offset;
- 
--		adsp_dbg(buf->dsp,
--			 "region=%d type=%d base=%08x off=%08x size=%08x\n",
--			 i, region->mem_type, region->base_addr,
--			 region->offset, region->cumulative_size);
-+		compr_dbg(buf,
-+			  "region=%d type=%d base=%08x off=%08x size=%08x\n",
-+			  i, region->mem_type, region->base_addr,
-+			  region->offset, region->cumulative_size);
- 	}
+-	compr->buf = compr->dsp->buffer;
++	compr->buf = buf;
+ 	compr->buf->compr = compr;
  
  	return 0;
-@@ -3380,7 +3390,7 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
+@@ -3002,7 +3026,8 @@ static void wm_adsp_compr_detach(struct wm_adsp_compr *compr)
+ 
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ {
+-	struct wm_adsp_compr *compr;
++	struct wm_adsp_compr *compr, *tmp;
++	struct snd_soc_pcm_runtime *rtd = stream->private_data;
+ 	int ret = 0;
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+@@ -3019,11 +3044,12 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ 		goto out;
+ 	}
+ 
+-	if (dsp->compr) {
+-		/* It is expect this limitation will be removed in future */
+-		adsp_err(dsp, "Only a single stream supported per DSP\n");
+-		ret = -EBUSY;
+-		goto out;
++	list_for_each_entry(tmp, &dsp->compr_list, list) {
++		if (!strcmp(tmp->name, rtd->codec_dai->name)) {
++			adsp_err(dsp, "Only a single stream supported per dai\n");
++			ret = -EBUSY;
++			goto out;
++		}
+ 	}
+ 
+ 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
+@@ -3034,8 +3060,9 @@ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream)
+ 
+ 	compr->dsp = dsp;
+ 	compr->stream = stream;
++	compr->name = rtd->codec_dai->name;
+ 
+-	dsp->compr = compr;
++	list_add_tail(&compr->list, &dsp->compr_list);
+ 
+ 	stream->runtime->private_data = compr;
+ 
+@@ -3054,7 +3081,7 @@ int wm_adsp_compr_free(struct snd_compr_stream *stream)
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+ 	wm_adsp_compr_detach(compr);
+-	dsp->compr = NULL;
++	list_del(&compr->list);
+ 
+ 	kfree(compr->raw_buf);
+ 	kfree(compr);
+@@ -3304,7 +3331,7 @@ static struct wm_adsp_compr_buf *wm_adsp_buffer_alloc(struct wm_adsp *dsp)
+ 
+ 	wm_adsp_buffer_clear(buf);
+ 
+-	dsp->buffer = buf;
++	list_add_tail(&buf->list, &dsp->buffer_list);
+ 
+ 	return buf;
+ }
+@@ -3360,6 +3387,7 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
+ 
+ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
+ {
++	struct wm_adsp_host_buf_coeff_v1 coeff_v1;
+ 	struct wm_adsp_compr_buf *buf;
+ 	unsigned int val, reg;
+ 	int ret, i;
+@@ -3395,9 +3423,45 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
  	if (ret < 0)
  		return ret;
  
--	adsp_dbg(dsp, "legacy host_buf_ptr=%x\n", buf->host_buf_ptr);
-+	compr_dbg(buf, "legacy host_buf_ptr=%x\n", buf->host_buf_ptr);
+-	adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
++	/*
++	 * v0 host_buffer coefficients didn't have versioning, so if the
++	 * control is one word, assume version 0.
++	 */
++	if (ctl->len == 4) {
++		adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
++		return 0;
++	}
++
++	ret = regmap_raw_read(ctl->dsp->regmap, reg, &coeff_v1,
++			      sizeof(coeff_v1));
++	if (ret < 0)
++		return ret;
++
++	coeff_v1.versions = be32_to_cpu(coeff_v1.versions);
++	val = coeff_v1.versions & HOST_BUF_COEFF_COMPAT_VER_MASK;
++	val >>= HOST_BUF_COEFF_COMPAT_VER_SHIFT;
  
- 	return 0;
+-	return 0;
++	if (val > HOST_BUF_COEFF_SUPPORTED_COMPAT_VER) {
++		adsp_err(ctl->dsp,
++			 "Host buffer coeff ver %u > supported version %u\n",
++			 val, HOST_BUF_COEFF_SUPPORTED_COMPAT_VER);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(coeff_v1.name); i++)
++		coeff_v1.name[i] = be32_to_cpu(coeff_v1.name[i]);
++
++	wm_adsp_remove_padding((u32 *)&coeff_v1.name,
++			       ARRAY_SIZE(coeff_v1.name),
++			       WM_ADSP_DATA_WORD_SIZE);
++
++	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
++			      (char *)&coeff_v1.name);
++
++	adsp_dbg(ctl->dsp, "host_buf_ptr=%x coeff version %u\n",
++		 buf->host_buf_ptr, val);
++
++	return val;
  }
-@@ -3428,7 +3438,7 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 	 * control is one word, assume version 0.
- 	 */
- 	if (ctl->len == 4) {
--		adsp_dbg(ctl->dsp, "host_buf_ptr=%x\n", buf->host_buf_ptr);
-+		compr_dbg(buf, "host_buf_ptr=%x\n", buf->host_buf_ptr);
- 		return 0;
+ 
+ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
+@@ -3416,12 +3480,13 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
+ 		if (ret < 0) {
+ 			adsp_err(dsp, "Failed to parse coeff: %d\n", ret);
+ 			goto error;
++		} else if (ret == 0) {
++			/* Only one buffer supported for version 0 */
++			return 0;
+ 		}
+-
+-		return 0;
  	}
  
-@@ -3458,8 +3468,8 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
- 			      (char *)&coeff_v1.name);
+-	if (!dsp->buffer) {
++	if (list_empty(&dsp->buffer_list)) {
+ 		/* Fall back to legacy support */
+ 		ret = wm_adsp_buffer_parse_legacy(dsp);
+ 		if (ret) {
+@@ -3439,13 +3504,16 @@ static int wm_adsp_buffer_init(struct wm_adsp *dsp)
  
--	adsp_dbg(ctl->dsp, "host_buf_ptr=%x coeff version %u\n",
--		 buf->host_buf_ptr, val);
-+	compr_dbg(buf, "host_buf_ptr=%x coeff version %u\n",
-+		  buf->host_buf_ptr, val);
+ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+ {
+-	if (dsp->buffer) {
+-		wm_adsp_compr_detach(dsp->buffer->compr);
++	struct wm_adsp_compr_buf *buf, *tmp;
  
- 	return val;
- }
-@@ -3525,7 +3535,7 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 	struct wm_adsp *dsp = compr->dsp;
- 	int ret = 0;
+-		kfree(dsp->buffer->regions);
+-		kfree(dsp->buffer);
++	list_for_each_entry_safe(buf, tmp, &dsp->buffer_list, list) {
++		if (buf->compr)
++			wm_adsp_compr_detach(buf->compr);
  
--	adsp_dbg(dsp, "Trigger: %d\n", cmd);
-+	compr_dbg(compr, "Trigger: %d\n", cmd);
+-		dsp->buffer = NULL;
++		kfree(buf->name);
++		kfree(buf->regions);
++		list_del(&buf->list);
++		kfree(buf);
+ 	}
+ 
+ 	return 0;
+@@ -3572,39 +3640,39 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
  
  	mutex_lock(&dsp->pwr_lock);
  
-@@ -3534,8 +3544,8 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 		if (!wm_adsp_compr_attached(compr)) {
- 			ret = wm_adsp_compr_attach(compr);
- 			if (ret < 0) {
--				adsp_err(dsp, "Failed to link buffer and stream: %d\n",
--					 ret);
-+				compr_err(compr, "Failed to link buffer and stream: %d\n",
-+					  ret);
- 				break;
- 			}
- 		}
-@@ -3547,8 +3557,8 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 					   HOST_BUFFER_FIELD(high_water_mark),
- 					   wm_adsp_compr_frag_words(compr));
- 		if (ret < 0) {
--			adsp_err(dsp, "Failed to set high water mark: %d\n",
--				 ret);
-+			compr_err(compr, "Failed to set high water mark: %d\n",
-+				  ret);
- 			break;
- 		}
- 		break;
-@@ -3589,7 +3599,7 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
- 		read_index = sign_extend32(next_read_index, 23);
- 
- 		if (read_index < 0) {
--			adsp_dbg(buf->dsp, "Avail check on unstarted stream\n");
-+			compr_dbg(buf, "Avail check on unstarted stream\n");
- 			return 0;
- 		}
- 
-@@ -3607,8 +3617,8 @@ static int wm_adsp_buffer_update_avail(struct wm_adsp_compr_buf *buf)
- 	if (avail < 0)
- 		avail += wm_adsp_buffer_size(buf);
- 
--	adsp_dbg(buf->dsp, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
--		 buf->read_index, write_index, avail * WM_ADSP_DATA_WORD_SIZE);
-+	compr_dbg(buf, "readindex=0x%x, writeindex=0x%x, avail=%d\n",
-+		  buf->read_index, write_index, avail * WM_ADSP_DATA_WORD_SIZE);
- 
- 	buf->avail = avail;
- 
-@@ -3621,11 +3631,11 @@ static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
- 
- 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
- 	if (ret < 0) {
--		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
-+		compr_err(buf, "Failed to check buffer error: %d\n", ret);
- 		return ret;
- 	}
- 	if (buf->error != 0) {
--		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
-+		compr_err(buf, "Buffer error occurred: %d\n", buf->error);
- 		return -EIO;
- 	}
- 
-@@ -3644,6 +3654,7 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
+-	buf = dsp->buffer;
+-	compr = dsp->compr;
+-
+-	if (!buf) {
++	if (list_empty(&dsp->buffer_list)) {
  		ret = -ENODEV;
  		goto out;
  	}
-+
+-
  	adsp_dbg(dsp, "Handling buffer IRQ\n");
  
- 	list_for_each_entry(buf, &dsp->buffer_list, list) {
-@@ -3656,13 +3667,13 @@ int wm_adsp_compr_handle_irq(struct wm_adsp *dsp)
- 		ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
- 					  &buf->irq_count);
- 		if (ret < 0) {
--			adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
-+			compr_err(buf, "Failed to get irq_count: %d\n", ret);
- 			goto out;
- 		}
+-	ret = wm_adsp_buffer_get_error(buf);
+-	if (ret < 0)
+-		goto out_notify; /* Wake poll to report error */
++	list_for_each_entry(buf, &dsp->buffer_list, list) {
++		compr = buf->compr;
  
- 		ret = wm_adsp_buffer_update_avail(buf);
- 		if (ret < 0) {
--			adsp_err(dsp, "Error reading avail: %d\n", ret);
-+			compr_err(buf, "Error reading avail: %d\n", ret);
- 			goto out;
- 		}
+-	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
+-				  &buf->irq_count);
+-	if (ret < 0) {
+-		adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
+-		goto out;
+-	}
++		ret = wm_adsp_buffer_get_error(buf);
++		if (ret < 0)
++			goto out_notify; /* Wake poll to report error */
  
-@@ -3686,8 +3697,7 @@ static int wm_adsp_buffer_reenable_irq(struct wm_adsp_compr_buf *buf)
- 	if (buf->irq_count & 0x01)
- 		return 0;
+-	ret = wm_adsp_buffer_update_avail(buf);
+-	if (ret < 0) {
+-		adsp_err(dsp, "Error reading avail: %d\n", ret);
+-		goto out;
+-	}
++		ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(irq_count),
++					  &buf->irq_count);
++		if (ret < 0) {
++			adsp_err(dsp, "Failed to get irq_count: %d\n", ret);
++			goto out;
++		}
  
--	adsp_dbg(buf->dsp, "Enable IRQ(0x%x) for next fragment\n",
--		 buf->irq_count);
-+	compr_dbg(buf, "Enable IRQ(0x%x) for next fragment\n", buf->irq_count);
+-	if (wm_adsp_fw[dsp->fw].voice_trigger && buf->irq_count == 2)
+-		ret = WM_ADSP_COMPR_VOICE_TRIGGER;
++		ret = wm_adsp_buffer_update_avail(buf);
++		if (ret < 0) {
++			adsp_err(dsp, "Error reading avail: %d\n", ret);
++			goto out;
++		}
++
++		if (wm_adsp_fw[dsp->fw].voice_trigger && buf->irq_count == 2)
++			ret = WM_ADSP_COMPR_VOICE_TRIGGER;
  
- 	buf->irq_count |= 0x01;
+ out_notify:
+-	if (compr && compr->stream)
+-		snd_compr_fragment_elapsed(compr->stream);
++		if (compr && compr->stream)
++			snd_compr_fragment_elapsed(compr->stream);
++	}
  
-@@ -3703,7 +3713,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 	struct wm_adsp_compr_buf *buf;
- 	int ret = 0;
+ out:
+ 	mutex_unlock(&dsp->pwr_lock);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 4b8778b0b06c..59e07ad16329 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -90,8 +90,8 @@ struct wm_adsp {
  
--	adsp_dbg(dsp, "Pointer request\n");
-+	compr_dbg(compr, "Pointer request\n");
+ 	struct work_struct boot_work;
  
- 	mutex_lock(&dsp->pwr_lock);
+-	struct wm_adsp_compr *compr;
+-	struct wm_adsp_compr_buf *buffer;
++	struct list_head compr_list;
++	struct list_head buffer_list;
  
-@@ -3718,7 +3728,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 	if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 		ret = wm_adsp_buffer_update_avail(buf);
- 		if (ret < 0) {
--			adsp_err(dsp, "Error reading avail: %d\n", ret);
-+			compr_err(compr, "Error reading avail: %d\n", ret);
- 			goto out;
- 		}
- 
-@@ -3737,9 +3747,8 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 			ret = wm_adsp_buffer_reenable_irq(buf);
- 			if (ret < 0) {
--				adsp_err(dsp,
--					 "Failed to re-enable buffer IRQ: %d\n",
--					 ret);
-+				compr_err(compr, "Failed to re-enable buffer IRQ: %d\n",
-+					  ret);
- 				goto out;
- 			}
- 		}
-@@ -3814,11 +3823,10 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
- static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 			      char __user *buf, size_t count)
- {
--	struct wm_adsp *dsp = compr->dsp;
- 	int ntotal = 0;
- 	int nwords, nbytes;
- 
--	adsp_dbg(dsp, "Requested read of %zu bytes\n", count);
-+	compr_dbg(compr, "Requested read of %zu bytes\n", count);
- 
- 	if (!compr->buf || compr->buf->error) {
- 		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
-@@ -3830,17 +3838,18 @@ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
- 	do {
- 		nwords = wm_adsp_buffer_capture_block(compr, count);
- 		if (nwords < 0) {
--			adsp_err(dsp, "Failed to capture block: %d\n", nwords);
-+			compr_err(compr, "Failed to capture block: %d\n",
-+				  nwords);
- 			return nwords;
- 		}
- 
- 		nbytes = nwords * WM_ADSP_DATA_WORD_SIZE;
- 
--		adsp_dbg(dsp, "Read %d bytes\n", nbytes);
-+		compr_dbg(compr, "Read %d bytes\n", nbytes);
- 
- 		if (copy_to_user(buf + ntotal, compr->raw_buf, nbytes)) {
--			adsp_err(dsp, "Failed to copy data to user: %d, %d\n",
--				 ntotal, nbytes);
-+			compr_err(compr, "Failed to copy data to user: %d, %d\n",
-+				  ntotal, nbytes);
- 			return -EFAULT;
- 		}
+ 	struct mutex pwr_lock;
  
 -- 
 2.20.1
