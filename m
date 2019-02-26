@@ -1,11 +1,13 @@
 From: Wen Yang <wen.yang99@zte.com.cn>
-Subject: [PATCH 1/3] ASoC: wcd9335: fix a leaked reference by adding missing of_node_put
-Date: Tue, 26 Feb 2019 16:17:49 +0800
-Message-ID: <1551169071-11639-1-git-send-email-wen.yang99@zte.com.cn>
+Subject: [PATCH 3/3] ASoC: eukrea-tlv320: fix a leaked reference by adding missing of_node_put
+Date: Tue, 26 Feb 2019 16:17:51 +0800
+Message-ID: <1551169071-11639-3-git-send-email-wen.yang99@zte.com.cn>
+References: <1551169071-11639-1-git-send-email-wen.yang99@zte.com.cn>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1551169071-11639-1-git-send-email-wen.yang99@zte.com.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, wang.yi59@zte.com.cn, Wen Yang <wen.yang99@zte.com.cn>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Vinod Koul <vkoul@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, wang.yi59@zte.com.cn, Wen Yang <wen.yang99@zte.com.cn>
 List-Id: alsa-devel@alsa-project.org
 
 The call to of_parse_phandle returns a node pointer with refcount
@@ -13,33 +15,39 @@ incremented thus it must be explicitly decremented after the last
 usage.
 
 Detected by coccinelle with the following warnings:
-./sound/soc/codecs/wcd9335.c:5193:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 5183, but without a correspon    ding object release within this function.
+./sound/soc/fsl/eukrea-tlv320.c:121:3-9: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 102, but without a correspo    nding object release within this function.
+./sound/soc/fsl/eukrea-tlv320.c:127:3-9: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 102, but without a correspo    nding object release within this function.
 
 Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@oracle.com> (commit_signer:1/11=9%,authored:1/11=9%)
 Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/codecs/wcd9335.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/eukrea-tlv320.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 981f88a..a04a7ce 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -5188,6 +5188,7 @@ static int wcd9335_slim_status(struct slim_device *sdev,
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 191426a..30a3d68 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -118,13 +118,13 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(&pdev->dev,
+ 				"fsl,mux-int-port node missing or invalid.\n");
+-			return ret;
++			goto err;
+ 		}
+ 		ret = of_property_read_u32(np, "fsl,mux-ext-port", &ext_port);
+ 		if (ret) {
+ 			dev_err(&pdev->dev,
+ 				"fsl,mux-ext-port node missing or invalid.\n");
+-			return ret;
++			goto err;
+ 		}
  
- 	wcd->slim = sdev;
- 	wcd->slim_ifc_dev = of_slim_get_device(sdev->ctrl, ifc_dev_np);
-+	of_node_put(ifc_dev_np);
- 	if (!wcd->slim_ifc_dev) {
- 		dev_err(dev, "Unable to get SLIM Interface device\n");
- 		return -EINVAL;
+ 		/*
 -- 
 2.9.5
