@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l36: Fix an IS_ERR() vs NULL
-	checking bug" to the asoc tree
-Date: Tue, 26 Feb 2019 12:06:33 +0000 (GMT)
-Message-ID: <20190226120633.88F7511284F0@debutante.sirena.org.uk>
-References: <20190222063151.GC30993@kadam>
+Subject: Applied "ASoC: wm_adsp: Factor out stripping padding
+	from ADSP data" to the asoc tree
+Date: Tue, 26 Feb 2019 12:06:31 +0000 (GMT)
+Message-ID: <20190226120631.5C6AB11284E3@debutante.sirena.org.uk>
+References: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7C98F8968A
- for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 13:06:36 +0100 (CET)
-In-Reply-To: <20190222063151.GC30993@kadam>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CF2EF8968D
+ for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2019 13:06:37 +0100 (CET)
+In-Reply-To: <20190222100421.894-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, James Schulman <james.schulman@cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l36: Fix an IS_ERR() vs NULL checking bug
+   ASoC: wm_adsp: Factor out stripping padding from ADSP data
 
 has been applied to the asoc tree at
 
@@ -55,37 +55,73 @@ to this mail.
 Thanks,
 Mark
 
->From eb23dcd20e91fe97679257dc4d195a707b4a0d1a Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 22 Feb 2019 09:31:51 +0300
-Subject: [PATCH] ASoC: cs35l36: Fix an IS_ERR() vs NULL checking bug
+>From cc7d6ce90216d101ae16f330fe05bd38e0e64cde Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Fri, 22 Feb 2019 10:04:17 +0000
+Subject: [PATCH] ASoC: wm_adsp: Factor out stripping padding from ADSP data
 
-The irq_get_irq_data() function doesn't return error pointers, it
-returns NULL.
+In preparation for more refactoring add a helper function to strip the
+padding from ADSP data.
 
-Fixes: 6ba9dd6c893b ("ASoC: cs35l36: Add support for Cirrus CS35L36 Amplifier")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l36.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index dc8cf61b9db8..e9b5f76f27a8 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -1845,9 +1845,9 @@ static int cs35l36_i2c_probe(struct i2c_client *i2c_client,
- 		cs35l36_apply_vpbr_config(cs35l36);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 12ef85e85c29..bd3241aacdb6 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3231,6 +3231,21 @@ static inline int wm_adsp_buffer_write(struct wm_adsp_compr_buf *buf,
+ 				       buf->host_buf_ptr + field_offset, data);
+ }
  
- 	irq_d = irq_get_irq_data(i2c_client->irq);
--	if (IS_ERR(irq_d)) {
-+	if (!irq_d) {
- 		dev_err(&i2c_client->dev, "Invalid IRQ: %d\n", i2c_client->irq);
--		ret = PTR_ERR(irq_d);
-+		ret = -ENODEV;
- 		goto err;
- 	}
++static void wm_adsp_remove_padding(u32 *buf, int nwords, int data_word_size)
++{
++	u8 *pack_in = (u8 *)buf;
++	u8 *pack_out = (u8 *)buf;
++	int i, j;
++
++	/* Remove the padding bytes from the data read from the DSP */
++	for (i = 0; i < nwords; i++) {
++		for (j = 0; j < data_word_size; j++)
++			*pack_out++ = *pack_in++;
++
++		pack_in += sizeof(*buf) - data_word_size;
++	}
++}
++
+ static int wm_adsp_legacy_host_buf_addr(struct wm_adsp_compr_buf *buf)
+ {
+ 	struct wm_adsp_alg_region *alg_region;
+@@ -3666,11 +3681,9 @@ EXPORT_SYMBOL_GPL(wm_adsp_compr_pointer);
+ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
+ {
+ 	struct wm_adsp_compr_buf *buf = compr->buf;
+-	u8 *pack_in = (u8 *)compr->raw_buf;
+-	u8 *pack_out = (u8 *)compr->raw_buf;
+ 	unsigned int adsp_addr;
+ 	int mem_type, nwords, max_read;
+-	int i, j, ret;
++	int i, ret;
  
+ 	/* Calculate read parameters */
+ 	for (i = 0; i < wm_adsp_fw[buf->dsp->fw].caps->num_regions; ++i)
+@@ -3702,13 +3715,7 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* Remove the padding bytes from the data read from the DSP */
+-	for (i = 0; i < nwords; i++) {
+-		for (j = 0; j < WM_ADSP_DATA_WORD_SIZE; j++)
+-			*pack_out++ = *pack_in++;
+-
+-		pack_in += sizeof(*(compr->raw_buf)) - WM_ADSP_DATA_WORD_SIZE;
+-	}
++	wm_adsp_remove_padding(compr->raw_buf, nwords, WM_ADSP_DATA_WORD_SIZE);
+ 
+ 	/* update read index to account for words read */
+ 	buf->read_index += nwords;
 -- 
 2.20.1
