@@ -1,7 +1,7 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 1/7] ASoC: stm32: i2s: fix IRQ clearing
-Date: Tue, 26 Feb 2019 14:51:04 +0100
-Message-ID: <1551189070-15469-2-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 4/7] ASoC: stm32: i2s: fix dma configuration
+Date: Tue, 26 Feb 2019 14:51:07 +0100
+Message-ID: <1551189070-15469-5-git-send-email-olivier.moysan@st.com>
 References: <1551189070-15469-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,60 +11,55 @@ Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Because of regmap cache, interrupts may not be cleared
-as expected.
-Declare IFCR register as write only and make writings
-to IFCR register unconditional.
+DMA configuration is not balanced on start/stop.
+Move DMA configuration to trigger callback.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/soc/stm/stm32_i2s.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index a25919d32187..339cd4715b2e 100644
+index 7f56d7b51ba3..95fffb61faa5 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -247,8 +247,8 @@ static irqreturn_t stm32_i2s_isr(int irq, void *devid)
- 		return IRQ_NONE;
- 	}
+@@ -488,7 +488,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int format = params_width(params);
+-	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
++	u32 cfgr, cfgr_mask, cfg1;
+ 	unsigned int fthlv;
+ 	int ret;
  
--	regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
--			   I2S_IFCR_MASK, flags);
-+	regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+			  I2S_IFCR_MASK, flags);
+@@ -529,15 +529,11 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	if (ret < 0)
+ 		return ret;
  
- 	if (flags & I2S_SR_OVR) {
- 		dev_dbg(&pdev->dev, "Overrun\n");
-@@ -277,7 +277,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
- 	case STM32_I2S_CFG2_REG:
- 	case STM32_I2S_IER_REG:
- 	case STM32_I2S_SR_REG:
--	case STM32_I2S_IFCR_REG:
- 	case STM32_I2S_TXDR_REG:
- 	case STM32_I2S_RXDR_REG:
- 	case STM32_I2S_CGFR_REG:
-@@ -559,8 +558,8 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 	i2s->refcount++;
- 	spin_unlock(&i2s->lock_fd);
+-	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+-	cfg1_mask = cfg1;
+-
+ 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
+-	cfg1 |= I2S_CFG1_FTHVL_SET(fthlv - 1);
+-	cfg1_mask |= I2S_CFG1_FTHVL_MASK;
++	cfg1 = I2S_CFG1_FTHVL_SET(fthlv - 1);
  
--	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
--				  I2S_IFCR_MASK, I2S_IFCR_MASK);
-+	return regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				 I2S_IFCR_MASK, I2S_IFCR_MASK);
+ 	return regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+-				  cfg1_mask, cfg1);
++				  I2S_CFG1_FTHVL_MASK, cfg1);
  }
  
- static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
-@@ -611,8 +610,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
- 		}
+ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+@@ -592,6 +588,10 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		/* Enable i2s */
+ 		dev_dbg(cpu_dai->dev, "start I2S\n");
  
--		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
--				   I2S_IFCR_MASK, I2S_IFCR_MASK);
-+		regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				  I2S_IFCR_MASK, I2S_IFCR_MASK);
- 
- 		if (playback_flg) {
- 			ier = I2S_IER_UDRIE;
++		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
++		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
++				   cfg1_mask, cfg1_mask);
++
+ 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+ 					 I2S_CR1_SPE, I2S_CR1_SPE);
+ 		if (ret < 0) {
 -- 
 2.7.4
