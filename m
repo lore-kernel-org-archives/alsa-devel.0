@@ -1,7 +1,7 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 6/7] ASoC: stm32: i2s: fix race condition in irq handler
-Date: Tue, 26 Feb 2019 14:51:09 +0100
-Message-ID: <1551189070-15469-7-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 1/7] ASoC: stm32: i2s: fix IRQ clearing
+Date: Tue, 26 Feb 2019 14:51:04 +0100
+Message-ID: <1551189070-15469-2-git-send-email-olivier.moysan@st.com>
 References: <1551189070-15469-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,86 +11,60 @@ Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-When snd_pcm_stop_xrun() is called in interrupt routine,
-substream context may have already been released.
-Add protection on substream context.
+Because of regmap cache, interrupts may not be cleared
+as expected.
+Declare IFCR register as write only and make writings
+to IFCR register unconditional.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/soc/stm/stm32_i2s.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 9edb753ffa1b..42ce87a35104 100644
+index a25919d32187..339cd4715b2e 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -201,6 +201,7 @@ enum i2s_datlen {
-  * @base:  mmio register base virtual address
-  * @phys_addr: I2S registers physical base address
-  * @lock_fd: lock to manage race conditions in full duplex mode
-+ * @irq_lock: prevent race condition with IRQ
-  * @dais_name: DAI name
-  * @mclk_rate: master clock frequency (Hz)
-  * @fmt: DAI protocol
-@@ -222,6 +223,7 @@ struct stm32_i2s_data {
- 	void __iomem *base;
- 	dma_addr_t phys_addr;
- 	spinlock_t lock_fd; /* Manage race conditions for full duplex */
-+	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
- 	char dais_name[STM32_I2S_DAI_NAME_SIZE];
- 	unsigned int mclk_rate;
- 	unsigned int fmt;
-@@ -263,8 +265,10 @@ static irqreturn_t stm32_i2s_isr(int irq, void *devid)
- 	if (flags & I2S_SR_TIFRE)
- 		dev_dbg(&pdev->dev, "Frame error\n");
+@@ -247,8 +247,8 @@ static irqreturn_t stm32_i2s_isr(int irq, void *devid)
+ 		return IRQ_NONE;
+ 	}
  
--	if (err)
-+	spin_lock(&i2s->irq_lock);
-+	if (err && i2s->substream)
- 		snd_pcm_stop_xrun(i2s->substream);
-+	spin_unlock(&i2s->irq_lock);
+-	regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-			   I2S_IFCR_MASK, flags);
++	regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++			  I2S_IFCR_MASK, flags);
  
- 	return IRQ_HANDLED;
- }
-@@ -540,9 +544,12 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
-+	unsigned long flags;
- 	int ret;
+ 	if (flags & I2S_SR_OVR) {
+ 		dev_dbg(&pdev->dev, "Overrun\n");
+@@ -277,7 +277,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_I2S_CFG2_REG:
+ 	case STM32_I2S_IER_REG:
+ 	case STM32_I2S_SR_REG:
+-	case STM32_I2S_IFCR_REG:
+ 	case STM32_I2S_TXDR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 	case STM32_I2S_CGFR_REG:
+@@ -559,8 +558,8 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 	i2s->refcount++;
+ 	spin_unlock(&i2s->lock_fd);
  
-+	spin_lock_irqsave(&i2s->irq_lock, flags);
- 	i2s->substream = substream;
-+	spin_unlock_irqrestore(&i2s->irq_lock, flags);
- 
- 	ret = clk_prepare_enable(i2s->i2sclk);
- 	if (ret < 0) {
-@@ -673,13 +680,16 @@ static void stm32_i2s_shutdown(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--
--	i2s->substream = NULL;
-+	unsigned long flags;
- 
- 	regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
- 			   I2S_CGFR_MCKOE, (unsigned int)~I2S_CGFR_MCKOE);
- 
- 	clk_disable_unprepare(i2s->i2sclk);
-+
-+	spin_lock_irqsave(&i2s->irq_lock, flags);
-+	i2s->substream = NULL;
-+	spin_unlock_irqrestore(&i2s->irq_lock, flags);
+-	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-				  I2S_IFCR_MASK, I2S_IFCR_MASK);
++	return regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				 I2S_IFCR_MASK, I2S_IFCR_MASK);
  }
  
- static int stm32_i2s_dai_probe(struct snd_soc_dai *cpu_dai)
-@@ -874,6 +884,7 @@ static int stm32_i2s_probe(struct platform_device *pdev)
- 	i2s->pdev = pdev;
- 	i2s->ms_flg = I2S_MS_NOT_SET;
- 	spin_lock_init(&i2s->lock_fd);
-+	spin_lock_init(&i2s->irq_lock);
- 	platform_set_drvdata(pdev, i2s);
+ static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -611,8 +610,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 		}
  
- 	ret = stm32_i2s_dais_init(pdev, i2s);
+-		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-				   I2S_IFCR_MASK, I2S_IFCR_MASK);
++		regmap_write_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				  I2S_IFCR_MASK, I2S_IFCR_MASK);
+ 
+ 		if (playback_flg) {
+ 			ier = I2S_IER_UDRIE;
 -- 
 2.7.4
