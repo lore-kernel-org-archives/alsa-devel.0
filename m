@@ -1,63 +1,72 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Set sample_type in
-	base config
-Date: Wed, 27 Feb 2019 08:45:37 -0600
-Message-ID: <c75aeb33-bb4a-a1d1-bb37-3e1e12c19b0a@linux.intel.com>
-References: <1551250158-27591-1-git-send-email-jenny.tc@intel.corp-partner.google.com>
+From: Philipp Puschmann <philipp.puschmann@emlix.com>
+Subject: [PATCH v2] ASoC: tlv320aic3x: fix reset gpio reference counting
+Date: Wed, 27 Feb 2019 16:17:33 +0100
+Message-ID: <20190227151733.4419-1-philipp.puschmann@emlix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8CF3F89699
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 15:45:41 +0100 (CET)
-In-Reply-To: <1551250158-27591-1-git-send-email-jenny.tc@intel.corp-partner.google.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jenny TC <jenny.tc@intel.corp-partner.google.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Abhijeet Kumar <abhijeet.kumar@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: N Harshapriya <harshapriya.n@intel.com>, M Naveen <naveen.m@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, jenny.tc@intel.com, Nujella Sathyanarayana <sathyanarayana.nujella@intel.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Philipp Puschmann <philipp.puschmann@emlix.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch fixes a bug that prevents freeing the reset gpio on unloading
+the module.
 
-On 2/27/19 12:49 AM, Jenny TC wrote:
-> From: Jenny TC <jenny.tc@intel.com>
->
-> sample_type defined in topology configuration is not getting reflected
-> in the dsp param. This patch sets sample_type in base config so that
-> the sample type defined in the topology is reflected int eh dsp params.
-> This issues was uncovered while debugging the S24_LE format which
-> require the MSB byte in 32 bit word to be skipped. Setting sample_type
-> to 1 helps to fix this.
+aic3x_i2c_probe is called when loading the module and it calls list_add
+with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
+So even if list_del is called it does nothing and in the end the gpio_reset
+is not freed. Then a repeated module probing fails silently because
+gpio_request fails.
 
-skl_set_base_module_format() is called from a variety of places, so am I correct in stating that S24_LE never worked with this driver? If so, the patch should really be titled "ASoC: Intel: Skylake: enable S24_LE format support"
+When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
+list_del to aic3x_i2c_remove because aic3x_remove may be called
+multiple times without aic3x_i2c_remove being called which leads to
+a NULL pointer dereference.
 
-Also your commit message is confusing in the last sentence. What do you mean by "Setting sample_type to " when you only use what's provided by the topology?
+Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
+---
+Changes in v2: Fix typo in title tlv320aix3x -> tlv320aic3x
 
->
-> Signed-off-by: Jenny TC <jenny.tc@intel.com>
-> ---
->   sound/soc/intel/skylake/skl-messages.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-> index b0e6fb9..9260e9a 100644
-> --- a/sound/soc/intel/skylake/skl-messages.c
-> +++ b/sound/soc/intel/skylake/skl-messages.c
-> @@ -483,6 +483,7 @@ static void skl_set_base_module_format(struct skl_sst *ctx,
->   	base_cfg->audio_fmt.bit_depth = format->bit_depth;
->   	base_cfg->audio_fmt.valid_bit_depth = format->valid_bit_depth;
->   	base_cfg->audio_fmt.ch_cfg = format->ch_cfg;
-> +	base_cfg->audio_fmt.sample_type = format->sample_type;
->   
->   	dev_dbg(ctx->dev, "bit_depth=%x valid_bd=%x ch_config=%x\n",
->   			format->bit_depth, format->valid_bit_depth,
+ sound/soc/codecs/tlv320aic3x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6aa0edf8c5ef..cea3ebecdb12 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int ret, i;
+ 
+-	INIT_LIST_HEAD(&aic3x->list);
+ 	aic3x->component = component;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
+@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+-	list_del(&aic3x->list);
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
+ 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+ 					      &aic3x->disable_nb[i].nb);
+@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
++	INIT_LIST_HEAD(&aic3x->list);
+ 	list_add(&aic3x->list, &reset_list);
+ 
+ 	return 0;
+@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
+ {
+ 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
+ 
++	list_del(&aic3x->list);
++
+ 	if (gpio_is_valid(aic3x->gpio_reset) &&
+ 	    !aic3x_is_shared_reset(aic3x)) {
+ 		gpio_set_value(aic3x->gpio_reset, 0);
+-- 
+2.20.1
