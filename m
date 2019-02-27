@@ -1,27 +1,25 @@
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 Subject: Re: [PATCH RFC 2/3] ASoC: hdmi-codec: add support for
 	bclk_ratio
-Date: Wed, 27 Feb 2019 18:00:20 +0000
-Message-ID: <20190227180020.tcdxan4qppdghmfl@shell.armlinux.org.uk>
+Date: Wed, 27 Feb 2019 13:01:05 -0500
+Message-ID: <CAGngYiWESOoKSp09=7W_EEdKJ5r47LQwVAanadAKOO=goy61qg@mail.gmail.com>
 References: <20190222212619.ghxly3eb6dx7p2ut@shell.armlinux.org.uk>
  <E1gxILm-0004MX-Kb@rmk-PC.armlinux.org.uk>
  <520b346f-a874-790d-61ec-fb4ac67ad046@ti.com>
  <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
- <f48bdac0-06ea-03e6-8794-bfb547ec1ed5@ti.com>
- <20190227114747.rjvkbewiloysdi3g@shell.armlinux.org.uk>
- <7dbea4ff-b2ea-2bd7-96aa-b1697422e691@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
- [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com
+ [IPv6:2607:f8b0:4864:20::342])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C323F896A1
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 19:00:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <7dbea4ff-b2ea-2bd7-96aa-b1697422e691@ti.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F02CAF896A5
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 19:01:18 +0100 (CET)
+Received: by mail-ot1-x342.google.com with SMTP id n71so15139473ota.10
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 10:01:18 -0800 (PST)
+In-Reply-To: <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,82 +29,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 27, 2019 at 07:48:33PM +0200, Jyri Sarha wrote:
-> On 27/02/2019 13:47, Russell King - ARM Linux admin wrote:
-> > On Mon, Feb 25, 2019 at 10:58:34PM +0200, Jyri Sarha wrote:
-> >> I think there are other options too. The obvious one would be passing
-> >> the blck_ratio callback trough HDMI-codec to HDMI-bridge-driver, but
-> >> yes, I do not like that either.
-> >>
-> >> The other would be changing the implicit bclk_ratio to 2 x sample-width,
-> >> and accepting blck_ratios of 36 and 40 in tda998x, and set CTS_N_M = 3
-> >> and CTS_N_K = 2 for them too.
-> > To put a bit of further information out there...
-> > 
-> > I really don't like that idea - what if we have a transmitter that
-> > really does use a bclk_ratio of 36 or 40?  That would mess up the
-> > CTS calculation in the TDA998x.
-> > 
-> > The equation I've come up to fit what we know for TDA998x is:
-> > 
-> > 	k = m * bclk_ratio / 128
-> > 
-> > where k and m are parameters that we values we select for TDA998x.
-> > This reflects the entire clock regeneration system including the sink.
-> > The possible values of k are 1, 2, 3, 4, or 8.  m are 1, 2, 4, or 8.
-> > I also have this equation which defines the fs regenerated at the sink:
-> > 
-> > 	fso = bclk_ratio * fsi * m / (128 * k)
-> > 
-> > If we did have a ratio of 36 or 40, the first equation above fails
-> > since k is not one of the possible integers.  If we round down and use
-> > e.g. 2 for the 36fs case, then we'd actually end up with a sample
-> > frequency on the sink of 1.125x faster than it should be, and the sink
-> > would suffer starvation of audio samples.  If we rounded up to 3, then
-> > the sample frequency will be 3/4 of it's true value, so the sink will
-> > overflow and would have to discard audio samples.
-> > 
-> > We know this happens, because that's the root of the problem at hand:
-> > wrongly setting the m and k values for the bclk_ratio being supplied
-> > to the TDA998x causes audio to be corrupted when reproduced by the
-> > sink.
-> > 
-> > Given that, we do need some way to validate the bclk_ratio when it is
-> > set, and not during hw_params which would (a) lead to ALSA devices
-> > failing when userspace is negotiating the parameters and (b) gives no
-> > way in the kernel for set_bclk_ratio() to discover whether a particular
-> > ratio is supported by the codec.
-> > 
-> > So, I think there's three possible ways around this:
-> > 1. adding a set_bclk_ratio() method to hdmi_codec_ops
-> > 2. calling hw_params() when our set_bclk_ratio() method is called
-> >    (what if the rest of the format isn't set or incompatible, which
-> >    may cause the hw_params() method to fail?)
-> > 3. adding a list of acceptable bclk_ratio values to hdmi_codec_pdata
-> 
-> Or leaving the bclk_ratio field zero in struct hdmi_codec_params if
-> set_bclk_ratio() is not called and leaving the bridge driver to decide
-> what to do in such a situation.
-> 
-> And in tda998x_audio_hw_params() doing something like this:
-> 
-> if (audio.bclk_ratio == 0)
-> 	audio.bclk_ratio = DIV_ROUND_UP(params->sample_width, 8) * 8;
-> 
-> But then again I think it would be quite sane option to set bclk_ration
-> in hdmi-codec to 2*sample_width and simply refuse the ratios of 36 or 40
-> in tda998x.
+On Wed, Feb 27, 2019 at 6:47 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> Given that, we do need some way to validate the bclk_ratio when it is
+> set, and not during hw_params which would (a) lead to ALSA devices
+> failing when userspace is negotiating the parameters and (b) gives no
+> way in the kernel for set_bclk_ratio() to discover whether a particular
+> ratio is supported by the codec.
+>
+> So, I think there's three possible ways around this:
+> 1. adding a set_bclk_ratio() method to hdmi_codec_ops
+> 2. calling hw_params() when our set_bclk_ratio() method is called
+>    (what if the rest of the format isn't set or incompatible, which
+>    may cause the hw_params() method to fail?)
+> 3. adding a list of acceptable bclk_ratio values to hdmi_codec_pdata
+>
 
-... which then leads to breakage of userspace if 18 or 20 bit formats
-were attempted, making the bridge driver's capabilities undiscoverable.
+Again excuse my obvious ignorance, but would these solutions work well in the
+more general case?
 
-Returning an error from hw_params causes hard failures.
+Imagine a cpu dai that supports 16x2/16x2, 20x2/20x2, 24x2/24x2
+(sample bits/frame bits -- wire format), sending audio to our tda998x
+hdmi xmitter.
+Depending on the type of samples that userspace chooses to play, one of the
+above formats gets selected by the ASoC core, resulting in a bclk_ratio of
+16x2, 20x2 or 32x2. It's up to the card driver to call set_bclk_ratio(), right?
+So now this card driver needs intimate knowledge of bclk_ratios vs formats for
+the cpu dai. Also it needs knowledge of which bclk_ratios are supported by the
+hdmi xmitter, and a mechanism to filter our the 20x2 blk_ratio format.
+Which may not be trivial, and also prevents it from being generic,
+i.e. we can no longer use simple-card ?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+But it gets worse. Imagine a hypothetical cpu dai that supports 20x2/20x2 and
+20x2/24x2. When the dai is sending to a codec that doesn't care about
+bclk_ratio,
+it should pick 20x2/20x2, because that's most efficient, right? Except
+on a tda998x
+it should select 20x2/24x2. So how would a card driver now even begin to
+deal with this, given that there appears to be no mechanism to even describe
+these differences? Because the params_physical_width() describes the memory
+format, and not the wire format, correct?
+
+So all this kind of suggests to me that the bclk_ratio could be part of the
+format description, or something?
+
+static struct snd_soc_dai_driver acme_cpu_dai = {
+        .playback = {
+                .formats = SNDRV_PCM_FMTBIT_S20_3LE_20 |
+                                SNDRV_PCM_FMTBIT_S20_3LE_24,
+                                SNDRV_PCM_FMTBIT_S16_LE | //
+bclk_ratio 16 implied
+                                SNDRV_PCM_FMTBIT_S24_LE | //
+bclk_ratio 24 implied
+                                SNDRV_PCM_FMTBIT_S24_LE_32
+        },
+};
+
+static struct snd_soc_dai_driver hdmi_dai = {
+        .playback = {
+                .formats = SNDRV_PCM_FMTBIT_S20_3LE_24 |
+                                SNDRV_PCM_FMTBIT_S16_LE | //
+bclk_ratio 16 implied
+                                SNDRV_PCM_FMTBIT_S24_LE | //
+bclk_ratio 24 implied
+                                SNDRV_PCM_FMTBIT_S24_LE_32,
+        },
+};
+
+In this case, the capabilities get negotiated correctly, and the tda998x's
+hw_params() could just call params_bclk_ratio(params) to get the ratio, right?
+
+And the fsl_ssi could resort to a rule to filter out all non-32x2 bclk_ratio
+formats only in master mode.
+
+As I said, I'm way out of my depth here. No idea how realistic or hypothetical
+this is, or if this would go against the grain of the existing ASoC
+architecture.
+
+I really hope there's a much better solution than this that will solve the
+general case.
