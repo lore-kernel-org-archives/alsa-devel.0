@@ -1,115 +1,98 @@
-From: Sven Van Asbroeck <thesven73@gmail.com>
-Subject: Re: [PATCH RFC 2/3] ASoC: hdmi-codec: add support for
-	bclk_ratio
-Date: Wed, 27 Feb 2019 13:01:05 -0500
-Message-ID: <CAGngYiWESOoKSp09=7W_EEdKJ5r47LQwVAanadAKOO=goy61qg@mail.gmail.com>
-References: <20190222212619.ghxly3eb6dx7p2ut@shell.armlinux.org.uk>
- <E1gxILm-0004MX-Kb@rmk-PC.armlinux.org.uk>
- <520b346f-a874-790d-61ec-fb4ac67ad046@ti.com>
- <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 1/2] ASoC: simple-card: add support for bclk_ratio
+Date: Wed, 27 Feb 2019 18:36:22 +0000
+Message-ID: <20190227183622.GA11065@sirena.org.uk>
+References: <20190225164218.19439-1-TheSven73@gmail.com>
+ <877ednbdnz.wl-kuninori.morimoto.gx@renesas.com>
+ <20190226091104.xr27vsiayiq3dl2n@shell.armlinux.org.uk>
+ <CAGngYiXrGNvwobKy+u8QWWsDowhTE8E7OSpVOOL1Yu9PvH-Z9w@mail.gmail.com>
+ <20190226154519.e2wbvbkjynkaob4c@shell.armlinux.org.uk>
+ <CAGngYiXSNbQbcY1tbnYURWTCu7rJk=L1H+So7kanJmpxkV5bEQ@mail.gmail.com>
+ <20190226170349.h4iqeegl7my6qzpt@shell.armlinux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com
- [IPv6:2607:f8b0:4864:20::342])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F02CAF896A5
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 19:01:18 +0100 (CET)
-Received: by mail-ot1-x342.google.com with SMTP id n71so15139473ota.10
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 10:01:18 -0800 (PST)
-In-Reply-To: <20190225140334.uy3qf55u2jjk3ith@shell.armlinux.org.uk>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============0322166856=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20190226170349.h4iqeegl7my6qzpt@shell.armlinux.org.uk>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 27, 2019 at 6:47 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> Given that, we do need some way to validate the bclk_ratio when it is
-> set, and not during hw_params which would (a) lead to ALSA devices
-> failing when userspace is negotiating the parameters and (b) gives no
-> way in the kernel for set_bclk_ratio() to discover whether a particular
-> ratio is supported by the codec.
->
-> So, I think there's three possible ways around this:
-> 1. adding a set_bclk_ratio() method to hdmi_codec_ops
-> 2. calling hw_params() when our set_bclk_ratio() method is called
->    (what if the rest of the format isn't set or incompatible, which
->    may cause the hw_params() method to fail?)
-> 3. adding a list of acceptable bclk_ratio values to hdmi_codec_pdata
->
 
-Again excuse my obvious ignorance, but would these solutions work well in the
-more general case?
+--===============0322166856==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
+Content-Disposition: inline
 
-Imagine a cpu dai that supports 16x2/16x2, 20x2/20x2, 24x2/24x2
-(sample bits/frame bits -- wire format), sending audio to our tda998x
-hdmi xmitter.
-Depending on the type of samples that userspace chooses to play, one of the
-above formats gets selected by the ASoC core, resulting in a bclk_ratio of
-16x2, 20x2 or 32x2. It's up to the card driver to call set_bclk_ratio(), right?
-So now this card driver needs intimate knowledge of bclk_ratios vs formats for
-the cpu dai. Also it needs knowledge of which bclk_ratios are supported by the
-hdmi xmitter, and a mechanism to filter our the 20x2 blk_ratio format.
-Which may not be trivial, and also prevents it from being generic,
-i.e. we can no longer use simple-card ?
 
-But it gets worse. Imagine a hypothetical cpu dai that supports 20x2/20x2 and
-20x2/24x2. When the dai is sending to a codec that doesn't care about
-bclk_ratio,
-it should pick 20x2/20x2, because that's most efficient, right? Except
-on a tda998x
-it should select 20x2/24x2. So how would a card driver now even begin to
-deal with this, given that there appears to be no mechanism to even describe
-these differences? Because the params_physical_width() describes the memory
-format, and not the wire format, correct?
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So all this kind of suggests to me that the bclk_ratio could be part of the
-format description, or something?
+On Tue, Feb 26, 2019 at 05:03:49PM +0000, Russell King - ARM Linux admin wrote:
+> On Tue, Feb 26, 2019 at 11:31:15AM -0500, Sven Van Asbroeck wrote:
 
-static struct snd_soc_dai_driver acme_cpu_dai = {
-        .playback = {
-                .formats = SNDRV_PCM_FMTBIT_S20_3LE_20 |
-                                SNDRV_PCM_FMTBIT_S20_3LE_24,
-                                SNDRV_PCM_FMTBIT_S16_LE | //
-bclk_ratio 16 implied
-                                SNDRV_PCM_FMTBIT_S24_LE | //
-bclk_ratio 24 implied
-                                SNDRV_PCM_FMTBIT_S24_LE_32
-        },
-};
+> > There is talk in the manual about "network mode", which could work by changing
+> > the LRCLK only at the first slot - thereby allowing clients to receive all
+> > slots just by counting, as long as they know the slot size?
 
-static struct snd_soc_dai_driver hdmi_dai = {
-        .playback = {
-                .formats = SNDRV_PCM_FMTBIT_S20_3LE_24 |
-                                SNDRV_PCM_FMTBIT_S16_LE | //
-bclk_ratio 16 implied
-                                SNDRV_PCM_FMTBIT_S24_LE | //
-bclk_ratio 24 implied
-                                SNDRV_PCM_FMTBIT_S24_LE_32,
-        },
-};
+> > LRCLK   _____/-----------------\_____/---------
+> > DATA    SLOT1|SLOT2|SLOT3|SLOT4|SLOT1
 
-In this case, the capabilities get negotiated correctly, and the tda998x's
-hw_params() could just call params_bclk_ratio(params) to get the ratio, right?
+> From what I gather, these are described using SND_SOC_DAIFMT_DSP_A
+> and SND_SOC_DAIFMT_DSP_B dai formats, and the parameters are
 
-And the fsl_ssi could resort to a rule to filter out all non-32x2 bclk_ratio
-formats only in master mode.
+Roughly, yes - the DSP formats are formats which only care about one
+edge of the LRCLK, the difference being if the first data bit is the
+same clock cycle as the transition or the next clock cycle.
 
-As I said, I'm way out of my depth here. No idea how realistic or hypothetical
-this is, or if this would go against the grain of the existing ASoC
-architecture.
+> controlled not through snd_soc_dai_set_bclk_ratio() but via
+> snd_soc_dai_set_tdm_slot().
 
-I really hope there's a much better solution than this that will solve the
-general case.
+> So, IMHO, the TDM formats should be disregarded from consideration
+> here.  Mark, ack?
+
+I'd expect set_bclk_ratio() to cover all formats - usually the hardware
+either has zero flexibility when it comes to the LRCLK format or isn't
+super bothered, this stuff is mainly used to adapt the more flexible
+hardware to the less flexible hardware.
+
+TDM is definitely something that only really makes sense with DSP
+formats though, I2S TDM is just weird.
+
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlx22KQACgkQJNaLcl1U
+h9C67wf+LI5e7n5wfQSOgAf3bSfp4s+9ChGv6IwimLmTBnUCC0TCk+hOo28e/zbT
+HD+pYCDjsSHaY0peq/927Xj5ErHLHZLVS1rGIh1SJk5V+2UKMn1lJ4MDLobhm0/U
+W+hvnMOnimLlGodvQtF7asE01AooE3GMLTQfdkwnX5y7M/c3whQ+KrLrLUCb/LyA
+slGgHscLSaK1I6443dYOhsBn8hkjkoBYtP9AGNQOC0aqkC1i8A+quDPM+ss/q0no
+C4686zVU0zanD6Kev1p0T5fsIjqlTZyz5qnVLF4CcPnWFjcJJO+zTBkDveq85pLp
+1ng04RT4v4fwaHqUL69WdL3l7OqttQ==
+=twmV
+-----END PGP SIGNATURE-----
+
+--8t9RHnE3ZwKMSgU+--
+
+--===============0322166856==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+
+--===============0322166856==--
