@@ -1,70 +1,43 @@
-From: Philipp Puschmann <philipp.puschmann@emlix.com>
-Subject: [PATCH] ASoC: tlv320aix3x: fix reset gpio reference counting
-Date: Wed, 27 Feb 2019 15:10:19 +0100
-Message-ID: <20190227141019.16027-1-philipp.puschmann@emlix.com>
+From: Olivier SCHMITT <sc.olivier@gmail.com>
+Subject: increase number of alsa loopback
+Date: Wed, 27 Feb 2019 15:20:32 +0100
+Message-ID: <dd6a3a76-a394-3da8-286d-c316fee6c487@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Philipp Puschmann <philipp.puschmann@emlix.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8992F89695
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 15:20:36 +0100 (CET)
+Received: by mail-wm1-x32f.google.com with SMTP id a62so6043758wmh.4
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 06:20:36 -0800 (PST)
+Received: from [130.79.124.2] (phiige.phi.unistra.fr. [130.79.124.2])
+ by smtp.gmail.com with ESMTPSA id t133sm1944267wmf.3.2019.02.27.06.20.34
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 27 Feb 2019 06:20:34 -0800 (PST)
+Content-Language: fr
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a bug that prevents freeing the reset gpio on unloading
-the module.
+Hello All,
 
-aic3x_i2c_probe is called when loading the module and it calls list_add
-with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
-So even if list_del is called it does nothing and in the end the gpio_reset
-is not freed. Then a repeated module probing fails silently because
-gpio_request fails.
+First, thanks for your project!
 
-When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
-list_del to aic3x_i2c_remove because aic3x_remove may be called
-multiple times without aic3x_i2c_remove being called which leads to
-a NULL pointer dereference.
+I search to increase the maximum number of 32 alsa loopback.
 
-Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
----
- sound/soc/codecs/tlv320aic3x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Can someone say me how do this?
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 6aa0edf8c5ef..cea3ebecdb12 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int ret, i;
- 
--	INIT_LIST_HEAD(&aic3x->list);
- 	aic3x->component = component;
- 
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
-@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int i;
- 
--	list_del(&aic3x->list);
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
- 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
- 					      &aic3x->disable_nb[i].nb);
-@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0)
- 		goto err_gpio;
- 
-+	INIT_LIST_HEAD(&aic3x->list);
- 	list_add(&aic3x->list, &reset_list);
- 
- 	return 0;
-@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
- {
- 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
- 
-+	list_del(&aic3x->list);
-+
- 	if (gpio_is_valid(aic3x->gpio_reset) &&
- 	    !aic3x_is_shared_reset(aic3x)) {
- 		gpio_set_value(aic3x->gpio_reset, 0);
--- 
-2.20.1
+Thanks in advance! Olivier.
