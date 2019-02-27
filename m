@@ -1,72 +1,60 @@
-From: Philipp Puschmann <philipp.puschmann@emlix.com>
-Subject: [PATCH v2] ASoC: tlv320aic3x: fix reset gpio reference counting
-Date: Wed, 27 Feb 2019 16:17:33 +0100
-Message-ID: <20190227151733.4419-1-philipp.puschmann@emlix.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: increase number of alsa loopback
+Date: Wed, 27 Feb 2019 17:12:42 +0100
+Message-ID: <e2aa42e0-93cb-a50c-41ec-b504f626ccbf@perex.cz>
+References: <dd6a3a76-a394-3da8-286d-c316fee6c487@gmail.com>
+ <04bde94b-1071-edc0-fd7a-cb0080ef79fa@perex.cz>
+ <e96dc312-d183-bca4-0ffa-6d3d12185c3b@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Philipp Puschmann <philipp.puschmann@emlix.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31FA5F89699
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 17:12:45 +0100 (CET)
+In-Reply-To: <e96dc312-d183-bca4-0ffa-6d3d12185c3b@gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Olivier SCHMITT <sc.olivier@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a bug that prevents freeing the reset gpio on unloading
-the module.
-
-aic3x_i2c_probe is called when loading the module and it calls list_add
-with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
-So even if list_del is called it does nothing and in the end the gpio_reset
-is not freed. Then a repeated module probing fails silently because
-gpio_request fails.
-
-When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
-list_del to aic3x_i2c_remove because aic3x_remove may be called
-multiple times without aic3x_i2c_remove being called which leads to
-a NULL pointer dereference.
-
-Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
----
-Changes in v2: Fix typo in title tlv320aix3x -> tlv320aic3x
-
- sound/soc/codecs/tlv320aic3x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 6aa0edf8c5ef..cea3ebecdb12 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int ret, i;
- 
--	INIT_LIST_HEAD(&aic3x->list);
- 	aic3x->component = component;
- 
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
-@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int i;
- 
--	list_del(&aic3x->list);
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
- 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
- 					      &aic3x->disable_nb[i].nb);
-@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0)
- 		goto err_gpio;
- 
-+	INIT_LIST_HEAD(&aic3x->list);
- 	list_add(&aic3x->list, &reset_list);
- 
- 	return 0;
-@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
- {
- 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
- 
-+	list_del(&aic3x->list);
-+
- 	if (gpio_is_valid(aic3x->gpio_reset) &&
- 	    !aic3x_is_shared_reset(aic3x)) {
- 		gpio_set_value(aic3x->gpio_reset, 0);
--- 
-2.20.1
+RG5lIDI3LiAwMi4gMTkgdiAxNjo0NCBPbGl2aWVyIFNDSE1JVFQgbmFwc2FsKGEpOgo+IEhlbGxv
+LAo+IAo+IFRoYW5rcyBmb3IgcmVwbHksCj4gCj4gSSBoYXZlIGNvbmZpZ3VyZSAvZXRjL21vZHBy
+b2JlLmQvYWxzYS1iYXNlLmNvbmYgd2l0aDoKPiAKPiBvcHRpb25zIHNuZC1hbG9vcCAKPiBpbmRl
+eD01LDYsNyw4LDksMTAsMTEsMTIsMTMsMTQsMTUsMTYsMTcsMTgsMTksMjAsMjEsMjIsMjMsMjQs
+MjUsMjYsMjcsMjgsMjkgCj4gaWQ9bHAwLGxwMSxscDIsbHAzLGxwNCxscDUsbHA2LGxwNyxscDgs
+bHA5LGxwMTAsbHAxMSxscDEyLGxwMTMsbHAxNCxscDE1LGxwMTYsbHAxNyxscDE4LGxwMTksbHAy
+MCxscDIxLGxwMjIsbHAyMyxscDI0IAo+IGVuYWJsZT0xLDEsMSwxLDEsMSwxLDEsMSwxLDEsMSwx
+LDEsMSwxLDEsMSwxLDEsMSwxLDEsMSwxLDEsMSwxIAo+IHBjbV9zdWJzdHJlYW1zPTIsMiwyLDIs
+MiwyLDIsMiwyLDIsMiwyLDIsMiwyLDIsMiwyLDIsMiwyLDIsMiwyLDIKPiAKPiBidXQgd2hlbiBp
+IHVzZSBpbmRleCBtb3JlIHRoYW4gMzIsIGkgaGF2ZSBzb21lIG1lc3NhZ2UgaW4gc3lzbG9nIHRo
+YXQgCj4gaXQncyBzYXkgYWxzYSBjYW4ndCB1c2UgaW5kZXggZ3JlYXRoZXIgdGhhbiAzMi4uLgo+
+IAo+IE1heWJlIGhhdmUgeW91ciBhbiBpZGVhIGZvciBtb2RpZnkgZXQgcmVjb21waWxpbmcga2Vy
+bmVsPwoKSSdtIGFmcmFpZCwgdGhlIEFMU0EgY2FyZCBsaW1pdCAoMzIpIGlzIGhhcmRjb2RlZCBh
+bmQgY2Fubm90IGJlIGVhc2lseQpjaGFuZ2VkLiBUaGUgcmVjb21waWxhdGlvbiB3b24ndCBoZWxw
+LgoKWW91IG1heSB1c2UgdXAgdG8gOCBwY20gc3Vic3RyZWFtcyBwZXIgdGhlIGxvb3AgY2FyZC4g
+VGhpcyBsaW1pdCBjYW4gYmUKaW5jcmVhc2VkIGJ5IGNoYW5naW5nIHRoZSB2YWx1ZSBpbiBhbG9v
+cC5jIChrZXJuZWwgZHJpdmVyKS4KCgkJCQkJSmFyb3NsYXYKCj4gTGUgMjcvMDIvMjAxOSDDoCAx
+NTozNSwgSmFyb3NsYXYgS3lzZWxhIGEgw6ljcml0wqA6Cj4+IERuZSAyNy4gMDIuIDE5IHYgMTU6
+MjAgT2xpdmllciBTQ0hNSVRUIG5hcHNhbChhKToKPj4+IEhlbGxvIEFsbCwKPj4+Cj4+PiBGaXJz
+dCwgdGhhbmtzIGZvciB5b3VyIHByb2plY3QhCj4+Pgo+Pj4gSSBzZWFyY2ggdG8gaW5jcmVhc2Ug
+dGhlIG1heGltdW0gbnVtYmVyIG9mIDMyIGFsc2EgbG9vcGJhY2suCj4+Pgo+Pj4gQ2FuIHNvbWVv
+bmUgc2F5IG1lIGhvdyBkbyB0aGlzPwo+PiBUaGVyZSdzIGhhcmRjb2RlZCBsaW1pdCBmb3IgdGhl
+IFBDTSBzdWJzdHJlYW1zIHRvIDgsIGJ1dCB5b3UgbWF5IGVuYWJsZQo+PiBtb3JlIGxvb3BiYWNr
+IGNhcmRzIChvcHRpb25zIHNuZC1hbG9vcCBlbmFibGU9MSwxLDEsMSkuCj4+Cj4+IAkJCQlKYXJv
+c2xhdgo+PgoKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBTb3Vu
+ZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
