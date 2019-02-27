@@ -1,25 +1,26 @@
-From: Olivier SCHMITT <sc.olivier@gmail.com>
-Subject: increase number of alsa loopback
-Date: Wed, 27 Feb 2019 15:20:32 +0100
-Message-ID: <dd6a3a76-a394-3da8-286d-c316fee6c487@gmail.com>
+From: Manuel Reinhardt <manuel.rhdt@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add quirk for MOTU MicroBook
+	II
+Date: Wed, 27 Feb 2019 15:26:01 +0100
+Message-ID: <d4a6b20f1a4cdb62c90e6802875814233b9c2337.camel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8992F89695
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 15:20:36 +0100 (CET)
-Received: by mail-wm1-x32f.google.com with SMTP id a62so6043758wmh.4
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 06:20:36 -0800 (PST)
-Received: from [130.79.124.2] (phiige.phi.unistra.fr. [130.79.124.2])
- by smtp.gmail.com with ESMTPSA id t133sm1944267wmf.3.2019.02.27.06.20.34
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A4C7F89695
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 15:26:03 +0100 (CET)
+Received: by mail-wr1-x441.google.com with SMTP id w17so18157910wrn.12
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 06:26:03 -0800 (PST)
+Received: from mrdesktop.fritz.box (ip5f5ac579.dynamic.kabel-deutschland.de.
+ [95.90.197.121])
+ by smtp.gmail.com with ESMTPSA id s5sm22102952wra.77.2019.02.27.06.26.02
  for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 27 Feb 2019 06:20:34 -0800 (PST)
-Content-Language: fr
+ (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+ Wed, 27 Feb 2019 06:26:02 -0800 (PST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,15 +30,245 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello All,
+Add an entry to the quirks-table to for usb-audio to recognize the
+Microbook II (although it only exposes vendor interfaces). A simple boot
+quirk is also implemented to set up the sample rate and  make sure that
+no audio urbs are sent before the device is ready.
 
-First, thanks for your project!
+This patch only provides audio playback and capture at 96kHz sample
+rate. Notice the following shortcomings:
 
-I search to increase the maximum number of 32 alsa loopback.
+- The sample rate is currently hardcoded to 96k although the device also
+  supports 48k and 44.1k.
 
-Can someone say me how do this?
+- The various mixer controls of the MicroBook are not made available.
 
-Thanks in advance! Olivier.
+- The keep-iface control should be on by default because the device
+  shuts down whenever the altsetting is reset which is usually unwanted.
+  (I don't know the best way to do this)
+
+- The communication format used by the MicroBook for sample rate setting
+  and also other setup has been reverse engineered by looking at the
+  usbmon output while running the windows driver through virtualbox. In
+  this patch the first byte of every message is set to \0 while in the
+  observed communications the first byte acts as a "message-counter"
+  increasing its value with every message sent. Leaving it at \0 does
+  not seem to affect the device.
+
+Signed-off-by: Manuel Reinhardt <manuel.rhdt@gmail.com>
+---
+ sound/usb/pcm.c          |  4 ++
+ sound/usb/quirks-table.h | 65 +++++++++++++++++++++++++++
+ sound/usb/quirks.c       | 97 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 166 insertions(+)
+
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index db114f3977e0..056af0a57b22 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -354,6 +354,10 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+ 		ep = 0x81;
+ 		ifnum = 1;
+ 		goto add_sync_ep_from_ifnum;
++	case USB_ID(0x07fd, 0x0004): /* MOTU MicroBook II */
++		ep = 0x84;
++		ifnum = 0;
++		goto add_sync_ep_from_ifnum;
+ 	}
+ 
+ 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index b345beb447bd..86e80916a029 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3398,5 +3398,70 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		.ifnum = QUIRK_NO_INTERFACE
+ 	}
+ },
++/* MOTU Microbook II */
++{
++	USB_DEVICE(0x07fd, 0x0004),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "MOTU",
++		.product_name = "MicroBookII",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
++					.channels = 6,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0,
++					.endpoint = 0x84,
++					.rates = SNDRV_PCM_RATE_96000,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						   USB_ENDPOINT_SYNC_ASYNC,
++					.rate_min = 96000,
++					.rate_max = 96000,
++					.nr_rates = 1,
++					.maxpacksize = 0x00d8,
++					.rate_table = (unsigned int[]) {
++						96000
++					}
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
++					.channels = 8,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0,
++					.endpoint = 0x03,
++					.rates = SNDRV_PCM_RATE_96000,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						   USB_ENDPOINT_SYNC_ASYNC,
++					.rate_min = 96000,
++					.rate_max = 96000,
++					.nr_rates = 1,
++					.maxpacksize = 0x0120,
++					.rate_table = (unsigned int[]) {
++						96000
++					}
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index f372c624bbf4..c86a06dd97dd 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1000,6 +1000,101 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
+ 	return 0;
+ }
+ 
++
++#define MICROBOOK_BUF_SIZE 128
++
++static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
++						int buf_size, int *length)
++{
++	int err, actual_length;
++
++	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x01), buf, *length,
++				&actual_length, 1000);
++	if (err < 0)
++		return err;
++
++	print_hex_dump(KERN_DEBUG, "snd: ", DUMP_PREFIX_NONE, 16, 1, buf,
++		       actual_length, false);
++
++	memset(buf, 0, buf_size);
++
++	err = usb_interrupt_msg(dev, usb_rcvintpipe(dev, 0x82), buf,
++				buf_size, &actual_length, 1000);
++	if (err < 0)
++		return err;
++
++	print_hex_dump(KERN_DEBUG, "rcv: ", DUMP_PREFIX_NONE, 16, 1, buf,
++		       actual_length, false);
++
++	*length = actual_length;
++	return 0;
++}
++
++static int snd_usb_motu_microbookii_boot_quirk(struct usb_device *dev)
++{
++	int err, actual_length, poll_attempts = 0;
++	bool setup_finished = false;
++	static const u8 set_samplerate_seq[] = { 0x00, 0x00, 0x00, 0x00,
++						 0x00, 0x00, 0x0b, 0x14,
++						 0x00, 0x00, 0x00, 0x01 };
++	static const u8 poll_ready_seq[] = { 0x00, 0x04, 0x00, 0x00,
++					     0x00, 0x00, 0x0b, 0x18 };
++	u8 *buf = kzalloc(MICROBOOK_BUF_SIZE, GFP_KERNEL);
++
++	if (!buf)
++		return -ENOMEM;
++
++	dev_info(&dev->dev, "Waiting for MOTU Microbook II to boot up...\n");
++
++	/* First we tell the device which sample rate to use. */
++	memcpy(buf, set_samplerate_seq, ARRAY_SIZE(set_samplerate_seq));
++	actual_length = ARRAY_SIZE(set_samplerate_seq);
++	err = snd_usb_motu_microbookii_communicate(dev, buf, MICROBOOK_BUF_SIZE,
++						   &actual_length);
++
++	if (err < 0) {
++		kfree(buf);
++		dev_err(&dev->dev,
++			"failed setting the sample rate for Motu MicroBook II: %d\n",
++			err);
++		return err;
++	}
++
++	/* Then we poll every 100 ms until the device informs of its readiness. */
++	while (!setup_finished) {
++		if (++poll_attempts > 100) {
++			kfree(buf);
++			dev_err(&dev->dev,
++				"failed booting Motu MicroBook II: timeout\n");
++			return -ENODEV;
++		}
++
++		memset(buf, 0, MICROBOOK_BUF_SIZE);
++		memcpy(buf, poll_ready_seq, ARRAY_SIZE(poll_ready_seq));
++
++		actual_length = ARRAY_SIZE(poll_ready_seq);
++		err = snd_usb_motu_microbookii_communicate(
++			dev, buf, MICROBOOK_BUF_SIZE, &actual_length);
++		if (err < 0) {
++			kfree(buf);
++			dev_err(&dev->dev,
++				"failed booting Motu MicroBook II: communication error\n");
++			return err;
++		}
++
++		if (buf[actual_length - 1] == 1)
++			setup_finished = true;
++
++		msleep(100);
++	}
++
++	kfree(buf);
++
++	dev_info(&dev->dev, "MOTU MicroBook II ready\n");
++
++	return 0;
++}
++
+ /*
+  * Setup quirks
+  */
+@@ -1177,6 +1272,8 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+ 		return snd_usb_gamecon780_boot_quirk(dev);
+ 	case USB_ID(0x2466, 0x8010): /* Fractal Audio Axe-Fx 3 */
+ 		return snd_usb_axefx3_boot_quirk(dev);
++	case USB_ID(0x07fd, 0x0004): /* MOTU MicroBook II */
++		return snd_usb_motu_microbookii_boot_quirk(dev);
+ 	}
+ 
+ 	return 0;
+-- 
+2.20.1
