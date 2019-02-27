@@ -1,21 +1,18 @@
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH V3] ASoC: fsl_esai: fix channel swap issue
- when stream starts
-Date: Wed, 27 Feb 2019 06:30:24 +0000
-Message-ID: <VI1PR0402MB33926551CFE8DA8621C367F2E3740@VI1PR0402MB3392.eurprd04.prod.outlook.com>
-References: <6a5f6ddf5c1683106b0cadd5691cd2d9cfe2c997.1551150582.git.shengjiu.wang@nxp.com>
- <20190226191057.GA24082@Asurada-Nvidia.nvidia.com>
+Subject: [PATCH V4] ASoC: fsl_esai: fix channel swap issue when
+	stream starts
+Date: Wed, 27 Feb 2019 06:31:12 +0000
+Message-ID: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-eopbgr60086.outbound.protection.outlook.com [40.107.6.86])
+ (mail-eopbgr60070.outbound.protection.outlook.com [40.107.6.70])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7856AF89675
- for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 07:30:27 +0100 (CET)
-In-Reply-To: <20190226191057.GA24082@Asurada-Nvidia.nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 058DAF89676
+ for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2019 07:31:14 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,86 +23,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ok, will send v4.
+There is very low possibility ( < 0.1% ) that channel swap happened
+in beginning when multi output/input pin is enabled. The issue is
+that hardware can't send data to correct pin in the beginning with
+the normal enable flow.
 
-Best regards
-Wang shengjiu
-> 
-> Hi Shengjiu,
-> 
-> Two more trivial comments inline.
-> 
-> On Tue, Feb 26, 2019 at 03:12:25AM +0000, S.j. Wang wrote:
-> > There is very low possibility ( < 0.1% ) that channel swap happened in
-> > beginning when multi output/input pin is enabled. The issue is that
-> > hardware can't send data to correct pin in the beginning with the
-> > normal enable flow.
-> >
-> > This is hardware issue, but there is no errata, the workaround flow is
-> > that: Each time playback/recording, firstly clear the xSMA/xSMB, then
-> > enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
-> before
-> > xSMA). Which is to use the xSMA as the trigger start register,
-> > previously the xCR_TE or xCR_RE is the bit for starting.
-> >
-> > Fixes commit 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-> > Cc: <stable@vger.kernel.org>
-> > Re> @@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct
-> > Re> snd_soc_dai *dai, u32 tx_mask,
-> >  	esai_priv->slot_width = slot_width;
-> >  	esai_priv->slots = slots;
-> > +	esai_priv->tx_mask    = tx_mask;
-> > +	esai_priv->rx_mask    = rx_mask;
-> 
-> Not necessary to have tabs before "="s.
-> 
-> > @@ -611,12 +606,23 @@ static int fsl_esai_trigger(struct
-> snd_pcm_substream *substream, int cmd,
-> >  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
-> >  				   tx ? ESAI_xCR_TE_MASK :
-> ESAI_xCR_RE_MASK,
-> >  				   tx ? ESAI_xCR_TE(pins) :
-> ESAI_xCR_RE(pins));
-> > +		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
-> > +
-> 
-> Please add a line of brief comments for the reason why we are doing this
-> here, something similar to the commit log, but should have:
-> 1) Clear xSMA/B 2) Set TE/RE before xSMA/B 3)Set xSMB before xSMA.
-> 
-> Apparently having this mask settings in the trigger() does not look very
-> common, so I believe a line of comments would help a lot.
-> 
-> You may add my Acked-by in your next version:
-> 
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> 
-> Thanks
-> 
-> > +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMB(tx),
-> > +				   ESAI_xSMB_xS_MASK,
-> ESAI_xSMB_xS(mask));
-> > +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMA(tx),
-> > +				   ESAI_xSMA_xS_MASK,
-> ESAI_xSMA_xS(mask));
-> > +
-> >  		break;
-> >  	case SNDRV_PCM_TRIGGER_SUSPEND:
-> >  	case SNDRV_PCM_TRIGGER_STOP:
-> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> >  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
-> >  				   tx ? ESAI_xCR_TE_MASK :
-> ESAI_xCR_RE_MASK, 0);
-> > +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMA(tx),
-> > +				   ESAI_xSMA_xS_MASK, 0);
-> > +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMB(tx),
-> > +				   ESAI_xSMB_xS_MASK, 0);
-> >
+This is hardware issue, but there is no errata, the workaround flow
+is that: Each time playback/recording, firstly clear the xSMA/xSMB,
+then enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
+before xSMA). Which is to use the xSMA as the trigger start register,
+previously the xCR_TE or xCR_RE is the bit for starting.
+
+Fixes commit 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_esai.c | 47 +++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index afe67c865330..3623aa9a6f2e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -54,6 +54,8 @@ struct fsl_esai {
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
++	u32 tx_mask;
++	u32 rx_mask;
+ 	u32 hck_rate[2];
+ 	u32 sck_rate[2];
+ 	bool hck_dir[2];
+@@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
+ 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+ 
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
+-			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
+-
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
+ 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
+ 
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
+-			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
+-
+ 	esai_priv->slot_width = slot_width;
+ 	esai_priv->slots = slots;
++	esai_priv->tx_mask = tx_mask;
++	esai_priv->rx_mask = rx_mask;
+ 
+ 	return 0;
+ }
+@@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	u8 i, channels = substream->runtime->channels;
+ 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
++	u32 mask;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -608,15 +603,38 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		for (i = 0; tx && i < channels; i++)
+ 			regmap_write(esai_priv->regmap, REG_ESAI_ETDR, 0x0);
+ 
++		/*
++		 * When set the TE/RE in the end of enablement flow, there
++		 * will be channel swap issue for multi data line case.
++		 * In order to workaround this issue, we switch the bit
++		 * enablement sequence to below sequence
++		 * 1) clear the xSMB & xSMA: which is done in probe and
++		 *                           stop state.
++		 * 2) set TE/RE
++		 * 3) set xSMB
++		 * 4) set xSMA:  xSMA is the last one in this flow, which
++		 *               will trigger esai to start.
++		 */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+ 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
+ 				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
++		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
++
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
++				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
++				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
++
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+ 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
++				   ESAI_xSMA_xS_MASK, 0);
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
++				   ESAI_xSMB_xS_MASK, 0);
+ 
+ 		/* Disable and reset FIFO */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
+@@ -906,6 +924,15 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	esai_priv->tx_mask = 0xFFFFFFFF;
++	esai_priv->rx_mask = 0xFFFFFFFF;
++
++	/* Clear the TSMA, TSMB, RSMA, RSMB */
++	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
+ 					      &fsl_esai_dai, 1);
+ 	if (ret) {
+-- 
+1.9.1
