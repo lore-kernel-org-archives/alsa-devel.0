@@ -1,28 +1,34 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: btcvsd add loopback" to the asoc tree
-Date: Thu, 28 Feb 2019 14:46:31 +0000 (GMT)
-Message-ID: <20190228144631.1CCFF1127605@debutante.sirena.org.uk>
-References: <1551231044-24062-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tlv320aic3x: fix reset gpio reference
+	counting" to the asoc tree
+Date: Thu, 28 Feb 2019 14:46:33 +0000 (GMT)
+Message-ID: <20190228144633.3DAA61127605@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1551231044-24062-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, stephen.chen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C2ECF89691
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2019 15:46:35 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Philipp Puschmann <philipp.puschmann@emlix.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: btcvsd add loopback
+   ASoC: tlv320aic3x: fix reset gpio reference counting
 
 has been applied to the asoc tree at
 
@@ -47,126 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From f060f46f09bb920d1e0d436d654996033b856e26 Mon Sep 17 00:00:00 2001
-From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Wed, 27 Feb 2019 09:30:44 +0800
-Subject: [PATCH] ASoC: mediatek: btcvsd add loopback
+>From 82ad759143ed77673db0d93d53c1cde7b99917ee Mon Sep 17 00:00:00 2001
+From: Philipp Puschmann <philipp.puschmann@emlix.com>
+Date: Wed, 27 Feb 2019 16:17:33 +0100
+Subject: [PATCH] ASoC: tlv320aic3x: fix reset gpio reference counting
 
-add direct loopback path from rx to tx
+This patch fixes a bug that prevents freeing the reset gpio on unloading
+the module.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+aic3x_i2c_probe is called when loading the module and it calls list_add
+with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
+So even if list_del is called it does nothing and in the end the gpio_reset
+is not freed. Then a repeated module probing fails silently because
+gpio_request fails.
+
+When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
+list_del to aic3x_i2c_remove because aic3x_remove may be called
+multiple times without aic3x_i2c_remove being called which leads to
+a NULL pointer dereference.
+
+Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/common/mtk-btcvsd.c | 69 +++++++++++++++++++++++++-
- 1 file changed, 68 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic3x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
-index 1b8bcdaf02d1..9a163d7064d1 100644
---- a/sound/soc/mediatek/common/mtk-btcvsd.c
-+++ b/sound/soc/mediatek/common/mtk-btcvsd.c
-@@ -49,6 +49,7 @@ enum bt_sco_state {
- 	BT_SCO_STATE_IDLE,
- 	BT_SCO_STATE_RUNNING,
- 	BT_SCO_STATE_ENDING,
-+	BT_SCO_STATE_LOOPBACK,
- };
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6aa0edf8c5ef..cea3ebecdb12 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int ret, i;
  
- enum bt_sco_direct {
-@@ -486,7 +487,8 @@ static irqreturn_t mtk_btcvsd_snd_irq_handler(int irq_id, void *dev)
- 	if (bt->rx->state != BT_SCO_STATE_RUNNING &&
- 	    bt->rx->state != BT_SCO_STATE_ENDING &&
- 	    bt->tx->state != BT_SCO_STATE_RUNNING &&
--	    bt->tx->state != BT_SCO_STATE_ENDING) {
-+	    bt->tx->state != BT_SCO_STATE_ENDING &&
-+	    bt->tx->state != BT_SCO_STATE_LOOPBACK) {
- 		dev_warn(bt->dev, "%s(), in idle state: rx->state: %d, tx->state: %d\n",
- 			 __func__, bt->rx->state, bt->tx->state);
- 		goto irq_handler_exit;
-@@ -512,6 +514,42 @@ static irqreturn_t mtk_btcvsd_snd_irq_handler(int irq_id, void *dev)
- 	buf_cnt_tx = btsco_packet_info[packet_type][2];
- 	buf_cnt_rx = btsco_packet_info[packet_type][3];
+-	INIT_LIST_HEAD(&aic3x->list);
+ 	aic3x->component = component;
  
-+	if (bt->tx->state == BT_SCO_STATE_LOOPBACK) {
-+		u8 *src, *dst;
-+		unsigned long connsys_addr_rx, ap_addr_rx;
-+		unsigned long connsys_addr_tx, ap_addr_tx;
-+
-+		connsys_addr_rx = *bt->bt_reg_pkt_r;
-+		ap_addr_rx = (unsigned long)bt->bt_sram_bank2_base +
-+			     (connsys_addr_rx & 0xFFFF);
-+
-+		connsys_addr_tx = *bt->bt_reg_pkt_w;
-+		ap_addr_tx = (unsigned long)bt->bt_sram_bank2_base +
-+			     (connsys_addr_tx & 0xFFFF);
-+
-+		if (connsys_addr_tx == 0xdeadfeed ||
-+		    connsys_addr_rx == 0xdeadfeed) {
-+			/* bt return 0xdeadfeed if read reg during bt sleep */
-+			dev_warn(bt->dev, "%s(), connsys_addr_tx == 0xdeadfeed\n",
-+				 __func__);
-+			goto irq_handler_exit;
-+		}
-+
-+		src = (u8 *)ap_addr_rx;
-+		dst = (u8 *)ap_addr_tx;
-+
-+		mtk_btcvsd_snd_data_transfer(BT_SCO_DIRECT_BT2ARM, src,
-+					     bt->tx->temp_packet_buf,
-+					     packet_length,
-+					     packet_num);
-+		mtk_btcvsd_snd_data_transfer(BT_SCO_DIRECT_ARM2BT,
-+					     bt->tx->temp_packet_buf, dst,
-+					     packet_length,
-+					     packet_num);
-+		bt->rx->rw_cnt++;
-+		bt->tx->rw_cnt++;
-+	}
-+
- 	if (bt->rx->state == BT_SCO_STATE_RUNNING ||
- 	    bt->rx->state == BT_SCO_STATE_ENDING) {
- 		if (bt->rx->xrun) {
-@@ -1067,6 +1105,33 @@ static int btcvsd_band_set(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
+@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+-	list_del(&aic3x->list);
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
+ 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+ 					      &aic3x->disable_nb[i].nb);
+@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
++	INIT_LIST_HEAD(&aic3x->list);
+ 	list_add(&aic3x->list, &reset_list);
+ 
  	return 0;
- }
- 
-+static int btcvsd_loopback_get(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_btcvsd_snd *bt = snd_soc_component_get_drvdata(cmpnt);
-+	bool lpbk_en = bt->tx->state == BT_SCO_STATE_LOOPBACK;
-+
-+	ucontrol->value.integer.value[0] = lpbk_en;
-+	return 0;
-+}
-+
-+static int btcvsd_loopback_set(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_btcvsd_snd *bt = snd_soc_component_get_drvdata(cmpnt);
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		mtk_btcvsd_snd_set_state(bt, bt->tx, BT_SCO_STATE_LOOPBACK);
-+		mtk_btcvsd_snd_set_state(bt, bt->rx, BT_SCO_STATE_LOOPBACK);
-+	} else {
-+		mtk_btcvsd_snd_set_state(bt, bt->tx, BT_SCO_STATE_RUNNING);
-+		mtk_btcvsd_snd_set_state(bt, bt->rx, BT_SCO_STATE_RUNNING);
-+	}
-+	return 0;
-+}
-+
- static int btcvsd_tx_mute_get(struct snd_kcontrol *kcontrol,
- 			      struct snd_ctl_elem_value *ucontrol)
+@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
  {
-@@ -1202,6 +1267,8 @@ static int btcvsd_tx_timestamp_get(struct snd_kcontrol *kcontrol,
- static const struct snd_kcontrol_new mtk_btcvsd_snd_controls[] = {
- 	SOC_ENUM_EXT("BTCVSD Band", btcvsd_enum[0],
- 		     btcvsd_band_get, btcvsd_band_set),
-+	SOC_SINGLE_BOOL_EXT("BTCVSD Loopback Switch", 0,
-+			    btcvsd_loopback_get, btcvsd_loopback_set),
- 	SOC_SINGLE_BOOL_EXT("BTCVSD Tx Mute Switch", 0,
- 			    btcvsd_tx_mute_get, btcvsd_tx_mute_set),
- 	SOC_SINGLE_BOOL_EXT("BTCVSD Tx Irq Received Switch", 0,
+ 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
+ 
++	list_del(&aic3x->list);
++
+ 	if (gpio_is_valid(aic3x->gpio_reset) &&
+ 	    !aic3x_is_shared_reset(aic3x)) {
+ 		gpio_set_value(aic3x->gpio_reset, 0);
 -- 
 2.20.1
