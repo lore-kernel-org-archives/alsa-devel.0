@@ -1,75 +1,64 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH] ASoC: hdmi-codec: avoid limiting
- params->msbits in hw_params()
-Date: Fri, 1 Mar 2019 11:10:30 +0200
-Message-ID: <07f53ffe-a1ba-59a7-986b-0fa384e96952@ti.com>
-References: <E1gzNdw-00059M-54@rmk-PC.armlinux.org.uk>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Regression: ASoC: soc-core: clear platform pointers on error
+Date: Fri, 1 Mar 2019 12:07:02 +0000
+Message-ID: <bbc0d37a-5a08-9ce0-58b6-c89d28c558ce@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCAE1F896E0
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 10:10:38 +0100 (CET)
-In-Reply-To: <E1gzNdw-00059M-54@rmk-PC.armlinux.org.uk>
-Content-Language: en-GB
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Russell King <rmk+kernel@armlinux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@chromium.org>, linux-tegra <linux-tegra@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 28/02/2019 17:30, Russell King wrote:
-> Limiting the value of the passed in params->msbits in the hw_params()
-> callback is redundant on three counts:
-> 
-> 1. We already specify in the DAI driver that we can only handle up to
->    24 bits.  This means msbits will be limited to 24 via the ALSA
->    constraints imposed by the ASoC core, unless we have multiple codecs
->    that can handle more bits.
-> 
-> 2. Nothing in our hw_params() implementation uses this value.
-> 
-> 3. The copy of the params that we are passed by the ASoC core never
->    reads back the msbits value.
-> 
-> Consequently, this code is unnecessary and does nothing useful.  Remove
-> it.
-> 
-> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Hi Mark, Curtis,
 
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
+I am seeing a regression on -next where the soundcard on one of our
+Tegra boards fails to initialise following a probe deferral. The bisect
+points to the commit 78a24e10cd94420f1b4e2dc5923ae7109e2aaba1 ('ASoC: 
+soc-core: clear platform pointers on error') and reverting this on top
+of -next fixes the problem.
 
-> ---
->  sound/soc/codecs/hdmi-codec.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index d5f73c837281..35df73e42cbc 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -484,9 +484,6 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
->  		params_width(params), params_rate(params),
->  		params_channels(params));
->  
-> -	if (params_width(params) > 24)
-> -		params->msbits = 24;
-> -
->  	ret = snd_pcm_create_iec958_consumer_hw_params(params, hp.iec.status,
->  						       sizeof(hp.iec.status));
->  	if (ret < 0) {
-> 
+Looking at the bootlog from the failure I see ...
 
+ tegra-snd-wm8903 sound: ASoC: failed to init link WM8903
+
+ tegra-snd-wm8903 sound: snd_soc_register_card failed (-517)
+
+ tegra30-i2s 70080400.i2s: DMA channels sourced from device 70080000.ahub
+
+ tegra-snd-wm8903 sound: ASoC: Both platform name/of_node are set for WM8903
+
+ tegra-snd-wm8903 sound: ASoC: failed to init link WM8903
+
+ tegra-snd-wm8903 sound: snd_soc_register_card failed (-22)
+
+ tegra-snd-wm8903: probe of sound failed with error -22
+
+
+With the above change I see soc_cleanup_platform() is ever being called
+when the probe is deferred and hence leads to the failure. Note that the
+initial failure, "ASoC: failed to init link WM8903" occurs very early
+in snd_soc_register_card() when initialising the prelinks. 
+
+The following fixes it, but I have not scrutinised the code to see if
+there are other exit points that we need to handle.
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 93d316d5bf8e..6f66beb0c3ae 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2797,6 +2797,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 
+                ret = soc_init_dai_link(card, link);
+                if (ret) {
++                       soc_cleanup_platform(card);
+                        dev_err(card->dev, "ASoC: failed to init link %s\n",
+                                link->name);
+                        mutex_unlock(&client_mutex);
+
+Cheers
+Jon
 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+nvpublic
