@@ -1,21 +1,22 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: [PATCH] ASoC: cs42xx8: Remove S32_LE in format list
-Date: Fri, 1 Mar 2019 03:45:13 +0000
-Message-ID: <VI1PR0402MB33925A2019ADC89B89BF3E91E3760@VI1PR0402MB3392.eurprd04.prod.outlook.com>
+Date: Thu, 28 Feb 2019 20:50:42 -0800
+Message-ID: <20190301045041.GA5064@Asurada>
 References: <1551333389-22791-1-git-send-email-shengjiu.wang@nxp.com>
- <ab0a0d6c-4905-328c-0e22-931c045ed8d9@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00073.outbound.protection.outlook.com [40.107.0.73])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com
+ [IPv6:2607:f8b0:4864:20::642])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43E25F896C0
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 04:45:15 +0100 (CET)
-In-Reply-To: <ab0a0d6c-4905-328c-0e22-931c045ed8d9@kernel.org>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59386F8073C
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 05:50:51 +0100 (CET)
+Received: by mail-pl1-x642.google.com with SMTP id q3so10864775pll.4
+ for <alsa-devel@alsa-project.org>; Thu, 28 Feb 2019 20:50:51 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1551333389-22791-1-git-send-email-shengjiu.wang@nxp.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,23 +26,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Timur Tabi <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi Shengjiu,
 
-> > cs42xx8 is a 24-bit A/D and 24-bit D/A device, so the S32_LE should
-> > not be in the supported format list.
-> >
-> > Signed-off-by: Shengjiu Wang<shengjiu.wang@nxp.com>
+On Thu, Feb 28, 2019 at 05:56:31AM +0000, S.j. Wang wrote:
+> cs42xx8 is a 24-bit A/D and 24-bit D/A device, so the S32_LE
+> should not be in the supported format list.
 > 
-> Is the device capable of accepting 32-bit samples, even if it downgrades it to
-> 24-bit internally?  If so, then maybe SNDRV_PCM_FMTBIT_S32_LE should
-> stay.
-Yes,  the S32_LE can be accepted by device, it seems like that the device only
-Use the upper 24bit, so the S32_LE result is same as S24_LE,  do you think the
-S32_LE should be remained?
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/codecs/cs42xx8.c | 3 +--
 
-Best regards
-Wang shengjiu
+This is for cs42xx8 codec driver, but its maintainers aren't
+seemly in To/Cc list. Please run ./scripts/get_maintainer.pl
+for it and resend.
