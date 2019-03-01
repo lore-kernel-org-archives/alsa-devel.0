@@ -1,21 +1,21 @@
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: cs42xx8: Remove S32_LE in format list
-Date: Fri, 1 Mar 2019 06:32:05 +0000
-Message-ID: <VI1PR0402MB3392CCF09FE75CE856C6174EE3760@VI1PR0402MB3392.eurprd04.prod.outlook.com>
-References: <1551333389-22791-1-git-send-email-shengjiu.wang@nxp.com>
- <20190301045041.GA5064@Asurada>
- <5c60b8c7-cb85-dec8-0358-6773251d3f2c@flatmax.org>
+Subject: Re: [PATCH] ASoC: fsl_asrc: add protection for the
+ asrc of older version
+Date: Fri, 1 Mar 2019 06:55:25 +0000
+Message-ID: <VI1PR0402MB339254C31997242633511D12E3760@VI1PR0402MB3392.eurprd04.prod.outlook.com>
+References: <1551407560-29950-1-git-send-email-shengjiu.wang@nxp.com>
+ <20190301025356.GA1371@Asurada-Nvidia.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr150072.outbound.protection.outlook.com [40.107.15.72])
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50065.outbound.protection.outlook.com [40.107.5.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D8E2F896C0
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 07:32:07 +0100 (CET)
-In-Reply-To: <5c60b8c7-cb85-dec8-0358-6773251d3f2c@flatmax.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54F3CF896B8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 07:55:27 +0100 (CET)
+In-Reply-To: <20190301025356.GA1371@Asurada-Nvidia.nvidia.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,56 +26,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Matt Flax <flatmax@flatmax.org>, Nicolin Chen <nicoleotsuka@gmail.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
+Hi
 > 
-> It would be a mistake to remove S32_LE from the format list.
+> Hi Shengjiu,
 > 
-> If you removed that, then we wouldn't be able to do 32 bit native playback
-> - it would force users to go through an ALSA plugin.
+> On Fri, Mar 01, 2019 at 02:32:38AM +0000, S.j. Wang wrote:
+> > There is a constraint for the channel number setting on the asrc of
+> > older version (e.g. imx35), the channel number should be even, odd
+> > number isn't valid.
+> >
+> > So add protection when the asrc of older version is used.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  sound/soc/fsl/fsl_asrc.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c index
+> > 528e8b108422..b3b3c5e15ef1 100644
+> > --- a/sound/soc/fsl/fsl_asrc.c
+> > +++ b/sound/soc/fsl/fsl_asrc.c
+> > @@ -109,7 +109,8 @@ static int fsl_asrc_request_pair(int channels, struct
+> fsl_asrc_pair *pair)
+> >  	if (index == ASRC_INVALID_PAIR) {
+> >  		dev_err(dev, "all pairs are busy now\n");
+> >  		ret = -EBUSY;
+> > -	} else if (asrc_priv->channel_avail < channels) {
+> > +	} else if (asrc_priv->channel_avail < channels ||
+> > +		(asrc_priv->channel_bits < 4 && channels % 2 != 0)) {
+> >  		dev_err(dev, "can't afford required channels: %d\n",
+> channels);
 > 
-> If you look at the cs42448 data sheet for example, the I2S and TDM bus
-> uses a 32 bit word size. For that reason, native S32_LE format is handled by
-> the codec. While the codec only uses the 24 MSBs, the I2S bus is 32 bit.
+> I feel it'd be better to have another else-if, since the existing error message
+> is against something else.
+> 
+> +	} else if (asrc_priv->channel_bits < 4 && channels & 1) {
+> +		/* old version of ASRC has channel_bits = 3 */
+> +  		dev_err(dev, "does not support odd channel number\n");
+> +  		ret = -EINVAL;
+> 
+> Alternatively, I feel instead of error-out at here, should we add a HW
+> constraint or at least fence it off at the beginning of the hw_params()? This
+> is actually nothing specific to the pair-request function but a hardware
+> constraint.
 
-This case is covered by S24_LE I think.  The S32_LE means the data is 32bit and slot width
-Is 32bit, this is not in data sheet.
+How about add constraint in startup?
+static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
+                               struct snd_soc_dai *dai)
+{
+       struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
+
+       if (asrc_priv->channel_bits == 3) {
+               snd_pcm_hw_constraint_step(substream->runtime, 0,
+                                          SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+       }
+
+       return 0;
+}
 
 Best regards
 Wang shengjiu
-> 
-> Matt
-> 
-> On 1/3/19 3:50 pm, Nicolin Chen wrote:
-> > Hi Shengjiu,
-> >
-> > On Thu, Feb 28, 2019 at 05:56:31AM +0000, S.j. Wang wrote:
-> >> cs42xx8 is a 24-bit A/D and 24-bit D/A device, so the S32_LE should
-> >> not be in the supported format list.
-> >>
-> >> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> >> ---
-> >>   sound/soc/codecs/cs42xx8.c | 3 +--
-> > This is for cs42xx8 codec driver, but its maintainers aren't seemly in
-> > To/Cc list. Please run ./scripts/get_maintainer.pl for it and resend.
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> >
-> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fma
-> i
-> > lman.alsa-project.org%2Fmailman%2Flistinfo%2Falsa-
-> devel&amp;data=02%7C
-> >
-> 01%7Cshengjiu.wang%40nxp.com%7Ce5686d72bd7843c5962508d69e0370a4
-> %7C686e
-> >
-> a1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C636870134975623123&amp;
-> sdata=Rr
-> >
-> YwfC4Y3xssED%2FzRum%2FXABGJTHvRrYwnRNgUL7u2lU%3D&amp;reserved
-> =0
