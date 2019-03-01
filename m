@@ -1,19 +1,19 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V2] ASoC: fsl_asrc: add constraint for the asrc
- of older version
-Date: Fri, 1 Mar 2019 08:37:08 +0000
-Message-ID: <24ebf5b610cc69f18c05e4aefa1874ae23861943.1551429264.git.shengjiu.wang@nxp.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: fix S/PDIF DAI
+Date: Fri, 1 Mar 2019 11:09:44 +0200
+Message-ID: <e6823774-d630-c418-1779-d0e894df9382@ti.com>
+References: <E1gzNdq-000598-RJ@rmk-PC.armlinux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr150082.outbound.protection.outlook.com [40.107.15.82])
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78E96F8073C
- for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 09:37:11 +0100 (CET)
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E95BF8073C
+ for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2019 10:09:49 +0100 (CET)
+In-Reply-To: <E1gzNdq-000598-RJ@rmk-PC.armlinux.org.uk>
+Content-Language: en-GB
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +23,180 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: Russell King <rmk+kernel@armlinux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is constraint for the channel number setting on the
-asrc of older version (e.g. imx35), the channel number should
-be even, odd number isn't valid.
+On 28/02/2019 17:30, Russell King wrote:
+> When using the S/PDIF DAI, there is no requirement to call
+> snd_soc_dai_set_fmt() as there is no DAI format definition that defines
+> S/PDIF.  In any case, S/PDIF does not have separate clocks, this is
+> embedded into the data stream.
+> 
+> Consequently, when attempting to use TDA998x in S/PDIF mode, the attempt
+> to configure TDA998x via the hw_params callback fails as the
+> hdmi_codec_daifmt is left initialised to zero.
+> 
+> Since the S/PDIF DAI will only be used by S/PDIF, prepare the
+> hdmi_codec_daifmt structure for this format.
+> 
+> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-So add this constraint when the asrc of older version is used.
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-changes in v2
-- switch to add constraint in startup function
+> ---
+>  sound/soc/codecs/hdmi-codec.c | 118 +++++++++++++++++++++---------------------
+>  1 file changed, 59 insertions(+), 59 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+> index e5b6769b9797..d5f73c837281 100644
+> --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -529,73 +529,71 @@ static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+>  {
+>  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+>  	struct hdmi_codec_daifmt cf = { 0 };
+> -	int ret = 0;
+>  
+>  	dev_dbg(dai->dev, "%s()\n", __func__);
+>  
+> -	if (dai->id == DAI_ID_SPDIF) {
+> -		cf.fmt = HDMI_SPDIF;
+> -	} else {
+> -		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> -		case SND_SOC_DAIFMT_CBM_CFM:
+> -			cf.bit_clk_master = 1;
+> -			cf.frame_clk_master = 1;
+> -			break;
+> -		case SND_SOC_DAIFMT_CBS_CFM:
+> -			cf.frame_clk_master = 1;
+> -			break;
+> -		case SND_SOC_DAIFMT_CBM_CFS:
+> -			cf.bit_clk_master = 1;
+> -			break;
+> -		case SND_SOC_DAIFMT_CBS_CFS:
+> -			break;
+> -		default:
+> -			return -EINVAL;
+> -		}
+> +	if (dai->id == DAI_ID_SPDIF)
+> +		return 0;
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +		cf.bit_clk_master = 1;
+> +		cf.frame_clk_master = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_CBS_CFM:
+> +		cf.frame_clk_master = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_CBM_CFS:
+> +		cf.bit_clk_master = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+>  
+> -		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> -		case SND_SOC_DAIFMT_NB_NF:
+> -			break;
+> -		case SND_SOC_DAIFMT_NB_IF:
+> -			cf.frame_clk_inv = 1;
+> -			break;
+> -		case SND_SOC_DAIFMT_IB_NF:
+> -			cf.bit_clk_inv = 1;
+> -			break;
+> -		case SND_SOC_DAIFMT_IB_IF:
+> -			cf.frame_clk_inv = 1;
+> -			cf.bit_clk_inv = 1;
+> -			break;
+> -		}
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF:
+> +		break;
+> +	case SND_SOC_DAIFMT_NB_IF:
+> +		cf.frame_clk_inv = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_IB_NF:
+> +		cf.bit_clk_inv = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_IB_IF:
+> +		cf.frame_clk_inv = 1;
+> +		cf.bit_clk_inv = 1;
+> +		break;
+> +	}
+>  
+> -		switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> -		case SND_SOC_DAIFMT_I2S:
+> -			cf.fmt = HDMI_I2S;
+> -			break;
+> -		case SND_SOC_DAIFMT_DSP_A:
+> -			cf.fmt = HDMI_DSP_A;
+> -			break;
+> -		case SND_SOC_DAIFMT_DSP_B:
+> -			cf.fmt = HDMI_DSP_B;
+> -			break;
+> -		case SND_SOC_DAIFMT_RIGHT_J:
+> -			cf.fmt = HDMI_RIGHT_J;
+> -			break;
+> -		case SND_SOC_DAIFMT_LEFT_J:
+> -			cf.fmt = HDMI_LEFT_J;
+> -			break;
+> -		case SND_SOC_DAIFMT_AC97:
+> -			cf.fmt = HDMI_AC97;
+> -			break;
+> -		default:
+> -			dev_err(dai->dev, "Invalid DAI interface format\n");
+> -			return -EINVAL;
+> -		}
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		cf.fmt = HDMI_I2S;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_A:
+> +		cf.fmt = HDMI_DSP_A;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_B:
+> +		cf.fmt = HDMI_DSP_B;
+> +		break;
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		cf.fmt = HDMI_RIGHT_J;
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		cf.fmt = HDMI_LEFT_J;
+> +		break;
+> +	case SND_SOC_DAIFMT_AC97:
+> +		cf.fmt = HDMI_AC97;
+> +		break;
+> +	default:
+> +		dev_err(dai->dev, "Invalid DAI interface format\n");
+> +		return -EINVAL;
+>  	}
+>  
+>  	hcp->daifmt[dai->id] = cf;
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+> @@ -792,8 +790,10 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+>  		i++;
+>  	}
+>  
+> -	if (hcd->spdif)
+> +	if (hcd->spdif) {
+>  		hcp->daidrv[i] = hdmi_spdif_dai;
+> +		hcp->daifmt[DAI_ID_SPDIF].fmt = HDMI_SPDIF;
+> +	}
+>  
+>  	dev_set_drvdata(dev, hcp);
+>  
+> 
 
- sound/soc/fsl/fsl_asrc.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 528e8b108422..31494f225037 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -445,6 +445,19 @@ struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir)
- }
- EXPORT_SYMBOL_GPL(fsl_asrc_get_dma_channel);
- 
-+static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
-+
-+	/* channel_bits = 3 means older version on imx35*/
-+	if (asrc_priv->channel_bits == 3)
-+		snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-+
-+	return 0;
-+}
-+
- static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
-@@ -539,6 +552,7 @@ static int fsl_asrc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- }
- 
- static const struct snd_soc_dai_ops fsl_asrc_dai_ops = {
-+	.startup      = fsl_asrc_dai_startup,
- 	.hw_params    = fsl_asrc_dai_hw_params,
- 	.hw_free      = fsl_asrc_dai_hw_free,
- 	.trigger      = fsl_asrc_dai_trigger,
 -- 
-1.9.1
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
