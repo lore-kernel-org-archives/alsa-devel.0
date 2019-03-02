@@ -1,55 +1,56 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: ab8500: Mark expected switch fall-through
-Date: Fri, 1 Mar 2019 14:43:10 -0600
-Message-ID: <20190301204310.GA19966@embeddedor>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] ASoC: core/dapm/topology: minor fixes
+Date: Fri,  1 Mar 2019 19:08:50 -0600
+Message-ID: <20190302010853.18115-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D60FBF8073C
+ for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2019 02:09:04 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch
-cases where we are expecting to fall through.
+3 small patches that have been used for a while but not
+contributed upstream.
 
-This patch fixes the following warning:
+The first patch fixes a name mismatch when using the same machine
+driver on ApolloLake and GeminiLake Chromebooks.
 
-In file included from sound/soc/codecs/ab8500-codec.c:24:
-sound/soc/codecs/ab8500-codec.c: In function ‘ab8500_codec_set_dai_fmt’:
-./include/linux/device.h:1485:2: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/codecs/ab8500-codec.c:2129:3: note: in expansion of macro ‘dev_err’
-   dev_err(dai->component->dev,
-   ^~~~~~~
-sound/soc/codecs/ab8500-codec.c:2132:2: note: here
-  default:
-  ^~~~~~~
+The second one fixes a minor mistake in the location of a topology
+pointer update, and aligns the code on the same pattern.
 
-Warning level 3 was used: -Wimplicit-fallthrough=3
+The last one corrects yet another miss with the introduction of the
+new buffer/src/scheduler soc_dapm elements which were always showing
+as 'On'
 
-This patch is part of the ongoing efforts to enable
--Wimplicit-fallthrough.
+Liam Girdwood (1):
+  ASoC: topology: Align tplg pointer increment across all kcontrols
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/soc/codecs/ab8500-codec.c | 1 +
- 1 file changed, 1 insertion(+)
+Pierre-Louis Bossart (1):
+  ASoC: core: support driver alias names for FE topology overrides
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 03bbbcd3b6c1..87616b126018 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2129,6 +2129,7 @@ static int ab8500_codec_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		dev_err(dai->component->dev,
- 			"%s: ERROR: The device is either a master or a slave.\n",
- 			__func__);
-+		/* fall through */
- 	default:
- 		dev_err(dai->component->dev,
- 			"%s: ERROR: Unsupporter master mask 0x%x\n",
+Ranjani Sridharan (1):
+  ASoC: dapm: set power_check callback for widgets that shouldnt be
+    always on
+
+ sound/soc/soc-core.c     |  7 +++++--
+ sound/soc/soc-dapm.c     |  7 +++++++
+ sound/soc/soc-topology.c | 17 +++++++++--------
+ 3 files changed, 21 insertions(+), 10 deletions(-)
+
 -- 
-2.21.0
+2.17.1
