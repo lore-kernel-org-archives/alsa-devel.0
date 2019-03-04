@@ -1,38 +1,74 @@
-From: Aditya Pakki <pakki001@umn.edu>
-Subject: [PATCH]  ALSA: usx2y: Fix potential NULL pointer dereference
-Date: Mon,  4 Mar 2019 17:00:02 -0600
-Message-ID: <20190304230003.13050-1-pakki001@umn.edu>
+From: Bernhard Rosenkraenzer <bero@lindev.ch>
+Subject: [PATCH] Fix speakers on Acer Predator Helios 500 Ryzen laptops
+Date: Tue, 5 Mar 2019 00:38:19 +0100
+Message-ID: <20190304233818.GA25749@lindev.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: pakki001@umn.edu
-Cc: kjlu@umn.edu, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
- usb_alloc_urb can fail due to kmalloc failure and push the error
- upstream. Further this can cause a NULL pointer dereference in
- init_pipe_urbs. This patch avoids such a scenario.
+On an Acer Predator Helios 500 (Ryzen version), the laptop's speakers
+don't work out of the box.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
----
- sound/usb/usx2y/usb_stream.c | 5 +++++
- 1 file changed, 5 insertions(+)
+The problem can be worked around with hdajackretask, remapping the
+"Black Headphone, Right side" pin (0x21) to the Internal speaker.
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index b0f8979ff2d2..221adf68bd0c 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -104,7 +104,12 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+This patch adds a quirk to change this mapping by default.
+
+Signed-off-by: Bernhard Rosenkraenzer <bero@lindev.ch>
+
+
+diff -up linux-5.0-rc8/sound/pci/hda/patch_realtek.c.0006~ linux-5.0-rc8/sound/pci/hda/patch_realtek.c
+--- linux-5.0-rc8/sound/pci/hda/patch_realtek.c.0006~	2019-02-25 01:46:45.000000000 +0100
++++ linux-5.0-rc8/sound/pci/hda/patch_realtek.c	2019-02-25 17:55:27.032586591 +0100
+@@ -1857,6 +1857,7 @@ enum {
+ 	ALC1220_FIXUP_CLEVO_P950,
+ 	ALC1220_FIXUP_SYSTEM76_ORYP5,
+ 	ALC1220_FIXUP_SYSTEM76_ORYP5_PINS,
++	ALC299_FIXUP_PREDATOR_SPK,
+ };
  
- 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
- 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
-+		if (!sk->inurb[u])
-+			return -ENOMEM;
-+
- 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
-+		if (!sk->outurb[u])
-+			return -ENOMEM;
- 	}
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -6627,6 +6628,13 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC285_FIXUP_LENOVO_HEADPHONE_NOISE
+ 	},
++	[ALC299_FIXUP_PREDATOR_SPK] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x21, 0x90170150 }, /* use as headset mic, without its own jack detect */
++			{ }
++		}
++	},
+ };
  
- 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
--- 
-2.17.1
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6643,6 +6651,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
++	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
+ 	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+@@ -7037,6 +7046,7 @@ static const struct hda_model_fixup alc2
+ 	{.id = ALC255_FIXUP_DELL_HEADSET_MIC, .name = "alc255-dell-headset"},
+ 	{.id = ALC295_FIXUP_HP_X360, .name = "alc295-hp-x360"},
+ 	{.id = ALC225_FIXUP_HEADSET_JACK, .name = "alc-sense-combo"},
++	{.id = ALC299_FIXUP_PREDATOR_SPK, .name = "predator-spk"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+@@ -7421,6 +7431,8 @@ static const struct snd_hda_pin_quirk al
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+ 		{0x17, 0x90170110}),
++	SND_HDA_PIN_QUIRK(0x10221457, 0x1028, "Acer", ALC299_FIXUP_PREDATOR_SPK,
++		{ 0x21, 0x90170150 }),
+ 	{}
+ };
+ 
