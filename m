@@ -1,77 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: Fix probe deferral following prelink failure" to the asoc tree
-Date: Mon,  4 Mar 2019 15:32:05 +0000 (GMT)
-Message-ID: <20190304153205.4F5D71128814@debutante.sirena.org.uk>
-References: <1551706274-22571-1-git-send-email-jonathanh@nvidia.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551706274-22571-1-git-send-email-jonathanh@nvidia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@google.com>, linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Sven Van Asbroeck <thesven73@gmail.com>
+Subject: Re: [PATCH RFC 2/3] ASoC: hdmi-codec: add support for
+	bclk_ratio
+Date: Mon, 4 Mar 2019 11:59:38 -0500
+Message-ID: <CAGngYiUNFc9N82duW1kwzx-dY3dk=1Sw9QffqpocoP=xz9OdVw@mail.gmail.com>
+References: <20190222212619.ghxly3eb6dx7p2ut@shell.armlinux.org.uk>
+ <E1gxILm-0004MX-Kb@rmk-PC.armlinux.org.uk>
+ <520b346f-a874-790d-61ec-fb4ac67ad046@ti.com>
+ <20190301123629.GC7429@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
+ [IPv6:2607:f8b0:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 380DBF896EB
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2019 17:59:50 +0100 (CET)
+Received: by mail-ot1-x341.google.com with SMTP id v20so4806421otk.7
+ for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2019 08:59:50 -0800 (PST)
+In-Reply-To: <20190301123629.GC7429@sirena.org.uk>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Russell King <rmk+kernel@armlinux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Mar 1, 2019 at 7:36 AM Mark Brown <broonie@kernel.org> wrote:
+>
+>
+> As Russell outlined there's quite a bit of hopeful assumption in how
+> ASoC handles the mapping of memory formats onto wire formats which works
+> almost all the time but not always and definitely not through robust
+> design
 
-   ASoC: soc-core: Fix probe deferral following prelink failure
+Yes, many of the painful tradeoffs in this discussion would go away, if the
+alsa negotiation infrastructure was 'bclk_ratio aware'.
 
-has been applied to the asoc tree at
+They say that a 100-line patch is often better than 1000 words. To help kick-
+start a discussion, I offer a simple patch which adds bclk_ratio to
+hw_params, which lets alsa 'negotiate' it the same way as the format,
+channels, etc.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Obviously this is completely flawed, as it exposes bclk_ratio to userspace thru
+snd_pcm_hw_params. Userspace has no business even knowing about this on-wire
+property.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+It may be flawed in a lot of other ways I can't see rn :)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+As far as a flawed suggestion goes, it seems to behave quite well on my system.
+The bclk_ratio is nicely constrained within the cpu and codec's supported
+ranges and rules, and the lowest supported value is picked before hw_params()
+gets called. Which is at least channels * sample_width.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Would there be a way to hide the bclk_ratio from userspace?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Is it even worth taking this forward? How likely is it for alsa components
+to care about the bclk_ratio? Maybe this is a tda998x one-off?
 
-Thanks,
-Mark
-
->From c342febcde452f817cbd3896dc40953ab17c309d Mon Sep 17 00:00:00 2001
-From: Jonathan Hunter <jonathanh@nvidia.com>
-Date: Mon, 4 Mar 2019 13:31:14 +0000
-Subject: [PATCH] ASoC: soc-core: Fix probe deferral following prelink failure
-
-Commit 78a24e10cd94 ("ASoC: soc-core: clear platform pointers on error")
-re-worked the clean-up of any platform pointers that may have been
-initialised by the function snd_soc_init_platform(). This commit missed
-one error path where if any of the prelinks for a soundcard failed to
-initialise, then these platform pointers would not be cleaned-up. This
-then prevents the soundcard from being initialised following a probe
-deferral when any of the soundcard prelinks cannot be found.
-
-Fix this by ensuring that soc_cleanup_platform() is called when
-initialising the soundcard prelinks fails.
-
-Fixes: 78a24e10cd94 ("ASoC: soc-core: clear platform pointers on error")
-
-Signed-off-by: Jonathan Hunter <jonathanh@nvidia.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 93d316d5bf8e..5a5764dba147 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2797,6 +2797,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 
- 		ret = soc_init_dai_link(card, link);
- 		if (ret) {
-+			soc_cleanup_platform(card);
- 			dev_err(card->dev, "ASoC: failed to init link %s\n",
- 				link->name);
- 			mutex_unlock(&client_mutex);
--- 
-2.20.1
+Sven
