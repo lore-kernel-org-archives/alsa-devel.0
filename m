@@ -1,106 +1,129 @@
-From: =?iso-8859-1?Q?Ren=E9_Rebe?= <rene@exactcode.de>
-Subject: Re: [PATCH RFC 16/26] ALSA: rme32: Convert to
-	copy_silence ops
-Date: Sat, 2 Mar 2019 18:19:50 +0100
-Message-ID: <3E5368DD-5DF4-48A8-A2AF-C19E5C473C8E@exactcode.de>
-References: <20170511210925.18208-1-tiwai@suse.de>
- <20170511210925.18208-17-tiwai@suse.de>
- <29B2CB39-BCFF-4A04-9406-80059409BDEE@exactcode.de>
- <s5hva9cbymf.wl-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0AAFF8961D
- for <alsa-devel@alsa-project.org>; Sat,  2 Mar 2019 18:20:04 +0100 (CET)
-In-Reply-To: <s5hva9cbymf.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: stm32: sai: fix set_sync service" to the asoc tree
+Date: Mon,  4 Mar 2019 00:05:54 +0000 (GMT)
+Message-ID: <20190304000554.566AC440082@finisterre.ee.mobilebroadband>
+References: <1551359965-25228-6-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1551359965-25228-6-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+The patch
 
-On 18 Jul 2018, at 12:56, Takashi Iwai <tiwai@suse.de> wrote:
+   ASoC: stm32: sai: fix set_sync service
 
->> to have another digital audio i/o card for our studio / office, I got a =
-pair of RME32 the other week from ebay. (mostly as reference to implement A=
-DAT for the RAD1 Sgi/Octane ALSA driver, =85)
->> =
+has been applied to the asoc tree at
 
->> Unfortunately they do not work with Linux. They are recognised and all t=
-he usual devices and /proc/=85 entries show up, however, the hardware point=
-er does not move during playback or capture no matter what clock source I c=
-hoose.
->> I tried attaching coax s/pdif as well as an 8-channel Behringer Ultragai=
-n ADAT source w/ clock.
-> =
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Does the /proc/asound/card*/rme32 entry show the right setup?
-> RME32 seems to have only few registers, and it behaves differently for
-> read and write.  Maybe you should try to watch the register 0x20000.
-> The hwptr is the LSB 33 bits.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-thank you again for your reply, and I finally took a deep breath to "shortl=
-y"
-take a closer look at this again. So with current linux-kernel :HEAD nothing
-has changed, and I get one IRQ when the playback starts.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-As I do not have the spec I did a quick hack and commented out the IRQ
-acknowledge around rme32.c line 829:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--                writel(0, rme32->iobase + RME32_IO_CONFIRM_ACTION_IRQ);
+Thanks,
+Mark
 
-surprisingly this =93works=94 in that I have more than the first frame comi=
-ng out of
-the optical fibre, aka quite constant running pcm stream.
+>From d4180b4c02e7b04b8479f6237b2bd98b4c5fd19c Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Thu, 28 Feb 2019 14:19:25 +0100
+Subject: [PATCH] ASoC: stm32: sai: fix set_sync service
 
-"Quite constant=94 because I think I sometimes (rarely) here some samples
-getting lost, probably because the IRQ keeps firing as it was not acknowled=
-ged.
-However, I=92m surprised this works 99%ish anyway.
+Add error check on set_sync function return.
+Add of_node_put() as of_get_parent() takes a reference
+which has to be released.
 
-Of course the questions is now to actually properly fix this, as acknowledg=
-ing
-this IRQ somehow makes the card stop entirely, I guess, somehow? At least
-that is how it looks like. Maybe you have an idea? Maybe some ALSA stream
-helper refactoring broke something a decade ago?
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/stm/stm32_sai.c     | 8 +++++---
+ sound/soc/stm/stm32_sai_sub.c | 8 +++++---
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
-I should probably also mention that this works with aplay, while with sox=
-=92s
-=93play=94 this hack is somehow producing constant under-run=92s:
-
-In:85.6% 00:03:18.02 [00:00:33.35] Out:8.73M [!=3D=3D=3D=3D=3D|=3D=3D=3D=3D=
-=3D!] Hd:0.0 Clip:0    play WARN alsa: under-run
-play WARN alsa: under-run
-play WARN alsa: under-run
-
-which might be an indication of some stream pointer helper glue not being w=
-ired up correctly anymore (I tested some seriously old version the last tim=
-e, like 2.6.29=92ish, so this might be broken since over a decade or so alr=
-eady)?
-
-Thanks again for any tips, as otherwise I might spend many more hours tryin=
-g to understand the FPGA and ALSA API.
-
-Have a nice weekend,
-	Ren=E9
-
--- =
-
- ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin, https://exactcode.=
-com
- https://exactscan.com | https://ocrkit.com | https://t2sde.org | https://r=
-ene.rebe.de
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index 14c9591aae42..d68d62f12df5 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -105,6 +105,7 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+ 	if (!pdev) {
+ 		dev_err(&sai_client->pdev->dev,
+ 			"Device not found for node %pOFn\n", np_provider);
++		of_node_put(np_provider);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -113,19 +114,20 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+ 		dev_err(&sai_client->pdev->dev,
+ 			"SAI sync provider data not found\n");
+ 		ret = -EINVAL;
+-		goto out_put_dev;
++		goto error;
+ 	}
+ 
+ 	/* Configure sync client */
+ 	ret = stm32_sai_sync_conf_client(sai_client, synci);
+ 	if (ret < 0)
+-		goto out_put_dev;
++		goto error;
+ 
+ 	/* Configure sync provider */
+ 	ret = stm32_sai_sync_conf_provider(sai_provider, synco);
+ 
+-out_put_dev:
++error:
+ 	put_device(&pdev->dev);
++	of_node_put(np_provider);
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index cb658463ccd1..55d802f51c15 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1106,7 +1106,7 @@ static int stm32_sai_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
+-	int cr1 = 0, cr1_mask;
++	int cr1 = 0, cr1_mask, ret;
+ 
+ 	sai->cpu_dai = cpu_dai;
+ 
+@@ -1136,8 +1136,10 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	/* Configure synchronization */
+ 	if (sai->sync == SAI_SYNC_EXTERNAL) {
+ 		/* Configure synchro client and provider */
+-		sai->pdata->set_sync(sai->pdata, sai->np_sync_provider,
+-				     sai->synco, sai->synci);
++		ret = sai->pdata->set_sync(sai->pdata, sai->np_sync_provider,
++					   sai->synco, sai->synci);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	cr1_mask |= SAI_XCR1_SYNCEN_MASK;
+-- 
+2.20.1
