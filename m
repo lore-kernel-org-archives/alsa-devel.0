@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ab8500: Mark expected switch
-	fall-through" to the asoc tree
-Date: Mon,  4 Mar 2019 00:06:09 +0000 (GMT)
-Message-ID: <20190304000609.F1B0A440082@finisterre.ee.mobilebroadband>
-References: <20190301204310.GA19966@embeddedor>
+Subject: Applied "ASoC: tlv320aic3x: fix reset gpio reference
+	counting" to the asoc tree
+Date: Mon,  4 Mar 2019 00:06:17 +0000 (GMT)
+Message-ID: <20190304000617.B0353440082@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2622539693465874866=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF759F89714
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2019 01:06:17 +0100 (CET)
-In-Reply-To: <20190301204310.GA19966@embeddedor>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20BFFF89717
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2019 01:06:19 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,15 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Philipp Puschmann <philipp.puschmann@emlix.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
-
---===============2622539693465874866==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: ab8500: Mark expected switch fall-through
+   ASoC: tlv320aic3x: fix reset gpio reference counting
 
 has been applied to the asoc tree at
 
@@ -56,63 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 102cefc8e879b707be0024fdc7bce1deeb359a5f Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Fri, 1 Mar 2019 14:43:10 -0600
-Subject: [PATCH] ASoC: ab8500: Mark expected switch fall-through
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 82ad759143ed77673db0d93d53c1cde7b99917ee Mon Sep 17 00:00:00 2001
+From: Philipp Puschmann <philipp.puschmann@emlix.com>
+Date: Wed, 27 Feb 2019 16:17:33 +0100
+Subject: [PATCH] ASoC: tlv320aic3x: fix reset gpio reference counting
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch
-cases where we are expecting to fall through.
+This patch fixes a bug that prevents freeing the reset gpio on unloading
+the module.
 
-This patch fixes the following warning:
+aic3x_i2c_probe is called when loading the module and it calls list_add
+with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
+So even if list_del is called it does nothing and in the end the gpio_reset
+is not freed. Then a repeated module probing fails silently because
+gpio_request fails.
 
-In file included from sound/soc/codecs/ab8500-codec.c:24:
-sound/soc/codecs/ab8500-codec.c: In function ‘ab8500_codec_set_dai_fmt’:
-./include/linux/device.h:1485:2: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/soc/codecs/ab8500-codec.c:2129:3: note: in expansion of macro ‘dev_err’
-   dev_err(dai->component->dev,
-   ^~~~~~~
-sound/soc/codecs/ab8500-codec.c:2132:2: note: here
-  default:
-  ^~~~~~~
+When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
+list_del to aic3x_i2c_remove because aic3x_remove may be called
+multiple times without aic3x_i2c_remove being called which leads to
+a NULL pointer dereference.
 
-Warning level 3 was used: -Wimplicit-fallthrough=3
-
-This patch is part of the ongoing efforts to enable
--Wimplicit-fallthrough.
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ab8500-codec.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tlv320aic3x.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 03bbbcd3b6c1..87616b126018 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -2129,6 +2129,7 @@ static int ab8500_codec_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		dev_err(dai->component->dev,
- 			"%s: ERROR: The device is either a master or a slave.\n",
- 			__func__);
-+		/* fall through */
- 	default:
- 		dev_err(dai->component->dev,
- 			"%s: ERROR: Unsupporter master mask 0x%x\n",
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6aa0edf8c5ef..cea3ebecdb12 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int ret, i;
+ 
+-	INIT_LIST_HEAD(&aic3x->list);
+ 	aic3x->component = component;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
+@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
+ 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
+ 	int i;
+ 
+-	list_del(&aic3x->list);
+ 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
+ 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
+ 					      &aic3x->disable_nb[i].nb);
+@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
+ 	if (ret != 0)
+ 		goto err_gpio;
+ 
++	INIT_LIST_HEAD(&aic3x->list);
+ 	list_add(&aic3x->list, &reset_list);
+ 
+ 	return 0;
+@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
+ {
+ 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
+ 
++	list_del(&aic3x->list);
++
+ 	if (gpio_is_valid(aic3x->gpio_reset) &&
+ 	    !aic3x_is_shared_reset(aic3x)) {
+ 		gpio_set_value(aic3x->gpio_reset, 0);
 -- 
 2.20.1
-
-
---===============2622539693465874866==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2622539693465874866==--
