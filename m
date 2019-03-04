@@ -1,28 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix oversampling mode" to the asoc tree
-Date: Mon,  4 Mar 2019 00:05:56 +0000 (GMT)
-Message-ID: <20190304000556.F3B20440082@finisterre.ee.mobilebroadband>
-References: <1551359965-25228-5-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1551359965-25228-5-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: stm32: sai: fix race condition in irq handler" to the asoc tree
+Date: Mon,  4 Mar 2019 00:05:59 +0000 (GMT)
+Message-ID: <20190304000559.B9E0A440082@finisterre.ee.mobilebroadband>
+References: <1551359965-25228-4-git-send-email-olivier.moysan@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1551359965-25228-4-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix oversampling mode
+   ASoC: stm32: sai: fix race condition in irq handler
 
 has been applied to the asoc tree at
 
@@ -47,53 +36,90 @@ to this mail.
 Thanks,
 Mark
 
->From 71d9537fada47762a1a1b33a8a1f95a92d7edc11 Mon Sep 17 00:00:00 2001
+>From 26f98e82dd49b7c3cc5ef0edd882aa732a62b672 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Thu, 28 Feb 2019 14:19:24 +0100
-Subject: [PATCH] ASoC: stm32: sai: fix oversampling mode
+Date: Thu, 28 Feb 2019 14:19:23 +0100
+Subject: [PATCH] ASoC: stm32: sai: fix race condition in irq handler
 
-Set OSR bit if mclk/fs ratio is 512.
+When snd_pcm_stop_xrun() is called in interrupt routine,
+substream context may have already been released.
+Add protection on substream context.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index cad415e03b5e..cb658463ccd1 100644
+index e418f446e03b..cad415e03b5e 100644
 --- a/sound/soc/stm/stm32_sai_sub.c
 +++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -913,7 +913,7 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 				     struct snd_pcm_hw_params *params)
+@@ -102,6 +102,7 @@
+  * @spdif_frm_cnt: S/PDIF playback frame counter
+  * @iec958: iec958 data
+  * @ctrl_lock: control lock
++ * @irq_lock: prevent race condition with IRQ
+  */
+ struct stm32_sai_sub_data {
+ 	struct platform_device *pdev;
+@@ -133,6 +134,7 @@ struct stm32_sai_sub_data {
+ 	unsigned int spdif_frm_cnt;
+ 	struct snd_aes_iec958 iec958;
+ 	struct mutex ctrl_lock; /* protect resources accessed by controls */
++	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
+ };
+ 
+ enum stm32_sai_fifo_th {
+@@ -474,8 +476,10 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+ 		status = SNDRV_PCM_STATE_XRUN;
+ 	}
+ 
+-	if (status != SNDRV_PCM_STATE_RUNNING)
++	spin_lock(&sai->irq_lock);
++	if (status != SNDRV_PCM_STATE_RUNNING && sai->substream)
+ 		snd_pcm_stop_xrun(sai->substream);
++	spin_unlock(&sai->irq_lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -679,8 +683,11 @@ static int stm32_sai_startup(struct snd_pcm_substream *substream,
  {
  	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
--	int div = 0;
-+	int div = 0, cr1 = 0;
- 	int sai_clk_rate, mclk_ratio, den;
- 	unsigned int rate = params_rate(params);
+ 	int imr, cr2, ret;
++	unsigned long flags;
  
-@@ -958,13 +958,19 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 		} else {
- 			if (sai->mclk_rate) {
- 				mclk_ratio = sai->mclk_rate / rate;
--				if ((mclk_ratio != 512) &&
--				    (mclk_ratio != 256)) {
-+				if (mclk_ratio == 512) {
-+					cr1 = SAI_XCR1_OSR;
-+				} else if (mclk_ratio != 256) {
- 					dev_err(cpu_dai->dev,
- 						"Wrong mclk ratio %d\n",
- 						mclk_ratio);
- 					return -EINVAL;
- 				}
-+
-+				regmap_update_bits(sai->regmap,
-+						   STM_SAI_CR1_REGX,
-+						   SAI_XCR1_OSR, cr1);
-+
- 				div = stm32_sai_get_clk_div(sai, sai_clk_rate,
- 							    sai->mclk_rate);
- 				if (div < 0)
++	spin_lock_irqsave(&sai->irq_lock, flags);
+ 	sai->substream = substream;
++	spin_unlock_irqrestore(&sai->irq_lock, flags);
+ 
+ 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
+ 		snd_pcm_hw_constraint_mask64(substream->runtime,
+@@ -1059,6 +1066,7 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *cpu_dai)
+ {
+ 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
++	unsigned long flags;
+ 
+ 	regmap_update_bits(sai->regmap, STM_SAI_IMR_REGX, SAI_XIMR_MASK, 0);
+ 
+@@ -1069,7 +1077,9 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	clk_rate_exclusive_put(sai->sai_mclk);
+ 
++	spin_lock_irqsave(&sai->irq_lock, flags);
+ 	sai->substream = NULL;
++	spin_unlock_irqrestore(&sai->irq_lock, flags);
+ }
+ 
+ static int stm32_sai_pcm_new(struct snd_soc_pcm_runtime *rtd,
+@@ -1433,6 +1443,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 
+ 	sai->pdev = pdev;
+ 	mutex_init(&sai->ctrl_lock);
++	spin_lock_init(&sai->irq_lock);
+ 	platform_set_drvdata(pdev, sai);
+ 
+ 	sai->pdata = dev_get_drvdata(pdev->dev.parent);
 -- 
 2.20.1
