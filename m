@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: fix reset gpio reference
-	counting" to the asoc tree
-Date: Mon,  4 Mar 2019 00:06:17 +0000 (GMT)
-Message-ID: <20190304000617.B0353440082@finisterre.ee.mobilebroadband>
+From: "Chiang, Mac" <mac.chiang@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: kbl_da7219_max98927:
+ add dai_trigger function
+Date: Mon, 4 Mar 2019 02:33:05 +0000
+Message-ID: <5B37778DAAD9B04DA049B4A421B9B3EE71E4E60A@PGSMSX111.gar.corp.intel.com>
+References: <1551460451-24540-1-git-send-email-mac.chiang@intel.com>
+ <872d7218-1d1a-af5a-7752-46da56e4121d@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20BFFF89717
- for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2019 01:06:19 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13A26F80736
+ for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2019 03:33:11 +0100 (CET)
+In-Reply-To: <872d7218-1d1a-af5a-7752-46da56e4121d@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +25,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Philipp Puschmann <philipp.puschmann@emlix.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, "Tc, Jenny" <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Sure. I'll refer your comments and submit again.
 
-   ASoC: tlv320aic3x: fix reset gpio reference counting
 
-has been applied to the asoc tree at
+-----Original Message-----
+From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com] 
+Sent: Saturday, March 2, 2019 2:06 AM
+To: Chiang, Mac <mac.chiang@intel.com>; alsa-devel@alsa-project.org
+Cc: Tc, Jenny <jenny.tc@intel.com>; N, Harshapriya <harshapriya.n@intel.com>; Mark Brown <broonie@kernel.org>; Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: Intel: boards: kbl_da7219_max98927: add dai_trigger function
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On 3/1/19 11:14 AM, mac.chiang@intel.com wrote:
+> From: Mac Chiang <mac.chiang@intel.com>
+>
+> s0ix entry failure is root cause by default speaker/vi sense path 
+> activate all the time that result in the audio IPs are not power gated(checked by pch_ip_power_gating_status).
+> Adding the run time speaker control ensure playback widgets are going 
+> to free and off eventually. With this func, counter works in s0ix subsequently (checked by slp_s0_residency_usc).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+<rant>
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If you submit a patch before internal reviews are complete, don't be surprised at the feedback. And if you don't copy maintainers this patch is going to be ignored as well.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+</rant>
 
-Thanks,
-Mark
+While the solution does solve a real issue, this commit message is probably one of the most convoluted and Intel-centric I've seen in a long time.
 
->From 82ad759143ed77673db0d93d53c1cde7b99917ee Mon Sep 17 00:00:00 2001
-From: Philipp Puschmann <philipp.puschmann@emlix.com>
-Date: Wed, 27 Feb 2019 16:17:33 +0100
-Subject: [PATCH] ASoC: tlv320aic3x: fix reset gpio reference counting
+The issue really is that the amplifier feedback is not modeled as being dependent on any active output. Even when there is no playback happening, parts of the graph, specifically the IV sense->speaker 
+protection->output remains active and this prevents the DSP from
+entering low-power states.
 
-This patch fixes a bug that prevents freeing the reset gpio on unloading
-the module.
+One alternative would be to have userspace play with pins/kcontrols to 
+take down the feedback loop. This is however not practical nor desirable.
 
-aic3x_i2c_probe is called when loading the module and it calls list_add
-with a probably uninitialized list entry aic3x->list (next = prev = NULL)).
-So even if list_del is called it does nothing and in the end the gpio_reset
-is not freed. Then a repeated module probing fails silently because
-gpio_request fails.
+A second approach would be to have a different model in the codec 
+driver, however Maxim indicated that the feedback includes stuff that is 
+not strictly related to playback.
 
-When moving INIT_LIST_HEAD to aic3x_i2c_probe we also have to move
-list_del to aic3x_i2c_remove because aic3x_remove may be called
-multiple times without aic3x_i2c_remove being called which leads to
-a NULL pointer dereference.
+This patch suggest a machine driver level approach where the speaker 
+pins are enabled/disabled dynamically depending on stream start/stop 
+events. DPAM graph representations show the feedback loop is indeed 
+disabled and low-power states can be reached.
 
-Signed-off-by: Philipp Puschmann <philipp.puschmann@emlix.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320aic3x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Can you please update the commit message and resubmit.
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 6aa0edf8c5ef..cea3ebecdb12 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1609,7 +1609,6 @@ static int aic3x_probe(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int ret, i;
- 
--	INIT_LIST_HEAD(&aic3x->list);
- 	aic3x->component = component;
- 
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++) {
-@@ -1692,7 +1691,6 @@ static void aic3x_remove(struct snd_soc_component *component)
- 	struct aic3x_priv *aic3x = snd_soc_component_get_drvdata(component);
- 	int i;
- 
--	list_del(&aic3x->list);
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
- 		regulator_unregister_notifier(aic3x->supplies[i].consumer,
- 					      &aic3x->disable_nb[i].nb);
-@@ -1890,6 +1888,7 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	if (ret != 0)
- 		goto err_gpio;
- 
-+	INIT_LIST_HEAD(&aic3x->list);
- 	list_add(&aic3x->list, &reset_list);
- 
- 	return 0;
-@@ -1906,6 +1905,8 @@ static int aic3x_i2c_remove(struct i2c_client *client)
- {
- 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
- 
-+	list_del(&aic3x->list);
-+
- 	if (gpio_is_valid(aic3x->gpio_reset) &&
- 	    !aic3x_is_shared_reset(aic3x)) {
- 		gpio_set_value(aic3x->gpio_reset, 0);
--- 
-2.20.1
+Thanks.
+
+> Signed-off-by: Jenny TC <jenny.tc@intel.com>
+> Signed-off-by: Harshapriya.n <harshapriya.n@intel.com>
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+> ---
+>   sound/soc/intel/boards/kbl_da7219_max98927.c | 50 ++++++++++++++++++++++++++++
+>   1 file changed, 50 insertions(+)
+>
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> index 723a493..e01ca9a 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> @@ -195,8 +195,58 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
+>   	return 0;
+>   }
+>   
+> +static int kabylake_ssp0_trigger(struct snd_pcm_substream *substream, int cmd)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	int j, ret;
+> +
+> +	for (j = 0; j < rtd->num_codecs; j++) {
+> +		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
+> +		const char *name = codec_dai->component->name;
+> +		struct snd_soc_component *component = codec_dai->component;
+> +		struct snd_soc_dapm_context *dapm =
+> +				snd_soc_component_get_dapm(component);
+> +		char pin_name[20];
+> +
+> +		if (strcmp(name, MAXIM_DEV0_NAME) &&
+> +			strcmp(name, MAXIM_DEV1_NAME))
+> +			continue;
+> +
+> +		snprintf(pin_name, ARRAY_SIZE(pin_name), "%s Spk",
+> +			codec_dai->component->name_prefix);
+> +
+> +		switch (cmd) {
+> +		case SNDRV_PCM_TRIGGER_START:
+> +		case SNDRV_PCM_TRIGGER_RESUME:
+> +		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +			ret = snd_soc_dapm_enable_pin(dapm, pin_name);
+> +			if (ret) {
+> +				dev_err(rtd->dev, "failed to enable %s: %d\n",
+> +				pin_name, ret);
+> +				return ret;
+> +			}
+> +			snd_soc_dapm_sync(dapm);
+> +			break;
+> +		case SNDRV_PCM_TRIGGER_STOP:
+> +		case SNDRV_PCM_TRIGGER_SUSPEND:
+> +		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +			ret = snd_soc_dapm_disable_pin(dapm, pin_name);
+> +			if (ret) {
+> +				dev_err(rtd->dev, "failed to disable %s: %d\n",
+> +				pin_name, ret);
+> +				return ret;
+> +			}
+> +			snd_soc_dapm_sync(dapm);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static struct snd_soc_ops kabylake_ssp0_ops = {
+>   	.hw_params = kabylake_ssp0_hw_params,
+> +	.trigger = kabylake_ssp0_trigger,
+>   };
+>   
+>   static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
