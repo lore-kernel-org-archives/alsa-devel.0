@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix iec958 controls indexation" to the asoc tree
-Date: Mon,  4 Mar 2019 00:06:06 +0000 (GMT)
-Message-ID: <20190304000606.7B327440082@finisterre.ee.mobilebroadband>
-References: <1551359965-25228-2-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: sai: fix exposed capabilities in spdif mode" to the asoc tree
+Date: Mon,  4 Mar 2019 00:06:02 +0000 (GMT)
+Message-ID: <20190304000602.66378440082@finisterre.ee.mobilebroadband>
+References: <1551359965-25228-3-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551359965-25228-2-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1551359965-25228-3-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix iec958 controls indexation
+   ASoC: stm32: sai: fix exposed capabilities in spdif mode
 
 has been applied to the asoc tree at
 
@@ -36,47 +36,39 @@ to this mail.
 Thanks,
 Mark
 
->From 5f8a1000c3e630c3ac06f1d664eeaa755bce8823 Mon Sep 17 00:00:00 2001
+>From b8468192971807c43a80d6e2c41f83141cb7b211 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Thu, 28 Feb 2019 14:19:21 +0100
-Subject: [PATCH] ASoC: stm32: sai: fix iec958 controls indexation
+Date: Thu, 28 Feb 2019 14:19:22 +0100
+Subject: [PATCH] ASoC: stm32: sai: fix exposed capabilities in spdif mode
 
-Allow indexation of sai iec958 controls according
-to device id.
+Change capabilities exposed in SAI S/PDIF mode, to match
+actually supported formats.
+In S/PDIF mode only 32 bits stereo is supported.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index f9297228c41c..506360b7bc01 100644
+index 506360b7bc01..e418f446e03b 100644
 --- a/sound/soc/stm/stm32_sai_sub.c
 +++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -100,7 +100,7 @@
-  * @slot_mask: rx or tx active slots mask. set at init or at runtime
-  * @data_size: PCM data width. corresponds to PCM substream width.
-  * @spdif_frm_cnt: S/PDIF playback frame counter
-- * @snd_aes_iec958: iec958 data
-+ * @iec958: iec958 data
-  * @ctrl_lock: control lock
-  */
- struct stm32_sai_sub_data {
-@@ -1068,11 +1068,12 @@ static int stm32_sai_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 			     struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
-+	struct snd_kcontrol_new knew = iec958_ctls;
+@@ -682,6 +682,14 @@ static int stm32_sai_startup(struct snd_pcm_substream *substream,
  
- 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
- 		dev_dbg(&sai->pdev->dev, "%s: register iec controls", __func__);
--		return snd_ctl_add(rtd->pcm->card,
--				   snd_ctl_new1(&iec958_ctls, sai));
-+		knew.device = rtd->pcm->device;
-+		return snd_ctl_add(rtd->pcm->card, snd_ctl_new1(&knew, sai));
- 	}
+ 	sai->substream = substream;
  
- 	return 0;
++	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
++		snd_pcm_hw_constraint_mask64(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_FORMAT,
++					     SNDRV_PCM_FMTBIT_S32_LE);
++		snd_pcm_hw_constraint_single(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++	}
++
+ 	ret = clk_prepare_enable(sai->sai_ck);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
 -- 
 2.20.1
