@@ -1,106 +1,74 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 2/7] drm/edid: Allow to ignore the audio EDID data
-Date: Tue, 5 Mar 2019 21:36:38 +0200
-Message-ID: <20190305193638.GB3888@intel.com>
-References: <cover.39761cc6c9d070568123e328cd216367c4c660b4.1551711042.git-series.maxime.ripard@bootlin.com>
- <4914bea9fc3ef3deaffa39ab691dbd9a76461e97.1551711042.git-series.maxime.ripard@bootlin.com>
- <87wole76ws.fsf@anholt.net>
- <CADnq5_PZ99hD=SgDrsDL-5zKMEXHxve205r_6xJpv9a9TM1ZHw@mail.gmail.com>
- <20190305091240.sbkvdwosocaytx22@flea>
- <20190305152413.GD16917@intel.com>
- <20190305191554.GA3888@intel.com>
- <CADnq5_OhTFJtQ0HRDUqAxxQeL6AFauazYaO76J0FhPG8ooYhkw@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda: set the 2nd headphone's name to
+ be Headphone2
+Date: Tue, 5 Mar 2019 21:00:58 +0100
+Message-ID: <18c107ea-6535-36c2-c8d0-a03397848c09@perex.cz>
+References: <20190305140910.25615-1-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <CADnq5_OhTFJtQ0HRDUqAxxQeL6AFauazYaO76J0FhPG8ooYhkw@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, eben@raspberrypi.org, Maxime Ripard <maxime.ripard@bootlin.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Paul Kocialkowski <paul.kocialkowski@bootlin.com>, David Airlie <airlied@linux.ie>, Sean Paul <seanpaul@chromium.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Daniel Vetter <daniel.vetter@intel.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D747F896CE
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 21:01:02 +0100 (CET)
+In-Reply-To: <20190305140910.25615-1-hui.wang@canonical.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXIgMDUsIDIwMTkgYXQgMDI6MjE6MDRQTSAtMDUwMCwgQWxleCBEZXVjaGVyIHdy
-b3RlOgo+IE9uIFR1ZSwgTWFyIDUsIDIwMTkgYXQgMjoxNSBQTSBWaWxsZSBTeXJqw6Rsw6QKPiA8
-dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+IHdyb3RlOgo+ID4KPiA+IE9uIFR1ZSwgTWFy
-IDA1LCAyMDE5IGF0IDA1OjI0OjEzUE0gKzAyMDAsIFZpbGxlIFN5cmrDpGzDpCB3cm90ZToKPiA+
-ID4gT24gVHVlLCBNYXIgMDUsIDIwMTkgYXQgMTA6MTI6NDBBTSArMDEwMCwgTWF4aW1lIFJpcGFy
-ZCB3cm90ZToKPiA+ID4gPiBPbiBNb24sIE1hciAwNCwgMjAxOSBhdCAwMzowNTozMVBNIC0wNTAw
-LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4gPiA+ID4gPiBPbiBNb24sIE1hciA0LCAyMDE5IGF0IDI6
-NTMgUE0gRXJpYyBBbmhvbHQgPGVyaWNAYW5ob2x0Lm5ldD4gd3JvdGU6Cj4gPiA+ID4gPiA+Cj4g
-PiA+ID4gPiA+IE1heGltZSBSaXBhcmQgPG1heGltZS5yaXBhcmRAYm9vdGxpbi5jb20+IHdyaXRl
-czoKPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiBJbiBzb21lIGNhc2VzLCBpbiBvcmRlciB0byBh
-Y2NvbW9kYXRlIHdpdGggZGlzcGxheXMgd2l0aCBwb29yIEVESURzLCB3ZQo+ID4gPiA+ID4gPiA+
-IG5lZWQgdG8gaWdub3JlIHRoYXQgdGhlIG1vbml0b3IgYWxsZWRnZWRseSBzdXBwb3J0cyBhdWRp
-byBvdXRwdXQgYW5kCj4gPiA+ID4gPiA+ID4gZGlzYWJsZSB0aGUgYXVkaW8gb3V0cHV0Lgo+ID4g
-PiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWF4aW1lIFJpcGFyZCA8bWF4
-aW1lLnJpcGFyZEBib290bGluLmNvbT4KPiA+ID4gPiA+ID4gPiAtLS0KPiA+ID4gPiA+ID4gPiAg
-ZHJpdmVycy9ncHUvZHJtL2RybV9lZGlkLmMgfCA4ICsrKysrKysrCj4gPiA+ID4gPiA+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykKPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2VkaWQuYyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9kcm1fZWRpZC5jCj4gPiA+ID4gPiA+ID4gaW5kZXggOTkwYjE5MDlmOWQ3Li5jMDI1OGIwMTFi
-YjIgMTAwNjQ0Cj4gPiA+ID4gPiA+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2RybV9lZGlkLmMK
-PiA+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX2VkaWQuYwo+ID4gPiA+ID4g
-PiA+IEBAIC00MTkwLDYgKzQxOTAsMTEgQEAgYm9vbCBkcm1fZGV0ZWN0X2hkbWlfbW9uaXRvcihz
-dHJ1Y3QgZWRpZCAqZWRpZCkKPiA+ID4gPiA+ID4gPiAgfQo+ID4gPiA+ID4gPiA+ICBFWFBPUlRf
-U1lNQk9MKGRybV9kZXRlY3RfaGRtaV9tb25pdG9yKTsKPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
-PiA+ICtzdGF0aWMgYm9vbCBpZ25vcmVfZWRpZF9hdWRpbyA9IGZhbHNlOwo+ID4gPiA+ID4gPiA+
-ICttb2R1bGVfcGFyYW0oaWdub3JlX2VkaWRfYXVkaW8sIGJvb2wsIDA2NDQpOwo+ID4gPiA+ID4g
-PiA+ICtNT0RVTEVfUEFSTV9ERVNDKGlnbm9yZV9lZGlkX2F1ZGlvLAo+ID4gPiA+ID4gPiA+ICsg
-ICAgICAgICAgICAgICJJZ25vcmUgdGhlIEVESUQgYW5kIGFsd2F5cyBjb25zaWRlciB0aGF0IGEg
-bW9uaXRvciBkb2Vzbid0IGhhdmUgYXVkaW8gY2FwYWJpbGl0aWVzIik7Cj4gPiA+ID4gPiA+ID4g
-Kwo+ID4gPiA+ID4gPiA+ICAvKioKPiA+ID4gPiA+ID4gPiAgICogZHJtX2RldGVjdF9tb25pdG9y
-X2F1ZGlvIC0gY2hlY2sgbW9uaXRvciBhdWRpbyBjYXBhYmlsaXR5Cj4gPiA+ID4gPiA+ID4gICAq
-IEBlZGlkOiBFRElEIGJsb2NrIHRvIHNjYW4KPiA+ID4gPiA+ID4gPiBAQCAtNDIwOSw2ICs0MjE0
-LDkgQEAgYm9vbCBkcm1fZGV0ZWN0X21vbml0b3JfYXVkaW8oc3RydWN0IGVkaWQgKmVkaWQpCj4g
-PiA+ID4gPiA+ID4gICAgICAgYm9vbCBoYXNfYXVkaW8gPSBmYWxzZTsKPiA+ID4gPiA+ID4gPiAg
-ICAgICBpbnQgc3RhcnRfb2Zmc2V0LCBlbmRfb2Zmc2V0Owo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4g
-PiA+ID4gKyAgICAgaWYgKGlnbm9yZV9lZGlkX2F1ZGlvKQo+ID4gPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgZ290byBlbmQ7Cj4gPiA+ID4gPiA+ID4gKwo+ID4gPiA+ID4gPiA+ICAgICAgIGVkaWRf
-ZXh0ID0gZHJtX2ZpbmRfY2VhX2V4dGVuc2lvbihlZGlkKTsKPiA+ID4gPiA+ID4gPiAgICAgICBp
-ZiAoIWVkaWRfZXh0KQo+ID4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgZ290byBlbmQ7Cj4gPiA+
-ID4gPiA+Cj4gPiA+ID4gPiA+IEl0IGxvb2tzIGxpa2UgdGhlIG1vdGl2YXRpb24gZm9yIHRoZSBv
-cmlnaW5hbCBmbGFnIG9uIFJhc3BiZXJyeSBQaSB3YXMKPiA+ID4gPiA+ID4gIkkndmUgZ290IGEg
-bm9uLWF1ZGlvIG1vbml0b3IsIGJ1dCB0aGUgc3lzdGVtIGNvbWVzIHVwIHRyeWluZyB0byBwbGF5
-Cj4gPiA+ID4gPiA+IGF1ZGlvIHRvIEhETUkgaW5zdGVhZCBvZiB0aGUgYW5hbG9nIGphY2siLiAg
-RG8gd2UgaGF2ZSBzb21lIHdheSBmb3IgRFJNCj4gPiA+ID4gPiA+IHRvIGNvbW11bmljYXRlIHRv
-IEFMU0EgdGhhdCB0aGlzIGlzIG5vdCB0aGUgcmlnaHQgcGxhY2UgdG8gdHJ5IHRvIHBsYXkKPiA+
-ID4gPiA+ID4gYXVkaW8gYnkgZGVmYXVsdD8KPiA+ID4gPiA+Cj4gPiA+ID4gPiBBcHBhcmVudGx5
-IG5vdC4gIFdlIGhhdmUgdXNlcnMgdXNpbmcgZGVidWcga25vYnMgaW4gb3VyIGRyaXZlcnMgdG8K
-PiA+ID4gPiA+IGRpc2FibGUgZGlzcGxheSBhdWRpbyBiZWNhdXNlIEFMU0EgZGVmYXVsdHMgdG8g
-dGhhdCByYXRoZXIgdGhhbiBvdGhlcgo+ID4gPiA+ID4gYXVkaW8uCj4gPiA+ID4KPiA+ID4gPiBJ
-IGd1ZXNzIG9uZSB3YXkgdG8gZG8gdGhpcyB3b3VsZCBiZSB0byByZWdpc3RlciB0aGUgY2FyZCBv
-bmx5IHdoZW4gYW4KPiA+ID4gPiBhdWRpby1jYXBhYmxlIG1vbml0b3IgaXMgY29ubmVjdGVkIGlu
-c3RlYWQgb2YgZG9pbmcgdGhpcyBhdCBwcm9iZQo+ID4gPiA+IHRpbWUuIEknbSBub3Qgc3VyZSBo
-b3cgY29udmVuaWVudCBpdCBpcyBmb3IgdXNlcnNwYWNlIHRob3VnaC4KPiA+ID4KPiA+ID4gV2Ug
-YWxyZWFkeSBwcm92aWRlIHRoZSBFTEQgdG8gYWxzYS4gSSdtIHByZXR0eSBzdXJlIHB1bHNlYXVk
-aW8gdXNlcwo+ID4gPiB0aGF0IHN0dWZmIHNvbWVob3cgdG8gZmlndXJlIG91dCB3aGV0aGVyIHRv
-IHBsYXkgYXVkaW8gb3ZlciBIRE1JLgo+ID4gPiBCdXQgc2luY2UgSSBkb24ndCB1c2UgcHVsc2Vh
-dWRpbyBteXNlbGYgSSBjYW4ndCBiZSAxMDAlIHN1cmUuCj4gPiA+Cj4gPiA+IENjOmluZyBUYWth
-c2hpL2Fsc2EgZm9sa3MgZm9yIGNvbmZpcm1hdGlvbi4KPiA+Cj4gPiBJIGZvcmdvdCB0aGF0IHRo
-ZSAucGluX2VsZF9ub3RpZnkoKSBzdHVmZiBpcyBpOTE1IHNwZWNpZmljLiBCdXQKPiA+IEkgc2Vl
-IHNvbWUga2luZCBvZiBoZG1pX2NvZGVjX29wcyB0aGluZyB1c2VkIGJ5IHNvbWUgb3RoZXIgZHJp
-dmVycy4KPiA+IEkgZ3Vlc3MgdGhhdCBpcyBzdXBwb3NlZCB0byBhY2hpZXZlIHRoZSBzYW1lIHRo
-aW5nIG1vcmUgb3IgbGVzcz8KPiA+IEknbSBub3QgaW1tZWRpYXRlbHkgc2VlaW5nIGFueSBraW5k
-IG9mIGRybS0+YWxzYSBub3RpZmljYXRpb24KPiA+IGhvb2sgaW4gdGhlcmUgdGhvdWdoLgo+IAo+
-IE9uIEFNRCBodywgdGhlIEdQVSBoYXMgYmFja2Rvb3IgYWNjZXNzIHRvIHNvbWUgb2YgdGhlIGF1
-ZGlvIHN0YXRlLCBzbwo+IHdoZW4gc3R1ZmYgaGFwcGVucyBvbiB0aGUgR1BVIHNpZGUsIGl0J3Mg
-cmVmbGVjdGVkIG9uIHRoZSBhdWRpbyBzaWRlCj4gYXV0b21hdGljYWxseS4KClJpZ2h0LiBpOTE1
-IGhhcyBhIHNpbWlsYXIgdGhpbmcgKG15IHRoZW9yeSBpcyB0aGF0IGl0J3MgYmFzaWNhbGx5CmFu
-IGluZHVzdHJ5IHdpZGUgaGFyZHdhcmUgd29ya2Fyb3VuZCBmb3IgaW5mbGV4aWJsZSBXaW5kb3dz
-IGRyaXZlcgphcmNoaXRlY3R1cmUpLiBCdXQgdGhhdCB3YXMgcHJvYmxlbWF0aWMgZm9yIHNvbWUg
-cG93ZXIgbWFuYWdlbWVudApyZWxhdGVkIHJlYXNvbnMgKElJUkMpIHNvIHdlIGFkZGVkIGEgc29m
-dHdhcmUgbWVjaGFuaXNtIGZvciBpdC4KVGhvdWdoIEkgYmVsaWV2ZSB3ZSBzdGlsbCB3cml0ZSB0
-aGUgRUxEIGludG8gdGhlIGhhcmR3YXJlIGJ1ZmZlcgphcyB3ZWxsLgoKLS0gClZpbGxlIFN5cmrD
-pGzDpApJbnRlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcK
-aHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWw=
+Dne 05. 03. 19 v 15:09 Hui Wang napsal(a):
+> Recently I saw two Headphones on some HP machines, the 1st Headphone
+> comes from the Front Headphone Jack, the 2nd one comes from the Front
+> Headset Jack, and the current HDA driver will set the same name to
+> them and with different index, just like below:
+> 'Headphone Playback Volume'
+> 'Headphone Playback Switch'
+> 'Headphone Playback Volume' index 1
+> 'Headphone Playback Switch' index 1
+> 'Front Headphone Jack'
+> 'Front Headphone Jack' index 1
+> 
+> This can't be handled by pulseaudio, and pulseaduio already has a
+> path analog-output-headphones-2.conf to handle the 2nd headphone, now
+> we set the 2nd headphone's name to "Headphone2", leave the other
+> headphones unchanged.
+> 
+> The change of hda_auto_parser.c will change the name of Jack.
+> 
+> The change of hda_generic.c will change the name of Volume and Switch.
+
+NAK. I'm afraid, but you're trying to revert the change from 2009:
+
+commit 668b9652be33510a2a42b290dd335d34d38e2068
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Fri Mar 6 10:13:24 2009 +0100
+
+  ALSA: hda - Create multiple HP / speaker controls with index
+
+  Create multiple "Headphone" and "Speaker" controls with non-zero index
+  numbers instead of "Headphone2", etc.
+
+  Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+I think that PA should be fixed instead try to fix the drivers. The
+indexes are exactly designed to distinguish the multiple similar I/O.
+
+I cannot find any other driver which uses the Headphone2 control name.
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
