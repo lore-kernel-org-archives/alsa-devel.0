@@ -1,23 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
- infrastructure 'bclk_ratio aware'
-Date: Tue, 5 Mar 2019 13:42:32 +0900
-Message-ID: <20190305044232.GA15636@workstation>
-References: <20190304165955.21696-1-TheSven73@gmail.com>
+From: "Chiang, Mac" <mac.chiang@intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: boards:
+ kbl_da7219_max98927: add dai_trigger function
+Date: Tue, 5 Mar 2019 05:42:13 +0000
+Message-ID: <5B37778DAAD9B04DA049B4A421B9B3EE71E4EA86@PGSMSX111.gar.corp.intel.com>
+References: <1551460451-24540-1-git-send-email-mac.chiang@intel.com>
+ <1551752535-27367-1-git-send-email-mac.chiang@intel.com>
+ <f4e39672-3d66-bf3b-faca-b89053e52c78@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD07FF896CE
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 05:42:42 +0100 (CET)
-Received: by mail-pg1-f193.google.com with SMTP id 196so4705726pgf.13
- for <alsa-devel@alsa-project.org>; Mon, 04 Mar 2019 20:42:42 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20190304165955.21696-1-TheSven73@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70F2DF806F7
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 06:42:23 +0100 (CET)
+In-Reply-To: <f4e39672-3d66-bf3b-faca-b89053e52c78@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +26,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sven Van Asbroeck <thesven73@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Russell King <rmk+kernel@armlinux.org.uk>, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Tc, Jenny" <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>>   
+>>   static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd, @@ 
+>> -864,6 +914,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+>>   {
+>>   	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
+>>   	struct kbl_hdmi_pcm *pcm;
+>> +	struct snd_soc_dapm_context *dapm = &card->dapm;
+>>   	struct snd_soc_component *component = NULL;
+>>   	int err, i = 0;
+>>   	char jack_name[NAME_SIZE];
+>> @@ -890,9 +941,25 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+>>   	if (!component)
+>>   		return -EINVAL;
+>>   
+>> +
+>>   	return hdac_hdmi_jack_port_init(component, &card->dapm);
+>>
+>That part looks quite broken. You have functional code after the unconditional return above for the jack init.
+>
+>This is not a diff illusion, I applied this patch and looked at the diff with emacs and I don't know how this could possibly work.
 
-On Mon, Mar 04, 2019 at 11:59:52AM -0500, Sven Van Asbroeck wrote:
-> Negotiation seems to work ok, but bclk_ratio is exposed to
-> userspace via snd_pcm_hw_params, which is not acceptable.
-> 
-> Constrain bclk_ratio by:
-> - cpu   dai capabilities && rules
-> - codec dai capabilities && rules
-> - minimum bclk_ratio is sample_width * channels
-> 
-> In hw_params_choose(), pick the smallest supported bclk_ratio,
-> which should correspond to the most efficient solution.
-> 
-> If cpu and codec dais do not specify or constrain supported
-> bclk_ratios, alsa will pick sample_width * channels.
-> 
-> Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
-> ---
->  include/sound/pcm.h         | 11 +++++++++++
->  include/sound/soc.h         |  2 ++
->  include/uapi/sound/asound.h |  5 +++--
->  sound/core/pcm_native.c     | 34 +++++++++++++++++++++++++++++++++-
->  sound/soc/soc-pcm.c         |  8 ++++++++
->  5 files changed, 57 insertions(+), 3 deletions(-)
+>The code prior to this patch was also weird with 2 returns at the end of
+>kabylake_card_late_probe()
 
-In UAPI of Linux sound subsystem, sample formats are represented
-in enumerators prefixed with 'SNDRV_PCM_FORMAT_'. In the enumerators,
-sample bits and padding bits are represented:
+>My take is that this has never been tested against Mark's branch but ported without tests from the Chrome tree.
 
-              S8 S16 S20 S24 S32 S18_3 S20_3 S24_3
-sample-bits:   8  16  20  24  32  18    20    24 (=width)
-padding-bits:  0   0  12   8   0   6    12     0
-total bits:    8  16  32  32  32  24    24    24 (=physical_width)
- 
-When indicating a certain bit ratio of BCLK/WS from userspace,
-applications use correct combination of the above format (=physical_width)
-and the number of samples per audio data frame (=channels).
+I'm missing one line change as below. So there is only one return in kabylake_card_late_probe() as prior one. I've tested and verified it on Chrome tree.
+   	error = hdac_hdmi_jack_port_init(component, &card->dapm);
 
-All of drivers can add constraints and rules for runtime of PCM substream
-in its .open callback. As a result, applications can see available
-combination of the format and the channels and choose correct combination.
-
-In my opinion, your issue is a lack of the constraints and rules in
-relevant drivers; perhaps in tda998x driver. Or core functionality of
-ALSA SoC part has a lack of consideration about the above design of
-ALSA PCM core and PCM interface. If a certain combination of CPU-dai and
-CODEC-dai requires to ignore the above somehow, it should be done in
-interaction between drivers for CPU-dai/CODEC-dai. In short, your issue
-should not be exported to userspace.
-
-I note that for your 'hypothetical' cpu dai[1], 20x2/20x2 mode
-(physical_width=20, channels=2) is not available from userspace application.
-We have no sample format suitable to it.
-
-
-Anyway, when posting to change UAPI of Linux sound subsystem, it's
-better to describe the reason fot new stuffs; what they're designed for,
-and the reason to require them. Wnen posting in a result of series of
-discussion done previously, it's better to add any reference to it. The
-change effects all of userspace stuffs, regardless of whether they exist
-or doesn't.  Furthermore the change has forced application developers to
-take care of codes newly added. Additionally, it's better to note actual
-example of applications with the added code. Unless, no one can judge
-that the added code is enough abstracted for an application to handle
-various type of hardware by the same code.
-
-[1] https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/146062.html
-
-
-Regards
-
-Takashi Sakamoto
+>>   
+>> -	return 0;
+>> +	if (err < 0)
+>> +		return err;
+>> +
+>> +	err = snd_soc_dapm_disable_pin(dapm, "Left Spk");
+>> +	if (err) {
+>> +		dev_err(card->dev, "failed to disable Left Spk: %d\n", err);
+>> +		return err;
+>> +	}
+>> +
+>> +	err = snd_soc_dapm_disable_pin(dapm, "Right Spk");
+>> +	if (err) {
+>> +		dev_err(card->dev, "failed to disable Right Spk: %d\n", err);
+>> +		return err;
+>> +	}
+>> +
+>> +	return snd_soc_dapm_sync(dapm);
