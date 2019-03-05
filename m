@@ -1,63 +1,87 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/tegra: avoid build error without CONFIG_PM
-Date: Tue, 5 Mar 2019 13:20:52 +0100
-Message-ID: <20190305122052.GG26369@ulmo>
-References: <20190304203337.1968705-1-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bO4vSxwwZtUjUWHo"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190304203337.1968705-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>, Sameer Pujar <spujar@nvidia.com>, Mohan Kumar D <mkumard@nvidia.com>, Ravindra Lokhande <rlokhande@nvidia.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda: set the 2nd headphone's name to be Headphone2
+Date: Tue,  5 Mar 2019 22:09:10 +0800
+Message-ID: <20190305140910.25615-1-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Recently I saw two Headphones on some HP machines, the 1st Headphone
+comes from the Front Headphone Jack, the 2nd one comes from the Front
+Headset Jack, and the current HDA driver will set the same name to
+them and with different index, just like below:
+'Headphone Playback Volume'
+'Headphone Playback Switch'
+'Headphone Playback Volume' index 1
+'Headphone Playback Switch' index 1
+'Front Headphone Jack'
+'Front Headphone Jack' index 1
 
---bO4vSxwwZtUjUWHo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This can't be handled by pulseaudio, and pulseaduio already has a
+path analog-output-headphones-2.conf to handle the 2nd headphone, now
+we set the 2nd headphone's name to "Headphone2", leave the other
+headphones unchanged.
 
-On Mon, Mar 04, 2019 at 09:33:25PM +0100, Arnd Bergmann wrote:
-> The #ifdef protection around the PM functions is wrong, leading to
-> a failed reference in some configurations:
->=20
-> sound/pci/hda/hda_tegra.c: In function 'hda_tegra_runtime_suspend':
-> sound/pci/hda/hda_tegra.c:273:2: error: implicit declaration of function =
-'hda_tegra_disable_clocks'; did you mean 'hda_tegra_enable_clocks'? [-Werro=
-r=3Dimplicit-function-declaration]
->=20
-> Better remove the #ifdefs entirely and rely on the compiler silently
-> dropping unused functions marked __maybe_unused.
->=20
-> Fixes: 707e0759f2f4 ("ALSA: hda/tegra: implement runtime suspend/resume")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/pci/hda/hda_tegra.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+The change of hda_auto_parser.c will change the name of Jack.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+The change of hda_generic.c will change the name of Volume and Switch.
 
---bO4vSxwwZtUjUWHo
-Content-Type: application/pgp-signature; name="signature.asc"
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+The alsa-info.txt before applying this patch:
+https://pastebin.ubuntu.com/p/CrPrHRykgT/
 
------BEGIN PGP SIGNATURE-----
+The alsa-info.txt after applying this patch:
+https://pastebin.ubuntu.com/p/9VbkyvMBkW/
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAlx+aaMACgkQ3SOs138+
-s6H6WA//WB4N33fMs8yvZ6WJzt5fQx13eFdt+uBUbxiSVQ7R9DlGEpBImbJN1O56
-ypMbJuL4K6EsgkaiYCtbJz8PKEdW3ccMFzw00LZG1F2EDCs8NwBGTKNgEPrmcip6
-7rZO+wL9lmJbjQrZwGkEOi1UlZww/Xx0puMqr/fveIzjGpwFLYuG3HY/TIqmfbNP
-sosgOQvvAwMoXFBXR/du8+cFkLXJTP9oDhTqJhS5wpwfkqdR4So4Rh3fcwmvLfHq
-ZWm4zSDzNbmebCamq5Zx9wFUnWl2jYF1pvTTFauPJrWS4PGaO2Mvz8AtIvVK8cXU
-9ziFNJTq8Fsf7t7twd/O4u+bGyVnDgYK+jFWhml/WG30VIfDCi1mrdZ32ThsTssA
-5WBPTOlnzMpK8/37LMyZPkh6Zx0U7d0xlrr0BrAAs4xEueVfOKhjs90V8Y0HqAot
-5wTkwhkp3bhNhgNUFtADKVleyRQYDMPj0V2J1fJnlYwtxDWLxX2gMTke+AEdng+A
-5z8tubJhu3sBtlLShdB1m3SxeKyr/nBqqF3Qw7Tnc3HOGTmzE1ZJvw4u5IlauwOb
-R7rJDMNF3pjP5rxMnIkNsCjq12VgOFAxigrpRKpILzem3Ay6nrW/wJSix+HABfmv
-kO9fbYEhIUvwWoBCU90ot30cUF6nUbHaE1DqO6i8LOEVn6RoJrw=
-=jU4C
------END PGP SIGNATURE-----
+sound/pci/hda/hda_auto_parser.c | 11 +++++++++--
+ sound/pci/hda/hda_generic.c     |  2 ++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
---bO4vSxwwZtUjUWHo--
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index df0d636145f8..748c62a9c5eb 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -714,6 +714,8 @@ int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
+ 	unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	const char *name = NULL;
+ 	int i;
++	int ret;
++	int index;
+ 	bool hdmi;
+ 
+ 	if (indexp)
+@@ -729,8 +731,13 @@ int snd_hda_get_pin_label(struct hda_codec *codec, hda_nid_t nid,
+ 		return fill_audio_out_name(codec, nid, cfg, "Speaker",
+ 					   label, maxlen, indexp);
+ 	case AC_JACK_HP_OUT:
+-		return fill_audio_out_name(codec, nid, cfg, "Headphone",
+-					   label, maxlen, indexp);
++		ret = fill_audio_out_name(codec, nid, cfg, "Headphone",
++					   label, maxlen, &index);
++		if (index == 1)
++			snprintf(label, maxlen, "%s", "Headphone2");
++		if (indexp)
++			*indexp = index;
++		return ret;
+ 	case AC_JACK_SPDIF_OUT:
+ 	case AC_JACK_DIG_OTHER_OUT:
+ 		hdmi = is_hdmi_cfg(def_conf);
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 4095cd7c56c6..2a34e8a6e2e1 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -2175,6 +2175,8 @@ static int create_extra_outs(struct hda_codec *codec, int num_pins,
+ 
+ 		if (num_pins == 2 && i == 1 && !strcmp(pfx, "Speaker"))
+ 			name = "Bass Speaker";
++		else if (num_pins == 2 && i == 1 && !strcmp(pfx, "Headphone"))
++			name = "Headphone2";
+ 		else if (num_pins >= 3) {
+ 			snprintf(tmp, sizeof(tmp), "%s %s",
+ 				 pfx, channel_name[i]);
+-- 
+2.17.1
