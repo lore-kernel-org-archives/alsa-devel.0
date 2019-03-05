@@ -1,92 +1,79 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: boards:
- kbl_da7219_max98927: add dai_trigger function
-Date: Tue, 5 Mar 2019 09:07:46 -0600
-Message-ID: <07563e30-95e8-9848-8bfe-2fa78ca2abd3@linux.intel.com>
-References: <1551460451-24540-1-git-send-email-mac.chiang@intel.com>
- <1551752535-27367-1-git-send-email-mac.chiang@intel.com>
- <f4e39672-3d66-bf3b-faca-b89053e52c78@linux.intel.com>
- <5B37778DAAD9B04DA049B4A421B9B3EE71E4EA86@PGSMSX111.gar.corp.intel.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH 2/7] drm/edid: Allow to ignore the audio EDID data
+Date: Tue, 5 Mar 2019 17:24:13 +0200
+Message-ID: <20190305152413.GD16917@intel.com>
+References: <cover.39761cc6c9d070568123e328cd216367c4c660b4.1551711042.git-series.maxime.ripard@bootlin.com>
+ <4914bea9fc3ef3deaffa39ab691dbd9a76461e97.1551711042.git-series.maxime.ripard@bootlin.com>
+ <87wole76ws.fsf@anholt.net>
+ <CADnq5_PZ99hD=SgDrsDL-5zKMEXHxve205r_6xJpv9a9TM1ZHw@mail.gmail.com>
+ <20190305091240.sbkvdwosocaytx22@flea>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2DBBF896EB
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 16:07:49 +0100 (CET)
-In-Reply-To: <5B37778DAAD9B04DA049B4A421B9B3EE71E4EA86@PGSMSX111.gar.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Chiang, Mac" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "N, Harshapriya" <harshapriya.n@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Tc, Jenny" <jenny.tc@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <20190305091240.sbkvdwosocaytx22@flea>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: alsa-devel@alsa-project.org, eben@raspberrypi.org, David Airlie <airlied@linux.ie>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Paul Kocialkowski <paul.kocialkowski@bootlin.com>, Sean Paul <seanpaul@chromium.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Daniel Vetter <daniel.vetter@intel.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/4/19 11:42 PM, Chiang, Mac wrote:
->>>    
->>>    static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd, @@
->>> -864,6 +914,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
->>>    {
->>>    	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
->>>    	struct kbl_hdmi_pcm *pcm;
->>> +	struct snd_soc_dapm_context *dapm = &card->dapm;
->>>    	struct snd_soc_component *component = NULL;
->>>    	int err, i = 0;
->>>    	char jack_name[NAME_SIZE];
->>> @@ -890,9 +941,25 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
->>>    	if (!component)
->>>    		return -EINVAL;
->>>    
->>> +
->>>    	return hdac_hdmi_jack_port_init(component, &card->dapm);
->>>
->> That part looks quite broken. You have functional code after the unconditional return above for the jack init.
->>
->> This is not a diff illusion, I applied this patch and looked at the diff with emacs and I don't know how this could possibly work.
-> 
->> The code prior to this patch was also weird with 2 returns at the end of
->> kabylake_card_late_probe()
-> 
->> My take is that this has never been tested against Mark's branch but ported without tests from the Chrome tree.
-> 
-> I'm missing one line change as below. So there is only one return in kabylake_card_late_probe() as prior one. I've tested and verified it on Chrome tree.
-
-In case I wasn't clear, your patch needs to be fixed and tested against 
-Mark's tree. It cannot possibly work as is.
-
->     	error = hdac_hdmi_jack_port_init(component, &card->dapm);
-> 
->>>    
->>> -	return 0;
->>> +	if (err < 0)
->>> +		return err;
->>> +
->>> +	err = snd_soc_dapm_disable_pin(dapm, "Left Spk");
->>> +	if (err) {
->>> +		dev_err(card->dev, "failed to disable Left Spk: %d\n", err);
->>> +		return err;
->>> +	}
->>> +
->>> +	err = snd_soc_dapm_disable_pin(dapm, "Right Spk");
->>> +	if (err) {
->>> +		dev_err(card->dev, "failed to disable Right Spk: %d\n", err);
->>> +		return err;
->>> +	}
->>> +
->>> +	return snd_soc_dapm_sync(dapm);
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+T24gVHVlLCBNYXIgMDUsIDIwMTkgYXQgMTA6MTI6NDBBTSArMDEwMCwgTWF4aW1lIFJpcGFyZCB3
+cm90ZToKPiBPbiBNb24sIE1hciAwNCwgMjAxOSBhdCAwMzowNTozMVBNIC0wNTAwLCBBbGV4IERl
+dWNoZXIgd3JvdGU6Cj4gPiBPbiBNb24sIE1hciA0LCAyMDE5IGF0IDI6NTMgUE0gRXJpYyBBbmhv
+bHQgPGVyaWNAYW5ob2x0Lm5ldD4gd3JvdGU6Cj4gPiA+Cj4gPiA+IE1heGltZSBSaXBhcmQgPG1h
+eGltZS5yaXBhcmRAYm9vdGxpbi5jb20+IHdyaXRlczoKPiA+ID4KPiA+ID4gPiBJbiBzb21lIGNh
+c2VzLCBpbiBvcmRlciB0byBhY2NvbW9kYXRlIHdpdGggZGlzcGxheXMgd2l0aCBwb29yIEVESURz
+LCB3ZQo+ID4gPiA+IG5lZWQgdG8gaWdub3JlIHRoYXQgdGhlIG1vbml0b3IgYWxsZWRnZWRseSBz
+dXBwb3J0cyBhdWRpbyBvdXRwdXQgYW5kCj4gPiA+ID4gZGlzYWJsZSB0aGUgYXVkaW8gb3V0cHV0
+Lgo+ID4gPiA+Cj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWF4aW1lIFJpcGFyZCA8bWF4aW1lLnJp
+cGFyZEBib290bGluLmNvbT4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgZHJpdmVycy9ncHUvZHJtL2Ry
+bV9lZGlkLmMgfCA4ICsrKysrKysrCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlv
+bnMoKykKPiA+ID4gPgo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2Vk
+aWQuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZWRpZC5jCj4gPiA+ID4gaW5kZXggOTkwYjE5MDlm
+OWQ3Li5jMDI1OGIwMTFiYjIgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2Ry
+bV9lZGlkLmMKPiA+ID4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX2VkaWQuYwo+ID4gPiA+
+IEBAIC00MTkwLDYgKzQxOTAsMTEgQEAgYm9vbCBkcm1fZGV0ZWN0X2hkbWlfbW9uaXRvcihzdHJ1
+Y3QgZWRpZCAqZWRpZCkKPiA+ID4gPiAgfQo+ID4gPiA+ICBFWFBPUlRfU1lNQk9MKGRybV9kZXRl
+Y3RfaGRtaV9tb25pdG9yKTsKPiA+ID4gPgo+ID4gPiA+ICtzdGF0aWMgYm9vbCBpZ25vcmVfZWRp
+ZF9hdWRpbyA9IGZhbHNlOwo+ID4gPiA+ICttb2R1bGVfcGFyYW0oaWdub3JlX2VkaWRfYXVkaW8s
+IGJvb2wsIDA2NDQpOwo+ID4gPiA+ICtNT0RVTEVfUEFSTV9ERVNDKGlnbm9yZV9lZGlkX2F1ZGlv
+LAo+ID4gPiA+ICsgICAgICAgICAgICAgICJJZ25vcmUgdGhlIEVESUQgYW5kIGFsd2F5cyBjb25z
+aWRlciB0aGF0IGEgbW9uaXRvciBkb2Vzbid0IGhhdmUgYXVkaW8gY2FwYWJpbGl0aWVzIik7Cj4g
+PiA+ID4gKwo+ID4gPiA+ICAvKioKPiA+ID4gPiAgICogZHJtX2RldGVjdF9tb25pdG9yX2F1ZGlv
+IC0gY2hlY2sgbW9uaXRvciBhdWRpbyBjYXBhYmlsaXR5Cj4gPiA+ID4gICAqIEBlZGlkOiBFRElE
+IGJsb2NrIHRvIHNjYW4KPiA+ID4gPiBAQCAtNDIwOSw2ICs0MjE0LDkgQEAgYm9vbCBkcm1fZGV0
+ZWN0X21vbml0b3JfYXVkaW8oc3RydWN0IGVkaWQgKmVkaWQpCj4gPiA+ID4gICAgICAgYm9vbCBo
+YXNfYXVkaW8gPSBmYWxzZTsKPiA+ID4gPiAgICAgICBpbnQgc3RhcnRfb2Zmc2V0LCBlbmRfb2Zm
+c2V0Owo+ID4gPiA+Cj4gPiA+ID4gKyAgICAgaWYgKGlnbm9yZV9lZGlkX2F1ZGlvKQo+ID4gPiA+
+ICsgICAgICAgICAgICAgZ290byBlbmQ7Cj4gPiA+ID4gKwo+ID4gPiA+ICAgICAgIGVkaWRfZXh0
+ID0gZHJtX2ZpbmRfY2VhX2V4dGVuc2lvbihlZGlkKTsKPiA+ID4gPiAgICAgICBpZiAoIWVkaWRf
+ZXh0KQo+ID4gPiA+ICAgICAgICAgICAgICAgZ290byBlbmQ7Cj4gPiA+Cj4gPiA+IEl0IGxvb2tz
+IGxpa2UgdGhlIG1vdGl2YXRpb24gZm9yIHRoZSBvcmlnaW5hbCBmbGFnIG9uIFJhc3BiZXJyeSBQ
+aSB3YXMKPiA+ID4gIkkndmUgZ290IGEgbm9uLWF1ZGlvIG1vbml0b3IsIGJ1dCB0aGUgc3lzdGVt
+IGNvbWVzIHVwIHRyeWluZyB0byBwbGF5Cj4gPiA+IGF1ZGlvIHRvIEhETUkgaW5zdGVhZCBvZiB0
+aGUgYW5hbG9nIGphY2siLiAgRG8gd2UgaGF2ZSBzb21lIHdheSBmb3IgRFJNCj4gPiA+IHRvIGNv
+bW11bmljYXRlIHRvIEFMU0EgdGhhdCB0aGlzIGlzIG5vdCB0aGUgcmlnaHQgcGxhY2UgdG8gdHJ5
+IHRvIHBsYXkKPiA+ID4gYXVkaW8gYnkgZGVmYXVsdD8KPiA+IAo+ID4gQXBwYXJlbnRseSBub3Qu
+ICBXZSBoYXZlIHVzZXJzIHVzaW5nIGRlYnVnIGtub2JzIGluIG91ciBkcml2ZXJzIHRvCj4gPiBk
+aXNhYmxlIGRpc3BsYXkgYXVkaW8gYmVjYXVzZSBBTFNBIGRlZmF1bHRzIHRvIHRoYXQgcmF0aGVy
+IHRoYW4gb3RoZXIKPiA+IGF1ZGlvLgo+IAo+IEkgZ3Vlc3Mgb25lIHdheSB0byBkbyB0aGlzIHdv
+dWxkIGJlIHRvIHJlZ2lzdGVyIHRoZSBjYXJkIG9ubHkgd2hlbiBhbgo+IGF1ZGlvLWNhcGFibGUg
+bW9uaXRvciBpcyBjb25uZWN0ZWQgaW5zdGVhZCBvZiBkb2luZyB0aGlzIGF0IHByb2JlCj4gdGlt
+ZS4gSSdtIG5vdCBzdXJlIGhvdyBjb252ZW5pZW50IGl0IGlzIGZvciB1c2Vyc3BhY2UgdGhvdWdo
+LgoKV2UgYWxyZWFkeSBwcm92aWRlIHRoZSBFTEQgdG8gYWxzYS4gSSdtIHByZXR0eSBzdXJlIHB1
+bHNlYXVkaW8gdXNlcwp0aGF0IHN0dWZmIHNvbWVob3cgdG8gZmlndXJlIG91dCB3aGV0aGVyIHRv
+IHBsYXkgYXVkaW8gb3ZlciBIRE1JLgpCdXQgc2luY2UgSSBkb24ndCB1c2UgcHVsc2VhdWRpbyBt
+eXNlbGYgSSBjYW4ndCBiZSAxMDAlIHN1cmUuCgpDYzppbmcgVGFrYXNoaS9hbHNhIGZvbGtzIGZv
+ciBjb25maXJtYXRpb24uCgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QK
+ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9w
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA==
