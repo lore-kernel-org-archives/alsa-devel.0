@@ -1,79 +1,38 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: boards:
- kbl_da7219_max98927: add dai_trigger function
-Date: Mon, 4 Mar 2019 22:03:35 -0600
-Message-ID: <f4e39672-3d66-bf3b-faca-b89053e52c78@linux.intel.com>
-References: <1551460451-24540-1-git-send-email-mac.chiang@intel.com>
- <1551752535-27367-1-git-send-email-mac.chiang@intel.com>
+From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH 0/2] ASoC: Mediatek: Add mt8183-mt6358 machine driver
+Date: Tue, 5 Mar 2019 12:06:43 +0800
+Message-ID: <1551758805-34880-1-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52799F896EB
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 05:03:39 +0100 (CET)
-In-Reply-To: <1551752535-27367-1-git-send-email-mac.chiang@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: mac.chiang@intel.com, alsa-devel@alsa-project.org
-Cc: harshapriya.n@intel.com, tiwai@suse.de, broonie@kernel.org, jenny.tc@intel.com
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds machine driver which uses MT8183 as SoC and
+MT6358 as external codec.
+The patch is based on broonie tree "for-next" branch
 
->   
->   static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
-> @@ -864,6 +914,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
->   {
->   	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
->   	struct kbl_hdmi_pcm *pcm;
-> +	struct snd_soc_dapm_context *dapm = &card->dapm;
->   	struct snd_soc_component *component = NULL;
->   	int err, i = 0;
->   	char jack_name[NAME_SIZE];
-> @@ -890,9 +941,25 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
->   	if (!component)
->   		return -EINVAL;
->   
-> +
->   	return hdac_hdmi_jack_port_init(component, &card->dapm);
+Shunli Wang (2):
+  ASoC: mediatek: mt8183: add mt8183-mt6358 machine driver
+  ASoC: mediatek: add document for mt8183-mt6358
 
-That part looks quite broken. You have functional code after the 
-unconditional return above for the jack init.
+ .../devicetree/bindings/sound/mt8183-mt6358.txt    |  12 ++
+ sound/soc/mediatek/Kconfig                         |  10 +
+ sound/soc/mediatek/mt8183/mt8183-mt6358.c          | 201 +++++++++++++++++++++
+ 3 files changed, 223 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8183-mt6358.txt
+ create mode 100644 sound/soc/mediatek/mt8183/mt8183-mt6358.c
 
-This is not a diff illusion, I applied this patch and looked at the diff 
-with emacs and I don't know how this could possibly work.
-
-The code prior to this patch was also weird with 2 returns at the end of 
-kabylake_card_late_probe()
-
-My take is that this has never been tested against Mark's branch but 
-ported without tests from the Chrome tree.
-
->   
-> -	return 0;
-> +	if (err < 0)
-> +		return err;
-> +
-> +	err = snd_soc_dapm_disable_pin(dapm, "Left Spk");
-> +	if (err) {
-> +		dev_err(card->dev, "failed to disable Left Spk: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	err = snd_soc_dapm_disable_pin(dapm, "Right Spk");
-> +	if (err) {
-> +		dev_err(card->dev, "failed to disable Right Spk: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	return snd_soc_dapm_sync(dapm);
+-- 
+1.9.1
