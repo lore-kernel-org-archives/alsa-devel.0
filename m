@@ -1,23 +1,23 @@
-From: Sven Van Asbroeck <thesven73@gmail.com>
-Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
- infrastructure 'bclk_ratio aware'
-Date: Tue, 5 Mar 2019 09:23:46 -0500
-Message-ID: <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
-References: <20190304165955.21696-1-TheSven73@gmail.com>
- <20190305044232.GA15636@workstation>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: boards:
+ kbl_da7219_max98927: add dai_trigger function
+Date: Tue, 5 Mar 2019 09:07:46 -0600
+Message-ID: <07563e30-95e8-9848-8bfe-2fa78ca2abd3@linux.intel.com>
+References: <1551460451-24540-1-git-send-email-mac.chiang@intel.com>
+ <1551752535-27367-1-git-send-email-mac.chiang@intel.com>
+ <f4e39672-3d66-bf3b-faca-b89053e52c78@linux.intel.com>
+ <5B37778DAAD9B04DA049B4A421B9B3EE71E4EA86@PGSMSX111.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com
- [IPv6:2607:f8b0:4864:20::243])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E267EF896CE
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 15:23:59 +0100 (CET)
-Received: by mail-oi1-x243.google.com with SMTP id t206so6936674oib.3
- for <alsa-devel@alsa-project.org>; Tue, 05 Mar 2019 06:23:59 -0800 (PST)
-In-Reply-To: <20190305044232.GA15636@workstation>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2DBBF896EB
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 16:07:49 +0100 (CET)
+In-Reply-To: <5B37778DAAD9B04DA049B4A421B9B3EE71E4EA86@PGSMSX111.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,45 +27,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+To: "Chiang, Mac" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Tc, Jenny" <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On 3/4/19 11:42 PM, Chiang, Mac wrote:
+>>>    
+>>>    static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd, @@
+>>> -864,6 +914,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+>>>    {
+>>>    	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
+>>>    	struct kbl_hdmi_pcm *pcm;
+>>> +	struct snd_soc_dapm_context *dapm = &card->dapm;
+>>>    	struct snd_soc_component *component = NULL;
+>>>    	int err, i = 0;
+>>>    	char jack_name[NAME_SIZE];
+>>> @@ -890,9 +941,25 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+>>>    	if (!component)
+>>>    		return -EINVAL;
+>>>    
+>>> +
+>>>    	return hdac_hdmi_jack_port_init(component, &card->dapm);
+>>>
+>> That part looks quite broken. You have functional code after the unconditional return above for the jack init.
+>>
+>> This is not a diff illusion, I applied this patch and looked at the diff with emacs and I don't know how this could possibly work.
+> 
+>> The code prior to this patch was also weird with 2 returns at the end of
+>> kabylake_card_late_probe()
+> 
+>> My take is that this has never been tested against Mark's branch but ported without tests from the Chrome tree.
+> 
+> I'm missing one line change as below. So there is only one return in kabylake_card_late_probe() as prior one. I've tested and verified it on Chrome tree.
 
-On Mon, Mar 4, 2019 at 11:42 PM Takashi Sakamoto
-<o-takashi@sakamocchi.jp> wrote:
->
-> Anyway, when posting to change UAPI of Linux sound subsystem, it's
-> better to describe the reason fot new stuffs; what they're designed for,
-> and the reason to require them. Wnen posting in a result of series of
-> discussion done previously, it's better to add any reference to it.
+In case I wasn't clear, your patch needs to be fixed and tested against 
+Mark's tree. It cannot possibly work as is.
 
-My apologies for not linking in previous discussions, I'll certainly make
-sure to link in the future.
-
-The original problem was that the fsl_ssi did not appear to work with the
-tda998x hdmi codec. This codec seems to be 'unique' in the sense that it
-needs to know the number of clocks per frame on the wire, i.e. the bclk_ratio,
-which no-one in alsa is providing or using at the moment.
-
-I first made the error of conflating the physical width and the bclk_ratio,
-and posted this patch - Russell King quickly pointed out my error:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/145916.html
-
-This then led to the following discussions:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145985
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145947
-
-Most of the discussion is about a mechanism to convey bclk_ratio from
-the frame master
-to the tda998x. We don't yet seem to have a consensus on how to do this best.
-
-My rfc patch was only intended to provoke discussion, and to allow
-people to experiment
-with a flawed solution that would allow the alsa core to negotiate
-bclk_ratio between
-components. The uapi change is a serious flaw. bclk_ratio negotiation should be
-invisible to userspace. But I cannot see a way to accomplish this.
-
-Sven
+>     	error = hdac_hdmi_jack_port_init(component, &card->dapm);
+> 
+>>>    
+>>> -	return 0;
+>>> +	if (err < 0)
+>>> +		return err;
+>>> +
+>>> +	err = snd_soc_dapm_disable_pin(dapm, "Left Spk");
+>>> +	if (err) {
+>>> +		dev_err(card->dev, "failed to disable Left Spk: %d\n", err);
+>>> +		return err;
+>>> +	}
+>>> +
+>>> +	err = snd_soc_dapm_disable_pin(dapm, "Right Spk");
+>>> +	if (err) {
+>>> +		dev_err(card->dev, "failed to disable Right Spk: %d\n", err);
+>>> +		return err;
+>>> +	}
+>>> +
+>>> +	return snd_soc_dapm_sync(dapm);
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
