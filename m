@@ -1,17 +1,19 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 1/2] ASoC: rt5651: Add support for active-high
-	jack detect
-Date: Tue,  5 Mar 2019 12:38:59 +0100
-Message-ID: <20190305113900.8893-1-hdegoede@redhat.com>
+Subject: [PATCH 2/2] ASoC: Intel: bytcr_rt5651: Add
+	BYT_RT5651_JD_NOT_INV quirk
+Date: Tue,  5 Mar 2019 12:39:00 +0100
+Message-ID: <20190305113900.8893-2-hdegoede@redhat.com>
+References: <20190305113900.8893-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09A11F896CE
- for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 12:39:06 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEBEAF896EB
+ for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2019 12:39:10 +0100 (CET)
+In-Reply-To: <20190305113900.8893-1-hdegoede@redhat.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,91 +27,76 @@ To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-U29tZSBib2FyZHMgdXNlIGEgamFjay1yZWNlcHRhY2xlIHdpdGggYSBzd2l0Y2ggd2hpY2ggcmVw
-b3J0cyB0aGUKamFjay1pbnNlcnRlZCBzdGF0dXMgYXMgYWN0aXZlLWhpZ2gsIHJhdGhlciB0aGVu
-IHRoZSBzdGFuZGFyZCBhY3RpdmUtbG93CnJlcG9ydGluZyBtb3N0IGphY2tzIHVzZS4KClRoaXMg
-Y29tbWl0IGFkZHMgc3VwcG9ydCBmb3IgaXQuIFRoaXMgaXMgYWN0aXZhdGVkIGJ5IGEgYm9vbGVh
-bgoicmVhbHRlayxqYWNrLWRldGVjdC1ub3QtaW52ZXJ0ZWQiIGRldmljZS1wcm9wZXJ0eS4gVGhl
-IG5vdC1pbnZlcnRlZAppbiB0aGUgZGV2aWNlLXByb3BlcnR5IG5hbWUsIHJhdGhlciB0aGVuIGFj
-dGl2ZS1oaWdoLCB3YXMgY2hvc2VuIHRvIGtlZXAKdGhlIGRldmljZS1wcm9wZXJ0eSBuYW1pbmcg
-Y29uc2lzdGVudCB3aXRoIHRoZSBydDU2NDAgY29kZWMgZHJpdmVyLgoKU2lnbmVkLW9mZi1ieTog
-SGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KLS0tCiAuLi4vZGV2aWNldHJlZS9i
-aW5kaW5ncy9zb3VuZC9ydDU2NTEudHh0ICAgICAgfCAgNSArKwogc291bmQvc29jL2NvZGVjcy9y
-dDU2NTEuYyAgICAgICAgICAgICAgICAgICAgIHwgNDcgKysrKysrKysrKysrKysrKy0tLQogc291
-bmQvc29jL2NvZGVjcy9ydDU2NTEuaCAgICAgICAgICAgICAgICAgICAgIHwgIDEgKwogMyBmaWxl
-cyBjaGFuZ2VkLCA0NiBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9ydDU2NTEudHh0IGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3J0NTY1MS50eHQKaW5kZXggYTQx
-MTk5YTVjZDc5Li41NmU3MzZhMWNiYTkgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9zb3VuZC9ydDU2NTEudHh0CisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9zb3VuZC9ydDU2NTEudHh0CkBAIC0yMiw2ICsyMiwxMSBAQCBPcHRpb25h
-bCBwcm9wZXJ0aWVzOgogICAyOiBVc2UgSkQxXzIgcGluIGZvciBqYWNrLWRldGVjdAogICAzOiBV
-c2UgSkQyIHBpbiBmb3IgamFjay1kZXRlY3QKIAorLSByZWFsdGVrLGphY2stZGV0ZWN0LW5vdC1p
-bnZlcnRlZAorICBib29sLiBOb3JtYWwgamFjay1kZXRlY3Qgc3dpdGNoZXMgZ2l2ZSBhbiBpbnZl
-cnRlZCAoYWN0aXZlLWxvdykgc2lnbmFsLAorICBzZXQgdGhpcyBib29sIGluIHRoZSByYXJlIGNh
-c2UgeW91J3ZlIGEgamFjay1kZXRlY3Qgc3dpdGNoIHdoaWNoIGlzIG5vdAorICBpbnZlcnRlZC4K
-KwogLSByZWFsdGVrLG92ZXItY3VycmVudC10aHJlc2hvbGQtbWljcm9hbXAKICAgdTMyLCBtaWNi
-aWFzIG92ZXItY3VycmVudCBkZXRlY3Rpb24gdGhyZXNob2xkIGluIMK1QSwgdmFsaWQgdmFsdWVz
-IGFyZQogICA2MDAsIDE1MDAgYW5kIDIwMDDCtUEuCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29k
-ZWNzL3J0NTY1MS5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NTEuYwppbmRleCA2NzNkYzE2MzFi
-OWMuLjc2NzgyOWQwYjA3YiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2NTEuYwor
-KysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY1MS5jCkBAIC0xNjQ1LDcgKzE2NDUsMTAgQEAgc3Rh
-dGljIGJvb2wgcnQ1NjUxX2phY2tfaW5zZXJ0ZWQoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpj
-b21wb25lbnQpCiAJCWJyZWFrOwogCX0KIAotCXJldHVybiB2YWwgPT0gMDsKKwlpZiAocnQ1NjUx
-LT5qZF9hY3RpdmVfaGlnaCkKKwkJcmV0dXJuIHZhbCAhPSAwOworCWVsc2UKKwkJcmV0dXJuIHZh
-bCA9PSAwOwogfQogCiAvKiBKYWNrIGRldGVjdCBhbmQgYnV0dG9uLXByZXNzIHRpbWluZ3MgKi8K
-QEAgLTE4NjgsMjAgKzE4NzEsNDcgQEAgc3RhdGljIHZvaWQgcnQ1NjUxX2VuYWJsZV9qYWNrX2Rl
-dGVjdChzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwKIAljYXNlIFJUNTY1MV9K
-RDFfMToKIAkJc25kX3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMoY29tcG9uZW50LCBSVDU2NTFf
-SkRfQ1RSTDIsCiAJCQlSVDU2NTFfSkRfVFJHX1NFTF9NQVNLLCBSVDU2NTFfSkRfVFJHX1NFTF9K
-RDFfMSk7Ci0JCXNuZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1NjUx
-X0lSUV9DVFJMMSwKLQkJCVJUNTY1MV9KRDFfMV9JUlFfRU4sIFJUNTY1MV9KRDFfMV9JUlFfRU4p
-OworCQkvKiBhY3RpdmUtbG93IGlzIG5vcm1hbCwgc2V0IGludiBmbGFnIGZvciBhY3RpdmUtaGln
-aCAqLworCQlpZiAocnQ1NjUxLT5qZF9hY3RpdmVfaGlnaCkKKwkJCXNuZF9zb2NfY29tcG9uZW50
-X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwKKwkJCQlSVDU2NTFfSVJRX0NUUkwxLAorCQkJCVJUNTY1
-MV9KRDFfMV9JUlFfRU4gfCBSVDU2NTFfSkQxXzFfSU5WLAorCQkJCVJUNTY1MV9KRDFfMV9JUlFf
-RU4gfCBSVDU2NTFfSkQxXzFfSU5WKTsKKwkJZWxzZQorCQkJc25kX3NvY19jb21wb25lbnRfdXBk
-YXRlX2JpdHMoY29tcG9uZW50LAorCQkJCVJUNTY1MV9JUlFfQ1RSTDEsCisJCQkJUlQ1NjUxX0pE
-MV8xX0lSUV9FTiB8IFJUNTY1MV9KRDFfMV9JTlYsCisJCQkJUlQ1NjUxX0pEMV8xX0lSUV9FTik7
-CiAJCWJyZWFrOwogCWNhc2UgUlQ1NjUxX0pEMV8yOgogCQlzbmRfc29jX2NvbXBvbmVudF91cGRh
-dGVfYml0cyhjb21wb25lbnQsIFJUNTY1MV9KRF9DVFJMMiwKIAkJCVJUNTY1MV9KRF9UUkdfU0VM
-X01BU0ssIFJUNTY1MV9KRF9UUkdfU0VMX0pEMV8yKTsKLQkJc25kX3NvY19jb21wb25lbnRfdXBk
-YXRlX2JpdHMoY29tcG9uZW50LCBSVDU2NTFfSVJRX0NUUkwxLAotCQkJUlQ1NjUxX0pEMV8yX0lS
-UV9FTiwgUlQ1NjUxX0pEMV8yX0lSUV9FTik7CisJCS8qIGFjdGl2ZS1sb3cgaXMgbm9ybWFsLCBz
-ZXQgaW52IGZsYWcgZm9yIGFjdGl2ZS1oaWdoICovCisJCWlmIChydDU2NTEtPmpkX2FjdGl2ZV9o
-aWdoKQorCQkJc25kX3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMoY29tcG9uZW50LAorCQkJCVJU
-NTY1MV9JUlFfQ1RSTDEsCisJCQkJUlQ1NjUxX0pEMV8yX0lSUV9FTiB8IFJUNTY1MV9KRDFfMl9J
-TlYsCisJCQkJUlQ1NjUxX0pEMV8yX0lSUV9FTiB8IFJUNTY1MV9KRDFfMl9JTlYpOworCQllbHNl
-CisJCQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0cyhjb21wb25lbnQsCisJCQkJUlQ1NjUx
-X0lSUV9DVFJMMSwKKwkJCQlSVDU2NTFfSkQxXzJfSVJRX0VOIHwgUlQ1NjUxX0pEMV8yX0lOViwK
-KwkJCQlSVDU2NTFfSkQxXzJfSVJRX0VOKTsKIAkJYnJlYWs7CiAJY2FzZSBSVDU2NTFfSkQyOgog
-CQlzbmRfc29jX2NvbXBvbmVudF91cGRhdGVfYml0cyhjb21wb25lbnQsIFJUNTY1MV9KRF9DVFJM
-MiwKIAkJCVJUNTY1MV9KRF9UUkdfU0VMX01BU0ssIFJUNTY1MV9KRF9UUkdfU0VMX0pEMik7Ci0J
-CXNuZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1NjUxX0lSUV9DVFJM
-MSwKLQkJCVJUNTY1MV9KRDJfSVJRX0VOLCBSVDU2NTFfSkQyX0lSUV9FTik7CisJCS8qIGFjdGl2
-ZS1sb3cgaXMgbm9ybWFsLCBzZXQgaW52IGZsYWcgZm9yIGFjdGl2ZS1oaWdoICovCisJCWlmIChy
-dDU2NTEtPmpkX2FjdGl2ZV9oaWdoKQorCQkJc25kX3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMo
-Y29tcG9uZW50LAorCQkJCVJUNTY1MV9JUlFfQ1RSTDEsCisJCQkJUlQ1NjUxX0pEMl9JUlFfRU4g
-fCBSVDU2NTFfSkQyX0lOViwKKwkJCQlSVDU2NTFfSkQyX0lSUV9FTiB8IFJUNTY1MV9KRDJfSU5W
-KTsKKwkJZWxzZQorCQkJc25kX3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMoY29tcG9uZW50LAor
-CQkJCVJUNTY1MV9JUlFfQ1RSTDEsCisJCQkJUlQ1NjUxX0pEMl9JUlFfRU4gfCBSVDU2NTFfSkQy
-X0lOViwKKwkJCQlSVDU2NTFfSkQyX0lSUV9FTik7CiAJCWJyZWFrOwogCWRlZmF1bHQ6CiAJCWRl
-dl9lcnIoY29tcG9uZW50LT5kZXYsICJDdXJyZW50bHkgb25seSBKRDFfMSAvIEpEMV8yIC8gSkQy
-IGFyZSBzdXBwb3J0ZWRcbiIpOwpAQCAtMTk4Niw2ICsyMDE2LDkgQEAgc3RhdGljIHZvaWQgcnQ1
-NjUxX2FwcGx5X3Byb3BlcnRpZXMoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQp
-CiAJCQkJICAgICAicmVhbHRlayxqYWNrLWRldGVjdC1zb3VyY2UiLCAmdmFsKSA9PSAwKQogCQly
-dDU2NTEtPmpkX3NyYyA9IHZhbDsKIAorCWlmIChkZXZpY2VfcHJvcGVydHlfcmVhZF9ib29sKGNv
-bXBvbmVudC0+ZGV2LCAicmVhbHRlayxqYWNrLWRldGVjdC1ub3QtaW52ZXJ0ZWQiKSkKKwkJcnQ1
-NjUxLT5qZF9hY3RpdmVfaGlnaCA9IHRydWU7CisKIAkvKgogCSAqIFRlc3Rpbmcgb24gdmFyaW91
-cyBib2FyZHMgaGFzIHNob3duIHRoYXQgZ29vZCBkZWZhdWx0cyBmb3IgdGhlIE9WQ0QKIAkgKiB0
-aHJlc2hvbGQgYW5kIHNjYWxlLWZhY3RvciBhcmUgMjAwMMK1QSBhbmQgMC43NS4gRm9yIGFuIGVm
-ZmVjdGl2ZQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9ydDU2NTEuaCBiL3NvdW5kL3Nv
-Yy9jb2RlY3MvcnQ1NjUxLmgKaW5kZXggNDFmY2I4YjVlYjQwLi4wNWIwZjZmOGI5NWQgMTAwNjQ0
-Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjUxLmgKKysrIGIvc291bmQvc29jL2NvZGVjcy9y
-dDU2NTEuaApAQCAtMjA4Myw2ICsyMDgzLDcgQEAgc3RydWN0IHJ0NTY1MV9wcml2IHsKIAlpbnQg
-cmVsZWFzZV9jb3VudDsKIAlpbnQgcG9sbF9jb3VudDsKIAl1bnNpZ25lZCBpbnQgamRfc3JjOwor
-CWJvb2wgamRfYWN0aXZlX2hpZ2g7CiAJdW5zaWduZWQgaW50IG92Y2RfdGg7CiAJdW5zaWduZWQg
-aW50IG92Y2Rfc2Y7CiAKLS0gCjIuMjAuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Add BYT_RT5651_JD_NOT_INV quirk for devices with an inverted
+(active-high instead of the normal active-low) jack-detect switch.
+
+And add a quirk for the Complet Electro Serv MY8307 tablet which has
+an inverted jack-detect switch (and a mono-speaker).
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/bytcr_rt5651.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 99d0c01a1bec..1bf97a784c4e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -79,14 +79,15 @@ enum {
+ #define BYT_RT5651_SSP0_AIF2		BIT(21)
+ #define BYT_RT5651_HP_LR_SWAPPED	BIT(22)
+ #define BYT_RT5651_MONO_SPEAKER		BIT(23)
++#define BYT_RT5651_JD_NOT_INV		BIT(24)
+ 
+ #define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
+ 					 BYT_RT5651_JD1_1   | \
+ 					 BYT_RT5651_OVCD_TH_2000UA | \
+ 					 BYT_RT5651_OVCD_SF_0P75)
+ 
+-/* jack-detect-source + dmic-en + ovcd-th + -sf + terminating empty entry */
+-#define MAX_NO_PROPS 5
++/* jack-detect-source + inv + dmic-en + ovcd-th + -sf + terminating entry */
++#define MAX_NO_PROPS 6
+ 
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
+@@ -137,6 +138,8 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
+ 	if (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER)
+ 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
++	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
++		dev_info(dev, "quirk JD_NOT_INV enabled\n");
+ }
+ 
+ #define BYT_CODEC_DAI1	"rt5651-aif1"
+@@ -414,6 +417,18 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 					BYT_RT5651_HP_LR_SWAPPED |
+ 					BYT_RT5651_MONO_SPEAKER),
+ 	},
++	{
++		/* Complet Electro Serv MY8307 */
++		.callback = byt_rt5651_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Complet Electro Serv"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "MY8307"),
++		},
++		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
++					BYT_RT5651_IN2_MAP |
++					BYT_RT5651_MONO_SPEAKER |
++					BYT_RT5651_JD_NOT_INV),
++	},
+ 	{
+ 		/* I.T.Works TW701, Ployer Momo7w and Trekstor ST70416-6
+ 		 * (these all use the same mainboard) */
+@@ -525,6 +540,9 @@ static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
+ 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
+ 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
+ 
++	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
++		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
++
+ 	return device_add_properties(i2c_dev, props);
+ }
+ 
+-- 
+2.20.1
