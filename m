@@ -1,7 +1,7 @@
 From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Subject: [PATCH] ASoC: dpcm: prevent snd_soc_dpcm use after free
-Date: Thu, 7 Mar 2019 07:41:45 +0800
-Message-ID: <1551915705-26018-1-git-send-email-kaichieh.chuang@mediatek.com>
+Date: Thu, 7 Mar 2019 07:45:59 +0800
+Message-ID: <1551915959-27150-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -119,7 +119,7 @@ index 5a5764d..d887576 100644
  	return snd_soc_bind_card(card);
  }
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index a5b40e8..e99346e 100644
+index a5b40e8..9020a06 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
 @@ -1228,8 +1228,10 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
@@ -216,7 +216,7 @@ index a5b40e8..e99346e 100644
 -			state == SND_SOC_DPCM_STATE_PREPARE)
 -			return 0;
 +			state == SND_SOC_DPCM_STATE_PREPARE) {
-+			ret = 0
++			ret = 0;
 +			break;
 +		}
  	}
