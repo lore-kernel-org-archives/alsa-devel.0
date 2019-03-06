@@ -1,58 +1,93 @@
-From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: Re: [alsa-devel] [RFC PATCH v2] ASoC: dpcm: prevent snd_soc_dpcm
- use after free
-Date: Wed, 6 Mar 2019 23:09:42 +0800
-Message-ID: <1551884982.4300.7.camel@mtksdaap41>
-References: <1551861979-26601-1-git-send-email-kaichieh.chuang@mediatek.com>
- <0c9de818-80b4-d172-422d-a96b47aa7f1e@perex.cz>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
+ infrastructure 'bclk_ratio aware'
+Date: Wed, 6 Mar 2019 16:53:47 +0100
+Message-ID: <02af2c16-b5c2-d717-4997-1dbeac6edc39@perex.cz>
+References: <20190304165955.21696-1-TheSven73@gmail.com>
+ <20190305044232.GA15636@workstation>
+ <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <0c9de818-80b4-d172-422d-a96b47aa7f1e-/Fr2/VpizcU@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, hochi.huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, michael.hsiao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D106F896CE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2019 16:53:51 +0100 (CET)
+In-Reply-To: <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Sven Van Asbroeck <thesven73@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2019-03-06 at 10:19 +0100, Jaroslav Kysela wrote:
-> Dne 06. 03. 19 v 9:46 KaiChieh Chuang napsal(a):
-> > the dpcm get from fe_clients/be_clients
-> > may be free before use
-> > 
-
-> > @@ -1294,9 +1294,11 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
-> >  #ifdef CONFIG_DEBUG_FS
-> >  		debugfs_remove(dpcm->debugfs_state);
-> >  #endif
-> > +		spin_lock(&fe->card->dpcm_lock);
-> >  		list_del(&dpcm->list_be);
-> >  		list_del(&dpcm->list_fe);
-> >  		kfree(dpcm);
-> > +		spin_unlock(&fe->card->dpcm_lock);
+Dne 05. 03. 19 v 15:23 Sven Van Asbroeck napsal(a):
+> Hi Takashi,
 > 
-> The unlock might be moved before kfree(). Also, I don't see the
-> list_add() spin lock protection in your patch.
+> On Mon, Mar 4, 2019 at 11:42 PM Takashi Sakamoto
+> <o-takashi@sakamocchi.jp> wrote:
+>>
+>> Anyway, when posting to change UAPI of Linux sound subsystem, it's
+>> better to describe the reason fot new stuffs; what they're designed for,
+>> and the reason to require them. Wnen posting in a result of series of
+>> discussion done previously, it's better to add any reference to it.
 > 
-> 				Jaroslav
+> My apologies for not linking in previous discussions, I'll certainly make
+> sure to link in the future.
 > 
+> The original problem was that the fsl_ssi did not appear to work with the
+> tda998x hdmi codec. This codec seems to be 'unique' in the sense that it
+> needs to know the number of clocks per frame on the wire, i.e. the bclk_ratio,
+> which no-one in alsa is providing or using at the moment.
+> 
+> I first made the error of conflating the physical width and the bclk_ratio,
+> and posted this patch - Russell King quickly pointed out my error:
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/145916.html
+> 
+> This then led to the following discussions:
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145985
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145947
+> 
+> Most of the discussion is about a mechanism to convey bclk_ratio from
+> the frame master
+> to the tda998x. We don't yet seem to have a consensus on how to do this best.
+> 
+> My rfc patch was only intended to provoke discussion, and to allow
+> people to experiment
+> with a flawed solution that would allow the alsa core to negotiate
+> bclk_ratio between
+> components. The uapi change is a serious flaw. bclk_ratio negotiation should be
+> invisible to userspace. But I cannot see a way to accomplish this.
 
-The dpcm_lock in this patch is to protect the instance of dpcm,
-e.g. protect dpcm not to be free while dereference from the
-be_clients/fe_clients.
+I think that this might be resolved using double constraint rules in the
+affected driver:
 
-The lock is not meant to protect the list "be_clients" and "fe_client",
-e.g. not meant to protect add/remove dpcm from these list.
+    snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
+                        bclk_format_constraint, substream,
+                                  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+    snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+                        bclk_channels_constraint, substream,
+                                  SNDRV_PCM_HW_PARAM_FORMAT, -1);
 
-The lock is added only at the places that may have race with
-dpcm_be_disconnect(), e.g. kfree(dpcm). And note that, many places that
-call for_each_dpcm_be/fe() cannot use spin_lock, since there are pcm
-callbacks which can sleep.
+And refine the format bitmask / channel interval according your bclk
+constraint. The physical sample width can be obtained in both
+bclk_format_constraint / bclk_channels_constraint function so all input
+values are known. The final bclk value can be obtained like in your
+proposed code:
+
+    params_channels(params) * params_width(params)
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
