@@ -1,254 +1,72 @@
-From: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Subject: Re: [alsa-devel] [RFC PATCH v2] ASoC: dpcm: prevent snd_soc_dpcm use
- after free
-Date: Wed, 6 Mar 2019 10:19:38 +0100
-Message-ID: <0c9de818-80b4-d172-422d-a96b47aa7f1e@perex.cz>
-References: <1551861979-26601-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda: set the
+ 2nd headphone's name to be Headphone2
+Date: Wed, 6 Mar 2019 18:23:11 +0800
+Message-ID: <f5057f0d-f7f3-8ccd-691a-a9bccea7caec@canonical.com>
+References: <20190305140910.25615-1-hui.wang@canonical.com>
+ <18c107ea-6535-36c2-c8d0-a03397848c09@perex.cz>
+ <1d8e9e63-3f2d-5351-1f29-d10f3db26313@canonical.com>
+ <083cbd74-3172-d06b-5594-4f9a8d909c1b@perex.cz>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1551861979-26601-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <083cbd74-3172-d06b-5594-4f9a8d909c1b@perex.cz>
 Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: michael.hsiao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, hochi.huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 06. 03. 19 v 9:46 KaiChieh Chuang napsal(a):
-> the dpcm get from fe_clients/be_clients
-> may be free before use
-> 
-> possible race condition between
-> void dpcm_be_disconnect(
-> 	...
-> 	list_del(&dpcm->list_be);
-> 	list_del(&dpcm->list_fe);
-> 	kfree(dpcm);
-> 	...
-> 
-> and
-> 	for_each_dpcm_fe()
-> 	for_each_dpcm_be*()
-> 
-> race condition example
-> Thread 1:
->     snd_soc_dapm_mixer_update_power()
->         -> soc_dpcm_runtime_update()
->             -> dpcm_be_disconnect()
->                 -> kfree(dpcm);
-> Thread 2:
->     dpcm_fe_dai_trigger()
->         -> dpcm_be_dai_trigger()
->             -> snd_soc_dpcm_can_be_free_stop()
->                 -> if (dpcm->fe == fe)
-> 
-> Excpetion Scenario:
-> 	two FE link to same BE
-> 	FE1 -> BE
-> 	FE2 ->
-> 
-> 	Thread 1: switch off mixer between FE2 -> BE
-> 	Thread 2: pcm_stop FE1
-> 
-> Add a spin lock at snd_soc_card level,
-> to protect the dpcm instance.
-> The lock may be used in atomic context, so use spin lock.
-> 
-> Exception:
-> 
-> Unable to handle kernel paging request at virtual address dead0000000000e0
-> 
-> pc=<> [<ffffff8960e2cd10>] dpcm_be_dai_trigger+0x29c/0x47c
-> 	sound/soc/soc-pcm.c:3226
-> 		if (dpcm->fe == fe)
-> lr=<> [<ffffff8960e2f694>] dpcm_fe_dai_do_trigger+0x94/0x26c
-> 
-> Backtrace:
-> [<ffffff89602dba80>] notify_die+0x68/0xb8
-> [<ffffff896028c7dc>] die+0x118/0x2a8
-> [<ffffff89602a2f84>] __do_kernel_fault+0x13c/0x14c
-> [<ffffff89602a27f4>] do_translation_fault+0x64/0xa0
-> [<ffffff8960280cf8>] do_mem_abort+0x4c/0xd0
-> [<ffffff8960282ad0>] el1_da+0x24/0x40
-> [<ffffff8960e2cd10>] dpcm_be_dai_trigger+0x29c/0x47c
-> [<ffffff8960e2f694>] dpcm_fe_dai_do_trigger+0x94/0x26c
-> [<ffffff8960e2edec>] dpcm_fe_dai_trigger+0x3c/0x44
-> [<ffffff8960de5588>] snd_pcm_do_stop+0x50/0x5c
-> [<ffffff8960dded24>] snd_pcm_action+0xb4/0x13c
-> [<ffffff8960ddfdb4>] snd_pcm_drop+0xa0/0x128
-> [<ffffff8960de69bc>] snd_pcm_common_ioctl+0x9d8/0x30f0
-> [<ffffff8960de1cac>] snd_pcm_ioctl_compat+0x29c/0x2f14
-> [<ffffff89604c9d60>] compat_SyS_ioctl+0x128/0x244
-> [<ffffff8960283740>] el0_svc_naked+0x34/0x38
-> [<ffffffffffffffff>] 0xffffffffffffffff
-> 
-> Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-> ---
->  include/sound/soc.h  |  2 ++
->  sound/soc/soc-core.c |  1 +
->  sound/soc/soc-pcm.c  | 31 ++++++++++++++++++++++++-------
->  3 files changed, 27 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index eb7db605955b..1e2be35ed36f 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1083,6 +1083,8 @@ struct snd_soc_card {
->  	struct mutex mutex;
->  	struct mutex dapm_mutex;
->  
-> +	spinlock_t dpcm_lock;
-> +
->  	bool instantiated;
->  	bool topology_shortname_created;
->  
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 5a5764dba147..d88757659729 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2820,6 +2820,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
->  	card->instantiated = 0;
->  	mutex_init(&card->mutex);
->  	mutex_init(&card->dapm_mutex);
-> +	spin_lock_init(&card->dpcm_lock);
->  
->  	return snd_soc_bind_card(card);
->  }
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index a5b40e82dea4..f31eaf58e750 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1294,9 +1294,11 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
->  #ifdef CONFIG_DEBUG_FS
->  		debugfs_remove(dpcm->debugfs_state);
->  #endif
-> +		spin_lock(&fe->card->dpcm_lock);
->  		list_del(&dpcm->list_be);
->  		list_del(&dpcm->list_fe);
->  		kfree(dpcm);
-> +		spin_unlock(&fe->card->dpcm_lock);
-
-The unlock might be moved before kfree(). Also, I don't see the
-list_add() spin lock protection in your patch.
-
-				Jaroslav
-
->  	}
->  }
->  
-> @@ -1548,9 +1550,11 @@ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
->  {
->  	struct snd_soc_dpcm *dpcm;
->  
-> +	spin_lock(&fe->card->dpcm_lock);
->  	for_each_dpcm_be(fe, stream, dpcm)
->  		dpcm->be->dpcm[stream].runtime_update =
->  						SND_SOC_DPCM_UPDATE_NO;
-> +	spin_unlock(&fe->card->dpcm_lock);
->  }
->  
->  static void dpcm_be_dai_startup_unwind(struct snd_soc_pcm_runtime *fe,
-> @@ -2640,11 +2644,13 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
->  	dpcm_be_dai_shutdown(fe, stream);
->  disconnect:
->  	/* disconnect any non started BEs */
-> +	spin_lock(&fe->card->dpcm_lock);
->  	for_each_dpcm_be(fe, stream, dpcm) {
->  		struct snd_soc_pcm_runtime *be = dpcm->be;
->  		if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
->  				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
->  	}
-> +	spin_unlock(&fe->card->dpcm_lock);
->  
->  	return ret;
->  }
-> @@ -3220,7 +3226,9 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
->  {
->  	struct snd_soc_dpcm *dpcm;
->  	int state;
-> +	int ret = 1;
->  
-> +	spin_lock(&fe->card->dpcm_lock);
->  	for_each_dpcm_fe(be, stream, dpcm) {
->  
->  		if (dpcm->fe == fe)
-> @@ -3229,12 +3237,15 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
->  		state = dpcm->fe->dpcm[stream].state;
->  		if (state == SND_SOC_DPCM_STATE_START ||
->  			state == SND_SOC_DPCM_STATE_PAUSED ||
-> -			state == SND_SOC_DPCM_STATE_SUSPEND)
-> -			return 0;
-> +			state == SND_SOC_DPCM_STATE_SUSPEND) {
-> +			ret = 0;
-> +			break;
-> +		}
->  	}
-> +	spin_unlock(&fe->card->dpcm_lock);
->  
->  	/* it's safe to free/stop this BE DAI */
-> -	return 1;
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
->  
-> @@ -3247,7 +3258,9 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
->  {
->  	struct snd_soc_dpcm *dpcm;
->  	int state;
-> +	int ret = 1;
->  
-> +	spin_lock(&fe->card->dpcm_lock);
->  	for_each_dpcm_fe(be, stream, dpcm) {
->  
->  		if (dpcm->fe == fe)
-> @@ -3257,12 +3270,15 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
->  		if (state == SND_SOC_DPCM_STATE_START ||
->  			state == SND_SOC_DPCM_STATE_PAUSED ||
->  			state == SND_SOC_DPCM_STATE_SUSPEND ||
-> -			state == SND_SOC_DPCM_STATE_PREPARE)
-> -			return 0;
-> +			state == SND_SOC_DPCM_STATE_PREPARE) {
-> +			ret = 0
-> +			break;
-> +		}
->  	}
-> +	spin_unlock(&fe->card->dpcm_lock);
->  
->  	/* it's safe to change hw_params */
-> -	return 1;
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
->  
-> @@ -3328,6 +3344,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
->  		goto out;
->  	}
->  
-> +	spin_lock(&fe->card->dpcm_lock);
->  	for_each_dpcm_be(fe, stream, dpcm) {
->  		struct snd_soc_pcm_runtime *be = dpcm->be;
->  		params = &dpcm->hw_params;
-> @@ -3348,7 +3365,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
->  				params_channels(params),
->  				params_rate(params));
->  	}
-> -
-> +	spin_unlock(&fe->card->dpcm_lock);
->  out:
->  	return offset;
->  }
-> 
-
-
--- 
-Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+T24gMjAxOS8zLzYg5LiL5Y2INDoxMCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+IERuZSAwNi4g
+MDMuIDE5IHYgMToyMyBIdWkgV2FuZyBuYXBzYWwoYSk6Cj4+IE9uIDIwMTkvMy82IOS4iuWNiDQ6
+MDAsIEphcm9zbGF2IEt5c2VsYSB3cm90ZToKPj4+IERuZSAwNS4gMDMuIDE5IHYgMTU6MDkgSHVp
+IFdhbmcgbmFwc2FsKGEpOgo+Pj4+IFJlY2VudGx5IEkgc2F3IHR3byBIZWFkcGhvbmVzIG9uIHNv
+bWUgSFAgbWFjaGluZXMsIHRoZSAxc3QgSGVhZHBob25lCj4+Pj4gY29tZXMgZnJvbSB0aGUgRnJv
+bnQgSGVhZHBob25lIEphY2ssIHRoZSAybmQgb25lIGNvbWVzIGZyb20gdGhlIEZyb250Cj4+Pj4g
+SGVhZHNldCBKYWNrLCBhbmQgdGhlIGN1cnJlbnQgSERBIGRyaXZlciB3aWxsIHNldCB0aGUgc2Ft
+ZSBuYW1lIHRvCj4+Pj4gdGhlbSBhbmQgd2l0aCBkaWZmZXJlbnQgaW5kZXgsIGp1c3QgbGlrZSBi
+ZWxvdzoKPj4+PiAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScKPj4+PiAnSGVhZHBob25lIFBs
+YXliYWNrIFN3aXRjaCcKPj4+PiAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScgaW5kZXggMQo+
+Pj4+ICdIZWFkcGhvbmUgUGxheWJhY2sgU3dpdGNoJyBpbmRleCAxCj4+Pj4gJ0Zyb250IEhlYWRw
+aG9uZSBKYWNrJwo+Pj4+ICdGcm9udCBIZWFkcGhvbmUgSmFjaycgaW5kZXggMQo+Pj4+Cj4+Pj4g
+VGhpcyBjYW4ndCBiZSBoYW5kbGVkIGJ5IHB1bHNlYXVkaW8sIGFuZCBwdWxzZWFkdWlvIGFscmVh
+ZHkgaGFzIGEKPj4+PiBwYXRoIGFuYWxvZy1vdXRwdXQtaGVhZHBob25lcy0yLmNvbmYgdG8gaGFu
+ZGxlIHRoZSAybmQgaGVhZHBob25lLCBub3cKPj4+PiB3ZSBzZXQgdGhlIDJuZCBoZWFkcGhvbmUn
+cyBuYW1lIHRvICJIZWFkcGhvbmUyIiwgbGVhdmUgdGhlIG90aGVyCj4+Pj4gaGVhZHBob25lcyB1
+bmNoYW5nZWQuCj4+Pj4KPj4+PiBUaGUgY2hhbmdlIG9mIGhkYV9hdXRvX3BhcnNlci5jIHdpbGwg
+Y2hhbmdlIHRoZSBuYW1lIG9mIEphY2suCj4+Pj4KPj4+PiBUaGUgY2hhbmdlIG9mIGhkYV9nZW5l
+cmljLmMgd2lsbCBjaGFuZ2UgdGhlIG5hbWUgb2YgVm9sdW1lIGFuZCBTd2l0Y2guCj4+PiBOQUsu
+IEknbSBhZnJhaWQsIGJ1dCB5b3UncmUgdHJ5aW5nIHRvIHJldmVydCB0aGUgY2hhbmdlIGZyb20g
+MjAwOToKPj4+Cj4+PiBjb21taXQgNjY4Yjk2NTJiZTMzNTEwYTJhNDJiMjkwZGQzMzVkMzRkMzhl
+MjA2OAo+Pj4gQXV0aG9yOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+PiBEYXRlOiAg
+IEZyaSBNYXIgNiAxMDoxMzoyNCAyMDA5ICswMTAwCj4+Pgo+Pj4gICBBTFNBOiBoZGEgLSBDcmVh
+dGUgbXVsdGlwbGUgSFAgLyBzcGVha2VyIGNvbnRyb2xzIHdpdGggaW5kZXgKPj4+Cj4+PiAgIENy
+ZWF0ZSBtdWx0aXBsZSAiSGVhZHBob25lIiBhbmQgIlNwZWFrZXIiIGNvbnRyb2xzIHdpdGggbm9u
+LXplcm8gaW5kZXgKPj4+ICAgbnVtYmVycyBpbnN0ZWFkIG9mICJIZWFkcGhvbmUyIiwgZXRjLgo+
+Pj4KPj4+ICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+Pj4K
+Pj4+IEkgdGhpbmsgdGhhdCBQQSBzaG91bGQgYmUgZml4ZWQgaW5zdGVhZCB0cnkgdG8gZml4IHRo
+ZSBkcml2ZXJzLiBUaGUKPj4+IGluZGV4ZXMgYXJlIGV4YWN0bHkgZGVzaWduZWQgdG8gZGlzdGlu
+Z3Vpc2ggdGhlIG11bHRpcGxlIHNpbWlsYXIgSS9PLgo+Pj4KPj4+IEkgY2Fubm90IGZpbmQgYW55
+IG90aGVyIGRyaXZlciB3aGljaCB1c2VzIHRoZSBIZWFkcGhvbmUyIGNvbnRyb2wgbmFtZS4KPj4+
+Cj4+PiAJCQkJCUphcm9zbGF2Cj4+Pgo+PiBPSywgZ290IGl0LsKgIEkgdHJpZWQgdG8gYWRkIHRo
+ZSBpbmRleCB0byB0aGUgcHVsc2VhdWRpbyBpbiBKYW4sIGJ1dCBub3QKPj4gZmluaXNoIHlldC7C
+oCBJZiB5b3UgaGF2ZSB0aW1lLCBwbGVhc2UgdGFrZSBhIGxvb2sgYXQgbXkgcGF0Y2hlcyBhbmQg
+bWFrZQo+PiBhIGNvbW1lbnQgb24gdGhlbS4KPj4KPj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvYXJjaGl2ZXMvcHVsc2VhdWRpby1kaXNjdXNzLzIwMTktSmFudWFyeS8wMzA3NjEuaHRt
+bAo+IFlvdXIgY2hhbmdlcyBzZWVtIGFzIGEgZ29vZCBzdGFydC4gVW5mb3J0dW5hdGVseSwgSSBk
+b24ndCBrbm93IFBBCj4gaW50ZXJuYWxzLCBzbyBpdCB3b3VsZCBiZSBiZXR0ZXIsIGlmIGEgUEEg
+ZGV2ZWxvcGVyIGNhbiByZXZpZXcgdGhvc2UKPiBwYXRjaGVzLgo+Cj4gCQkJCQkJSmFyb3NsYXYK
+Ck9LLCBUaGFua3MuCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNz
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcw==
