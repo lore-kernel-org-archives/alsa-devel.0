@@ -1,72 +1,65 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: set the
- 2nd headphone's name to be Headphone2
-Date: Wed, 6 Mar 2019 18:23:11 +0800
-Message-ID: <f5057f0d-f7f3-8ccd-691a-a9bccea7caec@canonical.com>
-References: <20190305140910.25615-1-hui.wang@canonical.com>
- <18c107ea-6535-36c2-c8d0-a03397848c09@perex.cz>
- <1d8e9e63-3f2d-5351-1f29-d10f3db26313@canonical.com>
- <083cbd74-3172-d06b-5594-4f9a8d909c1b@perex.cz>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <083cbd74-3172-d06b-5594-4f9a8d909c1b@perex.cz>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, pulseaudio-discuss@lists.freedesktop.org
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: i2s: Fix DAPM routes for capture stream
+Date: Wed, 06 Mar 2019 11:24:45 +0100
+Message-ID: <20190306102445.1640-1-s.nawrocki@samsung.com>
+References: <CGME20190306102457epcas2p136fcb099d5635ee498eefd17979fc880@epcas2p1.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxOS8zLzYg5LiL5Y2INDoxMCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+IERuZSAwNi4g
-MDMuIDE5IHYgMToyMyBIdWkgV2FuZyBuYXBzYWwoYSk6Cj4+IE9uIDIwMTkvMy82IOS4iuWNiDQ6
-MDAsIEphcm9zbGF2IEt5c2VsYSB3cm90ZToKPj4+IERuZSAwNS4gMDMuIDE5IHYgMTU6MDkgSHVp
-IFdhbmcgbmFwc2FsKGEpOgo+Pj4+IFJlY2VudGx5IEkgc2F3IHR3byBIZWFkcGhvbmVzIG9uIHNv
-bWUgSFAgbWFjaGluZXMsIHRoZSAxc3QgSGVhZHBob25lCj4+Pj4gY29tZXMgZnJvbSB0aGUgRnJv
-bnQgSGVhZHBob25lIEphY2ssIHRoZSAybmQgb25lIGNvbWVzIGZyb20gdGhlIEZyb250Cj4+Pj4g
-SGVhZHNldCBKYWNrLCBhbmQgdGhlIGN1cnJlbnQgSERBIGRyaXZlciB3aWxsIHNldCB0aGUgc2Ft
-ZSBuYW1lIHRvCj4+Pj4gdGhlbSBhbmQgd2l0aCBkaWZmZXJlbnQgaW5kZXgsIGp1c3QgbGlrZSBi
-ZWxvdzoKPj4+PiAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScKPj4+PiAnSGVhZHBob25lIFBs
-YXliYWNrIFN3aXRjaCcKPj4+PiAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScgaW5kZXggMQo+
-Pj4+ICdIZWFkcGhvbmUgUGxheWJhY2sgU3dpdGNoJyBpbmRleCAxCj4+Pj4gJ0Zyb250IEhlYWRw
-aG9uZSBKYWNrJwo+Pj4+ICdGcm9udCBIZWFkcGhvbmUgSmFjaycgaW5kZXggMQo+Pj4+Cj4+Pj4g
-VGhpcyBjYW4ndCBiZSBoYW5kbGVkIGJ5IHB1bHNlYXVkaW8sIGFuZCBwdWxzZWFkdWlvIGFscmVh
-ZHkgaGFzIGEKPj4+PiBwYXRoIGFuYWxvZy1vdXRwdXQtaGVhZHBob25lcy0yLmNvbmYgdG8gaGFu
-ZGxlIHRoZSAybmQgaGVhZHBob25lLCBub3cKPj4+PiB3ZSBzZXQgdGhlIDJuZCBoZWFkcGhvbmUn
-cyBuYW1lIHRvICJIZWFkcGhvbmUyIiwgbGVhdmUgdGhlIG90aGVyCj4+Pj4gaGVhZHBob25lcyB1
-bmNoYW5nZWQuCj4+Pj4KPj4+PiBUaGUgY2hhbmdlIG9mIGhkYV9hdXRvX3BhcnNlci5jIHdpbGwg
-Y2hhbmdlIHRoZSBuYW1lIG9mIEphY2suCj4+Pj4KPj4+PiBUaGUgY2hhbmdlIG9mIGhkYV9nZW5l
-cmljLmMgd2lsbCBjaGFuZ2UgdGhlIG5hbWUgb2YgVm9sdW1lIGFuZCBTd2l0Y2guCj4+PiBOQUsu
-IEknbSBhZnJhaWQsIGJ1dCB5b3UncmUgdHJ5aW5nIHRvIHJldmVydCB0aGUgY2hhbmdlIGZyb20g
-MjAwOToKPj4+Cj4+PiBjb21taXQgNjY4Yjk2NTJiZTMzNTEwYTJhNDJiMjkwZGQzMzVkMzRkMzhl
-MjA2OAo+Pj4gQXV0aG9yOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+PiBEYXRlOiAg
-IEZyaSBNYXIgNiAxMDoxMzoyNCAyMDA5ICswMTAwCj4+Pgo+Pj4gICBBTFNBOiBoZGEgLSBDcmVh
-dGUgbXVsdGlwbGUgSFAgLyBzcGVha2VyIGNvbnRyb2xzIHdpdGggaW5kZXgKPj4+Cj4+PiAgIENy
-ZWF0ZSBtdWx0aXBsZSAiSGVhZHBob25lIiBhbmQgIlNwZWFrZXIiIGNvbnRyb2xzIHdpdGggbm9u
-LXplcm8gaW5kZXgKPj4+ICAgbnVtYmVycyBpbnN0ZWFkIG9mICJIZWFkcGhvbmUyIiwgZXRjLgo+
-Pj4KPj4+ICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+Pj4K
-Pj4+IEkgdGhpbmsgdGhhdCBQQSBzaG91bGQgYmUgZml4ZWQgaW5zdGVhZCB0cnkgdG8gZml4IHRo
-ZSBkcml2ZXJzLiBUaGUKPj4+IGluZGV4ZXMgYXJlIGV4YWN0bHkgZGVzaWduZWQgdG8gZGlzdGlu
-Z3Vpc2ggdGhlIG11bHRpcGxlIHNpbWlsYXIgSS9PLgo+Pj4KPj4+IEkgY2Fubm90IGZpbmQgYW55
-IG90aGVyIGRyaXZlciB3aGljaCB1c2VzIHRoZSBIZWFkcGhvbmUyIGNvbnRyb2wgbmFtZS4KPj4+
-Cj4+PiAJCQkJCUphcm9zbGF2Cj4+Pgo+PiBPSywgZ290IGl0LsKgIEkgdHJpZWQgdG8gYWRkIHRo
-ZSBpbmRleCB0byB0aGUgcHVsc2VhdWRpbyBpbiBKYW4sIGJ1dCBub3QKPj4gZmluaXNoIHlldC7C
-oCBJZiB5b3UgaGF2ZSB0aW1lLCBwbGVhc2UgdGFrZSBhIGxvb2sgYXQgbXkgcGF0Y2hlcyBhbmQg
-bWFrZQo+PiBhIGNvbW1lbnQgb24gdGhlbS4KPj4KPj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvYXJjaGl2ZXMvcHVsc2VhdWRpby1kaXNjdXNzLzIwMTktSmFudWFyeS8wMzA3NjEuaHRt
-bAo+IFlvdXIgY2hhbmdlcyBzZWVtIGFzIGEgZ29vZCBzdGFydC4gVW5mb3J0dW5hdGVseSwgSSBk
-b24ndCBrbm93IFBBCj4gaW50ZXJuYWxzLCBzbyBpdCB3b3VsZCBiZSBiZXR0ZXIsIGlmIGEgUEEg
-ZGV2ZWxvcGVyIGNhbiByZXZpZXcgdGhvc2UKPiBwYXRjaGVzLgo+Cj4gCQkJCQkJSmFyb3NsYXYK
-Ck9LLCBUaGFua3MuCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNz
-QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vzcw==
+This patch sets missing stream_name of capture part of the DAI driver
+so we can define DAPM routing properly also for the capture stream.
+
+While at it "Playback" suffix is added to the playback stream names
+to clearly identify playback/capture.
+
+Together with related dts patch this fixes NULL pointer dereference
+when opening ALSA device for recording on Odroid XU3.
+
+Fixes: 64aba9bca5bd ("ASoC: samsung: i2s: Add widgets and routes for DPCM support")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 4231001226f4..ab471d550d17 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1130,11 +1130,11 @@ static const struct snd_soc_dapm_widget samsung_i2s_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route samsung_i2s_dapm_routes[] = {
+-	{ "Playback Mixer", NULL, "Primary" },
+-	{ "Playback Mixer", NULL, "Secondary" },
++	{ "Playback Mixer", NULL, "Primary Playback" },
++	{ "Playback Mixer", NULL, "Secondary Playback" },
+ 
+ 	{ "Mixer DAI TX", NULL, "Playback Mixer" },
+-	{ "Playback Mixer", NULL, "Mixer DAI RX" },
++	{ "Primary Capture", NULL, "Mixer DAI RX" },
+ };
+ 
+ static const struct snd_soc_component_driver samsung_i2s_component = {
+@@ -1155,7 +1155,8 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 			  int num_dais)
+ {
+ 	static const char *dai_names[] = { "samsung-i2s", "samsung-i2s-sec" };
+-	static const char *stream_names[] = { "Primary", "Secondary" };
++	static const char *stream_names[] = { "Primary Playback",
++					      "Secondary Playback" };
+ 	struct snd_soc_dai_driver *dai_drv;
+ 	struct i2s_dai *dai;
+ 	int i;
+@@ -1201,6 +1202,7 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 	dai_drv->capture.channels_max = 2;
+ 	dai_drv->capture.rates = i2s_dai_data->pcm_rates;
+ 	dai_drv->capture.formats = SAMSUNG_I2S_FMTS;
++	dai_drv->capture.stream_name = "Primary Capture";
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
