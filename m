@@ -1,7 +1,7 @@
 From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH] ASoC: dpcm: prevent snd_soc_dpcm use after free
-Date: Thu, 7 Mar 2019 07:45:59 +0800
-Message-ID: <1551915959-27150-1-git-send-email-kaichieh.chuang@mediatek.com>
+Subject: [PATCH v2] ASoC: dpcm: prevent snd_soc_dpcm use after free
+Date: Thu, 7 Mar 2019 07:51:09 +0800
+Message-ID: <1551916269-27779-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,8 +19,12 @@ To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, hochi.huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, michael.hsiao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-the dpcm get from fe_clients/be_clients
+The dpcm get from fe_clients/be_clients
 may be free before use
+
+Add a spin lock at snd_soc_card level,
+to protect the dpcm instance.
+The lock may be used in atomic context, so use spin lock.
 
 possible race condition between
 void dpcm_be_disconnect(
@@ -53,10 +57,6 @@ Excpetion Scenario:
 
 	Thread 1: switch of mixer between FE2 -> BE
 	Thread 2: pcm_stop FE1
-
-Add a spin lock at snd_soc_card level,
-to protect the dpcm instance.
-The lock may be used in atomic context, so use spin lock.
 
 Exception:
 
