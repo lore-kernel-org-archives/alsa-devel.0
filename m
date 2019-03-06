@@ -1,65 +1,58 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: i2s: Fix DAPM routes for capture stream
-Date: Wed, 06 Mar 2019 11:24:45 +0100
-Message-ID: <20190306102445.1640-1-s.nawrocki@samsung.com>
-References: <CGME20190306102457epcas2p136fcb099d5635ee498eefd17979fc880@epcas2p1.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [alsa-devel] [RFC PATCH v2] ASoC: dpcm: prevent snd_soc_dpcm
+ use after free
+Date: Wed, 6 Mar 2019 23:09:42 +0800
+Message-ID: <1551884982.4300.7.camel@mtksdaap41>
+References: <1551861979-26601-1-git-send-email-kaichieh.chuang@mediatek.com>
+ <0c9de818-80b4-d172-422d-a96b47aa7f1e@perex.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <0c9de818-80b4-d172-422d-a96b47aa7f1e-/Fr2/VpizcU@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, hochi.huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, michael.hsiao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch sets missing stream_name of capture part of the DAI driver
-so we can define DAPM routing properly also for the capture stream.
+On Wed, 2019-03-06 at 10:19 +0100, Jaroslav Kysela wrote:
+> Dne 06. 03. 19 v 9:46 KaiChieh Chuang napsal(a):
+> > the dpcm get from fe_clients/be_clients
+> > may be free before use
+> > 
 
-While at it "Playback" suffix is added to the playback stream names
-to clearly identify playback/capture.
+> > @@ -1294,9 +1294,11 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+> >  #ifdef CONFIG_DEBUG_FS
+> >  		debugfs_remove(dpcm->debugfs_state);
+> >  #endif
+> > +		spin_lock(&fe->card->dpcm_lock);
+> >  		list_del(&dpcm->list_be);
+> >  		list_del(&dpcm->list_fe);
+> >  		kfree(dpcm);
+> > +		spin_unlock(&fe->card->dpcm_lock);
+> 
+> The unlock might be moved before kfree(). Also, I don't see the
+> list_add() spin lock protection in your patch.
+> 
+> 				Jaroslav
+> 
 
-Together with related dts patch this fixes NULL pointer dereference
-when opening ALSA device for recording on Odroid XU3.
+The dpcm_lock in this patch is to protect the instance of dpcm,
+e.g. protect dpcm not to be free while dereference from the
+be_clients/fe_clients.
 
-Fixes: 64aba9bca5bd ("ASoC: samsung: i2s: Add widgets and routes for DPCM support")
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- sound/soc/samsung/i2s.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The lock is not meant to protect the list "be_clients" and "fe_client",
+e.g. not meant to protect add/remove dpcm from these list.
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 4231001226f4..ab471d550d17 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1130,11 +1130,11 @@ static const struct snd_soc_dapm_widget samsung_i2s_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route samsung_i2s_dapm_routes[] = {
--	{ "Playback Mixer", NULL, "Primary" },
--	{ "Playback Mixer", NULL, "Secondary" },
-+	{ "Playback Mixer", NULL, "Primary Playback" },
-+	{ "Playback Mixer", NULL, "Secondary Playback" },
- 
- 	{ "Mixer DAI TX", NULL, "Playback Mixer" },
--	{ "Playback Mixer", NULL, "Mixer DAI RX" },
-+	{ "Primary Capture", NULL, "Mixer DAI RX" },
- };
- 
- static const struct snd_soc_component_driver samsung_i2s_component = {
-@@ -1155,7 +1155,8 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
- 			  int num_dais)
- {
- 	static const char *dai_names[] = { "samsung-i2s", "samsung-i2s-sec" };
--	static const char *stream_names[] = { "Primary", "Secondary" };
-+	static const char *stream_names[] = { "Primary Playback",
-+					      "Secondary Playback" };
- 	struct snd_soc_dai_driver *dai_drv;
- 	struct i2s_dai *dai;
- 	int i;
-@@ -1201,6 +1202,7 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
- 	dai_drv->capture.channels_max = 2;
- 	dai_drv->capture.rates = i2s_dai_data->pcm_rates;
- 	dai_drv->capture.formats = SAMSUNG_I2S_FMTS;
-+	dai_drv->capture.stream_name = "Primary Capture";
- 
- 	return 0;
- }
--- 
-2.17.1
+The lock is added only at the places that may have race with
+dpcm_be_disconnect(), e.g. kfree(dpcm). And note that, many places that
+call for_each_dpcm_be/fe() cannot use spin_lock, since there are pcm
+callbacks which can sleep.
