@@ -1,14 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/3] dmaengine: omap-dma: make omap_dma_filter_fn private
-Date: Thu,  7 Mar 2019 16:16:09 +0100
-Message-ID: <20190307151646.1016966-2-arnd@arndb.de>
+Subject: [PATCH 3/3] dmaengine: edma: make edma_filter_fn private
+Date: Thu,  7 Mar 2019 16:16:10 +0100
+Message-ID: <20190307151646.1016966-3-arnd@arndb.de>
 References: <20190307151646.1016966-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190307151646.1016966-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Arnd Bergmann <arnd@arndb.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Arnd Bergmann <arnd@arndb.de>
 Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
@@ -18,72 +18,75 @@ header file removed.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/ti/omap-dma.c      |  3 ++-
- include/linux/omap-dma.h       |  2 --
- include/linux/omap-dmaengine.h | 21 ---------------------
- 3 files changed, 2 insertions(+), 24 deletions(-)
- delete mode 100644 include/linux/omap-dmaengine.h
+ drivers/dma/ti/edma.c |  5 +++--
+ include/linux/edma.h  | 29 -----------------------------
+ 2 files changed, 3 insertions(+), 31 deletions(-)
+ delete mode 100644 include/linux/edma.h
 
-diff --git a/drivers/dma/ti/omap-dma.c b/drivers/dma/ti/omap-dma.c
-index a4a931ddf6f6..5bf635ba234d 100644
---- a/drivers/dma/ti/omap-dma.c
-+++ b/drivers/dma/ti/omap-dma.c
-@@ -205,6 +205,7 @@ static const unsigned es_bytes[] = {
- 	[CSDP_DATA_TYPE_32] = 4,
- };
+diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
+index ceabdea40ae0..f2549ee3fb49 100644
+--- a/drivers/dma/ti/edma.c
++++ b/drivers/dma/ti/edma.c
+@@ -15,7 +15,6 @@
  
-+static bool omap_dma_filter_fn(struct dma_chan *chan, void *param);
- static struct of_dma_filter_info omap_dma_info = {
- 	.filter_fn = omap_dma_filter_fn,
- };
-@@ -1640,7 +1641,7 @@ static struct platform_driver omap_dma_driver = {
+ #include <linux/dmaengine.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/edma.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+@@ -2185,6 +2184,8 @@ static struct dma_chan *of_edma_xlate(struct of_phandle_args *dma_spec,
+ }
+ #endif
+ 
++static bool edma_filter_fn(struct dma_chan *chan, void *param);
++
+ static int edma_probe(struct platform_device *pdev)
+ {
+ 	struct edma_soc_info	*info = pdev->dev.platform_data;
+@@ -2524,7 +2525,7 @@ static struct platform_driver edma_tptc_driver = {
  	},
  };
  
--bool omap_dma_filter_fn(struct dma_chan *chan, void *param)
-+static bool omap_dma_filter_fn(struct dma_chan *chan, void *param)
+-bool edma_filter_fn(struct dma_chan *chan, void *param)
++static bool edma_filter_fn(struct dma_chan *chan, void *param)
  {
- 	if (chan->device->dev->driver == &omap_dma_driver.driver) {
- 		struct omap_dmadev *od = to_omap_dma_dev(chan->device);
-diff --git a/include/linux/omap-dma.h b/include/linux/omap-dma.h
-index 840ce551e773..ba3cfbb52312 100644
---- a/include/linux/omap-dma.h
-+++ b/include/linux/omap-dma.h
-@@ -1,8 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __LINUX_OMAP_DMA_H
- #define __LINUX_OMAP_DMA_H
--#include <linux/omap-dmaengine.h>
--
- /*
-  *  Legacy OMAP DMA handling defines and functions
-  *
-diff --git a/include/linux/omap-dmaengine.h b/include/linux/omap-dmaengine.h
+ 	bool match = false;
+ 
+diff --git a/include/linux/edma.h b/include/linux/edma.h
 deleted file mode 100644
-index 8e6906c72e90..000000000000
---- a/include/linux/omap-dmaengine.h
+index a1307e7827e8..000000000000
+--- a/include/linux/edma.h
 +++ /dev/null
-@@ -1,21 +0,0 @@
+@@ -1,29 +0,0 @@
 -/*
-- * OMAP DMA Engine support
+- * TI EDMA DMA engine driver
 - *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
+- * Copyright 2012 Texas Instruments
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation version 2.
+- *
+- * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+- * kind, whether express or implied; without even the implied warranty
+- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
 - */
--#ifndef __LINUX_OMAP_DMAENGINE_H
--#define __LINUX_OMAP_DMAENGINE_H
+-#ifndef __LINUX_EDMA_H
+-#define __LINUX_EDMA_H
 -
 -struct dma_chan;
 -
--#if defined(CONFIG_DMA_OMAP) || (defined(CONFIG_DMA_OMAP_MODULE) && defined(MODULE))
--bool omap_dma_filter_fn(struct dma_chan *, void *);
+-#if defined(CONFIG_TI_EDMA) || defined(CONFIG_TI_EDMA_MODULE)
+-bool edma_filter_fn(struct dma_chan *, void *);
 -#else
--static inline bool omap_dma_filter_fn(struct dma_chan *c, void *d)
+-static inline bool edma_filter_fn(struct dma_chan *chan, void *param)
 -{
 -	return false;
 -}
 -#endif
--#endif /* __LINUX_OMAP_DMAENGINE_H */
+-
+-#endif
 -- 
 2.20.0
