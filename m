@@ -1,539 +1,118 @@
-From: "Tc, Jenny" <jenny.tc@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Boards: Add Maxim98373 support
-Date: Thu, 7 Mar 2019 01:08:32 +0000
-Message-ID: <20ADAB092842284E95860F279283C5645699B4D7@BGSMSX104.gar.corp.intel.com>
-References: <1551113251-21317-1-git-send-email-jenny.tc@intel.com>
- <1551113251-21317-2-git-send-email-jenny.tc@intel.com>
- <5B37778DAAD9B04DA049B4A421B9B3EE71E4EB94@PGSMSX111.gar.corp.intel.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: [PATCH linux-next v1 1/2] ASoC: rsnd: src: Avoid a potential deadlock
+Date: Thu, 7 Mar 2019 11:34:52 +0900
+Message-ID: <20190307023453.25017-2-jiada_wang@mentor.com>
+References: <20190307023453.25017-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3ACBF8072E
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 02:08:40 +0100 (CET)
-In-Reply-To: <5B37778DAAD9B04DA049B4A421B9B3EE71E4EB94@PGSMSX111.gar.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Chiang, Mac" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "N,
- Harshapriya" <harshapriya.n@intel.com>, "M, Naveen" <naveen.m@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "M
- R, Sathya Prakash" <sathya.prakash.m.r@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307023453.25017-1-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Maintainers,
+lockdep warns us that priv->lock and k->k_lock can cause a
+deadlock when after acquire of k->k_lock, process is interrupted
+by src, while in another routine of src .init, k->k_lock is
+acquired with priv->lock held.
 
-A gentle reminder for the review.
+This patch avoids a potential deadlock by not calling soc_device_match()
+in SRC .init callback, instead it adds new soc fields in priv->flags to
+differentiate SoCs.
 
--Jenny
+Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ sound/soc/sh/rcar/core.c | 3 +++
+ sound/soc/sh/rcar/rsnd.h | 5 +++++
+ sound/soc/sh/rcar/src.c  | 9 +--------
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
->-----Original Message-----
->From: Chiang, Mac
->Sent: Tuesday, March 5, 2019 4:37 PM
->To: Tc, Jenny <jenny.tc@intel.com>; alsa-devel@alsa-project.org; Liam
->Girdwood <liam.r.girdwood@linux.intel.com>; Jie Yang
-><yang.jie@linux.intel.com>; Mark Brown <broonie@kernel.org>; Jaroslav
->Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Andy Shevchenko
-><andriy.shevchenko@linux.intel.com>
->Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; N,
->Harshapriya <harshapriya.n@intel.com>; M, Naveen <naveen.m@intel.com>;
->M R, Sathya Prakash <sathya.prakash.m.r@intel.com>; Nujella,
->Sathyanarayana <sathyanarayana.nujella@intel.com>
->Subject: RE: [PATCH] ASoC: Intel: Boards: Add Maxim98373 support
->
->Acked-by: Mac Chiang <mac.chiang@intel.com>
->
->-----Original Message-----
->From: Tc, Jenny
->Sent: Tuesday, February 26, 2019 12:48 AM
->To: alsa-devel@alsa-project.org; Liam Girdwood
-><liam.r.girdwood@linux.intel.com>; Jie Yang <yang.jie@linux.intel.com>;
->Mark Brown <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>;
->Takashi Iwai <tiwai@suse.com>; Andy Shevchenko
-><andriy.shevchenko@linux.intel.com>
->Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; Chiang, Mac
-><mac.chiang@intel.com>; N, Harshapriya <harshapriya.n@intel.com>; M,
->Naveen <naveen.m@intel.com>; M R, Sathya Prakash
-><sathya.prakash.m.r@intel.com>; Nujella, Sathyanarayana
-><sathyanarayana.nujella@intel.com>; Tc, Jenny <jenny.tc@intel.com>
->Subject: [PATCH] ASoC: Intel: Boards: Add Maxim98373 support
->
->This patch enables the reuse of kbl_da7219_max98927 machine driver to
->support max98373. The same machine driver is modified for cases where one
->amplifier is swapped out with another. Most of the changes are about
->renaming the codec and codec_dai names, with minor differences due to
->support for 24 bits in one case and 16 in the other.
->
->Signed-off-by: Jenny TC <jenny.tc@intel.com>
->Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->---
-> sound/soc/intel/boards/Kconfig                    |   1 +
-> sound/soc/intel/boards/kbl_da7219_max98927.c      | 203
->+++++++++++++++++++---
-> sound/soc/intel/common/soc-acpi-intel-kbl-match.c |  19 ++
-> 3 files changed, 200 insertions(+), 23 deletions(-)
->
->diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
->index 0a7e40d..12d6b73 100644
->--- a/sound/soc/intel/boards/Kconfig
->+++ b/sound/soc/intel/boards/Kconfig
->@@ -293,6 +293,7 @@ config
->SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
-> 	depends on MFD_INTEL_LPSS && I2C && ACPI
-> 	select SND_SOC_DA7219
-> 	select SND_SOC_MAX98927
->+	select SND_SOC_MAX98373
-> 	select SND_SOC_DMIC
-> 	select SND_SOC_HDAC_HDMI
-> 	help
->diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c
->b/sound/soc/intel/boards/kbl_da7219_max98927.c
->index 723a493..f41a2fc 100644
->--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
->+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
->@@ -2,7 +2,7 @@
-> // Copyright(c) 2018 Intel Corporation.
->
-> /*
->- * Intel Kabylake I2S Machine Driver with MAX98927 & DA7219 Codecs
->+ * Intel Kabylake I2S Machine Driver with MAX98927, MAX98373 & DA7219
->+ Codecs
->  *
->  * Modified from:
->  *   Intel Kabylake I2S Machine driver supporting MAX98927 and
->@@ -24,8 +24,14 @@
->
-> #define KBL_DIALOG_CODEC_DAI	"da7219-hifi"
-> #define MAX98927_CODEC_DAI	"max98927-aif1"
->-#define MAXIM_DEV0_NAME		"i2c-MX98927:00"
->-#define MAXIM_DEV1_NAME		"i2c-MX98927:01"
->+#define MAX98927_DEV0_NAME	"i2c-MX98927:00"
->+#define MAX98927_DEV1_NAME	"i2c-MX98927:01"
->+
->+#define MAX98373_CODEC_DAI	"max98373-aif1"
->+#define MAX98373_DEV0_NAME	"i2c-MX98373:00"
->+#define MAX98373_DEV1_NAME	"i2c-MX98373:01"
->+
->+
-> #define DUAL_CHANNEL	2
-> #define QUAD_CHANNEL	4
-> #define NAME_SIZE	32
->@@ -176,20 +182,38 @@ static int kabylake_ssp0_hw_params(struct
->snd_pcm_substream *substream,
-> 	for (j = 0; j < runtime->num_codecs; j++) {
-> 		struct snd_soc_dai *codec_dai = runtime->codec_dais[j];
->
->-		if (!strcmp(codec_dai->component->name,
->MAXIM_DEV0_NAME)) {
->+		if (!strcmp(codec_dai->component->name,
->MAX98927_DEV0_NAME)) {
-> 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8,
->16);
-> 			if (ret < 0) {
-> 				dev_err(runtime->dev, "DEV0 TDM slot
->err:%d\n", ret);
-> 				return ret;
-> 			}
-> 		}
->-		if (!strcmp(codec_dai->component->name,
->MAXIM_DEV1_NAME)) {
->+		if (!strcmp(codec_dai->component->name,
->MAX98927_DEV1_NAME)) {
-> 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8,
->16);
-> 			if (ret < 0) {
-> 				dev_err(runtime->dev, "DEV1 TDM slot
->err:%d\n", ret);
-> 				return ret;
-> 			}
-> 		}
->+		if (!strcmp(codec_dai->component->name,
->MAX98373_DEV0_NAME)) {
->+			ret = snd_soc_dai_set_tdm_slot(codec_dai,
->+							0x03, 3, 8, 24);
->+			if (ret < 0) {
->+				dev_err(runtime->dev,
->+						"DEV0 TDM slot err:%d\n",
->ret);
->+				return ret;
->+			}
->+		}
->+		if (!strcmp(codec_dai->component->name,
->MAX98373_DEV1_NAME)) {
->+			ret = snd_soc_dai_set_tdm_slot(codec_dai,
->+							0x0C, 3, 8, 24);
->+			if (ret < 0) {
->+				dev_err(runtime->dev,
->+						"DEV0 TDM slot err:%d\n",
->ret);
->+				return ret;
->+			}
->+		}
-> 	}
->
-> 	return 0;
->@@ -213,6 +237,25 @@ static int kabylake_ssp_fixup(struct
->snd_soc_pcm_runtime *rtd,
-> 	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
->
-> 	/*
->+	 * Topology for kblda7219m98373 & kblmax98373 supports only
->S24_LE,
->+	 * where as kblda7219m98927 & kblmax98927 supports S16_LE by
->default.
->+	 * Skipping the port wise FE and BE configuration for
->kblda7219m98373 &
->+	 * kblmax98373 as the topology (FE & BE) supports S24_LE only.
->+	 */
->+
->+	if (!strcmp(rtd->card->name, "kblda7219m98373") ||
->+		!strcmp(rtd->card->name, "kblmax98373")) {
->+		/* The ADSP will convert the FE rate to 48k, stereo */
->+		rate->min = rate->max = 48000;
->+		channels->min = channels->max = DUAL_CHANNEL;
->+
->+		/* set SSP to 24 bit */
->+		snd_mask_none(fmt);
->+		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
->+		return 0;
->+	}
->+
->+	/*
-> 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
-> 	 */
-> 	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") || @@ -352,20
->+395,31 @@ static int kabylake_da7219_fe_init(struct snd_soc_pcm_runtime
->*rtd)  static int kbl_fe_startup(struct snd_pcm_substream *substream)  {
-> 	struct snd_pcm_runtime *runtime = substream->runtime;
->+	struct snd_soc_pcm_runtime *soc_rt = substream->private_data;
->
-> 	/*
-> 	 * On this platform for PCM device we support,
-> 	 * 48Khz
-> 	 * stereo
->-	 * 16 bit audio
-> 	 */
->
-> 	runtime->hw.channels_max = DUAL_CHANNEL;
-> 	snd_pcm_hw_constraint_list(runtime, 0,
->SNDRV_PCM_HW_PARAM_CHANNELS,
-> 					   &constraints_channels);
->-
->-	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
->-	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
->+	/*
->+	 * Setup S24_LE (32 bit container and 24 bit valid data) for
->+	 * kblda7219m98373 & kblmax98373. For kblda7219m98927 &
->+	 * kblmax98927 keeping it as 16/16 due to topology FW dependency.
->+	 */
->+	if (!strcmp(soc_rt->card->name, "kblda7219m98373") ||
->+		!strcmp(soc_rt->card->name, "kblmax98373")) {
->+		runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_LE;
->+		snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
->+
->+	} else {
->+		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
->+		snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
->+	}
->
-> 	snd_pcm_hw_constraint_list(runtime, 0,
-> 				SNDRV_PCM_HW_PARAM_RATE,
->&constraints_rates); @@ -398,11 +452,23 @@ static int
->kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,  static int
->kabylake_dmic_startup(struct snd_pcm_substream *substream)  {
-> 	struct snd_pcm_runtime *runtime = substream->runtime;
->+	struct snd_soc_pcm_runtime *soc_rt = substream->private_data;
->
-> 	runtime->hw.channels_min = runtime->hw.channels_max =
->QUAD_CHANNEL;
-> 	snd_pcm_hw_constraint_list(runtime, 0,
->SNDRV_PCM_HW_PARAM_CHANNELS,
-> 			&constraints_channels_quad);
->
->+	/*
->+	 * Topology for kblda7219m98373 & kblmax98373 supports only
->S24_LE.
->+	 * The DMIC also configured for S24_LE. Forcing the DMIC format to
->+	 * S24_LE due to the topology FW dependency.
->+	 */
->+	if (!strcmp(soc_rt->card->name, "kblda7219m98373") ||
->+		!strcmp(soc_rt->card->name, "kblmax98373")) {
->+		runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_LE;
->+		snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
->+	}
->+
-> 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-> 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
->} @@ -448,29 +514,55 @@ static int kabylake_refcap_startup(struct
->snd_pcm_substream *substream)  static struct snd_soc_codec_conf
->max98927_codec_conf[] = {
->
-> 	{
->-		.dev_name = MAXIM_DEV0_NAME,
->+		.dev_name = MAX98927_DEV0_NAME,
->+		.name_prefix = "Right",
->+	},
->+
->+	{
->+		.dev_name = MAX98927_DEV1_NAME,
->+		.name_prefix = "Left",
->+	},
->+};
->+
->+static struct snd_soc_codec_conf max98373_codec_conf[] = {
->+
->+	{
->+		.dev_name = MAX98373_DEV0_NAME,
-> 		.name_prefix = "Right",
-> 	},
->
-> 	{
->-		.dev_name = MAXIM_DEV1_NAME,
->+		.dev_name = MAX98373_DEV1_NAME,
-> 		.name_prefix = "Left",
-> 	},
-> };
->
->-static struct snd_soc_dai_link_component ssp0_codec_components[] = {
->+static struct snd_soc_dai_link_component
->+max98927_ssp0_codec_components[] = {
-> 	{ /* Left */
->-		.name = MAXIM_DEV0_NAME,
->+		.name = MAX98927_DEV0_NAME,
-> 		.dai_name = MAX98927_CODEC_DAI,
-> 	},
->
-> 	{  /* For Right */
->-		.name = MAXIM_DEV1_NAME,
->+		.name = MAX98927_DEV1_NAME,
-> 		.dai_name = MAX98927_CODEC_DAI,
-> 	},
->
-> };
->
->+static struct snd_soc_dai_link_component
->max98373_ssp0_codec_components[] = {
->+	{ /* Left */
->+		.name = MAX98373_DEV0_NAME,
->+		.dai_name = MAX98373_CODEC_DAI,
->+	},
->+
->+	{  /* For Right */
->+		.name = MAX98373_DEV1_NAME,
->+		.dai_name = MAX98373_CODEC_DAI,
->+	},
->+
->+};
->+
-> /* kabylake digital audio interface glue - connects codec <--> CPU */  static
->struct snd_soc_dai_link kabylake_dais[] = {
-> 	/* Front End DAI links */
->@@ -607,8 +699,8 @@ static int kabylake_refcap_startup(struct
->snd_pcm_substream *substream)
-> 		.cpu_dai_name = "SSP0 Pin",
-> 		.platform_name = "0000:00:1f.3",
-> 		.no_pcm = 1,
->-		.codecs = ssp0_codec_components,
->-		.num_codecs = ARRAY_SIZE(ssp0_codec_components),
->+		.codecs = max98927_ssp0_codec_components,
->+		.num_codecs =
->ARRAY_SIZE(max98927_ssp0_codec_components),
-> 		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
-> 			SND_SOC_DAIFMT_NB_NF |
-> 			SND_SOC_DAIFMT_CBS_CFS,
->@@ -683,7 +775,7 @@ static int kabylake_refcap_startup(struct
->snd_pcm_substream *substream)  };
->
-> /* kabylake digital audio interface glue - connects codec <--> CPU */ -static
->struct snd_soc_dai_link kabylake_max98927_dais[] = {
->+static struct snd_soc_dai_link kabylake_max98_927_373_dais[] = {
-> 	/* Front End DAI links */
-> 	[KBL_DPCM_AUDIO_PB] = {
-> 		.name = "Kbl Audio Port",
->@@ -802,8 +894,8 @@ static int kabylake_refcap_startup(struct
->snd_pcm_substream *substream)
-> 		.cpu_dai_name = "SSP0 Pin",
-> 		.platform_name = "0000:00:1f.3",
-> 		.no_pcm = 1,
->-		.codecs = ssp0_codec_components,
->-		.num_codecs = ARRAY_SIZE(ssp0_codec_components),
->+		.codecs = max98927_ssp0_codec_components,
->+		.num_codecs =
->ARRAY_SIZE(max98927_ssp0_codec_components),
-> 		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
-> 			SND_SOC_DAIFMT_NB_NF |
-> 			SND_SOC_DAIFMT_CBS_CFS,
->@@ -917,8 +1009,8 @@ static int kabylake_card_late_probe(struct
->snd_soc_card *card)  static struct snd_soc_card kbl_audio_card_max98927 = {
-> 	.name = "kblmax98927",
-> 	.owner = THIS_MODULE,
->-	.dai_link = kabylake_max98927_dais,
->-	.num_links = ARRAY_SIZE(kabylake_max98927_dais),
->+	.dai_link = kabylake_max98_927_373_dais,
->+	.num_links = ARRAY_SIZE(kabylake_max98_927_373_dais),
-> 	.controls = kabylake_controls,
-> 	.num_controls = ARRAY_SIZE(kabylake_controls),
-> 	.dapm_widgets = kabylake_widgets,
->@@ -931,9 +1023,46 @@ static int kabylake_card_late_probe(struct
->snd_soc_card *card)
-> 	.late_probe = kabylake_card_late_probe,  };
->
->+static struct snd_soc_card kbl_audio_card_da7219_m98373 = {
->+	.name = "kblda7219m98373",
->+	.owner = THIS_MODULE,
->+	.dai_link = kabylake_dais,
->+	.num_links = ARRAY_SIZE(kabylake_dais),
->+	.controls = kabylake_controls,
->+	.num_controls = ARRAY_SIZE(kabylake_controls),
->+	.dapm_widgets = kabylake_widgets,
->+	.num_dapm_widgets = ARRAY_SIZE(kabylake_widgets),
->+	.dapm_routes = kabylake_map,
->+	.num_dapm_routes = ARRAY_SIZE(kabylake_map),
->+	.codec_conf = max98373_codec_conf,
->+	.num_configs = ARRAY_SIZE(max98373_codec_conf),
->+	.fully_routed = true,
->+	.late_probe = kabylake_card_late_probe, };
->+
->+static struct snd_soc_card kbl_audio_card_max98373 = {
->+	.name = "kblmax98373",
->+	.owner = THIS_MODULE,
->+	.dai_link = kabylake_max98_927_373_dais,
->+	.num_links = ARRAY_SIZE(kabylake_max98_927_373_dais),
->+	.controls = kabylake_controls,
->+	.num_controls = ARRAY_SIZE(kabylake_controls),
->+	.dapm_widgets = kabylake_widgets,
->+	.num_dapm_widgets = ARRAY_SIZE(kabylake_widgets),
->+	.dapm_routes = kabylake_map,
->+	.num_dapm_routes = ARRAY_SIZE(kabylake_map),
->+	.codec_conf = max98373_codec_conf,
->+	.num_configs = ARRAY_SIZE(max98373_codec_conf),
->+	.fully_routed = true,
->+	.late_probe = kabylake_card_late_probe, };
->+
-> static int kabylake_audio_probe(struct platform_device *pdev)  {
-> 	struct kbl_codec_private *ctx;
->+	struct snd_soc_dai_link *kbl_dai_link;
->+	struct snd_soc_dai_link_component **codecs;
->+	int i = 0;
->
-> 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-> 	if (!ctx)
->@@ -944,6 +1073,22 @@ static int kabylake_audio_probe(struct
->platform_device *pdev)
-> 	kabylake_audio_card =
-> 		(struct snd_soc_card *)pdev->id_entry->driver_data;
->
->+	kbl_dai_link = kabylake_audio_card->dai_link;
->+
->+	/* Update codecs for SSP0 with max98373 codec info */
->+	if (!strcmp(pdev->name, "kbl_da7219_max98373") ||
->+		(!strcmp(pdev->name, "kbl_max98373"))) {
->+		for (i = 0; i < kabylake_audio_card->num_links; ++i) {
->+			if (strcmp(kbl_dai_link[i].name, "SSP0-Codec"))
->+				continue;
->+
->+			codecs = &(kbl_dai_link[i].codecs);
->+			*codecs = max98373_ssp0_codec_components;
->+			kbl_dai_link[i].num_codecs =
->+
->	ARRAY_SIZE(max98373_ssp0_codec_components);
->+			break;
->+		}
->+	}
-> 	kabylake_audio_card->dev = &pdev->dev;
-> 	snd_soc_card_set_drvdata(kabylake_audio_card, ctx);
->
->@@ -961,13 +1106,23 @@ static int kabylake_audio_probe(struct
->platform_device *pdev)
-> 		.driver_data =
-> 			(kernel_ulong_t)&kbl_audio_card_max98927,
-> 	},
->+	{
->+		.name = "kbl_da7219_max98373",
->+		.driver_data =
->+			(kernel_ulong_t)&kbl_audio_card_da7219_m98373,
->+	},
->+	{
->+		.name = "kbl_max98373",
->+		.driver_data =
->+			(kernel_ulong_t)&kbl_audio_card_max98373,
->+	},
-> 	{ }
-> };
->
-> static struct platform_driver kabylake_audio = {
-> 	.probe = kabylake_audio_probe,
-> 	.driver = {
->-		.name = "kbl_da7219_max98927",
->+		.name = "kbl_da7219_max98_927_373",
-> 		.pm = &snd_soc_pm_ops,
-> 	},
-> 	.id_table = kbl_board_ids,
->@@ -976,8 +1131,10 @@ static int kabylake_audio_probe(struct
->platform_device *pdev)
-> module_platform_driver(kabylake_audio)
->
-> /* Module information */
->-MODULE_DESCRIPTION("Audio KabyLake Machine driver for MAX98927 &
->DA7219");
->+MODULE_DESCRIPTION("Audio KabyLake Machine driver for
->MAX98927/MAX98373
->+& DA7219");
-> MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
->MODULE_LICENSE("GPL v2");
->MODULE_ALIAS("platform:kbl_da7219_max98927");
-> MODULE_ALIAS("platform:kbl_max98927");
->+MODULE_ALIAS("platform:kbl_da7219_max98373");
->+MODULE_ALIAS("platform:kbl_max98373");
->diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
->b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
->index e6fa6f4..4b33105 100644
->--- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
->+++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
->@@ -37,6 +37,11 @@
-> 	.codecs = {"MX98927"}
-> };
->
->+static struct snd_soc_acpi_codecs kbl_7219_98373_codecs = {
->+	.num_codecs = 1,
->+	.codecs = {"MX98373"}
->+};
->+
-> struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
-> 	{
-> 		.id = "INT343A",
->@@ -106,6 +111,20 @@ struct snd_soc_acpi_mach
->snd_soc_acpi_intel_kbl_machines[] = {
-> 		.drv_name = "kbl_rt5660",
-> 		.fw_filename = "intel/dsp_fw_kbl.bin",
-> 	},
->+	{
->+		.id = "DLGS7219",
->+		.drv_name = "kbl_da7219_max98373",
->+		.fw_filename = "intel/dsp_fw_kbl.bin",
->+		.machine_quirk = snd_soc_acpi_codec_list,
->+		.quirk_data = &kbl_7219_98373_codecs,
->+		.pdata = &skl_dmic_data
->+	},
->+	{
->+		.id = "MX98373",
->+		.drv_name = "kbl_max98373",
->+		.fw_filename = "intel/dsp_fw_kbl.bin",
->+		.pdata = &skl_dmic_data
->+	},
-> 	{},
-> };
-> EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_kbl_machines);
->--
->1.9.1
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 022996d2db13..c2d466fe191f 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1680,6 +1680,7 @@ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
+ static int rsnd_probe(struct platform_device *pdev)
+ {
+ 	struct rsnd_priv *priv;
++	struct device_node *np = pdev->dev.of_node;
+ 	struct device *dev = &pdev->dev;
+ 	struct rsnd_dai *rdai;
+ 	int (*probe_func[])(struct rsnd_priv *priv) = {
+@@ -1706,6 +1707,8 @@ static int rsnd_probe(struct platform_device *pdev)
+ 
+ 	priv->pdev	= pdev;
+ 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
++	if (of_device_is_compatible(np, "renesas,rcar_sound-r8a77990"))
++		priv->flags |= RSND_SOC_E;
+ 	spin_lock_init(&priv->lock);
+ 
+ 	/*
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 90625c57847b..0e6ef4e18400 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -607,6 +607,8 @@ struct rsnd_priv {
+ #define RSND_GEN1	(1 << 0)
+ #define RSND_GEN2	(2 << 0)
+ #define RSND_GEN3	(3 << 0)
++#define RSND_SOC_MASK	(0xFF << 4)
++#define RSND_SOC_E	(1 << 4) /* E1/E2/E3 */
+ 
+ 	/*
+ 	 * below value will be filled on rsnd_gen_probe()
+@@ -679,6 +681,9 @@ struct rsnd_priv {
+ #define rsnd_is_gen1(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN1)
+ #define rsnd_is_gen2(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN2)
+ #define rsnd_is_gen3(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN3)
++#define rsnd_is_e3(priv)	(((priv)->flags & \
++					(RSND_GEN_MASK | RSND_SOC_MASK)) == \
++					(RSND_GEN3 | RSND_SOC_E))
+ 
+ #define rsnd_flags_has(p, f) ((p)->flags & (f))
+ #define rsnd_flags_set(p, f) ((p)->flags |= (f))
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index db81e066b92e..45096a66c074 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -14,7 +14,6 @@
+  */
+ 
+ #include "rsnd.h"
+-#include <linux/sys_soc.h>
+ 
+ #define SRC_NAME "src"
+ 
+@@ -189,18 +188,12 @@ const static u32 chan222222[] = {
+ 	0x00000006, /* 1 to 2 */
+ };
+ 
+-static const struct soc_device_attribute ov_soc[] = {
+-	{ .soc_id = "r8a77990" }, /* E3 */
+-	{ /* sentinel */ }
+-};
+-
+ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 				      struct rsnd_mod *mod)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	const struct soc_device_attribute *soc = soc_device_match(ov_soc);
+ 	int is_play = rsnd_io_is_play(io);
+ 	int use_src = 0;
+ 	u32 fin, fout;
+@@ -307,7 +300,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	/*
+ 	 * E3 need to overwrite
+ 	 */
+-	if (soc)
++	if (rsnd_is_e3(priv))
+ 		switch (rsnd_mod_id(mod)) {
+ 		case 0:
+ 		case 4:
+-- 
+2.19.2
