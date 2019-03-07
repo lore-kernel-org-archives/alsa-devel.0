@@ -1,21 +1,21 @@
-From: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: Question about devm_get_clk_from_child()
-Date: Thu, 07 Mar 2019 11:18:02 -0800
-Message-ID: <155198628270.20095.3432089262334429455@swboyd.mtv.corp.google.com>
-References: <877edcczwl.wl-kuninori.morimoto.gx@renesas.com>
- <87wolcbhy4.wl-kuninori.morimoto.gx@renesas.com>
- <155189284090.20095.14047212664009518639@swboyd.mtv.corp.google.com>
- <87lg1rmtqi.wl-kuninori.morimoto.gx@renesas.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ChromeBook machine will lose MIC JD
+Date: Thu, 7 Mar 2019 20:49:22 +0100
+Message-ID: <3d8c7930-607f-b048-db37-66de22b87810@perex.cz>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E4D@RTITMBSVM07.realtek.com.tw>
+ <31d98868-e037-6ad4-6e11-d770129090f9@perex.cz>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 047DAF806F7
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 20:18:06 +0100 (CET)
-In-Reply-To: <87lg1rmtqi.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12665F806F7
+ for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 20:49:27 +0100 (CET)
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,36 +25,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-clk@vger.kernel.org
+To: Kailang <kailang@realtek.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Kuninori Morimoto (2019-03-06 16:20:40)
+Dne 07. 03. 19 v 9:11 Kailang napsal(a):
+> Hi Jaroslav,
 > 
-> Hi Stephen
+> I need to check with Intel chrome audio team for the name change.
+> But chrome OS used 'alc-sense-combo' for early patch file.
+
+But with your patch, the ALC225_FIXUP_HEADSET_JACK and
+ALC295_FIXUP_CHROME_BOOK do a different thing, so it's not a simple
+replacement. Your chrome book fixup is not universal, so it should be
+distinguished in my opinion.
+
+Also, please, inline your patches or use ;git send-email' command to
+send your commit to this ML for a review.
+
+					Thanks,
+						Jaroslav
+
+> It also need to add this patch.
 > 
-> > > index 14cbf23..96053a9 100644
-> > > --- a/drivers/clk/clk.c
-> > > +++ b/drivers/clk/clk.c
-> > > @@ -4213,7 +4213,7 @@ struct clk *of_clk_get_by_name(struct device_node *np, const char *name)
-> > >         if (!np)
-> > >                 return ERR_PTR(-ENOENT);
-> > >  
-> > > -       return __of_clk_get(np, -1, np->full_name, name);
-> > > +       return __of_clk_get(np, 0, np->full_name, name);
-> > >  }
-> > 
-> > Yes this is correct. Thanks for debugging and fixing my thinko here. I
-> > was thinking that nobody would call of_clk_get_by_name() unless they
-> > wanted to find some clk that had a matching name, but it seems that we
-> > also allow NULL to be passed as the name to mean the typical "wildcard
-> > match" thing that clkdev has done for years. I'll throw this patch on
-> > top of the merge commit so the breakage window is small as I'd rather
-> > not rewrite the series just for this. Thanks.
+> Oh! Sorry!
+> I sent it with HTML mode.
+> I need to resend again for TXT mode. 
 > 
-> Ahh, OK.
-> So, how about this ? it is including both opinion :)
-> I'm not sure which one should be applied, but both can solve my issue.
+> BR,
+> Kailang
+> 
+> -----Original Message-----
+> From: Jaroslav Kysela <perex@perex.cz> 
+> Sent: Thursday, March 7, 2019 4:03 PM
+> To: Kailang <kailang@realtek.com>; Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
+> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: Re: [alsa-devel] ChromeBook machine will lose MIC JD
+> 
+> Dne 07. 03. 19 v 8:56 Kailang napsal(a):
+>> Hi Takashi,
+>>
+>> Attach patch will solve the issue for Mic JD lose.
+>>
+> 
+> -	{.id = ALC225_FIXUP_HEADSET_JACK, .name = "alc-sense-combo"},
+> +	{.id = ALC295_FIXUP_CHROME_BOOK, .name = "alc-sense-combo"},
+> 
+> Define another name here like 'alc-chrome-book' and don't remove the previous model name 'alc-sense-combo'.
+> 
+> 						Jaroslav
+> 
+> --
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+> ------Please consider the environment before printing this e-mail.
 > 
 
-No worries. I applied your original patch.
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
