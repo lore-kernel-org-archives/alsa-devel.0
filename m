@@ -1,72 +1,57 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: ti: fix davinci_mcasp_probe dependencies
-Date: Thu, 7 Mar 2019 15:25:23 +0200
-Message-ID: <8e98c10d-cf71-296d-eeae-97a8ffc2b9d7@ti.com>
-References: <20190304203114.1894822-1-arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: ams-delta: remove duplicate 'const'
+Date: Thu, 7 Mar 2019 15:26:41 +0200
+Message-ID: <52357a40-17d3-9dbe-d53c-58baa13116dd@ti.com>
+References: <20190307101101.613881-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190304203114.1894822-1-arnd@arndb.de>
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 990D1F8065A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 14:26:07 +0100 (CET)
+In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Arnd,
-
-On 04/03/2019 22.30, Arnd Bergmann wrote:
-> The SND_SOC_DAVINCI_MCASP driver can use either edma or sdma as
-> a back-end, and it takes the presence of the respective dma engine
-> drivers in the configuration as an indication to which ones should be
-> built. However, this is flawed in multiple ways:
-> 
-> - With CONFIG_TI_EDMA=m and CONFIG_SND_SOC_DAVINCI_MCASP=y,
->   is enabled as =m, and we get a link error:
->   sound/soc/ti/davinci-mcasp.o: In function `davinci_mcasp_probe':
->   davinci-mcasp.c:(.text+0x930): undefined reference to `edma_pcm_platform_register'
-
-In non randconfig case both edma and sdma DMAengine driver would be
-built in so I did missed this for sure.
-
-> - When CONFIG_SND_SOC_DAVINCI_MCASP=m has already been selected by
->   another driver, the same link error appears even if CONFIG_TI_EDMA
->   is disabled
-> 
-> There are possibly other issues here, but it seems that the only reasonable
-> solution is to always build both SND_SOC_TI_EDMA_PCM and
-> SND_SOC_TI_SDMA_PCM as a dependency here. Both are fairly small and
-> do not have any other compile-time dependencies, so the cost is
-> very small, and makes the configuration stage much more consistent.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-> 
-> Fixes: f2055e145f29 ("ASoC: ti: Merge davinci and omap directories")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/soc/ti/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
-> index 4bf3c15d4e51..ee7c202c69b7 100644
-> --- a/sound/soc/ti/Kconfig
-> +++ b/sound/soc/ti/Kconfig
-> @@ -21,8 +21,8 @@ config SND_SOC_DAVINCI_ASP
->  
->  config SND_SOC_DAVINCI_MCASP
->  	tristate "Multichannel Audio Serial Port (McASP) support"
-> -	select SND_SOC_TI_EDMA_PCM if TI_EDMA
-> -	select SND_SOC_TI_SDMA_PCM if DMA_OMAP
-> +	select SND_SOC_TI_EDMA_PCM
-> +	select SND_SOC_TI_SDMA_PCM
->  	help
->  	  Say Y or M here if you want to have support for McASP IP found in
->  	  various Texas Instruments SoCs like:
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+CgpPbiAwNy8wMy8yMDE5IDEyLjEwLCBBcm5kIEJlcmdtYW5uIHdyb3RlOgo+IGNsYW5nIHBvaW50
+cyBvdXQgdGhhdCBTT0NfRU5VTV9TSU5HTEVfRVhUX0RFQ0woKSBjb250YWlucyBhICdjb25zdCcK
+PiBtb2RpZmllciBhbHJlYWR5LCBzbyBhZGRpbmcgYW5vdGhlciBvbmUgZG9lcyBub3QgbWFrZSBp
+dCBtb3JlIGNvbnN0Ogo+IAo+IHNvdW5kL3NvYy90aS9hbXMtZGVsdGEuYzoyMDM6MTQ6IGVycm9y
+OiBkdXBsaWNhdGUgJ2NvbnN0JyBkZWNsYXJhdGlvbiBzcGVjaWZpZXIgWy1XZXJyb3IsLVdkdXBs
+aWNhdGUtZGVjbC1zcGVjaWZpZXJdCj4gc3RhdGljIGNvbnN0IFNPQ19FTlVNX1NJTkdMRV9FWFRf
+REVDTChhbXNfZGVsdGFfYXVkaW9fZW51bSwKPiAgICAgICAgICAgICAgXgo+IGluY2x1ZGUvc291
+bmQvc29jLmg6MzUxOjI6IG5vdGU6IGV4cGFuZGVkIGZyb20gbWFjcm8gJ1NPQ19FTlVNX1NJTkdM
+RV9FWFRfREVDTCcKPiAgICAgICAgIGNvbnN0IHN0cnVjdCBzb2NfZW51bSBuYW1lID0gU09DX0VO
+VU1fU0lOR0xFX0VYVChBUlJBWV9TSVpFKHh0ZXh0cyksIHh0ZXh0cykKClJldmlld2VkLWJ5OiBQ
+ZXRlciBVamZhbHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPgoKPiAKPiBTaWduZWQtb2ZmLWJ5
+OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+IC0tLQo+ICBzb3VuZC9zb2MvdGkvYW1z
+LWRlbHRhLmMgfCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxl
+dGlvbigtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvdGkvYW1zLWRlbHRhLmMgYi9zb3Vu
+ZC9zb2MvdGkvYW1zLWRlbHRhLmMKPiBpbmRleCA0ZGNlNDk0ZGZiZDMuLmI5NjExZGIxNGM4NiAx
+MDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvdGkvYW1zLWRlbHRhLmMKPiArKysgYi9zb3VuZC9zb2Mv
+dGkvYW1zLWRlbHRhLmMKPiBAQCAtMjAwLDcgKzIwMCw3IEBAIHN0YXRpYyBpbnQgYW1zX2RlbHRh
+X2dldF9hdWRpb19tb2RlKHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+ICAJcmV0dXJu
+IDA7Cj4gIH0KPiAgCj4gLXN0YXRpYyBjb25zdCBTT0NfRU5VTV9TSU5HTEVfRVhUX0RFQ0woYW1z
+X2RlbHRhX2F1ZGlvX2VudW0sCj4gK3N0YXRpYyBTT0NfRU5VTV9TSU5HTEVfRVhUX0RFQ0woYW1z
+X2RlbHRhX2F1ZGlvX2VudW0sCj4gIAkJCQkgICAgICBhbXNfZGVsdGFfYXVkaW9fbW9kZSk7Cj4g
+IAo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgYW1zX2RlbHRhX2F1ZGlv
+X2NvbnRyb2xzW10gPSB7Cj4gCgotIFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBP
+eSwgUG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElE
+OiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
