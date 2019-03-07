@@ -1,88 +1,47 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ChromeBook machine will lose MIC JD
-Date: Thu, 7 Mar 2019 20:49:22 +0100
-Message-ID: <3d8c7930-607f-b048-db37-66de22b87810@perex.cz>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E4D@RTITMBSVM07.realtek.com.tw>
- <31d98868-e037-6ad4-6e11-d770129090f9@perex.cz>
- <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12665F806F7
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 20:49:27 +0100 (CET)
-In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kailang <kailang@realtek.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Subject: [PATCH 2/2] dt-bindings: ASoC: axi-i2s: make both "rx" and "tx" optional
+Date: Thu,  7 Mar 2019 22:44:56 +0100
+Message-ID: <20190307214456.16445-2-luca@lucaceresoli.net>
+References: <20190307214456.16445-1-luca@lucaceresoli.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307214456.16445-1-luca@lucaceresoli.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: Luca Ceresoli <luca@lucaceresoli.net>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 07. 03. 19 v 9:11 Kailang napsal(a):
-> Hi Jaroslav,
-> 
-> I need to check with Intel chrome audio team for the name change.
-> But chrome OS used 'alc-sense-combo' for early patch file.
+Both the capture and playback channels are optional in the axi_i2s IP
+block. Document how to tell the driver which channels are
+instantiated.
 
-But with your patch, the ALC225_FIXUP_HEADSET_JACK and
-ALC295_FIXUP_CHROME_BOOK do a different thing, so it's not a simple
-replacement. Your chrome book fixup is not universal, so it should be
-distinguished in my opinion.
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+---
+ Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Also, please, inline your patches or use ;git send-email' command to
-send your commit to this ML for a review.
-
-					Thanks,
-						Jaroslav
-
-> It also need to add this patch.
-> 
-> Oh! Sorry!
-> I sent it with HTML mode.
-> I need to resend again for TXT mode. 
-> 
-> BR,
-> Kailang
-> 
-> -----Original Message-----
-> From: Jaroslav Kysela <perex@perex.cz> 
-> Sent: Thursday, March 7, 2019 4:03 PM
-> To: Kailang <kailang@realtek.com>; Takashi Iwai (tiwai@suse.de) <tiwai@suse.de>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: [alsa-devel] ChromeBook machine will lose MIC JD
-> 
-> Dne 07. 03. 19 v 8:56 Kailang napsal(a):
->> Hi Takashi,
->>
->> Attach patch will solve the issue for Mic JD lose.
->>
-> 
-> -	{.id = ALC225_FIXUP_HEADSET_JACK, .name = "alc-sense-combo"},
-> +	{.id = ALC295_FIXUP_CHROME_BOOK, .name = "alc-sense-combo"},
-> 
-> Define another name here like 'alc-chrome-book' and don't remove the previous model name 'alc-sense-combo'.
-> 
-> 						Jaroslav
-> 
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
-
-
+diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+index 4248b662deff..229ad1392cdc 100644
+--- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+@@ -1,5 +1,8 @@
+ ADI AXI-I2S controller
+ 
++The core can be generated with transmit (playback), only receive
++(capture) or both directions enabled.
++
+ Required properties:
+  - compatible : Must be "adi,axi-i2s-1.00.a"
+  - reg : Must contain I2S core's registers location and length
+@@ -9,8 +12,8 @@ Required properties:
+  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
+    rate reference clock.
+  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
+-   the core. The core expects two dma channels, one for transmit and one for
+-   receive.
++   the core. The core expects two dma channels if both transmit and receive are
++   enabled, one channel otherwise.
+  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
+ 
+ For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.17.1
