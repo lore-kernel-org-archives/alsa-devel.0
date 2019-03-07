@@ -1,7 +1,7 @@
 From: Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH] ASoC: soc-pcm: make symmetry work again
-Date: Thu, 07 Mar 2019 13:59:19 +0000
-Message-ID: <E1h1tYN-0004Z9-6M@rmk-PC.armlinux.org.uk>
+Subject: [PATCH v2] ASoC: soc-pcm: make symmetry work again
+Date: Thu, 07 Mar 2019 14:01:46 +0000
+Message-ID: <E1h1tak-0004bo-AV@rmk-PC.armlinux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +10,8 @@ Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
  [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C810F8065A
- for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 14:59:35 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66243F896EC
+ for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2019 15:01:58 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -41,12 +41,14 @@ Fixes: 957ce0c6b8a1 ("ASoC: soc-pcm: check symmetry after hw_params")
 Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 ---
 Not tested: this is something I stumbled over while reading the code.
+v2: also fixes the incorrect whitespace indentation copied from the
+    original patch.
 
  sound/soc/soc-pcm.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 08ee163504e8..dc3c3e31d2ef 100644
+index 08ee163504e8..2a4246dbe55f 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
 @@ -1010,15 +1010,16 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
@@ -54,7 +56,7 @@ index 08ee163504e8..dc3c3e31d2ef 100644
  	component = NULL;
  
 +	ret = soc_pcm_params_symmetry(substream, params);
-+        if (ret)
++	if (ret)
 +		goto component_err;
 +
  	/* store the parameters for each DAIs */
