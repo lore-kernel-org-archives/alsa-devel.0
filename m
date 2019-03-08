@@ -1,8 +1,8 @@
 From: Rander Wang <rander.wang@linux.intel.com>
-Subject: [PATCH 2/3] ASoC:hdac_hda:use correct format to setup
-	hda codec
-Date: Fri,  8 Mar 2019 16:38:58 +0800
-Message-ID: <20190308083859.50026-3-rander.wang@linux.intel.com>
+Subject: [PATCH 3/3] ASoC:intel:skl:fix a simultaneous playback
+	& capture issue on hda platform
+Date: Fri,  8 Mar 2019 16:38:59 +0800
+Message-ID: <20190308083859.50026-4-rander.wang@linux.intel.com>
 References: <20190308083859.50026-1-rander.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F78AF896F1
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:44 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E66A1F896EF
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:45 +0100 (CET)
 In-Reply-To: <20190308083859.50026-1-rander.wang@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,134 +27,70 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The current implementation of the hdac_hda codec results in zero-valued
-samples on capture and noise with headset playback when SOF is used on
-platforms with an on-board HDaudio codec. This is root-caused to SOF
-using be_hw_params_fixup, and the prepare() call using invalid runtime
-fields to determine the format.
+If playback and capture are enabled concurrently, when the capture stops
+the output becomes inaudile. The playback application will become stuck
+and underrun after a timeout.
 
-This patch moves the format handling to the hw_params() callback, as
-done already for hdac_hdmi, to make sure the fixed-up information is
-taken into account but keeps the codec initialization in prepare() as
-the stream_tag is only available at that time. Moving everything in the
-prepare() callback is possible but the code is less elegant so this
-two-step solution was chosen.
+This is caused by mistaken use of the stream_id, which should only be
+set for playback and not for capture
 
-The solution was tested with the SST driver with no regressions, and all
-the issues with SOF playback and capture are solved.
+Tested on Apollolake and Kabylake with SST driver.
 
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 ---
- sound/soc/codecs/hdac_hda.c | 53 +++++++++++++++++++++++++++++++++------------
- sound/soc/codecs/hdac_hda.h |  1 +
- 2 files changed, 40 insertions(+), 14 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index ffecdaaa8cf2..f889d94c8e3c 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -38,6 +38,9 @@ static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai);
- static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai);
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
- static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
-@@ -50,6 +53,7 @@ static const struct snd_soc_dai_ops hdac_hda_dai_ops = {
- 	.startup = hdac_hda_dai_open,
- 	.shutdown = hdac_hda_dai_close,
- 	.prepare = hdac_hda_dai_prepare,
-+	.hw_params = hdac_hda_dai_hw_params,
- 	.hw_free = hdac_hda_dai_hw_free,
- 	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
- };
-@@ -139,6 +143,39 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index a4284778f117..bb463ee6ff84 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -181,6 +181,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 	struct hdac_stream *hstream;
+ 	struct hdac_ext_stream *stream;
+ 	struct hdac_ext_link *link;
++	unsigned char stream_tag;
  
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct hdac_hda_priv *hda_pvt;
-+	unsigned int format_val;
-+	unsigned int maxbps;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		maxbps = dai->driver->playback.sig_bits;
-+	else
-+		maxbps = dai->driver->capture.sig_bits;
-+
-+	hda_pvt = snd_soc_component_get_drvdata(component);
-+	format_val = snd_hdac_calc_stream_format(params_rate(params),
-+						 params_channels(params),
-+						 params_format(params),
-+						 maxbps,
-+						 0);
-+	if (!format_val) {
-+		dev_err(dai->dev,
-+			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
-+			params_rate(params), params_channels(params),
-+			params_format(params), maxbps);
-+
-+		return -EINVAL;
+ 	hstream = snd_hdac_get_stream(bus, params->stream,
+ 					params->link_dma_id + 1);
+@@ -199,10 +200,13 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 
+ 	snd_hdac_ext_link_stream_setup(stream, format_val);
+ 
+-	list_for_each_entry(link, &bus->hlink_list, list) {
+-		if (link->index == params->link_index)
+-			snd_hdac_ext_link_set_stream_id(link,
+-					hstream->stream_tag);
++	stream_tag = hstream->stream_tag;
++	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		list_for_each_entry(link, &bus->hlink_list, list) {
++			if (link->index == params->link_index)
++				snd_hdac_ext_link_set_stream_id(link,
++								stream_tag);
++		}
+ 	}
+ 
+ 	stream->link_prepared = 1;
+@@ -645,6 +649,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *link_dev =
+ 				snd_soc_dai_get_dma_data(dai, substream);
+ 	struct hdac_ext_link *link;
++	unsigned char stream_tag;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -654,7 +659,11 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
+ 
+-	snd_hdac_ext_link_clear_stream_id(link, hdac_stream(link_dev)->stream_tag);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		stream_tag = hdac_stream(link_dev)->stream_tag;
++		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
 +	}
 +
-+	hda_pvt->pcm[dai->id].format_val[substream->stream] = format_val;
-+	return 0;
-+}
-+
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
-@@ -162,10 +199,9 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct hda_pcm_stream *hda_stream;
- 	struct hdac_hda_priv *hda_pvt;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct hdac_device *hdev;
--	struct hda_pcm_stream *hda_stream;
- 	unsigned int format_val;
- 	struct hda_pcm *pcm;
- 	unsigned int stream;
-@@ -179,19 +215,8 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 
- 	hda_stream = &pcm->stream[substream->stream];
- 
--	format_val = snd_hdac_calc_stream_format(runtime->rate,
--						 runtime->channels,
--						 runtime->format,
--						 hda_stream->maxbps,
--						 0);
--	if (!format_val) {
--		dev_err(&hdev->dev,
--			"invalid format_val, rate=%d, ch=%d, format=%d\n",
--			runtime->rate, runtime->channels, runtime->format);
--		return -EINVAL;
--	}
--
- 	stream = hda_pvt->pcm[dai->id].stream_tag[substream->stream];
-+	format_val = hda_pvt->pcm[dai->id].format_val[substream->stream];
- 
- 	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
- 				    stream, format_val, substream);
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-index e444ef593360..6b1bd4f428e7 100644
---- a/sound/soc/codecs/hdac_hda.h
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -8,6 +8,7 @@
- 
- struct hdac_hda_pcm {
- 	int stream_tag[2];
-+	unsigned int format_val[2];
- };
- 
- struct hdac_hda_priv {
+ 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
+ 	return 0;
+ }
 -- 
 2.14.1
