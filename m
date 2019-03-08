@@ -1,8 +1,8 @@
 From: Rander Wang <rander.wang@linux.intel.com>
-Subject: [PATCH 1/3] ASoC:soc-pcm:fix a codec fixup issue in
-	TDM case
-Date: Fri,  8 Mar 2019 16:38:57 +0800
-Message-ID: <20190308083859.50026-2-rander.wang@linux.intel.com>
+Subject: [PATCH 2/3] ASoC:hdac_hda:use correct format to setup
+	hda codec
+Date: Fri,  8 Mar 2019 16:38:58 +0800
+Message-ID: <20190308083859.50026-3-rander.wang@linux.intel.com>
 References: <20190308083859.50026-1-rander.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8B92F896EF
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:42 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F78AF896F1
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:44 +0100 (CET)
 In-Reply-To: <20190308083859.50026-1-rander.wang@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,54 +27,134 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On HDaudio platforms, if playback is started when capture is working,
-there is no audible output. 
+The current implementation of the hdac_hda codec results in zero-valued
+samples on capture and noise with headset playback when SOF is used on
+platforms with an on-board HDaudio codec. This is root-caused to SOF
+using be_hw_params_fixup, and the prepare() call using invalid runtime
+fields to determine the format.
 
-This can be root-caused to the use of the rx|tx_mask to store an HDaudio
-stream tag.
+This patch moves the format handling to the hw_params() callback, as
+done already for hdac_hdmi, to make sure the fixed-up information is
+taken into account but keeps the codec initialization in prepare() as
+the stream_tag is only available at that time. Moving everything in the
+prepare() callback is possible but the code is less elegant so this
+two-step solution was chosen.
 
-If capture is stared before playback, rx_mask would be non-zero on HDaudio
-platform, then the channel number of playback, which is in the same codec
-dai with the capture, would be changed by soc_pcm_codec_params_fixup based
-on the tx_mask at first, then overwritten by this function based on rx_mask
-at last.
-
-According to the author of tx|rx_mask, tx_mask is for playback and rx_mask 
-is for capture. And stream direction is checked at all other references of
-tx|rx_mask in ASoC, so here should be an error. This patch checks stream 
-direction for tx|rx_mask for fixup function.
-
-This issue would affect not only HDaudio+ASoC, but also I2S codecs if the
-channel number based on rx_mask is not equal to the one for tx_mask. It could
-be rarely reproduecd because most drivers in kernel set the same channel number
-to tx|rx_mask or rx_mask is zero.
-
-Tested on all platforms using stream_tag & HDaudio and intel I2S platforms.
+The solution was tested with the SST driver with no regressions, and all
+the issues with SOF playback and capture are solved.
 
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 53 +++++++++++++++++++++++++++++++++------------
+ sound/soc/codecs/hdac_hda.h |  1 +
+ 2 files changed, 40 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index a5b40e82dea4..e70555a4ea06 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -954,10 +954,13 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		codec_params = *params;
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index ffecdaaa8cf2..f889d94c8e3c 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -38,6 +38,9 @@ static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai);
+ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai);
++static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai);
+ static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai);
+ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
+@@ -50,6 +53,7 @@ static const struct snd_soc_dai_ops hdac_hda_dai_ops = {
+ 	.startup = hdac_hda_dai_open,
+ 	.shutdown = hdac_hda_dai_close,
+ 	.prepare = hdac_hda_dai_prepare,
++	.hw_params = hdac_hda_dai_hw_params,
+ 	.hw_free = hdac_hda_dai_hw_free,
+ 	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
+ };
+@@ -139,6 +143,39 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	return 0;
+ }
  
- 		/* fixup params based on TDM slot masks */
--		if (codec_dai->tx_mask)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-+		    codec_dai->tx_mask)
- 			soc_pcm_codec_params_fixup(&codec_params,
- 						   codec_dai->tx_mask);
--		if (codec_dai->rx_mask)
++static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct hdac_hda_priv *hda_pvt;
++	unsigned int format_val;
++	unsigned int maxbps;
 +
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
-+		    codec_dai->rx_mask)
- 			soc_pcm_codec_params_fixup(&codec_params,
- 						   codec_dai->rx_mask);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		maxbps = dai->driver->playback.sig_bits;
++	else
++		maxbps = dai->driver->capture.sig_bits;
++
++	hda_pvt = snd_soc_component_get_drvdata(component);
++	format_val = snd_hdac_calc_stream_format(params_rate(params),
++						 params_channels(params),
++						 params_format(params),
++						 maxbps,
++						 0);
++	if (!format_val) {
++		dev_err(dai->dev,
++			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
++			params_rate(params), params_channels(params),
++			params_format(params), maxbps);
++
++		return -EINVAL;
++	}
++
++	hda_pvt->pcm[dai->id].format_val[substream->stream] = format_val;
++	return 0;
++}
++
+ static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+@@ -162,10 +199,9 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_component *component = dai->component;
++	struct hda_pcm_stream *hda_stream;
+ 	struct hdac_hda_priv *hda_pvt;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct hdac_device *hdev;
+-	struct hda_pcm_stream *hda_stream;
+ 	unsigned int format_val;
+ 	struct hda_pcm *pcm;
+ 	unsigned int stream;
+@@ -179,19 +215,8 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
  
+ 	hda_stream = &pcm->stream[substream->stream];
+ 
+-	format_val = snd_hdac_calc_stream_format(runtime->rate,
+-						 runtime->channels,
+-						 runtime->format,
+-						 hda_stream->maxbps,
+-						 0);
+-	if (!format_val) {
+-		dev_err(&hdev->dev,
+-			"invalid format_val, rate=%d, ch=%d, format=%d\n",
+-			runtime->rate, runtime->channels, runtime->format);
+-		return -EINVAL;
+-	}
+-
+ 	stream = hda_pvt->pcm[dai->id].stream_tag[substream->stream];
++	format_val = hda_pvt->pcm[dai->id].format_val[substream->stream];
+ 
+ 	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
+ 				    stream, format_val, substream);
+diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
+index e444ef593360..6b1bd4f428e7 100644
+--- a/sound/soc/codecs/hdac_hda.h
++++ b/sound/soc/codecs/hdac_hda.h
+@@ -8,6 +8,7 @@
+ 
+ struct hdac_hda_pcm {
+ 	int stream_tag[2];
++	unsigned int format_val[2];
+ };
+ 
+ struct hdac_hda_priv {
 -- 
 2.14.1
