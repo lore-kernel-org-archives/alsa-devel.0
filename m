@@ -1,8 +1,8 @@
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
  infrastructure 'bclk_ratio aware'
-Date: Fri, 8 Mar 2019 13:37:11 +0000
-Message-ID: <20190308133711.orrdy2emec6hoqoz@shell.armlinux.org.uk>
+Date: Fri, 8 Mar 2019 23:29:46 +0900
+Message-ID: <20190308142943.GA17581@workstation>
 References: <20190304165955.21696-1-TheSven73@gmail.com>
  <20190305044232.GA15636@workstation>
  <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
@@ -12,12 +12,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
- [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
+ [66.111.4.229])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAD74F8072E
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 14:37:17 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20800F80724
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 15:29:53 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <20190308125916.2cgiqclp6jmlfbim@shell.armlinux.org.uk>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,37 +29,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org
+Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Russell King - ARM Linux admin <linux@armlinux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
 On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
-> On Fri, Mar 08, 2019 at 01:10:57PM +0900, Takashi Sakamoto wrote:
-> > On Tue, Mar 05, 2019 at 09:23:46AM -0500, Sven Van Asbroeck wrote:
-> > > The original problem was that the fsl_ssi did not appear to work with the
-> > > tda998x hdmi codec. This codec seems to be 'unique' in the sense that it
-> > > needs to know the number of clocks per frame on the wire, i.e. the bclk_ratio,
-> > > which no-one in alsa is providing or using at the moment.
-> > > 
-> > > I first made the error of conflating the physical width and the bclk_ratio,
-> > > and posted this patch - Russell King quickly pointed out my error:
-> > > https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/145916.html
-> > > 
-> > > This then led to the following discussions:
-> > > https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145985
-> > > https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145947
-> > > 
-> > > Most of the discussion is about a mechanism to convey bclk_ratio from
-> > > the frame master
-> > > to the tda998x. We don't yet seem to have a consensus on how to do this best.
-> > > 
-> > > My rfc patch was only intended to provoke discussion, and to allow
-> > > people to experiment
-> > > with a flawed solution that would allow the alsa core to negotiate
-> > > bclk_ratio between
-> > > components. The uapi change is a serious flaw. bclk_ratio negotiation should be
-> > > invisible to userspace. But I cannot see a way to accomplish this.
-> > 
 > > In your case:
 > > 
 > > +---+            +-----+
@@ -103,7 +78,7 @@ On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
 >    frame.
 > 
 > 2) it can generate more than 16 SCK clock cycles per sample.
-> 
+>
 > Both are entirely legal and permissable under the I2S specification.
 > Both look the same in memory.
 > 
@@ -122,36 +97,32 @@ On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
 > What this means is that multiplying the number of in-memory formats
 > by the number of unboundable bus-specific formats leads to an
 > unboundable quantity of formats.
+> 
+> This is why ASoC has the ability to set the bclk (bit clock, SCK)
+> to sample rate ratio - in other words, the number of clocks to
+> completely transmit the samples for the number of channels on the
+> link - bit clock rate = sample rate * bclk_ratio.
 
-I missed stating another point in that.  Let's say that we were to have
-definitions such as:
+Hm. In ALSA PCM core, the combination of 'rate_num' and 'rate_den' is
+another representation of sampling rate[1], and drivers can have
+constraints and rules for these two parameters of runtime of PCM
+substream. Once core functionalities and drivers in ALSA SoC part have
+common specifications about actual value of these two parameters, the
+issue could be solved, in my opinion.
+(But I need time to consider it further in this weekend...)
 
-SNDRV_PCM_FORMAT_S16_LE_I2S16
-SNDRV_PCM_FORMAT_S16_LE_I2S32
-SNDRV_PCM_FORMAT_S16_LE_SPDIF
 
-We have a CPU interface that can simultaneously produce both
-SNDRV_PCM_FORMAT_S16_LE_I2S32 and SNDRV_PCM_FORMAT_S16_LE_SPDIF.
-However, the ALSA format negotiation is such that only _one_ format
-can be negotiated between user space and kernel space.  So, one of
-those has to be selected.  So, despite the hardware being perfectly
-capable of producing both streams, combining the on-wire formats
-with the in-memory formats means that we can't support simultaneous
-operation, despite the hardware being perfectly capable.
+However, I don't have clear view of your case 2) yet. In that case,
+how drivers calculate return value in 'struct snd_pcm_ops.pointer'
+callback? It should be frame count, but WS seems not to be available
+for 16 bit sample because the number of SCK clock cycles per sample is
+larger than 16.
+(If WS clock works as I expected, SCK clock cycles per sample include
+expression of padding bits added to 16 bit sample.)
 
-Another point to make there is that in the general case, if a codec
-supports reception of SNDRV_PCM_FORMAT_S16_LE_I2S16, then it supports
-reception of SNDRV_PCM_FORMAT_S16_LE_I2S32 - the I2S bus specification
-explicitly allows for more clocks than there are sample bits, and
-states what happens to the extra bits.
 
-The exception to that is when the receiving device uses the bit clock
-(aka SCK) for some other purpose, such as TDA998x devices, where a
-driver for such a device needs to know the ratio between the bus bit
-clock and the sample rate.  As previously illustrated, ASoC has partial
-support for this.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/include/sound/pcm.h#n380
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+Thanks
+
+Takashi Sakamoto
