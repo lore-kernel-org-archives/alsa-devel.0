@@ -1,16 +1,19 @@
 From: Rander Wang <rander.wang@linux.intel.com>
-Subject: [PATCH 0/3] ASoC: hda: capture-related fixes
-Date: Fri,  8 Mar 2019 16:38:56 +0800
-Message-ID: <20190308083859.50026-1-rander.wang@linux.intel.com>
+Subject: [PATCH 1/3] ASoC:soc-pcm:fix a codec fixup issue in
+	TDM case
+Date: Fri,  8 Mar 2019 16:38:57 +0800
+Message-ID: <20190308083859.50026-2-rander.wang@linux.intel.com>
+References: <20190308083859.50026-1-rander.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70305F80724
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:35 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8B92F896EF
+ for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 09:37:42 +0100 (CET)
+In-Reply-To: <20190308083859.50026-1-rander.wang@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +27,54 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-There are several sources of errors fixed in this series, such as mismatch
-between TX and RX mask used to store the stream_tag, the use of hw_param
-fixups not properly handled in the hdac_hda codec and registers set on capture
-when they should only be used on playback. 
+On HDaudio platforms, if playback is started when capture is working,
+there is no audible output. 
 
-The first patch fixes a issue caused by tx|rx_mask for TDM.
-The Second one fixes the mismatch between BE dai format and hda codec format.
-The last one removes the register of stream id setting on capture. 
+This can be root-caused to the use of the rx|tx_mask to store an HDaudio
+stream tag.
 
-this series was tested successfully with the Intel Skylake driver on a Skylake
-Dell XPS13 (same as Linus), KabyLake NUC, Whiskylake laptop and Apollolake LeafHill
-board. The two soc-pcm and hdac_hda fixes are needed by the SOF driver as well, but
-SOF-specific patches will be provided in the next batch and are not included here
+If capture is stared before playback, rx_mask would be non-zero on HDaudio
+platform, then the channel number of playback, which is in the same codec
+dai with the capture, would be changed by soc_pcm_codec_params_fixup based
+on the tx_mask at first, then overwritten by this function based on rx_mask
+at last.
 
-Rander Wang (3):
-  ASoC:soc-pcm:fix a codec fixup issue in TDM case
-  ASoC:hdac_hda:use correct format to setup hda codec
-  ASoC:intel:skl:fix a simultaneous playback & capture issue on hda platform
+According to the author of tx|rx_mask, tx_mask is for playback and rx_mask 
+is for capture. And stream direction is checked at all other references of
+tx|rx_mask in ASoC, so here should be an error. This patch checks stream 
+direction for tx|rx_mask for fixup function.
 
- sound/soc/codecs/hdac_hda.c       | 53 ++++++++++++++++++++++++++++-----------
- sound/soc/codecs/hdac_hda.h       |  1 +
- sound/soc/intel/skylake/skl-pcm.c | 19 ++++++++++----
- sound/soc/soc-pcm.c               |  7 ++++--
- 4 files changed, 59 insertions(+), 21 deletions(-)
+This issue would affect not only HDaudio+ASoC, but also I2S codecs if the
+channel number based on rx_mask is not equal to the one for tx_mask. It could
+be rarely reproduecd because most drivers in kernel set the same channel number
+to tx|rx_mask or rx_mask is zero.
 
+Tested on all platforms using stream_tag & HDaudio and intel I2S platforms.
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a5b40e82dea4..e70555a4ea06 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -954,10 +954,13 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		codec_params = *params;
+ 
+ 		/* fixup params based on TDM slot masks */
+-		if (codec_dai->tx_mask)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
++		    codec_dai->tx_mask)
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->tx_mask);
+-		if (codec_dai->rx_mask)
++
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
++		    codec_dai->rx_mask)
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->rx_mask);
+ 
 -- 
 2.14.1
