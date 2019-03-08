@@ -1,110 +1,288 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
- infrastructure 'bclk_ratio aware'
-Date: Fri, 8 Mar 2019 13:10:57 +0900
-Message-ID: <20190308041056.GA1172@workstation>
-References: <20190304165955.21696-1-TheSven73@gmail.com>
- <20190305044232.GA15636@workstation>
- <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
+From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH v3] ASoC: dpcm: prevent snd_soc_dpcm use after free
+Date: Fri, 8 Mar 2019 13:05:53 +0800
+Message-ID: <1552021553-31547-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
- [66.111.4.229])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0539F806F7
- for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2019 05:11:03 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sven Van Asbroeck <thesven73@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <rmk+kernel@armlinux.org.uk>
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, hochi.huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, eason.yen-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, michael.hsiao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 05, 2019 at 09:23:46AM -0500, Sven Van Asbroeck wrote:
-> The original problem was that the fsl_ssi did not appear to work with the
-> tda998x hdmi codec. This codec seems to be 'unique' in the sense that it
-> needs to know the number of clocks per frame on the wire, i.e. the bclk_ratio,
-> which no-one in alsa is providing or using at the moment.
-> 
-> I first made the error of conflating the physical width and the bclk_ratio,
-> and posted this patch - Russell King quickly pointed out my error:
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/145916.html
-> 
-> This then led to the following discussions:
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145985
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-February/thread.html#145947
-> 
-> Most of the discussion is about a mechanism to convey bclk_ratio from
-> the frame master
-> to the tda998x. We don't yet seem to have a consensus on how to do this best.
-> 
-> My rfc patch was only intended to provoke discussion, and to allow
-> people to experiment
-> with a flawed solution that would allow the alsa core to negotiate
-> bclk_ratio between
-> components. The uapi change is a serious flaw. bclk_ratio negotiation should be
-> invisible to userspace. But I cannot see a way to accomplish this.
+The dpcm get from fe_clients/be_clients
+may be free before use
 
-In your case:
+Add a spin lock at snd_soc_card level,
+to protect the dpcm instance.
+The lock may be used in atomic context, so use spin lock.
 
-+---+            +-----+
-|CPU| <- wire -> |CODEC|
-|DAI|            | DAI |
-+---+            +-----+
+Use irq spin lock version,
+since the lock may be used in interrupts.
 
-So that:
+possible race condition between
+void dpcm_be_disconnect(
+	...
+	list_del(&dpcm->list_be);
+	list_del(&dpcm->list_fe);
+	kfree(dpcm);
+	...
 
-CPU-DAI = fsl_ssi
-CODEC-DAI = tda998x
-wire = I2S
+and
+	for_each_dpcm_fe()
+	for_each_dpcm_be*()
 
-In I2S:
- - SCK-line = serial clock
- - WS-line = word select
- - SD-line = serial data 
+race condition example
+Thread 1:
+    snd_soc_dapm_mixer_update_power()
+        -> soc_dpcm_runtime_update()
+            -> dpcm_be_disconnect()
+                -> kfree(dpcm);
+Thread 2:
+    dpcm_fe_dai_trigger()
+        -> dpcm_be_dai_trigger()
+            -> snd_soc_dpcm_can_be_free_stop()
+                -> if (dpcm->fe == fe)
 
-In general I2S communication:
- - 2 samples are transferred in a phase of WS
+Excpetion Scenario:
+	two FE link to same BE
+	FE1 -> BE
+	FE2 ->
 
-In my opinion:
- - 'the number of clocks per frame on the wire' (=you need)
-   = the number of phases of SCK per phase of WS
+	Thread 1: switch of mixer between FE2 -> BE
+	Thread 2: pcm_stop FE1
 
-In expectation of ALSA PCM interface for hardware for usual device:
- - half number of phases of SCK per phase of WC
-   = physical_width of sample
-   = bytes per sample
- - the number of phases of SCK per phase of WC
-   = physical_width * channels (=2)
-   = bytes per frame
- - the ratio between phases of SCK and phases of WC per second
-   = rate
+Exception:
 
-Here, usual device is expected to give FIFO for DMA and I2S bus,
-synchronized to SCK without any conversion. CODED-DAI also has
-FIFO to process signals.
+Unable to handle kernel paging request at virtual address dead0000000000e0
 
-In my opinion, if both of fsl_ssi and tda988x have enough constraints
-and rules for runtime of PCM substream about the physical_width, channels
-and rate, things look to work well. Perhaps, tda998x driver should have a
-condition statement for its role of 'frame master' to add the constraints
-and rules, to describe its quirk.
+pc=<> [<ffffff8960e2cd10>] dpcm_be_dai_trigger+0x29c/0x47c
+	sound/soc/soc-pcm.c:3226
+		if (dpcm->fe == fe)
+lr=<> [<ffffff8960e2f694>] dpcm_fe_dai_do_trigger+0x94/0x26c
 
-It's helpful to describe the 'unique'ness of tda998x hdmi codec for
-the detail.
+Backtrace:
+[<ffffff89602dba80>] notify_die+0x68/0xb8
+[<ffffff896028c7dc>] die+0x118/0x2a8
+[<ffffff89602a2f84>] __do_kernel_fault+0x13c/0x14c
+[<ffffff89602a27f4>] do_translation_fault+0x64/0xa0
+[<ffffff8960280cf8>] do_mem_abort+0x4c/0xd0
+[<ffffff8960282ad0>] el1_da+0x24/0x40
+[<ffffff8960e2cd10>] dpcm_be_dai_trigger+0x29c/0x47c
+[<ffffff8960e2f694>] dpcm_fe_dai_do_trigger+0x94/0x26c
+[<ffffff8960e2edec>] dpcm_fe_dai_trigger+0x3c/0x44
+[<ffffff8960de5588>] snd_pcm_do_stop+0x50/0x5c
+[<ffffff8960dded24>] snd_pcm_action+0xb4/0x13c
+[<ffffff8960ddfdb4>] snd_pcm_drop+0xa0/0x128
+[<ffffff8960de69bc>] snd_pcm_common_ioctl+0x9d8/0x30f0
+[<ffffff8960de1cac>] snd_pcm_ioctl_compat+0x29c/0x2f14
+[<ffffff89604c9d60>] compat_SyS_ioctl+0x128/0x244
+[<ffffff8960283740>] el0_svc_naked+0x34/0x38
+[<ffffffffffffffff>] 0xffffffffffffffff
 
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c |  1 +
+ sound/soc/soc-pcm.c  | 40 +++++++++++++++++++++++++++++++++-------
+ 3 files changed, 36 insertions(+), 7 deletions(-)
 
-Regards
-
-Takashi Sakamoto (not maintainer of this subsystem)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index eb7db60..1e2be35 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1083,6 +1083,8 @@ struct snd_soc_card {
+ 	struct mutex mutex;
+ 	struct mutex dapm_mutex;
+ 
++	spinlock_t dpcm_lock;
++
+ 	bool instantiated;
+ 	bool topology_shortname_created;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 5a5764d..d887576 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2820,6 +2820,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	card->instantiated = 0;
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
++	spin_lock_init(&card->dpcm_lock);
+ 
+ 	return snd_soc_bind_card(card);
+ }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a5b40e8..30df83a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1213,6 +1213,7 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 
+ 	/* only add new dpcms */
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+@@ -1228,8 +1229,10 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 	dpcm->fe = fe;
+ 	be->dpcm[stream].runtime = fe->dpcm[stream].runtime;
+ 	dpcm->state = SND_SOC_DPCM_LINK_STATE_NEW;
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
+ 	list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
+ 			stream ? "capture" : "playback",  fe->dai_link->name,
+@@ -1275,6 +1278,7 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
+ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm, *d;
++	unsigned long flags;
+ 
+ 	for_each_dpcm_be_safe(fe, stream, dpcm, d) {
+ 		dev_dbg(fe->dev, "ASoC: BE %s disconnect check for %s\n",
+@@ -1294,8 +1298,10 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ #ifdef CONFIG_DEBUG_FS
+ 		debugfs_remove(dpcm->debugfs_state);
+ #endif
++		spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 		list_del(&dpcm->list_be);
+ 		list_del(&dpcm->list_fe);
++		spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 		kfree(dpcm);
+ 	}
+ }
+@@ -1547,10 +1553,13 @@ int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
+ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm->be->dpcm[stream].runtime_update =
+ 						SND_SOC_DPCM_UPDATE_NO;
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ }
+ 
+ static void dpcm_be_dai_startup_unwind(struct snd_soc_pcm_runtime *fe,
+@@ -2571,6 +2580,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	struct snd_soc_dpcm *dpcm;
+ 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
+ 	int ret;
++	unsigned long flags;
+ 
+ 	dev_dbg(fe->dev, "ASoC: runtime %s open on FE %s\n",
+ 			stream ? "capture" : "playback", fe->dai_link->name);
+@@ -2640,11 +2650,13 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	dpcm_be_dai_shutdown(fe, stream);
+ disconnect:
+ 	/* disconnect any non started BEs */
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+ 	}
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -3220,7 +3232,10 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ {
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
++	int ret = 1;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+ 
+ 		if (dpcm->fe == fe)
+@@ -3229,12 +3244,15 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 		state = dpcm->fe->dpcm[stream].state;
+ 		if (state == SND_SOC_DPCM_STATE_START ||
+ 			state == SND_SOC_DPCM_STATE_PAUSED ||
+-			state == SND_SOC_DPCM_STATE_SUSPEND)
+-			return 0;
++			state == SND_SOC_DPCM_STATE_SUSPEND) {
++			ret = 0;
++			break;
++		}
+ 	}
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	/* it's safe to free/stop this BE DAI */
+-	return 1;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ 
+@@ -3247,7 +3265,10 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ {
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
++	int ret = 1;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+ 
+ 		if (dpcm->fe == fe)
+@@ -3257,12 +3278,15 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		if (state == SND_SOC_DPCM_STATE_START ||
+ 			state == SND_SOC_DPCM_STATE_PAUSED ||
+ 			state == SND_SOC_DPCM_STATE_SUSPEND ||
+-			state == SND_SOC_DPCM_STATE_PREPARE)
+-			return 0;
++			state == SND_SOC_DPCM_STATE_PREPARE) {
++			ret = 0;
++			break;
++		}
+ 	}
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	/* it's safe to change hw_params */
+-	return 1;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
+ 
+@@ -3301,6 +3325,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_pcm_hw_params *params = &fe->dpcm[stream].hw_params;
+ 	struct snd_soc_dpcm *dpcm;
+ 	ssize_t offset = 0;
++	unsigned long flags;
+ 
+ 	/* FE state */
+ 	offset += snprintf(buf + offset, size - offset,
+@@ -3328,6 +3353,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 		goto out;
+ 	}
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		params = &dpcm->hw_params;
+@@ -3348,7 +3374,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 				params_channels(params),
+ 				params_rate(params));
+ 	}
+-
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ out:
+ 	return offset;
+ }
+-- 
+1.9.1
