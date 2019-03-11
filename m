@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: axi-i2s: make both "rx" and "tx" optional" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:16 +0000 (GMT)
-Message-ID: <20190311172316.2C2DB1128896@debutante.sirena.org.uk>
-References: <20190307214456.16445-2-luca@lucaceresoli.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307214456.16445-2-luca@lucaceresoli.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luca Ceresoli <luca@lucaceresoli.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: i2s: fix registers declaration in regmap" to
+ the asoc tree
+Date: Mon, 11 Mar 2019 17:23:24 +0000 (GMT)
+Message-ID: <20190311172324.D3A4A1128897@debutante.sirena.org.uk>
+References: <1552318768-25404-1-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1552318768-25404-1-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: axi-i2s: make both "rx" and "tx" optional
+   ASoC: stm32: i2s: fix registers declaration in regmap
 
 has been applied to the asoc tree at
 
@@ -37,44 +48,41 @@ to this mail.
 Thanks,
 Mark
 
->From fa225400758dfc7ccddebf4d990f991a435f7921 Mon Sep 17 00:00:00 2001
-From: Luca Ceresoli <luca@lucaceresoli.net>
-Date: Thu, 7 Mar 2019 22:44:56 +0100
-Subject: [PATCH] ASoC: axi-i2s: make both "rx" and "tx" optional
+>From a39fe6e2061615496c12825d6d249fedf1974f8a Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 11 Mar 2019 16:39:28 +0100
+Subject: [PATCH] ASoC: stm32: i2s: fix registers declaration in regmap
 
-Both the capture and playback channels are optional in the axi_i2s IP
-block. Document how to tell the driver which channels are
-instantiated.
+- Declare SR as volatile, as it is changed by hardware.
+- Remove TXDR from readable and volatile register list,
+as it is intended for write accesses only.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-index 4248b662deff..229ad1392cdc 100644
---- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-@@ -1,5 +1,8 @@
- ADI AXI-I2S controller
- 
-+The core can be generated with transmit (playback), only receive
-+(capture) or both directions enabled.
-+
- Required properties:
-  - compatible : Must be "adi,axi-i2s-1.00.a"
-  - reg : Must contain I2S core's registers location and length
-@@ -9,8 +12,8 @@ Required properties:
-  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
-    rate reference clock.
-  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
--   the core. The core expects two dma channels, one for transmit and one for
--   receive.
-+   the core. The core expects two dma channels if both transmit and receive are
-+   enabled, one channel otherwise.
-  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
- 
- For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 47c334de6b09..8968458eec62 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -281,7 +281,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_I2S_CFG2_REG:
+ 	case STM32_I2S_IER_REG:
+ 	case STM32_I2S_SR_REG:
+-	case STM32_I2S_TXDR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 	case STM32_I2S_CGFR_REG:
+ 		return true;
+@@ -293,7 +292,7 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ static bool stm32_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+-	case STM32_I2S_TXDR_REG:
++	case STM32_I2S_SR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 		return true;
+ 	default:
 -- 
 2.20.1
