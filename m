@@ -1,28 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: change trigger traces" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:48 +0000 (GMT)
-Message-ID: <20190311172348.CB5321128896@debutante.sirena.org.uk>
-References: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: qcom: add i2c dependency for SND_SOC_SDM845" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:51 +0000 (GMT)
+Message-ID: <20190311172351.072681128896@debutante.sirena.org.uk>
+References: <20190304203114.1894822-3-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190304203114.1894822-3-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: change trigger traces
+   ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
 has been applied to the asoc tree at
 
@@ -47,51 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 52e7306ca2db565edc1503a74477f3547bc9e408 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:28 +0100
-Subject: [PATCH] ASoC: stm32: i2s: change trigger traces
+>From 686174a0989b1c33698b26523a1e4ccdcc84cf22 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 4 Mar 2019 21:30:52 +0100
+Subject: [PATCH] ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
-Update traces to log capture/playback stream start/stop.
+We must not select SND_SOC_MAX98927 unless CONFIG_I2C
+is also enabled:
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98927
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
+  Selected by [y]:
+  - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && MFD_CROS_EC [=y]
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 47c334de6b09..783b33497435 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -593,7 +593,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		/* Enable i2s */
--		dev_dbg(cpu_dai->dev, "start I2S\n");
-+		dev_dbg(cpu_dai->dev, "start I2S %s\n",
-+			playback_flg ? "playback" : "capture");
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 75ceb04d8bf0..b1764af858ba 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -98,7 +98,7 @@ config SND_SOC_MSM8996
  
- 		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
-@@ -638,6 +639,9 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dev_dbg(cpu_dai->dev, "stop I2S %s\n",
-+			playback_flg ? "playback" : "capture");
-+
- 		if (playback_flg)
- 			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
- 					   I2S_IER_UDRIE,
-@@ -654,8 +658,6 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			break;
- 		}
- 
--		dev_dbg(cpu_dai->dev, "stop I2S\n");
--
- 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
- 					 I2S_CR1_SPE, 0);
- 		if (ret < 0) {
+ config SND_SOC_SDM845
+ 	tristate "SoC Machine driver for SDM845 boards"
+-	depends on QCOM_APR && MFD_CROS_EC
++	depends on QCOM_APR && MFD_CROS_EC && I2C
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_RT5663
 -- 
 2.20.1
