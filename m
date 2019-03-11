@@ -1,123 +1,56 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8824: fix the issue of the widget
-	with prefix name
-Date: Mon, 11 Mar 2019 09:36:45 +0800
-Message-ID: <20190311013645.31523-1-KCHSU0@nuvoton.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH v2] ASoC: fsl: sai: Fix underrrun for playback stream start
+Date: Mon, 11 Mar 2019 09:23:59 +0200
+Message-ID: <CAEnQRZBpqgKAXBXrRQ9e-1Vj7hTZiqFbj1oghj9+pf0RKXN1EA@mail.gmail.com>
+References: <20190308173904.27298-1-daniel.baluta@nxp.com> <20190308205805.GA8912@Asurada-Nvidia.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 3C6F2F806F5
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 02:36:58 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190308205805.GA8912@Asurada-Nvidia.nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-The driver has two issues when machine add prefix name for codec.
-(1)The stream name of DAI can't find the AIF widgets.
-(2)The drivr can enable/disalbe the MICBIAS and SAR widgets.
+On Fri, Mar 8, 2019 at 10:59 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Fri, Mar 08, 2019 at 05:39:30PM +0000, Daniel Baluta wrote:
+>
+> > @@ -542,6 +544,11 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+> >       case SNDRV_PCM_TRIGGER_START:
+> >       case SNDRV_PCM_TRIGGER_RESUME:
+> >       case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> > +             for (i = 0; tx && i < channels; i++)
+> > +                     regmap_write(sai->regmap, FSL_SAI_TDR, 0x0);
+>
+> Though it could reduce underrrun for sure, I don't feel it's a
+> thorough fix, especially when dealing with a duplex case where
+> RX is the first stream while the driver enables both TE and RE
+> at the same time. So the transmitter might have started before
+> TX DMA request gets enabled.
 
-The patch will fix these issues caused by prefixed name added.
+I see your point here. This is trickier than I expected.
+>
+> We actually have something similar in the ESAI driver as that
+> one is well documented. But SAI is apparently more tricky at
+> the trigger() function. And the paragraph you pasted from the
+> RM doesn't explicitly sound like we should do this.
+>
+> Btw, Instead of writing dummy data, have you tried polling the
+> WFP pointer of the TFR0 register to make sure data is copied
+> by the DMA?
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8824.c | 46 +++++++++++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 8 deletions(-)
+This is a good suggestion. Will give it a try.
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 87ed3dc496dc..5ab05e75edea 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -681,8 +681,8 @@ static const struct snd_soc_dapm_widget nau8824_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("ADCR", NULL, NAU8824_REG_ANALOG_ADC_2,
- 		NAU8824_ADCR_EN_SFT, 0),
- 
--	SND_SOC_DAPM_AIF_OUT("AIFTX", "HiFi Capture", 0, SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_AIF_IN("AIFRX", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIFTX", "Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIFRX", "Playback", 0, SND_SOC_NOPM, 0, 0),
- 
- 	SND_SOC_DAPM_DAC("DACL", NULL, NAU8824_REG_RDAC,
- 		NAU8824_DACL_EN_SFT, 0),
-@@ -831,6 +831,36 @@ static void nau8824_int_status_clear_all(struct regmap *regmap)
- 	}
- }
- 
-+static void nau8824_dapm_disable_pin(struct nau8824 *nau8824, const char *pin)
-+{
-+	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-+	const char *prefix = dapm->component->name_prefix;
-+	char prefixed_pin[80];
-+
-+	if (prefix) {
-+		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
-+			 prefix, pin);
-+		snd_soc_dapm_disable_pin(dapm, prefixed_pin);
-+	} else {
-+		snd_soc_dapm_disable_pin(dapm, pin);
-+	}
-+}
-+
-+static void nau8824_dapm_enable_pin(struct nau8824 *nau8824, const char *pin)
-+{
-+	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-+	const char *prefix = dapm->component->name_prefix;
-+	char prefixed_pin[80];
-+
-+	if (prefix) {
-+		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
-+			 prefix, pin);
-+		snd_soc_dapm_force_enable_pin(dapm, prefixed_pin);
-+	} else {
-+		snd_soc_dapm_force_enable_pin(dapm, pin);
-+	}
-+}
-+
- static void nau8824_eject_jack(struct nau8824 *nau8824)
- {
- 	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-@@ -839,8 +869,8 @@ static void nau8824_eject_jack(struct nau8824 *nau8824)
- 	/* Clear all interruption status */
- 	nau8824_int_status_clear_all(regmap);
- 
--	snd_soc_dapm_disable_pin(dapm, "SAR");
--	snd_soc_dapm_disable_pin(dapm, "MICBIAS");
-+	nau8824_dapm_disable_pin(nau8824, "SAR");
-+	nau8824_dapm_disable_pin(nau8824, "MICBIAS");
- 	snd_soc_dapm_sync(dapm);
- 
- 	/* Enable the insertion interruption, disable the ejection
-@@ -870,8 +900,8 @@ static void nau8824_jdet_work(struct work_struct *work)
- 	struct regmap *regmap = nau8824->regmap;
- 	int adc_value, event = 0, event_mask = 0;
- 
--	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
--	snd_soc_dapm_force_enable_pin(dapm, "SAR");
-+	nau8824_dapm_enable_pin(nau8824, "MICBIAS");
-+	nau8824_dapm_enable_pin(nau8824, "SAR");
- 	snd_soc_dapm_sync(dapm);
- 
- 	msleep(100);
-@@ -882,8 +912,8 @@ static void nau8824_jdet_work(struct work_struct *work)
- 	if (adc_value < HEADSET_SARADC_THD) {
- 		event |= SND_JACK_HEADPHONE;
- 
--		snd_soc_dapm_disable_pin(dapm, "SAR");
--		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
-+		nau8824_dapm_disable_pin(nau8824, "SAR");
-+		nau8824_dapm_disable_pin(nau8824, "MICBIAS");
- 		snd_soc_dapm_sync(dapm);
- 	} else {
- 		event |= SND_JACK_HEADSET;
--- 
-2.18.0
+>
+> > +             if (tx)
+> > +                     udelay(10);
+>
+> Any justification for the delay? Missing a line of comments? I
+> guess it's to address the 3-bit clocks timing. However, putting
+> it before enabling DMA request doesn't make much sense to me.
+
+Indeed. Will come back with a better patch in v3.
+
+thanks,
+Daniel.
