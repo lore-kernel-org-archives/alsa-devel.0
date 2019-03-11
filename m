@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: add i2c dependency for SND_SOC_SDM845" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:51 +0000 (GMT)
-Message-ID: <20190311172351.072681128896@debutante.sirena.org.uk>
-References: <20190304203114.1894822-3-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190304203114.1894822-3-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: src: fix compiler warnings" to
+	the asoc tree
+Date: Mon, 11 Mar 2019 17:23:20 +0000 (GMT)
+Message-ID: <20190311172320.7AB761128896@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABF02F89710
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 18:23:27 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: add i2c dependency for SND_SOC_SDM845
+   ASoC: rsnd: src: fix compiler warnings
 
 has been applied to the asoc tree at
 
@@ -37,38 +53,100 @@ to this mail.
 Thanks,
 Mark
 
->From 686174a0989b1c33698b26523a1e4ccdcc84cf22 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 4 Mar 2019 21:30:52 +0100
-Subject: [PATCH] ASoC: qcom: add i2c dependency for SND_SOC_SDM845
+>From 399706df420ea8bc8b31283a919e6475f737d0ea Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Thu, 7 Mar 2019 15:15:54 +0900
+Subject: [PATCH] ASoC: rsnd: src: fix compiler warnings
 
-We must not select SND_SOC_MAX98927 unless CONFIG_I2C
-is also enabled:
+compiler complains about following declarations
 
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98927
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
-  Selected by [y]:
-  - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && MFD_CROS_EC [=y]
+sound/soc/sh/rcar/src.c:174:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsdsr_table_pattern1[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:183:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsdsr_table_pattern2[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:192:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsisr_table[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:201:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan288888[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:210:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan244888[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:219:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan222222[] = {
+ ^~~~~
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
+This patch moves the 'static' keyword to the front of the
+declaration to fix the compiler warnings
+
+Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/src.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 75ceb04d8bf0..b1764af858ba 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -98,7 +98,7 @@ config SND_SOC_MSM8996
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 45096a66c074..585ffba0244b 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -134,7 +134,7 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
+ 	return rate;
+ }
  
- config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
--	depends on QCOM_APR && MFD_CROS_EC
-+	depends on QCOM_APR && MFD_CROS_EC && I2C
- 	select SND_SOC_QDSP6
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_RT5663
+-const static u32 bsdsr_table_pattern1[] = {
++static const u32 bsdsr_table_pattern1[] = {
+ 	0x01800000, /* 6 - 1/6 */
+ 	0x01000000, /* 6 - 1/4 */
+ 	0x00c00000, /* 6 - 1/3 */
+@@ -143,7 +143,7 @@ const static u32 bsdsr_table_pattern1[] = {
+ 	0x00400000, /* 6 - 1   */
+ };
+ 
+-const static u32 bsdsr_table_pattern2[] = {
++static const u32 bsdsr_table_pattern2[] = {
+ 	0x02400000, /* 6 - 1/6 */
+ 	0x01800000, /* 6 - 1/4 */
+ 	0x01200000, /* 6 - 1/3 */
+@@ -152,7 +152,7 @@ const static u32 bsdsr_table_pattern2[] = {
+ 	0x00600000, /* 6 - 1   */
+ };
+ 
+-const static u32 bsisr_table[] = {
++static const u32 bsisr_table[] = {
+ 	0x00100060, /* 6 - 1/6 */
+ 	0x00100040, /* 6 - 1/4 */
+ 	0x00100030, /* 6 - 1/3 */
+@@ -161,7 +161,7 @@ const static u32 bsisr_table[] = {
+ 	0x00100020, /* 6 - 1   */
+ };
+ 
+-const static u32 chan288888[] = {
++static const u32 chan288888[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x000001fe, /* 1 to 8 */
+ 	0x000001fe, /* 1 to 8 */
+@@ -170,7 +170,7 @@ const static u32 chan288888[] = {
+ 	0x000001fe, /* 1 to 8 */
+ };
+ 
+-const static u32 chan244888[] = {
++static const u32 chan244888[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x0000001e, /* 1 to 4 */
+ 	0x0000001e, /* 1 to 4 */
+@@ -179,7 +179,7 @@ const static u32 chan244888[] = {
+ 	0x000001fe, /* 1 to 8 */
+ };
+ 
+-const static u32 chan222222[] = {
++static const u32 chan222222[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x00000006, /* 1 to 2 */
+ 	0x00000006, /* 1 to 2 */
 -- 
 2.20.1
