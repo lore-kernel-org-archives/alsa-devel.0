@@ -1,18 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Fix DAPM routes for capture stream" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:57 +0000 (GMT)
-Message-ID: <20190311172357.85BCB1128896@debutante.sirena.org.uk>
-References: <20190306102445.1640-1-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190306102445.1640-1-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: i2s: change trigger traces" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:48 +0000 (GMT)
+Message-ID: <20190311172348.CB5321128896@debutante.sirena.org.uk>
+References: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Fix DAPM routes for capture stream
+   ASoC: stm32: i2s: change trigger traces
 
 has been applied to the asoc tree at
 
@@ -37,63 +47,51 @@ to this mail.
 Thanks,
 Mark
 
->From 42e4cedd67e4eb2abaa5e684353a55d4a01a913e Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Wed, 6 Mar 2019 11:24:45 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Fix DAPM routes for capture stream
+>From 52e7306ca2db565edc1503a74477f3547bc9e408 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 11 Mar 2019 16:26:28 +0100
+Subject: [PATCH] ASoC: stm32: i2s: change trigger traces
 
-This patch sets missing stream_name of capture part of the DAI driver
-so we can define DAPM routing properly also for the capture stream.
+Update traces to log capture/playback stream start/stop.
 
-While at it "Playback" suffix is added to the playback stream names
-to clearly identify playback/capture.
-
-Together with related dts patch this fixes NULL pointer dereference
-when opening ALSA device for recording on Odroid XU3.
-
-Fixes: 64aba9bca5bd ("ASoC: samsung: i2s: Add widgets and routes for DPCM support")
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 4231001226f4..ab471d550d17 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1130,11 +1130,11 @@ static const struct snd_soc_dapm_widget samsung_i2s_widgets[] = {
- };
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 47c334de6b09..783b33497435 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -593,7 +593,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		/* Enable i2s */
+-		dev_dbg(cpu_dai->dev, "start I2S\n");
++		dev_dbg(cpu_dai->dev, "start I2S %s\n",
++			playback_flg ? "playback" : "capture");
  
- static const struct snd_soc_dapm_route samsung_i2s_dapm_routes[] = {
--	{ "Playback Mixer", NULL, "Primary" },
--	{ "Playback Mixer", NULL, "Secondary" },
-+	{ "Playback Mixer", NULL, "Primary Playback" },
-+	{ "Playback Mixer", NULL, "Secondary Playback" },
+ 		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+ 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+@@ -638,6 +639,9 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		dev_dbg(cpu_dai->dev, "stop I2S %s\n",
++			playback_flg ? "playback" : "capture");
++
+ 		if (playback_flg)
+ 			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
+ 					   I2S_IER_UDRIE,
+@@ -654,8 +658,6 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			break;
+ 		}
  
- 	{ "Mixer DAI TX", NULL, "Playback Mixer" },
--	{ "Playback Mixer", NULL, "Mixer DAI RX" },
-+	{ "Primary Capture", NULL, "Mixer DAI RX" },
- };
- 
- static const struct snd_soc_component_driver samsung_i2s_component = {
-@@ -1155,7 +1155,8 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
- 			  int num_dais)
- {
- 	static const char *dai_names[] = { "samsung-i2s", "samsung-i2s-sec" };
--	static const char *stream_names[] = { "Primary", "Secondary" };
-+	static const char *stream_names[] = { "Primary Playback",
-+					      "Secondary Playback" };
- 	struct snd_soc_dai_driver *dai_drv;
- 	struct i2s_dai *dai;
- 	int i;
-@@ -1201,6 +1202,7 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
- 	dai_drv->capture.channels_max = 2;
- 	dai_drv->capture.rates = i2s_dai_data->pcm_rates;
- 	dai_drv->capture.formats = SAMSUNG_I2S_FMTS;
-+	dai_drv->capture.stream_name = "Primary Capture";
- 
- 	return 0;
- }
+-		dev_dbg(cpu_dai->dev, "stop I2S\n");
+-
+ 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+ 					 I2S_CR1_SPE, 0);
+ 		if (ret < 0) {
 -- 
 2.20.1
