@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ams-delta: remove duplicate 'const'" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:40 +0000 (GMT)
-Message-ID: <20190311172340.133D41128896@debutante.sirena.org.uk>
-References: <20190307101101.613881-1-arnd@arndb.de>
+Subject: Applied "ASoC: stm32: i2s: improve channel capabilities handling" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:46 +0000 (GMT)
+Message-ID: <20190311172346.A663B1128896@debutante.sirena.org.uk>
+References: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
+In-Reply-To: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ams-delta: remove duplicate 'const'
+   ASoC: stm32: i2s: improve channel capabilities handling
 
 has been applied to the asoc tree at
 
@@ -37,40 +36,48 @@ to this mail.
 Thanks,
 Mark
 
->From c9fbc1c02ec881c8bb037f87efb706d22589fdab Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 11:10:49 +0100
-Subject: [PATCH] ASoC: ams-delta: remove duplicate 'const'
+>From c2dc8b2c114c22d7a04cf26a7c7d04faaa757143 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 11 Mar 2019 16:26:29 +0100
+Subject: [PATCH] ASoC: stm32: i2s: improve channel capabilities handling
 
-clang points out that SOC_ENUM_SINGLE_EXT_DECL() contains a 'const'
-modifier already, so adding another one does not make it more const:
+Use alsa snd_pcm_hw_constraint_single service to manage
+channels restriction. This provides better status on driver
+limitations, to the application.
 
-sound/soc/ti/ams-delta.c:203:14: error: duplicate 'const' declaration specifier [-Werror,-Wduplicate-decl-specifier]
-static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-             ^
-include/sound/soc.h:351:2: note: expanded from macro 'SOC_ENUM_SINGLE_EXT_DECL'
-        const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/ams-delta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_i2s.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
-index 4dce494dfbd3..b9611db14c86 100644
---- a/sound/soc/ti/ams-delta.c
-+++ b/sound/soc/ti/ams-delta.c
-@@ -200,7 +200,7 @@ static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 783b33497435..06bbbef74b3a 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -496,12 +496,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	unsigned int fthlv;
+ 	int ret;
  
--static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-+static SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
- 				      ams_delta_audio_mode);
+-	if ((params_channels(params) == 1) &&
+-	    ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)) {
+-		dev_err(cpu_dai->dev, "Mono mode supported only by DSP_A\n");
+-		return -EINVAL;
+-	}
+-
+ 	switch (format) {
+ 	case 16:
+ 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
+@@ -551,6 +545,10 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 	i2s->substream = substream;
+ 	spin_unlock_irqrestore(&i2s->irq_lock, flags);
  
- static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
++	if ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)
++		snd_pcm_hw_constraint_single(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++
+ 	ret = clk_prepare_enable(i2s->i2sclk);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
 -- 
 2.20.1
