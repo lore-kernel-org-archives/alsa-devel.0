@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8824: fix the issue of the widget
-	with prefix name" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:27 +0000 (GMT)
-Message-ID: <20190311172327.0C4B51128896@debutante.sirena.org.uk>
-References: <20190311013645.31523-1-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC:intel:skl:fix a simultaneous playback &
+	capture issue on hda platform" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:31 +0000 (GMT)
+Message-ID: <20190311172331.587D01128896@debutante.sirena.org.uk>
+References: <20190308083859.50026-4-rander.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98F65F80056
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 18:23:30 +0100 (CET)
-In-Reply-To: <20190311013645.31523-1-KCHSU0@nuvoton.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBD1FF8971E
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 18:23:32 +0100 (CET)
+In-Reply-To: <20190308083859.50026-4-rander.wang@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+To: Rander Wang <rander.wang@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8824: fix the issue of the widget with prefix name
+   ASoC:intel:skl:fix a simultaneous playback & capture issue on hda platform
 
 has been applied to the asoc tree at
 
@@ -55,107 +55,78 @@ to this mail.
 Thanks,
 Mark
 
->From 844a4a362dbec166b44d6b9b3dd45b08cb273703 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Mon, 11 Mar 2019 09:36:45 +0800
-Subject: [PATCH] ASoC: nau8824: fix the issue of the widget with prefix name
+>From c899df3e9b0bf7b76e642aed1a214582ea7012d5 Mon Sep 17 00:00:00 2001
+From: Rander Wang <rander.wang@linux.intel.com>
+Date: Fri, 8 Mar 2019 16:38:59 +0800
+Subject: [PATCH] ASoC:intel:skl:fix a simultaneous playback & capture issue on
+ hda platform
 
-The driver has two issues when machine add prefix name for codec.
-(1)The stream name of DAI can't find the AIF widgets.
-(2)The drivr can enable/disalbe the MICBIAS and SAR widgets.
+If playback and capture are enabled concurrently, when the capture stops
+the output becomes inaudile. The playback application will become stuck
+and underrun after a timeout.
 
-The patch will fix these issues caused by prefixed name added.
+This is caused by mistaken use of the stream_id, which should only be
+set for playback and not for capture
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Tested on Apollolake and Kabylake with SST driver.
+
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8824.c | 46 +++++++++++++++++++++++++++++++-------
- 1 file changed, 38 insertions(+), 8 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 87ed3dc496dc..5ab05e75edea 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -681,8 +681,8 @@ static const struct snd_soc_dapm_widget nau8824_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("ADCR", NULL, NAU8824_REG_ANALOG_ADC_2,
- 		NAU8824_ADCR_EN_SFT, 0),
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index a4284778f117..bb463ee6ff84 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -181,6 +181,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 	struct hdac_stream *hstream;
+ 	struct hdac_ext_stream *stream;
+ 	struct hdac_ext_link *link;
++	unsigned char stream_tag;
  
--	SND_SOC_DAPM_AIF_OUT("AIFTX", "HiFi Capture", 0, SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_AIF_IN("AIFRX", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("AIFTX", "Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIFRX", "Playback", 0, SND_SOC_NOPM, 0, 0),
+ 	hstream = snd_hdac_get_stream(bus, params->stream,
+ 					params->link_dma_id + 1);
+@@ -199,10 +200,13 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
  
- 	SND_SOC_DAPM_DAC("DACL", NULL, NAU8824_REG_RDAC,
- 		NAU8824_DACL_EN_SFT, 0),
-@@ -831,6 +831,36 @@ static void nau8824_int_status_clear_all(struct regmap *regmap)
+ 	snd_hdac_ext_link_stream_setup(stream, format_val);
+ 
+-	list_for_each_entry(link, &bus->hlink_list, list) {
+-		if (link->index == params->link_index)
+-			snd_hdac_ext_link_set_stream_id(link,
+-					hstream->stream_tag);
++	stream_tag = hstream->stream_tag;
++	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		list_for_each_entry(link, &bus->hlink_list, list) {
++			if (link->index == params->link_index)
++				snd_hdac_ext_link_set_stream_id(link,
++								stream_tag);
++		}
  	}
+ 
+ 	stream->link_prepared = 1;
+@@ -645,6 +649,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_stream *link_dev =
+ 				snd_soc_dai_get_dma_data(dai, substream);
+ 	struct hdac_ext_link *link;
++	unsigned char stream_tag;
+ 
+ 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+ 
+@@ -654,7 +659,11 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
+ 
+-	snd_hdac_ext_link_clear_stream_id(link, hdac_stream(link_dev)->stream_tag);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		stream_tag = hdac_stream(link_dev)->stream_tag;
++		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++	}
++
+ 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
+ 	return 0;
  }
- 
-+static void nau8824_dapm_disable_pin(struct nau8824 *nau8824, const char *pin)
-+{
-+	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-+	const char *prefix = dapm->component->name_prefix;
-+	char prefixed_pin[80];
-+
-+	if (prefix) {
-+		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
-+			 prefix, pin);
-+		snd_soc_dapm_disable_pin(dapm, prefixed_pin);
-+	} else {
-+		snd_soc_dapm_disable_pin(dapm, pin);
-+	}
-+}
-+
-+static void nau8824_dapm_enable_pin(struct nau8824 *nau8824, const char *pin)
-+{
-+	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-+	const char *prefix = dapm->component->name_prefix;
-+	char prefixed_pin[80];
-+
-+	if (prefix) {
-+		snprintf(prefixed_pin, sizeof(prefixed_pin), "%s %s",
-+			 prefix, pin);
-+		snd_soc_dapm_force_enable_pin(dapm, prefixed_pin);
-+	} else {
-+		snd_soc_dapm_force_enable_pin(dapm, pin);
-+	}
-+}
-+
- static void nau8824_eject_jack(struct nau8824 *nau8824)
- {
- 	struct snd_soc_dapm_context *dapm = nau8824->dapm;
-@@ -839,8 +869,8 @@ static void nau8824_eject_jack(struct nau8824 *nau8824)
- 	/* Clear all interruption status */
- 	nau8824_int_status_clear_all(regmap);
- 
--	snd_soc_dapm_disable_pin(dapm, "SAR");
--	snd_soc_dapm_disable_pin(dapm, "MICBIAS");
-+	nau8824_dapm_disable_pin(nau8824, "SAR");
-+	nau8824_dapm_disable_pin(nau8824, "MICBIAS");
- 	snd_soc_dapm_sync(dapm);
- 
- 	/* Enable the insertion interruption, disable the ejection
-@@ -870,8 +900,8 @@ static void nau8824_jdet_work(struct work_struct *work)
- 	struct regmap *regmap = nau8824->regmap;
- 	int adc_value, event = 0, event_mask = 0;
- 
--	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
--	snd_soc_dapm_force_enable_pin(dapm, "SAR");
-+	nau8824_dapm_enable_pin(nau8824, "MICBIAS");
-+	nau8824_dapm_enable_pin(nau8824, "SAR");
- 	snd_soc_dapm_sync(dapm);
- 
- 	msleep(100);
-@@ -882,8 +912,8 @@ static void nau8824_jdet_work(struct work_struct *work)
- 	if (adc_value < HEADSET_SARADC_THD) {
- 		event |= SND_JACK_HEADPHONE;
- 
--		snd_soc_dapm_disable_pin(dapm, "SAR");
--		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
-+		nau8824_dapm_disable_pin(nau8824, "SAR");
-+		nau8824_dapm_disable_pin(nau8824, "MICBIAS");
- 		snd_soc_dapm_sync(dapm);
- 	} else {
- 		event |= SND_JACK_HEADSET;
 -- 
 2.20.1
