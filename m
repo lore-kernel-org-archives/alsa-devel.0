@@ -1,13 +1,11 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 3/3] ASoC: stm32: i2s: use default dai name
-Date: Mon, 11 Mar 2019 16:26:30 +0100
-Message-ID: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
-References: <1552317990-24219-1-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH] ASoC: stm32: i2s: fix registers declaration in regmap
+Date: Mon, 11 Mar 2019 16:39:28 +0100
+Message-ID: <1552318768-25404-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -20,53 +18,35 @@ Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Use default DAI name based on dev_name function.
+- Declare SR as volatile, as it is changed by hardware.
+- Remove TXDR from readable and volatile register list,
+as it is intended for write accesses only.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/soc/stm/stm32_i2s.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 06bbbef74b3a..c18e068c1a0d 100644
+index c18e068c1a0d..952634258b02 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -179,7 +179,6 @@ enum i2s_datlen {
- 	I2S_I2SMOD_DATLEN_32,
- };
- 
--#define STM32_I2S_DAI_NAME_SIZE		20
- #define STM32_I2S_FIFO_SIZE		16
- 
- #define STM32_I2S_IS_MASTER(x)		((x)->ms_flg == I2S_MS_MASTER)
-@@ -202,7 +201,6 @@ enum i2s_datlen {
-  * @phys_addr: I2S registers physical base address
-  * @lock_fd: lock to manage race conditions in full duplex mode
-  * @irq_lock: prevent race condition with IRQ
-- * @dais_name: DAI name
-  * @mclk_rate: master clock frequency (Hz)
-  * @fmt: DAI protocol
-  * @refcount: keep count of opened streams on I2S
-@@ -224,7 +222,6 @@ struct stm32_i2s_data {
- 	dma_addr_t phys_addr;
- 	spinlock_t lock_fd; /* Manage race conditions for full duplex */
- 	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
--	char dais_name[STM32_I2S_DAI_NAME_SIZE];
- 	unsigned int mclk_rate;
- 	unsigned int fmt;
- 	int refcount;
-@@ -771,12 +768,8 @@ static int stm32_i2s_dais_init(struct platform_device *pdev,
- 	if (!dai_ptr)
- 		return -ENOMEM;
- 
--	snprintf(i2s->dais_name, STM32_I2S_DAI_NAME_SIZE,
--		 "%s", dev_name(&pdev->dev));
--
- 	dai_ptr->probe = stm32_i2s_dai_probe;
- 	dai_ptr->ops = &stm32_i2s_pcm_dai_ops;
--	dai_ptr->name = i2s->dais_name;
- 	dai_ptr->id = 1;
- 	stm32_i2s_dai_init(&dai_ptr->playback, "playback");
- 	stm32_i2s_dai_init(&dai_ptr->capture, "capture");
+@@ -278,7 +278,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ 	case STM32_I2S_CFG2_REG:
+ 	case STM32_I2S_IER_REG:
+ 	case STM32_I2S_SR_REG:
+-	case STM32_I2S_TXDR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 	case STM32_I2S_CGFR_REG:
+ 		return true;
+@@ -290,7 +289,7 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
+ static bool stm32_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+-	case STM32_I2S_TXDR_REG:
++	case STM32_I2S_SR_REG:
+ 	case STM32_I2S_RXDR_REG:
+ 		return true;
+ 	default:
 -- 
 2.7.4
