@@ -1,52 +1,136 @@
-From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH] ASoC: stm32: i2s: fix registers declaration in regmap
-Date: Mon, 11 Mar 2019 16:39:28 +0100
-Message-ID: <1552318768-25404-1-git-send-email-olivier.moysan@st.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
+ infrastructure 'bclk_ratio aware'
+Date: Mon, 11 Mar 2019 16:43:39 +0100
+Message-ID: <e9ce6844-8239-63a7-1855-7f47ebd97723@perex.cz>
+References: <20190304165955.21696-1-TheSven73@gmail.com>
+ <20190305044232.GA15636@workstation>
+ <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
+ <20190308041056.GA1172@workstation>
+ <20190308125916.2cgiqclp6jmlfbim@shell.armlinux.org.uk>
+ <20190308172235.GA31189@sirena.org.uk>
+ <25dec9c5-af5c-bc54-89dd-2abdeffa9f82@perex.cz>
+ <20190311081546.GA8324@workstation>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60DF7F806F5
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 16:43:44 +0100 (CET)
+In-Reply-To: <20190311081546.GA8324@workstation>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux admin <linux@armlinux.org.uk>, Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-- Declare SR as volatile, as it is changed by hardware.
-- Remove TXDR from readable and volatile register list,
-as it is intended for write accesses only.
+Dne 11. 03. 19 v 9:15 Takashi Sakamoto napsal(a):
+> Hi all,
+> 
+> On Fri, Mar 08, 2019 at 08:54:03PM +0100, Jaroslav Kysela wrote:
+>> Dne 08. 03. 19 v 18:22 Mark Brown napsal(a):
+>>> On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
+>>>> On Fri, Mar 08, 2019 at 01:10:57PM +0900, Takashi Sakamoto wrote:
+>>>
+>>>>> In expectation of ALSA PCM interface for hardware for usual device:
+>>>>>  - half number of phases of SCK per phase of WC
+>>>>>    = physical_width of sample
+>>>>>    = bytes per sample
+>>>
+>>>> They are not the same thing.
+>>>
+>>>> Let's take SNDRV_PCM_FORMAT_S16_LE.  The in-memory layout of this format
+>>>> is two 16-bit samples next to each other in a single 32-bit word.  Their
+>>>> width is 16, their physical_width is 16, and bytes per sample is 2.
+>>>
+>>>> A CPU DAI can do one of two things:
+>>>
+>>>> 1) it can generate exactly 16 SCK clock cycles per sample before WS
+>>>>    changes state, leading to a total of 32 SCK clock cycles per
+>>>>    frame.
+>>>
+>>>> 2) it can generate more than 16 SCK clock cycles per sample.
+>>>
+>>>> Both are entirely legal and permissable under the I2S specification.
+>>>> Both look the same in memory.
+>>>
+>>>> The ALSA format specification (SNDRV_PCM_FORMAT_*) does not specify
+>>>> which of these two is used on the wire - it only specifies the in-
+>>>> memory format.
+>>>
+>>> Everything Russell is saying here is correct.  The actual
+>>> ABI only affects the in memory format, userspace really shouldn't care
+>>> what's going on on the wire.  However we don't have separate
+>>> infrastructure for what goes on the wire and 90% of the time you can
+>>> just translate the memory layout into a wire layout which works so we're
+>>> conflating the two in a lot of places internally which is confusing and
+>>> fragile.
+>>
+>> I agree. We just need a library which will:
+>>
+>> 1) gather the information from hardware drivers
+>>   - a simple description of the bclk constrains
+>> 2) create right constraints (hw_params rules) for the ALSA PCM API
+>> 3) return the selected bclk when hw_params are installed
+>>
+>> The description of the bclk constraints from the hardware driver might
+>> be min/max or a list of allowed wire format bit width * channels,
+>> eventually define the wire formats (bitmask) and use them in this
+>> library. I can imagine that all of those bclk contraints descriptions
+>> (or any future, if there are such requirement) can be implemented in
+>> this library.
+>>
+>> The library should not extend hw_params (new interval), but it should
+>> work as a separate layer - use new structures / functions etc.
+> 
+> As another option I can suggest; usage of 'subformat' field of 'struct
+> snd_pcm_hw_params'.
+> 
+> At present, ALSA PCM interface has one entry to this field:
+>  - SNDRV_PCM_SUBFORMAT_STD
+> 
+> And no drivers use this entry.
+> 
+> Let's assume to add new entries to represent bclk/ws for the issued case:
+>  - SNDRV_PCM_SUBFORMAT_I2S_16BCLK_PER_WS
+>  - SNDRV_PCM_SUBFORMAT_I2S_48BCLK_PER_WS
+>  - SNDRV_PCM_SUBFORMAT_I2S_64BCLK_PER_WS
+>  - SNDRV_PCM_SUBFORMAT_I2S_128BCLK_PER_WS
+> 
+> Drivers can have constraints and rules for the parameter. At least, ALSA
+> PCM core should have an rule (if I understand correctly):
+>  - BCLK count of these subformats > physical_width * channel
+> 
+> One week point is it's not 'interval' type of parameter but 'mask'
+> parameter, thus we can't represent min/max/integer and so on. However,
+> less changes for ALSA PCM interface.
+> 
+> This is just an idea so it's not enough for me to consider about
+> relevant implementation. Any indication is welcome.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_i2s.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I would not use any of the "user space" ioctl API to represent the
+hardware bclk requirements. The applications should know just the DMA
+memory layout.
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index c18e068c1a0d..952634258b02 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -278,7 +278,6 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
- 	case STM32_I2S_CFG2_REG:
- 	case STM32_I2S_IER_REG:
- 	case STM32_I2S_SR_REG:
--	case STM32_I2S_TXDR_REG:
- 	case STM32_I2S_RXDR_REG:
- 	case STM32_I2S_CGFR_REG:
- 		return true;
-@@ -290,7 +289,7 @@ static bool stm32_i2s_readable_reg(struct device *dev, unsigned int reg)
- static bool stm32_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case STM32_I2S_TXDR_REG:
-+	case STM32_I2S_SR_REG:
- 	case STM32_I2S_RXDR_REG:
- 		return true;
- 	default:
+Also, think about the multiple simultaneous paths for the audio output
+in the sound controller (so one DMA from the user space to the
+controller, but the controller can do multiple simultaneous outputs
+using different clocks combining different wire buses or so). Yes, it's
+the corner case, but it's another reason to have the bclk code totally
+separated from the user space ALSA's PCM API.
+
+					Jaroslav
+
 -- 
-2.7.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
