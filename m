@@ -1,18 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: remove compat dma probing" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:42 +0000 (GMT)
-Message-ID: <20190311172342.47D561128896@debutante.sirena.org.uk>
-References: <20190307151646.1016966-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307151646.1016966-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgPeter Ujfalusi <peter.ujfalusi@ti.com>, Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: i2s: use default dai name" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:44 +0000 (GMT)
+Message-ID: <20190311172344.774651128896@debutante.sirena.org.uk>
+References: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: remove compat dma probing
+   ASoC: stm32: i2s: use default dai name
 
 has been applied to the asoc tree at
 
@@ -37,100 +47,59 @@ to this mail.
 Thanks,
 Mark
 
->From 642aafea8889b712fe8e57aaa706d6c05d295059 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 16:16:08 +0100
-Subject: [PATCH] ASoC: ti: remove compat dma probing
+>From fef050c88ce1cbec1ab9a0d981b5331a5ba40f15 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 11 Mar 2019 16:26:30 +0100
+Subject: [PATCH] ASoC: stm32: i2s: use default dai name
 
-After running into a link error:
+Use default DAI name based on dev_name function.
 
-sound/soc/ti/edma-pcm.o:(.rodata+0x18): undefined reference to `edma_filter_fn'
-
-I checked all users of this, and they have new-style 'dma_slave_map' tables,
-so none of them should still need it. Removing the associated lines
-simplifies the code and avoids the build-time dependency on the
-respective dmaengine drivers.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/edma-pcm.c | 5 +----
- sound/soc/ti/sdma-pcm.c | 9 +++------
- 2 files changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/ti/edma-pcm.c b/sound/soc/ti/edma-pcm.c
-index 59e588abe54b..fdffb801b185 100644
---- a/sound/soc/ti/edma-pcm.c
-+++ b/sound/soc/ti/edma-pcm.c
-@@ -23,7 +23,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/edma.h>
- 
- #include "edma-pcm.h"
- 
-@@ -43,14 +42,12 @@ static const struct snd_pcm_hardware edma_pcm_hardware = {
- static const struct snd_dmaengine_pcm_config edma_dmaengine_pcm_config = {
- 	.pcm_hardware = &edma_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = edma_filter_fn,
- 	.prealloc_buffer_size = 128 * 1024,
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 06bbbef74b3a..c18e068c1a0d 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -179,7 +179,6 @@ enum i2s_datlen {
+ 	I2S_I2SMOD_DATLEN_32,
  };
  
- int edma_pcm_platform_register(struct device *dev)
- {
--	return devm_snd_dmaengine_pcm_register(dev, &edma_dmaengine_pcm_config,
--					SND_DMAENGINE_PCM_FLAG_COMPAT);
-+	return devm_snd_dmaengine_pcm_register(dev, &edma_dmaengine_pcm_config, 0);
- }
- EXPORT_SYMBOL_GPL(edma_pcm_platform_register);
+-#define STM32_I2S_DAI_NAME_SIZE		20
+ #define STM32_I2S_FIFO_SIZE		16
  
-diff --git a/sound/soc/ti/sdma-pcm.c b/sound/soc/ti/sdma-pcm.c
-index 21a9c2499d48..a236350beb10 100644
---- a/sound/soc/ti/sdma-pcm.c
-+++ b/sound/soc/ti/sdma-pcm.c
-@@ -11,7 +11,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/omap-dmaengine.h>
+ #define STM32_I2S_IS_MASTER(x)		((x)->ms_flg == I2S_MS_MASTER)
+@@ -202,7 +201,6 @@ enum i2s_datlen {
+  * @phys_addr: I2S registers physical base address
+  * @lock_fd: lock to manage race conditions in full duplex mode
+  * @irq_lock: prevent race condition with IRQ
+- * @dais_name: DAI name
+  * @mclk_rate: master clock frequency (Hz)
+  * @fmt: DAI protocol
+  * @refcount: keep count of opened streams on I2S
+@@ -224,7 +222,6 @@ struct stm32_i2s_data {
+ 	dma_addr_t phys_addr;
+ 	spinlock_t lock_fd; /* Manage race conditions for full duplex */
+ 	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
+-	char dais_name[STM32_I2S_DAI_NAME_SIZE];
+ 	unsigned int mclk_rate;
+ 	unsigned int fmt;
+ 	int refcount;
+@@ -771,12 +768,8 @@ static int stm32_i2s_dais_init(struct platform_device *pdev,
+ 	if (!dai_ptr)
+ 		return -ENOMEM;
  
- #include "sdma-pcm.h"
- 
-@@ -31,7 +30,6 @@ static const struct snd_pcm_hardware sdma_pcm_hardware = {
- static const struct snd_dmaengine_pcm_config sdma_dmaengine_pcm_config = {
- 	.pcm_hardware = &sdma_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = omap_dma_filter_fn,
- 	.prealloc_buffer_size = 128 * 1024,
- };
- 
-@@ -39,13 +37,12 @@ int sdma_pcm_platform_register(struct device *dev,
- 			       char *txdmachan, char *rxdmachan)
- {
- 	struct snd_dmaengine_pcm_config *config;
--	unsigned int flags = SND_DMAENGINE_PCM_FLAG_COMPAT;
-+	unsigned int flags = 0;
- 
- 	/* Standard names for the directions: 'tx' and 'rx' */
- 	if (!txdmachan && !rxdmachan)
- 		return devm_snd_dmaengine_pcm_register(dev,
--						&sdma_dmaengine_pcm_config,
--						flags);
-+						&sdma_dmaengine_pcm_config, 0);
- 
- 	config = devm_kzalloc(dev, sizeof(*config), GFP_KERNEL);
- 	if (!config)
-@@ -65,7 +62,7 @@ int sdma_pcm_platform_register(struct device *dev,
- 	config->chan_names[0] = txdmachan;
- 	config->chan_names[1] = rxdmachan;
- 
--	return devm_snd_dmaengine_pcm_register(dev, config, flags);
-+	return devm_snd_dmaengine_pcm_register(dev, config, 0);
- }
- EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
- 
+-	snprintf(i2s->dais_name, STM32_I2S_DAI_NAME_SIZE,
+-		 "%s", dev_name(&pdev->dev));
+-
+ 	dai_ptr->probe = stm32_i2s_dai_probe;
+ 	dai_ptr->ops = &stm32_i2s_pcm_dai_ops;
+-	dai_ptr->name = i2s->dais_name;
+ 	dai_ptr->id = 1;
+ 	stm32_i2s_dai_init(&dai_ptr->playback, "playback");
+ 	stm32_i2s_dai_init(&dai_ptr->capture, "capture");
 -- 
 2.20.1
