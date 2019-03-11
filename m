@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC:hdac_hda:use correct format to setup hda
-	codec" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:33 +0000 (GMT)
-Message-ID: <20190311172333.7FEA41128896@debutante.sirena.org.uk>
+Subject: Applied "ASoC:soc-pcm:fix a codec fixup issue in TDM
+	case" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:35 +0000 (GMT)
+Message-ID: <20190311172335.A910E1128896@debutante.sirena.org.uk>
+References: <20190308083859.50026-2-rander.wang@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75868F89724
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 18:23:34 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1CBCF89728
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 18:23:36 +0100 (CET)
+In-Reply-To: <20190308083859.50026-2-rander.wang@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Rander Wang <rander.wang@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC:hdac_hda:use correct format to setup hda codec
+   ASoC:soc-pcm:fix a codec fixup issue in TDM case
 
 has been applied to the asoc tree at
 
@@ -53,141 +55,61 @@ to this mail.
 Thanks,
 Mark
 
->From 03d0aa4d4fddce4a5d865d819a4d98bfc3d451e6 Mon Sep 17 00:00:00 2001
+>From 570f18b6a8d1f0e60e8caf30e66161b6438dcc91 Mon Sep 17 00:00:00 2001
 From: Rander Wang <rander.wang@linux.intel.com>
-Date: Fri, 8 Mar 2019 16:38:58 +0800
-Subject: [PATCH] ASoC:hdac_hda:use correct format to setup hda codec
+Date: Fri, 8 Mar 2019 16:38:57 +0800
+Subject: [PATCH] ASoC:soc-pcm:fix a codec fixup issue in TDM case
 
-The current implementation of the hdac_hda codec results in zero-valued
-samples on capture and noise with headset playback when SOF is used on
-platforms with an on-board HDaudio codec. This is root-caused to SOF
-using be_hw_params_fixup, and the prepare() call using invalid runtime
-fields to determine the format.
+On HDaudio platforms, if playback is started when capture is working,
+there is no audible output.
 
-This patch moves the format handling to the hw_params() callback, as
-done already for hdac_hdmi, to make sure the fixed-up information is
-taken into account but keeps the codec initialization in prepare() as
-the stream_tag is only available at that time. Moving everything in the
-prepare() callback is possible but the code is less elegant so this
-two-step solution was chosen.
+This can be root-caused to the use of the rx|tx_mask to store an HDaudio
+stream tag.
 
-The solution was tested with the SST driver with no regressions, and all
-the issues with SOF playback and capture are solved.
+If capture is stared before playback, rx_mask would be non-zero on HDaudio
+platform, then the channel number of playback, which is in the same codec
+dai with the capture, would be changed by soc_pcm_codec_params_fixup based
+on the tx_mask at first, then overwritten by this function based on rx_mask
+at last.
+
+According to the author of tx|rx_mask, tx_mask is for playback and rx_mask
+is for capture. And stream direction is checked at all other references of
+tx|rx_mask in ASoC, so here should be an error. This patch checks stream
+direction for tx|rx_mask for fixup function.
+
+This issue would affect not only HDaudio+ASoC, but also I2S codecs if the
+channel number based on rx_mask is not equal to the one for tx_mask. It could
+be rarely reproduecd because most drivers in kernel set the same channel number
+to tx|rx_mask or rx_mask is zero.
+
+Tested on all platforms using stream_tag & HDaudio and intel I2S platforms.
 
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hda.c | 53 +++++++++++++++++++++++++++----------
- sound/soc/codecs/hdac_hda.h |  1 +
- 2 files changed, 40 insertions(+), 14 deletions(-)
+ sound/soc/soc-pcm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index ffecdaaa8cf2..f889d94c8e3c 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -38,6 +38,9 @@ static void hdac_hda_dai_close(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai);
- static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai);
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai);
- static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
-@@ -50,6 +53,7 @@ static const struct snd_soc_dai_ops hdac_hda_dai_ops = {
- 	.startup = hdac_hda_dai_open,
- 	.shutdown = hdac_hda_dai_close,
- 	.prepare = hdac_hda_dai_prepare,
-+	.hw_params = hdac_hda_dai_hw_params,
- 	.hw_free = hdac_hda_dai_hw_free,
- 	.set_tdm_slot = hdac_hda_dai_set_tdm_slot,
- };
-@@ -139,6 +143,39 @@ static int hdac_hda_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a5b40e82dea4..e70555a4ea06 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -954,10 +954,13 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		codec_params = *params;
  
-+static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct hdac_hda_priv *hda_pvt;
-+	unsigned int format_val;
-+	unsigned int maxbps;
+ 		/* fixup params based on TDM slot masks */
+-		if (codec_dai->tx_mask)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
++		    codec_dai->tx_mask)
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->tx_mask);
+-		if (codec_dai->rx_mask)
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		maxbps = dai->driver->playback.sig_bits;
-+	else
-+		maxbps = dai->driver->capture.sig_bits;
-+
-+	hda_pvt = snd_soc_component_get_drvdata(component);
-+	format_val = snd_hdac_calc_stream_format(params_rate(params),
-+						 params_channels(params),
-+						 params_format(params),
-+						 maxbps,
-+						 0);
-+	if (!format_val) {
-+		dev_err(dai->dev,
-+			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
-+			params_rate(params), params_channels(params),
-+			params_format(params), maxbps);
-+
-+		return -EINVAL;
-+	}
-+
-+	hda_pvt->pcm[dai->id].format_val[substream->stream] = format_val;
-+	return 0;
-+}
-+
- static int hdac_hda_dai_hw_free(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
-@@ -162,10 +199,9 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct hda_pcm_stream *hda_stream;
- 	struct hdac_hda_priv *hda_pvt;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct hdac_device *hdev;
--	struct hda_pcm_stream *hda_stream;
- 	unsigned int format_val;
- 	struct hda_pcm *pcm;
- 	unsigned int stream;
-@@ -179,19 +215,8 @@ static int hdac_hda_dai_prepare(struct snd_pcm_substream *substream,
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
++		    codec_dai->rx_mask)
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->rx_mask);
  
- 	hda_stream = &pcm->stream[substream->stream];
- 
--	format_val = snd_hdac_calc_stream_format(runtime->rate,
--						 runtime->channels,
--						 runtime->format,
--						 hda_stream->maxbps,
--						 0);
--	if (!format_val) {
--		dev_err(&hdev->dev,
--			"invalid format_val, rate=%d, ch=%d, format=%d\n",
--			runtime->rate, runtime->channels, runtime->format);
--		return -EINVAL;
--	}
--
- 	stream = hda_pvt->pcm[dai->id].stream_tag[substream->stream];
-+	format_val = hda_pvt->pcm[dai->id].format_val[substream->stream];
- 
- 	ret = snd_hda_codec_prepare(&hda_pvt->codec, hda_stream,
- 				    stream, format_val, substream);
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-index e444ef593360..6b1bd4f428e7 100644
---- a/sound/soc/codecs/hdac_hda.h
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -8,6 +8,7 @@
- 
- struct hdac_hda_pcm {
- 	int stream_tag[2];
-+	unsigned int format_val[2];
- };
- 
- struct hdac_hda_priv {
 -- 
 2.20.1
