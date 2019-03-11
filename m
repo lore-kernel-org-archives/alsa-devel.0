@@ -1,136 +1,140 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
- infrastructure 'bclk_ratio aware'
-Date: Mon, 11 Mar 2019 16:43:39 +0100
-Message-ID: <e9ce6844-8239-63a7-1855-7f47ebd97723@perex.cz>
-References: <20190304165955.21696-1-TheSven73@gmail.com>
- <20190305044232.GA15636@workstation>
- <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
- <20190308041056.GA1172@workstation>
- <20190308125916.2cgiqclp6jmlfbim@shell.armlinux.org.uk>
- <20190308172235.GA31189@sirena.org.uk>
- <25dec9c5-af5c-bc54-89dd-2abdeffa9f82@perex.cz>
- <20190311081546.GA8324@workstation>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60DF7F806F5
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 16:43:44 +0100 (CET)
-In-Reply-To: <20190311081546.GA8324@workstation>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux admin <linux@armlinux.org.uk>, Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: src: Avoid a potential deadlock" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:22 +0000 (GMT)
+Message-ID: <20190311172322.AD1AF1128897@debutante.sirena.org.uk>
+References: <20190307061554.26486-2-jiada_wang@mentor.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307061554.26486-2-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.comkuninori.morimoto.gx@renesas.com, jiada_wang@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 11. 03. 19 v 9:15 Takashi Sakamoto napsal(a):
-> Hi all,
-> 
-> On Fri, Mar 08, 2019 at 08:54:03PM +0100, Jaroslav Kysela wrote:
->> Dne 08. 03. 19 v 18:22 Mark Brown napsal(a):
->>> On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
->>>> On Fri, Mar 08, 2019 at 01:10:57PM +0900, Takashi Sakamoto wrote:
->>>
->>>>> In expectation of ALSA PCM interface for hardware for usual device:
->>>>>  - half number of phases of SCK per phase of WC
->>>>>    = physical_width of sample
->>>>>    = bytes per sample
->>>
->>>> They are not the same thing.
->>>
->>>> Let's take SNDRV_PCM_FORMAT_S16_LE.  The in-memory layout of this format
->>>> is two 16-bit samples next to each other in a single 32-bit word.  Their
->>>> width is 16, their physical_width is 16, and bytes per sample is 2.
->>>
->>>> A CPU DAI can do one of two things:
->>>
->>>> 1) it can generate exactly 16 SCK clock cycles per sample before WS
->>>>    changes state, leading to a total of 32 SCK clock cycles per
->>>>    frame.
->>>
->>>> 2) it can generate more than 16 SCK clock cycles per sample.
->>>
->>>> Both are entirely legal and permissable under the I2S specification.
->>>> Both look the same in memory.
->>>
->>>> The ALSA format specification (SNDRV_PCM_FORMAT_*) does not specify
->>>> which of these two is used on the wire - it only specifies the in-
->>>> memory format.
->>>
->>> Everything Russell is saying here is correct.  The actual
->>> ABI only affects the in memory format, userspace really shouldn't care
->>> what's going on on the wire.  However we don't have separate
->>> infrastructure for what goes on the wire and 90% of the time you can
->>> just translate the memory layout into a wire layout which works so we're
->>> conflating the two in a lot of places internally which is confusing and
->>> fragile.
->>
->> I agree. We just need a library which will:
->>
->> 1) gather the information from hardware drivers
->>   - a simple description of the bclk constrains
->> 2) create right constraints (hw_params rules) for the ALSA PCM API
->> 3) return the selected bclk when hw_params are installed
->>
->> The description of the bclk constraints from the hardware driver might
->> be min/max or a list of allowed wire format bit width * channels,
->> eventually define the wire formats (bitmask) and use them in this
->> library. I can imagine that all of those bclk contraints descriptions
->> (or any future, if there are such requirement) can be implemented in
->> this library.
->>
->> The library should not extend hw_params (new interval), but it should
->> work as a separate layer - use new structures / functions etc.
-> 
-> As another option I can suggest; usage of 'subformat' field of 'struct
-> snd_pcm_hw_params'.
-> 
-> At present, ALSA PCM interface has one entry to this field:
->  - SNDRV_PCM_SUBFORMAT_STD
-> 
-> And no drivers use this entry.
-> 
-> Let's assume to add new entries to represent bclk/ws for the issued case:
->  - SNDRV_PCM_SUBFORMAT_I2S_16BCLK_PER_WS
->  - SNDRV_PCM_SUBFORMAT_I2S_48BCLK_PER_WS
->  - SNDRV_PCM_SUBFORMAT_I2S_64BCLK_PER_WS
->  - SNDRV_PCM_SUBFORMAT_I2S_128BCLK_PER_WS
-> 
-> Drivers can have constraints and rules for the parameter. At least, ALSA
-> PCM core should have an rule (if I understand correctly):
->  - BCLK count of these subformats > physical_width * channel
-> 
-> One week point is it's not 'interval' type of parameter but 'mask'
-> parameter, thus we can't represent min/max/integer and so on. However,
-> less changes for ALSA PCM interface.
-> 
-> This is just an idea so it's not enough for me to consider about
-> relevant implementation. Any indication is welcome.
+The patch
 
-I would not use any of the "user space" ioctl API to represent the
-hardware bclk requirements. The applications should know just the DMA
-memory layout.
+   ASoC: rsnd: src: Avoid a potential deadlock
 
-Also, think about the multiple simultaneous paths for the audio output
-in the sound controller (so one DMA from the user space to the
-controller, but the controller can do multiple simultaneous outputs
-using different clocks combining different wire buses or so). Yes, it's
-the corner case, but it's another reason to have the bclk code totally
-separated from the user space ALSA's PCM API.
+has been applied to the asoc tree at
 
-					Jaroslav
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ba164a49f8f7390b036713bf8a70a150a938c670 Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Thu, 7 Mar 2019 15:15:53 +0900
+Subject: [PATCH] ASoC: rsnd: src: Avoid a potential deadlock
+
+lockdep warns us that priv->lock and k->k_lock can cause a
+deadlock when after acquire of k->k_lock, process is interrupted
+by src, while in another routine of src .init, k->k_lock is
+acquired with priv->lock held.
+
+This patch avoids a potential deadlock by not calling soc_device_match()
+in SRC .init callback, instead it adds new soc fields in priv->flags to
+differentiate SoCs.
+
+Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 2 ++
+ sound/soc/sh/rcar/rsnd.h | 5 +++++
+ sound/soc/sh/rcar/src.c  | 9 +--------
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 9834474684b1..8d3758f862f1 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -110,6 +110,8 @@ static const struct of_device_id rsnd_of_match[] = {
+ 	{ .compatible = "renesas,rcar_sound-gen1", .data = (void *)RSND_GEN1 },
+ 	{ .compatible = "renesas,rcar_sound-gen2", .data = (void *)RSND_GEN2 },
+ 	{ .compatible = "renesas,rcar_sound-gen3", .data = (void *)RSND_GEN3 },
++	/* Special Handling */
++	{ .compatible = "renesas,rcar_sound-r8a77990", .data = (void *)(RSND_GEN3 | RSND_SOC_E) },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, rsnd_of_match);
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 90625c57847b..0e6ef4e18400 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -607,6 +607,8 @@ struct rsnd_priv {
+ #define RSND_GEN1	(1 << 0)
+ #define RSND_GEN2	(2 << 0)
+ #define RSND_GEN3	(3 << 0)
++#define RSND_SOC_MASK	(0xFF << 4)
++#define RSND_SOC_E	(1 << 4) /* E1/E2/E3 */
+ 
+ 	/*
+ 	 * below value will be filled on rsnd_gen_probe()
+@@ -679,6 +681,9 @@ struct rsnd_priv {
+ #define rsnd_is_gen1(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN1)
+ #define rsnd_is_gen2(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN2)
+ #define rsnd_is_gen3(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN3)
++#define rsnd_is_e3(priv)	(((priv)->flags & \
++					(RSND_GEN_MASK | RSND_SOC_MASK)) == \
++					(RSND_GEN3 | RSND_SOC_E))
+ 
+ #define rsnd_flags_has(p, f) ((p)->flags & (f))
+ #define rsnd_flags_set(p, f) ((p)->flags |= (f))
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index db81e066b92e..45096a66c074 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -14,7 +14,6 @@
+  */
+ 
+ #include "rsnd.h"
+-#include <linux/sys_soc.h>
+ 
+ #define SRC_NAME "src"
+ 
+@@ -189,18 +188,12 @@ const static u32 chan222222[] = {
+ 	0x00000006, /* 1 to 2 */
+ };
+ 
+-static const struct soc_device_attribute ov_soc[] = {
+-	{ .soc_id = "r8a77990" }, /* E3 */
+-	{ /* sentinel */ }
+-};
+-
+ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 				      struct rsnd_mod *mod)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+-	const struct soc_device_attribute *soc = soc_device_match(ov_soc);
+ 	int is_play = rsnd_io_is_play(io);
+ 	int use_src = 0;
+ 	u32 fin, fout;
+@@ -307,7 +300,7 @@ static void rsnd_src_set_convert_rate(struct rsnd_dai_stream *io,
+ 	/*
+ 	 * E3 need to overwrite
+ 	 */
+-	if (soc)
++	if (rsnd_is_e3(priv))
+ 		switch (rsnd_mod_id(mod)) {
+ 		case 0:
+ 		case 4:
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
