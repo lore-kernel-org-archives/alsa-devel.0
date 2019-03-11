@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM" to the asoc tree
-Date: Mon, 11 Mar 2019 17:23:53 +0000 (GMT)
-Message-ID: <20190311172353.349AB1128896@debutante.sirena.org.uk>
-References: <20190307101145.636705-1-arnd@arndb.de>
+Subject: Applied "ASoC: samsung: i2s: Fix DAPM routes for capture stream" to the asoc tree
+Date: Mon, 11 Mar 2019 17:23:57 +0000 (GMT)
+Message-ID: <20190311172357.85BCB1128896@debutante.sirena.org.uk>
+References: <20190306102445.1640-1-s.nawrocki@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307101145.636705-1-arnd@arndb.de>
+In-Reply-To: <20190306102445.1640-1-s.nawrocki@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishal Thanki <vishalthanki@gmail.com>alsa-devel@alsa-project.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM
+   ASoC: samsung: i2s: Fix DAPM routes for capture stream
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 8ca5104715cfd14254ea5aecc390ae583b707607 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 11:11:30 +0100
-Subject: [PATCH] ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM
+>From 42e4cedd67e4eb2abaa5e684353a55d4a01a913e Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Wed, 6 Mar 2019 11:24:45 +0100
+Subject: [PATCH] ASoC: samsung: i2s: Fix DAPM routes for capture stream
 
-Building with clang shows a variable that is only used by the
-suspend/resume functions but defined outside of their #ifdef block:
+This patch sets missing stream_name of capture part of the DAI driver
+so we can define DAPM routing properly also for the capture stream.
 
-sound/soc/ti/davinci-mcasp.c:48:12: error: variable 'context_regs' is not needed and will not be emitted
+While at it "Playback" suffix is added to the playback stream names
+to clearly identify playback/capture.
 
-We commonly fix these by marking the PM functions as __maybe_unused,
-but here that would grow the davinci_mcasp structure, so instead
-add another #ifdef here.
+Together with related dts patch this fixes NULL pointer dereference
+when opening ALSA device for recording on Odroid XU3.
 
-Fixes: 1cc0c054f380 ("ASoC: davinci-mcasp: Convert the context save/restore to use array")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Fixes: 64aba9bca5bd ("ASoC: samsung: i2s: Add widgets and routes for DPCM support")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-mcasp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/samsung/i2s.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index a3a67a8f0f54..9fbc759fdefe 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -45,6 +45,7 @@
- 
- #define MCASP_MAX_AFIFO_DEPTH	64
- 
-+#ifdef CONFIG_PM
- static u32 context_regs[] = {
- 	DAVINCI_MCASP_TXFMCTL_REG,
- 	DAVINCI_MCASP_RXFMCTL_REG,
-@@ -68,6 +69,7 @@ struct davinci_mcasp_context {
- 	u32	*xrsr_regs; /* for serializer configuration */
- 	bool	pm_state;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 4231001226f4..ab471d550d17 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1130,11 +1130,11 @@ static const struct snd_soc_dapm_widget samsung_i2s_widgets[] = {
  };
-+#endif
  
- struct davinci_mcasp_ruledata {
- 	struct davinci_mcasp *mcasp;
+ static const struct snd_soc_dapm_route samsung_i2s_dapm_routes[] = {
+-	{ "Playback Mixer", NULL, "Primary" },
+-	{ "Playback Mixer", NULL, "Secondary" },
++	{ "Playback Mixer", NULL, "Primary Playback" },
++	{ "Playback Mixer", NULL, "Secondary Playback" },
+ 
+ 	{ "Mixer DAI TX", NULL, "Playback Mixer" },
+-	{ "Playback Mixer", NULL, "Mixer DAI RX" },
++	{ "Primary Capture", NULL, "Mixer DAI RX" },
+ };
+ 
+ static const struct snd_soc_component_driver samsung_i2s_component = {
+@@ -1155,7 +1155,8 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 			  int num_dais)
+ {
+ 	static const char *dai_names[] = { "samsung-i2s", "samsung-i2s-sec" };
+-	static const char *stream_names[] = { "Primary", "Secondary" };
++	static const char *stream_names[] = { "Primary Playback",
++					      "Secondary Playback" };
+ 	struct snd_soc_dai_driver *dai_drv;
+ 	struct i2s_dai *dai;
+ 	int i;
+@@ -1201,6 +1202,7 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 	dai_drv->capture.channels_max = 2;
+ 	dai_drv->capture.rates = i2s_dai_data->pcm_rates;
+ 	dai_drv->capture.formats = SAMSUNG_I2S_FMTS;
++	dai_drv->capture.stream_name = "Primary Capture";
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
