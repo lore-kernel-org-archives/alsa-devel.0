@@ -1,135 +1,67 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v11 0/5] Media Device Allocator API
-Date: Mon, 11 Mar 2019 14:53:31 +0100
-Message-ID: <2cff0450-7f48-b685-56c4-ae494cb67f14@xs4all.nl>
-References: <cover.1550804023.git.shuah@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: simple-card: test memory
+ allocation
+Date: Mon, 11 Mar 2019 15:07:53 +0100
+Message-ID: <831fdf7a-0239-9d6b-f8b8-21ca077c9009@linux.intel.com>
+References: <20190309020252.27860-1-pierre-louis.bossart@linux.intel.com>
+ <20190309020252.27860-2-pierre-louis.bossart@linux.intel.com>
+ <87pnqyuvcl.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1550804023.git.shuah@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45CDAF807B5
+ for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 15:07:57 +0100 (CET)
+In-Reply-To: <87pnqyuvcl.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shuah Khan <shuah@kernel.org>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2/22/19 6:28 PM, Shuah Khan wrote:
-> Media Device Allocator API to allows multiple drivers share a media device.
-> This API solves a very common use-case for media devices where one physical
-> device (an USB stick) provides both audio and video. When such media device
-> exposes a standard USB Audio class, a proprietary Video class, two or more
-> independent drivers will share a single physical USB bridge. In such cases,
-> it is necessary to coordinate access to the shared resource.
+On 3/10/19 7:20 PM, Kuninori Morimoto wrote:
 > 
-> Using this API, drivers can allocate a media device with the shared struct
-> device as the key. Once the media device is allocated by a driver, other
-> drivers can get a reference to it. The media device is released when all
-> the references are released.
+> Hi Pierre-Louis
+> 
+> Thank you for your patch.
+> 
+>> devm_kcalloc() return value needs to be tested
+>>
+>> Fixes: 17029e494edc6 ('ASoC: simple-card: add link_info')
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/soc/generic/simple-card.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+>> index 08df261024cf..bed4fe5721a2 100644
+>> --- a/sound/soc/generic/simple-card.c
+>> +++ b/sound/soc/generic/simple-card.c
+>> @@ -715,7 +715,7 @@ static int simple_probe(struct platform_device *pdev)
+>>   	dai_link  = devm_kcalloc(dev, li.link, sizeof(*dai_link),  GFP_KERNEL);
+>>   	dais      = devm_kcalloc(dev, li.dais, sizeof(*dais),      GFP_KERNEL);
+>>   	cconf     = devm_kcalloc(dev, li.conf, sizeof(*cconf),     GFP_KERNEL);
+>> -	if (!dai_props || !dai_link || !dais)
+>> +	if (!dai_props || !dai_link || !dais || !cconf)
+>>   		return -ENOMEM;
+> 
+> It isn't mentioned on code, but, "li.conf" will be 0 if it was not DPCM case.
+> This means cconf NULL might be happen.
 
-While doing the final compile tests for the pull request I encountered the
-following sparse warnings:
 
-sparse: WARNINGS
-/home/hans/work/build/media-git/drivers/media/usb/au0828/au0828-core.c:282:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-SPARSE:/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c
-/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:94:21:  warning: symbol 'media_device_usb_allocate' was not declared.
-Should it be static?
-SPARSE:/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c
-/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:120:6:  warning: symbol 'media_device_delete' was not declared. Should
-it be static?
-/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:94:22: warning: no previous prototype for 'media_device_usb_allocate'
-[-Wmissing-prototypes]
-/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:120:6: warning: no previous prototype for 'media_device_delete'
-[-Wmissing-prototypes]
+Humm, then don't call devm_kcalloc with a zero argument...
+And if you keep this code, if li.conf is not zero you still have a risk 
+of memory allocation failure. the test should be
 
-Can you fix these issues and post a v12?
-
-Thanks!
-
-	Hans
-
-> 
-> - This patch series in rested on 5.0-rc7 and addresses comments on
->   v10 series from Hans Verkuil. Fixed problems found in resource
->   sharing logic in au0828 adding a patch 5 to this series.
-> - I am sharing the test plan used for testing resource sharing which
->   could serve as a regression test plan. Test results can be found at:
-> 
-> https://docs.google.com/document/d/1XMs3HYgLiHby6xVIvIxv75KSXAAN3F4uUpw2uLuD9c4/edit?usp=sharing
-> 
-> - v10 was tested on 5.0-rc3 and addresses comments on v9 series from
->   Hans Verkuil.
-> - v9 was tested on 4.20-rc6.
-> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
->   arecord. When analog is streaming, digital and audio user-space
->   applications detect that the tuner is busy and exit. When digital
->   is streaming, analog and audio applications detect that the tuner is
->   busy and exit. When arecord is owns the tuner, digital and analog
->   detect that the tuner is busy and exit.
-> - Tested media device allocator API with bind/unbind testing on
->   snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
->   only when the last driver is unbound.
-> - Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
-> - Updated change log to describe the use-case more clearly.
-> - No changes to 0001,0002 code since the v7 referenced below.
-> - 0003 is a new patch to enable ALSA defines that have been
->   disabled for kernel between 4.9 and 4.19.
-> - Minor merge conflict resolution in 0004.
-> - Added SPDX to new files.
-> 
-> Changes since v10:
-> - Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
->            around media_device_usb_allocate() - Sakari Ailus's review
->            comment.
-> - Patch 2 and 3: No changes
-> - Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
-> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
-> - Patch 5: This is a new patch added to fix resource sharing
-> 	   inconsistencies and problem found during testing using Han's
-> 	   tests.
-> Changes since v9:
-> - Patch 1: Fix mutex assert warning from find_module() calls. This
->   code was written before the change to find_module() that requires
->   callers to hold module_mutex. I missed this during my testing on
->   4.20-rc6. Hans Verkuil reported the problem.
-> - Patch 4: sound/usb: Initializes all the entities it can before
->   registering the device based on comments from Hans Verkuil
-> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
-> - No changes to Patches 2 and 3.
-> 
-> References:
-> https://lkml.org/lkml/2018/11/2/169
-> https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
-> 
-> Shuah Khan (5):
->   media: Media Device Allocator API
->   media: change au0828 to use Media Device Allocator API
->   media: media.h: Enable ALSA MEDIA_INTF_T* interface types
->   sound/usb: Use Media Controller API to share media resources
->   au0828: fix enable and disable source audio and video inconsistencies
-> 
->  Documentation/media/kapi/mc-core.rst   |  41 ++++
->  drivers/media/Makefile                 |   4 +
->  drivers/media/media-dev-allocator.c    | 142 +++++++++++
->  drivers/media/usb/au0828/au0828-core.c | 190 ++++++++++----
->  drivers/media/usb/au0828/au0828.h      |   6 +-
->  include/media/media-dev-allocator.h    |  53 ++++
->  include/uapi/linux/media.h             |  25 +-
->  sound/usb/Kconfig                      |   4 +
->  sound/usb/Makefile                     |   2 +
->  sound/usb/card.c                       |  14 ++
->  sound/usb/card.h                       |   3 +
->  sound/usb/media.c                      | 327 +++++++++++++++++++++++++
->  sound/usb/media.h                      |  74 ++++++
->  sound/usb/mixer.h                      |   3 +
->  sound/usb/pcm.c                        |  29 ++-
->  sound/usb/quirks-table.h               |   1 +
->  sound/usb/stream.c                     |   2 +
->  sound/usb/usbaudio.h                   |   6 +
->  18 files changed, 865 insertions(+), 61 deletions(-)
->  create mode 100644 drivers/media/media-dev-allocator.c
->  create mode 100644 include/media/media-dev-allocator.h
->  create mode 100644 sound/usb/media.c
->  create mode 100644 sound/usb/media.h
-> 
++	if (!dai_props || !dai_link || !dais || (!cconf && li.conf))
