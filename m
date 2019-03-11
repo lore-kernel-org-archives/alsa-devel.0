@@ -1,124 +1,135 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC PATCH 1/4] alsa: make hw_params negotiation
- infrastructure 'bclk_ratio aware'
-Date: Mon, 11 Mar 2019 17:15:46 +0900
-Message-ID: <20190311081546.GA8324@workstation>
-References: <20190304165955.21696-1-TheSven73@gmail.com>
- <20190305044232.GA15636@workstation>
- <CAGngYiWDO6YTTMGOFwpzQCOkxEr+AOz3ScDt748w_0UuUk+JLw@mail.gmail.com>
- <20190308041056.GA1172@workstation>
- <20190308125916.2cgiqclp6jmlfbim@shell.armlinux.org.uk>
- <20190308172235.GA31189@sirena.org.uk>
- <25dec9c5-af5c-bc54-89dd-2abdeffa9f82@perex.cz>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v11 0/5] Media Device Allocator API
+Date: Mon, 11 Mar 2019 14:53:31 +0100
+Message-ID: <2cff0450-7f48-b685-56c4-ae494cb67f14@xs4all.nl>
+References: <cover.1550804023.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
- [66.111.4.221])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A562DF80056
- for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2019 09:15:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <25dec9c5-af5c-bc54-89dd-2abdeffa9f82@perex.cz>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Sven Van Asbroeck <thesven73@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1550804023.git.shuah@kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuah Khan <shuah@kernel.org>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-On Fri, Mar 08, 2019 at 08:54:03PM +0100, Jaroslav Kysela wrote:
-> Dne 08. 03. 19 v 18:22 Mark Brown napsal(a):
-> > On Fri, Mar 08, 2019 at 12:59:16PM +0000, Russell King - ARM Linux admin wrote:
-> >> On Fri, Mar 08, 2019 at 01:10:57PM +0900, Takashi Sakamoto wrote:
-> > 
-> >>> In expectation of ALSA PCM interface for hardware for usual device:
-> >>>  - half number of phases of SCK per phase of WC
-> >>>    = physical_width of sample
-> >>>    = bytes per sample
-> > 
-> >> They are not the same thing.
-> > 
-> >> Let's take SNDRV_PCM_FORMAT_S16_LE.  The in-memory layout of this format
-> >> is two 16-bit samples next to each other in a single 32-bit word.  Their
-> >> width is 16, their physical_width is 16, and bytes per sample is 2.
-> > 
-> >> A CPU DAI can do one of two things:
-> > 
-> >> 1) it can generate exactly 16 SCK clock cycles per sample before WS
-> >>    changes state, leading to a total of 32 SCK clock cycles per
-> >>    frame.
-> > 
-> >> 2) it can generate more than 16 SCK clock cycles per sample.
-> > 
-> >> Both are entirely legal and permissable under the I2S specification.
-> >> Both look the same in memory.
-> > 
-> >> The ALSA format specification (SNDRV_PCM_FORMAT_*) does not specify
-> >> which of these two is used on the wire - it only specifies the in-
-> >> memory format.
-> > 
-> > Everything Russell is saying here is correct.  The actual
-> > ABI only affects the in memory format, userspace really shouldn't care
-> > what's going on on the wire.  However we don't have separate
-> > infrastructure for what goes on the wire and 90% of the time you can
-> > just translate the memory layout into a wire layout which works so we're
-> > conflating the two in a lot of places internally which is confusing and
-> > fragile.
+On 2/22/19 6:28 PM, Shuah Khan wrote:
+> Media Device Allocator API to allows multiple drivers share a media device.
+> This API solves a very common use-case for media devices where one physical
+> device (an USB stick) provides both audio and video. When such media device
+> exposes a standard USB Audio class, a proprietary Video class, two or more
+> independent drivers will share a single physical USB bridge. In such cases,
+> it is necessary to coordinate access to the shared resource.
 > 
-> I agree. We just need a library which will:
+> Using this API, drivers can allocate a media device with the shared struct
+> device as the key. Once the media device is allocated by a driver, other
+> drivers can get a reference to it. The media device is released when all
+> the references are released.
+
+While doing the final compile tests for the pull request I encountered the
+following sparse warnings:
+
+sparse: WARNINGS
+/home/hans/work/build/media-git/drivers/media/usb/au0828/au0828-core.c:282:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+SPARSE:/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c
+/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:94:21:  warning: symbol 'media_device_usb_allocate' was not declared.
+Should it be static?
+SPARSE:/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c
+/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:120:6:  warning: symbol 'media_device_delete' was not declared. Should
+it be static?
+/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:94:22: warning: no previous prototype for 'media_device_usb_allocate'
+[-Wmissing-prototypes]
+/home/hans/work/build/media-git/drivers/media/media-dev-allocator.c:120:6: warning: no previous prototype for 'media_device_delete'
+[-Wmissing-prototypes]
+
+Can you fix these issues and post a v12?
+
+Thanks!
+
+	Hans
+
 > 
-> 1) gather the information from hardware drivers
->   - a simple description of the bclk constrains
-> 2) create right constraints (hw_params rules) for the ALSA PCM API
-> 3) return the selected bclk when hw_params are installed
+> - This patch series in rested on 5.0-rc7 and addresses comments on
+>   v10 series from Hans Verkuil. Fixed problems found in resource
+>   sharing logic in au0828 adding a patch 5 to this series.
+> - I am sharing the test plan used for testing resource sharing which
+>   could serve as a regression test plan. Test results can be found at:
 > 
-> The description of the bclk constraints from the hardware driver might
-> be min/max or a list of allowed wire format bit width * channels,
-> eventually define the wire formats (bitmask) and use them in this
-> library. I can imagine that all of those bclk contraints descriptions
-> (or any future, if there are such requirement) can be implemented in
-> this library.
+> https://docs.google.com/document/d/1XMs3HYgLiHby6xVIvIxv75KSXAAN3F4uUpw2uLuD9c4/edit?usp=sharing
 > 
-> The library should not extend hw_params (new interval), but it should
-> work as a separate layer - use new structures / functions etc.
-
-As another option I can suggest; usage of 'subformat' field of 'struct
-snd_pcm_hw_params'.
-
-At present, ALSA PCM interface has one entry to this field:
- - SNDRV_PCM_SUBFORMAT_STD
-
-And no drivers use this entry.
-
-Let's assume to add new entries to represent bclk/ws for the issued case:
- - SNDRV_PCM_SUBFORMAT_I2S_16BCLK_PER_WS
- - SNDRV_PCM_SUBFORMAT_I2S_48BCLK_PER_WS
- - SNDRV_PCM_SUBFORMAT_I2S_64BCLK_PER_WS
- - SNDRV_PCM_SUBFORMAT_I2S_128BCLK_PER_WS
-
-Drivers can have constraints and rules for the parameter. At least, ALSA
-PCM core should have an rule (if I understand correctly):
- - BCLK count of these subformats > physical_width * channel
-
-One week point is it's not 'interval' type of parameter but 'mask'
-parameter, thus we can't represent min/max/integer and so on. However,
-less changes for ALSA PCM interface.
-
-This is just an idea so it's not enough for me to consider about
-relevant implementation. Any indication is welcome.
-
-
-Regards
-
-Takashi Sakamoto
+> - v10 was tested on 5.0-rc3 and addresses comments on v9 series from
+>   Hans Verkuil.
+> - v9 was tested on 4.20-rc6.
+> - Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+>   arecord. When analog is streaming, digital and audio user-space
+>   applications detect that the tuner is busy and exit. When digital
+>   is streaming, analog and audio applications detect that the tuner is
+>   busy and exit. When arecord is owns the tuner, digital and analog
+>   detect that the tuner is busy and exit.
+> - Tested media device allocator API with bind/unbind testing on
+>   snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+>   only when the last driver is unbound.
+> - Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+> - Updated change log to describe the use-case more clearly.
+> - No changes to 0001,0002 code since the v7 referenced below.
+> - 0003 is a new patch to enable ALSA defines that have been
+>   disabled for kernel between 4.9 and 4.19.
+> - Minor merge conflict resolution in 0004.
+> - Added SPDX to new files.
+> 
+> Changes since v10:
+> - Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
+>            around media_device_usb_allocate() - Sakari Ailus's review
+>            comment.
+> - Patch 2 and 3: No changes
+> - Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
+> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+> - Patch 5: This is a new patch added to fix resource sharing
+> 	   inconsistencies and problem found during testing using Han's
+> 	   tests.
+> Changes since v9:
+> - Patch 1: Fix mutex assert warning from find_module() calls. This
+>   code was written before the change to find_module() that requires
+>   callers to hold module_mutex. I missed this during my testing on
+>   4.20-rc6. Hans Verkuil reported the problem.
+> - Patch 4: sound/usb: Initializes all the entities it can before
+>   registering the device based on comments from Hans Verkuil
+> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+> - No changes to Patches 2 and 3.
+> 
+> References:
+> https://lkml.org/lkml/2018/11/2/169
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
+> 
+> Shuah Khan (5):
+>   media: Media Device Allocator API
+>   media: change au0828 to use Media Device Allocator API
+>   media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+>   sound/usb: Use Media Controller API to share media resources
+>   au0828: fix enable and disable source audio and video inconsistencies
+> 
+>  Documentation/media/kapi/mc-core.rst   |  41 ++++
+>  drivers/media/Makefile                 |   4 +
+>  drivers/media/media-dev-allocator.c    | 142 +++++++++++
+>  drivers/media/usb/au0828/au0828-core.c | 190 ++++++++++----
+>  drivers/media/usb/au0828/au0828.h      |   6 +-
+>  include/media/media-dev-allocator.h    |  53 ++++
+>  include/uapi/linux/media.h             |  25 +-
+>  sound/usb/Kconfig                      |   4 +
+>  sound/usb/Makefile                     |   2 +
+>  sound/usb/card.c                       |  14 ++
+>  sound/usb/card.h                       |   3 +
+>  sound/usb/media.c                      | 327 +++++++++++++++++++++++++
+>  sound/usb/media.h                      |  74 ++++++
+>  sound/usb/mixer.h                      |   3 +
+>  sound/usb/pcm.c                        |  29 ++-
+>  sound/usb/quirks-table.h               |   1 +
+>  sound/usb/stream.c                     |   2 +
+>  sound/usb/usbaudio.h                   |   6 +
+>  18 files changed, 865 insertions(+), 61 deletions(-)
+>  create mode 100644 drivers/media/media-dev-allocator.c
+>  create mode 100644 include/media/media-dev-allocator.h
+>  create mode 100644 sound/usb/media.c
+>  create mode 100644 sound/usb/media.h
+> 
