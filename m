@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM" to the asoc tree
-Date: Wed, 13 Mar 2019 15:38:55 +0000 (GMT)
-Message-ID: <20190313153855.143DC1128B97@debutante.sirena.org.uk>
-References: <20190307101145.636705-1-arnd@arndb.de>
+Subject: Applied "ASoC: axi-i2s: make both "rx" and "tx" optional" to the asoc tree
+Date: Wed, 13 Mar 2019 15:38:35 +0000 (GMT)
+Message-ID: <20190313153835.7AA7C1128B97@debutante.sirena.org.uk>
+References: <20190307214456.16445-2-luca@lucaceresoli.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307101145.636705-1-arnd@arndb.de>
+In-Reply-To: <20190307214456.16445-2-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vishal Thanki <vishalthanki@gmail.com>alsa-devel@alsa-project.org
+To: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM
+   ASoC: axi-i2s: make both "rx" and "tx" optional
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From 8ca5104715cfd14254ea5aecc390ae583b707607 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 11:11:30 +0100
-Subject: [PATCH] ASoC: davinci-mcasp: Fix clang warning without CONFIG_PM
+>From fa225400758dfc7ccddebf4d990f991a435f7921 Mon Sep 17 00:00:00 2001
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Date: Thu, 7 Mar 2019 22:44:56 +0100
+Subject: [PATCH] ASoC: axi-i2s: make both "rx" and "tx" optional
 
-Building with clang shows a variable that is only used by the
-suspend/resume functions but defined outside of their #ifdef block:
+Both the capture and playback channels are optional in the axi_i2s IP
+block. Document how to tell the driver which channels are
+instantiated.
 
-sound/soc/ti/davinci-mcasp.c:48:12: error: variable 'context_regs' is not needed and will not be emitted
-
-We commonly fix these by marking the PM functions as __maybe_unused,
-but here that would grow the davinci_mcasp structure, so instead
-add another #ifdef here.
-
-Fixes: 1cc0c054f380 ("ASoC: davinci-mcasp: Convert the context save/restore to use array")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-mcasp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index a3a67a8f0f54..9fbc759fdefe 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -45,6 +45,7 @@
+diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+index 4248b662deff..229ad1392cdc 100644
+--- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+@@ -1,5 +1,8 @@
+ ADI AXI-I2S controller
  
- #define MCASP_MAX_AFIFO_DEPTH	64
++The core can be generated with transmit (playback), only receive
++(capture) or both directions enabled.
++
+ Required properties:
+  - compatible : Must be "adi,axi-i2s-1.00.a"
+  - reg : Must contain I2S core's registers location and length
+@@ -9,8 +12,8 @@ Required properties:
+  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
+    rate reference clock.
+  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
+-   the core. The core expects two dma channels, one for transmit and one for
+-   receive.
++   the core. The core expects two dma channels if both transmit and receive are
++   enabled, one channel otherwise.
+  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
  
-+#ifdef CONFIG_PM
- static u32 context_regs[] = {
- 	DAVINCI_MCASP_TXFMCTL_REG,
- 	DAVINCI_MCASP_RXFMCTL_REG,
-@@ -68,6 +69,7 @@ struct davinci_mcasp_context {
- 	u32	*xrsr_regs; /* for serializer configuration */
- 	bool	pm_state;
- };
-+#endif
- 
- struct davinci_mcasp_ruledata {
- 	struct davinci_mcasp *mcasp;
+ For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
 -- 
 2.20.1
