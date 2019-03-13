@@ -1,24 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ASoC: simple-card: test memory
- allocation
-Date: Tue, 12 Mar 2019 22:08:19 +0100
-Message-ID: <6be2cdb4-1891-2e4d-9b3b-d88a323c8347@linux.intel.com>
-References: <20190309020252.27860-1-pierre-louis.bossart@linux.intel.com>
- <20190309020252.27860-2-pierre-louis.bossart@linux.intel.com>
- <87pnqyuvcl.wl-kuninori.morimoto.gx@renesas.com>
- <831fdf7a-0239-9d6b-f8b8-21ca077c9009@linux.intel.com>
- <87sgvs9821.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: opening rawmidi on user ports
+Date: Wed, 13 Mar 2019 14:48:51 +0900
+Message-ID: <20190313054850.GA13393@workstation>
+References: <9c82e740-a327-3809-875c-3eb4f01945e8@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com
+ [64.147.123.26])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCDB7F8961E
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 05:38:04 +0100 (CET)
-In-Reply-To: <87sgvs9821.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF895F8961E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 06:48:58 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9c82e740-a327-3809-875c-3eb4f01945e8@gmail.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,33 +24,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+To: AlGrenadine <a.granvaud@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
->>>>    	cconf     = devm_kcalloc(dev, li.conf, sizeof(*cconf),     GFP_KERNEL);
->>>> -	if (!dai_props || !dai_link || !dais)
->>>> +	if (!dai_props || !dai_link || !dais || !cconf)
->>>>    		return -ENOMEM;
->>>
->>> It isn't mentioned on code, but, "li.conf" will be 0 if it was not DPCM case.
->>> This means cconf NULL might be happen.
->>
->>
->> Humm, then don't call devm_kcalloc with a zero argument...
->> And if you keep this code, if li.conf is not zero you still have a
->> risk of memory allocation failure. the test should be
->>
->> +	if (!dai_props || !dai_link || !dais || (!cconf && li.conf))
+On Tue, Mar 12, 2019 at 05:19:38PM +0100, AlGrenadine wrote:
+> I use btmidi-server from the bluez stack, which creates user ports to send
+> and receive midi via bluetooth.
+> I can't manager which parameter string i must provide to snd_rawmidi_open
+> function, can you help ?
 > 
-> Yes, indeed.
-> Thank you for your feedback
-> 
-> Actually, I have few cleanup patches for simple-card/audio-graph
-> for v5.2, then, your patch and it will be conflict.
-> If you are OK, I can merge your patch on my patch-set with your
-> Signed-off-by (or Reported-by).
-> Is OK for you ? I will post it when -rc1 was released from Linus.
+> (of course the user ports don't appear in amidi -l)
+> I only have a client and port ids (128:0) when using aconnect -l
 
-yes, that's fine. Thanks!
+As long as reading code of 'btmidi-server'[1], it uses ALSA sequencer
+interface. You need to use ALSA sequencer APIs instead of ALSA rawmidi
+APIs. Some tools will assist your work; 'aseqdump' and 'aplaymidi' in
+'alsa-utils' repository[2].
+
+[1] https://github.com/oxesoft/bluez/blob/midi/tools/btmidi-server.c
+[2] https://git.alsa-project.org/?p=alsa-utils.git
+
+Regards
+
+Takashi Sakamoto
