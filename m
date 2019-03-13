@@ -1,13 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: use default dai name" to the asoc tree
-Date: Wed, 13 Mar 2019 15:38:46 +0000 (GMT)
-Message-ID: <20190313153846.61BD01128B98@debutante.sirena.org.uk>
-References: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: i2s: improve channel capabilities handling" to
+ the asoc tree
+Date: Wed, 13 Mar 2019 15:38:48 +0000 (GMT)
+Message-ID: <20190313153848.88A7B1128B97@debutante.sirena.org.uk>
+References: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -22,7 +23,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: use default dai name
+   ASoC: stm32: i2s: improve channel capabilities handling
 
 has been applied to the asoc tree at
 
@@ -47,59 +48,48 @@ to this mail.
 Thanks,
 Mark
 
->From fef050c88ce1cbec1ab9a0d981b5331a5ba40f15 Mon Sep 17 00:00:00 2001
+>From c2dc8b2c114c22d7a04cf26a7c7d04faaa757143 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:30 +0100
-Subject: [PATCH] ASoC: stm32: i2s: use default dai name
+Date: Mon, 11 Mar 2019 16:26:29 +0100
+Subject: [PATCH] ASoC: stm32: i2s: improve channel capabilities handling
 
-Use default DAI name based on dev_name function.
+Use alsa snd_pcm_hw_constraint_single service to manage
+channels restriction. This provides better status on driver
+limitations, to the application.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 06bbbef74b3a..c18e068c1a0d 100644
+index 783b33497435..06bbbef74b3a 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -179,7 +179,6 @@ enum i2s_datlen {
- 	I2S_I2SMOD_DATLEN_32,
- };
+@@ -496,12 +496,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	unsigned int fthlv;
+ 	int ret;
  
--#define STM32_I2S_DAI_NAME_SIZE		20
- #define STM32_I2S_FIFO_SIZE		16
- 
- #define STM32_I2S_IS_MASTER(x)		((x)->ms_flg == I2S_MS_MASTER)
-@@ -202,7 +201,6 @@ enum i2s_datlen {
-  * @phys_addr: I2S registers physical base address
-  * @lock_fd: lock to manage race conditions in full duplex mode
-  * @irq_lock: prevent race condition with IRQ
-- * @dais_name: DAI name
-  * @mclk_rate: master clock frequency (Hz)
-  * @fmt: DAI protocol
-  * @refcount: keep count of opened streams on I2S
-@@ -224,7 +222,6 @@ struct stm32_i2s_data {
- 	dma_addr_t phys_addr;
- 	spinlock_t lock_fd; /* Manage race conditions for full duplex */
- 	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
--	char dais_name[STM32_I2S_DAI_NAME_SIZE];
- 	unsigned int mclk_rate;
- 	unsigned int fmt;
- 	int refcount;
-@@ -771,12 +768,8 @@ static int stm32_i2s_dais_init(struct platform_device *pdev,
- 	if (!dai_ptr)
- 		return -ENOMEM;
- 
--	snprintf(i2s->dais_name, STM32_I2S_DAI_NAME_SIZE,
--		 "%s", dev_name(&pdev->dev));
+-	if ((params_channels(params) == 1) &&
+-	    ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)) {
+-		dev_err(cpu_dai->dev, "Mono mode supported only by DSP_A\n");
+-		return -EINVAL;
+-	}
 -
- 	dai_ptr->probe = stm32_i2s_dai_probe;
- 	dai_ptr->ops = &stm32_i2s_pcm_dai_ops;
--	dai_ptr->name = i2s->dais_name;
- 	dai_ptr->id = 1;
- 	stm32_i2s_dai_init(&dai_ptr->playback, "playback");
- 	stm32_i2s_dai_init(&dai_ptr->capture, "capture");
+ 	switch (format) {
+ 	case 16:
+ 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
+@@ -551,6 +545,10 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 	i2s->substream = substream;
+ 	spin_unlock_irqrestore(&i2s->irq_lock, flags);
+ 
++	if ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)
++		snd_pcm_hw_constraint_single(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++
+ 	ret = clk_prepare_enable(i2s->i2sclk);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
 -- 
 2.20.1
