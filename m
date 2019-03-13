@@ -1,15 +1,22 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8810: automatic selecting BCLK in I2S
-	master mode
-Date: Wed, 13 Mar 2019 16:52:01 +0800
-Message-ID: <20190313085201.8605-1-KCHSU0@nuvoton.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: ChromeBook machine will lose MIC JD
+Date: Wed, 13 Mar 2019 08:52:42 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA11F@RTITMBSVM07.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E4D@RTITMBSVM07.realtek.com.tw>
+ <31d98868-e037-6ad4-6e11-d770129090f9@perex.cz>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
+ <3d8c7930-607f-b048-db37-66de22b87810@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A18DBA11FRTITMBSVM07real_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 974C7F8961E
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 09:52:08 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E967F89714
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 09:52:50 +0100 (CET)
+In-Reply-To: <3d8c7930-607f-b048-db37-66de22b87810@perex.cz>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,46 +26,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+To: Jaroslav Kysela <perex@perex.cz>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The driver will select correct BCLK automatically according to
-BCLK and FS information in I2S master mode.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18DBA11FRTITMBSVM07real_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8810.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+SGkgSmFyb3NsYXYsDQoNCkkgaGFkIG1vZGlmaWVkIHRoZSBwYXRjaCBhcyB5b3UgbWVudGlvbmVk
+Lg0KQnV0IEkgZG9uJ3Qga25vdyBob3cgdG8gdXNlIGdpdCBzZW5kLWVtYWlsLg0KDQpCUiwNCkth
+aWxhbmcNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphcm9zbGF2IEt5c2Vs
+YSA8cGVyZXhAcGVyZXguY3o+IA0KU2VudDogRnJpZGF5LCBNYXJjaCA4LCAyMDE5IDM6NDkgQU0N
+ClRvOiBLYWlsYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPjsgVGFrYXNoaSBJd2FpICh0aXdhaUBz
+dXNlLmRlKSA8dGl3YWlAc3VzZS5kZT4NCkNjOiAoYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+KSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KU3ViamVjdDogUmU6IFthbHNhLWRldmVs
+XSBDaHJvbWVCb29rIG1hY2hpbmUgd2lsbCBsb3NlIE1JQyBKRA0KDQpEbmUgMDcuIDAzLiAxOSB2
+IDk6MTEgS2FpbGFuZyBuYXBzYWwoYSk6DQo+IEhpIEphcm9zbGF2LA0KPiANCj4gSSBuZWVkIHRv
+IGNoZWNrIHdpdGggSW50ZWwgY2hyb21lIGF1ZGlvIHRlYW0gZm9yIHRoZSBuYW1lIGNoYW5nZS4N
+Cj4gQnV0IGNocm9tZSBPUyB1c2VkICdhbGMtc2Vuc2UtY29tYm8nIGZvciBlYXJseSBwYXRjaCBm
+aWxlLg0KDQpCdXQgd2l0aCB5b3VyIHBhdGNoLCB0aGUgQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFD
+SyBhbmQgQUxDMjk1X0ZJWFVQX0NIUk9NRV9CT09LIGRvIGEgZGlmZmVyZW50IHRoaW5nLCBzbyBp
+dCdzIG5vdCBhIHNpbXBsZSByZXBsYWNlbWVudC4gWW91ciBjaHJvbWUgYm9vayBmaXh1cCBpcyBu
+b3QgdW5pdmVyc2FsLCBzbyBpdCBzaG91bGQgYmUgZGlzdGluZ3Vpc2hlZCBpbiBteSBvcGluaW9u
+Lg0KDQpBbHNvLCBwbGVhc2UsIGlubGluZSB5b3VyIHBhdGNoZXMgb3IgdXNlIDtnaXQgc2VuZC1l
+bWFpbCcgY29tbWFuZCB0byBzZW5kIHlvdXIgY29tbWl0IHRvIHRoaXMgTUwgZm9yIGEgcmV2aWV3
+Lg0KDQoJCQkJCVRoYW5rcywNCgkJCQkJCUphcm9zbGF2DQoNCj4gSXQgYWxzbyBuZWVkIHRvIGFk
+ZCB0aGlzIHBhdGNoLg0KPiANCj4gT2ghIFNvcnJ5IQ0KPiBJIHNlbnQgaXQgd2l0aCBIVE1MIG1v
+ZGUuDQo+IEkgbmVlZCB0byByZXNlbmQgYWdhaW4gZm9yIFRYVCBtb2RlLiANCj4gDQo+IEJSLA0K
+PiBLYWlsYW5nDQo+IA0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYXJv
+c2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pg0KPiBTZW50OiBUaHVyc2RheSwgTWFyY2ggNywg
+MjAxOSA0OjAzIFBNDQo+IFRvOiBLYWlsYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPjsgVGFrYXNo
+aSBJd2FpICh0aXdhaUBzdXNlLmRlKSANCj4gPHRpd2FpQHN1c2UuZGU+DQo+IENjOiAoYWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnKSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KPiBT
+dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIENocm9tZUJvb2sgbWFjaGluZSB3aWxsIGxvc2UgTUlD
+IEpEDQo+IA0KPiBEbmUgMDcuIDAzLiAxOSB2IDg6NTYgS2FpbGFuZyBuYXBzYWwoYSk6DQo+PiBI
+aSBUYWthc2hpLA0KPj4NCj4+IEF0dGFjaCBwYXRjaCB3aWxsIHNvbHZlIHRoZSBpc3N1ZSBmb3Ig
+TWljIEpEIGxvc2UuDQo+Pg0KPiANCj4gLQl7LmlkID0gQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFD
+SywgLm5hbWUgPSAiYWxjLXNlbnNlLWNvbWJvIn0sDQo+ICsJey5pZCA9IEFMQzI5NV9GSVhVUF9D
+SFJPTUVfQk9PSywgLm5hbWUgPSAiYWxjLXNlbnNlLWNvbWJvIn0sDQo+IA0KPiBEZWZpbmUgYW5v
+dGhlciBuYW1lIGhlcmUgbGlrZSAnYWxjLWNocm9tZS1ib29rJyBhbmQgZG9uJ3QgcmVtb3ZlIHRo
+ZSBwcmV2aW91cyBtb2RlbCBuYW1lICdhbGMtc2Vuc2UtY29tYm8nLg0KPiANCj4gCQkJCQkJSmFy
+b3NsYXYNCj4gDQo+IC0tDQo+IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+DQo+IExp
+bnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLg0KPiANCj4g
+LS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhp
+cyBlLW1haWwuDQo+IA0KDQoNCi0tDQpKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pg0K
+TGludXggU291bmQgTWFpbnRhaW5lcjsgQUxTQSBQcm9qZWN0OyBSZWQgSGF0LCBJbmMuDQo=
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index 832657720a5f..125e205e6687 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -667,6 +667,24 @@ static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
- 	int val_len = 0, val_rate = 0, ret = 0;
-+	unsigned int ctrl_val, bclk_fs, bclk_div;
-+
-+	/* Select BCLK configuration if the codec as master. */
-+	regmap_read(nau8810->regmap, NAU8810_REG_CLOCK, &ctrl_val);
-+	if (ctrl_val & NAU8810_CLKIO_MASTER) {
-+		/* get the bclk and fs ratio */
-+		bclk_fs = snd_soc_params_to_bclk(params) / params_rate(params);
-+		if (bclk_fs <= 32)
-+			bclk_div = NAU8810_BCLKDIV_8;
-+		else if (bclk_fs <= 64)
-+			bclk_div = NAU8810_BCLKDIV_4;
-+		else if (bclk_fs <= 128)
-+			bclk_div = NAU8810_BCLKDIV_2;
-+		else
-+			return -EINVAL;
-+		regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
-+			NAU8810_BCLKSEL_MASK, bclk_div);
-+	}
- 
- 	switch (params_width(params)) {
- 	case 16:
--- 
-2.18.0
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18DBA11FRTITMBSVM07real_
+Content-Type: application/octet-stream;
+	name="0002-chrome-headset-mic-jd.patch"
+Content-Description: 0002-chrome-headset-mic-jd.patch
+Content-Disposition: attachment;
+	filename="0002-chrome-headset-mic-jd.patch"; size=2364;
+	creation-date="Wed, 13 Mar 2019 08:48:49 GMT";
+	modification-date="Wed, 13 Mar 2019 08:44:26 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSA3NWM5YjIxMmE4ZmEwMWU1OGUzZmY3MDY5YzRhYTBkMDM3YmY5ZTYxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFdlZCwgMTMgTWFyIDIwMTkgMTY6NDI6MjggKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEZpeGVkIEhlYWRzZXQgTWljIEpEIG5vdCBzdGFibGUKCkl0IHdpbGwg
+YmUgbG9zZSBNaWMgSkQgc3RhdGUgd2hlbiBDaHJvbWUgT1MgYm9vdCB3aXRoIGhlYWRzZXQgcGx1
+Z2dlZC4KSW1wbGVtZW50IG9mIHJlc2V0IGNvbWJvIGphY2sgSkQuIEl0IHdpbGwgc2hvdyBub3Jt
+YWxseS4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4K
+CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IGM4NDEzZDQ0OTczYy4uZmEwYTkyMjUyZjk1IDEwMDY0
+NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRh
+L3BhdGNoX3JlYWx0ZWsuYwpAQCAtNTUyMSw2ICs1NTIxLDI3IEBAIHN0YXRpYyB2b2lkIGFsY19m
+aXh1cF9oZWFkc2V0X2phY2soc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJfQogfQogCitzdGF0
+aWMgdm9pZCBhbGMyOTVfZml4dXBfY2hyb21lYm9vayhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywK
+KwkJCQkgICAgY29uc3Qgc3RydWN0IGhkYV9maXh1cCAqZml4LCBpbnQgYWN0aW9uKQoreworCXN0
+cnVjdCBhbGNfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCisJc3dpdGNoIChhY3Rpb24pIHsK
+KwljYXNlIEhEQV9GSVhVUF9BQ1RfUFJFX1BST0JFOgorCQlzd2l0Y2ggKGNvZGVjLT5jb3JlLnZl
+bmRvcl9pZCkgeworCQljYXNlIDB4MTBlYzAyOTU6CisJCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNv
+ZGVjLCAweDRhLCAweDgwMDAsIDEgPDwgMTUpOyAvKiBSZXNldCBIUCBKRCAqLworCQkJYWxjX3Vw
+ZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0YSwgMHg4MDAwLCAwIDw8IDE1KTsKKwkJCWJyZWFrOwor
+CQljYXNlIDB4MTBlYzAyMzY6CisJCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDFiLCAw
+eDgwMDAsIDEgPDwgMTUpOyAvKiBSZXNldCBIUCBKRCAqLworCQkJYWxjX3VwZGF0ZV9jb2VmX2lk
+eChjb2RlYywgMHgxYiwgMHg4MDAwLCAwIDw8IDE1KTsKKwkJCWJyZWFrOworCQl9CisJCWJyZWFr
+OworCX0KK30KKwogc3RhdGljIHZvaWQgYWxjX2ZpeHVwX2Rpc2FibGVfbWljX3ZyZWYoc3RydWN0
+IGhkYV9jb2RlYyAqY29kZWMsCiAJCQkJICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsIGlu
+dCBhY3Rpb24pCiB7CkBAIC01NjczLDYgKzU2OTQsNyBAQCBlbnVtIHsKIAlBTEMyMjVfRklYVVBf
+SEVBRFNFVF9KQUNLLAogCUFMQzI5M19GSVhVUF9TWVNURU03Nl9NSUNfTk9fUFJFU0VOQ0UsCiAJ
+QUxDMjg1X0ZJWFVQX0xFTk9WT19QQ19CRUVQX0lOX05PSVNFLAorCUFMQzI5NV9GSVhVUF9DSFJP
+TUVfQk9PSywKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2OV9maXh1
+cHNbXSA9IHsKQEAgLTY2MzksNiArNjY2MSwxMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9m
+aXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CiAJCS5jaGFpbmVkID0gdHJ1ZSwKIAkJLmNoYWluX2lk
+ID0gQUxDMjg1X0ZJWFVQX0xFTk9WT19IRUFEUEhPTkVfTk9JU0UKIAl9LAorCVtBTEMyOTVfRklY
+VVBfQ0hST01FX0JPT0tdID0geworCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5j
+ID0gYWxjMjk1X2ZpeHVwX2Nocm9tZWJvb2ssCisJCS5jaGFpbmVkID0gdHJ1ZSwKKwkJLmNoYWlu
+X2lkID0gQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFDSworCX0sCiB9OwogCiBzdGF0aWMgY29uc3Qg
+c3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2ZpeHVwX3RibFtdID0gewpAQCAtNzA0OSw2ICs3
+MDc3LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfbW9kZWxfZml4dXAgYWxjMjY5X2ZpeHVw
+X21vZGVsc1tdID0gewogCXsuaWQgPSBBTEMyNTVfRklYVVBfREVMTF9IRUFEU0VUX01JQywgLm5h
+bWUgPSAiYWxjMjU1LWRlbGwtaGVhZHNldCJ9LAogCXsuaWQgPSBBTEMyOTVfRklYVVBfSFBfWDM2
+MCwgLm5hbWUgPSAiYWxjMjk1LWhwLXgzNjAifSwKIAl7LmlkID0gQUxDMjI1X0ZJWFVQX0hFQURT
+RVRfSkFDSywgLm5hbWUgPSAiYWxjLXNlbnNlLWNvbWJvIn0sCisJey5pZCA9IEFMQzI5NV9GSVhV
+UF9DSFJPTUVfQk9PSywgLm5hbWUgPSAiYWxjLWNocm9tZS1ib29rIn0sCiAJe30KIH07CiAjZGVm
+aW5lIEFMQzIyNV9TVEFOREFSRF9QSU5TIFwK
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18DBA11FRTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A18DBA11FRTITMBSVM07real_--
