@@ -1,15 +1,16 @@
 From: Jiada Wang <jiada_wang@mentor.com>
 Subject: Re: [PATCH 5/5] ASoC: rsnd: dma: use extended audio dmac registers
  when available
-Date: Wed, 13 Mar 2019 15:34:00 +0900
-Message-ID: <eb7ac3a6-e386-09e8-54b0-2e0eda90ad66@mentor.com>
+Date: Wed, 13 Mar 2019 15:36:49 +0900
+Message-ID: <51be4cda-aa39-ce95-e7ef-404d9b02f188@mentor.com>
 References: <20190313055811.26135-1-jiada_wang@mentor.com>
  <87h8c7gv73.wl-kuninori.morimoto.gx@renesas.com>
+ <87ef7bguqn.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87h8c7gv73.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ef7bguqn.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
@@ -18,62 +19,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Morimoto-san
 
-thanks for your comments
-
-On 2019/03/13 15:23, Kuninori Morimoto wrote:
+On 2019/03/13 15:33, Kuninori Morimoto wrote:
 > 
 > Hi Jiada
 > 
->> Some of SoCs have both basic and extended dmac registers set
->> basic set only supports busif0 ~ busif3, in order to use
->> busif4 ~ busif7, extended audio dmac registers need to be used.
+>>> Some of SoCs have both basic and extended dmac registers set
+>>> basic set only supports busif0 ~ busif3, in order to use
+>>> busif4 ~ busif7, extended audio dmac registers need to be used.
+>>>
+>>> This patch changes to use extended dmac registers set when it is
+>>> available in device-tree.
+>>>
+>>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+>>> ---
 >>
->> This patch changes to use extended dmac registers set when it is
->> available in device-tree.
->>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
+>> 1st of all, if you want to post this kind of patch-set,
+>> you *should* post driver side patch 1st, and if it was accepted,
+>> you need to post SoC side patch. Then, you need to indicate
+>> to SoC maintainer which branch/commit should be based.
+>> Otherwise, it will 100% breaks git-bisect.
 > 
-> 1st of all, if you want to post this kind of patch-set,
-> you *should* post driver side patch 1st, and if it was accepted,
-> you need to post SoC side patch. Then, you need to indicate
-> to SoC maintainer which branch/commit should be based.
-> Otherwise, it will 100% breaks git-bisect.
+> Grr, orz
+> my head was 100% broken.
+> This time, your patch doesn't breaks git-bisect.
+> I'm so sorry.
 > 
-yes, you're right,
-sorry about this
-
-> 2nd, in my understanding, our conclusion at Renesas-ML
-> is that we don't need to think about basic/extend DMAC register.
-> Because extend area is 100% covering basic area.
-> In other words, it is compatible.
-> Driver side don't need to think about it.
->
-I am a little confused,
-because latest comment received from simon, suggests to let driver to 
-decide which register set to use.
-
-for me, I think it's not necessary, if extended register set is available,
-driver shall always use it.
+right, no problem.
+anyway, keep driver change before dts change,
+is always a good practice
 
 Thanks,
 Jiada
-
-
->> --- a/sound/soc/sh/rcar/dma.c
->> +++ b/sound/soc/sh/rcar/dma.c
->> @@ -830,7 +830,10 @@ int rsnd_dma_probe(struct rsnd_priv *priv)
->>   	/*
->>   	 * for Gen2 or later
->>   	 */
->> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "audmapp");
->> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "extaudmapp");
->> +	if (!res)
->> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->> +						   "audmapp");
->>   	dmac = devm_kzalloc(dev, sizeof(*dmac), GFP_KERNEL);
->>   	if (!dmac || !res) {
->>   		dev_err(dev, "dma allocate failed\n");
->> -- 
->> 2.19.2
->>
+> Best regards
+> ---
+> Kuninori Morimoto
+> 
