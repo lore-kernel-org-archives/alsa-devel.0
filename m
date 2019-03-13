@@ -1,56 +1,48 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH 5/5] ASoC: rsnd: dma: use extended audio dmac registers
- when available
-Date: Wed, 13 Mar 2019 15:36:49 +0900
-Message-ID: <51be4cda-aa39-ce95-e7ef-404d9b02f188@mentor.com>
-References: <20190313055811.26135-1-jiada_wang@mentor.com>
- <87h8c7gv73.wl-kuninori.morimoto.gx@renesas.com>
- <87ef7bguqn.wl-kuninori.morimoto.gx@renesas.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8810: use 64-bit arithmetic instead
+	of 32-bit
+Date: Wed, 13 Mar 2019 14:47:18 +0800
+Message-ID: <20190313064718.4534-1-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87ef7bguqn.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: horms@verge.net.au, magnus.damm@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, geert@linux-m68k.org, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6A855F896F3
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 07:47:25 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san
+Add suffix ULL to constant 256 in order to give the compiler complete
+information about the proper arithmetic to use.
 
-On 2019/03/13 15:33, Kuninori Morimoto wrote:
-> 
-> Hi Jiada
-> 
->>> Some of SoCs have both basic and extended dmac registers set
->>> basic set only supports busif0 ~ busif3, in order to use
->>> busif4 ~ busif7, extended audio dmac registers need to be used.
->>>
->>> This patch changes to use extended dmac registers set when it is
->>> available in device-tree.
->>>
->>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->>> ---
->>
->> 1st of all, if you want to post this kind of patch-set,
->> you *should* post driver side patch 1st, and if it was accepted,
->> you need to post SoC side patch. Then, you need to indicate
->> to SoC maintainer which branch/commit should be based.
->> Otherwise, it will 100% breaks git-bisect.
-> 
-> Grr, orz
-> my head was 100% broken.
-> This time, your patch doesn't breaks git-bisect.
-> I'm so sorry.
-> 
-right, no problem.
-anyway, keep driver change before dts change,
-is always a good practice
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8810.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Jiada
-> Best regards
-> ---
-> Kuninori Morimoto
-> 
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index bfd74b86c9d2..e7fd0b2645ea 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -505,7 +505,7 @@ static int nau88l0_calc_pll(unsigned int pll_in,
+ 	f2_max = 0;
+ 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
+ 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
+-		f2 = 256 * fs * 4 * nau8810_mclk_scaler[i] / 10;
++		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
+ 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
+ 			f2_max < f2) {
+ 			f2_max = f2;
+-- 
+2.18.0
