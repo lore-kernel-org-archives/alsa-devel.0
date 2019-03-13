@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8810: fix the issue of widget with
-	prefixed name" to the asoc tree
-Date: Wed, 13 Mar 2019 15:38:33 +0000 (GMT)
-Message-ID: <20190313153833.4D1A51128B97@debutante.sirena.org.uk>
-References: <20190313082344.8272-1-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: rsnd: src: fix compiler warnings" to
+	the asoc tree
+Date: Wed, 13 Mar 2019 15:38:57 +0000 (GMT)
+Message-ID: <20190313153857.32FED1128B97@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAF49F80799
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 16:38:34 +0100 (CET)
-In-Reply-To: <20190313082344.8272-1-KCHSU0@nuvoton.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5A2CF8974E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 16:38:58 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8810: fix the issue of widget with prefixed name
+   ASoC: rsnd: src: fix compiler warnings
 
 has been applied to the asoc tree at
 
@@ -55,36 +53,100 @@ to this mail.
 Thanks,
 Mark
 
->From 54d1cf78b0f4ba348a7c7fb8b7d0708d71b6cc8a Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Wed, 13 Mar 2019 16:23:44 +0800
-Subject: [PATCH] ASoC: nau8810: fix the issue of widget with prefixed name
+>From 825b22e5961a47ba7387d3ee6729956d6bb3b495 Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Thu, 7 Mar 2019 11:34:53 +0900
+Subject: [PATCH] ASoC: rsnd: src: fix compiler warnings
 
-The driver changes the stream name of DAC and ADC to avoid the issue of
-widget with prefixed name. When the machine adds prefixed name for codec,
-the stream name of DAI may not find the widgets.
+compiler complains about following declarations
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+sound/soc/sh/rcar/src.c:174:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsdsr_table_pattern1[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:183:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsdsr_table_pattern2[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:192:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 bsisr_table[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:201:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan288888[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:210:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan244888[] = {
+ ^~~~~
+sound/soc/sh/rcar/src.c:219:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+ const static u32 chan222222[] = {
+ ^~~~~
+
+This patch moves the 'static' keyword to the front of the
+declaration to fix the compiler warnings
+
+Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8810.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/src.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index bfd74b86c9d2..645aa0794123 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -411,9 +411,9 @@ static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("Mono Mixer", NAU8810_REG_POWER3,
- 		NAU8810_MOUTMX_EN_SFT, 0, &nau8810_mono_mixer_controls[0],
- 		ARRAY_SIZE(nau8810_mono_mixer_controls)),
--	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", NAU8810_REG_POWER3,
-+	SND_SOC_DAPM_DAC("DAC", "Playback", NAU8810_REG_POWER3,
- 		NAU8810_DAC_EN_SFT, 0),
--	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", NAU8810_REG_POWER2,
-+	SND_SOC_DAPM_ADC("ADC", "Capture", NAU8810_REG_POWER2,
- 		NAU8810_ADC_EN_SFT, 0),
- 	SND_SOC_DAPM_PGA("SpkN Out", NAU8810_REG_POWER3,
- 		NAU8810_NSPK_EN_SFT, 0, NULL, 0),
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index db81e066b92e..79716725f67b 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -135,7 +135,7 @@ unsigned int rsnd_src_get_rate(struct rsnd_priv *priv,
+ 	return rate;
+ }
+ 
+-const static u32 bsdsr_table_pattern1[] = {
++static const u32 bsdsr_table_pattern1[] = {
+ 	0x01800000, /* 6 - 1/6 */
+ 	0x01000000, /* 6 - 1/4 */
+ 	0x00c00000, /* 6 - 1/3 */
+@@ -144,7 +144,7 @@ const static u32 bsdsr_table_pattern1[] = {
+ 	0x00400000, /* 6 - 1   */
+ };
+ 
+-const static u32 bsdsr_table_pattern2[] = {
++static const u32 bsdsr_table_pattern2[] = {
+ 	0x02400000, /* 6 - 1/6 */
+ 	0x01800000, /* 6 - 1/4 */
+ 	0x01200000, /* 6 - 1/3 */
+@@ -153,7 +153,7 @@ const static u32 bsdsr_table_pattern2[] = {
+ 	0x00600000, /* 6 - 1   */
+ };
+ 
+-const static u32 bsisr_table[] = {
++static const u32 bsisr_table[] = {
+ 	0x00100060, /* 6 - 1/6 */
+ 	0x00100040, /* 6 - 1/4 */
+ 	0x00100030, /* 6 - 1/3 */
+@@ -162,7 +162,7 @@ const static u32 bsisr_table[] = {
+ 	0x00100020, /* 6 - 1   */
+ };
+ 
+-const static u32 chan288888[] = {
++static const u32 chan288888[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x000001fe, /* 1 to 8 */
+ 	0x000001fe, /* 1 to 8 */
+@@ -171,7 +171,7 @@ const static u32 chan288888[] = {
+ 	0x000001fe, /* 1 to 8 */
+ };
+ 
+-const static u32 chan244888[] = {
++static const u32 chan244888[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x0000001e, /* 1 to 4 */
+ 	0x0000001e, /* 1 to 4 */
+@@ -180,7 +180,7 @@ const static u32 chan244888[] = {
+ 	0x000001fe, /* 1 to 8 */
+ };
+ 
+-const static u32 chan222222[] = {
++static const u32 chan222222[] = {
+ 	0x00000006, /* 1 to 2 */
+ 	0x00000006, /* 1 to 2 */
+ 	0x00000006, /* 1 to 2 */
 -- 
 2.20.1
