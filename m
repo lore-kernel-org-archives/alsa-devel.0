@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ams-delta: remove duplicate 'const'" to the asoc tree
-Date: Wed, 13 Mar 2019 15:38:42 +0000 (GMT)
-Message-ID: <20190313153842.0898B1128B97@debutante.sirena.org.uk>
-References: <20190307101101.613881-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: nau8810: fix the issue of widget with
+	prefixed name" to the asoc tree
+Date: Wed, 13 Mar 2019 15:38:33 +0000 (GMT)
+Message-ID: <20190313153833.4D1A51128B97@debutante.sirena.org.uk>
+References: <20190313082344.8272-1-KCHSU0@nuvoton.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CAF49F80799
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 16:38:34 +0100 (CET)
+In-Reply-To: <20190313082344.8272-1-KCHSU0@nuvoton.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ams-delta: remove duplicate 'const'
+   ASoC: nau8810: fix the issue of widget with prefixed name
 
 has been applied to the asoc tree at
 
@@ -37,40 +55,36 @@ to this mail.
 Thanks,
 Mark
 
->From c9fbc1c02ec881c8bb037f87efb706d22589fdab Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 11:10:49 +0100
-Subject: [PATCH] ASoC: ams-delta: remove duplicate 'const'
+>From 54d1cf78b0f4ba348a7c7fb8b7d0708d71b6cc8a Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 13 Mar 2019 16:23:44 +0800
+Subject: [PATCH] ASoC: nau8810: fix the issue of widget with prefixed name
 
-clang points out that SOC_ENUM_SINGLE_EXT_DECL() contains a 'const'
-modifier already, so adding another one does not make it more const:
+The driver changes the stream name of DAC and ADC to avoid the issue of
+widget with prefixed name. When the machine adds prefixed name for codec,
+the stream name of DAI may not find the widgets.
 
-sound/soc/ti/ams-delta.c:203:14: error: duplicate 'const' declaration specifier [-Werror,-Wduplicate-decl-specifier]
-static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-             ^
-include/sound/soc.h:351:2: note: expanded from macro 'SOC_ENUM_SINGLE_EXT_DECL'
-        const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/ams-delta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/nau8810.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
-index 4dce494dfbd3..b9611db14c86 100644
---- a/sound/soc/ti/ams-delta.c
-+++ b/sound/soc/ti/ams-delta.c
-@@ -200,7 +200,7 @@ static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-+static SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
- 				      ams_delta_audio_mode);
- 
- static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index bfd74b86c9d2..645aa0794123 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -411,9 +411,9 @@ static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("Mono Mixer", NAU8810_REG_POWER3,
+ 		NAU8810_MOUTMX_EN_SFT, 0, &nau8810_mono_mixer_controls[0],
+ 		ARRAY_SIZE(nau8810_mono_mixer_controls)),
+-	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", NAU8810_REG_POWER3,
++	SND_SOC_DAPM_DAC("DAC", "Playback", NAU8810_REG_POWER3,
+ 		NAU8810_DAC_EN_SFT, 0),
+-	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", NAU8810_REG_POWER2,
++	SND_SOC_DAPM_ADC("ADC", "Capture", NAU8810_REG_POWER2,
+ 		NAU8810_ADC_EN_SFT, 0),
+ 	SND_SOC_DAPM_PGA("SpkN Out", NAU8810_REG_POWER3,
+ 		NAU8810_NSPK_EN_SFT, 0, NULL, 0),
 -- 
 2.20.1
