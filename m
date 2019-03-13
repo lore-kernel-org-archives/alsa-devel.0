@@ -1,7 +1,7 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH v2 2/5] arm64: dts: renesas: r8a7796: add extended audio dmac register
-Date: Wed, 13 Mar 2019 14:57:17 +0900
-Message-ID: <20190313055720.26082-3-jiada_wang@mentor.com>
+Subject: [PATCH v2 3/5] arm64: dts: renesas: r8a77965: add extended audio dmac register
+Date: Wed, 13 Mar 2019 14:57:18 +0900
+Message-ID: <20190313055720.26082-4-jiada_wang@mentor.com>
 References: <20190313055720.26082-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -21,14 +21,14 @@ This patch adds extended audio dmac register with name "extaudmapp".
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- arch/arm64/boot/dts/renesas/r8a7796.dtsi | 5 +++--
+ arch/arm64/boot/dts/renesas/r8a77965.dtsi | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a7796.dtsi b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
-index cdf784899cf8..761305199f17 100644
---- a/arch/arm64/boot/dts/renesas/r8a7796.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
-@@ -1775,8 +1775,9 @@
+diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+index 9763d108e183..25c6f386924b 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+@@ -1461,8 +1461,9 @@
  				<0 0xec5a0000 0 0x100>,  /* ADG */
  				<0 0xec540000 0 0x1000>, /* SSIU */
  				<0 0xec541000 0 0x280>,  /* SSI */
