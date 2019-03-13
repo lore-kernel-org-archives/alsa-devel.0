@@ -1,65 +1,75 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential
- deadlock
-Date: Wed, 13 Mar 2019 20:55:57 +0900
-Message-ID: <8cd7f718-bfb2-15c8-823d-88458b385377@mentor.com>
-References: <20190307061554.26486-1-jiada_wang@mentor.com>
- <20190307061554.26486-2-jiada_wang@mentor.com>
- <CAMuHMdU+1Ntz6uvk-VYsSdWJgBfzHu99SztqyfLX7z2FRxPdNg@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: hda - add more quirks for HP Z2 G4 and
+	HP Z240
+Date: Wed, 13 Mar 2019 13:40:15 +0100
+Message-ID: <20190313124015.25379-1-perex@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdU+1Ntz6uvk-VYsSdWJgBfzHu99SztqyfLX7z2FRxPdNg@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2620F807B5
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 13:40:34 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Jeff Burrell <jeff.burrell@hp.com>, Jaroslav Kysela <jkysela@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Geert
+From: Jaroslav Kysela <jkysela@redhat.com>
 
-On 2019/03/12 18:15, Geert Uytterhoeven wrote:
-> Hi Jiada, Fabrizio,
-> 
-> On Thu, Mar 7, 2019 at 7:17 AM Jiada Wang <jiada_wang@mentor.com> wrote:
->> lockdep warns us that priv->lock and k->k_lock can cause a
->> deadlock when after acquire of k->k_lock, process is interrupted
->> by src, while in another routine of src .init, k->k_lock is
->> acquired with priv->lock held.
->>
->> This patch avoids a potential deadlock by not calling soc_device_match()
->> in SRC .init callback, instead it adds new soc fields in priv->flags to
->> differentiate SoCs.
->>
->> Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
->>   sound/soc/sh/rcar/core.c | 2 ++
->>   sound/soc/sh/rcar/rsnd.h | 5 +++++
->>   sound/soc/sh/rcar/src.c  | 9 +--------
->>   3 files changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
->> index 022996d2db13..4fe83e611c01 100644
->> --- a/sound/soc/sh/rcar/core.c
->> +++ b/sound/soc/sh/rcar/core.c
->> @@ -110,6 +110,8 @@ static const struct of_device_id rsnd_of_match[] = {
->>          { .compatible = "renesas,rcar_sound-gen1", .data = (void *)RSND_GEN1 },
->>          { .compatible = "renesas,rcar_sound-gen2", .data = (void *)RSND_GEN2 },
->>          { .compatible = "renesas,rcar_sound-gen3", .data = (void *)RSND_GEN3 },
->> +       /* Special Handling */
->> +       { .compatible = "renesas,rcar_sound-r8a77990", .data = (void *)(RSND_GEN3 | RSND_SOC_E) },
-> 
-> I guess we need an entry for RZ/G2E, too?
-> 
-Sorry, I don't have user manual for RZ/G2E,
-if you can let me know where to find RZ/G2E's user manual,
-I can add entry for these SoCs
+Apply the HP_MIC_NO_PRESENCE fixups for the more HP Z2 G4 and
+HP Z240 models.
 
-Thanks,
-Jiada
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+Reported-by: Jeff Burrell <jeff.burrell@hp.com>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/pci/hda/patch_conexant.c | 3 +++
+ sound/pci/hda/patch_realtek.c  | 6 ++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index a4ee7656d9ee..fb65ad31e86c 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -936,6 +936,9 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8299, "HP 800 G3 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x829a, "HP 800 G3 DM", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x8455, "HP Z2 G4", CXT_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x8456, "HP Z2 G4 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x8457, "HP Z2 G4 mini", CXT_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x8458, "HP Z2 G4 mini premium", CXT_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
+ 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT_FIXUP_OLPC_XO),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400", CXT_PINCFG_LENOVO_TP410),
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c8413d44973c..476c3ee31dc8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6764,11 +6764,13 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x103c, 0x802e, "HP Z240 SFF", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x802f, "HP Z240", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x820d, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
+ 	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC295_FIXUP_HP_X360),
+-	SND_PCI_QUIRK(0x103c, 0x82bf, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x103c, 0x82c0, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x82bf, "HP G3 mini", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+-- 
+2.20.1
