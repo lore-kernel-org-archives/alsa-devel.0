@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: axi-i2s: make both "rx" and "tx" optional" to the asoc tree
-Date: Wed, 13 Mar 2019 15:38:35 +0000 (GMT)
-Message-ID: <20190313153835.7AA7C1128B97@debutante.sirena.org.uk>
-References: <20190307214456.16445-2-luca@lucaceresoli.net>
+Subject: Applied "ASoC: ams-delta: remove duplicate 'const'" to the asoc tree
+Date: Wed, 13 Mar 2019 15:38:42 +0000 (GMT)
+Message-ID: <20190313153842.0898B1128B97@debutante.sirena.org.uk>
+References: <20190307101101.613881-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307214456.16445-2-luca@lucaceresoli.net>
+In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Luca Ceresoli <luca@lucaceresoli.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: axi-i2s: make both "rx" and "tx" optional
+   ASoC: ams-delta: remove duplicate 'const'
 
 has been applied to the asoc tree at
 
@@ -37,44 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From fa225400758dfc7ccddebf4d990f991a435f7921 Mon Sep 17 00:00:00 2001
-From: Luca Ceresoli <luca@lucaceresoli.net>
-Date: Thu, 7 Mar 2019 22:44:56 +0100
-Subject: [PATCH] ASoC: axi-i2s: make both "rx" and "tx" optional
+>From c9fbc1c02ec881c8bb037f87efb706d22589fdab Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 7 Mar 2019 11:10:49 +0100
+Subject: [PATCH] ASoC: ams-delta: remove duplicate 'const'
 
-Both the capture and playback channels are optional in the axi_i2s IP
-block. Document how to tell the driver which channels are
-instantiated.
+clang points out that SOC_ENUM_SINGLE_EXT_DECL() contains a 'const'
+modifier already, so adding another one does not make it more const:
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+sound/soc/ti/ams-delta.c:203:14: error: duplicate 'const' declaration specifier [-Werror,-Wduplicate-decl-specifier]
+static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
+             ^
+include/sound/soc.h:351:2: note: expanded from macro 'SOC_ENUM_SINGLE_EXT_DECL'
+        const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/ti/ams-delta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-index 4248b662deff..229ad1392cdc 100644
---- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-@@ -1,5 +1,8 @@
- ADI AXI-I2S controller
+diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
+index 4dce494dfbd3..b9611db14c86 100644
+--- a/sound/soc/ti/ams-delta.c
++++ b/sound/soc/ti/ams-delta.c
+@@ -200,7 +200,7 @@ static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
-+The core can be generated with transmit (playback), only receive
-+(capture) or both directions enabled.
-+
- Required properties:
-  - compatible : Must be "adi,axi-i2s-1.00.a"
-  - reg : Must contain I2S core's registers location and length
-@@ -9,8 +12,8 @@ Required properties:
-  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
-    rate reference clock.
-  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
--   the core. The core expects two dma channels, one for transmit and one for
--   receive.
-+   the core. The core expects two dma channels if both transmit and receive are
-+   enabled, one channel otherwise.
-  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
+-static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
++static SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
+ 				      ams_delta_audio_mode);
  
- For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
+ static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
 -- 
 2.20.1
