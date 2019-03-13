@@ -1,17 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: hda - add more quirks for HP Z2 G4 and
-	HP Z240
-Date: Wed, 13 Mar 2019 13:40:15 +0100
-Message-ID: <20190313124015.25379-1-perex@perex.cz>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - call runtime_resume after S3
+ and S4 for each codec
+Date: Wed, 13 Mar 2019 21:22:30 +0800
+Message-ID: <aaa2a4c3-73c5-a61b-d06b-7bac6facbd03@canonical.com>
+References: <20190309151947.24663-1-hui.wang@canonical.com>
+ <s5hftrruimg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2620F807B5
- for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 13:40:34 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B32BF8961E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 14:22:43 +0100 (CET)
+In-Reply-To: <s5hftrruimg.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +25,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Jeff Burrell <jeff.burrell@hp.com>, Jaroslav Kysela <jkysela@redhat.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jaroslav Kysela <jkysela@redhat.com>
-
-Apply the HP_MIC_NO_PRESENCE fixups for the more HP Z2 G4 and
-HP Z240 models.
-
-Reported-by: Jeff Burrell <jeff.burrell@hp.com>
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/pci/hda/patch_conexant.c | 3 +++
- sound/pci/hda/patch_realtek.c  | 6 ++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index a4ee7656d9ee..fb65ad31e86c 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -936,6 +936,9 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8299, "HP 800 G3 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x829a, "HP 800 G3 DM", CXT_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x8455, "HP Z2 G4", CXT_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x8456, "HP Z2 G4 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x8457, "HP Z2 G4 mini", CXT_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x8458, "HP Z2 G4 mini premium", CXT_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
- 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT_FIXUP_OLPC_XO),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400", CXT_PINCFG_LENOVO_TP410),
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c8413d44973c..476c3ee31dc8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6764,11 +6764,13 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x103c, 0x802e, "HP Z240 SFF", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x802f, "HP Z240", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x820d, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC295_FIXUP_HP_X360),
--	SND_PCI_QUIRK(0x103c, 0x82bf, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x103c, 0x82c0, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x82bf, "HP G3 mini", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x103c, 0x82c0, "HP G3 mini premium", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x83b9, "HP Spectre x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
--- 
-2.20.1
+T24gMjAxOS8zLzEzIOS4i+WNiDc6MTksIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTYXQsIDA5
+IE1hciAyMDE5IDE2OjE5OjQ3ICswMTAwLAo+IEh1aSBXYW5nIHdyb3RlOgo+PiBSZWNlbnRseSB3
+ZSBmb3VuZCB0aGUgYXVkaW8gamFjayBkZXRlY3Rpb24gZG9lc24ndCB3b3JrIGFmdGVyIHN1c3Bl
+bmQKPj4gb24gbWFueSBtYWNoaW5lcyB3aXRoIFJlYWx0ZWsgY29kZWMuIFNvbWV0aW1lcyB0aGUg
+YXVkaW8gc2VsZWN0aW9uCj4+IGRpYWxvZ3VlIGRpZG4ndCBzaG93IHVwIGFmdGVyIHVzZXJzIHBs
+dWdnZWQgaGVhZGhwaG9uZS9oZWFkc2V0IGludG8KPj4gdGhlIGhlYWRzZXQgamFjaywgc29tZXRp
+bWVzIGFmdGVyIHVzZXMgcGx1Z2dlZCBoZWFkcGhvbmUvaGVhZHNldCwgdGhlbgo+PiBjbGljayB0
+aGUgc291bmQgaWNvbiBvbiB0aGUgdXBwZXItcmlnaHQgY29ybmVyIG9mIGdub21lLWRlc2t0b3As
+IGl0Cj4+IGFsc28gc2hvd2VkIHRoZSBzcGVha2VyIHJhdGhlciB0aGFuIHRoZSBoZWFkcGhvbmUu
+Cj4+Cj4+IFRoZSByb290IGNhdXNlIGlzIHRoYXQgYmVmb3JlIHN1c3BlbmQsIHRoZSBjb2RlYyBh
+bHJlYWR5IGNhbGwgdGhlCj4+IHJ1bnRpbWVfc3VzcGVuZCBzaW5jZSB0aGlzIGNvZGVjIGlzIG5v
+dCB1c2VkIGJ5IGFueSBhcHBzLCB0aGVuIGluCj4+IHJlc3VtZSwgaXQgd2lsbCBub3QgY2FsbCBy
+dW50aW1lX3Jlc3VtZSBmb3IgdGhpcyBjb2RlYy4gQnV0IGZvciBzb21lCj4+IHJlYWx0ZWsgY29k
+ZWMgKHNvIGZhciwgYWxjMjM2LCBhbGMyNTUgYW5kIGFsYzg5MSkgd2l0aCB0aGUgc3BlY2lmaWMK
+Pj4gQklPUywgaWYgaXQgZG9lc24ndCBydW4gcnVudGltZV9yZXN1bWUgYWZ0ZXIgc3VzcGVuZCwg
+YWxsIGNvZGVjCj4+IGZ1bmN0aW9ucyBpbmNsdWRpbmcgamFjayBkZXRlY3Rpb24gc3RvcCB3b3Jr
+aW5nIGFueW1vcmUuCj4+Cj4+IFRoaXMgcHJvYmxlbSBleGlzdGVkIGZvciBhIGxvbmcgdGltZSwg
+YnV0IGl0IHdhcyBub3QgZXhwb3NlZCwgdGhhdCBpcwo+PiBiZWNhdXNlIGlmIHVzZXJzIGlzIHBs
+YXlpbmcgc291bmQgb3IgcmVjb3JkaW5nIHNvdW5kLCBhbmQgYXQgdGhlIHNhbWUKPj4gdGltZSB0
+aGV5IHJ1biBzdXNwZW5kLCAgdGhlIHJ1bnRpbWVfc3VzcGVuZCB3aWxsIGJlIGNhbGxlZCBpbgo+
+PiBwbV9zdXNwZW5kIGFuZCBydW50aW1lX3Jlc3VtZSB3aWxsIGJlIGNhbGxlZCBpbiBwbV9yZXN1
+bWU7IGlmIGF1ZGlvCj4+IGNvZGVjIGlzIG5vdCB1c2VkIGJ5IGFueSBhcHBzIGFuZCB1c2VycyBy
+dW4gc3VzcGVuZCwgdGhlCj4+IHJ1bnRpbWVfcmVzdW1lIHdpbGwgbm90IGJlIGNhbGxlZCBpbiBw
+bV9yZXN1bWUsIHRoZW4gY29kZWMgc3RvcHMKPj4gd29ya2luZywgYnV0IGlmIHVzZXJzIHBsYXkg
+c291bmQgb3Igb3BlbiBzb3VuZC1zZXR0aW5nIHRvIGNoZWNrCj4+IGF1ZGlvIGRldmljZSwgdGhp
+cyB3aWxsIHRyaWdnZXIgY2FsbGluZyB0byBydW50aW1lX3Jlc3VtZSAoCj4+IHZpYSBzbmRfaGRh
+X3Bvd2VyX3VwKSwgdGhlbiB0aGUgY29kZWMgc3RhcnRzIHdvcmtpbmcgYWdhaW4gYmVmb3JlCj4+
+IHVzZXJzIG5vdGljZSB0aGlzIHByb2JsZW0uCj4+Cj4+IFNpbmNlIHdlIGRvbid0IGtub3cgaG93
+IG1hbnkgY29kZWMgYW5kIEJJT1MgY29tYmluYXRpb25zIGhhdmUgdGhpcwo+PiBwcm9ibGVtLCB0
+byBmaXggaXQsIGxldCB0aGUgZHJpdmVyIGNhbGwgcnVudGltZV9yZXN1bWUgZm9yIGFsbCBjb2Rl
+Y3MKPj4gaW4gcG1fcmVzdW1lLCBtYXliZSBmb3Igc29tZSBjb2RlY3MsIHRoaXMgaXMgbm90IG5l
+ZWRlZCwgYnV0IGl0IGlzCj4+IGhhcm1sZXNzLiBBZnRlciBhIGNvZGVjIGlzIHJ1bnRpbWUgcmVz
+dW1lZCwgaWYgaXQgaXMgbm90IHVzZWQgYnkgYW55Cj4+IGFwcHMsIGl0IHdpbGwgYmUgcnVudGlt
+ZSBzdXNwZW5kZWQgc29vbiBhbmQgZnVydGhlcm1vcmUgd2UgZG9uJ3QgcnVuCj4+IHN1c3BlbmQg
+ZnJlcXVlbnRseSwgdGhpcyBjaGFuZ2Ugd2lsbCBub3QgYWRkIG11Y2ggcG93ZXIgY29uc3VtcHRp
+b24uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEh1aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwuY29t
+Pgo+PiAtLS0KPj4gIGluY2x1ZGUvc291bmQvaGRhX2NvZGVjLmggfCAgMyArKysKPj4gIHNvdW5k
+L3BjaS9oZGEvaGRhX2NvZGVjLmMgfCAyNiArKysrKysrKysrKysrKysrKysrKysrKy0tLQo+PiAg
+MiBmaWxlcyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9oZGFfY29kZWMuaCBiL2luY2x1ZGUvc291bmQvaGRh
+X2NvZGVjLmgKPj4gaW5kZXggY2M3YzhkNDJkNGZkLi5hNGUyNmQxZDE4YmMgMTAwNjQ0Cj4+IC0t
+LSBhL2luY2x1ZGUvc291bmQvaGRhX2NvZGVjLmgKPj4gKysrIGIvaW5jbHVkZS9zb3VuZC9oZGFf
+Y29kZWMuaAo+PiBAQCAtMjYyLDYgKzI2Miw5IEBAIHN0cnVjdCBoZGFfY29kZWMgewo+PiAgCXVu
+c2lnbmVkIGludCBhdXRvX3J1bnRpbWVfcG06MTsgLyogZW5hYmxlIGF1dG9tYXRpYyBjb2RlYyBy
+dW50aW1lIHBtICovCj4+ICAJdW5zaWduZWQgaW50IGZvcmNlX3Bpbl9wcmVmaXg6MTsgLyogQWRk
+IGxvY2F0aW9uIHByZWZpeCAqLwo+PiAgCXVuc2lnbmVkIGludCBsaW5rX2Rvd25fYXRfc3VzcGVu
+ZDoxOyAvKiBsaW5rIGRvd24gYXQgcnVudGltZSBzdXNwZW5kICovCj4+ICsjaWZkZWYgQ09ORklH
+X1BNX1NMRUVQCj4+ICsJdW5zaWduZWQgaW50IGFscmVhZHlfcnRfc3VzcGVuZDoxOyAvKiBhbHJl
+YWR5IHJ1bnRpbWUgc3VzcGVuZCBiZWZvcmUgc2xlZXAgKi8KPj4gKyNlbmRpZgo+PiAgI2lmZGVm
+IENPTkZJR19QTQo+PiAgCXVuc2lnbmVkIGxvbmcgcG93ZXJfb25fYWNjdDsKPj4gIAl1bnNpZ25l
+ZCBsb25nIHBvd2VyX29mZl9hY2N0Owo+PiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFf
+Y29kZWMuYyBiL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMKPj4gaW5kZXggNWYyMDA1MDk4YTYw
+Li43YzJiYmUyNWFkZGUgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvZGVjLmMK
+Pj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29kZWMuYwo+PiBAQCAtMjkzOSwzNCArMjkzOSw1
+NCBAQCBzdGF0aWMgaW50IGhkYV9jb2RlY19ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpk
+ZXYpCj4+ICAjZW5kaWYgLyogQ09ORklHX1BNICovCj4+ICAKPj4gICNpZmRlZiBDT05GSUdfUE1f
+U0xFRVAKPj4gK3N0YXRpYyBpbnQgaGRhX2NvZGVjX2ZvcmNlX3Jlc3VtZShzdHJ1Y3QgZGV2aWNl
+ICpkZXYpCj4+ICt7Cj4+ICsJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMgPSBkZXZfdG9faGRhX2Nv
+ZGVjKGRldik7Cj4+ICsKPj4gKwlpZiAoY29kZWMtPmFscmVhZHlfcnRfc3VzcGVuZCkgewo+PiAr
+CQlpbnQgcmV0Owo+PiArCj4+ICsJCXBtX3J1bnRpbWVfZ2V0X25vcmVzdW1lKGRldik7Cj4+ICsJ
+CXJldCA9IHBtX3J1bnRpbWVfZm9yY2VfcmVzdW1lKGRldik7Cj4+ICsJCXBtX3J1bnRpbWVfcHV0
+KGRldik7Cj4+ICsJCXJldHVybiByZXQ7Cj4+ICsJfSBlbHNlCj4+ICsJCXJldHVybiBwbV9ydW50
+aW1lX2ZvcmNlX3Jlc3VtZShkZXYpOwo+PiArfQo+IEkgZG9uJ3QgdGhpbmsgd2UgbmVlZCBjb2Rl
+Yy0+YWxyZWFkeV9ydF9zdXNwZW5kIGZsYWcgY2hlY2suICBBbmQgaXQKPiBkZXNlcnZlcyBhIGNv
+bW1lbnQuICBpLmUuIGhkYV9jb2RlY19mb3JjZV9yZXN1bWUoKSB3aWxsIGJlIHNvbWV0aGluZwo+
+IGxpa2U6Cj4KPiBzdGF0aWMgaW50IGhkYV9jb2RlY19mb3JjZV9yZXN1bWUoc3RydWN0IGRldmlj
+ZSAqZGV2KQo+IHsKPiAJaW50IHJldDsKPgo+IAkvKiBUaGUgZ2V0L3B1dCBwYWlyIGJlbG93IGVu
+Zm9yY2VzIHRoZSBydW50aW1lIHJlc3VtZSBldmVuIGlmIHRoZQo+IAkgKiBkZXZpY2UgaGFzbid0
+IGJlZW4gdXNlZCBhdCBzdXNwZW5kIHRpbWUuICBUaGlzIHRyaWNrIGlzIG5lZWRlZCB0bwo+IAkg
+KiB1cGRhdGUgdGhlIGphY2sgc3RhdGUgY2hhbmdlIGR1cmluZyB0aGUgc2xlZXAuCj4gCSAqLwo+
+IAlwbV9ydW50aW1lX2dldF9ub3Jlc3VtZShkZXYpOwo+IAlyZXQgPSBwbV9ydW50aW1lX2ZvcmNl
+X3Jlc3VtZShkZXYpOwo+IAlwbV9ydW50aW1lX3B1dChkZXYpOwo+IAlyZXR1cm4gcmV0Owo+IH0K
+Pgo+Cj4gQ291bGQgeW91IGNoZWNrIHdoZXRoZXIgdGhpcyB3b3Jrcz8KPgo+Cj4gdGhhbmtzLAo+
+Cj4gVGFrYXNoaQoKR290IGl0LCB3aWxsIHRlc3QgaXQgdGhpcyB3ZWVrZW5kIG9yIG5leHQgd2Vl
+ayBhZnRlciBJIGdldCB0aGUgaGFyZHdhcmUuCgpUaGFua3MsCgpIdWkuCgoKPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cHM6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
