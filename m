@@ -1,29 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: improve channel capabilities handling" to
- the asoc tree
-Date: Wed, 13 Mar 2019 15:38:48 +0000 (GMT)
-Message-ID: <20190313153848.88A7B1128B97@debutante.sirena.org.uk>
-References: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: qcom: add i2c dependency for SND_SOC_SDM845" to the asoc tree
+Date: Wed, 13 Mar 2019 15:38:52 +0000 (GMT)
+Message-ID: <20190313153852.DF31C1128B97@debutante.sirena.org.uk>
+References: <20190304203114.1894822-3-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190304203114.1894822-3-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: improve channel capabilities handling
+   ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
 has been applied to the asoc tree at
 
@@ -48,48 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From c2dc8b2c114c22d7a04cf26a7c7d04faaa757143 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:29 +0100
-Subject: [PATCH] ASoC: stm32: i2s: improve channel capabilities handling
+>From 686174a0989b1c33698b26523a1e4ccdcc84cf22 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 4 Mar 2019 21:30:52 +0100
+Subject: [PATCH] ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
-Use alsa snd_pcm_hw_constraint_single service to manage
-channels restriction. This provides better status on driver
-limitations, to the application.
+We must not select SND_SOC_MAX98927 unless CONFIG_I2C
+is also enabled:
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98927
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
+  Selected by [y]:
+  - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && MFD_CROS_EC [=y]
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 783b33497435..06bbbef74b3a 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -496,12 +496,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	unsigned int fthlv;
- 	int ret;
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 75ceb04d8bf0..b1764af858ba 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -98,7 +98,7 @@ config SND_SOC_MSM8996
  
--	if ((params_channels(params) == 1) &&
--	    ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)) {
--		dev_err(cpu_dai->dev, "Mono mode supported only by DSP_A\n");
--		return -EINVAL;
--	}
--
- 	switch (format) {
- 	case 16:
- 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
-@@ -551,6 +545,10 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 	i2s->substream = substream;
- 	spin_unlock_irqrestore(&i2s->irq_lock, flags);
- 
-+	if ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)
-+		snd_pcm_hw_constraint_single(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-+
- 	ret = clk_prepare_enable(i2s->i2sclk);
- 	if (ret < 0) {
- 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
+ config SND_SOC_SDM845
+ 	tristate "SoC Machine driver for SDM845 boards"
+-	depends on QCOM_APR && MFD_CROS_EC
++	depends on QCOM_APR && MFD_CROS_EC && I2C
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_RT5663
 -- 
 2.20.1
