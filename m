@@ -1,62 +1,51 @@
-From: Fabrizio Castro <fabrizio.castro@bp.renesas.com>
-Subject: RE: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential
- deadlock
-Date: Wed, 13 Mar 2019 18:19:49 +0000
-Message-ID: <TY1PR01MB177056C725F16385A627111EC04A0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-References: <20190307061554.26486-1-jiada_wang@mentor.com>
- <20190307061554.26486-2-jiada_wang@mentor.com>
- <CAMuHMdU+1Ntz6uvk-VYsSdWJgBfzHu99SztqyfLX7z2FRxPdNg@mail.gmail.com>
- <8cd7f718-bfb2-15c8-823d-88458b385377@mentor.com>
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: [PATCH] ALSA: pcm: Fix function name in kernel-doc
+	comment
+Date: Wed, 13 Mar 2019 16:06:48 -0300
+Message-ID: <20190313190648.GA18221@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8cd7f718-bfb2-15c8-823d-88458b385377@mentor.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw1-xc44.google.com (mail-yw1-xc44.google.com
+ [IPv6:2607:f8b0:4864:20::c44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2E9EF80799
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 20:06:54 +0100 (CET)
+Received: by mail-yw1-xc44.google.com with SMTP id v127so2079099ywe.13
+ for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2019 12:06:54 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gSmlhZGEsDQoNCj4gRnJvbTogSmlhZGEgV2FuZyA8amlhZGFfd2FuZ0BtZW50b3IuY29t
-Pg0KPiBTZW50OiAxMyBNYXJjaCAyMDE5IDExOjU2DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggbGlu
-dXgtbmV4dCB2MiAxLzJdIEFTb0M6IHJzbmQ6IHNyYzogQXZvaWQgYSBwb3RlbnRpYWwgZGVhZGxv
-Y2sNCj4gDQo+IEhpIEdlZXJ0DQo+IA0KPiBPbiAyMDE5LzAzLzEyIDE4OjE1LCBHZWVydCBVeXR0
-ZXJob2V2ZW4gd3JvdGU6DQo+ID4gSGkgSmlhZGEsIEZhYnJpemlvLA0KPiA+DQo+ID4gT24gVGh1
-LCBNYXIgNywgMjAxOSBhdCA3OjE3IEFNIEppYWRhIFdhbmcgPGppYWRhX3dhbmdAbWVudG9yLmNv
-bT4gd3JvdGU6DQo+ID4+IGxvY2tkZXAgd2FybnMgdXMgdGhhdCBwcml2LT5sb2NrIGFuZCBrLT5r
-X2xvY2sgY2FuIGNhdXNlIGENCj4gPj4gZGVhZGxvY2sgd2hlbiBhZnRlciBhY3F1aXJlIG9mIGst
-PmtfbG9jaywgcHJvY2VzcyBpcyBpbnRlcnJ1cHRlZA0KPiA+PiBieSBzcmMsIHdoaWxlIGluIGFu
-b3RoZXIgcm91dGluZSBvZiBzcmMgLmluaXQsIGstPmtfbG9jayBpcw0KPiA+PiBhY3F1aXJlZCB3
-aXRoIHByaXYtPmxvY2sgaGVsZC4NCj4gPj4NCj4gPj4gVGhpcyBwYXRjaCBhdm9pZHMgYSBwb3Rl
-bnRpYWwgZGVhZGxvY2sgYnkgbm90IGNhbGxpbmcgc29jX2RldmljZV9tYXRjaCgpDQo+ID4+IGlu
-IFNSQyAuaW5pdCBjYWxsYmFjaywgaW5zdGVhZCBpdCBhZGRzIG5ldyBzb2MgZmllbGRzIGluIHBy
-aXYtPmZsYWdzIHRvDQo+ID4+IGRpZmZlcmVudGlhdGUgU29Dcy4NCj4gPj4NCj4gPj4gRml4ZXM6
-IGxpbnV4LW5leHQgY29tbWl0IDc2NzRiZWM0ZmMwOSAoIkFTb0M6IHJzbmQ6IHVwZGF0ZSBCU0RT
-Ui9CU0RJU1IgaGFuZGxpbmciKQ0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBKaWFkYSBXYW5nIDxqaWFk
-YV93YW5nQG1lbnRvci5jb20+DQo+ID4+IC0tLQ0KPiA+PiAgIHNvdW5kL3NvYy9zaC9yY2FyL2Nv
-cmUuYyB8IDIgKysNCj4gPj4gICBzb3VuZC9zb2Mvc2gvcmNhci9yc25kLmggfCA1ICsrKysrDQo+
-ID4+ICAgc291bmQvc29jL3NoL3JjYXIvc3JjLmMgIHwgOSArLS0tLS0tLS0NCj4gPj4gICAzIGZp
-bGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkNCj4gPj4NCj4gPj4g
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zaC9yY2FyL2NvcmUuYyBiL3NvdW5kL3NvYy9zaC9yY2Fy
-L2NvcmUuYw0KPiA+PiBpbmRleCAwMjI5OTZkMmRiMTMuLjRmZTgzZTYxMWMwMSAxMDA2NDQNCj4g
-Pj4gLS0tIGEvc291bmQvc29jL3NoL3JjYXIvY29yZS5jDQo+ID4+ICsrKyBiL3NvdW5kL3NvYy9z
-aC9yY2FyL2NvcmUuYw0KPiA+PiBAQCAtMTEwLDYgKzExMCw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3Qgb2ZfZGV2aWNlX2lkIHJzbmRfb2ZfbWF0Y2hbXSA9IHsNCj4gPj4gICAgICAgICAgeyAuY29t
-cGF0aWJsZSA9ICJyZW5lc2FzLHJjYXJfc291bmQtZ2VuMSIsIC5kYXRhID0gKHZvaWQgKilSU05E
-X0dFTjEgfSwNCj4gPj4gICAgICAgICAgeyAuY29tcGF0aWJsZSA9ICJyZW5lc2FzLHJjYXJfc291
-bmQtZ2VuMiIsIC5kYXRhID0gKHZvaWQgKilSU05EX0dFTjIgfSwNCj4gPj4gICAgICAgICAgeyAu
-Y29tcGF0aWJsZSA9ICJyZW5lc2FzLHJjYXJfc291bmQtZ2VuMyIsIC5kYXRhID0gKHZvaWQgKilS
-U05EX0dFTjMgfSwNCj4gPj4gKyAgICAgICAvKiBTcGVjaWFsIEhhbmRsaW5nICovDQo+ID4+ICsg
-ICAgICAgeyAuY29tcGF0aWJsZSA9ICJyZW5lc2FzLHJjYXJfc291bmQtcjhhNzc5OTAiLCAuZGF0
-YSA9ICh2b2lkICopKFJTTkRfR0VOMyB8IFJTTkRfU09DX0UpIH0sDQo+ID4NCj4gPiBJIGd1ZXNz
-IHdlIG5lZWQgYW4gZW50cnkgZm9yIFJaL0cyRSwgdG9vPw0KDQpHZWVydCBoYXMgYSBwb2ludCwg
-SSBhbSBsb29raW5nIGF0IHRoZSBVc2VyIG1hbnVhbCBmb3IgdGhlIFJaL0cyRSBhbmQgaXQgbG9v
-a3MgbGlrZSB0aGUNCmltcGxlbWVudGF0aW9uIGZvciB0aGUgUlovRzJFIGlzIHRoZSBzYW1lIGFz
-IHRoZSBvbmUgZm9yIHRoZSByOGE3Nzk5MA0KDQo+ID4NCj4gU29ycnksIEkgZG9uJ3QgaGF2ZSB1
-c2VyIG1hbnVhbCBmb3IgUlovRzJFLA0KPiBpZiB5b3UgY2FuIGxldCBtZSBrbm93IHdoZXJlIHRv
-IGZpbmQgUlovRzJFJ3MgdXNlciBtYW51YWwsDQo+IEkgY2FuIGFkZCBlbnRyeSBmb3IgdGhlc2Ug
-U29Dcw0KDQpJZiB5b3UgcHJlZmVyIEkgY291bGQgYWRkIHRoYXQgYWZ0ZXIgcnVubmluZyBzb21l
-IHRlc3RzPyBJIGRvIGhhdmUgYSBib2FyZCB3aXRoIGEgUlovRzJFLg0KDQpUaGFua3MsDQpGYWIN
-Cg0KPiANCj4gVGhhbmtzLA0KPiBKaWFkYQ0KPiA+IEdye29ldGplLGVldGluZ31zLA0KPiA+DQo+
-ID4gICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0DQo+ID4NCg==
+Signed-off-by: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+---
+ include/sound/pcm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 465d7d033..18bd8c3ea 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -750,7 +750,7 @@ static inline snd_pcm_uframes_t snd_pcm_playback_avail(struct snd_pcm_runtime *r
+ }
+ 
+ /**
+- * snd_pcm_playback_avail - Get the available (readable) space for capture
++ * snd_pcm_capture_avail - Get the available (readable) space for capture
+  * @runtime: PCM runtime instance
+  *
+  * Result is between 0 ... (boundary - 1)
+-- 
+2.19.1
