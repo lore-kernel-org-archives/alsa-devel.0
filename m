@@ -1,29 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: improve channel capabilities handling" to
- the asoc tree
-Date: Thu, 14 Mar 2019 15:53:41 +0000 (GMT)
-Message-ID: <20190314155341.23EE61126E64@debutante.sirena.org.uk>
-References: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: axi-i2s: let both capture and playback be optional" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:30 +0000 (GMT)
+Message-ID: <20190314155330.0DAF61126E64@debutante.sirena.org.uk>
+References: <20190307214456.16445-1-luca@lucaceresoli.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307214456.16445-1-luca@lucaceresoli.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: improve channel capabilities handling
+   ASoC: axi-i2s: let both capture and playback be optional
 
 has been applied to the asoc tree at
 
@@ -48,48 +37,142 @@ to this mail.
 Thanks,
 Mark
 
->From c2dc8b2c114c22d7a04cf26a7c7d04faaa757143 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:29 +0100
-Subject: [PATCH] ASoC: stm32: i2s: improve channel capabilities handling
+>From 7bf7d0554890c53478ec04d3d4bfced0c881f6c8 Mon Sep 17 00:00:00 2001
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Date: Thu, 7 Mar 2019 22:44:55 +0100
+Subject: [PATCH] ASoC: axi-i2s: let both capture and playback be optional
 
-Use alsa snd_pcm_hw_constraint_single service to manage
-channels restriction. This provides better status on driver
-limitations, to the application.
+Both the capture and playback channels are optional in the axi_i2s IP
+block. Reflect this in the driver by enabling only the channel(s) that
+have a DMA.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/adi/axi-i2s.c | 68 +++++++++++++++++++++++++++++------------
+ 1 file changed, 48 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 783b33497435..06bbbef74b3a 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -496,12 +496,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	unsigned int fthlv;
- 	int ret;
+diff --git a/sound/soc/adi/axi-i2s.c b/sound/soc/adi/axi-i2s.c
+index 4c23381727a1..273c543e8ff3 100644
+--- a/sound/soc/adi/axi-i2s.c
++++ b/sound/soc/adi/axi-i2s.c
+@@ -43,6 +43,9 @@ struct axi_i2s {
+ 	struct clk *clk;
+ 	struct clk *clk_ref;
  
--	if ((params_channels(params) == 1) &&
--	    ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)) {
--		dev_err(cpu_dai->dev, "Mono mode supported only by DSP_A\n");
--		return -EINVAL;
--	}
--
- 	switch (format) {
- 	case 16:
- 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
-@@ -551,6 +545,10 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 	i2s->substream = substream;
- 	spin_unlock_irqrestore(&i2s->irq_lock, flags);
- 
-+	if ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)
-+		snd_pcm_hw_constraint_single(substream->runtime,
-+					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++	bool   has_capture;
++	bool   has_playback;
 +
- 	ret = clk_prepare_enable(i2s->i2sclk);
- 	if (ret < 0) {
- 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
+ 	struct snd_soc_dai_driver dai_driver;
+ 
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+@@ -136,8 +139,10 @@ static int axi_i2s_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct axi_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 
+-	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
+-		&i2s->capture_dma_data);
++	snd_soc_dai_init_dma_data(
++		dai,
++		i2s->has_playback ? &i2s->playback_dma_data : NULL,
++		i2s->has_capture  ? &i2s->capture_dma_data  : NULL);
+ 
+ 	return 0;
+ }
+@@ -151,18 +156,6 @@ static const struct snd_soc_dai_ops axi_i2s_dai_ops = {
+ 
+ static struct snd_soc_dai_driver axi_i2s_dai = {
+ 	.probe = axi_i2s_dai_probe,
+-	.playback = {
+-		.channels_min = 2,
+-		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_KNOT,
+-		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE,
+-	},
+-	.capture = {
+-		.channels_min = 2,
+-		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_KNOT,
+-		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE,
+-	},
+ 	.ops = &axi_i2s_dai_ops,
+ 	.symmetric_rates = 1,
+ };
+@@ -178,6 +171,19 @@ static const struct regmap_config axi_i2s_regmap_config = {
+ 	.max_register = AXI_I2S_REG_STATUS,
+ };
+ 
++static void axi_i2s_parse_of(struct axi_i2s *i2s, const struct device_node *np)
++{
++	struct property *dma_names;
++	const char *dma_name;
++
++	of_property_for_each_string(np, "dma-names", dma_names, dma_name) {
++		if (strcmp(dma_name, "rx") == 0)
++			i2s->has_capture = true;
++		if (strcmp(dma_name, "tx") == 0)
++			i2s->has_playback = true;
++	}
++}
++
+ static int axi_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct resource *res;
+@@ -191,6 +197,8 @@ static int axi_i2s_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, i2s);
+ 
++	axi_i2s_parse_of(i2s, pdev->dev.of_node);
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(base))
+@@ -213,13 +221,29 @@ static int axi_i2s_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	i2s->playback_dma_data.addr = res->start + AXI_I2S_REG_TX_FIFO;
+-	i2s->playback_dma_data.addr_width = 4;
+-	i2s->playback_dma_data.maxburst = 1;
++	if (i2s->has_playback) {
++		axi_i2s_dai.playback.channels_min = 2;
++		axi_i2s_dai.playback.channels_max = 2;
++		axi_i2s_dai.playback.rates = SNDRV_PCM_RATE_KNOT;
++		axi_i2s_dai.playback.formats =
++			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE;
++
++		i2s->playback_dma_data.addr = res->start + AXI_I2S_REG_TX_FIFO;
++		i2s->playback_dma_data.addr_width = 4;
++		i2s->playback_dma_data.maxburst = 1;
++	}
++
++	if (i2s->has_capture) {
++		axi_i2s_dai.capture.channels_min = 2;
++		axi_i2s_dai.capture.channels_max = 2;
++		axi_i2s_dai.capture.rates = SNDRV_PCM_RATE_KNOT;
++		axi_i2s_dai.capture.formats =
++			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE;
+ 
+-	i2s->capture_dma_data.addr = res->start + AXI_I2S_REG_RX_FIFO;
+-	i2s->capture_dma_data.addr_width = 4;
+-	i2s->capture_dma_data.maxburst = 1;
++		i2s->capture_dma_data.addr = res->start + AXI_I2S_REG_RX_FIFO;
++		i2s->capture_dma_data.addr_width = 4;
++		i2s->capture_dma_data.maxburst = 1;
++	}
+ 
+ 	i2s->ratnum.num = clk_get_rate(i2s->clk_ref) / 2 / AXI_I2S_BITS_PER_FRAME;
+ 	i2s->ratnum.den_step = 1;
+@@ -240,6 +264,10 @@ static int axi_i2s_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_clk_disable;
+ 
++	dev_info(&pdev->dev, "probed, capture %s, playback %s\n",
++		 i2s->has_capture ? "enabled" : "disabled",
++		 i2s->has_playback ? "enabled" : "disabled");
++
+ 	return 0;
+ 
+ err_clk_disable:
 -- 
 2.20.1
