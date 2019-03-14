@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8810: automatic selecting BCLK in
-	I2S master mode" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:21 +0000 (GMT)
-Message-ID: <20190314155321.382C61126E64@debutante.sirena.org.uk>
-References: <20190313085201.8605-1-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: nau8810: use 64-bit arithmetic instead
+	of 32-bit" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:25 +0000 (GMT)
+Message-ID: <20190314155325.B18221126E64@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B782F896C7
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 16:53:25 +0100 (CET)
-In-Reply-To: <20190313085201.8605-1-KCHSU0@nuvoton.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F88EF896C7
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 16:53:28 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +23,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8810: automatic selecting BCLK in I2S master mode
+   ASoC: nau8810: use 64-bit arithmetic instead of 32-bit
 
 has been applied to the asoc tree at
 
@@ -55,48 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 20b83421e8eea43e28cb7aeea3e3f865f86aa69d Mon Sep 17 00:00:00 2001
+>From b517229ca2f7836125be58997808f2803f9ebc86 Mon Sep 17 00:00:00 2001
 From: John Hsu <KCHSU0@nuvoton.com>
-Date: Wed, 13 Mar 2019 16:52:01 +0800
-Subject: [PATCH] ASoC: nau8810: automatic selecting BCLK in I2S master mode
+Date: Wed, 13 Mar 2019 14:47:18 +0800
+Subject: [PATCH] ASoC: nau8810: use 64-bit arithmetic instead of 32-bit
 
-The driver will select correct BCLK automatically according to
-BCLK and FS information in I2S master mode.
+Add suffix ULL to constant 256 in order to give the compiler complete
+information about the proper arithmetic to use.
 
 Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8810.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/soc/codecs/nau8810.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index 39512a78a556..5d300b790f78 100644
+index bfd74b86c9d2..e7fd0b2645ea 100644
 --- a/sound/soc/codecs/nau8810.c
 +++ b/sound/soc/codecs/nau8810.c
-@@ -667,6 +667,24 @@ static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
- 	int val_len = 0, val_rate = 0, ret = 0;
-+	unsigned int ctrl_val, bclk_fs, bclk_div;
-+
-+	/* Select BCLK configuration if the codec as master. */
-+	regmap_read(nau8810->regmap, NAU8810_REG_CLOCK, &ctrl_val);
-+	if (ctrl_val & NAU8810_CLKIO_MASTER) {
-+		/* get the bclk and fs ratio */
-+		bclk_fs = snd_soc_params_to_bclk(params) / params_rate(params);
-+		if (bclk_fs <= 32)
-+			bclk_div = NAU8810_BCLKDIV_8;
-+		else if (bclk_fs <= 64)
-+			bclk_div = NAU8810_BCLKDIV_4;
-+		else if (bclk_fs <= 128)
-+			bclk_div = NAU8810_BCLKDIV_2;
-+		else
-+			return -EINVAL;
-+		regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
-+			NAU8810_BCLKSEL_MASK, bclk_div);
-+	}
- 
- 	switch (params_width(params)) {
- 	case 16:
+@@ -505,7 +505,7 @@ static int nau88l0_calc_pll(unsigned int pll_in,
+ 	f2_max = 0;
+ 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
+ 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
+-		f2 = 256 * fs * 4 * nau8810_mclk_scaler[i] / 10;
++		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
+ 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
+ 			f2_max < f2) {
+ 			f2_max = f2;
 -- 
 2.20.1
