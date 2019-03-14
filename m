@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: use default dai name" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:38 +0000 (GMT)
-Message-ID: <20190314155338.D6F9E1126E64@debutante.sirena.org.uk>
-References: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: stm32: i2s: change trigger traces" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:43 +0000 (GMT)
+Message-ID: <20190314155343.5754D1126E64@debutante.sirena.org.uk>
+References: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-4-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: use default dai name
+   ASoC: stm32: i2s: change trigger traces
 
 has been applied to the asoc tree at
 
@@ -47,59 +47,51 @@ to this mail.
 Thanks,
 Mark
 
->From fef050c88ce1cbec1ab9a0d981b5331a5ba40f15 Mon Sep 17 00:00:00 2001
+>From 52e7306ca2db565edc1503a74477f3547bc9e408 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:30 +0100
-Subject: [PATCH] ASoC: stm32: i2s: use default dai name
+Date: Mon, 11 Mar 2019 16:26:28 +0100
+Subject: [PATCH] ASoC: stm32: i2s: change trigger traces
 
-Use default DAI name based on dev_name function.
+Update traces to log capture/playback stream start/stop.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 06bbbef74b3a..c18e068c1a0d 100644
+index 47c334de6b09..783b33497435 100644
 --- a/sound/soc/stm/stm32_i2s.c
 +++ b/sound/soc/stm/stm32_i2s.c
-@@ -179,7 +179,6 @@ enum i2s_datlen {
- 	I2S_I2SMOD_DATLEN_32,
- };
+@@ -593,7 +593,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		/* Enable i2s */
+-		dev_dbg(cpu_dai->dev, "start I2S\n");
++		dev_dbg(cpu_dai->dev, "start I2S %s\n",
++			playback_flg ? "playback" : "capture");
  
--#define STM32_I2S_DAI_NAME_SIZE		20
- #define STM32_I2S_FIFO_SIZE		16
+ 		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+ 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+@@ -638,6 +639,9 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		dev_dbg(cpu_dai->dev, "stop I2S %s\n",
++			playback_flg ? "playback" : "capture");
++
+ 		if (playback_flg)
+ 			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
+ 					   I2S_IER_UDRIE,
+@@ -654,8 +658,6 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			break;
+ 		}
  
- #define STM32_I2S_IS_MASTER(x)		((x)->ms_flg == I2S_MS_MASTER)
-@@ -202,7 +201,6 @@ enum i2s_datlen {
-  * @phys_addr: I2S registers physical base address
-  * @lock_fd: lock to manage race conditions in full duplex mode
-  * @irq_lock: prevent race condition with IRQ
-- * @dais_name: DAI name
-  * @mclk_rate: master clock frequency (Hz)
-  * @fmt: DAI protocol
-  * @refcount: keep count of opened streams on I2S
-@@ -224,7 +222,6 @@ struct stm32_i2s_data {
- 	dma_addr_t phys_addr;
- 	spinlock_t lock_fd; /* Manage race conditions for full duplex */
- 	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
--	char dais_name[STM32_I2S_DAI_NAME_SIZE];
- 	unsigned int mclk_rate;
- 	unsigned int fmt;
- 	int refcount;
-@@ -771,12 +768,8 @@ static int stm32_i2s_dais_init(struct platform_device *pdev,
- 	if (!dai_ptr)
- 		return -ENOMEM;
- 
--	snprintf(i2s->dais_name, STM32_I2S_DAI_NAME_SIZE,
--		 "%s", dev_name(&pdev->dev));
+-		dev_dbg(cpu_dai->dev, "stop I2S\n");
 -
- 	dai_ptr->probe = stm32_i2s_dai_probe;
- 	dai_ptr->ops = &stm32_i2s_pcm_dai_ops;
--	dai_ptr->name = i2s->dais_name;
- 	dai_ptr->id = 1;
- 	stm32_i2s_dai_init(&dai_ptr->playback, "playback");
- 	stm32_i2s_dai_init(&dai_ptr->capture, "capture");
+ 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+ 					 I2S_CR1_SPE, 0);
+ 		if (ret < 0) {
 -- 
 2.20.1
