@@ -1,28 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: i2s: change trigger traces" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:43 +0000 (GMT)
-Message-ID: <20190314155343.5754D1126E64@debutante.sirena.org.uk>
-References: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: nau8810: automatic selecting BCLK in
+	I2S master mode" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:21 +0000 (GMT)
+Message-ID: <20190314155321.382C61126E64@debutante.sirena.org.uk>
+References: <20190313085201.8605-1-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1552317990-24219-2-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B782F896C7
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 16:53:25 +0100 (CET)
+In-Reply-To: <20190313085201.8605-1-KCHSU0@nuvoton.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: i2s: change trigger traces
+   ASoC: nau8810: automatic selecting BCLK in I2S master mode
 
 has been applied to the asoc tree at
 
@@ -47,51 +55,48 @@ to this mail.
 Thanks,
 Mark
 
->From 52e7306ca2db565edc1503a74477f3547bc9e408 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 11 Mar 2019 16:26:28 +0100
-Subject: [PATCH] ASoC: stm32: i2s: change trigger traces
+>From 20b83421e8eea43e28cb7aeea3e3f865f86aa69d Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 13 Mar 2019 16:52:01 +0800
+Subject: [PATCH] ASoC: nau8810: automatic selecting BCLK in I2S master mode
 
-Update traces to log capture/playback stream start/stop.
+The driver will select correct BCLK automatically according to
+BCLK and FS information in I2S master mode.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_i2s.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/nau8810.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 47c334de6b09..783b33497435 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -593,7 +593,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		/* Enable i2s */
--		dev_dbg(cpu_dai->dev, "start I2S\n");
-+		dev_dbg(cpu_dai->dev, "start I2S %s\n",
-+			playback_flg ? "playback" : "capture");
- 
- 		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
-@@ -638,6 +639,9 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dev_dbg(cpu_dai->dev, "stop I2S %s\n",
-+			playback_flg ? "playback" : "capture");
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index 39512a78a556..5d300b790f78 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -667,6 +667,24 @@ static int nau8810_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct nau8810 *nau8810 = snd_soc_component_get_drvdata(component);
+ 	int val_len = 0, val_rate = 0, ret = 0;
++	unsigned int ctrl_val, bclk_fs, bclk_div;
 +
- 		if (playback_flg)
- 			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
- 					   I2S_IER_UDRIE,
-@@ -654,8 +658,6 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			break;
- 		}
++	/* Select BCLK configuration if the codec as master. */
++	regmap_read(nau8810->regmap, NAU8810_REG_CLOCK, &ctrl_val);
++	if (ctrl_val & NAU8810_CLKIO_MASTER) {
++		/* get the bclk and fs ratio */
++		bclk_fs = snd_soc_params_to_bclk(params) / params_rate(params);
++		if (bclk_fs <= 32)
++			bclk_div = NAU8810_BCLKDIV_8;
++		else if (bclk_fs <= 64)
++			bclk_div = NAU8810_BCLKDIV_4;
++		else if (bclk_fs <= 128)
++			bclk_div = NAU8810_BCLKDIV_2;
++		else
++			return -EINVAL;
++		regmap_update_bits(nau8810->regmap, NAU8810_REG_CLOCK,
++			NAU8810_BCLKSEL_MASK, bclk_div);
++	}
  
--		dev_dbg(cpu_dai->dev, "stop I2S\n");
--
- 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
- 					 I2S_CR1_SPE, 0);
- 		if (ret < 0) {
+ 	switch (params_width(params)) {
+ 	case 16:
 -- 
 2.20.1
