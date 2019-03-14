@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ams-delta: remove duplicate 'const'" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:34 +0000 (GMT)
-Message-ID: <20190314155334.606711126E64@debutante.sirena.org.uk>
-References: <20190307101101.613881-1-arnd@arndb.de>
+Subject: Applied "ASoC: qcom: add i2c dependency for SND_SOC_SDM845" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:45 +0000 (GMT)
+Message-ID: <20190314155345.858DA1126E64@debutante.sirena.org.uk>
+References: <20190304203114.1894822-3-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
+In-Reply-To: <20190304203114.1894822-3-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ams-delta: remove duplicate 'const'
+   ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From c9fbc1c02ec881c8bb037f87efb706d22589fdab Mon Sep 17 00:00:00 2001
+>From 686174a0989b1c33698b26523a1e4ccdcc84cf22 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 11:10:49 +0100
-Subject: [PATCH] ASoC: ams-delta: remove duplicate 'const'
+Date: Mon, 4 Mar 2019 21:30:52 +0100
+Subject: [PATCH] ASoC: qcom: add i2c dependency for SND_SOC_SDM845
 
-clang points out that SOC_ENUM_SINGLE_EXT_DECL() contains a 'const'
-modifier already, so adding another one does not make it more const:
+We must not select SND_SOC_MAX98927 unless CONFIG_I2C
+is also enabled:
 
-sound/soc/ti/ams-delta.c:203:14: error: duplicate 'const' declaration specifier [-Werror,-Wduplicate-decl-specifier]
-static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-             ^
-include/sound/soc.h:351:2: note: expanded from macro 'SOC_ENUM_SINGLE_EXT_DECL'
-        const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
+WARNING: unmet direct dependencies detected for SND_SOC_MAX98927
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
+  Selected by [y]:
+  - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && MFD_CROS_EC [=y]
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/ams-delta.c | 2 +-
+ sound/soc/qcom/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
-index 4dce494dfbd3..b9611db14c86 100644
---- a/sound/soc/ti/ams-delta.c
-+++ b/sound/soc/ti/ams-delta.c
-@@ -200,7 +200,7 @@ static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 75ceb04d8bf0..b1764af858ba 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -98,7 +98,7 @@ config SND_SOC_MSM8996
  
--static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
-+static SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
- 				      ams_delta_audio_mode);
- 
- static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
+ config SND_SOC_SDM845
+ 	tristate "SoC Machine driver for SDM845 boards"
+-	depends on QCOM_APR && MFD_CROS_EC
++	depends on QCOM_APR && MFD_CROS_EC && I2C
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	select SND_SOC_RT5663
 -- 
 2.20.1
