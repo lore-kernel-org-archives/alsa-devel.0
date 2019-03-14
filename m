@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: hda/realtek: merge
+From: Kailang <kailang@realtek.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: merge
 	alc_fixup_headset_jack to alc295_fixup_chromebook
-Date: Thu, 14 Mar 2019 09:21:08 +0100
-Message-ID: <20190314082108.27933-1-perex@perex.cz>
+Date: Thu, 14 Mar 2019 08:27:46 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA1DE@RTITMBSVM07.realtek.com.tw>
+References: <20190314082108.27933-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5310FF80799
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 09:21:16 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A91BBF80799
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 09:27:50 +0100 (CET)
+In-Reply-To: <20190314082108.27933-1-perex@perex.cz>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +24,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com>
+To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav,
+
+ALC225_FIXUP_HEADSET_JACK ==> This model just could enable headset button function for ALC236 and ALC295.
+It doesn't only use for Chrome hardware.
+
+BR,
+Kailang
+
+-----Original Message-----
+From: Jaroslav Kysela <perex@perex.cz> 
+Sent: Thursday, March 14, 2019 4:21 PM
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>; Jaroslav Kysela <perex@perex.cz>; Kailang <kailang@realtek.com>
+Subject: [PATCH] ALSA: hda/realtek: merge alc_fixup_headset_jack to alc295_fixup_chromebook
+
 The ALC225_FIXUP_HEADSET_JACK fixup can be merged to alc295_fixup_chromebook.
-There are no other users for ALC225_FIXUP_HEADSET_JACK other than
-the chromebook hardware.
+There are no other users for ALC225_FIXUP_HEADSET_JACK other than the chromebook hardware.
 
 Cc: Kailang Yang <kailang@realtek.com>
 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
@@ -35,8 +52,7 @@ Signed-off-by: Jaroslav Kysela <perex@perex.cz>
  sound/pci/hda/patch_realtek.c | 45 +++++++++++------------------------
  1 file changed, 14 insertions(+), 31 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a63670013943..eb4018469250 100644
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c index a63670013943..eb4018469250 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
 @@ -5491,7 +5491,7 @@ static void alc_headset_btn_callback(struct hda_codec *codec,
@@ -45,8 +61,7 @@ index a63670013943..eb4018469250 100644
  
 -static void alc_fixup_headset_jack(struct hda_codec *codec,
 +static void alc295_fixup_chromebook(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)
- {
+ 				    const struct hda_fixup *fix, int action)  {
  
 @@ -5501,6 +5501,16 @@ static void alc_fixup_headset_jack(struct hda_codec *codec,
  						    alc_headset_btn_callback);
@@ -90,9 +105,7 @@ index a63670013943..eb4018469250 100644
 -}
 -
  static void alc_fixup_disable_mic_vref(struct hda_codec *codec,
- 				  const struct hda_fixup *fix, int action)
- {
-@@ -5690,11 +5680,10 @@ enum {
+ 				  const struct hda_fixup *fix, int action)  { @@ -5690,11 +5680,10 @@ enum {
  	ALC294_FIXUP_ASUS_MIC,
  	ALC294_FIXUP_ASUS_HEADSET_MIC,
  	ALC294_FIXUP_ASUS_SPK,
@@ -104,8 +117,7 @@ index a63670013943..eb4018469250 100644
 -	ALC295_FIXUP_CHROME_BOOK,
  };
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -6637,9 +6626,9 @@ static const struct hda_fixup alc269_fixups[] = {
+ static const struct hda_fixup alc269_fixups[] = { @@ -6637,9 +6626,9 @@ static const struct hda_fixup alc269_fixups[] = {
  		.chained = true,
  		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
  	},
@@ -130,5 +142,5 @@ index a63670013943..eb4018469250 100644
  };
  
  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
--- 
+--
 2.20.1
