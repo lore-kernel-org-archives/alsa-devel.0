@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ti: remove compat dma probing" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:36 +0000 (GMT)
-Message-ID: <20190314155336.8C6091126E64@debutante.sirena.org.uk>
-References: <20190307151646.1016966-1-arnd@arndb.de>
+Subject: Applied "ASoC: axi-i2s: make both "rx" and "tx" optional" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:27 +0000 (GMT)
+Message-ID: <20190314155327.D99621126E64@debutante.sirena.org.uk>
+References: <20190307214456.16445-2-luca@lucaceresoli.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307151646.1016966-1-arnd@arndb.de>
+In-Reply-To: <20190307214456.16445-2-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.orgPeter Ujfalusi <peter.ujfalusi@ti.com>, Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
+To: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ti: remove compat dma probing
+   ASoC: axi-i2s: make both "rx" and "tx" optional
 
 has been applied to the asoc tree at
 
@@ -37,100 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From 642aafea8889b712fe8e57aaa706d6c05d295059 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 7 Mar 2019 16:16:08 +0100
-Subject: [PATCH] ASoC: ti: remove compat dma probing
+>From fa225400758dfc7ccddebf4d990f991a435f7921 Mon Sep 17 00:00:00 2001
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Date: Thu, 7 Mar 2019 22:44:56 +0100
+Subject: [PATCH] ASoC: axi-i2s: make both "rx" and "tx" optional
 
-After running into a link error:
+Both the capture and playback channels are optional in the axi_i2s IP
+block. Document how to tell the driver which channels are
+instantiated.
 
-sound/soc/ti/edma-pcm.o:(.rodata+0x18): undefined reference to `edma_filter_fn'
-
-I checked all users of this, and they have new-style 'dma_slave_map' tables,
-so none of them should still need it. Removing the associated lines
-simplifies the code and avoids the build-time dependency on the
-respective dmaengine drivers.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/edma-pcm.c | 5 +----
- sound/soc/ti/sdma-pcm.c | 9 +++------
- 2 files changed, 4 insertions(+), 10 deletions(-)
+ Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ti/edma-pcm.c b/sound/soc/ti/edma-pcm.c
-index 59e588abe54b..fdffb801b185 100644
---- a/sound/soc/ti/edma-pcm.c
-+++ b/sound/soc/ti/edma-pcm.c
-@@ -23,7 +23,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/edma.h>
+diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+index 4248b662deff..229ad1392cdc 100644
+--- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
+@@ -1,5 +1,8 @@
+ ADI AXI-I2S controller
  
- #include "edma-pcm.h"
++The core can be generated with transmit (playback), only receive
++(capture) or both directions enabled.
++
+ Required properties:
+  - compatible : Must be "adi,axi-i2s-1.00.a"
+  - reg : Must contain I2S core's registers location and length
+@@ -9,8 +12,8 @@ Required properties:
+  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
+    rate reference clock.
+  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
+-   the core. The core expects two dma channels, one for transmit and one for
+-   receive.
++   the core. The core expects two dma channels if both transmit and receive are
++   enabled, one channel otherwise.
+  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
  
-@@ -43,14 +42,12 @@ static const struct snd_pcm_hardware edma_pcm_hardware = {
- static const struct snd_dmaengine_pcm_config edma_dmaengine_pcm_config = {
- 	.pcm_hardware = &edma_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = edma_filter_fn,
- 	.prealloc_buffer_size = 128 * 1024,
- };
- 
- int edma_pcm_platform_register(struct device *dev)
- {
--	return devm_snd_dmaengine_pcm_register(dev, &edma_dmaengine_pcm_config,
--					SND_DMAENGINE_PCM_FLAG_COMPAT);
-+	return devm_snd_dmaengine_pcm_register(dev, &edma_dmaengine_pcm_config, 0);
- }
- EXPORT_SYMBOL_GPL(edma_pcm_platform_register);
- 
-diff --git a/sound/soc/ti/sdma-pcm.c b/sound/soc/ti/sdma-pcm.c
-index 21a9c2499d48..a236350beb10 100644
---- a/sound/soc/ti/sdma-pcm.c
-+++ b/sound/soc/ti/sdma-pcm.c
-@@ -11,7 +11,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/omap-dmaengine.h>
- 
- #include "sdma-pcm.h"
- 
-@@ -31,7 +30,6 @@ static const struct snd_pcm_hardware sdma_pcm_hardware = {
- static const struct snd_dmaengine_pcm_config sdma_dmaengine_pcm_config = {
- 	.pcm_hardware = &sdma_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = omap_dma_filter_fn,
- 	.prealloc_buffer_size = 128 * 1024,
- };
- 
-@@ -39,13 +37,12 @@ int sdma_pcm_platform_register(struct device *dev,
- 			       char *txdmachan, char *rxdmachan)
- {
- 	struct snd_dmaengine_pcm_config *config;
--	unsigned int flags = SND_DMAENGINE_PCM_FLAG_COMPAT;
-+	unsigned int flags = 0;
- 
- 	/* Standard names for the directions: 'tx' and 'rx' */
- 	if (!txdmachan && !rxdmachan)
- 		return devm_snd_dmaengine_pcm_register(dev,
--						&sdma_dmaengine_pcm_config,
--						flags);
-+						&sdma_dmaengine_pcm_config, 0);
- 
- 	config = devm_kzalloc(dev, sizeof(*config), GFP_KERNEL);
- 	if (!config)
-@@ -65,7 +62,7 @@ int sdma_pcm_platform_register(struct device *dev,
- 	config->chan_names[0] = txdmachan;
- 	config->chan_names[1] = rxdmachan;
- 
--	return devm_snd_dmaengine_pcm_register(dev, config, flags);
-+	return devm_snd_dmaengine_pcm_register(dev, config, 0);
- }
- EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
- 
+ For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
 -- 
 2.20.1
