@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: axi-i2s: make both "rx" and "tx" optional" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:27 +0000 (GMT)
-Message-ID: <20190314155327.D99621126E64@debutante.sirena.org.uk>
-References: <20190307214456.16445-2-luca@lucaceresoli.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190307214456.16445-2-luca@lucaceresoli.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luca Ceresoli <luca@lucaceresoli.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: i2s: improve channel capabilities handling" to
+ the asoc tree
+Date: Thu, 14 Mar 2019 15:53:41 +0000 (GMT)
+Message-ID: <20190314155341.23EE61126E64@debutante.sirena.org.uk>
+References: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1552317990-24219-3-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: axi-i2s: make both "rx" and "tx" optional
+   ASoC: stm32: i2s: improve channel capabilities handling
 
 has been applied to the asoc tree at
 
@@ -37,44 +48,48 @@ to this mail.
 Thanks,
 Mark
 
->From fa225400758dfc7ccddebf4d990f991a435f7921 Mon Sep 17 00:00:00 2001
-From: Luca Ceresoli <luca@lucaceresoli.net>
-Date: Thu, 7 Mar 2019 22:44:56 +0100
-Subject: [PATCH] ASoC: axi-i2s: make both "rx" and "tx" optional
+>From c2dc8b2c114c22d7a04cf26a7c7d04faaa757143 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 11 Mar 2019 16:26:29 +0100
+Subject: [PATCH] ASoC: stm32: i2s: improve channel capabilities handling
 
-Both the capture and playback channels are optional in the axi_i2s IP
-block. Document how to tell the driver which channels are
-instantiated.
+Use alsa snd_pcm_hw_constraint_single service to manage
+channels restriction. This provides better status on driver
+limitations, to the application.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/adi,axi-i2s.txt | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-index 4248b662deff..229ad1392cdc 100644
---- a/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/adi,axi-i2s.txt
-@@ -1,5 +1,8 @@
- ADI AXI-I2S controller
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 783b33497435..06bbbef74b3a 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -496,12 +496,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	unsigned int fthlv;
+ 	int ret;
  
-+The core can be generated with transmit (playback), only receive
-+(capture) or both directions enabled.
+-	if ((params_channels(params) == 1) &&
+-	    ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)) {
+-		dev_err(cpu_dai->dev, "Mono mode supported only by DSP_A\n");
+-		return -EINVAL;
+-	}
+-
+ 	switch (format) {
+ 	case 16:
+ 		cfgr = I2S_CGFR_DATLEN_SET(I2S_I2SMOD_DATLEN_16);
+@@ -551,6 +545,10 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 	i2s->substream = substream;
+ 	spin_unlock_irqrestore(&i2s->irq_lock, flags);
+ 
++	if ((i2s->fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_A)
++		snd_pcm_hw_constraint_single(substream->runtime,
++					     SNDRV_PCM_HW_PARAM_CHANNELS, 2);
 +
- Required properties:
-  - compatible : Must be "adi,axi-i2s-1.00.a"
-  - reg : Must contain I2S core's registers location and length
-@@ -9,8 +12,8 @@ Required properties:
-  - clock-names : "axi" for the clock to the AXI interface, "ref" for the sample
-    rate reference clock.
-  - dmas: Pairs of phandle and specifier for the DMA channels that are used by
--   the core. The core expects two dma channels, one for transmit and one for
--   receive.
-+   the core. The core expects two dma channels if both transmit and receive are
-+   enabled, one channel otherwise.
-  - dma-names : "tx" for the transmit channel, "rx" for the receive channel.
- 
- For more details on the 'dma', 'dma-names', 'clock' and 'clock-names' properties
+ 	ret = clk_prepare_enable(i2s->i2sclk);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
 -- 
 2.20.1
