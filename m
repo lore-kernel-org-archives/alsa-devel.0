@@ -1,20 +1,23 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda: hdmi - add Icelake support
-Date: Thu, 14 Mar 2019 08:05:23 +0100
-Message-ID: <96c6fddd-c998-6901-5395-059c01c33c05@perex.cz>
-References: <20190313160923.10471-1-perex@perex.cz>
- <9485bfe9-441b-5d52-420d-662ae372a8a1@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: ChromeBook machine will lose MIC JD
+Date: Thu, 14 Mar 2019 07:35:10 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA1B5@RTITMBSVM07.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DB9E4D@RTITMBSVM07.realtek.com.tw>
+ <31d98868-e037-6ad4-6e11-d770129090f9@perex.cz>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DB9E67@RTITMBSVM07.realtek.com.tw>
+ <3d8c7930-607f-b048-db37-66de22b87810@perex.cz>
+ <s5hlg1jujxy.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 426CEF8961E
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 08:05:28 +0100 (CET)
-In-Reply-To: <9485bfe9-441b-5d52-420d-662ae372a8a1@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF1E5F8963C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 08:35:20 +0100 (CET)
+In-Reply-To: <s5hlg1jujxy.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +27,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Bard liao <bard.liao@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 13. 03. 19 v 21:55 Pierre-Louis Bossart napsal(a):
-> On 3/13/19 11:09 AM, Jaroslav Kysela wrote:
->> This is just a port of the ASoC Icelake HDMI codec code to the legacy
->> HDA driver with some cleanups.
->>
->> ASoC commit 019033c854a20e10f691f6cc0e897df8817d9521:
->>    "ASoC: Intel: hdac_hdmi: add Icelake support"
-> 
-> Thanks Jaroslav, we were just talking today about this but you beat us 
-> to it.
-> One comment below on the geminilake ID:
-> 
->>   #define is_geminilake(codec) (((codec)->core.vendor_id == 0x8086280d) || \
->>   				((codec)->core.vendor_id == 0x80862800))
-> 
->> +HDA_CODEC_ENTRY(0x80862800, "Geminilake HDMI",	patch_i915_glk_hdmi),
-> 
-> This 0x2800 ID does not seem to be legit. No one at Intel, including the 
-> hardware IP owner, was able to confirm why this value was provided 
-> upstream, it is not part of any internal hardware documentation, is 
-> suspiciously out-of-sequence and is not used in the hdac_hdmi code. The 
-> contributor who released this value is no longer with Intel so I would 
-> really suggest removing this ID from the list supported by the legacy 
-> driver. I can send a patch next week for this.
+Thanks. Takashi.
 
-Yes, the ID 0x80862800 is suspicious and it will be fine to remove it in
-the another patch with a proper comment. I preserved the functionality
-in my change. Thanks for your explanation.
+-----Original Message-----
+From: Takashi Iwai <tiwai@suse.de> 
+Sent: Wednesday, March 13, 2019 6:51 PM
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Kailang <kailang@realtek.com>; (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] ChromeBook machine will lose MIC JD
 
-						Jaroslav
+On Thu, 07 Mar 2019 20:49:22 +0100,
+Jaroslav Kysela wrote:
+> 
+> Dne 07. 03. 19 v 9:11 Kailang napsal(a):
+> > Hi Jaroslav,
+> > 
+> > I need to check with Intel chrome audio team for the name change.
+> > But chrome OS used 'alc-sense-combo' for early patch file.
+> 
+> But with your patch, the ALC225_FIXUP_HEADSET_JACK and 
+> ALC295_FIXUP_CHROME_BOOK do a different thing, so it's not a simple 
+> replacement. Your chrome book fixup is not universal, so it should be 
+> distinguished in my opinion.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Yeah, ideally this should be implemented in another model name.
+
+But, in this particular case, the original quirk was provided specifically for Chromebook (despite of its generic model name "alc-sense-combo"), and since Chromebook is already using this string, it's better to keep the string as before.  That is, the risk of breakage for other users of this model name is much lower than the burden of changes of the fixed string for Chrome, I suppose.
+
+So I'm going to take the patch as is -- as an exception.
+
+> Also, please, inline your patches or use ;git send-email' command to 
+> send your commit to this ML for a review.
+
+Right.  But I thought it was some problem in Kailang's company network to use git-send-email.  But some other people from Realtek seem capable to send patches in the git way, so it can be doable, as it seems.
+
+
+thanks,
+
+Takashi
+
+> 
+> 					Thanks,
+> 						Jaroslav
+> 
+> > It also need to add this patch.
+> > 
+> > Oh! Sorry!
+> > I sent it with HTML mode.
+> > I need to resend again for TXT mode. 
+> > 
+> > BR,
+> > Kailang
+> > 
+> > -----Original Message-----
+> > From: Jaroslav Kysela <perex@perex.cz>
+> > Sent: Thursday, March 7, 2019 4:03 PM
+> > To: Kailang <kailang@realtek.com>; Takashi Iwai (tiwai@suse.de) 
+> > <tiwai@suse.de>
+> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > Subject: Re: [alsa-devel] ChromeBook machine will lose MIC JD
+> > 
+> > Dne 07. 03. 19 v 8:56 Kailang napsal(a):
+> >> Hi Takashi,
+> >>
+> >> Attach patch will solve the issue for Mic JD lose.
+> >>
+> > 
+> > -	{.id = ALC225_FIXUP_HEADSET_JACK, .name = "alc-sense-combo"},
+> > +	{.id = ALC295_FIXUP_CHROME_BOOK, .name = "alc-sense-combo"},
+> > 
+> > Define another name here like 'alc-chrome-book' and don't remove the previous model name 'alc-sense-combo'.
+> > 
+> > 						Jaroslav
+> > 
+> > --
+> > Jaroslav Kysela <perex@perex.cz>
+> > Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> > 
+> > ------Please consider the environment before printing this e-mail.
+> > 
+> 
+> 
+> --
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
