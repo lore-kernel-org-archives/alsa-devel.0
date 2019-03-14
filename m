@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8810: use 64-bit arithmetic instead
-	of 32-bit" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:25 +0000 (GMT)
-Message-ID: <20190314155325.B18221126E64@debutante.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F88EF896C7
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 16:53:28 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ams-delta: remove duplicate 'const'" to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:34 +0000 (GMT)
+Message-ID: <20190314155334.606711126E64@debutante.sirena.org.uk>
+References: <20190307101101.613881-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190307101101.613881-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8810: use 64-bit arithmetic instead of 32-bit
+   ASoC: ams-delta: remove duplicate 'const'
 
 has been applied to the asoc tree at
 
@@ -53,32 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From b517229ca2f7836125be58997808f2803f9ebc86 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Wed, 13 Mar 2019 14:47:18 +0800
-Subject: [PATCH] ASoC: nau8810: use 64-bit arithmetic instead of 32-bit
+>From c9fbc1c02ec881c8bb037f87efb706d22589fdab Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 7 Mar 2019 11:10:49 +0100
+Subject: [PATCH] ASoC: ams-delta: remove duplicate 'const'
 
-Add suffix ULL to constant 256 in order to give the compiler complete
-information about the proper arithmetic to use.
+clang points out that SOC_ENUM_SINGLE_EXT_DECL() contains a 'const'
+modifier already, so adding another one does not make it more const:
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+sound/soc/ti/ams-delta.c:203:14: error: duplicate 'const' declaration specifier [-Werror,-Wduplicate-decl-specifier]
+static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
+             ^
+include/sound/soc.h:351:2: note: expanded from macro 'SOC_ENUM_SINGLE_EXT_DECL'
+        const struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8810.c | 2 +-
+ sound/soc/ti/ams-delta.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index bfd74b86c9d2..e7fd0b2645ea 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -505,7 +505,7 @@ static int nau88l0_calc_pll(unsigned int pll_in,
- 	f2_max = 0;
- 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
- 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
--		f2 = 256 * fs * 4 * nau8810_mclk_scaler[i] / 10;
-+		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
- 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
- 			f2_max < f2) {
- 			f2_max = f2;
+diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
+index 4dce494dfbd3..b9611db14c86 100644
+--- a/sound/soc/ti/ams-delta.c
++++ b/sound/soc/ti/ams-delta.c
+@@ -200,7 +200,7 @@ static int ams_delta_get_audio_mode(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static const SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
++static SOC_ENUM_SINGLE_EXT_DECL(ams_delta_audio_enum,
+ 				      ams_delta_audio_mode);
+ 
+ static const struct snd_kcontrol_new ams_delta_audio_controls[] = {
 -- 
 2.20.1
