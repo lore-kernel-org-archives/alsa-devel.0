@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: add i2c dependency for SND_SOC_SDM845" to the asoc tree
-Date: Thu, 14 Mar 2019 15:53:45 +0000 (GMT)
-Message-ID: <20190314155345.858DA1126E64@debutante.sirena.org.uk>
-References: <20190304203114.1894822-3-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190304203114.1894822-3-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rohit kumar <rohitkr@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>Cheng-Yi Chiang <cychiang@chromium.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: nau8810: fix the typo of function name"
+	to the asoc tree
+Date: Thu, 14 Mar 2019 15:53:23 +0000 (GMT)
+Message-ID: <20190314155323.5BF2C1126E64@debutante.sirena.org.uk>
+References: <20190313070416.15917-1-KCHSU0@nuvoton.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8547EF8963C
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 16:53:26 +0100 (CET)
+In-Reply-To: <20190313070416.15917-1-KCHSU0@nuvoton.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: add i2c dependency for SND_SOC_SDM845
+   ASoC: nau8810: fix the typo of function name
 
 has been applied to the asoc tree at
 
@@ -37,38 +55,40 @@ to this mail.
 Thanks,
 Mark
 
->From 686174a0989b1c33698b26523a1e4ccdcc84cf22 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 4 Mar 2019 21:30:52 +0100
-Subject: [PATCH] ASoC: qcom: add i2c dependency for SND_SOC_SDM845
+>From 709a9b8a1f4ff6c34c0a6e6fefb31cfb23b19bf5 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Wed, 13 Mar 2019 15:04:16 +0800
+Subject: [PATCH] ASoC: nau8810: fix the typo of function name
 
-We must not select SND_SOC_MAX98927 unless CONFIG_I2C
-is also enabled:
+Correct the typo at the function name.
 
-WARNING: unmet direct dependencies detected for SND_SOC_MAX98927
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
-  Selected by [y]:
-  - SND_SOC_SDM845 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && QCOM_APR [=y] && MFD_CROS_EC [=y]
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/nau8810.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 75ceb04d8bf0..b1764af858ba 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -98,7 +98,7 @@ config SND_SOC_MSM8996
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index e7fd0b2645ea..39512a78a556 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -493,7 +493,7 @@ static int nau8810_set_sysclk(struct snd_soc_dai *dai,
+ 	return 0;
+ }
  
- config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
--	depends on QCOM_APR && MFD_CROS_EC
-+	depends on QCOM_APR && MFD_CROS_EC && I2C
- 	select SND_SOC_QDSP6
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_RT5663
+-static int nau88l0_calc_pll(unsigned int pll_in,
++static int nau8810_calc_pll(unsigned int pll_in,
+ 	unsigned int fs, struct nau8810_pll *pll_param)
+ {
+ 	u64 f2, f2_max, pll_ratio;
+@@ -542,7 +542,7 @@ static int nau8810_set_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	int ret, fs;
+ 
+ 	fs = freq_out / 256;
+-	ret = nau88l0_calc_pll(freq_in, fs, pll_param);
++	ret = nau8810_calc_pll(freq_in, fs, pll_param);
+ 	if (ret < 0) {
+ 		dev_err(nau8810->dev, "Unsupported input clock %d\n", freq_in);
+ 		return ret;
 -- 
 2.20.1
