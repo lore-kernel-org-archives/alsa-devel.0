@@ -1,40 +1,65 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: opening rawmidi on user ports
-Date: Thu, 14 Mar 2019 09:59:24 +0100
-Message-ID: <9f5685f6-736f-746d-73a1-800194a4d00a@ladisch.de>
-References: <9c82e740-a327-3809-875c-3eb4f01945e8@gmail.com>
- <16e0299a-549b-951b-a3e9-5d70be8b3ad5@ladisch.de>
- <1a48e120-6971-832c-a918-3c5516d5bcab@gmail.com>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable headset MIC of Acer AIO with ALC286
+Date: Thu, 14 Mar 2019 16:59:34 +0800
+Message-ID: <20190314085933.11404-1-jian-hong@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [IPv6:2a01:4f8:212:88::2])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C58CF80799
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 09:59:24 +0100 (CET)
-In-Reply-To: <1a48e120-6971-832c-a918-3c5516d5bcab@gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: AlGrenadine <a.granvaud@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Jian-Hong Pan <jian-hong@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWxHcmVuYWRpbmUgd3JvdGU6Cj4gTGUgMTMvMDMvMjAxOSDDoCAxNDozNywgQ2xlbWVucyBMYWRp
-c2NoIGEgw6ljcml0IDoKPj4gTG9hZCB0aGUgc25kLXZpcm1pZGkgbW9kdWxlIHRvIGdldCBhIGJy
-aWRnZSBiZXR3ZWVuIHJhdyBNSURJIHBvcnRzIGFuZCBzZXF1ZW5jZXIgcG9ydHMuCj4KPiBPayB0
-aGVuIHdoYXQgd291bGQgYmUgdGhlIHNuZF9yYXdtaWRpX29wZW4gYXJndW1lbnQgZm9yIG5hbWUg
-b2YgdmlybWlkaSBwb3J0ID8KClNlZSAiYW1pZGkgLWwiLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Some Acer AIO desktops like Veriton Z6860G, Z4860G and Z4660G cannot
+record sound from headset MIC.  This patch adds the
+ALC286_FIXUP_ACER_AIO_HEADSET_MIC quirk to fix this issue.
+
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+ sound/pci/hda/patch_realtek.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a63670013943..b3fbad5a680f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5695,6 +5695,7 @@ enum {
+ 	ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
+ 	ALC255_FIXUP_ACER_HEADSET_MIC,
+ 	ALC295_FIXUP_CHROME_BOOK,
++	ALC286_FIXUP_ACER_AIO_HEADSET_MIC,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -6677,6 +6678,16 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC225_FIXUP_HEADSET_JACK
+ 	},
++	[ALC286_FIXUP_ACER_AIO_HEADSET_MIC] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x4f },
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0xd429 },
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6693,9 +6704,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
+-	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
+-- 
+2.20.1
