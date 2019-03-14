@@ -1,19 +1,16 @@
 From: Kailang <kailang@realtek.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: merge
-	alc_fixup_headset_jack to alc295_fixup_chromebook
-Date: Thu, 14 Mar 2019 08:27:46 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA1DE@RTITMBSVM07.realtek.com.tw>
-References: <20190314082108.27933-1-perex@perex.cz>
+Subject: Support two Dell Wyse platform
+Date: Thu, 14 Mar 2019 08:36:16 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA1EA@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A91BBF80799
- for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 09:27:50 +0100 (CET)
-In-Reply-To: <20190314082108.27933-1-perex@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CD1FF80799
+ for <alsa-devel@alsa-project.org>; Thu, 14 Mar 2019 09:36:21 +0100 (CET)
 Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,123 +21,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+--_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-ALC225_FIXUP_HEADSET_JACK ==> This model just could enable headset button function for ALC236 and ALC295.
-It doesn't only use for Chrome hardware.
+Hi Takashi,
+
+Attach patch was for Wyse NB and Wyse AIO platform.
 
 BR,
 Kailang
 
------Original Message-----
-From: Jaroslav Kysela <perex@perex.cz> 
-Sent: Thursday, March 14, 2019 4:21 PM
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>; Jaroslav Kysela <perex@perex.cz>; Kailang <kailang@realtek.com>
-Subject: [PATCH] ALSA: hda/realtek: merge alc_fixup_headset_jack to alc295_fixup_chromebook
+--_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_
+Content-Type: application/octet-stream; name="0000-new-Dell-wyse-aio.patch"
+Content-Description: 0000-new-Dell-wyse-aio.patch
+Content-Disposition: attachment; filename="0000-new-Dell-wyse-aio.patch";
+	size=2395; creation-date="Thu, 14 Mar 2019 08:29:56 GMT";
+	modification-date="Thu, 14 Mar 2019 08:32:27 GMT"
+Content-Transfer-Encoding: base64
 
-The ALC225_FIXUP_HEADSET_JACK fixup can be merged to alc295_fixup_chromebook.
-There are no other users for ALC225_FIXUP_HEADSET_JACK other than the chromebook hardware.
+RnJvbSAzM2E2MzIwZmVhNDc4OTg4OTk0MDdkN2M3ZTRjNjY3YjYyNDRiYzQzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFRodSwgMTQgTWFyIDIwMTkgMTY6MjI6NDUgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBzdXBwb3J0IGhlYWRzZXQgbW9kZSBmb3IgREVMTCBXWVNFCiBB
+SU8KClRoaXMgcGF0Y2ggd2lsbCBlbmFibGUgV1lTRSBBSU8gZm9yIEhlYWRzZXQgbW9kZS4KClNp
+Z25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1n
+aXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
+cmVhbHRlay5jCmluZGV4IGE2MzY3MDAxMzk0My4uYjQ5OGNmYzU5MzQ1IDEwMDY0NAotLS0gYS9z
+b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
+YWx0ZWsuYwpAQCAtNTY5NSw2ICs1Njk1LDkgQEAgZW51bSB7CiAJQUxDMjg1X0ZJWFVQX0xFTk9W
+T19QQ19CRUVQX0lOX05PSVNFLAogCUFMQzI1NV9GSVhVUF9BQ0VSX0hFQURTRVRfTUlDLAogCUFM
+QzI5NV9GSVhVUF9DSFJPTUVfQk9PSywKKwlBTEMyMjVfRklYVVBfREVMTF9XWVNFX0FJT19NSUNf
+Tk9fUFJFU0VOQ0UsCisJQUxDMjI1X0ZJWFVQX1dZU0VfQVVUT19NVVRFLAorCUFMQzIyNV9GSVhV
+UF9XWVNFX0RJU0FCTEVfTUlDX1ZSRUYsCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9m
+aXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CkBAIC02Njc3LDYgKzY2ODAsMjggQEAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjMjY5X2ZpeHVwc1tdID0gewogCQkuY2hhaW5lZCA9IHRy
+dWUsCiAJCS5jaGFpbl9pZCA9IEFMQzIyNV9GSVhVUF9IRUFEU0VUX0pBQ0sKIAl9LAorCVtBTEMy
+MjVfRklYVVBfREVMTF9XWVNFX0FJT19NSUNfTk9fUFJFU0VOQ0VdID0geworCQkudHlwZSA9IEhE
+QV9GSVhVUF9QSU5TLAorCQkudi5waW5zID0gKGNvbnN0IHN0cnVjdCBoZGFfcGludGJsW10pIHsK
+KwkJCXsgMHgxNiwgMHgwMTAxMTAyMCB9LCAvKiBSZWFyIExpbmUgb3V0ICovCisJCQl7IDB4MTks
+IDB4MDFhMTkxM2MgfSwgLyogdXNlIGFzIEZyb250IGhlYWRzZXQgbWljLCB3aXRob3V0IGl0cyBv
+d24gamFjayBkZXRlY3QgKi8KKwkJCXsgfQorCQl9LAorCQkuY2hhaW5lZCA9IHRydWUsCisJCS5j
+aGFpbl9pZCA9IEFMQzIyNV9GSVhVUF9XWVNFX0FVVE9fTVVURQorCX0sCisJW0FMQzIyNV9GSVhV
+UF9XWVNFX0FVVE9fTVVURV0gPSB7CisJCS50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCisJCS52LmZ1
+bmMgPSBhbGNfZml4dXBfYXV0b19tdXRlX3ZpYV9hbXAsCisJCS5jaGFpbmVkID0gdHJ1ZSwKKwkJ
+LmNoYWluX2lkID0gQUxDMjI1X0ZJWFVQX1dZU0VfRElTQUJMRV9NSUNfVlJFRgorCX0sCisJW0FM
+QzIyNV9GSVhVUF9XWVNFX0RJU0FCTEVfTUlDX1ZSRUZdID0geworCQkudHlwZSA9IEhEQV9GSVhV
+UF9GVU5DLAorCQkudi5mdW5jID0gYWxjX2ZpeHVwX2Rpc2FibGVfbWljX3ZyZWYsCisJCS5jaGFp
+bmVkID0gdHJ1ZSwKKwkJLmNoYWluX2lkID0gQUxDMjY5X0ZJWFVQX0hFQURTRVRfTU9ERV9OT19I
+UF9NSUMKKwl9LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2
+OV9maXh1cF90YmxbXSA9IHsKQEAgLTY3NDEsNiArNjc2Niw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3BjaV9xdWlyayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygw
+eDEwMjgsIDB4MDg3MSwgIkRlbGwgUHJlY2lzaW9uIDM2MzAiLCBBTEMyNTVfRklYVVBfREVMTF9I
+RUFEU0VUX01JQyksCiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDg3MiwgIkRlbGwgUHJlY2lz
+aW9uIDM2MzAiLCBBTEMyNTVfRklYVVBfREVMTF9IRUFEU0VUX01JQyksCiAJU05EX1BDSV9RVUlS
+SygweDEwMjgsIDB4MDg3MywgIkRlbGwgUHJlY2lzaW9uIDM5MzAiLCBBTEMyNTVfRklYVVBfRFVN
+TVlfTElORU9VVF9WRVJCKSwKKwlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwOGFkLCAiRGVsbCBX
+WVNFIEFJTyIsIEFMQzIyNV9GSVhVUF9ERUxMX1dZU0VfQUlPX01JQ19OT19QUkVTRU5DRSksCiAJ
+U05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDkzNSwgIkRlbGwiLCBBTEMyNzRfRklYVVBfREVMTF9B
+SU9fTElORU9VVF9WRVJCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgxNjRhLCAiRGVsbCIs
+IEFMQzI5M19GSVhVUF9ERUxMMV9NSUNfTk9fUFJFU0VOQ0UpLAogCVNORF9QQ0lfUVVJUksoMHgx
+MDI4LCAweDE2NGIsICJEZWxsIiwgQUxDMjkzX0ZJWFVQX0RFTEwxX01JQ19OT19QUkVTRU5DRSks
+Cg==
 
-Cc: Kailang Yang <kailang@realtek.com>
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/pci/hda/patch_realtek.c | 45 +++++++++++------------------------
- 1 file changed, 14 insertions(+), 31 deletions(-)
+--_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_
+Content-Type: application/octet-stream; name="0000-new-wyse-nb.patch"
+Content-Description: 0000-new-wyse-nb.patch
+Content-Disposition: attachment; filename="0000-new-wyse-nb.patch"; size=1186;
+	creation-date="Thu, 14 Mar 2019 08:29:09 GMT";
+	modification-date="Thu, 14 Mar 2019 07:53:04 GMT"
+Content-Transfer-Encoding: base64
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c index a63670013943..eb4018469250 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5491,7 +5491,7 @@ static void alc_headset_btn_callback(struct hda_codec *codec,
- 	jack->jack->button_state = report;
- }
- 
--static void alc_fixup_headset_jack(struct hda_codec *codec,
-+static void alc295_fixup_chromebook(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)  {
- 
-@@ -5501,6 +5501,16 @@ static void alc_fixup_headset_jack(struct hda_codec *codec,
- 						    alc_headset_btn_callback);
- 		snd_hda_jack_add_kctl(codec, 0x55, "Headset Jack", false,
- 				      SND_JACK_HEADSET, alc_headset_btn_keymap);
-+		switch (codec->core.vendor_id) {
-+		case 0x10ec0295:
-+			alc_update_coef_idx(codec, 0x4a, 0x8000, 1 << 15); /* Reset HP JD */
-+			alc_update_coef_idx(codec, 0x4a, 0x8000, 0 << 15);
-+			break;
-+		case 0x10ec0236:
-+			alc_update_coef_idx(codec, 0x1b, 0x8000, 1 << 15); /* Reset HP JD */
-+			alc_update_coef_idx(codec, 0x1b, 0x8000, 0 << 15);
-+			break;
-+		}
- 		break;
- 	case HDA_FIXUP_ACT_INIT:
- 		switch (codec->core.vendor_id) {
-@@ -5521,26 +5531,6 @@ static void alc_fixup_headset_jack(struct hda_codec *codec,
- 	}
- }
- 
--static void alc295_fixup_chromebook(struct hda_codec *codec,
--				    const struct hda_fixup *fix, int action)
--{
--
--	switch (action) {
--	case HDA_FIXUP_ACT_PRE_PROBE:
--		switch (codec->core.vendor_id) {
--		case 0x10ec0295:
--			alc_update_coef_idx(codec, 0x4a, 0x8000, 1 << 15); /* Reset HP JD */
--			alc_update_coef_idx(codec, 0x4a, 0x8000, 0 << 15);
--			break;
--		case 0x10ec0236:
--			alc_update_coef_idx(codec, 0x1b, 0x8000, 1 << 15); /* Reset HP JD */
--			alc_update_coef_idx(codec, 0x1b, 0x8000, 0 << 15);
--			break;
--		}
--		break;
--	}
--}
--
- static void alc_fixup_disable_mic_vref(struct hda_codec *codec,
- 				  const struct hda_fixup *fix, int action)  { @@ -5690,11 +5680,10 @@ enum {
- 	ALC294_FIXUP_ASUS_MIC,
- 	ALC294_FIXUP_ASUS_HEADSET_MIC,
- 	ALC294_FIXUP_ASUS_SPK,
--	ALC225_FIXUP_HEADSET_JACK,
-+	ALC295_FIXUP_CHROME_BOOK,
- 	ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
- 	ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
- 	ALC255_FIXUP_ACER_HEADSET_MIC,
--	ALC295_FIXUP_CHROME_BOOK,
- };
- 
- static const struct hda_fixup alc269_fixups[] = { @@ -6637,9 +6626,9 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
- 	},
--	[ALC225_FIXUP_HEADSET_JACK] = {
-+	[ALC295_FIXUP_CHROME_BOOK] = {
- 		.type = HDA_FIXUP_FUNC,
--		.v.func = alc_fixup_headset_jack,
-+		.v.func = alc295_fixup_chromebook,
- 	},
- 	[ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -6671,12 +6660,6 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC
- 	},
--	[ALC295_FIXUP_CHROME_BOOK] = {
--		.type = HDA_FIXUP_FUNC,
--		.v.func = alc295_fixup_chromebook,
--		.chained = true,
--		.chain_id = ALC225_FIXUP_HEADSET_JACK
--	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
---
-2.20.1
+RnJvbSAwNjNjMzI4N2RhNGY3ODkxMTcwZjEwNTI5MmZlYzkyMzM5OWMyNTgyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFRodSwgMTQgTWFyIDIwMTkgMTU6NTA6NTkgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBzdXBwb3J0IGhlYWRzZXQgbW9kZSBmb3IgTmV3IERFTEwKIFdZ
+U0UgTkIKCkVuYWJsZSBoZWFkc2V0IG1vZGUgc3VwcG9ydCBmb3IgbmV3IFdZU0UgTkIgcGxhdGZv
+cm0uCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+Cgpk
+aWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRh
+L3BhdGNoX3JlYWx0ZWsuYwppbmRleCBhNjM2NzAwMTM5NDMuLmYyZGQ2ZTU1MTQ0YiAxMDA2NDQK
+LS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMKQEAgLTY3NDEsNiArNjc0MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX3BjaV9xdWlyayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEw
+MjgsIDB4MDg3MSwgIkRlbGwgUHJlY2lzaW9uIDM2MzAiLCBBTEMyNTVfRklYVVBfREVMTF9IRUFE
+U0VUX01JQyksCiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDg3MiwgIkRlbGwgUHJlY2lzaW9u
+IDM2MzAiLCBBTEMyNTVfRklYVVBfREVMTF9IRUFEU0VUX01JQyksCiAJU05EX1BDSV9RVUlSSygw
+eDEwMjgsIDB4MDg3MywgIkRlbGwgUHJlY2lzaW9uIDM5MzAiLCBBTEMyNTVfRklYVVBfRFVNTVlf
+TElORU9VVF9WRVJCKSwKKwlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwOGFlLCAiRGVsbCBXWVNF
+IE5CIiwgQUxDMjI1X0ZJWFVQX0RFTEwxX01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlS
+SygweDEwMjgsIDB4MDkzNSwgIkRlbGwiLCBBTEMyNzRfRklYVVBfREVMTF9BSU9fTElORU9VVF9W
+RVJCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgxNjRhLCAiRGVsbCIsIEFMQzI5M19GSVhV
+UF9ERUxMMV9NSUNfTk9fUFJFU0VOQ0UpLAogCVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDE2NGIs
+ICJEZWxsIiwgQUxDMjkzX0ZJWFVQX0RFTEwxX01JQ19OT19QUkVTRU5DRSksCg==
+
+--_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_003_6FAB7C47BCF00940BB0999A99BE3547A18DBA1EARTITMBSVM07real_--
