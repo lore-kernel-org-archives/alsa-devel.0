@@ -1,9 +1,9 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 4/5] Android: avoid link_warning
-Date: Fri, 15 Mar 2019 13:18:48 +0100
-Message-ID: <77c916c1-4265-5929-9c8b-4ace67ff4490@perex.cz>
+Subject: Re: [PATCH 5/5] Android: add makefile and config.h
+Date: Fri, 15 Mar 2019 13:20:50 +0100
+Message-ID: <f46de9f7-f419-e448-334f-a1b1018bd229@perex.cz>
 References: <20190315091706.26772-1-cwhuang@linux.org.tw>
- <20190315091706.26772-5-cwhuang@linux.org.tw>
+ <20190315091706.26772-6-cwhuang@linux.org.tw>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CEC5F896B2
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 13:18:52 +0100 (CET)
-In-Reply-To: <20190315091706.26772-5-cwhuang@linux.org.tw>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6EDFF896B2
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 13:20:54 +0100 (CET)
+In-Reply-To: <20190315091706.26772-6-cwhuang@linux.org.tw>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,28 +29,307 @@ Cc: alsa-devel@alsa-project.org, Chih-Wei Huang <cwhuang@linux.org.tw>
 List-Id: alsa-devel@alsa-project.org
 
 Dne 15. 03. 19 v 10:17 Chih-Wei Huang napsal(a):
-> It will be treated as an error.
+> This is the initial porting of alsa-lib 1.1.8 to Android.
 > 
 > Signed-off-by: Chih-Wei Huang <cwhuang@linux.org.tw>
 > ---
->  src/pcm/pcm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  android/Android.mk |  55 ++++++++++++
+>  android/config.h   | 217 +++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 272 insertions(+)
+>  create mode 100644 android/Android.mk
+>  create mode 100644 android/config.h
 > 
-> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-> index 11aec805..4bb5fe5f 100644
-> --- a/src/pcm/pcm.c
-> +++ b/src/pcm/pcm.c
-> @@ -1053,7 +1053,7 @@ int snd_pcm_hwsync(snd_pcm_t *pcm)
->  	snd_pcm_unlock(pcm);
->  	return err;
->  }
-> -#ifndef DOC_HIDDEN
-> +#if !defined(DOC_HIDDEN) && !defined(ANDROID)
->  link_warning(snd_pcm_hwsync, "Warning: snd_pcm_hwsync() is deprecated, consider to use snd_pcm_avail()");
->  #endif
+> diff --git a/android/Android.mk b/android/Android.mk
+> new file mode 100644
+> index 00000000..e12fd3a6
+> --- /dev/null
+> +++ b/android/Android.mk
+> @@ -0,0 +1,55 @@
+> +#
+> +# Copyright (C) 2019 The Android-x86 Open Source Project
+> +#
+> +# Licensed under the GNU Lesser General Public License Version 2.1.
+> +# You may not use this file except in compliance with the License.
+> +# You may obtain a copy of the License at
+> +#
+> +#      http://www.gnu.org/licenses/lgpl.html
+> +#
+> +
+> +LOCAL_PATH := $(dir $(call my-dir))
+> +include $(CLEAR_VARS)
+> +
+> +LOCAL_MODULE := libasound
+> +LOCAL_MODULE_TAGS := optional
+> +LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+> +
+> +intermediates := $(call local-generated-sources-dir)
+> +
+> +LOCAL_C_INCLUDES := $(LOCAL_PATH)include $(LOCAL_PATH)android
+> +LOCAL_EXPORT_C_INCLUDE_DIRS := $(intermediates)
+> +
+> +LOCAL_CFLAGS := -DPIC \
+> +	-Wno-absolute-value -Wno-address-of-packed-member -Wno-missing-braces \
+> +	-Wno-pointer-arith -Wno-sign-compare -Wno-unused-function \
+> +	-Wno-unused-const-variable -Wno-unused-parameter -Wno-unused-variable \
+> +	-finline-limit=300 -finline-functions -fno-inline-functions-called-once
+> +
+> +# list of files to be excluded
+> +EXCLUDE_SRC_FILES := \
+> +	src/alisp/alisp_snd.c \
+> +	src/compat/hsearch_r.c \
+> +	src/control/control_shm.c \
+> +	src/pcm/pcm_d%.c \
+> +	src/pcm/pcm_ladspa.c \
+> +	src/pcm/pcm_shm.c \
+> +	src/pcm/scopes/level.c \
+> +
+> +LOCAL_SRC_FILES := $(filter-out $(EXCLUDE_SRC_FILES),$(call all-c-files-under,src))
+> +
+> +GEN := $(intermediates)/alsa/asoundlib.h
+> +$(GEN): $(LOCAL_PATH)configure.ac $(wildcard $(LOCAL_PATH)include/*.h)
+> +	rm -rf $(@D); mkdir -p $(@D); cd $(@D); \
+> +	ln -s ../../../../../../../../$(<D)/include/*.h .
+> +	cat $(@D)/asoundlib-head.h > $@; \
+> +	sed -n "/.*\(#include <[ae].*.h>\).*/s//\1/p" $< >> $@; \
+> +	cat $(@D)/asoundlib-tail.h >> $@
+> +	sed -n "/^AC_INIT.* \([0-9.]*\))/s//\#define SND_LIB_VERSION_STR \"\1\"/p" $< > $(@D)/version.h; \
+> +	ln -sf alsa/version.h $(@D)/..
+> +
+> +LOCAL_GENERATED_SOURCES := $(GEN)
+> +
+> +LOCAL_SHARED_LIBRARIES := libdl
+> +
+> +include $(BUILD_SHARED_LIBRARY)
+> diff --git a/android/config.h b/android/config.h
+> new file mode 100644
+> index 00000000..53d50396
+> --- /dev/null
+> +++ b/android/config.h
+> @@ -0,0 +1,217 @@
+> +/* include/config.h.  Generated from config.h.in by configure.  */
+> +/* include/config.h.in.  Generated from configure.ac by autoheader.  */
+> +
+> +/* Directory with aload* device files */
+> +#define ALOAD_DEVICE_DIRECTORY "/dev/"
+> +
+> +/* directory containing ALSA configuration database */
+> +#define ALSA_CONFIG_DIR "/system/usr/share/alsa"
+> +
+> +/* Enable assert at error message handler */
+> +/* #undef ALSA_DEBUG_ASSERT */
+> +
+> +/* Directory with ALSA device files */
+> +#define ALSA_DEVICE_DIRECTORY "/dev/snd/"
+> +
+> +/* directory containing ALSA add-on modules */
+> +#define ALSA_PLUGIN_DIR "/system/usr/lib/alsa-lib"
+> +
+> +/* Build hwdep component */
+> +#define BUILD_HWDEP "1"
+> +
+> +/* Build mixer component */
+> +#define BUILD_MIXER "1"
+> +
+> +/* Build PCM component */
+> +#define BUILD_PCM "1"
+> +
+> +/* Build PCM adpcm plugin */
+> +#define BUILD_PCM_PLUGIN_ADPCM "1"
+> +
+> +/* Build PCM alaw plugin */
+> +#define BUILD_PCM_PLUGIN_ALAW "1"
+> +
+> +/* Build PCM lfloat plugin */
+> +#define BUILD_PCM_PLUGIN_LFLOAT "1"
+> +
+> +/* Build PCM mmap-emul plugin */
+> +#define BUILD_PCM_PLUGIN_MMAP_EMUL "1"
+> +
+> +/* Build PCM mulaw plugin */
+> +#define BUILD_PCM_PLUGIN_MULAW "1"
+> +
+> +/* Build PCM rate plugin */
+> +#define BUILD_PCM_PLUGIN_RATE "1"
+> +
+> +/* Build PCM route plugin */
+> +#define BUILD_PCM_PLUGIN_ROUTE "1"
+> +
+> +/* Build raw MIDI component */
+> +/* #undef BUILD_RAWMIDI */
+> +
+> +/* Build sequencer component */
+> +/* #undef BUILD_SEQ */
+> +
+> +/* Build DSP Topology component */
+> +#define BUILD_TOPOLOGY "1"
+> +
+> +/* Build UCM component */
+> +#define BUILD_UCM "1"
+> +
+> +/* Have clock gettime */
+> +#define HAVE_CLOCK_GETTIME 1
+> +
+> +/* Define to 1 if you have the <dlfcn.h> header file. */
+> +#define HAVE_DLFCN_H 1
+> +
+> +/* Define to 1 if you have the <endian.h> header file. */
+> +#define HAVE_ENDIAN_H 1
+> +
+> +/* Define to 1 if you have the <inttypes.h> header file. */
+> +#define HAVE_INTTYPES_H 1
+> +
+> +/* Have libdl */
+> +#define HAVE_LIBDL 1
+> +
+> +/* Have libpthread */
+> +#define HAVE_LIBPTHREAD 1
+> +
+> +/* Define to 1 if you have the `resmgr' library (-lresmgr). */
+> +/* #undef HAVE_LIBRESMGR */
+> +
+> +/* Have librt */
+> +/* #undef HAVE_LIBRT */
+> +
+> +/* Define to 1 if you have the <memory.h> header file. */
+> +#define HAVE_MEMORY_H 1
+> +
+> +/* Define if your pthreads implementation have PTHREAD_MUTEX_RECURSIVE */
+> +#define HAVE_PTHREAD_MUTEX_RECURSIVE /**/
+> +
+> +/* Avoid calculation in float */
+> +/* #undef HAVE_SOFT_FLOAT */
+> +
+> +/* Define to 1 if you have the <stdint.h> header file. */
+> +#define HAVE_STDINT_H 1
+> +
+> +/* Define to 1 if you have the <stdlib.h> header file. */
+> +#define HAVE_STDLIB_H 1
+> +
+> +/* Define to 1 if you have the <strings.h> header file. */
+> +#define HAVE_STRINGS_H 1
+> +
+> +/* Define to 1 if you have the <string.h> header file. */
+> +#define HAVE_STRING_H 1
+> +
+> +/* Define to 1 if you have the <sys/endian.h> header file. */
+> +/* #undef HAVE_SYS_ENDIAN_H */
+> +
+> +/* Define to 1 if you have the <sys/shm.h> header file. */
+> +#define HAVE_SYS_SHM_H 1
+> +
+> +/* Define to 1 if you have the <sys/stat.h> header file. */
+> +#define HAVE_SYS_STAT_H 1
+> +
+> +/* Define to 1 if you have the <sys/types.h> header file. */
+> +#define HAVE_SYS_TYPES_H 1
+> +
+> +/* Define to 1 if you have the <unistd.h> header file. */
+> +#define HAVE_UNISTD_H 1
+> +
+> +/* Define to 1 if you have the `uselocale' function. */
+> +#define HAVE_USELOCALE 1
+> +
+> +/* Enable use of wordexp */
+> +/* #undef HAVE_WORDEXP */
+> +
+> +/* Define to 1 if compiler supports __thread */
+> +#define HAVE___THREAD 1
+> +
+> +/* Define to the sub-directory where libtool stores uninstalled libraries. */
+> +#define LT_OBJDIR ".libs/"
+> +
+> +/* No assert debug */
+> +/* #undef NDEBUG */
+> +
+> +/* Name of package */
+> +#define PACKAGE "alsa-lib"
+> +
+> +/* Define to the address where bug reports for this package should be sent. */
+> +#define PACKAGE_BUGREPORT ""
+> +
+> +/* Define to the full name of this package. */
+> +#define PACKAGE_NAME "alsa-lib"
+> +
+> +/* Define to the one symbol short name of this package. */
+> +#define PACKAGE_TARNAME "alsa-lib"
+> +
+> +/* Define to the home page for this package. */
+> +#define PACKAGE_URL ""
+> +
+> +/* Max number of cards */
+> +#define SND_MAX_CARDS 32
+> +
+> +/* Define to 1 if you have the ANSI C header files. */
+> +#define STDC_HEADERS 1
+> +
+> +/* Support /dev/aload* access for auto-loading */
+> +/* #undef SUPPORT_ALOAD */
+> +
+> +/* Support resmgr with alsa-lib */
+> +/* #undef SUPPORT_RESMGR */
+> +
+> +/* Disable thread-safe API functions */
+> +#define THREAD_SAFE_API "1"
+> +
+> +/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+> +#define TIME_WITH_SYS_TIME 1
+> +
+> +/* directory to put tmp socket files */
+> +#define TMPDIR "/tmp"
+> +
+> +/* Enable extensions on AIX 3, Interix.  */
+> +#ifndef _ALL_SOURCE
+> +# define _ALL_SOURCE 1
+> +#endif
+> +/* Enable GNU extensions on systems that have them.  */
+> +#ifndef _GNU_SOURCE
+> +# define _GNU_SOURCE 1
+> +#endif
+> +/* Enable threading extensions on Solaris.  */
+> +#ifndef _POSIX_PTHREAD_SEMANTICS
+> +# define _POSIX_PTHREAD_SEMANTICS 1
+> +#endif
+> +/* Enable extensions on HP NonStop.  */
+> +#ifndef _TANDEM_SOURCE
+> +# define _TANDEM_SOURCE 1
+> +#endif
+> +/* Enable general extensions on Solaris.  */
+> +#ifndef __EXTENSIONS__
+> +# define __EXTENSIONS__ 1
+> +#endif
+> +
+> +
+> +/* compiled with versioned symbols */
+> +/* #undef VERSIONED_SYMBOLS */
+> +
+> +/* Define to 1 if on MINIX. */
+> +/* #undef _MINIX */
+> +
+> +/* Define to 2 if the system does not provide POSIX.1 features except with
+> +   this defined. */
+> +/* #undef _POSIX_1_SOURCE */
+> +
+> +/* Define to 1 if you need to in order for `stat' and other things to work. */
+> +/* #undef _POSIX_SOURCE */
+> +
+> +/* Toolchain Symbol Prefix */
+> +#define __SYMBOL_PREFIX ""
+> +
+> +/* Define to empty if `const' does not conform to ANSI C. */
+> +/* #undef const */
+> +
+> +/* Define to `__inline__' or `__inline' if that's what the C compiler
+> +   calls it, or to nothing if 'inline' is not supported under any name.  */
+> +#ifndef __cplusplus
+> +/* #undef inline */
+> +#endif
 
-Create a new option in the configure script (--disable-hwsync-warning or
-so). I don't think that this should be Android only specific case.
+I am afraid, but those changes do not belong to the universal source
+package. You may create an androidcompile script (something like
+gitcompile) with some reasonable defaults for configure / autoconf /
+automake.
+
+If something is missing in the autoconf/automake files - just add it there.
 
 					Jaroslav
 
