@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Android porting of alsa-lib
-Date: Fri, 15 Mar 2019 13:22:15 +0100
-Message-ID: <25abfad7-33bd-761a-24eb-de4dd14bef2f@perex.cz>
-References: <20190315091706.26772-1-cwhuang@linux.org.tw>
+From: Jeff Horn <outforaride@gmail.com>
+Subject: Playing a wav file for a tone in an embedded project
+Date: Fri, 15 Mar 2019 09:07:33 -0700
+Message-ID: <CAM7q1L=T3ivGo1R5VaTgNDSvsVx7GZrXvNLrVU43BBVnX_QcrQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
+ [IPv6:2607:f8b0:4864:20::d43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00034F896B2
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 13:22:18 +0100 (CET)
-In-Reply-To: <20190315091706.26772-1-cwhuang@linux.org.tw>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84B6BF89673
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 17:07:46 +0100 (CET)
+Received: by mail-io1-xd43.google.com with SMTP id b9so2014740iot.13
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 09:07:45 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +23,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Chih-Wei Huang <cwhuang@android-x86.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 15. 03. 19 v 10:17 Chih-Wei Huang napsal(a):
-> Tested OK on Android-x86 pie-x86 branch.
+Hi,
 
-Write a cover letter (man git-send-email) next time, please.
+I am working on an embedded project ( i.MX6 ) and having an issue using a
+wav file for a tone in a Qt application. I am upgrading an existing project
+from Qt 5.3 with alsa-lib 1.0.8 and a 3.10.17 kernel to Qt 5.11 with
+alsa-lib 1.1.6 and a 4.9.123 kernel.
 
-I applied the first three obvious patches and commented the last two.
+The beep code is pretty simple, it loads a wav file and saves the wav data
+in a buffer. Then on each click event in Qt a beep() function is called.
+The beep() function calls snd_pcm_prepare() -> snd_pcm_writei() ->
+snd_pcm_drain().
 
-			Thanks,
-				Jaroslav
+With the previous release the entire beep() function takes ~160ms with the
+snd_pcm_prepare() close to 0ms. However, with the latest release the beep()
+function takes 550ms with 400ms in snd_pcm_prepare().
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+I tried to trace snd_pcm_prepare() in the kernel and found that the code
+path lands in dapm_power_widgets() and this is where a majority of the
+prepare call path time is spent.
+
+I don't know why the previous release seems to almost bypass
+snd_pcm_prepare() and the newer code base does not.
+
+So, is there a way to load a wav file on startup, save the wav data and
+then on each invocation of a beep() function play the data without having
+to call prepare each time?
+
+Thanks in advance for any suggestions/help
+
+Cheers,
+Jeff
