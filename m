@@ -1,21 +1,23 @@
 From: Chih-Wei Huang <cwhuang@android-x86.org>
-Subject: [PATCH 5/5] Android: add makefile and config.h
-Date: Fri, 15 Mar 2019 17:17:06 +0800
-Message-ID: <20190315091706.26772-6-cwhuang@linux.org.tw>
+Subject: Re: [PATCH 5/5] Android: add makefile and config.h
+Date: Fri, 15 Mar 2019 23:55:31 +0800
+Message-ID: <CAKc24n1HAG3Sq16ayE4tq4_9QQpAJmqokZZN=94-YjG7HKCwGw@mail.gmail.com>
 References: <20190315091706.26772-1-cwhuang@linux.org.tw>
+ <20190315091706.26772-6-cwhuang@linux.org.tw>
+ <f46de9f7-f419-e448-334f-a1b1018bd229@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com
+ [IPv6:2607:f8b0:4864:20::844])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51B83F89673
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 10:17:50 +0100 (CET)
-Received: by mail-pf1-x441.google.com with SMTP id 8so2496812pfr.4
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 02:17:50 -0700 (PDT)
-In-Reply-To: <20190315091706.26772-1-cwhuang@linux.org.tw>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E723CF89673
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 16:55:45 +0100 (CET)
+Received: by mail-qt1-x844.google.com with SMTP id z17so10615638qtn.4
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 08:55:45 -0700 (PDT)
+In-Reply-To: <f46de9f7-f419-e448-334f-a1b1018bd229@perex.cz>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,303 +27,204 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: patch@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: alsa-devel@alsa-project.org, Chih-Wei Huang <cwhuang@linux.org.tw>
 List-Id: alsa-devel@alsa-project.org
 
-This is the initial porting of alsa-lib 1.1.8 to Android.
-
-Signed-off-by: Chih-Wei Huang <cwhuang@linux.org.tw>
----
- android/Android.mk |  55 ++++++++++++
- android/config.h   | 217 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 272 insertions(+)
- create mode 100644 android/Android.mk
- create mode 100644 android/config.h
-
-diff --git a/android/Android.mk b/android/Android.mk
-new file mode 100644
-index 00000000..e12fd3a6
---- /dev/null
-+++ b/android/Android.mk
-@@ -0,0 +1,55 @@
-+#
-+# Copyright (C) 2019 The Android-x86 Open Source Project
-+#
-+# Licensed under the GNU Lesser General Public License Version 2.1.
-+# You may not use this file except in compliance with the License.
-+# You may obtain a copy of the License at
-+#
-+#      http://www.gnu.org/licenses/lgpl.html
-+#
-+
-+LOCAL_PATH := $(dir $(call my-dir))
-+include $(CLEAR_VARS)
-+
-+LOCAL_MODULE := libasound
-+LOCAL_MODULE_TAGS := optional
-+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-+
-+intermediates := $(call local-generated-sources-dir)
-+
-+LOCAL_C_INCLUDES := $(LOCAL_PATH)include $(LOCAL_PATH)android
-+LOCAL_EXPORT_C_INCLUDE_DIRS := $(intermediates)
-+
-+LOCAL_CFLAGS := -DPIC \
-+	-Wno-absolute-value -Wno-address-of-packed-member -Wno-missing-braces \
-+	-Wno-pointer-arith -Wno-sign-compare -Wno-unused-function \
-+	-Wno-unused-const-variable -Wno-unused-parameter -Wno-unused-variable \
-+	-finline-limit=300 -finline-functions -fno-inline-functions-called-once
-+
-+# list of files to be excluded
-+EXCLUDE_SRC_FILES := \
-+	src/alisp/alisp_snd.c \
-+	src/compat/hsearch_r.c \
-+	src/control/control_shm.c \
-+	src/pcm/pcm_d%.c \
-+	src/pcm/pcm_ladspa.c \
-+	src/pcm/pcm_shm.c \
-+	src/pcm/scopes/level.c \
-+
-+LOCAL_SRC_FILES := $(filter-out $(EXCLUDE_SRC_FILES),$(call all-c-files-under,src))
-+
-+GEN := $(intermediates)/alsa/asoundlib.h
-+$(GEN): $(LOCAL_PATH)configure.ac $(wildcard $(LOCAL_PATH)include/*.h)
-+	rm -rf $(@D); mkdir -p $(@D); cd $(@D); \
-+	ln -s ../../../../../../../../$(<D)/include/*.h .
-+	cat $(@D)/asoundlib-head.h > $@; \
-+	sed -n "/.*\(#include <[ae].*.h>\).*/s//\1/p" $< >> $@; \
-+	cat $(@D)/asoundlib-tail.h >> $@
-+	sed -n "/^AC_INIT.* \([0-9.]*\))/s//\#define SND_LIB_VERSION_STR \"\1\"/p" $< > $(@D)/version.h; \
-+	ln -sf alsa/version.h $(@D)/..
-+
-+LOCAL_GENERATED_SOURCES := $(GEN)
-+
-+LOCAL_SHARED_LIBRARIES := libdl
-+
-+include $(BUILD_SHARED_LIBRARY)
-diff --git a/android/config.h b/android/config.h
-new file mode 100644
-index 00000000..53d50396
---- /dev/null
-+++ b/android/config.h
-@@ -0,0 +1,217 @@
-+/* include/config.h.  Generated from config.h.in by configure.  */
-+/* include/config.h.in.  Generated from configure.ac by autoheader.  */
-+
-+/* Directory with aload* device files */
-+#define ALOAD_DEVICE_DIRECTORY "/dev/"
-+
-+/* directory containing ALSA configuration database */
-+#define ALSA_CONFIG_DIR "/system/usr/share/alsa"
-+
-+/* Enable assert at error message handler */
-+/* #undef ALSA_DEBUG_ASSERT */
-+
-+/* Directory with ALSA device files */
-+#define ALSA_DEVICE_DIRECTORY "/dev/snd/"
-+
-+/* directory containing ALSA add-on modules */
-+#define ALSA_PLUGIN_DIR "/system/usr/lib/alsa-lib"
-+
-+/* Build hwdep component */
-+#define BUILD_HWDEP "1"
-+
-+/* Build mixer component */
-+#define BUILD_MIXER "1"
-+
-+/* Build PCM component */
-+#define BUILD_PCM "1"
-+
-+/* Build PCM adpcm plugin */
-+#define BUILD_PCM_PLUGIN_ADPCM "1"
-+
-+/* Build PCM alaw plugin */
-+#define BUILD_PCM_PLUGIN_ALAW "1"
-+
-+/* Build PCM lfloat plugin */
-+#define BUILD_PCM_PLUGIN_LFLOAT "1"
-+
-+/* Build PCM mmap-emul plugin */
-+#define BUILD_PCM_PLUGIN_MMAP_EMUL "1"
-+
-+/* Build PCM mulaw plugin */
-+#define BUILD_PCM_PLUGIN_MULAW "1"
-+
-+/* Build PCM rate plugin */
-+#define BUILD_PCM_PLUGIN_RATE "1"
-+
-+/* Build PCM route plugin */
-+#define BUILD_PCM_PLUGIN_ROUTE "1"
-+
-+/* Build raw MIDI component */
-+/* #undef BUILD_RAWMIDI */
-+
-+/* Build sequencer component */
-+/* #undef BUILD_SEQ */
-+
-+/* Build DSP Topology component */
-+#define BUILD_TOPOLOGY "1"
-+
-+/* Build UCM component */
-+#define BUILD_UCM "1"
-+
-+/* Have clock gettime */
-+#define HAVE_CLOCK_GETTIME 1
-+
-+/* Define to 1 if you have the <dlfcn.h> header file. */
-+#define HAVE_DLFCN_H 1
-+
-+/* Define to 1 if you have the <endian.h> header file. */
-+#define HAVE_ENDIAN_H 1
-+
-+/* Define to 1 if you have the <inttypes.h> header file. */
-+#define HAVE_INTTYPES_H 1
-+
-+/* Have libdl */
-+#define HAVE_LIBDL 1
-+
-+/* Have libpthread */
-+#define HAVE_LIBPTHREAD 1
-+
-+/* Define to 1 if you have the `resmgr' library (-lresmgr). */
-+/* #undef HAVE_LIBRESMGR */
-+
-+/* Have librt */
-+/* #undef HAVE_LIBRT */
-+
-+/* Define to 1 if you have the <memory.h> header file. */
-+#define HAVE_MEMORY_H 1
-+
-+/* Define if your pthreads implementation have PTHREAD_MUTEX_RECURSIVE */
-+#define HAVE_PTHREAD_MUTEX_RECURSIVE /**/
-+
-+/* Avoid calculation in float */
-+/* #undef HAVE_SOFT_FLOAT */
-+
-+/* Define to 1 if you have the <stdint.h> header file. */
-+#define HAVE_STDINT_H 1
-+
-+/* Define to 1 if you have the <stdlib.h> header file. */
-+#define HAVE_STDLIB_H 1
-+
-+/* Define to 1 if you have the <strings.h> header file. */
-+#define HAVE_STRINGS_H 1
-+
-+/* Define to 1 if you have the <string.h> header file. */
-+#define HAVE_STRING_H 1
-+
-+/* Define to 1 if you have the <sys/endian.h> header file. */
-+/* #undef HAVE_SYS_ENDIAN_H */
-+
-+/* Define to 1 if you have the <sys/shm.h> header file. */
-+#define HAVE_SYS_SHM_H 1
-+
-+/* Define to 1 if you have the <sys/stat.h> header file. */
-+#define HAVE_SYS_STAT_H 1
-+
-+/* Define to 1 if you have the <sys/types.h> header file. */
-+#define HAVE_SYS_TYPES_H 1
-+
-+/* Define to 1 if you have the <unistd.h> header file. */
-+#define HAVE_UNISTD_H 1
-+
-+/* Define to 1 if you have the `uselocale' function. */
-+#define HAVE_USELOCALE 1
-+
-+/* Enable use of wordexp */
-+/* #undef HAVE_WORDEXP */
-+
-+/* Define to 1 if compiler supports __thread */
-+#define HAVE___THREAD 1
-+
-+/* Define to the sub-directory where libtool stores uninstalled libraries. */
-+#define LT_OBJDIR ".libs/"
-+
-+/* No assert debug */
-+/* #undef NDEBUG */
-+
-+/* Name of package */
-+#define PACKAGE "alsa-lib"
-+
-+/* Define to the address where bug reports for this package should be sent. */
-+#define PACKAGE_BUGREPORT ""
-+
-+/* Define to the full name of this package. */
-+#define PACKAGE_NAME "alsa-lib"
-+
-+/* Define to the one symbol short name of this package. */
-+#define PACKAGE_TARNAME "alsa-lib"
-+
-+/* Define to the home page for this package. */
-+#define PACKAGE_URL ""
-+
-+/* Max number of cards */
-+#define SND_MAX_CARDS 32
-+
-+/* Define to 1 if you have the ANSI C header files. */
-+#define STDC_HEADERS 1
-+
-+/* Support /dev/aload* access for auto-loading */
-+/* #undef SUPPORT_ALOAD */
-+
-+/* Support resmgr with alsa-lib */
-+/* #undef SUPPORT_RESMGR */
-+
-+/* Disable thread-safe API functions */
-+#define THREAD_SAFE_API "1"
-+
-+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-+#define TIME_WITH_SYS_TIME 1
-+
-+/* directory to put tmp socket files */
-+#define TMPDIR "/tmp"
-+
-+/* Enable extensions on AIX 3, Interix.  */
-+#ifndef _ALL_SOURCE
-+# define _ALL_SOURCE 1
-+#endif
-+/* Enable GNU extensions on systems that have them.  */
-+#ifndef _GNU_SOURCE
-+# define _GNU_SOURCE 1
-+#endif
-+/* Enable threading extensions on Solaris.  */
-+#ifndef _POSIX_PTHREAD_SEMANTICS
-+# define _POSIX_PTHREAD_SEMANTICS 1
-+#endif
-+/* Enable extensions on HP NonStop.  */
-+#ifndef _TANDEM_SOURCE
-+# define _TANDEM_SOURCE 1
-+#endif
-+/* Enable general extensions on Solaris.  */
-+#ifndef __EXTENSIONS__
-+# define __EXTENSIONS__ 1
-+#endif
-+
-+
-+/* compiled with versioned symbols */
-+/* #undef VERSIONED_SYMBOLS */
-+
-+/* Define to 1 if on MINIX. */
-+/* #undef _MINIX */
-+
-+/* Define to 2 if the system does not provide POSIX.1 features except with
-+   this defined. */
-+/* #undef _POSIX_1_SOURCE */
-+
-+/* Define to 1 if you need to in order for `stat' and other things to work. */
-+/* #undef _POSIX_SOURCE */
-+
-+/* Toolchain Symbol Prefix */
-+#define __SYMBOL_PREFIX ""
-+
-+/* Define to empty if `const' does not conform to ANSI C. */
-+/* #undef const */
-+
-+/* Define to `__inline__' or `__inline' if that's what the C compiler
-+   calls it, or to nothing if 'inline' is not supported under any name.  */
-+#ifndef __cplusplus
-+/* #undef inline */
-+#endif
--- 
-2.20.1
+SmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4g5pa8IDIwMTnlubQz5pyIMTXml6Ug6YCx
+5LqUIOS4i+WNiDg6MjDlr6vpgZPvvJoKPgo+IERuZSAxNS4gMDMuIDE5IHYgMTA6MTcgQ2hpaC1X
+ZWkgSHVhbmcgbmFwc2FsKGEpOgo+ID4gVGhpcyBpcyB0aGUgaW5pdGlhbCBwb3J0aW5nIG9mIGFs
+c2EtbGliIDEuMS44IHRvIEFuZHJvaWQuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQ2hpaC1XZWkg
+SHVhbmcgPGN3aHVhbmdAbGludXgub3JnLnR3Pgo+ID4gLS0tCj4gPiAgYW5kcm9pZC9BbmRyb2lk
+Lm1rIHwgIDU1ICsrKysrKysrKysrKwo+ID4gIGFuZHJvaWQvY29uZmlnLmggICB8IDIxNyArKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiA+ICAyIGZpbGVzIGNo
+YW5nZWQsIDI3MiBpbnNlcnRpb25zKCspCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFuZHJvaWQv
+QW5kcm9pZC5tawo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhbmRyb2lkL2NvbmZpZy5oCj4gPgo+
+ID4gZGlmZiAtLWdpdCBhL2FuZHJvaWQvQW5kcm9pZC5tayBiL2FuZHJvaWQvQW5kcm9pZC5tawo+
+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAwLi5lMTJmZDNhNgo+ID4g
+LS0tIC9kZXYvbnVsbAo+ID4gKysrIGIvYW5kcm9pZC9BbmRyb2lkLm1rCj4gPiBAQCAtMCwwICsx
+LDU1IEBACj4gPiArIwo+ID4gKyMgQ29weXJpZ2h0IChDKSAyMDE5IFRoZSBBbmRyb2lkLXg4NiBP
+cGVuIFNvdXJjZSBQcm9qZWN0Cj4gPiArIwo+ID4gKyMgTGljZW5zZWQgdW5kZXIgdGhlIEdOVSBM
+ZXNzZXIgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBWZXJzaW9uIDIuMS4KPiA+ICsjIFlvdSBtYXkg
+bm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS4K
+PiA+ICsjIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdAo+ID4gKyMKPiA+
+ICsjICAgICAgaHR0cDovL3d3dy5nbnUub3JnL2xpY2Vuc2VzL2xncGwuaHRtbAo+ID4gKyMKPiA+
+ICsKPiA+ICtMT0NBTF9QQVRIIDo9ICQoZGlyICQoY2FsbCBteS1kaXIpKQo+ID4gK2luY2x1ZGUg
+JChDTEVBUl9WQVJTKQo+ID4gKwo+ID4gK0xPQ0FMX01PRFVMRSA6PSBsaWJhc291bmQKPiA+ICtM
+T0NBTF9NT0RVTEVfVEFHUyA6PSBvcHRpb25hbAo+ID4gK0xPQ0FMX01PRFVMRV9DTEFTUyA6PSBT
+SEFSRURfTElCUkFSSUVTCj4gPiArCj4gPiAraW50ZXJtZWRpYXRlcyA6PSAkKGNhbGwgbG9jYWwt
+Z2VuZXJhdGVkLXNvdXJjZXMtZGlyKQo+ID4gKwo+ID4gK0xPQ0FMX0NfSU5DTFVERVMgOj0gJChM
+T0NBTF9QQVRIKWluY2x1ZGUgJChMT0NBTF9QQVRIKWFuZHJvaWQKPiA+ICtMT0NBTF9FWFBPUlRf
+Q19JTkNMVURFX0RJUlMgOj0gJChpbnRlcm1lZGlhdGVzKQo+ID4gKwo+ID4gK0xPQ0FMX0NGTEFH
+UyA6PSAtRFBJQyBcCj4gPiArICAgICAtV25vLWFic29sdXRlLXZhbHVlIC1Xbm8tYWRkcmVzcy1v
+Zi1wYWNrZWQtbWVtYmVyIC1Xbm8tbWlzc2luZy1icmFjZXMgXAo+ID4gKyAgICAgLVduby1wb2lu
+dGVyLWFyaXRoIC1Xbm8tc2lnbi1jb21wYXJlIC1Xbm8tdW51c2VkLWZ1bmN0aW9uIFwKPiA+ICsg
+ICAgIC1Xbm8tdW51c2VkLWNvbnN0LXZhcmlhYmxlIC1Xbm8tdW51c2VkLXBhcmFtZXRlciAtV25v
+LXVudXNlZC12YXJpYWJsZSBcCj4gPiArICAgICAtZmlubGluZS1saW1pdD0zMDAgLWZpbmxpbmUt
+ZnVuY3Rpb25zIC1mbm8taW5saW5lLWZ1bmN0aW9ucy1jYWxsZWQtb25jZQo+ID4gKwo+ID4gKyMg
+bGlzdCBvZiBmaWxlcyB0byBiZSBleGNsdWRlZAo+ID4gK0VYQ0xVREVfU1JDX0ZJTEVTIDo9IFwK
+PiA+ICsgICAgIHNyYy9hbGlzcC9hbGlzcF9zbmQuYyBcCj4gPiArICAgICBzcmMvY29tcGF0L2hz
+ZWFyY2hfci5jIFwKPiA+ICsgICAgIHNyYy9jb250cm9sL2NvbnRyb2xfc2htLmMgXAo+ID4gKyAg
+ICAgc3JjL3BjbS9wY21fZCUuYyBcCj4gPiArICAgICBzcmMvcGNtL3BjbV9sYWRzcGEuYyBcCj4g
+PiArICAgICBzcmMvcGNtL3BjbV9zaG0uYyBcCj4gPiArICAgICBzcmMvcGNtL3Njb3Blcy9sZXZl
+bC5jIFwKPiA+ICsKPiA+ICtMT0NBTF9TUkNfRklMRVMgOj0gJChmaWx0ZXItb3V0ICQoRVhDTFVE
+RV9TUkNfRklMRVMpLCQoY2FsbCBhbGwtYy1maWxlcy11bmRlcixzcmMpKQo+ID4gKwo+ID4gK0dF
+TiA6PSAkKGludGVybWVkaWF0ZXMpL2Fsc2EvYXNvdW5kbGliLmgKPiA+ICskKEdFTik6ICQoTE9D
+QUxfUEFUSCljb25maWd1cmUuYWMgJCh3aWxkY2FyZCAkKExPQ0FMX1BBVEgpaW5jbHVkZS8qLmgp
+Cj4gPiArICAgICBybSAtcmYgJChARCk7IG1rZGlyIC1wICQoQEQpOyBjZCAkKEBEKTsgXAo+ID4g
+KyAgICAgbG4gLXMgLi4vLi4vLi4vLi4vLi4vLi4vLi4vLi4vJCg8RCkvaW5jbHVkZS8qLmggLgo+
+ID4gKyAgICAgY2F0ICQoQEQpL2Fzb3VuZGxpYi1oZWFkLmggPiAkQDsgXAo+ID4gKyAgICAgc2Vk
+IC1uICIvLipcKCNpbmNsdWRlIDxbYWVdLiouaD5cKS4qL3MvL1wxL3AiICQ8ID4+ICRAOyBcCj4g
+PiArICAgICBjYXQgJChARCkvYXNvdW5kbGliLXRhaWwuaCA+PiAkQAo+ID4gKyAgICAgc2VkIC1u
+ICIvXkFDX0lOSVQuKiBcKFswLTkuXSpcKSkvcy8vXCNkZWZpbmUgU05EX0xJQl9WRVJTSU9OX1NU
+UiBcIlwxXCIvcCIgJDwgPiAkKEBEKS92ZXJzaW9uLmg7IFwKPiA+ICsgICAgIGxuIC1zZiBhbHNh
+L3ZlcnNpb24uaCAkKEBEKS8uLgo+ID4gKwo+ID4gK0xPQ0FMX0dFTkVSQVRFRF9TT1VSQ0VTIDo9
+ICQoR0VOKQo+ID4gKwo+ID4gK0xPQ0FMX1NIQVJFRF9MSUJSQVJJRVMgOj0gbGliZGwKPiA+ICsK
+PiA+ICtpbmNsdWRlICQoQlVJTERfU0hBUkVEX0xJQlJBUlkpCj4gPiBkaWZmIC0tZ2l0IGEvYW5k
+cm9pZC9jb25maWcuaCBiL2FuZHJvaWQvY29uZmlnLmgKPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0
+Cj4gPiBpbmRleCAwMDAwMDAwMC4uNTNkNTAzOTYKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBi
+L2FuZHJvaWQvY29uZmlnLmgKPiA+IEBAIC0wLDAgKzEsMjE3IEBACj4gPiArLyogaW5jbHVkZS9j
+b25maWcuaC4gIEdlbmVyYXRlZCBmcm9tIGNvbmZpZy5oLmluIGJ5IGNvbmZpZ3VyZS4gICovCj4g
+PiArLyogaW5jbHVkZS9jb25maWcuaC5pbi4gIEdlbmVyYXRlZCBmcm9tIGNvbmZpZ3VyZS5hYyBi
+eSBhdXRvaGVhZGVyLiAgKi8KPiA+ICsKPiA+ICsvKiBEaXJlY3Rvcnkgd2l0aCBhbG9hZCogZGV2
+aWNlIGZpbGVzICovCj4gPiArI2RlZmluZSBBTE9BRF9ERVZJQ0VfRElSRUNUT1JZICIvZGV2LyIK
+PiA+ICsKPiA+ICsvKiBkaXJlY3RvcnkgY29udGFpbmluZyBBTFNBIGNvbmZpZ3VyYXRpb24gZGF0
+YWJhc2UgKi8KPiA+ICsjZGVmaW5lIEFMU0FfQ09ORklHX0RJUiAiL3N5c3RlbS91c3Ivc2hhcmUv
+YWxzYSIKPiA+ICsKPiA+ICsvKiBFbmFibGUgYXNzZXJ0IGF0IGVycm9yIG1lc3NhZ2UgaGFuZGxl
+ciAqLwo+ID4gKy8qICN1bmRlZiBBTFNBX0RFQlVHX0FTU0VSVCAqLwo+ID4gKwo+ID4gKy8qIERp
+cmVjdG9yeSB3aXRoIEFMU0EgZGV2aWNlIGZpbGVzICovCj4gPiArI2RlZmluZSBBTFNBX0RFVklD
+RV9ESVJFQ1RPUlkgIi9kZXYvc25kLyIKPiA+ICsKPiA+ICsvKiBkaXJlY3RvcnkgY29udGFpbmlu
+ZyBBTFNBIGFkZC1vbiBtb2R1bGVzICovCj4gPiArI2RlZmluZSBBTFNBX1BMVUdJTl9ESVIgIi9z
+eXN0ZW0vdXNyL2xpYi9hbHNhLWxpYiIKPiA+ICsKPiA+ICsvKiBCdWlsZCBod2RlcCBjb21wb25l
+bnQgKi8KPiA+ICsjZGVmaW5lIEJVSUxEX0hXREVQICIxIgo+ID4gKwo+ID4gKy8qIEJ1aWxkIG1p
+eGVyIGNvbXBvbmVudCAqLwo+ID4gKyNkZWZpbmUgQlVJTERfTUlYRVIgIjEiCj4gPiArCj4gPiAr
+LyogQnVpbGQgUENNIGNvbXBvbmVudCAqLwo+ID4gKyNkZWZpbmUgQlVJTERfUENNICIxIgo+ID4g
+Kwo+ID4gKy8qIEJ1aWxkIFBDTSBhZHBjbSBwbHVnaW4gKi8KPiA+ICsjZGVmaW5lIEJVSUxEX1BD
+TV9QTFVHSU5fQURQQ00gIjEiCj4gPiArCj4gPiArLyogQnVpbGQgUENNIGFsYXcgcGx1Z2luICov
+Cj4gPiArI2RlZmluZSBCVUlMRF9QQ01fUExVR0lOX0FMQVcgIjEiCj4gPiArCj4gPiArLyogQnVp
+bGQgUENNIGxmbG9hdCBwbHVnaW4gKi8KPiA+ICsjZGVmaW5lIEJVSUxEX1BDTV9QTFVHSU5fTEZM
+T0FUICIxIgo+ID4gKwo+ID4gKy8qIEJ1aWxkIFBDTSBtbWFwLWVtdWwgcGx1Z2luICovCj4gPiAr
+I2RlZmluZSBCVUlMRF9QQ01fUExVR0lOX01NQVBfRU1VTCAiMSIKPiA+ICsKPiA+ICsvKiBCdWls
+ZCBQQ00gbXVsYXcgcGx1Z2luICovCj4gPiArI2RlZmluZSBCVUlMRF9QQ01fUExVR0lOX01VTEFX
+ICIxIgo+ID4gKwo+ID4gKy8qIEJ1aWxkIFBDTSByYXRlIHBsdWdpbiAqLwo+ID4gKyNkZWZpbmUg
+QlVJTERfUENNX1BMVUdJTl9SQVRFICIxIgo+ID4gKwo+ID4gKy8qIEJ1aWxkIFBDTSByb3V0ZSBw
+bHVnaW4gKi8KPiA+ICsjZGVmaW5lIEJVSUxEX1BDTV9QTFVHSU5fUk9VVEUgIjEiCj4gPiArCj4g
+PiArLyogQnVpbGQgcmF3IE1JREkgY29tcG9uZW50ICovCj4gPiArLyogI3VuZGVmIEJVSUxEX1JB
+V01JREkgKi8KPiA+ICsKPiA+ICsvKiBCdWlsZCBzZXF1ZW5jZXIgY29tcG9uZW50ICovCj4gPiAr
+LyogI3VuZGVmIEJVSUxEX1NFUSAqLwo+ID4gKwo+ID4gKy8qIEJ1aWxkIERTUCBUb3BvbG9neSBj
+b21wb25lbnQgKi8KPiA+ICsjZGVmaW5lIEJVSUxEX1RPUE9MT0dZICIxIgo+ID4gKwo+ID4gKy8q
+IEJ1aWxkIFVDTSBjb21wb25lbnQgKi8KPiA+ICsjZGVmaW5lIEJVSUxEX1VDTSAiMSIKPiA+ICsK
+PiA+ICsvKiBIYXZlIGNsb2NrIGdldHRpbWUgKi8KPiA+ICsjZGVmaW5lIEhBVkVfQ0xPQ0tfR0VU
+VElNRSAxCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIDEgaWYgeW91IGhhdmUgdGhlIDxkbGZjbi5o
+PiBoZWFkZXIgZmlsZS4gKi8KPiA+ICsjZGVmaW5lIEhBVkVfRExGQ05fSCAxCj4gPiArCj4gPiAr
+LyogRGVmaW5lIHRvIDEgaWYgeW91IGhhdmUgdGhlIDxlbmRpYW4uaD4gaGVhZGVyIGZpbGUuICov
+Cj4gPiArI2RlZmluZSBIQVZFX0VORElBTl9IIDEKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gMSBp
+ZiB5b3UgaGF2ZSB0aGUgPGludHR5cGVzLmg+IGhlYWRlciBmaWxlLiAqLwo+ID4gKyNkZWZpbmUg
+SEFWRV9JTlRUWVBFU19IIDEKPiA+ICsKPiA+ICsvKiBIYXZlIGxpYmRsICovCj4gPiArI2RlZmlu
+ZSBIQVZFX0xJQkRMIDEKPiA+ICsKPiA+ICsvKiBIYXZlIGxpYnB0aHJlYWQgKi8KPiA+ICsjZGVm
+aW5lIEhBVkVfTElCUFRIUkVBRCAxCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIDEgaWYgeW91IGhh
+dmUgdGhlIGByZXNtZ3InIGxpYnJhcnkgKC1scmVzbWdyKS4gKi8KPiA+ICsvKiAjdW5kZWYgSEFW
+RV9MSUJSRVNNR1IgKi8KPiA+ICsKPiA+ICsvKiBIYXZlIGxpYnJ0ICovCj4gPiArLyogI3VuZGVm
+IEhBVkVfTElCUlQgKi8KPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gMSBpZiB5b3UgaGF2ZSB0aGUg
+PG1lbW9yeS5oPiBoZWFkZXIgZmlsZS4gKi8KPiA+ICsjZGVmaW5lIEhBVkVfTUVNT1JZX0ggMQo+
+ID4gKwo+ID4gKy8qIERlZmluZSBpZiB5b3VyIHB0aHJlYWRzIGltcGxlbWVudGF0aW9uIGhhdmUg
+UFRIUkVBRF9NVVRFWF9SRUNVUlNJVkUgKi8KPiA+ICsjZGVmaW5lIEhBVkVfUFRIUkVBRF9NVVRF
+WF9SRUNVUlNJVkUgLyoqLwo+ID4gKwo+ID4gKy8qIEF2b2lkIGNhbGN1bGF0aW9uIGluIGZsb2F0
+ICovCj4gPiArLyogI3VuZGVmIEhBVkVfU09GVF9GTE9BVCAqLwo+ID4gKwo+ID4gKy8qIERlZmlu
+ZSB0byAxIGlmIHlvdSBoYXZlIHRoZSA8c3RkaW50Lmg+IGhlYWRlciBmaWxlLiAqLwo+ID4gKyNk
+ZWZpbmUgSEFWRV9TVERJTlRfSCAxCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIDEgaWYgeW91IGhh
+dmUgdGhlIDxzdGRsaWIuaD4gaGVhZGVyIGZpbGUuICovCj4gPiArI2RlZmluZSBIQVZFX1NURExJ
+Ql9IIDEKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gMSBpZiB5b3UgaGF2ZSB0aGUgPHN0cmluZ3Mu
+aD4gaGVhZGVyIGZpbGUuICovCj4gPiArI2RlZmluZSBIQVZFX1NUUklOR1NfSCAxCj4gPiArCj4g
+PiArLyogRGVmaW5lIHRvIDEgaWYgeW91IGhhdmUgdGhlIDxzdHJpbmcuaD4gaGVhZGVyIGZpbGUu
+ICovCj4gPiArI2RlZmluZSBIQVZFX1NUUklOR19IIDEKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8g
+MSBpZiB5b3UgaGF2ZSB0aGUgPHN5cy9lbmRpYW4uaD4gaGVhZGVyIGZpbGUuICovCj4gPiArLyog
+I3VuZGVmIEhBVkVfU1lTX0VORElBTl9IICovCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIDEgaWYg
+eW91IGhhdmUgdGhlIDxzeXMvc2htLmg+IGhlYWRlciBmaWxlLiAqLwo+ID4gKyNkZWZpbmUgSEFW
+RV9TWVNfU0hNX0ggMQo+ID4gKwo+ID4gKy8qIERlZmluZSB0byAxIGlmIHlvdSBoYXZlIHRoZSA8
+c3lzL3N0YXQuaD4gaGVhZGVyIGZpbGUuICovCj4gPiArI2RlZmluZSBIQVZFX1NZU19TVEFUX0gg
+MQo+ID4gKwo+ID4gKy8qIERlZmluZSB0byAxIGlmIHlvdSBoYXZlIHRoZSA8c3lzL3R5cGVzLmg+
+IGhlYWRlciBmaWxlLiAqLwo+ID4gKyNkZWZpbmUgSEFWRV9TWVNfVFlQRVNfSCAxCj4gPiArCj4g
+PiArLyogRGVmaW5lIHRvIDEgaWYgeW91IGhhdmUgdGhlIDx1bmlzdGQuaD4gaGVhZGVyIGZpbGUu
+ICovCj4gPiArI2RlZmluZSBIQVZFX1VOSVNURF9IIDEKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8g
+MSBpZiB5b3UgaGF2ZSB0aGUgYHVzZWxvY2FsZScgZnVuY3Rpb24uICovCj4gPiArI2RlZmluZSBI
+QVZFX1VTRUxPQ0FMRSAxCj4gPiArCj4gPiArLyogRW5hYmxlIHVzZSBvZiB3b3JkZXhwICovCj4g
+PiArLyogI3VuZGVmIEhBVkVfV09SREVYUCAqLwo+ID4gKwo+ID4gKy8qIERlZmluZSB0byAxIGlm
+IGNvbXBpbGVyIHN1cHBvcnRzIF9fdGhyZWFkICovCj4gPiArI2RlZmluZSBIQVZFX19fVEhSRUFE
+IDEKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gdGhlIHN1Yi1kaXJlY3Rvcnkgd2hlcmUgbGlidG9v
+bCBzdG9yZXMgdW5pbnN0YWxsZWQgbGlicmFyaWVzLiAqLwo+ID4gKyNkZWZpbmUgTFRfT0JKRElS
+ICIubGlicy8iCj4gPiArCj4gPiArLyogTm8gYXNzZXJ0IGRlYnVnICovCj4gPiArLyogI3VuZGVm
+IE5ERUJVRyAqLwo+ID4gKwo+ID4gKy8qIE5hbWUgb2YgcGFja2FnZSAqLwo+ID4gKyNkZWZpbmUg
+UEFDS0FHRSAiYWxzYS1saWIiCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIHRoZSBhZGRyZXNzIHdo
+ZXJlIGJ1ZyByZXBvcnRzIGZvciB0aGlzIHBhY2thZ2Ugc2hvdWxkIGJlIHNlbnQuICovCj4gPiAr
+I2RlZmluZSBQQUNLQUdFX0JVR1JFUE9SVCAiIgo+ID4gKwo+ID4gKy8qIERlZmluZSB0byB0aGUg
+ZnVsbCBuYW1lIG9mIHRoaXMgcGFja2FnZS4gKi8KPiA+ICsjZGVmaW5lIFBBQ0tBR0VfTkFNRSAi
+YWxzYS1saWIiCj4gPiArCj4gPiArLyogRGVmaW5lIHRvIHRoZSBvbmUgc3ltYm9sIHNob3J0IG5h
+bWUgb2YgdGhpcyBwYWNrYWdlLiAqLwo+ID4gKyNkZWZpbmUgUEFDS0FHRV9UQVJOQU1FICJhbHNh
+LWxpYiIKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gdGhlIGhvbWUgcGFnZSBmb3IgdGhpcyBwYWNr
+YWdlLiAqLwo+ID4gKyNkZWZpbmUgUEFDS0FHRV9VUkwgIiIKPiA+ICsKPiA+ICsvKiBNYXggbnVt
+YmVyIG9mIGNhcmRzICovCj4gPiArI2RlZmluZSBTTkRfTUFYX0NBUkRTIDMyCj4gPiArCj4gPiAr
+LyogRGVmaW5lIHRvIDEgaWYgeW91IGhhdmUgdGhlIEFOU0kgQyBoZWFkZXIgZmlsZXMuICovCj4g
+PiArI2RlZmluZSBTVERDX0hFQURFUlMgMQo+ID4gKwo+ID4gKy8qIFN1cHBvcnQgL2Rldi9hbG9h
+ZCogYWNjZXNzIGZvciBhdXRvLWxvYWRpbmcgKi8KPiA+ICsvKiAjdW5kZWYgU1VQUE9SVF9BTE9B
+RCAqLwo+ID4gKwo+ID4gKy8qIFN1cHBvcnQgcmVzbWdyIHdpdGggYWxzYS1saWIgKi8KPiA+ICsv
+KiAjdW5kZWYgU1VQUE9SVF9SRVNNR1IgKi8KPiA+ICsKPiA+ICsvKiBEaXNhYmxlIHRocmVhZC1z
+YWZlIEFQSSBmdW5jdGlvbnMgKi8KPiA+ICsjZGVmaW5lIFRIUkVBRF9TQUZFX0FQSSAiMSIKPiA+
+ICsKPiA+ICsvKiBEZWZpbmUgdG8gMSBpZiB5b3UgY2FuIHNhZmVseSBpbmNsdWRlIGJvdGggPHN5
+cy90aW1lLmg+IGFuZCA8dGltZS5oPi4gKi8KPiA+ICsjZGVmaW5lIFRJTUVfV0lUSF9TWVNfVElN
+RSAxCj4gPiArCj4gPiArLyogZGlyZWN0b3J5IHRvIHB1dCB0bXAgc29ja2V0IGZpbGVzICovCj4g
+PiArI2RlZmluZSBUTVBESVIgIi90bXAiCj4gPiArCj4gPiArLyogRW5hYmxlIGV4dGVuc2lvbnMg
+b24gQUlYIDMsIEludGVyaXguICAqLwo+ID4gKyNpZm5kZWYgX0FMTF9TT1VSQ0UKPiA+ICsjIGRl
+ZmluZSBfQUxMX1NPVVJDRSAxCj4gPiArI2VuZGlmCj4gPiArLyogRW5hYmxlIEdOVSBleHRlbnNp
+b25zIG9uIHN5c3RlbXMgdGhhdCBoYXZlIHRoZW0uICAqLwo+ID4gKyNpZm5kZWYgX0dOVV9TT1VS
+Q0UKPiA+ICsjIGRlZmluZSBfR05VX1NPVVJDRSAxCj4gPiArI2VuZGlmCj4gPiArLyogRW5hYmxl
+IHRocmVhZGluZyBleHRlbnNpb25zIG9uIFNvbGFyaXMuICAqLwo+ID4gKyNpZm5kZWYgX1BPU0lY
+X1BUSFJFQURfU0VNQU5USUNTCj4gPiArIyBkZWZpbmUgX1BPU0lYX1BUSFJFQURfU0VNQU5USUNT
+IDEKPiA+ICsjZW5kaWYKPiA+ICsvKiBFbmFibGUgZXh0ZW5zaW9ucyBvbiBIUCBOb25TdG9wLiAg
+Ki8KPiA+ICsjaWZuZGVmIF9UQU5ERU1fU09VUkNFCj4gPiArIyBkZWZpbmUgX1RBTkRFTV9TT1VS
+Q0UgMQo+ID4gKyNlbmRpZgo+ID4gKy8qIEVuYWJsZSBnZW5lcmFsIGV4dGVuc2lvbnMgb24gU29s
+YXJpcy4gICovCj4gPiArI2lmbmRlZiBfX0VYVEVOU0lPTlNfXwo+ID4gKyMgZGVmaW5lIF9fRVhU
+RU5TSU9OU19fIDEKPiA+ICsjZW5kaWYKPiA+ICsKPiA+ICsKPiA+ICsvKiBjb21waWxlZCB3aXRo
+IHZlcnNpb25lZCBzeW1ib2xzICovCj4gPiArLyogI3VuZGVmIFZFUlNJT05FRF9TWU1CT0xTICov
+Cj4gPiArCj4gPiArLyogRGVmaW5lIHRvIDEgaWYgb24gTUlOSVguICovCj4gPiArLyogI3VuZGVm
+IF9NSU5JWCAqLwo+ID4gKwo+ID4gKy8qIERlZmluZSB0byAyIGlmIHRoZSBzeXN0ZW0gZG9lcyBu
+b3QgcHJvdmlkZSBQT1NJWC4xIGZlYXR1cmVzIGV4Y2VwdCB3aXRoCj4gPiArICAgdGhpcyBkZWZp
+bmVkLiAqLwo+ID4gKy8qICN1bmRlZiBfUE9TSVhfMV9TT1VSQ0UgKi8KPiA+ICsKPiA+ICsvKiBE
+ZWZpbmUgdG8gMSBpZiB5b3UgbmVlZCB0byBpbiBvcmRlciBmb3IgYHN0YXQnIGFuZCBvdGhlciB0
+aGluZ3MgdG8gd29yay4gKi8KPiA+ICsvKiAjdW5kZWYgX1BPU0lYX1NPVVJDRSAqLwo+ID4gKwo+
+ID4gKy8qIFRvb2xjaGFpbiBTeW1ib2wgUHJlZml4ICovCj4gPiArI2RlZmluZSBfX1NZTUJPTF9Q
+UkVGSVggIiIKPiA+ICsKPiA+ICsvKiBEZWZpbmUgdG8gZW1wdHkgaWYgYGNvbnN0JyBkb2VzIG5v
+dCBjb25mb3JtIHRvIEFOU0kgQy4gKi8KPiA+ICsvKiAjdW5kZWYgY29uc3QgKi8KPiA+ICsKPiA+
+ICsvKiBEZWZpbmUgdG8gYF9faW5saW5lX18nIG9yIGBfX2lubGluZScgaWYgdGhhdCdzIHdoYXQg
+dGhlIEMgY29tcGlsZXIKPiA+ICsgICBjYWxscyBpdCwgb3IgdG8gbm90aGluZyBpZiAnaW5saW5l
+JyBpcyBub3Qgc3VwcG9ydGVkIHVuZGVyIGFueSBuYW1lLiAgKi8KPiA+ICsjaWZuZGVmIF9fY3Bs
+dXNwbHVzCj4gPiArLyogI3VuZGVmIGlubGluZSAqLwo+ID4gKyNlbmRpZgo+Cj4gSSBhbSBhZnJh
+aWQsIGJ1dCB0aG9zZSBjaGFuZ2VzIGRvIG5vdCBiZWxvbmcgdG8gdGhlIHVuaXZlcnNhbCBzb3Vy
+Y2UKPiBwYWNrYWdlLiBZb3UgbWF5IGNyZWF0ZSBhbiBhbmRyb2lkY29tcGlsZSBzY3JpcHQgKHNv
+bWV0aGluZyBsaWtlCj4gZ2l0Y29tcGlsZSkgd2l0aCBzb21lIHJlYXNvbmFibGUgZGVmYXVsdHMg
+Zm9yIGNvbmZpZ3VyZSAvIGF1dG9jb25mIC8KPiBhdXRvbWFrZS4KPgo+IElmIHNvbWV0aGluZyBp
+cyBtaXNzaW5nIGluIHRoZSBhdXRvY29uZi9hdXRvbWFrZSBmaWxlcyAtIGp1c3QgYWRkIGl0IHRo
+ZXJlLgoKVGhhbmsgeW91IGZvciByZXZpZXcgdGhlIHBhdGNoZXMuCgpBbmRyb2lkIGRvZXNuJ3Qg
+dXNlIGF1dG9jb25mL2F1dG9tYWtlLgpBbmRyb2lkIHVzZXMgbm9uLXJlY3Vyc2l2ZSBidWlsZCBz
+eXN0ZW0uClRoZSBtYWluIG1ha2VmaWxlIHdpbGwgaW5jbHVkZSBhbGwgQW5kcm9pZC5tawpmb3Vu
+ZCBpbiB0aGUgc291cmNlIHRyZWUgYW5kIG1ha2UgYWxsIG5lY2Vzc2FyeSB0YXJnZXRzCnRvIGJ1
+aWxkIHRoZSBmaW5hbCBpbWFnZS4KClRoaXMgcGF0Y2gganVzdCBhZGRzIHR3byBmaWxlcyB0byB0
+aGUgYW5kcm9pZC8gc3ViZm9sZGVyCndoaWNoIGludGVuZHMgdG8gd29yayB3aXRoIEFuZHJvaWQg
+YnVpbGQgc3lzdGVtLgpXZSBqdXN0IHB1bGwgdGhlIGFsc2EtbGliIChhbmQgYWxzYS11dGlscywg
+d2lsbCBzZW5kIGxhdGVyKSBjb2RlCnRvIEFuZHJvaWQgc291cmNlIHRyZWUgYW5kIGJ1aWxkIHRo
+ZW0uCkl0IHdvbid0IGFmZmVjdCBvdGhlcnMuIEkgaG9wZSB0byB1cHN0cmVhbSB0aGVtCnNvIG90
+aGVyIHBlb3BsZSBkb24ndCBuZWVkIHRvIHJlLWludmVudCB0aGUgd2hlZWwuCgpTZXZlcmFsIHVw
+c3RyZWFtIHByb2plY3RzIHdlIHVzZSBoYXZlIGFjY2VwdGVkIHN1Y2ggcGF0Y2hlcy4KRm9yIGV4
+YW1wbGVzOgoKZWZpdmFyOgogIGh0dHBzOi8vZ2l0aHViLmNvbS9yaGJvb3QvZWZpdmFyL3B1bGwv
+MTI1CmxpYnZhOgogIGh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC9saWJ2YS9wdWxsLzM3CnZhYXBp
+OgogIGh0dHBzOi8vZ2l0aHViLmNvbS9pbnRlbC9pbnRlbC12YWFwaS1kcml2ZXIvcHVsbC80NDYK
+ZXhmYXQ6CiAgaHR0cHM6Ly9naXRodWIuY29tL3JlbGFuL2V4ZmF0L3B1bGwvNTMKbGliZHJtOgog
+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvbWVzYS9kcm0vdHJlZS9BbmRyb2lkLm1rCm1l
+c2E6CiAgaHR0cHM6Ly9jZ2l0LmZyZWVkZXNrdG9wLm9yZy9tZXNhL21lc2EvdHJlZS9BbmRyb2lk
+Lm1rCgpJbiBwYXJ0aWN1bGFyLCBsaWJkcm0gLyBtZXNhIGhhdmUgYWRkZWQgQW5kcm9pZCBtYWtl
+ZmlsZXMKYW5kIG1haW50YWluZWQgdGhlbSBmb3IgeWVhcnMuCkkgaG9wZSB5b3UgY2FuIGNvbnNp
+ZGVyIHRvIGFjY2VwdCBpdC4KCkJlc3QgUmVnYXJkcywKCgoKCi0tCkNoaWgtV2VpCkFuZHJvaWQt
+eDg2IHByb2plY3QKaHR0cDovL3d3dy5hbmRyb2lkLXg4Ni5vcmcKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
