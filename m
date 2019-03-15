@@ -1,19 +1,20 @@
-From: Jeff Horn <outforaride@gmail.com>
-Subject: Playing a wav file for a tone in an embedded project
-Date: Fri, 15 Mar 2019 09:07:33 -0700
-Message-ID: <CAM7q1L=T3ivGo1R5VaTgNDSvsVx7GZrXvNLrVU43BBVnX_QcrQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: topology: create tlv before
+	soc_tplg_init_kcontrol" to the asoc tree
+Date: Fri, 15 Mar 2019 17:15:10 +0000 (GMT)
+Message-ID: <20190315171510.07E2D1126E81@debutante.sirena.org.uk>
+References: <20190313134943.29994-1-yung-chuan.liao@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84B6BF89673
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 17:07:46 +0100 (CET)
-Received: by mail-io1-xd43.google.com with SMTP id b9so2014740iot.13
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 09:07:45 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 260A0F89673
+ for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 18:15:18 +0100 (CET)
+In-Reply-To: <20190313134943.29994-1-yung-chuan.liao@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +24,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-I am working on an embedded project ( i.MX6 ) and having an issue using a
-wav file for a tone in a Qt application. I am upgrading an existing project
-from Qt 5.3 with alsa-lib 1.0.8 and a 3.10.17 kernel to Qt 5.11 with
-alsa-lib 1.1.6 and a 4.9.123 kernel.
+   ASoC: topology: create tlv before soc_tplg_init_kcontrol
 
-The beep code is pretty simple, it loads a wav file and saves the wav data
-in a buffer. Then on each click event in Qt a beep() function is called.
-The beep() function calls snd_pcm_prepare() -> snd_pcm_writei() ->
-snd_pcm_drain().
+has been applied to the asoc tree at
 
-With the previous release the entire beep() function takes ~160ms with the
-snd_pcm_prepare() close to 0ms. However, with the latest release the beep()
-function takes 550ms with 400ms in snd_pcm_prepare().
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I tried to trace snd_pcm_prepare() in the kernel and found that the code
-path lands in dapm_power_widgets() and this is where a majority of the
-prepare call path time is spent.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I don't know why the previous release seems to almost bypass
-snd_pcm_prepare() and the newer code base does not.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-So, is there a way to load a wav file on startup, save the wav data and
-then on each invocation of a beep() function play the data without having
-to call prepare each time?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Thanks in advance for any suggestions/help
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Cheers,
-Jeff
+Thanks,
+Mark
+
+>From 3789debfc379ac84b90e2db32d7a6b66d28a2c7c Mon Sep 17 00:00:00 2001
+From: Bard liao <yung-chuan.liao@linux.intel.com>
+Date: Wed, 13 Mar 2019 21:49:43 +0800
+Subject: [PATCH] ASoC: topology: create tlv before soc_tplg_init_kcontrol
+
+Component driver may want to use tlv data. Create tlv before
+soc_tplg_init_kcontrol so component driver can use the tlv data
+in the control_load ops.
+
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-topology.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 25fca7055464..fbee4720b834 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -894,19 +894,20 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
+ 			continue;
+ 		}
+ 
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
++
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc,
+ 			(struct snd_soc_tplg_ctl_hdr *) mc);
+ 		if (err < 0) {
+ 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 				mc->hdr.name);
++			soc_tplg_free_tlv(tplg, &kc);
+ 			kfree(sm);
+ 			continue;
+ 		}
+ 
+-		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
+-
+ 		/* register control here */
+ 		err = soc_tplg_add_kcontrol(tplg, &kc,
+ 			&sm->dobj.control.kcontrol);
+@@ -1324,18 +1325,19 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
+ 			continue;
+ 		}
+ 
++		/* create any TLV data */
++		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
++
+ 		/* pass control to driver for optional further init */
+ 		err = soc_tplg_init_kcontrol(tplg, &kc[i],
+ 			(struct snd_soc_tplg_ctl_hdr *)mc);
+ 		if (err < 0) {
+ 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
+ 				mc->hdr.name);
++			soc_tplg_free_tlv(tplg, &kc[i]);
+ 			kfree(sm);
+ 			continue;
+ 		}
+-
+-		/* create any TLV data */
+-		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
+ 	}
+ 	return kc;
+ 
+-- 
+2.20.1
