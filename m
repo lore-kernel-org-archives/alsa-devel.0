@@ -1,50 +1,33 @@
 From: Kangjie Lu <kjlu@umn.edu>
-Subject: [PATCH] sound: soc-pcm: add a check to avoid NULL pointer dereference
-Date: Thu, 14 Mar 2019 22:44:15 -0500
-Message-ID: <20190315034415.24085-1-kjlu@umn.edu>
+Subject: [PATCH] sound: rt5645: fix a NULL pointer dereference
+Date: Thu, 14 Mar 2019 22:48:32 -0500
+Message-ID: <20190315034833.25037-1-kjlu@umn.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kjlu@umn.edu
-Cc: pakki001@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: pakki001@umn.edu, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In case debugfs_create_u32 fails, the fix frees memory and returns
-an error to notify callers.
+devm_kcalloc() may fail and return NULL. The fix returns ENOMEM
+in case it fails to avoid NULL pointer dereference.
 
 Signed-off-by: Kangjie Lu <kjlu@umn.edu>
 ---
- sound/soc/soc-pcm.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt5645.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 0d5ec68a1e50..a7d88ed8ebb5 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1231,15 +1231,21 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
- 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
- 	list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9a0751978090..f842775dbf2c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3419,6 +3419,9 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+ 		GFP_KERNEL);
  
--	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
--			stream ? "capture" : "playback",  fe->dai_link->name,
--			stream ? "<-" : "->", be->dai_link->name);
--
- #ifdef CONFIG_DEBUG_FS
--	if (fe->debugfs_dpcm_root)
-+	if (fe->debugfs_dpcm_root) {
- 		dpcm->debugfs_state = debugfs_create_u32(be->dai_link->name, 0644,
- 				fe->debugfs_dpcm_root, &dpcm->state);
-+		if (!dpcm->debugfs_state) {
-+			kfree(dpcm);
-+			return -ENOMEM;
-+		}
-+	}
- #endif
++	if (!rt5645->eq_param)
++		return -ENOMEM;
 +
-+	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
-+			stream ? "capture" : "playback",  fe->dai_link->name,
-+			stream ? "<-" : "->", be->dai_link->name);
-+
- 	return 1;
+ 	return 0;
  }
  
 -- 
