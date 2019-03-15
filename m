@@ -1,66 +1,68 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8810: fix arm-linux-gnueabi-gcc 7.2.0
-	compile error
-Date: Fri, 15 Mar 2019 15:17:51 +0800
-Message-ID: <20190315071751.3192-1-KCHSU0@nuvoton.com>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [PATCH v2] ALSA: hda/realtek: Enable headset MIC of Acer AIO with ALC286
+Date: Fri, 15 Mar 2019 17:51:09 +0800
+Message-ID: <20190315095108.9195-1-jian-hong@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 8E528F896B2
- for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2019 08:17:58 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Jian-Hong Pan <jian-hong@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch fixes the compile error at the branch 'asoc for-5.2' as follows:
-compiler: arm-linux-gnueabi-gcc (Debian 7.2.0-11) 7.2.0
-ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-nau8810.ko] undefined!
+Some Acer AIO desktops like Veriton Z6860G, Z4860G and Z4660G cannot
+record sound from headset MIC.  This patch adds the
+ALC286_FIXUP_ACER_AIO_HEADSET_MIC quirk to fix this issue.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 ---
- sound/soc/codecs/nau8810.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+v2: According to Realtek's suggestion, change the COEF 0x4f from 0xd429 to
+    0x5029.  Thanks to Realtek!
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index 5d300b790f78..ede2030b987a 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -21,6 +21,7 @@
- #include <linux/i2c.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-+#include <linux/math64.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -497,6 +498,7 @@ static int nau8810_calc_pll(unsigned int pll_in,
- 	unsigned int fs, struct nau8810_pll *pll_param)
- {
- 	u64 f2, f2_max, pll_ratio;
-+	u32 mclk_scaler;
- 	int i, scal_sel;
+ sound/pci/hda/patch_realtek.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 384719d5c44e..191830d4fa40 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5687,6 +5687,7 @@ enum {
+ 	ALC225_FIXUP_DELL_WYSE_AIO_MIC_NO_PRESENCE,
+ 	ALC225_FIXUP_WYSE_AUTO_MUTE,
+ 	ALC225_FIXUP_WYSE_DISABLE_MIC_VREF,
++	ALC286_FIXUP_ACER_AIO_HEADSET_MIC,
+ };
  
- 	if (pll_in > NAU_PLL_REF_MAX || pll_in < NAU_PLL_REF_MIN)
-@@ -505,7 +507,8 @@ static int nau8810_calc_pll(unsigned int pll_in,
- 	f2_max = 0;
- 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
- 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
--		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
-+		mclk_scaler = 4 * nau8810_mclk_scaler[i] / 10;
-+		f2 = 256ULL * fs * mclk_scaler;
- 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
- 			f2_max < f2) {
- 			f2_max = f2;
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -6685,6 +6686,16 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+ 	},
++	[ALC286_FIXUP_ACER_AIO_HEADSET_MIC] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x4f },
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0x5029 },
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6701,9 +6712,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
+-	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
 -- 
-2.18.0
+2.20.1
