@@ -1,133 +1,33 @@
-From: syzbot <syzbot+a39b5d3c50e55e24fb4d@syzkaller.appspotmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in linear_transfer
-Date: Sat, 16 Mar 2019 04:52:04 -0700
-Message-ID: <000000000000bfc5f2058434c8dc@google.com>
-References: <00000000000052a5500584348100@google.com>
+From: syzbot <syzbot+12f17c177de05efea72d@syzkaller.appspotmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Write in default_read_copy_kernel
+Date: Sat, 16 Mar 2019 07:49:02 -0700
+Message-ID: <00000000000097b4a405843741e6@google.com>
+References: <0000000000004a6256057ca3b6bd@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <00000000000052a5500584348100@google.com>
+In-Reply-To: <0000000000004a6256057ca3b6bd@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel-owner@alsa-project.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+To: alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, dan.carpenter@oracle.com, gustavo@embeddedor.com, joe@perches.com, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, pasqualirb@gmail.com, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de, twischer@de.adit-jv.com, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has found a reproducer for the following crash on:
+syzbot has bisected this bug to:
 
-HEAD commit:    6c83d0d5 Merge branch 'for-linus-5.1-rc1' of git://git.ker..
+commit 65766ee0bf7fe8b3be80e2e1c3ef54ad59b29476
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Fri Nov 9 10:59:45 2018 +0000
+
+     ALSA: oss: Use kvzalloc() for local buffer allocations
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ae57db200000
+start commit:   65766ee0 ALSA: oss: Use kvzalloc() for local buffer alloca..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1013cad7200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7e1aaa1cfbfe1abf
-dashboard link: https://syzkaller.appspot.com/bug?extid=a39b5d3c50e55e24fb4d
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: amd64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113945fb200000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ed3cf7200000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=106e57db200000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ae57db200000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b9cc5a440391cbfd
+dashboard link: https://syzkaller.appspot.com/bug?extid=12f17c177de05efea72d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16c27125400000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=152a2a43400000
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a39b5d3c50e55e24fb4d@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:352 [inline]
-BUG: KASAN: slab-out-of-bounds in do_convert sound/core/oss/linear.c:48  
-[inline]
-BUG: KASAN: slab-out-of-bounds in convert sound/core/oss/linear.c:81  
-[inline]
-BUG: KASAN: slab-out-of-bounds in linear_transfer  
-sound/core/oss/linear.c:110 [inline]
-BUG: KASAN: slab-out-of-bounds in linear_transfer+0x6de/0x970  
-sound/core/oss/linear.c:88
-Read of size 1 at addr ffff88807ffcf3b8 by task syz-executor510/8466
-
-CPU: 1 PID: 8466 Comm: syz-executor510 Not tainted 5.0.0+ #24
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.cold+0x7c/0x20d mm/kasan/report.c:187
-  kasan_report.cold+0x1b/0x40 mm/kasan/report.c:317
-  check_memory_region_inline mm/kasan/generic.c:185 [inline]
-  check_memory_region+0x123/0x190 mm/kasan/generic.c:191
-  memcpy+0x24/0x50 mm/kasan/common.c:132
-  memcpy include/linux/string.h:352 [inline]
-  do_convert sound/core/oss/linear.c:48 [inline]
-  convert sound/core/oss/linear.c:81 [inline]
-  linear_transfer sound/core/oss/linear.c:110 [inline]
-  linear_transfer+0x6de/0x970 sound/core/oss/linear.c:88
-  snd_pcm_plug_read_transfer+0x1a1/0x2f0 sound/core/oss/pcm_plugin.c:651
-  snd_pcm_oss_read2+0x1f0/0x3f0 sound/core/oss/pcm_oss.c:1474
-  snd_pcm_oss_read1 sound/core/oss/pcm_oss.c:1531 [inline]
-  snd_pcm_oss_read+0x53a/0x6a0 sound/core/oss/pcm_oss.c:2751
-  __vfs_read+0x8d/0x110 fs/read_write.c:416
-  vfs_read+0x194/0x3e0 fs/read_write.c:452
-  ksys_read+0xea/0x1f0 fs/read_write.c:578
-  __do_sys_read fs/read_write.c:588 [inline]
-  __se_sys_read fs/read_write.c:586 [inline]
-  __x64_sys_read+0x73/0xb0 fs/read_write.c:586
-  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446839
-Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 5b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f018eea3db8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446839
-RDX: 0000000000001000 RSI: 00000000200012c0 RDI: 0000000000000003
-RBP: 00000000006dbc30 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc3c
-R13: 00007fff63b9986f R14: 00007f018eea49c0 R15: 0000000000000000
-
-Allocated by task 8450:
-  save_stack+0x45/0xd0 mm/kasan/common.c:75
-  set_track mm/kasan/common.c:87 [inline]
-  __kasan_kmalloc mm/kasan/common.c:497 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:470
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:511
-  __do_kmalloc_node mm/slab.c:3686 [inline]
-  __kmalloc_node+0x4e/0x70 mm/slab.c:3693
-  kmalloc_node include/linux/slab.h:588 [inline]
-  kvmalloc_node+0x68/0x100 mm/util.c:430
-  kvmalloc include/linux/mm.h:605 [inline]
-  kvzalloc include/linux/mm.h:613 [inline]
-  snd_pcm_plugin_alloc+0x585/0x770 sound/core/oss/pcm_plugin.c:70
-  snd_pcm_plug_alloc+0x148/0x330 sound/core/oss/pcm_plugin.c:129
-  snd_pcm_oss_change_params_locked+0x2118/0x3750  
-sound/core/oss/pcm_oss.c:1038
-  snd_pcm_oss_change_params+0x7b/0xd0 sound/core/oss/pcm_oss.c:1101
-  snd_pcm_oss_get_active_substream+0x136/0x190 sound/core/oss/pcm_oss.c:1118
-  snd_pcm_oss_get_rate sound/core/oss/pcm_oss.c:1768 [inline]
-  snd_pcm_oss_set_rate sound/core/oss/pcm_oss.c:1760 [inline]
-  snd_pcm_oss_ioctl+0x8f7/0x3430 sound/core/oss/pcm_oss.c:2607
-  vfs_ioctl fs/ioctl.c:46 [inline]
-  file_ioctl fs/ioctl.c:509 [inline]
-  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
-  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-  __do_sys_ioctl fs/ioctl.c:720 [inline]
-  __se_sys_ioctl fs/ioctl.c:718 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 0:
-(stack is not available)
-
-The buggy address belongs to the object at ffff88807ffce800
-  which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 3000 bytes inside of
-  4096-byte region [ffff88807ffce800, ffff88807ffcf800)
-The buggy address belongs to the page:
-page:ffffea0001fff380 count:1 mapcount:0 mapping:ffff88812c3f0dc0 index:0x0  
-compound_mapcount: 0
-flags: 0x1fffc0000010200(slab|head)
-raw: 01fffc0000010200 ffffea0001e65408 ffffea00027e2408 ffff88812c3f0dc0
-raw: 0000000000000000 ffff88807ffce800 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88807ffcf280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ffff88807ffcf300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ffff88807ffcf380: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
-                                         ^
-  ffff88807ffcf400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88807ffcf480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Reported-by: syzbot+12f17c177de05efea72d@syzkaller.appspotmail.com
+Fixes: 65766ee0 ("ALSA: oss: Use kvzalloc() for local buffer allocations")
