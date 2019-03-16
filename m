@@ -1,26 +1,27 @@
 From: syzbot <syzbot+a39b5d3c50e55e24fb4d@syzkaller.appspotmail.com>
-Subject: KASAN: slab-out-of-bounds Read in linear_transfer
-Date: Sat, 16 Mar 2019 04:32:06 -0700
-Message-ID: <00000000000052a5500584348100@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in linear_transfer
+Date: Sat, 16 Mar 2019 04:52:04 -0700
+Message-ID: <000000000000bfc5f2058434c8dc@google.com>
+References: <00000000000052a5500584348100@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <00000000000052a5500584348100@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+To: alsa-devel-owner@alsa-project.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-syzbot found the following crash on:
+syzbot has found a reproducer for the following crash on:
 
 HEAD commit:    6c83d0d5 Merge branch 'for-linus-5.1-rc1' of git://git.ker..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15765b0b200000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1013cad7200000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=7e1aaa1cfbfe1abf
 dashboard link: https://syzkaller.appspot.com/bug?extid=a39b5d3c50e55e24fb4d
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122294a3200000
+userspace arch: amd64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113945fb200000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ed3cf7200000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
 Reported-by: syzbot+a39b5d3c50e55e24fb4d@syzkaller.appspotmail.com
@@ -35,9 +36,9 @@ BUG: KASAN: slab-out-of-bounds in linear_transfer
 sound/core/oss/linear.c:110 [inline]
 BUG: KASAN: slab-out-of-bounds in linear_transfer+0x6de/0x970  
 sound/core/oss/linear.c:88
-Read of size 1 at addr ffff88809899f0b8 by task syz-executor.2/7877
+Read of size 1 at addr ffff88807ffcf3b8 by task syz-executor510/8466
 
-CPU: 1 PID: 7877 Comm: syz-executor.2 Not tainted 5.0.0+ #24
+CPU: 1 PID: 8466 Comm: syz-executor510 Not tainted 5.0.0+ #24
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
 Call Trace:
@@ -62,22 +63,21 @@ Call Trace:
   ksys_read+0xea/0x1f0 fs/read_write.c:578
   __do_sys_read fs/read_write.c:588 [inline]
   __se_sys_read fs/read_write.c:586 [inline]
-  __ia32_sys_read+0x71/0xb0 fs/read_write.c:586
-  do_syscall_32_irqs_on arch/x86/entry/common.c:326 [inline]
-  do_fast_syscall_32+0x281/0xc98 arch/x86/entry/common.c:397
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f66869
-Code: 85 d2 74 02 89 0a 5b 5d c3 8b 04 24 c3 8b 14 24 c3 8b 3c 24 c3 90 90  
-90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90  
-90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000f7f620cc EFLAGS: 00000296 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000200012c0
-RDX: 0000000000001000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+  __x64_sys_read+0x73/0xb0 fs/read_write.c:586
+  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x446839
+Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 5b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f018eea3db8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000446839
+RDX: 0000000000001000 RSI: 00000000200012c0 RDI: 0000000000000003
+RBP: 00000000006dbc30 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc3c
+R13: 00007fff63b9986f R14: 00007f018eea49c0 R15: 0000000000000000
 
-Allocated by task 7877:
+Allocated by task 8450:
   save_stack+0x45/0xd0 mm/kasan/common.c:75
   set_track mm/kasan/common.c:87 [inline]
   __kasan_kmalloc mm/kasan/common.c:497 [inline]
@@ -98,46 +98,36 @@ sound/core/oss/pcm_oss.c:1038
   snd_pcm_oss_get_rate sound/core/oss/pcm_oss.c:1768 [inline]
   snd_pcm_oss_set_rate sound/core/oss/pcm_oss.c:1760 [inline]
   snd_pcm_oss_ioctl+0x8f7/0x3430 sound/core/oss/pcm_oss.c:2607
-  snd_pcm_oss_ioctl_compat+0x24/0x30 sound/core/oss/pcm_oss.c:2734
-  __do_compat_sys_ioctl fs/compat_ioctl.c:1052 [inline]
-  __se_compat_sys_ioctl fs/compat_ioctl.c:998 [inline]
-  __ia32_compat_sys_ioctl+0x197/0x620 fs/compat_ioctl.c:998
-  do_syscall_32_irqs_on arch/x86/entry/common.c:326 [inline]
-  do_fast_syscall_32+0x281/0xc98 arch/x86/entry/common.c:397
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
+  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
 Freed by task 0:
 (stack is not available)
 
-The buggy address belongs to the object at ffff88809899e500
+The buggy address belongs to the object at ffff88807ffce800
   which belongs to the cache kmalloc-4k of size 4096
 The buggy address is located 3000 bytes inside of
-  4096-byte region [ffff88809899e500, ffff88809899f500)
+  4096-byte region [ffff88807ffce800, ffff88807ffcf800)
 The buggy address belongs to the page:
-page:ffffea0002626780 count:1 mapcount:0 mapping:ffff88812c3f0dc0 index:0x0  
+page:ffffea0001fff380 count:1 mapcount:0 mapping:ffff88812c3f0dc0 index:0x0  
 compound_mapcount: 0
 flags: 0x1fffc0000010200(slab|head)
-raw: 01fffc0000010200 ffffea00022bc088 ffffea0002841208 ffff88812c3f0dc0
-raw: 0000000000000000 ffff88809899e500 0000000100000001 0000000000000000
+raw: 01fffc0000010200 ffffea0001e65408 ffffea00027e2408 ffff88812c3f0dc0
+raw: 0000000000000000 ffff88807ffce800 0000000100000001 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
-  ffff88809899ef80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ffff88809899f000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ffff88809899f080: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
+  ffff88807ffcf280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff88807ffcf300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ffff88807ffcf380: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
                                          ^
-  ffff88809899f100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809899f180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff88807ffcf400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff88807ffcf480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 ==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
