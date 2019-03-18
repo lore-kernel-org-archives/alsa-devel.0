@@ -1,28 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: spdifrx: add power management" to the asoc tree
-Date: Mon, 18 Mar 2019 14:51:16 +0000 (GMT)
-Message-ID: <20190318145116.138FE1128874@debutante.sirena.org.uk>
-References: <1551890888-24622-1-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: simple-card: add
+	simple_parse_mclk_fs()" to the asoc tree
+Date: Mon, 18 Mar 2019 14:50:58 +0000 (GMT)
+Message-ID: <20190318145058.AD968112887B@debutante.sirena.org.uk>
+References: <8736nkztkd.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1551890888-24622-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86079F80792
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:50:59 +0100 (CET)
+In-Reply-To: <8736nkztkd.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: spdifrx: add power management
+   ASoC: simple-card: add simple_parse_mclk_fs()
 
 has been applied to the asoc tree at
 
@@ -47,112 +55,92 @@ to this mail.
 Thanks,
 Mark
 
->From f68c2a682d444296403d1aa6e73b3de0681fdcea Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 6 Mar 2019 17:48:08 +0100
-Subject: [PATCH] ASoC: stm32: spdifrx: add power management
+>From d708d35ef084535ba1a06d0c0f858e18a5edef5a Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 18 Mar 2019 13:50:17 +0900
+Subject: [PATCH] ASoC: simple-card: add simple_parse_mclk_fs()
 
-Add suspend and resume sleep callbacks to STM32 SPDIFRX driver,
-to support system low power modes.
+It is parsing mclk_fs at many places, but it should be
+same operation. This patch adds simple_parse_mclk_fs()
+and parse it.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_spdifrx.c | 42 ++++++++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 3 deletions(-)
+ sound/soc/generic/simple-card.c | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index 373df4f24be1..b4c3d983e195 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -21,6 +21,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/of_platform.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 5238c912cecd..b792638a11c8 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -187,6 +187,26 @@ static void simple_parse_convert(struct device *dev,
+ 	of_node_put(node);
+ }
  
-@@ -471,6 +472,8 @@ static int stm32_spdifrx_get_ctrl_data(struct stm32_spdifrx_data *spdifrx)
- 	memset(spdifrx->cs, 0, SPDIFRX_CS_BYTES_NB);
- 	memset(spdifrx->ub, 0, SPDIFRX_UB_BYTES_NB);
- 
-+	pinctrl_pm_select_default_state(&spdifrx->pdev->dev);
++static void simple_parse_mclk_fs(struct device_node *top,
++				 struct device_node *cpu,
++				 struct device_node *codec,
++				 struct simple_dai_props *props,
++				 char *prefix)
++{
++	struct device_node *node = of_get_parent(cpu);
++	char prop[128];
 +
- 	ret = stm32_spdifrx_dma_ctrl_start(spdifrx);
- 	if (ret < 0)
++	snprintf(prop, sizeof(prop), "%smclk-fs", PREFIX);
++	of_property_read_u32(top,	prop, &props->mclk_fs);
++
++	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
++	of_property_read_u32(node,	prop, &props->mclk_fs);
++	of_property_read_u32(cpu,	prop, &props->mclk_fs);
++	of_property_read_u32(codec,	prop, &props->mclk_fs);
++
++	of_node_put(node);
++}
++
+ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
+ 				   struct device_node *np,
+ 				   struct device_node *codec,
+@@ -200,7 +220,6 @@ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
+ 	struct snd_soc_dai_link_component *codecs = dai_link->codecs;
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node = of_get_parent(np);
+-	char prop[128];
+ 	char *prefix = "";
+ 	int ret;
+ 
+@@ -296,6 +315,7 @@ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
+ 	}
+ 
+ 	simple_parse_convert(dev, np, &dai_props->adata);
++	simple_parse_mclk_fs(top, np, codec, dai_props, prefix);
+ 
+ 	asoc_simple_card_canonicalize_platform(dai_link);
+ 
+@@ -303,11 +323,6 @@ static int simple_dai_link_of_dpcm(struct simple_priv *priv,
+ 	if (ret)
  		return ret;
-@@ -502,6 +505,7 @@ static int stm32_spdifrx_get_ctrl_data(struct stm32_spdifrx_data *spdifrx)
  
- end:
- 	clk_disable_unprepare(spdifrx->kclk);
-+	pinctrl_pm_select_sleep_state(&spdifrx->pdev->dev);
- 
- 	return ret;
- }
-@@ -611,10 +615,15 @@ static bool stm32_spdifrx_readable_reg(struct device *dev, unsigned int reg)
- 
- static bool stm32_spdifrx_volatile_reg(struct device *dev, unsigned int reg)
- {
--	if (reg == STM32_SPDIFRX_DR)
-+	switch (reg) {
-+	case STM32_SPDIFRX_DR:
-+	case STM32_SPDIFRX_CSR:
-+	case STM32_SPDIFRX_SR:
-+	case STM32_SPDIFRX_DIR:
- 		return true;
+-	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+-	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
+-	of_property_read_u32(node, prop, &dai_props->mclk_fs);
+-	of_property_read_u32(np,   prop, &dai_props->mclk_fs);
 -
--	return false;
-+	default:
-+		return false;
-+	}
- }
+ 	ret = asoc_simple_card_parse_daifmt(dev, node, codec,
+ 					    prefix, &dai_link->dai_fmt);
+ 	if (ret < 0)
+@@ -372,11 +387,7 @@ static int simple_dai_link_of(struct simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
- static bool stm32_spdifrx_writeable_reg(struct device *dev, unsigned int reg)
-@@ -638,6 +647,7 @@ static const struct regmap_config stm32_h7_spdifrx_regmap_conf = {
- 	.volatile_reg = stm32_spdifrx_volatile_reg,
- 	.writeable_reg = stm32_spdifrx_writeable_reg,
- 	.fast_io = true,
-+	.cache_type = REGCACHE_FLAT,
- };
+-	snprintf(prop, sizeof(prop), "%smclk-fs", prefix);
+-	of_property_read_u32(top,  PREFIX "mclk-fs", &dai_props->mclk_fs);
+-	of_property_read_u32(node,  prop, &dai_props->mclk_fs);
+-	of_property_read_u32(cpu,   prop, &dai_props->mclk_fs);
+-	of_property_read_u32(codec, prop, &dai_props->mclk_fs);
++	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
  
- static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
-@@ -983,10 +993,36 @@ static int stm32_spdifrx_remove(struct platform_device *pdev)
- 
- MODULE_DEVICE_TABLE(of, stm32_spdifrx_ids);
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int stm32_spdifrx_suspend(struct device *dev)
-+{
-+	struct stm32_spdifrx_data *spdifrx = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(spdifrx->regmap, true);
-+	regcache_mark_dirty(spdifrx->regmap);
-+
-+	return 0;
-+}
-+
-+static int stm32_spdifrx_resume(struct device *dev)
-+{
-+	struct stm32_spdifrx_data *spdifrx = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(spdifrx->regmap, false);
-+
-+	return regcache_sync(spdifrx->regmap);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops stm32_spdifrx_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(stm32_spdifrx_suspend, stm32_spdifrx_resume)
-+};
-+
- static struct platform_driver stm32_spdifrx_driver = {
- 	.driver = {
- 		.name = "st,stm32-spdifrx",
- 		.of_match_table = stm32_spdifrx_ids,
-+		.pm = &stm32_spdifrx_pm_ops,
- 	},
- 	.probe = stm32_spdifrx_probe,
- 	.remove = stm32_spdifrx_remove,
+ 	ret = asoc_simple_card_parse_cpu(cpu, dai_link,
+ 					 DAI, CELL, &single_cpu);
 -- 
 2.20.1
