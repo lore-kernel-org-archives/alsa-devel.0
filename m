@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: Check JD status when system
-	resume" to the asoc tree
-Date: Mon, 18 Mar 2019 14:51:07 +0000 (GMT)
-Message-ID: <20190318145107.580771128874@debutante.sirena.org.uk>
+Subject: Applied "ASoC: rt5682: recording has no sound after
+	booting" to the asoc tree
+Date: Mon, 18 Mar 2019 14:51:03 +0000 (GMT)
+Message-ID: <20190318145103.11F731128874@debutante.sirena.org.uk>
+References: <20190318071742.20134-1-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8192F8971A
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:51:08 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93F13F89721
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:51:10 +0100 (CET)
+In-Reply-To: <20190318071742.20134-1-shumingf@realtek.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +25,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Shuming Fan <shumingf@realtek.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, hou-hsun.lee@intel.com, hychao@google.com, lijen@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, derek.fang@realtek.com, flove@realtek.com, bard.liao@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5682: Check JD status when system resume
+   ASoC: rt5682: recording has no sound after booting
 
 has been applied to the asoc tree at
 
@@ -53,118 +55,61 @@ to this mail.
 Thanks,
 Mark
 
->From 4834d7070c85a5fb69637265dbbb05d13043280c Mon Sep 17 00:00:00 2001
+>From 1c5b6a27e432e4fe170a924c8b41012271496a4c Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Fri, 8 Mar 2019 11:36:08 +0800
-Subject: [PATCH] ASoC: rt5682: Check JD status when system resume
+Date: Mon, 18 Mar 2019 15:17:42 +0800
+Subject: [PATCH] ASoC: rt5682: recording has no sound after booting
 
-The IRQ function may not work when system suspend.
-We remove snd_soc_dapm_force_enable_pin function call to
-make sure the bias off when idle and run into suspend/resume function.
+If ASRC turns on, HW will use clk_dac as the reference clock
+whether recording or playback.
+Both of clk_dac and clk_adc should set proper clock while using ASRC.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5682.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 9d5acd2d04ab..b7e2e9937e6d 100644
+index b98974edf6ad..86a7fa31c294 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -910,13 +910,20 @@ static int rt5682_headset_detect(struct snd_soc_component *component,
- 		int jack_insert)
- {
+@@ -1208,7 +1208,7 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component =
+ 		snd_soc_dapm_to_component(w->dapm);
  	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
--	struct snd_soc_dapm_context *dapm =
--		snd_soc_component_get_dapm(component);
- 	unsigned int val, count;
+-	int ref, val, reg, sft, mask, idx = -EINVAL;
++	int ref, val, reg, idx = -EINVAL;
+ 	static const int div_f[] = {1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48};
+ 	static const int div_o[] = {1, 2, 4, 6, 8, 12, 16, 24, 32, 48};
  
- 	if (jack_insert) {
--		snd_soc_dapm_force_enable_pin(dapm, "CBJ Power");
--		snd_soc_dapm_sync(dapm);
-+
-+		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_1,
-+			RT5682_PWR_VREF2, RT5682_PWR_VREF2);
-+		snd_soc_component_update_bits(component,
-+				RT5682_PWR_ANLG_1, RT5682_PWR_FV2, 0);
-+		usleep_range(15000, 20000);
-+		snd_soc_component_update_bits(component,
-+				RT5682_PWR_ANLG_1, RT5682_PWR_FV2, RT5682_PWR_FV2);
-+		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
-+			RT5682_PWR_CBJ, RT5682_PWR_CBJ);
-+
- 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
- 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_HIGH);
+@@ -1222,15 +1222,10 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
  
-@@ -944,8 +951,10 @@ static int rt5682_headset_detect(struct snd_soc_component *component,
- 		rt5682_enable_push_button_irq(component, false);
- 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
- 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
--		snd_soc_dapm_disable_pin(dapm, "CBJ Power");
--		snd_soc_dapm_sync(dapm);
-+		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_1,
-+			RT5682_PWR_VREF2, 0);
-+		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
-+			RT5682_PWR_CBJ, 0);
+ 	idx = rt5682_div_sel(rt5682, ref, div_f, ARRAY_SIZE(div_f));
  
- 		rt5682->jack_type = 0;
+-	if (w->shift == RT5682_PWR_ADC_S1F_BIT) {
++	if (w->shift == RT5682_PWR_ADC_S1F_BIT)
+ 		reg = RT5682_PLL_TRACK_3;
+-		sft = RT5682_ADC_OSR_SFT;
+-		mask = RT5682_ADC_OSR_MASK;
+-	} else {
++	else
+ 		reg = RT5682_PLL_TRACK_2;
+-		sft = RT5682_DAC_OSR_SFT;
+-		mask = RT5682_DAC_OSR_MASK;
+-	}
+ 
+ 	snd_soc_component_update_bits(component, reg,
+ 		RT5682_FILTER_CLK_DIV_MASK, idx << RT5682_FILTER_CLK_DIV_SFT);
+@@ -1242,7 +1237,8 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
  	}
-@@ -1591,8 +1600,6 @@ static const struct snd_soc_dapm_widget rt5682_dapm_widgets[] = {
- 		0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("Vref1", RT5682_PWR_ANLG_1, RT5682_PWR_VREF1_BIT, 0,
- 		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
--	SND_SOC_DAPM_SUPPLY("Vref2", RT5682_PWR_ANLG_1, RT5682_PWR_VREF2_BIT, 0,
--		rt5655_set_verf, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
  
- 	/* ASRC */
- 	SND_SOC_DAPM_SUPPLY_S("DAC STO1 ASRC", 1, RT5682_PLL_TRACK_1,
-@@ -1627,9 +1634,6 @@ static const struct snd_soc_dapm_widget rt5682_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("BST1 CBJ", SND_SOC_NOPM,
- 		0, 0, NULL, 0),
+ 	snd_soc_component_update_bits(component, RT5682_ADDA_CLK_1,
+-		mask, idx << sft);
++		RT5682_ADC_OSR_MASK | RT5682_DAC_OSR_MASK,
++		(idx << RT5682_ADC_OSR_SFT) | (idx << RT5682_DAC_OSR_SFT));
  
--	SND_SOC_DAPM_SUPPLY("CBJ Power", RT5682_PWR_ANLG_3,
--		RT5682_PWR_CBJ_BIT, 0, NULL, 0),
--
- 	/* REC Mixer */
- 	SND_SOC_DAPM_MIXER("RECMIX1L", SND_SOC_NOPM, 0, 0, rt5682_rec1_l_mix,
- 		ARRAY_SIZE(rt5682_rec1_l_mix)),
-@@ -1792,17 +1796,13 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
- 
- 	/*Vref*/
- 	{"MICBIAS1", NULL, "Vref1"},
--	{"MICBIAS1", NULL, "Vref2"},
- 	{"MICBIAS2", NULL, "Vref1"},
--	{"MICBIAS2", NULL, "Vref2"},
- 
- 	{"CLKDET SYS", NULL, "CLKDET"},
- 
- 	{"IN1P", NULL, "LDO2"},
- 
- 	{"BST1 CBJ", NULL, "IN1P"},
--	{"BST1 CBJ", NULL, "CBJ Power"},
--	{"CBJ Power", NULL, "Vref2"},
- 
- 	{"RECMIX1L", "CBJ Switch", "BST1 CBJ"},
- 	{"RECMIX1L", NULL, "RECMIX1L Power"},
-@@ -1912,9 +1912,7 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
- 	{"HP Amp", NULL, "Capless"},
- 	{"HP Amp", NULL, "Charge Pump"},
- 	{"HP Amp", NULL, "CLKDET SYS"},
--	{"HP Amp", NULL, "CBJ Power"},
- 	{"HP Amp", NULL, "Vref1"},
--	{"HP Amp", NULL, "Vref2"},
- 	{"HPOL Playback", "Switch", "HP Amp"},
- 	{"HPOR Playback", "Switch", "HP Amp"},
- 	{"HPOL", NULL, "HPOL Playback"},
-@@ -2363,6 +2361,8 @@ static int rt5682_resume(struct snd_soc_component *component)
- 	regcache_cache_only(rt5682->regmap, false);
- 	regcache_sync(rt5682->regmap);
- 
-+	rt5682_irq(0, rt5682);
-+
  	return 0;
  }
- #else
 -- 
 2.20.1
