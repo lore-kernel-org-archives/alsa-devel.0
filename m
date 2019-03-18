@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: recording has no sound after
-	booting" to the asoc tree
-Date: Mon, 18 Mar 2019 14:51:03 +0000 (GMT)
-Message-ID: <20190318145103.11F731128874@debutante.sirena.org.uk>
-References: <20190318071742.20134-1-shumingf@realtek.com>
+Subject: Applied "ASoC: rt5682: fix jack type detection issue"
+	to the asoc tree
+Date: Mon, 18 Mar 2019 14:51:05 +0000 (GMT)
+Message-ID: <20190318145105.3ED9D1128874@debutante.sirena.org.uk>
+References: <20190318071713.20080-1-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93F13F89721
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5638BF89722
  for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:51:10 +0100 (CET)
-In-Reply-To: <20190318071742.20134-1-shumingf@realtek.com>
+In-Reply-To: <20190318071713.20080-1-shumingf@realtek.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5682: recording has no sound after booting
+   ASoC: rt5682: fix jack type detection issue
 
 has been applied to the asoc tree at
 
@@ -55,61 +55,69 @@ to this mail.
 Thanks,
 Mark
 
->From 1c5b6a27e432e4fe170a924c8b41012271496a4c Mon Sep 17 00:00:00 2001
+>From 675212bfb23394514b7f68ebf3954ba936281ccc Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Mon, 18 Mar 2019 15:17:42 +0800
-Subject: [PATCH] ASoC: rt5682: recording has no sound after booting
+Date: Mon, 18 Mar 2019 15:17:13 +0800
+Subject: [PATCH] ASoC: rt5682: fix jack type detection issue
 
-If ASRC turns on, HW will use clk_dac as the reference clock
-whether recording or playback.
-Both of clk_dac and clk_adc should set proper clock while using ASRC.
+The jack type detection needs the main bias power of analog.
+The modification makes sure the main bias power on/off while jack plug/unplug.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ sound/soc/codecs/rt5682.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index b98974edf6ad..86a7fa31c294 100644
+index b7e2e9937e6d..b98974edf6ad 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -1208,7 +1208,7 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component =
- 		snd_soc_dapm_to_component(w->dapm);
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
--	int ref, val, reg, sft, mask, idx = -EINVAL;
-+	int ref, val, reg, idx = -EINVAL;
- 	static const int div_f[] = {1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48};
- 	static const int div_o[] = {1, 2, 4, 6, 8, 12, 16, 24, 32, 48};
+@@ -915,7 +915,8 @@ static int rt5682_headset_detect(struct snd_soc_component *component,
+ 	if (jack_insert) {
  
-@@ -1222,15 +1222,10 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
+ 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_1,
+-			RT5682_PWR_VREF2, RT5682_PWR_VREF2);
++			RT5682_PWR_VREF2 | RT5682_PWR_MB,
++			RT5682_PWR_VREF2 | RT5682_PWR_MB);
+ 		snd_soc_component_update_bits(component,
+ 				RT5682_PWR_ANLG_1, RT5682_PWR_FV2, 0);
+ 		usleep_range(15000, 20000);
+@@ -952,7 +953,7 @@ static int rt5682_headset_detect(struct snd_soc_component *component,
+ 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
+ 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
+ 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_1,
+-			RT5682_PWR_VREF2, 0);
++			RT5682_PWR_VREF2 | RT5682_PWR_MB, 0);
+ 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
+ 			RT5682_PWR_CBJ, 0);
  
- 	idx = rt5682_div_sel(rt5682, ref, div_f, ARRAY_SIZE(div_f));
+@@ -2301,16 +2302,13 @@ static int rt5682_set_bias_level(struct snd_soc_component *component,
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+ 		regmap_update_bits(rt5682->regmap, RT5682_PWR_ANLG_1,
+-			RT5682_PWR_MB | RT5682_PWR_BG,
+-			RT5682_PWR_MB | RT5682_PWR_BG);
++			RT5682_PWR_BG, RT5682_PWR_BG);
+ 		regmap_update_bits(rt5682->regmap, RT5682_PWR_DIG_1,
+ 			RT5682_DIG_GATE_CTRL | RT5682_PWR_LDO,
+ 			RT5682_DIG_GATE_CTRL | RT5682_PWR_LDO);
+ 		break;
  
--	if (w->shift == RT5682_PWR_ADC_S1F_BIT) {
-+	if (w->shift == RT5682_PWR_ADC_S1F_BIT)
- 		reg = RT5682_PLL_TRACK_3;
--		sft = RT5682_ADC_OSR_SFT;
--		mask = RT5682_ADC_OSR_MASK;
--	} else {
-+	else
- 		reg = RT5682_PLL_TRACK_2;
--		sft = RT5682_DAC_OSR_SFT;
--		mask = RT5682_DAC_OSR_MASK;
--	}
+ 	case SND_SOC_BIAS_STANDBY:
+-		regmap_update_bits(rt5682->regmap, RT5682_PWR_ANLG_1,
+-			RT5682_PWR_MB, RT5682_PWR_MB);
+ 		regmap_update_bits(rt5682->regmap, RT5682_PWR_DIG_1,
+ 			RT5682_DIG_GATE_CTRL, RT5682_DIG_GATE_CTRL);
+ 		break;
+@@ -2318,7 +2316,7 @@ static int rt5682_set_bias_level(struct snd_soc_component *component,
+ 		regmap_update_bits(rt5682->regmap, RT5682_PWR_DIG_1,
+ 			RT5682_DIG_GATE_CTRL | RT5682_PWR_LDO, 0);
+ 		regmap_update_bits(rt5682->regmap, RT5682_PWR_ANLG_1,
+-			RT5682_PWR_MB | RT5682_PWR_BG, 0);
++			RT5682_PWR_BG, 0);
+ 		break;
  
- 	snd_soc_component_update_bits(component, reg,
- 		RT5682_FILTER_CLK_DIV_MASK, idx << RT5682_FILTER_CLK_DIV_SFT);
-@@ -1242,7 +1237,8 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
- 	}
- 
- 	snd_soc_component_update_bits(component, RT5682_ADDA_CLK_1,
--		mask, idx << sft);
-+		RT5682_ADC_OSR_MASK | RT5682_DAC_OSR_MASK,
-+		(idx << RT5682_ADC_OSR_SFT) | (idx << RT5682_DAC_OSR_SFT));
- 
- 	return 0;
- }
+ 	default:
 -- 
 2.20.1
