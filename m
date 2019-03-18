@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: explain extended Audio DMAC peri
-	peri address" to the asoc tree
-Date: Mon, 18 Mar 2019 14:51:22 +0000 (GMT)
-Message-ID: <20190318145122.858061128874@debutante.sirena.org.uk>
-References: <87ftrkye0f.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add missing reg/reg-name at
+	Document" to the asoc tree
+Date: Mon, 18 Mar 2019 14:51:24 +0000 (GMT)
+Message-ID: <20190318145124.A4FCC1128874@debutante.sirena.org.uk>
+References: <87h8c0ye0n.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06461F89729
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:51:25 +0100 (CET)
-In-Reply-To: <87ftrkye0f.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AFADF8972C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 15:51:26 +0100 (CET)
+In-Reply-To: <87h8c0ye0n.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: explain extended Audio DMAC peri peri address
+   ASoC: rsnd: add missing reg/reg-name at Document
 
 has been applied to the asoc tree at
 
@@ -55,38 +55,38 @@ to this mail.
 Thanks,
 Mark
 
->From c4bce31c4982ddb866b6b6d0f7ca1cf039a3aded Mon Sep 17 00:00:00 2001
+>From 14c747506ae65005ab024f2247e68b8e045f210a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 18 Mar 2019 14:11:34 +0900
-Subject: [PATCH] ASoC: rsnd: explain extended Audio DMAC peri peri address
+Date: Mon, 18 Mar 2019 14:11:27 +0900
+Subject: [PATCH] ASoC: rsnd: add missing reg/reg-name at Document
 
-If SoC has extended Audio DMAC peri peri address,
-DT needs to select it.
-Otherwise, it can select normal Audio DMAC peri peri address.
-Extended Audio DMAC peri peri address can use BUSIF4-7,
-normal address can't.
+reg is missing "Audio DMAC peri peri" part,
+and reg-name itself is missing at Document.
+This patch add these.
 
-Reported-by: Jiada Wang <jiada_wang@mentor.com>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index c58af457a831..b34afa66fb00 100644
+index 648d43e1b1e9..c58af457a831 100644
 --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
 +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -283,6 +283,8 @@ Required properties:
+@@ -282,7 +282,10 @@ Required properties:
+ - reg				: Should contain the register physical address.
  				  required register is
  				   SRU/ADG/SSI      if generation1
- 				   SRU/ADG/SSIU/SSI/AUDIO-DMAC-periperi if generation2/generation3
-+				   Select extended AUDIO-DMAC-periperi address if SoC has it,
-+				   otherwise select normal AUDIO-DMAC-periperi address.
- - reg-names			: Should contain the register names.
- 				   scu/adg/ssi	if generation1
- 				   scu/adg/ssiu/ssi/audmapp if generation2/generation3
+-				   SRU/ADG/SSIU/SSI if generation2
++				   SRU/ADG/SSIU/SSI/AUDIO-DMAC-periperi if generation2/generation3
++- reg-names			: Should contain the register names.
++				   scu/adg/ssi	if generation1
++				   scu/adg/ssiu/ssi/audmapp if generation2/generation3
+ - rcar_sound,ssi		: Should contain SSI feature.
+ 				  The number of SSI subnode should be same as HW.
+ 				  see below for detail.
 -- 
 2.20.1
