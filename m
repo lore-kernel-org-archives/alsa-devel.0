@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5682: recording has no sound
-	after booting
-Date: Mon, 18 Mar 2019 11:27:14 +0000
-Message-ID: <20190318112714.GD6221@sirena.org.uk>
-References: <20190318071742.20134-1-shumingf@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5682: fix jack type detection
+	issue
+Date: Mon, 18 Mar 2019 12:04:04 +0000
+Message-ID: <20190318120404.GE6221@sirena.org.uk>
+References: <20190318071713.20080-1-shumingf@realtek.com>
+ <20190318112701.GC6221@sirena.org.uk>
+ <10317AB43303BA4884D7AF9C2EBCFF4002B5D5E8@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8573244965565732256=="
+Content-Type: multipart/mixed; boundary="===============6451237339201879156=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64AD6F80792
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 12:27:18 +0100 (CET)
-In-Reply-To: <20190318071742.20134-1-shumingf@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F21BF80792
+ for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 13:04:18 +0100 (CET)
+In-Reply-To: <10317AB43303BA4884D7AF9C2EBCFF4002B5D5E8@RTITMBSVM07.realtek.com.tw>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +25,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: shumingf@realtek.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, hou-hsun.lee@intel.com, hychao@google.com, lijen@google.com, lgirdwood@gmail.com, albertchen@realtek.com, derek.fang@realtek.com, bard.liao@intel.com, flove@realtek.com
+To: Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "hou-hsun.lee@intel.com" <hou-hsun.lee@intel.com>, "hychao@google.com" <hychao@google.com>, "lijen@google.com" <lijen@google.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Albert Chen <albertchen@realtek.com>, Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>, "bard.liao@intel.com" <bard.liao@intel.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8573244965565732256==
+--===============6451237339201879156==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yudcn1FV7Hsu/q59"
+	protocol="application/pgp-signature"; boundary="h56sxpGKRmy85csR"
 Content-Disposition: inline
 
 
---yudcn1FV7Hsu/q59
-Content-Type: text/plain; charset=us-ascii
+--h56sxpGKRmy85csR
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2019 at 03:17:42PM +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
+On Mon, Mar 18, 2019 at 11:33:01AM +0000, Shuming [=E8=8C=83=E6=9B=B8=E9=8A=
+=98] wrote:
+> Hi Mark,
 >=20
-> If ASRC turns on, HW will use clk_dac as the reference clock
-> whether recording or playback.
-> Both of clk_dac and clk_adc should set proper clock while using ASRC.
+> This patch based on "ASoC: rt5682: Check JD status when system resume" pa=
+tch.
+> But "ASoC: rt5682: Check JD status when system resume" patch doesn't appl=
+y yet.
 
-This also doesn't apply, please check and resend.
+> Could you please check "ASoC: rt5682: Check JD status when system resume"=
+ patch first ?
+> https://patchwork.kernel.org/patch/10844139/
 
---yudcn1FV7Hsu/q59
+I have seen that, it's really hard to understand.  In any case, please
+resend like I said in the mail.
+
+--h56sxpGKRmy85csR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyPgJEACgkQJNaLcl1U
-h9B9ZggAhLwkhJxxLyV0QXS8w9N76cWVVuw0gztsMWnnMHcOrq2jKkR5vHDXn/WC
-2vipToaM/sDF0zvMDeW124TIhPyq4YeP13qbqihUSDyD8FcC+ty4SXuxoCRj5bKp
-+t6QDvr82s7TksSdw7ZWsc9zBp6vXUFIiZXKqw6YDI4UXubPZKWLcdIRzCU1JbKt
-miES5wP4EkGx70i45r6OwcUcGXoqw9AW/frs4fkiYai7Hn1UYA9x/RZDtAwVNcxF
-Uv+DUr+aZp1BDm3qzqIRBcj7xEEvzJupiltEXy4VWBE4xbtENQTxUJyAVwLadTOw
-Yf6wlwYVa2PBSUHqvSbc4akMLjOIBw==
-=3Ge1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyPiTMACgkQJNaLcl1U
+h9D3SAf9ETlKbhq8GTiVXIIDqRPCm776rN8HY12JsZ2bzfSYZHEDwCLXzAbGHpkf
+8cN83yG8cBq1zjUNz38pE48EbC6xMwfojE54gBeZXNz/CRAMoL9bh682J5Lv8k08
+nNcF9FGhIRISiiAAWpH++mNM7iukuelZNmVnBwyiD1JZbPq9YF8st0JB+qmjURXx
+2ReV+fLk7T0IeN7mL0q8eVNEpI0/JexWm6h2SFwBrkpdAtZ/tFFDwqR915y4HFSJ
+/cqkiCWKzePkteAJxltzygdEuF6FAG86PuIqapn0CqCvVJmmFnoacjFYBvoCE2Or
+PP8U/xsNRRuhxS1mPKNTRr7BDVDKug==
+=7wld
 -----END PGP SIGNATURE-----
 
---yudcn1FV7Hsu/q59--
+--h56sxpGKRmy85csR--
 
---===============8573244965565732256==
+--===============6451237339201879156==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8573244965565732256==--
+--===============6451237339201879156==--
