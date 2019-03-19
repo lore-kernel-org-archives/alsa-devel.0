@@ -1,100 +1,53 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: Correct some minor issues
-Date: Tue, 19 Mar 2019 17:43:09 +0000
-Message-ID: <20190319174309.27640-1-ckeepax@opensource.cirrus.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [PATCH 1/3] ASoC: da7219: Update DAI clock binding info to cover
+ WCLK/BCLK
+Date: Tue, 19 Mar 2019 17:49:30 +0000
+Message-ID: <a2e2ae888b3c2fbcaab3e4791ce98f877e3d38ff.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
+References: <cover.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE0B2F80792
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 18:43:12 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Akshu Agrawal <Akshu.Agrawal@amd.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-The wm_adsp_ops structures should be static and correct two printf
-specifiers.
+With the need to expose WCLK and BCLK as separate clocks, the
+'clock-cells' and 'clock-output-names' descriptions need to be
+updated as now the codec is providing 2 clocks. The example is
+also updated accordingly.
 
-Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
-Fixes: 4e08d50d1fb6 ("ASoC: wm_adsp: Factor out DSP specific operations")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- sound/soc/codecs/wm_adsp.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ Documentation/devicetree/bindings/sound/da7219.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 644aaf1d27403..5e615fbddf9a7 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -306,9 +306,9 @@
- #define HALO_MPU_VIO_ERR_SRC_MASK           0x00007fff
- #define HALO_MPU_VIO_ERR_SRC_SHIFT                   0
+diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
+index e9d0bae..add1caf 100644
+--- a/Documentation/devicetree/bindings/sound/da7219.txt
++++ b/Documentation/devicetree/bindings/sound/da7219.txt
+@@ -23,8 +23,8 @@ Optional properties:
+   interrupt is to be used to wake system, otherwise "irq" should be used.
+ - wakeup-source: Flag to indicate this device can wake system (suspend/resume).
  
--struct wm_adsp_ops wm_adsp1_ops;
--struct wm_adsp_ops wm_adsp2_ops[];
--struct wm_adsp_ops wm_halo_ops;
-+static struct wm_adsp_ops wm_adsp1_ops;
-+static struct wm_adsp_ops wm_adsp2_ops[];
-+static struct wm_adsp_ops wm_halo_ops;
+-- #clock-cells :  Should be set to '<0>', only one clock source provided;
+-- clock-output-names : Name given for DAI clocks output;
++- #clock-cells :  Should be set to '<1>', two clock sources provided;
++- clock-output-names : Names given for DAI clock outputs (WCLK & BCLK);
  
- struct wm_adsp_buf {
- 	struct list_head list;
-@@ -2142,7 +2142,7 @@ static void wmfw_parse_id_header(struct wm_adsp *dsp,
- 	dsp->fw_id = be32_to_cpu(fw->id);
- 	dsp->fw_id_version = be32_to_cpu(fw->ver);
+ - clocks : phandle and clock specifier for codec MCLK.
+ - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
+@@ -84,8 +84,8 @@ Example:
+ 		VDDMIC-supply = <&reg_audio>;
+ 		VDDIO-supply = <&reg_audio>;
  
--	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
-+	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %d algorithms\n",
- 		  dsp->fw_id, (dsp->fw_id_version & 0xff0000) >> 16,
- 		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
- 		  nalgs);
-@@ -2155,7 +2155,7 @@ static void wmfw_v3_parse_id_header(struct wm_adsp *dsp,
- 	dsp->fw_id_version = be32_to_cpu(fw->ver);
- 	dsp->fw_vendor_id = be32_to_cpu(fw->vendor_id);
+-		#clock-cells = <0>;
+-		clock-output-names = "dai-clks";
++		#clock-cells = <1>;
++		clock-output-names = "dai-wclk", "dai-bclk";
  
--	adsp_info(dsp, "Firmware: %x vendor: 0x%x v%d.%d.%d, %zu algorithms\n",
-+	adsp_info(dsp, "Firmware: %x vendor: 0x%x v%d.%d.%d, %d algorithms\n",
- 		  dsp->fw_id, dsp->fw_vendor_id,
- 		  (dsp->fw_id_version & 0xff0000) >> 16,
- 		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
-@@ -4407,13 +4407,13 @@ irqreturn_t wm_halo_wdt_expire(int irq, void *data)
- }
- EXPORT_SYMBOL_GPL(wm_halo_wdt_expire);
- 
--struct wm_adsp_ops wm_adsp1_ops = {
-+static struct wm_adsp_ops wm_adsp1_ops = {
- 	.validate_version = wm_adsp_validate_version,
- 	.parse_sizes = wm_adsp1_parse_sizes,
- 	.region_to_reg = wm_adsp_region_to_reg,
- };
- 
--struct wm_adsp_ops wm_adsp2_ops[] = {
-+static struct wm_adsp_ops wm_adsp2_ops[] = {
- 	{
- 		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
- 		.parse_sizes = wm_adsp2_parse_sizes,
-@@ -4474,7 +4474,7 @@ struct wm_adsp_ops wm_adsp2_ops[] = {
- 	},
- };
- 
--struct wm_adsp_ops wm_halo_ops = {
-+static struct wm_adsp_ops wm_halo_ops = {
- 	.sys_config_size = sizeof(struct wm_halo_system_config_xm_hdr),
- 	.parse_sizes = wm_adsp2_parse_sizes,
- 	.validate_version = wm_halo_validate_version,
+ 		clocks = <&clks 201>;
+ 		clock-names = "mclk";
 -- 
-2.11.0
+1.9.1
