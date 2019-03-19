@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Correct error messages in
-	wm_adsp_buffer_get_error" to the asoc tree
-Date: Tue, 19 Mar 2019 13:13:21 +0000 (GMT)
-Message-ID: <20190319131321.DB73211288E0@debutante.sirena.org.uk>
-References: <20190319115215.22960-3-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Correct handling of compressed
+	streams that restart" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:24 +0000 (GMT)
+Message-ID: <20190319131324.09D2911288E0@debutante.sirena.org.uk>
+References: <20190319115215.22960-2-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10942F89714
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:23 +0100 (CET)
-In-Reply-To: <20190319115215.22960-3-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48F02F89716
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:25 +0100 (CET)
+In-Reply-To: <20190319115215.22960-2-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Correct error messages in wm_adsp_buffer_get_error
+   ASoC: wm_adsp: Correct handling of compressed streams that restart
 
 has been applied to the asoc tree at
 
@@ -55,39 +55,48 @@ to this mail.
 Thanks,
 Mark
 
->From 48ead31ce247dc8c0b01ad99d1a97da35421493b Mon Sep 17 00:00:00 2001
+>From 639e5eb3c7d67e407f2a71fccd95323751398f6f Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 19 Mar 2019 11:52:05 +0000
-Subject: [PATCH] ASoC: wm_adsp: Correct error messages in
- wm_adsp_buffer_get_error
+Date: Tue, 19 Mar 2019 11:52:04 +0000
+Subject: [PATCH] ASoC: wm_adsp: Correct handling of compressed streams that
+ restart
 
-During recent logging improvements it seems two error messages lost
-their updates during patch application/rebasing. Add these back in.
+Previously support was added to allow streams to be stopped and
+started again without the DSP being power cycled and this was done
+by clearing the buffer state in trigger start. Another supported
+use-case is using the DSP for a trigger event then opening the
+compressed stream later to receive the audio, unfortunately clearing
+the buffer state in trigger start destroys the data received
+from such a trigger. Correct this issue by moving the call to
+wm_adsp_buffer_clear to be in trigger stop instead.
 
-Fixes: 0d3fba3e7a56 ("ASoC: wm_adsp: Improve logging messages")
+Fixes: 61fc060c40e6 ("ASoC: wm_adsp: Support streams which can start/stop with DSP active")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 0de36b7eeeb2..b3348a213c18 100644
+index b93fdc8d2d6f..0de36b7eeeb2 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -3535,11 +3535,11 @@ static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
+@@ -3571,8 +3571,6 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 		if (ret < 0)
+ 			break;
  
- 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
- 	if (ret < 0) {
--		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
-+		compr_err(buf, "Failed to check buffer error: %d\n", ret);
- 		return ret;
- 	}
- 	if (buf->error != 0) {
--		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
-+		compr_err(buf, "Buffer error occurred: %d\n", buf->error);
- 		return -EIO;
- 	}
- 
+-		wm_adsp_buffer_clear(compr->buf);
+-
+ 		/* Trigger the IRQ at one fragment of data */
+ 		ret = wm_adsp_buffer_write(compr->buf,
+ 					   HOST_BUFFER_FIELD(high_water_mark),
+@@ -3584,6 +3582,7 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
+ 		}
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
++		wm_adsp_buffer_clear(compr->buf);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
 -- 
 2.20.1
