@@ -1,186 +1,91 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH V4] ASoC: fsl_esai: fix channel swap issue
- when	stream starts
-Date: Tue, 19 Mar 2019 02:08:20 +0000
-Message-ID: <VI1PR0402MB3392C426C2F5D65322A04253E3400@VI1PR0402MB3392.eurprd04.prod.outlook.com>
-References: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential
+ deadlock
+Date: Tue, 19 Mar 2019 12:34:56 +0900
+Message-ID: <3f76f14b-b520-a0fa-b354-765a9e60551d@mentor.com>
+References: <20190307061554.26486-1-jiada_wang@mentor.com>
+ <20190307061554.26486-2-jiada_wang@mentor.com>
+ <CAMuHMdU+1Ntz6uvk-VYsSdWJgBfzHu99SztqyfLX7z2FRxPdNg@mail.gmail.com>
+ <8cd7f718-bfb2-15c8-823d-88458b385377@mentor.com>
+ <TY1PR01MB177056C725F16385A627111EC04A0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-eopbgr80078.outbound.protection.outlook.com [40.107.8.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7507F8068A
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 03:08:22 +0100 (CET)
-In-Reply-To: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <TY1PR01MB177056C725F16385A627111EC04A0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark
+Hi Fabrizio
 
-    Can this patch be accepted?  Or need I do any update?
+On 2019/03/14 3:19, Fabrizio Castro wrote:
+> Hello Jiada,
+> 
+>> From: Jiada Wang <jiada_wang@mentor.com>
+>> Sent: 13 March 2019 11:56
+>> Subject: Re: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential deadlock
+>>
+>> Hi Geert
+>>
+>> On 2019/03/12 18:15, Geert Uytterhoeven wrote:
+>>> Hi Jiada, Fabrizio,
+>>>
+>>> On Thu, Mar 7, 2019 at 7:17 AM Jiada Wang <jiada_wang@mentor.com> wrote:
+>>>> lockdep warns us that priv->lock and k->k_lock can cause a
+>>>> deadlock when after acquire of k->k_lock, process is interrupted
+>>>> by src, while in another routine of src .init, k->k_lock is
+>>>> acquired with priv->lock held.
+>>>>
+>>>> This patch avoids a potential deadlock by not calling soc_device_match()
+>>>> in SRC .init callback, instead it adds new soc fields in priv->flags to
+>>>> differentiate SoCs.
+>>>>
+>>>> Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
+>>>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+>>>> ---
+>>>>    sound/soc/sh/rcar/core.c | 2 ++
+>>>>    sound/soc/sh/rcar/rsnd.h | 5 +++++
+>>>>    sound/soc/sh/rcar/src.c  | 9 +--------
+>>>>    3 files changed, 8 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+>>>> index 022996d2db13..4fe83e611c01 100644
+>>>> --- a/sound/soc/sh/rcar/core.c
+>>>> +++ b/sound/soc/sh/rcar/core.c
+>>>> @@ -110,6 +110,8 @@ static const struct of_device_id rsnd_of_match[] = {
+>>>>           { .compatible = "renesas,rcar_sound-gen1", .data = (void *)RSND_GEN1 },
+>>>>           { .compatible = "renesas,rcar_sound-gen2", .data = (void *)RSND_GEN2 },
+>>>>           { .compatible = "renesas,rcar_sound-gen3", .data = (void *)RSND_GEN3 },
+>>>> +       /* Special Handling */
+>>>> +       { .compatible = "renesas,rcar_sound-r8a77990", .data = (void *)(RSND_GEN3 | RSND_SOC_E) },
+>>>
+>>> I guess we need an entry for RZ/G2E, too?
+> 
+> Geert has a point, I am looking at the User manual for the RZ/G2E and it looks like the
+> implementation for the RZ/G2E is the same as the one for the r8a77990
+> 
+>>>
+>> Sorry, I don't have user manual for RZ/G2E,
+>> if you can let me know where to find RZ/G2E's user manual,
+>> I can add entry for these SoCs
+> 
+> If you prefer I could add that after running some tests? I do have a board with a RZ/G2E.
+> 
+Yes, please
+since I have neither RZ/G2E board to test nor its user manual
 
-Best regards
-Wang shengjiu
+Thanks,
+Jiada
+> Thanks,
+> Fab
 > 
-> There is very low possibility ( < 0.1% ) that channel swap happened in
-> beginning when multi output/input pin is enabled. The issue is that
-> hardware can't send data to correct pin in the beginning with the normal
-> enable flow.
-> 
-> This is hardware issue, but there is no errata, the workaround flow is that:
-> Each time playback/recording, firstly clear the xSMA/xSMB, then enable
-> TE/RE, then enable xSMB and xSMA (xSMB must be enabled before xSMA).
-> Which is to use the xSMA as the trigger start register, previously the xCR_TE
-> or xCR_RE is the bit for starting.
-> 
-> Fixes commit 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-> Cc: <stable@vger.kernel.org>
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_esai.c | 47 +++++++++++++++++++++++++++++++++++++---
-> -------
->  1 file changed, 37 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c index
-> afe67c865330..3623aa9a6f2e 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -54,6 +54,8 @@ struct fsl_esai {
->  	u32 fifo_depth;
->  	u32 slot_width;
->  	u32 slots;
-> +	u32 tx_mask;
-> +	u32 rx_mask;
->  	u32 hck_rate[2];
->  	u32 sck_rate[2];
->  	bool hck_dir[2];
-> @@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct
-> snd_soc_dai *dai, u32 tx_mask,
->  	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
->  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
-> 
-> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
-> -			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
-> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
-> -			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
-> -
->  	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
->  			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
-> 
-> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
-> -			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
-> -	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
-> -			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
-> -
->  	esai_priv->slot_width = slot_width;
->  	esai_priv->slots = slots;
-> +	esai_priv->tx_mask = tx_mask;
-> +	esai_priv->rx_mask = rx_mask;
-> 
->  	return 0;
->  }
-> @@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream
-> *substream, int cmd,
->  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->  	u8 i, channels = substream->runtime->channels;
->  	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
-> +	u32 mask;
-> 
->  	switch (cmd) {
->  	case SNDRV_PCM_TRIGGER_START:
-> @@ -608,15 +603,38 @@ static int fsl_esai_trigger(struct
-> snd_pcm_substream *substream, int cmd,
->  		for (i = 0; tx && i < channels; i++)
->  			regmap_write(esai_priv->regmap, REG_ESAI_ETDR,
-> 0x0);
-> 
-> +		/*
-> +		 * When set the TE/RE in the end of enablement flow, there
-> +		 * will be channel swap issue for multi data line case.
-> +		 * In order to workaround this issue, we switch the bit
-> +		 * enablement sequence to below sequence
-> +		 * 1) clear the xSMB & xSMA: which is done in probe and
-> +		 *                           stop state.
-> +		 * 2) set TE/RE
-> +		 * 3) set xSMB
-> +		 * 4) set xSMA:  xSMA is the last one in this flow, which
-> +		 *               will trigger esai to start.
-> +		 */
->  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
->  				   tx ? ESAI_xCR_TE_MASK :
-> ESAI_xCR_RE_MASK,
->  				   tx ? ESAI_xCR_TE(pins) :
-> ESAI_xCR_RE(pins));
-> +		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
-> +
-> +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMB(tx),
-> +				   ESAI_xSMB_xS_MASK,
-> ESAI_xSMB_xS(mask));
-> +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMA(tx),
-> +				   ESAI_xSMA_xS_MASK,
-> ESAI_xSMA_xS(mask));
-> +
->  		break;
->  	case SNDRV_PCM_TRIGGER_SUSPEND:
->  	case SNDRV_PCM_TRIGGER_STOP:
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
->  				   tx ? ESAI_xCR_TE_MASK :
-> ESAI_xCR_RE_MASK, 0);
-> +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMA(tx),
-> +				   ESAI_xSMA_xS_MASK, 0);
-> +		regmap_update_bits(esai_priv->regmap,
-> REG_ESAI_xSMB(tx),
-> +				   ESAI_xSMB_xS_MASK, 0);
-> 
->  		/* Disable and reset FIFO */
->  		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
-> @@ -906,6 +924,15 @@ static int fsl_esai_probe(struct platform_device
-> *pdev)
->  		return ret;
->  	}
-> 
-> +	esai_priv->tx_mask = 0xFFFFFFFF;
-> +	esai_priv->rx_mask = 0xFFFFFFFF;
-> +
-> +	/* Clear the TSMA, TSMB, RSMA, RSMB */
-> +	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
-> +	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
-> +	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
-> +	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
-> +
->  	ret = devm_snd_soc_register_component(&pdev->dev,
-> &fsl_esai_component,
->  					      &fsl_esai_dai, 1);
->  	if (ret) {
-> --
-> 1.9.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fma
-> ilman.alsa-project.org%2Fmailman%2Flistinfo%2Falsa-
-> devel&amp;data=02%7C01%7Cshengjiu.wang%40nxp.com%7Ce2940159f310
-> 4473866a08d69c7d6c1e%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0
-> %7C636868459834438771&amp;sdata=WdeHv2JxOBqb0mQ%2B%2FrRISAt64
-> JZ6ATY2u02IzzFDaEY%3D&amp;reserved=0
+>>
+>> Thanks,
+>> Jiada
+>>> Gr{oetje,eeting}s,
+>>>
+>>>                           Geert
+>>>
