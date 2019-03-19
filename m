@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: free link string in error" to
-	the asoc tree
-Date: Tue, 19 Mar 2019 13:13:26 +0000 (GMT)
-Message-ID: <20190319131326.8D25F11288DF@debutante.sirena.org.uk>
-References: <20190305155753.10362-2-yung-chuan.liao@linux.intel.com>
+Subject: Applied "ASoC: wm_adsp: Refactor firmware status
+	reading" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:10 +0000 (GMT)
+Message-ID: <20190319131311.0167611288DF@debutante.sirena.org.uk>
+References: <20190319115215.22960-8-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B9C3F89717
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:34 +0100 (CET)
-In-Reply-To: <20190305155753.10362-2-yung-chuan.liao@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADA42F896FD
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:12 +0100 (CET)
+In-Reply-To: <20190319115215.22960-8-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, bard.liao@intel.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, david.rhodes@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: free link string in error
+   ASoC: wm_adsp: Refactor firmware status reading
 
 has been applied to the asoc tree at
 
@@ -55,34 +55,91 @@ to this mail.
 Thanks,
 Mark
 
->From b3718b8f7e9b4afdfd281d35233b078585aef2e9 Mon Sep 17 00:00:00 2001
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-Date: Tue, 5 Mar 2019 23:57:53 +0800
-Subject: [PATCH] ASoC: topology: free link string in error
+>From 4049ce86fc9b0512d4f624bb8b63c8f513fb66d1 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 19 Mar 2019 11:52:10 +0000
+Subject: [PATCH] ASoC: wm_adsp: Refactor firmware status reading
 
-Some strings are allocated by kstrdup, but not freed when error
-happened.
+In preparation for further additions refactor the reading of the
+firmware status.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 43 ++++++++++++++++----------------------
+ 1 file changed, 18 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 1be60cea2bf5..c6a30d000f59 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1883,6 +1883,9 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	ret = soc_tplg_dai_link_load(tplg, link, NULL);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
-+		kfree(link->name);
-+		kfree(link->stream_name);
-+		kfree(link->cpu_dai_name);
- 		kfree(link);
- 		return ret;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 8800ffcc4f8c..fb252762f23c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -788,49 +788,42 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *mem,
  	}
+ }
+ 
+-static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
++static void wm_adsp_read_fw_status(struct wm_adsp *dsp,
++				   int noffs, unsigned int *offs)
+ {
+-	unsigned int scratch[4];
+-	unsigned int addr = dsp->base + ADSP2_SCRATCH0;
+ 	unsigned int i;
+ 	int ret;
+ 
+-	for (i = 0; i < ARRAY_SIZE(scratch); ++i) {
+-		ret = regmap_read(dsp->regmap, addr + i, &scratch[i]);
++	for (i = 0; i < noffs; ++i) {
++		ret = regmap_read(dsp->regmap, dsp->base + offs[i], &offs[i]);
+ 		if (ret) {
+ 			adsp_err(dsp, "Failed to read SCRATCH%u: %d\n", i, ret);
+ 			return;
+ 		}
+ 	}
++}
++
++static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
++{
++	unsigned int offs[] = {
++		ADSP2_SCRATCH0, ADSP2_SCRATCH1, ADSP2_SCRATCH2, ADSP2_SCRATCH3,
++	};
++
++	wm_adsp_read_fw_status(dsp, ARRAY_SIZE(offs), offs);
+ 
+ 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
+-		 scratch[0], scratch[1], scratch[2], scratch[3]);
++		 offs[0], offs[1], offs[2], offs[3]);
+ }
+ 
+ static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
+ {
+-	unsigned int scratch[2];
+-	int ret;
++	unsigned int offs[] = { ADSP2V2_SCRATCH0_1, ADSP2V2_SCRATCH2_3 };
+ 
+-	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
+-			  &scratch[0]);
+-	if (ret) {
+-		adsp_err(dsp, "Failed to read SCRATCH0_1: %d\n", ret);
+-		return;
+-	}
+-
+-	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH2_3,
+-			  &scratch[1]);
+-	if (ret) {
+-		adsp_err(dsp, "Failed to read SCRATCH2_3: %d\n", ret);
+-		return;
+-	}
++	wm_adsp_read_fw_status(dsp, ARRAY_SIZE(offs), offs);
+ 
+ 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
+-		 scratch[0] & 0xFFFF,
+-		 scratch[0] >> 16,
+-		 scratch[1] & 0xFFFF,
+-		 scratch[1] >> 16);
++		 offs[0] & 0xFFFF, offs[0] >> 16,
++		 offs[1] & 0xFFFF, offs[1] >> 16);
+ }
+ 
+ static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
 -- 
 2.20.1
