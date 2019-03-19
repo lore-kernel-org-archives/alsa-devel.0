@@ -1,131 +1,88 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 05/12] ASoC: wm_adsp: Don't export wm_adsp2_lock
-Date: Tue, 19 Mar 2019 11:52:08 +0000
-Message-ID: <20190319115215.22960-6-ckeepax@opensource.cirrus.com>
-References: <20190319115215.22960-1-ckeepax@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 136EEF896B7
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 12:52:18 +0100 (CET)
-In-Reply-To: <20190319115215.22960-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, david.rhodes@cirrus.com
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: i2s: Don't use register read to determine
+ slave/master mode
+Date: Tue, 19 Mar 2019 13:11:02 +0100
+Message-ID: <20190319121102.28069-1-s.nawrocki@samsung.com>
+References: <CGME20190319121116epcas2p24125f5163744c01c0c2b6b25ca4878b8@epcas2p2.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: sbkim73@samsung.com, krzk@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This function is not presently called from outside the adsp code and nor
-should it be, as such stop exporting it.
+We can simplify the code by caching the CPU DAI master/slave
+information rather than reading previously set register bit.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/codecs/wm_adsp.c | 61 +++++++++++++++++++++++-----------------------
- sound/soc/codecs/wm_adsp.h |  1 -
- 2 files changed, 30 insertions(+), 32 deletions(-)
+ sound/soc/samsung/i2s.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5608ed5deccac..a9542a56b19e4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2622,6 +2622,36 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
- 	return 0;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index ab471d550d17..9722940da6a4 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -88,12 +88,6 @@ struct samsung_i2s_priv {
+ 	struct platform_device *pdev;
+ 	struct platform_device *pdev_sec;
+ 
+-	/* Memory mapped SFR region */
+-	void __iomem *addr;
+-
+-	/* Spinlock protecting access to the device's registers */
+-	spinlock_t lock;
+-
+ 	/* Lock for cross interface checks */
+ 	spinlock_t pcm_lock;
+ 
+@@ -122,6 +116,15 @@ struct samsung_i2s_priv {
+ 	/* The clock provider's data */
+ 	struct clk *clk_table[3];
+ 	struct clk_onecell_data clk_data;
++
++	/* Spinlock protecting member fields below */
++	spinlock_t lock;
++
++	/* Memory mapped SFR region */
++	void __iomem *addr;
++
++	/* A flag indicating the I2S slave mode operation */
++	bool slave_mode;
+ };
+ 
+ /* Returns true if this is the 'overlay' stereo DAI */
+@@ -130,15 +133,6 @@ static inline bool is_secondary(struct i2s_dai *i2s)
+ 	return i2s->drv->id == SAMSUNG_I2S_ID_SECONDARY;
  }
  
-+static int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
-+{
-+	struct regmap *regmap = dsp->regmap;
-+	unsigned int code0, code1, lock_reg;
-+
-+	if (!(lock_regions & WM_ADSP2_REGION_ALL))
-+		return 0;
-+
-+	lock_regions &= WM_ADSP2_REGION_ALL;
-+	lock_reg = dsp->base + ADSP2_LOCK_REGION_1_LOCK_REGION_0;
-+
-+	while (lock_regions) {
-+		code0 = code1 = 0;
-+		if (lock_regions & BIT(0)) {
-+			code0 = ADSP2_LOCK_CODE_0;
-+			code1 = ADSP2_LOCK_CODE_1;
-+		}
-+		if (lock_regions & BIT(1)) {
-+			code0 |= ADSP2_LOCK_CODE_0 << ADSP2_LOCK_REGION_SHIFT;
-+			code1 |= ADSP2_LOCK_CODE_1 << ADSP2_LOCK_REGION_SHIFT;
-+		}
-+		regmap_write(regmap, lock_reg, code0);
-+		regmap_write(regmap, lock_reg, code1);
-+		lock_regions >>= 2;
-+		lock_reg += 2;
-+	}
-+
-+	return 0;
-+}
-+
- static void wm_adsp2_boot_work(struct work_struct *work)
- {
- 	struct wm_adsp *dsp = container_of(work,
-@@ -3890,37 +3920,6 @@ int wm_adsp_compr_copy(struct snd_compr_stream *stream, char __user *buf,
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_copy);
- 
--int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
+-/* If operating in SoC-Slave mode */
+-static inline bool is_slave(struct i2s_dai *i2s)
 -{
--	struct regmap *regmap = dsp->regmap;
--	unsigned int code0, code1, lock_reg;
+-	struct samsung_i2s_priv *priv = i2s->priv;
 -
--	if (!(lock_regions & WM_ADSP2_REGION_ALL))
--		return 0;
--
--	lock_regions &= WM_ADSP2_REGION_ALL;
--	lock_reg = dsp->base + ADSP2_LOCK_REGION_1_LOCK_REGION_0;
--
--	while (lock_regions) {
--		code0 = code1 = 0;
--		if (lock_regions & BIT(0)) {
--			code0 = ADSP2_LOCK_CODE_0;
--			code1 = ADSP2_LOCK_CODE_1;
--		}
--		if (lock_regions & BIT(1)) {
--			code0 |= ADSP2_LOCK_CODE_0 << ADSP2_LOCK_REGION_SHIFT;
--			code1 |= ADSP2_LOCK_CODE_1 << ADSP2_LOCK_REGION_SHIFT;
--		}
--		regmap_write(regmap, lock_reg, code0);
--		regmap_write(regmap, lock_reg, code1);
--		lock_regions >>= 2;
--		lock_reg += 2;
--	}
--
--	return 0;
+-	u32 mod = readl(priv->addr + I2SMOD);
+-	return (mod & (1 << priv->variant_regs->mss_off)) ? true : false;
 -}
--EXPORT_SYMBOL_GPL(wm_adsp2_lock);
 -
- static void wm_adsp_fatal_error(struct wm_adsp *dsp)
+ /* If this interface of the controller is transmitting data */
+ static inline bool tx_active(struct i2s_dai *i2s)
  {
- 	struct wm_adsp_compr *compr;
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 8f09b4419a914..65ccf120dd5bc 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -141,7 +141,6 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event,
- 			 unsigned int freq);
+@@ -715,6 +709,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	mod &= ~(sdf_mask | lrp_rlow | mod_slave);
+ 	mod |= tmp;
+ 	writel(mod, priv->addr + I2SMOD);
++	priv->slave_mode = (mod & mod_slave);
+ 	spin_unlock_irqrestore(&priv->lock, flags);
+ 	pm_runtime_put(dai->dev);
  
--int wm_adsp2_lock(struct wm_adsp *adsp, unsigned int regions);
- irqreturn_t wm_adsp2_bus_error(struct wm_adsp *adsp);
+@@ -917,7 +912,7 @@ static int config_setup(struct i2s_dai *i2s)
+ 	set_rfs(i2s, rfs);
  
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	/* Don't bother with PSR in Slave mode */
+-	if (is_slave(i2s))
++	if (priv->slave_mode)
+ 		return 0;
+ 
+ 	if (!(priv->quirks & QUIRK_NO_MUXPSR)) {
 -- 
-2.11.0
+2.17.1
