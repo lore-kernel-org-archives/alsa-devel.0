@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Move wm_adsp2_set_dspclk to
-	CODEC drivers" to the asoc tree
-Date: Tue, 19 Mar 2019 13:13:13 +0000 (GMT)
-Message-ID: <20190319131313.3075511288DF@debutante.sirena.org.uk>
-References: <20190319115215.22960-7-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Shutdown any compressed
+	streams on DSP watchdog timeout" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:17 +0000 (GMT)
+Message-ID: <20190319131317.914C311288DF@debutante.sirena.org.uk>
+References: <20190319115215.22960-5-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0DFDF89707
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:14 +0100 (CET)
-In-Reply-To: <20190319115215.22960-7-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A740CF89713
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:18 +0100 (CET)
+In-Reply-To: <20190319115215.22960-5-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, david.rhodes@cirrus.com, broonie@kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, david.rhodes@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Move wm_adsp2_set_dspclk to CODEC drivers
+   ASoC: wm_adsp: Shutdown any compressed streams on DSP watchdog timeout
 
 has been applied to the asoc tree at
 
@@ -55,166 +55,87 @@ to this mail.
 Thanks,
 Mark
 
->From b9070df451668e0c317d420d8331568b4d7ba6df Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Tue, 19 Mar 2019 11:52:09 +0000
-Subject: [PATCH] ASoC: wm_adsp: Move wm_adsp2_set_dspclk to CODEC drivers
+>From a2bcbc1b9ac2f982a438081a9f1b5d823332d514 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 19 Mar 2019 11:52:07 +0000
+Subject: [PATCH] ASoC: wm_adsp: Shutdown any compressed streams on DSP
+ watchdog timeout
 
-The original wm_adsp2_early_event took an additional frequency
-argument for clocking control so could not be used directly as a
-DAPM callback. But this setup could equally be done by the codec
-driver function wrapping wm_adsp2_early event. In preparation
-for adding support for new core types wm_adsp2_set_dspclk has
-been exported, and the freq argument removed so that it can
-be used directly as a DAPM callback.
+If a watchdog timeout is received from the DSP it is safe to assume the
+DSP is not functioning anymore and as such any active compressed streams
+should be put into an error state.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l24.c |  4 +++-
- sound/soc/codecs/wm5102.c  |  4 +++-
- sound/soc/codecs/wm5110.c  |  4 +++-
- sound/soc/codecs/wm_adsp.c | 32 +++++++++++++-------------------
- sound/soc/codecs/wm_adsp.h |  6 ++++--
- 5 files changed, 26 insertions(+), 24 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 21 +++++++++++++++++++++
+ sound/soc/codecs/wm_adsp.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index b16832a6a9af..e056d871fafb 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -75,7 +75,9 @@ static int cs47l24_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 
- 	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
- 
--	return wm_adsp2_early_event(w, kcontrol, event, v);
-+	wm_adsp2_set_dspclk(w, v);
-+
-+	return wm_adsp2_early_event(w, kcontrol, event);
- }
- 
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 4466e195b66d..c972591f1cc4 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -646,6 +646,8 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 				return ret;
- 			}
- 		}
-+
-+		wm_adsp2_set_dspclk(w, v);
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMD:
-@@ -659,7 +661,7 @@ static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 		break;
- 	}
- 
--	return wm_adsp2_early_event(w, kcontrol, event, v);
-+	return wm_adsp2_early_event(w, kcontrol, event);
- }
- 
- static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index b25877fa529d..c543b73e2f20 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -211,7 +211,9 @@ static int wm5110_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 
- 	v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
- 
--	return wm_adsp2_early_event(w, kcontrol, event, v);
-+	wm_adsp2_set_dspclk(w, v);
-+
-+	return wm_adsp2_early_event(w, kcontrol, event);
- }
- 
- static const struct reg_sequence wm5110_no_dre_left_enable[] = {
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a9542a56b19e..8800ffcc4f8c 100644
+index c19a8a041d4d..5608ed5decca 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2715,26 +2715,22 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 	mutex_unlock(&dsp->pwr_lock);
- }
+@@ -2905,6 +2905,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
+ 			wm_adsp_buffer_free(dsp);
  
--static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
-+int wm_adsp2_set_dspclk(struct snd_soc_dapm_widget *w, unsigned int freq)
- {
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
-+	struct wm_adsp *dsp = &dsps[w->shift];
- 	int ret;
- 
--	switch (dsp->rev) {
--	case 0:
--		ret = regmap_update_bits_async(dsp->regmap,
--					       dsp->base + ADSP2_CLOCKING,
--					       ADSP2_CLK_SEL_MASK,
--					       freq << ADSP2_CLK_SEL_SHIFT);
--		if (ret) {
--			adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
--			return;
--		}
--		break;
--	default:
--		/* clock is handled by parent codec driver */
--		break;
--	}
-+	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CLOCKING,
-+				 ADSP2_CLK_SEL_MASK,
-+				 freq << ADSP2_CLK_SEL_SHIFT);
-+	if (ret)
-+		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
++		dsp->fatal_error = false;
 +
-+	return ret;
- }
-+EXPORT_SYMBOL_GPL(wm_adsp2_set_dspclk);
+ 		mutex_unlock(&dsp->pwr_lock);
  
- int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol)
-@@ -2792,8 +2788,7 @@ static void wm_adsp_stop_watchdog(struct wm_adsp *dsp)
- }
- 
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
--			 struct snd_kcontrol *kcontrol, int event,
--			 unsigned int freq)
-+			 struct snd_kcontrol *kcontrol, int event)
+ 		adsp_dbg(dsp, "Execution stopped\n");
+@@ -3000,6 +3002,9 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
  {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
-@@ -2802,7 +2797,6 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 	struct wm_adsp_compr_buf *buf = NULL, *tmp;
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		wm_adsp2_set_dspclk(dsp, freq);
- 		queue_work(system_unbound_wq, &dsp->boot_work);
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
++	if (compr->dsp->fatal_error)
++		return -EINVAL;
++
+ 	list_for_each_entry(tmp, &compr->dsp->buffer_list, list) {
+ 		if (!tmp->name || !strcmp(compr->name, tmp->name)) {
+ 			buf = tmp;
+@@ -3916,6 +3921,21 @@ int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_lock);
+ 
++static void wm_adsp_fatal_error(struct wm_adsp *dsp)
++{
++	struct wm_adsp_compr *compr;
++
++	dsp->fatal_error = true;
++
++	list_for_each_entry(compr, &dsp->compr_list, list) {
++		if (compr->stream) {
++			snd_compr_stop_error(compr->stream,
++					     SNDRV_PCM_STATE_XRUN);
++			snd_compr_fragment_elapsed(compr->stream);
++		}
++	}
++}
++
+ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ {
+ 	unsigned int val;
+@@ -3934,6 +3954,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
+ 		adsp_err(dsp, "watchdog timeout error\n");
+ 		wm_adsp_stop_watchdog(dsp);
++		wm_adsp_fatal_error(dsp);
+ 	}
+ 
+ 	if (val & (ADSP2_SLAVE_ERR_MASK | ADSP2_REGION_LOCK_ERR_MASK)) {
 diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 65ccf120dd5b..ac1bec3b2248 100644
+index 59e07ad16329..8f09b4419a91 100644
 --- a/sound/soc/codecs/wm_adsp.h
 +++ b/sound/soc/codecs/wm_adsp.h
-@@ -137,15 +137,17 @@ int wm_adsp2_component_probe(struct wm_adsp *dsp, struct snd_soc_component *comp
- int wm_adsp2_component_remove(struct wm_adsp *dsp, struct snd_soc_component *component);
- int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
-+
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
--			 struct snd_kcontrol *kcontrol, int event,
--			 unsigned int freq);
-+			 struct snd_kcontrol *kcontrol, int event);
+@@ -85,6 +85,7 @@ struct wm_adsp {
+ 	bool preloaded;
+ 	bool booted;
+ 	bool running;
++	bool fatal_error;
  
- irqreturn_t wm_adsp2_bus_error(struct wm_adsp *adsp);
+ 	struct list_head ctl_list;
  
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- 
-+int wm_adsp2_set_dspclk(struct snd_soc_dapm_widget *w, unsigned int freq);
-+
- int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol);
- int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
 -- 
 2.20.1
