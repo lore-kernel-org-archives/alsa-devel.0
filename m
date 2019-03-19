@@ -1,34 +1,20 @@
-From: Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH] ASoC: codecs: Fix to avoid potential NULL
-	pointer dereferences
-Date: Mon, 18 Mar 2019 20:03:56 -0500
-Message-ID: <CA+EnHHTAKMafHG8cspAipzKfH3F3EX8oXaMkZyEfAD1ByQB6Gw@mail.gmail.com>
-References: <20190319005805.13823-1-pakki001@umn.edu>
+From: kbuild test robot <lkp@intel.com>
+Subject: [RFC PATCH asoc] ASoC: wm_adsp: wm_adsp1_ops can be
+	static
+Date: Tue, 19 Mar 2019 23:00:06 +0800
+Message-ID: <20190319150006.GA15014@lkp-wsm-ep2>
+References: <201903192200.16nwKI4j%lkp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B476F80792
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 02:04:36 +0100 (CET)
-Received: from localhost (unknown [127.0.0.1])
- by mta-p7.oit.umn.edu (Postfix) with ESMTP id EEE19ACB
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 01:04:33 +0000 (UTC)
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
- by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id NPccapG3FB7x for <alsa-devel@alsa-project.org>;
- Mon, 18 Mar 2019 20:04:33 -0500 (CDT)
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197])
- (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mta-p7.oit.umn.edu (Postfix) with ESMTPS id BF0F6677
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 20:04:33 -0500 (CDT)
-Received: by mail-oi1-f197.google.com with SMTP id k131so8595762oif.2
- for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2019 18:04:33 -0700 (PDT)
-In-Reply-To: <20190319005805.13823-1-pakki001@umn.edu>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05328F80791
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 16:00:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201903192200.16nwKI4j%lkp@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,43 +24,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Aditya Pakki <pakki001@umn.edu>
-Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, Wen Shi <wenshi@opensource.cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Stuart Henderson <stuarth@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Apologies for the incorrect patch.
-"match" is dead code and I will send a correct patch again.
 
+Fixes: 4e08d50d1fb6 ("ASoC: wm_adsp: Factor out DSP specific operations")
+Signed-off-by: kbuild test robot <lkp@intel.com>
+---
+ wm_adsp.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-
-On Mon, Mar 18, 2019 at 7:58 PM Aditya Pakki <pakki001@umn.edu> wrote:
-
-> In sirf_audio_codec_driver_probe, of_match_node may fail and return a
-> NULL pointer. The patch avoids a potential NULL pointer dereference.
->
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-> ---
->  sound/soc/codecs/sirf-audio-codec.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/codecs/sirf-audio-codec.c
-> b/sound/soc/codecs/sirf-audio-codec.c
-> index e424499a8450..fd2bbd6a3c58 100644
-> --- a/sound/soc/codecs/sirf-audio-codec.c
-> +++ b/sound/soc/codecs/sirf-audio-codec.c
-> @@ -464,6 +464,8 @@ static int sirf_audio_codec_driver_probe(struct
-> platform_device *pdev)
->         const struct of_device_id *match;
->
->         match = of_match_node(sirf_audio_codec_of_match,
-> pdev->dev.of_node);
-> +       if (!match)
-> +               return -ENXIO;
->
->         sirf_audio_codec = devm_kzalloc(&pdev->dev,
->                 sizeof(struct sirf_audio_codec), GFP_KERNEL);
-> --
-> 2.17.1
->
->
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 644aaf1..2a9554d 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -306,8 +306,8 @@
+ #define HALO_MPU_VIO_ERR_SRC_MASK           0x00007fff
+ #define HALO_MPU_VIO_ERR_SRC_SHIFT                   0
+ 
+-struct wm_adsp_ops wm_adsp1_ops;
+-struct wm_adsp_ops wm_adsp2_ops[];
++static struct wm_adsp_ops wm_adsp1_ops;
++static struct wm_adsp_ops wm_adsp2_ops[];
+ struct wm_adsp_ops wm_halo_ops;
+ 
+ struct wm_adsp_buf {
