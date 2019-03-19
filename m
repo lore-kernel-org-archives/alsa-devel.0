@@ -1,9 +1,8 @@
 From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Enforces runtime_resume after
-	S3 and S4 for each codec
-Date: Tue, 19 Mar 2019 09:28:44 +0800
-Message-ID: <20190319012844.6543-2-hui.wang@canonical.com>
-References: <20190319012844.6543-1-hui.wang@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - Don't trigger jackpoll_work in
+	azx_resume
+Date: Tue, 19 Mar 2019 09:28:43 +0800
+Message-ID: <20190319012844.6543-1-hui.wang@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +10,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6994F80799
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 02:29:16 +0100 (CET)
-In-Reply-To: <20190319012844.6543-1-hui.wang@canonical.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51B1DF80709
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 02:29:14 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,87 +24,66 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Recently we found the audio jack detection stop working after suspend
-on many machines with Realtek codec. Sometimes the audio selection
-dialogue didn't show up after users plugged headhphone/headset into
-the headset jack, sometimes after uses plugged headphone/headset, then
-click the sound icon on the upper-right corner of gnome-desktop, it
-also showed the speaker rather than the headphone.
+The commit 3baffc4a84d7 (ALSA: hda/intel: Refactoring PM code) changed
+the behaviour of azx_resume(), it triggers the jackpoll_work after
+applying this commit.
 
-The root cause is that before suspend, the codec already call the
-runtime_suspend since this codec is not used by any apps, then in
-resume, it will not call runtime_resume for this codec. But for some
-realtek codec (so far, alc236, alc255 and alc891) with the specific
-BIOS, if it doesn't run runtime_resume after suspend, all codec
-functions including jack detection stop working anymore.
+This change introduced a new issue, all codecs are runtime active
+after S3, and will not call runtime_suspend() automatically.
 
-This problem existed for a long time, but it was not exposed, that is
-because when problem happens, if users play sound or open
-sound-setting to check audio device, this will trigger calling to
-runtime_resume (via snd_hda_power_up), then the codec starts working
-again before users notice this problem.
+The root cause is the jackpoll_work calls snd_hda_power_up/down_pm,
+and it calls up_pm before snd_hdac_enter_pm is called, while calls
+the down_pm in the middle of enter_pm and leave_pm is called. This
+makes the dev->power.usage_count unbalanced after S3.
 
-Since we don't know how many codec and BIOS combinations have this
-problem, to fix it, let the driver call runtime_resume for all codecs
-in pm_resume, maybe for some codecs, this is not needed, but it is
-harmless. After a codec is runtime resumed, if it is not used by any
-apps, it will be runtime suspended soon and furthermore we don't run
-suspend frequently, this change will not add much power consumption.
+To fix it, let azx_resume() don't trigger jackpoll_work as before
+it did.
 
+Fixes:  3baffc4a84d7 (ALSA: hda/intel: Refactoring PM code)
 Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
- sound/pci/hda/hda_codec.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_intel.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 5f2005098a60..ec0b8595eb4d 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2939,6 +2939,20 @@ static int hda_codec_runtime_resume(struct device *dev)
- #endif /* CONFIG_PM */
- 
- #ifdef CONFIG_PM_SLEEP
-+static int hda_codec_force_resume(struct device *dev)
-+{
-+	int ret;
-+
-+	/* The get/put pair below enforces the runtime resume even if the
-+	 * device hasn't been used at suspend time.  This trick is needed to
-+	 * update the jack state change during the sleep.
-+	 */
-+	pm_runtime_get_noresume(dev);
-+	ret = pm_runtime_force_resume(dev);
-+	pm_runtime_put(dev);
-+	return ret;
-+}
-+
- static int hda_codec_pm_suspend(struct device *dev)
- {
- 	dev->power.power_state = PMSG_SUSPEND;
-@@ -2948,7 +2962,7 @@ static int hda_codec_pm_suspend(struct device *dev)
- static int hda_codec_pm_resume(struct device *dev)
- {
- 	dev->power.power_state = PMSG_RESUME;
--	return pm_runtime_force_resume(dev);
-+	return hda_codec_force_resume(dev);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index e5c49003e75f..59e6af2db847 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -947,7 +947,7 @@ static void __azx_runtime_suspend(struct azx *chip)
+ 	display_power(chip, false);
  }
  
- static int hda_codec_pm_freeze(struct device *dev)
-@@ -2960,13 +2974,13 @@ static int hda_codec_pm_freeze(struct device *dev)
- static int hda_codec_pm_thaw(struct device *dev)
+-static void __azx_runtime_resume(struct azx *chip)
++static void __azx_runtime_resume(struct azx *chip, bool from_rt)
  {
- 	dev->power.power_state = PMSG_THAW;
--	return pm_runtime_force_resume(dev);
-+	return hda_codec_force_resume(dev);
- }
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct hdac_bus *bus = azx_bus(chip);
+@@ -964,7 +964,7 @@ static void __azx_runtime_resume(struct azx *chip)
+ 	azx_init_pci(chip);
+ 	hda_intel_init_chip(chip, true);
  
- static int hda_codec_pm_restore(struct device *dev)
- {
- 	dev->power.power_state = PMSG_RESTORE;
--	return pm_runtime_force_resume(dev);
-+	return hda_codec_force_resume(dev);
- }
- #endif /* CONFIG_PM_SLEEP */
+-	if (status) {
++	if (status && from_rt) {
+ 		list_for_each_codec(codec, &chip->bus)
+ 			if (status & (1 << codec->addr))
+ 				schedule_delayed_work(&codec->jackpoll_work,
+@@ -1016,7 +1016,7 @@ static int azx_resume(struct device *dev)
+ 			chip->msi = 0;
+ 	if (azx_acquire_irq(chip, 1) < 0)
+ 		return -EIO;
+-	__azx_runtime_resume(chip);
++	__azx_runtime_resume(chip, false);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
  
+ 	trace_azx_resume(chip);
+@@ -1081,7 +1081,7 @@ static int azx_runtime_resume(struct device *dev)
+ 	chip = card->private_data;
+ 	if (!azx_has_pm_runtime(chip))
+ 		return 0;
+-	__azx_runtime_resume(chip);
++	__azx_runtime_resume(chip, true);
+ 
+ 	/* disable controller Wake Up event*/
+ 	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
 -- 
 2.17.1
