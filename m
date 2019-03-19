@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Correct handling of compressed
-	streams that restart" to the asoc tree
-Date: Tue, 19 Mar 2019 13:13:24 +0000 (GMT)
-Message-ID: <20190319131324.09D2911288E0@debutante.sirena.org.uk>
-References: <20190319115215.22960-2-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Add locking to
+	wm_adsp2_bus_error" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:19 +0000 (GMT)
+Message-ID: <20190319131319.BA70411288DF@debutante.sirena.org.uk>
+References: <20190319115215.22960-4-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48F02F89716
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:25 +0100 (CET)
-In-Reply-To: <20190319115215.22960-2-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 051FEF89715
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:26 +0100 (CET)
+In-Reply-To: <20190319115215.22960-4-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Correct handling of compressed streams that restart
+   ASoC: wm_adsp: Add locking to wm_adsp2_bus_error
 
 has been applied to the asoc tree at
 
@@ -55,48 +55,66 @@ to this mail.
 Thanks,
 Mark
 
->From 639e5eb3c7d67e407f2a71fccd95323751398f6f Mon Sep 17 00:00:00 2001
+>From a2225a6d155fcb247fe4c6d87f7c91807462966d Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 19 Mar 2019 11:52:04 +0000
-Subject: [PATCH] ASoC: wm_adsp: Correct handling of compressed streams that
- restart
+Date: Tue, 19 Mar 2019 11:52:06 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add locking to wm_adsp2_bus_error
 
-Previously support was added to allow streams to be stopped and
-started again without the DSP being power cycled and this was done
-by clearing the buffer state in trigger start. Another supported
-use-case is using the DSP for a trigger event then opening the
-compressed stream later to receive the audio, unfortunately clearing
-the buffer state in trigger start destroys the data received
-from such a trigger. Correct this issue by moving the call to
-wm_adsp_buffer_clear to be in trigger stop instead.
+Best to lock across handling the bus error to ensure the DSP doesn't
+change power state as we are reading the status registers.
 
-Fixes: 61fc060c40e6 ("ASoC: wm_adsp: Support streams which can start/stop with DSP active")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b93fdc8d2d6f..0de36b7eeeb2 100644
+index b3348a213c18..c19a8a041d4d 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -3571,8 +3571,6 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
- 		if (ret < 0)
- 			break;
+@@ -3922,11 +3922,13 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ 	struct regmap *regmap = dsp->regmap;
+ 	int ret = 0;
  
--		wm_adsp_buffer_clear(compr->buf);
--
- 		/* Trigger the IRQ at one fragment of data */
- 		ret = wm_adsp_buffer_write(compr->buf,
- 					   HOST_BUFFER_FIELD(high_water_mark),
-@@ -3584,6 +3582,7 @@ int wm_adsp_compr_trigger(struct snd_compr_stream *stream, int cmd)
++	mutex_lock(&dsp->pwr_lock);
++
+ 	ret = regmap_read(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL, &val);
+ 	if (ret) {
+ 		adsp_err(dsp,
+ 			"Failed to read Region Lock Ctrl register: %d\n", ret);
+-		return IRQ_HANDLED;
++		goto error;
+ 	}
+ 
+ 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
+@@ -3945,7 +3947,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ 			adsp_err(dsp,
+ 				 "Failed to read Bus Err Addr register: %d\n",
+ 				 ret);
+-			return IRQ_HANDLED;
++			goto error;
  		}
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
-+		wm_adsp_buffer_clear(compr->buf);
- 		break;
- 	default:
- 		ret = -EINVAL;
+ 
+ 		adsp_err(dsp, "bus error address = 0x%x\n",
+@@ -3958,7 +3960,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ 			adsp_err(dsp,
+ 				 "Failed to read Pmem Xmem Err Addr register: %d\n",
+ 				 ret);
+-			return IRQ_HANDLED;
++			goto error;
+ 		}
+ 
+ 		adsp_err(dsp, "xmem error address = 0x%x\n",
+@@ -3971,6 +3973,9 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
+ 	regmap_update_bits(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL,
+ 			   ADSP2_CTRL_ERR_EINT, ADSP2_CTRL_ERR_EINT);
+ 
++error:
++	mutex_unlock(&dsp->pwr_lock);
++
+ 	return IRQ_HANDLED;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_bus_error);
 -- 
 2.20.1
