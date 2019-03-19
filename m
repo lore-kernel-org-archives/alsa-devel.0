@@ -1,91 +1,81 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential
- deadlock
-Date: Tue, 19 Mar 2019 12:34:56 +0900
-Message-ID: <3f76f14b-b520-a0fa-b354-765a9e60551d@mentor.com>
-References: <20190307061554.26486-1-jiada_wang@mentor.com>
- <20190307061554.26486-2-jiada_wang@mentor.com>
- <CAMuHMdU+1Ntz6uvk-VYsSdWJgBfzHu99SztqyfLX7z2FRxPdNg@mail.gmail.com>
- <8cd7f718-bfb2-15c8-823d-88458b385377@mentor.com>
- <TY1PR01MB177056C725F16385A627111EC04A0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
+From: Annaliese McDermond <nh6z@nh6z.net>
+Subject: [PATCH 00/13] ASoC: tlv320aic32x4: Rework Clock Setting
+Date: Mon, 18 Mar 2019 20:37:43 -0700
+Message-ID: <20190319033756.20616-1-nh6z@nh6z.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <TY1PR01MB177056C725F16385A627111EC04A0@TY1PR01MB1770.jpnprd01.prod.outlook.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp89.iad3a.emailsrvr.com (smtp89.iad3a.emailsrvr.com
+ [173.203.187.89])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C009EF89693
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 04:38:07 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabrizio
+The current tlv320aic32x4 code sets the various clock parameters by
+looking in a static table in the kernel.  This works well enough,
+but it has a few disadvantages.
 
-On 2019/03/14 3:19, Fabrizio Castro wrote:
-> Hello Jiada,
-> 
->> From: Jiada Wang <jiada_wang@mentor.com>
->> Sent: 13 March 2019 11:56
->> Subject: Re: [PATCH linux-next v2 1/2] ASoC: rsnd: src: Avoid a potential deadlock
->>
->> Hi Geert
->>
->> On 2019/03/12 18:15, Geert Uytterhoeven wrote:
->>> Hi Jiada, Fabrizio,
->>>
->>> On Thu, Mar 7, 2019 at 7:17 AM Jiada Wang <jiada_wang@mentor.com> wrote:
->>>> lockdep warns us that priv->lock and k->k_lock can cause a
->>>> deadlock when after acquire of k->k_lock, process is interrupted
->>>> by src, while in another routine of src .init, k->k_lock is
->>>> acquired with priv->lock held.
->>>>
->>>> This patch avoids a potential deadlock by not calling soc_device_match()
->>>> in SRC .init callback, instead it adds new soc fields in priv->flags to
->>>> differentiate SoCs.
->>>>
->>>> Fixes: linux-next commit 7674bec4fc09 ("ASoC: rsnd: update BSDSR/BSDISR handling")
->>>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->>>> ---
->>>>    sound/soc/sh/rcar/core.c | 2 ++
->>>>    sound/soc/sh/rcar/rsnd.h | 5 +++++
->>>>    sound/soc/sh/rcar/src.c  | 9 +--------
->>>>    3 files changed, 8 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
->>>> index 022996d2db13..4fe83e611c01 100644
->>>> --- a/sound/soc/sh/rcar/core.c
->>>> +++ b/sound/soc/sh/rcar/core.c
->>>> @@ -110,6 +110,8 @@ static const struct of_device_id rsnd_of_match[] = {
->>>>           { .compatible = "renesas,rcar_sound-gen1", .data = (void *)RSND_GEN1 },
->>>>           { .compatible = "renesas,rcar_sound-gen2", .data = (void *)RSND_GEN2 },
->>>>           { .compatible = "renesas,rcar_sound-gen3", .data = (void *)RSND_GEN3 },
->>>> +       /* Special Handling */
->>>> +       { .compatible = "renesas,rcar_sound-r8a77990", .data = (void *)(RSND_GEN3 | RSND_SOC_E) },
->>>
->>> I guess we need an entry for RZ/G2E, too?
-> 
-> Geert has a point, I am looking at the User manual for the RZ/G2E and it looks like the
-> implementation for the RZ/G2E is the same as the one for the r8a77990
-> 
->>>
->> Sorry, I don't have user manual for RZ/G2E,
->> if you can let me know where to find RZ/G2E's user manual,
->> I can add entry for these SoCs
-> 
-> If you prefer I could add that after running some tests? I do have a board with a RZ/G2E.
-> 
-Yes, please
-since I have neither RZ/G2E board to test nor its user manual
+1)  If the master clock doesn't match one of the precalculated values
+    the driver cannot work.  This could be because the designer
+    decided to use a different crystal, or because the clock comes
+    from a PLL that can't quite achieve the proper frequency
+    exactly.
 
-Thanks,
-Jiada
-> Thanks,
-> Fab
-> 
->>
->> Thanks,
->> Jiada
->>> Gr{oetje,eeting}s,
->>>
->>>                           Geert
->>>
+2)  The driver only supports certain pre-calculated sample rates.
+    The actual hardware can support many more.  These changes
+    enable those rates.  Additionally, certain sample rates at
+    certain clock rates were previously unavailable as
+    combinations.
+
+This patch dynamically calculates the various PLL and divider
+values to find something that works.
+
+Additionally, to enable much of this, the clock tree is
+modeled as a part of the Common Clock Framework.  This allows
+for easier debugigng as you can use the standard tools such as
+/sys/kernel/debug/clk/clk_summary.  It also simplifies enabling
+the entirety of the clock tree needed, and makes sure unused
+clocks become disabled.
+
+These patches have been tested and are working on a Raspberry Pi
+with the simplecard driver.
+
+Annaliese McDermond (13):
+  ASoC: tlv320aic32x4: Break out clock setting into separate function
+  ASoC: tlv320aic32x4: Model PLL in CCF
+  ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
+  ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
+  ASoC: tlv320aic32x4: Model BDIV divider in CCF
+  ASoC: tlv320aic32x4: Control clock gating with CCF
+  ASoC: tlv320aic32x4: Move aosr and dosr setting to separate functions
+  ASoC: tlv320aic32x4: Dynamically Determine Clocking
+  ASoC: tlv320aic32x4: Fix clock activation on bias level change
+  ASoC: tlv320aic32x4: Remove sysclk references
+  ASoC: tlv320aic32x4: Remove mclk references
+  ASoC: tlv320aic32x4: Propery Set Processing Blocks
+  ASoC: tlv320aic32x4: Allow 192000 Sample Rate
+
+ sound/soc/codecs/Makefile            |   2 +-
+ sound/soc/codecs/tlv320aic32x4-clk.c | 483 +++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     | 374 ++++++++++-----------
+ sound/soc/codecs/tlv320aic32x4.h     |  11 +
+ 4 files changed, 670 insertions(+), 200 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic32x4-clk.c
+
+-- 
+Annaliese McDermond
+nh6z@nh6z.net
