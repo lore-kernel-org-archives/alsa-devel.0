@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Don't export wm_adsp2_lock" to
-	the asoc tree
-Date: Tue, 19 Mar 2019 13:13:15 +0000 (GMT)
-Message-ID: <20190319131315.5A63A11288DF@debutante.sirena.org.uk>
-References: <20190319115215.22960-6-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Factor out parsing of firmware
+	ID header" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:08 +0000 (GMT)
+Message-ID: <20190319131308.CCFD311288DF@debutante.sirena.org.uk>
+References: <20190319115215.22960-9-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAC04F89712
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:16 +0100 (CET)
-In-Reply-To: <20190319115215.22960-6-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71B91F896F5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:15 +0100 (CET)
+In-Reply-To: <20190319115215.22960-9-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Don't export wm_adsp2_lock
+   ASoC: wm_adsp: Factor out parsing of firmware ID header
 
 has been applied to the asoc tree at
 
@@ -55,111 +55,75 @@ to this mail.
 Thanks,
 Mark
 
->From 2b0ee49f129cf3e9885f8d83439024e8116b865c Mon Sep 17 00:00:00 2001
+>From a5dcb24d70ffbb4ea47b8eefad1158d033b9dec9 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 19 Mar 2019 11:52:08 +0000
-Subject: [PATCH] ASoC: wm_adsp: Don't export wm_adsp2_lock
+Date: Tue, 19 Mar 2019 11:52:11 +0000
+Subject: [PATCH] ASoC: wm_adsp: Factor out parsing of firmware ID header
 
-This function is not presently called from outside the adsp code and nor
-should it be, as such stop exporting it.
+There is no need to duplicate this code for both ADSP1 and 2 as the
+handling is exactly the same.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 61 +++++++++++++++++++-------------------
- sound/soc/codecs/wm_adsp.h |  1 -
- 2 files changed, 30 insertions(+), 32 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5608ed5decca..a9542a56b19e 100644
+index fb252762f23c..acb57dd2c2ad 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2622,6 +2622,36 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
- 	return 0;
+@@ -1982,6 +1982,18 @@ static void wm_adsp_free_alg_regions(struct wm_adsp *dsp)
+ 	}
  }
  
-+static int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
++static void wmfw_parse_id_header(struct wm_adsp *dsp,
++				 struct wmfw_id_hdr *fw, int nalgs)
 +{
-+	struct regmap *regmap = dsp->regmap;
-+	unsigned int code0, code1, lock_reg;
++	dsp->fw_id = be32_to_cpu(fw->id);
++	dsp->fw_id_version = be32_to_cpu(fw->ver);
 +
-+	if (!(lock_regions & WM_ADSP2_REGION_ALL))
-+		return 0;
-+
-+	lock_regions &= WM_ADSP2_REGION_ALL;
-+	lock_reg = dsp->base + ADSP2_LOCK_REGION_1_LOCK_REGION_0;
-+
-+	while (lock_regions) {
-+		code0 = code1 = 0;
-+		if (lock_regions & BIT(0)) {
-+			code0 = ADSP2_LOCK_CODE_0;
-+			code1 = ADSP2_LOCK_CODE_1;
-+		}
-+		if (lock_regions & BIT(1)) {
-+			code0 |= ADSP2_LOCK_CODE_0 << ADSP2_LOCK_REGION_SHIFT;
-+			code1 |= ADSP2_LOCK_CODE_1 << ADSP2_LOCK_REGION_SHIFT;
-+		}
-+		regmap_write(regmap, lock_reg, code0);
-+		regmap_write(regmap, lock_reg, code1);
-+		lock_regions >>= 2;
-+		lock_reg += 2;
-+	}
-+
-+	return 0;
++	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
++		  dsp->fw_id, (dsp->fw_id_version & 0xff0000) >> 16,
++		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
++		  nalgs);
 +}
 +
- static void wm_adsp2_boot_work(struct work_struct *work)
+ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
  {
- 	struct wm_adsp *dsp = container_of(work,
-@@ -3890,37 +3920,6 @@ int wm_adsp_compr_copy(struct snd_compr_stream *stream, char __user *buf,
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_copy);
+ 	struct wmfw_adsp1_id_hdr adsp1_id;
+@@ -2005,13 +2017,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 	}
  
--int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
--{
--	struct regmap *regmap = dsp->regmap;
--	unsigned int code0, code1, lock_reg;
--
--	if (!(lock_regions & WM_ADSP2_REGION_ALL))
--		return 0;
--
--	lock_regions &= WM_ADSP2_REGION_ALL;
--	lock_reg = dsp->base + ADSP2_LOCK_REGION_1_LOCK_REGION_0;
--
--	while (lock_regions) {
--		code0 = code1 = 0;
--		if (lock_regions & BIT(0)) {
--			code0 = ADSP2_LOCK_CODE_0;
--			code1 = ADSP2_LOCK_CODE_1;
--		}
--		if (lock_regions & BIT(1)) {
--			code0 |= ADSP2_LOCK_CODE_0 << ADSP2_LOCK_REGION_SHIFT;
--			code1 |= ADSP2_LOCK_CODE_1 << ADSP2_LOCK_REGION_SHIFT;
--		}
--		regmap_write(regmap, lock_reg, code0);
--		regmap_write(regmap, lock_reg, code1);
--		lock_regions >>= 2;
--		lock_reg += 2;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(wm_adsp2_lock);
--
- static void wm_adsp_fatal_error(struct wm_adsp *dsp)
- {
- 	struct wm_adsp_compr *compr;
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 8f09b4419a91..65ccf120dd5b 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -141,7 +141,6 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event,
- 			 unsigned int freq);
+ 	n_algs = be32_to_cpu(adsp1_id.n_algs);
+-	dsp->fw_id = be32_to_cpu(adsp1_id.fw.id);
+-	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
+-		  dsp->fw_id,
+-		  (be32_to_cpu(adsp1_id.fw.ver) & 0xff0000) >> 16,
+-		  (be32_to_cpu(adsp1_id.fw.ver) & 0xff00) >> 8,
+-		  be32_to_cpu(adsp1_id.fw.ver) & 0xff,
+-		  n_algs);
++
++	wmfw_parse_id_header(dsp, &adsp1_id.fw, n_algs);
  
--int wm_adsp2_lock(struct wm_adsp *adsp, unsigned int regions);
- irqreturn_t wm_adsp2_bus_error(struct wm_adsp *adsp);
+ 	alg_region = wm_adsp_create_region(dsp, WMFW_ADSP1_ZM,
+ 					   adsp1_id.fw.id, adsp1_id.zm);
+@@ -2111,14 +2118,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 	}
  
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 	n_algs = be32_to_cpu(adsp2_id.n_algs);
+-	dsp->fw_id = be32_to_cpu(adsp2_id.fw.id);
+-	dsp->fw_id_version = be32_to_cpu(adsp2_id.fw.ver);
+-	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
+-		  dsp->fw_id,
+-		  (dsp->fw_id_version & 0xff0000) >> 16,
+-		  (dsp->fw_id_version & 0xff00) >> 8,
+-		  dsp->fw_id_version & 0xff,
+-		  n_algs);
++
++	wmfw_parse_id_header(dsp, &adsp2_id.fw, n_algs);
+ 
+ 	alg_region = wm_adsp_create_region(dsp, WMFW_ADSP2_XM,
+ 					   adsp2_id.fw.id, adsp2_id.xm);
 -- 
 2.20.1
