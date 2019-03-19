@@ -1,8 +1,8 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH 11/13] ASoC: tlv320aic32x4: Remove mclk
-	references
-Date: Mon, 18 Mar 2019 20:37:54 -0700
-Message-ID: <20190319033756.20616-12-nh6z@nh6z.net>
+Subject: [PATCH 06/13] ASoC: tlv320aic32x4: Control clock
+	gating with CCF
+Date: Mon, 18 Mar 2019 20:37:49 -0700
+Message-ID: <20190319033756.20616-7-nh6z@nh6z.net>
 References: <20190319033756.20616-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +12,8 @@ Received: from smtp89.iad3a.emailsrvr.com (smtp89.iad3a.emailsrvr.com
  [173.203.187.89])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6079F89716
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 04:38:21 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 802E5F89712
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 04:38:16 +0100 (CET)
 In-Reply-To: <20190319033756.20616-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,38 +28,109 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-mclk is not used by anything anymore.  Remove support for it.
-All that information now comes from the clock tree.
+Control the clock gating to the various clock components to use
+the CCF.  This allows us to prepare_enalbe only 3 clocks and the
+relationships assigned to them will cause upstream clockss to
+enable automatically.  Additionally we can do this in a single
+call to the CCF.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 71 ++++++--------------------------
+ 1 file changed, 13 insertions(+), 58 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 27babe48d5bc..2940cb2e5a4a 100644
+index 4e170cdc05ce..ecf692e346b6 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -53,7 +53,6 @@ struct aic32x4_priv {
- 	u32 micpga_routing;
- 	bool swapdacs;
- 	int rstn_gpio;
--	struct clk *mclk;
- 	const char *mclk_name;
+@@ -818,75 +818,30 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
+ static int aic32x4_set_bias_level(struct snd_soc_component *component,
+ 				  enum snd_soc_bias_level level)
+ {
+-	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
+ 	int ret;
  
- 	struct regulator *supply_ldo;
-@@ -1160,12 +1159,6 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		aic32x4->mclk_name = "mclk";
- 	}
- 
--	aic32x4->mclk = devm_clk_get(dev, "mclk");
--	if (IS_ERR(aic32x4->mclk)) {
--		dev_err(dev, "Failed getting the mclk. The current implementation does not support the usage of this codec without mclk\n");
--		return PTR_ERR(aic32x4->mclk);
--	}
++	struct clk_bulk_data clocks[] = {
++		{ .id = "madc" },
++		{ .id = "mdac" },
++		{ .id = "bdiv" },
++	};
++
++	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
++	if (ret)
++		return ret;
++
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		/* Switch on master clock */
+-		ret = clk_prepare_enable(aic32x4->mclk);
++		ret = clk_bulk_prepare_enable(ARRAY_SIZE(clocks), clocks);
+ 		if (ret) {
+-			dev_err(component->dev, "Failed to enable master clock\n");
++			dev_err(component->dev, "Failed to enable clocks\n");
+ 			return ret;
+ 		}
 -
- 	ret = aic32x4_register_clocks(dev, aic32x4->mclk_name);
- 	if (ret)
- 		return ret;
+-		/* Switch on PLL */
+-		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
+-					AIC32X4_PLLEN, AIC32X4_PLLEN);
+-
+-		/* Switch on NDAC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_NDAC,
+-					AIC32X4_NDACEN, AIC32X4_NDACEN);
+-
+-		/* Switch on MDAC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_MDAC,
+-					AIC32X4_MDACEN, AIC32X4_MDACEN);
+-
+-		/* Switch on NADC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_NADC,
+-					AIC32X4_NADCEN, AIC32X4_NADCEN);
+-
+-		/* Switch on MADC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_MADC,
+-					AIC32X4_MADCEN, AIC32X4_MADCEN);
+-
+-		/* Switch on BCLK_N Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
+-					AIC32X4_BCLKEN, AIC32X4_BCLKEN);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		/* Initial cold start */
+-		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
+-			break;
+-
+-		/* Switch off BCLK_N Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
+-					AIC32X4_BCLKEN, 0);
+-
+-		/* Switch off MADC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_MADC,
+-					AIC32X4_MADCEN, 0);
+-
+-		/* Switch off NADC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_NADC,
+-					AIC32X4_NADCEN, 0);
+-
+-		/* Switch off MDAC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_MDAC,
+-					AIC32X4_MDACEN, 0);
+-
+-		/* Switch off NDAC Divider */
+-		snd_soc_component_update_bits(component, AIC32X4_NDAC,
+-					AIC32X4_NDACEN, 0);
+-
+-		/* Switch off PLL */
+-		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
+-					AIC32X4_PLLEN, 0);
+-
+-		/* Switch off master clock */
+-		clk_disable_unprepare(aic32x4->mclk);
++		clk_bulk_disable_unprepare(ARRAY_SIZE(clocks), clocks);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		break;
 -- 
 2.19.1
