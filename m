@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Shutdown any compressed
-	streams on DSP watchdog timeout" to the asoc tree
-Date: Tue, 19 Mar 2019 13:13:17 +0000 (GMT)
-Message-ID: <20190319131317.914C311288DF@debutante.sirena.org.uk>
-References: <20190319115215.22960-5-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Correct error messages in
+	wm_adsp_buffer_get_error" to the asoc tree
+Date: Tue, 19 Mar 2019 13:13:21 +0000 (GMT)
+Message-ID: <20190319131321.DB73211288E0@debutante.sirena.org.uk>
+References: <20190319115215.22960-3-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A740CF89713
- for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:18 +0100 (CET)
-In-Reply-To: <20190319115215.22960-5-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10942F89714
+ for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 14:13:23 +0100 (CET)
+In-Reply-To: <20190319115215.22960-3-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Shutdown any compressed streams on DSP watchdog timeout
+   ASoC: wm_adsp: Correct error messages in wm_adsp_buffer_get_error
 
 has been applied to the asoc tree at
 
@@ -55,87 +55,39 @@ to this mail.
 Thanks,
 Mark
 
->From a2bcbc1b9ac2f982a438081a9f1b5d823332d514 Mon Sep 17 00:00:00 2001
+>From 48ead31ce247dc8c0b01ad99d1a97da35421493b Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 19 Mar 2019 11:52:07 +0000
-Subject: [PATCH] ASoC: wm_adsp: Shutdown any compressed streams on DSP
- watchdog timeout
+Date: Tue, 19 Mar 2019 11:52:05 +0000
+Subject: [PATCH] ASoC: wm_adsp: Correct error messages in
+ wm_adsp_buffer_get_error
 
-If a watchdog timeout is received from the DSP it is safe to assume the
-DSP is not functioning anymore and as such any active compressed streams
-should be put into an error state.
+During recent logging improvements it seems two error messages lost
+their updates during patch application/rebasing. Add these back in.
 
+Fixes: 0d3fba3e7a56 ("ASoC: wm_adsp: Improve logging messages")
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 21 +++++++++++++++++++++
- sound/soc/codecs/wm_adsp.h |  1 +
- 2 files changed, 22 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index c19a8a041d4d..5608ed5decca 100644
+index 0de36b7eeeb2..b3348a213c18 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2905,6 +2905,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
- 			wm_adsp_buffer_free(dsp);
+@@ -3535,11 +3535,11 @@ static int wm_adsp_buffer_get_error(struct wm_adsp_compr_buf *buf)
  
-+		dsp->fatal_error = false;
-+
- 		mutex_unlock(&dsp->pwr_lock);
- 
- 		adsp_dbg(dsp, "Execution stopped\n");
-@@ -3000,6 +3002,9 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- {
- 	struct wm_adsp_compr_buf *buf = NULL, *tmp;
- 
-+	if (compr->dsp->fatal_error)
-+		return -EINVAL;
-+
- 	list_for_each_entry(tmp, &compr->dsp->buffer_list, list) {
- 		if (!tmp->name || !strcmp(compr->name, tmp->name)) {
- 			buf = tmp;
-@@ -3916,6 +3921,21 @@ int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_lock);
- 
-+static void wm_adsp_fatal_error(struct wm_adsp *dsp)
-+{
-+	struct wm_adsp_compr *compr;
-+
-+	dsp->fatal_error = true;
-+
-+	list_for_each_entry(compr, &dsp->compr_list, list) {
-+		if (compr->stream) {
-+			snd_compr_stop_error(compr->stream,
-+					     SNDRV_PCM_STATE_XRUN);
-+			snd_compr_fragment_elapsed(compr->stream);
-+		}
-+	}
-+}
-+
- irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
- {
- 	unsigned int val;
-@@ -3934,6 +3954,7 @@ irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
- 	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
- 		adsp_err(dsp, "watchdog timeout error\n");
- 		wm_adsp_stop_watchdog(dsp);
-+		wm_adsp_fatal_error(dsp);
+ 	ret = wm_adsp_buffer_read(buf, HOST_BUFFER_FIELD(error), &buf->error);
+ 	if (ret < 0) {
+-		adsp_err(buf->dsp, "Failed to check buffer error: %d\n", ret);
++		compr_err(buf, "Failed to check buffer error: %d\n", ret);
+ 		return ret;
  	}
- 
- 	if (val & (ADSP2_SLAVE_ERR_MASK | ADSP2_REGION_LOCK_ERR_MASK)) {
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 59e07ad16329..8f09b4419a91 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -85,6 +85,7 @@ struct wm_adsp {
- 	bool preloaded;
- 	bool booted;
- 	bool running;
-+	bool fatal_error;
- 
- 	struct list_head ctl_list;
+ 	if (buf->error != 0) {
+-		adsp_err(buf->dsp, "Buffer error occurred: %d\n", buf->error);
++		compr_err(buf, "Buffer error occurred: %d\n", buf->error);
+ 		return -EIO;
+ 	}
  
 -- 
 2.20.1
