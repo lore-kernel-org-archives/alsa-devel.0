@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 07/12] ASoC: wm_adsp: Refactor firmware status
-	reading
-Date: Tue, 19 Mar 2019 11:52:10 +0000
-Message-ID: <20190319115215.22960-8-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 08/12] ASoC: wm_adsp: Factor out parsing of
+	firmware ID header
+Date: Tue, 19 Mar 2019 11:52:11 +0000
+Message-ID: <20190319115215.22960-9-ckeepax@opensource.cirrus.com>
 References: <20190319115215.22960-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,7 @@ Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D982F8968D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41CDCF896FD
  for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2019 12:52:18 +0100 (CET)
 In-Reply-To: <20190319115215.22960-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,85 +28,69 @@ To: broonie@kernel.org
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, david.rhodes@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for further additions refactor the reading of the
-firmware status.
+There is no need to duplicate this code for both ADSP1 and 2 as the
+handling is exactly the same.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 43 ++++++++++++++++++-------------------------
- 1 file changed, 18 insertions(+), 25 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8800ffcc4f8c0..fb252762f23ce 100644
+index fb252762f23ce..acb57dd2c2ad7 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -788,49 +788,42 @@ static unsigned int wm_adsp_region_to_reg(struct wm_adsp_region const *mem,
+@@ -1982,6 +1982,18 @@ static void wm_adsp_free_alg_regions(struct wm_adsp *dsp)
  	}
  }
  
--static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
-+static void wm_adsp_read_fw_status(struct wm_adsp *dsp,
-+				   int noffs, unsigned int *offs)
- {
--	unsigned int scratch[4];
--	unsigned int addr = dsp->base + ADSP2_SCRATCH0;
- 	unsigned int i;
- 	int ret;
- 
--	for (i = 0; i < ARRAY_SIZE(scratch); ++i) {
--		ret = regmap_read(dsp->regmap, addr + i, &scratch[i]);
-+	for (i = 0; i < noffs; ++i) {
-+		ret = regmap_read(dsp->regmap, dsp->base + offs[i], &offs[i]);
- 		if (ret) {
- 			adsp_err(dsp, "Failed to read SCRATCH%u: %d\n", i, ret);
- 			return;
- 		}
- 	}
++static void wmfw_parse_id_header(struct wm_adsp *dsp,
++				 struct wmfw_id_hdr *fw, int nalgs)
++{
++	dsp->fw_id = be32_to_cpu(fw->id);
++	dsp->fw_id_version = be32_to_cpu(fw->ver);
++
++	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
++		  dsp->fw_id, (dsp->fw_id_version & 0xff0000) >> 16,
++		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
++		  nalgs);
 +}
 +
-+static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
-+{
-+	unsigned int offs[] = {
-+		ADSP2_SCRATCH0, ADSP2_SCRATCH1, ADSP2_SCRATCH2, ADSP2_SCRATCH3,
-+	};
-+
-+	wm_adsp_read_fw_status(dsp, ARRAY_SIZE(offs), offs);
- 
- 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
--		 scratch[0], scratch[1], scratch[2], scratch[3]);
-+		 offs[0], offs[1], offs[2], offs[3]);
- }
- 
- static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
+ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
  {
--	unsigned int scratch[2];
--	int ret;
-+	unsigned int offs[] = { ADSP2V2_SCRATCH0_1, ADSP2V2_SCRATCH2_3 };
+ 	struct wmfw_adsp1_id_hdr adsp1_id;
+@@ -2005,13 +2017,8 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
+ 	}
  
--	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
--			  &scratch[0]);
--	if (ret) {
--		adsp_err(dsp, "Failed to read SCRATCH0_1: %d\n", ret);
--		return;
--	}
--
--	ret = regmap_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH2_3,
--			  &scratch[1]);
--	if (ret) {
--		adsp_err(dsp, "Failed to read SCRATCH2_3: %d\n", ret);
--		return;
--	}
-+	wm_adsp_read_fw_status(dsp, ARRAY_SIZE(offs), offs);
+ 	n_algs = be32_to_cpu(adsp1_id.n_algs);
+-	dsp->fw_id = be32_to_cpu(adsp1_id.fw.id);
+-	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
+-		  dsp->fw_id,
+-		  (be32_to_cpu(adsp1_id.fw.ver) & 0xff0000) >> 16,
+-		  (be32_to_cpu(adsp1_id.fw.ver) & 0xff00) >> 8,
+-		  be32_to_cpu(adsp1_id.fw.ver) & 0xff,
+-		  n_algs);
++
++	wmfw_parse_id_header(dsp, &adsp1_id.fw, n_algs);
  
- 	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
--		 scratch[0] & 0xFFFF,
--		 scratch[0] >> 16,
--		 scratch[1] & 0xFFFF,
--		 scratch[1] >> 16);
-+		 offs[0] & 0xFFFF, offs[0] >> 16,
-+		 offs[1] & 0xFFFF, offs[1] >> 16);
- }
+ 	alg_region = wm_adsp_create_region(dsp, WMFW_ADSP1_ZM,
+ 					   adsp1_id.fw.id, adsp1_id.zm);
+@@ -2111,14 +2118,8 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
+ 	}
  
- static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
+ 	n_algs = be32_to_cpu(adsp2_id.n_algs);
+-	dsp->fw_id = be32_to_cpu(adsp2_id.fw.id);
+-	dsp->fw_id_version = be32_to_cpu(adsp2_id.fw.ver);
+-	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
+-		  dsp->fw_id,
+-		  (dsp->fw_id_version & 0xff0000) >> 16,
+-		  (dsp->fw_id_version & 0xff00) >> 8,
+-		  dsp->fw_id_version & 0xff,
+-		  n_algs);
++
++	wmfw_parse_id_header(dsp, &adsp2_id.fw, n_algs);
+ 
+ 	alg_region = wm_adsp_create_region(dsp, WMFW_ADSP2_XM,
+ 					   adsp2_id.fw.id, adsp2_id.xm);
 -- 
 2.11.0
