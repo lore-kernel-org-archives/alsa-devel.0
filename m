@@ -1,15 +1,22 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: cs4270: Set auto-increment bit for
-	register writes
-Date: Wed, 20 Mar 2019 22:41:56 +0100
-Message-ID: <20190320214156.16346-1-daniel@zonque.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ALSA: seq: oss: Fix Spectre v1 vulnerability
+Date: Wed, 20 Mar 2019 18:42:01 -0500
+Message-ID: <20190320234201.GA24574@embeddedor>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id 3023BF80C13
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 22:42:07 +0100 (CET)
+Received: from gateway34.websitewelcome.com (gateway34.websitewelcome.com
+ [192.185.149.222])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEB9EF80C13
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 00:42:10 +0100 (CET)
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id 0582B1116C6A
+ for <alsa-devel@alsa-project.org>;
+ Wed, 20 Mar 2019 18:42:08 -0500 (CDT)
+Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,34 +26,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-The CS4270 does not by default increment the register address on
-consecutive writes. During normal operation it doesn't matter as all
-register accesses are done individually. At resume time after suspend,
-however, the regcache code gathers the biggest possible block of
-registers to sync and sends them one on one go.
+dev is indirectly controlled by user-space, hence leading to
+a potential exploitation of the Spectre variant 1 vulnerability.
 
-To fix this, set the INCR bit in all cases.
+This issue was detected with the help of Smatch:
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+sound/core/seq/oss/seq_oss_synth.c:626 snd_seq_oss_synth_make_info() warn: potential spectre issue 'dp->synths' [w] (local cap)
+
+Fix this by sanitizing dev before using it to index dp->synths.
+
+Notice that given that speculation windows are large, the policy is
+to kill the speculation on the first load and not worry if it can be
+completed with a dependent load/store [1].
+
+[1] https://lore.kernel.org/lkml/20180423164740.GY17484@dhcp22.suse.cz/
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- sound/soc/codecs/cs4270.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/core/seq/oss/seq_oss_synth.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 3c266eeb89bf..007ce9f48e44 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -642,6 +642,7 @@ static const struct regmap_config cs4270_regmap = {
- 	.reg_defaults =		cs4270_reg_defaults,
- 	.num_reg_defaults =	ARRAY_SIZE(cs4270_reg_defaults),
- 	.cache_type =		REGCACHE_RBTREE,
-+	.write_flag_mask =	CS4270_I2C_INCR,
+diff --git a/sound/core/seq/oss/seq_oss_synth.c b/sound/core/seq/oss/seq_oss_synth.c
+index 278ebb993122..c93945917235 100644
+--- a/sound/core/seq/oss/seq_oss_synth.c
++++ b/sound/core/seq/oss/seq_oss_synth.c
+@@ -617,13 +617,14 @@ int
+ snd_seq_oss_synth_make_info(struct seq_oss_devinfo *dp, int dev, struct synth_info *inf)
+ {
+ 	struct seq_oss_synth *rec;
++	struct seq_oss_synthinfo *info = get_synthinfo_nospec(dp, dev);
  
- 	.readable_reg =		cs4270_reg_is_readable,
- 	.volatile_reg =		cs4270_reg_is_volatile,
+-	if (dev < 0 || dev >= dp->max_synthdev)
++	if (!info)
+ 		return -ENXIO;
+ 
+-	if (dp->synths[dev].is_midi) {
++	if (info->is_midi) {
+ 		struct midi_info minf;
+-		snd_seq_oss_midi_make_info(dp, dp->synths[dev].midi_mapped, &minf);
++		snd_seq_oss_midi_make_info(dp, info->midi_mapped, &minf);
+ 		inf->synth_type = SYNTH_TYPE_MIDI;
+ 		inf->synth_subtype = 0;
+ 		inf->nr_voices = 16;
 -- 
-2.20.1
+2.21.0
