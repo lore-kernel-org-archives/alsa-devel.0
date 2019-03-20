@@ -1,9 +1,8 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH v2 01/12] ASoC: tlv320aic32x4: Break out clock
-	setting into separate function
-Date: Tue, 19 Mar 2019 21:51:18 -0700
-Message-ID: <20190320045129.6859-2-nh6z@nh6z.net>
-References: <20190320045129.6859-1-nh6z@nh6z.net>
+Subject: [PATCH v2 00/12] ASoC: tlv320aic32x4: Rework Clock
+	Setting
+Date: Tue, 19 Mar 2019 21:51:17 -0700
+Message-ID: <20190320045129.6859-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from smtp113.ord1c.emailsrvr.com (smtp113.ord1c.emailsrvr.com
  [108.166.43.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB095F80C13
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF068F80736
  for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 05:51:42 +0100 (CET)
-In-Reply-To: <20190320045129.6859-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,62 +26,70 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-Break the clock setting logic out from the main hw_params.  It's
-rather large and unweildy and makes for a large function.  This
-also better enables some of the following changes to the clock
-tree access in the driver.
+The current tlv320aic32x4 code sets the various clock parameters by
+looking in a static table in the kernel.  This works well enough,
+but it has a few disadvantages.
 
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
----
- sound/soc/codecs/tlv320aic32x4.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+1)  If the master clock doesn't match one of the precalculated values
+    the driver cannot work.  This could be because the designer
+    decided to use a different crystal, or because the clock comes
+    from a PLL that can't quite achieve the proper frequency
+    exactly.
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 96f1526cb258..1aa8f5aa4225 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -696,17 +696,13 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
+2)  The driver only supports certain pre-calculated sample rates.
+    The actual hardware can support many more.  These changes
+    enable those rates.  Additionally, certain sample rates at
+    certain clock rates were previously unavailable as
+    combinations.
+
+This patch dynamically calculates the various PLL and divider
+values to find something that works.
+
+Additionally, to enable much of this, the clock tree is
+modeled as a part of the Common Clock Framework.  This allows
+for easier debugigng as you can use the standard tools such as
+/sys/kernel/debug/clk/clk_summary.  It also simplifies enabling
+the entirety of the clock tree needed, and makes sure unused
+clocks become disabled.
+
+These patches have been tested and are working on a Raspberry Pi
+with the simplecard driver.
+
+Changes in v2:
+ - Update 0002 patch to change Kconfig to add dependency on CCF
+ - Update 0002 patch to correct the SPDX identifier
+ - Update 0002 patch to use EXPORT_SYMBOL_GPL() instead of
+   EXPORT_SYMBOL()
+ - Update patches 0002, 0004 and 0005 to use prepare/unprepare
+   instead of enable/disable since the i2c operations are not
+   atomic
+ - Update 0004 patch to fix indentation in commit message
+ - Drop patch 0009 because it is a duplicate of the already
+   committed patch in 667e9334
+ - Update 0019 patch to keep aic32x4_set_dai_sysclk but to have
+   it use clk_set_rate to set the master clock rate
  
--static int aic32x4_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params,
--			     struct snd_soc_dai *dai)
-+static int aic32x4_setup_clocks(struct snd_soc_component *component,
-+				unsigned int sample_rate,
-+				unsigned int parent_rate)
- {
--	struct snd_soc_component *component = dai->component;
--	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
--	u8 iface1_reg = 0;
--	u8 dacsetup_reg = 0;
- 	int i;
- 
--	i = aic32x4_get_divs(aic32x4->sysclk, params_rate(params));
-+	i = aic32x4_get_divs(parent_rate, sample_rate);
- 	if (i < 0) {
- 		printk(KERN_ERR "aic32x4: sampling rate not supported\n");
- 		return i;
-@@ -763,6 +759,20 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_component_update_bits(component, AIC32X4_BCLKN,
- 			    AIC32X4_BCLK_MASK, aic32x4_divs[i].blck_N);
- 
-+	return 0;
-+}
-+
-+static int aic32x4_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
-+	u8 iface1_reg = 0;
-+	u8 dacsetup_reg = 0;
-+
-+	aic32x4_setup_clocks(component, params_rate(params), aic32x4->sysclk);
-+
- 	switch (params_width(params)) {
- 	case 16:
- 		iface1_reg |= (AIC32X4_WORD_LEN_16BITS <<
+Annaliese McDermond (12):
+  ASoC: tlv320aic32x4: Break out clock setting into separate function
+  ASoC: tlv320aic32x4: Model PLL in CCF
+  ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
+  ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
+  ASoC: tlv320aic32x4: Model BDIV divider in CCF
+  ASoC: tlv320aic32x4: Control clock gating with CCF
+  ASoC: tlv320aic32x4: Move aosr and dosr setting to separate functions
+  ASoC: tlv320aic32x4: Dynamically Determine Clocking
+  ASoC: tlv320aic32x4: Restructure set_dai_sysclk
+  ASoC: tlv320aic32x4: Remove mclk references
+  ASoC: tlv320aic32x4: Propery Set Processing Blocks
+  ASoC: tlv320aic32x4: Allow 192000 Sample Rate
+
+ sound/soc/codecs/Kconfig             |   1 +
+ sound/soc/codecs/Makefile            |   2 +-
+ sound/soc/codecs/tlv320aic32x4-clk.c | 483 +++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     | 365 ++++++++++----------
+ sound/soc/codecs/tlv320aic32x4.h     |  11 +
+ 5 files changed, 674 insertions(+), 188 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic32x4-clk.c
+
 -- 
 2.19.1
