@@ -1,57 +1,52 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ALSA: rawmidi: Fix potential Spectre v1 vulnerability
-Date: Wed, 20 Mar 2019 16:15:24 -0500
-Message-ID: <20190320211524.GA20363@embeddedor>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ASoC: cs4270: Set auto-increment bit for
+	register writes
+Date: Wed, 20 Mar 2019 22:41:56 +0100
+Message-ID: <20190320214156.16346-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3023BF80C13
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 22:42:07 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-info->stream is indirectly controlled by user-space, hence leading to
-a potential exploitation of the Spectre variant 1 vulnerability.
+The CS4270 does not by default increment the register address on
+consecutive writes. During normal operation it doesn't matter as all
+register accesses are done individually. At resume time after suspend,
+however, the regcache code gathers the biggest possible block of
+registers to sync and sends them one on one go.
 
-This issue was detected with the help of Smatch:
+To fix this, set the INCR bit in all cases.
 
-sound/core/rawmidi.c:604 __snd_rawmidi_info_select() warn: potential spectre issue 'rmidi->streams' [r] (local cap)
-
-Fix this by sanitizing info->stream before using it to index
-rmidi->streams.
-
-Notice that given that speculation windows are large, the policy is
-to kill the speculation on the first load and not worry if it can be
-completed with a dependent load/store [1].
-
-[1] https://lore.kernel.org/lkml/20180423164740.GY17484@dhcp22.suse.cz/
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- sound/core/rawmidi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/cs4270.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index ee601d7f0926..c0690d1ecd55 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -30,6 +30,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mm.h>
-+#include <linux/nospec.h>
- #include <sound/rawmidi.h>
- #include <sound/info.h>
- #include <sound/control.h>
-@@ -601,6 +602,7 @@ static int __snd_rawmidi_info_select(struct snd_card *card,
- 		return -ENXIO;
- 	if (info->stream < 0 || info->stream > 1)
- 		return -EINVAL;
-+	info->stream = array_index_nospec(info->stream, 2);
- 	pstr = &rmidi->streams[info->stream];
- 	if (pstr->substream_count == 0)
- 		return -ENOENT;
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 3c266eeb89bf..007ce9f48e44 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -642,6 +642,7 @@ static const struct regmap_config cs4270_regmap = {
+ 	.reg_defaults =		cs4270_reg_defaults,
+ 	.num_reg_defaults =	ARRAY_SIZE(cs4270_reg_defaults),
+ 	.cache_type =		REGCACHE_RBTREE,
++	.write_flag_mask =	CS4270_I2C_INCR,
+ 
+ 	.readable_reg =		cs4270_reg_is_readable,
+ 	.volatile_reg =		cs4270_reg_is_volatile,
 -- 
-2.21.0
+2.20.1
