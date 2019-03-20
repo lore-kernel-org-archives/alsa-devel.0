@@ -1,18 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Don't use register read to determine slave/master mode" to the asoc tree
-Date: Wed, 20 Mar 2019 17:29:27 +0000 (GMT)
-Message-ID: <20190320172927.EADBE1126E4D@debutante.sirena.org.uk>
-References: <20190319121102.28069-1-s.nawrocki@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190319121102.28069-1-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.org, m.szyprowski@samsung.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: dfsdm: fix debugfs warnings on entry creation"
+ to the asoc tree
+Date: Wed, 20 Mar 2019 17:29:21 +0000 (GMT)
+Message-ID: <20190320172921.6C3991126E4C@debutante.sirena.org.uk>
+References: <1551711165-28684-3-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1551711165-28684-3-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Don't use register read to determine slave/master mode
+   ASoC: stm32: dfsdm: fix debugfs warnings on entry creation
 
 has been applied to the asoc tree at
 
@@ -37,86 +48,72 @@ to this mail.
 Thanks,
 Mark
 
->From f29eec793d4d16a1019abac1ac0702d07adae78e Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Tue, 19 Mar 2019 13:11:02 +0100
-Subject: [PATCH] ASoC: samsung: i2s: Don't use register read to determine
- slave/master mode
+>From c47255b61129857b74b0d86eaf59335348be05e0 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 4 Mar 2019 15:52:44 +0100
+Subject: [PATCH] ASoC: stm32: dfsdm: fix debugfs warnings on entry creation
 
-We can simplify the code by caching the CPU DAI master/slave
-information rather than reading previously set register bit.
+Register platform component with a prefix, to avoid warnings
+on debugfs entries creation, due to component name
+redundancy.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ sound/soc/stm/stm32_adfsdm.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index ab471d550d17..9722940da6a4 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -88,12 +88,6 @@ struct samsung_i2s_priv {
- 	struct platform_device *pdev;
- 	struct platform_device *pdev_sec;
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index d77f0421e4f0..78bed9734713 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -305,6 +305,7 @@ MODULE_DEVICE_TABLE(of, stm32_adfsdm_of_match);
+ static int stm32_adfsdm_probe(struct platform_device *pdev)
+ {
+ 	struct stm32_adfsdm_priv *priv;
++	struct snd_soc_component *component;
+ 	int ret;
  
--	/* Memory mapped SFR region */
--	void __iomem *addr;
--
--	/* Spinlock protecting access to the device's registers */
--	spinlock_t lock;
--
- 	/* Lock for cross interface checks */
- 	spinlock_t pcm_lock;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+@@ -332,9 +333,15 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->iio_cb))
+ 		return PTR_ERR(priv->iio_cb);
  
-@@ -122,6 +116,15 @@ struct samsung_i2s_priv {
- 	/* The clock provider's data */
- 	struct clk *clk_table[3];
- 	struct clk_onecell_data clk_data;
+-	ret = devm_snd_soc_register_component(&pdev->dev,
+-					      &stm32_adfsdm_soc_platform,
+-					      NULL, 0);
++	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
++	if (!component)
++		return -ENOMEM;
++#ifdef CONFIG_DEBUG_FS
++	component->debugfs_prefix = "pcm";
++#endif
 +
-+	/* Spinlock protecting member fields below */
-+	spinlock_t lock;
-+
-+	/* Memory mapped SFR region */
-+	void __iomem *addr;
-+
-+	/* A flag indicating the I2S slave mode operation */
-+	bool slave_mode;
- };
- 
- /* Returns true if this is the 'overlay' stereo DAI */
-@@ -130,15 +133,6 @@ static inline bool is_secondary(struct i2s_dai *i2s)
- 	return i2s->drv->id == SAMSUNG_I2S_ID_SECONDARY;
++	ret = snd_soc_add_component(&pdev->dev, component,
++				    &stm32_adfsdm_soc_platform, NULL, 0);
+ 	if (ret < 0)
+ 		dev_err(&pdev->dev, "%s: Failed to register PCM platform\n",
+ 			__func__);
+@@ -342,12 +349,20 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--/* If operating in SoC-Slave mode */
--static inline bool is_slave(struct i2s_dai *i2s)
--{
--	struct samsung_i2s_priv *priv = i2s->priv;
--
--	u32 mod = readl(priv->addr + I2SMOD);
--	return (mod & (1 << priv->variant_regs->mss_off)) ? true : false;
--}
--
- /* If this interface of the controller is transmitting data */
- static inline bool tx_active(struct i2s_dai *i2s)
- {
-@@ -715,6 +709,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	mod &= ~(sdf_mask | lrp_rlow | mod_slave);
- 	mod |= tmp;
- 	writel(mod, priv->addr + I2SMOD);
-+	priv->slave_mode = (mod & mod_slave);
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 	pm_runtime_put(dai->dev);
++static int stm32_adfsdm_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_component(&pdev->dev);
++
++	return 0;
++}
++
+ static struct platform_driver stm32_adfsdm_driver = {
+ 	.driver = {
+ 		   .name = STM32_ADFSDM_DRV_NAME,
+ 		   .of_match_table = stm32_adfsdm_of_match,
+ 		   },
+ 	.probe = stm32_adfsdm_probe,
++	.remove = stm32_adfsdm_remove,
+ };
  
-@@ -917,7 +912,7 @@ static int config_setup(struct i2s_dai *i2s)
- 	set_rfs(i2s, rfs);
- 
- 	/* Don't bother with PSR in Slave mode */
--	if (is_slave(i2s))
-+	if (priv->slave_mode)
- 		return 0;
- 
- 	if (!(priv->quirks & QUIRK_NO_MUXPSR)) {
+ module_platform_driver(stm32_adfsdm_driver);
 -- 
 2.20.1
