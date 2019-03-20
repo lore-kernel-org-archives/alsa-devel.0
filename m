@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Break out clock setting
-	into separate function" to the asoc tree
-Date: Wed, 20 Mar 2019 17:29:30 +0000 (GMT)
-Message-ID: <20190320172930.1BA971126E4C@debutante.sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 1/2] ASoC: lochnagar: Add device tree
+	binding document
+Date: Wed, 20 Mar 2019 17:37:31 +0000
+Message-ID: <20190320173732.8067-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43C15F80736
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 18:29:31 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66AB2F80C20
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 18:37:36 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,100 +22,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Annaliese McDermond <nh6z@nh6z.net>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Lochnagar is an evaluation and development board for Cirrus
+Logic Smart CODEC and Amp devices. It allows the connection of
+most Cirrus Logic devices on mini-cards, as well as allowing
+connection of various application processor systems to provide a
+full evaluation platform. This driver supports the board
+controller chip on the Lochnagar board.
 
-   ASoC: tlv320aic32x4: Break out clock setting into separate function
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Changes since v1:
+ - Made clock name a bit more generic
 
 Thanks,
-Mark
+Charles
 
->From bf31cbfbe25001036e1e096b1c260bf871766ea5 Mon Sep 17 00:00:00 2001
-From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Mon, 18 Mar 2019 20:37:44 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Break out clock setting into separate
- function
+ .../devicetree/bindings/sound/cirrus,lochnagar.txt | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
 
-Break the clock setting logic out from the main hw_params.  It's
-rather large and unweildy and makes for a large function.  This
-also better enables some of the following changes to the clock
-tree access in the driver.
-
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320aic32x4.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 96f1526cb258..1aa8f5aa4225 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -696,17 +696,13 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int aic32x4_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params,
--			     struct snd_soc_dai *dai)
-+static int aic32x4_setup_clocks(struct snd_soc_component *component,
-+				unsigned int sample_rate,
-+				unsigned int parent_rate)
- {
--	struct snd_soc_component *component = dai->component;
--	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
--	u8 iface1_reg = 0;
--	u8 dacsetup_reg = 0;
- 	int i;
- 
--	i = aic32x4_get_divs(aic32x4->sysclk, params_rate(params));
-+	i = aic32x4_get_divs(parent_rate, sample_rate);
- 	if (i < 0) {
- 		printk(KERN_ERR "aic32x4: sampling rate not supported\n");
- 		return i;
-@@ -763,6 +759,20 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_component_update_bits(component, AIC32X4_BCLKN,
- 			    AIC32X4_BCLK_MASK, aic32x4_divs[i].blck_N);
- 
-+	return 0;
-+}
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+new file mode 100644
+index 0000000000000..41ae2699f07a9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+@@ -0,0 +1,39 @@
++Cirrus Logic Lochnagar Audio Development Board
 +
-+static int aic32x4_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
-+	u8 iface1_reg = 0;
-+	u8 dacsetup_reg = 0;
++Lochnagar is an evaluation and development board for Cirrus Logic
++Smart CODEC and Amp devices. It allows the connection of most Cirrus
++Logic devices on mini-cards, as well as allowing connection of
++various application processor systems to provide a full evaluation
++platform.  Audio system topology, clocking and power can all be
++controlled through the Lochnagar, allowing the device under test
++to be used in a variety of possible use cases.
 +
-+	aic32x4_setup_clocks(component, params_rate(params), aic32x4->sysclk);
++This binding document describes the binding for the audio portion
++of the driver.
 +
- 	switch (params_width(params)) {
- 	case 16:
- 		iface1_reg |= (AIC32X4_WORD_LEN_16BITS <<
++This binding must be part of the Lochnagar MFD binding:
++  [4] ../mfd/cirrus,lochnagar.txt
++
++Required properties:
++
++  - compatible : One of the following strings:
++                 "cirrus,lochnagar2-soundcard"
++
++  - #sound-dai-cells : Must be set to 1.
++
++  - clocks : Contains an entry for each entry in clock-names.
++  - clock-names : Must include the following clocks:
++      "mclk" Master clock source for the sound card, should normally
++      be set to LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar
++      clock driver.
++
++Example:
++
++lochnagar-sc {
++	compatible = "cirrus,lochnagar2-soundcard";
++
++	#sound-dai-cells = <1>;
++
++	clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
++	clock-names = "mclk";
++};
 -- 
-2.20.1
+2.11.0
