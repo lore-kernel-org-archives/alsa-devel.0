@@ -1,17 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: dfsdm: manage multiple prepare" to the asoc tree
-Date: Wed, 20 Mar 2019 17:29:23 +0000 (GMT)
-Message-ID: <20190320172923.9818A1126E4C@debutante.sirena.org.uk>
-References: <1551711165-28684-2-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551711165-28684-2-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Correct some minor issues" to
+	the asoc tree
+Date: Wed, 20 Mar 2019 17:29:25 +0000 (GMT)
+Message-ID: <20190320172925.C17F01126E4D@debutante.sirena.org.uk>
+References: <20190319174309.27640-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 295B9F80791
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 18:29:31 +0100 (CET)
+In-Reply-To: <20190319174309.27640-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, kbuild test robot <lkp@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: dfsdm: manage multiple prepare
+   ASoC: wm_adsp: Correct some minor issues
 
 has been applied to the asoc tree at
 
@@ -36,93 +55,82 @@ to this mail.
 Thanks,
 Mark
 
->From 19441e35a43b616ea6afad91ed0d9e77268d8f6a Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 4 Mar 2019 15:52:43 +0100
-Subject: [PATCH] ASoC: stm32: dfsdm: manage multiple prepare
+>From cd537873729cf939996a6984df080e6a0dfac0fb Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 19 Mar 2019 17:43:09 +0000
+Subject: [PATCH] ASoC: wm_adsp: Correct some minor issues
 
-The DFSDM must be stopped when a new setting is applied.
-restart systematically DFSDM on multiple prepare calls,
-to apply changes.
+The wm_adsp_ops structures should be static and correct two printf
+specifiers.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
+Fixes: 4e08d50d1fb6 ("ASoC: wm_adsp: Factor out DSP specific operations")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 47901983a6ff..d77f0421e4f0 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -9,6 +9,7 @@
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 644aaf1d2740..5e615fbddf9a 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -306,9 +306,9 @@
+ #define HALO_MPU_VIO_ERR_SRC_MASK           0x00007fff
+ #define HALO_MPU_VIO_ERR_SRC_SHIFT                   0
  
- #include <linux/clk.h>
- #include <linux/module.h>
-+#include <linux/mutex.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+-struct wm_adsp_ops wm_adsp1_ops;
+-struct wm_adsp_ops wm_adsp2_ops[];
+-struct wm_adsp_ops wm_halo_ops;
++static struct wm_adsp_ops wm_adsp1_ops;
++static struct wm_adsp_ops wm_adsp2_ops[];
++static struct wm_adsp_ops wm_halo_ops;
  
-@@ -37,6 +38,8 @@ struct stm32_adfsdm_priv {
- 	/* PCM buffer */
- 	unsigned char *pcm_buff;
- 	unsigned int pos;
-+
-+	struct mutex lock; /* protect against race condition on iio state */
+ struct wm_adsp_buf {
+ 	struct list_head list;
+@@ -2142,7 +2142,7 @@ static void wmfw_parse_id_header(struct wm_adsp *dsp,
+ 	dsp->fw_id = be32_to_cpu(fw->id);
+ 	dsp->fw_id_version = be32_to_cpu(fw->ver);
+ 
+-	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %zu algorithms\n",
++	adsp_info(dsp, "Firmware: %x v%d.%d.%d, %d algorithms\n",
+ 		  dsp->fw_id, (dsp->fw_id_version & 0xff0000) >> 16,
+ 		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
+ 		  nalgs);
+@@ -2155,7 +2155,7 @@ static void wmfw_v3_parse_id_header(struct wm_adsp *dsp,
+ 	dsp->fw_id_version = be32_to_cpu(fw->ver);
+ 	dsp->fw_vendor_id = be32_to_cpu(fw->vendor_id);
+ 
+-	adsp_info(dsp, "Firmware: %x vendor: 0x%x v%d.%d.%d, %zu algorithms\n",
++	adsp_info(dsp, "Firmware: %x vendor: 0x%x v%d.%d.%d, %d algorithms\n",
+ 		  dsp->fw_id, dsp->fw_vendor_id,
+ 		  (dsp->fw_id_version & 0xff0000) >> 16,
+ 		  (dsp->fw_id_version & 0xff00) >> 8, dsp->fw_id_version & 0xff,
+@@ -4407,13 +4407,13 @@ irqreturn_t wm_halo_wdt_expire(int irq, void *data)
+ }
+ EXPORT_SYMBOL_GPL(wm_halo_wdt_expire);
+ 
+-struct wm_adsp_ops wm_adsp1_ops = {
++static struct wm_adsp_ops wm_adsp1_ops = {
+ 	.validate_version = wm_adsp_validate_version,
+ 	.parse_sizes = wm_adsp1_parse_sizes,
+ 	.region_to_reg = wm_adsp_region_to_reg,
  };
  
- static const struct snd_pcm_hardware stm32_adfsdm_pcm_hw = {
-@@ -62,10 +65,12 @@ static void stm32_adfsdm_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(dai);
+-struct wm_adsp_ops wm_adsp2_ops[] = {
++static struct wm_adsp_ops wm_adsp2_ops[] = {
+ 	{
+ 		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
+ 		.parse_sizes = wm_adsp2_parse_sizes,
+@@ -4474,7 +4474,7 @@ struct wm_adsp_ops wm_adsp2_ops[] = {
+ 	},
+ };
  
-+	mutex_lock(&priv->lock);
- 	if (priv->iio_active) {
- 		iio_channel_stop_all_cb(priv->iio_cb);
- 		priv->iio_active = false;
- 	}
-+	mutex_unlock(&priv->lock);
- }
- 
- static int stm32_adfsdm_dai_prepare(struct snd_pcm_substream *substream,
-@@ -74,13 +79,19 @@ static int stm32_adfsdm_dai_prepare(struct snd_pcm_substream *substream,
- 	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(dai);
- 	int ret;
- 
-+	mutex_lock(&priv->lock);
-+	if (priv->iio_active) {
-+		iio_channel_stop_all_cb(priv->iio_cb);
-+		priv->iio_active = false;
-+	}
-+
- 	ret = iio_write_channel_attribute(priv->iio_ch,
- 					  substream->runtime->rate, 0,
- 					  IIO_CHAN_INFO_SAMP_FREQ);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "%s: Failed to set %d sampling rate\n",
- 			__func__, substream->runtime->rate);
--		return ret;
-+		goto out;
- 	}
- 
- 	if (!priv->iio_active) {
-@@ -92,6 +103,9 @@ static int stm32_adfsdm_dai_prepare(struct snd_pcm_substream *substream,
- 				__func__, ret);
- 	}
- 
-+out:
-+	mutex_unlock(&priv->lock);
-+
- 	return ret;
- }
- 
-@@ -299,6 +313,7 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
- 
- 	priv->dev = &pdev->dev;
- 	priv->dai_drv = stm32_adfsdm_dai;
-+	mutex_init(&priv->lock);
- 
- 	dev_set_drvdata(&pdev->dev, priv);
- 
+-struct wm_adsp_ops wm_halo_ops = {
++static struct wm_adsp_ops wm_halo_ops = {
+ 	.sys_config_size = sizeof(struct wm_halo_system_config_xm_hdr),
+ 	.parse_sizes = wm_adsp2_parse_sizes,
+ 	.validate_version = wm_halo_validate_version,
 -- 
 2.20.1
