@@ -1,39 +1,88 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH RESEND] ARM: dts: exynos: Fix audio (microphone) routing on
- Odroid XU3
-Date: Wed, 20 Mar 2019 10:59:50 +0100
-Message-ID: <20190320095950.23566-1-s.nawrocki@samsung.com>
-References: <20190319205522.GD16150@kozik-lap>
-        <CGME20190320100002epcas2p2c85f13b20896f837aa5a48643b917680@epcas2p2.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20190319205522.GD16150@kozik-lap>
-Sender: linux-kernel-owner@vger.kernel.org
-To: krzk@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, robh+dt@kernel.org, kgene@kernel.org, b.zolnierkie@samsung.com, m.szyprowski@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, stable@vger.kernel.org
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: lochnagar: Add device tree binding
+	document
+Date: Wed, 20 Mar 2019 14:28:12 +0000
+Message-ID: <20190320142813.12745-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 298CFF80791
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 15:28:17 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-The name of CODEC input widget to which microphone is connected through
-the "Headphone" jack is "IN12" not "IN1". This fixes microphone support
-on Odroid XU3.
+Lochnagar is an evaluation and development board for Cirrus
+Logic Smart CODEC and Amp devices. It allows the connection of
+most Cirrus Logic devices on mini-cards, as well as allowing
+connection of various application processor systems to provide a
+full evaluation platform. This driver supports the board
+controller chip on the Lochnagar board.
 
-Cc: <stable@vger.kernel.org> # v4.14+
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/cirrus,lochnagar.txt | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
 
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-index 3a37267e6134..c3c2d85267da 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-@@ -22,7 +22,7 @@
- 			"Headphone Jack", "HPL",
- 			"Headphone Jack", "HPR",
- 			"Headphone Jack", "MICBIAS",
--			"IN1", "Headphone Jack",
-+			"IN12", "Headphone Jack",
- 			"Speakers", "SPKL",
- 			"Speakers", "SPKR",
- 			"I2S Playback", "Mixer DAI TX",
---
-2.17.1
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+new file mode 100644
+index 0000000000000..fba5fb53a2f90
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+@@ -0,0 +1,39 @@
++Cirrus Logic Lochnagar Audio Development Board
++
++Lochnagar is an evaluation and development board for Cirrus Logic
++Smart CODEC and Amp devices. It allows the connection of most Cirrus
++Logic devices on mini-cards, as well as allowing connection of
++various application processor systems to provide a full evaluation
++platform.  Audio system topology, clocking and power can all be
++controlled through the Lochnagar, allowing the device under test
++to be used in a variety of possible use cases.
++
++This binding document describes the binding for the audio portion
++of the driver.
++
++This binding must be part of the Lochnagar MFD binding:
++  [4] ../mfd/cirrus,lochnagar.txt
++
++Required properties:
++
++  - compatible : One of the following strings:
++                 "cirrus,lochnagar2-soundcard"
++
++  - #sound-dai-cells : Must be set to 1.
++
++  - clocks : Contains an entry for each entry in clock-names.
++  - clock-names : Must include the following clocks:
++      "ln-sound-mclk" Master clock source for the sound card, should
++      normally be set to LOCHNAGAR_SOUNDCARD_MCLK provided by the
++      Lochnagar clock driver.
++
++Example:
++
++lochnagar-sc {
++	compatible = "cirrus,lochnagar2-soundcard";
++
++	#sound-dai-cells = <1>;
++
++	clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
++	clock-names = "ln-soundcard-mclk";
++};
+-- 
+2.11.0
