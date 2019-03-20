@@ -1,8 +1,8 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH v2 06/12] ASoC: tlv320aic32x4: Control clock
-	gating with CCF
-Date: Tue, 19 Mar 2019 21:51:23 -0700
-Message-ID: <20190320045129.6859-7-nh6z@nh6z.net>
+Subject: [PATCH v2 07/12] ASoC: tlv320aic32x4: Move aosr and
+	dosr setting to separate functions
+Date: Tue, 19 Mar 2019 21:51:24 -0700
+Message-ID: <20190320045129.6859-8-nh6z@nh6z.net>
 References: <20190320045129.6859-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,7 @@ Received: from smtp113.ord1c.emailsrvr.com (smtp113.ord1c.emailsrvr.com
  [108.166.43.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99C52F89715
+ by alsa1.perex.cz (Postfix) with ESMTPS id E85B8F89717
  for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 05:51:50 +0100 (CET)
 In-Reply-To: <20190320045129.6859-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,108 +28,54 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-Control the clock gating to the various clock components to use
-the CCF.  This allows us to prepare_enalbe only 3 clocks and the
-relationships assigned to them will cause upstream clockss to
-enable automatically.  Additionally we can do this in a single
-call to the CCF.
+Move these to separate helper functions.  This looks cleaner and fits
+better with the new clock setting in CCF.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 67 +++++++-------------------------
- 1 file changed, 13 insertions(+), 54 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 4e170cdc05ce..b9d0c4a72015 100644
+index b9d0c4a72015..dffabbf7c921 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -818,41 +818,25 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
- static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 				  enum snd_soc_bias_level level)
- {
--	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
- 	int ret;
+@@ -716,6 +716,20 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	return 0;
+ }
  
-+	struct clk_bulk_data clocks[] = {
-+		{ .id = "madc" },
-+		{ .id = "mdac" },
-+		{ .id = "bdiv" },
-+	};
++static int aic32x4_set_aosr(struct snd_soc_component *component, u8 aosr)
++{
++	return snd_soc_component_write(component, AIC32X4_AOSR, aosr);
++}
 +
-+	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
-+	if (ret)
-+		return ret;
++static int aic32x4_set_dosr(struct snd_soc_component *component, u16 dosr)
++{
++	snd_soc_component_write(component, AIC32X4_DOSRMSB, dosr >> 8);
++	snd_soc_component_write(component, AIC32X4_DOSRLSB,
++		      (dosr & 0xff));
 +
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		/* Switch on master clock */
--		ret = clk_prepare_enable(aic32x4->mclk);
-+		ret = clk_bulk_prepare_enable(ARRAY_SIZE(clocks), clocks);
- 		if (ret) {
--			dev_err(component->dev, "Failed to enable master clock\n");
-+			dev_err(component->dev, "Failed to enable clocks\n");
- 			return ret;
- 		}
++	return 0;
++}
++
+ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 				unsigned int sample_rate,
+ 				unsigned int parent_rate)
+@@ -748,13 +762,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 	clk_set_rate(clocks[3].clk, aic32x4_divs[i].ndac_rate);
+ 	clk_set_rate(clocks[4].clk, aic32x4_divs[i].mdac_rate);
+ 	clk_set_rate(clocks[5].clk, aic32x4_divs[i].bdiv_rate);
 -
--		/* Switch on PLL */
--		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
--					AIC32X4_PLLEN, AIC32X4_PLLEN);
+-	/* DOSR MSB & LSB values */
+-	snd_soc_component_write(component, AIC32X4_DOSRMSB, aic32x4_divs[i].dosr >> 8);
+-	snd_soc_component_write(component, AIC32X4_DOSRLSB, (aic32x4_divs[i].dosr & 0xff));
 -
--		/* Switch on NDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NDAC,
--					AIC32X4_NDACEN, AIC32X4_NDACEN);
--
--		/* Switch on MDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MDAC,
--					AIC32X4_MDACEN, AIC32X4_MDACEN);
--
--		/* Switch on NADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NADC,
--					AIC32X4_NADCEN, AIC32X4_NADCEN);
--
--		/* Switch on MADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MADC,
--					AIC32X4_MADCEN, AIC32X4_MADCEN);
--
--		/* Switch on BCLK_N Divider */
--		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
--					AIC32X4_BCLKEN, AIC32X4_BCLKEN);
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
-@@ -861,32 +845,7 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
- 			break;
+-	/* AOSR value */
+-	snd_soc_component_write(component, AIC32X4_AOSR, aic32x4_divs[i].aosr);
++	aic32x4_set_aosr(component, aic32x4_divs[i].aosr);
++	aic32x4_set_dosr(component, aic32x4_divs[i].dosr);
  
--		/* Switch off BCLK_N Divider */
--		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
--					AIC32X4_BCLKEN, 0);
--
--		/* Switch off MADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MADC,
--					AIC32X4_MADCEN, 0);
--
--		/* Switch off NADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NADC,
--					AIC32X4_NADCEN, 0);
--
--		/* Switch off MDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MDAC,
--					AIC32X4_MDACEN, 0);
--
--		/* Switch off NDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NDAC,
--					AIC32X4_NDACEN, 0);
--
--		/* Switch off PLL */
--		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
--					AIC32X4_PLLEN, 0);
--
--		/* Switch off master clock */
--		clk_disable_unprepare(aic32x4->mclk);
-+		clk_bulk_disable_unprepare(ARRAY_SIZE(clocks), clocks);
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		break;
+ 	return 0;
+ }
 -- 
 2.19.1
