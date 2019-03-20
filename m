@@ -1,17 +1,22 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: [PROBLEM] ALSA: hda: PCM streams are suspended while
-	opening
-Date: Wed, 20 Mar 2019 16:04:14 +0000
-Message-ID: <1553097854-10287-1-git-send-email-jonathanh@nvidia.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 12/13] ASoC: tlv320aic32x4: Propery Set
+	Processing Blocks
+Date: Wed, 20 Mar 2019 16:26:37 +0000
+Message-ID: <20190320162637.GA27518@sirena.org.uk>
+References: <20190319033756.20616-1-nh6z@nh6z.net>
+ <20190319033756.20616-13-nh6z@nh6z.net>
+ <20190319153758.GJ5514@sirena.org.uk>
+ <D82403D3-0C43-43A4-8594-BAF08D9C2554@nh6z.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0934320035647444791=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78D59F80C13
- for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 17:04:37 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0518DF80791
+ for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2019 17:26:39 +0100 (CET)
+In-Reply-To: <D82403D3-0C43-43A4-8594-BAF08D9C2554@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,97 +26,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>, Jonathan Hunter <jonathanh@nvidia.com>
+To: Annaliese McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, team@nwdigitalradio.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jonathan Hunter <jonathanh@nvidia.com>
 
-This issue is not observed on the latest mainline kernel since the
-'ALSA: PCM suspend cleanup' series has been applied and the
-snd_pcm_suspend_all() function call in the HDA codec driver has been
-removed. However, this issue impacts stable kernel branches and so I
-am trying to find a solution for these branches.
+--===============0934320035647444791==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
 
-When stress testing audio playback across multiple HDA streams
-simultaneously, the following failure is sometimes observed when
-starting playback ...
 
- Unable to set hw params for playback: File descriptor in bad state
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The problem is caused because ...
-1. Playback is starting for one HDA codec and so the chip->open_mutex
-   in azx_pcm_open() has been acquired.
-2. Playback for another HDA codec is starting but is blocked waiting to
-   acquire the chip->open_mutex in azx_pcm_open().
-3. For the HDA codec that is blocked, its runtime-pm status is still
-   enabled from a previous playback session that has since completed and
-   been closed, however its autosuspend timeout has not expired yet.
-4. For the HDA codec that is blocked, the runtime-pm autosuspend timeout
-   now occurs calling the runtime-pm suspend callback and this calls
-   snd_pcm_suspend_all() placing all PCM streams in the suspended state.
-5. The block HDA codec is now unblocked and fails to set the HW params
-   because the PCM stream is in the suspended state.
+On Tue, Mar 19, 2019 at 09:24:00AM -0700, Annaliese McDermond wrote:
 
-The above has been observed on Tegra platforms where the autosuspend
-delay is set to 1 second and there is a delay to an AZX command. This
-highlights that there is a window of time where autosuspend can place
-the HDA PCM stream in the suspended state while opening the stream
-and cause playback to fail.
+> It=E2=80=99s not really a bug fix.  The codec has a variety of =E2=80=9Cp=
+rocessing blocks=E2=80=9D
+> that enable different filters (there=E2=80=99s an onboard FIR, Biquad, et=
+c.) and
+> such.  The big thing they change with regard to how the driver is written
+> now is that they change the decimation filter used.  The documentation
+> specifies to use certain filters for certain sample rates.  This
+> hasn=E2=80=99t mattered very much in the past because the default filters
+> (P1 and R1) are the ones recommended for 48kHz and below.  This is
+> particularly important for 192kHz operation because it won=E2=80=99t
+> work with P1 and R1.  So, it=E2=80=99s not really a bug fix.  It=E2=80=99=
+s part
+> of the road to enabling 192kHz operation.
 
-Looking at commit 3d21ef0b49f8 ('ALSA: pcm: Suspend streams globally via
-device type PM ops') it appears that the call to snd_pcm_suspend_all()
-has now been moved to the to the suspend handler for PCM streams and so
-I am wondering if it would be equivalent to make the following change to
-the HDA codec driver to achieve the same behaviour but only for the HDA
-driver. So far the issue has not been observed with this change.
+It does sound like a bug fix for higher sample rates (96kHz is
+supported?) even if it's a fairly niche case.
 
-Please note that I am not sending this as a formal patch as I wanted to
-get some feedback/comments on the above.
----
- sound/pci/hda/hda_codec.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 9f8d59e7e89f..26ecc6e1f524 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2923,12 +2923,9 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- static int hda_codec_runtime_suspend(struct device *dev)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
--	struct hda_pcm *pcm;
- 	unsigned int state;
- 
- 	cancel_delayed_work_sync(&codec->jackpoll_work);
--	list_for_each_entry(pcm, &codec->pcm_list_head, list)
--		snd_pcm_suspend_all(pcm->pcm);
- 	state = hda_call_codec_suspend(codec);
- 	if (codec->link_down_at_suspend ||
- 	    (codec_has_clkstop(codec) && codec_has_epss(codec) &&
-@@ -2948,11 +2945,22 @@ static int hda_codec_runtime_resume(struct device *dev)
- 	pm_runtime_mark_last_busy(dev);
- 	return 0;
- }
-+
-+static int hda_codec_suspend(struct device *dev)
-+{
-+	struct hda_codec *codec = dev_to_hda_codec(dev);
-+	struct hda_pcm *pcm;
-+
-+	list_for_each_entry(pcm, &codec->pcm_list_head, list)
-+		snd_pcm_suspend_all(pcm->pcm);
-+
-+	return pm_runtime_force_suspend(dev);
-+}
- #endif /* CONFIG_PM */
- 
- /* referred in hda_bind.c */
- const struct dev_pm_ops hda_codec_driver_pm = {
--	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+	SET_SYSTEM_SLEEP_PM_OPS(hda_codec_suspend,
- 				pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(hda_codec_runtime_suspend, hda_codec_runtime_resume,
- 			   NULL)
--- 
-1.9.1
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlySaboACgkQJNaLcl1U
+h9BpWQf9Gog7eKqCPLVIkECQP8MgQbXr4ef2CvvLHuCnUERjV/Uhh2DbedaY70Xd
+sUabz9HBdxEf0TzFpX/48LWaX3KMaftZDd5wtlHg727UmERTRchbag1LtbgU5POb
+NoVVo9cfHH7BGsFcz+kcqB/Bv74EpbJYyq6cKMZdZXIFCSJV4Iaf35ffMpuQuzZl
+V9Qfu27JL1XMgNt9GaMFDy/gWexbc/BsZAv5LjWj3xgnFFO4RqdKh+uOdT8DEUZl
+G4htKFzVlEoZ/tkkVBrSvcXPAvAYu7uhUjXlZujNLm1K14GIbeWiqf/5bOC9u4tV
+ReoyjEDKW26DZf6PghLt/+/1QW6zZw==
+=Oksz
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--
+
+--===============0934320035647444791==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0934320035647444791==--
