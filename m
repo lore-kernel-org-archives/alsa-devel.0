@@ -1,71 +1,88 @@
-From: Yue Haibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 -next] ASoC: wm_adsp: Make some variables static
-Date: Thu, 21 Mar 2019 10:01:06 +0800
-Message-ID: <20190321020106.11096-1-yuehaibing@huawei.com>
+From: Kailang <kailang@realtek.com>
+Subject: RE: [PATCH v2] ALSA: hda/realtek: Enable headset MIC of Acer AIO with ALC286
+Date: Thu, 21 Mar 2019 02:37:33 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA856@RTITMBSVM07.realtek.com.tw>
+References: <20190315095108.9195-1-jian-hong@endlessm.com>
+ <s5himwkpehk.wl-tiwai@suse.de>
+ <CAPpJ_ec7oWi+ymtHXVwBMWS7=WtGmtPX6GNd+VOKX9xFzGZEVA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAPpJ_ec7oWi+ymtHXVwBMWS7=WtGmtPX6GNd+VOKX9xFzGZEVA@mail.gmail.com>
+Content-Language: zh-TW
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, YueHaibing <yuehaibing@huawei.com>
+To: Jian-Hong Pan <jian-hong@endlessm.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linux Upstreaming Team <linux@endlessm.com>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: YueHaibing <yuehaibing@huawei.com>
-
-Fix sparse warnings:
-
-sound/soc/codecs/wm_adsp.c:309:20: warning: symbol 'wm_adsp1_ops' was not declared. Should it be static?
-sound/soc/codecs/wm_adsp.c:310:20: warning: symbol 'wm_adsp2_ops' was not declared. Should it be static?
-sound/soc/codecs/wm_adsp.c:311:20: warning: symbol 'wm_halo_ops' was not declared. Should it be static?
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: make variables static
----
- sound/soc/codecs/wm_adsp.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 644aaf1..c41bffc 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -306,9 +306,9 @@
- #define HALO_MPU_VIO_ERR_SRC_MASK           0x00007fff
- #define HALO_MPU_VIO_ERR_SRC_SHIFT                   0
- 
--struct wm_adsp_ops wm_adsp1_ops;
--struct wm_adsp_ops wm_adsp2_ops[];
--struct wm_adsp_ops wm_halo_ops;
-+static struct wm_adsp_ops wm_adsp1_ops;
-+static struct wm_adsp_ops wm_adsp2_ops[];
-+static struct wm_adsp_ops wm_halo_ops;
- 
- struct wm_adsp_buf {
- 	struct list_head list;
-@@ -4407,13 +4407,13 @@ irqreturn_t wm_halo_wdt_expire(int irq, void *data)
- }
- EXPORT_SYMBOL_GPL(wm_halo_wdt_expire);
- 
--struct wm_adsp_ops wm_adsp1_ops = {
-+static struct wm_adsp_ops wm_adsp1_ops = {
- 	.validate_version = wm_adsp_validate_version,
- 	.parse_sizes = wm_adsp1_parse_sizes,
- 	.region_to_reg = wm_adsp_region_to_reg,
- };
- 
--struct wm_adsp_ops wm_adsp2_ops[] = {
-+static struct wm_adsp_ops wm_adsp2_ops[] = {
- 	{
- 		.sys_config_size = sizeof(struct wm_adsp_system_config_xm_hdr),
- 		.parse_sizes = wm_adsp2_parse_sizes,
-@@ -4474,7 +4474,7 @@ struct wm_adsp_ops wm_adsp2_ops[] = {
- 	},
- };
- 
--struct wm_adsp_ops wm_halo_ops = {
-+static struct wm_adsp_ops wm_halo_ops = {
- 	.sys_config_size = sizeof(struct wm_halo_system_config_xm_hdr),
- 	.parse_sizes = wm_adsp2_parse_sizes,
- 	.validate_version = wm_halo_validate_version,
--- 
-2.7.0
+WWVzLCB5b3UgY291bGQgdXNlIFJldmlld2VkLWJ5Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLQ0KRnJvbTogSmlhbi1Ib25nIFBhbiA8amlhbi1ob25nQGVuZGxlc3NtLmNvbT4gDQpTZW50
+OiBXZWRuZXNkYXksIE1hcmNoIDIwLCAyMDE5IDE6MDYgUE0NClRvOiBUYWthc2hpIEl3YWkgPHRp
+d2FpQHN1c2UuZGU+DQpDYzogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT47IGFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGludXggVXBzdHJlYW1pbmcgVGVhbSA8bGludXhAZW5kbGVz
+c20uY29tPjsgTGludXggS2VybmVsIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KU3Vi
+amVjdDogUmU6IFtQQVRDSCB2Ml0gQUxTQTogaGRhL3JlYWx0ZWs6IEVuYWJsZSBoZWFkc2V0IE1J
+QyBvZiBBY2VyIEFJTyB3aXRoIEFMQzI4Ng0KDQpUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
+IOaWvCAyMDE55bm0M+aciDE15pelIOmAseS6lCDkuIvljYg3OjI05a+r6YGT77yaDQo+DQo+IE9u
+IEZyaSwgMTUgTWFyIDIwMTkgMTA6NTE6MDkgKzAxMDAsDQo+IEppYW4tSG9uZyBQYW4gd3JvdGU6
+DQo+ID4NCj4gPiBTb21lIEFjZXIgQUlPIGRlc2t0b3BzIGxpa2UgVmVyaXRvbiBaNjg2MEcsIFo0
+ODYwRyBhbmQgWjQ2NjBHIGNhbm5vdCANCj4gPiByZWNvcmQgc291bmQgZnJvbSBoZWFkc2V0IE1J
+Qy4gIFRoaXMgcGF0Y2ggYWRkcyB0aGUgDQo+ID4gQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX0hFQURT
+RVRfTUlDIHF1aXJrIHRvIGZpeCB0aGlzIGlzc3VlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
+Smlhbi1Ib25nIFBhbiA8amlhbi1ob25nQGVuZGxlc3NtLmNvbT4NCj4gPiAtLS0NCj4gPiB2Mjog
+QWNjb3JkaW5nIHRvIFJlYWx0ZWsncyBzdWdnZXN0aW9uLCBjaGFuZ2UgdGhlIENPRUYgMHg0ZiBm
+cm9tIDB4ZDQyOSB0bw0KPiA+ICAgICAweDUwMjkuICBUaGFua3MgdG8gUmVhbHRlayENCj4NCj4g
+SXQnZCBiZSBuaWNlciBpZiB3ZSBnZXQgZWl0aGVyIEFja2VkLWJ5IG9yIFJldmlld2VkLWJ5IHRh
+ZyBmcm9tIA0KPiBSZWFsdGVrLiAgS2FpbGFuZz8NCg0KSGkgS2FpbGFuZywNCg0KTWF5IHdlIGhh
+dmUgeW91ciBBY2tlZC1ieSBvciBSZXZpZXdlZC1ieSB0YWcgZm9yIHRoaXMgcGF0Y2g/DQpTaWdu
+ZWQtb2ZmIHdpbGwgYWxzbyBiZSBncmVhdCENCg0KVGhhbmsgeW91DQpKaWFuLUhvbmcgUGFuDQoN
+Cj4gdGhhbmtzLA0KPg0KPiBUYWthc2hpDQo+DQo+ID4NCj4gPiAgc291bmQvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMgfCAxNyArKysrKysrKysrKysrKy0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+MTQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9z
+b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyANCj4gPiBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
+cmVhbHRlay5jIGluZGV4IDM4NDcxOWQ1YzQ0ZS4uMTkxODMwZDRmYTQwIA0KPiA+IDEwMDY0NA0K
+PiA+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+ID4gKysrIGIvc291bmQv
+cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMNCj4gPiBAQCAtNTY4Nyw2ICs1Njg3LDcgQEAgZW51bSB7
+DQo+ID4gICAgICAgQUxDMjI1X0ZJWFVQX0RFTExfV1lTRV9BSU9fTUlDX05PX1BSRVNFTkNFLA0K
+PiA+ICAgICAgIEFMQzIyNV9GSVhVUF9XWVNFX0FVVE9fTVVURSwNCj4gPiAgICAgICBBTEMyMjVf
+RklYVVBfV1lTRV9ESVNBQkxFX01JQ19WUkVGLA0KPiA+ICsgICAgIEFMQzI4Nl9GSVhVUF9BQ0VS
+X0FJT19IRUFEU0VUX01JQywNCj4gPiAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0
+IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7IEBAIC02Njg1LDYgDQo+ID4gKzY2ODYsMTYg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjMjY5X2ZpeHVwc1tdID0gew0KPiA+
+ICAgICAgICAgICAgICAgLmNoYWluZWQgPSB0cnVlLA0KPiA+ICAgICAgICAgICAgICAgLmNoYWlu
+X2lkID0gQUxDMjY5X0ZJWFVQX0hFQURTRVRfTU9ERV9OT19IUF9NSUMNCj4gPiAgICAgICB9LA0K
+PiA+ICsgICAgIFtBTEMyODZfRklYVVBfQUNFUl9BSU9fSEVBRFNFVF9NSUNdID0gew0KPiA+ICsg
+ICAgICAgICAgICAgLnR5cGUgPSBIREFfRklYVVBfVkVSQlMsDQo+ID4gKyAgICAgICAgICAgICAu
+di52ZXJicyA9IChjb25zdCBzdHJ1Y3QgaGRhX3ZlcmJbXSkgew0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICB7IDB4MjAsIEFDX1ZFUkJfU0VUX0NPRUZfSU5ERVgsIDB4NGYgfSwNCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgeyAweDIwLCBBQ19WRVJCX1NFVF9QUk9DX0NPRUYsIDB4NTAyOSB9
+LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICB7IH0NCj4gPiArICAgICAgICAgICAgIH0sDQo+
+ID4gKyAgICAgICAgICAgICAuY2hhaW5lZCA9IHRydWUsDQo+ID4gKyAgICAgICAgICAgICAuY2hh
+aW5faWQgPSBBTEMyODZfRklYVVBfQUNFUl9BSU9fTUlDX05PX1BSRVNFTkNFDQo+ID4gKyAgICAg
+fSwNCj4gPiAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsg
+YWxjMjY5X2ZpeHVwX3RibFtdID0geyBAQCAtNjcwMSw5IA0KPiA+ICs2NzEyLDkgQEAgc3RhdGlj
+IGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsNCj4gPiAg
+ICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgwNzliLCAiQWNlciBBc3BpcmUgVjUtNTczRyIs
+IEFMQzI4Ml9GSVhVUF9BU1BJUkVfVjVfUElOUyksDQo+ID4gICAgICAgU05EX1BDSV9RVUlSSygw
+eDEwMjUsIDB4MTAyYiwgIkFjZXIgQXNwaXJlIEMyNC04NjAiLCBBTEMyODZfRklYVVBfQUNFUl9B
+SU9fTUlDX05PX1BSRVNFTkNFKSwNCj4gPiAgICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgx
+MDZkLCAiQWNlciBDbG91ZGJvb2sgMTQiLCBBTEMyODNfRklYVVBfQ0hST01FX0JPT0spLA0KPiA+
+IC0gICAgIFNORF9QQ0lfUVVJUksoMHgxMDI1LCAweDEyOGYsICJBY2VyIFZlcml0b24gWjY4NjBH
+IiwgQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX01JQ19OT19QUkVTRU5DRSksDQo+ID4gLSAgICAgU05E
+X1BDSV9RVUlSSygweDEwMjUsIDB4MTI5MCwgIkFjZXIgVmVyaXRvbiBaNDg2MEciLCBBTEMyODZf
+RklYVVBfQUNFUl9BSU9fTUlDX05PX1BSRVNFTkNFKSwNCj4gPiAtICAgICBTTkRfUENJX1FVSVJL
+KDB4MTAyNSwgMHgxMjkxLCAiQWNlciBWZXJpdG9uIFo0NjYwRyIsIEFMQzI4Nl9GSVhVUF9BQ0VS
+X0FJT19NSUNfTk9fUFJFU0VOQ0UpLA0KPiA+ICsgICAgIFNORF9QQ0lfUVVJUksoMHgxMDI1LCAw
+eDEyOGYsICJBY2VyIFZlcml0b24gWjY4NjBHIiwgQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX0hFQURT
+RVRfTUlDKSwNCj4gPiArICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgxMjkwLCAiQWNlciBW
+ZXJpdG9uIFo0ODYwRyIsIEFMQzI4Nl9GSVhVUF9BQ0VSX0FJT19IRUFEU0VUX01JQyksDQo+ID4g
+KyAgICAgU05EX1BDSV9RVUlSSygweDEwMjUsIDB4MTI5MSwgIkFjZXIgVmVyaXRvbiBaNDY2MEci
+LCANCj4gPiArIEFMQzI4Nl9GSVhVUF9BQ0VSX0FJT19IRUFEU0VUX01JQyksDQo+ID4gICAgICAg
+U05EX1BDSV9RVUlSSygweDEwMjUsIDB4MTMzMCwgIkFjZXIgVHJhdmVsTWF0ZSBYNTE0LTUxVCIs
+IEFMQzI1NV9GSVhVUF9BQ0VSX0hFQURTRVRfTUlDKSwNCj4gPiAgICAgICBTTkRfUENJX1FVSVJL
+KDB4MTAyOCwgMHgwNDcwLCAiRGVsbCBNMTAxeiIsIEFMQzI2OV9GSVhVUF9ERUxMX00xMDFaKSwN
+Cj4gPiAgICAgICBTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwNTRiLCAiRGVsbCBYUFMgb25lIDI3
+MTAiLCANCj4gPiBBTEMyNzVfRklYVVBfREVMTF9YUFMpLA0KPiA+IC0tDQo+ID4gMi4yMC4xDQo+
+ID4NCj4gPg0KDQotLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBw
+cmludGluZyB0aGlzIGUtbWFpbC4NCg==
