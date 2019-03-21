@@ -1,49 +1,39 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH v2 0/7] ASoC: tlv320aic26: Add device tree support and bug fixes
-Date: Thu, 21 Mar 2019 18:15:42 -0400
-Message-ID: <20190321221549.13765-1-jcormier@criticallink.com>
+Subject: [PATCH v2 1/7] ASoC: tlv320aic26: Allow tlv320aic26 to be selected in menuconfig
+Date: Thu, 21 Mar 2019 18:15:43 -0400
+Message-ID: <20190321221549.13765-2-jcormier@criticallink.com>
+References: <20190321221549.13765-1-jcormier@criticallink.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190321221549.13765-1-jcormier@criticallink.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
 Cc: Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Without a description you can't select the device in menuconfig
+Set depends to SPI_MASTER to match conditional in SND_SOC_ALL_CODECS
 
-The following patches were created to get the tlv320aic26 working
-on our AM335x SoM.
+Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
+---
+ sound/soc/codecs/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I'm resubmitting this patch series. Previous version here:
-https://lore.kernel.org/patchwork/cover/601439/
-
-This patch series relies on the following patch for proper operation.
-commit 93d0ad8f374c ("ASoC: tlv320aic26: Convert to params_width()")
-
-Changes since RFC:
-- Removed the unnecessary "#if defined(CONFIG_OF)"
-- Dropped the DSP_B patch
-Changes since V1:
-- Reordered Kconfig patch to first so each patch can be built
-- Rebased changes to Linux 5.1-rc1
-
-Cormier, Jonathan (7):
-  ASoC: tlv320aic26: Allow tlv320aic26 to be selected in menuconfig
-  dt-bindings: ASoC: tlv320aic26: Add device tree binding
-  ASoC: tlv320aic26: Add device tree binding
-  ASoC: tlv320aic26: Fix module autoload
-  ASoC: tlv320aic26: Fix regmap by setting reg_defaults and reg_stride
-  ASoC: tlv320aic26: hw_params was unintentionally clearing AIC26 master
-    mode
-  ASoC: tlv320aic26: Change Capture Mute to Capture Switch to match alsa
-    documentation.
-
- .../devicetree/bindings/sound/tlv320aic26.txt | 65 +++++++++++++++++++
- sound/soc/codecs/Kconfig                      |  4 +-
- sound/soc/codecs/tlv320aic26.c                | 55 ++++++++++++++--
- 3 files changed, 116 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 419114edfd57..cd697a015819 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1087,8 +1087,8 @@ config SND_SOC_TLV320AIC23_SPI
+ 	select SND_SOC_TLV320AIC23
+ 
+ config SND_SOC_TLV320AIC26
+-	tristate
+-	depends on SPI
++	tristate "Texas Instruments TLV320AIC26 audio CODEC - SPI"
++	depends on SPI_MASTER
+ 
+ config SND_SOC_TLV320AIC31XX
+ 	tristate "Texas Instruments TLV320AIC31xx CODECs"
 -- 
 2.21.0
