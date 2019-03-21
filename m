@@ -1,55 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: dapm: Fix NULL pointer dereference in
- snd_soc_dapm_new_dai
-Date: Thu, 21 Mar 2019 14:09:48 +0000
-Message-ID: <20190321140948.GD5684@sirena.org.uk>
-References: <1553163085-16845-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
- <20190321123156.GB5684@sirena.org.uk>
- <13b5c552-69a6-f1e0-174c-b5aa48560858@linux.intel.com>
+Subject: Re: [PATCH V4] ASoC: fsl_esai: fix channel swap issue
+ when	stream starts
+Date: Thu, 21 Mar 2019 14:13:54 +0000
+Message-ID: <20190321141354.GF5684@sirena.org.uk>
+References: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
+ <VI1PR0402MB3392C426C2F5D65322A04253E3400@VI1PR0402MB3392.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <13b5c552-69a6-f1e0-174c-b5aa48560858@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: multipart/mixed; boundary="===============5230688707467654898=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14DEEF80791
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 15:14:08 +0100 (CET)
+In-Reply-To: <VI1PR0402MB3392C426C2F5D65322A04253E3400@VI1PR0402MB3392.eurprd04.prod.outlook.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---k4f25fnPtRuIRUb3
-Content-Type: text/plain; charset=us-ascii
+--===============5230688707467654898==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Wb5NtZlyOqqy58h0"
 Content-Disposition: inline
 
-On Thu, Mar 21, 2019 at 08:59:55AM -0500, Pierre-Louis Bossart wrote:
-> On 3/21/19 7:31 AM, Mark Brown wrote:
-> > On Thu, Mar 21, 2019 at 03:41:25PM +0530, Pankaj Bharadiya wrote:
 
-> > This is very non-obvious - it's not at all clear why we'd need the text
-> > to free controls.  If there is an issue here it seems like it'd be
-> > better to make sure that snd_soc_dapm_free_kcontrol() can cope with that
-> > being NULL, that will be clearer and also avoid potential issues with
-> > other callers.
+--Wb5NtZlyOqqy58h0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I believe the issue is real, but you need to look at the entire code to figure it out
+On Tue, Mar 19, 2019 at 02:08:20AM +0000, S.j. Wang wrote:
+> Hi Mark
+>=20
+>     Can this patch be accepted?  Or need I do any update?
 
-Yeah, I'm fairly sure there's an actual issue here - it's just that the
-fix is obscure and feels fragile.
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
---k4f25fnPtRuIRUb3
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
+
+--Wb5NtZlyOqqy58h0
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyTmysACgkQJNaLcl1U
-h9C+eQf7Bnc/qA2kIaN+pwHVUzmOvzF4woWYt1c8PNct6q6whX8CI++mtMcTFLp6
-OihVNA9Y81AS9mM4v/UFOeR8DT66/8X6N3gpo8x9UCrzDjPT4fa/6RdxEJOt9njX
-05SU+q1FLg3K4+cjq0e9chDN0WpWRbgKQKJnlvmyaSRA/T6MDbYiMq9Okm8KXg+Q
-8sub2DQnSz3NNfUOTftQ90TqAibcTEvvGbx78XPZCMBYtC6MncpMXboh8ctvWUyw
-zcNsn+ZAP9+CSHZnX7lPWJke+b92wZfZGQeIsbQocFsicGQDreY43zW13y7CBxw9
-d6bDevREUeUMWbYiH6HxTjsiogcpJw==
-=C3gk
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyTnCEACgkQJNaLcl1U
+h9B9bQf/fXCvrAe4VwBHDEDbRf25Ej5zqtjF0y7qCYvdakFF9KQyS7I8Q04b5JZs
+x0qnlJVQYUWs1Bm81uqw3Y90Pej9oQ/zxCzwt2eJjvlbRkTt2eB/1mueC0MaN6qz
+x3KcDt3FvhKZZqOb6Xmy2WvgJTdp3+ySDy68Z5Hrfqo6oTTMp2IuxxBSWjpFPKBE
+Swv2JRAZUb3Mp5CSEDKJ3yZEtyl58/JIud97D8UJ7jXV6YsD+EJqLqKaty22sM3C
++3l65wd2tNIEr3cQhMUpseXUmye+IGIlBKtRxQuO3V/R0NTfEyzXfKm7pzw6/hpe
+VfcDZXZamrsiOl5IsNsmqdsKqM493g==
+=7Mjh
 -----END PGP SIGNATURE-----
 
---k4f25fnPtRuIRUb3--
+--Wb5NtZlyOqqy58h0--
+
+--===============5230688707467654898==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5230688707467654898==--
