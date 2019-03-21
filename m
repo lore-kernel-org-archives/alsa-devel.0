@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 19/20] ASoC: Intel: Make sure HSW/BDW based
-	machine drivers build for SOF
-Date: Thu, 21 Mar 2019 11:10:54 -0500
-Message-ID: <20190321161055.26582-20-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 20/20] ASoC: Intel: select relevant machine
+	drivers for SOF
+Date: Thu, 21 Mar 2019 11:10:55 -0500
+Message-ID: <20190321161055.26582-21-pierre-louis.bossart@linux.intel.com>
 References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,108 +22,93 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+SOF can only support specific machine drivers, handle dependencies
 
-HSW/BDW use hard coded IPC calls to set SSP, not needed in SOF as SSP is
-configured via topology.
-
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bdw-rt5677.c | 4 ++++
- sound/soc/intel/boards/broadwell.c  | 4 ++++
- sound/soc/intel/boards/haswell.c    | 4 ++++
- 3 files changed, 12 insertions(+)
+ sound/soc/intel/boards/Kconfig | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 1844c88ea4e2..6520a8ea5537 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -180,6 +180,7 @@ static const struct snd_soc_ops bdw_rt5677_ops = {
- 	.hw_params = bdw_rt5677_hw_params,
- };
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 12d6b73e9531..bf6d7a11f94a 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -1,6 +1,6 @@
+ menuconfig SND_SOC_INTEL_MACH
+ 	bool "Intel Machine drivers"
+-	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	depends on SND_SOC_INTEL_SST_TOPLEVEL || SND_SOC_SOF_INTEL_TOPLEVEL
+ 	help
+          Intel ASoC Machine Drivers. If you have a Intel machine that
+          has an audio controller with a DSP and I2S or DMIC port, then
+@@ -24,6 +24,10 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 	  Say Y or m if you have such a device.
+ 	  If unsure select "N".
  
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- static int bdw_rt5677_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-@@ -198,6 +199,7 @@ static int bdw_rt5677_rtd_init(struct snd_soc_pcm_runtime *rtd)
++endif ## SND_SOC_INTEL_HASWELL
++
++if SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
++
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "Broadwell with RT5677 codec"
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+@@ -43,7 +47,7 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 	  Ultrabook platforms.
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+-endif ## SND_SOC_INTEL_HASWELL
++endif ## SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
  
- 	return 0;
- }
-+#endif
+ if SND_SOC_INTEL_BAYTRAIL
  
- static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -265,7 +267,9 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		.dynamic = 1,
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- 		.init = bdw_rt5677_rtd_init,
-+#endif
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST,
- 			SND_SOC_DPCM_TRIGGER_POST
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index b86c746d9b7a..0f18f8964f51 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -131,6 +131,7 @@ static const struct snd_soc_ops broadwell_rt286_ops = {
- 	.hw_params = broadwell_rt286_hw_params,
- };
+@@ -68,7 +72,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
  
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-@@ -149,6 +150,7 @@ static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ endif ## SND_SOC_INTEL_BAYTRAIL
  
- 	return 0;
- }
-+#endif
+-if SND_SST_ATOM_HIFI2_PLATFORM
++if SND_SST_ATOM_HIFI2_PLATFORM || SND_SOC_SOF_BAYTRAIL
  
- /* broadwell digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broadwell_rt286_dais[] = {
-@@ -161,7 +163,9 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 		.dynamic = 1,
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- 		.init = broadwell_rtd_init,
-+#endif
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 971226d42042..93eb691c9d49 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -86,6 +86,7 @@ static const struct snd_soc_ops haswell_rt5640_ops = {
- 	.hw_params = haswell_rt5640_hw_params,
- };
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5640 codec"
+@@ -158,6 +162,10 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
  
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
- static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-@@ -104,6 +105,7 @@ static int haswell_rtd_init(struct snd_soc_pcm_runtime *rtd)
++endif ## SND_SST_ATOM_HIFI2_PLATFORM || SND_SOC_SOF_BAYTRAIL
++
++if SND_SST_ATOM_HIFI2_PLATFORM
++
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+@@ -314,7 +322,7 @@ config SND_SOC_INTEL_KBL_RT5660_MACH
  
- 	return 0;
- }
-+#endif
+ endif ## SND_SOC_INTEL_KBL
  
- static struct snd_soc_dai_link haswell_rt5640_dais[] = {
- 	/* Front End DAI links */
-@@ -115,7 +117,9 @@ static struct snd_soc_dai_link haswell_rt5640_dais[] = {
- 		.dynamic = 1,
- 		.codec_name = "snd-soc-dummy",
- 		.codec_dai_name = "snd-soc-dummy-dai",
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
- 		.init = haswell_rtd_init,
-+#endif
- 		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
+-if SND_SOC_INTEL_GLK
++if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+ 
+ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
+@@ -330,9 +338,9 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	   Say Y if you have such a device.
+ 	   If unsure select "N".
+ 
+-endif ## SND_SOC_INTEL_GLK
++endif ## SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
+ 
+-if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
++if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
+ 
+ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+ 	tristate "SKL/KBL/BXT/APL with HDA Codecs"
+@@ -344,6 +352,6 @@ config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
+           Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
+ 
+-endif ## SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
++endif ## SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC || SND_SOC_SOF_HDA_AUDIO_CODEC
+ 
+ endif ## SND_SOC_INTEL_MACH
 -- 
 2.17.1
