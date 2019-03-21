@@ -1,7 +1,7 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH v2 2/7] dt-bindings: ASoC: tlv320aic26: Add device tree binding
-Date: Thu, 21 Mar 2019 18:15:44 -0400
-Message-ID: <20190321221549.13765-3-jcormier@criticallink.com>
+Subject: [PATCH v2 3/7] ASoC: tlv320aic26: Add device tree binding
+Date: Thu, 21 Mar 2019 18:15:45 -0400
+Message-ID: <20190321221549.13765-4-jcormier@criticallink.com>
 References: <20190321221549.13765-1-jcormier@criticallink.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -16,80 +16,29 @@ Add support for the TI tlv320aic26 sound codec
 
 Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
 ---
- .../devicetree/bindings/sound/tlv320aic26.txt | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
+ sound/soc/codecs/tlv320aic26.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic26.txt b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
-new file mode 100644
-index 000000000000..93aa0f76ec0d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
-@@ -0,0 +1,65 @@
-+Texas Instruments - tlv320aic26 Codec module
-+
-+The tlv320aic26 serial control bus communicates through I2C protocols
-+
-+Required properties:
-+
-+- compatible - "string" - One of:
-+    "ti,tlv320aic26" - TLV320AIC26
-+- reg - <int> -  SPI chip select
-+
-+CODEC input pins:
-+  * MICIN
-+  * AUX
-+
-+CODEC output pins:
-+  * HPL
-+  * HPR
-+
-+The pins can be used in referring sound node's audio-routing property.
-+
-+Example:
-+
-+tlv320aic26: tlv320aic26@0 {
-+	compatible = "ti,tlv320aic26";
-+	reg = <0>;
+diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
+index b91b8d5f1ba3..5c9b320b918c 100644
+--- a/sound/soc/codecs/tlv320aic26.c
++++ b/sound/soc/codecs/tlv320aic26.c
+@@ -368,9 +368,16 @@ static int aic26_spi_probe(struct spi_device *spi)
+ 	return ret;
+ }
+ 
++static const struct of_device_id tlv320aic26_of_match[] = {
++	{ .compatible = "ti,tlv320aic26", },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, tlv320aic26_of_match);
 +
-+&spi0 {
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&spi0_pins>;
-+	pinctrl-1 = <&spi0_sleep_pins>;
-+
-+	status = "okay";
-+	ti,pindir-d0-out-d1-in = <1>;
-+
-+	tlv320aic26: tlv320aic26@1 {
-+		compatible = "ti,tlv320aic26";
-+		reg = <0x1>;
-+		status = "okay";
-+
-+		spi-max-frequency = <2000000>;
-+		spi-cpha;
-+	};
-+};
-+
-+sound {
-+	compatible = "simple-audio-card";
-+	simple-audio-card,name = "AM335x_SND";
-+	simple-audio-card,format = "dsp_b";
-+	/* SND_SOC_DAIFMT_CBM_CFM */
-+	simple-audio-card,bitclock-master = <&tlv320aic26_codec>;
-+	simple-audio-card,frame-master = <&tlv320aic26_codec>;
-+	/* SND_SOC_DAIFMT_IB_NF */
-+	simple-audio-card,bitclock-inversion;
-+
-+	simple-audio-card,cpu {
-+		sound-dai = <&mcasp1>;
-+		system-clock-frequency = <24576000>;
-+	};
-+
-+	tlv320aic26_codec: simple-audio-card,codec {
-+		sound-dai = <&tlv320aic26>;
-+		system-clock-frequency = <24576000>;
-+	};
-+};
+ static struct spi_driver aic26_spi = {
+ 	.driver = {
+ 		.name = "tlv320aic26-codec",
++		.of_match_table = of_match_ptr(tlv320aic26_of_match),
+ 	},
+ 	.probe = aic26_spi_probe,
+ };
 -- 
 2.21.0
