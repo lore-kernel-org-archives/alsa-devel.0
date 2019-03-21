@@ -1,88 +1,100 @@
-From: Kailang <kailang@realtek.com>
-Subject: RE: [PATCH v2] ALSA: hda/realtek: Enable headset MIC of Acer AIO with ALC286
-Date: Thu, 21 Mar 2019 02:37:33 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBA856@RTITMBSVM07.realtek.com.tw>
-References: <20190315095108.9195-1-jian-hong@endlessm.com>
- <s5himwkpehk.wl-tiwai@suse.de>
- <CAPpJ_ec7oWi+ymtHXVwBMWS7=WtGmtPX6GNd+VOKX9xFzGZEVA@mail.gmail.com>
+From: Annaliese McDermond <nh6z@nh6z.net>
+Subject: [PATCH v3 00/11] ASoC: tlv320aic32x4: Rework Clock
+	Setting
+Date: Wed, 20 Mar 2019 19:38:43 -0700
+Message-ID: <20190321023854.16947-1-nh6z@nh6z.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAPpJ_ec7oWi+ymtHXVwBMWS7=WtGmtPX6GNd+VOKX9xFzGZEVA@mail.gmail.com>
-Content-Language: zh-TW
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jian-Hong Pan <jian-hong@endlessm.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Linux Upstreaming Team <linux@endlessm.com>, Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp65.ord1c.emailsrvr.com (smtp65.ord1c.emailsrvr.com
+ [108.166.43.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC24EF8968A
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 03:39:06 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-WWVzLCB5b3UgY291bGQgdXNlIFJldmlld2VkLWJ5Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KRnJvbTogSmlhbi1Ib25nIFBhbiA8amlhbi1ob25nQGVuZGxlc3NtLmNvbT4gDQpTZW50
-OiBXZWRuZXNkYXksIE1hcmNoIDIwLCAyMDE5IDE6MDYgUE0NClRvOiBUYWthc2hpIEl3YWkgPHRp
-d2FpQHN1c2UuZGU+DQpDYzogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT47IGFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGludXggVXBzdHJlYW1pbmcgVGVhbSA8bGludXhAZW5kbGVz
-c20uY29tPjsgTGludXggS2VybmVsIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KU3Vi
-amVjdDogUmU6IFtQQVRDSCB2Ml0gQUxTQTogaGRhL3JlYWx0ZWs6IEVuYWJsZSBoZWFkc2V0IE1J
-QyBvZiBBY2VyIEFJTyB3aXRoIEFMQzI4Ng0KDQpUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+
-IOaWvCAyMDE55bm0M+aciDE15pelIOmAseS6lCDkuIvljYg3OjI05a+r6YGT77yaDQo+DQo+IE9u
-IEZyaSwgMTUgTWFyIDIwMTkgMTA6NTE6MDkgKzAxMDAsDQo+IEppYW4tSG9uZyBQYW4gd3JvdGU6
-DQo+ID4NCj4gPiBTb21lIEFjZXIgQUlPIGRlc2t0b3BzIGxpa2UgVmVyaXRvbiBaNjg2MEcsIFo0
-ODYwRyBhbmQgWjQ2NjBHIGNhbm5vdCANCj4gPiByZWNvcmQgc291bmQgZnJvbSBoZWFkc2V0IE1J
-Qy4gIFRoaXMgcGF0Y2ggYWRkcyB0aGUgDQo+ID4gQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX0hFQURT
-RVRfTUlDIHF1aXJrIHRvIGZpeCB0aGlzIGlzc3VlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-Smlhbi1Ib25nIFBhbiA8amlhbi1ob25nQGVuZGxlc3NtLmNvbT4NCj4gPiAtLS0NCj4gPiB2Mjog
-QWNjb3JkaW5nIHRvIFJlYWx0ZWsncyBzdWdnZXN0aW9uLCBjaGFuZ2UgdGhlIENPRUYgMHg0ZiBm
-cm9tIDB4ZDQyOSB0bw0KPiA+ICAgICAweDUwMjkuICBUaGFua3MgdG8gUmVhbHRlayENCj4NCj4g
-SXQnZCBiZSBuaWNlciBpZiB3ZSBnZXQgZWl0aGVyIEFja2VkLWJ5IG9yIFJldmlld2VkLWJ5IHRh
-ZyBmcm9tIA0KPiBSZWFsdGVrLiAgS2FpbGFuZz8NCg0KSGkgS2FpbGFuZywNCg0KTWF5IHdlIGhh
-dmUgeW91ciBBY2tlZC1ieSBvciBSZXZpZXdlZC1ieSB0YWcgZm9yIHRoaXMgcGF0Y2g/DQpTaWdu
-ZWQtb2ZmIHdpbGwgYWxzbyBiZSBncmVhdCENCg0KVGhhbmsgeW91DQpKaWFuLUhvbmcgUGFuDQoN
-Cj4gdGhhbmtzLA0KPg0KPiBUYWthc2hpDQo+DQo+ID4NCj4gPiAgc291bmQvcGNpL2hkYS9wYXRj
-aF9yZWFsdGVrLmMgfCAxNyArKysrKysrKysrKysrKy0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-MTQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9z
-b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyANCj4gPiBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
-cmVhbHRlay5jIGluZGV4IDM4NDcxOWQ1YzQ0ZS4uMTkxODMwZDRmYTQwIA0KPiA+IDEwMDY0NA0K
-PiA+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+ID4gKysrIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMNCj4gPiBAQCAtNTY4Nyw2ICs1Njg3LDcgQEAgZW51bSB7
-DQo+ID4gICAgICAgQUxDMjI1X0ZJWFVQX0RFTExfV1lTRV9BSU9fTUlDX05PX1BSRVNFTkNFLA0K
-PiA+ICAgICAgIEFMQzIyNV9GSVhVUF9XWVNFX0FVVE9fTVVURSwNCj4gPiAgICAgICBBTEMyMjVf
-RklYVVBfV1lTRV9ESVNBQkxFX01JQ19WUkVGLA0KPiA+ICsgICAgIEFMQzI4Nl9GSVhVUF9BQ0VS
-X0FJT19IRUFEU0VUX01JQywNCj4gPiAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0
-IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7IEBAIC02Njg1LDYgDQo+ID4gKzY2ODYsMTYg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjMjY5X2ZpeHVwc1tdID0gew0KPiA+
-ICAgICAgICAgICAgICAgLmNoYWluZWQgPSB0cnVlLA0KPiA+ICAgICAgICAgICAgICAgLmNoYWlu
-X2lkID0gQUxDMjY5X0ZJWFVQX0hFQURTRVRfTU9ERV9OT19IUF9NSUMNCj4gPiAgICAgICB9LA0K
-PiA+ICsgICAgIFtBTEMyODZfRklYVVBfQUNFUl9BSU9fSEVBRFNFVF9NSUNdID0gew0KPiA+ICsg
-ICAgICAgICAgICAgLnR5cGUgPSBIREFfRklYVVBfVkVSQlMsDQo+ID4gKyAgICAgICAgICAgICAu
-di52ZXJicyA9IChjb25zdCBzdHJ1Y3QgaGRhX3ZlcmJbXSkgew0KPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICB7IDB4MjAsIEFDX1ZFUkJfU0VUX0NPRUZfSU5ERVgsIDB4NGYgfSwNCj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgeyAweDIwLCBBQ19WRVJCX1NFVF9QUk9DX0NPRUYsIDB4NTAyOSB9
-LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICB7IH0NCj4gPiArICAgICAgICAgICAgIH0sDQo+
-ID4gKyAgICAgICAgICAgICAuY2hhaW5lZCA9IHRydWUsDQo+ID4gKyAgICAgICAgICAgICAuY2hh
-aW5faWQgPSBBTEMyODZfRklYVVBfQUNFUl9BSU9fTUlDX05PX1BSRVNFTkNFDQo+ID4gKyAgICAg
-fSwNCj4gPiAgfTsNCj4gPg0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsg
-YWxjMjY5X2ZpeHVwX3RibFtdID0geyBAQCAtNjcwMSw5IA0KPiA+ICs2NzEyLDkgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsNCj4gPiAg
-ICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgwNzliLCAiQWNlciBBc3BpcmUgVjUtNTczRyIs
-IEFMQzI4Ml9GSVhVUF9BU1BJUkVfVjVfUElOUyksDQo+ID4gICAgICAgU05EX1BDSV9RVUlSSygw
-eDEwMjUsIDB4MTAyYiwgIkFjZXIgQXNwaXJlIEMyNC04NjAiLCBBTEMyODZfRklYVVBfQUNFUl9B
-SU9fTUlDX05PX1BSRVNFTkNFKSwNCj4gPiAgICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgx
-MDZkLCAiQWNlciBDbG91ZGJvb2sgMTQiLCBBTEMyODNfRklYVVBfQ0hST01FX0JPT0spLA0KPiA+
-IC0gICAgIFNORF9QQ0lfUVVJUksoMHgxMDI1LCAweDEyOGYsICJBY2VyIFZlcml0b24gWjY4NjBH
-IiwgQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX01JQ19OT19QUkVTRU5DRSksDQo+ID4gLSAgICAgU05E
-X1BDSV9RVUlSSygweDEwMjUsIDB4MTI5MCwgIkFjZXIgVmVyaXRvbiBaNDg2MEciLCBBTEMyODZf
-RklYVVBfQUNFUl9BSU9fTUlDX05PX1BSRVNFTkNFKSwNCj4gPiAtICAgICBTTkRfUENJX1FVSVJL
-KDB4MTAyNSwgMHgxMjkxLCAiQWNlciBWZXJpdG9uIFo0NjYwRyIsIEFMQzI4Nl9GSVhVUF9BQ0VS
-X0FJT19NSUNfTk9fUFJFU0VOQ0UpLA0KPiA+ICsgICAgIFNORF9QQ0lfUVVJUksoMHgxMDI1LCAw
-eDEyOGYsICJBY2VyIFZlcml0b24gWjY4NjBHIiwgQUxDMjg2X0ZJWFVQX0FDRVJfQUlPX0hFQURT
-RVRfTUlDKSwNCj4gPiArICAgICBTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgxMjkwLCAiQWNlciBW
-ZXJpdG9uIFo0ODYwRyIsIEFMQzI4Nl9GSVhVUF9BQ0VSX0FJT19IRUFEU0VUX01JQyksDQo+ID4g
-KyAgICAgU05EX1BDSV9RVUlSSygweDEwMjUsIDB4MTI5MSwgIkFjZXIgVmVyaXRvbiBaNDY2MEci
-LCANCj4gPiArIEFMQzI4Nl9GSVhVUF9BQ0VSX0FJT19IRUFEU0VUX01JQyksDQo+ID4gICAgICAg
-U05EX1BDSV9RVUlSSygweDEwMjUsIDB4MTMzMCwgIkFjZXIgVHJhdmVsTWF0ZSBYNTE0LTUxVCIs
-IEFMQzI1NV9GSVhVUF9BQ0VSX0hFQURTRVRfTUlDKSwNCj4gPiAgICAgICBTTkRfUENJX1FVSVJL
-KDB4MTAyOCwgMHgwNDcwLCAiRGVsbCBNMTAxeiIsIEFMQzI2OV9GSVhVUF9ERUxMX00xMDFaKSwN
-Cj4gPiAgICAgICBTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwNTRiLCAiRGVsbCBYUFMgb25lIDI3
-MTAiLCANCj4gPiBBTEMyNzVfRklYVVBfREVMTF9YUFMpLA0KPiA+IC0tDQo+ID4gMi4yMC4xDQo+
-ID4NCj4gPg0KDQotLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBw
-cmludGluZyB0aGlzIGUtbWFpbC4NCg==
+The current tlv320aic32x4 code sets the various clock parameters by
+looking in a static table in the kernel.  This works well enough,
+but it has a few disadvantages.
+
+1)  If the master clock doesn't match one of the precalculated values
+    the driver cannot work.  This could be because the designer
+    decided to use a different crystal, or because the clock comes
+    from a PLL that can't quite achieve the proper frequency
+    exactly.
+
+2)  The driver only supports certain pre-calculated sample rates.
+    The actual hardware can support many more.  These changes
+    enable those rates.  Additionally, certain sample rates at
+    certain clock rates were previously unavailable as
+    combinations.
+
+This patch dynamically calculates the various PLL and divider
+values to find something that works.
+
+Additionally, to enable much of this, the clock tree is
+modeled as a part of the Common Clock Framework.  This allows
+for easier debugigng as you can use the standard tools such as
+/sys/kernel/debug/clk/clk_summary.  It also simplifies enabling
+the entirety of the clock tree needed, and makes sure unused
+clocks become disabled.
+
+These patches have been tested and are working on a Raspberry Pi
+with the simplecard driver.
+
+Changes in v2:
+ - Update 0002 patch to change Kconfig to add dependency on CCF
+ - Update 0002 patch to correct the SPDX identifier
+ - Update 0002 patch to use EXPORT_SYMBOL_GPL() instead of
+   EXPORT_SYMBOL()
+ - Update patches 0002, 0004 and 0005 to use prepare/unprepare
+   instead of enable/disable since the i2c operations are not
+   atomic
+ - Update 0004 patch to fix indentation in commit message
+ - Drop patch 0009 because it is a duplicate of the already
+   committed patch in 667e9334
+ - Update 0019 patch to keep aic32x4_set_dai_sysclk but to have
+   it use clk_set_rate to set the master clock rate
+
+Changes in v3:
+ - Rebase on current for-next
+ - Move "Properly Set Processing Blocks" to the start of the
+   patches so that it can potentially be applied as a bug
+   fix
+
+Annaliese McDermond (11):
+  ASoC: tlv320aic32x4: Properly Set Processing Blocks
+  ASoC: tlv320aic32x4: Model PLL in CCF
+  ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
+  ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
+  ASoC: tlv320aic32x4: Model BDIV divider in CCF
+  ASoC: tlv320aic32x4: Control clock gating with CCF
+  ASoC: tlv320aic32x4: Move aosr and dosr setting to separate functions
+  ASoC: tlv320aic32x4: Dynamically Determine Clocking
+  ASoC: tlv320aic32x4: Restructure set_dai_sysclk
+  ASoC: tlv320aic32x4: Remove mclk references
+  ASoC: tlv320aic32x4: Allow 192000 Sample Rate
+
+ sound/soc/codecs/Kconfig             |   1 +
+ sound/soc/codecs/Makefile            |   2 +-
+ sound/soc/codecs/tlv320aic32x4-clk.c | 483 +++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     | 357 ++++++++++----------
+ sound/soc/codecs/tlv320aic32x4.h     |  11 +
+ 5 files changed, 665 insertions(+), 189 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic32x4-clk.c
+
+-- 
+2.19.1
