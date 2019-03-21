@@ -1,27 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: add constraint for the asrc of older
- version" to the asoc tree
-Date: Thu, 21 Mar 2019 15:07:13 +0000 (GMT)
-Message-ID: <20190321150713.E4B1411288EC@debutante.sirena.org.uk>
-References: <3fc3a2cbe15b67537be9e97beff0d97f619a063f.1551505839.git.shengjiu.wang@nxp.com>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <3fc3a2cbe15b67537be9e97beff0d97f619a063f.1551505839.git.shengjiu.wang@nxp.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Cc: alsa-devel@alsa-project.org, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Shengjiu Wang <shengjiu.wang@nxp.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>
+Subject: Applied "ASoC: lochnagar: Add device tree binding
+	document" to the asoc tree
+Date: Thu, 21 Mar 2019 15:06:37 +0000 (GMT)
+Message-ID: <20190321150637.5E7FB11288EC@debutante.sirena.org.uk>
+References: <20190320173732.8067-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1039F89718
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 16:06:48 +0100 (CET)
+In-Reply-To: <20190320173732.8067-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: add constraint for the asrc of older version
+   ASoC: lochnagar: Add device tree binding document
 
 has been applied to the asoc tree at
 
@@ -46,55 +55,69 @@ to this mail.
 Thanks,
 Mark
 
->From 53f67a78663811968f426d480bc55887d787bd94 Mon Sep 17 00:00:00 2001
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Date: Sat, 2 Mar 2019 05:52:19 +0000
-Subject: [PATCH] ASoC: fsl_asrc: add constraint for the asrc of older version
+>From d9b27d50340c4c90637ebf24106c9064992e2f2a Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Wed, 20 Mar 2019 17:37:31 +0000
+Subject: [PATCH] ASoC: lochnagar: Add device tree binding document
 
-There is a constraint for the channel number setting on the
-asrc of older version (e.g. imx35), the channel number should
-be even, odd number isn't valid.
+Lochnagar is an evaluation and development board for Cirrus
+Logic Smart CODEC and Amp devices. It allows the connection of
+most Cirrus Logic devices on mini-cards, as well as allowing
+connection of various application processor systems to provide a
+full evaluation platform. This driver supports the board
+controller chip on the Lochnagar board.
 
-So add this constraint when the asrc of older version is used.
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ .../bindings/sound/cirrus,lochnagar.txt       | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 528e8b108422..0b937924d2e4 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -445,6 +445,19 @@ struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir)
- }
- EXPORT_SYMBOL_GPL(fsl_asrc_get_dma_channel);
- 
-+static int fsl_asrc_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+new file mode 100644
+index 000000000000..41ae2699f07a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+@@ -0,0 +1,39 @@
++Cirrus Logic Lochnagar Audio Development Board
 +
-+	/* Odd channel number is not valid for older ASRC (channel_bits==3) */
-+	if (asrc_priv->channel_bits == 3)
-+		snd_pcm_hw_constraint_step(substream->runtime, 0,
-+					   SNDRV_PCM_HW_PARAM_CHANNELS, 2);
++Lochnagar is an evaluation and development board for Cirrus Logic
++Smart CODEC and Amp devices. It allows the connection of most Cirrus
++Logic devices on mini-cards, as well as allowing connection of
++various application processor systems to provide a full evaluation
++platform.  Audio system topology, clocking and power can all be
++controlled through the Lochnagar, allowing the device under test
++to be used in a variety of possible use cases.
 +
-+	return 0;
-+}
++This binding document describes the binding for the audio portion
++of the driver.
 +
- static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_hw_params *params,
- 				  struct snd_soc_dai *dai)
-@@ -539,6 +552,7 @@ static int fsl_asrc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- }
- 
- static const struct snd_soc_dai_ops fsl_asrc_dai_ops = {
-+	.startup      = fsl_asrc_dai_startup,
- 	.hw_params    = fsl_asrc_dai_hw_params,
- 	.hw_free      = fsl_asrc_dai_hw_free,
- 	.trigger      = fsl_asrc_dai_trigger,
++This binding must be part of the Lochnagar MFD binding:
++  [4] ../mfd/cirrus,lochnagar.txt
++
++Required properties:
++
++  - compatible : One of the following strings:
++                 "cirrus,lochnagar2-soundcard"
++
++  - #sound-dai-cells : Must be set to 1.
++
++  - clocks : Contains an entry for each entry in clock-names.
++  - clock-names : Must include the following clocks:
++      "mclk" Master clock source for the sound card, should normally
++      be set to LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar
++      clock driver.
++
++Example:
++
++lochnagar-sc {
++	compatible = "cirrus,lochnagar2-soundcard";
++
++	#sound-dai-cells = <1>;
++
++	clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
++	clock-names = "mclk";
++};
 -- 
 2.20.1
