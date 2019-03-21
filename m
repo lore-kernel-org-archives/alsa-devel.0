@@ -1,111 +1,82 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PROBLEM] ALSA: hda: PCM streams are suspended
-	while opening
-Date: Thu, 21 Mar 2019 14:28:23 +0000
-Message-ID: <ffa1c237-baf8-587c-5389-29223613eb0e@nvidia.com>
-References: <1553097854-10287-1-git-send-email-jonathanh@nvidia.com>
- <s5hzhppqx8q.wl-tiwai@suse.de>
- <446faef9-a114-1b28-5636-a30bae04fa53@nvidia.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8183: add mt8183-mt6358 machine
+ driver
+Date: Thu, 21 Mar 2019 14:54:15 +0000
+Message-ID: <20190321145415.GH5684@sirena.org.uk>
+References: <1551758805-34880-1-git-send-email-shunli.wang@mediatek.com>
+ <1551758805-34880-2-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate15.nvidia.com (hqemgate15.nvidia.com [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03D8AF8076F
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 15:28:29 +0100 (CET)
-In-Reply-To: <446faef9-a114-1b28-5636-a30bae04fa53@nvidia.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
+Content-Type: multipart/mixed; boundary="===============1662067823895188433=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1551758805-34880-2-git-send-email-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 20/03/2019 17:59, Jon Hunter wrote:
-> 
-> On 20/03/2019 17:19, Takashi Iwai wrote:
->> On Wed, 20 Mar 2019 17:04:14 +0100,
->> Jon Hunter wrote:
->>>
->>> From: Jonathan Hunter <jonathanh@nvidia.com>
->>>
->>> This issue is not observed on the latest mainline kernel since the
->>> 'ALSA: PCM suspend cleanup' series has been applied and the
->>> snd_pcm_suspend_all() function call in the HDA codec driver has been
->>> removed. However, this issue impacts stable kernel branches and so I
->>> am trying to find a solution for these branches.
->>>
->>> When stress testing audio playback across multiple HDA streams
->>> simultaneously, the following failure is sometimes observed when
->>> starting playback ...
->>>
->>>  Unable to set hw params for playback: File descriptor in bad state
->>>
->>> The problem is caused because ...
->>> 1. Playback is starting for one HDA codec and so the chip->open_mutex
->>>    in azx_pcm_open() has been acquired.
->>> 2. Playback for another HDA codec is starting but is blocked waiting to
->>>    acquire the chip->open_mutex in azx_pcm_open().
->>> 3. For the HDA codec that is blocked, its runtime-pm status is still
->>>    enabled from a previous playback session that has since completed and
->>>    been closed, however its autosuspend timeout has not expired yet.
->>> 4. For the HDA codec that is blocked, the runtime-pm autosuspend timeout
->>>    now occurs calling the runtime-pm suspend callback and this calls
->>>    snd_pcm_suspend_all() placing all PCM streams in the suspended state.
->>> 5. The block HDA codec is now unblocked and fails to set the HW params
->>>    because the PCM stream is in the suspended state.
->>>
->>> The above has been observed on Tegra platforms where the autosuspend
->>> delay is set to 1 second and there is a delay to an AZX command. This
->>> highlights that there is a window of time where autosuspend can place
->>> the HDA PCM stream in the suspended state while opening the stream
->>> and cause playback to fail.
->>>
->>> Looking at commit 3d21ef0b49f8 ('ALSA: pcm: Suspend streams globally via
->>> device type PM ops') it appears that the call to snd_pcm_suspend_all()
->>> has now been moved to the to the suspend handler for PCM streams and so
->>> I am wondering if it would be equivalent to make the following change to
->>> the HDA codec driver to achieve the same behaviour but only for the HDA
->>> driver. So far the issue has not been observed with this change.
->>>
->>> Please note that I am not sending this as a formal patch as I wanted to
->>> get some feedback/comments on the above.
->>
->> I guess just backporting 3d21ef0b49f8 should be OK even for older
->> kernels.  This assures the PCM stream gets suspended before entering
->> any parent device suspend call.
->>
->> The remaining changes (except for the one for atiixp) are merely
->> cleanup of superfluous calls, and keeping them are harmless.
->>
->> Could you check whether my theory above correct?
-> 
-> I believe that you will need that change and 17bc4815de58 because we
-> need to prevent snd_pcm_suspend_all() being called in the pm-runtime
-> suspend callback. Applying only 3d21ef0b49f8 will means that at runtime
-> snd_pcm_suspend_all() can still be called from within the HDA codec
-> driver when the autosuspend timeout occurs. I will test this and
-> confirm. Maybe both could be backported?
+--===============1662067823895188433==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Yia77v5a8fyVHJSl"
+Content-Disposition: inline
 
-I confirmed today that with just 3d21ef0b49f8 the issue can occur, but
-with both 3d21ef0b49f8 and 17bc4815de58 the issue is not seen.
 
-Do you think that it would be appropriate to include these in the stable
-branches? They apply cleanly to v5.0, but we would probably need to
-back-port for early kernels such as v4.19, v4.9, etc.
+--Yia77v5a8fyVHJSl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cheers
-Jon
+On Tue, Mar 05, 2019 at 12:06:44PM +0800, Shunli Wang wrote:
 
--- 
-nvpublic
+> +config SND_SOC_MT8183_MT6358
+> +	tristate "ASoc Audio driver for MT8183 with MT6358 codec"
+> +	depends on SND_SOC_MT8183 && MTK_PMIC_WRAP
+> +	select SND_SOC_MT8183
+> +	help
+
+This doesn't build:
+
+scripts/kconfig/conf  --oldconfig Kconfig
+sound/soc/mediatek/Kconfig:119:error: recursive dependency detected!
+sound/soc/mediatek/Kconfig:119:	symbol SND_SOC_MT8183_MT6358 depends on SND_SOC_MT8183
+sound/soc/mediatek/Kconfig:109:	symbol SND_SOC_MT8183 is selected by SND_SOC_MT8183_MT6358
+For a resolution refer to Documentation/kbuild/kconfig-language.txt
+
+
+--Yia77v5a8fyVHJSl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyTpZYACgkQJNaLcl1U
+h9AjbAf8DuYIz4/B85CMwAGAQAnmgfjrOtnC5KQxpkM6m3PuHNBUHSFEpmyLYWy7
+p4ojMoDzQH/uaEChf3fOWD6oVyulAsMYx+1X2vEC+pQ5m/00FX/hBTcFfWT+7Eq5
+yERPCyhfvYgxhx4zURNKaTUpV3zfjarXM3ahqBj5DvuIXZU3NmyUhlUKSxqPKlSB
+UNYP71z6m8lP9Bp3NH/8sUKJQ2tXxKswRKhZDeXJqP5DygS+F5IqPD+cv+5Ms2xa
+av+d9Glg+/lgDEeoBTmzIYcRJGU0IePpECx9FHBkq9+Cwwp0snIe/n59u8F93Ys1
+NQdiiaT0WJACLBgUs0MfymQlHEO0fA==
+=MOOc
+-----END PGP SIGNATURE-----
+
+--Yia77v5a8fyVHJSl--
+
+
+--===============1662067823895188433==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--===============1662067823895188433==--
