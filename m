@@ -1,7 +1,7 @@
 From: "Cormier, Jonathan" <jcormier@criticallink.com>
-Subject: [PATCH v2 5/7] ASoC: tlv320aic26: Fix regmap by setting reg_defaults and reg_stride
-Date: Thu, 21 Mar 2019 18:15:47 -0400
-Message-ID: <20190321221549.13765-6-jcormier@criticallink.com>
+Subject: [PATCH v2 7/7] ASoC: tlv320aic26: Change Capture Mute to Capture Switch to match alsa documentation.
+Date: Thu, 21 Mar 2019 18:15:49 -0400
+Message-ID: <20190321221549.13765-8-jcormier@criticallink.com>
 References: <20190321221549.13765-1-jcormier@criticallink.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,60 +12,25 @@ To: Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org
 Cc: Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-tlv320aic26 codec wasn't being setup correctly on bootup due to
-a misconfigured regmap cache.
+Control name needs to match Switch for alsa to use it as the channel mute
 
-Fixes: b7e9f3973279 "ASoC: tlv320aic26: Convert to direct regmap API usage"
 Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
 ---
- sound/soc/codecs/tlv320aic26.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ sound/soc/codecs/tlv320aic26.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index db1d1704ae5c..cd1bcb9cbfe1 100644
+index c6ff4ca29d43..3935be79b091 100644
 --- a/sound/soc/codecs/tlv320aic26.c
 +++ b/sound/soc/codecs/tlv320aic26.c
-@@ -41,6 +41,27 @@ struct aic26 {
- 	int keyclick_len;
- };
- 
-+static const struct reg_default aic26_reg[] = {
-+	/* Page 0 */
-+	{ 0x00A0, 0x0000 }, { 0x00C0, 0x0000 }, { 0x00E0, 0x0000 },
-+	{ 0x0120, 0x0000 }, { 0x0140, 0x0000 },
-+	/* Page 1 */
-+	{ 0x0800, 0x0000 }, { 0x0820, 0x8000 }, { 0x0860, 0x0002 },
-+	{ 0x0880, 0xFFFF },
-+	/* Page 2 */
-+	{ 0x1000, 0x0000 }, { 0x1020, 0x8000 }, { 0x1040, 0xFFFF },
-+	{ 0x1060, 0xC580 }, { 0x1080, 0x4410 }, { 0x10A0, 0xAFC0 },
-+	{ 0x10C0, 0x0000 }, { 0x10E0,  27619 }, { 0x1100, -27034 },
-+	{ 0x1120,  26461 }, { 0x1140,  27619 }, { 0x1160, -27034 },
-+	{ 0x1180,  26461 }, { 0x11A0,  32131 }, { 0x11C0, -31506 },
-+	{ 0x11E0,  32131 }, { 0x1200, -31506 }, { 0x1220,  27619 },
-+	{ 0x1240, -27034 }, { 0x1260,  26461 }, { 0x1280,  27619 },
-+	{ 0x12A0, -27034 }, { 0x12C0,  26461 }, { 0x12E0,  32131 },
-+	{ 0x1300, -31506 }, { 0x1320,  32131 }, { 0x1340, -31506 },
-+	{ 0x1360, 0x1004 }, { 0x1380, 0x0000 }, { 0x13A0, 0x0000 },
-+	{ 0x13C0, 0xFE00 },
-+};
-+
- static const struct snd_soc_dapm_widget tlv320aic26_dapm_widgets[] = {
- SND_SOC_DAPM_INPUT("MICIN"),
- SND_SOC_DAPM_INPUT("AUX"),
-@@ -336,6 +357,13 @@ static const struct snd_soc_component_driver aic26_soc_component_dev = {
- static const struct regmap_config aic26_regmap = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
-+	/* AIC26_PAGE_ADDR(0, 0x01) */
-+	.reg_stride = 0x20,
-+
-+	.max_register = AIC26_REG_AUDIO_CTRL5,
-+	.reg_defaults = aic26_reg,
-+	.num_reg_defaults = ARRAY_SIZE(aic26_reg),
-+	.cache_type = REGCACHE_RBTREE,
- };
- 
- /* ---------------------------------------------------------------------
+@@ -269,7 +269,7 @@ static const struct snd_kcontrol_new aic26_snd_controls[] = {
+ 	SOC_DOUBLE("PCM Playback Volume", AIC26_REG_DAC_GAIN, 8, 0, 0x7f, 1),
+ 	SOC_DOUBLE("PCM Playback Switch", AIC26_REG_DAC_GAIN, 15, 7, 1, 1),
+ 	SOC_SINGLE("PCM Capture Volume", AIC26_REG_ADC_GAIN, 8, 0x7f, 0),
+-	SOC_SINGLE("PCM Capture Mute", AIC26_REG_ADC_GAIN, 15, 1, 1),
++	SOC_SINGLE("PCM Capture Switch", AIC26_REG_ADC_GAIN, 15, 1, 1),
+ 	SOC_SINGLE("Keyclick activate", AIC26_REG_AUDIO_CTRL2, 15, 0x1, 0),
+ 	SOC_SINGLE("Keyclick amplitude", AIC26_REG_AUDIO_CTRL2, 12, 0x7, 0),
+ 	SOC_SINGLE("Keyclick frequency", AIC26_REG_AUDIO_CTRL2, 8, 0x7, 0),
 -- 
 2.21.0
