@@ -1,8 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 12/14] ASoC: SOF: Add Nocodec machine driver
-	support
-Date: Thu, 21 Mar 2019 11:10:14 -0500
-Message-ID: <20190321161016.26515-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 14/14] ASoC: SOF: Add utils
+Date: Thu, 21 Mar 2019 11:10:16 -0500
+Message-ID: <20190321161016.26515-15-pierre-louis.bossart@linux.intel.com>
 References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,49 +21,23 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-
-Add a simple "fallback" machine driver that can be used to enable SOF
-on boards with no codec device. This machine driver can also be forced
-for debug/development.
+Helpers to set-up back-ends, create platform devices and common
+IO/block read/write operations
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof.h     |   6 +++
- sound/soc/sof/nocodec.c | 109 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 115 insertions(+)
- create mode 100644 sound/soc/sof/nocodec.c
+ sound/soc/sof/utils.c | 112 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+ create mode 100644 sound/soc/sof/utils.c
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 54f65ec33a6c..4640566b54fe 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -12,6 +12,7 @@
- #define __INCLUDE_SOUND_SOF_H
- 
- #include <linux/pci.h>
-+#include <sound/soc.h>
- #include <sound/soc-acpi.h>
- 
- struct snd_sof_dsp_ops;
-@@ -91,4 +92,9 @@ struct sof_dev_desc {
- 	const struct sof_arch_ops *arch_ops;
- };
- 
-+int sof_nocodec_setup(struct device *dev,
-+		      struct snd_sof_pdata *sof_pdata,
-+		      struct snd_soc_acpi_mach *mach,
-+		      const struct sof_dev_desc *desc,
-+		      const struct snd_sof_dsp_ops *ops);
- #endif
-diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
+diff --git a/sound/soc/sof/utils.c b/sound/soc/sof/utils.c
 new file mode 100644
-index 000000000000..4a66abe065c9
+index 000000000000..fbefddde34d2
 --- /dev/null
-+++ b/sound/soc/sof/nocodec.c
-@@ -0,0 +1,109 @@
++++ b/sound/soc/sof/utils.c
+@@ -0,0 +1,112 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -72,107 +45,110 @@ index 000000000000..4a66abe065c9
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++// Author: Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+#include <linux/module.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
++#include <linux/platform_device.h>
++#include <sound/soc.h>
 +#include <sound/sof.h>
 +#include "sof-priv.h"
 +
-+static struct snd_soc_card sof_nocodec_card = {
-+	.name = "nocodec", /* the sof- prefix is added by the core */
-+};
++/*
++ * Register IO
++ *
++ * The sof_io_xyz() wrappers are typically referenced in snd_sof_dsp_ops
++ * structures and and cannot be inlined.
++ */
 +
-+static int sof_nocodec_bes_setup(struct device *dev,
-+				 const struct snd_sof_dsp_ops *ops,
-+				 struct snd_soc_dai_link *links,
-+				 int link_num, struct snd_soc_card *card)
++void sof_io_write(struct snd_sof_dev *sdev, void __iomem *addr, u32 value)
 +{
-+	int i;
++	writel(value, addr);
++}
++EXPORT_SYMBOL(sof_io_write);
 +
-+	if (!ops || !links || !card)
-+		return -EINVAL;
++u32 sof_io_read(struct snd_sof_dev *sdev, void __iomem *addr)
++{
++	return readl(addr);
++}
++EXPORT_SYMBOL(sof_io_read);
 +
-+	/* set up BE dai_links */
-+	for (i = 0; i < link_num; i++) {
-+		links[i].name = devm_kasprintf(dev, GFP_KERNEL,
-+					       "NoCodec-%d", i);
-+		if (!links[i].name)
-+			return -ENOMEM;
++void sof_io_write64(struct snd_sof_dev *sdev, void __iomem *addr, u64 value)
++{
++	writeq(value, addr);
++}
++EXPORT_SYMBOL(sof_io_write64);
 +
-+		links[i].id = i;
-+		links[i].no_pcm = 1;
-+		links[i].cpu_dai_name = ops->drv[i].name;
-+		links[i].platform_name = dev_name(dev);
-+		links[i].codec_dai_name = "snd-soc-dummy-dai";
-+		links[i].codec_name = "snd-soc-dummy";
-+		links[i].dpcm_playback = 1;
-+		links[i].dpcm_capture = 1;
++u64 sof_io_read64(struct snd_sof_dev *sdev, void __iomem *addr)
++{
++	return readq(addr);
++}
++EXPORT_SYMBOL(sof_io_read64);
++
++/*
++ * IPC Mailbox IO
++ */
++
++void sof_mailbox_write(struct snd_sof_dev *sdev, u32 offset,
++		       void *message, size_t bytes)
++{
++	void __iomem *dest = sdev->bar[sdev->mailbox_bar] + offset;
++
++	memcpy_toio(dest, message, bytes);
++}
++EXPORT_SYMBOL(sof_mailbox_write);
++
++void sof_mailbox_read(struct snd_sof_dev *sdev, u32 offset,
++		      void *message, size_t bytes)
++{
++	void __iomem *src = sdev->bar[sdev->mailbox_bar] + offset;
++
++	memcpy_fromio(message, src, bytes);
++}
++EXPORT_SYMBOL(sof_mailbox_read);
++
++/*
++ * Memory copy.
++ */
++
++void sof_block_write(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *src,
++		     size_t size)
++{
++	void __iomem *dest = sdev->bar[bar] + offset;
++	const u8 *src_byte = src;
++	u32 affected_mask;
++	u32 tmp;
++	int m, n;
++
++	m = size / 4;
++	n = size % 4;
++
++	/* __iowrite32_copy use 32bit size values so divide by 4 */
++	__iowrite32_copy(dest, src, m);
++
++	if (n) {
++		affected_mask = (1 << (8 * n)) - 1;
++
++		/* first read the 32bit data of dest, then change affected
++		 * bytes, and write back to dest. For unaffected bytes, it
++		 * should not be changed
++		 */
++		tmp = ioread32(dest + m * 4);
++		tmp &= ~affected_mask;
++
++		tmp |= *(u32 *)(src_byte + m * 4) & affected_mask;
++		iowrite32(tmp, dest + m * 4);
 +	}
-+
-+	card->dai_link = links;
-+	card->num_links = link_num;
-+
-+	return 0;
 +}
++EXPORT_SYMBOL(sof_block_write);
 +
-+int sof_nocodec_setup(struct device *dev,
-+		      struct snd_sof_pdata *sof_pdata,
-+		      struct snd_soc_acpi_mach *mach,
-+		      const struct sof_dev_desc *desc,
-+		      const struct snd_sof_dsp_ops *ops)
++void sof_block_read(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *dest,
++		    size_t size)
 +{
-+	struct snd_soc_dai_link *links;
-+	int ret = 0;
++	void __iomem *src = sdev->bar[bar] + offset;
 +
-+	if (!mach)
-+		return -EINVAL;
-+
-+	sof_pdata->drv_name = "sof-nocodec";
-+
-+	mach->drv_name = "sof-nocodec";
-+	sof_pdata->fw_filename = desc->nocodec_fw_filename;
-+	sof_pdata->tplg_filename = desc->nocodec_tplg_filename;
-+
-+	/* create dummy BE dai_links */
-+	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
-+			     ops->num_drv, GFP_KERNEL);
-+	if (!links)
-+		return -ENOMEM;
-+
-+	ret = sof_nocodec_bes_setup(dev, ops, links, ops->num_drv,
-+				    &sof_nocodec_card);
-+	return ret;
++	memcpy_fromio(dest, src, size);
 +}
-+EXPORT_SYMBOL(sof_nocodec_setup);
-+
-+static int sof_nocodec_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &sof_nocodec_card;
-+
-+	card->dev = &pdev->dev;
-+
-+	return devm_snd_soc_register_card(&pdev->dev, card);
-+}
-+
-+static int sof_nocodec_remove(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver sof_nocodec_audio = {
-+	.probe = sof_nocodec_probe,
-+	.remove = sof_nocodec_remove,
-+	.driver = {
-+		.name = "sof-nocodec",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+module_platform_driver(sof_nocodec_audio)
-+
-+MODULE_DESCRIPTION("ASoC sof nocodec");
-+MODULE_AUTHOR("Liam Girdwood");
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_ALIAS("platform:sof-nocodec");
++EXPORT_SYMBOL(sof_block_read);
 -- 
 2.17.1
