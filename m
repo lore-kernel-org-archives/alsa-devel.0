@@ -1,48 +1,40 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 -next] ASoC: wm_adsp: Make some
-	variables static
-Date: Thu, 21 Mar 2019 09:10:57 +0000
-Message-ID: <20190321091057.GW46536@ediswmail.ad.cirrus.com>
-References: <20190321020106.11096-1-yuehaibing@huawei.com>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [PATCH] ALSA: hda/realtek - Add support for Acer Aspire E5-523G/ES1-432 headset mic
+Date: Thu, 21 Mar 2019 17:17:31 +0800
+Message-ID: <20190321091730.18638-1-jian-hong@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19795F80C0F
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 10:11:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20190321020106.11096-1-yuehaibing@huawei.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Yue Haibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, tiwai@suse.com, rf@opensource.cirrus.com, broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>, Jian-Hong Pan <jian-hong@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 21, 2019 at 10:01:06AM +0800, Yue Haibing wrote:
-> From: YueHaibing <yuehaibing@huawei.com>
-> 
-> Fix sparse warnings:
-> 
-> sound/soc/codecs/wm_adsp.c:309:20: warning: symbol 'wm_adsp1_ops' was not declared. Should it be static?
-> sound/soc/codecs/wm_adsp.c:310:20: warning: symbol 'wm_adsp2_ops' was not declared. Should it be static?
-> sound/soc/codecs/wm_adsp.c:311:20: warning: symbol 'wm_halo_ops' was not declared. Should it be static?
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
+From: Chris Chiu <chiu@endlessm.com>
 
-Thanks for the patch but afraid a fix for this was merged
-yesterday.
+The Acer laptop Aspire E5-523G and ES1-432 with ALC255 can't detect
+the headset microphone until ALC255_FIXUP_ACER_MIC_NO_PRESENCE quirk
+applied.
 
-Thanks,
-Charles
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Signed-off-by: Daniel Drake <drake@endlessm.com>
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 191830d4fa40..89a96442eb07 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6712,6 +6712,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
++	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+-- 
+2.20.1
