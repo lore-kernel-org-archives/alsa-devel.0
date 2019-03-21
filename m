@@ -1,8 +1,9 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH v3 00/11] ASoC: tlv320aic32x4: Rework Clock
-	Setting
-Date: Wed, 20 Mar 2019 19:38:43 -0700
-Message-ID: <20190321023854.16947-1-nh6z@nh6z.net>
+Subject: [PATCH v3 01/11] ASoC: tlv320aic32x4: Properly Set
+	Processing Blocks
+Date: Wed, 20 Mar 2019 19:38:44 -0700
+Message-ID: <20190321023854.16947-2-nh6z@nh6z.net>
+References: <20190321023854.16947-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from smtp65.ord1c.emailsrvr.com (smtp65.ord1c.emailsrvr.com
  [108.166.43.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC24EF8968A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5C34F80C0F
  for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 03:39:06 +0100 (CET)
+In-Reply-To: <20190321023854.16947-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +28,110 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-The current tlv320aic32x4 code sets the various clock parameters by
-looking in a static table in the kernel.  This works well enough,
-but it has a few disadvantages.
+Different processing blocks are required for different sampling
+rates and power parameters.  Set the processing blocks based
+on this information.
 
-1)  If the master clock doesn't match one of the precalculated values
-    the driver cannot work.  This could be because the designer
-    decided to use a different crystal, or because the clock comes
-    from a PLL that can't quite achieve the proper frequency
-    exactly.
+Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 56 ++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 20 deletions(-)
 
-2)  The driver only supports certain pre-calculated sample rates.
-    The actual hardware can support many more.  These changes
-    enable those rates.  Additionally, certain sample rates at
-    certain clock rates were previously unavailable as
-    combinations.
-
-This patch dynamically calculates the various PLL and divider
-values to find something that works.
-
-Additionally, to enable much of this, the clock tree is
-modeled as a part of the Common Clock Framework.  This allows
-for easier debugigng as you can use the standard tools such as
-/sys/kernel/debug/clk/clk_summary.  It also simplifies enabling
-the entirety of the clock tree needed, and makes sure unused
-clocks become disabled.
-
-These patches have been tested and are working on a Raspberry Pi
-with the simplecard driver.
-
-Changes in v2:
- - Update 0002 patch to change Kconfig to add dependency on CCF
- - Update 0002 patch to correct the SPDX identifier
- - Update 0002 patch to use EXPORT_SYMBOL_GPL() instead of
-   EXPORT_SYMBOL()
- - Update patches 0002, 0004 and 0005 to use prepare/unprepare
-   instead of enable/disable since the i2c operations are not
-   atomic
- - Update 0004 patch to fix indentation in commit message
- - Drop patch 0009 because it is a duplicate of the already
-   committed patch in 667e9334
- - Update 0019 patch to keep aic32x4_set_dai_sysclk but to have
-   it use clk_set_rate to set the master clock rate
-
-Changes in v3:
- - Rebase on current for-next
- - Move "Properly Set Processing Blocks" to the start of the
-   patches so that it can potentially be applied as a bug
-   fix
-
-Annaliese McDermond (11):
-  ASoC: tlv320aic32x4: Properly Set Processing Blocks
-  ASoC: tlv320aic32x4: Model PLL in CCF
-  ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
-  ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
-  ASoC: tlv320aic32x4: Model BDIV divider in CCF
-  ASoC: tlv320aic32x4: Control clock gating with CCF
-  ASoC: tlv320aic32x4: Move aosr and dosr setting to separate functions
-  ASoC: tlv320aic32x4: Dynamically Determine Clocking
-  ASoC: tlv320aic32x4: Restructure set_dai_sysclk
-  ASoC: tlv320aic32x4: Remove mclk references
-  ASoC: tlv320aic32x4: Allow 192000 Sample Rate
-
- sound/soc/codecs/Kconfig             |   1 +
- sound/soc/codecs/Makefile            |   2 +-
- sound/soc/codecs/tlv320aic32x4-clk.c | 483 +++++++++++++++++++++++++++
- sound/soc/codecs/tlv320aic32x4.c     | 357 ++++++++++----------
- sound/soc/codecs/tlv320aic32x4.h     |  11 +
- 5 files changed, 665 insertions(+), 189 deletions(-)
- create mode 100644 sound/soc/codecs/tlv320aic32x4-clk.c
-
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 1aa8f5aa4225..71a93fbc5971 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -59,6 +59,8 @@ struct aic32x4_rate_divs {
+ 	u8 nadc;
+ 	u8 madc;
+ 	u8 blck_N;
++	u8 r_block;
++	u8 p_block;
+ };
+ 
+ struct aic32x4_priv {
+@@ -307,34 +309,34 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ 
+ static const struct aic32x4_rate_divs aic32x4_divs[] = {
+ 	/* 8k rate */
+-	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24},
+-	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24},
+-	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24},
++	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24, 1, 1},
++	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24, 1, 1},
++	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24, 1, 1},
+ 	/* 11.025k rate */
+-	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16},
+-	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16},
++	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16, 1, 1},
++	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16, 1, 1},
+ 	/* 16k rate */
+-	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12},
+-	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12},
+-	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12},
++	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12, 1, 1},
++	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12, 1, 1},
++	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12, 1, 1},
+ 	/* 22.05k rate */
+-	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8},
+-	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8},
+-	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8},
++	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8, 1, 1},
++	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8, 1, 1},
++	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8, 1, 1},
+ 	/* 32k rate */
+-	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6},
+-	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6},
++	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6, 1, 1},
++	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6, 1, 1},
+ 	/* 44.1k rate */
+-	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4},
+-	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4},
+-	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4},
++	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4, 1, 1},
++	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4, 1, 1},
++	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4, 1, 1},
+ 	/* 48k rate */
+-	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4},
+-	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
+-	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4},
++	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4, 1, 1},
++	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4, 1, 1},
++	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4, 1, 1},
+ 
+ 	/* 96k rate */
+-	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1},
++	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1, 1, 9},
+ };
+ 
+ static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
+@@ -696,6 +698,18 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
++static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
++						u8 r_block, u8 p_block)
++{
++	if (r_block > 18 || p_block > 25)
++		return -EINVAL;
++
++	snd_soc_component_write(component, AIC32X4_ADCSPB, r_block);
++	snd_soc_component_write(component, AIC32X4_DACSPB, p_block);
++
++	return 0;
++}
++
+ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 				unsigned int sample_rate,
+ 				unsigned int parent_rate)
+@@ -708,6 +722,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 		return i;
+ 	}
+ 
++	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
++
+ 	/* MCLK as PLL_CLKIN */
+ 	snd_soc_component_update_bits(component, AIC32X4_CLKMUX, AIC32X4_PLL_CLKIN_MASK,
+ 			    AIC32X4_PLL_CLKIN_MCLK << AIC32X4_PLL_CLKIN_SHIFT);
 -- 
 2.19.1
