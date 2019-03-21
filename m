@@ -1,11 +1,14 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 00/14] ASoC: Sound Open Firmware (SOF) core
-Date: Thu, 21 Mar 2019 11:10:02 -0500
-Message-ID: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 02/14] ASoC: SOF: Add Sound Open Firmware
+	KControl support
+Date: Thu, 21 Mar 2019 11:10:04 -0500
+Message-ID: <20190321161016.26515-3-pierre-louis.bossart@linux.intel.com>
+References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,220 +22,579 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sound Open Firmware (SOF) is a host and DSP architecture agnostic
-audio DSP firmware. SOF is not tied to any specific host architecture
-or any specific physical IO communication type (it will work with on
-SoC DSPs, or DSP connected via SPI/I2C).
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-SOF is also not coupled to any particular DSP architecture and has
-abstraction similar to Linux to allow porting to other DSP
-architectures.
+SOF exposes regular ALSA Kcontrols that are defined by topology. This
+patch converts the Kcontrol IO to DSP IPC.
 
-https://www.sofproject.org/
+The current implementation is aligned with previous Intel solutions,
+but is not optimal and can be improved:
+a) for every get/put the host wakes up the DSP and generates an
+IPC. The kernel should cache the values and generate an IPC only when
+strictly necessary.
+b) the firmware can be implemented to only instantiate the pipelines
+and related control-related parts that are needed at a given time, and
+power-gate the relevant SRAM blocks.
 
-This patch series introduces the SOF core and utilities. Support for
-Intel devices is provided as a follow-up series.
+The development tasks for these two improvements has started, once
+validated they willl be provided in an update.
 
-The SOF core manages all the core DSP services and ALSA/ASoC IO. The
-core is responsible for loading firmware, parsing topology, exposing
-PCMs and kcontrols, providing debug and trace mechanisms and
-performing IPC between host and DSP.
-
-The SOF core also has logic to allow reuse of existing machine drivers
-for other platforms/machines without any code modification. i.e. DAI
-links can be modified at runtime to bind with SOF and SOF topologies
-instead of existing hard coded DAI links and topology.
-
-Future patches will simplify the IPC interface to allow e.g. for the
-use of RPMsg or mailboxes on other hardware, the changes are not
-included just yet.
-
-This patchset is dependent on 3 patches already shared on alsa-devel
-but not yet merged:
-    ASoC: topology: Align tplg pointer increment across all kcontrols
-    ASoC: core: support driver alias names for FE topology overrides
-    ASoC: dapm: set power_check callback for widgets that shouldnt be always on
-
-Changes since v4:
-
-feedback from Mark:
-Removed need for private field in soc_runtime
-Completely reworked IPC, now much simpler and robust. IPC refactoring
-work will continue to e.g. allow for different types of IPC hardware
-and a better split between core and platform-specific drivers.
-
-Feedback from Takashi:
-Clarified endianness and alignment issues for page tables
-Removed useless mutexes
-Removed unneeded initializations, return types and wrappers
-Use snd_mask_set_format()
-Trace code flow optimization
-Removed checks on preallocate_pages()
-Test status of open/close functions.
-
-Released reference when pm_runtime_get_sync fails
-Fixed multiple memory allocation issues
-Fixed static analysis warnings
-Fixed error checks with copy_to_user()
-Added support for multi-core DSPs
-Fixed leaked references with firmware handling on resume
-Multiple topology fixes/improvements (enum/switch, mux, removal of
-duplicate connections, widget power not reported as ON)
-Code simplifications (removed set-but-unused, typecasts, etc).
-
-Changes since v3:
-
-Addressed dozens ofcomments from Takashi Iwai, Mark Brown, Andy
-Shevchenko, Daniel Baluta (Thanks!)
-Hardened memory allocation, fixed module load/unload oops or errors
-(now at hundreds of cycles on ApolloLake devices)
-Fixed suspend/resume and removed use of suspend_late, now using
-snd_soc_pm_ops and standard flow
-Fixed topology free (multiple patches already contributed for
-ASoC-core)
-Fixed debugfs/pm_runtime interaction
-Removed error checks on debugfs, changed to EXPORT_SYMBOL_GPL
-Added filenames in debug messages, ues hex_dump_to_buffer
-Removed "sof-audio" platform device and added better error checks on
-probe
-Reworked data structures to remove mix of const/variable fields and
-duplication of pointers for platform-specific changes
-Removed redundant ops tables
-Fixed trace/logger issues
-Fixed issues with loader (alignment and block size errors)
-Fixed release_firmware handling (was all over the place)
-Simplified PCI handling
-Added comments on non-atomic triggers
-Removed enum controls (not supported in topology)
-Simplified include file dependencies
-Fix cppcheck warnings
-Fixed Kconfigs to deal with Kbuild warnings on exotic architectures
-
-Precisions:
-
-The code in this patchset is directly squashed from the SOF
-development branch [1], which tracks Mark Brown's for-next branch on a
-weekly basis and the configurations used for testing are based on the
-defconfigs at [2]. The patches are also used backported for Chromebook
-devices.
-
-Full disclosure on known limitation and issues (full list at [3])
-
-a) the interaction with ASoC is not always perfect, there are a couple
-of points where a better solution is desired (use of private data,
-support for link DMA, etc). The known points are explicitly documented
-in the code and will be updated. To be clearer, it's our belief that
-SOF does not cripple ASoC in any way, and that merging this SOF core
-does not harm others. It's just complicated to get things right,
-especially on a couple of cases where the topology and DPCM frameworks
-generate complex flows that very few people understand.
-b) The get/put methods for controls generate an IPC and possibly a
-wake-up. This is not optimal and is being fixed.
-c) runtime_pm is being hardened and the use of SMART_SUSPEND was suggested.
-
-Thank you for reviews and comments, we appreciate the time spent
-commenting on this large patchset. Thanks in particular to Alan Cox
-and Andy Shevchenko for their comments on an earlier version. This
-patchset also includes contributions from Daniel Baluta for loading
-code on non-Intel platforms.
-
-Pierre
-
-[1] https://github.com/thesofproject/linux
-[2] https://github.com/thesofproject/kconfig
-[3] https://github.com/thesofproject/linux/issues
-
-Liam Girdwood (12):
-  ASoC: SOF: Add Sound Open Firmware driver core
-  ASoC: SOF: Add Sound Open Firmware KControl support
-  ASoC: SOF: Add driver debug support.
-  ASoC: SOF: Add support for IPC IO between DSP and Host
-  ASoC: SOF: Add PCM operations support
-  ASoC: SOF: Add support for loading topologies
-  ASoC: SOF: Add DSP firmware logger support
-  ASoC: SOF: Add DSP HW abstraction operations
-  ASoC: SOF: Add firmware loader support
-  ASoC: SOF: Add userspace ABI support
-  ASoC: SOF: Add PM support
-  ASoC: SOF: Add Nocodec machine driver support
-
-Pierre-Louis Bossart (2):
-  ASoC: SOF: Add xtensa support
-  ASoC: SOF: Add utils
-
- include/sound/sof.h               |  100 +
- include/sound/sof/control.h       |  158 ++
- include/sound/sof/dai-intel.h     |  178 ++
- include/sound/sof/dai.h           |   75 +
- include/sound/sof/header.h        |  158 ++
- include/sound/sof/info.h          |  118 ++
- include/sound/sof/pm.h            |   48 +
- include/sound/sof/stream.h        |  148 ++
- include/sound/sof/topology.h      |  256 +++
- include/sound/sof/trace.h         |   66 +
- include/sound/sof/xtensa.h        |   44 +
- include/uapi/sound/sof/abi.h      |   62 +
- include/uapi/sound/sof/eq.h       |  172 ++
- include/uapi/sound/sof/fw.h       |   78 +
- include/uapi/sound/sof/header.h   |   27 +
- include/uapi/sound/sof/manifest.h |  188 ++
- include/uapi/sound/sof/tokens.h   |  103 +
- include/uapi/sound/sof/tone.h     |   21 +
- include/uapi/sound/sof/trace.h    |   97 +
- sound/soc/sof/control.c           |  544 ++++++
- sound/soc/sof/core.c              |  489 +++++
- sound/soc/sof/debug.c             |  219 +++
- sound/soc/sof/ipc.c               |  742 ++++++++
- sound/soc/sof/loader.c            |  376 ++++
- sound/soc/sof/nocodec.c           |  109 ++
- sound/soc/sof/ops.c               |  204 ++
- sound/soc/sof/ops.h               |  403 ++++
- sound/soc/sof/pcm.c               |  723 +++++++
- sound/soc/sof/pm.c                |  373 ++++
- sound/soc/sof/sof-priv.h          |  616 ++++++
- sound/soc/sof/topology.c          | 2913 +++++++++++++++++++++++++++++
- sound/soc/sof/trace.c             |  295 +++
- sound/soc/sof/utils.c             |  112 ++
- sound/soc/sof/xtensa/Kconfig      |    2 +
- sound/soc/sof/xtensa/Makefile     |    5 +
- sound/soc/sof/xtensa/core.c       |  138 ++
- 36 files changed, 10360 insertions(+)
- create mode 100644 include/sound/sof.h
- create mode 100644 include/sound/sof/control.h
- create mode 100644 include/sound/sof/dai-intel.h
- create mode 100644 include/sound/sof/dai.h
- create mode 100644 include/sound/sof/header.h
- create mode 100644 include/sound/sof/info.h
- create mode 100644 include/sound/sof/pm.h
- create mode 100644 include/sound/sof/stream.h
- create mode 100644 include/sound/sof/topology.h
- create mode 100644 include/sound/sof/trace.h
- create mode 100644 include/sound/sof/xtensa.h
- create mode 100644 include/uapi/sound/sof/abi.h
- create mode 100644 include/uapi/sound/sof/eq.h
- create mode 100644 include/uapi/sound/sof/fw.h
- create mode 100644 include/uapi/sound/sof/header.h
- create mode 100644 include/uapi/sound/sof/manifest.h
- create mode 100644 include/uapi/sound/sof/tokens.h
- create mode 100644 include/uapi/sound/sof/tone.h
- create mode 100644 include/uapi/sound/sof/trace.h
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/control.c | 544 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 544 insertions(+)
  create mode 100644 sound/soc/sof/control.c
- create mode 100644 sound/soc/sof/core.c
- create mode 100644 sound/soc/sof/debug.c
- create mode 100644 sound/soc/sof/ipc.c
- create mode 100644 sound/soc/sof/loader.c
- create mode 100644 sound/soc/sof/nocodec.c
- create mode 100644 sound/soc/sof/ops.c
- create mode 100644 sound/soc/sof/ops.h
- create mode 100644 sound/soc/sof/pcm.c
- create mode 100644 sound/soc/sof/pm.c
- create mode 100644 sound/soc/sof/sof-priv.h
- create mode 100644 sound/soc/sof/topology.c
- create mode 100644 sound/soc/sof/trace.c
- create mode 100644 sound/soc/sof/utils.c
- create mode 100644 sound/soc/sof/xtensa/Kconfig
- create mode 100644 sound/soc/sof/xtensa/Makefile
- create mode 100644 sound/soc/sof/xtensa/core.c
 
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+new file mode 100644
+index 000000000000..189cdc645939
+--- /dev/null
++++ b/sound/soc/sof/control.c
+@@ -0,0 +1,544 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++/* Mixer Controls */
++
++#include <linux/pm_runtime.h>
++#include "sof-priv.h"
++
++static inline u32 mixer_to_ipc(unsigned int value, u32 *volume_map, int size)
++{
++	if (value >= size)
++		return volume_map[size - 1];
++
++	return volume_map[value];
++}
++
++static inline u32 ipc_to_mixer(u32 value, u32 *volume_map, int size)
++{
++	int i;
++
++	for (i = 0; i < size; i++) {
++		if (volume_map[i] >= value)
++			return i;
++	}
++
++	return i - 1;
++}
++
++int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *sm =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = sm->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int err, ret;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: volume get failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* get all the mixer data from DSP */
++	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_VOLUME);
++
++	/* read back each channel */
++	for (i = 0; i < channels; i++)
++		ucontrol->value.integer.value[i] =
++			ipc_to_mixer(cdata->chanv[i].value,
++				     scontrol->volume_table, sm->max + 1);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: volume get failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *sm =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = sm->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int ret, err;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: volume put failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* update each channel */
++	for (i = 0; i < channels; i++) {
++		cdata->chanv[i].value =
++			mixer_to_ipc(ucontrol->value.integer.value[i],
++				     scontrol->volume_table, sm->max + 1);
++		cdata->chanv[i].channel = i;
++	}
++
++	/* notify DSP of mixer updates */
++	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_VOLUME);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: volume put failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_switch_get(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *sm =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = sm->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int err, ret;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: switch get failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* get all the mixer data from DSP */
++	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_SWITCH);
++
++	/* read back each channel */
++	for (i = 0; i < channels; i++)
++		ucontrol->value.integer.value[i] = cdata->chanv[i].value;
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: switch get failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
++		       struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *sm =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = sm->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int ret, err;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: switch put failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* update each channel */
++	for (i = 0; i < channels; i++) {
++		cdata->chanv[i].value = ucontrol->value.integer.value[i];
++		cdata->chanv[i].channel = i;
++	}
++
++	/* notify DSP of mixer updates */
++	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_SWITCH);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: switch put failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
++		     struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_enum *se =
++		(struct soc_enum *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = se->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int err, ret;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: enum get failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* get all the mixer data from DSP */
++	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_ENUM);
++
++	/* read back each channel */
++	for (i = 0; i < channels; i++)
++		ucontrol->value.enumerated.item[i] = cdata->chanv[i].value;
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: enum get failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
++		     struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_enum *se =
++		(struct soc_enum *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = se->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	unsigned int i, channels = scontrol->num_channels;
++	int ret, err;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: enum put failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* update each channel */
++	for (i = 0; i < channels; i++) {
++		cdata->chanv[i].value = ucontrol->value.enumerated.item[i];
++		cdata->chanv[i].channel = i;
++	}
++
++	/* notify DSP of mixer updates */
++	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_VALUE,
++				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
++				  SOF_CTRL_CMD_ENUM);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: enum put failed to idle %d\n",
++				    err);
++	return 0;
++}
++
++int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_bytes_ext *be =
++		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = be->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_abi_hdr *data = cdata->data;
++	size_t size;
++	int ret, err;
++
++	if (be->max > sizeof(ucontrol->value.bytes.data)) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: data max %d exceeds ucontrol data array size\n",
++				    be->max);
++		return -EINVAL;
++	}
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes get failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* get all the mixer data from DSP */
++	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_DATA,
++				  SOF_CTRL_TYPE_DATA_GET, scontrol->cmd);
++	size = data->size + sizeof(*data);
++	if (size > be->max) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: DSP sent %zu bytes max is %d\n",
++				    size, be->max);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	/* copy back to kcontrol */
++	memcpy(ucontrol->value.bytes.data, data, size);
++
++out:
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes get failed to idle %d\n",
++				    err);
++	return ret;
++}
++
++int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
++		      struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_bytes_ext *be =
++		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = be->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct sof_abi_hdr *data = cdata->data;
++	int ret, err;
++
++	if (be->max > sizeof(ucontrol->value.bytes.data)) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: data max %d exceeds ucontrol data array size\n",
++				    be->max);
++		return -EINVAL;
++	}
++
++	if (data->size > be->max) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: size too big %d bytes max is %d\n",
++				    data->size, be->max);
++		return -EINVAL;
++	}
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes put failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* copy from kcontrol */
++	memcpy(data, ucontrol->value.bytes.data, data->size);
++
++	/* notify DSP of mixer updates */
++	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_DATA,
++				  SOF_CTRL_TYPE_DATA_SET, scontrol->cmd);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes put failed to idle %d\n",
++				    err);
++	return ret;
++}
++
++int snd_sof_bytes_ext_put(struct snd_kcontrol *kcontrol,
++			  const unsigned int __user *binary_data,
++			  unsigned int size)
++{
++	struct soc_bytes_ext *be =
++		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = be->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct snd_ctl_tlv header;
++	const struct snd_ctl_tlv __user *tlvd =
++		(const struct snd_ctl_tlv __user *)binary_data;
++	int ret;
++	int err;
++	int max_size = SOF_IPC_MSG_MAX_SIZE -
++		sizeof(const struct sof_ipc_ctrl_data);
++
++	/*
++	 * The beginning of bytes data contains a header from where
++	 * the length (as bytes) is needed to know the correct copy
++	 * length of data from tlvd->tlv.
++	 */
++	if (copy_from_user(&header, tlvd, sizeof(const struct snd_ctl_tlv)))
++		return -EFAULT;
++
++	/*
++	 * The maximum length that can be copied is limited by IPC max
++	 * length and topology defined length for ext bytes control.
++	 */
++	if (be->max < max_size) /* min() not used to avoid sparse warnings */
++		max_size = be->max;
++	if (header.length > max_size) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: Bytes data size %d exceeds max %d.\n",
++				    header.length, max_size);
++		return -EINVAL;
++	}
++
++	/* Check that header id matches the command */
++	if (header.numid != scontrol->cmd) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: incorrect numid %d\n",
++				    header.numid);
++		return -EINVAL;
++	}
++
++	if (copy_from_user(cdata->data, tlvd->tlv, header.length))
++		return -EFAULT;
++
++	if (cdata->data->magic != SOF_ABI_MAGIC) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: Wrong ABI magic 0x%08x.\n",
++				    cdata->data->magic);
++		return -EINVAL;
++	}
++
++	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, cdata->data->abi)) {
++		dev_err_ratelimited(sdev->dev, "error: Incompatible ABI version 0x%08x.\n",
++				    cdata->data->abi);
++		return -EINVAL;
++	}
++
++	if (cdata->data->size + sizeof(const struct sof_abi_hdr) > max_size) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: Mismatch in ABI data size (truncated?).\n");
++		return -EINVAL;
++	}
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes_ext put failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/* notify DSP of mixer updates */
++	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_DATA,
++				  SOF_CTRL_TYPE_DATA_SET, scontrol->cmd);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes_ext put failed to idle %d\n",
++				    err);
++
++	return ret;
++}
++
++int snd_sof_bytes_ext_get(struct snd_kcontrol *kcontrol,
++			  unsigned int __user *binary_data,
++			  unsigned int size)
++{
++	struct soc_bytes_ext *be =
++		(struct soc_bytes_ext *)kcontrol->private_value;
++	struct snd_sof_control *scontrol = be->dobj.private;
++	struct snd_sof_dev *sdev = scontrol->sdev;
++	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
++	struct snd_ctl_tlv header;
++	struct snd_ctl_tlv __user *tlvd =
++		(struct snd_ctl_tlv __user *)binary_data;
++	int max_size = SOF_IPC_MSG_MAX_SIZE -
++		sizeof(const struct sof_ipc_ctrl_data);
++	int data_size;
++	int err;
++	int ret;
++
++	ret = pm_runtime_get_sync(sdev->dev);
++	if (ret < 0) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes_ext get failed to resume %d\n",
++				    ret);
++		pm_runtime_put_noidle(sdev->dev);
++		return ret;
++	}
++
++	/*
++	 * Decrement the limit by ext bytes header size to
++	 * ensure the user space buffer is not exceeded.
++	 */
++	size -= sizeof(const struct snd_ctl_tlv);
++
++	/* set the ABI header values */
++	cdata->data->magic = SOF_ABI_MAGIC;
++	cdata->data->abi = SOF_ABI_VERSION;
++
++	/* get all the component data from DSP */
++	ret = snd_sof_ipc_get_comp_data(sdev->ipc, scontrol,
++					SOF_IPC_COMP_GET_DATA,
++					SOF_CTRL_TYPE_DATA_GET, scontrol->cmd);
++
++	/* Prevent read of other kernel data or possibly corrupt response */
++	data_size = cdata->data->size + sizeof(const struct sof_abi_hdr);
++
++	/* check size. min3() is not used to avoid sparse warnings */
++	if (size < max_size)
++		max_size = size;
++	if (be->max < max_size)
++		max_size = be->max;
++	if (data_size > max_size) {
++		dev_err_ratelimited(sdev->dev,
++				    "error: user data size %d exceeds max size %d.\n",
++				    data_size, max_size);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	header.numid = scontrol->cmd;
++	header.length = data_size;
++	if (copy_to_user(tlvd, &header, sizeof(const struct snd_ctl_tlv))) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	if (copy_to_user(tlvd->tlv, cdata->data, data_size))
++		return -EFAULT;
++
++out:
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev,
++				    "error: bytes_ext get failed to idle %d\n",
++				    err);
++	return ret;
++}
 -- 
 2.17.1
