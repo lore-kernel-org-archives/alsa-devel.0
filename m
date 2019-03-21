@@ -1,36 +1,27 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Properly Set Processing
-	Blocks" to the asoc tree
-Date: Thu, 21 Mar 2019 15:06:39 +0000 (GMT)
-Message-ID: <20190321150639.5E41211288EC@debutante.sirena.org.uk>
-References: <20190321023854.16947-2-nh6z@nh6z.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9E6EF896B7
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 16:06:40 +0100 (CET)
-In-Reply-To: <20190321023854.16947-2-nh6z@nh6z.net>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Annaliese McDermond <nh6z@nh6z.net>
-Cc: team@nwdigitalradio.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: fsl_esai: fix channel swap issue when stream starts"
+ to the asoc tree
+Date: Thu, 21 Mar 2019 15:07:11 +0000 (GMT)
+Message-ID: <20190321150711.D55FA11288EC@debutante.sirena.org.uk>
+References: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <f05c95e5371336a8e3b0c395dc4cef70922f0caa.1551248985.git.shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Shengjiu Wang <shengjiu.wang@nxp.com>, stable@vger.kernel.org, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Properly Set Processing Blocks
+   ASoC: fsl_esai: fix channel swap issue when stream starts
 
 has been applied to the asoc tree at
 
@@ -55,116 +46,131 @@ to this mail.
 Thanks,
 Mark
 
->From c95e3a4b96293403a427b5185e60fad28af51fdd Mon Sep 17 00:00:00 2001
-From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Wed, 20 Mar 2019 19:38:44 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Properly Set Processing Blocks
+>From 0ff4e8c61b794a4bf6c854ab071a1abaaa80f358 Mon Sep 17 00:00:00 2001
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Date: Wed, 27 Feb 2019 06:31:12 +0000
+Subject: [PATCH] ASoC: fsl_esai: fix channel swap issue when stream starts
 
-Different processing blocks are required for different sampling
-rates and power parameters.  Set the processing blocks based
-on this information.
+There is very low possibility ( < 0.1% ) that channel swap happened
+in beginning when multi output/input pin is enabled. The issue is
+that hardware can't send data to correct pin in the beginning with
+the normal enable flow.
 
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
+This is hardware issue, but there is no errata, the workaround flow
+is that: Each time playback/recording, firstly clear the xSMA/xSMB,
+then enable TE/RE, then enable xSMB and xSMA (xSMB must be enabled
+before xSMA). Which is to use the xSMA as the trigger start register,
+previously the xCR_TE or xCR_RE is the bit for starting.
+
+Fixes commit 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 56 ++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 20 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 47 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 37 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 1aa8f5aa4225..71a93fbc5971 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -59,6 +59,8 @@ struct aic32x4_rate_divs {
- 	u8 nadc;
- 	u8 madc;
- 	u8 blck_N;
-+	u8 r_block;
-+	u8 p_block;
- };
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index afe67c865330..3623aa9a6f2e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -54,6 +54,8 @@ struct fsl_esai {
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
++	u32 tx_mask;
++	u32 rx_mask;
+ 	u32 hck_rate[2];
+ 	u32 sck_rate[2];
+ 	bool hck_dir[2];
+@@ -361,21 +363,13 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
+ 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
  
- struct aic32x4_priv {
-@@ -307,34 +309,34 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMA,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(tx_mask));
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_TSMB,
+-			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(tx_mask));
+-
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
+ 			   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(slots));
  
- static const struct aic32x4_rate_divs aic32x4_divs[] = {
- 	/* 8k rate */
--	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24},
--	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24},
--	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24},
-+	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24, 1, 1},
-+	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24, 1, 1},
-+	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24, 1, 1},
- 	/* 11.025k rate */
--	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16},
--	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16},
-+	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16, 1, 1},
-+	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16, 1, 1},
- 	/* 16k rate */
--	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12},
--	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12},
--	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12},
-+	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12, 1, 1},
-+	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12, 1, 1},
-+	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12, 1, 1},
- 	/* 22.05k rate */
--	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8},
--	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8},
--	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8},
-+	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8, 1, 1},
-+	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8, 1, 1},
-+	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8, 1, 1},
- 	/* 32k rate */
--	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6},
--	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6},
-+	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6, 1, 1},
-+	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6, 1, 1},
- 	/* 44.1k rate */
--	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4},
--	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4},
--	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4, 1, 1},
-+	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4, 1, 1},
-+	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4, 1, 1},
- 	/* 48k rate */
--	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4},
--	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
--	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4, 1, 1},
-+	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4, 1, 1},
-+	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4, 1, 1},
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMA,
+-			   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(rx_mask));
+-	regmap_update_bits(esai_priv->regmap, REG_ESAI_RSMB,
+-			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
+-
+ 	esai_priv->slot_width = slot_width;
+ 	esai_priv->slots = slots;
++	esai_priv->tx_mask = tx_mask;
++	esai_priv->rx_mask = rx_mask;
  
- 	/* 96k rate */
--	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1},
-+	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1, 1, 9},
- };
- 
- static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
-@@ -696,6 +698,18 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
  	return 0;
  }
+@@ -596,6 +590,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	u8 i, channels = substream->runtime->channels;
+ 	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
++	u32 mask;
  
-+static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
-+						u8 r_block, u8 p_block)
-+{
-+	if (r_block > 18 || p_block > 25)
-+		return -EINVAL;
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -608,15 +603,38 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		for (i = 0; tx && i < channels; i++)
+ 			regmap_write(esai_priv->regmap, REG_ESAI_ETDR, 0x0);
+ 
++		/*
++		 * When set the TE/RE in the end of enablement flow, there
++		 * will be channel swap issue for multi data line case.
++		 * In order to workaround this issue, we switch the bit
++		 * enablement sequence to below sequence
++		 * 1) clear the xSMB & xSMA: which is done in probe and
++		 *                           stop state.
++		 * 2) set TE/RE
++		 * 3) set xSMB
++		 * 4) set xSMA:  xSMA is the last one in this flow, which
++		 *               will trigger esai to start.
++		 */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+ 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
+ 				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
++		mask = tx ? esai_priv->tx_mask : esai_priv->rx_mask;
 +
-+	snd_soc_component_write(component, AIC32X4_ADCSPB, r_block);
-+	snd_soc_component_write(component, AIC32X4_DACSPB, p_block);
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
++				   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(mask));
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
++				   ESAI_xSMA_xS_MASK, ESAI_xSMA_xS(mask));
 +
-+	return 0;
-+}
-+
- static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 				unsigned int sample_rate,
- 				unsigned int parent_rate)
-@@ -708,6 +722,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 		return i;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+ 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK, 0);
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMA(tx),
++				   ESAI_xSMA_xS_MASK, 0);
++		regmap_update_bits(esai_priv->regmap, REG_ESAI_xSMB(tx),
++				   ESAI_xSMB_xS_MASK, 0);
+ 
+ 		/* Disable and reset FIFO */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx),
+@@ -906,6 +924,15 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return ret;
  	}
  
-+	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
++	esai_priv->tx_mask = 0xFFFFFFFF;
++	esai_priv->rx_mask = 0xFFFFFFFF;
 +
- 	/* MCLK as PLL_CLKIN */
- 	snd_soc_component_update_bits(component, AIC32X4_CLKMUX, AIC32X4_PLL_CLKIN_MASK,
- 			    AIC32X4_PLL_CLKIN_MCLK << AIC32X4_PLL_CLKIN_SHIFT);
++	/* Clear the TSMA, TSMB, RSMA, RSMB */
++	regmap_write(esai_priv->regmap, REG_ESAI_TSMA, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_TSMB, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
++	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
+ 					      &fsl_esai_dai, 1);
+ 	if (ret) {
 -- 
 2.20.1
