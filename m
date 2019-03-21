@@ -1,8 +1,7 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH v3 01/11] ASoC: tlv320aic32x4: Properly Set
-	Processing Blocks
-Date: Wed, 20 Mar 2019 19:38:44 -0700
-Message-ID: <20190321023854.16947-2-nh6z@nh6z.net>
+Subject: [PATCH v3 02/11] ASoC: tlv320aic32x4: Model PLL in CCF
+Date: Wed, 20 Mar 2019 19:38:45 -0700
+Message-ID: <20190321023854.16947-3-nh6z@nh6z.net>
 References: <20190321023854.16947-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +11,8 @@ Received: from smtp65.ord1c.emailsrvr.com (smtp65.ord1c.emailsrvr.com
  [108.166.43.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5C34F80C0F
- for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 03:39:06 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B3F8F8968A
+ for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2019 03:39:09 +0100 (CET)
 In-Reply-To: <20190321023854.16947-1-nh6z@nh6z.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,110 +27,592 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
-Different processing blocks are required for different sampling
-rates and power parameters.  Set the processing blocks based
-on this information.
+Model and manage the on-board PLL as a component in the Core
+Clock Framework.  This should allow us to do some more complex
+clock management and power control.  Also, some of the
+on-board chip clocks can be exposed to the outside, and this
+change will make those clocks easier to consume by other
+parts of the kernel.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 56 ++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 20 deletions(-)
+ sound/soc/codecs/Kconfig             |   1 +
+ sound/soc/codecs/Makefile            |   2 +-
+ sound/soc/codecs/tlv320aic32x4-clk.c | 323 +++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     |  93 ++++----
+ sound/soc/codecs/tlv320aic32x4.h     |   5 +
+ 5 files changed, 380 insertions(+), 44 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 1aa8f5aa4225..71a93fbc5971 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -59,6 +59,8 @@ struct aic32x4_rate_divs {
- 	u8 nadc;
- 	u8 madc;
- 	u8 blck_N;
-+	u8 r_block;
-+	u8 p_block;
- };
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 419114edfd57..cfb59f15bb94 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1097,6 +1097,7 @@ config SND_SOC_TLV320AIC31XX
  
- struct aic32x4_priv {
-@@ -307,34 +309,34 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ config SND_SOC_TLV320AIC32X4
+ 	tristate
++	depends on COMMON_CLK
  
- static const struct aic32x4_rate_divs aic32x4_divs[] = {
- 	/* 8k rate */
--	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24},
--	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24},
--	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24},
-+	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24, 1, 1},
-+	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24, 1, 1},
-+	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24, 1, 1},
- 	/* 11.025k rate */
--	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16},
--	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16},
-+	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16, 1, 1},
-+	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16, 1, 1},
- 	/* 16k rate */
--	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12},
--	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12},
--	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12},
-+	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12, 1, 1},
-+	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12, 1, 1},
-+	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12, 1, 1},
- 	/* 22.05k rate */
--	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8},
--	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8},
--	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8},
-+	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8, 1, 1},
-+	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8, 1, 1},
-+	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8, 1, 1},
- 	/* 32k rate */
--	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6},
--	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6},
-+	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6, 1, 1},
-+	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6, 1, 1},
- 	/* 44.1k rate */
--	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4},
--	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4},
--	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4, 1, 1},
-+	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4, 1, 1},
-+	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4, 1, 1},
- 	/* 48k rate */
--	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4},
--	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4},
--	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4},
-+	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4, 1, 1},
-+	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4, 1, 1},
-+	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4, 1, 1},
- 
- 	/* 96k rate */
--	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1},
-+	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1, 1, 9},
- };
- 
- static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
-@@ -696,6 +698,18 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
-+						u8 r_block, u8 p_block)
-+{
-+	if (r_block > 18 || p_block > 25)
-+		return -EINVAL;
+ config SND_SOC_TLV320AIC32X4_I2C
+ 	tristate "Texas Instruments TLV320AIC32x4 audio CODECs - I2C"
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index aab2ad95a137..c0c9a07975ad 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -192,7 +192,7 @@ snd-soc-tlv320aic23-i2c-objs := tlv320aic23-i2c.o
+ snd-soc-tlv320aic23-spi-objs := tlv320aic23-spi.o
+ snd-soc-tlv320aic26-objs := tlv320aic26.o
+ snd-soc-tlv320aic31xx-objs := tlv320aic31xx.o
+-snd-soc-tlv320aic32x4-objs := tlv320aic32x4.o
++snd-soc-tlv320aic32x4-objs := tlv320aic32x4.o tlv320aic32x4-clk.o
+ snd-soc-tlv320aic32x4-i2c-objs := tlv320aic32x4-i2c.o
+ snd-soc-tlv320aic32x4-spi-objs := tlv320aic32x4-spi.o
+ snd-soc-tlv320aic3x-objs := tlv320aic3x.o
+diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
+new file mode 100644
+index 000000000000..5e495fc8d931
+--- /dev/null
++++ b/sound/soc/codecs/tlv320aic32x4-clk.c
+@@ -0,0 +1,323 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Clock Tree for the Texas Instruments TLV320AIC32x4
++ *
++ * Copyright 2019 Annaliese McDermond
++ *
++ * Author: Annaliese McDermond <nh6z@nh6z.net>
++ */
 +
-+	snd_soc_component_write(component, AIC32X4_ADCSPB, r_block);
-+	snd_soc_component_write(component, AIC32X4_DACSPB, p_block);
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
++#include <linux/regmap.h>
++#include <linux/device.h>
++
++#include "tlv320aic32x4.h"
++
++#define to_clk_aic32x4(_hw) container_of(_hw, struct clk_aic32x4, hw)
++struct clk_aic32x4 {
++	struct clk_hw hw;
++	struct device *dev;
++	struct regmap *regmap;
++	unsigned int reg;
++};
++
++/*
++ * struct clk_aic32x4_pll_muldiv - Multiplier/divider settings
++ * @p:		Divider
++ * @r:		first multiplier
++ * @j:		integer part of second multiplier
++ * @d:		decimal part of second multiplier
++ */
++struct clk_aic32x4_pll_muldiv {
++	u8 p;
++	u16 r;
++	u8 j;
++	u16 d;
++};
++
++struct aic32x4_clkdesc {
++	const char *name;
++	const char * const *parent_names;
++	unsigned int num_parents;
++	const struct clk_ops *ops;
++	unsigned int reg;
++};
++
++static int clk_aic32x4_pll_prepare(struct clk_hw *hw)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++
++	return regmap_update_bits(pll->regmap, AIC32X4_PLLPR,
++				AIC32X4_PLLEN, AIC32X4_PLLEN);
++}
++
++static void clk_aic32x4_pll_unprepare(struct clk_hw *hw)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++
++	regmap_update_bits(pll->regmap, AIC32X4_PLLPR,
++				AIC32X4_PLLEN, 0);
++}
++
++static int clk_aic32x4_pll_is_prepared(struct clk_hw *hw)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(pll->regmap, AIC32X4_PLLPR, &val);
++	if (ret < 0)
++		return ret;
++
++	return !!(val & AIC32X4_PLLEN);
++}
++
++static int clk_aic32x4_pll_get_muldiv(struct clk_aic32x4 *pll,
++			struct clk_aic32x4_pll_muldiv *settings)
++{
++	/*	Change to use regmap_bulk_read? */
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(pll->regmap, AIC32X4_PLLPR, &val);
++	if (ret)
++		return ret;
++	settings->r = val & AIC32X4_PLL_R_MASK;
++	settings->p = (val & AIC32X4_PLL_P_MASK) >> AIC32X4_PLL_P_SHIFT;
++
++	ret = regmap_read(pll->regmap, AIC32X4_PLLJ, &val);
++	if (ret < 0)
++		return ret;
++	settings->j = val;
++
++	ret = regmap_read(pll->regmap, AIC32X4_PLLDMSB, &val);
++	if (ret < 0)
++		return ret;
++	settings->d = val << 8;
++
++	ret = regmap_read(pll->regmap, AIC32X4_PLLDLSB,	 &val);
++	if (ret < 0)
++		return ret;
++	settings->d |= val;
 +
 +	return 0;
 +}
 +
- static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 				unsigned int sample_rate,
++static int clk_aic32x4_pll_set_muldiv(struct clk_aic32x4 *pll,
++			struct clk_aic32x4_pll_muldiv *settings)
++{
++	int ret;
++	/*	Change to use regmap_bulk_write for some if not all? */
++
++	ret = regmap_update_bits(pll->regmap, AIC32X4_PLLPR,
++				AIC32X4_PLL_R_MASK, settings->r);
++	if (ret < 0)
++		return ret;
++
++	ret = regmap_update_bits(pll->regmap, AIC32X4_PLLPR,
++				AIC32X4_PLL_P_MASK,
++				settings->p << AIC32X4_PLL_P_SHIFT);
++	if (ret < 0)
++		return ret;
++
++	ret = regmap_write(pll->regmap, AIC32X4_PLLJ, settings->j);
++	if (ret < 0)
++		return ret;
++
++	ret = regmap_write(pll->regmap, AIC32X4_PLLDMSB, (settings->d >> 8));
++	if (ret < 0)
++		return ret;
++	ret = regmap_write(pll->regmap, AIC32X4_PLLDLSB, (settings->d & 0xff));
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static unsigned long clk_aic32x4_pll_calc_rate(
++			struct clk_aic32x4_pll_muldiv *settings,
++			unsigned long parent_rate)
++{
++	u64 rate;
++	/*
++	 * We scale j by 10000 to account for the decimal part of P and divide
++	 * it back out later.
++	 */
++	rate = (u64) parent_rate * settings->r *
++				((settings->j * 10000) + settings->d);
++
++	return (unsigned long) DIV_ROUND_UP_ULL(rate, settings->p * 10000);
++}
++
++static int clk_aic32x4_pll_calc_muldiv(struct clk_aic32x4_pll_muldiv *settings,
++			unsigned long rate, unsigned long parent_rate)
++{
++	u64 multiplier;
++
++	settings->p = parent_rate / AIC32X4_MAX_PLL_CLKIN + 1;
++	if (settings->p > 8)
++		return -1;
++
++	/*
++	 * We scale this figure by 10000 so that we can get the decimal part
++	 * of the multiplier.	This is because we can't do floating point
++	 * math in the kernel.
++	 */
++	 multiplier = (u64) rate * settings->p * 10000;
++	 do_div(multiplier, parent_rate);
++
++	/*
++	 * J can't be over 64, so R can scale this.
++	 * R can't be greater than 4.
++	 */
++	settings->r = ((u32) multiplier / 640000) + 1;
++	if (settings->r > 4)
++		return -1;
++	do_div(multiplier, settings->r);
++
++	/*
++	 * J can't be < 1.
++	 */
++	if (multiplier < 10000)
++		return -1;
++
++	/* Figure out the integer part, J, and the fractional part, D. */
++	settings->j = (u32) multiplier / 10000;
++	settings->d = (u32) multiplier % 10000;
++
++	return 0;
++}
++
++static unsigned long clk_aic32x4_pll_recalc_rate(struct clk_hw *hw,
++			unsigned long parent_rate)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++	struct clk_aic32x4_pll_muldiv settings;
++	int ret;
++
++	ret =  clk_aic32x4_pll_get_muldiv(pll, &settings);
++	if (ret < 0)
++		return 0;
++
++	return clk_aic32x4_pll_calc_rate(&settings, parent_rate);
++}
++
++static long clk_aic32x4_pll_round_rate(struct clk_hw *hw,
++			unsigned long rate,
++			unsigned long *parent_rate)
++{
++	struct clk_aic32x4_pll_muldiv settings;
++	int ret;
++
++	ret = clk_aic32x4_pll_calc_muldiv(&settings, rate, *parent_rate);
++	if (ret < 0)
++		return 0;
++
++	return clk_aic32x4_pll_calc_rate(&settings, *parent_rate);
++}
++
++static int clk_aic32x4_pll_set_rate(struct clk_hw *hw,
++			unsigned long rate,
++			unsigned long parent_rate)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++	struct clk_aic32x4_pll_muldiv settings;
++	int ret;
++
++	ret = clk_aic32x4_pll_calc_muldiv(&settings, rate, parent_rate);
++	if (ret < 0)
++		return -EINVAL;
++
++	return clk_aic32x4_pll_set_muldiv(pll, &settings);
++}
++
++static int clk_aic32x4_pll_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++
++	return regmap_update_bits(pll->regmap,
++				AIC32X4_CLKMUX,
++				AIC32X4_PLL_CLKIN_MASK,
++				index << AIC32X4_PLL_CLKIN_SHIFT);
++}
++
++static u8 clk_aic32x4_pll_get_parent(struct clk_hw *hw)
++{
++	struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
++	unsigned int val;
++
++	regmap_read(pll->regmap, AIC32X4_PLLPR, &val);
++
++	return (val & AIC32X4_PLL_CLKIN_MASK) >> AIC32X4_PLL_CLKIN_SHIFT;
++}
++
++
++static const struct clk_ops aic32x4_pll_ops = {
++	.prepare = clk_aic32x4_pll_prepare,
++	.unprepare = clk_aic32x4_pll_unprepare,
++	.is_prepared = clk_aic32x4_pll_is_prepared,
++	.recalc_rate = clk_aic32x4_pll_recalc_rate,
++	.round_rate = clk_aic32x4_pll_round_rate,
++	.set_rate = clk_aic32x4_pll_set_rate,
++	.set_parent = clk_aic32x4_pll_set_parent,
++	.get_parent = clk_aic32x4_pll_get_parent,
++};
++
++static struct aic32x4_clkdesc aic32x4_clkdesc_array[] = {
++	{
++		.name = "pll",
++		.parent_names =
++			(const char* []) { "mclk", "bclk", "gpio", "din" },
++		.num_parents = 4,
++		.ops = &aic32x4_pll_ops,
++		.reg = 0,
++	},
++};
++
++static struct clk *aic32x4_register_clk(struct device *dev,
++			struct aic32x4_clkdesc *desc)
++{
++	struct clk_init_data init;
++	struct clk_aic32x4 *priv;
++	const char *devname = dev_name(dev);
++
++	init.ops = desc->ops;
++	init.name = desc->name;
++	init.parent_names = desc->parent_names;
++	init.num_parents = desc->num_parents;
++	init.flags = 0;
++
++	priv = devm_kzalloc(dev, sizeof(struct clk_aic32x4), GFP_KERNEL);
++	if (priv == NULL)
++		return (struct clk *) -ENOMEM;
++
++	priv->dev = dev;
++	priv->hw.init = &init;
++	priv->regmap = dev_get_regmap(dev, NULL);
++	priv->reg = desc->reg;
++
++	clk_hw_register_clkdev(&priv->hw, desc->name, devname);
++	return devm_clk_register(dev, &priv->hw);
++}
++
++int aic32x4_register_clocks(struct device *dev, const char *mclk_name)
++{
++	int i;
++
++	/*
++	 * These lines are here to preserve the current functionality of
++	 * the driver with regard to the DT.  These should eventually be set
++	 * by DT nodes so that the connections can be set up in configuration
++	 * rather than code.
++	 */
++	aic32x4_clkdesc_array[0].parent_names =
++			(const char* []) { mclk_name, "bclk", "gpio", "din" };
++
++	for (i = 0; i < ARRAY_SIZE(aic32x4_clkdesc_array); ++i)
++		aic32x4_register_clk(dev, &aic32x4_clkdesc_array[i]);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(aic32x4_register_clocks);
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 71a93fbc5971..7cf8c7cedfe1 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -33,6 +33,7 @@
+ #include <linux/cdev.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
++#include <linux/of_clk.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <sound/tlv320aic32x4.h>
+@@ -49,9 +50,7 @@
+ struct aic32x4_rate_divs {
+ 	u32 mclk;
+ 	u32 rate;
+-	u8 p_val;
+-	u8 pll_j;
+-	u16 pll_d;
++	unsigned long pll_rate;
+ 	u16 dosr;
+ 	u8 ndac;
+ 	u8 mdac;
+@@ -71,6 +70,7 @@ struct aic32x4_priv {
+ 	bool swapdacs;
+ 	int rstn_gpio;
+ 	struct clk *mclk;
++	const char *mclk_name;
+ 
+ 	struct regulator *supply_ldo;
+ 	struct regulator *supply_iov;
+@@ -309,34 +309,34 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
+ 
+ static const struct aic32x4_rate_divs aic32x4_divs[] = {
+ 	/* 8k rate */
+-	{12000000, 8000, 1, 7, 6800, 768, 5, 3, 128, 5, 18, 24, 1, 1},
+-	{24000000, 8000, 2, 7, 6800, 768, 15, 1, 64, 45, 4, 24, 1, 1},
+-	{25000000, 8000, 2, 7, 3728, 768, 15, 1, 64, 45, 4, 24, 1, 1},
++	{ 12000000, 8000, 57120000, 768, 5, 3, 128, 5, 18, 24, 1, 1 },
++	{ 24000000, 8000, 57120000, 768, 15, 1, 64, 45, 4, 24, 1, 1 },
++	{ 25000000, 8000, 32620000, 768, 15, 1, 64, 45, 4, 24, 1, 1 },
+ 	/* 11.025k rate */
+-	{12000000, 11025, 1, 7, 5264, 512, 8, 2, 128, 8, 8, 16, 1, 1},
+-	{24000000, 11025, 2, 7, 5264, 512, 16, 1, 64, 32, 4, 16, 1, 1},
++	{ 12000000, 11025, 44217600, 512, 8, 2, 128, 8, 8, 16, 1, 1 },
++	{ 24000000, 11025, 44217600, 512, 16, 1, 64, 32, 4, 16, 1, 1 },
+ 	/* 16k rate */
+-	{12000000, 16000, 1, 7, 6800, 384, 5, 3, 128, 5, 9, 12, 1, 1},
+-	{24000000, 16000, 2, 7, 6800, 384, 15, 1, 64, 18, 5, 12, 1, 1},
+-	{25000000, 16000, 2, 7, 3728, 384, 15, 1, 64, 18, 5, 12, 1, 1},
++	{ 12000000, 16000, 57120000, 384, 5, 3, 128, 5, 9, 12, 1, 1 },
++	{ 24000000, 16000, 57120000, 384, 15, 1, 64, 18, 5, 12, 1, 1 },
++	{ 25000000, 16000, 32620000, 384, 15, 1, 64, 18, 5, 12, 1, 1 },
+ 	/* 22.05k rate */
+-	{12000000, 22050, 1, 7, 5264, 256, 4, 4, 128, 4, 8, 8, 1, 1},
+-	{24000000, 22050, 2, 7, 5264, 256, 16, 1, 64, 16, 4, 8, 1, 1},
+-	{25000000, 22050, 2, 7, 2253, 256, 16, 1, 64, 16, 4, 8, 1, 1},
++	{ 12000000, 22050, 44217600, 256, 4, 4, 128, 4, 8, 8, 1, 1 },
++	{ 24000000, 22050, 44217600, 256, 16, 1, 64, 16, 4, 8, 1, 1 },
++	{ 25000000, 22050, 19713750, 256, 16, 1, 64, 16, 4, 8, 1, 1 },
+ 	/* 32k rate */
+-	{12000000, 32000, 1, 7, 1680, 192, 2, 7, 64, 2, 21, 6, 1, 1},
+-	{24000000, 32000, 2, 7, 1680, 192, 7, 2, 64, 7, 6, 6, 1, 1},
++	{ 12000000, 32000, 14112000, 192, 2, 7, 64, 2, 21, 6, 1, 1 },
++	{ 24000000, 32000, 14112000, 192, 7, 2, 64, 7, 6, 6, 1, 1 },
+ 	/* 44.1k rate */
+-	{12000000, 44100, 1, 7, 5264, 128, 2, 8, 128, 2, 8, 4, 1, 1},
+-	{24000000, 44100, 2, 7, 5264, 128, 8, 2, 64, 8, 4, 4, 1, 1},
+-	{25000000, 44100, 2, 7, 2253, 128, 8, 2, 64, 8, 4, 4, 1, 1},
++	{ 12000000, 44100, 44217600, 128, 2, 8, 128, 2, 8, 4, 1, 1 },
++	{ 24000000, 44100, 44217600, 128, 8, 2, 64, 8, 4, 4, 1, 1 },
++	{ 25000000, 44100, 19713750, 128, 8, 2, 64, 8, 4, 4, 1, 1 },
+ 	/* 48k rate */
+-	{12000000, 48000, 1, 8, 1920, 128, 2, 8, 128, 2, 8, 4, 1, 1},
+-	{24000000, 48000, 2, 8, 1920, 128, 8, 2, 64, 8, 4, 4, 1, 1},
+-	{25000000, 48000, 2, 7, 8643, 128, 8, 2, 64, 8, 4, 4, 1, 1},
++	{ 12000000, 48000, 18432000, 128, 2, 8, 128, 2, 8, 4, 1, 1 },
++	{ 24000000, 48000, 18432000, 128, 8, 2, 64, 8, 4, 4, 1, 1 },
++	{ 25000000, 48000, 75626250, 128, 8, 2, 64, 8, 4, 4, 1, 1 },
+ 
+ 	/* 96k rate */
+-	{25000000, 96000, 2, 7, 8643, 64, 4, 4, 64, 4, 4, 1, 1, 9},
++	{ 25000000, 96000, 75626250, 64, 4, 4, 64, 4, 4, 1, 1, 9 },
+ };
+ 
+ static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
+@@ -715,6 +715,11 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
  				unsigned int parent_rate)
-@@ -708,6 +722,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ {
+ 	int i;
++	int ret;
++
++	struct clk_bulk_data clocks[] = {
++		{ .id = "pll" },
++	};
+ 
+ 	i = aic32x4_get_divs(parent_rate, sample_rate);
+ 	if (i < 0) {
+@@ -722,32 +727,22 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
  		return i;
  	}
  
-+	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
++	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
++	if (ret)
++		return ret;
 +
- 	/* MCLK as PLL_CLKIN */
- 	snd_soc_component_update_bits(component, AIC32X4_CLKMUX, AIC32X4_PLL_CLKIN_MASK,
- 			    AIC32X4_PLL_CLKIN_MCLK << AIC32X4_PLL_CLKIN_SHIFT);
++	clk_set_rate(clocks[0].clk, sample_rate);
++
+ 	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
+ 
+-	/* MCLK as PLL_CLKIN */
+-	snd_soc_component_update_bits(component, AIC32X4_CLKMUX, AIC32X4_PLL_CLKIN_MASK,
+-			    AIC32X4_PLL_CLKIN_MCLK << AIC32X4_PLL_CLKIN_SHIFT);
+ 	/* PLL as CODEC_CLKIN */
+-	snd_soc_component_update_bits(component, AIC32X4_CLKMUX, AIC32X4_CODEC_CLKIN_MASK,
++	snd_soc_component_update_bits(component, AIC32X4_CLKMUX,
++			AIC32X4_CODEC_CLKIN_MASK,
+ 			AIC32X4_CODEC_CLKIN_PLL << AIC32X4_CODEC_CLKIN_SHIFT);
+ 	/* DAC_MOD_CLK as BDIV_CLKIN */
+ 	snd_soc_component_update_bits(component, AIC32X4_IFACE3, AIC32X4_BDIVCLK_MASK,
+ 				AIC32X4_DACMOD2BCLK << AIC32X4_BDIVCLK_SHIFT);
+ 
+-	/* We will fix R value to 1 and will make P & J=K.D as variable */
+-	snd_soc_component_update_bits(component, AIC32X4_PLLPR, AIC32X4_PLL_R_MASK, 0x01);
+-
+-	/* PLL P value */
+-	snd_soc_component_update_bits(component, AIC32X4_PLLPR, AIC32X4_PLL_P_MASK,
+-			    aic32x4_divs[i].p_val << AIC32X4_PLL_P_SHIFT);
+-
+-	/* PLL J value */
+-	snd_soc_component_write(component, AIC32X4_PLLJ, aic32x4_divs[i].pll_j);
+-
+-	/* PLL D value */
+-	snd_soc_component_write(component, AIC32X4_PLLDMSB, (aic32x4_divs[i].pll_d >> 8));
+-	snd_soc_component_write(component, AIC32X4_PLLDLSB, (aic32x4_divs[i].pll_d & 0xff));
+-
+ 	/* NDAC divider value */
+ 	snd_soc_component_update_bits(component, AIC32X4_NDAC,
+ 				AIC32X4_NDAC_MASK, aic32x4_divs[i].ndac);
+@@ -1006,8 +1001,8 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+ 
+ 	/* Power platform configuration */
+ 	if (aic32x4->power_cfg & AIC32X4_PWR_MICBIAS_2075_LDOIN) {
+-		snd_soc_component_write(component, AIC32X4_MICBIAS, AIC32X4_MICBIAS_LDOIN |
+-						      AIC32X4_MICBIAS_2075V);
++		snd_soc_component_write(component, AIC32X4_MICBIAS,
++				AIC32X4_MICBIAS_LDOIN | AIC32X4_MICBIAS_2075V);
+ 	}
+ 	if (aic32x4->power_cfg & AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE)
+ 		snd_soc_component_write(component, AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE);
+@@ -1070,12 +1065,18 @@ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+ 		struct device_node *np)
+ {
+ 	struct aic32x4_setup_data *aic32x4_setup;
++	int ret;
+ 
+ 	aic32x4_setup = devm_kzalloc(aic32x4->dev, sizeof(*aic32x4_setup),
+ 							GFP_KERNEL);
+ 	if (!aic32x4_setup)
+ 		return -ENOMEM;
+ 
++	ret = of_property_match_string(np, "clock-names", "mclk");
++	if (ret < 0)
++		return -EINVAL;
++	aic32x4->mclk_name = of_clk_get_parent_name(np, ret);
++
+ 	aic32x4->swapdacs = false;
+ 	aic32x4->micpga_routing = 0;
+ 	aic32x4->rstn_gpio = of_get_named_gpio(np, "reset-gpios", 0);
+@@ -1209,6 +1210,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		aic32x4->swapdacs = pdata->swapdacs;
+ 		aic32x4->micpga_routing = pdata->micpga_routing;
+ 		aic32x4->rstn_gpio = pdata->rstn_gpio;
++		aic32x4->mclk_name = "mclk";
+ 	} else if (np) {
+ 		ret = aic32x4_parse_dt(aic32x4, np);
+ 		if (ret) {
+@@ -1220,6 +1222,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		aic32x4->swapdacs = false;
+ 		aic32x4->micpga_routing = 0;
+ 		aic32x4->rstn_gpio = -1;
++		aic32x4->mclk_name = "mclk";
+ 	}
+ 
+ 	aic32x4->mclk = devm_clk_get(dev, "mclk");
+@@ -1228,6 +1231,10 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		return PTR_ERR(aic32x4->mclk);
+ 	}
+ 
++	ret = aic32x4_register_clocks(dev, aic32x4->mclk_name);
++	if (ret)
++		return ret;
++
+ 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+ 		ret = devm_gpio_request_one(dev, aic32x4->rstn_gpio,
+ 				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index c2d74025bf4b..e2b65bbba7c2 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -16,6 +16,7 @@ struct regmap_config;
+ extern const struct regmap_config aic32x4_regmap_config;
+ int aic32x4_probe(struct device *dev, struct regmap *regmap);
+ int aic32x4_remove(struct device *dev);
++int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
+ 
+ /* tlv320aic32x4 register space (in decimal to match datasheet) */
+ 
+@@ -205,4 +206,8 @@ int aic32x4_remove(struct device *dev);
+ #define AIC32X4_RMICPGANIN_IN1L_10K	0x10
+ #define AIC32X4_RMICPGANIN_CM1R_10K	0x40
+ 
++/* Clock Limits */
++#define AIC32X4_MAX_PLL_CLKIN		20000000
++
++
+ #endif				/* _TLV320AIC32X4_H */
 -- 
 2.19.1
