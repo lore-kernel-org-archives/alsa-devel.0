@@ -1,7 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 09/14] ASoC: SOF: Add firmware loader support
-Date: Thu, 21 Mar 2019 11:10:11 -0500
-Message-ID: <20190321161016.26515-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 11/14] ASoC: SOF: Add PM support
+Date: Thu, 21 Mar 2019 11:10:13 -0500
+Message-ID: <20190321161016.26515-12-pierre-louis.bossart@linux.intel.com>
 References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,27 +18,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-The firmware loader exports APIs that can be called by core to load and
-process multiple different file formats.
+Add support for saving and restoring DSP context in D3 to host DDR.
 
+The suspend callback includes: suspend all pcm's stream that are running,
+send CTX_SAVE ipc, drop all ipc's, release trace dma and then
+power off the DSP.
+
+And the resume callback performs the following steps: load FW, run FW,
+re-initialize trace, restore pipeline, restore the kcontrol values
+and finally send the ctx restore ipc to the dsp.
+
+The streams that are suspended are resumed by the ALSA resume trigger.
+If the streams are paused during system suspend, they are marked
+explicitly so they can be restored during PAUSE_RELEASE.
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 376 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 376 insertions(+)
- create mode 100644 sound/soc/sof/loader.c
+ sound/soc/sof/pm.c | 373 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 373 insertions(+)
+ create mode 100644 sound/soc/sof/pm.c
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
 new file mode 100644
-index 000000000000..657c0dd5c013
+index 000000000000..fd0cf10bf742
 --- /dev/null
-+++ b/sound/soc/sof/loader.c
-@@ -0,0 +1,376 @@
++++ b/sound/soc/sof/pm.c
+@@ -0,0 +1,373 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -48,372 +60,369 @@ index 000000000000..657c0dd5c013
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
-+// Generic firmware loader.
-+//
 +
-+#include <linux/firmware.h>
-+#include <sound/sof.h>
 +#include "ops.h"
++#include "sof-priv.h"
 +
-+static int get_ext_windows(struct snd_sof_dev *sdev,
-+			   struct sof_ipc_ext_data_hdr *ext_hdr)
++static int sof_restore_kcontrols(struct snd_sof_dev *sdev)
 +{
-+	struct sof_ipc_window *w = (struct sof_ipc_window *)ext_hdr;
-+	size_t size;
++	struct snd_sof_control *scontrol = NULL;
++	int ipc_cmd, ctrl_type;
++	int ret = 0;
 +
-+	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
-+		return -EINVAL;
++	/* restore kcontrol values */
++	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
++		/* reset readback offset for scontrol after resuming */
++		scontrol->readback_offset = 0;
 +
-+	size = sizeof(*w) + sizeof(struct sof_ipc_window_elem) * w->num_windows;
++		/* notify DSP of kcontrol values */
++		switch (scontrol->cmd) {
++		case SOF_CTRL_CMD_VOLUME:
++			/* fallthrough */
++		case SOF_CTRL_CMD_ENUM:
++			/* fallthrough */
++		case SOF_CTRL_CMD_SWITCH:
++			ipc_cmd = SOF_IPC_COMP_SET_VALUE;
++			ctrl_type = SOF_CTRL_TYPE_VALUE_CHAN_SET;
++			ret = snd_sof_ipc_set_comp_data(sdev->ipc, scontrol,
++							ipc_cmd, ctrl_type,
++							scontrol->cmd);
++			break;
++		case SOF_CTRL_CMD_BINARY:
++			ipc_cmd = SOF_IPC_COMP_SET_DATA;
++			ctrl_type = SOF_CTRL_TYPE_DATA_SET;
++			ret = snd_sof_ipc_set_comp_data(sdev->ipc, scontrol,
++							ipc_cmd, ctrl_type,
++							scontrol->cmd);
++			break;
 +
-+	/* keep a local copy of the data */
-+	sdev->info_window = kmemdup(w, size, GFP_KERNEL);
-+	if (!sdev->info_window)
-+		return -ENOMEM;
++		default:
++			break;
++		}
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed kcontrol value set for widget: %d\n",
++				scontrol->comp_id);
++
++			return ret;
++		}
++	}
 +
 +	return 0;
 +}
 +
-+/* parse the extended FW boot data structures from FW boot message */
-+int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
++static int sof_restore_pipelines(struct snd_sof_dev *sdev)
 +{
-+	struct sof_ipc_ext_data_hdr *ext_hdr;
-+	void *ext_data;
++	struct snd_sof_widget *swidget = NULL;
++	struct snd_sof_route *sroute = NULL;
++	struct sof_ipc_pipe_new *pipeline;
++	struct snd_sof_dai *dai;
++	struct sof_ipc_comp_dai *comp_dai;
++	struct sof_ipc_cmd_hdr *hdr;
 +	int ret = 0;
 +
-+	ext_data = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!ext_data)
-+		return -ENOMEM;
++	/* restore pipeline components */
++	list_for_each_entry_reverse(swidget, &sdev->widget_list, list) {
++		struct sof_ipc_comp_reply r;
 +
-+	/* get first header */
-+	snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+			       sizeof(*ext_hdr));
-+	ext_hdr = (struct sof_ipc_ext_data_hdr *)ext_data;
++		/* skip if there is no private data */
++		if (!swidget->private)
++			continue;
 +
-+	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
-+		/* read in ext structure */
-+		offset += sizeof(*ext_hdr);
-+		snd_sof_dsp_block_read(sdev, bar, offset,
-+				   (void *)((u8 *)ext_data + sizeof(*ext_hdr)),
-+				   ext_hdr->hdr.size - sizeof(*ext_hdr));
-+
-+		dev_dbg(sdev->dev, "found ext header type %d size 0x%x\n",
-+			ext_hdr->type, ext_hdr->hdr.size);
-+
-+		/* process structure data */
-+		switch (ext_hdr->type) {
-+		case SOF_IPC_EXT_DMA_BUFFER:
++		switch (swidget->id) {
++		case snd_soc_dapm_dai_in:
++			/* fallthrough */
++		case snd_soc_dapm_dai_out:
++			dai = (struct snd_sof_dai *)swidget->private;
++			comp_dai = &dai->comp_dai;
++			ret = sof_ipc_tx_message(sdev->ipc,
++						 comp_dai->comp.hdr.cmd,
++						 comp_dai, sizeof(*comp_dai),
++						 &r, sizeof(r));
 +			break;
-+		case SOF_IPC_EXT_WINDOW:
-+			ret = get_ext_windows(sdev, ext_hdr);
++		case snd_soc_dapm_scheduler:
++
++			/*
++			 * During suspend, all DSP cores are powered off.
++			 * Therefore upon resume, create the pipeline comp
++			 * and power up the core that the pipeline is
++			 * scheduled on.
++			 */
++			pipeline = (struct sof_ipc_pipe_new *)swidget->private;
++			ret = sof_load_pipeline_ipc(sdev, pipeline, &r);
 +			break;
 +		default:
++			hdr = (struct sof_ipc_cmd_hdr *)swidget->private;
++			ret = sof_ipc_tx_message(sdev->ipc, hdr->cmd,
++						 swidget->private, hdr->size,
++						 &r, sizeof(r));
 +			break;
 +		}
-+
 +		if (ret < 0) {
-+			dev_err(sdev->dev, "error: failed to parse ext data type %d\n",
-+				ext_hdr->type);
-+			break;
-+		}
++			dev_err(sdev->dev,
++				"error: failed to load widget type %d with ID: %d\n",
++				swidget->widget->id, swidget->comp_id);
 +
-+		/* move to next header */
-+		offset += ext_hdr->hdr.size;
-+		snd_sof_dsp_block_read(sdev, bar, offset, ext_data,
-+				       sizeof(*ext_hdr));
-+		ext_hdr = (struct sof_ipc_ext_data_hdr *)ext_data;
++			return ret;
++		}
 +	}
 +
-+	kfree(ext_data);
-+	return ret;
-+}
-+EXPORT_SYMBOL(snd_sof_fw_parse_ext_data);
++	/* restore pipeline connections */
++	list_for_each_entry_reverse(sroute, &sdev->route_list, list) {
++		struct sof_ipc_pipe_comp_connect *connect;
++		struct sof_ipc_reply reply;
 +
-+/* generic module parser for mmaped DSPs */
-+int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
-+				struct snd_sof_mod_hdr *module)
-+{
-+	struct snd_sof_blk_hdr *block;
-+	int count;
-+	u32 offset;
-+	size_t remaining;
++		/* skip if there's no private data */
++		if (!sroute->private)
++			continue;
 +
-+	dev_dbg(sdev->dev, "new module size 0x%x blocks 0x%x type 0x%x\n",
-+		module->size, module->num_blocks, module->type);
++		connect = sroute->private;
 +
-+	block = (struct snd_sof_blk_hdr *)((u8 *)module + sizeof(*module));
++		/* send ipc */
++		ret = sof_ipc_tx_message(sdev->ipc,
++					 connect->hdr.cmd,
++					 connect, sizeof(*connect),
++					 &reply, sizeof(reply));
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to load route sink %s control %s source %s\n",
++				sroute->route->sink,
++				sroute->route->control ? sroute->route->control
++					: "none",
++				sroute->route->source);
 +
-+	/* module->size doesn't include header size */
-+	remaining = module->size;
-+	for (count = 0; count < module->num_blocks; count++) {
-+		/* minus header size of block */
-+		remaining -= sizeof(*block);
-+		if (remaining < block->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
++			return ret;
 +		}
++	}
 +
-+		if (block->size == 0) {
-+			dev_warn(sdev->dev,
-+				 "warning: block %d size zero\n", count);
-+			dev_warn(sdev->dev, " type 0x%x offset 0x%x\n",
-+				 block->type, block->offset);
++	/* restore dai links */
++	list_for_each_entry_reverse(dai, &sdev->dai_list, list) {
++		struct sof_ipc_reply reply;
++		struct sof_ipc_dai_config *config = dai->dai_config;
++
++		if (!config) {
++			dev_err(sdev->dev, "error: no config for DAI %s\n",
++				dai->name);
 +			continue;
 +		}
 +
-+		switch (block->type) {
-+		case SOF_FW_BLK_TYPE_RSRVD0:
-+		case SOF_FW_BLK_TYPE_SRAM...SOF_FW_BLK_TYPE_RSRVD14:
-+			continue;	/* not handled atm */
-+		case SOF_FW_BLK_TYPE_IRAM:
-+		case SOF_FW_BLK_TYPE_DRAM:
-+			offset = block->offset;
++		ret = sof_ipc_tx_message(sdev->ipc,
++					 config->hdr.cmd, config,
++					 config->hdr.size,
++					 &reply, sizeof(reply));
++
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: failed to set dai config for %s\n",
++				dai->name);
++
++			return ret;
++		}
++	}
++
++	/* complete pipeline */
++	list_for_each_entry(swidget, &sdev->widget_list, list) {
++		switch (swidget->id) {
++		case snd_soc_dapm_scheduler:
++			swidget->complete =
++				snd_sof_complete_pipeline(sdev, swidget);
 +			break;
 +		default:
-+			dev_err(sdev->dev, "error: bad type 0x%x for block 0x%x\n",
-+				block->type, count);
-+			return -EINVAL;
++			break;
 +		}
-+
-+		dev_dbg(sdev->dev,
-+			"block %d type 0x%x size 0x%x ==>  offset 0x%x\n",
-+			count, block->type, block->size, offset);
-+
-+		/* checking block->size to avoid unaligned access */
-+		if (block->size % sizeof(u32)) {
-+			dev_err(sdev->dev, "error: invalid block size 0x%x\n",
-+				block->size);
-+			return -EINVAL;
-+		}
-+		snd_sof_dsp_block_write(sdev, sdev->mmio_bar, offset,
-+					(void *)((u8 *)block + sizeof(*block)),
-+					block->size);
-+
-+		/* minus body size of block */
-+		remaining -= block->size;
-+		/* next block */
-+		block = (struct snd_sof_blk_hdr *)((u8 *)block + sizeof(*block)
-+			+ block->size);
 +	}
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
++	/* restore pipeline kcontrols */
++	ret = sof_restore_kcontrols(sdev);
++	if (ret < 0)
++		dev_err(sdev->dev,
++			"error: restoring kcontrols after resume\n");
 +
-+static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw)
-+{
-+	struct snd_sof_fw_header *header;
-+
-+	/* Read the header information from the data pointer */
-+	header = (struct snd_sof_fw_header *)fw->data;
-+
-+	/* verify FW sig */
-+	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
-+		dev_err(sdev->dev, "error: invalid firmware signature\n");
-+		return -EINVAL;
-+	}
-+
-+	/* check size is valid */
-+	if (fw->size != header->file_size + sizeof(*header)) {
-+		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
-+			fw->size, header->file_size + sizeof(*header));
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(sdev->dev, "header size=0x%x modules=0x%x abi=0x%x size=%zu\n",
-+		header->file_size, header->num_modules,
-+		header->abi, sizeof(*header));
-+
-+	return 0;
++	return ret;
 +}
 +
-+static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw)
++static int sof_send_pm_ipc(struct snd_sof_dev *sdev, int cmd)
 +{
-+	struct snd_sof_fw_header *header;
-+	struct snd_sof_mod_hdr *module;
-+	int (*load_module)(struct snd_sof_dev *sof_dev,
-+			   struct snd_sof_mod_hdr *hdr);
-+	int ret, count;
-+	size_t remaining;
++	struct sof_ipc_pm_ctx pm_ctx;
++	struct sof_ipc_reply reply;
 +
-+	header = (struct snd_sof_fw_header *)fw->data;
-+	load_module = sof_ops(sdev)->load_module;
-+	if (!load_module)
-+		return -EINVAL;
++	memset(&pm_ctx, 0, sizeof(pm_ctx));
 +
-+	/* parse each module */
-+	module = (struct snd_sof_mod_hdr *)((u8 *)(fw->data) + sizeof(*header));
-+	remaining = fw->size - sizeof(*header);
-+	for (count = 0; count < header->num_modules; count++) {
-+		/* minus header size of module */
-+		remaining -= sizeof(*module);
-+		if (remaining < module->size) {
-+			dev_err(sdev->dev, "error: not enough data remaining\n");
-+			return -EINVAL;
-+		}
-+		/* module */
-+		ret = load_module(sdev, module);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: invalid module %d\n", count);
-+			return ret;
-+		}
-+		/* minus body size of module */
-+		remaining -=  module->size;
-+		module = (struct snd_sof_mod_hdr *)((u8 *)module
-+			+ sizeof(*module) + module->size);
-+	}
++	/* configure ctx save ipc message */
++	pm_ctx.hdr.size = sizeof(pm_ctx);
++	pm_ctx.hdr.cmd = SOF_IPC_GLB_PM_MSG | cmd;
 +
-+	return 0;
++	/* send ctx save ipc to dsp */
++	return sof_ipc_tx_message(sdev->ipc, pm_ctx.hdr.cmd, &pm_ctx,
++				 sizeof(pm_ctx), &reply, sizeof(reply));
 +}
 +
-+int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
++static void sof_set_restore_stream(struct snd_sof_dev *sdev)
 +{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	const char *fw_filename;
-+	int ret;
++	struct snd_sof_pcm *spcm;
 +
-+	/* set code loading condition to true */
-+	sdev->code_loading = 1;
++	/* suspend all running streams */
++	list_for_each_entry(spcm, &sdev->pcm_list, list) {
 +
-+	/* Don't request firmware again if firmware is already requested */
-+	if (plat_data->fw)
++		spcm->restore_stream[0] = 1;
++		spcm->restore_stream[1] = 1;
++
++	}
++}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++static void sof_cache_debugfs(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_dfsentry *dfse;
++
++	list_for_each_entry(dfse, &sdev->dfsentry_list, list) {
++
++		/* nothing to do if debugfs buffer is not IO mem */
++		if (dfse->type == SOF_DFSENTRY_TYPE_BUF)
++			continue;
++
++		/* cache memory that is only accessible in D0 */
++		if (dfse->access_type == SOF_DEBUGFS_ACCESS_D0_ONLY)
++			memcpy_fromio(dfse->cache_buf, dfse->io_mem,
++				      dfse->size);
++	}
++}
++#endif
++
++static int sof_resume(struct device *dev, bool runtime_resume)
++{
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret = 0;
++
++	/* do nothing if dsp resume callbacks are not set */
++	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
 +		return 0;
 +
-+	fw_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+				     "%s/%s",
-+				     plat_data->fw_filename_prefix,
-+				     plat_data->fw_filename);
-+	if (!fw_filename)
-+		return -ENOMEM;
-+
-+	ret = request_firmware(&plat_data->fw, fw_filename, sdev->dev);
-+
++	/*
++	 * if the runtime_resume flag is set, call the runtime_resume routine
++	 * or else call the system resume routine
++	 */
++	if (runtime_resume)
++		ret = snd_sof_dsp_runtime_resume(sdev);
++	else
++		ret = snd_sof_dsp_resume(sdev);
 +	if (ret < 0) {
-+		dev_err(sdev->dev, "error: request firmware %s failed err: %d\n",
-+			fw_filename, ret);
++		dev_err(sdev->dev,
++			"error: failed to power up DSP after resume\n");
++		return ret;
 +	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(snd_sof_load_firmware_raw);
 +
-+int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_pdata *plat_data = sdev->pdata;
-+	int ret;
++	/* load the firmware */
++	ret = snd_sof_load_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to load DSP firmware after resume %d\n",
++			ret);
++		return ret;
++	}
 +
-+	ret = snd_sof_load_firmware_raw(sdev);
++	/* boot the firmware */
++	ret = snd_sof_run_firmware(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to boot DSP firmware after resume %d\n",
++			ret);
++		return ret;
++	}
++
++	/* resume DMA trace, only need send ipc */
++	ret = snd_sof_init_trace_ipc(sdev);
++	if (ret < 0) {
++		/* non fatal */
++		dev_warn(sdev->dev,
++			 "warning: failed to init trace after resume %d\n",
++			 ret);
++	}
++
++	/* restore pipelines */
++	ret = sof_restore_pipelines(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev,
++			"error: failed to restore pipeline after resume %d\n",
++			ret);
++		return ret;
++	}
++
++	/* notify DSP of system resume */
++	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_RESTORE);
 +	if (ret < 0)
-+		return ret;
++		dev_err(sdev->dev,
++			"error: ctx_restore ipc error during resume %d\n",
++			ret);
 +
-+	/* make sure the FW header and file is valid */
-+	ret = check_header(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW header\n");
-+		goto error;
-+	}
-+
-+	/* prepare the DSP for FW loading */
-+	ret = snd_sof_dsp_reset(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		goto error;
-+	}
-+
-+	/* parse and load firmware modules to DSP */
-+	ret = load_modules(sdev, plat_data->fw);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: invalid FW modules\n");
-+		goto error;
-+	}
-+
-+	return 0;
-+
-+error:
-+	release_firmware(plat_data->fw);
-+	plat_data->fw = NULL;
 +	return ret;
-+
 +}
-+EXPORT_SYMBOL(snd_sof_load_firmware_memcpy);
 +
-+int snd_sof_load_firmware(struct snd_sof_dev *sdev)
++static int sof_suspend(struct device *dev, bool runtime_suspend)
 +{
-+	dev_dbg(sdev->dev, "loading firmware\n");
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret = 0;
 +
-+	if (sof_ops(sdev)->load_firmware)
-+		return sof_ops(sdev)->load_firmware(sdev);
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_load_firmware);
++	/* do nothing if dsp suspend callback is not set */
++	if (!sof_ops(sdev)->suspend)
++		return 0;
 +
-+int snd_sof_run_firmware(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+	int init_core_mask;
++	/* release trace */
++	snd_sof_release_trace(sdev);
 +
-+	init_waitqueue_head(&sdev->boot_wait);
-+	sdev->boot_complete = false;
++	/* set restore_stream for all streams during system suspend */
++	if (!runtime_suspend)
++		sof_set_restore_stream(sdev);
 +
-+	/* create fw_version debugfs to store boot version info */
-+	if (sdev->first_boot) {
-+		ret = snd_sof_debugfs_buf_item(sdev, &sdev->fw_version,
-+					       sizeof(sdev->fw_version),
-+					       "fw_version");
-+		/* errors are only due to memory allocation, not debugfs */
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
-+			return ret;
-+		}
-+	}
-+
-+	/* perform pre fw run operations */
-+	ret = snd_sof_dsp_pre_fw_run(sdev);
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
++	/* cache debugfs contents during runtime suspend */
++	if (runtime_suspend)
++		sof_cache_debugfs(sdev);
++#endif
++	/* notify DSP of upcoming power down */
++	ret = sof_send_pm_ipc(sdev, SOF_IPC_PM_CTX_SAVE);
 +	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed pre fw run op\n");
++		dev_err(sdev->dev,
++			"error: ctx_save ipc error during suspend %d\n",
++			ret);
 +		return ret;
 +	}
 +
-+	dev_dbg(sdev->dev, "booting DSP firmware\n");
++	/* power down all DSP cores */
++	if (runtime_suspend)
++		ret = snd_sof_dsp_runtime_suspend(sdev, 0);
++	else
++		ret = snd_sof_dsp_suspend(sdev, 0);
++	if (ret < 0)
++		dev_err(sdev->dev,
++			"error: failed to power down DSP during suspend %d\n",
++			ret);
 +
-+	/* boot the firmware on the DSP */
-+	ret = snd_sof_dsp_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset DSP\n");
-+		return ret;
-+	}
-+
-+	init_core_mask = ret;
-+
-+	/* now wait for the DSP to boot */
-+	ret = wait_event_timeout(sdev->boot_wait, sdev->boot_complete,
-+				 msecs_to_jiffies(sdev->boot_timeout));
-+	if (ret == 0) {
-+		dev_err(sdev->dev, "error: firmware boot failure\n");
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
-+			SOF_DBG_TEXT | SOF_DBG_PCI);
-+		return -EIO;
-+	}
-+
-+	dev_info(sdev->dev, "firmware boot complete\n");
-+
-+	/* perform post fw run operations */
-+	ret = snd_sof_dsp_post_fw_run(sdev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed post fw run op\n");
-+		return ret;
-+	}
-+
-+	/* fw boot is complete. Update the active cores mask */
-+	sdev->enabled_cores_mask = init_core_mask;
-+
-+	return 0;
++	return ret;
 +}
-+EXPORT_SYMBOL(snd_sof_run_firmware);
 +
-+void snd_sof_fw_unload(struct snd_sof_dev *sdev)
++int snd_sof_runtime_suspend(struct device *dev)
 +{
-+	/* TODO: support module unloading at runtime */
++	return sof_suspend(dev, true);
 +}
-+EXPORT_SYMBOL(snd_sof_fw_unload);
++EXPORT_SYMBOL(snd_sof_runtime_suspend);
++
++int snd_sof_runtime_resume(struct device *dev)
++{
++	return sof_resume(dev, true);
++}
++EXPORT_SYMBOL(snd_sof_runtime_resume);
++
++int snd_sof_resume(struct device *dev)
++{
++	return sof_resume(dev, false);
++}
++EXPORT_SYMBOL(snd_sof_resume);
++
++int snd_sof_suspend(struct device *dev)
++{
++	return sof_suspend(dev, false);
++}
++EXPORT_SYMBOL(snd_sof_suspend);
 -- 
 2.17.1
