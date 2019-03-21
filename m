@@ -1,8 +1,7 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 13/20] ASoC: SOF: Intel: add SKL+ platform
-	DAIs
-Date: Thu, 21 Mar 2019 11:10:48 -0500
-Message-ID: <20190321161055.26582-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 15/20] ASoC: SOF: Add ACPI device support
+Date: Thu, 21 Mar 2019 11:10:50 -0500
+Message-ID: <20190321161055.26582-16-pierre-louis.bossart@linux.intel.com>
 References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,27 +18,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add declarations for DAIs and utilities for link DMA management
+Add support ACPI based SOF DSP devices.
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 318 ++++++++++++++++++++++++++++++++++
- 1 file changed, 318 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-dai.c
+ sound/soc/sof/sof-acpi-dev.c | 310 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 310 insertions(+)
+ create mode 100644 sound/soc/sof/sof-acpi-dev.c
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
 new file mode 100644
-index 000000000000..e7ecbb23eb05
+index 000000000000..53d2ade525b5
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -0,0 +1,318 @@
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -0,0 +1,310 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -47,316 +45,308 @@ index 000000000000..e7ecbb23eb05
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Keyon Jie <yang.jie@linux.intel.com>
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 +//
 +
-+#include <sound/pcm_params.h>
-+#include <sound/hdaudio_ext.h>
-+#include "../sof-priv.h"
-+#include "hda.h"
++#include <linux/acpi.h>
++#include <linux/firmware.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#ifdef CONFIG_X86
++#include <asm/iosf_mbi.h>
++#endif
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#include "ops.h"
 +
-+struct hda_pipe_params {
-+	u8 host_dma_id;
-+	u8 link_dma_id;
-+	u32 ch;
-+	u32 s_freq;
-+	u32 s_fmt;
-+	u8 linktype;
-+	snd_pcm_format_t format;
-+	int link_index;
-+	int stream;
-+	unsigned int host_bps;
-+	unsigned int link_bps;
++/* platform specific devices */
++#include "intel/shim.h"
++
++static char *fw_path;
++module_param(fw_path, charp, 0444);
++MODULE_PARM_DESC(fw_path, "alternate path for SOF firmware.");
++
++static char *tplg_path;
++module_param(tplg_path, charp, 0444);
++MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
++static const struct sof_dev_desc sof_acpi_haswell_desc = {
++	.machines = snd_soc_acpi_intel_haswell_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = -1,
++	.irqindex_host_ipc = 0,
++	.chip_info = &hsw_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-hsw.ri",
++	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
++	.ops = &sof_hsw_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++#endif
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++static const struct sof_dev_desc sof_acpi_broadwell_desc = {
++	.machines = snd_soc_acpi_intel_broadwell_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = -1,
++	.irqindex_host_ipc = 0,
++	.chip_info = &bdw_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-bdw.ri",
++	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
++	.ops = &sof_bdw_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++#endif
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++
++/* BYTCR uses different IRQ index */
++static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
++	.machines = snd_soc_acpi_intel_baytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 0,
++	.chip_info = &byt_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-byt.ri",
++	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
++	.ops = &sof_byt_ops,
++	.arch_ops = &sof_xtensa_arch_ops
 +};
 +
-+/*
-+ * Unlike GP dma, there is a set of stream registers in hda controller
-+ * to control the link dma channels. Each register controls one link
-+ * dma channel and the relation is fixed. To make sure FW uses correct
-+ * link dma channels, host allocates stream registers and sends the
-+ * corresponding link dma channels to FW to allocate link dma channel
-+ *
-+ * FIXME: this API is abused in the sense that tx_num and rx_num are
-+ * passed as arguments, not returned. We need to find a better way to
-+ * retrieve the stream tag allocated for the link DMA
-+ */
-+static int hda_link_dma_get_channels(struct snd_soc_dai *dai,
-+				     unsigned int *tx_num,
-+				     unsigned int *tx_slot,
-+				     unsigned int *rx_num,
-+				     unsigned int *rx_slot)
++static const struct sof_dev_desc sof_acpi_baytrail_desc = {
++	.machines = snd_soc_acpi_intel_baytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 5,
++	.chip_info = &byt_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-byt.ri",
++	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
++	.ops = &sof_byt_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++
++#ifdef CONFIG_X86 /* TODO: move this to common helper */
++
++static bool is_byt_cr(struct platform_device *pdev)
 +{
-+	struct hdac_bus *bus;
-+	struct hdac_ext_stream *stream;
-+	struct snd_pcm_substream substream;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
++	struct device *dev = &pdev->dev;
++	int status = 0;
 +
-+	bus = sof_to_bus(sdev);
++	if (iosf_mbi_available()) {
++		u32 bios_status;
++		status = iosf_mbi_read(BT_MBI_UNIT_PMC, /* 0x04 PUNIT */
++				       MBI_REG_READ, /* 0x10 */
++				       0x006, /* BIOS_CONFIG */
++				       &bios_status);
 +
-+	memset(&substream, 0, sizeof(substream));
-+	if (*tx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for playback");
-+			return -EBUSY;
++		if (status) {
++			dev_err(dev, "could not read PUNIT BIOS_CONFIG\n");
++		} else {
++			/* bits 26:27 mirror PMIC options */
++			bios_status = (bios_status >> 26) & 3;
++
++			if (bios_status == 1 || bios_status == 3) {
++				dev_info(dev, "Detected Baytrail-CR platform\n");
++				return true;
++			}
++
++			dev_info(dev, "BYT-CR not detected\n");
 +		}
-+
-+		snd_soc_dai_set_dma_data(dai, &substream, (void *)stream);
-+		*tx_slot = hdac_stream(stream)->stream_tag - 1;
-+
-+		dev_dbg(bus->dev, "link dma channel %d for playback", *tx_slot);
-+	}
-+
-+	if (*rx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for capture");
-+			return -EBUSY;
-+		}
-+
-+		snd_soc_dai_set_dma_data(dai, &substream, (void *)stream);
-+		*rx_slot = hdac_stream(stream)->stream_tag - 1;
-+
-+		dev_dbg(bus->dev, "link dma channel %d for capture", *rx_slot);
-+	}
-+
-+	return 0;
-+}
-+
-+static int hda_link_dma_params(struct hdac_ext_stream *stream,
-+			       struct hda_pipe_params *params)
-+{
-+	struct hdac_stream *hstream = &stream->hstream;
-+	unsigned char stream_tag = hstream->stream_tag;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_link *link;
-+	unsigned int format_val;
-+
-+	snd_hdac_ext_stream_decouple(bus, stream, true);
-+	snd_hdac_ext_link_stream_reset(stream);
-+
-+	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
-+						 params->format,
-+						 params->link_bps, 0);
-+
-+	dev_dbg(bus->dev, "format_val=%d, rate=%d, ch=%d, format=%d\n",
-+		format_val, params->s_freq, params->ch, params->format);
-+
-+	snd_hdac_ext_link_stream_setup(stream, format_val);
-+
-+	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		list_for_each_entry(link, &bus->hlink_list, list) {
-+			if (link->index == params->link_index)
-+				snd_hdac_ext_link_set_stream_id(link,
-+								stream_tag);
-+		}
-+	}
-+
-+	stream->link_prepared = 1;
-+
-+	return 0;
-+}
-+
-+static int hda_link_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct hda_pipe_params p_params = {0};
-+	struct hdac_ext_link *link;
-+	int stream_tag;
-+
-+	link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
-+	if (!link)
-+		return -EINVAL;
-+
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
-+
-+	/* set the stream tag in the codec dai dma params  */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
-+
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = stream_tag - 1;
-+	p_params.link_index = link->index;
-+	p_params.format = params_format(params);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		p_params.link_bps = codec_dai->driver->playback.sig_bits;
-+	else
-+		p_params.link_bps = codec_dai->driver->capture.sig_bits;
-+
-+	return hda_link_dma_params(link_dev, &p_params);
-+}
-+
-+static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+
-+	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_hdac_ext_link_stream_start(link_dev);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_hdac_ext_link_stream_clear(link_dev);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * FIXME: This API is also abused since it's used for two purposes.
-+ * when the substream argument is NULL this function is used for cleanups
-+ * that aren't necessarily required, and called explicitly by handling
-+ * ASoC core structures, which is not recommended.
-+ * This part will be reworked in follow-up patches.
-+ */
-+static int hda_link_hw_free(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *dai)
-+{
-+	const char *name;
-+	unsigned int stream_tag;
-+	struct hdac_bus *bus;
-+	struct hdac_ext_link *link;
-+	struct hdac_stream *hstream;
-+	struct hdac_ext_stream *stream;
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_pcm_substream pcm_substream;
-+
-+	memset(&pcm_substream, 0, sizeof(pcm_substream));
-+	if (substream) {
-+		hstream = substream->runtime->private_data;
-+		bus = hstream->bus;
-+		rtd = snd_pcm_substream_chip(substream);
-+		link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+		snd_hdac_ext_stream_decouple(bus, link_dev, false);
-+		name = rtd->codec_dai->component->name;
-+		link = snd_hdac_ext_bus_get_link(bus, name);
-+		if (!link)
-+			return -EINVAL;
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			stream_tag = hdac_stream(link_dev)->stream_tag;
-+			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
-+		}
-+
-+		link_dev->link_prepared = 0;
 +	} else {
-+		/* release all hda streams when dai link is unloaded */
-+		pcm_substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
-+
-+		pcm_substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		}
++		dev_info(dev, "IOSF_MBI not available, no BYT-CR detection\n");
 +	}
++
++	if (platform_get_resource(pdev, IORESOURCE_IRQ, 5) == NULL) {
++		/*
++		 * Some devices detected as BYT-T have only a single IRQ listed,
++		 * causing platform_get_irq with index 5 to return -ENXIO.
++		 * The correct IRQ in this case is at index 0, as on BYT-CR.
++		 */
++		dev_info(dev, "Falling back to Baytrail-CR platform\n");
++		return true;
++	}
++
++	return false;
++}
++#else
++static int is_byt_cr(struct platform_device *pdev)
++{
++	return 0;
++}
++#endif
++
++static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
++	.machines = snd_soc_acpi_intel_cherrytrail_machines,
++	.resindex_lpe_base = 0,
++	.resindex_pcicfg_base = 1,
++	.resindex_imr_base = 2,
++	.irqindex_host_ipc = 5,
++	.chip_info = &cht_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.nocodec_fw_filename = "sof-cht.ri",
++	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
++	.ops = &sof_cht_ops,
++	.arch_ops = &sof_xtensa_arch_ops
++};
++
++#endif
++
++static const struct dev_pm_ops sof_acpi_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
++	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
++			   NULL)
++};
++
++static void sof_acpi_probe_complete(struct device *dev)
++{
++	/* allow runtime_pm */
++	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_enable(dev);
++}
++
++static int sof_acpi_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	const struct sof_dev_desc *desc;
++	struct snd_soc_acpi_mach *mach;
++	struct snd_sof_pdata *sof_pdata;
++	const struct snd_sof_dsp_ops *ops;
++	int ret = 0;
++
++	dev_dbg(&pdev->dev, "ACPI DSP detected");
++
++	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
++	if (!sof_pdata)
++		return -ENOMEM;
++
++	desc = (const struct sof_dev_desc *)device_get_match_data(dev);
++	if (!desc)
++		return -ENODEV;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++	if (desc == &sof_acpi_baytrail_desc && is_byt_cr(pdev))
++		desc = &sof_acpi_baytrailcr_desc;
++#endif
++
++	/* get ops for platform */
++	ops = desc->ops;
++	if (!ops) {
++		dev_err(dev, "error: no matching ACPI descriptor ops\n");
++		return -ENODEV;
++	}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)
++	/* force nocodec mode */
++	dev_warn(dev, "Force to use nocodec mode\n");
++	mach = devm_kzalloc(dev, sizeof(*mach), GFP_KERNEL);
++	if (!mach)
++		return -ENOMEM;
++	ret = sof_nocodec_setup(dev, sof_pdata, mach, desc, ops);
++	if (ret < 0)
++		return ret;
++#else
++	/* find machine */
++	mach = snd_soc_acpi_find_machine(desc->machines);
++	if (!mach) {
++		dev_warn(dev, "warning: No matching ASoC machine driver found\n");
++	} else {
++		sof_pdata->fw_filename = mach->sof_fw_filename;
++		sof_pdata->tplg_filename = mach->sof_tplg_filename;
++	}
++#endif
++
++	mach->mach_params.platform = dev_name(dev);
++	mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
++
++	sof_pdata->machine = mach;
++	sof_pdata->desc = desc;
++	sof_pdata->dev = &pdev->dev;
++	sof_pdata->platform = dev_name(dev);
++
++	/* alternate fw and tplg filenames ? */
++	if (fw_path)
++		sof_pdata->fw_filename_prefix = fw_path;
++	else
++		sof_pdata->fw_filename_prefix =
++			sof_pdata->desc->default_fw_path;
++
++	if (tplg_path)
++		sof_pdata->tplg_filename_prefix = tplg_path;
++	else
++		sof_pdata->tplg_filename_prefix =
++			sof_pdata->desc->default_tplg_path;
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	/* set callback to enable runtime_pm */
++	sof_pdata->sof_probe_complete = sof_acpi_probe_complete;
++#endif
++	/* call sof helper for DSP hardware probe */
++	ret = snd_sof_device_probe(dev, sof_pdata);
++	if (ret) {
++		dev_err(dev, "error: failed to probe DSP hardware!\n");
++		return ret;
++	}
++
++#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++	sof_acpi_probe_complete(dev);
++#endif
++
++	return ret;
++}
++
++static int sof_acpi_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	/* call sof helper for DSP hardware remove */
++	snd_sof_device_remove(&pdev->dev);
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops hda_link_dai_ops = {
-+	.hw_params = hda_link_hw_params,
-+	.hw_free = hda_link_hw_free,
-+	.trigger = hda_link_pcm_trigger,
-+	.get_channel_map = hda_link_dma_get_channels,
-+};
++static const struct acpi_device_id sof_acpi_match[] = {
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
++	{ "INT33C8", (unsigned long)&sof_acpi_haswell_desc },
 +#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++	{ "INT3438", (unsigned long)&sof_acpi_broadwell_desc },
++#endif
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
++	{ "80860F28", (unsigned long)&sof_acpi_baytrail_desc },
++	{ "808622A8", (unsigned long)&sof_acpi_cherrytrail_desc },
++#endif
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, sof_acpi_match);
 +
-+/*
-+ * common dai driver for skl+ platforms.
-+ * some products who use this DAI array only physically have a subset of
-+ * the DAIs, but no harm is done here by adding the whole set.
-+ */
-+struct snd_soc_dai_driver skl_dai[] = {
-+{
-+	.name = "SSP0 Pin",
-+},
-+{
-+	.name = "SSP1 Pin",
-+},
-+{
-+	.name = "SSP2 Pin",
-+},
-+{
-+	.name = "SSP3 Pin",
-+},
-+{
-+	.name = "SSP4 Pin",
-+},
-+{
-+	.name = "SSP5 Pin",
-+},
-+{
-+	.name = "DMIC01 Pin",
-+},
-+{
-+	.name = "DMIC16k Pin",
-+},
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+{
-+	.name = "iDisp1 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp2 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp3 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+#endif
++/* acpi_driver definition */
++static struct platform_driver snd_sof_acpi_driver = {
++	.probe = sof_acpi_probe,
++	.remove = sof_acpi_remove,
++	.driver = {
++		.name = "sof-audio-acpi",
++		.pm = &sof_acpi_pm,
++		.acpi_match_table = ACPI_PTR(sof_acpi_match),
++	},
 +};
++module_platform_driver(snd_sof_acpi_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.17.1
