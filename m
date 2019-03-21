@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: Update DAI clock binding info to cover WCLK/BCLK" to the asoc tree
-Date: Thu, 21 Mar 2019 15:07:09 +0000 (GMT)
-Message-ID: <20190321150709.C97CB11288EC@debutante.sirena.org.uk>
-References: <a2e2ae888b3c2fbcaab3e4791ce98f877e3d38ff.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
+Subject: Applied "ASoC: AMD: Update DA7219 DAI clock name to align with codec updates" to the asoc tree
+Date: Thu, 21 Mar 2019 15:07:05 +0000 (GMT)
+Message-ID: <20190321150705.B71D111288EC@debutante.sirena.org.uk>
+References: <3159a9ec4f79fe25219e04bafc29a842b650521c.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a2e2ae888b3c2fbcaab3e4791ce98f877e3d38ff.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
+In-Reply-To: <3159a9ec4f79fe25219e04bafc29a842b650521c.1553017237.git.Adam.Thomson.Opensource@diasemi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Support Opensource <support.opensource@diasemi.com>, Akshu Agrawal <Akshu.Agrawal@amd.com>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: Update DAI clock binding info to cover WCLK/BCLK
+   ASoC: AMD: Update DA7219 DAI clock name to align with codec updates
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 41d176d3ec147f499614adc773080f244d47e3cd Mon Sep 17 00:00:00 2001
+>From 883149027a989dc121ad277785a4b4a901b7fd31 Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Tue, 19 Mar 2019 17:49:30 +0000
-Subject: [PATCH] ASoC: da7219: Update DAI clock binding info to cover
- WCLK/BCLK
+Date: Tue, 19 Mar 2019 17:49:32 +0000
+Subject: [PATCH] ASoC: AMD: Update DA7219 DAI clock name to align with codec
+ updates
 
-With the need to expose WCLK and BCLK as separate clocks, the
-'clock-cells' and 'clock-output-names' descriptions need to be
-updated as now the codec is providing 2 clocks. The example is
-also updated accordingly.
+As the DAI clocks for DA7219 have now been split into BCLK and WCLK,
+the clock lookup name needs to be udpated here to select BCLK to
+achieve the same functionality as before with regards to DAI clock
+gating.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/da7219.txt | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
-index e9d0baeb94e2..add1caf26ac2 100644
---- a/Documentation/devicetree/bindings/sound/da7219.txt
-+++ b/Documentation/devicetree/bindings/sound/da7219.txt
-@@ -23,8 +23,8 @@ Optional properties:
-   interrupt is to be used to wake system, otherwise "irq" should be used.
- - wakeup-source: Flag to indicate this device can wake system (suspend/resume).
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index a5daad973ce5..f37a588ba345 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -72,7 +72,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
  
--- #clock-cells :  Should be set to '<0>', only one clock source provided;
--- clock-output-names : Name given for DAI clocks output;
-+- #clock-cells :  Should be set to '<1>', two clock sources provided;
-+- clock-output-names : Names given for DAI clock outputs (WCLK & BCLK);
+-	da7219_dai_clk = clk_get(component->dev, "da7219-dai-clks");
++	da7219_dai_clk = clk_get(component->dev, "da7219-dai-bclk");
  
- - clocks : phandle and clock specifier for codec MCLK.
- - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
-@@ -84,8 +84,8 @@ Example:
- 		VDDMIC-supply = <&reg_audio>;
- 		VDDIO-supply = <&reg_audio>;
- 
--		#clock-cells = <0>;
--		clock-output-names = "dai-clks";
-+		#clock-cells = <1>;
-+		clock-output-names = "dai-wclk", "dai-bclk";
- 
- 		clocks = <&clks 201>;
- 		clock-names = "mclk";
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				SND_JACK_HEADSET | SND_JACK_LINEOUT |
 -- 
 2.20.1
