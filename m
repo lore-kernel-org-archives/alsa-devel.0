@@ -1,17 +1,16 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8810: fix the issue of 64 bits
-	division
-Date: Fri, 22 Mar 2019 12:25:35 +0800
-Message-ID: <20190322042535.30650-1-KCHSU0@nuvoton.com>
-References: <20190313064718.4534-1-KCHSU0@nuvoton.com>
+From: libin.yang@intel.com
+Subject: [PATCH] ASoC: fix hdmi codec driver contest in S3
+Date: Fri, 22 Mar 2019 13:31:48 +0800
+Message-ID: <1553232708-22671-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id B9519F89670
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 05:25:42 +0100 (CET)
-In-Reply-To: <20190313064718.4534-1-KCHSU0@nuvoton.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCBF5F8076F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 06:48:14 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +20,149 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: libin.yang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Do division with div_u64 for the PLL calculation.
-These errors are fixed and list as follows:
-1."__udivdi3" [sound/soc/codecs/snd-soc-nau8810.ko] undefined!
-2."__aeabi_uldivmod" [sound/soc/codecs/snd-soc-nau8810.ko] undefined!
-3. nau8810.c:(.text.nau8810_calc_pll+0xd8): undefined reference to
-`__udivdi3'
+From: Libin Yang <libin.yang@intel.com>
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+In S3, there is a contest between dapm event and getting display power.
+
+When resume, the sequence is:
+
+hdac_hdmi_runtime_resume()
+  => snd_hdac_display_power()
+hdac_hdmi_xxx_widget_event()
+
+The hdac_hdmi_xxx_widget_event() are based on the power being on.
+Otherwise, the operation on the codec register will fail.
+
+However, in snd_hdac_display_power(), it may sleep because of the
+mutex_lock() in display driver. In this case, hdac_hdmi_xxx_widget_event()
+will be called before the power is on.
+
+Let's not operate the registers and wait for the power in
+hdac_hdmi_xxx_widget_event()
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/soc/codecs/nau8810.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
-index 125e205e6687..dd82c65cfa7f 100644
---- a/sound/soc/codecs/nau8810.c
-+++ b/sound/soc/codecs/nau8810.c
-@@ -505,7 +505,8 @@ static int nau8810_calc_pll(unsigned int pll_in,
- 	f2_max = 0;
- 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
- 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
--		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
-+		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i];
-+		f2 = div_u64(f2, 10);
- 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
- 			f2_max < f2) {
- 			f2_max = f2;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 5eeb0fe..dc182b0 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -144,6 +144,7 @@ struct hdac_hdmi_priv {
+ 	int num_pin;
+ 	int num_cvt;
+ 	int num_ports;
++	int display_power;	/* 0: power off; 1 power on */
+ 	struct mutex pin_mutex;
+ 	struct hdac_chmap chmap;
+ 	struct hdac_hdmi_drv_data *drv_data;
+@@ -742,12 +743,26 @@ static void hdac_hdmi_set_amp(struct hdac_device *hdev,
+ 					AC_VERB_SET_AMP_GAIN_MUTE, val);
+ }
+ 
++static int wait_for_display_power(struct hdac_hdmi_priv *hdmi)
++{
++	int i = 0;
++
++	/* sleep for totally 80ms ~ 200ms should be enough */
++	while (i < 40) {
++		if (!hdmi->display_power)
++			usleep_range(2000, 5000);
++		else
++			return 0;
++	}
++	return -EAGAIN;
++}
+ 
+ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ 					struct snd_kcontrol *kc, int event)
+ {
+ 	struct hdac_hdmi_port *port = w->priv;
+ 	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
++	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+ 	struct hdac_hdmi_pcm *pcm;
+ 
+ 	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n",
+@@ -757,6 +772,11 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ 	if (!pcm)
+ 		return -EIO;
+ 
++	if (wait_for_display_power(hdmi)) {
++		dev_err(&hdev->dev, "%s: hdmi power is not ready\n", __func__);
++		return -EAGAIN;
++	}
++
+ 	/* set the device if pin is mst_capable */
+ 	if (hdac_hdmi_port_select_set(hdev, port) < 0)
+ 		return -EIO;
+@@ -803,6 +823,11 @@ static int hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
+ 	if (!pcm)
+ 		return -EIO;
+ 
++	if (wait_for_display_power(hdmi)) {
++		dev_err(&hdev->dev, "%s: hdmi power is not ready\n", __func__);
++		return -EAGAIN;
++	}
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		hdac_hdmi_set_power_state(hdev, cvt->nid, AC_PWRST_D0);
+@@ -840,6 +865,7 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct hdac_hdmi_port *port = w->priv;
+ 	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
++	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+ 	int mux_idx;
+ 
+ 	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n",
+@@ -850,6 +876,11 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
+ 
+ 	mux_idx = dapm_kcontrol_get_value(kc);
+ 
++	if (wait_for_display_power(hdmi)) {
++		dev_err(&hdev->dev, "%s: hdmi power is not ready\n", __func__);
++		return -EAGAIN;
++	}
++
+ 	/* set the device if pin is mst_capable */
+ 	if (hdac_hdmi_port_select_set(hdev, port) < 0)
+ 		return -EIO;
+@@ -2068,6 +2099,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ {
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+ 	struct hdac_bus *bus = hdev->bus;
++	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+ 	struct hdac_ext_link *hlink = NULL;
+ 
+ 	dev_dbg(dev, "Enter: %s\n", __func__);
+@@ -2095,6 +2127,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	snd_hdac_ext_bus_link_put(bus, hlink);
+ 
+ 	snd_hdac_display_power(bus, hdev->addr, false);
++	hdmi->display_power = 0;
+ 
+ 	return 0;
+ }
+@@ -2102,6 +2135,7 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ static int hdac_hdmi_runtime_resume(struct device *dev)
+ {
+ 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
++	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+ 	struct hdac_bus *bus = hdev->bus;
+ 	struct hdac_ext_link *hlink = NULL;
+ 
+@@ -2128,6 +2162,7 @@ static int hdac_hdmi_runtime_resume(struct device *dev)
+ 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ 							AC_PWRST_D0);
+ 
++	hdmi->display_power = 1;
+ 	return 0;
+ }
+ #else
 -- 
-2.18.0
+2.7.4
