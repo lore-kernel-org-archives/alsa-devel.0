@@ -1,8 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Fix possible OOB access in PCM oss
-	plugins
-Date: Fri, 22 Mar 2019 16:21:13 +0100
-Message-ID: <20190322152113.29369-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/ca0132 - Simplify alt firmware
+	loading code
+Date: Fri, 22 Mar 2019 16:30:12 +0100
+Message-ID: <20190322153012.30898-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,11 +10,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2BB7F8076F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 16:21:15 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 5E6C6AE1F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 15:21:15 +0000 (UTC)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94E6BF8076F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 16:30:15 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,102 +22,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: alsa-devel@alsa-project.org
+Cc: Nathan Chancellor <natechancellor@gmail.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-The PCM OSS emulation converts and transfers the data on the fly via
-"plugins".  The data is converted over the dynamically allocated
-buffer for each plugin, and recently syzkaller caught OOB in this
-flow.
+ca0132 codec driver loads the firmware selectively depending on the
+model in addition to the fallback of the default firmware.  The code
+works good, but a minor problem is that the current code seems
+confusing for Clang where it spews a warning about uninitialized
+variable.
 
-Although the bisection by syzbot pointed out to the commit
-65766ee0bf7f ("ALSA: oss: Use kvzalloc() for local buffer
-allocations"), this is merely a commit to replace vmalloc() with
-kvmalloc(), hence it can't be the cause.  The further debug action
-revealed that this happens in the case where a slave PCM doesn't
-support only the stereo channels while the OSS stream is set up for a
-mono channel.  Below is a brief explanation:
+This patch simplifies the code flow for such a false-positive
+warning.  After this refactoring, the ca0132_spec.alt_firmware_present
+field is no longer used, hence it's eliminated as well.
 
-At each OSS parameter change, the driver sets up the PCM hw_params
-again in snd_pcm_oss_change_params_lock().  This is also the place
-where plugins are created and local buffers are allocated.  The
-problem is that the plugins are created before the final hw_params is
-determined.  Namely, two snd_pcm_hw_param_near() calls for setting the
-period size and periods may influence on the final result of channels,
-rates, etc, too, while the current code has already created plugins
-beforehand with the premature values.  So, the plugin believes that
-channels=1, while the actual I/O is with channels=2, which makes the
-driver reading/writing over the allocated buffer size.
-
-The fix is simply to move the plugin allocation code after the final
-hw_params call.
-
-Reported-by: syzbot+d4503ae45b65c5bc1194@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
+Reported-and-tested-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/oss/pcm_oss.c | 43 ++++++++++++++++++++++---------------------
- 1 file changed, 22 insertions(+), 21 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index d5b0d7ba83c4..f6ae68017608 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -940,6 +940,28 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
- 	oss_frame_size = snd_pcm_format_physical_width(params_format(params)) *
- 			 params_channels(params) / 8;
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 29882bda7632..e1ebc6d5f382 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1005,7 +1005,6 @@ struct ca0132_spec {
+ 	unsigned int scp_resp_header;
+ 	unsigned int scp_resp_data[4];
+ 	unsigned int scp_resp_count;
+-	bool alt_firmware_present;
+ 	bool startup_check_entered;
+ 	bool dsp_reload;
  
-+	err = snd_pcm_oss_period_size(substream, params, sparams);
-+	if (err < 0)
-+		goto failure;
-+
-+	n = snd_pcm_plug_slave_size(substream, runtime->oss.period_bytes / oss_frame_size);
-+	err = snd_pcm_hw_param_near(substream, sparams, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, n, NULL);
-+	if (err < 0)
-+		goto failure;
-+
-+	err = snd_pcm_hw_param_near(substream, sparams, SNDRV_PCM_HW_PARAM_PERIODS,
-+				     runtime->oss.periods, NULL);
-+	if (err < 0)
-+		goto failure;
-+
-+	snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
-+
-+	err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_HW_PARAMS, sparams);
-+	if (err < 0) {
-+		pcm_dbg(substream->pcm, "HW_PARAMS failed: %i\n", err);
-+		goto failure;
-+	}
-+
- #ifdef CONFIG_SND_PCM_OSS_PLUGINS
- 	snd_pcm_oss_plugin_clear(substream);
- 	if (!direct) {
-@@ -974,27 +996,6 @@ static int snd_pcm_oss_change_params_locked(struct snd_pcm_substream *substream)
+@@ -7518,7 +7517,7 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	bool dsp_loaded = false;
+ 	struct ca0132_spec *spec = codec->spec;
+ 	const struct dsp_image_seg *dsp_os_image;
+-	const struct firmware *fw_entry;
++	const struct firmware *fw_entry = NULL;
+ 	/*
+ 	 * Alternate firmwares for different variants. The Recon3Di apparently
+ 	 * can use the default firmware, but I'll leave the option in case
+@@ -7529,33 +7528,26 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	case QUIRK_R3D:
+ 	case QUIRK_AE5:
+ 		if (request_firmware(&fw_entry, DESKTOP_EFX_FILE,
+-					codec->card->dev) != 0) {
++					codec->card->dev) != 0)
+ 			codec_dbg(codec, "Desktop firmware not found.");
+-			spec->alt_firmware_present = false;
+-		} else {
++		else
+ 			codec_dbg(codec, "Desktop firmware selected.");
+-			spec->alt_firmware_present = true;
+-		}
+ 		break;
+ 	case QUIRK_R3DI:
+ 		if (request_firmware(&fw_entry, R3DI_EFX_FILE,
+-					codec->card->dev) != 0) {
++					codec->card->dev) != 0)
+ 			codec_dbg(codec, "Recon3Di alt firmware not detected.");
+-			spec->alt_firmware_present = false;
+-		} else {
++		else
+ 			codec_dbg(codec, "Recon3Di firmware selected.");
+-			spec->alt_firmware_present = true;
+-		}
+ 		break;
+ 	default:
+-		spec->alt_firmware_present = false;
+ 		break;
  	}
- #endif
- 
--	err = snd_pcm_oss_period_size(substream, params, sparams);
--	if (err < 0)
--		goto failure;
--
--	n = snd_pcm_plug_slave_size(substream, runtime->oss.period_bytes / oss_frame_size);
--	err = snd_pcm_hw_param_near(substream, sparams, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, n, NULL);
--	if (err < 0)
--		goto failure;
--
--	err = snd_pcm_hw_param_near(substream, sparams, SNDRV_PCM_HW_PARAM_PERIODS,
--				     runtime->oss.periods, NULL);
--	if (err < 0)
--		goto failure;
--
--	snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
--
--	if ((err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_HW_PARAMS, sparams)) < 0) {
--		pcm_dbg(substream->pcm, "HW_PARAMS failed: %i\n", err);
--		goto failure;
--	}
--
- 	if (runtime->oss.trigger) {
- 		sw_params->start_threshold = 1;
- 	} else {
+ 	/*
+ 	 * Use default ctefx.bin if no alt firmware is detected, or if none
+ 	 * exists for your particular codec.
+ 	 */
+-	if (!spec->alt_firmware_present) {
++	if (!fw_entry) {
+ 		codec_dbg(codec, "Default firmware selected.");
+ 		if (request_firmware(&fw_entry, EFX_FILE,
+ 					codec->card->dev) != 0)
 -- 
 2.16.4
