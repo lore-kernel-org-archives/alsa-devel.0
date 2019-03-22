@@ -1,223 +1,36 @@
-From: Paulo Fidalgo <paulo.fidalgo.pt@gmail.com>
-Subject: Re: Dell XPS 9360 continuous hissing sound
-Date: Fri, 22 Mar 2019 16:07:15 +0000
-Message-ID: <CAKbjie63rA-gj+m2ZvtMJY4_FZSopt=ef2nVm6NSqS2wm8kw0A@mail.gmail.com>
-References: <CAKbjie7OEVyB4vq4L01p2ov3Vo3Mw+3edLQxwT2eVhzaj-Cu0g@mail.gmail.com>
- <s5hftreapj1.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0000000000001769e20584b10d26"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
- [IPv6:2607:f8b0:4864:20::829])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B973F89678
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 17:07:28 +0100 (CET)
-Received: by mail-qt1-x829.google.com with SMTP id v20so3039982qtv.12
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 09:07:28 -0700 (PDT)
-In-Reply-To: <s5hftreapj1.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Subject: [PATCH] ASoC: dapm: Initialize private_value in snd_soc_dapm_new_dai
+Date: Fri, 22 Mar 2019 21:53:39 +0530
+Message-ID: <1553271819-24576-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, pankaj.laxminarayan.bharadiya@intel.com
 List-Id: alsa-devel@alsa-project.org
 
---0000000000001769e20584b10d26
-Content-Type: text/plain; charset="UTF-8"
+In case of single config, private_value is left uninitialized.
 
-Strangely the command returns amixer: Unable to find simple control 'numid=10',0
-So I've runned "amixer -c0" and you can find the output in before.txt
+The private_value does need to be initialized or in
+snd_soc_dapm_new_control_unlocked() call failure case, it leads to a
+bogus free in snd_soc_dapm_free_kcontrol()
 
-Then I've runned amixer -c 0 cset 'numid=10' 1
-and again the "amixer -c0" and you can find the output in after.txt
+Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also I've notice that the sound appears after I playing a music on
-computer and goes a few (like 10 ) seconds after the music stopped.
-
-
-On Fri, 22 Mar 2019 at 15:37, Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Fri, 22 Mar 2019 12:40:22 +0100,
-> Paulo Fidalgo wrote:
-> >
-> > Hi!
-> >
-> > After a bug report on Fedora
-> > (https://bugzilla.redhat.com/show_bug.cgi?id=1677353)
-> >
-> > ----
-> > When I start t he computer I hears a continuous background noise. The
-> > problem is also described here:
-> > https://wiki.archlinux.org/index.php/Dell_XPS_13_(9360)#Continuous_hissing_sound_with_headphones
-> >
-> > I need to issue the command `amixer -c 0 cset 'numid=10' 1` to solve
-> > the problem, but every time I reboot the computer I need to run it
-> > again.
-> > This has been happening for quite some time, but I've been post-poning
-> > the bug report.
->
-> What is the original value before setting this amixer command above?
-> You can get via "amixer -c0 get numid=10'.
->
-> Does the noise again when you restore the value after setting to 1 in
-> the above?
->
->
-> Takashi
->
-> >
-> > Current kernel: 4.20.7-200.fc29.x86_64
-> >
-> > Alsa information:
-> > http://www.alsa-project.org/db/?f=df4834c53335709abb521c767e7b1da2f4371744
-> > ----
-> > They advise me to contact you, to see if we can get a solution on this.
-> >
-> > Note: The computer also does not recognise (switch to) when I plug an headset.
-> >
-> > If you need more information, I'm eager to help diagnose and help to
-> > solve this, but I have no Kernel programming skills, other than that
-> > count on me.
-> >
-> > Kind regards,
-> >
-> > Paulo Fidalgo
-> >
-
---0000000000001769e20584b10d26
-Content-Type: text/plain; charset="US-ASCII"; name="after.txt"
-Content-Disposition: attachment; filename="after.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jtk9c2kf0>
-X-Attachment-Id: f_jtk9c2kf0
-
-U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
-dm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6
-IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86IFBsYXliYWNrIDg3IFsxMDAl
-XSBbMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkcGhvbmUnLDAKICBDYXBh
-YmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0
-IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQg
-TGVmdDogUGxheWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxh
-eWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRw
-aG9uZSBNaWMnLDAKICBDYXBhYmlsaXRpZXM6IGNzd2l0Y2ggY3N3aXRjaC1qb2luZWQgY3N3aXRj
-aC1leGNsdXNpdmUKICBDYXB0dXJlIGV4Y2x1c2l2ZSBncm91cDogMAogIENhcHR1cmUgY2hhbm5l
-bHM6IE1vbm8KICBNb25vOiBDYXB0dXJlIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFk
-cGhvbmUgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFu
-bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQg
-TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDEgWzMzJV0g
-WzEwLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IDEgWzMzJV0gWzEwLjAwZEJdClNpbXBsZSBtaXhlciBj
-b250cm9sICdTcGVha2VyJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5
-YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFj
-ayAwIC0gODcKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJd
-IFtvZmZdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJdIFtvZmZdClNp
-bXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5
-YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFj
-ayAwIC0gMjU1CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAw
-ZEJdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0lFQzk1OCcsMAogIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpv
-aW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29mZl0KU2lt
-cGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMQogIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dp
-dGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29u
-XQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywyCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNo
-IHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFj
-ayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdJRUM5NTgnLDMKICBDYXBhYmlsaXRpZXM6IHBz
-d2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86IFBs
-YXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsNAogIENhcGFiaWxpdGll
-czogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9u
-bzogUGxheWJhY2sgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMAogIENhcGFi
-aWxpdGllczogY3ZvbHVtZSBjc3dpdGNoCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAt
-IEZyb250IFJpZ2h0CiAgTGltaXRzOiBDYXB0dXJlIDAgLSA2MwogIEZyb250IExlZnQ6IENhcHR1
-cmUgNjMgWzEwMCVdIFszMC4wMGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IENhcHR1cmUgNjMgWzEw
-MCVdIFszMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdBdXRvLU11dGUgTW9kZScs
-MAogIENhcGFiaWxpdGllczogZW51bQogIEl0ZW1zOiAnRGlzYWJsZWQnICdFbmFibGVkJwogIEl0
-ZW0wOiAnRGlzYWJsZWQnClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkc2V0IE1pYycsMAogIENh
-cGFiaWxpdGllczogY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBjc3dpdGNoLWV4Y2x1c2l2ZQogIENh
-cHR1cmUgZXhjbHVzaXZlIGdyb3VwOiAwCiAgQ2FwdHVyZSBjaGFubmVsczogTW9ubwogIE1vbm86
-IENhcHR1cmUgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHNldCBNaWMgQm9vc3QnLDAK
-ICBDYXBhYmlsaXRpZXM6IHZvbHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0g
-RnJvbnQgUmlnaHQKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQK
-ICBMaW1pdHM6IDAgLSAzCiAgRnJvbnQgTGVmdDogMSBbMzMlXSBbMTAuMDBkQl0KICBGcm9udCBS
-aWdodDogMSBbMzMlXSBbMTAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIE1p
-YycsMAogIENhcGFiaWxpdGllczogY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBjc3dpdGNoLWV4Y2x1
-c2l2ZQogIENhcHR1cmUgZXhjbHVzaXZlIGdyb3VwOiAwCiAgQ2FwdHVyZSBjaGFubmVsczogTW9u
-bwogIE1vbm86IENhcHR1cmUgW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIE1p
-YyBCb29zdCcsMAogIENhcGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZy
-b250IExlZnQgLSBGcm9udCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
-cm9udCBSaWdodAogIExpbWl0czogMCAtIDMKICBGcm9udCBMZWZ0OiAwIFswJV0gWzAuMDBkQl0K
-ICBGcm9udCBSaWdodDogMCBbMCVdIFswLjAwZEJdCg==
---0000000000001769e20584b10d26
-Content-Type: text/plain; charset="US-ASCII"; name="before.txt"
-Content-Disposition: attachment; filename="before.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jtk9c2ks1>
-X-Attachment-Id: f_jtk9c2ks1
-
-U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
-dm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6
-IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86IFBsYXliYWNrIDgzIFs5NSVd
-IFstMy4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkcGhvbmUnLDAKICBDYXBh
-YmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0
-IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQg
-TGVmdDogUGxheWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxh
-eWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRw
-aG9uZSBNaWMnLDAKICBDYXBhYmlsaXRpZXM6IGNzd2l0Y2ggY3N3aXRjaC1qb2luZWQgY3N3aXRj
-aC1leGNsdXNpdmUKICBDYXB0dXJlIGV4Y2x1c2l2ZSBncm91cDogMAogIENhcHR1cmUgY2hhbm5l
-bHM6IE1vbm8KICBNb25vOiBDYXB0dXJlIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFk
-cGhvbmUgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFu
-bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQg
-TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBb
-MC4wMGRCXQogIEZyb250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRy
-b2wgJ1NwZWFrZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNr
-IGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAg
-LSA4NwogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29m
-Zl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29mZl0KU2ltcGxl
-IG1peGVyIGNvbnRyb2wgJ1BDTScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZQogIFBsYXliYWNr
-IGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAg
-LSAyNTUKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0K
-ICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIg
-Y29udHJvbCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVk
-CiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2ZmXQpTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnSUVDOTU4JywxCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gt
-am9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNp
-bXBsZSBtaXhlciBjb250cm9sICdJRUM5NTgnLDIKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3
-aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86IFBsYXliYWNrIFtv
-bl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMwogIENhcGFiaWxpdGllczogcHN3aXRj
-aCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJh
-Y2sgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4Jyw0CiAgQ2FwYWJpbGl0aWVzOiBw
-c3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQ
-bGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdDYXB0dXJlJywwCiAgQ2FwYWJpbGl0
-aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJv
-bnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDYzCiAgRnJvbnQgTGVmdDogQ2FwdHVyZSA2
-MyBbMTAwJV0gWzMwLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSA2MyBbMTAwJV0g
-WzMwLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0F1dG8tTXV0ZSBNb2RlJywwCiAg
-Q2FwYWJpbGl0aWVzOiBlbnVtCiAgSXRlbXM6ICdEaXNhYmxlZCcgJ0VuYWJsZWQnCiAgSXRlbTA6
-ICdEaXNhYmxlZCcKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRzZXQgTWljJywwCiAgQ2FwYWJp
-bGl0aWVzOiBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIGNzd2l0Y2gtZXhjbHVzaXZlCiAgQ2FwdHVy
-ZSBleGNsdXNpdmUgZ3JvdXA6IDAKICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogQ2Fw
-dHVyZSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkc2V0IE1pYyBCb29zdCcsMAogIENh
-cGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9u
-dCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
-bWl0czogMCAtIDMKICBGcm9udCBMZWZ0OiAxIFszMyVdIFsxMC4wMGRCXQogIEZyb250IFJpZ2h0
-OiAxIFszMyVdIFsxMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW50ZXJuYWwgTWljJyww
-CiAgQ2FwYWJpbGl0aWVzOiBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIGNzd2l0Y2gtZXhjbHVzaXZl
-CiAgQ2FwdHVyZSBleGNsdXNpdmUgZ3JvdXA6IDAKICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCiAg
-TW9ubzogQ2FwdHVyZSBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW50ZXJuYWwgTWljIEJv
-b3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQg
-TGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250
-IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBbMC4wMGRCXQogIEZy
-b250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0K
---0000000000001769e20584b10d26
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---0000000000001769e20584b10d26--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 67b032c..665a6b1 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4042,7 +4042,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_soc_dapm_widget template;
+ 	struct snd_soc_dapm_widget *w;
+ 	const char **w_param_text;
+-	unsigned long private_value;
++	unsigned long private_value = 0;
+ 	char *link_name;
+ 	int ret;
+ 
+-- 
+2.7.4
