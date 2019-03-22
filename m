@@ -1,38 +1,64 @@
-From: Aditya Pakki <pakki001@umn.edu>
-Subject: [PATCH v3] ASoC: sirf-audio: Remove redundant of_match_node call
-Date: Fri, 22 Mar 2019 17:00:29 -0500
-Message-ID: <20190322220031.13773-1-pakki001@umn.edu>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: pakki001@umn.edu
-Cc: kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Guido Trentalancia <guido@trentalancia.com>
+Subject: Re: Hercules P32 DJ: severe sound distortion during
+ MIDI transfers
+Date: Fri, 22 Mar 2019 23:04:24 +0100 (CET)
+Message-ID: <1263893544.64832.1553292264324@pim.register.it>
+References: <1553114844.12865.6.camel@trentalancia.com>
+ <1335514032.30698.1553207267014@pim.register.it>
+ <s5hr2azp9t3.wl-tiwai@suse.de>
+ <D5E663E4-9118-4CA3-8ADE-5F97202D9404@trentalancia.com>
+ <s5himwbb5h4.wl-tiwai@suse.de>
+ <53EC51B6-618E-47B4-95E8-B24BECEEBC98@trentalancia.com>
+ <s5hef6zb4k6.wl-tiwai@suse.de> <1553262288.26146.4.camel@trentalancia.com>
+ <s5htvfv9d9z.wl-tiwai@suse.de>
+ <AF692377-8E9F-4483-81EC-712B31526DE4@trentalancia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webmailsmtp.register.it (webmailsmtp38.register.it
+ [195.110.123.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E49E5F8076F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 23:04:25 +0100 (CET)
+In-Reply-To: <AF692377-8E9F-4483-81EC-712B31526DE4@trentalancia.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Unlike other drivers probe method, of_match_node return value
-is not used or checked. This patch removes the redundant code.
+Update on affected kernels...
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> Il 22 marzo 2019 alle 15.54 Guido Trentalancia <guido@trentalancia.com> ha scritto:
+> 
+> 
+> As already explained, I have tested the following kernels:
+> 
+> - kernel 5.0.2 -----> BROKEN
+> - kernel 4.17.10 --> BROKEN
+> - kernel 4.12.9 ---> BROKEN
 
----
-v2: Move the signed by above the version change log
-v1: A check is unnecessary as match is never used.
----
- sound/soc/codecs/sirf-audio-codec.c | 3 ---
- 1 file changed, 3 deletions(-)
+kernel 3.8.13 is also BROKEN (on the system where it fails, not the other one obviously).
 
-diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-index e424499a8450..e0af21050078 100644
---- a/sound/soc/codecs/sirf-audio-codec.c
-+++ b/sound/soc/codecs/sirf-audio-codec.c
-@@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
- 	struct sirf_audio_codec *sirf_audio_codec;
- 	void __iomem *base;
- 	struct resource *mem_res;
--	const struct of_device_id *match;
--
--	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
- 
- 	sirf_audio_codec = devm_kzalloc(&pdev->dev,
- 		sizeof(struct sirf_audio_codec), GFP_KERNEL);
--- 
-2.17.1
+On kernel 3.0.0 it is broken even when MIDI is not running.
+
+So, it affects virtually all kernels...
+
+> So, it's been around for very long.
+> 
+> What do you suggest doing?
+> 
+> I have found reports on the web about similar problems (with other audio interfaces) with kernels>3.0.0.
+
+Regards,
+
+Guido
