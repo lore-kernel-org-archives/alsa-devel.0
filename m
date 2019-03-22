@@ -1,58 +1,48 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: hda/ca0132: work around clang -Wuninitialized warning
-Date: Fri, 22 Mar 2019 15:06:28 +0100
-Message-ID: <20190322140649.197027-1-arnd@arndb.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: dapm: Fix NULL pointer dereference in
+ snd_soc_dapm_free_kcontrol
+Date: Fri, 22 Mar 2019 09:43:39 -0500
+Message-ID: <44b4ca5a-c76b-e2ae-0f57-294198a37b25@linux.intel.com>
+References: <1553257809-9294-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1553257809-9294-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: clang-built-linux@googlegroups.com, Nick Desaulniers <ndesaulniers@google.com>, Nathan Chancellor <natechancellor@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When CONFIG_PCI is disabled, clang gets confused about the
-control flow of the switch() statement always ending up
-in the default case, and warns:
+On 3/22/19 7:30 AM, Pankaj Bharadiya wrote:
+> w_text_param can be NULL and it is being dereferenced without checking.
+> Add the missing sanity check to prevent  NULL pointer dereference.
+> 
+> Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+> ---
+>   sound/soc/soc-dapm.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 1ec06ef..67b032c 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -3957,6 +3957,10 @@ snd_soc_dapm_free_kcontrol(struct snd_soc_card *card,
+>   	int count;
+>   
+>   	devm_kfree(card->dev, (void *)*private_value);
+> +
+> +	if (!w_param_text)
+> +		return;
 
-sound/pci/hda/patch_ca0132.c:7558:6: error: variable 'fw_entry' is used uninitialized whenever 'if' condition is false
-      [-Werror,-Wsometimes-uninitialized]
-        if (!spec->alt_firmware_present) {
-            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/pci/hda/patch_ca0132.c:7565:42: note: uninitialized use occurs here
-        dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
-                                                ^~~~~~~~
-sound/pci/hda/patch_ca0132.c:7558:2: note: remove the 'if' if its condition is always true
-        if (!spec->alt_firmware_present) {
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/pci/hda/patch_ca0132.c:7521:33: note: initialize the variable 'fw_entry' to silence this warning
-        const struct firmware *fw_entry;
-                                       ^
-                                        = NULL
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Adding an explicit check for CONFIG_PCI avoids the issue.
-Unfortunately this is not very intuitive here.
+next time, try using git format-patch -v2 to signal it's an updated 
+version, it helps reviewers. Thanks!
 
-Link: https://bugs.llvm.org/show_bug.cgi?id=41197#c1
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Any suggestions for other workarounds appreciated. If you can think
-of a better fix, please treat this as a reported-by:
----
- sound/pci/hda/patch_ca0132.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 29882bda7632..415b16b7db70 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -7555,7 +7555,7 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
- 	 * Use default ctefx.bin if no alt firmware is detected, or if none
- 	 * exists for your particular codec.
- 	 */
--	if (!spec->alt_firmware_present) {
-+	if (!IS_ENABLED(CONFIG_PCI) || !spec->alt_firmware_present) {
- 		codec_dbg(codec, "Default firmware selected.");
- 		if (request_firmware(&fw_entry, EFX_FILE,
- 					codec->card->dev) != 0)
--- 
-2.20.0
+> +
+>   	for (count = 0 ; count < num_params; count++)
+>   		devm_kfree(card->dev, (void *)w_param_text[count]);
+>   	devm_kfree(card->dev, w_param_text);
+> 
