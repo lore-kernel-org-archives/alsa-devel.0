@@ -1,19 +1,23 @@
-From: Paulo Fidalgo <paulo.fidalgo.pt@gmail.com>
-Subject: Dell XPS 9360 continuous hissing sound
-Date: Fri, 22 Mar 2019 11:40:22 +0000
-Message-ID: <CAKbjie7OEVyB4vq4L01p2ov3Vo3Mw+3edLQxwT2eVhzaj-Cu0g@mail.gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH V2] ASoC: fix hdmi codec driver contest in
+ S3
+Date: Fri, 22 Mar 2019 11:46:25 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19527F9D9F@SHSMSX103.ccr.corp.intel.com>
+References: <1553235896-8185-1-git-send-email-libin.yang@intel.com>
+ <s5hpnqjp9es.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527F9BB6@SHSMSX103.ccr.corp.intel.com>
+ <s5hh8bvb5ba.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com
- [IPv6:2607:f8b0:4864:20::72d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88C6DF8078F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 12:40:34 +0100 (CET)
-Received: by mail-qk1-x72d.google.com with SMTP id k130so992158qke.3
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 04:40:34 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5FD1F89670
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 12:46:30 +0100 (CET)
+In-Reply-To: <s5hh8bvb5ba.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +27,214 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: tiwai@suse.com, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi Takashi,
 
-After a bug report on Fedora
-(https://bugzilla.redhat.com/show_bug.cgi?id=1677353)
+>> >
+>> >On Fri, 22 Mar 2019 07:24:56 +0100,
+>> >libin.yang@intel.com wrote:
+>> >>
+>> >> From: Libin Yang <libin.yang@intel.com>
+>> >>
+>> >> In S3, there is a contest between dapm event and getting display power.
+>> >>
+>> >> When resume, the sequence is:
+>> >>
+>> >> hdac_hdmi_runtime_resume()
+>> >>   => snd_hdac_display_power()
+>> >> hdac_hdmi_xxx_widget_event()
+>> >>
+>> >> The hdac_hdmi_xxx_widget_event() are based on the power being on.
+>> >> Otherwise, the operation on the codec register will fail.
+>> >>
+>> >> However, in snd_hdac_display_power(), it may sleep because of the
+>> >> mutex_lock() in display driver. In this case,
+>> >> hdac_hdmi_xxx_widget_event() will be called before the power is on.
+>> >>
+>> >> Let's not operate the registers and wait for the power in
+>> >> hdac_hdmi_xxx_widget_event()
+>> >>
+>> >> Signed-off-by: Libin Yang <libin.yang@intel.com>
+>> >
+>> >IMO the workaround looks a bit too fragile.  The substantial problem
+>> >is the race between codec and DAPM.  Can this be controlled better,
+>> >e.g. by defining the proper PM dependency?  I thought we may
+>> >rearrange the PM topology dynamically.
+>>
+>> It seems codec and DAPM is OK so far. Codec resume will be called
+>> firstly and then DAPM. But in HDMI codec runtime resume, it will call
+>> snd_hdac_display_power(). This function will try to get a mutex_lock.
+>> If it fails to get the lock, it will sleep. This will cause dapm event
+>> handler to be called before audio power domain in display is on in the HDMI
+>driver.
+>
+>It implies that the calls are racy.  If they have to be called in some order, they
+>have to be serialized in a more better way than inserting a random delay...
 
-----
-When I start t he computer I hears a continuous background noise. The
-problem is also described here:
-https://wiki.archlinux.org/index.php/Dell_XPS_13_(9360)#Continuous_hissing_sound_with_headphones
+Yes. The code does seem to be misleading. What do you think of using
+something like "wait_for_complete()"? This will be more readable.
 
-I need to issue the command `amixer -c 0 cset 'numid=10' 1` to solve
-the problem, but every time I reboot the computer I need to run it
-again.
-This has been happening for quite some time, but I've been post-poning
-the bug report.
+Regards,
+Libin
 
-Current kernel: 4.20.7-200.fc29.x86_64
-
-Alsa information:
-http://www.alsa-project.org/db/?f=df4834c53335709abb521c767e7b1da2f4371744
-----
-They advise me to contact you, to see if we can get a solution on this.
-
-Note: The computer also does not recognise (switch to) when I plug an headset.
-
-If you need more information, I'm eager to help diagnose and help to
-solve this, but I have no Kernel programming skills, other than that
-count on me.
-
-Kind regards,
-
-Paulo Fidalgo
+>
+>
+>thanks,
+>
+>Takashi
+>
+>>
+>> Regards,
+>> Libin
+>>
+>> >
+>> >
+>> >thanks,
+>> >
+>> >Takashi
+>> >
+>> >> ---
+>> >>  sound/soc/codecs/hdac_hdmi.c | 36
+>> >> ++++++++++++++++++++++++++++++++++++
+>> >>  1 file changed, 36 insertions(+)
+>> >>
+>> >> diff --git a/sound/soc/codecs/hdac_hdmi.c
+>> >> b/sound/soc/codecs/hdac_hdmi.c index 5eeb0fe..3c5c122 100644
+>> >> --- a/sound/soc/codecs/hdac_hdmi.c
+>> >> +++ b/sound/soc/codecs/hdac_hdmi.c
+>> >> @@ -144,6 +144,7 @@ struct hdac_hdmi_priv {
+>> >>  	int num_pin;
+>> >>  	int num_cvt;
+>> >>  	int num_ports;
+>> >> +	int display_power;	/* 0: power off; 1 power on */
+>> >>  	struct mutex pin_mutex;
+>> >>  	struct hdac_chmap chmap;
+>> >>  	struct hdac_hdmi_drv_data *drv_data; @@ -742,12 +743,27 @@
+>> >static
+>> >> void hdac_hdmi_set_amp(struct hdac_device *hdev,
+>> >>  					AC_VERB_SET_AMP_GAIN_MUTE,
+>> >val);  }
+>> >>
+>> >> +static int wait_for_display_power(struct hdac_hdmi_priv *hdmi) {
+>> >> +	int i = 0;
+>> >> +
+>> >> +	/* sleep for totally 80ms ~ 200ms should be enough */
+>> >> +	while (i < 40) {
+>> >> +		if (!hdmi->display_power)
+>> >> +			usleep_range(2000, 5000);
+>> >> +		else
+>> >> +			return 0;
+>> >> +		i++;
+>> >> +	}
+>> >> +	return -EAGAIN;
+>> >> +}
+>> >>
+>> >>  static int hdac_hdmi_pin_output_widget_event(struct
+>> >snd_soc_dapm_widget *w,
+>> >>  					struct snd_kcontrol *kc, int event)  {
+>> >>  	struct hdac_hdmi_port *port = w->priv;
+>> >>  	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
+>> >> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> >>  	struct hdac_hdmi_pcm *pcm;
+>> >>
+>> >>  	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n", @@ -757,6
+>> >+773,11
+>> >> @@ static int hdac_hdmi_pin_output_widget_event(struct
+>> >snd_soc_dapm_widget *w,
+>> >>  	if (!pcm)
+>> >>  		return -EIO;
+>> >>
+>> >> +	if (wait_for_display_power(hdmi)) {
+>> >> +		dev_err(&hdev->dev, "%s: hdmi power is not ready\n",
+>> >__func__);
+>> >> +		return -EAGAIN;
+>> >> +	}
+>> >> +
+>> >>  	/* set the device if pin is mst_capable */
+>> >>  	if (hdac_hdmi_port_select_set(hdev, port) < 0)
+>> >>  		return -EIO;
+>> >> @@ -803,6 +824,11 @@ static int
+>> >hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
+>> >>  	if (!pcm)
+>> >>  		return -EIO;
+>> >>
+>> >> +	if (wait_for_display_power(hdmi)) {
+>> >> +		dev_err(&hdev->dev, "%s: hdmi power is not ready\n",
+>> >__func__);
+>> >> +		return -EAGAIN;
+>> >> +	}
+>> >> +
+>> >>  	switch (event) {
+>> >>  	case SND_SOC_DAPM_PRE_PMU:
+>> >>  		hdac_hdmi_set_power_state(hdev, cvt->nid, AC_PWRST_D0);
+>> >@@ -840,6
+>> >> +866,7 @@ static int hdac_hdmi_pin_mux_widget_event(struct
+>> >> snd_soc_dapm_widget *w,  {
+>> >>  	struct hdac_hdmi_port *port = w->priv;
+>> >>  	struct hdac_device *hdev = dev_to_hdac_dev(w->dapm->dev);
+>> >> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> >>  	int mux_idx;
+>> >>
+>> >>  	dev_dbg(&hdev->dev, "%s: widget: %s event: %x\n", @@ -850,6
+>> >+877,11
+>> >> @@ static int hdac_hdmi_pin_mux_widget_event(struct
+>> >> snd_soc_dapm_widget *w,
+>> >>
+>> >>  	mux_idx = dapm_kcontrol_get_value(kc);
+>> >>
+>> >> +	if (wait_for_display_power(hdmi)) {
+>> >> +		dev_err(&hdev->dev, "%s: hdmi power is not ready\n",
+>> >__func__);
+>> >> +		return -EAGAIN;
+>> >> +	}
+>> >> +
+>> >>  	/* set the device if pin is mst_capable */
+>> >>  	if (hdac_hdmi_port_select_set(hdev, port) < 0)
+>> >>  		return -EIO;
+>> >> @@ -2068,6 +2100,7 @@ static int hdac_hdmi_runtime_suspend(struct
+>> >> device *dev)  {
+>> >>  	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+>> >>  	struct hdac_bus *bus = hdev->bus;
+>> >> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> >>  	struct hdac_ext_link *hlink = NULL;
+>> >>
+>> >>  	dev_dbg(dev, "Enter: %s\n", __func__); @@ -2095,6 +2128,7 @@
+>> >static
+>> >> int hdac_hdmi_runtime_suspend(struct device *dev)
+>> >>  	snd_hdac_ext_bus_link_put(bus, hlink);
+>> >>
+>> >>  	snd_hdac_display_power(bus, hdev->addr, false);
+>> >> +	hdmi->display_power = 0;
+>> >>
+>> >>  	return 0;
+>> >>  }
+>> >> @@ -2102,6 +2136,7 @@ static int hdac_hdmi_runtime_suspend(struct
+>> >> device *dev)  static int hdac_hdmi_runtime_resume(struct device
+>> >> *dev) {
+>> >>  	struct hdac_device *hdev = dev_to_hdac_dev(dev);
+>> >> +	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
+>> >>  	struct hdac_bus *bus = hdev->bus;
+>> >>  	struct hdac_ext_link *hlink = NULL;
+>> >>
+>> >> @@ -2128,6 +2163,7 @@ static int hdac_hdmi_runtime_resume(struct
+>> >device *dev)
+>> >>  	snd_hdac_codec_read(hdev, hdev->afg, 0,
+>> >	AC_VERB_SET_POWER_STATE,
+>> >>  							AC_PWRST_D0);
+>> >>
+>> >> +	hdmi->display_power = 1;
+>> >>  	return 0;
+>> >>  }
+>> >>  #else
+>> >> --
+>> >> 2.7.4
+>> >>
+>> >> _______________________________________________
+>> >> Alsa-devel mailing list
+>> >> Alsa-devel@alsa-project.org
+>> >> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>>
