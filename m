@@ -1,63 +1,43 @@
 From: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: [PATCH 1/3] ALSA: hda/realtek: Enable ASUS X441MB and X705FD headset MIC with ALC256
-Date: Fri, 22 Mar 2019 11:37:18 +0800
-Message-ID: <20190322033719.10793-1-jian-hong@endlessm.com>
+Subject: [PATCH 2/3] ALSA: hda/realtek: Enable headset mic of ASUS P5440FF with ALC256
+Date: Fri, 22 Mar 2019 11:37:20 +0800
+Message-ID: <20190322033719.10793-2-jian-hong@endlessm.com>
+References: <20190322033719.10793-1-jian-hong@endlessm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190322033719.10793-1-jian-hong@endlessm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.com>
-Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Jian-Hong Pan <jian-hong@endlessm.com>, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>
+Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Chris Chiu <chiu@endlessm.com>, Daniel Drake <drake@endlessm.com>, Jian-Hong Pan <jian-hong@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ASUS laptop X441MB and X705FD with ALC256 cannot detect the headset
-MIC until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+From: Chris Chiu <chiu@endlessm.com>
+
+The ASUS laptop P5440FF with ALC256 can't detect the headset microphone
+until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
 
 Signed-off-by: Chris Chiu <chiu@endlessm.com>
 Signed-off-by: Daniel Drake <drake@endlessm.com>
 Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 ---
- sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 89a96442eb07..2523e495924e 100644
+index 2523e495924e..b8efb20916ba 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -5688,6 +5688,7 @@ enum {
- 	ALC225_FIXUP_WYSE_AUTO_MUTE,
- 	ALC225_FIXUP_WYSE_DISABLE_MIC_VREF,
- 	ALC286_FIXUP_ACER_AIO_HEADSET_MIC,
-+	ALC256_FIXUP_ASUS_MIC_NO_PRESENCE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -6696,6 +6697,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE
- 	},
-+	[ALC256_FIXUP_ASUS_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x04a11120 }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7333,6 +7343,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+@@ -7343,6 +7343,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
  		{0x14, 0x90170110},
  		{0x1b, 0x90a70130},
  		{0x21, 0x03211020}),
 +	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1043, "ASUS", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE,
-+		{0x1a, 0x90a70130},
-+		{0x1b, 0x90170110},
++		{0x12, 0x90a60130},
++		{0x14, 0x90170110},
 +		{0x21, 0x03211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
- 		{0x12, 0xb7a60130},
- 		{0x13, 0xb8a61140},
+ 	SND_HDA_PIN_QUIRK(0x10ec0256, 0x1043, "ASUS", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 		{0x1a, 0x90a70130},
+ 		{0x1b, 0x90170110},
 -- 
 2.20.1
