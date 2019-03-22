@@ -1,51 +1,58 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Hercules P32 DJ: severe sound distortion during
- MIDI transfers
-Date: Fri, 22 Mar 2019 15:06:25 +0100
-Message-ID: <30e9cb6f-2bd5-292e-beb4-e49aad2db747@ladisch.de>
-References: <1553114844.12865.6.camel@trentalancia.com>
- <1335514032.30698.1553207267014@pim.register.it>
- <s5hr2azp9t3.wl-tiwai@suse.de>
- <D5E663E4-9118-4CA3-8ADE-5F97202D9404@trentalancia.com>
- <s5himwbb5h4.wl-tiwai@suse.de>
- <53EC51B6-618E-47B4-95E8-B24BECEEBC98@trentalancia.com>
- <s5hef6zb4k6.wl-tiwai@suse.de> <1553262288.26146.4.camel@trentalancia.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: hda/ca0132: work around clang -Wuninitialized warning
+Date: Fri, 22 Mar 2019 15:06:28 +0100
+Message-ID: <20190322140649.197027-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41727F8078F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 15:06:26 +0100 (CET)
-In-Reply-To: <1553262288.26146.4.camel@trentalancia.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Guido Trentalancia <guido@trentalancia.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: clang-built-linux@googlegroups.com, Nick Desaulniers <ndesaulniers@google.com>, Nathan Chancellor <natechancellor@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Guido Trentalancia wrote:
-> Also, the hardware is the same: Hercules P32 DJ (with exactly the same
-> firmware version 1.46 which is the latest).
+When CONFIG_PCI is disabled, clang gets confused about the
+control flow of the switch() statement always ending up
+in the default case, and warns:
 
-Are the USB controllers the same (2.0/3.x, OHCI/UHCI/EHCI/xHCI)?
+sound/pci/hda/patch_ca0132.c:7558:6: error: variable 'fw_entry' is used uninitialized whenever 'if' condition is false
+      [-Werror,-Wsometimes-uninitialized]
+        if (!spec->alt_firmware_present) {
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/pci/hda/patch_ca0132.c:7565:42: note: uninitialized use occurs here
+        dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
+                                                ^~~~~~~~
+sound/pci/hda/patch_ca0132.c:7558:2: note: remove the 'if' if its condition is always true
+        if (!spec->alt_firmware_present) {
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/pci/hda/patch_ca0132.c:7521:33: note: initialize the variable 'fw_entry' to silence this warning
+        const struct firmware *fw_entry;
+                                       ^
+                                        = NULL
 
-You wrote that "amidi -p hw:2,0,0 -d" causes the problem.  As long as no
-MIDI messages are actually received, the kernel or driver cannot affect
-what happens on the USB bus; the polling is done entirely by the host
-controller.
+Adding an explicit check for CONFIG_PCI avoids the issue.
+Unfortunately this is not very intuitive here.
 
+Link: https://bugs.llvm.org/show_bug.cgi?id=41197#c1
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Any suggestions for other workarounds appreciated. If you can think
+of a better fix, please treat this as a reported-by:
+---
+ sound/pci/hda/patch_ca0132.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Clemens
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 29882bda7632..415b16b7db70 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -7555,7 +7555,7 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	 * Use default ctefx.bin if no alt firmware is detected, or if none
+ 	 * exists for your particular codec.
+ 	 */
+-	if (!spec->alt_firmware_present) {
++	if (!IS_ENABLED(CONFIG_PCI) || !spec->alt_firmware_present) {
+ 		codec_dbg(codec, "Default firmware selected.");
+ 		if (request_firmware(&fw_entry, EFX_FILE,
+ 					codec->card->dev) != 0)
+-- 
+2.20.0
