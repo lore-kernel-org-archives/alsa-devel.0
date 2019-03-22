@@ -1,53 +1,69 @@
-From: Alex Ivanov <gnidorah@ya.ru>
-Subject: [PATCH] [-, JACK, plugin,
-	1/1] configure: use /etc instead of /etc
-Date: Fri, 22 Mar 2019 18:44:10 +0300
-Message-ID: <20190322154410.10712-1-gnidorah@ya.ru>
-References: <s5h1s2zb23j.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [BACKPORT 4.4.y 02/25] ALSA: compress: add support for 32bit calls in a 64bit kernel
+Date: Fri, 22 Mar 2019 16:43:53 +0100
+Message-ID: <20190322154425.3852517-3-arnd@arndb.de>
+References: <20190322154425.3852517-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward104o.mail.yandex.net (forward104o.mail.yandex.net
- [37.140.190.179])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 953BFF8078F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 16:44:16 +0100 (CET)
-In-Reply-To: <s5h1s2zb23j.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190322154425.3852517-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Ravindra Lokhande <rlokhande@nvidia.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Joe Perches <joe@perches.com>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi.
+From: Ravindra Lokhande <rlokhande@nvidia.com>
 
-Sure. Here we go.
+Compress offload does not support ioctl calls from a 32bit userspace
+in a 64 bit kernel. This patch adds support for ioctls from a 32bit
+userspace in a 64bit kernel
 
-Signed-off-by: Alex Ivanov <gnidorah@ya.ru>
+Signed-off-by: Ravindra Lokhande <rlokhande@nvidia.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+(cherry picked from commit c10368897e104c008c610915a218f0fe5fa4ec96)
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- configure.ac | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/compress_offload.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index 5b80585..b52923c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -237,7 +237,7 @@ AC_ARG_WITH(alsalconfdir,
- 	[path where ALSA local add-on config files are stored]),
-     alsalconfdir="$withval", alsalconfdir="")
- if test -z "$alsalconfdir"; then
--    alsalconfdir="/etc/alsa/conf.d"
-+    alsalconfdir="$sysconfdir/alsa/conf.d"
- fi
- AC_DEFINE_UNQUOTED(ALSA_LCONF_DIR, "$alsalconfdir", [directory containing local ALSA add-on config files])
- ALSA_LCONF_DIR="$alsalconfdir"
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 6163bf3e8177..33d40d6fa3f1 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -38,6 +38,7 @@
+ #include <linux/uio.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
++#include <linux/compat.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/compress_params.h>
+@@ -858,6 +859,15 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	return retval;
+ }
+ 
++/* support of 32bit userspace on 64bit platforms */
++#ifdef CONFIG_COMPAT
++static long snd_compr_ioctl_compat(struct file *file, unsigned int cmd,
++						unsigned long arg)
++{
++	return snd_compr_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
++}
++#endif
++
+ static const struct file_operations snd_compr_file_ops = {
+ 		.owner =	THIS_MODULE,
+ 		.open =		snd_compr_open,
+@@ -865,6 +875,9 @@ static const struct file_operations snd_compr_file_ops = {
+ 		.write =	snd_compr_write,
+ 		.read =		snd_compr_read,
+ 		.unlocked_ioctl = snd_compr_ioctl,
++#ifdef CONFIG_COMPAT
++		.compat_ioctl = snd_compr_ioctl_compat,
++#endif
+ 		.mmap =		snd_compr_mmap,
+ 		.poll =		snd_compr_poll,
+ };
 -- 
-2.19.2
+2.20.0
