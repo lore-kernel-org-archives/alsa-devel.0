@@ -1,30 +1,21 @@
-From: Guido Trentalancia <guido@trentalancia.com>
-Subject: Re: Hercules P32 DJ: severe sound distortion during
- MIDI transfers
-Date: Fri, 22 Mar 2019 17:06:22 +0100 (CET)
-Message-ID: <351256499.62701.1553270782127@pim.register.it>
-References: <1553114844.12865.6.camel@trentalancia.com>
- <1335514032.30698.1553207267014@pim.register.it>
- <s5hr2azp9t3.wl-tiwai@suse.de>
- <D5E663E4-9118-4CA3-8ADE-5F97202D9404@trentalancia.com>
- <s5himwbb5h4.wl-tiwai@suse.de>
- <53EC51B6-618E-47B4-95E8-B24BECEEBC98@trentalancia.com>
- <s5hef6zb4k6.wl-tiwai@suse.de> <1553262288.26146.4.camel@trentalancia.com>
- <s5htvfv9d9z.wl-tiwai@suse.de>
- <AF692377-8E9F-4483-81EC-712B31526DE4@trentalancia.com>
- <s5hsgvf9cs0.wl-tiwai@suse.de>
- <BF82F065-6E1F-4017-AB3E-70555EDBA2BB@trentalancia.com>
+From: Paulo Fidalgo <paulo.fidalgo.pt@gmail.com>
+Subject: Re: Dell XPS 9360 continuous hissing sound
+Date: Fri, 22 Mar 2019 16:07:15 +0000
+Message-ID: <CAKbjie63rA-gj+m2ZvtMJY4_FZSopt=ef2nVm6NSqS2wm8kw0A@mail.gmail.com>
+References: <CAKbjie7OEVyB4vq4L01p2ov3Vo3Mw+3edLQxwT2eVhzaj-Cu0g@mail.gmail.com>
+ <s5hftreapj1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="0000000000001769e20584b10d26"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmailsmtp.register.it (webmailsmtp30.register.it
- [81.88.63.155])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
+ [IPv6:2607:f8b0:4864:20::829])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84FD7F8076F
- for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 17:06:23 +0100 (CET)
-In-Reply-To: <BF82F065-6E1F-4017-AB3E-70555EDBA2BB@trentalancia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B973F89678
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 17:07:28 +0100 (CET)
+Received: by mail-qt1-x829.google.com with SMTP id v20so3039982qtv.12
+ for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2019 09:07:28 -0700 (PDT)
+In-Reply-To: <s5hftreapj1.wl-tiwai@suse.de>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,292 +26,198 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On the 22nd of March 2019 at 16.05 Guido Trentalancia <guido@trentalancia.com> wrote:
-> 
-> 
-> I suppose the Fedora 29 kernels are included in the range I tested as broken, i.e. 4.12 -- 5.0.
+--0000000000001769e20584b10d26
+Content-Type: text/plain; charset="UTF-8"
 
-I have checked and can now confirm the above, as Fedora 29 kernel is version 4.18.16, therefore included in the same range I tested as broken.
+Strangely the command returns amixer: Unable to find simple control 'numid=10',0
+So I've runned "amixer -c0" and you can find the output in before.txt
 
-> So, there is something triggering it on my system and not the other, maybe the USB system as pointed out by Clemens.
-> 
-> I'll make some research on the two USB systems...
-> 
-> I would also like to try USB Audio driver from kernel 3.0.1.
-> 
-> What else do you suggest?
-> 
-> Guido
-> 
-> Il 22 marzo 2019 15:58:23 CET, Takashi Iwai <tiwai@suse.de> ha scritto:
-> >On Fri, 22 Mar 2019 15:54:03 +0100,
-> >Guido Trentalancia wrote:
-> >> 
-> >> As already explained, I have tested the following kernels:
-> >> 
-> >> - kernel 5.0.2 -----> BROKEN
-> >> - kernel 4.17.10 --> BROKEN
-> >> - kernel 4.12.9 ---> BROKEN
-> >> 
-> >> So, it's been around for very long.
-> >> 
-> >> What do you suggest doing?
+Then I've runned amixer -c 0 cset 'numid=10' 1
+and again the "amixer -c0" and you can find the output in after.txt
+
+Also I've notice that the sound appears after I playing a music on
+computer and goes a few (like 10 ) seconds after the music stopped.
+
+
+On Fri, 22 Mar 2019 at 15:37, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Fri, 22 Mar 2019 12:40:22 +0100,
+> Paulo Fidalgo wrote:
 > >
-> >But which kernel is used for another user who can use without the
-> >problem?  I suppose they use the recent kernel with Fedora?
+> > Hi!
 > >
-> >> I have found reports on the web about similar problems (with other
-> >audio
-> >> interfaces) with kernels>3.0.0.
+> > After a bug report on Fedora
+> > (https://bugzilla.redhat.com/show_bug.cgi?id=1677353)
 > >
-> >Such a regression should have been reported earlier, otherwise it
-> >becomes more and more difficult to catch up...
+> > ----
+> > When I start t he computer I hears a continuous background noise. The
+> > problem is also described here:
+> > https://wiki.archlinux.org/index.php/Dell_XPS_13_(9360)#Continuous_hissing_sound_with_headphones
 > >
+> > I need to issue the command `amixer -c 0 cset 'numid=10' 1` to solve
+> > the problem, but every time I reboot the computer I need to run it
+> > again.
+> > This has been happening for quite some time, but I've been post-poning
+> > the bug report.
+>
+> What is the original value before setting this amixer command above?
+> You can get via "amixer -c0 get numid=10'.
+>
+> Does the noise again when you restore the value after setting to 1 in
+> the above?
+>
+>
+> Takashi
+>
 > >
-> >thanks,
+> > Current kernel: 4.20.7-200.fc29.x86_64
 > >
-> >Takashi
+> > Alsa information:
+> > http://www.alsa-project.org/db/?f=df4834c53335709abb521c767e7b1da2f4371744
+> > ----
+> > They advise me to contact you, to see if we can get a solution on this.
 > >
+> > Note: The computer also does not recognise (switch to) when I plug an headset.
 > >
-> >> Regards,
-> >> 
-> >> Guido
-> >> 
-> >> Il 22 marzo 2019 15:47:36 CET, Takashi Iwai <tiwai@suse.de> ha
-> >scritto:
-> >> 
-> >>     On Fri, 22 Mar 2019 14:44:48 +0100,
-> >>     Guido Trentalancia wrote:
-> >>          
-> >>          Hello Takashi.
-> >>          
-> >>          I have carried out the test that you proposed...
-> >>          
-> >>          My reply follows your quoted text.
-> >>          
-> >>          On Fri, 22/03/2019 at 11.12 +0100, Takashi Iwai wrote:
-> >>              On Fri, 22 Mar 2019 11:04:01 +0100,
-> >>              Guido Trentalancia wrote:
-> >>                  
-> >>                  Hello Takashi,
-> >>                  
-> >>                  I am using the latest version of everything,
-> >including kernel and
-> >>                  ALSA
-> >>                  userspace library / tools.
-> >>                  
-> >>                  The other user has exactly the same hardware and has
-> >tested same
-> >>                  firmware
-> >>                  (both 1.36 and latest
-> >>                 1.46), but with Fedora 29 and it is working.
-> >>                  
-> >>                  Perhaps Fedora 29 has a different version of the
-> >ALSA library, I
-> >>                  will find
-> >>                  out, try to downgrade, test again and report back.
-> >>              
-> >>              Yes, that'd be really helpful.  If aligning the software
-> >doesn't fix
-> >>              the issue, it's either because of the hardware or the
-> >difference of
-> >>              usage patterns.
-> >>          
-> >>          I have tested exactly the same ALSA userspace library and
-> >plugins
-> >>          distributed by Fedora 29 and it does NOT work !
-> >>          
-> >>          As already explained, the usage pattern is exactly the same
-> >between me
-> >>          and the user which is not experiencing this severe problem.
-> >>          
-> >>          Also, the hardware is the same: Hercules P32 DJ (with
-> >exactly the same
-> >>          firmware version 1.46 which is the latest).
-> >>          
-> >>          So, the conclusion is that it must be a kernel bug ! I was
-> >expecting
-> >>          this, as already pointed out in previous messages.
-> >>     
-> >>     Did you test the
-> >>     very same kernel, too?  Without that confirmation, no
-> >>     one can conclude that at all...
-> >>     
-> >>     If the kernel makes difference, you can try identify which kernel
-> >>     version starts showing the problem, and at best, do git
-> >bisection.
-> >> 
-> >>     thanks,
-> >>     
-> >>     Takashi
-> >> 
-> >>          Can you please help me fix this bug since you wrote the
-> >driver and/or
-> >>          are maintaining it ?
-> >>          
-> >>          Thanks,
-> >>          
-> >>          Guido
-> >>          
-> >>              thanks,
-> >>              
-> >>              Takashi
-> >> 
-> >>                  Guido
-> >>                  
-> >>                  Il 22 marzo 2019 10:53:11 CET, Takashi Iwai
-> ><tiwai@suse.de> ha
-> >>                  scritto:
-> >>                  
-> >>                      On Fri, 22 Mar 2019
-> >>                 10:17:17 +0100,
-> >>                      Guido Trentalancia wrote:
-> >>                           
-> >>                           It cannot be a firmware bug, as you say,
-> >because:
-> >>                           
-> >>                           - it does NOT happen on Windows!
-> >>                      
-> >>                      It doesn't mean that the device behaves
-> >correctly as
-> >>                  advertised.
-> >>                      
-> >>                           - it does NOT even always happen on Linux:
-> >other users
-> >>                  (with different kernel
-> >>                           / ALSA library) are not experiencing the
-> >same problem;
-> >>                           - it happens with several firmware
-> >versions, including the
-> >>                  latest one (1.36
-> >>                           and 1.46).
-> >>                           
-> >>                           So it is either a bug in ALSA kernel
-> >driver, USB sound
-> >>                  driver (more likely) or
-> >>                           ALSA library.
-> >>                           
-> >>                           Now, you are in charge of the USB sound
-> >driver, can you
-> >>                  please double check??
-> >>                      
-> >>                      If it doesn't happen for other users with the
-> >very same device,
-> >>                  you'd
-> >>                      need to identify what's the difference
-> >>                 between your case and
-> >>                  others.
-> >>                      For example, if the difference of alsa-lib
-> >matters, you can try
-> >>                  the
-> >>                      very same condition.
-> >>                      
-> >>                      This kind of bug can't be easily debugged
-> >without the actual
-> >>                      hardware, unfortunately.
-> >>                  
-> >>                      Takashi
-> >>                  
-> >>                           Regards,
-> >>                           
-> >>                           Guido
-> >>                           
-> >>                           Il 22 marzo 2019 09:55:52 CET, Takashi Iwai
-> ><tiwai@suse.de
-> >>                      ha scritto:
-> >>                           
-> >>                               On Thu, 21 Mar 2019 23:27:46 +0100,
-> >>                               Guido Trentalancia wrote:
-> >>                                    
-> >>                                    I wonder if this might be due to a
-> >bug in the
-> >>                  "USB Audio Driver for Alsa"?
-> >>                                    
-> >>                                   
-> >https://git.kernel.org/pub/scm/linux/kernel/git/t
-> >>                  orvalds/linux.git/tree/sound/usb
-> >>                                    
-> >>                                   
-> >https://git.kernel.org/pub/scm/linux/kernel/git/t
-> >>                  iwai/sound.git/tree/sound/usb
-> >>                               
-> >>                               More likely a buggy firmware of your
-> >USB audio device
-> >>                  :)
-> >>                               
-> >>                                From the driver implementation POV,
-> >both audio and
-> >>                  MIDI devices are
-> >>                               handled by individual endpoints, hence
-> >they shouldn't
-> >>                  conflict.
-> >>                               
-> >>                               Or another possibility would be some
-> >USB host side
-> >>                  issue like the
-> >>                               bandwidth.  But
-> >>                               it's a MIDI stream that is very low
-> >data rate, so this
-> >>                               sounds also unlikely...
-> >>                           
-> >>                               thanks,
-> >> 
-> >>                  Takashi
-> >>                           
-> >>                                    Guido
-> >>                                    
-> >>                                        On the 20th of March 2019 at
-> >21.47 Guido
-> >>                          Trentalancia
-> >>                                        <guido@trentalancia.com wrote:
-> >>                                       
-> >>                                        Hello.
-> >>                                       
-> >>                                        I am hitting a very serious
-> >bug (ALSA kernel
-> >>                  driver or ALSA library)
-> >>                                        when using the Hercules P32 DJ
-> >audio
-> >>                  interface.
-> >>                                       
-> >>                                        The sound is severely
-> >distorted during MIDI
-> >>                  transfers.
-> >>                                       
-> >>                                        To reproduce:
-> >>                                       
-> >>                                          + start playing something in
-> >a first
-> >>                  console:
-> >>                                       
-> >>                                        console1# AUDIODEV=hw:2,0 play
-> >audio.wav
-> >>                                       
-> >>                                          + the audio plays fine
-> >> 
-> >>                                          + now start "amidi" in a
-> >second console
-> >>                  while the above track is still
-> >>                                            playing
-> >>                                           
-> >>                                        console2#
-> >>                                   amidi -p hw:2,0,0 -d
-> >>                                       
-> >>                                          + the sound is now severely
-> >distorted
-> >>                  (basically noise, with some
-> >>                          hard-
-> >>                                            to-distinguish features
-> >resembling the
-> >>                  original track) until "amidi"
-> >>                                            is
-> >>                                            interrupted !
-> >> 
-> >> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > If you need more information, I'm eager to help diagnose and help to
+> > solve this, but I have no Kernel programming skills, other than that
+> > count on me.
+> >
+> > Kind regards,
+> >
+> > Paulo Fidalgo
+> >
+
+--0000000000001769e20584b10d26
+Content-Type: text/plain; charset="US-ASCII"; name="after.txt"
+Content-Disposition: attachment; filename="after.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtk9c2kf0>
+X-Attachment-Id: f_jtk9c2kf0
+
+U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
+dm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6
+IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86IFBsYXliYWNrIDg3IFsxMDAl
+XSBbMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkcGhvbmUnLDAKICBDYXBh
+YmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0
+IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQg
+TGVmdDogUGxheWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxh
+eWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRw
+aG9uZSBNaWMnLDAKICBDYXBhYmlsaXRpZXM6IGNzd2l0Y2ggY3N3aXRjaC1qb2luZWQgY3N3aXRj
+aC1leGNsdXNpdmUKICBDYXB0dXJlIGV4Y2x1c2l2ZSBncm91cDogMAogIENhcHR1cmUgY2hhbm5l
+bHM6IE1vbm8KICBNb25vOiBDYXB0dXJlIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFk
+cGhvbmUgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFu
+bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQg
+TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDEgWzMzJV0g
+WzEwLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IDEgWzMzJV0gWzEwLjAwZEJdClNpbXBsZSBtaXhlciBj
+b250cm9sICdTcGVha2VyJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5
+YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFj
+ayAwIC0gODcKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJd
+IFtvZmZdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDAgWzAlXSBbLTY1LjI1ZEJdIFtvZmZdClNp
+bXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5
+YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFj
+ayAwIC0gMjU1CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAw
+ZEJdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1p
+eGVyIGNvbnRyb2wgJ0lFQzk1OCcsMAogIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpv
+aW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29mZl0KU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMQogIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dp
+dGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJhY2sgW29u
+XQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywyCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNo
+IHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFj
+ayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdJRUM5NTgnLDMKICBDYXBhYmlsaXRpZXM6IHBz
+d2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86IFBs
+YXliYWNrIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsNAogIENhcGFiaWxpdGll
+czogcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9u
+bzogUGxheWJhY2sgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMAogIENhcGFi
+aWxpdGllczogY3ZvbHVtZSBjc3dpdGNoCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAt
+IEZyb250IFJpZ2h0CiAgTGltaXRzOiBDYXB0dXJlIDAgLSA2MwogIEZyb250IExlZnQ6IENhcHR1
+cmUgNjMgWzEwMCVdIFszMC4wMGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IENhcHR1cmUgNjMgWzEw
+MCVdIFszMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdBdXRvLU11dGUgTW9kZScs
+MAogIENhcGFiaWxpdGllczogZW51bQogIEl0ZW1zOiAnRGlzYWJsZWQnICdFbmFibGVkJwogIEl0
+ZW0wOiAnRGlzYWJsZWQnClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkc2V0IE1pYycsMAogIENh
+cGFiaWxpdGllczogY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBjc3dpdGNoLWV4Y2x1c2l2ZQogIENh
+cHR1cmUgZXhjbHVzaXZlIGdyb3VwOiAwCiAgQ2FwdHVyZSBjaGFubmVsczogTW9ubwogIE1vbm86
+IENhcHR1cmUgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHNldCBNaWMgQm9vc3QnLDAK
+ICBDYXBhYmlsaXRpZXM6IHZvbHVtZQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0g
+RnJvbnQgUmlnaHQKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQK
+ICBMaW1pdHM6IDAgLSAzCiAgRnJvbnQgTGVmdDogMSBbMzMlXSBbMTAuMDBkQl0KICBGcm9udCBS
+aWdodDogMSBbMzMlXSBbMTAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIE1p
+YycsMAogIENhcGFiaWxpdGllczogY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBjc3dpdGNoLWV4Y2x1
+c2l2ZQogIENhcHR1cmUgZXhjbHVzaXZlIGdyb3VwOiAwCiAgQ2FwdHVyZSBjaGFubmVsczogTW9u
+bwogIE1vbm86IENhcHR1cmUgW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0ludGVybmFsIE1p
+YyBCb29zdCcsMAogIENhcGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZy
+b250IExlZnQgLSBGcm9udCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
+cm9udCBSaWdodAogIExpbWl0czogMCAtIDMKICBGcm9udCBMZWZ0OiAwIFswJV0gWzAuMDBkQl0K
+ICBGcm9udCBSaWdodDogMCBbMCVdIFswLjAwZEJdCg==
+--0000000000001769e20584b10d26
+Content-Type: text/plain; charset="US-ASCII"; name="before.txt"
+Content-Disposition: attachment; filename="before.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_jtk9c2ks1>
+X-Attachment-Id: f_jtk9c2ks1
+
+U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
+dm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6
+IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86IFBsYXliYWNrIDgzIFs5NSVd
+IFstMy4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkcGhvbmUnLDAKICBDYXBh
+YmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0
+IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA4NwogIE1vbm86CiAgRnJvbnQg
+TGVmdDogUGxheWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxh
+eWJhY2sgODcgWzEwMCVdIFswLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRw
+aG9uZSBNaWMnLDAKICBDYXBhYmlsaXRpZXM6IGNzd2l0Y2ggY3N3aXRjaC1qb2luZWQgY3N3aXRj
+aC1leGNsdXNpdmUKICBDYXB0dXJlIGV4Y2x1c2l2ZSBncm91cDogMAogIENhcHR1cmUgY2hhbm5l
+bHM6IE1vbm8KICBNb25vOiBDYXB0dXJlIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFk
+cGhvbmUgTWljIEJvb3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFu
+bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQg
+TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBb
+MC4wMGRCXQogIEZyb250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRy
+b2wgJ1NwZWFrZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNr
+IGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAg
+LSA4NwogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29m
+Zl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMCBbMCVdIFstNjUuMjVkQl0gW29mZl0KU2ltcGxl
+IG1peGVyIGNvbnRyb2wgJ1BDTScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZQogIFBsYXliYWNr
+IGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAg
+LSAyNTUKICBNb25vOgogIEZyb250IExlZnQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0K
+ICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU1IFsxMDAlXSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIg
+Y29udHJvbCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVk
+CiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2ZmXQpTaW1wbGUg
+bWl4ZXIgY29udHJvbCAnSUVDOTU4JywxCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gt
+am9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNp
+bXBsZSBtaXhlciBjb250cm9sICdJRUM5NTgnLDIKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3
+aXRjaC1qb2luZWQKICBQbGF5YmFjayBjaGFubmVsczogTW9ubwogIE1vbm86IFBsYXliYWNrIFtv
+bl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0lFQzk1OCcsMwogIENhcGFiaWxpdGllczogcHN3aXRj
+aCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogUGxheWJh
+Y2sgW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4Jyw0CiAgQ2FwYWJpbGl0aWVzOiBw
+c3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQ
+bGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdDYXB0dXJlJywwCiAgQ2FwYWJpbGl0
+aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJv
+bnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDYzCiAgRnJvbnQgTGVmdDogQ2FwdHVyZSA2
+MyBbMTAwJV0gWzMwLjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSA2MyBbMTAwJV0g
+WzMwLjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0F1dG8tTXV0ZSBNb2RlJywwCiAg
+Q2FwYWJpbGl0aWVzOiBlbnVtCiAgSXRlbXM6ICdEaXNhYmxlZCcgJ0VuYWJsZWQnCiAgSXRlbTA6
+ICdEaXNhYmxlZCcKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRzZXQgTWljJywwCiAgQ2FwYWJp
+bGl0aWVzOiBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIGNzd2l0Y2gtZXhjbHVzaXZlCiAgQ2FwdHVy
+ZSBleGNsdXNpdmUgZ3JvdXA6IDAKICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCiAgTW9ubzogQ2Fw
+dHVyZSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdIZWFkc2V0IE1pYyBCb29zdCcsMAogIENh
+cGFiaWxpdGllczogdm9sdW1lCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9u
+dCBSaWdodAogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
+bWl0czogMCAtIDMKICBGcm9udCBMZWZ0OiAxIFszMyVdIFsxMC4wMGRCXQogIEZyb250IFJpZ2h0
+OiAxIFszMyVdIFsxMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW50ZXJuYWwgTWljJyww
+CiAgQ2FwYWJpbGl0aWVzOiBjc3dpdGNoIGNzd2l0Y2gtam9pbmVkIGNzd2l0Y2gtZXhjbHVzaXZl
+CiAgQ2FwdHVyZSBleGNsdXNpdmUgZ3JvdXA6IDAKICBDYXB0dXJlIGNoYW5uZWxzOiBNb25vCiAg
+TW9ubzogQ2FwdHVyZSBbb2ZmXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW50ZXJuYWwgTWljIEJv
+b3N0JywwCiAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQg
+TGVmdCAtIEZyb250IFJpZ2h0CiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250
+IFJpZ2h0CiAgTGltaXRzOiAwIC0gMwogIEZyb250IExlZnQ6IDAgWzAlXSBbMC4wMGRCXQogIEZy
+b250IFJpZ2h0OiAwIFswJV0gWzAuMDBkQl0K
+--0000000000001769e20584b10d26
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--0000000000001769e20584b10d26--
