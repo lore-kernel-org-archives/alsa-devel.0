@@ -1,44 +1,42 @@
-From: syzbot <syzbot+c4c4b2bb358bb936ad7e@syzkaller.appspotmail.com>
-Subject: Re: KASAN: use-after-free Read in rt_cache_valid
-Date: Sat, 23 Mar 2019 14:10:00 -0700
-Message-ID: <000000000000f8e14f0584c96446@google.com>
-References: <00000000000066aa5f0581b6effe@google.com>
+From: Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH] sound: rt5645: fix a NULL pointer dereference
+Date: Sat, 23 Mar 2019 18:05:11 -0500
+Message-ID: <aab4eea2-2d6e-1a16-5b2a-47ac5f75e642@umn.edu>
+References: <20190315034833.25037-1-kjlu@umn.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <00000000000066aa5f0581b6effe@google.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alexandre.torgue@st.com, alsa-devel@alsa-project.org, arnaud.pouliquen@st.com, broonie@kernel.org, colin.king@canonical.com, davem@davemloft.net, dsahern@gmail.com, ktkhai@virtuozzo.com, kuznet@ms2.inr.ac.ru, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, mcoquelin.stm32@gmail.com, netdev@vger.kernel.org, olivier.moysan@st.com, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, tyhicks@canonical.com, willy@infradead.org, yoshfuji@linux-ipv6.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190315034833.25037-1-kjlu@umn.edu>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 20190315034833.25037-1-kjlu@umn.edu
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has bisected this bug to:
 
-commit 6b27e27729270a2478fdebea2db9c4f57bb4e8e6
-Author: Colin Ian King <colin.king@canonical.com>
-Date:   Wed Oct 31 19:31:43 2018 +0000
+On 3/14/19 10:48 PM, Kangjie Lu wrote:
+> devm_kcalloc() may fail and return NULL. The fix returns ENOMEM
+> in case it fails to avoid NULL pointer dereference.
+>
+> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+> ---
+>  sound/soc/codecs/rt5645.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+> index 9a0751978090..f842775dbf2c 100644
+> --- a/sound/soc/codecs/rt5645.c
+> +++ b/sound/soc/codecs/rt5645.c
+> @@ -3419,6 +3419,9 @@ static int rt5645_probe(struct snd_soc_component *component)
+>  		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+>  		GFP_KERNEL);
+>  
+> +	if (!rt5645->eq_param)
+> +		return -ENOMEM;
+> +
+>  	return 0;
+>  }
+>  
 
-     ASoC: stm32: sai: fix less than zero comparison on unsigned int
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10c0298b200000
-start commit:   aa0c38cf Merge branch 'fixes' of git://git.kernel.org/pub/..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=12c0298b200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c0298b200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee434566c893c7b1
-dashboard link: https://syzkaller.appspot.com/bug?extid=c4c4b2bb358bb936ad7e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1197cb88c00000
-
-Reported-by: syzbot+c4c4b2bb358bb936ad7e@syzkaller.appspotmail.com
-Fixes: 6b27e2772927 ("ASoC: stm32: sai: fix less than zero comparison on  
-unsigned int")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Friendly reminder, could someone review this patch ?
