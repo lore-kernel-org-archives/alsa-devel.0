@@ -1,115 +1,43 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] ASoC: intel: Fix crash at suspend/resume after failed codec registration
-Date: Fri, 22 Mar 2019 15:39:48 -0700
-Message-ID: <1553294388-25293-1-git-send-email-linux@roeck-us.net>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Curtis Malainey <cujomalainey@chromium.org>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: simple-card-utils: remove set but not used variable ''
+Date: Sat, 23 Mar 2019 02:08:38 +0000
+Message-ID: <20190323020838.107533-1-yuehaibing@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If codec registration fails after the ASoC Intel SST driver has been probed,
-the kernel will Oops and crash at suspend/resume.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-general protection fault: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 2811 Comm: cat Tainted: G        W         4.19.30 #15
-Hardware name: GOOGLE Clapper, BIOS Google_Clapper.5216.199.7 08/22/2014
-RIP: 0010:snd_soc_suspend+0x5a/0xd21
-Code: 03 80 3c 10 00 49 89 d7 74 0b 48 89 df e8 71 72 c4 fe 4c 89
-fa 48 8b 03 48 89 45 d0 48 8d 98 a0 01 00 00 48 89 d8 48 c1 e8 03
-<8a> 04 10 84 c0 0f 85 85 0c 00 00 80 3b 00 0f 84 6b 0c 00 00 48 8b
-RSP: 0018:ffff888035407750 EFLAGS: 00010202
-RAX: 0000000000000034 RBX: 00000000000001a0 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffff88805c417098
-RBP: ffff8880354077b0 R08: dffffc0000000000 R09: ffffed100b975718
-R10: 0000000000000001 R11: ffffffff949ea4a3 R12: 1ffff1100b975746
-R13: dffffc0000000000 R14: ffff88805cba4588 R15: dffffc0000000000
-FS:  0000794a78e91b80(0000) GS:ffff888068d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007bd5283ccf58 CR3: 000000004b7aa000 CR4: 00000000001006e0
-Call Trace:
-? dpm_complete+0x67b/0x67b
-? i915_gem_suspend+0x14d/0x1ad
-sst_soc_prepare+0x91/0x1dd
-? sst_be_hw_params+0x7e/0x7e
-dpm_prepare+0x39a/0x88b
-dpm_suspend_start+0x13/0x9d
-suspend_devices_and_enter+0x18f/0xbd7
-? arch_suspend_enable_irqs+0x11/0x11
-? printk+0xd9/0x12d
-? lock_release+0x95f/0x95f
-? log_buf_vmcoreinfo_setup+0x131/0x131
-? rcu_read_lock_sched_held+0x140/0x22a
-? __bpf_trace_rcu_utilization+0xa/0xa
-? __pm_pr_dbg+0x186/0x190
-? pm_notifier_call_chain+0x39/0x39
-? suspend_test+0x9d/0x9d
-pm_suspend+0x2f4/0x728
-? trace_suspend_resume+0x3da/0x3da
-? lock_release+0x95f/0x95f
-? kernfs_fop_write+0x19f/0x32d
-state_store+0xd8/0x147
-? sysfs_kf_read+0x155/0x155
-kernfs_fop_write+0x23e/0x32d
-__vfs_write+0x108/0x608
-? vfs_read+0x2e9/0x2e9
-? rcu_read_lock_sched_held+0x140/0x22a
-? __bpf_trace_rcu_utilization+0xa/0xa
-? debug_smp_processor_id+0x10/0x10
-? selinux_file_permission+0x1c5/0x3c8
-? rcu_sync_lockdep_assert+0x6a/0xad
-? __sb_start_write+0x129/0x2ac
-vfs_write+0x1aa/0x434
-ksys_write+0xfe/0x1be
-? __ia32_sys_read+0x82/0x82
-do_syscall_64+0xcd/0x120
-entry_SYSCALL_64_after_hwframe+0x49/0xbe
+sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
+sound/soc/generic/simple-card-utils.c:164:18: warning:
+ parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
 
-In the observed situation, the problem is seen because the codec driver
-failed to probe due to a hardware problem.
+It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
+asoc_simple_debug_info()"), so can be removed.
 
-max98090 i2c-193C9890:00: Failed to read device revision: -1
-max98090 i2c-193C9890:00: ASoC: failed to probe component -1
-cht-bsw-max98090 cht-bsw-max98090: ASoC: failed to instantiate card -1
-cht-bsw-max98090 cht-bsw-max98090: snd_soc_register_card failed -1
-cht-bsw-max98090: probe of cht-bsw-max98090 failed with error -1
-
-The problem is similar to the problem solved with commit 2fc995a87f2e
-("ASoC: intel: Fix crash at suspend/resume without card registration"),
-but codec registration fails at a later point. At that time, the pointer
-checked with the above mentioned commit is already set, but it is not
-cleared if the device is subsequently removed. Adding a remove function
-to clear the pointer fixes the problem.
-
-Cc: stable@vger.kernel.org
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/generic/simple-card-utils.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 08cea5b5cda9..0e8b1c5eec88 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -706,9 +706,17 @@ static int sst_soc_probe(struct snd_soc_component *component)
- 	return sst_dsp_init_v2_dpcm(component);
- }
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 4ed68348f939..db1458a19985 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
+ 	 * see
+ 	 *	soc-core.c :: snd_soc_init_multicodec()
+ 	 */
+-	if (dlc) {
++	if (dlc)
+ 		dai_of_node	= dlc->of_node;
+-		dai_name	= dlc->dai_name;
+-	}
  
-+static void sst_soc_remove(struct snd_soc_component *component)
-+{
-+	struct sst_data *drv = dev_get_drvdata(component->dev);
-+
-+	drv->soc_card = NULL;
-+}
-+
- static const struct snd_soc_component_driver sst_soc_platform_drv  = {
- 	.name		= DRV_NAME,
- 	.probe		= sst_soc_probe,
-+	.remove		= sst_soc_remove,
- 	.ops		= &sst_platform_ops,
- 	.compr_ops	= &sst_platform_compr_ops,
- 	.pcm_new	= sst_pcm_new,
--- 
-2.7.4
+ 	/*
+ 	 * Parse dai->sysclk come from "clocks = <&xxx>"
