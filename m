@@ -1,43 +1,57 @@
-From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ASoC: simple-card-utils: remove set but not used variable ''
-Date: Sat, 23 Mar 2019 02:08:38 +0000
-Message-ID: <20190323020838.107533-1-yuehaibing@huawei.com>
+From: Alex Ivanov <gnidorah@ya.ru>
+Subject: [PATCH v3] [-, JACK, plugin,
+	1/1] configure: use /etc instead of /etc
+Date: Sat, 23 Mar 2019 08:20:57 +0300
+Message-ID: <20190323052057.7576-1-gnidorah@ya.ru>
+References: <s5hk1gqpzio.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: YueHaibing <yuehaibing@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from forward103o.mail.yandex.net (forward103o.mail.yandex.net
+ [37.140.190.177])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF60BF8076F
+ for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2019 06:21:03 +0100 (CET)
+In-Reply-To: <s5hk1gqpzio.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Use $sysconfdir as prefix for ALSA_LCONF_DIR by default. Otherwise install
+fails on non-FHS distros.
 
-sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
-sound/soc/generic/simple-card-utils.c:164:18: warning:
- parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
-
-It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
-asoc_simple_debug_info()"), so can be removed.
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Alex Ivanov <gnidorah@ya.ru>
 ---
- sound/soc/generic/simple-card-utils.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ configure.ac | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 4ed68348f939..db1458a19985 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
- 	 * see
- 	 *	soc-core.c :: snd_soc_init_multicodec()
- 	 */
--	if (dlc) {
-+	if (dlc)
- 		dai_of_node	= dlc->of_node;
--		dai_name	= dlc->dai_name;
--	}
- 
- 	/*
- 	 * Parse dai->sysclk come from "clocks = <&xxx>"
+diff --git a/configure.ac b/configure.ac
+index 5b80585..1be4a70 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -237,7 +237,12 @@ AC_ARG_WITH(alsalconfdir,
+ 	[path where ALSA local add-on config files are stored]),
+     alsalconfdir="$withval", alsalconfdir="")
+ if test -z "$alsalconfdir"; then
+-    alsalconfdir="/etc/alsa/conf.d"
++    eval dir="$sysconfdir"
++    case "$dir" in
++    /*) ;;
++    *) dir="$dir"
++    esac
++    alsalconfdir="$dir/alsa/conf.d"
+ fi
+ AC_DEFINE_UNQUOTED(ALSA_LCONF_DIR, "$alsalconfdir", [directory containing local ALSA add-on config files])
+ ALSA_LCONF_DIR="$alsalconfdir"
+-- 
+2.19.2
