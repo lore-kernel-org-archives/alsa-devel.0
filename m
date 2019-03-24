@@ -1,33 +1,33 @@
 From: Kangjie Lu <kjlu@umn.edu>
-Subject: [PATCH] sound: codecs: fix a potential NULL pointer dereference
-Date: Sun, 24 Mar 2019 18:12:37 -0500
-Message-ID: <20190324231237.2246-1-kjlu@umn.edu>
+Subject: [PATCH] sound: codecs: fix a missing check for regmap_update_bits
+Date: Sun, 24 Mar 2019 18:25:53 -0500
+Message-ID: <20190324232553.10020-1-kjlu@umn.edu>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kjlu@umn.edu
-Cc: pakki001@umn.edu, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: pakki001@umn.edu, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In case devm_kzalloc fails, the patch returns -ENOMEM to avoid
-potential NULL pointer dereference.
+regmap_update_bits could fail. The fix checks its status and if
+it fails, returns its error code upstream.
 
 Signed-off-by: Kangjie Lu <kjlu@umn.edu>
 ---
- sound/soc/codecs/rt5663.c | 2 ++
+ sound/soc/codecs/cs35l34.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index da6647015708..909ab99a1995 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3480,6 +3480,8 @@ static int rt5663_parse_dp(struct rt5663_priv *rt5663, struct device *dev)
- 		table_size = sizeof(struct impedance_mapping_table) *
- 			rt5663->pdata.impedance_sensing_num;
- 		rt5663->imp_table = devm_kzalloc(dev, table_size, GFP_KERNEL);
-+		if (!rt5663->imp_table)
-+			return -ENOMEM;
- 		device_property_read_u32_array(dev,
- 			"realtek,impedance_sensing_table",
- 			(u32 *)rt5663->imp_table, table_size);
+diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
+index 5063c05afa27..a456b1ac9019 100644
+--- a/sound/soc/codecs/cs35l34.c
++++ b/sound/soc/codecs/cs35l34.c
+@@ -262,6 +262,8 @@ static int cs35l34_sdin_event(struct snd_soc_dapm_widget *w,
+ 		}
+ 		ret = regmap_update_bits(priv->regmap, CS35L34_PWRCTL1,
+ 					CS35L34_PDN_ALL, CS35L34_PDN_ALL);
++		if (ret < 0)
++			return ret;
+ 	break;
+ 	default:
+ 		pr_err("Invalid event = 0x%x\n", event);
 -- 
 2.17.1
