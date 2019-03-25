@@ -1,23 +1,13 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PROBLEM] ALSA: hda: PCM streams are suspended
-	while opening
-Date: Mon, 25 Mar 2019 15:31:26 +0000
-Message-ID: <dd9d4106-c2d8-3ed8-fe9e-f7744f3eb8a7@nvidia.com>
-References: <1553097854-10287-1-git-send-email-jonathanh@nvidia.com>
- <s5hzhppqx8q.wl-tiwai@suse.de>
- <446faef9-a114-1b28-5636-a30bae04fa53@nvidia.com>
- <ffa1c237-baf8-587c-5389-29223613eb0e@nvidia.com>
- <s5h5zs79sv8.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: aloop: Support S24 sample formats
+Date: Mon, 25 Mar 2019 16:35:20 +0100
+Message-ID: <5e015489-8705-0aa4-dfde-78854a49f6be@perex.cz>
+References: <1553526854-16921-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25474F801D9
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 16:31:32 +0100 (CET)
-In-Reply-To: <s5h5zs79sv8.wl-tiwai@suse.de>
+In-Reply-To: <1553526854-16921-1-git-send-email-twischer@de.adit-jv.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,105 +18,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
+To: twischer@de.adit-jv.com, patch@alsa-project.org, broonie@kernel.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Dne 25. 03. 19 v 16:14 twischer@de.adit-jv.com napsal(a):
+> From: Timo Wischer <twischer@de.adit-jv.com>
+> 
+> Currently snd_aloop supports only S16 and S32 audio sample formats. With
+> this patch the S24 formats are also supported.
 
-On 25/03/2019 09:59, Takashi Iwai wrote:
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
-...
-
-> I reconsidered the problem again, and noticed that the very same
-> problem may appear with the system PM, not only with runtime PM.
-> The suspend can happen at any time, so even a stream in OPEN state may
-> go to suspend, and you'll hit the same problem.  It's just a corner
-> case so no one really cared much.
 > 
-> So, I think the patch like below should fix the problem.
-> This can be easily backported to all stable trees, and it alone should
-> work without backporting the else intrusive changes.
-> 
-> Could you check whether my theory is correct?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
+> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 > ---
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: pcm: Don't suspend stream in unrecoverable PCM state
+>  sound/drivers/aloop.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Currently PCM core sets each opened stream forcibly to SUSPENDED state
-> via snd_pcm_suspend_all() call, and the user-space is responsible for
-> re-triggering the resume manually either via snd_pcm_resume() or
-> prepare call.  The scheme works fine usually, but there are corner
-> cases where the stream can't be resumed by that call: the streams
-> still in OPEN state before finishing hw_params.  When they are
-> suspended, user-space cannot perform resume or prepare because they
-> haven't been set up yet.  The only possible recovery is to re-open the
-> device, which isn't nice at all.  Similarly, when a stream is in
-> DISCONNECTED state, it makes no sense to change it to SUSPENDED
-> state.  Ditto for in SETUP state; which you can re-prepare directly.
+> diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+> index 8c3fbe1..c14e57b 100644
+> --- a/sound/drivers/aloop.c
+> +++ b/sound/drivers/aloop.c
+> @@ -337,7 +337,7 @@ static int loopback_prepare(struct snd_pcm_substream *substream)
+>  
+>  	loopback_timer_stop_sync(dpcm);
+>  
+> -	salign = (snd_pcm_format_width(runtime->format) *
+> +	salign = (snd_pcm_format_physical_width(runtime->format) *
+>  						runtime->channels) / 8;
+>  	bps = salign * runtime->rate;
+>  	if (bps <= 0 || salign <= 0)
+> @@ -562,6 +562,8 @@ static const struct snd_pcm_hardware loopback_pcm_hardware =
+>  			 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE |
+>  			 SNDRV_PCM_INFO_RESUME),
+>  	.formats =	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+> +			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |
+> +			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE |
+>  			 SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |
+>  			 SNDRV_PCM_FMTBIT_FLOAT_LE | SNDRV_PCM_FMTBIT_FLOAT_BE),
+>  	.rates =	SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_192000,
 > 
-> So, this patch addresses these issues by filtering the PCM streams to
-> be suspended by checking the PCM state.  When a stream is in either
-> OPEN, SETUP or DISCONNECTED as well as already SUSPENDED, the suspend
-> action is skipped.
-> 
-> To be noted, this problem was originally reported for the PCM runtime
-> PM on HD-audio.  And, the runtime PM problem itself was already
-> addressed (although not intended) by the code refactoring commits
-> 3d21ef0b49f8 ("ALSA: pcm: Suspend streams globally via device type PM
-> ops") and 17bc4815de58 ("ALSA: pci: Remove superfluous
-> snd_pcm_suspend*() calls").  These commits eliminated the
-> snd_pcm_suspend*() calls from the runtime PM suspend callback code
-> path, hence the racy OPEN state won't appear while runtime PM.
-> (FWIW, the race window is between snd_pcm_open_substream() and the
-> first power up in azx_pcm_open().)
-> 
-> Although the runtime PM issue was already "fixed", the same problem is
-> still present for the system PM, hence this patch is still needed.
-> And for stable trees, this patch alone should suffice for fixing the
-> runtime PM problem, too.
-> 
-> Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/pcm_native.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index f731f904e8cc..1d8452912b14 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -1445,8 +1445,15 @@ static int snd_pcm_pause(struct snd_pcm_substream *substream, int push)
->  static int snd_pcm_pre_suspend(struct snd_pcm_substream *substream, int state)
->  {
->  	struct snd_pcm_runtime *runtime = substream->runtime;
-> -	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
-> +	switch (runtime->status->state) {
-> +	case SNDRV_PCM_STATE_SUSPENDED:
->  		return -EBUSY;
-> +	/* unresumable PCM state; return -EBUSY for skipping suspend */
-> +	case SNDRV_PCM_STATE_OPEN:
-> +	case SNDRV_PCM_STATE_SETUP:
-> +	case SNDRV_PCM_STATE_DISCONNECTED:
-> +		return -EBUSY;
-> +	}
->  	runtime->trigger_master = substream;
->  	return 0;
->  }
 
-Thanks, this works for me! I have tested this on stable branch
-linux-5.0.y with Tegra194. So feel free to add my ...
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
 
 -- 
-nvpublic
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
