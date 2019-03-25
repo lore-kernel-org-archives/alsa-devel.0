@@ -1,61 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [alsa-devel] [PATCH] ASoC: intel: Fix crash at suspend/resume
  after failed codec registration
-Date: Mon, 25 Mar 2019 15:02:37 +0000
-Message-ID: <20190325150237.GH7284@sirena.org.uk>
+Date: Mon, 25 Mar 2019 15:05:33 +0000
+Message-ID: <20190325150533.GI7284@sirena.org.uk>
 References: <1553294388-25293-1-git-send-email-linux@roeck-us.net>
  <5451ba5b-1a5d-41b0-2b39-772c326de785@linux.intel.com>
  <20190325121232.GF7284@sirena.org.uk>
- <b6d2bdc5-d0e8-dee7-52be-fa7f3a36fa9f@linux.intel.com>
+ <50fafc60-0ee4-ab33-8d24-dfc149215bee@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oyqLL/JqMvClXZi1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="TKDEsImF70pdVIl+"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <b6d2bdc5-d0e8-dee7-52be-fa7f3a36fa9f@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Curtis Malainey <cujomalainey@chromium.org>, Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <50fafc60-0ee4-ab33-8d24-dfc149215bee@roeck-us.net>
+Sender: stable-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Curtis Malainey <cujomalainey@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---oyqLL/JqMvClXZi1
+--TKDEsImF70pdVIl+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 25, 2019 at 09:18:04AM -0400, Pierre-Louis Bossart wrote:
-> On 3/25/19 8:12 AM, Mark Brown wrote:
+On Mon, Mar 25, 2019 at 07:21:00AM -0700, Guenter Roeck wrote:
 
-> > These are driver specific issues not device model issues as far as I can
-> > see?  The issue fixed by this as is that you're storing a pointer in the
-> > ASoC level (not device model level) probe that you don't free when the
-> > component is unbound, causing you to dereference it later during
-> > suspend.  There is absolutely no problem with the machine driver not
-> > being guaranteed to bind at the time it's initially registered, that's
-> > perfectly normal and should cause no problems.
+> It is actually a bit more complicated than that. The stored pointer (drv->soc_card)
+> isn't released. The problem is that dev_get_drvdata(drv->soc_card->dev) is NULL,
+> which causes the crash. I don't think there is a UAF involved - I built the
+> test image with KASAN enabled and it did not barf at me.
 
-> Agree, what I was referring is that if the machine probe and card
-> registration fails (not just deferred), the parent acpi/pci driver isn't
-> notified - there is just no means to provide that information and that leads
-> to all kinds of configuration issues.
+What is a "UAF"?
 
-If there are issues here they could happen via means other than a probe
-failing so there's a problem whatever is going on - someone manually
-unbinding a device for example.
+> Overall the implementation does seem a bit suspicious to me. I don't really
+> understand why the platform driver handles suspend/resume for the cards.
+> But that may just be my lack of understanding. However, either case, I think the
+> Haswell driver (sst-haswell-pcm.c) has a similar problem. I am also not sure if
 
---oyqLL/JqMvClXZi1
+It's certainly a bit unusual, usually the platform driver would just
+deal with suspending itself and the card driver would handle overall
+card suspension together with the core.
+
+--TKDEsImF70pdVIl+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyY7YwACgkQJNaLcl1U
-h9Clbwf/eSfum4OA4Z/gu9wTzkAEv/8I/lNUyM1bpru9/4lYtkZjjRh0V2P+Sms+
-le3NjV1zK5HG777qhUGAX3iMbkFqbL0xBspUl6fjacleVYnXcUILPYmO4ppy9qia
-fvvLZlHoP6WyMVcS2tTI9AlYvrJ84F+Y1b3dvtF7blfH9l08NyS/21l6VXNfu5Ss
-YrOXb6ITRdJ392WPd+ASShXVlJoTQLpcMLlCJo9n9TaABaFBxVeeNFgptb4iN4aB
-2rHX+Vgr5D9uKoESwPFV2HQZ7vkTO9Jnmc0M3uMr5KeCg+/YEl8BAOjvyB5Cwlr1
-hOa3m6t6Dxdpzyna8cvXBdWkYexLfA==
-=UHdW
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyY7jwACgkQJNaLcl1U
+h9BAeQf+PQ+l1znpCsPbzSflIPAJyV3HJ4A9fSRVIOnh2V/z+pJQAWq/aTP+9xmp
+Ggb5K1xJVuu+oU5FsvAUmZe8vk2ek9LgJDSBFET5mZPljmGIWPLSNM3UgEQixAih
+dEQmqfwKjICSHlMkS+Lk82X6GIhsVHCJSqtKS7AQWojcb+Rm2wqGaavgSGZzPBTs
+whHJO6905jQyx9e9lE2FZV7/fq4icSPqtYey9yA+59qmT8R5fjxzRhvKs802ZWyR
+UKyJZkzC/YRS4og/kThp4rgGpZwWDRi3AKHq4h/1E3b3kskb4QkeZpw4qrAoGtsv
+Gn+E1wbeN2yCs1ok6dVkUQQwEEatQg==
+=zn5k
 -----END PGP SIGNATURE-----
 
---oyqLL/JqMvClXZi1--
+--TKDEsImF70pdVIl+--
