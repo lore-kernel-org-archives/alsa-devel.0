@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Control clock gating
-	with CCF" to the asoc tree
-Date: Mon, 25 Mar 2019 16:11:34 +0000 (GMT)
-Message-ID: <20190325161134.335EC11288F1@debutante.sirena.org.uk>
+Subject: Applied "ASoC: tlv320aic32x4: Model CODEC_CLKIN in
+	CCF" to the asoc tree
+Date: Mon, 25 Mar 2019 16:11:40 +0000 (GMT)
+Message-ID: <20190325161140.A0E0111288F1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37F7AF89728
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:40 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7761F89727
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:41 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Control clock gating with CCF
+   ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
 
 has been applied to the asoc tree at
 
@@ -53,114 +53,127 @@ to this mail.
 Thanks,
 Mark
 
->From d25970b5fd51e9fcf0afbe190908ea4049454da4 Mon Sep 17 00:00:00 2001
+>From fd2df3aeafa4b4cc468d58e147e0822967034b71 Mon Sep 17 00:00:00 2001
 From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Thu, 21 Mar 2019 17:58:49 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Control clock gating with CCF
+Date: Thu, 21 Mar 2019 17:58:46 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
 
-Control the clock gating to the various clock components to use
-the CCF.  This allows us to prepare_enalbe only 3 clocks and the
-relationships assigned to them will cause upstream clockss to
-enable automatically.  Additionally we can do this in a single
-call to the CCF.
+Model and manage codec clock input as a component in the Core
+Clock Framework.  This should allow us to do some more complex
+clock management and power control.  Also, some of the
+on-board chip clocks can be exposed to the outside, and this
+change will make those clocks easier to consume by other
+parts of the kernel.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 67 +++++++-------------------------
- 1 file changed, 13 insertions(+), 54 deletions(-)
+ sound/soc/codecs/tlv320aic32x4-clk.c | 34 ++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.c     | 18 +++++++++++----
+ 2 files changed, 47 insertions(+), 5 deletions(-)
 
+diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
+index 5e495fc8d931..cded85009c8c 100644
+--- a/sound/soc/codecs/tlv320aic32x4-clk.c
++++ b/sound/soc/codecs/tlv320aic32x4-clk.c
+@@ -265,6 +265,30 @@ static const struct clk_ops aic32x4_pll_ops = {
+ 	.get_parent = clk_aic32x4_pll_get_parent,
+ };
+ 
++static int clk_aic32x4_codec_clkin_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_aic32x4 *mux = to_clk_aic32x4(hw);
++
++	return regmap_update_bits(mux->regmap,
++		AIC32X4_CLKMUX,
++		AIC32X4_CODEC_CLKIN_MASK, index << AIC32X4_CODEC_CLKIN_SHIFT);
++}
++
++static u8 clk_aic32x4_codec_clkin_get_parent(struct clk_hw *hw)
++{
++	struct clk_aic32x4 *mux = to_clk_aic32x4(hw);
++	unsigned int val;
++
++	regmap_read(mux->regmap, AIC32X4_CLKMUX, &val);
++
++	return (val & AIC32X4_CODEC_CLKIN_MASK) >> AIC32X4_CODEC_CLKIN_SHIFT;
++}
++
++static const struct clk_ops aic32x4_codec_clkin_ops = {
++	.set_parent = clk_aic32x4_codec_clkin_set_parent,
++	.get_parent = clk_aic32x4_codec_clkin_get_parent,
++};
++
+ static struct aic32x4_clkdesc aic32x4_clkdesc_array[] = {
+ 	{
+ 		.name = "pll",
+@@ -274,6 +298,14 @@ static struct aic32x4_clkdesc aic32x4_clkdesc_array[] = {
+ 		.ops = &aic32x4_pll_ops,
+ 		.reg = 0,
+ 	},
++	{
++		.name = "codec_clkin",
++		.parent_names =
++			(const char *[]) { "mclk", "bclk", "gpio", "pll" },
++		.num_parents = 4,
++		.ops = &aic32x4_codec_clkin_ops,
++		.reg = 0,
++	},
+ };
+ 
+ static struct clk *aic32x4_register_clk(struct device *dev,
+@@ -314,6 +346,8 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name)
+ 	 */
+ 	aic32x4_clkdesc_array[0].parent_names =
+ 			(const char* []) { mclk_name, "bclk", "gpio", "din" };
++	aic32x4_clkdesc_array[1].parent_names =
++			(const char *[]) { mclk_name, "bclk", "gpio", "pll" };
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic32x4_clkdesc_array); ++i)
+ 		aic32x4_register_clk(dev, &aic32x4_clkdesc_array[i]);
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index bf9ccda6616d..c3e9f65b26a7 100644
+index 7cf8c7cedfe1..5496e4e080f4 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -834,41 +834,25 @@ static int aic32x4_mute(struct snd_soc_dai *dai, int mute)
- static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 				  enum snd_soc_bias_level level)
- {
--	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
- 	int ret;
+@@ -735,12 +735,9 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
  
+ 	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
+ 
+-	/* PLL as CODEC_CLKIN */
+-	snd_soc_component_update_bits(component, AIC32X4_CLKMUX,
+-			AIC32X4_CODEC_CLKIN_MASK,
+-			AIC32X4_CODEC_CLKIN_PLL << AIC32X4_CODEC_CLKIN_SHIFT);
+ 	/* DAC_MOD_CLK as BDIV_CLKIN */
+-	snd_soc_component_update_bits(component, AIC32X4_IFACE3, AIC32X4_BDIVCLK_MASK,
++	snd_soc_component_update_bits(component, AIC32X4_IFACE3,
++				AIC32X4_BDIVCLK_MASK,
+ 				AIC32X4_DACMOD2BCLK << AIC32X4_BDIVCLK_SHIFT);
+ 
+ 	/* NDAC divider value */
+@@ -987,6 +984,15 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+ {
+ 	struct aic32x4_priv *aic32x4 = snd_soc_component_get_drvdata(component);
+ 	u32 tmp_reg;
++	int ret;
++
 +	struct clk_bulk_data clocks[] = {
-+		{ .id = "madc" },
-+		{ .id = "mdac" },
-+		{ .id = "bdiv" },
++	    { .id = "codec_clkin" },
 +	};
 +
 +	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
 +	if (ret)
 +		return ret;
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		/* Switch on master clock */
--		ret = clk_prepare_enable(aic32x4->mclk);
-+		ret = clk_bulk_prepare_enable(ARRAY_SIZE(clocks), clocks);
- 		if (ret) {
--			dev_err(component->dev, "Failed to enable master clock\n");
-+			dev_err(component->dev, "Failed to enable clocks\n");
- 			return ret;
- 		}
--
--		/* Switch on PLL */
--		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
--					AIC32X4_PLLEN, AIC32X4_PLLEN);
--
--		/* Switch on NDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NDAC,
--					AIC32X4_NDACEN, AIC32X4_NDACEN);
--
--		/* Switch on MDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MDAC,
--					AIC32X4_MDACEN, AIC32X4_MDACEN);
--
--		/* Switch on NADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NADC,
--					AIC32X4_NADCEN, AIC32X4_NADCEN);
--
--		/* Switch on MADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MADC,
--					AIC32X4_MADCEN, AIC32X4_MADCEN);
--
--		/* Switch on BCLK_N Divider */
--		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
--					AIC32X4_BCLKEN, AIC32X4_BCLKEN);
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
-@@ -877,32 +861,7 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
- 			break;
  
--		/* Switch off BCLK_N Divider */
--		snd_soc_component_update_bits(component, AIC32X4_BCLKN,
--					AIC32X4_BCLKEN, 0);
--
--		/* Switch off MADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MADC,
--					AIC32X4_MADCEN, 0);
--
--		/* Switch off NADC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NADC,
--					AIC32X4_NADCEN, 0);
--
--		/* Switch off MDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_MDAC,
--					AIC32X4_MDACEN, 0);
--
--		/* Switch off NDAC Divider */
--		snd_soc_component_update_bits(component, AIC32X4_NDAC,
--					AIC32X4_NDACEN, 0);
--
--		/* Switch off PLL */
--		snd_soc_component_update_bits(component, AIC32X4_PLLPR,
--					AIC32X4_PLLEN, 0);
--
--		/* Switch off master clock */
--		clk_disable_unprepare(aic32x4->mclk);
-+		clk_bulk_disable_unprepare(ARRAY_SIZE(clocks), clocks);
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		break;
+ 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+ 		ndelay(10);
+@@ -999,6 +1005,8 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
+ 	if (aic32x4->setup)
+ 		aic32x4_setup_gpios(component);
+ 
++	clk_set_parent(clocks[0].clk, clocks[1].clk);
++
+ 	/* Power platform configuration */
+ 	if (aic32x4->power_cfg & AIC32X4_PWR_MICBIAS_2075_LDOIN) {
+ 		snd_soc_component_write(component, AIC32X4_MICBIAS,
 -- 
 2.20.1
