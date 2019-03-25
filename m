@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Fix incorrect extern" to the asoc
-	tree
-Date: Mon, 25 Mar 2019 12:22:08 +0000 (GMT)
-Message-ID: <20190325122208.8E35A11288F1@debutante.sirena.org.uk>
+Subject: Applied "ASoC: nau8810: fix the issue of 64 bits
+	division" to the asoc tree
+Date: Mon, 25 Mar 2019 12:22:10 +0000 (GMT)
+Message-ID: <20190325122210.B3C3311288F1@debutante.sirena.org.uk>
+References: <20190322042535.30650-1-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABF08F808F6
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 13:22:10 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E3DAF80C15
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 13:22:12 +0100 (CET)
+In-Reply-To: <20190322042535.30650-1-KCHSU0@nuvoton.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andi Kleen <ak@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Fix incorrect extern
+   ASoC: nau8810: fix the issue of 64 bits division
 
 has been applied to the asoc tree at
 
@@ -53,34 +55,37 @@ to this mail.
 Thanks,
 Mark
 
->From eddb6084305e5418ce28b8379a6c3d0058a61463 Mon Sep 17 00:00:00 2001
-From: Andi Kleen <ak@linux.intel.com>
-Date: Thu, 21 Mar 2019 15:00:05 -0700
-Subject: [PATCH] ASoC: AMD: Fix incorrect extern
+>From 3a9ce0f1b2961f6c3ad2a49dcf85449784c18bb5 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 22 Mar 2019 12:25:35 +0800
+Subject: [PATCH] ASoC: nau8810: fix the issue of 64 bits division
 
-When using bare externs outside include files that types should
-at least match. This fixes a type confusion between bool
-and int.
+Do division with div_u64 for the PLL calculation.
+These errors are fixed and list as follows:
+1."__udivdi3" [sound/soc/codecs/snd-soc-nau8810.ko] undefined!
+2."__aeabi_uldivmod" [sound/soc/codecs/snd-soc-nau8810.ko] undefined!
+3. nau8810.c:(.text.nau8810_calc_pll+0xd8): undefined reference to
+`__udivdi3'
 
-Cc: broonie@kernel.org
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/nau8810.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index f37a588ba345..8a619a75b3a9 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -47,7 +47,7 @@
- 
- static struct snd_soc_jack cz_jack;
- static struct clk *da7219_dai_clk;
--extern int bt_uart_enable;
-+extern bool bt_uart_enable;
- 
- static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- {
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index 125e205e6687..dd82c65cfa7f 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -505,7 +505,8 @@ static int nau8810_calc_pll(unsigned int pll_in,
+ 	f2_max = 0;
+ 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
+ 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
+-		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
++		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i];
++		f2 = div_u64(f2, 10);
+ 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
+ 			f2_max < f2) {
+ 			f2_max = f2;
 -- 
 2.20.1
