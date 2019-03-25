@@ -1,20 +1,18 @@
-From: Mukesh Ojha <mojha@codeaurora.org>
-Subject: Re: [PATCH v3] ASoC: sirf-audio: Remove redundant
-	of_match_node call
-Date: Mon, 25 Mar 2019 19:21:42 +0530
-Message-ID: <c9244500-ddce-4c8f-2086-82738a51ea0a@codeaurora.org>
-References: <20190322220031.13773-1-pakki001@umn.edu>
+From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
+Subject: snd_pcm_writei 0 frames
+Date: Mon, 25 Mar 2019 14:16:17 +0000
+Message-ID: <AM5P192MB01806DDBC9D07CD4C6425187C55E0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50048.outbound.protection.outlook.com [40.107.5.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17B05F80764
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 14:51:52 +0100 (CET)
-In-Reply-To: <20190322220031.13773-1-pakki001@umn.edu>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A31DF808F6
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 15:16:20 +0100 (CET)
+Content-Language: it-IT
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +22,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Aditya Pakki <pakki001@umn.edu>
-Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-On 3/23/2019 3:30 AM, Aditya Pakki wrote:
-> Unlike other drivers probe method, of_match_node return value
+I've the following configuration in my asound.conf:
 
-Instead could be written like "Use of `of_match_node` is redundant in 
-sirf-audio-codec driver probe. Remove it."
+|-----| - - > |-----| - - > |-----| - - > |-----| - - > |-----| - - > |----------|
+|plug |       |     | - - > |     | - - > |     | - - > |     | - - > | (output) |
+|-----| - - > |     | - - > |     | - - > |     | - - > |     | - - > |    hw    |
+              |     | - - > |     | - - > |     | - - > |     | - - > |          |
+              |     |       |     |       |route| - - > |dmix | - - > |          |
+              |     |       |     |       |     | - - > |     | - - > |          |
+              |     |       |     |       |     | - - > |     | - - > |          |
+              |     |       |     |       |-----| - - > |-----| - - > |----------|
+              |route|       |multi|
+              |     | - - > |     |
+              |     | - - > |     | - - > |----| - - > |----| - - > |----------|
+              |     | - - > |     | - - > |    | - - > |    | - - > |(loopback)|
+              |-----| - - > |     | - - > |plug| - - > |dmix| - - > |    hw    |
+                            |-----| - - > |----| - - > |----| - - > |----------|
 
-> is not used or checked. This patch removes the redundant code.
->
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+As you can see I'm using a loopback interface.
+I open the pcm plug in the block mode to write.
 
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org 
-<mailto:mojha@codeaurora.org>>
+writtenFrames = snd_pcm_writei(handle, bufferToWrite, bufferToWriteSize);
 
-Thanks.
-Mukesh
+Using the configuration above I have several "writes" with 0 written frames.
+It seems like the snd_pcm_writei does not hold until data will be written.
 
+In general, 0 written frames sounds weird to me, because snd_pcm_writei should block itself if no space is available in the circular buffer right?
 
-> ---
-> v2: Move the signed by above the version change log
-> v1: A check is unnecessary as match is never used.
-> ---
->   sound/soc/codecs/sirf-audio-codec.c | 3 ---
->   1 file changed, 3 deletions(-)
->
-> diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-> index e424499a8450..e0af21050078 100644
-> --- a/sound/soc/codecs/sirf-audio-codec.c
-> +++ b/sound/soc/codecs/sirf-audio-codec.c
-> @@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
->   	struct sirf_audio_codec *sirf_audio_codec;
->   	void __iomem *base;
->   	struct resource *mem_res;
-> -	const struct of_device_id *match;
-> -
-> -	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
->   
->   	sirf_audio_codec = devm_kzalloc(&pdev->dev,
->   		sizeof(struct sirf_audio_codec), GFP_KERNEL);
+So, my questions are two:
+
+  1.  Writing 0 frames is an expected behaviour (regardless of my configuration in the asound.conf)? In what scenarios can I have that?
+  2.  How my configuration could trigger this behaviour?
+
+Best Regards
+Giuliano Zannetti
