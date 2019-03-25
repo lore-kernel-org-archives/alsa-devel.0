@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Allow 192000 Sample
-	Rate" to the asoc tree
-Date: Mon, 25 Mar 2019 16:11:23 +0000 (GMT)
-Message-ID: <20190325161123.8110211288F1@debutante.sirena.org.uk>
+Subject: Applied "ASoC: tlv320aic32x4: Remove mclk references"
+	to the asoc tree
+Date: Mon, 25 Mar 2019 16:11:25 +0000 (GMT)
+Message-ID: <20190325161125.A176411288F1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B01F7F80764
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:25 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A4F1F801D9
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:26 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Allow 192000 Sample Rate
+   ASoC: tlv320aic32x4: Remove mclk references
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 6d56ee1550b8a81bc63c80051ff78d8d704b09ba Mon Sep 17 00:00:00 2001
+>From 78f2d58a289302e56a7def96a783a7686ebf27e2 Mon Sep 17 00:00:00 2001
 From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Thu, 21 Mar 2019 17:58:54 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Allow 192000 Sample Rate
+Date: Thu, 21 Mar 2019 17:58:53 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Remove mclk references
 
-The clocking and processing blocks are now properly set up to
-support 192000 sample rates.  Allow drivers to ask for that.
+mclk is not used by anything anymore.  Remove support for it.
+All that information now comes from the clock tree.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic32x4.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index a5457d3de1b1..75443efeda69 100644
+index 289bf411e60e..a5457d3de1b1 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -857,7 +857,7 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
- 	return 0;
- }
+@@ -53,7 +53,6 @@ struct aic32x4_priv {
+ 	u32 micpga_routing;
+ 	bool swapdacs;
+ 	int rstn_gpio;
+-	struct clk *mclk;
+ 	const char *mclk_name;
  
--#define AIC32X4_RATES	SNDRV_PCM_RATE_8000_96000
-+#define AIC32X4_RATES	SNDRV_PCM_RATE_8000_192000
- #define AIC32X4_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE \
- 			 | SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 	struct regulator *supply_ldo;
+@@ -1190,12 +1189,6 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		aic32x4->mclk_name = "mclk";
+ 	}
  
+-	aic32x4->mclk = devm_clk_get(dev, "mclk");
+-	if (IS_ERR(aic32x4->mclk)) {
+-		dev_err(dev, "Failed getting the mclk. The current implementation does not support the usage of this codec without mclk\n");
+-		return PTR_ERR(aic32x4->mclk);
+-	}
+-
+ 	ret = aic32x4_register_clocks(dev, aic32x4->mclk_name);
+ 	if (ret)
+ 		return ret;
 -- 
 2.20.1
