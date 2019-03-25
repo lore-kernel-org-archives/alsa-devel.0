@@ -1,61 +1,73 @@
 From: Mukesh Ojha <mojha@codeaurora.org>
-Subject: Re: [PATCH] sound: codecs: fix a potential NULL pointer dereference
-Date: Mon, 25 Mar 2019 12:24:18 +0530
-Message-ID: <ddedc6d6-823a-44ea-e02b-b83fa80a4483@codeaurora.org>
-References: <20190324231237.2246-1-kjlu@umn.edu>
- <4fa0e2cb-7044-12e1-33b3-14015c94e48d@codeaurora.org>
+Subject: Re: [PATCH -next] ASoC: simple-card-utils: remove set but not used
+ variable ''
+Date: Mon, 25 Mar 2019 13:12:01 +0530
+Message-ID: <6a0c2306-088f-cdbc-0730-60b899611c6f@codeaurora.org>
+References: <20190323020838.107533-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4fa0e2cb-7044-12e1-33b3-14015c94e48d@codeaurora.org>
+In-Reply-To: <20190323020838.107533-1-yuehaibing@huawei.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kangjie Lu <kjlu@umn.edu>
-Cc: pakki001@umn.edu, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: YueHaibing <yuehaibing@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kangjje/Aditya,
 
-Please do take care of the return value you are sending upstream whether 
-still is checked or not
-otherwise NULL pointer dereference will still come.
-Also resource release properly otherwise your patch may looks simple but 
-it can introduce memory leak as well in other path.
+On 3/23/2019 7:38 AM, YueHaibing wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
+>
+> sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
+> sound/soc/generic/simple-card-utils.c:164:18: warning:
+>   parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
+>
+> It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
 
+
+I am not able to find this commit
+
+0580dde59438
+
+
+> asoc_simple_debug_info()"), so can be removed.
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>   sound/soc/generic/simple-card-utils.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+> index 4ed68348f939..db1458a19985 100644
+> --- a/sound/soc/generic/simple-card-utils.c
+> +++ b/sound/soc/generic/simple-card-utils.c
+> @@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
+>   	 * see
+>   	 *	soc-core.c :: snd_soc_init_multicodec()
+>   	 */
+> -	if (dlc) {
+> +	if (dlc)
+>   		dai_of_node	= dlc->of_node;
+> -		dai_name	= dlc->dai_name;
+
+I don't see any function like `asoc_simple_parse_clk`
+
+but instead this `asoc_simple_card_parse_clk` and there the variable is 
+used.
+
+Can you double check latest code base ?
 
 Thanks,
 Mukesh
 
-On 3/25/2019 12:15 PM, Mukesh Ojha wrote:
->
-> On 3/25/2019 4:42 AM, Kangjie Lu wrote:
->> In case devm_kzalloc fails, the patch returns -ENOMEM to avoid
->> potential NULL pointer dereference.
->>
->> Signed-off-by: Kangjie Lu <kjlu@umn.edu>
->> ---
->>   sound/soc/codecs/rt5663.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
->> index da6647015708..909ab99a1995 100644
->> --- a/sound/soc/codecs/rt5663.c
->> +++ b/sound/soc/codecs/rt5663.c
->> @@ -3480,6 +3480,8 @@ static int rt5663_parse_dp(struct rt5663_priv 
->> *rt5663, struct device *dev)
->>           table_size = sizeof(struct impedance_mapping_table) *
->>               rt5663->pdata.impedance_sensing_num;
->>           rt5663->imp_table = devm_kzalloc(dev, table_size, GFP_KERNEL);
->> +        if (!rt5663->imp_table)
->> +            return -ENOMEM;
->
-> add checks in rt5663_parse_dp  as well.
->
-> Thanks.
-> Mukesh
+
+> -	}
+>   
+>   	/*
+>   	 * Parse dai->sysclk come from "clocks = <&xxx>"
 >
 >
->> device_property_read_u32_array(dev,
->>               "realtek,impedance_sensing_table",
->>               (u32 *)rt5663->imp_table, table_size);
+>
+>
+>
