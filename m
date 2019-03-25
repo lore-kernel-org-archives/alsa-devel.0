@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sirf-audio: Remove redundant
-	of_match_node call" to the asoc tree
-Date: Mon, 25 Mar 2019 12:22:04 +0000 (GMT)
-Message-ID: <20190325122204.AEE4411288F1@debutante.sirena.org.uk>
+Subject: Applied "ASoC: AMD: Fix incorrect extern" to the asoc
+	tree
+Date: Mon, 25 Mar 2019 12:22:08 +0000 (GMT)
+Message-ID: <20190325122208.8E35A11288F1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33AE6F801D9
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 13:22:09 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABF08F808F6
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 13:22:10 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Aditya Pakki <pakki001@umn.edu>
+To: Andi Kleen <ak@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sirf-audio: Remove redundant of_match_node call
+   ASoC: AMD: Fix incorrect extern
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 78540a259b050480d20354efaf1055c233728b3b Mon Sep 17 00:00:00 2001
-From: Aditya Pakki <pakki001@umn.edu>
-Date: Fri, 22 Mar 2019 17:00:29 -0500
-Subject: [PATCH] ASoC: sirf-audio: Remove redundant of_match_node call
+>From eddb6084305e5418ce28b8379a6c3d0058a61463 Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Thu, 21 Mar 2019 15:00:05 -0700
+Subject: [PATCH] ASoC: AMD: Fix incorrect extern
 
-Unlike other drivers probe method, of_match_node return value
-is not used or checked. This patch removes the redundant code.
+When using bare externs outside include files that types should
+at least match. This fixes a type confusion between bool
+and int.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Reviewed-by: Steven Price <steven.price@arm.com>
+Cc: broonie@kernel.org
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sirf-audio-codec.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-index e424499a8450..e0af21050078 100644
---- a/sound/soc/codecs/sirf-audio-codec.c
-+++ b/sound/soc/codecs/sirf-audio-codec.c
-@@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
- 	struct sirf_audio_codec *sirf_audio_codec;
- 	void __iomem *base;
- 	struct resource *mem_res;
--	const struct of_device_id *match;
--
--	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index f37a588ba345..8a619a75b3a9 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -47,7 +47,7 @@
  
- 	sirf_audio_codec = devm_kzalloc(&pdev->dev,
- 		sizeof(struct sirf_audio_codec), GFP_KERNEL);
+ static struct snd_soc_jack cz_jack;
+ static struct clk *da7219_dai_clk;
+-extern int bt_uart_enable;
++extern bool bt_uart_enable;
+ 
+ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
 2.20.1
