@@ -1,18 +1,23 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd_pcm_writei 0 frames
-Date: Mon, 25 Mar 2019 16:14:46 +0100
-Message-ID: <31a51ad0-4740-7ba7-7b2d-a9cd9262b1fc@perex.cz>
-References: <AM5P192MB01806DDBC9D07CD4C6425187C55E0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PROBLEM] ALSA: hda: PCM streams are suspended
+	while opening
+Date: Mon, 25 Mar 2019 15:31:26 +0000
+Message-ID: <dd9d4106-c2d8-3ed8-fe9e-f7744f3eb8a7@nvidia.com>
+References: <1553097854-10287-1-git-send-email-jonathanh@nvidia.com>
+ <s5hzhppqx8q.wl-tiwai@suse.de>
+ <446faef9-a114-1b28-5636-a30bae04fa53@nvidia.com>
+ <ffa1c237-baf8-587c-5389-29223613eb0e@nvidia.com>
+ <s5h5zs79sv8.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37D7EF808F6
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 16:14:50 +0100 (CET)
-In-Reply-To: <AM5P192MB01806DDBC9D07CD4C6425187C55E0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25474F801D9
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 16:31:32 +0100 (CET)
+In-Reply-To: <s5h5zs79sv8.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,76 +28,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Giuliano Zannetti - ART S.p.A." <giuliano.zannetti@artgroup-spa.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 25. 03. 19 v 15:16 Giuliano Zannetti - ART S.p.A. napsal(a):
-> Hi,
-> 
-> I've the following configuration in my asound.conf:
-> 
-> |-----| - - > |-----| - - > |-----| - - > |-----| - - > |-----| - - > |----------|
-> |plug |       |     | - - > |     | - - > |     | - - > |     | - - > | (output) |
-> |-----| - - > |     | - - > |     | - - > |     | - - > |     | - - > |    hw    |
->               |     | - - > |     | - - > |     | - - > |     | - - > |          |
->               |     |       |     |       |route| - - > |dmix | - - > |          |
->               |     |       |     |       |     | - - > |     | - - > |          |
->               |     |       |     |       |     | - - > |     | - - > |          |
->               |     |       |     |       |-----| - - > |-----| - - > |----------|
->               |route|       |multi|
->               |     | - - > |     |
->               |     | - - > |     | - - > |----| - - > |----| - - > |----------|
->               |     | - - > |     | - - > |    | - - > |    | - - > |(loopback)|
->               |-----| - - > |     | - - > |plug| - - > |dmix| - - > |    hw    |
->                             |-----| - - > |----| - - > |----| - - > |----------|
-> 
-> As you can see I'm using a loopback interface.
-> I open the pcm plug in the block mode to write.
-> 
-> writtenFrames = snd_pcm_writei(handle, bufferToWrite, bufferToWriteSize);
-> 
-> Using the configuration above I have several "writes" with 0 written frames.
-> It seems like the snd_pcm_writei does not hold until data will be written.
-> 
-> In general, 0 written frames sounds weird to me, because snd_pcm_writei should block itself if no space is available in the circular buffer right?
-> 
-> So, my questions are two:
-> 
->   1.  Writing 0 frames is an expected behaviour (regardless of my configuration in the asound.conf)? In what scenarios can I have that?
->   2.  How my configuration could trigger this behaviour?
 
-I guess that snd_pcm_multi_may_wait_for_avail_min() implementation is the culprit. It should take in account all slaves - not only the master one.
+On 25/03/2019 09:59, Takashi Iwai wrote:
 
-Could you test this modification?
+...
 
-diff --git a/src/pcm/pcm_multi.c b/src/pcm/pcm_multi.c
-index 28440378..0afd31bf 100644
---- a/src/pcm/pcm_multi.c
-+++ b/src/pcm/pcm_multi.c
-@@ -775,11 +775,15 @@ static int snd_pcm_multi_mmap(snd_pcm_t *pcm)
-        return 0;
- }
+> I reconsidered the problem again, and noticed that the very same
+> problem may appear with the system PM, not only with runtime PM.
+> The suspend can happen at any time, so even a stream in OPEN state may
+> go to suspend, and you'll hit the same problem.  It's just a corner
+> case so no one really cared much.
+> 
+> So, I think the patch like below should fix the problem.
+> This can be easily backported to all stable trees, and it alone should
+> work without backporting the else intrusive changes.
+> 
+> Could you check whether my theory is correct?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: pcm: Don't suspend stream in unrecoverable PCM state
+> 
+> Currently PCM core sets each opened stream forcibly to SUSPENDED state
+> via snd_pcm_suspend_all() call, and the user-space is responsible for
+> re-triggering the resume manually either via snd_pcm_resume() or
+> prepare call.  The scheme works fine usually, but there are corner
+> cases where the stream can't be resumed by that call: the streams
+> still in OPEN state before finishing hw_params.  When they are
+> suspended, user-space cannot perform resume or prepare because they
+> haven't been set up yet.  The only possible recovery is to re-open the
+> device, which isn't nice at all.  Similarly, when a stream is in
+> DISCONNECTED state, it makes no sense to change it to SUSPENDED
+> state.  Ditto for in SETUP state; which you can re-prepare directly.
+> 
+> So, this patch addresses these issues by filtering the PCM streams to
+> be suspended by checking the PCM state.  When a stream is in either
+> OPEN, SETUP or DISCONNECTED as well as already SUSPENDED, the suspend
+> action is skipped.
+> 
+> To be noted, this problem was originally reported for the PCM runtime
+> PM on HD-audio.  And, the runtime PM problem itself was already
+> addressed (although not intended) by the code refactoring commits
+> 3d21ef0b49f8 ("ALSA: pcm: Suspend streams globally via device type PM
+> ops") and 17bc4815de58 ("ALSA: pci: Remove superfluous
+> snd_pcm_suspend*() calls").  These commits eliminated the
+> snd_pcm_suspend*() calls from the runtime PM suspend callback code
+> path, hence the racy OPEN state won't appear while runtime PM.
+> (FWIW, the race window is between snd_pcm_open_substream() and the
+> first power up in azx_pcm_open().)
+> 
+> Although the runtime PM issue was already "fixed", the same problem is
+> still present for the system PM, hence this patch is still needed.
+> And for stable trees, this patch alone should suffice for fixing the
+> runtime PM problem, too.
+> 
+> Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/pcm_native.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index f731f904e8cc..1d8452912b14 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -1445,8 +1445,15 @@ static int snd_pcm_pause(struct snd_pcm_substream *substream, int push)
+>  static int snd_pcm_pre_suspend(struct snd_pcm_substream *substream, int state)
+>  {
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+> -	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
+> +	switch (runtime->status->state) {
+> +	case SNDRV_PCM_STATE_SUSPENDED:
+>  		return -EBUSY;
+> +	/* unresumable PCM state; return -EBUSY for skipping suspend */
+> +	case SNDRV_PCM_STATE_OPEN:
+> +	case SNDRV_PCM_STATE_SETUP:
+> +	case SNDRV_PCM_STATE_DISCONNECTED:
+> +		return -EBUSY;
+> +	}
+>  	runtime->trigger_master = substream;
+>  	return 0;
+>  }
 
--static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail ATTRIBUTE_UNUSED)
-+static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail)
- {
-        snd_pcm_multi_t *multi = pcm->private_data;
--       snd_pcm_t *slave = multi->slaves[multi->master_slave].pcm;
--       return snd_pcm_may_wait_for_avail_min(slave, snd_pcm_mmap_avail(slave));
-+       unsigned int i;
-+       for (i = 0; i < multi->slaves_count; ++i) {
-+               if (snd_pcm_may_wait_for_avail_min(multi->slaves[i].pcm, avail))
-+                       return 1;
-+       }
-+       return 0;
- }
+Thanks, this works for me! I have tested this on stable branch
+linux-5.0.y with Tegra194. So feel free to add my ...
 
- static snd_pcm_chmap_query_t **snd_pcm_multi_query_chmaps(snd_pcm_t *pcm)
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-					Jaroslav
-
+Cheers
+Jon
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+nvpublic
