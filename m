@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Dynamically Determine
-	Clocking" to the asoc tree
-Date: Mon, 25 Mar 2019 16:11:29 +0000 (GMT)
-Message-ID: <20190325161129.E535611288F1@debutante.sirena.org.uk>
-References: <20190322005854.23360-8-nh6z@nh6z.net>
+Subject: Applied "ASoC: tlv320aic32x4: Move aosr and dosr
+	setting to separate functions" to the asoc tree
+Date: Mon, 25 Mar 2019 16:11:32 +0000 (GMT)
+Message-ID: <20190325161132.0E67A11288F1@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 643A7F896D6
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:31 +0100 (CET)
-In-Reply-To: <20190322005854.23360-8-nh6z@nh6z.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 316D9F89717
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:33 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +23,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Annaliese McDermond <nh6z@nh6z.net>
-Cc: team@nwdigitalradio.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Dynamically Determine Clocking
+   ASoC: tlv320aic32x4: Move aosr and dosr setting to separate functions
 
 has been applied to the asoc tree at
 
@@ -55,293 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From 96c3bb00239de4fb5f4ddca42c1f90d6d9b3c697 Mon Sep 17 00:00:00 2001
+>From fbafbf6517274a797e6e6508c18dd8dba5920c89 Mon Sep 17 00:00:00 2001
 From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Thu, 21 Mar 2019 17:58:51 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Dynamically Determine Clocking
+Date: Thu, 21 Mar 2019 17:58:50 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Move aosr and dosr setting to separate
+ functions
 
-The existing code uses a static lookup table to determine the
-settings of the various clock devices on board the chip.  This is
-limiting in a couple of ways.  First, this doesn't allow for any
-master clock rates other than the three that have been
-precalculated.  Additionally, new sample rates are difficult to
-add to the table.  Witness that the chip is capable of 192000 Hz
-sampling, but it is not provided by this driver.  Last, if the
-driver is clocked by something that isn't a crystal, the
-upstream clock may not be able to achieve exactly the rate
-requested in the driver.  This will mean that clocking will be
-slightly off for the sampling clock or that it won't work at all.
-
-This patch determines the settings for all of the clocks at
-runtime considering the real conditions of the clocks in the
-system.  The rules for the clocks are in TI's SLAA557 application
-guide on pages 37, 51 and 77.
+Move these to separate helper functions.  This looks cleaner and fits
+better with the new clock setting in CCF.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 190 ++++++++++++++-----------------
- sound/soc/codecs/tlv320aic32x4.h |   4 +-
- 2 files changed, 90 insertions(+), 104 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index bf3a80237b03..625528500f8d 100644
+index c3e9f65b26a7..bf3a80237b03 100644
 --- a/sound/soc/codecs/tlv320aic32x4.c
 +++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -47,21 +47,6 @@
- 
- #include "tlv320aic32x4.h"
- 
--struct aic32x4_rate_divs {
--	u32 mclk;
--	u32 rate;
--	unsigned long pll_rate;
--	u16 dosr;
--	unsigned long ndac_rate;
--	unsigned long mdac_rate;
--	u8 aosr;
--	unsigned long nadc_rate;
--	unsigned long madc_rate;
--	unsigned long bdiv_rate;
--	u8 r_block;
--	u8 p_block;
--};
--
- struct aic32x4_priv {
- 	struct regmap *regmap;
- 	u32 sysclk;
-@@ -307,58 +292,6 @@ static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
- 			0, 0x0F, 0),
- };
- 
--static const struct aic32x4_rate_divs aic32x4_divs[] = {
--	/* 8k rate */
--	{ 12000000, 8000, 57120000, 768, 18432000, 6144000, 128, 18432000,
--		1024000, 256000, 1, 1 },
--	{ 24000000, 8000, 57120000, 768, 6144000, 6144000, 64, 2048000,
--		512000, 256000, 1, 1 },
--	{ 25000000, 8000, 32620000, 768, 6144000, 6144000, 64, 2048000,
--		512000, 256000, 1, 1 },
--	/* 11.025k rate */
--	{ 12000000, 11025, 44217600, 512, 11289600, 5644800, 128, 11289600,
--		1411200, 352800, 1, 1 },
--	{ 24000000, 11025, 44217600, 512, 5644800, 5644800, 64, 2822400,
--		705600, 352800, 1, 1 },
--	/* 16k rate */
--	{ 12000000, 16000, 57120000, 384, 18432000, 6144000, 128, 18432000,
--		2048000, 512000, 1, 1 },
--	{ 24000000, 16000, 57120000, 384, 6144000, 6144000, 64, 5120000,
--		1024000, 512000, 1, 1 },
--	{ 25000000, 16000, 32620000, 384, 6144000, 6144000, 64, 5120000,
--		1024000, 512000, 1, 1 },
--	/* 22.05k rate */
--	{ 12000000, 22050, 44217600, 256, 22579200, 5644800, 128, 22579200,
--		2822400, 705600, 1, 1 },
--	{ 24000000, 22050, 44217600, 256, 5644800, 5644800, 64, 5644800,
--		1411200, 705600, 1, 1 },
--	{ 25000000, 22050, 19713750, 256, 5644800, 5644800, 64, 5644800,
--		1411200, 705600, 1, 1 },
--	/* 32k rate */
--	{ 12000000, 32000, 14112000, 192, 43008000, 6144000, 64, 43008000,
--		2048000, 1024000, 1, 1 },
--	{ 24000000, 32000, 14112000, 192, 12288000, 6144000, 64, 12288000,
--		2048000, 1024000, 1, 1 },
--	/* 44.1k rate */
--	{ 12000000, 44100, 44217600, 128, 45158400, 5644800, 128, 45158400,
--		5644800, 1411200, 1, 1 },
--	{ 24000000, 44100, 44217600, 128, 11289600, 5644800, 64, 11289600,
--		2822400, 1411200, 1, 1 },
--	{ 25000000, 44100, 19713750, 128, 11289600, 5644800, 64, 11289600,
--		2822400, 1411200, 1, 1 },
--	/* 48k rate */
--	{ 12000000, 48000, 18432000, 128, 49152000, 6144000, 128, 49152000,
--		6144000, 1536000, 1, 1 },
--	{ 24000000, 48000, 18432000, 128, 12288000, 6144000, 64, 12288000,
--		3072000, 1536000, 1, 1 },
--	{ 25000000, 48000, 75626250, 128, 12288000, 6144000, 64, 12288000,
--		3072000, 1536000, 1, 1 },
--
--	/* 96k rate */
--	{ 25000000, 96000, 75626250, 64, 24576000, 6144000, 64, 24576000,
--		6144000, 3072000, 1, 9 },
--};
--
- static const struct snd_kcontrol_new hpl_output_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("L_DAC Switch", AIC32X4_HPLROUTE, 3, 1, 0),
- 	SOC_DAPM_SINGLE("IN1_L Switch", AIC32X4_HPLROUTE, 2, 1, 0),
-@@ -630,20 +563,6 @@ const struct regmap_config aic32x4_regmap_config = {
- };
- EXPORT_SYMBOL(aic32x4_regmap_config);
- 
--static inline int aic32x4_get_divs(int mclk, int rate)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(aic32x4_divs); i++) {
--		if ((aic32x4_divs[i].rate == rate)
--			&& (aic32x4_divs[i].mclk == mclk)) {
--			return i;
--		}
--	}
--	printk(KERN_ERR "aic32x4: master clock and sample rate is not supported\n");
--	return -EINVAL;
--}
--
- static int aic32x4_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				  int clk_id, unsigned int freq, int dir)
- {
-@@ -745,11 +664,17 @@ static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
+@@ -718,6 +718,20 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	return 0;
  }
  
- static int aic32x4_setup_clocks(struct snd_soc_component *component,
--				unsigned int sample_rate,
--				unsigned int parent_rate)
-+				unsigned int sample_rate)
- {
--	int i;
-+	u8 aosr;
-+	u16 dosr;
-+	u8 adc_resource_class, dac_resource_class;
-+	u8 madc, nadc, mdac, ndac, max_nadc, min_mdac, max_ndac;
-+	u8 dosr_increment;
-+	u16 max_dosr, min_dosr;
-+	unsigned long mclk_rate, adc_clock_rate, dac_clock_rate;
- 	int ret;
-+	struct clk *mclk;
- 
- 	struct clk_bulk_data clocks[] = {
- 		{ .id = "pll" },
-@@ -759,30 +684,89 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 		{ .id = "mdac" },
- 		{ .id = "bdiv" },
- 	};
--
--	i = aic32x4_get_divs(parent_rate, sample_rate);
--	if (i < 0) {
--		printk(KERN_ERR "aic32x4: sampling rate not supported\n");
--		return i;
--	}
--
- 	ret = devm_clk_bulk_get(component->dev, ARRAY_SIZE(clocks), clocks);
- 	if (ret)
- 		return ret;
- 
--	clk_set_rate(clocks[0].clk, aic32x4_divs[i].pll_rate);
--	clk_set_rate(clocks[1].clk, aic32x4_divs[i].nadc_rate);
--	clk_set_rate(clocks[2].clk, aic32x4_divs[i].madc_rate);
--	clk_set_rate(clocks[3].clk, aic32x4_divs[i].ndac_rate);
--	clk_set_rate(clocks[4].clk, aic32x4_divs[i].mdac_rate);
--	clk_set_rate(clocks[5].clk, aic32x4_divs[i].bdiv_rate);
--
--	aic32x4_set_aosr(component, aic32x4_divs[i].aosr);
--	aic32x4_set_dosr(component, aic32x4_divs[i].dosr);
-+	mclk = clk_get_parent(clocks[1].clk);
-+	mclk_rate = clk_get_rate(mclk);
++static int aic32x4_set_aosr(struct snd_soc_component *component, u8 aosr)
++{
++	return snd_soc_component_write(component, AIC32X4_AOSR, aosr);
++}
 +
-+	if (sample_rate <= 48000) {
-+		aosr = 128;
-+		adc_resource_class = 6;
-+		dac_resource_class = 8;
-+		dosr_increment = 8;
-+		aic32x4_set_processing_blocks(component, 1, 1);
-+	} else if (sample_rate <= 96000) {
-+		aosr = 64;
-+		adc_resource_class = 6;
-+		dac_resource_class = 8;
-+		dosr_increment = 4;
-+		aic32x4_set_processing_blocks(component, 1, 9);
-+	} else if (sample_rate == 192000) {
-+		aosr = 32;
-+		adc_resource_class = 3;
-+		dac_resource_class = 4;
-+		dosr_increment = 2;
-+		aic32x4_set_processing_blocks(component, 13, 19);
-+	} else {
-+		dev_err(component->dev, "Sampling rate not supported\n");
-+		return -EINVAL;
-+	}
++static int aic32x4_set_dosr(struct snd_soc_component *component, u16 dosr)
++{
++	snd_soc_component_write(component, AIC32X4_DOSRMSB, dosr >> 8);
++	snd_soc_component_write(component, AIC32X4_DOSRLSB,
++		      (dosr & 0xff));
++
++	return 0;
++}
++
+ static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
+ 						u8 r_block, u8 p_block)
+ {
+@@ -763,14 +777,10 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 	clk_set_rate(clocks[4].clk, aic32x4_divs[i].mdac_rate);
+ 	clk_set_rate(clocks[5].clk, aic32x4_divs[i].bdiv_rate);
  
 -	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
-+	madc = DIV_ROUND_UP((32 * adc_resource_class), aosr);
-+	max_dosr = (AIC32X4_MAX_DOSR_FREQ / sample_rate / dosr_increment) *
-+			dosr_increment;
-+	min_dosr = (AIC32X4_MIN_DOSR_FREQ / sample_rate / dosr_increment) *
-+			dosr_increment;
-+	max_nadc = AIC32X4_MAX_CODEC_CLKIN_FREQ / (madc * aosr * sample_rate);
-+
-+	for (nadc = max_nadc; nadc > 0; --nadc) {
-+		adc_clock_rate = nadc * madc * aosr * sample_rate;
-+		for (dosr = max_dosr; dosr >= min_dosr;
-+				dosr -= dosr_increment) {
-+			min_mdac = DIV_ROUND_UP((32 * dac_resource_class), dosr);
-+			max_ndac = AIC32X4_MAX_CODEC_CLKIN_FREQ /
-+					(min_mdac * dosr * sample_rate);
-+			for (mdac = min_mdac; mdac <= 128; ++mdac) {
-+				for (ndac = max_ndac; ndac > 0; --ndac) {
-+					dac_clock_rate = ndac * mdac * dosr *
-+							sample_rate;
-+					if (dac_clock_rate == adc_clock_rate) {
-+						if (clk_round_rate(clocks[0].clk, dac_clock_rate) == 0)
-+							continue;
-+
-+						clk_set_rate(clocks[0].clk,
-+							dac_clock_rate);
-+
-+						clk_set_rate(clocks[1].clk,
-+							sample_rate * aosr *
-+							madc);
-+						clk_set_rate(clocks[2].clk,
-+							sample_rate * aosr);
-+						aic32x4_set_aosr(component,
-+							aosr);
-+
-+						clk_set_rate(clocks[3].clk,
-+							sample_rate * dosr *
-+							mdac);
-+						clk_set_rate(clocks[4].clk,
-+							sample_rate * dosr);
-+						aic32x4_set_dosr(component,
-+							dosr);
-+
-+						clk_set_rate(clocks[5].clk,
-+							sample_rate * 32);
-+						return 0;
-+					}
-+				}
-+			}
-+		}
-+	}
++	aic32x4_set_aosr(component, aic32x4_divs[i].aosr);
++	aic32x4_set_dosr(component, aic32x4_divs[i].dosr);
  
--	return 0;
-+	dev_err(component->dev,
-+		"Could not set clocks to support sample rate.\n");
-+	return -EINVAL;
- }
- 
- static int aic32x4_hw_params(struct snd_pcm_substream *substream,
-@@ -794,7 +778,7 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
- 	u8 iface1_reg = 0;
- 	u8 dacsetup_reg = 0;
- 
--	aic32x4_setup_clocks(component, params_rate(params), aic32x4->sysclk);
-+	aic32x4_setup_clocks(component, params_rate(params));
- 
- 	switch (params_width(params)) {
- 	case 16:
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index 6ede877b00a0..88205bc97198 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -211,7 +211,9 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
- #define AIC32X4_DIV_MASK        GENMASK(6, 0)
- 
- /* Clock Limits */
-+#define AIC32X4_MAX_DOSR_FREQ		6200000
-+#define AIC32X4_MIN_DOSR_FREQ		2800000
-+#define AIC32X4_MAX_CODEC_CLKIN_FREQ    110000000
- #define AIC32X4_MAX_PLL_CLKIN		20000000
- 
+-	/* DOSR MSB & LSB values */
+-	snd_soc_component_write(component, AIC32X4_DOSRMSB, aic32x4_divs[i].dosr >> 8);
+-	snd_soc_component_write(component, AIC32X4_DOSRLSB, (aic32x4_divs[i].dosr & 0xff));
 -
- #endif				/* _TLV320AIC32X4_H */
+-	/* AOSR value */
+-	snd_soc_component_write(component, AIC32X4_AOSR, aic32x4_divs[i].aosr);
++	aic32x4_set_processing_blocks(component, aic32x4_divs[i].r_block, aic32x4_divs[i].p_block);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
