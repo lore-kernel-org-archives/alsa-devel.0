@@ -1,42 +1,69 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: intel: Fix crash at suspend/resume
- after failed codec registration
-Date: Mon, 25 Mar 2019 09:18:04 -0400
-Message-ID: <b6d2bdc5-d0e8-dee7-52be-fa7f3a36fa9f@linux.intel.com>
-References: <1553294388-25293-1-git-send-email-linux@roeck-us.net>
- <5451ba5b-1a5d-41b0-2b39-772c326de785@linux.intel.com>
- <20190325121232.GF7284@sirena.org.uk>
+From: Mukesh Ojha <mojha@codeaurora.org>
+Subject: Re: [PATCH v3] ASoC: sirf-audio: Remove redundant
+	of_match_node call
+Date: Mon, 25 Mar 2019 19:21:42 +0530
+Message-ID: <c9244500-ddce-4c8f-2086-82738a51ea0a@codeaurora.org>
+References: <20190322220031.13773-1-pakki001@umn.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190325121232.GF7284@sirena.org.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17B05F80764
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 14:51:52 +0100 (CET)
+In-Reply-To: <20190322220031.13773-1-pakki001@umn.edu>
 Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Curtis Malainey <cujomalainey@chromium.org>, Guenter Roeck <linux@roeck-us.net>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Aditya Pakki <pakki001@umn.edu>
+Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/25/19 8:12 AM, Mark Brown wrote:
-> On Sat, Mar 23, 2019 at 09:55:46AM -0400, Pierre-Louis Bossart wrote:
-> 
->> I'd like to highlight that there is a fundamental flaw in the way the
->> machine drivers are handled. Since we don't have a hook for the machine
->> driver in the BIOS, the DSP driver creates a platform_device which will
->> instantiate the machine driver. When errors happen in the machine driver
->> probe, they are suppressed due to a 'feature' of the device model, so you
->> can end-up with a broken configuration that is still reported as a
->> successful strobe.
-> 
-> These are driver specific issues not device model issues as far as I can
-> see?  The issue fixed by this as is that you're storing a pointer in the
-> ASoC level (not device model level) probe that you don't free when the
-> component is unbound, causing you to dereference it later during
-> suspend.  There is absolutely no problem with the machine driver not
-> being guaranteed to bind at the time it's initially registered, that's
-> perfectly normal and should cause no problems.
 
-Agree, what I was referring is that if the machine probe and card 
-registration fails (not just deferred), the parent acpi/pci driver isn't 
-notified - there is just no means to provide that information and that 
-leads to all kinds of configuration issues.
+On 3/23/2019 3:30 AM, Aditya Pakki wrote:
+> Unlike other drivers probe method, of_match_node return value
+
+Instead could be written like "Use of `of_match_node` is redundant in 
+sirf-audio-codec driver probe. Remove it."
+
+> is not used or checked. This patch removes the redundant code.
+>
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org 
+<mailto:mojha@codeaurora.org>>
+
+Thanks.
+Mukesh
+
+
+> ---
+> v2: Move the signed by above the version change log
+> v1: A check is unnecessary as match is never used.
+> ---
+>   sound/soc/codecs/sirf-audio-codec.c | 3 ---
+>   1 file changed, 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
+> index e424499a8450..e0af21050078 100644
+> --- a/sound/soc/codecs/sirf-audio-codec.c
+> +++ b/sound/soc/codecs/sirf-audio-codec.c
+> @@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
+>   	struct sirf_audio_codec *sirf_audio_codec;
+>   	void __iomem *base;
+>   	struct resource *mem_res;
+> -	const struct of_device_id *match;
+> -
+> -	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
+>   
+>   	sirf_audio_codec = devm_kzalloc(&pdev->dev,
+>   		sizeof(struct sirf_audio_codec), GFP_KERNEL);
