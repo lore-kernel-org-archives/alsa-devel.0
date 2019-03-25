@@ -1,43 +1,80 @@
-From: =?UTF-8?B?Sm9zw6kgUmFtw7NuIE11w7FveiBQZWtrYXJpbmVu?= <koalinux@gmail.com>
-Subject: Noise on alc285
-Date: Sun, 24 Mar 2019 15:21:49 +0200
-Message-ID: <CANWZPgJCcQY-C9nTVCZP-RVh_Numpfk8dRFuHoJZ8jCuCkRX8A@mail.gmail.com>
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] ASoC: simple-card-utils: remove set but not used
+ variable ''
+Date: Mon, 25 Mar 2019 15:58:04 +0800
+Message-ID: <ae41e273-1c0e-c178-cc94-7f0330b7559f@huawei.com>
+References: <20190323020838.107533-1-yuehaibing@huawei.com>
+ <6a0c2306-088f-cdbc-0730-60b899611c6f@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it1-x12a.google.com (mail-it1-x12a.google.com
- [IPv6:2607:f8b0:4864:20::12a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 021D7F801DA
- for <alsa-devel@alsa-project.org>; Sun, 24 Mar 2019 14:22:02 +0100 (CET)
-Received: by mail-it1-x12a.google.com with SMTP id w85so3150347itc.3
- for <alsa-devel@alsa-project.org>; Sun, 24 Mar 2019 06:22:02 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <6a0c2306-088f-cdbc-0730-60b899611c6f@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mukesh Ojha <mojha@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ICAgIEhpLAoKICAgIENhbiBJIGhhdmUgc29tZSBoZWxwIGZpeGluZyBub2lzZSBwcm9ibGVtcyBp
-bgpteSBocCBlbnZ5IHgzNjAoYWcwODA4bm8pPy4gVGhlIGRlc2NyaXB0aW9uIG9mIHRoZQptYWNo
-aW5lIGlzIHVwbG9hZGVkIGF0IFsxXS4gSSB0cmllZCBib3RoIGZyb20gbXkgZ2VudG9vCnN5c3Rl
-bSBhcyBzcGVjaWZpZWQgaW4gdGhlIGxpbmssIGFzIHdlbGwgYXMgdXNpbmcgbXkKZHVhbCBib290
-ZWQgdWJ1bnR1IGJpb25pYywgYm90aCByZXByb2R1Y2Ugbm9pc2UgZG9pbmcKYSBzaG9ydCByZWNv
-cmQsIGFzIHdlbGwgYXMgY2hhbmdpbmcgdGhlIGhlYWRwaG9uZXMKZm9yIHNldmVyYWwgZGlmZmVy
-ZW50IHNldHMuIENoYW5naW5nIHBvc2l0aW9uLWZpeCBwYXJhbWV0ZXIKaW4gc25kLWhkYS1pbnRl
-bCBvciBtb2RlbCB0byBsZW5vdm8tc3BrLW5vaXNlIG9yCmRlbGwtc3BrLW5vaXNlIGRpZG4ndCBt
-aXRpZ2F0ZSB0aGUgaXNzdWUuIEkgdHJpZWQgYWxzbwphbGMyOTUtaHAteDM2MCBhbmQgYWxjMjgw
-LWhwLWhlYWRzZXQgd2l0aCBzYW1lIGx1Y2suCgpbMV1odHRwOi8vYWxzYS1wcm9qZWN0Lm9yZy9k
-Yi8/Zj0yMmZkNjEzYjI1NzdhM2QzZGM5OWEzMWY1Y2YwNDQyMGJjNjg4NjE1CgogICAgVGhhbmtz
-IQoKICAgIEpvc8OpLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+On 2019/3/25 15:42, Mukesh Ojha wrote:
+> 
+> On 3/23/2019 7:38 AM, YueHaibing wrote:
+>> Fixes gcc '-Wunused-but-set-variable' warning:
+>>
+>> sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
+>> sound/soc/generic/simple-card-utils.c:164:18: warning:
+>>   parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
+>>
+>> It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
+> 
+> 
+> I am not able to find this commit
+> 
+> 0580dde59438
+
+It's now in linux-next tree.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=0580dde59438686d60762b6da9229ebec693b94f
+
+> 
+> 
+>> asoc_simple_debug_info()"), so can be removed.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>   sound/soc/generic/simple-card-utils.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+>> index 4ed68348f939..db1458a19985 100644
+>> --- a/sound/soc/generic/simple-card-utils.c
+>> +++ b/sound/soc/generic/simple-card-utils.c
+>> @@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
+>>        * see
+>>        *    soc-core.c :: snd_soc_init_multicodec()
+>>        */
+>> -    if (dlc) {
+>> +    if (dlc)
+>>           dai_of_node    = dlc->of_node;
+>> -        dai_name    = dlc->dai_name;
+> 
+> I don't see any function like `asoc_simple_parse_clk`
+> 
+> but instead this `asoc_simple_card_parse_clk` and there the variable is used.
+> 
+> Can you double check latest code base ?
+> 
+> Thanks,
+> Mukesh
+> 
+> 
+>> -    }
+>>         /*
+>>        * Parse dai->sysclk come from "clocks = <&xxx>"
+>>
+>>
+>>
+>>
+>>
+> 
+> .
+> 
