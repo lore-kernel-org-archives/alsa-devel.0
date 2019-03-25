@@ -1,18 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: Fix crash at suspend/resume after failed codec registration" to the asoc tree
-Date: Mon, 25 Mar 2019 12:22:12 +0000 (GMT)
-Message-ID: <20190325122212.D778B11288F1@debutante.sirena.org.uk>
-References: <1553294388-25293-1-git-send-email-linux@roeck-us.net>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1553294388-25293-1-git-send-email-linux@roeck-us.net>
-Sender: stable-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: stable@vger.kernel.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Curtis Malainey <cujomalainey@chromium.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, linux-kernel@vger.kernel.orgstable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>Mark Brown <broonie@kernel.org>Jarkko Nikula <jarkko.nikula@linux.intel.com>Curtis Malainey <cujomalainey@chromium.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: stm32: sai: add power management" to the asoc tree
+Date: Mon, 25 Mar 2019 12:22:06 +0000 (GMT)
+Message-ID: <20190325122206.D241911288F1@debutante.sirena.org.uk>
+References: <1553182496-25569-1-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1553182496-25569-1-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: Fix crash at suspend/resume after failed codec registration
+   ASoC: stm32: sai: add power management
 
 has been applied to the asoc tree at
 
@@ -37,116 +47,289 @@ to this mail.
 Thanks,
 Mark
 
->From 8f71370f4b02730e8c27faf460af7a3586e24e1f Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Fri, 22 Mar 2019 15:39:48 -0700
-Subject: [PATCH] ASoC: intel: Fix crash at suspend/resume after failed codec
- registration
+>From cf8817733d10c0147a01c97219dd0551bcf25e08 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Thu, 21 Mar 2019 16:34:56 +0100
+Subject: [PATCH] ASoC: stm32: sai: add power management
 
-If codec registration fails after the ASoC Intel SST driver has been probed,
-the kernel will Oops and crash at suspend/resume.
+Add support of low power modes to STM32 SAI driver.
 
-general protection fault: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 2811 Comm: cat Tainted: G        W         4.19.30 #15
-Hardware name: GOOGLE Clapper, BIOS Google_Clapper.5216.199.7 08/22/2014
-RIP: 0010:snd_soc_suspend+0x5a/0xd21
-Code: 03 80 3c 10 00 49 89 d7 74 0b 48 89 df e8 71 72 c4 fe 4c 89
-fa 48 8b 03 48 89 45 d0 48 8d 98 a0 01 00 00 48 89 d8 48 c1 e8 03
-<8a> 04 10 84 c0 0f 85 85 0c 00 00 80 3b 00 0f 84 6b 0c 00 00 48 8b
-RSP: 0018:ffff888035407750 EFLAGS: 00010202
-RAX: 0000000000000034 RBX: 00000000000001a0 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffff88805c417098
-RBP: ffff8880354077b0 R08: dffffc0000000000 R09: ffffed100b975718
-R10: 0000000000000001 R11: ffffffff949ea4a3 R12: 1ffff1100b975746
-R13: dffffc0000000000 R14: ffff88805cba4588 R15: dffffc0000000000
-FS:  0000794a78e91b80(0000) GS:ffff888068d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007bd5283ccf58 CR3: 000000004b7aa000 CR4: 00000000001006e0
-Call Trace:
-? dpm_complete+0x67b/0x67b
-? i915_gem_suspend+0x14d/0x1ad
-sst_soc_prepare+0x91/0x1dd
-? sst_be_hw_params+0x7e/0x7e
-dpm_prepare+0x39a/0x88b
-dpm_suspend_start+0x13/0x9d
-suspend_devices_and_enter+0x18f/0xbd7
-? arch_suspend_enable_irqs+0x11/0x11
-? printk+0xd9/0x12d
-? lock_release+0x95f/0x95f
-? log_buf_vmcoreinfo_setup+0x131/0x131
-? rcu_read_lock_sched_held+0x140/0x22a
-? __bpf_trace_rcu_utilization+0xa/0xa
-? __pm_pr_dbg+0x186/0x190
-? pm_notifier_call_chain+0x39/0x39
-? suspend_test+0x9d/0x9d
-pm_suspend+0x2f4/0x728
-? trace_suspend_resume+0x3da/0x3da
-? lock_release+0x95f/0x95f
-? kernfs_fop_write+0x19f/0x32d
-state_store+0xd8/0x147
-? sysfs_kf_read+0x155/0x155
-kernfs_fop_write+0x23e/0x32d
-__vfs_write+0x108/0x608
-? vfs_read+0x2e9/0x2e9
-? rcu_read_lock_sched_held+0x140/0x22a
-? __bpf_trace_rcu_utilization+0xa/0xa
-? debug_smp_processor_id+0x10/0x10
-? selinux_file_permission+0x1c5/0x3c8
-? rcu_sync_lockdep_assert+0x6a/0xad
-? __sb_start_write+0x129/0x2ac
-vfs_write+0x1aa/0x434
-ksys_write+0xfe/0x1be
-? __ia32_sys_read+0x82/0x82
-do_syscall_64+0xcd/0x120
-entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-In the observed situation, the problem is seen because the codec driver
-failed to probe due to a hardware problem.
-
-max98090 i2c-193C9890:00: Failed to read device revision: -1
-max98090 i2c-193C9890:00: ASoC: failed to probe component -1
-cht-bsw-max98090 cht-bsw-max98090: ASoC: failed to instantiate card -1
-cht-bsw-max98090 cht-bsw-max98090: snd_soc_register_card failed -1
-cht-bsw-max98090: probe of cht-bsw-max98090 failed with error -1
-
-The problem is similar to the problem solved with commit 2fc995a87f2e
-("ASoC: intel: Fix crash at suspend/resume without card registration"),
-but codec registration fails at a later point. At that time, the pointer
-checked with the above mentioned commit is already set, but it is not
-cleared if the device is subsequently removed. Adding a remove function
-to clear the pointer fixes the problem.
-
-Cc: stable@vger.kernel.org
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/stm/stm32_sai.c     | 80 +++++++++++++++++++++++++++++++----
+ sound/soc/stm/stm32_sai.h     |  2 +
+ sound/soc/stm/stm32_sai_sub.c | 45 +++++++++++++++-----
+ 3 files changed, 108 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 08cea5b5cda9..0e8b1c5eec88 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -706,9 +706,17 @@ static int sst_soc_probe(struct snd_soc_component *component)
- 	return sst_dsp_init_v2_dpcm(component);
- }
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index d68d62f12df5..7550d5f08be3 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -21,6 +21,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/reset.h>
  
-+static void sst_soc_remove(struct snd_soc_component *component)
+ #include <sound/dmaengine_pcm.h>
+@@ -44,20 +45,41 @@ static const struct of_device_id stm32_sai_ids[] = {
+ 	{}
+ };
+ 
+-static int stm32_sai_sync_conf_client(struct stm32_sai_data *sai, int synci)
++static int stm32_sai_pclk_disable(struct device *dev)
 +{
-+	struct sst_data *drv = dev_get_drvdata(component->dev);
++	struct stm32_sai_data *sai = dev_get_drvdata(dev);
 +
-+	drv->soc_card = NULL;
++	clk_disable_unprepare(sai->pclk);
++
++	return 0;
 +}
 +
- static const struct snd_soc_component_driver sst_soc_platform_drv  = {
- 	.name		= DRV_NAME,
- 	.probe		= sst_soc_probe,
-+	.remove		= sst_soc_remove,
- 	.ops		= &sst_platform_ops,
- 	.compr_ops	= &sst_platform_compr_ops,
- 	.pcm_new	= sst_pcm_new,
++static int stm32_sai_pclk_enable(struct device *dev)
+ {
++	struct stm32_sai_data *sai = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	/* Enable peripheral clock to allow GCR register access */
+ 	ret = clk_prepare_enable(sai->pclk);
+ 	if (ret) {
+ 		dev_err(&sai->pdev->dev, "failed to enable clock: %d\n", ret);
+ 		return ret;
+ 	}
+ 
++	return 0;
++}
++
++static int stm32_sai_sync_conf_client(struct stm32_sai_data *sai, int synci)
++{
++	int ret;
++
++	/* Enable peripheral clock to allow GCR register access */
++	ret = stm32_sai_pclk_enable(&sai->pdev->dev);
++	if (ret)
++		return ret;
++
+ 	writel_relaxed(FIELD_PREP(SAI_GCR_SYNCIN_MASK, (synci - 1)), sai->base);
+ 
+-	clk_disable_unprepare(sai->pclk);
++	stm32_sai_pclk_disable(&sai->pdev->dev);
+ 
+ 	return 0;
+ }
+@@ -68,11 +90,9 @@ static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
+ 	int ret;
+ 
+ 	/* Enable peripheral clock to allow GCR register access */
+-	ret = clk_prepare_enable(sai->pclk);
+-	if (ret) {
+-		dev_err(&sai->pdev->dev, "failed to enable clock: %d\n", ret);
++	ret = stm32_sai_pclk_enable(&sai->pdev->dev);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	dev_dbg(&sai->pdev->dev, "Set %pOFn%s as synchro provider\n",
+ 		sai->pdev->dev.of_node,
+@@ -83,13 +103,13 @@ static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
+ 		dev_err(&sai->pdev->dev, "%pOFn%s already set as sync provider\n",
+ 			sai->pdev->dev.of_node,
+ 			prev_synco == STM_SAI_SYNC_OUT_A ? "A" : "B");
+-		clk_disable_unprepare(sai->pclk);
++			stm32_sai_pclk_disable(&sai->pdev->dev);
+ 		return -EINVAL;
+ 	}
+ 
+ 	writel_relaxed(FIELD_PREP(SAI_GCR_SYNCOUT_MASK, synco), sai->base);
+ 
+-	clk_disable_unprepare(sai->pclk);
++	stm32_sai_pclk_disable(&sai->pdev->dev);
+ 
+ 	return 0;
+ }
+@@ -195,12 +215,54 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	return devm_of_platform_populate(&pdev->dev);
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++/*
++ * When pins are shared by two sai sub instances, pins have to be defined
++ * in sai parent node. In this case, pins state is not managed by alsa fw.
++ * These pins are managed in suspend/resume callbacks.
++ */
++static int stm32_sai_suspend(struct device *dev)
++{
++	struct stm32_sai_data *sai = dev_get_drvdata(dev);
++	int ret;
++
++	ret = stm32_sai_pclk_enable(dev);
++	if (ret)
++		return ret;
++
++	sai->gcr = readl_relaxed(sai->base);
++	stm32_sai_pclk_disable(dev);
++
++	return pinctrl_pm_select_sleep_state(dev);
++}
++
++static int stm32_sai_resume(struct device *dev)
++{
++	struct stm32_sai_data *sai = dev_get_drvdata(dev);
++	int ret;
++
++	ret = stm32_sai_pclk_enable(dev);
++	if (ret)
++		return ret;
++
++	writel_relaxed(sai->gcr, sai->base);
++	stm32_sai_pclk_disable(dev);
++
++	return pinctrl_pm_select_default_state(dev);
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops stm32_sai_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_sai_suspend, stm32_sai_resume)
++};
++
+ MODULE_DEVICE_TABLE(of, stm32_sai_ids);
+ 
+ static struct platform_driver stm32_sai_driver = {
+ 	.driver = {
+ 		.name = "st,stm32-sai",
+ 		.of_match_table = stm32_sai_ids,
++		.pm = &stm32_sai_pm_ops,
+ 	},
+ 	.probe = stm32_sai_probe,
+ };
+diff --git a/sound/soc/stm/stm32_sai.h b/sound/soc/stm/stm32_sai.h
+index 08de899c766b..9c36a393ab7b 100644
+--- a/sound/soc/stm/stm32_sai.h
++++ b/sound/soc/stm/stm32_sai.h
+@@ -268,6 +268,7 @@ struct stm32_sai_conf {
+  * @version: SOC version
+  * @irq: SAI interrupt line
+  * @set_sync: pointer to synchro mode configuration callback
++ * @gcr: SAI Global Configuration Register
+  */
+ struct stm32_sai_data {
+ 	struct platform_device *pdev;
+@@ -279,4 +280,5 @@ struct stm32_sai_data {
+ 	int irq;
+ 	int (*set_sync)(struct stm32_sai_data *sai,
+ 			struct device_node *np_provider, int synco, int synci);
++	u32 gcr;
+ };
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 55d802f51c15..2a90641cf164 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -168,6 +168,7 @@ static bool stm32_sai_sub_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case STM_SAI_DR_REGX:
++	case STM_SAI_SR_REGX:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -182,7 +183,6 @@ static bool stm32_sai_sub_writeable_reg(struct device *dev, unsigned int reg)
+ 	case STM_SAI_FRCR_REGX:
+ 	case STM_SAI_SLOTR_REGX:
+ 	case STM_SAI_IMR_REGX:
+-	case STM_SAI_SR_REGX:
+ 	case STM_SAI_CLRFR_REGX:
+ 	case STM_SAI_DR_REGX:
+ 	case STM_SAI_PDMCR_REGX:
+@@ -202,6 +202,7 @@ static const struct regmap_config stm32_sai_sub_regmap_config_f4 = {
+ 	.volatile_reg = stm32_sai_sub_volatile_reg,
+ 	.writeable_reg = stm32_sai_sub_writeable_reg,
+ 	.fast_io = true,
++	.cache_type = REGCACHE_FLAT,
+ };
+ 
+ static const struct regmap_config stm32_sai_sub_regmap_config_h7 = {
+@@ -213,6 +214,7 @@ static const struct regmap_config stm32_sai_sub_regmap_config_h7 = {
+ 	.volatile_reg = stm32_sai_sub_volatile_reg,
+ 	.writeable_reg = stm32_sai_sub_writeable_reg,
+ 	.fast_io = true,
++	.cache_type = REGCACHE_FLAT,
+ };
+ 
+ static int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
+@@ -441,8 +443,8 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+ 	if (!flags)
+ 		return IRQ_NONE;
+ 
+-	regmap_update_bits(sai->regmap, STM_SAI_CLRFR_REGX, SAI_XCLRFR_MASK,
+-			   SAI_XCLRFR_MASK);
++	regmap_write_bits(sai->regmap, STM_SAI_CLRFR_REGX, SAI_XCLRFR_MASK,
++			  SAI_XCLRFR_MASK);
+ 
+ 	if (!sai->substream) {
+ 		dev_err(&pdev->dev, "Device stopped. Spurious IRQ 0x%x\n", sr);
+@@ -704,9 +706,8 @@ static int stm32_sai_startup(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Enable ITs */
+-
+-	regmap_update_bits(sai->regmap, STM_SAI_CLRFR_REGX,
+-			   SAI_XCLRFR_MASK, SAI_XCLRFR_MASK);
++	regmap_write_bits(sai->regmap, STM_SAI_CLRFR_REGX,
++			  SAI_XCLRFR_MASK, SAI_XCLRFR_MASK);
+ 
+ 	imr = SAI_XIMR_OVRUDRIE;
+ 	if (STM_SAI_IS_CAPTURE(sai)) {
+@@ -738,10 +739,10 @@ static int stm32_sai_set_config(struct snd_soc_dai *cpu_dai,
+ 	 * SAI fifo threshold is set to half fifo, to keep enough space
+ 	 * for DMA incoming bursts.
+ 	 */
+-	regmap_update_bits(sai->regmap, STM_SAI_CR2_REGX,
+-			   SAI_XCR2_FFLUSH | SAI_XCR2_FTH_MASK,
+-			   SAI_XCR2_FFLUSH |
+-			   SAI_XCR2_FTH_SET(STM_SAI_FIFO_TH_HALF));
++	regmap_write_bits(sai->regmap, STM_SAI_CR2_REGX,
++			  SAI_XCR2_FFLUSH | SAI_XCR2_FTH_MASK,
++			  SAI_XCR2_FFLUSH |
++			  SAI_XCR2_FTH_SET(STM_SAI_FIFO_TH_HALF));
+ 
+ 	/* DS bits in CR1 not set for SPDIF (size forced to 24 bits).*/
+ 	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
+@@ -1492,10 +1493,34 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int stm32_sai_sub_suspend(struct device *dev)
++{
++	struct stm32_sai_sub_data *sai = dev_get_drvdata(dev);
++
++	regcache_cache_only(sai->regmap, true);
++	regcache_mark_dirty(sai->regmap);
++	return 0;
++}
++
++static int stm32_sai_sub_resume(struct device *dev)
++{
++	struct stm32_sai_sub_data *sai = dev_get_drvdata(dev);
++
++	regcache_cache_only(sai->regmap, false);
++	return regcache_sync(sai->regmap);
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops stm32_sai_sub_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stm32_sai_sub_suspend, stm32_sai_sub_resume)
++};
++
+ static struct platform_driver stm32_sai_sub_driver = {
+ 	.driver = {
+ 		.name = "st,stm32-sai-sub",
+ 		.of_match_table = stm32_sai_sub_ids,
++		.pm = &stm32_sai_sub_pm_ops,
+ 	},
+ 	.probe = stm32_sai_sub_probe,
+ };
 -- 
 2.20.1
