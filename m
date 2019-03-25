@@ -1,17 +1,17 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: [asoc:for-5.2 74/82]
- sound/soc/codecs/tlv320aic32x4-clk.c:287:21: error: variable
- 'aic32x4_codec_clkin_ops' has initializer but incomplete type
-Date: Tue, 26 Mar 2019 01:19:47 +0800
-Message-ID: <201903260146.m6IOXDQ8%lkp@intel.com>
+Subject: [asoc:for-5.2 75/82]
+ sound/soc/codecs/tlv320aic32x4-clk.c:346:21: error: variable
+ 'aic32x4_div_ops' has initializer but incomplete type
+Date: Tue, 26 Mar 2019 01:41:44 +0800
+Message-ID: <201903260139.pRWwxf8s%lkp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
+Content-Type: multipart/mixed; boundary="qMm9M+Fa2AknHoGS"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7B71F808F6
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 18:20:01 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2EE8F808F6
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 18:42:02 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,33 +27,24 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.
 List-Id: alsa-devel@alsa-project.org
 
 
---J2SCkAp4GZ/dPZZf
+--qMm9M+Fa2AknHoGS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 head:   6d56ee1550b8a81bc63c80051ff78d8d704b09ba
-commit: fd2df3aeafa4b4cc468d58e147e0822967034b71 [74/82] ASoC: tlv320aic32x4: Model CODEC_CLKIN in CCF
+commit: a51b50062091619915c5155085bbe13a7aca6903 [75/82] ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
 config: sparc64-allyesconfig (attached as .config)
 compiler: sparc64-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
 reproduce:
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout fd2df3aeafa4b4cc468d58e147e0822967034b71
+        git checkout a51b50062091619915c5155085bbe13a7aca6903
         # save the attached .config to linux build tree
         GCC_VERSION=7.2.0 make.cross ARCH=sparc64 
 
 All errors (new ones prefixed by >>):
 
-   sound/soc/codecs/tlv320aic32x4-clk.c:19:16: error: field 'hw' has incomplete type
-     struct clk_hw hw;
-                   ^~
-   In file included from include/linux/init.h:5:0,
-                    from include/linux/io.h:22,
-                    from include/linux/clk-provider.h:9,
-                    from sound/soc/codecs/tlv320aic32x4-clk.c:10:
-   sound/soc/codecs/tlv320aic32x4-clk.c: In function 'clk_aic32x4_pll_prepare':
-   include/linux/kernel.h:979:32: error: dereferencing pointer to incomplete type 'struct clk_hw'
      BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
                                    ^~~~~~
    include/linux/compiler.h:324:9: note: in definition of macro '__compiletime_assert'
@@ -137,7 +128,7 @@ All errors (new ones prefixed by >>):
      .get_parent = clk_aic32x4_pll_get_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
    sound/soc/codecs/tlv320aic32x4-clk.c:265:16: note: (near initialization for 'aic32x4_pll_ops')
->> sound/soc/codecs/tlv320aic32x4-clk.c:287:21: error: variable 'aic32x4_codec_clkin_ops' has initializer but incomplete type
+   sound/soc/codecs/tlv320aic32x4-clk.c:287:21: error: variable 'aic32x4_codec_clkin_ops' has initializer but incomplete type
     static const struct clk_ops aic32x4_codec_clkin_ops = {
                         ^~~~~~~
    sound/soc/codecs/tlv320aic32x4-clk.c:288:3: error: 'const struct clk_ops' has no member named 'set_parent'
@@ -154,42 +145,83 @@ All errors (new ones prefixed by >>):
      .get_parent = clk_aic32x4_codec_clkin_get_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    sound/soc/codecs/tlv320aic32x4-clk.c:289:16: note: (near initialization for 'aic32x4_codec_clkin_ops')
+>> sound/soc/codecs/tlv320aic32x4-clk.c:346:21: error: variable 'aic32x4_div_ops' has initializer but incomplete type
+    static const struct clk_ops aic32x4_div_ops = {
+                        ^~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:347:3: error: 'const struct clk_ops' has no member named 'prepare'
+     .prepare = clk_aic32x4_div_prepare,
+      ^~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:347:13: warning: excess elements in struct initializer
+     .prepare = clk_aic32x4_div_prepare,
+                ^~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:347:13: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc/codecs/tlv320aic32x4-clk.c:348:3: error: 'const struct clk_ops' has no member named 'unprepare'
+     .unprepare = clk_aic32x4_div_unprepare,
+      ^~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:348:15: warning: excess elements in struct initializer
+     .unprepare = clk_aic32x4_div_unprepare,
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:348:15: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc/codecs/tlv320aic32x4-clk.c:349:3: error: 'const struct clk_ops' has no member named 'set_rate'
+     .set_rate = clk_aic32x4_div_set_rate,
+      ^~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:349:14: warning: excess elements in struct initializer
+     .set_rate = clk_aic32x4_div_set_rate,
+                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:349:14: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc/codecs/tlv320aic32x4-clk.c:350:3: error: 'const struct clk_ops' has no member named 'round_rate'
+     .round_rate = clk_aic32x4_div_round_rate,
+      ^~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:350:16: warning: excess elements in struct initializer
+     .round_rate = clk_aic32x4_div_round_rate,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:350:16: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc/codecs/tlv320aic32x4-clk.c:351:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
+     .recalc_rate = clk_aic32x4_div_recalc_rate,
+      ^~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:351:17: warning: excess elements in struct initializer
+     .recalc_rate = clk_aic32x4_div_recalc_rate,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/tlv320aic32x4-clk.c:351:17: note: (near initialization for 'aic32x4_div_ops')
    sound/soc/codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
-   sound/soc/codecs/tlv320aic32x4-clk.c:314:23: error: storage size of 'init' isn't known
+   sound/soc/codecs/tlv320aic32x4-clk.c:404:23: error: storage size of 'init' isn't known
      struct clk_init_data init;
                           ^~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:334:9: error: implicit declaration of function 'devm_clk_register'; did you mean 'device_register'? [-Werror=implicit-function-declaration]
+   sound/soc/codecs/tlv320aic32x4-clk.c:424:9: error: implicit declaration of function 'devm_clk_register'; did you mean 'device_register'? [-Werror=implicit-function-declaration]
      return devm_clk_register(dev, &priv->hw);
             ^~~~~~~~~~~~~~~~~
             device_register
-   sound/soc/codecs/tlv320aic32x4-clk.c:314:23: warning: unused variable 'init' [-Wunused-variable]
+   sound/soc/codecs/tlv320aic32x4-clk.c:404:23: warning: unused variable 'init' [-Wunused-variable]
      struct clk_init_data init;
                           ^~~~
    sound/soc/codecs/tlv320aic32x4-clk.c: At top level:
    sound/soc/codecs/tlv320aic32x4-clk.c:257:29: error: storage size of 'aic32x4_pll_ops' isn't known
     static const struct clk_ops aic32x4_pll_ops = {
                                 ^~~~~~~~~~~~~~~
->> sound/soc/codecs/tlv320aic32x4-clk.c:287:29: error: storage size of 'aic32x4_codec_clkin_ops' isn't known
+   sound/soc/codecs/tlv320aic32x4-clk.c:287:29: error: storage size of 'aic32x4_codec_clkin_ops' isn't known
     static const struct clk_ops aic32x4_codec_clkin_ops = {
                                 ^~~~~~~~~~~~~~~~~~~~~~~
+>> sound/soc/codecs/tlv320aic32x4-clk.c:346:29: error: storage size of 'aic32x4_div_ops' isn't known
+    static const struct clk_ops aic32x4_div_ops = {
+                                ^~~~~~~~~~~~~~~
    sound/soc/codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
-   sound/soc/codecs/tlv320aic32x4-clk.c:335:1: warning: control reaches end of non-void function [-Wreturn-type]
+   sound/soc/codecs/tlv320aic32x4-clk.c:425:1: warning: control reaches end of non-void function [-Wreturn-type]
     }
     ^
    cc1: some warnings being treated as errors
 
-vim +/aic32x4_codec_clkin_ops +287 sound/soc/codecs/tlv320aic32x4-clk.c
+vim +/aic32x4_div_ops +346 sound/soc/codecs/tlv320aic32x4-clk.c
 
    255	
    256	
-   257	static const struct clk_ops aic32x4_pll_ops = {
+ > 257	static const struct clk_ops aic32x4_pll_ops = {
    258		.prepare = clk_aic32x4_pll_prepare,
    259		.unprepare = clk_aic32x4_pll_unprepare,
    260		.is_prepared = clk_aic32x4_pll_is_prepared,
    261		.recalc_rate = clk_aic32x4_pll_recalc_rate,
    262		.round_rate = clk_aic32x4_pll_round_rate,
    263		.set_rate = clk_aic32x4_pll_set_rate,
- > 264		.set_parent = clk_aic32x4_pll_set_parent,
+   264		.set_parent = clk_aic32x4_pll_set_parent,
    265		.get_parent = clk_aic32x4_pll_get_parent,
    266	};
    267	
@@ -212,67 +244,84 @@ vim +/aic32x4_codec_clkin_ops +287 sound/soc/codecs/tlv320aic32x4-clk.c
    284		return (val & AIC32X4_CODEC_CLKIN_MASK) >> AIC32X4_CODEC_CLKIN_SHIFT;
    285	}
    286	
- > 287	static const struct clk_ops aic32x4_codec_clkin_ops = {
-   288		.set_parent = clk_aic32x4_codec_clkin_set_parent,
+   287	static const struct clk_ops aic32x4_codec_clkin_ops = {
+ > 288		.set_parent = clk_aic32x4_codec_clkin_set_parent,
    289		.get_parent = clk_aic32x4_codec_clkin_get_parent,
    290	};
    291	
-   292	static struct aic32x4_clkdesc aic32x4_clkdesc_array[] = {
-   293		{
-   294			.name = "pll",
-   295			.parent_names =
-   296				(const char* []) { "mclk", "bclk", "gpio", "din" },
-   297			.num_parents = 4,
-   298			.ops = &aic32x4_pll_ops,
-   299			.reg = 0,
-   300		},
-   301		{
-   302			.name = "codec_clkin",
-   303			.parent_names =
-   304				(const char *[]) { "mclk", "bclk", "gpio", "pll" },
-   305			.num_parents = 4,
-   306			.ops = &aic32x4_codec_clkin_ops,
-   307			.reg = 0,
-   308		},
-   309	};
-   310	
-   311	static struct clk *aic32x4_register_clk(struct device *dev,
-   312				struct aic32x4_clkdesc *desc)
-   313	{
- > 314		struct clk_init_data init;
-   315		struct clk_aic32x4 *priv;
-   316		const char *devname = dev_name(dev);
+   292	static int clk_aic32x4_div_prepare(struct clk_hw *hw)
+   293	{
+   294		struct clk_aic32x4 *div = to_clk_aic32x4(hw);
+   295	
+   296		return regmap_update_bits(div->regmap, div->reg,
+   297					AIC32X4_DIVEN, AIC32X4_DIVEN);
+   298	}
+   299	
+   300	static void clk_aic32x4_div_unprepare(struct clk_hw *hw)
+   301	{
+   302		struct clk_aic32x4 *div = to_clk_aic32x4(hw);
+   303	
+   304		regmap_update_bits(div->regmap, div->reg,
+   305				AIC32X4_DIVEN, 0);
+   306	}
+   307	
+   308	static int clk_aic32x4_div_set_rate(struct clk_hw *hw, unsigned long rate,
+   309					unsigned long parent_rate)
+   310	{
+   311		struct clk_aic32x4 *div = to_clk_aic32x4(hw);
+   312		u8 divisor;
+   313	
+   314		divisor = DIV_ROUND_UP(parent_rate, rate);
+   315		if (divisor > 128)
+   316			return -EINVAL;
    317	
-   318		init.ops = desc->ops;
-   319		init.name = desc->name;
-   320		init.parent_names = desc->parent_names;
-   321		init.num_parents = desc->num_parents;
-   322		init.flags = 0;
-   323	
-   324		priv = devm_kzalloc(dev, sizeof(struct clk_aic32x4), GFP_KERNEL);
-   325		if (priv == NULL)
-   326			return (struct clk *) -ENOMEM;
-   327	
-   328		priv->dev = dev;
-   329		priv->hw.init = &init;
-   330		priv->regmap = dev_get_regmap(dev, NULL);
-   331		priv->reg = desc->reg;
-   332	
-   333		clk_hw_register_clkdev(&priv->hw, desc->name, devname);
-   334		return devm_clk_register(dev, &priv->hw);
-   335	}
-   336	
+   318		return regmap_update_bits(div->regmap, div->reg,
+   319					AIC32X4_DIV_MASK, divisor);
+   320	}
+   321	
+   322	static long clk_aic32x4_div_round_rate(struct clk_hw *hw, unsigned long rate,
+   323					unsigned long *parent_rate)
+   324	{
+   325		unsigned long divisor;
+   326	
+   327		divisor = DIV_ROUND_UP(*parent_rate, rate);
+   328		if (divisor > 128)
+   329			return -EINVAL;
+   330	
+   331		return DIV_ROUND_UP(*parent_rate, divisor);
+   332	}
+   333	
+   334	static unsigned long clk_aic32x4_div_recalc_rate(struct clk_hw *hw,
+   335							unsigned long parent_rate)
+   336	{
+   337		struct clk_aic32x4 *div = to_clk_aic32x4(hw);
+   338	
+   339		unsigned int val;
+   340	
+   341		regmap_read(div->regmap, div->reg, &val);
+   342	
+   343		return DIV_ROUND_UP(parent_rate, val & AIC32X4_DIV_MASK);
+   344	}
+   345	
+ > 346	static const struct clk_ops aic32x4_div_ops = {
+   347		.prepare = clk_aic32x4_div_prepare,
+   348		.unprepare = clk_aic32x4_div_unprepare,
+   349		.set_rate = clk_aic32x4_div_set_rate,
+   350		.round_rate = clk_aic32x4_div_round_rate,
+   351		.recalc_rate = clk_aic32x4_div_recalc_rate,
+   352	};
+   353	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---J2SCkAp4GZ/dPZZf
+--qMm9M+Fa2AknHoGS
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICIgMmVwAAy5jb25maWcAjFzdc9u2sn/vX6FJX9qZ29Z2ErXn3PEDSIISKpJgCFCy/cJR
+H4sICOsQmVwAAy5jb25maWcAjFzdc9u2sn/vX6FJX9qZ29Z2ErXn3PEDSIISKpJgCFCy/cJR
 FCX11LF9JLn35L+/u+AXFgDlzJw5DX+7+Fos9guQf/zhxxl7OT193Z7ud9uHh2+zL/vH/WF7
 2n+afb5/2P/vLJGzQuoZT4T+FZiz+8eX//52fN4edvN3s/e/Xv568cthdzlb7Q+P+4dZ/PT4
 +f7LC3Rw//T4w48/wP9+BPDrM/R1+Pesa/fLA/byy5fHl1++7Hazn5L9x/vt4+z3X6+gt8vL
@@ -1326,11 +1375,11 @@ t4FcfQPpyHnNqNHawKs9PMDBW5CN/HuIq+dhECVtoSOpy5wsrgImIbtP/aWHvh0mi4jW7vSA
 UUi2nC/7jEYKejMQPx1fTaLJycmxYNuIUgTLdzTGSIWmoBsb5Tso4cVZgyEOa69Cm8V17B9U
 LM2y4vo6ekQVr5fEqywVJ4emUxC/tWz0W2pXfOtC1vhR0nADh0HC/T8Ne4I4U5UDAA==
 
---J2SCkAp4GZ/dPZZf
+--qMm9M+Fa2AknHoGS
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---J2SCkAp4GZ/dPZZf--
+--qMm9M+Fa2AknHoGS--
