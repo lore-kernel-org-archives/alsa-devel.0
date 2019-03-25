@@ -1,17 +1,17 @@
 From: kbuild test robot <lkp@intel.com>
-Subject: [asoc:for-5.2 75/82]
- sound/soc/codecs/tlv320aic32x4-clk.c:346:21: error: variable
- 'aic32x4_div_ops' has initializer but incomplete type
-Date: Tue, 26 Mar 2019 01:41:44 +0800
-Message-ID: <201903260139.pRWwxf8s%lkp@intel.com>
+Subject: [asoc:for-5.2 76/82]
+ sound/soc//codecs/tlv320aic32x4-clk.c:372:21: error: variable
+ 'aic32x4_bdiv_ops' has initializer but incomplete type
+Date: Tue, 26 Mar 2019 02:17:21 +0800
+Message-ID: <201903260219.fhotMQHR%lkp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="qMm9M+Fa2AknHoGS"
+Content-Type: multipart/mixed; boundary="mYCpIKhGyMATD0i+"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2EE8F808F6
- for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 18:42:02 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD0C5F80764
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 19:18:07 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,190 +27,207 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.
 List-Id: alsa-devel@alsa-project.org
 
 
---qMm9M+Fa2AknHoGS
+--mYCpIKhGyMATD0i+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 head:   6d56ee1550b8a81bc63c80051ff78d8d704b09ba
-commit: a51b50062091619915c5155085bbe13a7aca6903 [75/82] ASoC: tlv320aic32x4: Model DAC/ADC dividers in CCF
+commit: 9b484124ebd906c4d6bc826cc0d417e80cc1105c [76/82] ASoC: tlv320aic32x4: Model BDIV divider in CCF
 config: sparc64-allyesconfig (attached as .config)
 compiler: sparc64-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
 reproduce:
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout a51b50062091619915c5155085bbe13a7aca6903
+        git checkout 9b484124ebd906c4d6bc826cc0d417e80cc1105c
         # save the attached .config to linux build tree
         GCC_VERSION=7.2.0 make.cross ARCH=sparc64 
 
 All errors (new ones prefixed by >>):
 
-     BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
-                                   ^~~~~~
-   include/linux/compiler.h:324:9: note: in definition of macro '__compiletime_assert'
-      if (!(condition))     \
-            ^~~~~~~~~
-   include/linux/compiler.h:344:2: note: in expansion of macro '_compiletime_assert'
-     _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
-     ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                        ^~~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:979:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-     BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
-     ^~~~~~~~~~~~~~~~
-   include/linux/kernel.h:979:20: note: in expansion of macro '__same_type'
-     BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
-                       ^~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:17:29: note: in expansion of macro 'container_of'
-    #define to_clk_aic32x4(_hw) container_of(_hw, struct clk_aic32x4, hw)
-                                ^~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:49:28: note: in expansion of macro 'to_clk_aic32x4'
-     struct clk_aic32x4 *pll = to_clk_aic32x4(hw);
-                               ^~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c: At top level:
-   sound/soc/codecs/tlv320aic32x4-clk.c:257:21: error: variable 'aic32x4_pll_ops' has initializer but incomplete type
-    static const struct clk_ops aic32x4_pll_ops = {
-                        ^~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:258:3: error: 'const struct clk_ops' has no member named 'prepare'
-     .prepare = clk_aic32x4_pll_prepare,
-      ^~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:258:13: warning: excess elements in struct initializer
-     .prepare = clk_aic32x4_pll_prepare,
-                ^~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:258:13: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:259:3: error: 'const struct clk_ops' has no member named 'unprepare'
-     .unprepare = clk_aic32x4_pll_unprepare,
-      ^~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:259:15: warning: excess elements in struct initializer
      .unprepare = clk_aic32x4_pll_unprepare,
                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:259:15: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:260:3: error: 'const struct clk_ops' has no member named 'is_prepared'
+   sound/soc//codecs/tlv320aic32x4-clk.c:259:15: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:260:3: error: 'const struct clk_ops' has no member named 'is_prepared'
      .is_prepared = clk_aic32x4_pll_is_prepared,
       ^~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:260:17: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:260:17: warning: excess elements in struct initializer
      .is_prepared = clk_aic32x4_pll_is_prepared,
                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:260:17: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:261:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:260:17: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:261:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
      .recalc_rate = clk_aic32x4_pll_recalc_rate,
       ^~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:261:17: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:261:17: warning: excess elements in struct initializer
      .recalc_rate = clk_aic32x4_pll_recalc_rate,
                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:261:17: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:262:3: error: 'const struct clk_ops' has no member named 'round_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:261:17: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:262:3: error: 'const struct clk_ops' has no member named 'round_rate'
      .round_rate = clk_aic32x4_pll_round_rate,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:262:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:262:16: warning: excess elements in struct initializer
      .round_rate = clk_aic32x4_pll_round_rate,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:262:16: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:263:3: error: 'const struct clk_ops' has no member named 'set_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:262:16: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:263:3: error: 'const struct clk_ops' has no member named 'set_rate'
      .set_rate = clk_aic32x4_pll_set_rate,
       ^~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:263:14: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:263:14: warning: excess elements in struct initializer
      .set_rate = clk_aic32x4_pll_set_rate,
                  ^~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:263:14: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:264:3: error: 'const struct clk_ops' has no member named 'set_parent'
+   sound/soc//codecs/tlv320aic32x4-clk.c:263:14: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:264:3: error: 'const struct clk_ops' has no member named 'set_parent'
      .set_parent = clk_aic32x4_pll_set_parent,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:264:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:264:16: warning: excess elements in struct initializer
      .set_parent = clk_aic32x4_pll_set_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:264:16: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:265:3: error: 'const struct clk_ops' has no member named 'get_parent'
+   sound/soc//codecs/tlv320aic32x4-clk.c:264:16: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:265:3: error: 'const struct clk_ops' has no member named 'get_parent'
      .get_parent = clk_aic32x4_pll_get_parent,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:265:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:265:16: warning: excess elements in struct initializer
      .get_parent = clk_aic32x4_pll_get_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:265:16: note: (near initialization for 'aic32x4_pll_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:287:21: error: variable 'aic32x4_codec_clkin_ops' has initializer but incomplete type
+   sound/soc//codecs/tlv320aic32x4-clk.c:265:16: note: (near initialization for 'aic32x4_pll_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:287:21: error: variable 'aic32x4_codec_clkin_ops' has initializer but incomplete type
     static const struct clk_ops aic32x4_codec_clkin_ops = {
                         ^~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:288:3: error: 'const struct clk_ops' has no member named 'set_parent'
+   sound/soc//codecs/tlv320aic32x4-clk.c:288:3: error: 'const struct clk_ops' has no member named 'set_parent'
      .set_parent = clk_aic32x4_codec_clkin_set_parent,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:288:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:288:16: warning: excess elements in struct initializer
      .set_parent = clk_aic32x4_codec_clkin_set_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:288:16: note: (near initialization for 'aic32x4_codec_clkin_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:289:3: error: 'const struct clk_ops' has no member named 'get_parent'
+   sound/soc//codecs/tlv320aic32x4-clk.c:288:16: note: (near initialization for 'aic32x4_codec_clkin_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:289:3: error: 'const struct clk_ops' has no member named 'get_parent'
      .get_parent = clk_aic32x4_codec_clkin_get_parent,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:289:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:289:16: warning: excess elements in struct initializer
      .get_parent = clk_aic32x4_codec_clkin_get_parent,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:289:16: note: (near initialization for 'aic32x4_codec_clkin_ops')
->> sound/soc/codecs/tlv320aic32x4-clk.c:346:21: error: variable 'aic32x4_div_ops' has initializer but incomplete type
+   sound/soc//codecs/tlv320aic32x4-clk.c:289:16: note: (near initialization for 'aic32x4_codec_clkin_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:346:21: error: variable 'aic32x4_div_ops' has initializer but incomplete type
     static const struct clk_ops aic32x4_div_ops = {
                         ^~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:347:3: error: 'const struct clk_ops' has no member named 'prepare'
+   sound/soc//codecs/tlv320aic32x4-clk.c:347:3: error: 'const struct clk_ops' has no member named 'prepare'
      .prepare = clk_aic32x4_div_prepare,
       ^~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:347:13: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:347:13: warning: excess elements in struct initializer
      .prepare = clk_aic32x4_div_prepare,
                 ^~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:347:13: note: (near initialization for 'aic32x4_div_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:348:3: error: 'const struct clk_ops' has no member named 'unprepare'
+   sound/soc//codecs/tlv320aic32x4-clk.c:347:13: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:348:3: error: 'const struct clk_ops' has no member named 'unprepare'
      .unprepare = clk_aic32x4_div_unprepare,
       ^~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:348:15: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:348:15: warning: excess elements in struct initializer
      .unprepare = clk_aic32x4_div_unprepare,
                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:348:15: note: (near initialization for 'aic32x4_div_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:349:3: error: 'const struct clk_ops' has no member named 'set_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:348:15: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:349:3: error: 'const struct clk_ops' has no member named 'set_rate'
      .set_rate = clk_aic32x4_div_set_rate,
       ^~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:349:14: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:349:14: warning: excess elements in struct initializer
      .set_rate = clk_aic32x4_div_set_rate,
                  ^~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:349:14: note: (near initialization for 'aic32x4_div_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:350:3: error: 'const struct clk_ops' has no member named 'round_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:349:14: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:350:3: error: 'const struct clk_ops' has no member named 'round_rate'
      .round_rate = clk_aic32x4_div_round_rate,
       ^~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:350:16: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:350:16: warning: excess elements in struct initializer
      .round_rate = clk_aic32x4_div_round_rate,
                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:350:16: note: (near initialization for 'aic32x4_div_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c:351:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
+   sound/soc//codecs/tlv320aic32x4-clk.c:350:16: note: (near initialization for 'aic32x4_div_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:351:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
      .recalc_rate = clk_aic32x4_div_recalc_rate,
       ^~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:351:17: warning: excess elements in struct initializer
+   sound/soc//codecs/tlv320aic32x4-clk.c:351:17: warning: excess elements in struct initializer
      .recalc_rate = clk_aic32x4_div_recalc_rate,
                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:351:17: note: (near initialization for 'aic32x4_div_ops')
-   sound/soc/codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
-   sound/soc/codecs/tlv320aic32x4-clk.c:404:23: error: storage size of 'init' isn't known
+   sound/soc//codecs/tlv320aic32x4-clk.c:351:17: note: (near initialization for 'aic32x4_div_ops')
+>> sound/soc//codecs/tlv320aic32x4-clk.c:372:21: error: variable 'aic32x4_bdiv_ops' has initializer but incomplete type
+    static const struct clk_ops aic32x4_bdiv_ops = {
+                        ^~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:373:3: error: 'const struct clk_ops' has no member named 'prepare'
+     .prepare = clk_aic32x4_div_prepare,
+      ^~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:373:13: warning: excess elements in struct initializer
+     .prepare = clk_aic32x4_div_prepare,
+                ^~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:373:13: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:374:3: error: 'const struct clk_ops' has no member named 'unprepare'
+     .unprepare = clk_aic32x4_div_unprepare,
+      ^~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:374:15: warning: excess elements in struct initializer
+     .unprepare = clk_aic32x4_div_unprepare,
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:374:15: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:375:3: error: 'const struct clk_ops' has no member named 'set_parent'
+     .set_parent = clk_aic32x4_bdiv_set_parent,
+      ^~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:375:16: warning: excess elements in struct initializer
+     .set_parent = clk_aic32x4_bdiv_set_parent,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:375:16: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:376:3: error: 'const struct clk_ops' has no member named 'get_parent'
+     .get_parent = clk_aic32x4_bdiv_get_parent,
+      ^~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:376:16: warning: excess elements in struct initializer
+     .get_parent = clk_aic32x4_bdiv_get_parent,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:376:16: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:377:3: error: 'const struct clk_ops' has no member named 'set_rate'
+     .set_rate = clk_aic32x4_div_set_rate,
+      ^~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:377:14: warning: excess elements in struct initializer
+     .set_rate = clk_aic32x4_div_set_rate,
+                 ^~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:377:14: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:378:3: error: 'const struct clk_ops' has no member named 'round_rate'
+     .round_rate = clk_aic32x4_div_round_rate,
+      ^~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:378:16: warning: excess elements in struct initializer
+     .round_rate = clk_aic32x4_div_round_rate,
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:378:16: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c:379:3: error: 'const struct clk_ops' has no member named 'recalc_rate'
+     .recalc_rate = clk_aic32x4_div_recalc_rate,
+      ^~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:379:17: warning: excess elements in struct initializer
+     .recalc_rate = clk_aic32x4_div_recalc_rate,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c:379:17: note: (near initialization for 'aic32x4_bdiv_ops')
+   sound/soc//codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
+   sound/soc//codecs/tlv320aic32x4-clk.c:440:23: error: storage size of 'init' isn't known
      struct clk_init_data init;
                           ^~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:424:9: error: implicit declaration of function 'devm_clk_register'; did you mean 'device_register'? [-Werror=implicit-function-declaration]
+   sound/soc//codecs/tlv320aic32x4-clk.c:460:9: error: implicit declaration of function 'devm_clk_register'; did you mean 'device_register'? [-Werror=implicit-function-declaration]
      return devm_clk_register(dev, &priv->hw);
             ^~~~~~~~~~~~~~~~~
             device_register
-   sound/soc/codecs/tlv320aic32x4-clk.c:404:23: warning: unused variable 'init' [-Wunused-variable]
+   sound/soc//codecs/tlv320aic32x4-clk.c:440:23: warning: unused variable 'init' [-Wunused-variable]
      struct clk_init_data init;
                           ^~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c: At top level:
-   sound/soc/codecs/tlv320aic32x4-clk.c:257:29: error: storage size of 'aic32x4_pll_ops' isn't known
+   sound/soc//codecs/tlv320aic32x4-clk.c: At top level:
+   sound/soc//codecs/tlv320aic32x4-clk.c:257:29: error: storage size of 'aic32x4_pll_ops' isn't known
     static const struct clk_ops aic32x4_pll_ops = {
                                 ^~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c:287:29: error: storage size of 'aic32x4_codec_clkin_ops' isn't known
+   sound/soc//codecs/tlv320aic32x4-clk.c:287:29: error: storage size of 'aic32x4_codec_clkin_ops' isn't known
     static const struct clk_ops aic32x4_codec_clkin_ops = {
                                 ^~~~~~~~~~~~~~~~~~~~~~~
->> sound/soc/codecs/tlv320aic32x4-clk.c:346:29: error: storage size of 'aic32x4_div_ops' isn't known
+   sound/soc//codecs/tlv320aic32x4-clk.c:346:29: error: storage size of 'aic32x4_div_ops' isn't known
     static const struct clk_ops aic32x4_div_ops = {
                                 ^~~~~~~~~~~~~~~
-   sound/soc/codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
-   sound/soc/codecs/tlv320aic32x4-clk.c:425:1: warning: control reaches end of non-void function [-Wreturn-type]
+>> sound/soc//codecs/tlv320aic32x4-clk.c:372:29: error: storage size of 'aic32x4_bdiv_ops' isn't known
+    static const struct clk_ops aic32x4_bdiv_ops = {
+                                ^~~~~~~~~~~~~~~~
+   sound/soc//codecs/tlv320aic32x4-clk.c: In function 'aic32x4_register_clk':
+   sound/soc//codecs/tlv320aic32x4-clk.c:461:1: warning: control reaches end of non-void function [-Wreturn-type]
     }
     ^
    cc1: some warnings being treated as errors
 
-vim +/aic32x4_div_ops +346 sound/soc/codecs/tlv320aic32x4-clk.c
+vim +/aic32x4_bdiv_ops +372 sound/soc//codecs/tlv320aic32x4-clk.c
 
    255	
    256	
@@ -245,7 +262,7 @@ vim +/aic32x4_div_ops +346 sound/soc/codecs/tlv320aic32x4-clk.c
    285	}
    286	
    287	static const struct clk_ops aic32x4_codec_clkin_ops = {
- > 288		.set_parent = clk_aic32x4_codec_clkin_set_parent,
+   288		.set_parent = clk_aic32x4_codec_clkin_set_parent,
    289		.get_parent = clk_aic32x4_codec_clkin_get_parent,
    290	};
    291	
@@ -303,25 +320,53 @@ vim +/aic32x4_div_ops +346 sound/soc/codecs/tlv320aic32x4-clk.c
    343		return DIV_ROUND_UP(parent_rate, val & AIC32X4_DIV_MASK);
    344	}
    345	
- > 346	static const struct clk_ops aic32x4_div_ops = {
+   346	static const struct clk_ops aic32x4_div_ops = {
    347		.prepare = clk_aic32x4_div_prepare,
    348		.unprepare = clk_aic32x4_div_unprepare,
    349		.set_rate = clk_aic32x4_div_set_rate,
-   350		.round_rate = clk_aic32x4_div_round_rate,
+ > 350		.round_rate = clk_aic32x4_div_round_rate,
    351		.recalc_rate = clk_aic32x4_div_recalc_rate,
    352	};
    353	
+   354	static int clk_aic32x4_bdiv_set_parent(struct clk_hw *hw, u8 index)
+   355	{
+   356		struct clk_aic32x4 *mux = to_clk_aic32x4(hw);
+   357	
+   358		return regmap_update_bits(mux->regmap, AIC32X4_IFACE3,
+   359					AIC32X4_BDIVCLK_MASK, index);
+   360	}
+   361	
+   362	static u8 clk_aic32x4_bdiv_get_parent(struct clk_hw *hw)
+   363	{
+   364		struct clk_aic32x4 *mux = to_clk_aic32x4(hw);
+   365		unsigned int val;
+   366	
+   367		regmap_read(mux->regmap, AIC32X4_IFACE3, &val);
+   368	
+   369		return val & AIC32X4_BDIVCLK_MASK;
+   370	}
+   371	
+ > 372	static const struct clk_ops aic32x4_bdiv_ops = {
+   373		.prepare = clk_aic32x4_div_prepare,
+   374		.unprepare = clk_aic32x4_div_unprepare,
+   375		.set_parent = clk_aic32x4_bdiv_set_parent,
+   376		.get_parent = clk_aic32x4_bdiv_get_parent,
+   377		.set_rate = clk_aic32x4_div_set_rate,
+   378		.round_rate = clk_aic32x4_div_round_rate,
+   379		.recalc_rate = clk_aic32x4_div_recalc_rate,
+   380	};
+   381	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---qMm9M+Fa2AknHoGS
+--mYCpIKhGyMATD0i+
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICOsQmVwAAy5jb25maWcAjFzdc9u2sn/vX6FJX9qZ29Z2ErXn3PEDSIISKpJgCFCy/cJR
+H4sICHcXmVwAAy5jb25maWcAjFzdc9u2sn/vX6FJX9qZ29Z2ErXn3PEDSIISKpJgCFCy/cJR
 FCX11LF9JLn35L+/u+AXFgDlzJw5DX+7+Fos9guQf/zhxxl7OT193Z7ud9uHh2+zL/vH/WF7
 2n+afb5/2P/vLJGzQuoZT4T+FZiz+8eX//52fN4edvN3s/e/Xv568cthdzlb7Q+P+4dZ/PT4
 +f7LC3Rw//T4w48/wP9+BPDrM/R1+Pesa/fLA/byy5fHl1++7Hazn5L9x/vt4+z3X6+gt8vL
@@ -1375,11 +1420,11 @@ t4FcfQPpyHnNqNHawKs9PMDBW5CN/HuIq+dhECVtoSOpy5wsrgImIbtP/aWHvh0mi4jW7vSA
 UUi2nC/7jEYKejMQPx1fTaLJycmxYNuIUgTLdzTGSIWmoBsb5Tso4cVZgyEOa69Cm8V17B9U
 LM2y4vo6ekQVr5fEqywVJ4emUxC/tWz0W2pXfOtC1vhR0nADh0HC/T8Ne4I4U5UDAA==
 
---qMm9M+Fa2AknHoGS
+--mYCpIKhGyMATD0i+
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---qMm9M+Fa2AknHoGS--
+--mYCpIKhGyMATD0i+--
