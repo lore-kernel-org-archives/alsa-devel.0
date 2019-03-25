@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Initialize private_value in snd_soc_dapm_new_dai" to the asoc tree
-Date: Mon, 25 Mar 2019 16:11:45 +0000 (GMT)
-Message-ID: <20190325161145.0ABA511288F1@debutante.sirena.org.uk>
-References: <1553271819-24576-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1553271819-24576-1-git-send-email-pankaj.laxminarayan.bharadiya@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, pankaj.laxminarayan.bharadiya@intel.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: tlv320aic32x4: Allow 192000 Sample
+	Rate" to the asoc tree
+Date: Mon, 25 Mar 2019 16:11:23 +0000 (GMT)
+Message-ID: <20190325161123.8110211288F1@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B01F7F80764
+ for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2019 17:11:25 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Annaliese McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Initialize private_value in snd_soc_dapm_new_dai
+   ASoC: tlv320aic32x4: Allow 192000 Sample Rate
 
 has been applied to the asoc tree at
 
@@ -36,35 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 8633d44002ba5c98f44bacc1397190adba832fd6 Mon Sep 17 00:00:00 2001
-From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Date: Fri, 22 Mar 2019 21:53:39 +0530
-Subject: [PATCH] ASoC: dapm: Initialize private_value in snd_soc_dapm_new_dai
+>From 6d56ee1550b8a81bc63c80051ff78d8d704b09ba Mon Sep 17 00:00:00 2001
+From: Annaliese McDermond <nh6z@nh6z.net>
+Date: Thu, 21 Mar 2019 17:58:54 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Allow 192000 Sample Rate
 
-In case of single config, private_value is left uninitialized.
+The clocking and processing blocks are now properly set up to
+support 192000 sample rates.  Allow drivers to ask for that.
 
-The private_value does need to be initialized or in
-snd_soc_dapm_new_control_unlocked() call failure case, it leads to a
-bogus free in snd_soc_dapm_free_kcontrol()
-
-Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 2 +-
+ sound/soc/codecs/tlv320aic32x4.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1ec06ef6d161..74a6f5705f66 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4038,7 +4038,7 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
- 	struct snd_soc_dapm_widget template;
- 	struct snd_soc_dapm_widget *w;
- 	const char **w_param_text;
--	unsigned long private_value;
-+	unsigned long private_value = 0;
- 	char *link_name;
- 	int ret;
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index a5457d3de1b1..75443efeda69 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -857,7 +857,7 @@ static int aic32x4_set_bias_level(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
+-#define AIC32X4_RATES	SNDRV_PCM_RATE_8000_96000
++#define AIC32X4_RATES	SNDRV_PCM_RATE_8000_192000
+ #define AIC32X4_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE \
+ 			 | SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
  
 -- 
 2.20.1
