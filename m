@@ -1,65 +1,116 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/2 v4] ALSA: pcm: anonymous dup
-	implementation
-Date: Tue, 26 Mar 2019 15:41:11 +0100
-Message-ID: <f5b429c6-803c-b624-6d39-5001c76e892f@perex.cz>
-References: <20190204093910.23878-1-perex@perex.cz>
- <20190326140928.GC10898@sirena.org.uk> <s5hva0567vs.wl-tiwai@suse.de>
- <CACL=Q7we61BwO81W7tQFvb9ohkBZkk34DSXL2B-Ky2B6zfWk1A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEB80F801D9
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 15:41:19 +0100 (CET)
-In-Reply-To: <CACL=Q7we61BwO81W7tQFvb9ohkBZkk34DSXL2B-Ky2B6zfWk1A@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Phil Burk <philburk@google.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Zach Riggle <riggle@google.com>, ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang@linaro.org>, Leo Yan <leo.yan@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: add fsl_audmix DT binding documentation" to the asoc tree
+Date: Tue, 26 Mar 2019 14:42:44 +0000 (GMT)
+Message-ID: <20190326144244.33CE11121B57@debutante.sirena.org.uk>
+References: <1548155654-12985-3-git-send-email-viorel.suman@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1548155654-12985-3-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Viorel Suman <viorel.suman@gmail.com>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDI2LiAwMy4gMTkgdiAxNToyNyBQaGlsIEJ1cmsgbmFwc2FsKGEpOgo+IEhlbGxvLAo+IAo+
-IFRoYW5rcyBmb3Iga2VlcGluZ8KgdGhpcyBtb3ZpbmcgZm9yd2FyZC4KPiAKPiBBbnkgc3VnZ2Vz
-dGlvbnMgZm9yIHRlc3RpbmcgdGhpcz8gV2UgY2FuIHRyeSB0byB0ZXN0IGl0IGhlcmUgaW4gQW5k
-cm9pZC4gSXQgbWF5IGJlIHRyaWNreSBiZWNhdXNlIHlvdXIgcGF0Y2hlcyBtYXkgY29uZmxpY3Qg
-d2l0aCBzb21lIHByb3ByaWV0YXJ5IFF1YWxjb21tIGNoYW5nZXMgaW4gdGhlIGtlcm5lbCB3ZSBh
-cmUgY3VycmVudGx5IHVzaW5nLgo+IAo+IENhbiBJIGdldCBhIHN1bW1hcnkgbGlzdCBvZiB0aGUg
-cGF0Y2hlcyByZXF1aXJlZCBmb3Iga2VybmVsIGFuZCB0aW55YWxzYT8KClRoZSB2NiBpcyB0aGUg
-bGFzdCB2ZXJzaW9uLCB0aGUgZnVsbCBpbmZvcm1hdGlvbiBpcyBpbiB0aGUgY292ZXIgbGV0dGVy
-OgoKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwv
-MjAxOS1GZWJydWFyeS8xNDUxMjcuaHRtbApodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE5LUZlYnJ1YXJ5LzE0NTEyOC5odG1sCmh0dHBzOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTktRmVicnVh
-cnkvMTQ1MTI5Lmh0bWwKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWls
-L2Fsc2EtZGV2ZWwvMjAxOS1GZWJydWFyeS8xNDUxMzAuaHRtbAoKCQkJCQkJSmFyb3NsYXYKCj4g
-Cj4gVGhhbmtzLAo+IFBoaWwgQnVyawo+IAo+IAo+IE9uIFR1ZSwgTWFyIDI2LCAyMDE5IGF0IDc6
-MTMgQU0gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlIDxtYWlsdG86dGl3YWlAc3VzZS5kZT4+
-IHdyb3RlOgo+IAo+ICAgICBPbiBUdWUsIDI2IE1hciAyMDE5IDE1OjA5OjI4ICswMTAwLAo+ICAg
-ICBNYXJrIEJyb3duIHdyb3RlOgo+ICAgICA+Cj4gICAgID4gT24gTW9uLCBGZWIgMDQsIDIwMTkg
-YXQgMTA6Mzk6MDhBTSArMDEwMCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+ICAgICA+ID4gVGhp
-cyBwYXRjaHNldCBjb250YWlucyB0aGUgYW5vbnltb3VzIGR1cCBpbXBsZW1lbnRhdGlvbiB3aXRo
-IHBlcm1pc3Npb25zCj4gICAgID4gPiBjaGVja2luZyBmb3IgdGhlIEFMU0EncyBQQ00gaW50ZXJm
-YWNlIGluIGtlcm5lbCB0byBlbmFibGUgdGhlIHJlc3RyaWN0ZWQKPiAgICAgPiA+IERNQSBzb3Vu
-ZCBidWZmZXIgc2hhcmluZyBmb3IgdGhlIHJlc3RyaWN0ZWQgdGFza3MuCj4gICAgID4KPiAgICAg
-PiBJcyB0aGVyZSBhbnkgbmV3cyBvbiBtZXJnaW5nIHRoaXMgZHVyaW5nIHRoZSBjdXJyZW50IGRl
-dmVsb3BtZW50IGN5Y2xlLAo+ICAgICA+IG9yIGFueXRoaW5nIGVsc2UgbmVlZGVkIHRvIG1vdmUg
-dGhpcyBmb3J3YXJkcz8KPiAKPiAgICAgSSd2ZSBzZWVuIG5vIHJlYWN0aW9uIHdoZXRoZXIgdGhl
-IHBhdGNoIHJlYWxseSB0ZXN0ZWQsIHdvcmtlZCBvcgo+ICAgICBoZWxwZWQgaW4gdGhlIHJlYWwg
-c2NlbmFyaW8uLi4KPiAKPiAKPiAgICAgVGFrYXNoaQo+IAoKCi0tIApKYXJvc2xhdiBLeXNlbGEg
-PHBlcmV4QHBlcmV4LmN6PgpMaW51eCBTb3VuZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7IFJl
-ZCBIYXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+The patch
+
+   ASoC: add fsl_audmix DT binding documentation
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d0d9071b724123ebde89bdf6b52b86c3289abe85 Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Tue, 22 Jan 2019 11:14:27 +0000
+Subject: [PATCH] ASoC: add fsl_audmix DT binding documentation
+
+Add the DT binding documentation for NXP Audio Mixer
+CPU DAI driver.
+
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/fsl,audmix.txt  | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,audmix.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/fsl,audmix.txt b/Documentation/devicetree/bindings/sound/fsl,audmix.txt
+new file mode 100644
+index 000000000000..45f807ec21a5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,audmix.txt
+@@ -0,0 +1,54 @@
++NXP Audio Mixer (AUDMIX).
++
++The Audio Mixer is a on-chip functional module that allows mixing of two
++audio streams into a single audio stream. Audio Mixer has two input serial
++audio interfaces. These are driven by two Synchronous Audio interface
++modules (SAI). Each input serial interface carries 8 audio channels in its
++frame in TDM manner. Mixer mixes audio samples of corresponding channels
++from two interfaces into a single sample. Before mixing, audio samples of
++two inputs can be attenuated based on configuration. The output of the
++Audio Mixer is also a serial audio interface. Like input interfaces it has
++the same TDM frame format. This output is used to drive the serial DAC TDM
++interface of audio codec and also sent to the external pins along with the
++receive path of normal audio SAI module for readback by the CPU.
++
++The output of Audio Mixer can be selected from any of the three streams
++ - serial audio input 1
++ - serial audio input 2
++ - mixed audio
++
++Mixing operation is independent of audio sample rate but the two audio
++input streams must have same audio sample rate with same number of channels
++in TDM frame to be eligible for mixing.
++
++Device driver required properties:
++=================================
++  - compatible		: Compatible list, contains "fsl,imx8qm-audmix"
++
++  - reg			: Offset and length of the register set for the device.
++
++  - clocks		: Must contain an entry for each entry in clock-names.
++
++  - clock-names		: Must include the "ipg" for register access.
++
++  - power-domains	: Must contain the phandle to AUDMIX power domain node
++
++  - dais		: Must contain a list of phandles to AUDMIX connected
++			  DAIs. The current implementation requires two phandles
++			  to SAI interfaces to be provided, the first SAI in the
++			  list being used to route the AUDMIX output.
++
++  - model		: Must contain machine driver name which will configure
++			  and instantiate the appropriate audio card.
++
++Device driver configuration example:
++======================================
++  audmix: audmix@59840000 {
++    compatible = "fsl,imx8qm-audmix";
++    reg = <0x0 0x59840000 0x0 0x10000>;
++    clocks = <&clk IMX8QXP_AUD_AUDMIX_IPG>;
++    clock-names = "ipg";
++    power-domains = <&pd_audmix>;
++    dais = <&sai4>, <&sai5>;
++    model = "imx-audmix";
++  };
+-- 
+2.20.1
