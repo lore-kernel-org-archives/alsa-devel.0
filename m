@@ -1,104 +1,162 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ALSA: isa/wavefront: Fix potential Spectre v1 vulnerabilities
-Date: Tue, 26 Mar 2019 13:32:02 -0500
-Message-ID: <20190326183202.GA17285@embeddedor>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel:kbl_da7219_max98927: remove
+ headset
+Date: Tue, 26 Mar 2019 18:28:28 -0400
+Message-ID: <47f23197-110e-5a0c-49d1-f6bc94298e81@linux.intel.com>
+References: <1553620856-21428-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A57FBF801D9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 23:28:45 +0100 (CET)
+In-Reply-To: <1553620856-21428-1-git-send-email-jenny.tc@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jenny TC <jenny.tc@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
+Cc: N Harshapriya <harshapriya.n@intel.com>, M Naveen <naveen.m@intel.com>, Mac Chiang <mac.chiang@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, Nujella Sathyanarayana <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-header->number and i are indirectly controlled by user-space, hence leading
-to a potential exploitation of the Spectre variant 1 vulnerability.
+On 3/26/19 1:20 PM, Jenny TC wrote:
+> kbl_da7219_max98927 supports two configurations - One with da7219 &
+> max98927/373 and other one with max98927/373 alone. This patch
+> removes the headset dais from max98927/373 configuration. Since the
+> snd_soc_dapm_ignore_suspend for DMIC is called from da7219_codec_init,
+> the code is re-arranged to invoke snd_soc_dapm_ignore_suspend from
+> kabylake_dmic_init.
+> 
+> Signed-off-by: Jenny TC <jenny.tc@intel.com>
 
-This issue was detected with the help of Smatch:
+it's quite hard to review this patch with the diff format you've 
+selected. What I find surprising is that you removed the headset 
+capture, but not the playback? Shouldn't the HS_PB also be removed 
+somewhere?
 
-sound/isa/wavefront/wavefront_synth.c:792 wavefront_send_patch() warn: potential spectre issue 'dev->patch_status' [w] (local cap)
-sound/isa/wavefront/wavefront_synth.c:819 wavefront_send_program() warn: potential spectre issue 'dev->prog_status' [w] (local cap)
-sound/isa/wavefront/wavefront_synth.c:1197 wavefront_send_alias() warn: potential spectre issue 'dev->sample_status' [w]
-sound/isa/wavefront/wavefront_synth.c:1248 wavefront_send_multisample() warn: potential spectre issue 'dev->sample_status' [w]
-sound/isa/wavefront/wavefront_synth.c:1548 wavefront_synth_control() warn: potential spectre issue 'dev->sample_status' [r] (local cap)
-
-Fix this by sanitizing header->number and i before using them to index
-dev->patch_status, dev->prog_status, dev->sample_status.
-
-Notice that given that speculation windows are large, the policy is
-to kill the speculation on the first load and not worry if it can be
-completed with a dependent load/store [1].
-
-[1] https://lore.kernel.org/lkml/20180423164740.GY17484@dhcp22.suse.cz/
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/isa/wavefront/wavefront_synth.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
-index 0b1e4b34b299..a78e125dfdf9 100644
---- a/sound/isa/wavefront/wavefront_synth.c
-+++ b/sound/isa/wavefront/wavefront_synth.c
-@@ -31,6 +31,7 @@
- #include <linux/moduleparam.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-+#include <linux/nospec.h>
- #include <sound/core.h>
- #include <sound/snd_wavefront.h>
- #include <sound/initval.h>
-@@ -788,6 +789,8 @@ wavefront_send_patch (snd_wavefront_t *dev, wavefront_patch_info *header)
- 
- 	if (header->number >= ARRAY_SIZE(dev->patch_status))
- 		return -EINVAL;
-+	header->number = array_index_nospec(header->number,
-+					    ARRAY_SIZE(dev->patch_status));
- 
- 	dev->patch_status[header->number] |= WF_SLOT_FILLED;
- 
-@@ -815,6 +818,8 @@ wavefront_send_program (snd_wavefront_t *dev, wavefront_patch_info *header)
- 
- 	if (header->number >= ARRAY_SIZE(dev->prog_status))
- 		return -EINVAL;
-+	header->number = array_index_nospec(header->number,
-+					    ARRAY_SIZE(dev->prog_status));
- 
- 	dev->prog_status[header->number] = WF_SLOT_USED;
- 
-@@ -1194,6 +1199,11 @@ wavefront_send_alias (snd_wavefront_t *dev, wavefront_patch_info *header)
- 		return -EIO;
- 	}
- 
-+	if (header->number >= ARRAY_SIZE(dev->sample_status))
-+		return -EINVAL;
-+	header->number = array_index_nospec(header->number,
-+					    ARRAY_SIZE(dev->sample_status));
-+
- 	dev->sample_status[header->number] = (WF_SLOT_FILLED|WF_ST_ALIAS);
- 
- 	return (0);
-@@ -1245,6 +1255,12 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
- 		return -EIO;
- 	}
- 
-+	if (header->number >= ARRAY_SIZE(dev->sample_status)) {
-+		kfree(msample_hdr);
-+		return -EINVAL;
-+	}
-+	header->number = array_index_nospec(header->number,
-+					    ARRAY_SIZE(dev->sample_status));
- 	dev->sample_status[header->number] = (WF_SLOT_FILLED|WF_ST_MULTISAMPLE);
- 
- 	kfree(msample_hdr);
-@@ -1545,6 +1561,7 @@ wavefront_synth_control (snd_wavefront_card_t *acard,
- 			wc->status = EINVAL;
- 			return -EINVAL;
- 		}
-+		i = array_index_nospec(i, WF_MAX_SAMPLE);
- 		wc->rbuf[0] = dev->sample_status[i];
- 		wc->status = 0;
- 		return 0;
--- 
-2.21.0
+> ---
+>   sound/soc/intel/boards/kbl_da7219_max98927.c | 52 ++++++++++++----------------
+>   1 file changed, 23 insertions(+), 29 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> index 2768a57..f72a7bf 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+> @@ -52,7 +52,6 @@ struct kbl_codec_private {
+>   
+>   enum {
+>   	KBL_DPCM_AUDIO_PB = 0,
+> -	KBL_DPCM_AUDIO_CP,
+>   	KBL_DPCM_AUDIO_ECHO_REF_CP,
+>   	KBL_DPCM_AUDIO_REF_CP,
+>   	KBL_DPCM_AUDIO_DMIC_CP,
+> @@ -60,6 +59,7 @@ enum {
+>   	KBL_DPCM_AUDIO_HDMI2_PB,
+>   	KBL_DPCM_AUDIO_HDMI3_PB,
+>   	KBL_DPCM_AUDIO_HS_PB,
+> +	KBL_DPCM_AUDIO_CP,
+>   };
+>   
+>   static int platform_clock_control(struct snd_soc_dapm_widget *w,
+> @@ -311,6 +311,12 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+>   
+>   	da7219_aad_jack_det(component, &ctx->kabylake_headset);
+>   
+> +	return 0;
+> +}
+> +
+> +static int kabylake_dmic_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	int ret;
+>   	ret = snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
+>   	if (ret)
+>   		dev_err(rtd->dev, "SoC DMIC - Ignore suspend failed %d\n", ret);
+> @@ -581,20 +587,6 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+>   		.dpcm_playback = 1,
+>   		.ops = &kabylake_da7219_fe_ops,
+>   	},
+> -	[KBL_DPCM_AUDIO_CP] = {
+> -		.name = "Kbl Audio Capture Port",
+> -		.stream_name = "Audio Record",
+> -		.cpu_dai_name = "System Pin",
+> -		.platform_name = "0000:00:1f.3",
+> -		.dynamic = 1,
+> -		.codec_name = "snd-soc-dummy",
+> -		.codec_dai_name = "snd-soc-dummy-dai",
+> -		.nonatomic = 1,
+> -		.trigger = {
+> -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> -		.dpcm_capture = 1,
+> -		.ops = &kabylake_da7219_fe_ops,
+> -	},
+>   	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
+>   		.name = "Kbl Audio Echo Reference cap",
+>   		.stream_name = "Echoreference Capture",
+> @@ -690,6 +682,20 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+>   		.ops = &kabylake_da7219_fe_ops,
+>   
+>   	},
+> +	[KBL_DPCM_AUDIO_CP] = {
+> +		.name = "Kbl Audio Capture Port",
+> +		.stream_name = "Audio Record",
+> +		.cpu_dai_name = "System Pin",
+> +		.platform_name = "0000:00:1f.3",
+> +		.dynamic = 1,
+> +		.codec_name = "snd-soc-dummy",
+> +		.codec_dai_name = "snd-soc-dummy-dai",
+> +		.nonatomic = 1,
+> +		.trigger = {
+> +			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> +		.dpcm_capture = 1,
+> +		.ops = &kabylake_da7219_fe_ops,
+> +	},
+>   
+>   	/* Back End DAI links */
+>   	{
+> @@ -733,6 +739,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+>   		.cpu_dai_name = "DMIC01 Pin",
+>   		.codec_name = "dmic-codec",
+>   		.codec_dai_name = "dmic-hifi",
+> +		.init = kabylake_dmic_init,
+>   		.platform_name = "0000:00:1f.3",
+>   		.be_hw_params_fixup = kabylake_dmic_fixup,
+>   		.ignore_suspend = 1,
+> @@ -792,20 +799,6 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+>   		.dpcm_playback = 1,
+>   		.ops = &kabylake_da7219_fe_ops,
+>   	},
+> -	[KBL_DPCM_AUDIO_CP] = {
+> -		.name = "Kbl Audio Capture Port",
+> -		.stream_name = "Audio Record",
+> -		.cpu_dai_name = "System Pin",
+> -		.platform_name = "0000:00:1f.3",
+> -		.dynamic = 1,
+> -		.codec_name = "snd-soc-dummy",
+> -		.codec_dai_name = "snd-soc-dummy-dai",
+> -		.nonatomic = 1,
+> -		.trigger = {
+> -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> -		.dpcm_capture = 1,
+> -		.ops = &kabylake_da7219_fe_ops,
+> -	},
+>   	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
+>   		.name = "Kbl Audio Echo Reference cap",
+>   		.stream_name = "Echoreference Capture",
+> @@ -911,6 +904,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+>   		.cpu_dai_name = "DMIC01 Pin",
+>   		.codec_name = "dmic-codec",
+>   		.codec_dai_name = "dmic-hifi",
+> +		.init = kabylake_dmic_init,
+>   		.platform_name = "0000:00:1f.3",
+>   		.be_hw_params_fixup = kabylake_dmic_fixup,
+>   		.ignore_suspend = 1,
+> 
