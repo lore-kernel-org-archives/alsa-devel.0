@@ -1,72 +1,65 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] ASoC: core: Fix use-after-free after deferred card
- registration
-Date: Tue, 26 Mar 2019 10:49:00 -0700
-Message-ID: <20190326174900.GB9916@roeck-us.net>
-References: <1553621018-8944-1-git-send-email-linux@roeck-us.net>
- <CAOReqxhLmTBZx04FZaeS_-9f6bk1RwJ_31UqB8MQ=KyB-5Ou=Q@mail.gmail.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: regression: bad sound card type detection in audio
+	graph
+Date: Tue, 26 Mar 2019 19:09:45 +0100
+Message-ID: <17699625-dd15-afc7-780f-c7c2d4721525@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOReqxhLmTBZx04FZaeS_-9f6bk1RwJ_31UqB8MQ=KyB-5Ou=Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Curtis Malainey <cujomalainey@google.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Curtis Malainey <cujomalainey@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F11F5F80760
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 19:09:48 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: kuninori.morimoto.gx@renesas.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, olivier.moysan@st.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 26, 2019 at 10:35:41AM -0700, Curtis Malainey wrote:
-> This has already been patched. See
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-March/146150.html
+Hello Kuninori,
 
-Ah, obviously. I missed that one. Sorry for the noise.
+We are seeing a regression while rebasing on kernel V5.1 (from v4.19).
+The regression is linked to your update of the audio graph to merge the
+support of the normal and DPCM sound cards.
 
-Guenter
+In our sound card (described here:
+https://github.com/STMicroelectronics/linux/blob/v4.19-stm32mp/arch/arm/boot/dts/stm32mp157c-ev1.dts)
 
-> 
-> On Tue, Mar 26, 2019 at 10:23 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > If snd_soc_register_card() fails because one of its links fails
-> > to instantiate with -EPROBE_DEFER, and the to-be-registered link
-> > is a legacy link, a subsequent retry will trigger a use-after-free
-> > and quite often a system crash.
-> >
-> > Example:
-> >
-> > byt-max98090 byt-max98090: ASoC: failed to init link Baytrail Audio
-> > byt-max98090 byt-max98090: snd_soc_register_card failed -517
-> > ....
-> > BUG: KASAN: use-after-free in snd_soc_init_platform+0x233/0x312
-> > Read of size 8 at addr ffff888067c43070 by task kworker/1:1/23
-> >
-> > snd_soc_init_platform() allocates memory attached to the card device.
-> > This memory is released when the card device is released. However,
-> > the pointer to the memory (dai_link->platforms) is only cleared from
-> > soc_cleanup_platform(), which is called from soc_cleanup_card_resources(),
-> > but not if snd_soc_register_card() fails early.
-> >
-> > Add the missing call to soc_cleanup_platform() in the error handling
-> > code of snd_soc_register_card() to fix the problem.
-> >
-> > Fixes: 78a24e10cd94 ("ASoC: soc-core: clear platform pointers on error")
-> > Cc: Curtis Malainey <cujomalainey@chromium.org>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >  sound/soc/soc-core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > index 93d316d5bf8e..6bf9884d0863 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -2799,6 +2799,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
-> >                 if (ret) {
-> >                         dev_err(card->dev, "ASoC: failed to init link %s\n",
-> >                                 link->name);
-> > +                       soc_cleanup_platform(card);
-> >                         mutex_unlock(&client_mutex);
-> >                         return ret;
-> >                 }
-> > --
-> > 2.7.4
-> >
+We declare a normal sound card using the WM8994 codec:
+
+  Playback: CPU-DAI (SAI2a)-> CODEC-DAI/port0
+  Record: CPU-DAI (SAI2B)<- CODEC-DAI/port1
+  ...
+
+The WM8994 codec is declared with 2 ports as it supports 2 interfaces.
+
+When we probe the sound card we are detecting a wrong dai link type
+because the condition
+if (of_get_child_count(codec_port) > 1) return true. The dai link is
+detected as DPCM instead of the expected normal link.
+
+I checked your last commits sent on mailing list, seems that this
+criteria is still valid.
+
+Please could you elaborate a little bit on this criteria for the
+normal/DPCM selection?
+
+What is you feeling about this limitation. Do you see a way to refine
+the condition to allow normal sound card with multi-port codecs. Or do
+we have to migrate our sound card to DPCM.
+
+Thanks in advance for your answer
+
+Regards
+Arnaud
