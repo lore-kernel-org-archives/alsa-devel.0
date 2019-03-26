@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: Add Audio Mixer CPU DAI driver" to the asoc tree
-Date: Tue, 26 Mar 2019 14:42:46 +0000 (GMT)
-Message-ID: <20190326144246.5CDE71121B57@debutante.sirena.org.uk>
-References: <1548155654-12985-2-git-send-email-viorel.suman@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1548155654-12985-2-git-send-email-viorel.suman@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: fsl: Add Audio Mixer machine driver" to
+	the asoc tree
+Date: Tue, 26 Mar 2019 14:42:42 +0000 (GMT)
+Message-ID: <20190326144242.11A7D1121B57@debutante.sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 482BDF801D9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 15:42:44 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Viorel Suman <viorel.suman@gmail.com>, dl-linux-imx <linux-imx@nxp.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: Add Audio Mixer CPU DAI driver
+   ASoC: fsl: Add Audio Mixer machine driver
 
 has been applied to the asoc tree at
 
@@ -37,757 +53,392 @@ to this mail.
 Thanks,
 Mark
 
->From be1df61cf06efb355c90702e46b8d46f055acb4e Mon Sep 17 00:00:00 2001
+>From b86ef5367761603df5f66ce08fb014b991f6b51d Mon Sep 17 00:00:00 2001
 From: Viorel Suman <viorel.suman@nxp.com>
-Date: Tue, 22 Jan 2019 11:14:26 +0000
-Subject: [PATCH] ASoC: fsl: Add Audio Mixer CPU DAI driver
+Date: Tue, 22 Jan 2019 11:14:30 +0000
+Subject: [PATCH] ASoC: fsl: Add Audio Mixer machine driver
 
-This patch implements Audio Mixer CPU DAI driver for NXP iMX8 SOCs.
-The Audio Mixer is a on-chip functional module that allows mixing of
-two audio streams into a single audio stream.
-
-Audio Mixer datasheet is available here:
-https://www.nxp.com/docs/en/reference-manual/IMX8DQXPRM.pdf
+This patch implements Audio Mixer machine driver for NXP iMX8 SOCs.
+It connects together Audio Mixer and related SAI instances.
 
 Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/Kconfig      |   7 +
- sound/soc/fsl/Makefile     |   3 +
- sound/soc/fsl/fsl_audmix.c | 576 +++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_audmix.h | 102 +++++++
- 4 files changed, 688 insertions(+)
- create mode 100644 sound/soc/fsl/fsl_audmix.c
- create mode 100644 sound/soc/fsl/fsl_audmix.h
+ sound/soc/fsl/Kconfig      |   9 +
+ sound/soc/fsl/Makefile     |   2 +
+ sound/soc/fsl/imx-audmix.c | 327 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 338 insertions(+)
+ create mode 100644 sound/soc/fsl/imx-audmix.c
 
 diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 7b1d9970be8b..0af2e056d211 100644
+index 0af2e056d211..d87c842806bd 100644
 --- a/sound/soc/fsl/Kconfig
 +++ b/sound/soc/fsl/Kconfig
-@@ -24,6 +24,13 @@ config SND_SOC_FSL_SAI
- 	  This option is only useful for out-of-tree drivers since
- 	  in-tree drivers select it automatically.
+@@ -303,6 +303,15 @@ config SND_SOC_FSL_ASOC_CARD
+ 	 CS4271, CS4272 and SGTL5000.
+ 	 Say Y if you want to add support for Freescale Generic ASoC Sound Card.
  
-+config SND_SOC_FSL_AUDMIX
-+	tristate "Audio Mixer (AUDMIX) module support"
-+	select REGMAP_MMIO
++config SND_SOC_IMX_AUDMIX
++	tristate "SoC Audio support for i.MX boards with AUDMIX"
++	select SND_SOC_FSL_AUDMIX
++	select SND_SOC_FSL_SAI
 +	help
-+	  Say Y if you want to add Audio Mixer (AUDMIX)
-+	  support for the NXP iMX CPUs.
++	  SoC Audio support for i.MX boards with Audio Mixer
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  an Audio Mixer.
 +
- config SND_SOC_FSL_SSI
- 	tristate "Synchronous Serial Interface module (SSI) support"
- 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+ endif # SND_IMX_SOC
+ 
+ endmenu
 diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 3c0ff315b971..4172d5a3e36c 100644
+index 4172d5a3e36c..c0dd04422fe9 100644
 --- a/sound/soc/fsl/Makefile
 +++ b/sound/soc/fsl/Makefile
-@@ -12,6 +12,7 @@ snd-soc-p1022-rdk-objs := p1022_rdk.o
- obj-$(CONFIG_SND_SOC_P1022_RDK) += snd-soc-p1022-rdk.o
+@@ -62,6 +62,7 @@ snd-soc-imx-es8328-objs := imx-es8328.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-spdif-objs := imx-spdif.o
+ snd-soc-imx-mc13783-objs := imx-mc13783.o
++snd-soc-imx-audmix-objs := imx-audmix.o
  
- # Freescale SSI/DMA/SAI/SPDIF Support
-+snd-soc-fsl-audmix-objs := fsl_audmix.o
- snd-soc-fsl-asoc-card-objs := fsl-asoc-card.o
- snd-soc-fsl-asrc-objs := fsl_asrc.o fsl_asrc_dma.o
- snd-soc-fsl-sai-objs := fsl_sai.o
-@@ -22,6 +23,8 @@ snd-soc-fsl-esai-objs := fsl_esai.o
- snd-soc-fsl-micfil-objs := fsl_micfil.o
- snd-soc-fsl-utils-objs := fsl_utils.o
- snd-soc-fsl-dma-objs := fsl_dma.o
-+
-+obj-$(CONFIG_SND_SOC_FSL_AUDMIX) += snd-soc-fsl-audmix.o
- obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) += snd-soc-fsl-asoc-card.o
- obj-$(CONFIG_SND_SOC_FSL_ASRC) += snd-soc-fsl-asrc.o
- obj-$(CONFIG_SND_SOC_FSL_SAI) += snd-soc-fsl-sai.o
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+ obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
+@@ -71,3 +72,4 @@ obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
++obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
 new file mode 100644
-index 000000000000..3356cb617713
+index 000000000000..72e37ca6cfbb
 --- /dev/null
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -0,0 +1,576 @@
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -0,0 +1,327 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * NXP AUDMIX ALSA SoC Digital Audio Interface (DAI) driver
-+ *
 + * Copyright 2017 NXP
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
 + */
 +
-+#include <linux/clk.h>
 +#include <linux/module.h>
 +#include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
++#include <linux/clk.h>
 +#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+
++#include <sound/soc-dapm.h>
++#include <linux/pm_runtime.h>
++#include "fsl_sai.h"
 +#include "fsl_audmix.h"
 +
-+#define SOC_ENUM_SINGLE_S(xreg, xshift, xtexts) \
-+	SOC_ENUM_SINGLE(xreg, xshift, ARRAY_SIZE(xtexts), xtexts)
-+
-+static const char
-+	*tdm_sel[] = { "TDM1", "TDM2", },
-+	*mode_sel[] = { "Disabled", "TDM1", "TDM2", "Mixed", },
-+	*width_sel[] = { "16b", "18b", "20b", "24b", "32b", },
-+	*endis_sel[] = { "Disabled", "Enabled", },
-+	*updn_sel[] = { "Downward", "Upward", },
-+	*mask_sel[] = { "Unmask", "Mask", };
-+
-+static const struct soc_enum fsl_audmix_enum[] = {
-+/* FSL_AUDMIX_CTR enums */
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_MIXCLK_SHIFT, tdm_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_OUTSRC_SHIFT, mode_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_OUTWIDTH_SHIFT, width_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_MASKRTDF_SHIFT, mask_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_MASKCKDF_SHIFT, mask_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_SYNCMODE_SHIFT, endis_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_CTR, FSL_AUDMIX_CTR_SYNCSRC_SHIFT, tdm_sel),
-+/* FSL_AUDMIX_ATCR0 enums */
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_ATCR0, 0, endis_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_ATCR0, 1, updn_sel),
-+/* FSL_AUDMIX_ATCR1 enums */
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_ATCR1, 0, endis_sel),
-+SOC_ENUM_SINGLE_S(FSL_AUDMIX_ATCR1, 1, updn_sel),
++struct imx_audmix {
++	struct platform_device *pdev;
++	struct snd_soc_card card;
++	struct platform_device *audmix_pdev;
++	struct platform_device *out_pdev;
++	struct clk *cpu_mclk;
++	int num_dai;
++	struct snd_soc_dai_link *dai;
++	int num_dai_conf;
++	struct snd_soc_codec_conf *dai_conf;
++	int num_dapm_routes;
++	struct snd_soc_dapm_route *dapm_routes;
 +};
 +
-+struct fsl_audmix_state {
-+	u8 tdms;
-+	u8 clk;
-+	char msg[64];
++static const u32 imx_audmix_rates[] = {
++	8000, 12000, 16000, 24000, 32000, 48000, 64000, 96000,
 +};
 +
-+static const struct fsl_audmix_state prms[4][4] = {{
-+	/* DIS->DIS, do nothing */
-+	{ .tdms = 0, .clk = 0, .msg = "" },
-+	/* DIS->TDM1*/
-+	{ .tdms = 1, .clk = 1, .msg = "DIS->TDM1: TDM1 not started!\n" },
-+	/* DIS->TDM2*/
-+	{ .tdms = 2, .clk = 2, .msg = "DIS->TDM2: TDM2 not started!\n" },
-+	/* DIS->MIX */
-+	{ .tdms = 3, .clk = 0, .msg = "DIS->MIX: Please start both TDMs!\n" }
-+}, {	/* TDM1->DIS */
-+	{ .tdms = 1, .clk = 0, .msg = "TDM1->DIS: TDM1 not started!\n" },
-+	/* TDM1->TDM1, do nothing */
-+	{ .tdms = 0, .clk = 0, .msg = "" },
-+	/* TDM1->TDM2 */
-+	{ .tdms = 3, .clk = 2, .msg = "TDM1->TDM2: Please start both TDMs!\n" },
-+	/* TDM1->MIX */
-+	{ .tdms = 3, .clk = 0, .msg = "TDM1->MIX: Please start both TDMs!\n" }
-+}, {	/* TDM2->DIS */
-+	{ .tdms = 2, .clk = 0, .msg = "TDM2->DIS: TDM2 not started!\n" },
-+	/* TDM2->TDM1 */
-+	{ .tdms = 3, .clk = 1, .msg = "TDM2->TDM1: Please start both TDMs!\n" },
-+	/* TDM2->TDM2, do nothing */
-+	{ .tdms = 0, .clk = 0, .msg = "" },
-+	/* TDM2->MIX */
-+	{ .tdms = 3, .clk = 0, .msg = "TDM2->MIX: Please start both TDMs!\n" }
-+}, {	/* MIX->DIS */
-+	{ .tdms = 3, .clk = 0, .msg = "MIX->DIS: Please start both TDMs!\n" },
-+	/* MIX->TDM1 */
-+	{ .tdms = 3, .clk = 1, .msg = "MIX->TDM1: Please start both TDMs!\n" },
-+	/* MIX->TDM2 */
-+	{ .tdms = 3, .clk = 2, .msg = "MIX->TDM2: Please start both TDMs!\n" },
-+	/* MIX->MIX, do nothing */
-+	{ .tdms = 0, .clk = 0, .msg = "" }
-+}, };
-+
-+static int fsl_audmix_state_trans(struct snd_soc_component *comp,
-+				  unsigned int *mask, unsigned int *ctr,
-+				  const struct fsl_audmix_state prm)
-+{
-+	struct fsl_audmix *priv = snd_soc_component_get_drvdata(comp);
-+	/* Enforce all required TDMs are started */
-+	if ((priv->tdms & prm.tdms) != prm.tdms) {
-+		dev_dbg(comp->dev, prm.msg);
-+		return -EINVAL;
-+	}
-+
-+	switch (prm.clk) {
-+	case 1:
-+	case 2:
-+		/* Set mix clock */
-+		(*mask) |= FSL_AUDMIX_CTR_MIXCLK_MASK;
-+		(*ctr)  |= FSL_AUDMIX_CTR_MIXCLK(prm.clk - 1);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fsl_audmix_put_mix_clk_src(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_kcontrol_chip(kcontrol);
-+	struct fsl_audmix *priv = snd_soc_component_get_drvdata(comp);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int *item = ucontrol->value.enumerated.item;
-+	unsigned int reg_val, val, mix_clk;
-+	int ret = 0;
-+
-+	/* Get current state */
-+	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
-+	if (ret)
-+		return ret;
-+
-+	mix_clk = ((reg_val & FSL_AUDMIX_CTR_MIXCLK_MASK)
-+			>> FSL_AUDMIX_CTR_MIXCLK_SHIFT);
-+	val = snd_soc_enum_item_to_val(e, item[0]);
-+
-+	dev_dbg(comp->dev, "TDMs=x%08x, val=x%08x\n", priv->tdms, val);
-+
-+	/**
-+	 * Ensure the current selected mixer clock is available
-+	 * for configuration propagation
-+	 */
-+	if (!(priv->tdms & BIT(mix_clk))) {
-+		dev_err(comp->dev,
-+			"Started TDM%d needed for config propagation!\n",
-+			mix_clk + 1);
-+		return -EINVAL;
-+	}
-+
-+	if (!(priv->tdms & BIT(val))) {
-+		dev_err(comp->dev,
-+			"The selected clock source has no TDM%d enabled!\n",
-+			val + 1);
-+		return -EINVAL;
-+	}
-+
-+	return snd_soc_put_enum_double(kcontrol, ucontrol);
-+}
-+
-+static int fsl_audmix_put_out_src(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_kcontrol_chip(kcontrol);
-+	struct fsl_audmix *priv = snd_soc_component_get_drvdata(comp);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int *item = ucontrol->value.enumerated.item;
-+	u32 out_src, mix_clk;
-+	unsigned int reg_val, val, mask = 0, ctr = 0;
-+	int ret = 0;
-+
-+	/* Get current state */
-+	ret = snd_soc_component_read(comp, FSL_AUDMIX_CTR, &reg_val);
-+	if (ret)
-+		return ret;
-+
-+	/* "From" state */
-+	out_src = ((reg_val & FSL_AUDMIX_CTR_OUTSRC_MASK)
-+			>> FSL_AUDMIX_CTR_OUTSRC_SHIFT);
-+	mix_clk = ((reg_val & FSL_AUDMIX_CTR_MIXCLK_MASK)
-+			>> FSL_AUDMIX_CTR_MIXCLK_SHIFT);
-+
-+	/* "To" state */
-+	val = snd_soc_enum_item_to_val(e, item[0]);
-+
-+	dev_dbg(comp->dev, "TDMs=x%08x, val=x%08x\n", priv->tdms, val);
-+
-+	/* Check if state is changing ... */
-+	if (out_src == val)
-+		return 0;
-+	/**
-+	 * Ensure the current selected mixer clock is available
-+	 * for configuration propagation
-+	 */
-+	if (!(priv->tdms & BIT(mix_clk))) {
-+		dev_err(comp->dev,
-+			"Started TDM%d needed for config propagation!\n",
-+			mix_clk + 1);
-+		return -EINVAL;
-+	}
-+
-+	/* Check state transition constraints */
-+	ret = fsl_audmix_state_trans(comp, &mask, &ctr, prms[out_src][val]);
-+	if (ret)
-+		return ret;
-+
-+	/* Complete transition to new state */
-+	mask |= FSL_AUDMIX_CTR_OUTSRC_MASK;
-+	ctr  |= FSL_AUDMIX_CTR_OUTSRC(val);
-+
-+	return snd_soc_component_update_bits(comp, FSL_AUDMIX_CTR, mask, ctr);
-+}
-+
-+static const struct snd_kcontrol_new fsl_audmix_snd_controls[] = {
-+	/* FSL_AUDMIX_CTR controls */
-+	SOC_ENUM_EXT("Mixing Clock Source", fsl_audmix_enum[0],
-+		     snd_soc_get_enum_double, fsl_audmix_put_mix_clk_src),
-+	SOC_ENUM_EXT("Output Source", fsl_audmix_enum[1],
-+		     snd_soc_get_enum_double, fsl_audmix_put_out_src),
-+	SOC_ENUM("Output Width", fsl_audmix_enum[2]),
-+	SOC_ENUM("Frame Rate Diff Error", fsl_audmix_enum[3]),
-+	SOC_ENUM("Clock Freq Diff Error", fsl_audmix_enum[4]),
-+	SOC_ENUM("Sync Mode Config", fsl_audmix_enum[5]),
-+	SOC_ENUM("Sync Mode Clk Source", fsl_audmix_enum[6]),
-+	/* TDM1 Attenuation controls */
-+	SOC_ENUM("TDM1 Attenuation", fsl_audmix_enum[7]),
-+	SOC_ENUM("TDM1 Attenuation Direction", fsl_audmix_enum[8]),
-+	SOC_SINGLE("TDM1 Attenuation Step Divider", FSL_AUDMIX_ATCR0,
-+		   2, 0x00fff, 0),
-+	SOC_SINGLE("TDM1 Attenuation Initial Value", FSL_AUDMIX_ATIVAL0,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM1 Attenuation Step Up Factor", FSL_AUDMIX_ATSTPUP0,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM1 Attenuation Step Down Factor", FSL_AUDMIX_ATSTPDN0,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM1 Attenuation Step Target", FSL_AUDMIX_ATSTPTGT0,
-+		   0, 0x3ffff, 0),
-+	/* TDM2 Attenuation controls */
-+	SOC_ENUM("TDM2 Attenuation", fsl_audmix_enum[9]),
-+	SOC_ENUM("TDM2 Attenuation Direction", fsl_audmix_enum[10]),
-+	SOC_SINGLE("TDM2 Attenuation Step Divider", FSL_AUDMIX_ATCR1,
-+		   2, 0x00fff, 0),
-+	SOC_SINGLE("TDM2 Attenuation Initial Value", FSL_AUDMIX_ATIVAL1,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM2 Attenuation Step Up Factor", FSL_AUDMIX_ATSTPUP1,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM2 Attenuation Step Down Factor", FSL_AUDMIX_ATSTPDN1,
-+		   0, 0x3ffff, 0),
-+	SOC_SINGLE("TDM2 Attenuation Step Target", FSL_AUDMIX_ATSTPTGT1,
-+		   0, 0x3ffff, 0),
++static const struct snd_pcm_hw_constraint_list imx_audmix_rate_constraints = {
++	.count = ARRAY_SIZE(imx_audmix_rates),
++	.list = imx_audmix_rates,
 +};
 +
-+static int fsl_audmix_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++static int imx_audmix_fe_startup(struct snd_pcm_substream *substream)
 +{
-+	struct snd_soc_component *comp = dai->component;
-+	u32 mask = 0, ctr = 0;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct imx_audmix *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct device *dev = rtd->card->dev;
++	unsigned long clk_rate = clk_get_rate(priv->cpu_mclk);
++	int ret;
 +
-+	/* AUDMIX is working in DSP_A format only */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		break;
-+	default:
-+		return -EINVAL;
++	if (clk_rate % 24576000 == 0) {
++		ret = snd_pcm_hw_constraint_list(runtime, 0,
++						 SNDRV_PCM_HW_PARAM_RATE,
++						 &imx_audmix_rate_constraints);
++		if (ret < 0)
++			return ret;
++	} else {
++		dev_warn(dev, "mclk may be not supported %lu\n", clk_rate);
 +	}
++
++	ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
++					   1, 8);
++	if (ret < 0)
++		return ret;
++
++	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
++					    FSL_AUDMIX_FORMATS);
++}
++
++static int imx_audmix_fe_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->card->dev;
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	unsigned int fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF;
++	u32 channels = params_channels(params);
++	int ret, dir;
 +
 +	/* For playback the AUDMIX is slave, and for record is master */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		break;
-+	default:
-+		return -EINVAL;
++	fmt |= tx ? SND_SOC_DAIFMT_CBS_CFS : SND_SOC_DAIFMT_CBM_CFM;
++	dir  = tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN;
++
++	/* set DAI configuration */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
++	if (ret) {
++		dev_err(dev, "failed to set cpu dai fmt: %d\n", ret);
++		return ret;
 +	}
 +
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_NF:
-+		/* Output data will be written on positive edge of the clock */
-+		ctr |= FSL_AUDMIX_CTR_OUTCKPOL(0);
-+		break;
-+	case SND_SOC_DAIFMT_NB_NF:
-+		/* Output data will be written on negative edge of the clock */
-+		ctr |= FSL_AUDMIX_CTR_OUTCKPOL(1);
-+		break;
-+	default:
-+		return -EINVAL;
++	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, FSL_SAI_CLK_MAST1, 0, dir);
++	if (ret) {
++		dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
++		return ret;
 +	}
 +
-+	mask |= FSL_AUDMIX_CTR_OUTCKPOL_MASK;
++	/*
++	 * Per datasheet, AUDMIX expects 8 slots and 32 bits
++	 * for every slot in TDM mode.
++	 */
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, BIT(channels) - 1,
++				       BIT(channels) - 1, 8, 32);
++	if (ret)
++		dev_err(dev, "failed to set cpu dai tdm slot: %d\n", ret);
 +
-+	return snd_soc_component_update_bits(comp, FSL_AUDMIX_CTR, mask, ctr);
++	return ret;
 +}
 +
-+static int fsl_audmix_dai_trigger(struct snd_pcm_substream *substream, int cmd,
-+				  struct snd_soc_dai *dai)
++static int imx_audmix_be_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params)
 +{
-+	struct fsl_audmix *priv = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->card->dev;
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	unsigned int fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF;
++	int ret;
 +
-+	/* Capture stream shall not be handled */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++	if (!tx)
 +		return 0;
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		priv->tdms |= BIT(dai->driver->id);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		priv->tdms &= ~BIT(dai->driver->id);
-+		break;
-+	default:
++	/* For playback the AUDMIX is slave */
++	fmt |= SND_SOC_DAIFMT_CBM_CFM;
++
++	/* set AUDMIX DAI configuration */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
++	if (ret)
++		dev_err(dev, "failed to set AUDMIX DAI fmt: %d\n", ret);
++
++	return ret;
++}
++
++static struct snd_soc_ops imx_audmix_fe_ops = {
++	.startup = imx_audmix_fe_startup,
++	.hw_params = imx_audmix_fe_hw_params,
++};
++
++static struct snd_soc_ops imx_audmix_be_ops = {
++	.hw_params = imx_audmix_be_hw_params,
++};
++
++static int imx_audmix_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *audmix_np = NULL, *out_cpu_np = NULL;
++	struct platform_device *audmix_pdev = NULL;
++	struct platform_device *cpu_pdev;
++	struct of_phandle_args args;
++	struct imx_audmix *priv;
++	int i, num_dai, ret;
++	const char *fe_name_pref = "HiFi-AUDMIX-FE-";
++	char *be_name, *be_pb, *be_cp, *dai_name, *capture_dai_name;
++
++	if (pdev->dev.parent) {
++		audmix_np = pdev->dev.parent->of_node;
++	} else {
++		dev_err(&pdev->dev, "Missing parent device.\n");
 +		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops fsl_audmix_dai_ops = {
-+	.set_fmt      = fsl_audmix_dai_set_fmt,
-+	.trigger      = fsl_audmix_dai_trigger,
-+};
-+
-+static struct snd_soc_dai_driver fsl_audmix_dai[] = {
-+	{
-+		.id   = 0,
-+		.name = "audmix-0",
-+		.playback = {
-+			.stream_name = "AUDMIX-Playback-0",
-+			.channels_min = 8,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 96000,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = FSL_AUDMIX_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AUDMIX-Capture-0",
-+			.channels_min = 8,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 96000,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = FSL_AUDMIX_FORMATS,
-+		},
-+		.ops = &fsl_audmix_dai_ops,
-+	},
-+	{
-+		.id   = 1,
-+		.name = "audmix-1",
-+		.playback = {
-+			.stream_name = "AUDMIX-Playback-1",
-+			.channels_min = 8,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 96000,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = FSL_AUDMIX_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AUDMIX-Capture-1",
-+			.channels_min = 8,
-+			.channels_max = 8,
-+			.rate_min = 8000,
-+			.rate_max = 96000,
-+			.rates = SNDRV_PCM_RATE_8000_96000,
-+			.formats = FSL_AUDMIX_FORMATS,
-+		},
-+		.ops = &fsl_audmix_dai_ops,
-+	},
-+};
-+
-+static const struct snd_soc_component_driver fsl_audmix_component = {
-+	.name		  = "fsl-audmix-dai",
-+	.controls	  = fsl_audmix_snd_controls,
-+	.num_controls	  = ARRAY_SIZE(fsl_audmix_snd_controls),
-+};
-+
-+static bool fsl_audmix_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case FSL_AUDMIX_CTR:
-+	case FSL_AUDMIX_STR:
-+	case FSL_AUDMIX_ATCR0:
-+	case FSL_AUDMIX_ATIVAL0:
-+	case FSL_AUDMIX_ATSTPUP0:
-+	case FSL_AUDMIX_ATSTPDN0:
-+	case FSL_AUDMIX_ATSTPTGT0:
-+	case FSL_AUDMIX_ATTNVAL0:
-+	case FSL_AUDMIX_ATSTP0:
-+	case FSL_AUDMIX_ATCR1:
-+	case FSL_AUDMIX_ATIVAL1:
-+	case FSL_AUDMIX_ATSTPUP1:
-+	case FSL_AUDMIX_ATSTPDN1:
-+	case FSL_AUDMIX_ATSTPTGT1:
-+	case FSL_AUDMIX_ATTNVAL1:
-+	case FSL_AUDMIX_ATSTP1:
-+		return true;
-+	default:
-+		return false;
++	if (!audmix_np) {
++		dev_err(&pdev->dev, "Missign DT node for parent device.\n");
++		return -EINVAL;
 +	}
-+}
 +
-+static bool fsl_audmix_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case FSL_AUDMIX_CTR:
-+	case FSL_AUDMIX_ATCR0:
-+	case FSL_AUDMIX_ATIVAL0:
-+	case FSL_AUDMIX_ATSTPUP0:
-+	case FSL_AUDMIX_ATSTPDN0:
-+	case FSL_AUDMIX_ATSTPTGT0:
-+	case FSL_AUDMIX_ATCR1:
-+	case FSL_AUDMIX_ATIVAL1:
-+	case FSL_AUDMIX_ATSTPUP1:
-+	case FSL_AUDMIX_ATSTPDN1:
-+	case FSL_AUDMIX_ATSTPTGT1:
-+		return true;
-+	default:
-+		return false;
++	audmix_pdev = of_find_device_by_node(audmix_np);
++	if (!audmix_pdev) {
++		dev_err(&pdev->dev, "Missing AUDMIX platform device for %s\n",
++			np->full_name);
++		return -EINVAL;
 +	}
-+}
 +
-+static const struct reg_default fsl_audmix_reg[] = {
-+	{ FSL_AUDMIX_CTR,       0x00060 },
-+	{ FSL_AUDMIX_STR,       0x00003 },
-+	{ FSL_AUDMIX_ATCR0,     0x00000 },
-+	{ FSL_AUDMIX_ATIVAL0,   0x3FFFF },
-+	{ FSL_AUDMIX_ATSTPUP0,  0x2AAAA },
-+	{ FSL_AUDMIX_ATSTPDN0,  0x30000 },
-+	{ FSL_AUDMIX_ATSTPTGT0, 0x00010 },
-+	{ FSL_AUDMIX_ATTNVAL0,  0x00000 },
-+	{ FSL_AUDMIX_ATSTP0,    0x00000 },
-+	{ FSL_AUDMIX_ATCR1,     0x00000 },
-+	{ FSL_AUDMIX_ATIVAL1,   0x3FFFF },
-+	{ FSL_AUDMIX_ATSTPUP1,  0x2AAAA },
-+	{ FSL_AUDMIX_ATSTPDN1,  0x30000 },
-+	{ FSL_AUDMIX_ATSTPTGT1, 0x00010 },
-+	{ FSL_AUDMIX_ATTNVAL1,  0x00000 },
-+	{ FSL_AUDMIX_ATSTP1,    0x00000 },
-+};
-+
-+static const struct regmap_config fsl_audmix_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = FSL_AUDMIX_ATSTP1,
-+	.reg_defaults = fsl_audmix_reg,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_audmix_reg),
-+	.readable_reg = fsl_audmix_readable_reg,
-+	.writeable_reg = fsl_audmix_writeable_reg,
-+	.cache_type = REGCACHE_FLAT,
-+};
-+
-+static int fsl_audmix_probe(struct platform_device *pdev)
-+{
-+	struct fsl_audmix *priv;
-+	struct resource *res;
-+	void __iomem *regs;
-+	int ret;
-+	const char *sprop;
++	num_dai = of_count_phandle_with_args(audmix_np, "dais", NULL);
++	if (num_dai != FSL_AUDMIX_MAX_DAIS) {
++		dev_err(&pdev->dev, "Need 2 dais to be provided for %s\n",
++			audmix_np->full_name);
++		return -EINVAL;
++	}
 +
 +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
 +	if (!priv)
 +		return -ENOMEM;
 +
-+	/* Get the addresses */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
++	priv->num_dai = 2 * num_dai;
++	priv->dai = devm_kzalloc(&pdev->dev, priv->num_dai *
++				 sizeof(struct snd_soc_dai_link), GFP_KERNEL);
++	if (!priv->dai)
++		return -ENOMEM;
 +
-+	priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "ipg", regs,
-+						 &fsl_audmix_regmap_config);
-+	if (IS_ERR(priv->regmap)) {
-+		dev_err(&pdev->dev, "failed to init regmap\n");
-+		return PTR_ERR(priv->regmap);
-+	}
++	priv->num_dai_conf = num_dai;
++	priv->dai_conf = devm_kzalloc(&pdev->dev, priv->num_dai_conf *
++				      sizeof(struct snd_soc_codec_conf),
++				      GFP_KERNEL);
++	if (!priv->dai_conf)
++		return -ENOMEM;
 +
-+	priv->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
-+	if (IS_ERR(priv->ipg_clk)) {
-+		dev_err(&pdev->dev, "failed to get ipg clock\n");
-+		return PTR_ERR(priv->ipg_clk);
-+	}
++	priv->num_dapm_routes = 3 * num_dai;
++	priv->dapm_routes = devm_kzalloc(&pdev->dev, priv->num_dapm_routes *
++					 sizeof(struct snd_soc_dapm_route),
++					 GFP_KERNEL);
++	if (!priv->dapm_routes)
++		return -ENOMEM;
 +
-+	platform_set_drvdata(pdev, priv);
-+	pm_runtime_enable(&pdev->dev);
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_audmix_component,
-+					      fsl_audmix_dai,
-+					      ARRAY_SIZE(fsl_audmix_dai));
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register ASoC DAI\n");
-+		return ret;
-+	}
-+
-+	sprop = of_get_property(pdev->dev.of_node, "model", NULL);
-+	if (sprop) {
-+		priv->pdev = platform_device_register_data(&pdev->dev, sprop, 0,
-+							   NULL, 0);
-+		if (IS_ERR(priv->pdev)) {
-+			ret = PTR_ERR(priv->pdev);
-+			dev_err(&pdev->dev,
-+				"failed to register platform %s: %d\n", sprop,
-+				 ret);
++	for (i = 0; i < num_dai; i++) {
++		ret = of_parse_phandle_with_args(audmix_np, "dais", NULL, i,
++						 &args);
++		if (ret < 0) {
++			dev_err(&pdev->dev, "of_parse_phandle_with_args failed\n");
++			return ret;
 +		}
-+	} else {
-+		dev_err(&pdev->dev, "[model] attribute missing.\n");
-+		ret = -EINVAL;
++
++		cpu_pdev = of_find_device_by_node(args.np);
++		if (!cpu_pdev) {
++			dev_err(&pdev->dev, "failed to find SAI platform device\n");
++			return -EINVAL;
++		}
++
++		dai_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s%s",
++					  fe_name_pref, args.np->full_name + 1);
++
++		dev_info(pdev->dev.parent, "DAI FE name:%s\n", dai_name);
++
++		if (i == 0) {
++			out_cpu_np = args.np;
++			capture_dai_name =
++				devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s %s",
++					       dai_name, "CPU-Capture");
++		}
++
++		priv->dai[i].name = dai_name;
++		priv->dai[i].stream_name = "HiFi-AUDMIX-FE";
++		priv->dai[i].codec_dai_name = "snd-soc-dummy-dai";
++		priv->dai[i].codec_name = "snd-soc-dummy";
++		priv->dai[i].cpu_of_node = args.np;
++		priv->dai[i].cpu_dai_name = dev_name(&cpu_pdev->dev);
++		priv->dai[i].platform_of_node = args.np;
++		priv->dai[i].dynamic = 1;
++		priv->dai[i].dpcm_playback = 1;
++		priv->dai[i].dpcm_capture = (i == 0 ? 1 : 0);
++		priv->dai[i].ignore_pmdown_time = 1;
++		priv->dai[i].ops = &imx_audmix_fe_ops;
++
++		/* Add AUDMIX Backend */
++		be_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
++					 "audmix-%d", i);
++		be_pb = devm_kasprintf(&pdev->dev, GFP_KERNEL,
++				       "AUDMIX-Playback-%d", i);
++		be_cp = devm_kasprintf(&pdev->dev, GFP_KERNEL,
++				       "AUDMIX-Capture-%d", i);
++
++		priv->dai[num_dai + i].name = be_name;
++		priv->dai[num_dai + i].codec_dai_name = "snd-soc-dummy-dai";
++		priv->dai[num_dai + i].codec_name = "snd-soc-dummy";
++		priv->dai[num_dai + i].cpu_of_node = audmix_np;
++		priv->dai[num_dai + i].cpu_dai_name = be_name;
++		priv->dai[num_dai + i].platform_name = "snd-soc-dummy";
++		priv->dai[num_dai + i].no_pcm = 1;
++		priv->dai[num_dai + i].dpcm_playback = 1;
++		priv->dai[num_dai + i].dpcm_capture  = 1;
++		priv->dai[num_dai + i].ignore_pmdown_time = 1;
++		priv->dai[num_dai + i].ops = &imx_audmix_be_ops;
++
++		priv->dai_conf[i].of_node = args.np;
++		priv->dai_conf[i].name_prefix = dai_name;
++
++		priv->dapm_routes[i].source =
++			devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s %s",
++				       dai_name, "CPU-Playback");
++		priv->dapm_routes[i].sink = be_pb;
++		priv->dapm_routes[num_dai + i].source   = be_pb;
++		priv->dapm_routes[num_dai + i].sink     = be_cp;
++		priv->dapm_routes[2 * num_dai + i].source = be_cp;
++		priv->dapm_routes[2 * num_dai + i].sink   = capture_dai_name;
++	}
++
++	cpu_pdev = of_find_device_by_node(out_cpu_np);
++	if (!cpu_pdev) {
++		dev_err(&pdev->dev, "failed to find SAI platform device\n");
++		return -EINVAL;
++	}
++	priv->cpu_mclk = devm_clk_get(&cpu_pdev->dev, "mclk1");
++	if (IS_ERR(priv->cpu_mclk)) {
++		ret = PTR_ERR(priv->cpu_mclk);
++		dev_err(&cpu_pdev->dev, "failed to get DAI mclk1: %d\n", ret);
++		return -EINVAL;
++	}
++
++	priv->audmix_pdev = audmix_pdev;
++	priv->out_pdev  = cpu_pdev;
++
++	priv->card.dai_link = priv->dai;
++	priv->card.num_links = priv->num_dai;
++	priv->card.codec_conf = priv->dai_conf;
++	priv->card.num_configs = priv->num_dai_conf;
++	priv->card.dapm_routes = priv->dapm_routes;
++	priv->card.num_dapm_routes = priv->num_dapm_routes;
++	priv->card.dev = pdev->dev.parent;
++	priv->card.owner = THIS_MODULE;
++	priv->card.name = "imx-audmix";
++
++	platform_set_drvdata(pdev, &priv->card);
++	snd_soc_card_set_drvdata(&priv->card, priv);
++
++	ret = devm_snd_soc_register_card(pdev->dev.parent, &priv->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
++		return ret;
 +	}
 +
 +	return ret;
 +}
 +
-+static int fsl_audmix_remove(struct platform_device *pdev)
-+{
-+	struct fsl_audmix *priv = dev_get_drvdata(&pdev->dev);
-+
-+	if (priv->pdev)
-+		platform_device_unregister(priv->pdev);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int fsl_audmix_runtime_resume(struct device *dev)
-+{
-+	struct fsl_audmix *priv = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(priv->ipg_clk);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable IPG clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	regcache_cache_only(priv->regmap, false);
-+	regcache_mark_dirty(priv->regmap);
-+
-+	return regcache_sync(priv->regmap);
-+}
-+
-+static int fsl_audmix_runtime_suspend(struct device *dev)
-+{
-+	struct fsl_audmix *priv = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(priv->regmap, true);
-+
-+	clk_disable_unprepare(priv->ipg_clk);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM */
-+
-+static const struct dev_pm_ops fsl_audmix_pm = {
-+	SET_RUNTIME_PM_OPS(fsl_audmix_runtime_suspend,
-+			   fsl_audmix_runtime_resume,
-+			   NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+};
-+
-+static const struct of_device_id fsl_audmix_ids[] = {
-+	{ .compatible = "fsl,imx8qm-audmix", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
-+
-+static struct platform_driver fsl_audmix_driver = {
-+	.probe = fsl_audmix_probe,
-+	.remove = fsl_audmix_remove,
++static struct platform_driver imx_audmix_driver = {
++	.probe = imx_audmix_probe,
 +	.driver = {
-+		.name = "fsl-audmix",
-+		.of_match_table = fsl_audmix_ids,
-+		.pm = &fsl_audmix_pm,
++		.name = "imx-audmix",
++		.pm = &snd_soc_pm_ops,
 +	},
 +};
-+module_platform_driver(fsl_audmix_driver);
++module_platform_driver(imx_audmix_driver);
 +
-+MODULE_DESCRIPTION("NXP AUDMIX ASoC DAI driver");
++MODULE_DESCRIPTION("NXP AUDMIX ASoC machine driver");
 +MODULE_AUTHOR("Viorel Suman <viorel.suman@nxp.com>");
-+MODULE_ALIAS("platform:fsl-audmix");
++MODULE_ALIAS("platform:imx-audmix");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/fsl/fsl_audmix.h b/sound/soc/fsl/fsl_audmix.h
-new file mode 100644
-index 000000000000..7812ffec45c5
---- /dev/null
-+++ b/sound/soc/fsl/fsl_audmix.h
-@@ -0,0 +1,102 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * NXP AUDMIX ALSA SoC Digital Audio Interface (DAI) driver
-+ *
-+ * Copyright 2017 NXP
-+ */
-+
-+#ifndef __FSL_AUDMIX_H
-+#define __FSL_AUDMIX_H
-+
-+#define FSL_AUDMIX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			SNDRV_PCM_FMTBIT_S24_LE |\
-+			SNDRV_PCM_FMTBIT_S32_LE)
-+/* AUDMIX Registers */
-+#define FSL_AUDMIX_CTR		0x200 /* Control */
-+#define FSL_AUDMIX_STR		0x204 /* Status */
-+
-+#define FSL_AUDMIX_ATCR0	0x208 /* Attenuation Control */
-+#define FSL_AUDMIX_ATIVAL0	0x20c /* Attenuation Initial Value */
-+#define FSL_AUDMIX_ATSTPUP0	0x210 /* Attenuation step up factor */
-+#define FSL_AUDMIX_ATSTPDN0	0x214 /* Attenuation step down factor */
-+#define FSL_AUDMIX_ATSTPTGT0	0x218 /* Attenuation step target */
-+#define FSL_AUDMIX_ATTNVAL0	0x21c /* Attenuation Value */
-+#define FSL_AUDMIX_ATSTP0	0x220 /* Attenuation step number */
-+
-+#define FSL_AUDMIX_ATCR1	0x228 /* Attenuation Control */
-+#define FSL_AUDMIX_ATIVAL1	0x22c /* Attenuation Initial Value */
-+#define FSL_AUDMIX_ATSTPUP1	0x230 /* Attenuation step up factor */
-+#define FSL_AUDMIX_ATSTPDN1	0x234 /* Attenuation step down factor */
-+#define FSL_AUDMIX_ATSTPTGT1	0x238 /* Attenuation step target */
-+#define FSL_AUDMIX_ATTNVAL1	0x23c /* Attenuation Value */
-+#define FSL_AUDMIX_ATSTP1	0x240 /* Attenuation step number */
-+
-+/* AUDMIX Control Register */
-+#define FSL_AUDMIX_CTR_MIXCLK_SHIFT	0
-+#define FSL_AUDMIX_CTR_MIXCLK_MASK	BIT(FSL_AUDMIX_CTR_MIXCLK_SHIFT)
-+#define FSL_AUDMIX_CTR_MIXCLK(i)	((i) << FSL_AUDMIX_CTR_MIXCLK_SHIFT)
-+#define FSL_AUDMIX_CTR_OUTSRC_SHIFT	1
-+#define FSL_AUDMIX_CTR_OUTSRC_MASK	(0x3 << FSL_AUDMIX_CTR_OUTSRC_SHIFT)
-+#define FSL_AUDMIX_CTR_OUTSRC(i)	(((i) << FSL_AUDMIX_CTR_OUTSRC_SHIFT)\
-+					      & FSL_AUDMIX_CTR_OUTSRC_MASK)
-+#define FSL_AUDMIX_CTR_OUTWIDTH_SHIFT	3
-+#define FSL_AUDMIX_CTR_OUTWIDTH_MASK	(0x7 << FSL_AUDMIX_CTR_OUTWIDTH_SHIFT)
-+#define FSL_AUDMIX_CTR_OUTWIDTH(i)	(((i) << FSL_AUDMIX_CTR_OUTWIDTH_SHIFT)\
-+					      & FSL_AUDMIX_CTR_OUTWIDTH_MASK)
-+#define FSL_AUDMIX_CTR_OUTCKPOL_SHIFT	6
-+#define FSL_AUDMIX_CTR_OUTCKPOL_MASK	BIT(FSL_AUDMIX_CTR_OUTCKPOL_SHIFT)
-+#define FSL_AUDMIX_CTR_OUTCKPOL(i)	((i) << FSL_AUDMIX_CTR_OUTCKPOL_SHIFT)
-+#define FSL_AUDMIX_CTR_MASKRTDF_SHIFT	7
-+#define FSL_AUDMIX_CTR_MASKRTDF_MASK	BIT(FSL_AUDMIX_CTR_MASKRTDF_SHIFT)
-+#define FSL_AUDMIX_CTR_MASKRTDF(i)	((i) << FSL_AUDMIX_CTR_MASKRTDF_SHIFT)
-+#define FSL_AUDMIX_CTR_MASKCKDF_SHIFT	8
-+#define FSL_AUDMIX_CTR_MASKCKDF_MASK	BIT(FSL_AUDMIX_CTR_MASKCKDF_SHIFT)
-+#define FSL_AUDMIX_CTR_MASKCKDF(i)	((i) << FSL_AUDMIX_CTR_MASKCKDF_SHIFT)
-+#define FSL_AUDMIX_CTR_SYNCMODE_SHIFT	9
-+#define FSL_AUDMIX_CTR_SYNCMODE_MASK	BIT(FSL_AUDMIX_CTR_SYNCMODE_SHIFT)
-+#define FSL_AUDMIX_CTR_SYNCMODE(i)	((i) << FSL_AUDMIX_CTR_SYNCMODE_SHIFT)
-+#define FSL_AUDMIX_CTR_SYNCSRC_SHIFT	10
-+#define FSL_AUDMIX_CTR_SYNCSRC_MASK	BIT(FSL_AUDMIX_CTR_SYNCSRC_SHIFT)
-+#define FSL_AUDMIX_CTR_SYNCSRC(i)	((i) << FSL_AUDMIX_CTR_SYNCSRC_SHIFT)
-+
-+/* AUDMIX Status Register */
-+#define FSL_AUDMIX_STR_RATEDIFF		BIT(0)
-+#define FSL_AUDMIX_STR_CLKDIFF		BIT(1)
-+#define FSL_AUDMIX_STR_MIXSTAT_SHIFT	2
-+#define FSL_AUDMIX_STR_MIXSTAT_MASK	(0x3 << FSL_AUDMIX_STR_MIXSTAT_SHIFT)
-+#define FSL_AUDMIX_STR_MIXSTAT(i)	(((i) & FSL_AUDMIX_STR_MIXSTAT_MASK) \
-+					   >> FSL_AUDMIX_STR_MIXSTAT_SHIFT)
-+/* AUDMIX Attenuation Control Register */
-+#define FSL_AUDMIX_ATCR_AT_EN		BIT(0)
-+#define FSL_AUDMIX_ATCR_AT_UPDN		BIT(1)
-+#define FSL_AUDMIX_ATCR_ATSTPDIF_SHIFT	2
-+#define FSL_AUDMIX_ATCR_ATSTPDFI_MASK	\
-+				(0xfff << FSL_AUDMIX_ATCR_ATSTPDIF_SHIFT)
-+
-+/* AUDMIX Attenuation Initial Value Register */
-+#define FSL_AUDMIX_ATIVAL_ATINVAL_MASK	0x3FFFF
-+
-+/* AUDMIX Attenuation Step Up Factor Register */
-+#define FSL_AUDMIX_ATSTPUP_ATSTEPUP_MASK	0x3FFFF
-+
-+/* AUDMIX Attenuation Step Down Factor Register */
-+#define FSL_AUDMIX_ATSTPDN_ATSTEPDN_MASK	0x3FFFF
-+
-+/* AUDMIX Attenuation Step Target Register */
-+#define FSL_AUDMIX_ATSTPTGT_ATSTPTG_MASK	0x3FFFF
-+
-+/* AUDMIX Attenuation Value Register */
-+#define FSL_AUDMIX_ATTNVAL_ATCURVAL_MASK	0x3FFFF
-+
-+/* AUDMIX Attenuation Step Number Register */
-+#define FSL_AUDMIX_ATSTP_STPCTR_MASK	0x3FFFF
-+
-+#define FSL_AUDMIX_MAX_DAIS		2
-+struct fsl_audmix {
-+	struct platform_device *pdev;
-+	struct regmap *regmap;
-+	struct clk *ipg_clk;
-+	u8 tdms;
-+};
-+
-+#endif /* __FSL_AUDMIX_H */
 -- 
 2.20.1
