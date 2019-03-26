@@ -1,65 +1,104 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: regression: bad sound card type detection in audio
-	graph
-Date: Tue, 26 Mar 2019 19:09:45 +0100
-Message-ID: <17699625-dd15-afc7-780f-c7c2d4721525@st.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ALSA: isa/wavefront: Fix potential Spectre v1 vulnerabilities
+Date: Tue, 26 Mar 2019 13:32:02 -0500
+Message-ID: <20190326183202.GA17285@embeddedor>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F11F5F80760
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 19:09:48 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: kuninori.morimoto.gx@renesas.com
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, olivier.moysan@st.com, tiwai@suse.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Kuninori,
+header->number and i are indirectly controlled by user-space, hence leading
+to a potential exploitation of the Spectre variant 1 vulnerability.
 
-We are seeing a regression while rebasing on kernel V5.1 (from v4.19).
-The regression is linked to your update of the audio graph to merge the
-support of the normal and DPCM sound cards.
+This issue was detected with the help of Smatch:
 
-In our sound card (described here:
-https://github.com/STMicroelectronics/linux/blob/v4.19-stm32mp/arch/arm/boot/dts/stm32mp157c-ev1.dts)
+sound/isa/wavefront/wavefront_synth.c:792 wavefront_send_patch() warn: potential spectre issue 'dev->patch_status' [w] (local cap)
+sound/isa/wavefront/wavefront_synth.c:819 wavefront_send_program() warn: potential spectre issue 'dev->prog_status' [w] (local cap)
+sound/isa/wavefront/wavefront_synth.c:1197 wavefront_send_alias() warn: potential spectre issue 'dev->sample_status' [w]
+sound/isa/wavefront/wavefront_synth.c:1248 wavefront_send_multisample() warn: potential spectre issue 'dev->sample_status' [w]
+sound/isa/wavefront/wavefront_synth.c:1548 wavefront_synth_control() warn: potential spectre issue 'dev->sample_status' [r] (local cap)
 
-We declare a normal sound card using the WM8994 codec:
+Fix this by sanitizing header->number and i before using them to index
+dev->patch_status, dev->prog_status, dev->sample_status.
 
-  Playback: CPU-DAI (SAI2a)-> CODEC-DAI/port0
-  Record: CPU-DAI (SAI2B)<- CODEC-DAI/port1
-  ...
+Notice that given that speculation windows are large, the policy is
+to kill the speculation on the first load and not worry if it can be
+completed with a dependent load/store [1].
 
-The WM8994 codec is declared with 2 ports as it supports 2 interfaces.
+[1] https://lore.kernel.org/lkml/20180423164740.GY17484@dhcp22.suse.cz/
 
-When we probe the sound card we are detecting a wrong dai link type
-because the condition
-if (of_get_child_count(codec_port) > 1) return true. The dai link is
-detected as DPCM instead of the expected normal link.
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/isa/wavefront/wavefront_synth.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-I checked your last commits sent on mailing list, seems that this
-criteria is still valid.
-
-Please could you elaborate a little bit on this criteria for the
-normal/DPCM selection?
-
-What is you feeling about this limitation. Do you see a way to refine
-the condition to allow normal sound card with multi-port codecs. Or do
-we have to migrate our sound card to DPCM.
-
-Thanks in advance for your answer
-
-Regards
-Arnaud
+diff --git a/sound/isa/wavefront/wavefront_synth.c b/sound/isa/wavefront/wavefront_synth.c
+index 0b1e4b34b299..a78e125dfdf9 100644
+--- a/sound/isa/wavefront/wavefront_synth.c
++++ b/sound/isa/wavefront/wavefront_synth.c
+@@ -31,6 +31,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
++#include <linux/nospec.h>
+ #include <sound/core.h>
+ #include <sound/snd_wavefront.h>
+ #include <sound/initval.h>
+@@ -788,6 +789,8 @@ wavefront_send_patch (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 
+ 	if (header->number >= ARRAY_SIZE(dev->patch_status))
+ 		return -EINVAL;
++	header->number = array_index_nospec(header->number,
++					    ARRAY_SIZE(dev->patch_status));
+ 
+ 	dev->patch_status[header->number] |= WF_SLOT_FILLED;
+ 
+@@ -815,6 +818,8 @@ wavefront_send_program (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 
+ 	if (header->number >= ARRAY_SIZE(dev->prog_status))
+ 		return -EINVAL;
++	header->number = array_index_nospec(header->number,
++					    ARRAY_SIZE(dev->prog_status));
+ 
+ 	dev->prog_status[header->number] = WF_SLOT_USED;
+ 
+@@ -1194,6 +1199,11 @@ wavefront_send_alias (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 		return -EIO;
+ 	}
+ 
++	if (header->number >= ARRAY_SIZE(dev->sample_status))
++		return -EINVAL;
++	header->number = array_index_nospec(header->number,
++					    ARRAY_SIZE(dev->sample_status));
++
+ 	dev->sample_status[header->number] = (WF_SLOT_FILLED|WF_ST_ALIAS);
+ 
+ 	return (0);
+@@ -1245,6 +1255,12 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
+ 		return -EIO;
+ 	}
+ 
++	if (header->number >= ARRAY_SIZE(dev->sample_status)) {
++		kfree(msample_hdr);
++		return -EINVAL;
++	}
++	header->number = array_index_nospec(header->number,
++					    ARRAY_SIZE(dev->sample_status));
+ 	dev->sample_status[header->number] = (WF_SLOT_FILLED|WF_ST_MULTISAMPLE);
+ 
+ 	kfree(msample_hdr);
+@@ -1545,6 +1561,7 @@ wavefront_synth_control (snd_wavefront_card_t *acard,
+ 			wc->status = EINVAL;
+ 			return -EINVAL;
+ 		}
++		i = array_index_nospec(i, WF_MAX_SAMPLE);
+ 		wc->rbuf[0] = dev->sample_status[i];
+ 		wc->status = 0;
+ 		return 0;
+-- 
+2.21.0
