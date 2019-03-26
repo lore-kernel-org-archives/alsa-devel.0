@@ -1,7 +1,7 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH 07/10] ALSA: aloop: Move CABLE_VALID_BOTH to the top of file
-Date: Tue, 26 Mar 2019 08:49:31 +0100
-Message-ID: <1553586574-18608-3-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH 06/10] ALSA: aloop: Rename all jiffies timer specific functions
+Date: Tue, 26 Mar 2019 08:49:30 +0100
+Message-ID: <1553586574-18608-2-git-send-email-twischer@de.adit-jv.com>
 References: <1553529644-5654-1-git-send-email-twischer@de.adit-jv.com>
  <1553586574-18608-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
@@ -15,38 +15,98 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
-so all functions can use the same.
+This commit does not change the behaviour. It only seperates the jiffies
+timer specific implementation from the generic part.
 
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 ---
- sound/drivers/aloop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/drivers/aloop.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 3105757..85a1519 100644
+index 422d130..3105757 100644
 --- a/sound/drivers/aloop.c
 +++ b/sound/drivers/aloop.c
-@@ -69,6 +69,10 @@ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels change
+@@ -202,7 +202,7 @@ static inline unsigned int get_rate_shift(struct loopback_pcm *dpcm)
+ }
  
- #define NO_PITCH 100000
+ /* call in cable->lock */
+-static int loopback_timer_start(struct loopback_pcm *dpcm)
++static int loopback_jiffies_timer_start(struct loopback_pcm *dpcm)
+ {
+ 	unsigned long tick;
+ 	unsigned int rate_shift = get_rate_shift(dpcm);
+@@ -223,7 +223,7 @@ static int loopback_timer_start(struct loopback_pcm *dpcm)
+ }
  
-+#define CABLE_VALID_PLAYBACK	BIT(SNDRV_PCM_STREAM_PLAYBACK)
-+#define CABLE_VALID_CAPTURE	BIT(SNDRV_PCM_STREAM_CAPTURE)
-+#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK | CABLE_VALID_CAPTURE)
-+
- struct loopback_cable;
- struct loopback_pcm;
- 
-@@ -238,10 +242,6 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
+ /* call in cable->lock */
+-static inline int loopback_timer_stop(struct loopback_pcm *dpcm)
++static inline int loopback_jiffies_timer_stop(struct loopback_pcm *dpcm)
+ {
+ 	del_timer(&dpcm->timer);
+ 	dpcm->timer.expires = 0;
+@@ -231,7 +231,7 @@ static inline int loopback_timer_stop(struct loopback_pcm *dpcm)
  	return 0;
  }
  
--#define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
--#define CABLE_VALID_CAPTURE	(1 << SNDRV_PCM_STREAM_CAPTURE)
--#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK|CABLE_VALID_CAPTURE)
--
- static int loopback_check_format(struct loopback_cable *cable, int stream)
+-static inline int loopback_timer_stop_sync(struct loopback_pcm *dpcm)
++static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
  {
- 	struct snd_pcm_runtime *runtime, *cruntime;
+ 	del_timer_sync(&dpcm->timer);
+ 
+@@ -517,7 +517,8 @@ static inline void bytepos_finish(struct loopback_pcm *dpcm,
+ }
+ 
+ /* call in cable->lock */
+-static unsigned int loopback_pos_update(struct loopback_cable *cable)
++static unsigned int loopback_jiffies_timer_pos_update
++		(struct loopback_cable *cable)
+ {
+ 	struct loopback_pcm *dpcm_play =
+ 			cable->streams[SNDRV_PCM_STREAM_PLAYBACK];
+@@ -570,14 +571,15 @@ static unsigned int loopback_pos_update(struct loopback_cable *cable)
+ 	return running;
+ }
+ 
+-static void loopback_timer_function(struct timer_list *t)
++static void loopback_jiffies_timer_function(struct timer_list *t)
+ {
+ 	struct loopback_pcm *dpcm = from_timer(dpcm, t, timer);
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&dpcm->cable->lock, flags);
+-	if (loopback_pos_update(dpcm->cable) & (1 << dpcm->substream->stream)) {
+-		loopback_timer_start(dpcm);
++	if (loopback_jiffies_timer_pos_update(dpcm->cable) &
++			(1 << dpcm->substream->stream)) {
++		loopback_jiffies_timer_start(dpcm);
+ 		if (dpcm->period_update_pending) {
+ 			dpcm->period_update_pending = 0;
+ 			spin_unlock_irqrestore(&dpcm->cable->lock, flags);
+@@ -748,18 +750,18 @@ static void free_cable(struct snd_pcm_substream *substream)
+ 
+ static int loopback_jiffies_timer_open(struct loopback_pcm *dpcm)
+ {
+-	timer_setup(&dpcm->timer, loopback_timer_function, 0);
++	timer_setup(&dpcm->timer, loopback_jiffies_timer_function, 0);
+ 
+ 	return 0;
+ }
+ 
+ static struct loopback_ops loopback_jiffies_timer_ops = {
+ 	.open = loopback_jiffies_timer_open,
+-	.start = loopback_timer_start,
+-	.stop = loopback_timer_stop,
+-	.stop_sync = loopback_timer_stop_sync,
+-	.close_substream = loopback_timer_stop_sync,
+-	.pos_update = loopback_pos_update,
++	.start = loopback_jiffies_timer_start,
++	.stop = loopback_jiffies_timer_stop,
++	.stop_sync = loopback_jiffies_timer_stop_sync,
++	.close_substream = loopback_jiffies_timer_stop_sync,
++	.pos_update = loopback_jiffies_timer_pos_update,
+ 	.dpcm_info = loopback_jiffies_timer_dpcm_info,
+ };
+ 
 -- 
 2.7.4
