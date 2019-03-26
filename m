@@ -1,32 +1,19 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH V2] ASoC: fix hdmi codec driver contest in
- S3
-Date: Tue, 26 Mar 2019 11:02:13 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19527FB3DA@SHSMSX103.ccr.corp.intel.com>
-References: <1553235896-8185-1-git-send-email-libin.yang@intel.com>
- <s5hpnqjp9es.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527F9BB6@SHSMSX103.ccr.corp.intel.com>
- <s5hh8bvb5ba.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527F9D9F@SHSMSX103.ccr.corp.intel.com>
- <s5hbm22psfz.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FAAA5@SHSMSX103.ccr.corp.intel.com>
- <s5h4l7r9shp.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FAE2A@SHSMSX103.ccr.corp.intel.com>
- <s5hbm1z81em.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FB1A0@SHSMSX103.ccr.corp.intel.com>
- <s5hr2aum6i5.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FB25E@SHSMSX103.ccr.corp.intel.com>
- <s5hk1gmm2oz.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v4] ALSA: core: Allow drivers to set R/W
+ wait time.
+Date: Tue, 26 Mar 2019 19:05:32 +0800
+Message-ID: <6ab7ed56-2043-e830-d16b-e73c44541c38@canonical.com>
+References: <20180706125036.12940-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B9C7F801D9
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 12:02:18 +0100 (CET)
-In-Reply-To: <s5hk1gmm2oz.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D577F801D9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 12:05:42 +0100 (CET)
+In-Reply-To: <20180706125036.12940-1-liam.r.girdwood@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,106 +24,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
->> >
->> >On Tue, 26 Mar 2019 06:42:15 +0100,
->> >Yang, Libin wrote:
->> >(snip)
->> >> Hi Takashi,
->> >> Below is my draft patch, which doesn't work with
->> >> pm_runtime_get_sync(). Is there anything wrong in my code?
->> >(snip)
->> >> And the dmesg is:
->> >> [   36.087224] HDMI HDA Codec ehdaudio0D2: in hdmi_codec_resume
->1890
->> >ylb
->> >> [   36.087230] HDMI HDA Codec ehdaudio0D2: in
->> >hdac_hdmi_runtime_resume 2122 ylb 1
->> >> [   36.087335] HDMI HDA Codec ehdaudio0D2: in
->> >hdac_hdmi_cvt_output_widget_event 812 ylb
->> >> [   40.097586] HDMI HDA Codec ehdaudio0D2: in
->> >hdac_hdmi_runtime_resume 2135 ylb 2
->> >> [   40.097766] HDMI HDA Codec ehdaudio0D2: in
->> >hdac_hdmi_pin_output_widget_event 767 ylb
->> >> [   45.108632] HDMI HDA Codec ehdaudio0D2: in
->> >hdac_hdmi_pin_mux_widget_event 857 ylb
->> >>
->> >> >From the dmesg, hdac_hdmi_cvt_output_widget_event()
->> >> is called between "ylb 1" and "ylb 2" in runtime_resume().
->> >> This means xxx_event() registers setting runs before display power
->> >> is turned on.
->> >
->> >OK, now I understood what went wrong.  It's a similar issue as we've
->> >hit for the legacy HD-audio and figured out recently.
->> >
->> >If my understanding is correct, the problem is the call of
->> >pm_runtime_force_resume() in PM resume callback combined with an
->> >async work.  pm_runtime_force_resume() sets the runtime state
->> >immediately to RPM_ACTIVE even before finishing the task.  The code
->> >seems assuming blindly that there is no other conflicting task while
->> >S3/S4 resume, but this is a problem.  That's why the next
->> >pm_runtime_get_sync() wasn't blocked but just went through; since the
->> >RPM flag was already set to RPM_ACTIVE in pm_runtime_force_resume(),
->> >it thought as if it were already active, while the real runtime resume code
->was still processing the callback.
->>
->> Yes, exactly right. And I have checked dev->power.runtime_status, it's
->> RPM_ACTIVE when xxx_event() calls pm_runtime_get_sync().
->>
->> >
->> >In the case of legacy HD-audio, we "fixed" the problem by avoiding
->> >the trigger of async work at resume, but let it be triggered from
->> >runtime resume.  In ASoC case, however, it's no option.
->> >
->> >Maybe a possible solution in the sound driver side would be to move
->> >from system suspend/resume to ASoC component suspend/resume.  The
->> >runtime suspend/resume can be kept as is, and call
->> >pm_runtime_force_suspend and resume from the component
->suspend/resume
->> >callbacks.  Since the component callbacks are certainly processed
->> >before DAPM events, this should assure the order.
->>
->> I have worked out another patch. This patch decouples the xxx_event()
->> and runtime suspend/resume. This means in whichever case, xxx_event()
->> can make sure display power is in the correct status. What do you think?
->> On the same time, I will try the component suspend/resume. My
->> understanding is that snd_hdac_display_power() should be called either
->> in runtime_suspend/ resume or in component suspend/resume.
->
->This might work around the particular case, yes.  However it still makes me
->uneasy as the root cause isn't full covered -- the other part of runtime resume
->might be still pending while executing the DAPM event.
->
->Now, considering the idea with device_link_add() again: I guess it's
->snd_soc_resume() who kicks off the DAPM even work?  If so, and if
->snd_soc_resume() gets called from the machine driver, we can assure the PM
->order via device_link_add() so that the codec driver is resumed before the
->machine driver.  Then at the time the deferred resume work is executed, the
->codec is ready, so the display power is on.
-
-Yes, snd_soc_resume() kicks off the DAPM event work. The
-device PM sequence is good. The root cause is when hdmi runtime_resume
-calls snd_hdac_display_power(), it may sleep. The flow is:
-
-1. HDMI runtime_resume runs
-2. HDMI runtime_resume calls snd_hdac_display_power(), but display
-driver is also operating display power and the mutex_lock is hold. So
-HDMI runtime_resume sleeps.
-3. the deferred work is scheduled and xxx_event() is called.
-
-This is wrong. All these happen because of the mutex_lock is hold
-by display driver, which causes HDMI runtime_resume sleep.
-
-Regards,
-Libin
-
->
->
->thanks,
->
->Takashi
+T24gMjAxOC83LzYg5LiL5Y2IODo1MCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPiBDdXJyZW50bHkg
+QUxTQSBjb3JlIGJsb2NrcyB1c2Vyc3BhY2UgZm9yIGFib3V0IDEwIHNlY29uZHMgZm9yIFBDTSBS
+L1cgSU8uCj4gVGhpcyBuZWVkcyB0byBiZSBjb25maWd1cmFibGUgZm9yIG1vZGVybiBoYXJkd2Fy
+ZSBsaWtlIERTUHMgd2hlcmUgbm8KPiBwb2ludGVyIHVwZGF0ZSBpbiBtaWxsaXNlY29uZHMgY2Fu
+IGluZGljYXRlIHRlcm1pbmFsIERTUCBlcnJvcnMuCj4KPiBBZGQgYSBzdWJzdHJlYW0gdmFyaWFi
+bGUgdG8gc2V0IHRoZSB3YWl0IHRpbWUgaW4gbXMuIFRoaXMgYWxsb3dzIHVzZXJzcGFjZQo+IGFu
+ZCBkcml2ZXJzIHRvIHJlY292ZXIgbW9yZSBxdWlja2x5IGZyb20gdGVybWluYWwgRFNQIGVycm9y
+cy4KPgo+IFNpZ25lZC1vZmYtYnk6IExpYW0gR2lyZHdvb2QgPGxpYW0uci5naXJkd29vZEBsaW51
+eC5pbnRlbC5jb20+Cj4gLS0tCj4KPiBDaGFuZ2VzIHNpbmNlIFYxIDotCj4gICBvIFJlbW92ZSBB
+UEkgbWV0aG9kIGFuZCBhbG93IGRyaXZlcnMgdG8gc2V0IGRpcmVjdGx5Lgo+ICAgbyBWYWxpZGF0
+ZSB0aW1lIGlzIGRyaXZlciBzdXBwbGllZCB0aW1lcy4KPgo+IFYyIDotCj4gICBvIE1heCB3YWl0
+IGNhbGMgbm93IGluIG1zLgo+ICAgbyBjaGVja3BhdGNoLiAKPgo+IHYzOi0KPiAgIG8gUmVtb3Zl
+IGRyaXZlciBzdXBwbGllZCB0aW1lIHZhbGlkYXRpb24uCj4KPiAgaW5jbHVkZS9zb3VuZC9wY20u
+aCAgfCAgMSArCj4gIHNvdW5kL2NvcmUvcGNtX2xpYi5jIHwgMTcgKysrKysrKysrKysrLS0tLS0K
+PiAgMiBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Cj4g
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvcGNtLmggYi9pbmNsdWRlL3NvdW5kL3BjbS5oCj4g
+aW5kZXggZTA1NGM1ODNkM2IzLi5mY2RmMzU4YTI1ZjAgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9z
+b3VuZC9wY20uaAo+ICsrKyBiL2luY2x1ZGUvc291bmQvcGNtLmgKPiBAQCAtNDYyLDYgKzQ2Miw3
+IEBAIHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSB7Cj4gICAgICAgICAgLyogLS0gdGltZXIgc2Vj
+dGlvbiAtLSAqLwo+ICAJc3RydWN0IHNuZF90aW1lciAqdGltZXI7CQkvKiB0aW1lciAqLwo+ICAJ
+dW5zaWduZWQgdGltZXJfcnVubmluZzogMTsJLyogdGltZSBpcyBydW5uaW5nICovCj4gKwlsb25n
+IHdhaXRfdGltZTsJLyogdGltZSBpbiBtcyBmb3IgUi9XIHRvIHdhaXQgZm9yIGF2YWlsICovCj4g
+IAkvKiAtLSBuZXh0IHN1YnN0cmVhbSAtLSAqLwo+ICAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFt
+ICpuZXh0Owo+ICAJLyogLS0gbGlua2VkIHN1YnN0cmVhbXMgLS0gKi8KPiBkaWZmIC0tZ2l0IGEv
+c291bmQvY29yZS9wY21fbGliLmMgYi9zb3VuZC9jb3JlL3BjbV9saWIuYwo+IGluZGV4IDQ0YjVh
+ZTgzMzA4Mi4uZWVjYmZkYzdhMmM5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL2NvcmUvcGNtX2xpYi5j
+Cj4gKysrIGIvc291bmQvY29yZS9wY21fbGliLmMKPiBAQCAtMTgzMiwxMiArMTgzMiwxOSBAQCBz
+dGF0aWMgaW50IHdhaXRfZm9yX2F2YWlsKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3Ry
+ZWFtLAo+ICAJaWYgKHJ1bnRpbWUtPm5vX3BlcmlvZF93YWtldXApCj4gIAkJd2FpdF90aW1lID0g
+TUFYX1NDSEVEVUxFX1RJTUVPVVQ7Cj4gIAllbHNlIHsKPiAtCQl3YWl0X3RpbWUgPSAxMDsKPiAt
+CQlpZiAocnVudGltZS0+cmF0ZSkgewo+IC0JCQlsb25nIHQgPSBydW50aW1lLT5wZXJpb2Rfc2l6
+ZSAqIDIgLyBydW50aW1lLT5yYXRlOwo+IC0JCQl3YWl0X3RpbWUgPSBtYXgodCwgd2FpdF90aW1l
+KTsKPiArCQkvKiB1c2Ugd2FpdCB0aW1lIGZyb20gc3Vic3RyZWFtIGlmIGF2YWlsYWJsZSAqLwo+
+ICsJCWlmIChzdWJzdHJlYW0tPndhaXRfdGltZSkgewo+ICsJCQl3YWl0X3RpbWUgPSBzdWJzdHJl
+YW0tPndhaXRfdGltZTsKCkkgaW52ZXN0aWdhdGVkIHRoZSBzb2YgZHJpdmVyIHJlY2VudGx5LMKg
+IGFuZCBmb3VuZCB0aGlzwqAgcGF0Y2ggaXMgYQpsaXR0bGUgYml0IGNvbmZ1c2VkLMKgIGlmIHN1
+YnN0cmVhbS0+d2FpdF90aW1lIGlzIHNldCwgd2h5IGRvbid0wqAgY29udmVydAp0aGUgd2FpdF90
+aW1lIHRvIGppZmZpZXMgaGVyZT8gSXMgaXQgYSBidWcgb3IgYW4gb24tcHVycG9zZSBkZXNpZ24/
+CgpUaGFua3MsCgpIdWkuCgoKPiArCQl9IGVsc2Ugewo+ICsJCQl3YWl0X3RpbWUgPSAxMDsKPiAr
+Cj4gKwkJCWlmIChydW50aW1lLT5yYXRlKSB7Cj4gKwkJCQlsb25nIHQgPSBydW50aW1lLT5wZXJp
+b2Rfc2l6ZSAqIDIgLwo+ICsJCQkJCSBydW50aW1lLT5yYXRlOwo+ICsJCQkJd2FpdF90aW1lID0g
+bWF4KHQsIHdhaXRfdGltZSk7Cj4gKwkJCX0KPiArCQkJd2FpdF90aW1lID0gbXNlY3NfdG9famlm
+Zmllcyh3YWl0X3RpbWUgKiAxMDAwKTsKPiAgCQl9Cj4gLQkJd2FpdF90aW1lID0gbXNlY3NfdG9f
+amlmZmllcyh3YWl0X3RpbWUgKiAxMDAwKTsKPiAgCX0KPiAgCj4gIAlmb3IgKDs7KSB7CgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
