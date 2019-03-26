@@ -1,17 +1,36 @@
-From: Timo Wischer <twischer@de.adit-jv.com>
-Subject: Re: [PATCH 09/10] ALSA: pcm: Add snd_pcm_ops for
-	snd_pcm_link()
-Date: Tue, 26 Mar 2019 12:25:37 +0100
-Message-ID: <3ad5c313-ba2c-b541-8930-3f2515dfca72@de.adit-jv.com>
-References: <1553529644-5654-1-git-send-email-twischer@de.adit-jv.com>
- <1553586574-18608-1-git-send-email-twischer@de.adit-jv.com>
- <1553586574-18608-5-git-send-email-twischer@de.adit-jv.com>
- <s5ho95ym3s7.wl-tiwai@suse.de>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH V2] ASoC: fix hdmi codec driver contest in
+ S3
+Date: Tue, 26 Mar 2019 11:28:44 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19527FB474@SHSMSX103.ccr.corp.intel.com>
+References: <1553235896-8185-1-git-send-email-libin.yang@intel.com>
+ <s5hpnqjp9es.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527F9BB6@SHSMSX103.ccr.corp.intel.com>
+ <s5hh8bvb5ba.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527F9D9F@SHSMSX103.ccr.corp.intel.com>
+ <s5hbm22psfz.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FAAA5@SHSMSX103.ccr.corp.intel.com>
+ <s5h4l7r9shp.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FAE2A@SHSMSX103.ccr.corp.intel.com>
+ <s5hbm1z81em.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FB1A0@SHSMSX103.ccr.corp.intel.com>
+ <s5hr2aum6i5.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FB25E@SHSMSX103.ccr.corp.intel.com>
+ <s5hk1gmm2oz.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FB3DA@SHSMSX103.ccr.corp.intel.com>
+ <s5hftr97ux2.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19527FB430@SHSMSX103.ccr.corp.intel.com>
+ <s5hbm1x7ucw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5ho95ym3s7.wl-tiwai@suse.de>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7664BF80760
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 12:28:48 +0100 (CET)
+In-Reply-To: <s5hbm1x7ucw.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,69 +42,144 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, broonie@kernel.org, patch@alsa-project.org, alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
-
-On 3/26/19 09:35, Takashi Iwai wrote:
-> On Tue, 26 Mar 2019 08:49:33 +0100,
-> <twischer@de.adit-jv.com> wrote:
->> From: Timo Wischer <twischer@de.adit-jv.com>
->>
->> snd_pcm_link() can be called by the user as long as the device is not
->> yet started. Therefore currently a driver which wants to iterate over
->> the linked substreams has to do this at the start trigger. But the start
->> trigger should not block for a long time. Therefore there is no callback
->> which can be used to iterate over the linked substreams without delaying
->> the start trigger.
->> This patch introduces a new callback function which will be called after
->> the linked substream list was updated by snd_pcm_link(). This callback
->> function is allowed to block for a longer time without interfering the
->> synchronized start up of linked substreams.
->>
->> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-> Well, the idea appears interesting, but I'm afraid that the
-> implementation is still racy.  The place you're calling the new
-> callback isn't protected, hence the stream can be triggered while
-> calling it.  That is, even during operating your loopback link_changed
-> callback, another thread is able to start the stream.
 
 Hi Takashi,
 
-As far as I got you mean the following scenario:
+>-----Original Message-----
+>From: Takashi Iwai [mailto:tiwai@suse.de]
+>Sent: Tuesday, March 26, 2019 7:23 PM
+>To: Yang, Libin <libin.yang@intel.com>
+>Cc: alsa-devel@alsa-project.org; broonie@kernel.org
+>Subject: Re: [alsa-devel] [PATCH V2] ASoC: fix hdmi codec driver contest in S3
+>
+>On Tue, 26 Mar 2019 12:19:15 +0100,
+>Yang, Libin wrote:
+>>
+>> Hi Takashi,
+>>
+>> >> Hi Takashi,
+>> >>
+>> >> >> >
+>> >> >> >On Tue, 26 Mar 2019 06:42:15 +0100, Yang, Libin wrote:
+>> >> >> >(snip)
+>> >> >> >> Hi Takashi,
+>> >> >> >> Below is my draft patch, which doesn't work with
+>> >> >> >> pm_runtime_get_sync(). Is there anything wrong in my code?
+>> >> >> >(snip)
+>> >> >> >> And the dmesg is:
+>> >> >> >> [   36.087224] HDMI HDA Codec ehdaudio0D2: in
+>hdmi_codec_resume
+>> >> >1890
+>> >> >> >ylb
+>> >> >> >> [   36.087230] HDMI HDA Codec ehdaudio0D2: in
+>> >> >> >hdac_hdmi_runtime_resume 2122 ylb 1
+>> >> >> >> [   36.087335] HDMI HDA Codec ehdaudio0D2: in
+>> >> >> >hdac_hdmi_cvt_output_widget_event 812 ylb
+>> >> >> >> [   40.097586] HDMI HDA Codec ehdaudio0D2: in
+>> >> >> >hdac_hdmi_runtime_resume 2135 ylb 2
+>> >> >> >> [   40.097766] HDMI HDA Codec ehdaudio0D2: in
+>> >> >> >hdac_hdmi_pin_output_widget_event 767 ylb
+>> >> >> >> [   45.108632] HDMI HDA Codec ehdaudio0D2: in
+>> >> >> >hdac_hdmi_pin_mux_widget_event 857 ylb
+>> >> >> >>
+>> >> >> >> >From the dmesg, hdac_hdmi_cvt_output_widget_event()
+>> >> >> >> is called between "ylb 1" and "ylb 2" in runtime_resume().
+>> >> >> >> This means xxx_event() registers setting runs before display
+>> >> >> >> power is turned on.
+>> >> >> >
+>> >> >> >OK, now I understood what went wrong.  It's a similar issue as
+>> >> >> >we've hit for the legacy HD-audio and figured out recently.
+>> >> >> >
+>> >> >> >If my understanding is correct, the problem is the call of
+>> >> >> >pm_runtime_force_resume() in PM resume callback combined with
+>> >> >> >an async work.  pm_runtime_force_resume() sets the runtime
+>> >> >> >state immediately to RPM_ACTIVE even before finishing the task.
+>> >> >> >The code seems assuming blindly that there is no other
+>> >> >> >conflicting task while
+>> >> >> >S3/S4 resume, but this is a problem.  That's why the next
+>> >> >> >pm_runtime_get_sync() wasn't blocked but just went through;
+>> >> >> >since the RPM flag was already set to RPM_ACTIVE in
+>> >> >> >pm_runtime_force_resume(), it thought as if it were already
+>> >> >> >active, while the real runtime resume code
+>> >> >was still processing the callback.
+>> >> >>
+>> >> >> Yes, exactly right. And I have checked
+>> >> >> dev->power.runtime_status, it's RPM_ACTIVE when xxx_event() calls
+>pm_runtime_get_sync().
+>> >> >>
+>> >> >> >
+>> >> >> >In the case of legacy HD-audio, we "fixed" the problem by
+>> >> >> >avoiding the trigger of async work at resume, but let it be
+>> >> >> >triggered from runtime resume.  In ASoC case, however, it's no
+>option.
+>> >> >> >
+>> >> >> >Maybe a possible solution in the sound driver side would be to
+>> >> >> >move from system suspend/resume to ASoC component
+>> >suspend/resume.
+>> >> >> >The runtime suspend/resume can be kept as is, and call
+>> >> >> >pm_runtime_force_suspend and resume from the component
+>> >> >suspend/resume
+>> >> >> >callbacks.  Since the component callbacks are certainly
+>> >> >> >processed before DAPM events, this should assure the order.
+>> >> >>
+>> >> >> I have worked out another patch. This patch decouples the
+>> >> >> xxx_event() and runtime suspend/resume. This means in whichever
+>> >> >> case, xxx_event() can make sure display power is in the correct status.
+>> >What do you think?
+>> >> >> On the same time, I will try the component suspend/resume. My
+>> >> >> understanding is that snd_hdac_display_power() should be called
+>> >> >> either in runtime_suspend/ resume or in component suspend/resume.
+>> >> >
+>> >> >This might work around the particular case, yes.  However it still
+>> >> >makes me uneasy as the root cause isn't full covered -- the other
+>> >> >part of runtime resume might be still pending while executing the
+>> >> >DAPM
+>> >event.
+>> >> >
+>> >> >Now, considering the idea with device_link_add() again: I guess
+>> >> >it's
+>> >> >snd_soc_resume() who kicks off the DAPM even work?  If so, and if
+>> >> >snd_soc_resume() gets called from the machine driver, we can
+>> >> >assure the PM order via device_link_add() so that the codec driver
+>> >> >is resumed before the machine driver.  Then at the time the
+>> >> >deferred resume work is executed, the codec is ready, so the display
+>power is on.
+>> >>
+>> >> Yes, snd_soc_resume() kicks off the DAPM event work. The device PM
+>> >> sequence is good. The root cause is when hdmi runtime_resume calls
+>> >> snd_hdac_display_power(), it may sleep. The flow is:
+>> >>
+>> >> 1. HDMI runtime_resume runs
+>> >> 2. HDMI runtime_resume calls snd_hdac_display_power(), but display
+>> >> driver is also operating display power and the mutex_lock is hold.
+>> >> So HDMI runtime_resume sleeps.
+>> >> 3. the deferred work is scheduled and xxx_event() is called.
+>> >>
+>> >> This is wrong. All these happen because of the mutex_lock is hold
+>> >> by display driver, which causes HDMI runtime_resume sleep.
+>> >
+>> >Well, the mutex lock itself is OK, and it's designed to behave so.
+>> >
+>> >As mentioned, the root cause is pm_runtime_force_resume() that sets
+>> >RPM_ACTIVE while a concurrent task is running.
+>> >
+>> >OTOH, this can be seen indeed as a PM dependency between devices, and
+>> >if we set the order explicitly, the problem can be avoided, too.
+>> >Then the runtime resume of codec finishes before snd_soc_resume() is
+>> >called from the machine driver resume.
+>>
+>> Do you have any idea to set the order explicitly? What I can think of
+>> is that we set HDMI device to be the machine device parent?
+>
+>device_link_add() should serve for defining the explicit PM dependency.
 
-  * snd_pcm_link() is called for a HW sound card
-      o loopback_snd_timer_link_changed()
-      o loopback_snd_timer_open()
-      o spin_lock_irqsave(&dpcm->cable->lock, flags);
-  * snd_pcm_start() called for aloop sound card
-      o loopback_trigger()
-      o spin_lock(&cable->lock) -> has to wait till
-        loopback_snd_timer_open() calls spin_unlock_irqrestore()
+Get it. I will check this function. Thanks.
 
-So far snd_pcm_start() has to wait for loopback_snd_timer_open().
-
-  * loopback_snd_timer_open() will continue with
-      o dpcm->cable->snd_timer.instance = NULL;
-      o spin_unlock_irqrestore()
-  * loopback_trigger() can enter the lock
-      o loopback_snd_timer_start() will fail with -EINVAL due to
-        (loopback_trigger == NULL)
-
-At least this will not result into memory corruption due to race or any 
-other wired behavior.
-But my expectation is that snd_pcm_link(hw, aloop) or 
-snd_pcm_link(aloop, hw) is only called by the application calling 
-snd_pcm_start(aloop)
-because the same aloop device cannot be opened by multiple applications 
-at the same time.
-
-Do you see an use case where one application would call snd_pcm_start() 
-in parallel with snd_pcm_link() (somehow configuring the device)?
-May be we should add an additional synchronization mechanism in 
-pcm_native.c to avoid call of snd_pcm_link() in parallel with 
-snd_pcm_start().
+Regards,
+Libin
 
 >
-> thanks,
 >
-> Takashi
+>Takashi
