@@ -1,89 +1,148 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: enable S24_LE format
-	support" to the asoc tree
-Date: Tue, 26 Mar 2019 14:42:48 +0000 (GMT)
-Message-ID: <20190326144248.7BE161121B57@debutante.sirena.org.uk>
+From: Timo Wischer <twischer@de.adit-jv.com>
+Subject: Re: [PATCH 09/10] ALSA: pcm: Add snd_pcm_ops for snd_pcm_link()
+Date: Tue, 26 Mar 2019 16:16:54 +0100
+Message-ID: <68cfbf7a-5f1e-50d2-2b97-4d3c5d360b36@de.adit-jv.com>
+References: <1553529644-5654-1-git-send-email-twischer@de.adit-jv.com>
+ <1553586574-18608-1-git-send-email-twischer@de.adit-jv.com>
+ <1553586574-18608-5-git-send-email-twischer@de.adit-jv.com>
+ <s5ho95ym3s7.wl-tiwai@suse.de>
+ <3ad5c313-ba2c-b541-8930-3f2515dfca72@de.adit-jv.com>
+ <s5hr2at67ew.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3034CF89726
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 15:42:59 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jenny TC <jenny.tc@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hr2at67ew.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: broonie@kernel.org, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 3/26/19 15:23, Takashi Iwai wrote:
+> On Tue, 26 Mar 2019 12:25:37 +0100,
+> Timo Wischer wrote:
+>> On 3/26/19 09:35, Takashi Iwai wrote:
+>>
+>>      On Tue, 26 Mar 2019 08:49:33 +0100,
+>>      <twischer@de.adit-jv.com> wrote:
+>>      
+>>          From: Timo Wischer <twischer@de.adit-jv.com>
+>>          
+>>          snd_pcm_link() can be called by the user as long as the device is not
+>>          yet started. Therefore currently a driver which wants to iterate over
+>>          the linked substreams has to do this at the start trigger. But the start
+>>          trigger should not block for a long time. Therefore there is no callback
+>>          which can be used to iterate over the linked substreams without delaying
+>>          the start trigger.
+>>          This patch introduces a new callback function which will be called after
+>>          the linked substream list was updated by snd_pcm_link(). This callback
+>>          function is allowed to block for a longer time without interfering the
+>>          synchronized start up of linked substreams.
+>>          
+>>          Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+>>          
+>>      Well, the idea appears interesting, but I'm afraid that the
+>>      implementation is still racy.  The place you're calling the new
+>>      callback isn't protected, hence the stream can be triggered while
+>>      calling it.  That is, even during operating your loopback link_changed
+>>      callback, another thread is able to start the stream.
+>>      
+>> Hi Takashi,
+>>
+>> As far as I got you mean the following scenario:
+>>
+>>    * snd_pcm_link() is called for a HW sound card
+>>        + loopback_snd_timer_link_changed()
+> The start may happen at this point.
 
-   ASoC: Intel: Skylake: enable S24_LE format support
+In this case the last link status will be used and aloop will print a 
+warning "Another sound timer was requested but at least one device is 
+already running...".
 
-has been applied to the asoc tree at
+Without this patch set a similar issue already exists. When calling 
+snd_pcm_start() before snd_pcm_link() was done the additional device 
+linked by the snd_pcm_link() will not be started.
+Therefore the application has already to take care about the order of 
+the calls.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+>
+>>        + loopback_snd_timer_open()
+>>        + spin_lock_irqsave(&dpcm->cable->lock, flags);
+>>    * snd_pcm_start() called for aloop sound card
+>>        + loopback_trigger()
+>>        + spin_lock(&cable->lock) -> has to wait till loopback_snd_timer_open()
+>>          calls spin_unlock_irqrestore()
+>>
+>> So far snd_pcm_start() has to wait for loopback_snd_timer_open().
+>>
+>>    * loopback_snd_timer_open() will continue with
+>>        + dpcm->cable->snd_timer.instance = NULL;
+>>        + spin_unlock_irqrestore()
+>>    * loopback_trigger() can enter the lock
+>>        + loopback_snd_timer_start() will fail with -EINVAL due to
+>>          (loopback_trigger == NULL)
+>>
+>> At least this will not result into memory corruption due to race or any other
+>> wired behavior.
+> I don't expect the memory corruption, but my point is that dealing
+> with linked streams is still tricky.  It was considered for the
+> lightweight coupled start/stop operation, and something intensively
+> depending on the linked status was out of the original design...
+>
+>> But my expectation is that snd_pcm_link(hw, aloop) or snd_pcm_link(aloop, hw)
+>> is only called by the application calling snd_pcm_start(aloop)
+>> because the same aloop device cannot be opened by multiple applications at the
+>> same time.
+>>
+>> Do you see an use case where one application would call snd_pcm_start() in
+>> parallel with snd_pcm_link() (somehow configuring the device)?
+> It's not about the actual application usages but rather against the
+> malicious attacks.  Especially aloop is a virtual device that is
+> available allover the places, it may be deployed / attacked easily.
+The attack we are identifying here can only be done by the application 
+opening the aloop device.
+An application allowed to open the aloop device is anyway able to 
+manipulate the audio streaming.
+Or do you see an attack which would influence any other device/stream 
+not opened by this application?
+>
+>> May be we should add an additional synchronization mechanism in pcm_native.c
+>> to avoid call of snd_pcm_link() in parallel with snd_pcm_start().
+> If it really matters...  Honestly speaking, I'm not fully convinced
+> whether we want to deal with this using the PCM link mechanism.
+>
+> What's the motivation for using the linked streams at the first place?
+> That's one of the biggest missing piece in the whole picture.
+In general when the user uses snd_pcm_link() it expects that the linked 
+devices are somehow synchronized.
+Any applications already using snd_pcm_link() do not need to be adapted 
+to use the new feature of aloop (for example JACK or ALSA multi plugin)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+But when linking a HW sound card and aloop without this patch set, both 
+devices will be started in sync but
+the snd_pcm_period_eleapsed() calls of the different devices will drift. 
+To avoid this the aloop plugin can automatically use the right timer.
+If this feature is not implemented the user has to use snd_pcm_link() to 
+trigger snd_pcm_start() in sync but also has to configure the aloop 
+plugin to use the right sound timer.
+May be the linked cards can change during runtime of the system. Without 
+this feature the aloop kernel driver has to be loaded with different 
+kernel parameters
+to select the right timer.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ALSA controls cannot be used easily. Selecting the sound timer by the 
+card number could be error prone because the card ID could change 
+between system starts.
+Therefore an ALSA control supporting the card name should be used. This 
+could be for example done via an ALSA enum control. But in this case the 
+names of all sound cards of the system has to be available
+on aloop probe() call. But at this point in time the sound cards probed 
+after aloop are not available. Therefore only the sound timers of the 
+sound cards probed before aloop are selectable.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 36e075ce74ec4e261a638bf09d10b3348ca4d883 Mon Sep 17 00:00:00 2001
-From: Jenny TC <jenny.tc@intel.com>
-Date: Sat, 23 Mar 2019 18:40:10 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: enable S24_LE format support
-
-To enable S24_LE format, sample_type in topology fw has to be set to 1.
-But sample_type defined in topology firmware configuration is not
-getting reflected in the dsp param. This patch sets sample_type in base
-config so that the sample type defined in the topology firmware is reflected
-in the dsp params. This issues was uncovered while debugging the S24_LE format
-which require the MSB byte in 32 bit word to be skipped. Setting sample_type
-in topology firmware to 1 helps to skip MSB byte word.
-
-Signed-off-by: Jenny TC <jenny.tc@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-messages.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 28c4806b196a..4bf70b4429f0 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -483,6 +483,7 @@ static void skl_set_base_module_format(struct skl_sst *ctx,
- 	base_cfg->audio_fmt.bit_depth = format->bit_depth;
- 	base_cfg->audio_fmt.valid_bit_depth = format->valid_bit_depth;
- 	base_cfg->audio_fmt.ch_cfg = format->ch_cfg;
-+	base_cfg->audio_fmt.sample_type = format->sample_type;
- 
- 	dev_dbg(ctx->dev, "bit_depth=%x valid_bd=%x ch_config=%x\n",
- 			format->bit_depth, format->valid_bit_depth,
--- 
-2.20.1
+>
+>
+> thanks,
+>
+> Takashi
