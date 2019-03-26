@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: Add Audio Mixer machine driver" to
-	the asoc tree
-Date: Tue, 26 Mar 2019 14:42:42 +0000 (GMT)
-Message-ID: <20190326144242.11A7D1121B57@debutante.sirena.org.uk>
+Subject: Applied "ASoC: tlv320aic32x4: Only enable with common
+	clock" to the asoc tree
+Date: Tue, 26 Mar 2019 14:42:50 +0000 (GMT)
+Message-ID: <20190326144250.9CA611121B57@debutante.sirena.org.uk>
+References: <20190326131835.8925-1-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 482BDF801D9
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 15:42:44 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBA24F89723
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 15:42:57 +0100 (CET)
+In-Reply-To: <20190326131835.8925-1-broonie@kernel.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Annaliese McDermond <nh6z@nh6z.net>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: Add Audio Mixer machine driver
+   ASoC: tlv320aic32x4: Only enable with common clock
 
 has been applied to the asoc tree at
 
@@ -53,392 +55,48 @@ to this mail.
 Thanks,
 Mark
 
->From b86ef5367761603df5f66ce08fb014b991f6b51d Mon Sep 17 00:00:00 2001
-From: Viorel Suman <viorel.suman@nxp.com>
-Date: Tue, 22 Jan 2019 11:14:30 +0000
-Subject: [PATCH] ASoC: fsl: Add Audio Mixer machine driver
+>From 64f01d2b5ccc621c3aa66b82daf9154f5581f36a Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Tue, 26 Mar 2019 13:10:13 +0000
+Subject: [PATCH] ASoC: tlv320aic32x4: Only enable with common clock
 
-This patch implements Audio Mixer machine driver for NXP iMX8 SOCs.
-It connects together Audio Mixer and related SAI instances.
+Some architectures do not yet support the common clock API at all but
+the tlv320aic32x4 driver now requires it.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/Kconfig      |   9 +
- sound/soc/fsl/Makefile     |   2 +
- sound/soc/fsl/imx-audmix.c | 327 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 338 insertions(+)
- create mode 100644 sound/soc/fsl/imx-audmix.c
+ sound/soc/codecs/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 0af2e056d211..d87c842806bd 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -303,6 +303,15 @@ config SND_SOC_FSL_ASOC_CARD
- 	 CS4271, CS4272 and SGTL5000.
- 	 Say Y if you want to add support for Freescale Generic ASoC Sound Card.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 6e99320c79b8..419142111b6d 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -180,8 +180,8 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
+ 	select SND_SOC_TLV320AIC26 if SPI_MASTER
+ 	select SND_SOC_TLV320AIC31XX if I2C
+-	select SND_SOC_TLV320AIC32X4_I2C if I2C
+-	select SND_SOC_TLV320AIC32X4_SPI if SPI_MASTER
++	select SND_SOC_TLV320AIC32X4_I2C if I2C && COMMON_CLK
++	select SND_SOC_TLV320AIC32X4_SPI if SPI_MASTER && COMMON_CLK
+ 	select SND_SOC_TLV320AIC3X if I2C
+ 	select SND_SOC_TPA6130A2 if I2C
+ 	select SND_SOC_TLV320DAC33 if I2C
+@@ -1110,11 +1110,13 @@ config SND_SOC_TLV320AIC32X4
+ config SND_SOC_TLV320AIC32X4_I2C
+ 	tristate "Texas Instruments TLV320AIC32x4 audio CODECs - I2C"
+ 	depends on I2C
++	depends on COMMON_CLK
+ 	select SND_SOC_TLV320AIC32X4
  
-+config SND_SOC_IMX_AUDMIX
-+	tristate "SoC Audio support for i.MX boards with AUDMIX"
-+	select SND_SOC_FSL_AUDMIX
-+	select SND_SOC_FSL_SAI
-+	help
-+	  SoC Audio support for i.MX boards with Audio Mixer
-+	  Say Y if you want to add support for SoC audio on an i.MX board with
-+	  an Audio Mixer.
-+
- endif # SND_IMX_SOC
+ config SND_SOC_TLV320AIC32X4_SPI
+ 	tristate "Texas Instruments TLV320AIC32x4 audio CODECs - SPI"
+ 	depends on SPI_MASTER
++	depends on COMMON_CLK
+ 	select SND_SOC_TLV320AIC32X4
  
- endmenu
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index 4172d5a3e36c..c0dd04422fe9 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -62,6 +62,7 @@ snd-soc-imx-es8328-objs := imx-es8328.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-spdif-objs := imx-spdif.o
- snd-soc-imx-mc13783-objs := imx-mc13783.o
-+snd-soc-imx-audmix-objs := imx-audmix.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
-@@ -71,3 +72,4 @@ obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-+obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-new file mode 100644
-index 000000000000..72e37ca6cfbb
---- /dev/null
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -0,0 +1,327 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2017 NXP
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/clk.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/pm_runtime.h>
-+#include "fsl_sai.h"
-+#include "fsl_audmix.h"
-+
-+struct imx_audmix {
-+	struct platform_device *pdev;
-+	struct snd_soc_card card;
-+	struct platform_device *audmix_pdev;
-+	struct platform_device *out_pdev;
-+	struct clk *cpu_mclk;
-+	int num_dai;
-+	struct snd_soc_dai_link *dai;
-+	int num_dai_conf;
-+	struct snd_soc_codec_conf *dai_conf;
-+	int num_dapm_routes;
-+	struct snd_soc_dapm_route *dapm_routes;
-+};
-+
-+static const u32 imx_audmix_rates[] = {
-+	8000, 12000, 16000, 24000, 32000, 48000, 64000, 96000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list imx_audmix_rate_constraints = {
-+	.count = ARRAY_SIZE(imx_audmix_rates),
-+	.list = imx_audmix_rates,
-+};
-+
-+static int imx_audmix_fe_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct imx_audmix *priv = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct device *dev = rtd->card->dev;
-+	unsigned long clk_rate = clk_get_rate(priv->cpu_mclk);
-+	int ret;
-+
-+	if (clk_rate % 24576000 == 0) {
-+		ret = snd_pcm_hw_constraint_list(runtime, 0,
-+						 SNDRV_PCM_HW_PARAM_RATE,
-+						 &imx_audmix_rate_constraints);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		dev_warn(dev, "mclk may be not supported %lu\n", clk_rate);
-+	}
-+
-+	ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS,
-+					   1, 8);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
-+					    FSL_AUDMIX_FORMATS);
-+}
-+
-+static int imx_audmix_fe_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct device *dev = rtd->card->dev;
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	unsigned int fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF;
-+	u32 channels = params_channels(params);
-+	int ret, dir;
-+
-+	/* For playback the AUDMIX is slave, and for record is master */
-+	fmt |= tx ? SND_SOC_DAIFMT_CBS_CFS : SND_SOC_DAIFMT_CBM_CFM;
-+	dir  = tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN;
-+
-+	/* set DAI configuration */
-+	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
-+	if (ret) {
-+		dev_err(dev, "failed to set cpu dai fmt: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, FSL_SAI_CLK_MAST1, 0, dir);
-+	if (ret) {
-+		dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * Per datasheet, AUDMIX expects 8 slots and 32 bits
-+	 * for every slot in TDM mode.
-+	 */
-+	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, BIT(channels) - 1,
-+				       BIT(channels) - 1, 8, 32);
-+	if (ret)
-+		dev_err(dev, "failed to set cpu dai tdm slot: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int imx_audmix_be_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct device *dev = rtd->card->dev;
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	unsigned int fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF;
-+	int ret;
-+
-+	if (!tx)
-+		return 0;
-+
-+	/* For playback the AUDMIX is slave */
-+	fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+
-+	/* set AUDMIX DAI configuration */
-+	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
-+	if (ret)
-+		dev_err(dev, "failed to set AUDMIX DAI fmt: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_ops imx_audmix_fe_ops = {
-+	.startup = imx_audmix_fe_startup,
-+	.hw_params = imx_audmix_fe_hw_params,
-+};
-+
-+static struct snd_soc_ops imx_audmix_be_ops = {
-+	.hw_params = imx_audmix_be_hw_params,
-+};
-+
-+static int imx_audmix_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *audmix_np = NULL, *out_cpu_np = NULL;
-+	struct platform_device *audmix_pdev = NULL;
-+	struct platform_device *cpu_pdev;
-+	struct of_phandle_args args;
-+	struct imx_audmix *priv;
-+	int i, num_dai, ret;
-+	const char *fe_name_pref = "HiFi-AUDMIX-FE-";
-+	char *be_name, *be_pb, *be_cp, *dai_name, *capture_dai_name;
-+
-+	if (pdev->dev.parent) {
-+		audmix_np = pdev->dev.parent->of_node;
-+	} else {
-+		dev_err(&pdev->dev, "Missing parent device.\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!audmix_np) {
-+		dev_err(&pdev->dev, "Missign DT node for parent device.\n");
-+		return -EINVAL;
-+	}
-+
-+	audmix_pdev = of_find_device_by_node(audmix_np);
-+	if (!audmix_pdev) {
-+		dev_err(&pdev->dev, "Missing AUDMIX platform device for %s\n",
-+			np->full_name);
-+		return -EINVAL;
-+	}
-+
-+	num_dai = of_count_phandle_with_args(audmix_np, "dais", NULL);
-+	if (num_dai != FSL_AUDMIX_MAX_DAIS) {
-+		dev_err(&pdev->dev, "Need 2 dais to be provided for %s\n",
-+			audmix_np->full_name);
-+		return -EINVAL;
-+	}
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->num_dai = 2 * num_dai;
-+	priv->dai = devm_kzalloc(&pdev->dev, priv->num_dai *
-+				 sizeof(struct snd_soc_dai_link), GFP_KERNEL);
-+	if (!priv->dai)
-+		return -ENOMEM;
-+
-+	priv->num_dai_conf = num_dai;
-+	priv->dai_conf = devm_kzalloc(&pdev->dev, priv->num_dai_conf *
-+				      sizeof(struct snd_soc_codec_conf),
-+				      GFP_KERNEL);
-+	if (!priv->dai_conf)
-+		return -ENOMEM;
-+
-+	priv->num_dapm_routes = 3 * num_dai;
-+	priv->dapm_routes = devm_kzalloc(&pdev->dev, priv->num_dapm_routes *
-+					 sizeof(struct snd_soc_dapm_route),
-+					 GFP_KERNEL);
-+	if (!priv->dapm_routes)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num_dai; i++) {
-+		ret = of_parse_phandle_with_args(audmix_np, "dais", NULL, i,
-+						 &args);
-+		if (ret < 0) {
-+			dev_err(&pdev->dev, "of_parse_phandle_with_args failed\n");
-+			return ret;
-+		}
-+
-+		cpu_pdev = of_find_device_by_node(args.np);
-+		if (!cpu_pdev) {
-+			dev_err(&pdev->dev, "failed to find SAI platform device\n");
-+			return -EINVAL;
-+		}
-+
-+		dai_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s%s",
-+					  fe_name_pref, args.np->full_name + 1);
-+
-+		dev_info(pdev->dev.parent, "DAI FE name:%s\n", dai_name);
-+
-+		if (i == 0) {
-+			out_cpu_np = args.np;
-+			capture_dai_name =
-+				devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s %s",
-+					       dai_name, "CPU-Capture");
-+		}
-+
-+		priv->dai[i].name = dai_name;
-+		priv->dai[i].stream_name = "HiFi-AUDMIX-FE";
-+		priv->dai[i].codec_dai_name = "snd-soc-dummy-dai";
-+		priv->dai[i].codec_name = "snd-soc-dummy";
-+		priv->dai[i].cpu_of_node = args.np;
-+		priv->dai[i].cpu_dai_name = dev_name(&cpu_pdev->dev);
-+		priv->dai[i].platform_of_node = args.np;
-+		priv->dai[i].dynamic = 1;
-+		priv->dai[i].dpcm_playback = 1;
-+		priv->dai[i].dpcm_capture = (i == 0 ? 1 : 0);
-+		priv->dai[i].ignore_pmdown_time = 1;
-+		priv->dai[i].ops = &imx_audmix_fe_ops;
-+
-+		/* Add AUDMIX Backend */
-+		be_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+					 "audmix-%d", i);
-+		be_pb = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+				       "AUDMIX-Playback-%d", i);
-+		be_cp = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+				       "AUDMIX-Capture-%d", i);
-+
-+		priv->dai[num_dai + i].name = be_name;
-+		priv->dai[num_dai + i].codec_dai_name = "snd-soc-dummy-dai";
-+		priv->dai[num_dai + i].codec_name = "snd-soc-dummy";
-+		priv->dai[num_dai + i].cpu_of_node = audmix_np;
-+		priv->dai[num_dai + i].cpu_dai_name = be_name;
-+		priv->dai[num_dai + i].platform_name = "snd-soc-dummy";
-+		priv->dai[num_dai + i].no_pcm = 1;
-+		priv->dai[num_dai + i].dpcm_playback = 1;
-+		priv->dai[num_dai + i].dpcm_capture  = 1;
-+		priv->dai[num_dai + i].ignore_pmdown_time = 1;
-+		priv->dai[num_dai + i].ops = &imx_audmix_be_ops;
-+
-+		priv->dai_conf[i].of_node = args.np;
-+		priv->dai_conf[i].name_prefix = dai_name;
-+
-+		priv->dapm_routes[i].source =
-+			devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s %s",
-+				       dai_name, "CPU-Playback");
-+		priv->dapm_routes[i].sink = be_pb;
-+		priv->dapm_routes[num_dai + i].source   = be_pb;
-+		priv->dapm_routes[num_dai + i].sink     = be_cp;
-+		priv->dapm_routes[2 * num_dai + i].source = be_cp;
-+		priv->dapm_routes[2 * num_dai + i].sink   = capture_dai_name;
-+	}
-+
-+	cpu_pdev = of_find_device_by_node(out_cpu_np);
-+	if (!cpu_pdev) {
-+		dev_err(&pdev->dev, "failed to find SAI platform device\n");
-+		return -EINVAL;
-+	}
-+	priv->cpu_mclk = devm_clk_get(&cpu_pdev->dev, "mclk1");
-+	if (IS_ERR(priv->cpu_mclk)) {
-+		ret = PTR_ERR(priv->cpu_mclk);
-+		dev_err(&cpu_pdev->dev, "failed to get DAI mclk1: %d\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	priv->audmix_pdev = audmix_pdev;
-+	priv->out_pdev  = cpu_pdev;
-+
-+	priv->card.dai_link = priv->dai;
-+	priv->card.num_links = priv->num_dai;
-+	priv->card.codec_conf = priv->dai_conf;
-+	priv->card.num_configs = priv->num_dai_conf;
-+	priv->card.dapm_routes = priv->dapm_routes;
-+	priv->card.num_dapm_routes = priv->num_dapm_routes;
-+	priv->card.dev = pdev->dev.parent;
-+	priv->card.owner = THIS_MODULE;
-+	priv->card.name = "imx-audmix";
-+
-+	platform_set_drvdata(pdev, &priv->card);
-+	snd_soc_card_set_drvdata(&priv->card, priv);
-+
-+	ret = devm_snd_soc_register_card(pdev->dev.parent, &priv->card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed\n");
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static struct platform_driver imx_audmix_driver = {
-+	.probe = imx_audmix_probe,
-+	.driver = {
-+		.name = "imx-audmix",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+module_platform_driver(imx_audmix_driver);
-+
-+MODULE_DESCRIPTION("NXP AUDMIX ASoC machine driver");
-+MODULE_AUTHOR("Viorel Suman <viorel.suman@nxp.com>");
-+MODULE_ALIAS("platform:imx-audmix");
-+MODULE_LICENSE("GPL v2");
+ config SND_SOC_TLV320AIC3X
 -- 
 2.20.1
