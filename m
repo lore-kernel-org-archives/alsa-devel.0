@@ -1,19 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: emux: Add support of loading GUS-patch
-Date: Tue, 26 Mar 2019 17:36:01 +0100
-Message-ID: <20190326163601.19261-1-tiwai@suse.de>
+From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
+Subject: R:  snd_pcm_writei 0 frames
+Date: Tue, 26 Mar 2019 16:40:38 +0000
+Message-ID: <AM5P192MB018096422734E192742DAA52C55F0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+References: <AM5P192MB01806DDBC9D07CD4C6425187C55E0@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+ <31a51ad0-4740-7ba7-7b2d-a9cd9262b1fc@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from EUR02-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr20044.outbound.protection.outlook.com [40.107.2.44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B40F5F801D8
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 17:36:03 +0100 (CET)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 44972ABC1
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 16:36:02 +0000 (UTC)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F5B8F801D9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 17:40:40 +0100 (CET)
+In-Reply-To: <31a51ad0-4740-7ba7-7b2d-a9cd9262b1fc@perex.cz>
+Content-Language: it-IT
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +25,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It's a feature request for the ancient sutff, but it's still valid;
-the loading of a GUS-patch isn't available via hwdep device although
-it's supported over OSS sequencer.  The only missing piece is the call
-of snd_soundfont_load_guspatch() in synth emux hwdep code.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/synth/emux/emux_hwdep.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/synth/emux/emux_hwdep.c b/sound/synth/emux/emux_hwdep.c
-index d9fcae071b47..fae48d108b97 100644
---- a/sound/synth/emux/emux_hwdep.c
-+++ b/sound/synth/emux/emux_hwdep.c
-@@ -39,6 +39,11 @@ snd_emux_hwdep_load_patch(struct snd_emux *emu, void __user *arg)
- 	if (copy_from_user(&patch, arg, sizeof(patch)))
- 		return -EFAULT;
- 
-+	if (patch.key == GUS_PATCH)
-+		return snd_soundfont_load_guspatch(emu->sflist, arg,
-+						   patch.len + sizeof(patch),
-+						   TMP_CLIENT_ID);
-+
- 	if (patch.type >= SNDRV_SFNT_LOAD_INFO &&
- 	    patch.type <= SNDRV_SFNT_PROBE_DATA) {
- 		err = snd_soundfont_load(emu->sflist, arg, patch.len + sizeof(patch), TMP_CLIENT_ID);
--- 
-2.16.4
+SGkgSmFyb3NsYXYsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBzdWdnZXN0aW9uLiBCdXQgdW5mb3J0
+dW5hdGVseSB0aGUgcHJvYmxlbSBwZXJzaXN0cy4NCg0KR2l1bGlhbm8NCg0KLS0tLS1NZXNzYWdn
+aW8gb3JpZ2luYWxlLS0tLS0NCkRhOiBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PiAN
+CkludmlhdG86IGx1bmVkw6wgMjUgbWFyem8gMjAxOSAxNjoxNQ0KQTogR2l1bGlhbm8gWmFubmV0
+dGkgLSBBUlQgUy5wLkEuIDxnaXVsaWFuby56YW5uZXR0aUBhcnRncm91cC1zcGEuY29tPjsgYWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQpDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
+Pg0KT2dnZXR0bzogUmU6IFthbHNhLWRldmVsXSBzbmRfcGNtX3dyaXRlaSAwIGZyYW1lcw0KDQpE
+bmUgMjUuIDAzLiAxOSB2IDE1OjE2IEdpdWxpYW5vIFphbm5ldHRpIC0gQVJUIFMucC5BLiBuYXBz
+YWwoYSk6DQo+IEhpLA0KPiANCj4gSSd2ZSB0aGUgZm9sbG93aW5nIGNvbmZpZ3VyYXRpb24gaW4g
+bXkgYXNvdW5kLmNvbmY6DQo+IA0KPiB8LS0tLS18IC0gLSA+IHwtLS0tLXwgLSAtID4gfC0tLS0t
+fCAtIC0gPiB8LS0tLS18IC0gLSA+IHwtLS0tLXwgLSAtID4gDQo+IHwtLS0tLXwgfC0tLS0tLS0t
+LS18DQo+IHxwbHVnIHwgICAgICAgfCAgICAgfCAtIC0gPiB8ICAgICB8IC0gLSA+IHwgICAgIHwg
+LSAtID4gfCAgICAgfCAtIC0gPiB8IChvdXRwdXQpIHwNCj4gfC0tLS0tfCAtIC0gPiB8ICAgICB8
+IC0gLSA+IHwgICAgIHwgLSAtID4gfCAgICAgfCAtIC0gPiB8ICAgICB8IC0gLSA+IHwgICAgaHcg
+ICAgfA0KPiAgICAgICAgICAgICAgIHwgICAgIHwgLSAtID4gfCAgICAgfCAtIC0gPiB8ICAgICB8
+IC0gLSA+IHwgICAgIHwgLSAtID4gfCAgICAgICAgICB8DQo+ICAgICAgICAgICAgICAgfCAgICAg
+fCAgICAgICB8ICAgICB8ICAgICAgIHxyb3V0ZXwgLSAtID4gfGRtaXggfCAtIC0gPiB8ICAgICAg
+ICAgIHwNCj4gICAgICAgICAgICAgICB8ICAgICB8ICAgICAgIHwgICAgIHwgICAgICAgfCAgICAg
+fCAtIC0gPiB8ICAgICB8IC0gLSA+IHwgICAgICAgICAgfA0KPiAgICAgICAgICAgICAgIHwgICAg
+IHwgICAgICAgfCAgICAgfCAgICAgICB8ICAgICB8IC0gLSA+IHwgICAgIHwgLSAtID4gfCAgICAg
+ICAgICB8DQo+ICAgICAgICAgICAgICAgfCAgICAgfCAgICAgICB8ICAgICB8ICAgICAgIHwtLS0t
+LXwgLSAtID4gfC0tLS0tfCAtIC0gPiB8LS0tLS0tLS0tLXwNCj4gICAgICAgICAgICAgICB8cm91
+dGV8ICAgICAgIHxtdWx0aXwNCj4gICAgICAgICAgICAgICB8ICAgICB8IC0gLSA+IHwgICAgIHwN
+Cj4gICAgICAgICAgICAgICB8ICAgICB8IC0gLSA+IHwgICAgIHwgLSAtID4gfC0tLS18IC0gLSA+
+IHwtLS0tfCAtIC0gPiB8LS0tLS0tLS0tLXwNCj4gICAgICAgICAgICAgICB8ICAgICB8IC0gLSA+
+IHwgICAgIHwgLSAtID4gfCAgICB8IC0gLSA+IHwgICAgfCAtIC0gPiB8KGxvb3BiYWNrKXwNCj4g
+ICAgICAgICAgICAgICB8LS0tLS18IC0gLSA+IHwgICAgIHwgLSAtID4gfHBsdWd8IC0gLSA+IHxk
+bWl4fCAtIC0gPiB8ICAgIGh3ICAgIHwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwt
+LS0tLXwgLSAtID4gfC0tLS18IC0gLSA+IHwtLS0tfCAtIC0gPiANCj4gfC0tLS0tLS0tLS18DQo+
+IA0KPiBBcyB5b3UgY2FuIHNlZSBJJ20gdXNpbmcgYSBsb29wYmFjayBpbnRlcmZhY2UuDQo+IEkg
+b3BlbiB0aGUgcGNtIHBsdWcgaW4gdGhlIGJsb2NrIG1vZGUgdG8gd3JpdGUuDQo+IA0KPiB3cml0
+dGVuRnJhbWVzID0gc25kX3BjbV93cml0ZWkoaGFuZGxlLCBidWZmZXJUb1dyaXRlLCANCj4gYnVm
+ZmVyVG9Xcml0ZVNpemUpOw0KPiANCj4gVXNpbmcgdGhlIGNvbmZpZ3VyYXRpb24gYWJvdmUgSSBo
+YXZlIHNldmVyYWwgIndyaXRlcyIgd2l0aCAwIHdyaXR0ZW4gZnJhbWVzLg0KPiBJdCBzZWVtcyBs
+aWtlIHRoZSBzbmRfcGNtX3dyaXRlaSBkb2VzIG5vdCBob2xkIHVudGlsIGRhdGEgd2lsbCBiZSB3
+cml0dGVuLg0KPiANCj4gSW4gZ2VuZXJhbCwgMCB3cml0dGVuIGZyYW1lcyBzb3VuZHMgd2VpcmQg
+dG8gbWUsIGJlY2F1c2Ugc25kX3BjbV93cml0ZWkgc2hvdWxkIGJsb2NrIGl0c2VsZiBpZiBubyBz
+cGFjZSBpcyBhdmFpbGFibGUgaW4gdGhlIGNpcmN1bGFyIGJ1ZmZlciByaWdodD8NCj4gDQo+IFNv
+LCBteSBxdWVzdGlvbnMgYXJlIHR3bzoNCj4gDQo+ICAgMS4gIFdyaXRpbmcgMCBmcmFtZXMgaXMg
+YW4gZXhwZWN0ZWQgYmVoYXZpb3VyIChyZWdhcmRsZXNzIG9mIG15IGNvbmZpZ3VyYXRpb24gaW4g
+dGhlIGFzb3VuZC5jb25mKT8gSW4gd2hhdCBzY2VuYXJpb3MgY2FuIEkgaGF2ZSB0aGF0Pw0KPiAg
+IDIuICBIb3cgbXkgY29uZmlndXJhdGlvbiBjb3VsZCB0cmlnZ2VyIHRoaXMgYmVoYXZpb3VyPw0K
+DQpJIGd1ZXNzIHRoYXQgc25kX3BjbV9tdWx0aV9tYXlfd2FpdF9mb3JfYXZhaWxfbWluKCkgaW1w
+bGVtZW50YXRpb24gaXMgdGhlIGN1bHByaXQuIEl0IHNob3VsZCB0YWtlIGluIGFjY291bnQgYWxs
+IHNsYXZlcyAtIG5vdCBvbmx5IHRoZSBtYXN0ZXIgb25lLg0KDQpDb3VsZCB5b3UgdGVzdCB0aGlz
+IG1vZGlmaWNhdGlvbj8NCg0KZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX211bHRpLmMgYi9zcmMv
+cGNtL3BjbV9tdWx0aS5jIGluZGV4IDI4NDQwMzc4Li4wYWZkMzFiZiAxMDA2NDQNCi0tLSBhL3Ny
+Yy9wY20vcGNtX211bHRpLmMNCisrKyBiL3NyYy9wY20vcGNtX211bHRpLmMNCkBAIC03NzUsMTEg
+Kzc3NSwxNSBAQCBzdGF0aWMgaW50IHNuZF9wY21fbXVsdGlfbW1hcChzbmRfcGNtX3QgKnBjbSkN
+CiAgICAgICAgcmV0dXJuIDA7DQogfQ0KDQotc3RhdGljIGludCBzbmRfcGNtX211bHRpX21heV93
+YWl0X2Zvcl9hdmFpbF9taW4oc25kX3BjbV90ICpwY20sIHNuZF9wY21fdWZyYW1lc190IGF2YWls
+IEFUVFJJQlVURV9VTlVTRUQpDQorc3RhdGljIGludCBzbmRfcGNtX211bHRpX21heV93YWl0X2Zv
+cl9hdmFpbF9taW4oc25kX3BjbV90ICpwY20sIA0KK3NuZF9wY21fdWZyYW1lc190IGF2YWlsKQ0K
+IHsNCiAgICAgICAgc25kX3BjbV9tdWx0aV90ICptdWx0aSA9IHBjbS0+cHJpdmF0ZV9kYXRhOw0K
+LSAgICAgICBzbmRfcGNtX3QgKnNsYXZlID0gbXVsdGktPnNsYXZlc1ttdWx0aS0+bWFzdGVyX3Ns
+YXZlXS5wY207DQotICAgICAgIHJldHVybiBzbmRfcGNtX21heV93YWl0X2Zvcl9hdmFpbF9taW4o
+c2xhdmUsIHNuZF9wY21fbW1hcF9hdmFpbChzbGF2ZSkpOw0KKyAgICAgICB1bnNpZ25lZCBpbnQg
+aTsNCisgICAgICAgZm9yIChpID0gMDsgaSA8IG11bHRpLT5zbGF2ZXNfY291bnQ7ICsraSkgew0K
+KyAgICAgICAgICAgICAgIGlmIChzbmRfcGNtX21heV93YWl0X2Zvcl9hdmFpbF9taW4obXVsdGkt
+PnNsYXZlc1tpXS5wY20sIGF2YWlsKSkNCisgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAx
+Ow0KKyAgICAgICB9DQorICAgICAgIHJldHVybiAwOw0KIH0NCg0KIHN0YXRpYyBzbmRfcGNtX2No
+bWFwX3F1ZXJ5X3QgKipzbmRfcGNtX211bHRpX3F1ZXJ5X2NobWFwcyhzbmRfcGNtX3QgKnBjbSkN
+Cg0KCQkJCQlKYXJvc2xhdg0KDQoNCi0tDQpKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6
+Pg0KTGludXggU291bmQgTWFpbnRhaW5lcjsgQUxTQSBQcm9qZWN0OyBSZWQgSGF0LCBJbmMuDQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
