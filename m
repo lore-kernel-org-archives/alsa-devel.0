@@ -1,7 +1,7 @@
 From: <twischer@de.adit-jv.com>
-Subject: [PATCH 06/10] ALSA: aloop: Rename all jiffies timer specific functions
-Date: Tue, 26 Mar 2019 08:49:30 +0100
-Message-ID: <1553586574-18608-2-git-send-email-twischer@de.adit-jv.com>
+Subject: [PATCH 09/10] ALSA: pcm: Add snd_pcm_ops for snd_pcm_link()
+Date: Tue, 26 Mar 2019 08:49:33 +0100
+Message-ID: <1553586574-18608-5-git-send-email-twischer@de.adit-jv.com>
 References: <1553529644-5654-1-git-send-email-twischer@de.adit-jv.com>
  <1553586574-18608-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
@@ -15,98 +15,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
-This commit does not change the behaviour. It only seperates the jiffies
-timer specific implementation from the generic part.
+snd_pcm_link() can be called by the user as long as the device is not
+yet started. Therefore currently a driver which wants to iterate over
+the linked substreams has to do this at the start trigger. But the start
+trigger should not block for a long time. Therefore there is no callback
+which can be used to iterate over the linked substreams without delaying
+the start trigger.
+This patch introduces a new callback function which will be called after
+the linked substream list was updated by snd_pcm_link(). This callback
+function is allowed to block for a longer time without interfering the
+synchronized start up of linked substreams.
 
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 ---
- sound/drivers/aloop.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ include/sound/pcm.h     |  1 +
+ sound/core/pcm_native.c | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 422d130..3105757 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -202,7 +202,7 @@ static inline unsigned int get_rate_shift(struct loopback_pcm *dpcm)
- }
- 
- /* call in cable->lock */
--static int loopback_timer_start(struct loopback_pcm *dpcm)
-+static int loopback_jiffies_timer_start(struct loopback_pcm *dpcm)
- {
- 	unsigned long tick;
- 	unsigned int rate_shift = get_rate_shift(dpcm);
-@@ -223,7 +223,7 @@ static int loopback_timer_start(struct loopback_pcm *dpcm)
- }
- 
- /* call in cable->lock */
--static inline int loopback_timer_stop(struct loopback_pcm *dpcm)
-+static inline int loopback_jiffies_timer_stop(struct loopback_pcm *dpcm)
- {
- 	del_timer(&dpcm->timer);
- 	dpcm->timer.expires = 0;
-@@ -231,7 +231,7 @@ static inline int loopback_timer_stop(struct loopback_pcm *dpcm)
- 	return 0;
- }
- 
--static inline int loopback_timer_stop_sync(struct loopback_pcm *dpcm)
-+static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
- {
- 	del_timer_sync(&dpcm->timer);
- 
-@@ -517,7 +517,8 @@ static inline void bytepos_finish(struct loopback_pcm *dpcm,
- }
- 
- /* call in cable->lock */
--static unsigned int loopback_pos_update(struct loopback_cable *cable)
-+static unsigned int loopback_jiffies_timer_pos_update
-+		(struct loopback_cable *cable)
- {
- 	struct loopback_pcm *dpcm_play =
- 			cable->streams[SNDRV_PCM_STREAM_PLAYBACK];
-@@ -570,14 +571,15 @@ static unsigned int loopback_pos_update(struct loopback_cable *cable)
- 	return running;
- }
- 
--static void loopback_timer_function(struct timer_list *t)
-+static void loopback_jiffies_timer_function(struct timer_list *t)
- {
- 	struct loopback_pcm *dpcm = from_timer(dpcm, t, timer);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&dpcm->cable->lock, flags);
--	if (loopback_pos_update(dpcm->cable) & (1 << dpcm->substream->stream)) {
--		loopback_timer_start(dpcm);
-+	if (loopback_jiffies_timer_pos_update(dpcm->cable) &
-+			(1 << dpcm->substream->stream)) {
-+		loopback_jiffies_timer_start(dpcm);
- 		if (dpcm->period_update_pending) {
- 			dpcm->period_update_pending = 0;
- 			spin_unlock_irqrestore(&dpcm->cable->lock, flags);
-@@ -748,18 +750,18 @@ static void free_cable(struct snd_pcm_substream *substream)
- 
- static int loopback_jiffies_timer_open(struct loopback_pcm *dpcm)
- {
--	timer_setup(&dpcm->timer, loopback_timer_function, 0);
-+	timer_setup(&dpcm->timer, loopback_jiffies_timer_function, 0);
- 
- 	return 0;
- }
- 
- static struct loopback_ops loopback_jiffies_timer_ops = {
- 	.open = loopback_jiffies_timer_open,
--	.start = loopback_timer_start,
--	.stop = loopback_timer_stop,
--	.stop_sync = loopback_timer_stop_sync,
--	.close_substream = loopback_timer_stop_sync,
--	.pos_update = loopback_pos_update,
-+	.start = loopback_jiffies_timer_start,
-+	.stop = loopback_jiffies_timer_stop,
-+	.stop_sync = loopback_jiffies_timer_stop_sync,
-+	.close_substream = loopback_jiffies_timer_stop_sync,
-+	.pos_update = loopback_jiffies_timer_pos_update,
- 	.dpcm_info = loopback_jiffies_timer_dpcm_info,
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 18bd8c3..a7e5dd2 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -90,6 +90,7 @@ struct snd_pcm_ops {
+ 			     unsigned long offset);
+ 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
+ 	int (*ack)(struct snd_pcm_substream *substream);
++	int (*link_changed)(struct snd_pcm_substream *substream);
  };
  
+ /*
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index f731f90..57a8a66 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1981,6 +1981,27 @@ static bool is_pcm_file(struct file *file)
+ /*
+  * PCM link handling
+  */
++/* Note: call with snd_pcm_link_rwsem locked */
++static int  snd_pcm_link_changed(struct snd_pcm_substream * const substream)
++{
++	struct snd_pcm_substream *s;
++
++	/* snd_pcm_link_rwsem is down whenever the link_list is changed.
++	 * Therefore this lock is sufficent for the iteration.
++	 */
++	snd_pcm_group_for_each_entry(s, substream) {
++		int err;
++
++		if (!s->ops->link_changed)
++			continue;
++		err = s->ops->link_changed(s);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ {
+ 	int res = 0;
+@@ -2030,6 +2051,9 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 	snd_pcm_group_assign(substream1, target_group);
+ 	snd_pcm_stream_unlock(substream1);
+ 	snd_pcm_group_unlock_irq(target_group, nonatomic);
++
++	if (res >= 0)
++		res = snd_pcm_link_changed(substream);
+  _end:
+ 	up_write(&snd_pcm_link_rwsem);
+  _nolock:
+@@ -2076,6 +2100,11 @@ static int snd_pcm_unlink(struct snd_pcm_substream *substream)
+ 	snd_pcm_group_unlock_irq(group, nonatomic);
+ 	if (do_free)
+ 		kfree(group);
++	if (res >= 0)
++		res = snd_pcm_link_changed(substream);
++	/* Also signal substream which was removed */
++	if (res >= 0 && substream->ops->link_changed)
++		res = substream->ops->link_changed(substream);
+ 
+        _end:
+ 	up_write(&snd_pcm_link_rwsem);
 -- 
 2.7.4
