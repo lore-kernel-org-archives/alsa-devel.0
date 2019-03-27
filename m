@@ -1,40 +1,42 @@
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 45/63] ASoC: fsl-asoc-card: fix
-	object reference leaks in fsl_asoc_card_probe
-Date: Wed, 27 Mar 2019 14:23:05 -0400
-Message-ID: <20190327182323.18577-45-sashal@kernel.org>
-References: <20190327182323.18577-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 3.18 19/41] SoC: imx-sgtl5000: add missing put_device()
+Date: Wed, 27 Mar 2019 14:24:56 -0400
+Message-ID: <20190327182518.19394-19-sashal@kernel.org>
+References: <20190327182518.19394-1-sashal@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAF30F80CAB
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 19:24:45 +0100 (CET)
-In-Reply-To: <20190327182323.18577-1-sashal@kernel.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190327182518.19394-1-sashal@kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, wen yang <yellowriver2010@hotmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Wen Yang <yellowriver2010@hotmil.com>, Fabio Estevam <festevam@gmail.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Wen Yang <yellowriver2010@hotmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: wen yang <yellowriver2010@hotmail.com>
+From: Wen Yang <yellowriver2010@hotmail.com>
 
-[ Upstream commit 11907e9d3533648615db08140e3045b829d2c141 ]
+[ Upstream commit 8fa857da9744f513036df1c43ab57f338941ae7d ]
 
 The of_find_device_by_node() takes a reference to the underlying device
 structure, we should release that reference.
 
-Signed-off-by: Wen Yang <yellowriver2010@hotmil.com>
+Detected by coccinelle with the following warnings:
+./sound/soc/fsl/imx-sgtl5000.c:169:1-7: ERROR: missing put_device;
+call of_find_device_by_node on line 105, but without a corresponding
+object release within this function.
+./sound/soc/fsl/imx-sgtl5000.c:177:1-7: ERROR: missing put_device;
+call of_find_device_by_node on line 105, but without a corresponding
+object release within this function.
+
+Signed-off-by: Wen Yang <yellowriver2010@hotmail.com>
 Cc: Timur Tabi <timur@kernel.org>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
@@ -43,26 +45,31 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
 Cc: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 1 +
+ sound/soc/fsl/imx-sgtl5000.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 1b05d1c5d9fd..a32fe14b4687 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -659,6 +659,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- asrc_fail:
- 	of_node_put(asrc_np);
- 	of_node_put(codec_np);
-+	put_device(&cpu_pdev->dev);
- fail:
- 	of_node_put(cpu_np);
- 
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 1cb22dd034eb..110f3cf361af 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -115,6 +115,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 		ret = -EPROBE_DEFER;
+ 		goto fail;
+ 	}
++	put_device(&ssi_pdev->dev);
+ 	codec_dev = of_find_i2c_device_by_node(codec_np);
+ 	if (!codec_dev) {
+ 		dev_err(&pdev->dev, "failed to find codec platform device\n");
 -- 
 2.19.1
