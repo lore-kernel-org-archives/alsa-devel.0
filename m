@@ -1,9 +1,9 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH alsa-plugins] configure: Fix unexpanded
- ALSA_DATA_DIR
-Date: Wed, 27 Mar 2019 13:54:44 +0100
-Message-ID: <a93a7209-2b77-1a31-7aea-8bee2f5d8049@perex.cz>
-References: <20190327114204.26304-1-tiwai@suse.de>
+Subject: Re: [PATCH RFC alsa-lib] Drop -I$includedir/alsa from
+ alsa.pc
+Date: Wed, 27 Mar 2019 13:57:10 +0100
+Message-ID: <6dccda48-6d41-9c33-c08c-0accff794c73@perex.cz>
+References: <20190326141510.10120-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,9 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22AFAF801D8
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 13:54:46 +0100 (CET)
-In-Reply-To: <20190327114204.26304-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE815F8071D
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 13:57:13 +0100 (CET)
+In-Reply-To: <20190326141510.10120-1-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,36 +24,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 27. 03. 19 v 12:42 Takashi Iwai napsal(a):
-> When no --with-alsadatadir is given, configure scripts takes
-> $datadir/alsa as the default location, while it's expanded to
-> $prefix/data/alsa.  Although ALSA_DATA_DIR is set via
-> AC_DEFINE_UNQUOTED(), this expands only $alsadatadir itself and not
-> about the $prefix in the content.  For resolving this, we need to do
-> eval twice.
+Dne 26. 03. 19 v 15:15 Takashi Iwai napsal(a):
+> We used to put the additional include path $includedir/alsa in
+> pkgconfig just because some applications have included asoundlib.h
+> like
+>   #include <asoundlib.h>
+> although the canonical form should be
+>   #include <alsa/asoundlib.h>
+> 
+> However, adding this include path is significantly dangerous due to
+> possible conflicts of file names like version.h.  It's already the
+> reason to discourage people using alsa.pc for the packages.
+> 
+> In this patch, the additional include path from alsa.pc is dropped
+> finally.  At the same time, as a rescue plan for the programs
+> including via <asoundlib.h>, a stub header file is provided in
+> include/sound/asoundlib.h.  It just includes alsa/asoundlib.h with a
+> warning to suggest for replacing with alsa/asoundlib.h.
+> Actually this is the same file as we install into sys/asoundlib.h, so
+> the whole changes are very minimal here.
 > 
 > Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
->  configure.ac | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/Makefile.am | 1 +
+>  utils/alsa.pc.in    | 4 +---
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/configure.ac b/configure.ac
-> index 1be4a70c803c..5b131e704c2f 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -211,7 +211,7 @@ if test -z "$alsadatadir"; then
->      eval dir="$datadir"
->      case "$dir" in
->      /*) ;;
-> -    *) dir="$dir"
-> +    *) eval dir="$dir"
->      esac
->      alsadatadir="$dir/alsa"
->  fi
-> 
+> diff --git a/include/Makefile.am b/include/Makefile.am
+> index 67f32e36c911..fffc8a62e88b 100644
+> --- a/include/Makefile.am
+> +++ b/include/Makefile.am
+> @@ -96,3 +96,4 @@ AM_CPPFLAGS=-I$(top_srcdir)/include
+>  install-data-hook:
+>  	test -d $(DESTDIR)$(sysincludedir) || mkdir -p $(DESTDIR)$(sysincludedir)
+>  	$(INSTALL_DATA) $(srcdir)/sys.h $(DESTDIR)$(sysincludedir)/asoundlib.h
+> +	$(INSTALL_DATA) $(srcdir)/sys.h $(DESTDIR)/asoundlib.h
+> diff --git a/utils/alsa.pc.in b/utils/alsa.pc.in
+> index 8de9859f42db..444f66d85a34 100644
+> --- a/utils/alsa.pc.in
+> +++ b/utils/alsa.pc.in
+> @@ -9,6 +9,4 @@ Version: @VERSION@
+>  Requires: 
+>  Libs: -L${libdir} -lasound
+>  Libs.private: @ALSA_DEPLIBS@
+> -# -I${includedir}/alsa below is just for backward compatibility
+> -# (it was set so mistakely in the older version)
+> -Cflags: -I${includedir} -I${includedir}/alsa
+> +Cflags: -I${includedir}
 
 Acked-by: Jaroslav Kysela <perex@perex.cz>
 
