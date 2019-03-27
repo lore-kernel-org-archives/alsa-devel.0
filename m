@@ -1,54 +1,59 @@
 From: Mukesh Ojha <mojha@codeaurora.org>
-Subject: Re: [PATCH v3] ASoC: sirf-audio: Remove redundant of_match_node call
-Date: Wed, 27 Mar 2019 20:03:19 +0530
-Message-ID: <7273b5c0-2308-54b2-6bd5-6ad11292f8ea@codeaurora.org>
-References: <20190322220031.13773-1-pakki001@umn.edu>
+Subject: Re: [PATCH v2 -next] ASoC: simple-card-utils: remove set but not used
+ variable 'dai_name'
+Date: Wed, 27 Mar 2019 20:23:17 +0530
+Message-ID: <4611a8ee-4e89-b871-5151-588bd639a47d@codeaurora.org>
+References: <20190323020838.107533-1-yuehaibing@huawei.com>
+ <20190325031740.164364-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190322220031.13773-1-pakki001@umn.edu>
+In-Reply-To: <20190325031740.164364-1-yuehaibing@huawei.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Aditya Pakki <pakki001@umn.edu>
-Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 3/23/2019 3:30 AM, Aditya Pakki wrote:
-> Unlike other drivers probe method, of_match_node return value
-> is not used or checked. This patch removes the redundant code.
-
-Instead could be written like "Use of `of_match_node` is redundant in 
-sirf-audio-codec driver probe. Remove it."
-
+On 3/25/2019 8:47 AM, YueHaibing wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
 >
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-
+> sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
+> sound/soc/generic/simple-card-utils.c:164:18: warning:
+>   parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
+>
+> It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
+> asoc_simple_debug_info()"), so can be removed.
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 
 -Mukesh
-
-
->
 > ---
-> v2: Move the signed by above the version change log
-> v1: A check is unnecessary as match is never used.
+> v2: fix patch title
 > ---
->   sound/soc/codecs/sirf-audio-codec.c | 3 ---
->   1 file changed, 3 deletions(-)
+>   sound/soc/generic/simple-card-utils.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
 >
-> diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-> index e424499a8450..e0af21050078 100644
-> --- a/sound/soc/codecs/sirf-audio-codec.c
-> +++ b/sound/soc/codecs/sirf-audio-codec.c
-> @@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
->   	struct sirf_audio_codec *sirf_audio_codec;
->   	void __iomem *base;
->   	struct resource *mem_res;
-> -	const struct of_device_id *match;
-> -
-> -	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
+> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+> index 4ed68348f939..db1458a19985 100644
+> --- a/sound/soc/generic/simple-card-utils.c
+> +++ b/sound/soc/generic/simple-card-utils.c
+> @@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
+>   	 * see
+>   	 *	soc-core.c :: snd_soc_init_multicodec()
+>   	 */
+> -	if (dlc) {
+> +	if (dlc)
+>   		dai_of_node	= dlc->of_node;
+> -		dai_name	= dlc->dai_name;
+> -	}
 >   
->   	sirf_audio_codec = devm_kzalloc(&pdev->dev,
->   		sizeof(struct sirf_audio_codec), GFP_KERNEL);
+>   	/*
+>   	 * Parse dai->sysclk come from "clocks = <&xxx>"
+>
+>
+>
