@@ -1,70 +1,226 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH] ASoC: mt8183: change supported formats of DL2
-	and UL1
-Date: Wed, 27 Mar 2019 14:42:36 +0800
-Message-ID: <20190327064236.144843-1-tzungbi@google.com>
+From: Timo Wischer <twischer@de.adit-jv.com>
+Subject: Re: [PATCH 09/10] ALSA: pcm: Add snd_pcm_ops for snd_pcm_link()
+Date: Wed, 27 Mar 2019 09:34:40 +0100
+Message-ID: <c99f074c-99e2-7213-6738-67d08d44d030@de.adit-jv.com>
+References: <1553529644-5654-1-git-send-email-twischer@de.adit-jv.com>
+ <1553586574-18608-1-git-send-email-twischer@de.adit-jv.com>
+ <1553586574-18608-5-git-send-email-twischer@de.adit-jv.com>
+ <s5ho95ym3s7.wl-tiwai@suse.de>
+ <3ad5c313-ba2c-b541-8930-3f2515dfca72@de.adit-jv.com>
+ <s5hr2at67ew.wl-tiwai@suse.de>
+ <68cfbf7a-5f1e-50d2-2b97-4d3c5d360b36@de.adit-jv.com>
+ <s5ha7hh62yg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com
- [IPv6:2607:f8b0:4864:20::849])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CBE2F801D9
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 07:42:58 +0100 (CET)
-Received: by mail-qt1-x849.google.com with SMTP id 18so15962322qtw.20
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 23:42:57 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, jiaxin.yu@mediatek.com, tzungbi@google.com, shunli.wang@mediatek.com, dgreid@google.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5ha7hh62yg.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: broonie@kernel.org, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DL2 and UL1 should only provide 16-bit, mono, 8kHz and 16kHz to
-userspace.  Change the formats accordingly.
+On 3/26/19 17:00, Takashi Iwai wrote:
+> On Tue, 26 Mar 2019 16:16:54 +0100,
+> Timo Wischer wrote:
+>> On 3/26/19 15:23, Takashi Iwai wrote:
+>>> On Tue, 26 Mar 2019 12:25:37 +0100,
+>>> Timo Wischer wrote:
+>>>> On 3/26/19 09:35, Takashi Iwai wrote:
+>>>>
+>>>>       On Tue, 26 Mar 2019 08:49:33 +0100,
+>>>>       <twischer@de.adit-jv.com> wrote:
+>>>>                From: Timo Wischer <twischer@de.adit-jv.com>
+>>>>                    snd_pcm_link() can be called by the user as long
+>>>> as the device is not
+>>>>           yet started. Therefore currently a driver which wants to iterate over
+>>>>           the linked substreams has to do this at the start trigger. But the start
+>>>>           trigger should not block for a long time. Therefore there is no callback
+>>>>           which can be used to iterate over the linked substreams without delaying
+>>>>           the start trigger.
+>>>>           This patch introduces a new callback function which will be called after
+>>>>           the linked substream list was updated by snd_pcm_link(). This callback
+>>>>           function is allowed to block for a longer time without interfering the
+>>>>           synchronized start up of linked substreams.
+>>>>                    Signed-off-by: Timo Wischer
+>>>> <twischer@de.adit-jv.com>
+>>>>                Well, the idea appears interesting, but I'm afraid
+>>>> that the
+>>>>       implementation is still racy.  The place you're calling the new
+>>>>       callback isn't protected, hence the stream can be triggered while
+>>>>       calling it.  That is, even during operating your loopback link_changed
+>>>>       callback, another thread is able to start the stream.
+>>>>       Hi Takashi,
+>>>>
+>>>> As far as I got you mean the following scenario:
+>>>>
+>>>>     * snd_pcm_link() is called for a HW sound card
+>>>>         + loopback_snd_timer_link_changed()
+>>> The start may happen at this point.
+>> In this case the last link status will be used and aloop will print a
+>> warning "Another sound timer was requested but at least one device is
+>> already running...".
+>>
+>> Without this patch set a similar issue already exists. When calling
+>> snd_pcm_start() before snd_pcm_link() was done the additional device
+>> linked by the snd_pcm_link() will not be started.
+>> Therefore the application has already to take care about the order of
+>> the calls.
+> Yes, but it doesn't matter for now, just because other drivers do care
+> the PCM links only for trigger callback.  Now you're trying to add
+> something new but in an incomplete manner.
+>
+>>>>         + loopback_snd_timer_open()
+>>>>         + spin_lock_irqsave(&dpcm->cable->lock, flags);
+>>>>     * snd_pcm_start() called for aloop sound card
+>>>>         + loopback_trigger()
+>>>>         + spin_lock(&cable->lock) -> has to wait till loopback_snd_timer_open()
+>>>>           calls spin_unlock_irqrestore()
+>>>>
+>>>> So far snd_pcm_start() has to wait for loopback_snd_timer_open().
+>>>>
+>>>>     * loopback_snd_timer_open() will continue with
+>>>>         + dpcm->cable->snd_timer.instance = NULL;
+>>>>         + spin_unlock_irqrestore()
+>>>>     * loopback_trigger() can enter the lock
+>>>>         + loopback_snd_timer_start() will fail with -EINVAL due to
+>>>>           (loopback_trigger == NULL)
+>>>>
+>>>> At least this will not result into memory corruption due to race or any other
+>>>> wired behavior.
+>>> I don't expect the memory corruption, but my point is that dealing
+>>> with linked streams is still tricky.  It was considered for the
+>>> lightweight coupled start/stop operation, and something intensively
+>>> depending on the linked status was out of the original design...
+>>>
+>>>> But my expectation is that snd_pcm_link(hw, aloop) or snd_pcm_link(aloop, hw)
+>>>> is only called by the application calling snd_pcm_start(aloop)
+>>>> because the same aloop device cannot be opened by multiple applications at the
+>>>> same time.
+>>>>
+>>>> Do you see an use case where one application would call snd_pcm_start() in
+>>>> parallel with snd_pcm_link() (somehow configuring the device)?
+>>> It's not about the actual application usages but rather against the
+>>> malicious attacks.  Especially aloop is a virtual device that is
+>>> available allover the places, it may be deployed / attacked easily.
+>> The attack we are identifying here can only be done by the application
+>> opening the aloop device.
+>> An application allowed to open the aloop device is anyway able to
+>> manipulate the audio streaming.
+> Right, and if it such a racy access may lead to a driver misbehavior,
+> it's a big concern.  The proposed callback usage is racy, so some
+> other implementation might be broken easily in future.
+>
+>> Or do you see an attack which would influence any other device/stream
+>> not opened by this application?
+>>
+>>>> May be we should add an additional synchronization mechanism in pcm_native.c
+>>>> to avoid call of snd_pcm_link() in parallel with snd_pcm_start().
+>>> If it really matters...  Honestly speaking, I'm not fully convinced
+>>> whether we want to deal with this using the PCM link mechanism.
+>>>
+>>> What's the motivation for using the linked streams at the first place?
+>>> That's one of the biggest missing piece in the whole picture.
+>> In general when the user uses snd_pcm_link() it expects that the
+>> linked devices are somehow synchronized.
+>> Any applications already using snd_pcm_link() do not need to be
+>> adapted to use the new feature of aloop (for example JACK or ALSA
+>> multi plugin)
+>>
+>> But when linking a HW sound card and aloop without this patch set,
+>> both devices will be started in sync but
+>> the snd_pcm_period_eleapsed() calls of the different devices will
+>> drift. To avoid this the aloop plugin can automatically use the right
+>> timer.
+>> If this feature is not implemented the user has to use snd_pcm_link()
+>> to trigger snd_pcm_start() in sync but also has to configure the aloop
+>> plugin to use the right sound timer.
+>> May be the linked cards can change during runtime of the
+>> system. Without this feature the aloop kernel driver has to be loaded
+>> with different kernel parameters
+>> to select the right timer.
+>>
+>> ALSA controls cannot be used easily. Selecting the sound timer by the
+>> card number could be error prone because the card ID could change
+>> between system starts.
+>> Therefore an ALSA control supporting the card name should be
+>> used. This could be for example done via an ALSA enum control. But in
+>> this case the names of all sound cards of the system has to be
+>> available
+>> on aloop probe() call. But at this point in time the sound cards
+>> probed after aloop are not available. Therefore only the sound timers
+>> of the sound cards probed before aloop are selectable.
+> Hm.  For me this patch series looks very hackish.  As mentioned, the
+> PCM link usage is rather just a synchronous trigger start/stop for
+> multiple streams belonging to the same hardware; in that sense, it'd
+> be possible to adapt some mechanism for aloop, but at most it should
+> be much less intrusive change, e.g. just doing the multiple
+> loopback_timer_start() in a single loop.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+What do you mean by "just doing the multiple loopback_timer_start() in a 
+single loop."?
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index 43be51bf0329..ad42da1b948c 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -195,9 +195,9 @@ static struct snd_soc_dai_driver mt8183_memif_dai_driver[] = {
- 		.playback = {
- 			.stream_name = "DL2",
- 			.channels_min = 1,
--			.channels_max = 2,
--			.rates = MTK_PCM_RATES,
--			.formats = MTK_PCM_FORMATS,
-+			.channels_max = 1,
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 		},
- 		.ops = &mtk_afe_fe_ops,
- 	},
-@@ -219,9 +219,9 @@ static struct snd_soc_dai_driver mt8183_memif_dai_driver[] = {
- 		.capture = {
- 			.stream_name = "UL1",
- 			.channels_min = 1,
--			.channels_max = 2,
--			.rates = MTK_PCM_RATES,
--			.formats = MTK_PCM_FORMATS,
-+			.channels_max = 1,
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 		},
- 		.ops = &mtk_afe_fe_ops,
- 	},
--- 
-2.21.0.392.gf8f6787159e-goog
+The snd_pcm_link() call information are mainly used to select the right 
+sound timer. Starting the timer in sync is a nice add-on.
+Therefore by simple starting all timers in a for loop I would not select 
+the right sound timer.
+(May be I misunderstood your example)
+
+
+I could call the link_changed() callback inside 
+snd_pcm_stream_lock_irq() same lock also hold by snd_pcm_start().
+But an application could still call snd_pcm_link() and snd_pcm_start() 
+in parallel e.g.:
+
+snd_pcm_common_ioctl(IOCTL_LINK)
+ > task switch
+snd_pcm_common_ioctl(IOCTL_START)
+snd_pcm_start()
+done
+ > continue previous task
+
+The same could for example happen with snd_pcm_start() and snd_hw_free():
+
+snd_pcm_common_ioctl(IOCTL_START)
+ > task switch
+snd_pcm_common_ioctl(IOCTL_HW_FREE)
+snd_hw_free()
+Done
+ > continue previous task
+snd_pcm_start() will fail with an error code
+
+Therefore I do not think we have to synchronize the IOCTL calls (this 
+can only be done in the user application or ALSAlib). We only have to 
+return an proper error code in case of misusage.
+
+As far as I understand ALSA was not designed for multithread usage. So 
+the user (or ALSAlib) has to be aware of calling the functions in the 
+right order.
+Otherwise the user could expect returned error codes.
+
+In case of my patch set snd_pcm_start() will always fail with a proper 
+error code as long as no sound timer is running. This could be the case 
+if snd_pcm_start() is called before the first snd_pcm_link() call.
+This is also the case if snd_pcm_start() is called when the 
+snd_pcm_link() call has closed the old timer but not yet opened the new one.
+In case of snd_pcm_link() is called after snd_pcm_start() aloop will 
+write a proper warning (that the snd_pcm_link() call will have no effect 
+because the stream is already running).
+All member variables used in loopback_snd_timer_open(), 
+loopback_snd_timer_source_update() and loopback_snd_timer_start() are 
+always protected by cable->lock. Therefore no one can read an invalid 
+state of these variables and the misusage can always be detected.
+
+Therefore I am not sure what I should change. May be you could reference 
+to a source code line which looks hackish for you?
+
+Thanks
+
+Timo
+
+>
+>
+> thanks,
+>
+> Takashi
