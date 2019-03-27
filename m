@@ -1,162 +1,121 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel:kbl_da7219_max98927: remove
- headset
-Date: Tue, 26 Mar 2019 18:28:28 -0400
-Message-ID: <47f23197-110e-5a0c-49d1-f6bc94298e81@linux.intel.com>
-References: <1553620856-21428-1-git-send-email-jenny.tc@intel.com>
+From: Shuah Khan <shuah@kernel.org>
+Subject: [PATCH v12 0/5] Media Device Allocator API
+Date: Tue, 26 Mar 2019 20:24:47 -0600
+Message-ID: <cover.1553634246.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A57FBF801D9
- for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 23:28:45 +0100 (CET)
-In-Reply-To: <1553620856-21428-1-git-send-email-jenny.tc@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Jenny TC <jenny.tc@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>
-Cc: N Harshapriya <harshapriya.n@intel.com>, M Naveen <naveen.m@intel.com>, Mac Chiang <mac.chiang@intel.com>, M R Sathya Prakash <sathya.prakash.m.r@intel.com>, Nujella Sathyanarayana <sathyanarayana.nujella@intel.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
+Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/26/19 1:20 PM, Jenny TC wrote:
-> kbl_da7219_max98927 supports two configurations - One with da7219 &
-> max98927/373 and other one with max98927/373 alone. This patch
-> removes the headset dais from max98927/373 configuration. Since the
-> snd_soc_dapm_ignore_suspend for DMIC is called from da7219_codec_init,
-> the code is re-arranged to invoke snd_soc_dapm_ignore_suspend from
-> kabylake_dmic_init.
-> 
-> Signed-off-by: Jenny TC <jenny.tc@intel.com>
+Media Device Allocator API to allows multiple drivers share a media device.
+This API solves a very common use-case for media devices where one physical
+device (an USB stick) provides both audio and video. When such media device
+exposes a standard USB Audio class, a proprietary Video class, two or more
+independent drivers will share a single physical USB bridge. In such cases,
+it is necessary to coordinate access to the shared resource.
 
-it's quite hard to review this patch with the diff format you've 
-selected. What I find surprising is that you removed the headset 
-capture, but not the playback? Shouldn't the HS_PB also be removed 
-somewhere?
+Using this API, drivers can allocate a media device with the shared struct
+device as the key. Once the media device is allocated by a driver, other
+drivers can get a reference to it. The media device is released when all
+the references are released.
 
-> ---
->   sound/soc/intel/boards/kbl_da7219_max98927.c | 52 ++++++++++++----------------
->   1 file changed, 23 insertions(+), 29 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-> index 2768a57..f72a7bf 100644
-> --- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-> @@ -52,7 +52,6 @@ struct kbl_codec_private {
->   
->   enum {
->   	KBL_DPCM_AUDIO_PB = 0,
-> -	KBL_DPCM_AUDIO_CP,
->   	KBL_DPCM_AUDIO_ECHO_REF_CP,
->   	KBL_DPCM_AUDIO_REF_CP,
->   	KBL_DPCM_AUDIO_DMIC_CP,
-> @@ -60,6 +59,7 @@ enum {
->   	KBL_DPCM_AUDIO_HDMI2_PB,
->   	KBL_DPCM_AUDIO_HDMI3_PB,
->   	KBL_DPCM_AUDIO_HS_PB,
-> +	KBL_DPCM_AUDIO_CP,
->   };
->   
->   static int platform_clock_control(struct snd_soc_dapm_widget *w,
-> @@ -311,6 +311,12 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
->   
->   	da7219_aad_jack_det(component, &ctx->kabylake_headset);
->   
-> +	return 0;
-> +}
-> +
-> +static int kabylake_dmic_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	int ret;
->   	ret = snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
->   	if (ret)
->   		dev_err(rtd->dev, "SoC DMIC - Ignore suspend failed %d\n", ret);
-> @@ -581,20 +587,6 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
->   		.dpcm_playback = 1,
->   		.ops = &kabylake_da7219_fe_ops,
->   	},
-> -	[KBL_DPCM_AUDIO_CP] = {
-> -		.name = "Kbl Audio Capture Port",
-> -		.stream_name = "Audio Record",
-> -		.cpu_dai_name = "System Pin",
-> -		.platform_name = "0000:00:1f.3",
-> -		.dynamic = 1,
-> -		.codec_name = "snd-soc-dummy",
-> -		.codec_dai_name = "snd-soc-dummy-dai",
-> -		.nonatomic = 1,
-> -		.trigger = {
-> -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> -		.dpcm_capture = 1,
-> -		.ops = &kabylake_da7219_fe_ops,
-> -	},
->   	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
->   		.name = "Kbl Audio Echo Reference cap",
->   		.stream_name = "Echoreference Capture",
-> @@ -690,6 +682,20 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
->   		.ops = &kabylake_da7219_fe_ops,
->   
->   	},
-> +	[KBL_DPCM_AUDIO_CP] = {
-> +		.name = "Kbl Audio Capture Port",
-> +		.stream_name = "Audio Record",
-> +		.cpu_dai_name = "System Pin",
-> +		.platform_name = "0000:00:1f.3",
-> +		.dynamic = 1,
-> +		.codec_name = "snd-soc-dummy",
-> +		.codec_dai_name = "snd-soc-dummy-dai",
-> +		.nonatomic = 1,
-> +		.trigger = {
-> +			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> +		.dpcm_capture = 1,
-> +		.ops = &kabylake_da7219_fe_ops,
-> +	},
->   
->   	/* Back End DAI links */
->   	{
-> @@ -733,6 +739,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
->   		.cpu_dai_name = "DMIC01 Pin",
->   		.codec_name = "dmic-codec",
->   		.codec_dai_name = "dmic-hifi",
-> +		.init = kabylake_dmic_init,
->   		.platform_name = "0000:00:1f.3",
->   		.be_hw_params_fixup = kabylake_dmic_fixup,
->   		.ignore_suspend = 1,
-> @@ -792,20 +799,6 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
->   		.dpcm_playback = 1,
->   		.ops = &kabylake_da7219_fe_ops,
->   	},
-> -	[KBL_DPCM_AUDIO_CP] = {
-> -		.name = "Kbl Audio Capture Port",
-> -		.stream_name = "Audio Record",
-> -		.cpu_dai_name = "System Pin",
-> -		.platform_name = "0000:00:1f.3",
-> -		.dynamic = 1,
-> -		.codec_name = "snd-soc-dummy",
-> -		.codec_dai_name = "snd-soc-dummy-dai",
-> -		.nonatomic = 1,
-> -		.trigger = {
-> -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
-> -		.dpcm_capture = 1,
-> -		.ops = &kabylake_da7219_fe_ops,
-> -	},
->   	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
->   		.name = "Kbl Audio Echo Reference cap",
->   		.stream_name = "Echoreference Capture",
-> @@ -911,6 +904,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
->   		.cpu_dai_name = "DMIC01 Pin",
->   		.codec_name = "dmic-codec",
->   		.codec_dai_name = "dmic-hifi",
-> +		.init = kabylake_dmic_init,
->   		.platform_name = "0000:00:1f.3",
->   		.be_hw_params_fixup = kabylake_dmic_fixup,
->   		.ignore_suspend = 1,
-> 
+- This patch series in tested on 5.1-rc2 and addresses the compile errors,
+  warns, and sparse errors reported by Hans Verkuil and Dan Carpenter.
+ 
+Changes since v11:
+- Patch 1: Add CONFIG_MODULES dependency in media_dev_allocator files.
+  to fix compile errors when CONFIG_MODULES is disabled.
+- Patch 2, 3: No changes.
+- Patch 4: Fix sparse error reported by Dan Carpenter.
+- Patch 5: Fix warns found by Hans Verkuil.
+
+- v11 was tested on 5.0-rc7 and addresses comments on v10 series from
+  Hans Verkuil. Fixed problems found in resource sharing logic in au0828
+  adding a patch 5 to this series. The test plan used for testing resource
+  sharing could serve as a regression test plan and the test results can be
+  found at:
+
+https://docs.google.com/document/d/1XMs3HYgLiHby6xVIvIxv75KSXAAN3F4uUpw2uLuD9c4/edit?usp=sharing
+
+- v10 was tested on 5.0-rc3 and addresses comments on v9 series from
+  Hans Verkuil.
+
+Changes since v10:
+- Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
+           around media_device_usb_allocate() - Sakari Ailus's review
+           comment.
+- Patch 2 and 3: No changes
+- Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- Patch 5: This is a new patch added to fix resource sharing
+           inconsistencies and problem found during testing using Han's
+           tests.
+
+Changes since v9:
+- Patch 1: Fix mutex assert warning from find_module() calls. This
+  code was written before the change to find_module() that requires
+  callers to hold module_mutex. I missed this during my testing on
+  4.20-rc6. Hans Verkuil reported the problem.
+- Patch 4: sound/usb: Initializes all the entities it can before
+  registering the device based on comments from Hans Verkuil
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- No changes to Patches 2 and 3.
+
+- v9 was tested on 4.20-rc6.
+- Tested sharing resources with kaffeine, vlc, xawtv, tvtime, and
+  arecord. When analog is streaming, digital and audio user-space
+  applications detect that the tuner is busy and exit. When digital
+  is streaming, analog and audio applications detect that the tuner is
+  busy and exit. When arecord is owns the tuner, digital and analog
+  detect that the tuner is busy and exit.
+- Tested media device allocator API with bind/unbind testing on
+  snd-usb-audio and au0828 drivers to make sure /dev/mediaX is released
+  only when the last driver is unbound.
+- Addressed review comments from Hans on the RFC v8 (rebased on 4.19)
+- Updated change log to describe the use-case more clearly.
+- No changes to 0001,0002 code since the v7 referenced below.
+- 0003 is a new patch to enable ALSA defines that have been
+  disabled for kernel between 4.9 and 4.19.
+- Minor merge conflict resolution in 0004.
+- Added SPDX to new files.
+
+References:
+https://lkml.org/lkml/2018/11/2/169
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
+
+Shuah Khan (5):
+  media: Media Device Allocator API
+  media: change au0828 to use Media Device Allocator API
+  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+  sound/usb: Use Media Controller API to share media resources
+  au0828: fix enable and disable source audio and video inconsistencies
+
+ Documentation/media/kapi/mc-core.rst   |  41 ++++
+ drivers/media/Makefile                 |   6 +
+ drivers/media/media-dev-allocator.c    | 142 +++++++++++
+ drivers/media/usb/au0828/au0828-core.c | 194 +++++++++++----
+ drivers/media/usb/au0828/au0828.h      |   6 +-
+ include/media/media-dev-allocator.h    |  54 ++++
+ include/uapi/linux/media.h             |  25 +-
+ sound/usb/Kconfig                      |   4 +
+ sound/usb/Makefile                     |   2 +
+ sound/usb/card.c                       |  14 ++
+ sound/usb/card.h                       |   3 +
+ sound/usb/media.c                      | 327 +++++++++++++++++++++++++
+ sound/usb/media.h                      |  74 ++++++
+ sound/usb/mixer.h                      |   3 +
+ sound/usb/pcm.c                        |  29 ++-
+ sound/usb/quirks-table.h               |   1 +
+ sound/usb/stream.c                     |   2 +
+ sound/usb/usbaudio.h                   |   6 +
+ 18 files changed, 872 insertions(+), 61 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
+
+-- 
+2.17.1
