@@ -1,47 +1,46 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: Fix typo in comment
-Date: Wed, 27 Mar 2019 15:24:51 +0000
-Message-ID: <20190327152451.2870-1-ckeepax@opensource.cirrus.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH -next] ASoC: fix SND_SOC_LOCHNAGAR_SC kconfig warning
+Date: Wed, 27 Mar 2019 08:43:19 -0700
+Message-ID: <fb9f38e4-c4c9-400e-fb16-fa2714eb8d00@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B8ADF801D9
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 16:24:55 +0100 (CET)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Piotr Stankiewicz <piotrs@opensource.cirrus.co>, Charles Keepax <ckeepax@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, patches@opensource.cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+
+Fix kconfig warning for SND_SOC_LOCHNAGAR_SC:
+
+WARNING: unmet direct dependencies detected for SND_SOC_LOCHNAGAR_SC
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && MFD_LOCHNAGAR [=n]
+  Selected by [m]:
+  - SND_SOC_ALL_CODECS [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && COMPILE_TEST [=y]
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Piotr Stankiewicz <piotrs@opensource.cirrus.com>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
+ sound/soc/codecs/Kconfig |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5e615fbddf9a7..0aa62b26f61cc 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3263,7 +3263,7 @@ static void wm_halo_stop_core(struct wm_adsp *dsp)
- 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CCM_CORE_CONTROL,
- 			   HALO_CORE_EN, 0);
- 
--	/* reset halo core with CORE_SOFT_REEST */
-+	/* reset halo core with CORE_SOFT_RESET */
- 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CORE_SOFT_RESET,
- 			   HALO_CORE_SOFT_RESET_MASK, 1);
- }
--- 
-2.11.0
+--- linux-next-20190327.orig/sound/soc/codecs/Kconfig
++++ linux-next-20190327/sound/soc/codecs/Kconfig
+@@ -94,7 +94,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_JZ4725B_CODEC
+ 	select SND_SOC_LM4857 if I2C
+ 	select SND_SOC_LM49453 if I2C
+-	select SND_SOC_LOCHNAGAR_SC
++	select SND_SOC_LOCHNAGAR_SC if MFD_LOCHNAGAR
+ 	select SND_SOC_MAX98088 if I2C
+ 	select SND_SOC_MAX98090 if I2C
+ 	select SND_SOC_MAX98095 if I2C
