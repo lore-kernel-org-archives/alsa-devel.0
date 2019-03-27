@@ -1,76 +1,54 @@
-From: Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/2] ALSA: Replace snd_malloc_pages() and
- snd_free_pages() with standard helpers, take#2
-Date: Wed, 27 Mar 2019 15:19:51 +0100
-Message-ID: <20190327141951.GK11927@dhcp22.suse.cz>
-References: <20190327092959.30382-1-tiwai@suse.de>
- <20190327092959.30382-2-tiwai@suse.de>
- <20190327114730.GG11927@dhcp22.suse.cz>
- <s5ho95w2zoq.wl-tiwai@suse.de>
+From: Mukesh Ojha <mojha@codeaurora.org>
+Subject: Re: [PATCH v3] ASoC: sirf-audio: Remove redundant of_match_node call
+Date: Wed, 27 Mar 2019 20:03:19 +0530
+Message-ID: <7273b5c0-2308-54b2-6bd5-6ad11292f8ea@codeaurora.org>
+References: <20190322220031.13773-1-pakki001@umn.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B6DFF80C17
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 15:19:52 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5ho95w2zoq.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Hugh Dickins <hughd@google.com>, Vlastimil Babka <vbabka@suse.cz>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190322220031.13773-1-pakki001@umn.edu>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Aditya Pakki <pakki001@umn.edu>
+Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed 27-03-19 14:51:17, Takashi Iwai wrote:
-> On Wed, 27 Mar 2019 12:47:30 +0100,
-> Michal Hocko wrote:
-> > 
-> > On Wed 27-03-19 10:29:58, Takashi Iwai wrote:
-> > > snd_malloc_pages() and snd_free_pages() are merely thin wrappers of
-> > > the standard page allocator / free functions.  Even the arguments are
-> > > compatible with some standard helpers, so there is little merit of
-> > > keeping these wrappers.
-> > > 
-> > > This patch replaces the all existing callers of snd_malloc_pages() and
-> > > snd_free_pages() with the direct calls of the standard helper
-> > > functions.  In this version, we use a recently introduced one,
-> > > alloc_pages_exact(), which suits better than the old
-> > > snd_malloc_pages() implementation for our purposes.  Then we can avoid
-> > > the waste of pages by alignment to power-of-two.
-> > > 
-> > > Since alloc_pages_exact() does split pages, we need no longer
-> > > __GFP_COMP flag; or better to say, we must not pass __GFP_COMP to
-> > > alloc_pages_exact().  So the former unconditional addition of
-> > > __GFP_COMP flag in snd_malloc_pages() is dropped, as well as in most
-> > > other places.
-> > 
-> > I haven't checked all the callers but the replacement makes sense to me.
-> > I am just wondering whether there is any hard requireemet to have all
-> > those requests to be physically contiguous or kvmalloc would suit them
-> > better.
-> 
-> Most of callers are supposed to allocate buffers that can be also
-> mmapped to user-space, so kvmalloc() won't work.  So, the explicit
-> page allocations are on purpose.
 
-OK, I see. There is a facility to remap vmalloc pages to userspace
-(remap_vmalloc_range_partial) but I can see why you do not want to
-change the code around.
+On 3/23/2019 3:30 AM, Aditya Pakki wrote:
+> Unlike other drivers probe method, of_match_node return value
+> is not used or checked. This patch removes the redundant code.
 
->From the snd_malloc_pages->alloc_pages_exact point of view (I haven't
-checked all the callers) feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+Instead could be written like "Use of `of_match_node` is redundant in 
+sirf-audio-codec driver probe. Remove it."
 
--- 
-Michal Hocko
-SUSE Labs
+>
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+
+-Mukesh
+
+
+>
+> ---
+> v2: Move the signed by above the version change log
+> v1: A check is unnecessary as match is never used.
+> ---
+>   sound/soc/codecs/sirf-audio-codec.c | 3 ---
+>   1 file changed, 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
+> index e424499a8450..e0af21050078 100644
+> --- a/sound/soc/codecs/sirf-audio-codec.c
+> +++ b/sound/soc/codecs/sirf-audio-codec.c
+> @@ -461,9 +461,6 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
+>   	struct sirf_audio_codec *sirf_audio_codec;
+>   	void __iomem *base;
+>   	struct resource *mem_res;
+> -	const struct of_device_id *match;
+> -
+> -	match = of_match_node(sirf_audio_codec_of_match, pdev->dev.of_node);
+>   
+>   	sirf_audio_codec = devm_kzalloc(&pdev->dev,
+>   		sizeof(struct sirf_audio_codec), GFP_KERNEL);
