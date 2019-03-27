@@ -1,35 +1,20 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH V2] ASoC: fix hdmi codec driver contest in
- S3
-Date: Wed, 27 Mar 2019 06:14:31 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19527FCBCA@SHSMSX103.ccr.corp.intel.com>
-References: <1553235896-8185-1-git-send-email-libin.yang@intel.com>
- <s5hpnqjp9es.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527F9BB6@SHSMSX103.ccr.corp.intel.com>
- <s5hh8bvb5ba.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527F9D9F@SHSMSX103.ccr.corp.intel.com>
- <s5hbm22psfz.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FAAA5@SHSMSX103.ccr.corp.intel.com>
- <s5h4l7r9shp.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FAE2A@SHSMSX103.ccr.corp.intel.com>
- <s5hbm1z81em.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FB1A0@SHSMSX103.ccr.corp.intel.com>
- <s5hr2aum6i5.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FB2CE@SHSMSX103.ccr.corp.intel.com>
- <s5hlg12m2xr.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19527FB419@SHSMSX103.ccr.corp.intel.com>
- <s5hef6t7uj3.wl-tiwai@suse.de>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: mt8183: change supported formats of DL2
+	and UL1
+Date: Wed, 27 Mar 2019 14:42:36 +0800
+Message-ID: <20190327064236.144843-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com
+ [IPv6:2607:f8b0:4864:20::849])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72B81F801D9
- for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 07:14:39 +0100 (CET)
-In-Reply-To: <s5hef6t7uj3.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CBE2F801D9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2019 07:42:58 +0100 (CET)
+Received: by mail-qt1-x849.google.com with SMTP id 18so15962322qtw.20
+ for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2019 23:42:57 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,52 +24,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, jiaxin.yu@mediatek.com, tzungbi@google.com, shunli.wang@mediatek.com, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+DL2 and UL1 should only provide 16-bit, mono, 8kHz and 16kHz to
+userspace.  Change the formats accordingly.
 
->> >>
->> >> >
->> >> >In the case of legacy HD-audio, we "fixed" the problem by avoiding
->> >> >the trigger of async work at resume, but let it be triggered from
->> >> >runtime resume.  In ASoC case, however, it's no option.
->> >> >
->> >> >Maybe a possible solution in the sound driver side would be to
->> >> >move from system suspend/resume to ASoC component
->suspend/resume.
->> >> >The runtime suspend/resume can be kept as is, and call
->> >> >pm_runtime_force_suspend and resume from the component
->> >suspend/resume
->> >> >callbacks.  Since the component callbacks are certainly processed
->> >> >before DAPM events, this should assure the order.
->> >>
->> >> I tried to move display power setting from runtime suspend/resume
->> >> to component suspend/resume. I found there may be another issue:
->> >> playback will NOT call component suspend/resume.
->> >> This  means we will never have chance to set the display power if
->> >> we don't do the S3.
->> >
->> >The runtime suspend/resume are fine and need to be kept, I suppose.
->> >The only problem is the system suspend/resume callbacks that call
->> >pm_runtime_force_*().  Just moving these two to component would work?
->> >
->>
->> Let's see the flow of the suspend:
->> 1. Component suspend is called. It will call snd_hdac_display_power()
->> to turn off the display power.
->
->No, what I meant was to make the component suspend calling
->pm_runtime_force_suspend() instead of the system suspend.
->Ditto for the component resume calling pm_runtime_force_resume().
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-It seems this component suspend/resume method works well. 
-I will do more test and send out the patch later.
-
-Regards,
-Libin
-
->
->
->Takashi
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 43be51bf0329..ad42da1b948c 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -195,9 +195,9 @@ static struct snd_soc_dai_driver mt8183_memif_dai_driver[] = {
+ 		.playback = {
+ 			.stream_name = "DL2",
+ 			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = MTK_PCM_RATES,
+-			.formats = MTK_PCM_FORMATS,
++			.channels_max = 1,
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+ 		.ops = &mtk_afe_fe_ops,
+ 	},
+@@ -219,9 +219,9 @@ static struct snd_soc_dai_driver mt8183_memif_dai_driver[] = {
+ 		.capture = {
+ 			.stream_name = "UL1",
+ 			.channels_min = 1,
+-			.channels_max = 2,
+-			.rates = MTK_PCM_RATES,
+-			.formats = MTK_PCM_FORMATS,
++			.channels_max = 1,
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+ 		.ops = &mtk_afe_fe_ops,
+ 	},
+-- 
+2.21.0.392.gf8f6787159e-goog
