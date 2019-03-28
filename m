@@ -1,21 +1,21 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/4] soundwire: remove unused struct
-	sdw_bus_conf definition
-Date: Thu, 28 Mar 2019 13:41:34 +0000
-Message-ID: <20190328134134.22479-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/4] soundwire: bus: check if pm runtime is
+	enabled before calling
+Date: Thu, 28 Mar 2019 13:41:33 +0000
+Message-ID: <20190328134134.22479-4-srinivas.kandagatla@linaro.org>
 References: <20190328134134.22479-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BE31F89714
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 14:42:06 +0100 (CET)
-Received: by mail-wr1-x442.google.com with SMTP id w1so23004642wrp.2
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 06:42:06 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FC7EF89708
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 14:42:05 +0100 (CET)
+Received: by mail-wr1-x441.google.com with SMTP id r4so15273203wrq.8
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 06:42:05 -0700 (PDT)
 In-Reply-To: <20190328134134.22479-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,39 +30,46 @@ To: vkoul@kernel.org
 Cc: sanyog.r.kale@intel.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-struct sdw_bus_conf seems to be replaced with struct sdw_bus_params
-so remove this unused data structure to avoid confusion to readers.
+Check the device has pm runtime enabled before returning error.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/soundwire/sdw.h | 15 ---------------
- 1 file changed, 15 deletions(-)
+ drivers/soundwire/bus.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index df313913e856..a8129745b7ec 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -389,21 +389,6 @@ enum sdw_reg_bank {
- 	SDW_BANK1,
- };
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1cbfedfc20ef..101562a6fb0d 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -327,9 +327,11 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 	if (ret < 0)
+ 		return ret;
  
--/**
-- * struct sdw_bus_conf: Bus configuration
-- *
-- * @clk_freq: Clock frequency, in Hz
-- * @num_rows: Number of rows in frame
-- * @num_cols: Number of columns in frame
-- * @bank: Next register bank
-- */
--struct sdw_bus_conf {
--	unsigned int clk_freq;
--	unsigned int num_rows;
--	unsigned int num_cols;
--	unsigned int bank;
--};
--
- /**
-  * struct sdw_prepare_ch: Prepare/De-prepare Data Port channel
-  *
+-	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
+-		return ret;
++	if (pm_runtime_enabled(slave->bus->dev)) {
++		ret = pm_runtime_get_sync(slave->bus->dev);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	ret = sdw_transfer(slave->bus, &msg);
+ 	pm_runtime_put(slave->bus->dev);
+@@ -355,9 +357,11 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
+-		return ret;
++	if (pm_runtime_enabled(slave->bus->dev)) {
++		ret = pm_runtime_get_sync(slave->bus->dev);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	ret = sdw_transfer(slave->bus, &msg);
+ 	pm_runtime_put(slave->bus->dev);
 -- 
 2.21.0
