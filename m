@@ -1,34 +1,65 @@
-From: syzbot <syzbot+a979743610b4755d4d57@syzkaller.appspotmail.com>
-Subject: Re: INFO: task hung in evdev_release
-Date: Wed, 27 Mar 2019 18:24:01 -0700
-Message-ID: <000000000000bf3ccd05851d68a7@google.com>
-References: <000000000000f1be430578524a20@google.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5677-spi: Add ACPI ID
+Date: Thu, 28 Mar 2019 10:27:00 +0800
+Message-ID: <20190328022700.14344-1-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000f1be430578524a20@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org, dmitry.torokhov@gmail.com, jbrunet@baylibre.com, lgirdwood@gmail.com, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, robh+dt@kernel.org, rydberg@bitmath.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DBBEF801D8
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 03:27:20 +0100 (CET)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, cujomalainey@google.com, albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has bisected this bug to:
+Add the ACPI ID for the product "chromebook pixel 2015" to match the 
+coreboot settings.
 
-commit e32d99af6830c9a8f37b4f2637ef0cdc60fa79fb
-Author: Jerome Brunet <jbrunet@baylibre.com>
-Date:   Tue Jul 17 15:42:50 2018 +0000
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5677-spi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-     ASoC: meson: add axg fifos DT binding documentation
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13fba69b200000
-start commit:   9dcd936c Merge tag 'for-4.19/dm-fixes-4' of git://git.kern..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=1007a69b200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fba69b200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=88e9a8a39dc0be2d
-dashboard link: https://syzkaller.appspot.com/bug?extid=a979743610b4755d4d57
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fcd826400000
-
-Reported-by: syzbot+a979743610b4755d4d57@syzkaller.appspotmail.com
-Fixes: e32d99af6830 ("ASoC: meson: add axg fifos DT binding documentation")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 84501c2020c7..167a02773a0b 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -25,6 +25,7 @@
+ #include <linux/sysfs.h>
+ #include <linux/clk.h>
+ #include <linux/firmware.h>
++#include <linux/acpi.h>
+ 
+ #include "rt5677-spi.h"
+ 
+@@ -226,9 +227,16 @@ static int rt5677_spi_probe(struct spi_device *spi)
+ 	return 0;
+ }
+ 
++static const struct acpi_device_id rt5677_spi_acpi_id[] = {
++	{ "RT5677AA", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
++
+ static struct spi_driver rt5677_spi_driver = {
+ 	.driver = {
+ 		.name = "rt5677",
++		.acpi_match_table = ACPI_PTR(rt5677_spi_acpi_id),
+ 	},
+ 	.probe = rt5677_spi_probe,
+ };
+-- 
+2.21.0
