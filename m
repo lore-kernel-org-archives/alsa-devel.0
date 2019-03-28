@@ -1,18 +1,18 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 09/10] ASoC: Intel: cht_bsw_rt5672: Convert
+Subject: [PATCH v3 05/10] ASoC: Intel: bytcht_es8316: Convert
 	to use acpi_dev_get_first_match_dev()
-Date: Thu, 28 Mar 2019 19:17:28 +0200
-Message-ID: <20190328171729.44002-10-andriy.shevchenko@linux.intel.com>
+Date: Thu, 28 Mar 2019 19:17:24 +0200
+Message-ID: <20190328171729.44002-6-andriy.shevchenko@linux.intel.com>
 References: <20190328171729.44002-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6577EF8963C
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 18:17:40 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 522F5F89701
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 18:17:39 +0100 (CET)
 In-Reply-To: <20190328171729.44002-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,36 +34,36 @@ Convert the driver to use acpi_dev_get_first_match_dev() instead.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 9 +++++----
+ sound/soc/intel/boards/bytcht_es8316.c | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 3d5a2b3a06f0..0f7770822388 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -401,7 +401,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	struct cht_mc_private *drv;
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index d2a7e6ba11ae..6937c00cf63d 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -442,7 +442,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
  	const char *platform_name;
--	const char *i2c_name;
+-	const char *i2c_name = NULL;
 +	struct acpi_device *adev;
+ 	struct device *codec_dev;
+ 	int dai_index = 0;
  	int i;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
-@@ -411,10 +411,11 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	strcpy(drv->codec_name, RT5672_I2C_DEFAULT);
+@@ -463,10 +463,11 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	}
  
  	/* fixup codec name based on HID */
 -	i2c_name = acpi_dev_get_first_match_name(mach->id, NULL, -1);
 -	if (i2c_name) {
 +	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
 +	if (adev) {
- 		snprintf(drv->codec_name, sizeof(drv->codec_name),
--			 "i2c-%s", i2c_name);
+ 		snprintf(codec_name, sizeof(codec_name),
+-			"%s%s", "i2c-", i2c_name);
 +			 "i2c-%s", acpi_dev_name(adev));
 +		put_device(&adev->dev);
- 		for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
- 			if (!strcmp(cht_dailink[i].codec_name,
- 				RT5672_I2C_DEFAULT)) {
+ 		byt_cht_es8316_dais[dai_index].codec_name = codec_name;
+ 	}
+ 
 -- 
 2.20.1
