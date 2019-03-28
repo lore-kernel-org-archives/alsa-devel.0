@@ -1,16 +1,23 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5677-spi: Add ACPI ID
-Date: Thu, 28 Mar 2019 10:27:00 +0800
-Message-ID: <20190328022700.14344-1-oder_chiou@realtek.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH] ASoC: mt8183: change supported formats of
+ DL2 and UL1
+Date: Thu, 28 Mar 2019 14:59:56 +0800
+Message-ID: <CA+Px+wUp+QXNSmwT6j7vYiQ8RA7aubrva2Y8k5HJTcBwaZGdKw@mail.gmail.com>
+References: <20190327064236.144843-1-tzungbi@google.com>
+ <1553732888.13776.2.camel@mtksdaap41>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com
+ [IPv6:2607:f8b0:4864:20::343])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DBBEF801D8
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 03:27:20 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C7F9F80C16
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 08:00:08 +0100 (CET)
+Received: by mail-ot1-x343.google.com with SMTP id u15so17311531otq.10
+ for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 00:00:08 -0700 (PDT)
+In-Reply-To: <1553732888.13776.2.camel@mtksdaap41>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,46 +27,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, cujomalainey@google.com, albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Cc: alsa-devel@alsa-project.org, Jimmy Cheng-Yi Chiang <cychiang@google.com>, =?UTF-8?B?SmlheGluIFl1ICjkv57lrrbpkasp?= <jiaxin.yu@mediatek.com>, broonie@kernel.org, =?UTF-8?B?U2h1bmxpIFdhbmcgKOeOi+mhuuWIqSk=?= <shunli.wang@mediatek.com>, eason.yen@mediatek.com, Dylan Reid <dgreid@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the ACPI ID for the product "chromebook pixel 2015" to match the 
-coreboot settings.
+Hi,
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677-spi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I see.  This is common code for all 8183 platform and indeed a wrong place
+to confine the formats.
 
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 84501c2020c7..167a02773a0b 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -25,6 +25,7 @@
- #include <linux/sysfs.h>
- #include <linux/clk.h>
- #include <linux/firmware.h>
-+#include <linux/acpi.h>
- 
- #include "rt5677-spi.h"
- 
-@@ -226,9 +227,16 @@ static int rt5677_spi_probe(struct spi_device *spi)
- 	return 0;
- }
- 
-+static const struct acpi_device_id rt5677_spi_acpi_id[] = {
-+	{ "RT5677AA", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
-+
- static struct spi_driver rt5677_spi_driver = {
- 	.driver = {
- 		.name = "rt5677",
-+		.acpi_match_table = ACPI_PTR(rt5677_spi_acpi_id),
- 	},
- 	.probe = rt5677_spi_probe,
- };
--- 
-2.21.0
+Please ignore this patch.
+
+On Thu, Mar 28, 2019 at 8:28 AM KaiChieh Chuang <
+kaichieh.chuang@mediatek.com> wrote:
+
+> On Wed, 2019-03-27 at 14:42 +0800, Tzung-Bi Shih wrote:
+> > DL2 and UL1 should only provide 16-bit, mono, 8kHz and 16kHz to
+> > userspace.  Change the formats accordingly.
+> >
+> > Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+>
+> Hi,
+>         i thought we should report hardware capabilities, not user space's
+> intention?
+>
+>
