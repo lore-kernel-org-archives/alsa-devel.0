@@ -1,21 +1,16 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: regression: bad sound card type detection in audio
-	graph
-Date: Thu, 28 Mar 2019 18:56:04 +0100
-Message-ID: <ca008e8f-a031-d78d-2ee6-55f90a39378b@st.com>
-References: <17699625-dd15-afc7-780f-c7c2d4721525@st.com>
- <87pnqbrfqg.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 16/20] ASoC: SOF: Add PCI device support
+Date: Thu, 28 Mar 2019 14:21:47 -0400
+Message-ID: <9f48d5e7-8a95-db2f-0605-b15e45670ce0@linux.intel.com>
+References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
+ <20190321161055.26582-17-pierre-louis.bossart@linux.intel.com>
+ <20190328174819.GM9224@smile.fi.intel.com>
+ <20190328174918.GN9224@smile.fi.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F485F80769
- for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2019 18:56:10 +0100 (CET)
-In-Reply-To: <87pnqbrfqg.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20190328174918.GN9224@smile.fi.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,74 +21,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, "tiwai@suse.com" <tiwai@suse.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkga3VuaW5vcmksCgoKT24gMy8yOC8xOSAxOjU1IEFNLCBLdW5pbm9yaSBNb3JpbW90byB3cm90
-ZToKPiAKPiBIacKgIEFybmF1ZAo+IAo+IFRoYW5rIHlvdSBmb3IgY2hlY2tpbmcvdGVzdGluZyBk
-cml2ZXIKPiAKPj4gSW4gb3VyIHNvdW5kIGNhcmQgKGRlc2NyaWJlZCBoZXJlOgo+PiBodHRwczov
-L2dpdGh1Yi5jb20vU1RNaWNyb2VsZWN0cm9uaWNzL2xpbnV4L2Jsb2IvdjQuMTktc3RtMzJtcC9h
-cmNoL2FybS9ib290L2R0cy9zdG0zMm1wMTU3Yy1ldjEuZHRzKQo+PiAKPj4gV2UgZGVjbGFyZSBh
-IG5vcm1hbCBzb3VuZCBjYXJkIHVzaW5nIHRoZSBXTTg5OTQgY29kZWM6Cj4+IAo+PsKgwqAgUGxh
-eWJhY2s6IENQVS1EQUkgKFNBSTJhKS0+IENPREVDLURBSS9wb3J0MAo+PsKgwqAgUmVjb3JkOiBD
-UFUtREFJIChTQUkyQik8LSBDT0RFQy1EQUkvcG9ydDEKPj7CoMKgIC4uLgo+PiAKPj4gVGhlIFdN
-ODk5NCBjb2RlYyBpcyBkZWNsYXJlZCB3aXRoIDIgcG9ydHMgYXMgaXQgc3VwcG9ydHMgMiBpbnRl
-cmZhY2VzLgo+PiAKPj4gV2hlbiB3ZSBwcm9iZSB0aGUgc291bmQgY2FyZCB3ZSBhcmUgZGV0ZWN0
-aW5nIGEgd3JvbmcgZGFpIGxpbmsgdHlwZQo+PiBiZWNhdXNlIHRoZSBjb25kaXRpb24KPj4gaWYg
-KG9mX2dldF9jaGlsZF9jb3VudChjb2RlY19wb3J0KSA+IDEpIHJldHVybiB0cnVlLiBUaGUgZGFp
-IGxpbmsgaXMKPj4gZGV0ZWN0ZWQgYXMgRFBDTSBpbnN0ZWFkIG9mIHRoZSBleHBlY3RlZCBub3Jt
-YWwgbGluay4KPiAKPiBJdCBzZWVtcyBkaWZmaWN1bHQgdG8gdXNlIFdNODk5NCBvbiBteSB0ZXN0
-IGVudmlyb25tZW50Lgo+IEFuZCBJIHRyaWVkIHRvIGFkZCAyIHBvcnRzIG9uIG15IHNvdW5kIGNv
-ZGVjIGRyaXZlci9EVCwKPiBidXQgSSBjYW4ndCByZXByb2R1Y2UgeW91ciBpc3N1ZS4KPiBCdXQs
-IEkgd2FudCB0byBzb2x2ZSB5b3VyIGlzc3VlLgo+IAo+IEluIG15IHVuZGVyc3RhbmRpbmcsIGlu
-IHlvdXIgY2FzZSwgY3B1L2NvZGVjIHdpbGwgYmUgYmVsb3cuCj4gCj4gwqDCoMKgwqDCoMKgwqAg
-Zm9yIFBsYXliYWNrCj4gwqDCoMKgwqDCoMKgwqAgY3B1X2VwwqDCoMKgwqDCoMKgwqDCoMKgID0g
-c2FpMmFfZW5kcG9pbnQKPiDCoMKgwqDCoMKgwqDCoCBjb2RlY19lcMKgwqDCoMKgwqDCoMKgID0g
-d204OTk0X3R4X2VuZHBvaW50Cj4gwqDCoMKgwqDCoMKgwqAgY29kZWNfcG9ydMKgwqDCoMKgwqAg
-PSB3bTg5OTRfdHhfcG9ydAo+IAo+IMKgwqDCoMKgwqDCoMKgIGZvciBSZWNvcmQKPiDCoMKgwqDC
-oMKgwqDCoCBjcHVfZXDCoMKgwqDCoMKgwqDCoMKgwqAgPSBzYWkyYl9lbmRwb2ludAo+IMKgwqDC
-oMKgwqDCoMKgIGNvZGVjX2VwwqDCoMKgwqDCoMKgwqAgPSB3bTg5OTRfcnhfZW5kcG9pbnQKPiDC
-oMKgwqDCoMKgwqDCoCBjb2RlY19wb3J0wqDCoMKgwqDCoCA9IHdtODk5NF9yeF9wb3J0Cj4gCj4+
-IFBsZWFzZSBjb3VsZCB5b3UgZWxhYm9yYXRlIGEgbGl0dGxlIGJpdCBvbiB0aGlzIGNyaXRlcmlh
-IGZvciB0aGUKPj4gbm9ybWFsL0RQQ00gc2VsZWN0aW9uPwo+PiAKPj4gV2hhdCBpcyB5b3UgZmVl
-bGluZyBhYm91dCB0aGlzIGxpbWl0YXRpb24uIERvIHlvdSBzZWUgYSB3YXkgdG8gcmVmaW5lCj4+
-IHRoZSBjb25kaXRpb24gdG8gYWxsb3cgbm9ybWFsIHNvdW5kIGNhcmQgd2l0aCBtdWx0aS1wb3J0
-IGNvZGVjcy4gT3IgZG8KPj4gd2UgaGF2ZSB0byBtaWdyYXRlIG91ciBzb3VuZCBjYXJkIHRvIERQ
-Q00uCj4gCj4gSWYgaXQgd2FzIERQQ00sIDEgcG9ydCBpcyBjb25uZWN0ZWQgZnJvbSBtdWx0aXBs
-ZSAiZW5kcG9pbnQiLgo+IFNvLCBhdWRpby1ncmFwaC1jYXJkIGlzIGNoZWNraW5nIGlmIGl0IHdh
-cyAibXVsdGktZW5kcG9pbnQiIG9yIG5vdC4KPiAibXVsdGktcG9ydCIgaXMgbm90IHJlbGF0ZWQg
-dG8gdGhpcyBqdWRnbWVudC4KPiAKPiBBbmQgaW4geW91ciBjYXNlLCBpZiBteSB1bmRlcnN0YW5k
-aW5nIHdhcyBjb3JyZWN0LAo+IHdtODk5NF90eC9yeCBvbmx5IGhhdmUgc2luZ2xlLWVuZHBvaW50
-Lgo+IHNvLCBpZiAob2ZfZ2V0X2NoaWxkX2NvdW50KGNvZGVjX3BvcnQpID4gMSkgcmV0dXJuIHRy
-dWUgaXMgYQo+IGxpdHRsZSBiaXQgc3RyYW5nZSBmb3IgbWUuCj4gQ2FuIHlvdSBjaGVjayB3aGF0
-IGlzIHRoaXMgY29kZWNfcG9ydCA/IEkgdGhpbmsgeW91IGNhbiB1c2UKPiBwcmludGsoIiVwT0Zc
-biIsIGNvZGVjX3BvcnQpIGZvciBpdC4KPiAKVGhhbmtzIGZvciB5b3VyIGFuc3dlciBhbmQgbXkg
-YXBvbG9naXplLiBJIGZvdW5kIHRoZSBpc3N1ZTogaXQgd2FzCmxvY2F0ZWQgYmV0d2VlbiBteSBr
-ZXlib2FyZCBhbmQgbXkgc2VhdC4uLgoKSSBtZXJnZWQgYSBiYWQgYnJhbmNoLCB3aGljaCBjb250
-YWlucyBmb2xsb3dpbmcgZGVjbGFyYXRpb24gZm9yIHRoZSB0aGUKd29sZnNvbiBub2RlOgoKcG9y
-dHMgewoJI2FkZHJlc3MtY2VsbHMgPSA8MT47CiAgICAgICAgI3NpemUtY2VsbHMgPSA8MD47Cgl3
-bTg5OTRfdHhfZW5kcG9pbnQ6IGVuZHBvaW50QDAgewoJCXJlZyA9IDwwPjsKICAgICAgICAgICAg
-ICAgIHJlbW90ZS1lbmRwb2ludCA9IDwmc2FpMmFfZW5kcG9pbnQ+OwogICAgICAgfTsKICAgICAg
-IHdtODk5NF9yeF9lbmRwb2ludDogZW5kcG9pbnRAMSB7CgkJcmVnID0gPDE+OwogICAgICAgICAg
-ICAgICAgcmVtb3RlLWVuZHBvaW50ID0gPCZzYWkyYl9lbmRwb2ludD47CiAgICAgICB9Owp9OwoK
-VGhpcyB3YXMgcHJvYmluZyBiZWZvcmUgdGhlIGF1ZGlvIGdyYXBoIHVwZGF0ZSwgbm90IG5vdywg
-YnV0IHRoaXMgaXMgbm90CmEgdmFsaWQgd2F5IHRvIGRlY2xhcmUgaXQuCgpXaXRoIHRoZSBjb25m
-aWd1cmF0aW9uIGRlc2NyaWJlZCBpbiB0aGUgZ2l0aHViLCBpdCBpcyBwZXJmZWN0bHkgd29ya2lu
-Zy4KClRoaXMgdHJpZyBtZSBhbiBleHRyYSBxdWVzdGlvbjogaG93IHRvIG1hbmFnZSBhIGNvbmZp
-Z3VyYXRpb24gdXNpbmcgb25seQpvbmUgY29kZWMgREFJIChiaWRpcikgY29ubmVjdGVkIHRvIDIg
-dW5pZGlyZWN0aW9uYWwgQ1BVLURBST8KICBQbGF5YmFjazogQ1BVLURBSSAoc2xhdmUpLT4gKG1h
-c3RlcilDT0RFQy1EQUkvcG9ydDAKICBSZWNvcmQ6IENQVS1EQUkgKHNsYXZlKTwtIChtYXN0ZXIp
-Q09ERUMtREFJL3BvcnQwCgpJbiB0aGlzIGNhc2UgaXQgc2VlbXMgbG9naWMgdG8gZGVjbGFyZSBm
-b3IgdGhlIGNvZGVjLCBvbmUgcG9ydCB3aXRoIDIKZW5kcG9pbnRzIHNvIHRoaXMgaW1wbHkgdG8g
-dXNlIERQQ00gbWVjaGFuaXNtLi4uIHJpZ2h0PwpJbiB0aGlzIGNhc2Ugd2Ugc2hvdWxkIHVzZSBh
-IHN0YXRpYyByb3V0aW5nIHRvIGNvbm5jZXQgRkUgYW5kIEJFLi4uPwpEbyB5b3Uga25vdyBpZiB0
-aGlzIGtpbmQgb2YgY29uZmlndXJhdGlvbiBoYXMgYmVlbiB0ZXN0ZWQ/CgpGWWksIFRoaXMgY29u
-ZmlndXJhdGlvbiBpcyBhdmFpbGFibGUgb24gdGhlIHN0bTMybXAxNTdjLWRrMiBib2FyZC4gVG9k
-YXkKd2UgaGF2ZSBub3QgYW4gdXBzdHJlYW1hYmxlIHNvbHV0aW9uICh3ZSBoYXZlIGhhY2tlZCB0
-aGUgY29kZWMgdG8KZHVwbGljYXRlIHRoZSBEQUkgdG8gY3JlYXRlIDIgcG9ydHMgd2l0aCBvbmUg
-ZW5kcG9pbnQsIGluc3RlYWQgb2Ygb25lCnBvcnQgd2l0aCAyIGVuZHBvaW50cykuCgpUaGFua3Ms
-CgpBcm5hdWQKCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Heya Andy,
+
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_EDISON)
+>>
+>> Can we use Merrifield / mrfld instead of EDISON in entire series?
+
+we could, but I don't know of any other platform than Edison to run the 
+code. I know it's less accurate from an architecture perspective but 
+felt Merrifield was confusing for non-Intel folks.
+
+> And one more question, is there any howto to run a nocodec variant of SOF on
+> Intel Merrifield platform?
+
+I haven't had time to look into this with the slew of comments on v3/v4 
+and travel. If you have a working Edison setup with 5.0+, then this 
+should work as is. the main issue is going to describe the SSP2 pins 
+with ACPI ASL stuff to make sure they are in 3.3V and the right pinmux, 
+that's the part that I keep kicking down the road. When I used Edison 
+with the official built there was a 'simple' script for the pin-mux, if 
+you have the moral equivalent in ASL I am all ears
+-Pierre
