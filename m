@@ -1,50 +1,80 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 2/4] soundwire: cdns: fix check for number
-	of messages
-Date: Fri, 29 Mar 2019 10:06:32 +0000
-Message-ID: <0e99ce6b-af40-df7b-9548-0055261c6440@linaro.org>
-References: <20190328134134.22479-1-srinivas.kandagatla@linaro.org>
- <20190328134134.22479-3-srinivas.kandagatla@linaro.org>
- <797b8525-dbcd-e52b-7b36-b80427a80186@linux.intel.com>
- <28b05dc7-f269-0091-53ab-4390f613fc09@linaro.org>
- <20190329055446.GJ5348@vkoul-mobl>
+From: shuah <shuah@kernel.org>
+Subject: Re: [PATCH v13 2/6] media: change au0828 to use Media Device
+ Allocator API
+Date: Fri, 29 Mar 2019 08:14:24 -0600
+Message-ID: <232cd798-4c0a-78d2-5eac-4c2870b4d6eb@kernel.org>
+References: <cover.1553814518.git.shuah@kernel.org>
+ <05ec250a56d9eaa868e7c8cf6376d6f8e29bb102.1553814518.git.shuah@kernel.org>
+ <693a4487-b4dd-b3e0-953e-22c342708f1f@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 159BDF8071D
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 11:06:34 +0100 (CET)
-Received: by mail-wm1-x32b.google.com with SMTP id z24so2084471wmi.5
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 03:06:34 -0700 (PDT)
-In-Reply-To: <20190329055446.GJ5348@vkoul-mobl>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <693a4487-b4dd-b3e0-953e-22c342708f1f@xs4all.nl>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: sanyog.r.kale@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 3/29/19 2:27 AM, Hans Verkuil wrote:
+> On 3/29/19 1:04 AM, Shuah Khan wrote:
+>> Media Device Allocator API to allows multiple drivers share a media device.
+>> This API solves a very common use-case for media devices where one physical
+>> device (an USB stick) provides both audio and video. When such media device
+>> exposes a standard USB Audio class, a proprietary Video class, two or more
+>> independent drivers will share a single physical USB bridge. In such cases,
+>> it is necessary to coordinate access to the shared resource.
+>>
+>> Using this API, drivers can allocate a media device with the shared struct
+>> device as the key. Once the media device is allocated by a driver, other
+>> drivers can get a reference to it. The media device is released when all
+>> the references are released.
+>>
+>> Change au0828 to use Media Device Allocator API to allocate media device
+>> with the parent usb struct device as the key, so it can be shared with the
+>> snd_usb_audio driver.
+>>
+>> Signed-off-by: Shuah Khan <shuah@kernel.org>
+>> ---
+>>   drivers/media/usb/au0828/Kconfig       |  2 ++
+>>   drivers/media/usb/au0828/au0828-core.c | 13 +++++--------
+>>   drivers/media/usb/au0828/au0828.h      |  1 +
+>>   3 files changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/au0828/Kconfig b/drivers/media/usb/au0828/Kconfig
+>> index 65fc067eb864..98de6e24329e 100644
+>> --- a/drivers/media/usb/au0828/Kconfig
+>> +++ b/drivers/media/usb/au0828/Kconfig
+>> @@ -2,6 +2,8 @@
+>>   config VIDEO_AU0828
+>>   	tristate "Auvitek AU0828 support"
+>>   	depends on I2C && INPUT && DVB_CORE && USB && VIDEO_V4L2
+>> +	select MEDIA_CONTROLLER
+>> +	select MEDIA_CONTROLLER_DVB
+> 
+> Is it required to select MEDIA_CONTROLLER_DVB? Does something fail to work
+> if this is unset?
+> 
 
+Need this enabled for dvb driver to use media controller. api.
 
-On 29/03/2019 05:54, Vinod Koul wrote:
->>> is that the defer structure is actually modified below this code (not
->>> shown in the diff) to set defer>length = msg->len, so testing before the
->>> value is set looks more suspicious than the current code.
->> removing the length field in defer should get rid of such instances.
-> Right!
-I will go ahead and post the cleanup patch to get rid of 
-confusing/redundant length field in defer.
+e.g dvb_register_media_device() does all its media controller code
+when MEDIA_CONTROLLER_DVB is enabled.
 
-Thanks,
-srini
+See drivers/media/dvb-core/dvbdev.c
+
+The config still says experimental:
+
+config MEDIA_CONTROLLER_DVB
+         bool "Enable Media controller for DVB (EXPERIMENTAL)"
+         depends on MEDIA_CONTROLLER && DVB_CORE
+         ---help---
+           Enable the media controller API support for DVB.
+
+           This is currently experimental.
+
+Is that still accurate? Should be updated?
+
+thanks,
+-- Shuah
