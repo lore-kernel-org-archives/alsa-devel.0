@@ -1,21 +1,16 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 1/4] soundwire: add module_sdw_driver
-	helper macro
-Date: Fri, 29 Mar 2019 11:08:43 +0530
-Message-ID: <20190329053843.GI5348@vkoul-mobl>
-References: <20190328134134.22479-1-srinivas.kandagatla@linaro.org>
- <20190328134134.22479-2-srinivas.kandagatla@linaro.org>
+From: libin.yang@intel.com
+Subject: [PATCH] ASoC: hdmi: add device PM dependency
+Date: Fri, 29 Mar 2019 13:23:02 +0800
+Message-ID: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E8A7F80766
- for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 06:38:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20190328134134.22479-2-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3718F8071D
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 06:39:22 +0100 (CET)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +20,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
+Cc: libin.yang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 28-03-19, 13:41, Srinivas Kandagatla wrote:
-> This Helper macro is for Soundwire drivers which do not do anything special in
+From: Libin Yang <libin.yang@intel.com>
 
-s/Soundwire/SoundWire
+HDMI audio codec register operation depends on the display audio power
+domain. The hdmi audio codec dapm event callback must be called after
+display audio power is turned on.
 
-Most of the 'documentation' uses SoundWire as that is spec name, unless
-you are referring to subsystem in which case all will be lowercase :)
+Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The customer
+audio driver can call the function to set the audio power dependency.
 
-> module init/exit. This eliminates a lot of boilerplate. Each module may only
-> use this macro once, and calling it replaces module_init() and module_exit()
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  include/linux/soundwire/sdw_type.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-> index 9fd553e553e9..e14843ed13a5 100644
-> --- a/include/linux/soundwire/sdw_type.h
-> +++ b/include/linux/soundwire/sdw_type.h
-> @@ -16,4 +16,15 @@ void sdw_unregister_driver(struct sdw_driver *drv);
->  
->  int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
->  
-> +/**
-> + * module_sdw_driver() - Helper macro for registering a Soundwire driver
-> + * @__sdw_driver: soundwire slave driver struct
-> + *
-> + * Helper macro for Soundwire drivers which do not do anything special in
-> + * module init/exit. This eliminates a lot of boilerplate. Each module may only
-> + * use this macro once, and calling it replaces module_init() and module_exit()
-> + */
-> +#define module_sdw_driver(__sdw_driver) \
-> +	module_driver(__sdw_driver, sdw_register_driver, \
-> +			sdw_unregister_driver)
->  #endif /* __SOUNDWIRE_TYPES_H */
-> -- 
-> 2.21.0
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+ sound/soc/codecs/hdac_hdmi.h |  6 ++++++
+ 2 files changed, 18 insertions(+)
 
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 5eeb0fe..c991407 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
+ }
+ EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
+ 
++struct device_link *
++hdac_hdmi_device_link_add(struct device *consumer,
++			  struct snd_soc_component *component,
++			  u32 flags)
++{
++	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
++	struct hdac_device *hdev = hdmi->hdev;
++
++	return device_link_add(consumer, &hdev->dev, flags);
++}
++EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
++
+ static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
+ 			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
+ {
+diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
+index 4fa2fc9..9239c6b 100644
+--- a/sound/soc/codecs/hdac_hdmi.h
++++ b/sound/soc/codecs/hdac_hdmi.h
+@@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
+ 
+ int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
+ 			struct snd_soc_dapm_context *dapm);
++
++struct device_link *
++hdac_hdmi_device_link_add(struct device *consumer,
++			  struct snd_soc_component *component,
++			  u32 flags);
++
+ #endif /* __HDAC_HDMI_H__ */
 -- 
-~Vinod
+2.7.4
