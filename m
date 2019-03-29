@@ -1,73 +1,61 @@
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 3/3] ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II
-Date: Fri, 29 Mar 2019 22:50:45 +0100
-Message-ID: <20190329215045.6254-3-paul@crapouillou.net>
-References: <20190329215045.6254-1-paul@crapouillou.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190329215045.6254-1-paul@crapouillou.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+From: Daniel Mentz <danielmentz@google.com>
+Subject: [PATCH] ALSA: uapi: #include <time.h> in asound.h
+Date: Fri, 29 Mar 2019 15:48:54 -0700
+Message-ID: <20190329224854.38009-1-danielmentz@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw1-xc4a.google.com (mail-yw1-xc4a.google.com
+ [IPv6:2607:f8b0:4864:20::c4a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAA7FF80C16
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 23:49:15 +0100 (CET)
+Received: by mail-yw1-xc4a.google.com with SMTP id k127so2608085ywe.23
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 15:49:15 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, etam@google.com
+Cc: Daniel Mentz <danielmentz@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Teclast X98+ II is a Cherrytrail tablet, which require two quirks:
-- it has stereo speakers,
-- its jack detection mechanism is inverted.
+The uapi header asound.h defines types based on struct timespec. We need
+to #include <time.h> to get access to the definition of this struct.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Previously, we encountered the following error message when building
+applications with a clang/bionic toolchain:
+
+kernel-headers/sound/asound.h:350:19: error: field has incomplete type 'struct timespec'
+  struct timespec trigger_tstamp;
+                  ^
+
+The absence of the time.h #include statement does not cause build errors
+with glibc, because its version of stdlib.h indirectly includes time.h.
+
+Signed-off-by: Daniel Mentz <danielmentz@google.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ include/uapi/sound/asound.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index e59ef61e1fd0..4d0f8eb560d0 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -22,6 +22,7 @@
- #include <linux/acpi.h>
- #include <linux/clk.h>
- #include <linux/device.h>
-+#include <linux/dmi.h>
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
-@@ -441,11 +442,25 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
- 	{ },
- };
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 404d4b9ffe76..df1153cea0b7 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -32,6 +32,7 @@
  
-+/* Please keep this list alphabetically sorted */
-+static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
-+	{	/* Teclast X98 Plus II */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
-+		},
-+		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN1_MAP
-+					| BYT_CHT_ES8316_JD_INVERTED),
-+	},
-+	{}
-+};
-+
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
- 	static const char * const mic_name[] = { "in1", "in2" };
- 	struct property_entry props[MAX_NO_PROPS] = {};
- 	struct byt_cht_es8316_private *priv;
-+	const struct dmi_system_id *dmi_id;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
- 	const char *platform_name;
-@@ -487,7 +502,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		return ret;
+ #ifndef __KERNEL__
+ #include <stdlib.h>
++#include <time.h>
+ #endif
  
- 	/* Check for BYTCR or other platform and setup quirks */
--	if (x86_match_cpu(baytrail_cpu_ids) &&
-+	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
-+	if (dmi_id) {
-+		quirk = (int)dmi_id->driver_data;
-+	} else if (x86_match_cpu(baytrail_cpu_ids) &&
- 	    mach->mach_params.acpi_ipc_irq_index == 0) {
- 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
- 		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
+ /*
 -- 
-2.11.0
+2.21.0.392.gf8f6787159e-goog
