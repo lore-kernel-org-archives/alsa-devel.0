@@ -1,105 +1,69 @@
-From: Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v13 2/6] media: change au0828 to use Media Device Allocator API
-Date: Thu, 28 Mar 2019 18:04:57 -0600
-Message-ID: <05ec250a56d9eaa868e7c8cf6376d6f8e29bb102.1553814518.git.shuah@kernel.org>
-References: <cover.1553814518.git.shuah@kernel.org>
+From: Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH v3 02/10] extcon: axp288: Convert to use
+ acpi_dev_get_first_match_dev()
+Date: Fri, 29 Mar 2019 09:53:09 +0900
+Message-ID: <c5090422-e707-a774-f3ab-b5bf49cd6851@samsung.com>
+References: <20190328171729.44002-1-andriy.shevchenko@linux.intel.com>
+ <CGME20190328171737epcas5p2f2bc38aebfcd986cee75928fae36eee7@epcas5p2.samsung.com>
+ <20190328171729.44002-3-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1553814518.git.shuah@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
-Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A52AF80C16
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 01:52:51 +0100 (CET)
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20190329005245epoutp03d68da714c01c109f066cd82bf17f82ff~QR8EGWCwY0627006270epoutp03f
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 00:52:45 +0000 (GMT)
+In-Reply-To: <20190328171729.44002-3-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-acpi@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Hans de Goede <hdegoede@redhat.com>, Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, MyungJoo Ham <myungjoo.ham@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Media Device Allocator API to allows multiple drivers share a media device.
-This API solves a very common use-case for media devices where one physical
-device (an USB stick) provides both audio and video. When such media device
-exposes a standard USB Audio class, a proprietary Video class, two or more
-independent drivers will share a single physical USB bridge. In such cases,
-it is necessary to coordinate access to the shared resource.
-
-Using this API, drivers can allocate a media device with the shared struct
-device as the key. Once the media device is allocated by a driver, other
-drivers can get a reference to it. The media device is released when all
-the references are released.
-
-Change au0828 to use Media Device Allocator API to allocate media device
-with the parent usb struct device as the key, so it can be shared with the
-snd_usb_audio driver.
-
-Signed-off-by: Shuah Khan <shuah@kernel.org>
----
- drivers/media/usb/au0828/Kconfig       |  2 ++
- drivers/media/usb/au0828/au0828-core.c | 13 +++++--------
- drivers/media/usb/au0828/au0828.h      |  1 +
- 3 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/media/usb/au0828/Kconfig b/drivers/media/usb/au0828/Kconfig
-index 65fc067eb864..98de6e24329e 100644
---- a/drivers/media/usb/au0828/Kconfig
-+++ b/drivers/media/usb/au0828/Kconfig
-@@ -2,6 +2,8 @@
- config VIDEO_AU0828
- 	tristate "Auvitek AU0828 support"
- 	depends on I2C && INPUT && DVB_CORE && USB && VIDEO_V4L2
-+	select MEDIA_CONTROLLER
-+	select MEDIA_CONTROLLER_DVB
- 	select I2C_ALGOBIT
- 	select VIDEO_TVEEPROM
- 	select VIDEOBUF2_VMALLOC if VIDEO_V4L2
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 3f8c92a70116..4f8ba6f64d3c 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -155,9 +155,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- 	dev->media_dev->disable_source = NULL;
- 	mutex_unlock(&mdev->graph_mutex);
- 
--	media_device_unregister(dev->media_dev);
--	media_device_cleanup(dev->media_dev);
--	kfree(dev->media_dev);
-+	media_device_delete(dev->media_dev, KBUILD_MODNAME, THIS_MODULE);
- 	dev->media_dev = NULL;
- #endif
- }
-@@ -210,14 +208,10 @@ static int au0828_media_device_init(struct au0828_dev *dev,
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	struct media_device *mdev;
- 
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
-+	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME, THIS_MODULE);
- 	if (!mdev)
- 		return -ENOMEM;
- 
--	/* check if media device is already initialized */
--	if (!mdev->dev)
--		media_device_usb_init(mdev, udev, udev->product);
--
- 	dev->media_dev = mdev;
- #endif
- 	return 0;
-@@ -480,6 +474,9 @@ static int au0828_media_device_register(struct au0828_dev *dev,
- 		/* register media device */
- 		ret = media_device_register(dev->media_dev);
- 		if (ret) {
-+			media_device_delete(dev->media_dev, KBUILD_MODNAME,
-+					    THIS_MODULE);
-+			dev->media_dev = NULL;
- 			dev_err(&udev->dev,
- 				"Media Device Register Error: %d\n", ret);
- 			return ret;
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 425c35d16057..57b00de8d3f2 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -31,6 +31,7 @@
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-fh.h>
- #include <media/media-device.h>
-+#include <media/media-dev-allocator.h>
- 
- /* DVB */
- #include <media/demux.h>
--- 
-2.17.1
+SGkgQW5keSwKCk9uIDE5LiAzLiAyOS4g7Jik7KCEIDI6MTcsIEFuZHkgU2hldmNoZW5rbyB3cm90
+ZToKPiBhY3BpX2Rldl9nZXRfZmlyc3RfbWF0Y2hfbmFtZSgpIGlzIGRlcHJlY2F0ZWQgYW5kIGdv
+aW5nIHRvIGJlIHJlbW92ZWQKPiBiZWNhdXNlIGl0IGxlYWtzIGEgcmVmZXJlbmNlLgo+IAo+IENv
+bnZlcnQgdGhlIGRyaXZlciB0byB1c2UgYWNwaV9kZXZfZ2V0X2ZpcnN0X21hdGNoX2RldigpIGlu
+c3RlYWQuCj4gCj4gQ2M6IENoYW53b28gQ2hvaSA8Y3cwMC5jaG9pQHNhbXN1bmcuY29tPgo+IENj
+OiBNeXVuZ0pvbyBIYW0gPG15dW5nam9vLmhhbUBzYW1zdW5nLmNvbT4KPiBDYzogQ2hlbi1ZdSBU
+c2FpIDx3ZW5zQGNzaWUub3JnPgo+IFNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5k
+cml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgo+IC0tLQo+ICBkcml2ZXJzL2V4dGNvbi9l
+eHRjb24tYXhwMjg4LmMgfCA5ICsrKysrLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRp
+b25zKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2V4dGNvbi9l
+eHRjb24tYXhwMjg4LmMgYi9kcml2ZXJzL2V4dGNvbi9leHRjb24tYXhwMjg4LmMKPiBpbmRleCBh
+OTgzNzA4Yjc3YTYuLjUwZjk0MDJmYjMyNSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2V4dGNvbi9l
+eHRjb24tYXhwMjg4LmMKPiArKysgYi9kcml2ZXJzL2V4dGNvbi9leHRjb24tYXhwMjg4LmMKPiBA
+QCAtMzMzLDcgKzMzMyw3IEBAIHN0YXRpYyBpbnQgYXhwMjg4X2V4dGNvbl9wcm9iZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ICAJc3RydWN0IGF4cDI4OF9leHRjb25faW5mbyAqaW5m
+bzsKPiAgCXN0cnVjdCBheHAyMHhfZGV2ICpheHAyMHggPSBkZXZfZ2V0X2RydmRhdGEocGRldi0+
+ZGV2LnBhcmVudCk7Cj4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+IC0JY29u
+c3QgY2hhciAqbmFtZTsKPiArCXN0cnVjdCBhY3BpX2RldmljZSAqYWRldjsKPiAgCWludCByZXQs
+IGksIHBpcnE7Cj4gIAo+ICAJaW5mbyA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2Yo
+KmluZm8pLCBHRlBfS0VSTkVMKTsKPiBAQCAtMzU3LDkgKzM1NywxMCBAQCBzdGF0aWMgaW50IGF4
+cDI4OF9leHRjb25fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgCQlpZiAo
+cmV0KQo+ICAJCQlyZXR1cm4gcmV0Owo+ICAKPiAtCQluYW1lID0gYWNwaV9kZXZfZ2V0X2ZpcnN0
+X21hdGNoX25hbWUoIklOVDM0OTYiLCBOVUxMLCAtMSk7Cj4gLQkJaWYgKG5hbWUpIHsKPiAtCQkJ
+aW5mby0+aWRfZXh0Y29uID0gZXh0Y29uX2dldF9leHRjb25fZGV2KG5hbWUpOwo+ICsJCWFkZXYg
+PSBhY3BpX2Rldl9nZXRfZmlyc3RfbWF0Y2hfZGV2KCJJTlQzNDk2IiwgTlVMTCwgLTEpOwo+ICsJ
+CWlmIChhZGV2KSB7Cj4gKwkJCWluZm8tPmlkX2V4dGNvbiA9IGV4dGNvbl9nZXRfZXh0Y29uX2Rl
+dihhY3BpX2Rldl9uYW1lKGFkZXYpKTsKPiArCQkJcHV0X2RldmljZSgmYWRldi0+ZGV2KTsKPiAg
+CQkJaWYgKCFpbmZvLT5pZF9leHRjb24pCj4gIAkJCQlyZXR1cm4gLUVQUk9CRV9ERUZFUjsKPiAg
+Cj4gCgpBcHBsaWVkIGl0LiBUaGFua3MuCgotLSAKQmVzdCBSZWdhcmRzLApDaGFud29vIENob2kK
+U2Ftc3VuZyBFbGVjdHJvbmljcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
