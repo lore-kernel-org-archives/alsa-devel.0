@@ -1,39 +1,40 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [PATCH][next] ASoC: fsl: fix spelling mistake: "missign" ->
- "missing"
-Date: Fri, 29 Mar 2019 08:39:59 +0000
-Message-ID: <1553848793.20793.0.camel@nxp.com>
-References: <20190328092816.12883-1-colin.king@canonical.com>
-         <acedd6b3-9234-390d-1626-ac02223c93cd@codeaurora.org>
-Reply-To: Viorel Suman <viorel.suman@nxp.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v3 00/10] ACPI / utils: Replace leaky
+	function
+Date: Fri, 29 Mar 2019 11:29:11 +0200
+Message-ID: <20190329092911.GE3622@lahna.fi.intel.com>
+References: <20190328171729.44002-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <acedd6b3-9234-390d-1626-ac02223c93cd@codeaurora.org>
-Content-Language: en-US
-Content-ID: <58555B717F7797409ACD13AC72FD4F96@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: dl-linux-imx <linux-imx@nxp.com>, "colin.king@canonical.com" <colin.king@canonical.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "mojha@codeaurora.org" <mojha@codeaurora.org>, "tiwai@suse.com" <tiwai@suse.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "perex@perex.cz" <perex@perex.cz>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.or>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74472F80766
+ for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2019 10:29:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20190328171729.44002-1-andriy.shevchenko@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Chanwoo Choi <cw00.choi@samsung.com>, Hans de Goede <hdegoede@redhat.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linus Walleij <linus.walleij@linaro.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, linux-acpi@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, MyungJoo Ham <myungjoo.ham@samsung.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gSm8sIDIwMTktMDMtMjggYXQgMTU6NDggKzA1MzAsIE11a2VzaCBPamhhIHdyb3RlOg0KPiBP
-biAzLzI4LzIwMTkgMjo1OCBQTSwgQ29saW4gS2luZyB3cm90ZToNCj4gPiANCj4gPiBGcm9tOiBD
-b2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiA+IA0KPiA+IFRoZXJl
-IGlzIGEgc3BlbGxpbmcgbWlzdGFrZSBpbiBhIGRldl9lcnIgbWVzc2FnZS4gRml4IHRoaXMuDQo+
-ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25p
-Y2FsLmNvbT4NCj4gDQo+IFJldmlld2VkLWJ5OiBNdWtlc2ggT2poYSA8bW9qaGFAY29kZWF1cm9y
-YS5vcmc+DQoNCkFja2VkLWJ5OiBWaW9yZWwgU3VtYW4gPHZpb3JlbC5zdW1hbkBueHAuY29tPg0K
-DQo+IA0KPiAtTXVrZXNoDQo+IA0KPiA+IA0KPiA+IC0tLQ0KPiA+IMKgIHNvdW5kL3NvYy9mc2wv
-aW14LWF1ZG1peC5jIHwgMiArLQ0KPiA+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
-KSwgMSBkZWxldGlvbigtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2lt
-eC1hdWRtaXguYyBiL3NvdW5kL3NvYy9mc2wvaW14LQ0KPiA+IGF1ZG1peC5jDQo+ID4gaW5kZXgg
-NzJlMzdjYTZjZmJiLi43OTgzYmQzMzljMDEgMTAwNjQ0DQo+ID4gLS0tIGEvc291bmQvc29jL2Zz
-bC9pbXgtYXVkbWl4LmMNCj4gPiArKysgYi9zb3VuZC9zb2MvZnNsL2lteC1hdWRtaXguYw0KPiA+
-IEBAIC0xNjEsNyArMTYxLDcgQEAgc3RhdGljIGludCBpbXhfYXVkbWl4X3Byb2JlKHN0cnVjdA0K
-PiA+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiDCoMKgCX0NCj4gPiDCoMKgDQo+ID4gwqDC
-oAlpZiAoIWF1ZG1peF9ucCkgew0KPiA+IC0JCWRldl9lcnIoJnBkZXYtPmRldiwgIk1pc3NpZ24g
-RFQgbm9kZSBmb3IgcGFyZW50DQo+ID4gZGV2aWNlLlxuIik7DQo+ID4gKwkJZGV2X2VycigmcGRl
-di0+ZGV2LCAiTWlzc2luZyBEVCBub2RlIGZvciBwYXJlbnQNCj4gPiBkZXZpY2UuXG4iKTsNCj4g
-PiDCoMKgCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiDCoMKgCX0NCj4gPiDCoMKg
+On Thu, Mar 28, 2019 at 07:17:19PM +0200, Andy Shevchenko wrote:
+> The acpi_dev_get_first_match_name() is missing put_device() call
+> and thus keeping reference counting unbalanced.
+> 
+> In order to fix the issue introduce a new helper to convert existing users
+> one-by-one to a better API.
+
+For the entire series,
+
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
