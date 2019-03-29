@@ -1,87 +1,92 @@
-From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH] ASoC: cs42l51: add multi endpoint support
-Date: Fri, 29 Mar 2019 16:37:37 +0100
-Message-ID: <1553873857-7423-1-git-send-email-olivier.moysan@st.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH v3 2/2] ASoC: tlv320aic31xx: Add button press detection
+Date: Fri, 29 Mar 2019 10:47:04 -0500
+Message-ID: <20190329154704.4922-2-afd@ti.com>
+References: <20190329154704.4922-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com
-Cc: benjamin.gaignard@st.com, kuninori.morimoto.gx@renesas.com
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190329154704.4922-1-afd@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Support multiple endpoints on cs42L51 codec port
-when used in of_graph context.
+This device can optionally detect headset or microphone button presses.
+Add support for this by passing this event to the jack layer.
 
-This patch allows to share the codec port between two CPU DAIs.
-
-Example:
-
-STM32MP157C-DK2 board uses CS42L51 audio codec.
-This codec is connected to two serial audio interfaces,
-which are configured either as rx or tx.
-
->From AsoC point of view the topolgy is the following:
-// 2 CPU DAIs (SAI2A/B), 1 Codec (CS42L51)
-Playback: CPU-A-DAI(slave) -> (master)CODEC-DAI/port0
-Record:   CPU-B-DAI(slave) <- (master)CODEC-DAI/port0
-
-In the DT two endpoints have to be associated to the codec port:
-cs42l51_port: port {
-	cs42l51_tx_endpoint: endpoint@0 {
-		remote-endpoint = <&sai2a_endpoint>;
-	};
-	cs42l51_rx_endpoint: endpoint@1 {
-		remote-endpoint = <&sai2b_endpoint>;
-	};
-};
-
-However, when the audio graph card parses the codec nodes, it expects
-to find DAI interface indexes matching the endpoints indexes.
-
-The current patch forces the use of DAI id 0 for both endpoints,
-which allows to share the codec DAI between the two CPU DAIs
-for playback and capture streams respectively.
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/cs42l51.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index fd2bd74024c1..80da3cd73e04 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -464,6 +464,13 @@ static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute)
- 	return snd_soc_component_write(component, CS42L51_DAC_OUT_CTL, reg);
- }
+Changes from v1:
+ - Rebase
+
+Changes from v2:
+ - Rebase
+
+ sound/soc/codecs/tlv320aic31xx.c | 17 +++++++++++++++--
+ sound/soc/codecs/tlv320aic31xx.h |  3 ++-
+ 2 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 3e11b3d41f3d..f59632ed2230 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1380,10 +1380,21 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 		dev_err(dev, "Short circuit on Left output is detected\n");
+ 	if (value & AIC31XX_HPRSCDETECT)
+ 		dev_err(dev, "Short circuit on Right output is detected\n");
+-	if (value & AIC31XX_HSPLUG) {
++	if (value & (AIC31XX_HSPLUG | AIC31XX_BUTTONPRESS)) {
+ 		unsigned int val;
+ 		int status = 0;
  
-+static int cs42l51_of_xlate_dai_id(struct snd_soc_component *component,
-+				   struct device_node *endpoint)
-+{
-+	/* return dai id 0, whatever the endpoint index */
-+	return 0;
-+}
++		ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG2,
++				  &val);
++		if (ret) {
++			dev_err(dev, "Failed to read interrupt mask: %d\n",
++				ret);
++			goto exit;
++		}
 +
- static const struct snd_soc_dai_ops cs42l51_dai_ops = {
- 	.hw_params      = cs42l51_hw_params,
- 	.set_sysclk     = cs42l51_set_dai_sysclk,
-@@ -526,6 +533,7 @@ static const struct snd_soc_component_driver soc_component_device_cs42l51 = {
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l51_dapm_widgets),
- 	.dapm_routes		= cs42l51_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(cs42l51_routes),
-+	.of_xlate_dai_id	= cs42l51_of_xlate_dai_id,
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
++		if (val & AIC31XX_BUTTONPRESS)
++			status |= SND_JACK_BTN_0;
++
+ 		ret = regmap_read(aic31xx->regmap, AIC31XX_HSDETECT, &val);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to read headset type: %d\n", ret);
+@@ -1408,7 +1419,8 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	}
+ 	if (value & ~(AIC31XX_HPLSCDETECT |
+ 		      AIC31XX_HPRSCDETECT |
+-		      AIC31XX_HSPLUG))
++		      AIC31XX_HSPLUG |
++		      AIC31XX_BUTTONPRESS))
+ 		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
+ 
+ read_overflow:
+@@ -1522,6 +1534,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 
+ 		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
+ 			     AIC31XX_HSPLUGDET |
++			     AIC31XX_BUTTONPRESSDET |
+ 			     AIC31XX_SC |
+ 			     AIC31XX_ENGINE);
+ 
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 9985ceed97ae..cb024955c978 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -21,7 +21,8 @@
+ #define DAC31XX_BIT			BIT(3)
+ 
+ #define AIC31XX_JACK_MASK (SND_JACK_HEADPHONE | \
+-			   SND_JACK_HEADSET)
++			   SND_JACK_HEADSET | \
++			   SND_JACK_BTN_0)
+ 
+ enum aic31xx_type {
+ 	AIC3100	= 0,
 -- 
-2.7.4
+2.21.0
