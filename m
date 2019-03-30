@@ -1,105 +1,50 @@
-From: Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v14 2/6] media: change au0828 to use Media Device Allocator API
-Date: Fri, 29 Mar 2019 19:53:57 -0600
-Message-ID: <a2ff6ba4f36564194872833ec400367e541da754.1553909893.git.shuah@kernel.org>
-References: <cover.1553909892.git.shuah@kernel.org>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [BACKPORT 4.4.y 02/25] ALSA: compress: add support for 32bit
+ calls in a 64bit kernel
+Date: Sat, 30 Mar 2019 10:40:39 +0100
+Message-ID: <20190330094039.GA17316@kroah.com>
+References: <20190322154425.3852517-1-arnd@arndb.de>
+ <20190322154425.3852517-3-arnd@arndb.de>
+ <20190326010911.GB29420@kroah.com>
+ <CAK8P3a22Mp9yR49CEe2bq240SuSpbvy1XBDa2sSvWYMt=AZM3Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1553909892.git.shuah@kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a22Mp9yR49CEe2bq240SuSpbvy1XBDa2sSvWYMt=AZM3Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
-Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "# 3.4.x" <stable@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ravindra Lokhande <rlokhande@nvidia.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Joe Perches <joe@perches.com>, Dan Carpenter <dan.carpenter@oracle.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Media Device Allocator API to allows multiple drivers share a media device.
-This API solves a very common use-case for media devices where one physical
-device (an USB stick) provides both audio and video. When such media device
-exposes a standard USB Audio class, a proprietary Video class, two or more
-independent drivers will share a single physical USB bridge. In such cases,
-it is necessary to coordinate access to the shared resource.
+On Tue, Mar 26, 2019 at 08:55:14AM +0100, Arnd Bergmann wrote:
+> On Tue, Mar 26, 2019 at 2:23 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Mar 22, 2019 at 04:43:53PM +0100, Arnd Bergmann wrote:
+> > > From: Ravindra Lokhande <rlokhande@nvidia.com>
+> > >
+> > > Compress offload does not support ioctl calls from a 32bit userspace
+> > > in a 64 bit kernel. This patch adds support for ioctls from a 32bit
+> > > userspace in a 64bit kernel
+> > >
+> > > Signed-off-by: Ravindra Lokhande <rlokhande@nvidia.com>
+> > > Acked-by: Vinod Koul <vinod.koul@intel.com>
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > (cherry picked from commit c10368897e104c008c610915a218f0fe5fa4ec96)
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > ---
+> > >  sound/core/compress_offload.c | 13 +++++++++++++
+> > >  1 file changed, 13 insertions(+)
+> >
+> > How is this not a "new feature"?  What bug does this fix?  Has this ever
+> > worked in the past?
+> 
+> It has never worked in the past, but I consider it a bug for the compat layer
+> to behave differently from native code. In this case, any 32-bit application
+> using the SNDRV_COMPRESS_* ioctls will just fail to do anything on
+> a 64-bit kernel at all without the trivial fix that should have been there when
+> the driver was originally merged.
 
-Using this API, drivers can allocate a media device with the shared struct
-device as the key. Once the media device is allocated by a driver, other
-drivers can get a reference to it. The media device is released when all
-the references are released.
+Ok, fair enough, now queued up.
 
-Change au0828 to use Media Device Allocator API to allocate media device
-with the parent usb struct device as the key, so it can be shared with the
-snd_usb_audio driver.
-
-Signed-off-by: Shuah Khan <shuah@kernel.org>
----
- drivers/media/usb/au0828/Kconfig       |  2 ++
- drivers/media/usb/au0828/au0828-core.c | 13 +++++--------
- drivers/media/usb/au0828/au0828.h      |  1 +
- 3 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/media/usb/au0828/Kconfig b/drivers/media/usb/au0828/Kconfig
-index 65fc067eb864..98de6e24329e 100644
---- a/drivers/media/usb/au0828/Kconfig
-+++ b/drivers/media/usb/au0828/Kconfig
-@@ -2,6 +2,8 @@
- config VIDEO_AU0828
- 	tristate "Auvitek AU0828 support"
- 	depends on I2C && INPUT && DVB_CORE && USB && VIDEO_V4L2
-+	select MEDIA_CONTROLLER
-+	select MEDIA_CONTROLLER_DVB
- 	select I2C_ALGOBIT
- 	select VIDEO_TVEEPROM
- 	select VIDEOBUF2_VMALLOC if VIDEO_V4L2
-diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
-index 3f8c92a70116..4f8ba6f64d3c 100644
---- a/drivers/media/usb/au0828/au0828-core.c
-+++ b/drivers/media/usb/au0828/au0828-core.c
-@@ -155,9 +155,7 @@ static void au0828_unregister_media_device(struct au0828_dev *dev)
- 	dev->media_dev->disable_source = NULL;
- 	mutex_unlock(&mdev->graph_mutex);
- 
--	media_device_unregister(dev->media_dev);
--	media_device_cleanup(dev->media_dev);
--	kfree(dev->media_dev);
-+	media_device_delete(dev->media_dev, KBUILD_MODNAME, THIS_MODULE);
- 	dev->media_dev = NULL;
- #endif
- }
-@@ -210,14 +208,10 @@ static int au0828_media_device_init(struct au0828_dev *dev,
- #ifdef CONFIG_MEDIA_CONTROLLER
- 	struct media_device *mdev;
- 
--	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
-+	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME, THIS_MODULE);
- 	if (!mdev)
- 		return -ENOMEM;
- 
--	/* check if media device is already initialized */
--	if (!mdev->dev)
--		media_device_usb_init(mdev, udev, udev->product);
--
- 	dev->media_dev = mdev;
- #endif
- 	return 0;
-@@ -480,6 +474,9 @@ static int au0828_media_device_register(struct au0828_dev *dev,
- 		/* register media device */
- 		ret = media_device_register(dev->media_dev);
- 		if (ret) {
-+			media_device_delete(dev->media_dev, KBUILD_MODNAME,
-+					    THIS_MODULE);
-+			dev->media_dev = NULL;
- 			dev_err(&udev->dev,
- 				"Media Device Register Error: %d\n", ret);
- 			return ret;
-diff --git a/drivers/media/usb/au0828/au0828.h b/drivers/media/usb/au0828/au0828.h
-index 425c35d16057..57b00de8d3f2 100644
---- a/drivers/media/usb/au0828/au0828.h
-+++ b/drivers/media/usb/au0828/au0828.h
-@@ -31,6 +31,7 @@
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-fh.h>
- #include <media/media-device.h>
-+#include <media/media-dev-allocator.h>
- 
- /* DVB */
- #include <media/demux.h>
--- 
-2.17.1
+greg k-h
