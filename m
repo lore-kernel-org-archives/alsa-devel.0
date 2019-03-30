@@ -1,19 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 16/20] ASoC: SOF:
- Add PCI device support
-Date: Fri, 29 Mar 2019 20:30:41 -0400
-Message-ID: <d6b6fc83-c362-4b86-ebb1-9c79dbb36858@linux.intel.com>
-References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
- <20190321161055.26582-17-pierre-louis.bossart@linux.intel.com>
- <20190328174819.GM9224@smile.fi.intel.com>
- <20190328174918.GN9224@smile.fi.intel.com>
- <9f48d5e7-8a95-db2f-0605-b15e45670ce0@linux.intel.com>
- <20190328220826.GQ9224@smile.fi.intel.com>
+Subject: Re: [PATCH] ASoC: hdmi: add device PM dependency
+Date: Fri, 29 Mar 2019 21:32:56 -0400
+Message-ID: <044dca38-efbf-0ef9-8ada-327e959a7aee@linux.intel.com>
+References: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190328220826.GQ9224@smile.fi.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D2BFF80766
+ for <alsa-devel@alsa-project.org>; Sat, 30 Mar 2019 02:36:20 +0100 (CET)
+In-Reply-To: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,53 +23,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, sound-open-firmware@alsa-project.org, Alan Cox <alan@linux.intel.com>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/28/19 6:08 PM, Andy Shevchenko wrote:
-> On Thu, Mar 28, 2019 at 02:21:47PM -0400, Pierre-Louis Bossart wrote:
->>>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_EDISON)
->>>>
->>>> Can we use Merrifield / mrfld instead of EDISON in entire series?
->>
->> we could, but I don't know of any other platform than Edison to run the
->> code. I know it's less accurate from an architecture perspective but felt
->> Merrifield was confusing for non-Intel folks.
+On 3/29/19 1:23 AM, libin.yang@intel.com wrote:
+> From: Libin Yang <libin.yang@intel.com>
 > 
-> We use Merrifield across the entire kernel. It would be confusing other way around.
-> So, please, change it to be consistent with the rest of the kernel.
+> HDMI audio codec register operation depends on the display audio power
+> domain. The hdmi audio codec dapm event callback must be called after
+> display audio power is turned on.
+> 
+> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The customer
+> audio driver can call the function to set the audio power dependency.
 
-Since this is the only comment so far, I'll add a follow-up patch.
+Can you clarify what the 'customer audio driver(s)' are, and in the case 
+where you meant the cAVS/SST driver all a patch that makes use of this 
+new routine?
 
-> 
->>> And one more question, is there any howto to run a nocodec variant of SOF on
->>> Intel Merrifield platform?
->>
->> I haven't had time to look into this with the slew of comments on v3/v4 and
->> travel. If you have a working Edison setup with 5.0+, then this should work
->> as is.
-> 
-> Where to get SOF binary, and more interesting where to get sources and howto
-> compile them into binary?
+Also the patch subject should be ASoC: hdac_hdmi: ...
+
 
 
 > 
->> the main issue is going to describe the SSP2 pins with ACPI ASL stuff
->> to make sure they are in 3.3V and the right pinmux, that's the part that I
->> keep kicking down the road. When I used Edison with the official built there
->> was a 'simple' script for the pin-mux, if you have the moral equivalent in
->> ASL I am all ears
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> ---
+>   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+>   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
+>   2 files changed, 18 insertions(+)
 > 
-> I don't know what should be done and where, the pins themselves are in correct
-> mode set by firmware (if no-one touches them as GPIOs):
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 5eeb0fe..c991407 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
+>   }
+>   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
+>   
+> +struct device_link *
+> +hdac_hdmi_device_link_add(struct device *consumer,
+> +			  struct snd_soc_component *component,
+> +			  u32 flags)
+> +{
+> +	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
+> +	struct hdac_device *hdev = hdmi->hdev;
+> +
+> +	return device_link_add(consumer, &hdev->dev, flags);
+> +}
+> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
+> +
+>   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
+>   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
+>   {
+> diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
+> index 4fa2fc9..9239c6b 100644
+> --- a/sound/soc/codecs/hdac_hdmi.h
+> +++ b/sound/soc/codecs/hdac_hdmi.h
+> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
+>   
+>   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
+>   			struct snd_soc_dapm_context *dapm);
+> +
+> +struct device_link *
+> +hdac_hdmi_device_link_add(struct device *consumer,
+> +			  struct snd_soc_component *component,
+> +			  u32 flags);
+> +
+>   #endif /* __HDAC_HDMI_H__ */
 > 
-> pin 75 (GP40_I2S_2_CLK) mode 1 0x00003221
-> pin 76 (GP41_I2S_2_FS) mode 1 0x00003221
-> pin 77 (GP42_I2S_2_RXD) mode 1 0x00003221
-> pin 78 (GP43_I2S_2_TXD) mode 1 0x00003221
-> 
-> If you talking about Edison/Arduino board and its discrete pin control, we have
-> a mechanism to set it from ASL.
-
-yep, that's the board I have.
