@@ -1,50 +1,41 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [BACKPORT 4.4.y 02/25] ALSA: compress: add support for 32bit
- calls in a 64bit kernel
-Date: Sat, 30 Mar 2019 10:40:39 +0100
-Message-ID: <20190330094039.GA17316@kroah.com>
-References: <20190322154425.3852517-1-arnd@arndb.de>
- <20190322154425.3852517-3-arnd@arndb.de>
- <20190326010911.GB29420@kroah.com>
- <CAK8P3a22Mp9yR49CEe2bq240SuSpbvy1XBDa2sSvWYMt=AZM3Q@mail.gmail.com>
+From: GitHub issues - opened <github@alsa-project.org>
+Subject: 1.18: alsa-lib build fails with LTO
+Date: Sat, 30 Mar 2019 14:48:52 +0100 (CET)
+Message-ID: <20190330134852.507EFF89673@alsa1.perex.cz>
+References: <1553953728889269114-webhooks-bot@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a22Mp9yR49CEe2bq240SuSpbvy1XBDa2sSvWYMt=AZM3Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "# 3.4.x" <stable@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ravindra Lokhande <rlokhande@nvidia.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Joe Perches <joe@perches.com>, Dan Carpenter <dan.carpenter@oracle.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B3DD8F8075C
+ for <alsa-devel@alsa-project.org>; Sat, 30 Mar 2019 14:48:49 +0100 (CET)
+In-Reply-To: <1553953728889269114-webhooks-bot@alsa-project.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 26, 2019 at 08:55:14AM +0100, Arnd Bergmann wrote:
-> On Tue, Mar 26, 2019 at 2:23 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Mar 22, 2019 at 04:43:53PM +0100, Arnd Bergmann wrote:
-> > > From: Ravindra Lokhande <rlokhande@nvidia.com>
-> > >
-> > > Compress offload does not support ioctl calls from a 32bit userspace
-> > > in a 64 bit kernel. This patch adds support for ioctls from a 32bit
-> > > userspace in a 64bit kernel
-> > >
-> > > Signed-off-by: Ravindra Lokhande <rlokhande@nvidia.com>
-> > > Acked-by: Vinod Koul <vinod.koul@intel.com>
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > (cherry picked from commit c10368897e104c008c610915a218f0fe5fa4ec96)
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  sound/core/compress_offload.c | 13 +++++++++++++
-> > >  1 file changed, 13 insertions(+)
-> >
-> > How is this not a "new feature"?  What bug does this fix?  Has this ever
-> > worked in the past?
-> 
-> It has never worked in the past, but I consider it a bug for the compat layer
-> to behave differently from native code. In this case, any 32-bit application
-> using the SNDRV_COMPRESS_* ioctls will just fail to do anything on
-> a 64-bit kernel at all without the trivial fix that should have been there when
-> the driver was originally merged.
+alsa-project/alsa-lib issue #6 was opened from kloczek:
 
-Ok, fair enough, now queued up.
+<pre>make[2]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-lib-1.1.8/src&apos;
+/bin/sh ../libtool  --tag=CC   --mode=link gcc  -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -version-info 2:0:0 -Wl,--version-script=Versions  -Wl,--no-undefined -Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto -fuse-linker-plugin -o libasound.la -rpath /usr/lib64 conf.lo confmisc.lo input.lo output.lo async.lo error.lo dlmisc.lo socket.lo shmarea.lo userfile.lo names.lo control/libcontrol.la mixer/libmixer.la pcm/libpcm.la timer/libtimer.la rawmidi/libr
+ awmidi.la hwdep/libhwdep.la seq/libseq.la ucm/libucm.la topology/libtopology.la  -lm -ldl -lpthread -lrt 
+libtool: link: gcc -shared  -fPIC -DPIC  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o .libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o .libs/userfile.o .libs/names.o  -Wl,--whole-archive control/.libs/libcontrol.a mixer/.libs/libmixer.a pcm/.libs/libpcm.a timer/.libs/libtimer.a rawmidi/.libs/librawmidi.a hwdep/.libs/libhwdep.a seq/.libs/libseq.a ucm/.libs/libucm.a topology/.libs/libtopology.a -Wl,--no-whole-archive -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -O2 -g -fstack-protector-strong -grecord-gcc-switches -m64 -mtune=generic -flto -Wl,--version-script=Versions -Wl,--no-undefined -Wl,-z -Wl,relro -Wl,--as-needed -Wl,-z -Wl,now -flto -fuse-linker-plugin    -lm -ldl -lpthread -lrt -Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.
+ 0.0
+/tmp/ccROQp1D.s: Assembler messages:
+/tmp/ccROQp1D.s: Error: invalid attempt to declare external version name as default in symbol `snd_dlopen@@ALSA_1.1.6&apos;
+lto-wrapper: fatal error: gcc returned 1 exit status
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+</pre>
 
-greg k-h
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/6
+Repository URL: https://github.com/alsa-project/alsa-lib
