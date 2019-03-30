@@ -1,41 +1,100 @@
-From: GitHub issues - opened <github@alsa-project.org>
-Subject: 1.18: alsa-lib build fails with LTO
-Date: Sat, 30 Mar 2019 14:48:52 +0100 (CET)
-Message-ID: <20190330134852.507EFF89673@alsa1.perex.cz>
-References: <1553953728889269114-webhooks-bot@alsa-project.org>
+From: Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH 3/3] mfd: cros: Update EC to use BIT() and merge
+Date: Sat, 30 Mar 2019 14:43:36 +0000
+Message-ID: <20190330144336.5fd8b9a0@archlinux>
+References: <CAPUE2uti=fketJ4vJw34et_y9L_gsEUwXNDdjg0sG8Z27ir1Hg@mail.gmail.com>
+        <20190329175628.31481-1-gwendal@chromium.org>
+        <CAPUE2uuh2TvUiQCuG7KzQ=GD5Gm3C5ZbfZ42J0__H2R6yD1j9Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B3DD8F8075C
- for <alsa-devel@alsa-project.org>; Sat, 30 Mar 2019 14:48:49 +0100 (CET)
-In-Reply-To: <1553953728889269114-webhooks-bot@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAPUE2uuh2TvUiQCuG7KzQ=GD5Gm3C5ZbfZ42J0__H2R6yD1j9Q@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Gwendal Grignou <gwendal@chromium.org>
+Cc: enric.balletbo@collabora.com, bleung@chromium.org, groeck@chromium.org, lee.jones@linaro.org, broonie@kernel.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-project/alsa-lib issue #6 was opened from kloczek:
+On Fri, 29 Mar 2019 10:56:37 -0700
+Gwendal Grignou <gwendal@chromium.org> wrote:
 
-<pre>make[2]: Entering directory &apos;/home/tkloczko/rpmbuild/BUILD/alsa-lib-1.1.8/src&apos;
-/bin/sh ../libtool  --tag=CC   --mode=link gcc  -O2 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -flto -version-info 2:0:0 -Wl,--version-script=Versions  -Wl,--no-undefined -Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -flto -fuse-linker-plugin -o libasound.la -rpath /usr/lib64 conf.lo confmisc.lo input.lo output.lo async.lo error.lo dlmisc.lo socket.lo shmarea.lo userfile.lo names.lo control/libcontrol.la mixer/libmixer.la pcm/libpcm.la timer/libtimer.la rawmidi/libr
- awmidi.la hwdep/libhwdep.la seq/libseq.la ucm/libucm.la topology/libtopology.la  -lm -ldl -lpthread -lrt 
-libtool: link: gcc -shared  -fPIC -DPIC  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o .libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o .libs/userfile.o .libs/names.o  -Wl,--whole-archive control/.libs/libcontrol.a mixer/.libs/libmixer.a pcm/.libs/libpcm.a timer/.libs/libtimer.a rawmidi/.libs/librawmidi.a hwdep/.libs/libhwdep.a seq/.libs/libseq.a ucm/.libs/libucm.a topology/.libs/libtopology.a -Wl,--no-whole-archive -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -O2 -g -fstack-protector-strong -grecord-gcc-switches -m64 -mtune=generic -flto -Wl,--version-script=Versions -Wl,--no-undefined -Wl,-z -Wl,relro -Wl,--as-needed -Wl,-z -Wl,now -flto -fuse-linker-plugin    -lm -ldl -lpthread -lrt -Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.
- 0.0
-/tmp/ccROQp1D.s: Assembler messages:
-/tmp/ccROQp1D.s: Error: invalid attempt to declare external version name as default in symbol `snd_dlopen@@ALSA_1.1.6&apos;
-lto-wrapper: fatal error: gcc returned 1 exit status
-compilation terminated.
-/usr/bin/ld: error: lto-wrapper failed
-</pre>
+What is "and merge" referring to in the title?
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/6
-Repository URL: https://github.com/alsa-project/alsa-lib
+> Instead of using 1 << ..., use BIT() cleaner and safer.
+> Fix minor fixes since major cros_ec_commands.h cleanup was uploaded.
+> 
+> TEST=compile.
+
+Personally I'd prefer this is a a couple of patches as several
+different changes going on.
+
+A few minor comments below.
+
+> 
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> ---
+>  include/linux/mfd/cros_ec_commands.h | 268 ++++++++++++++-------------
+>  1 file changed, 143 insertions(+), 125 deletions(-)
+> 
+> diff --git a/include/linux/mfd/cros_ec_commands.h
+> b/include/linux/mfd/cros_ec_commands.h
+> index ea25e1644d23..5c4764e3db6f 100644
+> --- a/include/linux/mfd/cros_ec_commands.h
+> +++ b/include/linux/mfd/cros_ec_commands.h
+> @@ -46,7 +46,7 @@ extern "C"{
+>  #define EC_PROTO_VERSION          0x00000002
+...
+> 
+>  /**
+>   * struct ec_response_get_protocol_info - Response to the get protocol info.
+> @@ -1347,12 +1347,12 @@ enum ec_feature_code {
+>  	EC_FEATURE_AUDIO_CODEC = 38,
+>  	/* EC Supports SCP. */
+>  	EC_FEATURE_SCP = 39,
+> -	/* The MCU is Intel Integrated Sensor Hub */
+> +	/* The MCU is an Integrated Sensor Hub */
+
+Unrelated from the other changes so I'd like to see it in a separate
+patch.
+
+>  	EC_FEATURE_ISH = 40,
+>  };
+...
+>  enum ec_led_colors {
+>  	EC_LED_COLOR_RED = 0,
+> @@ -2438,6 +2438,7 @@ enum motionsensor_chip {
+>  	MOTIONSENSE_CHIP_LIS2DE = 15,
+>  	MOTIONSENSE_CHIP_LIS2MDL = 16,
+>  	MOTIONSENSE_CHIP_LSM6DS3 = 17,
+> +	MOTIONSENSE_CHIP_LSM6DSO = 18,
+
+Why is this here?
+
+>  	MOTIONSENSE_CHIP_MAX,
+>  };
+> 
+...
+> 
+>  enum mkbp_config_valid {
+Bit odd that this was an enum in the first place..
+
+I checked and it doesn't seem that the type is used anywhere,
+so I would just make this set of defines.
+
+> -	EC_MKBP_VALID_SCAN_PERIOD		= 1 << 0,
+> -	EC_MKBP_VALID_POLL_TIMEOUT		= 1 << 1,
+> -	EC_MKBP_VALID_MIN_POST_SCAN_DELAY	= 1 << 3,
+> -	EC_MKBP_VALID_OUTPUT_SETTLE		= 1 << 4,
+> -	EC_MKBP_VALID_DEBOUNCE_DOWN		= 1 << 5,
+> -	EC_MKBP_VALID_DEBOUNCE_UP		= 1 << 6,
+> -	EC_MKBP_VALID_FIFO_MAX_DEPTH		= 1 << 7,
+> +	EC_MKBP_VALID_SCAN_PERIOD		= BIT(0),
+> +	EC_MKBP_VALID_POLL_TIMEOUT		= BIT(1),
+> +	EC_MKBP_VALID_MIN_POST_SCAN_DELAY	= BIT(3),
+> +	EC_MKBP_VALID_OUTPUT_SETTLE		= BIT(4),
+> +	EC_MKBP_VALID_DEBOUNCE_DOWN		= BIT(5),
+> +	EC_MKBP_VALID_DEBOUNCE_UP		= BIT(6),
+> +	EC_MKBP_VALID_FIFO_MAX_DEPTH		= BIT(7),
+>  };
+> 
+...
