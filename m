@@ -1,92 +1,126 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: hdmi: add device PM dependency
-Date: Fri, 29 Mar 2019 21:32:56 -0400
-Message-ID: <044dca38-efbf-0ef9-8ada-327e959a7aee@linux.intel.com>
-References: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
+From: Shuah Khan <shuah@kernel.org>
+Subject: [PATCH v14 0/6] Media Device Allocator API
+Date: Fri, 29 Mar 2019 19:53:55 -0600
+Message-ID: <cover.1553909892.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D2BFF80766
- for <alsa-devel@alsa-project.org>; Sat, 30 Mar 2019 02:36:20 +0100 (CET)
-In-Reply-To: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: mchehab@kernel.org, perex@perex.cz, tiwai@suse.com, hverkuil@xs4all.nl
+Cc: Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/29/19 1:23 AM, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
-> 
-> HDMI audio codec register operation depends on the display audio power
-> domain. The hdmi audio codec dapm event callback must be called after
-> display audio power is turned on.
-> 
-> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The customer
-> audio driver can call the function to set the audio power dependency.
+Media Device Allocator API to allows multiple drivers share a media device.
+This API solves a very common use-case for media devices where one physical
+device (an USB stick) provides both audio and video. When such media device
+exposes a standard USB Audio class, a proprietary Video class, two or more
+independent drivers will share a single physical USB bridge. In such cases,
+it is necessary to coordinate access to the shared resource.
 
-Can you clarify what the 'customer audio driver(s)' are, and in the case 
-where you meant the cAVS/SST driver all a patch that makes use of this 
-new routine?
+Using this API, drivers can allocate a media device with the shared struct
+device as the key. Once the media device is allocated by a driver, other
+drivers can get a reference to it. The media device is released when all
+the references are released.
 
-Also the patch subject should be ASoC: hdac_hdmi: ...
+The primary focus for testing The patch series is making sure media
+device is released when both drivers release the media device with
+a series of unbind/binds on both drivers.
 
+- both au0828 and snd-usb-aduio as built-in
+- both au0828 and snd-usb-aduio as modules
+- au0828 as module and snd-usb-aduio as built-in
+- au0828 as built-in and snd-usb-aduio as module
 
+Test results can be found at:
 
-> 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
-> ---
->   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
->   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
->   2 files changed, 18 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> index 5eeb0fe..c991407 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
->   }
->   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
->   
-> +struct device_link *
-> +hdac_hdmi_device_link_add(struct device *consumer,
-> +			  struct snd_soc_component *component,
-> +			  u32 flags)
-> +{
-> +	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
-> +	struct hdac_device *hdev = hdmi->hdev;
-> +
-> +	return device_link_add(consumer, &hdev->dev, flags);
-> +}
-> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
-> +
->   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
->   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
->   {
-> diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
-> index 4fa2fc9..9239c6b 100644
-> --- a/sound/soc/codecs/hdac_hdmi.h
-> +++ b/sound/soc/codecs/hdac_hdmi.h
-> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
->   
->   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
->   			struct snd_soc_dapm_context *dapm);
-> +
-> +struct device_link *
-> +hdac_hdmi_device_link_add(struct device *consumer,
-> +			  struct snd_soc_component *component,
-> +			  u32 flags);
-> +
->   #endif /* __HDAC_HDMI_H__ */
-> 
+https://docs.google.com/document/d/1RMF8Rwj7xHJEoOx6_K2f-REgZJ63BMeAVEf-CV-0HsM/edit?usp=sharing
+
+Changes since v13:
+- Minor changes to variable names and other minor changes to copyright
+  and typos suggested by Hans Verkuil.
+
+Changes since v12:
+- Patch 1: Fixed prototype warns from media_dev_allocator.c. Removed
+  dependency on find_module() by adding struct module to input args.
+  Still need module name to pass into media_device API.
+- Patch 2 & 4: Update media dev allocator api calls to pass in struct module
+  pointer.
+- No changes to Patches 3 & 5.
+- Added patch 6 with a test. It can go in separately.
+
+Changes since v11:
+- Patch 1: Add CONFIG_MODULES dependency in media_dev_allocator files.
+  to fix compile errors when CONFIG_MODULES is disabled.
+- Patch 2, 3: No changes.
+- Patch 4: Fix sparse error reported by Dan Carpenter.
+- Patch 5: Fix warns found by Hans Verkuil.
+- v11 was tested on 5.0-rc7 and addresses comments on v10 series from
+  Hans Verkuil. Fixed problems found in resource sharing logic in au0828
+  adding a patch 5 to this series. The test plan used for testing resource
+  sharing could serve as a regression test plan and the test results can be
+  found at:
+- v10 was tested on 5.0-rc3 and addresses comments on v9 series from
+  Hans Verkuil.
+
+Changes since v10:
+- Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
+           around media_device_usb_allocate() - Sakari Ailus's review
+           comment.
+- Patch 2 and 3: No changes
+- Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- Patch 5: This is a new patch added to fix resource sharing
+           inconsistencies and problem found during testing using Han's
+           tests.
+
+Changes since v9:
+- Patch 1: Fix mutex assert warning from find_module() calls. This
+  code was written before the change to find_module() that requires
+  callers to hold module_mutex. I missed this during my testing on
+  4.20-rc6. Hans Verkuil reported the problem.
+- Patch 4: sound/usb: Initializes all the entities it can before
+  registering the device based on comments from Hans Verkuil
+- Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+- No changes to Patches 2 and 3.
+
+References:
+https://lkml.org/lkml/2018/11/2/169
+https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
+
+Shuah Khan (6):
+  media: Media Device Allocator API
+  media: change au0828 to use Media Device Allocator API
+  media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+  sound/usb: Use Media Controller API to share media resources
+  au0828: fix enable and disable source audio and video inconsistencies
+  selftests: media_dev_allocator api test
+
+ Documentation/media/kapi/mc-core.rst          |  41 +++
+ drivers/media/Makefile                        |   6 +
+ drivers/media/media-dev-allocator.c           | 135 ++++++++
+ drivers/media/usb/au0828/Kconfig              |   2 +
+ drivers/media/usb/au0828/au0828-core.c        | 195 ++++++++---
+ drivers/media/usb/au0828/au0828.h             |   6 +-
+ include/media/media-dev-allocator.h           |  63 ++++
+ include/uapi/linux/media.h                    |  25 +-
+ sound/usb/Kconfig                             |   4 +
+ sound/usb/Makefile                            |   2 +
+ sound/usb/card.c                              |  14 +
+ sound/usb/card.h                              |   3 +
+ sound/usb/media.c                             | 327 ++++++++++++++++++
+ sound/usb/media.h                             |  74 ++++
+ sound/usb/mixer.h                             |   3 +
+ sound/usb/pcm.c                               |  29 +-
+ sound/usb/quirks-table.h                      |   1 +
+ sound/usb/stream.c                            |   2 +
+ sound/usb/usbaudio.h                          |   6 +
+ .../media_tests/media_dev_allocator.sh        |  85 +++++
+ 20 files changed, 962 insertions(+), 61 deletions(-)
+ create mode 100644 drivers/media/media-dev-allocator.c
+ create mode 100644 include/media/media-dev-allocator.h
+ create mode 100644 sound/usb/media.c
+ create mode 100644 sound/usb/media.h
+ create mode 100755 tools/testing/selftests/media_tests/media_dev_allocator.sh
+
+-- 
+2.17.1
