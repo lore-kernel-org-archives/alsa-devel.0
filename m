@@ -1,110 +1,111 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 2/7] dt-bindings: ASoC: tlv320aic26: Add device tree
- binding
-Date: Sun, 31 Mar 2019 01:41:21 -0500
-Message-ID: <20190331010229.GA10206@bogus>
-References: <20190321221549.13765-1-jcormier@criticallink.com>
- <20190321221549.13765-3-jcormier@criticallink.com>
+From: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Subject: [PATCH] Documentation: soundwire: Ensure that code is inside the code blocks
+Date: Mon,  1 Apr 2019 00:34:22 +0200
+Message-ID: <20190331223423.29855-1-j.neuschaefer@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190321221549.13765-3-jcormier@criticallink.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Cormier, Jonathan" <jcormier@criticallink.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: linux-doc@vger.kernel.org
+Cc: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jonathan Corbet <corbet@lwn.net>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 21, 2019 at 06:15:44PM -0400, Cormier, Jonathan wrote:
-> Add support for the TI tlv320aic26 sound codec
-> 
-> Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
-> ---
->  .../devicetree/bindings/sound/tlv320aic26.txt | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/tlv320aic26.txt b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
-> new file mode 100644
-> index 000000000000..93aa0f76ec0d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
-> @@ -0,0 +1,65 @@
-> +Texas Instruments - tlv320aic26 Codec module
-> +
-> +The tlv320aic26 serial control bus communicates through I2C protocols
-> +
-> +Required properties:
-> +
-> +- compatible - "string" - One of:
-> +    "ti,tlv320aic26" - TLV320AIC26
-> +- reg - <int> -  SPI chip select
-> +
-> +CODEC input pins:
-> +  * MICIN
-> +  * AUX
-> +
-> +CODEC output pins:
-> +  * HPL
-> +  * HPR
-> +
-> +The pins can be used in referring sound node's audio-routing property.
-> +
-> +Example:
-> +
-> +tlv320aic26: tlv320aic26@0 {
+The way the document is written now, Sphinx renders empty code blocks
+followed by the lines that should be inside them.
 
-audio-codec@0
+Unindent the code-block directives to fix this.
 
-> +	compatible = "ti,tlv320aic26";
-> +	reg = <0>;
-> +};
-> +
-> +&spi0 {
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&spi0_pins>;
-> +	pinctrl-1 = <&spi0_sleep_pins>;
-> +
-> +	status = "okay";
+Fixes: 502c00d9c315 ("Documentation: soundwire: fix stream.rst markup warn=
+ings")
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/driver-api/soundwire/stream.rst | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Don't show status in examples.
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation=
+/driver-api/soundwire/stream.rst
+index 26a6064503fd..5351bd2f34a8 100644
+=2D-- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -201,7 +201,7 @@ Bus implements below API for allocate a stream which n=
+eeds to be called once
+ per stream. From ASoC DPCM framework, this stream state maybe linked to
+ .startup() operation.
 
-> +	ti,pindir-d0-out-d1-in = <1>;
-> +
-> +	tlv320aic26: tlv320aic26@1 {
+-  .. code-block:: c
++.. code-block:: c
 
-This split is convention, but outside the scope of binding docs, so 
-please just show the complete node.
+   int sdw_alloc_stream(char * stream_name);
 
-> +		compatible = "ti,tlv320aic26";
-> +		reg = <0x1>;
-> +		status = "okay";
-> +
-> +		spi-max-frequency = <2000000>;
-> +		spi-cpha;
-> +	};
-> +};
-> +
-> +sound {
-> +	compatible = "simple-audio-card";
-> +	simple-audio-card,name = "AM335x_SND";
-> +	simple-audio-card,format = "dsp_b";
-> +	/* SND_SOC_DAIFMT_CBM_CFM */
-> +	simple-audio-card,bitclock-master = <&tlv320aic26_codec>;
-> +	simple-audio-card,frame-master = <&tlv320aic26_codec>;
-> +	/* SND_SOC_DAIFMT_IB_NF */
-> +	simple-audio-card,bitclock-inversion;
-> +
-> +	simple-audio-card,cpu {
-> +		sound-dai = <&mcasp1>;
-> +		system-clock-frequency = <24576000>;
-> +	};
-> +
-> +	tlv320aic26_codec: simple-audio-card,codec {
-> +		sound-dai = <&tlv320aic26>;
-> +		system-clock-frequency = <24576000>;
-> +	};
-> +};
-> -- 
-> 2.21.0
-> 
+@@ -228,7 +228,7 @@ the respective Master(s) and Slave(s) associated with =
+stream. These APIs can
+ only be invoked once by respective Master(s) and Slave(s). From ASoC DPCM
+ framework, this stream state is linked to .hw_params() operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_stream_add_master(struct sdw_bus * bus,
+ 		struct sdw_stream_config * stream_config,
+@@ -274,7 +274,7 @@ Bus implements below API for PREPARE state which needs=
+ to be called once per
+ stream. From ASoC DPCM framework, this stream state is linked to
+ .prepare() operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_prepare_stream(struct sdw_stream_runtime * stream);
+
+@@ -304,7 +304,7 @@ Bus implements below API for ENABLE state which needs =
+to be called once per
+ stream. From ASoC DPCM framework, this stream state is linked to
+ .trigger() start operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_enable_stream(struct sdw_stream_runtime * stream);
+
+@@ -332,7 +332,7 @@ Bus implements below API for DISABLED state which need=
+s to be called once
+ per stream. From ASoC DPCM framework, this stream state is linked to
+ .trigger() stop operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_disable_stream(struct sdw_stream_runtime * stream);
+
+@@ -357,7 +357,7 @@ Bus implements below API for DEPREPARED state which ne=
+eds to be called once
+ per stream. From ASoC DPCM framework, this stream state is linked to
+ .trigger() stop operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_deprepare_stream(struct sdw_stream_runtime * stream);
+
+@@ -382,7 +382,7 @@ Bus implements below APIs for RELEASE state which need=
+s to be called by
+ all the Master(s) and Slave(s) associated with stream. From ASoC DPCM
+ framework, this stream state is linked to .hw_free() operation.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   int sdw_stream_remove_master(struct sdw_bus * bus,
+ 		struct sdw_stream_runtime * stream);
+@@ -395,7 +395,7 @@ stream assigned as part of ALLOCATED state.
+
+ In .shutdown() the data structure maintaining stream state are freed up.
+
+-  .. code-block:: c
++.. code-block:: c
+
+   void sdw_release_stream(struct sdw_stream_runtime * stream);
+
+=2D-
+2.20.1
