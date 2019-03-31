@@ -1,107 +1,110 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ASoC: hdmi: add device PM dependency
-Date: Sat, 30 Mar 2019 23:28:19 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195280A963@SHSMSX103.ccr.corp.intel.com>
-References: <1553836982-10653-1-git-send-email-libin.yang@intel.com>
- <044dca38-efbf-0ef9-8ada-327e959a7aee@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 2/7] dt-bindings: ASoC: tlv320aic26: Add device tree
+ binding
+Date: Sun, 31 Mar 2019 01:41:21 -0500
+Message-ID: <20190331010229.GA10206@bogus>
+References: <20190321221549.13765-1-jcormier@criticallink.com>
+ <20190321221549.13765-3-jcormier@criticallink.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B47FCF80766
- for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2019 00:28:25 +0100 (CET)
-In-Reply-To: <044dca38-efbf-0ef9-8ada-327e959a7aee@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190321221549.13765-3-jcormier@criticallink.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Cormier, Jonathan" <jcormier@criticallink.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org, Bob Duke <bduke@criticallink.com>, Mike Williamson <michael.williamson@criticallink.com>, Greg Gluszek <greg.gluszek@criticallink.com>, Mark Brown <broonie@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
+On Thu, Mar 21, 2019 at 06:15:44PM -0400, Cormier, Jonathan wrote:
+> Add support for the TI tlv320aic26 sound codec
+> 
+> Signed-off-by: Cormier, Jonathan <jcormier@criticallink.com>
+> ---
+>  .../devicetree/bindings/sound/tlv320aic26.txt | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic26.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/tlv320aic26.txt b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+> new file mode 100644
+> index 000000000000..93aa0f76ec0d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/tlv320aic26.txt
+> @@ -0,0 +1,65 @@
+> +Texas Instruments - tlv320aic26 Codec module
+> +
+> +The tlv320aic26 serial control bus communicates through I2C protocols
+> +
+> +Required properties:
+> +
+> +- compatible - "string" - One of:
+> +    "ti,tlv320aic26" - TLV320AIC26
+> +- reg - <int> -  SPI chip select
+> +
+> +CODEC input pins:
+> +  * MICIN
+> +  * AUX
+> +
+> +CODEC output pins:
+> +  * HPL
+> +  * HPR
+> +
+> +The pins can be used in referring sound node's audio-routing property.
+> +
+> +Example:
+> +
+> +tlv320aic26: tlv320aic26@0 {
 
->On 3/29/19 1:23 AM, libin.yang@intel.com wrote:
->> From: Libin Yang <libin.yang@intel.com>
->>
->> HDMI audio codec register operation depends on the display audio power
->> domain. The hdmi audio codec dapm event callback must be called after
->> display audio power is turned on.
->>
->> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The
->> customer audio driver can call the function to set the audio power
->dependency.
->
->Can you clarify what the 'customer audio driver(s)' are, and in the case where
->you meant the cAVS/SST driver all a patch that makes use of this new routine?
+audio-codec@0
 
-Sure, I will do it. I haven't made the patches for cAVS/SST driver. I tested it
-on SOF driver. It works.
+> +	compatible = "ti,tlv320aic26";
+> +	reg = <0>;
+> +};
+> +
+> +&spi0 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&spi0_pins>;
+> +	pinctrl-1 = <&spi0_sleep_pins>;
+> +
+> +	status = "okay";
 
->
->Also the patch subject should be ASoC: hdac_hdmi: ...
+Don't show status in examples.
 
-Thanks for point it out. I will change the subject.
+> +	ti,pindir-d0-out-d1-in = <1>;
+> +
+> +	tlv320aic26: tlv320aic26@1 {
 
-Regards,
-Libin
+This split is convention, but outside the scope of binding docs, so 
+please just show the complete node.
 
->
->
->
->>
->> Signed-off-by: Libin Yang <libin.yang@intel.com>
->> ---
->>   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
->>   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
->>   2 files changed, 18 insertions(+)
->>
->> diff --git a/sound/soc/codecs/hdac_hdmi.c
->> b/sound/soc/codecs/hdac_hdmi.c index 5eeb0fe..c991407 100644
->> --- a/sound/soc/codecs/hdac_hdmi.c
->> +++ b/sound/soc/codecs/hdac_hdmi.c
->> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai,
->int device,
->>   }
->>   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
->>
->> +struct device_link *
->> +hdac_hdmi_device_link_add(struct device *consumer,
->> +			  struct snd_soc_component *component,
->> +			  u32 flags)
->> +{
->> +	struct hdac_hdmi_priv *hdmi =
->snd_soc_component_get_drvdata(component);
->> +	struct hdac_device *hdev = hdmi->hdev;
->> +
->> +	return device_link_add(consumer, &hdev->dev, flags); }
->> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
->> +
->>   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
->>   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
->>   {
->> diff --git a/sound/soc/codecs/hdac_hdmi.h
->> b/sound/soc/codecs/hdac_hdmi.h index 4fa2fc9..9239c6b 100644
->> --- a/sound/soc/codecs/hdac_hdmi.h
->> +++ b/sound/soc/codecs/hdac_hdmi.h
->> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int
->> pcm,
->>
->>   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
->>   			struct snd_soc_dapm_context *dapm);
->> +
->> +struct device_link *
->> +hdac_hdmi_device_link_add(struct device *consumer,
->> +			  struct snd_soc_component *component,
->> +			  u32 flags);
->> +
->>   #endif /* __HDAC_HDMI_H__ */
->>
+> +		compatible = "ti,tlv320aic26";
+> +		reg = <0x1>;
+> +		status = "okay";
+> +
+> +		spi-max-frequency = <2000000>;
+> +		spi-cpha;
+> +	};
+> +};
+> +
+> +sound {
+> +	compatible = "simple-audio-card";
+> +	simple-audio-card,name = "AM335x_SND";
+> +	simple-audio-card,format = "dsp_b";
+> +	/* SND_SOC_DAIFMT_CBM_CFM */
+> +	simple-audio-card,bitclock-master = <&tlv320aic26_codec>;
+> +	simple-audio-card,frame-master = <&tlv320aic26_codec>;
+> +	/* SND_SOC_DAIFMT_IB_NF */
+> +	simple-audio-card,bitclock-inversion;
+> +
+> +	simple-audio-card,cpu {
+> +		sound-dai = <&mcasp1>;
+> +		system-clock-frequency = <24576000>;
+> +	};
+> +
+> +	tlv320aic26_codec: simple-audio-card,codec {
+> +		sound-dai = <&tlv320aic26>;
+> +		system-clock-frequency = <24576000>;
+> +	};
+> +};
+> -- 
+> 2.21.0
+> 
