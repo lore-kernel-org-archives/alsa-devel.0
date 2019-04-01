@@ -1,61 +1,82 @@
-From: Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: [PATCH] ALSA: hda/realtek: Enable headset MIC of Acer TravelMate B114-21 with ALC233
-Date: Mon,  1 Apr 2019 11:25:05 +0800
-Message-ID: <20190401032503.2821-1-jian-hong@endlessm.com>
+From: libin.yang@intel.com
+Subject: [PATCH V2] ASoC: hdac_hdmi: add device PM dependency
+Date: Mon,  1 Apr 2019 12:50:51 +0800
+Message-ID: <1554094251-25910-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux@endlessm.com, Jian-Hong Pan <jian-hong@endlessm.com>, Daniel Drake <drake@endlessm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B970F8075C
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 07:07:05 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: libin.yang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The Acer TravelMate B114-21 laptop cannot detect and record sound from
-headset MIC.  This patch adds the ALC233_FIXUP_ACER_HEADSET_MIC HDA verb
-quirk chained with ALC233_FIXUP_ASUS_MIC_NO_PRESENCE pin quirk to fix
-this issue.
+From: Libin Yang <libin.yang@intel.com>
 
-Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-Signed-off-by: Daniel Drake <drake@endlessm.com>
+HDMI audio codec register operation depends on the display audio power
+domain. The hdmi audio codec dapm event callback must be called after
+display audio power is turned on.
+
+Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The customer
+audio driver, such as cAVS/SST and SOF audio driver, can call the function
+to set the audio power dependency.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/pci/hda/patch_realtek.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+ sound/soc/codecs/hdac_hdmi.h |  6 ++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a3fb3d4c5730..bdb2227be4eb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5690,6 +5690,7 @@ enum {
- 	ALC286_FIXUP_ACER_AIO_HEADSET_MIC,
- 	ALC256_FIXUP_ASUS_MIC_NO_PRESENCE,
- 	ALC299_FIXUP_PREDATOR_SPK,
-+	ALC233_FIXUP_ACER_HEADSET_MIC,
- };
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 5eeb0fe..c991407 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
+ }
+ EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -6713,6 +6714,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ 0x21, 0x90170150 }, /* use as headset mic, without its own jack detect */
- 			{ }
- 		}
-+	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x45 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x5089 },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC233_FIXUP_ASUS_MIC_NO_PRESENCE
- 	},
- };
++struct device_link *
++hdac_hdmi_device_link_add(struct device *consumer,
++			  struct snd_soc_component *component,
++			  u32 flags)
++{
++	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
++	struct hdac_device *hdev = hdmi->hdev;
++
++	return device_link_add(consumer, &hdev->dev, flags);
++}
++EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
++
+ static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
+ 			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
+ {
+diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
+index 4fa2fc9..9239c6b 100644
+--- a/sound/soc/codecs/hdac_hdmi.h
++++ b/sound/soc/codecs/hdac_hdmi.h
+@@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
  
-@@ -6737,6 +6747,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
+ int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
+ 			struct snd_soc_dapm_context *dapm);
++
++struct device_link *
++hdac_hdmi_device_link_add(struct device *consumer,
++			  struct snd_soc_component *component,
++			  u32 flags);
++
+ #endif /* __HDAC_HDMI_H__ */
 -- 
-2.20.1
+2.7.4
