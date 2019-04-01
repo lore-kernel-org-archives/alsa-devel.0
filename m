@@ -1,21 +1,18 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH V2] ASoC: hdac_hdmi: add device PM
- dependency
-Date: Mon, 1 Apr 2019 13:43:41 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D195280F260@SHSMSX103.ccr.corp.intel.com>
-References: <1554094251-25910-1-git-send-email-libin.yang@intel.com>
- <8b5f72b4-9674-ecfe-5007-7098b5432a40@linux.intel.com>
+From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
+Subject: loopback snd_pcm_writei
+Date: Mon, 1 Apr 2019 13:51:22 +0000
+Message-ID: <AM5P192MB0180EB66182156CF2353C0FFC5550@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr130080.outbound.protection.outlook.com [40.107.13.80])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73C7AF89610
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 15:43:47 +0200 (CEST)
-In-Reply-To: <8b5f72b4-9674-ecfe-5007-7098b5432a40@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 164A4F89610
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 15:51:23 +0200 (CEST)
+Content-Language: it-IT
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,99 +22,147 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
+Hi,
 
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Monday, April 1, 2019 8:34 PM
->To: Yang, Libin <libin.yang@intel.com>; alsa-devel@alsa-project.org;
->tiwai@suse.de; broonie@kernel.org
->Subject: Re: [alsa-devel] [PATCH V2] ASoC: hdac_hdmi: add device PM
->dependency
->
->On 4/1/19 12:50 AM, libin.yang@intel.com wrote:
->> From: Libin Yang <libin.yang@intel.com>
->>
->> HDMI audio codec register operation depends on the display audio power
->> domain. The hdmi audio codec dapm event callback must be called after
->> display audio power is turned on.
->>
->> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The
->> customer audio driver, such as cAVS/SST and SOF audio driver, can call
->> the function to set the audio power dependency.
->>
->> Signed-off-by: Libin Yang <libin.yang@intel.com>
->> ---
->>   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
->>   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
->>   2 files changed, 18 insertions(+)
->>
->> diff --git a/sound/soc/codecs/hdac_hdmi.c
->> b/sound/soc/codecs/hdac_hdmi.c index 5eeb0fe..c991407 100644
->> --- a/sound/soc/codecs/hdac_hdmi.c
->> +++ b/sound/soc/codecs/hdac_hdmi.c
->> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai,
->int device,
->>   }
->>   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
->>
->> +struct device_link *
->> +hdac_hdmi_device_link_add(struct device *consumer,
->> +			  struct snd_soc_component *component,
->> +			  u32 flags)
->> +{
->> +	struct hdac_hdmi_priv *hdmi =
->snd_soc_component_get_drvdata(component);
->> +	struct hdac_device *hdev = hdmi->hdev;
->> +
->> +	return device_link_add(consumer, &hdev->dev, flags);
->
->Don't you need a matching device_link_free() to avoid a memory leak?
+I have the configuration in the asound.conf above.
 
-Right. Sorry for my poor patch and thanks for pointing it out. 
-I will refine it and test tomorrow.
+my_plug - - > my_route - - > my_multi - - > slave0 (forward)
+                                      - - > slave1 (loopback)
 
->
->Also what would be the expectations for the flags and do you really want the
->consumer to set them?
+I open the plug my_plug in the block mode:
 
-A consumer setting the flag will be more flexible. For the flag, I'm currently thinking
-to use DL_FLAG_RPM_ACTIVE. Not sure if it is a good flag.
+    writtenFrames = snd_pcm_writei(handle, bufferToWrite, bufferToWriteSize);
 
->
->And last, without a patch of the cAVS driver it's hard to see how this might be
->used.
+The issue I see is that there are several "writes" with 0 written frames. It seems like the snd_pcm_writei does not hold until data will be written. In general, 0 written frames sounds weird to me, because snd_pcm_writei should block itself if no space is available in the circular buffer right?
 
-I tried on SOF, it worked. I will check if I have a cAVS environment and will have
-a test on cAVS.
+I have tried to fix the following method in pcm_multi.c, as Jaroslav Kysela suggests.
 
-Regards,
-Libin
+-static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail ATTRIBUTE_UNUSED)
++static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail)
+{
+        snd_pcm_multi_t *multi = pcm->private_data;
+-       snd_pcm_t *slave = multi->slaves[multi->master_slave].pcm;
+-       return snd_pcm_may_wait_for_avail_min(slave, snd_pcm_mmap_avail(slave));
++       unsigned int i;
++       for (i = 0; i < multi->slaves_count; ++i) {
++               if (snd_pcm_may_wait_for_avail_min(multi->slaves[i].pcm, avail))
++                       return 1;
++       }
++       return 0;
+}
 
->
->> +}
->> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
->> +
->>   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
->>   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
->>   {
->> diff --git a/sound/soc/codecs/hdac_hdmi.h
->> b/sound/soc/codecs/hdac_hdmi.h index 4fa2fc9..9239c6b 100644
->> --- a/sound/soc/codecs/hdac_hdmi.h
->> +++ b/sound/soc/codecs/hdac_hdmi.h
->> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int
->> pcm,
->>
->>   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
->>   			struct snd_soc_dapm_context *dapm);
->> +
->> +struct device_link *
->> +hdac_hdmi_device_link_add(struct device *consumer,
->> +			  struct snd_soc_component *component,
->> +			  u32 flags);
->> +
->>   #endif /* __HDAC_HDMI_H__ */
->>
+But unfortunately the issue has not been resolved.
+
+
+#*************************************************
+#                     PLAYBACK
+#*************************************************
+
+pcm.my_plug
+{
+  type plug
+  slave.pcm my_route
+  slave.channels 2
+}
+
+pcm.my_route
+{
+  type route
+  slave.pcm my_multi
+  slave.channels 4
+  ttable.0.0 1
+  ttable.0.1 1
+  ttable.1.2 1
+  ttable.1.3 1
+}
+
+pcm.my_multi
+{
+  type multi
+  slaves
+  {
+    slave0
+    {
+      pcm my_dmix
+      channels 2
+    }
+    slave1
+    {
+      pcm my_dmix_loop
+      channels 2
+    }
+  }
+  bindings
+  {
+    0 {slave slave0 channel 0}
+    1 {slave slave0 channel 1}
+    2 {slave slave1 channel 0}
+    3 {slave slave1 channel 1}
+  }
+}
+
+#-------------------- Slave 0 --------------------
+
+pcm.my_dmix
+{
+  type dmix
+  ipc_key 1000
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 3840
+  slave.rate 48000
+  slave.pcm "hw:0,0"
+}
+
+#-------------------- Slave 1 --------------------
+
+pcm.my_dmix_loop
+{
+  type dmix
+  ipc_key 1000
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 3840
+  slave.rate 48000
+  slave.pcm my_loopback_out
+}
+
+pcm.my_loopback_out
+{
+  type hw
+  card Loopback
+  device 0
+  subdevice 0
+}
+
+#*************************************************
+#                     CAPTURE
+#*************************************************
+
+pcm.my_dsnoop_loop
+{
+  type dsnoop
+  ipc_key 1000
+  ipc_key_add_uid 1
+  ipc_perm 0600
+  slave.period_time 10000
+  slave.period_size 480
+  slave.buffer_size 3840
+  slave.rate 48000
+  slave.pcm my_loopback_in
+}
+
+pcm.my_loopback_in
+{
+  type hw
+  card Loopback
+  device 1
+  subdevice 0
+}
