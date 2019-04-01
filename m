@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: remove set but not
-	used variable 'dai_name'" to the asoc tree
-Date: Mon,  1 Apr 2019 09:52:54 +0100 (BST)
-Message-ID: <20190401085254.CF405440082@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: wm_adsp: Fix typo in comment" to the
+	asoc tree
+Date: Mon,  1 Apr 2019 09:53:04 +0100 (BST)
+Message-ID: <20190401085304.C0D6B440085@finisterre.ee.mobilebroadband>
+References: <20190327152451.2870-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56B04F89610
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:00 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF297F8962D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:09 +0200 (CEST)
+In-Reply-To: <20190327152451.2870-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: remove set but not used variable 'dai_name'
+   ASoC: wm_adsp: Fix typo in comment
 
 has been applied to the asoc tree at
 
@@ -53,44 +55,29 @@ to this mail.
 Thanks,
 Mark
 
->From 35146467bd43704c52d1d5760af9839a10ad5b12 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 25 Mar 2019 03:17:40 +0000
-Subject: [PATCH] ASoC: simple-card-utils: remove set but not used variable
- 'dai_name'
+>From 809589a94dcce27cb5f2081280d1155c71ae45f7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Wed, 27 Mar 2019 15:24:51 +0000
+Subject: [PATCH] ASoC: wm_adsp: Fix typo in comment
 
-Fixes gcc '-Wunused-but-set-variable' warning:
-
-sound/soc/generic/simple-card-utils.c: In function 'asoc_simple_parse_clk':
-sound/soc/generic/simple-card-utils.c:164:18: warning:
- parameter 'dai_name' set but not used [-Wunused-but-set-parameter]
-
-It's not used since commit 0580dde59438 ("ASoC: simple-card-utils: add
-asoc_simple_debug_info()"), so can be removed.
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card-utils.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 4ed68348f939..db1458a19985 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -173,10 +173,8 @@ int asoc_simple_parse_clk(struct device *dev,
- 	 * see
- 	 *	soc-core.c :: snd_soc_init_multicodec()
- 	 */
--	if (dlc) {
-+	if (dlc)
- 		dai_of_node	= dlc->of_node;
--		dai_name	= dlc->dai_name;
--	}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 5e615fbddf9a..0aa62b26f61c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3263,7 +3263,7 @@ static void wm_halo_stop_core(struct wm_adsp *dsp)
+ 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CCM_CORE_CONTROL,
+ 			   HALO_CORE_EN, 0);
  
- 	/*
- 	 * Parse dai->sysclk come from "clocks = <&xxx>"
+-	/* reset halo core with CORE_SOFT_REEST */
++	/* reset halo core with CORE_SOFT_RESET */
+ 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CORE_SOFT_RESET,
+ 			   HALO_CORE_SOFT_RESET_MASK, 1);
+ }
 -- 
 2.20.1
