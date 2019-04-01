@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677-spi: Add ACPI ID" to the asoc
-	tree
-Date: Mon,  1 Apr 2019 09:53:20 +0100 (BST)
-Message-ID: <20190401085320.6D2F5440082@finisterre.ee.mobilebroadband>
-References: <20190328022700.14344-1-oder_chiou@realtek.com>
+Subject: Applied "ASoC: tlv320aic32x4: Fix Common Pins" to the
+	asoc tree
+Date: Mon,  1 Apr 2019 09:53:25 +0100 (BST)
+Message-ID: <20190401085325.B563C440082@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42A8FF89739
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:25 +0200 (CEST)
-In-Reply-To: <20190328022700.14344-1-oder_chiou@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70C3CF89746
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:29 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cujomalainey@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+To: Annaliese McDermond <nh6z@nh6z.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677-spi: Add ACPI ID
+   ASoC: tlv320aic32x4: Fix Common Pins
 
 has been applied to the asoc tree at
 
@@ -55,48 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 2b070f6739025ecbf2ccb55daf9e19d3fb343c7e Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Thu, 28 Mar 2019 10:27:00 +0800
-Subject: [PATCH] ASoC: rt5677-spi: Add ACPI ID
+>From c63adb28f6d913310430f14c69f0a2ea55eed0cc Mon Sep 17 00:00:00 2001
+From: Annaliese McDermond <nh6z@nh6z.net>
+Date: Sat, 30 Mar 2019 09:02:02 -0700
+Subject: [PATCH] ASoC: tlv320aic32x4: Fix Common Pins
 
-Add the ACPI ID for the product "chromebook pixel 2015" to match the
-coreboot settings.
+The common pins were mistakenly not added to the DAPM graph.
+Adding these pins will allow valid graphs to be created.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677-spi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/tlv320aic32x4.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 84501c2020c7..167a02773a0b 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -25,6 +25,7 @@
- #include <linux/sysfs.h>
- #include <linux/clk.h>
- #include <linux/firmware.h>
-+#include <linux/acpi.h>
- 
- #include "rt5677-spi.h"
- 
-@@ -226,9 +227,16 @@ static int rt5677_spi_probe(struct spi_device *spi)
- 	return 0;
- }
- 
-+static const struct acpi_device_id rt5677_spi_acpi_id[] = {
-+	{ "RT5677AA", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
-+
- static struct spi_driver rt5677_spi_driver = {
- 	.driver = {
- 		.name = "rt5677",
-+		.acpi_match_table = ACPI_PTR(rt5677_spi_acpi_id),
- 	},
- 	.probe = rt5677_spi_probe,
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 96f1526cb258..5520044929f4 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -490,6 +490,8 @@ static const struct snd_soc_dapm_widget aic32x4_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("IN2_R"),
+ 	SND_SOC_DAPM_INPUT("IN3_L"),
+ 	SND_SOC_DAPM_INPUT("IN3_R"),
++	SND_SOC_DAPM_INPUT("CM_L"),
++	SND_SOC_DAPM_INPUT("CM_R"),
  };
+ 
+ static const struct snd_soc_dapm_route aic32x4_dapm_routes[] = {
 -- 
 2.20.1
