@@ -1,50 +1,94 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: dpcm: skip missing substream while applying symmetry
-Date: Mon,  1 Apr 2019 15:03:54 +0200
-Message-ID: <20190401130354.24202-1-jbrunet@baylibre.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: hdac_hdmi: add device PM
+	dependency
+Date: Mon, 1 Apr 2019 08:34:21 -0400
+Message-ID: <8b5f72b4-9674-ecfe-5007-7098b5432a40@linux.intel.com>
+References: <1554094251-25910-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F102F80717
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 15:26:29 +0200 (CEST)
+In-Reply-To: <1554094251-25910-1-git-send-email-libin.yang@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If for any reason, the backend does not have the requested substream
-(like capture on a playback only backend), the BE will be skipped in
-dpcm_be_dai_startup().
+On 4/1/19 12:50 AM, libin.yang@intel.com wrote:
+> From: Libin Yang <libin.yang@intel.com>
+> 
+> HDMI audio codec register operation depends on the display audio power
+> domain. The hdmi audio codec dapm event callback must be called after
+> display audio power is turned on.
+> 
+> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The customer
+> audio driver, such as cAVS/SST and SOF audio driver, can call the function
+> to set the audio power dependency.
+> 
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> ---
+>   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+>   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
+>   2 files changed, 18 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 5eeb0fe..c991407 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
+>   }
+>   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
+>   
+> +struct device_link *
+> +hdac_hdmi_device_link_add(struct device *consumer,
+> +			  struct snd_soc_component *component,
+> +			  u32 flags)
+> +{
+> +	struct hdac_hdmi_priv *hdmi = snd_soc_component_get_drvdata(component);
+> +	struct hdac_device *hdev = hdmi->hdev;
+> +
+> +	return device_link_add(consumer, &hdev->dev, flags);
 
-However, dpcm_apply_symmetry() does not skip those BE and will
-dereference the be_substream (NULL) pointer anyway.
+Don't you need a matching device_link_free() to avoid a memory leak?
 
-Like in dpcm_be_dai_startup(), just skip those BE.
+Also what would be the expectations for the flags and do you really want 
+the consumer to set them?
 
-Fixes: 906c7d690c3b ("ASoC: dpcm: Apply symmetry for DPCM")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/soc-pcm.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+And last, without a patch of the cAVS driver it's hard to see how this 
+might be used.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 0d5ec68a1e50..99bbd724d2a6 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1899,10 +1899,15 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
- 		struct snd_pcm_substream *be_substream =
- 			snd_soc_dpcm_get_substream(be, stream);
--		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
-+		struct snd_soc_pcm_runtime *rtd;
- 		struct snd_soc_dai *codec_dai;
- 		int i;
- 
-+		/* A backend may not have the requested substream */
-+		if (!be_substream)
-+			continue;
-+
-+		rtd = be_substream->private_data;
- 		if (rtd->dai_link->be_hw_params_fixup)
- 			continue;
- 
--- 
-2.20.1
+> +}
+> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
+> +
+>   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
+>   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
+>   {
+> diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
+> index 4fa2fc9..9239c6b 100644
+> --- a/sound/soc/codecs/hdac_hdmi.h
+> +++ b/sound/soc/codecs/hdac_hdmi.h
+> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
+>   
+>   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
+>   			struct snd_soc_dapm_context *dapm);
+> +
+> +struct device_link *
+> +hdac_hdmi_device_link_add(struct device *consumer,
+> +			  struct snd_soc_component *component,
+> +			  u32 flags);
+> +
+>   #endif /* __HDAC_HDMI_H__ */
+> 
