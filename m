@@ -1,21 +1,19 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH V2] ASoC: fsl_esai: Support synchronous mode
-Date: Thu, 4 Apr 2019 06:29:39 +0000
-Message-ID: <VE1PR04MB6479E9E8A536F7EEFE78A3A1E3500@VE1PR04MB6479.eurprd04.prod.outlook.com>
-References: <dac7c52215b4bb09f3548bcb9246f8fe21799e38.1554285839.git.shengjiu.wang@nxp.com>
- <20190403185716.GA5130@Asurada-Nvidia.nvidia.com>
+From: Victor L <victor910@gmail.com>
+Subject: alsa kernel panic
+Date: Mon, 1 Apr 2019 12:41:39 +1000
+Message-ID: <CAAz5HLaSWhF1NobrufjwiLrWv3jO6w+8XGZvt1f6cB8sNKSSvQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr140057.outbound.protection.outlook.com [40.107.14.57])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com
+ [IPv6:2607:f8b0:4864:20::241])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02223F8075B
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 08:29:40 +0200 (CEST)
-In-Reply-To: <20190403185716.GA5130@Asurada-Nvidia.nvidia.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CA3AF89610
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 04:41:51 +0200 (CEST)
+Received: by mail-oi1-x241.google.com with SMTP id i21so5988308oib.11
+ for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2019 19:41:51 -0700 (PDT)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,91 +23,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: alsa-devel@alsa-project.org
+Cc: daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi ,
 
-> 
-> This looks better :)
-> 
-> On Wed, Apr 03, 2019 at 10:07:40AM +0000, S.j. Wang wrote:
-> > @@ -218,7 +218,7 @@ static int fsl_esai_set_dai_sysclk(struct
-> > snd_soc_dai *dai, int clk_id,  {
-> >  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
-> >  	struct clk *clksrc = esai_priv->extalclk;
-> > -	bool tx = clk_id <= ESAI_HCKT_EXTAL;
-> > +	bool tx = (clk_id <= ESAI_HCKT_EXTAL || esai_priv->synchronous);
-> >  	bool in = dir == SND_SOC_CLOCK_IN;
-> >  	u32 ratio, ecr = 0;
-> >  	unsigned long clk_rate;
-> > @@ -253,7 +253,7 @@ static int fsl_esai_set_dai_sysclk(struct
-> snd_soc_dai *dai, int clk_id,
-> >  		ecr |= ESAI_ECR_ETI;
-> >  		/* fall through */
-> 
-> Btw, I am also wondering if the fall through here is a bug....
-> Because I don't recall that there is a specific reason to fall through here.
-> Can you please help confirm? Perhaps we need to submit a separate fix as
-> well by replacing it with a "break;".
-Yes, I think there is issue here, will submit another patch for it.
-> 
-> >  	case ESAI_HCKR_EXTAL:
-> > -		ecr |= ESAI_ECR_ERI;
-> > +		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI :
-> ESAI_ECR_ERI;
-> >  		break;
-> >  	default:
-> >  		return -EINVAL;
-> 
-> > @@ -537,10 +537,18 @@ static int fsl_esai_hw_params(struct
-> > snd_pcm_substream *substream,
-> >
-> >  	bclk = params_rate(params) * slot_width * esai_priv->slots;
-> >
-> > -	ret = fsl_esai_set_bclk(dai, tx, bclk);
-> > +	ret = fsl_esai_set_bclk(dai, esai_priv->synchronous || tx, bclk);
-> >  	if (ret)
-> >  		return ret;
-> >
-> > +	mask = ESAI_xCR_xSWS_MASK;
-> > +	val = ESAI_xCR_xSWS(slot_width, width);
-> > +
-> > +	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx), mask,
-> val);
-> > +	/* Recording in synchronous mode needs to set TCR also */
-> > +	if (!tx && esai_priv->synchronous)
-> > +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-> mask, val);
-> > +
-> >  	/* Use Normal mode to support monaural audio */
-> >  	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
-> >  			   ESAI_xCR_xMOD_MASK,
-> params_channels(params) > 1 ?
-> > @@ -556,10 +564,9 @@ static int fsl_esai_hw_params(struct
-> > snd_pcm_substream *substream,
-> >
-> >  	regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx), mask,
-> val);
-> >
-> > -	mask = ESAI_xCR_xSWS_MASK | (tx ? ESAI_xCR_PADC : 0);
-> > -	val = ESAI_xCR_xSWS(slot_width, width) | (tx ? ESAI_xCR_PADC : 0);
-> > -
-> > -	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx), mask,
-> val);
-> > +	if (tx)
-> > +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-> > +					ESAI_xCR_PADC, ESAI_xCR_PADC);
-> 
-> Mind aligning the indentation here like the one below?
-> 		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-> 				   ESAI_xCR_PADC, ESAI_xCR_PADC);
+I have Linux panic when started play music with one of my USB audio device.
+first please see this logs:
 
-Ok. Will send v3.
-> 
-> Once you fix the indentation, add this:
-> 
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> 
-> Thanks
+[   71.684730] usbcore: registered new interface driver snd-usb-audio
+[   73.835355] BUG: unable to handle kernel NULL pointer dereference
+at 0000000000000008
+[   73.835412] IP: [<ffffffffc0b45d3c>]
+snd_usb_endpoint_start+0x23c/0x2f0 [snd_usb_audio]
+[   73.835414] PGD 0
+[   73.835415]
+[   73.835418] Oops: 0000 [#1] PREEMPT SMP
+[   73.835482] Modules linked in: snd_usb_audio snd_usbmidi_lib
+snd_hwdep snd_pcm_oss snd_mixer_oss snd_
+pcm snd_seq_midi snd_seq_midi_event snd_rawmidi snd_seq snd_seq_device
+snd_timer snd soundcore coretemp
+iwl3945 iwlegacy i915 ehci_pci iTCO_wdt ehci_hcd pcmcia
+iTCO_vendor_support kvm usbcore mac80211 e1000e
+yenta_socket sr_mod pcmcia_rsrc cfg80211 pcmcia_core lpc_ich mfd_core
+drm_kms_helper cdrom rfkill ata_ge
+neric irqbypass ptp pps_core joydev sg pcspkr i2c_i801 drm battery
+i2c_algo_bit ata_piix i2c_smbus usb_c
+ommon shpchp rng_core ac acpi_cpufreq video button nls_utf8 cifs
+sha256_ssse3 cmac md4 des_generic arc4
+dns_resolver fscache sunrpc loop ip_tables x_tables autofs4 ext4 crc16
+jbd2 crc32c_generic fscrypto ecb
+glue_helper lrw gf128mul ablk_helper cryptd aes_x86_64 mbcache sd_mod
+ahci libahci
+[   73.835486]  evdev libata psmouse serio_raw scsi_mod thermal
+[   73.835491] CPU: 1 PID: 1099 Comm: output:oops Not tainted 4.9.144-rt93 #1
+[   73.835492] Hardware name: LENOVO 636962M/636962M, BIOS 7IET38WW
+(1.19 ) 03/22/2011
+[   73.835494] task: ffff8beb97502c40 task.stack: ffffac1901068000
+[   73.835505] RIP: 0010:[<ffffffffc0b45d3c>]  [<ffffffffc0b45d3c>]
+snd_usb_endpoint_start+0x23c/0x2f0 [
+snd_usb_audio]
+[   73.835507] RSP: 0000:ffffac190106bcc0  EFLAGS: 00010246
+[   73.835508] RAX: 00000000ffffffea RBX: ffff8beb96c00000 RCX: 00000000ffffffea
+[   73.835509] RDX: 0000000000000000 RSI: ffffffffc0b5bf98 RDI: ffff8beb99a18000
+[   73.835511] RBP: 0000000000000002 R08: ffffffffc0b5a8d3 R09: 0000000000000000
+[   73.835512] R10: 00000000fffffe00 R11: 0000000000000200 R12: ffff8beb96c80070
+[   73.835513] R13: ffff8beb99a18000 R14: 0000000000000002 R15: 0000000000000000
+[   73.835516] FS:  00007fdfedc66700(0000) GS:ffff8bebbf300000(0000)
+knlGS:0000000000000000
+[   73.835518] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   73.835519] CR2: 0000000000000008 CR3: 00000000b4ab6000 CR4: 0000000000000670
+[   73.835520] Stack:
+[   73.835525]  ffff8bebb8888c18 ffff8beb96c00000 0000000000000000
+0000000000008002
+[   73.835528]  00007fdfe40197d0 ffffffffc0b4e7cd ffff8bebb8888c18
+ffff8beb974b2400
+[   73.835531]  ffffffffc0b5088a ffff8beb0000ac44 ffff8bebb206d300
+0000000000000000
+[   73.835531] Call Trace:
+[   73.835545]  [<ffffffffc0b4e7cd>] ? start_endpoints+0x3d/0x150
+[snd_usb_audio]
+[   73.835555]  [<ffffffffc0b5088a>] ? snd_usb_pcm_prepare+0x2ea/0x520
+[snd_usb_audio]
+[   73.835577]  [<ffffffffc0b0c176>] ?
+snd_pcm_sw_params_user+0x56/0x90 [snd_pcm]
+[   73.835584]  [<ffffffffc0b0b2d9>] ? snd_pcm_do_prepare+0x19/0x30 [snd_pcm]
+[   73.835591]  [<ffffffffc0b09ea6>] ? snd_pcm_action_single+0x36/0x80 [snd_pcm]
+[   73.835598]  [<ffffffffc0b0a311>] ?
+snd_pcm_action_nonatomic+0x61/0x70 [snd_pcm]
+[   73.835606]  [<ffffffffc0b0e219>] ?
+snd_pcm_common_ioctl1+0x3a9/0xc60 [snd_pcm]
+[   73.835674]  [<ffffffffc03a73ce>] ? ext4_file_write_iter+0x22e/0x370 [ext4]
+[   73.835682]  [<ffffffffc0b0ecaa>] ?
+snd_pcm_playback_ioctl1+0x1da/0x240 [snd_pcm]
+[   73.835690]  [<ffffffffb9736a38>] ? __seccomp_filter+0x78/0x2a0
+[   73.835698]  [<ffffffffc0b0ed33>] ?
+snd_pcm_playback_ioctl+0x23/0x30 [snd_pcm]
+[   73.835702]  [<ffffffffb982c9c4>] ? do_vfs_ioctl+0xa4/0x620
+[   73.835706]  [<ffffffffb96033b4>] ? syscall_trace_enter+0x144/0x300
+[   73.835709]  [<ffffffffb982cfb4>] ? SyS_ioctl+0x74/0x80
+[   73.835711]  [<ffffffffb9603c56>] ? do_syscall_64+0x76/0x100
+[   73.835717]  [<ffffffffb9c38b4e>] ? entry_SYSCALL_64_after_swapgs+0x58/0xc6
+[   73.835747] Code: c0 d3 a8 b5 c0 83 f8 a6 74 15 83 f8 e0 49 c7 c0
+8c a8 b5 c0 48 c7 c2 74 a8 b5 c0 4c
+ 0f 45 c2 48 8b 13 89 c1 48 c7 c6 98 bf b5 c0 <48> 8b 7a 08 89 ea 48
+81 c7 98 00 00 00 e8 e2 7b f4 f8 f0
+ 80 63
+[   73.835757] RIP  [<ffffffffc0b45d3c>]
+snd_usb_endpoint_start+0x23c/0x2f0 [snd_usb_audio]
+[   73.835758]  RSP <ffffac190106bcc0>
+[   73.835759] CR2: 0000000000000008
+
+I give you more detail, I have Debian Linux 4.9.144-rt93. I tested
+under Debian 4.19 and Ubuntu same panic present.
+Please help me to fix this problem, this device working fine under
+Windows. I believe this problem in Linux audio driver.
+I ready to provide any additional details if needs.
+-- 
+Regards,
+Viktor L
