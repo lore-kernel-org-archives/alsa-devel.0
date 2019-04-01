@@ -1,161 +1,138 @@
-From: Jenny TC <jenny.tc@intel.com>
-Subject: [PATCH v4] ASoC: Intel: boards: kbl_da7219_max98927:
-	add dai_trigger function
-Date: Mon,  1 Apr 2019 20:21:23 +0530
-Message-ID: <1554130283-21692-1-git-send-email-jenny.tc@intel.com>
+From: shuah <shuah@kernel.org>
+Subject: Re: [PATCH v14 5/6] au0828: fix enable and disable source audio and
+ video inconsistencies
+Date: Mon, 1 Apr 2019 08:53:17 -0600
+Message-ID: <43ad656a-47d7-9723-d5af-06f86d40e8a0@kernel.org>
+References: <cover.1553909892.git.shuah@kernel.org>
+ <a314cc4fbfa5ae928cd9f13b8e16046e38418273.1553909893.git.shuah@kernel.org>
+ <b67b2a75-ef2a-08df-c67c-c14bd9e33303@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 999ABF8075C
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 16:51:31 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
-Cc: tiwai@suse.de, harshapriya.n@intel.com, mac.chiang@intel.com, jenny.tc@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b67b2a75-ef2a-08df-c67c-c14bd9e33303@xs4all.nl>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, shuah <shuah@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
+On 4/1/19 5:14 AM, Hans Verkuil wrote:
+> Hi Shuah,
+> 
+> On 3/30/19 2:54 AM, Shuah Khan wrote:
+>> Enable and disable source interfaces aren't consistent in enforcing
+>> how video and audio share the tuner resource.
+>>
+>> Fix these issues to enforce the following rules and allow
+>> sharing between audio and video applications.
+>>
+>> - When DVB is streaming, audio/video/vbi/s-video/composite
+>>    should find the resource busy. DVB holds the tuner in
+>>    exclusive mode.
+>> - When video is streaming, audio can share the tuner and vice versa.
+>> - v4l2 allows multiple applications to open video device.
+>> - Video applications call enable source multiple times during their
+>>    run-time. Resource should stay locked until the last application
+>>    releases it.
+>> - A shared resource should stay in shared state and locked when it is
+>>    in use by audio and video. More than one video application is allowed
+>>    to use the tuner as long as video streaming protocol allows such usage.
+>>    Resource is released when the last video/audio application releases it.
+>> - S-Video and Composite hold the resource in exclusive mode.
+>> - VBI allows more than vbi applications sharing and will not share
+>>    with another type. When resource is locked by VBI and in use by
+>>    multiple VBI applications, it should stay locked until the last
+>>    application disables it.
+> 
+> This isn't correct: only one application at most can stream VBI, but
+> VBI can be shared with video and audio streaming.
+> 
+> All three come from the same source (analog TV), so as long as one of
+> these is streaming the analog tuner resource is in use.
+> 
+> With this patch it seems that streaming VBI blocks streaming audio/video
+> and vice versa. That's wrong.
 
-amplifier feedback is not modeled as being dependent on any active
-output. Even when there is no playback happening, parts of the graph,
-specifically the IV sense->speaker protection->output remains active
-and this prevents the DSP from entering low-power states.
+Right. The reason I went this route is that VBI streaming stops even
+when another VBI starts to stream. I am debugging this. Looks like
+you have a fix for this from reading below.
 
-This patch suggest a machine driver level approach where the speaker
-pins are enabled/disabled dynamically depending on stream start/stop
-events. DPAM graph representations show the feedback loop is indeed
-disabled and low-power states can be reached.
+> 
+> Otherwise everything looks OK, except for a typo below.
+> 
 
-Signed-off-by: Jenny TC <jenny.tc@intel.com>
-Signed-off-by: Harshapriya.n <harshapriya.n@intel.com>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
----
-Changelog:
-  v4:
-    - Changed device name in in kabylake_ssp0_trigger to address a
-	conflict with recently merged patch
-	MAXIM_DEV0_NAME -> MAX98927_DEV0_NAME ...
-  v3:
-    - fixed the return logic at the end of kabylake_card_late_probe()
-  v2:
-    - described clearly in commit message
-    - added snd_soc_dapm_disable_pin in kabylake_card_late_probe()
----
----
- sound/soc/intel/boards/kbl_da7219_max98927.c | 73 +++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 2 deletions(-)
+Will fix the typos and also I noticed, I forgot to catch updating
+Copyright in one of the files.
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 2768a57..a04a6bb 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -219,8 +219,60 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int kabylake_ssp0_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int j, ret;
-+
-+	for (j = 0; j < rtd->num_codecs; j++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
-+		const char *name = codec_dai->component->name;
-+		struct snd_soc_component *component = codec_dai->component;
-+		struct snd_soc_dapm_context *dapm =
-+				snd_soc_component_get_dapm(component);
-+		char pin_name[20];
-+
-+		if (strcmp(name, MAX98927_DEV0_NAME) &&
-+			strcmp(name, MAX98927_DEV1_NAME) &&
-+			strcmp(name, MAX98373_DEV0_NAME) &&
-+			strcmp(name, MAX98373_DEV1_NAME))
-+			continue;
-+
-+		snprintf(pin_name, ARRAY_SIZE(pin_name), "%s Spk",
-+			codec_dai->component->name_prefix);
-+
-+		switch (cmd) {
-+		case SNDRV_PCM_TRIGGER_START:
-+		case SNDRV_PCM_TRIGGER_RESUME:
-+		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+			ret = snd_soc_dapm_enable_pin(dapm, pin_name);
-+			if (ret) {
-+				dev_err(rtd->dev, "failed to enable %s: %d\n",
-+				pin_name, ret);
-+				return ret;
-+			}
-+			snd_soc_dapm_sync(dapm);
-+			break;
-+		case SNDRV_PCM_TRIGGER_STOP:
-+		case SNDRV_PCM_TRIGGER_SUSPEND:
-+		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+			ret = snd_soc_dapm_disable_pin(dapm, pin_name);
-+			if (ret) {
-+				dev_err(rtd->dev, "failed to disable %s: %d\n",
-+				pin_name, ret);
-+				return ret;
-+			}
-+			snd_soc_dapm_sync(dapm);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static struct snd_soc_ops kabylake_ssp0_ops = {
- 	.hw_params = kabylake_ssp0_hw_params,
-+	.trigger = kabylake_ssp0_trigger,
- };
- 
- static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -956,6 +1008,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct kbl_hdmi_pcm *pcm;
-+	struct snd_soc_dapm_context *dapm = &card->dapm;
- 	struct snd_soc_component *component = NULL;
- 	int err, i = 0;
- 	char jack_name[NAME_SIZE];
-@@ -982,9 +1035,25 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- 	if (!component)
- 		return -EINVAL;
- 
--	return hdac_hdmi_jack_port_init(component, &card->dapm);
- 
--	return 0;
-+	err = hdac_hdmi_jack_port_init(component, &card->dapm);
-+
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_soc_dapm_disable_pin(dapm, "Left Spk");
-+	if (err) {
-+		dev_err(card->dev, "failed to disable Left Spk: %d\n", err);
-+		return err;
-+	}
-+
-+	err = snd_soc_dapm_disable_pin(dapm, "Right Spk");
-+	if (err) {
-+		dev_err(card->dev, "failed to disable Right Spk: %d\n", err);
-+		return err;
-+	}
-+
-+	return snd_soc_dapm_sync(dapm);
- }
- 
- /* kabylake audio machine driver for SPT + DA7219 */
--- 
-1.9.1
+>>
+>> Signed-off-by: Shuah Khan <shuah@kernel.org>
+>> ---
+>>   drivers/media/usb/au0828/au0828-core.c | 182 +++++++++++++++++++------
+>>   drivers/media/usb/au0828/au0828.h      |   5 +-
+>>   2 files changed, 148 insertions(+), 39 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+>> index 4f8ba6f64d3c..b8bcab2fa1dc 100644
+>> --- a/drivers/media/usb/au0828/au0828-core.c
+>> +++ b/drivers/media/usb/au0828/au0828-core.c
+>> @@ -272,6 +272,27 @@ static void au0828_media_graph_notify(struct media_entity *new,
+>>   	}
+>>   }
+>>   
+>> +static bool au0828_is_link_sharable(struct media_entity *owner,
+>> +				    struct media_entity *entity)
+>> +{
+>> +	bool sharable = false;
+> 
+> typo: sharable -> shareable
+> 
+> Also in the function name: do a search-and-replace for this.
+
+Will do.
+
+> 
+>> +
+>> +	/* Tuner link can be shared by audio and video */
+> 
+> add: and VBI
+> 
+> I think the core issue is here since VBI should be included with
+> IO_V4L and AUDIO_CAPTURE.
+> 
+>> +	switch (owner->function) {
+>> +	case MEDIA_ENT_F_IO_V4L:
+>> +	case MEDIA_ENT_F_AUDIO_CAPTURE:
+>> +		if (entity->function == MEDIA_ENT_F_IO_V4L ||
+>> +		    entity->function == MEDIA_ENT_F_AUDIO_CAPTURE)
+>> +			sharable = true;
+>> +		break;
+>> +	case MEDIA_ENT_F_DTV_DEMOD:
+>> +	case MEDIA_ENT_F_IO_VBI:
+>> +	default:
+>> +		break;
+>> +	}
+>> +	return sharable;
+> 
+> I hacked this function so VBI is included with IO_V4L/AUDIO_CAPTURE
+> and now it works.
+> 
+
+Yes. Y have been debugging with VBI included in the sharing, however
+running into the below problem. Do you have the patch I can use to
+test with this series?
+
+> There is one remaining issue (but that was always a problem with au0828):
+> when streaming is in progress from both video and vbi, and then you stop
+> the video streaming, then vbi stops as well.
+> 
+> au0828_stop_streaming() calls v4l2_device_call_all(&dev->v4l2_dev, 0, video, s_stream, 0);
+> which it should only do when the last user disappears. I'll post a patch
+> for au0828 to fix this.
+> 
+
+Thanks for finding this problem. I narrowed it to close and didn't get
+a chance to play with it.
+
+thanks,
+-- Shuah
