@@ -1,23 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v4 16/20] ASoC: SOF:
- Add PCI device support
-Date: Mon, 1 Apr 2019 17:59:16 -0400
-Message-ID: <5d4f7d94-4806-fd9a-687b-75c428348779@linux.intel.com>
-References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
- <20190321161055.26582-17-pierre-louis.bossart@linux.intel.com>
- <20190328174819.GM9224@smile.fi.intel.com>
- <20190328174918.GN9224@smile.fi.intel.com>
- <9f48d5e7-8a95-db2f-0605-b15e45670ce0@linux.intel.com>
- <20190328220826.GQ9224@smile.fi.intel.com>
- <d6b6fc83-c362-4b86-ebb1-9c79dbb36858@linux.intel.com>
- <f4e5f957-b4f1-174c-3569-cf5c21b55ac4@linux.intel.com>
- <s5hh8bhlf64.wl-tiwai@suse.de>
+From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Subject: Re: [PATCH] Documentation: soundwire: Ensure that code
+ is inside the code blocks
+Date: Tue, 2 Apr 2019 00:52:11 +0200
+Message-ID: <20190401225211.GE2095@latitude>
+References: <20190331223423.29855-1-j.neuschaefer@gmx.net>
+ <20190401154003.7eddc9e9@lwn.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6087380232174640784=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hh8bhlf64.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F974F8075C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 00:52:23 +0200 (CEST)
+In-Reply-To: <20190401154003.7eddc9e9@lwn.net>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +23,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Alan Cox <alan@linux.intel.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/1/19 3:05 PM, Takashi Iwai wrote:
-> On Mon, 01 Apr 2019 19:26:13 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> On 3/29/19 8:30 PM, Pierre-Louis Bossart wrote:
->>> On 3/28/19 6:08 PM, Andy Shevchenko wrote:
->>>> On Thu, Mar 28, 2019 at 02:21:47PM -0400, Pierre-Louis Bossart wrote:
->>>>>>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_EDISON)
->>>>>>>
->>>>>>> Can we use Merrifield / mrfld instead of EDISON in entire series?
->>>>>
->>>>> we could, but I don't know of any other platform than Edison to run the
->>>>> code. I know it's less accurate from an architecture perspective
->>>>> but felt
->>>>> Merrifield was confusing for non-Intel folks.
->>>>
->>>> We use Merrifield across the entire kernel. It would be confusing
->>>> other way around.
->>>> So, please, change it to be consistent with the rest of the kernel.
->>>
->>> Since this is the only comment so far, I'll add a follow-up patch.
->>
->> Discard this reply, I'll address this in an update to address
->> Takashi's comments as well.
->>
->>
->> Actually I need feedback from reviewers/maintainers: I could either
->> provide an update addressing just comments from Andy and Takashi, or
->> provide a larger update that would include known fixes and
->> simplifications from SOF contributors on github, e.g. on the IPC. We
->> have about 15-20 delta patches that were accepted on github, not sure
->> what the preference is, just addressing comments so far or getting the
->> latest and greatest patches squashed?
-> 
-> IMO, one or two more whole patchset refresh would be still worth.
-> Then we can merge the base, and go for refinement with each small
-> change, hopefully in this merge cycle.
-> 
-> For the resubmission, please give me a bit more time.  I had no time
-> for further review in the last week due to completely other
-> businesses (the office room movement, etc)...
 
-Sure, I am understand how time consuming this can be and how 'reviewer 
-fatigue' can occur. We can add a couple of additional changes, e.g. for 
-the IPC and some resource management while you (and others) go over the 
-current patchset and tentatively resubmit next week, would that work?
+--===============6087380232174640784==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SFyWQ0h3ruR435lw"
+Content-Disposition: inline
+
+
+--SFyWQ0h3ruR435lw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 01, 2019 at 03:40:03PM -0600, Jonathan Corbet wrote:
+> On Mon,  1 Apr 2019 00:34:22 +0200
+> Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+>=20
+> > The way the document is written now, Sphinx renders empty code blocks
+> > followed by the lines that should be inside them.
+> >=20
+> > Unindent the code-block directives to fix this.
+> >=20
+> > Fixes: 502c00d9c315 ("Documentation: soundwire: fix stream.rst markup w=
+arnings")
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+>=20
+> That definitely makes things better.  Applied, thanks.
+>=20
+> I'm going to take out the Fixes tag, though, since the named commit did
+> not, in fact, introduce that problem.
+
+Ah, true, the wrong indentation didn't come from that commit.
+
+> It's also good to copy authors of patches named in Fixes tags so they
+> can defend themselves :)
+
+Good idea, I'll try to remember that.
+
+
+Jonathan Neusch=C3=A4fer
+
+--SFyWQ0h3ruR435lw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAlyilhIACgkQCDBEmo7z
+X9vZ8A//Ubr9LUXRv3XHqbcvLtsVzW1M+qSredcJrMbpgR86ynQnBKQH1tM0Z7UE
+CE910vJTtwKogXfB/ohMwb1mOUlumajBuhCPO4MRKj6kO4et6g8kgNU3rUJj2Eh8
+9OB1rOyWADqOJLbxZq/W+FPt217NMNry/BrWu9JSXak4Y7pax3cJOuSTt1IHuSzx
++h7AcudAKgiAvnYC3hVh2FZdSScQIpEf/G6oP5uvv2YvF1QOnGXhShGBzBKxZGp7
+hjOWwJLZ1hTnMgV6eIGYackJMMqPSnAfjtLLn7YZH90z1T9ehorUOvVFp5fd/6j9
+duakvKusP4ED6llf7LiXmanOhbqq1M74qtD5eUVwmexsW1omGYXV48dQzElgrO6B
+K0v8LML3g0m7L1wsWrdOYwCXReEWjTdGU5gVgfmi0O7PSRPy0sW1/vTqOctSGSfZ
+1o6+n6E6RZ9vnq1IzyPZw7cNojn+vU7zr8bhF4a+jFGiDsuZJB83wXLOgoupajhO
+az+Y2QvDXq8E4U5U+4pAuv1K9XEvoDcrG5D2CsJxgA0Z+Xifp3NN5Qwa4XyTUkSj
+ia3NXHW+BtNcOBUnNa37kFLiVkokER7wwvxqD2nMB4ujI7QzYlQFZfuSKOIP6TRk
+GlE5Gh6AC4USqRXAyPa3ZkqqSEoaCz+6AOrcX+yXYBZ1BuSAHNw=
+=0pIl
+-----END PGP SIGNATURE-----
+
+--SFyWQ0h3ruR435lw--
+
+--===============6087380232174640784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6087380232174640784==--
