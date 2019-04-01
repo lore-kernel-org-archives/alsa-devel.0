@@ -1,36 +1,79 @@
-From: Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] Documentation: soundwire: Ensure that code is inside
- the code blocks
-Date: Mon, 1 Apr 2019 15:40:03 -0600
-Message-ID: <20190401154003.7eddc9e9@lwn.net>
-References: <20190331223423.29855-1-j.neuschaefer@gmx.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v4 16/20] ASoC: SOF:
+ Add PCI device support
+Date: Mon, 1 Apr 2019 17:59:16 -0400
+Message-ID: <5d4f7d94-4806-fd9a-687b-75c428348779@linux.intel.com>
+References: <20190321161055.26582-1-pierre-louis.bossart@linux.intel.com>
+ <20190321161055.26582-17-pierre-louis.bossart@linux.intel.com>
+ <20190328174819.GM9224@smile.fi.intel.com>
+ <20190328174918.GN9224@smile.fi.intel.com>
+ <9f48d5e7-8a95-db2f-0605-b15e45670ce0@linux.intel.com>
+ <20190328220826.GQ9224@smile.fi.intel.com>
+ <d6b6fc83-c362-4b86-ebb1-9c79dbb36858@linux.intel.com>
+ <f4e5f957-b4f1-174c-3569-cf5c21b55ac4@linux.intel.com>
+ <s5hh8bhlf64.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190331223423.29855-1-j.neuschaefer@gmx.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc: linux-doc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <s5hh8bhlf64.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon,  1 Apr 2019 00:34:22 +0200
-Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
-
-> The way the document is written now, Sphinx renders empty code blocks
-> followed by the lines that should be inside them.
+On 4/1/19 3:05 PM, Takashi Iwai wrote:
+> On Mon, 01 Apr 2019 19:26:13 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>> On 3/29/19 8:30 PM, Pierre-Louis Bossart wrote:
+>>> On 3/28/19 6:08 PM, Andy Shevchenko wrote:
+>>>> On Thu, Mar 28, 2019 at 02:21:47PM -0400, Pierre-Louis Bossart wrote:
+>>>>>>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_EDISON)
+>>>>>>>
+>>>>>>> Can we use Merrifield / mrfld instead of EDISON in entire series?
+>>>>>
+>>>>> we could, but I don't know of any other platform than Edison to run the
+>>>>> code. I know it's less accurate from an architecture perspective
+>>>>> but felt
+>>>>> Merrifield was confusing for non-Intel folks.
+>>>>
+>>>> We use Merrifield across the entire kernel. It would be confusing
+>>>> other way around.
+>>>> So, please, change it to be consistent with the rest of the kernel.
+>>>
+>>> Since this is the only comment so far, I'll add a follow-up patch.
+>>
+>> Discard this reply, I'll address this in an update to address
+>> Takashi's comments as well.
+>>
+>>
+>> Actually I need feedback from reviewers/maintainers: I could either
+>> provide an update addressing just comments from Andy and Takashi, or
+>> provide a larger update that would include known fixes and
+>> simplifications from SOF contributors on github, e.g. on the IPC. We
+>> have about 15-20 delta patches that were accepted on github, not sure
+>> what the preference is, just addressing comments so far or getting the
+>> latest and greatest patches squashed?
 > 
-> Unindent the code-block directives to fix this.
+> IMO, one or two more whole patchset refresh would be still worth.
+> Then we can merge the base, and go for refinement with each small
+> change, hopefully in this merge cycle.
 > 
-> Fixes: 502c00d9c315 ("Documentation: soundwire: fix stream.rst markup warnings")
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> For the resubmission, please give me a bit more time.  I had no time
+> for further review in the last week due to completely other
+> businesses (the office room movement, etc)...
 
-That definitely makes things better.  Applied, thanks.
-
-I'm going to take out the Fixes tag, though, since the named commit did
-not, in fact, introduce that problem.  It's also good to copy authors of
-patches named in Fixes tags so they can defend themselves :)
-
-Thanks,
-
-jon
+Sure, I am understand how time consuming this can be and how 'reviewer 
+fatigue' can occur. We can add a couple of additional changes, e.g. for 
+the IPC and some resource management while you (and others) go over the 
+current patchset and tentatively resubmit next week, would that work?
