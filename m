@@ -1,129 +1,114 @@
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: Applied "ASoC: es8316: Add support for inverted jack detect" to
- the asoc tree
-Date: Mon, 01 Apr 2019 19:57:19 +0200
-Message-ID: <1554141439.10471.2@crapouillou.net>
-References: <20190329215045.6254-1-paul@crapouillou.net>
-        <20190401085258.20BE0440083@finisterre.ee.mobilebroadband>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Support synchronous mode
+Date: Mon, 1 Apr 2019 11:17:44 -0700
+Message-ID: <20190401181742.GA21288@Asurada-Nvidia>
+References: <1554118759-2403-1-git-send-email-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190401085258.20BE0440083@finisterre.ee.mobilebroadband>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2CA2F89610
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 20:17:51 +0200 (CEST)
+Received: by mail-pg1-x542.google.com with SMTP id i2so5161869pgj.11
+ for <alsa-devel@alsa-project.org>; Mon, 01 Apr 2019 11:17:51 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1554118759-2403-1-git-send-email-shengjiu.wang@nxp.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Shengjiu,
 
-What about the other two patches? Should I make a new patchset with=20
-these?
-
-Thanks,
--Paul
-
-
-Le lun. 1 avril 2019 =E0 10:52, Mark Brown <broonie@kernel.org> a =E9crit=20
-:
-> The patch
->=20
->    ASoC: es8316: Add support for inverted jack detect
->=20
-> has been applied to the asoc tree at
->=20
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->=20
-> All being well this means that it will be integrated into the=20
-> linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
->=20
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems=20
-> and
-> send followup patches addressing any issues that are reported if=20
-> needed.
->=20
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
->=20
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
->=20
-> Thanks,
-> Mark
->=20
-> From 0bbcedd6bb41b82b77115fc001441ff34e7c4ea7 Mon Sep 17 00:00:00 2001
-> From: Paul Cercueil <paul@crapouillou.net>
-> Date: Fri, 29 Mar 2019 22:50:43 +0100
-> Subject: [PATCH] ASoC: es8316: Add support for inverted jack detect
->=20
-> On some devices (Teclast X98+ II tablet, maybe others), the jack
-> detection has been wired backwards, so when the ES8316 reports
-> headphones being present it means they are actually not plugged.
->=20
-> Use a quirk around this incorrect behaviour, which can be enabled
-> through the 'everest,jack-detect-inverted' boolean device property.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Mon, Apr 01, 2019 at 11:39:10AM +0000, S.j. Wang wrote:
+> In ESAI synchronous mode, the clock is generated by Tx, So
+> we should always set registers of Tx which relate with the
+> bit clock and frame clock generation (TCCR, TCR, ECR), even
+> there is only Rx is working.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 > ---
->  sound/soc/codecs/es8316.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-> index 6d4a323f786b..ec2770b3f77d 100644
-> --- a/sound/soc/codecs/es8316.c
-> +++ b/sound/soc/codecs/es8316.c
-> @@ -43,6 +43,7 @@ struct es8316_priv {
->  	unsigned int sysclk;
->  	unsigned int allowed_rates[NR_SUPPORTED_MCLK_LRCK_RATIOS];
->  	struct snd_pcm_hw_constraint_list sysclk_constraints;
-> +	bool jd_inverted;
->  };
->=20
->  /*
-> @@ -577,6 +578,9 @@ static irqreturn_t es8316_irq(int irq, void *data)
->  	if (!es8316->jack)
->  		goto out;
->=20
-> +	if (es8316->jd_inverted)
-> +		flags ^=3D ES8316_GPIO_FLAG_HP_NOT_INSERTED;
-> +
->  	dev_dbg(comp->dev, "gpio flags %#04x\n", flags);
->  	if (flags & ES8316_GPIO_FLAG_HP_NOT_INSERTED) {
->  		/* Jack removed, or spurious IRQ? */
-> @@ -592,6 +596,8 @@ static irqreturn_t es8316_irq(int irq, void *data)
->  		/* Jack inserted, determine type */
->  		es8316_enable_micbias_for_mic_gnd_short_detect(comp);
->  		regmap_read(es8316->regmap, ES8316_GPIO_FLAG, &flags);
-> +		if (es8316->jd_inverted)
-> +			flags ^=3D ES8316_GPIO_FLAG_HP_NOT_INSERTED;
->  		dev_dbg(comp->dev, "gpio flags %#04x\n", flags);
->  		if (flags & ES8316_GPIO_FLAG_HP_NOT_INSERTED) {
->  			/* Jack unplugged underneath us */
-> @@ -633,6 +639,14 @@ static void es8316_enable_jack_detect(struct=20
-> snd_soc_component *component,
->  {
->  	struct es8316_priv *es8316 =3D=20
-> snd_soc_component_get_drvdata(component);
->=20
-> +	/*
-> +	 * Init es8316->jd_inverted here and not in the probe, as we cannot
-> +	 * guarantee that the bytchr-es8316 driver, which might set this
-> +	 * property, will probe before us.
-> +	 */
-> +	es8316->jd_inverted =3D device_property_read_bool(component->dev,
-> +							"everest,jack-detect-inverted");
-> +
->  	mutex_lock(&es8316->lock);
->=20
->  	es8316->jack =3D jack;
-> --
-> 2.20.1
->=20
+>  sound/soc/fsl/fsl_esai.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 3623aa9a6f2e..d9fcddd55c02 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -230,6 +230,21 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (esai_priv->synchronous && !tx) {
+> +		switch (clk_id) {
+> +		case ESAI_HCKR_FSYS:
+> +			fsl_esai_set_dai_sysclk(dai, ESAI_HCKT_FSYS,
+> +								freq, dir);
+> +			break;
+> +		case ESAI_HCKR_EXTAL:
+> +			fsl_esai_set_dai_sysclk(dai, ESAI_HCKT_EXTAL,
+> +								freq, dir);
 
-=
+Not sure why you call set_dai_sysclk inside set_dai_sysclk again. It
+feels very confusing to do so, especially without a comments.
+
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>  	/* Bypass divider settings if the requirement doesn't change */
+>  	if (freq == esai_priv->hck_rate[tx] && dir == esai_priv->hck_dir[tx])
+>  		return 0;
+> @@ -537,10 +552,21 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+>  
+>  	bclk = params_rate(params) * slot_width * esai_priv->slots;
+>  
+> -	ret = fsl_esai_set_bclk(dai, tx, bclk);
+> +	ret = fsl_esai_set_bclk(dai, esai_priv->synchronous ? true : tx, bclk);
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (esai_priv->synchronous && !tx) {
+> +		/* Use Normal mode to support monaural audio */
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> +			   ESAI_xCR_xMOD_MASK, params_channels(params) > 1 ?
+> +			   ESAI_xCR_xMOD_NETWORK : 0);
+> +
+> +		mask = ESAI_xCR_xSWS_MASK | ESAI_xCR_PADC;
+> +		val = ESAI_xCR_xSWS(slot_width, width) | ESAI_xCR_PADC;
+> +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR, mask, val);
+> +	}
+
+Does synchronous mode require to set both TCR and RCR? or just TCR?
+The code behind this part is doing the same setting to RCR. If that
+is not needed any more for a synchronous recording, we should reuse
+it instead of inserting a piece of redundant code. Otherwise, if we
+need to set both, we should have two regmap_update_bits operations
+back-to-back for TCR and RCR (and other registers too).
+
+> +
+>  	/* Use Normal mode to support monaural audio */
+>  	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+>  			   ESAI_xCR_xMOD_MASK, params_channels(params) > 1 ?
+
+In case that we only need to set TCR (more likely I feel), it would
+feel less confusing to me, if we changed REG_ESAI_xCR(tx) here, for
+example, to REG_ESAI_xCR(tx || sync). Yea, please add to the top a
+'bool sync = esai_priv->synchronous;'.
+
+Similarly, for ECR_ETO and ECR_ERO:
+	(tx || sync) ? ESAI_ECR_ETO : ESAI_ECR_ERO;
