@@ -1,18 +1,26 @@
-From: Giuliano Zannetti - ART S.p.A. <giuliano.zannetti@artgroup-spa.com>
-Subject: loopback snd_pcm_writei
-Date: Mon, 1 Apr 2019 13:51:22 +0000
-Message-ID: <AM5P192MB0180EB66182156CF2353C0FFC5550@AM5P192MB0180.EURP192.PROD.OUTLOOK.COM>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: regression: bad sound card type detection in audio
+	graph
+Date: Mon, 1 Apr 2019 15:53:07 +0200
+Message-ID: <03f247d6-6a41-7e92-3b5f-33a94d59c8bb@st.com>
+References: <17699625-dd15-afc7-780f-c7c2d4721525@st.com>
+ <87pnqbrfqg.wl-kuninori.morimoto.gx@renesas.com>
+ <ca008e8f-a031-d78d-2ee6-55f90a39378b@st.com>
+ <87muleo3dd.wl-kuninori.morimoto.gx@renesas.com>
+ <3011cbc1-0142-009f-ff96-66f330b4fc77@st.com>
+ <87d0m6inv2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-eopbgr130080.outbound.protection.outlook.com [40.107.13.80])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 164A4F89610
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 15:51:23 +0200 (CEST)
-Content-Language: it-IT
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31D12F8075C
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 15:53:11 +0200 (CEST)
+In-Reply-To: <87d0m6inv2.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,147 +30,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, "tiwai@suse.com" <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Kuninori,
 
-I have the configuration in the asound.conf above.
+On 4/1/19 2:26 AM, Kuninori Morimoto wrote:
+> 
+> Hi Arnaud
+> 
+>> > Easy solution I noticed now is that compatible = "audio-graph-card" case
+>> > should only select non DPCM case, same as before.
+>> > compatible = "audio-graph-scu-card" can be both "non DPCM" and "DPCM".
+>> > I think only user of "audio-graph-scu-card" is me, and it is local use.
+>> > I think it is still DT backward compatible (?)
+>> > I didn't test this patch, but maybe similar can be solution ?
+>> 
+>> Yes i think that is a good proposal with advantage of ensuring
+>> compatibility with existing code.
+>> 
+>> Thanks for your clarifications!
+> 
+> Good !
+> Can you test and post patch ?
+> I think my proposed patch is not good enough for you (?).
+> I want to test your tested patch on my side.
 
-my_plug - - > my_route - - > my_multi - - > slave0 (forward)
-                                      - - > slave1 (loopback)
+I tested the patch you proposed it works perfectly.
+For your information , we have posted in parallel a patch to support
+multi endpoint for the cs42l51 codec.
+https://www.spinics.net/lists/alsa-devel/msg88655.html
+This patch as been accepted by Marc and should be part on the next pull
+request.
+Associated DT (need to be upstreamed) is visible
+here:https://github.com/STMicroelectronics/linux/blob/196201973b7048ccf75aa63ac3c3673f8b6ee1c1/arch/arm/boot/dts/stm32mp157a-dk1.dts#L212
 
-I open the plug my_plug in the block mode:
+For sure I can propose the patch in audio graph but it is your idea,
+and i have no major update/fix on it. So if you prefer you can post it
+and i will ack it.
 
-    writtenFrames = snd_pcm_writei(handle, bufferToWrite, bufferToWriteSize);
+@ -20,10 +20,12 @@
+ #include <linux/string.h>
+ #include <sound/simple_card_utils.h>
 
-The issue I see is that there are several "writes" with 0 written frames. It seems like the snd_pcm_writei does not hold until data will be written. In general, 0 written frames sounds weird to me, because snd_pcm_writei should block itself if no space is available in the circular buffer right?
+ #define PREFIX	"audio-graph-card,"
 
-I have tried to fix the following method in pcm_multi.c, as Jaroslav Kysela suggests.
++#define DPCM_SELECTABLE 1
++
+ static int graph_outdrv_event(struct snd_soc_dapm_widget *w,
+ 			      struct snd_kcontrol *kcontrol,
+ 			      int event)
+ {
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+@@ -414,10 +416,12 @@ static int graph_for_each_link(struct
+asoc_simple_priv *priv,
+ 	struct device_node *codec_ep;
+ 	struct device_node *codec_port;
+ 	struct device_node *codec_port_old = NULL;
+ 	struct asoc_simple_data adata;
+ 	int rc, ret;
++	unsigned int dpcm_selectable =
++				   (unsigned int)of_device_get_match_data(dev);
 
--static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail ATTRIBUTE_UNUSED)
-+static int snd_pcm_multi_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail)
-{
-        snd_pcm_multi_t *multi = pcm->private_data;
--       snd_pcm_t *slave = multi->slaves[multi->master_slave].pcm;
--       return snd_pcm_may_wait_for_avail_min(slave, snd_pcm_mmap_avail(slave));
-+       unsigned int i;
-+       for (i = 0; i < multi->slaves_count; ++i) {
-+               if (snd_pcm_may_wait_for_avail_min(multi->slaves[i].pcm, avail))
-+                       return 1;
-+       }
-+       return 0;
-}
+ 	/* loop for all listed CPU port */
+ 	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
+ 		cpu_port = it.node;
+ 		cpu_ep	 = NULL;
+@@ -443,12 +447,13 @@ static int graph_for_each_link(struct
+asoc_simple_priv *priv,
+ 			/*
+ 			 * It is DPCM
+ 			 * if Codec port has many endpoints,
+ 			 * or has convert-xxx property
+ 			 */
+-			if ((of_get_child_count(codec_port) > 1) ||
+-			    adata.convert_rate || adata.convert_channels)
++			if (dpcm_selectable  &&
++			    ((of_get_child_count(codec_port) > 1) ||
++			    adata.convert_rate || adata.convert_channels))
+ 				ret = func_dpcm(priv, cpu_ep, codec_ep, li,
+ 						(codec_port_old == codec_port));
+ 			/* else normal sound */
+ 			else
+ 				ret = func_noml(priv, cpu_ep, codec_ep, li);
+@@ -677,11 +682,13 @@ static int graph_remove(struct platform_device *pdev)
+ 	return asoc_simple_clean_reference(card);
+ }
 
-But unfortunately the issue has not been resolved.
+ static const struct of_device_id graph_of_match[] = {
+ 	{ .compatible = "audio-graph-card", },
+-	{ .compatible = "audio-graph-scu-card", },
++	{ .compatible = "audio-graph-scu-card",
++	  .data = (void *)DPCM_SELECTABLE
++	},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, graph_of_match);
+
+ static struct platform_driver graph_card = {
 
 
-#*************************************************
-#                     PLAYBACK
-#*************************************************
 
-pcm.my_plug
-{
-  type plug
-  slave.pcm my_route
-  slave.channels 2
-}
+Thanks,
+Arnaud
 
-pcm.my_route
-{
-  type route
-  slave.pcm my_multi
-  slave.channels 4
-  ttable.0.0 1
-  ttable.0.1 1
-  ttable.1.2 1
-  ttable.1.3 1
-}
-
-pcm.my_multi
-{
-  type multi
-  slaves
-  {
-    slave0
-    {
-      pcm my_dmix
-      channels 2
-    }
-    slave1
-    {
-      pcm my_dmix_loop
-      channels 2
-    }
-  }
-  bindings
-  {
-    0 {slave slave0 channel 0}
-    1 {slave slave0 channel 1}
-    2 {slave slave1 channel 0}
-    3 {slave slave1 channel 1}
-  }
-}
-
-#-------------------- Slave 0 --------------------
-
-pcm.my_dmix
-{
-  type dmix
-  ipc_key 1000
-  ipc_key_add_uid 1
-  ipc_perm 0600
-  slave.period_time 10000
-  slave.period_size 480
-  slave.buffer_size 3840
-  slave.rate 48000
-  slave.pcm "hw:0,0"
-}
-
-#-------------------- Slave 1 --------------------
-
-pcm.my_dmix_loop
-{
-  type dmix
-  ipc_key 1000
-  ipc_key_add_uid 1
-  ipc_perm 0600
-  slave.period_time 10000
-  slave.period_size 480
-  slave.buffer_size 3840
-  slave.rate 48000
-  slave.pcm my_loopback_out
-}
-
-pcm.my_loopback_out
-{
-  type hw
-  card Loopback
-  device 0
-  subdevice 0
-}
-
-#*************************************************
-#                     CAPTURE
-#*************************************************
-
-pcm.my_dsnoop_loop
-{
-  type dsnoop
-  ipc_key 1000
-  ipc_key_add_uid 1
-  ipc_perm 0600
-  slave.period_time 10000
-  slave.period_size 480
-  slave.buffer_size 3840
-  slave.rate 48000
-  slave.pcm my_loopback_in
-}
-
-pcm.my_loopback_in
-{
-  type hw
-  card Loopback
-  device 1
-  subdevice 0
-}
+> 
+> Best regards
+> ---
+> Kuninori Morimoto
