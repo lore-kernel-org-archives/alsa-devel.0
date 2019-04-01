@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Fix typo in comment" to the
-	asoc tree
-Date: Mon,  1 Apr 2019 09:53:04 +0100 (BST)
-Message-ID: <20190401085304.C0D6B440085@finisterre.ee.mobilebroadband>
-References: <20190327152451.2870-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: rt5677-spi: Add ACPI ID" to the asoc
+	tree
+Date: Mon,  1 Apr 2019 09:53:20 +0100 (BST)
+Message-ID: <20190401085320.6D2F5440082@finisterre.ee.mobilebroadband>
+References: <20190328022700.14344-1-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF297F8962D
- for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:09 +0200 (CEST)
-In-Reply-To: <20190327152451.2870-1-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42A8FF89739
+ for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2019 10:53:25 +0200 (CEST)
+In-Reply-To: <20190328022700.14344-1-oder_chiou@realtek.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cujomalainey@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Fix typo in comment
+   ASoC: rt5677-spi: Add ACPI ID
 
 has been applied to the asoc tree at
 
@@ -55,29 +55,48 @@ to this mail.
 Thanks,
 Mark
 
->From 809589a94dcce27cb5f2081280d1155c71ae45f7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Wed, 27 Mar 2019 15:24:51 +0000
-Subject: [PATCH] ASoC: wm_adsp: Fix typo in comment
+>From 2b070f6739025ecbf2ccb55daf9e19d3fb343c7e Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Thu, 28 Mar 2019 10:27:00 +0800
+Subject: [PATCH] ASoC: rt5677-spi: Add ACPI ID
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Add the ACPI ID for the product "chromebook pixel 2015" to match the
+coreboot settings.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5677-spi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5e615fbddf9a..0aa62b26f61c 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3263,7 +3263,7 @@ static void wm_halo_stop_core(struct wm_adsp *dsp)
- 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CCM_CORE_CONTROL,
- 			   HALO_CORE_EN, 0);
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 84501c2020c7..167a02773a0b 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -25,6 +25,7 @@
+ #include <linux/sysfs.h>
+ #include <linux/clk.h>
+ #include <linux/firmware.h>
++#include <linux/acpi.h>
  
--	/* reset halo core with CORE_SOFT_REEST */
-+	/* reset halo core with CORE_SOFT_RESET */
- 	regmap_update_bits(dsp->regmap, dsp->base + HALO_CORE_SOFT_RESET,
- 			   HALO_CORE_SOFT_RESET_MASK, 1);
+ #include "rt5677-spi.h"
+ 
+@@ -226,9 +227,16 @@ static int rt5677_spi_probe(struct spi_device *spi)
+ 	return 0;
  }
+ 
++static const struct acpi_device_id rt5677_spi_acpi_id[] = {
++	{ "RT5677AA", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
++
+ static struct spi_driver rt5677_spi_driver = {
+ 	.driver = {
+ 		.name = "rt5677",
++		.acpi_match_table = ACPI_PTR(rt5677_spi_acpi_id),
+ 	},
+ 	.probe = rt5677_spi_probe,
+ };
 -- 
 2.20.1
