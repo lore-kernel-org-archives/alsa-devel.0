@@ -1,45 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: tlv320aic31xx: Add headphone/headset
- detection
-Date: Mon, 1 Apr 2019 14:57:52 +0700
-Message-ID: <20190401075752.GN2059@sirena.org.uk>
-References: <20190329154704.4922-1-afd@ti.com>
+From: syzbot <syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com>
+Subject: Re: WARNING in port_delete
+Date: Mon, 01 Apr 2019 00:58:01 -0700
+Message-ID: <0000000000002402ed05857361e0@google.com>
+References: <0000000000004f7eb00570be9f92@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JLiXfqD9/Kt1b+Pq"
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190329154704.4922-1-afd@ti.com>
+In-Reply-To: <0000000000004f7eb00570be9f92@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, colin.king@canonical.com, linux-kernel@vger.kernel.org, mingo@redhat.com, paulmck@linux.vnet.ibm.com, perex@perex.cz, rostedt@goodmis.org, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+syzbot has bisected this bug to:
 
---JLiXfqD9/Kt1b+Pq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+commit 63d86a7e85f84b8ac3b2f394570965aedbb03787
+Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Date:   Tue May 1 20:08:46 2018 +0000
 
-On Fri, Mar 29, 2019 at 10:47:03AM -0500, Andrew F. Davis wrote:
-> This device can detect the insertion/removal of headphones and headsets.
-> Enable reporting this status by enabling this interrupt and forwarding
-> this to upper-layers if a jack has been defined.
+     rcu: Convert rcu_grace_period_init tracepoint to gp_seq
 
-This doesn't apply against current code, please check and resend.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f86d2f200000
+start commit:   091a1eaa Merge branch 'akpm'
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=14046d2f200000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10046d2f200000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0af03fe452b65fb
+dashboard link: https://syzkaller.appspot.com/bug?extid=e4c8abb920efa77bace9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e2c91400000
 
---JLiXfqD9/Kt1b+Pq
-Content-Type: application/pgp-signature; name="signature.asc"
+Reported-by: syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com
+Fixes: 63d86a7e85f8 ("rcu: Convert rcu_grace_period_init tracepoint to  
+gp_seq")
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyhxH8ACgkQJNaLcl1U
-h9C8ZAf/Yxn+/gAw6NllkxZh49h6GowFWW6/Qq16wkCb+1bPpkCAGn5uH/ge6xTo
-bTbz8j5zoW9QbvLN2LXVyzmW3gmXTcKzlKS0jogm/JUzbOf/RAbsdfUstmO6FF2Y
-Ewj93DcuKx8DscRxx/rbQbzDZmwj3UPNaWlgz56/at3ieOa72Io8eXpZJy2oaWKa
-ZBx1es7kgAg5FOdojs0oJMlB/xTykMe+kpZ6JdP0oVElkRhDxyOoByUeZzSgTgUG
-1MinmsbQmsnIxy1MNf+o/NaCpG31smi2i28ErXUNTMl0E11L+JRdgmIEEx5CfJDK
-COeZ5EkGZ6h2Zfp1gQuxr24QQvm7uA==
-=mAL8
------END PGP SIGNATURE-----
-
---JLiXfqD9/Kt1b+Pq--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
