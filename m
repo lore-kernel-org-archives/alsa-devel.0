@@ -1,30 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: fix spelling mistake: "missign" -> "missing"" to
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: Mediatek: Add document for mt8183-da7219-max98357" to
  the asoc tree
-Date: Mon,  1 Apr 2019 09:53:07 +0100 (BST)
-Message-ID: <20190401085307.A2D25440082@finisterre.ee.mobilebroadband>
-References: <20190328092816.12883-1-colin.king@canonical.com>
+Date: Mon,  1 Apr 2019 09:53:01 +0100 (BST)
+Message-ID: <20190401085301.698AF440082@finisterre.ee.mobilebroadband>
+References: <1553848489-27926-5-git-send-email-shunli.wang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190328092816.12883-1-colin.king@canonical.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Viorel Suman <viorel.suman@nxp.com>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1553848489-27926-5-git-send-email-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: fix spelling mistake: "missign" -> "missing"
+   ASoC: Mediatek: Add document for mt8183-da7219-max98357
 
 has been applied to the asoc tree at
 
@@ -49,33 +48,41 @@ to this mail.
 Thanks,
 Mark
 
->From de70b2a581125a8a627db6fdc1d7f9c05536fe84 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 28 Mar 2019 09:28:16 +0000
-Subject: [PATCH] ASoC: fsl: fix spelling mistake: "missign" -> "missing"
+>From 5a79acf9a9188d85e1f1a697ed7531e0f0f36943 Mon Sep 17 00:00:00 2001
+From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Fri, 29 Mar 2019 16:34:49 +0800
+Subject: [PATCH] ASoC: Mediatek: Add document for mt8183-da7219-max98357
 
-There is a spelling mistake in a dev_err message. Fix this.
+This patch adds document for the machine board with
+mt6358, da7219 and max98357 codecs.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
-Acked-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/fsl/imx-audmix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/sound/mt8183-da7219-max98357.txt     | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 72e37ca6cfbb..7983bd339c01 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -161,7 +161,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 	}
- 
- 	if (!audmix_np) {
--		dev_err(&pdev->dev, "Missign DT node for parent device.\n");
-+		dev_err(&pdev->dev, "Missing DT node for parent device.\n");
- 		return -EINVAL;
- 	}
- 
+diff --git a/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
+new file mode 100644
+index 000000000000..92ac86f83822
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8183-da7219-max98357.txt
+@@ -0,0 +1,15 @@
++MT8183 with MT6358, DA7219 and MAX98357 CODECS
++
++Required properties:
++- compatible : "mediatek,mt8183_da7219_max98357"
++- mediatek,headset-codec: the phandles of da7219 codecs
++- mediatek,platform: the phandle of MT8183 ASoC platform
++
++Example:
++
++	sound {
++		compatible = "mediatek,mt8183_da7219_max98357";
++		mediatek,headset-codec = <&da7219>;
++		mediatek,platform = <&afe>;
++	};
++
 -- 
 2.20.1
