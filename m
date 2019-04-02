@@ -1,54 +1,46 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 2/3] ASoC: wm_adsp: Remove redundant NULL check
-	in wm_adsp_buffer_free
-Date: Tue, 2 Apr 2019 13:49:15 +0100
-Message-ID: <20190402124916.28736-2-ckeepax@opensource.cirrus.com>
-References: <20190402124916.28736-1-ckeepax@opensource.cirrus.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: WARNING in port_delete
+Date: Tue, 2 Apr 2019 15:12:16 +0200
+Message-ID: <CACT4Y+ZBxcwq+s9HbrVRFFt04Ri+MyVR9CQ=pp-5D13LzVngdg@mail.gmail.com>
+References: <0000000000004f7eb00570be9f92@google.com> <0000000000002402ed05857361e0@google.com>
+ <20190401192413.GQ4102@linux.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7AE2F89631
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 14:49:20 +0200 (CEST)
-In-Reply-To: <20190402124916.28736-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190401192413.GQ4102@linux.ibm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc: syzbot <syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com>, alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, Colin King <colin.king@canonical.com>, LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Steven Rostedt <rostedt@goodmis.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-wm_adsp_compr_detach is NULL aware so there is no need to check for NULL
-before calling it, remove the redundant check.
+On Mon, Apr 1, 2019 at 9:25 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
+>
+> On Mon, Apr 01, 2019 at 12:58:01AM -0700, syzbot wrote:
+> > syzbot has bisected this bug to:
+> >
+> > commit 63d86a7e85f84b8ac3b2f394570965aedbb03787
+> > Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+> > Date:   Tue May 1 20:08:46 2018 +0000
+> >
+> >     rcu: Convert rcu_grace_period_init tracepoint to gp_seq
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f86d2f200000
+> > start commit:   091a1eaa Merge branch 'akpm'
+> > git tree:       upstream
+> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=14046d2f200000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=10046d2f200000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0af03fe452b65fb
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=e4c8abb920efa77bace9
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e2c91400000
+> >
+> > Reported-by: syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com
+> > Fixes: 63d86a7e85f8 ("rcu: Convert rcu_grace_period_init tracepoint
+> > to gp_seq")
+>
+> I could easily be suffering from a lack of imagination, but I am not
+> seeing how this change to RCU's event tracing could cause this result.
+> Especially given that CONFIG_RCU_TRACE=n in your .config.
+>
+> What am I missing here?
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 2da4ba2da42a8..4223186594b4d 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3887,8 +3887,7 @@ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
- 	struct wm_adsp_compr_buf *buf, *tmp;
- 
- 	list_for_each_entry_safe(buf, tmp, &dsp->buffer_list, list) {
--		if (buf->compr)
--			wm_adsp_compr_detach(buf->compr);
-+		wm_adsp_compr_detach(buf->compr);
- 
- 		kfree(buf->name);
- 		kfree(buf->regions);
--- 
-2.11.0
+I don't think you are missing something here.
