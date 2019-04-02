@@ -1,78 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 03/14] ASoC: SOF: Add driver debug
- support.
-Date: Tue, 2 Apr 2019 12:44:13 +0700
-Message-ID: <20190402054413.GA2059@sirena.org.uk>
-References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
- <20190321161016.26515-4-pierre-louis.bossart@linux.intel.com>
- <s5hsgv5k6ox.wl-tiwai@suse.de>
- <631c6cba-2f81-6f5f-3d5f-f9f5bbb171c7@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7273473939018186018=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <631c6cba-2f81-6f5f-3d5f-f9f5bbb171c7@linux.intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Alan Cox <alan@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
+Subject: Applied "ASoC: dpcm: skip missing substream while applying symmetry" to the asoc tree
+Date: Tue,  2 Apr 2019 06:46:38 +0100 (BST)
+Message-ID: <20190402054638.9F576442467@finisterre.ee.mobilebroadband>
+References: <20190401130354.24202-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190401130354.24202-1-jbrunet@baylibre.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7273473939018186018==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fKtH0JUtvN5p2ETH"
-Content-Disposition: inline
+   ASoC: dpcm: skip missing substream while applying symmetry
 
+has been applied to the asoc tree at
 
---fKtH0JUtvN5p2ETH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Apr 01, 2019 at 01:15:46PM -0400, Pierre-Louis Bossart wrote:
-> On 3/29/19 12:04 PM, Takashi Iwai wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Doesn't pos need to be aligned to 32bit as well (at least at actually
-> > reading from iomem)?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Good point,  we can either return an error if the count in both a multiple
-> of 32 bits, or do some caching to allow for arbitrary size access. The
-> former is very simple but not sure if this is accepted behavior for debugfs.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-You really want something that will work with arbatrary userspace tools
-if you can rather than requiring special magic read sizes - things like
-cat and cp should probably work.  A common thing is to do reads/writes
-of the correct sizes into a buffer and then pick the relevant bits out
-of the buffer to satisfy what userspace actually asked for.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---fKtH0JUtvN5p2ETH
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 6246f283d5e02ac757bd8d9bacde8fdc54c4582d Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 1 Apr 2019 15:03:54 +0200
+Subject: [PATCH] ASoC: dpcm: skip missing substream while applying symmetry
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyi9qwACgkQJNaLcl1U
-h9BuTgf+NlmA7q9YSZBIssQK1AP049eF3W6Qg0Sk8g57IywHoOBErH59scvb7QTO
-BX6NPAceHjNbG7ZzHWHwQZFNCgKyWJQfz00aE3inaPQI5/8dr9uyZccfmoVufLe5
-XlxqnPVs1RB0uavLCAQSXzUQrCZuALDrbdAqFLSegDI5xWeGDX9IbJ5pKRkGMWaZ
-wCDOyNkUwh5ABv8RY8HIGjBL6ZltvH09UpQAx+7a7MVI1b2YKs4SJDG0tRMEMlrg
-cEtEVdC0gfl+pkA2+GL/nQf5MshyMtZmS1jnHpFdxdbvpfgz22n1V+5jL3gaCKmV
-Scuy1SJuaJNcNS4rhmr3PI/bUlykUg==
-=EFoI
------END PGP SIGNATURE-----
+If for any reason, the backend does not have the requested substream
+(like capture on a playback only backend), the BE will be skipped in
+dpcm_be_dai_startup().
 
---fKtH0JUtvN5p2ETH--
+However, dpcm_apply_symmetry() does not skip those BE and will
+dereference the be_substream (NULL) pointer anyway.
 
---===============7273473939018186018==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Like in dpcm_be_dai_startup(), just skip those BE.
 
+Fixes: 906c7d690c3b ("ASoC: dpcm: Apply symmetry for DPCM")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-pcm.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---===============7273473939018186018==--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 7fe5321000e8..2d5d5cac4ba6 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1911,10 +1911,15 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		struct snd_pcm_substream *be_substream =
+ 			snd_soc_dpcm_get_substream(be, stream);
+-		struct snd_soc_pcm_runtime *rtd = be_substream->private_data;
++		struct snd_soc_pcm_runtime *rtd;
+ 		struct snd_soc_dai *codec_dai;
+ 		int i;
+ 
++		/* A backend may not have the requested substream */
++		if (!be_substream)
++			continue;
++
++		rtd = be_substream->private_data;
+ 		if (rtd->dai_link->be_hw_params_fixup)
+ 			continue;
+ 
+-- 
+2.20.1
