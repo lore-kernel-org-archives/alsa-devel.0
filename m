@@ -1,46 +1,43 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: WARNING in port_delete
-Date: Tue, 2 Apr 2019 15:12:16 +0200
-Message-ID: <CACT4Y+ZBxcwq+s9HbrVRFFt04Ri+MyVR9CQ=pp-5D13LzVngdg@mail.gmail.com>
-References: <0000000000004f7eb00570be9f92@google.com> <0000000000002402ed05857361e0@google.com>
- <20190401192413.GQ4102@linux.ibm.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v5 03/14] ASoC: SOF: Add driver debug
+ support.
+Date: Tue, 2 Apr 2019 08:47:52 -0500
+Message-ID: <9da94302-b630-a4f9-f155-426f63a3091e@linux.intel.com>
+References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
+ <20190321161016.26515-4-pierre-louis.bossart@linux.intel.com>
+ <s5hsgv5k6ox.wl-tiwai@suse.de>
+ <631c6cba-2f81-6f5f-3d5f-f9f5bbb171c7@linux.intel.com>
+ <20190402054413.GA2059@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190401192413.GQ4102@linux.ibm.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc: syzbot <syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com>, alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, Colin King <colin.king@canonical.com>, LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Steven Rostedt <rostedt@goodmis.org>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <20190402054413.GA2059@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 1, 2019 at 9:25 PM Paul E. McKenney <paulmck@linux.ibm.com> wrote:
->
-> On Mon, Apr 01, 2019 at 12:58:01AM -0700, syzbot wrote:
-> > syzbot has bisected this bug to:
-> >
-> > commit 63d86a7e85f84b8ac3b2f394570965aedbb03787
-> > Author: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> > Date:   Tue May 1 20:08:46 2018 +0000
-> >
-> >     rcu: Convert rcu_grace_period_init tracepoint to gp_seq
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f86d2f200000
-> > start commit:   091a1eaa Merge branch 'akpm'
-> > git tree:       upstream
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=14046d2f200000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=10046d2f200000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0af03fe452b65fb
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e4c8abb920efa77bace9
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e2c91400000
-> >
-> > Reported-by: syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com
-> > Fixes: 63d86a7e85f8 ("rcu: Convert rcu_grace_period_init tracepoint
-> > to gp_seq")
->
-> I could easily be suffering from a lack of imagination, but I am not
-> seeing how this change to RCU's event tracing could cause this result.
-> Especially given that CONFIG_RCU_TRACE=n in your .config.
->
-> What am I missing here?
 
-I don't think you are missing something here.
+>>> Doesn't pos need to be aligned to 32bit as well (at least at actually
+>>> reading from iomem)?
+>> Good point,  we can either return an error if the count in both a multiple
+>> of 32 bits, or do some caching to allow for arbitrary size access. The
+>> former is very simple but not sure if this is accepted behavior for debugfs.
+> You really want something that will work with arbatrary userspace tools
+> if you can rather than requiring special magic read sizes - things like
+> cat and cp should probably work.  A common thing is to do reads/writes
+> of the correct sizes into a buffer and then pick the relevant bits out
+> of the buffer to satisfy what userspace actually asked for.
+
+Thanks for the advice. The data is already in a buffer so it's not 
+difficult to implement support for sizes that aren't multiple of 4 bytes.
