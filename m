@@ -1,77 +1,162 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v6 5/6] dt-bindings: display: sii902x: Add HDMI audio bindings
-Date: Tue, 2 Apr 2019 10:29:14 +0300
-Message-ID: <4a0573f42112a1070c2d48ecc4a4e89838842cfc.1554146714.git.jsarha@ti.com>
-References: <cover.1554146714.git.jsarha@ti.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v15 0/6] Media Device Allocator API
+Date: Tue, 2 Apr 2019 09:38:15 +0200
+Message-ID: <fb0b46d3-a8a5-c5b5-7f3e-08ddfd27235b@xs4all.nl>
+References: <cover.1554155701.git.shuah@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <cover.1554146714.git.jsarha@ti.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: fabrizio.castro@bp.renesas.com, Songjun.Wu@atmel.com, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, voice.shen@atmel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1554155701.git.shuah@kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuah Khan <shuah@kernel.org>, mchehab@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHNpaTkwMnggY2hpcCBmYW1pbHkgc3VwcG9ydHMgYWxzbyBIRE1JIGF1ZGlvLiBBZGQgYmlu
-ZGluZyBmb3IKZGVzY3JpYmluZyB0aGUgbmVjZXNzYXJ5IGkycyBhbmQgbWNsayB3aXJpbmcgZm9y
-IGl0LgoKU2lnbmVkLW9mZi1ieTogSnlyaSBTYXJoYSA8anNhcmhhQHRpLmNvbT4KLS0tCiAuLi4v
-YmluZGluZ3MvZGlzcGxheS9icmlkZ2Uvc2lpOTAyeC50eHQgICAgICAgfCAzNyArKysrKysrKysr
-KysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMzcgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4
-LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9z
-aWk5MDJ4LnR4dAppbmRleCBjNGMxODU1Y2E2NTQuLmQxMjRhNWZlZGFiMSAxMDA2NDQKLS0tIGEv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL3NpaTkwMngu
-dHh0CisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRn
-ZS9zaWk5MDJ4LnR4dApAQCAtOSw2ICs5LDM3IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6CiAJICBh
-Ym91dCBob3RwbHVnIGV2ZW50cy4KIAktIHJlc2V0LWdwaW9zOiBPRiBkZXZpY2UtdHJlZSBncGlv
-IHNwZWNpZmljYXRpb24gZm9yIFJTVF9OIHBpbi4KIAorCUhETUkgYXVkaW8gcHJvcGVydGllczoK
-KwktICNzb3VuZC1kYWktY2VsbHM6IDwwPiBvciA8MT4uIDwwPiBpZiBvbmx5IGkycyBvciBzcGRp
-ZiBwaW4KKwkgICBpcyB3aXJlZCwgPDE+IGlmIHRoZSBib3RoIGFyZSB3aXJlZC4gSERNSSBhdWRp
-byBpcworCSAgIGNvbmZpZ3VyZWQgb25seSBpZiB0aGlzIHByb3BlcnR5IGlzIGZvdW5kLgorCS0g
-c2lsLGkycy1kYXRhLWxhbmVzOiBBcnJheSBvZiB1cCB0byA0IGludGVnZXJzIHdpdGggdmFsdWVz
-IG9mIDAtMworCSAgIEVhY2ggaW50ZWdlciBpbmRpY2F0ZXMgd2hpY2ggaTJzIHBpbiBpcyBjb25u
-ZWN0ZWQgdG8gd2hpY2gKKwkgICBhdWRpbyBmaWZvLiBUaGUgZmlyc3QgaW50ZWdlciBzZWxlY3Rz
-IGkycyBhdWRpbyBwaW4gZm9yIHRoZQorCSAgIGZpcnN0IGF1ZGlvIGZpZm8jMCAoSERNSSBjaGFu
-bmVscyAxJjIpLCBzZWNvbmQgZm9yIGZpZm8jMQorCSAgIChIRE1JIGNoYW5uZWxzIDMmNCksIGFu
-ZCBzbyBvbi4gVGhlcmUgaXMgNCBmaWZvcyBhbmQgNCBpMnMKKwkgICBwaW5zIChTRDAgLSBTRDMp
-LiBBbnkgaTJzIHBpbiBjYW4gYmUgY29ubmVjdGVkIHRvIGFueSBmaWZvLAorCSAgIGJ1dCB0aGVy
-ZSBjYW4gYmUgbm8gZ2Fwcy4gRS5nLiBhbiBpMnMgcGluIG11c3QgYmUgbWFwcGVkIHRvCisJICAg
-ZmlmbyMwIGFuZCBmaWZvIzEgYmVmb3JlIG1hcHBpbmcgYSBjaGFubmVsIHRvIGZpZm8jMi4gRGVm
-YXVsdAorCSAgIHZhbHVlIGlzIDwwPiwgZGVzY3JpYmluZyBTRDAgcGluIGJlaWdpbmcgcm91dGVk
-IHRvIGhkbWkgYXVkaW8KKwkgICBmaWZvICMwLgorCS0gY2xvY2tzOiBwaGFuZGxlIGFuZCBjbG9j
-ayBzcGVjaWZpZXIgZm9yIGVhY2ggY2xvY2sgbGlzdGVkIGluCisgICAgICAgICAgIHRoZSBjbG9j
-ay1uYW1lcyBwcm9wZXJ0eQorCS0gY2xvY2stbmFtZXM6ICJtY2xrIgorCSAgIERlc2NyaWJlcyBT
-SUk5MDJ4IE1DTEsgaW5wdXQuIE1DTEsgaXMgdXNlZCB0byBwcm9kdWNlCisJICAgSERNSSBhdWRp
-byBDVFMgdmFsdWVzLiBUaGlzIHByb3BlcnR5IGlzIHJlcXVpcmVkIGlmCisJICAgIiNzb3VuZC1k
-YWktY2VsbHMiLXByb3BlcnR5IGlzIHByZXNlbnQuIFRoaXMgcHJvcGVydHkgZm9sbG93cworCSAg
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay9jbG9jay1iaW5kaW5ncy50
-eHQKKwkgICBjb25zdW1lciBiaW5kaW5nLgorCisJSWYgSERNSSBhdWRpbyBpcyBjb25maWd1cmVk
-IHRoZSBzaWk5MDJ4IGRldmljZSBiZWNvbWVzIGFuIEFTb0MKKwljb2RlYyBjb21wb25lbnQsIHRo
-YXQgY2FuIGJlIHVzZWQgaW4gY29uZmlndXJpbmcgZnVsbCBhdWRpbworCWRldmljZXMgd2l0aCBB
-U29DIHNpbXBsZS1jYXJkIG9yIGF1ZGlvLWdyYXBoLWNhcmQuIFNlZSB0aGVpcgorCWJpbmRpbmcg
-ZG9jdW1lbnRzIG9uIGhvdyB0byBkZXNjcmliZSBob3cgdGhlIHNpaTkwMnggZGV2aWNlIGlzCisJ
-Y29ubmVjdGVkIHRvIHRoZSByZXN0IG9mIHRoZSBhdWRpbyBzeXN0ZW06CisJRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dAorCURvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hdWRpby1ncmFwaC1jYXJkLnR4dAorCiBPcHRp
-b25hbCBzdWJub2RlczoKIAktIHZpZGVvIGlucHV0OiB0aGlzIHN1Ym5vZGUgY2FuIGNvbnRhaW4g
-YSB2aWRlbyBpbnB1dCBwb3J0IG5vZGUKIAkgIHRvIGNvbm5lY3QgdGhlIGJyaWRnZSB0byBhIGRp
-c3BsYXkgY29udHJvbGxlciBvdXRwdXQgKFNlZSB0aGlzCkBAIC0yMSw2ICs1MiwxMiBAQCBFeGFt
-cGxlOgogCQljb21wYXRpYmxlID0gInNpbCxzaWk5MDIyIjsKIAkJcmVnID0gPDB4Mzk+OwogCQly
-ZXNldC1ncGlvcyA9IDwmcGlvQSAxIDA+OworCisJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CisJ
-CWkycy1kYXRhLWxhbmVzID0gPCAwIDEgMiA+OworCQljbG9ja3MgPSA8Jm1jbGs+OworCQljbG9j
-ay1uYW1lcyA9ICJtY2xrIjsKKwogCQlwb3J0cyB7CiAJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsK
-IAkJCSNzaXplLWNlbGxzID0gPDA+OwotLSAKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwg
-UG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuIFktdHVubnVzL0J1c2luZXNzIElEOiAw
-NjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWw=
+On 4/2/19 2:40 AM, Shuah Khan wrote:
+> Media Device Allocator API to allows multiple drivers share a media device.
+> This API solves a very common use-case for media devices where one physical
+> device (an USB stick) provides both audio and video. When such media device
+> exposes a standard USB Audio class, a proprietary Video class, two or more
+> independent drivers will share a single physical USB bridge. In such cases,
+> it is necessary to coordinate access to the shared resource.
+> 
+> Using this API, drivers can allocate a media device with the shared struct
+> device as the key. Once the media device is allocated by a driver, other
+> drivers can get a reference to it. The media device is released when all
+> the references are released.
+> 
+> The primary focus for testing The patch series is making sure media
+> device is released when both drivers release the media device with
+> a series of unbind/binds on both drivers.
+> 
+> - both au0828 and snd-usb-aduio as built-in
+> - both au0828 and snd-usb-aduio as modules
+> - au0828 as module and snd-usb-aduio as built-in
+> - au0828 as built-in and snd-usb-aduio as module
+> 
+> Test results can be found at:
+> 
+> https://docs.google.com/document/d/1RMF8Rwj7xHJEoOx6_K2f-REgZJ63BMeAVEf-CV-0HsM/edit?usp=sharing
+
+Phew, after posting v2 of my patch "au0828: stop video streaming only when last
+user stops" everything now works as it should, including the issue with two VBI
+streams you found.
+
+Should I take the selftest patch or will you take that yourself?
+
+Let me know so I can make the pull request for this. It's been a long journey
+since the first post on April 9th, 2014: "[RFC PATCH 0/2] managed token devres
+interfaces".
+
+Almost exactly five years of work!
+
+Regards,
+
+	Hans
+
+> 
+> Changes since v14:
+> - Fixed typos and Copyright date.
+> - Made VBI shareable with audio and video.
+> - Tested with Hans's patch to to fix second VBi stream stepping
+>   on active VBI stream. The patch didn't fix the problem.
+> 
+>   1. Start qv4l2 -V /dev/vbi0
+>     Start capture - Streaming active
+> 
+>   2. Start qv4l2 -V /dev/vbi0
+>    Start capture - Streaming active
+>    Streaming won't start and the first stream stops.
+> 
+> There is still a problem in au0828. I am sending the patch series with
+> audio, video, and VBI shareable with this known issue.
+> 
+> Changes since v13:
+> - Minor changes to variable names and other minor changes to copyright
+>   and typos suggested by Hans Verkuil.
+> 
+> Changes since v12:
+> - Patch 1: Fixed prototype warns from media_dev_allocator.c. Removed
+>   dependency on find_module() by adding struct module to input args.
+>   Still need module name to pass into media_device API.
+> - Patch 2 & 4: Update media dev allocator api calls to pass in struct module
+>   pointer.
+> - No changes to Patches 3 & 5.
+> - Added patch 6 with a test. It can go in separately.
+> 
+> Changes since v11:
+> - Patch 1: Add CONFIG_MODULES dependency in media_dev_allocator files.
+>   to fix compile errors when CONFIG_MODULES is disabled.
+> - Patch 2, 3: No changes.
+> - Patch 4: Fix sparse error reported by Dan Carpenter.
+> - Patch 5: Fix warns found by Hans Verkuil.
+> - v11 was tested on 5.0-rc7 and addresses comments on v10 series from
+>   Hans Verkuil. Fixed problems found in resource sharing logic in au0828
+>   adding a patch 5 to this series. The test plan used for testing resource
+>   sharing could serve as a regression test plan and the test results can be
+>   found at:
+> - v10 was tested on 5.0-rc3 and addresses comments on v9 series from
+>   Hans Verkuil.
+> 
+> Changes since v10:
+> - Patch 1: Fixed SPDX tag and removed redundant IS_ENABLED(CONFIG_USB)
+>            around media_device_usb_allocate() - Sakari Ailus's review
+>            comment.
+> - Patch 2 and 3: No changes
+> - Patch 4: Fixed SPDX tag - Sakari Ailus's review comment.
+> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+> - Patch 5: This is a new patch added to fix resource sharing
+>            inconsistencies and problem found during testing using Han's
+>            tests.
+> 
+> Changes since v9:
+> - Patch 1: Fix mutex assert warning from find_module() calls. This
+>   code was written before the change to find_module() that requires
+>   callers to hold module_mutex. I missed this during my testing on
+>   4.20-rc6. Hans Verkuil reported the problem.
+> - Patch 4: sound/usb: Initializes all the entities it can before
+>   registering the device based on comments from Hans Verkuil
+> - Carried Reviewed-by tag from Takashi Iwai for the sound from v9.
+> - No changes to Patches 2 and 3.
+> 
+> References:
+> https://lkml.org/lkml/2018/11/2/169
+> https://www.mail-archive.com/linux-media@vger.kernel.org/msg105854.html
+> 
+> Shuah Khan (6):
+>   media: Media Device Allocator API
+>   media: change au0828 to use Media Device Allocator API
+>   media: media.h: Enable ALSA MEDIA_INTF_T* interface types
+>   sound/usb: Use Media Controller API to share media resources
+>   au0828: fix enable and disable source audio and video inconsistencies
+>   selftests: media_dev_allocator api test
+> 
+>  Documentation/media/kapi/mc-core.rst          |  41 +++
+>  drivers/media/Makefile                        |   6 +
+>  drivers/media/media-dev-allocator.c           | 135 ++++++++
+>  drivers/media/usb/au0828/Kconfig              |   2 +
+>  drivers/media/usb/au0828/au0828-core.c        | 196 ++++++++---
+>  drivers/media/usb/au0828/au0828.h             |   6 +-
+>  include/media/media-dev-allocator.h           |  63 ++++
+>  include/uapi/linux/media.h                    |  25 +-
+>  sound/usb/Kconfig                             |   4 +
+>  sound/usb/Makefile                            |   2 +
+>  sound/usb/card.c                              |  14 +
+>  sound/usb/card.h                              |   3 +
+>  sound/usb/media.c                             | 327 ++++++++++++++++++
+>  sound/usb/media.h                             |  74 ++++
+>  sound/usb/mixer.h                             |   3 +
+>  sound/usb/pcm.c                               |  29 +-
+>  sound/usb/quirks-table.h                      |   1 +
+>  sound/usb/stream.c                            |   2 +
+>  sound/usb/usbaudio.h                          |   6 +
+>  .../media_tests/media_dev_allocator.sh        |  85 +++++
+>  20 files changed, 963 insertions(+), 61 deletions(-)
+>  create mode 100644 drivers/media/media-dev-allocator.c
+>  create mode 100644 include/media/media-dev-allocator.h
+>  create mode 100644 sound/usb/media.c
+>  create mode 100644 sound/usb/media.h
+>  create mode 100755 tools/testing/selftests/media_tests/media_dev_allocator.sh
+> 
