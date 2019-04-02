@@ -1,7 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 3/3] ASoC: wm_adsp: Make use of local variables
-Date: Tue, 2 Apr 2019 13:49:16 +0100
-Message-ID: <20190402124916.28736-3-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 2/3] ASoC: wm_adsp: Remove redundant NULL check
+	in wm_adsp_buffer_free
+Date: Tue, 2 Apr 2019 13:49:15 +0100
+Message-ID: <20190402124916.28736-2-ckeepax@opensource.cirrus.com>
 References: <20190402124916.28736-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,7 +12,7 @@ Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE608F89633
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7AE2F89631
  for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 14:49:20 +0200 (CEST)
 In-Reply-To: <20190402124916.28736-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,44 +28,27 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tidy up some instances of dereferencing to obtain things that are
-already stored in local variables.
+wm_adsp_compr_detach is NULL aware so there is no need to check for NULL
+before calling it, remove the redundant check.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4223186594b4d..c8c49d5b8ac95 100644
+index 2da4ba2da42a8..4223186594b4d 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -3381,7 +3381,7 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- 		return -EINVAL;
+@@ -3887,8 +3887,7 @@ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+ 	struct wm_adsp_compr_buf *buf, *tmp;
  
- 	compr->buf = buf;
--	compr->buf->compr = compr;
-+	buf->compr = compr;
+ 	list_for_each_entry_safe(buf, tmp, &dsp->buffer_list, list) {
+-		if (buf->compr)
+-			wm_adsp_compr_detach(buf->compr);
++		wm_adsp_compr_detach(buf->compr);
  
- 	return 0;
- }
-@@ -4092,7 +4092,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 	buf = compr->buf;
- 
--	if (!compr->buf || compr->buf->error) {
-+	if (!buf || buf->error) {
- 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
- 		ret = -EIO;
- 		goto out;
-@@ -4112,7 +4112,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 			ret = wm_adsp_buffer_get_error(buf);
- 			if (ret < 0) {
--				if (compr->buf->error)
-+				if (buf->error)
- 					snd_compr_stop_error(stream,
- 							SNDRV_PCM_STATE_XRUN);
- 				goto out;
+ 		kfree(buf->name);
+ 		kfree(buf->regions);
 -- 
 2.11.0
