@@ -1,147 +1,47 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH V2] ASoC: hdac_hdmi: add device PM
- dependency
-Date: Tue, 2 Apr 2019 02:45:31 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19528115C1@SHSMSX103.ccr.corp.intel.com>
-References: <1554094251-25910-1-git-send-email-libin.yang@intel.com>
- <8b5f72b4-9674-ecfe-5007-7098b5432a40@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-core: Fix probe deferral following prelink
+ failure
+Date: Tue, 2 Apr 2019 11:35:09 +0700
+Message-ID: <20190402043509.GQ2059@sirena.org.uk>
+References: <1551706274-22571-1-git-send-email-jonathanh@nvidia.com>
+ <4eb94b41-7e16-7b39-5c14-a7d180ce67df@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CC7EF89610
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 04:45:36 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rUztinBX/EQDJOOk"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4eb94b41-7e16-7b39-5c14-a7d180ce67df@nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Curtis Malainey <cujomalainey@google.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
 
-Thanks for pointing out my patch's defect. I think we should call 
-xxx_del() instread of xxx_free().
+--rUztinBX/EQDJOOk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi all,
+On Mon, Apr 01, 2019 at 01:22:09PM +0100, Jon Hunter wrote:
 
-I found it's a little confusing when releasing the link. I will send out
-a RFC patch based on Pierre's suggestion. Please kindly help review the
-logic of releasing the link.
+> FYI, I am seeing that the deferral of soundcards failing with v5.1-rc3
+> because the above has not been merged yet. Just wanted to let you know
+> in case this one was not marked for v5.1.
 
-Regards,
-Libin
+I don't have this patch at all AFAICT.
 
+--rUztinBX/EQDJOOk
+Content-Type: application/pgp-signature; name="signature.asc"
 
->-----Original Message-----
->From: Yang, Libin
->Sent: Monday, April 1, 2019 9:44 PM
->To: 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>; alsa-
->devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org
->Subject: RE: [alsa-devel] [PATCH V2] ASoC: hdac_hdmi: add device PM
->dependency
->
->Hi Pierre,
->
->>-----Original Message-----
->>From: Pierre-Louis Bossart
->>[mailto:pierre-louis.bossart@linux.intel.com]
->>Sent: Monday, April 1, 2019 8:34 PM
->>To: Yang, Libin <libin.yang@intel.com>; alsa-devel@alsa-project.org;
->>tiwai@suse.de; broonie@kernel.org
->>Subject: Re: [alsa-devel] [PATCH V2] ASoC: hdac_hdmi: add device PM
->>dependency
->>
->>On 4/1/19 12:50 AM, libin.yang@intel.com wrote:
->>> From: Libin Yang <libin.yang@intel.com>
->>>
->>> HDMI audio codec register operation depends on the display audio
->>> power domain. The hdmi audio codec dapm event callback must be called
->>> after display audio power is turned on.
->>>
->>> Add hdac_hdmi_device_link_add() in HDMI audio codec driver. The
->>> customer audio driver, such as cAVS/SST and SOF audio driver, can
->>> call the function to set the audio power dependency.
->>>
->>> Signed-off-by: Libin Yang <libin.yang@intel.com>
->>> ---
->>>   sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
->>>   sound/soc/codecs/hdac_hdmi.h |  6 ++++++
->>>   2 files changed, 18 insertions(+)
->>>
->>> diff --git a/sound/soc/codecs/hdac_hdmi.c
->>> b/sound/soc/codecs/hdac_hdmi.c index 5eeb0fe..c991407 100644
->>> --- a/sound/soc/codecs/hdac_hdmi.c
->>> +++ b/sound/soc/codecs/hdac_hdmi.c
->>> @@ -1792,6 +1792,18 @@ int hdac_hdmi_jack_init(struct snd_soc_dai
->>> *dai,
->>int device,
->>>   }
->>>   EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
->>>
->>> +struct device_link *
->>> +hdac_hdmi_device_link_add(struct device *consumer,
->>> +			  struct snd_soc_component *component,
->>> +			  u32 flags)
->>> +{
->>> +	struct hdac_hdmi_priv *hdmi =
->>snd_soc_component_get_drvdata(component);
->>> +	struct hdac_device *hdev = hdmi->hdev;
->>> +
->>> +	return device_link_add(consumer, &hdev->dev, flags);
->>
->>Don't you need a matching device_link_free() to avoid a memory leak?
->
->Right. Sorry for my poor patch and thanks for pointing it out.
->I will refine it and test tomorrow.
->
->>
->>Also what would be the expectations for the flags and do you really
->>want the consumer to set them?
->
->A consumer setting the flag will be more flexible. For the flag, I'm currently
->thinking to use DL_FLAG_RPM_ACTIVE. Not sure if it is a good flag.
->
->>
->>And last, without a patch of the cAVS driver it's hard to see how this
->>might be used.
->
->I tried on SOF, it worked. I will check if I have a cAVS environment and will
->have a test on cAVS.
->
->Regards,
->Libin
->
->>
->>> +}
->>> +EXPORT_SYMBOL_GPL(hdac_hdmi_device_link_add);
->>> +
->>>   static void hdac_hdmi_present_sense_all_pins(struct hdac_device *hdev,
->>>   			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
->>>   {
->>> diff --git a/sound/soc/codecs/hdac_hdmi.h
->>> b/sound/soc/codecs/hdac_hdmi.h index 4fa2fc9..9239c6b 100644
->>> --- a/sound/soc/codecs/hdac_hdmi.h
->>> +++ b/sound/soc/codecs/hdac_hdmi.h
->>> @@ -7,4 +7,10 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int
->>> pcm,
->>>
->>>   int hdac_hdmi_jack_port_init(struct snd_soc_component *component,
->>>   			struct snd_soc_dapm_context *dapm);
->>> +
->>> +struct device_link *
->>> +hdac_hdmi_device_link_add(struct device *consumer,
->>> +			  struct snd_soc_component *component,
->>> +			  u32 flags);
->>> +
->>>   #endif /* __HDAC_HDMI_H__ */
->>>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyi5noACgkQJNaLcl1U
+h9CexAf/eATHuzU+lN7Fozhx+OPt6qbOXgrnTNzEDfg/ztwUxwpP+qjxGaHamdc8
+/p9OWg+WxH5Fv0SxBqyR6dNQOwcGf1nf9Ps4MhxWIJxbQvZqRziuQ6yyowC/X8yj
+7eAPfUB/yOQ1BpYCQe7eVB+BuJsjq2do6I8DgRuWN3gXm9QUqS2fHipkH13sVNPN
+TnRXQRKGN++BwG6GKUOAG+Z11dmyEHK7WXiLyMVoL4CQ9x5kENZsbVDmMsrSgtOp
+HgMkDFbzopCSWPhoUpvLbBONbKzJGgw2XtThg7xWEkz3rUz0Jtwrb8afGbvusf2g
+uBIYtkXI1nVf/gX/dpoixJjq3Ub56w==
+=xAaC
+-----END PGP SIGNATURE-----
+
+--rUztinBX/EQDJOOk--
