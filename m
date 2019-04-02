@@ -1,8 +1,8 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH resend 2/3] ASoC: Intel: bytcr_rt5651: Add
-	BYT_RT5651_JD_NOT_INV quirk
-Date: Tue,  2 Apr 2019 12:20:48 +0200
-Message-ID: <20190402102049.27975-3-hdegoede@redhat.com>
+Subject: [PATCH resend 3/3] ASoC: Intel: cht_bsw_max98090_ti:
+	Enable codec clock once and keep it enabled
+Date: Tue,  2 Apr 2019 12:20:49 +0200
+Message-ID: <20190402102049.27975-4-hdegoede@redhat.com>
 References: <20190402102049.27975-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0545EF89631
- for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 12:20:56 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 381EAF8071D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2019 12:20:58 +0200 (CEST)
 In-Reply-To: <20190402102049.27975-1-hdegoede@redhat.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,79 +24,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Dean Wallace <duffydack73@gmail.com>, Mogens Jensen <mogens-jensen@protonmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add BYT_RT5651_JD_NOT_INV quirk for devices with an inverted
-(active-high instead of the normal active-low) jack-detect switch.
+Users have been seeing sound stability issues with max98090 codecs since:
+commit 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
 
-And add a quirk for the Complet Electro Serv MY8307 tablet which has
-an inverted jack-detect switch (and a mono-speaker).
+At first that commit broke sound for Chromebook Swanky and Clapper models,
+the problem was that the machine-driver has been controlling the wrong
+clock on those models since support for them was added. This was hidden by
+clk-pmc-atom.c keeping the actual clk on unconditionally.
 
+With the machine-driver controlling the proper clock, sound works again
+but we are seeing bug reports describing it as: low volume,
+"sounds like played at 10x speed" and instable.
+
+When these issues are hit the following message is seen in dmesg:
+"max98090 i2c-193C9890:00: PLL unlocked".
+
+Attempts have been made to fix this by inserting a delay between enabling
+the clk and enabling and checking the pll, but this has not helped.
+
+It seems that at least on boards which use pmc_plt_clk_0 as clock,
+if we ever disable the clk, the pll looses its lock and after that we get
+various issues.
+
+This commit fixes this by enabling the clock once at probe time on
+these boards. In essence this restores the old behavior of clk-pmc-atom.c
+always keeping the clk on on these boards.
+
+Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+Reported-by: Mogens Jensen <mogens-jensen@protonmail.com>
+Reported-by: Dean Wallace <duffydack73@gmail.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+Changes in v2:
+-Only enable the codec clock once and keep it enabled on boards which use
+ pmc_plt_clk_0 as clock and leave the behavior unchanged on other boards
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 47 +++++++++++++++++---
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index b0a4d297176e..4ed59f41ee83 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -79,14 +79,15 @@ enum {
- #define BYT_RT5651_SSP0_AIF2		BIT(21)
- #define BYT_RT5651_HP_LR_SWAPPED	BIT(22)
- #define BYT_RT5651_MONO_SPEAKER		BIT(23)
-+#define BYT_RT5651_JD_NOT_INV		BIT(24)
- 
- #define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
- 					 BYT_RT5651_JD1_1   | \
- 					 BYT_RT5651_OVCD_TH_2000UA | \
- 					 BYT_RT5651_OVCD_SF_0P75)
- 
--/* jack-detect-source + dmic-en + ovcd-th + -sf + terminating empty entry */
--#define MAX_NO_PROPS 5
-+/* jack-detect-source + inv + dmic-en + ovcd-th + -sf + terminating entry */
-+#define MAX_NO_PROPS 6
- 
- struct byt_rt5651_private {
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 3263b0495853..c0e0844f75b9 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -43,6 +43,7 @@ struct cht_mc_private {
  	struct clk *mclk;
-@@ -137,6 +138,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
- 	if (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER)
- 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
-+	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
-+		dev_info(dev, "quirk JD_NOT_INV enabled\n");
- }
+ 	struct snd_soc_jack jack;
+ 	bool ts3a227e_present;
++	int quirks;
+ };
  
- #define BYT_CODEC_DAI1	"rt5651-aif1"
-@@ -414,6 +417,18 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 					BYT_RT5651_HP_LR_SWAPPED |
- 					BYT_RT5651_MONO_SPEAKER),
- 	},
-+	{
-+		/* Complet Electro Serv MY8307 */
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Complet Electro Serv"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "MY8307"),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
-+					BYT_RT5651_IN2_MAP |
-+					BYT_RT5651_MONO_SPEAKER |
-+					BYT_RT5651_JD_NOT_INV),
-+	},
- 	{
- 		/* I.T.Works TW701, Ployer Momo7w and Trekstor ST70416-6
- 		 * (these all use the same mainboard) */
-@@ -525,6 +540,9 @@ static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
- 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
+ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+@@ -54,6 +55,10 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	int ret;
  
-+	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
-+		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
++	/* See the comment in snd_cht_mc_probe() */
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		return 0;
 +
- 	return device_add_properties(i2c_dev, props);
+ 	codec_dai = snd_soc_card_get_codec_dai(card, CHT_CODEC_DAI);
+ 	if (!codec_dai) {
+ 		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
+@@ -223,6 +228,10 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 			"jack detection gpios not added, error %d\n", ret);
+ 	}
+ 
++	/* See the comment in snd_cht_mc_probe() */
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		return 0;
++
+ 	/*
+ 	 * The firmware might enable the clock at
+ 	 * boot (this information may or may not
+@@ -423,16 +432,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	const char *mclk_name;
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *platform_name;
+-	int quirks = 0;
+-
+-	dmi_id = dmi_first_match(cht_max98090_quirk_table);
+-	if (dmi_id)
+-		quirks = (unsigned long)dmi_id->driver_data;
+ 
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
+ 	if (!drv)
+ 		return -ENOMEM;
+ 
++	dmi_id = dmi_first_match(cht_max98090_quirk_table);
++	if (dmi_id)
++		drv->quirks = (unsigned long)dmi_id->driver_data;
++
+ 	drv->ts3a227e_present = acpi_dev_found("104C227E");
+ 	if (!drv->ts3a227e_present) {
+ 		/* no need probe TI jack detection chip */
+@@ -458,7 +466,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	snd_soc_card_cht.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
+ 
+-	if (quirks & QUIRK_PMC_PLT_CLK_0)
++	if (drv->quirks & QUIRK_PMC_PLT_CLK_0)
+ 		mclk_name = "pmc_plt_clk_0";
+ 	else
+ 		mclk_name = "pmc_plt_clk_3";
+@@ -471,6 +479,21 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(drv->mclk);
+ 	}
+ 
++	/*
++	 * Boards which have the MAX98090's clk connected to clk_0 do not seem
++	 * to like it if we muck with the clock. If we disable the clock when
++	 * it is unused we get "max98090 i2c-193C9890:00: PLL unlocked" errors
++	 * and the PLL never seems to lock again.
++	 * So for these boards we enable it here once and leave it at that.
++	 */
++	if (drv->quirks & QUIRK_PMC_PLT_CLK_0) {
++		ret_val = clk_prepare_enable(drv->mclk);
++		if (ret_val < 0) {
++			dev_err(&pdev->dev, "MCLK enable error: %d\n", ret_val);
++			return ret_val;
++		}
++	}
++
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
+ 	if (ret_val) {
+ 		dev_err(&pdev->dev,
+@@ -481,11 +504,23 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
  }
  
++static int snd_cht_mc_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
++
++	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
++		clk_disable_unprepare(ctx->mclk);
++
++	return 0;
++}
++
+ static struct platform_driver snd_cht_mc_driver = {
+ 	.driver = {
+ 		.name = "cht-bsw-max98090",
+ 	},
+ 	.probe = snd_cht_mc_probe,
++	.remove = snd_cht_mc_remove,
+ };
+ 
+ module_platform_driver(snd_cht_mc_driver)
 -- 
 2.21.0
