@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Make use of local variables"
-	to the asoc tree
-Date: Wed,  3 Apr 2019 05:41:27 +0100 (BST)
-Message-ID: <20190403044127.70AE4440083@finisterre.ee.mobilebroadband>
-References: <20190402124916.28736-3-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Remove redundant NULL check in
+	wm_adsp_buffer_free" to the asoc tree
+Date: Wed,  3 Apr 2019 05:41:30 +0100 (BST)
+Message-ID: <20190403044130.7F9AC440082@finisterre.ee.mobilebroadband>
+References: <20190402124916.28736-2-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8301DF8970A
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 06:41:32 +0200 (CEST)
-In-Reply-To: <20190402124916.28736-3-ckeepax@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 963C1F8971E
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 06:41:34 +0200 (CEST)
+In-Reply-To: <20190402124916.28736-2-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Make use of local variables
+   ASoC: wm_adsp: Remove redundant NULL check in wm_adsp_buffer_free
 
 has been applied to the asoc tree at
 
@@ -55,50 +55,34 @@ to this mail.
 Thanks,
 Mark
 
->From 789b930a8f0de609fd2ef9f2ebf73726b7087fea Mon Sep 17 00:00:00 2001
+>From 26ffa016a3c1b34fbfcc8368edb315f2829504ae Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 2 Apr 2019 13:49:16 +0100
-Subject: [PATCH] ASoC: wm_adsp: Make use of local variables
+Date: Tue, 2 Apr 2019 13:49:15 +0100
+Subject: [PATCH] ASoC: wm_adsp: Remove redundant NULL check in
+ wm_adsp_buffer_free
 
-Tidy up some instances of dereferencing to obtain things that are
-already stored in local variables.
+wm_adsp_compr_detach is NULL aware so there is no need to check for NULL
+before calling it, remove the redundant check.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 6145260d89bf..4662a20cfb92 100644
+index 0aa62b26f61c..6145260d89bf 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -3381,7 +3381,7 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
- 		return -EINVAL;
+@@ -3887,8 +3887,7 @@ static int wm_adsp_buffer_free(struct wm_adsp *dsp)
+ 	struct wm_adsp_compr_buf *buf, *tmp;
  
- 	compr->buf = buf;
--	compr->buf->compr = compr;
-+	buf->compr = compr;
+ 	list_for_each_entry_safe(buf, tmp, &dsp->buffer_list, list) {
+-		if (buf->compr)
+-			wm_adsp_compr_detach(buf->compr);
++		wm_adsp_compr_detach(buf->compr);
  
- 	return 0;
- }
-@@ -4091,7 +4091,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 
- 	buf = compr->buf;
- 
--	if (!compr->buf || compr->buf->error) {
-+	if (!buf || buf->error) {
- 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
- 		ret = -EIO;
- 		goto out;
-@@ -4111,7 +4111,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
- 			ret = wm_adsp_buffer_get_error(buf);
- 			if (ret < 0) {
--				if (compr->buf->error)
-+				if (buf->error)
- 					snd_compr_stop_error(stream,
- 							SNDRV_PCM_STATE_XRUN);
- 				goto out;
+ 		kfree(buf->name);
+ 		kfree(buf->regions);
 -- 
 2.20.1
