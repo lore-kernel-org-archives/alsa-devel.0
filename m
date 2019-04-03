@@ -1,52 +1,58 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5677: make ACPI property names match _DSD
-Date: Wed, 3 Apr 2019 10:33:53 +0700
-Message-ID: <20190403033353.GH2059@sirena.org.uk>
-References: <20190401205519.34023-1-fletcherw@chromium.org>
- <20190401205519.34023-2-fletcherw@chromium.org>
- <20190402050637.GW2059@sirena.org.uk>
- <CAN-6NYYPL=W66vnnqbXK+LBFbuSnpqL8iv+h_x4G67PWFsMoKA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: soc-core: Fix probe deferral following prelink
+ failure
+Date: Wed, 3 Apr 2019 10:47:32 +0700
+Message-ID: <20190403034732.GA5748@sirena.org.uk>
+References: <1551706274-22571-1-git-send-email-jonathanh@nvidia.com>
+ <4eb94b41-7e16-7b39-5c14-a7d180ce67df@nvidia.com>
+ <20190402043509.GQ2059@sirena.org.uk>
+ <2d8a0569-b821-c0c0-af39-d3863d17f47f@nvidia.com>
+ <20190402091955.GE2059@sirena.org.uk>
+ <10d454a4-e1e1-3a4b-8400-acd680d75a3d@nvidia.com>
+ <20190402093159.GF2059@sirena.org.uk>
+ <3053ef10-ba36-ee88-4ca0-d1e39c0ea25c@nvidia.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HZmXSWY/1Xf1kK7R"
+        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAN-6NYYPL=W66vnnqbXK+LBFbuSnpqL8iv+h_x4G67PWFsMoKA@mail.gmail.com>
+In-Reply-To: <3053ef10-ba36-ee88-4ca0-d1e39c0ea25c@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fletcher Woodruff <fletcherw@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, alsa-devel@alsa-project.org, Ross Zwisler <zwisler@google.com>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Curtis Malainey <cujomalainey@google.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---HZmXSWY/1Xf1kK7R
+--GvXjxJ+pjyke8COw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 02, 2019 at 09:52:56AM -0600, Fletcher Woodruff wrote:
-> On Mon, Apr 1, 2019 at 11:06 PM Mark Brown <broonie@kernel.org> wrote:
+On Tue, Apr 02, 2019 at 10:44:34AM +0100, Jon Hunter wrote:
 
-> > It'd be fine to add your new DT style properties but this
-> > might break existing systems.
+> Right I see it in -next. Sorry but what I am asking is if you are
+> planning to send as a fix for v5.1? Maybe you have not sent out the
+> fixes yet for v5.1 and so wanted to check.
 
-> That said, I agree it would be safer to use the idiomatic ACPI names, and then
-> fall back to the DT style names if the idiomatic names fail. Does that sound
-> reasonable?
+It is in my for-5.1 branch so I am intending to send it for v5.1.  Like
+many maintainers I have separate branches in my tree and in -next for
+things that are intended for the next merge window and things that are
+intended to be sent sooner, in my case I have both for-linus and
+for-next branches, plus both topic and numberd for-x.y branches which
+feed into those.
 
-Yes.
-
---HZmXSWY/1Xf1kK7R
+--GvXjxJ+pjyke8COw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlykKaEACgkQJNaLcl1U
-h9CBCQf+NRB3vvcQqq83OqlGvqNPTlklbaDb7Dxl/u7aRVTEtnk/CUYK919RICan
-9lbW88q6uibWZ53742jjEvR78GOWm50ZLu1ht5lqrvCYa3E3ZPggpMaf5f+rk+DV
-RcYUAHwDfinabYcuR8hfJ/ITngB9Xop9zl1VVXSovHlLIRnXoPGpUagKCtFamkSV
-NpvXVkJ3NTyLLPOYH/aCVOC+/ZxuOPrKBD/NQe3wv3n2mZSFo6/o3sWp27tNsU9E
-5MKTtD6JNs6tRVt5IvFPOR3XSztzRaDElhJSqRJgpXurrfzpsyIV4Uh6/FWLZIJe
-q7AMrRMdi0i0xdQZb/hEwZ2XvrhhKQ==
-=m8Q1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlykLNMACgkQJNaLcl1U
+h9BmVAf/ZcwA45Zda/LkY1pBNBCgd87JEXIVkqXKtQGiEnPfpPgVjzZGI2dUGdHy
+k2vP6x3i2/4tVQnihVezBNfuGh1wWSPiQD2WDBZURzn0TVpn0ACqD5m0c293f123
+nUTXSjC6W2En40vRwC9TJZw5TlDFm6Dz1p+Wrrcj9BU6g/8T0vCo9rjTFT2EBq0D
+i1VG7PojtINPWgLE/r2B/rewpPDtaxCMHRoA9/dKbpIcadXhX8aIbHlr95d6KqpN
+m2XStNxFVjNjQyF4V+K7oeS/dBeVjVccoP3cj5E8brUicgXfV6IEVgIVciQ/R6lT
+0qwd/+GKsvLlgwuy9Im4iSriS8pTvQ==
+=zXM5
 -----END PGP SIGNATURE-----
 
---HZmXSWY/1Xf1kK7R--
+--GvXjxJ+pjyke8COw--
