@@ -1,7 +1,7 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 1/7] ASoC: dt-bindings: update cs42l51 bindings
-Date: Wed, 3 Apr 2019 15:23:31 +0200
-Message-ID: <1554297817-14154-2-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 3/7] ASoC: cs42l51: add reset management
+Date: Wed, 3 Apr 2019 15:23:33 +0200
+Message-ID: <1554297817-14154-4-git-send-email-olivier.moysan@st.com>
 References: <1554297817-14154-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,45 +20,59 @@ Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.com
 List-Id: alsa-devel@alsa-project.org
 
-Add compatible, reg, regulator, and reset
-to Cirrus CS42L51 audio codec bindings.
+Manage cs42l51 audio codec reset pin.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- Documentation/devicetree/bindings/sound/cs42l51.txt | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/codecs/cs42l51.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42l51.txt b/Documentation/devicetree/bindings/sound/cs42l51.txt
-index 4b5de33ce377..acbd68ddd2cb 100644
---- a/Documentation/devicetree/bindings/sound/cs42l51.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42l51.txt
-@@ -1,6 +1,17 @@
- CS42L51 audio CODEC
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index f43eb51d2d8d..9b3ffa16b204 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -30,6 +30,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm_params.h>
+ #include <sound/pcm.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
  
-+Required properties:
-+
-+  - compatible : "cirrus,cs42l51"
-+
-+  - reg : the I2C address of the device for I2C.
-+
- Optional properties:
-+  - VL-supply, VD-supply, VA-supply, VAHP-supply: power supplies for the device,
-+    as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - reset-gpios : GPIO specification for the reset pin. If specified, it will be
-+    deasserted before starting the communication with the codec.
- 
-   - clocks : a list of phandles + clock-specifiers, one for each entry in
-     clock-names
-@@ -14,4 +25,9 @@ cs42l51: cs42l51@4a {
- 	reg = <0x4a>;
- 	clocks = <&mclk_prov>;
- 	clock-names = "MCLK";
-+	VL-supply = <&reg_audio>;
-+	VD-supply = <&reg_audio>;
-+	VA-supply = <&reg_audio>;
-+	VAHP-supply = <&reg_audio>;
-+	reset-gpios = <&gpiog 9 GPIO_ACTIVE_LOW>;
+@@ -54,6 +55,7 @@ struct cs42l51_private {
+ 	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
+ 	enum master_slave_mode func;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(cs42l51_supply_names)];
++	struct gpio_desc *reset_gpio;
  };
+ 
+ #define CS42L51_FORMATS ( \
+@@ -595,6 +597,17 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
+ 		return ret;
+ 	}
+ 
++	cs42l51->reset_gpio = devm_gpiod_get_optional(dev, "reset",
++						      GPIOD_OUT_LOW);
++	if (IS_ERR(cs42l51->reset_gpio))
++		return PTR_ERR(cs42l51->reset_gpio);
++
++	if (cs42l51->reset_gpio) {
++		dev_dbg(dev, "Release reset gpio\n");
++		gpiod_set_value_cansleep(cs42l51->reset_gpio, 0);
++		mdelay(2);
++	}
++
+ 	/* Verify that we have a CS42L51 */
+ 	ret = regmap_read(regmap, CS42L51_CHIP_REV_ID, &val);
+ 	if (ret < 0) {
+@@ -629,6 +642,8 @@ int cs42l51_remove(struct device *dev)
+ {
+ 	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
+ 
++	gpiod_set_value_cansleep(cs42l51->reset_gpio, 1);
++
+ 	return regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
+ 				      cs42l51->supplies);
+ }
 -- 
 2.7.4
