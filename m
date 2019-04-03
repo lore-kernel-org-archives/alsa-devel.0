@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Mediatek: MT8183: Fix build error in
-	mt8183_da7219_max98357_dev_probe" to the asoc tree
-Date: Wed,  3 Apr 2019 05:41:21 +0100 (BST)
-Message-ID: <20190403044121.88392440083@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: wm_adsp: Make use of local variables"
+	to the asoc tree
+Date: Wed,  3 Apr 2019 05:41:27 +0100 (BST)
+Message-ID: <20190403044127.70AE4440083@finisterre.ee.mobilebroadband>
+References: <20190402124916.28736-3-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75DA5F8071D
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 06:41:26 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8301DF8970A
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 06:41:32 +0200 (CEST)
+In-Reply-To: <20190402124916.28736-3-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Mediatek: MT8183: Fix build error in mt8183_da7219_max98357_dev_probe
+   ASoC: wm_adsp: Make use of local variables
 
 has been applied to the asoc tree at
 
@@ -53,42 +55,50 @@ to this mail.
 Thanks,
 Mark
 
->From 52a30f3bb1b15c7d27233e9947370c1c14b5cbae Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Wed, 3 Apr 2019 12:15:52 +0800
-Subject: [PATCH] ASoC: Mediatek: MT8183: Fix build error in
- mt8183_da7219_max98357_dev_probe
+>From 789b930a8f0de609fd2ef9f2ebf73726b7087fea Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 2 Apr 2019 13:49:16 +0100
+Subject: [PATCH] ASoC: wm_adsp: Make use of local variables
 
-When building CONFIG_SND_SOC_MT8183_DA7219_MAX98357A=m
-gcc warn this:
+Tidy up some instances of dereferencing to obtain things that are
+already stored in local variables.
 
-sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c: In function mt8183_da7219_max98357_dev_probe:
-sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c:413:13: error: struct snd_soc_dai_link has no member named platform; did you mean platforms?
-   dai_link->platform = NULL;
-             ^~~~~~~~
-             platforms
-
-use 'dai_link->platforms' instead of 'dai_link->platform'.
-
-Fixes: 11c0269017b2 ("ASoC: Mediatek: MT8183: Add machine driver with TS3A227")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 93536659a859..1e7e8aed8707 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -410,7 +410,7 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
- 		 * the "platform" will not null when probe is trying
- 		 * again. It's not expected normally.
- 		 */
--		dai_link->platform = NULL;
-+		dai_link->platforms = NULL;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 6145260d89bf..4662a20cfb92 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3381,7 +3381,7 @@ static int wm_adsp_compr_attach(struct wm_adsp_compr *compr)
+ 		return -EINVAL;
  
- 		if (dai_link->platform_name)
- 			continue;
+ 	compr->buf = buf;
+-	compr->buf->compr = compr;
++	buf->compr = compr;
+ 
+ 	return 0;
+ }
+@@ -4091,7 +4091,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 
+ 	buf = compr->buf;
+ 
+-	if (!compr->buf || compr->buf->error) {
++	if (!buf || buf->error) {
+ 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
+ 		ret = -EIO;
+ 		goto out;
+@@ -4111,7 +4111,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
+ 		if (buf->avail < wm_adsp_compr_frag_words(compr)) {
+ 			ret = wm_adsp_buffer_get_error(buf);
+ 			if (ret < 0) {
+-				if (compr->buf->error)
++				if (buf->error)
+ 					snd_compr_stop_error(stream,
+ 							SNDRV_PCM_STATE_XRUN);
+ 				goto out;
 -- 
 2.20.1
