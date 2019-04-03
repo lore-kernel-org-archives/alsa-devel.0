@@ -1,43 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Mediatek: MT8183: DA7219: fix build error
-Date: Wed, 3 Apr 2019 14:36:51 +0700
-Message-ID: <20190403073651.GF5748@sirena.org.uk>
-References: <20190403065547.19382-1-anders.roxell@linaro.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GV0iVqYguTV4Q9ER"
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH] ASoC: sprd: Fix the smatch warning
+Date: Wed,  3 Apr 2019 00:47:55 -0700
+Message-ID: <811e491489b62624942dabd56f277b08784ef0f9.1554276741.git.baolin.wang@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190403065547.19382-1-anders.roxell@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, baolin.wang@linaro.org, dan.carpenter@oracle.com
 List-Id: alsa-devel@alsa-project.org
 
+Remove the unnecessary validation of the 'cstream' variable to fix
+below smatch warning:
 
---GV0iVqYguTV4Q9ER
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+sprd_platform_compr_drain_notify() warn: variable dereferenced
+before check 'cstream' (see line 105)
 
-On Wed, Apr 03, 2019 at 08:55:47AM +0200, Anders Roxell wrote:
-> When building CONFIG_SND_SOC_MT8183_DA7219_MAX98357A=m the following
-> errro pops up:
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+---
+ sound/soc/sprd/sprd-pcm-compress.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Someone else already fixed this.
-
---GV0iVqYguTV4Q9ER
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlykYpAACgkQJNaLcl1U
-h9DaPwf/S1wjvRWPfxeHpWLXscVDG+bKetdtPUEpZcwafkkUEy+8kj+v3YWEkLIk
-qE32Mkq7cMOzg0MliqtcujhRmXGlKF0AGHtFRjAohv9othesOBuFVhYGa7KHd+C2
-eP/q/QtY3G6CwjwkA8WEiC410owyG6lLsq7E+7HVmOLrwwWlvM1yRpUQXsCQRrHs
-Yz1v8c/dbEMLZCK2mL3YHZdjg+aTVCt8rKYPkzY3VSIish1B28Dmqc99j9SxKr14
-5zxBPzxcbF5YJn6E7mG1kkpIWmNnAfj2I7e5DTaE5SfIjgNTgyrlGiHu4fi3NZ5g
-yjsM0YILNiS6k7S21cCEKrpT5yyXPw==
-=RBI4
------END PGP SIGNATURE-----
-
---GV0iVqYguTV4Q9ER--
+diff --git a/sound/soc/sprd/sprd-pcm-compress.c b/sound/soc/sprd/sprd-pcm-compress.c
+index dc84257..424e983 100644
+--- a/sound/soc/sprd/sprd-pcm-compress.c
++++ b/sound/soc/sprd/sprd-pcm-compress.c
+@@ -107,8 +107,7 @@ static void sprd_platform_compr_drain_notify(void *arg)
+ 
+ 	memset(stream->info_area, 0, sizeof(struct sprd_compr_playinfo));
+ 
+-	if (cstream)
+-		snd_compr_drain_notify(cstream);
++	snd_compr_drain_notify(cstream);
+ }
+ 
+ static void sprd_platform_compr_dma_complete(void *data)
+-- 
+1.9.1
