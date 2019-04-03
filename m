@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Mediatek: MT8183: TS3A227: fix build error" to the asoc tree
-Date: Wed,  3 Apr 2019 05:41:24 +0100 (BST)
-Message-ID: <20190403044124.7744B440082@finisterre.ee.mobilebroadband>
-References: <20190403030501.25140-1-anders.roxell@linaro.org>
+Subject: Applied "ASoC: tlv320aic31xx: aic31xx_set_jack() can be static" to the asoc tree
+Date: Wed,  3 Apr 2019 05:41:33 +0100 (BST)
+Message-ID: <20190403044133.5EF89440083@finisterre.ee.mobilebroadband>
+References: <20190402114618.GA8728@lkp-wsm-ep1>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190403030501.25140-1-anders.roxell@linaro.org>
+In-Reply-To: <20190402114618.GA8728@lkp-wsm-ep1>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Anders Roxell <anders.roxell@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: kbuild test robot <lkp@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, "Andrew F. Davis" <afd@ti.com>, Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Colin Ian King <colin.king@canonical.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Mediatek: MT8183: TS3A227: fix build error
+   ASoC: tlv320aic31xx: aic31xx_set_jack() can be static
 
 has been applied to the asoc tree at
 
@@ -37,44 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 2b7bcdad3af9fbd104d5f300dbb90f684c36aa09 Mon Sep 17 00:00:00 2001
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Wed, 3 Apr 2019 05:05:01 +0200
-Subject: [PATCH] ASoC: Mediatek: MT8183: TS3A227: fix build error
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 7742a5b418c91b1f27a08ebf90cb662cf4c06604 Mon Sep 17 00:00:00 2001
+From: kbuild test robot <lkp@intel.com>
+Date: Tue, 2 Apr 2019 19:46:18 +0800
+Subject: [PATCH] ASoC: tlv320aic31xx: aic31xx_set_jack() can be static
 
-When building CONFIG_SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=m the
-following error pops up:
-
-../sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c: In function ‘mt8183_mt6358_ts3a227_max98357_dev_probe’:
-../sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c:325:13: error: ‘struct snd_soc_dai_link’ has no member named ‘platform’; did you mean ‘platforms’?
-   dai_link->platform = NULL;
-             ^~~~~~~~
-             platforms
-
-Rework to use 'dai_link->platforms' instead of 'dai_link->platform'.
-
-Fixes: 11c0269017b2 ("ASoC: Mediatek: MT8183: Add machine driver with TS3A227")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Fixes: ebf3326cd969 ("ASoC: tlv320aic31xx: Add headphone/headset detection")
+Signed-off-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 2da56232a9e1..a50c6af5c945 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -322,7 +322,7 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 		 * the "platform" will not null when probe is trying
- 		 * again. It's not expected normally.
- 		 */
--		dai_link->platform = NULL;
-+		dai_link->platforms = NULL;
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index fa47bfcb93e9..9b37e98da0db 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1264,8 +1264,8 @@ static int aic31xx_set_bias_level(struct snd_soc_component *component,
+ 	return 0;
+ }
  
- 		if (dai_link->platform_name)
- 			continue;
+-int aic31xx_set_jack(struct snd_soc_component *component,
+-		     struct snd_soc_jack *jack, void *data)
++static int aic31xx_set_jack(struct snd_soc_component *component,
++			    struct snd_soc_jack *jack, void *data)
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+ 
 -- 
 2.20.1
