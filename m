@@ -1,52 +1,57 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH resend 0/3] ASoC: Intel: Misc. fixes
-Date: Wed, 3 Apr 2019 08:33:45 +0200
-Message-ID: <94d7ebe6-8539-3c15-a14d-fbec0b68a3c8@redhat.com>
-References: <20190402102049.27975-1-hdegoede@redhat.com>
- <20190403044017.GC5748@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [asoc:for-5.2 101/107]
+ sound/soc/sprd/sprd-pcm-compress.c:110 sprd_platform_compr_drain_notify()
+ warn: variable dereferenced before check 'cstream' (see line 105)
+Date: Wed, 3 Apr 2019 09:46:19 +0300
+Message-ID: <20190403064619.GI32613@kadam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
- [209.85.208.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A37BF80714
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 08:33:47 +0200 (CEST)
-Received: by mail-ed1-f65.google.com with SMTP id s16so13819774edr.3
- for <alsa-devel@alsa-project.org>; Tue, 02 Apr 2019 23:33:47 -0700 (PDT)
-In-Reply-To: <20190403044017.GC5748@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Return-path: <kbuild-bounces@lists.01.org>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.01.org/mailman/options/kbuild>,
+ <mailto:kbuild-request@lists.01.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/kbuild/>
+List-Post: <mailto:kbuild@lists.01.org>
+List-Help: <mailto:kbuild-request@lists.01.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/kbuild>,
+ <mailto:kbuild-request@lists.01.org?subject=subscribe>
+Errors-To: kbuild-bounces@lists.01.org
+Sender: "kbuild" <kbuild-bounces@lists.01.org>
+To: kbuild@01.org, Baolin Wang <baolin.wang@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+head:   6d5e2bf9d203e4d9e08ca2e9420c6ff22ad190af
+commit: cce1396936ef2b347d622b4d49718818eb32029d [101/107] ASoC: sprd: Add Spreadtrum audio compress offload support
 
-On 03-04-19 06:40, Mark Brown wrote:
-> On Tue, Apr 02, 2019 at 12:20:46PM +0200, Hans de Goede wrote:
->> Hi Pierre-Louis, Mark,
->>
->> These 3 patches (originally 2 different patch-sets) seem to have
->> fallen through the cracks, hence this resend.
-> 
-> Not sure what makes you say that for patch 1 and 2, they're already
-> there?
+smatch warnings:
+sound/soc/sprd/sprd-pcm-compress.c:110 sprd_platform_compr_drain_notify() warn: variable dereferenced before check 'cstream' (see line 105)
 
-My bad, I somehow overlooked them.
+# https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?id=cce1396936ef2b347d622b4d49718818eb32029d
+git remote add asoc https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+git remote update asoc
+git checkout cce1396936ef2b347d622b4d49718818eb32029d
+vim +/cstream +110 sound/soc/sprd/sprd-pcm-compress.c
 
-Thank you for merging them (and for merging the 3th patch).
+cce13969 Baolin Wang 2019-03-27   98  
+cce13969 Baolin Wang 2019-03-27   99  static int sprd_platform_compr_trigger(struct snd_compr_stream *cstream,
+cce13969 Baolin Wang 2019-03-27  100  				       int cmd);
+cce13969 Baolin Wang 2019-03-27  101  
+cce13969 Baolin Wang 2019-03-27  102  static void sprd_platform_compr_drain_notify(void *arg)
+cce13969 Baolin Wang 2019-03-27  103  {
+cce13969 Baolin Wang 2019-03-27  104  	struct snd_compr_stream *cstream = arg;
+cce13969 Baolin Wang 2019-03-27 @105  	struct snd_compr_runtime *runtime = cstream->runtime;
+                                                                            ^^^^^^^^^^^^^^^^
 
-Regards,
+cce13969 Baolin Wang 2019-03-27  106  	struct sprd_compr_stream *stream = runtime->private_data;
+cce13969 Baolin Wang 2019-03-27  107  
+cce13969 Baolin Wang 2019-03-27  108  	memset(stream->info_area, 0, sizeof(struct sprd_compr_playinfo));
+cce13969 Baolin Wang 2019-03-27  109  
+cce13969 Baolin Wang 2019-03-27 @110  	if (cstream)
+                                            ^^^^^^^
 
-Hans
+cce13969 Baolin Wang 2019-03-27  111  		snd_compr_drain_notify(cstream);
+cce13969 Baolin Wang 2019-03-27  112  }
+cce13969 Baolin Wang 2019-03-27  113  
