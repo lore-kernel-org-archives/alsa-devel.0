@@ -1,79 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH resend 0/3] ASoC: Intel: Misc. fixes
-Date: Wed, 3 Apr 2019 11:40:17 +0700
-Message-ID: <20190403044017.GC5748@sirena.org.uk>
-References: <20190402102049.27975-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6051876545964359017=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52BC2F8068A
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 06:40:23 +0200 (CEST)
-In-Reply-To: <20190402102049.27975-1-hdegoede@redhat.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Mediatek: MT8183: TS3A227: fix build error" to the asoc tree
+Date: Wed,  3 Apr 2019 05:41:24 +0100 (BST)
+Message-ID: <20190403044124.7744B440082@finisterre.ee.mobilebroadband>
+References: <20190403030501.25140-1-anders.roxell@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190403030501.25140-1-anders.roxell@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anders Roxell <anders.roxell@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6051876545964359017==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
-Content-Disposition: inline
+   ASoC: Mediatek: MT8183: TS3A227: fix build error
 
+has been applied to the asoc tree at
 
---UPT3ojh+0CqEDtpF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Apr 02, 2019 at 12:20:46PM +0200, Hans de Goede wrote:
-> Hi Pierre-Louis, Mark,
->=20
-> These 3 patches (originally 2 different patch-sets) seem to have
-> fallen through the cracks, hence this resend.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Not sure what makes you say that for patch 1 and 2, they're already
-there? =20
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-8a68a509ae6b5d7d18c6bfc88553ca7761029ada ASoC: rt5651: Add support for acti=
-ve-high jack detect
-a0cb2d4357e483b7bca3c06f790d8f5d4cc20d84 ASoC: Intel: bytcr_rt5651: Add BYT=
-_RT5651_JD_NOT_INV quirk
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---UPT3ojh+0CqEDtpF
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlykOTEACgkQJNaLcl1U
-h9DuPAf/TPMtY3WZqJtrh9u6jbzbYVUSlWaa23D78nWI3/1TtGxYmEVNtVtMFY6D
-TYFRCTqkJFb8/Urnum8AjGLWbJY+JFhhMMDVxg7qdd7LFYyvi98QIaYFQH5oKSxU
-zsNTaNrKY+BSf+DMm+xSd37sc3cK3cQLo+HJYglUF7wNznbgmeLEqcz7KoPtRO6V
-gxbslsZqV9Eo92NbB1X5uvZXLPzPFY2V9vj4zCnyAKb5yjqexxqEYjc49Oqq0XZc
-FYzroCve5FAkqcxxjv7WMmQqEc+DyFWtkWjUolU1RYmSXNL8plQBVi5p9+s0kpEt
-LF96zweh9Srkh//Mx1NGshQCz9dHqg==
-=XrE4
------END PGP SIGNATURE-----
-
---UPT3ojh+0CqEDtpF--
-
---===============6051876545964359017==
-Content-Type: text/plain; charset="us-ascii"
+>From 2b7bcdad3af9fbd104d5f300dbb90f684c36aa09 Mon Sep 17 00:00:00 2001
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Wed, 3 Apr 2019 05:05:01 +0200
+Subject: [PATCH] ASoC: Mediatek: MT8183: TS3A227: fix build error
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+When building CONFIG_SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=m the
+following error pops up:
 
---===============6051876545964359017==--
+../sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c: In function ‘mt8183_mt6358_ts3a227_max98357_dev_probe’:
+../sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c:325:13: error: ‘struct snd_soc_dai_link’ has no member named ‘platform’; did you mean ‘platforms’?
+   dai_link->platform = NULL;
+             ^~~~~~~~
+             platforms
+
+Rework to use 'dai_link->platforms' instead of 'dai_link->platform'.
+
+Fixes: 11c0269017b2 ("ASoC: Mediatek: MT8183: Add machine driver with TS3A227")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 2da56232a9e1..a50c6af5c945 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -322,7 +322,7 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
+ 		 * the "platform" will not null when probe is trying
+ 		 * again. It's not expected normally.
+ 		 */
+-		dai_link->platform = NULL;
++		dai_link->platforms = NULL;
+ 
+ 		if (dai_link->platform_name)
+ 			continue;
+-- 
+2.20.1
