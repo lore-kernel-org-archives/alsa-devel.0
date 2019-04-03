@@ -1,23 +1,19 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: No sound output on Zen AIO 27 Z272SD_Z272SD
-Date: Wed, 3 Apr 2019 16:32:33 +0800
-Message-ID: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Content-Type: text/plain; charset="utf-8"; Format="flowed"; DelSp="yes"
+From: Kailang <kailang@realtek.com>
+Subject: Re: No sound output on Zen AIO 27 Z272SD_Z272SD
+Date: Wed, 3 Apr 2019 09:12:01 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBB13A@RTITMBSVM07.realtek.com.tw>
+References: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04EAFF8068A
- for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 10:32:38 +0200 (CEST)
-Received: from mail-pl1-f199.google.com ([209.85.214.199])
- by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
- (Exim 4.76) (envelope-from <kai.heng.feng@canonical.com>)
- id 1hBbK1-0001kl-VP
- for alsa-devel@alsa-project.org; Wed, 03 Apr 2019 08:32:38 +0000
-Received: by mail-pl1-f199.google.com with SMTP id j1so11888151pll.13
- for <alsa-devel@alsa-project.org>; Wed, 03 Apr 2019 01:32:37 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15DF3F8071D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2019 11:12:11 +0200 (CEST)
+In-Reply-To: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
+Content-Language: zh-TW
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,15 +23,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: kailang@realtek.com, tiwai@suse.com, Derek Gordon <derek@derekgordon.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Pshou <pshou@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>, Derek Gordon <derek@derekgordon.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpaZW4gQUlPIDI3IFoyNzJTRF9aMjcyU0QgZG9lc27igJl0IGhhdmUgc291bmQgb3V0cHV0
-IFsxXS4KCldl4oCZdmUgdHJpZWQgIm1vZGVsPWFsYzI1Ni1hc3VzLWFpb+KAnSBidXQgaXQgZG9l
-c27igJl0IHdvcmsuCgpTZWVtcyBsaWtlIHRoaXMgcGxhdGZvcm0gbmVlZHMgc29tZXRoaW5nIGRp
-ZmZlcmVudCB0aGFuICAKQUxDMjU2X0ZJWFVQX0FTVVNfQUlPX0dQSU8yLgoKWzFdIGh0dHBzOi8v
-YnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvMTgyMTkzNgoKS2FpLUhlbmcKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+QWRkIFBzaG91Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogS2FpLUhlbmcg
+RmVuZyA8a2FpLmhlbmcuZmVuZ0BjYW5vbmljYWwuY29tPiANClNlbnQ6IFdlZG5lc2RheSwgQXBy
+aWwgMywgMjAxOSA0OjMzIFBNDQpUbzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQpDYzog
+dGl3YWlAc3VzZS5jb207IEthaWxhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+OyBEZXJlayBHb3Jk
+b24gPGRlcmVrQGRlcmVrZ29yZG9uLmNvbT4NClN1YmplY3Q6IE5vIHNvdW5kIG91dHB1dCBvbiBa
+ZW4gQUlPIDI3IFoyNzJTRF9aMjcyU0QNCg0KSGksDQoNClplbiBBSU8gMjcgWjI3MlNEX1oyNzJT
+RCBkb2VzbuKAmXQgaGF2ZSBzb3VuZCBvdXRwdXQgWzFdLg0KDQpXZeKAmXZlIHRyaWVkICJtb2Rl
+bD1hbGMyNTYtYXN1cy1haW/igJ0gYnV0IGl0IGRvZXNu4oCZdCB3b3JrLg0KDQpTZWVtcyBsaWtl
+IHRoaXMgcGxhdGZvcm0gbmVlZHMgc29tZXRoaW5nIGRpZmZlcmVudCB0aGFuIEFMQzI1Nl9GSVhV
+UF9BU1VTX0FJT19HUElPMi4NCg0KWzFdIGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3Mv
+MTgyMTkzNg0KDQpLYWktSGVuZw0KDQotLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25t
+ZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
