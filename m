@@ -1,14 +1,14 @@
 From: YueHaibing <yuehaibing@huawei.com>
 Subject: Re: [PATCH -next] ASoC: Mediatek: MT8183: Fix
  platform_no_drv_owner.cocci warnings
-Date: Thu, 4 Apr 2019 09:39:39 +0800
-Message-ID: <9d10b78e-c98d-932f-285b-2485e4f12acc@huawei.com>
-References: <20190403071159.9725-1-yuehaibing@huawei.com>
+Date: Thu, 4 Apr 2019 09:39:51 +0800
+Message-ID: <b9e3c8d6-9c69-5450-bcf8-3457dc9243f0@huawei.com>
+References: <20190403071139.9625-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190403071159.9725-1-yuehaibing@huawei.com>
+In-Reply-To: <20190403071139.9625-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>, Shunli Wang <shunli.wang@mediatek.com>
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
@@ -22,20 +22,20 @@ On 2019/4/3 15:11, YueHaibing wrote:
 > 
 > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 1 -
+>  sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 1 -
 >  1 file changed, 1 deletion(-)
 > 
-> diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-> index 93536659a859..117d81b43542 100644
-> --- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-> +++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-> @@ -454,7 +454,6 @@ static const struct of_device_id mt8183_da7219_max98357_dt_match[] = {
->  static struct platform_driver mt8183_da7219_max98357_driver = {
+> diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+> index 2da56232a9e1..7ed3c947276d 100644
+> --- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+> +++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+> @@ -364,7 +364,6 @@ static const struct of_device_id mt8183_mt6358_ts3a227_max98357_dt_match[] = {
+>  static struct platform_driver mt8183_mt6358_ts3a227_max98357_driver = {
 >  	.driver = {
->  		.name = "mt8183_da7219_max98357",
+>  		.name = "mt8183_mt6358_ts3a227_max98357",
 > -		.owner = THIS_MODULE,
 >  #ifdef CONFIG_OF
->  		.of_match_table = mt8183_da7219_max98357_dt_match,
+>  		.of_match_table = mt8183_mt6358_ts3a227_max98357_dt_match,
 >  #endif
 > 
 > 
