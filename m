@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sprd: Fix spelling mistake "faied" -> "failed"" to the asoc tree
-Date: Thu,  4 Apr 2019 15:16:27 +0700 (+07)
-Message-ID: <20190404081627.D053A441D3C@finisterre.ee.mobilebroadband>
-References: <20190404075603.11680-1-colin.king@canonical.com>
+Subject: Applied "ASoC: rockchip: pdm: adjust waterlevel in frame unit" to the asoc tree
+Date: Thu,  4 Apr 2019 15:16:34 +0700 (+07)
+Message-ID: <20190404081634.31E08441D3C@finisterre.ee.mobilebroadband>
+References: <1554350189-24318-1-git-send-email-sugar.zhang@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190404075603.11680-1-colin.king@canonical.com>
+In-Reply-To: <1554350189-24318-1-git-send-email-sugar.zhang@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linaro.org>, Chunyan Zhang <zhang.lyra@gmail.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sprd: Fix spelling mistake "faied" -> "failed"
+   ASoC: rockchip: pdm: adjust waterlevel in frame unit
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 47fa5773f11c7cc9117d74ea5a18a22502d8f0f3 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 4 Apr 2019 08:56:03 +0100
-Subject: [PATCH] ASoC: sprd: Fix spelling mistake "faied" -> "failed"
+>From 430f5da69b9323d5e7faca95bc30e61be4fcbbbf Mon Sep 17 00:00:00 2001
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Date: Thu, 4 Apr 2019 11:56:29 +0800
+Subject: [PATCH] ASoC: rockchip: pdm: adjust waterlevel in frame unit
 
-There are two identical spelling mistakes in dev_err messages. Fix them.
+This patch make the waterlevel more reasonable, because the pdm
+controller share the single FIFO(128 entries) with each channel.
+adjust waterlevel in frame to meet the vad or dma frames request.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
-Reviewed-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sprd/sprd-pcm-compress.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_pdm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sprd/sprd-pcm-compress.c b/sound/soc/sprd/sprd-pcm-compress.c
-index 424e9834d093..6cddf551bc11 100644
---- a/sound/soc/sprd/sprd-pcm-compress.c
-+++ b/sound/soc/sprd/sprd-pcm-compress.c
-@@ -281,13 +281,13 @@ static int sprd_platform_compr_set_params(struct snd_compr_stream *cstream,
- 	 */
- 	ret = sprd_platform_compr_dma_config(cstream, params, 1);
- 	if (ret) {
--		dev_err(dev, "faied to config stage 1 DMA: %d\n", ret);
-+		dev_err(dev, "failed to config stage 1 DMA: %d\n", ret);
- 		return ret;
- 	}
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index 3e1c5fd5b32b..955cdc2b8fc5 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -255,8 +255,9 @@ static int rockchip_pdm_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(pdm->regmap, PDM_CTRL0,
+ 			   PDM_PATH_MSK | PDM_VDW_MSK,
+ 			   val);
++	/* all channels share the single FIFO */
+ 	regmap_update_bits(pdm->regmap, PDM_DMA_CTRL, PDM_DMA_RDL_MSK,
+-			   PDM_DMA_RDL(16));
++			   PDM_DMA_RDL(8 * params_channels(params)));
  
- 	ret = sprd_platform_compr_dma_config(cstream, params, 0);
- 	if (ret) {
--		dev_err(dev, "faied to config stage 0 DMA: %d\n", ret);
-+		dev_err(dev, "failed to config stage 0 DMA: %d\n", ret);
- 		goto config_err;
- 	}
- 
+ 	return 0;
+ }
 -- 
 2.20.1
