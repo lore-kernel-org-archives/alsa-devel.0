@@ -1,16 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+From: Keyon Jie <yang.jie@linux.intel.com>
 Subject: Re: [Sound-open-firmware] [PATCH v5 05/14] ASoC: SOF:
  Add PCM operations support
-Date: Thu, 04 Apr 2019 12:00:57 +0100
-Message-ID: <c3b944185e4582ec4d5fda88b90dbff9ef04c68b.camel@linux.intel.com>
+Date: Thu, 4 Apr 2019 19:19:17 +0800
+Message-ID: <68cda7ca-1f37-3b42-006a-66e1cd2cf723@linux.intel.com>
 References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
  <20190321161016.26515-6-pierre-louis.bossart@linux.intel.com>
  <s5hd0m2caz6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <s5hd0m2caz6.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,24 +22,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2019-04-04 at 12:37 +0200, Takashi Iwai wrote:
-> > +
-> > +     /* set runtime config */
-> > +     runtime->hw.info = SNDRV_PCM_INFO_MMAP |
-> > +                       SNDRV_PCM_INFO_MMAP_VALID |
-> > +                       SNDRV_PCM_INFO_INTERLEAVED |
-> > +                       SNDRV_PCM_INFO_PAUSE |
-> > +                       SNDRV_PCM_INFO_RESUME |
-> > +                       SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
-> 
-> Does SOF support the full resume?  That is, the stream gets resumed at
-> the exact position that was suspended.  Most devices can't, hence they
-> don't set *_INFO_RESUME flag and let user-space restarting.
-
-Not atm, and I don't see this as an ask in the near future either, but it's
-technically possible given the open firmware.
-
-Liam
+CgpPbiAyMDE5LzQvNCDkuIvljYg2OjM3LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAy
+MSBNYXIgMjAxOSAxNzoxMDowNyArMDEwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToK
+Pj4KPj4gKy8qIHRoaXMgbWF5IGdldCBjYWxsZWQgc2V2ZXJhbCB0aW1lcyBieSBvc3MgZW11bGF0
+aW9uICovCj4+ICtzdGF0aWMgaW50IHNvZl9wY21faHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqc3Vic3RyZWFtLAo+PiArCQkJICAgICBzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMg
+KnBhcmFtcykKPj4gK3sKPiAuLi4uCj4+ICsJLyogY29udGFpbmVyIHNpemUgKi8KPj4gKwlzd2l0
+Y2ggKHBhcmFtc193aWR0aChwYXJhbXMpKSB7Cj4+ICsJY2FzZSAxNjoKPj4gKwkJcGNtLnBhcmFt
+cy5zYW1wbGVfY29udGFpbmVyX2J5dGVzID0gMjsKPj4gKwkJYnJlYWs7Cj4+ICsJY2FzZSAyNDoK
+Pj4gKwkJcGNtLnBhcmFtcy5zYW1wbGVfY29udGFpbmVyX2J5dGVzID0gNDsKPj4gKwkJYnJlYWs7
+Cj4+ICsJY2FzZSAzMjoKPj4gKwkJcGNtLnBhcmFtcy5zYW1wbGVfY29udGFpbmVyX2J5dGVzID0g
+NDsKPj4gKwkJYnJlYWs7Cj4+ICsJZGVmYXVsdDoKPj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+ICsJ
+fQo+IAo+IFRoaXMgY2FuIGJlIHNpbXBseSBzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aCgp
+IC8gOC4KPiAKPj4gK3N0YXRpYyBpbnQgc29mX3BjbV9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0
+cmVhbSAqc3Vic3RyZWFtKQo+PiArewo+IC4uLi4KPj4gKwkvKiBzZXQgYW55IHJ1bnRpbWUgY29u
+c3RyYWludHMgYmFzZWQgb24gdG9wb2xvZ3kgKi8KPj4gKwlzbmRfcGNtX2h3X2NvbnN0cmFpbnRf
+c3RlcChzdWJzdHJlYW0tPnJ1bnRpbWUsIDAsCj4+ICsJCQkJICAgU05EUlZfUENNX0hXX1BBUkFN
+X0JVRkZFUl9TSVpFLAo+PiArCQkJCSAgIGxlMzJfdG9fY3B1KGNhcHMtPnBlcmlvZF9zaXplX21p
+bikpOwo+PiArCXNuZF9wY21faHdfY29uc3RyYWludF9zdGVwKHN1YnN0cmVhbS0+cnVudGltZSwg
+MCwKPj4gKwkJCQkgICBTTkRSVl9QQ01fSFdfUEFSQU1fUEVSSU9EX1NJWkUsCj4+ICsJCQkJICAg
+bGUzMl90b19jcHUoY2Fwcy0+cGVyaW9kX3NpemVfbWluKSk7Cj4gCj4gSXMgcGVyaW9kX3NpemVf
+bWluIGluIGZyYW1lcyBvciBpbiBieXRlcz8gIFRoZSBjb2RlIGJlbG93IHJlZmVycyBhcwo+IGJ5
+dGUgc2l6ZSB3aGlsZSB0aGlzIHJlZmVycyBhcyBmcmFtZXMsIHNvIHRoZXkgbG9vayBpbmNvbnNp
+c3RlbnQuCgpZZXAsIHlvdSBhcmUgcmlnaHQsIHdlIHNob3VsZCB1c2UgU05EUlZfUENNX0hXX1BB
+UkFNX0JVRkZFUl9CWVRFUyBhbmQgClNORFJWX1BDTV9IV19QQVJBTV9QRVJJT0RfQllURVMgaGVy
+ZSwgdGhhbmtzIGZvciBwb2ludGluZyBvdXQuCgpUaGV5IGFyZSBjb25maWd1cmVkKGluIHRwbGcg
+ZmlsZSkgZm9sbG93aW5nIGNvbW1lbnRzIGluIApkZWZpbml0aW9uKHNvbWV3aGF0IGNvbmZ1c2lv
+biBjb21wYXJpbmcgdG8gQUxTQSBub3Rpb24gd2hlcmUgJ3NpemUnIAptZWFucyBpbiBmcmFtZXM/
+KSBvZiBzdHJ1Y3Qgc25kX3NvY190cGxnX3N0cmVhbV9jYXBzOgoJX19sZTMyIHBlcmlvZF9zaXpl
+X21pbjsJLyogbWluIHBlcmlvZCBzaXplIGJ5dGVzICovCglfX2xlMzIgcGVyaW9kX3NpemVfbWF4
+OwkvKiBtYXggcGVyaW9kIHNpemUgYnl0ZXMgKi8KCV9fbGUzMiBidWZmZXJfc2l6ZV9taW47CS8q
+IG1pbiBidWZmZXIgc2l6ZSBieXRlcyAqLwoJX19sZTMyIGJ1ZmZlcl9zaXplX21heDsJLyogbWF4
+IGJ1ZmZlciBzaXplIGJ5dGVzICovCgpUaGFua3MsCn5LZXlvbgoKPiAKPj4gKwo+PiArCS8qIHNl
+dCBydW50aW1lIGNvbmZpZyAqLwo+PiArCXJ1bnRpbWUtPmh3LmluZm8gPSBTTkRSVl9QQ01fSU5G
+T19NTUFQIHwKPj4gKwkJCSAgU05EUlZfUENNX0lORk9fTU1BUF9WQUxJRCB8Cj4+ICsJCQkgIFNO
+RFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKPj4gKwkJCSAgU05EUlZfUENNX0lORk9fUEFVU0Ug
+fAo+PiArCQkJICBTTkRSVl9QQ01fSU5GT19SRVNVTUUgfAo+PiArCQkJICBTTkRSVl9QQ01fSU5G
+T19OT19QRVJJT0RfV0FLRVVQOwo+IAo+IERvZXMgU09GIHN1cHBvcnQgdGhlIGZ1bGwgcmVzdW1l
+PyAgVGhhdCBpcywgdGhlIHN0cmVhbSBnZXRzIHJlc3VtZWQgYXQKPiB0aGUgZXhhY3QgcG9zaXRp
+b24gdGhhdCB3YXMgc3VzcGVuZGVkLiAgTW9zdCBkZXZpY2VzIGNhbid0LCBoZW5jZSB0aGV5Cj4g
+ZG9uJ3Qgc2V0ICpfSU5GT19SRVNVTUUgZmxhZyBhbmQgbGV0IHVzZXItc3BhY2UgcmVzdGFydGlu
+Zy4KPiAKPj4gKwlydW50aW1lLT5ody5wZXJpb2RfYnl0ZXNfbWluID0gbGUzMl90b19jcHUoY2Fw
+cy0+cGVyaW9kX3NpemVfbWluKTsKPj4gKwlydW50aW1lLT5ody5wZXJpb2RfYnl0ZXNfbWF4ID0g
+bGUzMl90b19jcHUoY2Fwcy0+cGVyaW9kX3NpemVfbWF4KTsKPj4gKwlydW50aW1lLT5ody5wZXJp
+b2RzX21pbiA9IGxlMzJfdG9fY3B1KGNhcHMtPnBlcmlvZHNfbWluKTsKPj4gKwlydW50aW1lLT5o
+dy5wZXJpb2RzX21heCA9IGxlMzJfdG9fY3B1KGNhcHMtPnBlcmlvZHNfbWF4KTsKPj4gKwlydW50
+aW1lLT5ody5idWZmZXJfYnl0ZXNfbWF4ID0gbGUzMl90b19jcHUoY2Fwcy0+YnVmZmVyX3NpemVf
+bWF4KTsKPiAKPiBUaGVzZSByZWZlciBhcyBieXRlcy4uLgo+IAo+IAo+IHRoYW5rcywKPiAKPiBU
+YWthc2hpCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiBTb3VuZC1vcGVuLWZpcm13YXJlIG1haWxpbmcgbGlzdAo+IFNvdW5kLW9wZW4tZmlybXdhcmVA
+YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vc291bmQtb3Blbi1maXJtd2FyZQo+IApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
