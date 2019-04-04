@@ -1,20 +1,17 @@
 From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH 2/2] ASoC: tlv320aic32x4: Add Playback
-	PowerTune Controls
-Date: Wed,  3 Apr 2019 21:01:55 -0700
-Message-ID: <20190404040155.29246-2-nh6z@nh6z.net>
-References: <20190404040155.29246-1-nh6z@nh6z.net>
+Subject: [PATCH 1/2] ASoC: tlv320aic32x4: Change author's name
+Date: Wed,  3 Apr 2019 21:17:15 -0700
+Message-ID: <20190404041716.29896-1-nh6z@nh6z.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp81.ord1d.emailsrvr.com (smtp81.ord1d.emailsrvr.com
- [184.106.54.81])
+Received: from smtp121.iad3b.emailsrvr.com (smtp121.iad3b.emailsrvr.com
+ [146.20.161.121])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4D36F8075B
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 06:02:16 +0200 (CEST)
-In-Reply-To: <20190404040155.29246-1-nh6z@nh6z.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B11AF8071D
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 06:17:25 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,53 +25,55 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: team@nwdigitalradio.com
 List-Id: alsa-devel@alsa-project.org
 
-PowerTune controls the power level of the chip.  On playback this
-indirectly controls things like the gain of the various output
-amplifiers.  This can allow for the decrease of output levels
-from the codec.  This adds controls for those power levels to
-the driver.
+The author of these files has changed her name.  Update
+instances in the code of her dead name to current legal
+name.
 
 Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 9 +++++++++
- sound/soc/codecs/tlv320aic32x4.h | 2 ++
- 2 files changed, 11 insertions(+)
+ sound/soc/codecs/tlv320aic32x4-i2c.c | 4 ++--
+ sound/soc/codecs/tlv320aic32x4-spi.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 77df2cbdf5f4..6edee05ff9f0 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -248,9 +248,18 @@ static const char * const lo_cm_text[] = {
+diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
+index 385fa2e9525a..22c3a6bc0b6c 100644
+--- a/sound/soc/codecs/tlv320aic32x4-i2c.c
++++ b/sound/soc/codecs/tlv320aic32x4-i2c.c
+@@ -3,7 +3,7 @@
+  *
+  * Copyright 2011 NW Digital Radio
+  *
+- * Author: Jeremy McDermond <nh6z@nh6z.net>
++ * Author: Annaliese McDermond <nh6z@nh6z.net>
+  *
+  * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
+  *
+@@ -72,5 +72,5 @@ static struct i2c_driver aic32x4_i2c_driver = {
+ module_i2c_driver(aic32x4_i2c_driver);
  
- static SOC_ENUM_SINGLE_DECL(lo_cm_enum, AIC32X4_CMMODE, 3, lo_cm_text);
+ MODULE_DESCRIPTION("ASoC TLV320AIC32x4 codec driver I2C");
+-MODULE_AUTHOR("Jeremy McDermond <nh6z@nh6z.net>");
++MODULE_AUTHOR("Annaliese McDermond <nh6z@nh6z.net>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/tlv320aic32x4-spi.c b/sound/soc/codecs/tlv320aic32x4-spi.c
+index 07d78ae51e05..aa5b7ba0254b 100644
+--- a/sound/soc/codecs/tlv320aic32x4-spi.c
++++ b/sound/soc/codecs/tlv320aic32x4-spi.c
+@@ -3,7 +3,7 @@
+  *
+  * Copyright 2011 NW Digital Radio
+  *
+- * Author: Jeremy McDermond <nh6z@nh6z.net>
++ * Author: Annaliese McDermond <nh6z@nh6z.net>
+  *
+  * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
+  *
+@@ -74,5 +74,5 @@ static struct spi_driver aic32x4_spi_driver = {
+ module_spi_driver(aic32x4_spi_driver);
  
-+static const char * const ptm_text[] = {
-+	"P3", "P2", "P1",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(l_ptm_enum, AIC32X4_LPLAYBACK, 2, ptm_text);
-+static SOC_ENUM_SINGLE_DECL(r_ptm_enum, AIC32X4_RPLAYBACK, 2, ptm_text);
-+
- static const struct snd_kcontrol_new aic32x4_snd_controls[] = {
- 	SOC_DOUBLE_R_S_TLV("PCM Playback Volume", AIC32X4_LDACVOL,
- 			AIC32X4_RDACVOL, 0, -0x7f, 0x30, 7, 0, tlv_pcm),
-+	SOC_ENUM("DAC Left Playback PowerTune Switch", l_ptm_enum),
-+	SOC_ENUM("DAC Right Playback PowerTune Switch", r_ptm_enum),
- 	SOC_DOUBLE_R_S_TLV("HP Driver Gain Volume", AIC32X4_HPLGAIN,
- 			AIC32X4_HPRGAIN, 0, -0x6, 0x1d, 5, 0,
- 			tlv_driver_gain),
-diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
-index 88205bc97198..40734211bc0e 100644
---- a/sound/soc/codecs/tlv320aic32x4.h
-+++ b/sound/soc/codecs/tlv320aic32x4.h
-@@ -78,6 +78,8 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
- 
- #define AIC32X4_PWRCFG		AIC32X4_REG(1, 1)
- #define AIC32X4_LDOCTL		AIC32X4_REG(1, 2)
-+#define AIC32X4_LPLAYBACK	AIC32X4_REG(1, 3)
-+#define AIC32X4_RPLAYBACK	AIC32X4_REG(1, 4)
- #define AIC32X4_OUTPWRCTL	AIC32X4_REG(1, 9)
- #define AIC32X4_CMMODE		AIC32X4_REG(1, 10)
- #define AIC32X4_HPLROUTE	AIC32X4_REG(1, 12)
+ MODULE_DESCRIPTION("ASoC TLV320AIC32x4 codec driver SPI");
+-MODULE_AUTHOR("Jeremy McDermond <nh6z@nh6z.net>");
++MODULE_AUTHOR("Annaliese McDermond <nh6z@nh6z.net>");
+ MODULE_LICENSE("GPL");
 -- 
 2.19.1
