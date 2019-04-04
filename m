@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_adsp: Avoid calling
- snd_compr_stop_error from WDT expiry
-Date: Thu, 4 Apr 2019 20:39:20 +0700
-Message-ID: <20190404133920.GA2803@sirena.org.uk>
-References: <20190404125601.11684-1-ckeepax@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v5 05/14] ASoC: SOF:
+ Add PCM operations support
+Date: Thu, 4 Apr 2019 08:53:34 -0500
+Message-ID: <a91b54fd-3cdb-b229-4a45-e4917649fc60@linux.intel.com>
+References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
+ <20190321161016.26515-6-pierre-louis.bossart@linux.intel.com>
+ <s5hd0m2caz6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3208929077083736138=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB463F8071D
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 15:39:27 +0200 (CEST)
-In-Reply-To: <20190404125601.11684-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <s5hd0m2caz6.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +21,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3208929077083736138==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
+>> +	/* container size */
+>> +	switch (params_width(params)) {
+>> +	case 16:
+>> +		pcm.params.sample_container_bytes = 2;
+>> +		break;
+>> +	case 24:
+>> +		pcm.params.sample_container_bytes = 4;
+>> +		break;
+>> +	case 32:
+>> +		pcm.params.sample_container_bytes = 4;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+> 
+> This can be simply snd_pcm_format_physical_width() / 8.
 
+ok
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> 
+>> +static int sof_pcm_open(struct snd_pcm_substream *substream)
+>> +{
+> ....
+>> +	/* set any runtime constraints based on topology */
+>> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
+>> +				   SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
+>> +				   le32_to_cpu(caps->period_size_min));
+>> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
+>> +				   SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
+>> +				   le32_to_cpu(caps->period_size_min));
+> 
+> Is period_size_min in frames or in bytes?  The code below refers as
+> byte size while this refers as frames, so they look inconsistent.
 
-On Thu, Apr 04, 2019 at 01:56:01PM +0100, Charles Keepax wrote:
+need to check, the topology files always mention frames not bytes.
 
-> Fixes: 56bc22bd1dac ("ASoC: wm_adsp: Shutdown any compressed streams on DSP watchdog timeout")
+> 
+>> +
+>> +	/* set runtime config */
+>> +	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
+>> +			  SNDRV_PCM_INFO_MMAP_VALID |
+>> +			  SNDRV_PCM_INFO_INTERLEAVED |
+>> +			  SNDRV_PCM_INFO_PAUSE |
+>> +			  SNDRV_PCM_INFO_RESUME |
+>> +			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
+> 
+> Does SOF support the full resume?  That is, the stream gets resumed at
+> the exact position that was suspended.  Most devices can't, hence they
+> don't set *_INFO_RESUME flag and let user-space restarting.
 
-This commit doesn't exist upstream...
+Ah this is interesting. All previous Intel drivers set this flag, 
+baytrail/haswell/broadwell, atom-sst and skylake. Only Skylake+ devices 
+can restart at exactly the right position, but it's my understanding 
+that no one ever enabled this mode.
 
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
+Now I see an awful amount of devices that set this INFO_RESUME flag, and 
+I'd be surprised if they all supported a full resume, could it be that 
+there's a requirement that fell between the cracks on this one?
 
------BEGIN PGP SIGNATURE-----
+> 
+>> +	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
+>> +	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
+>> +	runtime->hw.periods_min = le32_to_cpu(caps->periods_min);
+>> +	runtime->hw.periods_max = le32_to_cpu(caps->periods_max);
+>> +	runtime->hw.buffer_bytes_max = le32_to_cpu(caps->buffer_size_max);
+> 
+> These refer as bytes...
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlymCQUACgkQJNaLcl1U
-h9D/5gf5AW76p9Lqm9dUh3Hr2fngZVuEk0EaBrT/liAZNdc3cp0UerwzZCEJZuaS
-ahPr6+c1o+xsiz7FCT4nb3TxwEgQHeZtTSdQZuBJiqX4xmFWIfBiD12uMTaohpyi
-MqTIxBY2cJaGObYQBy26u1Y7V2n8isuJJP0sksvJ5B7f8sjbns84HGPpoHLc9Dxj
-j+MJDjB0iEslH1qOPulzcTyKnI6ntzDHyP5pxPygCKSlck+BrIe2idYU1dYUIvLt
-rVV/A5mp2RkQLlBVDj3e9hojcb2EsfKN+pBk8BdMf9cby6j6eZFmeEyEzNjx0caO
-dhVjsPajOgzSwWl6YSmKIJLBlL1/Jw==
-=NRZR
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
-
---===============3208929077083736138==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3208929077083736138==--
+will check as well.
