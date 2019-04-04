@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98357a: add missing supported rates" to the asoc tree
-Date: Thu,  4 Apr 2019 20:58:37 +0700 (+07)
-Message-ID: <20190404135837.5B0C0441D3C@finisterre.ee.mobilebroadband>
-References: <20190404115015.32208-1-jbrunet@baylibre.com>
+Subject: Applied "ASoC: cs42l51: add reset management" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:26 +0700 (+07)
+Message-ID: <20190404135826.22337441D3C@finisterre.ee.mobilebroadband>
+References: <1554297817-14154-4-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190404115015.32208-1-jbrunet@baylibre.com>
+In-Reply-To: <1554297817-14154-4-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Maxime Jourdan <mjourdan@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98357a: add missing supported rates
+   ASoC: cs42l51: add reset management
 
 has been applied to the asoc tree at
 
@@ -37,34 +36,65 @@ to this mail.
 Thanks,
 Mark
 
->From fdf34366d3242d5eeffa1b4d9a3497ebf30a4ecb Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 4 Apr 2019 13:50:15 +0200
-Subject: [PATCH] ASoC: max98357a: add missing supported rates
+>From 11b9cd748e3107df5c5e040a4daa986a3c6d8b75 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 3 Apr 2019 15:23:33 +0200
+Subject: [PATCH] ASoC: cs42l51: add reset management
 
-According the publicly available datasheet (and some test) the max98357a
-also supports 32, 44.1 and 88.2 kHz sample rate.
+Manage cs42l51 audio codec reset pin.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98357a.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/cs42l51.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/soc/codecs/max98357a.c b/sound/soc/codecs/max98357a.c
-index d469576b5a7b..d037a3e4d323 100644
---- a/sound/soc/codecs/max98357a.c
-+++ b/sound/soc/codecs/max98357a.c
-@@ -97,7 +97,10 @@ static struct snd_soc_dai_driver max98357a_dai_driver = {
- 					SNDRV_PCM_FMTBIT_S32,
- 		.rates		= SNDRV_PCM_RATE_8000 |
- 					SNDRV_PCM_RATE_16000 |
-+					SNDRV_PCM_RATE_32000 |
-+					SNDRV_PCM_RATE_44100 |
- 					SNDRV_PCM_RATE_48000 |
-+					SNDRV_PCM_RATE_88200 |
- 					SNDRV_PCM_RATE_96000,
- 		.rate_min	= 8000,
- 		.rate_max	= 96000,
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index f43eb51d2d8d..9b3ffa16b204 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -30,6 +30,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm_params.h>
+ #include <sound/pcm.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ 
+@@ -54,6 +55,7 @@ struct cs42l51_private {
+ 	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
+ 	enum master_slave_mode func;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(cs42l51_supply_names)];
++	struct gpio_desc *reset_gpio;
+ };
+ 
+ #define CS42L51_FORMATS ( \
+@@ -595,6 +597,17 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
+ 		return ret;
+ 	}
+ 
++	cs42l51->reset_gpio = devm_gpiod_get_optional(dev, "reset",
++						      GPIOD_OUT_LOW);
++	if (IS_ERR(cs42l51->reset_gpio))
++		return PTR_ERR(cs42l51->reset_gpio);
++
++	if (cs42l51->reset_gpio) {
++		dev_dbg(dev, "Release reset gpio\n");
++		gpiod_set_value_cansleep(cs42l51->reset_gpio, 0);
++		mdelay(2);
++	}
++
+ 	/* Verify that we have a CS42L51 */
+ 	ret = regmap_read(regmap, CS42L51_CHIP_REV_ID, &val);
+ 	if (ret < 0) {
+@@ -629,6 +642,8 @@ int cs42l51_remove(struct device *dev)
+ {
+ 	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
+ 
++	gpiod_set_value_cansleep(cs42l51->reset_gpio, 1);
++
+ 	return regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
+ 				      cs42l51->supplies);
+ }
 -- 
 2.20.1
