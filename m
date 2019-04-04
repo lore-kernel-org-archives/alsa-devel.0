@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: pdm: change dma burst to 8" to the asoc tree
-Date: Thu,  4 Apr 2019 15:16:59 +0700 (+07)
-Message-ID: <20190404081700.07830441D3C@finisterre.ee.mobilebroadband>
-References: <1554349691-23450-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: rockchip: pdm: using left justified store mode" to the asoc tree
+Date: Thu,  4 Apr 2019 15:16:56 +0700 (+07)
+Message-ID: <20190404081656.B1131441D3D@finisterre.ee.mobilebroadband>
+References: <1554298856-59028-3-git-send-email-sugar.zhang@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554349691-23450-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <1554298856-59028-3-git-send-email-sugar.zhang@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Sugar Zhang <sugar.zhang@rock-chips.com>
 Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: pdm: change dma burst to 8
+   ASoC: rockchip: pdm: using left justified store mode
 
 has been applied to the asoc tree at
 
@@ -37,31 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 86a7b6ffd90095d81d9fa0d8b48955b7c83b2e2f Mon Sep 17 00:00:00 2001
+>From fb20de606316a446efdfb0f775a892f782165783 Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Thu, 4 Apr 2019 11:48:11 +0800
-Subject: [PATCH] ASoC: rockchip: pdm: change dma burst to 8
+Date: Wed, 3 Apr 2019 21:40:46 +0800
+Subject: [PATCH] ASoC: rockchip: pdm: using left justified store mode
 
-This patch decreases the transfer bursts to avoid the fifo overrun.
+This patch set left justified store mode default.
 
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_pdm.c | 1 +
+ sound/soc/rockchip/rockchip_pdm.h | 3 +++
+ 2 files changed, 4 insertions(+)
 
 diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 8a2e3bbce3a1..d0b403a0e27b 100644
+index 400e29edb1c9..ba61a4b27d39 100644
 --- a/sound/soc/rockchip/rockchip_pdm.c
 +++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -24,7 +24,7 @@
+@@ -135,6 +135,7 @@ static int rockchip_pdm_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(pdm->regmap, PDM_HPF_CTRL,
+ 			   PDM_HPF_LE | PDM_HPF_RE, PDM_HPF_LE | PDM_HPF_RE);
+ 	regmap_update_bits(pdm->regmap, PDM_CLK_CTRL, PDM_CLK_EN, PDM_CLK_EN);
++	regmap_update_bits(pdm->regmap, PDM_CTRL0, PDM_MODE_MSK, PDM_MODE_LJ);
  
- #include "rockchip_pdm.h"
+ 	val = 0;
+ 	switch (params_format(params)) {
+diff --git a/sound/soc/rockchip/rockchip_pdm.h b/sound/soc/rockchip/rockchip_pdm.h
+index 886b48d128fd..00a8fa187d22 100644
+--- a/sound/soc/rockchip/rockchip_pdm.h
++++ b/sound/soc/rockchip/rockchip_pdm.h
+@@ -42,6 +42,9 @@
  
--#define PDM_DMA_BURST_SIZE	(16) /* size * width: 16*4 = 64 bytes */
-+#define PDM_DMA_BURST_SIZE	(8) /* size * width: 8*4 = 32 bytes */
- 
- struct rk_pdm_dev {
- 	struct device *dev;
+ /* PDM CTRL0 */
+ #define PDM_PATH_MSK		(0xf << 27)
++#define PDM_MODE_MSK		BIT(31)
++#define PDM_MODE_RJ		0
++#define PDM_MODE_LJ		BIT(31)
+ #define PDM_PATH3_EN		BIT(30)
+ #define PDM_PATH2_EN		BIT(29)
+ #define PDM_PATH1_EN		BIT(28)
 -- 
 2.20.1
