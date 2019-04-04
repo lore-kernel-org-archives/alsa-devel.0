@@ -1,28 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l51: add adc volume control" to the asoc tree
-Date: Thu,  4 Apr 2019 20:58:17 +0700 (+07)
-Message-ID: <20190404135817.E959C441D3B@finisterre.ee.mobilebroadband>
-References: <1554297817-14154-8-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1554297817-14154-8-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, apatard@mandriva.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: cs42l51: add support of master mode" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:23 +0700 (+07)
+Message-ID: <20190404135823.715FD441D3B@finisterre.ee.mobilebroadband>
+References: <1554297817-14154-5-git-send-email-olivier.moysan@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1554297817-14154-5-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l51: add adc volume control
+   ASoC: cs42l51: add support of master mode
 
 has been applied to the asoc tree at
 
@@ -47,39 +36,76 @@ to this mail.
 Thanks,
 Mark
 
->From e04232c38190ec4485c62ceff94cf2b1c0caba20 Mon Sep 17 00:00:00 2001
+>From 2f7c4ce09a43457666592f36e18a5db58cca86a0 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 3 Apr 2019 15:23:37 +0200
-Subject: [PATCH] ASoC: cs42l51: add adc volume control
+Date: Wed, 3 Apr 2019 15:23:34 +0200
+Subject: [PATCH] ASoC: cs42l51: add support of master mode
 
-Add ADC boost volume control for CS42L51 codec.
+Add support of master mode for cs42l51 cirrus audio codec.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/cs42l51.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index b8f43858876a..58ece037d944 100644
+index 9b3ffa16b204..397b68901d1c 100644
 --- a/sound/soc/codecs/cs42l51.c
 +++ b/sound/soc/codecs/cs42l51.c
-@@ -123,6 +123,7 @@ static const DECLARE_TLV_DB_SCALE(tone_tlv, -1050, 150, 0);
- static const DECLARE_TLV_DB_SCALE(aout_tlv, -10200, 50, 0);
+@@ -340,6 +340,19 @@ static struct cs42l51_ratios slave_auto_ratios[] = {
+ 	{  256, CS42L51_DSM_MODE, 1 }, {  384, CS42L51_DSM_MODE, 1 },
+ };
  
- static const DECLARE_TLV_DB_SCALE(boost_tlv, 1600, 1600, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_boost_tlv, 2000, 2000, 0);
- static const char *chan_mix[] = {
- 	"L R",
- 	"L+R",
-@@ -151,6 +152,8 @@ static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
- 	SOC_SINGLE("Zero Cross Switch", CS42L51_DAC_CTL, 0, 0, 0),
- 	SOC_DOUBLE_TLV("Mic Boost Volume",
- 			CS42L51_MIC_CTL, 0, 1, 1, 0, boost_tlv),
-+	SOC_DOUBLE_TLV("ADC Boost Volume",
-+		       CS42L51_MIC_CTL, 5, 6, 1, 0, adc_boost_tlv),
- 	SOC_SINGLE_TLV("Bass Volume", CS42L51_TONE_CTL, 0, 0xf, 1, tone_tlv),
- 	SOC_SINGLE_TLV("Treble Volume", CS42L51_TONE_CTL, 4, 0xf, 1, tone_tlv),
- 	SOC_ENUM_EXT("PCM channel mixer",
++/*
++ * Master mode mclk/fs ratios.
++ * Recommended configurations are SSM for 4-50khz and DSM for 50-100kHz ranges
++ * The table below provides support of following ratios:
++ * 128: SSM (%128) with div2 disabled
++ * 256: SSM (%128) with div2 enabled
++ * In both cases, if sampling rate is above 50kHz, SSM is overridden
++ * with DSM (%128) configuration
++ */
++static struct cs42l51_ratios master_ratios[] = {
++	{ 128, CS42L51_SSM_MODE, 0 }, { 256, CS42L51_SSM_MODE, 1 },
++};
++
+ static int cs42l51_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+@@ -362,11 +375,13 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int ratio;
+ 	struct cs42l51_ratios *ratios = NULL;
+ 	int nr_ratios = 0;
+-	int intf_ctl, power_ctl, fmt;
++	int intf_ctl, power_ctl, fmt, mode;
+ 
+ 	switch (cs42l51->func) {
+ 	case MODE_MASTER:
+-		return -EINVAL;
++		ratios = master_ratios;
++		nr_ratios = ARRAY_SIZE(master_ratios);
++		break;
+ 	case MODE_SLAVE:
+ 		ratios = slave_ratios;
+ 		nr_ratios = ARRAY_SIZE(slave_ratios);
+@@ -402,7 +417,16 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
+ 	switch (cs42l51->func) {
+ 	case MODE_MASTER:
+ 		intf_ctl |= CS42L51_INTF_CTL_MASTER;
+-		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
++		mode = ratios[i].speed_mode;
++		/* Force DSM mode if sampling rate is above 50kHz */
++		if (rate > 50000)
++			mode = CS42L51_DSM_MODE;
++		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(mode);
++		/*
++		 * Auto detect mode is not applicable for master mode and has to
++		 * be disabled. Otherwise SPEED[1:0] bits will be ignored.
++		 */
++		power_ctl &= ~CS42L51_MIC_POWER_CTL_AUTO;
+ 		break;
+ 	case MODE_SLAVE:
+ 		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
 -- 
 2.20.1
