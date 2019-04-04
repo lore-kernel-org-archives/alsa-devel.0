@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l51: add reset management" to the asoc tree
-Date: Thu,  4 Apr 2019 20:58:26 +0700 (+07)
-Message-ID: <20190404135826.22337441D3C@finisterre.ee.mobilebroadband>
-References: <1554297817-14154-4-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: cs42l51: add regulator management" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:29 +0700 (+07)
+Message-ID: <20190404135829.1A94A441D3B@finisterre.ee.mobilebroadband>
+References: <1554297817-14154-3-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554297817-14154-4-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1554297817-14154-3-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l51: add reset management
+   ASoC: cs42l51: add regulator management
 
 has been applied to the asoc tree at
 
@@ -36,65 +36,149 @@ to this mail.
 Thanks,
 Mark
 
->From 11b9cd748e3107df5c5e040a4daa986a3c6d8b75 Mon Sep 17 00:00:00 2001
+>From f77b6ea70f3a672092e2d7eca2e67be09c0b8c54 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 3 Apr 2019 15:23:33 +0200
-Subject: [PATCH] ASoC: cs42l51: add reset management
+Date: Wed, 3 Apr 2019 15:23:32 +0200
+Subject: [PATCH] ASoC: cs42l51: add regulator management
 
-Manage cs42l51 audio codec reset pin.
+Add cs42l51 audio codec power supply management
+through regulator framework.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/codecs/cs42l51-i2c.c |  6 +++++
+ sound/soc/codecs/cs42l51.c     | 44 +++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs42l51.h     |  1 +
+ 3 files changed, 50 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
+index 4b5731a41876..8333dbf18ea2 100644
+--- a/sound/soc/codecs/cs42l51-i2c.c
++++ b/sound/soc/codecs/cs42l51-i2c.c
+@@ -35,12 +35,18 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c,
+ 	return cs42l51_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
+ }
+ 
++static int cs42l51_i2c_remove(struct i2c_client *i2c)
++{
++	return cs42l51_remove(&i2c->dev);
++}
++
+ static struct i2c_driver cs42l51_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l51",
+ 		.of_match_table = cs42l51_of_match,
+ 	},
+ 	.probe = cs42l51_i2c_probe,
++	.remove = cs42l51_i2c_remove,
+ 	.id_table = cs42l51_i2c_id,
+ };
+ 
 diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index f43eb51d2d8d..9b3ffa16b204 100644
+index 80da3cd73e04..f43eb51d2d8d 100644
 --- a/sound/soc/codecs/cs42l51.c
 +++ b/sound/soc/codecs/cs42l51.c
-@@ -30,6 +30,7 @@
- #include <sound/initval.h>
+@@ -31,6 +31,7 @@
  #include <sound/pcm_params.h>
  #include <sound/pcm.h>
-+#include <linux/gpio/consumer.h>
  #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
++#include <linux/regulator/consumer.h>
  
-@@ -54,6 +55,7 @@ struct cs42l51_private {
+ #include "cs42l51.h"
+ 
+@@ -40,11 +41,19 @@ enum master_slave_mode {
+ 	MODE_MASTER,
+ };
+ 
++static const char * const cs42l51_supply_names[] = {
++	"VL",
++	"VD",
++	"VA",
++	"VAHP",
++};
++
+ struct cs42l51_private {
+ 	unsigned int mclk;
+ 	struct clk *mclk_handle;
  	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
  	enum master_slave_mode func;
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(cs42l51_supply_names)];
-+	struct gpio_desc *reset_gpio;
++	struct regulator_bulk_data supplies[ARRAY_SIZE(cs42l51_supply_names)];
  };
  
  #define CS42L51_FORMATS ( \
-@@ -595,6 +597,17 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
- 		return ret;
+@@ -550,7 +559,7 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
+ {
+ 	struct cs42l51_private *cs42l51;
+ 	unsigned int val;
+-	int ret;
++	int ret, i;
+ 
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+@@ -569,6 +578,23 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
+ 		cs42l51->mclk_handle = NULL;
  	}
  
-+	cs42l51->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-+						      GPIOD_OUT_LOW);
-+	if (IS_ERR(cs42l51->reset_gpio))
-+		return PTR_ERR(cs42l51->reset_gpio);
++	for (i = 0; i < ARRAY_SIZE(cs42l51->supplies); i++)
++		cs42l51->supplies[i].supply = cs42l51_supply_names[i];
 +
-+	if (cs42l51->reset_gpio) {
-+		dev_dbg(dev, "Release reset gpio\n");
-+		gpiod_set_value_cansleep(cs42l51->reset_gpio, 0);
-+		mdelay(2);
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(cs42l51->supplies),
++				      cs42l51->supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l51->supplies),
++				    cs42l51->supplies);
++	if (ret != 0) {
++		dev_err(dev, "Failed to enable supplies: %d\n", ret);
++		return ret;
 +	}
 +
  	/* Verify that we have a CS42L51 */
  	ret = regmap_read(regmap, CS42L51_CHIP_REV_ID, &val);
  	if (ret < 0) {
-@@ -629,6 +642,8 @@ int cs42l51_remove(struct device *dev)
- {
- 	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
+@@ -587,11 +613,27 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
  
-+	gpiod_set_value_cansleep(cs42l51->reset_gpio, 1);
+ 	ret = devm_snd_soc_register_component(dev,
+ 			&soc_component_device_cs42l51, &cs42l51_dai, 1);
++	if (ret < 0)
++		goto error;
 +
- 	return regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
- 				      cs42l51->supplies);
++	return 0;
++
+ error:
++	regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
++			       cs42l51->supplies);
+ 	return ret;
  }
+ EXPORT_SYMBOL_GPL(cs42l51_probe);
+ 
++int cs42l51_remove(struct device *dev)
++{
++	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
++
++	return regulator_bulk_disable(ARRAY_SIZE(cs42l51->supplies),
++				      cs42l51->supplies);
++}
++EXPORT_SYMBOL_GPL(cs42l51_remove);
++
+ const struct of_device_id cs42l51_of_match[] = {
+ 	{ .compatible = "cirrus,cs42l51", },
+ 	{ }
+diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
+index 0ca805492ac4..aef0ede82c7b 100644
+--- a/sound/soc/codecs/cs42l51.h
++++ b/sound/soc/codecs/cs42l51.h
+@@ -22,6 +22,7 @@ struct device;
+ 
+ extern const struct regmap_config cs42l51_regmap;
+ int cs42l51_probe(struct device *dev, struct regmap *regmap);
++int cs42l51_remove(struct device *dev);
+ extern const struct of_device_id cs42l51_of_match[];
+ 
+ #define CS42L51_CHIP_ID			0x1B
 -- 
 2.20.1
