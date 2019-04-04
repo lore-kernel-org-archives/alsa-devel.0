@@ -1,56 +1,58 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.9 66/91] ASoC: fsl-asoc-card: fix object reference leaks in fsl_asoc_card_probe
-Date: Thu,  4 Apr 2019 10:47:50 +0200
-Message-ID: <20190404084539.276503412@linuxfoundation.org>
-References: <20190404084535.450029272@linuxfoundation.org>
+From: Mukesh Ojha <mojha@codeaurora.org>
+Subject: Re: [PATCH] soundwire: cdns: Fix compilation error on
+	arm64
+Date: Thu, 4 Apr 2019 14:22:22 +0530
+Message-ID: <ed49c2d9-dba1-1de6-0178-651f6567e3c3@codeaurora.org>
+References: <20190404081221.341-1-jank@cadence.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190404084535.450029272@linuxfoundation.org>
-Sender: stable-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Wen Yang <yellowriver2010@hotmil.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38F92F8968A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 10:52:32 +0200 (CEST)
+In-Reply-To: <20190404081221.341-1-jank@cadence.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Jan Kotas <jank@cadence.com>, vkoul@kernel.org, sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-4.9-stable review patch.  If anyone has any objections, please let me know.
 
-------------------
+On 4/4/2019 1:42 PM, Jan Kotas wrote:
+> On arm64 the cadence_master.c file doesn't compile.
+>
+> readl and writel are undefined.
+> This patch fixes that by including io.h.
+>
+> Signed-off-by: Jan Kotas <jank@cadence.com>
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 
-[ Upstream commit 11907e9d3533648615db08140e3045b829d2c141 ]
-
-The of_find_device_by_node() takes a reference to the underlying device
-structure, we should release that reference.
-
-Signed-off-by: Wen Yang <yellowriver2010@hotmil.com>
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index dffd549a0e2a..705d2524ec31 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -689,6 +689,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- asrc_fail:
- 	of_node_put(asrc_np);
- 	of_node_put(codec_np);
-+	put_device(&cpu_pdev->dev);
- fail:
- 	of_node_put(cpu_np);
- 
--- 
-2.19.1
+Cheers,
+-Mukesh
+> ---
+>   drivers/soundwire/cadence_master.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index cb6a331f4..0b5bcc209 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/delay.h>
+>   #include <linux/device.h>
+>   #include <linux/interrupt.h>
+> +#include <linux/io.h>
+>   #include <linux/module.h>
+>   #include <linux/mod_devicetable.h>
+>   #include <linux/soundwire/sdw_registers.h>
