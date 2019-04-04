@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l51: add support of master mode" to the asoc tree
-Date: Thu,  4 Apr 2019 20:58:23 +0700 (+07)
-Message-ID: <20190404135823.715FD441D3B@finisterre.ee.mobilebroadband>
-References: <1554297817-14154-5-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: cs42l51: add power management" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:20 +0700 (+07)
+Message-ID: <20190404135820.B9248441D3C@finisterre.ee.mobilebroadband>
+References: <1554297817-14154-7-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554297817-14154-5-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1554297817-14154-7-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l51: add support of master mode
+   ASoC: cs42l51: add power management
 
 has been applied to the asoc tree at
 
@@ -36,76 +36,217 @@ to this mail.
 Thanks,
 Mark
 
->From 2f7c4ce09a43457666592f36e18a5db58cca86a0 Mon Sep 17 00:00:00 2001
+>From 75a714823e89ceeb168092b4c4d0a3f52b415461 Mon Sep 17 00:00:00 2001
 From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 3 Apr 2019 15:23:34 +0200
-Subject: [PATCH] ASoC: cs42l51: add support of master mode
+Date: Wed, 3 Apr 2019 15:23:36 +0200
+Subject: [PATCH] ASoC: cs42l51: add power management
 
-Add support of master mode for cs42l51 cirrus audio codec.
+Add sleep PM callbacks to support system low power modes.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs42l51-i2c.c |   7 +-
+ sound/soc/codecs/cs42l51.c     | 122 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs42l51.h     |   2 +
+ 3 files changed, 129 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 9b3ffa16b204..397b68901d1c 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -340,6 +340,19 @@ static struct cs42l51_ratios slave_auto_ratios[] = {
- 	{  256, CS42L51_DSM_MODE, 1 }, {  384, CS42L51_DSM_MODE, 1 },
- };
+diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
+index 8333dbf18ea2..116221e581ce 100644
+--- a/sound/soc/codecs/cs42l51-i2c.c
++++ b/sound/soc/codecs/cs42l51-i2c.c
+@@ -29,8 +29,6 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c,
+ 	struct regmap_config config;
  
-+/*
-+ * Master mode mclk/fs ratios.
-+ * Recommended configurations are SSM for 4-50khz and DSM for 50-100kHz ranges
-+ * The table below provides support of following ratios:
-+ * 128: SSM (%128) with div2 disabled
-+ * 256: SSM (%128) with div2 enabled
-+ * In both cases, if sampling rate is above 50kHz, SSM is overridden
-+ * with DSM (%128) configuration
-+ */
-+static struct cs42l51_ratios master_ratios[] = {
-+	{ 128, CS42L51_SSM_MODE, 0 }, { 256, CS42L51_SSM_MODE, 1 },
+ 	config = cs42l51_regmap;
+-	config.val_bits = 8;
+-	config.reg_bits = 8;
+ 
+ 	return cs42l51_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
+ }
+@@ -40,10 +38,15 @@ static int cs42l51_i2c_remove(struct i2c_client *i2c)
+ 	return cs42l51_remove(&i2c->dev);
+ }
+ 
++static const struct dev_pm_ops cs42l51_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(cs42l51_suspend, cs42l51_resume)
 +};
 +
- static int cs42l51_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
-@@ -362,11 +375,13 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int ratio;
- 	struct cs42l51_ratios *ratios = NULL;
- 	int nr_ratios = 0;
--	int intf_ctl, power_ctl, fmt;
-+	int intf_ctl, power_ctl, fmt, mode;
+ static struct i2c_driver cs42l51_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l51",
+ 		.of_match_table = cs42l51_of_match,
++		.pm = &cs42l51_pm_ops,
+ 	},
+ 	.probe = cs42l51_i2c_probe,
+ 	.remove = cs42l51_i2c_remove,
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 397b68901d1c..b8f43858876a 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -56,6 +56,7 @@ struct cs42l51_private {
+ 	enum master_slave_mode func;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(cs42l51_supply_names)];
+ 	struct gpio_desc *reset_gpio;
++	struct regmap *regmap;
+ };
  
- 	switch (cs42l51->func) {
- 	case MODE_MASTER:
--		return -EINVAL;
-+		ratios = master_ratios;
-+		nr_ratios = ARRAY_SIZE(master_ratios);
-+		break;
- 	case MODE_SLAVE:
- 		ratios = slave_ratios;
- 		nr_ratios = ARRAY_SIZE(slave_ratios);
-@@ -402,7 +417,16 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
- 	switch (cs42l51->func) {
- 	case MODE_MASTER:
- 		intf_ctl |= CS42L51_INTF_CTL_MASTER;
--		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
-+		mode = ratios[i].speed_mode;
-+		/* Force DSM mode if sampling rate is above 50kHz */
-+		if (rate > 50000)
-+			mode = CS42L51_DSM_MODE;
-+		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(mode);
-+		/*
-+		 * Auto detect mode is not applicable for master mode and has to
-+		 * be disabled. Otherwise SPEED[1:0] bits will be ignored.
-+		 */
-+		power_ctl &= ~CS42L51_MIC_POWER_CTL_AUTO;
- 		break;
- 	case MODE_SLAVE:
- 		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
+ #define CS42L51_FORMATS ( \
+@@ -575,7 +576,106 @@ static const struct snd_soc_component_driver soc_component_device_cs42l51 = {
+ 	.non_legacy_dai_naming	= 1,
+ };
+ 
++static bool cs42l51_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS42L51_POWER_CTL1:
++	case CS42L51_MIC_POWER_CTL:
++	case CS42L51_INTF_CTL:
++	case CS42L51_MIC_CTL:
++	case CS42L51_ADC_CTL:
++	case CS42L51_ADC_INPUT:
++	case CS42L51_DAC_OUT_CTL:
++	case CS42L51_DAC_CTL:
++	case CS42L51_ALC_PGA_CTL:
++	case CS42L51_ALC_PGB_CTL:
++	case CS42L51_ADCA_ATT:
++	case CS42L51_ADCB_ATT:
++	case CS42L51_ADCA_VOL:
++	case CS42L51_ADCB_VOL:
++	case CS42L51_PCMA_VOL:
++	case CS42L51_PCMB_VOL:
++	case CS42L51_BEEP_FREQ:
++	case CS42L51_BEEP_VOL:
++	case CS42L51_BEEP_CONF:
++	case CS42L51_TONE_CTL:
++	case CS42L51_AOUTA_VOL:
++	case CS42L51_AOUTB_VOL:
++	case CS42L51_PCM_MIXER:
++	case CS42L51_LIMIT_THRES_DIS:
++	case CS42L51_LIMIT_REL:
++	case CS42L51_LIMIT_ATT:
++	case CS42L51_ALC_EN:
++	case CS42L51_ALC_REL:
++	case CS42L51_ALC_THRES:
++	case CS42L51_NOISE_CONF:
++	case CS42L51_CHARGE_FREQ:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool cs42l51_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS42L51_STATUS:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool cs42l51_readable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CS42L51_CHIP_REV_ID:
++	case CS42L51_POWER_CTL1:
++	case CS42L51_MIC_POWER_CTL:
++	case CS42L51_INTF_CTL:
++	case CS42L51_MIC_CTL:
++	case CS42L51_ADC_CTL:
++	case CS42L51_ADC_INPUT:
++	case CS42L51_DAC_OUT_CTL:
++	case CS42L51_DAC_CTL:
++	case CS42L51_ALC_PGA_CTL:
++	case CS42L51_ALC_PGB_CTL:
++	case CS42L51_ADCA_ATT:
++	case CS42L51_ADCB_ATT:
++	case CS42L51_ADCA_VOL:
++	case CS42L51_ADCB_VOL:
++	case CS42L51_PCMA_VOL:
++	case CS42L51_PCMB_VOL:
++	case CS42L51_BEEP_FREQ:
++	case CS42L51_BEEP_VOL:
++	case CS42L51_BEEP_CONF:
++	case CS42L51_TONE_CTL:
++	case CS42L51_AOUTA_VOL:
++	case CS42L51_AOUTB_VOL:
++	case CS42L51_PCM_MIXER:
++	case CS42L51_LIMIT_THRES_DIS:
++	case CS42L51_LIMIT_REL:
++	case CS42L51_LIMIT_ATT:
++	case CS42L51_ALC_EN:
++	case CS42L51_ALC_REL:
++	case CS42L51_ALC_THRES:
++	case CS42L51_NOISE_CONF:
++	case CS42L51_STATUS:
++	case CS42L51_CHARGE_FREQ:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ const struct regmap_config cs42l51_regmap = {
++	.reg_bits = 8,
++	.reg_stride = 1,
++	.val_bits = 8,
++	.use_single_write = true,
++	.readable_reg = cs42l51_readable_reg,
++	.volatile_reg = cs42l51_volatile_reg,
++	.writeable_reg = cs42l51_writeable_reg,
+ 	.max_register = CS42L51_CHARGE_FREQ,
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+@@ -596,6 +696,7 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap)
+ 		return -ENOMEM;
+ 
+ 	dev_set_drvdata(dev, cs42l51);
++	cs42l51->regmap = regmap;
+ 
+ 	cs42l51->mclk_handle = devm_clk_get(dev, "MCLK");
+ 	if (IS_ERR(cs42l51->mclk_handle)) {
+@@ -673,6 +774,27 @@ int cs42l51_remove(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(cs42l51_remove);
+ 
++int __maybe_unused cs42l51_suspend(struct device *dev)
++{
++	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
++
++	regcache_cache_only(cs42l51->regmap, true);
++	regcache_mark_dirty(cs42l51->regmap);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cs42l51_suspend);
++
++int __maybe_unused cs42l51_resume(struct device *dev)
++{
++	struct cs42l51_private *cs42l51 = dev_get_drvdata(dev);
++
++	regcache_cache_only(cs42l51->regmap, false);
++
++	return regcache_sync(cs42l51->regmap);
++}
++EXPORT_SYMBOL_GPL(cs42l51_resume);
++
+ const struct of_device_id cs42l51_of_match[] = {
+ 	{ .compatible = "cirrus,cs42l51", },
+ 	{ }
+diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
+index aef0ede82c7b..79dee01137c8 100644
+--- a/sound/soc/codecs/cs42l51.h
++++ b/sound/soc/codecs/cs42l51.h
+@@ -23,6 +23,8 @@ struct device;
+ extern const struct regmap_config cs42l51_regmap;
+ int cs42l51_probe(struct device *dev, struct regmap *regmap);
+ int cs42l51_remove(struct device *dev);
++int __maybe_unused cs42l51_suspend(struct device *dev);
++int __maybe_unused cs42l51_resume(struct device *dev);
+ extern const struct of_device_id cs42l51_of_match[];
+ 
+ #define CS42L51_CHIP_ID			0x1B
 -- 
 2.20.1
