@@ -1,97 +1,85 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [Sound-open-firmware] [PATCH v5 05/14] ASoC: SOF:
- Add PCM operations support
-Date: Thu, 4 Apr 2019 08:53:34 -0500
-Message-ID: <a91b54fd-3cdb-b229-4a45-e4917649fc60@linux.intel.com>
-References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
- <20190321161016.26515-6-pierre-louis.bossart@linux.intel.com>
- <s5hd0m2caz6.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: cs42l51: add adc volume control" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:17 +0700 (+07)
+Message-ID: <20190404135817.E959C441D3B@finisterre.ee.mobilebroadband>
+References: <1554297817-14154-8-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hd0m2caz6.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, Daniel Baluta <daniel.baluta@gmail.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1554297817-14154-8-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, apatard@mandriva.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
->> +	/* container size */
->> +	switch (params_width(params)) {
->> +	case 16:
->> +		pcm.params.sample_container_bytes = 2;
->> +		break;
->> +	case 24:
->> +		pcm.params.sample_container_bytes = 4;
->> +		break;
->> +	case 32:
->> +		pcm.params.sample_container_bytes = 4;
->> +		break;
->> +	default:
->> +		return -EINVAL;
->> +	}
-> 
-> This can be simply snd_pcm_format_physical_width() / 8.
+   ASoC: cs42l51: add adc volume control
 
-ok
+has been applied to the asoc tree at
 
-> 
->> +static int sof_pcm_open(struct snd_pcm_substream *substream)
->> +{
-> ....
->> +	/* set any runtime constraints based on topology */
->> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
->> +				   SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
->> +				   le32_to_cpu(caps->period_size_min));
->> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
->> +				   SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
->> +				   le32_to_cpu(caps->period_size_min));
-> 
-> Is period_size_min in frames or in bytes?  The code below refers as
-> byte size while this refers as frames, so they look inconsistent.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-need to check, the topology files always mention frames not bytes.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> 
->> +
->> +	/* set runtime config */
->> +	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
->> +			  SNDRV_PCM_INFO_MMAP_VALID |
->> +			  SNDRV_PCM_INFO_INTERLEAVED |
->> +			  SNDRV_PCM_INFO_PAUSE |
->> +			  SNDRV_PCM_INFO_RESUME |
->> +			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
-> 
-> Does SOF support the full resume?  That is, the stream gets resumed at
-> the exact position that was suspended.  Most devices can't, hence they
-> don't set *_INFO_RESUME flag and let user-space restarting.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Ah this is interesting. All previous Intel drivers set this flag, 
-baytrail/haswell/broadwell, atom-sst and skylake. Only Skylake+ devices 
-can restart at exactly the right position, but it's my understanding 
-that no one ever enabled this mode.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Now I see an awful amount of devices that set this INFO_RESUME flag, and 
-I'd be surprised if they all supported a full resume, could it be that 
-there's a requirement that fell between the cracks on this one?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> 
->> +	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
->> +	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
->> +	runtime->hw.periods_min = le32_to_cpu(caps->periods_min);
->> +	runtime->hw.periods_max = le32_to_cpu(caps->periods_max);
->> +	runtime->hw.buffer_bytes_max = le32_to_cpu(caps->buffer_size_max);
-> 
-> These refer as bytes...
+Thanks,
+Mark
 
-will check as well.
+>From e04232c38190ec4485c62ceff94cf2b1c0caba20 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 3 Apr 2019 15:23:37 +0200
+Subject: [PATCH] ASoC: cs42l51: add adc volume control
+
+Add ADC boost volume control for CS42L51 codec.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs42l51.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index b8f43858876a..58ece037d944 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -123,6 +123,7 @@ static const DECLARE_TLV_DB_SCALE(tone_tlv, -1050, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(aout_tlv, -10200, 50, 0);
+ 
+ static const DECLARE_TLV_DB_SCALE(boost_tlv, 1600, 1600, 0);
++static const DECLARE_TLV_DB_SCALE(adc_boost_tlv, 2000, 2000, 0);
+ static const char *chan_mix[] = {
+ 	"L R",
+ 	"L+R",
+@@ -151,6 +152,8 @@ static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
+ 	SOC_SINGLE("Zero Cross Switch", CS42L51_DAC_CTL, 0, 0, 0),
+ 	SOC_DOUBLE_TLV("Mic Boost Volume",
+ 			CS42L51_MIC_CTL, 0, 1, 1, 0, boost_tlv),
++	SOC_DOUBLE_TLV("ADC Boost Volume",
++		       CS42L51_MIC_CTL, 5, 6, 1, 0, adc_boost_tlv),
+ 	SOC_SINGLE_TLV("Bass Volume", CS42L51_TONE_CTL, 0, 0xf, 1, tone_tlv),
+ 	SOC_SINGLE_TLV("Treble Volume", CS42L51_TONE_CTL, 4, 0xf, 1, tone_tlv),
+ 	SOC_ENUM_EXT("PCM channel mixer",
+-- 
+2.20.1
