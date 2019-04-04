@@ -1,17 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: update cs42l51 bindings" to the asoc tree
-Date: Thu,  4 Apr 2019 20:58:31 +0700 (+07)
-Message-ID: <20190404135831.D3441441D3C@finisterre.ee.mobilebroadband>
-References: <1554297817-14154-2-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554297817-14154-2-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com, apatard@mandriva.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Avoid calling
+	snd_compr_stop_error from WDT expiry" to the asoc tree
+Date: Thu,  4 Apr 2019 20:58:34 +0700 (+07)
+Message-ID: <20190404135834.A5851441D3B@finisterre.ee.mobilebroadband>
+References: <20190404125601.11684-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13045F8972E
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 15:58:44 +0200 (CEST)
+In-Reply-To: <20190404125601.11684-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, stable@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: update cs42l51 bindings
+   ASoC: wm_adsp: Avoid calling snd_compr_stop_error from WDT expiry
 
 has been applied to the asoc tree at
 
@@ -36,51 +55,69 @@ to this mail.
 Thanks,
 Mark
 
->From 26bde6ad6d59b2e1347995de6198205ef6138b52 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 3 Apr 2019 15:23:31 +0200
-Subject: [PATCH] ASoC: dt-bindings: update cs42l51 bindings
+>From aa612f2b006aa3552871dabcd6a8e90e33f65e09 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Thu, 4 Apr 2019 13:56:01 +0100
+Subject: [PATCH] ASoC: wm_adsp: Avoid calling snd_compr_stop_error from WDT
+ expiry
 
-Add compatible, reg, regulator, and reset
-to Cirrus CS42L51 audio codec bindings.
+It is unsafe to call snd_compr_stop_error from outside of the
+compressed ops. Firstly the compressed device lock needs to be held
+and secondly it queues error work to issue a trigger stop which
+should not happen after the stream has been freed. To avoid these
+issues use the same trick used for the IRQ handling, simply send a
+snd_compr_fragment_elapsed to cause user-space to wake on the poll,
+then report the error when user-space issues the pointer request
+after it wakes.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Fixes: a2bcbc1b9ac2f ("ASoC: wm_adsp: Shutdown any compressed streams on DSP watchdog timeout")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@kernel.org
 ---
- .../devicetree/bindings/sound/cs42l51.txt        | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/codecs/wm_adsp.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42l51.txt b/Documentation/devicetree/bindings/sound/cs42l51.txt
-index 4b5de33ce377..acbd68ddd2cb 100644
---- a/Documentation/devicetree/bindings/sound/cs42l51.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42l51.txt
-@@ -1,6 +1,17 @@
- CS42L51 audio CODEC
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index c8c49d5b8ac9..a9298bfddd9c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -4092,7 +4092,7 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
  
-+Required properties:
-+
-+  - compatible : "cirrus,cs42l51"
-+
-+  - reg : the I2C address of the device for I2C.
-+
- Optional properties:
-+  - VL-supply, VD-supply, VA-supply, VAHP-supply: power supplies for the device,
-+    as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - reset-gpios : GPIO specification for the reset pin. If specified, it will be
-+    deasserted before starting the communication with the codec.
+ 	buf = compr->buf;
  
-   - clocks : a list of phandles + clock-specifiers, one for each entry in
-     clock-names
-@@ -14,4 +25,9 @@ cs42l51: cs42l51@4a {
- 	reg = <0x4a>;
- 	clocks = <&mclk_prov>;
- 	clock-names = "MCLK";
-+	VL-supply = <&reg_audio>;
-+	VD-supply = <&reg_audio>;
-+	VA-supply = <&reg_audio>;
-+	VAHP-supply = <&reg_audio>;
-+	reset-gpios = <&gpiog 9 GPIO_ACTIVE_LOW>;
- };
+-	if (!buf || buf->error) {
++	if (dsp->fatal_error || !buf || buf->error) {
+ 		snd_compr_stop_error(stream, SNDRV_PCM_STATE_XRUN);
+ 		ret = -EIO;
+ 		goto out;
+@@ -4196,12 +4196,13 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
+ static int wm_adsp_compr_read(struct wm_adsp_compr *compr,
+ 			      char __user *buf, size_t count)
+ {
++	struct wm_adsp *dsp = compr->dsp;
+ 	int ntotal = 0;
+ 	int nwords, nbytes;
+ 
+ 	compr_dbg(compr, "Requested read of %zu bytes\n", count);
+ 
+-	if (!compr->buf || compr->buf->error) {
++	if (dsp->fatal_error || !compr->buf || compr->buf->error) {
+ 		snd_compr_stop_error(compr->stream, SNDRV_PCM_STATE_XRUN);
+ 		return -EIO;
+ 	}
+@@ -4262,11 +4263,8 @@ static void wm_adsp_fatal_error(struct wm_adsp *dsp)
+ 	dsp->fatal_error = true;
+ 
+ 	list_for_each_entry(compr, &dsp->compr_list, list) {
+-		if (compr->stream) {
+-			snd_compr_stop_error(compr->stream,
+-					     SNDRV_PCM_STATE_XRUN);
++		if (compr->stream)
+ 			snd_compr_fragment_elapsed(compr->stream);
+-		}
+ 	}
+ }
+ 
 -- 
 2.20.1
