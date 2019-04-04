@@ -1,22 +1,71 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 02/20] ASoC: efika-audio-fabric.c: Switch to SPDX identifier
-Date: Fri, 5 Apr 2019 10:26:49 -0300
-Message-ID: <CAOMZO5Aa_z5V03hYG+=A2zgMNKU5kEPHU=uYH1v_6VD-47s9kg@mail.gmail.com>
-References: <20190405115010.28838-1-andradanciu1997@gmail.com>
- <20190405115010.28838-3-andradanciu1997@gmail.com> <8e16e9f5-2c0f-a1e6-df0d-67b982db294a@codeaurora.org>
- <CAOMZO5CZtJq65iUDN2Ao9zt=0_L0iXy-5eRCrHAzQb+3s5rxBA@mail.gmail.com> <e3bc6c00-d88d-d30a-28a1-a8c4e520ec5a@codeaurora.org>
+From: Zubin Mithra <zsm@chromium.org>
+Subject: [PATCH] ALSA: seq: Fix OOB-reads from strlcpy
+Date: Thu,  4 Apr 2019 14:33:55 -0700
+Message-ID: <20190404213355.76452-1-zsm@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e3bc6c00-d88d-d30a-28a1-a8c4e520ec5a@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mukesh Ojha <mojha@codeaurora.org>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, Andra Danciu <andradanciu1997@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, timur@kernel.org, Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev@lists.ozlabs.org, Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Sascha Hauer <kernel@pengutronix.de>, Linux-ALSA <alsa-devel@alsa-project.org>, Shawn Guo <shawnguo@kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
+ [IPv6:2607:f8b0:4864:20::641])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC518F8075B
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 23:34:09 +0200 (CEST)
+Received: by mail-pl1-x641.google.com with SMTP id d1so1809124plj.8
+ for <alsa-devel@alsa-project.org>; Thu, 04 Apr 2019 14:34:08 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: groeck@chromium.org, tiwai@suse.com, Zubin Mithra <zsm@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 5, 2019 at 10:24 AM Mukesh Ojha <mojha@codeaurora.org> wrote:
+When ioctl calls are made with non-null-terminated userspace strings,
+strlcpy causes an OOB-read from within strlen. Fix by changing to use
+strscpy instead.
 
-> you mean all lines to start with //, does not it look to noisy to eyes ?
+Signed-off-by: Zubin Mithra <zsm@chromium.org>
+---
+ sound/core/seq/seq_clientmgr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Mark Brown's recommendation is to use // in all the initial block
-lines instead of only in the SPDX one.
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 7d4640d1fe9fb..38e7deab63847 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -1252,7 +1252,7 @@ static int snd_seq_ioctl_set_client_info(struct snd_seq_client *client,
+ 
+ 	/* fill the info fields */
+ 	if (client_info->name[0])
+-		strlcpy(client->name, client_info->name, sizeof(client->name));
++		strscpy(client->name, client_info->name, sizeof(client->name));
+ 
+ 	client->filter = client_info->filter;
+ 	client->event_lost = client_info->event_lost;
+@@ -1530,7 +1530,7 @@ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
+ 	/* set queue name */
+ 	if (!info->name[0])
+ 		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
+-	strlcpy(q->name, info->name, sizeof(q->name));
++	strscpy(q->name, info->name, sizeof(q->name));
+ 	snd_use_lock_free(&q->use_lock);
+ 
+ 	return 0;
+@@ -1592,7 +1592,7 @@ static int snd_seq_ioctl_set_queue_info(struct snd_seq_client *client,
+ 		queuefree(q);
+ 		return -EPERM;
+ 	}
+-	strlcpy(q->name, info->name, sizeof(q->name));
++	strscpy(q->name, info->name, sizeof(q->name));
+ 	queuefree(q);
+ 
+ 	return 0;
+-- 
+2.21.0.392.gf8f6787159e-goog
