@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: pdm: adjust waterlevel in frame unit" to the asoc tree
-Date: Thu,  4 Apr 2019 15:16:34 +0700 (+07)
-Message-ID: <20190404081634.31E08441D3C@finisterre.ee.mobilebroadband>
-References: <1554350189-24318-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: rockchip: pdm: add compatible for rk1808" to the asoc tree
+Date: Thu,  4 Apr 2019 15:16:40 +0700 (+07)
+Message-ID: <20190404081640.D7D3E441D3C@finisterre.ee.mobilebroadband>
+References: <1554350070-24078-1-git-send-email-sugar.zhang@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554350189-24318-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <1554350070-24078-1-git-send-email-sugar.zhang@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Sugar Zhang <sugar.zhang@rock-chips.com>
 Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: pdm: adjust waterlevel in frame unit
+   ASoC: rockchip: pdm: add compatible for rk1808
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 430f5da69b9323d5e7faca95bc30e61be4fcbbbf Mon Sep 17 00:00:00 2001
+>From 717d97879b346d56fc47a6e3fe0ad44fea9949b2 Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Thu, 4 Apr 2019 11:56:29 +0800
-Subject: [PATCH] ASoC: rockchip: pdm: adjust waterlevel in frame unit
+Date: Thu, 4 Apr 2019 11:54:30 +0800
+Subject: [PATCH] ASoC: rockchip: pdm: add compatible for rk1808
 
-This patch make the waterlevel more reasonable, because the pdm
-controller share the single FIFO(128 entries) with each channel.
-adjust waterlevel in frame to meet the vad or dma frames request.
+This patch adds support for rk1808, the pdm controller
+is the same as rk3308.
 
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pdm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_pdm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 3e1c5fd5b32b..955cdc2b8fc5 100644
+index 4f93a7454e85..3e1c5fd5b32b 100644
 --- a/sound/soc/rockchip/rockchip_pdm.c
 +++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -255,8 +255,9 @@ static int rockchip_pdm_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(pdm->regmap, PDM_CTRL0,
- 			   PDM_PATH_MSK | PDM_VDW_MSK,
- 			   val);
-+	/* all channels share the single FIFO */
- 	regmap_update_bits(pdm->regmap, PDM_DMA_CTRL, PDM_DMA_RDL_MSK,
--			   PDM_DMA_RDL(16));
-+			   PDM_DMA_RDL(8 * params_channels(params)));
- 
- 	return 0;
- }
+@@ -457,6 +457,8 @@ static const struct of_device_id rockchip_pdm_match[] = {
+ 	{ .compatible = "rockchip,pdm", },
+ 	{ .compatible = "rockchip,px30-pdm",
+ 	  .data = (void *)RK_PDM_RK3308 },
++	{ .compatible = "rockchip,rk1808-pdm",
++	  .data = (void *)RK_PDM_RK3308 },
+ 	{ .compatible = "rockchip,rk3308-pdm",
+ 	  .data = (void *)RK_PDM_RK3308 },
+ 	{},
 -- 
 2.20.1
