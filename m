@@ -1,49 +1,39 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: imx-pcm: Switch to SPDX identifier
-Date: Thu, 4 Apr 2019 09:09:17 -0300
-Message-ID: <CAOMZO5Co=+0wwXzfkc8aGAC7d6Dm7PsHBQcLyx2VVZjkcKrsVQ@mail.gmail.com>
-References: <20190404120703.30054-1-andradanciu1997@gmail.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: [Xen-devel][PATCH] ALSA: xen-front: Do not use stream buffer size before it is set
+Date: Thu,  4 Apr 2019 15:38:38 +0300
+Message-ID: <20190404123838.22162-1-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190404120703.30054-1-andradanciu1997@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: timur@kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linuxppc-dev@lists.ozlabs.org, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 4, 2019 at 9:07 AM Andra Danciu <andradanciu1997@gmail.com> wrote:
->
-> Adopt the SPDX license identifier headers to ease license compliance
-> management.
->
-> Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
-> ---
->  sound/soc/fsl/imx-pcm.h | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-> index 133c4470acad..3ce2f437e645 100644
-> --- a/sound/soc/fsl/imx-pcm.h
-> +++ b/sound/soc/fsl/imx-pcm.h
-> @@ -1,13 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-This is not correct...
+This fixes the regression introduced while moving to Xen shared
+buffer implementation.
 
->  /*
->   * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
->   *
->   * This code is based on code copyrighted by Freescale,
->   * Liam Girdwood, Javier Martin and probably others.
-> - *
-> - * This program is free software; you can redistribute  it and/or modify it
-> - * under  the terms of  the GNU General  Public License as published by the
-> - * Free Software Foundation;  either version 2 of the  License, or (at your
-> - * option) any later version.
+Fixes: 58f9d806d16a ("ALSA: xen-front: Use Xen common shared buffer implementation")
 
-as it does not match with the original license text.
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ sound/xen/xen_snd_front_alsa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You should use:
-
-/* SPDX-License-Identifier: GPL-2.0+ */
+diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+index a7f413cb704d..b14ab512c2ce 100644
+--- a/sound/xen/xen_snd_front_alsa.c
++++ b/sound/xen/xen_snd_front_alsa.c
+@@ -441,7 +441,7 @@ static int shbuf_setup_backstore(struct xen_snd_front_pcm_stream_info *stream,
+ {
+ 	int i;
+ 
+-	stream->buffer = alloc_pages_exact(stream->buffer_sz, GFP_KERNEL);
++	stream->buffer = alloc_pages_exact(buffer_sz, GFP_KERNEL);
+ 	if (!stream->buffer)
+ 		return -ENOMEM;
+ 
+-- 
+2.21.0
