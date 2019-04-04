@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Change author's name" to
-	the asoc tree
-Date: Thu,  4 Apr 2019 13:04:30 +0700 (+07)
-Message-ID: <20190404060430.CA83A441D3C@finisterre.ee.mobilebroadband>
-References: <20190404041716.29896-1-nh6z@nh6z.net>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH V2] ASoC: fsl_esai: Support synchronous mode
+Date: Thu, 4 Apr 2019 06:29:39 +0000
+Message-ID: <VE1PR04MB6479E9E8A536F7EEFE78A3A1E3500@VE1PR04MB6479.eurprd04.prod.outlook.com>
+References: <dac7c52215b4bb09f3548bcb9246f8fe21799e38.1554285839.git.shengjiu.wang@nxp.com>
+ <20190403185716.GA5130@Asurada-Nvidia.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr140057.outbound.protection.outlook.com [40.107.14.57])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E486DF8971F
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 08:04:34 +0200 (CEST)
-In-Reply-To: <20190404041716.29896-1-nh6z@nh6z.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02223F8075B
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 08:29:40 +0200 (CEST)
+In-Reply-To: <20190403185716.GA5130@Asurada-Nvidia.nvidia.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,92 +25,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Annaliese McDermond <nh6z@nh6z.net>
-Cc: team@nwdigitalradio.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi
 
-   ASoC: tlv320aic32x4: Change author's name
+> 
+> This looks better :)
+> 
+> On Wed, Apr 03, 2019 at 10:07:40AM +0000, S.j. Wang wrote:
+> > @@ -218,7 +218,7 @@ static int fsl_esai_set_dai_sysclk(struct
+> > snd_soc_dai *dai, int clk_id,  {
+> >  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+> >  	struct clk *clksrc = esai_priv->extalclk;
+> > -	bool tx = clk_id <= ESAI_HCKT_EXTAL;
+> > +	bool tx = (clk_id <= ESAI_HCKT_EXTAL || esai_priv->synchronous);
+> >  	bool in = dir == SND_SOC_CLOCK_IN;
+> >  	u32 ratio, ecr = 0;
+> >  	unsigned long clk_rate;
+> > @@ -253,7 +253,7 @@ static int fsl_esai_set_dai_sysclk(struct
+> snd_soc_dai *dai, int clk_id,
+> >  		ecr |= ESAI_ECR_ETI;
+> >  		/* fall through */
+> 
+> Btw, I am also wondering if the fall through here is a bug....
+> Because I don't recall that there is a specific reason to fall through here.
+> Can you please help confirm? Perhaps we need to submit a separate fix as
+> well by replacing it with a "break;".
+Yes, I think there is issue here, will submit another patch for it.
+> 
+> >  	case ESAI_HCKR_EXTAL:
+> > -		ecr |= ESAI_ECR_ERI;
+> > +		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI :
+> ESAI_ECR_ERI;
+> >  		break;
+> >  	default:
+> >  		return -EINVAL;
+> 
+> > @@ -537,10 +537,18 @@ static int fsl_esai_hw_params(struct
+> > snd_pcm_substream *substream,
+> >
+> >  	bclk = params_rate(params) * slot_width * esai_priv->slots;
+> >
+> > -	ret = fsl_esai_set_bclk(dai, tx, bclk);
+> > +	ret = fsl_esai_set_bclk(dai, esai_priv->synchronous || tx, bclk);
+> >  	if (ret)
+> >  		return ret;
+> >
+> > +	mask = ESAI_xCR_xSWS_MASK;
+> > +	val = ESAI_xCR_xSWS(slot_width, width);
+> > +
+> > +	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx), mask,
+> val);
+> > +	/* Recording in synchronous mode needs to set TCR also */
+> > +	if (!tx && esai_priv->synchronous)
+> > +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> mask, val);
+> > +
+> >  	/* Use Normal mode to support monaural audio */
+> >  	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+> >  			   ESAI_xCR_xMOD_MASK,
+> params_channels(params) > 1 ?
+> > @@ -556,10 +564,9 @@ static int fsl_esai_hw_params(struct
+> > snd_pcm_substream *substream,
+> >
+> >  	regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx), mask,
+> val);
+> >
+> > -	mask = ESAI_xCR_xSWS_MASK | (tx ? ESAI_xCR_PADC : 0);
+> > -	val = ESAI_xCR_xSWS(slot_width, width) | (tx ? ESAI_xCR_PADC : 0);
+> > -
+> > -	regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx), mask,
+> val);
+> > +	if (tx)
+> > +		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> > +					ESAI_xCR_PADC, ESAI_xCR_PADC);
+> 
+> Mind aligning the indentation here like the one below?
+> 		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
+> 				   ESAI_xCR_PADC, ESAI_xCR_PADC);
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7297ba6c74c5b9e78d8e936af82eecfcf7d32dfb Mon Sep 17 00:00:00 2001
-From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Wed, 3 Apr 2019 21:17:15 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Change author's name
-
-The author of these files has changed her name.  Update
-instances in the code of her dead name to current legal
-name.
-
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/tlv320aic32x4-i2c.c | 4 ++--
- sound/soc/codecs/tlv320aic32x4-spi.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
-index 385fa2e9525a..22c3a6bc0b6c 100644
---- a/sound/soc/codecs/tlv320aic32x4-i2c.c
-+++ b/sound/soc/codecs/tlv320aic32x4-i2c.c
-@@ -3,7 +3,7 @@
-  *
-  * Copyright 2011 NW Digital Radio
-  *
-- * Author: Jeremy McDermond <nh6z@nh6z.net>
-+ * Author: Annaliese McDermond <nh6z@nh6z.net>
-  *
-  * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
-  *
-@@ -72,5 +72,5 @@ static struct i2c_driver aic32x4_i2c_driver = {
- module_i2c_driver(aic32x4_i2c_driver);
- 
- MODULE_DESCRIPTION("ASoC TLV320AIC32x4 codec driver I2C");
--MODULE_AUTHOR("Jeremy McDermond <nh6z@nh6z.net>");
-+MODULE_AUTHOR("Annaliese McDermond <nh6z@nh6z.net>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tlv320aic32x4-spi.c b/sound/soc/codecs/tlv320aic32x4-spi.c
-index 07d78ae51e05..aa5b7ba0254b 100644
---- a/sound/soc/codecs/tlv320aic32x4-spi.c
-+++ b/sound/soc/codecs/tlv320aic32x4-spi.c
-@@ -3,7 +3,7 @@
-  *
-  * Copyright 2011 NW Digital Radio
-  *
-- * Author: Jeremy McDermond <nh6z@nh6z.net>
-+ * Author: Annaliese McDermond <nh6z@nh6z.net>
-  *
-  * Based on sound/soc/codecs/wm8974 and TI driver for kernel 2.6.27.
-  *
-@@ -74,5 +74,5 @@ static struct spi_driver aic32x4_spi_driver = {
- module_spi_driver(aic32x4_spi_driver);
- 
- MODULE_DESCRIPTION("ASoC TLV320AIC32x4 codec driver SPI");
--MODULE_AUTHOR("Jeremy McDermond <nh6z@nh6z.net>");
-+MODULE_AUTHOR("Annaliese McDermond <nh6z@nh6z.net>");
- MODULE_LICENSE("GPL");
--- 
-2.20.1
+Ok. Will send v3.
+> 
+> Once you fix the indentation, add this:
+> 
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> 
+> Thanks
