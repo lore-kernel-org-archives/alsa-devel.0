@@ -1,71 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] ASoC: cs42l51: change mic bias DAPM
-Date: Thu, 4 Apr 2019 12:47:04 +0700
-Message-ID: <20190404054704.GN5748@sirena.org.uk>
-References: <1554297817-14154-1-git-send-email-olivier.moysan@st.com>
- <1554297817-14154-6-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0114704039031081348=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1554297817-14154-6-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Olivier Moysan <olivier.moysan@st.com>
-Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, mcoquelin.stm32@gmail.com, apatard@mandriva.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: Applied "ASoC: sprd: Fix the smatch warning" to the asoc tree
+Date: Thu,  4 Apr 2019 13:04:21 +0700 (+07)
+Message-ID: <20190404060421.68A29441D3C@finisterre.ee.mobilebroadband>
+References: <811e491489b62624942dabd56f277b08784ef0f9.1554276741.git.baolin.wang@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <811e491489b62624942dabd56f277b08784ef0f9.1554276741.git.baolin.wang@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, baolin.wang@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.comdan.carpenter@oracle.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0114704039031081348==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wwtQuX191/I956S7"
-Content-Disposition: inline
+   ASoC: sprd: Fix the smatch warning
 
+has been applied to the asoc tree at
 
---wwtQuX191/I956S7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Apr 03, 2019 at 03:23:35PM +0200, Olivier Moysan wrote:
-> Use SND_SOC_DAPM_SUPPLY for mic bias DAPM
-> instead of deprecated SND_SOC_DAPM_MICBIAS.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-There are existing users in mainline, have they all been updated to be
-compatible with this, or verified that they don't need updates?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---wwtQuX191/I956S7
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlylmlgACgkQJNaLcl1U
-h9BOnAf+PPQFLLTsRJ7K59cQlzHC/KzeoMMsp5NZ8ya8aE9dR0f0Qsmdd9C2TBbv
-7DQectXbqeSTHvK+lKeRDOaqLseOulblX5eioaayMSXrXgaQbSISOEp/jkonZI9Y
-pc5qLhabKNKYGcYBFRwIUyTI/S/vBmbvQdbl9cTHiUmbTWpDmQi7rDzsB+XcM1RS
-mYU7U1klquugB3orcCCoKe19wnOA75kfwKZVPFPv0QhUUJFU1qk35C/wjYKF6z8b
-xXT+4cYj2YtSZ7O7Uoh5h0p+qSTSMfFToG2ry6qJ2UTKIg8Lp2TgU4epGz22uA0v
-zwBJPJ0xTEqrG/a55i1+QI7I71w+MQ==
-=GYiY
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---wwtQuX191/I956S7--
+>From adcc9f2b064e60f569979fb1de1f158e8bed8a6d Mon Sep 17 00:00:00 2001
+From: Baolin Wang <baolin.wang@linaro.org>
+Date: Wed, 3 Apr 2019 00:47:55 -0700
+Subject: [PATCH] ASoC: sprd: Fix the smatch warning
 
+Remove the unnecessary validation of the 'cstream' variable to fix
+below smatch warning:
 
---===============0114704039031081348==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+sprd_platform_compr_drain_notify() warn: variable dereferenced
+before check 'cstream' (see line 105)
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sprd/sprd-pcm-compress.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---===============0114704039031081348==--
+diff --git a/sound/soc/sprd/sprd-pcm-compress.c b/sound/soc/sprd/sprd-pcm-compress.c
+index dc84257cffc2..424e9834d093 100644
+--- a/sound/soc/sprd/sprd-pcm-compress.c
++++ b/sound/soc/sprd/sprd-pcm-compress.c
+@@ -107,8 +107,7 @@ static void sprd_platform_compr_drain_notify(void *arg)
+ 
+ 	memset(stream->info_area, 0, sizeof(struct sprd_compr_playinfo));
+ 
+-	if (cstream)
+-		snd_compr_drain_notify(cstream);
++	snd_compr_drain_notify(cstream);
+ }
+ 
+ static void sprd_platform_compr_dma_complete(void *data)
+-- 
+2.20.1
