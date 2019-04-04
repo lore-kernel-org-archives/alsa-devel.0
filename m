@@ -1,55 +1,54 @@
-From: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
-Subject: Surround speaker connection on Acer 8951G
-Date: Thu, 4 Apr 2019 21:24:30 +0200
-Message-ID: <20190404192430.GA24729@xn--80adja5bqm.su>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 1/3] soundwire: fix style issues
+Date: Thu, 04 Apr 2019 12:28:28 -0700
+Message-ID: <98050a8abfdd9ec015d4de846b276cf046115e3f.camel@perches.com>
+References: <20190404182204.31262-1-pierre-louis.bossart@linux.intel.com>
+         <20190404182204.31262-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.xn--80adja5bqm.su (xn--80adja5bqm.su [45.62.210.217])
- by alsa1.perex.cz (Postfix) with ESMTP id 92C1BF8071D
- for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 21:24:32 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190404182204.31262-2-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, 2019-04-04 at 13:22 -0500, Pierre-Louis Bossart wrote:
+> Visual inspections confirmed by checkpatch.pl --strict expose a number
+> of style issues, specifically parameter alignment is inconsistent as
+> if different contributors used different styles. Before we restart
+> support for SoundWire with Sound Open Firmware on Intel platforms,
+> let's clean all this.
+> 
+> Fix Kconfig help, spelling, SPDX format, alignment, spurious
+> parentheses, bool comparisons to true/false, macro argument
+> protection.
+> 
+> No new functionality added.
 
-I am not sure if this is the right place to ask or if I should just
-submit a bugreport, but you guys helped me out with a similar problem about 
-10 years ago, so I'll try here first. If I'm wrong here, then I apologize,
-just let me know.
+[]
 
-I have an Acer Aspire Ethos 8951G notebook which has 6 built in speakers for
-5.1 surround sound, it's a Realtek ALC669X.
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+[]
+> @@ -458,13 +458,13 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
+>  		mutex_unlock(&slave->bus->bus_lock);
+>  		if (dev_num < 0) {
+>  			dev_err(slave->bus->dev, "Get dev_num failed: %d",
+> -								dev_num);
+> +				dev_num);
 
-The problem is that only two speakers are recognized by default.
+You could also add the missing terminating '\n' to these formats like:
 
-I tried fiddling around with hdajackretast and it does make a difference, but
-I somehow could not find a step-by-step approach on how to figure out what is
-what and how to map everything correctly, so some guidance would be very much 
-appreciated. I even ended up in situations where I got channels supporting 
-only mute which would influence muting of other channels, I really got lost 
-there..
+ 			dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
 
+>  			return dev_num;
+>  		}
+>  	} else {
+>  		dev_info(slave->bus->dev,
+> -				"Slave already registered dev_num:%d",
+> -				slave->dev_num);
+> +			 "Slave already registered dev_num:%d",
+> +			 slave->dev_num);
 
-Here's my alsa-info output:
-http://alsa-project.org/db/?f=3adde87164f5fc349c3c78b211ee63e416ebf10b
-
-It would be great if we could figure it out and make it work by default.
-
-Basically that's what we did 10 years ago, back then I had an Acer Aspire 
-8920G with a ALC889 which had the same problem that got fixed by you and these 
-days it just works out of the box :)
-
-Kind regards,
-Jin
+etc...
