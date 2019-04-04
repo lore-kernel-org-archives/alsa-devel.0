@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: sound: rockchip: add compatible for rk3308/px30" to the asoc tree
-Date: Thu,  4 Apr 2019 15:16:43 +0700 (+07)
-Message-ID: <20190404081643.E1230441D3E@finisterre.ee.mobilebroadband>
-References: <1554349995-23944-1-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554349995-23944-1-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: simple-card: don't select DPCM via
+	simple-audio-card" to the asoc tree
+Date: Thu,  4 Apr 2019 15:17:06 +0700 (+07)
+Message-ID: <20190404081706.6BB3C441D3C@finisterre.ee.mobilebroadband>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BC48F89756
+ for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2019 10:17:10 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: sound: rockchip: add compatible for rk3308/px30
+   ASoC: simple-card: don't select DPCM via simple-audio-card
 
 has been applied to the asoc tree at
 
@@ -37,40 +53,81 @@ to this mail.
 Thanks,
 Mark
 
->From 6bfff707985fff14fa79c851e53f9630e76a4860 Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Thu, 4 Apr 2019 11:53:15 +0800
-Subject: [PATCH] dt-bindings: sound: rockchip: add compatible for rk3308/px30
+>From 42bf029a55a9bb8036f1d738a28dba2f7ec1e79d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 4 Apr 2019 09:52:52 +0900
+Subject: [PATCH] ASoC: simple-card: don't select DPCM via simple-audio-card
 
-This patch adds bindings for rk3308/px30.
+commit da215354eb55c ("ASoC: simple-card: merge simple-scu-card")
+merged simple-scu-audio-card which can handle DPCM into
+simple-audio-card.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+By this patch, the judgement to select "normal sound card" or
+"DPCM sound card" is based on its CPU/Codec DAI count.
+But, because of it, existing "simple-audio-card" user who is
+assuming "normal sound card" might select DPCM unintentionally.
+
+To solve this issue, this patch allows "simple-audio-card" user
+can select "normal sound card", and "simple-scu-audio-card" user
+can select both "normal sound card" and "DPCM sound card".
+This keeps compatibility collectry.
+
+Fixes: da215354eb55c ("ASoC: simple-card: merge simple-scu-card")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip,pdm.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/generic/simple-card.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,pdm.txt b/Documentation/devicetree/bindings/sound/rockchip,pdm.txt
-index 47f164fbd1d7..3e0eb7354ba6 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,pdm.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,pdm.txt
-@@ -3,6 +3,8 @@
- Required properties:
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 7147bba45a2a..34de32efc4c4 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -9,12 +9,15 @@
+ #include <linux/device.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/string.h>
+ #include <sound/simple_card.h>
+ #include <sound/soc-dai.h>
+ #include <sound/soc.h>
  
- - compatible: "rockchip,pdm"
-+  - "rockchip,px30-pdm"
-+  - "rockchip,rk3308-pdm"
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - dmas: DMA specifiers for rx dma. See the DMA client binding,
-@@ -12,6 +14,8 @@ Required properties:
- - clock-names: should contain following:
-    - "pdm_hclk": clock for PDM BUS
-    - "pdm_clk" : clock for PDM controller
-+- resets: a list of phandle + reset-specifer paris, one for each entry in reset-names.
-+- reset-names: reset names, should include "pdm-m".
- - pinctrl-names: Must contain a "default" entry.
- - pinctrl-N: One property must exist for each entry in
- 	     pinctrl-names. See ../pinctrl/pinctrl-bindings.txt
++#define DPCM_SELECTABLE 1
++
+ struct simple_priv {
+ 	struct snd_soc_card snd_card;
+ 	struct simple_dai_props {
+@@ -441,6 +444,7 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node;
++	uintptr_t dpcm_selectable = (uintptr_t)of_device_get_match_data(dev);
+ 	bool is_top = 0;
+ 	int ret = 0;
+ 
+@@ -480,8 +484,9 @@ static int simple_for_each_link(struct simple_priv *priv,
+ 			 * if it has many CPUs,
+ 			 * or has convert-xxx property
+ 			 */
+-			if (num > 2 ||
+-			    adata.convert_rate || adata.convert_channels)
++			if (dpcm_selectable &&
++			    (num > 2 ||
++			     adata.convert_rate || adata.convert_channels))
+ 				ret = func_dpcm(priv, np, codec, li, is_top);
+ 			/* else normal sound */
+ 			else
+@@ -822,7 +827,8 @@ static int simple_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id simple_of_match[] = {
+ 	{ .compatible = "simple-audio-card", },
+-	{ .compatible = "simple-scu-audio-card", },
++	{ .compatible = "simple-scu-audio-card",
++	  .data = (void *)DPCM_SELECTABLE },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, simple_of_match);
 -- 
 2.20.1
