@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 15/20] ASoC: mx27vis-aic32x4: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:05 +0300
-Message-ID: <20190405115010.28838-16-andradanciu1997@gmail.com>
+Subject: [PATCH 14/20] ASoC: mpc8610_hpcd: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:04 +0300
+Message-ID: <20190405115010.28838-15-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,45 +15,34 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/mx27vis-aic32x4.c | 29 +++++++----------------------
- 1 file changed, 7 insertions(+), 22 deletions(-)
+ sound/soc/fsl/mpc8610_hpcd.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/mx27vis-aic32x4.c b/sound/soc/fsl/mx27vis-aic32x4.c
-index d7ec3d20065c..37a4520aef62 100644
---- a/sound/soc/fsl/mx27vis-aic32x4.c
-+++ b/sound/soc/fsl/mx27vis-aic32x4.c
-@@ -1,25 +1,10 @@
--/*
-- * mx27vis-aic32x4.c
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index a639b52c16f6..f6261a3eeb0f 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -1,14 +1,10 @@
+-/**
+- * Freescale MPC8610HPCD ALSA SoC Machine driver
 - *
-- * Copyright 2011 Vista Silicon S.L.
+- * Author: Timur Tabi <timur@freescale.com>
 - *
-- * Author: Javier Martin <javier.martin@vista-silicon.com>
+- * Copyright 2007-2010 Freescale Semiconductor, Inc.
 - *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-- * MA 02110-1301, USA.
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
 - */
-+// SPDX-License-Identifier: GPL-2.0+
++// SPDX-License-Identifier: GPL-2.0
 +//
-+// mx27vis-aic32x4.c
++// Freescale MPC8610HPCD ALSA SoC Machine driver
 +//
-+// Copyright 2011 Vista Silicon S.L.
++// Author: Timur Tabi <timur@freescale.com>
 +//
-+// Author: Javier Martin <javier.martin@vista-silicon.com>
++// Copyright 2007-2010 Freescale Semiconductor, Inc.
  
  #include <linux/module.h>
- #include <linux/moduleparam.h>
+ #include <linux/interrupt.h>
 -- 
 2.11.0
