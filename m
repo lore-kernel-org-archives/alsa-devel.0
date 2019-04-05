@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 04/20] ASoC: fsl-dma: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:54 +0300
-Message-ID: <20190405115010.28838-5-andradanciu1997@gmail.com>
+Subject: [PATCH 05/20] ASoC: imx-audmux: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:55 +0300
+Message-ID: <20190405115010.28838-6-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,58 +15,42 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/fsl_dma.c | 26 +++++++++++---------------
- sound/soc/fsl/fsl_dma.h |  5 +----
- 2 files changed, 12 insertions(+), 19 deletions(-)
+ sound/soc/fsl/imx-audmux.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index 78871de35086..e22508301412 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -1,18 +1,14 @@
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 99e07b01a2ce..04e59e66711d 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -1,21 +1,11 @@
 -/*
-- * Freescale DMA ALSA SoC PCM driver
+- * Copyright 2012 Freescale Semiconductor, Inc.
+- * Copyright 2012 Linaro Ltd.
+- * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
 - *
-- * Author: Timur Tabi <timur@freescale.com>
-- *
-- * Copyright 2007-2010 Freescale Semiconductor, Inc.
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- *
-- * This driver implements ASoC support for the Elo DMA controller, which is
-- * the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
-- * the PCM driver is what handles the DMA buffer.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Freescale DMA ALSA SoC PCM driver
-+//
-+// Author: Timur Tabi <timur@freescale.com>
-+//
-+// Copyright 2007-2010 Freescale Semiconductor, Inc.
-+//
-+// This driver implements ASoC support for the Elo DMA controller, which is
-+// the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
-+// the PCM driver is what handles the DMA buffer.
- 
- #include <linux/module.h>
- #include <linux/init.h>
-diff --git a/sound/soc/fsl/fsl_dma.h b/sound/soc/fsl/fsl_dma.h
-index 78fee97e8036..f19ae765b656 100644
---- a/sound/soc/fsl/fsl_dma.h
-+++ b/sound/soc/fsl/fsl_dma.h
-@@ -1,9 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * mpc8610-pcm.h - ALSA PCM interface for the Freescale MPC8610 SoC
+- * Initial development of this code was funded by
+- * Phytec Messtechnik GmbH, http://www.phytec.de
 - *
 - * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright 2012 Freescale Semiconductor, Inc.
++// Copyright 2012 Linaro Ltd.
++// Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
++//
++// Initial development of this code was funded by
++// Phytec Messtechnik GmbH, http://www.phytec.de
  
- #ifndef _MPC8610_PCM_H
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
 -- 
 2.11.0
