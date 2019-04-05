@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 17/20] ASoC: p1022_rdk: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:07 +0300
-Message-ID: <20190405115010.28838-18-andradanciu1997@gmail.com>
+Subject: [PATCH 18/20] ASoC: pcm030-audio-fabric: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:08 +0300
+Message-ID: <20190405115010.28838-19-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,48 +15,34 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/p1022_rdk.c | 32 ++++++++++++++------------------
- 1 file changed, 14 insertions(+), 18 deletions(-)
+ sound/soc/fsl/pcm030-audio-fabric.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/p1022_rdk.c b/sound/soc/fsl/p1022_rdk.c
-index 4afbdd610bfa..1c32c2d8c6b0 100644
---- a/sound/soc/fsl/p1022_rdk.c
-+++ b/sound/soc/fsl/p1022_rdk.c
-@@ -1,21 +1,17 @@
--/**
-- * Freescale P1022RDK ALSA SoC Machine driver
+diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
+index e339f36cea95..a7fe4ad25c52 100644
+--- a/sound/soc/fsl/pcm030-audio-fabric.c
++++ b/sound/soc/fsl/pcm030-audio-fabric.c
+@@ -1,14 +1,10 @@
+-/*
+- * Phytec pcm030 driver for the PSC of the Freescale MPC52xx
+- * configured as AC97 interface
 - *
-- * Author: Timur Tabi <timur@freescale.com>
-- *
-- * Copyright 2012 Freescale Semiconductor, Inc.
+- * Copyright 2008 Jon Smirl, Digispeaker
+- * Author: Jon Smirl <jonsmirl@gmail.com>
 - *
 - * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
+- * version 2. This program is licensed "as is" without any warranty of any
 - * kind, whether express or implied.
-- *
-- * Note: in order for audio to work correctly, the output controls need
-- * to be enabled, because they control the clock.  So for playback, for
-- * example:
-- *
-- *      amixer sset 'Left Output Mixer PCM' on
-- *      amixer sset 'Right Output Mixer PCM' on
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Freescale P1022RDK ALSA SoC Machine driver
++// Phytec pcm030 driver for the PSC of the Freescale MPC52xx
++// configured as AC97 interface
 +//
-+// Author: Timur Tabi <timur@freescale.com>
-+//
-+// Copyright 2012 Freescale Semiconductor, Inc.
-+//
-+// Note: in order for audio to work correctly, the output controls need
-+// to be enabled, because they control the clock.  So for playback, for
-+// example:
-+//
-+//      amixer sset 'Left Output Mixer PCM' on
-+//      amixer sset 'Right Output Mixer PCM' on
++// Copyright 2008 Jon Smirl, Digispeaker
++// Author: Jon Smirl <jonsmirl@gmail.com>
  
+ #include <linux/init.h>
  #include <linux/module.h>
- #include <linux/fsl/guts.h>
 -- 
 2.11.0
