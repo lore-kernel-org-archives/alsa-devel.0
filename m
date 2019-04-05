@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 01/20] ASoC: imx-pcm: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:51 +0300
-Message-ID: <20190405115010.28838-2-andradanciu1997@gmail.com>
+Subject: [PATCH 02/20] ASoC: efika-audio-fabric.c: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:52 +0300
+Message-ID: <20190405115010.28838-3-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,27 +15,33 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/imx-pcm.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/fsl/efika-audio-fabric.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 133c4470acad..5dd406774d3e 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -1,13 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
-  *
-  * This code is based on code copyrighted by Freescale,
-  * Liam Girdwood, Javier Martin and probably others.
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
+index 667f4215dfc0..3e832902fc99 100644
+--- a/sound/soc/fsl/efika-audio-fabric.c
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -1,14 +1,9 @@
+-/*
+- * Efika driver for the PSC of the Freescale MPC52xx
+- * configured as AC97 interface
 - *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-  */
+- * Copyright 2008 Jon Smirl, Digispeaker
+- * Author: Jon Smirl <jonsmirl@gmail.com>
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2. This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- */
++// SPDX-License-Identifier: GPL-2.0
++// Efika driver for the PSC of the Freescale MPC52xx
++// configured as AC97 interface
++//
++// Copyright 2008 Jon Smirl, Digispeaker
++// Author: Jon Smirl <jonsmirl@gmail.com>
  
- #ifndef _IMX_PCM_H
+ #include <linux/init.h>
+ #include <linux/module.h>
 -- 
 2.11.0
