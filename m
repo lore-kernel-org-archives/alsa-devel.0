@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 13/20] ASoC: mpc5200_psc_i2s: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:03 +0300
-Message-ID: <20190405115010.28838-14-andradanciu1997@gmail.com>
+Subject: [PATCH 11/20] ASoC: mpc5200_dma: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:01 +0300
+Message-ID: <20190405115010.28838-12-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,25 +15,25 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/mpc5200_psc_i2s.c | 14 +++++++-------
+ sound/soc/fsl/mpc5200_dma.c | 14 +++++++-------
  1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index d8232943ccb6..6de97461ba25 100644
---- a/sound/soc/fsl/mpc5200_psc_i2s.c
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index c1a4544eb16b..4396442c2fdd 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
 @@ -1,10 +1,10 @@
 -/*
-- * Freescale MPC5200 PSC in I2S mode
-- * ALSA SoC Digital Audio Interface (DAI) driver
+- * Freescale MPC5200 PSC DMA
+- * ALSA SoC Platform driver
 - *
 - * Copyright (C) 2008 Secret Lab Technologies Ltd.
 - * Copyright (C) 2009 Jon Smirl, Digispeaker
 - */
 +// SPDX-License-Identifier: GPL
 +//
-+// Freescale MPC5200 PSC in I2S mode
-+// ALSA SoC Digital Audio Interface (DAI) driver
++// Freescale MPC5200 PSC DMA
++// ALSA SoC Platform driver
 +//
 +// Copyright (C) 2008 Secret Lab Technologies Ltd.
 +// Copyright (C) 2009 Jon Smirl, Digispeaker
