@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 07/20] ASoC: imx-mc13783: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:57 +0300
-Message-ID: <20190405115010.28838-8-andradanciu1997@gmail.com>
+Subject: [PATCH 08/20] ASoC: imx-pcm-fiq: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:58 +0300
+Message-ID: <20190405115010.28838-9-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,38 +15,37 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/imx-mc13783.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ sound/soc/fsl/imx-pcm-fiq.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
-index 9d19b808f634..545815a27074 100644
---- a/sound/soc/fsl/imx-mc13783.c
-+++ b/sound/soc/fsl/imx-mc13783.c
-@@ -1,17 +1,11 @@
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index 0578f3486847..c49aea4fba56 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -1,16 +1,11 @@
 -/*
-- * imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
+- * imx-pcm-fiq.c  --  ALSA Soc Audio Layer
 - *
-- * Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
+- * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
 - *
-- * Heavly based on phycore-mc13783:
-- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+- * This code is based on code copyrighted by Freescale,
+- * Liam Girdwood, Javier Martin and probably others.
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
 - *  Free Software Foundation;  either version 2 of the  License, or (at your
 - *  option) any later version.
-- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
++// imx-pcm-fiq.c  --  ALSA Soc Audio Layer
 +//
-+// imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
++// Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
 +//
-+// Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
-+//
-+// Heavly based on phycore-mc13783:
-+// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
++// This code is based on code copyrighted by Freescale,
++// Liam Girdwood, Javier Martin and probably others.
++
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
 -- 
 2.11.0
