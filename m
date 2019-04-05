@@ -1,11 +1,8 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 03/20] ASoC: eukrea-tlv320: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:53 +0300
-Message-ID: <20190405115010.28838-4-andradanciu1997@gmail.com>
+Subject: [PATCH 04/20] ASoC: fsl-dma: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:54 +0300
+Message-ID: <20190405115010.28838-5-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -18,42 +15,58 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/eukrea-tlv320.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ sound/soc/fsl/fsl_dma.c | 26 +++++++++++---------------
+ sound/soc/fsl/fsl_dma.h |  5 +----
+ 2 files changed, 12 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
-index 30a3d68b5c03..d648268cb454 100644
---- a/sound/soc/fsl/eukrea-tlv320.c
-+++ b/sound/soc/fsl/eukrea-tlv320.c
-@@ -1,19 +1,13 @@
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 78871de35086..e22508301412 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -1,18 +1,14 @@
 -/*
-- * eukrea-tlv320.c  --  SoC audio for eukrea_cpuimxXX in I2S mode
+- * Freescale DMA ALSA SoC PCM driver
 - *
-- * Copyright 2010 Eric Bénard, Eukréa Electromatique <eric@eukrea.com>
+- * Author: Timur Tabi <timur@freescale.com>
 - *
-- * based on sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-- * which is Copyright 2009 Simtec Electronics
-- * and on sound/soc/imx/phycore-ac97.c which is
-- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+- * Copyright 2007-2010 Freescale Semiconductor, Inc.
 - *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
 - *
+- * This driver implements ASoC support for the Elo DMA controller, which is
+- * the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
+- * the PCM driver is what handles the DMA buffer.
 - */
-+// SPDX-License-Identifier: GPL-2.0+
++// SPDX-License-Identifier: GPL-2.0
 +//
-+// eukrea-tlv320.c  --  SoC audio for eukrea_cpuimxXX in I2S mode
++// Freescale DMA ALSA SoC PCM driver
 +//
-+// Copyright 2010 Eric Bénard, Eukréa Electromatique <eric@eukrea.com>
++// Author: Timur Tabi <timur@freescale.com>
 +//
-+// based on sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-+// which is Copyright 2009 Simtec Electronics
-+// and on sound/soc/imx/phycore-ac97.c which is
-+// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
++// Copyright 2007-2010 Freescale Semiconductor, Inc.
++//
++// This driver implements ASoC support for the Elo DMA controller, which is
++// the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
++// the PCM driver is what handles the DMA buffer.
  
- #include <linux/errno.h>
  #include <linux/module.h>
+ #include <linux/init.h>
+diff --git a/sound/soc/fsl/fsl_dma.h b/sound/soc/fsl/fsl_dma.h
+index 78fee97e8036..f19ae765b656 100644
+--- a/sound/soc/fsl/fsl_dma.h
++++ b/sound/soc/fsl/fsl_dma.h
+@@ -1,9 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * mpc8610-pcm.h - ALSA PCM interface for the Freescale MPC8610 SoC
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef _MPC8610_PCM_H
 -- 
 2.11.0
