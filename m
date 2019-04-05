@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-toddr: add g12a support" to the asoc tree
-Date: Fri,  5 Apr 2019 09:43:15 +0700 (+07)
-Message-ID: <20190405024315.7F18E441D3C@finisterre.ee.mobilebroadband>
-References: <20190404111733.28705-4-jbrunet@baylibre.com>
+Subject: Applied "ASoC: meson: axg-fifo: add g12a support" to the asoc tree
+Date: Fri,  5 Apr 2019 09:43:18 +0700 (+07)
+Message-ID: <20190405024318.C6730441D3B@finisterre.ee.mobilebroadband>
+References: <20190404111733.28705-3-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190404111733.28705-4-jbrunet@baylibre.com>
+In-Reply-To: <20190404111733.28705-3-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Maxime Jourdan <mjourdan@baylibre.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-toddr: add g12a support
+   ASoC: meson: axg-fifo: add g12a support
 
 has been applied to the asoc tree at
 
@@ -37,102 +37,117 @@ to this mail.
 Thanks,
 Mark
 
->From a3c23a8ad4dc07100d916d75ca30c982288b868d Mon Sep 17 00:00:00 2001
+>From 7c02509a8a9981fb2c16b75904423e7ab2f9f43a Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 4 Apr 2019 13:17:30 +0200
-Subject: [PATCH] ASoC: meson: axg-toddr: add g12a support
+Date: Thu, 4 Apr 2019 13:17:29 +0200
+Subject: [PATCH] ASoC: meson: axg-fifo: add g12a support
 
-Since the g12a SoC fifo can set the fifo initial start address, we must
-make sure to actually reset the write pointer to this address when
-starting a capture.
+The g12a fifos gained the ability to set the initial address of the
+pointer within the buffer, instead of defaulting to the buffer start
+address.
+
+It is not very useful to us (yet) but we need to put a copy the buffer
+start address in the related register for the fifo to work properly on the
+g12a SoC family
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-toddr.c | 53 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ sound/soc/meson/axg-fifo.c | 34 +++++++++++++++++++++++++++++++---
+ sound/soc/meson/axg-fifo.h |  2 ++
+ 2 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index 0e9ca3882ae5..4f63e434fad4 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -24,6 +24,7 @@
- #define CTRL0_TODDR_MSB_POS(x)		((x) << 8)
- #define CTRL0_TODDR_LSB_POS_MASK	GENMASK(7, 3)
- #define CTRL0_TODDR_LSB_POS(x)		((x) << 3)
-+#define CTRL1_TODDR_FORCE_FINISH	BIT(25)
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index 75e5e480fda2..01c1c7db2510 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -19,7 +19,7 @@
+  * This file implements the platform operations common to the playback and
+  * capture frontend DAI. The logic behind this two types of fifo is very
+  * similar but some difference exist.
+- * These differences the respective DAI drivers
++ * These differences are handled in the respective DAI drivers
+  */
  
- #define TODDR_MSB_POS	31
- 
-@@ -33,6 +34,22 @@ static int axg_toddr_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 	return axg_fifo_pcm_new(rtd, SNDRV_PCM_STREAM_CAPTURE);
+ static struct snd_pcm_hardware axg_fifo_hw = {
+@@ -133,6 +133,23 @@ static int axg_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
+ 	return 0;
  }
  
-+static int g12a_toddr_dai_prepare(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *dai)
++static int g12a_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
++				   struct snd_pcm_hw_params *params)
 +{
-+	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
++	struct axg_fifo *fifo = axg_fifo_data(ss);
++	struct snd_pcm_runtime *runtime = ss->runtime;
++	int ret;
 +
-+	/* Reset the write pointer to the FIFO_INIT_ADDR */
-+	regmap_update_bits(fifo->map, FIFO_CTRL1,
-+			   CTRL1_TODDR_FORCE_FINISH, 0);
-+	regmap_update_bits(fifo->map, FIFO_CTRL1,
-+			   CTRL1_TODDR_FORCE_FINISH, CTRL1_TODDR_FORCE_FINISH);
-+	regmap_update_bits(fifo->map, FIFO_CTRL1,
-+			   CTRL1_TODDR_FORCE_FINISH, 0);
++	ret = axg_fifo_pcm_hw_params(ss, params);
++	if (ret)
++		return ret;
++
++	/* Set the initial memory address of the DMA */
++	regmap_write(fifo->map, FIFO_INIT_ADDR, runtime->dma_addr);
 +
 +	return 0;
 +}
 +
- static int axg_toddr_dai_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params,
- 				   struct snd_soc_dai *dai)
-@@ -172,10 +189,46 @@ static const struct axg_fifo_match_data axg_toddr_match_data = {
- 	.dai_drv	= &axg_toddr_dai_drv
+ static int axg_fifo_pcm_hw_free(struct snd_pcm_substream *ss)
+ {
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+@@ -262,6 +279,17 @@ const struct snd_pcm_ops axg_fifo_pcm_ops = {
+ };
+ EXPORT_SYMBOL_GPL(axg_fifo_pcm_ops);
+ 
++const struct snd_pcm_ops g12a_fifo_pcm_ops = {
++	.open =		axg_fifo_pcm_open,
++	.close =        axg_fifo_pcm_close,
++	.ioctl =	snd_pcm_lib_ioctl,
++	.hw_params =	g12a_fifo_pcm_hw_params,
++	.hw_free =      axg_fifo_pcm_hw_free,
++	.pointer =	axg_fifo_pcm_pointer,
++	.trigger =	axg_fifo_pcm_trigger,
++};
++EXPORT_SYMBOL_GPL(g12a_fifo_pcm_ops);
++
+ int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+@@ -278,7 +306,7 @@ static const struct regmap_config axg_fifo_regmap_cfg = {
+ 	.reg_bits	= 32,
+ 	.val_bits	= 32,
+ 	.reg_stride	= 4,
+-	.max_register	= FIFO_STATUS2,
++	.max_register	= FIFO_INIT_ADDR,
  };
  
-+static const struct snd_soc_dai_ops g12a_toddr_ops = {
-+	.prepare	= g12a_toddr_dai_prepare,
-+	.hw_params	= axg_toddr_dai_hw_params,
-+	.startup	= axg_toddr_dai_startup,
-+	.shutdown	= axg_toddr_dai_shutdown,
-+};
-+
-+static struct snd_soc_dai_driver g12a_toddr_dai_drv = {
-+	.name = "TODDR",
-+	.capture = {
-+		.stream_name	= "Capture",
-+		.channels_min	= 1,
-+		.channels_max	= AXG_FIFO_CH_MAX,
-+		.rates		= AXG_FIFO_RATES,
-+		.formats	= AXG_FIFO_FORMATS,
-+	},
-+	.ops		= &g12a_toddr_ops,
-+	.pcm_new	= axg_toddr_pcm_new,
-+};
-+
-+static const struct snd_soc_component_driver g12a_toddr_component_drv = {
-+	.dapm_widgets		= axg_toddr_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(axg_toddr_dapm_widgets),
-+	.dapm_routes		= axg_toddr_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
-+	.ops			= &g12a_fifo_pcm_ops
-+};
-+
-+static const struct axg_fifo_match_data g12a_toddr_match_data = {
-+	.component_drv	= &g12a_toddr_component_drv,
-+	.dai_drv	= &g12a_toddr_dai_drv
-+};
-+
- static const struct of_device_id axg_toddr_of_match[] = {
- 	{
- 		.compatible = "amlogic,axg-toddr",
- 		.data = &axg_toddr_match_data,
-+	}, {
-+		.compatible = "amlogic,g12a-toddr",
-+		.data = &g12a_toddr_match_data,
- 	}, {}
+ int axg_fifo_probe(struct platform_device *pdev)
+@@ -339,6 +367,6 @@ int axg_fifo_probe(struct platform_device *pdev)
+ }
+ EXPORT_SYMBOL_GPL(axg_fifo_probe);
+ 
+-MODULE_DESCRIPTION("Amlogic AXG fifo driver");
++MODULE_DESCRIPTION("Amlogic AXG/G12A fifo driver");
+ MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
+index d9f516cfbeda..5caf81241dfe 100644
+--- a/sound/soc/meson/axg-fifo.h
++++ b/sound/soc/meson/axg-fifo.h
+@@ -60,6 +60,7 @@ struct snd_soc_pcm_runtime;
+ #define FIFO_STATUS1			0x14
+ #define  STATUS1_INT_STS(x)		((x) << 0)
+ #define FIFO_STATUS2			0x18
++#define FIFO_INIT_ADDR			0x24
+ 
+ struct axg_fifo {
+ 	struct regmap *map;
+@@ -74,6 +75,7 @@ struct axg_fifo_match_data {
  };
- MODULE_DEVICE_TABLE(of, axg_toddr_of_match);
+ 
+ extern const struct snd_pcm_ops axg_fifo_pcm_ops;
++extern const struct snd_pcm_ops g12a_fifo_pcm_ops;
+ 
+ int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type);
+ int axg_fifo_probe(struct platform_device *pdev);
 -- 
 2.20.1
