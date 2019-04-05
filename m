@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: add g12a compatibles" to the asoc tree
-Date: Fri,  5 Apr 2019 09:43:21 +0700 (+07)
-Message-ID: <20190405024322.05F3C441D3C@finisterre.ee.mobilebroadband>
-References: <20190404111733.28705-2-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190404111733.28705-2-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Maxime Jourdan <mjourdan@baylibre.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: topology: fix big-endian check" to the
+	asoc tree
+Date: Fri,  5 Apr 2019 09:42:59 +0700 (+07)
+Message-ID: <20190405024259.D923C441D3B@finisterre.ee.mobilebroadband>
+References: <20190404191358.4235-3-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6949CF80792
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 04:43:04 +0200 (CEST)
+In-Reply-To: <20190404191358.4235-3-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: add g12a compatibles
+   ASoC: topology: fix big-endian check
 
 has been applied to the asoc tree at
 
@@ -37,96 +55,41 @@ to this mail.
 Thanks,
 Mark
 
->From 679f4e6cfd45bcc14bb563576e419ac9e43fad7c Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 4 Apr 2019 13:17:28 +0200
-Subject: [PATCH] ASoC: meson: add g12a compatibles
+>From 2114171d9cce1a897bee394b06f6c224247f095c Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 4 Apr 2019 14:13:58 -0500
+Subject: [PATCH] ASoC: topology: fix big-endian check
 
-Add new compatible strings for the g12a devices.
-Audio wise, the g12a is fairly to close to the axg, yet some differences
-need to be handled.
+Use an explicit define to avoid Sparse issues coming from the use of
+cpu_to_be32
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt  | 4 +++-
- Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt   | 3 ++-
- .../devicetree/bindings/sound/amlogic,axg-spdifin.txt         | 3 ++-
- .../devicetree/bindings/sound/amlogic,axg-spdifout.txt        | 3 ++-
- .../devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt  | 4 +++-
- 5 files changed, 12 insertions(+), 5 deletions(-)
+ sound/soc/soc-topology.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
-index 3dfc2515e5c6..4330fc9dca6d 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
-@@ -2,7 +2,9 @@
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 03c4dbdfc584..51903ca7614b 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -30,6 +30,8 @@
+ #include <sound/soc-topology.h>
+ #include <sound/tlv.h>
  
- Required properties:
- - compatible: 'amlogic,axg-toddr' or
--	      'amlogic,axg-frddr'
-+	      'amlogic,axg-toddr' or
-+	      'amlogic,g12a-frddr' or
-+	      'amlogic,g12a-toddr'
- - reg: physical base address of the controller and length of memory
-        mapped region.
- - interrupts: interrupt specifier for the fifo.
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
-index 5672d0bc5b16..73f473a9365f 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
-@@ -1,7 +1,8 @@
- * Amlogic Audio PDM input
++#define SOC_TPLG_MAGIC_BIG_ENDIAN            0x436F5341 /* ASoC in reverse */
++
+ /*
+  * We make several passes over the data (since it wont necessarily be ordered)
+  * and process objects in the following order. This guarantees the component
+@@ -2502,7 +2504,7 @@ static int soc_valid_header(struct soc_tplg *tplg,
+ 	}
  
- Required properties:
--- compatible: 'amlogic,axg-pdm'
-+- compatible: 'amlogic,axg-pdm' or
-+	      'amlogic,g12a-pdm'
- - reg: physical base address of the controller and length of memory
-        mapped region.
- - clocks: list of clock phandle, one for each entry clock-names.
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
-index 2e6cb7d9b202..0b82504fa419 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
-@@ -1,7 +1,8 @@
- * Amlogic Audio SPDIF Input
- 
- Required properties:
--- compatible: 'amlogic,axg-spdifin'
-+- compatible: 'amlogic,axg-spdifin' or
-+	      'amlogic,g12a-spdifin'
- - interrupts: interrupt specifier for the spdif input.
- - clocks: list of clock phandle, one for each entry clock-names.
- - clock-names: should contain the following:
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-index 521c38ad89e7..826152730508 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-@@ -1,7 +1,8 @@
- * Amlogic Audio SPDIF Output
- 
- Required properties:
--- compatible: 'amlogic,axg-spdifout'
-+- compatible: 'amlogic,axg-spdifout' or
-+	      'amlogic,g12a-spdifout'
- - clocks: list of clock phandle, one for each entry clock-names.
- - clock-names: should contain the following:
-   * "pclk" : peripheral clock.
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
-index 1c1b7490554e..3b94a715a0b9 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
-@@ -2,7 +2,9 @@
- 
- Required properties:
- - compatible: 'amlogic,axg-tdmin' or
--	      'amlogic,axg-tdmout'
-+	      'amlogic,axg-tdmout' or
-+	      'amlogic,g12a-tdmin' or
-+	      'amlogic,g12a-tdmout'
- - reg: physical base address of the controller and length of memory
-        mapped region.
- - clocks: list of clock phandle, one for each entry clock-names.
+ 	/* big endian firmware objects not supported atm */
+-	if (hdr->magic == cpu_to_be32(SND_SOC_TPLG_MAGIC)) {
++	if (hdr->magic == SOC_TPLG_MAGIC_BIG_ENDIAN) {
+ 		dev_err(tplg->dev,
+ 			"ASoC: pass %d big endian not supported header got %x at offset 0x%lx size 0x%zx.\n",
+ 			tplg->pass, hdr->magic,
 -- 
 2.20.1
