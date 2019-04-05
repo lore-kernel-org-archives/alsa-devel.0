@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 05/20] ASoC: imx-audmux: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:55 +0300
-Message-ID: <20190405115010.28838-6-andradanciu1997@gmail.com>
+Subject: [PATCH 06/20] ASoC: imx-es8328: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:56 +0300
+Message-ID: <20190405115010.28838-7-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,42 +15,31 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/imx-audmux.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+ sound/soc/fsl/imx-es8328.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 99e07b01a2ce..04e59e66711d 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -1,21 +1,11 @@
+diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
+index 9953438086e4..c9d8739b04a9 100644
+--- a/sound/soc/fsl/imx-es8328.c
++++ b/sound/soc/fsl/imx-es8328.c
+@@ -1,14 +1,7 @@
 -/*
 - * Copyright 2012 Freescale Semiconductor, Inc.
 - * Copyright 2012 Linaro Ltd.
-- * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
 - *
-- * Initial development of this code was funded by
-- * Phytec Messtechnik GmbH, http://www.phytec.de
+- * The code contained herein is licensed under the GNU General Public
+- * License. You may obtain a copy of the GNU General Public License
+- * Version 2 or later at the following locations:
 - *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
+- * http://www.opensource.org/licenses/gpl-license.html
+- * http://www.gnu.org/copyleft/gpl.html
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
 +// Copyright 2012 Freescale Semiconductor, Inc.
 +// Copyright 2012 Linaro Ltd.
-+// Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-+//
-+// Initial development of this code was funded by
-+// Phytec Messtechnik GmbH, http://www.phytec.de
  
- #include <linux/clk.h>
- #include <linux/debugfs.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
 -- 
 2.11.0
