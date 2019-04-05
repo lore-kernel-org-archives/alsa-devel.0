@@ -1,49 +1,55 @@
-From: Jan Kotas <jank@cadence.com>
-Subject: [PATCH] soundwire: fix pm_runtime_get_sync return code checks
-Date: Fri, 5 Apr 2019 08:26:55 +0100
-Message-ID: <20190405072655.25995-1-jank@cadence.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH] ASoC: stm32: fix sai driver name initialisation
+Date: Fri, 5 Apr 2019 11:19:11 +0200
+Message-ID: <1554455951-2755-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: vkoul@kernel.org, sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jan Kotas <jank@cadence.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam
+ Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>
+Cc: arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When PM is disabled it returns -EACCES, which is currently
-threated as an error, and prevents accessing the slave's
-registers.
+This patch fixes the sai driver structure overwriting which results in
+a cpu dai name equal NULL.
 
-This patch ignores the -EACCES return value from
-pm_runtime_get_sync() to let the SoundWire work in systems
-without runtime PM.
+Fixes: 3e086ed ("ASoC: stm32: add SAI driver")
 
-Signed-off-by: Jan Kotas <jank@cadence.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/soundwire/bus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1cbfedfc2..6567ff439 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -328,7 +328,7 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- 		return ret;
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 2a90641..3dd54bc 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1420,7 +1420,6 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
+ 	if (!sai->cpu_dai_drv)
+ 		return -ENOMEM;
  
- 	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
-+	if (ret < 0 && ret != -EACCES)
- 		return ret;
+-	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
+ 	if (STM_SAI_IS_PLAYBACK(sai)) {
+ 		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
+ 		       sizeof(stm32_sai_playback_dai));
+@@ -1430,6 +1429,7 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
+ 		       sizeof(stm32_sai_capture_dai));
+ 		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
+ 	}
++	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
  
- 	ret = sdw_transfer(slave->bus, &msg);
-@@ -356,7 +356,7 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- 		return ret;
- 
- 	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
-+	if (ret < 0 && ret != -EACCES)
- 		return ret;
- 
- 	ret = sdw_transfer(slave->bus, &msg);
+ 	return 0;
+ }
 -- 
-2.15.0
+2.7.4
