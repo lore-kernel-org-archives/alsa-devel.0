@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 20/20] ASoC: wm1133-ev1: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:10 +0300
-Message-ID: <20190405115010.28838-21-andradanciu1997@gmail.com>
+Subject: [PATCH 15/20] ASoC: mx27vis-aic32x4: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:05 +0300
+Message-ID: <20190405115010.28838-16-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,37 +15,45 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/wm1133-ev1.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ sound/soc/fsl/mx27vis-aic32x4.c | 29 +++++++----------------------
+ 1 file changed, 7 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
-index 2f80b21b2921..aad24ccbef90 100644
---- a/sound/soc/fsl/wm1133-ev1.c
-+++ b/sound/soc/fsl/wm1133-ev1.c
-@@ -1,16 +1,11 @@
+diff --git a/sound/soc/fsl/mx27vis-aic32x4.c b/sound/soc/fsl/mx27vis-aic32x4.c
+index d7ec3d20065c..37a4520aef62 100644
+--- a/sound/soc/fsl/mx27vis-aic32x4.c
++++ b/sound/soc/fsl/mx27vis-aic32x4.c
+@@ -1,25 +1,10 @@
 -/*
-- *  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
+- * mx27vis-aic32x4.c
 - *
-- *  Copyright (c) 2010 Wolfson Microelectronics plc
-- *  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+- * Copyright 2011 Vista Silicon S.L.
 - *
-- *  Based on an earlier driver for the same hardware by Liam Girdwood.
+- * Author: Javier Martin <javier.martin@vista-silicon.com>
 - *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+- * MA 02110-1301, USA.
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+//  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
++// mx27vis-aic32x4.c
 +//
-+//  Copyright (c) 2010 Wolfson Microelectronics plc
-+//  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
++// Copyright 2011 Vista Silicon S.L.
 +//
-+//  Based on an earlier driver for the same hardware by Liam Girdwood.
++// Author: Javier Martin <javier.martin@vista-silicon.com>
  
- #include <linux/platform_device.h>
- #include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.11.0
