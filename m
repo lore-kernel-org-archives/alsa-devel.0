@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 12/20] ASoC: mpc5200_psc_ac97: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:02 +0300
-Message-ID: <20190405115010.28838-13-andradanciu1997@gmail.com>
+Subject: [PATCH 16/20] ASoC: p1022_ds: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:06 +0300
+Message-ID: <20190405115010.28838-17-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,32 +15,34 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/mpc5200_psc_ac97.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ sound/soc/fsl/p1022_ds.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
-index 07ee355ee385..e5b9c04d1565 100644
---- a/sound/soc/fsl/mpc5200_psc_ac97.c
-+++ b/sound/soc/fsl/mpc5200_psc_ac97.c
-@@ -1,13 +1,9 @@
--/*
-- * linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index 41c623c55c16..80384f70878d 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -1,14 +1,10 @@
+-/**
+- * Freescale P1022DS ALSA SoC Machine driver
 - *
-- * Copyright (C) 2009 Jon Smirl, Digispeaker
-- * Author: Jon Smirl <jonsmirl@gmail.com>
+- * Author: Timur Tabi <timur@freescale.com>
 - *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
+- * Copyright 2010 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
++// Freescale P1022DS ALSA SoC Machine driver
 +//
-+// Copyright (C) 2009 Jon Smirl, Digispeaker
-+// Author: Jon Smirl <jonsmirl@gmail.com>
++// Author: Timur Tabi <timur@freescale.com>
++//
++// Copyright 2010 Freescale Semiconductor, Inc.
  
  #include <linux/module.h>
- #include <linux/of_device.h>
+ #include <linux/fsl/guts.h>
 -- 
 2.11.0
