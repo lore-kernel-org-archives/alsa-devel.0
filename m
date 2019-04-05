@@ -1,130 +1,60 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH] ASoC: stm32: simplify dai driver initialisation
-Date: Fri, 5 Apr 2019 11:26:27 +0200
-Message-ID: <1554456387-3088-1-git-send-email-arnaud.pouliquen@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam
- Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>
-Cc: arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Andra Danciu <andradanciu1997@gmail.com>
+Subject: [PATCH 00/20] Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:50 +0300
+Message-ID: <20190405115010.28838-1-andradanciu1997@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: daniel.baluta@nxp.com, Andra Danciu <andradanciu1997@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Suppress the useless dynamic allocation of the dai driver structure.
+This patch set switches to SPDX identifier inside the fsl directory.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/stm/stm32_sai_sub.c | 43 +++++++++----------------------------------
- 1 file changed, 9 insertions(+), 34 deletions(-)
+Andra Danciu (20):
+  ASoC: imx-pcm: Switch to SPDX identifier
+  ASoC: efika-audio-fabric.c: Switch to SPDX identifier
+  ASoC: eukrea-tlv320: Switch to SPDX identifier
+  ASoC: fsl-dma: Switch to SPDX identifier
+  ASoC: imx-audmux: Switch to SPDX identifier
+  ASoC: imx-es8328: Switch to SPDX identifier
+  ASoC: imx-mc13783: Switch to SPDX identifier
+  ASoC: imx-pcm-fiq: Switch to SPDX identifier
+  ASoC: imx-spdif: Switch to SPDX identifier
+  ASoC: imx-ssi: Switch to SPDX identifier
+  ASoC: mpc5200_dma: Switch to SPDX identifier
+  ASoC: mpc5200_psc_ac97: Switch to SPDX identifier
+  ASoC: mpc5200_psc_i2s: Switch to SPDX identifier
+  ASoC: mpc8610_hpcd: Switch to SPDX identifier
+  ASoC: mx27vis-aic32x4: Switch to SPDX identifier
+  ASoC: p1022_ds: Switch to SPDX identifier
+  ASoC: p1022_rdk: Switch to SPDX identifier
+  ASoC: pcm030-audio-fabric: Switch to SPDX identifier
+  ASoC: phycore-ac97: Switch to SPDX identifier
+  ASoC: wm1133-ev1: Switch to SPDX identifier
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 3dd54bc..e3b021c 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -109,7 +109,7 @@ struct stm32_sai_sub_data {
- 	struct regmap *regmap;
- 	const struct regmap_config *regmap_config;
- 	struct snd_dmaengine_dai_dma_data dma_params;
--	struct snd_soc_dai_driver *cpu_dai_drv;
-+	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct snd_soc_dai *cpu_dai;
- 	struct snd_pcm_substream *substream;
- 	struct stm32_sai_data *pdata;
-@@ -1204,8 +1204,7 @@ static const struct snd_pcm_hardware stm32_sai_pcm_hw = {
- 	.periods_max = 8,
- };
- 
--static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
--{
-+static struct snd_soc_dai_driver stm32_sai_playback_dai = {
- 		.probe = stm32_sai_dai_probe,
- 		.pcm_new = stm32_sai_pcm_new,
- 		.id = 1, /* avoid call to fmt_single_name() */
-@@ -1222,11 +1221,9 @@ static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
- 				SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &stm32_sai_pcm_dai_ops,
--	}
- };
- 
--static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
--{
-+static struct snd_soc_dai_driver stm32_sai_capture_dai = {
- 		.probe = stm32_sai_dai_probe,
- 		.id = 1, /* avoid call to fmt_single_name() */
- 		.capture = {
-@@ -1242,7 +1239,6 @@ static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
- 				SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &stm32_sai_pcm_dai_ops,
--	}
- };
- 
- static const struct snd_dmaengine_pcm_config stm32_sai_pcm_config = {
-@@ -1411,29 +1407,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	return 0;
- }
- 
--static int stm32_sai_sub_dais_init(struct platform_device *pdev,
--				   struct stm32_sai_sub_data *sai)
--{
--	sai->cpu_dai_drv = devm_kzalloc(&pdev->dev,
--					sizeof(struct snd_soc_dai_driver),
--					GFP_KERNEL);
--	if (!sai->cpu_dai_drv)
--		return -ENOMEM;
--
--	if (STM_SAI_IS_PLAYBACK(sai)) {
--		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
--		       sizeof(stm32_sai_playback_dai));
--		sai->cpu_dai_drv->playback.stream_name = sai->cpu_dai_drv->name;
--	} else {
--		memcpy(sai->cpu_dai_drv, &stm32_sai_capture_dai,
--		       sizeof(stm32_sai_capture_dai));
--		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
--	}
--	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
--
--	return 0;
--}
--
- static int stm32_sai_sub_probe(struct platform_device *pdev)
- {
- 	struct stm32_sai_sub_data *sai;
-@@ -1465,9 +1438,11 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	ret = stm32_sai_sub_dais_init(pdev, sai);
--	if (ret)
--		return ret;
-+	if (STM_SAI_IS_PLAYBACK(sai))
-+		sai->cpu_dai_drv = stm32_sai_playback_dai;
-+	else
-+		sai->cpu_dai_drv = stm32_sai_capture_dai;
-+	sai->cpu_dai_drv.name = dev_name(&pdev->dev);
- 
- 	ret = devm_request_irq(&pdev->dev, sai->pdata->irq, stm32_sai_isr,
- 			       IRQF_SHARED, dev_name(&pdev->dev), sai);
-@@ -1477,7 +1452,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_component,
--					      sai->cpu_dai_drv, 1);
-+					      &sai->cpu_dai_drv, 1);
- 	if (ret)
- 		return ret;
- 
+ sound/soc/fsl/efika-audio-fabric.c  | 17 ++++-------
+ sound/soc/fsl/eukrea-tlv320.c       | 26 +++++++----------
+ sound/soc/fsl/fsl_dma.c             | 26 +++++++----------
+ sound/soc/fsl/fsl_dma.h             |  5 +---
+ sound/soc/fsl/imx-audmux.c          | 26 ++++++-----------
+ sound/soc/fsl/imx-es8328.c          | 15 +++-------
+ sound/soc/fsl/imx-mc13783.c         | 22 ++++++--------
+ sound/soc/fsl/imx-pcm-fiq.c         | 21 ++++++--------
+ sound/soc/fsl/imx-pcm.h             |  6 +---
+ sound/soc/fsl/imx-spdif.c           | 13 ++-------
+ sound/soc/fsl/imx-ssi.c             | 57 ++++++++++++++++---------------------
+ sound/soc/fsl/imx-ssi.h             |  6 +---
+ sound/soc/fsl/mpc5200_dma.c         | 14 ++++-----
+ sound/soc/fsl/mpc5200_psc_ac97.c    | 16 ++++-------
+ sound/soc/fsl/mpc5200_psc_i2s.c     | 14 ++++-----
+ sound/soc/fsl/mpc8610_hpcd.c        | 18 +++++-------
+ sound/soc/fsl/mx27vis-aic32x4.c     | 29 +++++--------------
+ sound/soc/fsl/p1022_ds.c            | 18 +++++-------
+ sound/soc/fsl/p1022_rdk.c           | 32 +++++++++------------
+ sound/soc/fsl/pcm030-audio-fabric.c | 18 +++++-------
+ sound/soc/fsl/phycore-ac97.c        | 16 ++++-------
+ sound/soc/fsl/wm1133-ev1.c          | 21 ++++++--------
+ 22 files changed, 161 insertions(+), 275 deletions(-)
+
 -- 
-2.7.4
+2.11.0
