@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 18/20] ASoC: pcm030-audio-fabric: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:08 +0300
-Message-ID: <20190405115010.28838-19-andradanciu1997@gmail.com>
+Subject: [PATCH 19/20] ASoC: phycore-ac97: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:09 +0300
+Message-ID: <20190405115010.28838-20-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,34 +15,32 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/pcm030-audio-fabric.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/fsl/phycore-ac97.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
-index e339f36cea95..a7fe4ad25c52 100644
---- a/sound/soc/fsl/pcm030-audio-fabric.c
-+++ b/sound/soc/fsl/pcm030-audio-fabric.c
-@@ -1,14 +1,10 @@
+diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
+index 66fb6c4614d2..fe7ba6db7c96 100644
+--- a/sound/soc/fsl/phycore-ac97.c
++++ b/sound/soc/fsl/phycore-ac97.c
+@@ -1,14 +1,8 @@
 -/*
-- * Phytec pcm030 driver for the PSC of the Freescale MPC52xx
-- * configured as AC97 interface
+- * phycore-ac97.c  --  SoC audio for imx_phycore in AC97 mode
 - *
-- * Copyright 2008 Jon Smirl, Digispeaker
-- * Author: Jon Smirl <jonsmirl@gmail.com>
+- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
 - *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
 - */
-+// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0+
 +//
-+// Phytec pcm030 driver for the PSC of the Freescale MPC52xx
-+// configured as AC97 interface
++// phycore-ac97.c  --  SoC audio for imx_phycore in AC97 mode
 +//
-+// Copyright 2008 Jon Smirl, Digispeaker
-+// Author: Jon Smirl <jonsmirl@gmail.com>
++// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
  
- #include <linux/init.h>
  #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.11.0
