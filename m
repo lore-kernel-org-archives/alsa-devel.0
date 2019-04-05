@@ -1,44 +1,50 @@
-From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 11/20] ASoC: mpc5200_dma: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:01 +0300
-Message-ID: <20190405115010.28838-12-andradanciu1997@gmail.com>
+From: Mukesh Ojha <mojha@codeaurora.org>
+Subject: Re: [PATCH 01/20] ASoC: imx-pcm: Switch to SPDX identifier
+Date: Fri, 5 Apr 2019 17:40:06 +0530
+Message-ID: <0508e035-1b4f-346b-bd9a-ccb34c41a69b@codeaurora.org>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
+ <20190405115010.28838-2-andradanciu1997@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
+In-Reply-To: <20190405115010.28838-2-andradanciu1997@gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: daniel.baluta@nxp.com, Andra Danciu <andradanciu1997@gmail.com>
+To: Andra Danciu <andradanciu1997@gmail.com>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: daniel.baluta@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
 
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
----
- sound/soc/fsl/mpc5200_dma.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+On 4/5/2019 5:19 PM, Andra Danciu wrote:
+> Adopt the SPDX license identifier headers to ease license compliance
+> management.
+>
+> Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index c1a4544eb16b..4396442c2fdd 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -1,10 +1,10 @@
--/*
-- * Freescale MPC5200 PSC DMA
-- * ALSA SoC Platform driver
-- *
-- * Copyright (C) 2008 Secret Lab Technologies Ltd.
-- * Copyright (C) 2009 Jon Smirl, Digispeaker
-- */
-+// SPDX-License-Identifier: GPL
-+//
-+// Freescale MPC5200 PSC DMA
-+// ALSA SoC Platform driver
-+//
-+// Copyright (C) 2008 Secret Lab Technologies Ltd.
-+// Copyright (C) 2009 Jon Smirl, Digispeaker
- 
- #include <linux/module.h>
- #include <linux/of_device.h>
--- 
-2.11.0
+Cheers,
+-Mukesh
+> ---
+>   sound/soc/fsl/imx-pcm.h | 6 +-----
+>   1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+> index 133c4470acad..5dd406774d3e 100644
+> --- a/sound/soc/fsl/imx-pcm.h
+> +++ b/sound/soc/fsl/imx-pcm.h
+> @@ -1,13 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+>   /*
+>    * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
+>    *
+>    * This code is based on code copyrighted by Freescale,
+>    * Liam Girdwood, Javier Martin and probably others.
+> - *
+> - * This program is free software; you can redistribute  it and/or modify it
+> - * under  the terms of  the GNU General  Public License as published by the
+> - * Free Software Foundation;  either version 2 of the  License, or (at your
+> - * option) any later version.
+>    */
+>   
+>   #ifndef _IMX_PCM_H
