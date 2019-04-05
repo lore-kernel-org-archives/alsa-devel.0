@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: skylake: add remove() callback
-	for component driver" to the asoc tree
-Date: Fri,  5 Apr 2019 09:43:28 +0700 (+07)
-Message-ID: <20190405024328.6AA50441D3B@finisterre.ee.mobilebroadband>
-References: <20190405003040.8709-3-ranjani.sridharan@linux.intel.com>
+Subject: Applied "ASoC: cs35l35: Disable regulators on driver
+	removal" to the asoc tree
+Date: Fri,  5 Apr 2019 09:43:31 +0700 (+07)
+Message-ID: <20190405024331.956B2441D3C@finisterre.ee.mobilebroadband>
+References: <20190404162720.4995-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 001BBF89746
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 04:43:31 +0200 (CEST)
-In-Reply-To: <20190405003040.8709-3-ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62708F8974E
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 04:43:36 +0200 (CEST)
+In-Reply-To: <20190404162720.4995-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: skylake: add remove() callback for component driver
+   ASoC: cs35l35: Disable regulators on driver removal
 
 has been applied to the asoc tree at
 
@@ -55,42 +55,51 @@ to this mail.
 Thanks,
 Mark
 
->From 2e05ddd2c9f8000751d52fcf35b8318da46026bc Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Thu, 4 Apr 2019 17:30:39 -0700
-Subject: [PATCH] ASoC: intel: skylake: add remove() callback for component
- driver
+>From 47c4cc08cb5b34e93ab337b924c5ede77ca3c936 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Thu, 4 Apr 2019 17:27:20 +0100
+Subject: [PATCH] ASoC: cs35l35: Disable regulators on driver removal
 
-Topology is not unloaded in the core during unregister_component()
-anymore. So, add the remove() callback that will unload the
-topology.
+The chips main power supplies VA and VP are enabled during probe but
+then never disabled, this will cause warnings from the regulator
+framework on driver removal. Fix this by adding a remove callback and
+disabling the supplies, whilst doing so follow best practice and put the
+chip back into reset as well.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs35l35.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 56099db8f86d..57031b6d4d45 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1462,9 +1462,16 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
- 	return 0;
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 9f4a59871cee..c71696146c5e 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1635,6 +1635,16 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 	return ret;
  }
  
-+static void skl_pcm_remove(struct snd_soc_component *component)
++static int cs35l35_i2c_remove(struct i2c_client *i2c_client)
 +{
-+	/* remove topology */
-+	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++	struct cs35l35_private *cs35l35 = i2c_get_clientdata(i2c_client);
++
++	regulator_bulk_disable(cs35l35->num_supplies, cs35l35->supplies);
++	gpiod_set_value_cansleep(cs35l35->reset_gpio, 0);
++
++	return 0;
 +}
 +
- static const struct snd_soc_component_driver skl_component  = {
- 	.name		= "pcm",
- 	.probe		= skl_platform_soc_probe,
-+	.remove		= skl_pcm_remove,
- 	.ops		= &skl_platform_ops,
- 	.pcm_new	= skl_pcm_new,
- 	.pcm_free	= skl_pcm_free,
+ static const struct of_device_id cs35l35_of_match[] = {
+ 	{.compatible = "cirrus,cs35l35"},
+ 	{},
+@@ -1655,6 +1665,7 @@ static struct i2c_driver cs35l35_i2c_driver = {
+ 	},
+ 	.id_table = cs35l35_id,
+ 	.probe = cs35l35_i2c_probe,
++	.remove = cs35l35_i2c_remove,
+ };
+ 
+ module_i2c_driver(cs35l35_i2c_driver);
 -- 
 2.20.1
