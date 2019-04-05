@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 14/20] ASoC: mpc8610_hpcd: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:04 +0300
-Message-ID: <20190405115010.28838-15-andradanciu1997@gmail.com>
+Subject: [PATCH 13/20] ASoC: mpc5200_psc_i2s: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:03 +0300
+Message-ID: <20190405115010.28838-14-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,34 +15,30 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/mpc8610_hpcd.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/fsl/mpc5200_psc_i2s.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index a639b52c16f6..f6261a3eeb0f 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -1,14 +1,10 @@
--/**
-- * Freescale MPC8610HPCD ALSA SoC Machine driver
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index d8232943ccb6..6de97461ba25 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -1,10 +1,10 @@
+-/*
+- * Freescale MPC5200 PSC in I2S mode
+- * ALSA SoC Digital Audio Interface (DAI) driver
 - *
-- * Author: Timur Tabi <timur@freescale.com>
-- *
-- * Copyright 2007-2010 Freescale Semiconductor, Inc.
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
+- * Copyright (C) 2008 Secret Lab Technologies Ltd.
+- * Copyright (C) 2009 Jon Smirl, Digispeaker
 - */
-+// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL
 +//
-+// Freescale MPC8610HPCD ALSA SoC Machine driver
++// Freescale MPC5200 PSC in I2S mode
++// ALSA SoC Digital Audio Interface (DAI) driver
 +//
-+// Author: Timur Tabi <timur@freescale.com>
-+//
-+// Copyright 2007-2010 Freescale Semiconductor, Inc.
++// Copyright (C) 2008 Secret Lab Technologies Ltd.
++// Copyright (C) 2009 Jon Smirl, Digispeaker
  
  #include <linux/module.h>
- #include <linux/interrupt.h>
+ #include <linux/of_device.h>
 -- 
 2.11.0
