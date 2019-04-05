@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 09/20] ASoC: imx-spdif: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:59 +0300
-Message-ID: <20190405115010.28838-10-andradanciu1997@gmail.com>
+Subject: [PATCH 12/20] ASoC: mpc5200_psc_ac97: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:02 +0300
+Message-ID: <20190405115010.28838-13-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,29 +15,32 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/imx-spdif.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ sound/soc/fsl/mpc5200_psc_ac97.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index 797d66e43d49..4f7f210beb18 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -1,13 +1,6 @@
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 07ee355ee385..e5b9c04d1565 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -1,13 +1,9 @@
 -/*
-- * Copyright (C) 2013 Freescale Semiconductor, Inc.
+- * linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
 - *
-- * The code contained herein is licensed under the GNU General Public
-- * License. You may obtain a copy of the GNU General Public License
-- * Version 2 or later at the following locations:
+- * Copyright (C) 2009 Jon Smirl, Digispeaker
+- * Author: Jon Smirl <jonsmirl@gmail.com>
 - *
-- * http://www.opensource.org/licenses/gpl-license.html
-- * http://www.gnu.org/copyleft/gpl.html
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - */
-+// SPDX-License-Identifier: GPL-2.0+
++// SPDX-License-Identifier: GPL-2.0
 +//
-+// Copyright (C) 2013 Freescale Semiconductor, Inc.
++// linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
++//
++// Copyright (C) 2009 Jon Smirl, Digispeaker
++// Author: Jon Smirl <jonsmirl@gmail.com>
  
  #include <linux/module.h>
- #include <linux/of_platform.h>
+ #include <linux/of_device.h>
 -- 
 2.11.0
