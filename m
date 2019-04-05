@@ -1,20 +1,20 @@
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 2/2] ASoC: pcm: update module refcount if
- module_get_upon_open is set
-Date: Fri, 05 Apr 2019 09:59:49 -0700
-Message-ID: <a07369454af6746b809e0d4f34595b262576e063.camel@linux.intel.com>
-References: <20190405030655.13144-1-ranjani.sridharan@linux.intel.com>
- <20190405030655.13144-2-ranjani.sridharan@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: core: conditionally increase
+ module refcount on component open
+Date: Fri, 5 Apr 2019 12:12:53 -0500
+Message-ID: <bf4c55c0-13f1-31fd-029f-9db6518365a8@linux.intel.com>
+References: <20190405165709.14202-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FA3CF80C1B
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 18:59:51 +0200 (CEST)
-In-Reply-To: <20190405030655.13144-2-ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BDEFF80792
+ for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 19:12:56 +0200 (CEST)
+In-Reply-To: <20190405165709.14202-1-ranjani.sridharan@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +24,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2019-04-04 at 20:06 -0700, Ranjani Sridharan wrote:
-> Setting the module_get_upon_open field for component driver
-> prevents the module refcount from being incremented during
-> component probe(). This could lead to the module being
-> allowed to be unloaded when a pcm stream is open. So,
-> if this field is set, the module's refcount should be
-> incremented during pcm open to prevent module removal
-> when the component is in use. And, the refcount should
-> be decremented upon pcm close.
+
+
+On 4/5/19 11:57 AM, Ranjani Sridharan wrote:
+> Recently, for Intel platforms the "ignore_module_refcount" field
+> was introduced for the component driver. In order to avoid a
+> deadlock preventing the PCI modules from being removed
+> even when the card was idle, the refcounts were not incremented
+> for the device driver module during component probe.
+> 
+> However, this change introduced a nasty side effect:
+> the device driver module can be unloaded while a pcm stream is open.
+> 
+> This patch proposes to change the field to be renamed as
+> "module_get_upon_open". When this field is set, the module
+> refcount should be incremented on pcm open amd decremented
+> upon pcm close. This will enable modules to be removed
+> when no PCM playback/capture happens and prevent removal
+> when the component is actually in use.
+> 
+> Also, align with the skylake component driver with the new name.
+> 
+> Fixes: b450b878('ASoC: core: don't increase component module refcount
+>                   unconditionally'
 > 
 > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> ---
->  sound/soc/soc-pcm.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 7fe5321000e8..d84a9a5b14c0 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -15,6 +15,7 @@
->  #include <linux/delay.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/workqueue.h>
->  #include <linux/export.h>
-> @@ -463,6 +464,9 @@ static int soc_pcm_components_close(struct
-> snd_pcm_substream *substream,
->  			continue;
->  
->  		component->driver->ops->close(substream);
-> +
-> +		if (component->driver->module_get_upon_open)
-> +			module_put(component->dev->driver->owner);
-I made a minor fix to align the code similar to the one in soc-core.
-I've sent a V2 version of the patch set with the fix. Sorry about the
-noise.
 
-Thanks,
-Ranjani
->  	}
->  
->  	return 0;
-> @@ -513,6 +517,10 @@ static int soc_pcm_open(struct snd_pcm_substream
-> *substream)
->  		    !component->driver->ops->open)
->  			continue;
->  
-> +		if (component->driver->module_get_upon_open)
-> +			if (!try_module_get(component->dev->driver-
-> >owner))
-> +				return -ENODEV;
-> +
->  		ret = component->driver->ops->open(substream);
->  		if (ret < 0) {
->  			dev_err(component->dev,
+Both patches 1..2
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks for improving and fixing this Ranjani!
+
+> ---
+>   include/sound/soc.h               | 9 +++++++--
+>   sound/soc/intel/skylake/skl-pcm.c | 2 +-
+>   sound/soc/soc-core.c              | 4 ++--
+>   3 files changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index 1e2be35ed36f..482b4ea87c3c 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -802,8 +802,13 @@ struct snd_soc_component_driver {
+>   	int probe_order;
+>   	int remove_order;
+>   
+> -	/* signal if the module handling the component cannot be removed */
+> -	unsigned int ignore_module_refcount:1;
+> +	/*
+> +	 * signal if the module handling the component should not be removed
+> +	 * if a pcm is open. Setting this would prevent the module
+> +	 * refcount being incremented in probe() but allow it be incremented
+> +	 * when a pcm is opened and decremented when it is closed.
+> +	 */
+> +	unsigned int module_get_upon_open:1;
+>   
+>   	/* bits */
+>   	unsigned int idle_bias_on:1;
+> diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+> index 56099db8f86d..ee53d047c3bd 100644
+> --- a/sound/soc/intel/skylake/skl-pcm.c
+> +++ b/sound/soc/intel/skylake/skl-pcm.c
+> @@ -1468,7 +1468,7 @@ static const struct snd_soc_component_driver skl_component  = {
+>   	.ops		= &skl_platform_ops,
+>   	.pcm_new	= skl_pcm_new,
+>   	.pcm_free	= skl_pcm_free,
+> -	.ignore_module_refcount = 1, /* do not increase the refcount in core */
+> +	.module_get_upon_open = 1, /* increment refcount when a pcm is opened */
+>   };
+>   
+>   int skl_platform_register(struct device *dev)
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 6f4842977b8d..e78534bbd092 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -947,7 +947,7 @@ static void soc_cleanup_component(struct snd_soc_component *component)
+>   	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
+>   	soc_cleanup_component_debugfs(component);
+>   	component->card = NULL;
+> -	if (!component->driver->ignore_module_refcount)
+> +	if (!component->driver->module_get_upon_open)
+>   		module_put(component->dev->driver->owner);
+>   }
+>   
+> @@ -1381,7 +1381,7 @@ static int soc_probe_component(struct snd_soc_card *card,
+>   		return 0;
+>   	}
+>   
+> -	if (!component->driver->ignore_module_refcount &&
+> +	if (!component->driver->module_get_upon_open &&
+>   	    !try_module_get(component->dev->driver->owner))
+>   		return -ENODEV;
+>   
+> 
