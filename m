@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 06/20] ASoC: imx-es8328: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:49:56 +0300
-Message-ID: <20190405115010.28838-7-andradanciu1997@gmail.com>
+Subject: [PATCH 07/20] ASoC: imx-mc13783: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:49:57 +0300
+Message-ID: <20190405115010.28838-8-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,31 +15,38 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/imx-es8328.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ sound/soc/fsl/imx-mc13783.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 9953438086e4..c9d8739b04a9 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -1,14 +1,7 @@
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index 9d19b808f634..545815a27074 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -1,17 +1,11 @@
 -/*
-- * Copyright 2012 Freescale Semiconductor, Inc.
-- * Copyright 2012 Linaro Ltd.
+- * imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
 - *
-- * The code contained herein is licensed under the GNU General Public
-- * License. You may obtain a copy of the GNU General Public License
-- * Version 2 or later at the following locations:
+- * Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
 - *
-- * http://www.opensource.org/licenses/gpl-license.html
-- * http://www.gnu.org/copyleft/gpl.html
+- * Heavly based on phycore-mc13783:
+- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// Copyright 2012 Freescale Semiconductor, Inc.
-+// Copyright 2012 Linaro Ltd.
++// imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
++//
++// Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
++//
++// Heavly based on phycore-mc13783:
++// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
  
- #include <linux/gpio.h>
  #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.11.0
