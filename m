@@ -1,7 +1,7 @@
 From: Andra Danciu <andradanciu1997@gmail.com>
-Subject: [PATCH 19/20] ASoC: phycore-ac97: Switch to SPDX identifier
-Date: Fri,  5 Apr 2019 14:50:09 +0300
-Message-ID: <20190405115010.28838-20-andradanciu1997@gmail.com>
+Subject: [PATCH 20/20] ASoC: wm1133-ev1: Switch to SPDX identifier
+Date: Fri,  5 Apr 2019 14:50:10 +0300
+Message-ID: <20190405115010.28838-21-andradanciu1997@gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190405115010.28838-1-andradanciu1997@gmail.com>
@@ -15,32 +15,37 @@ management.
 
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 ---
- sound/soc/fsl/phycore-ac97.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/fsl/wm1133-ev1.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
-index 66fb6c4614d2..fe7ba6db7c96 100644
---- a/sound/soc/fsl/phycore-ac97.c
-+++ b/sound/soc/fsl/phycore-ac97.c
-@@ -1,14 +1,8 @@
+diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+index 2f80b21b2921..aad24ccbef90 100644
+--- a/sound/soc/fsl/wm1133-ev1.c
++++ b/sound/soc/fsl/wm1133-ev1.c
+@@ -1,16 +1,11 @@
 -/*
-- * phycore-ac97.c  --  SoC audio for imx_phycore in AC97 mode
+- *  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
 - *
-- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+- *  Copyright (c) 2010 Wolfson Microelectronics plc
+- *  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+- *
+- *  Based on an earlier driver for the same hardware by Liam Girdwood.
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
 - *  Free Software Foundation;  either version 2 of the  License, or (at your
 - *  option) any later version.
-- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// phycore-ac97.c  --  SoC audio for imx_phycore in AC97 mode
++//  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
 +//
-+// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
++//  Copyright (c) 2010 Wolfson Microelectronics plc
++//  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
++//
++//  Based on an earlier driver for the same hardware by Liam Girdwood.
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
 -- 
 2.11.0
