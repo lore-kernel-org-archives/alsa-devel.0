@@ -1,64 +1,23 @@
-From: Mukesh Ojha <mojha@codeaurora.org>
-Subject: Re: [PATCH 02/20] ASoC: efika-audio-fabric.c: Switch to SPDX
- identifier
-Date: Fri, 5 Apr 2019 18:17:00 +0530
-Message-ID: <8e16e9f5-2c0f-a1e6-df0d-67b982db294a@codeaurora.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 02/20] ASoC: efika-audio-fabric.c: Switch to SPDX identifier
+Date: Fri, 5 Apr 2019 09:50:17 -0300
+Message-ID: <CAOMZO5CZtJq65iUDN2Ao9zt=0_L0iXy-5eRCrHAzQb+3s5rxBA@mail.gmail.com>
 References: <20190405115010.28838-1-andradanciu1997@gmail.com>
- <20190405115010.28838-3-andradanciu1997@gmail.com>
+ <20190405115010.28838-3-andradanciu1997@gmail.com> <8e16e9f5-2c0f-a1e6-df0d-67b982db294a@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-3-andradanciu1997@gmail.com>
-Content-Language: en-US
+In-Reply-To: <8e16e9f5-2c0f-a1e6-df0d-67b982db294a@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: daniel.baluta@nxp.com
+To: Mukesh Ojha <mojha@codeaurora.org>
+Cc: Andra Danciu <andradanciu1997@gmail.com>, timur@kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linuxppc-dev@lists.ozlabs.org, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Apr 5, 2019 at 9:47 AM Mukesh Ojha <mojha@codeaurora.org> wrote:
 
-On 4/5/2019 5:19 PM, Andra Danciu wrote:
-> Adopt the SPDX license identifier headers to ease license compliance
-> management.
+> Don't change entire thing with //. only above line with the license is
+> enough.
 >
-> Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
-> ---
->   sound/soc/fsl/efika-audio-fabric.c | 17 ++++++-----------
->   1 file changed, 6 insertions(+), 11 deletions(-)
->
-> diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
-> index 667f4215dfc0..3e832902fc99 100644
-> --- a/sound/soc/fsl/efika-audio-fabric.c
-> +++ b/sound/soc/fsl/efika-audio-fabric.c
-> @@ -1,14 +1,9 @@
-> -/*
-> - * Efika driver for the PSC of the Freescale MPC52xx
-> - * configured as AC97 interface
-> - *
-> - * Copyright 2008 Jon Smirl, Digispeaker
-> - * Author: Jon Smirl <jonsmirl@gmail.com>
-> - *
-> - * This file is licensed under the terms of the GNU General Public License
-> - * version 2. This program is licensed "as is" without any warranty of any
-> - * kind, whether express or implied.
-> - */
-> +// SPDX-License-Identifier: GPL-2.0
+> Please apply this rule every patch of yours.
 
-Don't change entire thing with //. only above line with the license is 
-enough.
-
-Please apply this rule every patch of yours.
-
-Thanks,
-Mukesh
-
-
-> +// Efika driver for the PSC of the Freescale MPC52xx
-> +// configured as AC97 interface
-> +//
-> +// Copyright 2008 Jon Smirl, Digispeaker
-> +// Author: Jon Smirl <jonsmirl@gmail.com>
-
->   
->   #include <linux/init.h>
->   #include <linux/module.h>
+Not really. This is the style preferred in this subsystem.
