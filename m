@@ -1,52 +1,84 @@
-From: Annaliese McDermond <nh6z@nh6z.net>
-Subject: [PATCH] ASoC: tlv320aic32x4: Fix spacing
-Date: Fri,  5 Apr 2019 14:54:30 -0700
-Message-ID: <20190405215430.27419-1-nh6z@nh6z.net>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 5/6] dt-bindings: display: sii902x: Add HDMI audio
+ bindings
+Date: Sat, 06 Apr 2019 01:06:32 -0500
+Message-ID: <5ca841ea.1c69fb81.374b6.c322@mx.google.com>
+References: <cover.1554146714.git.jsarha@ti.com>
+ <4a0573f42112a1070c2d48ecc4a4e89838842cfc.1554146714.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp121.ord1d.emailsrvr.com (smtp121.ord1d.emailsrvr.com
- [184.106.54.121])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6916F80C1B
- for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2019 23:54:37 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: team@nwdigitalradio.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <4a0573f42112a1070c2d48ecc4a4e89838842cfc.1554146714.git.jsarha@ti.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: fabrizio.castro@bp.renesas.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Songjun.Wu@atmel.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, voice.shen@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-Fix some cosmetic spacing issues reported by Julia Lawall
-<julia.lawall@lip6.fr>.
-
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
----
- sound/soc/codecs/tlv320aic32x4-clk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
-index 667ec2c03508..9e4899eb1d8e 100644
---- a/sound/soc/codecs/tlv320aic32x4-clk.c
-+++ b/sound/soc/codecs/tlv320aic32x4-clk.c
-@@ -165,8 +165,8 @@ static int clk_aic32x4_pll_calc_muldiv(struct clk_aic32x4_pll_muldiv *settings,
- 	 * of the multiplier.	This is because we can't do floating point
- 	 * math in the kernel.
- 	 */
--	 multiplier = (u64) rate * settings->p * 10000;
--	 do_div(multiplier, parent_rate);
-+	multiplier = (u64) rate * settings->p * 10000;
-+	do_div(multiplier, parent_rate);
- 
- 	/*
- 	 * J can't be over 64, so R can scale this.
--- 
-2.19.1
+T24gVHVlLCBBcHIgMDIsIDIwMTkgYXQgMTA6Mjk6MTRBTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90
+ZToKPiBUaGUgc2lpOTAyeCBjaGlwIGZhbWlseSBzdXBwb3J0cyBhbHNvIEhETUkgYXVkaW8uIEFk
+ZCBiaW5kaW5nIGZvcgo+IGRlc2NyaWJpbmcgdGhlIG5lY2Vzc2FyeSBpMnMgYW5kIG1jbGsgd2ly
+aW5nIGZvciBpdC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBKeXJpIFNhcmhhIDxqc2FyaGFAdGkuY29t
+Pgo+IC0tLQo+ICAuLi4vYmluZGluZ3MvZGlzcGxheS9icmlkZ2Uvc2lpOTAyeC50eHQgICAgICAg
+fCAzNyArKysrKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAzNyBpbnNlcnRpb25z
+KCspCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9k
+aXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+IGluZGV4IGM0YzE4NTVjYTY1NC4uZDEy
+NGE1ZmVkYWIxIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+IEBAIC05LDYgKzksMzcg
+QEAgT3B0aW9uYWwgcHJvcGVydGllczoKPiAgCSAgYWJvdXQgaG90cGx1ZyBldmVudHMuCj4gIAkt
+IHJlc2V0LWdwaW9zOiBPRiBkZXZpY2UtdHJlZSBncGlvIHNwZWNpZmljYXRpb24gZm9yIFJTVF9O
+IHBpbi4KPiAgCj4gKwlIRE1JIGF1ZGlvIHByb3BlcnRpZXM6Cj4gKwktICNzb3VuZC1kYWktY2Vs
+bHM6IDwwPiBvciA8MT4uIDwwPiBpZiBvbmx5IGkycyBvciBzcGRpZiBwaW4KPiArCSAgIGlzIHdp
+cmVkLCA8MT4gaWYgdGhlIGJvdGggYXJlIHdpcmVkLiBIRE1JIGF1ZGlvIGlzCj4gKwkgICBjb25m
+aWd1cmVkIG9ubHkgaWYgdGhpcyBwcm9wZXJ0eSBpcyBmb3VuZC4KPiArCS0gc2lsLGkycy1kYXRh
+LWxhbmVzOiBBcnJheSBvZiB1cCB0byA0IGludGVnZXJzIHdpdGggdmFsdWVzIG9mIDAtMwo+ICsJ
+ICAgRWFjaCBpbnRlZ2VyIGluZGljYXRlcyB3aGljaCBpMnMgcGluIGlzIGNvbm5lY3RlZCB0byB3
+aGljaAo+ICsJICAgYXVkaW8gZmlmby4gVGhlIGZpcnN0IGludGVnZXIgc2VsZWN0cyBpMnMgYXVk
+aW8gcGluIGZvciB0aGUKPiArCSAgIGZpcnN0IGF1ZGlvIGZpZm8jMCAoSERNSSBjaGFubmVscyAx
+JjIpLCBzZWNvbmQgZm9yIGZpZm8jMQo+ICsJICAgKEhETUkgY2hhbm5lbHMgMyY0KSwgYW5kIHNv
+IG9uLiBUaGVyZSBpcyA0IGZpZm9zIGFuZCA0IGkycwo+ICsJICAgcGlucyAoU0QwIC0gU0QzKS4g
+QW55IGkycyBwaW4gY2FuIGJlIGNvbm5lY3RlZCB0byBhbnkgZmlmbywKPiArCSAgIGJ1dCB0aGVy
+ZSBjYW4gYmUgbm8gZ2Fwcy4gRS5nLiBhbiBpMnMgcGluIG11c3QgYmUgbWFwcGVkIHRvCj4gKwkg
+ICBmaWZvIzAgYW5kIGZpZm8jMSBiZWZvcmUgbWFwcGluZyBhIGNoYW5uZWwgdG8gZmlmbyMyLiBE
+ZWZhdWx0Cj4gKwkgICB2YWx1ZSBpcyA8MD4sIGRlc2NyaWJpbmcgU0QwIHBpbiBiZWlnaW5nIHJv
+dXRlZCB0byBoZG1pIGF1ZGlvCj4gKwkgICBmaWZvICMwLgo+ICsJLSBjbG9ja3M6IHBoYW5kbGUg
+YW5kIGNsb2NrIHNwZWNpZmllciBmb3IgZWFjaCBjbG9jayBsaXN0ZWQgaW4KPiArICAgICAgICAg
+ICB0aGUgY2xvY2stbmFtZXMgcHJvcGVydHkKPiArCS0gY2xvY2stbmFtZXM6ICJtY2xrIgo+ICsJ
+ICAgRGVzY3JpYmVzIFNJSTkwMnggTUNMSyBpbnB1dC4gTUNMSyBpcyB1c2VkIHRvIHByb2R1Y2UK
+PiArCSAgIEhETUkgYXVkaW8gQ1RTIHZhbHVlcy4gVGhpcyBwcm9wZXJ0eSBpcyByZXF1aXJlZCBp
+Zgo+ICsJICAgIiNzb3VuZC1kYWktY2VsbHMiLXByb3BlcnR5IGlzIHByZXNlbnQuIFRoaXMgcHJv
+cGVydHkgZm9sbG93cwo+ICsJICAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Ns
+b2NrL2Nsb2NrLWJpbmRpbmdzLnR4dAo+ICsJICAgY29uc3VtZXIgYmluZGluZy4KPiArCj4gKwlJ
+ZiBIRE1JIGF1ZGlvIGlzIGNvbmZpZ3VyZWQgdGhlIHNpaTkwMnggZGV2aWNlIGJlY29tZXMgYW4g
+QVNvQwo+ICsJY29kZWMgY29tcG9uZW50LCB0aGF0IGNhbiBiZSB1c2VkIGluIGNvbmZpZ3VyaW5n
+IGZ1bGwgYXVkaW8KPiArCWRldmljZXMgd2l0aCBBU29DIHNpbXBsZS1jYXJkIG9yIGF1ZGlvLWdy
+YXBoLWNhcmQuIFNlZSB0aGVpcgoKQVNvQyBpcyBhIExpbnV4IHRoaW5nLgoKPiArCWJpbmRpbmcg
+ZG9jdW1lbnRzIG9uIGhvdyB0byBkZXNjcmliZSBob3cgdGhlIHNpaTkwMnggZGV2aWNlIGlzCj4g
+Kwljb25uZWN0ZWQgdG8gdGhlIHJlc3Qgb2YgdGhlIGF1ZGlvIHN5c3RlbToKPiArCURvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zaW1wbGUtY2FyZC50eHQKPiArCURvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hdWRpby1ncmFwaC1jYXJkLnR4dAo+
+ICsKPiAgT3B0aW9uYWwgc3Vibm9kZXM6Cj4gIAktIHZpZGVvIGlucHV0OiB0aGlzIHN1Ym5vZGUg
+Y2FuIGNvbnRhaW4gYSB2aWRlbyBpbnB1dCBwb3J0IG5vZGUKPiAgCSAgdG8gY29ubmVjdCB0aGUg
+YnJpZGdlIHRvIGEgZGlzcGxheSBjb250cm9sbGVyIG91dHB1dCAoU2VlIHRoaXMKPiBAQCAtMjEs
+NiArNTIsMTIgQEAgRXhhbXBsZToKPiAgCQljb21wYXRpYmxlID0gInNpbCxzaWk5MDIyIjsKPiAg
+CQlyZWcgPSA8MHgzOT47Cj4gIAkJcmVzZXQtZ3Bpb3MgPSA8JnBpb0EgMSAwPjsKPiArCj4gKwkJ
+I3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKPiArCQlpMnMtZGF0YS1sYW5lcyA9IDwgMCAxIDIgPjsK
+PiArCQljbG9ja3MgPSA8Jm1jbGs+Owo+ICsJCWNsb2NrLW5hbWVzID0gIm1jbGsiOwo+ICsKPiAg
+CQlwb3J0cyB7Cj4gIAkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ICAJCQkjc2l6ZS1jZWxscyA9
+IDwwPjsKPiAtLSAKPiBUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1
+IDIyLCAwMDE4MCBIZWxzaW5raS4gWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290
+aXBhaWtrYS9Eb21pY2lsZTogSGVsc2lua2kKPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2RyaS1kZXZlbA==
