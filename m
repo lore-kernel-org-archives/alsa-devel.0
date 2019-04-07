@@ -1,99 +1,50 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: display: sii902x: Add HDMI audio
- bindings
-Date: Sat, 6 Apr 2019 15:53:07 +0300
-Message-ID: <2abfb475-31c7-85ca-2ad2-3d689c2838d7@ti.com>
-References: <cover.1554146714.git.jsarha@ti.com>
- <4a0573f42112a1070c2d48ecc4a4e89838842cfc.1554146714.git.jsarha@ti.com>
- <5ca841ea.1c69fb81.374b6.c322@mx.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <5ca841ea.1c69fb81.374b6.c322@mx.google.com>
-Content-Language: en-GB
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Rob Herring <robh@kernel.org>
-Cc: fabrizio.castro@bp.renesas.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Songjun.Wu@atmel.com, dri-devel@lists.freedesktop.org, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, voice.shen@atmel.com
+From: Nicholas Mc Guire <hofrat@opentech.at>
+Subject: [PATCH] ASoC: ab8500: add range to usleep_range
+Date: Sun,  7 Apr 2019 04:59:34 +0200
+Message-ID: <1554605974-25481-1-git-send-email-hofrat@opentech.at>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@opentech.at>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYvMDQvMjAxOSAwOTowNiwgUm9iIEhlcnJpbmcgd3JvdGU6Cj4gT24gVHVlLCBBcHIgMDIs
-IDIwMTkgYXQgMTA6Mjk6MTRBTSArMDMwMCwgSnlyaSBTYXJoYSB3cm90ZToKPj4gVGhlIHNpaTkw
-MnggY2hpcCBmYW1pbHkgc3VwcG9ydHMgYWxzbyBIRE1JIGF1ZGlvLiBBZGQgYmluZGluZyBmb3IK
-Pj4gZGVzY3JpYmluZyB0aGUgbmVjZXNzYXJ5IGkycyBhbmQgbWNsayB3aXJpbmcgZm9yIGl0Lgo+
-Pgo+PiBTaWduZWQtb2ZmLWJ5OiBKeXJpIFNhcmhhIDxqc2FyaGFAdGkuY29tPgo+PiAtLS0KPj4g
-IC4uLi9iaW5kaW5ncy9kaXNwbGF5L2JyaWRnZS9zaWk5MDJ4LnR4dCAgICAgICB8IDM3ICsrKysr
-KysrKysrKysrKysrKysKPj4gIDEgZmlsZSBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspCj4+Cj4+
-IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9i
-cmlkZ2Uvc2lpOTAyeC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlz
-cGxheS9icmlkZ2Uvc2lpOTAyeC50eHQKPj4gaW5kZXggYzRjMTg1NWNhNjU0Li5kMTI0YTVmZWRh
-YjEgMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNw
-bGF5L2JyaWRnZS9zaWk5MDJ4LnR4dAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvZGlzcGxheS9icmlkZ2Uvc2lpOTAyeC50eHQKPj4gQEAgLTksNiArOSwzNyBAQCBP
-cHRpb25hbCBwcm9wZXJ0aWVzOgo+PiAgCSAgYWJvdXQgaG90cGx1ZyBldmVudHMuCj4+ICAJLSBy
-ZXNldC1ncGlvczogT0YgZGV2aWNlLXRyZWUgZ3BpbyBzcGVjaWZpY2F0aW9uIGZvciBSU1RfTiBw
-aW4uCj4+ICAKPj4gKwlIRE1JIGF1ZGlvIHByb3BlcnRpZXM6Cj4+ICsJLSAjc291bmQtZGFpLWNl
-bGxzOiA8MD4gb3IgPDE+LiA8MD4gaWYgb25seSBpMnMgb3Igc3BkaWYgcGluCj4+ICsJICAgaXMg
-d2lyZWQsIDwxPiBpZiB0aGUgYm90aCBhcmUgd2lyZWQuIEhETUkgYXVkaW8gaXMKPj4gKwkgICBj
-b25maWd1cmVkIG9ubHkgaWYgdGhpcyBwcm9wZXJ0eSBpcyBmb3VuZC4KPj4gKwktIHNpbCxpMnMt
-ZGF0YS1sYW5lczogQXJyYXkgb2YgdXAgdG8gNCBpbnRlZ2VycyB3aXRoIHZhbHVlcyBvZiAwLTMK
-Pj4gKwkgICBFYWNoIGludGVnZXIgaW5kaWNhdGVzIHdoaWNoIGkycyBwaW4gaXMgY29ubmVjdGVk
-IHRvIHdoaWNoCj4+ICsJICAgYXVkaW8gZmlmby4gVGhlIGZpcnN0IGludGVnZXIgc2VsZWN0cyBp
-MnMgYXVkaW8gcGluIGZvciB0aGUKPj4gKwkgICBmaXJzdCBhdWRpbyBmaWZvIzAgKEhETUkgY2hh
-bm5lbHMgMSYyKSwgc2Vjb25kIGZvciBmaWZvIzEKPj4gKwkgICAoSERNSSBjaGFubmVscyAzJjQp
-LCBhbmQgc28gb24uIFRoZXJlIGlzIDQgZmlmb3MgYW5kIDQgaTJzCj4+ICsJICAgcGlucyAoU0Qw
-IC0gU0QzKS4gQW55IGkycyBwaW4gY2FuIGJlIGNvbm5lY3RlZCB0byBhbnkgZmlmbywKPj4gKwkg
-ICBidXQgdGhlcmUgY2FuIGJlIG5vIGdhcHMuIEUuZy4gYW4gaTJzIHBpbiBtdXN0IGJlIG1hcHBl
-ZCB0bwo+PiArCSAgIGZpZm8jMCBhbmQgZmlmbyMxIGJlZm9yZSBtYXBwaW5nIGEgY2hhbm5lbCB0
-byBmaWZvIzIuIERlZmF1bHQKPj4gKwkgICB2YWx1ZSBpcyA8MD4sIGRlc2NyaWJpbmcgU0QwIHBp
-biBiZWlnaW5nIHJvdXRlZCB0byBoZG1pIGF1ZGlvCj4+ICsJICAgZmlmbyAjMC4KPj4gKwktIGNs
-b2NrczogcGhhbmRsZSBhbmQgY2xvY2sgc3BlY2lmaWVyIGZvciBlYWNoIGNsb2NrIGxpc3RlZCBp
-bgo+PiArICAgICAgICAgICB0aGUgY2xvY2stbmFtZXMgcHJvcGVydHkKPj4gKwktIGNsb2NrLW5h
-bWVzOiAibWNsayIKPj4gKwkgICBEZXNjcmliZXMgU0lJOTAyeCBNQ0xLIGlucHV0LiBNQ0xLIGlz
-IHVzZWQgdG8gcHJvZHVjZQo+PiArCSAgIEhETUkgYXVkaW8gQ1RTIHZhbHVlcy4gVGhpcyBwcm9w
-ZXJ0eSBpcyByZXF1aXJlZCBpZgo+PiArCSAgICIjc291bmQtZGFpLWNlbGxzIi1wcm9wZXJ0eSBp
-cyBwcmVzZW50LiBUaGlzIHByb3BlcnR5IGZvbGxvd3MKPj4gKwkgICBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvY2xvY2svY2xvY2stYmluZGluZ3MudHh0Cj4+ICsJICAgY29uc3Vt
-ZXIgYmluZGluZy4KPj4gKwo+PiArCUlmIEhETUkgYXVkaW8gaXMgY29uZmlndXJlZCB0aGUgc2lp
-OTAyeCBkZXZpY2UgYmVjb21lcyBhbiBBU29DCj4+ICsJY29kZWMgY29tcG9uZW50LCB0aGF0IGNh
-biBiZSB1c2VkIGluIGNvbmZpZ3VyaW5nIGZ1bGwgYXVkaW8KPj4gKwlkZXZpY2VzIHdpdGggQVNv
-QyBzaW1wbGUtY2FyZCBvciBhdWRpby1ncmFwaC1jYXJkLiBTZWUgdGhlaXIKPiAKPiBBU29DIGlz
-IGEgTGludXggdGhpbmcuCgpZZXMgaXQgaXMuIERvZXMgaXQgbWVhbiB0aGF0IEkgc2hvdWxkIG5v
-dCB1c2UgdGhlIHRlcm0gaW4gdGhlIGJpbmRpbmcKZG9jdW1lbnQ/CgpFLmcuIFdyaXRlIGl0IGxp
-a2UgdGhpczoKCklmIEhETUkgYXVkaW8gaXMgY29uZmlndXJlZCB0aGUgc2lpOTAyeCBkZXZpY2Ug
-YmVjb21lcyBhbiBJMlMgYW5kL29yCnNwZGlmIGF1ZGlvIGNvZGVjIGNvbXBvbmVudCAoZS5nIGEg
-ZGlnaXRhbCBhdWRpbyBzaW5rKSwgdGhhdCBjYW4gYmUgdXNlZAppbiBjb25maWd1cmluZyBhIGZ1
-bGwgYXVkaW8gZGV2aWNlcyB3aXRoIHNpbXBsZS1jYXJkIG9yIGF1ZGlvLWdyYXBoLWNhcmQKYmlu
-ZGluZy4gU2VlIHRoZWlyIGJpbmRpbmcgZG9jdW1lbnRzIG9uIGhvdyB0byBkZXNjcmliZSB0aGUg
-d2F5IHRoZQpzaWk5MDJ4IGRldmljZSBpcyBjb25uZWN0ZWQgdG8gdGhlIHJlc3Qgb2YgdGhlIGF1
-ZGlvIHN5c3RlbToKRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBs
-ZS1jYXJkLnR4dApEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYXVkaW8t
-Z3JhcGgtY2FyZC50eHQKCj4gCj4+ICsJYmluZGluZyBkb2N1bWVudHMgb24gaG93IHRvIGRlc2Ny
-aWJlIGhvdyB0aGUgc2lpOTAyeCBkZXZpY2UgaXMKPj4gKwljb25uZWN0ZWQgdG8gdGhlIHJlc3Qg
-b2YgdGhlIGF1ZGlvIHN5c3RlbToKPj4gKwlEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3Mvc291bmQvc2ltcGxlLWNhcmQudHh0Cj4+ICsJRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3NvdW5kL2F1ZGlvLWdyYXBoLWNhcmQudHh0Cj4+ICsKPj4gIE9wdGlvbmFsIHN1Ym5v
-ZGVzOgo+PiAgCS0gdmlkZW8gaW5wdXQ6IHRoaXMgc3Vibm9kZSBjYW4gY29udGFpbiBhIHZpZGVv
-IGlucHV0IHBvcnQgbm9kZQo+PiAgCSAgdG8gY29ubmVjdCB0aGUgYnJpZGdlIHRvIGEgZGlzcGxh
-eSBjb250cm9sbGVyIG91dHB1dCAoU2VlIHRoaXMKPj4gQEAgLTIxLDYgKzUyLDEyIEBAIEV4YW1w
-bGU6Cj4+ICAJCWNvbXBhdGlibGUgPSAic2lsLHNpaTkwMjIiOwo+PiAgCQlyZWcgPSA8MHgzOT47
-Cj4+ICAJCXJlc2V0LWdwaW9zID0gPCZwaW9BIDEgMD47Cj4+ICsKPj4gKwkJI3NvdW5kLWRhaS1j
-ZWxscyA9IDwwPjsKPj4gKwkJaTJzLWRhdGEtbGFuZXMgPSA8IDAgMSAyID47Cj4+ICsJCWNsb2Nr
-cyA9IDwmbWNsaz47Cj4+ICsJCWNsb2NrLW5hbWVzID0gIm1jbGsiOwo+PiArCj4+ICAJCXBvcnRz
-IHsKPj4gIAkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+PiAgCQkJI3NpemUtY2VsbHMgPSA8MD47
-Cj4+IC0tIAo+PiBUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2FsYW5rYXR1IDIy
-LCAwMDE4MCBIZWxzaW5raS4gWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEtNC4gS290aXBh
-aWtrYS9Eb21pY2lsZTogSGVsc2lua2kKPj4KPiAKCgotLSAKVGV4YXMgSW5zdHJ1bWVudHMgRmlu
-bGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2lu
-ZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5n
-IGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVk
-ZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA==
+Providing a range for usleep_range() allows the hrtimer subsystem to 
+coalesce timers - as this delay has no upper limit anyway (interrupts
+or context switch is possible) it should not hurt to extend this
+from 2 to 2-4 milliseconds.
+
+Signed-off-by: Nicholas Mc Guire <hofrat@opentech.at>
+---
+
+Problem located with an experimental coccinelle script
+
+Basically usleep_range() with min == max never makes much sense notably
+in non-atomic context.
+
+Patch was compile tested with: u8500_defconfig (implies CONFIG_SND_SOC_AB8500_CODEC=y)
+(with some sparse warnings about not implemented system calls)
+
+Patch is against 5.1-rc3 (localversion-next is next=20190405)
+
+ sound/soc/codecs/ab8500-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 87616b1..19e7f03 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -1062,10 +1062,10 @@ static void anc_iir(struct snd_soc_component *component, unsigned int bnk,
+ 			snd_soc_component_update_bits(component, AB8500_ANCCONF1,
+ 					BIT(AB8500_ANCCONF1_ANCIIRINIT),
+ 					BIT(AB8500_ANCCONF1_ANCIIRINIT));
+-			usleep_range(AB8500_ANC_SM_DELAY, AB8500_ANC_SM_DELAY);
++			usleep_range(AB8500_ANC_SM_DELAY, AB8500_ANC_SM_DELAY*2);
+ 			snd_soc_component_update_bits(component, AB8500_ANCCONF1,
+ 					BIT(AB8500_ANCCONF1_ANCIIRINIT), 0);
+-			usleep_range(AB8500_ANC_SM_DELAY, AB8500_ANC_SM_DELAY);
++			usleep_range(AB8500_ANC_SM_DELAY, AB8500_ANC_SM_DELAY*2);
+ 		} else {
+ 			snd_soc_component_update_bits(component, AB8500_ANCCONF1,
+ 					BIT(AB8500_ANCCONF1_ANCIIRUPDATE),
+-- 
+2.1.4
