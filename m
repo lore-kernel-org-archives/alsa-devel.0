@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-pcm-fiq: Switch to SPDX identifier" to the asoc tree
-Date: Mon,  8 Apr 2019 14:28:47 +0700 (+07)
-Message-ID: <20190408072847.92A7D441D3B@finisterre.ee.mobilebroadband>
-References: <20190405115010.28838-9-andradanciu1997@gmail.com>
+Subject: Applied "ASoC: imx-mc13783: Switch to SPDX identifier" to the asoc tree
+Date: Mon,  8 Apr 2019 14:28:59 +0700 (+07)
+Message-ID: <20190408072859.657C2441D3C@finisterre.ee.mobilebroadband>
+References: <20190405115010.28838-8-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-9-andradanciu1997@gmail.com>
+In-Reply-To: <20190405115010.28838-8-andradanciu1997@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Andra Danciu <andradanciu1997@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-pcm-fiq: Switch to SPDX identifier
+   ASoC: imx-mc13783: Switch to SPDX identifier
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From d4451c159a0b63efd5028d62cae501737d8679fa Mon Sep 17 00:00:00 2001
+>From a134f42eaacaa4d31785d51cf19a45845721b212 Mon Sep 17 00:00:00 2001
 From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Fri, 5 Apr 2019 14:49:58 +0300
-Subject: [PATCH] ASoC: imx-pcm-fiq: Switch to SPDX identifier
+Date: Fri, 5 Apr 2019 14:49:57 +0300
+Subject: [PATCH] ASoC: imx-mc13783: Switch to SPDX identifier
 
 Adopt the SPDX license identifier headers to ease license compliance
 management.
@@ -48,37 +48,38 @@ management.
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-pcm-fiq.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ sound/soc/fsl/imx-mc13783.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 0578f3486847..c49aea4fba56 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -1,16 +1,11 @@
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index 9d19b808f634..545815a27074 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -1,17 +1,11 @@
 -/*
-- * imx-pcm-fiq.c  --  ALSA Soc Audio Layer
+- * imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
 - *
-- * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
+- * Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
 - *
-- * This code is based on code copyrighted by Freescale,
-- * Liam Girdwood, Javier Martin and probably others.
+- * Heavly based on phycore-mc13783:
+- * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
 - *  Free Software Foundation;  either version 2 of the  License, or (at your
 - *  option) any later version.
+- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
-+// imx-pcm-fiq.c  --  ALSA Soc Audio Layer
 +//
-+// Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
++// imx-mc13783.c  --  SoC audio for imx based boards with mc13783 codec
 +//
-+// This code is based on code copyrighted by Freescale,
-+// Liam Girdwood, Javier Martin and probably others.
-+
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
++// Copyright 2012 Philippe Retornaz, <philippe.retornaz@epfl.ch>
++//
++// Heavly based on phycore-mc13783:
++// Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.20.1
