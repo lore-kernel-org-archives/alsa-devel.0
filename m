@@ -1,36 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Fix spacing" to the asoc
-	tree
-Date: Mon,  8 Apr 2019 14:23:47 +0700 (+07)
-Message-ID: <20190408072347.8D473441D3B@finisterre.ee.mobilebroadband>
-References: <20190405215430.27419-1-nh6z@nh6z.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D35EF896DE
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 09:24:04 +0200 (CEST)
-In-Reply-To: <20190405215430.27419-1-nh6z@nh6z.net>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Annaliese McDermond <nh6z@nh6z.net>
-Cc: team@nwdigitalradio.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II" to the asoc tree
+Date: Mon,  8 Apr 2019 14:24:31 +0700 (+07)
+Message-ID: <20190408072431.38023441D3B@finisterre.ee.mobilebroadband>
+References: <20190329215045.6254-3-paul@crapouillou.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190329215045.6254-3-paul@crapouillou.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Fix spacing
+   ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II
 
 has been applied to the asoc tree at
 
@@ -55,34 +37,70 @@ to this mail.
 Thanks,
 Mark
 
->From daae4c583534a3e20f08701ef6659066ebf60ca7 Mon Sep 17 00:00:00 2001
-From: Annaliese McDermond <nh6z@nh6z.net>
-Date: Fri, 5 Apr 2019 14:54:30 -0700
-Subject: [PATCH] ASoC: tlv320aic32x4: Fix spacing
+>From a8d218f4fe8116395e4c4a13b63029ecf00d4035 Mon Sep 17 00:00:00 2001
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Fri, 29 Mar 2019 22:50:45 +0100
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II
 
-Fix some cosmetic spacing issues reported by Julia Lawall
-<julia.lawall@lip6.fr>.
+The Teclast X98+ II is a Cherrytrail tablet, which require two quirks:
+- it has stereo speakers,
+- its jack detection mechanism is inverted.
 
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4-clk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
-index 667ec2c03508..9e4899eb1d8e 100644
---- a/sound/soc/codecs/tlv320aic32x4-clk.c
-+++ b/sound/soc/codecs/tlv320aic32x4-clk.c
-@@ -165,8 +165,8 @@ static int clk_aic32x4_pll_calc_muldiv(struct clk_aic32x4_pll_muldiv *settings,
- 	 * of the multiplier.	This is because we can't do floating point
- 	 * math in the kernel.
- 	 */
--	 multiplier = (u64) rate * settings->p * 10000;
--	 do_div(multiplier, parent_rate);
-+	multiplier = (u64) rate * settings->p * 10000;
-+	do_div(multiplier, parent_rate);
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index ccf552e92d53..38975827e276 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -22,6 +22,7 @@
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/device.h>
++#include <linux/dmi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/init.h>
+@@ -441,11 +442,25 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ 	{ },
+ };
  
- 	/*
- 	 * J can't be over 64, so R can scale this.
++/* Please keep this list alphabetically sorted */
++static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
++	{	/* Teclast X98 Plus II */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
++		},
++		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN1_MAP
++					| BYT_CHT_ES8316_JD_INVERTED),
++	},
++	{}
++};
++
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+ 	static const char * const mic_name[] = { "in1", "in2" };
+ 	struct property_entry props[MAX_NO_PROPS] = {};
+ 	struct byt_cht_es8316_private *priv;
++	const struct dmi_system_id *dmi_id;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *platform_name;
+@@ -488,7 +503,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	/* Check for BYTCR or other platform and setup quirks */
+-	if (x86_match_cpu(baytrail_cpu_ids) &&
++	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
++	if (dmi_id) {
++		quirk = (int)dmi_id->driver_data;
++	} else if (x86_match_cpu(baytrail_cpu_ids) &&
+ 	    mach->mach_params.acpi_ipc_irq_index == 0) {
+ 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
+ 		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
 -- 
 2.20.1
