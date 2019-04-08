@@ -1,17 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: fix sai driver name initialisation" to the asoc tree
-Date: Mon,  8 Apr 2019 14:29:59 +0700 (+07)
-Message-ID: <20190408072959.F0485441D3C@finisterre.ee.mobilebroadband>
-References: <1554455951-2755-1-git-send-email-arnaud.pouliquen@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554455951-2755-1-git-send-email-arnaud.pouliquen@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Liam@sirena.org.uk, Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi@sirena.org.uk, Iwai <tiwai@suse.com>, arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: topology: Use the correct dobj to free
+	enum control values and texts" to the asoc tree
+Date: Mon,  8 Apr 2019 14:30:12 +0700 (+07)
+Message-ID: <20190408073012.9E25E441D3B@finisterre.ee.mobilebroadband>
+References: <20190405024833.12189-1-ranjani.sridharan@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D26E1F8973B
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 09:30:24 +0200 (CEST)
+In-Reply-To: <20190405024833.12189-1-ranjani.sridharan@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: fix sai driver name initialisation
+   ASoC: topology: Use the correct dobj to free enum control values and texts
 
 has been applied to the asoc tree at
 
@@ -36,41 +55,48 @@ to this mail.
 Thanks,
 Mark
 
->From 17d3069ccf06970e2db3f7cbf4335f207524279e Mon Sep 17 00:00:00 2001
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Fri, 5 Apr 2019 11:19:11 +0200
-Subject: [PATCH] ASoC: stm32: fix sai driver name initialisation
+>From 54f8844e3f6cf898450a6c85f70fa997f0aa72b9 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Thu, 4 Apr 2019 19:48:33 -0700
+Subject: [PATCH] ASoC: topology: Use the correct dobj to free enum control
+ values and texts
 
-This patch fixes the sai driver structure overwriting which results in
-a cpu dai name equal NULL.
+The control values and texts of the enum kcontrol associated
+with a widget need to be freed when the widget is removed.
+However, both struct snd_soc_dapm_widget and struct soc_enum
+contain a dobj member, which resulted in a confusion.
+The existing code generates a null pointer dereference by
+attempting to free the values and texts from the dobj which
+belongs to the widget instead of the dobj belonging to the
+enum kcontrol.
 
-Fixes: 3e086ed ("ASoC: stm32: add SAI driver")
+The suggested fix is to use the correct dobj member (se->dobj)
+of the enum kcontrol.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 55d802f51c15..83d8a7ac56f4 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1419,7 +1419,6 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
- 	if (!sai->cpu_dai_drv)
- 		return -ENOMEM;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 25fca7055464..96852d250619 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -482,10 +482,11 @@ static void remove_widget(struct snd_soc_component *comp,
  
--	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
- 	if (STM_SAI_IS_PLAYBACK(sai)) {
- 		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
- 		       sizeof(stm32_sai_playback_dai));
-@@ -1429,6 +1428,7 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
- 		       sizeof(stm32_sai_capture_dai));
- 		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
- 	}
-+	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
+ 			snd_ctl_remove(card, kcontrol);
  
- 	return 0;
- }
+-			kfree(dobj->control.dvalues);
++			/* free enum kcontrol's dvalues and dtexts */
++			kfree(se->dobj.control.dvalues);
+ 			for (j = 0; j < se->items; j++)
+-				kfree(dobj->control.dtexts[j]);
+-			kfree(dobj->control.dtexts);
++				kfree(se->dobj.control.dtexts[j]);
++			kfree(se->dobj.control.dtexts);
+ 
+ 			kfree(se);
+ 			kfree(w->kcontrol_news[i].name);
 -- 
 2.20.1
