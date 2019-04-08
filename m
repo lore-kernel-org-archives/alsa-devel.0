@@ -1,89 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-audmux: Switch to SPDX identifier" to the asoc tree
-Date: Mon,  8 Apr 2019 14:29:19 +0700 (+07)
-Message-ID: <20190408072919.A7FAC441D3C@finisterre.ee.mobilebroadband>
-References: <20190405115010.28838-6-andradanciu1997@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-6-andradanciu1997@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Add two more machines to the
+ power_save_blacklist
+Date: Mon, 8 Apr 2019 15:29:45 +0800
+Message-ID: <8578f497-072c-f12f-ba78-576bcb2a05f5@canonical.com>
+References: <20190408013535.6423-1-hui.wang@canonical.com>
+ <163657bc-535a-c528-200d-cd3e84894d24@perex.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <163657bc-535a-c528-200d-cd3e84894d24@perex.cz>
+Content-Language: en-US
+Sender: stable-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 2019/4/8 下午3:23, Jaroslav Kysela wrote:
+> Dne 08. 04. 19 v 3:35 Hui Wang napsal(a):
+>> Recently we set CONFIG_SND_HDA_POWER_SAVE_DEFAULT to 1 when
+>> configuring the kernel, then two machines were reported to have noise
+>> after installing the new kernel. Put them in the blacklist, the
+>> noise disappears.
+> Please, place the new entries sorted using the PCI IDs...
+>
+> 					Jaroslav Kysela
 
-   ASoC: imx-audmux: Switch to SPDX identifier
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Got it, will fix it in the V2.
 
 Thanks,
-Mark
 
->From 47bbcbfeb8ac99164067485a8322d92e69044211 Mon Sep 17 00:00:00 2001
-From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Fri, 5 Apr 2019 14:49:55 +0300
-Subject: [PATCH] ASoC: imx-audmux: Switch to SPDX identifier
+Hui.
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
 
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/imx-audmux.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index 99e07b01a2ce..04e59e66711d 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -1,21 +1,11 @@
--/*
-- * Copyright 2012 Freescale Semiconductor, Inc.
-- * Copyright 2012 Linaro Ltd.
-- * Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-- *
-- * Initial development of this code was funded by
-- * Phytec Messtechnik GmbH, http://www.phytec.de
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Copyright 2012 Freescale Semiconductor, Inc.
-+// Copyright 2012 Linaro Ltd.
-+// Copyright 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-+//
-+// Initial development of this code was funded by
-+// Phytec Messtechnik GmbH, http://www.phytec.de
- 
- #include <linux/clk.h>
- #include <linux/debugfs.h>
--- 
-2.20.1
+>> https://bugs.launchpad.net/bugs/1821663
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>> ---
+>>  sound/pci/hda/hda_intel.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index ece256a3b48f..f62fb8b16c49 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -2150,6 +2150,9 @@ static struct snd_pci_quirk power_save_blacklist[] = {
+>>  	SND_PCI_QUIRK(0x17aa, 0x367b, "Lenovo IdeaCentre B550", 0),
+>>  	/* https://bugzilla.redhat.com/show_bug.cgi?id=1572975 */
+>>  	SND_PCI_QUIRK(0x17aa, 0x36a7, "Lenovo C50 All in one", 0),
+>> +	/* https://bugs.launchpad.net/bugs/1821663 */
+>> +	SND_PCI_QUIRK(0x1631, 0xe017, "Packard Bell NEC IMEDIA 5204", 0),
+>> +	SND_PCI_QUIRK(0x8086, 0x2064, "Intel Laptop 8086:2064", 0),
+>>  	{}
+>>  };
+>>  #endif /* CONFIG_PM */
+>>
+>
