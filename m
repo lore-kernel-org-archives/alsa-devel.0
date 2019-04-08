@@ -1,58 +1,105 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda - Add two more machines to the
- power_save_blacklist
-Date: Mon, 8 Apr 2019 15:29:45 +0800
-Message-ID: <8578f497-072c-f12f-ba78-576bcb2a05f5@canonical.com>
-References: <20190408013535.6423-1-hui.wang@canonical.com>
- <163657bc-535a-c528-200d-cd3e84894d24@perex.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <163657bc-535a-c528-200d-cd3e84894d24@perex.cz>
-Content-Language: en-US
-Sender: stable-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl-dma: Switch to SPDX identifier" to the asoc tree
+Date: Mon,  8 Apr 2019 14:29:29 +0700 (+07)
+Message-ID: <20190408072929.952A1441D3B@finisterre.ee.mobilebroadband>
+References: <20190405115010.28838-5-andradanciu1997@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190405115010.28838-5-andradanciu1997@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andra Danciu <andradanciu1997@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2019/4/8 下午3:23, Jaroslav Kysela wrote:
-> Dne 08. 04. 19 v 3:35 Hui Wang napsal(a):
->> Recently we set CONFIG_SND_HDA_POWER_SAVE_DEFAULT to 1 when
->> configuring the kernel, then two machines were reported to have noise
->> after installing the new kernel. Put them in the blacklist, the
->> noise disappears.
-> Please, place the new entries sorted using the PCI IDs...
->
-> 					Jaroslav Kysela
+The patch
 
-Got it, will fix it in the V2.
+   ASoC: fsl-dma: Switch to SPDX identifier
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
+Mark
 
-Hui.
+>From e073564fe653eacbef6723a0a5210131b3998000 Mon Sep 17 00:00:00 2001
+From: Andra Danciu <andradanciu1997@gmail.com>
+Date: Fri, 5 Apr 2019 14:49:54 +0300
+Subject: [PATCH] ASoC: fsl-dma: Switch to SPDX identifier
 
+Adopt the SPDX license identifier headers to ease license compliance
+management.
 
->> https://bugs.launchpad.net/bugs/1821663
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->> ---
->>  sound/pci/hda/hda_intel.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index ece256a3b48f..f62fb8b16c49 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -2150,6 +2150,9 @@ static struct snd_pci_quirk power_save_blacklist[] = {
->>  	SND_PCI_QUIRK(0x17aa, 0x367b, "Lenovo IdeaCentre B550", 0),
->>  	/* https://bugzilla.redhat.com/show_bug.cgi?id=1572975 */
->>  	SND_PCI_QUIRK(0x17aa, 0x36a7, "Lenovo C50 All in one", 0),
->> +	/* https://bugs.launchpad.net/bugs/1821663 */
->> +	SND_PCI_QUIRK(0x1631, 0xe017, "Packard Bell NEC IMEDIA 5204", 0),
->> +	SND_PCI_QUIRK(0x8086, 0x2064, "Intel Laptop 8086:2064", 0),
->>  	{}
->>  };
->>  #endif /* CONFIG_PM */
->>
->
+Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_dma.c | 26 +++++++++++---------------
+ sound/soc/fsl/fsl_dma.h |  5 +----
+ 2 files changed, 12 insertions(+), 19 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 78871de35086..e22508301412 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -1,18 +1,14 @@
+-/*
+- * Freescale DMA ALSA SoC PCM driver
+- *
+- * Author: Timur Tabi <timur@freescale.com>
+- *
+- * Copyright 2007-2010 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- *
+- * This driver implements ASoC support for the Elo DMA controller, which is
+- * the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
+- * the PCM driver is what handles the DMA buffer.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Freescale DMA ALSA SoC PCM driver
++//
++// Author: Timur Tabi <timur@freescale.com>
++//
++// Copyright 2007-2010 Freescale Semiconductor, Inc.
++//
++// This driver implements ASoC support for the Elo DMA controller, which is
++// the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
++// the PCM driver is what handles the DMA buffer.
+ 
+ #include <linux/module.h>
+ #include <linux/init.h>
+diff --git a/sound/soc/fsl/fsl_dma.h b/sound/soc/fsl/fsl_dma.h
+index 78fee97e8036..f19ae765b656 100644
+--- a/sound/soc/fsl/fsl_dma.h
++++ b/sound/soc/fsl/fsl_dma.h
+@@ -1,9 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * mpc8610-pcm.h - ALSA PCM interface for the Freescale MPC8610 SoC
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef _MPC8610_PCM_H
+-- 
+2.20.1
