@@ -1,49 +1,107 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V1] ASoC: fsl_esai: replace fall-through with break
-Date: Mon, 8 Apr 2019 09:28:06 +0000
-Message-ID: <66c117128f300b0ec5f278f538412789c78b60a6.1554715589.git.shengjiu.wang@nxp.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: Mediatek: MT8183: change supported
+	formats of DL2 and UL1
+Date: Mon,  8 Apr 2019 18:47:28 +0800
+Message-ID: <20190408104728.57351-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "gustavo@embeddedor.com" <gustavo@embeddedor.com>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com
+ [IPv6:2607:f8b0:4864:20::749])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92801F8076C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 12:47:43 +0200 (CEST)
+Received: by mail-qk1-x749.google.com with SMTP id d131so11175074qkc.18
+ for <alsa-devel@alsa-project.org>; Mon, 08 Apr 2019 03:47:43 -0700 (PDT)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, jiaxin.yu@mediatek.com, tzungbi@google.com, shunli.wang@mediatek.com, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
-case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent of
-each other, so replace fall-through with break.
+DL2 and UL1 are for BTSCO.  They should only provide 16-bit, mono,
+8kHz and 16kHz to userspace.  Change the formats accordingly.
 
-Fixes: 16bbeb2b43c3 ("ASoC: fsl_esai: Mark expected switch fall-through")
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- sound/soc/fsl/fsl_esai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7410bbfd2af..bad0dfed6b68 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *=
-dai, int clk_id,
- 		break;
- 	case ESAI_HCKT_EXTAL:
- 		ecr |=3D ESAI_ECR_ETI;
--		/* fall through */
-+		break;
- 	case ESAI_HCKR_EXTAL:
- 		ecr |=3D esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
- 		break;
---=20
-1.9.1
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 681bedb524f9..4e44e5689d6f 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -69,6 +69,46 @@ mt8183_mt6358_ts3a227_max98357_dapm_routes[] = {
+ 	{"IT6505_8CH", NULL, "TDM"},
+ };
+ 
++static int
++mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
++	struct snd_pcm_substream *substream)
++{
++	static const unsigned int rates[] = {
++		8000, 16000
++	};
++	static const struct snd_pcm_hw_constraint_list constraints_rates = {
++		.count = ARRAY_SIZE(rates),
++		.list  = rates,
++		.mask = 0,
++	};
++	static const unsigned int channels[] = {
++		1,
++	};
++	static const struct snd_pcm_hw_constraint_list constraints_channels = {
++		.count = ARRAY_SIZE(channels),
++		.list = channels,
++		.mask = 0,
++	};
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	snd_pcm_hw_constraint_list(runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++	runtime->hw.channels_max = 1;
++	snd_pcm_hw_constraint_list(runtime, 0,
++			SNDRV_PCM_HW_PARAM_CHANNELS,
++			&constraints_channels);
++
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
++
++	return 0;
++}
++
++static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_bt_sco_ops = {
++	.startup = mt8183_mt6358_ts3a227_max98357_bt_sco_startup,
++};
++
+ static struct snd_soc_dai_link
+ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	/* FE */
+@@ -93,6 +133,7 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 			    SND_SOC_DPCM_TRIGGER_PRE},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
++		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
+ 	},
+ 	{
+ 		.name = "Playback_3",
+@@ -115,6 +156,7 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 			    SND_SOC_DPCM_TRIGGER_PRE},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
++		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
+ 	},
+ 	{
+ 		.name = "Capture_2",
+-- 
+2.21.0.392.gf8f6787159e-goog
