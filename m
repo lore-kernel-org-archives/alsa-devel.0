@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II" to the asoc tree
-Date: Mon,  8 Apr 2019 14:24:31 +0700 (+07)
-Message-ID: <20190408072431.38023441D3B@finisterre.ee.mobilebroadband>
-References: <20190329215045.6254-3-paul@crapouillou.net>
+Subject: Applied "ASoC: wm1133-ev1: Switch to SPDX identifier" to the asoc tree
+Date: Mon,  8 Apr 2019 14:24:48 +0700 (+07)
+Message-ID: <20190408072448.5F08F441D3B@finisterre.ee.mobilebroadband>
+References: <20190405115010.28838-21-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190329215045.6254-3-paul@crapouillou.net>
+In-Reply-To: <20190405115010.28838-21-andradanciu1997@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Andra Danciu <andradanciu1997@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II
+   ASoC: wm1133-ev1: Switch to SPDX identifier
 
 has been applied to the asoc tree at
 
@@ -37,70 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From a8d218f4fe8116395e4c4a13b63029ecf00d4035 Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Fri, 29 Mar 2019 22:50:45 +0100
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II
+>From a03584b75a28450a2a64646e3c1b3d6c48aacf3b Mon Sep 17 00:00:00 2001
+From: Andra Danciu <andradanciu1997@gmail.com>
+Date: Fri, 5 Apr 2019 14:50:10 +0300
+Subject: [PATCH] ASoC: wm1133-ev1: Switch to SPDX identifier
 
-The Teclast X98+ II is a Cherrytrail tablet, which require two quirks:
-- it has stereo speakers,
-- its jack detection mechanism is inverted.
+Adopt the SPDX license identifier headers to ease license compliance
+management.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ sound/soc/fsl/wm1133-ev1.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index ccf552e92d53..38975827e276 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -22,6 +22,7 @@
- #include <linux/acpi.h>
+diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+index 2f80b21b2921..aad24ccbef90 100644
+--- a/sound/soc/fsl/wm1133-ev1.c
++++ b/sound/soc/fsl/wm1133-ev1.c
+@@ -1,16 +1,11 @@
+-/*
+- *  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
+- *
+- *  Copyright (c) 2010 Wolfson Microelectronics plc
+- *  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+- *
+- *  Based on an earlier driver for the same hardware by Liam Girdwood.
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++//  wm1133-ev1.c - Audio for WM1133-EV1 on i.MX31ADS
++//
++//  Copyright (c) 2010 Wolfson Microelectronics plc
++//  Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
++//
++//  Based on an earlier driver for the same hardware by Liam Girdwood.
+ 
+ #include <linux/platform_device.h>
  #include <linux/clk.h>
- #include <linux/device.h>
-+#include <linux/dmi.h>
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
-@@ -441,11 +442,25 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
- 	{ },
- };
- 
-+/* Please keep this list alphabetically sorted */
-+static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
-+	{	/* Teclast X98 Plus II */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
-+		},
-+		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN1_MAP
-+					| BYT_CHT_ES8316_JD_INVERTED),
-+	},
-+	{}
-+};
-+
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
- 	static const char * const mic_name[] = { "in1", "in2" };
- 	struct property_entry props[MAX_NO_PROPS] = {};
- 	struct byt_cht_es8316_private *priv;
-+	const struct dmi_system_id *dmi_id;
- 	struct device *dev = &pdev->dev;
- 	struct snd_soc_acpi_mach *mach;
- 	const char *platform_name;
-@@ -488,7 +503,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	/* Check for BYTCR or other platform and setup quirks */
--	if (x86_match_cpu(baytrail_cpu_ids) &&
-+	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
-+	if (dmi_id) {
-+		quirk = (int)dmi_id->driver_data;
-+	} else if (x86_match_cpu(baytrail_cpu_ids) &&
- 	    mach->mach_params.acpi_ipc_irq_index == 0) {
- 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
- 		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
 -- 
 2.20.1
