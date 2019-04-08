@@ -1,18 +1,36 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mpc5200_psc_i2s: Switch to SPDX identifier" to the asoc tree
-Date: Mon,  8 Apr 2019 14:26:01 +0700 (+07)
-Message-ID: <20190408072601.99E7E441D3C@finisterre.ee.mobilebroadband>
-References: <20190405115010.28838-14-andradanciu1997@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-14-andradanciu1997@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: pcm: update module refcount if
+	module_get_upon_open is set" to the asoc tree
+Date: Mon,  8 Apr 2019 14:24:10 +0700 (+07)
+Message-ID: <20190408072410.82FF0441D3B@finisterre.ee.mobilebroadband>
+References: <20190405165709.14202-2-ranjani.sridharan@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 241B4F8971B
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 09:24:25 +0200 (CEST)
+In-Reply-To: <20190405165709.14202-2-ranjani.sridharan@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mpc5200_psc_i2s: Switch to SPDX identifier
+   ASoC: pcm: update module refcount if module_get_upon_open is set
 
 has been applied to the asoc tree at
 
@@ -37,41 +55,60 @@ to this mail.
 Thanks,
 Mark
 
->From 864a8472c4412dd9bedb6484ce41ec906e812d57 Mon Sep 17 00:00:00 2001
-From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Fri, 5 Apr 2019 14:50:03 +0300
-Subject: [PATCH] ASoC: mpc5200_psc_i2s: Switch to SPDX identifier
+>From 52034add758e268c39110f33d46e2a9492e82aef Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Fri, 5 Apr 2019 09:57:09 -0700
+Subject: [PATCH] ASoC: pcm: update module refcount if module_get_upon_open is
+ set
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
+Setting the module_get_upon_open field for component driver
+prevents the module refcount from being incremented during
+component probe(). This could lead to the module being
+allowed to be unloaded when a pcm stream is open. So,
+if this field is set, the module's refcount should be
+incremented during pcm open to prevent module removal
+when the component is in use. And, the refcount should
+be decremented upon pcm close.
 
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc5200_psc_i2s.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/soc-pcm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index d8232943ccb6..6de97461ba25 100644
---- a/sound/soc/fsl/mpc5200_psc_i2s.c
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.c
-@@ -1,10 +1,10 @@
--/*
-- * Freescale MPC5200 PSC in I2S mode
-- * ALSA SoC Digital Audio Interface (DAI) driver
-- *
-- * Copyright (C) 2008 Secret Lab Technologies Ltd.
-- * Copyright (C) 2009 Jon Smirl, Digispeaker
-- */
-+// SPDX-License-Identifier: GPL
-+//
-+// Freescale MPC5200 PSC in I2S mode
-+// ALSA SoC Digital Audio Interface (DAI) driver
-+//
-+// Copyright (C) 2008 Secret Lab Technologies Ltd.
-+// Copyright (C) 2009 Jon Smirl, Digispeaker
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2d5d5cac4ba6..d21247546f7f 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -15,6 +15,7 @@
+ #include <linux/delay.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
++#include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+ #include <linux/export.h>
+@@ -463,6 +464,9 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
+ 			continue;
  
- #include <linux/module.h>
- #include <linux/of_device.h>
+ 		component->driver->ops->close(substream);
++
++		if (component->driver->module_get_upon_open)
++			module_put(component->dev->driver->owner);
+ 	}
+ 
+ 	return 0;
+@@ -513,6 +517,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		    !component->driver->ops->open)
+ 			continue;
+ 
++		if (component->driver->module_get_upon_open &&
++		    !try_module_get(component->dev->driver->owner))
++			return -ENODEV;
++
+ 		ret = component->driver->ops->open(substream);
+ 		if (ret < 0) {
+ 			dev_err(component->dev,
 -- 
 2.20.1
