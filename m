@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mpc8610_hpcd: Switch to SPDX identifier" to the asoc tree
-Date: Mon,  8 Apr 2019 14:25:51 +0700 (+07)
-Message-ID: <20190408072551.3DAE9441D3B@finisterre.ee.mobilebroadband>
-References: <20190405115010.28838-15-andradanciu1997@gmail.com>
+Subject: Applied "ASoC: mpc5200_psc_ac97: Switch to SPDX identifier" to the asoc tree
+Date: Mon,  8 Apr 2019 14:26:13 +0700 (+07)
+Message-ID: <20190408072613.4E966441D3B@finisterre.ee.mobilebroadband>
+References: <20190405115010.28838-13-andradanciu1997@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-15-andradanciu1997@gmail.com>
+In-Reply-To: <20190405115010.28838-13-andradanciu1997@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Andra Danciu <andradanciu1997@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mpc8610_hpcd: Switch to SPDX identifier
+   ASoC: mpc5200_psc_ac97: Switch to SPDX identifier
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From eed9bb238e08619547585e563499f79a700109b8 Mon Sep 17 00:00:00 2001
+>From 1af301d46246942a00e15294603dbd3abfb41a82 Mon Sep 17 00:00:00 2001
 From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Fri, 5 Apr 2019 14:50:04 +0300
-Subject: [PATCH] ASoC: mpc8610_hpcd: Switch to SPDX identifier
+Date: Fri, 5 Apr 2019 14:50:02 +0300
+Subject: [PATCH] ASoC: mpc5200_psc_ac97: Switch to SPDX identifier
 
 Adopt the SPDX license identifier headers to ease license compliance
 management.
@@ -48,34 +48,32 @@ management.
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc8610_hpcd.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/fsl/mpc5200_psc_ac97.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index a639b52c16f6..f6261a3eeb0f 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -1,14 +1,10 @@
--/**
-- * Freescale MPC8610HPCD ALSA SoC Machine driver
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 07ee355ee385..e5b9c04d1565 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -1,13 +1,9 @@
+-/*
+- * linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
 - *
-- * Author: Timur Tabi <timur@freescale.com>
+- * Copyright (C) 2009 Jon Smirl, Digispeaker
+- * Author: Jon Smirl <jonsmirl@gmail.com>
 - *
-- * Copyright 2007-2010 Freescale Semiconductor, Inc.
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Freescale MPC8610HPCD ALSA SoC Machine driver
++// linux/sound/mpc5200-ac97.c -- AC97 support for the Freescale MPC52xx chip.
 +//
-+// Author: Timur Tabi <timur@freescale.com>
-+//
-+// Copyright 2007-2010 Freescale Semiconductor, Inc.
++// Copyright (C) 2009 Jon Smirl, Digispeaker
++// Author: Jon Smirl <jonsmirl@gmail.com>
  
  #include <linux/module.h>
- #include <linux/interrupt.h>
+ #include <linux/of_device.h>
 -- 
 2.20.1
