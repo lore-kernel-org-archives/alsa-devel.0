@@ -1,51 +1,66 @@
-From: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH] ALSA: hda - Add two more machines to the power_save_blacklist
-Date: Mon, 08 Apr 2019 19:29:24 +0000
-Message-ID: <20190408192925.756FE20880@mail.kernel.org>
-References: <20190408013535.6423-1-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20190408013535.6423-1-hui.wang@canonical.com>
-Sender: stable-owner@vger.kernel.org
-To: Sasha Levin <sashal@kernel.org>, Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.orgstable@vger.kernel.orgstable@vger.kernel.org
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH] ASoC: pcm: fix error handling when
+	try_module_get() fails.
+Date: Mon,  8 Apr 2019 12:30:25 -0700
+Message-ID: <20190408193025.22639-1-ranjani.sridharan@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A32F7F8076C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 21:30:28 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Handle error before returning when try_module_get() fails
+to prevent inconsistent mutex lock/unlock.
 
-[This is an automated email]
+Fixes: 52034add7 (ASoC: pcm: update module refcount if
+		  module_get_upon_open is set)
 
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-The bot has tested the following trees: v5.0.7, v4.19.34, v4.14.111, v4.9.168, v4.4.178, v3.18.138.
-
-v5.0.7: Build OK!
-v4.19.34: Build OK!
-v4.14.111: Failed to apply! Possible dependencies:
-    721f1e6c1fd1 ("ALSA: hda - add Lenovo IdeaCentre B550 to the power_save_blacklist")
-    dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
-
-v4.9.168: Failed to apply! Possible dependencies:
-    721f1e6c1fd1 ("ALSA: hda - add Lenovo IdeaCentre B550 to the power_save_blacklist")
-    dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
-
-v4.4.178: Failed to apply! Possible dependencies:
-    721f1e6c1fd1 ("ALSA: hda - add Lenovo IdeaCentre B550 to the power_save_blacklist")
-    dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
-
-v3.18.138: Failed to apply! Possible dependencies:
-    1ba8f9d30817 ("ALSA: hda: Add a power_save blacklist")
-    59ed1eade1d6 ("ALSA: hda - Move codec suspend/resume to codec driver")
-    66797f36fd17 ("ALSA: hda - Pass printf argument directly to request_module()")
-    721f1e6c1fd1 ("ALSA: hda - add Lenovo IdeaCentre B550 to the power_save_blacklist")
-    95a962c36f6e ("ALSA: hda - More kerneldoc comments")
-    a41d122449be ("ALSA: hda - Embed bus into controller object")
-    b2a0bafa7582 ("ALSA: hda - Use shutdown driver ops instead of reboot notifier")
-    d068ebc25e6e ("ALSA: hda - Move some codes up to hdac_bus struct")
-    d8a766a16ed9 ("ALSA: hda - Bind codecs via standard bus")
-    dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
-    dda42bd0c3a4 ("ALSA: hda - Add kerneldoc comments to hda_generic.c")
-    e3d280fc6d42 ("ALSA: hda - Make snd_hda_bus_type public")
-
-
-How should we proceed with this patch?
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index d21247546f7f..be80a12fba27 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -518,8 +518,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 			continue;
+ 
+ 		if (component->driver->module_get_upon_open &&
+-		    !try_module_get(component->dev->driver->owner))
+-			return -ENODEV;
++		    !try_module_get(component->dev->driver->owner)) {
++			ret = -ENODEV;
++			goto module_err;
++		}
+ 
+ 		ret = component->driver->ops->open(substream);
+ 		if (ret < 0) {
+@@ -636,7 +638,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 
+ component_err:
+ 	soc_pcm_components_close(substream, component);
+-
++module_err:
+ 	if (cpu_dai->driver->ops->shutdown)
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+ out:
+-- 
+2.17.1
