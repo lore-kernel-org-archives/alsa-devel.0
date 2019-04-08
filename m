@@ -1,40 +1,40 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 0/4] soundwire: code cleanup
-Date: Mon,  8 Apr 2019 15:04:57 -0500
-Message-ID: <20190408200501.9610-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 2/4] soundwire: bus: remove useless initializations
+Date: Mon,  8 Apr 2019 15:04:59 -0500
+Message-ID: <20190408200501.9610-3-pierre-louis.bossart@linux.intel.com>
+References: <20190408200501.9610-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190408200501.9610-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire support will be provided in Linux with the Sound Open
-Firmware (SOF) on Intel platforms. Before we start adding the missing
-pieces, there are a number of warnings and style issues reported by
-checkpatch, cppcheck and Coccinelle that need to be cleaned-up.
+No need for explicit initialization of page and ssp fields, they are
+already zeroed with a memset.
 
-Changes since v1:
-added missing newlines in new patch (suggested by Joe Perches)
+Detected with cppcheck:
 
-Pierre-Louis Bossart (4):
-  soundwire: fix style issues
-  soundwire: bus: remove useless initializations
-  soundwire: stream: remove useless initialization of local variable
-  soundwire: add missing newlines in dynamic debug logs
+[drivers/soundwire/bus.c:309]: (style) Variable 'msg->page' is
+reassigned a value before the old one has been used.
 
- drivers/soundwire/Kconfig          |   2 +-
- drivers/soundwire/bus.c            | 137 ++++++++-------
- drivers/soundwire/bus.h            |  16 +-
- drivers/soundwire/bus_type.c       |   4 +-
- drivers/soundwire/cadence_master.c |  99 +++++------
- drivers/soundwire/cadence_master.h |  22 +--
- drivers/soundwire/intel.c          | 101 ++++++-----
- drivers/soundwire/intel.h          |   4 +-
- drivers/soundwire/intel_init.c     |  12 +-
- drivers/soundwire/mipi_disco.c     | 116 +++++++------
- drivers/soundwire/slave.c          |  10 +-
- drivers/soundwire/stream.c         | 267 +++++++++++++++--------------
- 12 files changed, 403 insertions(+), 387 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 691a31df9732..bb697fd68580 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -271,8 +271,6 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+ 	msg->dev_num = dev_num;
+ 	msg->flags = flags;
+ 	msg->buf = buf;
+-	msg->ssp_sync = false;
+-	msg->page = false;
+ 
+ 	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
+ 		return 0;
 -- 
 2.17.1
