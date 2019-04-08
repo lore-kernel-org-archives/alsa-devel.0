@@ -1,52 +1,49 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH] ASoC: Intel: kbl: fix wrong number of channels
-Date: Mon,  8 Apr 2019 17:08:58 +0800
-Message-ID: <20190408090858.261269-1-tzungbi@google.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: [PATCH V1] ASoC: fsl_esai: replace fall-through with break
+Date: Mon, 8 Apr 2019 09:28:06 +0000
+Message-ID: <66c117128f300b0ec5f278f538412789c78b60a6.1554715589.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com
- [IPv6:2607:f8b0:4864:20::249])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7247F89618
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 11:09:11 +0200 (CEST)
-Received: by mail-oi1-x249.google.com with SMTP id c21so5395982oig.20
- for <alsa-devel@alsa-project.org>; Mon, 08 Apr 2019 02:09:11 -0700 (PDT)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, tzungbi@google.com, dgreid@google.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "gustavo@embeddedor.com" <gustavo@embeddedor.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix wrong setting on number of channels.  The context wants to set
-constraint to 2 channels instead of 4.
+case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent of
+each other, so replace fall-through with break.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Fixes: 16bbeb2b43c3 ("ASoC: fsl_esai: Mark expected switch fall-through")
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 7044d8c2b187..879f14257a3e 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -405,7 +405,7 @@ static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- };
- 
- static const unsigned int dmic_2ch[] = {
--	4,
-+	2,
- };
- 
- static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
--- 
-2.21.0.392.gf8f6787159e-goog
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c7410bbfd2af..bad0dfed6b68 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *=
+dai, int clk_id,
+ 		break;
+ 	case ESAI_HCKT_EXTAL:
+ 		ecr |=3D ESAI_ECR_ETI;
+-		/* fall through */
++		break;
+ 	case ESAI_HCKR_EXTAL:
+ 		ecr |=3D esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
+ 		break;
+--=20
+1.9.1
