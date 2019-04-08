@@ -1,53 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rt5677: allow multiple interrupt sources
-Date: Mon, 8 Apr 2019 13:10:14 +0700
-Message-ID: <20190408061014.GG2803@sirena.org.uk>
-References: <20190401205519.34023-2-fletcherw@chromium.org>
- <20190405204257.87095-1-fletcherw@chromium.org>
- <20190405204257.87095-2-fletcherw@chromium.org>
+From: Jan Kotas <jank@cadence.com>
+Subject: Re: [PATCH] soundwire: fix pm_runtime_get_sync return code checks
+Date: Mon, 8 Apr 2019 07:12:03 +0000
+Message-ID: <92538D7E-C628-40AC-AFE9-52C97B3BC42D@global.cadence.com>
+References: <20190405072655.25995-1-jank@cadence.com>
+ <367316fa-9d92-2dfc-32c4-3e0e8c76ef43@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190405204257.87095-2-fletcherw@chromium.org>
+In-Reply-To: <367316fa-9d92-2dfc-32c4-3e0e8c76ef43@linux.intel.com>
+Content-Language: en-US
+Content-ID: <D0FA97D6FAC454499E72DEAB5204999D@namprd07.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fletcher Woodruff <fletcherw@chromium.org>
-Cc: linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Curtis Malainey <cujomalainey@chromium.org>, Ross Zwisler <zwisler@google.com>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Jan Kotas <jank@cadence.com>, "vkoul@kernel.org" <vkoul@kernel.org>, "sanyog.r.kale@intel.com" <sanyog.r.kale@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---+sHJum3is6Tsg7/J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Apr 05, 2019 at 02:42:55PM -0600, Fletcher Woodruff wrote:
+> On 5 Apr 2019, at 17:04, Pierre-Louis Bossart <pierre-louis.bossart@linux=
+.intel.com> wrote:
+>=20
+> On 4/5/19 2:26 AM, Jan Kotas wrote:
+>>=20
+>> =20
+>>  	ret =3D pm_runtime_get_sync(slave->bus->dev);
+>> -	if (ret < 0)
+>> +	if (ret < 0 && ret !=3D -EACCES)
+>>=20
+> There was a patch submitted on 3/28 by Srinivas Kandagatla who suggested =
+an alternate solution for exactly the same code.
+>=20
+> +	if (pm_runtime_enabled(slave->bus->dev)) {
+> +		ret =3D pm_runtime_get_sync(slave->bus->dev);
+> +		if (ret < 0)
+> +			return ret;
+>=20
+> I am far from an expert on pm_runtime but Srinivas' solution looks more e=
+legant to me.
 
-> This patch allows headphone plug detect and mic present
-> detect to be enabled at the same time. This patch implements
-> an irq_chip with irq_domain directly instead of using
-> regmap_irq, so that interrupt source line polarities can
-> be flipped to support irq sharing.
+Hello Pierre,
 
-This changelog still doesn't explain why there is a need to open code
-this rather than having the irq_chip and irq_domain provided by
-regmap-irq support whatever is missing here.  You said it "needs its own
-irq regardless for hotword detection" but provided no information on why
-this is.
+Please take a look at this patch, that was my inspiration:
+https://lists.linuxfoundation.org/pipermail/linux-pm/2011-June/031930.html
 
---+sHJum3is6Tsg7/J
-Content-Type: application/pgp-signature; name="signature.asc"
+I also took a look, and it seems the value returned by=20
+pm_runtime_get_syncis simply ignored in a lot of places,=20
+so checking its value may be excessive.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyq5cMACgkQJNaLcl1U
-h9Di0wf+NBjf+bFwqw4oq6RJZ5iGyPABszKGZis/h9oAn8BEh3w5HkteApE6b7vj
-2/6OXo6qqVxeRfdC8heAQyGILTpvYuo+HaUKy+JqDqh98fCKBQ53LeE/9i63UewU
-DlTI6RY0/cF2dvg6H5hsmp7AGnf4khVtpBh1UoiCKb90i/jZX7BDKmIIBbgVC9iN
-pyT5MZvTIVENmidN49e8GnvoVqOvPPEfRDOKiDsEJ+oFHLG39V7K7vbFW/aU9x76
-LuXfwIYk6vsBDsPaMl6P6YLBYCuYaONgYI3/XUSFAh5nI6NMeBmgTZQwiq7b3r2v
-EFZRpLqZ6TJ7ajDLwJ7mHQWufl0AaA==
-=Svc4
------END PGP SIGNATURE-----
-
---+sHJum3is6Tsg7/J--
+Regards,
+Jan=
