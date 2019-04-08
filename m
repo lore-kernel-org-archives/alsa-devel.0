@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: conditionally increase module
-	refcount on component open" to the asoc tree
-Date: Mon,  8 Apr 2019 14:24:20 +0700 (+07)
-Message-ID: <20190408072420.54C23441D3C@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: Intel: bytcht_es8316: Add quirk for
+	inverted jack detect" to the asoc tree
+Date: Mon,  8 Apr 2019 14:24:39 +0700 (+07)
+Message-ID: <20190408072439.397E5441D3C@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B25CFF89728
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 09:24:34 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC14EF89731
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 09:24:55 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: conditionally increase module refcount on component open
+   ASoC: Intel: bytcht_es8316: Add quirk for inverted jack detect
 
 has been applied to the asoc tree at
 
@@ -53,95 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From b4ed6b51f356224c6c71540ed94087f7f09b84af Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Fri, 5 Apr 2019 09:57:08 -0700
-Subject: [PATCH] ASoC: core: conditionally increase module refcount on
- component open
+>From ba49cf6f8e4ad44ee752eb13413a26a7191893ae Mon Sep 17 00:00:00 2001
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Fri, 29 Mar 2019 22:50:44 +0100
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Add quirk for inverted jack
+ detect
 
-Recently, for Intel platforms the "ignore_module_refcount" field
-was introduced for the component driver. In order to avoid a
-deadlock preventing the PCI modules from being removed
-even when the card was idle, the refcounts were not incremented
-for the device driver module during component probe.
+Add a quirk to support boards whose jack detection mechanism is
+inverted.
 
-However, this change introduced a nasty side effect:
-the device driver module can be unloaded while a pcm stream is open.
+It will set the 'everest,jack-detect-inverted' boolean device property
+for the es8316 codec driver.
 
-This patch proposes to change the field to be renamed as
-"module_get_upon_open". When this field is set, the module
-refcount should be incremented on pcm open amd decremented
-upon pcm close. This will enable modules to be removed
-when no PCM playback/capture happens and prevent removal
-when the component is actually in use.
-
-Also, align with the skylake component driver with the new name.
-
-Fixes: b450b878('ASoC: core: don't increase component module refcount
-                 unconditionally'
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h               | 9 +++++++--
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
- sound/soc/soc-core.c              | 4 ++--
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1e2be35ed36f..482b4ea87c3c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -802,8 +802,13 @@ struct snd_soc_component_driver {
- 	int probe_order;
- 	int remove_order;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 6937c00cf63d..ccf552e92d53 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -40,6 +40,9 @@
+ #include "../atom/sst-atom-controls.h"
+ #include "../common/sst-dsp.h"
  
--	/* signal if the module handling the component cannot be removed */
--	unsigned int ignore_module_refcount:1;
-+	/*
-+	 * signal if the module handling the component should not be removed
-+	 * if a pcm is open. Setting this would prevent the module
-+	 * refcount being incremented in probe() but allow it be incremented
-+	 * when a pcm is opened and decremented when it is closed.
-+	 */
-+	unsigned int module_get_upon_open:1;
++/* jd-inv + terminating entry */
++#define MAX_NO_PROPS 2
++
+ struct byt_cht_es8316_private {
+ 	struct clk *mclk;
+ 	struct snd_soc_jack jack;
+@@ -55,6 +58,7 @@ enum {
+ #define BYT_CHT_ES8316_MAP(quirk)		((quirk) & GENMASK(3, 0))
+ #define BYT_CHT_ES8316_SSP0			BIT(16)
+ #define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
++#define BYT_CHT_ES8316_JD_INVERTED		BIT(18)
  
- 	/* bits */
- 	unsigned int idle_bias_on:1;
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 57031b6d4d45..9735e2412251 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1475,7 +1475,7 @@ static const struct snd_soc_component_driver skl_component  = {
- 	.ops		= &skl_platform_ops,
- 	.pcm_new	= skl_pcm_new,
- 	.pcm_free	= skl_pcm_free,
--	.ignore_module_refcount = 1, /* do not increase the refcount in core */
-+	.module_get_upon_open = 1, /* increment refcount when a pcm is opened */
- };
+ static int quirk;
  
- int skl_platform_register(struct device *dev)
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d88757659729..46e3ab0fced4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -947,7 +947,7 @@ static void soc_cleanup_component(struct snd_soc_component *component)
- 	snd_soc_dapm_free(snd_soc_component_get_dapm(component));
- 	soc_cleanup_component_debugfs(component);
- 	component->card = NULL;
--	if (!component->driver->ignore_module_refcount)
-+	if (!component->driver->module_get_upon_open)
- 		module_put(component->dev->driver->owner);
+@@ -72,6 +76,8 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk SSP0 enabled");
+ 	if (quirk & BYT_CHT_ES8316_MONO_SPEAKER)
+ 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
++	if (quirk & BYT_CHT_ES8316_JD_INVERTED)
++		dev_info(dev, "quirk JD_INVERTED enabled\n");
  }
  
-@@ -1381,7 +1381,7 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		return 0;
- 	}
+ static int byt_cht_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+@@ -438,12 +444,14 @@ static const struct acpi_gpio_mapping byt_cht_es8316_gpios[] = {
+ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ {
+ 	static const char * const mic_name[] = { "in1", "in2" };
++	struct property_entry props[MAX_NO_PROPS] = {};
+ 	struct byt_cht_es8316_private *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_acpi_mach *mach;
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	struct device *codec_dev;
++	unsigned int cnt = 0;
+ 	int dai_index = 0;
+ 	int i;
+ 	int ret = 0;
+@@ -513,6 +521,15 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	if (!codec_dev)
+ 		return -EPROBE_DEFER;
  
--	if (!component->driver->ignore_module_refcount &&
-+	if (!component->driver->module_get_upon_open &&
- 	    !try_module_get(component->dev->driver->owner))
- 		return -ENODEV;
- 
++	if (quirk & BYT_CHT_ES8316_JD_INVERTED)
++		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
++
++	if (cnt) {
++		ret = device_add_properties(codec_dev, props);
++		if (ret)
++			return ret;
++	}
++
+ 	devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
+ 	priv->speaker_en_gpio =
+ 		gpiod_get_index(codec_dev, "speaker-enable", 0,
 -- 
 2.20.1
