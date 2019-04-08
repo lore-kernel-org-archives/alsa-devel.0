@@ -1,38 +1,129 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - Add two more machines to the power_save_blacklist
-Date: Mon,  8 Apr 2019 09:35:35 +0800
-Message-ID: <20190408013535.6423-1-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.org
+From: libin.yang@intel.com
+Subject: [PATCH] ASoC: cAVS: add device_link to HDMI audio
+Date: Mon,  8 Apr 2019 09:21:53 +0800
+Message-ID: <1554686513-7770-1-git-send-email-libin.yang@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01D45F896DB
+ for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 03:37:58 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: libin.yang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Recently we set CONFIG_SND_HDA_POWER_SAVE_DEFAULT to 1 when
-configuring the kernel, then two machines were reported to have noise
-after installing the new kernel. Put them in the blacklist, the
-noise disappears.
+From: Libin Yang <libin.yang@intel.com>
 
-https://bugs.launchpad.net/bugs/1821663
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+In resume from S3, HDAC HDMI codec driver dapm event callback may be
+operated before HDMI codec driver turns on the display audio power
+domain because of the contest between display driver and hdmi codec driver.
+
+This patch adds the device_link between cAVS generic machine device
+(consumer) and hdmi codec device (supplier) to make sure the sequence is
+always correct.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/skl_hda_dsp_common.c  | 15 +++++++++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h  |  1 +
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 12 ++++++++++++
+ 3 files changed, 28 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ece256a3b48f..f62fb8b16c49 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2150,6 +2150,9 @@ static struct snd_pci_quirk power_save_blacklist[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x367b, "Lenovo IdeaCentre B550", 0),
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1572975 */
- 	SND_PCI_QUIRK(0x17aa, 0x36a7, "Lenovo C50 All in one", 0),
-+	/* https://bugs.launchpad.net/bugs/1821663 */
-+	SND_PCI_QUIRK(0x1631, 0xe017, "Packard Bell NEC IMEDIA 5204", 0),
-+	SND_PCI_QUIRK(0x8086, 0x2064, "Intel Laptop 8086:2064", 0),
- 	{}
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+index 9b30c0e..01c8937 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+@@ -17,6 +17,18 @@
+ 
+ #define NAME_SIZE	32
+ 
++static int skl_hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *dai = rtd->codec_dai;
++
++	if (!ctx->link)
++		ctx->link = device_link_add(rtd->card->dev, dai->dev,
++					    DL_FLAG_RPM_ACTIVE);
++
++	return 0;
++}
++
+ int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
+ {
+ 	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
+@@ -48,6 +60,7 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 		.cpu_dai_name = "iDisp1 Pin",
+ 		.codec_name = "ehdaudio0D2",
+ 		.codec_dai_name = "intel-hdmi-hifi1",
++		.init = skl_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
+ 		.trigger[0] = SND_SOC_DPCM_TRIGGER_POST,
+@@ -58,6 +71,7 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 		.cpu_dai_name = "iDisp2 Pin",
+ 		.codec_name = "ehdaudio0D2",
+ 		.codec_dai_name = "intel-hdmi-hifi2",
++		.init = skl_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
+ 		.trigger[0] = SND_SOC_DPCM_TRIGGER_POST,
+@@ -68,6 +82,7 @@ struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
+ 		.cpu_dai_name = "iDisp3 Pin",
+ 		.codec_name = "ehdaudio0D2",
+ 		.codec_dai_name = "intel-hdmi-hifi3",
++		.init = skl_hdmi_init,
+ 		.dpcm_playback = 1,
+ 		.no_pcm = 1,
+ 		.trigger[0] = SND_SOC_DPCM_TRIGGER_POST,
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
+index 87c50af..df5cc6b 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.h
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
+@@ -29,6 +29,7 @@ struct skl_hda_private {
+ 	int pcm_count;
+ 	int dai_index;
+ 	const char *platform_name;
++	struct device_link *link;
  };
- #endif /* CONFIG_PM */
+ 
+ extern struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS];
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index b9a21e6..ceca11e 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -166,8 +166,20 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(&pdev->dev, &hda_soc_card);
+ }
+ 
++static int skl_hda_audio_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
++
++	if (ctx->link)
++		device_link_del(ctx->link);
++
++	return 0;
++}
++
+ static struct platform_driver skl_hda_audio = {
+ 	.probe = skl_hda_audio_probe,
++	.remove = skl_hda_audio_remove,
+ 	.driver = {
+ 		.name = "skl_hda_dsp_generic",
+ 		.pm = &snd_soc_pm_ops,
 -- 
-2.17.1
+2.7.4
