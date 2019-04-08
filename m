@@ -1,76 +1,71 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH V1] ASoC: fsl_esai: replace fall-through
-	with break
-Date: Mon, 8 Apr 2019 10:55:22 -0500
-Message-ID: <38a6d36e-0f8e-fe3d-202b-30371042e248@embeddedor.com>
-References: <66c117128f300b0ec5f278f538412789c78b60a6.1554715589.git.shengjiu.wang@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] soundwire: fix pm_runtime_get_sync return
+ code checks
+Date: Mon, 8 Apr 2019 12:43:47 -0500
+Message-ID: <ace7e7f7-c3bf-f38c-0e70-da826175e3c5@linux.intel.com>
+References: <20190405072655.25995-1-jank@cadence.com>
+ <367316fa-9d92-2dfc-32c4-3e0e8c76ef43@linux.intel.com>
+ <92538D7E-C628-40AC-AFE9-52C97B3BC42D@global.cadence.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway20.websitewelcome.com (gateway20.websitewelcome.com
- [192.185.64.36])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBE3EF89610
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 17:55:26 +0200 (CEST)
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway20.websitewelcome.com (Postfix) with ESMTP id 5BAF3400E570F
- for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2019 10:55:24 -0500 (CDT)
-In-Reply-To: <66c117128f300b0ec5f278f538412789c78b60a6.1554715589.git.shengjiu.wang@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <92538D7E-C628-40AC-AFE9-52C97B3BC42D@global.cadence.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "S.j. Wang" <shengjiu.wang@nxp.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Kotas <jank@cadence.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "vkoul@kernel.org" <vkoul@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, "sanyog.r.kale@intel.com" <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 4/8/19 4:28 AM, S.j. Wang wrote:
-> case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent of
-> each other, so replace fall-through with break.
+On 4/8/19 2:12 AM, Jan Kotas wrote:
 > 
-If this is correct, then you should use the following "Fixes" tag instead,
-which is the one that introduced the bug:
-
-Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-
-> Fixes: 16bbeb2b43c3 ("ASoC: fsl_esai: Mark expected switch fall-through")
 > 
-        ^^^^
-because this didn't change any functionality.
-
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_esai.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> On 5 Apr 2019, at 17:04, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>> On 4/5/19 2:26 AM, Jan Kotas wrote:
+>>>
+>>>   
+>>>   	ret = pm_runtime_get_sync(slave->bus->dev);
+>>> -	if (ret < 0)
+>>> +	if (ret < 0 && ret != -EACCES)
+>>>
+>> There was a patch submitted on 3/28 by Srinivas Kandagatla who suggested an alternate solution for exactly the same code.
+>>
+>> +	if (pm_runtime_enabled(slave->bus->dev)) {
+>> +		ret = pm_runtime_get_sync(slave->bus->dev);
+>> +		if (ret < 0)
+>> +			return ret;
+>>
+>> I am far from an expert on pm_runtime but Srinivas' solution looks more elegant to me.
 > 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index c7410bbfd2af..bad0dfed6b68 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
->  		break;
->  	case ESAI_HCKT_EXTAL:
->  		ecr |= ESAI_ECR_ETI;
-
-Also, you should use a simple assignment operator "=" instead of "|=" in both cases.
-
-> -		/* fall through */
-> +		break;
->  	case ESAI_HCKR_EXTAL:
->  		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
->  		break;
+> Hello Pierre,
 > 
+> Please take a look at this patch, that was my inspiration:
+> https://lists.linuxfoundation.org/pipermail/linux-pm/2011-June/031930.html
 
-Thanks
---
-Gustavo
+The two patches seems to be identical:
+
+static inline bool pm_runtime_enabled(struct device *dev)
+{
+	return !dev->power.disable_depth;
+}
+
+static int rpm_resume()
+[...]
+else if (dev->power.disable_depth > 0)
+		retval = -EACCES;
+
+
+However I am still not clear on why this might fail.
+
+I can only think of one possible explanation: there is no explicit 
+pm_runtime_enable() in the soundwire code, so maybe the expectation is 
+that the pm_runtime status is inherited from the parent (in the intel 
+case the PCI driver), and that's missing in non-intel configurations?
+
+> I also took a look, and it seems the value returned by
+> pm_runtime_get_syncis simply ignored in a lot of places,
+> so checking its value may be excessive.
+But not checking seems careless at best...
