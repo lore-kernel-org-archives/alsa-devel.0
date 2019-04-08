@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-pcm: Switch to SPDX identifier" to the asoc tree
-Date: Mon,  8 Apr 2019 14:29:48 +0700 (+07)
-Message-ID: <20190408072949.0B2BA441D3B@finisterre.ee.mobilebroadband>
-References: <20190405115010.28838-2-andradanciu1997@gmail.com>
+Subject: Applied "ASoC: stm32: fix sai driver name initialisation" to the asoc tree
+Date: Mon,  8 Apr 2019 14:29:59 +0700 (+07)
+Message-ID: <20190408072959.F0485441D3C@finisterre.ee.mobilebroadband>
+References: <1554455951-2755-1-git-send-email-arnaud.pouliquen@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190405115010.28838-2-andradanciu1997@gmail.com>
+In-Reply-To: <1554455951-2755-1-git-send-email-arnaud.pouliquen@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.comalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, Liam@sirena.org.uk, Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi@sirena.org.uk, Iwai <tiwai@suse.com>, arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-pcm: Switch to SPDX identifier
+   ASoC: stm32: fix sai driver name initialisation
 
 has been applied to the asoc tree at
 
@@ -37,38 +36,41 @@ to this mail.
 Thanks,
 Mark
 
->From 1c05c1ed6f4dd267a2ca30bacd63870cd5ecc860 Mon Sep 17 00:00:00 2001
-From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Fri, 5 Apr 2019 14:49:51 +0300
-Subject: [PATCH] ASoC: imx-pcm: Switch to SPDX identifier
+>From 17d3069ccf06970e2db3f7cbf4335f207524279e Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Fri, 5 Apr 2019 11:19:11 +0200
+Subject: [PATCH] ASoC: stm32: fix sai driver name initialisation
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
+This patch fixes the sai driver structure overwriting which results in
+a cpu dai name equal NULL.
 
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Fixes: 3e086ed ("ASoC: stm32: add SAI driver")
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-pcm.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 133c4470acad..5dd406774d3e 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -1,13 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
- /*
-  * Copyright 2009 Sascha Hauer <s.hauer@pengutronix.de>
-  *
-  * This code is based on code copyrighted by Freescale,
-  * Liam Girdwood, Javier Martin and probably others.
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-  */
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 55d802f51c15..83d8a7ac56f4 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1419,7 +1419,6 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
+ 	if (!sai->cpu_dai_drv)
+ 		return -ENOMEM;
  
- #ifndef _IMX_PCM_H
+-	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
+ 	if (STM_SAI_IS_PLAYBACK(sai)) {
+ 		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
+ 		       sizeof(stm32_sai_playback_dai));
+@@ -1429,6 +1428,7 @@ static int stm32_sai_sub_dais_init(struct platform_device *pdev,
+ 		       sizeof(stm32_sai_capture_dai));
+ 		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
+ 	}
++	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
