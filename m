@@ -1,99 +1,31 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: timer: Revert active callback sync check
-	at close
-Date: Tue,  9 Apr 2019 12:31:13 +0200
-Message-ID: <20190409103113.883-1-tiwai@suse.de>
+From: Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH v2 0/3] ASoC: fsl: audmix: remove "model" attribute and fix
+ ref leaks
+Date: Tue, 9 Apr 2019 11:27:38 +0000
+Message-ID: <1554809242-27475-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0F05F89610
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2019 12:31:17 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id C76ABAEF1
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2019 10:31:16 +0000 (UTC)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Viorel Suman <viorel.suman@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is essentially a revert of the commit a7588c896b05 ("ALSA: timer:
-Check ack_list emptiness instead of bit flag").  The intended change
-by the commit turns out to be insufficient, as snd_timer_close*()
-always calls snd_timer_stop() that deletes the ack_list beforehand.
-
-In theory, we can change the behavior of snd_timer_stop() to sync the
-pending ack_list, but this will become a deadlock for the callback
-like sequencer that calls again snd_timer_stop() from itself.  So,
-reverting the change is a more straightforward solution.
-
-Fixes: a7588c896b05 ("ALSA: timer: Check ack_list emptiness instead of bit flag")
-Reported-by: syzbot+58813d77154713f4de15@syzkaller.appspotmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/timer.h |  1 +
- sound/core/timer.c    | 11 ++++++-----
- 2 files changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/timer.h b/include/sound/timer.h
-index bcfee20ea226..7ae226ab6990 100644
---- a/include/sound/timer.h
-+++ b/include/sound/timer.h
-@@ -43,6 +43,7 @@
- #define SNDRV_TIMER_IFLG_START	  0x00000004
- #define SNDRV_TIMER_IFLG_AUTO	  0x00000008	/* auto restart */
- #define SNDRV_TIMER_IFLG_FAST	  0x00000010	/* fast callback (do not use tasklet) */
-+#define SNDRV_TIMER_IFLG_CALLBACK 0x00000020	/* timer callback is active */
- #define SNDRV_TIMER_IFLG_EXCLUSIVE 0x00000040	/* exclusive owner - no more instances */
- #define SNDRV_TIMER_IFLG_EARLY_EVENT 0x00000080	/* write early event to the poll queue */
- 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index bb7e90ab90f8..df52d2960179 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -372,7 +372,7 @@ static int snd_timer_close_locked(struct snd_timer_instance *timeri)
- 		timer->num_instances--;
- 		/* wait, until the active callback is finished */
- 		spin_lock_irq(&timer->lock);
--		while (!list_empty(&timeri->ack_list)) {
-+		while (timeri->flags & SNDRV_TIMER_IFLG_CALLBACK) {
- 			spin_unlock_irq(&timer->lock);
- 			udelay(10);
- 			spin_lock_irq(&timer->lock);
-@@ -748,19 +748,20 @@ static void snd_timer_process_callbacks(struct snd_timer *timer,
- 		ti = list_first_entry(head, struct snd_timer_instance,
- 				      ack_list);
- 
-+		/* remove from ack_list and make empty */
-+		list_del_init(&ti->ack_list);
-+
- 		if (!(ti->flags & SNDRV_TIMER_IFLG_DEAD)) {
- 			ticks = ti->pticks;
- 			ti->pticks = 0;
- 			resolution = ti->resolution;
--
-+			ti->flags |= SNDRV_TIMER_IFLG_CALLBACK;
- 			spin_unlock(&timer->lock);
- 			if (ti->callback)
- 				ti->callback(ti, resolution, ticks);
- 			spin_lock(&timer->lock);
-+			ti->flags &= ~SNDRV_TIMER_IFLG_CALLBACK;
- 		}
--
--		/* remove from ack_list and make empty */
--		list_del_init(&ti->ack_list);
- 	}
- }
- 
--- 
-2.16.4
+VGhlIGxhdGVzdCBhdWRtaXggcGF0Y2gtc2V0ICh2NSkgaGFkIHRoZSAibW9kZWwiIGF0dHJpYnV0
+ZSByZW1vdmVkIGFzDQpyZXF1ZXN0ZWQgYnkgTmljb2xpbiBDaGVuLCBidXQgbG9va3MgbGlrZSAo
+djQpIHZlcnNpb24gb2YgREFJIGRyaXZlcg0KcmVhY2hlZCAiZm9yLW5leHQiIGJyYW5jaCAtIGZp
+eCB0aGlzIGJ5IHJlbW92aW5nICJtb2RlbCIgYXR0cmlidXRlLg0KQXNzaWRlIG9mIHRoaXMgZml4
+IG9iamVjdCByZWZlcmVuY2UgbGVha3MgaW4gbWFjaGluZSBwcm9iZSByZXBvcnRlZCBieQ0KSnVs
+aWEgTGF3YWxsLg0KDQpWaW9yZWwgU3VtYW4gKDMpOg0KICBBU29DOiBmc2xfYXVkbWl4OiByZW1v
+dmUgIm1vZGVsIiBhdHRyaWJ1dGUNCiAgZHQtYmluZGluZ3M6IGZzbCxhdWRtaXg6IHJlbW92ZSAi
+bW9kZWwiIGF0dHJpYnV0ZQ0KICBBU29DOiBpbXgtYXVkbWl4OiBmaXggb2JqZWN0IHJlZmVyZW5j
+ZSBsZWFrcyBpbiBwcm9iZQ0KDQpDaGFuZ2VzIHNpbmNlIFYxOg0KICBhKSBSZW1vdmVkICJtb2Rl
+bCIgYXR0cmlidXRlIGZyb20gZHQtYmluZGluZ3MgZG9jdW1lbnRhdGlvbg0KICBiKSBBZHJlc3Nl
+ZCBEYW5pZWwncyBjb21tZW50cw0KDQogLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZnNs
+LGF1ZG1peC50eHQgICAgICAgfCAgNCAtLQ0KIHNvdW5kL3NvYy9mc2wvZnNsX2F1ZG1peC5jICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgNDMgKysrKysrKysrKysrLS0tLS0tLS0tLQ0KIHNvdW5k
+L3NvYy9mc2wvaW14LWF1ZG1peC5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKysNCiAz
+IGZpbGVzIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKyksIDI0IGRlbGV0aW9ucygtKQ0KDQotLSAN
+CjIuNy40DQoNCg==
