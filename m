@@ -1,34 +1,32 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [PATCH 0/2] ASoC: fsl: audmix: fix two issues
-Date: Tue, 9 Apr 2019 08:55:53 +0000
-Message-ID: <1554800153.2729.5.camel@nxp.com>
-References: <1554798876-20653-1-git-send-email-viorel.suman@nxp.com>
-Reply-To: Viorel Suman <viorel.suman@nxp.com>
+From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH v2 0/1] ASoC: Mediatek: MT8183: add I2S2 control path from UL2
+ and UL3
+Date: Tue, 9 Apr 2019 17:13:36 +0800
+Message-ID: <20190409091337.43934-1-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554798876-20653-1-git-send-email-viorel.suman@nxp.com>
-Content-Language: en-US
-Content-ID: <0599532AC1B14B4F96A1D6EB5C7FA96F@eurprd04.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "Julia.Lawall@lip6.fr" <Julia.Lawall@lip6.fr>, "perex@perex.cz" <perex@perex.cz>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, dl-linux-imx <linux-imx@nxp.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-UGxlYXNlIGlnbm9yZSB0aGlzIHNlcmllcywgdGhlIGRldmljZSBiaW5kaW5ncyBkb2N1bWVudGF0
-aW9uLCBbMV0sDQpzdGlsbCBjb250YWlucyAibW9kZWwiIGF0dHJpYnV0ZS4gV2lsbCBzZW5kIFYy
-Lg0KDQpbMV0gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxhdWRt
-aXgudHh0DQoNClJlZ2FyZHMsDQpWaW9yZWwNCg0KT24gTWEsIDIwMTktMDQtMDkgYXQgMDg6MzUg
-KzAwMDAsIFZpb3JlbCBTdW1hbiB3cm90ZToNCj4gVGhlIGxhdGVzdCBhdWRtaXggcGF0Y2gtc2V0
-ICh2NSkgaGFkIHRoZSAibW9kZWwiIGF0dHJpYnV0ZQ0KPiByZW1vdmVkIGFzIHJlcXVlc3RlZCBi
-eSBOaWNvbGluIENoZW4sIGJ1dCBsb29rcyBsaWtlICh2NCkNCj4gdmVyc2lvbiBvZiBEQUkgZHJp
-dmVyIHJlYWNoZWQgImZvci1uZXh0IiBicmFuY2ggLSBmaXggdGhpcy4NCj4gQXNzaWRlIG9mIHRo
-aXMgZml4IG9iamVjdCByZWZlcmVuY2UgbGVha3MgaW4gbWFjaGluZSBwcm9iZSByZXBvcnRlZA0K
-PiBieSBKdWxpYSBMYXdhbGwuDQo+IA0KPiBWaW9yZWwgU3VtYW4gKDIpOg0KPiDCoCBBU29DOiBm
-c2xfYXVkbWl4OiByZW1vdmUgIm1vZGVsIiBhdHRyaWJ1dGUNCj4gwqAgQVNvQzogaW14LWF1ZG1p
-eDogZml4IG9iamVjdCByZWZlcmVuY2UgbGVha3MgaW4gcHJvYmUNCj4gDQo+IMKgc291bmQvc29j
-L2ZzbC9mc2xfYXVkbWl4LmMgfCA2MSArKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0t
-DQo+IC0tLS0tLS0tLS0tLQ0KPiDCoHNvdW5kL3NvYy9mc2wvaW14LWF1ZG1peC5jIHwgMzEgKysr
-KysrKysrLS0tLS0tLS0tLS0tLS0NCj4gwqAyIGZpbGVzIGNoYW5nZWQsIDQzIGluc2VydGlvbnMo
-KyksIDQ5IGRlbGV0aW9ucygtKQ0KPiANCj4gLS3CoA0KPiAyLjcuNA0KPiA=
+ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+
+Shunli Wang (1):
+  ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+-- 
+2.18.0
