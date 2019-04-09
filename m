@@ -1,38 +1,37 @@
-From: Kailang <kailang@realtek.com>
-Subject: power state in power save mode
-Date: Tue, 9 Apr 2019 09:54:27 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBB2F8@RTITMBSVM07.realtek.com.tw>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_audmix: remove "model" attribute
+Date: Tue, 9 Apr 2019 13:05:31 +0300
+Message-ID: <CAEnQRZB8ub6tyuputU51Ev9d6USg4idcXW6P6tkfuhHECAuGUA@mail.gmail.com>
+References: <1554798876-20653-1-git-send-email-viorel.suman@nxp.com> <1554798876-20653-2-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE0FAF89610
- for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2019 11:54:36 +0200 (CEST)
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1554798876-20653-2-git-send-email-viorel.suman@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.inf>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi Viorel,
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=98081ca62cbac31fb0f7efaf90b2e7384ce22257
+Few comments inline.
 
-Use upper patch to print power state in function alc256_init() and alc256_shutup().
-But when kernel turn on power_save = 1. (echo 1 > /sys/module/snd_hda_intel/parameters/power_save)
+On Tue, Apr 9, 2019 at 11:36 AM Viorel Suman <viorel.suman@nxp.com> wrote:
+>
+> Use "of_device_id.data" to specify the machine driver,
+> instead of "model" DTS attribute.
 
-The print power state value always be 0x0. ( If it turn off power save, power state value will normally)
+<snip>
 
-BR,
-Kailang
+>  static int fsl_audmix_probe(struct platform_device *pdev)
+>  {
+> +       struct device *dev = &pdev->dev;
+
+You might want to remove this change from the patch because it touches
+a lot of lines
+and it makes the review harder.
+
+I don't see any reason to have it at all.
+
+thanks,
+Daniel.
