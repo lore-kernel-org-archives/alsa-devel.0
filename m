@@ -1,41 +1,92 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: [PATCH v2 3/3] ASoC: imx-audmix: fix object reference leaks in probe
-Date: Tue, 9 Apr 2019 11:27:42 +0000
-Message-ID: <1554809242-27475-4-git-send-email-viorel.suman@nxp.com>
-References: <1554809242-27475-1-git-send-email-viorel.suman@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v5 05/14] ASoC: SOF: Add PCM operations
+ support
+Date: Tue, 9 Apr 2019 08:50:03 -0500
+Message-ID: <aafcef1c-ca4d-3026-0c58-788713479df9@linux.intel.com>
+References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
+ <20190321161016.26515-6-pierre-louis.bossart@linux.intel.com>
+ <s5hd0m2caz6.wl-tiwai@suse.de>
+ <f5346e231c80876f0fa74e1172d570b0033cbf42.camel@linux.intel.com>
+ <s5hv9zsy6qr.wl-tiwai@suse.de>
+ <7f8f25fc-0ea5-7562-37bb-64a8468f040d@linux.intel.com>
+ <s5hmukz4nbf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554809242-27475-1-git-send-email-viorel.suman@nxp.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <s5hmukz4nbf.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Viorel Suman <viorel.suman@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-UmVsZWFzZSB0aGUgcmVmZXJlbmNlIHRvIHRoZSB1bmRlcmx5aW5nIGRldmljZSB0YWtlbg0KYnkg
-b2ZfZmluZF9kZXZpY2VfYnlfbm9kZSgpIGNhbGwuDQoNClNpZ25lZC1vZmYtYnk6IFZpb3JlbCBT
-dW1hbiA8dmlvcmVsLnN1bWFuQG54cC5jb20+DQpSZXBvcnRlZC1ieTogSnVsaWEgTGF3YWxsIDxK
-dWxpYS5MYXdhbGxAbGlwNi5mcj4NCi0tLQ0KIHNvdW5kL3NvYy9mc2wvaW14LWF1ZG1peC5jIHwg
-NCArKysrDQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2ZzbC9pbXgtYXVkbWl4LmMgYi9zb3VuZC9zb2MvZnNsL2lteC1hdWRtaXguYw0K
-aW5kZXggNzk4M2JkMy4uOWFhZjNlNSAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9mc2wvaW14LWF1
-ZG1peC5jDQorKysgYi9zb3VuZC9zb2MvZnNsL2lteC1hdWRtaXguYw0KQEAgLTE3MSw2ICsxNzEs
-NyBAQCBzdGF0aWMgaW50IGlteF9hdWRtaXhfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldikNCiAJCQlucC0+ZnVsbF9uYW1lKTsNCiAJCXJldHVybiAtRUlOVkFMOw0KIAl9DQorCXB1
-dF9kZXZpY2UoJmF1ZG1peF9wZGV2LT5kZXYpOw0KIA0KIAludW1fZGFpID0gb2ZfY291bnRfcGhh
-bmRsZV93aXRoX2FyZ3MoYXVkbWl4X25wLCAiZGFpcyIsIE5VTEwpOw0KIAlpZiAobnVtX2RhaSAh
-PSBGU0xfQVVETUlYX01BWF9EQUlTKSB7DQpAQCAtMjE2LDYgKzIxNyw3IEBAIHN0YXRpYyBpbnQg
-aW14X2F1ZG1peF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIAkJCWRldl9l
-cnIoJnBkZXYtPmRldiwgImZhaWxlZCB0byBmaW5kIFNBSSBwbGF0Zm9ybSBkZXZpY2VcbiIpOw0K
-IAkJCXJldHVybiAtRUlOVkFMOw0KIAkJfQ0KKwkJcHV0X2RldmljZSgmY3B1X3BkZXYtPmRldik7
-DQogDQogCQlkYWlfbmFtZSA9IGRldm1fa2FzcHJpbnRmKCZwZGV2LT5kZXYsIEdGUF9LRVJORUws
-ICIlcyVzIiwNCiAJCQkJCSAgZmVfbmFtZV9wcmVmLCBhcmdzLm5wLT5mdWxsX25hbWUgKyAxKTsN
-CkBAIC0yODAsNiArMjgyLDggQEAgc3RhdGljIGludCBpbXhfYXVkbWl4X3Byb2JlKHN0cnVjdCBw
-bGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWlsZWQgdG8g
-ZmluZCBTQUkgcGxhdGZvcm0gZGV2aWNlXG4iKTsNCiAJCXJldHVybiAtRUlOVkFMOw0KIAl9DQor
-CXB1dF9kZXZpY2UoJmNwdV9wZGV2LT5kZXYpOw0KKw0KIAlwcml2LT5jcHVfbWNsayA9IGRldm1f
-Y2xrX2dldCgmY3B1X3BkZXYtPmRldiwgIm1jbGsxIik7DQogCWlmIChJU19FUlIocHJpdi0+Y3B1
-X21jbGspKSB7DQogCQlyZXQgPSBQVFJfRVJSKHByaXYtPmNwdV9tY2xrKTsNCi0tIA0KMi43LjQN
-Cg0K
+
+>>>>>> +	/* set runtime config */
+>>>>>> +	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
+>>>>>> +			  SNDRV_PCM_INFO_MMAP_VALID |
+>>>>>> +			  SNDRV_PCM_INFO_INTERLEAVED |
+>>>>>> +			  SNDRV_PCM_INFO_PAUSE |
+>>>>>> +			  SNDRV_PCM_INFO_RESUME |
+>>>>>> +			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
+>>>>>
+>>>>> Does SOF support the full resume?  That is, the stream gets resumed
+>>>>> at
+>>>>> the exact position that was suspended.  Most devices can't, hence
+>>>>> they
+>>>>> don't set *_INFO_RESUME flag and let user-space restarting.
+>>>> Hi Takashi,
+>>>>
+>>>> Thanks for your comment. The SOF driver definitely cannot guarantee to
+>>>> resume from the exact same position due to the fact that triggers for
+>>>> the host dma and link dma are not synchronized and also IPC scheduling
+>>>> will affect this. So we should remove INOF_RESUME from hw.info.
+>>>>
+>>>> I do one follow up question for you. When a stream resumes/restarts
+>>>> after suspend, we have the need for restoring the hw_params in the SOF
+>>>> driver prior to handling the START trigger. I noticed that the
+>>>> legacy/skylake driver does not seem to do this though. Do you have any
+>>>> insights on what we might be missing in the SOF driver?
+>>>
+>>> So, SOF mandates the re-setup of the hw params in BE at resume?
+>>> Then the right place to do is in the prepare callback.  Without
+>>> SNDRV_PCM_INFO_RESUME flag, the PCM core won't trigger RESUME, but
+>>> returns -ENOSYS.  Then user-space will do prepare, and start with the
+>>> normal trigger.
+>>
+>> Takashi, some of us at Intel are a bit nervous about returning an
+>> error to force the application to jump to its error-handling code
+>> (typically only done for xruns and not always rock-solid) and as a
+>> side effect get a prepare ioctl. I checked that e.g. CRAS does support
+>> this mode but I wonder how many application developers know about
+>> this. I personally didn't.
+> 
+> Essentially all applications are supposed to do so.  There are only
+> few drivers that support really the full resume.  Some drivers set the
+> flag, but many of them must be incorrect, especially ASoC ones.
+> 
+>> Moreover, it seems that the default behavior is rather to support
+>> RESUME, even if the hardware can't precisely restart from the same
+>> position, so we are concerned about exposing new errors when SOF is
+>> selected instead of legacy drivers (Baytrail, Atom-SST and
+>> Skylake-SST).
+>>
+>> In short, is this really your recommendation to remove this
+>> INFO_RESUME flag? And if yes, should we demote all existing Intel
+>> drivers and remove this flag as well?
+> 
+> Yes, better to start with less -- especially if this allows us to
+> simplify the code a lot.
+
+ok, thanks for confirming. we'll remove the INFO_RESUME flag in SOF and 
+follow-up with the removal on all other Intel drivers. Thanks for 
+enlightening us on this.
+-Pierre
