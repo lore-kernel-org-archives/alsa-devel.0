@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 05/14] ASoC: SOF: Add PCM operations
- support
-Date: Tue, 9 Apr 2019 08:50:03 -0500
-Message-ID: <aafcef1c-ca4d-3026-0c58-788713479df9@linux.intel.com>
+Subject: Re: [Sound-open-firmware] [PATCH v5 05/14] ASoC: SOF:
+ Add PCM operations support
+Date: Tue, 9 Apr 2019 09:23:17 -0500
+Message-ID: <dd1fdce0-1ae8-c5f3-a744-d04891951de2@linux.intel.com>
 References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
  <20190321161016.26515-6-pierre-louis.bossart@linux.intel.com>
  <s5hd0m2caz6.wl-tiwai@suse.de>
@@ -10,11 +10,12 @@ References: <20190321161016.26515-1-pierre-louis.bossart@linux.intel.com>
  <s5hv9zsy6qr.wl-tiwai@suse.de>
  <7f8f25fc-0ea5-7562-37bb-64a8468f040d@linux.intel.com>
  <s5hmukz4nbf.wl-tiwai@suse.de>
+ <aafcef1c-ca4d-3026-0c58-788713479df9@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <s5hmukz4nbf.wl-tiwai@suse.de>
+In-Reply-To: <aafcef1c-ca4d-3026-0c58-788713479df9@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,67 +27,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, alsa-devel@alsa-project.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Alan Cox <alan@linux.intel.com>, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
->>>>>> +	/* set runtime config */
->>>>>> +	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
->>>>>> +			  SNDRV_PCM_INFO_MMAP_VALID |
->>>>>> +			  SNDRV_PCM_INFO_INTERLEAVED |
->>>>>> +			  SNDRV_PCM_INFO_PAUSE |
->>>>>> +			  SNDRV_PCM_INFO_RESUME |
->>>>>> +			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
->>>>>
->>>>> Does SOF support the full resume?  That is, the stream gets resumed
->>>>> at
->>>>> the exact position that was suspended.  Most devices can't, hence
->>>>> they
->>>>> don't set *_INFO_RESUME flag and let user-space restarting.
->>>> Hi Takashi,
->>>>
->>>> Thanks for your comment. The SOF driver definitely cannot guarantee to
->>>> resume from the exact same position due to the fact that triggers for
->>>> the host dma and link dma are not synchronized and also IPC scheduling
->>>> will affect this. So we should remove INOF_RESUME from hw.info.
->>>>
->>>> I do one follow up question for you. When a stream resumes/restarts
->>>> after suspend, we have the need for restoring the hw_params in the SOF
->>>> driver prior to handling the START trigger. I noticed that the
->>>> legacy/skylake driver does not seem to do this though. Do you have any
->>>> insights on what we might be missing in the SOF driver?
->>>
->>> So, SOF mandates the re-setup of the hw params in BE at resume?
->>> Then the right place to do is in the prepare callback.  Without
->>> SNDRV_PCM_INFO_RESUME flag, the PCM core won't trigger RESUME, but
->>> returns -ENOSYS.  Then user-space will do prepare, and start with the
->>> normal trigger.
->>
->> Takashi, some of us at Intel are a bit nervous about returning an
->> error to force the application to jump to its error-handling code
->> (typically only done for xruns and not always rock-solid) and as a
->> side effect get a prepare ioctl. I checked that e.g. CRAS does support
->> this mode but I wonder how many application developers know about
->> this. I personally didn't.
-> 
-> Essentially all applications are supposed to do so.  There are only
-> few drivers that support really the full resume.  Some drivers set the
-> flag, but many of them must be incorrect, especially ASoC ones.
-> 
->> Moreover, it seems that the default behavior is rather to support
->> RESUME, even if the hardware can't precisely restart from the same
->> position, so we are concerned about exposing new errors when SOF is
->> selected instead of legacy drivers (Baytrail, Atom-SST and
->> Skylake-SST).
->>
->> In short, is this really your recommendation to remove this
->> INFO_RESUME flag? And if yes, should we demote all existing Intel
->> drivers and remove this flag as well?
-> 
-> Yes, better to start with less -- especially if this allows us to
-> simplify the code a lot.
-
-ok, thanks for confirming. we'll remove the INFO_RESUME flag in SOF and 
-follow-up with the removal on all other Intel drivers. Thanks for 
-enlightening us on this.
--Pierre
+Cj4gb2ssIHRoYW5rcyBmb3IgY29uZmlybWluZy4gd2UnbGwgcmVtb3ZlIHRoZSBJTkZPX1JFU1VN
+RSBmbGFnIGluIFNPRiBhbmQgCj4gZm9sbG93LXVwIHdpdGggdGhlIHJlbW92YWwgb24gYWxsIG90
+aGVyIEludGVsIGRyaXZlcnMuIFRoYW5rcyBmb3IgCj4gZW5saWdodGVuaW5nIHVzIG9uIHRoaXMu
+CgpBY3R1YWxseSBvbmUgbW9yZSBxdWVzdGlvbiByZWxhdGVkIHRvIHRoZSBkb2N1bWVudGF0aW9u
+LCB3aGljaCByZWFkcwoKIk5vdGUgdGhhdCB0aGUgdHJpZ2dlciB3aXRoIFNVU1BFTkQgY2FuIGFs
+d2F5cyBiZSBjYWxsZWQgd2hlbiAKc25kX3BjbV9zdXNwZW5kX2FsbCgpIGlzIGNhbGxlZCwgcmVn
+YXJkbGVzcyBvZiB0aGUgU05EUlZfUENNX0lORk9fUkVTVU1FIApmbGFnLiBUaGUgUkVTVU1FIGZs
+YWcgYWZmZWN0cyBvbmx5IHRoZSBiZWhhdmlvciBvZiBzbmRfcGNtX3Jlc3VtZSgpLiAKKFRodXMs
+IGluIHRoZW9yeSwgU05EUlZfUENNX1RSSUdHRVJfUkVTVU1FIGlzbuKAmXQgbmVlZGVkIHRvIGJl
+IGhhbmRsZWQgaW4gCnRoZSB0cmlnZ2VyIGNhbGxiYWNrIHdoZW4gbm8gU05EUlZfUENNX0lORk9f
+UkVTVU1FIGZsYWcgaXMgc2V0LiBCdXQsIAppdOKAmXMgYmV0dGVyIHRvIGtlZXAgaXQgZm9yIGNv
+bXBhdGliaWxpdHkgcmVhc29ucy4pIgoKSSBjb3VsZCBub3QgZmlndXJlIG91dCB3aGF0IHRoZSBs
+YXN0IHNlbnRlbmNlIG1lYW5zLiBJdCdzIG15IAp1bmRlcnN0YW5kaW5nIHRoYXQgdGhlIHJlc3Vt
+ZV90cmlnZ2VyIHdpbGwgbmV2ZXIgYmUgY2FsbGVkIHdpdGggdGhlIGNvZGUgCmZsb3cgYmVsb3cg
+d2hlbiBJTkZPX1JFU1VNRSBpc24ndCBkZWNsYXJlZC4gV291bGQgeW91IG1pbmQgY2xhcmlmeWlu
+ZyAKd2hhdCB0aGlzIGNvbXBhdGliaWxpdHkgbWlnaHQgYmU/IFRoYW5rcyEKCnN0YXRpYyBpbnQg
+c25kX3BjbV9wcmVfcmVzdW1lKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBp
+bnQgCnN0YXRlKQp7CglzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gc3Vic3RyZWFt
+LT5ydW50aW1lOwoJaWYgKCEocnVudGltZS0+aW5mbyAmIFNORFJWX1BDTV9JTkZPX1JFU1VNRSkp
+CgkJcmV0dXJuIC1FTk9TWVM7CgpyZXMgPSBvcHMtPnByZV9hY3Rpb24oc3Vic3RyZWFtLCBzdGF0
+ZSk7CmlmIChyZXMgPCAwKQogICAgCXJldHVybiByZXM7IDw8PCByZXR1cm4gbWVhbnMgdHJpZ2dl
+cl9yZXN1bWUgaXMgbm90IGNhbGxlZD8KcmVzID0gb3BzLT5kb19hY3Rpb24oc3Vic3RyZWFtLCBz
+dGF0ZSk7CgpzdGF0aWMgY29uc3Qgc3RydWN0IGFjdGlvbl9vcHMgc25kX3BjbV9hY3Rpb25fcmVz
+dW1lID0gewoJLnByZV9hY3Rpb24gPSBzbmRfcGNtX3ByZV9yZXN1bWUsCgkuZG9fYWN0aW9uID0g
+c25kX3BjbV9kb19yZXN1bWUsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
