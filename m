@@ -1,29 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix master clock management" to the asoc
- tree
-Date: Wed, 10 Apr 2019 13:26:47 +0100 (BST)
-Message-ID: <20190410122647.CBE451128ED2@debutante.sirena.org.uk>
-References: <1554883716-10436-1-git-send-email-olivier.moysan@st.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and
+ UL3" to the asoc tree
+Date: Wed, 10 Apr 2019 13:26:43 +0100 (BST)
+Message-ID: <20190410122643.D97401128ED2@debutante.sirena.org.uk>
+References: <20190409091337.43934-2-shunli.wang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1554883716-10436-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com, perex@perex.cz, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20190409091337.43934-2-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix master clock management
+   ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
 
 has been applied to the asoc tree at
 
@@ -48,136 +48,197 @@ to this mail.
 Thanks,
 Mark
 
->From e37c2deafe7058cf7989c4c47bbf1140cc867d89 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 10 Apr 2019 10:08:36 +0200
-Subject: [PATCH] ASoC: stm32: sai: fix master clock management
+>From 053cefe348b91cabeb43290c17ae88079a597f04 Mon Sep 17 00:00:00 2001
+From: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Tue, 9 Apr 2019 17:13:37 +0800
+Subject: [PATCH] ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and
+ UL3
 
-When master clock is used, master clock rate is set exclusively.
-Parent clocks of master clock cannot be changed after a call to
-clk_set_rate_exclusive(). So the parent clock of SAI kernel clock
-must be set before.
-Ensure also that exclusive rate operations are balanced
-in STM32 SAI driver.
+This patch add the control path from UL2 or UL3 to I2S2.
+The patch is based on broonie tree "for-next" branch.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 64 +++++++++++++++++++++++++----------
- 1 file changed, 47 insertions(+), 17 deletions(-)
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 83d8a7ac56f4..d7045aa520de 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -70,6 +70,7 @@
- #define SAI_IEC60958_STATUS_BYTES	24
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 43be51bf0329..1bc0fafe5e29 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -291,11 +291,15 @@ static struct snd_soc_dai_driver mt8183_memif_dai_driver[] = {
+ static const struct snd_kcontrol_new memif_ul1_ch1_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1", AFE_CONN21,
+ 				    I_ADDA_UL_CH1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S0_CH1", AFE_CONN21,
++				    I_I2S0_CH1, 1, 0),
+ };
  
- #define SAI_MCLK_NAME_LEN		32
-+#define SAI_RATE_11K			11025
+ static const struct snd_kcontrol_new memif_ul1_ch2_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH2", AFE_CONN22,
+ 				    I_ADDA_UL_CH2, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S0_CH2", AFE_CONN21,
++				    I_I2S0_CH2, 1, 0),
+ };
  
- /**
-  * struct stm32_sai_sub_data - private data of SAI sub block (block A or B)
-@@ -309,6 +310,25 @@ static int stm32_sai_set_clk_div(struct stm32_sai_sub_data *sai,
- 	return ret;
- }
+ static const struct snd_kcontrol_new memif_ul2_ch1_mix[] = {
+@@ -307,6 +311,8 @@ static const struct snd_kcontrol_new memif_ul2_ch1_mix[] = {
+ 				    I_DL2_CH1, 1, 0),
+ 	SOC_DAPM_SINGLE_AUTODISABLE("DL3_CH1", AFE_CONN5,
+ 				    I_DL3_CH1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S2_CH1", AFE_CONN5,
++				    I_I2S2_CH1, 1, 0),
+ };
  
-+static int stm32_sai_set_parent_clock(struct stm32_sai_sub_data *sai,
-+				      unsigned int rate)
-+{
-+	struct platform_device *pdev = sai->pdev;
-+	struct clk *parent_clk = sai->pdata->clk_x8k;
-+	int ret;
-+
-+	if (!(rate % SAI_RATE_11K))
-+		parent_clk = sai->pdata->clk_x11k;
-+
-+	ret = clk_set_parent(sai->sai_ck, parent_clk);
-+	if (ret)
-+		dev_err(&pdev->dev, " Error %d setting sai_ck parent clock. %s",
-+			ret, ret == -EBUSY ?
-+			"Active stream rates conflict\n" : "\n");
-+
-+	return ret;
-+}
-+
- static long stm32_sai_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
- 				      unsigned long *prate)
- {
-@@ -490,25 +510,29 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
- 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	int ret;
+ static const struct snd_kcontrol_new memif_ul2_ch2_mix[] = {
+@@ -318,16 +324,22 @@ static const struct snd_kcontrol_new memif_ul2_ch2_mix[] = {
+ 				    I_DL2_CH2, 1, 0),
+ 	SOC_DAPM_SINGLE_AUTODISABLE("DL3_CH2", AFE_CONN6,
+ 				    I_DL3_CH2, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S2_CH2", AFE_CONN6,
++				    I_I2S2_CH2, 1, 0),
+ };
  
--	if (dir == SND_SOC_CLOCK_OUT) {
-+	if (dir == SND_SOC_CLOCK_OUT && sai->sai_mclk) {
- 		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
- 					 SAI_XCR1_NODIV,
- 					 (unsigned int)~SAI_XCR1_NODIV);
- 		if (ret < 0)
- 			return ret;
+ static const struct snd_kcontrol_new memif_ul3_ch1_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1", AFE_CONN32,
+ 				    I_ADDA_UL_CH1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S2_CH1", AFE_CONN32,
++				    I_I2S2_CH1, 1, 0),
+ };
  
--		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
--		sai->mclk_rate = freq;
-+		/* If master clock is used, set parent clock now */
-+		ret = stm32_sai_set_parent_clock(sai, freq);
-+		if (ret)
-+			return ret;
+ static const struct snd_kcontrol_new memif_ul3_ch2_mix[] = {
+ 	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH2", AFE_CONN33,
+ 				    I_ADDA_UL_CH2, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I2S2_CH2", AFE_CONN33,
++				    I_I2S2_CH2, 1, 0),
+ };
  
--		if (sai->sai_mclk) {
--			ret = clk_set_rate_exclusive(sai->sai_mclk,
--						     sai->mclk_rate);
--			if (ret) {
--				dev_err(cpu_dai->dev,
--					"Could not set mclk rate\n");
--				return ret;
--			}
-+		ret = clk_set_rate_exclusive(sai->sai_mclk, freq);
-+		if (ret) {
-+			dev_err(cpu_dai->dev,
-+				ret == -EBUSY ?
-+				"Active streams have incompatible rates" :
-+				"Could not set mclk rate\n");
-+			return ret;
- 		}
-+
-+		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
-+		sai->mclk_rate = freq;
- 	}
+ static const struct snd_kcontrol_new memif_ul4_ch1_mix[] = {
+@@ -380,16 +392,22 @@ static const struct snd_soc_dapm_route mt8183_memif_routes[] = {
+ 	{"UL1", NULL, "UL1_CH2"},
+ 	{"UL1_CH1", "ADDA_UL_CH1", "ADDA Capture"},
+ 	{"UL1_CH2", "ADDA_UL_CH2", "ADDA Capture"},
++	{"UL1_CH1", "I2S0_CH1", "I2S0"},
++	{"UL1_CH2", "I2S0_CH2", "I2S0"},
  
- 	return 0;
-@@ -916,11 +940,13 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 	int div = 0, cr1 = 0;
- 	int sai_clk_rate, mclk_ratio, den;
- 	unsigned int rate = params_rate(params);
-+	int ret;
+ 	{"UL2", NULL, "UL2_CH1"},
+ 	{"UL2", NULL, "UL2_CH2"},
+ 	{"UL2_CH1", "ADDA_UL_CH1", "ADDA Capture"},
+ 	{"UL2_CH2", "ADDA_UL_CH2", "ADDA Capture"},
++	{"UL2_CH1", "I2S2_CH1", "I2S2"},
++	{"UL2_CH2", "I2S2_CH2", "I2S2"},
  
--	if (!(rate % 11025))
--		clk_set_parent(sai->sai_ck, sai->pdata->clk_x11k);
--	else
--		clk_set_parent(sai->sai_ck, sai->pdata->clk_x8k);
-+	if (!sai->sai_mclk) {
-+		ret = stm32_sai_set_parent_clock(sai, rate);
-+		if (ret)
-+			return ret;
-+	}
- 	sai_clk_rate = clk_get_rate(sai->sai_ck);
+ 	{"UL3", NULL, "UL3_CH1"},
+ 	{"UL3", NULL, "UL3_CH2"},
+ 	{"UL3_CH1", "ADDA_UL_CH1", "ADDA Capture"},
+ 	{"UL3_CH2", "ADDA_UL_CH2", "ADDA Capture"},
++	{"UL3_CH1", "I2S2_CH1", "I2S2"},
++	{"UL3_CH2", "I2S2_CH2", "I2S2"},
  
- 	if (STM_SAI_IS_F4(sai->pdata)) {
-@@ -1079,9 +1105,13 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
- 	regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, SAI_XCR1_NODIV,
- 			   SAI_XCR1_NODIV);
+ 	{"UL4", NULL, "UL4_CH1"},
+ 	{"UL4", NULL, "UL4_CH2"},
+@@ -421,7 +439,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = DL1_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_DL2] = {
+ 		.name = "DL2",
+@@ -438,7 +458,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = DL2_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_DL3] = {
+ 		.name = "DL3",
+@@ -455,7 +477,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = DL3_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_VUL2] = {
+ 		.name = "VUL2",
+@@ -472,7 +496,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = VUL2_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_AWB] = {
+ 		.name = "AWB",
+@@ -489,7 +515,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = AWB_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_AWB2] = {
+ 		.name = "AWB2",
+@@ -506,7 +534,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = AWB2_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_VUL12] = {
+ 		.name = "VUL12",
+@@ -523,7 +553,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = VUL12_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_MOD_DAI] = {
+ 		.name = "MOD_DAI",
+@@ -540,7 +572,9 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = MOD_DAI_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ 	[MT8183_MEMIF_HDMI] = {
+ 		.name = "HDMI",
+@@ -553,10 +587,13 @@ static const struct mtk_base_memif_data memif_data[MT8183_MEMIF_NUM] = {
+ 		.mono_reg = -1,
+ 		.mono_shift = -1,
+ 		.enable_reg = -1,	/* control in tdm for sync start */
++		.enable_shift = -1,
+ 		.hd_reg = AFE_MEMIF_HD_MODE,
+ 		.hd_shift = HDMI_HD_SFT,
+ 		.agent_disable_reg = -1,
++		.agent_disable_shift = -1,
+ 		.msb_reg = -1,
++		.msb_shift = -1,
+ 	},
+ };
  
--	clk_disable_unprepare(sai->sai_ck);
-+	/* Release mclk rate only if rate was actually set */
-+	if (sai->mclk_rate) {
-+		clk_rate_exclusive_put(sai->sai_mclk);
-+		sai->mclk_rate = 0;
-+	}
- 
--	clk_rate_exclusive_put(sai->sai_mclk);
-+	clk_disable_unprepare(sai->sai_ck);
- 
- 	spin_lock_irqsave(&sai->irq_lock, flags);
- 	sai->substream = NULL;
+@@ -671,6 +708,7 @@ static const struct mtk_base_irq_data irq_data[MT8183_IRQ_NUM] = {
+ 		.irq_cnt_shift = 0,
+ 		.irq_cnt_maskbit = 0x3ffff,
+ 		.irq_fs_reg = -1,
++		.irq_fs_shift = -1,
+ 		.irq_fs_maskbit = -1,
+ 		.irq_en_reg = AFE_IRQ_MCU_CON0,
+ 		.irq_en_shift = IRQ8_MCU_ON_SFT,
 -- 
 2.20.1
