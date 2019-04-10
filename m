@@ -1,8 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_audmix: remove "model" attribute"
-	to the asoc tree
-Date: Wed, 10 Apr 2019 13:26:39 +0100 (BST)
-Message-ID: <20190410122639.DBD381128ED2@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Mediatek: MT8183: change supported
+	formats of DL2 and UL1" to the asoc tree
+Date: Wed, 10 Apr 2019 13:26:41 +0100 (BST)
+Message-ID: <20190410122641.DD4331128ED2@debutante.sirena.org.uk>
+References: <20190408104728.57351-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -11,8 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DC04F896DD
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 14:26:41 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F735F89712
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 14:26:44 +0200 (CEST)
+In-Reply-To: <20190408104728.57351-1-tzungbi@google.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +24,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, jiaxin.yu@mediatek.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, shunli.wang@mediatek.com, dgreid@google.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_audmix: remove "model" attribute
+   ASoC: Mediatek: MT8183: change supported formats of DL2 and UL1
 
 has been applied to the asoc tree at
 
@@ -53,94 +54,87 @@ to this mail.
 Thanks,
 Mark
 
->From 830b857f7971b8f49471fee4e715ccac66400711 Mon Sep 17 00:00:00 2001
-From: Viorel Suman <viorel.suman@nxp.com>
-Date: Wed, 10 Apr 2019 11:06:36 +0000
-Subject: [PATCH] ASoC: fsl_audmix: remove "model" attribute
+>From 7fa5782d5355bad773a7c9b341fcb4f712cf8352 Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Mon, 8 Apr 2019 18:47:28 +0800
+Subject: [PATCH] ASoC: Mediatek: MT8183: change supported formats of DL2 and
+ UL1
 
-Use "of_device_id.data" to specify the machine driver
-instead of "model" DTS attribute.
+DL2 and UL1 are for BTSCO.  They should only provide 16-bit, mono,
+8kHz and 16kHz to userspace.  Change the formats accordingly.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_audmix.c | 43 ++++++++++++++++++++------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index dabde0342c95..dc802d5c4ccd 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -445,13 +445,29 @@ static const struct regmap_config fsl_audmix_regmap_config = {
- 	.cache_type = REGCACHE_FLAT,
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 681bedb524f9..4e44e5689d6f 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -69,6 +69,46 @@ mt8183_mt6358_ts3a227_max98357_dapm_routes[] = {
+ 	{"IT6505_8CH", NULL, "TDM"},
  };
  
-+static const struct of_device_id fsl_audmix_ids[] = {
-+	{
-+		.compatible = "fsl,imx8qm-audmix",
-+		.data = "imx-audmix",
-+	},
-+	{ /* sentinel */ }
++static int
++mt8183_mt6358_ts3a227_max98357_bt_sco_startup(
++	struct snd_pcm_substream *substream)
++{
++	static const unsigned int rates[] = {
++		8000, 16000
++	};
++	static const struct snd_pcm_hw_constraint_list constraints_rates = {
++		.count = ARRAY_SIZE(rates),
++		.list  = rates,
++		.mask = 0,
++	};
++	static const unsigned int channels[] = {
++		1,
++	};
++	static const struct snd_pcm_hw_constraint_list constraints_channels = {
++		.count = ARRAY_SIZE(channels),
++		.list = channels,
++		.mask = 0,
++	};
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	snd_pcm_hw_constraint_list(runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++	runtime->hw.channels_max = 1;
++	snd_pcm_hw_constraint_list(runtime, 0,
++			SNDRV_PCM_HW_PARAM_CHANNELS,
++			&constraints_channels);
++
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
++
++	return 0;
++}
++
++static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_bt_sco_ops = {
++	.startup = mt8183_mt6358_ts3a227_max98357_bt_sco_startup,
 +};
-+MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
 +
- static int fsl_audmix_probe(struct platform_device *pdev)
- {
- 	struct fsl_audmix *priv;
- 	struct resource *res;
-+	const char *mdrv;
-+	const struct of_device_id *of_id;
- 	void __iomem *regs;
- 	int ret;
--	const char *sprop;
-+
-+	of_id = of_match_device(fsl_audmix_ids, &pdev->dev);
-+	if (!of_id || !of_id->data)
-+		return -EINVAL;
-+
-+	mdrv = of_id->data;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -487,19 +503,12 @@ static int fsl_audmix_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	sprop = of_get_property(pdev->dev.of_node, "model", NULL);
--	if (sprop) {
--		priv->pdev = platform_device_register_data(&pdev->dev, sprop, 0,
--							   NULL, 0);
--		if (IS_ERR(priv->pdev)) {
--			ret = PTR_ERR(priv->pdev);
--			dev_err(&pdev->dev,
--				"failed to register platform %s: %d\n", sprop,
--				 ret);
--		}
--	} else {
--		dev_err(&pdev->dev, "[model] attribute missing.\n");
--		ret = -EINVAL;
-+	priv->pdev = platform_device_register_data(&pdev->dev, mdrv, 0, NULL,
-+						   0);
-+	if (IS_ERR(priv->pdev)) {
-+		ret = PTR_ERR(priv->pdev);
-+		dev_err(&pdev->dev, "failed to register platform %s: %d\n",
-+			mdrv, ret);
- 	}
- 
- 	return ret;
-@@ -553,12 +562,6 @@ static const struct dev_pm_ops fsl_audmix_pm = {
- 				pm_runtime_force_resume)
- };
- 
--static const struct of_device_id fsl_audmix_ids[] = {
--	{ .compatible = "fsl,imx8qm-audmix", },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
--
- static struct platform_driver fsl_audmix_driver = {
- 	.probe = fsl_audmix_probe,
- 	.remove = fsl_audmix_remove,
+ static struct snd_soc_dai_link
+ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 	/* FE */
+@@ -93,6 +133,7 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 			    SND_SOC_DPCM_TRIGGER_PRE},
+ 		.dynamic = 1,
+ 		.dpcm_playback = 1,
++		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
+ 	},
+ 	{
+ 		.name = "Playback_3",
+@@ -115,6 +156,7 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
+ 			    SND_SOC_DPCM_TRIGGER_PRE},
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
++		.ops = &mt8183_mt6358_ts3a227_max98357_bt_sco_ops,
+ 	},
+ 	{
+ 		.name = "Capture_2",
 -- 
 2.20.1
