@@ -1,75 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cAVS: add device_link to HDMI audio
-Date: Wed, 10 Apr 2019 12:29:49 +0100
-Message-ID: <20190410112949.GM6106@sirena.org.uk>
-References: <1554686513-7770-1-git-send-email-libin.yang@intel.com>
+Subject: Re: [PATCH] sound: cs43130: fix a NULL pointer dereference
+Date: Wed, 10 Apr 2019 12:42:56 +0100
+Message-ID: <20190410114256.GN6106@sirena.org.uk>
+References: <20190315035120.25913-1-kjlu@umn.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8766615126937636648=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B28B8F89623
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 13:29:56 +0200 (CEST)
-In-Reply-To: <1554686513-7770-1-git-send-email-libin.yang@intel.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v541l457l4DThMFo"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190315035120.25913-1-kjlu@umn.edu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kangjie Lu <kjlu@umn.edu>
+Cc: pakki001@umn.edu, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8766615126937636648==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XbHSybK3LHOYQtWI"
-Content-Disposition: inline
-
-
---XbHSybK3LHOYQtWI
+--v541l457l4DThMFo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2019 at 09:21:53AM +0800, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
->=20
-> In resume from S3, HDAC HDMI codec driver dapm event callback may be
-> operated before HDMI codec driver turns on the display audio power
-> domain because of the contest between display driver and hdmi codec drive=
-r.
+On Thu, Mar 14, 2019 at 10:51:20PM -0500, Kangjie Lu wrote:
+> In case create_singlethread_workqueue fails, the fix returns
+> -ENOMEM to avoid potential NULL pointer dereference.
 
-This doesn't apply against current code, please check and resend.
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
---XbHSybK3LHOYQtWI
+--v541l457l4DThMFo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyt06wACgkQJNaLcl1U
-h9APPgf9GCuJOI2+xWIm3dtdbPPwNfINQxE3cAPG2RIHyTP9wCVuCQcM47Xfltd1
-a9lUdrekMs38upk6fRjhjPT73UDltcov24tNLILC8BKpR1LP8Iw8dFCTXe9tuUAC
-MZcTt6IQuZYltReoQ7dLHi/2K9OG5mHoZbpOULNNUj3aOJJOVz3P8Ij3tSDPN6kS
-mH3b+uCISgyWWB+Ci5J6rTieWwgde55YbQL68WMl9aohR29MKih5eLxWCFhGBfD1
-D5jN80eh9sstbPK40UOU7JKvqTNALARm9V5mAxpbRW7YHduWFIFnu5T5yGdcyzcT
-TpgMy93PsIrWQrU/r0itq4athZd5uw==
-=Jl0f
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlyt1r8ACgkQJNaLcl1U
+h9CeYQf/aYGE0HNsqPGPQ626dW6VPCc+lT4dA/WjxpXpnG2IV9DWJOPw5UC8fdzP
+AlsOdyaxtt7oJkDqAl+mLfkfE9/dniCEmIqGJgfxTN7p0ztIxW1tYuFNwtb+0ULv
+QyQMA9b43cFGiMjunrgW8pEir9wiANgDm6fCl0ezP56R//V91I9EFOXKHEBrOo/z
+Jr8CmKv/Y8u7i1dJbdzXQAS07oqGhiUKePUmv5Pns8LcogNa0GrK/ztYFokU41gr
+oywnMium81E5XmVf5ug4cE/Y4f1aGXQJZpdDTXw71jnlTVSwE9MU8vubsaKReNbT
+1MpGpkmLJtIQz8AE3pHwtivrOqypJQ==
+=8xzx
 -----END PGP SIGNATURE-----
 
---XbHSybK3LHOYQtWI--
-
---===============8766615126937636648==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8766615126937636648==--
+--v541l457l4DThMFo--
