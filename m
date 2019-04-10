@@ -1,23 +1,23 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V2] ASoC: fsl_esai: replace fall-through
-	with break
-Date: Tue, 9 Apr 2019 20:53:17 -0700
-Message-ID: <20190410035317.GA3032@Asurada>
-References: <46e9b55edb223894392a90c7cdb6241a43cb9cff.1554864022.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_asrc: replace the process_option
+ table with function
+Date: Tue, 9 Apr 2019 21:26:39 -0700
+Message-ID: <20190410042638.GB3032@Asurada>
+References: <1554866131-12088-1-git-send-email-shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB979F8068A
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 05:53:23 +0200 (CEST)
-Received: by mail-pg1-x541.google.com with SMTP id z9so659215pgu.10
- for <alsa-devel@alsa-project.org>; Tue, 09 Apr 2019 20:53:23 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11AC9F89616
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 06:26:44 +0200 (CEST)
+Received: by mail-pl1-x643.google.com with SMTP id d1so569887plj.8
+ for <alsa-devel@alsa-project.org>; Tue, 09 Apr 2019 21:26:44 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <46e9b55edb223894392a90c7cdb6241a43cb9cff.1554864022.git.shengjiu.wang@nxp.com>
+In-Reply-To: <1554866131-12088-1-git-send-email-shengjiu.wang@nxp.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,41 +28,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "gustavo@embeddedor.com" <gustavo@embeddedor.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 10, 2019 at 02:42:45AM +0000, S.j. Wang wrote:
-> case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent of
-> each other, so replace fall-through with break.
-> 
-> Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+On Wed, Apr 10, 2019 at 03:15:26AM +0000, S.j. Wang wrote:
+> The table is not flexible if supported sample rate is not in the
+> table, so use a function to replace it.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Could you please elaborate a bit the special use case here?
 
-Thanks
+The table was copied directly from the Reference Manual. We
+also have listed all supported input and output sample rates
+just right behind that table. If there're missing rates, we
+probably should update those two lists also? Otherwise, how
+could we have a driver limiting both I/O sample rates while
+we still see something not in the table?
 
-> ---
-> Changes in v2
-> - fix the fixes tag.
-> 
->  sound/soc/fsl/fsl_esai.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index c7410bbfd2af..bad0dfed6b68 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
->  		break;
->  	case ESAI_HCKT_EXTAL:
->  		ecr |= ESAI_ECR_ETI;
-> -		/* fall through */
-> +		break;
->  	case ESAI_HCKR_EXTAL:
->  		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
->  		break;
-> -- 
-> 1.9.1
-> 
+> +static int proc_autosel(int Fsin, int Fsout, int *pre_proc, int *post_proc)
+
+Please add some comments to this function to explain what it
+does, and how it works. And better to rename it to something
+like "fsl_asrc_sel_proc".
+
+> +{
+> +	bool det_out_op2_cond;
+> +	bool det_out_op0_cond;
+> +
+> +	det_out_op2_cond = (((Fsin * 15 > Fsout * 16) & (Fsout < 56000)) |
+> +					((Fsin > 56000) & (Fsout < 56000)));
+> +	det_out_op0_cond = (Fsin * 23 < Fsout * 8);
+
+"detect output option condition"? Please explain a bit or add
+comments to explain.
+
+> +
+> +	/*
+> +	 * Not supported case: Tsout>16.125*Tsin, and Tsout>8.125*Tsin.
+
+Could be "unsupported". And it should fit within one line:
+	/* Unsupported case: Tsout > 16.125 * Tsin, and Tsout > 8.125 * Tsin */
+
+> +	 */
+> +	if (Fsin * 8 > 129 * Fsout)
+> +		*pre_proc = 5;
+> +	else if (Fsin * 8 > 65 * Fsout)
+> +		*pre_proc = 4;
+> +	else if (Fsin * 8 > 33 * Fsout)
+> +		*pre_proc = 2;
+> +	else if (Fsin * 8 > 15 * Fsout) {
+> +		if (Fsin > 152000)
+> +			*pre_proc = 2;
+> +		else
+> +			*pre_proc = 1;
+> +	} else if (Fsin < 76000)
+> +		*pre_proc = 0;
+> +	else if (Fsin > 152000)
+> +		*pre_proc = 2;
+> +	else
+> +		*pre_proc = 1;
+> +
+> +	if (det_out_op2_cond)
+> +		*post_proc = 2;
+> +	else if (det_out_op0_cond)
+> +		*post_proc = 0;
+> +	else
+> +		*post_proc = 1;
+> +
+> +	if (*pre_proc == 4 || *pre_proc == 5)
+> +		return -EINVAL;
+
+I think you'd better add some necessary comments here too.
+
+> @@ -377,11 +404,17 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+>  			   ASRCTR_IDRi_MASK(index) | ASRCTR_USRi_MASK(index),
+>  			   ASRCTR_IDR(index) | ASRCTR_USR(index));
+>  
+> +	ret = proc_autosel(inrate, outrate, &pre_proc, &post_proc);
+> +	if (ret) {
+> +		pair_err("No supported pre-processing options\n");
+> +		return ret;
+> +	}
+
+I think we should do this earlier in this function, once We
+know the inrate and outrate, instead of having all register
+being configured then going for an error-out.
+
+Another thing confuses me: so we could have supported sample
+rates in the list but the hardware might not support some of
+them because we couldn't calculate their processing options?
