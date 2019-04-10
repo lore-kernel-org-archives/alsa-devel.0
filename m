@@ -1,68 +1,48 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: [PATCH v3 4/4] ASoC: fsl_audmix: cache pdev->dev pointer
-Date: Wed, 10 Apr 2019 10:37:32 +0000
-Message-ID: <1554892629-17646-5-git-send-email-viorel.suman@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/4] dt-bindings: fsl,audmix: remove "model" attribute
+Date: Wed, 10 Apr 2019 11:39:47 +0100
+Message-ID: <20190410103947.GH6106@sirena.org.uk>
 References: <1554892629-17646-1-git-send-email-viorel.suman@nxp.com>
+ <1554892629-17646-3-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Hlh2aiwFLCZwGcpw"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1554892629-17646-1-git-send-email-viorel.suman@nxp.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1554892629-17646-3-git-send-email-viorel.suman@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Viorel Suman <viorel.suman@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>"linuxppc-dev@lists.ozlabs.org" <li>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlcmUgc2hvdWxkIGJlIG5vIHRyb3VibGUgdG8gdW5kZXJzdGFuZCBkZXYgPSBwZGV2LT5kZXYu
-DQpUaGlzIGNhbiBzYXZlIHNvbWUgc3BhY2UgdG8gaGF2ZSBtb3JlIHByaW50IGluZm8gb3Igc2F2
-ZQ0Kc29tZSB3cmFwcGVkIGxpbmVzLg0KDQpTaWduZWQtb2ZmLWJ5OiBWaW9yZWwgU3VtYW4gPHZp
-b3JlbC5zdW1hbkBueHAuY29tPg0KU3VnZ2VzdGVkLWJ5OiBOaWNvbGluIENoZW4gPG5pY29sZW90
-c3VrYUBnbWFpbC5jb20+DQotLS0NCiBzb3VuZC9zb2MvZnNsL2ZzbF9hdWRtaXguYyB8IDI2ICsr
-KysrKysrKysrKystLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMo
-KyksIDEzIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9mc2xfYXVk
-bWl4LmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9hdWRtaXguYw0KaW5kZXggZGM4MDJkNS4uMmQxMGQ4
-YiAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9mc2wvZnNsX2F1ZG1peC5jDQorKysgYi9zb3VuZC9z
-b2MvZnNsL2ZzbF9hdWRtaXguYw0KQEAgLTQ1Niw2ICs0NTYsNyBAQCBNT0RVTEVfREVWSUNFX1RB
-QkxFKG9mLCBmc2xfYXVkbWl4X2lkcyk7DQogDQogc3RhdGljIGludCBmc2xfYXVkbWl4X3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogew0KKwlzdHJ1Y3QgZGV2aWNlICpkZXYg
-PSAmcGRldi0+ZGV2Ow0KIAlzdHJ1Y3QgZnNsX2F1ZG1peCAqcHJpdjsNCiAJc3RydWN0IHJlc291
-cmNlICpyZXM7DQogCWNvbnN0IGNoYXIgKm1kcnY7DQpAQCAtNDYzLDUxICs0NjQsNTAgQEAgc3Rh
-dGljIGludCBmc2xfYXVkbWl4X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQog
-CXZvaWQgX19pb21lbSAqcmVnczsNCiAJaW50IHJldDsNCiANCi0Jb2ZfaWQgPSBvZl9tYXRjaF9k
-ZXZpY2UoZnNsX2F1ZG1peF9pZHMsICZwZGV2LT5kZXYpOw0KKwlvZl9pZCA9IG9mX21hdGNoX2Rl
-dmljZShmc2xfYXVkbWl4X2lkcywgZGV2KTsNCiAJaWYgKCFvZl9pZCB8fCAhb2ZfaWQtPmRhdGEp
-DQogCQlyZXR1cm4gLUVJTlZBTDsNCiANCiAJbWRydiA9IG9mX2lkLT5kYXRhOw0KIA0KLQlwcml2
-ID0gZGV2bV9remFsbG9jKCZwZGV2LT5kZXYsIHNpemVvZigqcHJpdiksIEdGUF9LRVJORUwpOw0K
-Kwlwcml2ID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpwcml2KSwgR0ZQX0tFUk5FTCk7DQog
-CWlmICghcHJpdikNCiAJCXJldHVybiAtRU5PTUVNOw0KIA0KIAkvKiBHZXQgdGhlIGFkZHJlc3Nl
-cyAqLw0KIAlyZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0s
-IDApOw0KLQlyZWdzID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIHJlcyk7DQor
-CXJlZ3MgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCByZXMpOw0KIAlpZiAoSVNfRVJSKHJl
-Z3MpKQ0KIAkJcmV0dXJuIFBUUl9FUlIocmVncyk7DQogDQotCXByaXYtPnJlZ21hcCA9IGRldm1f
-cmVnbWFwX2luaXRfbW1pb19jbGsoJnBkZXYtPmRldiwgImlwZyIsIHJlZ3MsDQorCXByaXYtPnJl
-Z21hcCA9IGRldm1fcmVnbWFwX2luaXRfbW1pb19jbGsoZGV2LCAiaXBnIiwgcmVncywNCiAJCQkJ
-CQkgJmZzbF9hdWRtaXhfcmVnbWFwX2NvbmZpZyk7DQogCWlmIChJU19FUlIocHJpdi0+cmVnbWFw
-KSkgew0KLQkJZGV2X2VycigmcGRldi0+ZGV2LCAiZmFpbGVkIHRvIGluaXQgcmVnbWFwXG4iKTsN
-CisJCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGluaXQgcmVnbWFwXG4iKTsNCiAJCXJldHVybiBQ
-VFJfRVJSKHByaXYtPnJlZ21hcCk7DQogCX0NCiANCi0JcHJpdi0+aXBnX2NsayA9IGRldm1fY2xr
-X2dldCgmcGRldi0+ZGV2LCAiaXBnIik7DQorCXByaXYtPmlwZ19jbGsgPSBkZXZtX2Nsa19nZXQo
-ZGV2LCAiaXBnIik7DQogCWlmIChJU19FUlIocHJpdi0+aXBnX2NsaykpIHsNCi0JCWRldl9lcnIo
-JnBkZXYtPmRldiwgImZhaWxlZCB0byBnZXQgaXBnIGNsb2NrXG4iKTsNCisJCWRldl9lcnIoZGV2
-LCAiZmFpbGVkIHRvIGdldCBpcGcgY2xvY2tcbiIpOw0KIAkJcmV0dXJuIFBUUl9FUlIocHJpdi0+
-aXBnX2Nsayk7DQogCX0NCiANCiAJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgcHJpdik7DQot
-CXBtX3J1bnRpbWVfZW5hYmxlKCZwZGV2LT5kZXYpOw0KKwlwbV9ydW50aW1lX2VuYWJsZShkZXYp
-Ow0KIA0KLQlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY29tcG9uZW50KCZwZGV2LT5kZXYs
-ICZmc2xfYXVkbWl4X2NvbXBvbmVudCwNCisJcmV0ID0gZGV2bV9zbmRfc29jX3JlZ2lzdGVyX2Nv
-bXBvbmVudChkZXYsICZmc2xfYXVkbWl4X2NvbXBvbmVudCwNCiAJCQkJCSAgICAgIGZzbF9hdWRt
-aXhfZGFpLA0KIAkJCQkJICAgICAgQVJSQVlfU0laRShmc2xfYXVkbWl4X2RhaSkpOw0KIAlpZiAo
-cmV0KSB7DQotCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWlsZWQgdG8gcmVnaXN0ZXIgQVNvQyBE
-QUlcbiIpOw0KKwkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gcmVnaXN0ZXIgQVNvQyBEQUlcbiIp
-Ow0KIAkJcmV0dXJuIHJldDsNCiAJfQ0KIA0KLQlwcml2LT5wZGV2ID0gcGxhdGZvcm1fZGV2aWNl
-X3JlZ2lzdGVyX2RhdGEoJnBkZXYtPmRldiwgbWRydiwgMCwgTlVMTCwNCi0JCQkJCQkgICAwKTsN
-CisJcHJpdi0+cGRldiA9IHBsYXRmb3JtX2RldmljZV9yZWdpc3Rlcl9kYXRhKGRldiwgbWRydiwg
-MCwgTlVMTCwgMCk7DQogCWlmIChJU19FUlIocHJpdi0+cGRldikpIHsNCiAJCXJldCA9IFBUUl9F
-UlIocHJpdi0+cGRldik7DQotCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWlsZWQgdG8gcmVnaXN0
-ZXIgcGxhdGZvcm0gJXM6ICVkXG4iLA0KKwkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gcmVnaXN0
-ZXIgcGxhdGZvcm0gJXM6ICVkXG4iLA0KIAkJCW1kcnYsIHJldCk7DQogCX0NCiANCi0tIA0KMi43
-LjQNCg0K
+
+--Hlh2aiwFLCZwGcpw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Apr 10, 2019 at 10:37:30AM +0000, Viorel Suman wrote:
+> Remove "model" attribute.
+>=20
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
+
+--Hlh2aiwFLCZwGcpw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlytx/MACgkQJNaLcl1U
+h9DvXwf/ZeIIHmvAomjnHuuJMUPoTAbgbUldCg3l5vaAJESfKTc/zCNHpH3ENXOc
+0faIgAzQrF1At/4fAY6pJkIKAEcR/ryaIwPDk7BHfMyfoW8V+6IBu1z33JqOAhYa
+XPPz30TZC2X123j8SvKdULu0GxtRRCaaCnoYWVyKCeLsjeBbPJ08AUvQ8QsuGnDU
+0tv7lTgds05v8WZ8zeN0hUWoEAz2yHy9Wm9kymOgaAoIZRZARWYQTnCZDoLp5AW7
+B9G3ecNhiZu2M8/6TqFtlpeuo7mJTcNL5+N5wWhy5SgtqQjmZdq3uyfyQY3b1Xhk
+QNON31ljdlbbQFw83Wf7AsodJUybAw==
+=C5Bl
+-----END PGP SIGNATURE-----
+
+--Hlh2aiwFLCZwGcpw--
