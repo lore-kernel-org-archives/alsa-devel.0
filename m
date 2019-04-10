@@ -1,92 +1,54 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH 1/3] sound: Add hikey960 i2s audio driver
-Date: Wed, 10 Apr 2019 15:57:21 +0300
-Message-ID: <CAEnQRZDWHkWqL=v7PiuiW6-Ke+c0wZrEJ+SeTirdNnTzYdOgeg@mail.gmail.com>
-References: <1551362220-99351-1-git-send-email-lipengcheng8@huawei.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ASoC: cAVS: add device_link to HDMI audio
+Date: Wed, 10 Apr 2019 13:07:26 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952817B8C@SHSMSX103.ccr.corp.intel.com>
+References: <1554686513-7770-1-git-send-email-libin.yang@intel.com>
+ <20190410112949.GM6106@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1551362220-99351-1-git-send-email-lipengcheng8@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pengcheng Li <lipengcheng8@huawei.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, john.stultz@linaro.org, Linux-ALSA <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, suzhuangluan@hisilicon.com, kongfei@hisilicon.com, liyuequan@hisilicon.com, cash.qianli@hisilicon.com, huangli295@hisilicon.com, hantanglei@huawei.com, wangyoulin1@hisilicon.com, ninggaoyu@hisilicon.com, xuwei5@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2013F89616
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 15:07:33 +0200 (CEST)
+In-Reply-To: <20190410112949.GM6106@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Pengcheng,
+Hi Mark,
 
-Make sure you run ./scripts/checkpatch.pl --strict yourpatchfile.patch
-
-On Thu, Feb 28, 2019 at 4:15 PM Pengcheng Li <lipengcheng8@huawei.com> wrote:
+>-----Original Message-----
+>From: Mark Brown [mailto:broonie@kernel.org]
+>Sent: Wednesday, April 10, 2019 7:30 PM
+>To: Yang, Libin <libin.yang@intel.com>
+>Cc: alsa-devel@alsa-project.org; tiwai@suse.de; pierre-
+>louis.bossart@linux.intel.com
+>Subject: Re: [alsa-devel] [PATCH] ASoC: cAVS: add device_link to HDMI audio
 >
-> From: Youlin Wang <wangyoulin1@hisilicon.com>
+>On Mon, Apr 08, 2019 at 09:21:53AM +0800, libin.yang@intel.com wrote:
+>> From: Libin Yang <libin.yang@intel.com>
+>>
+>> In resume from S3, HDAC HDMI codec driver dapm event callback may be
+>> operated before HDMI codec driver turns on the display audio power
+>> domain because of the contest between display driver and hdmi codec
+>driver.
 >
-> Add i2s driver for hisi3660 soc found on the hikey960 board.
-> Add conpile line in make file.
-> Technical support by Guangke Ji.
+>This doesn't apply against current code, please check and resend.
 
-Care to add here some documentation pointers to I2S IP on the SOC?
+Got it. Thanks. I will update the patch based on the latest code.
 
-> diff --git a/sound/soc/hisilicon/Kconfig b/sound/soc/hisilicon/Kconfig
-> index 4356d5a..b023ef9 100644
-> --- a/sound/soc/hisilicon/Kconfig
-> +++ b/sound/soc/hisilicon/Kconfig
-> @@ -1,5 +1,11 @@
->  config SND_I2S_HI6210_I2S
-> -       tristate "Hisilicon I2S controller"
-> +       tristate "Hisilicon Hi6210 I2S controller"
-> +       select SND_SOC_GENERIC_DMAENGINE_PCM
-> +       help
-> +         Hisilicon I2S
-
-Can you enahance the help text? Something like "I2S controller driver
-for hisi3600 SoC"
-<snip>
-
-> + * Copyright (c) 2001-2021, Huawei Tech. Co., Ltd.
-
-2021? :) IANAL but this looks strange :).
-
-> +struct hi3660_i2s {
-> +       struct device *dev;
-> +       struct reset_control *rc;
-> +       int clocks;
-> +       struct regulator *regu_asp;
-> +       struct pinctrl *pctrl;
-> +       struct pinctrl_state *pin_default;
-> +       struct pinctrl_state *pin_idle;
-> +       struct clk *asp_subsys_clk;
-> +       struct snd_soc_dai_driver dai;
-> +       void __iomem *base;
-> +       void __iomem *base_syscon;
-> +       phys_addr_t base_phys;
-> +       struct snd_dmaengine_dai_dma_data dma_data[2];
-> +       spinlock_t lock;
-
-What is this lock used for? Please add some docs.
-
-> +       int rate;
-> +       int format;
-> +       int bits;
-> +       int channels;
-> +       u32 master;
-> +       u32 status;
-> +};
-> +
-> +static void update_bits(struct hi3660_i2s *i2s, u32 ofs, u32 reset, u32 set)
-> +{
-> +       u32 val = readl(i2s->base + ofs) & ~reset;
-> +
-> +       writel(val | set, i2s->base + ofs);
-> +}
-> +
-> +static void update_bits_syscon(struct hi3660_i2s *i2s,
-> +                       u32 ofs, u32 reset, u32 set)
-> +{
-> +       u32 val = readl(i2s->base_syscon + ofs) & ~reset;
-> +
-> +       writel(val | set, i2s->base_syscon + ofs);
-> +}
-
-Look at the snd_soc_component_update_bits. You can make these two
-functions following the same
-pattern for parameters.
+Regards,
+Libin
