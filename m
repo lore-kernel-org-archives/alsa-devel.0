@@ -1,9 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm: fix error handling when
-	try_module_get() fails." to the asoc tree
-Date: Wed, 10 Apr 2019 13:26:33 +0100 (BST)
-Message-ID: <20190410122633.DD28B1128ED2@debutante.sirena.org.uk>
-References: <20190408193025.22639-1-ranjani.sridharan@linux.intel.com>
+Subject: Applied "ASoC: fsl_audmix: remove "model" attribute"
+	to the asoc tree
+Date: Wed, 10 Apr 2019 13:26:39 +0100 (BST)
+Message-ID: <20190410122639.DBD381128ED2@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +11,8 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDD2FF896DB
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 14:26:40 +0200 (CEST)
-In-Reply-To: <20190408193025.22639-1-ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DC04F896DD
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 14:26:41 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +22,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm: fix error handling when try_module_get() fails.
+   ASoC: fsl_audmix: remove "model" attribute
 
 has been applied to the asoc tree at
 
@@ -55,47 +53,94 @@ to this mail.
 Thanks,
 Mark
 
->From 70802487bb9145a4f8b26f5a11d0e7f83c25100a Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Mon, 8 Apr 2019 12:30:25 -0700
-Subject: [PATCH] ASoC: pcm: fix error handling when try_module_get() fails.
+>From 830b857f7971b8f49471fee4e715ccac66400711 Mon Sep 17 00:00:00 2001
+From: Viorel Suman <viorel.suman@nxp.com>
+Date: Wed, 10 Apr 2019 11:06:36 +0000
+Subject: [PATCH] ASoC: fsl_audmix: remove "model" attribute
 
-Handle error before returning when try_module_get() fails
-to prevent inconsistent mutex lock/unlock.
+Use "of_device_id.data" to specify the machine driver
+instead of "model" DTS attribute.
 
-Fixes: 52034add7 (ASoC: pcm: update module refcount if
-		  module_get_upon_open is set)
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_audmix.c | 43 ++++++++++++++++++++------------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d21247546f7f..be80a12fba27 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -518,8 +518,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 			continue;
+diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+index dabde0342c95..dc802d5c4ccd 100644
+--- a/sound/soc/fsl/fsl_audmix.c
++++ b/sound/soc/fsl/fsl_audmix.c
+@@ -445,13 +445,29 @@ static const struct regmap_config fsl_audmix_regmap_config = {
+ 	.cache_type = REGCACHE_FLAT,
+ };
  
- 		if (component->driver->module_get_upon_open &&
--		    !try_module_get(component->dev->driver->owner))
--			return -ENODEV;
-+		    !try_module_get(component->dev->driver->owner)) {
-+			ret = -ENODEV;
-+			goto module_err;
-+		}
++static const struct of_device_id fsl_audmix_ids[] = {
++	{
++		.compatible = "fsl,imx8qm-audmix",
++		.data = "imx-audmix",
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
++
+ static int fsl_audmix_probe(struct platform_device *pdev)
+ {
+ 	struct fsl_audmix *priv;
+ 	struct resource *res;
++	const char *mdrv;
++	const struct of_device_id *of_id;
+ 	void __iomem *regs;
+ 	int ret;
+-	const char *sprop;
++
++	of_id = of_match_device(fsl_audmix_ids, &pdev->dev);
++	if (!of_id || !of_id->data)
++		return -EINVAL;
++
++	mdrv = of_id->data;
  
- 		ret = component->driver->ops->open(substream);
- 		if (ret < 0) {
-@@ -636,7 +638,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -487,19 +503,12 @@ static int fsl_audmix_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
- component_err:
- 	soc_pcm_components_close(substream, component);
+-	sprop = of_get_property(pdev->dev.of_node, "model", NULL);
+-	if (sprop) {
+-		priv->pdev = platform_device_register_data(&pdev->dev, sprop, 0,
+-							   NULL, 0);
+-		if (IS_ERR(priv->pdev)) {
+-			ret = PTR_ERR(priv->pdev);
+-			dev_err(&pdev->dev,
+-				"failed to register platform %s: %d\n", sprop,
+-				 ret);
+-		}
+-	} else {
+-		dev_err(&pdev->dev, "[model] attribute missing.\n");
+-		ret = -EINVAL;
++	priv->pdev = platform_device_register_data(&pdev->dev, mdrv, 0, NULL,
++						   0);
++	if (IS_ERR(priv->pdev)) {
++		ret = PTR_ERR(priv->pdev);
++		dev_err(&pdev->dev, "failed to register platform %s: %d\n",
++			mdrv, ret);
+ 	}
+ 
+ 	return ret;
+@@ -553,12 +562,6 @@ static const struct dev_pm_ops fsl_audmix_pm = {
+ 				pm_runtime_force_resume)
+ };
+ 
+-static const struct of_device_id fsl_audmix_ids[] = {
+-	{ .compatible = "fsl,imx8qm-audmix", },
+-	{ /* sentinel */ }
+-};
+-MODULE_DEVICE_TABLE(of, fsl_audmix_ids);
 -
-+module_err:
- 	if (cpu_dai->driver->ops->shutdown)
- 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
- out:
+ static struct platform_driver fsl_audmix_driver = {
+ 	.probe = fsl_audmix_probe,
+ 	.remove = fsl_audmix_remove,
 -- 
 2.20.1
