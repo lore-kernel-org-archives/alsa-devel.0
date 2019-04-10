@@ -1,65 +1,83 @@
-From: Yong Zhi <yong.zhi@intel.com>
-Subject: [PATCH v2] ASoC: Intel: common: add Geminilake
-	Realtek+Maxim machine driver entry
-Date: Wed, 10 Apr 2019 12:27:31 -0500
-Message-ID: <1554917251-16772-1-git-send-email-yong.zhi@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [EXT] Re: [PATCH v2 1/3] ASoC: fsl_audmix: remove "model"
+ attribute
+Date: Wed, 10 Apr 2019 10:51:57 -0700
+Message-ID: <20190410175156.GA24002@Asurada-Nvidia.nvidia.com>
+References: <1554809242-27475-1-git-send-email-viorel.suman@nxp.com>
+ <1554809242-27475-2-git-send-email-viorel.suman@nxp.com>
+ <20190410042906.GC3032@Asurada> <1554892497.14997.13.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EC87F8068A
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 19:27:46 +0200 (CEST)
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
-Cc: harshapriya.n@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org, Naveen Manohar <naveen.m@intel.com>, Yong Zhi <yong.zhi@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <1554892497.14997.13.camel@nxp.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>, "Julia.Lawall@lip6.fr" <Julia.Lawall@lip6.fr>, "robh+dt@kernel.org" <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "s.hauer@pengutronix.de" <s.hau>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds glk_rt5682_max98357a_i2s machine driver entry into
-machine table. Both Skylake and SOF platform drivers can use this
-machine drivers.
+On Wed, Apr 10, 2019 at 10:34:57AM +0000, Viorel Suman wrote:
+> Hi Nicolin,
+> =
 
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
-Hi, Pierre,
+> On Ma, 2019-04-09 at 21:29 -0700, Nicolin Chen wrote:
+> > WARNING: This email was created outside of NXP. DO NOT CLICK links or
+> > attachments unless you recognize the sender and know the content is
+> > safe.
+> > =
 
-This is an update to https://patchwork.kernel.org/patch/10472523/
-with SOF files prefix and asoc_plat_name removed, tested with SOF v1.1, thanks!!
+> > =
 
- sound/soc/intel/common/soc-acpi-intel-glk-match.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> > =
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-index 3f2061475ae4..616eb09e78a0 100644
---- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-@@ -31,6 +31,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
- 		.sof_fw_filename = "sof-glk.ri",
- 		.sof_tplg_filename = "sof-glk-da7219.tplg",
- 	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "glk_rt5682_max98357a",
-+		.fw_filename = "intel/dsp_fw_glk.bin",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &glk_codecs,
-+		.sof_fw_filename = "sof-glk.ri",
-+		.sof_tplg_filename = "sof-glk-rt5682.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
--- 
-2.7.4
+> > On Tue, Apr 09, 2019 at 11:27:39AM +0000, Viorel Suman wrote:
+> > > =
+
+> > > Use "of_device_id.data" to specify the machine driver
+> > > instead of "model" DTS attribute.
+> > > =
+
+> > > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> > Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > =
+
+> > > =
+
+> > > ---
+> > > =A0sound/soc/fsl/fsl_audmix.c | 43 +++++++++++++++++++++++-----------
+> > > ---------
+> > > =A01 file changed, 23 insertions(+), 20 deletions(-)
+> > > =
+
+> > > +=A0=A0=A0=A0=A0priv->pdev =3D platform_device_register_data(&pdev->d=
+ev, mdrv,
+> > > 0, NULL,
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A00);
+> > Would you please send a separate patch to replace "pdev->dev"?
+> =
+
+> Thank you for review. Yes, will send V3.
+
+Ah...when I said that, I was literally saying that you should
+send a separate patch individually, not resend the series.
+
+Now I see you sent v3/v4 almost at the same time as "Applied"
+mails from Mark. And I am totally confused which version got
+applied....
+
+Please rebase your local tree and find out which version got
+applied and then send the diff with a separate patch.
+
+Thanks
+Nicolin
