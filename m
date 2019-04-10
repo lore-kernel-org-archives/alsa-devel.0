@@ -1,100 +1,80 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [EXT] Re: [PATCH] ASoC: fsl_asrc: replace the
- process_option table with function
-Date: Wed, 10 Apr 2019 08:26:59 +0000
-Message-ID: <VE1PR04MB6479C577E9C2C58E624C5611E32E0@VE1PR04MB6479.eurprd04.prod.outlook.com>
-References: <1554866131-12088-1-git-send-email-shengjiu.wang@nxp.com>
- <20190410042638.GB3032@Asurada>
- <VE1PR04MB64798A5ADF025047AF5B9076E32E0@VE1PR04MB6479.eurprd04.prod.outlook.com>
- <20190410080052.GA5180@Asurada>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 0/1] ASoC: Mediatek: MT8183: add I2S2 control path
+ from UL2 and UL3
+Date: Wed, 10 Apr 2019 10:35:30 +0100
+Message-ID: <20190410093530.GB6106@sirena.org.uk>
+References: <20190409091337.43934-1-shunli.wang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-eopbgr10057.outbound.protection.outlook.com [40.107.1.57])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85A1DF8068A
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 10:27:00 +0200 (CEST)
-In-Reply-To: <20190410080052.GA5180@Asurada>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: multipart/mixed; boundary="===============6534884139436181741=="
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20190409091337.43934-1-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============6534884139436181741==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Nicolin Chen <nicoleotsuka@gmail.com>
-> Sent: Wednesday, April 10, 2019 4:01 PM
-> To: S.j. Wang <shengjiu.wang@nxp.com>
-> Cc: timur@kernel.org; Xiubo.Lee@gmail.com; festevam@gmail.com;
-> broonie@kernel.org; alsa-devel@alsa-project.org; linuxppc-
-> dev@lists.ozlabs.org
-> Subject: Re: [EXT] Re: [PATCH] ASoC: fsl_asrc: replace the process_option
-> table with function
-> 
-> WARNING: This email was created outside of NXP. DO NOT CLICK links or
-> attachments unless you recognize the sender and know the content is safe.
-> 
-> 
-> 
-> On Wed, Apr 10, 2019 at 07:22:31AM +0000, S.j. Wang wrote:
-> > > The table was copied directly from the Reference Manual. We also
-> > > have listed all supported input and output sample rates just right behind
-> that table.
-> > > If there're missing rates, we probably should update those two lists also?
-> > > Otherwise, how could we have a driver limiting both I/O sample rates
-> > > while we still see something not in the table?
-> > >
-> >
-> > Yes,  I plan to send another patch to update the in/out rate list.  Do
-> > I need To merge that to this commit?  Actually we want to support 12k
-> > and 24KHz
-> 
-> Please send separate patches but in one series. And a question:
-> 
-> Is it possible to update the table? It'd be way quicker to use lookup table
-> than real-time calculation all the time. I believe you can simply calculate all
-> the values out for 12KHz and 24KHz since you have the function. If there are
-> certain combinations of these two not being supported, then we could mark
-> it with a special value and add an if-check to error out.
-> 
 
-Yes,  but I think the function should be more flexible, if someday we need to support
-Other sample rate, only need to update the list.
+--7ZAtKRhVyVSsbBD2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > > +static int proc_autosel(int Fsin, int Fsout, int *pre_proc, int
-> > > > +*post_proc)
-> > >
-> > > Please add some comments to this function to explain what it does,
-> > > and how it works. And better to rename it to something like
-> "fsl_asrc_sel_proc".
-> > >
-> > Yes, some comments should be added, but not so detail, because this
-> > function
-> 
-> As much comments as possible.
-> 
-> > Is get from the design team, but the owner has left.
-> 
-> OK...that's sad...
-> 
-> > > Another thing confuses me: so we could have supported sample rates
-> > > in the list but the hardware might not support some of them because
-> > > we couldn't calculate their processing options?
-> >
-> > No, just want to support 12k, 24KHz, or others as customer like.
-> 
-> I was confused because the I/O rate lists not getting updated.
-> It makes sense now if you are abort to update them.
+On Tue, Apr 09, 2019 at 05:13:36PM +0800, Shunli Wang wrote:
+> ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+>=20
+> Shunli Wang (1):
+>   ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+>=20
+>  sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 38 ++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
+
+--7ZAtKRhVyVSsbBD2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlytuOEACgkQJNaLcl1U
+h9DHNAf/dlx4IJydb6KythBwiVaJvkDCgOxwxC+hF44H73d0W9VHNL4viNE+jbaN
+6rzj46try2XnWwcQzG4qNUtVtMNInZPiaC0hGLjXVgK80dBtptlzE3Pc6258JsRr
+cO7L/b7+mA1KKq4pcGL73KhD6/kQ3KvjJIBU7dTaosPx/pHU4VaZ2BosW3DTewXB
+aaPdUy98PUKSUG4rZsC7qeadMBrYbUtEB5/uyY5PQMYRABuKZF2wMdjeUmdAw00n
+Nq6HW81mpQPUun5OV6ijc6Rf/QIN5SedR3velXhvmXaFQI60Zzqgo1K8XLeLMN8J
+PrJwhAk/s39pbvQLBL65a4TVGw4zYQ==
+=5E9n
+-----END PGP SIGNATURE-----
+
+--7ZAtKRhVyVSsbBD2--
+
+
+--===============6534884139436181741==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Linux-mediatek mailing list
+Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+--===============6534884139436181741==--
