@@ -1,23 +1,18 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcht_es8316: fix
- compilation warning and quirk handling
-Date: Wed, 10 Apr 2019 18:16:32 +0200
-Message-ID: <fec99a28-8109-659a-a51e-f1475a015144@redhat.com>
-References: <20190410160548.24317-1-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: Make boards more available for
+	compile test
+Date: Wed, 10 Apr 2019 17:38:00 +0100
+Message-ID: <20190410163800.31376-1-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com
- [209.85.128.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CC01F8068A
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 18:16:34 +0200 (CEST)
-Received: by mail-wm1-f67.google.com with SMTP id q16so3270432wmj.3
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 09:16:34 -0700 (PDT)
-In-Reply-To: <20190410160548.24317-1-pierre-louis.bossart@linux.intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62900F89616
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 18:38:05 +0200 (CEST)
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,94 +22,278 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Paul Cercueil <paul@crapouillou.net>, broonie@kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The Intel boards have very strict dependencies which make them less
+available for compile test than is desirable, with requirements for
+specific drivers that are only needed at runtime but not at build time.
+Relax this a bit if COMPILE_TEST is enabled to improve build coverage
+for these drivers.
 
-On 10-04-19 18:05, Pierre-Louis Bossart wrote:
-> Remove warning and align quirk management with other machine
-> drivers. No need to be creative here.
-> 
-> bytcht_es8316.c:508:11: warning: cast from pointer to integer of
-> different size [-Wpointer-to-int-cast]
-> 
->     quirk = (int)dmi_id->driver_data;
->             ^
-> Fixes: a8d218f4fe811 ('ASoC: Intel: bytcht_es8316: Add quirk for the Teclast X98+ II')
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/Kconfig | 79 +++++++++++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 25 deletions(-)
 
-There is a good reason to use -1 for quirk-override not set.
-
-The user may want to override the quirk variable to actual 0, on
-CHT we default to:
-
-                 /* Others default to internal-mic-in1-map, mono-speaker */
-                 quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP |
-                         BYT_CHT_ES8316_MONO_SPEAKER;
-
-Which is 0x20000, if the user now justs wants to clear the
-BYT_CHT_ES8316_MONO_SPEAKER flag through the override, then the user
-must be able to specify 0 as override.
-
-So IMHO the proper fix here would be to just change the:
-
-	(int)dmi_id->driver_data;
-
-to:
-
-	(long)dmi_id->driver_data;
-
-And leave the rest of the code alone.
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->   sound/soc/intel/boards/bytcht_es8316.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-> index 38975827e276..42e9e1e50e9c 100644
-> --- a/sound/soc/intel/boards/bytcht_es8316.c
-> +++ b/sound/soc/intel/boards/bytcht_es8316.c
-> @@ -61,9 +61,9 @@ enum {
->   #define BYT_CHT_ES8316_MONO_SPEAKER		BIT(17)
->   #define BYT_CHT_ES8316_JD_INVERTED		BIT(18)
->   
-> -static int quirk;
-> +static unsigned long quirk;
->   
-> -static int quirk_override = -1;
-> +static int quirk_override;
->   module_param_named(quirk, quirk_override, int, 0444);
->   MODULE_PARM_DESC(quirk, "Board-specific quirk override");
->   
-> @@ -505,7 +505,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
->   	/* Check for BYTCR or other platform and setup quirks */
->   	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
->   	if (dmi_id) {
-> -		quirk = (int)dmi_id->driver_data;
-> +		quirk = (unsigned long)dmi_id->driver_data;
->   	} else if (x86_match_cpu(baytrail_cpu_ids) &&
->   	    mach->mach_params.acpi_ipc_irq_index == 0) {
->   		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
-> @@ -516,8 +516,9 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
->   		quirk = BYT_CHT_ES8316_INTMIC_IN1_MAP |
->   			BYT_CHT_ES8316_MONO_SPEAKER;
->   	}
-> -	if (quirk_override != -1) {
-> -		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n", quirk,
-> +	if (quirk_override) {
-> +		dev_info(dev, "Overriding quirk 0x%x => 0x%x\n",
-> +			 (unsigned int)quirk,
->   			 quirk_override);
->   		quirk = quirk_override;
->   	}
-> 
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 12d6b73e9531..07b1a02934f1 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -16,7 +16,9 @@ if SND_SOC_INTEL_HASWELL
+ 
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "Haswell Lynxpoint"
+-	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
++	depends on I2C
++	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+@@ -26,7 +28,10 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
++	depends on I2C
++	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
++	depends on GPIOLIB || COMPILE_TEST
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
+@@ -36,7 +41,9 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 
+ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "Broadwell Wildcatpoint"
+-	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
++	depends on I2C
++	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT286
+ 	help
+ 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
+@@ -49,7 +56,8 @@ if SND_SOC_INTEL_BAYTRAIL
+ 
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "Baytrail with MAX98090 codec"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on I2C
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -59,7 +67,8 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "Baytrail with RT5640 codec"
+-	depends on X86_INTEL_LPSS && I2C
++	depends on I2C
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -72,7 +81,8 @@ if SND_SST_ATOM_HIFI2_PLATFORM
+ 
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5640 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5640
+ 	help
+@@ -83,7 +93,8 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 	tristate "Baytrail and Baytrail-CR with RT5651 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5651
+ 	help
+@@ -94,7 +105,8 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 	tristate "Cherrytrail & Braswell with RT5672 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5670
+         help
+@@ -105,7 +117,8 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "Cherrytrail & Braswell with RT5645/5650 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_RT5645
+ 	help
+@@ -116,7 +129,8 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	tristate "Cherrytrail & Braswell with MAX98090 & TI codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+ 	help
+@@ -127,7 +141,8 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
+ 	tristate "Cherrytrail & Braswell with NAU88L24 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_NAU8824
+ 	help
+@@ -138,7 +153,8 @@ config SND_SOC_INTEL_CHT_BSW_NAU8824_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "Baytrail & Cherrytrail with DA7212/7213 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_DA7213
+ 	help
+@@ -149,7 +165,8 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "Baytrail & Cherrytrail with ES8316 codec"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_ACPI
+ 	select SND_SOC_ES8316
+ 	help
+@@ -160,7 +177,8 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+-	depends on X86_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on X86_INTEL_LPSS || COMPILE_TEST
+ 	help
+ 	  This adds support for ASoC machine driver for the MinnowBoard Max or
+ 	  Up boards and provides access to I2S signals on the Low-Speed
+@@ -176,7 +194,8 @@ if SND_SOC_INTEL_SKL
+ 
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "SKL with RT286 I2S mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT286
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -188,7 +207,8 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 	tristate "SKL with NAU88L25 and SSM4567 in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_SSM4567
+ 	select SND_SOC_DMIC
+@@ -201,7 +221,8 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	tristate "SKL with NAU88L25 and MAX98357A in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -218,7 +239,8 @@ if SND_SOC_INTEL_APL
+ 
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -232,7 +254,8 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	tristate "Broxton with RT298 I2S mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT298
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -249,7 +272,8 @@ if SND_SOC_INTEL_KBL
+ 
+ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	tristate "KBL with RT5663 and MAX98927 in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5663
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+@@ -263,7 +287,8 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         tristate "KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
+-        depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+         depends on SPI
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
+@@ -278,7 +303,8 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+ 	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -290,7 +316,8 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
+ 	tristate "KBL with DA7219 and MAX98927 in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_MAX98373
+@@ -304,7 +331,8 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5660_MACH
+ 	tristate "KBL with RT5660 in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5660
+ 	select SND_SOC_HDAC_HDMI
+ 	help
+@@ -318,7 +346,8 @@ if SND_SOC_INTEL_GLK
+ 
+ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
+ 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
+-	depends on MFD_INTEL_LPSS && I2C && ACPI
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	select SND_SOC_RT5682
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+-- 
+2.20.1
