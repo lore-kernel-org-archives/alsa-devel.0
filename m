@@ -1,75 +1,57 @@
 From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: RE: [EXT] Re: [PATCH V1] ASoC: fsl_esai: replace fall-through with
- break
-Date: Wed, 10 Apr 2019 02:39:38 +0000
-Message-ID: <VE1PR04MB6479E21639D20833A71F9B57E32E0@VE1PR04MB6479.eurprd04.prod.outlook.com>
-References: <66c117128f300b0ec5f278f538412789c78b60a6.1554715589.git.shengjiu.wang@nxp.com>
- <38a6d36e-0f8e-fe3d-202b-30371042e248@embeddedor.com>
- <VE1PR04MB6479C16BB1C92E1AE291BB12E32D0@VE1PR04MB6479.eurprd04.prod.outlook.com>
- <eba6372b-618c-4633-f0a9-06c034cf2f9c@embeddedor.com>
- <20190409035450.GA8476@Asurada>
+Subject: [PATCH V2] ASoC: fsl_esai: replace fall-through with
+	break
+Date: Wed, 10 Apr 2019 02:42:45 +0000
+Message-ID: <46e9b55edb223894392a90c7cdb6241a43cb9cff.1554864022.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20190409035450.GA8476@Asurada>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-eopbgr00072.outbound.protection.outlook.com [40.107.0.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 342EEF80765
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 04:42:46 +0200 (CEST)
 Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Nicolin Chen <nicoleotsuka@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "gustavo@embeddedor.com" <gustavo@embeddedor.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent of
+each other, so replace fall-through with break.
 
->=20
-> Hi Gustavo,
->=20
-> On Mon, Apr 08, 2019 at 10:20:25PM -0500, Gustavo A. R. Silva wrote:
-> > >>> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> > >>> index
-> > >>> c7410bbfd2af..bad0dfed6b68 100644
-> > >>> --- a/sound/soc/fsl/fsl_esai.c
-> > >>> +++ b/sound/soc/fsl/fsl_esai.c
-> > >>> @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct
-> > >> snd_soc_dai *dai, int clk_id,
-> > >>>               break;
-> > >>>       case ESAI_HCKT_EXTAL:
-> > >>>               ecr |=3D ESAI_ECR_ETI;
-> > >>
-> > >> Also, you should use a simple assignment operator "=3D" instead of
-> > >> "|=3D" in both cases.
-> > >
-> > > The result is same for "=3D" and "|=3D", because there is "ecr =3D 0"=
- in
-> > > beginning of This function.
-> > >
-> >
-> > Following that same logic, then why not use "+=3D" instead?
-> >
-> > The point is: is "|=3D" or any other assignment operator other than "=
-=3D"
-> necessary?
-> > The answer in this case is: no, it is not.  So, go for the simple one
-> > and avoid any unnecessary confusion.
->=20
-> I would like to keep "|=3D" here, just in case that someday it'd be easie=
-r to
-> insert something to ecr before this chunk. So please get easy on this one=
-.
->=20
-> Thanks
-> Nicolin
+Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
 
-Thanks for reviewing,  I will send v2.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+Changes in v2
+- fix the fixes tag.
 
-Best regards
-Wang shengjiu
+ sound/soc/fsl/fsl_esai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c7410bbfd2af..bad0dfed6b68 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		break;
+ 	case ESAI_HCKT_EXTAL:
+ 		ecr |= ESAI_ECR_ETI;
+-		/* fall through */
++		break;
+ 	case ESAI_HCKR_EXTAL:
+ 		ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
+ 		break;
+-- 
+1.9.1
