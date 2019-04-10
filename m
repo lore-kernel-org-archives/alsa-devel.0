@@ -1,164 +1,148 @@
-From: syzbot <syzbot+58813d77154713f4de15@syzkaller.appspotmail.com>
-Subject: Re: KASAN: use-after-free Read in snd_timer_process_callbacks
-Date: Tue, 09 Apr 2019 22:47:05 -0700
-Message-ID: <000000000000774327058626993b@google.com>
-References: <000000000000c956f2058613b25c@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [sound:topic/misc-core-fixes 16/17] sound/core/timer.c:348
+ snd_timer_open() warn: inconsistent returns 'mutex:&register_mutex'.
+Date: Wed, 10 Apr 2019 08:49:50 +0300
+Message-ID: <20190410054950.GO6070@kadam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <000000000000c956f2058613b25c@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel-owner@alsa-project.org, alsa-devel@alsa-project.org, ben.hutchings@codethink.co.uk, linux-kernel@vger.kernel.org, perex@perex.cz, srikanth.h@samsung.com, syzkaller-bugs@googlegroups.com, tiwai@suse.com, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <kbuild-bounces@lists.01.org>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.01.org/mailman/options/kbuild>,
+ <mailto:kbuild-request@lists.01.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/kbuild/>
+List-Post: <mailto:kbuild@lists.01.org>
+List-Help: <mailto:kbuild-request@lists.01.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/kbuild>,
+ <mailto:kbuild-request@lists.01.org?subject=subscribe>
+Errors-To: kbuild-bounces@lists.01.org
+Sender: "kbuild" <kbuild-bounces@lists.01.org>
+To: kbuild@01.org, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-syzbot has found a reproducer for the following crash on:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git topic/misc-core-fixes
+head:   58e224117e101df0a90fa69ed8f32d6e1881c642
+commit: 3d2ebce824f281b246de1f513f8863d95540df50 [16/17] ALSA: timer: Simplify error path in snd_timer_open()
 
-HEAD commit:    cfd24a53 Add linux-next specific files for 20190409
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=111d56af200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=75160b904dadd291
-dashboard link: https://syzkaller.appspot.com/bug?extid=58813d77154713f4de15
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ba6af200000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1749585b200000
+New smatch warnings:
+sound/core/timer.c:348 snd_timer_open() warn: inconsistent returns 'mutex:&register_mutex'.
+  Locked on:   line 309
+  Unlocked on: line 348
 
-The bug was bisected to:
+Old smatch warnings:
+sound/core/timer.c:1226 snd_timer_proc_read() error: we previously assumed 'timer->card' could be null (see line 1219)
 
-commit a7588c896b05444929ecb3d0115481988720abf6
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Wed Mar 27 15:56:08 2019 +0000
+# https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=3d2ebce824f281b246de1f513f8863d95540df50
+git remote add sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+git remote update sound
+git checkout 3d2ebce824f281b246de1f513f8863d95540df50
+vim +348 sound/core/timer.c
 
-     ALSA: timer: Check ack_list emptiness instead of bit flag
+53d2f744 Takashi Iwai    2005-11-17  250  int snd_timer_open(struct snd_timer_instance **ti,
+53d2f744 Takashi Iwai    2005-11-17  251  		   char *owner, struct snd_timer_id *tid,
+^1da177e Linus Torvalds  2005-04-16  252  		   unsigned int slave_id)
+^1da177e Linus Torvalds  2005-04-16  253  {
+53d2f744 Takashi Iwai    2005-11-17  254  	struct snd_timer *timer;
+53d2f744 Takashi Iwai    2005-11-17  255  	struct snd_timer_instance *timeri = NULL;
+9b7d869e Takashi Iwai    2017-11-05  256  	int err;
+^1da177e Linus Torvalds  2005-04-16  257  
+3d2ebce8 Takashi Iwai    2019-03-28  258  	mutex_lock(&register_mutex);
+^1da177e Linus Torvalds  2005-04-16  259  	if (tid->dev_class == SNDRV_TIMER_CLASS_SLAVE) {
+^1da177e Linus Torvalds  2005-04-16  260  		/* open a slave instance */
+^1da177e Linus Torvalds  2005-04-16  261  		if (tid->dev_sclass <= SNDRV_TIMER_SCLASS_NONE ||
+^1da177e Linus Torvalds  2005-04-16  262  		    tid->dev_sclass > SNDRV_TIMER_SCLASS_OSS_SEQUENCER) {
+cf74dcf3 Takashi Iwai    2014-02-04  263  			pr_debug("ALSA: timer: invalid slave class %i\n",
+cf74dcf3 Takashi Iwai    2014-02-04  264  				 tid->dev_sclass);
+3d2ebce8 Takashi Iwai    2019-03-28  265  			err = -EINVAL;
+3d2ebce8 Takashi Iwai    2019-03-28  266  			goto unlock;
+^1da177e Linus Torvalds  2005-04-16  267  		}
+^1da177e Linus Torvalds  2005-04-16  268  		timeri = snd_timer_instance_new(owner, NULL);
+2fd43d11 Clemens Ladisch 2005-10-12  269  		if (!timeri) {
+3d2ebce8 Takashi Iwai    2019-03-28  270  			err = -ENOMEM;
+3d2ebce8 Takashi Iwai    2019-03-28  271  			goto unlock;
+2fd43d11 Clemens Ladisch 2005-10-12  272  		}
+^1da177e Linus Torvalds  2005-04-16  273  		timeri->slave_class = tid->dev_sclass;
+^1da177e Linus Torvalds  2005-04-16  274  		timeri->slave_id = tid->device;
+^1da177e Linus Torvalds  2005-04-16  275  		timeri->flags |= SNDRV_TIMER_IFLG_SLAVE;
+^1da177e Linus Torvalds  2005-04-16  276  		list_add_tail(&timeri->open_list, &snd_timer_slave_list);
+9b7d869e Takashi Iwai    2017-11-05  277  		err = snd_timer_check_slave(timeri);
+9b7d869e Takashi Iwai    2017-11-05  278  		if (err < 0) {
+9b7d869e Takashi Iwai    2017-11-05  279  			snd_timer_close_locked(timeri);
+9b7d869e Takashi Iwai    2017-11-05  280  			timeri = NULL;
+9b7d869e Takashi Iwai    2017-11-05  281  		}
+3d2ebce8 Takashi Iwai    2019-03-28  282  		goto unlock;
+^1da177e Linus Torvalds  2005-04-16  283  	}
+^1da177e Linus Torvalds  2005-04-16  284  
+^1da177e Linus Torvalds  2005-04-16  285  	/* open a master instance */
+^1da177e Linus Torvalds  2005-04-16  286  	timer = snd_timer_find(tid);
+ee2da997 Johannes Berg   2008-07-09  287  #ifdef CONFIG_MODULES
+ee2da997 Johannes Berg   2008-07-09  288  	if (!timer) {
+1a60d4c5 Ingo Molnar     2006-01-16  289  		mutex_unlock(&register_mutex);
+^1da177e Linus Torvalds  2005-04-16  290  		snd_timer_request(tid);
+1a60d4c5 Ingo Molnar     2006-01-16  291  		mutex_lock(&register_mutex);
+^1da177e Linus Torvalds  2005-04-16  292  		timer = snd_timer_find(tid);
+^1da177e Linus Torvalds  2005-04-16  293  	}
+^1da177e Linus Torvalds  2005-04-16  294  #endif
+2fd43d11 Clemens Ladisch 2005-10-12  295  	if (!timer) {
+3d2ebce8 Takashi Iwai    2019-03-28  296  		err = -ENODEV;
+3d2ebce8 Takashi Iwai    2019-03-28  297  		goto unlock;
+2fd43d11 Clemens Ladisch 2005-10-12  298  	}
+^1da177e Linus Torvalds  2005-04-16  299  	if (!list_empty(&timer->open_list_head)) {
+2fd43d11 Clemens Ladisch 2005-10-12  300  		timeri = list_entry(timer->open_list_head.next,
+53d2f744 Takashi Iwai    2005-11-17  301  				    struct snd_timer_instance, open_list);
+^1da177e Linus Torvalds  2005-04-16  302  		if (timeri->flags & SNDRV_TIMER_IFLG_EXCLUSIVE) {
+3d2ebce8 Takashi Iwai    2019-03-28  303  			err = -EBUSY;
+3d2ebce8 Takashi Iwai    2019-03-28  304  			timeri = NULL;
+3d2ebce8 Takashi Iwai    2019-03-28  305  			goto unlock;
+^1da177e Linus Torvalds  2005-04-16  306  		}
+^1da177e Linus Torvalds  2005-04-16  307  	}
+9b7d869e Takashi Iwai    2017-11-05  308  	if (timer->num_instances >= timer->max_instances) {
+9b7d869e Takashi Iwai    2017-11-05  309  		return -EBUSY;
+                                                        ^^^^^^^^^^^^^^
+delete the stray return
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1100d3ab200000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=1300d3ab200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1500d3ab200000
+3d2ebce8 Takashi Iwai    2019-03-28  310  		goto unlock;
+                                                        ^^^^^^^^^^^
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+58813d77154713f4de15@syzkaller.appspotmail.com
-Fixes: a7588c896b05 ("ALSA: timer: Check ack_list emptiness instead of bit  
-flag")
-
-==================================================================
-BUG: KASAN: use-after-free in __list_del_entry_valid+0xd2/0xf5  
-lib/list_debug.c:42
-Read of size 8 at addr ffff8880a9363ee0 by task swapper/0/0
-
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.1.0-rc4-next-20190409 #21
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  <IRQ>
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.cold+0x7c/0x20d mm/kasan/report.c:187
-  kasan_report.cold+0x1b/0x40 mm/kasan/report.c:317
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  __list_del_entry_valid+0xd2/0xf5 lib/list_debug.c:42
-  __list_del_entry include/linux/list.h:117 [inline]
-  list_del_init include/linux/list.h:176 [inline]
-  snd_timer_process_callbacks+0x7f/0x2f0 sound/core/timer.c:763
-  snd_timer_interrupt sound/core/timer.c:883 [inline]
-  snd_timer_interrupt+0x578/0xdd0 sound/core/timer.c:804
-  snd_hrtimer_callback+0x219/0x3e0 sound/core/hrtimer.c:64
-  __run_hrtimer kernel/time/hrtimer.c:1389 [inline]
-  __hrtimer_run_queues+0x33e/0xde0 kernel/time/hrtimer.c:1451
-  hrtimer_interrupt+0x314/0x770 kernel/time/hrtimer.c:1509
-  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1035 [inline]
-  smp_apic_timer_interrupt+0x120/0x570 arch/x86/kernel/apic/apic.c:1060
-  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:807
-  </IRQ>
-RIP: 0010:native_safe_halt+0x2/0x10 arch/x86/include/asm/irqflags.h:58
-Code: ff ff ff 48 89 c7 48 89 45 d8 e8 99 65 8e fa 48 8b 45 d8 e9 ce fe ff  
-ff 48 89 df e8 88 65 8e fa eb 82 90 90 90 90 90 90 fb f4 <c3> 0f 1f 00 66  
-2e 0f 1f 84 00 00 00 00 00 f4 c3 90 90 90 90 90 90
-RSP: 0018:ffffffff88807d08 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff13
-RAX: 1ffffffff1124ad9 RBX: ffffffff8887a100 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: 0000000000000006 RDI: ffffffff8887a97c
-RBP: ffffffff88807d38 R08: ffffffff8887a100 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffffff889256b8 R14: 0000000000000000 R15: 0000000000000000
-  arch_cpu_idle+0x10/0x20 arch/x86/kernel/process.c:567
-  default_idle_call+0x36/0x90 kernel/sched/idle.c:93
-  cpuidle_idle_call kernel/sched/idle.c:153 [inline]
-  do_idle+0x386/0x570 kernel/sched/idle.c:262
-  cpu_startup_entry+0x1b/0x20 kernel/sched/idle.c:353
-  rest_init+0x245/0x37b init/main.c:450
-  arch_call_rest_init+0xe/0x1b
-  start_kernel+0x816/0x84f init/main.c:747
-  x86_64_start_reservations+0x29/0x2b arch/x86/kernel/head64.c:470
-  x86_64_start_kernel+0x77/0x7b arch/x86/kernel/head64.c:451
-  secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-
-Allocated by task 7722:
-  save_stack+0x45/0xd0 mm/kasan/common.c:75
-  set_track mm/kasan/common.c:87 [inline]
-  __kasan_kmalloc mm/kasan/common.c:497 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:470
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:511
-  kmem_cache_alloc_trace+0x151/0x760 mm/slab.c:3621
-  kmalloc include/linux/slab.h:547 [inline]
-  kzalloc include/linux/slab.h:742 [inline]
-  snd_timer_instance_new+0x4f/0x3d0 sound/core/timer.c:109
-  snd_timer_open+0x8a7/0x1760 sound/core/timer.c:313
-  snd_seq_timer_open+0x240/0x590 sound/core/seq/seq_timer.c:290
-  queue_use+0xcb/0x240 sound/core/seq/seq_queue.c:502
-  snd_seq_queue_alloc+0x2c5/0x4d0 sound/core/seq/seq_queue.c:189
-  snd_seq_ioctl_create_queue+0xb0/0x330 sound/core/seq/seq_clientmgr.c:1522
-  snd_seq_ioctl+0x224/0x3e0 sound/core/seq/seq_clientmgr.c:2138
-  vfs_ioctl fs/ioctl.c:46 [inline]
-  file_ioctl fs/ioctl.c:509 [inline]
-  do_vfs_ioctl+0xd6e/0x1390 fs/ioctl.c:696
-  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
-  __do_sys_ioctl fs/ioctl.c:720 [inline]
-  __se_sys_ioctl fs/ioctl.c:718 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
-  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 7722:
-  save_stack+0x45/0xd0 mm/kasan/common.c:75
-  set_track mm/kasan/common.c:87 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:459
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:467
-  __cache_free mm/slab.c:3498 [inline]
-  kfree+0xcf/0x230 mm/slab.c:3821
-  snd_timer_close_locked+0x6fd/0xd60 sound/core/timer.c:405
-  snd_timer_close+0x2e/0x70 sound/core/timer.c:430
-  snd_seq_timer_close+0x91/0xd0 sound/core/seq/seq_timer.c:329
-  queue_delete+0x52/0xb0 sound/core/seq/seq_queue.c:147
-  snd_seq_queue_client_leave+0x36/0x170 sound/core/seq/seq_queue.c:584
-  seq_free_client1.part.0+0xf3/0x270 sound/core/seq/seq_clientmgr.c:263
-  seq_free_client1 sound/core/seq/seq_clientmgr.c:256 [inline]
-  seq_free_client+0x80/0xf0 sound/core/seq/seq_clientmgr.c:285
-  snd_seq_release+0x55/0xf0 sound/core/seq/seq_clientmgr.c:366
-  __fput+0x2e5/0x8d0 fs/file_table.c:278
-  ____fput+0x16/0x20 fs/file_table.c:309
-  task_work_run+0x14a/0x1c0 kernel/task_work.c:113
-  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-  exit_to_usermode_loop+0x273/0x2c0 arch/x86/entry/common.c:166
-  prepare_exit_to_usermode arch/x86/entry/common.c:197 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:268 [inline]
-  do_syscall_64+0x52d/0x610 arch/x86/entry/common.c:293
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff8880a9363e40
-  which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 160 bytes inside of
-  256-byte region [ffff8880a9363e40, ffff8880a9363f40)
-The buggy address belongs to the page:
-page:ffffea0002a4d8c0 count:1 mapcount:0 mapping:ffff88812c3f07c0  
-index:0xffff8880a9363940
-flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea0002a21a48 ffffea0002a2e048 ffff88812c3f07c0
-raw: ffff8880a9363940 ffff8880a9363080 0000000100000009 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff8880a9363d80: 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc
-  ffff8880a9363e00: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-> ffff8880a9363e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                        ^
-  ffff8880a9363f00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-  ffff8880a9363f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+9b7d869e Takashi Iwai    2017-11-05  311  	}
+^1da177e Linus Torvalds  2005-04-16  312  	timeri = snd_timer_instance_new(owner, timer);
+2fd43d11 Clemens Ladisch 2005-10-12  313  	if (!timeri) {
+3d2ebce8 Takashi Iwai    2019-03-28  314  		err = -ENOMEM;
+3d2ebce8 Takashi Iwai    2019-03-28  315  		goto unlock;
+2fd43d11 Clemens Ladisch 2005-10-12  316  	}
+230323da Takashi Iwai    2016-01-21  317  	/* take a card refcount for safe disconnection */
+230323da Takashi Iwai    2016-01-21  318  	if (timer->card)
+230323da Takashi Iwai    2016-01-21  319  		get_device(&timer->card->card_dev);
+^1da177e Linus Torvalds  2005-04-16  320  	timeri->slave_class = tid->dev_sclass;
+^1da177e Linus Torvalds  2005-04-16  321  	timeri->slave_id = slave_id;
+8ddc0563 Vegard Nossum   2016-08-29  322  
+8ddc0563 Vegard Nossum   2016-08-29  323  	if (list_empty(&timer->open_list_head) && timer->hw.open) {
+3d2ebce8 Takashi Iwai    2019-03-28  324  		err = timer->hw.open(timer);
+8ddc0563 Vegard Nossum   2016-08-29  325  		if (err) {
+8ddc0563 Vegard Nossum   2016-08-29  326  			kfree(timeri->owner);
+8ddc0563 Vegard Nossum   2016-08-29  327  			kfree(timeri);
+3d2ebce8 Takashi Iwai    2019-03-28  328  			timeri = NULL;
+8ddc0563 Vegard Nossum   2016-08-29  329  
+8ddc0563 Vegard Nossum   2016-08-29  330  			if (timer->card)
+8ddc0563 Vegard Nossum   2016-08-29  331  				put_device(&timer->card->card_dev);
+8ddc0563 Vegard Nossum   2016-08-29  332  			module_put(timer->module);
+3d2ebce8 Takashi Iwai    2019-03-28  333  			goto unlock;
+8ddc0563 Vegard Nossum   2016-08-29  334  		}
+8ddc0563 Vegard Nossum   2016-08-29  335  	}
+8ddc0563 Vegard Nossum   2016-08-29  336  
+^1da177e Linus Torvalds  2005-04-16  337  	list_add_tail(&timeri->open_list, &timer->open_list_head);
+9b7d869e Takashi Iwai    2017-11-05  338  	timer->num_instances++;
+9b7d869e Takashi Iwai    2017-11-05  339  	err = snd_timer_check_master(timeri);
+9b7d869e Takashi Iwai    2017-11-05  340  	if (err < 0) {
+9b7d869e Takashi Iwai    2017-11-05  341  		snd_timer_close_locked(timeri);
+9b7d869e Takashi Iwai    2017-11-05  342  		timeri = NULL;
+9b7d869e Takashi Iwai    2017-11-05  343  	}
+3d2ebce8 Takashi Iwai    2019-03-28  344  
+3d2ebce8 Takashi Iwai    2019-03-28  345   unlock:
+1a60d4c5 Ingo Molnar     2006-01-16  346  	mutex_unlock(&register_mutex);
+^1da177e Linus Torvalds  2005-04-16  347  	*ti = timeri;
+9b7d869e Takashi Iwai    2017-11-05 @348  	return err;
+^1da177e Linus Torvalds  2005-04-16  349  }
+98856392 Takashi Iwai    2017-06-16  350  EXPORT_SYMBOL(snd_timer_open);
+^1da177e Linus Torvalds  2005-04-16  351  
