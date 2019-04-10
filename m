@@ -1,41 +1,35 @@
 From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [EXT] Re: [PATCH v3 2/4] dt-bindings: fsl, audmix: remove "model"
- attribute
-Date: Wed, 10 Apr 2019 10:48:48 +0000
-Message-ID: <1554893328.14997.15.camel@nxp.com>
-References: <1554892629-17646-1-git-send-email-viorel.suman@nxp.com>
- <1554892629-17646-3-git-send-email-viorel.suman@nxp.com>
- <20190410103947.GH6106@sirena.org.uk>
-Reply-To: Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH v4 0/4] ASoC: fsl: audmix: remove "model" attribute and fix
+ ref leaks
+Date: Wed, 10 Apr 2019 11:06:35 +0000
+Message-ID: <1554894380-25153-1-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190410103947.GH6106@sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Language: en-US
-Content-ID: <6B84F3E90B75994381C04DD8D34477F2@eurprd04.prod.outlook.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "viorel.suman@gmail.com" <viorel.suman@gmail.com>, "Julia.Lawall@lip6.fr" <Julia.Lawall@lip6.fr>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "perex@perex.cz" <perex@perex.cz>"linuxppc-dev@lists.ozlabs.org" <linu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Viorel Suman <viorel.suman@nxp.com>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywNCg0KT24gTWksIDIwMTktMDQtMTAgYXQgMTE6MzkgKzAxMDAsIE1hcmsgQnJvd24g
-d3JvdGU6DQo+IE9uIFdlZCwgQXByIDEwLCAyMDE5IGF0IDEwOjM3OjMwQU0gKzAwMDAsIFZpb3Jl
-bCBTdW1hbiB3cm90ZToNCj4gPiANCj4gPiBSZW1vdmUgIm1vZGVsIiBhdHRyaWJ1dGUuDQo+ID4g
-DQo+ID4gU2lnbmVkLW9mZi1ieTogVmlvcmVsIFN1bWFuIDx2aW9yZWwuc3VtYW5AbnhwLmNvbT4N
-Cj4gPiBBY2tlZC1ieTogTmljb2xpbiBDaGVuIDxuaWNvbGVvdHN1a2FAZ21haWwuY29tPg0KPiBQ
-bGVhc2UgdXNlIHN1YmplY3QgbGluZXMgbWF0Y2hpbmcgdGhlIHN0eWxlIGZvciB0aGUgc3Vic3lz
-dGVtLsKgwqBUaGlzDQo+IG1ha2VzIGl0IGVhc2llciBmb3IgcGVvcGxlIHRvIGlkZW50aWZ5IHJl
-bGV2YW50IHBhdGNoZXMuDQoNClN1cmUsIHRoYW5rIHlvdSwgZG8gSSBoYXZlIHRvIHNlbmQgVjQg
-d2l0aCBzdWJqZWN0IGZpeGVkID8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5l
-bEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+VGhlIGxhdGVzdCBhdWRtaXggcGF0Y2gtc2V0ICh2NSkgaGFkIHRoZSAibW9kZWwiIGF0dHJpYnV0
+ZSByZW1vdmVkIGFzDQpyZXF1ZXN0ZWQgYnkgTmljb2xpbiBDaGVuLCBidXQgbG9va3MgbGlrZSAo
+djQpIHZlcnNpb24gb2YgREFJIGRyaXZlcg0KcmVhY2hlZCAiZm9yLW5leHQiIGJyYW5jaCAtIGZp
+eCB0aGlzIGJ5IHJlbW92aW5nICJtb2RlbCIgYXR0cmlidXRlLg0KQXNzaWRlIG9mIHRoaXMgZml4
+IG9iamVjdCByZWZlcmVuY2UgbGVha3MgaW4gbWFjaGluZSBwcm9iZSByZXBvcnRlZCBieQ0KSnVs
+aWEgTGF3YWxsLg0KDQpWaW9yZWwgU3VtYW4gKDQpOg0KICBBU29DOiBmc2xfYXVkbWl4OiByZW1v
+dmUgIm1vZGVsIiBhdHRyaWJ1dGUNCiAgQVNvQzogZnNsX2F1ZG1peDogcmVtb3ZlICJtb2RlbCIg
+YXR0cmlidXRlIGZyb20gRFQgZG9jdW1lbnQNCiAgQVNvQzogaW14LWF1ZG1peDogZml4IG9iamVj
+dCByZWZlcmVuY2UgbGVha3MgaW4gcHJvYmUNCiAgQVNvQzogZnNsX2F1ZG1peDogY2FjaGUgcGRl
+di0+ZGV2IHBvaW50ZXINCg0KQ2hhbmdlcyBzaW5jZSBWMToNCiAgYSkgUmVtb3ZlZCAibW9kZWwi
+IGF0dHJpYnV0ZSBmcm9tIGR0LWJpbmRpbmdzIGRvY3VtZW50YXRpb24NCiAgYikgQWRyZXNzZWQg
+RGFuaWVsJ3MgY29tbWVudHMNCg0KQ2hhbmdlcyBzaW5jZSBWMjoNCiAgYSkgQ2FjaGUgcGRldi0+
+ZGV2IHBvaW50ZXIgaW4gZnNsX2F1ZG1peCBwcm9iZSBhcyBzdWdnZXN0ZWQgYnkgTmljb2xpbg0K
+DQpDaGFuZ2VzIHNpbmNlIFYzOg0KICBhKSBVc2Ugc3ViamVjdCBsaW5lcyBtYXRjaGluZyB0aGUg
+c3R5bGUgZm9yIHRoZSBzdWJzeXN0ZW0uDQoNCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3Vu
+ZC9mc2wsYXVkbWl4LnR4dCAgICAgICB8ICA0IC0tDQogc291bmQvc29jL2ZzbC9mc2xfYXVkbWl4
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgfCA2MCArKysrKysrKysrKy0tLS0tLS0tLS0tDQog
+c291bmQvc29jL2ZzbC9pbXgtYXVkbWl4LmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCAr
+Kw0KIDMgZmlsZXMgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKSwgMzMgZGVsZXRpb25zKC0pDQoN
+Ci0tIA0KMi43LjQNCg0K
