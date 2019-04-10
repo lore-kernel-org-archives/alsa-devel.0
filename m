@@ -1,80 +1,78 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 0/1] ASoC: Mediatek: MT8183: add I2S2 control path
- from UL2 and UL3
-Date: Wed, 10 Apr 2019 10:35:30 +0100
-Message-ID: <20190410093530.GB6106@sirena.org.uk>
-References: <20190409091337.43934-1-shunli.wang@mediatek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pcm: fix error handling when
+ try_module_get() fails.
+Date: Wed, 10 Apr 2019 10:50:10 +0100
+Message-ID: <20190410095010.GD6106@sirena.org.uk>
+References: <20190408193025.22639-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6534884139436181741=="
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20190409091337.43934-1-shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Shunli Wang <shunli.wang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, srv_heupstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, jiaxin.yu-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, tzungbi-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8391509918069456157=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E6AEF8068A
+ for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 11:50:18 +0200 (CEST)
+In-Reply-To: <20190408193025.22639-1-ranjani.sridharan@linux.intel.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6534884139436181741==
+--===============8391509918069456157==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
+	protocol="application/pgp-signature"; boundary="T7mxYSe680VjQnyC"
 Content-Disposition: inline
 
 
---7ZAtKRhVyVSsbBD2
+--T7mxYSe680VjQnyC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 09, 2019 at 05:13:36PM +0800, Shunli Wang wrote:
-> ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+On Mon, Apr 08, 2019 at 12:30:25PM -0700, Ranjani Sridharan wrote:
+> Handle error before returning when try_module_get() fails
+> to prevent inconsistent mutex lock/unlock.
 >=20
-> Shunli Wang (1):
->   ASoC: Mediatek: MT8183: add I2S2 control path from UL2 and UL3
+> Fixes: 52034add7 (ASoC: pcm: update module refcount if
+> 		  module_get_upon_open is set)
 >=20
->  sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 38 ++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
+You keep on adding blank lines after your Fixes: lines for some reason,
+this is unusual and will probably confuse some tooling.
 
---7ZAtKRhVyVSsbBD2
+--T7mxYSe680VjQnyC
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlytuOEACgkQJNaLcl1U
-h9DHNAf/dlx4IJydb6KythBwiVaJvkDCgOxwxC+hF44H73d0W9VHNL4viNE+jbaN
-6rzj46try2XnWwcQzG4qNUtVtMNInZPiaC0hGLjXVgK80dBtptlzE3Pc6258JsRr
-cO7L/b7+mA1KKq4pcGL73KhD6/kQ3KvjJIBU7dTaosPx/pHU4VaZ2BosW3DTewXB
-aaPdUy98PUKSUG4rZsC7qeadMBrYbUtEB5/uyY5PQMYRABuKZF2wMdjeUmdAw00n
-Nq6HW81mpQPUun5OV6ijc6Rf/QIN5SedR3velXhvmXaFQI60Zzqgo1K8XLeLMN8J
-PrJwhAk/s39pbvQLBL65a4TVGw4zYQ==
-=5E9n
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlytvFEACgkQJNaLcl1U
+h9ATngf/fkHMlmYNpIrhLTG3VTz5e+U99aNBRfv95dKNcUXmnzH+4e/wBEElSYmR
+TzydlncTBKXCO0LhNSQhBr+ykAyzHZhEvNzb/g9mHcuTzZwASzMFOG/8O3urgREs
+3ph6dVVoCOTae3EYnhmBczSxk8b43y7ImnenY+BpFES+RbCJ/ZrIDpMVcGRnEvor
+vyo7xJ/9WGbMYHI1tusi3+9HNm5QZ8x/IzBElpdjtKVPTvgafbGWka6lF0hGpVAc
+IdX9/+KeNlH7mukGy2nYJL/XYuYHxLU/gc35waPLrS1f1Yr/kOWiJ2PHScVVMuoH
+9D2GEgJdeZr3ZXI1643NifgtlQrqgw==
+=ro76
 -----END PGP SIGNATURE-----
 
---7ZAtKRhVyVSsbBD2--
+--T7mxYSe680VjQnyC--
 
-
---===============6534884139436181741==
+--===============8391509918069456157==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-_______________________________________________
-Linux-mediatek mailing list
-Linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-http://lists.infradead.org/mailman/listinfo/linux-mediatek
 
---===============6534884139436181741==--
+--===============8391509918069456157==--
