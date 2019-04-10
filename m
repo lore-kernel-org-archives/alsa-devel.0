@@ -1,86 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: fix wrong number of
-	channels" to the asoc tree
-Date: Wed, 10 Apr 2019 13:26:49 +0100 (BST)
-Message-ID: <20190410122649.C50D01128ED2@debutante.sirena.org.uk>
-References: <20190408090858.261269-1-tzungbi@google.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 1/3] sound: Add hikey960 i2s audio driver
+Date: Wed, 10 Apr 2019 15:57:21 +0300
+Message-ID: <CAEnQRZDWHkWqL=v7PiuiW6-Ke+c0wZrEJ+SeTirdNnTzYdOgeg@mail.gmail.com>
+References: <1551362220-99351-1-git-send-email-lipengcheng8@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57423F896E8
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 14:26:51 +0200 (CEST)
-In-Reply-To: <20190408090858.261269-1-tzungbi@google.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, tzungbi@google.com, Mark Brown <broonie@kernel.org>, dgreid@google.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1551362220-99351-1-git-send-email-lipengcheng8@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pengcheng Li <lipengcheng8@huawei.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, john.stultz@linaro.org, Linux-ALSA <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, suzhuangluan@hisilicon.com, kongfei@hisilicon.com, liyuequan@hisilicon.com, cash.qianli@hisilicon.com, huangli295@hisilicon.com, hantanglei@huawei.com, wangyoulin1@hisilicon.com, ninggaoyu@hisilicon.com, xuwei5@huawei.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello Pengcheng,
 
-   ASoC: Intel: kbl: fix wrong number of channels
+Make sure you run ./scripts/checkpatch.pl --strict yourpatchfile.patch
 
-has been applied to the asoc tree at
+On Thu, Feb 28, 2019 at 4:15 PM Pengcheng Li <lipengcheng8@huawei.com> wrote:
+>
+> From: Youlin Wang <wangyoulin1@hisilicon.com>
+>
+> Add i2s driver for hisi3660 soc found on the hikey960 board.
+> Add conpile line in make file.
+> Technical support by Guangke Ji.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Care to add here some documentation pointers to I2S IP on the SOC?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> diff --git a/sound/soc/hisilicon/Kconfig b/sound/soc/hisilicon/Kconfig
+> index 4356d5a..b023ef9 100644
+> --- a/sound/soc/hisilicon/Kconfig
+> +++ b/sound/soc/hisilicon/Kconfig
+> @@ -1,5 +1,11 @@
+>  config SND_I2S_HI6210_I2S
+> -       tristate "Hisilicon I2S controller"
+> +       tristate "Hisilicon Hi6210 I2S controller"
+> +       select SND_SOC_GENERIC_DMAENGINE_PCM
+> +       help
+> +         Hisilicon I2S
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Can you enahance the help text? Something like "I2S controller driver
+for hisi3600 SoC"
+<snip>
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> + * Copyright (c) 2001-2021, Huawei Tech. Co., Ltd.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+2021? :) IANAL but this looks strange :).
 
-Thanks,
-Mark
+> +struct hi3660_i2s {
+> +       struct device *dev;
+> +       struct reset_control *rc;
+> +       int clocks;
+> +       struct regulator *regu_asp;
+> +       struct pinctrl *pctrl;
+> +       struct pinctrl_state *pin_default;
+> +       struct pinctrl_state *pin_idle;
+> +       struct clk *asp_subsys_clk;
+> +       struct snd_soc_dai_driver dai;
+> +       void __iomem *base;
+> +       void __iomem *base_syscon;
+> +       phys_addr_t base_phys;
+> +       struct snd_dmaengine_dai_dma_data dma_data[2];
+> +       spinlock_t lock;
 
->From d6ba3f815bc5f3c4249d15c8bc5fbb012651b4a4 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 8 Apr 2019 17:08:58 +0800
-Subject: [PATCH] ASoC: Intel: kbl: fix wrong number of channels
+What is this lock used for? Please add some docs.
 
-Fix wrong setting on number of channels.  The context wants to set
-constraint to 2 channels instead of 4.
+> +       int rate;
+> +       int format;
+> +       int bits;
+> +       int channels;
+> +       u32 master;
+> +       u32 status;
+> +};
+> +
+> +static void update_bits(struct hi3660_i2s *i2s, u32 ofs, u32 reset, u32 set)
+> +{
+> +       u32 val = readl(i2s->base + ofs) & ~reset;
+> +
+> +       writel(val | set, i2s->base + ofs);
+> +}
+> +
+> +static void update_bits_syscon(struct hi3660_i2s *i2s,
+> +                       u32 ofs, u32 reset, u32 set)
+> +{
+> +       u32 val = readl(i2s->base_syscon + ofs) & ~reset;
+> +
+> +       writel(val | set, i2s->base_syscon + ofs);
+> +}
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 7044d8c2b187..879f14257a3e 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -405,7 +405,7 @@ static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- };
- 
- static const unsigned int dmic_2ch[] = {
--	4,
-+	2,
- };
- 
- static const struct snd_pcm_hw_constraint_list constraints_dmic_2ch = {
--- 
-2.20.1
+Look at the snd_soc_component_update_bits. You can make these two
+functions following the same
+pattern for parameters.
