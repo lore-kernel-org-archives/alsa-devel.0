@@ -1,77 +1,148 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [EXT] Re: [PATCH] ASoC: fsl_asrc: replace the
- process_option table with function
-Date: Wed, 10 Apr 2019 01:00:53 -0700
-Message-ID: <20190410080052.GA5180@Asurada>
-References: <1554866131-12088-1-git-send-email-shengjiu.wang@nxp.com>
- <20190410042638.GB3032@Asurada>
- <VE1PR04MB64798A5ADF025047AF5B9076E32E0@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [PATCH] ASoC: stm32: sai: fix master clock management
+Date: Wed, 10 Apr 2019 10:08:36 +0200
+Message-ID: <1554883716-10436-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52170F89623
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 10:01:02 +0200 (CEST)
-Received: by mail-pf1-x444.google.com with SMTP id 10so971633pfo.5
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 01:01:02 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB64798A5ADF025047AF5B9076E32E0@VE1PR04MB6479.eurprd04.prod.outlook.com>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com
+Cc: benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 10, 2019 at 07:22:31AM +0000, S.j. Wang wrote:
-> > The table was copied directly from the Reference Manual. We also have
-> > listed all supported input and output sample rates just right behind that table.
-> > If there're missing rates, we probably should update those two lists also?
-> > Otherwise, how could we have a driver limiting both I/O sample rates while
-> > we still see something not in the table?
-> > 
-> 
-> Yes,  I plan to send another patch to update the in/out rate list.  Do I need
-> To merge that to this commit?  Actually we want to support 12k and 24KHz
+When master clock is used, master clock rate is set exclusively.
+Parent clocks of master clock cannot be changed after a call to
+clk_set_rate_exclusive(). So the parent clock of SAI kernel clock
+must be set before.
+Ensure also that exclusive rate operations are balanced
+in STM32 SAI driver.
 
-Please send separate patches but in one series. And a question:
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ sound/soc/stm/stm32_sai_sub.c | 64 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 47 insertions(+), 17 deletions(-)
 
-Is it possible to update the table? It'd be way quicker to use
-lookup table than real-time calculation all the time. I believe
-you can simply calculate all the values out for 12KHz and 24KHz
-since you have the function. If there are certain combinations
-of these two not being supported, then we could mark it with a
-special value and add an if-check to error out.
-
-> > > +static int proc_autosel(int Fsin, int Fsout, int *pre_proc, int
-> > > +*post_proc)
-> > 
-> > Please add some comments to this function to explain what it does, and how
-> > it works. And better to rename it to something like "fsl_asrc_sel_proc".
-> > 
-> Yes, some comments should be added, but not so detail, because this function
-
-As much comments as possible.
-
-> Is get from the design team, but the owner has left.
-
-OK...that's sad...
-
-> > Another thing confuses me: so we could have supported sample rates in the
-> > list but the hardware might not support some of them because we couldn't
-> > calculate their processing options?
-> 
-> No, just want to support 12k, 24KHz, or others as customer like.
-
-I was confused because the I/O rate lists not getting updated.
-It makes sense now if you are abort to update them.
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 3dd54bc54fa1..77aa38183955 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -70,6 +70,7 @@
+ #define SAI_IEC60958_STATUS_BYTES	24
+ 
+ #define SAI_MCLK_NAME_LEN		32
++#define SAI_RATE_11K			11025
+ 
+ /**
+  * struct stm32_sai_sub_data - private data of SAI sub block (block A or B)
+@@ -311,6 +312,25 @@ static int stm32_sai_set_clk_div(struct stm32_sai_sub_data *sai,
+ 	return ret;
+ }
+ 
++static int stm32_sai_set_parent_clock(struct stm32_sai_sub_data *sai,
++				      unsigned int rate)
++{
++	struct platform_device *pdev = sai->pdev;
++	struct clk *parent_clk = sai->pdata->clk_x8k;
++	int ret;
++
++	if (!(rate % SAI_RATE_11K))
++		parent_clk = sai->pdata->clk_x11k;
++
++	ret = clk_set_parent(sai->sai_ck, parent_clk);
++	if (ret)
++		dev_err(&pdev->dev, " Error %d setting sai_ck parent clock. %s",
++			ret, ret == -EBUSY ?
++			"Active stream rates conflict\n" : "\n");
++
++	return ret;
++}
++
+ static long stm32_sai_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
+ 				      unsigned long *prate)
+ {
+@@ -492,25 +512,29 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret;
+ 
+-	if (dir == SND_SOC_CLOCK_OUT) {
++	if (dir == SND_SOC_CLOCK_OUT && sai->sai_mclk) {
+ 		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
+ 					 SAI_XCR1_NODIV,
+ 					 (unsigned int)~SAI_XCR1_NODIV);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
+-		sai->mclk_rate = freq;
++		/* If master clock is used, set parent clock now */
++		ret = stm32_sai_set_parent_clock(sai, freq);
++		if (ret)
++			return ret;
+ 
+-		if (sai->sai_mclk) {
+-			ret = clk_set_rate_exclusive(sai->sai_mclk,
+-						     sai->mclk_rate);
+-			if (ret) {
+-				dev_err(cpu_dai->dev,
+-					"Could not set mclk rate\n");
+-				return ret;
+-			}
++		ret = clk_set_rate_exclusive(sai->sai_mclk, freq);
++		if (ret) {
++			dev_err(cpu_dai->dev,
++				ret == -EBUSY ?
++				"Active streams have incompatible rates" :
++				"Could not set mclk rate\n");
++			return ret;
+ 		}
++
++		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
++		sai->mclk_rate = freq;
+ 	}
+ 
+ 	return 0;
+@@ -917,11 +941,13 @@ static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
+ 	int div = 0, cr1 = 0;
+ 	int sai_clk_rate, mclk_ratio, den;
+ 	unsigned int rate = params_rate(params);
++	int ret;
+ 
+-	if (!(rate % 11025))
+-		clk_set_parent(sai->sai_ck, sai->pdata->clk_x11k);
+-	else
+-		clk_set_parent(sai->sai_ck, sai->pdata->clk_x8k);
++	if (!sai->sai_mclk) {
++		ret = stm32_sai_set_parent_clock(sai, rate);
++		if (ret)
++			return ret;
++	}
+ 	sai_clk_rate = clk_get_rate(sai->sai_ck);
+ 
+ 	if (STM_SAI_IS_F4(sai->pdata)) {
+@@ -1080,9 +1106,13 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, SAI_XCR1_NODIV,
+ 			   SAI_XCR1_NODIV);
+ 
+-	clk_disable_unprepare(sai->sai_ck);
++	/* Release mclk rate only if rate was actually set */
++	if (sai->mclk_rate) {
++		clk_rate_exclusive_put(sai->sai_mclk);
++		sai->mclk_rate = 0;
++	}
+ 
+-	clk_rate_exclusive_put(sai->sai_mclk);
++	clk_disable_unprepare(sai->sai_ck);
+ 
+ 	spin_lock_irqsave(&sai->irq_lock, flags);
+ 	sai->substream = NULL;
+-- 
+2.7.4
