@@ -1,48 +1,45 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: Re: [EXT] Re: [PATCH V2] ASoC: fsl_esai: replace
- fall-through with break
-Date: Thu, 11 Apr 2019 03:09:41 +0000
-Message-ID: <VE1PR04MB6479BBD94E90632DB3374555E32F0@VE1PR04MB6479.eurprd04.prod.outlook.com>
-References: <46e9b55edb223894392a90c7cdb6241a43cb9cff.1554864022.git.shengjiu.wang@nxp.com>
- <20190410112813.GL6106@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-eopbgr70075.outbound.protection.outlook.com [40.107.7.75])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBB46F89616
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 05:09:43 +0200 (CEST)
-In-Reply-To: <20190410112813.GL6106@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "gustavo@embeddedor.com" <gustavo@embeddedor.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 0/5] soundwire: code cleanup
+Date: Wed, 10 Apr 2019 22:16:56 -0500
+Message-ID: <20190411031701.5926-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark
+SoundWire support will be provided in Linux with the Sound Open
+Firmware (SOF) on Intel platforms. Before we start adding the missing
+pieces, there are a number of warnings and style issues reported by
+checkpatch, cppcheck and Coccinelle that need to be cleaned-up.
 
-> 
-> On Wed, Apr 10, 2019 at 02:42:45AM +0000, S.j. Wang wrote:
-> > case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent
-> of
-> > each other, so replace fall-through with break.
-> 
-> This doesn't apply against current code, please check and resend.
+Changes since v2:
+fixed inversion of devm_kcalloc parameters, detected while rebasing
+additional patches.
 
-Thanks, have sent v4 for update subject according to Gustavo's comments.
+Changes since v1:
+added missing newlines in new patch (suggested by Joe Perches)
 
-[PATCH V4] ASoC: fsl_esai: Fix missing break in switch statement
+Pierre-Louis Bossart (5):
+  soundwire: intel: fix inversion in devm_kcalloc parameters
+  soundwire: fix style issues
+  soundwire: bus: remove useless initializations
+  soundwire: stream: remove useless initialization of local variable
+  soundwire: add missing newlines in dynamic debug logs
 
-Best regards
-Wang shengjiu
+ drivers/soundwire/Kconfig          |   2 +-
+ drivers/soundwire/bus.c            | 137 ++++++++-------
+ drivers/soundwire/bus.h            |  16 +-
+ drivers/soundwire/bus_type.c       |   4 +-
+ drivers/soundwire/cadence_master.c |  99 +++++------
+ drivers/soundwire/cadence_master.h |  22 +--
+ drivers/soundwire/intel.c          | 103 ++++++-----
+ drivers/soundwire/intel.h          |   4 +-
+ drivers/soundwire/intel_init.c     |  12 +-
+ drivers/soundwire/mipi_disco.c     | 116 +++++++------
+ drivers/soundwire/slave.c          |  10 +-
+ drivers/soundwire/stream.c         | 267 +++++++++++++++--------------
+ 12 files changed, 404 insertions(+), 388 deletions(-)
+
+-- 
+2.17.1
