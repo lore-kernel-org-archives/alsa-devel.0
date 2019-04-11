@@ -1,47 +1,37 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] regmap: soundwire: fix Kconfig select/depend issue
-Date: Thu, 11 Apr 2019 14:28:13 -0500
-Message-ID: <20190411192814.10663-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] soundwire: fix SOUNDWIRE_BUS option
+Date: Thu, 11 Apr 2019 14:28:14 -0500
+Message-ID: <20190411192814.10663-3-pierre-louis.bossart@linux.intel.com>
 References: <20190411192814.10663-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20190411192814.10663-1-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The mechanism should be
+SOUNDWIRE_BUS can be selected independendly by the SOC driver
+(e.g. SOUNDWIRE_INTEL) or the codec driver (via REGMAP_SOUNDWIRE).
 
-config CODEC_XYX_SDW
-       depends on SOUNDWIRE
-       select REGMAP_SOUNDWIRE
+Remove wrong-way link between SOUNDWIRE_BUS and REGMAP_SOUNDWIRE
 
-config REGMAP_SOUNDWIRE
-       depends on SOUNDWIRE
-       select SOUNDWIRE_BUS
-
-SOUNDWIRE_BUS can be independently selected by the SOC driver. The SOC
-driver should not know or care about REGMAP_SOUNDWIRE.
-
-Fixes: 7c22ce6e2184 ('03fc8746f7915b5a391d8227f7e1')
+Fixes: 6c49b32d3c09 ('soundwire: select REGMAP_SOUNDWIRE')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/base/regmap/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soundwire/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-index 6ad5ef48b61e..4e422afe3c0d 100644
---- a/drivers/base/regmap/Kconfig
-+++ b/drivers/base/regmap/Kconfig
-@@ -44,7 +44,8 @@ config REGMAP_IRQ
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 84876a74874f..d382d80d2fe1 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -18,7 +18,6 @@ comment "SoundWire Devices"
  
- config REGMAP_SOUNDWIRE
+ config SOUNDWIRE_BUS
  	tristate
--	depends on SOUNDWIRE_BUS
-+	depends on SOUNDWIRE
-+	select SOUNDWIRE_BUS
+-	select REGMAP_SOUNDWIRE
  
- config REGMAP_SCCB
+ config SOUNDWIRE_CADENCE
  	tristate
 -- 
 2.17.1
