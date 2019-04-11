@@ -1,66 +1,73 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V2 2/2] ASoC: fsl_asrc: Unify the supported input and output
- rate
-Date: Thu, 11 Apr 2019 09:39:09 +0000
-Message-ID: <b7f4c8dd00743ddd09c33def00c1759757b8e743.1554975348.git.shengjiu.wang@nxp.com>
-References: <cover.1554975348.git.shengjiu.wang@nxp.com>
+From: libin.yang@intel.com
+Subject: [PATCH 00/12] ASoC: intel: add device_link to HDMI
+	audio
+Date: Thu, 11 Apr 2019 17:34:47 +0800
+Message-ID: <1554975299-25343-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1554975348.git.shengjiu.wang@nxp.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F04BCF808F6
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 11:51:01 +0200 (CEST)
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, libin.yang@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-VW5pZnkgdGhlIHN1cHBvcnRlZCBpbnB1dCBhbmQgb3V0cHV0IHJhdGUsIGFkZCB0aGUNCjEya0h6
-LzI0a0h6LzEyOGtIeiB0byB0aGUgc3VwcG9ydCBsaXN0DQoNClNpZ25lZC1vZmYtYnk6IFNoZW5n
-aml1IFdhbmcgPHNoZW5naml1LndhbmdAbnhwLmNvbT4NCi0tLQ0KIHNvdW5kL3NvYy9mc2wvZnNs
-X2FzcmMuYyB8IDI5ICsrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5n
-ZWQsIDE4IGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2ZzbC9mc2xfYXNyYy5jIGIvc291bmQvc29jL2ZzbC9mc2xfYXNyYy5jDQppbmRleCA1
-ODU3ZDM4M2Q5NjIuLjQ0YmNjNGE3YjIzYiAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9mc2wvZnNs
-X2FzcmMuYw0KKysrIGIvc291bmQvc29jL2ZzbC9mc2xfYXNyYy5jDQpAQCAtMjcsMTMgKzI3LDE0
-IEBADQogCWRldl9kYmcoJmFzcmNfcHJpdi0+cGRldi0+ZGV2LCAiUGFpciAlYzogIiBmbXQsICdB
-JyArIGluZGV4LCAjI19fVkFfQVJHU19fKQ0KIA0KIC8qIENvcnJlc3BvbmRpbmcgdG8gcHJvY2Vz
-c19vcHRpb24gKi8NCi1zdGF0aWMgaW50IHN1cHBvcnRlZF9pbnB1dF9yYXRlW10gPSB7DQotCTU1
-MTIsIDgwMDAsIDExMDI1LCAxNjAwMCwgMjIwNTAsIDMyMDAwLCA0NDEwMCwgNDgwMDAsIDY0MDAw
-LCA4ODIwMCwNCi0JOTYwMDAsIDE3NjQwMCwgMTkyMDAwLA0KK3N0YXRpYyB1bnNpZ25lZCBpbnQg
-c3VwcG9ydGVkX2FzcmNfcmF0ZVtdID0gew0KKwk1NTEyLCA4MDAwLCAxMTAyNSwgMTIwMDAsIDE2
-MDAwLCAyMjA1MCwgMjQwMDAsIDMyMDAwLCA0NDEwMCwgNDgwMDAsDQorCTY0MDAwLCA4ODIwMCwg
-OTYwMDAsIDEyODAwMCwgMTc2NDAwLCAxOTIwMDAsDQogfTsNCiANCi1zdGF0aWMgaW50IHN1cHBv
-cnRlZF9hc3JjX3JhdGVbXSA9IHsNCi0JODAwMCwgMTEwMjUsIDE2MDAwLCAyMjA1MCwgMzIwMDAs
-IDQ0MTAwLCA0ODAwMCwgNjQwMDAsIDg4MjAwLCA5NjAwMCwgMTc2NDAwLCAxOTIwMDAsDQorc3Rh
-dGljIHN0cnVjdCBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbGlzdCBmc2xfYXNyY19yYXRlX2NvbnN0
-cmFpbnRzID0gew0KKwkuY291bnQgPSBBUlJBWV9TSVpFKHN1cHBvcnRlZF9hc3JjX3JhdGUpLA0K
-KwkubGlzdCA9IHN1cHBvcnRlZF9hc3JjX3JhdGUsDQogfTsNCiANCiAvKioNCkBAIC0zMDUsMTEg
-KzMwNiwxMSBAQCBzdGF0aWMgaW50IGZzbF9hc3JjX2NvbmZpZ19wYWlyKHN0cnVjdCBmc2xfYXNy
-Y19wYWlyICpwYWlyKQ0KIAlpZGVhbCA9IGNvbmZpZy0+aW5jbGsgPT0gSU5DTEtfTk9ORTsNCiAN
-CiAJLyogVmFsaWRhdGUgaW5wdXQgYW5kIG91dHB1dCBzYW1wbGUgcmF0ZXMgKi8NCi0JZm9yIChp
-biA9IDA7IGluIDwgQVJSQVlfU0laRShzdXBwb3J0ZWRfaW5wdXRfcmF0ZSk7IGluKyspDQotCQlp
-ZiAoaW5yYXRlID09IHN1cHBvcnRlZF9pbnB1dF9yYXRlW2luXSkNCisJZm9yIChpbiA9IDA7IGlu
-IDwgQVJSQVlfU0laRShzdXBwb3J0ZWRfYXNyY19yYXRlKTsgaW4rKykNCisJCWlmIChpbnJhdGUg
-PT0gc3VwcG9ydGVkX2FzcmNfcmF0ZVtpbl0pDQogCQkJYnJlYWs7DQogDQotCWlmIChpbiA9PSBB
-UlJBWV9TSVpFKHN1cHBvcnRlZF9pbnB1dF9yYXRlKSkgew0KKwlpZiAoaW4gPT0gQVJSQVlfU0la
-RShzdXBwb3J0ZWRfYXNyY19yYXRlKSkgew0KIAkJcGFpcl9lcnIoInVuc3VwcG9ydGVkIGlucHV0
-IHNhbXBsZSByYXRlOiAlZEh6XG4iLCBpbnJhdGUpOw0KIAkJcmV0dXJuIC1FSU5WQUw7DQogCX0N
-CkBAIC01MDIsNyArNTAzLDkgQEAgc3RhdGljIGludCBmc2xfYXNyY19kYWlfc3RhcnR1cChzdHJ1
-Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCiAJCXNuZF9wY21faHdfY29uc3RyYWlu
-dF9zdGVwKHN1YnN0cmVhbS0+cnVudGltZSwgMCwNCiAJCQkJCSAgIFNORFJWX1BDTV9IV19QQVJB
-TV9DSEFOTkVMUywgMik7DQogDQotCXJldHVybiAwOw0KKw0KKwlyZXR1cm4gc25kX3BjbV9od19j
-b25zdHJhaW50X2xpc3Qoc3Vic3RyZWFtLT5ydW50aW1lLCAwLA0KKwkJCVNORFJWX1BDTV9IV19Q
-QVJBTV9SQVRFLCAmZnNsX2FzcmNfcmF0ZV9jb25zdHJhaW50cyk7DQogfQ0KIA0KIHN0YXRpYyBp
-bnQgZnNsX2FzcmNfZGFpX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0
-cmVhbSwNCkBAIC02MjYsMTQgKzYyOSwxOCBAQCBzdGF0aWMgaW50IGZzbF9hc3JjX2RhaV9wcm9i
-ZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkNCiAJCS5zdHJlYW1fbmFtZSA9ICJBU1JDLVBsYXli
-YWNrIiwNCiAJCS5jaGFubmVsc19taW4gPSAxLA0KIAkJLmNoYW5uZWxzX21heCA9IDEwLA0KLQkJ
-LnJhdGVzID0gRlNMX0FTUkNfUkFURVMsDQorCQkucmF0ZV9taW4gPSA1NTEyLA0KKwkJLnJhdGVf
-bWF4ID0gMTkyMDAwLA0KKwkJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfS05PVCwNCiAJCS5mb3Jt
-YXRzID0gRlNMX0FTUkNfRk9STUFUUywNCiAJfSwNCiAJLmNhcHR1cmUgPSB7DQogCQkuc3RyZWFt
-X25hbWUgPSAiQVNSQy1DYXB0dXJlIiwNCiAJCS5jaGFubmVsc19taW4gPSAxLA0KIAkJLmNoYW5u
-ZWxzX21heCA9IDEwLA0KLQkJLnJhdGVzID0gRlNMX0FTUkNfUkFURVMsDQorCQkucmF0ZV9taW4g
-PSA1NTEyLA0KKwkJLnJhdGVfbWF4ID0gMTkyMDAwLA0KKwkJLnJhdGVzID0gU05EUlZfUENNX1JB
-VEVfS05PVCwNCiAJCS5mb3JtYXRzID0gRlNMX0FTUkNfRk9STUFUUywNCiAJfSwNCiAJLm9wcyA9
-ICZmc2xfYXNyY19kYWlfb3BzLA0KLS0gDQoxLjkuMQ0KDQo=
+From: Libin Yang <libin.yang@intel.com>
+
+This patchset add the device_link between the machine devices
+of intel boards and HDMI audio codec. This can make sure that
+display audio power domain is always turned on before operating
+on the HDMI audio codecs.
+
+patch 2 adds the helper functions in a new created header file.
+However skl_hda_dsp_generic doesn't use these helper functions
+because skl_hda_dsp_generic is a special driver, the add link
+and delete link operations are in different source code files.
+If it includes the header file, there is compiling warning.
+
+Libin Yang (12):
+  ASoC: intel: skl_hda_dsp_generic: add device_link to HDMI audio
+  ASoC: intel: boards: define some general functions for hdac_hdmi
+  ASoC: intel: bxt_da7219_max98357a: add device_link to HDMI audio
+  ASoC: intel: bxt_rt298: add device_link to HDMI audio
+  ASoC: intel: glk_rt5682_max98357a: add device_link to HDMI audio
+  ASoC: intel: kbl_da7219_max98357a: add device_link to HDMI audio
+  ASoC: intel: kbl_da7219_max98927: add device_link to HDMI audio
+  ASoC: intel: kbl_rt5660: add device_link to HDMI audio
+  ASoC: intel: kbl_rt5663_max98927 add device_link to HDMI audio
+  ASoC: intel: kbl_rt5663_rt5514_max98927 add device_link to HDMI audio
+  ASoC: intel: skl_nau88l25_max98357a add device_link to HDMI audio
+  ASoC: intel: skl_nau88l25_ssm4567 add device_link to HDMI audio
+
+ sound/soc/intel/boards/bxt_da7219_max98357a.c      | 14 +++++++
+ sound/soc/intel/boards/bxt_rt298.c                 | 14 ++++++-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c      | 14 +++++++
+ sound/soc/intel/boards/hdac_hdmi_common.h          | 46 ++++++++++++++++++++++
+ sound/soc/intel/boards/kbl_da7219_max98357a.c      | 14 +++++++
+ sound/soc/intel/boards/kbl_da7219_max98927.c       | 14 +++++++
+ sound/soc/intel/boards/kbl_rt5660.c                | 14 ++++++-
+ sound/soc/intel/boards/kbl_rt5663_max98927.c       | 14 ++++++-
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 14 ++++++-
+ sound/soc/intel/boards/skl_hda_dsp_common.c        | 22 +++++++++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h        |  1 +
+ sound/soc/intel/boards/skl_hda_dsp_generic.c       | 12 ++++++
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c    | 36 ++++++++++++++++-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c      | 36 ++++++++++++++++-
+ 14 files changed, 259 insertions(+), 6 deletions(-)
+ create mode 100644 sound/soc/intel/boards/hdac_hdmi_common.h
+
+-- 
+2.7.4
