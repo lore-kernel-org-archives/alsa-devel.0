@@ -1,8 +1,9 @@
 From: libin.yang@intel.com
-Subject: [PATCH v3 00/12] ASoC: intel: add device_link to HDMI
-	audio
-Date: Thu, 11 Apr 2019 22:19:48 +0800
-Message-ID: <1554992400-28777-1-git-send-email-libin.yang@intel.com>
+Subject: [PATCH v3 01/12] ASoC: intel: boards: define some
+	general functions for hdac_hdmi
+Date: Thu, 11 Apr 2019 22:19:49 +0800
+Message-ID: <1554992400-28777-2-git-send-email-libin.yang@intel.com>
+References: <1554992400-28777-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -10,8 +11,9 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B611F89616
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 16:36:02 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E5D7F89625
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 16:36:04 +0200 (CEST)
+In-Reply-To: <1554992400-28777-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,41 +29,56 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@intel.com>
 
-This patchset add the device_link between the machine devices
-of intel boards and HDMI audio codec. This can make sure that
-display audio power domain is always turned on before operating
-on the HDMI audio codecs.
+Create hdac_hdmi_common.h and define some general functions related to
+hdac_hdmi codec.
 
-Libin Yang (12):
-  ASoC: intel: skl_hda_dsp_generic: add device_link to HDMI audio
-  ASoC: intel: boards: define some general functions for hdac_hdmi
-  ASoC: intel: bxt_da7219_max98357a: add device_link to HDMI audio
-  ASoC: intel: bxt_rt298: add device_link to HDMI audio
-  ASoC: intel: glk_rt5682_max98357a: add device_link to HDMI audio
-  ASoC: intel: kbl_da7219_max98357a: add device_link to HDMI audio
-  ASoC: intel: kbl_da7219_max98927: add device_link to HDMI audio
-  ASoC: intel: kbl_rt5660: add device_link to HDMI audio
-  ASoC: intel: kbl_rt5663_max98927 add device_link to HDMI audio
-  ASoC: intel: kbl_rt5663_rt5514_max98927 add device_link to HDMI audio
-  ASoC: intel: skl_nau88l25_max98357a add device_link to HDMI audio
-  ASoC: intel: skl_nau88l25_ssm4567 add device_link to HDMI audio
-
- sound/soc/intel/boards/bxt_da7219_max98357a.c      | 14 +++++++
- sound/soc/intel/boards/bxt_rt298.c                 | 14 ++++++-
- sound/soc/intel/boards/glk_rt5682_max98357a.c      | 14 +++++++
- sound/soc/intel/boards/hdac_hdmi_common.h          | 46 ++++++++++++++++++++++
- sound/soc/intel/boards/kbl_da7219_max98357a.c      | 14 +++++++
- sound/soc/intel/boards/kbl_da7219_max98927.c       | 14 +++++++
- sound/soc/intel/boards/kbl_rt5660.c                | 14 ++++++-
- sound/soc/intel/boards/kbl_rt5663_max98927.c       | 14 ++++++-
- .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 14 ++++++-
- sound/soc/intel/boards/skl_hda_dsp_common.c        | 22 +++++++++++
- sound/soc/intel/boards/skl_hda_dsp_common.h        |  1 +
- sound/soc/intel/boards/skl_hda_dsp_generic.c       | 12 ++++++
- sound/soc/intel/boards/skl_nau88l25_max98357a.c    | 36 ++++++++++++++++-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c      | 36 ++++++++++++++++-
- 14 files changed, 259 insertions(+), 6 deletions(-)
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/soc/intel/boards/hdac_hdmi_common.h | 36 +++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
  create mode 100644 sound/soc/intel/boards/hdac_hdmi_common.h
 
+diff --git a/sound/soc/intel/boards/hdac_hdmi_common.h b/sound/soc/intel/boards/hdac_hdmi_common.h
+new file mode 100644
+index 0000000..277493d
+--- /dev/null
++++ b/sound/soc/intel/boards/hdac_hdmi_common.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright(c) 2019 Intel Corporation.
++ */
++
++/*
++ * This file includes the general functions related to hdac_hdmi codec,
++ * which is used by the different boards
++ */
++
++#ifndef __SOUND_SOC_HDAC_HDMI_COMMON
++#define __SOUND_SOC_HDAC_HDMI_COMMON
++
++static int hdac_hdmi_add_device_link(struct device *consumer,
++				     struct device *supplier,
++				     struct device_link **link)
++{
++	/*
++	 * Setup a device_link between machine device and HDMI codec device.
++	 * The machine device is the consumer and the HDMI codec device is
++	 * the supplier. With this setting, we can make sure that the audio
++	 * domain in display power will be always turned on before operating
++	 * on the HDMI audio codec registers.
++	 */
++	if (!(*link))
++		*link = device_link_add(consumer, supplier, DL_FLAG_RPM_ACTIVE |
++					DL_FLAG_AUTOREMOVE_CONSUMER);
++
++	if (!(*link))
++		dev_warn(consumer,
++			 "failed creating device_link for HDMI codec\n");
++
++	return 0;
++}
++
++#endif /* __SOUND_SOC_HDAC_HDMI_COMMON */
 -- 
 2.7.4
