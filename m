@@ -1,43 +1,33 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V2 2/2] ASoC: fsl_asrc: Unify the supported input and
- output rate
-Date: Thu, 11 Apr 2019 13:11:58 -0700
-Message-ID: <20190411201158.GB13170@Asurada-Nvidia.nvidia.com>
-References: <cover.1554975348.git.shengjiu.wang@nxp.com>
- <b7f4c8dd00743ddd09c33def00c1759757b8e743.1554975348.git.shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v4 4/4] ASoC: fsl_audmix: cache pdev->dev pointer
+Date: Thu, 11 Apr 2019 13:21:18 -0700
+Message-ID: <20190411202117.GC13170@Asurada-Nvidia.nvidia.com>
+References: <1554894380-25153-1-git-send-email-viorel.suman@nxp.com>
+ <1554894380-25153-5-git-send-email-viorel.suman@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <b7f4c8dd00743ddd09c33def00c1759757b8e743.1554975348.git.shengjiu.wang@nxp.com>
+In-Reply-To: <1554894380-25153-5-git-send-email-viorel.suman@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Julia Lawall <Julia.Lawall@lip6.fr>, Viorel Suman <viorel.suman@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, dl-linux-imx <linux-imx@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lis>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 11, 2019 at 09:39:09AM +0000, S.j. Wang wrote:
-> Unify the supported input and output rate, add the
+On Wed, Apr 10, 2019 at 11:06:39AM +0000, Viorel Suman wrote:
+> There should be no trouble to understand dev = pdev->dev.
+> This can save some space to have more print info or save
+> some wrapped lines.
 
-We previously didn't support 5KHz->5KHz, but now we do? That'd be
-great if so.
+Change looks fine. Ack.
 
->  static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
-> @@ -626,14 +629,18 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
->  		.stream_name = "ASRC-Playback",
->  		.channels_min = 1,
->  		.channels_max = 10,
-> -		.rates = FSL_ASRC_RATES,
-> +		.rate_min = 5512,
-> +		.rate_max = 192000,
-> +		.rates = SNDRV_PCM_RATE_KNOT,
->  		.formats = FSL_ASRC_FORMATS,
->  	},
->  	.capture = {
->  		.stream_name = "ASRC-Capture",
->  		.channels_min = 1,
->  		.channels_max = 10,
-> -		.rates = FSL_ASRC_RATES,
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> Suggested-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-Probably could remove FSL_ASRC_RATES define since it's not used.
+I think usually Suggested-by comes above Signed-off-by.
 
-Thanks
+This was originally in your change already, so you can replace:
+-Suggested-by: Nicolin Chen <nicoleotsuka@gmail.com>
+-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Just a chance for it to get resent without being a noise :)
