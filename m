@@ -1,19 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: common: add Geminilake
- Realtek+Maxim machine driver entry
-Date: Wed, 10 Apr 2019 13:08:40 -0500
-Message-ID: <5198e493-6184-2e49-d7c7-e19ecf04021c@linux.intel.com>
-References: <1554917251-16772-1-git-send-email-yong.zhi@intel.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [EXT] Re: [PATCH V2] ASoC: fsl_esai: replace
+ fall-through with break
+Date: Thu, 11 Apr 2019 02:48:25 +0000
+Message-ID: <VE1PR04MB6479B21F67A8989072035BF6E32F0@VE1PR04MB6479.eurprd04.prod.outlook.com>
+References: <46e9b55edb223894392a90c7cdb6241a43cb9cff.1554864022.git.shengjiu.wang@nxp.com>
+ <b68a4e3a-8568-0c6e-aa3a-947e62e4f0f5@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr10053.outbound.protection.outlook.com [40.107.1.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 777BBF80765
- for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2019 20:08:43 +0200 (CEST)
-In-Reply-To: <1554917251-16772-1-git-send-email-yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC80DF80716
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 04:48:27 +0200 (CEST)
+In-Reply-To: <b68a4e3a-8568-0c6e-aa3a-947e62e4f0f5@embeddedor.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,52 +26,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Yong Zhi <yong.zhi@intel.com>, alsa-devel@alsa-project.org
-Cc: harshapriya.n@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org, Naveen Manohar <naveen.m@intel.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
+> 
+> 
+> On 4/9/19 9:42 PM, S.j. Wang wrote:
+> > case ESAI_HCKT_EXTAL and case ESAI_HCKR_EXTAL should be independent
+> of
+> > each other, so replace fall-through with break.
+> >
+> I think you should change the subject line to:
+> 
+> fix missing break in switch statement
+> 
+> ...because you are fixing a bug, and it's important to put emphasis on that in
+> the subject line.
+> 
+> Also, notice that this bug has been out there for more than 5 years now, so
+> you should also tag this for stable.
+> 
+> Thanks
+> --
+> Gustavo
+>
 
-On 4/10/19 12:27 PM, Yong Zhi wrote:
-> This patch adds glk_rt5682_max98357a_i2s machine driver entry into
-> machine table. Both Skylake and SOF platform drivers can use this
-> machine drivers.
-> 
-> Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-> Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Ok, will send v3.
 
-
-Ack. This is needed to probe the glk_rt5682_max98357a machine driver 
-that's been merged around July 2018.
-
-> ---
-> Hi, Pierre,
+ 
 > 
-> This is an update to https://patchwork.kernel.org/patch/10472523/
-> with SOF files prefix and asoc_plat_name removed, tested with SOF v1.1, thanks!!
-> 
->   sound/soc/intel/common/soc-acpi-intel-glk-match.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> index 3f2061475ae4..616eb09e78a0 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
-> @@ -31,6 +31,15 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
->   		.sof_fw_filename = "sof-glk.ri",
->   		.sof_tplg_filename = "sof-glk-da7219.tplg",
->   	},
-> +	{
-> +		.id = "10EC5682",
-> +		.drv_name = "glk_rt5682_max98357a",
-> +		.fw_filename = "intel/dsp_fw_glk.bin",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &glk_codecs,
-> +		.sof_fw_filename = "sof-glk.ri",
-> +		.sof_tplg_filename = "sof-glk-rt5682.tplg",
-> +	},
->   	{},
->   };
->   EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
-> 
+> > Fixes: 43d24e76b698 ("ASoC: fsl_esai: Add ESAI CPU DAI driver")
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> > Changes in v2
+> > - fix the fixes tag.
+> >
+> >  sound/soc/fsl/fsl_esai.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c index
+> > c7410bbfd2af..bad0dfed6b68 100644
+> > --- a/sound/soc/fsl/fsl_esai.c
+> > +++ b/sound/soc/fsl/fsl_esai.c
+> > @@ -251,7 +251,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai
+> *dai, int clk_id,
+> >               break;
+> >       case ESAI_HCKT_EXTAL:
+> >               ecr |= ESAI_ECR_ETI;
+> > -             /* fall through */
+> > +             break;
+> >       case ESAI_HCKR_EXTAL:
+> >               ecr |= esai_priv->synchronous ? ESAI_ECR_ETI : ESAI_ECR_ERI;
+> >               break;
+> >
