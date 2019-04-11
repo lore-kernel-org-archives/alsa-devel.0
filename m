@@ -1,8 +1,8 @@
 From: libin.yang@intel.com
-Subject: [PATCH v2 09/12] ASoC: intel: kbl_rt5663_max98927 add
+Subject: [PATCH v2 08/12] ASoC: intel: kbl_rt5660: add
 	device_link to HDMI audio
-Date: Thu, 11 Apr 2019 22:09:50 +0800
-Message-ID: <1554991793-14851-10-git-send-email-libin.yang@intel.com>
+Date: Thu, 11 Apr 2019 22:09:49 +0800
+Message-ID: <1554991793-14851-9-git-send-email-libin.yang@intel.com>
 References: <1554991793-14851-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,8 @@ Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B9F8F8971E
- for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 16:26:05 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B928F808F6
+ for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2019 16:26:03 +0200 (CEST)
 In-Reply-To: <1554991793-14851-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,36 +33,36 @@ In resume from S3, HDAC HDMI codec driver dapm event callback may be
 operated before HDMI codec driver turns on the display audio power
 domain because of the contest between display driver and hdmi codec driver.
 
-This patch adds the device_link between kbl_rt5663_max98927 machine device
+This patch adds the device_link between kbl_rt5660 machine device
 (consumer) and hdmi codec device (supplier) to make sure the sequence is
 always correct.
 
 Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 5 ++++-
+ sound/soc/intel/boards/kbl_rt5660.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index d714752..48b9e08 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -31,6 +31,7 @@
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
+diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
+index 3255e00..e681984 100644
+--- a/sound/soc/intel/boards/kbl_rt5660.c
++++ b/sound/soc/intel/boards/kbl_rt5660.c
+@@ -23,6 +23,7 @@
+ 
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../../codecs/rt5660.h"
 +#include "hdac_hdmi_common.h"
  
- #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
- #define KBL_MAXIM_CODEC_DAI "max98927-aif1"
-@@ -53,6 +54,7 @@ struct kbl_rt5663_private {
+ #define KBL_RT5660_CODEC_DAI "rt5660-aif1"
+ #define DUAL_CHANNEL 2
+@@ -41,6 +42,7 @@ struct kbl_hdmi_pcm {
+ struct kbl_codec_private {
+ 	struct gpio_desc *gpio_lo_mute;
  	struct list_head hdmi_pcm_list;
- 	struct clk *mclk;
- 	struct clk *sclk;
 +	struct device_link *link;
  };
  
  enum {
-@@ -336,7 +338,8 @@ static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
+@@ -222,7 +224,8 @@ static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
  
  	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
  
