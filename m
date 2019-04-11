@@ -1,128 +1,66 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH V2 1/2] ASoC: fsl_asrc: replace the process_option table
- with function
-Date: Thu, 11 Apr 2019 14:15:28 +0300
-Message-ID: <CAEnQRZAQk1w79uqFCBCkFy=4_FQvxetfPsS10c+AMddJpc1VNg@mail.gmail.com>
-References: <cover.1554975348.git.shengjiu.wang@nxp.com> <a04859bff36ba26cb4cb51ff092a3f2e2eca455d.1554975348.git.shengjiu.wang@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wcd9335: Fix missing regmap requirement" to the asoc tree
+Date: Thu, 11 Apr 2019 12:19:48 +0100 (BST)
+Message-ID: <20190411111948.D4E9E1126DD2@debutante.sirena.org.uk>
+References: <8c0b22e2-2c67-8d45-a57d-dfc54043fbc9@free.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a04859bff36ba26cb4cb51ff092a3f2e2eca455d.1554975348.git.shengjiu.wang@nxp.com>
+In-Reply-To: <8c0b22e2-2c67-8d45-a57d-dfc54043fbc9@free.fr>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shengjiu,
+The patch
 
-Mostly looking good. See few comments inline:
+   ASoC: wcd9335: Fix missing regmap requirement
 
-<snip>
+has been applied to the asoc tree at
 
-> +/*
-> + * Select the pre-processing and post-processing options
-> + *
-> + * Fsin: input sample rate
-> + * Fsout: output sample rate
-> + * pre_proc: return value for pre-processing option
-> + * post_proc: return value for post-processing option
-> + */
-> +static int fsl_asrc_sel_proc(int Fsin, int Fsout, int *pre_proc, int *post_proc)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.1
 
-Lets be naming consistent here: Fsin -> fs_in, Fsout -> fs_out.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +{
-> +       bool det_out_op2_cond;
-> +       bool det_out_op0_cond;
-> +
-> +       /* Codition for selection of post-processing */
-> +       det_out_op2_cond = (((Fsin * 15 > Fsout * 16) & (Fsout < 56000)) |
-> +                                       ((Fsin > 56000) & (Fsout < 56000)));
-Remove outer parenthesis. Also should here be a logical or (||)
-instead of bitwise or (|)?
-Same for && vs &.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +       det_out_op0_cond = (Fsin * 23 < Fsout * 8);
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Remove outer parenthesis.
-> +
-> +       /*
-> +        * unsupported case: Tsout>16.125*Tsin, and Tsout>8.125*Tsin.
-> +        * Tsout>16.125*Tsin -> Fsin * 8 > 129 * Fsout
-> +        * Tsout>8.125*Tsin  -> Fsin * 8 > 65 * Fsout
-> +        * Tsout>4.125*Tsin  -> Fsin * 8 > 33 * Fsout
-> +        * Tsout>1.875*Tsin  -> Fsin * 8 > 15 * Fsout
-> +        */
-> +       if (Fsin * 8 > 129 * Fsout)
-> +               *pre_proc = 5;
-> +       else if (Fsin * 8 > 65 * Fsout)
-> +               *pre_proc = 4;
-> +       else if (Fsin * 8 > 33 * Fsout)
-> +               *pre_proc = 2;
-> +       else if (Fsin * 8 > 15 * Fsout) {
-> +               if (Fsin > 152000)
-> +                       *pre_proc = 2;
-> +               else
-> +                       *pre_proc = 1;
-> +       } else if (Fsin < 76000)
-> +               *pre_proc = 0;
-> +       else if (Fsin > 152000)
-> +               *pre_proc = 2;
-> +       else
-> +               *pre_proc = 1;
-> +
-> +       if (det_out_op2_cond)
-> +               *post_proc = 2;
-> +       else if (det_out_op0_cond)
-> +               *post_proc = 0;
-> +       else
-> +               *post_proc = 1;
-> +
-> +       /* unsupported options */
-> +       if (*pre_proc == 4 || *pre_proc == 5)
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +
->  /**
->   * Request ASRC pair
->   *
-> @@ -239,8 +278,10 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
->         u32 inrate, outrate, indiv, outdiv;
->         u32 clk_index[2], div[2];
->         int in, out, channels;
-> +       int pre_proc, post_proc;
->         struct clk *clk;
->         bool ideal;
-> +       int ret;
->
->         if (!config) {
->                 pair_err("invalid pair config\n");
-> @@ -289,6 +330,12 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
->                 return -EINVAL;
->         }
->
-> +       ret = fsl_asrc_sel_proc(inrate, outrate, &pre_proc, &post_proc);
-> +       if (ret) {
-> +               pair_err("No supported pre-processing options\n");
-> +               return ret;
-> +       }
-> +
->         /* Validate input and output clock sources */
->         clk_index[IN] = clk_map[IN][config->inclk];
->         clk_index[OUT] = clk_map[OUT][config->outclk];
-> @@ -380,8 +427,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
->         /* Apply configurations for pre- and post-processing */
->         regmap_update_bits(asrc_priv->regmap, REG_ASRCFG,
->                            ASRCFG_PREMODi_MASK(index) | ASRCFG_POSTMODi_MASK(index),
-> -                          ASRCFG_PREMOD(index, process_option[in][out][0]) |
-> -                          ASRCFG_POSTMOD(index, process_option[in][out][1]));
-> +                          ASRCFG_PREMOD(index, pre_proc) |
-> +                          ASRCFG_POSTMOD(index, post_proc));
->
->         return fsl_asrc_set_ideal_ratio(pair, inrate, outrate);
->  }
-> --
-> 1.9.1
->
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ac71317e6be01812cc0c54d8be6d3c1139c8380b Mon Sep 17 00:00:00 2001
+From: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Date: Wed, 10 Apr 2019 16:23:38 +0200
+Subject: [PATCH] ASoC: wcd9335: Fix missing regmap requirement
+
+wcd9335.c: undefined reference to 'devm_regmap_add_irq_chip'
+
+Signed-off-by: Marc Gonzalez <marc.w.gonzalez@free.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 419114edfd57..667fc1d59e18 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1151,6 +1151,7 @@ config SND_SOC_WCD9335
+ 	tristate "WCD9335 Codec"
+ 	depends on SLIMBUS
+ 	select REGMAP_SLIMBUS
++	select REGMAP_IRQ
+ 	help
+ 	  The WCD9335 is a standalone Hi-Fi audio CODEC IC, supports
+ 	  Qualcomm Technologies, Inc. (QTI) multimedia solutions,
+-- 
+2.20.1
