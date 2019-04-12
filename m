@@ -1,86 +1,55 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH] ASoC: codec: hdac_hdmi add device_link to
- card device
-Date: Fri, 12 Apr 2019 03:04:24 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1952818DDD@SHSMSX103.ccr.corp.intel.com>
-References: <1555036832-2850-1-git-send-email-libin.yang@intel.com>
- <8c33f4c2-39ce-a620-b540-c933e4157b83@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24650F80716
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 05:04:28 +0200 (CEST)
-In-Reply-To: <8c33f4c2-39ce-a620-b540-c933e4157b83@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH] ASoC: sprd: Add reserved DMA memory support
+Date: Fri, 12 Apr 2019 14:40:17 +0800
+Message-ID: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, baolin.wang@linaro.org, orsonzhai@gmail.com, zhang.lyra@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre,
+For Spreadtrum audio platform driver, it need allocate a larger DMA buffer
+dynamically to copy audio data between userspace and kernel space, but that
+will increase the risk of memory allocation failure especially the system
+is under heavy load situation.
 
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Friday, April 12, 2019 11:00 AM
->To: Yang, Libin <libin.yang@intel.com>; alsa-devel@alsa-project.org;
->tiwai@suse.de; broonie@kernel.org
->Subject: Re: [alsa-devel] [PATCH] ASoC: codec: hdac_hdmi add device_link to
->card device
->
->On 4/11/19 9:40 PM, libin.yang@intel.com wrote:
->> From: Libin Yang <libin.yang@intel.com>
->>
->> In resume from S3, HDAC HDMI codec driver dapm event callback may be
->> operated before HDMI codec driver turns on the display audio power
->> domain because of the contest between display driver and hdmi codec
->driver.
->>
->> This patch adds the device_link between soc card device (consumer) and
->> hdmi codec device (supplier) to make sure the sequence is always correct.
->>
->> Signed-off-by: Libin Yang <libin.yang@intel.com>
->> ---
->>   sound/soc/codecs/hdac_hdmi.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/sound/soc/codecs/hdac_hdmi.c
->> b/sound/soc/codecs/hdac_hdmi.c index 5eeb0fe..8bb883e 100644
->> --- a/sound/soc/codecs/hdac_hdmi.c
->> +++ b/sound/soc/codecs/hdac_hdmi.c
->> @@ -1855,6 +1855,15 @@ static int hdmi_codec_probe(struct
->snd_soc_component *component)
->>   	hdmi->card = dapm->card->snd_card;
->>
->>   	/*
->> +	 * Setup a device_link between card device and HDMI codec device.
->> +	 * The card device is the consumer and the HDMI codec device is
->> +	 * the supplier. With this setting, we can make sure that the audio
->> +	 * domain in display power will be always turned on before operating
->> +	 * on the HDMI audio codec registers.
->> +	 */
->> +	device_link_add(component->card->dev, &hdev->dev,
->DL_FLAG_RPM_ACTIVE |
->> +			DL_FLAG_AUTOREMOVE_CONSUMER);
->
->Should device_link_free() be added to hdmi_codec_remove then?
+To make sure the audio can work in this scenario, we usually reserve one
+region of memory to be used as a shared pool of DMA buffers for the
+platform component. So add of_reserved_mem_device_init_by_idx() function
+to initialize the shared pool of DMA buffers to be used by the platform
+component.
 
-As Takashi suggested, I add the DL_FLAG_AUTOREMOVE_CONSUMER flag.
-This will make sure the link will be freed when machine driver are removed.
-And as machine driver depends on the hdac_hdmi module, when
-hdmi_codec_remove() is called, the link is freed already.
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+---
+ sound/soc/sprd/sprd-pcm-dma.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Regards,
-Libin
-
->Thanks!
+diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
+index 9be6d4b..d38ebbb 100644
+--- a/sound/soc/sprd/sprd-pcm-dma.c
++++ b/sound/soc/sprd/sprd-pcm-dma.c
+@@ -6,6 +6,7 @@
+ #include <linux/dma/sprd-dma.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/of_reserved_mem.h>
+ #include <linux/platform_device.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -530,8 +531,14 @@ static void sprd_pcm_free(struct snd_pcm *pcm)
+ 
+ static int sprd_soc_platform_probe(struct platform_device *pdev)
+ {
++	struct device_node *np = pdev->dev.of_node;
+ 	int ret;
+ 
++	ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
++	if (ret)
++		dev_warn(&pdev->dev,
++			 "no reserved DMA memory for audio platform device\n");
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
+ 					      NULL, 0);
+ 	if (ret)
+-- 
+1.7.9.5
