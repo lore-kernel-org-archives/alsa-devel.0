@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 14/21] ASoC: SOF: Intel: add SKL+ platform
-	DAIs
-Date: Fri, 12 Apr 2019 11:08:57 -0500
-Message-ID: <20190412160904.30418-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 11/21] ASoC: SOF: Intel: Add Intel specific
+	HDA stream operations
+Date: Fri, 12 Apr 2019 11:08:54 -0500
+Message-ID: <20190412160904.30418-12-pierre-louis.bossart@linux.intel.com>
 References: <20190412160904.30418-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,24 +22,24 @@ To: alsa-devel@alsa-project.org
 Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Keyon Jie <yang.jie@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add declarations for DAIs and utilities for link DMA management
+Add support or HDA DSP stream operations for Intel HDA DSPs.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 351 ++++++++++++++++++++++++++++++++++
- 1 file changed, 351 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-dai.c
+ sound/soc/sof/intel/hda-stream.c | 692 +++++++++++++++++++++++++++++++
+ 1 file changed, 692 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-stream.c
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
 new file mode 100644
-index 000000000000..830328af19c5
+index 000000000000..6290b2df5e62
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -0,0 +1,351 @@
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -0,0 +1,692 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -47,349 +47,690 @@ index 000000000000..830328af19c5
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Keyon Jie <yang.jie@linux.intel.com>
++// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//	    Rander Wang <rander.wang@intel.com>
++//          Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+#include <sound/pcm_params.h>
++/*
++ * Hardware interface for generic Intel audio DSP HDA IP
++ */
++
++#include <linux/pm_runtime.h>
 +#include <sound/hdaudio_ext.h>
-+#include "../sof-priv.h"
++#include <sound/hda_register.h>
++#include <sound/sof.h>
++#include "../ops.h"
 +#include "hda.h"
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+
-+struct hda_pipe_params {
-+	u8 host_dma_id;
-+	u8 link_dma_id;
-+	u32 ch;
-+	u32 s_freq;
-+	u32 s_fmt;
-+	u8 linktype;
-+	snd_pcm_format_t format;
-+	int link_index;
-+	int stream;
-+	unsigned int host_bps;
-+	unsigned int link_bps;
-+};
-+
 +/*
-+ * Unlike GP dma, there is a set of stream registers in hda controller
-+ * to control the link dma channels. Each register controls one link
-+ * dma channel and the relation is fixed. To make sure FW uses correct
-+ * link dma channels, host allocates stream registers and sends the
-+ * corresponding link dma channels to FW to allocate link dma channel
-+ *
-+ * FIXME: this API is abused in the sense that tx_num and rx_num are
-+ * passed as arguments, not returned. We need to find a better way to
-+ * retrieve the stream tag allocated for the link DMA
++ * set up one of BDL entries for a stream
 + */
-+static int hda_link_dma_get_channels(struct snd_soc_dai *dai,
-+				     unsigned int *tx_num,
-+				     unsigned int *tx_slot,
-+				     unsigned int *rx_num,
-+				     unsigned int *rx_slot)
++static int hda_setup_bdle(struct snd_sof_dev *sdev,
++			  struct snd_dma_buffer *dmab,
++			  struct hdac_stream *stream,
++			  struct sof_intel_dsp_bdl **bdlp,
++			  int offset, int size, int ioc)
 +{
-+	struct hdac_bus *bus;
-+	struct hdac_ext_stream *stream;
-+	struct snd_pcm_substream substream;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct sof_intel_dsp_bdl *bdl = *bdlp;
 +
-+	bus = sof_to_bus(sdev);
++	while (size > 0) {
++		dma_addr_t addr;
++		int chunk;
 +
-+	memset(&substream, 0, sizeof(substream));
-+	if (*tx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for playback");
-+			return -EBUSY;
++		if (stream->frags >= HDA_DSP_MAX_BDL_ENTRIES) {
++			dev_err(sdev->dev, "error: stream frags exceeded\n");
++			return -EINVAL;
 +		}
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, stream);
-+		*tx_slot = hdac_stream(stream)->stream_tag - 1;
++		addr = snd_sgbuf_get_addr(dmab, offset);
++		/* program BDL addr */
++		bdl->addr_l = cpu_to_le32(lower_32_bits(addr));
++		bdl->addr_h = cpu_to_le32(upper_32_bits(addr));
++		/* program BDL size */
++		chunk = snd_sgbuf_get_chunk_size(dmab, offset, size);
++		/* one BDLE should not cross 4K boundary */
++		if (bus->align_bdle_4k) {
++			u32 remain = 0x1000 - (offset & 0xfff);
 +
-+		dev_dbg(bus->dev, "link dma channel %d for playback", *tx_slot);
-+	}
-+
-+	if (*rx_num == 1) {
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_hdac_ext_stream_assign(bus, &substream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
-+		if (!stream) {
-+			dev_err(bus->dev, "error: failed to find a free hda ext stream for capture");
-+			return -EBUSY;
++			if (chunk > remain)
++				chunk = remain;
 +		}
++		bdl->size = cpu_to_le32(chunk);
++		/* only program IOC when the whole segment is processed */
++		size -= chunk;
++		bdl->ioc = (size || !ioc) ? 0 : cpu_to_le32(0x01);
++		bdl++;
++		stream->frags++;
++		offset += chunk;
 +
-+		snd_soc_dai_set_dma_data(dai, &substream, stream);
-+		*rx_slot = hdac_stream(stream)->stream_tag - 1;
-+
-+		dev_dbg(bus->dev, "link dma channel %d for capture", *rx_slot);
++		dev_vdbg(sdev->dev, "bdl, frags:%d, chunk size:0x%x;\n",
++			 stream->frags, chunk);
 +	}
 +
-+	return 0;
++	*bdlp = bdl;
++	return offset;
 +}
 +
-+static int hda_link_dma_params(struct hdac_ext_stream *stream,
-+			       struct hda_pipe_params *params)
++/*
++ * set up Buffer Descriptor List (BDL) for host memory transfer
++ * BDL describes the location of the individual buffers and is little endian.
++ */
++int hda_dsp_stream_setup_bdl(struct snd_sof_dev *sdev,
++			     struct snd_dma_buffer *dmab,
++			     struct hdac_stream *stream)
++{
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	struct sof_intel_dsp_bdl *bdl;
++	int i, offset, period_bytes, periods;
++	int remain, ioc;
++
++	period_bytes = stream->period_bytes;
++	dev_dbg(sdev->dev, "period_bytes:0x%x\n", period_bytes);
++	if (!period_bytes)
++		period_bytes = stream->bufsize;
++
++	periods = stream->bufsize / period_bytes;
++
++	dev_dbg(sdev->dev, "periods:%d\n", periods);
++
++	remain = stream->bufsize % period_bytes;
++	if (remain)
++		periods++;
++
++	/* program the initial BDL entries */
++	bdl = (struct sof_intel_dsp_bdl *)stream->bdl.area;
++	offset = 0;
++	stream->frags = 0;
++
++	/*
++	 * set IOC if don't use position IPC
++	 * and period_wakeup needed.
++	 */
++	ioc = hda->no_ipc_position ?
++	      !stream->no_period_wakeup : 0;
++
++	for (i = 0; i < periods; i++) {
++		if (i == (periods - 1) && remain)
++			/* set the last small entry */
++			offset = hda_setup_bdle(sdev, dmab,
++						stream, &bdl, offset,
++						remain, 0);
++		else
++			offset = hda_setup_bdle(sdev, dmab,
++						stream, &bdl, offset,
++						period_bytes, ioc);
++	}
++
++	return offset;
++}
++
++int hda_dsp_stream_spib_config(struct snd_sof_dev *sdev,
++			       struct hdac_ext_stream *stream,
++			       int enable, u32 size)
 +{
 +	struct hdac_stream *hstream = &stream->hstream;
-+	unsigned char stream_tag = hstream->stream_tag;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_link *link;
-+	unsigned int format_val;
++	u32 mask;
 +
-+	snd_hdac_ext_stream_decouple(bus, stream, true);
-+	snd_hdac_ext_link_stream_reset(stream);
-+
-+	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
-+						 params->format,
-+						 params->link_bps, 0);
-+
-+	dev_dbg(bus->dev, "format_val=%d, rate=%d, ch=%d, format=%d\n",
-+		format_val, params->s_freq, params->ch, params->format);
-+
-+	snd_hdac_ext_link_stream_setup(stream, format_val);
-+
-+	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		list_for_each_entry(link, &bus->hlink_list, list) {
-+			if (link->index == params->link_index)
-+				snd_hdac_ext_link_set_stream_id(link,
-+								stream_tag);
-+		}
++	if (!sdev->bar[HDA_DSP_SPIB_BAR]) {
++		dev_err(sdev->dev, "error: address of spib capability is NULL\n");
++		return -EINVAL;
 +	}
 +
-+	stream->link_prepared = 1;
++	mask = (1 << hstream->index);
++
++	/* enable/disable SPIB for the stream */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_SPIB_BAR,
++				SOF_HDA_ADSP_REG_CL_SPBFIFO_SPBFCCTL, mask,
++				enable << hstream->index);
++
++	/* set the SPIB value */
++	sof_io_write(sdev, stream->spib_addr, size);
 +
 +	return 0;
 +}
 +
-+static int hda_link_hw_params(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params,
-+			      struct snd_soc_dai *dai)
++/* get next unused stream */
++struct hdac_ext_stream *
++hda_dsp_stream_get(struct snd_sof_dev *sdev, int direction)
 +{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_bus *bus = hstream->bus;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct hda_pipe_params p_params = {0};
-+	struct hdac_ext_link *link;
-+	int stream_tag;
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_ext_stream *stream = NULL;
++	struct hdac_stream *s;
 +
-+	link_dev = snd_soc_dai_get_dma_data(dai, substream);
++	spin_lock_irq(&bus->reg_lock);
 +
-+	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
-+	if (!link)
-+		return -EINVAL;
++	/* get an unused stream */
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (s->direction == direction && !s->opened) {
++			s->opened = true;
++			stream = stream_to_hdac_ext_stream(s);
++			break;
++		}
++	}
 +
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
++	spin_unlock_irq(&bus->reg_lock);
 +
-+	/* set the stream tag in the codec dai dma params  */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
++	/* stream found ? */
++	if (!stream)
++		dev_err(sdev->dev, "error: no free %s streams\n",
++			direction == SNDRV_PCM_STREAM_PLAYBACK ?
++			"playback" : "capture");
 +
-+	p_params.s_fmt = snd_pcm_format_width(params_format(params));
-+	p_params.ch = params_channels(params);
-+	p_params.s_freq = params_rate(params);
-+	p_params.stream = substream->stream;
-+	p_params.link_dma_id = stream_tag - 1;
-+	p_params.link_index = link->index;
-+	p_params.format = params_format(params);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		p_params.link_bps = codec_dai->driver->playback.sig_bits;
-+	else
-+		p_params.link_bps = codec_dai->driver->capture.sig_bits;
-+
-+	return hda_link_dma_params(link_dev, &p_params);
++	return stream;
 +}
 +
-+static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
++/* free a stream */
++int hda_dsp_stream_put(struct snd_sof_dev *sdev, int direction, int stream_tag)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_sof_dev *sdev =
-+		snd_soc_component_get_drvdata(dai->component);
-+	struct snd_sof_pcm *spcm;
-+	int stream = substream->stream;
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_stream *s;
 +
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm)
-+		return -EINVAL;
++	spin_lock_irq(&bus->reg_lock);
 +
-+	/* setup hw_params again only if resuming from system suspend */
-+	if (!spcm->hw_params_upon_resume[stream])
-+		return 0;
++	/* find used stream */
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (s->direction == direction &&
++		    s->opened && s->stream_tag == stream_tag) {
++			s->opened = false;
++			spin_unlock_irq(&bus->reg_lock);
++			return 0;
++		}
++	}
 +
-+	dev_dbg(sdev->dev, "hda: prepare stream %d dir %d\n",
-+		spcm->pcm.pcm_id, substream->stream);
++	spin_unlock_irq(&bus->reg_lock);
 +
-+	return hda_link_hw_params(substream, &rtd->dpcm[stream].hw_params,
-+				  dai);
++	dev_dbg(sdev->dev, "stream_tag %d not opened!\n", stream_tag);
++	return -ENODEV;
 +}
 +
-+static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
++int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
++			   struct hdac_ext_stream *stream, int cmd)
 +{
-+	struct hdac_ext_stream *link_dev =
-+				snd_soc_dai_get_dma_data(dai, substream);
-+	int ret;
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
 +
-+	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
++	/* cmd must be for audio stream */
 +	switch (cmd) {
 +	case SNDRV_PCM_TRIGGER_RESUME:
-+		/* set up hw_params */
-+		ret = hda_link_pcm_prepare(substream, dai);
-+		if (ret < 0) {
-+			dev_err(dai->dev,
-+				"error: setting up hw_params during resume\n");
-+			return ret;
-+		}
-+
-+		/* fallthrough */
-+	case SNDRV_PCM_TRIGGER_START:
 +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_hdac_ext_link_stream_start(link_dev);
++	case SNDRV_PCM_TRIGGER_START:
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
++					1 << hstream->index,
++					1 << hstream->index);
++
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++					sd_offset,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK);
++
++		hstream->running = true;
 +		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 +	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
 +	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_hdac_ext_link_stream_clear(link_dev);
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++					sd_offset,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK, 0x0);
++
++		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, sd_offset +
++				  SOF_HDA_ADSP_REG_CL_SD_STS,
++				  SOF_HDA_CL_DMA_SD_INT_MASK);
++
++		hstream->running = false;
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
++					1 << hstream->index, 0x0);
 +		break;
 +	default:
++		dev_err(sdev->dev, "error: unknown command: %d\n", cmd);
 +		return -EINVAL;
 +	}
++
 +	return 0;
 +}
 +
 +/*
-+ * FIXME: This API is also abused since it's used for two purposes.
-+ * when the substream argument is NULL this function is used for cleanups
-+ * that aren't necessarily required, and called explicitly by handling
-+ * ASoC core structures, which is not recommended.
-+ * This part will be reworked in follow-up patches.
++ * prepare for common hdac registers settings, for both code loader
++ * and normal stream.
 + */
-+static int hda_link_hw_free(struct snd_pcm_substream *substream,
-+			    struct snd_soc_dai *dai)
++int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
++			     struct hdac_ext_stream *stream,
++			     struct snd_dma_buffer *dmab,
++			     struct snd_pcm_hw_params *params)
 +{
-+	const char *name;
-+	unsigned int stream_tag;
-+	struct hdac_bus *bus;
-+	struct hdac_ext_link *link;
-+	struct hdac_stream *hstream;
-+	struct hdac_ext_stream *stream;
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct hdac_ext_stream *link_dev;
-+	struct snd_pcm_substream pcm_substream;
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
++	int ret, timeout = HDA_DSP_STREAM_RESET_TIMEOUT;
++	u32 val, mask;
 +
-+	memset(&pcm_substream, 0, sizeof(pcm_substream));
-+	if (substream) {
-+		hstream = substream->runtime->private_data;
-+		bus = hstream->bus;
-+		rtd = snd_pcm_substream_chip(substream);
-+		link_dev = snd_soc_dai_get_dma_data(dai, substream);
-+		snd_hdac_ext_stream_decouple(bus, link_dev, false);
-+		name = rtd->codec_dai->component->name;
-+		link = snd_hdac_ext_bus_get_link(bus, name);
-+		if (!link)
-+			return -EINVAL;
++	if (!stream) {
++		dev_err(sdev->dev, "error: no stream available\n");
++		return -ENODEV;
++	}
 +
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			stream_tag = hdac_stream(link_dev)->stream_tag;
-+			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
-+		}
++	/* decouple host and link DMA */
++	mask = 0x1 << hstream->index;
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
++				mask, mask);
 +
-+		link_dev->link_prepared = 0;
++	if (!dmab) {
++		dev_err(sdev->dev, "error: no dma buffer allocated!\n");
++		return -ENODEV;
++	}
++
++	/* clear stream status */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
++				SOF_HDA_CL_DMA_SD_INT_MASK |
++				SOF_HDA_SD_CTL_DMA_START, 0);
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++				sd_offset + SOF_HDA_ADSP_REG_CL_SD_STS,
++				SOF_HDA_CL_DMA_SD_INT_MASK,
++				SOF_HDA_CL_DMA_SD_INT_MASK);
++
++	/* stream reset */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset, 0x1,
++				0x1);
++	udelay(3);
++	do {
++		val = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
++				       sd_offset);
++		if (val & 0x1)
++			break;
++	} while (--timeout);
++	if (timeout == 0) {
++		dev_err(sdev->dev, "error: stream reset failed\n");
++		return -ETIMEDOUT;
++	}
++
++	timeout = HDA_DSP_STREAM_RESET_TIMEOUT;
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset, 0x1,
++				0x0);
++
++	/* wait for hardware to report that stream is out of reset */
++	udelay(3);
++	do {
++		val = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
++				       sd_offset);
++		if ((val & 0x1) == 0)
++			break;
++	} while (--timeout);
++	if (timeout == 0) {
++		dev_err(sdev->dev, "error: timeout waiting for stream reset\n");
++		return -ETIMEDOUT;
++	}
++
++	if (hstream->posbuf)
++		*hstream->posbuf = 0;
++
++	/* reset BDL address */
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL,
++			  0x0);
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU,
++			  0x0);
++
++	/* clear stream status */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
++				SOF_HDA_CL_DMA_SD_INT_MASK |
++				SOF_HDA_SD_CTL_DMA_START, 0);
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++				sd_offset + SOF_HDA_ADSP_REG_CL_SD_STS,
++				SOF_HDA_CL_DMA_SD_INT_MASK,
++				SOF_HDA_CL_DMA_SD_INT_MASK);
++
++	hstream->frags = 0;
++
++	ret = hda_dsp_stream_setup_bdl(sdev, dmab, hstream);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: set up of BDL failed\n");
++		return ret;
++	}
++
++	/* program stream tag to set up stream descriptor for DMA */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
++				SOF_HDA_CL_SD_CTL_STREAM_TAG_MASK,
++				hstream->stream_tag <<
++				SOF_HDA_CL_SD_CTL_STREAM_TAG_SHIFT);
++
++	/* program cyclic buffer length */
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_CBL,
++			  hstream->bufsize);
++
++	/*
++	 * Recommended hardware programming sequence for HDAudio DMA format
++	 *
++	 * 1. Put DMA into coupled mode by clearing PPCTL.PROCEN bit
++	 *    for corresponding stream index before the time of writing
++	 *    format to SDxFMT register.
++	 * 2. Write SDxFMT
++	 * 3. Set PPCTL.PROCEN bit for corresponding stream index to
++	 *    enable decoupled mode
++	 */
++
++	/* couple host and link DMA, disable DSP features */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
++				mask, 0);
++
++	/* program stream format */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++				sd_offset +
++				SOF_HDA_ADSP_REG_CL_SD_FORMAT,
++				0xffff, hstream->format_val);
++
++	/* decouple host and link DMA, enable DSP features */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
++				mask, mask);
++
++	/* program last valid index */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++				sd_offset + SOF_HDA_ADSP_REG_CL_SD_LVI,
++				0xffff, (hstream->frags - 1));
++
++	/* program BDL address */
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL,
++			  (u32)hstream->bdl.addr);
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU,
++			  upper_32_bits(hstream->bdl.addr));
++
++	/* enable position buffer */
++	if (!(snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_ADSP_DPLBASE)
++				& SOF_HDA_ADSP_DPLBASE_ENABLE)) {
++		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_ADSP_DPUBASE,
++				  upper_32_bits(bus->posbuf.addr));
++		snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_ADSP_DPLBASE,
++				  (u32)bus->posbuf.addr |
++				  SOF_HDA_ADSP_DPLBASE_ENABLE);
++	}
++
++	/* set interrupt enable bits */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
++				SOF_HDA_CL_DMA_SD_INT_MASK,
++				SOF_HDA_CL_DMA_SD_INT_MASK);
++
++	/* read FIFO size */
++	if (hstream->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		hstream->fifo_size =
++			snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
++					 sd_offset +
++					 SOF_HDA_ADSP_REG_CL_SD_FIFOSIZE);
++		hstream->fifo_size &= 0xffff;
++		hstream->fifo_size += 1;
 +	} else {
-+		/* release all hda streams when dai link is unloaded */
-+		pcm_substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
++		hstream->fifo_size = 0;
++	}
++
++	return ret;
++}
++
++irqreturn_t hda_dsp_stream_interrupt(int irq, void *context)
++{
++	struct hdac_bus *bus = context;
++	u32 status;
++
++	if (!pm_runtime_active(bus->dev))
++		return IRQ_NONE;
++
++	spin_lock(&bus->reg_lock);
++
++	status = snd_hdac_chip_readl(bus, INTSTS);
++	if (status == 0 || status == 0xffffffff) {
++		spin_unlock(&bus->reg_lock);
++		return IRQ_NONE;
++	}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	/* clear rirb int */
++	status = snd_hdac_chip_readb(bus, RIRBSTS);
++	if (status & RIRB_INT_MASK) {
++		if (status & RIRB_INT_RESPONSE)
++			snd_hdac_bus_update_rirb(bus);
++		snd_hdac_chip_writeb(bus, RIRBSTS, RIRB_INT_MASK);
++	}
++#endif
++
++	spin_unlock(&bus->reg_lock);
++
++	return snd_hdac_chip_readl(bus, INTSTS) ? IRQ_WAKE_THREAD : IRQ_HANDLED;
++}
++
++irqreturn_t hda_dsp_stream_threaded_handler(int irq, void *context)
++{
++	struct hdac_bus *bus = context;
++	struct sof_intel_hda_dev *sof_hda = bus_to_sof_hda(bus);
++	struct hdac_stream *s;
++	u32 status = snd_hdac_chip_readl(bus, INTSTS);
++	u32 sd_status;
++
++	/* check streams */
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (status & (1 << s->index) && s->opened) {
++			sd_status = snd_hdac_stream_readb(s, SD_STS);
++
++			dev_vdbg(bus->dev, "stream %d status 0x%x\n",
++				 s->index, sd_status);
++
++			snd_hdac_stream_writeb(s, SD_STS, SD_INT_MASK);
++
++			if (!s->substream ||
++			    !s->running ||
++			    (sd_status & SOF_HDA_CL_DMA_SD_INT_COMPLETE) == 0)
++				continue;
++
++			/* Inform ALSA only in case not do that with IPC */
++			if (sof_hda->no_ipc_position)
++				snd_pcm_period_elapsed(s->substream);
++
++		}
++	}
++
++	return IRQ_HANDLED;
++}
++
++int hda_dsp_stream_init(struct snd_sof_dev *sdev)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_ext_stream *stream;
++	struct hdac_stream *hstream;
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	int sd_offset;
++	int i, num_playback, num_capture, num_total, ret;
++	u32 gcap;
++
++	gcap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCAP);
++	dev_dbg(sdev->dev, "hda global caps = 0x%x\n", gcap);
++
++	/* get stream count from GCAP */
++	num_capture = (gcap >> 8) & 0x0f;
++	num_playback = (gcap >> 12) & 0x0f;
++	num_total = num_playback + num_capture;
++
++	dev_dbg(sdev->dev, "detected %d playback and %d capture streams\n",
++		num_playback, num_capture);
++
++	if (num_playback >= SOF_HDA_PLAYBACK_STREAMS) {
++		dev_err(sdev->dev, "error: too many playback streams %d\n",
++			num_playback);
++		return -EINVAL;
++	}
++
++	if (num_capture >= SOF_HDA_CAPTURE_STREAMS) {
++		dev_err(sdev->dev, "error: too many capture streams %d\n",
++			num_playback);
++		return -EINVAL;
++	}
++
++	/*
++	 * mem alloc for the position buffer
++	 * TODO: check position buffer update
++	 */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
++				  SOF_HDA_DPIB_ENTRY_SIZE * num_total,
++				  &bus->posbuf);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: posbuffer dma alloc failed\n");
++		return -ENOMEM;
++	}
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	/* mem alloc for the CORB/RIRB ringbuffers */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
++				  PAGE_SIZE, &bus->rb);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: RB alloc failed\n");
++		return -ENOMEM;
++	}
++#endif
++
++	/* create capture streams */
++	for (i = 0; i < num_capture; i++) {
++		struct sof_intel_hda_stream *hda_stream;
++
++		hda_stream = devm_kzalloc(sdev->dev, sizeof(*hda_stream),
++					  GFP_KERNEL);
++		if (!hda_stream)
++			return -ENOMEM;
++
++		stream = &hda_stream->hda_stream;
++
++		stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++			SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
++
++		stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++			SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
++			SOF_HDA_PPLC_INTERVAL * i;
++
++		/* do we support SPIB */
++		if (sdev->bar[HDA_DSP_SPIB_BAR]) {
++			stream->spib_addr = sdev->bar[HDA_DSP_SPIB_BAR] +
++				SOF_HDA_SPIB_BASE + SOF_HDA_SPIB_INTERVAL * i +
++				SOF_HDA_SPIB_SPIB;
++
++			stream->fifo_addr = sdev->bar[HDA_DSP_SPIB_BAR] +
++				SOF_HDA_SPIB_BASE + SOF_HDA_SPIB_INTERVAL * i +
++				SOF_HDA_SPIB_MAXFIFO;
 +		}
 +
-+		pcm_substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		stream = snd_soc_dai_get_dma_data(dai, &pcm_substream);
-+		if (stream) {
-+			snd_soc_dai_set_dma_data(dai, &pcm_substream, NULL);
-+			snd_hdac_ext_stream_release(stream,
-+						    HDAC_EXT_STREAM_TYPE_LINK);
++		hstream = &stream->hstream;
++		hstream->bus = bus;
++		hstream->sd_int_sta_mask = 1 << i;
++		hstream->index = i;
++		sd_offset = SOF_STREAM_SD_OFFSET(hstream);
++		hstream->sd_addr = sdev->bar[HDA_DSP_HDA_BAR] + sd_offset;
++		hstream->stream_tag = i + 1;
++		hstream->opened = false;
++		hstream->running = false;
++		hstream->direction = SNDRV_PCM_STREAM_CAPTURE;
++
++		/* memory alloc for stream BDL */
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
++					  HDA_DSP_BDL_SIZE, &hstream->bdl);
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: stream bdl dma alloc failed\n");
++			return -ENOMEM;
 +		}
++		hstream->posbuf = (__le32 *)(bus->posbuf.area +
++			(hstream->index) * 8);
++
++		list_add_tail(&hstream->list, &bus->stream_list);
++	}
++
++	/* create playback streams */
++	for (i = num_capture; i < num_total; i++) {
++		struct sof_intel_hda_stream *hda_stream;
++
++		hda_stream = devm_kzalloc(sdev->dev, sizeof(*hda_stream),
++					  GFP_KERNEL);
++		if (!hda_stream)
++			return -ENOMEM;
++
++		stream = &hda_stream->hda_stream;
++
++		/* we always have DSP support */
++		stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++			SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
++
++		stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++			SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
++			SOF_HDA_PPLC_INTERVAL * i;
++
++		/* do we support SPIB */
++		if (sdev->bar[HDA_DSP_SPIB_BAR]) {
++			stream->spib_addr = sdev->bar[HDA_DSP_SPIB_BAR] +
++				SOF_HDA_SPIB_BASE + SOF_HDA_SPIB_INTERVAL * i +
++				SOF_HDA_SPIB_SPIB;
++
++			stream->fifo_addr = sdev->bar[HDA_DSP_SPIB_BAR] +
++				SOF_HDA_SPIB_BASE + SOF_HDA_SPIB_INTERVAL * i +
++				SOF_HDA_SPIB_MAXFIFO;
++		}
++
++		hstream = &stream->hstream;
++		hstream->bus = bus;
++		hstream->sd_int_sta_mask = 1 << i;
++		hstream->index = i;
++		sd_offset = SOF_STREAM_SD_OFFSET(hstream);
++		hstream->sd_addr = sdev->bar[HDA_DSP_HDA_BAR] + sd_offset;
++		hstream->stream_tag = i - num_capture + 1;
++		hstream->opened = false;
++		hstream->running = false;
++		hstream->direction = SNDRV_PCM_STREAM_PLAYBACK;
++
++		/* mem alloc for stream BDL */
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
++					  HDA_DSP_BDL_SIZE, &hstream->bdl);
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: stream bdl dma alloc failed\n");
++			return -ENOMEM;
++		}
++
++		hstream->posbuf = (__le32 *)(bus->posbuf.area +
++			(hstream->index) * 8);
++
++		list_add_tail(&hstream->list, &bus->stream_list);
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops hda_link_dai_ops = {
-+	.hw_params = hda_link_hw_params,
-+	.hw_free = hda_link_hw_free,
-+	.trigger = hda_link_pcm_trigger,
-+	.prepare = hda_link_pcm_prepare,
-+	.get_channel_map = hda_link_dma_get_channels,
-+};
++void hda_dsp_stream_free(struct snd_sof_dev *sdev)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct hdac_stream *s, *_s;
++	struct hdac_ext_stream *stream;
++	struct sof_intel_hda_stream *hda_stream;
++
++	/* free position buffer */
++	if (bus->posbuf.area)
++		snd_dma_free_pages(&bus->posbuf);
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++	/* free position buffer */
++	if (bus->rb.area)
++		snd_dma_free_pages(&bus->rb);
 +#endif
 +
-+/*
-+ * common dai driver for skl+ platforms.
-+ * some products who use this DAI array only physically have a subset of
-+ * the DAIs, but no harm is done here by adding the whole set.
-+ */
-+struct snd_soc_dai_driver skl_dai[] = {
-+{
-+	.name = "SSP0 Pin",
-+},
-+{
-+	.name = "SSP1 Pin",
-+},
-+{
-+	.name = "SSP2 Pin",
-+},
-+{
-+	.name = "SSP3 Pin",
-+},
-+{
-+	.name = "SSP4 Pin",
-+},
-+{
-+	.name = "SSP5 Pin",
-+},
-+{
-+	.name = "DMIC01 Pin",
-+},
-+{
-+	.name = "DMIC16k Pin",
-+},
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+{
-+	.name = "iDisp1 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp2 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "iDisp3 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &hda_link_dai_ops,
-+},
-+#endif
-+};
++	list_for_each_entry_safe(s, _s, &bus->stream_list, list) {
++		/* TODO: decouple */
++
++		/* free bdl buffer */
++		if (s->bdl.area)
++			snd_dma_free_pages(&s->bdl);
++		list_del(&s->list);
++		stream = stream_to_hdac_ext_stream(s);
++		hda_stream = container_of(stream, struct sof_intel_hda_stream,
++					  hda_stream);
++		devm_kfree(sdev->dev, hda_stream);
++	}
++}
 -- 
 2.17.1
