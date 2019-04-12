@@ -1,55 +1,80 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: [PATCH] ASoC: sprd: Add reserved DMA memory support
-Date: Fri, 12 Apr 2019 14:40:17 +0800
-Message-ID: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, baolin.wang@linaro.org, orsonzhai@gmail.com, zhang.lyra@gmail.com
+From: Jan Kotas <jank@cadence.com>
+Subject: Re: [PATCH] soundwire: fix pm_runtime_get_sync return
+ code checks
+Date: Fri, 12 Apr 2019 08:29:04 +0000
+Message-ID: <84D8A5FD-F5DE-4C57-B39F-D772A3C23400@global.cadence.com>
+References: <20190405072655.25995-1-jank@cadence.com>
+ <367316fa-9d92-2dfc-32c4-3e0e8c76ef43@linux.intel.com>
+ <92538D7E-C628-40AC-AFE9-52C97B3BC42D@global.cadence.com>
+ <ace7e7f7-c3bf-f38c-0e70-da826175e3c5@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0a-0014ca01.pphosted.com (mx0b-0014ca01.pphosted.com
+ [208.86.201.193])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADFB0F89616
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 10:29:13 +0200 (CEST)
+In-Reply-To: <ace7e7f7-c3bf-f38c-0e70-da826175e3c5@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "vkoul@kernel.org" <vkoul@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jan Kotas <jank@cadence.com>, "sanyog.r.kale@intel.com" <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For Spreadtrum audio platform driver, it need allocate a larger DMA buffer
-dynamically to copy audio data between userspace and kernel space, but that
-will increase the risk of memory allocation failure especially the system
-is under heavy load situation.
-
-To make sure the audio can work in this scenario, we usually reserve one
-region of memory to be used as a shared pool of DMA buffers for the
-platform component. So add of_reserved_mem_device_init_by_idx() function
-to initialize the shared pool of DMA buffers to be used by the platform
-component.
-
-Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
----
- sound/soc/sprd/sprd-pcm-dma.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-index 9be6d4b..d38ebbb 100644
---- a/sound/soc/sprd/sprd-pcm-dma.c
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -6,6 +6,7 @@
- #include <linux/dma/sprd-dma.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -530,8 +531,14 @@ static void sprd_pcm_free(struct snd_pcm *pcm)
- 
- static int sprd_soc_platform_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	int ret;
- 
-+	ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
-+	if (ret)
-+		dev_warn(&pdev->dev,
-+			 "no reserved DMA memory for audio platform device\n");
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
- 					      NULL, 0);
- 	if (ret)
--- 
-1.7.9.5
+DQoNCk9uIDggQXByIDIwMTksIGF0IDE5OjQzLCBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJl
+LWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPG1haWx0bzpwaWVycmUtbG91aXMuYm9zc2Fy
+dEBsaW51eC5pbnRlbC5jb20+PiB3cm90ZToNCg0KDQpPbiA0LzgvMTkgMjoxMiBBTSwgSmFuIEtv
+dGFzIHdyb3RlOg0KT24gNSBBcHIgMjAxOSwgYXQgMTc6MDQsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0
+IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb208bWFpbHRvOnBpZXJyZS1sb3Vp
+cy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4+IHdyb3RlOg0KDQpPbiA0LzUvMTkgMjoyNiBBTSwg
+SmFuIEtvdGFzIHdyb3RlOg0KDQogICAgcmV0ID0gcG1fcnVudGltZV9nZXRfc3luYyhzbGF2ZS0+
+YnVzLT5kZXYpOw0KLSBpZiAocmV0IDwgMCkNCisgaWYgKHJldCA8IDAgJiYgcmV0ICE9IC1FQUND
+RVMpDQoNClRoZXJlIHdhcyBhIHBhdGNoIHN1Ym1pdHRlZCBvbiAzLzI4IGJ5IFNyaW5pdmFzIEth
+bmRhZ2F0bGEgd2hvIHN1Z2dlc3RlZCBhbiBhbHRlcm5hdGUgc29sdXRpb24gZm9yIGV4YWN0bHkg
+dGhlIHNhbWUgY29kZS4NCg0KKyBpZiAocG1fcnVudGltZV9lbmFibGVkKHNsYXZlLT5idXMtPmRl
+dikpIHsNCisgcmV0ID0gcG1fcnVudGltZV9nZXRfc3luYyhzbGF2ZS0+YnVzLT5kZXYpOw0KKyBp
+ZiAocmV0IDwgMCkNCisgcmV0dXJuIHJldDsNCg0KSSBhbSBmYXIgZnJvbSBhbiBleHBlcnQgb24g
+cG1fcnVudGltZSBidXQgU3Jpbml2YXMnIHNvbHV0aW9uIGxvb2tzIG1vcmUgZWxlZ2FudCB0byBt
+ZS4NCkhlbGxvIFBpZXJyZSwNClBsZWFzZSB0YWtlIGEgbG9vayBhdCB0aGlzIHBhdGNoLCB0aGF0
+IHdhcyBteSBpbnNwaXJhdGlvbjoNCmh0dHBzOi8vdXJsZGVmZW5zZS5wcm9vZnBvaW50LmNvbS92
+Mi91cmw/dT1odHRwcy0zQV9fbGlzdHMubGludXhmb3VuZGF0aW9uLm9yZ19waXBlcm1haWxfbGlu
+dXgtMkRwbV8yMDExLTJESnVuZV8wMzE5MzAuaHRtbCZkPUR3SUNhUSZjPWFVcTk4M0wycHVlMkZx
+S0ZvUDZQR0hNSlF5b0o3a2wzczNHWi1faGFYcVkmcj1nN0dBUUVOVlh4X1JRZHlYSEluUE1nJm09
+YjdGMHRqM2lMX2lxTUIxZzI0b1NIZmlaRVhyX3ZjREkyZ2Z0cXE1SDJNZyZzPWNTZUp6M00zNFRH
+WWRBYlV2aDBDcnFrdzdJTmdHYzhaMnVhSVN0SEFyUVkmZT0NCg0KVGhlIHR3byBwYXRjaGVzIHNl
+ZW1zIHRvIGJlIGlkZW50aWNhbDoNCg0Kc3RhdGljIGlubGluZSBib29sIHBtX3J1bnRpbWVfZW5h
+YmxlZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQp7DQpyZXR1cm4gIWRldi0+cG93ZXIuZGlzYWJsZV9k
+ZXB0aDsNCn0NCg0Kc3RhdGljIGludCBycG1fcmVzdW1lKCkNClsuLi5dDQplbHNlIGlmIChkZXYt
+PnBvd2VyLmRpc2FibGVfZGVwdGggPiAwKQ0KcmV0dmFsID0gLUVBQ0NFUzsNCg0KDQpIb3dldmVy
+IEkgYW0gc3RpbGwgbm90IGNsZWFyIG9uIHdoeSB0aGlzIG1pZ2h0IGZhaWwuDQoNCkkgY2FuIG9u
+bHkgdGhpbmsgb2Ygb25lIHBvc3NpYmxlIGV4cGxhbmF0aW9uOiB0aGVyZSBpcyBubyBleHBsaWNp
+dCBwbV9ydW50aW1lX2VuYWJsZSgpIGluIHRoZSBzb3VuZHdpcmUgY29kZSwgc28gbWF5YmUgdGhl
+IGV4cGVjdGF0aW9uIGlzIHRoYXQgdGhlIHBtX3J1bnRpbWUgc3RhdHVzIGlzIGluaGVyaXRlZCBm
+cm9tIHRoZSBwYXJlbnQgKGluIHRoZSBpbnRlbCBjYXNlIHRoZSBQQ0kgZHJpdmVyKSwgYW5kIHRo
+YXQncyBtaXNzaW5nIGluIG5vbi1pbnRlbCBjb25maWd1cmF0aW9ucz8NCg0KVGhlIFBNIGltcGxl
+bWVudGF0aW9uIGZvciBzb3VuZHdpcmUgc2VlbXMgdG8gYmUgaW5jb21wbGV0ZS4NCkkgdGhpbmsg
+aXQgcmVsaWVzIG9uIGVpdGhlciBQQ0llIG9yIHNvbWUgb3RoZXIgSW50ZWwtc3BlY2lmaWMgY29k
+ZS4NClRoZXJlIGFyZSBqdXN0IGEgZmV3IHBtXyBmdW5jdGlvbiBjYWxscyBpbiB0aGUgZW50aXJl
+DQpkcml2ZXJzL3NvdW5kd2lyZSBkaXJlY3RvcnkuDQpJ4oCZbSB0ZXN0aW5nIFNvdW5kV2lyZSBh
+cyBhIHBsYXRmb3JtLCB3aXRoIGFuIGFybTY0IENQVSwNCmFuZCBpdCBkb2VzbuKAmXQgc2VlbSB0
+byBiZSB3b3JraW5nIGluIGl0cyBjdXJyZW50IGZvcm0uDQoNCg0KSSBhbHNvIHRvb2sgYSBsb29r
+LCBhbmQgaXQgc2VlbXMgdGhlIHZhbHVlIHJldHVybmVkIGJ5DQpwbV9ydW50aW1lX2dldF9zeW5j
+aXMgc2ltcGx5IGlnbm9yZWQgaW4gYSBsb3Qgb2YgcGxhY2VzLA0Kc28gY2hlY2tpbmcgaXRzIHZh
+bHVlIG1heSBiZSBleGNlc3NpdmUuDQpCdXQgbm90IGNoZWNraW5nIHNlZW1zIGNhcmVsZXNzIGF0
+IGJlc3TigKYNCknigJltIG5vdCBhbiBleHBlcnQgb24gcG0sIGp1c3QgbG9va2VkIGluIHRoZSBz
+b3VyY2VzLg0KSXQgbWF5IGJlIGJlc3QgdG8gY29uc3VsdCBpdCB3aXRoIHRoZSBwbSBtYWludGFp
+bmVycy4NCg0KSmFuDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
