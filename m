@@ -1,55 +1,59 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] regmap: soundwire: fix Kconfig
- select/depend issue
-Date: Fri, 12 Apr 2019 09:07:41 -0500
-Message-ID: <bd9a5c75-8519-b6ac-ca16-7fa93c706ead@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 0/2] soundwire: fix Kconfig select/depend
+ issues
+Date: Fri, 12 Apr 2019 09:17:35 -0500
+Message-ID: <aaa3f184-bcd5-70fd-b8fa-e6e361253ede@linux.intel.com>
 References: <20190411192814.10663-1-pierre-louis.bossart@linux.intel.com>
- <20190411192814.10663-2-pierre-louis.bossart@linux.intel.com>
- <s5ho95bpqis.wl-tiwai@suse.de>
+ <189ee558-766c-0e94-9570-3bf283681795@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5ho95bpqis.wl-tiwai@suse.de>
+In-Reply-To: <189ee558-766c-0e94-9570-3bf283681795@linaro.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the reviews
 
->> The mechanism should be
->>
->> config CODEC_XYX_SDW
->>         depends on SOUNDWIRE
->>         select REGMAP_SOUNDWIRE
->>
->> config REGMAP_SOUNDWIRE
->>         depends on SOUNDWIRE
->>         select SOUNDWIRE_BUS
+
+On 4/12/19 5:06 AM, Srinivas Kandagatla wrote:
 > 
-> To be noted, in general you can't do put both depends-on and select.
-> The select always wins.  So the depends-on in REGMAP_SOUNDWIRE is more
-> or less moot.
+> 
+> On 11/04/2019 20:28, Pierre-Louis Bossart wrote:
+>> 0-day/Kbuild starts complaining about missed module dependencies and
+>> compilation issues. Since codecs and soc drivers need to be compilable
+>> independently, let's fix this using the following model:
+>>
+>> SOUNDWIRE_INTEL ---- select -----------
+>>                                        |
+>>                       v
+>> REGMAP_SOUNDWIRE --- select ---> SOUNDWIRE_BUS
+>>
+> 
+> Last time when I looked at this, Kconfig symbols SOUNDWIRE_BUS and 
+> SOUNDWIRE looked totally redundant and bit over done.
+> 
+> Removing SOUNDWIRE_BUS Kconfig did clean it up and made it bit more 
+> align with others
 
+Good point, but no. This is intentional and follows the Kconfig pattern 
+pattern described by Takashi at https://lkml.org/lkml/2017/11/17/47
 
-ok. To double-check, the example below would be legit, yes?
+yes, this SOUNDWIRE is overkill for now, but let's assume there is a 
+second non-intel implementation (which I understand as very likely given 
+all the threads on ARM64 support). In that case you'd really want a 
+top-level selector option that has no actual compilation impact - not 
+used in any Makefile or code - but enables the sub-options and let 
+users/distros select the platforms they care about.
 
-  config CODEC_XYX_SDW
-	 tristate "XYZ SDW Codec"
-          depends on SOUNDWIRE
-          select REGMAP_SOUNDWIRE
+SOUNDWIRE_BUS is really the lowest-common denominator that will be used 
+by all drivers at the end.
 
-  config REGMAP_SOUNDWIRE
-          select SOUNDWIRE_BUS
+> regarding REGMAP_SOUNDWIRE, It should be selected by the codec/soundwire 
+> slave drivers isn't it?
 
-it'd follow the typical pattern seen in sound/soc/codecs/Kconfig:
-
-config SND_SOC_CS4265
-	tristate "Cirrus Logic CS4265 CODEC"
-	depends on I2C
-	select REGMAP_I2C
-
+yes, that was the intent.
 Thanks
 -Pierre
