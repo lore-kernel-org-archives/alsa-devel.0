@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 06/21] ASoC: SOF: Intel: Add Intel specific
-	HDA DSP HW operations
-Date: Fri, 12 Apr 2019 11:08:49 -0500
-Message-ID: <20190412160904.30418-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 08/21] ASoC: SOF: Intel: Add Intel specific
+	HDA firmware loader
+Date: Fri, 12 Apr 2019 11:08:51 -0500
+Message-ID: <20190412160904.30418-9-pierre-louis.bossart@linux.intel.com>
 References: <20190412160904.30418-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,22 +24,22 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add support for various PM and core reset/run state transitions.
+Add support for loading DSP firmware on Intel HDA based platforms.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dsp.c | 455 ++++++++++++++++++++++++++++++++++
- 1 file changed, 455 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-dsp.c
+ sound/soc/sof/intel/hda-loader.c | 371 +++++++++++++++++++++++++++++++
+ 1 file changed, 371 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-loader.c
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
 new file mode 100644
-index 000000000000..311fed502e09
+index 000000000000..6a44bc349e44
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -0,0 +1,455 @@
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -0,0 +1,371 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -54,446 +54,362 @@ index 000000000000..311fed502e09
 +//
 +
 +/*
-+ * Hardware interface for generic Intel audio DSP HDA IP
++ * Hardware interface for HDA DSP code loader
 + */
 +
++#include <linux/firmware.h>
 +#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
++#include <sound/sof.h>
 +#include "../ops.h"
 +#include "hda.h"
 +
-+/*
-+ * DSP Core control.
-+ */
++#define HDA_FW_BOOT_ATTEMPTS	3
 +
-+int hda_dsp_core_reset_enter(struct snd_sof_dev *sdev, unsigned int core_mask)
++static int cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
++			     unsigned int size, struct snd_dma_buffer *dmab,
++			     int direction)
 +{
-+	u32 adspcs;
-+	u32 reset;
++	struct hdac_ext_stream *dsp_stream;
++	struct hdac_stream *hstream;
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
 +	int ret;
 +
-+	/* set reset bits for cores */
-+	reset = HDA_DSP_ADSPCS_CRST_MASK(core_mask);
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-+					 HDA_DSP_REG_ADSPCS,
-+					 reset, reset),
++	if (direction != SNDRV_PCM_STREAM_PLAYBACK) {
++		dev_err(sdev->dev, "error: code loading DMA is playback only\n");
++		return -EINVAL;
++	}
 +
-+	/* poll with timeout to check if operation successful */
++	dsp_stream = hda_dsp_stream_get(sdev, direction);
++
++	if (!dsp_stream) {
++		dev_err(sdev->dev, "error: no stream available\n");
++		return -ENODEV;
++	}
++	hstream = &dsp_stream->hstream;
++
++	/* allocate DMA buffer */
++	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: memory alloc failed: %x\n", ret);
++		goto error;
++	}
++
++	hstream->period_bytes = 0;/* initialize period_bytes */
++	hstream->format_val = format;
++	hstream->bufsize = size;
++
++	ret = hda_dsp_stream_hw_params(sdev, dsp_stream, dmab, NULL);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: hdac prepare failed: %x\n", ret);
++		goto error;
++	}
++
++	hda_dsp_stream_spib_config(sdev, dsp_stream, HDA_DSP_SPIB_ENABLE, size);
++
++	return hstream->stream_tag;
++
++error:
++	hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
++	snd_dma_free_pages(dmab);
++	return ret;
++}
++
++/*
++ * first boot sequence has some extra steps. core 0 waits for power
++ * status on core 1, so power up core 1 also momentarily, keep it in
++ * reset/stall and then turn it off
++ */
++static int cl_dsp_init(struct snd_sof_dev *sdev, const void *fwdata,
++		       u32 fwsize, int stream_tag)
++{
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	const struct sof_intel_dsp_desc *chip = hda->desc;
++	unsigned int status;
++	int ret;
++
++	/* step 1: power up corex */
++	ret = hda_dsp_core_power_up(sdev, chip->cores_mask);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core 0/1 power up failed\n");
++		goto err;
++	}
++
++	/* step 2: purge FW request */
++	snd_sof_dsp_write(sdev, HDA_DSP_BAR, chip->ipc_req,
++			  chip->ipc_req_mask | (HDA_DSP_IPC_PURGE_FW |
++			  ((stream_tag - 1) << 9)));
++
++	/* step 3: unset core 0 reset state & unstall/run core 0 */
++	ret = hda_dsp_core_run(sdev, HDA_DSP_CORE_MASK(0));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core start failed %d\n", ret);
++		ret = -EIO;
++		goto err;
++	}
++
++	/* step 4: wait for IPC DONE bit from ROM */
 +	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
-+					HDA_DSP_REG_ADSPCS, adspcs,
-+					((adspcs & reset) == reset),
++					    chip->ipc_ack, status,
++					    ((status & chip->ipc_ack_mask)
++						    == chip->ipc_ack_mask),
++					    HDA_DSP_REG_POLL_INTERVAL_US,
++					    HDA_DSP_INIT_TIMEOUT_US);
++
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: waiting for HIPCIE done\n");
++		goto err;
++	}
++
++	/* step 5: power down corex */
++	ret = hda_dsp_core_power_down(sdev,
++				  chip->cores_mask & ~(HDA_DSP_CORE_MASK(0)));
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: dsp core x power down failed\n");
++		goto err;
++	}
++
++	/* step 6: enable IPC interrupts */
++	hda_dsp_ipc_int_enable(sdev);
++
++	/* step 7: wait for ROM init */
++	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
++					HDA_DSP_SRAM_REG_ROM_STATUS, status,
++					((status & HDA_DSP_ROM_STS_MASK)
++						== HDA_DSP_ROM_INIT),
 +					HDA_DSP_REG_POLL_INTERVAL_US,
-+					HDA_DSP_RESET_TIMEOUT_US);
-+
-+	/* has core entered reset ? */
-+	adspcs = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+				  HDA_DSP_REG_ADSPCS);
-+	if ((adspcs & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) !=
-+		HDA_DSP_ADSPCS_CRST_MASK(core_mask)) {
-+		dev_err(sdev->dev,
-+			"error: reset enter failed: core_mask %x adspcs 0x%x\n",
-+			core_mask, adspcs);
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+int hda_dsp_core_reset_leave(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	unsigned int crst;
-+	u32 adspcs;
-+	int ret;
-+
-+	/* clear reset bits for cores */
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-+					 HDA_DSP_REG_ADSPCS,
-+					 HDA_DSP_ADSPCS_CRST_MASK(core_mask),
-+					 0);
-+
-+	/* poll with timeout to check if operation successful */
-+	crst = HDA_DSP_ADSPCS_CRST_MASK(core_mask);
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
-+					    HDA_DSP_REG_ADSPCS, adspcs,
-+					    !(adspcs & crst),
-+					    HDA_DSP_REG_POLL_INTERVAL_US,
-+					    HDA_DSP_RESET_TIMEOUT_US);
-+
-+	/* has core left reset ? */
-+	adspcs = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+				  HDA_DSP_REG_ADSPCS);
-+	if ((adspcs & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) != 0) {
-+		dev_err(sdev->dev,
-+			"error: reset leave failed: core_mask %x adspcs 0x%x\n",
-+			core_mask, adspcs);
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	/* stall core */
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-+					 HDA_DSP_REG_ADSPCS,
-+					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask),
-+					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
-+
-+	/* set reset state */
-+	return hda_dsp_core_reset_enter(sdev, core_mask);
-+}
-+
-+int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	int ret;
-+
-+	/* leave reset state */
-+	ret = hda_dsp_core_reset_leave(sdev, core_mask);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* run core */
-+	dev_dbg(sdev->dev, "unstall/run core: core_mask = %x\n", core_mask);
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-+					 HDA_DSP_REG_ADSPCS,
-+					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask),
-+					 0);
-+
-+	/* is core now running ? */
-+	if (!hda_dsp_core_is_enabled(sdev, core_mask)) {
-+		hda_dsp_core_stall_reset(sdev, core_mask);
-+		dev_err(sdev->dev, "error: DSP start core failed: core_mask %x\n",
-+			core_mask);
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Power Management.
-+ */
-+
-+int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	unsigned int cpa;
-+	u32 adspcs;
-+	int ret;
-+
-+	/* update bits */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS,
-+				HDA_DSP_ADSPCS_SPA_MASK(core_mask),
-+				HDA_DSP_ADSPCS_SPA_MASK(core_mask));
-+
-+	/* poll with timeout to check if operation successful */
-+	cpa = HDA_DSP_ADSPCS_CPA_MASK(core_mask);
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
-+					    HDA_DSP_REG_ADSPCS, adspcs,
-+					    (adspcs & cpa) == cpa,
-+					    HDA_DSP_REG_POLL_INTERVAL_US,
-+					    HDA_DSP_RESET_TIMEOUT_US);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: timeout on core powerup\n");
-+
-+	/* did core power up ? */
-+	adspcs = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+				  HDA_DSP_REG_ADSPCS);
-+	if ((adspcs & HDA_DSP_ADSPCS_CPA_MASK(core_mask)) !=
-+		HDA_DSP_ADSPCS_CPA_MASK(core_mask)) {
-+		dev_err(sdev->dev,
-+			"error: power up core failed core_mask %xadspcs 0x%x\n",
-+			core_mask, adspcs);
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+int hda_dsp_core_power_down(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	u32 adspcs;
-+
-+	/* update bits */
-+	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
-+					 HDA_DSP_REG_ADSPCS,
-+					 HDA_DSP_ADSPCS_SPA_MASK(core_mask), 0);
-+
-+	return snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
-+				HDA_DSP_REG_ADSPCS, adspcs,
-+				!(adspcs & HDA_DSP_ADSPCS_SPA_MASK(core_mask)),
-+				HDA_DSP_REG_POLL_INTERVAL_US,
-+				HDA_DSP_PD_TIMEOUT * USEC_PER_MSEC);
-+}
-+
-+bool hda_dsp_core_is_enabled(struct snd_sof_dev *sdev,
-+			     unsigned int core_mask)
-+{
-+	int val;
-+	bool is_enable;
-+
-+	val = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS);
-+
-+	is_enable = ((val & HDA_DSP_ADSPCS_CPA_MASK(core_mask)) &&
-+			(val & HDA_DSP_ADSPCS_SPA_MASK(core_mask)) &&
-+			!(val & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) &&
-+			!(val & HDA_DSP_ADSPCS_CSTALL_MASK(core_mask)));
-+
-+	dev_dbg(sdev->dev, "DSP core(s) enabled? %d : core_mask %x\n",
-+		is_enable, core_mask);
-+
-+	return is_enable;
-+}
-+
-+int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask)
-+{
-+	int ret;
-+
-+	/* return if core is already enabled */
-+	if (hda_dsp_core_is_enabled(sdev, core_mask))
++					chip->rom_init_timeout *
++					USEC_PER_MSEC);
++	if (!ret)
 +		return 0;
 +
-+	/* power up */
-+	ret = hda_dsp_core_power_up(sdev, core_mask);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: dsp core power up failed: core_mask %x\n",
-+			core_mask);
-+		return ret;
-+	}
-+
-+	return hda_dsp_core_run(sdev, core_mask);
-+}
-+
-+int hda_dsp_core_reset_power_down(struct snd_sof_dev *sdev,
-+				  unsigned int core_mask)
-+{
-+	int ret;
-+
-+	/* place core in reset prior to power down */
-+	ret = hda_dsp_core_stall_reset(sdev, core_mask);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: dsp core reset failed: core_mask %x\n",
-+			core_mask);
-+		return ret;
-+	}
-+
-+	/* power down core */
-+	ret = hda_dsp_core_power_down(sdev, core_mask);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: dsp core power down fail mask %x: %d\n",
-+			core_mask, ret);
-+		return ret;
-+	}
-+
-+	/* make sure we are in OFF state */
-+	if (hda_dsp_core_is_enabled(sdev, core_mask)) {
-+		dev_err(sdev->dev, "error: dsp core disable fail mask %x: %d\n",
-+			core_mask, ret);
-+		ret = -EIO;
-+	}
++err:
++	hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
++	hda_dsp_core_reset_power_down(sdev, chip->cores_mask);
 +
 +	return ret;
 +}
 +
-+void hda_dsp_ipc_int_enable(struct snd_sof_dev *sdev)
++static int cl_trigger(struct snd_sof_dev *sdev,
++		      struct hdac_ext_stream *stream, int cmd)
 +{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
 +
-+	/* enable IPC DONE and BUSY interrupts */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, chip->ipc_ctl,
-+			HDA_DSP_REG_HIPCCTL_DONE | HDA_DSP_REG_HIPCCTL_BUSY,
-+			HDA_DSP_REG_HIPCCTL_DONE | HDA_DSP_REG_HIPCCTL_BUSY);
++	/* code loader is special case that reuses stream ops */
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		wait_event_timeout(sdev->waitq, !sdev->code_loading,
++				   HDA_DSP_CL_TRIGGER_TIMEOUT);
 +
-+	/* enable IPC interrupt */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
-+				HDA_DSP_ADSPIC_IPC, HDA_DSP_ADSPIC_IPC);
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
++					1 << hstream->index,
++					1 << hstream->index);
++
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++					sd_offset,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK,
++					SOF_HDA_SD_CTL_DMA_START |
++					SOF_HDA_CL_DMA_SD_INT_MASK);
++
++		hstream->running = true;
++		return 0;
++	default:
++		return hda_dsp_stream_trigger(sdev, stream, cmd);
++	}
 +}
 +
-+void hda_dsp_ipc_int_disable(struct snd_sof_dev *sdev)
++static struct hdac_ext_stream *get_stream_with_tag(struct snd_sof_dev *sdev,
++						   int tag)
 +{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
-+
-+	/* disable IPC interrupt */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
-+				HDA_DSP_ADSPIC_IPC, 0);
-+
-+	/* disable IPC BUSY and DONE interrupt */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, chip->ipc_ctl,
-+			HDA_DSP_REG_HIPCCTL_BUSY | HDA_DSP_REG_HIPCCTL_DONE, 0);
-+}
-+
-+static int hda_suspend(struct snd_sof_dev *sdev, int state)
-+{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
 +	struct hdac_bus *bus = sof_to_bus(sdev);
-+#endif
++	struct hdac_stream *s;
++
++	/* get stream with tag */
++	list_for_each_entry(s, &bus->stream_list, list) {
++		if (s->direction == SNDRV_PCM_STREAM_PLAYBACK &&
++		    s->stream_tag == tag) {
++			return stream_to_hdac_ext_stream(s);
++		}
++	}
++
++	return NULL;
++}
++
++static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
++		      struct hdac_ext_stream *stream)
++{
++	struct hdac_stream *hstream = &stream->hstream;
++	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
 +	int ret;
 +
-+	/* disable IPC interrupts */
-+	hda_dsp_ipc_int_disable(sdev);
++	ret = hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* power down all hda link */
-+	snd_hdac_ext_bus_link_power_down_all(bus);
-+#endif
++	hda_dsp_stream_put(sdev, SNDRV_PCM_STREAM_PLAYBACK,
++			   hstream->stream_tag);
++	hstream->running = 0;
++	hstream->substream = NULL;
 +
-+	/* power down DSP */
-+	ret = hda_dsp_core_reset_power_down(sdev, chip->cores_mask);
++	/* reset BDL address */
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPL, 0);
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR,
++			  sd_offset + SOF_HDA_ADSP_REG_CL_SD_BDLPU, 0);
++
++	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, sd_offset, 0);
++	snd_dma_free_pages(dmab);
++	dmab->area = NULL;
++	hstream->bufsize = 0;
++	hstream->format_val = 0;
++
++	return ret;
++}
++
++static int cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *stream)
++{
++	unsigned int reg;
++	int ret, status;
++
++	ret = cl_trigger(sdev, stream, SNDRV_PCM_TRIGGER_START);
 +	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to power down core during suspend\n");
++		dev_err(sdev->dev, "error: DMA trigger start failed\n");
 +		return ret;
 +	}
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* disable ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
-+	snd_hdac_ext_bus_ppcap_enable(bus, false);
++	status = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
++					HDA_DSP_SRAM_REG_ROM_STATUS, reg,
++					((reg & HDA_DSP_ROM_STS_MASK)
++						== HDA_DSP_ROM_FW_ENTERED),
++					HDA_DSP_REG_POLL_INTERVAL_US,
++					HDA_DSP_BASEFW_TIMEOUT_US);
 +
-+	/* disable hda bus irq and i/o */
-+	snd_hdac_bus_stop_chip(bus);
-+#else
-+	/* disable ppcap interrupt */
-+	hda_dsp_ctrl_ppcap_enable(sdev, false);
-+	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
-+
-+	/* disable hda bus irq */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
-+				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
-+				0);
-+#endif
-+
-+	/* disable LP retention mode */
-+	snd_sof_pci_update_bits(sdev, PCI_PGCTL,
-+				PCI_PGCTL_LSRMD_MASK, PCI_PGCTL_LSRMD_MASK);
-+
-+	/* reset controller */
-+	ret = hda_dsp_ctrl_link_reset(sdev, true);
++	ret = cl_trigger(sdev, stream, SNDRV_PCM_TRIGGER_STOP);
 +	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to reset controller during suspend\n");
++		dev_err(sdev->dev, "error: DMA trigger stop failed\n");
 +		return ret;
 +	}
 +
-+	return 0;
++	return status;
 +}
 +
-+static int hda_resume(struct snd_sof_dev *sdev)
++int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
 +{
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	struct hdac_ext_link *hlink = NULL;
-+#endif
-+	int ret;
++	struct snd_sof_pdata *plat_data = sdev->pdata;
++	const struct sof_dev_desc *desc = plat_data->desc;
++	const struct sof_intel_dsp_desc *chip_info;
++	struct hdac_ext_stream *stream;
++	struct firmware stripped_firmware;
++	int ret, ret1, tag, i;
++
++	chip_info = desc->chip_info;
++
++	stripped_firmware.data = plat_data->fw->data;
++	stripped_firmware.size = plat_data->fw->size;
++
++	/* init for booting wait */
++	init_waitqueue_head(&sdev->boot_wait);
++	sdev->boot_complete = false;
++
++	/* prepare DMA for code loader stream */
++	tag = cl_stream_prepare(sdev, 0x40, stripped_firmware.size,
++				&sdev->dmab, SNDRV_PCM_STREAM_PLAYBACK);
++
++	if (tag < 0) {
++		dev_err(sdev->dev, "error: dma prepare for fw loading err: %x\n",
++			tag);
++		return tag;
++	}
++
++	/* get stream with tag */
++	stream = get_stream_with_tag(sdev, tag);
++	if (!stream) {
++		dev_err(sdev->dev,
++			"error: could not get stream with stream tag %d\n",
++			tag);
++		ret = -ENODEV;
++		goto err;
++	}
++
++	memcpy(sdev->dmab.area, stripped_firmware.data,
++	       stripped_firmware.size);
++
++	/* try ROM init a few times before giving up */
++	for (i = 0; i < HDA_FW_BOOT_ATTEMPTS; i++) {
++		ret = cl_dsp_init(sdev, stripped_firmware.data,
++				  stripped_firmware.size, tag);
++
++		/* don't retry anymore if successful */
++		if (!ret)
++			break;
++
++		dev_err(sdev->dev, "error: Error code=0x%x: FW status=0x%x\n",
++			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_SRAM_REG_ROM_ERROR),
++			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
++					 HDA_DSP_SRAM_REG_ROM_STATUS));
++		dev_err(sdev->dev, "error: iteration %d of Core En/ROM load failed: %d\n",
++			i, ret);
++	}
++
++	if (i == HDA_FW_BOOT_ATTEMPTS) {
++		dev_err(sdev->dev, "error: dsp init failed after %d attempts with err: %d\n",
++			i, ret);
++		goto cleanup;
++	}
 +
 +	/*
-+	 * clear TCSEL to clear playback on some HD Audio
-+	 * codecs. PCI TCSEL is defined in the Intel manuals.
++	 * at this point DSP ROM has been initialized and
++	 * should be ready for code loading and firmware boot
 +	 */
-+	snd_sof_pci_update_bits(sdev, PCI_TCSEL, 0x07, 0);
++	ret = cl_copy_fw(sdev, stream);
++	if (!ret)
++		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
++	else
++		dev_err(sdev->dev, "error: load fw failed ret: %d\n", ret);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* reset and start hda controller */
-+	ret = hda_dsp_ctrl_init_chip(sdev, true);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to start controller after resume\n");
-+		return ret;
++cleanup:
++	/*
++	 * Perform codeloader stream cleanup.
++	 * This should be done even if firmware loading fails.
++	 */
++	ret1 = cl_cleanup(sdev, &sdev->dmab, stream);
++	if (ret1 < 0) {
++		dev_err(sdev->dev, "error: Code loader DSP cleanup failed\n");
++
++		/* set return value to indicate cleanup failure */
++		ret = ret1;
 +	}
 +
-+	hda_dsp_ctrl_misc_clock_gating(sdev, false);
++	/*
++	 * return master core id if both fw copy
++	 * and stream clean up are successful
++	 */
++	if (!ret)
++		return chip_info->init_core_mask;
 +
-+	/* Reset stream-to-link mapping */
-+	list_for_each_entry(hlink, &bus->hlink_list, list)
-+		bus->io_ops->reg_writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
++	/* dump dsp registers and disable DSP upon error */
++err:
++	hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
 +
-+	hda_dsp_ctrl_misc_clock_gating(sdev, true);
-+
-+	/* enable ppcap interrupt */
-+	snd_hdac_ext_bus_ppcap_enable(bus, true);
-+	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
-+#else
-+
-+	hda_dsp_ctrl_misc_clock_gating(sdev, false);
-+
-+	/* reset controller */
-+	ret = hda_dsp_ctrl_link_reset(sdev, true);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to reset controller during resume\n");
-+		return ret;
-+	}
-+
-+	/* take controller out of reset */
-+	ret = hda_dsp_ctrl_link_reset(sdev, false);
-+	if (ret < 0) {
-+		dev_err(sdev->dev,
-+			"error: failed to ready controller during resume\n");
-+		return ret;
-+	}
-+
-+	/* enable hda bus irq */
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
-+				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN,
-+				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN);
-+
-+	hda_dsp_ctrl_misc_clock_gating(sdev, true);
-+
-+	/* enable ppcap interrupt */
-+	hda_dsp_ctrl_ppcap_enable(sdev, true);
-+	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
-+#endif
-+
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+	/* turn off the links that were off before suspend */
-+	list_for_each_entry(hlink, &bus->hlink_list, list) {
-+		if (!hlink->ref_count)
-+			snd_hdac_ext_bus_link_power_down(hlink);
-+	}
-+
-+	/* check dma status and clean up CORB/RIRB buffers */
-+	if (!bus->cmd_dma_state)
-+		snd_hdac_bus_stop_cmd_io(bus);
-+#endif
-+
-+	return 0;
++	/* disable DSP */
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR,
++				SOF_HDA_REG_PP_PPCTL,
++				SOF_HDA_PPCTL_GPROCEN, 0);
++	return ret;
 +}
 +
-+int hda_dsp_resume(struct snd_sof_dev *sdev)
++/* pre fw run operations */
++int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev)
 +{
-+	/* init hda controller. DSP cores will be powered up during fw boot */
-+	return hda_resume(sdev);
++	/* disable clock gating and power gating */
++	return hda_dsp_ctrl_clock_power_gating(sdev, false);
 +}
 +
-+int hda_dsp_runtime_resume(struct snd_sof_dev *sdev)
++/* post fw run operations */
++int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
 +{
-+	/* init hda controller. DSP cores will be powered up during fw boot */
-+	return hda_resume(sdev);
-+}
-+
-+int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev, int state)
-+{
-+	/* stop hda controller and power dsp off */
-+	return hda_suspend(sdev, state);
-+}
-+
-+int hda_dsp_suspend(struct snd_sof_dev *sdev, int state)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	int ret;
-+
-+	/* stop hda controller and power dsp off */
-+	ret = hda_suspend(sdev, state);
-+	if (ret < 0) {
-+		dev_err(bus->dev, "error: suspending dsp\n");
-+		return ret;
-+	}
-+
-+	return 0;
++	/* re-enable clock gating and power gating */
++	return hda_dsp_ctrl_clock_power_gating(sdev, true);
 +}
 -- 
 2.17.1
