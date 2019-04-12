@@ -1,8 +1,8 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 09/21] ASoC: SOF: Intel: Add Intel specific
-	HDA PCM operations
-Date: Fri, 12 Apr 2019 11:08:52 -0500
-Message-ID: <20190412160904.30418-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 13/21] ASoC: SOF: Intel: Add support for
+	HDAudio codecs
+Date: Fri, 12 Apr 2019 11:08:56 -0500
+Message-ID: <20190412160904.30418-14-pierre-louis.bossart@linux.intel.com>
 References: <20190412160904.30418-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,24 +22,21 @@ To: alsa-devel@alsa-project.org
 Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Daniel Baluta <daniel.baluta@gmail.com>, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-
-Add PCM operations for Intel HDA based DSPs.
+Add probe, init and cleanup routines for HDaudio.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-pcm.c | 240 ++++++++++++++++++++++++++++++++++
- 1 file changed, 240 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-pcm.c
+ sound/soc/sof/intel/hda-codec.c | 171 ++++++++++++++++++++++++++++++++
+ 1 file changed, 171 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-codec.c
 
-diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
 new file mode 100644
-index 000000000000..5714a79fbe1a
+index 000000000000..b8b37f082309
 --- /dev/null
-+++ b/sound/soc/sof/intel/hda-pcm.c
-@@ -0,0 +1,240 @@
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -0,0 +1,171 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -47,238 +44,169 @@ index 000000000000..5714a79fbe1a
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+//	    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-+//	    Rander Wang <rander.wang@intel.com>
-+//          Keyon Jie <yang.jie@linux.intel.com>
++// Authors: Keyon Jie <yang.jie@linux.intel.com>
 +//
 +
-+/*
-+ * Hardware interface for generic Intel audio DSP HDA IP
-+ */
-+
++#include <linux/module.h>
 +#include <sound/hdaudio_ext.h>
-+#include <sound/hda_register.h>
-+#include <sound/pcm_params.h>
++#include <sound/hda_codec.h>
++#include <sound/hda_i915.h>
++#include <sound/sof.h>
 +#include "../ops.h"
 +#include "hda.h"
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++#include "../../codecs/hdac_hda.h"
++#endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
 +
-+#define SDnFMT_BASE(x)	((x) << 14)
-+#define SDnFMT_MULT(x)	(((x) - 1) << 11)
-+#define SDnFMT_DIV(x)	(((x) - 1) << 8)
-+#define SDnFMT_BITS(x)	((x) << 4)
-+#define SDnFMT_CHAN(x)	((x) << 0)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++#define IDISP_VID_INTEL	0x80860000
 +
-+static inline u32 get_mult_div(struct snd_sof_dev *sdev, int rate)
++/* load the legacy HDA codec driver */
++#ifdef MODULE
++static void hda_codec_load_module(struct hda_codec *codec)
 +{
-+	switch (rate) {
-+	case 8000:
-+		return SDnFMT_DIV(6);
-+	case 9600:
-+		return SDnFMT_DIV(5);
-+	case 11025:
-+		return SDnFMT_BASE(1) | SDnFMT_DIV(4);
-+	case 16000:
-+		return SDnFMT_DIV(3);
-+	case 22050:
-+		return SDnFMT_BASE(1) | SDnFMT_DIV(2);
-+	case 32000:
-+		return SDnFMT_DIV(3) | SDnFMT_MULT(2);
-+	case 44100:
-+		return SDnFMT_BASE(1);
-+	case 48000:
-+		return 0;
-+	case 88200:
-+		return SDnFMT_BASE(1) | SDnFMT_MULT(2);
-+	case 96000:
-+		return SDnFMT_MULT(2);
-+	case 176400:
-+		return SDnFMT_BASE(1) | SDnFMT_MULT(4);
-+	case 192000:
-+		return SDnFMT_MULT(4);
-+	default:
-+		dev_warn(sdev->dev, "can't find div rate %d using 48kHz\n",
-+			 rate);
-+		return 0; /* use 48KHz if not found */
-+	}
-+};
++	char alias[MODULE_NAME_LEN];
++	const char *module = alias;
 +
-+static inline u32 get_bits(struct snd_sof_dev *sdev, int sample_bits)
-+{
-+	switch (sample_bits) {
-+	case 8:
-+		return SDnFMT_BITS(0);
-+	case 16:
-+		return SDnFMT_BITS(1);
-+	case 20:
-+		return SDnFMT_BITS(2);
-+	case 24:
-+		return SDnFMT_BITS(3);
-+	case 32:
-+		return SDnFMT_BITS(4);
-+	default:
-+		dev_warn(sdev->dev, "can't find %d bits using 16bit\n",
-+			 sample_bits);
-+		return SDnFMT_BITS(1); /* use 16bits format if not found */
-+	}
-+};
++	snd_hdac_codec_modalias(&codec->core, alias, sizeof(alias));
++	dev_dbg(&codec->core.dev, "loading codec module: %s\n", module);
++	request_module(module);
++}
++#else
++static void hda_codec_load_module(struct hda_codec *codec) {}
++#endif
 +
-+int hda_dsp_pcm_hw_params(struct snd_sof_dev *sdev,
-+			  struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params,
-+			  struct sof_ipc_stream_params *ipc_params)
++#endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
++
++/* probe individual codec */
++static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
 +{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_ext_stream *stream = stream_to_hdac_ext_stream(hstream);
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	struct snd_dma_buffer *dmab;
++	struct hda_bus *hbus = sof_to_hbus(sdev);
++	struct hdac_device *hdev;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++	struct hdac_hda_priv *hda_priv;
++#endif
++	u32 hda_cmd = (address << 28) | (AC_NODE_ROOT << 20) |
++		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
++	u32 resp = -1;
 +	int ret;
-+	u32 size, rate, bits;
 +
-+	size = params_buffer_bytes(params);
-+	rate = get_mult_div(sdev, params_rate(params));
-+	bits = get_bits(sdev, params_width(params));
++	mutex_lock(&hbus->core.cmd_mutex);
++	snd_hdac_bus_send_cmd(&hbus->core, hda_cmd);
++	snd_hdac_bus_get_response(&hbus->core, address, &resp);
++	mutex_unlock(&hbus->core.cmd_mutex);
++	if (resp == -1)
++		return -EIO;
++	dev_dbg(sdev->dev, "HDA codec #%d probed OK: response: %x\n",
++		address, resp);
 +
-+	hstream->substream = substream;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
++	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
++	hda_priv = kzalloc(sizeof(*hda_priv), GFP_KERNEL);
++	if (!hda_priv)
++		return -ENOMEM;
 +
-+	dmab = substream->runtime->dma_buffer_p;
++	hda_priv->codec.bus = hbus;
++	hdev = &hda_priv->codec.core;
 +
-+	hstream->format_val = rate | bits | (params_channels(params) - 1);
-+	hstream->bufsize = size;
-+	hstream->period_bytes = params_period_bytes(params);
-+	hstream->no_period_wakeup  =
-+			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
-+			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
-+
-+	ret = hda_dsp_stream_hw_params(sdev, stream, dmab, params);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: hdac prepare failed: %x\n", ret);
++	ret = snd_hdac_ext_bus_device_init(&hbus->core, address, hdev);
++	if (ret < 0)
 +		return ret;
++
++	/* use legacy bus only for HDA codecs, idisp uses ext bus */
++	if ((resp & 0xFFFF0000) != IDISP_VID_INTEL) {
++		hdev->type = HDA_DEV_LEGACY;
++		hda_codec_load_module(&hda_priv->codec);
 +	}
 +
-+	/* disable SPIB, to enable buffer wrap for stream */
-+	hda_dsp_stream_spib_config(sdev, stream, HDA_DSP_SPIB_DISABLE, 0);
++	return 0;
++#else
++	/* snd_hdac_ext_bus_device_exit will use kfree to free hdev */
++	hdev = kzalloc(sizeof(*hdev), GFP_KERNEL);
++	if (!hdev)
++		return -ENOMEM;
 +
-+	/* set host_period_bytes to 0 if no IPC position */
-+	if (hda && hda->no_ipc_position)
-+		ipc_params->host_period_bytes = 0;
++	ret = snd_hdac_ext_bus_device_init(&hbus->core, address, hdev);
 +
-+	ipc_params->stream_tag = hstream->stream_tag;
++	return ret;
++#endif
++}
++
++/* Codec initialization */
++int hda_codec_probe_bus(struct snd_sof_dev *sdev)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	int i, ret;
++
++	/* probe codecs in avail slots */
++	for (i = 0; i < HDA_MAX_CODECS; i++) {
++
++		if (!(bus->codec_mask & (1 << i)))
++			continue;
++
++		ret = hda_codec_probe(sdev, i);
++		if (ret < 0) {
++			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
++				i, ret);
++			return ret;
++		}
++	}
 +
 +	return 0;
 +}
++EXPORT_SYMBOL(hda_codec_probe_bus);
 +
-+int hda_dsp_pcm_trigger(struct snd_sof_dev *sdev,
-+			struct snd_pcm_substream *substream, int cmd)
++#if IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)
++
++void hda_codec_i915_get(struct snd_sof_dev *sdev)
 +{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct hdac_ext_stream *stream = stream_to_hdac_ext_stream(hstream);
++	struct hdac_bus *bus = sof_to_bus(sdev);
 +
-+	return hda_dsp_stream_trigger(sdev, stream, cmd);
++	dev_dbg(bus->dev, "Turning i915 HDAC power on\n");
++	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
 +}
++EXPORT_SYMBOL(hda_codec_i915_get);
 +
-+snd_pcm_uframes_t hda_dsp_pcm_pointer(struct snd_sof_dev *sdev,
-+				      struct snd_pcm_substream *substream)
++void hda_codec_i915_put(struct snd_sof_dev *sdev)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	struct snd_sof_pcm *spcm;
-+	snd_pcm_uframes_t pos;
++	struct hdac_bus *bus = sof_to_bus(sdev);
 +
-+	spcm = snd_sof_find_spcm_dai(sdev, rtd);
-+	if (!spcm) {
-+		dev_warn_ratelimited(sdev->dev, "warn: can't find PCM with DAI ID %d\n",
-+				     rtd->dai_link->id);
-+		return 0;
-+	}
-+
-+	if (hda && !hda->no_ipc_position) {
-+		/* read position from IPC position */
-+		pos = spcm->stream[substream->stream].posn.host_posn;
-+		goto found;
-+	}
-+
-+	/*
-+	 * DPIB/posbuf position mode:
-+	 * For Playback, Use DPIB register from HDA space which
-+	 * reflects the actual data transferred.
-+	 * For Capture, Use the position buffer for pointer, as DPIB
-+	 * is not accurate enough, its update may be completed
-+	 * earlier than the data written to DDR.
-+	 */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		pos = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
-+				       AZX_REG_VS_SDXDPIB_XBASE +
-+				       (AZX_REG_VS_SDXDPIB_XINTERVAL *
-+					hstream->index));
-+	} else {
-+		/*
-+		 * For capture stream, we need more workaround to fix the
-+		 * position incorrect issue:
-+		 *
-+		 * 1. Wait at least 20us before reading position buffer after
-+		 * the interrupt generated(IOC), to make sure position update
-+		 * happens on frame boundary i.e. 20.833uSec for 48KHz.
-+		 * 2. Perform a dummy Read to DPIB register to flush DMA
-+		 * position value.
-+		 * 3. Read the DMA Position from posbuf. Now the readback
-+		 * value should be >= period boundary.
-+		 */
-+		usleep_range(20, 21);
-+		snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
-+				 AZX_REG_VS_SDXDPIB_XBASE +
-+				 (AZX_REG_VS_SDXDPIB_XINTERVAL *
-+				  hstream->index));
-+		pos = snd_hdac_stream_get_pos_posbuf(hstream);
-+	}
-+
-+	if (pos >= hstream->bufsize)
-+		pos = 0;
-+
-+found:
-+	pos = bytes_to_frames(substream->runtime, pos);
-+
-+	dev_vdbg(sdev->dev, "PCM: stream %d dir %d position %lu\n",
-+		 hstream->index, substream->stream, pos);
-+	return pos;
++	dev_dbg(bus->dev, "Turning i915 HDAC power off\n");
++	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
 +}
++EXPORT_SYMBOL(hda_codec_i915_put);
 +
-+int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
-+		     struct snd_pcm_substream *substream)
++int hda_codec_i915_init(struct snd_sof_dev *sdev)
 +{
-+	struct hdac_ext_stream *dsp_stream;
-+	int direction = substream->stream;
-+
-+	dsp_stream = hda_dsp_stream_get(sdev, direction);
-+
-+	if (!dsp_stream) {
-+		dev_err(sdev->dev, "error: no stream available\n");
-+		return -ENODEV;
-+	}
-+
-+	/* binding pcm substream to hda stream */
-+	substream->runtime->private_data = &dsp_stream->hstream;
-+	return 0;
-+}
-+
-+int hda_dsp_pcm_close(struct snd_sof_dev *sdev,
-+		      struct snd_pcm_substream *substream)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
-+	int direction = substream->stream;
++	struct hdac_bus *bus = sof_to_bus(sdev);
 +	int ret;
 +
-+	ret = hda_dsp_stream_put(sdev, direction, hstream->stream_tag);
++	/* i915 exposes a HDA codec for HDMI audio */
++	ret = snd_hdac_i915_init(bus);
++	if (ret < 0)
++		return ret;
 +
-+	if (ret) {
-+		dev_dbg(sdev->dev, "stream %s not opened!\n", substream->name);
-+		return -ENODEV;
-+	}
++	hda_codec_i915_get(sdev);
 +
-+	/* unbinding pcm substream to hda stream */
-+	substream->runtime->private_data = NULL;
 +	return 0;
 +}
++EXPORT_SYMBOL(hda_codec_i915_init);
++
++int hda_codec_i915_exit(struct snd_sof_dev *sdev)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	int ret;
++
++	hda_codec_i915_put(sdev);
++
++	ret = snd_hdac_i915_exit(bus);
++
++	return ret;
++}
++EXPORT_SYMBOL(hda_codec_i915_exit);
++
++#endif /* CONFIG_SND_SOC_HDAC_HDMI */
++
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.17.1
