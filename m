@@ -1,7 +1,7 @@
-From: syzbot <syzbot+4d729bd9da724d0282dd@syzkaller.appspotmail.com>
-Subject: WARNING: proc registration bug in snd_info_register
-Date: Fri, 12 Apr 2019 04:46:13 -0700
-Message-ID: <0000000000008706a1058653d950@google.com>
+From: syzbot <syzbot+2e782bf6a60d0fcb932d@syzkaller.appspotmail.com>
+Subject: WARNING: proc registration bug in snd_info_card_register
+Date: Fri, 12 Apr 2019 04:46:12 -0700
+Message-ID: <0000000000007f693a058653d90c@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -15,25 +15,25 @@ syzbot found the following crash on:
 
 HEAD commit:    9a33b369 usb-fuzzer: main usb gadget fuzzer driver
 git tree:       https://github.com/google/kasan/tree/usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=1065d5bb200000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1738acd3200000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=23e37f59d94ddd15
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d729bd9da724d0282dd
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e782bf6a60d0fcb932d
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=140ef0f3200000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=102c7c2d200000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4d729bd9da724d0282dd@syzkaller.appspotmail.com
+Reported-by: syzbot+2e782bf6a60d0fcb932d@syzkaller.appspotmail.com
 
-usb 3-1: config 0 descriptor??
-snd_usb_toneport 1-1:0.0: Line 6 POD Studio UX2 now attached
-usb 1-1: USB disconnect, device number 26
+usb 1-1: send failed (error -71)
+usb 6-1: send failed (error -71)
+usb 5-1: USB disconnect, device number 3
 ------------[ cut here ]------------
-proc_dir_entry 'asound/card4' already registered
-WARNING: CPU: 0 PID: 533 at fs/proc/generic.c:359 proc_register+0x3d9/0x550  
+proc_dir_entry 'asound/PODStudioUX2' already registered
+WARNING: CPU: 1 PID: 534 at fs/proc/generic.c:359 proc_register+0x3d9/0x550  
 fs/proc/generic.c:359
 Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 533 Comm: kworker/0:2 Not tainted 5.1.0-rc4-319354-g9a33b36 #3
+CPU: 1 PID: 534 Comm: kworker/1:2 Not tainted 5.1.0-rc4-319354-g9a33b36 #3
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
 Workqueue: usb_hub_wq hub_event
@@ -52,20 +52,19 @@ RIP: 0010:proc_register+0x3d9/0x550 fs/proc/generic.c:359
 Code: ff df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 61 01 00 00 48 8b 04 24  
 48 c7 c7 e0 a0 79 8e 48 8b b0 d0 00 00 00 e8 a7 9e 71 ff <0f> 0b 48 c7 c7  
 a0 90 91 91 e8 b9 10 34 0c 48 8b 4c 24 28 48 b8 00
-RSP: 0018:ffff88809f59f018 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88821443f0c0 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815b1e42 RDI: ffffed1013eb3df5
-RBP: ffff8880a7b65780 R08: ffff88809f51c980 R09: 0000000000000000
+RSP: 0018:ffff88809fb9f000 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff88809d2df840 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815b1e42 RDI: ffffed1013f73df2
+RBP: ffff888096382a00 R08: ffff88809f9cc980 R09: 0000000000000000
 R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffff88808f034ab8 R15: 0000000000000005
-  proc_mkdir_data+0x17b/0x230 fs/proc/generic.c:475
-  __snd_info_register sound/core/info.c:814 [inline]
-  snd_info_register+0x2f8/0x3e0 sound/core/info.c:854
-  create_subdir+0x69/0xa0 sound/core/info.c:458
-  snd_info_card_create+0xcf/0x230 sound/core/info.c:528
-  snd_card_new+0x61d/0x920 sound/core/init.c:255
-  snd_usb_audio_create sound/usb/card.c:475 [inline]
-  usb_audio_probe+0x10d9/0x1fa0 sound/usb/card.c:621
+R13: dffffc0000000000 R14: ffff8880a594cd38 R15: 000000000000000c
+  proc_symlink+0x147/0x1c0 fs/proc/generic.c:451
+  snd_info_card_register+0x14b/0x1e0 sound/core/info.c:558
+  snd_card_register sound/core/init.c:772 [inline]
+  snd_card_register+0x432/0x5f0 sound/core/init.c:736
+  toneport_init sound/usb/line6/toneport.c:457 [inline]
+  toneport_init+0x256/0x63c sound/usb/line6/toneport.c:412
+  line6_probe+0xb01/0x1150 sound/usb/line6/driver.c:784
   usb_probe_interface+0x31d/0x820 drivers/usb/core/driver.c:361
   really_probe+0x2da/0xb10 drivers/base/dd.c:509
   driver_probe_device+0x21d/0x350 drivers/base/dd.c:671
@@ -90,7 +89,8 @@ R13: dffffc0000000000 R14: ffff88808f034ab8 R15: 0000000000000005
   port_event drivers/usb/core/hub.c:5350 [inline]
   hub_event+0x138e/0x3b00 drivers/usb/core/hub.c:5432
   process_one_work+0x90f/0x1580 kernel/workqueue.c:2269
-  worker_thread+0x9b/0xe20 kernel/workqueue.c:2415
+  process_scheduled_works kernel/workqueue.c:2331 [inline]
+  worker_thread+0x7b0/0xe20 kernel/workqueue.c:2417
   kthread+0x313/0x420 kernel/kthread.c:253
   ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
 Kernel Offset: disabled
@@ -104,3 +104,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this bug report. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
