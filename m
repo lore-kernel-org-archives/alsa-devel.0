@@ -1,26 +1,49 @@
-From: Alyssa Rosenzweig <alyssa-kyPdXwtBHbIqQpLF9uBUvQ@public.gmane.org>
-Subject: Re: [PATCH] ASoC: rockchip: Select DMA_PL330 by RK3399 audio
-Date: Tue, 16 Apr 2019 09:34:34 -0700
-Message-ID: <20190416163434.GB17199@rosenzweig.io>
-References: <20190414210212.2144-1-alyssa@rosenzweig.io>
- <20190416162735.GI4834@sirena.org.uk>
+From: ecmk <info@ecmk.org>
+Subject: Kernel patch needed for Asus Q325UAR
+Date: Fri, 12 Apr 2019 14:43:50 -0700
+Message-ID: <1887e6cb-0c33-664c-d3be-c282d8b797de@ecmk.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20190416162735.GI4834-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
-List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
- <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 882E2F80716
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 23:43:55 +0200 (CEST)
+Received: from [10.20.2.178] ([12.37.157.226]) by mrelay.perfora.net
+ (mreueus001 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Mgdfd-1hTiYx2UvX-00OANT
+ for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 23:43:52 +0200
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Independent of this, should PL330 be selecting AMBA then?
+No sound combined with quickly fading sounds for a few seconds. Randomly 
+working but with low quality distorted sound. The model needs to be 
+added to the kernel patch listed bellow.
+
+
+Asus Q325UAR suffers from the same issues as discussed here:
+
+
+[alsa-devel] [PATCH] ALSA: hda/realtek: Enable audio jacks of ASUS 
+UX391UA with, ALC294
+
+https://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143282.html
+
+
+A detailed issue of the problem plus the solution is described here
+
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1784485?comments=all
+
+
+Thanks
