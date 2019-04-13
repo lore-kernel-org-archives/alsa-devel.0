@@ -1,20 +1,23 @@
-From: ecmk <info@ecmk.org>
-Subject: Kernel patch needed for Asus Q325UAR
-Date: Fri, 12 Apr 2019 14:43:50 -0700
-Message-ID: <1887e6cb-0c33-664c-d3be-c282d8b797de@ecmk.org>
+From: Derek Gordon <derek@derekgordon.com>
+Subject: Re: No sound output on Zen AIO 27 Z272SD_Z272SD
+Date: Sat, 13 Apr 2019 07:39:49 -0400
+Message-ID: <CAGGMHBP=4RBXPvMzLgi7yWaxsc=wvENPLdidugFvtzVBBPzdtw@mail.gmail.com>
+References: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DBB13A@RTITMBSVM07.realtek.com.tw>
+ <126650E837C1704F92183C9FD34C1CCE18DA5106@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
+ [IPv6:2a00:1450:4864:20::542])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 882E2F80716
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 23:43:55 +0200 (CEST)
-Received: from [10.20.2.178] ([12.37.157.226]) by mrelay.perfora.net
- (mreueus001 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Mgdfd-1hTiYx2UvX-00OANT
- for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2019 23:43:52 +0200
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7894EF8075A
+ for <alsa-devel@alsa-project.org>; Sat, 13 Apr 2019 13:40:01 +0200 (CEST)
+Received: by mail-ed1-x542.google.com with SMTP id k45so10598672edb.6
+ for <alsa-devel@alsa-project.org>; Sat, 13 Apr 2019 04:40:01 -0700 (PDT)
+In-Reply-To: <126650E837C1704F92183C9FD34C1CCE18DA5106@RTITMBSVM07.realtek.com.tw>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +27,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Pshou <pshou@realtek.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-No sound combined with quickly fading sounds for a few seconds. Randomly 
-working but with low quality distorted sound. The model needs to be 
-added to the kernel patch listed bellow.
-
-
-Asus Q325UAR suffers from the same issues as discussed here:
-
-
-[alsa-devel] [PATCH] ALSA: hda/realtek: Enable audio jacks of ASUS 
-UX391UA with, ALC294
-
-https://mailman.alsa-project.org/pipermail/alsa-devel/2018-December/143282.html
-
-
-A detailed issue of the problem plus the solution is described here
-
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1784485?comments=all
-
-
-Thanks
+SSBpbnN0YWxsZWQgYWxzYS10b29scyB2aWEgcmVwby4KCkkgYm9vdGVkIHRoZSBsYXRlc3QgNC4x
+OC54IGtlcm5lbCBmcm9tIFVidW50dS4KCnJvb3RAZGVyZWstWmVuLUFJTy0yNy1aMjcyU0Q6L2hv
+bWUvZGVyZWsjIGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwClNFVF9DT0VGX0lOREVYIDB4
+MzUKbmlkID0gMHgyMCwgdmVyYiA9IDB4NTAwLCBwYXJhbSA9IDB4MzUKdmFsdWUgPSAweDAKcm9v
+dEBkZXJlay1aZW4tQUlPLTI3LVoyNzJTRDovaG9tZS9kZXJlayMgaGRhLXZlcmIgL2Rldi9zbmQv
+aHdDMEQwIDB4MjAKU0VUX1BST0NfQ09FRiAweDg5NjggIC8vIHNldCBQREIgZmxvYXRpbmcKbmlk
+ID0gMHgyMCwgdmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODk2OAp2YWx1ZSA9IDB4MApyb290QGRl
+cmVrLVplbi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVrIyBoZGEtdmVyYiAvZGV2L3NuZC9od0Mw
+RDAgMHg1YgpTRVRfQ09FRl9JTkRFWCAweDAxCm5pZCA9IDB4NWIsIHZlcmIgPSAweDUwMCwgcGFy
+YW0gPSAweDEKdmFsdWUgPSAweDAKcm9vdEBkZXJlay1aZW4tQUlPLTI3LVoyNzJTRDovaG9tZS9k
+ZXJlayMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4NWIKU0VUX1BST0NfQ09FRiAweDg1NDAK
+bmlkID0gMHg1YiwgdmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODU0MAp2YWx1ZSA9IDB4MApyb290
+QGRlcmVrLVplbi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVrIwoKTm8gYXVkaW8gZm9yIFlvdXR1
+YmUuY29tLCBsb2NhbCBNUDMsIG9yIHRoZSAidGVzdCBzcGVha2VycyIgb3B0aW9uIGluClVidW50
+dSBzZXR0aW5ncy4KCgoKCk9uIFRodSwgQXByIDExLCAyMDE5IGF0IDk6MzYgUE0gUHNob3UgPHBz
+aG91QHJlYWx0ZWsuY29tPiB3cm90ZToKCj4gSGksCj4KPiAxLiBVc2UgV2luZG93cyB0byBib290
+IHRvIHNlZSBpZiB0aGVyZSBpcyBubyBzb3VuZD8KPiBJZiB0aGVyZSBpcyBubyBzb3VuZCBpbiBX
+aW5kb3dzLCBpdCBtYXkgYmUgYSBwcm9ibGVtIHdpdGggY29kZWMgb3IgYW1wLCB0bwo+IGJlIHNl
+bnQgYmFjayB0byBBU1VTIGZvciByZXBhaXIuCj4KPiAyLiBQbGVhc2UgdHVybiBvbiB0aGUgZm9s
+bG93aW5nIHZhbHVlcyB3aXRoIGhkYS12ZXJiIChhbHNhLXRvb2wgLT4KPiBoZGEtdmVyYikKPiAu
+L2hhZC12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwIFNFVF9DT0VGX0lOREVYIDB4MzUKPiAuL2hh
+ZC12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwIFNFVF9QUk9DX0NPRUYgMHg4OTY4ICAvLyBzZXQg
+UERCIGZsb2F0aW5nCj4gLi9oYWQtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHg1YiBTRVRfQ09FRl9J
+TkRFWCAweDAxCj4gLi9oYWQtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHg1YiBTRVRfUFJPQ19DT0VG
+IDB4ODU0MAo+Cj4gUGxlYXNlIHR1cm4gb24gdGhlIHNvdW5kKG1peGVyKSwgcGxheSBhIHNvbmcu
+Cj4gSWYgdGhlcmUgaXMgYSBzb3VuZC4gQ2FuIEthaS1IZW5nIGhlbHAgbWUgZ2V0IGEgUEFUQ0gg
+ZmlsZS4KPgo+IEJlc3QgcmVnYXJkcwo+IHBzaG91Cj4KPiAtLS0tLeWOn+Wni+mDteS7ti0tLS0t
+Cj4g5a+E5Lu26ICFOiBLYWlsYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgo+IOWvhOS7tuaXpeac
+nzogMjAxOeW5tDTmnIgz5pelIDE3OjEyCj4g5pS25Lu26ICFOiBLYWktSGVuZyBGZW5nIDxrYWku
+aGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+Owo+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+
+IOWJr+acrDogdGl3YWlAc3VzZS5jb207IERlcmVrIEdvcmRvbiA8ZGVyZWtAZGVyZWtnb3Jkb24u
+Y29tPjsgUHNob3UgPAo+IHBzaG91QHJlYWx0ZWsuY29tPgo+IOS4u+aXqDogUkU6IE5vIHNvdW5k
+IG91dHB1dCBvbiBaZW4gQUlPIDI3IFoyNzJTRF9aMjcyU0QKPgo+IEFkZCBQc2hvdS4KPgo+IC0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogS2FpLUhlbmcgRmVuZyA8a2FpLmhlbmcu
+ZmVuZ0BjYW5vbmljYWwuY29tPgo+IFNlbnQ6IFdlZG5lc2RheSwgQXByaWwgMywgMjAxOSA0OjMz
+IFBNCj4gVG86IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IENjOiB0aXdhaUBzdXNlLmNv
+bTsgS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT47IERlcmVrIEdvcmRvbiA8Cj4gZGVyZWtA
+ZGVyZWtnb3Jkb24uY29tPgo+IFN1YmplY3Q6IE5vIHNvdW5kIG91dHB1dCBvbiBaZW4gQUlPIDI3
+IFoyNzJTRF9aMjcyU0QKPgo+IEhpLAo+Cj4gWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNEIGRvZXNu
+4oCZdCBoYXZlIHNvdW5kIG91dHB1dCBbMV0uCj4KPiBXZeKAmXZlIHRyaWVkICJtb2RlbD1hbGMy
+NTYtYXN1cy1haW/igJ0gYnV0IGl0IGRvZXNu4oCZdCB3b3JrLgo+Cj4gU2VlbXMgbGlrZSB0aGlz
+IHBsYXRmb3JtIG5lZWRzIHNvbWV0aGluZyBkaWZmZXJlbnQgdGhhbgo+IEFMQzI1Nl9GSVhVUF9B
+U1VTX0FJT19HUElPMi4KPgo+IFsxXSBodHRwczovL2J1Z3MubGF1bmNocGFkLm5ldC9idWdzLzE4
+MjE5MzYKPgo+IEthaS1IZW5nCj4KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25t
+ZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4KPgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
