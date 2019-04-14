@@ -1,139 +1,22 @@
-From: Roope Salmi <rpsalmi@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: Add quirk for Focusrite
-	Scarlett Solo
-Date: Sun, 14 Apr 2019 14:13:06 +0300
-Message-ID: <20190414111306.6376-1-rpsalmi@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Roope Salmi <rpsalmi@gmail.com>
+From: Andra Danciu <andradanciu1997@gmail.com>
+Subject: [PATCH 0/2] Fix invalid license IDS
+Date: Sun, 14 Apr 2019 22:14:48 +0300
+Message-ID: <20190414191450.18377-1-andradanciu1997@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, daniel.baluta@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The device reports Synch: Synchronous on the playback interface.
-This causes regular audible napping on sample rates that are not multiples
-of 1 kHz. Fix to Synch: Asynchronous.
+This series of patches solves two issues reported by Thomas Gleixner
 
-Specifically observed on Focusrite Scarlett Solo 2nd generation. I assume
-the first generation model has a different device ID. A first generation
-Scarlett 2i2 I was able to test advertised Synch: Asynchronous by default.
+Andra Danciu (2):
+  ASoC: mpc5200_dma: Fix invalid license ID
+  ASoC: mpc5200_psc_i2s: Fix invalid license ID
 
-For example, with a sample rate of 44100 Hz, a silent sample is played
-every 40.96 seconds (likely 44.0 samples instead of 44.1 transmitted per
-USB frame on average, 4096 being the size of some internal buffer).
-There may be some other bug at play here since this doesn't happen
-on other platforms. However, a feedback endpoint is listed and using it
-fixes the issue. That is the only change in the quirk,
-but I didn't find a way to declare only it.
+ sound/soc/fsl/mpc5200_dma.c     | 2 +-
+ sound/soc/fsl/mpc5200_psc_i2s.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Tested on two units and on two different computers.
-
-Signed-off-by: Roope Salmi <rpsalmi@gmail.com>
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 86e80916a..5525f9043 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2770,6 +2770,90 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		.type = QUIRK_MIDI_NOVATION
- 	}
- },
-+{
-+	/*
-+	 * Focusrite Scarlett Solo 2nd generation
-+	 * Reports that playback should use Synch: Synchronous
-+	 * while still providing a feedback endpoint. Synchronous causes
-+	 * snapping on some sample rates. 
-+	 * Force it to use Synch: Asynchronous.
-+	 */
-+	USB_DEVICE(0x1235, 0x8205),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 2,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = 0,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						   USB_ENDPOINT_SYNC_ASYNC,
-+					.protocol = UAC_VERSION_2,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						 SNDRV_PCM_RATE_48000 |
-+						 SNDRV_PCM_RATE_88200 |
-+						 SNDRV_PCM_RATE_96000 |
-+						 SNDRV_PCM_RATE_176400 |
-+						 SNDRV_PCM_RATE_192000,
-+					.rate_min = 44100,
-+					.rate_max = 192000,
-+					.nr_rates = 6,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200,
-+						96000, 176400, 192000 
-+					},
-+					.clock = 41
-+				}
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+					.channels = 2,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = 0,
-+					.endpoint = 0x82,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						   USB_ENDPOINT_SYNC_ASYNC |
-+						   USB_ENDPOINT_USAGE_IMPLICIT_FB,
-+					.protocol = UAC_VERSION_2,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						 SNDRV_PCM_RATE_48000 |
-+						 SNDRV_PCM_RATE_88200 |
-+						 SNDRV_PCM_RATE_96000 |
-+						 SNDRV_PCM_RATE_176400 |
-+						 SNDRV_PCM_RATE_192000,
-+					.rate_min = 44100,
-+					.rate_max = 192000,
-+					.nr_rates = 6,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200,
-+						96000, 176400, 192000 
-+					},
-+					.clock = 41
-+				}
-+			},
-+ 			{
-+ 				.ifnum = 3,
-+ 				.type = QUIRK_IGNORE_INTERFACE
-+ 			},
-+ 			{
-+ 				.ifnum = -1
-+ 			}
-+ 		}
-+ 	}
-+},
- 
- /* Access Music devices */
- {
 -- 
-2.17.1
+2.11.0
