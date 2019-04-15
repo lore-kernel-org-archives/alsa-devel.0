@@ -1,64 +1,92 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ACPI / device_sysfs: change _ADR representation to 64 bits
-Date: Mon, 15 Apr 2019 10:18:57 -0500
-Message-ID: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE ACPICA" <devel@acpica.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: IEEE 1394 isoc library, libhinoko v0.1.0 release
+Date: Tue, 16 Apr 2019 00:30:57 +0900
+Message-ID: <20190415153053.GA32090@workstation>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/linux1394-devel>,
+ <mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+ <mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Standards such as the MIPI DisCo for SoundWire 1.0 specification
-assume the _ADR field is 64 bits.
-
-_ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-struct acpi_device_info.
-
-This patch bumps the representation used for sysfs to 64 bits.
-
-Example with a SoundWire device, the results show the complete
-vendorID and linkID which were omitted before:
-
-Before:
-$ more /sys/bus/acpi/devices/device\:38/adr
-0x5d070000
-After:
-$ more /sys/bus/acpi/devices/device\:38/adr
-0x000010025d070000
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/acpi/device_sysfs.c | 3 +--
- include/acpi/acpi_bus.h     | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-index 8940054d6250..f8d73ae42529 100644
---- a/drivers/acpi/device_sysfs.c
-+++ b/drivers/acpi/device_sysfs.c
-@@ -428,8 +428,7 @@ static ssize_t acpi_device_adr_show(struct device *dev,
- {
- 	struct acpi_device *acpi_dev = to_acpi_device(dev);
- 
--	return sprintf(buf, "0x%08x\n",
--		       (unsigned int)(acpi_dev->pnp.bus_address));
-+	return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
- }
- static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
- 
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index f7981751ac77..9075e28ea60a 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -230,7 +230,7 @@ struct acpi_device_dir {
- /* Plug and Play */
- 
- typedef char acpi_bus_id[8];
--typedef unsigned long acpi_bus_address;
-+typedef u64 acpi_bus_address;
- typedef char acpi_device_name[40];
- typedef char acpi_device_class[20];
- 
--- 
-2.17.1
+SGkgYWxsLAoKQXMgQUxTQSBmaXJld2lyZSBzdGFjayBpbmNsdWRlcyBtb3JlIGRyaXZlcnMgdG8g
+ZXhwYW5kIHN1cHBvcnQgZm9yIGF1ZGlvIGFuZAptdXNpYyB1bml0cyBvbiBJRUVFIDEzOTQgYnVz
+LCBJIHJlYWxpemVkIHRoYXQgc29tZSBkZXZpY2VzIGdlbmVyYXRlIHBlcmlvZGljYWwKc2hvcnQg
+bm9pc2VzIGluIGl0cyBvdXRwdXQgc291bmQsIGFuZCBzb21lIHVzZXJzIHJlcG9ydHMgdGhlIGlz
+c3VlLiBJIHdyb3RlIG15CnByZXZpb3VzIHJlcG9ydFsxXSBmb3IgRGljZSBBU0lDLCBob3dldmVy
+IHRvZGF5IEkgcmVhbGl6ZSB0aGUgb3RoZXIgdHlwZSBvZgpkZXZpY2UgaGFzIHRoZSBzaW1pbGFy
+IGlzc3VlLiBGdXJ0aGVybW9yZSwgZXZlbiBpZiB1c2luZyB0aGUgc2FtZSBBU0lDLCBvbmUgaGFz
+CnRoZSBpc3N1ZSBidXQgYW5vdGhlciBoYXMgbm9uZS4KCkZvciBmdXJ0aGVyIGludmVzdGlnYXRp
+b24sIHRoZSBzZXF1ZW5jZSBvZiBwYWNrZXQgZm9yIGxvbmcgcGVyaW9kIGlzIHJlcXVpcmVkCnRv
+IGFuYWx5emUgaW5jbGluYXRpb24gb2YgdGhlIGNvbnRlbnQ7IGUuZy4gc2V2ZXJhbCB0ZW5zIG1p
+bnV0ZXMuIEhvd2V2ZXIsIGl0CnJlcXVpcmVzIHRvbnMgb2YgbWVtb3J5IGZvciB0aGUgY29udGVu
+dCBvZiBjYXB0dXJlZCBwYWNrZXRzLiBBcyBsb25nIGFzIEkga25vdywKdGhlcmUncyBubyBwcm90
+b2NvbCBhbmFseXplciB3aXRoIHNvIG11Y2ggbWVtb3JpZXMuCgpVbmxpa2UgYXN5bmNocm9ub3Vz
+IGNvbW11bmljYXRpb24gb24gSUVFRSAxMzk0IGJ1cywgYW55IGlzb2Nocm9ub3VzCmNvbW11bmlj
+YXRpb24gb24gdGhlIGJ1cyBjYW4gYmUgY2FwdHVyZWQgYnkgSVIgY29udGV4dCBvZiAxMzk0IE9I
+Q0lbMl0uClRoaXMgZW5hYmxlcyB0byB1c2UgTGludXggc3lzdGVtIGZvciBwYWNrZXQgY2FwdHVy
+ZSB3aXRoIGxhcmdlIG1lbW9yeS9zdG9yYWdlLgoKSW4gdGhlIGRpYWdyYW0gYmVsb3csIHR3byBw
+aHlzaWNhbCBtYWNoaW5lcyBhcmUgY29ubmVjdGVkIGJ5IHR3byAxMzk0IE9IQ0kKY29udHJvbGxl
+ciwgYW5kIHRhcmdldCBkZXZpY2UgaXMgY29ubmVjdGVkIHRvIG9uZSBvZiB0aGUgY29udHJvbGxl
+ci4KCiAgIFdpbmRvd3MgKG9yIG1hY09TKQogICAgICAgIG1hY2hpbmUKICArLS0tLS0tLS0tLS0t
+LS0tLS0rCiAgfCAgIHByb3ByaWV0YXJ5ICAgfAogIHwgICB1bml0IGRyaXZlciAgIHwKICB8ICAg
+ICAgICB8ICAgICAgICB8CiAgfCAgIHByb3ByaWV0YXJ5ICAgfAogIHwgICBvaGNpIGRyaXZlciAg
+IHwKICB8ICAgICAgICB8ICAgICAgICB8CiAgfCAgICAxMzk0IE9IQ0kgICAgfAogICstLS0tICAr
+IC0gKyAtLS0tLSsKICAgICAgICAgfCAgIHwKICAgICAgICAgfCAgICstLS0tIHRhcmdldCBkZXZp
+Y2UgICAKICAgICAgICAgfAogICstLS0tICArIC0tLS0tLS0tLSsKICB8ICAgIDEzOTQgT0hDSSAg
+ICB8CiAgfCAgICAgICAgfCAgICAgICAgfAogIHwgIGZpcmV3aXJlLW9oY2kgIHwKICB8ICBmaXJl
+d2lyZS1jb3JlICB8CiAgfCAgICAgL2Rldi9mdyogICAgfAogIHwgICAgICAgIHwgICAgICAgIHwK
+ICB8ICAgIGxpYmhpbm9rbyAgICB8CiAgfCAgICAgICAgfCAgICAgICAgfAogIHwgICBhcHBsaWNh
+dGlvbnMgIHwKICB8KFB5dGhvbiAzIHNjcmlwdCl8CiAgKy0tLS0tLS0tLS0tLS0tLS0tKwogICAg
+IExpbnV4IG1hY2hpbmUKCkluIHRoaXMgY2FzZSwgdGhlIHR3byBjb250cm9sbGVycyBhbmQgdGhl
+IGRldmljZSBhcmUgb24gdGhlIHNhbWUgYnVzLiBXaGVuIGFuCnVuaXQgZHJpdmVyIGluIG9uZSBz
+aWRlIChXaW5kb3dzIE9TKSBjb21tdW5pY2F0ZXMgdG8gdGhlIGRldmljZSBieSBpc29jaHJvbm91
+cwpwYWNrZXQsIHRoZSBwYWNrZXRzIGZyb20gYm90aCBvZiB0aGUgdW5pdCBkcml2ZXIgYW5kIHRo
+ZSBkZXZpY2UgY2FuIGJlIGNhcHR1cmVkCmluIGFub3RoZXIgc2lkZSAod2l0aCBMaW51eCBPUyku
+CgoKVG9kYXkgSSByZWxlYXNlZCBsaWJoaW5va29bM10gdG8gYXNzaXN0IHRoaXMga2luZCBvZiB3
+b3JrLiBUaGlzIEkvTyBsaWJyYXJ5CnByb2R1Y2VzIGEgc2VyaWVzIG9mIEFQSSB0byBvcGVyYXRl
+IDEzOTQgT0hDSSBjb250cm9sbGVyIHZpYSBVQVBJIG9mIExpbnV4CkZpcmVXaXJlIHN1YnN5c3Rl
+bSBmb3IgYW55IGlzb2Nocm9ub3VzIGNvbnRleHQ7IGkuZS4gSVIgYW5kIElULiBFc3BlY2lhbGx5
+LCBJUgpjb250ZXh0IHdpdGggYnVmZmVyLWZpbGwgbW9kZSBpcyB1c2VmdWwgZm9yIHRoZSBraW5k
+IG9mIHdvcmsuIEZvciB0aGUKaW1wbGVtZW50YXRpb24sIEkgZ290IGdyZWF0IGhlbHAgZnJvbSBD
+bGVtZW5zWzRdLgoKTGlrZSBhIHNpc3RlciBwcm9qZWN0IChsaWJoaW5hd2FbNV0pLCB0aGUgbGli
+cmFyeSBzdXBwb3J0cyBHT2JqZWN0CkludHJvc3BlY3Rpb25bNl0gYXMgd2VsbCBmb3IgZHluYW1p
+YyBsYW5ndWFnZSBiaW5kaW5ncy4gQXMgYSByZXN1bHQsCmludGVycHJldGVyIGxhbmd1YWdlIGlz
+IGF2YWlsYWJsZSB0byB3cml0ZSBsaWJoaW5va28gYXBwbGljYXRpb24gKGUuZy4KUHl0aG9uIDMp
+LiBUaGlzIGlzIGdvb2QgZm9yIHByb3RvdHlwaW5nIG9mIHByb2dyYW0gYWRhcHRlZCB0byB2ZW5k
+b3ItZGVwZW5kZW50CmFuZCBtb2RlbC1kZXBlbmRlbnQgaW5jbGluYXRpb25zLiBZb3UgY2FuIHNl
+ZSBzb21lIFB5dGhvbiAzIGV4YW1wbGVzIGluCmBzYW1wbGVzYCBkaXJlY3RvcnkgKFB5R09iamVj
+dFs3XSBpcyByZXF1aXJlZCB0byBydW4pLgoKSWYgeW91J3JlIGludGVyZXN0cyBpbiBsaWJoaW5v
+a28gYW5kIGl0cyBhcHBsaWNhdGlvbiwgcGxlYXNlIHJlZmVyIHRvCmludHJvZHVjdGlvbiBzZWN0
+aW9uIG9mIGRvY3VtZW50YXRpb25bOF0uIFBsZWFzZSBlbnN1cmUgdGhhdCBwdWJsaWMgQVBJcyBv
+ZiB0aGUKbGlicmFyeSBhcmUgbm90IHN0YWJsZSB5ZXQuCgpJIG5lZWQgbW9yZSB0aW1lIGZvciB0
+aGUgaW52ZXN0aWdhdGlvbiwgYnV0IHdpc2ggdG8gcHJvcG9zZSBiZXR0ZXIKaW1wbGVtZW50YXRp
+b24gYWdhaW5zdCB0aGUgaXNzdWUgYW5kIHRvIHdyaXRlIGEgcGFwZXIgaW4gdGhpcyB5ZWFyLgoK
+ClsxXSBbYWxzYS1kZXZlbF0gRGljZSBwYWNrZXQgc2VxdWVuY2UgcXVpcmsgYW5kIEFMU0EgZmly
+ZXdpcmUgc3RhY2sgaW4gTGludXggNC42Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTYtTWF5LzEwNzcxNS5odG1sClsyXSAxMzk0IE9wZW4g
+SG9zdCBDb250cm9sbGVyIEludGVyZmFjZSBTcGVjaWZpY2F0aW9uCmh0dHBzOi8vaWVlZTEzOTQu
+d2lraS5rZXJuZWwub3JnL2luZGV4LnBocC9TcGVjaWZpY2F0aW9ucyMxMzk0X09wZW5fSG9zdF9D
+b250cm9sbGVyX0ludGVyZmFjZV9TcGVjaWZpY2F0aW9uClszXSBSZWxlYXNlIHZlcnNpb24gMC4x
+LjAgcmVsZWFzZSDCtyB0YWthc3dpZS9saWJoaW5va28KaHR0cHM6Ly9naXRodWIuY29tL3Rha2Fz
+d2llL2xpYmhpbm9rby9yZWxlYXNlcy90YWcvdjAuMS4wCls0XSBPdmVydmlldyDigJQgR09iamVj
+dCBJbnRyb3NwZWN0aW9uCmh0dHBzOi8vZ2kucmVhZHRoZWRvY3MuaW8vZW4vbGF0ZXN0LwpbNV0g
+SUVFRSAxMzk0IGZvciBMaW51eCAvIENvbnRlbnQgb2YgYnVmZmVyIGZvciByZWNlaXZlX211bHRp
+Y2hhbm5lbCBjdHggaW4gdXNlcnNwYWNlCmh0dHBzOi8vc291cmNlZm9yZ2UubmV0L3AvbGludXgx
+Mzk0L21haWxtYW4vbWVzc2FnZS8zNjU3OTEzNy8KWzZdIHRha2Fzd2llL2xpYmhpbmF3YQpodHRw
+czovL2dpdGh1Yi5jb20vdGFrYXN3aWUvbGliaGluYXdhCls3XSBPdmVydmlldyDigJQgUHlHT2Jq
+ZWN0Cmh0dHBzOi8vcHlnb2JqZWN0LnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC8KWzhdIEhpbm9r
+byBSZWZlcmVuY2UgTWFudWFsOiBIaW5va28gUmVmZXJlbmNlIE1hbnVhbApodHRwczovL3Rha2Fz
+d2llLmdpdGh1Yi5pby9saWJoaW5va28tZG9jcy8KCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3Rv
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbWFpbGlu
+ZyBsaXN0IGxpbnV4MTM5NC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbGludXgxMzk0LWRldmVsCg==
