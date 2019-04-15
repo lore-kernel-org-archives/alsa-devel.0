@@ -1,130 +1,64 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v3 2/5] soundwire: fix style issues
-Date: Mon, 15 Apr 2019 08:09:59 -0500
-Message-ID: <08ea1442-361a-ecfc-ca26-d3bd8a0ec37b@linux.intel.com>
-References: <20190411031701.5926-1-pierre-louis.bossart@linux.intel.com>
- <20190411031701.5926-3-pierre-louis.bossart@linux.intel.com>
- <20190414095839.GG28103@vkoul-mobl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] ACPI / device_sysfs: change _ADR representation to 64 bits
+Date: Mon, 15 Apr 2019 10:18:57 -0500
+Message-ID: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190414095839.GG28103@vkoul-mobl>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE ACPICA" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
+Standards such as the MIPI DisCo for SoundWire 1.0 specification
+assume the _ADR field is 64 bits.
 
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/soundwire/Kconfig          |   2 +-
->>   drivers/soundwire/bus.c            |  87 ++++++++--------
->>   drivers/soundwire/bus.h            |  16 +--
->>   drivers/soundwire/bus_type.c       |   4 +-
->>   drivers/soundwire/cadence_master.c |  87 ++++++++--------
->>   drivers/soundwire/cadence_master.h |  22 ++--
->>   drivers/soundwire/intel.c          |  87 ++++++++--------
->>   drivers/soundwire/intel.h          |   4 +-
->>   drivers/soundwire/intel_init.c     |  12 +--
->>   drivers/soundwire/mipi_disco.c     | 116 +++++++++++----------
->>   drivers/soundwire/slave.c          |  10 +-
->>   drivers/soundwire/stream.c         | 161 +++++++++++++++--------------
-> 
-> I would prefer this to be a patch per module. It doesnt help to have a
-> single patch for all the files!
-> 
-> It would be great to have cleanup done per logical group, for example
-> typos in a patch, aligns in another etc...
+_ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+struct acpi_device_info.
 
-You've got to be kidding. I've never seen people ask for this sort of 
-detail.
+This patch bumps the representation used for sysfs to 64 bits.
 
-> 
->>   12 files changed, 313 insertions(+), 295 deletions(-)
->>
->> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
->> index 19c8efb9a5ee..84876a74874f 100644
->> --- a/drivers/soundwire/Kconfig
->> +++ b/drivers/soundwire/Kconfig
->> @@ -4,7 +4,7 @@
->>   
->>   menuconfig SOUNDWIRE
->>   	bool "SoundWire support"
->> -	---help---
->> +	help
-> 
-> Not sure if this is a style issue, kernel seems to have 2990 instances
-> of this!
+Example with a SoundWire device, the results show the complete
+vendorID and linkID which were omitted before:
 
-this is reported by checkpatch.pl --strict.
+Before:
+$ more /sys/bus/acpi/devices/device\:38/adr
+0x5d070000
+After:
+$ more /sys/bus/acpi/devices/device\:38/adr
+0x000010025d070000
 
-> 
->>   	if (msg->page)
->>   		sdw_reset_page(bus, msg->dev_num);
->> @@ -243,7 +244,7 @@ int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
->>    * Caller needs to hold the msg_lock lock while calling this
->>    */
->>   int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
->> -				struct sdw_defer *defer)
->> +		       struct sdw_defer *defer)
-> 
-> this does not seem aligned to me!
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/acpi/device_sysfs.c | 3 +--
+ include/acpi/acpi_bus.h     | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-It is, I checked. 2 tabs and 7 spaces.
-
-> 
->>   int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
->> -		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
->> +		 u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
-> 
-> this one too
-
-2 tabs and one space.
-
-> 
->> @@ -458,13 +458,13 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
->>   		mutex_unlock(&slave->bus->bus_lock);
->>   		if (dev_num < 0) {
->>   			dev_err(slave->bus->dev, "Get dev_num failed: %d",
->> -								dev_num);
->> +				dev_num);
-> 
-> It might read better if we move the log to second line along with
-> dev_num...
-> 
->>   int sdw_configure_dpn_intr(struct sdw_slave *slave,
->> -			int port, bool enable, int mask)
->> +			   int port, bool enable, int mask)
-> 
-> not aligned
-
-it is in the code. It's a diff illusion.
-
-> 
->>   void sdw_extract_slave_id(struct sdw_bus *bus,
->> -			u64 addr, struct sdw_slave_id *id);
->> +			  u64 addr, struct sdw_slave_id *id);
->>   
-> 
-> Not aligned
-
-it is in the code. It's a diff illusion.
-
->   
->>   enum sdw_command_response
->>   cdns_xfer_msg_defer(struct sdw_bus *bus,
->> -		struct sdw_msg *msg, struct sdw_defer *defer)
->> +		    struct sdw_msg *msg, struct sdw_defer *defer)
-> 
-> this one too..
-> 
->>   static int cdns_port_params(struct sdw_bus *bus,
->> -		struct sdw_port_params *p_params, unsigned int bank)
->> +			    struct sdw_port_params *p_params, unsigned int bank)
-> 
-> here as well.. (and giving up on rest)
-
-Please check for yourself that this is a diff illusion w/ tab space.
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 8940054d6250..f8d73ae42529 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -428,8 +428,7 @@ static ssize_t acpi_device_adr_show(struct device *dev,
+ {
+ 	struct acpi_device *acpi_dev = to_acpi_device(dev);
+ 
+-	return sprintf(buf, "0x%08x\n",
+-		       (unsigned int)(acpi_dev->pnp.bus_address));
++	return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
+ }
+ static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+ 
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index f7981751ac77..9075e28ea60a 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -230,7 +230,7 @@ struct acpi_device_dir {
+ /* Plug and Play */
+ 
+ typedef char acpi_bus_id[8];
+-typedef unsigned long acpi_bus_address;
++typedef u64 acpi_bus_address;
+ typedef char acpi_device_name[40];
+ typedef char acpi_device_class[20];
+ 
+-- 
+2.17.1
