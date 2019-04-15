@@ -1,42 +1,97 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] ALSA: isa/wavefront: Fix potential Spectre v1
- vulnerabilities
-Date: Mon, 15 Apr 2019 17:40:27 -0500
-Message-ID: <f2a81b0f-ac5e-9161-cf48-74dbc65d8a1f@embeddedor.com>
-References: <20190326183202.GA17285@embeddedor>
- <52a533e5-f106-db5f-35f7-2dd85672f541@embeddedor.com>
- <s5hef62kidq.wl-tiwai@suse.de>
+From: Pshou <pshou@realtek.com>
+Subject: =?utf-8?b?5Zue6KaGOiBObyBzb3VuZCBvdXRwdXQgb24gWmVu?=
+	=?utf-8?q?_AIO_27_Z272SD=5FZ272SD?=
+Date: Mon, 15 Apr 2019 23:59:38 +0000
+Message-ID: <126650E837C1704F92183C9FD34C1CCE18DA51AB@RTITMBSVM07.realtek.com.tw>
+References: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DBB13A@RTITMBSVM07.realtek.com.tw>
+ <126650E837C1704F92183C9FD34C1CCE18DA5106@RTITMBSVM07.realtek.com.tw>
+ <CAGGMHBP=4RBXPvMzLgi7yWaxsc=wvENPLdidugFvtzVBBPzdtw@mail.gmail.com>
+ <CAGGMHBOGDUnMewBTrZgoBKFk_A4sNF4fEXwfH9Ay8SNTzjy0-g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hef62kidq.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A415F896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 01:59:48 +0200 (CEST)
+In-Reply-To: <CAGGMHBOGDUnMewBTrZgoBKFk_A4sNF4fEXwfH9Ay8SNTzjy0-g@mail.gmail.com>
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Derek Gordon <derek@derekgordon.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>, CHLin <doomko@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 4/15/19 5:34 PM, Takashi Iwai wrote:
-> On Mon, 15 Apr 2019 21:35:17 +0200,
->  Gustavo A. R. Silva  wrote:
->>
->> Hi all,
->>
->> Friendly ping:
->>
->> Who can take this?
-> 
-> All platforms that support ISA boards are so old and they don't suffer
-> from Spectre at all.
-> 
-
-Oh okay.
-
-I'll take this info into account for future changes.
-
-Thanks
---
-Gustavo
+QWRkZWQgQ0hMaW4NCg0K5a+E5Lu26ICFOiBEZXJlayBHb3Jkb24gPGRlcmVrQGRlcmVrZ29yZG9u
+LmNvbT4NCuWvhOS7tuaXpeacnzogMjAxOeW5tDTmnIgxM+aXpSAyMTo1NQ0K5pS25Lu26ICFOiBQ
+c2hvdSA8cHNob3VAcmVhbHRlay5jb20+DQrlia/mnKw6IEthaWxhbmcgPGthaWxhbmdAcmVhbHRl
+ay5jb20+OyBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+OyBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHRpd2FpQHN1c2UuY29tDQrkuLvml6g6IFJlOiBObyBz
+b3VuZCBvdXRwdXQgb24gWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNEDQoNCk9rYXksIGp1c3QgZm9y
+IHNhZmUga2VlcGluZyBoZXJlIEkgdGVzdGVkIHRoaXMgb24gbWFpbmxpbmUgNS4xIGFzIHdlbGwu
+ICBTYW1lIHJlc3VsdHMuICBObyBhdWRpbyBmcm9tIGFueSBzb3VyY2VzLg0KDQpPbiBTYXQsIEFw
+ciAxMywgMjAxOSBhdCA3OjM5IEFNIERlcmVrIEdvcmRvbiA8ZGVyZWtAZGVyZWtnb3Jkb24uY29t
+PG1haWx0bzpkZXJla0BkZXJla2dvcmRvbi5jb20+PiB3cm90ZToNCkkgaW5zdGFsbGVkIGFsc2Et
+dG9vbHMgdmlhIHJlcG8uDQoNCkkgYm9vdGVkIHRoZSBsYXRlc3QgNC4xOC54IGtlcm5lbCBmcm9t
+IFVidW50dS4NCg0Kcm9vdEBkZXJlay1aZW4tQUlPLTI3LVoyNzJTRDovaG9tZS9kZXJlayMgaGRh
+LXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MjAgU0VUX0NPRUZfSU5ERVggMHgzNQ0KbmlkID0gMHgy
+MCwgdmVyYiA9IDB4NTAwLCBwYXJhbSA9IDB4MzUNCnZhbHVlID0gMHgwDQpyb290QGRlcmVrLVpl
+bi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVrIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgy
+MCBTRVRfUFJPQ19DT0VGIDB4ODk2OCAgLy8gc2V0IFBEQiBmbG9hdGluZw0KbmlkID0gMHgyMCwg
+dmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODk2OA0KdmFsdWUgPSAweDANCnJvb3RAZGVyZWstWmVu
+LUFJTy0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjIGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDVi
+IFNFVF9DT0VGX0lOREVYIDB4MDENCm5pZCA9IDB4NWIsIHZlcmIgPSAweDUwMCwgcGFyYW0gPSAw
+eDENCnZhbHVlID0gMHgwDQpyb290QGRlcmVrLVplbi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVr
+IyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHg1YiBTRVRfUFJPQ19DT0VGIDB4ODU0MA0Kbmlk
+ID0gMHg1YiwgdmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODU0MA0KdmFsdWUgPSAweDANCnJvb3RA
+ZGVyZWstWmVuLUFJTy0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjDQoNCk5vIGF1ZGlvIGZvciBZb3V0
+dWJlLmNvbSwgbG9jYWwgTVAzLCBvciB0aGUgInRlc3Qgc3BlYWtlcnMiIG9wdGlvbiBpbiBVYnVu
+dHUgc2V0dGluZ3MuDQoNCg0KDQoNCk9uIFRodSwgQXByIDExLCAyMDE5IGF0IDk6MzYgUE0gUHNo
+b3UgPHBzaG91QHJlYWx0ZWsuY29tPG1haWx0bzpwc2hvdUByZWFsdGVrLmNvbT4+IHdyb3RlOg0K
+SGksDQoNCjEuIFVzZSBXaW5kb3dzIHRvIGJvb3QgdG8gc2VlIGlmIHRoZXJlIGlzIG5vIHNvdW5k
+Pw0KSWYgdGhlcmUgaXMgbm8gc291bmQgaW4gV2luZG93cywgaXQgbWF5IGJlIGEgcHJvYmxlbSB3
+aXRoIGNvZGVjIG9yIGFtcCwgdG8gYmUgc2VudCBiYWNrIHRvIEFTVVMgZm9yIHJlcGFpci4NCg0K
+Mi4gUGxlYXNlIHR1cm4gb24gdGhlIGZvbGxvd2luZyB2YWx1ZXMgd2l0aCBoZGEtdmVyYiAoYWxz
+YS10b29sIC0+IGhkYS12ZXJiKQ0KLi9oYWQtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMCBTRVRf
+Q09FRl9JTkRFWCAweDM1DQouL2hhZC12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwIFNFVF9QUk9D
+X0NPRUYgMHg4OTY4ICAvLyBzZXQgUERCIGZsb2F0aW5nDQouL2hhZC12ZXJiIC9kZXYvc25kL2h3
+QzBEMCAweDViIFNFVF9DT0VGX0lOREVYIDB4MDENCi4vaGFkLXZlcmIgL2Rldi9zbmQvaHdDMEQw
+IDB4NWIgU0VUX1BST0NfQ09FRiAweDg1NDANCg0KUGxlYXNlIHR1cm4gb24gdGhlIHNvdW5kKG1p
+eGVyKSwgcGxheSBhIHNvbmcuDQpJZiB0aGVyZSBpcyBhIHNvdW5kLiBDYW4gS2FpLUhlbmcgaGVs
+cCBtZSBnZXQgYSBQQVRDSCBmaWxlLg0KDQpCZXN0IHJlZ2FyZHMNCnBzaG91DQoNCi0tLS0t5Y6f
+5aeL6YO15Lu2LS0tLS0NCuWvhOS7tuiAhTogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbTxt
+YWlsdG86a2FpbGFuZ0ByZWFsdGVrLmNvbT4+DQrlr4Tku7bml6XmnJ86IDIwMTnlubQ05pyIM+aX
+pSAxNzoxMg0K5pS25Lu26ICFOiBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNh
+bC5jb208bWFpbHRvOmthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbT4+OyBhbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmc8bWFpbHRvOmFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4NCuWJr+ac
+rDogdGl3YWlAc3VzZS5jb208bWFpbHRvOnRpd2FpQHN1c2UuY29tPjsgRGVyZWsgR29yZG9uIDxk
+ZXJla0BkZXJla2dvcmRvbi5jb208bWFpbHRvOmRlcmVrQGRlcmVrZ29yZG9uLmNvbT4+OyBQc2hv
+dSA8cHNob3VAcmVhbHRlay5jb208bWFpbHRvOnBzaG91QHJlYWx0ZWsuY29tPj4NCuS4u+aXqDog
+UkU6IE5vIHNvdW5kIG91dHB1dCBvbiBaZW4gQUlPIDI3IFoyNzJTRF9aMjcyU0QNCg0KQWRkIFBz
+aG91Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogS2FpLUhlbmcgRmVuZyA8
+a2FpLmhlbmcuZmVuZ0BjYW5vbmljYWwuY29tPG1haWx0bzprYWkuaGVuZy5mZW5nQGNhbm9uaWNh
+bC5jb20+Pg0KU2VudDogV2VkbmVzZGF5LCBBcHJpbCAzLCAyMDE5IDQ6MzMgUE0NClRvOiBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc8bWFpbHRvOmFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+Zz4NCkNjOiB0aXdhaUBzdXNlLmNvbTxtYWlsdG86dGl3YWlAc3VzZS5jb20+OyBLYWlsYW5nIDxr
+YWlsYW5nQHJlYWx0ZWsuY29tPG1haWx0bzprYWlsYW5nQHJlYWx0ZWsuY29tPj47IERlcmVrIEdv
+cmRvbiA8ZGVyZWtAZGVyZWtnb3Jkb24uY29tPG1haWx0bzpkZXJla0BkZXJla2dvcmRvbi5jb20+
+Pg0KU3ViamVjdDogTm8gc291bmQgb3V0cHV0IG9uIFplbiBBSU8gMjcgWjI3MlNEX1oyNzJTRA0K
+DQpIaSwNCg0KWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNEIGRvZXNu4oCZdCBoYXZlIHNvdW5kIG91
+dHB1dCBbMV0uDQoNCldl4oCZdmUgdHJpZWQgIm1vZGVsPWFsYzI1Ni1hc3VzLWFpb+KAnSBidXQg
+aXQgZG9lc27igJl0IHdvcmsuDQoNClNlZW1zIGxpa2UgdGhpcyBwbGF0Zm9ybSBuZWVkcyBzb21l
+dGhpbmcgZGlmZmVyZW50IHRoYW4gQUxDMjU2X0ZJWFVQX0FTVVNfQUlPX0dQSU8yLg0KDQpbMV0g
+aHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvYnVncy8xODIxOTM2DQoNCkthaS1IZW5nDQoNCi0t
+LS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMg
+ZS1tYWlsLg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
