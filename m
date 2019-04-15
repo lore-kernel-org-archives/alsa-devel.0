@@ -1,18 +1,35 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mpc5200_dma: Fix invalid license ID" to the asoc tree
+Subject: Applied "ASoC: rsnd: Document r8a77470 bindings" to
+	the asoc tree
 Date: Mon, 15 Apr 2019 09:53:30 +0100 (BST)
-Message-ID: <20190415085330.18F5911279F6@debutante.sirena.org.uk>
-References: <20190414191450.18377-2-andradanciu1997@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190414191450.18377-2-andradanciu1997@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>, daniel.baluta@gmail.com, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.deThomas Gleixner <tglx@linutronix.de>, timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
+Message-ID: <20190415085330.7C14B1127A64@debutante.sirena.org.uk>
+References: <1554969262-15028-17-git-send-email-cv-dong@jinso.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C493CF80CAB
+ for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2019 10:53:36 +0200 (CEST)
+In-Reply-To: <1554969262-15028-17-git-send-email-cv-dong@jinso.co.jp>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Cc: cv-dong@jinso.co.jp, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, geert+renesas@glider.be, yoshihiro.shimoda.uh@renesas.com, biju.das@bp.renesas.com, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, na-hoan@jinso.co.jp, horms+renesas@verge.net.au, h-inayoshi@jinso.co.jp, nv-dung@jinso.co.jp
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mpc5200_dma: Fix invalid license ID
+   ASoC: rsnd: Document r8a77470 bindings
 
 has been applied to the asoc tree at
 
@@ -37,32 +54,30 @@ to this mail.
 Thanks,
 Mark
 
->From 8981d195355ecf898c8bacabba8ce9c178534b43 Mon Sep 17 00:00:00 2001
-From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Sun, 14 Apr 2019 22:14:49 +0300
-Subject: [PATCH] ASoC: mpc5200_dma: Fix invalid license ID
+>From d1d58766908aad18b1f967fc107702959da84f2b Mon Sep 17 00:00:00 2001
+From: Cao Van Dong <cv-dong@jinso.co.jp>
+Date: Thu, 11 Apr 2019 16:54:18 +0900
+Subject: [PATCH] ASoC: rsnd: Document r8a77470 bindings
 
-As the file had no other license notice/reference, it falls under the
-project license and therefore the proper SPDX id is: GPL-2.0-only
+Document SoC specific bindings for R-Car RZ/G1C(r8a77470) SoC.
 
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Fixes: 1edfc2485d8dc ("ASoC: mpc5200_dma: Switch to SPDX identifier")
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Signed-off-by: Cao Van Dong <cv-dong@jinso.co.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc5200_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 4396442c2fdd..ccf9301889fe 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // Freescale MPC5200 PSC DMA
- // ALSA SoC Platform driver
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index b34afa66fb00..5c52182f7dcf 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -266,6 +266,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
+ 				    - "renesas,rcar_sound-r8a7744" (RZ/G1N)
+ 				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
++				    - "renesas,rcar_sound-r8a77470" (RZ/G1C)
+ 				    - "renesas,rcar_sound-r8a774a1" (RZ/G2M)
+ 				    - "renesas,rcar_sound-r8a774c0" (RZ/G2E)
+ 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
 -- 
 2.20.1
