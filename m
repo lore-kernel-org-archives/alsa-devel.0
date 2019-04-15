@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mpc5200_psc_i2s: Fix invalid license ID" to the asoc
- tree
-Date: Mon, 15 Apr 2019 09:53:29 +0100 (BST)
-Message-ID: <20190415085329.DD3AC11279E1@debutante.sirena.org.uk>
-References: <20190414191450.18377-3-andradanciu1997@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190414191450.18377-3-andradanciu1997@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Subject: Applied "ASoC: mpc5200_dma: Fix invalid license ID" to the asoc tree
+Date: Mon, 15 Apr 2019 09:53:30 +0100 (BST)
+Message-ID: <20190415085330.18F5911279F6@debutante.sirena.org.uk>
+References: <20190414191450.18377-2-andradanciu1997@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190414191450.18377-2-andradanciu1997@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Andra Danciu <andradanciu1997@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, s.hauer@pengutronix.de, linuxppc-dev@lists.ozlabs.org, daniel.baluta@gmail.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, Mark Brown <broonie@kernel.org>, linux-imx@nxp.com, kernel@pengutronix.de, tiwai@suse.com, shawnguo@kernel.org, Thomas Gleixner <tglx@linutronix.de>, perex@perex.cz, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>, daniel.baluta@gmail.com, festevam@gmail.com, kernel@pengutronix.de, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.deThomas Gleixner <tglx@linutronix.de>, timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mpc5200_psc_i2s: Fix invalid license ID
+   ASoC: mpc5200_dma: Fix invalid license ID
 
 has been applied to the asoc tree at
 
@@ -49,32 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 93741a77a901d1a4b1861c6dbf5607fdf5d36cbc Mon Sep 17 00:00:00 2001
+>From 8981d195355ecf898c8bacabba8ce9c178534b43 Mon Sep 17 00:00:00 2001
 From: Andra Danciu <andradanciu1997@gmail.com>
-Date: Sun, 14 Apr 2019 22:14:50 +0300
-Subject: [PATCH] ASoC: mpc5200_psc_i2s: Fix invalid license ID
+Date: Sun, 14 Apr 2019 22:14:49 +0300
+Subject: [PATCH] ASoC: mpc5200_dma: Fix invalid license ID
 
 As the file had no other license notice/reference, it falls under the
 project license and therefore the proper SPDX id is: GPL-2.0-only
 
 Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Fixes: 864a8472c4412 ("ASoC: mpc5200_psc_i2s: Switch to SPDX identifier")
+Fixes: 1edfc2485d8dc ("ASoC: mpc5200_dma: Switch to SPDX identifier")
 Reported-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc5200_psc_i2s.c | 2 +-
+ sound/soc/fsl/mpc5200_dma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index 6de97461ba25..9bc01f374b39 100644
---- a/sound/soc/fsl/mpc5200_psc_i2s.c
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index 4396442c2fdd..ccf9301889fe 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
 @@ -1,4 +1,4 @@
 -// SPDX-License-Identifier: GPL
 +// SPDX-License-Identifier: GPL-2.0-only
  //
- // Freescale MPC5200 PSC in I2S mode
- // ALSA SoC Digital Audio Interface (DAI) driver
+ // Freescale MPC5200 PSC DMA
+ // ALSA SoC Platform driver
 -- 
 2.20.1
