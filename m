@@ -1,62 +1,80 @@
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 3/3] ALSA: seq: Protect racy pool
- manipulation from OSS sequencer
-Date: Mon, 15 Apr 2019 11:52:01 +0300 (EEST)
-Message-ID: <alpine.DEB.2.21.1904151143030.20954@eliteleevi>
-References: <20190412122935.4092-1-tiwai@suse.de>
- <20190412122935.4092-4-tiwai@suse.de>
- <alpine.DEB.2.21.1904150930580.20954@eliteleevi>
- <s5hsgujkbpu.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mpc5200_psc_i2s: Fix invalid license ID" to the asoc
+ tree
+Date: Mon, 15 Apr 2019 09:53:29 +0100 (BST)
+Message-ID: <20190415085329.DD3AC11279E1@debutante.sirena.org.uk>
+References: <20190414191450.18377-3-andradanciu1997@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 074AAF80CAB
- for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2019 10:50:43 +0200 (CEST)
-In-Reply-To: <s5hsgujkbpu.wl-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20190414191450.18377-3-andradanciu1997@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Andra Danciu <andradanciu1997@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, timur@kernel.org, Xiubo.Lee@gmail.com, Daniel Baluta <daniel.baluta@nxp.com>, s.hauer@pengutronix.de, linuxppc-dev@lists.ozlabs.org, daniel.baluta@gmail.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, Mark Brown <broonie@kernel.org>, linux-imx@nxp.com, kernel@pengutronix.de, tiwai@suse.com, shawnguo@kernel.org, Thomas Gleixner <tglx@linutronix.de>, perex@perex.cz, festevam@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-On Mon, 15 Apr 2019, Takashi Iwai wrote:
+   ASoC: mpc5200_psc_i2s: Fix invalid license ID
 
-> > > +void snd_seq_client_ioctl_unlock(int clientid)
-> > > +{
-> > > +	struct snd_seq_client *client;
-> > > +
-> > > +	client = snd_seq_client_use_ptr(clientid);
-> > > +	if (WARN_ON(!client))
-> > > +		return;
-> > > +	mutex_unlock(&client->ioctl_mutex);
-> > > +	snd_use_lock_free(&client->use_lock);
-> > > +	snd_seq_client_unlock(client);
-> > 
-> > is that double-unlock intentional? snd_seq_client_unlock() seems to call
-> > the same snd_use_lock_free for the same handle as on the previous line.
-> 
-> Yes, it's intentional.  The trick is snd_seq_client_ioctl_lock()
-> doesn't call snd_seq_client_unlock(), i.e. keeps refcount up.  This
-> is, in turn, released in snd_seq_client_ioctl_unlock().
-> snd_seq_client_ioctl_unlock() gets its refcount at use_ptr(), hence
-> this releases twice.  Maybe it's worth for more comments.
+has been applied to the asoc tree at
 
-ah yes, ok thanks, just checking. :) I was misled by the asymmetric 
-names. As you are taking the refcount with two client_use_ptr() calls in 
-both lock and unlock, would it be more logical to have two 
-snd_seq_client_unlock() calls in unlock?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
 
-Otherwise patchset looks good!
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 93741a77a901d1a4b1861c6dbf5607fdf5d36cbc Mon Sep 17 00:00:00 2001
+From: Andra Danciu <andradanciu1997@gmail.com>
+Date: Sun, 14 Apr 2019 22:14:50 +0300
+Subject: [PATCH] ASoC: mpc5200_psc_i2s: Fix invalid license ID
+
+As the file had no other license notice/reference, it falls under the
+project license and therefore the proper SPDX id is: GPL-2.0-only
+
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Fixes: 864a8472c4412 ("ASoC: mpc5200_psc_i2s: Switch to SPDX identifier")
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andra Danciu <andradanciu1997@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/mpc5200_psc_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 6de97461ba25..9bc01f374b39 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // Freescale MPC5200 PSC in I2S mode
+ // ALSA SoC Digital Audio Interface (DAI) driver
+-- 
+2.20.1
