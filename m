@@ -1,69 +1,123 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: imx: fix fiq dependencies
-Date: Tue, 16 Apr 2019 15:12:23 +0200
-Message-ID: <20190416131242.1232143-1-arnd@arndb.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Dell AIO speaker pop noise
+Date: Tue, 16 Apr 2019 13:52:07 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBBCC6@RTITMBSVM07.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
+ <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
+ <s5h8swajr70.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
+ <300c8e06-71a0-9bff-2963-91fed9d79b8b@canonical.com>
+ <s5hv9ze5lph.wl-tiwai@suse.de>
+ <b457c3f6-1fc5-a3da-2904-0da5f3c5a170@canonical.com>
+ <s5himve5fi5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Cosmin Samoila <cosmin.samoila@nxp.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEC3CF896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 15:52:15 +0200 (CEST)
+In-Reply-To: <s5himve5fi5.wl-tiwai@suse.de>
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, hwang4 <hui.wang@canonical.com>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-During randconfig builds, I occasionally run into an invalid configuration
-of the freescale FIQ sound support:
-
-WARNING: unmet direct dependencies detected for SND_SOC_IMX_PCM_FIQ
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]
-  Selected by [y]:
-  - SND_SOC_FSL_SPDIF [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]!=n && (MXC_TZIC [=n] || MXC_AVIC [=y])
-
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_remove':
-imx-ssi.c:(.text+0x28): undefined reference to `imx_pcm_fiq_exit'
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_probe':
-imx-ssi.c:(.text+0xa64): undefined reference to `imx_pcm_fiq_init'
-
-The Kconfig warning is a result of the symbol being defined inside of
-the "if SND_IMX_SOC" block, and is otherwise harmless. The link error
-is more tricky and happens with SND_SOC_IMX_SSI=y, which may or may not
-imply FIQ support. However, if SND_SOC_FSL_SSI is set to =m at the same
-time, that selects SND_SOC_IMX_PCM_FIQ as a loadable module dependency,
-which then causes a link failure from imx-ssi.
-
-The solution here is to make SND_SOC_IMX_PCM_FIQ built-in whenever
-one of its potential users is built-in.
-
-Fixes: ff40260f79dc ("ASoC: fsl: refine DMA/FIQ dependencies")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/fsl/Kconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 7b1d9970be8b..1f65cf555ebe 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -182,16 +182,17 @@ config SND_MPC52xx_SOC_EFIKA
- 
- endif # SND_POWERPC_SOC
- 
-+config SND_SOC_IMX_PCM_FIQ
-+	tristate
-+	default y if SND_SOC_IMX_SSI=y && (SND_SOC_FSL_SSI=m || SND_SOC_FSL_SPDIF=m) && (MXC_TZIC || MXC_AVIC)
-+	select FIQ
-+
- if SND_IMX_SOC
- 
- config SND_SOC_IMX_SSI
- 	tristate
- 	select SND_SOC_FSL_UTILS
- 
--config SND_SOC_IMX_PCM_FIQ
--	tristate
--	select FIQ
--
- comment "SoC Audio support for Freescale i.MX boards:"
- 
- config SND_MXC_SOC_WM1133_EV1
--- 
-2.20.0
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGFrYXNoaSBJd2FpIDx0
+aXdhaUBzdXNlLmRlPg0KPiBTZW50OiBUdWVzZGF5LCBBcHJpbCAxNiwgMjAxOSA3OjU4IFBNDQo+
+IFRvOiBod2FuZzQgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+DQo+IENjOiAoYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnKSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPjsgS2FpbGFuZw0K
+PiA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4NCj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBEZWxs
+IEFJTyBzcGVha2VyIHBvcCBub2lzZQ0KPiANCj4gT24gVHVlLCAxNiBBcHIgMjAxOSAxMzoyNjo0
+NyArMDIwMCwNCj4gaHdhbmc0IHdyb3RlOg0KPiA+DQo+ID4NCj4gPiBPbiAyMDE5LzQvMTYg5LiL
+5Y2INTo0MywgVGFrYXNoaSBJd2FpIHdyb3RlOg0KPiA+ID4gT24gVHVlLCAxNiBBcHIgMjAxOSAx
+MTozMToyMiArMDIwMCwNCj4gPiA+IGh3YW5nNCB3cm90ZToNCj4gPiA+Pg0KPiA+ID4+IE9uIDIw
+MTkvNC8xNiDkuIvljYg0OjU5LCBLYWlsYW5nIHdyb3RlOg0KPiA+ID4+Pj4gLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCj4gPiA+Pj4+IEZyb206IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5k
+ZT4NCj4gPiA+Pj4+IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDE2LCAyMDE5IDQ6MjIgUE0NCj4gPiA+
+Pj4+IFRvOiBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pg0KPiA+ID4+Pj4gQ2M6IEth
+aWxhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+OyBod2FuZzQNCj4gPiA+Pj4+IDxodWkud2FuZ0Bj
+YW5vbmljYWwuY29tPjsNCj4gPiA+Pj4+IChhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcpIDxh
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+DQo+ID4gPj4+PiBTdWJqZWN0OiBSZTogW2Fsc2Et
+ZGV2ZWxdIERlbGwgQUlPIHNwZWFrZXIgcG9wIG5vaXNlDQo+ID4gPj4+Pg0KPiA+ID4+Pj4gT24g
+VHVlLCAxNiBBcHIgMjAxOSAxMDowMTozMSArMDIwMCwgSmFyb3NsYXYgS3lzZWxhIHdyb3RlOg0K
+PiA+ID4+Pj4+IERuZSAxNi4gMDQuIDE5IHYgOTozMCBLYWlsYW5nIG5hcHNhbChhKToNCj4gPiA+
+Pj4+Pj4gSGkgVGFrYXNoaSwNCj4gPiA+Pj4+Pj4NCj4gPiA+Pj4+Pj4gSXNzdWUgMTogVGhlIG5v
+aXNlIGtlZXBzIG9jY3VycmluZyB2aWEgc3BlYWtlciB3aGVuIEhlYWRzZXQgaXMNCj4gcGx1Z2dl
+ZCBpbi4NCj4gPiA+Pj4+Pj4gSXNzdWUgMjogVGhlIGh1bW1pbmcgbm9pc2UgaXMgb2NjdXJpbmcg
+d2hlbiBzd2l0Y2hpbmcgdG8gc291bmQNCj4gPiA+Pj4+Pj4gb2YNCj4gPiA+Pj4+IHNldHRpbmdz
+Lg0KPiA+ID4+Pj4+PiAJIFRoZSBub2lzZSB3aWxsIGJlIHN0b3BwZWQgd2hlbiBzd2l0Y2hpbmcg
+dG8gb3RoZXIgb3B0aW9ucyBvZg0KPiBzZXR0aW5ncy4NCj4gPiA+Pj4+Pj4gSXNzdWUgMzogVGhl
+IHBvcHBpbmcgbm9pc2Ugb2NjdXJyZWQgZm9yIG9uZSBzZWNvbmQgd2hlbiBwbHVnZ2VkDQo+ID4g
+Pj4+Pj4+IGluIGFuZA0KPiA+ID4+Pj4gcmVtb3ZlZCB0aGUgaGVhZHNldC4NCj4gPiA+Pj4+Pj4g
+VGhpcyBwYXRjaCB3aWxsIHNvbHZlIHRoaXMgdGhyZWUgaXNzdWVzLg0KPiA+ID4+Pj4+IEhpLA0K
+PiA+ID4+Pj4+DQo+ID4gPj4+Pj4gICAgIGNvdWxkIHlvdSBleHBsYWluLCB3aHkgdGhlIHBvd2Vy
+LXNhdmUgZnVuY3Rpb24gY2F1c2VzIHRoaXMNCj4gPiA+Pj4+PiBiZWhhdmlvdXI/IENhbiB3ZSBk
+byBzb21ldGhpbmcgZWxzZSB0aGFuIHR1cm5pbmcgb2ZmIHRoZQ0KPiA+ID4+Pj4+IHBvd2VyLXNh
+dmUgY29kZWMgc2V0dGluZ3MgdG8gYXZvaWQgc3VjaCBub2lzZXM/IEkgaGF2ZSB0aGlzDQo+ID4g
+Pj4+Pj4gcXVlc3Rpb24gYmVjYXVzZSBpdCdzIHJlYWxseQ0KPiA+ID4+Pj4gZWFzeSB0byBkaXNh
+YmxlIHNvbWV0aGluZywgYnV0IEkgZmVlbCB0aGF0IHRoZSBjdWxwcml0IG9mIHRoZQ0KPiA+ID4+
+Pj4gbm9pc2VzIG1pZ2h0IGJlIGp1c3QgdGhlIHdyb25nIGNvZGVjIHNldHRpbmdzLiBJIGd1ZXNz
+IHRoYXQgeW91DQo+ID4gPj4+PiBoYXZlIHByb2JhYmx5IGZ1bGwgZG9jdW1lbnRhdGlvbiBmb3Ig
+dGhlIGNvZGVjIGFuZCBwcm9iYWJseSBmb3INCj4gPiA+Pj4+IHRoZSBoYXJkd2FyZSwgc28gaXQg
+bWlnaHQgYmUgbmljZSB0byBmaW5kIHRoZSByZWFsIGN1bHByaXQuDQo+ID4gPj4+Pg0KPiA+ID4+
+Pj4gTm90ZSB0aGF0IHBvd2VyX3NhdmVfbm9kZT0wIGRvZXNuJ3QgbWVhbiB0aGF0IHRoZSB3aG9s
+ZSBwb3dlcg0KPiA+ID4+Pj4gc2F2aW5nIGlzIGRpc2FibGVkLiAgSXQgZGlzYWJsZXMgdGhlIGZp
+bmUtZ3JhaW5lZCBwb3dlciBzYXZpbmcsDQo+ID4gPj4+PiBpLmUuIHBvd2VyaW5nIGRvd24gdGhl
+IHVudXNlZCB3aWRnZXQgbm9kZXMuDQo+ID4gPj4+Pg0KPiA+ID4+Pj4gSWYgc28sIEkgd29uZGVy
+IHdoZXRoZXIgdGhpcyBtaWdodCBiZSBhYm91dCB0aGUgZGVmYXVsdA0KPiA+ID4+Pj4gcGluLXNo
+dXR1cCBiZWhhdmlvci4gIEkgaW1wcm92ZWQgdGhlIGNsaWNrIG5vaXNlIHByb2JsZW0gb24gbXkN
+Cj4gPiA+Pj4+IERlbGwgZGVza3RvcCBieSBkaXNhYmxpbmcgdGhlIHBpbiBzaHV0dXAuICBTZWUg
+Y29tbWl0IGMwY2E1ZWNlZDIyMi4NCj4gPiA+Pj4+IEthaWxhbmcsIEh1aSwgZGlkIHlvdSB0cnkg
+dG8gYWRkIHRoZSBjaGFpbiB0bw0KPiBBTEMyNjlfRklYVVBfTk9fU0hVVFVQPw0KPiA+ID4+Pj4N
+Cj4gPiA+Pj4gVGhpcyBub2lzZSB3YXMgbm90IGhhcHBlbiBvbiBwb3dlcm9mZi4NCj4gPiA+Pj4g
+QUlPIHVzZSBleHRlcm5hbCBBTVAuIFNvLCBpdCB3aWxsIGJlIG5lZWQgdG8gaGF2ZSBhIHJlZmVy
+ZW5jZSB2b2x0YWdlIHZpYQ0KPiBjb2RlYy4NCj4gPiA+Pj4gU28sIFBpbi1jdGxzIHdhcyBub3Qg
+YmUgMC4gSSBhcHBseSBvcHRpb24gc3BlYy0+Z2VuLnN1cHByZXNzX2F1dG9fbXV0ZSA9DQo+IDEg
+dG8gYXZvaWQgdGhhdC4NCj4gPiA+Pj4gSW50ZXJuYWwgU1BLIFBJTiBhbHNvIGRvbid0IGVudGVy
+IHRvIEQzLiBCdXQgSSBmaW5kIGl0IGp1c3Qgb25seSBoYXBwZW4gb24NCj4gQUxDMjc0IGZhbWls
+eSBjb2RlY3MuDQo+ID4gPj4+IEFMQzI3NCBwaW4gZW50ZXIgdG8gRDMuIFBpbi1jdGxzIGFsc28g
+YmUgMC4gU28sIHBvd2VyX3NhdmVfbm9kZT0wIHdpbGwNCj4gbGV0IFBJTiB0byBEMC4NCj4gPiA+
+Pj4NCj4gPiA+Pj4gcG93ZXJfc2F2ZSA9IDAgaXQgYWxzbyBjb3VsZCBzb2x2ZSBpc3N1ZS4NCj4g
+PiA+Pg0KPiA+ID4+IFllcywgYXZvaWQgc2V0dGluZyBwaW5jdGwgaXMgb25seSBwYXJ0IGZpeCwg
+dGhlIE9ETSBzYWlkIHRoZSBtYWluDQo+ID4gPj4gcHJvYmxlbSBpcyB0aGUgRUFQRCBwaW4gaXMg
+aGlnaC0+bG93LT5oaWdoLT5sb3cgcGVyaW9kaWNhbGx5LCBpdA0KPiA+ID4+IGhhcyBzdGggdG8g
+ZG8gd2l0aCB0aGUgd2lkZ2V0IG5vZGUgcG93ZXIgc3RhdGUuDQo+ID4gPiBGV0lXLCB0aGVyZSBp
+cyBhbHNvIHNwZWMtPmdlbi5rZWVwX2VhcGRfb249MSB0aGF0IHByZXZlbnRzIHRoZSBFQVBEDQo+
+ID4gPiB0b2dnbGUgYXQgcG93ZXIgc2F2aW5nLg0KPiA+DQo+ID4gR290IGl0LCBidXQgZG9lcyBp
+dCBwcmV2ZW50IE5vZGVzIG9yIHRoZSB3aG9sZSBjb2RlYyBmcm9tIGVudGVyaW5nIEQzPw0KPiA+
+DQo+ID4gSGVyZSB0aGUgRUFEUCBpcyBsb3csIGl0IGlzIG5vdCBiZWNhdXNlIHRoZSBzZXRfZWFw
+ZCgpIGlzIGNhbGxlZCwgSQ0KPiA+IGNoZWNrZWQgdGhlIEVBUEQgb2YgYWxsIG5vZGVzLCB0aGV5
+IGFyZSBhbGwgMHgyIGFsbCB0aGUgdGltZS4gQW5kDQo+ID4gcGF0Y2hfcmVhbHRlayBhbHJlYWR5
+IHNldCB0aGUgb3duX2VhcGRfY3RsPTEsIGFuZCB0aGUgTklEIGZvciBzcGVha2VyDQo+ID4gaXMg
+MHgxNiwgaXQgaXMgbm90IGluIHRoZToNCj4gPg0KPiA+IMKgwqDCoCBzdGF0aWMgaGRhX25pZF90
+IHBpbnNbXSA9IHsNCj4gPiDCoMKgwqAgwqDCoMKgIDB4MGYsIDB4MTAsIDB4MTQsIDB4MTUsIDB4
+MTcsIDANCj4gPiDCoMKgwqAgfTsNCj4gPg0KDQpJIGRlc2NyaWJlZCB0aGUgRUFQRCB1c2FnZS4N
+Ckl0IGp1c3QgbmVlZCB0byBzZXQgTklEIDB4MTQgdG8gZWFwZCBvbi4NCjB4MTUgMHgxNyBhbHNv
+IGNvdWxkIGxldCBFQVBEIG9uLiAoMHgwZiBhbmQgMHgxMCB3YXMgc3VwcG9ydCBieSB2ZXJ5IG9s
+ZCBjb2RlYyBBTEMyNjApDQpJZiBpdCBuZWVkIHRvIHR1cm4gb24gZWFwZCB0byBlbmFibGUgZXh0
+ZXJuYWwgQU1QIG9yIHNwZWFrZXIsIGl0IG9ubHkgY291bGQgc2V0dXAgb25lIE5JRCB0byB0dXJu
+IG9uIEVBUEQuDQoJDQo+ID4gU28gdGhlIGRyaXZlciB3aWxsIG5vdCBzZXQgdGhlIGVhcGQgdG8g
+MCBmb3Igc3BlYWtlci4NCj4gDQo+IE9LLCByaWdodCwgd2l0aCBvd25fZWFwZF9jdGwsIHRoZSBm
+bGFnIGNoYW5nZSBtYWtlcyBubyBzZW5zZS4NCj4gDQo+ID4gSWYNCj4gPiBrZWVwX2VhcGRfb249
+MSBjYW4gcHJldmVudCBjb2RlYy9ub2RlcyBmcm9tIGVudGVyaW5nIEQzLCBtYXliZSBpdCB3aWxs
+DQo+ID4gaGVscC4NCj4gDQo+IEFjdHVhbGx5IGl0J3MgcG9zc2libGUgdG8gcHJldmVudCB0aGUg
+c3BlY2lmaWMgcm91dGUgKHBhdGgpIGZyb20gdGhlIGR5bmFtaWMNCj4gcG93ZXIgZG93biwgdG9v
+LiAgWW91IGNhbiBsb29rIGZvciB0aGUgcGF0aCBhbmQgc2V0DQo+IHBhdGgtPnBpbl9maXhlZD0x
+LiAgQnV0IGl0J2QgYmUgYSBiaXQgdG9vIHRyaWNreSBhbmQgY29tcGxleC4NCj4gDQo+IA0KPiBU
+YWthc2hpDQo+IA0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9y
+ZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
