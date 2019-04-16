@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static" to the asoc tree
+Subject: Applied "ASoC: imx: fix fiq dependencies" to the asoc tree
 Date: Tue, 16 Apr 2019 17:32:56 +0100 (BST)
-Message-ID: <20190416163256.39C7A1127D45@debutante.sirena.org.uk>
-References: <20190416145251.16800-1-yuehaibing@huawei.com>
+Message-ID: <20190416163256.644B01128088@debutante.sirena.org.uk>
+References: <20190416131242.1232143-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190416145251.16800-1-yuehaibing@huawei.com>
+In-Reply-To: <20190416131242.1232143-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, colin.king@canonical.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, maruthi.bayyavarapu@amd.com, perex@perex.cz, tiwai@suse.com, Vijendar.Mukunda@amd.com
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Cosmin Samoila <cosmin.samoila@nxp.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
+   ASoC: imx: fix fiq dependencies
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,66 @@ to this mail.
 Thanks,
 Mark
 
->From dc11607e151bd85b17c8e03d1bf823febd5e3c40 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Tue, 16 Apr 2019 22:52:51 +0800
-Subject: [PATCH] ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
+>From 46ad66d5b2e4a658e11affef65e4753f4b6ee375 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 16 Apr 2019 15:12:23 +0200
+Subject: [PATCH] ASoC: imx: fix fiq dependencies
 
-Fix sparse warning:
+During randconfig builds, I occasionally run into an invalid configuration
+of the freescale FIQ sound support:
 
-sound/soc/amd/raven/acp3x-pcm-dma.c:561:24: warning:
- symbol 'acp3x_dai_i2s_ops' was not declared. Should it be static?
+WARNING: unmet direct dependencies detected for SND_SOC_IMX_PCM_FIQ
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]
+  Selected by [y]:
+  - SND_SOC_FSL_SPDIF [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]!=n && (MXC_TZIC [=n] || MXC_AVIC [=y])
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+sound/soc/fsl/imx-ssi.o: In function `imx_ssi_remove':
+imx-ssi.c:(.text+0x28): undefined reference to `imx_pcm_fiq_exit'
+sound/soc/fsl/imx-ssi.o: In function `imx_ssi_probe':
+imx-ssi.c:(.text+0xa64): undefined reference to `imx_pcm_fiq_init'
+
+The Kconfig warning is a result of the symbol being defined inside of
+the "if SND_IMX_SOC" block, and is otherwise harmless. The link error
+is more tricky and happens with SND_SOC_IMX_SSI=y, which may or may not
+imply FIQ support. However, if SND_SOC_FSL_SSI is set to =m at the same
+time, that selects SND_SOC_IMX_PCM_FIQ as a loadable module dependency,
+which then causes a link failure from imx-ssi.
+
+The solution here is to make SND_SOC_IMX_PCM_FIQ built-in whenever
+one of its potential users is built-in.
+
+Fixes: ff40260f79dc ("ASoC: fsl: refine DMA/FIQ dependencies")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/Kconfig | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 1a2e15ff1456..9775bda2a4ca 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -558,7 +558,7 @@ static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index d87c842806bd..55ed47c599e2 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -189,16 +189,17 @@ config SND_MPC52xx_SOC_EFIKA
  
--struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
-+static struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
- 	.hw_params = acp3x_dai_i2s_hwparams,
- 	.trigger   = acp3x_dai_i2s_trigger,
- 	.set_fmt = acp3x_dai_i2s_set_fmt,
+ endif # SND_POWERPC_SOC
+ 
++config SND_SOC_IMX_PCM_FIQ
++	tristate
++	default y if SND_SOC_IMX_SSI=y && (SND_SOC_FSL_SSI=m || SND_SOC_FSL_SPDIF=m) && (MXC_TZIC || MXC_AVIC)
++	select FIQ
++
+ if SND_IMX_SOC
+ 
+ config SND_SOC_IMX_SSI
+ 	tristate
+ 	select SND_SOC_FSL_UTILS
+ 
+-config SND_SOC_IMX_PCM_FIQ
+-	tristate
+-	select FIQ
+-
+ comment "SoC Audio support for Freescale i.MX boards:"
+ 
+ config SND_MXC_SOC_WM1133_EV1
 -- 
 2.20.1
