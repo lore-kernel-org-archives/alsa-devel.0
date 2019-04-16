@@ -1,102 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx: fix fiq dependencies" to the asoc tree
-Date: Tue, 16 Apr 2019 17:32:56 +0100 (BST)
-Message-ID: <20190416163256.644B01128088@debutante.sirena.org.uk>
-References: <20190416131242.1232143-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190416131242.1232143-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Cosmin Samoila <cosmin.samoila@nxp.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: rockchip: Select DMA_PL330 by RK3399
+	audio
+Date: Tue, 16 Apr 2019 17:37:17 +0100
+Message-ID: <20190416163717.GJ4834@sirena.org.uk>
+References: <20190414210212.2144-1-alyssa@rosenzweig.io>
+ <20190416162735.GI4834@sirena.org.uk>
+ <20190416163434.GB17199@rosenzweig.io>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8485183367496144235=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48633F896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 18:37:21 +0200 (CEST)
+In-Reply-To: <20190416163434.GB17199@rosenzweig.io>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: imx: fix fiq dependencies
+--===============8485183367496144235==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="F4+N/OgRSdC8YnqX"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+--F4+N/OgRSdC8YnqX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Apr 16, 2019 at 09:34:34AM -0700, Alyssa Rosenzweig wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Independent of this, should PL330 be selecting AMBA then?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+No, it's a dependency already.  The problem is selects ignore
+dependencies.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--F4+N/OgRSdC8YnqX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 46ad66d5b2e4a658e11affef65e4753f4b6ee375 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 16 Apr 2019 15:12:23 +0200
-Subject: [PATCH] ASoC: imx: fix fiq dependencies
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly2BL0ACgkQJNaLcl1U
+h9AaHQf/QMXGbWmLRrHLIBm2kZAdXpYdCckDOm+1yovetxRDHdOaY+TBNkyrCWQv
+oCI47mX1fjQUeTsjwMFJmcMvZFKMXDIexw7F7gqymK5rBm83w/4W3Hm8Y8mKw3SF
+C9Rd3XzeZCOX0VOgq2akIRVbyRuwRrVi593K70Q5amKV+b6Ahw5GNDwZh9lRxMuJ
+Lw2y36kaT+NFak0kjxKXxX/49sxuEM8ZTuMXMEKr4DTdygVwDgUAAeK0jfQBuVaW
+7JY/cUVHm87K9tKlI7wc5fpGfLsUIivCimmU7hzm0eCRKYOkJ4GFe2qHsVuEPEAw
+rutGjxazs1zw2cj1oX/D0mjcxwP4Xw==
+=WcuD
+-----END PGP SIGNATURE-----
 
-During randconfig builds, I occasionally run into an invalid configuration
-of the freescale FIQ sound support:
+--F4+N/OgRSdC8YnqX--
 
-WARNING: unmet direct dependencies detected for SND_SOC_IMX_PCM_FIQ
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]
-  Selected by [y]:
-  - SND_SOC_FSL_SPDIF [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m]!=n && (MXC_TZIC [=n] || MXC_AVIC [=y])
+--===============8485183367496144235==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_remove':
-imx-ssi.c:(.text+0x28): undefined reference to `imx_pcm_fiq_exit'
-sound/soc/fsl/imx-ssi.o: In function `imx_ssi_probe':
-imx-ssi.c:(.text+0xa64): undefined reference to `imx_pcm_fiq_init'
 
-The Kconfig warning is a result of the symbol being defined inside of
-the "if SND_IMX_SOC" block, and is otherwise harmless. The link error
-is more tricky and happens with SND_SOC_IMX_SSI=y, which may or may not
-imply FIQ support. However, if SND_SOC_FSL_SSI is set to =m at the same
-time, that selects SND_SOC_IMX_PCM_FIQ as a loadable module dependency,
-which then causes a link failure from imx-ssi.
-
-The solution here is to make SND_SOC_IMX_PCM_FIQ built-in whenever
-one of its potential users is built-in.
-
-Fixes: ff40260f79dc ("ASoC: fsl: refine DMA/FIQ dependencies")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/Kconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index d87c842806bd..55ed47c599e2 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -189,16 +189,17 @@ config SND_MPC52xx_SOC_EFIKA
- 
- endif # SND_POWERPC_SOC
- 
-+config SND_SOC_IMX_PCM_FIQ
-+	tristate
-+	default y if SND_SOC_IMX_SSI=y && (SND_SOC_FSL_SSI=m || SND_SOC_FSL_SPDIF=m) && (MXC_TZIC || MXC_AVIC)
-+	select FIQ
-+
- if SND_IMX_SOC
- 
- config SND_SOC_IMX_SSI
- 	tristate
- 	select SND_SOC_FSL_UTILS
- 
--config SND_SOC_IMX_PCM_FIQ
--	tristate
--	select FIQ
--
- comment "SoC Audio support for Freescale i.MX boards:"
- 
- config SND_MXC_SOC_WM1133_EV1
--- 
-2.20.1
+--===============8485183367496144235==--
