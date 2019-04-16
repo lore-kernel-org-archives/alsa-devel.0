@@ -1,22 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: core: Fix card races between
-	register and disconnect
-Date: Tue, 16 Apr 2019 17:21:03 +0200
-Message-ID: <20190416152103.6189-3-tiwai@suse.de>
-References: <20190416152103.6189-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rockchip: Select DMA_PL330 by RK3399
+	audio
+Date: Tue, 16 Apr 2019 17:27:35 +0100
+Message-ID: <20190416162735.GI4834@sirena.org.uk>
+References: <20190414210212.2144-1-alyssa@rosenzweig.io>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6333624106899294032=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98D81F896E4
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 17:21:05 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id F11BDAF1F
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 15:21:04 +0000 (UTC)
-In-Reply-To: <20190416152103.6189-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D67A3F896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 18:27:40 +0200 (CEST)
+In-Reply-To: <20190414210212.2144-1-alyssa@rosenzweig.io>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +23,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a small race window in the card disconnection code that
-allows the registration of another card with the very same card id.
-This leads to a warning in procfs creation as caught by syzkaller.
 
-The problem is that we delete snd_cards and snd_cards_lock entries at
-the very beginning of the disconnection procedure.  This makes the
-slot available to be assigned for another card object while the
-disconnection procedure is being processed.  Then it becomes possible
-to issue a procfs registration with the existing file name although we
-check the conflict beforehand.
+--===============6333624106899294032==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rCb8EA+9TsBVtA92"
+Content-Disposition: inline
 
-The fix is simply to move the snd_cards and snd_cards_lock clearances
-at the end of the disconnection procedure.  The references to these
-entries are merely either from the global proc files like
-/proc/asound/cards or from the card registration / disconnection, so
-it should be fine to shift at the very end.
 
-Reported-by: syzbot+48df349490c36f9f54ab@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/init.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+--rCb8EA+9TsBVtA92
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 0c4dc40376a7..079c12d64b0e 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -382,14 +382,7 @@ int snd_card_disconnect(struct snd_card *card)
- 	card->shutdown = 1;
- 	spin_unlock(&card->files_lock);
- 
--	/* phase 1: disable fops (user space) operations for ALSA API */
--	mutex_lock(&snd_card_mutex);
--	snd_cards[card->number] = NULL;
--	clear_bit(card->number, snd_cards_lock);
--	mutex_unlock(&snd_card_mutex);
--	
--	/* phase 2: replace file->f_op with special dummy operations */
--	
-+	/* replace file->f_op with special dummy operations */
- 	spin_lock(&card->files_lock);
- 	list_for_each_entry(mfile, &card->files_list, list) {
- 		/* it's critical part, use endless loop */
-@@ -405,7 +398,7 @@ int snd_card_disconnect(struct snd_card *card)
- 	}
- 	spin_unlock(&card->files_lock);	
- 
--	/* phase 3: notify all connected devices about disconnection */
-+	/* notify all connected devices about disconnection */
- 	/* at this point, they cannot respond to any calls except release() */
- 
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
-@@ -421,6 +414,13 @@ int snd_card_disconnect(struct snd_card *card)
- 		device_del(&card->card_dev);
- 		card->registered = false;
- 	}
-+
-+	/* disable fops (user space) operations for ALSA API */
-+	mutex_lock(&snd_card_mutex);
-+	snd_cards[card->number] = NULL;
-+	clear_bit(card->number, snd_cards_lock);
-+	mutex_unlock(&snd_card_mutex);
-+
- #ifdef CONFIG_PM
- 	wake_up(&card->power_sleep);
- #endif
--- 
-2.16.4
+On Sun, Apr 14, 2019 at 02:02:12PM -0700, Alyssa Rosenzweig wrote:
+> Without the appropriate DMA controller selected, the RK3399 audio
+> drivers compile but fail immediately. Accordingly, selecting the RK3399
+> audio without the corresponding PL330 controller is an invalid
+> configuration. Prevent errors (otherwise forcing the driver to unload at
+> runtime)  by an appropriate `select` directive in the Kconfig.
+
+This breaks the build as it enables CONFIG_PL330 but that depends on
+AMBA which isn't selected so we end up with:
+
+ld: drivers/dma/pl330.o: in function `pl330_driver_init':
+pl330.c:(.init.text+0x8): undefined reference to `amba_driver_register'
+ld: drivers/dma/pl330.o: in function `pl330_driver_exit':
+pl330.c:(.exit.text+0x8): undefined reference to `amba_driver_unregister'
+make: *** [Makefile:1029: vmlinux] Error 1
+
+in my test configs.
+
+--rCb8EA+9TsBVtA92
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly2AncACgkQJNaLcl1U
+h9Dy7gf/X/zWP2wVe8pN6N+wdZXeihoh9hWhvrv76tXugzt39qnQyd+vjK7Qj6P9
+YVB5fGNU8fYqFdWPpSpNDKyJYVyHyu5lRqJMsrq4NlEZiDTPVKUY77hVOpOnCdxc
+TGSkuXZ1YrSym5shJOozh0WjfSpmfod9jaz8kVYcdZ/BpLAbFoK6nvjExT9FgqfU
+fMZ882Oa0YKkvkn8jHk0RggGtg276lpr/RjvxbbwiAgM3/MiVmzjg1We+Q7tOjED
+iTTlV7zS4efo9R2zUagyuD2mOZZ3OSe0Q/w+OAaJDk0LhXTvsnsWrkRyhiLRavrb
+MkSdhem4xHS7Eq11z2Y9VLV3BvOdFA==
+=7L4S
+-----END PGP SIGNATURE-----
+
+--rCb8EA+9TsBVtA92--
+
+--===============6333624106899294032==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6333624106899294032==--
