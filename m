@@ -1,52 +1,84 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] ACPI / device_sysfs: change _ADR representation to 64
- bits
-Date: Tue, 16 Apr 2019 14:39:35 +0530
-Message-ID: <20190416090935.GT28103@vkoul-mobl>
-References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
- <20190416032923.GQ28103@vkoul-mobl>
- <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
+From: hwang4 <hui.wang@canonical.com>
+Subject: Re: Dell AIO speaker pop noise
+Date: Tue, 16 Apr 2019 17:31:22 +0800
+Message-ID: <300c8e06-71a0-9bff-2963-91fed9d79b8b@canonical.com>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
+ <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
+ <s5h8swajr70.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jank@cadence.com, Joe Perches <joe@perches.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4155F896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 11:31:34 +0200 (CEST)
+In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 16-04-19, 10:09, Rafael J. Wysocki wrote:
-> On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> > On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
-> > > Standards such as the MIPI DisCo for SoundWire 1.0 specification
-> > > assume the _ADR field is 64 bits.
-> > >
-> > > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
-> > > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
-> > > struct acpi_device_info.
-> > >
-> > > This patch bumps the representation used for sysfs to 64 bits.
-> > >
-> > > Example with a SoundWire device, the results show the complete
-> > > vendorID and linkID which were omitted before:
-> > >
-> > > Before:
-> > > $ more /sys/bus/acpi/devices/device\:38/adr
-> > > 0x5d070000
-> > > After:
-> > > $ more /sys/bus/acpi/devices/device\:38/adr
-> > > 0x000010025d070000
-> >
-> > This looks fine but the sysfs file is an ABI. Not sure if we can modify
-> > the value returned this way.. Though it should not cause userspace
-> > reading 32bits to break...
-> 
-> Well, IIRC using "08" instead of "016" in the format field would
-> preserve the existing behavior for 32-bit values, wouldn't it?
-
-Yeah that should do :)
-
--- 
-~Vinod
+Ck9uIDIwMTkvNC8xNiDkuIvljYg0OjU5LCBLYWlsYW5nIHdyb3RlOgo+Cj4+IC0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tCj4+IEZyb206IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPj4g
+U2VudDogVHVlc2RheSwgQXByaWwgMTYsIDIwMTkgNDoyMiBQTQo+PiBUbzogSmFyb3NsYXYgS3lz
+ZWxhIDxwZXJleEBwZXJleC5jej4KPj4gQ2M6IEthaWxhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+
+OyBod2FuZzQgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+Owo+PiAoYWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnKSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPgo+PiBTdWJqZWN0OiBSZTog
+W2Fsc2EtZGV2ZWxdIERlbGwgQUlPIHNwZWFrZXIgcG9wIG5vaXNlCj4+Cj4+IE9uIFR1ZSwgMTYg
+QXByIDIwMTkgMTA6MDE6MzEgKzAyMDAsCj4+IEphcm9zbGF2IEt5c2VsYSB3cm90ZToKPj4+IERu
+ZSAxNi4gMDQuIDE5IHYgOTozMCBLYWlsYW5nIG5hcHNhbChhKToKPj4+PiBIaSBUYWthc2hpLAo+
+Pj4+Cj4+Pj4gSXNzdWUgMTogVGhlIG5vaXNlIGtlZXBzIG9jY3VycmluZyB2aWEgc3BlYWtlciB3
+aGVuIEhlYWRzZXQgaXMgcGx1Z2dlZCBpbi4KPj4+PiBJc3N1ZSAyOiBUaGUgaHVtbWluZyBub2lz
+ZSBpcyBvY2N1cmluZyB3aGVuIHN3aXRjaGluZyB0byBzb3VuZCBvZgo+PiBzZXR0aW5ncy4KPj4+
+PiAJIFRoZSBub2lzZSB3aWxsIGJlIHN0b3BwZWQgd2hlbiBzd2l0Y2hpbmcgdG8gb3RoZXIgb3B0
+aW9ucyBvZiBzZXR0aW5ncy4KPj4+PiBJc3N1ZSAzOiBUaGUgcG9wcGluZyBub2lzZSBvY2N1cnJl
+ZCBmb3Igb25lIHNlY29uZCB3aGVuIHBsdWdnZWQgaW4gYW5kCj4+IHJlbW92ZWQgdGhlIGhlYWRz
+ZXQuCj4+Pj4gVGhpcyBwYXRjaCB3aWxsIHNvbHZlIHRoaXMgdGhyZWUgaXNzdWVzLgo+Pj4gSGks
+Cj4+Pgo+Pj4gICAgY291bGQgeW91IGV4cGxhaW4sIHdoeSB0aGUgcG93ZXItc2F2ZSBmdW5jdGlv
+biBjYXVzZXMgdGhpcwo+Pj4gYmVoYXZpb3VyPyBDYW4gd2UgZG8gc29tZXRoaW5nIGVsc2UgdGhh
+biB0dXJuaW5nIG9mZiB0aGUgcG93ZXItc2F2ZQo+Pj4gY29kZWMgc2V0dGluZ3MgdG8gYXZvaWQg
+c3VjaCBub2lzZXM/IEkgaGF2ZSB0aGlzIHF1ZXN0aW9uIGJlY2F1c2UgaXQncyByZWFsbHkKPj4g
+ZWFzeSB0byBkaXNhYmxlIHNvbWV0aGluZywgYnV0IEkgZmVlbCB0aGF0IHRoZSBjdWxwcml0IG9m
+IHRoZSBub2lzZXMgbWlnaHQgYmUganVzdAo+PiB0aGUgd3JvbmcgY29kZWMgc2V0dGluZ3MuIEkg
+Z3Vlc3MgdGhhdCB5b3UgaGF2ZSBwcm9iYWJseSBmdWxsIGRvY3VtZW50YXRpb24KPj4gZm9yIHRo
+ZSBjb2RlYyBhbmQgcHJvYmFibHkgZm9yIHRoZSBoYXJkd2FyZSwgc28gaXQgbWlnaHQgYmUgbmlj
+ZSB0byBmaW5kIHRoZQo+PiByZWFsIGN1bHByaXQuCj4+Cj4+IE5vdGUgdGhhdCBwb3dlcl9zYXZl
+X25vZGU9MCBkb2Vzbid0IG1lYW4gdGhhdCB0aGUgd2hvbGUgcG93ZXIgc2F2aW5nIGlzCj4+IGRp
+c2FibGVkLiAgSXQgZGlzYWJsZXMgdGhlIGZpbmUtZ3JhaW5lZCBwb3dlciBzYXZpbmcsIGkuZS4g
+cG93ZXJpbmcgZG93biB0aGUKPj4gdW51c2VkIHdpZGdldCBub2Rlcy4KPj4KPj4gSWYgc28sIEkg
+d29uZGVyIHdoZXRoZXIgdGhpcyBtaWdodCBiZSBhYm91dCB0aGUgZGVmYXVsdCBwaW4tc2h1dHVw
+IGJlaGF2aW9yLiAgSQo+PiBpbXByb3ZlZCB0aGUgY2xpY2sgbm9pc2UgcHJvYmxlbSBvbiBteSBE
+ZWxsIGRlc2t0b3AgYnkgZGlzYWJsaW5nIHRoZSBwaW4KPj4gc2h1dHVwLiAgU2VlIGNvbW1pdCBj
+MGNhNWVjZWQyMjIuCj4+IEthaWxhbmcsIEh1aSwgZGlkIHlvdSB0cnkgdG8gYWRkIHRoZSBjaGFp
+biB0byBBTEMyNjlfRklYVVBfTk9fU0hVVFVQPwo+Pgo+IFRoaXMgbm9pc2Ugd2FzIG5vdCBoYXBw
+ZW4gb24gcG93ZXJvZmYuCj4gQUlPIHVzZSBleHRlcm5hbCBBTVAuIFNvLCBpdCB3aWxsIGJlIG5l
+ZWQgdG8gaGF2ZSBhIHJlZmVyZW5jZSB2b2x0YWdlIHZpYSBjb2RlYy4KPiBTbywgUGluLWN0bHMg
+d2FzIG5vdCBiZSAwLiBJIGFwcGx5IG9wdGlvbiBzcGVjLT5nZW4uc3VwcHJlc3NfYXV0b19tdXRl
+ID0gMSB0byBhdm9pZCB0aGF0Lgo+IEludGVybmFsIFNQSyBQSU4gYWxzbyBkb24ndCBlbnRlciB0
+byBEMy4gQnV0IEkgZmluZCBpdCBqdXN0IG9ubHkgaGFwcGVuIG9uIEFMQzI3NCBmYW1pbHkgY29k
+ZWNzLgo+IEFMQzI3NCBwaW4gZW50ZXIgdG8gRDMuIFBpbi1jdGxzIGFsc28gYmUgMC4gU28sIHBv
+d2VyX3NhdmVfbm9kZT0wIHdpbGwgbGV0IFBJTiB0byBEMC4KPgo+IHBvd2VyX3NhdmUgPSAwIGl0
+IGFsc28gY291bGQgc29sdmUgaXNzdWUuCgoKWWVzLCBhdm9pZCBzZXR0aW5nIHBpbmN0bCBpcyBv
+bmx5IHBhcnQgZml4LCB0aGUgT0RNIHNhaWQgdGhlIG1haW4gCnByb2JsZW0gaXMgdGhlIEVBUEQg
+cGluIGlzIGhpZ2gtPmxvdy0+aGlnaC0+bG93IHBlcmlvZGljYWxseSwgaXQgaGFzIHN0aCAKdG8g
+ZG8gd2l0aCB0aGUgd2lkZ2V0IG5vZGUgcG93ZXIgc3RhdGUuCgo+Cj4KPgo+PiB0aGFua3MsCj4+
+Cj4+IFRha2FzaGkKPj4KPj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBi
+ZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
