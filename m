@@ -1,215 +1,188 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: core: Don't refer to snd_cards array
-	directly
-Date: Tue, 16 Apr 2019 20:44:15 +0200
-Message-ID: <20190416184415.27837-2-tiwai@suse.de>
-References: <20190416184415.27837-1-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 00/26] compat_ioctl: cleanups
+Date: Tue, 16 Apr 2019 22:19:38 +0200
+Message-ID: <20190416202013.4034148-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4FFAF896E2
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 20:44:17 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id BBE0AAF3B
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 18:44:16 +0000 (UTC)
-In-Reply-To: <20190416184415.27837-1-tiwai@suse.de>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org, y2038@lists.linaro.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Karsten Keil <isdn@linux-pingi.de>, "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Marcel Holtmann <marcel@holtmann.org>, netdev@vger.kernel.org, devel@driverdev.osuosl.org, linux-integrity@vger.kernel.org, qat-linux@intel.com, linux-crypto@vger.kernel.org, linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, linux1394-devel@lists.sourceforge.net, amd-gfx@lists.freedesktop.org, linux-input@vger.kernel.org, linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org, linux-iio@vger.ker
 List-Id: alsa-devel@alsa-project.org
 
-The snd_cards[] array holds the card pointers that have been currently
-registered, and it's exported for the external modules that may need
-to refer a card object.  But accessing to this array can be racy
-against the driver probe or removal, as the card registration or free
-may happen concurrently.
+Hi Al,
 
-This patch gets rid of the direct access to snd_cards[] array and
-provides a helper function to give the card object from the index
-number with a refcount management.  Then the caller can access to the
-given card object safely, and releases it via snd_card_unref().
+It took me way longer than I had hoped to revisit this series, see
+https://lore.kernel.org/lkml/20180912150142.157913-1-arnd@arndb.de/
+for the previously posted version.
 
-While we're at it, add a proper comment to snd_card_unref() and make
-it an inlined function for type-safety, too.
+I've come to the point where all conversion handlers and most
+COMPATIBLE_IOCTL() entries are gone from this file, but for
+now, this series only has the parts that have either been reviewed
+previously, or that are simple enough to include.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/core.h       | 16 ++++++++++++++--
- sound/core/init.c          | 23 +++++++++++++++++++++--
- sound/core/oss/mixer_oss.c | 16 ++++++++++++----
- sound/core/sound.c         |  5 ++++-
- sound/last.c               | 10 +++++++---
- 5 files changed, 58 insertions(+), 12 deletions(-)
+The main missing piece is the SG_IO/SG_GET_REQUEST_TABLE conversion.
+I'll post the patches I made for that later, as they need more
+testing and review from the scsi maintainers.
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index e923c23e05dd..c90ebbc8d9c4 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -226,7 +226,6 @@ int copy_from_user_toio(volatile void __iomem *dst, const void __user *src, size
- 
- /* init.c */
- 
--extern struct snd_card *snd_cards[SNDRV_CARDS];
- int snd_card_locked(int card);
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- #define SND_MIXER_OSS_NOTIFY_REGISTER	0
-@@ -251,7 +250,20 @@ int snd_card_add_dev_attr(struct snd_card *card,
- int snd_component_add(struct snd_card *card, const char *component);
- int snd_card_file_add(struct snd_card *card, struct file *file);
- int snd_card_file_remove(struct snd_card *card, struct file *file);
--#define snd_card_unref(card)	put_device(&(card)->card_dev)
-+
-+struct snd_card *snd_card_ref(int card);
-+
-+/**
-+ * snd_card_unref - Unreference the card object
-+ * @card: the card object to unreference
-+ *
-+ * Call this function for the card object that was obtained via snd_card_ref()
-+ * or snd_lookup_minor_data().
-+ */
-+static inline void snd_card_unref(struct snd_card *card)
-+{
-+	put_device(&card->card_dev);
-+}
- 
- #define snd_card_set_dev(card, devptr) ((card)->dev = (devptr))
- 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 079c12d64b0e..d64416f0a281 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -49,8 +49,7 @@ static const struct file_operations snd_shutdown_f_ops;
- 
- /* locked for registering/using */
- static DECLARE_BITMAP(snd_cards_lock, SNDRV_CARDS);
--struct snd_card *snd_cards[SNDRV_CARDS];
--EXPORT_SYMBOL(snd_cards);
-+static struct snd_card *snd_cards[SNDRV_CARDS];
- 
- static DEFINE_MUTEX(snd_card_mutex);
- 
-@@ -268,6 +267,26 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- }
- EXPORT_SYMBOL(snd_card_new);
- 
-+/**
-+ * snd_card_ref - Get the card object from the index
-+ * @idx: the card index
-+ *
-+ * Returns a card object corresponding to the given index or NULL if not found.
-+ * Release the object via snd_card_unref().
-+ */
-+struct snd_card *snd_card_ref(int idx)
-+{
-+	struct snd_card *card;
-+
-+	mutex_lock(&snd_card_mutex);
-+	card = snd_cards[idx];
-+	if (card)
-+		get_device(&card->card_dev);
-+	mutex_unlock(&snd_card_mutex);
-+	return card;
-+}
-+EXPORT_SYMBOL_GPL(snd_card_ref);
-+
- /* return non-zero if a card is already locked */
- int snd_card_locked(int card)
- {
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index 64d904bee8bb..c8618678649c 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -1403,24 +1403,32 @@ static int snd_mixer_oss_notify_handler(struct snd_card *card, int cmd)
- 
- static int __init alsa_mixer_oss_init(void)
- {
-+	struct snd_card *card;
- 	int idx;
- 	
- 	snd_mixer_oss_notify_callback = snd_mixer_oss_notify_handler;
- 	for (idx = 0; idx < SNDRV_CARDS; idx++) {
--		if (snd_cards[idx])
--			snd_mixer_oss_notify_handler(snd_cards[idx], SND_MIXER_OSS_NOTIFY_REGISTER);
-+		card = snd_card_ref(idx);
-+		if (card) {
-+			snd_mixer_oss_notify_handler(card, SND_MIXER_OSS_NOTIFY_REGISTER);
-+			snd_card_unref(card);
-+		}
- 	}
- 	return 0;
- }
- 
- static void __exit alsa_mixer_oss_exit(void)
- {
-+	struct snd_card *card;
- 	int idx;
- 
- 	snd_mixer_oss_notify_callback = NULL;
- 	for (idx = 0; idx < SNDRV_CARDS; idx++) {
--		if (snd_cards[idx])
--			snd_mixer_oss_notify_handler(snd_cards[idx], SND_MIXER_OSS_NOTIFY_FREE);
-+		card = snd_card_ref(idx);
-+		if (card) {
-+			snd_mixer_oss_notify_handler(card, SND_MIXER_OSS_NOTIFY_FREE);
-+			snd_card_unref(card);
-+		}
- 	}
- }
- 
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index b30f027eb0fe..a9ad4379523b 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -134,8 +134,11 @@ static struct snd_minor *autoload_device(unsigned int minor)
- 	if (dev == SNDRV_MINOR_CONTROL) {
- 		/* /dev/aloadC? */
- 		int card = SNDRV_MINOR_CARD(minor);
--		if (snd_cards[card] == NULL)
-+		struct snd_card *ref = snd_card_ref(card);
-+		if (!ref)
- 			snd_request_card(card);
-+		else
-+			snd_card_unref(ref);
- 	} else if (dev == SNDRV_MINOR_GLOBAL) {
- 		/* /dev/aloadSEQ */
- 		snd_request_other(minor);
-diff --git a/sound/last.c b/sound/last.c
-index 43f222825038..4f5a624ab438 100644
---- a/sound/last.c
-+++ b/sound/last.c
-@@ -24,14 +24,18 @@
- 
- static int __init alsa_sound_last_init(void)
- {
-+	struct snd_card *card;
- 	int idx, ok = 0;
- 	
- 	printk(KERN_INFO "ALSA device list:\n");
--	for (idx = 0; idx < SNDRV_CARDS; idx++)
--		if (snd_cards[idx] != NULL) {
--			printk(KERN_INFO "  #%i: %s\n", idx, snd_cards[idx]->longname);
-+	for (idx = 0; idx < SNDRV_CARDS; idx++) {
-+		card = snd_card_ref(idx);
-+		if (card) {
-+			printk(KERN_INFO "  #%i: %s\n", idx, card->longname);
-+			snd_card_unref(card);
- 			ok++;
- 		}
-+	}
- 	if (ok == 0)
- 		printk(KERN_INFO "  No soundcards found.\n");
- 	return 0;
+I hope you can still take these for the coming merge window, unless
+new problems come up.
+
+      Arnd
+
+Arnd Bergmann (26):
+  compat_ioctl: pppoe: fix PPPOEIOCSFWD handling
+  compat_ioctl: move simple ppp command handling into driver
+  compat_ioctl: avoid unused function warning for do_ioctl
+  compat_ioctl: move PPPIOCSCOMPRESS32 to ppp-generic.c
+  compat_ioctl: move PPPIOCSPASS32/PPPIOCSACTIVE32 to ppp_generic.c
+  compat_ioctl: handle PPPIOCGIDLE for 64-bit time_t
+  compat_ioctl: move rtc handling into rtc-dev.c
+  compat_ioctl: add compat_ptr_ioctl()
+  compat_ioctl: move drivers to compat_ptr_ioctl
+  compat_ioctl: use correct compat_ptr() translation in drivers
+  ceph: fix compat_ioctl for ceph_dir_operations
+  compat_ioctl: move more drivers to compat_ptr_ioctl
+  compat_ioctl: move tape handling into drivers
+  compat_ioctl: move ATYFB_CLK handling to atyfb driver
+  compat_ioctl: move isdn/capi ioctl translation into driver
+  compat_ioctl: move rfcomm handlers into driver
+  compat_ioctl: move hci_sock handlers into driver
+  compat_ioctl: remove HCIUART handling
+  compat_ioctl: remove HIDIO translation
+  compat_ioctl: remove translation for sound ioctls
+  compat_ioctl: remove IGNORE_IOCTL()
+  compat_ioctl: remove /dev/random commands
+  compat_ioctl: remove joystick ioctl translation
+  compat_ioctl: remove PCI ioctl translation
+  compat_ioctl: remove /dev/raw ioctl translation
+  compat_ioctl: remove last RAID handling code
+
+ Documentation/networking/ppp_generic.txt    |   2 +
+ arch/um/drivers/hostaudio_kern.c            |   1 +
+ drivers/android/binder.c                    |   2 +-
+ drivers/char/ppdev.c                        |  12 +-
+ drivers/char/random.c                       |   1 +
+ drivers/char/tpm/tpm_vtpm_proxy.c           |  12 +-
+ drivers/crypto/qat/qat_common/adf_ctl_drv.c |   2 +-
+ drivers/dma-buf/dma-buf.c                   |   4 +-
+ drivers/dma-buf/sw_sync.c                   |   2 +-
+ drivers/dma-buf/sync_file.c                 |   2 +-
+ drivers/firewire/core-cdev.c                |  12 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c    |   2 +-
+ drivers/hid/hidraw.c                        |   4 +-
+ drivers/hid/usbhid/hiddev.c                 |  11 +-
+ drivers/hwtracing/stm/core.c                |  12 +-
+ drivers/ide/ide-tape.c                      |  31 +-
+ drivers/iio/industrialio-core.c             |   2 +-
+ drivers/infiniband/core/uverbs_main.c       |   4 +-
+ drivers/isdn/capi/capi.c                    |  31 +
+ drivers/isdn/i4l/isdn_ppp.c                 |  14 +-
+ drivers/media/rc/lirc_dev.c                 |   4 +-
+ drivers/mfd/cros_ec_dev.c                   |   4 +-
+ drivers/misc/cxl/flash.c                    |   8 +-
+ drivers/misc/genwqe/card_dev.c              |  23 +-
+ drivers/misc/mei/main.c                     |  22 +-
+ drivers/misc/vmw_vmci/vmci_host.c           |   2 +-
+ drivers/mtd/ubi/cdev.c                      |  36 +-
+ drivers/net/ppp/ppp_generic.c               |  99 +++-
+ drivers/net/ppp/pppoe.c                     |   7 +
+ drivers/net/ppp/pptp.c                      |   3 +
+ drivers/net/tap.c                           |  12 +-
+ drivers/nvdimm/bus.c                        |   4 +-
+ drivers/nvme/host/core.c                    |   2 +-
+ drivers/pci/switch/switchtec.c              |   2 +-
+ drivers/platform/x86/wmi.c                  |   2 +-
+ drivers/rpmsg/rpmsg_char.c                  |   4 +-
+ drivers/rtc/dev.c                           |  13 +-
+ drivers/rtc/rtc-vr41xx.c                    |  10 +
+ drivers/s390/char/tape_char.c               |  41 +-
+ drivers/sbus/char/display7seg.c             |   2 +-
+ drivers/sbus/char/envctrl.c                 |   4 +-
+ drivers/scsi/3w-xxxx.c                      |   4 +-
+ drivers/scsi/cxlflash/main.c                |   2 +-
+ drivers/scsi/esas2r/esas2r_main.c           |   2 +-
+ drivers/scsi/megaraid/megaraid_mm.c         |  28 +-
+ drivers/scsi/osst.c                         |  34 +-
+ drivers/scsi/pmcraid.c                      |   4 +-
+ drivers/scsi/st.c                           |  35 +-
+ drivers/staging/android/ion/ion.c           |   4 +-
+ drivers/staging/pi433/pi433_if.c            |  12 +-
+ drivers/staging/vme/devices/vme_user.c      |   2 +-
+ drivers/tee/tee_core.c                      |   2 +-
+ drivers/usb/class/cdc-wdm.c                 |   2 +-
+ drivers/usb/class/usbtmc.c                  |   4 +-
+ drivers/usb/core/devio.c                    |  16 +-
+ drivers/usb/gadget/function/f_fs.c          |  12 +-
+ drivers/vfio/vfio.c                         |  39 +-
+ drivers/vhost/net.c                         |  12 +-
+ drivers/vhost/scsi.c                        |  12 +-
+ drivers/vhost/test.c                        |  12 +-
+ drivers/vhost/vsock.c                       |  12 +-
+ drivers/video/fbdev/aty/atyfb_base.c        |  12 +-
+ drivers/virt/fsl_hypervisor.c               |   2 +-
+ fs/btrfs/super.c                            |   2 +-
+ fs/ceph/dir.c                               |   1 +
+ fs/ceph/file.c                              |   2 +-
+ fs/compat_ioctl.c                           | 602 +-------------------
+ fs/fat/file.c                               |  13 +-
+ fs/fuse/dev.c                               |   2 +-
+ fs/notify/fanotify/fanotify_user.c          |   2 +-
+ fs/userfaultfd.c                            |   2 +-
+ include/linux/fs.h                          |   7 +
+ include/linux/if_pppox.h                    |   2 +
+ include/linux/mtio.h                        |  58 ++
+ include/uapi/linux/ppp-ioctl.h              |   2 +
+ include/uapi/linux/ppp_defs.h               |  14 +
+ net/bluetooth/hci_sock.c                    |  21 +-
+ net/bluetooth/rfcomm/sock.c                 |  14 +-
+ net/l2tp/l2tp_ppp.c                         |   3 +
+ net/rfkill/core.c                           |   2 +-
+ sound/core/oss/pcm_oss.c                    |   4 +
+ sound/oss/dmasound/dmasound_core.c          |   2 +
+ 82 files changed, 452 insertions(+), 1034 deletions(-)
+ create mode 100644 include/linux/mtio.h
+
 -- 
-2.16.4
+2.20.0
+
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Karsten Keil <isdn@linux-pingi.de>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: devel@driverdev.osuosl.org
+Cc: linux-integrity@vger.kernel.org
+Cc: qat-linux@intel.com
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux1394-devel@lists.sourceforge.net
+Cc: amd-gfx@lists.freedesktop.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-ide@vger.kernel.org
+Cc: linux-iio@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-ppp@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org
+Cc: platform-driver-x86@vger.kernel.org
+Cc: linux-remoteproc@vger.kernel.org
+Cc: linux-rtc@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Cc: ceph-devel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-bluetooth@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Cc: y2038@lists.linaro.org
