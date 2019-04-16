@@ -1,188 +1,274 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 00/26] compat_ioctl: cleanups
-Date: Tue, 16 Apr 2019 22:19:38 +0200
-Message-ID: <20190416202013.4034148-1-arnd@arndb.de>
+Subject: [PATCH v3 20/26] compat_ioctl: remove translation for sound ioctls
+Date: Tue, 16 Apr 2019 22:28:05 +0200
+Message-ID: <20190416202839.248216-1-arnd@arndb.de>
+References: <20190416202013.4034148-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190416202013.4034148-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, y2038@lists.linaro.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Karsten Keil <isdn@linux-pingi.de>, "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Marcel Holtmann <marcel@holtmann.org>, netdev@vger.kernel.org, devel@driverdev.osuosl.org, linux-integrity@vger.kernel.org, qat-linux@intel.com, linux-crypto@vger.kernel.org, linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, linux1394-devel@lists.sourceforge.net, amd-gfx@lists.freedesktop.org, linux-input@vger.kernel.org, linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org, linux-iio@vger.ker
+Cc: linux-fsdevel@vger.kernel.org, y2038@lists.linaro.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, linux-um@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Al,
+The SNDCTL_* and SOUND_* commands are the old OSS user interface.
 
-It took me way longer than I had hoped to revisit this series, see
-https://lore.kernel.org/lkml/20180912150142.157913-1-arnd@arndb.de/
-for the previously posted version.
+I checked all the sound ioctl commands listed in fs/compat_ioctl.c
+to see if we still need the translation handlers. Here is what I
+found:
 
-I've come to the point where all conversion handlers and most
-COMPATIBLE_IOCTL() entries are gone from this file, but for
-now, this series only has the parts that have either been reviewed
-previously, or that are simple enough to include.
+- sound/oss/ is (almost) gone from the kernel, this is what actually
+  needed all the translations
+- The ALSA emulation for OSS correctly handles all compat_ioctl
+  commands already.
+- sound/oss/dmasound/ is the last holdout of the original OSS code,
+  this is only used on arch/m68k, which has no 64-bit mode and
+  hence needs no compat handlers
+- arch/um/drivers/hostaudio_kern.c may run in 64-bit mode with
+  32-bit x86 user space underneath it. This rare corner case is
+  the only one that still needs the compat handlers.
 
-The main missing piece is the SG_IO/SG_GET_REQUEST_TABLE conversion.
-I'll post the patches I made for that later, as they need more
-testing and review from the scsi maintainers.
+By adding a simple redirect of .compat_ioctl to .unlocked_ioctl in the
+UML driver, we can remove all the COMPATIBLE_IOCTL() annotations without
+a change in functionality. For completeness, I'm adding the same thing
+to the dmasound file, knowing that it makes no difference.
 
-I hope you can still take these for the coming merge window, unless
-new problems come up.
+The compat_ioctl list contains one comment about SNDCTL_DSP_MAPINBUF and
+SNDCTL_DSP_MAPOUTBUF, which actually would need a translation handler
+if implemented. However, the native implementation just returns -EINVAL,
+so we don't care.
 
-      Arnd
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/um/drivers/hostaudio_kern.c   |   1 +
+ fs/compat_ioctl.c                  | 158 -----------------------------
+ sound/core/oss/pcm_oss.c           |   4 +
+ sound/oss/dmasound/dmasound_core.c |   2 +
+ 4 files changed, 7 insertions(+), 158 deletions(-)
 
-Arnd Bergmann (26):
-  compat_ioctl: pppoe: fix PPPOEIOCSFWD handling
-  compat_ioctl: move simple ppp command handling into driver
-  compat_ioctl: avoid unused function warning for do_ioctl
-  compat_ioctl: move PPPIOCSCOMPRESS32 to ppp-generic.c
-  compat_ioctl: move PPPIOCSPASS32/PPPIOCSACTIVE32 to ppp_generic.c
-  compat_ioctl: handle PPPIOCGIDLE for 64-bit time_t
-  compat_ioctl: move rtc handling into rtc-dev.c
-  compat_ioctl: add compat_ptr_ioctl()
-  compat_ioctl: move drivers to compat_ptr_ioctl
-  compat_ioctl: use correct compat_ptr() translation in drivers
-  ceph: fix compat_ioctl for ceph_dir_operations
-  compat_ioctl: move more drivers to compat_ptr_ioctl
-  compat_ioctl: move tape handling into drivers
-  compat_ioctl: move ATYFB_CLK handling to atyfb driver
-  compat_ioctl: move isdn/capi ioctl translation into driver
-  compat_ioctl: move rfcomm handlers into driver
-  compat_ioctl: move hci_sock handlers into driver
-  compat_ioctl: remove HCIUART handling
-  compat_ioctl: remove HIDIO translation
-  compat_ioctl: remove translation for sound ioctls
-  compat_ioctl: remove IGNORE_IOCTL()
-  compat_ioctl: remove /dev/random commands
-  compat_ioctl: remove joystick ioctl translation
-  compat_ioctl: remove PCI ioctl translation
-  compat_ioctl: remove /dev/raw ioctl translation
-  compat_ioctl: remove last RAID handling code
-
- Documentation/networking/ppp_generic.txt    |   2 +
- arch/um/drivers/hostaudio_kern.c            |   1 +
- drivers/android/binder.c                    |   2 +-
- drivers/char/ppdev.c                        |  12 +-
- drivers/char/random.c                       |   1 +
- drivers/char/tpm/tpm_vtpm_proxy.c           |  12 +-
- drivers/crypto/qat/qat_common/adf_ctl_drv.c |   2 +-
- drivers/dma-buf/dma-buf.c                   |   4 +-
- drivers/dma-buf/sw_sync.c                   |   2 +-
- drivers/dma-buf/sync_file.c                 |   2 +-
- drivers/firewire/core-cdev.c                |  12 +-
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c    |   2 +-
- drivers/hid/hidraw.c                        |   4 +-
- drivers/hid/usbhid/hiddev.c                 |  11 +-
- drivers/hwtracing/stm/core.c                |  12 +-
- drivers/ide/ide-tape.c                      |  31 +-
- drivers/iio/industrialio-core.c             |   2 +-
- drivers/infiniband/core/uverbs_main.c       |   4 +-
- drivers/isdn/capi/capi.c                    |  31 +
- drivers/isdn/i4l/isdn_ppp.c                 |  14 +-
- drivers/media/rc/lirc_dev.c                 |   4 +-
- drivers/mfd/cros_ec_dev.c                   |   4 +-
- drivers/misc/cxl/flash.c                    |   8 +-
- drivers/misc/genwqe/card_dev.c              |  23 +-
- drivers/misc/mei/main.c                     |  22 +-
- drivers/misc/vmw_vmci/vmci_host.c           |   2 +-
- drivers/mtd/ubi/cdev.c                      |  36 +-
- drivers/net/ppp/ppp_generic.c               |  99 +++-
- drivers/net/ppp/pppoe.c                     |   7 +
- drivers/net/ppp/pptp.c                      |   3 +
- drivers/net/tap.c                           |  12 +-
- drivers/nvdimm/bus.c                        |   4 +-
- drivers/nvme/host/core.c                    |   2 +-
- drivers/pci/switch/switchtec.c              |   2 +-
- drivers/platform/x86/wmi.c                  |   2 +-
- drivers/rpmsg/rpmsg_char.c                  |   4 +-
- drivers/rtc/dev.c                           |  13 +-
- drivers/rtc/rtc-vr41xx.c                    |  10 +
- drivers/s390/char/tape_char.c               |  41 +-
- drivers/sbus/char/display7seg.c             |   2 +-
- drivers/sbus/char/envctrl.c                 |   4 +-
- drivers/scsi/3w-xxxx.c                      |   4 +-
- drivers/scsi/cxlflash/main.c                |   2 +-
- drivers/scsi/esas2r/esas2r_main.c           |   2 +-
- drivers/scsi/megaraid/megaraid_mm.c         |  28 +-
- drivers/scsi/osst.c                         |  34 +-
- drivers/scsi/pmcraid.c                      |   4 +-
- drivers/scsi/st.c                           |  35 +-
- drivers/staging/android/ion/ion.c           |   4 +-
- drivers/staging/pi433/pi433_if.c            |  12 +-
- drivers/staging/vme/devices/vme_user.c      |   2 +-
- drivers/tee/tee_core.c                      |   2 +-
- drivers/usb/class/cdc-wdm.c                 |   2 +-
- drivers/usb/class/usbtmc.c                  |   4 +-
- drivers/usb/core/devio.c                    |  16 +-
- drivers/usb/gadget/function/f_fs.c          |  12 +-
- drivers/vfio/vfio.c                         |  39 +-
- drivers/vhost/net.c                         |  12 +-
- drivers/vhost/scsi.c                        |  12 +-
- drivers/vhost/test.c                        |  12 +-
- drivers/vhost/vsock.c                       |  12 +-
- drivers/video/fbdev/aty/atyfb_base.c        |  12 +-
- drivers/virt/fsl_hypervisor.c               |   2 +-
- fs/btrfs/super.c                            |   2 +-
- fs/ceph/dir.c                               |   1 +
- fs/ceph/file.c                              |   2 +-
- fs/compat_ioctl.c                           | 602 +-------------------
- fs/fat/file.c                               |  13 +-
- fs/fuse/dev.c                               |   2 +-
- fs/notify/fanotify/fanotify_user.c          |   2 +-
- fs/userfaultfd.c                            |   2 +-
- include/linux/fs.h                          |   7 +
- include/linux/if_pppox.h                    |   2 +
- include/linux/mtio.h                        |  58 ++
- include/uapi/linux/ppp-ioctl.h              |   2 +
- include/uapi/linux/ppp_defs.h               |  14 +
- net/bluetooth/hci_sock.c                    |  21 +-
- net/bluetooth/rfcomm/sock.c                 |  14 +-
- net/l2tp/l2tp_ppp.c                         |   3 +
- net/rfkill/core.c                           |   2 +-
- sound/core/oss/pcm_oss.c                    |   4 +
- sound/oss/dmasound/dmasound_core.c          |   2 +
- 82 files changed, 452 insertions(+), 1034 deletions(-)
- create mode 100644 include/linux/mtio.h
-
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index 7f9dbdbc4eb7..1bf139c3727a 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -298,6 +298,7 @@ static const struct file_operations hostaudio_fops = {
+ 	.write          = hostaudio_write,
+ 	.poll           = hostaudio_poll,
+ 	.unlocked_ioctl	= hostaudio_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.mmap           = NULL,
+ 	.open           = hostaudio_open,
+ 	.release        = hostaudio_release,
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 5d13336e9eaa..625536aa6b03 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -51,8 +51,6 @@
+ #include <linux/uaccess.h>
+ #include <linux/watchdog.h>
+ 
+-#include <linux/soundcard.h>
+-
+ #include <linux/hiddev.h>
+ 
+ 
+@@ -399,162 +397,6 @@ COMPATIBLE_IOCTL(SG_GET_KEEP_ORPHAN)
+ /* PPP stuff */
+ COMPATIBLE_IOCTL(PPPIOCGUNIT)
+ COMPATIBLE_IOCTL(PPPIOCGCHAN)
+-/* Big A */
+-/* sparc only */
+-/* Big Q for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_CTRLRATE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETOUTCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETINCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PERCMODE)
+-COMPATIBLE_IOCTL(SNDCTL_FM_LOAD_INSTR)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_TESTMIDI)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESETSAMPLES)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRSYNTHS)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRMIDIS)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_THRESHOLD)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_MEMAVL)
+-COMPATIBLE_IOCTL(SNDCTL_FM_4OP_ENABLE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PANIC)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_OUTOFBAND)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETTIME)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_ID)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_CONTROL)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_REMOVESAMPLE)
+-/* Big T for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TIMEBASE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_START)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_STOP)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_CONTINUE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TEMPO)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SOURCE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_METRONOME)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SELECT)
+-/* Little m for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_PRETIME)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUMODE)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUCMD)
+-/* Big P for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SPEED)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_STEREO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETBLKSIZE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_WRITE_FILTER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_POST)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SUBDIVIDE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFRAGMENT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETFMTS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFMT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOSPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETISPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_NONBLOCK)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETCAPS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETIPTR)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOPTR)
+-/* SNDCTL_DSP_MAPINBUF,  XXX needs translation */
+-/* SNDCTL_DSP_MAPOUTBUF,  XXX needs translation */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETSYNCRO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETDUPLEX)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETODELAY)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_PROFILE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_RATE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_BITS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_FILTER)
+-/* Big C for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_LOAD)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RUN)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_HALT)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_SENDMSG)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCVMSG)
+-/* Big M for sound/OSS */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE3)
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MUTE)
+-/* SOUND_MIXER_READ_ENHANCE,  same value as READ_MUTE */
+-/* SOUND_MIXER_READ_LOUD,  same value as READ_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_DEVMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_STEREODEVS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CAPS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE3)
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MUTE)
+-/* SOUND_MIXER_WRITE_ENHANCE,  same value as WRITE_MUTE */
+-/* SOUND_MIXER_WRITE_LOUD,  same value as WRITE_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_OLD_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_MIXER_ACCESS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_AGC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_3DSE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE3)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE4)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE5)
+-COMPATIBLE_IOCTL(SOUND_MIXER_GETLEVELS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_SETLEVELS)
+-COMPATIBLE_IOCTL(OSS_GETVERSION)
+ /* Raw devices */
+ COMPATIBLE_IOCTL(RAW_SETBIND)
+ COMPATIBLE_IOCTL(RAW_GETBIND)
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index f6ae68017608..f85ea328fd27 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2732,6 +2732,10 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
+ static long snd_pcm_oss_ioctl_compat(struct file *file, unsigned int cmd,
+ 				     unsigned long arg)
+ {
++	/*
++	 * Everything is compatbile except SNDCTL_DSP_MAPINBUF/SNDCTL_DSP_MAPOUTBUF,
++	 * which are not implemented for the native case either
++	 */
+ 	return snd_pcm_oss_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+ }
+ #else
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index fc9bcd47d6a4..f802ea331e24 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -384,6 +384,7 @@ static const struct file_operations mixer_fops =
+ 	.owner		= THIS_MODULE,
+ 	.llseek		= no_llseek,
+ 	.unlocked_ioctl	= mixer_unlocked_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= mixer_open,
+ 	.release	= mixer_release,
+ };
+@@ -1167,6 +1168,7 @@ static const struct file_operations sq_fops =
+ 	.write		= sq_write,
+ 	.poll		= sq_poll,
+ 	.unlocked_ioctl	= sq_unlocked_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= sq_open,
+ 	.release	= sq_release,
+ };
 -- 
 2.20.0
-
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Karsten Keil <isdn@linux-pingi.de>
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: devel@driverdev.osuosl.org
-Cc: linux-integrity@vger.kernel.org
-Cc: qat-linux@intel.com
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux1394-devel@lists.sourceforge.net
-Cc: amd-gfx@lists.freedesktop.org
-Cc: linux-input@vger.kernel.org
-Cc: linux-usb@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-ide@vger.kernel.org
-Cc: linux-iio@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-ppp@vger.kernel.org
-Cc: linux-nvme@lists.infradead.org
-Cc: platform-driver-x86@vger.kernel.org
-Cc: linux-remoteproc@vger.kernel.org
-Cc: linux-rtc@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Cc: ceph-devel@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-bluetooth@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Cc: y2038@lists.linaro.org
