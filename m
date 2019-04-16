@@ -1,91 +1,52 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Dell AIO speaker pop noise
-Date: Tue, 16 Apr 2019 08:59:37 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
- <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
- <s5h8swajr70.wl-tiwai@suse.de>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] ACPI / device_sysfs: change _ADR representation to 64
+ bits
+Date: Tue, 16 Apr 2019 14:39:35 +0530
+Message-ID: <20190416090935.GT28103@vkoul-mobl>
+References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
+ <20190416032923.GQ28103@vkoul-mobl>
+ <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9189F89614
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 10:59:44 +0200 (CEST)
-In-Reply-To: <s5h8swajr70.wl-tiwai@suse.de>
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: hwang4 <hui.wang@canonical.com>, "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jank@cadence.com, Joe Perches <joe@perches.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Tuesday, April 16, 2019 4:22 PM
-> To: Jaroslav Kysela <perex@perex.cz>
-> Cc: Kailang <kailang@realtek.com>; hwang4 <hui.wang@canonical.com>;
-> (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
-> Subject: Re: [alsa-devel] Dell AIO speaker pop noise
-> 
-> On Tue, 16 Apr 2019 10:01:31 +0200,
-> Jaroslav Kysela wrote:
+On 16-04-19, 10:09, Rafael J. Wysocki wrote:
+> On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul@kernel.org> wrote:
 > >
-> > Dne 16. 04. 19 v 9:30 Kailang napsal(a):
-> > > Hi Takashi,
+> > On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
+> > > Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> > > assume the _ADR field is 64 bits.
 > > >
-> > > Issue 1: The noise keeps occurring via speaker when Headset is plugged in.
-> > > Issue 2: The humming noise is occuring when switching to sound of
-> settings.
-> > > 	 The noise will be stopped when switching to other options of settings.
-> > > Issue 3: The popping noise occurred for one second when plugged in and
-> removed the headset.
+> > > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> > > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> > > struct acpi_device_info.
 > > >
-> > > This patch will solve this three issues.
+> > > This patch bumps the representation used for sysfs to 64 bits.
+> > >
+> > > Example with a SoundWire device, the results show the complete
+> > > vendorID and linkID which were omitted before:
+> > >
+> > > Before:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x5d070000
+> > > After:
+> > > $ more /sys/bus/acpi/devices/device\:38/adr
+> > > 0x000010025d070000
 > >
-> > Hi,
-> >
-> >   could you explain, why the power-save function causes this
-> > behaviour? Can we do something else than turning off the power-save
-> > codec settings to avoid such noises? I have this question because it's really
-> easy to disable something, but I feel that the culprit of the noises might be just
-> the wrong codec settings. I guess that you have probably full documentation
-> for the codec and probably for the hardware, so it might be nice to find the
-> real culprit.
+> > This looks fine but the sysfs file is an ABI. Not sure if we can modify
+> > the value returned this way.. Though it should not cause userspace
+> > reading 32bits to break...
 > 
-> Note that power_save_node=0 doesn't mean that the whole power saving is
-> disabled.  It disables the fine-grained power saving, i.e. powering down the
-> unused widget nodes.
-> 
-> If so, I wonder whether this might be about the default pin-shutup behavior.  I
-> improved the click noise problem on my Dell desktop by disabling the pin
-> shutup.  See commit c0ca5eced222.
-> Kailang, Hui, did you try to add the chain to ALC269_FIXUP_NO_SHUTUP?
-> 
-This noise was not happen on poweroff.
-AIO use external AMP. So, it will be need to have a reference voltage via codec.
-So, Pin-ctls was not be 0. I apply option spec->gen.suppress_auto_mute = 1 to avoid that. 
-Internal SPK PIN also don't enter to D3. But I find it just only happen on ALC274 family codecs.
-ALC274 pin enter to D3. Pin-ctls also be 0. So, power_save_node=0 will let PIN to D0.
+> Well, IIRC using "08" instead of "016" in the format field would
+> preserve the existing behavior for 32-bit values, wouldn't it?
 
-power_save = 0 it also could solve issue.
+Yeah that should do :)
 
-
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
+-- 
+~Vinod
