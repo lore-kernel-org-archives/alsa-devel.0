@@ -1,17 +1,17 @@
-From: hwang4 <hui.wang@canonical.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: Dell AIO speaker pop noise
-Date: Tue, 16 Apr 2019 15:56:21 +0800
-Message-ID: <7701ee76-a88b-5547-7ec9-4954b0e4813f@canonical.com>
+Date: Tue, 16 Apr 2019 10:01:31 +0200
+Message-ID: <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
 References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB3ECF89616
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 09:56:33 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 690CAF896E2
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 10:01:36 +0200 (CEST)
 In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,18 +24,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Kailang <kailang@realtek.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Cc: hwang4 <hui.wang@canonical.com>, "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-IMKgVGVzdGVkLWJ5OiBIdWkgV2FuZyA8aHVpLndhbmdAY2Fub25pY2FsLmNvbT4KCk9uIDIwMTkv
-NC8xNiDkuIvljYgzOjMwLCBLYWlsYW5nIHdyb3RlOgo+IEhpIFRha2FzaGksCj4KPiBJc3N1ZSAx
-OiBUaGUgbm9pc2Uga2VlcHMgb2NjdXJyaW5nIHZpYSBzcGVha2VyIHdoZW4gSGVhZHNldCBpcyBw
-bHVnZ2VkIGluLgo+IElzc3VlIDI6IFRoZSBodW1taW5nIG5vaXNlIGlzIG9jY3VyaW5nIHdoZW4g
-c3dpdGNoaW5nIHRvIHNvdW5kIG9mIHNldHRpbmdzLgo+IAkgVGhlIG5vaXNlIHdpbGwgYmUgc3Rv
-cHBlZCB3aGVuIHN3aXRjaGluZyB0byBvdGhlciBvcHRpb25zIG9mIHNldHRpbmdzLgo+IElzc3Vl
-IDM6IFRoZSBwb3BwaW5nIG5vaXNlIG9jY3VycmVkIGZvciBvbmUgc2Vjb25kIHdoZW4gcGx1Z2dl
-ZCBpbiBhbmQgcmVtb3ZlZCB0aGUgaGVhZHNldC4KPgo+IFRoaXMgcGF0Y2ggd2lsbCBzb2x2ZSB0
-aGlzIHRocmVlIGlzc3Vlcy4KPgo+IEJSLAo+IEthaWxhbmcKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Dne 16. 04. 19 v 9:30 Kailang napsal(a):
+> Hi Takashi,
+> 
+> Issue 1: The noise keeps occurring via speaker when Headset is plugged in.
+> Issue 2: The humming noise is occuring when switching to sound of settings.
+> 	 The noise will be stopped when switching to other options of settings.
+> Issue 3: The popping noise occurred for one second when plugged in and removed the headset.
+> 
+> This patch will solve this three issues.
+
+Hi,
+
+  could you explain, why the power-save function causes this behaviour? Can we do something else than turning off the power-save codec settings to avoid such noises? I have this question because it's
+really easy to disable something, but I feel that the culprit of the noises might be just the wrong codec settings. I guess that you have probably full documentation for the codec and probably for the
+hardware, so it might be nice to find the real culprit.
+
+			Thank you,
+				Jaroslav
+
+> 
+> BR,
+> Kailang
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
