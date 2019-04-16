@@ -1,124 +1,99 @@
-From: syzbot <syzbot+8016c844427ade041774@syzkaller.appspotmail.com>
-Subject: BUG: corrupted list in snd_info_create_entry
-Date: Tue, 16 Apr 2019 04:26:06 -0700
-Message-ID: <000000000000ee717d0586a40863@google.com>
+From: hwang4 <hui.wang@canonical.com>
+Subject: Re: Dell AIO speaker pop noise
+Date: Tue, 16 Apr 2019 19:26:47 +0800
+Message-ID: <b457c3f6-1fc5-a3da-2904-0da5f3c5a170@canonical.com>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
+ <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
+ <s5h8swajr70.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
+ <300c8e06-71a0-9bff-2963-91fed9d79b8b@canonical.com>
+ <s5hv9ze5lph.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, andreyknvl@google.com, joe@perches.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, vkoul@kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112]) (using TLSv1 with cipher AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56C00F89616
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 13:26:54 +0200 (CEST)
+In-Reply-To: <s5hv9ze5lph.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    9a33b369 usb-fuzzer: main usb gadget fuzzer driver
-git tree:       https://github.com/google/kasan/tree/usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c1a387200000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=23e37f59d94ddd15
-dashboard link: https://syzkaller.appspot.com/bug?extid=8016c844427ade041774
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179a01b7200000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8016c844427ade041774@syzkaller.appspotmail.com
-
-usb 2-1: USB disconnect, device number 16
-list_add corruption. prev->next should be next (ffff8880a8672358), but was  
-ffff8880a4cde0e8. (prev=ffff8880a4cde868).
-snd_usb_toneport 4-1:0.0: Line 6 POD Studio UX2 found
-------------[ cut here ]------------
-usb 6-1: USB disconnect, device number 16
-kernel BUG at lib/list_debug.c:26!
-invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.1.0-rc4-319354-g9a33b36 #3
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__list_add_valid.cold+0x3a/0x3c lib/list_debug.c:26
-Code: 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 80 94 b3 8e e8 69 e7 e9 fd 0f  
-0b 48 89 f1 48 c7 c7 00 94 b3 8e 4c 89 e6 e8 55 e7 e9 fd <0f> 0b 48 89 ee  
-48 c7 c7 a0 95 b3 8e e8 44 e7 e9 fd 0f 0b 4c 89 ea
-RSP: 0018:ffff8880a846f110 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff8880a8672280 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815b1e42 RDI: ffffed101508de14
-RBP: ffff8880a52679a8 R08: 0000000000000075 R09: ffffed1015a04fc9
-R10: ffffed1015a04fc8 R11: ffff8880ad027e47 R12: ffff8880a8672358
-R13: ffff8880a4cde868 R14: ffff8880a52679b0 R15: ffff8880a8672358
-FS:  0000000000000000(0000) GS:ffff8880ad000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000625208 CR3: 00000000958dc000 CR4: 00000000001406f0
-Call Trace:
-  __list_add include/linux/list.h:60 [inline]
-  list_add_tail include/linux/list.h:93 [inline]
-  snd_info_create_entry+0x25f/0x400 sound/core/info.c:717
-  snd_info_create_module_entry sound/core/info.c:737 [inline]
-  create_subdir+0x27/0xa0 sound/core/info.c:454
-  snd_info_card_create+0xcf/0x230 sound/core/info.c:528
-  snd_card_new+0x61d/0x920 sound/core/init.c:255
-snd_usb_toneport 3-1:0.0: set_interface failed
-  line6_probe+0x135/0x1150 sound/usb/line6/driver.c:736
-snd_usb_toneport 3-1:0.0: Line 6 POD Studio UX2 now disconnected
-  usb_probe_interface+0x31d/0x820 drivers/usb/core/driver.c:361
-  really_probe+0x2da/0xb10 drivers/base/dd.c:509
-  driver_probe_device+0x21d/0x350 drivers/base/dd.c:671
-snd_usb_toneport: probe of 3-1:0.0 failed with error -71
-  __device_attach_driver+0x1d8/0x290 drivers/base/dd.c:778
-  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:454
-snd_usb_toneport 4-1:0.0: set_interface failed
-  __device_attach+0x223/0x3a0 drivers/base/dd.c:844
-snd_usb_toneport 4-1:0.0: Line 6 POD Studio UX2 now disconnected
-  bus_probe_device+0x1f1/0x2a0 drivers/base/bus.c:514
-  device_add+0xad2/0x16e0 drivers/base/core.c:2106
-snd_usb_toneport: probe of 4-1:0.0 failed with error -71
-  usb_set_configuration+0xdf7/0x1740 drivers/usb/core/message.c:2021
-  generic_probe+0xa2/0xda drivers/usb/core/generic.c:210
-  usb_probe_device+0xc0/0x150 drivers/usb/core/driver.c:266
-  really_probe+0x2da/0xb10 drivers/base/dd.c:509
-  driver_probe_device+0x21d/0x350 drivers/base/dd.c:671
-  __device_attach_driver+0x1d8/0x290 drivers/base/dd.c:778
-  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:454
-usb 3-1: USB disconnect, device number 16
-usb 4-1: USB disconnect, device number 16
-  __device_attach+0x223/0x3a0 drivers/base/dd.c:844
-  bus_probe_device+0x1f1/0x2a0 drivers/base/bus.c:514
-  device_add+0xad2/0x16e0 drivers/base/core.c:2106
-usb 2-1: new high-speed USB device number 17 using dummy_hcd
-  usb_new_device.cold+0x537/0xccf drivers/usb/core/hub.c:2534
-  hub_port_connect drivers/usb/core/hub.c:5089 [inline]
-  hub_port_connect_change drivers/usb/core/hub.c:5204 [inline]
-  port_event drivers/usb/core/hub.c:5350 [inline]
-  hub_event+0x138e/0x3b00 drivers/usb/core/hub.c:5432
-usb 6-1: new high-speed USB device number 17 using dummy_hcd
-  process_one_work+0x90f/0x1580 kernel/workqueue.c:2269
-  process_scheduled_works kernel/workqueue.c:2331 [inline]
-  worker_thread+0x7b0/0xe20 kernel/workqueue.c:2417
-  kthread+0x313/0x420 kernel/kthread.c:253
-  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
-Modules linked in:
----[ end trace 152fc83c1caf10d9 ]---
-RIP: 0010:__list_add_valid.cold+0x3a/0x3c lib/list_debug.c:26
-Code: 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 80 94 b3 8e e8 69 e7 e9 fd 0f  
-0b 48 89 f1 48 c7 c7 00 94 b3 8e 4c 89 e6 e8 55 e7 e9 fd <0f> 0b 48 89 ee  
-48 c7 c7 a0 95 b3 8e e8 44 e7 e9 fd 0f 0b 4c 89 ea
-RSP: 0018:ffff8880a846f110 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff8880a8672280 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815b1e42 RDI: ffffed101508de14
-RBP: ffff8880a52679a8 R08: 0000000000000075 R09: ffffed1015a04fc9
-R10: ffffed1015a04fc8 R11: ffff8880ad027e47 R12: ffff8880a8672358
-R13: ffff8880a4cde868 R14: ffff8880a52679b0 R15: ffff8880a8672358
-FS:  0000000000000000(0000) GS:ffff8880ad000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000625208 CR3: 00000000958dc000 CR4: 00000000001406f0
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Ck9uIDIwMTkvNC8xNiDkuIvljYg1OjQzLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAx
+NiBBcHIgMjAxOSAxMTozMToyMiArMDIwMCwKPiBod2FuZzQgd3JvdGU6Cj4+Cj4+IE9uIDIwMTkv
+NC8xNiDkuIvljYg0OjU5LCBLYWlsYW5nIHdyb3RlOgo+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
+ZS0tLS0tCj4+Pj4gRnJvbTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+Pj4+IFNlbnQ6
+IFR1ZXNkYXksIEFwcmlsIDE2LCAyMDE5IDQ6MjIgUE0KPj4+PiBUbzogSmFyb3NsYXYgS3lzZWxh
+IDxwZXJleEBwZXJleC5jej4KPj4+PiBDYzogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT47
+IGh3YW5nNCA8aHVpLndhbmdAY2Fub25pY2FsLmNvbT47Cj4+Pj4gKGFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZykgPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4KPj4+PiBTdWJqZWN0OiBS
+ZTogW2Fsc2EtZGV2ZWxdIERlbGwgQUlPIHNwZWFrZXIgcG9wIG5vaXNlCj4+Pj4KPj4+PiBPbiBU
+dWUsIDE2IEFwciAyMDE5IDEwOjAxOjMxICswMjAwLAo+Pj4+IEphcm9zbGF2IEt5c2VsYSB3cm90
+ZToKPj4+Pj4gRG5lIDE2LiAwNC4gMTkgdiA5OjMwIEthaWxhbmcgbmFwc2FsKGEpOgo+Pj4+Pj4g
+SGkgVGFrYXNoaSwKPj4+Pj4+Cj4+Pj4+PiBJc3N1ZSAxOiBUaGUgbm9pc2Uga2VlcHMgb2NjdXJy
+aW5nIHZpYSBzcGVha2VyIHdoZW4gSGVhZHNldCBpcyBwbHVnZ2VkIGluLgo+Pj4+Pj4gSXNzdWUg
+MjogVGhlIGh1bW1pbmcgbm9pc2UgaXMgb2NjdXJpbmcgd2hlbiBzd2l0Y2hpbmcgdG8gc291bmQg
+b2YKPj4+PiBzZXR0aW5ncy4KPj4+Pj4+IAkgVGhlIG5vaXNlIHdpbGwgYmUgc3RvcHBlZCB3aGVu
+IHN3aXRjaGluZyB0byBvdGhlciBvcHRpb25zIG9mIHNldHRpbmdzLgo+Pj4+Pj4gSXNzdWUgMzog
+VGhlIHBvcHBpbmcgbm9pc2Ugb2NjdXJyZWQgZm9yIG9uZSBzZWNvbmQgd2hlbiBwbHVnZ2VkIGlu
+IGFuZAo+Pj4+IHJlbW92ZWQgdGhlIGhlYWRzZXQuCj4+Pj4+PiBUaGlzIHBhdGNoIHdpbGwgc29s
+dmUgdGhpcyB0aHJlZSBpc3N1ZXMuCj4+Pj4+IEhpLAo+Pj4+Pgo+Pj4+PiAgICAgY291bGQgeW91
+IGV4cGxhaW4sIHdoeSB0aGUgcG93ZXItc2F2ZSBmdW5jdGlvbiBjYXVzZXMgdGhpcwo+Pj4+PiBi
+ZWhhdmlvdXI/IENhbiB3ZSBkbyBzb21ldGhpbmcgZWxzZSB0aGFuIHR1cm5pbmcgb2ZmIHRoZSBw
+b3dlci1zYXZlCj4+Pj4+IGNvZGVjIHNldHRpbmdzIHRvIGF2b2lkIHN1Y2ggbm9pc2VzPyBJIGhh
+dmUgdGhpcyBxdWVzdGlvbiBiZWNhdXNlIGl0J3MgcmVhbGx5Cj4+Pj4gZWFzeSB0byBkaXNhYmxl
+IHNvbWV0aGluZywgYnV0IEkgZmVlbCB0aGF0IHRoZSBjdWxwcml0IG9mIHRoZSBub2lzZXMgbWln
+aHQgYmUganVzdAo+Pj4+IHRoZSB3cm9uZyBjb2RlYyBzZXR0aW5ncy4gSSBndWVzcyB0aGF0IHlv
+dSBoYXZlIHByb2JhYmx5IGZ1bGwgZG9jdW1lbnRhdGlvbgo+Pj4+IGZvciB0aGUgY29kZWMgYW5k
+IHByb2JhYmx5IGZvciB0aGUgaGFyZHdhcmUsIHNvIGl0IG1pZ2h0IGJlIG5pY2UgdG8gZmluZCB0
+aGUKPj4+PiByZWFsIGN1bHByaXQuCj4+Pj4KPj4+PiBOb3RlIHRoYXQgcG93ZXJfc2F2ZV9ub2Rl
+PTAgZG9lc24ndCBtZWFuIHRoYXQgdGhlIHdob2xlIHBvd2VyIHNhdmluZyBpcwo+Pj4+IGRpc2Fi
+bGVkLiAgSXQgZGlzYWJsZXMgdGhlIGZpbmUtZ3JhaW5lZCBwb3dlciBzYXZpbmcsIGkuZS4gcG93
+ZXJpbmcgZG93biB0aGUKPj4+PiB1bnVzZWQgd2lkZ2V0IG5vZGVzLgo+Pj4+Cj4+Pj4gSWYgc28s
+IEkgd29uZGVyIHdoZXRoZXIgdGhpcyBtaWdodCBiZSBhYm91dCB0aGUgZGVmYXVsdCBwaW4tc2h1
+dHVwIGJlaGF2aW9yLiAgSQo+Pj4+IGltcHJvdmVkIHRoZSBjbGljayBub2lzZSBwcm9ibGVtIG9u
+IG15IERlbGwgZGVza3RvcCBieSBkaXNhYmxpbmcgdGhlIHBpbgo+Pj4+IHNodXR1cC4gIFNlZSBj
+b21taXQgYzBjYTVlY2VkMjIyLgo+Pj4+IEthaWxhbmcsIEh1aSwgZGlkIHlvdSB0cnkgdG8gYWRk
+IHRoZSBjaGFpbiB0byBBTEMyNjlfRklYVVBfTk9fU0hVVFVQPwo+Pj4+Cj4+PiBUaGlzIG5vaXNl
+IHdhcyBub3QgaGFwcGVuIG9uIHBvd2Vyb2ZmLgo+Pj4gQUlPIHVzZSBleHRlcm5hbCBBTVAuIFNv
+LCBpdCB3aWxsIGJlIG5lZWQgdG8gaGF2ZSBhIHJlZmVyZW5jZSB2b2x0YWdlIHZpYSBjb2RlYy4K
+Pj4+IFNvLCBQaW4tY3RscyB3YXMgbm90IGJlIDAuIEkgYXBwbHkgb3B0aW9uIHNwZWMtPmdlbi5z
+dXBwcmVzc19hdXRvX211dGUgPSAxIHRvIGF2b2lkIHRoYXQuCj4+PiBJbnRlcm5hbCBTUEsgUElO
+IGFsc28gZG9uJ3QgZW50ZXIgdG8gRDMuIEJ1dCBJIGZpbmQgaXQganVzdCBvbmx5IGhhcHBlbiBv
+biBBTEMyNzQgZmFtaWx5IGNvZGVjcy4KPj4+IEFMQzI3NCBwaW4gZW50ZXIgdG8gRDMuIFBpbi1j
+dGxzIGFsc28gYmUgMC4gU28sIHBvd2VyX3NhdmVfbm9kZT0wIHdpbGwgbGV0IFBJTiB0byBEMC4K
+Pj4+Cj4+PiBwb3dlcl9zYXZlID0gMCBpdCBhbHNvIGNvdWxkIHNvbHZlIGlzc3VlLgo+Pgo+PiBZ
+ZXMsIGF2b2lkIHNldHRpbmcgcGluY3RsIGlzIG9ubHkgcGFydCBmaXgsIHRoZSBPRE0gc2FpZCB0
+aGUgbWFpbgo+PiBwcm9ibGVtIGlzIHRoZSBFQVBEIHBpbiBpcyBoaWdoLT5sb3ctPmhpZ2gtPmxv
+dyBwZXJpb2RpY2FsbHksIGl0IGhhcwo+PiBzdGggdG8gZG8gd2l0aCB0aGUgd2lkZ2V0IG5vZGUg
+cG93ZXIgc3RhdGUuCj4gRldJVywgdGhlcmUgaXMgYWxzbyBzcGVjLT5nZW4ua2VlcF9lYXBkX29u
+PTEgdGhhdCBwcmV2ZW50cyB0aGUgRUFQRAo+IHRvZ2dsZSBhdCBwb3dlciBzYXZpbmcuCgpHb3Qg
+aXQsIGJ1dCBkb2VzIGl0IHByZXZlbnQgTm9kZXMgb3IgdGhlIHdob2xlIGNvZGVjIGZyb20gZW50
+ZXJpbmcgRDM/CgpIZXJlIHRoZSBFQURQIGlzIGxvdywgaXQgaXMgbm90IGJlY2F1c2UgdGhlIHNl
+dF9lYXBkKCkgaXMgY2FsbGVkLCBJIApjaGVja2VkIHRoZSBFQVBEIG9mIGFsbCBub2RlcywgdGhl
+eSBhcmUgYWxsIDB4MiBhbGwgdGhlIHRpbWUuIEFuZCAKcGF0Y2hfcmVhbHRlayBhbHJlYWR5IHNl
+dCB0aGUgb3duX2VhcGRfY3RsPTEsIGFuZCB0aGUgTklEIGZvciBzcGVha2VyIGlzIAoweDE2LCBp
+dCBpcyBub3QgaW4gdGhlOgoKIMKgwqDCoCBzdGF0aWMgaGRhX25pZF90IHBpbnNbXSA9IHsKIMKg
+wqDCoCDCoMKgwqAgMHgwZiwgMHgxMCwgMHgxNCwgMHgxNSwgMHgxNywgMAogwqDCoMKgIH07CgpT
+byB0aGUgZHJpdmVyIHdpbGwgbm90IHNldCB0aGUgZWFwZCB0byAwIGZvciBzcGVha2VyLiBJZiBr
+ZWVwX2VhcGRfb249MSAKY2FuIHByZXZlbnQgY29kZWMvbm9kZXMgZnJvbSBlbnRlcmluZyBEMywg
+bWF5YmUgaXQgd2lsbCBoZWxwLgoKVGhhbmtzLAoKSHVpLgoKPgo+Cj4gVGFrYXNoaQo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwczovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
