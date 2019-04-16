@@ -1,117 +1,77 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Dell AIO speaker pop noise
-Date: Tue, 16 Apr 2019 14:18:08 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBBCE5@RTITMBSVM07.realtek.com.tw>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
- <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
- <s5h8swajr70.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
- <300c8e06-71a0-9bff-2963-91fed9d79b8b@canonical.com>
- <s5hv9ze5lph.wl-tiwai@suse.de>
- <b457c3f6-1fc5-a3da-2904-0da5f3c5a170@canonical.com>
+From: Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: atmel: tse850: Make some functions static
+Date: Tue, 16 Apr 2019 22:47:18 +0800
+Message-ID: <20190416144718.25576-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92D76F89616
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 16:18:15 +0200 (CEST)
-In-Reply-To: <b457c3f6-1fc5-a3da-2904-0da5f3c5a170@canonical.com>
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: hwang4 <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: peda@axentia.se, codrin.ciubotariu@microchip.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSHVpLA0KDQpBSU8gd2FzIHdpcmUgcG93ZXIgY2FibGUuIEl0IGRvZXNuJ3QgaW5jbHVkZSBi
-YXR0ZXJ5Lg0KSSB0aGluayBBSU8gY2FuIHVzZSBwb3dlcl9zYXZlID0gMCBvcHRpb24uDQpCZWNh
-dXNlIGNvZGVjIHBvd2VyIGNvbnN1bXB0aW9uIHdhcyBsb3dlci4gSXQgd2FzIDAuMDFXfjAuMDJX
-IHdpdGhvdXQgd29yayB0aW1lLg0KSG93IGRpZCB5b3UgdGhpbms/DQoNCkNQVSBvciBWR0EgY2hp
-cCB3aGljaCBwb3dlciBjb25zdW1wdGlvbiB3YXMgbW9yZSB0aGFuIDIwVyBhYm92ZS4NCg0KQlIs
-DQpLYWlsYW5nDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogaHdhbmc0
-IDxodWkud2FuZ0BjYW5vbmljYWwuY29tPg0KPiBTZW50OiBUdWVzZGF5LCBBcHJpbCAxNiwgMjAx
-OSA3OjI3IFBNDQo+IFRvOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQo+IENjOiAoYWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPjsg
-S2FpbGFuZw0KPiA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4NCj4gU3ViamVjdDogUmU6IFthbHNhLWRl
-dmVsXSBEZWxsIEFJTyBzcGVha2VyIHBvcCBub2lzZQ0KPiANCj4gT24gMjAxOS80LzE2IOS4i+WN
-iDU6NDMsIFRha2FzaGkgSXdhaSB3cm90ZToNCj4gPiBPbiBUdWUsIDE2IEFwciAyMDE5IDExOjMx
-OjIyICswMjAwLA0KPiA+IGh3YW5nNCB3cm90ZToNCj4gPj4NCj4gPj4gT24gMjAxOS80LzE2IOS4
-i+WNiDQ6NTksIEthaWxhbmcgd3JvdGU6DQo+ID4+Pj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCj4gPj4+PiBGcm9tOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQo+ID4+Pj4gU2Vu
-dDogVHVlc2RheSwgQXByaWwgMTYsIDIwMTkgNDoyMiBQTQ0KPiA+Pj4+IFRvOiBKYXJvc2xhdiBL
-eXNlbGEgPHBlcmV4QHBlcmV4LmN6Pg0KPiA+Pj4+IENjOiBLYWlsYW5nIDxrYWlsYW5nQHJlYWx0
-ZWsuY29tPjsgaHdhbmc0DQo+IDxodWkud2FuZ0BjYW5vbmljYWwuY29tPjsNCj4gPj4+PiAoYWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0K
-PiA+Pj4+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gRGVsbCBBSU8gc3BlYWtlciBwb3Agbm9p
-c2UNCj4gPj4+Pg0KPiA+Pj4+IE9uIFR1ZSwgMTYgQXByIDIwMTkgMTA6MDE6MzEgKzAyMDAsIEph
-cm9zbGF2IEt5c2VsYSB3cm90ZToNCj4gPj4+Pj4gRG5lIDE2LiAwNC4gMTkgdiA5OjMwIEthaWxh
-bmcgbmFwc2FsKGEpOg0KPiA+Pj4+Pj4gSGkgVGFrYXNoaSwNCj4gPj4+Pj4+DQo+ID4+Pj4+PiBJ
-c3N1ZSAxOiBUaGUgbm9pc2Uga2VlcHMgb2NjdXJyaW5nIHZpYSBzcGVha2VyIHdoZW4gSGVhZHNl
-dCBpcw0KPiBwbHVnZ2VkIGluLg0KPiA+Pj4+Pj4gSXNzdWUgMjogVGhlIGh1bW1pbmcgbm9pc2Ug
-aXMgb2NjdXJpbmcgd2hlbiBzd2l0Y2hpbmcgdG8gc291bmQgb2YNCj4gPj4+PiBzZXR0aW5ncy4N
-Cj4gPj4+Pj4+IAkgVGhlIG5vaXNlIHdpbGwgYmUgc3RvcHBlZCB3aGVuIHN3aXRjaGluZyB0byBv
-dGhlciBvcHRpb25zIG9mDQo+IHNldHRpbmdzLg0KPiA+Pj4+Pj4gSXNzdWUgMzogVGhlIHBvcHBp
-bmcgbm9pc2Ugb2NjdXJyZWQgZm9yIG9uZSBzZWNvbmQgd2hlbiBwbHVnZ2VkDQo+ID4+Pj4+PiBp
-biBhbmQNCj4gPj4+PiByZW1vdmVkIHRoZSBoZWFkc2V0Lg0KPiA+Pj4+Pj4gVGhpcyBwYXRjaCB3
-aWxsIHNvbHZlIHRoaXMgdGhyZWUgaXNzdWVzLg0KPiA+Pj4+PiBIaSwNCj4gPj4+Pj4NCj4gPj4+
-Pj4gICAgIGNvdWxkIHlvdSBleHBsYWluLCB3aHkgdGhlIHBvd2VyLXNhdmUgZnVuY3Rpb24gY2F1
-c2VzIHRoaXMNCj4gPj4+Pj4gYmVoYXZpb3VyPyBDYW4gd2UgZG8gc29tZXRoaW5nIGVsc2UgdGhh
-biB0dXJuaW5nIG9mZiB0aGUNCj4gPj4+Pj4gcG93ZXItc2F2ZSBjb2RlYyBzZXR0aW5ncyB0byBh
-dm9pZCBzdWNoIG5vaXNlcz8gSSBoYXZlIHRoaXMNCj4gPj4+Pj4gcXVlc3Rpb24gYmVjYXVzZSBp
-dCdzIHJlYWxseQ0KPiA+Pj4+IGVhc3kgdG8gZGlzYWJsZSBzb21ldGhpbmcsIGJ1dCBJIGZlZWwg
-dGhhdCB0aGUgY3VscHJpdCBvZiB0aGUNCj4gPj4+PiBub2lzZXMgbWlnaHQgYmUganVzdCB0aGUg
-d3JvbmcgY29kZWMgc2V0dGluZ3MuIEkgZ3Vlc3MgdGhhdCB5b3UNCj4gPj4+PiBoYXZlIHByb2Jh
-Ymx5IGZ1bGwgZG9jdW1lbnRhdGlvbiBmb3IgdGhlIGNvZGVjIGFuZCBwcm9iYWJseSBmb3IgdGhl
-DQo+ID4+Pj4gaGFyZHdhcmUsIHNvIGl0IG1pZ2h0IGJlIG5pY2UgdG8gZmluZCB0aGUgcmVhbCBj
-dWxwcml0Lg0KPiA+Pj4+DQo+ID4+Pj4gTm90ZSB0aGF0IHBvd2VyX3NhdmVfbm9kZT0wIGRvZXNu
-J3QgbWVhbiB0aGF0IHRoZSB3aG9sZSBwb3dlcg0KPiA+Pj4+IHNhdmluZyBpcyBkaXNhYmxlZC4g
-IEl0IGRpc2FibGVzIHRoZSBmaW5lLWdyYWluZWQgcG93ZXIgc2F2aW5nLA0KPiA+Pj4+IGkuZS4g
-cG93ZXJpbmcgZG93biB0aGUgdW51c2VkIHdpZGdldCBub2Rlcy4NCj4gPj4+Pg0KPiA+Pj4+IElm
-IHNvLCBJIHdvbmRlciB3aGV0aGVyIHRoaXMgbWlnaHQgYmUgYWJvdXQgdGhlIGRlZmF1bHQgcGlu
-LXNodXR1cA0KPiA+Pj4+IGJlaGF2aW9yLiAgSSBpbXByb3ZlZCB0aGUgY2xpY2sgbm9pc2UgcHJv
-YmxlbSBvbiBteSBEZWxsIGRlc2t0b3AgYnkNCj4gPj4+PiBkaXNhYmxpbmcgdGhlIHBpbiBzaHV0
-dXAuICBTZWUgY29tbWl0IGMwY2E1ZWNlZDIyMi4NCj4gPj4+PiBLYWlsYW5nLCBIdWksIGRpZCB5
-b3UgdHJ5IHRvIGFkZCB0aGUgY2hhaW4gdG8gQUxDMjY5X0ZJWFVQX05PX1NIVVRVUD8NCj4gPj4+
-Pg0KPiA+Pj4gVGhpcyBub2lzZSB3YXMgbm90IGhhcHBlbiBvbiBwb3dlcm9mZi4NCj4gPj4+IEFJ
-TyB1c2UgZXh0ZXJuYWwgQU1QLiBTbywgaXQgd2lsbCBiZSBuZWVkIHRvIGhhdmUgYSByZWZlcmVu
-Y2Ugdm9sdGFnZSB2aWENCj4gY29kZWMuDQo+ID4+PiBTbywgUGluLWN0bHMgd2FzIG5vdCBiZSAw
-LiBJIGFwcGx5IG9wdGlvbiBzcGVjLT5nZW4uc3VwcHJlc3NfYXV0b19tdXRlID0gMQ0KPiB0byBh
-dm9pZCB0aGF0Lg0KPiA+Pj4gSW50ZXJuYWwgU1BLIFBJTiBhbHNvIGRvbid0IGVudGVyIHRvIEQz
-LiBCdXQgSSBmaW5kIGl0IGp1c3Qgb25seSBoYXBwZW4gb24NCj4gQUxDMjc0IGZhbWlseSBjb2Rl
-Y3MuDQo+ID4+PiBBTEMyNzQgcGluIGVudGVyIHRvIEQzLiBQaW4tY3RscyBhbHNvIGJlIDAuIFNv
-LCBwb3dlcl9zYXZlX25vZGU9MCB3aWxsIGxldA0KPiBQSU4gdG8gRDAuDQo+ID4+Pg0KPiA+Pj4g
-cG93ZXJfc2F2ZSA9IDAgaXQgYWxzbyBjb3VsZCBzb2x2ZSBpc3N1ZS4NCj4gPj4NCj4gPj4gWWVz
-LCBhdm9pZCBzZXR0aW5nIHBpbmN0bCBpcyBvbmx5IHBhcnQgZml4LCB0aGUgT0RNIHNhaWQgdGhl
-IG1haW4NCj4gPj4gcHJvYmxlbSBpcyB0aGUgRUFQRCBwaW4gaXMgaGlnaC0+bG93LT5oaWdoLT5s
-b3cgcGVyaW9kaWNhbGx5LCBpdCBoYXMNCj4gPj4gc3RoIHRvIGRvIHdpdGggdGhlIHdpZGdldCBu
-b2RlIHBvd2VyIHN0YXRlLg0KPiA+IEZXSVcsIHRoZXJlIGlzIGFsc28gc3BlYy0+Z2VuLmtlZXBf
-ZWFwZF9vbj0xIHRoYXQgcHJldmVudHMgdGhlIEVBUEQNCj4gPiB0b2dnbGUgYXQgcG93ZXIgc2F2
-aW5nLg0KPiANCj4gR290IGl0LCBidXQgZG9lcyBpdCBwcmV2ZW50IE5vZGVzIG9yIHRoZSB3aG9s
-ZSBjb2RlYyBmcm9tIGVudGVyaW5nIEQzPw0KPiANCj4gSGVyZSB0aGUgRUFEUCBpcyBsb3csIGl0
-IGlzIG5vdCBiZWNhdXNlIHRoZSBzZXRfZWFwZCgpIGlzIGNhbGxlZCwgSSBjaGVja2VkIHRoZQ0K
-PiBFQVBEIG9mIGFsbCBub2RlcywgdGhleSBhcmUgYWxsIDB4MiBhbGwgdGhlIHRpbWUuIEFuZCBw
-YXRjaF9yZWFsdGVrIGFscmVhZHkgc2V0DQo+IHRoZSBvd25fZWFwZF9jdGw9MSwgYW5kIHRoZSBO
-SUQgZm9yIHNwZWFrZXIgaXMgMHgxNiwgaXQgaXMgbm90IGluIHRoZToNCj4gDQo+ICDCoMKgwqAg
-c3RhdGljIGhkYV9uaWRfdCBwaW5zW10gPSB7DQo+ICDCoMKgwqAgwqDCoMKgIDB4MGYsIDB4MTAs
-IDB4MTQsIDB4MTUsIDB4MTcsIDANCj4gIMKgwqDCoCB9Ow0KPiANCj4gU28gdGhlIGRyaXZlciB3
-aWxsIG5vdCBzZXQgdGhlIGVhcGQgdG8gMCBmb3Igc3BlYWtlci4gSWYga2VlcF9lYXBkX29uPTEg
-Y2FuDQo+IHByZXZlbnQgY29kZWMvbm9kZXMgZnJvbSBlbnRlcmluZyBEMywgbWF5YmUgaXQgd2ls
-bCBoZWxwLg0KPiANCj4gVGhhbmtzLA0KPiANCj4gSHVpLg0KPiANCj4gPg0KPiA+DQo+ID4gVGFr
-YXNoaQ0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-DQo+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QNCj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcNCj4gPiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwNCj4gDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1l
-bnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: YueHaibing <yuehaibing@huawei.com>
+
+Fix sparse warnings:
+
+sound/soc/atmel/tse850-pcm5142.c:120:5: warning: symbol 'tse850_get_mix' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:132:5: warning: symbol 'tse850_put_mix' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:154:5: warning: symbol 'tse850_get_ana' was not declared. Should it be static?
+sound/soc/atmel/tse850-pcm5142.c:187:5: warning: symbol 'tse850_put_ana' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/atmel/tse850-pcm5142.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
+index 214adca..ae44518 100644
+--- a/sound/soc/atmel/tse850-pcm5142.c
++++ b/sound/soc/atmel/tse850-pcm5142.c
+@@ -117,8 +117,8 @@ static int tse850_put_mux2(struct snd_kcontrol *kctrl,
+ 	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
+ }
+ 
+-int tse850_get_mix(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_get_mix(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -129,8 +129,8 @@ int tse850_get_mix(struct snd_kcontrol *kctrl,
+ 	return 0;
+ }
+ 
+-int tse850_put_mix(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_put_mix(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -151,8 +151,8 @@ int tse850_put_mix(struct snd_kcontrol *kctrl,
+ 	return 1;
+ }
+ 
+-int tse850_get_ana(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_get_ana(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -184,8 +184,8 @@ int tse850_get_ana(struct snd_kcontrol *kctrl,
+ 	return 0;
+ }
+ 
+-int tse850_put_ana(struct snd_kcontrol *kctrl,
+-		   struct snd_ctl_elem_value *ucontrol)
++static int tse850_put_ana(struct snd_kcontrol *kctrl,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
+ 	struct snd_soc_card *card = dapm->card;
+-- 
+2.7.4
