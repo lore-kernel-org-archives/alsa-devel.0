@@ -1,63 +1,42 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Dell AIO speaker pop noise
-Date: Tue, 16 Apr 2019 10:01:31 +0200
-Message-ID: <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
-References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] ACPI / device_sysfs: change _ADR representation to 64 bits
+Date: Tue, 16 Apr 2019 10:09:57 +0200
+Message-ID: <CAJZ5v0jOkQ7aWn6B_yVTYd7y+78mpGSzBoGuWe3uCdzDRNE94Q@mail.gmail.com>
+References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com> <20190416032923.GQ28103@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 690CAF896E2
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 10:01:36 +0200 (CEST)
-In-Reply-To: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kailang <kailang@realtek.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: hwang4 <hui.wang@canonical.com>, "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190416032923.GQ28103@vkoul-mobl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, jank@cadence.com, Joe Perches <joe@perches.com>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 16. 04. 19 v 9:30 Kailang napsal(a):
-> Hi Takashi,
-> 
-> Issue 1: The noise keeps occurring via speaker when Headset is plugged in.
-> Issue 2: The humming noise is occuring when switching to sound of settings.
-> 	 The noise will be stopped when switching to other options of settings.
-> Issue 3: The popping noise occurred for one second when plugged in and removed the headset.
-> 
-> This patch will solve this three issues.
+On Tue, Apr 16, 2019 at 5:29 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
+> > Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> > assume the _ADR field is 64 bits.
+> >
+> > _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> > released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> > struct acpi_device_info.
+> >
+> > This patch bumps the representation used for sysfs to 64 bits.
+> >
+> > Example with a SoundWire device, the results show the complete
+> > vendorID and linkID which were omitted before:
+> >
+> > Before:
+> > $ more /sys/bus/acpi/devices/device\:38/adr
+> > 0x5d070000
+> > After:
+> > $ more /sys/bus/acpi/devices/device\:38/adr
+> > 0x000010025d070000
+>
+> This looks fine but the sysfs file is an ABI. Not sure if we can modify
+> the value returned this way.. Though it should not cause userspace
+> reading 32bits to break...
 
-Hi,
-
-  could you explain, why the power-save function causes this behaviour? Can we do something else than turning off the power-save codec settings to avoid such noises? I have this question because it's
-really easy to disable something, but I feel that the culprit of the noises might be just the wrong codec settings. I guess that you have probably full documentation for the codec and probably for the
-hardware, so it might be nice to find the real culprit.
-
-			Thank you,
-				Jaroslav
-
-> 
-> BR,
-> Kailang
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Well, IIRC using "08" instead of "016" in the format field would
+preserve the existing behavior for 32-bit values, wouldn't it?
