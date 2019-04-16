@@ -1,97 +1,123 @@
-From: Pshou <pshou@realtek.com>
-Subject: =?utf-8?b?5Zue6KaGOiBObyBzb3VuZCBvdXRwdXQgb24gWmVu?=
-	=?utf-8?q?_AIO_27_Z272SD=5FZ272SD?=
-Date: Mon, 15 Apr 2019 23:59:38 +0000
-Message-ID: <126650E837C1704F92183C9FD34C1CCE18DA51AB@RTITMBSVM07.realtek.com.tw>
-References: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
- <6FAB7C47BCF00940BB0999A99BE3547A18DBB13A@RTITMBSVM07.realtek.com.tw>
- <126650E837C1704F92183C9FD34C1CCE18DA5106@RTITMBSVM07.realtek.com.tw>
- <CAGGMHBP=4RBXPvMzLgi7yWaxsc=wvENPLdidugFvtzVBBPzdtw@mail.gmail.com>
- <CAGGMHBOGDUnMewBTrZgoBKFk_A4sNF4fEXwfH9Ay8SNTzjy0-g@mail.gmail.com>
+From: syzbot <syzbot+90cf07b4a2473213d16b@syzkaller.appspotmail.com>
+Subject: Re: BUG: corrupted list in snd_info_free_entry
+Date: Mon, 15 Apr 2019 17:29:06 -0700
+Message-ID: <000000000000515bbf05869adb3f@google.com>
+References: <00000000000083d0ba058653d9c2@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A415F896E2
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 01:59:48 +0200 (CEST)
-In-Reply-To: <CAGGMHBOGDUnMewBTrZgoBKFk_A4sNF4fEXwfH9Ay8SNTzjy0-g@mail.gmail.com>
-Content-Language: zh-TW
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Derek Gordon <derek@derekgordon.com>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>, CHLin <doomko@realtek.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <00000000000083d0ba058653d9c2@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel-owner@alsa-project.org, alsa-devel@alsa-project.org, andreyknvl@google.com, joe@perches.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-QWRkZWQgQ0hMaW4NCg0K5a+E5Lu26ICFOiBEZXJlayBHb3Jkb24gPGRlcmVrQGRlcmVrZ29yZG9u
-LmNvbT4NCuWvhOS7tuaXpeacnzogMjAxOeW5tDTmnIgxM+aXpSAyMTo1NQ0K5pS25Lu26ICFOiBQ
-c2hvdSA8cHNob3VAcmVhbHRlay5jb20+DQrlia/mnKw6IEthaWxhbmcgPGthaWxhbmdAcmVhbHRl
-ay5jb20+OyBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+OyBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHRpd2FpQHN1c2UuY29tDQrkuLvml6g6IFJlOiBObyBz
-b3VuZCBvdXRwdXQgb24gWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNEDQoNCk9rYXksIGp1c3QgZm9y
-IHNhZmUga2VlcGluZyBoZXJlIEkgdGVzdGVkIHRoaXMgb24gbWFpbmxpbmUgNS4xIGFzIHdlbGwu
-ICBTYW1lIHJlc3VsdHMuICBObyBhdWRpbyBmcm9tIGFueSBzb3VyY2VzLg0KDQpPbiBTYXQsIEFw
-ciAxMywgMjAxOSBhdCA3OjM5IEFNIERlcmVrIEdvcmRvbiA8ZGVyZWtAZGVyZWtnb3Jkb24uY29t
-PG1haWx0bzpkZXJla0BkZXJla2dvcmRvbi5jb20+PiB3cm90ZToNCkkgaW5zdGFsbGVkIGFsc2Et
-dG9vbHMgdmlhIHJlcG8uDQoNCkkgYm9vdGVkIHRoZSBsYXRlc3QgNC4xOC54IGtlcm5lbCBmcm9t
-IFVidW50dS4NCg0Kcm9vdEBkZXJlay1aZW4tQUlPLTI3LVoyNzJTRDovaG9tZS9kZXJlayMgaGRh
-LXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MjAgU0VUX0NPRUZfSU5ERVggMHgzNQ0KbmlkID0gMHgy
-MCwgdmVyYiA9IDB4NTAwLCBwYXJhbSA9IDB4MzUNCnZhbHVlID0gMHgwDQpyb290QGRlcmVrLVpl
-bi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVrIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgy
-MCBTRVRfUFJPQ19DT0VGIDB4ODk2OCAgLy8gc2V0IFBEQiBmbG9hdGluZw0KbmlkID0gMHgyMCwg
-dmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODk2OA0KdmFsdWUgPSAweDANCnJvb3RAZGVyZWstWmVu
-LUFJTy0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjIGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDVi
-IFNFVF9DT0VGX0lOREVYIDB4MDENCm5pZCA9IDB4NWIsIHZlcmIgPSAweDUwMCwgcGFyYW0gPSAw
-eDENCnZhbHVlID0gMHgwDQpyb290QGRlcmVrLVplbi1BSU8tMjctWjI3MlNEOi9ob21lL2RlcmVr
-IyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHg1YiBTRVRfUFJPQ19DT0VGIDB4ODU0MA0Kbmlk
-ID0gMHg1YiwgdmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODU0MA0KdmFsdWUgPSAweDANCnJvb3RA
-ZGVyZWstWmVuLUFJTy0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjDQoNCk5vIGF1ZGlvIGZvciBZb3V0
-dWJlLmNvbSwgbG9jYWwgTVAzLCBvciB0aGUgInRlc3Qgc3BlYWtlcnMiIG9wdGlvbiBpbiBVYnVu
-dHUgc2V0dGluZ3MuDQoNCg0KDQoNCk9uIFRodSwgQXByIDExLCAyMDE5IGF0IDk6MzYgUE0gUHNo
-b3UgPHBzaG91QHJlYWx0ZWsuY29tPG1haWx0bzpwc2hvdUByZWFsdGVrLmNvbT4+IHdyb3RlOg0K
-SGksDQoNCjEuIFVzZSBXaW5kb3dzIHRvIGJvb3QgdG8gc2VlIGlmIHRoZXJlIGlzIG5vIHNvdW5k
-Pw0KSWYgdGhlcmUgaXMgbm8gc291bmQgaW4gV2luZG93cywgaXQgbWF5IGJlIGEgcHJvYmxlbSB3
-aXRoIGNvZGVjIG9yIGFtcCwgdG8gYmUgc2VudCBiYWNrIHRvIEFTVVMgZm9yIHJlcGFpci4NCg0K
-Mi4gUGxlYXNlIHR1cm4gb24gdGhlIGZvbGxvd2luZyB2YWx1ZXMgd2l0aCBoZGEtdmVyYiAoYWxz
-YS10b29sIC0+IGhkYS12ZXJiKQ0KLi9oYWQtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMCBTRVRf
-Q09FRl9JTkRFWCAweDM1DQouL2hhZC12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwIFNFVF9QUk9D
-X0NPRUYgMHg4OTY4ICAvLyBzZXQgUERCIGZsb2F0aW5nDQouL2hhZC12ZXJiIC9kZXYvc25kL2h3
-QzBEMCAweDViIFNFVF9DT0VGX0lOREVYIDB4MDENCi4vaGFkLXZlcmIgL2Rldi9zbmQvaHdDMEQw
-IDB4NWIgU0VUX1BST0NfQ09FRiAweDg1NDANCg0KUGxlYXNlIHR1cm4gb24gdGhlIHNvdW5kKG1p
-eGVyKSwgcGxheSBhIHNvbmcuDQpJZiB0aGVyZSBpcyBhIHNvdW5kLiBDYW4gS2FpLUhlbmcgaGVs
-cCBtZSBnZXQgYSBQQVRDSCBmaWxlLg0KDQpCZXN0IHJlZ2FyZHMNCnBzaG91DQoNCi0tLS0t5Y6f
-5aeL6YO15Lu2LS0tLS0NCuWvhOS7tuiAhTogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbTxt
-YWlsdG86a2FpbGFuZ0ByZWFsdGVrLmNvbT4+DQrlr4Tku7bml6XmnJ86IDIwMTnlubQ05pyIM+aX
-pSAxNzoxMg0K5pS25Lu26ICFOiBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNh
-bC5jb208bWFpbHRvOmthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNvbT4+OyBhbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmc8bWFpbHRvOmFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4NCuWJr+ac
-rDogdGl3YWlAc3VzZS5jb208bWFpbHRvOnRpd2FpQHN1c2UuY29tPjsgRGVyZWsgR29yZG9uIDxk
-ZXJla0BkZXJla2dvcmRvbi5jb208bWFpbHRvOmRlcmVrQGRlcmVrZ29yZG9uLmNvbT4+OyBQc2hv
-dSA8cHNob3VAcmVhbHRlay5jb208bWFpbHRvOnBzaG91QHJlYWx0ZWsuY29tPj4NCuS4u+aXqDog
-UkU6IE5vIHNvdW5kIG91dHB1dCBvbiBaZW4gQUlPIDI3IFoyNzJTRF9aMjcyU0QNCg0KQWRkIFBz
-aG91Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogS2FpLUhlbmcgRmVuZyA8
-a2FpLmhlbmcuZmVuZ0BjYW5vbmljYWwuY29tPG1haWx0bzprYWkuaGVuZy5mZW5nQGNhbm9uaWNh
-bC5jb20+Pg0KU2VudDogV2VkbmVzZGF5LCBBcHJpbCAzLCAyMDE5IDQ6MzMgUE0NClRvOiBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmc8bWFpbHRvOmFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-Zz4NCkNjOiB0aXdhaUBzdXNlLmNvbTxtYWlsdG86dGl3YWlAc3VzZS5jb20+OyBLYWlsYW5nIDxr
-YWlsYW5nQHJlYWx0ZWsuY29tPG1haWx0bzprYWlsYW5nQHJlYWx0ZWsuY29tPj47IERlcmVrIEdv
-cmRvbiA8ZGVyZWtAZGVyZWtnb3Jkb24uY29tPG1haWx0bzpkZXJla0BkZXJla2dvcmRvbi5jb20+
-Pg0KU3ViamVjdDogTm8gc291bmQgb3V0cHV0IG9uIFplbiBBSU8gMjcgWjI3MlNEX1oyNzJTRA0K
-DQpIaSwNCg0KWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNEIGRvZXNu4oCZdCBoYXZlIHNvdW5kIG91
-dHB1dCBbMV0uDQoNCldl4oCZdmUgdHJpZWQgIm1vZGVsPWFsYzI1Ni1hc3VzLWFpb+KAnSBidXQg
-aXQgZG9lc27igJl0IHdvcmsuDQoNClNlZW1zIGxpa2UgdGhpcyBwbGF0Zm9ybSBuZWVkcyBzb21l
-dGhpbmcgZGlmZmVyZW50IHRoYW4gQUxDMjU2X0ZJWFVQX0FTVVNfQUlPX0dQSU8yLg0KDQpbMV0g
-aHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvYnVncy8xODIxOTM2DQoNCkthaS1IZW5nDQoNCi0t
-LS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMg
-ZS1tYWlsLg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+syzbot has found a reproducer for the following crash on:
+
+HEAD commit:    9a33b369 usb-fuzzer: main usb gadget fuzzer driver
+git tree:       https://github.com/google/kasan/tree/usb-fuzzer
+console output: https://syzkaller.appspot.com/x/log.txt?x=111b89d3200000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=23e37f59d94ddd15
+dashboard link: https://syzkaller.appspot.com/bug?extid=90cf07b4a2473213d16b
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1611baf3200000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1665618f200000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+90cf07b4a2473213d16b@syzkaller.appspotmail.com
+
+snd_usb_toneport 5-1:0.0: set_interface failed
+list_del corruption. prev->next should be ffff8880a78a4868, but was  
+ffff88821b198ea8
+snd_usb_toneport 4-1:0.0: Line 6 POD Studio UX2 now disconnected
+------------[ cut here ]------------
+snd_usb_toneport 5-1:0.0: Line 6 POD Studio UX2 now disconnected
+kernel BUG at lib/list_debug.c:51!
+invalid opcode: 0000 [#1] SMP KASAN PTI
+snd_usb_toneport: probe of 5-1:0.0 failed with error -71
+CPU: 1 PID: 537 Comm: kworker/1:3 Not tainted 5.1.0-rc4-319354-g9a33b36 #3
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+snd_usb_toneport: probe of 4-1:0.0 failed with error -71
+RIP: 0010:__list_del_entry_valid.cold+0xf/0x55 lib/list_debug.c:51
+Code: e8 69 e7 e9 fd 0f 0b 48 89 f1 48 c7 c7 00 94 b3 8e 4c 89 e6 e8 55 e7  
+e9 fd 0f 0b 48 89 ee 48 c7 c7 a0 95 b3 8e e8 44 e7 e9 fd <0f> 0b 4c 89 ea  
+48 89 ee 48 c7 c7 e0 94 b3 8e e8 30 e7 e9 fd 0f 0b
+RSP: 0018:ffff88809eddf118 EFLAGS: 00010282
+RAX: 0000000000000054 RBX: ffff8880a78a4770 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815b1e42 RDI: ffffed1013dbbe15
+RBP: ffff8880a78a4868 R08: 0000000000000054 R09: ffffed1015a24fc9
+R10: ffffed1015a24fc8 R11: ffff8880ad127e47 R12: ffff88809cafbea8
+usb 5-1: USB disconnect, device number 41
+R13: ffff8880a74abc18 R14: ffff8880a78a4770 R15: ffff8880a78a4858
+FS:  0000000000000000(0000) GS:ffff8880ad100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4fcd865000 CR3: 00000000945aa000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+usb 4-1: USB disconnect, device number 41
+Call Trace:
+  __list_del_entry include/linux/list.h:117 [inline]
+  list_del include/linux/list.h:125 [inline]
+  snd_info_free_entry+0x137/0x340 sound/core/info.c:795
+  snd_info_card_free+0x43/0x90 sound/core/info.c:606
+  snd_card_do_free sound/core/init.c:469 [inline]
+  release_card_device+0x8b/0x100 sound/core/init.c:156
+  device_release+0x7d/0x210 drivers/base/core.c:1064
+  kobject_cleanup lib/kobject.c:662 [inline]
+  kobject_release lib/kobject.c:691 [inline]
+  kref_put include/linux/kref.h:67 [inline]
+  kobject_put+0x1df/0x4f0 lib/kobject.c:708
+  put_device+0x21/0x30 drivers/base/core.c:2205
+  snd_card_free_when_closed+0x3a/0x50 sound/core/init.c:493
+  line6_disconnect.cold+0xa3/0xbc sound/usb/line6/driver.c:833
+  line6_probe+0xb23/0x1150 sound/usb/line6/driver.c:799
+  usb_probe_interface+0x31d/0x820 drivers/usb/core/driver.c:361
+  really_probe+0x2da/0xb10 drivers/base/dd.c:509
+  driver_probe_device+0x21d/0x350 drivers/base/dd.c:671
+  __device_attach_driver+0x1d8/0x290 drivers/base/dd.c:778
+  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:454
+  __device_attach+0x223/0x3a0 drivers/base/dd.c:844
+  bus_probe_device+0x1f1/0x2a0 drivers/base/bus.c:514
+  device_add+0xad2/0x16e0 drivers/base/core.c:2106
+  usb_set_configuration+0xdf7/0x1740 drivers/usb/core/message.c:2021
+  generic_probe+0xa2/0xda drivers/usb/core/generic.c:210
+  usb_probe_device+0xc0/0x150 drivers/usb/core/driver.c:266
+  really_probe+0x2da/0xb10 drivers/base/dd.c:509
+  driver_probe_device+0x21d/0x350 drivers/base/dd.c:671
+  __device_attach_driver+0x1d8/0x290 drivers/base/dd.c:778
+  bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:454
+  __device_attach+0x223/0x3a0 drivers/base/dd.c:844
+  bus_probe_device+0x1f1/0x2a0 drivers/base/bus.c:514
+  device_add+0xad2/0x16e0 drivers/base/core.c:2106
+  usb_new_device.cold+0x537/0xccf drivers/usb/core/hub.c:2534
+  hub_port_connect drivers/usb/core/hub.c:5089 [inline]
+  hub_port_connect_change drivers/usb/core/hub.c:5204 [inline]
+  port_event drivers/usb/core/hub.c:5350 [inline]
+  hub_event+0x138e/0x3b00 drivers/usb/core/hub.c:5432
+  process_one_work+0x90f/0x1580 kernel/workqueue.c:2269
+  process_scheduled_works kernel/workqueue.c:2331 [inline]
+  worker_thread+0x7b0/0xe20 kernel/workqueue.c:2417
+  kthread+0x313/0x420 kernel/kthread.c:253
+  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
+Modules linked in:
+---[ end trace f69ca8f71496c60d ]---
+RIP: 0010:__list_del_entry_valid.cold+0xf/0x55 lib/list_debug.c:51
+snd_usb_toneport 1-1:0.0: set_interface failed
+Code: e8 69 e7 e9 fd 0f 0b 48 89 f1 48 c7 c7 00 94 b3 8e 4c 89 e6 e8 55 e7  
+e9 fd 0f 0b 48 89 ee 48 c7 c7 a0 95 b3 8e e8 44 e7 e9 fd <0f> 0b 4c 89 ea  
+48 89 ee 48 c7 c7 e0 94 b3 8e e8 30 e7 e9 fd 0f 0b
+RSP: 0018:ffff88809eddf118 EFLAGS: 00010282
+snd_usb_toneport 1-1:0.0: Line 6 POD Studio UX2 now disconnected
+RAX: 0000000000000054 RBX: ffff8880a78a4770 RCX: 0000000000000000
+snd_usb_toneport: probe of 1-1:0.0 failed with error -71
+RDX: 0000000000000000 RSI: ffffffff815b1e42 RDI: ffffed1013dbbe15
+RBP: ffff8880a78a4868 R08: 0000000000000054 R09: ffffed1015a24fc9
+R10: ffffed1015a24fc8 R11: ffff8880ad127e47 R12: ffff88809cafbea8
+R13: ffff8880a74abc18 R14: ffff8880a78a4770 R15: ffff8880a78a4858
+FS:  0000000000000000(0000) GS:ffff8880ad100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+usb 1-1: USB disconnect, device number 42
+CR2: 00007f4fcd865000 CR3: 000000001167a000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
