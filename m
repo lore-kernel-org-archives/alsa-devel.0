@@ -1,55 +1,91 @@
-From: Jan Kotas <jank@cadence.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: cdns: Fix compilation error on
- arm64
-Date: Tue, 16 Apr 2019 08:43:53 +0000
-Message-ID: <F63978EE-8D0E-446C-BDAB-48B7F5FF7D82@global.cadence.com>
-References: <20190404081221.341-1-jank@cadence.com>
- <20190414094408.GF28103@vkoul-mobl>
- <8ba31402-b507-5060-76be-89a7ddaf7dca@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Dell AIO speaker pop noise
+Date: Tue, 16 Apr 2019 08:59:37 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A18DBBC48@RTITMBSVM07.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A18DBBB6E@RTITMBSVM07.realtek.com.tw>
+ <bc45619b-951a-f2c5-5b3c-9a51a21708f2@perex.cz>
+ <s5h8swajr70.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8ba31402-b507-5060-76be-89a7ddaf7dca@linux.intel.com>
-Content-Language: en-US
-Content-ID: <55E01CCD6BEDD446B95A2BC4D1F14312@namprd07.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vkoul@kernel.org>
-Cc: Jan Kotas <jank@cadence.com>, "sanyog.r.kale@intel.com" <sanyog.r.kale@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9189F89614
+ for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 10:59:44 +0200 (CEST)
+In-Reply-To: <s5h8swajr70.wl-tiwai@suse.de>
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: hwang4 <hui.wang@canonical.com>, "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiAxNCBBcHIgMjAxOSwgYXQgMTE6NDQsIFZpbm9kIEtvdWwgPHZrb3VsQGtlcm5lbC5vcmc+
-IHdyb3RlOg0KPiANCj4gDQo+IE9uIDA0LTA0LTE5LCAwOToxMiwgSmFuIEtvdGFzIHdyb3RlOg0K
-Pj4gT24gYXJtNjQgdGhlIGNhZGVuY2VfbWFzdGVyLmMgZmlsZSBkb2Vzbid0IGNvbXBpbGUuDQo+
-PiANCj4+IHJlYWRsIGFuZCB3cml0ZWwgYXJlIHVuZGVmaW5lZC4NCj4+IFRoaXMgcGF0Y2ggZml4
-ZXMgdGhhdCBieSBpbmNsdWRpbmcgaW8uaC4NCj4gDQo+IEFuZCBJIGNhbnQgdmVyaWZ5IHRoYXQg
-d2l0aG91dCBoYWNraW5nIGtjb25maWcgdG8gZm9yY2UgY29tcGlsZSB0aGUgbGliLg0KDQpJ4oCZ
-bSB3b3JraW5nIG9uIGEgbmV3IGRyaXZlciB3aGljaCB1c2VzIHRoZSBTT1VORFdJUkVfQ0FERU5D
-RToNCkhlcmXigJlzIGEgZGlmZiBvZiB0aGUgS2NvbmZpZywgaXTigJlzIGEgdmVyeSBlYXJseSBz
-dGFnZS4NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvc291bmR3aXJlL0tjb25maWcgYi9kcml2ZXJz
-L3NvdW5kd2lyZS9LY29uZmlnDQppbmRleCAxOWM4ZWZiOWEuLjkwZDU2OWUwMyAxMDA2NDQNCi0t
-LSBhL2RyaXZlcnMvc291bmR3aXJlL0tjb25maWcNCisrKyBiL2RyaXZlcnMvc291bmR3aXJlL0tj
-b25maWcNCkBAIC0zNCw0ICszNCwxMCBAQCBjb25maWcgU09VTkRXSVJFX0lOVEVMDQogICAgICBl
-bmFibGUgdGhpcyBjb25maWcgb3B0aW9uIHRvIGdldCB0aGUgU291bmRXaXJlIHN1cHBvcnQgZm9y
-IHRoYXQNCiAgICAgIGRldmljZS4NCg0KK2NvbmZpZyBTT1VORFdJUkVfQ0FERU5DRV9QTEFURk9S
-TQ0KKyAgIHRyaXN0YXRlICJTb3VuZFdpcmUgQ2FkZW5jZSBQbGF0Zm9ybSBkcml2ZXIiDQorICAg
-c2VsZWN0IFNPVU5EV0lSRV9DQURFTkNFDQorICAgc2VsZWN0IFNPVU5EV0lSRV9CVVMNCisgICBo
-ZWxwDQorICAgICBTb3VuZFdpcmUgQ2FkZW5jZSBQbGF0Zm9ybSBkcml2ZXJzLg0KIGVuZGlmDQoN
-CkkgaGF2ZW7igJl0IG1vZGlmaWVkIGFueSBvZiB0aGUgZXhpc3RpbmcgbGluZXMuIA0KU09VTkRX
-SVJFX0NBREVOQ0UgZG9lc27igJl0IGRlcGVuZCBvbiBhbnl0aGluZywgZXhjZXB0IFNPVU5EV0lS
-RSwNCnNvIGl0IHNob3VsZCB3b3JrLCB3aGVuIHNlbGVjdGVkLg0KDQo+IE9uIDE1IEFwciAyMDE5
-LCBhdCAxNDo0MSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxp
-bnV4LmludGVsLmNvbT4gd3JvdGU6DQo+IA0KPiANCj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9z
-b3VuZHdpcmUvY2FkZW5jZV9tYXN0ZXIuYyBiL2RyaXZlcnMvc291bmR3aXJlL2NhZGVuY2VfbWFz
-dGVyLmMNCj4+PiBpbmRleCBjYjZhMzMxZjQuLjBiNWJjYzIwOSAxMDA2NDQNCj4+PiAtLS0gYS9k
-cml2ZXJzL3NvdW5kd2lyZS9jYWRlbmNlX21hc3Rlci5jDQo+Pj4gKysrIGIvZHJpdmVycy9zb3Vu
-ZHdpcmUvY2FkZW5jZV9tYXN0ZXIuYw0KPj4+IEBAIC05LDYgKzksNyBAQA0KPj4+ICAjaW5jbHVk
-ZSA8bGludXgvZGVsYXkuaD4NCj4+PiAgI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPg0KPj4+ICAj
-aW5jbHVkZSA8bGludXgvaW50ZXJydXB0Lmg+DQo+Pj4gKyNpbmNsdWRlIDxsaW51eC9pby5oPg0K
-Pj4gV2h5IG5vdCBhZGQgYXNtL2lvLmggd2hpY2ggaXMgdGhlIGhlYWRlciB0aGF0IGFjdHVhbGx5
-IGRlZmluZXMNCj4+IHJlYWRsL3dyaXRlbD8NCj4gDQo+IFRoZSB2YXN0IG1ham9yaXR5IG9mIGtl
-cm5lbCBjb2RlIHVzZXMgbGludXgvaW8uaC4NCj4gV2UgdXNlIGxpbnV4L2lvLmggZm9yIFNPRiBh
-cyB3ZWxsLg0KDQpJIHVzZSBsaW51eC9pby5oIGluIG15IG90aGVyIGRyaXZlcnMgdG9vLg0KDQo+
-IA0KPj4+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+Pj4gICNpbmNsdWRlIDxsaW51eC9t
-b2RfZGV2aWNldGFibGUuaD4NCj4+PiAgI2luY2x1ZGUgPGxpbnV4L3NvdW5kd2lyZS9zZHdfcmVn
-aXN0ZXJzLmg+DQo+Pj4gLS0gDQo+Pj4gMi4xNS4wDQoNCg==
+
+
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Tuesday, April 16, 2019 4:22 PM
+> To: Jaroslav Kysela <perex@perex.cz>
+> Cc: Kailang <kailang@realtek.com>; hwang4 <hui.wang@canonical.com>;
+> (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> Subject: Re: [alsa-devel] Dell AIO speaker pop noise
+> 
+> On Tue, 16 Apr 2019 10:01:31 +0200,
+> Jaroslav Kysela wrote:
+> >
+> > Dne 16. 04. 19 v 9:30 Kailang napsal(a):
+> > > Hi Takashi,
+> > >
+> > > Issue 1: The noise keeps occurring via speaker when Headset is plugged in.
+> > > Issue 2: The humming noise is occuring when switching to sound of
+> settings.
+> > > 	 The noise will be stopped when switching to other options of settings.
+> > > Issue 3: The popping noise occurred for one second when plugged in and
+> removed the headset.
+> > >
+> > > This patch will solve this three issues.
+> >
+> > Hi,
+> >
+> >   could you explain, why the power-save function causes this
+> > behaviour? Can we do something else than turning off the power-save
+> > codec settings to avoid such noises? I have this question because it's really
+> easy to disable something, but I feel that the culprit of the noises might be just
+> the wrong codec settings. I guess that you have probably full documentation
+> for the codec and probably for the hardware, so it might be nice to find the
+> real culprit.
+> 
+> Note that power_save_node=0 doesn't mean that the whole power saving is
+> disabled.  It disables the fine-grained power saving, i.e. powering down the
+> unused widget nodes.
+> 
+> If so, I wonder whether this might be about the default pin-shutup behavior.  I
+> improved the click noise problem on my Dell desktop by disabling the pin
+> shutup.  See commit c0ca5eced222.
+> Kailang, Hui, did you try to add the chain to ALC269_FIXUP_NO_SHUTUP?
+> 
+This noise was not happen on poweroff.
+AIO use external AMP. So, it will be need to have a reference voltage via codec.
+So, Pin-ctls was not be 0. I apply option spec->gen.suppress_auto_mute = 1 to avoid that. 
+Internal SPK PIN also don't enter to D3. But I find it just only happen on ALC274 family codecs.
+ALC274 pin enter to D3. Pin-ctls also be 0. So, power_save_node=0 will let PIN to D0.
+
+power_save = 0 it also could solve issue.
+
+
+
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ------Please consider the environment before printing this e-mail.
