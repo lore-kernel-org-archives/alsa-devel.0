@@ -1,83 +1,80 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/7][RFC] ASoC: modern style CPU
-Date: Mon, 15 Apr 2019 21:48:23 -0500
-Message-ID: <f55ad838-1b1f-26c1-57a5-bf11937156fb@linux.intel.com>
-References: <87zhp144vs.wl-kuninori.morimoto.gx@renesas.com>
- <20190412115619.GK6909@sirena.org.uk>
- <87h8ayepjd.wl-kuninori.morimoto.gx@renesas.com>
- <87ftqieo0h.wl-kuninori.morimoto.gx@renesas.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] ACPI / device_sysfs: change _ADR representation to 64
+ bits
+Date: Tue, 16 Apr 2019 08:59:23 +0530
+Message-ID: <20190416032923.GQ28103@vkoul-mobl>
+References: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91010F896E2
- for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2019 04:48:26 +0200 (CEST)
-In-Reply-To: <87ftqieo0h.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20190415151857.25531-1-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, Erik Schmauss <erik.schmauss@intel.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-> I know you are already working for it for Intel
+On 15-04-19, 10:18, Pierre-Louis Bossart wrote:
+> Standards such as the MIPI DisCo for SoundWire 1.0 specification
+> assume the _ADR field is 64 bits.
 > 
-> 	https://github.com/plbossart/sound/commits/fix/codec-legacy-dai
+> _ADR is defined as an "Integer" represented as 64 bits since ACPI 2.0
+> released in 2002. The low levels already use _ADR as 64 bits, e.g. in
+> struct acpi_device_info.
 > 
-> and, it will be conflict to my posted patch style.
+> This patch bumps the representation used for sysfs to 64 bits.
 > 
-> 	https://patchwork.kernel.org/patch/10888741/
-> 	https://patchwork.kernel.org/patch/10888745/
+> Example with a SoundWire device, the results show the complete
+> vendorID and linkID which were omitted before:
 > 
-> So, I can avoid to posting patch for Intel,
-> then, you need to update it again for modern style CPU.
-> Or, I can update Intel by using above macro.
-> What is your opinion ?
+> Before:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x5d070000
+> After:
+> $ more /sys/bus/acpi/devices/device\:38/adr
+> 0x000010025d070000
 
-I must admit I didn't look at the new style. With all due respect I am 
-not sold, it's becoming a lot less intuitive and readable, e.g.:
+This looks fine but the sysfs file is an ABI. Not sure if we can modify
+the value returned this way.. Though it should not cause userspace
+reading 32bits to break...
 
-+SND_SOC_DAI_LINK_CCP(aif1,
-+	SND_SOC_DAI_LINK(SDL_CPU("samsung-i2s.0")),
-+	SND_SOC_DAI_LINK(SDL_CODEC("wm8994-codec", "wm8994-aif1")),
-+	SND_SOC_DAI_LINK(SDL_PLATFORM("samsung-i2s.0")));
-+
-+SND_SOC_DAI_LINK_CCP(fifo_tx,
-+	SND_SOC_DAI_LINK(SDL_CPU("samsung-i2s-sec")),
-+	SND_SOC_DAI_LINK(SDL_CODEC("wm8994-codec", "wm8994-aif1")),
-+	SND_SOC_DAI_LINK(SDL_PLATFORM("samsung-i2s-sec")));
-+
-  static struct snd_soc_dai_link smdk_dai[] = {
-  	{ /* Primary DAI i/f */
-  		.name = "WM8994 AIF1",
-  		.stream_name = "Pri_Dai",
--		.cpu_dai_name = "samsung-i2s.0",
--		.codec_dai_name = "wm8994-aif1",
--		.platform_name = "samsung-i2s.0",
--		.codec_name = "wm8994-codec",
-  		.init = smdk_wm8994_init_paiftx,
-  		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-  			SND_SOC_DAIFMT_CBM_CFM,
-  		.ops = &smdk_ops,
-+		SND_SOC_LINK_CCP(aif1),
 
-is this really the new direction?
-Even the acronyms are not simple, it took me 15mn to figure out that CCP 
-stood for CPU/Codec/Platform and I couldn't figure out what SDL means. 
-The multiple repetitions of SND_SOC_DAI_LINK is also misleading, it's 
-just a property of the *same* dailink that you handle.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/acpi/device_sysfs.c | 3 +--
+>  include/acpi/acpi_bus.h     | 2 +-
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index 8940054d6250..f8d73ae42529 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -428,8 +428,7 @@ static ssize_t acpi_device_adr_show(struct device *dev,
+>  {
+>  	struct acpi_device *acpi_dev = to_acpi_device(dev);
+>  
+> -	return sprintf(buf, "0x%08x\n",
+> -		       (unsigned int)(acpi_dev->pnp.bus_address));
+> +	return sprintf(buf, "0x%016llx\n", acpi_dev->pnp.bus_address);
+>  }
+>  static DEVICE_ATTR(adr, 0444, acpi_device_adr_show, NULL);
+>  
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index f7981751ac77..9075e28ea60a 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -230,7 +230,7 @@ struct acpi_device_dir {
+>  /* Plug and Play */
+>  
+>  typedef char acpi_bus_id[8];
+> -typedef unsigned long acpi_bus_address;
+> +typedef u64 acpi_bus_address;
+>  typedef char acpi_device_name[40];
+>  typedef char acpi_device_class[20];
+>  
+> -- 
+> 2.17.1
 
-I am even more nervous since we have a need to explicitly some cpu and 
-codec dai names depending on quirks, with the additional abstraction 
-it'll become plain unreadable - or we need new helpers.
+-- 
+~Vinod
