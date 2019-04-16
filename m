@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: tse850: Make some functions static" to the asoc tree
+Subject: Applied "ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static" to the asoc tree
 Date: Tue, 16 Apr 2019 17:32:56 +0100 (BST)
-Message-ID: <20190416163256.92B9211281C6@debutante.sirena.org.uk>
-References: <20190416144718.25576-1-yuehaibing@huawei.com>
+Message-ID: <20190416163256.39C7A1127D45@debutante.sirena.org.uk>
+References: <20190416145251.16800-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190416144718.25576-1-yuehaibing@huawei.com>
+In-Reply-To: <20190416145251.16800-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, broonie@kernel.org, codrin.ciubotariu@microchip.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ludovic.desroches@microchip.comMark Brown <broonie@kernel.org>, nicolas.ferre@microchip.com, peda@axentia.se, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, colin.king@canonical.com, Hulk Robot <hulkci@huawei.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, maruthi.bayyavarapu@amd.com, perex@perex.cz, tiwai@suse.com, Vijendar.Mukunda@amd.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: tse850: Make some functions static
+   ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
 
 has been applied to the asoc tree at
 
@@ -37,72 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1de0914a6fe2dcc0c2cbe0a49a07c0506b97c405 Mon Sep 17 00:00:00 2001
+>From dc11607e151bd85b17c8e03d1bf823febd5e3c40 Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Tue, 16 Apr 2019 22:47:18 +0800
-Subject: [PATCH] ASoC: atmel: tse850: Make some functions static
+Date: Tue, 16 Apr 2019 22:52:51 +0800
+Subject: [PATCH] ASoC: amd: acp3x: Make acp3x_dai_i2s_ops static
 
-Fix sparse warnings:
+Fix sparse warning:
 
-sound/soc/atmel/tse850-pcm5142.c:120:5: warning: symbol 'tse850_get_mix' was not declared. Should it be static?
-sound/soc/atmel/tse850-pcm5142.c:132:5: warning: symbol 'tse850_put_mix' was not declared. Should it be static?
-sound/soc/atmel/tse850-pcm5142.c:154:5: warning: symbol 'tse850_get_ana' was not declared. Should it be static?
-sound/soc/atmel/tse850-pcm5142.c:187:5: warning: symbol 'tse850_put_ana' was not declared. Should it be static?
+sound/soc/amd/raven/acp3x-pcm-dma.c:561:24: warning:
+ symbol 'acp3x_dai_i2s_ops' was not declared. Should it be static?
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/tse850-pcm5142.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-index 214adcad5419..ae445184614a 100644
---- a/sound/soc/atmel/tse850-pcm5142.c
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -117,8 +117,8 @@ static int tse850_put_mux2(struct snd_kcontrol *kctrl,
- 	return snd_soc_dapm_put_enum_double(kctrl, ucontrol);
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 1a2e15ff1456..9775bda2a4ca 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -558,7 +558,7 @@ static int acp3x_dai_i2s_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
  }
  
--int tse850_get_mix(struct snd_kcontrol *kctrl,
--		   struct snd_ctl_elem_value *ucontrol)
-+static int tse850_get_mix(struct snd_kcontrol *kctrl,
-+			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
- 	struct snd_soc_card *card = dapm->card;
-@@ -129,8 +129,8 @@ int tse850_get_mix(struct snd_kcontrol *kctrl,
- 	return 0;
- }
- 
--int tse850_put_mix(struct snd_kcontrol *kctrl,
--		   struct snd_ctl_elem_value *ucontrol)
-+static int tse850_put_mix(struct snd_kcontrol *kctrl,
-+			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
- 	struct snd_soc_card *card = dapm->card;
-@@ -151,8 +151,8 @@ int tse850_put_mix(struct snd_kcontrol *kctrl,
- 	return 1;
- }
- 
--int tse850_get_ana(struct snd_kcontrol *kctrl,
--		   struct snd_ctl_elem_value *ucontrol)
-+static int tse850_get_ana(struct snd_kcontrol *kctrl,
-+			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
- 	struct snd_soc_card *card = dapm->card;
-@@ -184,8 +184,8 @@ int tse850_get_ana(struct snd_kcontrol *kctrl,
- 	return 0;
- }
- 
--int tse850_put_ana(struct snd_kcontrol *kctrl,
--		   struct snd_ctl_elem_value *ucontrol)
-+static int tse850_put_ana(struct snd_kcontrol *kctrl,
-+			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kctrl);
- 	struct snd_soc_card *card = dapm->card;
+-struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
++static struct snd_soc_dai_ops acp3x_dai_i2s_ops = {
+ 	.hw_params = acp3x_dai_i2s_hwparams,
+ 	.trigger   = acp3x_dai_i2s_trigger,
+ 	.set_fmt = acp3x_dai_i2s_set_fmt,
 -- 
 2.20.1
