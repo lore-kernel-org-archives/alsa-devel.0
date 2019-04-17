@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to module" to the asoc tree
+Subject: Applied "ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"" to the asoc tree
 Date: Wed, 17 Apr 2019 17:42:13 +0100 (BST)
-Message-ID: <20190417164213.C3B0C1128FC8@debutante.sirena.org.uk>
-References: <20190417152932.36436-1-yuehaibing@huawei.com>
+Message-ID: <20190417164213.952B91128FC7@debutante.sirena.org.uk>
+References: <20190417162628.10976-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190417152932.36436-1-yuehaibing@huawei.com>
+In-Reply-To: <20190417162628.10976-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, kaichieh.chuang@mediatek.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, matthias.bgg@gmail.com, perex@perex.cz, shunli.wang@mediatek.com, tiwai@suse.com
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to module
+   ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 04e7a02937527fd7edb1e493f04613f2340085dc Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Wed, 17 Apr 2019 23:29:32 +0800
-Subject: [PATCH] ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to
- module
+>From 7d8cdb818571ca019cf909bd737e549895b9a0d9 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 17 Apr 2019 17:26:28 +0100
+Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake "plalform" ->
+ "platform"
 
-During randconfig builds, I occasionally run into an invalid configuration
+There is a spelling mistake in a dev_err message. Fix it.
 
-WARNING: unmet direct dependencies detected for SND_SOC_TS3A227E
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=m]
-  Selected by [y]:
-  - SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_MT8183 [=y]
-
-sound/soc/codecs/ts3a227e.o: In function `ts3a227e_i2c_probe':
-ts3a227e.c:(.text+0x684): undefined reference to `__devm_regmap_init_i2c'
-sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_init':
-ts3a227e.c:(.init.text+0x18): undefined reference to `i2c_register_driver'
-sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_exit':
-ts3a227e.c:(.exit.text+0x14): undefined reference to `i2c_del_driver'
-
-This patch add I2C dependency to fix this.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: ebbddc75bbe8 ("ASoC: Mediatek: MT8183: Add machine driver with DA7219")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/hdmi-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 874404bcccfd..f70b7109f2b6 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -118,6 +118,7 @@ config SND_SOC_MT8183
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 35df73e42cbc..b9d9dde9fbaf 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -757,7 +757,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	dev_dbg(dev, "%s()\n", __func__);
  
- config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	tristate "ASoC Audio driver for MT8183 with MT6358 TS3A227E MAX98357A codec"
-+	depends on I2C
- 	depends on SND_SOC_MT8183
- 	select SND_SOC_MT6358
- 	select SND_SOC_MAX98357A
+ 	if (!hcd) {
+-		dev_err(dev, "%s: No plalform data\n", __func__);
++		dev_err(dev, "%s: No platform data\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.20.1
