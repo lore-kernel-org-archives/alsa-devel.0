@@ -1,69 +1,37 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: sound: Convert Allwinner SPDIF binding
- to YAML
-Date: Wed, 17 Apr 2019 11:04:22 -0500
-Message-ID: <CAL_Jsq+3rJqFjz-n3b3OUXRewpEh2-uFFDExnhEvPH0-t-gFJQ@mail.gmail.com>
-References: <4060ec46117ccf3cd643b8f1b9759ed44d38c5e7.1555330005.git-series.maxime.ripard@bootlin.com>
- <CAL_JsqLuMObaNzrRMGDi-m=0B8AA7CYqJkrvD_K3cTmH7rdE4Q@mail.gmail.com>
- <20190417064338.wuzjkixbg7noolwx@flea>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"
+Date: Wed, 17 Apr 2019 17:26:28 +0100
+Message-ID: <20190417162628.10976-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20190417064338.wuzjkixbg7noolwx@flea>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 17, 2019 at 1:43 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
->
-> Hi Rob,
->
-> On Tue, Apr 16, 2019 at 04:36:18PM -0500, Rob Herring wrote:
-> > On Mon, Apr 15, 2019 at 7:07 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
-> > >
-> > > The Allwinner SoCs feature an SPDIF controller across multiple SoC
-> > > generations.
-> > >
-> > > However, earlier generations were a bit simpler than the subsequent ones,
-> > > and for example would always have RX and TX capabilities, and no reset
-> > > lines.
-> > >
-> > > In order to express this, let's create two YAML schemas instead of the free
-> > > form text we had before.
-> >
-> > The only difference is 'reset' is required in one? Perhaps better to
-> > just not make 'reset' required til we figure out how to handle a
-> > conditional like this. Seems like we discussed this and I probably
-> > said to split things?
->
-> We indeed discussed this, and this was one of the solutions to support
-> this. I wanted to get the discussion started as of how exactly we want
-> to support this kind of construct.
->
-> I looked it up a bit, and it looks like json schema 7 introduces
-> conditionals that would allow us to deal with this nicely.
->
-> https://json-schema.org/understanding-json-schema/reference/conditionals.html
->
-> Is that something we can switch to while we have not a lot of schemas,
-> or would that require some significant work?
+From: Colin Ian King <colin.king@canonical.com>
 
-We need check if the json-schema library supports this yet. I think it
-should as there was an issue for it which is closed now.
+There is a spelling mistake in a dev_err message. Fix it.
 
-We'll then need to update the meta-schema and maybe the schema fixups
-to handle this case. We should have a test case in the library too.
-Test cases are important given that if you get schemas wrong, the
-result is silence.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/hdmi-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 35df73e42cbc..b9d9dde9fbaf 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -757,7 +757,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	dev_dbg(dev, "%s()\n", __func__);
+ 
+ 	if (!hcd) {
+-		dev_err(dev, "%s: No plalform data\n", __func__);
++		dev_err(dev, "%s: No platform data\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.20.1
