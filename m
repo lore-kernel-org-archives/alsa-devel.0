@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"" to the asoc tree
-Date: Wed, 17 Apr 2019 17:42:13 +0100 (BST)
-Message-ID: <20190417164213.952B91128FC7@debutante.sirena.org.uk>
-References: <20190417162628.10976-1-colin.king@canonical.com>
+Subject: Applied "ASoC: fsl_micfil: Remove set but not used variable 'osr'" to the asoc tree
+Date: Wed, 17 Apr 2019 17:42:14 +0100 (BST)
+Message-ID: <20190417164214.546461128FC8@debutante.sirena.org.uk>
+References: <20190417150915.37968-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190417162628.10976-1-colin.king@canonical.com>
+In-Reply-To: <20190417150915.37968-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, festevam@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgMark Brown <broonie@kernel.org>, nicoleotsuka@gmail.com, perex@perex.cz, timur@kernel.org, tiwai@suse.com, Xiubo.Lee@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: fix spelling mistake "plalform" -> "platform"
+   ASoC: fsl_micfil: Remove set but not used variable 'osr'
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,41 @@ to this mail.
 Thanks,
 Mark
 
->From 7d8cdb818571ca019cf909bd737e549895b9a0d9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 17 Apr 2019 17:26:28 +0100
-Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake "plalform" ->
- "platform"
+>From fd30e17e4f7a499635bd4e3a5d83534afcaaa9a8 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Wed, 17 Apr 2019 23:09:15 +0800
+Subject: [PATCH] ASoC: fsl_micfil: Remove set but not used variable 'osr'
 
-There is a spelling mistake in a dev_err message. Fix it.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+sound/soc/fsl/fsl_micfil.c: In function 'get_clk_div':
+sound/soc/fsl/fsl_micfil.c:154:6: warning: variable 'osr' set but not used [-Wunused-but-set-variable]
+
+It is never used since introduction in
+commit 47a70e6fc9a8 ("ASoC: Add MICFIL SoC Digital Audio Interface driver.")
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_micfil.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 35df73e42cbc..b9d9dde9fbaf 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -757,7 +757,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	dev_dbg(dev, "%s()\n", __func__);
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 40c07e756481..f7f2d29f1bfe 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -151,12 +151,9 @@ static inline int get_clk_div(struct fsl_micfil *micfil,
+ {
+ 	u32 ctrl2_reg;
+ 	long mclk_rate;
+-	int osr;
+ 	int clk_div;
  
- 	if (!hcd) {
--		dev_err(dev, "%s: No plalform data\n", __func__);
-+		dev_err(dev, "%s: No platform data\n", __func__);
- 		return -EINVAL;
- 	}
+ 	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+-	osr = 16 - ((ctrl2_reg & MICFIL_CTRL2_CICOSR_MASK)
+-		    >> MICFIL_CTRL2_CICOSR_SHIFT);
+ 
+ 	mclk_rate = clk_get_rate(micfil->mclk);
  
 -- 
 2.20.1
