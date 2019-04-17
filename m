@@ -1,180 +1,47 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH 2/2] dt-bindings: sound: sun6i-spdif: Document that the
- RX channel can be missing
-Date: Wed, 17 Apr 2019 20:24:41 +0200
-Message-ID: <20190417182441.gluqwwoziybabmz5@flea>
-References: <4060ec46117ccf3cd643b8f1b9759ed44d38c5e7.1555330005.git-series.maxime.ripard@bootlin.com>
- <e671a8289b7176b1eacb79edf443575f940f4a22.1555330005.git-series.maxime.ripard@bootlin.com>
- <CAL_Jsq+nv4fOBEVswtXFVvC_Va4suWa9F9H=E4Vt1xw6K7z-Ng@mail.gmail.com>
- <20190416071916.y5cdqhdlljcasbsn@flea>
- <CAL_JsqK6oyfdAPuivH7Z6tf1iqArbcbguRinOA3Xu0Lf=GOiGQ@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH -next] ASoC: fsl_micfil: Remove set but not used variable
+ 'osr'
+Date: Wed, 17 Apr 2019 11:35:19 -0700
+Message-ID: <20190417183518.GA5073@Asurada-Nvidia.nvidia.com>
+References: <20190417150915.37968-1-yuehaibing@huawei.com>
+ <CAEnQRZAug2kQoFTN6W47URBKwHcU5Zmmy=04smOtMomuzz6_TA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0824315503129564653=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAL_JsqK6oyfdAPuivH7Z6tf1iqArbcbguRinOA3Xu0Lf=GOiGQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAEnQRZAug2kQoFTN6W47URBKwHcU5Zmmy=04smOtMomuzz6_TA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@gmail.com>, Cosmin-Gabriel Samoila <gabrielcsmo@gmail.com>
+Cc: Yue Haibing <yuehaibing@huawei.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 17, 2019 at 06:25:11PM +0300, Daniel Baluta wrote:
 
---===============0824315503129564653==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="sxwgxl2i3bech6el"
-Content-Disposition: inline
+> Looks good to me. Just one question for Cosmin:
 
-
---sxwgxl2i3bech6el
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 16, 2019 at 04:50:35PM -0500, Rob Herring wrote:
-> On Tue, Apr 16, 2019 at 2:19 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
+> > diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+> > index 40c07e7..f7f2d29 100644
+> > --- a/sound/soc/fsl/fsl_micfil.c
+> > +++ b/sound/soc/fsl/fsl_micfil.c
+> > @@ -151,12 +151,9 @@ static inline int get_clk_div(struct fsl_micfil *micfil,
+> >  {
+> >         u32 ctrl2_reg;
+> >         long mclk_rate;
+> > -       int osr;
+> >         int clk_div;
 > >
-> > Hi Rob,
-> >
-> > On Mon, Apr 15, 2019 at 08:36:28PM -0500, Rob Herring wrote:
-> > > On Mon, Apr 15, 2019 at 7:07 AM Maxime Ripard <maxime.ripard@bootlin.com> wrote:
-> > > >
-> > > > Not all controllers using the A31 SPDIF binding actually have some RX
-> > > > capabilities, and therefore on some controllers we don't have the option to
-> > > > set an RX DMA channel.
-> > > >
-> > > > This was already done in the DTSI, but the binding itself was never
-> > > > updated.
-> > > >
-> > > > Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/sound/allwinner,sun6i-a31-spdif.yaml | 16 +++++++++++++---
-> > > >  1 file changed, 13 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun6i-a31-spdif.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun6i-a31-spdif.yaml
-> > > > index 7329d9fcf34c..800f794fafe0 100644
-> > > > --- a/Documentation/devicetree/bindings/sound/allwinner,sun6i-a31-spdif.yaml
-> > > > +++ b/Documentation/devicetree/bindings/sound/allwinner,sun6i-a31-spdif.yaml
-> > > > @@ -44,14 +44,24 @@ properties:
-> > > >        - const: spdif
-> > > >
-> > > >    dmas:
-> > > > +    minItems: 1
-> > > > +    maxItems: 2
-> > > >      items:
-> > > >        - description: RX DMA Channel
-> > > >        - description: TX DMA Channel
-> > > > +    description:
-> > > > +      Some controllers cannot receive but can only transmit data. In
-> > > > +      such a case, the RX DMA channel is to be omitted.
-> > >
-> > > Really, the schema is saying rx is optional, but it doesn't really
-> > > matter here as the schema for each item is just 'description'.
-> >
-> > What should I do here then?
-> >
-> > Remove the global description and leave only the one under items?
->
-> I think the opposite. Just drop 'items' and leave 'description'.
->
-> > Also, it won't necessarily match the dma-names (since rx might be
-> > there or not), does it matter or is it obvious enough that we don't
-> > care?
-> >
-> > > >    dma-names:
-> > > > -    items:
-> > > > -      - const: rx
-> > > > -      - const: tx
-> > > > +    minItems: 1
-> > > > +    maxItems: 2
-> > > > +    enum:
-> > > > +      - rx
-> > > > +      - tx
-> > > > +    description:
-> > > > +      Some controllers cannot receive but can only transmit data. In
-> > > > +      such a case, the RX name is to be omitted.
-> > >
-> > > Here it matters though. This would allow just 'tx', '"tx", "tx"', or
-> > > either order.
-> > >
-> > > You need something like this:
-> > >
-> > > oneOf:
-> > >   -  items:
-> > >        - const: rx
-> > >        - const: tx
-> > >   - const: tx
-> >
-> > Ok.
-> >
-> > > Ideally, we'd always put the required entry first and avoid this
-> > > problem. Not always possible if the first entry gets removed in later
-> > > h/w.
-> >
-> > One of the question I was wondering myself when I wrote those schemas
-> > is how are we supposed to deal with lists that need to have a
-> > particular set of values, but without any particular order?
->
-> 'items' can be a list or dictionary. When it's a dictionary, the
-> schema for 'items' is applied to each item. For example:
->
-> items:
->   enum: [ rx, tx ]
->   uniqueItems: true
->
-> 'uniqueItems' prevents the case of 'rx, rx' or 'tx, tx'.
+> >         regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+> 
+> I noticed now that we also read ctrl2_reg without using it. Is this as intended?
 
-Oh, so that's how you use uniqueItems. I've been struggling with it to
-cover the ALSA routing options that will have non-unique strings, but
-string-array didn't let me. I'll test that.
+For Cosmin,
 
-> > rx and tx here is a good example of that. We need both (let's leave
-> > the "missing RX" case aside for a minute), but since we reference them
-> > by name, '"rx", "tx"' is strictly equivalent to '"tx", "rx"'. Yet,
-> > items cares about the order, so the latter would fail to validate with
-> > that schemas.
->
-> Even when we reference things by name, the order should be defined
-> still. Using names allows for skipping entries.
->
-> If you have a mixture, I'd prefer to see dts files cleaned-up.
+Same question here.
 
-That works for me, thanks!
-Maxime
+Btw, I just noticed that the initial patch of adding this driver
+did not seemly include most of FSL maintainers/reviewers. Please
+run get_maintainer.pl to add all listed reviewers when sending a
+change to the maillist.
 
---
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
---sxwgxl2i3bech6el
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXLdvaQAKCRDj7w1vZxhR
-xUVaAP9XMxL6SQXibEOcVv6XQ+IhCns/yrvqojpTxrNq91j1aQD8C/Vt6NaZ96rN
-s5jZ8AqnLHxf6a3Iu4d87LvMkAq27wg=
-=Gt+T
------END PGP SIGNATURE-----
-
---sxwgxl2i3bech6el--
-
-
---===============0824315503129564653==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============0824315503129564653==--
+Thanks
+Nicolin
