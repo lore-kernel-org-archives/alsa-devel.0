@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic32x4: Remove set but not used variable 'mclk_rate'" to the asoc tree
-Date: Wed, 17 Apr 2019 17:42:14 +0100 (BST)
-Message-ID: <20190417164214.8336F1128FCB@debutante.sirena.org.uk>
-References: <20190417150157.24044-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to module" to the asoc tree
+Date: Wed, 17 Apr 2019 17:42:13 +0100 (BST)
+Message-ID: <20190417164213.C3B0C1128FC8@debutante.sirena.org.uk>
+References: <20190417152932.36436-1-yuehaibing@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190417150157.24044-1-yuehaibing@huawei.com>
+In-Reply-To: <20190417152932.36436-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, nh6z@nh6z.net, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Hulk Robot <hulkci@huawei.com>, kaichieh.chuang@mediatek.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, matthias.bgg@gmail.com, perex@perex.cz, shunli.wang@mediatek.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic32x4: Remove set but not used variable 'mclk_rate'
+   ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to module
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From 9f54872adbc2707b44eaf898defce60285aeca69 Mon Sep 17 00:00:00 2001
+>From 04e7a02937527fd7edb1e493f04613f2340085dc Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
-Date: Wed, 17 Apr 2019 23:01:57 +0800
-Subject: [PATCH] ASoC: tlv320aic32x4: Remove set but not used variable
- 'mclk_rate'
+Date: Wed, 17 Apr 2019 23:29:32 +0800
+Subject: [PATCH] ASoC: Mediatek: MT8183: Fix build err while CONFIG_I2C set to
+ module
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+During randconfig builds, I occasionally run into an invalid configuration
 
-sound/soc/codecs/tlv320aic32x4.c: In function 'aic32x4_setup_clocks':
-sound/soc/codecs/tlv320aic32x4.c:669:16: warning: variable 'mclk_rate' set but not used [-Wunused-but-set-variable]
+WARNING: unmet direct dependencies detected for SND_SOC_TS3A227E
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=m]
+  Selected by [y]:
+  - SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_MT8183 [=y]
 
-It is not used since introduction in
-commit 96c3bb00239d ("ASoC: tlv320aic32x4: Dynamically Determine Clocking")
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_i2c_probe':
+ts3a227e.c:(.text+0x684): undefined reference to `__devm_regmap_init_i2c'
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_init':
+ts3a227e.c:(.init.text+0x18): undefined reference to `i2c_register_driver'
+sound/soc/codecs/ts3a227e.o: In function `ts3a227e_driver_exit':
+ts3a227e.c:(.exit.text+0x14): undefined reference to `i2c_del_driver'
 
+This patch add I2C dependency to fix this.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: ebbddc75bbe8 ("ASoC: Mediatek: MT8183: Add machine driver with DA7219")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 6edee05ff9f0..83608f386aef 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -684,9 +684,8 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 	u8 madc, nadc, mdac, ndac, max_nadc, min_mdac, max_ndac;
- 	u8 dosr_increment;
- 	u16 max_dosr, min_dosr;
--	unsigned long mclk_rate, adc_clock_rate, dac_clock_rate;
-+	unsigned long adc_clock_rate, dac_clock_rate;
- 	int ret;
--	struct clk *mclk;
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 874404bcccfd..f70b7109f2b6 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -118,6 +118,7 @@ config SND_SOC_MT8183
  
- 	struct clk_bulk_data clocks[] = {
- 		{ .id = "pll" },
-@@ -700,9 +699,6 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
- 
--	mclk = clk_get_parent(clocks[1].clk);
--	mclk_rate = clk_get_rate(mclk);
--
- 	if (sample_rate <= 48000) {
- 		aosr = 128;
- 		adc_resource_class = 6;
+ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+ 	tristate "ASoC Audio driver for MT8183 with MT6358 TS3A227E MAX98357A codec"
++	depends on I2C
+ 	depends on SND_SOC_MT8183
+ 	select SND_SOC_MT6358
+ 	select SND_SOC_MAX98357A
 -- 
 2.20.1
