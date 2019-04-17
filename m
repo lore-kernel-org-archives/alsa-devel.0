@@ -1,46 +1,120 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH] ALSA: pcm: Enable MMAP status and control for ARMv7 and ARMv8
-Date: Wed, 17 Apr 2019 10:46:11 +0200
-Message-ID: <1555490771-13242-1-git-send-email-twischer@de.adit-jv.com>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH V2 1/2] ASoC: fsl_asrc: replace the process_option table
+ with function
+Date: Wed, 17 Apr 2019 09:04:01 +0000
+Message-ID: <VE1PR04MB6479AF6501388845572EC268E3250@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: patch@alsa-project.org, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Timo Wischer <twischer@de.adit-jv.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+Hi
 
-Since ARMv7 hardware cache coherence is supported.
-"The SCU maintains coherency between the individual data caches in the
-Cortex-A5 MPCore processor using a variation of the MOESI protocol" [1].
+>=20
+>=20
+> On Thu, Apr 11, 2019 at 09:39:06AM +0000, S.j. Wang wrote:
+>=20
+> > +/*
+> > + * Select the pre-processing and post-processing options
+>=20
+> By aligning with other function comments:
+> /**
+>  * Select the pre-processing and post-processing options
+>=20
+> > + *
+> > + * Fsin: input sample rate
+> > + * Fsout: output sample rate
+>=20
+> I would suggest to use inrate and outrate to keep naming consistent.
+>=20
+> > + * pre_proc: return value for pre-processing option
+> > + * post_proc: return value for post-processing option  */ static int
+> > +fsl_asrc_sel_proc(int Fsin, int Fsout, int *pre_proc, int *post_proc)
+> > +{
+> > +     bool det_out_op2_cond;
+> > +     bool det_out_op0_cond;
+>=20
+> By looking at the comments below. Probably better to rename them
+>         bool post_proc_cond2, post_proc_cond0;
+>=20
+> > +     /* Codition for selection of post-processing */
+>=20
+> "Codition" -> "Conditions"
+>=20
+> > +     det_out_op2_cond =3D (((Fsin * 15 > Fsout * 16) & (Fsout < 56000)=
+) |
+> > +                                     ((Fsin > 56000) & (Fsout <
+> > + 56000)));
+>=20
+> Combining Daniel's comments + indentation alignment:
+>         det_out_op2_cond =3D (Fsin * 15 > Fsout * 16 && Fsout < 56000) ||
+>                            (Fsin > 56000 && Fsout < 56000);
+>=20
+> > +     det_out_op0_cond =3D (Fsin * 23 < Fsout * 8);
+> > +
+> > +     /*
+> > +      * unsupported case: Tsout>16.125*Tsin, and Tsout>8.125*Tsin.
+>=20
+> Funny thing is that there'd be no point in checking the 16.125, if Tsout =
+is
+> bigger than 8.125 times of Tsin, i.e. only one condition:
+>         Tsout > 8.125 * Tsin
+>=20
+> > +      * Tsout>16.125*Tsin -> Fsin * 8 > 129 * Fsout
+> > +      * Tsout>8.125*Tsin  -> Fsin * 8 > 65 * Fsout
+> > +      * Tsout>4.125*Tsin  -> Fsin * 8 > 33 * Fsout
+> > +      * Tsout>1.875*Tsin  -> Fsin * 8 > 15 * Fsout
+>=20
+> Took me a while to understand what it is saying....
+>=20
+> Better to write like this:
+>         /* Does not support cases: Tsout > 8.125 * Tsin */
+>         if (Fsin * 8 > 65 * Fsout) {
+>                 pair_err("Does not support %d > 8.125 * %d\n", Fsout, Fsi=
+n);
+>                 return -EINVAL;
+>         }
+>=20
+>         /* Otherwise, select pre_proc between [0, 2] */
+>         if (Fsin * 8 > 33 * Fsout)
+> > +             *pre_proc =3D 2;
+> > +     else if (Fsin * 8 > 15 * Fsout) {
+> > +             if (Fsin > 152000)
+> > +                     *pre_proc =3D 2;
+> > +             else
+> > +                     *pre_proc =3D 1;
+> > +     } else if (Fsin < 76000)
+> > +             *pre_proc =3D 0;
+> > +     else if (Fsin > 152000)
+> > +             *pre_proc =3D 2;
+> > +     else
+> > +             *pre_proc =3D 1;
+>=20
+> <=3D=3D Would look better by moving post_cond calculations here.
+>=20
+> > +     if (det_out_op2_cond)
+> > +             *post_proc =3D 2;
+> > +     else if (det_out_op0_cond)
+> > +             *post_proc =3D 0;
+> > +     else
+> > +             *post_proc =3D 1;
+>=20
+> And we could remove this check below:
+> > +     /* unsupported options */
+> > +     if (*pre_proc =3D=3D 4 || *pre_proc =3D=3D 5)
+> > +             return -EINVAL;
+>=20
+> So basically we are doing:
+>         1) Error out unsupported cases
+>         2) Select pre_proc
+>         3) Calculate conditions for post_proc
+>         4) Select post_proc
+>=20
+> Thanks
 
-Therefore this patch enables the MMAP access to the status and control
-structures. This avoids HWSYYNC ioctl calls and therefore lowers the CPU
-usage.
-
-[1] http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0434c/
-BABJECBF.html
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
- sound/core/pcm_native.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 1d84529..b8019ef 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3225,7 +3225,8 @@ static __poll_t snd_pcm_poll(struct file *file, poll_table *wait)
-  * Only on coherent architectures, we can mmap the status and the control records
-  * for effcient data transfer.  On others, we have to use HWSYNC ioctl...
-  */
--#if defined(CONFIG_X86) || defined(CONFIG_PPC) || defined(CONFIG_ALPHA)
-+#if defined(CONFIG_X86) || defined(CONFIG_PPC) || defined(CONFIG_ALPHA) || \
-+	(defined(CONFIG_ARM) && defined(CONFIG_CPU_V7)) || defined(CONFIG_ARM64)
- /*
-  * mmap status record
-  */
--- 
-2.7.4
+Thanks for reviewing, will send v3.
