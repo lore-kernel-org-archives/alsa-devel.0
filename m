@@ -1,62 +1,65 @@
-From: Johan Hovold <johan@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3 2/5] soundwire: fix style issues
-Date: Thu, 18 Apr 2019 19:29:43 +0200
-Message-ID: <20190418172943.GC28269@localhost>
-References: <20190411031701.5926-1-pierre-louis.bossart@linux.intel.com>
- <20190411031701.5926-3-pierre-louis.bossart@linux.intel.com>
- <20190414095839.GG28103@vkoul-mobl>
- <08ea1442-361a-ecfc-ca26-d3bd8a0ec37b@linux.intel.com>
- <20190417093354.GL775@localhost>
- <200c8e66-4245-967b-b80e-b6f6a63f80c5@linux.intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V3 1/2] ASoC: fsl_asrc: replace the process_option table
+ with function
+Date: Thu, 18 Apr 2019 12:17:09 -0700
+Message-ID: <20190418191708.GA14885@Asurada-Nvidia.nvidia.com>
+References: <VE1PR04MB6479228E9CAE2A432D904BC7E3260@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <200c8e66-4245-967b-b80e-b6f6a63f80c5@linux.intel.com>
+In-Reply-To: <VE1PR04MB6479228E9CAE2A432D904BC7E3260@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Johan Hovold <johan@kernel.org>, Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Sanyog Kale <sanyog.r.kale@intel.com>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 17, 2019 at 12:18:22PM -0500, Pierre-Louis Bossart wrote:
-> 
-> >>>> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-> >>>> index 19c8efb9a5ee..84876a74874f 100644
-> >>>> --- a/drivers/soundwire/Kconfig
-> >>>> +++ b/drivers/soundwire/Kconfig
-> >>>> @@ -4,7 +4,7 @@
-> >>>>    
-> >>>>    menuconfig SOUNDWIRE
-> >>>>    	bool "SoundWire support"
-> >>>> -	---help---
-> >>>> +	help
-> >>>
-> >>> Not sure if this is a style issue, kernel seems to have 2990 instances
-> >>> of this!
-> >>
-> >> this is reported by checkpatch.pl --strict.
+On Thu, Apr 18, 2019 at 09:37:06AM +0000, S.j. Wang wrote:
+> > > > And this is according to IMX6DQRM:
+> > > >     Limited support for the case when output sampling rates is
+> > > >     between 8kHz and 30kHz. The limitation is the supported ratio
+> > > >     (Fsin/Fsout) range as between 1/24 to 8
+> > > >
+> > > > This should cover your 8.125 condition already, even if having an
+> > > > outrate range between [8KHz, 30KHz] check, since an outrate above
+> > > > 30KHz will not have an inrate bigger than 8.125 times of it, given
+> > > > the maximum input rate is 192KHz.
+> > > >
+> > > > So I think that we can just drop that 8.125 condition from your
+> > > > change and there's no need to error out any more.
+> > > >
+> > > No, if outrate=8kHz,  inrate > 88.2kHz, these cases are not supported.
+> > > This is not covered by
+> > >
+> > >         if ((outrate > 8000 && outrate < 30000) &&
+> > >             (outrate/inrate > 24 || inrate/outrate > 8)) {
 > > 
-> > Please don't run checkpatch on code that's already in the kernel, and
-> > especially not with the --strict (a.k.a. --subjective) option enabled.
+> > Good catch. The range should be [8KHz, 30KHz] vs. (8KHz, 32KHz) in the
+> > code. Then I think the fix should be at both lines:
 > > 
-> > Don't try to fix what isn't broken.
+> > -         if ((outrate > 8000 && outrate < 30000) &&
+> > -             (outrate/inrate > 24 || inrate/outrate > 8)) {
+> > +         if ((outrate >= 8000 && outrate =< 30000) &&
+> > +             (outrate > 24 * inrate || inrate > 8 * outrate)) {
+> > 
+> > Overall, I think we should fix this instead of adding an extra one, since it is
+> > very likely saying the same thing.
 > 
-> I would agree in general, but this case is different: the SoundWire code 
-> in the upstream kernel is missing parts left and right and isn't fully 
-> functional as is. I will soon be posting what's missing, so this cleanup 
-> is an opportunity to bring SoundWire to the latest coding standards 
-> before adding the missing pieces which will be compliant with --strict. 
-> For the record using --strict already exposed 3 major issues in the 
-> yet-to-be-released code, so it's not as subjective as you describe it.
+> Actually if outrate < 8kHz, there will be issue too.
 
-It's not just me calling it subjective; --subjective is literally
-another name for the same switch which enables checks that are
-specifically *not* part of the coding standard.
+Here is the thing, the RM doesn't explicitly state that ASRC can
+support a lower output sample rate than 8KHz. And I actually had
+a concern when reviewing your PATCH-2, as the table of supported
+output sample rate no longer matches RM.
 
-By all my means use it on your own patches before you submit them if
-you agree with all or some of those checks, but I doubt all that
-open-parenthesis re-alignment is going to expose any major issues. ;)
+If you've verified a lower output sample rate working solid with
+the process_option function, that means our driver can go beyond
+the limitation mentioned in the RM, then I believe [8KHz, 32KHz]
+should be updated too -- that says we can do:
+-	if ((outrate > 8000 && outrate < 30000) &&
+-	    (outrate/inrate > 24 || inrate/outrate > 8)) {
++	if ((outrate >= 5512 && outrate =< 30000) &&
++	    (outrate > 24 * inrate || inrate > 8 * outrate)) {
 
-It does add noise, and makes code forensic and backports harder though.
-
-Johan 
+Actually "ourate > 24 * inrate" is kind of pointless for range
+[5KHz, 32KHz] but we can keep it since it matches RM.
