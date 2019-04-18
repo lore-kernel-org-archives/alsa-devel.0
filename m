@@ -1,106 +1,46 @@
-From: Derek Gordon <derek@derekgordon.com>
-Subject: Re: No sound output on Zen AIO 27 Z272SD_Z272SD
-Date: Thu, 18 Apr 2019 05:53:48 -0400
-Message-ID: <CAGGMHBMc17qgd4=4Nu39M4x1FR=Q_mJdCVzd5aykTF+JKmYTHQ@mail.gmail.com>
-References: <8312BDF2-554A-45BB-B8D7-E9F86735AC1D@canonical.com>
- <6FAB7C47BCF00940BB0999A99BE3547A18DBB13A@RTITMBSVM07.realtek.com.tw>
- <126650E837C1704F92183C9FD34C1CCE18DA5106@RTITMBSVM07.realtek.com.tw>
- <CAGGMHBP=4RBXPvMzLgi7yWaxsc=wvENPLdidugFvtzVBBPzdtw@mail.gmail.com>
- <CAGGMHBOGDUnMewBTrZgoBKFk_A4sNF4fEXwfH9Ay8SNTzjy0-g@mail.gmail.com>
- <126650E837C1704F92183C9FD34C1CCE18DA537A@RTITMBSVM07.realtek.com.tw>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Add pm runtime function
+Date: Thu, 18 Apr 2019 10:15:24 +0000
+Message-ID: <VE1PR04MB6479871F3FC087282D23582DE3260@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51F97F896E2
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2019 11:54:01 +0200 (CEST)
-Received: by mail-ed1-x533.google.com with SMTP id i13so1265858edf.11
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2019 02:54:01 -0700 (PDT)
-In-Reply-To: <126650E837C1704F92183C9FD34C1CCE18DA537A@RTITMBSVM07.realtek.com.tw>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Pshou <pshou@realtek.com>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, "tiwai@suse.com" <tiwai@suse.com>, CHLin <doomko@realtek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-QWxtb3N0IGV2ZXJ5dGhpbmcgSSBoYXZlIG93bmVkIGFuZCBvbmx5IGJlZW4gb2ZmaWNpYWxseSBz
-dXBwb3J0aW5nIG9mCldpbmRvd3MuIFRoYXQgc2hvdWxkbid0IG1lYW4gaXQncyBpbXBvc3NpYmxl
-IGZvciB1cyB0byB1c2UgTGludXggYW5kIGEKd29ya2Fyb3VuZCBzaG91bGQgYmUgYXZhaWxhYmxl
-IHNvbWVob3cganVzdCBsaWtlIGl0IHdhcyBncmFudGVkIGZvciBzaW1pbGFyCnN5c3RlbXMgcmVj
-ZW50bHkgd2l0aCBuZXdlciBhdWRpbyBlcXVpcG1lbnQgaW5jbHVkaW5nIG1hY2hpbmVzIHRoYXQg
-YXJlIG5ldwp0byBBc3VzIHByb2R1Y3QgbGluZS4KCk9uIFRodSwgQXByIDE4LCAyMDE5LCAzOjA4
-IEFNIFBzaG91IDxwc2hvdUByZWFsdGVrLmNvbT4gd3JvdGU6Cgo+IFRoaXMgbW90aGVyYm9hcmQg
-b25seSBzdXBwb3J0cyB0aGUgV0lORE9XUyBzZXJpZXMgYW5kIGRvZXMgbm90IHN1cHBvcnQgdGhl
-Cj4gTElOVVggc2VyaWVzLgo+Cj4KPgo+IFlvdSBjYW4gZ2V0IHRoZSBpbmZvcm1hdGlvbiBvZiBX
-SU5ET1dTIFNPVU5EIG9uIHRoZSBvZmZpY2lhbCB3ZWJzaXRlIG9mCj4gQVNVUy4KPgo+Cj4KPiBC
-ZXN0IHJlZ2FyZHMKPgo+IFBzaG91Cj4KPgo+Cj4gKuWvhOS7tuiAhToqIERlcmVrIEdvcmRvbiA8
-ZGVyZWtAZGVyZWtnb3Jkb24uY29tPgo+ICrlr4Tku7bml6XmnJ86KiAyMDE55bm0NOaciDEz5pel
-IDIxOjU1Cj4gKuaUtuS7tuiAhToqIFBzaG91IDxwc2hvdUByZWFsdGVrLmNvbT4KPiAq5Ymv5pys
-OiogS2FpbGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT47IEthaS1IZW5nIEZlbmcgPAo+IGthaS5o
-ZW5nLmZlbmdAY2Fub25pY2FsLmNvbT47IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgdGl3
-YWlAc3VzZS5jb20KPiAq5Li75peoOiogUmU6IE5vIHNvdW5kIG91dHB1dCBvbiBaZW4gQUlPIDI3
-IFoyNzJTRF9aMjcyU0QKPgo+Cj4KPiBPa2F5LCBqdXN0IGZvciBzYWZlIGtlZXBpbmcgaGVyZSBJ
-IHRlc3RlZCB0aGlzIG9uIG1haW5saW5lIDUuMSBhcyB3ZWxsLgo+IFNhbWUgcmVzdWx0cy4gIE5v
-IGF1ZGlvIGZyb20gYW55IHNvdXJjZXMuCj4KPgo+Cj4gT24gU2F0LCBBcHIgMTMsIDIwMTkgYXQg
-NzozOSBBTSBEZXJlayBHb3Jkb24gPGRlcmVrQGRlcmVrZ29yZG9uLmNvbT4KPiB3cm90ZToKPgo+
-IEkgaW5zdGFsbGVkIGFsc2EtdG9vbHMgdmlhIHJlcG8uCj4KPgo+Cj4gSSBib290ZWQgdGhlIGxh
-dGVzdCA0LjE4Lngga2VybmVsIGZyb20gVWJ1bnR1Lgo+Cj4KPgo+IHJvb3RAZGVyZWstWmVuLUFJ
-Ty0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjIGhkYS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDIwCj4g
-U0VUX0NPRUZfSU5ERVggMHgzNQo+Cj4gbmlkID0gMHgyMCwgdmVyYiA9IDB4NTAwLCBwYXJhbSA9
-IDB4MzUKPgo+IHZhbHVlID0gMHgwCj4KPiByb290QGRlcmVrLVplbi1BSU8tMjctWjI3MlNEOi9o
-b21lL2RlcmVrIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMAo+IFNFVF9QUk9DX0NPRUYg
-MHg4OTY4ICAvLyBzZXQgUERCIGZsb2F0aW5nCj4KPiBuaWQgPSAweDIwLCB2ZXJiID0gMHg0MDAs
-IHBhcmFtID0gMHg4OTY4Cj4KPiB2YWx1ZSA9IDB4MAo+Cj4gcm9vdEBkZXJlay1aZW4tQUlPLTI3
-LVoyNzJTRDovaG9tZS9kZXJlayMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4NWIKPiBTRVRf
-Q09FRl9JTkRFWCAweDAxCj4KPiBuaWQgPSAweDViLCB2ZXJiID0gMHg1MDAsIHBhcmFtID0gMHgx
-Cj4KPiB2YWx1ZSA9IDB4MAo+Cj4gcm9vdEBkZXJlay1aZW4tQUlPLTI3LVoyNzJTRDovaG9tZS9k
-ZXJlayMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4NWIKPiBTRVRfUFJPQ19DT0VGIDB4ODU0
-MAo+Cj4gbmlkID0gMHg1YiwgdmVyYiA9IDB4NDAwLCBwYXJhbSA9IDB4ODU0MAo+Cj4gdmFsdWUg
-PSAweDAKPgo+IHJvb3RAZGVyZWstWmVuLUFJTy0yNy1aMjcyU0Q6L2hvbWUvZGVyZWsjCj4KPgo+
-Cj4gTm8gYXVkaW8gZm9yIFlvdXR1YmUuY29tLCBsb2NhbCBNUDMsIG9yIHRoZSAidGVzdCBzcGVh
-a2VycyIgb3B0aW9uIGluCj4gVWJ1bnR1IHNldHRpbmdzLgo+Cj4KPgo+Cj4KPgo+Cj4KPgo+IE9u
-IFRodSwgQXByIDExLCAyMDE5IGF0IDk6MzYgUE0gUHNob3UgPHBzaG91QHJlYWx0ZWsuY29tPiB3
-cm90ZToKPgo+IEhpLAo+Cj4gMS4gVXNlIFdpbmRvd3MgdG8gYm9vdCB0byBzZWUgaWYgdGhlcmUg
-aXMgbm8gc291bmQ/Cj4gSWYgdGhlcmUgaXMgbm8gc291bmQgaW4gV2luZG93cywgaXQgbWF5IGJl
-IGEgcHJvYmxlbSB3aXRoIGNvZGVjIG9yIGFtcCwgdG8KPiBiZSBzZW50IGJhY2sgdG8gQVNVUyBm
-b3IgcmVwYWlyLgo+Cj4gMi4gUGxlYXNlIHR1cm4gb24gdGhlIGZvbGxvd2luZyB2YWx1ZXMgd2l0
-aCBoZGEtdmVyYiAoYWxzYS10b29sIC0+Cj4gaGRhLXZlcmIpCj4gLi9oYWQtdmVyYiAvZGV2L3Nu
-ZC9od0MwRDAgMHgyMCBTRVRfQ09FRl9JTkRFWCAweDM1Cj4gLi9oYWQtdmVyYiAvZGV2L3NuZC9o
-d0MwRDAgMHgyMCBTRVRfUFJPQ19DT0VGIDB4ODk2OCAgLy8gc2V0IFBEQiBmbG9hdGluZwo+IC4v
-aGFkLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4NWIgU0VUX0NPRUZfSU5ERVggMHgwMQo+IC4vaGFk
-LXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4NWIgU0VUX1BST0NfQ09FRiAweDg1NDAKPgo+IFBsZWFz
-ZSB0dXJuIG9uIHRoZSBzb3VuZChtaXhlciksIHBsYXkgYSBzb25nLgo+IElmIHRoZXJlIGlzIGEg
-c291bmQuIENhbiBLYWktSGVuZyBoZWxwIG1lIGdldCBhIFBBVENIIGZpbGUuCj4KPiBCZXN0IHJl
-Z2FyZHMKPiBwc2hvdQo+Cj4gLS0tLS3ljp/lp4vpg7Xku7YtLS0tLQo+IOWvhOS7tuiAhTogS2Fp
-bGFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KPiDlr4Tku7bml6XmnJ86IDIwMTnlubQ05pyIM+aX
-pSAxNzoxMgo+IOaUtuS7tuiAhTogS2FpLUhlbmcgRmVuZyA8a2FpLmhlbmcuZmVuZ0BjYW5vbmlj
-YWwuY29tPjsKPiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiDlia/mnKw6IHRpd2FpQHN1
-c2UuY29tOyBEZXJlayBHb3Jkb24gPGRlcmVrQGRlcmVrZ29yZG9uLmNvbT47IFBzaG91IDwKPiBw
-c2hvdUByZWFsdGVrLmNvbT4KPiDkuLvml6g6IFJFOiBObyBzb3VuZCBvdXRwdXQgb24gWmVuIEFJ
-TyAyNyBaMjcyU0RfWjI3MlNECj4KPiBBZGQgUHNob3UuCj4KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQo+IEZyb206IEthaS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNv
-bT4KPiBTZW50OiBXZWRuZXNkYXksIEFwcmlsIDMsIDIwMTkgNDozMyBQTQo+IFRvOiBhbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKPiBDYzogdGl3YWlAc3VzZS5jb207IEthaWxhbmcgPGthaWxh
-bmdAcmVhbHRlay5jb20+OyBEZXJlayBHb3Jkb24gPAo+IGRlcmVrQGRlcmVrZ29yZG9uLmNvbT4K
-PiBTdWJqZWN0OiBObyBzb3VuZCBvdXRwdXQgb24gWmVuIEFJTyAyNyBaMjcyU0RfWjI3MlNECj4K
-PiBIaSwKPgo+IFplbiBBSU8gMjcgWjI3MlNEX1oyNzJTRCBkb2VzbuKAmXQgaGF2ZSBzb3VuZCBv
-dXRwdXQgWzFdLgo+Cj4gV2XigJl2ZSB0cmllZCAibW9kZWw9YWxjMjU2LWFzdXMtYWlv4oCdIGJ1
-dCBpdCBkb2VzbuKAmXQgd29yay4KPgo+IFNlZW1zIGxpa2UgdGhpcyBwbGF0Zm9ybSBuZWVkcyBz
-b21ldGhpbmcgZGlmZmVyZW50IHRoYW4KPiBBTEMyNTZfRklYVVBfQVNVU19BSU9fR1BJTzIuCj4K
-PiBbMV0gaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvYnVncy8xODIxOTM2Cj4KPiBLYWktSGVu
-Zwo+Cj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRp
-bmcgdGhpcyBlLW1haWwuCj4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Hi
+
+>=20
+> On Thu, Apr 18, 2019 at 02:00:12AM -0700, Nicolin Chen wrote:
+> > On Thu, Apr 18, 2019 at 03:29:09AM +0000, S.j. Wang wrote:
+>=20
+> > > In imx8 when systerm enter suspend state, the power of subsystem
+> > > will be off, the clock enable state will be lost and register
+> > > configuration
+>=20
+> > Just for curiosity, we had similar situation on imx6sx, so we added
+> > suspend/resume with regcache. Why will the clock enable state be lost
+> > too? Does CCM on imx8 (might not be called CCM
+> > though) have any difference? What about clock rate settings?
+>=20
+> That sounds like a bug somewhere else - I'd expect that after resume the
+> clocking would be restored to the state it was in before suspend.
+
+There is limitation in our internal design. That is in imx8 the power of
+subsystem will be disabled at suspend, include the clock state , clock rate=
+.=20
+
+I should not add it in comments,  please ignore them, I will change the
+description.
+
+This patch is to enable the pm runtime,  so I think it is better to move th=
+e
+clock operation to pm runtime,  and close the clock at suspend to reduce
+the power.
+
+Best regards
+Wang shengjiu
