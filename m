@@ -1,76 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/3] Fix jack detection for Chromebook
-	Pixel
-Date: Thu, 18 Apr 2019 10:07:14 +0100
-Message-ID: <20190418090714.GB6702@sirena.org.uk>
-References: <20190405204257.87095-4-fletcherw@chromium.org>
- <20190415194557.9182-1-fletcherw@chromium.org>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH V3 1/2] ASoC: fsl_asrc: replace the process_option table
+ with function
+Date: Thu, 18 Apr 2019 09:37:06 +0000
+Message-ID: <VE1PR04MB6479228E9CAE2A432D904BC7E3260@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0898098927781472221=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AA83F896E3
- for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2019 11:07:21 +0200 (CEST)
-In-Reply-To: <20190415194557.9182-1-fletcherw@chromium.org>
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Fletcher Woodruff <fletcherw@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============0898098927781472221==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
-Content-Disposition: inline
-
-
---wq9mPyueHGvFACwf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Apr 15, 2019 at 01:45:56PM -0600, Fletcher Woodruff wrote:
-> Headphone/mic jack detection doesn't work on the Chromebook Pixel 2015.
 >=20
-> This patch changes the irq implementation to support polarity flipping
-> and fixes the configuration code so that correct GPIO pins are read
-> from ACPI.
+> On Thu, Apr 18, 2019 at 08:50:48AM +0000, S.j. Wang wrote:
+> > > And this is according to IMX6DQRM:
+> > >     Limited support for the case when output sampling rates is
+> > >     between 8kHz and 30kHz. The limitation is the supported ratio
+> > >     (Fsin/Fsout) range as between 1/24 to 8
+> > >
+> > > This should cover your 8.125 condition already, even if having an
+> > > outrate range between [8KHz, 30KHz] check, since an outrate above
+> > > 30KHz will not have an inrate bigger than 8.125 times of it, given
+> > > the maximum input rate is 192KHz.
+> > >
+> > > So I think that we can just drop that 8.125 condition from your
+> > > change and there's no need to error out any more.
+> > >
+> > No, if outrate=3D8kHz,  inrate > 88.2kHz, these cases are not supported=
+.
+> > This is not covered by
+> >
+> >         if ((outrate > 8000 && outrate < 30000) &&
+> >             (outrate/inrate > 24 || inrate/outrate > 8)) {
+>=20
+> Good catch. The range should be [8KHz, 30KHz] vs. (8KHz, 32KHz) in the
+> code. Then I think the fix should be at both lines:
+>=20
+> -         if ((outrate > 8000 && outrate < 30000) &&
+> -             (outrate/inrate > 24 || inrate/outrate > 8)) {
+> +         if ((outrate >=3D 8000 && outrate =3D< 30000) &&
+> +             (outrate > 24 * inrate || inrate > 8 * outrate)) {
+>=20
+> Overall, I think we should fix this instead of adding an extra one, since=
+ it is
+> very likely saying the same thing.
 
-I only have patch 1 here...
+Actually if outrate < 8kHz, there will be issue too.
 
---wq9mPyueHGvFACwf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly4PkEACgkQJNaLcl1U
-h9AKBgf/d6flxv24JGmWelSWiY4bgbJoRjqeAQSiS+Vl86GgHlxJlsZ9GGS1okMX
-JGvRgvtmaAVYSlyaCq/HPj6OBdDbxZkkzFgeVbP29akcS3l4zaDhwX04N9Ae5lHU
-FzEUrhW/QkOrhFqxD6H8Y/K/gimOWH2Pt6vK6uRvbk58+VCCe6X3Vtq1dbagR8a9
-zFMCOru7kGfrrcsl9VXnBkFVlivx36Mnakoh2RiVEPz5NHlGkURWpiHQY+B0qrtX
-kx4Z2YF8QKrekCFUPzbu8gDYslAql/e8ngmjM268OqSGiFWXC73jT7rW1nijftaN
-BG+679ghjWE0qX17Up/cjQLBbi0MAQ==
-=vBBN
------END PGP SIGNATURE-----
-
---wq9mPyueHGvFACwf--
-
---===============0898098927781472221==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0898098927781472221==--
+Best regards
+Wang shengjiu
