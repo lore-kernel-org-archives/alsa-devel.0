@@ -1,89 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sprd: Add reserved DMA memory support" to the asoc tree
-Date: Thu, 18 Apr 2019 11:26:06 +0100 (BST)
-Message-ID: <20190418102606.AE0181126DA9@debutante.sirena.org.uk>
-References: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
+From: "S.j. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Add pm runtime function
+Date: Thu, 18 Apr 2019 11:12:45 +0000
+Message-ID: <VE1PR04MB6479999444FBBCF81E37E630E3260@VE1PR04MB6479.eurprd04.prod.outlook.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ee4a22c3491628abf94c8d356dccd67984604811.1555049554.git.baolin.wang@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, baolin.wang@linaro.org, broonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgMark Brown <broonie@kernel.org>, orsonzhai@gmail.com, perex@perex.cz, tiwai@suse.com, zhang.lyra@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi
 
-   ASoC: sprd: Add reserved DMA memory support
+> On Thu, Apr 18, 2019 at 10:15:24AM +0000, S.j. Wang wrote:
+> > > On Thu, Apr 18, 2019 at 02:00:12AM -0700, Nicolin Chen wrote:
+> > > > On Thu, Apr 18, 2019 at 03:29:09AM +0000, S.j. Wang wrote:
+>=20
+> > > > Just for curiosity, we had similar situation on imx6sx, so we
+> > > > added suspend/resume with regcache. Why will the clock enable
+> > > > state be lost too? Does CCM on imx8 (might not be called CCM
+> > > > though) have any difference? What about clock rate settings?
+>=20
+> > > That sounds like a bug somewhere else - I'd expect that after resume
+> > > the clocking would be restored to the state it was in before suspend.
+>=20
+> > There is limitation in our internal design. That is in imx8 the power
+> > of subsystem will be disabled at suspend, include the clock state , clo=
+ck
+> rate.
+>=20
+> Right, that's fairly normal but usually it'd be restored as part of the r=
+esume
+> process?
+>=20
+> > This patch is to enable the pm runtime,  so I think it is better to
+> > move the clock operation to pm runtime,  and close the clock at
+> > suspend to reduce the power.
+>=20
+> It's definitely good to turn the clock off as much as possible, yes.
 
-has been applied to the asoc tree at
+Thanks, will send v2.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 25a073bb9ceda91b8bf731b20ac01b68cc8877a9 Mon Sep 17 00:00:00 2001
-From: Baolin Wang <baolin.wang@linaro.org>
-Date: Fri, 12 Apr 2019 14:40:17 +0800
-Subject: [PATCH] ASoC: sprd: Add reserved DMA memory support
-
-For Spreadtrum audio platform driver, it need allocate a larger DMA buffer
-dynamically to copy audio data between userspace and kernel space, but that
-will increase the risk of memory allocation failure especially the system
-is under heavy load situation.
-
-To make sure the audio can work in this scenario, we usually reserve one
-region of memory to be used as a shared pool of DMA buffers for the
-platform component. So add of_reserved_mem_device_init_by_idx() function
-to initialize the shared pool of DMA buffers to be used by the platform
-component.
-
-Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sprd/sprd-pcm-dma.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-index 9be6d4b2bf74..d38ebbbbf169 100644
---- a/sound/soc/sprd/sprd-pcm-dma.c
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -6,6 +6,7 @@
- #include <linux/dma/sprd-dma.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -530,8 +531,14 @@ static const struct snd_soc_component_driver sprd_soc_component = {
- 
- static int sprd_soc_platform_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	int ret;
- 
-+	ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
-+	if (ret)
-+		dev_warn(&pdev->dev,
-+			 "no reserved DMA memory for audio platform device\n");
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev, &sprd_soc_component,
- 					      NULL, 0);
- 	if (ret)
--- 
-2.20.1
+Best regards
+Wang shengjiu
