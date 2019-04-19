@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm: save fixed-up hw_params of BE" to
-	the asoc tree
-Date: Fri, 19 Apr 2019 17:14:06 +0100 (BST)
-Message-ID: <20190419161406.7FC34441D3D@finisterre.ee.mobilebroadband>
-References: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
+Subject: Applied "ASoC: samsung: s3c2412-i2s: Convert to SPDX
+	License Identifier" to the asoc tree
+Date: Fri, 19 Apr 2019 17:14:13 +0100 (BST)
+Message-ID: <20190419161413.97916441D3D@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-17-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40AE7F896EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51AB5F89720
  for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:17 +0200 (CEST)
-In-Reply-To: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
+In-Reply-To: <20190419102202.4384-17-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,12 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Cc: libin.yang@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Mark Brown <broonie@kernel.org>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm: save fixed-up hw_params of BE
+   ASoC: samsung: s3c2412-i2s: Convert to SPDX License Identifier
 
 has been applied to the asoc tree at
 
@@ -54,36 +55,80 @@ to this mail.
 Thanks,
 Mark
 
->From ae061d2a857f84ad47b77b04c3ad37478651ab6c Mon Sep 17 00:00:00 2001
-From: Libin Yang <libin.yang@intel.com>
-Date: Fri, 19 Apr 2019 09:53:12 +0800
-Subject: [PATCH] ASoC: pcm: save fixed-up hw_params of BE
+>From 25bc05fbc464457a2187cb240b26a6dbd609399a Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 12:21:51 +0200
+Subject: [PATCH] ASoC: samsung: s3c2412-i2s: Convert to SPDX License
+ Identifier
 
-Some drivers mandate setting up hw params after resuming from system sleep.
-Since, the hw_params ioctl is not invoked upon resuming, the fixed-up BE
-dai hw params should be saved so the driver can use it in its resume
-sequence.
+Replace GPL v2.0+ license statements with SPDX license identifier.
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/samsung/s3c2412-i2s.c | 28 +++++++++++-----------------
+ sound/soc/samsung/s3c2412-i2s.h | 11 +++--------
+ 2 files changed, 14 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 2d5d5cac4ba6..035dedee78f1 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2156,6 +2156,10 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 			}
- 		}
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index c08638b0e458..787a3f6e9f24 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -1,20 +1,14 @@
+-/* sound/soc/samsung/s3c2412-i2s.c
+- *
+- * ALSA Soc Audio Layer - S3C2412 I2S driver
+- *
+- * Copyright (c) 2006 Wolfson Microelectronics PLC.
+- *	Graeme Gregory graeme.gregory@wolfsonmicro.com
+- *	linux@wolfsonmicro.com
+- *
+- * Copyright (c) 2007, 2004-2005 Simtec Electronics
+- *	http://armlinux.simtec.co.uk/
+- *	Ben Dooks <ben@simtec.co.uk>
+- *
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// ALSA Soc Audio Layer - S3C2412 I2S driver
++//
++// Copyright (c) 2006 Wolfson Microelectronics PLC.
++//	Graeme Gregory graeme.gregory@wolfsonmicro.com
++//	linux@wolfsonmicro.com
++//
++// Copyright (c) 2007, 2004-2005 Simtec Electronics
++//	http://armlinux.simtec.co.uk/
++//	Ben Dooks <ben@simtec.co.uk>
  
-+		/* copy the fixed-up hw params for BE dai */
-+		memcpy(&be->dpcm[stream].hw_params, &dpcm->hw_params,
-+		       sizeof(struct snd_pcm_hw_params));
-+
- 		/* only allow hw_params() if no connected FEs are running */
- 		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
- 			continue;
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+diff --git a/sound/soc/samsung/s3c2412-i2s.h b/sound/soc/samsung/s3c2412-i2s.h
+index 02ad5794c0a9..bff2a797cb08 100644
+--- a/sound/soc/samsung/s3c2412-i2s.h
++++ b/sound/soc/samsung/s3c2412-i2s.h
+@@ -1,16 +1,11 @@
+-/* sound/soc/samsung/s3c2412-i2s.c
+- *
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
+  * ALSA Soc Audio Layer - S3C2412 I2S driver
+  *
+  * Copyright (c) 2007 Simtec Electronics
+  *	http://armlinux.simtec.co.uk/
+  *	Ben Dooks <ben@simtec.co.uk>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+-*/
++ */
+ 
+ #ifndef __SND_SOC_S3C24XX_S3C2412_I2S_H
+ #define __SND_SOC_S3C24XX_S3C2412_I2S_H __FILE__
 -- 
 2.20.1
