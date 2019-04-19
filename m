@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: spdif: Convert to SPDX License
-	Identifier" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:08 +0100 (BST)
-Message-ID: <20190419161408.CD333441D56@finisterre.ee.mobilebroadband>
-References: <20190419102202.4384-25-s.nawrocki@samsung.com>
+Subject: Applied "ASoC: Intel: Haswell: Remove set but not used
+	variable 'stage_type'" to the asoc tree
+Date: Fri, 19 Apr 2019 17:14:05 +0100 (BST)
+Message-ID: <20190419161405.ED76A441D3C@finisterre.ee.mobilebroadband>
+References: <20190418024848.39112-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C13FF896FA
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:11 +0200 (CEST)
-In-Reply-To: <20190419102202.4384-25-s.nawrocki@samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FB76F896FB
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:12 +0200 (CEST)
+In-Reply-To: <20190418024848.39112-1-yuehaibing@huawei.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Mark Brown <broonie@kernel.org>, m.szyprowski@samsung.com
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: spdif: Convert to SPDX License Identifier
+   ASoC: Intel: Haswell: Remove set but not used variable 'stage_type'
 
 has been applied to the asoc tree at
 
@@ -55,64 +55,57 @@ to this mail.
 Thanks,
 Mark
 
->From dbf0344a4b6ad38732fa246c1b8ea93435af58e0 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 19 Apr 2019 12:21:59 +0200
-Subject: [PATCH] ASoC: samsung: spdif: Convert to SPDX License Identifier
+>From 479879701758206a2cc75176119fcc9dacc40846 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 18 Apr 2019 10:48:48 +0800
+Subject: [PATCH] ASoC: Intel: Haswell: Remove set but not used variable
+ 'stage_type'
 
-Replace GPL v2.0 license statements with SPDX license identifier.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+sound/soc/intel/haswell/sst-haswell-ipc.c: In function 'hsw_stream_message':
+sound/soc/intel/haswell/sst-haswell-ipc.c:669:29: warning: variable 'stage_type' set but not used [-Wunused-but-set-variable]
+
+It is never used since introduction in
+commit ba57f68235cf ("ASoC: Intel: create haswell folder and move haswell platform files in")
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/spdif.c | 17 ++++++-----------
- sound/soc/samsung/spdif.h |  8 ++------
- 2 files changed, 8 insertions(+), 17 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-index 5e4afb330416..805c57986e0b 100644
---- a/sound/soc/samsung/spdif.c
-+++ b/sound/soc/samsung/spdif.c
-@@ -1,14 +1,9 @@
--/* sound/soc/samsung/spdif.c
-- *
-- * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- *		http://www.samsung.com/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-+//
-+// Copyright (c) 2010 Samsung Electronics Co. Ltd
-+//		http://www.samsung.com/
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index 31fcdf12c67d..74acf9c65161 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -345,11 +345,6 @@ static inline u32 msg_get_stream_type(u32 msg)
+ 	return (msg & IPC_STR_TYPE_MASK) >>  IPC_STR_TYPE_SHIFT;
+ }
  
- #include <linux/clk.h>
- #include <linux/io.h>
-diff --git a/sound/soc/samsung/spdif.h b/sound/soc/samsung/spdif.h
-index 4f72cb446dbf..461da60ab040 100644
---- a/sound/soc/samsung/spdif.h
-+++ b/sound/soc/samsung/spdif.h
-@@ -1,13 +1,9 @@
--/* sound/soc/samsung/spdif.h
-- *
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-  * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-  *
-  * Copyright (c) 2010 Samsung Electronics Co. Ltd
-  *		http://www.samsung.com/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
+-static inline u32 msg_get_stage_type(u32 msg)
+-{
+-	return (msg & IPC_STG_TYPE_MASK) >>  IPC_STG_TYPE_SHIFT;
+-}
+-
+ static inline u32 msg_get_stream_id(u32 msg)
+ {
+ 	return (msg & IPC_STR_ID_MASK) >>  IPC_STR_ID_SHIFT;
+@@ -666,13 +661,12 @@ static int hsw_module_message(struct sst_hsw *hsw, u32 header)
  
- #ifndef __SND_SOC_SAMSUNG_SPDIF_H
+ static int hsw_stream_message(struct sst_hsw *hsw, u32 header)
+ {
+-	u32 stream_msg, stream_id, stage_type;
++	u32 stream_msg, stream_id;
+ 	struct sst_hsw_stream *stream;
+ 	int handled = 0;
+ 
+ 	stream_msg = msg_get_stream_type(header);
+ 	stream_id = msg_get_stream_id(header);
+-	stage_type = msg_get_stage_type(header);
+ 
+ 	stream = get_stream_by_id(hsw, stream_id);
+ 	if (stream == NULL)
 -- 
 2.20.1
