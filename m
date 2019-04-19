@@ -1,19 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: pcm: save fixed-up hw_params of BE
-Date: Fri, 19 Apr 2019 10:30:51 -0500
-Message-ID: <fa332aba-7695-3687-b0e6-3d17d8f2ab15@linux.intel.com>
-References: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 03/14] ASoC: SOF: Add driver debug
+	support.
+Date: Fri, 19 Apr 2019 16:54:58 +0100
+Message-ID: <20190419155458.GV2803@sirena.org.uk>
+References: <20190412160519.30207-1-pierre-louis.bossart@linux.intel.com>
+ <20190412160519.30207-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2956632986270053541=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 863DBF807B6
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 17:31:05 +0200 (CEST)
-In-Reply-To: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
-Content-Language: en-US
+In-Reply-To: <20190412160519.30207-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,45 +18,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, alsa-devel@alsa-project.org, Alan Cox <alan@linux.intel.com>, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/18/19 8:53 PM, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
-> 
-> Some drivers mandate setting up hw params after resuming from system sleep.
-> Since, the hw_params ioctl is not invoked upon resuming, the fixed-up BE
-> dai hw params should be saved so the driver can use it in its resume
-> sequence.
 
-This functionality is needed for SOF. We initially thought of 
-implementing it as an SOF-specific patch but thought this could be 
-useful to others, and don't see any negative impact.
-
-Libin and Ranjani, can you clarify what 'some drivers' means. I took it 
-as "SOF and other DPCM-based drivers without the 'INFO_RESUME' flag". 
-Please confirm if I was correct, if we want feedback we should clarify 
-who might benefit. Thanks!
+--===============2956632986270053541==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="FZIkiClxIZ9JeWSb"
+Content-Disposition: inline
 
 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
-> ---
->   sound/soc/soc-pcm.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index d212475..7469535 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2164,6 +2164,10 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
->   			}
->   		}
->   
-> +		/* copy the fixed-up hw params for BE dai */
-> +		memcpy(&be->dpcm[stream].hw_params, &dpcm->hw_params,
-> +		       sizeof(struct snd_pcm_hw_params));
-> +
->   		/* only allow hw_params() if no connected FEs are running */
->   		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
->   			continue;
-> 
+--FZIkiClxIZ9JeWSb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 12, 2019 at 11:05:08AM -0500, Pierre-Louis Bossart wrote:
+
+> +		if (pm_runtime_active(sdev->dev) ||
+> +		    dfse->access_type == SOF_DEBUGFS_ACCESS_ALWAYS) {
+> +			memcpy_fromio(buf, dfse->io_mem + pos, size);
+> +		} else {
+> +			dev_info(sdev->dev,
+> +				 "Copying cached debugfs data\n");
+> +			memcpy(buf, dfse->cache_buf + pos, size);
+> +		}
+
+Might this get a bit noisy if we start hitting the info case?
+
+--FZIkiClxIZ9JeWSb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly571EACgkQJNaLcl1U
+h9CrCAf/bEmNoGNaWLqNaUBGSzl+sUQAucI5jJRk60/ZqEiGCOV9B/ZRTC5yQthw
+Wu23KQSxljBYMnZhq0XYJfGz9xtrBcWb0LJ7a9gNII4Gusglg7tFEcqb1svcXg4m
+kGxm7+jv3kcFecEqzoL8XWFyezutQXdtCVb3fklySkh86qGsD6oPuHJX95cIk2B9
+PTJy+S1bjR7xPQ0PfArFR/0hubF+c3rUCrzDW7YxiJp63w73zPTIj9BwuLqjihZ/
+lqZvrsEhqMqemuUiG97mncXdWH/JRPJKrJ8WHPwvQTyeCG3zHkltJO+BjW1s3VU+
+h/Z7Hiji9ZZki4go/MMucBxawlt9Cg==
+=JOM/
+-----END PGP SIGNATURE-----
+
+--FZIkiClxIZ9JeWSb--
+
+--===============2956632986270053541==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2956632986270053541==--
