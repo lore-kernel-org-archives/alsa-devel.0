@@ -1,17 +1,23 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: codecs: rt5682: initialize mutex before
-	using
-Date: Fri, 19 Apr 2019 15:53:49 -0500
-Message-ID: <20190419205349.23200-1-pierre-louis.bossart@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 0/3] ASoC: Intel: boards: fix
+ compilation and quirk handling
+Date: Sat, 20 Apr 2019 00:50:28 +0200
+Message-ID: <5a489e37-6111-19c1-1113-040f3b048fee@redhat.com>
+References: <20190419201218.19821-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
+ [209.85.208.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F000F801D9
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 22:53:57 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5993AF801D9
+ for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2019 00:50:30 +0200 (CEST)
+Received: by mail-ed1-f68.google.com with SMTP id g6so5472230edc.8
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 15:50:30 -0700 (PDT)
+In-Reply-To: <20190419201218.19821-1-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,41 +27,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, Xun Zhang <xun2.zhang@intel.com>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Xun Zhang <xun2.zhang@intel.com>
+Hi,
 
-In rt5682 codec driver, a mutex called "calibrate_mutex" is used
-in rt5682_calibrate() before initialization, which causes warning
-in lock debug. Move the initialization before the usage of mutex.
+On 19-04-19 22:12, Pierre-Louis Bossart wrote:
+> Fix compilation warning and align quirk override handling between
+> machine drivers.
+> 
+> V2: use default -1 in all cases as discussed with Hans de Goede
 
-Signed-off-by: Xun Zhang <xun2.zhang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt5682.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you, series looks good to me:
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 86a7fa31c294..505fb3d7b1c5 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2588,6 +2588,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 
- 	rt5682_reset(rt5682->regmap);
- 
-+	mutex_init(&rt5682->calibrate_mutex);
- 	rt5682_calibrate(rt5682);
- 
- 	ret = regmap_multi_reg_write(rt5682->regmap, patch_list,
-@@ -2654,7 +2655,6 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 	INIT_DELAYED_WORK(&rt5682->jd_check_work,
- 				rt5682_jd_check_handler);
- 
--	mutex_init(&rt5682->calibrate_mutex);
- 
- 	if (i2c->irq) {
- 		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
--- 
-2.17.1
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
