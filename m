@@ -1,20 +1,21 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 0/5] soundwire: code cleanup
-Date: Fri, 19 Apr 2019 12:07:38 -0500
-Message-ID: <bb335979-61de-e2d7-d1b4-8e29e2beda49@linux.intel.com>
+Subject: Re: [PATCH v3 2/5] soundwire: fix style issues
+Date: Fri, 19 Apr 2019 12:14:34 -0500
+Message-ID: <37c5af39-a1e4-adc3-e8a9-bcada8e3b35b@linux.intel.com>
 References: <20190411031701.5926-1-pierre-louis.bossart@linux.intel.com>
- <20190414100417.GH28103@vkoul-mobl>
- <df6040ba-ab69-ae64-a27f-236e8ac95c14@linux.intel.com>
+ <20190411031701.5926-3-pierre-louis.bossart@linux.intel.com>
+ <20190414095839.GG28103@vkoul-mobl>
+ <08ea1442-361a-ecfc-ca26-d3bd8a0ec37b@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9950DF801D9
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 19:07:42 +0200 (CEST)
-In-Reply-To: <df6040ba-ab69-ae64-a27f-236e8ac95c14@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E015FF896E2
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 19:14:37 +0200 (CEST)
+In-Reply-To: <08ea1442-361a-ecfc-ca26-d3bd8a0ec37b@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,47 +27,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 4/15/19 7:57 AM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 4/14/19 5:04 AM, Vinod Koul wrote:
->> On 10-04-19, 22:16, Pierre-Louis Bossart wrote:
->>> SoundWire support will be provided in Linux with the Sound Open
->>> Firmware (SOF) on Intel platforms. Before we start adding the missing
->>> pieces, there are a number of warnings and style issues reported by
->>> checkpatch, cppcheck and Coccinelle that need to be cleaned-up.
->>
->> Applied, 1, 3 and 4 (5 looked good but didnt apply)
-> 
-> this applies on top of Mark Brown's for-next tree. This should be the 
-> reference really for SoundWire work, if we start having another tree 
-> with deltas it's really counter productive. I already have dependencies 
-> on acpi...
-
-Vinod, can you please double-check why patch 5 didn't work for you. I 
-tried on Mark and Linus' trees and no issues, see below.
-
-$ git reset --hard v5.1-rc5
-HEAD is now at dc4060a5dc25 Linux 5.1-rc5
-
-$ git am ~/Downloads/alsa/39/\[PATCH\ v3\ *.eml
-Applying: soundwire: intel: fix inversion in devm_kcalloc parameters
-Applying: soundwire: fix style issues
-Applying: soundwire: bus: remove useless initializations
-Applying: soundwire: stream: remove useless initialization of local variable
-Applying: soundwire: add missing newlines in dynamic debug logs
-
-$ git reset --hard broonie/for-next
-HEAD is now at 84fdefca04a7 Merge branch 'asoc-5.2' into asoc-next
-
-$ git am ~/Downloads/alsa/39/\[PATCH\ v3\ *.eml
-Applying: soundwire: intel: fix inversion in devm_kcalloc parameters
-Applying: soundwire: fix style issues
-Applying: soundwire: bus: remove useless initializations
-Applying: soundwire: stream: remove useless initialization of local variable
-Applying: soundwire: add missing newlines in dynamic debug logs
+Cj4+PiDCoCBlbnVtIHNkd19jb21tYW5kX3Jlc3BvbnNlCj4+PiDCoCBjZG5zX3hmZXJfbXNnX2Rl
+ZmVyKHN0cnVjdCBzZHdfYnVzICpidXMsCj4+PiAtwqDCoMKgwqDCoMKgwqAgc3RydWN0IHNkd19t
+c2cgKm1zZywgc3RydWN0IHNkd19kZWZlciAqZGVmZXIpCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBzdHJ1Y3Qgc2R3X21zZyAqbXNnLCBzdHJ1Y3Qgc2R3X2RlZmVyICpkZWZlcikKPj4KPj4g
+dGhpcyBvbmUgdG9vLi4KPj4KPj4+IMKgIHN0YXRpYyBpbnQgY2Ruc19wb3J0X3BhcmFtcyhzdHJ1
+Y3Qgc2R3X2J1cyAqYnVzLAo+Pj4gLcKgwqDCoMKgwqDCoMKgIHN0cnVjdCBzZHdfcG9ydF9wYXJh
+bXMgKnBfcGFyYW1zLCB1bnNpZ25lZCBpbnQgYmFuaykKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgc3RydWN0IHNkd19wb3J0X3BhcmFtcyAqcF9wYXJhbXMsIHVuc2lnbmVkIGlu
+dCBiYW5rKQo+Pgo+PiBoZXJlIGFzIHdlbGwuLiAoYW5kIGdpdmluZyB1cCBvbiByZXN0KQo+IAo+
+IFBsZWFzZSBjaGVjayBmb3IgeW91cnNlbGYgdGhhdCB0aGlzIGlzIGEgZGlmZiBpbGx1c2lvbiB3
+LyB0YWIgc3BhY2UuCgpWaW5vZCwgY2FuIHlvdSBwbGVhc2UgZG91YmxlLWNoZWNrLCB0aGUgYWxp
+Z25tZW50IGlzc3VlcyB5b3UgcmVwb3J0ZWQgCmRvbid0IGV4aXN0LCBzZWUgZS5nLiBiZWxvdyB3
+aGF0IHRoZSBjb2RlIGxvb2tzIGxpa2UgYWZ0ZXIgbWVyZ2UuCgoKaW50IHNkd190cmFuc2Zlcl9k
+ZWZlcihzdHJ1Y3Qgc2R3X2J1cyAqYnVzLCBzdHJ1Y3Qgc2R3X21zZyAqbXNnLAogICAgICAgICAg
+ICAgICAgICAgICAgICBzdHJ1Y3Qgc2R3X2RlZmVyICpkZWZlcikKCmludCBzZHdfZmlsbF9tc2co
+c3RydWN0IHNkd19tc2cgKm1zZywgc3RydWN0IHNkd19zbGF2ZSAqc2xhdmUsCiAgICAgICAgICAg
+ICAgICAgIHUzMiBhZGRyLCBzaXplX3QgY291bnQsIHUxNiBkZXZfbnVtLCB1OCBmbGFncywgdTgg
+KmJ1ZikKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
