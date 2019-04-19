@@ -1,120 +1,66 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V4 2/3] ASoC: fsl_asrc: replace the process_option table with
- function
-Date: Fri, 19 Apr 2019 10:23:53 +0000
-Message-ID: <0f7a6907c73e110c797b478fedaba2fc47b5e994.1555669068.git.shengjiu.wang@nxp.com>
-References: <cover.1555669068.git.shengjiu.wang@nxp.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 07/27] ASoC: samsung: jive_wm8750: Convert to
+ SPDX License Identifier
+Date: Fri, 19 Apr 2019 12:21:42 +0200
+Message-ID: <20190419102202.4384-8-s.nawrocki@samsung.com>
+References: <20190419102202.4384-1-s.nawrocki@samsung.com>
+ <CGME20190419102241epcas1p114e54ca76473a74aed6a1d186cb7629e@epcas1p1.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <cover.1555669068.git.shengjiu.wang@nxp.com>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF2FFF89735
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:22:45 +0200 (CEST)
+In-reply-to: <20190419102202.4384-1-s.nawrocki@samsung.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbiB3ZSB3YW50IHRvIHN1cHBvcnQgbW9yZSBzYW1wbGUgcmF0ZSwgZm9yIGV4YW1wbGUgMTJr
-SHovMjRrSHoNCndlIG5lZWQgdXBkYXRlIHRoZSBwcm9jZXNzX29wdGlvbiB0YWJsZSwgaWYgd2Ug
-d2FudCB0byBzdXBwb3J0IG1vcmUNCnNhbXBsZSByYXRlIG5leHQgdGltZSwgdGhlIHRhYmxlIG5l
-ZWQgdG8gYmUgdXBkYXRlZCBhZ2Fpbi4gd2hpY2gNCmlzIG5vdCBmbGV4aWJsZS4NCg0KV2UgZ290
-IGEgZnVuY3Rpb24gZnNsX2FzcmNfc2VsX3Byb2MgdG8gcmVwbGFjZSB0aGUgdGFibGUsIHdoaWNo
-IGNhbg0KZ2l2ZSB0aGUgcHJlLXByb2Nlc3NpbmcgYW5kIHBvc3QtcHJvY2Vzc2luZyBvcHRpb25z
-IGFjY29yZGluZyB0bw0KdGhlIHNhbXBsZSByYXRlLg0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2pp
-dSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54cC5jb20+DQotLS0NCiBzb3VuZC9zb2MvZnNsL2ZzbF9h
-c3JjLmMgfCA3NSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
-LS0NCiAxIGZpbGUgY2hhbmdlZCwgNTUgaW5zZXJ0aW9ucygrKSwgMjAgZGVsZXRpb25zKC0pDQoN
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvZnNsL2ZzbF9hc3JjLmMgYi9zb3VuZC9zb2MvZnNsL2Zz
-bF9hc3JjLmMNCmluZGV4IDViOGFkYzdmYjExNy4uMmM0YmJjMzQ5OWRiIDEwMDY0NA0KLS0tIGEv
-c291bmQvc29jL2ZzbC9mc2xfYXNyYy5jDQorKysgYi9zb3VuZC9zb2MvZnNsL2ZzbF9hc3JjLmMN
-CkBAIC0yNiwyNCArMjYsNiBAQA0KICNkZWZpbmUgcGFpcl9kYmcoZm10LCAuLi4pIFwNCiAJZGV2
-X2RiZygmYXNyY19wcml2LT5wZGV2LT5kZXYsICJQYWlyICVjOiAiIGZtdCwgJ0EnICsgaW5kZXgs
-ICMjX19WQV9BUkdTX18pDQogDQotLyogU2FtcGxlIHJhdGVzIGFyZSBhbGlnbmVkIHdpdGggdGhh
-dCBkZWZpbmVkIGluIHBjbS5oIGZpbGUgKi8NCi1zdGF0aWMgY29uc3QgdTggcHJvY2Vzc19vcHRp
-b25bXVsxMl1bMl0gPSB7DQotCS8qIDhrSHogMTEuMDI1a0h6IDE2a0h6IDIyLjA1a0h6IDMya0h6
-IDQ0LjFrSHogNDhrSHogICA2NGtIeiAgIDg4LjJrSHogOTZrSHogICAxNzZrSHogIDE5MmtIeiAq
-Lw0KLQl7ezAsIDF9LCB7MCwgMX0sIHswLCAxfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSwgezAs
-IDB9LCB7MCwgMH0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSx9LAkvKiA1NTEySHog
-Ki8NCi0Je3swLCAxfSwgezAsIDF9LCB7MCwgMX0sIHswLCAxfSwgezAsIDB9LCB7MCwgMH0sIHsw
-LCAwfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sfSwJLyogOGtIeiAq
-Lw0KLQl7ezAsIDJ9LCB7MCwgMX0sIHswLCAxfSwgezAsIDF9LCB7MCwgMH0sIHswLCAwfSwgezAs
-IDB9LCB7MCwgMH0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSx9LAkvKiAxMTAyNUh6
-ICovDQotCXt7MSwgMn0sIHswLCAyfSwgezAsIDF9LCB7MCwgMX0sIHswLCAxfSwgezAsIDF9LCB7
-MCwgMX0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSwgezAsIDB9LH0sCS8qIDE2a0h6
-ICovDQotCXt7MSwgMn0sIHsxLCAyfSwgezAsIDJ9LCB7MCwgMX0sIHswLCAxfSwgezAsIDF9LCB7
-MCwgMX0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sIHswLCAwfSwgezAsIDB9LH0sCS8qIDIyMDUw
-SHogKi8NCi0Je3sxLCAyfSwgezIsIDF9LCB7MiwgMX0sIHswLCAyfSwgezAsIDF9LCB7MCwgMX0s
-IHswLCAxfSwgezAsIDF9LCB7MCwgMX0sIHswLCAwfSwgezAsIDB9LCB7MCwgMH0sfSwJLyogMzJr
-SHogKi8NCi0Je3syLCAyfSwgezIsIDJ9LCB7MiwgMX0sIHsyLCAxfSwgezAsIDJ9LCB7MCwgMX0s
-IHswLCAxfSwgezAsIDF9LCB7MCwgMX0sIHswLCAxfSwgezAsIDB9LCB7MCwgMH0sfSwJLyogNDQu
-MWtIeiAqLw0KLQl7ezIsIDJ9LCB7MiwgMn0sIHsyLCAxfSwgezIsIDF9LCB7MCwgMn0sIHswLCAy
-fSwgezAsIDF9LCB7MCwgMX0sIHswLCAxfSwgezAsIDF9LCB7MCwgMH0sIHswLCAwfSx9LAkvKiA0
-OGtIeiAqLw0KLQl7ezIsIDJ9LCB7MiwgMn0sIHsyLCAyfSwgezIsIDF9LCB7MSwgMn0sIHswLCAy
-fSwgezAsIDJ9LCB7MCwgMX0sIHswLCAxfSwgezAsIDF9LCB7MCwgMX0sIHswLCAwfSx9LAkvKiA2
-NGtIeiAqLw0KLQl7ezIsIDJ9LCB7MiwgMn0sIHsyLCAyfSwgezIsIDJ9LCB7MSwgMn0sIHsxLCAy
-fSwgezEsIDJ9LCB7MSwgMX0sIHsxLCAxfSwgezEsIDF9LCB7MSwgMX0sIHsxLCAxfSx9LAkvKiA4
-OC4ya0h6ICovDQotCXt7MiwgMn0sIHsyLCAyfSwgezIsIDJ9LCB7MiwgMn0sIHsxLCAyfSwgezEs
-IDJ9LCB7MSwgMn0sIHsxLCAxfSwgezEsIDF9LCB7MSwgMX0sIHsxLCAxfSwgezEsIDF9LH0sCS8q
-IDk2a0h6ICovDQotCXt7MiwgMn0sIHsyLCAyfSwgezIsIDJ9LCB7MiwgMn0sIHsyLCAyfSwgezIs
-IDJ9LCB7MiwgMn0sIHsyLCAxfSwgezIsIDF9LCB7MiwgMX0sIHsyLCAxfSwgezIsIDF9LH0sCS8q
-IDE3NmtIeiAqLw0KLQl7ezIsIDJ9LCB7MiwgMn0sIHsyLCAyfSwgezIsIDJ9LCB7MiwgMn0sIHsy
-LCAyfSwgezIsIDJ9LCB7MiwgMX0sIHsyLCAxfSwgezIsIDF9LCB7MiwgMX0sIHsyLCAxfSx9LAkv
-KiAxOTJrSHogKi8NCi19Ow0KLQ0KIC8qIENvcnJlc3BvbmRpbmcgdG8gcHJvY2Vzc19vcHRpb24g
-Ki8NCiBzdGF0aWMgaW50IHN1cHBvcnRlZF9pbnB1dF9yYXRlW10gPSB7DQogCTU1MTIsIDgwMDAs
-IDExMDI1LCAxNjAwMCwgMjIwNTAsIDMyMDAwLCA0NDEwMCwgNDgwMDAsIDY0MDAwLCA4ODIwMCwN
-CkBAIC04MCw2ICs2Miw1MSBAQA0KIHN0YXRpYyB1bnNpZ25lZCBjaGFyICpjbGtfbWFwWzJdOw0K
-IA0KIC8qKg0KKyAqIFNlbGVjdCB0aGUgcHJlLXByb2Nlc3NpbmcgYW5kIHBvc3QtcHJvY2Vzc2lu
-ZyBvcHRpb25zDQorICogVW5zdXBwb3J0IGNhc2VzOiBUc291dCA+IDguMTI1ICogVHNpbiwgVHNv
-dXQgPiAxNi4xMjUgKiBUc2luDQorICoNCisgKiBpbnJhdGU6IGlucHV0IHNhbXBsZSByYXRlDQor
-ICogb3V0cmF0ZTogb3V0cHV0IHNhbXBsZSByYXRlDQorICogcHJlX3Byb2M6IHJldHVybiB2YWx1
-ZSBmb3IgcHJlLXByb2Nlc3Npbmcgb3B0aW9uDQorICogcG9zdF9wcm9jOiByZXR1cm4gdmFsdWUg
-Zm9yIHBvc3QtcHJvY2Vzc2luZyBvcHRpb24NCisgKi8NCitzdGF0aWMgaW50IGZzbF9hc3JjX3Nl
-bF9wcm9jKGludCBpbnJhdGUsIGludCBvdXRyYXRlLA0KKwkJCSAgICAgaW50ICpwcmVfcHJvYywg
-aW50ICpwb3N0X3Byb2MpDQorew0KKwlib29sIHBvc3RfcHJvY19jb25kMjsNCisJYm9vbCBwb3N0
-X3Byb2NfY29uZDA7DQorDQorCS8qIHNlbGVjdCBwcmVfcHJvYyBiZXR3ZWVuIFswLCAyXSAqLw0K
-KwlpZiAoaW5yYXRlICogOCA+IDMzICogb3V0cmF0ZSkNCisJCSpwcmVfcHJvYyA9IDI7DQorCWVs
-c2UgaWYgKGlucmF0ZSAqIDggPiAxNSAqIG91dHJhdGUpIHsNCisJCWlmIChpbnJhdGUgPiAxNTIw
-MDApDQorCQkJKnByZV9wcm9jID0gMjsNCisJCWVsc2UNCisJCQkqcHJlX3Byb2MgPSAxOw0KKwl9
-IGVsc2UgaWYgKGlucmF0ZSA8IDc2MDAwKQ0KKwkJKnByZV9wcm9jID0gMDsNCisJZWxzZSBpZiAo
-aW5yYXRlID4gMTUyMDAwKQ0KKwkJKnByZV9wcm9jID0gMjsNCisJZWxzZQ0KKwkJKnByZV9wcm9j
-ID0gMTsNCisNCisJLyogQ29uZGl0aW9uIGZvciBzZWxlY3Rpb24gb2YgcG9zdC1wcm9jZXNzaW5n
-ICovDQorCXBvc3RfcHJvY19jb25kMiA9IChpbnJhdGUgKiAxNSA+IG91dHJhdGUgKiAxNiAmJiBv
-dXRyYXRlIDwgNTYwMDApIHx8DQorCQkJICAoaW5yYXRlID4gNTYwMDAgJiYgb3V0cmF0ZSA8IDU2
-MDAwKTsNCisJcG9zdF9wcm9jX2NvbmQwID0gaW5yYXRlICogMjMgPCBvdXRyYXRlICogODsNCisN
-CisJaWYgKHBvc3RfcHJvY19jb25kMikNCisJCSpwb3N0X3Byb2MgPSAyOw0KKwllbHNlIGlmIChw
-b3N0X3Byb2NfY29uZDApDQorCQkqcG9zdF9wcm9jID0gMDsNCisJZWxzZQ0KKwkJKnBvc3RfcHJv
-YyA9IDE7DQorDQorCXJldHVybiAwOw0KK30NCisNCisvKioNCiAgKiBSZXF1ZXN0IEFTUkMgcGFp
-cg0KICAqDQogICogSXQgYXNzaWducyBwYWlyIGJ5IHRoZSBvcmRlciBvZiBBLT5DLT5CIGJlY2F1
-c2UgYWxsb2NhdGlvbiBvZiBwYWlyIEIsDQpAQCAtMjM5LDggKzI2NiwxMCBAQCBzdGF0aWMgaW50
-IGZzbF9hc3JjX2NvbmZpZ19wYWlyKHN0cnVjdCBmc2xfYXNyY19wYWlyICpwYWlyKQ0KIAl1MzIg
-aW5yYXRlLCBvdXRyYXRlLCBpbmRpdiwgb3V0ZGl2Ow0KIAl1MzIgY2xrX2luZGV4WzJdLCBkaXZb
-Ml07DQogCWludCBpbiwgb3V0LCBjaGFubmVsczsNCisJaW50IHByZV9wcm9jLCBwb3N0X3Byb2M7
-DQogCXN0cnVjdCBjbGsgKmNsazsNCiAJYm9vbCBpZGVhbDsNCisJaW50IHJldDsNCiANCiAJaWYg
-KCFjb25maWcpIHsNCiAJCXBhaXJfZXJyKCJpbnZhbGlkIHBhaXIgY29uZmlnXG4iKTsNCkBAIC0y
-ODksNiArMzE4LDEyIEBAIHN0YXRpYyBpbnQgZnNsX2FzcmNfY29uZmlnX3BhaXIoc3RydWN0IGZz
-bF9hc3JjX3BhaXIgKnBhaXIpDQogCQlyZXR1cm4gLUVJTlZBTDsNCiAJfQ0KIA0KKwlyZXQgPSBm
-c2xfYXNyY19zZWxfcHJvYyhpbnJhdGUsIG91dHJhdGUsICZwcmVfcHJvYywgJnBvc3RfcHJvYyk7
-DQorCWlmIChyZXQpIHsNCisJCXBhaXJfZXJyKCJObyBzdXBwb3J0ZWQgcHJlLXByb2Nlc3Npbmcg
-b3B0aW9uc1xuIik7DQorCQlyZXR1cm4gcmV0Ow0KKwl9DQorDQogCS8qIFZhbGlkYXRlIGlucHV0
-IGFuZCBvdXRwdXQgY2xvY2sgc291cmNlcyAqLw0KIAljbGtfaW5kZXhbSU5dID0gY2xrX21hcFtJ
-Tl1bY29uZmlnLT5pbmNsa107DQogCWNsa19pbmRleFtPVVRdID0gY2xrX21hcFtPVVRdW2NvbmZp
-Zy0+b3V0Y2xrXTsNCkBAIC0zODAsOCArNDE1LDggQEAgc3RhdGljIGludCBmc2xfYXNyY19jb25m
-aWdfcGFpcihzdHJ1Y3QgZnNsX2FzcmNfcGFpciAqcGFpcikNCiAJLyogQXBwbHkgY29uZmlndXJh
-dGlvbnMgZm9yIHByZS0gYW5kIHBvc3QtcHJvY2Vzc2luZyAqLw0KIAlyZWdtYXBfdXBkYXRlX2Jp
-dHMoYXNyY19wcml2LT5yZWdtYXAsIFJFR19BU1JDRkcsDQogCQkJICAgQVNSQ0ZHX1BSRU1PRGlf
-TUFTSyhpbmRleCkgfAlBU1JDRkdfUE9TVE1PRGlfTUFTSyhpbmRleCksDQotCQkJICAgQVNSQ0ZH
-X1BSRU1PRChpbmRleCwgcHJvY2Vzc19vcHRpb25baW5dW291dF1bMF0pIHwNCi0JCQkgICBBU1JD
-RkdfUE9TVE1PRChpbmRleCwgcHJvY2Vzc19vcHRpb25baW5dW291dF1bMV0pKTsNCisJCQkgICBB
-U1JDRkdfUFJFTU9EKGluZGV4LCBwcmVfcHJvYykgfA0KKwkJCSAgIEFTUkNGR19QT1NUTU9EKGlu
-ZGV4LCBwb3N0X3Byb2MpKTsNCiANCiAJcmV0dXJuIGZzbF9hc3JjX3NldF9pZGVhbF9yYXRpbyhw
-YWlyLCBpbnJhdGUsIG91dHJhdGUpOw0KIH0NCi0tIA0KMS45LjENCg0K
+Replace GPL v2.0 license statements with SPDX license identifier.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/jive_wm8750.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+index 529b10dc532b..f05f9e03f07d 100644
+--- a/sound/soc/samsung/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -1,15 +1,10 @@
+-/* sound/soc/samsung/jive_wm8750.c
+- *
+- * Copyright 2007,2008 Simtec Electronics
+- *
+- * Based on sound/soc/pxa/spitz.c
+- *	Copyright 2005 Wolfson Microelectronics PLC.
+- *	Copyright 2005 Openedhand Ltd.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+-*/
++// SPDX-License-Identifier: GPL-2.0
++//
++// Copyright 2007,2008 Simtec Electronics
++//
++// Based on sound/soc/pxa/spitz.c
++//	Copyright 2005 Wolfson Microelectronics PLC.
++//	Copyright 2005 Openedhand Ltd.
+ 
+ #include <linux/module.h>
+ #include <sound/soc.h>
+-- 
+2.17.1
