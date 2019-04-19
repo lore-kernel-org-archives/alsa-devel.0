@@ -1,62 +1,58 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V4 3/3] ASoC: fsl_asrc: Unify the supported input and
- output rate
-Date: Fri, 19 Apr 2019 11:28:13 -0700
-Message-ID: <20190419182812.GC1136@Asurada-Nvidia.nvidia.com>
-References: <cover.1555669068.git.shengjiu.wang@nxp.com>
- <b450010bb24e18e01b78d32067d6efdb572a9cc4.1555669068.git.shengjiu.wang@nxp.com>
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 0/5] Allwinner H6 SPDIF support
+Date: Fri, 19 Apr 2019 21:17:25 +0200
+Message-ID: <20190419191730.9437-1-peron.clem@gmail.com>
+Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <b450010bb24e18e01b78d32067d6efdb572a9cc4.1555669068.git.shengjiu.wang@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCELXIX7UICBBC545DSQKGQE2CTRC6I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 19, 2019 at 10:23:56AM +0000, S.j. Wang wrote:
-> Unify the supported input and output rate, add the
-> 12kHz/24kHz/128kHz to the support list
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_asrc.c | 32 +++++++++++++++++++-------------
->  1 file changed, 19 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> index 2c4bbc3499db..0d06e738264a 100644
-> --- a/sound/soc/fsl/fsl_asrc.c
-> +++ b/sound/soc/fsl/fsl_asrc.c
-> @@ -27,13 +27,14 @@
->  	dev_dbg(&asrc_priv->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
->  
->  /* Corresponding to process_option */
-> -static int supported_input_rate[] = {
-> -	5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200,
-> -	96000, 176400, 192000,
-> +static unsigned int supported_asrc_rate[] = {
-> +	5512, 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
-> +	64000, 88200, 96000, 128000, 176400, 192000,
->  };
->  
-> -static int supported_asrc_rate[] = {
-> -	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200, 96000, 176400, 192000,
-> +static struct snd_pcm_hw_constraint_list fsl_asrc_rate_constraints = {
-> +	.count = ARRAY_SIZE(supported_asrc_rate),
-> +	.list = supported_asrc_rate,
->  };
->  
->  /**
-> @@ -293,11 +294,11 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
->  	ideal = config->inclk == INCLK_NONE;
->  
->  	/* Validate input and output sample rates */
-> -	for (in = 0; in < ARRAY_SIZE(supported_input_rate); in++)
-> -		if (inrate == supported_input_rate[in])
-> +	for (in = 0; in < ARRAY_SIZE(supported_asrc_rate); in++)
-> +		if (inrate == supported_asrc_rate[in])
->  			break;
+*H6 DMA support IS REQUIRED*
 
-Not sure if we still need it upon having hw_constraint. Maybe m2m
-needs it?
+Allwinner H6 SoC has a SPDIF controller called One Wire Audio (OWA) which
+is different from the previous H3 generation and not compatible.
+
+Difference are an increase of fifo sizes, some memory mapping are different
+and there is now the possibility to output the master clock on a pin.
+
+Also this series require the DMA working on H6, a first version has been
+submitted by Jernej =C5=A0krabec but is not yet accepted (as this moment):
+https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=3D89011
+
+This series has been tested on Beelink GS1 on top of sunxi/for-next with
+Jernej DMA support patch.
+
+Cl=C3=A9ment P=C3=A9ron (5):
+  dt-bindings: sound: sun4i-spdif: Add Allwinner H6 compatible
+  ASoC: sun4i-spdif: Add support for H6 SoC
+  arm64: dts: allwinner: Add SPDIF node for Allwinner H6
+  arm64: dts: allwinner: h6: Enable SPDIF for Beelink GS1
+  arm64: defconfig: Enable Sun4i SPDIF module
+
+ .../bindings/sound/sunxi,sun4i-spdif.txt      |  3 +-
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  4 ++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 38 +++++++++++++++++
+ arch/arm64/configs/defconfig                  |  1 +
+ sound/soc/sunxi/sun4i-spdif.c                 | 42 ++++++++++++++++---
+ 5 files changed, 81 insertions(+), 7 deletions(-)
+
+--=20
+2.17.1
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
