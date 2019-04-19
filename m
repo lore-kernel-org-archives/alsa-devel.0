@@ -1,19 +1,19 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 20/27] ASoC: samsung: smdk_spdif: Convert to
+Subject: [PATCH 21/27] ASoC: samsung: smdk_wm8580: Convert to
  SPDX License Identifier
-Date: Fri, 19 Apr 2019 12:21:55 +0200
-Message-ID: <20190419102202.4384-21-s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 12:21:56 +0200
+Message-ID: <20190419102202.4384-22-s.nawrocki@samsung.com>
 References: <20190419102202.4384-1-s.nawrocki@samsung.com>
- <CGME20190419102324epcas1p425e4612e7fb7f62b09cece5af88cb6c2@epcas1p4.samsung.com>
+ <CGME20190419102327epcas2p3109c900534aada238c9aad4dfd118eef@epcas2p3.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E708FF89783
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:23:27 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AFC0F8978E
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:23:32 +0200 (CEST)
 In-reply-to: <20190419102202.4384-1-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,32 +32,31 @@ Replace GPL v2.0+ license statements with SPDX license identifier.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/samsung/smdk_spdif.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/samsung/smdk_wm8580.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
-index 7fc7cc6d1530..87a70d872c00 100644
---- a/sound/soc/samsung/smdk_spdif.c
-+++ b/sound/soc/samsung/smdk_spdif.c
-@@ -1,14 +1,8 @@
+diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+index 6e4dfa7e2c89..987807e6f8c3 100644
+--- a/sound/soc/samsung/smdk_wm8580.c
++++ b/sound/soc/samsung/smdk_wm8580.c
+@@ -1,14 +1,7 @@
 -/*
-- * smdk_spdif.c  --  S/PDIF audio for SMDK
+- *  smdk_wm8580.c
 - *
-- * Copyright 2010 Samsung Electronics Co. Ltd.
+- *  Copyright (c) 2009 Samsung Electronics Co. Ltd
+- *  Author: Jaswinder Singh <jassisinghbrar@gmail.com>
 - *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of the
-- * License, or (at your option) any later version.
-- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// smdk_spdif.c - S/PDIF audio for SMDK
-+//
-+// Copyright (C) 2010 Samsung Electronics Co., Ltd.
++// Copyright (c) 2009 Samsung Electronics Co. Ltd
++// Author: Jaswinder Singh <jassisinghbrar@gmail.com>
  
- #include <linux/clk.h>
  #include <linux/module.h>
+ #include <sound/soc.h>
 -- 
 2.17.1
