@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Haswell: Remove set but not used
-	variable 'stage_type'" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:05 +0100 (BST)
-Message-ID: <20190419161405.ED76A441D3C@finisterre.ee.mobilebroadband>
-References: <20190418024848.39112-1-yuehaibing@huawei.com>
+Subject: Applied "ASoC: samsung: smdk_wm8994*: Convert to SPDX
+	License Identifier" to the asoc tree
+Date: Fri, 19 Apr 2019 17:14:09 +0100 (BST)
+Message-ID: <20190419161410.0EFD2441D3C@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-23-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FB76F896FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D407F896F0
  for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:12 +0200 (CEST)
-In-Reply-To: <20190418024848.39112-1-yuehaibing@huawei.com>
+In-Reply-To: <20190419102202.4384-23-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,13 +24,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, yang.jie@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, Mark Brown <broonie@kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Mark Brown <broonie@kernel.org>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Haswell: Remove set but not used variable 'stage_type'
+   ASoC: samsung: smdk_wm8994*: Convert to SPDX License Identifier
 
 has been applied to the asoc tree at
 
@@ -55,57 +55,61 @@ to this mail.
 Thanks,
 Mark
 
->From 479879701758206a2cc75176119fcc9dacc40846 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 18 Apr 2019 10:48:48 +0800
-Subject: [PATCH] ASoC: Intel: Haswell: Remove set but not used variable
- 'stage_type'
+>From f9ff38071cdc2c1c2bbc0e2b81b025476c152982 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 12:21:57 +0200
+Subject: [PATCH] ASoC: samsung: smdk_wm8994*: Convert to SPDX License
+ Identifier
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Replace GPL v2.0+ license statements with SPDX license identifier.
 
-sound/soc/intel/haswell/sst-haswell-ipc.c: In function 'hsw_stream_message':
-sound/soc/intel/haswell/sst-haswell-ipc.c:669:29: warning: variable 'stage_type' set but not used [-Wunused-but-set-variable]
-
-It is never used since introduction in
-commit ba57f68235cf ("ASoC: Intel: create haswell folder and move haswell platform files in")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-ipc.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ sound/soc/samsung/smdk_wm8994.c    |  9 +--------
+ sound/soc/samsung/smdk_wm8994pcm.c | 16 +++++-----------
+ 2 files changed, 6 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
-index 31fcdf12c67d..74acf9c65161 100644
---- a/sound/soc/intel/haswell/sst-haswell-ipc.c
-+++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
-@@ -345,11 +345,6 @@ static inline u32 msg_get_stream_type(u32 msg)
- 	return (msg & IPC_STR_TYPE_MASK) >>  IPC_STR_TYPE_SHIFT;
- }
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index ff57b192d37d..135d8c2745be 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -1,11 +1,4 @@
+-/*
+- *  smdk_wm8994.c
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
  
--static inline u32 msg_get_stage_type(u32 msg)
--{
--	return (msg & IPC_STG_TYPE_MASK) >>  IPC_STG_TYPE_SHIFT;
--}
--
- static inline u32 msg_get_stream_id(u32 msg)
- {
- 	return (msg & IPC_STR_ID_MASK) >>  IPC_STR_ID_SHIFT;
-@@ -666,13 +661,12 @@ static int hsw_module_message(struct sst_hsw *hsw, u32 header)
- 
- static int hsw_stream_message(struct sst_hsw *hsw, u32 header)
- {
--	u32 stream_msg, stream_id, stage_type;
-+	u32 stream_msg, stream_id;
- 	struct sst_hsw_stream *stream;
- 	int handled = 0;
- 
- 	stream_msg = msg_get_stream_type(header);
- 	stream_id = msg_get_stream_id(header);
--	stage_type = msg_get_stage_type(header);
- 
- 	stream = get_stream_by_id(hsw, stream_id);
- 	if (stream == NULL)
+ #include "../codecs/wm8994.h"
+ #include <sound/pcm_params.h>
+diff --git a/sound/soc/samsung/smdk_wm8994pcm.c b/sound/soc/samsung/smdk_wm8994pcm.c
+index 2e621496be8b..43171d6457fa 100644
+--- a/sound/soc/samsung/smdk_wm8994pcm.c
++++ b/sound/soc/samsung/smdk_wm8994pcm.c
+@@ -1,14 +1,8 @@
+-/*
+- *  sound/soc/samsung/smdk_wm8994pcm.c
+- *
+- *  Copyright (c) 2011 Samsung Electronics Co., Ltd
+- *		http://www.samsung.com
+- *
+- *  This program is free software; you can redistribute  it and/or  modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright (c) 2011 Samsung Electronics Co., Ltd
++//		http://www.samsung.com
++
+ #include <linux/module.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
 -- 
 2.20.1
