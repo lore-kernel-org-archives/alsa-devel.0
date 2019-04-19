@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: fsl_esai: Add pm runtime function
-Date: Fri, 19 Apr 2019 16:25:07 +0100
-Message-ID: <20190419152507.GU2803@sirena.org.uk>
-References: <VE1PR04MB6479A85982748088CC42901DE3270@VE1PR04MB6479.eurprd04.prod.outlook.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: pcm: save fixed-up hw_params of BE
+Date: Fri, 19 Apr 2019 10:30:51 -0500
+Message-ID: <fa332aba-7695-3687-b0e6-3d17d8f2ab15@linux.intel.com>
+References: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0410660248572819041=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B71EF807B6
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 17:25:10 +0200 (CEST)
-In-Reply-To: <VE1PR04MB6479A85982748088CC42901DE3270@VE1PR04MB6479.eurprd04.prod.outlook.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 863DBF807B6
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 17:31:05 +0200 (CEST)
+In-Reply-To: <1555638792-20848-1-git-send-email-libin.yang@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +23,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 4/18/19 8:53 PM, libin.yang@intel.com wrote:
+> From: Libin Yang <libin.yang@intel.com>
+> 
+> Some drivers mandate setting up hw params after resuming from system sleep.
+> Since, the hw_params ioctl is not invoked upon resuming, the fixed-up BE
+> dai hw params should be saved so the driver can use it in its resume
+> sequence.
 
---===============0410660248572819041==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4WCFFtl4AQpQKunj"
-Content-Disposition: inline
+This functionality is needed for SOF. We initially thought of 
+implementing it as an SOF-specific patch but thought this could be 
+useful to others, and don't see any negative impact.
 
-
---4WCFFtl4AQpQKunj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Apr 19, 2019 at 11:01:21AM +0000, S.j. Wang wrote:
-
-> > fsl_esai_probe(struct platform_device *pdev)
-> >                 return ret;
-> >         }
-> >=20
-> > +       pm_runtime_enable(&pdev->dev);
-> > +
-
-> I just have a question, do I need to add pm_runtime_idle(&pdev->dev)?
-
-It gets used to help drivers get into the correct state on startup, if
-you're unsure if it's 100% required it shouldn't hurt.
-
---4WCFFtl4AQpQKunj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly56FIACgkQJNaLcl1U
-h9CGCwf/V4SKmPiu420k0g+uofTrLtN6Jv9aTQuGhf7zO7AX1stWXlkVwZwj6RZK
-XC7w1TLKHMVSJUp+U5nUKH9lrbIPsldykON2Mn1cK7TQRIXMXoXgZgBZRagddQkU
-iP0RupSAma6LT4/o4RHV6pjp2qDMU8oJfIUcBqiyFQsmaEMvYK14izz7hOScKwIb
-VZMnFG60t8T7AxVCKda6cW72ikkuV1pvAENJ2j36iTNfaFA9Ufo/du99PNZK+9bW
-o34ZkH1FrcKZRgM0gQ3icbYUxQQV+WflxfFayC4M/qfCXjJiVoAbvEpLzfSSVYtW
-Irvy3o+JKq311kA8vioI3gdp9HFhUg==
-=6lYl
------END PGP SIGNATURE-----
-
---4WCFFtl4AQpQKunj--
-
---===============0410660248572819041==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Libin and Ranjani, can you clarify what 'some drivers' means. I took it 
+as "SOF and other DPCM-based drivers without the 'INFO_RESUME' flag". 
+Please confirm if I was correct, if we want feedback we should clarify 
+who might benefit. Thanks!
 
 
---===============0410660248572819041==--
+> Signed-off-by: Libin Yang <libin.yang@intel.com>
+> ---
+>   sound/soc/soc-pcm.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index d212475..7469535 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2164,6 +2164,10 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+>   			}
+>   		}
+>   
+> +		/* copy the fixed-up hw params for BE dai */
+> +		memcpy(&be->dpcm[stream].hw_params, &dpcm->hw_params,
+> +		       sizeof(struct snd_pcm_hw_params));
+> +
+>   		/* only allow hw_params() if no connected FEs are running */
+>   		if (!snd_soc_dpcm_can_be_params(fe, be, stream))
+>   			continue;
+> 
