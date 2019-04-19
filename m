@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: snow: Convert to SPDX License
-	Identifier" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:09 +0100 (BST)
-Message-ID: <20190419161409.6632A441D3B@finisterre.ee.mobilebroadband>
-References: <20190419102202.4384-24-s.nawrocki@samsung.com>
+Subject: Applied "ASoC: samsung: speyside: Convert to SPDX
+	License Identifier" to the asoc tree
+Date: Fri, 19 Apr 2019 17:14:08 +0100 (BST)
+Message-ID: <20190419161408.3852B441D41@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-26-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39C51F807B6
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:12 +0200 (CEST)
-In-Reply-To: <20190419102202.4384-24-s.nawrocki@samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 209ABF801D9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:11 +0200 (CEST)
+In-Reply-To: <20190419102202.4384-26-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: snow: Convert to SPDX License Identifier
+   ASoC: samsung: speyside: Convert to SPDX License Identifier
 
 has been applied to the asoc tree at
 
@@ -55,41 +55,41 @@ to this mail.
 Thanks,
 Mark
 
->From ebf4c423dd2a53f3a65f2a1645cc50b4db03de9e Mon Sep 17 00:00:00 2001
+>From 3f8b21fd7960371bfd9f40955e5eb6be8db80bf9 Mon Sep 17 00:00:00 2001
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 19 Apr 2019 12:21:58 +0200
-Subject: [PATCH] ASoC: samsung: snow: Convert to SPDX License Identifier
+Date: Fri, 19 Apr 2019 12:22:00 +0200
+Subject: [PATCH] ASoC: samsung: speyside: Convert to SPDX License Identifier
 
-Replace GPL v2.0 license statements with SPDX license identifier.
+Replace GPL v2.0+ license statements with SPDX license identifier.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/snow.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ sound/soc/samsung/speyside.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 5d8efc2d5c38..57ce90fe5004 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -1,15 +1,6 @@
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 4b4147d07804..15465c84daa3 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -1,13 +1,8 @@
 -/*
-- * ASoC machine driver for Snow boards
+- * Speyside audio support
 - *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
+- * Copyright 2011 Wolfson Microelectronics
 - *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
 - */
-+// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0+
 +//
-+// ASoC machine driver for Snow boards
++// Speyside audio support
++//
++// Copyright 2011 Wolfson Microelectronics
  
- #include <linux/clk.h>
- #include <linux/module.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
 -- 
 2.20.1
