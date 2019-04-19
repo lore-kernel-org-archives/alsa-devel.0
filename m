@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: arndale: Convert to SPDX
-	License Identifier" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:23 +0100 (BST)
-Message-ID: <20190419161423.5BA9B441D3F@finisterre.ee.mobilebroadband>
-References: <20190419102202.4384-2-s.nawrocki@samsung.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] soundwire: code cleanup
+Date: Fri, 19 Apr 2019 12:07:38 -0500
+Message-ID: <bb335979-61de-e2d7-d1b4-8e29e2beda49@linux.intel.com>
+References: <20190411031701.5926-1-pierre-louis.bossart@linux.intel.com>
+ <20190414100417.GH28103@vkoul-mobl>
+ <df6040ba-ab69-ae64-a27f-236e8ac95c14@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39305F8973B
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:30 +0200 (CEST)
-In-Reply-To: <20190419102202.4384-2-s.nawrocki@samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9950DF801D9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 19:07:42 +0200 (CEST)
+In-Reply-To: <df6040ba-ab69-ae64-a27f-236e8ac95c14@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,74 +25,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Mark Brown <broonie@kernel.org>, m.szyprowski@samsung.com
+To: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com, joe@perches.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: samsung: arndale: Convert to SPDX License Identifier
 
-has been applied to the asoc tree at
+On 4/15/19 7:57 AM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 4/14/19 5:04 AM, Vinod Koul wrote:
+>> On 10-04-19, 22:16, Pierre-Louis Bossart wrote:
+>>> SoundWire support will be provided in Linux with the Sound Open
+>>> Firmware (SOF) on Intel platforms. Before we start adding the missing
+>>> pieces, there are a number of warnings and style issues reported by
+>>> checkpatch, cppcheck and Coccinelle that need to be cleaned-up.
+>>
+>> Applied, 1, 3 and 4 (5 looked good but didnt apply)
+> 
+> this applies on top of Mark Brown's for-next tree. This should be the 
+> reference really for SoundWire work, if we start having another tree 
+> with deltas it's really counter productive. I already have dependencies 
+> on acpi...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+Vinod, can you please double-check why patch 5 didn't work for you. I 
+tried on Mark and Linus' trees and no issues, see below.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+$ git reset --hard v5.1-rc5
+HEAD is now at dc4060a5dc25 Linux 5.1-rc5
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+$ git am ~/Downloads/alsa/39/\[PATCH\ v3\ *.eml
+Applying: soundwire: intel: fix inversion in devm_kcalloc parameters
+Applying: soundwire: fix style issues
+Applying: soundwire: bus: remove useless initializations
+Applying: soundwire: stream: remove useless initialization of local variable
+Applying: soundwire: add missing newlines in dynamic debug logs
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+$ git reset --hard broonie/for-next
+HEAD is now at 84fdefca04a7 Merge branch 'asoc-5.2' into asoc-next
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4c61608402f5408855d54c91e32e61780644dd1d Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 19 Apr 2019 12:21:36 +0200
-Subject: [PATCH] ASoC: samsung: arndale: Convert to SPDX License Identifier
-
-Replace GPL v2.0 license statements with SPDX license identifier.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/arndale_rt5631.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index ee1fda92f2f4..cc334e1866f6 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -1,15 +1,8 @@
--/*
-- *  arndale_rt5631.c
-- *
-- *  Copyright (c) 2014, Insignal Co., Ltd.
-- *
-- *  Author: Claude <claude@insginal.co.kr>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Copyright (c) 2014, Insignal Co., Ltd.
-+//
-+//  Author: Claude <claude@insginal.co.kr>
- 
- #include <linux/module.h>
- #include <linux/platform_device.h>
--- 
-2.20.1
+$ git am ~/Downloads/alsa/39/\[PATCH\ v3\ *.eml
+Applying: soundwire: intel: fix inversion in devm_kcalloc parameters
+Applying: soundwire: fix style issues
+Applying: soundwire: bus: remove useless initializations
+Applying: soundwire: stream: remove useless initialization of local variable
+Applying: soundwire: add missing newlines in dynamic debug logs
