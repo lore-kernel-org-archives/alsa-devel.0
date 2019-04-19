@@ -1,14 +1,13 @@
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 4/5] arm64: dts: allwinner: h6: Enable SPDIF
- for Beelink GS1
-Date: Fri, 19 Apr 2019 21:17:29 +0200
-Message-ID: <20190419191730.9437-5-peron.clem@gmail.com>
+Subject: [PATCH v2 5/5] arm64: defconfig: Enable Sun4i SPDIF module
+Date: Fri, 19 Apr 2019 21:17:30 +0200
+Message-ID: <20190419191730.9437-6-peron.clem@gmail.com>
 References: <20190419191730.9437-1-peron.clem@gmail.com>
 Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCELXIX7UICBBD545DSQKGQEY2AYNWY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCELXIX7UICBBEN45DSQKGQERPG3I2Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20190419191730.9437-1-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -21,30 +20,27 @@ To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Beelink GS1 board has a SPDIF out connector, so enable it in
-the device-tree.
+Allwinner A64 and H6 use the Sun4i SPDIF driver.
+
+Enable this to allow a proper support.
 
 Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch=
-/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 0dc33c90dd60..76a95ad33dc5 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -243,6 +243,10 @@
- 	vcc-pm-supply =3D <&reg_aldo1>;
- };
-=20
-+&spdif {
-+	status =3D "okay";
-+};
-+
- &uart0 {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&uart0_ph_pins>;
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 2d9c39033c1a..423413768d79 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -531,6 +531,7 @@ CONFIG_SND_SOC_RK3399_GRU_SOUND=3Dm
+ CONFIG_SND_MESON_AXG_SOUND_CARD=3Dm
+ CONFIG_SND_SOC_SAMSUNG=3Dy
+ CONFIG_SND_SOC_RCAR=3Dm
++CONFIG_SND_SUN4I_SPDIF=3Dm
+ CONFIG_SND_SOC_AK4613=3Dm
+ CONFIG_SND_SOC_PCM3168A_I2C=3Dm
+ CONFIG_SND_SIMPLE_CARD=3Dm
 --=20
 2.17.1
 
