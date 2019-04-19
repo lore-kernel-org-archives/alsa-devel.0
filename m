@@ -1,20 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: codec: hdac_hdmi add device_link
- to card device
-Date: Fri, 19 Apr 2019 10:17:18 -0500
-Message-ID: <a399619c-bb78-26c2-8fc4-7f99df4a6ea6@linux.intel.com>
-References: <1555161492-9143-1-git-send-email-libin.yang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2] ASoC: fsl_esai: Add pm runtime function
+Date: Fri, 19 Apr 2019 16:25:07 +0100
+Message-ID: <20190419152507.GU2803@sirena.org.uk>
+References: <VE1PR04MB6479A85982748088CC42901DE3270@VE1PR04MB6479.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0410660248572819041=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5143F896E2
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 17:17:32 +0200 (CEST)
-In-Reply-To: <1555161492-9143-1-git-send-email-libin.yang@intel.com>
-Content-Language: en-US
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B71EF807B6
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 17:25:10 +0200 (CEST)
+In-Reply-To: <VE1PR04MB6479A85982748088CC42901DE3270@VE1PR04MB6479.eurprd04.prod.outlook.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +22,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: libin.yang@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/13/19 8:18 AM, libin.yang@intel.com wrote:
-> From: Libin Yang <libin.yang@intel.com>
-> 
-> In resume from S3, HDAC HDMI codec driver dapm event callback may be
-> operated before HDMI codec driver turns on the display audio power
-> domain because of the contest between display driver and hdmi codec driver.
-> 
-> This patch adds the device_link between soc card device (consumer) and
-> hdmi codec device (supplier) to make sure the sequence is always correct.
-> 
-> Signed-off-by: Libin Yang <libin.yang@intel.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+--===============0410660248572819041==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4WCFFtl4AQpQKunj"
+Content-Disposition: inline
 
-Libin, please follow-up on the question from Takashi on CC:ing to 
-stable. I would guess this probably would be needed for 4.14+, older 
-stuff is unlikely to work anyways due to other issues.
 
-> ---
->   sound/soc/codecs/hdac_hdmi.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-> index 5eeb0fe..4de1fbf 100644
-> --- a/sound/soc/codecs/hdac_hdmi.c
-> +++ b/sound/soc/codecs/hdac_hdmi.c
-> @@ -1855,6 +1855,17 @@ static int hdmi_codec_probe(struct snd_soc_component *component)
->   	hdmi->card = dapm->card->snd_card;
->   
->   	/*
-> +	 * Setup a device_link between card device and HDMI codec device.
-> +	 * The card device is the consumer and the HDMI codec device is
-> +	 * the supplier. With this setting, we can make sure that the audio
-> +	 * domain in display power will be always turned on before operating
-> +	 * on the HDMI audio codec registers.
-> +	 * Let's use the flag DL_FLAG_AUTOREMOVE_CONSUMER. This can make
-> +	 * sure the device link is freed when the machine driver is removed.
-> +	 */
-> +	device_link_add(component->card->dev, &hdev->dev, DL_FLAG_RPM_ACTIVE |
-> +			DL_FLAG_AUTOREMOVE_CONSUMER);
-> +	/*
->   	 * hdac_device core already sets the state to active and calls
->   	 * get_noresume. So enable runtime and set the device to suspend.
->   	 */
-> 
+--4WCFFtl4AQpQKunj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 19, 2019 at 11:01:21AM +0000, S.j. Wang wrote:
+
+> > fsl_esai_probe(struct platform_device *pdev)
+> >                 return ret;
+> >         }
+> >=20
+> > +       pm_runtime_enable(&pdev->dev);
+> > +
+
+> I just have a question, do I need to add pm_runtime_idle(&pdev->dev)?
+
+It gets used to help drivers get into the correct state on startup, if
+you're unsure if it's 100% required it shouldn't hurt.
+
+--4WCFFtl4AQpQKunj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAly56FIACgkQJNaLcl1U
+h9CGCwf/V4SKmPiu420k0g+uofTrLtN6Jv9aTQuGhf7zO7AX1stWXlkVwZwj6RZK
+XC7w1TLKHMVSJUp+U5nUKH9lrbIPsldykON2Mn1cK7TQRIXMXoXgZgBZRagddQkU
+iP0RupSAma6LT4/o4RHV6pjp2qDMU8oJfIUcBqiyFQsmaEMvYK14izz7hOScKwIb
+VZMnFG60t8T7AxVCKda6cW72ikkuV1pvAENJ2j36iTNfaFA9Ufo/du99PNZK+9bW
+o34ZkH1FrcKZRgM0gQ3icbYUxQQV+WflxfFayC4M/qfCXjJiVoAbvEpLzfSSVYtW
+Irvy3o+JKq311kA8vioI3gdp9HFhUg==
+=6lYl
+-----END PGP SIGNATURE-----
+
+--4WCFFtl4AQpQKunj--
+
+--===============0410660248572819041==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0410660248572819041==--
