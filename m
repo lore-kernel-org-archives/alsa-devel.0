@@ -1,14 +1,14 @@
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 3/5] arm64: dts: allwinner: Add SPDIF node
- for Allwinner H6
-Date: Fri, 19 Apr 2019 21:17:28 +0200
-Message-ID: <20190419191730.9437-4-peron.clem@gmail.com>
+Subject: [PATCH v2 4/5] arm64: dts: allwinner: h6: Enable SPDIF
+ for Beelink GS1
+Date: Fri, 19 Apr 2019 21:17:29 +0200
+Message-ID: <20190419191730.9437-5-peron.clem@gmail.com>
 References: <20190419191730.9437-1-peron.clem@gmail.com>
 Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCELXIX7UICBBDV45DSQKGQEXBU73CA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCELXIX7UICBBD545DSQKGQEY2AYNWY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20190419191730.9437-1-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -21,79 +21,30 @@ To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Allwinner H6 has a SPDIF controller called OWA (One Wire Audio).
-
-Only one pinmuxing is available so set it as default.
+Beelink GS1 board has a SPDIF out connector, so enable it in
+the device-tree.
 
 Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 38 ++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot=
-/dts/allwinner/sun50i-h6.dtsi
-index ad2077830f73..6c1debf11e5c 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -83,6 +83,24 @@
- 		method =3D "smc";
- 	};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch=
+/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index 0dc33c90dd60..76a95ad33dc5 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -243,6 +243,10 @@
+ 	vcc-pm-supply =3D <&reg_aldo1>;
+ };
 =20
-+	sound_spdif {
-+		compatible =3D "simple-audio-card";
-+		simple-audio-card,name =3D "On-board SPDIF";
++&spdif {
++	status =3D "okay";
++};
 +
-+		simple-audio-card,cpu {
-+			sound-dai =3D <&spdif>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai =3D <&spdif_out>;
-+		};
-+	};
-+
-+	spdif_out: spdif-out {
-+		#sound-dai-cells =3D <0>;
-+		compatible =3D "linux,spdif-dit";
-+	};
-+
- 	timer {
- 		compatible =3D "arm,armv8-timer";
- 		interrupts =3D <GIC_PPI 13
-@@ -264,6 +282,11 @@
- 				bias-pull-up;
- 			};
-=20
-+			spdif_tx_pin: spdif-tx-pin {
-+				pins =3D "PH7";
-+				function =3D "spdif";
-+			};
-+
- 			uart0_ph_pins: uart0-ph-pins {
- 				pins =3D "PH0", "PH1";
- 				function =3D "uart0";
-@@ -391,6 +414,21 @@
- 			};
- 		};
-=20
-+		spdif: spdif@5093000 {
-+			#sound-dai-cells =3D <0>;
-+			compatible =3D "allwinner,sun50i-h6-spdif";
-+			reg =3D <0x05093000 0x400>;
-+			interrupts =3D <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks =3D <&ccu CLK_BUS_SPDIF>, <&ccu CLK_SPDIF>;
-+			clock-names =3D "apb", "spdif";
-+			resets =3D <&ccu RST_BUS_SPDIF>;
-+			dmas =3D <&dma 2>;
-+			dma-names =3D "tx";
-+			pinctrl-names =3D "default";
-+			pinctrl-0 =3D <&spdif_tx_pin>;
-+			status =3D "disabled";
-+		};
-+
- 		usb2otg: usb@5100000 {
- 			compatible =3D "allwinner,sun50i-h6-musb",
- 				     "allwinner,sun8i-a33-musb";
+ &uart0 {
+ 	pinctrl-names =3D "default";
+ 	pinctrl-0 =3D <&uart0_ph_pins>;
 --=20
 2.17.1
 
