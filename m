@@ -1,86 +1,62 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V4 3/3] ASoC: fsl_asrc: Unify the supported input and output
- rate
-Date: Fri, 19 Apr 2019 10:23:56 +0000
-Message-ID: <b450010bb24e18e01b78d32067d6efdb572a9cc4.1555669068.git.shengjiu.wang@nxp.com>
-References: <cover.1555669068.git.shengjiu.wang@nxp.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 09/27] ASoC: samsung: lowland: Convert to SPDX
+ License Identifier
+Date: Fri, 19 Apr 2019 12:21:44 +0200
+Message-ID: <20190419102202.4384-10-s.nawrocki@samsung.com>
+References: <20190419102202.4384-1-s.nawrocki@samsung.com>
+ <CGME20190419102247epcas1p247aee40179e2b79a419b136a9a72a891@epcas1p2.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <cover.1555669068.git.shengjiu.wang@nxp.com>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4074F89735
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:22:52 +0200 (CEST)
+In-reply-to: <20190419102202.4384-1-s.nawrocki@samsung.com>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-VW5pZnkgdGhlIHN1cHBvcnRlZCBpbnB1dCBhbmQgb3V0cHV0IHJhdGUsIGFkZCB0aGUNCjEya0h6
-LzI0a0h6LzEyOGtIeiB0byB0aGUgc3VwcG9ydCBsaXN0DQoNClNpZ25lZC1vZmYtYnk6IFNoZW5n
-aml1IFdhbmcgPHNoZW5naml1LndhbmdAbnhwLmNvbT4NCi0tLQ0KIHNvdW5kL3NvYy9mc2wvZnNs
-X2FzcmMuYyB8IDMyICsrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNo
-YW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2ZzbC9mc2xfYXNyYy5jIGIvc291bmQvc29jL2ZzbC9mc2xfYXNyYy5jDQppbmRl
-eCAyYzRiYmMzNDk5ZGIuLjBkMDZlNzM4MjY0YSAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9mc2wv
-ZnNsX2FzcmMuYw0KKysrIGIvc291bmQvc29jL2ZzbC9mc2xfYXNyYy5jDQpAQCAtMjcsMTMgKzI3
-LDE0IEBADQogCWRldl9kYmcoJmFzcmNfcHJpdi0+cGRldi0+ZGV2LCAiUGFpciAlYzogIiBmbXQs
-ICdBJyArIGluZGV4LCAjI19fVkFfQVJHU19fKQ0KIA0KIC8qIENvcnJlc3BvbmRpbmcgdG8gcHJv
-Y2Vzc19vcHRpb24gKi8NCi1zdGF0aWMgaW50IHN1cHBvcnRlZF9pbnB1dF9yYXRlW10gPSB7DQot
-CTU1MTIsIDgwMDAsIDExMDI1LCAxNjAwMCwgMjIwNTAsIDMyMDAwLCA0NDEwMCwgNDgwMDAsIDY0
-MDAwLCA4ODIwMCwNCi0JOTYwMDAsIDE3NjQwMCwgMTkyMDAwLA0KK3N0YXRpYyB1bnNpZ25lZCBp
-bnQgc3VwcG9ydGVkX2FzcmNfcmF0ZVtdID0gew0KKwk1NTEyLCA4MDAwLCAxMTAyNSwgMTIwMDAs
-IDE2MDAwLCAyMjA1MCwgMjQwMDAsIDMyMDAwLCA0NDEwMCwgNDgwMDAsDQorCTY0MDAwLCA4ODIw
-MCwgOTYwMDAsIDEyODAwMCwgMTc2NDAwLCAxOTIwMDAsDQogfTsNCiANCi1zdGF0aWMgaW50IHN1
-cHBvcnRlZF9hc3JjX3JhdGVbXSA9IHsNCi0JODAwMCwgMTEwMjUsIDE2MDAwLCAyMjA1MCwgMzIw
-MDAsIDQ0MTAwLCA0ODAwMCwgNjQwMDAsIDg4MjAwLCA5NjAwMCwgMTc2NDAwLCAxOTIwMDAsDQor
-c3RhdGljIHN0cnVjdCBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbGlzdCBmc2xfYXNyY19yYXRlX2Nv
-bnN0cmFpbnRzID0gew0KKwkuY291bnQgPSBBUlJBWV9TSVpFKHN1cHBvcnRlZF9hc3JjX3JhdGUp
-LA0KKwkubGlzdCA9IHN1cHBvcnRlZF9hc3JjX3JhdGUsDQogfTsNCiANCiAvKioNCkBAIC0yOTMs
-MTEgKzI5NCwxMSBAQCBzdGF0aWMgaW50IGZzbF9hc3JjX2NvbmZpZ19wYWlyKHN0cnVjdCBmc2xf
-YXNyY19wYWlyICpwYWlyKQ0KIAlpZGVhbCA9IGNvbmZpZy0+aW5jbGsgPT0gSU5DTEtfTk9ORTsN
-CiANCiAJLyogVmFsaWRhdGUgaW5wdXQgYW5kIG91dHB1dCBzYW1wbGUgcmF0ZXMgKi8NCi0JZm9y
-IChpbiA9IDA7IGluIDwgQVJSQVlfU0laRShzdXBwb3J0ZWRfaW5wdXRfcmF0ZSk7IGluKyspDQot
-CQlpZiAoaW5yYXRlID09IHN1cHBvcnRlZF9pbnB1dF9yYXRlW2luXSkNCisJZm9yIChpbiA9IDA7
-IGluIDwgQVJSQVlfU0laRShzdXBwb3J0ZWRfYXNyY19yYXRlKTsgaW4rKykNCisJCWlmIChpbnJh
-dGUgPT0gc3VwcG9ydGVkX2FzcmNfcmF0ZVtpbl0pDQogCQkJYnJlYWs7DQogDQotCWlmIChpbiA9
-PSBBUlJBWV9TSVpFKHN1cHBvcnRlZF9pbnB1dF9yYXRlKSkgew0KKwlpZiAoaW4gPT0gQVJSQVlf
-U0laRShzdXBwb3J0ZWRfYXNyY19yYXRlKSkgew0KIAkJcGFpcl9lcnIoInVuc3VwcG9ydGVkIGlu
-cHV0IHNhbXBsZSByYXRlOiAlZEh6XG4iLCBpbnJhdGUpOw0KIAkJcmV0dXJuIC1FSU5WQUw7DQog
-CX0NCkBAIC0zMTEsNyArMzEyLDcgQEAgc3RhdGljIGludCBmc2xfYXNyY19jb25maWdfcGFpcihz
-dHJ1Y3QgZnNsX2FzcmNfcGFpciAqcGFpcikNCiAJCXJldHVybiAtRUlOVkFMOw0KIAl9DQogDQot
-CWlmICgob3V0cmF0ZSA+PSA4MDAwICYmIG91dHJhdGUgPD0gMzAwMDApICYmDQorCWlmICgob3V0
-cmF0ZSA+PSA1NTEyICYmIG91dHJhdGUgPD0gMzAwMDApICYmDQogCSAgICAob3V0cmF0ZSA+IDI0
-ICogaW5yYXRlIHx8IGlucmF0ZSA+IDggKiBvdXRyYXRlKSkgew0KIAkJcGFpcl9lcnIoImV4Y2Vl
-ZCBzdXBwb3J0ZWQgcmF0aW8gcmFuZ2UgKDEvMjQsIDgpIGZvciBpbnJhdGUvb3V0cmF0ZTogJWQv
-JWRcbiIsDQogCQkJCWlucmF0ZSwgb3V0cmF0ZSk7DQpAQCAtNDkwLDcgKzQ5MSw5IEBAIHN0YXRp
-YyBpbnQgZnNsX2FzcmNfZGFpX3N0YXJ0dXAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sDQogCQlzbmRfcGNtX2h3X2NvbnN0cmFpbnRfc3RlcChzdWJzdHJlYW0tPnJ1bnRpbWUs
-IDAsDQogCQkJCQkgICBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsIDIpOw0KIA0KLQlyZXR1
-cm4gMDsNCisNCisJcmV0dXJuIHNuZF9wY21faHdfY29uc3RyYWludF9saXN0KHN1YnN0cmVhbS0+
-cnVudGltZSwgMCwNCisJCQlTTkRSVl9QQ01fSFdfUEFSQU1fUkFURSwgJmZzbF9hc3JjX3JhdGVf
-Y29uc3RyYWludHMpOw0KIH0NCiANCiBzdGF0aWMgaW50IGZzbF9hc3JjX2RhaV9od19wYXJhbXMo
-c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQpAQCAtNjAzLDcgKzYwNiw2IEBA
-IHN0YXRpYyBpbnQgZnNsX2FzcmNfZGFpX3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0K
-IAlyZXR1cm4gMDsNCiB9DQogDQotI2RlZmluZSBGU0xfQVNSQ19SQVRFUwkJIFNORFJWX1BDTV9S
-QVRFXzgwMDBfMTkyMDAwDQogI2RlZmluZSBGU0xfQVNSQ19GT1JNQVRTCShTTkRSVl9QQ01fRk1U
-QklUX1MyNF9MRSB8IFwNCiAJCQkJIFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwgXA0KIAkJCQkg
-U05EUlZfUENNX0ZNVEJJVF9TMjBfM0xFKQ0KQEAgLTYxNCwxNCArNjE2LDE4IEBAIHN0YXRpYyBp
-bnQgZnNsX2FzcmNfZGFpX3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0KIAkJLnN0cmVh
-bV9uYW1lID0gIkFTUkMtUGxheWJhY2siLA0KIAkJLmNoYW5uZWxzX21pbiA9IDEsDQogCQkuY2hh
-bm5lbHNfbWF4ID0gMTAsDQotCQkucmF0ZXMgPSBGU0xfQVNSQ19SQVRFUywNCisJCS5yYXRlX21p
-biA9IDU1MTIsDQorCQkucmF0ZV9tYXggPSAxOTIwMDAsDQorCQkucmF0ZXMgPSBTTkRSVl9QQ01f
-UkFURV9LTk9ULA0KIAkJLmZvcm1hdHMgPSBGU0xfQVNSQ19GT1JNQVRTLA0KIAl9LA0KIAkuY2Fw
-dHVyZSA9IHsNCiAJCS5zdHJlYW1fbmFtZSA9ICJBU1JDLUNhcHR1cmUiLA0KIAkJLmNoYW5uZWxz
-X21pbiA9IDEsDQogCQkuY2hhbm5lbHNfbWF4ID0gMTAsDQotCQkucmF0ZXMgPSBGU0xfQVNSQ19S
-QVRFUywNCisJCS5yYXRlX21pbiA9IDU1MTIsDQorCQkucmF0ZV9tYXggPSAxOTIwMDAsDQorCQku
-cmF0ZXMgPSBTTkRSVl9QQ01fUkFURV9LTk9ULA0KIAkJLmZvcm1hdHMgPSBGU0xfQVNSQ19GT1JN
-QVRTLA0KIAl9LA0KIAkub3BzID0gJmZzbF9hc3JjX2RhaV9vcHMsDQotLSANCjEuOS4xDQoNCg==
+Replace GPL v2.0+ license statements with SPDX license identifier.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/lowland.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
+index c9081f42f373..2fdab2ac8e8c 100644
+--- a/sound/soc/samsung/lowland.c
++++ b/sound/soc/samsung/lowland.c
+@@ -1,13 +1,8 @@
+-/*
+- * Lowland audio support
+- *
+- * Copyright 2011 Wolfson Microelectronics
+- *
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Lowland audio support
++//
++// Copyright 2011 Wolfson Microelectronics
+ 
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+-- 
+2.17.1
