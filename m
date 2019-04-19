@@ -1,17 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v6 03/14] ASoC: SOF: Add driver debug
- support.
-Date: Fri, 19 Apr 2019 11:09:51 -0500
-Message-ID: <9a5609c3-df05-2dcc-69b7-b10fe2dc221d@linux.intel.com>
-References: <20190412160519.30207-1-pierre-louis.bossart@linux.intel.com>
- <20190412160519.30207-4-pierre-louis.bossart@linux.intel.com>
- <20190419155458.GV2803@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: tobermory: Convert to SPDX
+	License Identifier" to the asoc tree
+Date: Fri, 19 Apr 2019 17:14:07 +0100 (BST)
+Message-ID: <20190419161407.1457C441D3E@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-28-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20190419155458.GV2803@sirena.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 271F5F896EA
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:11 +0200 (CEST)
+In-Reply-To: <20190419102202.4384-28-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +24,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org, tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>, Daniel Baluta <daniel.baluta@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, andriy.shevchenko@linux.intel.com, Alan Cox <alan@linux.intel.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Mark Brown <broonie@kernel.org>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review Mark
+The patch
 
-On 4/19/19 10:54 AM, Mark Brown wrote:
-> On Fri, Apr 12, 2019 at 11:05:08AM -0500, Pierre-Louis Bossart wrote:
-> 
->> +		if (pm_runtime_active(sdev->dev) ||
->> +		    dfse->access_type == SOF_DEBUGFS_ACCESS_ALWAYS) {
->> +			memcpy_fromio(buf, dfse->io_mem + pos, size);
->> +		} else {
->> +			dev_info(sdev->dev,
->> +				 "Copying cached debugfs data\n");
->> +			memcpy(buf, dfse->cache_buf + pos, size);
->> +		}
-> 
-> Might this get a bit noisy if we start hitting the info case?
+   ASoC: samsung: tobermory: Convert to SPDX License Identifier
 
-Indeed, I recall we discussed removing this log but it's still there. We 
-can fix this with a follow-up patch or in a v7 depending if there are 
-other comments.
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d18360e07fb73c61b5bd850daa9744d986e44d50 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 12:22:02 +0200
+Subject: [PATCH] ASoC: samsung: tobermory: Convert to SPDX License Identifier
+
+Replace GPL v2.0+ license statements with SPDX license identifier.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/samsung/tobermory.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index 998727cb4c31..14b11acb12a4 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -1,13 +1,8 @@
+-/*
+- * Tobermory audio support
+- *
+- * Copyright 2011 Wolfson Microelectronics
+- *
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Tobermory audio support
++//
++// Copyright 2011 Wolfson Microelectronics
+ 
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+-- 
+2.20.1
