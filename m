@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: smdk_wm8994*: Convert to SPDX
+Subject: Applied "ASoC: samsung: smdk_spdif: Convert to SPDX
 	License Identifier" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:09 +0100 (BST)
-Message-ID: <20190419161410.0EFD2441D3C@finisterre.ee.mobilebroadband>
-References: <20190419102202.4384-23-s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 17:14:11 +0100 (BST)
+Message-ID: <20190419161411.3EF3D441D3B@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-21-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D407F896F0
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:12 +0200 (CEST)
-In-Reply-To: <20190419102202.4384-23-s.nawrocki@samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80ADEF8971B
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:13 +0200 (CEST)
+In-Reply-To: <20190419102202.4384-21-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: smdk_wm8994*: Convert to SPDX License Identifier
+   ASoC: samsung: smdk_spdif: Convert to SPDX License Identifier
 
 has been applied to the asoc tree at
 
@@ -55,61 +55,42 @@ to this mail.
 Thanks,
 Mark
 
->From f9ff38071cdc2c1c2bbc0e2b81b025476c152982 Mon Sep 17 00:00:00 2001
+>From 64301240f86a3bc23adce5ac35c98f6632ad63f1 Mon Sep 17 00:00:00 2001
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 19 Apr 2019 12:21:57 +0200
-Subject: [PATCH] ASoC: samsung: smdk_wm8994*: Convert to SPDX License
- Identifier
+Date: Fri, 19 Apr 2019 12:21:55 +0200
+Subject: [PATCH] ASoC: samsung: smdk_spdif: Convert to SPDX License Identifier
 
 Replace GPL v2.0+ license statements with SPDX license identifier.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/smdk_wm8994.c    |  9 +--------
- sound/soc/samsung/smdk_wm8994pcm.c | 16 +++++-----------
- 2 files changed, 6 insertions(+), 19 deletions(-)
+ sound/soc/samsung/smdk_spdif.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index ff57b192d37d..135d8c2745be 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -1,11 +1,4 @@
--/*
-- *  smdk_wm8994.c
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
- 
- #include "../codecs/wm8994.h"
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/samsung/smdk_wm8994pcm.c b/sound/soc/samsung/smdk_wm8994pcm.c
-index 2e621496be8b..43171d6457fa 100644
---- a/sound/soc/samsung/smdk_wm8994pcm.c
-+++ b/sound/soc/samsung/smdk_wm8994pcm.c
+diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
+index 7fc7cc6d1530..87a70d872c00 100644
+--- a/sound/soc/samsung/smdk_spdif.c
++++ b/sound/soc/samsung/smdk_spdif.c
 @@ -1,14 +1,8 @@
 -/*
-- *  sound/soc/samsung/smdk_wm8994pcm.c
+- * smdk_spdif.c  --  S/PDIF audio for SMDK
 - *
-- *  Copyright (c) 2011 Samsung Electronics Co., Ltd
-- *		http://www.samsung.com
+- * Copyright 2010 Samsung Electronics Co. Ltd.
 - *
-- *  This program is free software; you can redistribute  it and/or  modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2 of the
+- * License, or (at your option) any later version.
+- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// Copyright (c) 2011 Samsung Electronics Co., Ltd
-+//		http://www.samsung.com
-+
++// smdk_spdif.c - S/PDIF audio for SMDK
++//
++// Copyright (C) 2010 Samsung Electronics Co., Ltd.
+ 
+ #include <linux/clk.h>
  #include <linux/module.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
 -- 
 2.20.1
