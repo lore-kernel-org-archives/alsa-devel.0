@@ -1,9 +1,9 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: smdk_wm8580: Convert to SPDX
+Subject: Applied "ASoC: samsung: smartq_wm8987: Convert to SPDX
 	License Identifier" to the asoc tree
-Date: Fri, 19 Apr 2019 17:14:10 +0100 (BST)
-Message-ID: <20190419161410.A037C441D3D@finisterre.ee.mobilebroadband>
-References: <20190419102202.4384-22-s.nawrocki@samsung.com>
+Date: Fri, 19 Apr 2019 17:14:11 +0100 (BST)
+Message-ID: <20190419161411.C9A8E441D3E@finisterre.ee.mobilebroadband>
+References: <20190419102202.4384-20-s.nawrocki@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -12,9 +12,9 @@ Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [IPv6:2a01:7e01::f03c:91ff:fed4:a3b6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F9D4F896FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD4B2F8970A
  for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 18:14:13 +0200 (CEST)
-In-Reply-To: <20190419102202.4384-22-s.nawrocki@samsung.com>
+In-Reply-To: <20190419102202.4384-20-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,7 +30,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: smdk_wm8580: Convert to SPDX License Identifier
+   ASoC: samsung: smartq_wm8987: Convert to SPDX License Identifier
 
 has been applied to the asoc tree at
 
@@ -55,10 +55,10 @@ to this mail.
 Thanks,
 Mark
 
->From fe20039c8d09d41f9c6773ff96067b10ed9c87a4 Mon Sep 17 00:00:00 2001
+>From 8aa0ef201cdc43ea91bfc78f88c313b32c4b1ad3 Mon Sep 17 00:00:00 2001
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 19 Apr 2019 12:21:56 +0200
-Subject: [PATCH] ASoC: samsung: smdk_wm8580: Convert to SPDX License
+Date: Fri, 19 Apr 2019 12:21:54 +0200
+Subject: [PATCH] ASoC: samsung: smartq_wm8987: Convert to SPDX License
  Identifier
 
 Replace GPL v2.0+ license statements with SPDX license identifier.
@@ -66,31 +66,37 @@ Replace GPL v2.0+ license statements with SPDX license identifier.
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/smdk_wm8580.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ sound/soc/samsung/smartq_wm8987.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
-index 6e4dfa7e2c89..987807e6f8c3 100644
---- a/sound/soc/samsung/smdk_wm8580.c
-+++ b/sound/soc/samsung/smdk_wm8580.c
-@@ -1,14 +1,7 @@
--/*
-- *  smdk_wm8580.c
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index cf0f54e652c1..b9e887ea60b2 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -1,17 +1,10 @@
+-/* sound/soc/samsung/smartq_wm8987.c
 - *
-- *  Copyright (c) 2009 Samsung Electronics Co. Ltd
-- *  Author: Jaswinder Singh <jassisinghbrar@gmail.com>
+- * Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
+- *
+- * Based on smdk6410_wm8987.c
+- *     Copyright 2007 Wolfson Microelectronics PLC. - linux@wolfsonmicro.com
+- *     Graeme Gregory - graeme.gregory@wolfsonmicro.com
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
 - *  Free Software Foundation;  either version 2 of the  License, or (at your
 - *  option) any later version.
+- *
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// Copyright (c) 2009 Samsung Electronics Co. Ltd
-+// Author: Jaswinder Singh <jassisinghbrar@gmail.com>
++// Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
++//
++// Based on smdk6410_wm8987.c
++//     Copyright 2007 Wolfson Microelectronics PLC. - linux@wolfsonmicro.com
++//     Graeme Gregory - graeme.gregory@wolfsonmicro.com
  
+ #include <linux/gpio/consumer.h>
  #include <linux/module.h>
- #include <sound/soc.h>
 -- 
 2.20.1
