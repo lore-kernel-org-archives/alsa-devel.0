@@ -1,19 +1,19 @@
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 04/27] ASoC: samsung: h1940_uda1380: Convert to
- SPDX License Identifier
-Date: Fri, 19 Apr 2019 12:21:39 +0200
-Message-ID: <20190419102202.4384-5-s.nawrocki@samsung.com>
+Subject: [PATCH 05/27] ASoC: samsung: i2s: Convert to SPDX
+ License Identifier
+Date: Fri, 19 Apr 2019 12:21:40 +0200
+Message-ID: <20190419102202.4384-6-s.nawrocki@samsung.com>
 References: <20190419102202.4384-1-s.nawrocki@samsung.com>
- <CGME20190419102231epcas2p450050b6853ff4c466f0f9f7ac99ce9cc@epcas2p4.samsung.com>
+ <CGME20190419102234epcas1p2f07fc4e9e40d5d9d60a33d52c37ff2bd@epcas1p2.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCC9EF8971D
- for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:22:35 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 937D7F89727
+ for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2019 12:22:38 +0200 (CEST)
 In-reply-to: <20190419102202.4384-1-s.nawrocki@samsung.com>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,42 +28,55 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, krzk@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Replace GPL v2.0+ license statements with SPDX license identifier.
+Replace remaining GPL v2.0 license statements with SPDX license
+identifier.
 
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
- sound/soc/samsung/h1940_uda1380.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ sound/soc/samsung/i2s-regs.h | 8 +-------
+ sound/soc/samsung/i2s.h      | 8 ++------
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 051935162d7b..95925c4a5964 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -1,17 +1,11 @@
--/*
-- * h1940-uda1380.c  --  ALSA Soc Audio Layer
+diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
+index 964985ea2e80..b4b5d6053503 100644
+--- a/sound/soc/samsung/i2s-regs.h
++++ b/sound/soc/samsung/i2s-regs.h
+@@ -1,15 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+- * linux/sound/soc/samsung/i2s-regs.h
 - *
-- * Copyright (c) 2010 Arnaud Patard <arnaud.patard@rtp-net.org>
-- * Copyright (c) 2010 Vasily Khoruzhick <anarsoul@gmail.com>
-- *
-- * Based on version from Arnaud Patard <arnaud.patard@rtp-net.org>
+  * Copyright (c) 2011 Samsung Electronics Co., Ltd.
+  *		http://www.samsung.com
+  *
+  * Samsung I2S driver's register header
 - *
 - * This program is free software; you can redistribute  it and/or modify it
 - * under  the terms of  the GNU General  Public License as published by the
 - * Free Software Foundation;  either version 2 of the  License, or (at your
 - * option) any later version.
-- *
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// h1940_uda1380.c - ALSA SoC Audio Layer
-+//
-+// Copyright (c) 2010 Arnaud Patard <arnaud.patard@rtp-net.org>
-+// Copyright (c) 2010 Vasily Khoruzhick <anarsoul@gmail.com>
-+//
-+// Based on version from Arnaud Patard <arnaud.patard@rtp-net.org>
+  */
  
- #include <linux/types.h>
- #include <linux/gpio.h>
+ #ifndef __SND_SOC_SAMSUNG_I2S_REGS_H
+diff --git a/sound/soc/samsung/i2s.h b/sound/soc/samsung/i2s.h
+index a9832a9555cb..78b475ef98d9 100644
+--- a/sound/soc/samsung/i2s.h
++++ b/sound/soc/samsung/i2s.h
+@@ -1,13 +1,9 @@
+-/* sound/soc/samsung/i2s.h
+- *
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
+  * ALSA SoC Audio Layer - Samsung I2S Controller driver
+  *
+  * Copyright (c) 2010 Samsung Electronics Co. Ltd.
+  *	Jaswinder Singh <jassisinghbrar@gmail.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+  */
+ 
+ #ifndef __SND_SOC_SAMSUNG_I2S_H
 -- 
 2.17.1
