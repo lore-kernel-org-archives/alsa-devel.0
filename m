@@ -1,52 +1,42 @@
-From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v2 5/5] arm64: defconfig: Enable Sun4i SPDIF module
-Date: Fri, 19 Apr 2019 21:17:30 +0200
-Message-ID: <20190419191730.9437-6-peron.clem@gmail.com>
-References: <20190419191730.9437-1-peron.clem@gmail.com>
-Reply-To: peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCELXIX7UICBBEN45DSQKGQERPG3I2Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20190419191730.9437-1-peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 0/2] soundwire: fix Kconfig select/depend issues
+Date: Fri, 19 Apr 2019 14:46:47 -0500
+Message-ID: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allwinner A64 and H6 use the Sun4i SPDIF driver.
+0-day/Kbuild starts complaining about missed module dependencies and
+compilation issues. Since codecs and soc drivers need to be compilable
+independently, let's fix this using the following model:
 
-Enable this to allow a proper support.
+SOF_INTEL_XYZ --- select ---->  SOUNDWIRE_INTEL ---> select ----
+                                                               |
+				                               v
+                                                        SOUNDWIRE_BUS
+   							       ^
+                                                               |
+CODEC_ABC ------- select -----> REGMAP_SOUNDWIRE ---> select ---
 
-Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+The SOUNDWIRE option remains a top-level boolean selector without
+impact on compilation, as recommended by Linus [1] and done for all
+Intel ASoC stuff.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 2d9c39033c1a..423413768d79 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -531,6 +531,7 @@ CONFIG_SND_SOC_RK3399_GRU_SOUND=3Dm
- CONFIG_SND_MESON_AXG_SOUND_CARD=3Dm
- CONFIG_SND_SOC_SAMSUNG=3Dy
- CONFIG_SND_SOC_RCAR=3Dm
-+CONFIG_SND_SUN4I_SPDIF=3Dm
- CONFIG_SND_SOC_AK4613=3Dm
- CONFIG_SND_SOC_PCM3168A_I2C=3Dm
- CONFIG_SND_SIMPLE_CARD=3Dm
---=20
+[1] https://lkml.org/lkml/2017/11/15/554
+
+Changes since v1:
+Removed useless depend in REGMAP_SOUNDWIRE (select will ignore dependencies)
+Reordered patches to avoid circular dependencies with git bisect
+
+Pierre-Louis Bossart (2):
+  soundwire: fix SOUNDWIRE_BUS option
+  regmap: soundwire: fix Kconfig select/depend issue
+
+ drivers/base/regmap/Kconfig | 2 +-
+ drivers/soundwire/Kconfig   | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+-- 
 2.17.1
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
