@@ -1,73 +1,54 @@
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: fsl: sai: Fix clock source for mclk0
-Date: Sat, 20 Apr 2019 15:41:04 +0000
-Message-ID: <20190420154038.14576-1-daniel.baluta@nxp.com>
+Subject: [PATCH 1/2] ASoC: fsl: sai: Add support for runtime pm
+Date: Sat, 20 Apr 2019 15:59:04 +0000
+Message-ID: <20190420155846.10027-2-daniel.baluta@nxp.com>
+References: <20190420155846.10027-1-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-eopbgr80084.outbound.protection.outlook.com [40.107.8.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 566E4F807B6
- for <alsa-devel@alsa-project.org>; Sat, 20 Apr 2019 17:41:06 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190420155846.10027-1-daniel.baluta@nxp.com>
 Content-Language: en-US
-List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-SAI provide multiple master clock source options selectable
-via bit MSEL of TCR2/RCR2.
-
-All possible master clock sources are stored in sai->mclk_clk
-array. Current implementation assumes that MCLK0 source is always
-busclk, but this is wrong!
-
-For example, on i.MX8QM we have:
-
-00b - Bus Clock selected.
-01b - Master Clock (MCLK) 1 option selected.
-10b - Master Clock (MCLK) 2 option selected.
-11b - Master Clock (MCLK) 3 option selected.
-
-while on i.MX6SX we have:
-
-00b - Master Clock (MCLK) 1 option selected.
-01b - Master Clock (MCLK) 1 option selected.
-10b - Master Clock (MCLK) 2 option selected.
-11b - Master Clock (MCLK) 3 option selected.
-
-So, this patch will read mclk0 source clock from device tree.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d2a4dc744fd7..faa8de87ff83 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -829,8 +829,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		sai->bus_clk = NULL;
- 	}
- 
--	sai->mclk_clk[0] = sai->bus_clk;
--	for (i = 1; i < FSL_SAI_MCLK_MAX; i++) {
-+	for (i = 0; i < FSL_SAI_MCLK_MAX; i++) {
- 		sprintf(tmp, "mclk%d", i);
- 		sai->mclk_clk[i] = devm_clk_get(&pdev->dev, tmp);
- 		if (IS_ERR(sai->mclk_clk[i])) {
--- 
-2.17.1
+QmFzaWNhbGx5IHRoZSBzYW1lIGFjdGlvbnMgYXMgZm9yIHN5c3RlbSBQTSwgc28gbWFrZSB1c2UN
+Cm9mIHBtX3J1bnRpbWVfZm9yY2Vfc3VzcGVuZC9wbV9ydW50aW1lX2ZvcmNlX3Jlc3VtZS4NCg0K
+U2lnbmVkLW9mZi1ieTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0KU2ln
+bmVkLW9mZi1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29tPg0KLS0tDQog
+c291bmQvc29jL2ZzbC9mc2xfc2FpLmMgfCAxNiArKysrKysrKysrKy0tLS0tDQogMSBmaWxlIGNo
+YW5nZWQsIDExIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9z
+b3VuZC9zb2MvZnNsL2ZzbF9zYWkuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQppbmRleCBi
+NTYzMDA0ZmI4OWYuLmFlZWIwN2I3NDE3NyAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9mc2wvZnNs
+X3NhaS5jDQorKysgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuYw0KQEAgLTksNiArOSw3IEBADQog
+I2luY2x1ZGUgPGxpbnV4L2RtYWVuZ2luZS5oPg0KICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4N
+CiAjaW5jbHVkZSA8bGludXgvb2ZfYWRkcmVzcy5oPg0KKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50
+aW1lLmg+DQogI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPg0KICNpbmNsdWRlIDxsaW51eC9zbGFi
+Lmg+DQogI2luY2x1ZGUgPGxpbnV4L3RpbWUuaD4NCkBAIC04OTgsNiArODk5LDggQEAgc3RhdGlj
+IGludCBmc2xfc2FpX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogDQogCXBs
+YXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIHNhaSk7DQogDQorCXBtX3J1bnRpbWVfZW5hYmxlKCZw
+ZGV2LT5kZXYpOw0KKw0KIAlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY29tcG9uZW50KCZw
+ZGV2LT5kZXYsICZmc2xfY29tcG9uZW50LA0KIAkJCSZmc2xfc2FpX2RhaSwgMSk7DQogCWlmIChy
+ZXQpDQpAQCAtOTE3LDggKzkyMCw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lk
+IGZzbF9zYWlfaWRzW10gPSB7DQogfTsNCiBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBmc2xfc2Fp
+X2lkcyk7DQogDQotI2lmZGVmIENPTkZJR19QTV9TTEVFUA0KLXN0YXRpYyBpbnQgZnNsX3NhaV9z
+dXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCisjaWZkZWYgQ09ORklHX1BNDQorc3RhdGljIGlu
+dCBmc2xfc2FpX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQogew0KIAlzdHJ1
+Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQogDQpAQCAtOTI4LDcgKzkz
+MSw3IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikNCiAJ
+cmV0dXJuIDA7DQogfQ0KIA0KLXN0YXRpYyBpbnQgZnNsX3NhaV9yZXN1bWUoc3RydWN0IGRldmlj
+ZSAqZGV2KQ0KK3N0YXRpYyBpbnQgZnNsX3NhaV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNl
+ICpkZXYpDQogew0KIAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7
+DQogDQpAQCAtOTQwLDEwICs5NDMsMTMgQEAgc3RhdGljIGludCBmc2xfc2FpX3Jlc3VtZShzdHJ1
+Y3QgZGV2aWNlICpkZXYpDQogCXJlZ21hcF93cml0ZShzYWktPnJlZ21hcCwgRlNMX1NBSV9SQ1NS
+LCAwKTsNCiAJcmV0dXJuIHJlZ2NhY2hlX3N5bmMoc2FpLT5yZWdtYXApOw0KIH0NCi0jZW5kaWYg
+LyogQ09ORklHX1BNX1NMRUVQICovDQorI2VuZGlmIC8qIENPTkZJR19QTSAqLw0KIA0KIHN0YXRp
+YyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBmc2xfc2FpX3BtX29wcyA9IHsNCi0JU0VUX1NZU1RF
+TV9TTEVFUF9QTV9PUFMoZnNsX3NhaV9zdXNwZW5kLCBmc2xfc2FpX3Jlc3VtZSkNCisJU0VUX1JV
+TlRJTUVfUE1fT1BTKGZzbF9zYWlfcnVudGltZV9zdXNwZW5kLA0KKwkJCSAgIGZzbF9zYWlfcnVu
+dGltZV9yZXN1bWUsIE5VTEwpDQorCVNFVF9TWVNURU1fU0xFRVBfUE1fT1BTKHBtX3J1bnRpbWVf
+Zm9yY2Vfc3VzcGVuZCwNCisJCQkJcG1fcnVudGltZV9mb3JjZV9yZXN1bWUpDQogfTsNCiANCiBz
+dGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBmc2xfc2FpX2RyaXZlciA9IHsNCi0tIA0KMi4x
+Ny4xDQoNCg==
