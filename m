@@ -1,49 +1,33 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl: sai: Fix clock source for mclk0
-Date: Sun, 21 Apr 2019 11:40:12 +0300
-Message-ID: <CAEnQRZAH7qxHVk19UrUrAg3KdDbKz5tg0jwizB9TTLpciRpwfg@mail.gmail.com>
-References: <20190420154038.14576-1-daniel.baluta@nxp.com> <20190421053749.GA5552@Asurada>
- <CAEnQRZDs_gnS8ehjM2M_y+Yw0Ge-Sq=A2c9BV-g=P_d0+O40hQ@mail.gmail.com>
- <20190421080439.GA8784@Asurada> <20190421082627.GB8304@Asurada>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Fuqian Huang <huangfq.daxian@gmail.com>
+Subject: [PATCH v2 06/06] sound: isa: gus: fix misuse of %x
+Date: Sun, 21 Apr 2019 19:48:44 +0800
+Message-ID: <20190421114844.20574-1-huangfq.daxian@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190421082627.GB8304@Asurada>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, dl-linux-imx <linux-imx@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Fuqian Huang <huangfq.daxian@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 21, 2019 at 11:26 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Sun, Apr 21, 2019 at 01:04:39AM -0700, Nicolin Chen wrote:
-> > On Sun, Apr 21, 2019 at 10:26:40AM +0300, Daniel Baluta wrote:
-> > > > Firstly, according to your commit message, neither imx8qm nor
-> > > > imx6sx has an "mclk0" clock in the clock list. Either of them
-> > > > starts with "mclk1". So, before you change the driver, I don't
-> > > > think it's even a right thing to define an "mclk0" in the DT.
-> > >
-> > > From what I understand mclk0 means option 00b of MSEL bits which is:
-> > > * busclk for i.MX8
-> > > * mclk1 for i.MX6/7.
-> >
-> > MSEL bit is used for an internal clock MUX to select four clock
-> > inputs. However,  these four clock inputs aren't exactly 1:1 of
-> > SAI's inputs. As fas as I can tell, SAI only has one bus clock
-> > and three MCLK[1-3]; the internal clock MUX maps the bus clock
-> > or MCLK1 to its input0, and then linearly maps MCLK[1-3] to its
-> > inputs[1-3]. So it doesn't sound right to me that you define an
-> > "MCLK0" in the DT, as it's supposed to describe input clocks of
-> > SAI block, other than its internal clock MUX's.
->
-> Daniel, I think I's saying this too confident, though I do feel
-> so :) But if you can prove me wrong and justify that there is an
-> "MCLK0" as an external input of the SAI block, I will agree with
-> this change.
+Pointers should be printed with %p or %px rather than
+cast to long type and printed with %lx.
+Change %lx to %p to print the pointer.
 
-Thanks a lot Nicolin for your input on this! Really appreciate it.
-Let me have some time to further investigate it and really figure
-out what happens at the hardware level.
+Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+---
+ sound/isa/gus/gus_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
-Daniel.
+diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
+index 4ac76f4..63e790f 100644
+--- a/sound/isa/gus/gus_mem.c
++++ b/sound/isa/gus/gus_mem.c
+@@ -306,7 +306,7 @@ static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
+ 	used = 0;
+ 	for (block = alloc->first, i = 0; block; block = block->next, i++) {
+ 		used += block->size;
+-		snd_iprintf(buffer, "Block %i at 0x%lx onboard 0x%x size %i (0x%x):\n", i, (long) block, block->ptr, block->size, block->size);
++		snd_iprintf(buffer, "Block %i at 0x%p onboard 0x%x size %i (0x%x):\n", i, block, block->ptr, block->size, block->size);
+ 		if (block->share ||
+ 		    block->share_id[0] || block->share_id[1] ||
+ 		    block->share_id[2] || block->share_id[3])
+-- 
+2.11.0
