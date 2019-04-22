@@ -1,56 +1,58 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: sun4i-i2s: Wrong quirks for Allwinner A64 ?
-Date: Sun, 21 Apr 2019 19:35:31 -0700
-Message-ID: <CA+E=qVcEFGqwbLCJWYv8SLz9Lm+4RivSY5xhwbP5h9f_ZPJQkA@mail.gmail.com>
-References: <CAJiuCceUaWJ=PMXzjJPz-bMVOJFkfWg0B3T-OwNncu0KSQvnVQ@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V5 1/3] ASoC: fsl_asrc: Fix the issue about unsupported
+ rate
+Date: Sun, 21 Apr 2019 19:49:16 -0700
+Message-ID: <20190422024915.GA9768@Asurada>
+References: <cover.1555900078.git.shengjiu.wang@nxp.com>
+ <a74fe1798ef8f473e11f5e39452664b5e80515df.1555900078.git.shengjiu.wang@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAJiuCceUaWJ=PMXzjJPz-bMVOJFkfWg0B3T-OwNncu0KSQvnVQ@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc: Marcus Cooper <codekipper@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Icenowy Zheng <icenowy@aosc.io>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <a74fe1798ef8f473e11f5e39452664b5e80515df.1555900078.git.shengjiu.wang@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Cc: "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBBcHIgMjEsIDIwMTkgYXQgNTozNSBBTSBDbMOpbWVudCBQw6lyb24gPHBlcm9uLmNs
-ZW1AZ21haWwuY29tPiB3cm90ZToKPgo+IEhpLAo+Cj4gSSdtIGxvb2tpbmcgdG8gcG9ydCB0aGUg
-c3VuNGktaTJzIGRyaXZlcnMgZm9yIEFsbHdpbm5lciBINiwgYnV0Cj4gcmVnYXJkaW5nIHRoZSBx
-dWlya3MgSSBmb3VuZCBzdHJhbmdlIHRoYXQgSDMgYW5kIEE2NCB3YXMgc28gZGlmZmVyZW50Lgo+
-Cj4gSSBoYXZlIGFuYWx5emVkIHRoZSBkYXRhc2hlZXQgYW5kIHVzaW5nIGh1bWFuIHJlYWRpbmcg
-Y29tcGFyaXNvbiwgSQo+IGhhdmUgZm91bmQgb25seSAzIG1pbm9yIGRpZmZlcmVuY2VzIGluIHRo
-ZSByZWdpc3RlcnMuCj4KPiBIMyByZWZlcmVuY2UgaSBoYXZlIHVzZWQgOiBIMyBEYXRhc2hlZXQo
-UmV2aXNpb24gMS4wKQo+IEZvciBBNjQgOiBBNjQgVXNlciBNYW51YWwoUmV2aXNpb24gMS4xKQo+
-Cj4gSDMgaXMgaWRlbnRpY2FsIHRvIEE2NCBleGNlcHQgSDMgaGFzIG5ldyA6Cj4gTFJDS1JfT1VU
-IGJpdCgxNikgaW4gUENNX0NPTlRST0xfUkVHCj4gU0RJX3N5bmNfc2VsIEJpdCgzMSkgaW4gUENN
-X0ZNVDBfUkVHCj4gTFJDS1JfUEVSSU9EIE1hc2soMjk6MjApIGluIFBDTV9GTVQwX1JFRwo+Cj4g
-UmVnYXJkaW5nIHRoZSBxdWlya3Mgc3RydWN0IGluIHRoZSBkcml2ZXJzIGFuZCB0aGUgY29tbWl0
-IGxvZwo+IHNoYTE6IDY2ZWNjZTMzMjUzODNjODMwNDA2M2U3ZDVhMzBmNDM3NGVmNWEzM2UKPiBB
-U29DOiBzdW40aS1pMnM6IEFkZCBjb21wYXRpYmlsaXR5IHdpdGggQTY0IGNvZGVjIEkyUwoKTm90
-ZSB0aGF0IGl0IG1lbnRpb25zICpjb2RlYyogSTJTLiBBNjQgaGFzIDQgSTJTLCAzIGFyZSBwcmV0
-dHkgbXVjaApsaWtlIEgzLCBidXQgdGhlIG90aGVyIChvbmUgdGhhdCBpcyB1c2VkIHdpdGggYnVp
-bHQtaW4gYXVkaW8gY29kZWMpIGlzCnRvdGFsbHkgZGlmZmVyZW50LgoKU2VlIDMuMjAuNCBpbiBB
-NjQgdXNlciBtYW51YWwsIHJlZ3MgMHgwMC0weDNjIGFyZSBjb2RlYyBJMlMuCgo+Cj4gICAgIFRo
-ZSBJMlMgYmxvY2sgdXNlZCBmb3IgdGhlIGF1ZGlvIGNvZGVjIGluIHRoZSBBNjQgZGlmZmVycyBm
-cm9tIG90aGVyIDMKPiAgICAgSTJTIG1vZHVsZXMgaW4gQTY0IGFuZCBpc24ndCBjb21wYXRpYmxl
-IHdpdGggSDMuIEJ1dCBpdCBpcyB2ZXJ5IHNpbWlsYXIKPiAgICAgdG8gd2hhdCBpcyBmb3VuZCBp
-biBBMTAoc3VuNGkpLiBIb3dldmVyLCBpdHMgVFggRklGTyBpcwo+ICAgICBsb2NhdGVkIGF0IGEg
-ZGlmZmVyZW50IGFkZHJlc3MuCj4KPiBJdCBzYWlkIHRoYXQgQTY0IGlzIHJlYWxseSBkaWZmZXJl
-bnQgd2hpY2ggSSBkaXNhZ3JlZSwgZm9yIG1lIHRoZSBIMwo+IHVzZSB0aGUgc2FtZSBJUCBhcyBB
-NjQgd2l0aCBhIGxpdHRsZSBpbXByb3ZlbWVudC4KPiBXaGljaCBzZWVtcyBsb2dpY2FsIGJlY2F1
-c2UgIlRoZSBBNjQgaXMgYmFzaWNhbGx5IGFuIEFsbHdpbm5lciBIMyB3aXRoCj4gdGhlIENvcnRl
-eC1BNyBjb3JlcyByZXBsYWNlZCB3aXRoIENvcnRleC1BNTMgY29yZXMiIChzb3VyY2UKPiBsaW51
-eC1zdW54aS5vcmcpCj4KPiBJJ20gb2theSB0byBzZW5kIGEgcGF0Y2ggdG8gZml4IHRoYXQgYnV0
-IEkgZG9uJ3QgaGF2ZSBhbiBIMyBub3IgQTY0IHRvCj4gdGVzdCB0aGUgbW9kaWZpY2F0aW9uLgo+
-Cj4gVGhhbmtzLAo+IENsZW1lbnQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJu
-ZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+On Mon, Apr 22, 2019 at 02:32:32AM +0000, S.j. Wang wrote:
+> When the output sample rate is [8kHz, 30kHz], the limitation
+> of the supported ratio range is (1/24, 8). In the driver
+
+Should be [1/24, 8].
+
+Otherwise,
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thanks
+
+> we use (8kHz, 30kHz) instead of [8kHz, 30kHz].
+> So this patch is to fix this issue and the potential rounding
+> issue with divider.
+> 
+> Fixes: fff6e03c7b65 ("ASoC: fsl_asrc: add support for 8-30kHz
+> output sample rate")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/fsl/fsl_asrc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+> index 0b937924d2e4..ea035c12a325 100644
+> --- a/sound/soc/fsl/fsl_asrc.c
+> +++ b/sound/soc/fsl/fsl_asrc.c
+> @@ -282,8 +282,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+>  		return -EINVAL;
+>  	}
+>  
+> -	if ((outrate > 8000 && outrate < 30000) &&
+> -	    (outrate/inrate > 24 || inrate/outrate > 8)) {
+> +	if ((outrate >= 8000 && outrate <= 30000) &&
+> +	    (outrate > 24 * inrate || inrate > 8 * outrate)) {
+>  		pair_err("exceed supported ratio range [1/24, 8] for \
+>  				inrate/outrate: %d/%d\n", inrate, outrate);
+>  		return -EINVAL;
+> -- 
+> 1.9.1
+> 
