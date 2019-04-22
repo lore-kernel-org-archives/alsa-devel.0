@@ -1,93 +1,77 @@
-From: Viorel Suman <viorel.suman@nxp.com>
-Subject: Re: [PATCH 3/3 v3] ASoC: fsl_sai: Move clock operation to PM runtime
-Date: Mon, 22 Apr 2019 11:06:12 +0000
-Message-ID: <1555931172.31656.6.camel@nxp.com>
-References: <20190421193853.10188-1-daniel.baluta@nxp.com>
-         <20190421193853.10188-4-daniel.baluta@nxp.com>
-Reply-To: Viorel Suman <viorel.suman@nxp.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 3/3 v3] ASoC: fsl_sai: Move clock operation
+ to PM runtime
+Date: Mon, 22 Apr 2019 14:25:59 +0300
+Message-ID: <CAEnQRZBrpD=mG7JmSFYVarv05hHHgApEDYNu9x2GLHO1NEvRiw@mail.gmail.com>
+References: <20190421193853.10188-1-daniel.baluta@nxp.com> <20190421193853.10188-4-daniel.baluta@nxp.com>
+ <1555931172.31656.6.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190421193853.10188-4-daniel.baluta@nxp.com>
-Content-Language: en-US
-Content-ID: <E4EF202FE8D88542B4AA75DF110B1FA5@eurprd04.prod.outlook.com>
+In-Reply-To: <1555931172.31656.6.camel@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGFuaWVsLA0KDQpPbiBEdSwgMjAxOS0wNC0yMSBhdCAxOTozOSArMDAwMCwgRGFuaWVsIEJh
-bHV0YSB3cm90ZToNCj4gRnJvbTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29t
-Pg0KPiANCj4gVHVybiBvZmYvb24gY2xvY2tzIHdoZW4gZGV2aWNlIGVudGVycyBzdXNwZW5kL3Jl
-c3VtZS4gVGhpcw0KPiBjYW4gaGVscCBzYXZpbmcgcG93ZXIuDQo+IA0KPiBBcyBhIGZ1cnRoZXIg
-b3B0aW1pemF0aW9uLCB3ZSB0dXJuIG9mZi9vbiBtY2xrIG9ubHkgd2hlbiBTQUkNCj4gaXMgaW4g
-bWFzdGVyIG1vZGUgYmVjYXVzZSBvdGhlcndpc2UgbWNsayBpcyBleHRlcm5hbGx5IHByb3ZpZGVk
-Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAu
-Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5j
-b20+DQo+IC0tLQ0KPiDCoHNvdW5kL3NvYy9mc2wvZnNsX3NhaS5jIHwgNjAgKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gwqAxIGZpbGUgY2hhbmdlZCwgNTAgaW5z
-ZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L2ZzbC9mc2xfc2FpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuYw0KPiBpbmRleCA4NjIzYjdm
-ODgyYjkuLjEzYTQ2MjM2MGVkMyAxMDA2NDQNCj4gLS0tIGEvc291bmQvc29jL2ZzbC9mc2xfc2Fp
-LmMNCj4gKysrIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCj4gQEAgLTU5NiwxNSArNTk2LDgg
-QEAgc3RhdGljIGludCBmc2xfc2FpX3N0YXJ0dXAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpz
-dWJzdHJlYW0sDQo+IMKgew0KPiDCoAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gc25kX3NvY19kYWlf
-Z2V0X2RydmRhdGEoY3B1X2RhaSk7DQo+IMKgCWJvb2wgdHggPSBzdWJzdHJlYW0tPnN0cmVhbSA9
-PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLOw0KPiAtCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZz
-YWktPnBkZXYtPmRldjsNCj4gwqAJaW50IHJldDsNCj4gwqANCj4gLQlyZXQgPSBjbGtfcHJlcGFy
-ZV9lbmFibGUoc2FpLT5idXNfY2xrKTsNCj4gLQlpZiAocmV0KSB7DQo+IC0JCWRldl9lcnIoZGV2
-LCAiZmFpbGVkIHRvIGVuYWJsZSBidXMgY2xvY2s6ICVkXG4iLCByZXQpOw0KPiAtCQlyZXR1cm4g
-cmV0Ow0KPiAtCX0NCj4gLQ0KPiDCoAlyZWdtYXBfdXBkYXRlX2JpdHMoc2FpLT5yZWdtYXAsIEZT
-TF9TQUlfeENSMyh0eCksIEZTTF9TQUlfQ1IzX1RSQ0UsDQo+IMKgCQkJwqDCoMKgRlNMX1NBSV9D
-UjNfVFJDRSk7DQo+IMKgDQo+IEBAIC02MjEsOCArNjE0LDYgQEAgc3RhdGljIHZvaWQgZnNsX3Nh
-aV9zaHV0ZG93bihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gwqAJYm9v
-bCB0eCA9IHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0s7DQo+
-IMKgDQo+IMKgCXJlZ21hcF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNMX1NBSV94Q1IzKHR4
-KSwgRlNMX1NBSV9DUjNfVFJDRSwgMCk7DQo+IC0NCj4gLQljbGtfZGlzYWJsZV91bnByZXBhcmUo
-c2FpLT5idXNfY2xrKTsNCj4gwqB9DQo+IMKgDQo+IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
-c29jX2RhaV9vcHMgZnNsX3NhaV9wY21fZGFpX29wcyA9IHsNCj4gQEAgLTkzMiw2ICs5MjMsMTYg
-QEAgc3RhdGljIGludCBmc2xfc2FpX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYp
-DQo+IMKgew0KPiDCoAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7
-DQo+IMKgDQo+ICsJaWYgKCFzYWktPmlzX3NsYXZlX21vZGUpIHsNClRoaXMgY2hlY2sgaXMgcmVk
-dW5kYW50IGFzIHRoZSBiaXRzIGluwqBzYWktPm1jbGtfc3RyZWFtcyBhcmUgc2V0L3Vuc2V0IGZv
-ciBtYXN0ZXINCm1vZGUgb25seSwgcGxlYXNlIGNoZWNrwqBmc2xfc2FpX2h3X3BhcmFtcyBhbmTC
-oGZzbF9zYWlfaHdfZnJlZSBmdW5jdGlvbnMuDQoNCj4gKwkJaWYgKHNhaS0+bWNsa19zdHJlYW1z
-ICYgQklUKFNORFJWX1BDTV9TVFJFQU1fQ0FQVFVSRSkpDQo+ICsJCQljbGtfZGlzYWJsZV91bnBy
-ZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMF1dKTsNCj4gKw0KPiArCQlpZiAoc2Fp
-LT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykpDQo+ICsJCQlj
-bGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsNCj4g
-Kwl9DQo+ICsNCj4gKwljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5idXNfY2xrKTsNCj4gKw0K
-PiDCoAlyZWdjYWNoZV9jYWNoZV9vbmx5KHNhaS0+cmVnbWFwLCB0cnVlKTsNCj4gwqAJcmVnY2Fj
-aGVfbWFya19kaXJ0eShzYWktPnJlZ21hcCk7DQo+IMKgDQo+IEBAIC05NDEsNiArOTQyLDI3IEBA
-IHN0YXRpYyBpbnQgZnNsX3NhaV9ydW50aW1lX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQ0K
-PiDCoHN0YXRpYyBpbnQgZnNsX3NhaV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYp
-DQo+IMKgew0KPiDCoAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7
-DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShzYWktPmJ1
-c19jbGspOw0KPiArCWlmIChyZXQpIHsNCj4gKwkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gZW5h
-YmxlIGJ1cyBjbG9jazogJWRcbiIsIHJldCk7DQo+ICsJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiAr
-DQo+ICsJaWYgKCFzYWktPmlzX3NsYXZlX21vZGUpIHsNCj4gKwkJaWYgKHNhaS0+bWNsa19zdHJl
-YW1zICYgQklUKFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spKSB7DQo+ICsJCQlyZXQgPSBjbGtf
-cHJlcGFyZV9lbmFibGUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsNCj4gKwkJCWlm
-IChyZXQpDQo+ICsJCQkJZ290byBkaXNhYmxlX2J1c19jbGs7DQo+ICsJCX0NCj4gKw0KPiArCQlp
-ZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKSkgew0K
-PiArCQkJcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKHNhaS0+bWNsa19jbGtbc2FpLT5tY2xrX2lk
-WzBdXSk7DQo+ICsJCQlpZiAocmV0KQ0KPiArCQkJCWdvdG8gZGlzYWJsZV90eF9jbGs7DQo+ICsJ
-CX0NCj4gKwl9DQo+IMKgDQo+IMKgCXJlZ2NhY2hlX2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIGZh
-bHNlKTsNCj4gwqAJcmVnbWFwX3dyaXRlKHNhaS0+cmVnbWFwLCBGU0xfU0FJX1RDU1IsIEZTTF9T
-QUlfQ1NSX1NSKTsNCj4gQEAgLTk0OCw3ICs5NzAsMjUgQEAgc3RhdGljIGludCBmc2xfc2FpX3J1
-bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gwqAJdXNsZWVwX3JhbmdlKDEwMDAs
-IDIwMDApOw0KPiDCoAlyZWdtYXBfd3JpdGUoc2FpLT5yZWdtYXAsIEZTTF9TQUlfVENTUiwgMCk7
-DQo+IMKgCXJlZ21hcF93cml0ZShzYWktPnJlZ21hcCwgRlNMX1NBSV9SQ1NSLCAwKTsNCj4gLQly
-ZXR1cm4gcmVnY2FjaGVfc3luYyhzYWktPnJlZ21hcCk7DQo+ICsNCj4gKwlyZXQgPSByZWdjYWNo
-ZV9zeW5jKHNhaS0+cmVnbWFwKTsNCj4gKwlpZiAocmV0KQ0KPiArCQlnb3RvIGRpc2FibGVfcnhf
-Y2xrOw0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICsNCj4gK2Rpc2FibGVfcnhfY2xrOg0KPiArCWlm
-ICghc2FpLT5pc19zbGF2ZV9tb2RlICYmDQo+ICsJwqDCoMKgwqAoc2FpLT5tY2xrX3N0cmVhbXMg
-JiBCSVQoU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKSkpDQo+ICsJCWNsa19kaXNhYmxlX3VucHJl
-cGFyZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFswXV0pOw0KPiArZGlzYWJsZV90eF9jbGs6
-DQo+ICsJaWYgKCFzYWktPmlzX3NsYXZlX21vZGUgJiYNCj4gKwnCoMKgwqDCoChzYWktPm1jbGtf
-c3RyZWFtcyAmIEJJVChTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSkpDQo+ICsJCWNsa19kaXNh
-YmxlX3VucHJlcGFyZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFsxXV0pOw0KPiArZGlzYWJs
-ZV9idXNfY2xrOg0KPiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShzYWktPmJ1c19jbGspOw0KPiAr
-DQo+ICsJcmV0dXJuIHJldDsNCj4gwqB9DQo+IMKgI2VuZGlmIC8qIENPTkZJR19QTSAqLw0KPiDC
-oA0KPiAtLcKgDQo+IDIuMTcuMQ0KPiA=
+On Mon, Apr 22, 2019 at 2:07 PM Viorel Suman <viorel.suman@nxp.com> wrote:
+>
+> Hi Daniel,
+>
+> On Du, 2019-04-21 at 19:39 +0000, Daniel Baluta wrote:
+> > From: Shengjiu Wang <shengjiu.wang@nxp.com>
+> >
+> > Turn off/on clocks when device enters suspend/resume. This
+> > can help saving power.
+> >
+> > As a further optimization, we turn off/on mclk only when SAI
+> > is in master mode because otherwise mclk is externally provided.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >  sound/soc/fsl/fsl_sai.c | 60 ++++++++++++++++++++++++++++++++++-------
+> >  1 file changed, 50 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> > index 8623b7f882b9..13a462360ed3 100644
+> > --- a/sound/soc/fsl/fsl_sai.c
+> > +++ b/sound/soc/fsl/fsl_sai.c
+> > @@ -596,15 +596,8 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+> >  {
+> >       struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+> >       bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+> > -     struct device *dev = &sai->pdev->dev;
+> >       int ret;
+> >
+> > -     ret = clk_prepare_enable(sai->bus_clk);
+> > -     if (ret) {
+> > -             dev_err(dev, "failed to enable bus clock: %d\n", ret);
+> > -             return ret;
+> > -     }
+> > -
+> >       regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE,
+> >                          FSL_SAI_CR3_TRCE);
+> >
+> > @@ -621,8 +614,6 @@ static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+> >       bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+> >
+> >       regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx), FSL_SAI_CR3_TRCE, 0);
+> > -
+> > -     clk_disable_unprepare(sai->bus_clk);
+> >  }
+> >
+> >  static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+> > @@ -932,6 +923,16 @@ static int fsl_sai_runtime_suspend(struct device *dev)
+> >  {
+> >       struct fsl_sai *sai = dev_get_drvdata(dev);
+> >
+> > +     if (!sai->is_slave_mode) {
+> This check is redundant as the bits in sai->mclk_streams are set/unset for master
+> mode only, please check fsl_sai_hw_params and fsl_sai_hw_free functions.
+
+Hi Viorel,
+
+I think you make a very good point here. Will fix and send v3.
+
+Thanks!
