@@ -1,58 +1,35 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 2/2] regmap: soundwire: fix Kconfig select/depend issue
-Date: Mon, 22 Apr 2019 11:31:41 +0530
-Message-ID: <20190422060141.GW28103@vkoul-mobl>
-References: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
- <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: [PATCH] ASoC: DA7219: Fix failure in hw_params by not letting
+ set_rate error out
+Date: Mon, 22 Apr 2019 06:14:07 +0000
+Message-ID: <20190422061334.4243-1-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 19-04-19, 14:46, Pierre-Louis Bossart wrote:
-> The mechanism should be
-> 
-> config CODEC_XYX_SDW
->        depends on SOUNDWIRE
->        select REGMAP_SOUNDWIRE
-> 
-> config REGMAP_SOUNDWIRE
->        select SOUNDWIRE_BUS
-> 
-> SOUNDWIRE_BUS can be independently selected by the SOC driver. The SOC
-> driver should not know or care about REGMAP_SOUNDWIRE.
-
-lgtm, Mark can I have ypu ack so that I can carry the series thru
-soundwire tree
-
-Thanks
-
-> Fixes: 7c22ce6e2184 ('03fc8746f7915b5a391d8227f7e1')
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/base/regmap/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-> index 6ad5ef48b61e..c12e3f1fb110 100644
-> --- a/drivers/base/regmap/Kconfig
-> +++ b/drivers/base/regmap/Kconfig
-> @@ -44,7 +44,7 @@ config REGMAP_IRQ
->  
->  config REGMAP_SOUNDWIRE
->  	tristate
-> -	depends on SOUNDWIRE_BUS
-> +	select SOUNDWIRE_BUS
->  
->  config REGMAP_SCCB
->  	tristate
-> -- 
-> 2.17.1
-
--- 
-~Vinod
+V2UgbmVlZCB0byBzZXQgbWluaW11bSBiY2xrIDY0eCBvZiB3Y2xrIGFzIHRoaXMgaXMgaHcgY29u
+c3RyYWludCBpbiBvbmUNCm9mIHRoZSBjb21wb25lbnQgdXNlZC4NClNpbmNlLCBjbGtfc2V0X3Jh
+dGUgYW5kIGNsayBpcyBlbmFibGVkIGluIG1hY2hpbmUgZHJpdmVyIHRoZQ0KY2xrX3NldF9yYXRl
+IGluIGh3X3BhcmFtcyBvZiBkYTcyMTkgZmFpbHMgYW5kIGVycm9ycyBvdXQgYW5kIHdoZW4gaXQN
+CnRyaWVzIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZS4NCg0KSW4gY2FzZXMgbGlrZSB0aGVzZSBub3Qg
+b25seSBjbGtfc2V0X3JhdGUgb2YgZGE3MjE5IGNvZGVjIHNob3VsZCBmYWlsDQphbmQgbm90IG92
+ZXJyaWRlIHRoZSB2YWx1ZSBidXQgYWxzbyBzaG91bGQgbm90IGVycm9yIG91dC4NCg0KU2lnbmVk
+LW9mZi1ieTogQWtzaHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPg0KLS0tDQogc291
+bmQvc29jL2NvZGVjcy9kYTcyMTkuYyB8IDggKy0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDcgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29k
+ZWNzL2RhNzIxOS5jIGIvc291bmQvc29jL2NvZGVjcy9kYTcyMTkuYw0KaW5kZXggNWY1ZmEzNDE2
+YWYzLi5hMDQxZGJmNDQyYWYgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5j
+DQorKysgYi9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jDQpAQCAtMTYyMSwxMyArMTYyMSw3IEBA
+IHN0YXRpYyBpbnQgZGE3MjE5X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
+YnN0cmVhbSwNCiANCiAJCWlmIChiY2xrKSB7DQogCQkJYmNsa19yYXRlID0gZnJhbWVfc2l6ZSAq
+IHNyOw0KLQkJCXJldCA9IGNsa19zZXRfcmF0ZShiY2xrLCBiY2xrX3JhdGUpOw0KLQkJCWlmIChy
+ZXQpIHsNCi0JCQkJZGV2X2Vycihjb21wb25lbnQtPmRldiwNCi0JCQkJCSJGYWlsZWQgdG8gc2V0
+IEJDTEsgcmF0ZSAlbHU6ICVkXG4iLA0KLQkJCQkJYmNsa19yYXRlLCByZXQpOw0KLQkJCQlyZXR1
+cm4gcmV0Ow0KLQkJCX0NCisJCQljbGtfc2V0X3JhdGUoYmNsaywgYmNsa19yYXRlKTsNCiAJCX0g
+ZWxzZSB7DQogCQkJcmV0ID0gZGE3MjE5X3NldF9iY2xrc19wZXJfd2Nsayhjb21wb25lbnQsIGZy
+YW1lX3NpemUpOw0KIAkJCWlmIChyZXQpIHsNCi0tIA0KMi4xNy4xDQoNCg==
