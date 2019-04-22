@@ -1,81 +1,127 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: DA7219: Fix failure in hw_params by
- not letting set_rate error out
-Date: Mon, 22 Apr 2019 08:23:29 +0000
-Message-ID: <f0cb97b0-19aa-aff5-0ac4-60406e6e1a97@amd.com>
-References: <20190422061334.4243-1-akshu.agrawal@amd.com>
- <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
+From: Jonathan Liu <net147@gmail.com>
+Subject: Re: snd-usb-audio Buffer Sizes and Round Trip Latency
+Date: Mon, 22 Apr 2019 20:50:15 +1000
+Message-ID: <CANwerB1piY43GRZUP2DA9odEkjCXu=gFLZY5Ft1Y3U3tXLn+Mg@mail.gmail.com>
+References: <5fb8650f-5a55-d895-f7b3-bc8a3b1af31b@linux.intel.com>
+ <Pine.LNX.4.44L0.1810221112460.1530-100000@iolanthe.rowland.org>
+ <CANwerB2wCHRz4E45uqWRVsynhzcFHNDwkHiAefoG0eJ=dCYTKQ@mail.gmail.com>
+ <928c8739-f0bc-339c-f951-6eb6bd001cf4@linux.intel.com>
+ <s5htvlbq0k6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
-Content-Language: en-US
-Content-ID: <0A8DFADB8F9D9147A86963DAA545825B@namprd12.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-yi Chiang <cychiang@chromium.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, "yuhsuan@chromium.org" <yuhsuan@chromium.org>, "tzungbi@chromium.org" <tzungbi@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
+ [IPv6:2607:f8b0:4864:20::541])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D9B0F80730
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2019 12:50:28 +0200 (CEST)
+Received: by mail-pg1-x541.google.com with SMTP id k19so5705582pgh.0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2019 03:50:28 -0700 (PDT)
+In-Reply-To: <s5htvlbq0k6.wl-tiwai@suse.de>
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, ALSA development <alsa-devel@alsa-project.org>, Alan Stern <stern@rowland.harvard.edu>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCk9uIDQvMjIvMjAxOSAxOjA5IFBNLCBDaGVuZy15aSBDaGlhbmcgd3JvdGU6DQo+IEhpIEFr
-c2h1LA0KPiANCj4gDQo+IE9uIE1vbiwgQXByIDIyLCAyMDE5IGF0IDI6MTUgUE0gQWdyYXdhbCwg
-QWtzaHUgPEFrc2h1LkFncmF3YWxAYW1kLmNvbT4gd3JvdGU6DQo+Pg0KPj4gV2UgbmVlZCB0byBz
-ZXQgbWluaW11bSBiY2xrIDY0eCBvZiB3Y2xrIGFzIHRoaXMgaXMgaHcgY29uc3RyYWludCBpbiBv
-bmUNCj4+IG9mIHRoZSBjb21wb25lbnQgdXNlZC4NCj4+IFNpbmNlLCBjbGtfc2V0X3JhdGUgYW5k
-IGNsayBpcyBlbmFibGVkIGluIG1hY2hpbmUgZHJpdmVyIHRoZQ0KPj4gY2xrX3NldF9yYXRlIGlu
-IGh3X3BhcmFtcyBvZiBkYTcyMTkgZmFpbHMgYW5kIGVycm9ycyBvdXQgYW5kIHdoZW4gaXQNCj4+
-IHRyaWVzIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZS4NCj4+DQo+PiBJbiBjYXNlcyBsaWtlIHRoZXNl
-IG5vdCBvbmx5IGNsa19zZXRfcmF0ZSBvZiBkYTcyMTkgY29kZWMgc2hvdWxkIGZhaWwNCj4+IGFu
-ZCBub3Qgb3ZlcnJpZGUgdGhlIHZhbHVlIGJ1dCBhbHNvIHNob3VsZCBub3QgZXJyb3Igb3V0Lg0K
-Pj4NCj4+IFNpZ25lZC1vZmYtYnk6IEFrc2h1IEFncmF3YWwgPGFrc2h1LmFncmF3YWxAYW1kLmNv
-bT4NCj4+IC0tLQ0KPj4gIHNvdW5kL3NvYy9jb2RlY3MvZGE3MjE5LmMgfCA4ICstLS0tLS0tDQo+
-PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA3IGRlbGV0aW9ucygtKQ0KPj4NCj4+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jIGIvc291bmQvc29jL2NvZGVj
-cy9kYTcyMTkuYw0KPj4gaW5kZXggNWY1ZmEzNDE2YWYzLi5hMDQxZGJmNDQyYWYgMTAwNjQ0DQo+
-PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jDQo+PiArKysgYi9zb3VuZC9zb2MvY29k
-ZWNzL2RhNzIxOS5jDQo+PiBAQCAtMTYyMSwxMyArMTYyMSw3IEBAIHN0YXRpYyBpbnQgZGE3MjE5
-X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4+DQo+PiAg
-ICAgICAgICAgICAgICAgaWYgKGJjbGspIHsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgIGJj
-bGtfcmF0ZSA9IGZyYW1lX3NpemUgKiBzcjsNCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIHJl
-dCA9IGNsa19zZXRfcmF0ZShiY2xrLCBiY2xrX3JhdGUpOw0KPj4gLSAgICAgICAgICAgICAgICAg
-ICAgICAgaWYgKHJldCkgew0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXZf
-ZXJyKGNvbXBvbmVudC0+ZGV2LA0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICJGYWlsZWQgdG8gc2V0IEJDTEsgcmF0ZSAlbHU6ICVkXG4iLA0KPj4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJjbGtfcmF0ZSwgcmV0KTsNCj4+IC0gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4+IC0gICAgICAgICAgICAg
-ICAgICAgICAgIH0NCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGNsa19zZXRfcmF0ZShiY2xr
-LCBiY2xrX3JhdGUpOw0KPiANCj4gSSB0aGluayB0aGlzIG1pZ2h0IG1hc2sgdGhlIHJlYWwgaXNz
-dWUgd2hlbiBzZXR0aW5nIHJhdGUgZmFpbHMuDQoNCk5vdCBkb2luZyBhbiBlcnJvciBjaGVjayBm
-b3IgY2xrX3NldF9yYXRlIGlzIG5vdCByYXJlIGJlY2F1c2UNCmNsa19zZXRfcmF0ZSBmYWlscyBp
-ZiB0aGUgY2xrIHdoaWNoIHlvdSBhcmUgdHJ5aW5nIHRvIHNldCBpcyBhbHJlYWR5DQplbmFibGVk
-LiBOb3cgd2UgY2FuIGFkZCBhIGlzX3ByZXBhcmVkIGNoZWNrIGJlZm9yZSBjYWxsaW5nIGNsa19z
-ZXRfcmF0ZQ0KYnV0IHRoYXQgd291bGQgYmUgcmVkdW5kYW50IGFzIGNsa19zZXRfcmF0ZSBkb2Vz
-IHRoZSBzYW1lIGNoZWNrLg0KDQo+IEEgbW9yZSBmdW5kYW1lbnRhbCBwcm9ibGVtIG1pZ2h0IGJl
-IHdoYXQgYXJlIHRoZSBhY2NlcHRhYmxlIHJhdGlvcw0KPiBiZXR3ZWVuIGJjbGsgYW5kIHdjbGsu
-DQo+IA0KDQphY2NlcHRhYmxlIHJhdGlvcyBmb3IgZGE3MjE5IGZyb20gc3BlYyBhcmU6DQowMCA9
-IDMyIEJDTEtTIHBlciBXQ0xLDQowMSA9IDY0IEJDTEtTIHBlciBXQ0xLDQoxMCA9IDEyOCBCQ0xL
-IHBlciBXQ0xLDQoxMSA9IDI1NiBCQ0xLIHBlciBXQ0xLDQoNCmRhNzIxOSBkZXJpdmVzIHRoaXMg
-cmF0aW9uIGZyb20gU1IgZm9yIGEgd2Nsay4gVGhlIHNhbWUgd2UgZG8gaW4gbWFjaGluZQ0KZHJp
-dmVyLg0KQ29uZmxpY3QgY29tZXMgb25seSBpbiBjYXNlIG9mIGFuIGV4Y2VwdGlvbiB3aGVyZSB0
-aGVyZSBpcyBjb25zdHJhaW50DQpmcm9tIGEgaHcgY29tcG9uZW50LiBFbHNlIHdoZW4gdGhlIGF1
-ZGlvIGlzIHBsYXllZCBvbiBkYTcyMTkgY29kZWMgd2UNCmNvdWxkIGhhdmUgbGV0IGRhNzIxOSBv
-bmx5IHNldCByYXRlIGFuZCBlbmFibGUgY2xrcy4NCg0KVGhhbmtzLA0KQWtzaHUNCg0KPiBGcm9t
-IGV4aXN0aW5nIGNvZGUgb2YgZGE3MjE5IEkgc2VlIHRoZXJlIGFyZSBvbmx5IHR3byBjaG9pY2Vz
-IG9mDQo+IGZyYW1lX3NpemU6IDMyIG9yIDY0Lg0KPiANCj4gSW4gZGE3MjE5X2h3X3BhcmFtczoN
-Cj4gLi4uDQo+IGlmIChkYTcyMTktPm1hc3RlciAmJiAhZGE3MjE5LT50ZG1fZW4pIHsNCj4gICBp
-ZiAoKHdvcmRfbGVuICogREE3MjE5X0RBSV9DSF9OVU1fTUFYKSA8PSAzMikNCj4gICAgICBmcmFt
-ZV9zaXplID0gMzI7DQo+ICAgZWxzZQ0KPiAgICAgIGZyYW1lX3NpemUgPSA2NDsNCj4gDQo+IEFu
-ZCBpbiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxOS80LzE3LzMyMg0KPiB0aGUgY2hvaWNlIGZy
-b20gbWFjaGluZSBkcml2ZXIgaXMgNjQgb3IgaGlnaGVyLg0KPiANCj4gSW4gY3pfZGE3MjE5X3Bh
-cmFtczoNCj4gIC4uLg0KPiAgaWYgKGJjbGsgPCAod2NsayAqIDY0KSkNCj4gICBiY2xrID0gd2Ns
-ayAqIDY0Ow0KPiAgcmV0dXJuIGRhNzIxOV9jbGtfZW5hYmxlKHN1YnN0cmVhbSwgd2NsaywgYmNs
-ayk7DQo+IA0KPiBJIGRvbid0IGtub3cgd2hhdCBpcyB0aGUgYmVzdCBzb2x1dGlvbiB0byBhdm9p
-ZCB0aGlzIGNvbmZsaWN0Lg0KPiBNYXliZSBqdXN0IHNldCBhIGZpeGVkIHJhdGlvIGZyb20gZGV2
-aWNlIHByb3BlcnR5IHRoYXQgY2FuIGJlc3Qgd29yaw0KPiBmb3IgdGhlIGNvbWJpbmF0aW9uIG9m
-IGNvZGVjcyBvbiB0aGUgbWFjaGluZT8NCj4gDQo+IA0KPiANCj4gDQo+IA0KPj4gICAgICAgICAg
-ICAgICAgIH0gZWxzZSB7DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBkYTcyMTlf
-c2V0X2JjbGtzX3Blcl93Y2xrKGNvbXBvbmVudCwgZnJhbWVfc2l6ZSk7DQo+PiAgICAgICAgICAg
-ICAgICAgICAgICAgICBpZiAocmV0KSB7DQo+PiAtLQ0KPj4gMi4xNy4xDQo+Pg0KPj4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4+IEFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0DQo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4+IGh0dHBzOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbA0K
+On Wed, 24 Oct 2018 at 18:13, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Tue, 23 Oct 2018 16:08:22 +0200,
+> Pierre-Louis Bossart wrote:
+> >
+> >
+> > >>>> Linux 4.17.14, Class Compliant Mode (snd-usb-audio, ALSA backend):
+> > >>>> 16/2 32 + 80 ~ 2.333 ms
+> > >> What are these numbers?  Are these lines supposed to in the format
+> > >> expressed by the first formula above?  If they are, how come
+> > >> "block_size/periods" shows up as a pair of numbers "16/2" but
+> > >> "block_size*periods" shows up as a single number "32"?
+> > >>
+> > > To interpret "16/2 32 + 80 ~ 2.333 ms"
+> > > Block size: 16 samples
+> > > Periods: 2 (one period for playback + one period for recording when
+> > > determining round trip latency)
+> > > The minimum round trip latency is: 16 * 2 = 32 samples
+> > > However, I measured 112 samples round trip latency which is an
+> > > additional delay of 80 samples (32 + 80 = 112).
+> > > 112 samples at 48000 Hz is 112 / 48000 * 1000 is approximately 2.333
+> > > ms measured round trip latency.
+> >
+> > ok, so what problem are you trying to fix?
+> >
+> > Are you concerned about the latency numbers (but then they seem lower
+> > on Linux and latency concerns with large buffers are a self-negating
+> > proposition)? are you concerned about the variable delay that doesn't
+> > seem to exist on MacOS or Windows? Are you trying to match the
+> > performance of the RME driver on MacOS?
+> >
+> > I am not sure how this comparison is done btw, the delay includes both
+> > buffering on the device side before reaching the analog parts as well
+> > as buffering on the OS side. While the former should be constant, the
+> > latter depends a great deal on implementation, not sure there are
+> > direct lessons to be applied to ALSA. I also see
+> > inconsistent/non-linear results where with a larger block size the
+> > delay is smaller, e.g.
+> >
+> > 256/2 512 + 650 ~ 24.208 ms
+> > 2048/3 6144 + 633 ~ 141.188 ms
+
+>
+> Independently from the measurement done in this thread, actually,
+> there is a known latency source in the playback path in USB-audio
+> driver code -- which I mentioned in the audio mini conf in the last
+> year: namely, the USB-audio driver starts streaming at prepare time
+> for playback, not at the trigger-START time.  This is a sort of
+> workaround to make the device looking similar to the standard
+> ring-buffer behavior.
+>
+> Maybe moving the start at trigger (like the capture direction) would
+> reduce this artificial latency, but it makes the driver behaving in an
+> unexpected manner.  Then it may wake up for period_elapsed soon after
+> the stream start with a large runtime->delay value, as the data in
+> in-flight URBs are seen as already "processed".
+
+I observed that snd_usb_pcm_prepare calls start_endpoints which ends
+up submitting silent urbs (prepared by prepare_silent_urb) until
+ep->prepare_data_urb is set by SNDRV_PCM_TRIGGER_START in
+snd_usb_substream_playback_trigger.
+
+I tried to moving the start_endpoints call from snd_usb_pcm_prepare to
+snd_usb_substream_playback trigger's SNDRV_PCM_TRIGGER_START case (see
+https://github.com/net147/linux/commit/276eae5481653a2d4034fbae56f0d5bc579ecf67
+- it is enabled using start_playback_on_prepare=0 module option for
+snd-usb-audio) but I get a kernel stall in some cases with the
+following call trace:
+_raw_spin_lock+0x2c/0x30
+_snd_pcm_stream_lock_irqsave+0x31/0x60 [snd_pcm]
+snd_pcm_period_elapsed+0x26/0xb0 [snd_pcm]
+prepare_playback_urb+0x368/0x640 [snd_usb_audio]
+? usb_submit_urb+0x3cb/0x590
+snd_usb_endpoint_start+0x148/0x300 [snd_usb_audio]
+start_endpoints+0x36/0x160 [snd_usb_audio]
+snd_usb_substream_playback_trigger+0x152/0x1a0 [snd_usb_audio]
+snd_pcm_action+0x117/0x150 [snd_pcm]
+snd_pcm_common_ioctl+0x588/0xdb0 [snd_pcm]
+? mprotect_fixup+0x1ec/0x2f0
+snd_pcm_ioctl+0x23/0x30 [snd_pcm]
+do_vfs_ioctl+0xa6/0x760
+? syscall_trace_enter+0x1be/0x2b0
+__x64_sys_ioctl+0x62/0x90
+do_syscall_64+0x5b/0x170
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Any ideas?
+
+Thanks.
+
+Regards,
+Jonathan
