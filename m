@@ -1,35 +1,93 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: [PATCH] ASoC: DA7219: Fix failure in hw_params by not letting
- set_rate error out
-Date: Mon, 22 Apr 2019 06:14:07 +0000
-Message-ID: <20190422061334.4243-1-akshu.agrawal@amd.com>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: DA7219: Fix failure in hw_params by
+ not letting set_rate error out
+Date: Mon, 22 Apr 2019 15:39:13 +0800
+Message-ID: <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
+References: <20190422061334.4243-1-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <20190422061334.4243-1-akshu.agrawal@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, yuhsuan@chromium.org, tzungbi@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-V2UgbmVlZCB0byBzZXQgbWluaW11bSBiY2xrIDY0eCBvZiB3Y2xrIGFzIHRoaXMgaXMgaHcgY29u
-c3RyYWludCBpbiBvbmUNCm9mIHRoZSBjb21wb25lbnQgdXNlZC4NClNpbmNlLCBjbGtfc2V0X3Jh
-dGUgYW5kIGNsayBpcyBlbmFibGVkIGluIG1hY2hpbmUgZHJpdmVyIHRoZQ0KY2xrX3NldF9yYXRl
-IGluIGh3X3BhcmFtcyBvZiBkYTcyMTkgZmFpbHMgYW5kIGVycm9ycyBvdXQgYW5kIHdoZW4gaXQN
-CnRyaWVzIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZS4NCg0KSW4gY2FzZXMgbGlrZSB0aGVzZSBub3Qg
-b25seSBjbGtfc2V0X3JhdGUgb2YgZGE3MjE5IGNvZGVjIHNob3VsZCBmYWlsDQphbmQgbm90IG92
-ZXJyaWRlIHRoZSB2YWx1ZSBidXQgYWxzbyBzaG91bGQgbm90IGVycm9yIG91dC4NCg0KU2lnbmVk
-LW9mZi1ieTogQWtzaHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPg0KLS0tDQogc291
-bmQvc29jL2NvZGVjcy9kYTcyMTkuYyB8IDggKy0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDcgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29k
-ZWNzL2RhNzIxOS5jIGIvc291bmQvc29jL2NvZGVjcy9kYTcyMTkuYw0KaW5kZXggNWY1ZmEzNDE2
-YWYzLi5hMDQxZGJmNDQyYWYgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5j
-DQorKysgYi9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jDQpAQCAtMTYyMSwxMyArMTYyMSw3IEBA
-IHN0YXRpYyBpbnQgZGE3MjE5X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
-YnN0cmVhbSwNCiANCiAJCWlmIChiY2xrKSB7DQogCQkJYmNsa19yYXRlID0gZnJhbWVfc2l6ZSAq
-IHNyOw0KLQkJCXJldCA9IGNsa19zZXRfcmF0ZShiY2xrLCBiY2xrX3JhdGUpOw0KLQkJCWlmIChy
-ZXQpIHsNCi0JCQkJZGV2X2Vycihjb21wb25lbnQtPmRldiwNCi0JCQkJCSJGYWlsZWQgdG8gc2V0
-IEJDTEsgcmF0ZSAlbHU6ICVkXG4iLA0KLQkJCQkJYmNsa19yYXRlLCByZXQpOw0KLQkJCQlyZXR1
-cm4gcmV0Ow0KLQkJCX0NCisJCQljbGtfc2V0X3JhdGUoYmNsaywgYmNsa19yYXRlKTsNCiAJCX0g
-ZWxzZSB7DQogCQkJcmV0ID0gZGE3MjE5X3NldF9iY2xrc19wZXJfd2Nsayhjb21wb25lbnQsIGZy
-YW1lX3NpemUpOw0KIAkJCWlmIChyZXQpIHsNCi0tIA0KMi4xNy4xDQoNCg==
+Hi Akshu,
+
+
+On Mon, Apr 22, 2019 at 2:15 PM Agrawal, Akshu <Akshu.Agrawal@amd.com> wrote:
+>
+> We need to set minimum bclk 64x of wclk as this is hw constraint in one
+> of the component used.
+> Since, clk_set_rate and clk is enabled in machine driver the
+> clk_set_rate in hw_params of da7219 fails and errors out and when it
+> tries to override the value.
+>
+> In cases like these not only clk_set_rate of da7219 codec should fail
+> and not override the value but also should not error out.
+>
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+> ---
+>  sound/soc/codecs/da7219.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 5f5fa3416af3..a041dbf442af 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -1621,13 +1621,7 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
+>
+>                 if (bclk) {
+>                         bclk_rate = frame_size * sr;
+> -                       ret = clk_set_rate(bclk, bclk_rate);
+> -                       if (ret) {
+> -                               dev_err(component->dev,
+> -                                       "Failed to set BCLK rate %lu: %d\n",
+> -                                       bclk_rate, ret);
+> -                               return ret;
+> -                       }
+> +                       clk_set_rate(bclk, bclk_rate);
+
+I think this might mask the real issue when setting rate fails.
+A more fundamental problem might be what are the acceptable ratios
+between bclk and wclk.
+
+>From existing code of da7219 I see there are only two choices of
+frame_size: 32 or 64.
+
+In da7219_hw_params:
+...
+if (da7219->master && !da7219->tdm_en) {
+  if ((word_len * DA7219_DAI_CH_NUM_MAX) <= 32)
+     frame_size = 32;
+  else
+     frame_size = 64;
+
+And in https://lkml.org/lkml/2019/4/17/322
+the choice from machine driver is 64 or higher.
+
+In cz_da7219_params:
+ ...
+ if (bclk < (wclk * 64))
+  bclk = wclk * 64;
+ return da7219_clk_enable(substream, wclk, bclk);
+
+I don't know what is the best solution to avoid this conflict.
+Maybe just set a fixed ratio from device property that can best work
+for the combination of codecs on the machine?
+
+
+
+
+
+>                 } else {
+>                         ret = da7219_set_bclks_per_wclk(component, frame_size);
+>                         if (ret) {
+> --
+> 2.17.1
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
