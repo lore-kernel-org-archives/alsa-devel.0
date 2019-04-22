@@ -1,81 +1,60 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH 3/3 v3] ASoC: fsl_sai: Move clock operation to PM runtime
-Date: Sun, 21 Apr 2019 19:39:10 +0000
-Message-ID: <20190421193853.10188-4-daniel.baluta@nxp.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 1/3 v2] ASoC: fsl_sai: Update is_slave_mode with correct
+ value
+Date: Sun, 21 Apr 2019 18:08:47 -0700
+Message-ID: <20190422010846.GA8364@Asurada>
 References: <20190421193853.10188-1-daniel.baluta@nxp.com>
+ <20190421193853.10188-2-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190421193853.10188-1-daniel.baluta@nxp.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190421193853.10188-2-daniel.baluta@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0KDQpUdXJuIG9mZi9v
-biBjbG9ja3Mgd2hlbiBkZXZpY2UgZW50ZXJzIHN1c3BlbmQvcmVzdW1lLiBUaGlzDQpjYW4gaGVs
-cCBzYXZpbmcgcG93ZXIuDQoNCkFzIGEgZnVydGhlciBvcHRpbWl6YXRpb24sIHdlIHR1cm4gb2Zm
-L29uIG1jbGsgb25seSB3aGVuIFNBSQ0KaXMgaW4gbWFzdGVyIG1vZGUgYmVjYXVzZSBvdGhlcndp
-c2UgbWNsayBpcyBleHRlcm5hbGx5IHByb3ZpZGVkLg0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2pp
-dSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54cC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFs
-dXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQotLS0NCiBzb3VuZC9zb2MvZnNsL2ZzbF9zYWku
-YyB8IDYwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQogMSBmaWxl
-IGNoYW5nZWQsIDUwIGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuYw0KaW5k
-ZXggODYyM2I3Zjg4MmI5Li4xM2E0NjIzNjBlZDMgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvZnNs
-L2ZzbF9zYWkuYw0KKysrIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCkBAIC01OTYsMTUgKzU5
-Niw4IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtLA0KIHsNCiAJc3RydWN0IGZzbF9zYWkgKnNhaSA9IHNuZF9zb2NfZGFpX2dl
-dF9kcnZkYXRhKGNwdV9kYWkpOw0KIAlib29sIHR4ID0gc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05E
-UlZfUENNX1NUUkVBTV9QTEFZQkFDSzsNCi0Jc3RydWN0IGRldmljZSAqZGV2ID0gJnNhaS0+cGRl
-di0+ZGV2Ow0KIAlpbnQgcmV0Ow0KIA0KLQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoc2FpLT5i
-dXNfY2xrKTsNCi0JaWYgKHJldCkgew0KLQkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gZW5hYmxl
-IGJ1cyBjbG9jazogJWRcbiIsIHJldCk7DQotCQlyZXR1cm4gcmV0Ow0KLQl9DQotDQogCXJlZ21h
-cF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNMX1NBSV94Q1IzKHR4KSwgRlNMX1NBSV9DUjNf
-VFJDRSwNCiAJCQkgICBGU0xfU0FJX0NSM19UUkNFKTsNCiANCkBAIC02MjEsOCArNjE0LDYgQEAg
-c3RhdGljIHZvaWQgZnNsX3NhaV9zaHV0ZG93bihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
-YnN0cmVhbSwNCiAJYm9vbCB0eCA9IHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJF
-QU1fUExBWUJBQ0s7DQogDQogCXJlZ21hcF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNMX1NB
-SV94Q1IzKHR4KSwgRlNMX1NBSV9DUjNfVFJDRSwgMCk7DQotDQotCWNsa19kaXNhYmxlX3VucHJl
-cGFyZShzYWktPmJ1c19jbGspOw0KIH0NCiANCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2Nf
-ZGFpX29wcyBmc2xfc2FpX3BjbV9kYWlfb3BzID0gew0KQEAgLTkzMiw2ICs5MjMsMTYgQEAgc3Rh
-dGljIGludCBmc2xfc2FpX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQogew0K
-IAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQogDQorCWlmICgh
-c2FpLT5pc19zbGF2ZV9tb2RlKSB7DQorCQlpZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05E
-UlZfUENNX1NUUkVBTV9DQVBUVVJFKSkNCisJCQljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5t
-Y2xrX2Nsa1tzYWktPm1jbGtfaWRbMF1dKTsNCisNCisJCWlmIChzYWktPm1jbGtfc3RyZWFtcyAm
-IEJJVChTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSkNCisJCQljbGtfZGlzYWJsZV91bnByZXBh
-cmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsNCisJfQ0KKw0KKwljbGtfZGlzYWJs
-ZV91bnByZXBhcmUoc2FpLT5idXNfY2xrKTsNCisNCiAJcmVnY2FjaGVfY2FjaGVfb25seShzYWkt
-PnJlZ21hcCwgdHJ1ZSk7DQogCXJlZ2NhY2hlX21hcmtfZGlydHkoc2FpLT5yZWdtYXApOw0KIA0K
-QEAgLTk0MSw2ICs5NDIsMjcgQEAgc3RhdGljIGludCBmc2xfc2FpX3J1bnRpbWVfc3VzcGVuZChz
-dHJ1Y3QgZGV2aWNlICpkZXYpDQogc3RhdGljIGludCBmc2xfc2FpX3J1bnRpbWVfcmVzdW1lKHN0
-cnVjdCBkZXZpY2UgKmRldikNCiB7DQogCXN0cnVjdCBmc2xfc2FpICpzYWkgPSBkZXZfZ2V0X2Ry
-dmRhdGEoZGV2KTsNCisJaW50IHJldDsNCisNCisJcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKHNh
-aS0+YnVzX2Nsayk7DQorCWlmIChyZXQpIHsNCisJCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGVu
-YWJsZSBidXMgY2xvY2s6ICVkXG4iLCByZXQpOw0KKwkJcmV0dXJuIHJldDsNCisJfQ0KKw0KKwlp
-ZiAoIXNhaS0+aXNfc2xhdmVfbW9kZSkgew0KKwkJaWYgKHNhaS0+bWNsa19zdHJlYW1zICYgQklU
-KFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spKSB7DQorCQkJcmV0ID0gY2xrX3ByZXBhcmVfZW5h
-YmxlKHNhaS0+bWNsa19jbGtbc2FpLT5tY2xrX2lkWzFdXSk7DQorCQkJaWYgKHJldCkNCisJCQkJ
-Z290byBkaXNhYmxlX2J1c19jbGs7DQorCQl9DQorDQorCQlpZiAoc2FpLT5tY2xrX3N0cmVhbXMg
-JiBCSVQoU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKSkgew0KKwkJCXJldCA9IGNsa19wcmVwYXJl
-X2VuYWJsZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFswXV0pOw0KKwkJCWlmIChyZXQpDQor
-CQkJCWdvdG8gZGlzYWJsZV90eF9jbGs7DQorCQl9DQorCX0NCiANCiAJcmVnY2FjaGVfY2FjaGVf
-b25seShzYWktPnJlZ21hcCwgZmFsc2UpOw0KIAlyZWdtYXBfd3JpdGUoc2FpLT5yZWdtYXAsIEZT
-TF9TQUlfVENTUiwgRlNMX1NBSV9DU1JfU1IpOw0KQEAgLTk0OCw3ICs5NzAsMjUgQEAgc3RhdGlj
-IGludCBmc2xfc2FpX3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCiAJdXNsZWVw
-X3JhbmdlKDEwMDAsIDIwMDApOw0KIAlyZWdtYXBfd3JpdGUoc2FpLT5yZWdtYXAsIEZTTF9TQUlf
-VENTUiwgMCk7DQogCXJlZ21hcF93cml0ZShzYWktPnJlZ21hcCwgRlNMX1NBSV9SQ1NSLCAwKTsN
-Ci0JcmV0dXJuIHJlZ2NhY2hlX3N5bmMoc2FpLT5yZWdtYXApOw0KKw0KKwlyZXQgPSByZWdjYWNo
-ZV9zeW5jKHNhaS0+cmVnbWFwKTsNCisJaWYgKHJldCkNCisJCWdvdG8gZGlzYWJsZV9yeF9jbGs7
-DQorDQorCXJldHVybiAwOw0KKw0KK2Rpc2FibGVfcnhfY2xrOg0KKwlpZiAoIXNhaS0+aXNfc2xh
-dmVfbW9kZSAmJg0KKwkgICAgKHNhaS0+bWNsa19zdHJlYW1zICYgQklUKFNORFJWX1BDTV9TVFJF
-QU1fQ0FQVFVSRSkpKQ0KKwkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHNhaS0+bWNsa19jbGtbc2Fp
-LT5tY2xrX2lkWzBdXSk7DQorZGlzYWJsZV90eF9jbGs6DQorCWlmICghc2FpLT5pc19zbGF2ZV9t
-b2RlICYmDQorCSAgICAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVBTV9Q
-TEFZQkFDSykpKQ0KKwkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHNhaS0+bWNsa19jbGtbc2FpLT5t
-Y2xrX2lkWzFdXSk7DQorZGlzYWJsZV9idXNfY2xrOg0KKwljbGtfZGlzYWJsZV91bnByZXBhcmUo
-c2FpLT5idXNfY2xrKTsNCisNCisJcmV0dXJuIHJldDsNCiB9DQogI2VuZGlmIC8qIENPTkZJR19Q
-TSAqLw0KIA0KLS0gDQoyLjE3LjENCg0K
+On Sun, Apr 21, 2019 at 07:39:08PM +0000, Daniel Baluta wrote:
+> is_slave_mode defaults to false because sai structure
+> that contains it is kzalloc'ed.
+> 
+> Anyhow, if we decide to set the following configuration
+> SAI slave -> SAI master, is_slave_mode will remain set on true
+> although SAI being master it should be set to false.
+> 
+> Fix this by updating is_slave_mode for each call of
+> fsl_sai_set_dai_fmt.
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Thanks
+
+> ---
+>  sound/soc/fsl/fsl_sai.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index b563004fb89f..d9df98975cf8 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -268,12 +268,14 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+>  	case SND_SOC_DAIFMT_CBS_CFS:
+>  		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+>  		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
+> +		sai->is_slave_mode = false;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBM_CFM:
+>  		sai->is_slave_mode = true;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBS_CFM:
+>  		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
+> +		sai->is_slave_mode = false;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBM_CFS:
+>  		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
+> -- 
+> 2.17.1
+> 
