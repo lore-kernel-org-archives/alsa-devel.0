@@ -1,93 +1,81 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: DA7219: Fix failure in hw_params by
  not letting set_rate error out
-Date: Mon, 22 Apr 2019 15:39:13 +0800
-Message-ID: <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
+Date: Mon, 22 Apr 2019 08:23:29 +0000
+Message-ID: <f0cb97b0-19aa-aff5-0ac4-60406e6e1a97@amd.com>
 References: <20190422061334.4243-1-akshu.agrawal@amd.com>
+ <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190422061334.4243-1-akshu.agrawal@amd.com>
+In-Reply-To: <CAFv8NwKZskTeyaUQWevydfxZf0=nf+Z4kBOkYynTfiOMOq-LDA@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <0A8DFADB8F9D9147A86963DAA545825B@namprd12.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, yuhsuan@chromium.org, tzungbi@chromium.org
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Adam.Thomson.Opensource@diasemi.com" <Adam.Thomson.Opensource@diasemi.com>, "yuhsuan@chromium.org" <yuhsuan@chromium.org>, "tzungbi@chromium.org" <tzungbi@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Akshu,
-
-
-On Mon, Apr 22, 2019 at 2:15 PM Agrawal, Akshu <Akshu.Agrawal@amd.com> wrote:
->
-> We need to set minimum bclk 64x of wclk as this is hw constraint in one
-> of the component used.
-> Since, clk_set_rate and clk is enabled in machine driver the
-> clk_set_rate in hw_params of da7219 fails and errors out and when it
-> tries to override the value.
->
-> In cases like these not only clk_set_rate of da7219 codec should fail
-> and not override the value but also should not error out.
->
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> ---
->  sound/soc/codecs/da7219.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> index 5f5fa3416af3..a041dbf442af 100644
-> --- a/sound/soc/codecs/da7219.c
-> +++ b/sound/soc/codecs/da7219.c
-> @@ -1621,13 +1621,7 @@ static int da7219_hw_params(struct snd_pcm_substream *substream,
->
->                 if (bclk) {
->                         bclk_rate = frame_size * sr;
-> -                       ret = clk_set_rate(bclk, bclk_rate);
-> -                       if (ret) {
-> -                               dev_err(component->dev,
-> -                                       "Failed to set BCLK rate %lu: %d\n",
-> -                                       bclk_rate, ret);
-> -                               return ret;
-> -                       }
-> +                       clk_set_rate(bclk, bclk_rate);
-
-I think this might mask the real issue when setting rate fails.
-A more fundamental problem might be what are the acceptable ratios
-between bclk and wclk.
-
->From existing code of da7219 I see there are only two choices of
-frame_size: 32 or 64.
-
-In da7219_hw_params:
-...
-if (da7219->master && !da7219->tdm_en) {
-  if ((word_len * DA7219_DAI_CH_NUM_MAX) <= 32)
-     frame_size = 32;
-  else
-     frame_size = 64;
-
-And in https://lkml.org/lkml/2019/4/17/322
-the choice from machine driver is 64 or higher.
-
-In cz_da7219_params:
- ...
- if (bclk < (wclk * 64))
-  bclk = wclk * 64;
- return da7219_clk_enable(substream, wclk, bclk);
-
-I don't know what is the best solution to avoid this conflict.
-Maybe just set a fixed ratio from device property that can best work
-for the combination of codecs on the machine?
-
-
-
-
-
->                 } else {
->                         ret = da7219_set_bclks_per_wclk(component, frame_size);
->                         if (ret) {
-> --
-> 2.17.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+DQoNCk9uIDQvMjIvMjAxOSAxOjA5IFBNLCBDaGVuZy15aSBDaGlhbmcgd3JvdGU6DQo+IEhpIEFr
+c2h1LA0KPiANCj4gDQo+IE9uIE1vbiwgQXByIDIyLCAyMDE5IGF0IDI6MTUgUE0gQWdyYXdhbCwg
+QWtzaHUgPEFrc2h1LkFncmF3YWxAYW1kLmNvbT4gd3JvdGU6DQo+Pg0KPj4gV2UgbmVlZCB0byBz
+ZXQgbWluaW11bSBiY2xrIDY0eCBvZiB3Y2xrIGFzIHRoaXMgaXMgaHcgY29uc3RyYWludCBpbiBv
+bmUNCj4+IG9mIHRoZSBjb21wb25lbnQgdXNlZC4NCj4+IFNpbmNlLCBjbGtfc2V0X3JhdGUgYW5k
+IGNsayBpcyBlbmFibGVkIGluIG1hY2hpbmUgZHJpdmVyIHRoZQ0KPj4gY2xrX3NldF9yYXRlIGlu
+IGh3X3BhcmFtcyBvZiBkYTcyMTkgZmFpbHMgYW5kIGVycm9ycyBvdXQgYW5kIHdoZW4gaXQNCj4+
+IHRyaWVzIHRvIG92ZXJyaWRlIHRoZSB2YWx1ZS4NCj4+DQo+PiBJbiBjYXNlcyBsaWtlIHRoZXNl
+IG5vdCBvbmx5IGNsa19zZXRfcmF0ZSBvZiBkYTcyMTkgY29kZWMgc2hvdWxkIGZhaWwNCj4+IGFu
+ZCBub3Qgb3ZlcnJpZGUgdGhlIHZhbHVlIGJ1dCBhbHNvIHNob3VsZCBub3QgZXJyb3Igb3V0Lg0K
+Pj4NCj4+IFNpZ25lZC1vZmYtYnk6IEFrc2h1IEFncmF3YWwgPGFrc2h1LmFncmF3YWxAYW1kLmNv
+bT4NCj4+IC0tLQ0KPj4gIHNvdW5kL3NvYy9jb2RlY3MvZGE3MjE5LmMgfCA4ICstLS0tLS0tDQo+
+PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA3IGRlbGV0aW9ucygtKQ0KPj4NCj4+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jIGIvc291bmQvc29jL2NvZGVj
+cy9kYTcyMTkuYw0KPj4gaW5kZXggNWY1ZmEzNDE2YWYzLi5hMDQxZGJmNDQyYWYgMTAwNjQ0DQo+
+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxOS5jDQo+PiArKysgYi9zb3VuZC9zb2MvY29k
+ZWNzL2RhNzIxOS5jDQo+PiBAQCAtMTYyMSwxMyArMTYyMSw3IEBAIHN0YXRpYyBpbnQgZGE3MjE5
+X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4+DQo+PiAg
+ICAgICAgICAgICAgICAgaWYgKGJjbGspIHsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgIGJj
+bGtfcmF0ZSA9IGZyYW1lX3NpemUgKiBzcjsNCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIHJl
+dCA9IGNsa19zZXRfcmF0ZShiY2xrLCBiY2xrX3JhdGUpOw0KPj4gLSAgICAgICAgICAgICAgICAg
+ICAgICAgaWYgKHJldCkgew0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXZf
+ZXJyKGNvbXBvbmVudC0+ZGV2LA0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJGYWlsZWQgdG8gc2V0IEJDTEsgcmF0ZSAlbHU6ICVkXG4iLA0KPj4gLSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJjbGtfcmF0ZSwgcmV0KTsNCj4+IC0gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4+IC0gICAgICAgICAgICAg
+ICAgICAgICAgIH0NCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGNsa19zZXRfcmF0ZShiY2xr
+LCBiY2xrX3JhdGUpOw0KPiANCj4gSSB0aGluayB0aGlzIG1pZ2h0IG1hc2sgdGhlIHJlYWwgaXNz
+dWUgd2hlbiBzZXR0aW5nIHJhdGUgZmFpbHMuDQoNCk5vdCBkb2luZyBhbiBlcnJvciBjaGVjayBm
+b3IgY2xrX3NldF9yYXRlIGlzIG5vdCByYXJlIGJlY2F1c2UNCmNsa19zZXRfcmF0ZSBmYWlscyBp
+ZiB0aGUgY2xrIHdoaWNoIHlvdSBhcmUgdHJ5aW5nIHRvIHNldCBpcyBhbHJlYWR5DQplbmFibGVk
+LiBOb3cgd2UgY2FuIGFkZCBhIGlzX3ByZXBhcmVkIGNoZWNrIGJlZm9yZSBjYWxsaW5nIGNsa19z
+ZXRfcmF0ZQ0KYnV0IHRoYXQgd291bGQgYmUgcmVkdW5kYW50IGFzIGNsa19zZXRfcmF0ZSBkb2Vz
+IHRoZSBzYW1lIGNoZWNrLg0KDQo+IEEgbW9yZSBmdW5kYW1lbnRhbCBwcm9ibGVtIG1pZ2h0IGJl
+IHdoYXQgYXJlIHRoZSBhY2NlcHRhYmxlIHJhdGlvcw0KPiBiZXR3ZWVuIGJjbGsgYW5kIHdjbGsu
+DQo+IA0KDQphY2NlcHRhYmxlIHJhdGlvcyBmb3IgZGE3MjE5IGZyb20gc3BlYyBhcmU6DQowMCA9
+IDMyIEJDTEtTIHBlciBXQ0xLDQowMSA9IDY0IEJDTEtTIHBlciBXQ0xLDQoxMCA9IDEyOCBCQ0xL
+IHBlciBXQ0xLDQoxMSA9IDI1NiBCQ0xLIHBlciBXQ0xLDQoNCmRhNzIxOSBkZXJpdmVzIHRoaXMg
+cmF0aW9uIGZyb20gU1IgZm9yIGEgd2Nsay4gVGhlIHNhbWUgd2UgZG8gaW4gbWFjaGluZQ0KZHJp
+dmVyLg0KQ29uZmxpY3QgY29tZXMgb25seSBpbiBjYXNlIG9mIGFuIGV4Y2VwdGlvbiB3aGVyZSB0
+aGVyZSBpcyBjb25zdHJhaW50DQpmcm9tIGEgaHcgY29tcG9uZW50LiBFbHNlIHdoZW4gdGhlIGF1
+ZGlvIGlzIHBsYXllZCBvbiBkYTcyMTkgY29kZWMgd2UNCmNvdWxkIGhhdmUgbGV0IGRhNzIxOSBv
+bmx5IHNldCByYXRlIGFuZCBlbmFibGUgY2xrcy4NCg0KVGhhbmtzLA0KQWtzaHUNCg0KPiBGcm9t
+IGV4aXN0aW5nIGNvZGUgb2YgZGE3MjE5IEkgc2VlIHRoZXJlIGFyZSBvbmx5IHR3byBjaG9pY2Vz
+IG9mDQo+IGZyYW1lX3NpemU6IDMyIG9yIDY0Lg0KPiANCj4gSW4gZGE3MjE5X2h3X3BhcmFtczoN
+Cj4gLi4uDQo+IGlmIChkYTcyMTktPm1hc3RlciAmJiAhZGE3MjE5LT50ZG1fZW4pIHsNCj4gICBp
+ZiAoKHdvcmRfbGVuICogREE3MjE5X0RBSV9DSF9OVU1fTUFYKSA8PSAzMikNCj4gICAgICBmcmFt
+ZV9zaXplID0gMzI7DQo+ICAgZWxzZQ0KPiAgICAgIGZyYW1lX3NpemUgPSA2NDsNCj4gDQo+IEFu
+ZCBpbiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxOS80LzE3LzMyMg0KPiB0aGUgY2hvaWNlIGZy
+b20gbWFjaGluZSBkcml2ZXIgaXMgNjQgb3IgaGlnaGVyLg0KPiANCj4gSW4gY3pfZGE3MjE5X3Bh
+cmFtczoNCj4gIC4uLg0KPiAgaWYgKGJjbGsgPCAod2NsayAqIDY0KSkNCj4gICBiY2xrID0gd2Ns
+ayAqIDY0Ow0KPiAgcmV0dXJuIGRhNzIxOV9jbGtfZW5hYmxlKHN1YnN0cmVhbSwgd2NsaywgYmNs
+ayk7DQo+IA0KPiBJIGRvbid0IGtub3cgd2hhdCBpcyB0aGUgYmVzdCBzb2x1dGlvbiB0byBhdm9p
+ZCB0aGlzIGNvbmZsaWN0Lg0KPiBNYXliZSBqdXN0IHNldCBhIGZpeGVkIHJhdGlvIGZyb20gZGV2
+aWNlIHByb3BlcnR5IHRoYXQgY2FuIGJlc3Qgd29yaw0KPiBmb3IgdGhlIGNvbWJpbmF0aW9uIG9m
+IGNvZGVjcyBvbiB0aGUgbWFjaGluZT8NCj4gDQo+IA0KPiANCj4gDQo+IA0KPj4gICAgICAgICAg
+ICAgICAgIH0gZWxzZSB7DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICByZXQgPSBkYTcyMTlf
+c2V0X2JjbGtzX3Blcl93Y2xrKGNvbXBvbmVudCwgZnJhbWVfc2l6ZSk7DQo+PiAgICAgICAgICAg
+ICAgICAgICAgICAgICBpZiAocmV0KSB7DQo+PiAtLQ0KPj4gMi4xNy4xDQo+Pg0KPj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4+IEFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0DQo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCj4+IGh0dHBzOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbA0K
