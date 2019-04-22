@@ -1,62 +1,31 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Move clock operation to PM runtime
-Date: Mon, 22 Apr 2019 11:15:40 -0700
-Message-ID: <20190422181539.GA30867@Asurada-Nvidia.nvidia.com>
-References: <20190420155846.10027-1-daniel.baluta@nxp.com>
- <20190420155846.10027-3-daniel.baluta@nxp.com>
- <20190421055406.GC683@Asurada-Nvidia.nvidia.com>
- <1555930942.31656.4.camel@nxp.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH v3 0/3] Add runtime PM for SAI digital audio interface
+Date: Mon, 22 Apr 2019 19:02:27 +0000
+Message-ID: <20190422190213.30726-1-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1555930942.31656.4.camel@nxp.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "broonie@kernel.org" <broonie@kernel.org>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 22, 2019 at 11:02:22AM +0000, Viorel Suman wrote:
-> Hi Nicolin,
-> 
-> On Sb, 2019-04-20 at 22:54 -0700, Nicolin Chen wrote:
-> > On Sat, Apr 20, 2019 at 03:59:05PM +0000, Daniel Baluta wrote:
-> > > 
-> > > Turn off/on clocks when device enters suspend/resume. This
-> > > helps saving power.
-> > > 
-> > > @@ -934,6 +933,25 @@ static int fsl_sai_runtime_suspend(struct device *dev)
-> > >  static int fsl_sai_runtime_resume(struct device *dev)
-> > >  {
-> > >  	struct fsl_sai *sai = dev_get_drvdata(dev);
-> > > +	int ret;
-> > > +
-> > > +	ret = clk_prepare_enable(sai->bus_clk);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "failed to enable bus clock: %d\n", ret);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	if (sai->mclk_streams & BIT(SNDRV_PCM_STREAM_PLAYBACK)) {
-> > > +		ret = clk_prepare_enable(sai->mclk_clk[sai->mclk_id[1]]);
-> > > +		if (ret)
-> > > +			goto disable_bus_clk;
-> > > +	}
-> > > +
-> > > +	if (sai->mclk_streams & BIT(SNDRV_PCM_STREAM_CAPTURE)) {
-> > > +		ret = clk_prepare_enable(sai->mclk_clk[sai->mclk_id[0]]);
-> > > +		if (ret)
-> > > +			goto disable_tx_clk;
-> > > +	}
-> > The driver only enables mclk_clks for I2S master mode. But this
-> > change enables them for I2S slave mode also. It doesn't sound a
-> > right thing to me since we are supposed to save power?
-> 
-> This change does not enable them for I2S slave mode, please check "fsl_sai_hw_params"
-> and "fsl_sai_hw_free" functions: the field "sai->mclk_streams" is modified only for
-> the case when "if (!sai->is_slave_mode)";
-
-Thanks for the input. This should be fine then.
-
-Nicolin
+Rmlyc3QgcGF0Y2ggZml4ZXMgYSBidWcgYnkgY29ycmVjdGx5IHNldHRpbmcgaXNfc2xhdmVfbW9k
+ZSwgdGhlbg0Kc2Vjb25kIHBhdGNoIGFkZHMgc3VwcG9ydCBmb3IgcnVudGltZSBQTSBhbmQgZmlu
+YWxseSAzcmQgcGF0Y2ggbW92ZXMNCmNsb2NrIGhhbmRsaW5nIGZyb20gc3RhcnR1cC9zaHR1ZG93
+biBmdW5jdGlvbiB0byBydW50aW1lIFBNIGhhbmRsZXJzLg0KDQpDaGFuZ2VzIHNpbmNlIHYyOiAo
+YWZ0ZXIgVmlvcmVsJ3MgY29tbWVudHMpDQoJLSBubyBuZWVkIHRvIGNoZWNrIGZvciBpc19zbGF2
+ZV9tb2RlIHdoZW4gZW5hYmxpbmcvZGlzYWJsaW5nIHRoZSBjbG9ja3MNCgliZWNhdXNlIHNhaS0+
+bWNsa19zdHJlYW1zIGlzIG9ubHkgc2V0IHdoZW4gU0FJIGlzIGluIG1hc3RlciBtb2RlLg0KDQpD
+aGFuZ2VzIHNpbmNlIHYxOiAoYWZ0ZXIgTmljb2xpbidzIGNvbW1lbnRzKQ0KCS0gYWRkZWQgcGF0
+Y2ggMQ0KCS0gYWRkZWQgZnNsX3NhaV9yZW1vdmUgaW4gb3JkZXIgdG8gY2FsbCBwbV9ydW50aW1l
+X2Rpc2FibGUNCgktIG9ubHkgZGlzYWJsZS9lbmFibGUgbWNsayB3aGVuIFNBSSBpbiBtYXN0ZXIg
+bW9kZS4NCg0KRGFuaWVsIEJhbHV0YSAoMik6DQogIEFTb0M6IGZzbF9zYWk6IFVwZGF0ZSBpc19z
+bGF2ZV9tb2RlIHdpdGggY29ycmVjdCB2YWx1ZQ0KICBBU29DOiBmc2xfc2FpOiBBZGQgc3VwcG9y
+dCBmb3IgcnVudGltZSBwbQ0KDQpTaGVuZ2ppdSBXYW5nICgxKToNCiAgQVNvQzogZnNsX3NhaTog
+TW92ZSBjbG9jayBvcGVyYXRpb24gdG8gUE0gcnVudGltZQ0KDQogc291bmQvc29jL2ZzbC9mc2xf
+c2FpLmMgfCA3OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLQ0KIDEg
+ZmlsZSBjaGFuZ2VkLCA2MyBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkNCg0KLS0gDQoy
+LjE3LjENCg0K
