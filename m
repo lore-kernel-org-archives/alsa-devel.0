@@ -1,63 +1,62 @@
-From: =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Subject: Re: sun4i-i2s: Wrong quirks for Allwinner A64 ?
-Date: Mon, 22 Apr 2019 19:48:33 +0200
-Message-ID: <CAJiuCceQYskqsPA04NtvW+0Si64wpL-OjO5suq5mFqFptjA19g@mail.gmail.com>
-References: <CAJiuCceUaWJ=PMXzjJPz-bMVOJFkfWg0B3T-OwNncu0KSQvnVQ@mail.gmail.com>
- <CA+E=qVcEFGqwbLCJWYv8SLz9Lm+4RivSY5xhwbP5h9f_ZPJQkA@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl: Move clock operation to PM runtime
+Date: Mon, 22 Apr 2019 11:15:40 -0700
+Message-ID: <20190422181539.GA30867@Asurada-Nvidia.nvidia.com>
+References: <20190420155846.10027-1-daniel.baluta@nxp.com>
+ <20190420155846.10027-3-daniel.baluta@nxp.com>
+ <20190421055406.GC683@Asurada-Nvidia.nvidia.com>
+ <1555930942.31656.4.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CA+E=qVcEFGqwbLCJWYv8SLz9Lm+4RivSY5xhwbP5h9f_ZPJQkA@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Marcus Cooper <codekipper@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Icenowy Zheng <icenowy@aosc.io>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1555930942.31656.4.camel@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Viorel Suman <viorel.suman@nxp.com>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, dl-linux-imx <linux-imx@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "S.j. Wang" <shengjiu.wang@nxp.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVmFzaWx5LAoKT24gTW9uLCAyMiBBcHIgMjAxOSBhdCAwNDozNSwgVmFzaWx5IEtob3J1emhp
-Y2sgPGFuYXJzb3VsQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiBPbiBTdW4sIEFwciAyMSwgMjAxOSBh
-dCA1OjM1IEFNIENsw6ltZW50IFDDqXJvbiA8cGVyb24uY2xlbUBnbWFpbC5jb20+IHdyb3RlOgo+
-ID4KPiA+IEhpLAo+ID4KPiA+IEknbSBsb29raW5nIHRvIHBvcnQgdGhlIHN1bjRpLWkycyBkcml2
-ZXJzIGZvciBBbGx3aW5uZXIgSDYsIGJ1dAo+ID4gcmVnYXJkaW5nIHRoZSBxdWlya3MgSSBmb3Vu
-ZCBzdHJhbmdlIHRoYXQgSDMgYW5kIEE2NCB3YXMgc28gZGlmZmVyZW50Lgo+ID4KPiA+IEkgaGF2
-ZSBhbmFseXplZCB0aGUgZGF0YXNoZWV0IGFuZCB1c2luZyBodW1hbiByZWFkaW5nIGNvbXBhcmlz
-b24sIEkKPiA+IGhhdmUgZm91bmQgb25seSAzIG1pbm9yIGRpZmZlcmVuY2VzIGluIHRoZSByZWdp
-c3RlcnMuCj4gPgo+ID4gSDMgcmVmZXJlbmNlIGkgaGF2ZSB1c2VkIDogSDMgRGF0YXNoZWV0KFJl
-dmlzaW9uIDEuMCkKPiA+IEZvciBBNjQgOiBBNjQgVXNlciBNYW51YWwoUmV2aXNpb24gMS4xKQo+
-ID4KPiA+IEgzIGlzIGlkZW50aWNhbCB0byBBNjQgZXhjZXB0IEgzIGhhcyBuZXcgOgo+ID4gTFJD
-S1JfT1VUIGJpdCgxNikgaW4gUENNX0NPTlRST0xfUkVHCj4gPiBTRElfc3luY19zZWwgQml0KDMx
-KSBpbiBQQ01fRk1UMF9SRUcKPiA+IExSQ0tSX1BFUklPRCBNYXNrKDI5OjIwKSBpbiBQQ01fRk1U
-MF9SRUcKPiA+Cj4gPiBSZWdhcmRpbmcgdGhlIHF1aXJrcyBzdHJ1Y3QgaW4gdGhlIGRyaXZlcnMg
-YW5kIHRoZSBjb21taXQgbG9nCj4gPiBzaGExOiA2NmVjY2UzMzI1MzgzYzgzMDQwNjNlN2Q1YTMw
-ZjQzNzRlZjVhMzNlCj4gPiBBU29DOiBzdW40aS1pMnM6IEFkZCBjb21wYXRpYmlsaXR5IHdpdGgg
-QTY0IGNvZGVjIEkyUwo+Cj4gTm90ZSB0aGF0IGl0IG1lbnRpb25zICpjb2RlYyogSTJTLiBBNjQg
-aGFzIDQgSTJTLCAzIGFyZSBwcmV0dHkgbXVjaAo+IGxpa2UgSDMsIGJ1dCB0aGUgb3RoZXIgKG9u
-ZSB0aGF0IGlzIHVzZWQgd2l0aCBidWlsdC1pbiBhdWRpbyBjb2RlYykgaXMKPiB0b3RhbGx5IGRp
-ZmZlcmVudC4KCkluZGVlZC4uLiBOb3Qgc3VyZSB3aHkgbXkgYnJhaW4gc2tpcCB0aGlzIHdvcmQg
-d2hlbiBJIHJlYWQgdGhlIGNvbW1pdCBsb2cuCkJ1dCBpdHMgd2VsbCBleHBsYWluZWQgYW5kIG9i
-dmlvdXMgd2hlbiBsb29raW5nIGF0IHRoZSBkZXZpY2UtdHJlZS4KClRoYW5rcyBmb3IgdGhlIHJl
-cGx5LApDbGVtZW50Cgo+Cj4gU2VlIDMuMjAuNCBpbiBBNjQgdXNlciBtYW51YWwsIHJlZ3MgMHgw
-MC0weDNjIGFyZSBjb2RlYyBJMlMuCj4KPiA+Cj4gPiAgICAgVGhlIEkyUyBibG9jayB1c2VkIGZv
-ciB0aGUgYXVkaW8gY29kZWMgaW4gdGhlIEE2NCBkaWZmZXJzIGZyb20gb3RoZXIgMwo+ID4gICAg
-IEkyUyBtb2R1bGVzIGluIEE2NCBhbmQgaXNuJ3QgY29tcGF0aWJsZSB3aXRoIEgzLiBCdXQgaXQg
-aXMgdmVyeSBzaW1pbGFyCj4gPiAgICAgdG8gd2hhdCBpcyBmb3VuZCBpbiBBMTAoc3VuNGkpLiBI
-b3dldmVyLCBpdHMgVFggRklGTyBpcwo+ID4gICAgIGxvY2F0ZWQgYXQgYSBkaWZmZXJlbnQgYWRk
-cmVzcy4KPiA+Cj4gPiBJdCBzYWlkIHRoYXQgQTY0IGlzIHJlYWxseSBkaWZmZXJlbnQgd2hpY2gg
-SSBkaXNhZ3JlZSwgZm9yIG1lIHRoZSBIMwo+ID4gdXNlIHRoZSBzYW1lIElQIGFzIEE2NCB3aXRo
-IGEgbGl0dGxlIGltcHJvdmVtZW50Lgo+ID4gV2hpY2ggc2VlbXMgbG9naWNhbCBiZWNhdXNlICJU
-aGUgQTY0IGlzIGJhc2ljYWxseSBhbiBBbGx3aW5uZXIgSDMgd2l0aAo+ID4gdGhlIENvcnRleC1B
-NyBjb3JlcyByZXBsYWNlZCB3aXRoIENvcnRleC1BNTMgY29yZXMiIChzb3VyY2UKPiA+IGxpbnV4
-LXN1bnhpLm9yZykKPiA+Cj4gPiBJJ20gb2theSB0byBzZW5kIGEgcGF0Y2ggdG8gZml4IHRoYXQg
-YnV0IEkgZG9uJ3QgaGF2ZSBhbiBIMyBub3IgQTY0IHRvCj4gPiB0ZXN0IHRoZSBtb2RpZmljYXRp
-b24uCj4gPgo+ID4gVGhhbmtzLAo+ID4gQ2xlbWVudAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGlu
-dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+On Mon, Apr 22, 2019 at 11:02:22AM +0000, Viorel Suman wrote:
+> Hi Nicolin,
+> 
+> On Sb, 2019-04-20 at 22:54 -0700, Nicolin Chen wrote:
+> > On Sat, Apr 20, 2019 at 03:59:05PM +0000, Daniel Baluta wrote:
+> > > 
+> > > Turn off/on clocks when device enters suspend/resume. This
+> > > helps saving power.
+> > > 
+> > > @@ -934,6 +933,25 @@ static int fsl_sai_runtime_suspend(struct device *dev)
+> > >  static int fsl_sai_runtime_resume(struct device *dev)
+> > >  {
+> > >  	struct fsl_sai *sai = dev_get_drvdata(dev);
+> > > +	int ret;
+> > > +
+> > > +	ret = clk_prepare_enable(sai->bus_clk);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "failed to enable bus clock: %d\n", ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	if (sai->mclk_streams & BIT(SNDRV_PCM_STREAM_PLAYBACK)) {
+> > > +		ret = clk_prepare_enable(sai->mclk_clk[sai->mclk_id[1]]);
+> > > +		if (ret)
+> > > +			goto disable_bus_clk;
+> > > +	}
+> > > +
+> > > +	if (sai->mclk_streams & BIT(SNDRV_PCM_STREAM_CAPTURE)) {
+> > > +		ret = clk_prepare_enable(sai->mclk_clk[sai->mclk_id[0]]);
+> > > +		if (ret)
+> > > +			goto disable_tx_clk;
+> > > +	}
+> > The driver only enables mclk_clks for I2S master mode. But this
+> > change enables them for I2S slave mode also. It doesn't sound a
+> > right thing to me since we are supposed to save power?
+> 
+> This change does not enable them for I2S slave mode, please check "fsl_sai_hw_params"
+> and "fsl_sai_hw_free" functions: the field "sai->mclk_streams" is modified only for
+> the case when "if (!sai->is_slave_mode)";
+
+Thanks for the input. This should be fine then.
+
+Nicolin
