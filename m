@@ -1,78 +1,58 @@
-From: "S.j. Wang" <shengjiu.wang@nxp.com>
-Subject: [PATCH V6 3/3] ASoC: fsl_asrc: Unify the supported input and output
- rate
-Date: Mon, 22 Apr 2019 04:52:08 +0000
-Message-ID: <aa3757e2fb4ec4e1cf2b1fe3de651257a2a89350.1555908545.git.shengjiu.wang@nxp.com>
-References: <cover.1555908545.git.shengjiu.wang@nxp.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 2/2] regmap: soundwire: fix Kconfig select/depend issue
+Date: Mon, 22 Apr 2019 11:31:41 +0530
+Message-ID: <20190422060141.GW28103@vkoul-mobl>
+References: <20190419194649.18467-1-pierre-louis.bossart@linux.intel.com>
+ <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1555908545.git.shengjiu.wang@nxp.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190419194649.18467-3-pierre-louis.bossart@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "timur@kernel.org" <timur@kernel.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org, liam.r.girdwood@linux.intel.com, jank@cadence.com, joe@perches.com, srinivas.kandagatla@linaro.org, "Rafael J. Wysocki" <rafael@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-VW5pZnkgdGhlIHN1cHBvcnRlZCBpbnB1dCBhbmQgb3V0cHV0IHJhdGUsIGFkZCB0aGUNCjEya0h6
-LzI0a0h6LzEyOGtIeiB0byB0aGUgc3VwcG9ydCBsaXN0DQoNClNpZ25lZC1vZmYtYnk6IFNoZW5n
-aml1IFdhbmcgPHNoZW5naml1LndhbmdAbnhwLmNvbT4NCkFja2VkLWJ5OiBOaWNvbGluIENoZW4g
-PG5pY29sZW90c3VrYUBnbWFpbC5jb20+DQotLS0NCiBzb3VuZC9zb2MvZnNsL2ZzbF9hc3JjLmMg
-fCAzMiArKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAx
-OSBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9mc2wvZnNsX2FzcmMuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX2FzcmMuYw0KaW5kZXggYThkNjcx
-MGYyNTQxLi5jYmJmNjI1N2YwOGEgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvZnNsL2ZzbF9hc3Jj
-LmMNCisrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX2FzcmMuYw0KQEAgLTI3LDEzICsyNywxNCBAQA0K
-IAlkZXZfZGJnKCZhc3JjX3ByaXYtPnBkZXYtPmRldiwgIlBhaXIgJWM6ICIgZm10LCAnQScgKyBp
-bmRleCwgIyNfX1ZBX0FSR1NfXykNCiANCiAvKiBDb3JyZXNwb25kaW5nIHRvIHByb2Nlc3Nfb3B0
-aW9uICovDQotc3RhdGljIGludCBzdXBwb3J0ZWRfaW5wdXRfcmF0ZVtdID0gew0KLQk1NTEyLCA4
-MDAwLCAxMTAyNSwgMTYwMDAsIDIyMDUwLCAzMjAwMCwgNDQxMDAsIDQ4MDAwLCA2NDAwMCwgODgy
-MDAsDQotCTk2MDAwLCAxNzY0MDAsIDE5MjAwMCwNCitzdGF0aWMgdW5zaWduZWQgaW50IHN1cHBv
-cnRlZF9hc3JjX3JhdGVbXSA9IHsNCisJNTUxMiwgODAwMCwgMTEwMjUsIDEyMDAwLCAxNjAwMCwg
-MjIwNTAsIDI0MDAwLCAzMjAwMCwgNDQxMDAsIDQ4MDAwLA0KKwk2NDAwMCwgODgyMDAsIDk2MDAw
-LCAxMjgwMDAsIDE3NjQwMCwgMTkyMDAwLA0KIH07DQogDQotc3RhdGljIGludCBzdXBwb3J0ZWRf
-YXNyY19yYXRlW10gPSB7DQotCTgwMDAsIDExMDI1LCAxNjAwMCwgMjIwNTAsIDMyMDAwLCA0NDEw
-MCwgNDgwMDAsIDY0MDAwLCA4ODIwMCwgOTYwMDAsIDE3NjQwMCwgMTkyMDAwLA0KK3N0YXRpYyBz
-dHJ1Y3Qgc25kX3BjbV9od19jb25zdHJhaW50X2xpc3QgZnNsX2FzcmNfcmF0ZV9jb25zdHJhaW50
-cyA9IHsNCisJLmNvdW50ID0gQVJSQVlfU0laRShzdXBwb3J0ZWRfYXNyY19yYXRlKSwNCisJLmxp
-c3QgPSBzdXBwb3J0ZWRfYXNyY19yYXRlLA0KIH07DQogDQogLyoqDQpAQCAtMjkzLDExICsyOTQs
-MTEgQEAgc3RhdGljIGludCBmc2xfYXNyY19jb25maWdfcGFpcihzdHJ1Y3QgZnNsX2FzcmNfcGFp
-ciAqcGFpcikNCiAJaWRlYWwgPSBjb25maWctPmluY2xrID09IElOQ0xLX05PTkU7DQogDQogCS8q
-IFZhbGlkYXRlIGlucHV0IGFuZCBvdXRwdXQgc2FtcGxlIHJhdGVzICovDQotCWZvciAoaW4gPSAw
-OyBpbiA8IEFSUkFZX1NJWkUoc3VwcG9ydGVkX2lucHV0X3JhdGUpOyBpbisrKQ0KLQkJaWYgKGlu
-cmF0ZSA9PSBzdXBwb3J0ZWRfaW5wdXRfcmF0ZVtpbl0pDQorCWZvciAoaW4gPSAwOyBpbiA8IEFS
-UkFZX1NJWkUoc3VwcG9ydGVkX2FzcmNfcmF0ZSk7IGluKyspDQorCQlpZiAoaW5yYXRlID09IHN1
-cHBvcnRlZF9hc3JjX3JhdGVbaW5dKQ0KIAkJCWJyZWFrOw0KIA0KLQlpZiAoaW4gPT0gQVJSQVlf
-U0laRShzdXBwb3J0ZWRfaW5wdXRfcmF0ZSkpIHsNCisJaWYgKGluID09IEFSUkFZX1NJWkUoc3Vw
-cG9ydGVkX2FzcmNfcmF0ZSkpIHsNCiAJCXBhaXJfZXJyKCJ1bnN1cHBvcnRlZCBpbnB1dCBzYW1w
-bGUgcmF0ZTogJWRIelxuIiwgaW5yYXRlKTsNCiAJCXJldHVybiAtRUlOVkFMOw0KIAl9DQpAQCAt
-MzExLDcgKzMxMiw3IEBAIHN0YXRpYyBpbnQgZnNsX2FzcmNfY29uZmlnX3BhaXIoc3RydWN0IGZz
-bF9hc3JjX3BhaXIgKnBhaXIpDQogCQlyZXR1cm4gLUVJTlZBTDsNCiAJfQ0KIA0KLQlpZiAoKG91
-dHJhdGUgPj0gODAwMCAmJiBvdXRyYXRlIDw9IDMwMDAwKSAmJg0KKwlpZiAoKG91dHJhdGUgPj0g
-NTUxMiAmJiBvdXRyYXRlIDw9IDMwMDAwKSAmJg0KIAkgICAgKG91dHJhdGUgPiAyNCAqIGlucmF0
-ZSB8fCBpbnJhdGUgPiA4ICogb3V0cmF0ZSkpIHsNCiAJCXBhaXJfZXJyKCJleGNlZWQgc3VwcG9y
-dGVkIHJhdGlvIHJhbmdlIFsxLzI0LCA4XSBmb3IgXA0KIAkJCQlpbnJhdGUvb3V0cmF0ZTogJWQv
-JWRcbiIsIGlucmF0ZSwgb3V0cmF0ZSk7DQpAQCAtNDg2LDcgKzQ4Nyw5IEBAIHN0YXRpYyBpbnQg
-ZnNsX2FzcmNfZGFpX3N0YXJ0dXAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0s
-DQogCQlzbmRfcGNtX2h3X2NvbnN0cmFpbnRfc3RlcChzdWJzdHJlYW0tPnJ1bnRpbWUsIDAsDQog
-CQkJCQkgICBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsIDIpOw0KIA0KLQlyZXR1cm4gMDsN
-CisNCisJcmV0dXJuIHNuZF9wY21faHdfY29uc3RyYWludF9saXN0KHN1YnN0cmVhbS0+cnVudGlt
-ZSwgMCwNCisJCQlTTkRSVl9QQ01fSFdfUEFSQU1fUkFURSwgJmZzbF9hc3JjX3JhdGVfY29uc3Ry
-YWludHMpOw0KIH0NCiANCiBzdGF0aWMgaW50IGZzbF9hc3JjX2RhaV9od19wYXJhbXMoc3RydWN0
-IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sDQpAQCAtNTk5LDcgKzYwMiw2IEBAIHN0YXRp
-YyBpbnQgZnNsX2FzcmNfZGFpX3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0KIAlyZXR1
-cm4gMDsNCiB9DQogDQotI2RlZmluZSBGU0xfQVNSQ19SQVRFUwkJIFNORFJWX1BDTV9SQVRFXzgw
-MDBfMTkyMDAwDQogI2RlZmluZSBGU0xfQVNSQ19GT1JNQVRTCShTTkRSVl9QQ01fRk1UQklUX1My
-NF9MRSB8IFwNCiAJCQkJIFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwgXA0KIAkJCQkgU05EUlZf
-UENNX0ZNVEJJVF9TMjBfM0xFKQ0KQEAgLTYxMCwxNCArNjEyLDE4IEBAIHN0YXRpYyBpbnQgZnNs
-X2FzcmNfZGFpX3Byb2JlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQ0KIAkJLnN0cmVhbV9uYW1l
-ID0gIkFTUkMtUGxheWJhY2siLA0KIAkJLmNoYW5uZWxzX21pbiA9IDEsDQogCQkuY2hhbm5lbHNf
-bWF4ID0gMTAsDQotCQkucmF0ZXMgPSBGU0xfQVNSQ19SQVRFUywNCisJCS5yYXRlX21pbiA9IDU1
-MTIsDQorCQkucmF0ZV9tYXggPSAxOTIwMDAsDQorCQkucmF0ZXMgPSBTTkRSVl9QQ01fUkFURV9L
-Tk9ULA0KIAkJLmZvcm1hdHMgPSBGU0xfQVNSQ19GT1JNQVRTLA0KIAl9LA0KIAkuY2FwdHVyZSA9
-IHsNCiAJCS5zdHJlYW1fbmFtZSA9ICJBU1JDLUNhcHR1cmUiLA0KIAkJLmNoYW5uZWxzX21pbiA9
-IDEsDQogCQkuY2hhbm5lbHNfbWF4ID0gMTAsDQotCQkucmF0ZXMgPSBGU0xfQVNSQ19SQVRFUywN
-CisJCS5yYXRlX21pbiA9IDU1MTIsDQorCQkucmF0ZV9tYXggPSAxOTIwMDAsDQorCQkucmF0ZXMg
-PSBTTkRSVl9QQ01fUkFURV9LTk9ULA0KIAkJLmZvcm1hdHMgPSBGU0xfQVNSQ19GT1JNQVRTLA0K
-IAl9LA0KIAkub3BzID0gJmZzbF9hc3JjX2RhaV9vcHMsDQotLSANCjEuOS4xDQoNCg==
+On 19-04-19, 14:46, Pierre-Louis Bossart wrote:
+> The mechanism should be
+> 
+> config CODEC_XYX_SDW
+>        depends on SOUNDWIRE
+>        select REGMAP_SOUNDWIRE
+> 
+> config REGMAP_SOUNDWIRE
+>        select SOUNDWIRE_BUS
+> 
+> SOUNDWIRE_BUS can be independently selected by the SOC driver. The SOC
+> driver should not know or care about REGMAP_SOUNDWIRE.
+
+lgtm, Mark can I have ypu ack so that I can carry the series thru
+soundwire tree
+
+Thanks
+
+> Fixes: 7c22ce6e2184 ('03fc8746f7915b5a391d8227f7e1')
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/base/regmap/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+> index 6ad5ef48b61e..c12e3f1fb110 100644
+> --- a/drivers/base/regmap/Kconfig
+> +++ b/drivers/base/regmap/Kconfig
+> @@ -44,7 +44,7 @@ config REGMAP_IRQ
+>  
+>  config REGMAP_SOUNDWIRE
+>  	tristate
+> -	depends on SOUNDWIRE_BUS
+> +	select SOUNDWIRE_BUS
+>  
+>  config REGMAP_SCCB
+>  	tristate
+> -- 
+> 2.17.1
+
+-- 
+~Vinod
