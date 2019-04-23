@@ -1,20 +1,21 @@
-From: Rob van der Putten <rob@sput.nl>
-Subject: [PATCH] Aseqnet, no nagle and dual stack
-Date: Tue, 23 Apr 2019 20:25:58 +0200
-Message-ID: <q9nlbm$3kqm$1@blaine.gmane.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: Intel: Add machine driver for
+ CX2072X on BYT/CHT platforms
+Date: Tue, 23 Apr 2019 12:20:24 -0700
+Message-ID: <f241c576-8c37-24d1-48c7-04bb36a7c565@linux.intel.com>
+References: <20190423141336.12568-1-tiwai@suse.de>
+ <20190423141336.12568-3-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blaine.gmane.org (unknown [195.159.176.226])
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05585F80730
- for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2019 20:26:04 +0200 (CEST)
-Received: from list by blaine.gmane.org with local (Exim 4.89)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1hJ07H-000VEO-DA
- for alsa-devel@alsa-project.org; Tue, 23 Apr 2019 20:26:03 +0200
-Content-Language: en-GB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11662F89618
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2019 21:20:27 +0200 (CEST)
+In-Reply-To: <20190423141336.12568-3-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,191 +25,144 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there
+On 4/23/19 9:13 AM, Takashi Iwai wrote:
+> This is an implementation of a machine driver needed for Conexant
+> CX2072X codec on Intel Baytrail and Cherrytrail platforms.  The
+> current patch is based on the initial work by Pierre-Louis Bossart and
+> the other Intel machine drivers.
+> 
+> The jack detection support (driven via the standard GPIO) was added on
+> top of the original work.
+> 
+> No SOF support yet, so the corresponding entries are commented out.
+
+SOF support is trivial to add, can we help you here?
 
 
-Not an ALSA source patch, but a patch for an ALSA related util.
-Aseqnet sends ALSA sound_seq MIDI over TCP/IP. The patch below disables 
-nagle, enables quickack and makes aseqnet dual-stack.
+> +config SND_SOC_INTEL_BYT_CHT_CX2072X_MACH
+> +	tristate "Baytrail & Cherrytrail with CX2072X codec"
+> +	depends on X86_INTEL_LPSS && I2C && ACPI
+
+Didn't Mark recently split this in two, with X86_INTEL_LPSS || COMPILE_TEST?
+
+> +static int byt_cht_cx2072x_fixup(struct snd_soc_pcm_runtime *rtd,
+> +				 struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_interval *rate =
+> +		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+> +	struct snd_interval *channels =
+> +		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+> +	int ret;
+> +
+> +	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
+> +	rate->min = rate->max = 48000;
+> +	channels->min = channels->max = 2;
+> +
+> +	/* set SSP2 to 24-bit */
+> +	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+> +
+> +	/*
+> +	 * Default mode for SSP configuration is TDM 4 slot, override config
+> +	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
+> +	 * dai_set_tdm_slot() since there is no other API exposed
+> +	 */
+> +	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+> +				SND_SOC_DAIFMT_I2S     |
+> +				SND_SOC_DAIFMT_NB_NF   |
+> +				SND_SOC_DAIFMT_CBS_CFS);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	snd_soc_dai_set_bclk_ratio(rtd->codec_dai, 50);
+
+that part would be problematic for SOF. IIRC we put all clock-related 
+stuff in the init, and ignore the fixups to use topology-based 
+information instead. If this call to _set_bclk_ratio can be moved to the 
+init it's more future-proof. Is there a reason to do this here in the fixup?
 
 
---- aseqnet.c.bak	2012-01-25 10:43:38.000000000 +0100
-+++ aseqnet.c	2017-08-26 14:17:58.261868853 +0200
-@@ -3,6 +3,8 @@
-   *   ver.0.1
-   *
-   * Copyright (C) 1999-2000 Takashi Iwai
-+ * Modified by Rob van der Putten, Leiden, Holland,
-+ * rob at sput dot nl.
-   *
-   *  This program is free software; you can redistribute it and/or modify
-   *  it under the terms of the GNU General Public License version 2 as
-@@ -15,18 +17,21 @@
-   *
-   */
+> +static struct snd_soc_dai_link byt_cht_cx2072x_dais[] = {
+> +	[MERR_DPCM_AUDIO] = {
+> +		.name = "Audio Port",
+> +		.stream_name = "Audio",
+> +		.cpu_dai_name = "media-cpu-dai",
+> +		.codec_dai_name = "snd-soc-dummy-dai",
+> +		.codec_name = "snd-soc-dummy",
+> +		.platform_name = "sst-mfld-platform",
+> +		.nonatomic = true,
+> +		.dynamic = 1,
+> +		.dpcm_playback = 1,
+> +		.dpcm_capture = 1,
+> +		.ops = &byt_cht_cx2072x_aif1_ops,
+> +	},
+> +	[MERR_DPCM_DEEP_BUFFER] = {
+> +		.name = "Deep-Buffer Audio Port",
+> +		.stream_name = "Deep-Buffer Audio",
+> +		.cpu_dai_name = "deepbuffer-cpu-dai",
+> +		.codec_dai_name = "snd-soc-dummy-dai",
+> +		.codec_name = "snd-soc-dummy",
+> +		.platform_name = "sst-mfld-platform",
+> +		.nonatomic = true,
+> +		.dynamic = 1,
+> +		.dpcm_playback = 1,
+> +		.ops = &byt_cht_cx2072x_aif1_ops,
+> +	},
+> +	/* back ends */
+> +	{
+> +		.name = "SSP2-Codec",
+> +		.id = 1,
+> +		.cpu_dai_name = "ssp2-port",
+> +		.platform_name = "sst-mfld-platform",
+> +		.no_pcm = 1,
+> +		.codec_dai_name = "cx2072x-hifi",
+> +		.codec_name = "i2c-14F10720:00",
+> +		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+> +					      | SND_SOC_DAIFMT_CBS_CFS,
+> +		.init = byt_cht_cx2072x_init,
+> +		.be_hw_params_fixup = byt_cht_cx2072x_fixup,
+> +		.nonatomic = true,
 
-+#include <alsa/asoundlib.h>
-+#include <arpa/inet.h>
-+#include <assert.h>
-+#include <ctype.h>
-+#include <getopt.h>
-+#include <locale.h>
-+#include <netdb.h>
-+#include <netinet/in.h>
-+#include <netinet/tcp.h>
-+#include <signal.h>
-  #include <stdio.h>
-  #include <stdlib.h>
--#include <ctype.h>
-  #include <string.h>
--#include <netinet/in.h>
-  #include <sys/socket.h>
--#include <netdb.h>
--#include <locale.h>
--#include <alsa/asoundlib.h>
--#include <getopt.h>
--#include <signal.h>
--#include <assert.h>
-+#include <sys/types.h>
-  #include "aconfig.h"
-  #include "gettext.h"
+I can't recall if this .atomic is needed or not for back-ends.
 
-@@ -327,17 +332,24 @@
-   */
-  static void init_server(int port)
-  {
-+	/*
-+	*       RvdP, changed to support IPv6
-+	*       Dual stack only!
-+	*/
-  	int i;
-  	int curstate = 1;
--	struct sockaddr_in addr;
-+	int ipv6only = 0;
-+	int nodelay  = 1;
-+	int quickack = 1;
-+	struct sockaddr_in6 addr;
+> +	{
+> +		.id = "14F10720",
+> +		.drv_name = "bytcht_cx2072x",
+> +		.fw_filename = "intel/fw_sst_0f28.bin",
+> +		.board = "bytcht_cx2072x",
+> +		/* .sof_fw_filename = "sof-byt.ri", */
+> +		/* .sof_tplg_filename = "sof-byt-cx2072x.tplg", */
+> +	},
+>   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
+>   	/*
+>   	 * This is always last in the table so that it is selected only when
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> index deafd87cc764..69ecbb88c171 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
+> @@ -169,6 +169,14 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
+>   		.sof_fw_filename = "sof-cht.ri",
+>   		.sof_tplg_filename = "sof-cht-rt5651.tplg",
+>   	},
+> +	{
+> +		.id = "14F10720",
+> +		.drv_name = "bytcht_cx2072x",
+> +		.fw_filename = "intel/fw_sst_22a8.bin",
+> +		.board = "bytcht_cx2072x",
+> +		/* .sof_fw_filename = "sof-cht.ri", */
+> +		/* .sof_tplg_filename = "sof-cht-cx2072x.tplg", */
+> +	},
 
-  	memset(&addr, 0, sizeof(addr));
-
--	addr.sin_family = AF_INET;
--	addr.sin_addr.s_addr = INADDR_ANY;
--	addr.sin_port = htons(port);
-+	addr.sin6_family = AF_INET6;
-+	inet_pton(AF_INET6, "::", &(addr.sin6_addr));
-+	addr.sin6_port = htons(port);
-
--	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-+	sockfd = socket(PF_INET6, SOCK_STREAM, 0);
-  	if (sockfd < 0)  {
-  		perror("create socket");
-  		exit(1);
-@@ -345,7 +357,19 @@
-  	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &curstate, 
-sizeof(curstate));
-  	/* the return value is ignored.. */
-
--	if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)  {
-+	/*    Force dual stack    */
-+	setsockopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, &ipv6only, 
-sizeof(ipv6only));
-+	/* the return value is ignored.. */
-+
-+	/*    Nagle and quickack  */
-+	if ((setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &nodelay, 
-sizeof(nodelay))) < 0) {
-+		perror("Error setsockopt tcp_nodelay");
-+	}
-+	if ((setsockopt(sockfd, IPPROTO_TCP, TCP_QUICKACK, &quickack, 
-sizeof(quickack))) < 0) {
-+		perror("Error setsockopt tcp_quickack");
-+	}
-+
-+	if (bind(sockfd, (struct sockaddr *) &addr, sizeof(addr)) < 0)  {
-  		perror("can't bind");
-  		exit(1);
-  	}
-@@ -394,30 +418,58 @@
-   */
-  static void init_client(char *server, int port)
-  {
--	struct sockaddr_in addr;
--	struct hostent *host;
--	int curstate = 1;
--	int fd;
-+	/*
-+	*	RvdP, changed to support IPv6
-+	*/
-
--	if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
--		perror("create socket");
-+	struct addrinfo hints;
-+	struct addrinfo *result, *rp;
-+	int curstate = 1;
-+	int nodelay  = 1;
-+	int quickack = 1;
-+	int fd, s;
-+	char portstr[8];
-+
-+	memset(&hints, 0, sizeof(struct addrinfo));
-+	hints.ai_family   = AF_UNSPEC;
-+	hints.ai_socktype = SOCK_STREAM;
-+	/* hints.ai_protocol = IPPROTO_TCP; */
-+	hints.ai_flags    = 0;
-+
-+	memset(portstr, 0, 8);
-+	snprintf(portstr, 6, "%d", port);
-+
-+	s = getaddrinfo(server, portstr, &hints, &result);
-+	if (s != 0) {
-+		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
-+		exit(1);
-+	}
-+	for (rp = result; rp != NULL; rp = rp->ai_next) {
-+		fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-+		if (fd == -1)
-+			continue;
-+		if (connect(fd, rp->ai_addr, rp->ai_addrlen) != -1)
-+			break;
-+		close(fd);
-+	}
-+	if (rp == NULL) {
-+		fprintf(stderr, "Could not connect\n");
-  		exit(1);
-  	}
-+
-  	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &curstate, 
-sizeof(curstate)) < 0) {
-  		perror("setsockopt");
-  		exit(1);
-  	}
--	if ((host = gethostbyname(server)) == NULL){
--		fprintf(stderr, _("can't get address %s\n"), server);
--		exit(1);
-+
-+	/*  RvdP, nagle and quickack  */
-+	if ((setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, 
-sizeof(nodelay))) < 0) {
-+		perror("Error setsockopt tcp_nodelay");
-  	}
--	addr.sin_port = htons(port);
--	addr.sin_family = AF_INET;
--	memcpy(&addr.sin_addr, host->h_addr, host->h_length);
--	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
--		perror("connect");
--		exit(1);
-+	if ((setsockopt(fd, IPPROTO_TCP, TCP_QUICKACK, &quickack, 
-sizeof(quickack))) < 0) {
-+		perror("Error setsockopt tcp_quickack");
-  	}
-+
-  	if (verbose)
-  		fprintf(stderr, _("ok.. connected\n"));
-  	netfd[0] = fd;
-
-
-Regards,
-Rob
+I'd uncomment those two ACPI machine parts. There is not risk unless SOF 
+is actually enabled.
