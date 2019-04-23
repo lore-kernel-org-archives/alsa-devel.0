@@ -1,141 +1,67 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH] ASoC: stm32: simplify dai driver initialisation
-Date: Tue, 23 Apr 2019 13:29:37 +0000
-Message-ID: <9cb0aea8-81d3-3122-da55-2ee0c90809e8@st.com>
-References: <1554456387-3088-1-git-send-email-arnaud.pouliquen@st.com>
+From: =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
+Subject: Re: [PATCH] ASoC: rt1308: Add RT1308 amplifier driver
+Date: Tue, 23 Apr 2019 13:39:59 +0000
+Message-ID: <BC6F7617C38F3E4E8CA887E07B35B828011660AC@RTITEXDAG02.realtek.com.tw>
+References: <20190416022246.10121-1-derek.fang@realtek.com>
+ <20190416153510.GE4834@sirena.org.uk>
+ <BC6F7617C38F3E4E8CA887E07B35B8280116192E@RTITMBSVM07.realtek.com.tw>
+ <20190417150518.GB5703@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1554456387-3088-1-git-send-email-arnaud.pouliquen@st.com>
-Content-Language: en-US
-Content-ID: <7BA1FD71D75DC14A8BA5064AFB8FBA14@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4265EF8070C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2019 15:40:07 +0200 (CEST)
+In-Reply-To: <20190417150518.GB5703@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Albert Chen <albertchen@realtek.com>, "bard.liao@intel.com" <bard.liao@intel.com>, =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Arnaud,
-
-On 4/5/19 11:26 AM, Arnaud Pouliquen wrote:
-> Suppress the useless dynamic allocation of the dai driver structure.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->   sound/soc/stm/stm32_sai_sub.c | 43 +++++++++----------------------------------
->   1 file changed, 9 insertions(+), 34 deletions(-)
+> On Wed, Apr 17, 2019 at 11:40:28AM +0000, Derek wrote:
 > 
-> diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-> index 3dd54bc..e3b021c 100644
-> --- a/sound/soc/stm/stm32_sai_sub.c
-> +++ b/sound/soc/stm/stm32_sai_sub.c
-> @@ -109,7 +109,7 @@ struct stm32_sai_sub_data {
->   	struct regmap *regmap;
->   	const struct regmap_config *regmap_config;
->   	struct snd_dmaengine_dai_dma_data dma_params;
-> -	struct snd_soc_dai_driver *cpu_dai_drv;
-> +	struct snd_soc_dai_driver cpu_dai_drv;
->   	struct snd_soc_dai *cpu_dai;
->   	struct snd_pcm_substream *substream;
->   	struct stm32_sai_data *pdata;
-> @@ -1204,8 +1204,7 @@ static const struct snd_pcm_hardware stm32_sai_pcm_hw = {
->   	.periods_max = 8,
->   };
->   
-> -static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
-> -{
-> +static struct snd_soc_dai_driver stm32_sai_playback_dai = {
->   		.probe = stm32_sai_dai_probe,
->   		.pcm_new = stm32_sai_pcm_new,
->   		.id = 1, /* avoid call to fmt_single_name() */
-> @@ -1222,11 +1221,9 @@ static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
->   				SNDRV_PCM_FMTBIT_S32_LE,
->   		},
->   		.ops = &stm32_sai_pcm_dai_ops,
-> -	}
->   };
->   
-> -static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
-> -{
-> +static struct snd_soc_dai_driver stm32_sai_capture_dai = {
->   		.probe = stm32_sai_dai_probe,
->   		.id = 1, /* avoid call to fmt_single_name() */
->   		.capture = {
-> @@ -1242,7 +1239,6 @@ static struct snd_soc_dai_driver stm32_sai_capture_dai[] = {
->   				SNDRV_PCM_FMTBIT_S32_LE,
->   		},
->   		.ops = &stm32_sai_pcm_dai_ops,
-> -	}
->   };
->   
->   static const struct snd_dmaengine_pcm_config stm32_sai_pcm_config = {
-> @@ -1411,29 +1407,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
->   	return 0;
->   }
->   
-> -static int stm32_sai_sub_dais_init(struct platform_device *pdev,
-> -				   struct stm32_sai_sub_data *sai)
-> -{
-> -	sai->cpu_dai_drv = devm_kzalloc(&pdev->dev,
-> -					sizeof(struct snd_soc_dai_driver),
-> -					GFP_KERNEL);
-> -	if (!sai->cpu_dai_drv)
-> -		return -ENOMEM;
-> -
-> -	if (STM_SAI_IS_PLAYBACK(sai)) {
-> -		memcpy(sai->cpu_dai_drv, &stm32_sai_playback_dai,
-> -		       sizeof(stm32_sai_playback_dai));
-> -		sai->cpu_dai_drv->playback.stream_name = sai->cpu_dai_drv->name;
-> -	} else {
-> -		memcpy(sai->cpu_dai_drv, &stm32_sai_capture_dai,
-> -		       sizeof(stm32_sai_capture_dai));
-> -		sai->cpu_dai_drv->capture.stream_name = sai->cpu_dai_drv->name;
-> -	}
-> -	sai->cpu_dai_drv->name = dev_name(&pdev->dev);
-> -
-> -	return 0;
-> -}
-> -
->   static int stm32_sai_sub_probe(struct platform_device *pdev)
->   {
->   	struct stm32_sai_sub_data *sai;
-> @@ -1465,9 +1438,11 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> -	ret = stm32_sai_sub_dais_init(pdev, sai);
-> -	if (ret)
-> -		return ret;
-> +	if (STM_SAI_IS_PLAYBACK(sai))
-> +		sai->cpu_dai_drv = stm32_sai_playback_dai;
-> +	else
-> +		sai->cpu_dai_drv = stm32_sai_capture_dai;
-> +	sai->cpu_dai_drv.name = dev_name(&pdev->dev);
->   
->   	ret = devm_request_irq(&pdev->dev, sai->pdata->irq, stm32_sai_isr,
->   			       IRQF_SHARED, dev_name(&pdev->dev), sai);
-> @@ -1477,7 +1452,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
->   	}
->   
->   	ret = devm_snd_soc_register_component(&pdev->dev, &stm32_component,
-> -					      sai->cpu_dai_drv, 1);
-> +					      &sai->cpu_dai_drv, 1);
->   	if (ret)
->   		return ret;
->   
+> Please fix your mail client to word wrap within paragraphs at something
+> substantially less than 80 columns.  Doing this makes your messages much
+> easier to read and reply to.
 > 
+> > > The ones here with comments look an awful lot like they're system
+> > > specific config which should be left up to either platform data (or
+> > > DT/ACPI configuration) or done at runtime (like gains).  Some of the
+> > > others like the pads configuration might also fit into that.
+> 
+> > We don't open the DA gain setting for user at runtime, so have to set
+> > a default level in the init list.
+> 
+> That's not the way Linux drivers generally work...  is there some technical reason
+> for that or is it just some kind of policy decision?
 
-Just one comment. sai is missing in commit message.
+Maybe I could add a gain control for the user and set the gain to safety max level in init list for speaker protection.
 
-Reviewed-by: Olivier Moysan <olivier.moysan@st.com>
+> 
+> > > > +static void rt1308_reset(struct regmap *regmap) {
+> > > > +	regmap_write(regmap, RT1308_RESET, 0); }
+> > >
+> > > If we do need the init list shouldn't we also do a reninit every time we do a
+> reset?
+> 
+> > The init list is only set at driver probe, not every time after resetting.
+> 
+> This is what I'm pointing out; if you don't restore these values then why set them
+> at all?
 
-BRs
-olivier
+OK, I could reinit after every time resetting.
+
+> ------Please consider the environment before printing this e-mail.
