@@ -1,78 +1,54 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v3 3/3] ASoC: fsl_sai: Move clock operation to PM runtime
-Date: Mon, 22 Apr 2019 19:02:30 +0000
-Message-ID: <20190422190213.30726-4-daniel.baluta@nxp.com>
-References: <20190422190213.30726-1-daniel.baluta@nxp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH v2 1/2] dt-bindings: ASoC: Add Spreadtrum multi-channel data transfer support
+Date: Tue, 23 Apr 2019 10:26:21 +0800
+Message-ID: <fd223d1dcf5be1f83863e881fa3db931b5c84601.1555917711.git.baolin.wang@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190422190213.30726-1-daniel.baluta@nxp.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "timur@kernel.org" <timur@kernel.org>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>, "festevam@gmail.com" <festevam@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, robh+dt@kernel.org, mark.rutland@arm.com, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, baolin.wang@linaro.org, orsonzhai@gmail.com, zhang.lyra@gmail.com, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogU2hlbmdqaXUgV2FuZyA8c2hlbmdqaXUud2FuZ0BueHAuY29tPg0KDQpUdXJuIG9mZi9v
-biBjbG9ja3Mgd2hlbiBkZXZpY2UgZW50ZXJzIHN1c3BlbmQvcmVzdW1lLiBUaGlzDQpjYW4gaGVs
-cCBzYXZpbmcgcG93ZXIuDQoNCkFzIGEgZnVydGhlciBvcHRpbWl6YXRpb24sIHdlIHR1cm4gb2Zm
-L29uIG1jbGsgb25seSB3aGVuIFNBSQ0KaXMgaW4gbWFzdGVyIG1vZGUgYmVjYXVzZSBvdGhlcndp
-c2UgbWNsayBpcyBleHRlcm5hbGx5IHByb3ZpZGVkLg0KDQpTaWduZWQtb2ZmLWJ5OiBTaGVuZ2pp
-dSBXYW5nIDxzaGVuZ2ppdS53YW5nQG54cC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFs
-dXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQotLS0NCiBzb3VuZC9zb2MvZnNsL2ZzbF9zYWku
-YyB8IDU0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tDQogMSBmaWxl
-IGNoYW5nZWQsIDQ0IGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMgYi9zb3VuZC9zb2MvZnNsL2ZzbF9zYWkuYw0KaW5k
-ZXggODYyM2I3Zjg4MmI5Li43ZmQxYTgxZWMxYWEgMTAwNjQ0DQotLS0gYS9zb3VuZC9zb2MvZnNs
-L2ZzbF9zYWkuYw0KKysrIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCkBAIC01OTYsMTUgKzU5
-Niw4IEBAIHN0YXRpYyBpbnQgZnNsX3NhaV9zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtLA0KIHsNCiAJc3RydWN0IGZzbF9zYWkgKnNhaSA9IHNuZF9zb2NfZGFpX2dl
-dF9kcnZkYXRhKGNwdV9kYWkpOw0KIAlib29sIHR4ID0gc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05E
-UlZfUENNX1NUUkVBTV9QTEFZQkFDSzsNCi0Jc3RydWN0IGRldmljZSAqZGV2ID0gJnNhaS0+cGRl
-di0+ZGV2Ow0KIAlpbnQgcmV0Ow0KIA0KLQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoc2FpLT5i
-dXNfY2xrKTsNCi0JaWYgKHJldCkgew0KLQkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gZW5hYmxl
-IGJ1cyBjbG9jazogJWRcbiIsIHJldCk7DQotCQlyZXR1cm4gcmV0Ow0KLQl9DQotDQogCXJlZ21h
-cF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNMX1NBSV94Q1IzKHR4KSwgRlNMX1NBSV9DUjNf
-VFJDRSwNCiAJCQkgICBGU0xfU0FJX0NSM19UUkNFKTsNCiANCkBAIC02MjEsOCArNjE0LDYgQEAg
-c3RhdGljIHZvaWQgZnNsX3NhaV9zaHV0ZG93bihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
-YnN0cmVhbSwNCiAJYm9vbCB0eCA9IHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJF
-QU1fUExBWUJBQ0s7DQogDQogCXJlZ21hcF91cGRhdGVfYml0cyhzYWktPnJlZ21hcCwgRlNMX1NB
-SV94Q1IzKHR4KSwgRlNMX1NBSV9DUjNfVFJDRSwgMCk7DQotDQotCWNsa19kaXNhYmxlX3VucHJl
-cGFyZShzYWktPmJ1c19jbGspOw0KIH0NCiANCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2Nf
-ZGFpX29wcyBmc2xfc2FpX3BjbV9kYWlfb3BzID0gew0KQEAgLTkzMiw2ICs5MjMsMTQgQEAgc3Rh
-dGljIGludCBmc2xfc2FpX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQogew0K
-IAlzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQogDQorCWlmIChz
-YWktPm1jbGtfc3RyZWFtcyAmIEJJVChTTkRSVl9QQ01fU1RSRUFNX0NBUFRVUkUpKQ0KKwkJY2xr
-X2Rpc2FibGVfdW5wcmVwYXJlKHNhaS0+bWNsa19jbGtbc2FpLT5tY2xrX2lkWzBdXSk7DQorDQor
-CWlmIChzYWktPm1jbGtfc3RyZWFtcyAmIEJJVChTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSkN
-CisJCWNsa19kaXNhYmxlX3VucHJlcGFyZShzYWktPm1jbGtfY2xrW3NhaS0+bWNsa19pZFsxXV0p
-Ow0KKw0KKwljbGtfZGlzYWJsZV91bnByZXBhcmUoc2FpLT5idXNfY2xrKTsNCisNCiAJcmVnY2Fj
-aGVfY2FjaGVfb25seShzYWktPnJlZ21hcCwgdHJ1ZSk7DQogCXJlZ2NhY2hlX21hcmtfZGlydHko
-c2FpLT5yZWdtYXApOw0KIA0KQEAgLTk0MSw2ICs5NDAsMjUgQEAgc3RhdGljIGludCBmc2xfc2Fp
-X3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpDQogc3RhdGljIGludCBmc2xfc2Fp
-X3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCiB7DQogCXN0cnVjdCBmc2xfc2Fp
-ICpzYWkgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCisJaW50IHJldDsNCisNCisJcmV0ID0gY2xr
-X3ByZXBhcmVfZW5hYmxlKHNhaS0+YnVzX2Nsayk7DQorCWlmIChyZXQpIHsNCisJCWRldl9lcnIo
-ZGV2LCAiZmFpbGVkIHRvIGVuYWJsZSBidXMgY2xvY2s6ICVkXG4iLCByZXQpOw0KKwkJcmV0dXJu
-IHJldDsNCisJfQ0KKw0KKwlpZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NU
-UkVBTV9QTEFZQkFDSykpIHsNCisJCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShzYWktPm1jbGtf
-Y2xrW3NhaS0+bWNsa19pZFsxXV0pOw0KKwkJaWYgKHJldCkNCisJCQlnb3RvIGRpc2FibGVfYnVz
-X2NsazsNCisJfQ0KKw0KKwlpZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NU
-UkVBTV9DQVBUVVJFKSkgew0KKwkJcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKHNhaS0+bWNsa19j
-bGtbc2FpLT5tY2xrX2lkWzBdXSk7DQorCQlpZiAocmV0KQ0KKwkJCWdvdG8gZGlzYWJsZV90eF9j
-bGs7DQorCX0NCiANCiAJcmVnY2FjaGVfY2FjaGVfb25seShzYWktPnJlZ21hcCwgZmFsc2UpOw0K
-IAlyZWdtYXBfd3JpdGUoc2FpLT5yZWdtYXAsIEZTTF9TQUlfVENTUiwgRlNMX1NBSV9DU1JfU1Ip
-Ow0KQEAgLTk0OCw3ICs5NjYsMjMgQEAgc3RhdGljIGludCBmc2xfc2FpX3J1bnRpbWVfcmVzdW1l
-KHN0cnVjdCBkZXZpY2UgKmRldikNCiAJdXNsZWVwX3JhbmdlKDEwMDAsIDIwMDApOw0KIAlyZWdt
-YXBfd3JpdGUoc2FpLT5yZWdtYXAsIEZTTF9TQUlfVENTUiwgMCk7DQogCXJlZ21hcF93cml0ZShz
-YWktPnJlZ21hcCwgRlNMX1NBSV9SQ1NSLCAwKTsNCi0JcmV0dXJuIHJlZ2NhY2hlX3N5bmMoc2Fp
-LT5yZWdtYXApOw0KKw0KKwlyZXQgPSByZWdjYWNoZV9zeW5jKHNhaS0+cmVnbWFwKTsNCisJaWYg
-KHJldCkNCisJCWdvdG8gZGlzYWJsZV9yeF9jbGs7DQorDQorCXJldHVybiAwOw0KKw0KK2Rpc2Fi
-bGVfcnhfY2xrOg0KKwlpZiAoc2FpLT5tY2xrX3N0cmVhbXMgJiBCSVQoU05EUlZfUENNX1NUUkVB
-TV9DQVBUVVJFKSkNCisJCWNsa19kaXNhYmxlX3VucHJlcGFyZShzYWktPm1jbGtfY2xrW3NhaS0+
-bWNsa19pZFswXV0pOw0KK2Rpc2FibGVfdHhfY2xrOg0KKwlpZiAoc2FpLT5tY2xrX3N0cmVhbXMg
-JiBCSVQoU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykpDQorCQljbGtfZGlzYWJsZV91bnByZXBh
-cmUoc2FpLT5tY2xrX2Nsa1tzYWktPm1jbGtfaWRbMV1dKTsNCitkaXNhYmxlX2J1c19jbGs6DQor
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShzYWktPmJ1c19jbGspOw0KKw0KKwlyZXR1cm4gcmV0Ow0K
-IH0NCiAjZW5kaWYgLyogQ09ORklHX1BNICovDQogDQotLSANCjIuMTcuMQ0KDQo=
+On Spreadtrum platform, the audio subsystem will use the multi-channel
+data transfer controller to transfer sound stream between audio subsystem
+and other AP/CP subsystem.
+
+It can support 10 DAC channel and 10 ADC channel, and each channel has
+512 bytes depth data fifo. Moreover each channel can be used DMA mode
+or interrupt mode to transfer data.
+
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+---
+Changes from v1:
+ - Move the documentation into sound/.
+---
+ .../devicetree/bindings/sound/sprd-mcdt.txt        |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/sprd-mcdt.txt b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+new file mode 100644
+index 0000000..274ba0a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/sprd-mcdt.txt
+@@ -0,0 +1,19 @@
++Spreadtrum Multi-Channel Data Transfer Binding
++
++The Multi-channel data transfer controller is used for sound stream
++transmission between audio subsystem and other AP/CP subsystem. It
++supports 10 DAC channel and 10 ADC channel, and each channel can be
++configured with DMA mode or interrupt mode.
++
++Required properties:
++- compatible: Should be "sprd,sc9860-mcdt".
++- reg: Should contain registers address and length.
++- interrupts: Should contain one interrupt shared by all channel.
++
++Example:
++
++mcdt@41490000 {
++	compatible = "sprd,sc9860-mcdt";
++	reg = <0 0x41490000 0 0x170>;
++	interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
++};
+-- 
+1.7.9.5
